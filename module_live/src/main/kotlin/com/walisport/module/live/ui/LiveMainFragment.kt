@@ -36,6 +36,9 @@ import com.walisport.module.live.ui.viewmodel.LiveMainViewModel
 import com.walisport.module.live.utils.TextViewExt.setBottomDrawable
 import kotlinx.coroutines.delay
 import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator
+import android.view.animation.AccelerateDecelerateInterpolator
+import androidx.viewpager2.widget.ViewPager2
 import arch.cayenne.lib.common.utils.ext.NavResultExt.observeResult
 import arch.cayenne.lib.common.utils.helper.LiveViewPagerAnimHelper
 import arch.cayenne.lib.common.utils.helper.doSmartAnim
@@ -140,12 +143,10 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
 
         mBinding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
+                // 动画更新指示器位置
+                animateIndicatorToPosition(tab?.position ?: 0)
                 tab?.let {
-                    viewPagerAnimHelper.doViewPagerAnim(
-                        targetPosition = tab.position,
-                        viewPager = mBinding.vpPage,
-                        fakeViewPager = mBinding.fragmentFakeViewPager,
-                    )
+                    mBinding.vpPage.doSmartAnim(targetPosition = tab.position)
                 }
                 tab?.view?.findViewById<SkinnableTextView>(R.id.tabText)?.let { textView ->
                     textView.setTextColor(
@@ -156,6 +157,8 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                     )
                     textView.typeface = Typeface.DEFAULT_BOLD
                 }
+
+
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab?) {
@@ -172,6 +175,12 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
 
             override fun onTabReselected(tab: TabLayout.Tab?) {
                 // Handle reselect if needed
+            }
+        })
+        // 监听 ViewPager2 的页面滑动
+        mBinding.vpPage.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+
             }
         })
     }
@@ -319,6 +328,10 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
             tabLayout.getTabAt(1)?.select()
             vpPage.setCurrentItem(1, false)
             tabLayout.removeAllTips()
+            tabLayout.post {
+            // 计算单个 Tab 的宽度
+            val tabWidth = mBinding.tabLayout.width.toFloat() / mBinding.tabLayout.tabCount
+            mBinding.customIndicator.setTabWidth(tabWidth)}
         }
     }
 
@@ -379,5 +392,15 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
             return true
         }
         return super.onBackPressed()
+    }
+    private fun animateIndicatorToPosition(position: Int) {
+        val animator = ValueAnimator.ofFloat(mBinding.customIndicator.getCurrentPosition().toFloat(), position.toFloat())
+        animator.duration = 100 // 动画持续时间
+        animator.interpolator = AccelerateDecelerateInterpolator()
+        animator.addUpdateListener { animation ->
+            val progress = animation.animatedValue as Float
+            mBinding.customIndicator.setIndicatorPosition(progress.toInt(), progress % 1f)
+        }
+        animator.start()
     }
 }
