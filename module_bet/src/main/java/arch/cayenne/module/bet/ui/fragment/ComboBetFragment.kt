@@ -148,7 +148,11 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
                 cancelText = getString(R.string.btn_cancel)
             ).apply {
                 setOnOkClickListener {
-                    mViewModel.removeAll()
+                    this.view?.post {
+                        mViewModel.onBetListListener.removeObservers(viewLifecycleOwner)
+                        this@ComboBetFragment.dismiss()
+                        mViewModel.removeAll()
+                    }
                 }
             }.show(childFragmentManager)
         }
@@ -167,9 +171,7 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
     override fun createObserverAtState(): Lifecycle.State = Lifecycle.State.RESUMED
     override suspend fun createObserver() {
         mViewModel.onBetListListener.observe(viewLifecycleOwner) {
-            if (it.isEmpty()) {
-                dismiss()
-            } else if (it.size == 1) {
+            if (it.size == 1) {
                 navigate(
                     ComboBetFragmentDirections.actionComboBetFragmentToSingleBetFragment().apply {
                         this.arguments.putString(Config.KEY_NON_ANIM, "")

@@ -211,12 +211,11 @@ class BetSheetFragment private constructor() :
         super.onDismiss(dialog)
     }
 
-    override fun customHide(doEnd: (() -> Unit)?) {
-        super.customHide {
-            val f = mBinding.mainNav.getFragment<Fragment>().childFragmentManager.primaryNavigationFragment
-            if (f is BetSheetListener) {
-                f.doCustomHideEnd()
-            }
+    override fun setCustomCollapseSetting() {
+        super.setCustomCollapseSetting()
+        val f = mBinding.mainNav.getFragment<Fragment>().childFragmentManager.primaryNavigationFragment
+        if (f is BetSheetListener) {
+            f.doCustomHideEnd()
         }
         mViewModel.removeSingleBet()
     }
