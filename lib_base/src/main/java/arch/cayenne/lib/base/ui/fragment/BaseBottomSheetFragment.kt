@@ -82,7 +82,9 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
                     this@BaseBottomSheetFragment.dismiss()
                     super.onBackPressed()
                 } else {
-                    customHide()
+                    if (!isDismissing) {
+                        customHide()
+                    }
                 }
             }
         }
@@ -223,6 +225,7 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
         if (!autoPlayAnimation) {
             // 關閉對話框的 window，先不要顯示
             dialog?.window?.decorView?.visibility = View.INVISIBLE
+            isDismissing = true
         }
         uiBind.onStart()
         setStatusBar()
@@ -320,15 +323,21 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
 
     @CallSuper
     open fun customShow() {
-        isDismissing = false
-        setCustomExpendSetting()
-        playEnterAnimations()
+        if (isDismissing) {
+            isDismissing = false
+            setCustomExpendSetting()
+            playEnterAnimations()
+        }
+
     }
 
     @CallSuper
     open fun customHide() {
-        isDismissing = true
-        playExitAnimations()
+        if (!isDismissing) {
+            isDismissing = true
+            playExitAnimations()
+        }
+
     }
 
 
