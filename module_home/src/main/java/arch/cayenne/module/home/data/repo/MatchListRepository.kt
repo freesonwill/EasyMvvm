@@ -83,7 +83,7 @@ class MatchListRepository(
                 marketCrossRef = matchFullData.matchMarketCrossRefs,
                 marketSelectCrossRefs = matchFullData.marketSelectCrossRefs,
             )
-            "KC_ 新增聯賽到賽事表內成功了$refIds".logi()
+            "New match data from api insert success : $refIds".logi(this::class.java.simpleName)
             return ApiResponseState.Succeeded(resp.data!!.matchList)
         }
         return ApiResponseState.Failed(resp.error)

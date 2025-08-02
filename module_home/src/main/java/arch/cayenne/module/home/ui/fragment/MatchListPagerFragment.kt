@@ -173,7 +173,7 @@ class MatchListPagerFragment :
 
     private val matchListObserver = Observer <List<MatchWithMarkets>> { matchList ->
         val preEmpty = matchAdapter.currentList.isEmpty()
-        "KC_ 更新賽事列表 ${matchList.map { it.match.matchId }}".logi()
+        "MatchListChange livedata Observed~ ${matchList.map { it.match.matchId }}".logi(this::class.java.simpleName)
         matchAdapter.submitList(matchList)
         mBinding.rvHomeGameList.doOnPreDraw {
             subscribeVisibleMatch()
