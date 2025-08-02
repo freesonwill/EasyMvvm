@@ -201,10 +201,20 @@ class ComboBetViewModel(
         _onMultiLayoutExpendListener.value = _onMultiLayoutExpendListener.value?.not() ?: true
     }
 
-    private fun setExpandMultiLayout(expand: Boolean) {
+    fun setExpandMultiLayout(expand: Boolean) {
         val currentValue = _onMultiLayoutExpendListener.value ?: false
         if (currentValue == expand) return // No change needed
         _onMultiLayoutExpendListener.value = expand
+    }
+
+    fun clearBetMoney() {
+        _onComboMultiBetBeanListener.value = _onComboMultiBetBeanListener.value?.map {
+            if (it.inputMoney > 0) {
+                it.copy(inputMoney = 0L)
+            } else {
+                it
+            }
+        }
     }
 
     suspend fun getBetSize(): Int = repo.getBetSize()

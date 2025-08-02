@@ -131,7 +131,7 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
         }
     }
 
-    protected fun playExitAnimations() {
+    protected fun playExitAnimations(doEnd: (() -> Unit)? = null) {
         val sheetContainerSheetAnim = AnimationUtils.loadAnimation(requireContext(), R.anim.slide_bottom_sheet_down)
         sheetContainerSheetAnim.setAnimationListener(object : Animation.AnimationListener {
             override fun onAnimationStart(animation: Animation?) {
@@ -147,6 +147,7 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
                 } else {
                     setCustomCollapseSetting()
                 }
+                doEnd?.invoke()
             }
 
             override fun onAnimationRepeat(animation: Animation?) {}
@@ -330,9 +331,9 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
     }
 
     @CallSuper
-    open fun customHide() {
+    open fun customHide(doEnd: (() -> Unit)? = null) {
         isDismissing = true
-        playExitAnimations()
+        playExitAnimations(doEnd)
     }
 
 

@@ -2,7 +2,6 @@ package arch.cayenne.module.bet.ui.fragment
 
 import android.os.Bundle
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.SimpleItemAnimator
@@ -10,6 +9,7 @@ import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.ui.view.BetResultToastView
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavResultExt.sendResult
+import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
@@ -169,5 +169,17 @@ class BetResultFragment : BaseFragment<BetResultViewModel, FragmentBetResultBind
 
     override fun showExitAnim(key: String, value: String) {
         sendResult(key, value, R.id.betResultFragment)
+    }
+
+    override fun doCustomHideEnd() {
+        lifecycleScope.launch {
+            mViewModel.onBetSheetListener.value?.let {
+                if (it.size == 1) {
+                    navigate(BetResultFragmentDirections.actionBetResultFragmentToSingleBetFragment(), null)
+                } else {
+                    navigate(BetResultFragmentDirections.actionBetResultFragmentToComboBetFragment(), null)
+                }
+            }
+        }
     }
 }

@@ -194,13 +194,13 @@ class BetSheetFragment private constructor() :
         super.onDismiss(dialog)
     }
 
-    override fun customShow() {
-        initDestination()
-        super.customShow()
-    }
-
-    override fun customHide() {
-        super.customHide()
+    override fun customHide(doEnd: (() -> Unit)?) {
+        super.customHide {
+            val f = mBinding.mainNav.getFragment<Fragment>().childFragmentManager.primaryNavigationFragment
+            if (f is BetSheetListener) {
+                f.doCustomHideEnd()
+            }
+        }
         mViewModel.removeSingleBet()
     }
 }
@@ -208,4 +208,5 @@ class BetSheetFragment private constructor() :
 interface BetSheetListener {
     fun dismiss(key: String = KEY_RESULT, value: String = VALUE_DISMISS)
     fun showExitAnim(key: String = KEY_RESULT, value: String)
+    fun doCustomHideEnd()
 }
