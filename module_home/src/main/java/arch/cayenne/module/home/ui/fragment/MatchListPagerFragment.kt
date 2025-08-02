@@ -33,6 +33,7 @@ import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
 import arch.cayenne.module.home.ui.viewmodel.MatchListViewModel
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
+import java.lang.ref.WeakReference
 import kotlin.reflect.KClass
 
 class MatchListPagerFragment :
@@ -65,9 +66,15 @@ class MatchListPagerFragment :
                     mViewModel.addMatchCollect(item, !item.match.collect)
                 }
 
-                override fun onOddsCellClick(selection: SelectionBeanLite, x: Float, y: Float) {
+                override fun onOddsCellClick(cell: WeakReference<View>, selection: SelectionBeanLite, x: Float, y: Float) {
                     lifecycleScope.launch {
+                        cell.get()?.isSelected = true
                         val status = mViewModel.setSelection(selection.selectionId)
+
+                        if (status !is AddSelectionStatus.Success) {
+                            cell.get()?.isSelected = false
+                        }
+
                         if (status is AddSelectionStatus.Success.Single) {
                             BetSheetFragment.newInstance(1).show(requireActivity().supportFragmentManager)
                         } else if (status is AddSelectionStatus.Failure.DisableComboForParlay) {
