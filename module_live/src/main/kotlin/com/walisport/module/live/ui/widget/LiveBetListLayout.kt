@@ -231,7 +231,7 @@ class LiveBetListLayout @JvmOverloads constructor(
                     tvBetDuelLeft.text = name
                     tvBetDuelRight.text = odds
                     sclOne.isSelected = isCombo
-                    sclOne.clickNoRepeat {
+                    sclOne.clickNoRepeatSingle() {
                         handleClick(marketId, isCombo, callback, sclOne) }
                 }
                 is LiveBetContentItemLayoutTowBinding -> {
@@ -239,7 +239,7 @@ class LiveBetListLayout @JvmOverloads constructor(
                     tvBetDuelLeft.text = name
                     tvBetDuelRight.text = odds
                     sclTow.isSelected = isCombo
-                    sclTow.clickNoRepeat {
+                    sclTow.clickNoRepeatSingle {
                         handleClick(marketId, isCombo, callback, sclTow) }
                 }
                 is LiveBetContentItemLayoutThreeBinding -> {
@@ -247,7 +247,7 @@ class LiveBetListLayout @JvmOverloads constructor(
                     tvBetDuelLeft.text = name
                     tvBetDuelRight.text = odds
                     sclThree.isSelected = isCombo
-                    sclThree.clickNoRepeat {
+                    sclThree.clickNoRepeatSingle {
                         handleClick(marketId, isCombo, callback, sclThree) }
                 }
                 else ->{}
