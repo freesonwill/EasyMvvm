@@ -75,7 +75,8 @@ class MatchListRepository(
                     order = page * 100 + index
                 )
             }
-            matchDao.insertTournamentMatchRef(tournamentMatchRefs)
+            val res = matchDao.insertTournamentMatchRef(tournamentMatchRefs)
+            "KC_ 新增聯賽到賽事表內成功了$res".logi()
             matchDao.insertMatch(
                 matches = matchFullData.match,
                 markets = matchFullData.markets,

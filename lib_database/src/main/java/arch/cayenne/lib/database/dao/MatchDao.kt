@@ -23,7 +23,7 @@ import kotlinx.coroutines.flow.Flow
 abstract class MatchDao : BaseDao<MatchBean>() {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    abstract suspend fun insertTournamentMatchRef(crossRef: List<TournamentMatchRef>)
+    abstract suspend fun insertTournamentMatchRef(crossRef: List<TournamentMatchRef>) : List<Long>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     protected abstract suspend fun insertMatch(match: List<MatchBean>)

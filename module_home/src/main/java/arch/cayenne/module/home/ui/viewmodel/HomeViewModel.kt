@@ -281,6 +281,7 @@ class HomeViewModel : BaseViewModel() {
                 setState(HomeState.Sport.LoadSuccess)
             } else if (it is ApiResponseState.Failed) {
                 if (tournaments.value?.peekContent() == null || tournaments.value?.peekContent()?.isEmpty() == true) {
+                    "KC_ 取得球類錯誤 清空聯賽列表到只剩全部".logd()
                     tournaments.value = Event(
                         arrayListOf(
                             TournamentDataModel.createAllItem(
@@ -303,6 +304,7 @@ class HomeViewModel : BaseViewModel() {
             repository.updateSelectedSportId(currentPlayTypeId, currentSportId)
         }
         if (currentPlayTypeId != PlayType.CHAMPION.id) {
+            "KC_ setCurrentSport 清空聯賽列表".logd()
             tournaments.value = Event(arrayListOf())
             setCurrentSelectedDate()   //目前日期跟著球類走，ex:早盤日期目前是7.11，不管點擊哪一個聯賽都是7.11資料，所以設定完當前選擇的球類後先設定日期
             getCurrentTournament()
@@ -327,6 +329,7 @@ class HomeViewModel : BaseViewModel() {
                 setState(HomeState.Tournament.LoadSuccess)
             } else if (it is ApiResponseState.Failed) {
                 if ((tournaments.value?.peekContent() == null || tournaments.value?.peekContent()?.isEmpty() == true)) {
+                    "KC_ 取得聯賽錯誤 清空聯賽列表到只剩全部".logd()
                     tournaments.value = Event(
                         arrayListOf(
                             TournamentDataModel.createAllItem(

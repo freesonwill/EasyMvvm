@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
@@ -172,7 +173,7 @@ class MatchListPagerFragment :
 
     private val matchListObserver = Observer <List<MatchWithMarkets>> { matchList ->
         val preEmpty = matchAdapter.currentList.isEmpty()
-
+        "KC_ 更新賽事列表 ${matchList.map { it.match.matchId }}".logi()
         matchAdapter.submitList(matchList)
         mBinding.rvHomeGameList.doOnPreDraw {
             subscribeVisibleMatch()
