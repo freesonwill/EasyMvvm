@@ -2,7 +2,9 @@ package arch.cayenne.lib.base.ui.fragment
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.GestureDetector
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.CallSuper
@@ -81,6 +83,7 @@ abstract class BaseFragment<VM : BaseViewModel, VB : ViewBinding> : Fragment(), 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         uiBind.onViewCreated(view,savedInstanceState)
+
     }
     @CallSuper
     override fun onStart() {

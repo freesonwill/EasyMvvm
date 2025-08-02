@@ -4,7 +4,9 @@ import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
+import android.view.GestureDetector
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
@@ -74,6 +76,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
             DrawerLayout.LOCK_MODE_LOCKED_CLOSED,
             GravityCompat.END
         )
+        mBinding.drawerLayout.setParentFragment(this)
     }
 
     //init DrawerLayout Content
