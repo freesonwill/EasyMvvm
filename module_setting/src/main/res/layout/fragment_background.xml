@@ -118,6 +118,11 @@
                         android:textSize="@dimen/sp_15" />
                 </LinearLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"/>
         </LinearLayout>
     </LinearLayout>
 </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>

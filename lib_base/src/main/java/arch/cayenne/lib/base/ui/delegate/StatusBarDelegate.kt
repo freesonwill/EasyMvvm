@@ -64,7 +64,12 @@ class StatusBarDelegate : IStatusBar {
         //默认
         when (val statusBarMode = config.statusBarType) {
             StatusBarMode.DEFAULT -> {
-                immersionBar.statusBarColor(config.statusBarColor)//设置状态栏颜色
+                try {//防止找不到颜色报错
+                    immersionBar.statusBarColor(config.statusBarColor)//设置状态栏颜色
+                }catch (e:Exception){
+                    e.printStackTrace()
+                    immersionBar.statusBarColor(android.R.color.black)//设置状态栏颜色
+                }
                 immersionBar.hideBar(BarHide.FLAG_SHOW_BAR) //状态栏显示
                     .fullScreen(false) //退出全屏模式
                     .navigationBarColor(config.statusBarColor) // 设置虚拟导航栏颜色

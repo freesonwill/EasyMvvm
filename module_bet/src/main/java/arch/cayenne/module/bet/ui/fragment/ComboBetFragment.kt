@@ -94,6 +94,14 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
 
     private var initSize = 2
 
+    private val forceUpdateObserver = object :
+        ViewTreeObserver.OnGlobalLayoutListener {
+        override fun onGlobalLayout() {
+            mBinding.root.viewTreeObserver.removeOnGlobalLayoutListener(this)
+            forceUpdateLayout()
+        }
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         lifecycleScope.launch {
             initSize = withContext(this.coroutineContext) {
@@ -140,7 +148,11 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
                 cancelText = getString(R.string.btn_cancel)
             ).apply {
                 setOnOkClickListener {
-                    mViewModel.removeAll()
+                    this.view?.post {
+                        mViewModel.onBetListListener.removeObservers(viewLifecycleOwner)
+                        this@ComboBetFragment.dismiss()
+                        mViewModel.removeAll()
+                    }
                 }
             }.show(childFragmentManager)
         }
@@ -159,9 +171,7 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
     override fun createObserverAtState(): Lifecycle.State = Lifecycle.State.RESUMED
     override suspend fun createObserver() {
         mViewModel.onBetListListener.observe(viewLifecycleOwner) {
-            if (it.isEmpty()) {
-                dismiss()
-            } else if (it.size == 1) {
+            if (it.size == 1) {
                 navigate(
                     ComboBetFragmentDirections.actionComboBetFragmentToSingleBetFragment().apply {
                         this.arguments.putString(Config.KEY_NON_ANIM, "")
@@ -195,13 +205,7 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
         }
         mViewModel.onForceUpdateListener.observe(viewLifecycleOwner) {
             if (it) {
-                mBinding.root.viewTreeObserver.addOnGlobalLayoutListener(object :
-                    ViewTreeObserver.OnGlobalLayoutListener {
-                    override fun onGlobalLayout() {
-                        mBinding.root.viewTreeObserver.removeOnGlobalLayoutListener(this)
-                        forceUpdateLayout()
-                    }
-                })
+                mBinding.root.viewTreeObserver.addOnGlobalLayoutListener(forceUpdateObserver)
             }
         }
         mViewModel.onMultiLayoutExpendListener.observe(viewLifecycleOwner) {
@@ -236,7 +240,7 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
     }
 
     private fun forceUpdateLayout() {
-        if (betSelectionAdapter.itemCount == 0 || mViewModel.onBetListListener.value?.size == 1) return
+        if (betSelectionAdapter.itemCount == 0 || mViewModel.onBetListListener.value?.size == 1 || !isDetached) return
         adjustLayoutHeight()
     }
 
@@ -426,6 +430,16 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
 
     override fun showExitAnim(key: String, value: String) {
         sendResult(key, value, R.id.comboBetFragment)
+    }
+
+    override fun doCustomHideEnd() {
+        mViewModel.setExpandMultiLayout(false)
+        mViewModel.clearBetMoney()
+    }
+
+    override fun onDestroyView() {
+        mBinding.root.viewTreeObserver.removeOnGlobalLayoutListener(forceUpdateObserver)
+        super.onDestroyView()
     }
 
 }

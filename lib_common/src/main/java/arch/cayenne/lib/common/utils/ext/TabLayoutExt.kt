@@ -88,19 +88,4 @@ object TabLayoutExt {
         viewTreeObserver.addOnScrollChangedListener(animate)
         post(animate)
     }
-
-    fun TabLayout.selectTabWithoutAnimation(index: Int) {
-        val tab = getTabAt(index) ?: return
-
-        // 透過反射關掉 animateToTab
-        try {
-            val method = TabLayout::class.java.getDeclaredMethod("setScrollPosition", Int::class.java, Float::class.java, Boolean::class.java, Boolean::class.java)
-            method.isAccessible = true
-            method.invoke(this, index, 0f, true, false)
-            tab.select()
-        } catch (e: Exception) {
-            e.printStackTrace()
-            tab.select()
-        }
-    }
 }

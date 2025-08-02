@@ -228,19 +228,5 @@
             android:layout_marginTop="@dimen/dp_5"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@id/lay_top" />
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/fragment_fake_view_pager"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:clipChildren="false"
-            android:clipToPadding="false"
-            android:overScrollMode="ifContentScrolls"
-            android:paddingStart="0dp"
-            android:paddingEnd="0dp"
-            app:layout_constraintBottom_toBottomOf="@id/vp_message"
-            app:layout_constraintEnd_toEndOf="@id/vp_message"
-            app:layout_constraintStart_toStartOf="@id/vp_message"
-            app:layout_constraintTop_toTopOf="@id/vp_message" />
     </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
 </layout>

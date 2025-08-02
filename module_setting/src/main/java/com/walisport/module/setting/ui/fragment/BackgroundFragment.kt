@@ -41,6 +41,9 @@ class BackgroundFragment : BaseFragment<SettingViewModel, FragmentBackgroundBind
             barRoot.layoutParams.width = resources.displayMetrics.widthPixels - 20.dp2px
             //点击返回，使用变动前的皮肤
             tvBack.clickNoRepeat {
+                if (skinOld != skinType) {
+                    mViewModel.resetSkinType(skinOld)
+                }
                 mViewModel.setSkinRecord(skinOld)
                 findNavController().navigateUp()
             }

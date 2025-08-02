@@ -47,9 +47,10 @@ import kotlin.reflect.KClass
  */
 
 class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding>() {
-    companion object{
+    companion object {
         const val CHANGE_MATCH = "CHANGE_MATCH"
     }
+
     override val vbClass: KClass<FragmentLiveMainBinding> = FragmentLiveMainBinding::class
     override val vmClass: KClass<LiveMainViewModel> = LiveMainViewModel::class
     private lateinit var args: LiveMainFragmentArgs
@@ -69,7 +70,10 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         setVideoView()
         loadFragment()
         mViewModel.observeMatchInfoNotify()
-        mBinding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, GravityCompat.END)
+        mBinding.drawerLayout.setDrawerLockMode(
+            DrawerLayout.LOCK_MODE_LOCKED_CLOSED,
+            GravityCompat.END
+        )
     }
 
     //init DrawerLayout Content
@@ -105,24 +109,28 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                 findNavController().navigateUp()
             }
             llcLeagueNameLogo.clickNoRepeat {
-                navigate(
-                    LiveMainFragmentDirections.actionLiveMainFragmentToLeagueFragment()
-                        .apply {
-                            mViewModel.matchId.value?.let { value ->
-                                arguments.putLong(
-                                    "matchID",
-                                    value
-                                )
-                            }
-                            mViewModel.leagueID.value?.let { value ->
-                                arguments.putInt(
-                                    "leagueID",
-                                    value
-                                )
-                            }
-                            arguments.putString("leagueName", mViewModel.leagueName.value)
-                            arguments.putString("leagueLogo", mViewModel.leagueLogo.value)
-                        })
+                val nav = findNavController()
+                val dest = R.id.leagueFragment
+                if (nav.currentDestination?.id != dest) {
+                    navigate(
+                        LiveMainFragmentDirections.actionLiveMainFragmentToLeagueFragment()
+                            .apply {
+                                mViewModel.matchId.value?.let { value ->
+                                    arguments.putLong(
+                                        "matchID",
+                                        value
+                                    )
+                                }
+                                mViewModel.leagueID.value?.let { value ->
+                                    arguments.putInt(
+                                        "leagueID",
+                                        value
+                                    )
+                                }
+                                arguments.putString("leagueName", mViewModel.leagueName.value)
+                                arguments.putString("leagueLogo", mViewModel.leagueLogo.value)
+                            })
+                }
             }
 
             tvMoney.clickNoRepeat {
@@ -169,9 +177,11 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
     }
 
     override suspend fun createObserver() {
-        observeResult<Bundle>(CHANGE_MATCH){
+        observeResult<Bundle>(CHANGE_MATCH) {
             val newArgs: LiveMainFragmentArgs = LiveMainFragmentArgs.fromBundle(it)
-            "observeResult-->newArgs--->$newArgs,args:${args},extras:${it},${this.args.equal(newArgs)}".logd(TAG)
+            "observeResult-->newArgs--->$newArgs,args:${args},extras:${it},${this.args.equal(newArgs)}".logd(
+                TAG
+            )
             if (this.args.equal(newArgs)) return@observeResult
             this.args = newArgs
             updateMatchId(newArgs.matchId)
@@ -245,7 +255,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
     //比赛ID发生变化,取消订阅,数据请空
     private fun updateMatchId(matchId: Long) {
         mBinding.tabLayout.getTabAt(1)?.select()
-        mBinding.vpPage.setCurrentItem(1,true)
+        mBinding.vpPage.setCurrentItem(1, true)
         mViewModel.matchId.value?.let {
             deleteDataAndSubscriptions(matchId)
             mViewModel.setMatchId(matchId)
@@ -307,7 +317,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
             }.attach()
             tabLayout.clearOnTabSelectedListeners()
             tabLayout.getTabAt(1)?.select()
-            vpPage.setCurrentItem(1,false)
+            vpPage.setCurrentItem(1, false)
             tabLayout.removeAllTips()
         }
     }

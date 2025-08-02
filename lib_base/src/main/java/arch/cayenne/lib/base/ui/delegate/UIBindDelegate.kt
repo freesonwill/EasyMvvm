@@ -12,7 +12,6 @@ import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.base.ui._interface.IView
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
@@ -157,18 +156,16 @@ class UIBindDelegate<UIOwner, VM, VB>(
     }
 
     private suspend fun createObserver(uiOwner: UIOwner) {
+        @Suppress("DEPRECATION")
         when (val state = uiOwner.createObserverAtState()) {
             Lifecycle.State.CREATED -> {
                 uiOwner.createObserver()
             }
-
-            Lifecycle.State.STARTED, Lifecycle.State.RESUMED -> {
-                uiOwner.lifecycleScope.launch {
-                    uiOwner.repeatOnLifecycle(state) {
-                        uiOwner.createObserver()
-                        this@launch.cancel() // 只执行一次
-                    }
-                }
+            Lifecycle.State.STARTED ->{
+                uiOwner.lifecycleScope.launchWhenStarted { uiOwner.createObserver() }
+            }
+            Lifecycle.State.RESUMED -> {
+                uiOwner.lifecycleScope.launchWhenResumed { uiOwner.createObserver() }
             }
 
             else -> {

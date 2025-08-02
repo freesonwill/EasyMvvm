@@ -72,6 +72,11 @@ class ComboBetViewModel(
         }
 
         addSource(_onBetListListener) {
+            if (it.size > lastBetSize) {
+                value = true
+                lastBetSize = it.size
+                return@addSource
+            }
             checkBothLoaded()
             if (lastBetSize != it.size) {
                 updateBox = Pair(true, updateBox.second)
@@ -196,10 +201,20 @@ class ComboBetViewModel(
         _onMultiLayoutExpendListener.value = _onMultiLayoutExpendListener.value?.not() ?: true
     }
 
-    private fun setExpandMultiLayout(expand: Boolean) {
+    fun setExpandMultiLayout(expand: Boolean) {
         val currentValue = _onMultiLayoutExpendListener.value ?: false
         if (currentValue == expand) return // No change needed
         _onMultiLayoutExpendListener.value = expand
+    }
+
+    fun clearBetMoney() {
+        _onComboMultiBetBeanListener.value = _onComboMultiBetBeanListener.value?.map {
+            if (it.inputMoney > 0) {
+                it.copy(inputMoney = 0L)
+            } else {
+                it
+            }
+        }
     }
 
     suspend fun getBetSize(): Int = repo.getBetSize()

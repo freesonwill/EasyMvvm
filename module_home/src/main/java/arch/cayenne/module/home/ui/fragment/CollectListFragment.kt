@@ -40,6 +40,7 @@ import arch.cayenne.module.home.ui.view.decoration.MatchCardItemDecoration
 import arch.cayenne.module.home.ui.viewmodel.CollectListViewModel
 import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
 import kotlinx.coroutines.launch
+import java.lang.ref.WeakReference
 import kotlin.reflect.KClass
 
 /**
@@ -81,11 +82,17 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
                     mViewModel.removeMatchCollect(item)
                 }
 
-                override fun onOddsCellClick(selection: SelectionBeanLite, x: Float, y: Float) {
+                override fun onOddsCellClick(cell: WeakReference<View>, selection: SelectionBeanLite, x: Float, y: Float) {
                     lifecycleScope.launch {
+                        cell.get()?.isSelected = true
                         val status = mViewModel.setSelection(selection.selectionId)
+
+                        if (status !is AddSelectionStatus.Success) {
+                            cell.get()?.isSelected = false
+                        }
+
                         if (status is AddSelectionStatus.Success.Single) {
-                            BetSheetFragment.newInstance(1).show(requireActivity().supportFragmentManager)
+                            BetSheetFragment.show(requireActivity())
                         } else if (status is AddSelectionStatus.Failure.DisableComboForParlay) {
                             showToast(getString(R.string.disabled_to_combo))
                         } else if (status is AddSelectionStatus.Failure.DisableComboForProvider) {

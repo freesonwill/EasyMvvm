@@ -17,6 +17,9 @@
         <action
             android:id="@+id/action_singleBetFragment_to_betResultFragment"
             app:destination="@id/betResultFragment" />
+        <action
+            android:id="@+id/action_singleBetFragment_to_comboBetFragment"
+            app:destination="@id/comboBetFragment" />
     </fragment>
 
     <fragment

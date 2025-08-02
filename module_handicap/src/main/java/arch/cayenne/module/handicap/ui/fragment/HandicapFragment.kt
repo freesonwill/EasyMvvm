@@ -59,10 +59,7 @@ class HandicapFragment : BaseFragment<HandicapViewModel, FragmentHandicapBinding
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 tab?.let {
                     "1111".loge("测试")
-                    mBinding.viewpager.doSmartAnim(
-                        targetPosition = tab.position,
-                        fakeViewPager = mBinding.fragmentFakeViewPager,
-                    )
+                    mBinding.viewpager.doSmartAnim(targetPosition = tab.position)
                 }
             }
 

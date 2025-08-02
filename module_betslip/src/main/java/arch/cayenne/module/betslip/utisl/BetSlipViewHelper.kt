@@ -12,7 +12,7 @@ internal object BetSlipViewHelper {
         ObjectAnimator.ofFloat(view, "translationY", 0f, height.toFloat())
             .also {
                 it.interpolator = LinearInterpolator()
-                it.duration = 100
+                it.duration = 50
                 it.addListener(onEnd = {
                     onEnd?.invoke()
                 })
@@ -24,7 +24,7 @@ internal object BetSlipViewHelper {
         ObjectAnimator.ofFloat(view, "translationY", height, 0f)
             .also {
                 it.interpolator = LinearInterpolator()
-                it.duration = 100
+                it.duration = 50
                 it.addListener(onEnd = {
                     onEnd?.invoke()
                 })

@@ -14,6 +14,9 @@ class FloatingButtonViewModel(private val repo: FloatingButtonRepository) : Base
     private val _onBettingCount = MutableLiveData(0)
     val onBettingCount: LiveData<Int> = _onBettingCount
 
+    val count: Int
+        get() = _onBettingCount.value ?: 0
+
     init {
         viewModelScope.launch {
             repo.observeComboBetCount().collect {

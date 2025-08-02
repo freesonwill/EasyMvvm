@@ -43,6 +43,7 @@ class HomeCalendarPopupWindow<VB : ViewBinding>(
 
     private val onDataSelectedListener: ((String) -> Unit)? = builder.onDateSelectedListener
     private val onCalendarDismissListener: (() -> Unit)? = builder.onCalendarDismissListener
+    private val onResetDateListener: (()-> Unit)? = builder.onResetDateListener
     private val popupWindow: PopupWindow = PopupWindow(
         binding.root,
         builder.width,
@@ -159,10 +160,9 @@ class HomeCalendarPopupWindow<VB : ViewBinding>(
             }
             this.calendarBtnCancel.clickNoRepeat {
                 this.calendarView.scrollToCurrent()
-                val currDate ="${calendarView.curYear}${calendarView.curMonth}${calendarView.curDay}"
-                onDataSelectedListener?.invoke(DateUtils.getMonthDay(currDate))
                 val minRangeDate = calendarView.minRangeCalendar
                 calendarView.scrollToCalendar(minRangeDate.year,minRangeDate.month,minRangeDate.day)
+                onResetDateListener?.invoke()
                 dismiss() // 關閉 Popup
             }
             this.calendarBtnOk.clickNoRepeat {
@@ -387,6 +387,7 @@ class HomeCalendarPopupWindow<VB : ViewBinding>(
         internal var elevation: Float? = null
         internal var onDateSelectedListener: ((String) -> Unit)? = null
         internal var onCalendarDismissListener: (()-> Unit)? = null
+        internal var onResetDateListener: (()-> Unit)? = null
 
         /**
          * 提供一個公開的方法讓外部設定監聽器
@@ -396,6 +397,9 @@ class HomeCalendarPopupWindow<VB : ViewBinding>(
         }
         fun setOnCalendarDismissListener(listener: () -> Unit) = apply {
             this.onCalendarDismissListener = listener
+        }
+        fun setOnResetDateListener(listener: () -> Unit) = apply {
+            this.onResetDateListener = listener
         }
         open fun build(): HomeCalendarPopupWindow<VB> {
             return HomeCalendarPopupWindow(context, lifecycleOwner, bindingInflater, this)

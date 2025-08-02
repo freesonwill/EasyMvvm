@@ -155,15 +155,12 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
         }
 
         mViewModel.onReserveOddsListener.observe(viewLifecycleOwner) { odds ->
+            mBinding.btnReserve.isVisible = odds == null
+            mBinding.clCancelReserve.isVisible = odds != null
             if (odds == null) {
                 mBinding.tvBetHint.text = getString(R.string.btn_bet_hint)
-                mBinding.btnReserve.isVisible = true
-                mBinding.clCancelReserve.isVisible = false
             } else {
                 mBinding.tvBetHint.text = getString(R.string.title_reserve)
-                mBinding.btnReserve.isVisible = false
-                mBinding.clCancelReserve.isVisible = true
-
                 val value = "@${odds.getOdds()}"
                 mBinding.tvCancelReserve.text = value
             }
@@ -208,6 +205,11 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
 
     override fun showExitAnim(key: String, value: String) {
         sendResult(key, value, R.id.singleBetFragment)
+    }
+
+    override fun doCustomHideEnd() {
+        mViewModel.removeReserve()
+        mViewModel.clearNumber()
     }
 
     private fun hideKeyboard() {
