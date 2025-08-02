@@ -69,7 +69,7 @@ class MatchListPagerFragment :
                     lifecycleScope.launch {
                         val status = mViewModel.setSelection(selection.selectionId)
                         if (status is AddSelectionStatus.Success.Single) {
-                            BetSheetFragment.newInstance(1).show(requireActivity().supportFragmentManager)
+                            BetSheetFragment.show(requireActivity())
                         } else if (status is AddSelectionStatus.Failure.DisableComboForParlay) {
                             showToast(getString(R.string.disabled_to_combo))
                         } else if (status is AddSelectionStatus.Failure.DisableComboForProvider) {
@@ -273,6 +273,10 @@ class MatchListPagerFragment :
             mViewModel.setPlayTypeId(this.getInt(ARG_PLAY_TYPE_ID))
             mViewModel.setPosition(this.getInt(ARG_POSITION))
         }
+//        mViewModel.startObserveMatch()
+    }
+
+    fun startObserveMatch() {
         mViewModel.startObserveMatch()
     }
 

@@ -11,6 +11,8 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
+import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
+import androidx.viewpager2.widget.ViewPager2.SCROLL_STATE_IDLE
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
@@ -22,10 +24,10 @@ import arch.cayenne.lib.common.utils.ext.NavResultExt.observeResult
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
 import arch.cayenne.lib.common.utils.ext.TabLayoutExt.reflexMargin
-import arch.cayenne.lib.common.utils.ext.TabLayoutExt.selectTabWithoutAnimation
 import arch.cayenne.lib.common.utils.ext.TabLayoutExt.setupEndTabMoreAnimation
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+import arch.cayenne.lib.common.utils.ext.getFormatDate
 import arch.cayenne.lib.common.utils.helper.BounceEdgeEffectHelper
 import arch.cayenne.lib.database.entity.TournamentDataModel
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
@@ -60,6 +62,10 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
         }
     }
     private var customPopup : HomeCalendarPopupWindow<HomeTourPopupCalendarViewBinding>? = null
+    private var tournamentTabLayoutMediator: CustomTabLayoutMediator? = null
+
+    private var leaguePagerAdapter : LeaguePagerAdapter? = null
+    private var gameListPageCallback: OnPageChangeCallback? = null
 
     //    private val tournamentListFragment  = TournamentListFragment.newInstance()
     private var isExpanded = false
@@ -130,6 +136,20 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             //聯賽
             vpGameList.isSaveEnabled = false
             vpGameList.adapter = null
+            vpGameList.offscreenPageLimit = 2
+            gameListPageCallback = object : OnPageChangeCallback(){
+                override fun onPageScrollStateChanged(state: Int) {
+                    super.onPageScrollStateChanged(state)
+                    if (state == SCROLL_STATE_IDLE) {
+                        val itemId = leaguePagerAdapter?.getItemId(vpGameList.currentItem)?: return
+                        val fragment = childFragmentManager.findFragmentByTag("f$itemId") ?: return
+                        if (fragment is MatchListPagerFragment) {
+                            fragment.startObserveMatch()
+                        }
+                    }
+                }
+            }
+            vpGameList.registerOnPageChangeCallback(gameListPageCallback!!)
 
             // 日期 Tab 設定, 固定 "全部"
             updateDateTabs(tlDateList, dateTabs)
@@ -145,8 +165,10 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 var tabSelectedDate: String
                 val index = tlDateList.selectedTabPosition
                 if (index >= 0) {
-                    val endDateTriple = mViewModel.recently7DayMatchScheduleCount.value?.peekContent()?.getOrNull(index)
-                    tabSelectedDate = endDateTriple?.day?.replace("-","") ?: "0"
+                    val tag = tlDateList.getTabAt(tlDateList.selectedTabPosition)?.tag
+                    val triple = getFuture31Days().find { it.first == tag }
+                    triple?.third?.getFormatDate()?.replace("/", "")
+                    tabSelectedDate = triple?.third?.getFormatDate()?.replace("/", "") ?: "0"
                 } else {
                     tabSelectedDate = "0"
                 }
@@ -274,6 +296,8 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 with(mBinding.layoutContainer) {
                     llOtherDate.isSelected = false
                 }
+            }.setOnResetDateListener {
+                resetDateTabs()
             }.build()
         }
     }
@@ -380,13 +404,13 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
 
     private fun setTournamentAndViewPagerLayout(tournaments: List<TournamentDataModel>) {
         with(mBinding.layoutContainer) {
-
-            vpGameList.adapter = LeaguePagerAdapter(
+            leaguePagerAdapter = LeaguePagerAdapter(
                 fragmentManager = childFragmentManager,
                 lifecycle = viewLifecycleOwner.lifecycle,
                 tournament = tournaments,
                 playTypeId = mViewModel.currentPlayTypeId
             )
+            vpGameList.adapter = leaguePagerAdapter
             vpGameList.offsetLeftAndRight(1)
 
             // 使用 reflexMargin 擴展方法設置更小的 tab 間距
@@ -396,7 +420,8 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             //導致tabLayout沒有資料時又多設定一次OnTabSelectedListener，因此要先清除之前的listener
             mBinding.layoutContainer.tlLeagueList.clearOnTabSelectedListeners()
 
-            CustomTabLayoutMediator(
+            tournamentTabLayoutMediator?.detach()
+            tournamentTabLayoutMediator = CustomTabLayoutMediator(
                 tabLayout = tlLeagueList,
                 viewPager = vpGameList
             ) { tab, position ->
@@ -405,25 +430,19 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                     tab.view.setPadding(0, 0, 10f.dp2px, 0)
                 }
             }.also { layoutMediator ->
-                layoutMediator.attach(mBinding.layoutContainer.ivFaker)
+                layoutMediator.attach(
+                    afterTabSelected = { position ->
+                        getSelectedRecently31Scheduled(position)
+                        tournaments.getOrNull(position)?.id?.let { id -> mViewModel.setCurrentTournamentId(id)}
+                    }
+                )
                 val selectedPosition = tournaments.indexOfFirst { it.isSelected }
                 getSelectedRecently31Scheduled(selectedPosition)
-                tlLeagueList.post{ tlLeagueList.selectTabWithoutAnimation(selectedPosition) }
-                vpGameList.setCurrentItem(selectedPosition, false)
-            }
-
-            tlLeagueList.addOnTabSelectedListener(object : OnTabSelectedListener {
-                override fun onTabSelected(tab: TabLayout.Tab?) {
-                    tab?.let {
-                        getSelectedRecently31Scheduled(it.position)
-                        tournaments.getOrNull(it.position)?.id?.let { id -> mViewModel.setCurrentTournamentId(id)}
-                    }
+                tlLeagueList.post{ layoutMediator.selectTabWithoutAnimation(selectedPosition) }
+                vpGameList.post {
+                    gameListPageCallback?.onPageScrollStateChanged(SCROLL_STATE_IDLE)
                 }
-
-                override fun onTabUnselected(tab: TabLayout.Tab?) {}
-                override fun onTabReselected(tab: TabLayout.Tab?) {}
-            })
-
+            }
         }
     }
 

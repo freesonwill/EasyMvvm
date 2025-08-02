@@ -91,7 +91,17 @@ abstract class BetDao : BaseDao<BetBean>() {
                 "        LIMIT 1" +
                 "    )"
     )
-    abstract fun observeCurrentSelections(status: BetStatusEnum = BetStatusEnum.PENDING): Flow<List<BetSelectionLiteBean>>
+    abstract fun observeCurrentLiteSelections(status: BetStatusEnum = BetStatusEnum.PENDING): Flow<List<BetSelectionLiteBean>>
+
+    @Query(
+        "SELECT * FROM BetSelectionBean WHERE betId = (" +
+                "        SELECT betId FROM BetBean" +
+                "        WHERE status = :status" +
+                "        ORDER BY betId DESC" +
+                "        LIMIT 1" +
+                "    )"
+    )
+    abstract fun observeCurrentSelections(status: BetStatusEnum = BetStatusEnum.PENDING): Flow<List<BetSelectionBean>>
 
     @Query(
         "SELECT selectionId FROM BetSelectionBean WHERE betId = (" +

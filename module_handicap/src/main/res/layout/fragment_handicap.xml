@@ -52,19 +52,5 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tabLayout" />
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/fragment_fake_view_pager"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:clipChildren="false"
-            android:clipToPadding="false"
-            android:overScrollMode="ifContentScrolls"
-            android:paddingStart="0dp"
-            android:paddingEnd="0dp"
-            app:layout_constraintBottom_toBottomOf="@id/viewpager"
-            app:layout_constraintEnd_toEndOf="@id/viewpager"
-            app:layout_constraintStart_toStartOf="@id/viewpager"
-            app:layout_constraintTop_toTopOf="@id/viewpager" />
     </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
 </layout>

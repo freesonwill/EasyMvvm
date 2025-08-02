@@ -14,6 +14,7 @@ import arch.cayenne.module.home.data.repo.MatchListRepository
 import arch.cayenne.module.home.utils.DateUtils
 import galaxy.common.proto.Common
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -31,6 +32,8 @@ class MatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
     private var _position = -1
     private var _selectedDate = MutableStateFlow<Long>(0)
     override val repository: MatchListRepository by inject()
+
+    private var observeJob : Job? = null
 
     fun setSportId(id: Int) {
         _sportId = id
@@ -63,8 +66,8 @@ class MatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
     fun getSportId() = _sportId
 
     fun startObserveMatch() {
-
-        viewModelScope.launch {
+        if (observeJob != null) return
+        observeJob = viewModelScope.launch {
             combine(
                 _selectedDate,
                 repository.observeMatchChange(_playType, _tournamentId).distinctUntilChanged()
