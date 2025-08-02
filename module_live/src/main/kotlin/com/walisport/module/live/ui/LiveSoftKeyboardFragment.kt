@@ -126,10 +126,8 @@ class LiveSoftKeyboardFragment :
 //            }
             //监听点击事件
             setOnTouchListener { v, event ->
-                "event action ${event.action}".logd("aaa")
                 if (event.action == MotionEvent.ACTION_UP) {
                     if (chatViewModel.softKeyBoardListener.value != KeyBoardType.SOFT_KEYBOARD) {
-                        "onTouch et".logd("aaa")
                         chatViewModel.addSoftKeyBoardEvent(KeyBoardType.SOFT_KEYBOARD)
                     }
                     return@setOnTouchListener true
@@ -176,7 +174,6 @@ class LiveSoftKeyboardFragment :
      * 发送消息
      * */
     private fun sendText() {
-        "sendText ${mViewModel.inputText.length}".logd("aaa")
         if(mViewModel.inputText.isEmpty()){
             return
         }
@@ -187,7 +184,6 @@ class LiveSoftKeyboardFragment :
     override suspend fun createObserver() {
         viewLifecycleOwner.lifecycleScope.launch {
             chatViewModel.currentSoftKeyboard.collect {
-                "currentSoftKeyboard $it".logd("aaa")
                 when (it) {
                     KeyBoardType.SOFT_KEYBOARD -> showSoftKeyBoard()
                     KeyBoardType.EMOJI -> showEmoji()
@@ -393,7 +389,6 @@ class LiveSoftKeyboardFragment :
      *打开软件盘
      * */
     private fun openSoftKeyBoard(){
-        "openSoftKeyBoard".logd("aaa")
         EditTextUtils.showKeyboard(activity, mBinding.liveChatEtInput)
     }
 

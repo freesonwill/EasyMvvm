@@ -276,7 +276,6 @@ class LiveChatViewModel(private val chatRepo: LiveChatRepository) : BaseViewMode
         if(keyBoardType == _softKeyBoardListener.value){
             return
         }
-        "addSoftKeyBoardEvent $flag  keyBoarType $keyBoardType".logd("aaa")
         _softKeyBoardListener.tryEmit(keyBoardType)
     }
 
@@ -288,7 +287,6 @@ class LiveChatViewModel(private val chatRepo: LiveChatRepository) : BaseViewMode
         if(softKeyBoarVisible == _openSoftKeyBoardLiveData.value){
             return
         }
-        "opensoftKeyBoad ${softKeyBoarVisible}".logd("aaa")
         _openSoftKeyBoardLiveData.value = softKeyBoarVisible
     }
 
