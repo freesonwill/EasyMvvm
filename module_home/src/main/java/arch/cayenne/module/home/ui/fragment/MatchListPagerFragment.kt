@@ -66,21 +66,20 @@ class MatchListPagerFragment :
                 }
 
                 override fun onOddsCellClick(selection: SelectionBeanLite, x: Float, y: Float) {
-                    showToast("test")
-//                    lifecycleScope.launch {
-//                        val status = mViewModel.setSelection(selection.selectionId)
-//                        if (status is AddSelectionStatus.Success.Single) {
-//                            BetSheetFragment.newInstance(1).show(requireActivity().supportFragmentManager)
-//                        } else if (status is AddSelectionStatus.Failure.DisableComboForParlay) {
-//                            showToast(getString(R.string.disabled_to_combo))
-//                        } else if (status is AddSelectionStatus.Failure.DisableComboForProvider) {
-//                            showToast(getString(R.string.disabled_to_combo_for_provider))
-//                        } else if (status is AddSelectionStatus.Failure.NetworkDisconnected) {
-//                            showToast(getString(arch.cayenne.lib.common.R.string.toast_server_disconnected))
-//                        } else if (status is AddSelectionStatus.Success.Combo || status is AddSelectionStatus.Success.Update) {
-//                            fabViewModel.setClickAnimation(x, y)
-//                        }
-//                    }
+                    lifecycleScope.launch {
+                        val status = mViewModel.setSelection(selection.selectionId)
+                        if (status is AddSelectionStatus.Success.Single) {
+                            BetSheetFragment.newInstance(1).show(requireActivity().supportFragmentManager)
+                        } else if (status is AddSelectionStatus.Failure.DisableComboForParlay) {
+                            showToast(getString(R.string.disabled_to_combo))
+                        } else if (status is AddSelectionStatus.Failure.DisableComboForProvider) {
+                            showToast(getString(R.string.disabled_to_combo_for_provider))
+                        } else if (status is AddSelectionStatus.Failure.NetworkDisconnected) {
+                            showToast(getString(arch.cayenne.lib.common.R.string.toast_server_disconnected))
+                        } else if (status is AddSelectionStatus.Success.Combo || status is AddSelectionStatus.Success.Update) {
+                            fabViewModel.setClickAnimation(x, y)
+                        }
+                    }
                 }
             })
             val decoration = MatchCardItemDecoration(12.dp2px)
