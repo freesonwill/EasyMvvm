@@ -136,7 +136,9 @@ class SingleBetViewModel(
             launch {
                 balanceRepo.observeBalance().collect {
                     _onBalanceListener.value = it
-                    setRemainingNumber(it.balance)
+                    if (it != null) {
+                        setRemainingNumber(it.balance)
+                    }
                 }
             }
             launch {

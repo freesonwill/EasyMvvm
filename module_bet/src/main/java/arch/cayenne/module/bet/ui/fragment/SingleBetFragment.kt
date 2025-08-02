@@ -149,9 +149,11 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
             }
         }
         mViewModel.onBalanceListener.observe(viewLifecycleOwner) {
-            val money = "${mViewModel.moneySymbol} ${it.balance.getFormalMoney()}"
-            mBinding.tvBalance.text = money
-            mBinding.tvMoney.text = mViewModel.moneySymbol
+            if (it != null) {
+                val money = "${mViewModel.moneySymbol} ${it.balance.getFormalMoney()}"
+                mBinding.tvBalance.text = money
+                mBinding.tvMoney.text = mViewModel.moneySymbol
+            }
         }
 
         mViewModel.onReserveOddsListener.observe(viewLifecycleOwner) { odds ->
