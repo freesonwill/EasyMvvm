@@ -11,6 +11,7 @@ import arch.cayenne.lib.database.entity.MatchWithMarkets
 import arch.cayenne.lib.database.entity.SelectionBeanLite
 import arch.cayenne.module.home.databinding.ItemMatchCardBinding
 import arch.cayenne.module.home.ui.adapter.compare.MatchItemCompare
+import java.lang.ref.WeakReference
 
 class MatchItemAdapter(private val onMatchItemClickListener: OnMatchItemClickListener? = null) :
     BaseAdapter<MatchWithMarkets, MatchItemViewHolder, ItemMatchCardBinding>(MatchItemCompare()) {
@@ -76,5 +77,5 @@ class MatchItemAdapter(private val onMatchItemClickListener: OnMatchItemClickLis
 interface OnMatchItemClickListener {
     fun onLiveEntryClick(item: MatchWithMarkets)
     fun onFavoriteClick(item: MatchWithMarkets)
-    fun onOddsCellClick(selection: SelectionBeanLite, x: Float, y: Float)
+    fun onOddsCellClick(cell: WeakReference<View>, selection: SelectionBeanLite, x: Float, y: Float)
 }
