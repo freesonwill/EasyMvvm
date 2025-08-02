@@ -13,7 +13,7 @@ import kotlin.coroutines.resume
 
 class ToastMessageAnimation: ToastDefaultAnimation() {
 
-    private var lastTranslationY = 0
+    private var lastTranslationY = -1
 
     override fun getLayoutParams(view: View): WindowManager.LayoutParams {
         val layoutParams = WindowManager.LayoutParams()
@@ -46,9 +46,13 @@ class ToastMessageAnimation: ToastDefaultAnimation() {
         return suspendCancellableCoroutine { continuation ->
             val layoutParams = v.layoutParams as WindowManager.LayoutParams
             val height = (v.height + 8.dp2px)
-            val targetPosition = layoutParams.y - height
+            val targetPosition = if (lastTranslationY == layoutParams.y || lastTranslationY == -1) {
+                layoutParams.y - height
+            } else {
+                layoutParams.y - height - (layoutParams.y - lastTranslationY)
+            }
             lastTranslationY = targetPosition
-            val anim = ValueAnimator.ofInt(layoutParams.y, lastTranslationY).apply {
+            val anim = ValueAnimator.ofInt(layoutParams.y, targetPosition).apply {
                 duration = animDuration
                 addUpdateListener { animation ->
                     val value = animation.animatedValue as Int
