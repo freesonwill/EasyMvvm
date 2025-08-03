@@ -2,6 +2,7 @@ package arch.cayenne.module.bet.ui.fragment
 
 import android.content.DialogInterface
 import android.os.Bundle
+import android.util.Log
 import android.view.ContextThemeWrapper
 import android.view.LayoutInflater
 import android.view.View
@@ -162,7 +163,9 @@ class BetSheetFragment private constructor() :
         // navigation的fragment沒有收起彈窗方法，必須靠回調頂層bottom sheet收起彈窗
         val navController = NavHostFragment.findNavController(mBinding.mainNav.getFragment())
         navController.addOnDestinationChangedListener { _, destination, bundle ->
+            Log.d("abcd", "++++ $destination")
             if (bundle?.containsKey(Config.KEY_NON_ANIM) == false) {
+                Log.d("abcd", "++++ no amim")
                 showEnterAnim()
             }
             removeLastObserver()
@@ -174,7 +177,7 @@ class BetSheetFragment private constructor() :
             if (isDismissing) {
                 if (it >= 2) {
                     setStartDestination(2)
-                } else if (lastCount >= 2 && it <= 1) {
+                } else if (it <= 1) {
                     setStartDestination(1)
                 }
             }
