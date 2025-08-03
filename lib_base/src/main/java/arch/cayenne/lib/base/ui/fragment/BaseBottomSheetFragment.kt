@@ -324,6 +324,9 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
 
     @CallSuper
     open fun customShow() {
+        if (sheetContainer?.visibility == View.INVISIBLE) {
+            isDismissing = true
+        }
         if (isDismissing) {
             isDismissing = false
             setCustomExpendSetting()
