@@ -42,6 +42,7 @@ class BetResultFragment : BaseFragment<BetResultViewModel, FragmentBetResultBind
     override fun initView(savedInstanceState: Bundle?) {
         (mBinding.rvComboOdds.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
         (mBinding.rvBet.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
+        mBinding.rvComboOdds.itemAnimator = null
 
         mBinding.rvBet.adapter = betSelectionAdapter
         mBinding.rvComboOdds.adapter = detailAdapter
