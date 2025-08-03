@@ -1,10 +1,13 @@
 package com.walisport.module.live.ui
 
 import android.animation.ValueAnimator
+import android.app.Dialog
+import android.content.DialogInterface
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.Gravity
+import android.view.KeyEvent
 import android.view.View
 import android.view.View.OnLayoutChangeListener
 import android.view.ViewGroup
@@ -21,6 +24,7 @@ import arch.cayenne.lib.common.utils.ext.ResourceExt.getDimensionPixelSize
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.ext.startSafeAnimateSet
+import com.walisport.module.live.R
 import com.walisport.module.live.compare.VideoSourceBeanCompare
 import com.walisport.module.live.databinding.FragmentLiveSourcePortraitBinding
 import com.walisport.module.live.ui.adapter.LiveVideoSourceHorizontalAdapter
@@ -132,10 +136,28 @@ class LiveSourceFragment :
                 windowParams.gravity = Gravity.BOTTOM
                 windowParams.width = WindowManager.LayoutParams.MATCH_PARENT // 宽度占满
                 val height = requireArguments().getInt(HEIGHT, ViewGroup.LayoutParams.WRAP_CONTENT)
-                windowParams.height =height
+                windowParams.height = height
                 window.setAttributes(windowParams);
             }
         }
+    }
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val dialog = super.onCreateDialog(savedInstanceState)
+        dialog.window?.setWindowAnimations(R.style.NoAnimationDialog)
+        dialog.setOnKeyListener(object : DialogInterface.OnKeyListener {
+            override fun onKey(dialog: DialogInterface?, keyCode: Int, event: KeyEvent?): Boolean {
+                if (event?.keyCode == KeyEvent.KEYCODE_BACK && event.action == KeyEvent.ACTION_UP) {
+                    this@LiveSourceFragment.dismiss()
+                    return true
+                } else {
+                    return false
+                }
+            }
+
+        })
+
+        return dialog
     }
 
 
