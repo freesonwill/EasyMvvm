@@ -6,9 +6,11 @@ import android.os.Bundle
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.ui.dialog.CommonDialog
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
+import arch.cayenne.lib.common.ui.view.DynamicStateLayout.States
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
@@ -90,14 +92,33 @@ class MessageListFragment : BaseFragment<MessageMainViewModel, FragmentMessageLi
     }
 
     override fun initListener() {
+    }
+
+    override fun initData() {
+        super.initData()
         //不需要每个fragment请求一次接口
         if (msgType == MSG_ALL) {
             mViewModel.getMessageList(MSG_ALL)
-            mBinding.emptyState.setState(DynamicStateLayout.States.LOADING, "")
+            mBinding.emptyState.setState(States.LOADING, "")
         }
     }
 
     override suspend fun createObserver() {
+        mViewModel.apiStateListener.observe(viewLifecycleOwner) { state ->
+            mBinding.refreshLayout.finishRefresh()
+            mBinding.refreshLayout.finishLoadMore()
+            when (state) {
+                DataState.NetworkUnavailable -> {
+                    if (msgAdapter.itemCount == 0) {
+                        mBinding.emptyState.visibility = View.VISIBLE
+                        mBinding.emptyState.setState(
+                            States.NETWORK_ANOMALY,
+                            arch.cayenne.lib.common.R.string.error_net.getString()
+                        )
+                    }
+                }
+            }
+        }
         mViewModel.notificationBean.observe(viewLifecycleOwner) {
             mBinding.refreshLayout.finishRefresh()
             mBinding.refreshLayout.finishLoadMore()
@@ -106,7 +127,7 @@ class MessageListFragment : BaseFragment<MessageMainViewModel, FragmentMessageLi
                     msgAdapter.submitList(it)
                     mBinding.emptyState.visibility = View.VISIBLE
                     mBinding.emptyState.setState(
-                        DynamicStateLayout.States.DATA_EMPTY,
+                        States.DATA_EMPTY,
                         arch.cayenne.lib.common.R.string.data_empty.getString()
                     )
                 } else {
@@ -118,7 +139,7 @@ class MessageListFragment : BaseFragment<MessageMainViewModel, FragmentMessageLi
                         if (temp.isEmpty()) {
                             mBinding.emptyState.visibility = View.VISIBLE
                             mBinding.emptyState.setState(
-                                DynamicStateLayout.States.DATA_EMPTY,
+                                States.DATA_EMPTY,
                                 arch.cayenne.lib.common.R.string.data_empty.getString()
                             )
                         } else {
