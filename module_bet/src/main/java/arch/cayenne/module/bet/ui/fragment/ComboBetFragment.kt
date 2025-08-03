@@ -246,9 +246,14 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
         adjustLayoutHeight()
     }
 
+    private fun getScreenHeight(): Int? {
+        // 检查 context 是否不为空
+        return context?.resources?.displayMetrics?.heightPixels
+    }
+
     private fun adjustLayoutHeight() {
         if (!isDetached || isRemoving || !isAdded) return
-        val screenHeight = resources.displayMetrics.heightPixels
+        val screenHeight = getScreenHeight() ?: return
         val maxFragmentHeight = (screenHeight * 0.75).toInt()
 
         val topTitleHeight =
@@ -296,7 +301,7 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
     }
 
     private fun setMultiLayoutHeight() {
-        val screenHeight = resources.displayMetrics.heightPixels
+        val screenHeight = getScreenHeight() ?: return
         val maxFragmentHeight = (screenHeight * 0.75).toInt()
 
         val totalMargin = getMultiLayoutMargin()
@@ -314,7 +319,7 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
         if (initSize == 2) {
             initBetLayoutHeight(false)
         } else {
-            val screenHeight = resources.displayMetrics.heightPixels
+            val screenHeight = getScreenHeight() ?: return
             val maxFragmentHeight = (screenHeight * 0.75).toInt()
 
             val titleHeight = mBinding.clTitleBet.height +
@@ -448,8 +453,8 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
     }
 
     override fun onDestroyView() {
-        mBinding.root.viewTreeObserver.removeOnGlobalLayoutListener(forceUpdateObserver)
         super.onDestroyView()
+        mBinding.root.viewTreeObserver.removeOnGlobalLayoutListener(forceUpdateObserver)
     }
 
 }
