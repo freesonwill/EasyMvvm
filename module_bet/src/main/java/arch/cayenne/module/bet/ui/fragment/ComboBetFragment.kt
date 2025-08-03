@@ -2,6 +2,7 @@ package arch.cayenne.module.bet.ui.fragment
 
 import android.animation.ValueAnimator
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -148,11 +149,7 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
                 cancelText = getString(R.string.btn_cancel)
             ).apply {
                 setOnOkClickListener {
-                    this.view?.post {
-                        mViewModel.onBetListListener.removeObservers(viewLifecycleOwner)
-                        this@ComboBetFragment.dismiss()
-                        mViewModel.removeAll()
-                    }
+                    mViewModel.removeAll()
                 }
             }.show(childFragmentManager)
         }
@@ -171,6 +168,10 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
     override fun createObserverAtState(): Lifecycle.State = Lifecycle.State.RESUMED
     override suspend fun createObserver() {
         mViewModel.onBetListListener.observe(viewLifecycleOwner) {
+            if (it.isEmpty()) {
+                dismiss()
+                return@observe
+            }
             if (it.size == 1) {
                 navigate(
                     ComboBetFragmentDirections.actionComboBetFragmentToSingleBetFragment(
