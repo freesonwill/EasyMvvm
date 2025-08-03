@@ -74,8 +74,6 @@ class BetSheetRepository(
 
     fun removeSingleBet() {
         scope.launch {
-            //TOOD 暫時方法
-            delay(200L)
             betDao.getCurrentBet()?.let {
                 if (it.betType == BetTypeEnum.SINGLE || it.betType == BetTypeEnum.RESERVE) {
                     betDao.removeBet(it.betId)

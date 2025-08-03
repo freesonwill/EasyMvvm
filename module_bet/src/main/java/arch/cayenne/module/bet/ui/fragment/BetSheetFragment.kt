@@ -218,8 +218,12 @@ class BetSheetFragment private constructor() :
             if (f is BetSheetListener) {
                 f.doCustomHideEnd()
             }
-            mViewModel.removeSingleBet()
         }
+    }
+
+    override fun setCustomCollapseSetting() {
+        super.setCustomCollapseSetting()
+        mViewModel.removeSingleBet()
     }
 }
 
