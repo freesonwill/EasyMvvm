@@ -156,7 +156,9 @@ class MainActivity : BaseNavActivity<MainViewModel>() {
 
     private fun createBetSheet() {
         launch(Lifecycle.State.RESUMED, context = Dispatchers.IO) {
-            BetSheetFragment.create(this@MainActivity)
+            mBinding.root.postDelayed( {
+                BetSheetFragment.create(this@MainActivity)
+            }, 500L)
         }
     }
 
