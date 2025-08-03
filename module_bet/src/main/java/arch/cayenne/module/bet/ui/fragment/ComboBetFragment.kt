@@ -2,11 +2,9 @@ package arch.cayenne.module.bet.ui.fragment
 
 import android.animation.ValueAnimator
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewTreeObserver
 import android.view.animation.LinearInterpolator
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.animation.doOnEnd
@@ -94,14 +92,6 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
     }
 
     private var initSize = 2
-
-    private val forceUpdateObserver = object :
-        ViewTreeObserver.OnGlobalLayoutListener {
-        override fun onGlobalLayout() {
-            mBinding.root.viewTreeObserver.removeOnGlobalLayoutListener(this)
-            forceUpdateLayout()
-        }
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         lifecycleScope.launch {
@@ -207,7 +197,7 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
         }
         mViewModel.onForceUpdateListener.observe(viewLifecycleOwner) {
             if (it) {
-                mBinding.root.viewTreeObserver.addOnGlobalLayoutListener(forceUpdateObserver)
+                forceUpdateLayout()
             }
         }
         mViewModel.onMultiLayoutExpendListener.observe(viewLifecycleOwner) {
@@ -252,7 +242,7 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
     }
 
     private fun adjustLayoutHeight() {
-        if (!isDetached || isRemoving || !isAdded) return
+        if (isDetached || isRemoving || !isAdded) return
         val screenHeight = getScreenHeight() ?: return
         val maxFragmentHeight = (screenHeight * 0.75).toInt()
 
@@ -450,11 +440,6 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
             }
         }
 
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        mBinding.root.viewTreeObserver.removeOnGlobalLayoutListener(forceUpdateObserver)
     }
 
 }
