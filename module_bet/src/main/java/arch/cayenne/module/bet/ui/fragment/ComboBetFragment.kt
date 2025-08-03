@@ -436,8 +436,15 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
     }
 
     override fun doCustomHideEnd() {
-        mViewModel.setExpandMultiLayout(false)
-        mViewModel.clearBetMoney()
+        mViewModel.onBetListListener.value?.let {
+            if (it.isNotEmpty()) {
+                mViewModel.setExpandMultiLayout(false)
+                mViewModel.clearBetMoney()
+            } else {
+                navigate(ComboBetFragmentDirections.actionComboBetFragmentToSingleBetFragment(), null)
+            }
+        }
+
     }
 
     override fun onDestroyView() {
