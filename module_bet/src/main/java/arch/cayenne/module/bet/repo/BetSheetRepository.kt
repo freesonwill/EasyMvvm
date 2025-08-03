@@ -17,7 +17,7 @@ class BetSheetRepository(
     private val remoteManager: BettingRemoteManager
 ) : BaseRepository() {
 
-    val observerBetCount: Flow<Int> = betDao.observeComboCount()
+    val observerBetCount: Flow<Int> = betDao.observeCurrentCount()
 
     init {
         scope.launch {

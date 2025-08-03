@@ -122,8 +122,14 @@ abstract class BetDao : BaseDao<BetBean>() {
     @Query("UPDATE BetDetailBean SET status = :status WHERE orderId = :order")
     abstract suspend fun updateDetailResult(order: String, status: BetResultStatusEnum)
 
-    @Query("SELECT COUNT(*) FROM BetSelectionBean WHERE betId = ( SELECT betId FROM BetBean WHERE status = :status ORDER BY betId DESC LIMIT 1)")
+    @Query("SELECT COUNT(*) FROM BetSelectionBean WHERE betId = ( SELECT betId FROM BetBean WHERE status = :status AND betType = :type ORDER BY betId DESC LIMIT 1)")
     abstract fun observeComboCount(
+        status: BetStatusEnum = BetStatusEnum.PENDING,
+        type: BetTypeEnum = BetTypeEnum.COMBO
+    ): Flow<Int>
+
+    @Query("SELECT COUNT(*) FROM BetSelectionBean WHERE betId = ( SELECT betId FROM BetBean WHERE status = :status ORDER BY betId DESC LIMIT 1)")
+    abstract fun observeCurrentCount(
         status: BetStatusEnum = BetStatusEnum.PENDING
     ): Flow<Int>
 
