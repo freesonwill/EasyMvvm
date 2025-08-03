@@ -71,8 +71,8 @@ class SingleBetRepository(
 
     fun observeSelectionBean(): Flow<BetSelectionBean> = selectionFlow
     fun observeComboBean(): Flow<ComboMultiBetBean> = comboFlow
-    suspend fun getBetType(): BetTypeEnum? =
-        withContext(scope.coroutineContext) { betDao.getCurrentBet()?.betType }
+
+    fun observeBetType(): Flow<BetTypeEnum?> = betDao.observeCurrentBetType()
 
     fun removeBet() {
         scope.launch {
