@@ -172,14 +172,6 @@ class BetResultFragment : BaseFragment<BetResultViewModel, FragmentBetResultBind
     }
 
     override fun doCustomHideEnd() {
-        lifecycleScope.launch {
-            mViewModel.onBetSheetListener.value?.let {
-                if (it.size == 1) {
-                    navigate(BetResultFragmentDirections.actionBetResultFragmentToSingleBetFragment(), null)
-                } else {
-                    navigate(BetResultFragmentDirections.actionBetResultFragmentToComboBetFragment(), null)
-                }
-            }
-        }
+        navigate(BetResultFragmentDirections.actionBetResultFragmentToSingleBetFragment(), null)
     }
 }

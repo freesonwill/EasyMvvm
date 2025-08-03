@@ -173,7 +173,7 @@ class BetSheetFragment private constructor() :
             if (isDismissing) {
                 if (lastCount != it && it >= 2) {
                     setStartDestination(2)
-                } else if (lastCount > 1 && it == 0) {
+                } else if (lastCount != 0 && it == 0) {
                     setStartDestination(1)
                 }
                 lastCount = it
@@ -211,13 +211,14 @@ class BetSheetFragment private constructor() :
         super.onDismiss(dialog)
     }
 
-    override fun setCustomCollapseSetting() {
-        super.setCustomCollapseSetting()
-        val f = mBinding.mainNav.getFragment<Fragment>().childFragmentManager.primaryNavigationFragment
-        if (f is BetSheetListener) {
-            f.doCustomHideEnd()
+    override fun customHide(onEnd: (() -> Unit)?) {
+        super.customHide {
+            val f = mBinding.mainNav.getFragment<Fragment>().childFragmentManager.primaryNavigationFragment
+            if (f is BetSheetListener) {
+                f.doCustomHideEnd()
+            }
+            mViewModel.removeSingleBet()
         }
-        mViewModel.removeSingleBet()
     }
 }
 
