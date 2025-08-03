@@ -243,11 +243,12 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
     }
 
     private fun forceUpdateLayout() {
-        if (betSelectionAdapter.itemCount == 0 || mViewModel.onBetListListener.value?.size == 1 || !isDetached) return
+        if (betSelectionAdapter.itemCount == 0 || mViewModel.onBetListListener.value?.size == 1) return
         adjustLayoutHeight()
     }
 
     private fun adjustLayoutHeight() {
+        if (!isDetached || isRemoving || !isAdded) return
         val screenHeight = resources.displayMetrics.heightPixels
         val maxFragmentHeight = (screenHeight * 0.75).toInt()
 
