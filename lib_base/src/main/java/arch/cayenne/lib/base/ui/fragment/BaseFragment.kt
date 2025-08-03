@@ -25,6 +25,7 @@ import arch.cayenne.lib.base.ui.delegate.StatusBarDelegate
 import arch.cayenne.lib.base.ui.delegate.UIBindDelegate
 import arch.cayenne.lib.base.ui._interface.IStatusBar
 import arch.cayenne.lib.base.ui._interface.IView
+import arch.cayenne.lib.base.ui._interface.OnSwipeTouchListener
 import arch.cayenne.lib.base.utils.ext.FragmentExt.handleBackPressed
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
@@ -43,11 +44,13 @@ import kotlin.reflect.KClass
  */
 abstract class BaseFragment<VM : BaseViewModel, VB : ViewBinding> : Fragment(), IView, IStatusBar {
     protected open val TAG = this.javaClass.simpleName
+
     //#region VB,VM
     protected val mBinding: VB get() = uiBind.binding
     protected val mViewModel: VM get() = uiBind.viewModel
     abstract val vbClass: KClass<VB>
     abstract val vmClass: KClass<VM>
+    private val isTouchBackPressed = false
     private val uiBind by lazy {
         UIBindDelegate(
             uiOwner = this,
@@ -55,6 +58,7 @@ abstract class BaseFragment<VM : BaseViewModel, VB : ViewBinding> : Fragment(), 
             vbProvider = ::createVB,
         )
     }
+
     protected open fun createVB(container: ViewGroup?): VB {
         return getViewBind(vbClass, container, false)
     }
@@ -74,7 +78,7 @@ abstract class BaseFragment<VM : BaseViewModel, VB : ViewBinding> : Fragment(), 
         savedInstanceState: Bundle?
     ): View {
         super.onCreateView(inflater, container, savedInstanceState)
-        uiBind.onCreateView(inflater,container,savedInstanceState)
+        uiBind.onCreateView(inflater, container, savedInstanceState)
         handleBackPressed(::onBackPressed)
         return mBinding.root
     }
@@ -82,39 +86,52 @@ abstract class BaseFragment<VM : BaseViewModel, VB : ViewBinding> : Fragment(), 
     @CallSuper
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        uiBind.onViewCreated(view,savedInstanceState)
-
+        uiBind.onViewCreated(view, savedInstanceState)
+       if (isTouchBackPressed){
+           uiBind.binding.root.setOnTouchListener(object : OnSwipeTouchListener(requireContext()) {
+               override fun onSwipeLeft() {
+                   requireActivity().onBackPressedDispatcher.onBackPressed()
+               }
+           })
+       }
     }
+
     @CallSuper
     override fun onStart() {
         super.onStart()
         uiBind.onStart()
     }
+
     @CallSuper
     override fun onResume() {
         super.onResume()
         uiBind.onResume()
     }
+
     @CallSuper
     override fun onPause() {
         super.onPause()
         uiBind.onPause()
     }
+
     @CallSuper
     override fun onStop() {
         super.onStop()
         uiBind.onStop()
     }
+
     @CallSuper
     override fun onDestroyView() {
         super.onDestroyView()
         uiBind.onDestroyView()
     }
+
     @CallSuper
     override fun onDestroy() {
         super.onDestroy()
         uiBind.onDestroy()
     }
+
     @CallSuper
     override fun onHiddenChanged(hidden: Boolean) {
         super.onHiddenChanged(hidden)
@@ -122,15 +139,15 @@ abstract class BaseFragment<VM : BaseViewModel, VB : ViewBinding> : Fragment(), 
     }
 
     @CallSuper
-    override fun onNewIntent(intent: Intent){
+    override fun onNewIntent(intent: Intent) {
         uiBind.onNewIntent(intent)
     }
 
-    override fun setStatusBar(config: StatusBarConfig,view: View) {
-        statusBar.setStatusBar(config,view)
+    override fun setStatusBar(config: StatusBarConfig, view: View) {
+        statusBar.setStatusBar(config, view)
     }
 
-    fun getStatusBarColor() : Int{
+    fun getStatusBarColor(): Int {
         return statusBar.configStatusBar().statusBarColor
     }
 
@@ -168,7 +185,7 @@ abstract class BaseFragment<VM : BaseViewModel, VB : ViewBinding> : Fragment(), 
      *
      * @return true-拦截事件，false-不拦截事件
      */
-    open fun onBackPressed():Boolean {
+    open fun onBackPressed(): Boolean {
         return false
     }
 }
@@ -185,17 +202,17 @@ fun Fragment.launch(
     state: Lifecycle.State? = null,
     context: CoroutineContext = EmptyCoroutineContext,
     start: CoroutineStart = CoroutineStart.DEFAULT,
-    lifecycleScope:LifecycleCoroutineScope = viewLifecycleOwner.lifecycleScope,
+    lifecycleScope: LifecycleCoroutineScope = viewLifecycleOwner.lifecycleScope,
     block: suspend CoroutineScope.() -> Unit
 ): Job {
     @Suppress("DEPRECATION")
     return if (state == null) lifecycleScope.launch(block = block, context = context, start = start)
-    else when(state) {
-            Lifecycle.State.CREATED -> lifecycleScope.launchWhenCreated(block)
-            Lifecycle.State.STARTED -> lifecycleScope.launchWhenStarted(block)
-            Lifecycle.State.RESUMED -> lifecycleScope.launchWhenResumed(block)
-            else -> throw IllegalArgumentException("Unsupported lifecycle state: $state")
-        }
+    else when (state) {
+        Lifecycle.State.CREATED -> lifecycleScope.launchWhenCreated(block)
+        Lifecycle.State.STARTED -> lifecycleScope.launchWhenStarted(block)
+        Lifecycle.State.RESUMED -> lifecycleScope.launchWhenResumed(block)
+        else -> throw IllegalArgumentException("Unsupported lifecycle state: $state")
+    }
 }
 
 /**
