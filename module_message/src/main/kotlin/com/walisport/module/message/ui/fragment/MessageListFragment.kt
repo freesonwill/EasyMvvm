@@ -103,6 +103,7 @@ class MessageListFragment : BaseFragment<MessageMainViewModel, FragmentMessageLi
             mBinding.refreshLayout.finishLoadMore()
             it.let {
                 if (it.isEmpty()) {
+                    msgAdapter.submitList(it)
                     mBinding.emptyState.visibility = View.VISIBLE
                     mBinding.emptyState.setState(
                         DynamicStateLayout.States.DATA_EMPTY,
