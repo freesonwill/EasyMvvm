@@ -206,6 +206,7 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
         unhideableBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {
                 if ((newState == BottomSheetBehavior.STATE_COLLAPSED || newState == BottomSheetBehavior.STATE_HIDDEN)&& !autoPlayAnimation) {
+                    isDismissing = true
                     setCustomCollapseSetting()
                 }
             }
@@ -243,7 +244,7 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
                     if (autoPlayAnimation) {
                         dismiss()
                     } else {
-                        playExitAnimations()
+                        customHide()
                     }
                 }
             }
@@ -324,6 +325,9 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
 
     @CallSuper
     open fun customShow() {
+        if (sheetContainer?.visibility == View.INVISIBLE) {
+            isDismissing = true
+        }
         if (isDismissing) {
             isDismissing = false
             setCustomExpendSetting()
@@ -358,7 +362,7 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
     }
 
     protected open fun superDismiss() {
-        isDismissing = false
+        isDismissing = true
         super.dismiss()
     }
 

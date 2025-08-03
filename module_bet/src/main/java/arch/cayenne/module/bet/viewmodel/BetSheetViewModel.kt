@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.module.bet.repo.BetSheetRepository
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 
 class BetSheetViewModel(private val repo: BetSheetRepository) : BaseViewModel() {
@@ -18,7 +19,7 @@ class BetSheetViewModel(private val repo: BetSheetRepository) : BaseViewModel() 
     init {
         repo.register()
         viewModelScope.launch {
-            repo.observerBetCount.collect { count ->
+            repo.observerBetCount.distinctUntilChanged().collect { count ->
                 _betSheetSizeListener.value = count
             }
         }

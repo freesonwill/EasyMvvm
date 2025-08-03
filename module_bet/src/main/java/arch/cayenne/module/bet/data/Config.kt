@@ -7,6 +7,7 @@ internal object Config {
     const val KEY_NON_ANIM = "key_non_anim"
     const val VALUE_SINGLE_TO_RESULT = "value_single_to_result"
     const val VALUE_COMBO_TO_RESULT = "value_combo_to_result"
+    const val VALUE_COMBO_TO_SINGLE = "value_combo_to_single"
     const val VALUE_RESULT_TO_SINGLE = "value_result_to_single"
     const val VALUE_RESULT_TO_COMBO = "value_result_to_combo"
 

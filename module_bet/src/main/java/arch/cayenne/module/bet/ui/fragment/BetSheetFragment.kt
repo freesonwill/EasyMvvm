@@ -170,14 +170,15 @@ class BetSheetFragment private constructor() :
         }
         var lastCount = 0
         mViewModel.betSheetSizeListener.observe(viewLifecycleOwner) {
+            if (lastCount == it) return@observe
             if (isDismissing) {
-                if (lastCount != it && it >= 2) {
+                if (it >= 2) {
                     setStartDestination(2)
-                } else if (lastCount != 0 && it == 0) {
+                } else if (lastCount >= 2 && it <= 1) {
                     setStartDestination(1)
                 }
-                lastCount = it
             }
+            lastCount = it
         }
     }
 

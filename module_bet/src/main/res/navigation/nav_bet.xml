@@ -20,6 +20,12 @@
         <action
             android:id="@+id/action_singleBetFragment_to_comboBetFragment"
             app:destination="@id/comboBetFragment" />
+
+        <argument
+            android:name="from"
+            app:argType="string"
+            android:defaultValue=""
+            app:nullable="true"/>
     </fragment>
 
     <fragment

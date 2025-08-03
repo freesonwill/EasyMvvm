@@ -25,6 +25,9 @@ import com.walisport.app.R
 import com.walisport.app.ui.viewmodel.MainViewModel
 import com.walisport.module.message.ui.fragment.AppNotifyFragment
 import com.walisport.module.message.ui.view.AppNotifyToastView
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import kotlin.reflect.KClass
 import kotlin.system.exitProcess
@@ -122,7 +125,8 @@ class MainActivity : BaseNavActivity<MainViewModel>() {
         }
 
         val navHostFragment = fragmentManager.findFragmentById(mBinding.navHost.id)
-        val curFragment = navHostFragment?.childFragmentManager?.fragments?.firstOrNull { it.isVisible }
+        val curFragment =
+            navHostFragment?.childFragmentManager?.fragments?.firstOrNull { it.isVisible }
         if (curFragment is HomeBetSlipFragment) {
             return
         }
@@ -151,8 +155,10 @@ class MainActivity : BaseNavActivity<MainViewModel>() {
     }
 
     private fun createBetSheet() {
-        launch(Lifecycle.State.RESUMED) {
-            BetSheetFragment.create(this@MainActivity)
+        launch(Lifecycle.State.RESUMED, context = Dispatchers.IO) {
+            mBinding.root.postDelayed( {
+                BetSheetFragment.create(this@MainActivity)
+            }, 500L)
         }
     }
 
