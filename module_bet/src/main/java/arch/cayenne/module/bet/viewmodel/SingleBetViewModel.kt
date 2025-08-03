@@ -142,8 +142,8 @@ class SingleBetViewModel(
                 }
             }
             launch {
-                betRepo.getBetType()?.let {
-                    _betTypeListener.value = it
+                betRepo.observeBetType().collect {
+                    _betTypeListener.value = it ?: BetTypeEnum.SINGLE
                 }
             }
         }
@@ -186,6 +186,12 @@ class SingleBetViewModel(
 
     fun saveToCombo() {
         betRepo.saveToCombo()
+    }
+
+    fun saveToSingle() {
+        viewModelScope.launch {
+            betRepo.saveToSingle()
+        }
     }
 
     fun saveToReserve(odds: Int) {

@@ -66,10 +66,6 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
 
     override fun initListener() {
         mBinding.ivClose.apply { addScaleOnTouchAnimation() }.setOnClickListener {
-            val type = mViewModel.betTypeListener.value
-            if (type != BetTypeEnum.COMBO) {
-                mViewModel.removeBet()
-            }
             dismiss()
         }
         mBinding.btnBack.setOnClickListener {
@@ -123,7 +119,7 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
             showKeyboard()
         }
         mBinding.btnDelete.setOnClickListener {
-            mViewModel.removeBet()
+            mViewModel.saveToSingle()
             dismiss()
         }
     }
