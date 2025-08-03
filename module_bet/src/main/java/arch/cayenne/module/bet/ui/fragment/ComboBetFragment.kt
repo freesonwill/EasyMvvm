@@ -165,9 +165,7 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
                 navigate(
                     ComboBetFragmentDirections.actionComboBetFragmentToSingleBetFragment(
                         Config.VALUE_COMBO_TO_SINGLE
-                    ).apply {
-                        this.arguments.putString(Config.KEY_NON_ANIM, "")
-                    },
+                    ),
                     null
                 )
             } else {
