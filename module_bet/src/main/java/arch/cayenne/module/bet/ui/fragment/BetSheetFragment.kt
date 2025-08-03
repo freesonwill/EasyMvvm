@@ -174,7 +174,7 @@ class BetSheetFragment private constructor() :
             if (isDismissing) {
                 if (it >= 2) {
                     setStartDestination(2)
-                } else if (lastCount >= 2 && it <= 1) {
+                } else if (it <= 1) {
                     setStartDestination(1)
                 }
             }

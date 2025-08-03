@@ -60,7 +60,7 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
         })
         val type = SingleBetFragmentArgs.fromBundle(requireArguments()).from
         if (type == Config.VALUE_COMBO_TO_SINGLE) {
-            setBetTypeLayout(BetTypeEnum.SINGLE)
+            setBetTypeLayout(BetTypeEnum.COMBO)
         }
     }
 

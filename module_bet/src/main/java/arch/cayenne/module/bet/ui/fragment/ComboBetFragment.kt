@@ -2,11 +2,9 @@ package arch.cayenne.module.bet.ui.fragment
 
 import android.animation.ValueAnimator
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewTreeObserver
 import android.view.animation.LinearInterpolator
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.animation.doOnEnd
@@ -95,14 +93,6 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
 
     private var initSize = 2
 
-    private val forceUpdateObserver = object :
-        ViewTreeObserver.OnGlobalLayoutListener {
-        override fun onGlobalLayout() {
-            mBinding.root.viewTreeObserver.removeOnGlobalLayoutListener(this)
-            forceUpdateLayout()
-        }
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         lifecycleScope.launch {
             initSize = withContext(this.coroutineContext) {
@@ -133,7 +123,6 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
         mBinding.rvBet.addItemDecoration(decoration)
 
         mBinding.rvMultiBet.adapter = comboMultiBetAdapter
-        mBinding.rvMultiBet.isNestedScrollingEnabled = false
         setSumBetMoney(emptyList())
     }
 
@@ -208,7 +197,7 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
         }
         mViewModel.onForceUpdateListener.observe(viewLifecycleOwner) {
             if (it) {
-                mBinding.root.viewTreeObserver.addOnGlobalLayoutListener(forceUpdateObserver)
+                forceUpdateLayout()
             }
         }
         mViewModel.onMultiLayoutExpendListener.observe(viewLifecycleOwner) {
@@ -243,12 +232,18 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
     }
 
     private fun forceUpdateLayout() {
-        if (betSelectionAdapter.itemCount == 0 || mViewModel.onBetListListener.value?.size == 1 || !isDetached) return
+        if (betSelectionAdapter.itemCount == 0 || mViewModel.onBetListListener.value?.size == 1) return
         adjustLayoutHeight()
     }
 
+    private fun getScreenHeight(): Int? {
+        // 检查 context 是否不为空
+        return context?.resources?.displayMetrics?.heightPixels
+    }
+
     private fun adjustLayoutHeight() {
-        val screenHeight = resources.displayMetrics.heightPixels
+        if (isDetached || isRemoving || !isAdded) return
+        val screenHeight = getScreenHeight() ?: return
         val maxFragmentHeight = (screenHeight * 0.75).toInt()
 
         val topTitleHeight =
@@ -296,7 +291,7 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
     }
 
     private fun setMultiLayoutHeight() {
-        val screenHeight = resources.displayMetrics.heightPixels
+        val screenHeight = getScreenHeight() ?: return
         val maxFragmentHeight = (screenHeight * 0.75).toInt()
 
         val totalMargin = getMultiLayoutMargin()
@@ -314,7 +309,7 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
         if (initSize == 2) {
             initBetLayoutHeight(false)
         } else {
-            val screenHeight = resources.displayMetrics.heightPixels
+            val screenHeight = getScreenHeight() ?: return
             val maxFragmentHeight = (screenHeight * 0.75).toInt()
 
             val titleHeight = mBinding.clTitleBet.height +
@@ -445,11 +440,6 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
             }
         }
 
-    }
-
-    override fun onDestroyView() {
-        mBinding.root.viewTreeObserver.removeOnGlobalLayoutListener(forceUpdateObserver)
-        super.onDestroyView()
     }
 
 }
