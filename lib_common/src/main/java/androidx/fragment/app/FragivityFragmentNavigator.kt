@@ -263,7 +263,7 @@ class FragivityFragmentNavigator(
                               action:(isImmediate:Boolean)->Unit
     ){
         //"execAfterAnim==>$nextFragment,enterAnim:$enterAnim,exitAnim:$exitAnim,tag:${tag}".logd(TAG)
-        if (exitAnim == -1) { //没有动画需要延时
+        if (exitAnim == -1 && enterAnim != -1) { //没有动画需要延时
             nextFragment.launch(Lifecycle.State.RESUMED, lifecycleScope = nextFragment.lifecycleScope) {
                 val anim = AnimationUtils.loadAnimation(nextFragment.requireContext(), enterAnim)
                 val duration = anim.duration
