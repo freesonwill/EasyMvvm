@@ -3,6 +3,9 @@ package com.walisport.module.message.ui.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import arch.cayenne.lib.base.data.constants.DataState
+import arch.cayenne.lib.base.data.remote.ApiResponseState
+import arch.cayenne.lib.base.data.remote.ApiResponseState.Start.dataAs
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import com.walisport.module.message.data.MessageMainRepository
 import com.walisport.module.message.data.NotificationBean
@@ -107,21 +110,40 @@ class MessageMainViewModel(private val repo: MessageMainRepository) : BaseViewMo
     //获取系统消息列表
     fun getMessageList(type: Int) {
         cursorId = 0L
-        val result = repo.getMessageList(cursorId, type)
-        result.let {
-            if (result.isNotEmpty()) {
-                cursorId = result.last().id
+        cursorType = type
+        callApi({
+            repo.getMessageData(cursorId, cursorType)
+        }, {
+            if (it is ApiResponseState.Failed) {
+                setState(DataState.NetworkUnavailable)
+            } else if (it is ApiResponseState.Succeeded<*>) {
+                val result = it.dataAs<List<NotificationBean>>()
+                if (result != null) {
+                    if (result.isNotEmpty()) {
+                        cursorId = result.last().id
+                    }
+                }
+                setState(DataState.LoadSuccess)
             }
-        }
+        }, autoUpdateState = false)
     }
 
     //加载更多系统消息列表
     fun getMoreMessageList() {
-        val result = repo.getMessageList(cursorId, cursorType)
-        result.let {
-            if (result.isNotEmpty()) {
-                cursorId = result.last().id
+        callApi({
+            repo.getMessageData(cursorId, cursorType)
+        }, {
+            if (it is ApiResponseState.Failed) {
+                setState(DataState.NetworkUnavailable)
+            } else if (it is ApiResponseState.Succeeded<*>) {
+                val result = it.dataAs<List<NotificationBean>>()
+                if (result != null) {
+                    if (result.isNotEmpty()) {
+                        cursorId = result.last().id
+                    }
+                }
+                setState(DataState.LoadSuccess)
             }
-        }
+        }, autoUpdateState = false)
     }
 }
