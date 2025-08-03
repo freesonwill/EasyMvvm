@@ -58,6 +58,10 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
             }
 
         })
+        val type = SingleBetFragmentArgs.fromBundle(requireArguments()).from
+        if (type == Config.VALUE_COMBO_TO_SINGLE) {
+            setBetTypeLayout(BetTypeEnum.SINGLE)
+        }
     }
 
     override fun initListener() {
@@ -168,21 +172,7 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
             }
         }
         mViewModel.betTypeListener.observe(viewLifecycleOwner) { type ->
-            when (type) {
-                BetTypeEnum.SINGLE, BetTypeEnum.RESERVE -> {
-                    mBinding.btnCollusion.visibility = View.VISIBLE
-                    mBinding.btnDelete.visibility = View.INVISIBLE
-                    mBinding.ivClose.setImageDrawable(SkinnableResourceManager.getDrawable(requireContext(), R.drawable.icon_page_close))
-                }
-
-                BetTypeEnum.COMBO -> {
-                    mBinding.btnCollusion.visibility = View.INVISIBLE
-                    mBinding.btnDelete.visibility = View.VISIBLE
-                    mBinding.ivClose.setImageDrawable(SkinnableResourceManager.getDrawable(requireContext(), R.drawable.icon_collapse))
-                }
-
-                else -> {}
-            }
+            setBetTypeLayout(type)
         }
         mViewModel.onCanBetListener.observe(viewLifecycleOwner) {
             mBinding.clBet.isEnabled = it
@@ -191,6 +181,24 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
             if (it is DataState.NetworkUnavailable) {
                 showToast(getString(arch.cayenne.lib.common.R.string.toast_server_disconnected))
             }
+        }
+    }
+
+    private fun setBetTypeLayout(type: BetTypeEnum?) {
+        when (type) {
+            BetTypeEnum.SINGLE, BetTypeEnum.RESERVE -> {
+                mBinding.btnCollusion.visibility = View.VISIBLE
+                mBinding.btnDelete.visibility = View.INVISIBLE
+                mBinding.ivClose.setImageDrawable(SkinnableResourceManager.getDrawable(requireContext(), R.drawable.icon_page_close))
+            }
+
+            BetTypeEnum.COMBO -> {
+                mBinding.btnCollusion.visibility = View.INVISIBLE
+                mBinding.btnDelete.visibility = View.VISIBLE
+                mBinding.ivClose.setImageDrawable(SkinnableResourceManager.getDrawable(requireContext(), R.drawable.icon_collapse))
+            }
+
+            else -> {}
         }
     }
 

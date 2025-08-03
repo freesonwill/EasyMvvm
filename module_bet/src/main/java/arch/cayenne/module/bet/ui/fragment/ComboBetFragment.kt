@@ -173,7 +173,9 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
         mViewModel.onBetListListener.observe(viewLifecycleOwner) {
             if (it.size == 1) {
                 navigate(
-                    ComboBetFragmentDirections.actionComboBetFragmentToSingleBetFragment().apply {
+                    ComboBetFragmentDirections.actionComboBetFragmentToSingleBetFragment(
+                        Config.VALUE_COMBO_TO_SINGLE
+                    ).apply {
                         this.arguments.putString(Config.KEY_NON_ANIM, "")
                     },
                     null
