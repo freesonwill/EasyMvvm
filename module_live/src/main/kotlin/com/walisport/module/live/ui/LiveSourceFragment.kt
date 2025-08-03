@@ -12,7 +12,6 @@ import android.view.View
 import android.view.View.OnLayoutChangeListener
 import android.view.ViewGroup
 import android.view.WindowManager
-import android.widget.LinearLayout
 import androidx.core.animation.doOnEnd
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -91,7 +90,7 @@ class LiveSourceFragment :
 
                 if (location[0] == 0) {
                     mBinding.ctSource.removeOnLayoutChangeListener(this)
-                    mBinding.ctSource.postDelayed({ playEnterAnimations() }, 150)
+                    playEnterAnimations()
                 }
             }
         })
@@ -157,6 +156,7 @@ class LiveSourceFragment :
 
         })
 
+
         return dialog
     }
 
@@ -169,14 +169,15 @@ class LiveSourceFragment :
                     0
                 ).apply {
                     addUpdateListener {
-                        val lp = mBinding.ctSource.layoutParams as LinearLayout.LayoutParams
-                        lp.topMargin = it.animatedValue as Int
-
-                        mBinding.ctSource.layoutParams = lp
+//                        val lp = mBinding.ctSource.layoutParams as LinearLayout.LayoutParams
+//                        lp.topMargin = it.animatedValue as Int
+//
+//                        mBinding.ctSource.layoutParams = lp
+                        mBinding.ctSource.translationY = (it.animatedValue as Int).toFloat()
                     }
                 },
             )
-        }, duration = 150L, start = true)
+        }, duration = ANIMATION_DURATION, start = true)
 
     }
 
@@ -191,17 +192,14 @@ class LiveSourceFragment :
                     com.walisport.module.live.R.dimen.video_source_portrait_margin_top.getDimensionPixelSize()
                 ).apply {
                     addUpdateListener {
-                        val lp = mBinding.ctSource.layoutParams as LinearLayout.LayoutParams
-                        lp.topMargin = it.animatedValue as Int
-
-                        mBinding.ctSource.layoutParams = lp
+                        mBinding.ctSource.translationY = (it.animatedValue as Int).toFloat()
                     }
                 },
             )
             doOnEnd {
                 superDismiss()
             }
-        }, duration = 150L, start = true)
+        }, duration = ANIMATION_DURATION, start = true)
     }
 
     private fun superDismiss() {
@@ -235,6 +233,8 @@ class LiveSourceFragment :
 
         const val WIDTH = "width"
         const val HEIGHT = "height"
+
+        const val ANIMATION_DURATION = 120L
     }
 
 }
