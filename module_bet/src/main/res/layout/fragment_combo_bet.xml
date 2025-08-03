@@ -51,7 +51,7 @@
             app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
+    <arch.cayenne.lib.common.ui.view.BottomSheetRecyclerView
         android:id="@+id/rv_bet"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -131,7 +131,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
         </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
 
-        <androidx.recyclerview.widget.RecyclerView
+        <arch.cayenne.lib.common.ui.view.BottomSheetRecyclerView
             android:id="@+id/rv_multi_bet"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
