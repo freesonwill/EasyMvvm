@@ -243,7 +243,7 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
                     if (autoPlayAnimation) {
                         dismiss()
                     } else {
-                        playExitAnimations()
+                        customHide()
                     }
                 }
             }
@@ -358,7 +358,7 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
     }
 
     protected open fun superDismiss() {
-        isDismissing = false
+        isDismissing = true
         super.dismiss()
     }
 
