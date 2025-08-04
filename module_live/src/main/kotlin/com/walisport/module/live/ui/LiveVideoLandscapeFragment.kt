@@ -240,7 +240,7 @@ class LiveVideoLandscapeFragment :
             reduce(
                 targetWidth = mBinding.root.measuredWidth - mBinding.fragmentStatistics.measuredWidth - VIDEO_MARGIN_HORIZONTAL.dp2px * 2,
                 targetHeight = 209.dp2px,
-                targetHorizontalMargin = VIDEO_MARGIN_HORIZONTAL.dp2px
+                targetHorizontalMargin = (VIDEO_MARGIN_HORIZONTAL.dp2px * 1.6).toInt()
             ) {
                 videoViewFullScreen = false
             }
