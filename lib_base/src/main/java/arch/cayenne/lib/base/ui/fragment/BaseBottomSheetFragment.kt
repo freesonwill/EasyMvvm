@@ -7,7 +7,6 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.util.AttributeSet
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -168,7 +167,6 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
                     try {
                         superDismiss()
                     } catch (e: Exception) {
-                        Log.d("abcd", "dismissAllowingStateLoss")
                         dismissAllowingStateLoss()
                     }
                 } else {
@@ -194,7 +192,6 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
 
     @CallSuper
     protected open fun setCustomCollapseSetting() {
-        Log.d("abcd", "collapse ${this.javaClass.simpleName}")
         dialog?.window?.decorView?.visibility = View.INVISIBLE
         backgroundView?.visibility = View.INVISIBLE
         sheetContainer?.visibility = View.INVISIBLE
@@ -236,7 +233,6 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
         unhideableBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {
                 if ((newState == BottomSheetBehavior.STATE_COLLAPSED || newState == BottomSheetBehavior.STATE_HIDDEN) && !autoPlayAnimation) {
-                    Log.d("abcd", "++++ $isResumed")
                     if (this@BaseBottomSheetFragment.isResumed) {
                         isDismissing = true
                         setCustomCollapseSetting()
@@ -275,7 +271,6 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
             setOnClickListener {
                 if (isCancelable) {
                     if (autoPlayAnimation) {
-                        Log.d("abcd", "++++ $isDismissing $sheetContainer")
                         dismiss()
                     } else {
                         customHide()
@@ -394,7 +389,6 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
     }
 
     open fun superDismiss() {
-        Log.d("abcd", "superDismiss")
         isDismissing = true
         super.dismissNow()
     }
