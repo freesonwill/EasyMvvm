@@ -123,9 +123,7 @@ class TournamentListFragment :
                     override fun afterTextChanged(s: Editable?) {
                         val keyword = s?.toString()?.trim().orEmpty()
                         if (keyword.isEmpty()) {
-                            if (!mBinding.ceSearch.hasFocus()) {
                                 mViewModel.setSearchMode(false)
-                            }
                         } else {
                             // 有輸入內容時自動開始搜尋
                             mViewModel.setSearchMode(true)
