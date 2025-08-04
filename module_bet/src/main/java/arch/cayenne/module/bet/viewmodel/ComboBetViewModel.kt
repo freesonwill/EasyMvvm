@@ -78,6 +78,12 @@ class ComboBetViewModel(
                 value = true
                 lastBetSize = it.size
                 return@addSource
+            } else if (lastBetSize > it.size) {
+                if (lastBetSize == 3 && it.size == 2) {
+                    value = true
+                    lastBetSize = it.size
+                    return@addSource
+                }
             }
             checkBothLoaded()
             if (lastBetSize != it.size) {

@@ -69,7 +69,6 @@ class HomeViewModel : BaseViewModel() {
 
     private val repository: HomeRepository by inject()
     private val balanceRepository: BalanceRepository by inject()
-    private val skinManager: SkinnableManager by inject { parametersOf(viewModelScope) }
     val currentBalanceChange by lazy { MutableLiveData<InfoBean>() }
 
     val sportsStatistical by lazy { MutableLiveData<Event<List<SportDataModel>>>() }
@@ -91,9 +90,6 @@ class HomeViewModel : BaseViewModel() {
     private var timerJob: Job? = null
     private val _timer = MutableLiveData<Event<Long>>()
     val timer: LiveData<Event<Long>> = _timer
-
-    private val _selectedSkinType = MutableLiveData<Event<String>>()
-    val selectedSkinType: LiveData<Event<String>> = _selectedSkinType
 
     //聯賽收回上滑動畫結束事件
     private val _tournamentSlideOutEnd = MutableLiveData<Event<Unit>>()
@@ -245,14 +241,6 @@ class HomeViewModel : BaseViewModel() {
             balanceRepository.observeBalance().collect {
                 withContext(Dispatchers.Main) {
                     currentBalanceChange.value = it
-                }
-            }
-        }
-        viewModelScope.launch(Dispatchers.IO) {
-            //觀察換肤type
-            skinManager.skinFlow.collect {
-                withContext(Dispatchers.Main) {
-                    _selectedSkinType.value = Event(it)
                 }
             }
         }
