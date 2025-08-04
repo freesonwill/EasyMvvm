@@ -32,7 +32,7 @@ class  PersonalInfoFragment : BaseFragment<PersonalInfoViewModel, FragmentPerson
         TitleBarPersonalInfoBinding.inflate(LayoutInflater.from(context), mBinding.titleBar, false)
     }
     private var personalInfoAdapter = PersonalInfoAdapter()
-
+    private val nickNameMaxLength = 6
     override fun initView(savedInstanceState: Bundle?) {
         val layoutManager = object : GridLayoutManager(context, 4) {
             override fun canScrollVertically() = false
@@ -64,7 +64,7 @@ class  PersonalInfoFragment : BaseFragment<PersonalInfoViewModel, FragmentPerson
             personalInfoAdapter.submitList(mViewModel.getPersonalInfoData())
             personalInfoAdapter.setSelectedPosition(mViewModel.getDefaultPosition())
             personalInfoAdapter.setOnItemClickListener { _ ->
-                if (ceNickName.text?.isNotEmpty() == true && (ceNickName.text?.length ?: 0) <= 8) {
+                if (ceNickName.text?.isNotEmpty() == true && (ceNickName.text?.length ?: 0) <= nickNameMaxLength) {
                     btnSave.isEnabled = true
                 }
             }
@@ -84,7 +84,7 @@ class  PersonalInfoFragment : BaseFragment<PersonalInfoViewModel, FragmentPerson
         with (mBinding) {
             btnSave.clickNoRepeat {
                 with (mBinding) {
-                    if ((ceNickName.text?.length ?: 0) > 8) {
+                    if ((ceNickName.text?.length ?: 0) > nickNameMaxLength) {
                         return@clickNoRepeat
                     }
                     if (ceNickName.text.isNullOrEmpty()) {

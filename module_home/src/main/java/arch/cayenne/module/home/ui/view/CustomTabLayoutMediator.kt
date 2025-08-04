@@ -1,6 +1,5 @@
 package arch.cayenne.module.home.ui.view
 
-import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import arch.cayenne.lib.common.utils.helper.ViewPagerAnimHelper.Companion.getAnimHelper
@@ -100,7 +99,7 @@ class CustomTabLayoutMediator(
         if(tabLayout is CustomTabLayout) {
             // 設置自訂的 ClickListener
             tabLayout.onTabClick = { position ->
-                doOnClick(position)
+                doOnClick(position, true)
             }
         }
     }
