@@ -91,9 +91,8 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
 
             override fun onStart() {
                 super.onStart()
-                setSheetContainer()
+                hideSheet()
                 setCustomExpendSetting()
-                removeDim()
                 if (!autoPlayAnimation) {
                     // 關閉對話框的 window，先不要顯示
                     dialog?.window?.decorView?.visibility = View.INVISIBLE
@@ -101,8 +100,20 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
                 }
             }
 
+            var systemHide = false
+
+            override fun show() {
+                if (systemHide && !autoPlayAnimation) {
+                    return
+                }
+                super.show()
+                systemHide = false
+
+            }
+
             override fun hide() {
-                super.hide()
+                systemHide = true
+//                super.hide()
             }
         }
 
@@ -157,6 +168,7 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
                     try {
                         superDismiss()
                     } catch (e: Exception) {
+                        Log.d("abcd", "dismissAllowingStateLoss")
                         dismissAllowingStateLoss()
                     }
                 } else {
@@ -182,6 +194,7 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
 
     @CallSuper
     protected open fun setCustomCollapseSetting() {
+        Log.d("abcd", "collapse ${this.javaClass.simpleName}")
         dialog?.window?.decorView?.visibility = View.INVISIBLE
         backgroundView?.visibility = View.INVISIBLE
         sheetContainer?.visibility = View.INVISIBLE
@@ -223,6 +236,7 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
         unhideableBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {
                 if ((newState == BottomSheetBehavior.STATE_COLLAPSED || newState == BottomSheetBehavior.STATE_HIDDEN) && !autoPlayAnimation) {
+                    Log.d("abcd", "++++ $isResumed")
                     if (this@BaseBottomSheetFragment.isResumed) {
                         isDismissing = true
                         setCustomCollapseSetting()
@@ -243,18 +257,25 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
     override fun onStart() {
         super.onStart()
         uiBind.onStart()
+        setSheetContainer()
+        removeDim()
         setStatusBar()
-  }
+    }
+
+    private fun hideSheet() {
+        backgroundView?.visibility = View.INVISIBLE
+        sheetContainer?.visibility = View.INVISIBLE
+    }
 
     private fun setSheetContainer() {
         val d = dialog as BottomSheetDialog
         val root = d.findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)?.parent as ViewGroup
 
         backgroundView = root.getChildAt(0).apply {
-            visibility = View.INVISIBLE
             setOnClickListener {
                 if (isCancelable) {
                     if (autoPlayAnimation) {
+                        Log.d("abcd", "++++ $isDismissing $sheetContainer")
                         dismiss()
                     } else {
                         customHide()
@@ -262,9 +283,7 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
                 }
             }
         }
-        sheetContainer = root.findViewById<View?>(com.google.android.material.R.id.design_bottom_sheet).apply {
-            visibility = View.INVISIBLE
-        }
+        sheetContainer = root.findViewById<View?>(com.google.android.material.R.id.design_bottom_sheet)
     }
 
     @CallSuper
@@ -374,9 +393,10 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
         }
     }
 
-    protected open fun superDismiss() {
+    open fun superDismiss() {
+        Log.d("abcd", "superDismiss")
         isDismissing = true
-        super.dismiss()
+        super.dismissNow()
     }
 
     override fun onCancel(dialog: DialogInterface) {
