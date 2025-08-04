@@ -6,6 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
 import androidx.core.view.GravityCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -41,7 +43,7 @@ import arch.cayenne.module.home.databinding.ItemLeagueTabBinding
 import arch.cayenne.module.home.ui.adapter.LeaguePagerAdapter
 import arch.cayenne.module.home.ui.adapter.SportsListAdapter
 import arch.cayenne.module.home.ui.view.CustomTabLayoutMediator
-import arch.cayenne.module.home.ui.view.HomeCalendarPopupWindow
+import arch.cayenne.module.home.ui.view.HomeCalendarFragment
 import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
 import arch.cayenne.module.home.utils.DateUtils
 import com.bumptech.glide.Glide
@@ -61,7 +63,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             mViewModel.setCurrentSport(id)
         }
     }
-    private var customPopup : HomeCalendarPopupWindow<HomeTourPopupCalendarViewBinding>? = null
+    private var customPopup : HomeCalendarFragment? = null
     private var tournamentTabLayoutMediator: CustomTabLayoutMediator? = null
 
     private var leaguePagerAdapter : LeaguePagerAdapter? = null
@@ -276,29 +278,27 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
     private fun showHomeCalendar(tabSelectedDate: String) {
         with(mBinding.layoutContainer) {
             llOtherDate.isSelected = true
-        }
-        // 使用 Builder 創建 Popup
-        setCalendarPopup()
-        customPopup?.updateCalendarSkin()
-        customPopup?.setUIListener(tabSelectedDate)
-        // 顯示 Popup
-        customPopup!!.showAsDropDown(mBinding.layoutContainer.tlDateList)
-    }
 
-    private fun setCalendarPopup() {
-        if (customPopup == null) {
-            customPopup = HomeCalendarPopupWindow.Builder(
-                this,
-                HomeTourPopupCalendarViewBinding::inflate
-            ).setOnDateSelectedListener {selectedDate ->
-                setSelectedDateTab(getFuture31Days().find { it.first == selectedDate })
-            }.setOnCalendarDismissListener {
-                with(mBinding.layoutContainer) {
-                    llOtherDate.isSelected = false
+            customPopup = HomeCalendarFragment.Builder().apply {
+                val statusBarHeight =
+                    ViewCompat.getRootWindowInsets(requireView())
+                        ?.getInsets(WindowInsetsCompat.Type.statusBars())?.top ?: 0
+                setMarginTop(mBinding.clSecondNavbar.bottom + llDateFilterContainer.bottom - statusBarHeight)
+                setMaskView(mBinding.viewCalendarMask)
+                mViewModel.recently7DayMatchScheduleCount.value?.peekContent()?.let { setRange(it) }
+                setOnDateSelectedListener { selectedDate ->
+                    setSelectedDateTab(getFuture31Days().find { it.first == selectedDate })
                 }
-            }.setOnResetDateListener {
-                resetDateTabs()
+                setOnResetDateListener {
+                    resetDateTabs()
+                }
+                setOnDismissListener {
+                    llOtherDate.isSelected = false
+                    customPopup = null
+                }
             }.build()
+
+            customPopup?.show(childFragmentManager, mBinding.clMain.id, tabSelectedDate)
         }
     }
 
@@ -522,16 +522,8 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             }
         }
         mViewModel.recently7DayMatchScheduleCount.observeEvent(viewLifecycleOwner, this) { list->
-            setCalendarPopup()
-            customPopup?.setSchemeDate(list)
+            customPopup?.updateRange(list)
         }
-
-        mViewModel.selectedSkinType.observeEvent(viewLifecycleOwner, this) { _ ->
-            mBinding.apply {
-                customPopup?.updateCalendarSkin()
-            }
-        }
-
         mViewModel.selectedDate.observeEvent(viewLifecycleOwner, this) { select ->
             if (select == HomeViewModel.DEFAULT_DATE) return@observeEvent
             setSelectedDateTab(getFuture31Days().find { it.third == select })
