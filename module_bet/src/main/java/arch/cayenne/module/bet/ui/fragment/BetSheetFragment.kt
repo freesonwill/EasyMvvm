@@ -112,7 +112,7 @@ class BetSheetFragment private constructor() :
     }
 
     private fun initDestination() {
-        setStartDestination(1)
+        setStartDestination(mViewModel.count)
     }
 
     override fun initListener() {
@@ -150,7 +150,7 @@ class BetSheetFragment private constructor() :
         }
         val navGraph = navController.navInflater.inflate(R.navigation.nav_bet)
 
-        if (size == 1) {
+        if (size <= 1) {
             navGraph.setStartDestination(R.id.singleBetFragment)
         } else {
             navGraph.setStartDestination(R.id.comboBetFragment)
@@ -162,9 +162,7 @@ class BetSheetFragment private constructor() :
         // navigation的fragment沒有收起彈窗方法，必須靠回調頂層bottom sheet收起彈窗
         val navController = NavHostFragment.findNavController(mBinding.mainNav.getFragment())
         navController.addOnDestinationChangedListener { _, destination, bundle ->
-            if (bundle?.containsKey("from") == false) {
-                showEnterAnim()
-            }
+            showEnterAnim()
             removeLastObserver()
             handleDismissObserve(navController, destination.id)
         }
@@ -172,13 +170,35 @@ class BetSheetFragment private constructor() :
         mViewModel.betSheetSizeListener.observe(viewLifecycleOwner) {
             if (lastCount == it) return@observe
             if (isDismissing) {
-                if (it >= 2) {
-                    setStartDestination(2)
+                if (lastCount < 2 && it >= 2) {
+                    if (checkCurrentDir(it)) {
+                        removeLastObserver()
+                        mBinding.root.postDelayed({
+                            if (lastLiveData == null) {
+                                setStartDestination(2)
+                            }
+                        }, 300L)
+                    }
                 } else if (it <= 1) {
-                    setStartDestination(1)
+                    if (checkCurrentDir(it)) {
+                        removeLastObserver()
+                        mBinding.root.postDelayed({
+                            if (lastLiveData == null) {
+                                setStartDestination(1)
+                            }
+                        }, 300L)
+                    }
                 }
             }
             lastCount = it
+        }
+    }
+
+    private fun checkCurrentDir(size: Int): Boolean {
+        return if (size <= 1) {
+            controller.currentDestination?.label != "SingleBetFragment"
+        } else {
+            controller.currentDestination?.label != "ComboBetFragment"
         }
     }
 
@@ -198,6 +218,7 @@ class BetSheetFragment private constructor() :
     private fun showEnterAnim() {
         if (lastLiveData == null) return
         val v = mBinding.root
+        if (v.translationY == 0f) return
         val h = v.height.toFloat()
         ViewHelper.expandView(v, h)
     }
@@ -210,6 +231,13 @@ class BetSheetFragment private constructor() :
     override fun onDismiss(dialog: DialogInterface) {
         mViewModel.removeSingleBet()
         super.onDismiss(dialog)
+    }
+
+    override fun customShow() {
+        if (lastLiveData == null) {
+            initDestination()
+        }
+        super.customShow()
     }
 
     override fun customHide(onEnd: (() -> Unit)?) {
