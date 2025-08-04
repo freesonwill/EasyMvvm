@@ -1,5 +1,6 @@
 package arch.cayenne.module.home.ui.fragment
 
+import android.annotation.SuppressLint
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -37,7 +38,6 @@ import arch.cayenne.module.home.R
 import arch.cayenne.module.home.data.constants.HomeState
 import arch.cayenne.module.home.data.constants.PlayType
 import arch.cayenne.module.home.databinding.FragmentNewHomeBinding
-import arch.cayenne.module.home.databinding.HomeTourPopupCalendarViewBinding
 import arch.cayenne.module.home.databinding.ItemDateTabBinding
 import arch.cayenne.module.home.databinding.ItemLeagueTabBinding
 import arch.cayenne.module.home.ui.adapter.LeaguePagerAdapter
@@ -131,6 +131,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
     }
 
     //init 三級導航欄位與日期
+    @SuppressLint("DefaultLocale")
     private fun initTournamentLayout() {
         // 取得未來 31 天 (MMDD, 星期, timeStamp)
         val dateTabs = getFutureSevenDays()
@@ -163,16 +164,25 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
 
             // 其他日期 Tab 設定
             llOtherDate.clickNoRepeat {
+                // 轉換日期格式為 YYYYMMDD 給 DatePicker 使用
+                fun List<String>.toYYYYMMDD(): String {
+                    val year = this[0]
+                    val month = this[1].padStart(2, '0')
+                    val day = this[2].padStart(2, '0')
+                    return "$year$month$day"
+                }
+
                 //呼叫日曆popup元件
-                var tabSelectedDate: String
-                val index = tlDateList.selectedTabPosition
-                if (index >= 0) {
-                    val tag = tlDateList.getTabAt(tlDateList.selectedTabPosition)?.tag
-                    val triple = getFuture31Days().find { it.first == tag }
-                    triple?.third?.getFormatDate()?.replace("/", "")
-                    tabSelectedDate = triple?.third?.getFormatDate()?.replace("/", "") ?: "0"
+                val tabSelectedDate = if (tlDateList.selectedTabPosition >= 0) {
+                    tlDateList.getTabAt(tlDateList.selectedTabPosition)?.let { tab ->
+                        getFuture31Days().find { it.first == tab.tag }?.let { triple ->
+                            tab.view.isSelected = false
+                            triple.third.getFormatDate().split("/").toYYYYMMDD()
+                        } ?: "0"
+                    } ?: "0"
                 } else {
-                    tabSelectedDate = "0"
+                    tvTabAll.isSelected = false
+                    "0"
                 }
                 showHomeCalendar(tabSelectedDate)
             }
@@ -295,6 +305,13 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 setOnDismissListener {
                     llOtherDate.isSelected = false
                     customPopup = null
+
+                    // 重置日期tab選擇狀態
+                    tlDateList.getTabAt(tlDateList.selectedTabPosition)?.let {
+                        if(!it.view.isSelected) {
+                            it.view.isSelected = true
+                        }
+                    } ?: run { tvTabAll.isSelected = true }
                 }
             }.build()
 
