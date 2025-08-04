@@ -87,6 +87,22 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
                     }
                 }
             }
+
+            override fun onStart() {
+                super.onStart()
+                setSheetContainer()
+                setCustomExpendSetting()
+                removeDim()
+                if (!autoPlayAnimation) {
+                    // 關閉對話框的 window，先不要顯示
+                    dialog?.window?.decorView?.visibility = View.INVISIBLE
+                    isDismissing = true
+                }
+            }
+
+            override fun hide() {
+                super.hide()
+            }
         }
 
         dialog.setOnShowListener {
@@ -205,7 +221,7 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
         val unhideableBehavior = UnhideableBottomSheetBehavior<View>(requireContext(), null)
         unhideableBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {
-                if ((newState == BottomSheetBehavior.STATE_COLLAPSED || newState == BottomSheetBehavior.STATE_HIDDEN)&& !autoPlayAnimation) {
+                if ((newState == BottomSheetBehavior.STATE_COLLAPSED || newState == BottomSheetBehavior.STATE_HIDDEN) && !autoPlayAnimation) {
                     isDismissing = true
                     setCustomCollapseSetting()
                 }
@@ -222,13 +238,6 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
     @CallSuper
     override fun onStart() {
         super.onStart()
-        setSheetContainer()
-        removeDim()
-        if (!autoPlayAnimation) {
-            // 關閉對話框的 window，先不要顯示
-            dialog?.window?.decorView?.visibility = View.INVISIBLE
-            isDismissing = true
-        }
         uiBind.onStart()
         setStatusBar()
   }
