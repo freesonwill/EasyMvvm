@@ -1,11 +1,14 @@
 package arch.cayenne.module.home.ui.fragment
 
+import android.annotation.SuppressLint
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
 import androidx.core.view.GravityCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -35,13 +38,12 @@ import arch.cayenne.module.home.R
 import arch.cayenne.module.home.data.constants.HomeState
 import arch.cayenne.module.home.data.constants.PlayType
 import arch.cayenne.module.home.databinding.FragmentNewHomeBinding
-import arch.cayenne.module.home.databinding.HomeTourPopupCalendarViewBinding
 import arch.cayenne.module.home.databinding.ItemDateTabBinding
 import arch.cayenne.module.home.databinding.ItemLeagueTabBinding
 import arch.cayenne.module.home.ui.adapter.LeaguePagerAdapter
 import arch.cayenne.module.home.ui.adapter.SportsListAdapter
 import arch.cayenne.module.home.ui.view.CustomTabLayoutMediator
-import arch.cayenne.module.home.ui.view.HomeCalendarPopupWindow
+import arch.cayenne.module.home.ui.view.HomeCalendarFragment
 import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
 import arch.cayenne.module.home.utils.DateUtils
 import com.bumptech.glide.Glide
@@ -61,7 +63,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             mViewModel.setCurrentSport(id)
         }
     }
-    private var customPopup : HomeCalendarPopupWindow<HomeTourPopupCalendarViewBinding>? = null
+    private var customPopup : HomeCalendarFragment? = null
     private var tournamentTabLayoutMediator: CustomTabLayoutMediator? = null
 
     private var leaguePagerAdapter : LeaguePagerAdapter? = null
@@ -129,6 +131,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
     }
 
     //init 三級導航欄位與日期
+    @SuppressLint("DefaultLocale")
     private fun initTournamentLayout() {
         // 取得未來 31 天 (MMDD, 星期, timeStamp)
         val dateTabs = getFutureSevenDays()
@@ -161,16 +164,25 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
 
             // 其他日期 Tab 設定
             llOtherDate.clickNoRepeat {
+                // 轉換日期格式為 YYYYMMDD 給 DatePicker 使用
+                fun List<String>.toYYYYMMDD(): String {
+                    val year = this[0]
+                    val month = this[1].padStart(2, '0')
+                    val day = this[2].padStart(2, '0')
+                    return "$year$month$day"
+                }
+
                 //呼叫日曆popup元件
-                var tabSelectedDate: String
-                val index = tlDateList.selectedTabPosition
-                if (index >= 0) {
-                    val tag = tlDateList.getTabAt(tlDateList.selectedTabPosition)?.tag
-                    val triple = getFuture31Days().find { it.first == tag }
-                    triple?.third?.getFormatDate()?.replace("/", "")
-                    tabSelectedDate = triple?.third?.getFormatDate()?.replace("/", "") ?: "0"
+                val tabSelectedDate = if (tlDateList.selectedTabPosition >= 0) {
+                    tlDateList.getTabAt(tlDateList.selectedTabPosition)?.let { tab ->
+                        getFuture31Days().find { it.first == tab.tag }?.let { triple ->
+                            tab.view.isSelected = false
+                            triple.third.getFormatDate().split("/").toYYYYMMDD()
+                        } ?: "0"
+                    } ?: "0"
                 } else {
-                    tabSelectedDate = "0"
+                    tvTabAll.isSelected = false
+                    "0"
                 }
                 showHomeCalendar(tabSelectedDate)
             }
@@ -276,29 +288,34 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
     private fun showHomeCalendar(tabSelectedDate: String) {
         with(mBinding.layoutContainer) {
             llOtherDate.isSelected = true
-        }
-        // 使用 Builder 創建 Popup
-        setCalendarPopup()
-        customPopup?.updateCalendarSkin()
-        customPopup?.setUIListener(tabSelectedDate)
-        // 顯示 Popup
-        customPopup!!.showAsDropDown(mBinding.layoutContainer.tlDateList)
-    }
 
-    private fun setCalendarPopup() {
-        if (customPopup == null) {
-            customPopup = HomeCalendarPopupWindow.Builder(
-                this,
-                HomeTourPopupCalendarViewBinding::inflate
-            ).setOnDateSelectedListener {selectedDate ->
-                setSelectedDateTab(getFuture31Days().find { it.first == selectedDate })
-            }.setOnCalendarDismissListener {
-                with(mBinding.layoutContainer) {
-                    llOtherDate.isSelected = false
+            customPopup = HomeCalendarFragment.Builder().apply {
+                val statusBarHeight =
+                    ViewCompat.getRootWindowInsets(requireView())
+                        ?.getInsets(WindowInsetsCompat.Type.statusBars())?.top ?: 0
+                setMarginTop(mBinding.clSecondNavbar.bottom + llDateFilterContainer.bottom - statusBarHeight)
+                setMaskView(mBinding.viewCalendarMask)
+                mViewModel.recently7DayMatchScheduleCount.value?.peekContent()?.let { setRange(it) }
+                setOnDateSelectedListener { selectedDate ->
+                    setSelectedDateTab(getFuture31Days().find { it.first == selectedDate })
                 }
-            }.setOnResetDateListener {
-                resetDateTabs()
+                setOnResetDateListener {
+                    resetDateTabs()
+                }
+                setOnDismissListener {
+                    llOtherDate.isSelected = false
+                    customPopup = null
+
+                    // 重置日期tab選擇狀態
+                    tlDateList.getTabAt(tlDateList.selectedTabPosition)?.let {
+                        if(!it.view.isSelected) {
+                            it.view.isSelected = true
+                        }
+                    } ?: run { tvTabAll.isSelected = true }
+                }
             }.build()
+
+            customPopup?.show(childFragmentManager, mBinding.clMain.id, tabSelectedDate)
         }
     }
 
@@ -522,16 +539,8 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             }
         }
         mViewModel.recently7DayMatchScheduleCount.observeEvent(viewLifecycleOwner, this) { list->
-            setCalendarPopup()
-            customPopup?.setSchemeDate(list)
+            customPopup?.updateRange(list)
         }
-
-        mViewModel.selectedSkinType.observeEvent(viewLifecycleOwner, this) { _ ->
-            mBinding.apply {
-                customPopup?.updateCalendarSkin()
-            }
-        }
-
         mViewModel.selectedDate.observeEvent(viewLifecycleOwner, this) { select ->
             if (select == HomeViewModel.DEFAULT_DATE) return@observeEvent
             setSelectedDateTab(getFuture31Days().find { it.third == select })
