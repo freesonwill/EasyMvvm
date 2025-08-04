@@ -24,7 +24,6 @@ import arch.cayenne.lib.base.ui._interface.IView
 import arch.cayenne.lib.base.ui.delegate.StatusBarDelegate
 import arch.cayenne.lib.base.ui.delegate.UIBindDelegate
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
-import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import org.koin.androidx.viewmodel.ext.android.viewModelForClass
@@ -73,7 +72,9 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
         val dialog = object : BottomSheetDialog(requireContext(), theme) {
             override fun onBackPressed() {
                 this@BaseBottomSheetFragment.dismiss()
-                super.onBackPressed()
+                if (!isResumed) {
+                    super.onBackPressed()
+                }
             }
 
             override fun onStart() {
@@ -267,7 +268,7 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
 
     open fun superDismiss() {
         isDismissing = true
-        super.dismissNow()
+        super.dismiss()
     }
 
     protected fun removeDim() {

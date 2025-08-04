@@ -9,7 +9,10 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import androidx.annotation.CallSuper
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.base.R
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
@@ -134,8 +137,21 @@ abstract class BasePreLoadBottomSheerFragment<VM : BaseViewModel, VB : ViewBindi
         sheetContainer?.startAnimation(sheetContainerSheetAnim)
     }
 
-    fun customCreate(activity: FragmentActivity, newTag: String) {
+    fun customDetach() {
+        superDismiss()
+    }
+
+    fun customAttach(activity: FragmentActivity, newTag: String) {
         show(activity.supportFragmentManager, newTag)
+    }
+
+    fun customAttach(fragment: Fragment, newTag: String) {
+        show(fragment.requireActivity().supportFragmentManager, newTag)
+        fragment.lifecycle.addObserver(object : DefaultLifecycleObserver {
+            override fun onDestroy(owner: LifecycleOwner) {
+                superDismiss()
+            }
+        })
     }
 
     @CallSuper
@@ -157,7 +173,6 @@ abstract class BasePreLoadBottomSheerFragment<VM : BaseViewModel, VB : ViewBindi
             isDismissing = true
             playExitAnimations(onEnd)
         }
-
     }
 }
 

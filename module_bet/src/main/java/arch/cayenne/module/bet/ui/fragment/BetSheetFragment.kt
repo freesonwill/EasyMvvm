@@ -35,7 +35,7 @@ class BetSheetFragment private constructor() :
             val manager = activity.supportFragmentManager
             val f = manager.findFragmentByTag(TAG)
             if (f == null) {
-                BetSheetFragment().customCreate(activity, TAG)
+                BetSheetFragment().customAttach(activity, TAG)
             }
         }
 
