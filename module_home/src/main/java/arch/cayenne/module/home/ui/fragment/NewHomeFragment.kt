@@ -6,6 +6,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
 import androidx.core.view.GravityCompat
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentManager.FragmentLifecycleCallbacks
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -136,7 +139,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             //聯賽
             vpGameList.isSaveEnabled = false
             vpGameList.adapter = null
-            vpGameList.offscreenPageLimit = 2
+            //如果往右往左滑動，等待滑動完成後，再去開始startObserveMatch
             gameListPageCallback = object : OnPageChangeCallback(){
                 override fun onPageScrollStateChanged(state: Int) {
                     super.onPageScrollStateChanged(state)
@@ -150,6 +153,16 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 }
             }
             vpGameList.registerOnPageChangeCallback(gameListPageCallback!!)
+            //如果直接點擊聯賽到ViewPager還沒生成的MatchListPageFragment聯賽的話，這個MatchListPageFragment會生成並且attach上去，所以在這裡需要做attach完成後的startObserveMatch
+            childFragmentManager.registerFragmentLifecycleCallbacks(object : FragmentLifecycleCallbacks() {
+                override fun onFragmentViewCreated(fm: FragmentManager, f: Fragment, v: View, savedInstanceState: Bundle?) {
+                    super.onFragmentViewCreated(fm, f, v, savedInstanceState)
+                    val currentItemId = "f${leaguePagerAdapter?.getItemId(vpGameList.currentItem)}"
+                    if (f is MatchListPagerFragment && f.tag == currentItemId) {
+                        f.startObserveMatch()
+                    }
+                }
+            }, false)
 
             // 日期 Tab 設定, 固定 "全部"
             updateDateTabs(tlDateList, dateTabs)
@@ -439,9 +452,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 val selectedPosition = tournaments.indexOfFirst { it.isSelected }
                 getSelectedRecently31Scheduled(selectedPosition)
                 tlLeagueList.post{ layoutMediator.selectTabWithoutAnimation(selectedPosition) }
-                vpGameList.post {
-                    gameListPageCallback?.onPageScrollStateChanged(SCROLL_STATE_IDLE)
-                }
+                vpGameList.post { gameListPageCallback?.onPageScrollStateChanged(SCROLL_STATE_IDLE) }
             }
         }
     }
