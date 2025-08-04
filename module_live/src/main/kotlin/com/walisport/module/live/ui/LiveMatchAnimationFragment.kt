@@ -212,6 +212,18 @@ class LiveMatchAnimationFragment :
         }
     }
 
+    override fun onResume() {
+        mBinding.animationView.onResume()
+        mBinding.animationView.resumeTimers()
+        super.onResume()
+    }
+
+    override fun onPause() {
+        mBinding.animationView.onPause()
+        mBinding.animationView.pauseTimers()
+        super.onPause()
+    }
+
     override fun onDestroy() {
         mBinding.animationView.destroy()
         super.onDestroy()
