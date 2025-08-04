@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
-import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.PorterDuff
@@ -17,8 +16,6 @@ import android.util.AttributeSet
 import android.view.GestureDetector
 import android.view.GestureDetector.SimpleOnGestureListener
 import android.view.MotionEvent
-import android.view.animation.Animation
-import android.view.animation.ScaleAnimation
 import android.widget.AdapterView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.findViewTreeLifecycleOwner
@@ -35,11 +32,6 @@ class SkinnableRippleView : ConstraintLayout {
     private val flowHelper = SkinnableViewFlowHelper()
 
     /**
-     * 水波纹的颜色
-     */
-    private var rippleColor = 0
-
-    /**
      * 水波纹扩散类型
      */
     private var rippleType: Int? = null
@@ -47,28 +39,7 @@ class SkinnableRippleView : ConstraintLayout {
     /**
      * 背景样式
      */
-    private var bgType: Int? = null
-
-    /**
-     * 放大持续时间
-     */
-    private var zoomDuration = 0
-
-    /**
-     * 放大比例
-     */
-    private var zoomScale = 0f
-
-    /**
-     * 放大动画类
-     */
-    private var scaleAnimation: ScaleAnimation? = null
-
-
-    /**
-     * 视图是否放大
-     */
-    private var hasToZoom: Boolean? = null
+    private var bgType: Int = 0
 
     /**
      * 是否从视图中心开始动画
@@ -90,7 +61,7 @@ class SkinnableRippleView : ConstraintLayout {
     /**
      * 水波纹透明度
      */
-    private var rippleAlpha = 80
+    private var rippleAlpha = 30
 
 
     /**
@@ -156,8 +127,6 @@ class SkinnableRippleView : ConstraintLayout {
 
     private var originBitmap: Bitmap? = null
 
-    private var onCompletionListener: OnRippleCompleteListener? = null
-
 
     /**
      * 视图的宽和高
@@ -179,13 +148,6 @@ class SkinnableRippleView : ConstraintLayout {
      * 水波纹更新波纹Runnable
      */
     private val runnable = Runnable { invalidate() }
-
-    /**
-     * 定义回调函数，当水波纹效果完成时调用
-     */
-    interface OnRippleCompleteListener {
-        fun onComplete(rippleView: SkinnableRippleView?)
-    }
 
     constructor(context: Context) : super(context) {
         initView(context)
@@ -226,15 +188,12 @@ class SkinnableRippleView : ConstraintLayout {
         rippleType = typedArray.getInt(R.styleable.RippleView_rv_type, 0)
         bgType = rippleColorHelper.bgType
         rippleCorner = rippleColorHelper.rippleCorner.toFloat()
-        hasToZoom = typedArray.getBoolean(R.styleable.RippleView_rv_zoom, false)
         isCentered = typedArray.getBoolean(R.styleable.RippleView_rv_centered, false)
         rippleDuration =
             typedArray.getInteger(R.styleable.RippleView_rv_rippleDuration, rippleDuration)
         rippleAlpha = typedArray.getInteger(R.styleable.RippleView_rv_alpha, rippleAlpha)
         ripplePadding = typedArray.getDimensionPixelSize(R.styleable.RippleView_rv_ripplePadding, 0)
         canvasHandler = Handler()
-        zoomScale = typedArray.getFloat(R.styleable.RippleView_rv_zoomScale, 1.03f)
-        zoomDuration = typedArray.getInt(R.styleable.RippleView_rv_zoomDuration, 50)
         typedArray.recycle()
         paint = Paint()
         paint!!.isAntiAlias = true
@@ -260,58 +219,55 @@ class SkinnableRippleView : ConstraintLayout {
         this.isClickable = true
     }
 
+    companion object {
+        const val RECT_ROUND = 0     //上下左右圆角矩型
+        const val RECT_TOP = 1       //顶部左右圆角矩型
+        const val RECT_NONE = 2      //无圆角矩型
+        const val RECT_BOTTOM = 3    //底部左右圆角矩型
+    }
+
+    private fun setClipPath(path: Path, type: Int) {
+        val rect = RectF(0f, 0f, WIDTH.toFloat(), HEIGHT.toFloat())
+        when (type) {
+            RECT_ROUND -> path.addRoundRect(rect, rippleCorner, rippleCorner, Path.Direction.CW)
+            RECT_TOP -> path.addRoundRect(
+                rect, floatArrayOf(
+                    rippleCorner,
+                    rippleCorner,
+                    rippleCorner,
+                    rippleCorner,
+                    0f,
+                    0f,
+                    0f,
+                    0f
+                ),
+                Path.Direction.CW
+            )
+
+            RECT_NONE -> path.addRect(rect, Path.Direction.CW)
+            RECT_BOTTOM -> path.addRoundRect(
+                rect,
+                floatArrayOf(
+                    0f,
+                    0f,
+                    0f,
+                    0f,
+                    rippleCorner,
+                    rippleCorner,
+                    rippleCorner,
+                    rippleCorner
+                ),
+                Path.Direction.CW
+            )
+        }
+    }
+
     override fun draw(canvas: Canvas) {
         super.draw(canvas)
         if (animationRunning) {
             canvas.save()
             val path = Path()
-            val rect = RectF(0f, 0f, WIDTH.toFloat(), HEIGHT.toFloat())
-            when (bgType) {
-                0 -> {
-                    path.addRoundRect(rect, rippleCorner, rippleCorner, Path.Direction.CW)
-                }
-
-                1 -> {
-                    path.addRoundRect(
-                        rect,
-                        floatArrayOf(
-                            rippleCorner,
-                            rippleCorner,
-                            rippleCorner,
-                            rippleCorner,
-                            0f,
-                            0f,
-                            0f,
-                            0f
-                        ),
-                        Path.Direction.CW
-                    )
-                }
-
-                2 -> {
-                    path.addRect(
-                        RectF(0f, 0f, WIDTH.toFloat(), HEIGHT.toFloat()),
-                        Path.Direction.CW
-                    )
-                }
-
-                else -> {
-                    path.addRoundRect(
-                        rect,
-                        floatArrayOf(
-                            0f,
-                            0f,
-                            0f,
-                            0f,
-                            rippleCorner,
-                            rippleCorner,
-                            rippleCorner,
-                            rippleCorner
-                        ),
-                        Path.Direction.CW
-                    )
-                }
-            }
+            setClipPath(path, bgType)
             canvas.clipPath(path)
             if (rippleDuration <= timer * frameRate) {
                 animationRunning = false
@@ -323,12 +279,10 @@ class SkinnableRippleView : ConstraintLayout {
                     canvas.restore()
                 }
                 invalidate()
-                onCompletionListener?.onComplete(this)
                 return
             } else {
                 canvasHandler!!.postDelayed(runnable, frameRate.toLong())
             }
-
             if (timer == 0) {
                 canvas.save()
             }
@@ -336,9 +290,6 @@ class SkinnableRippleView : ConstraintLayout {
                 x, y, (radiusMax * ((timer.toFloat() * frameRate) / rippleDuration)),
                 paint!!
             )
-            paint!!.color = Color.parseColor("#ffff4444")
-
-
             if ((rippleType == 1) && originBitmap != null && ((timer.toFloat() * frameRate) / rippleDuration) > 0.4f) {
                 if (durationEmpty == -1) {
                     durationEmpty = rippleDuration - timer * frameRate
@@ -350,33 +301,20 @@ class SkinnableRippleView : ConstraintLayout {
                 tmpBitmap.recycle()
             }
             paint!!.color = rippleColorHelper.rippleColor
-
-            if (rippleType == 1) {
-                if (((timer.toFloat() * frameRate) / rippleDuration) > 0.6f) {
-                    paint!!.alpha =
-                        (rippleAlpha - ((rippleAlpha) * ((timerEmpty.toFloat() * frameRate) / (durationEmpty)))).toInt()
-                } else {
-                    paint!!.alpha = rippleAlpha
-                }
-            } else {
-                paint!!.alpha =
-                    (rippleAlpha - ((rippleAlpha) * ((timer.toFloat() * frameRate) / rippleDuration))).toInt()
-            }
+            paint!!.alpha = getCircleAlpha()
             timer++
         }
+    }
+
+    private fun getCircleAlpha(): Int {
+        return (rippleAlpha - ((rippleAlpha) * ((timer.toFloat() * frameRate) / rippleDuration))).toInt()
     }
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         super.onSizeChanged(w, h, oldw, oldh)
         WIDTH = w
         HEIGHT = h
-        scaleAnimation =
-            ScaleAnimation(1.0f, zoomScale, 1.0f, zoomScale, (w / 2).toFloat(), (h / 2).toFloat())
-        scaleAnimation!!.duration = zoomDuration.toLong()
-        scaleAnimation!!.repeatMode = Animation.REVERSE
-        scaleAnimation!!.repeatCount = 1
     }
-
 
     /**
      * 启动水波纹动画，通过MotionEvent事件
@@ -387,22 +325,8 @@ class SkinnableRippleView : ConstraintLayout {
         createAnimation(event.x, event.y)
     }
 
-    /**
-     * 启动水波纹动画，通过x，y坐标
-     *
-     * @param x
-     * @param y
-     */
-    fun animateRipple(x: Float, y: Float) {
-        createAnimation(x, y)
-    }
-
-
     private fun createAnimation(x: Float, y: Float) {
         if (this.isEnabled && !animationRunning) {
-            if (hasToZoom!!) {
-                this.startAnimation(scaleAnimation)
-            }
             radiusMax = (1.5 * WIDTH).toFloat()
             if (isCentered!! || rippleType == 1) {
                 this.x = (measuredWidth / 2).toFloat()
@@ -419,7 +343,6 @@ class SkinnableRippleView : ConstraintLayout {
         }
     }
 
-
     override fun onTouchEvent(event: MotionEvent): Boolean {
         if (gestureDetector!!.onTouchEvent(event)) {
             animateRipple(event)
@@ -427,7 +350,6 @@ class SkinnableRippleView : ConstraintLayout {
         }
         return super.onTouchEvent(event)
     }
-
 
     override fun onInterceptTouchEvent(event: MotionEvent): Boolean {
         this.onTouchEvent(event)
@@ -463,125 +385,6 @@ class SkinnableRippleView : ConstraintLayout {
         }
     }
 
-
-    /**
-     * 设置水波纹的颜色
-     *
-     * @param rippleColor
-     */
-    fun setRippleColor(rippleColor: Int) {
-        this.rippleColor = resources.getColor(rippleColor)
-    }
-
-    fun getRippleColor(): Int {
-        return rippleColor
-    }
-
-    fun isCentered(): Boolean {
-        return isCentered!!
-    }
-
-    /**
-     * 设置水波纹动画是否开始从父视图中心开始，默认为false
-     *
-     * @param isCentered
-     */
-    fun setCentered(isCentered: Boolean?) {
-        this.isCentered = isCentered
-    }
-
-    fun getRipplePadding(): Int {
-        return ripplePadding
-    }
-
-    /**
-     * 设置水波纹内边距，默认为0dip
-     *
-     * @param ripplePadding
-     */
-    fun setRipplePadding(ripplePadding: Int) {
-        this.ripplePadding = ripplePadding
-    }
-
-    fun isZooming(): Boolean {
-        return hasToZoom!!
-    }
-
-    /**
-     * 在水波纹结束后，是否有放大动画，默认为false
-     *
-     * @param hasToZoom
-     */
-    fun setZooming(hasToZoom: Boolean?) {
-        this.hasToZoom = hasToZoom
-    }
-
-    fun getZoomScale(): Float {
-        return zoomScale
-    }
-
-    /**
-     * 设置放大动画比例
-     *
-     * @param zoomScale
-     */
-    fun setZoomScale(zoomScale: Float) {
-        this.zoomScale = zoomScale
-    }
-
-    fun getZoomDuration(): Int {
-        return zoomDuration
-    }
-
-    /**
-     * 设置放大动画持续时间，默认为200ms
-     *
-     * @param zoomDuration
-     */
-    fun setZoomDuration(zoomDuration: Int) {
-        this.zoomDuration = zoomDuration
-    }
-
-    fun getRippleDuration(): Int {
-        return rippleDuration
-    }
-
-    /**
-     * 设置水波纹动画持续时间，默认为400ms
-     *
-     * @param rippleDuration
-     */
-    fun setRippleDuration(rippleDuration: Int) {
-        this.rippleDuration = rippleDuration
-    }
-
-    fun getFrameRate(): Int {
-        return frameRate
-    }
-
-    /**
-     * 设置水波纹动画的帧速率，默认为10
-     *
-     * @param frameRate
-     */
-    fun setFrameRate(frameRate: Int) {
-        this.frameRate = frameRate
-    }
-
-    fun getRippleAlpha(): Int {
-        return rippleAlpha
-    }
-
-    /**
-     * 设置水波纹动画的透明度，默认为90，取值为0到255之间
-     *
-     * @param rippleAlpha
-     */
-    fun setRippleAlpha(rippleAlpha: Int) {
-        this.rippleAlpha = rippleAlpha
-    }
-
-
     /**
      * 绘制扩散背景范围视图bitmap
      *
@@ -603,7 +406,6 @@ class SkinnableRippleView : ConstraintLayout {
             (x + radius).toInt(),
             (y + radius).toInt()
         )
-
         paint.isAntiAlias = true
         canvas.drawARGB(0, 0, 0, 0)
         canvas.drawCircle(x, y, radius.toFloat(), paint)
