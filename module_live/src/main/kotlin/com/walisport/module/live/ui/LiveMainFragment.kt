@@ -1,15 +1,18 @@
 package com.walisport.module.live.ui
 
+import android.animation.ValueAnimator
 import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
+import android.view.animation.AccelerateDecelerateInterpolator
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
+import androidx.viewpager2.widget.ViewPager2
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.data.model.PagerBean
 import arch.cayenne.lib.base.ui.adapter.PagerAdapter
@@ -17,11 +20,13 @@ import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
+import arch.cayenne.lib.common.utils.ext.NavResultExt.observeResult
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.removeAllTips
+import arch.cayenne.lib.common.utils.helper.doSmartAnim
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.lib.skin.widget.SkinnableTextView
 import arch.cayenne.module.betslip.ui.fragment.BetSlipFragment
@@ -33,15 +38,7 @@ import com.walisport.module.live.data.BetOnMenuStatus
 import com.walisport.module.live.databinding.FragmentLiveMainBinding
 import com.walisport.module.live.databinding.TitleBarLiveBinding
 import com.walisport.module.live.ui.viewmodel.LiveMainViewModel
-import com.walisport.module.live.utils.TextViewExt.setBottomDrawable
 import kotlinx.coroutines.delay
-import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator
-import android.view.animation.AccelerateDecelerateInterpolator
-import androidx.viewpager2.widget.ViewPager2
-import arch.cayenne.lib.common.utils.ext.NavResultExt.observeResult
-import arch.cayenne.lib.common.utils.helper.LiveViewPagerAnimHelper
-import arch.cayenne.lib.common.utils.helper.doSmartAnim
 import kotlinx.coroutines.flow.filter
 import kotlin.reflect.KClass
 
@@ -60,9 +57,6 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
     private var drawerContentFragment: LiveBetOnMenuFragment? = null
     private val titleBarBinding: TitleBarLiveBinding by lazy {
         TitleBarLiveBinding.inflate(LayoutInflater.from(context), mBinding.titleBar, false)
-    }
-    private val viewPagerAnimHelper by lazy {
-        LiveViewPagerAnimHelper()
     }
 
     override fun initView(savedInstanceState: Bundle?) {
@@ -185,12 +179,14 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         })
     }
 
+    override fun createObserverAtState(): Lifecycle.State {
+        return Lifecycle.State.RESUMED
+    }
+
     override suspend fun createObserver() {
         observeResult<Bundle>(CHANGE_MATCH) {
             val newArgs: LiveMainFragmentArgs = LiveMainFragmentArgs.fromBundle(it)
-            "observeResult-->newArgs--->$newArgs,args:${args},extras:${it},${this.args.equal(newArgs)}".logd(
-                TAG
-            )
+            "observeResult-->newArgs--->$newArgs,args:${args},extras:${it},${this.args.equal(newArgs)}".logd(TAG)
             if (this.args.equal(newArgs)) return@observeResult
             this.args = newArgs
             updateMatchId(newArgs.matchId)
