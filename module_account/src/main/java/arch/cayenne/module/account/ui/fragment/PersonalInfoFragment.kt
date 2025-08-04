@@ -12,6 +12,7 @@ import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.popBackStack
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+import arch.cayenne.lib.common.utils.ext.touchBackPressed
 import arch.cayenne.module.account.R
 import arch.cayenne.module.account.data.constants.KeyConfig
 import arch.cayenne.module.account.databinding.FragmentPersonalInfoBinding
@@ -78,6 +79,7 @@ class  PersonalInfoFragment : BaseFragment<PersonalInfoViewModel, FragmentPerson
                 btnSave.isEnabled = mViewModel.getDefaultPosition() != -1
             }
         }
+        mBinding.root.touchBackPressed(requireContext())
     }
 
     override fun initListener() {

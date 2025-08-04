@@ -11,6 +11,7 @@ import arch.cayenne.lib.common.utils.ImmersionBarUtils.immersionBarColorExt
 import arch.cayenne.lib.common.utils.ImmersionBarUtils.immersionBarSkinTypeExt
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+import arch.cayenne.lib.common.utils.ext.touchBackPressed
 import com.walisport.module.setting.databinding.FragmentBackgroundBinding
 import com.walisport.module.setting.databinding.TitleBarBackgroundBinding
 import com.walisport.module.setting.ui.viewmodel.SettingViewModel
@@ -54,6 +55,7 @@ class BackgroundFragment : BaseFragment<SettingViewModel, FragmentBackgroundBind
                 findNavController().navigateUp()
             }
         }
+        mBinding.root.touchBackPressed(requireContext())
     }
 
     override fun onStart() {

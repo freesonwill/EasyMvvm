@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.navigation.fragment.findNavController
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
+import arch.cayenne.lib.common.utils.ext.touchBackPressed
 import com.walisport.module.topup.R
 import com.walisport.module.topup.databinding.FragmentTopupMainBinding
 import com.walisport.module.topup.ui.viewmodel.TopUpMainViewModel
@@ -24,8 +25,10 @@ class TopUpMainFragment : BaseFragment<TopUpMainViewModel, FragmentTopupMainBind
                 findNavController().navigateUp()
             })
 
-
+            root.touchBackPressed(requireContext())
         }
+
+
     }
 
 

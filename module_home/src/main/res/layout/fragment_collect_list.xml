@@ -25,6 +25,8 @@
         <arch.cayenne.lib.skin.widget.SkinnableRecyclerView
             android:id="@+id/rv_collect_list"
             android:layout_width="match_parent"
+            android:focusableInTouchMode="true"
+            android:focusable="true"
             android:layout_height="match_parent" />
     </arch.cayenne.lib.common.ui.view.PullRefreshLayout>
     <arch.cayenne.lib.common.ui.view.DynamicStateLayout

@@ -7,6 +7,7 @@ import androidx.navigation.fragment.findNavController
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+import arch.cayenne.lib.common.utils.ext.touchBackPressed
 import arch.cayenne.lib.common.utils.helper.showToast
 import com.walisport.module.feedback.R
 import com.walisport.module.feedback.databinding.FragmentFeedbackMainBinding
@@ -30,6 +31,7 @@ class FeedbackMainFragment : BaseFragment<FeedbackMainViewModel, FragmentFeedbac
         }
         //默认会选中一个
         mViewModel.setCheckBoxSelected(true)
+        mBinding.root.touchBackPressed(requireContext())
     }
 
 

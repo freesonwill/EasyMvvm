@@ -5,6 +5,7 @@ import androidx.navigation.fragment.findNavController
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+import arch.cayenne.lib.common.utils.ext.touchBackPressed
 import com.walisport.module.setting.R
 import com.walisport.module.setting.databinding.FragmentNoticeBinding
 import com.walisport.module.setting.ui.dialog.MatchNoticeDialog
@@ -30,6 +31,7 @@ class NoticeFragment : BaseFragment<SettingViewModel, FragmentNoticeBinding>() {
         mBinding.titleBar.loadGeneralTitleBar(R.string.menu_notice_set.getString(),
             { findNavController().navigateUp() })
         initToggle()
+        mBinding.root.touchBackPressed(requireContext())
     }
 
     private fun initToggle() {

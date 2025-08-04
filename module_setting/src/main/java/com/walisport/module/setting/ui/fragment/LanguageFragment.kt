@@ -8,6 +8,7 @@ import androidx.navigation.fragment.findNavController
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.data.constants.LanguageType
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+import arch.cayenne.lib.common.utils.ext.touchBackPressed
 import arch.cayenne.lib.skin.widget.SkinnableTextView
 import com.walisport.module.setting.R
 import com.walisport.module.setting.databinding.FragmentLanguageBinding
@@ -28,6 +29,7 @@ class LanguageFragment : BaseFragment<LanguageViewModel, FragmentLanguageBinding
         mBinding.titleBar.loadGeneralTitleBar(R.string.menu_language_set, {
             findNavController().navigateUp()
         })
+        mBinding.root.touchBackPressed(requireContext())
     }
 
     override fun initListener() {

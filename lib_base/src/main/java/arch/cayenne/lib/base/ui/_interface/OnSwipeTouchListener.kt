@@ -2,42 +2,42 @@ package arch.cayenne.lib.base.ui._interface
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
+import kotlin.math.abs
 
-// OnSwipeTouchListener.kt
 open class OnSwipeTouchListener(ctx: Context) : View.OnTouchListener {
-    private val gestureDetector: GestureDetector
 
-    init {
-        gestureDetector = GestureDetector(ctx, GestureListener())
-    }
+
+    private var startX: Float = 0f
+    private var startTime: Long = 0L
+    private val SWIPE_THRESHOLD = 100 // Minimum distance in pixels
+    private val SWIPE_MAX_TIME = 1000 // Max time in milliseconds (1 second)
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouch(v: View, event: MotionEvent): Boolean {
-        gestureDetector.onTouchEvent(event)
-        return true
-    }
-
-    private inner class GestureListener : GestureDetector.SimpleOnGestureListener() {
-
-        override fun onFling(
-            e1: MotionEvent?, e2: MotionEvent, velocityX: Float, velocityY: Float
-        ): Boolean {
-            if (e1 == null || e2 == null) return false
-
-            // 检测向右滑动到屏幕最左侧
-            val deltaX = e2.x - e1.x
-            val isAtLeftEdge = e1.x < 100 // 屏幕左侧 100px 范围内
-            if (deltaX > 200 && velocityX > 200 && isAtLeftEdge) {
-                // 触发返回上一级页面
-                onSwipeLeft()
+        when (event.action) {
+            MotionEvent.ACTION_DOWN -> {
+                startX = event.x
+                startTime = event.eventTime
                 return true
             }
-            return false
+            MotionEvent.ACTION_UP -> {
+                val endX = event.x
+                val endTime = event.eventTime
+                val diffX = endX - startX
+                val timeDiff = endTime - startTime
+
+                // Check for left-to-right swipe: distance >= 100 pixels, within 1 second, mostly horizontal
+                if (diffX > SWIPE_THRESHOLD && timeDiff <= SWIPE_MAX_TIME) {
+                    onSwipeLeft()
+                    return true
+                }
+            }
         }
+        return false
     }
+
 
     open fun onSwipeLeft() {}
 }

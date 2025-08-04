@@ -50,7 +50,7 @@ abstract class BaseFragment<VM : BaseViewModel, VB : ViewBinding> : Fragment(), 
     protected val mViewModel: VM get() = uiBind.viewModel
     abstract val vbClass: KClass<VB>
     abstract val vmClass: KClass<VM>
-    private val isTouchBackPressed = false
+    open val isTouchBackPressed : Boolean= true//是否支持侧滑关闭
     private val uiBind by lazy {
         UIBindDelegate(
             uiOwner = this,
@@ -87,15 +87,7 @@ abstract class BaseFragment<VM : BaseViewModel, VB : ViewBinding> : Fragment(), 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         uiBind.onViewCreated(view, savedInstanceState)
-       if (isTouchBackPressed){
-           uiBind.binding.root.setOnTouchListener(object : OnSwipeTouchListener(requireContext()) {
-               override fun onSwipeLeft() {
-                   requireActivity().onBackPressedDispatcher.onBackPressed()
-               }
-           })
-       }
     }
-
     @CallSuper
     override fun onStart() {
         super.onStart()

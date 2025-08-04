@@ -4,6 +4,7 @@ import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.animation.TimeInterpolator
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.ContextWrapper
 import android.content.res.ColorStateList
 import android.graphics.Bitmap
@@ -18,8 +19,10 @@ import android.view.View.OnAttachStateChangeListener
 import android.view.animation.DecelerateInterpolator
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.view.children
 import androidx.recyclerview.widget.RecyclerView
+import arch.cayenne.lib.base.ui._interface.OnSwipeTouchListener
 import arch.cayenne.lib.common.R
 import com.google.android.material.shape.CornerFamily
 import com.google.android.material.shape.MaterialShapeDrawable
@@ -416,4 +419,12 @@ fun View.addRippleEffect(
     val rippleDrawable = RippleDrawable(rippleColorState, backgroundDrawable, null)
 
     this.background = rippleDrawable
+}
+//侧滑退出当前fragment
+fun View.touchBackPressed(context: Context){
+    setOnTouchListener(object : OnSwipeTouchListener(context) {
+        override fun onSwipeLeft() {
+            requireActivity().onBackPressedDispatcher.onBackPressed()
+        }
+    })
 }

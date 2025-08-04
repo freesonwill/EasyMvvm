@@ -35,7 +35,6 @@ class HomeBetSlipFragment : BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsl
     override val vbClass: KClass<FragmentHomeBetslipBinding> = FragmentHomeBetslipBinding::class
     override val vmClass: KClass<HomeBetSlipViewModel> = HomeBetSlipViewModel::class
     private val betSlipFilterViewModel: BetSlipFilterViewModel by viewModel()
-
     override fun initView(savedInstanceState: Bundle?) {
         val array = resources.getStringArray(R.array.bet_slip_menus)
         val list = listOf(
