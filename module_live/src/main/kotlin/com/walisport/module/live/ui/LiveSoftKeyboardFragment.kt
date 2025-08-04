@@ -65,9 +65,14 @@ class LiveSoftKeyboardFragment :
                 return
             }
             mBinding.liveChatEtInput.text?.append(item?.key)
-            mBinding.liveChatEtInput.requestFocus()
-            mBinding.liveChatEtInput.setSelection(mBinding.liveChatEtInput.length())
+//            mBinding.liveChatEtInput.requestFocus()
+//            mBinding.liveChatEtInput.setSelection(mBinding.liveChatEtInput.length())
         }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        hideSoftKeyBoard(4)
     }
 
     override fun initView(savedInstanceState: Bundle?) {
@@ -79,9 +84,6 @@ class LiveSoftKeyboardFragment :
 
     @SuppressLint("SetTextI18n")
     override fun initListener() {
-        mBinding.liveChatEtInput.setOnClickListener {
-            chatViewModel.addSoftKeyBoardEvent(KeyBoardType.SOFT_KEYBOARD)
-        }
         mBinding.liveChatIvEmoji.setOnClickListener {
             chatViewModel.addSoftKeyBoardEvent(KeyBoardType.EMOJI)
         }
@@ -131,6 +133,7 @@ class LiveSoftKeyboardFragment :
                     if (chatViewModel.softKeyBoardListener.value != KeyBoardType.SOFT_KEYBOARD) {
                         "onTouch et".logd("aaa")
                         chatViewModel.addSoftKeyBoardEvent(KeyBoardType.SOFT_KEYBOARD)
+                        chatViewModel.updateSoftKeyBoard()
                     }
                     return@setOnTouchListener true
                 }
@@ -182,6 +185,7 @@ class LiveSoftKeyboardFragment :
         }
         chatViewModel.addSoftKeyBoardEvent(KeyBoardType.NONE,4)
         chatViewModel.sendMsgToChat(mViewModel.inputText)
+        mViewModel.inputText = ""
     }
 
     override suspend fun createObserver() {
@@ -196,9 +200,9 @@ class LiveSoftKeyboardFragment :
             }
         }
         chatViewModel.openSoftKeyBoardLiveData.observe(viewLifecycleOwner){
-            if(it){
+            if(it && !isSoftKeyBoard){  //显示软件盘状态 it == true  当前软件盘没有收缩状态
                 openSoftKeyBoard()
-            }else{
+            }else if(!it && isSoftKeyBoard){ // 隐藏软件盘状态  it== false 当前软件盘弹出状态
                 hideSoftKeyBoard(2)
             }
         }
@@ -265,8 +269,8 @@ class LiveSoftKeyboardFragment :
                     }
                     dispatchKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DEL))
                     dispatchKeyEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_DEL))
-                    mBinding.liveChatEtInput.requestFocus()
-                    mBinding.liveChatEtInput.setSelection(mBinding.liveChatEtInput.length())
+//                    mBinding.liveChatEtInput.requestFocus()
+//                    mBinding.liveChatEtInput.setSelection(mBinding.liveChatEtInput.length())
                 }
             }
             softAdapter.submitList(mViewModel.softData())
@@ -327,11 +331,10 @@ class LiveSoftKeyboardFragment :
                     arch.cayenne.lib.common.R.color.card_background
                 )
             )
-            liveChatEtInput.requestFocus()
+//            liveChatEtInput.requestFocus()
         }
         updateEmojiView(false)
         updateWhenKeyBoardVisible(KeyBoardType.SOFT_KEYBOARD)
-        openSoftKeyBoard()
     }
 
 
@@ -340,8 +343,8 @@ class LiveSoftKeyboardFragment :
      * */
     private fun showEmoji() {
         mBinding.apply {
-            mBinding.liveChatEtInput.requestFocus()
-            mBinding.liveChatEtInput.setSelection(mBinding.liveChatEtInput.text?.length ?: 0)
+//            mBinding.liveChatEtInput.requestFocus()
+//            mBinding.liveChatEtInput.setSelection(mBinding.liveChatEtInput.text?.length ?: 0)
             liveChatIvEmoji.isVisible = false
             liveChatTvSend.isVisible = true
             liveChatTvSize.isVisible = true
@@ -412,9 +415,9 @@ class LiveSoftKeyboardFragment :
     }
 
     private fun onSoftKeyBoardHide(){
-        if(chatViewModel.softKeyBoardListener.value == KeyBoardType.SOFT_KEYBOARD){
-            chatViewModel.addSoftKeyBoardEvent(KeyBoardType.NONE,5)
-        }
+//        if(chatViewModel.softKeyBoardListener.value == KeyBoardType.SOFT_KEYBOARD){
+//            chatViewModel.addSoftKeyBoardEvent(KeyBoardType.NONE,5)
+//        }
     }
 
 
