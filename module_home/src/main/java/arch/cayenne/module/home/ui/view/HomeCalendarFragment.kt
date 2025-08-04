@@ -2,6 +2,7 @@ package arch.cayenne.module.home.ui.view
 
 import android.animation.Animator
 import android.animation.ValueAnimator
+import android.annotation.SuppressLint
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.ColorFilter
@@ -130,11 +131,15 @@ class HomeCalendarFragment private constructor() : BaseFragment<HomeCalendarView
         }
     }
 
+    @SuppressLint("DefaultLocale")
     override fun initListener() {
         with(mBinding) {
             // 獲取當前日期
+            val year = "${calendarView.selectedCalendar.year}"
+            val month = String.format("%02d", calendarView.selectedCalendar.month)
+            val day = String.format("%02d", calendarView.selectedCalendar.day)
             var selectedDate =
-                if (tabSelectedDate == "0") "${calendarView.selectedCalendar}"
+                if (tabSelectedDate == "0") "$year$month$day"
                 else tabSelectedDate
 
             // 透過 binding 操作 Popup 內部的 View
