@@ -333,8 +333,4 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
         mBinding.tabLayout.reflexMargin(8.dp2px, 8.dp2px, 4.dp2px)
         mBinding.tabLayout.removeAllTips()
     }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-    }
 }

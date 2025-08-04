@@ -9,6 +9,7 @@ import arch.cayenne.lib.base.data.remote.ApiResponseState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.koin.core.component.KoinComponent
 
 /**
@@ -47,14 +48,11 @@ abstract class BaseViewModel : ViewModel(), KoinComponent {
         }
         handle?.invoke(ApiResponseState.Start)
         handle?.invoke(ApiResponseState.Processing(0, 100))
-        val jobs = viewModelScope.async(Dispatchers.IO) {
-            api()
-        }
         viewModelScope.launch {
             if (autoUpdateState) {
                 _apiStateListener.value = DataState.Loading
             }
-            val response = jobs.await()
+            val response = withContext(Dispatchers.IO) { api() }
             handle?.invoke(ApiResponseState.Processing(100, 100))
             if (autoUpdateState) {
                 if (response is ApiResponseState.Failed) {
