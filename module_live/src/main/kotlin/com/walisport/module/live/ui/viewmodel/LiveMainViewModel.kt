@@ -128,7 +128,6 @@ class LiveMainViewModel(
     }
 
     fun observeMatchBean(matchId: Long) {
-        observeMatchBeanJob
         observeMatchBeanJob?.cancel()
         observeMatchBeanJob = viewModelScope.launch {
             repo.observeMatchBean(matchId).collect {
