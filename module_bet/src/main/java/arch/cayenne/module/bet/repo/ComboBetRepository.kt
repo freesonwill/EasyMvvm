@@ -16,6 +16,7 @@ import galaxy.client.proto.Client
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -37,21 +38,17 @@ class ComboBetRepository(
 
     init {
         scope.launch {
-            betDao.getCurrentBet()?.let { bet ->
-                launch {
-                    betDao.observeSelections(bet.betId).collect {
-                        selectionFlow.emit(it)
-                        if (lastSize != it.size) {
-                            if (lastSize == 0) {
-                                val emptyRisk = getEmptyRiskList(it.size)
-                                if (emptyRisk.isNotEmpty()) {
-                                    comboMultiBetFlow.emit(calculateMultiBetSums(it, emptyRisk))
-                                }
-                                setComboMulti(it)
-                            }
-                            lastSize = it.size
+            betDao.observeCurrentSelections().collect {
+                selectionFlow.emit(it)
+                if (lastSize != it.size) {
+                    if (lastSize == 0) {
+                        val emptyRisk = getEmptyRiskList(it.size)
+                        if (emptyRisk.isNotEmpty()) {
+                            comboMultiBetFlow.emit(calculateMultiBetSums(it, emptyRisk))
                         }
                     }
+                    setComboMulti(it)
+                    lastSize = it.size
                 }
             }
         }
