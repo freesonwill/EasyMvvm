@@ -1,11 +1,13 @@
 package com.walisport.module.live.data.repository
 
+import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.base.data.repository.BaseRepository
 import com.walisport.module.live.LiveRemoteManager
 import com.walisport.module.live.data.model.LeagueMatchBean
 import com.walisport.module.live.data.model.MatchBean
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -17,58 +19,60 @@ class LiveLeagueRepository(
     override val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
 
     //获取联赛日程列表数据
-    suspend fun getMatchLeagueData(
+    suspend fun getMatchLeagueList(
         leagueId: Int,
         cursorMatchId: Long,
         cursorMatchStartTime: Long
-    ): LeagueMatchBean? {
-        val resp =
-            remoteManager.getMatchLeagueReq(scope, leagueId, cursorMatchId, cursorMatchStartTime)
-        val list = ArrayList<MatchBean>()
-        val stringSet = mutableSetOf<String>()
-        resp?.matchList?.mapIndexed { _, item ->
-            val timeStamp = item.basicInfo.startTime
-            val isToday = isTimeStampToday(timeStamp)
-            val temp = MatchBean(
-                matchId = item.matchId,
-                sportId = item.basicInfo.sportId,
-                homeLogo = item.basicInfo.homeTeamIcon,
-                isToday = isToday,
-                homeName = item.basicInfo.homeTeam,
-                awayLogo = item.basicInfo.awayTeamIcon,
-                awayName = item.basicInfo.awayTeam,
-                startTime = item.basicInfo.startTime
-            )
-            val date = convertStampToDate(timeStamp)
-            if (!stringSet.contains(date)) {
-                list.add(
-                    MatchBean(
-                        0, 0, true,
-                        isToday = false,
-                        weekDay = date,
-                        homeLogo = "",
-                        homeName = "",
-                        awayLogo = "",
-                        awayName = "",
-                        startTime = 0L
+    ): ApiResponseState =
+        withContext(scope.coroutineContext) {
+            val result = remoteManager.getMatchLeagueListReq(scope, leagueId, cursorMatchId, cursorMatchStartTime)
+            return@withContext if (result.error == null && result.data != null) {
+                val matchList = ArrayList<MatchBean>()
+                val strList = mutableSetOf<String>()
+                result.data!!.matchList.mapIndexed { _, item ->
+                    val timeStamp = item.basicInfo.startTime
+                    val isToday = isTimeStampToday(timeStamp)
+                    val temp = MatchBean(
+                        matchId = item.matchId,
+                        sportId = item.basicInfo.sportId,
+                        homeLogo = item.basicInfo.homeTeamIcon,
+                        isToday = isToday,
+                        homeName = item.basicInfo.homeTeam,
+                        awayLogo = item.basicInfo.awayTeamIcon,
+                        awayName = item.basicInfo.awayTeam,
+                        startTime = item.basicInfo.startTime
                     )
+                    val date = convertStampToDate(timeStamp)
+                    if (!strList.contains(date)) {
+                        matchList.add(
+                            MatchBean(
+                                0, 0, true,
+                                isToday = false,
+                                weekDay = date,
+                                homeLogo = "",
+                                homeName = "",
+                                awayLogo = "",
+                                awayName = "",
+                                startTime = 0L
+                            )
+                        )
+                        strList.add(date)
+                    }
+                    matchList.add(temp)
+                }
+                val data = LeagueMatchBean(
+                    match = matchList,
+                    tournamentName = result.data!!.tournamentName,
+                    tournamentShortName = result.data!!.tournamentShortName,
+                    size = result.data!!.matchCount,
+                    logo = result.data!!.icon,
+                    color = result.data!!.color
                 )
-                stringSet.add(date)
+                ApiResponseState.Succeeded(data)
+            } else {
+                ApiResponseState.Failed(result.error)
             }
-            list.add(temp)
         }
-        val data = resp?.let {
-            LeagueMatchBean(
-                match = list,
-                tournamentName = resp.tournamentName,
-                tournamentShortName = resp.tournamentShortName,
-                size = resp.matchCount,
-                logo = resp.icon,
-                color = resp.color
-            )
-        }
-        return data
-    }
 
     private fun convertStampToDate(timeStamp: Long): String {
         val date = Date(timeStamp)
