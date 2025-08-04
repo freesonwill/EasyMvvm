@@ -33,9 +33,7 @@
             android:layout_marginStart="@dimen/dp_12"
             android:layout_marginTop="@dimen/dp_10"
             android:layout_marginEnd="@dimen/dp_12"
-            android:background="@drawable/bg_set_item"
-            android:clickable="true"
-            android:focusable="true">
+            android:background="@drawable/bg_set_item">
 
             <arch.cayenne.lib.skin.widget.SkinnableRippleView
                 android:id="@+id/setting_odds"
@@ -109,9 +107,7 @@
             android:layout_marginStart="@dimen/dp_12"
             android:layout_marginTop="@dimen/dp_10"
             android:layout_marginEnd="@dimen/dp_12"
-            android:background="@drawable/bg_set_item_top"
-            android:clickable="true"
-            android:focusable="true">
+            android:background="@drawable/bg_set_item_top">
 
             <arch.cayenne.lib.skin.widget.SkinnableRippleView
                 android:id="@+id/setting_notice"
