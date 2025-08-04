@@ -5,6 +5,7 @@ import android.content.Context
 import android.view.View
 import androidx.core.content.ContextCompat
 import arch.cayenne.lib.common.R
+import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import com.scwang.smart.refresh.footer.ClassicsFooter
 import com.scwang.smart.refresh.layout.api.RefreshLayout
 import com.scwang.smart.refresh.layout.constant.RefreshState
@@ -24,7 +25,7 @@ class PullRefreshFooter(context: Context) : ClassicsFooter(context) {
     ) {
         when (newState) {
             RefreshState.PullUpToLoad -> {
-                mTitleText.text = ContextCompat.getString(context, R.string.load_more_up)
+                mTitleText.text = R.string.load_more_up.getString()
             }
             else -> Unit
         }
