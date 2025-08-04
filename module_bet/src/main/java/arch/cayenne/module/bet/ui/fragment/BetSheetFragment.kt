@@ -238,6 +238,10 @@ class BetSheetFragment private constructor() :
             initDestination()
         }
         super.customShow()
+        val f = mBinding.mainNav.getFragment<Fragment>().childFragmentManager.primaryNavigationFragment
+        if (f is BetSheetListener) {
+            f.doCustomShow()
+        }
     }
 
     override fun customHide(onEnd: (() -> Unit)?) {
@@ -259,4 +263,7 @@ interface BetSheetListener {
     fun dismiss(key: String = KEY_RESULT, value: String = VALUE_DISMISS)
     fun showExitAnim(key: String = KEY_RESULT, value: String)
     fun doCustomHideEnd()
+    fun doCustomShow() {
+
+    }
 }

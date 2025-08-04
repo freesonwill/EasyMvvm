@@ -215,14 +215,18 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
         sendResult(key, value, R.id.singleBetFragment)
     }
 
+    override fun doCustomShow() {
+        mBinding.etMoney.requestFocus()
+    }
+
     override fun doCustomHideEnd() {
         mViewModel.removeReserve()
         mViewModel.clearNumber()
+        showKeyboard()
     }
 
     private fun hideKeyboard() {
         ViewUtils.collapseView(mBinding.clKeyboard, mBinding.ivFakerView)
-        mBinding.etMoney.clearFocus()
         mBinding.clMoney.isFocusableInTouchMode = false
         mBinding.clMoney.isFocusable = false
     }
@@ -230,7 +234,6 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
     private fun showKeyboard() {
         if (!mBinding.clKeyboard.isVisible) {
             ViewUtils.expandView(mBinding.clKeyboard, mBinding.ivFakerView)
-            mBinding.etMoney.requestFocus()
             mBinding.clMoney.isFocusableInTouchMode = true
             mBinding.clMoney.isFocusable = true
         }
