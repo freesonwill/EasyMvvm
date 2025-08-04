@@ -5,14 +5,15 @@ import android.os.Bundle
 import android.view.ContextThemeWrapper
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.FrameLayout
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import arch.cayenne.lib.base.ui.fragment.BaseBottomSheetFragment
-import arch.cayenne.lib.database.entity.BetTypeEnum
 import arch.cayenne.module.bet.R
 import arch.cayenne.module.bet.data.Config
 import arch.cayenne.module.bet.data.Config.KEY_RESULT
@@ -21,7 +22,6 @@ import arch.cayenne.module.bet.databinding.FragmentBetSheetBinding
 import arch.cayenne.module.bet.util.ViewHelper
 import arch.cayenne.module.bet.viewmodel.BetSheetViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
 
 class BetSheetFragment private constructor() :
@@ -29,29 +29,24 @@ class BetSheetFragment private constructor() :
 
     companion object {
 
-        private const val KEY_TYPE = "key_type"
+        private const val TAG = "BetSheetFragment"
 
-        /***
-         * 調起投注彈窗
-         * 調起前需先將注單加入到資料庫 (BetBean)
-         */
-        fun newInstance(type: BetTypeEnum? = null): BetSheetFragment {
-            return BetSheetFragment().apply {
-                type?.let {
-                    arguments = Bundle().apply {
-                        putInt(KEY_TYPE, it.ordinal)
-                    }
-                }
+        fun create(activity: FragmentActivity) {
+            val manager = activity.supportFragmentManager
+            val f = manager.findFragmentByTag(TAG)
+            if (f == null) {
+                BetSheetFragment().customCreate(activity, TAG)
             }
         }
 
-        fun newInstance(size: Int): BetSheetFragment {
-            val type = if (size == 1) {
-                BetTypeEnum.SINGLE
-            } else {
-                BetTypeEnum.COMBO
+        fun show(activity: FragmentActivity) {
+            val manager = activity.supportFragmentManager
+            val f = manager.findFragmentByTag(TAG)
+            if (f == null) {
+                BetSheetFragment().show(manager, TAG)
+            } else if (f is BaseBottomSheetFragment<*, *>) {
+                f.customShow()
             }
-            return newInstance(type)
         }
     }
 
@@ -65,7 +60,7 @@ class BetSheetFragment private constructor() :
     private val dismissObserver = Observer<String> { value ->
         val v = mBinding.root
         when (value) {
-            VALUE_DISMISS -> dismiss()
+            VALUE_DISMISS -> customHide()
             Config.VALUE_SINGLE_TO_RESULT -> {
                 ViewHelper.collapseView(v) {
                     controller.navigate(SingleBetFragmentDirections.actionSingleBetFragmentToBetResultFragment(), null)
@@ -96,37 +91,36 @@ class BetSheetFragment private constructor() :
         return super.onGetLayoutInflater(savedInstanceState).cloneInContext(contextThemeWrapper)
     }
 
-    override fun initView(savedInstanceState: Bundle?) {
-        initMaxHeight()
-        setFitToContents()
-        val typeOrdinal = arguments?.getInt(KEY_TYPE)
-        if (typeOrdinal == null) {
-            lifecycleScope.launch {
-                mViewModel.getSelectionSize().let { size ->
-                    if (size == 0) {
-                        dismiss()
-                    } else {
-                        setStartDestination(size)
-                    }
-                }
-            }
-        } else {
-            when (BetTypeEnum.entries[typeOrdinal]) {
-                BetTypeEnum.SINGLE, BetTypeEnum.RESERVE -> {
-                    setStartDestination(1)
-                }
-                BetTypeEnum.COMBO -> {
-                    setStartDestination(2)
-                }
-                else -> {
-                    dismiss()
-                }
-            }
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        return super.onCreateView(inflater, container, savedInstanceState).apply {
+            initMaxHeight()
         }
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        initDestination()
+        super.onViewCreated(view, savedInstanceState)
+    }
+
+
+    override fun initView(savedInstanceState: Bundle?) {
 
     }
 
+    private fun initDestination() {
+        setStartDestination(1)
+    }
+
     override fun initListener() {
+    }
+
+    override fun onStart() {
+        super.onStart()
+        setFitToContents()
     }
 
     private fun setFitToContents() {
@@ -139,8 +133,8 @@ class BetSheetFragment private constructor() :
             behavior.skipCollapsed = true  // ← 允許收合
             behavior.isHideable = true      // ← 允許向下滑關閉
             behavior.isFitToContents = true
-            behavior.state = BottomSheetBehavior.STATE_EXPANDED
-            behavior.saveFlags = BottomSheetBehavior.SAVE_ALL
+            behavior.state = BottomSheetBehavior.STATE_COLLAPSED
+            behavior.saveFlags = BottomSheetBehavior.SAVE_HIDEABLE
         }
     }
 
@@ -168,11 +162,23 @@ class BetSheetFragment private constructor() :
         // navigation的fragment沒有收起彈窗方法，必須靠回調頂層bottom sheet收起彈窗
         val navController = NavHostFragment.findNavController(mBinding.mainNav.getFragment())
         navController.addOnDestinationChangedListener { _, destination, bundle ->
-            if (bundle?.containsKey(Config.KEY_NON_ANIM) == false) {
+            if (bundle?.containsKey("from") == false) {
                 showEnterAnim()
             }
             removeLastObserver()
             handleDismissObserve(navController, destination.id)
+        }
+        var lastCount = 0
+        mViewModel.betSheetSizeListener.observe(viewLifecycleOwner) {
+            if (lastCount == it) return@observe
+            if (isDismissing) {
+                if (it >= 2) {
+                    setStartDestination(2)
+                } else if (it <= 1) {
+                    setStartDestination(1)
+                }
+            }
+            lastCount = it
         }
     }
 
@@ -205,9 +211,24 @@ class BetSheetFragment private constructor() :
         mViewModel.removeSingleBet()
         super.onDismiss(dialog)
     }
+
+    override fun customHide(onEnd: (() -> Unit)?) {
+        super.customHide {
+            val f = mBinding.mainNav.getFragment<Fragment>().childFragmentManager.primaryNavigationFragment
+            if (f is BetSheetListener) {
+                f.doCustomHideEnd()
+            }
+        }
+    }
+
+    override fun setCustomCollapseSetting() {
+        super.setCustomCollapseSetting()
+        mViewModel.removeSingleBet()
+    }
 }
 
 interface BetSheetListener {
     fun dismiss(key: String = KEY_RESULT, value: String = VALUE_DISMISS)
     fun showExitAnim(key: String = KEY_RESULT, value: String)
+    fun doCustomHideEnd()
 }

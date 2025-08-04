@@ -18,7 +18,6 @@ class CustomTabLayoutMediator(
     private var adapter: RecyclerView.Adapter<*>? = null
     private var attached = false
     private var skipAnyAnim = false
-    private var fakeViewPager: ImageView? = null
 
     private var onPageChangeCallback: TabLayoutOnPageChangeCallback? = null
     private var onTabSelectedListener: TabLayout.OnTabSelectedListener? = null
@@ -53,7 +52,7 @@ class CustomTabLayoutMediator(
                     }
 
                 // 清空之前的切換紀錄
-                fakeViewPager?.let { viewPager.getAnimHelper(it).resetHistory() }
+                viewPager.getAnimHelper().resetHistory()
             }
 
             skipAnyAnim = noAnim
@@ -69,10 +68,9 @@ class CustomTabLayoutMediator(
 
     /**
      * 將 TabLayoutMediator 綁定到 TabLayout 和 ViewPager2。
-     * @param fakeViewPager 一個用來模擬 ViewPager2 動畫效果的假 ImageView。
      * @param afterTabSelected 可選的 CallBack 函式，在標籤切換動畫結束時觸發。
      */
-    fun attach(fakeViewPager: ImageView, afterTabSelected: ((position: Int) -> Unit)? = null) {
+    fun attach(afterTabSelected: ((position: Int) -> Unit)? = null) {
         if (attached) throw IllegalStateException("TabLayoutMediator is already attached")
 
         adapter = viewPager.adapter ?: throw IllegalStateException(
@@ -80,15 +78,14 @@ class CustomTabLayoutMediator(
         )
         attached = true
 
-        this.fakeViewPager = fakeViewPager
         // 清空之前的切換紀錄
-        viewPager.getAnimHelper(fakeViewPager).resetHistory()
+        viewPager.getAnimHelper().resetHistory()
 
         onPageChangeCallback = TabLayoutOnPageChangeCallback(tabLayout).also {
             viewPager.registerOnPageChangeCallback(it)
         }
 
-        onTabSelectedListener = ViewPagerOnTabSelectedListener(viewPager, fakeViewPager, afterTabSelected).also {
+        onTabSelectedListener = ViewPagerOnTabSelectedListener(viewPager, afterTabSelected).also {
             tabLayout.addOnTabSelectedListener(it)
         }
 
@@ -181,7 +178,6 @@ class CustomTabLayoutMediator(
 
     private inner class ViewPagerOnTabSelectedListener(
         private val viewPager: ViewPager2,
-        private val fakeViewPager: ImageView,
         private val afterTabSelected: ((position: Int) -> Unit)?
     ) : TabLayout.OnTabSelectedListener {
         override fun onTabSelected(tab: TabLayout.Tab) {
@@ -189,10 +185,7 @@ class CustomTabLayoutMediator(
                 viewPager.setCurrentItem(tab.position, false)
                 skipAnyAnim = false
             } else {
-                viewPager.doSmartAnim(
-                    targetPosition = tab.position,
-                    fakeViewPager = fakeViewPager
-                )
+                viewPager.doSmartAnim(targetPosition = tab.position)
             }
             afterTabSelected?.invoke(tab.position)
         }

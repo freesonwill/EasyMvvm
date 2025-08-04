@@ -42,7 +42,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/ll_top" />
 
-    <androidx.recyclerview.widget.RecyclerView
+    <arch.cayenne.lib.common.ui.view.BottomSheetRecyclerView
         android:id="@+id/rv_bet"
         android:layout_width="match_parent"
         android:layout_height="0dp"

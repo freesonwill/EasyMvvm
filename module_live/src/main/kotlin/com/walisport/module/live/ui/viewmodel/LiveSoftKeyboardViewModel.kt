@@ -17,6 +17,8 @@ import org.koin.core.parameter.parametersOf
 class LiveSoftKeyboardViewModel : BaseViewModel() {
 
     val languageManager:LanguageManager by inject { parametersOf(viewModelScope) }
+    //记录软件盘收缩前，输入事件
+    var inputText:String = ""
 
     fun tabMenus() =
         arrayListOf(

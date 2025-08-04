@@ -142,10 +142,7 @@ class MessageMainFragment : BaseFragment<MessageMainViewModel, FragmentMessageMa
     private fun selectMessageType(type: Int, anim: Boolean) {
         //ViewPager切换动画
         if (anim) {
-            mBinding.vpMessage.doSmartAnim(
-                targetPosition = type,
-                fakeViewPager = mBinding.fragmentFakeViewPager,
-            )
+            mBinding.vpMessage.doSmartAnim(targetPosition = type)
         }
         mBinding.ivMsgAll.isSelected = false
         mBinding.ivMsgSys.isSelected = false

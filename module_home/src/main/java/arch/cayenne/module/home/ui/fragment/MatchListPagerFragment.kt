@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
@@ -33,6 +34,7 @@ import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
 import arch.cayenne.module.home.ui.viewmodel.MatchListViewModel
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
+import java.lang.ref.WeakReference
 import kotlin.reflect.KClass
 
 class MatchListPagerFragment :
@@ -65,11 +67,17 @@ class MatchListPagerFragment :
                     mViewModel.addMatchCollect(item, !item.match.collect)
                 }
 
-                override fun onOddsCellClick(selection: SelectionBeanLite, x: Float, y: Float) {
+                override fun onOddsCellClick(cell: WeakReference<View>, selection: SelectionBeanLite, x: Float, y: Float) {
                     lifecycleScope.launch {
+                        cell.get()?.isSelected = true
                         val status = mViewModel.setSelection(selection.selectionId)
+
+                        if (status !is AddSelectionStatus.Success) {
+                            cell.get()?.isSelected = false
+                        }
+
                         if (status is AddSelectionStatus.Success.Single) {
-                            BetSheetFragment.newInstance(1).show(requireActivity().supportFragmentManager)
+                            BetSheetFragment.show(requireActivity())
                         } else if (status is AddSelectionStatus.Failure.DisableComboForParlay) {
                             showToast(getString(R.string.disabled_to_combo))
                         } else if (status is AddSelectionStatus.Failure.DisableComboForProvider) {
@@ -165,7 +173,7 @@ class MatchListPagerFragment :
 
     private val matchListObserver = Observer <List<MatchWithMarkets>> { matchList ->
         val preEmpty = matchAdapter.currentList.isEmpty()
-
+        "MatchListChange livedata Observed~ ${matchList.map { it.match.matchId }}".logi(this::class.java.simpleName)
         matchAdapter.submitList(matchList)
         mBinding.rvHomeGameList.doOnPreDraw {
             subscribeVisibleMatch()
@@ -273,6 +281,10 @@ class MatchListPagerFragment :
             mViewModel.setPlayTypeId(this.getInt(ARG_PLAY_TYPE_ID))
             mViewModel.setPosition(this.getInt(ARG_POSITION))
         }
+//        mViewModel.startObserveMatch()
+    }
+
+    fun startObserveMatch() {
         mViewModel.startObserveMatch()
     }
 

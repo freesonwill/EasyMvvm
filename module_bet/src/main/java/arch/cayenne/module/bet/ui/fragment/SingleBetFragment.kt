@@ -58,14 +58,16 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
             }
 
         })
+        val type = SingleBetFragmentArgs.fromBundle(requireArguments()).from
+        if (type == Config.VALUE_COMBO_TO_SINGLE) {
+            setBetTypeLayout(BetTypeEnum.COMBO)
+        } else {
+            setBetTypeLayout(BetTypeEnum.SINGLE)
+        }
     }
 
     override fun initListener() {
         mBinding.ivClose.apply { addScaleOnTouchAnimation() }.setOnClickListener {
-            val type = mViewModel.betTypeListener.value
-            if (type != BetTypeEnum.COMBO) {
-                mViewModel.removeBet()
-            }
             dismiss()
         }
         mBinding.btnBack.setOnClickListener {
@@ -119,7 +121,7 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
             showKeyboard()
         }
         mBinding.btnDelete.setOnClickListener {
-            mViewModel.removeBet()
+            mViewModel.saveToSingle()
             dismiss()
         }
     }
@@ -149,41 +151,26 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
             }
         }
         mViewModel.onBalanceListener.observe(viewLifecycleOwner) {
-            val money = "${mViewModel.moneySymbol} ${it.balance.getFormalMoney()}"
-            mBinding.tvBalance.text = money
-            mBinding.tvMoney.text = mViewModel.moneySymbol
+            if (it != null) {
+                val money = "${mViewModel.moneySymbol} ${it.balance.getFormalMoney()}"
+                mBinding.tvBalance.text = money
+                mBinding.tvMoney.text = mViewModel.moneySymbol
+            }
         }
 
         mViewModel.onReserveOddsListener.observe(viewLifecycleOwner) { odds ->
+            mBinding.btnReserve.isVisible = odds == null
+            mBinding.clCancelReserve.isVisible = odds != null
             if (odds == null) {
                 mBinding.tvBetHint.text = getString(R.string.btn_bet_hint)
-                mBinding.btnReserve.isVisible = true
-                mBinding.clCancelReserve.isVisible = false
             } else {
                 mBinding.tvBetHint.text = getString(R.string.title_reserve)
-                mBinding.btnReserve.isVisible = false
-                mBinding.clCancelReserve.isVisible = true
-
                 val value = "@${odds.getOdds()}"
                 mBinding.tvCancelReserve.text = value
             }
         }
         mViewModel.betTypeListener.observe(viewLifecycleOwner) { type ->
-            when (type) {
-                BetTypeEnum.SINGLE, BetTypeEnum.RESERVE -> {
-                    mBinding.btnCollusion.visibility = View.VISIBLE
-                    mBinding.btnDelete.visibility = View.INVISIBLE
-                    mBinding.ivClose.setImageDrawable(SkinnableResourceManager.getDrawable(requireContext(), R.drawable.icon_page_close))
-                }
-
-                BetTypeEnum.COMBO -> {
-                    mBinding.btnCollusion.visibility = View.INVISIBLE
-                    mBinding.btnDelete.visibility = View.VISIBLE
-                    mBinding.ivClose.setImageDrawable(SkinnableResourceManager.getDrawable(requireContext(), R.drawable.icon_collapse))
-                }
-
-                else -> {}
-            }
+            setBetTypeLayout(type)
         }
         mViewModel.onCanBetListener.observe(viewLifecycleOwner) {
             mBinding.clBet.isEnabled = it
@@ -192,6 +179,24 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
             if (it is DataState.NetworkUnavailable) {
                 showToast(getString(arch.cayenne.lib.common.R.string.toast_server_disconnected))
             }
+        }
+    }
+
+    private fun setBetTypeLayout(type: BetTypeEnum?) {
+        when (type) {
+            BetTypeEnum.SINGLE, BetTypeEnum.RESERVE -> {
+                mBinding.btnCollusion.visibility = View.VISIBLE
+                mBinding.btnDelete.visibility = View.INVISIBLE
+                mBinding.ivClose.setImageDrawable(SkinnableResourceManager.getDrawable(requireContext(), R.drawable.icon_page_close))
+            }
+
+            BetTypeEnum.COMBO -> {
+                mBinding.btnCollusion.visibility = View.INVISIBLE
+                mBinding.btnDelete.visibility = View.VISIBLE
+                mBinding.ivClose.setImageDrawable(SkinnableResourceManager.getDrawable(requireContext(), R.drawable.icon_collapse))
+            }
+
+            else -> {}
         }
     }
 
@@ -208,6 +213,11 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
 
     override fun showExitAnim(key: String, value: String) {
         sendResult(key, value, R.id.singleBetFragment)
+    }
+
+    override fun doCustomHideEnd() {
+        mViewModel.removeReserve()
+        mViewModel.clearNumber()
     }
 
     private fun hideKeyboard() {

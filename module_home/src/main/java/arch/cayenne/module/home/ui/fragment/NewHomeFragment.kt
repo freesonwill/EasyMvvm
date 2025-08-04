@@ -11,6 +11,8 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
+import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
+import androidx.viewpager2.widget.ViewPager2.SCROLL_STATE_IDLE
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
@@ -61,6 +63,9 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
     }
     private var customPopup : HomeCalendarPopupWindow<HomeTourPopupCalendarViewBinding>? = null
     private var tournamentTabLayoutMediator: CustomTabLayoutMediator? = null
+
+    private var leaguePagerAdapter : LeaguePagerAdapter? = null
+    private var gameListPageCallback: OnPageChangeCallback? = null
 
     //    private val tournamentListFragment  = TournamentListFragment.newInstance()
     private var isExpanded = false
@@ -131,6 +136,20 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             //聯賽
             vpGameList.isSaveEnabled = false
             vpGameList.adapter = null
+            vpGameList.offscreenPageLimit = 2
+            gameListPageCallback = object : OnPageChangeCallback(){
+                override fun onPageScrollStateChanged(state: Int) {
+                    super.onPageScrollStateChanged(state)
+                    if (state == SCROLL_STATE_IDLE) {
+                        val itemId = leaguePagerAdapter?.getItemId(vpGameList.currentItem)?: return
+                        val fragment = childFragmentManager.findFragmentByTag("f$itemId") ?: return
+                        if (fragment is MatchListPagerFragment) {
+                            fragment.startObserveMatch()
+                        }
+                    }
+                }
+            }
+            vpGameList.registerOnPageChangeCallback(gameListPageCallback!!)
 
             // 日期 Tab 設定, 固定 "全部"
             updateDateTabs(tlDateList, dateTabs)
@@ -385,15 +404,14 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
 
     private fun setTournamentAndViewPagerLayout(tournaments: List<TournamentDataModel>) {
         with(mBinding.layoutContainer) {
-
-            vpGameList.adapter = LeaguePagerAdapter(
+            leaguePagerAdapter = LeaguePagerAdapter(
                 fragmentManager = childFragmentManager,
                 lifecycle = viewLifecycleOwner.lifecycle,
                 tournament = tournaments,
                 playTypeId = mViewModel.currentPlayTypeId
             )
+            vpGameList.adapter = leaguePagerAdapter
             vpGameList.offsetLeftAndRight(1)
-            vpGameList.offscreenPageLimit = 1
 
             // 使用 reflexMargin 擴展方法設置更小的 tab 間距
             tlLeagueList.reflexMargin(2.dp2px, 2.dp2px, 1.dp2px)
@@ -413,7 +431,6 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 }
             }.also { layoutMediator ->
                 layoutMediator.attach(
-                    fakeViewPager = mBinding.layoutContainer.ivFaker,
                     afterTabSelected = { position ->
                         getSelectedRecently31Scheduled(position)
                         tournaments.getOrNull(position)?.id?.let { id -> mViewModel.setCurrentTournamentId(id)}
@@ -422,6 +439,9 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 val selectedPosition = tournaments.indexOfFirst { it.isSelected }
                 getSelectedRecently31Scheduled(selectedPosition)
                 tlLeagueList.post{ layoutMediator.selectTabWithoutAnimation(selectedPosition) }
+                vpGameList.post {
+                    gameListPageCallback?.onPageScrollStateChanged(SCROLL_STATE_IDLE)
+                }
             }
         }
     }

@@ -208,9 +208,9 @@ fun Fragment.launch(
     @Suppress("DEPRECATION")
     return if (state == null) lifecycleScope.launch(block = block, context = context, start = start)
     else when (state) {
-        Lifecycle.State.CREATED -> lifecycleScope.launchWhenCreated(block)
-        Lifecycle.State.STARTED -> lifecycleScope.launchWhenStarted(block)
-        Lifecycle.State.RESUMED -> lifecycleScope.launchWhenResumed(block)
+        Lifecycle.State.CREATED -> lifecycleScope.launchWhenCreated{ launch(context,start,block) }
+        Lifecycle.State.STARTED -> lifecycleScope.launchWhenStarted{ launch(context,start,block) }
+        Lifecycle.State.RESUMED -> lifecycleScope.launchWhenResumed{ launch(context,start,block) }
         else -> throw IllegalArgumentException("Unsupported lifecycle state: $state")
     }
 }
