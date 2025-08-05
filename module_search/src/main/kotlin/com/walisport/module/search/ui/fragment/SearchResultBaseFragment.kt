@@ -39,22 +39,22 @@ class SearchResultBaseFragment :
     override fun initData() {
         super.initData()
 
-        // 等待換頁動畫完成
-        view?.postDelayed({
-            // 處理navigate過來的（第一次搜尋的）
-            findNavController().also { nav ->
-                nav.backQueue.getOrNull(nav.backQueue.size - 2)?.destination?.id?.let { fromId ->
-                    observeResultOnce<String>(
-                        key = SEARCH_KEY,
-                        fromId = fromId,
-                        navController = nav
-                    ) { key ->
-                        currentKeyword = key
-                        doSearch()
-                    }
+        // 處理navigate過來的（第一次搜尋的）
+        findNavController().also { nav ->
+            nav.backQueue.getOrNull(nav.backQueue.size - 2)?.destination?.id?.let { fromId ->
+                observeResultOnce<String>(
+                    key = SEARCH_KEY,
+                    fromId = fromId,
+                    navController = nav
+                ) { key ->
+                    currentKeyword = key
+                    updateSearchText(currentKeyword)
+
+                    // 等待換頁動畫完成
+                    view?.postDelayed({ doSearch() }, 300)
                 }
             }
-        }, 300)
+        }
     }
 
     override fun initListener() {
@@ -102,7 +102,6 @@ class SearchResultBaseFragment :
     }
 
     private fun doSearch() {
-        updateSearchText(currentKeyword)
         addSearchRecord(currentKeyword)
         mViewModel.getSearchResult(currentKeyword)
     }
