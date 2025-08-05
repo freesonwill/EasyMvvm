@@ -74,16 +74,6 @@ class InterceptedViewImpl(private val view: ViewGroup) {
     }
 
     fun onInterceptTouchEvent(e: MotionEvent): Boolean {
-        /*"""aaaa----
-            ${MotionEvent.actionToString(e.action)},
-            e.x:${e.x}, e.y:${e.y}
-            e.rawX:${e.rawX}, e.rawY:${e.rawY} 
-            lastX:$lastX, lastY:$lastY
-            isDirectionScroll:${isDirectionScrolled(e)}, interceptFlags:$interceptFlags, slot:$touchSlop
-            canScrollDirection:${canScrollInDirection(e)}
-            intercepted:$isIntercepting
-            calculateInterceptedType:${calculateInterceptedType(e)}
-        """.logd(TAG)*/
         when (e.action) {
             MotionEvent.ACTION_DOWN -> {
                 lastX = e.rawX
@@ -98,7 +88,7 @@ class InterceptedViewImpl(private val view: ViewGroup) {
             MotionEvent.ACTION_MOVE -> {
                 if (!isIntercepting
                     && !canScrollInDirection(e) //方向上能否滑动
-                    && isDirectionScrolled(e) //
+                    && isInterceptConditionMet(e) //
                 ) {
                     isIntercepting = true
                 }
@@ -112,6 +102,11 @@ class InterceptedViewImpl(private val view: ViewGroup) {
         return isIntercepting
     }
 
+    /**
+     * 计算当前手势的拦截类型和偏移量
+     * @param e MotionEvent
+     * @return Pair<InterceptedDirection, Float> 拦截方向和偏移量
+     */
     private fun calculateInterceptedType(e: MotionEvent): Pair<InterceptedDirection, Float> {
         val deltaX = e.rawX - lastX
         val deltaY = e.rawY - lastY
@@ -128,12 +123,21 @@ class InterceptedViewImpl(private val view: ViewGroup) {
         }
     }
 
-
-    private fun isDirectionScrolled(e: MotionEvent): Boolean {
-        val (_, delta) = calculateInterceptedType(e)
-        return delta > touchSlop
+    /**
+     * 判断是否满足拦截条件
+     * @param e MotionEvent
+     * @return true表示满足拦截条件，false表示不满足
+     */
+    private fun isInterceptConditionMet(e: MotionEvent): Boolean {
+        val (direction, delta) = calculateInterceptedType(e)
+        return shouldIntercept(direction) && delta > touchSlop
     }
 
+    /**
+     * 判断当前View是否可以在指定方向上滚动，不能滚动才去截获
+     * @param e MotionEvent
+     * @return true表示可以滚动，false表示不能滚动
+     */
     private fun canScrollInDirection(e: MotionEvent): Boolean {
         val (direction) = calculateInterceptedType(e)
         return when (direction) {
@@ -144,4 +148,12 @@ class InterceptedViewImpl(private val view: ViewGroup) {
         }
     }
 
+    /**
+     * 判断是否拦截指定方向的手势
+     * @param direction
+     * @return
+     */
+    private fun shouldIntercept(direction: InterceptedDirection): Boolean {
+        return (interceptFlags and direction.v) != 0
+    }
 }
