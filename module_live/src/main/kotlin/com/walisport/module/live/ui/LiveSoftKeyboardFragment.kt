@@ -116,7 +116,7 @@ class LiveSoftKeyboardFragment :
                 "软件盘高度1  ${imeInsets.bottom}".logd("aaa")
 
                 isSoftKeyBoard = false
-//                onSoftKeyBoardHide()
+                onSoftKeyBoardHide()
             }
             insets
         }
