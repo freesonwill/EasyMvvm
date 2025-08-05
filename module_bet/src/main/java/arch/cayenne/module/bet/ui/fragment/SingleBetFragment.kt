@@ -135,6 +135,7 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
         }
         mViewModel.onBetSheetListener.observe(viewLifecycleOwner) {
             setBetData(it)
+            setBetButtonByOdds(mViewModel.onReserveOddsListener.value, it.odds)
         }
         mViewModel.onBetWinMoney.observe(viewLifecycleOwner) {
             mBinding.tvBetMoney.isVisible = it.isNotEmpty() && it != "0"
@@ -159,15 +160,14 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
         }
 
         mViewModel.onReserveOddsListener.observe(viewLifecycleOwner) { odds ->
+            val currentOdds = mViewModel.onBetSheetListener.value?.odds ?: 0
             mBinding.btnReserve.isVisible = odds == null
             mBinding.clCancelReserve.isVisible = odds != null
-            if (odds == null) {
-                mBinding.tvBetHint.text = getString(R.string.btn_bet_hint)
-            } else {
-                mBinding.tvBetHint.text = getString(R.string.title_reserve)
+            if (odds != null) {
                 val value = "@${odds.getOdds()}"
                 mBinding.tvCancelReserve.text = value
             }
+            setBetButtonByOdds(odds, currentOdds)
         }
         mViewModel.betTypeListener.observe(viewLifecycleOwner) { type ->
             setBetTypeLayout(type)
@@ -205,6 +205,14 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
         mBinding.btnCollusion.isEnabled = data.isParlay
         mBinding.clBet.isEnabled = data.isActive
         mBinding.layoutBet.ivDelete.isVisible = false
+    }
+
+    private fun setBetButtonByOdds(reserveOdds: Int?, currentOdds: Int) {
+        if (reserveOdds == null || reserveOdds == currentOdds) {
+            mBinding.tvBetHint.text = getString(R.string.btn_bet_hint)
+        } else {
+            mBinding.tvBetHint.text = getString(R.string.title_reserve)
+        }
     }
 
     override fun dismiss(key: String, value: String) {
