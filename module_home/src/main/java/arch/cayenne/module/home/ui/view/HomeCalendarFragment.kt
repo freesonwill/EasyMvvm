@@ -44,7 +44,9 @@ class HomeCalendarFragment private constructor() : BaseFragment<HomeCalendarView
     enum class AnimState {
         EXPANDING, EXPAND, COLLAPSING, COLLAPSE
     }
-
+    enum class States {
+        CALENDAR_CLOSE_NOTHING // 加载中
+    }
     private val defaultAnimDuration = 300L
 
     private var onDataSelectedListener: ((String) -> Unit)? = null
@@ -253,7 +255,9 @@ class HomeCalendarFragment private constructor() : BaseFragment<HomeCalendarView
             }
         }
     }
-
+    fun callDismiss() {
+        collapseView()
+    }
     private fun collapseView() {
         with(mBinding.clCalendarPopupRoot) {
             val currentHeight = (heightAnimator?.animatedValue as? Int) ?: height

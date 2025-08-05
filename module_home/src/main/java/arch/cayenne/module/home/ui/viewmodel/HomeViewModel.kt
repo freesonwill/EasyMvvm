@@ -25,6 +25,7 @@ import arch.cayenne.module.home.data.constants.HomeState
 import arch.cayenne.module.home.data.constants.PlayType
 import arch.cayenne.module.home.data.constants.playTypeToShowType
 import arch.cayenne.module.home.data.repo.HomeRepository
+import arch.cayenne.module.home.ui.view.HomeCalendarFragment
 import galaxy.common.proto.Common
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -98,6 +99,8 @@ class HomeViewModel : BaseViewModel() {
     private val _notifyToChampion = MutableLiveData<Event<Unit>>()
     val notifyToChampion: LiveData<Event<Unit>> = _notifyToChampion
 
+    private val _calendarStates = MutableLiveData<HomeCalendarFragment.States>()
+    val calendarStates = _calendarStates
     fun notifyTournamentSlideOutEnd() {
         _tournamentSlideOutEnd.value = Event(Unit)
     }
@@ -414,5 +417,8 @@ class HomeViewModel : BaseViewModel() {
     override fun onCleared() {
         super.onCleared()
         stopTimer()
+    }
+    fun setCalendarState(state: HomeCalendarFragment.States) {
+        _calendarStates.value = state
     }
 }
