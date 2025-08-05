@@ -32,7 +32,7 @@
     <arch.cayenne.lib.skin.widget.SkinnableTabLayout
         android:id="@+id/tabLayout"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_40"
+        android:layout_height="@dimen/dp_36"
         android:background="@color/live_main_tab_bg"
         app:tabIndicatorHeight="0dp"
         app:tabMode="fixed"
@@ -41,6 +41,7 @@
         app:tabPaddingStart="0dp"
         app:tabPaddingEnd="0dp"
         app:tabRippleColor="@null"
+        android:layout_marginTop="@dimen/dp_2"
         android:paddingBottom="@dimen/dp_1"
         tools:ignore="SpeakableTextPresentCheck" />
     <com.walisport.module.live.ui.widget.CustomTabIndicator

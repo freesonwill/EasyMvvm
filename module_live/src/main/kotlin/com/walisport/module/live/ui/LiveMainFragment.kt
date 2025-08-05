@@ -12,7 +12,6 @@ import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
-import androidx.viewpager2.widget.ViewPager2
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.data.model.PagerBean
 import arch.cayenne.lib.base.ui.adapter.PagerAdapter
@@ -41,7 +40,7 @@ import com.walisport.module.live.ui.viewmodel.LiveMainViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.filter
 import kotlin.reflect.KClass
-
+import arch.cayenne.lib.common.utils.ext.DimensionExt.px2sp
 /**
  * 直播详情页
  */
@@ -149,6 +148,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                             R.color.tab_selected_text_color
                         )
                     )
+                    textView.textSize = 15f.px2sp
                     textView.typeface = Typeface.DEFAULT_BOLD
                 }
             }
@@ -161,6 +161,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                             R.color.video_tab_text_color
                         )
                     )
+                    textView.textSize = 15f.px2sp
                     textView.typeface = Typeface.DEFAULT
                 }
             }
@@ -307,6 +308,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                             if (position == tabSelectPosition) R.color.tab_selected_text_color else R.color.video_tab_text_color
                         )
                     )
+                    textSize = 15f.px2sp
                     typeface =
                         if (position == tabSelectPosition) Typeface.DEFAULT_BOLD else Typeface.DEFAULT
 

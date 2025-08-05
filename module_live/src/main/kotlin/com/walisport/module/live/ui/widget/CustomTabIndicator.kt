@@ -16,7 +16,7 @@ class CustomTabIndicator(context: Context, attrs: AttributeSet) : SkinnableView(
     }
 
     private var indicatorWidth = 0f
-    private var indicatorHeight = dpToPx(3f) // 指示器高度
+    private var indicatorHeight = dpToPx(2f) // 指示器高度
     private var cornerRadius = dpToPx(2f) // 圆角半径
     private var currentPosition = 1
     private var positionOffset = 0f
@@ -48,7 +48,7 @@ class CustomTabIndicator(context: Context, attrs: AttributeSet) : SkinnableView(
     // 设置单个 Tab 的宽度和指示器宽度
     fun setTabWidth(width: Float) {
         tabWidth = width
-        indicatorWidth = width * 0.6f // 指示器宽度为 Tab 宽度的 60%
+        indicatorWidth = width * 0.45f // 指示器宽度为 Tab 宽度的 60%
         invalidate()
     }
 
