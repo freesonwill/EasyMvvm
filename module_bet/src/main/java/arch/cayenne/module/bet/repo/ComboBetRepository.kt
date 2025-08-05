@@ -16,7 +16,6 @@ import galaxy.client.proto.Client
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -252,7 +251,33 @@ class ComboBetRepository(
 
             }
         }
-        return result.sortedWith(compareBy({ it.comboK }, { it.comboV }))
+
+        return result.sortedWith { a, b ->
+            val aIsOne = a.comboV == 1
+            val bIsOne = b.comboV == 1
+
+            val aIsMain = aIsOne && a.comboK == n
+            val bIsMain = bIsOne && b.comboK == n
+
+            when {
+                // 優先顯示 maxComboK 且 comboV == 1 的那一筆
+                aIsMain && !bIsMain -> -1
+                !aIsMain && bIsMain -> 1
+
+                // 接著顯示其他 comboV == 1 的，comboK 升序
+                aIsOne && bIsOne -> a.comboK.compareTo(b.comboK)
+
+                // comboV == 1 的優先於 comboV != 1
+                aIsOne && !bIsOne -> -1
+                !aIsOne && bIsOne -> 1
+
+                // 最後 comboV != 1 的，依 comboK 升序，再 comboV 升序
+                else -> {
+                    val k = a.comboK.compareTo(b.comboK)
+                    if (k != 0) k else a.comboV.compareTo(b.comboV)
+                }
+            }
+        }
     }
 
     private fun <T> List<T>.combinations(k: Int): List<List<T>> {
