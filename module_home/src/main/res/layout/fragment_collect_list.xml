@@ -22,12 +22,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:srlEnablePreviewInEditMode="true">
-        <arch.cayenne.lib.skin.widget.SkinnableRecyclerView
+        <arch.cayenne.lib.common.ui.view.InterceptedRecyclerView
             android:id="@+id/rv_collect_list"
             android:layout_width="match_parent"
             android:focusableInTouchMode="true"
             android:focusable="true"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            app:interceptedDirection = "RIGHT"
+            app:touchSlop = "DEFAULT"
+            />
     </arch.cayenne.lib.common.ui.view.PullRefreshLayout>
     <arch.cayenne.lib.common.ui.view.DynamicStateLayout
         android:id="@+id/cl_dynamics"
