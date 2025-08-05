@@ -17,6 +17,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
 import arch.cayenne.lib.common.databinding.FragmentReserveDialogBinding
 import arch.cayenne.lib.common.ui.viewmodel.ReserveDialogViewModel
+import arch.cayenne.lib.common.utils.ViewUtils
 
 class ReserveDialogFragment private constructor() : BaseDialogFragment<ReserveDialogViewModel, FragmentReserveDialogBinding>() {
 
@@ -140,6 +141,8 @@ class ReserveDialogFragment private constructor() : BaseDialogFragment<ReserveDi
 
     override fun initView(savedInstanceState: Bundle?) {
         mBinding.root.visibility = View.INVISIBLE
+
+        ViewUtils.hideKeyboard(requireContext(), mBinding.etRate)
         mBinding.etRate.requestFocus()
 
         val odds = requireArguments().getInt(ODDS_NUMBER, -1)
