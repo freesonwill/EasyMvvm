@@ -22,8 +22,9 @@ object EditTextUtils {
      */
     fun showKeyboard(context: Activity?, editText: EditText) {
         val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
-//        imm!!.showSoftInput(editText, InputMethodManager.SHOW_IMPLICIT)
-        imm?.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+        imm!!.showSoftInput(editText, InputMethodManager.SHOW_IMPLICIT)
+//        imm?.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
+//        editText.requestFocus()
 
     }
 

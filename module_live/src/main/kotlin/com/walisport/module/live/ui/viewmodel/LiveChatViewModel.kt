@@ -24,14 +24,14 @@ import kotlinx.coroutines.launch
 
 class LiveChatViewModel(private val chatRepo: LiveChatRepository) : BaseViewModel() {
     private var matchId: Long? = null
-    private val _currentSoftKeyboard = MutableStateFlow(KeyBoardType.NONE)
+    private val _currentSoftKeyboard = MutableStateFlow(KeyBoardType.CHAT)
     private val _loginLiveData = MutableLiveData<ChatLoginResponseData?>()
     private val _sendMsgResultLiveData = MutableLiveData<ChatSendMsgResponse?>()
     private val _sendMsgLiveData = MutableLiveData<String>()
     private val _historyLiveData = MutableLiveData<Boolean>()
     private val _newMsgFLow = MutableStateFlow<MsgNotify?>(null)
     private val _checkBetAmountLiveData = MutableLiveData<CheckBetResultEnum>()
-    private val _softKeyBoardListener = MutableStateFlow(KeyBoardType.NONE)
+    private val _softKeyBoardListener = MutableStateFlow(KeyBoardType.CHAT)
     private val _openSoftKeyBoardLiveData = MutableLiveData<Boolean>()
 
     //检查是否可以发送消息
@@ -178,18 +178,18 @@ class LiveChatViewModel(private val chatRepo: LiveChatRepository) : BaseViewMode
             when (_checkBetAmountLiveData.value) {
                 CheckBetResultEnum.BET_AMOUNT_INVALID -> {
                     toastLiveData.value = R.string.insufficient_bet_amount.getString()
-                    _softKeyBoardListener.value = KeyBoardType.NONE
+                    _softKeyBoardListener.value = KeyBoardType.CHAT
                 }
                 CheckBetResultEnum.BALANCE_INVALID -> {
                     toastLiveData.value = R.string.insufficient_balance.getString()
-                    _softKeyBoardListener.value = KeyBoardType.NONE
+                    _softKeyBoardListener.value = KeyBoardType.CHAT
                 }
                 CheckBetResultEnum.SUCCESS -> {
                     _currentSoftKeyboard.value = softKeyBoardListener.value
                 }
                 null -> {
                     toastLiveData.value = R.string.insufficient_fali.getString()
-                    _softKeyBoardListener.value = KeyBoardType.NONE
+                    _softKeyBoardListener.value = KeyBoardType.CHAT
                 }
             }
         }
@@ -217,7 +217,7 @@ class LiveChatViewModel(private val chatRepo: LiveChatRepository) : BaseViewMode
     /**
      *更新软件盘显示
      * */
-    fun updateSoftKeyBoard() {
+    fun updateKeyBoard() {
         if (currentSoftKeyboard.value == softKeyBoardListener.value) {
             return
         }
@@ -249,7 +249,9 @@ class LiveChatViewModel(private val chatRepo: LiveChatRepository) : BaseViewMode
      * 添加本地数据
      * */
     fun addLocalMsg(content: String) {
-
+        if (_loginLiveData.value == null) {
+            return
+        }
         val id = System.currentTimeMillis().toString()
         val user = _loginLiveData.value!!
         val msg = ChatMsg(
@@ -285,10 +287,10 @@ class LiveChatViewModel(private val chatRepo: LiveChatRepository) : BaseViewMode
      * @param softKeyBoarVisible true显示软件盘  false 关闭软件盘
      * */
     fun updateSoftKeyBoard(softKeyBoarVisible:Boolean){
-        if(softKeyBoarVisible == _openSoftKeyBoardLiveData.value){
-            return
-        }
-        "opensoftKeyBoad ${softKeyBoarVisible}".logd("aaa")
+//        "updateSoftKeyBoard ${softKeyBoarVisible} ${_openSoftKeyBoardLiveData.value}".logd("aaa")
+//        if(softKeyBoarVisible == _openSoftKeyBoardLiveData.value){
+//            return
+//        }
         _openSoftKeyBoardLiveData.value = softKeyBoarVisible
     }
 

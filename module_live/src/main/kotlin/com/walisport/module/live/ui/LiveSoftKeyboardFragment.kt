@@ -1,7 +1,6 @@
 package com.walisport.module.live.ui
 
 import android.annotation.SuppressLint
-import android.graphics.Rect
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -9,7 +8,6 @@ import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
-import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
 import android.widget.FrameLayout
 import android.widget.ImageView
@@ -17,7 +15,6 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
-import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
@@ -93,39 +90,46 @@ class LiveSoftKeyboardFragment :
         mBinding.liveChatIvKeyboard.setOnClickListener {
             chatViewModel.addSoftKeyBoardEvent(KeyBoardType.SOFT_KEYBOARD)
         }
-// 监听键盘的显示和隐藏
+    }
+    @SuppressLint("ClickableViewAccessibility")
+    private fun initInputListener() {
+        // 监听键盘的显示和隐藏
         ViewCompat.setOnApplyWindowInsetsListener(requireView()) { _: View?, insets: WindowInsetsCompat ->
-            if (insets.isVisible(WindowInsetsCompat.Type.ime())) {
+//            val isSoftVisible = insets.isVisible(WindowInsetsCompat.Type.ime())
+//            "isSoftVis $isSoftVisible".logd("aaa")
+            val imeInsets = insets.getInsets(WindowInsetsCompat.Type.ime())
+            val isSoftVisible = imeInsets.bottom > 100.dp2px
+            if (isSoftVisible) {
                 // 键盘显示
                 if(isSoftKeyBoard){
                     return@setOnApplyWindowInsetsListener insets
                 }
                 isSoftKeyBoard = true
-                onSoftKeyBoardShow()
+                chatViewModel.softKeyBoardHeight = imeInsets.bottom
+                "软件盘高度  ${chatViewModel.softKeyBoardHeight}".logd("aaa")
+//                onSoftKeyBoardShow()
             } else {
                 // 键盘隐藏
                 if(!isSoftKeyBoard){
                     return@setOnApplyWindowInsetsListener insets
                 }
+                "软件盘高度1  ${imeInsets.bottom}".logd("aaa")
+
                 isSoftKeyBoard = false
-                onSoftKeyBoardHide()
+//                onSoftKeyBoardHide()
             }
             insets
         }
-    }
-    @SuppressLint("ClickableViewAccessibility")
-    private fun initInputListener() {
         mBinding.liveChatEtInput.apply {
             //监听聚焦事件，不合格的展示软件盘一律拦截
-//            setOnFocusChangeListener { v, hasFocus ->
-//                "onFocusChange $hasFocus".logd("aaa")
-//                if (!hasFocus) {
-//                    return@setOnFocusChangeListener
-//                }
-//                if (chatViewModel.openSoftKeyBoardLiveData.value == false) {
-//                    hideSoftKeyBoard(1)
-//                }
-//            }
+            setOnFocusChangeListener { v, hasFocus ->
+                //如果当前点击事件 softkeyboardlisterner 和 当前状态currentKeyboardListener 一致可以过滤掉聚焦事件
+                "onFouceCHangeListener openSoftkeyboadLiveData ${chatViewModel.openSoftKeyBoardLiveData.value} hasFouce $hasFocus".logd("aaa")
+                if (chatViewModel.openSoftKeyBoardLiveData.value == true) { //要打开软件盘并且软件盘在收缩中
+//                    chatViewModel.updateSoftKeyBoard(true)
+                   openSoftKeyBoard()
+                }
+            }
             //监听点击事件
             setOnTouchListener { v, event ->
                 "event action ${event.action}".logd("aaa")
@@ -133,11 +137,11 @@ class LiveSoftKeyboardFragment :
                     if (chatViewModel.softKeyBoardListener.value != KeyBoardType.SOFT_KEYBOARD) {
                         "onTouch et".logd("aaa")
                         chatViewModel.addSoftKeyBoardEvent(KeyBoardType.SOFT_KEYBOARD)
-                        chatViewModel.updateSoftKeyBoard()
+                        chatViewModel.updateSoftKeyBoard(true)
                     }
                     return@setOnTouchListener true
                 }
-                return@setOnTouchListener false
+                return@setOnTouchListener true
             }
             //设置发送按钮
             imeOptions = EditorInfo.IME_ACTION_SEND
@@ -183,7 +187,7 @@ class LiveSoftKeyboardFragment :
         if(mViewModel.inputText.isEmpty()){
             return
         }
-        chatViewModel.addSoftKeyBoardEvent(KeyBoardType.NONE,4)
+        chatViewModel.addSoftKeyBoardEvent(KeyBoardType.CHAT,4)
         chatViewModel.sendMsgToChat(mViewModel.inputText)
         mViewModel.inputText = ""
     }
@@ -195,15 +199,19 @@ class LiveSoftKeyboardFragment :
                 when (it) {
                     KeyBoardType.SOFT_KEYBOARD -> showSoftKeyBoard()
                     KeyBoardType.EMOJI -> showEmoji()
-                    KeyBoardType.NONE -> showChat()
+                    KeyBoardType.CHAT -> showChat()
                 }
             }
         }
         chatViewModel.openSoftKeyBoardLiveData.observe(viewLifecycleOwner){
+            "openSoftkeyBoardLiveData ${it}  isSoftKeyBoard $isSoftKeyBoard".logd("aaa")
             if(it && !isSoftKeyBoard){  //显示软件盘状态 it == true  当前软件盘没有收缩状态
                 openSoftKeyBoard()
+                mBinding.liveChatEtInput.requestFocus()
             }else if(!it && isSoftKeyBoard){ // 隐藏软件盘状态  it== false 当前软件盘弹出状态
                 hideSoftKeyBoard(2)
+                mBinding.liveChatEtInput.clearFocus()
+
             }
         }
     }
@@ -312,7 +320,7 @@ class LiveSoftKeyboardFragment :
             )
         }
         updateEmojiView(false)
-        updateWhenKeyBoardVisible(KeyBoardType.NONE)
+        updateWhenKeyBoardVisible(KeyBoardType.CHAT)
         hideSoftKeyBoard(3)
     }
 
@@ -377,7 +385,7 @@ class LiveSoftKeyboardFragment :
         //聊天界面和软件盘、表情键盘的hint展示不同
         mBinding.liveChatEtInput.hint = SkinnableResourceManager.getString(
             requireContext(),
-            if (type == KeyBoardType.NONE) R.string.live_chat_talk else R.string.live_chat_speak,
+            if (type == KeyBoardType.CHAT) R.string.live_chat_talk else R.string.live_chat_speak,
             mViewModel.languageManager.getLanguage()
         )
         //聊天界面、表情键盘和表情键盘对应的topMargin不同
@@ -388,7 +396,7 @@ class LiveSoftKeyboardFragment :
         }
         mBinding.liveChatLlInput.backgroundTintList = SkinnableResourceManager.getColorStateList(
             requireContext(),
-            if (type == KeyBoardType.NONE) arch.cayenne.lib.common.R.color.input_box_2 else arch.cayenne.lib.res.R.color.card_ooo_background
+            if (type == KeyBoardType.CHAT) arch.cayenne.lib.common.R.color.input_box_2 else arch.cayenne.lib.res.R.color.card_ooo_background
         )
     }
 
@@ -415,9 +423,10 @@ class LiveSoftKeyboardFragment :
     }
 
     private fun onSoftKeyBoardHide(){
-//        if(chatViewModel.softKeyBoardListener.value == KeyBoardType.SOFT_KEYBOARD){
-//            chatViewModel.addSoftKeyBoardEvent(KeyBoardType.NONE,5)
-//        }
+        "onSoftkeyBoardHide ${chatViewModel.softKeyBoardListener.value}".logd("aaa")
+        if(chatViewModel.softKeyBoardListener.value == KeyBoardType.SOFT_KEYBOARD){
+            chatViewModel.addSoftKeyBoardEvent(KeyBoardType.CHAT,5)
+        }
     }
 
 
