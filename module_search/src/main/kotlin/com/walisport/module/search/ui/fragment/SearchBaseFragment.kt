@@ -126,17 +126,32 @@ abstract class SearchBaseFragment<VM : BaseViewModel, CVB : ViewBinding>: BaseFr
     @CallSuper
     open fun toSearchResult(word: String) {
         parentFragmentManager.clearFragmentResult(GO_BACK_TO_MAIN)
-        if (findNavController().currentDestination?.id != R.id.searchFragment) {
-            parentFragmentManager.setFragmentResult(SEARCH_KEY, bundleOf(SEARCH_KEY to word))
-            findNavController().popBackStack(R.id.searchResultBaseFragment, false)
-        } else {
-            sendResult(
-                key = SEARCH_KEY,
-                value = word,
-                destinationId = R.id.searchFragment,
-                navController = findNavController()
-            )
-            findNavController().navigate(R.id.searchResultBaseFragment, null, navOptions)
+        when {
+            this is SearchResultDirectMatchFragment && word == mViewModel.currentTitle -> {
+                // DirectMatch頁且關鍵字相同，呼叫子頁自身再次搜索功能
+                with(mViewModel) {
+                    val id = directMatchId ?: return
+                    val type = directMatchType ?: return
+                    // 重置選擇日期
+                    setSelectedDate(null)
+                    getSearchResult(id = id.toString(), type = type)
+                }
+            }
+            this is SearchFragment -> {
+                // 在SearchFragment中，直接跳轉到SearchResultBaseFragment
+                sendResult(
+                    key = SEARCH_KEY,
+                    value = word,
+                    destinationId = R.id.searchFragment,
+                    navController = findNavController()
+                )
+                findNavController().navigate(R.id.searchResultBaseFragment, null, navOptions)
+            }
+            else -> {
+                // 在其他Fragment中，要popBackStack到SearchResultBaseFragment
+                parentFragmentManager.setFragmentResult(SEARCH_KEY, bundleOf(SEARCH_KEY to word))
+                findNavController().popBackStack(R.id.searchResultBaseFragment, false)
+            }
         }
     }
 
@@ -187,10 +202,7 @@ abstract class SearchBaseFragment<VM : BaseViewModel, CVB : ViewBinding>: BaseFr
 
     private fun setBackPressHandler(onBackPress: (() -> Boolean)? = null) {
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
-            closeDatePicker()
-
             if(onBackPress?.invoke() == true) return@addCallback
-
             isEnabled = false
             requireActivity().onBackPressedDispatcher.onBackPressed()
         }
