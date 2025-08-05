@@ -5,6 +5,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
@@ -101,6 +102,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             tlHome.addOnTabSelectedListener(object : OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab?) {
                     tab?.position?.apply {
+                        mViewModel.setCalendarState(HomeCalendarFragment.States.CALENDAR_CLOSE_NOTHING)
                         mViewModel.setCurrentPlayType(PlayType.entries[this].id)
                     }
                 }
@@ -173,6 +175,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
 
             tvTabAll.clickNoRepeat {
                 resetDateTabs()
+                mViewModel.setCalendarState(HomeCalendarFragment.States.CALENDAR_CLOSE_NOTHING)
             }
 
             // 其他日期 Tab 設定
@@ -226,6 +229,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                     val dateTimestamp = getFuture31Days().find { it.first == this }?.third ?: return
                     lifecycleScope.launch {
                         mViewModel.selectedDate(dateTimestamp)
+                        mViewModel.setCalendarState(HomeCalendarFragment.States.CALENDAR_CLOSE_NOTHING)
                     }
                 }
             }
@@ -306,8 +310,15 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 val statusBarHeight =
                     ViewCompat.getRootWindowInsets(requireView())
                         ?.getInsets(WindowInsetsCompat.Type.statusBars())?.top ?: 0
-                setMarginTop(mBinding.clSecondNavbar.bottom + llDateFilterContainer.bottom - statusBarHeight)
+                val marginTopHeight = mBinding.clSecondNavbar.bottom + llDateFilterContainer.bottom - statusBarHeight
+                setMarginTop(marginTopHeight)
                 setMaskView(mBinding.viewCalendarMask)
+                // 取得 maskView 的 LayoutParams
+                val params = mBinding.viewCalendarMask.layoutParams as ViewGroup.MarginLayoutParams
+                // 設定 topMargin
+                params.topMargin = marginTopHeight
+                // 將修改後的 LayoutParams 重新應用到 maskView
+                mBinding.viewCalendarMask.layoutParams = params
                 mViewModel.recently7DayMatchScheduleCount.value?.peekContent()?.let { setRange(it) }
                 setOnDateSelectedListener { selectedDate ->
                     setSelectedDateTab(getFuture31Days().find { it.first == selectedDate })
@@ -464,6 +475,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                     afterTabSelected = { position ->
                         getSelectedRecently31Scheduled(position)
                         tournaments.getOrNull(position)?.id?.let { id -> mViewModel.setCurrentTournamentId(id)}
+                        mViewModel.setCalendarState(HomeCalendarFragment.States.CALENDAR_CLOSE_NOTHING)
                     }
                 )
                 val selectedPosition = tournaments.indexOfFirst { it.isSelected }
@@ -492,18 +504,22 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             llWalletEntry.apply {
                 addScaleOnTouchAnimation(ivWalletAdd)
             }.setOnClickListener {
+                mViewModel.setCalendarState(HomeCalendarFragment.States.CALENDAR_CLOSE_NOTHING)
                 //navigate(Uri.parse("walisport://module_home/homeFragment"))
                 navigate(Uri.parse("walisport://module_topup/topUpFragment"))
             }
             llFavoriteEntry.setOnClickListener {
+                mViewModel.setCalendarState(HomeCalendarFragment.States.CALENDAR_CLOSE_NOTHING)
                 navigate(NewHomeFragmentDirections.actionNewHomeFragmentToCollectListFragment())
             }
             llFavoriteEntry.addScaleOnTouchAnimation()
             llSearchEntry.setOnClickListener {
+                mViewModel.setCalendarState(HomeCalendarFragment.States.CALENDAR_CLOSE_NOTHING)
                 navigate(arch.cayenne.lib.res.R.string.nav_module_search_fragment.deeplink())
             }
             llSearchEntry.addScaleOnTouchAnimation()
             llBetEntry.setOnClickListener {
+                mViewModel.setCalendarState(HomeCalendarFragment.States.CALENDAR_CLOSE_NOTHING)
                 navigate(NewHomeFragmentDirections.actionNewHomeFragmentToHomeBetSlipFragment())
             }
             llBetEntry.addScaleOnTouchAnimation()
@@ -575,6 +591,16 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                     if (mViewModel.currentPlayTypeId == PlayType.EARLY.id) {
                         mBinding.layoutContainer.llDateFilterContainer.visibility = View.VISIBLE
                         mBinding.layoutContainer.llOtherDate.visibility = View.VISIBLE
+                    }
+                }
+                else -> Unit
+            }
+        }
+        mViewModel.calendarStates.observe(viewLifecycleOwner) {
+            when (it) {
+                HomeCalendarFragment.States.CALENDAR_CLOSE_NOTHING -> {
+                    if (customPopup != null) {
+                        customPopup?.callDismiss()
                     }
                 }
                 else -> Unit
