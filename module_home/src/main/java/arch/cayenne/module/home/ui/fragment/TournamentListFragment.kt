@@ -376,6 +376,9 @@ class TournamentListFragment :
 
         newIndex?.let { mViewModel.setActiveHeaderIndex(it) }
     }
+
+    override fun onBackPressed(): Boolean = mViewModel.getType() == TournamentListType.CHAMPION
+
     companion object {
         private const val ARG_TOURNAMENT_TYPE = "tournament_type"
         private const val ARG_SPORT_ID = "sport_id"

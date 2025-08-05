@@ -27,6 +27,9 @@ class SearchBaseViewModel: BaseViewModel() {
     /** 暫存的螢幕截圖 */
     private var tempScreenShot: Bitmap? = null
 
+    /** 當前搜尋關鍵字 */
+    private var currentKeyWord: String? = null
+
     init {
         // 初始化當前語系為預設語系
         _currentLanguage.tryEmit(Locale.getDefault())
@@ -72,5 +75,15 @@ class SearchBaseViewModel: BaseViewModel() {
     fun clearTempScreenShot() {
         tempScreenShot?.recycle()
         tempScreenShot = null
+    }
+
+    /** 設置當前搜尋關鍵字 */
+    fun setCurrentKeyword(keyword: String?) {
+        currentKeyWord = keyword
+    }
+
+    /** 取得當前搜尋關鍵字 */
+    fun getCurrentKeyword(): String? {
+        return currentKeyWord
     }
 }
