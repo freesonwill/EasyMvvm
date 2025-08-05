@@ -77,7 +77,7 @@ class ChampionViewModel : BaseViewModel() {
         this.matchId = matchId
     }
     fun getChampionDetail() {
-        _isLoading.value = true
+        _isLoading.value = matchWithMarketsChange.value == null
         viewModelScope.launch(Dispatchers.IO) {
             val matchWithMarkets = championRepository.getChampionDetail(matchId)
             withContext(Dispatchers.Main) {
