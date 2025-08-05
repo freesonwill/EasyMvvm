@@ -151,8 +151,6 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                     )
                     textView.typeface = Typeface.DEFAULT_BOLD
                 }
-
-
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab?) {
@@ -171,12 +169,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                 // Handle reselect if needed
             }
         })
-        // 监听 ViewPager2 的页面滑动
-        mBinding.vpPage.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
 
-            }
-        })
     }
 
     override fun createObserverAtState(): Lifecycle.State {
