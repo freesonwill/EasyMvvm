@@ -178,7 +178,11 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
             }
         }
         mViewModel.onComboMultiBetBeanListener.observe(viewLifecycleOwner) { data ->
+            val lastSize = comboMultiBetAdapter.itemCount
             comboMultiBetAdapter.submitList(data) {
+                if (data.size > lastSize) {
+                    mBinding.rvMultiBet.scrollToPosition(0)
+                }
                 if (data.size <= 1) {
                     mBinding.rvMultiBet.layoutParams = mBinding.rvMultiBet.layoutParams.apply {
                         this.height = getMultiItemHeight()
