@@ -24,6 +24,7 @@
         <attr name="android:textAppearance"/>
         <attr name="android:text"/>
         <attr name="android:hint"/>
+        <attr name="skinnableFontWeight" format="integer"/>
     </declare-styleable>
 
 

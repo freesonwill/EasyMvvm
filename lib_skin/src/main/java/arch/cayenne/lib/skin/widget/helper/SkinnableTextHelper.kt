@@ -1,16 +1,16 @@
 package arch.cayenne.lib.skin.widget.helper
 
 import android.content.Context
+import android.graphics.Typeface
 import android.graphics.drawable.Drawable
+import android.os.Build
 import android.util.AttributeSet
 import android.widget.TextView
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
-import arch.cayenne.lib.skin.LanguageManager
 import arch.cayenne.lib.skin.R
 import arch.cayenne.lib.skin.data.SkinMsgType
-import org.koin.java.KoinJavaComponent.inject
 import java.util.Locale
 
 open class SkinnableTextHelper(mView: TextView) : LanguageHelper(mView) {
@@ -23,6 +23,7 @@ open class SkinnableTextHelper(mView: TextView) : LanguageHelper(mView) {
     private var mDrawableTopResId = INVALID_ID
     private var mTextResId = INVALID_ID
     private var mHintResId = INVALID_ID
+    private var fontWeight:Int = INVALID_ID
 
     override val mView: TextView
         get() = super.mView as TextView
@@ -60,6 +61,10 @@ open class SkinnableTextHelper(mView: TextView) : LanguageHelper(mView) {
         }
         if(a.hasValue(R.styleable.SportTextHelper_android_hint)){
             mHintResId = a.getResourceId(R.styleable.SportTextHelper_android_hint, INVALID_ID)
+        }
+        if(a.hasValue(R.styleable.SportTextHelper_skinnableFontWeight)){
+            fontWeight = a.getInt(R.styleable.SportTextHelper_skinnableFontWeight, INVALID_ID)
+            setFontWeight()
         }
         a.recycle()
 
@@ -243,6 +248,12 @@ open class SkinnableTextHelper(mView: TextView) : LanguageHelper(mView) {
         if(checkResourceIdValid(color)){
             textColorResId = color
             applyTextColorResource()
+        }
+    }
+
+    private fun setFontWeight(){
+        if(fontWeight != INVALID_ID && Build.VERSION.SDK_INT >= Build.VERSION_CODES.P){
+                mView.setTypeface(Typeface.create(Typeface.DEFAULT,fontWeight,false))
         }
     }
 }
