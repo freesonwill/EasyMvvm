@@ -1,7 +1,6 @@
 package arch.cayenne.module.bet.repo
 
 import arch.cayenne.lib.base.data.repository.BaseRepository
-import arch.cayenne.lib.common.data.constants.OddsDisplayEnum
 import arch.cayenne.lib.common.data.constants.UserDataKey
 import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.database.dao.BetDao

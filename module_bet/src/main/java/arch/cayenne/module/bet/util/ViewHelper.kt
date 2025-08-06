@@ -7,7 +7,7 @@ import androidx.core.animation.addListener
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.core.view.postDelayed
-import arch.cayenne.lib.common.utils.ext.SportMoneyOddsExt.getOdds
+import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
 import arch.cayenne.lib.database.entity.BetSelectionBean
 import arch.cayenne.lib.database.entity.OddsStatusEnum
 import arch.cayenne.module.bet.databinding.ItemBetSheetBinding

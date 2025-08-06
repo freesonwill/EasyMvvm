@@ -3,7 +3,7 @@ package arch.cayenne.module.bet.repo
 import arch.cayenne.lib.base.data.repository.BaseRepository
 import arch.cayenne.lib.common.data.constants.UserDataKey
 import arch.cayenne.lib.common.data.manager.UserDataManager
-import arch.cayenne.lib.common.utils.ext.SportMoneyOddsExt.getOdds
+import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toOdds
 import arch.cayenne.lib.database.dao.BetDao
 import arch.cayenne.lib.database.entity.BetDetailBean

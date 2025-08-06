@@ -2,7 +2,9 @@ package arch.cayenne.module.bet.ui.fragment
 
 import android.os.Bundle
 import android.view.View
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
+import androidx.core.view.postDelayed
 import androidx.lifecycle.Lifecycle
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
@@ -19,11 +21,12 @@ import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.database.entity.BetSelectionBean
 import arch.cayenne.lib.database.entity.BetTypeEnum
+import arch.cayenne.lib.database.entity.OddsStatusEnum
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.module.bet.R
 import arch.cayenne.module.bet.data.Config
 import arch.cayenne.module.bet.databinding.FragmentSingleBetBinding
-import arch.cayenne.module.bet.util.ViewHelper
+import arch.cayenne.module.bet.databinding.ItemBetSheetBinding
 import arch.cayenne.module.bet.viewmodel.SingleBetViewModel
 import kotlin.reflect.KClass
 
@@ -201,10 +204,36 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
     }
 
     private fun setBetData(data: BetSelectionBean) {
-        ViewHelper.bindBetSheet(data, mBinding.layoutBet)
+        bindBetSheet(data, mBinding.layoutBet)
         mBinding.btnCollusion.isEnabled = data.isParlay
         mBinding.clBet.isEnabled = data.isActive
         mBinding.layoutBet.ivDelete.isVisible = false
+    }
+
+    private fun bindBetSheet(bean: BetSelectionBean, binding: ItemBetSheetBinding) {
+        val odds = "@${bean.odds.getOdds()}"
+        binding.tvOdds.text = odds
+
+        binding.tvSelectionName.text = bean.name
+        binding.tvMarket.text = bean.marketName
+        binding.tvMatchName.text = bean.matchName
+        binding.tvLeagueName.text = bean.leagueName
+
+        binding.tvStatus.isVisible = bean.isPlaying
+        binding.tvBetStop.isVisible = !bean.isActive
+
+        val oddsColor = when (bean.oddsStatus) {
+            OddsStatusEnum.UP -> ContextCompat.getColor(binding.root.context, arch.cayenne.module.bet.R.color.green)
+            OddsStatusEnum.DOWN -> ContextCompat.getColor(binding.root.context, arch.cayenne.module.bet.R.color.red)
+            else -> null
+        }
+        if (oddsColor != null) {
+            val originColor = binding.tvOdds.currentTextColor
+            binding.tvOdds.setTextColor(oddsColor)
+            binding.tvOdds.postDelayed(2_000L) {
+                binding.tvOdds.setTextColor(originColor)
+            }
+        }
     }
 
     private fun setBetButtonByOdds(reserveOdds: Int?, currentOdds: Int) {

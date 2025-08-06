@@ -17,9 +17,9 @@ object SportMoneyOddsExt {
     private val oddsType: Int get() = manager.getValue(UserDataKey.KEY_ODDS, 0)
 
     fun Long.getFormalMoney(odds: Int): String {
-        if (this == 0L || odds <= 0) return "0" // ← 明確處理 0
+        if (this == 0L || odds <= 0) return "0"
 
-        val result = this * odds - oddsType * 10000
+        val result = this * (odds - oddsType * 100)
         val decimal = BigDecimal(result).divide(BigDecimal(10000))
             .setScale(2, RoundingMode.DOWN)
 
@@ -27,11 +27,11 @@ object SportMoneyOddsExt {
 
         val numberFormat = NumberFormat.getNumberInstance(Locale.US).apply {
             maximumFractionDigits = 2
-            minimumFractionDigits = if (stripped.scale() > 0) 2 else 0
-            isGroupingUsed = true // 千分位
+            minimumFractionDigits = 0
+            isGroupingUsed = true
         }
 
-        return numberFormat.format(decimal)
+        return numberFormat.format(stripped)
     }
 
     /**

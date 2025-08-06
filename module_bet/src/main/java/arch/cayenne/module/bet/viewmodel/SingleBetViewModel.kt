@@ -81,7 +81,7 @@ class SingleBetViewModel(
         get() = CurrencySymbols.getSymbol(_onBalanceListener.value?.currency ?: "")
 
     private val _onBetWinMoney = MediatorLiveData<String>().apply {
-        var odds = 1
+        var odds = 100
         addSource(_onBetSheetListener) { data ->
             if (_onReserveOddsListener.value == null) {
                 odds = data.odds
