@@ -382,6 +382,5 @@ class BettingRemoteManager(
             ),
             markets = markets
         )
-
     }
 }

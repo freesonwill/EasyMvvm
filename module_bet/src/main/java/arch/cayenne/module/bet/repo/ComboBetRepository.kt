@@ -1,6 +1,9 @@
 package arch.cayenne.module.bet.repo
 
 import arch.cayenne.lib.base.data.repository.BaseRepository
+import arch.cayenne.lib.common.data.constants.OddsDisplayEnum
+import arch.cayenne.lib.common.data.constants.UserDataKey
+import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toOdds
 import arch.cayenne.lib.database.dao.BetDao
@@ -16,12 +19,14 @@ import galaxy.client.proto.Client
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class ComboBetRepository(
     override val scope: CoroutineScope,
     private val betDao: BetDao,
+    manager: UserDataManager,
     private val remoteManager: BettingRemoteManager
 ) : BaseRepository() {
 
@@ -30,6 +35,10 @@ class ComboBetRepository(
     private val comboMultiBetFlow =
         MutableSharedFlow<List<ComboMultiBetBean>>(replay = 1, extraBufferCapacity = 1)
 
+    private val observerOddsDisplay = manager.observe<Int>(UserDataKey.KEY_ODDS)
+    private val observerLanguage = manager.observe<String>(UserDataKey.KEY_LANGUAGE)
+    private var oddsDisplayEnum: OddsDisplayEnum? = null
+
     val isConnected: Boolean
         get() = remoteManager.isConnected
 
@@ -37,17 +46,34 @@ class ComboBetRepository(
 
     init {
         scope.launch {
-            betDao.observeCurrentSelections().collect {
-                selectionFlow.emit(it)
-                if (lastSize != it.size) {
-                    if (lastSize == 0) {
-                        val emptyRisk = getEmptyRiskList(it.size)
-                        if (emptyRisk.isNotEmpty()) {
-                            comboMultiBetFlow.emit(calculateMultiBetSums(it, emptyRisk))
+            launch {
+                betDao.observeCurrentSelections().collect {
+                    selectionFlow.emit(it)
+                    if (lastSize != it.size) {
+                        if (lastSize == 0) {
+                            val emptyRisk = getEmptyRiskList(it.size)
+                            if (emptyRisk.isNotEmpty()) {
+                                comboMultiBetFlow.replayCache.last()
+                                comboMultiBetFlow.emit(calculateMultiBetSums(it, emptyRisk))
+                            }
                         }
+                        setComboMulti(it)
+                        lastSize = it.size
                     }
-                    setComboMulti(it)
-                    lastSize = it.size
+                }
+            }
+            launch {
+                observerOddsDisplay.onStart {
+                    val value = manager.getValue(UserDataKey.KEY_ODDS, OddsDisplayEnum.EU.value)
+                    oddsDisplayEnum =  OddsDisplayEnum.entries[value]
+                }.collect {
+                    oddsDisplayEnum =  OddsDisplayEnum.entries[it]
+                    updateOdds()
+                }
+            }
+            launch {
+                observerLanguage.collect {
+                    updateLanguage()
                 }
             }
         }
@@ -297,5 +323,55 @@ class ComboBetRepository(
         betDao.getCurrentBet()?.let {
             betDao.getSelections(it.betId).size
         } ?: 0
+    }
+
+    private fun updateLanguage() {
+        scope.launch {
+            betDao.getCurrentBet()?.let { bet ->
+                betDao.getSelections(bet.betId).forEach { selection ->
+                    remoteManager.getMatchReq(selection.matchId)?.let { newMatch ->
+                        newMatch.markets.find { market ->
+                            market.selections.find { it.selectionId == selection.selectionId } != null
+                        }?.let { market ->
+                            val marketName = market.market.marketName
+                            val name =
+                                market.selections.find { it.selectionId == selection.selectionId }?.name
+                                    ?: selection.name
+                            val leagueName = newMatch.match.basicInfo.tournamentName
+                            val matchName = newMatch.match.basicInfo.matchName
+                            betDao.updateLanguage(
+                                bet.betId,
+                                selection.selectionId,
+                                marketName = marketName,
+                                name = name,
+                                leagueName = leagueName,
+                                matchName = matchName
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun updateOdds() {
+        scope.launch {
+            betDao.getCurrentBet()?.let { bet ->
+                betDao.getSelections(bet.betId).forEach { selection ->
+                    remoteManager.getMatchReq(selection.matchId)?.let { newMatch ->
+                        newMatch.markets.find { market ->
+                            market.selections.find { it.selectionId == selection.selectionId } != null
+                        }?.selections?.find { it.selectionId == selection.selectionId }
+                            ?.let { newSelection ->
+                                betDao.updateOdds(
+                                    bet.betId,
+                                    selection.selectionId,
+                                    newSelection.odds
+                                )
+                            }
+                    }
+                }
+            }
+        }
     }
 }
