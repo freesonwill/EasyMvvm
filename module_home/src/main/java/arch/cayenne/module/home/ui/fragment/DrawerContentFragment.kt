@@ -49,11 +49,6 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
         }
     }
 
-    override fun initData() {
-        super.initData()
-        mViewModel.getMessageList()
-    }
-
     override fun initListener() {
         with(mBinding) {
             clDrawerNickname.clickNoRepeat {
@@ -114,6 +109,7 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
                 launch {
                     selectedSkinType.observe(viewLifecycleOwner) {
                         refreshDefaultNickName()
+                        mViewModel.getMessageList()
                     }
                 }
                 notificationBean.observeEvent(viewLifecycleOwner,this@DrawerContentFragment) { list ->
