@@ -1,13 +1,13 @@
 package com.walisport.module.live.ui
 
-import android.content.Intent
+import android.animation.ValueAnimator
 import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
-import androidx.core.content.ContextCompat
+import android.view.animation.AccelerateDecelerateInterpolator
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.Lifecycle
@@ -19,13 +19,13 @@ import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
-import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.lib.common.utils.ext.NavResultExt.observeResult
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.removeAllTips
-import arch.cayenne.lib.common.utils.helper.ViewPagerAnimHelper
+import arch.cayenne.lib.common.utils.helper.doSmartAnim
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.lib.skin.widget.SkinnableTextView
 import arch.cayenne.module.betslip.ui.fragment.BetSlipFragment
@@ -37,22 +37,20 @@ import com.walisport.module.live.data.BetOnMenuStatus
 import com.walisport.module.live.databinding.FragmentLiveMainBinding
 import com.walisport.module.live.databinding.TitleBarLiveBinding
 import com.walisport.module.live.ui.viewmodel.LiveMainViewModel
-import com.walisport.module.live.utils.TextViewExt.setBottomDrawable
 import kotlinx.coroutines.delay
-import android.animation.ObjectAnimator;
-import arch.cayenne.lib.common.utils.ext.NavResultExt.observeResult
-import arch.cayenne.lib.common.utils.helper.doSmartAnim
 import kotlinx.coroutines.flow.filter
 import kotlin.reflect.KClass
-
+import arch.cayenne.lib.common.utils.ext.DimensionExt.px2sp
+import arch.cayenne.lib.common.utils.ext.DimensionExt.px2dp
 /**
  * 直播详情页
  */
 
 class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding>() {
-    companion object{
+    companion object {
         const val CHANGE_MATCH = "CHANGE_MATCH"
     }
+
     override val vbClass: KClass<FragmentLiveMainBinding> = FragmentLiveMainBinding::class
     override val vmClass: KClass<LiveMainViewModel> = LiveMainViewModel::class
     private lateinit var args: LiveMainFragmentArgs
@@ -69,7 +67,10 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         setVideoView()
         loadFragment()
         mViewModel.observeMatchInfoNotify()
-        mBinding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, GravityCompat.END)
+        mBinding.drawerLayout.setDrawerLockMode(
+            DrawerLayout.LOCK_MODE_LOCKED_CLOSED,
+            GravityCompat.END
+        )
     }
 
     //init DrawerLayout Content
@@ -105,24 +106,28 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                 findNavController().navigateUp()
             }
             llcLeagueNameLogo.clickNoRepeat {
-                navigate(
-                    LiveMainFragmentDirections.actionLiveMainFragmentToLeagueFragment()
-                        .apply {
-                            mViewModel.matchId.value?.let { value ->
-                                arguments.putLong(
-                                    "matchID",
-                                    value
-                                )
-                            }
-                            mViewModel.leagueID.value?.let { value ->
-                                arguments.putInt(
-                                    "leagueID",
-                                    value
-                                )
-                            }
-                            arguments.putString("leagueName", mViewModel.leagueName.value)
-                            arguments.putString("leagueLogo", mViewModel.leagueLogo.value)
-                        })
+                val nav = findNavController()
+                val dest = R.id.leagueFragment
+                if (nav.currentDestination?.id != dest) {
+                    navigate(
+                        LiveMainFragmentDirections.actionLiveMainFragmentToLeagueFragment()
+                            .apply {
+                                mViewModel.matchId.value?.let { value ->
+                                    arguments.putLong(
+                                        "matchID",
+                                        value
+                                    )
+                                }
+                                mViewModel.leagueID.value?.let { value ->
+                                    arguments.putInt(
+                                        "leagueID",
+                                        value
+                                    )
+                                }
+                                arguments.putString("leagueName", mViewModel.leagueName.value)
+                                arguments.putString("leagueLogo", mViewModel.leagueLogo.value)
+                            })
+                }
             }
 
             tvMoney.clickNoRepeat {
@@ -132,11 +137,10 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
 
         mBinding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
+                // 动画更新指示器位置
+                animateIndicatorToPosition(tab?.position ?: 0)
                 tab?.let {
-                    mBinding.vpPage.doSmartAnim(
-                        targetPosition = tab.position,
-                        fakeViewPager = mBinding.fragmentFakeViewPager,
-                    )
+                    mBinding.vpPage.doSmartAnim(targetPosition = tab.position)
                 }
                 tab?.view?.findViewById<SkinnableTextView>(R.id.tabText)?.let { textView ->
                     textView.setTextColor(
@@ -145,13 +149,8 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                             R.color.tab_selected_text_color
                         )
                     )
+                    textView.textSize = 15f.px2sp
                     textView.typeface = Typeface.DEFAULT_BOLD
-                    textView.setBottomDrawable(context?.let {
-                        ContextCompat.getDrawable(
-                            it,
-                            R.drawable.live_tab_indicator
-                        )
-                    }, 4.dp2px)
                 }
             }
 
@@ -163,13 +162,8 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                             R.color.video_tab_text_color
                         )
                     )
+                    textView.textSize = 15f.px2sp
                     textView.typeface = Typeface.DEFAULT
-                    textView.setBottomDrawable(context?.let {
-                        ContextCompat.getDrawable(
-                            it,
-                            R.drawable.live_tab_indicatort_tan
-                        )
-                    }, 3.dp2px)
                 }
             }
 
@@ -177,10 +171,15 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                 // Handle reselect if needed
             }
         })
+
+    }
+
+    override fun createObserverAtState(): Lifecycle.State {
+        return Lifecycle.State.RESUMED
     }
 
     override suspend fun createObserver() {
-        observeResult<Bundle>(CHANGE_MATCH){
+        observeResult<Bundle>(CHANGE_MATCH) {
             val newArgs: LiveMainFragmentArgs = LiveMainFragmentArgs.fromBundle(it)
             "observeResult-->newArgs--->$newArgs,args:${args},extras:${it},${this.args.equal(newArgs)}".logd(TAG)
             if (this.args.equal(newArgs)) return@observeResult
@@ -256,7 +255,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
     //比赛ID发生变化,取消订阅,数据请空
     private fun updateMatchId(matchId: Long) {
         mBinding.tabLayout.getTabAt(1)?.select()
-        mBinding.vpPage.setCurrentItem(1,true)
+        mBinding.vpPage.setCurrentItem(1, true)
         mViewModel.matchId.value?.let {
             deleteDataAndSubscriptions(matchId)
             mViewModel.setMatchId(matchId)
@@ -303,12 +302,6 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                 tab.text = list[position].title
                 tab.setCustomView(R.layout.custom_tab)
                 tab.customView?.findViewById<SkinnableTextView>(R.id.tabText)?.apply {
-                    setBottomDrawable(context?.let {
-                        ContextCompat.getDrawable(
-                            it,
-                            if (position == tabSelectPosition) R.drawable.live_tab_indicator else R.drawable.live_tab_indicatort_tan
-                        )
-                    }, 4.dp2px)
                     text = list[position].title
                     setTextColor(
                         SkinnableResourceManager.getColor(
@@ -316,6 +309,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                             if (position == tabSelectPosition) R.color.tab_selected_text_color else R.color.video_tab_text_color
                         )
                     )
+                    textSize = 15f.px2sp
                     typeface =
                         if (position == tabSelectPosition) Typeface.DEFAULT_BOLD else Typeface.DEFAULT
 
@@ -324,8 +318,12 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
             }.attach()
             tabLayout.clearOnTabSelectedListeners()
             tabLayout.getTabAt(1)?.select()
-            vpPage.setCurrentItem(1,false)
+            vpPage.setCurrentItem(1, false)
             tabLayout.removeAllTips()
+            tabLayout.post {
+            // 计算单个 Tab 的宽度
+            val tabWidth = mBinding.tabLayout.width.toFloat() / mBinding.tabLayout.tabCount
+            mBinding.customIndicator.setTabWidth(tabWidth)}
         }
     }
 
@@ -386,5 +384,15 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
             return true
         }
         return super.onBackPressed()
+    }
+    private fun animateIndicatorToPosition(position: Int) {
+        val animator = ValueAnimator.ofFloat(mBinding.customIndicator.getCurrentPosition().toFloat(), position.toFloat())
+        animator.duration = 100 // 动画持续时间
+        animator.interpolator = AccelerateDecelerateInterpolator()
+        animator.addUpdateListener { animation ->
+            val progress = animation.animatedValue as Float
+            mBinding.customIndicator.setIndicatorPosition(progress.toInt(), progress % 1f)
+        }
+        animator.start()
     }
 }

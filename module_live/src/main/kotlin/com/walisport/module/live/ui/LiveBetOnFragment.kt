@@ -77,7 +77,7 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
                             mViewModel.setSelection(it, selectionId)
                         }
                         if (status is AddSelectionStatus.Success.Single) {
-                            BetSheetFragment.newInstance(1).show(requireActivity().supportFragmentManager)
+                            BetSheetFragment.show(requireActivity())
                         } else if (status is AddSelectionStatus.Failure.DisableComboForParlay) {
                             showToast(getString(R.string.disabled_to_combo))
                         } else if (status is AddSelectionStatus.Failure.DisableComboForProvider) {
@@ -332,9 +332,5 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
         mBinding.tabLayout.getTabAt(0)?.select()
         mBinding.tabLayout.reflexMargin(8.dp2px, 8.dp2px, 4.dp2px)
         mBinding.tabLayout.removeAllTips()
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
     }
 }

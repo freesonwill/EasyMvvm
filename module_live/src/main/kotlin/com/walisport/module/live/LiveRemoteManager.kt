@@ -1,11 +1,10 @@
 package com.walisport.module.live
 
 import arch.cayenne.lib.base.data.remote.ApiResponseState
-import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.websocket.WebSocketManager
 import arch.cayenne.lib.websocket.data.ApiCode
 import arch.cayenne.lib.websocket.data.ConnectState
-import arch.cayenne.lib.websocket.data.SocketConnectState
+import arch.cayenne.lib.websocket.data.SocketResponseData
 import arch.cayenne.lib.websocket.extension.observeProtoMessage
 import arch.cayenne.lib.websocket.extension.sendAndWaitProtoMessageResponse
 import galaxy.client.proto.Client
@@ -17,7 +16,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import okio.utf8Size
 
 class LiveRemoteManager(private val socketManager: WebSocketManager) {
 
@@ -137,28 +135,26 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
     }
 
     //获取联赛日程列表数据
-    suspend fun getMatchLeagueReq(
+    suspend fun getMatchLeagueListReq(
         scope: CoroutineScope,
         tournamentId: Int,
         cursorMatchId: Long,
         cursorMatchStartTime: Long
-    ): Client.TournamentMatchResp? {
+    ): SocketResponseData<Client.TournamentMatchResp> {
         val result = socketManager.sendAndWaitProtoMessageResponse<Client.TournamentMatchResp>(
             scope = scope,
             dispatcher = Dispatchers.IO,
-            apiCode = ApiCode.MATCH_LEAGUE
+            apiCode = ApiCode.MATCH_LEAGUE,
+            timeout = 1000L
         ) {
             Client.TournamentMatchReq.newBuilder().apply {
                 this.tournamentId = tournamentId
                 this.cursorMatchId = cursorMatchId
                 this.cursorMatchStartTime = cursorMatchStartTime
-                this.size = 50
+                this.size = 10
             }.build()
         }
-        if (result.error == null && result.data != null) {
-            return result.data!!
-        }
-        return null
+        return result
     }
 
     // 500-1007: 盘口分类

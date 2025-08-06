@@ -27,6 +27,7 @@ import galaxy.client.proto.Sloth
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
@@ -75,7 +76,7 @@ class LiveMainViewModel(
     val observeMainMatch: LiveData<LiveMatchBean> = _observeMainMatch
     val currentBalanceChange by lazy { MutableLiveData<InfoBean>() }
     fun observeLoginChange(): Flow<Boolean> = repo.observeLoginChange()
-
+    private var observeMatchBeanJob: Job? = null
     //监听matchId和sportId，并设置1s的防抖
     @OptIn(FlowPreview::class)
     val matchIdSportIdObserver: Flow<Pair<Long, Int>> =
@@ -121,13 +122,16 @@ class LiveMainViewModel(
                 repo.getMatchRes(matchId)
             },{
                 if (it is ApiResponseState.Succeeded<*>) {
-                    _mainMatch.value = it.data!! as LiveMatchBean? // 主线程更新 LiveData
+                    it.data.let {data->
+                        _mainMatch.value = data as LiveMatchBean? // 主线程更新 LiveData
+                    }
                 }
             })
     }
 
     fun observeMatchBean(matchId: Long) {
-        viewModelScope.launch {
+        observeMatchBeanJob?.cancel()
+        observeMatchBeanJob = viewModelScope.launch {
             repo.observeMatchBean(matchId).collect {
                 _observeMainMatch.value = it
             }

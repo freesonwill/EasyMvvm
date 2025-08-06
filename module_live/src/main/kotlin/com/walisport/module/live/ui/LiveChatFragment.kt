@@ -193,6 +193,7 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
         mViewModel.addSoftKeyBoardEvent(KeyBoardType.CHAT, flag)
     }
 
+
     /**
      * 如果要隐藏和显示表情键盘时使用动画
      * @param emojiKeyBoardVisible 表情键盘显示或者隐藏
@@ -249,6 +250,7 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
             mBinding.liveChatKeyboard.layoutParams.height = height
         }
     }
+
 
     /**
      * 判断键盘是否在显示中

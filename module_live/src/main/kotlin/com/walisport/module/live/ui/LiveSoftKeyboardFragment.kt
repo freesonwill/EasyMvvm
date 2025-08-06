@@ -73,7 +73,6 @@ class LiveSoftKeyboardFragment :
     }
 
     override fun initView(savedInstanceState: Bundle?) {
-
         initTab()
         initSoftRecycler()
         initInputListener()
@@ -132,10 +131,8 @@ class LiveSoftKeyboardFragment :
             }
             //监听点击事件
             setOnTouchListener { v, event ->
-                "event action ${event.action}".logd("aaa")
                 if (event.action == MotionEvent.ACTION_UP) {
                     if (chatViewModel.softKeyBoardListener.value != KeyBoardType.SOFT_KEYBOARD) {
-                        "onTouch et".logd("aaa")
                         chatViewModel.addSoftKeyBoardEvent(KeyBoardType.SOFT_KEYBOARD)
                         chatViewModel.updateSoftKeyBoard(true)
                     }
@@ -183,7 +180,6 @@ class LiveSoftKeyboardFragment :
      * 发送消息
      * */
     private fun sendText() {
-        "sendText ${mViewModel.inputText.length}".logd("aaa")
         if(mViewModel.inputText.isEmpty()){
             return
         }
@@ -195,7 +191,6 @@ class LiveSoftKeyboardFragment :
     override suspend fun createObserver() {
         viewLifecycleOwner.lifecycleScope.launch {
             chatViewModel.currentSoftKeyboard.collect {
-                "currentSoftKeyboard $it".logd("aaa")
                 when (it) {
                     KeyBoardType.SOFT_KEYBOARD -> showSoftKeyBoard()
                     KeyBoardType.EMOJI -> showEmoji()
@@ -404,7 +399,6 @@ class LiveSoftKeyboardFragment :
      *打开软件盘
      * */
     private fun openSoftKeyBoard(){
-        "openSoftKeyBoard".logd("aaa")
         EditTextUtils.showKeyboard(activity, mBinding.liveChatEtInput)
     }
 
@@ -418,10 +412,16 @@ class LiveSoftKeyboardFragment :
         EditTextUtils.hideKeyboard(activity, mBinding.liveChatEtInput)
     }
 
+    /**
+     *软键盘打开时调用
+     * */
     private fun onSoftKeyBoardShow() {
 
     }
 
+    /**
+     * 软件盘关闭时调用
+     * */
     private fun onSoftKeyBoardHide(){
         "onSoftkeyBoardHide ${chatViewModel.softKeyBoardListener.value}".logd("aaa")
         if(chatViewModel.softKeyBoardListener.value == KeyBoardType.SOFT_KEYBOARD){

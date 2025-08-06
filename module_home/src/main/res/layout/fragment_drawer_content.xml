@@ -53,7 +53,7 @@
         android:layout_marginEnd="@dimen/dp_12"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/cl_drawer_nickname"
-        android:background="@drawable/ic_drawer_card_bg">
+       >
 
         <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
             android:id="@+id/cl_notification_header"
@@ -95,7 +95,7 @@
             android:id="@+id/item_notification_1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="visible"
+            android:visibility="gone"
             app:layout_constraintTop_toBottomOf="@id/cl_notification_header"
             app:layout_constraintStart_toStartOf="parent"
             android:paddingHorizontal="@dimen/dp_12"

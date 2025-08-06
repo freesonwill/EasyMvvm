@@ -2,7 +2,6 @@ package arch.cayenne.module.home.ui.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.room.Transaction
 import arch.cayenne.lib.base.data.constants.DataState
@@ -10,6 +9,8 @@ import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.base.data.remote.ApiResponseState.Start.dataAs
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.common.data.constants.SportEnum
 import arch.cayenne.lib.common.data.repo.BalanceRepository
 import arch.cayenne.lib.common.ui.viewmodel.Event
@@ -18,11 +19,11 @@ import arch.cayenne.lib.database.entity.ChampionTournamentDataModel
 import arch.cayenne.lib.database.entity.InfoBean
 import arch.cayenne.lib.database.entity.SportDataModel
 import arch.cayenne.lib.database.entity.TournamentDataModel
-import arch.cayenne.lib.skin.SkinnableManager
 import arch.cayenne.module.home.data.constants.HomeState
 import arch.cayenne.module.home.data.constants.PlayType
 import arch.cayenne.module.home.data.constants.playTypeToShowType
 import arch.cayenne.module.home.data.repo.HomeRepository
+import arch.cayenne.module.home.ui.view.HomeCalendarFragment
 import galaxy.common.proto.Common
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -34,12 +35,10 @@ import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
-import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.core.component.inject
-import org.koin.core.parameter.parametersOf
 import plugin.koin.KoinViewModel
 
 @KoinViewModel
@@ -52,14 +51,9 @@ class HomeViewModel : BaseViewModel() {
     private val _currentPlayTypeId: MutableStateFlow<Int> = MutableStateFlow(PlayType.TODAY.id)
     val currentPlayTypeId: Int
         get() = _currentPlayTypeId.value
-    val playTypeIndexChange: LiveData<Event<Int>> = _currentPlayTypeId.transform {
-        when(it) {
-            PlayType.TODAY.id -> emit(Event(0))
-            PlayType.EARLY.id -> emit(Event(1))
-            PlayType.CHAMPION.id -> emit(Event(2))
-            else -> Unit
-        }
-    }.asLiveData(Dispatchers.Main)
+    private val _playTypeIndexChange: MutableLiveData<Event<Int>> = MutableLiveData<Event<Int>>()
+    val playTypeIndexChange: LiveData<Event<Int>> = _playTypeIndexChange
+
 
     private val _currentSportId: MutableStateFlow<Int> = MutableStateFlow(SportEnum.Default.id)
     val currentSportId: Int
@@ -67,7 +61,6 @@ class HomeViewModel : BaseViewModel() {
 
     private val repository: HomeRepository by inject()
     private val balanceRepository: BalanceRepository by inject()
-    private val skinManager: SkinnableManager by inject { parametersOf(viewModelScope) }
     val currentBalanceChange by lazy { MutableLiveData<InfoBean>() }
 
     val sportsStatistical by lazy { MutableLiveData<Event<List<SportDataModel>>>() }
@@ -90,9 +83,6 @@ class HomeViewModel : BaseViewModel() {
     private val _timer = MutableLiveData<Event<Long>>()
     val timer: LiveData<Event<Long>> = _timer
 
-    private val _selectedSkinType = MutableLiveData<Event<String>>()
-    val selectedSkinType: LiveData<Event<String>> = _selectedSkinType
-
     //聯賽收回上滑動畫結束事件
     private val _tournamentSlideOutEnd = MutableLiveData<Event<Unit>>()
     val tournamentSlideOutEnd: LiveData<Event<Unit>> = _tournamentSlideOutEnd
@@ -100,11 +90,23 @@ class HomeViewModel : BaseViewModel() {
     private val _notifyToChampion = MutableLiveData<Event<Unit>>()
     val notifyToChampion: LiveData<Event<Unit>> = _notifyToChampion
 
+    private val _calendarStates = MutableLiveData<HomeCalendarFragment.States>()
+    val calendarStates = _calendarStates
     fun notifyTournamentSlideOutEnd() {
         _tournamentSlideOutEnd.value = Event(Unit)
     }
 
     init {
+        viewModelScope.launch {
+            _currentPlayTypeId.collect {
+                when(it) {
+                    PlayType.TODAY.id -> _playTypeIndexChange.value = Event(0)
+                    PlayType.EARLY.id -> _playTypeIndexChange.value = Event(1)
+                    PlayType.CHAMPION.id -> _playTypeIndexChange.value = Event(2)
+                    else -> Unit
+                }
+            }
+        }
         viewModelScope.launch(Dispatchers.IO) {
             repository.observeSportsMatchCount()
                 .combine(_currentPlayTypeId) { list, playTypeId ->
@@ -246,14 +248,6 @@ class HomeViewModel : BaseViewModel() {
                 }
             }
         }
-        viewModelScope.launch(Dispatchers.IO) {
-            //觀察換肤type
-            skinManager.skinFlow.collect {
-                withContext(Dispatchers.Main) {
-                    _selectedSkinType.value = Event(it)
-                }
-            }
-        }
         startTimer()
     }
 
@@ -281,6 +275,7 @@ class HomeViewModel : BaseViewModel() {
                 setState(HomeState.Sport.LoadSuccess)
             } else if (it is ApiResponseState.Failed) {
                 if (tournaments.value?.peekContent() == null || tournaments.value?.peekContent()?.isEmpty() == true) {
+                    "Get Sport List Failure set only all into tournaments livedata".loge(this::class.java.simpleName)
                     tournaments.value = Event(
                         arrayListOf(
                             TournamentDataModel.createAllItem(
@@ -303,6 +298,7 @@ class HomeViewModel : BaseViewModel() {
             repository.updateSelectedSportId(currentPlayTypeId, currentSportId)
         }
         if (currentPlayTypeId != PlayType.CHAMPION.id) {
+            "On setCurrentSport -> Clear Tournaments LiveData & Update Tournaments from API".logi(this::class.java.simpleName)
             tournaments.value = Event(arrayListOf())
             setCurrentSelectedDate()   //目前日期跟著球類走，ex:早盤日期目前是7.11，不管點擊哪一個聯賽都是7.11資料，所以設定完當前選擇的球類後先設定日期
             getCurrentTournament()
@@ -327,6 +323,7 @@ class HomeViewModel : BaseViewModel() {
                 setState(HomeState.Tournament.LoadSuccess)
             } else if (it is ApiResponseState.Failed) {
                 if ((tournaments.value?.peekContent() == null || tournaments.value?.peekContent()?.isEmpty() == true)) {
+                    "Get Tournament List Failure set only all into tournaments livedata".loge(this::class.java.simpleName)
                     tournaments.value = Event(
                         arrayListOf(
                             TournamentDataModel.createAllItem(
@@ -421,5 +418,8 @@ class HomeViewModel : BaseViewModel() {
     override fun onCleared() {
         super.onCleared()
         stopTimer()
+    }
+    fun setCalendarState(state: HomeCalendarFragment.States) {
+        _calendarStates.value = state
     }
 }

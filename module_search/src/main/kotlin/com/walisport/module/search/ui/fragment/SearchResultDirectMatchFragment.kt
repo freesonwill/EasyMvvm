@@ -39,7 +39,6 @@ import com.walisport.module.search.ui.fragment.SearchDatePickerFragment.Companio
 import com.walisport.module.search.ui.fragment.SearchDatePickerFragment.Companion.DATE_PICKER_RESULT_KEY
 import com.walisport.module.search.ui.fragment.SearchDatePickerFragment.Companion.DATE_PICKER_RESULT_START
 import com.walisport.module.search.ui.fragment.SearchDatePickerFragment.Companion.DATE_PICKER_RESULT_TIME_IN_MILLIS
-import com.walisport.module.search.ui.fragment.SearchResultBaseFragment.Companion.GO_BACK_TO_MAIN
 import com.walisport.module.search.ui.viewmodel.SearchResultDirectMatchViewModel
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat

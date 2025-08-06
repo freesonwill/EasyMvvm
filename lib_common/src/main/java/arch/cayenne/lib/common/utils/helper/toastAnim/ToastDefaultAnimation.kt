@@ -9,7 +9,7 @@ import androidx.core.animation.addListener
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 
-class ToastDefaultAnimation: ToastAnimation {
+open class ToastDefaultAnimation: ToastAnimation {
 
     override val animDuration: Long
         get() = 150L

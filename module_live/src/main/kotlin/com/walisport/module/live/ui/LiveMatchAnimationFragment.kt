@@ -17,11 +17,13 @@ import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import com.github.lzyzsd.jsbridge.BridgeWebViewClient
 import com.github.lzyzsd.jsbridge.DefaultHandler
+import com.walisport.module.live.R
 import com.walisport.module.live.databinding.FragmentLiveMatchAnimationBinding
 import com.walisport.module.live.ui.viewmodel.LiveMainViewModel
 import com.walisport.module.live.ui.viewmodel.LiveMatchAnimationViewModel
 import com.walisport.module.live.ui.viewmodel.LiveMatchMediaViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import kotlin.reflect.KClass
 
@@ -185,6 +187,7 @@ class LiveMatchAnimationFragment :
                             loadsImagesAutomatically = true
                         }
                     }
+                    visibility = View.VISIBLE
                     super.onPageFinished(view, url)
                 }
             })
@@ -205,8 +208,20 @@ class LiveMatchAnimationFragment :
                 }
             })
 
-            setBackgroundColor(arch.cayenne.lib.common.R.color.color_80000000.getColor())
+            setBackgroundColor(arch.cayenne.lib.common.R.color.black.getColor())
         }
+    }
+
+    override fun onResume() {
+        mBinding.animationView.onResume()
+        mBinding.animationView.resumeTimers()
+        super.onResume()
+    }
+
+    override fun onPause() {
+        mBinding.animationView.onPause()
+        mBinding.animationView.pauseTimers()
+        super.onPause()
     }
 
     override fun onDestroy() {

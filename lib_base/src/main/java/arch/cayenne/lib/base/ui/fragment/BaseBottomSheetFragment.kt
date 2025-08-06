@@ -34,9 +34,9 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
 
     protected val TAG by lazy { this::class.java.simpleName }
     private var mScrollY: Int? = null
-    private var backgroundView: View? = null
-    private var sheetContainer: View? = null
-    private var isDismissing = false
+    protected var backgroundView: View? = null
+    protected var sheetContainer: View? = null
+    protected var isDismissing = false
     //#region VB,VM
     protected val mBinding: VB get() = uiBind.binding
     protected val mViewModel: VM get() = uiBind.viewModel
@@ -72,30 +72,22 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
         val dialog = object : BottomSheetDialog(requireContext(), theme) {
             override fun onBackPressed() {
                 this@BaseBottomSheetFragment.dismiss()
-                super.onBackPressed()
+                if (!isResumed) {
+                    super.onBackPressed()
+                }
+            }
+
+            override fun onStart() {
+                super.onStart()
+                hideSheet()
+            }
+
+            override fun hide() {
             }
         }
 
         dialog.setOnShowListener {
-            val d = it as BottomSheetDialog
-            val root = d.findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)?.parent as ViewGroup
-
-            backgroundView = root.getChildAt(0).apply {
-                visibility = View.INVISIBLE
-//                setBackgroundColor(Color.BLACK)
-//                alpha = 0.75f
-                setOnClickListener {
-                    if (isCancelable) {
-                        dismiss()
-                    }
-                }
-            }
-            sheetContainer = root.findViewById<View?>(com.google.android.material.R.id.design_bottom_sheet).apply {
-                visibility = View.INVISIBLE
-            }
-            // 彈出動畫
             playEnterAnimations()
-
         }
 
         return dialog
@@ -110,7 +102,7 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
 
     protected open fun enterAnimation():Animation = AnimationUtils.loadAnimation(requireContext(),R.anim.slide_bottom_sheet_up)
 
-    private fun playEnterAnimations() {
+    protected fun playEnterAnimations() {
         sheetContainer?.let {  scv ->
             // bottom sheet 上滑動畫
             val sheetAnim = enterAnimation()
@@ -128,7 +120,26 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
             })
             scv.startAnimation(sheetAnim)
         }
+    }
 
+    protected fun playExitAnimations() {
+        val sheetContainerSheetAnim = AnimationUtils.loadAnimation(requireContext(), R.anim.slide_bottom_sheet_down)
+        sheetContainerSheetAnim.setAnimationListener(object : Animation.AnimationListener {
+            override fun onAnimationStart(animation: Animation?) {
+                backgroundView?.visibility = View.INVISIBLE
+            }
+            override fun onAnimationEnd(animation: Animation?) {
+                try {
+                    superDismiss()
+                } catch (e: Exception) {
+                    dismissAllowingStateLoss()
+                }
+            }
+
+            override fun onAnimationRepeat(animation: Animation?) {}
+        })
+
+        sheetContainer?.startAnimation(sheetContainerSheetAnim)
     }
 
     @CallSuper
@@ -153,10 +164,33 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
     @CallSuper
     override fun onStart() {
         super.onStart()
-        removeDim()
         uiBind.onStart()
+        setSheetContainer()
+        setBackGroundOnclick()
+        removeDim()
         setStatusBar()
-  }
+    }
+
+    protected open fun setBackGroundOnclick() {
+        backgroundView?.setOnClickListener {
+            if (isCancelable) {
+                dismiss()
+            }
+        }
+    }
+
+    protected fun hideSheet() {
+        backgroundView?.visibility = View.INVISIBLE
+        sheetContainer?.visibility = View.INVISIBLE
+    }
+
+    private fun setSheetContainer() {
+        val d = dialog as BottomSheetDialog
+        val root = d.findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)?.parent as ViewGroup
+
+        backgroundView = root.getChildAt(0)
+        sheetContainer = root.findViewById(com.google.android.material.R.id.design_bottom_sheet)
+    }
 
     @CallSuper
     override fun onResume() {
@@ -205,6 +239,9 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
         }
     }
 
+    override suspend fun createObserver() {
+    }
+
     fun show(manager: FragmentManager) {
         val f = manager.findFragmentByTag(this::class.java.simpleName)
         if (f == null || !f.isAdded) {
@@ -212,7 +249,11 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
         }
     }
 
-    override suspend fun createObserver() {
+    override fun show(manager: FragmentManager, tag: String?) {
+        val f = manager.findFragmentByTag(tag)
+        if (f == null || !f.isAdded) {
+            super.show(manager, tag)
+        }
     }
 
 
@@ -222,28 +263,11 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
             return
         }
         isDismissing = true
-
-        val sheetContainerSheetAnim = AnimationUtils.loadAnimation(requireContext(), R.anim.slide_bottom_sheet_down)
-        sheetContainerSheetAnim.setAnimationListener(object : Animation.AnimationListener {
-            override fun onAnimationStart(animation: Animation?) {
-                backgroundView?.visibility = View.INVISIBLE
-            }
-            override fun onAnimationEnd(animation: Animation?) {
-                try {
-                    superDismiss()
-                } catch (e: Exception) {
-                    dismissAllowingStateLoss()
-                }
-            }
-
-            override fun onAnimationRepeat(animation: Animation?) {}
-        })
-
-        sheetContainer?.startAnimation(sheetContainerSheetAnim)
+        playExitAnimations()
     }
 
-    protected open fun superDismiss() {
-        isDismissing = false
+    open fun superDismiss() {
+        isDismissing = true
         super.dismiss()
     }
 

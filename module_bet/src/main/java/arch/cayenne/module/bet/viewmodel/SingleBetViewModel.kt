@@ -66,7 +66,7 @@ class SingleBetViewModel(
                 if (odds == null) {
                     isBetSheetActive && isMoneyValid
                 } else {
-                    isBetSheetActive && isMoneyValid && odds > betSheet.odds
+                    isBetSheetActive && isMoneyValid && odds >= betSheet.odds
                 }
             }
         }
@@ -136,12 +136,14 @@ class SingleBetViewModel(
             launch {
                 balanceRepo.observeBalance().collect {
                     _onBalanceListener.value = it
-                    setRemainingNumber(it.balance)
+                    if (it != null) {
+                        setRemainingNumber(it.balance)
+                    }
                 }
             }
             launch {
-                betRepo.getBetType()?.let {
-                    _betTypeListener.value = it
+                betRepo.observeBetType().collect {
+                    _betTypeListener.value = it ?: BetTypeEnum.SINGLE
                 }
             }
         }
@@ -152,10 +154,11 @@ class SingleBetViewModel(
             return false
         }
         val money = onEditNumber.value?.toMoney() ?: return false
+        val currentOdds = _onBetSheetListener.value?.odds ?: 0
         val reserveOdds = _onReserveOddsListener.value
 
         viewModelScope.launch {
-            if (reserveOdds == null) {
+            if (reserveOdds == null || reserveOdds == currentOdds) {
                 val isSuccess = async {
                     betRepo.saveToSingle()
                 }.await()
@@ -184,6 +187,12 @@ class SingleBetViewModel(
 
     fun saveToCombo() {
         betRepo.saveToCombo()
+    }
+
+    fun saveToSingle() {
+        viewModelScope.launch {
+            betRepo.saveToSingle()
+        }
     }
 
     fun saveToReserve(odds: Int) {

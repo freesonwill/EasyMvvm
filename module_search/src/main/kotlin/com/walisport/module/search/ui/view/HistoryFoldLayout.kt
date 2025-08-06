@@ -97,7 +97,8 @@ class HistoryFoldLayout @JvmOverloads constructor(
 
         for(i in 0 until childCount) {
             val childView = getChildAt(i)
-            val childWidth = FoldUtils.getViewWidth(childView) + mHorizontalSpacing
+            val space = if (tempLineCount > 0) mHorizontalSpacing else 0
+            val childWidth = FoldUtils.getViewWidth(childView) + space
 
             if(tempWidth + childWidth < maxWidth) {
                 // 如果加上這個元素後還不會超過行寬，就放進當前行

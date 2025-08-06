@@ -5,14 +5,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowInsets
 import androidx.annotation.CallSuper
 import androidx.annotation.IdRes
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
@@ -187,10 +185,14 @@ fun Fragment.launch(
     lifecycleScope:LifecycleCoroutineScope = viewLifecycleOwner.lifecycleScope,
     block: suspend CoroutineScope.() -> Unit
 ): Job {
+    @Suppress("DEPRECATION")
     return if (state == null) lifecycleScope.launch(block = block, context = context, start = start)
-    else lifecycleScope.launch(context = context, start = start) {
-        repeatOnLifecycle(state, block)
-    }
+    else when(state) {
+            Lifecycle.State.CREATED -> lifecycleScope.launchWhenCreated{ launch(context,start,block) }
+            Lifecycle.State.STARTED -> lifecycleScope.launchWhenStarted{ launch(context,start,block) }
+            Lifecycle.State.RESUMED -> lifecycleScope.launchWhenResumed{ launch(context,start,block) }
+            else -> throw IllegalArgumentException("Unsupported lifecycle state: $state")
+        }
 }
 
 /**

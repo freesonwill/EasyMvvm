@@ -6,6 +6,8 @@ import arch.cayenne.lib.database.entity.BetTypeEnum
 import arch.cayenne.module.bet.BettingRemoteManager
 import galaxy.client.proto.Client
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -14,6 +16,8 @@ class BetSheetRepository(
     private val betDao: BetDao,
     private val remoteManager: BettingRemoteManager
 ) : BaseRepository() {
+
+    val observerBetCount: Flow<Int> = betDao.observeCurrentCount()
 
     init {
         scope.launch {

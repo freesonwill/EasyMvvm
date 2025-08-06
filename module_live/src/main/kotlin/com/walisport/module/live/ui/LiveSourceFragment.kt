@@ -1,15 +1,18 @@
 package com.walisport.module.live.ui
 
 import android.animation.ValueAnimator
+import android.app.Dialog
+import android.content.DialogInterface
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.Gravity
+import android.view.KeyEvent
+import android.view.MotionEvent
 import android.view.View
 import android.view.View.OnLayoutChangeListener
 import android.view.ViewGroup
 import android.view.WindowManager
-import android.widget.LinearLayout
 import androidx.core.animation.doOnEnd
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -21,12 +24,14 @@ import arch.cayenne.lib.common.utils.ext.ResourceExt.getDimensionPixelSize
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.ext.startSafeAnimateSet
+import com.walisport.module.live.R
 import com.walisport.module.live.compare.VideoSourceBeanCompare
 import com.walisport.module.live.databinding.FragmentLiveSourcePortraitBinding
 import com.walisport.module.live.ui.adapter.LiveVideoSourceHorizontalAdapter
 import com.walisport.module.live.ui.viewmodel.LiveMatchMediaViewModel
 import com.walisport.module.live.ui.viewmodel.LiveVideoSourceViewModel
 import kotlin.reflect.KClass
+
 
 class LiveSourceFragment :
     BaseDialogFragment<LiveVideoSourceViewModel, FragmentLiveSourcePortraitBinding>() {
@@ -87,7 +92,7 @@ class LiveSourceFragment :
 
                 if (location[0] == 0) {
                     mBinding.ctSource.removeOnLayoutChangeListener(this)
-                    mBinding.ctSource.postDelayed({ playEnterAnimations() }, 150)
+                    playEnterAnimations()
                 }
             }
         })
@@ -121,6 +126,11 @@ class LiveSourceFragment :
 
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        isCancelable = false
+    }
+
 
     override fun onStart() {
         super.onStart()
@@ -132,10 +142,48 @@ class LiveSourceFragment :
                 windowParams.gravity = Gravity.BOTTOM
                 windowParams.width = WindowManager.LayoutParams.MATCH_PARENT // 宽度占满
                 val height = requireArguments().getInt(HEIGHT, ViewGroup.LayoutParams.WRAP_CONTENT)
-                windowParams.height =height
+                windowParams.height = height
                 window.setAttributes(windowParams);
             }
         }
+    }
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val dialog = super.onCreateDialog(savedInstanceState)
+        dialog.window?.setWindowAnimations(R.style.NoAnimationDialog)
+        dialog.setCanceledOnTouchOutside(true)
+        dialog.setOnKeyListener(object : DialogInterface.OnKeyListener {
+            override fun onKey(dialog: DialogInterface?, keyCode: Int, event: KeyEvent?): Boolean {
+                if (event?.keyCode == KeyEvent.KEYCODE_BACK && event.action == KeyEvent.ACTION_UP) {
+                    this@LiveSourceFragment.dismiss()
+                    return true
+                } else {
+                    return false
+                }
+            }
+
+        })
+
+        dialog.window?.let { window ->
+            val decorView = window.decorView
+            decorView.setOnTouchListener { _, event ->
+                if (event.action == MotionEvent.ACTION_DOWN) {
+                    val dialogBounds = Rect()
+                    decorView.getHitRect(dialogBounds)
+                    if (!dialogBounds.contains(event.x.toInt(), event.y.toInt())) {
+                        dismiss() // 手动调用 dismiss
+                        true
+                    } else {
+                        false
+                    }
+                } else {
+                    false
+                }
+            }
+
+        }
+
+        return dialog
     }
 
 
@@ -147,14 +195,15 @@ class LiveSourceFragment :
                     0
                 ).apply {
                     addUpdateListener {
-                        val lp = mBinding.ctSource.layoutParams as LinearLayout.LayoutParams
-                        lp.topMargin = it.animatedValue as Int
-
-                        mBinding.ctSource.layoutParams = lp
+//                        val lp = mBinding.ctSource.layoutParams as LinearLayout.LayoutParams
+//                        lp.topMargin = it.animatedValue as Int
+//
+//                        mBinding.ctSource.layoutParams = lp
+                        mBinding.ctSource.translationY = (it.animatedValue as Int).toFloat()
                     }
                 },
             )
-        }, duration = 150L, start = true)
+        }, duration = ANIMATION_DURATION, start = true)
 
     }
 
@@ -169,17 +218,14 @@ class LiveSourceFragment :
                     com.walisport.module.live.R.dimen.video_source_portrait_margin_top.getDimensionPixelSize()
                 ).apply {
                     addUpdateListener {
-                        val lp = mBinding.ctSource.layoutParams as LinearLayout.LayoutParams
-                        lp.topMargin = it.animatedValue as Int
-
-                        mBinding.ctSource.layoutParams = lp
+                        mBinding.ctSource.translationY = (it.animatedValue as Int).toFloat()
                     }
                 },
             )
             doOnEnd {
                 superDismiss()
             }
-        }, duration = 150L, start = true)
+        }, duration = ANIMATION_DURATION, start = true)
     }
 
     private fun superDismiss() {
@@ -213,6 +259,8 @@ class LiveSourceFragment :
 
         const val WIDTH = "width"
         const val HEIGHT = "height"
+
+        const val ANIMATION_DURATION = 120L
     }
 
 }

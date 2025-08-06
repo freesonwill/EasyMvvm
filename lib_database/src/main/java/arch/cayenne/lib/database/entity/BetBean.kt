@@ -54,6 +54,7 @@ data class BetSelectionBean(
     var isPlaying: Boolean, // 是否滾球
     var isParlay: Boolean,
     val provider: Int,
+    val createTime: Long = System.currentTimeMillis(),
     var oddsStatus: OddsStatusEnum? = null
 ) {
     fun updateOdds(newOdds: Int) {

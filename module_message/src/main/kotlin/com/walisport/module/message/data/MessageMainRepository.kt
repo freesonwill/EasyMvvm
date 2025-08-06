@@ -1,5 +1,6 @@
 package com.walisport.module.message.data
 
+import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.base.data.repository.BaseRepository
 import arch.cayenne.lib.database.dao.MessageDao
 import arch.cayenne.lib.database.entity.MessageBean
@@ -7,6 +8,7 @@ import com.walisport.module.message.MessageRemoteManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class MessageMainRepository(
     private val remoteManager: MessageRemoteManager,
@@ -69,5 +71,29 @@ class MessageMainRepository(
             }
         }
     }
+
+    //获取用户消息通知列表
+    suspend fun getMessageData(id: Long, type: Int): ApiResponseState =
+        withContext(scope.coroutineContext) {
+            val result = remoteManager.getMessageListReq(scope, id, type)
+            return@withContext if (result.error == null && result.data != null) {
+                val list = ArrayList<NotificationBean>()
+                result.data!!.msgRecordList?.mapIndexed { _, item ->
+                    val temp = NotificationBean(
+                        id = item.id,                 //消息ID
+                        type = item.type,             //消息类型 1系统通知 2活动通知
+                        state = item.status,          //状态 0未读 1已读
+                        title = item.title,           //标题
+                        content = item.content,       //内容
+                        createTime = item.createTime  //创建时间
+                    )
+                    list.add(temp)
+                }
+                insertMessage(list)
+                ApiResponseState.Succeeded(list)
+            } else {
+                ApiResponseState.Failed(result.error)
+            }
+        }
 }
 
