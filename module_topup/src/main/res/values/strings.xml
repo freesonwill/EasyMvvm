@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="fragment_title">充值</string>
+    <string name="fragment_title">钱包</string>
+    <string name="balance">余额</string>
+    <string name="recharge">充值</string>
+    <string name="withdrawal">提现</string>
+    <string name="recharge_record">充值记录</string>
+    <string name="withdrawal_record">提现记录</string>
 </resources>
