@@ -24,6 +24,7 @@ class MatchItemCompare : DiffUtil.ItemCallback<MatchWithMarkets>() {
 
         if (oldItem.match.basicInfo.status != newItem.match.basicInfo.status) diff.add("status")
         if (oldLiveInfo.clock != newLiveInfo.clock) diff.add("clock")
+        if (oldLiveInfo.rollClock != newLiveInfo.rollClock) diff.add("rollClock")
         if (oldLiveInfo.score != newLiveInfo.score) diff.add("score")
         if (oldLiveInfo.viewerCount != newLiveInfo.viewerCount) diff.add("viewerCount")
         if (oldLiveInfo.liveAnimation != newLiveInfo.liveAnimation) diff.add("liveAnimation")
