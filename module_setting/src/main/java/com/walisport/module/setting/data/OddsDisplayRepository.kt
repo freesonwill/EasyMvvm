@@ -22,7 +22,6 @@ class OddsDisplayRepository(
 
     //设置赔率显示方式
     suspend fun setOddsType(type: OddsDisplayEnum) = withContext(scope.coroutineContext) {
-        manager.setKeyValue(UserDataKey.KEY_ODDS, type.value)
         val resp = socketManager.sendAndWaitProtoMessageResponse<Client.UpdateSettingResp>(
             scope = scope,
             dispatcher = Dispatchers.IO,
@@ -35,6 +34,7 @@ class OddsDisplayRepository(
             }.build()
         }
         if (resp.error == null && resp.data != null) {
+            manager.setKeyValue(UserDataKey.KEY_ODDS, type.value)
             ApiResponseState.Succeeded(resp.data)
         } else {
             ApiResponseState.Failed(error = resp.error)
