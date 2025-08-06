@@ -16,7 +16,7 @@ object SportMoneyOddsExt {
     private val manager: UserDataManager = inject<UserDataManager>(UserDataManager::class.java).value
     private val oddsType: Int get() = manager.getValue(UserDataKey.KEY_ODDS, 0)
 
-    fun Long.getFormalMoney(odds: Int): String {
+    fun Long.getDisplayFormalMoney(odds: Int): String {
         if (this == 0L || odds <= 0) return "0"
 
         val result = this * (odds - oddsType * 100)
@@ -37,7 +37,7 @@ object SportMoneyOddsExt {
     /**
      * @return string: 1234 轉換為 12.34, 1000 轉換為 10.00
      */
-    fun Int.getOdds(): String {
+    fun Int.getDisplayOdds(): String {
         if (this <= 0) return "0"
 
         val newOdds = this - oddsType * 100
@@ -46,7 +46,7 @@ object SportMoneyOddsExt {
         return decimal.setScale(2, RoundingMode.DOWN).stripTrailingZeros().toPlainString()
     }
 
-    fun Int.getOdds(odds: Int): String {
+    fun Int.getDisplayOdds(odds: Int): String {
         if (this <= 0 || odds <= 0) return "0" // ← 明確處理 0
 
         val newOdds = this * odds - oddsType * 10000

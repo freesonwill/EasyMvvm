@@ -15,7 +15,8 @@ import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.common.utils.ext.NavResultExt.sendResult
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
-import arch.cayenne.lib.common.utils.ext.SportMoneyOddsExt.getOdds
+import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
+import arch.cayenne.lib.common.utils.ext.SportMoneyOddsExt.getDisplayOdds
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.helper.showToast
@@ -211,7 +212,7 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
     }
 
     private fun bindBetSheet(bean: BetSelectionBean, binding: ItemBetSheetBinding) {
-        val odds = "@${bean.odds.getOdds()}"
+        val odds = "@${bean.odds.getDisplayOdds()}"
         binding.tvOdds.text = odds
 
         binding.tvSelectionName.text = bean.name

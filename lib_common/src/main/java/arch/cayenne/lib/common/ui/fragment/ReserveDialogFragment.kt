@@ -17,7 +17,7 @@ import androidx.core.view.isVisible
 import arch.cayenne.lib.common.databinding.FragmentReserveDialogBinding
 import arch.cayenne.lib.common.ui.viewmodel.ReserveDialogViewModel
 import arch.cayenne.lib.common.utils.ViewUtils
-import arch.cayenne.lib.common.utils.ext.SportMoneyOddsExt.getOdds
+import arch.cayenne.lib.common.utils.ext.SportMoneyOddsExt.getDisplayOdds
 
 class ReserveDialogFragment private constructor() : BaseDialogFragment<ReserveDialogViewModel, FragmentReserveDialogBinding>() {
 
@@ -164,7 +164,7 @@ class ReserveDialogFragment private constructor() : BaseDialogFragment<ReserveDi
             }
 
             override fun getOtherText(): String {
-                return "+${mViewModel.minOdds.getOdds()}"
+                return "+${mViewModel.minOdds.getDisplayOdds()}"
             }
 
         })
