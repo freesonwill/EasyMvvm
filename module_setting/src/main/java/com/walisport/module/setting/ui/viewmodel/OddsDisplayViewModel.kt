@@ -22,12 +22,7 @@ class OddsDisplayViewModel(private val repo: OddsDisplayRepository): BaseViewMod
 
     //设置赔率方式
     fun setOddsType(type: OddsDisplayEnum) {
-        callApi( {
-            repo.setOddsType(type)
-        }, {
-            if (it is ApiResponseState.Succeeded<*>) {
-                _displayType.value = type
-            }
-        })
+        repo.setOddsType(type)
+        _displayType.value = type
     }
 }
