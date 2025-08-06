@@ -105,7 +105,7 @@ abstract class MatchDao : BaseDao<MatchBean>() {
                 "sel.detail_active as detailActive, " +
                 "sel.name as name, " +
                 "sel.shortName as shortName, " +
-                "CASE WHEN :isEuropeOddsDisplay THEN sel.odds ELSE sel.odds - 100 END as odds, " +
+                "sel.odds as odds, " +
                 "sel.active as active, " +
                 "sel.parlay as parlay, " +
                 "0 as isSelected," +
@@ -113,7 +113,7 @@ abstract class MatchDao : BaseDao<MatchBean>() {
             "FROM SelectionBean sel " +
             "INNER JOIN  MarketSelectCrossRef ref ON ref.matchId = :matchId AND ref.marketId = :marketId " +
             "WHERE sel.selectionId = ref.selectionId ORDER BY ref.`order`")
-    abstract suspend fun getSelectionLites(matchId: Long, marketId: Long, isEuropeOddsDisplay: Boolean = true): List<SelectionBeanLite>
+    abstract suspend fun getSelectionLites(matchId: Long, marketId: Long): List<SelectionBeanLite>
 
     @Transaction
     @Query("SELECT * FROM SelectionBean WHERE selectionId = :selectionId")
@@ -226,7 +226,6 @@ abstract class MatchDao : BaseDao<MatchBean>() {
     open suspend fun updateOnlyMatch(
         updateIds: List<Long>,     //更新的賽事id
         matchLites: List<MatchBeanLite>,
-        isEuropeOddsDisplay: Boolean,   //目前設定是否是歐洲盤
     ) : List<MatchWithMarkets>{
         matchLites.forEach { bean ->
             updateNotifyMatchBasic(
@@ -250,7 +249,7 @@ abstract class MatchDao : BaseDao<MatchBean>() {
                 )
             }
         }
-        return getOneMatchByIds(updateIds, isEuropeOddsDisplay)
+        return getOneMatchByIds(updateIds)
     }
 
     @Transaction
@@ -261,7 +260,6 @@ abstract class MatchDao : BaseDao<MatchBean>() {
         selections: List<SelectionBean>,
         marketCrossRef: List<MatchMarketCrossRef>,
         marketSelectCrossRefs: List<MarketSelectCrossRef>,
-        isEuropeOddsDisplay: Boolean,
     ): List<MatchWithMarkets> {
         matchLites.forEach { bean ->
             updateNotifyMatchBasic(
@@ -293,7 +291,7 @@ abstract class MatchDao : BaseDao<MatchBean>() {
         //盤口的selection有可能在推播時整個變更（例如兩個選項+0.5/-0.5 -> +1/-1），所以刪除之前的cross ref，把之前盤口和selection連結斷開再連接，避免query取得之前的盤口
         deleteMarketSelectionCrossRef(marketCrossRef.map { it.matchId }, marketCrossRef.map { it.marketId })
         insertMarketSelectionCrossRef(marketSelectCrossRefs)
-        return getOneMatchByIds(updateIds, isEuropeOddsDisplay).onEach {
+        return getOneMatchByIds(updateIds).onEach {
             //加入賠率趨勢
             it.markets.forEach { markets ->
                 markets.selections.forEach { selection ->
@@ -306,12 +304,12 @@ abstract class MatchDao : BaseDao<MatchBean>() {
     }
 
     @Transaction
-    open suspend fun getFullMatch(playType: Int, tournamentId: Int, page: Int, date: Long, isEurope: Boolean): List<MatchWithMarkets> {
+    open suspend fun getFullMatch(playType: Int, tournamentId: Int, page: Int, date: Long): List<MatchWithMarkets> {
         return queryAllMatch(playType, tournamentId, page, date).map { matchBean ->
             val markets = getMarkets(matchBean.matchId).map { marketBean ->
                 val selections = specialHandling(
                     marketBean.marketId,
-                    getSelectionLites(matchBean.matchId, marketBean.marketId, isEurope)
+                    getSelectionLites(matchBean.matchId, marketBean.marketId)
                 )
 
                 MarketWithSelections(marketBean, selections)
@@ -332,12 +330,12 @@ abstract class MatchDao : BaseDao<MatchBean>() {
     }
 
     @Transaction
-    open suspend fun getOneMatchByIds(matchId: List<Long>, isEuropeOddsDisplay: Boolean): List<MatchWithMarkets> {
+    open suspend fun getOneMatchByIds(matchId: List<Long>): List<MatchWithMarkets> {
         return getMatchByIds(matchId).map { matchBean ->
             val markets = getMarkets(matchBean.matchId).map { marketBean ->
                 val selections = specialHandling(
                     marketBean.marketId,
-                    getSelectionLites(matchBean.matchId, marketBean.marketId, isEuropeOddsDisplay)
+                    getSelectionLites(matchBean.matchId, marketBean.marketId)
                 )
                 MarketWithSelections(marketBean, selections)
             }
@@ -346,12 +344,12 @@ abstract class MatchDao : BaseDao<MatchBean>() {
     }
 
     @Transaction
-    open suspend fun getOneMatchById(matchId: Long, isEuropeOddsDisplay: Boolean): MatchWithMarkets {
+    open suspend fun getOneMatchById(matchId: Long): MatchWithMarkets {
         return getMatchById(matchId).let { matchBean ->
             val markets = getMarkets(matchBean.matchId).map { marketBean ->
                 val selections = specialHandling(
                 marketBean.marketId,
-                getSelectionLites(matchBean.matchId, marketBean.marketId, isEuropeOddsDisplay)
+                getSelectionLites(matchBean.matchId, marketBean.marketId)
             )
                 MarketWithSelections(marketBean, selections)
             }

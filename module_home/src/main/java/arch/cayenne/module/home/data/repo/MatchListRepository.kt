@@ -2,7 +2,6 @@ package arch.cayenne.module.home.data.repo
 
 import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
-import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.database.dao.BetDao
 import arch.cayenne.lib.database.dao.InfoDao
 import arch.cayenne.lib.database.dao.MatchDao
@@ -22,8 +21,7 @@ class MatchListRepository(
     private val betDao: BetDao,
     private val matchDao: MatchDao,
     private val infoDao: InfoDao,
-    private val userDataManager: UserDataManager,
-) : BaseMatchRepository(scope, socketManager, betDao, matchDao, infoDao, userDataManager) {
+) : BaseMatchRepository(scope, socketManager, betDao, matchDao, infoDao) {
     /**
      * 根據不同的條件，從api或是db(優先)取得賽事資料，如果從api來的話，拿到後會先存進資料庫內
      * @param playType : 一級導航欄

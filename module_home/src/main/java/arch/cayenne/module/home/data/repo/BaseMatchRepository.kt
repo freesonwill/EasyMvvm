@@ -4,9 +4,6 @@ import androidx.room.Transaction
 import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.base.data.repository.BaseRepository
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
-import arch.cayenne.lib.common.data.constants.OddsDisplayEnum
-import arch.cayenne.lib.common.data.constants.UserDataKey
-import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.database.dao.BetDao
 import arch.cayenne.lib.database.dao.InfoDao
 import arch.cayenne.lib.database.dao.MatchDao
@@ -35,18 +32,11 @@ abstract class BaseMatchRepository(
     private val betDao: BetDao,
     private val matchDao: MatchDao,
     private val infoDao: InfoDao,
-    private val userDataManager: UserDataManager,
 ) : BaseRepository() {
     companion object {
         const val ONE_DAY_TIME_STAMP = 86399000L
         const val THIRTY_DAY_TIME_STAMP = 86399000L * 29
         const val DEFAULT_MATCH_SIZE = 10
-    }
-
-    protected val isEuropeOddsDisplay : Boolean
-    get() {
-        val value = userDataManager.getValue(UserDataKey.KEY_ODDS, OddsDisplayEnum.EU.value)
-        return value == OddsDisplayEnum.EU.value
     }
 
     /**
@@ -121,7 +111,7 @@ abstract class BaseMatchRepository(
         }
         if (res.error == null && res.data != null) {
             matchDao.updateOnlyMatchCollect(item.match.matchId, collect)
-            return matchDao.getOneMatchById(item.match.matchId, isEuropeOddsDisplay).setSelected(betDao)
+            return matchDao.getOneMatchById(item.match.matchId).setSelected(betDao)
         }
         return null
     }
@@ -130,7 +120,7 @@ abstract class BaseMatchRepository(
      * 取得特定的match，藉由matchId
      * */
     suspend fun getOneMatchById(matchId: Long): MatchWithMarkets? {
-        return matchDao.getOneMatchByIds(arrayListOf(matchId), isEuropeOddsDisplay).setSelected(betDao).firstOrNull()
+        return matchDao.getOneMatchByIds(arrayListOf(matchId)).setSelected(betDao).firstOrNull()
     }
 
     /**
@@ -162,8 +152,7 @@ abstract class BaseMatchRepository(
             updateData.markets,
             updateData.selections,
             updateData.matchMarketCrossRefs,
-            updateData.marketSelectCrossRefs,
-            isEuropeOddsDisplay,
+            updateData.marketSelectCrossRefs
         ).setSelected(betDao)
     }
 
@@ -193,7 +182,7 @@ abstract class BaseMatchRepository(
                 )
             )
         }
-        return matchDao.updateOnlyMatch(matchLites.map { it.matchId }, matchLites, isEuropeOddsDisplay).setSelected(betDao)
+        return matchDao.updateOnlyMatch(matchLites.map { it.matchId }, matchLites).setSelected(betDao)
     }
 
     /**
@@ -201,7 +190,7 @@ abstract class BaseMatchRepository(
      * @return 根據條件query的賽事資料
      * */
     suspend fun queryFullMatches(matchIds: List<Long>, selectedIds: List<Long>? = null) : List<MatchWithMarkets> {
-        val result = matchDao.getOneMatchByIds(matchIds, isEuropeOddsDisplay).setSelected(betDao, selectedIds)
+        val result = matchDao.getOneMatchByIds(matchIds).setSelected(betDao, selectedIds)
         return matchIds.mapNotNull { id -> result.find { it.match.matchId == id } }
     }
 
@@ -211,7 +200,7 @@ abstract class BaseMatchRepository(
     }
 
     suspend fun getSelectionInsertBean(matchId: Long, selectionId: Long): BetInsertBean? = withContext(scope.coroutineContext) {
-        val match = matchDao.getOneMatchById(matchId, isEuropeOddsDisplay)
+        val match = matchDao.getOneMatchById(matchId)
         val selectionBean = matchDao.getSelectionById(selectionId)
         matchSelectionInsertBean(match, selectionBean)
     }

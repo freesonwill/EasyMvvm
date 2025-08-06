@@ -51,10 +51,10 @@ class HomeModuleInitializer: DefaultInitializer<Unit> {
             CoroutineScope(Dispatchers.IO)
         }
         factory { HomeRepository(get(), get(), get(), get()) }
-        factory { ChampionRepository(get(), get(), get<GameDatabase>().matchDao(), get<GameDatabase>().betDao(), get<GameDatabase>().infoDao(), get()) }
+        factory { ChampionRepository(get(), get(), get<GameDatabase>().matchDao(), get<GameDatabase>().betDao(), get<GameDatabase>().infoDao()) }
         factory { TournamentListRepository(get(), get(), get<GameDatabase>().tournamentDao(), get<GameDatabase>().infoDao()) }
-        factory { CollectListRepository(get(), get(), get<GameDatabase>().betDao(), get<GameDatabase>().matchDao(), get<GameDatabase>().infoDao(), get()) }
-        factory { MatchListRepository(get(), get(), get<GameDatabase>().betDao(), get<GameDatabase>().matchDao(), get<GameDatabase>().infoDao(), get()) }
+        factory { CollectListRepository(get(), get(), get<GameDatabase>().betDao(), get<GameDatabase>().matchDao(), get<GameDatabase>().infoDao()) }
+        factory { MatchListRepository(get(), get(), get<GameDatabase>().betDao(), get<GameDatabase>().matchDao(), get<GameDatabase>().infoDao()) }
         factory { DrawerContentRepository(get(), get(), get()) }
     }
     private val moduleList: List<Module> = listOf(viewModules, daoModule, repoModules)
