@@ -105,14 +105,13 @@ class BetSlipFragment :
                 val marginStart: Int = 8f.dp2px
                 for (i in 0 until mTabStrip.childCount) {
                     val tabView = mTabStrip.getChildAt(i)
-                    //设置tab左右间距为10dp  注意这里不能使用Padding 因为源码中线的宽度是根据 tabView的宽度来设置的
+                    //设置tab左右间距为8dp  注意这里不能使用Padding 因为源码中线的宽度是根据 tabView的宽度来设置的
                     val params = tabView.layoutParams as LinearLayout.LayoutParams
-                    params.leftMargin = marginStart
+                      params.leftMargin = marginStart
                     params.height = 32.dp2px
                     when (i) {
                         0, 1, 2 -> {
                             params.width = 74.dp2px
-                            params.rightMargin = marginStart
                         }
 
                         else -> {
