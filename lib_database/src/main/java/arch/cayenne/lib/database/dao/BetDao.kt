@@ -176,4 +176,9 @@ abstract class BetDao : BaseDao<BetBean>() {
         "UPDATE BetSelectionBean SET marketName = :marketName, name = :name, leagueName = :leagueName, matchName = :matchName WHERE betId = :betId AND selectionId = :selectionId"
     )
     abstract suspend fun updateLanguage(betId: Long, selectionId: Long, marketName: String, name: String, leagueName: String, matchName: String)
+
+    @Query(
+        "UPDATE BetSelectionBean SET odds = :odds WHERE betId = :betId AND selectionId = :selectionId"
+    )
+    abstract suspend fun updateOdds(betId: Long, selectionId: Long, odds: Int)
 }
