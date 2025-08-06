@@ -25,7 +25,7 @@ class TopUpMainFragment : BaseFragment<TopUpMainViewModel, FragmentTopupMainBind
                 findNavController().navigateUp()
             })
 
-            root.touchBackPressed(requireContext())
+            root.touchBackPressed()
         }
 
 

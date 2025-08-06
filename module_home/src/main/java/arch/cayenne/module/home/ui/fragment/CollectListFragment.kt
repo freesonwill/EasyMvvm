@@ -122,7 +122,7 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
                 }
             })
         }
-        mBinding.rvCollectList.touchBackPressed(requireContext())
+        mBinding.rvCollectList.touchBackPressed()
     }
 
     override fun onCreateAnimation(transit: Int, enter: Boolean, nextAnim: Int): Animation? {

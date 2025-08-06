@@ -31,7 +31,7 @@ class NoticeFragment : BaseFragment<SettingViewModel, FragmentNoticeBinding>() {
         mBinding.titleBar.loadGeneralTitleBar(R.string.menu_notice_set.getString(),
             { findNavController().navigateUp() })
         initToggle()
-        mBinding.root.touchBackPressed(requireContext())
+        mBinding.root.touchBackPressed()
     }
 
     private fun initToggle() {

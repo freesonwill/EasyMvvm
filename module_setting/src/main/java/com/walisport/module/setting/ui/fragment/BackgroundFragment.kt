@@ -55,7 +55,7 @@ class BackgroundFragment : BaseFragment<SettingViewModel, FragmentBackgroundBind
                 findNavController().navigateUp()
             }
         }
-        mBinding.root.touchBackPressed(requireContext())
+        mBinding.root.touchBackPressed()
     }
 
     override fun onStart() {

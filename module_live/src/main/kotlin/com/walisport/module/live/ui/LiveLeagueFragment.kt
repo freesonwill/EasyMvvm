@@ -91,7 +91,7 @@ class LiveLeagueFragment : BaseFragment<LeagueViewModel, FragmentLeagueBinding>(
             sendResult(LiveMainFragment.CHANGE_MATCH, result)
             navigateUp()
         }
-        mBinding.recyclerLeague.touchBackPressed(requireContext())
+        mBinding.recyclerLeague.touchBackPressed()
     }
 
     override fun initData() {

@@ -104,7 +104,8 @@ class SearchResultDirectMatchFragment :
             }
             tvDate.text = dateHintStr
         }
-        mBinding.root.touchBackPressed(requireContext())
+        mBinding.root.touchBackPressed()
+        contentBinding.recyclerView.touchBackPressed()
     }
 
     override fun initData() {

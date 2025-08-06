@@ -29,7 +29,7 @@ class LanguageFragment : BaseFragment<LanguageViewModel, FragmentLanguageBinding
         mBinding.titleBar.loadGeneralTitleBar(R.string.menu_language_set, {
             findNavController().navigateUp()
         })
-        mBinding.root.touchBackPressed(requireContext())
+        mBinding.root.touchBackPressed()
     }
 
     override fun initListener() {

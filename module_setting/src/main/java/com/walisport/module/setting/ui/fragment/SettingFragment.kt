@@ -40,7 +40,7 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
             mBinding.tvVersion.text =
                 "ver.${pi.versionName}_${arch.cayenne.lib.common.BuildConfig.BUILD_TIME}"
         }
-        mBinding.root.touchBackPressed(requireContext())
+        mBinding.root.touchBackPressed()
     }
 
     override fun initListener() {

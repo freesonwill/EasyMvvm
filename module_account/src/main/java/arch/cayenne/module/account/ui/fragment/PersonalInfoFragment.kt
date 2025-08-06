@@ -79,7 +79,7 @@ class  PersonalInfoFragment : BaseFragment<PersonalInfoViewModel, FragmentPerson
                 btnSave.isEnabled = mViewModel.getDefaultPosition() != -1
             }
         }
-        mBinding.root.touchBackPressed(requireContext())
+        mBinding.root.touchBackPressed()
     }
 
     override fun initListener() {

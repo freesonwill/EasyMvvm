@@ -6,9 +6,11 @@ import android.view.View
 
 open class OnSwipeTouchListener: View.OnTouchListener {
     private var startX: Float = 0f
+    private var startY: Float = 0f
     private var startTime: Long = 0L
-    private val SWIPE_THRESHOLD = 100 // Minimum distance in pixels
-    private val SWIPE_MAX_TIME = 1000 // Max time in milliseconds (1 second)
+    private val SWIPE_THRESHOLD = 100 // 按下和抬起的滑动距离
+    private val SWIPE_MAX_TIME = 1000 // 按下和抬起的时间间隔
+    private val thresholdY = 50 // Y轴滑动阀值
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouch(v: View, event: MotionEvent): Boolean {
@@ -17,17 +19,19 @@ open class OnSwipeTouchListener: View.OnTouchListener {
             MotionEvent.ACTION_DOWN -> {
                 if(startTime == 0L){
                     startX = event.x
+                    startY = event.y
                     startTime = event.eventTime
                 }
-                return true
+                return event.action == MotionEvent.ACTION_DOWN
             }
             MotionEvent.ACTION_UP -> {
                 val endX = event.x
+                val endY = event.y
                 val endTime = event.eventTime
                 val diffX = endX - startX
+                val diffY = endY - startY
                 val timeDiff = endTime - startTime
-                // Check for left-to-right swipe: distance >= 100 pixels, within 1 second, mostly horizontal
-                if (diffX > SWIPE_THRESHOLD && timeDiff <= SWIPE_MAX_TIME) {
+                if (diffX > SWIPE_THRESHOLD && timeDiff <= SWIPE_MAX_TIME&&diffY<=thresholdY) {
                     onSwipeLeft()
                     return true
                 }

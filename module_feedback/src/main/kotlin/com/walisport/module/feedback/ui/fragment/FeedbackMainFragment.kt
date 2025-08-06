@@ -31,7 +31,7 @@ class FeedbackMainFragment : BaseFragment<FeedbackMainViewModel, FragmentFeedbac
         }
         //默认会选中一个
         mViewModel.setCheckBoxSelected(true)
-        mBinding.root.touchBackPressed(requireContext())
+        mBinding.root.touchBackPressed()
     }
 
 
