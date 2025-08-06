@@ -226,7 +226,7 @@
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_335"
-            android:alpha="0.3"
+            android:alpha="0.7"
             android:background="@drawable/bg_wallet_bar"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
