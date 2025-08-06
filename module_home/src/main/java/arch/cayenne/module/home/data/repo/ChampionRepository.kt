@@ -1,6 +1,7 @@
 package arch.cayenne.module.home.data.repo
 
 import androidx.room.Transaction
+import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.database.dao.BetDao
 import arch.cayenne.lib.database.dao.InfoDao
 import arch.cayenne.lib.database.dao.MatchDao
@@ -20,7 +21,8 @@ class ChampionRepository(
     private val matchDao: MatchDao,
     private val betDao: BetDao,
     private val infoDao: InfoDao,
-) : BaseMatchRepository(scope, socketManager, betDao, matchDao, infoDao) {
+    private val userDataManager: UserDataManager,
+) : BaseMatchRepository(scope, socketManager, betDao, matchDao, infoDao, userDataManager) {
     @Transaction
     suspend fun getChampionDetail(matchId: Long) : MatchWithMarkets? {
         val resp = socketManager.sendAndWaitProtoMessageResponse<Client.GetMatchResp>(
@@ -42,10 +44,11 @@ class ChampionRepository(
                 marketCrossRef = matchFullData.matchMarketCrossRefs,
                 marketSelectCrossRefs = matchFullData.marketSelectCrossRefs,
             )
-            return matchDao.getOneMatchById(matchId).setSelected(betDao)
+            return matchDao.getOneMatchById(matchId, isEuropeOddsDisplay).setSelected(betDao)
         }
         return null
     }
 
-    suspend fun getOnCurrentMatch(matchId: Long, selectedIds: List<Long>) : MatchWithMarkets? = matchDao.getOneMatchById(matchId).setSelected(betDao, selectedIds)
+    suspend fun getOnCurrentMatch(matchId: Long, selectedIds: List<Long>) : MatchWithMarkets? =
+        matchDao.getOneMatchById(matchId, isEuropeOddsDisplay).setSelected(betDao, selectedIds)
 }
