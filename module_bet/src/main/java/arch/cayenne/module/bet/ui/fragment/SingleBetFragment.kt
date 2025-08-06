@@ -13,7 +13,7 @@ import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.common.utils.ext.NavResultExt.sendResult
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
-import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
+import arch.cayenne.lib.common.utils.ext.SportMoneyOddsExt.getOdds
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.helper.showToast
