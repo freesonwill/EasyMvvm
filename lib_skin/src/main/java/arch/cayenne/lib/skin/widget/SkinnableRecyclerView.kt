@@ -12,7 +12,7 @@ import arch.cayenne.lib.skin.widget.helper.SkinnableViewFlowHelper
 import kotlinx.coroutines.launch
 import org.koin.java.KoinJavaComponent.inject
 
-class SkinnableRecyclerView : RecyclerView {
+open class SkinnableRecyclerView : RecyclerView {
     private val flowHelper = SkinnableViewFlowHelper()
     private val backgroundHelper = SkinnableBackGroundHelper(this)
 
