@@ -6,4 +6,5 @@
     <color name="wallet_ripper">#F3F3F4</color>
     <color name="wallet_balance">#FFFFFF</color>
     <color name="btn_withdraw">#24EE8A</color>
+    <color name="btn_recharge">#000000</color>
 </resources>
