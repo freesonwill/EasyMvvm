@@ -76,7 +76,7 @@ class TournamentListRepository(
         tournamentDao.insert(tournamentList)
         tournamentDao.insertSportTournamentCrossRefs(refs)
         tournamentDao.deleteMissing(sportId, playType, refs.map { it.tournamentId })
-        return ApiResponseState.Succeeded(queryTournaments(playType, sportId))
+        return ApiResponseState.Succeeded(queryChampionTournaments(sportId))
     }
 
     suspend fun queryTournaments(playTypeId: Int, sportId: Int) = tournamentDao.queryTournaments(playTypeId, sportId)
