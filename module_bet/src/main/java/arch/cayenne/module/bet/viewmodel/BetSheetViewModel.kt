@@ -17,7 +17,6 @@ class BetSheetViewModel(private val repo: BetSheetRepository) : BaseViewModel() 
         get() = _betSheetSizeListener.value ?: 0
 
     init {
-        repo.register()
         viewModelScope.launch {
             repo.observerBetCount.distinctUntilChanged().collect { count ->
                 _betSheetSizeListener.value = count
@@ -29,6 +28,10 @@ class BetSheetViewModel(private val repo: BetSheetRepository) : BaseViewModel() 
 
     fun unregister() {
         repo.unregister()
+    }
+
+    fun register() {
+        repo.register()
     }
 
     fun removeSingleBet() {

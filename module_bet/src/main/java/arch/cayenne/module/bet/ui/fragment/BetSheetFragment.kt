@@ -223,11 +223,6 @@ class BetSheetFragment private constructor() :
         ViewHelper.expandView(v, h)
     }
 
-    override fun superDismiss() {
-        mViewModel.unregister()
-        super.superDismiss()
-    }
-
     override fun onDismiss(dialog: DialogInterface) {
         mViewModel.removeSingleBet()
         super.onDismiss(dialog)
@@ -237,6 +232,7 @@ class BetSheetFragment private constructor() :
         if (lastLiveData == null) {
             initDestination()
         }
+        mViewModel.register()
         super.customShow()
         val f = mBinding.mainNav.getFragment<Fragment>().childFragmentManager.primaryNavigationFragment
         if (f is BetSheetListener) {
@@ -251,6 +247,7 @@ class BetSheetFragment private constructor() :
                 f.doCustomHideEnd()
             }
         }
+        mViewModel.unregister()
     }
 
     override fun setCustomCollapseSetting() {
