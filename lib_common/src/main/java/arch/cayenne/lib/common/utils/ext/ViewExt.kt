@@ -428,3 +428,18 @@ fun View.touchBackPressed(){
         }
     })
 }
+
+fun View.getTouchListener(): View.OnTouchListener? {
+    return try {
+        val listenerInfoField = View::class.java.getDeclaredField("mListenerInfo")
+        listenerInfoField.isAccessible = true
+        val listenerInfo = listenerInfoField.get(this)
+
+        val touchListenerField = listenerInfo.javaClass.getDeclaredField("mOnTouchListener")
+        touchListenerField.isAccessible = true
+        touchListenerField.get(listenerInfo) as? View.OnTouchListener
+    } catch (e: Exception) {
+        e.printStackTrace()
+        null
+    }
+}

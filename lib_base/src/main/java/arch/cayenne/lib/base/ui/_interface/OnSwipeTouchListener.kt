@@ -3,6 +3,7 @@ package arch.cayenne.lib.base.ui._interface
 import android.annotation.SuppressLint
 import android.view.MotionEvent
 import android.view.View
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 
 open class OnSwipeTouchListener: View.OnTouchListener {
     private var startX: Float = 0f
@@ -15,7 +16,6 @@ open class OnSwipeTouchListener: View.OnTouchListener {
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouch(v: View, event: MotionEvent): Boolean {
         when (event.action) {
-            MotionEvent.ACTION_MOVE,
             MotionEvent.ACTION_DOWN -> {
                 if(startTime == 0L){
                     startX = event.x

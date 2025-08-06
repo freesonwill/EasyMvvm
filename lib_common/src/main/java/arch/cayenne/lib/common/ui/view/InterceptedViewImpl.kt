@@ -8,6 +8,7 @@ import android.view.ViewConfiguration
 import android.view.ViewGroup
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.R
+import arch.cayenne.lib.common.utils.ext.getTouchListener
 import kotlin.math.abs
 
 /**
@@ -17,6 +18,7 @@ import kotlin.math.abs
 class InterceptedViewImpl(private val view: ViewGroup) {
     private val TAG = "InterceptedViewImpl"
     private var isIntercepting = false
+    private var downEventSnapshot: MotionEventSnapshot? = null
 
     enum class InterceptedDirection(val v: Int) {
         UP(0x01), //上滑
@@ -79,6 +81,7 @@ class InterceptedViewImpl(private val view: ViewGroup) {
                 lastX = e.rawX
                 lastY = e.rawY
                 isIntercepting = false
+                downEventSnapshot = e.toSnapshot()
             }
 
             MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
@@ -91,6 +94,8 @@ class InterceptedViewImpl(private val view: ViewGroup) {
                     && isInterceptConditionMet(e) //
                 ) {
                     isIntercepting = true
+                    //因为在Move事件中拦截，所以需要发送一个假的DOWN事件给TouchListener
+                    sendFakeDownEventToTouchListener()
                 }
 
             }
@@ -100,6 +105,16 @@ class InterceptedViewImpl(private val view: ViewGroup) {
 
     fun onTouchEvent(e: MotionEvent): Boolean {
         return isIntercepting
+    }
+
+    /**
+     * 发送一个假的DOWN事件给TouchListener
+     */
+    private fun sendFakeDownEventToTouchListener() {
+        downEventSnapshot!!.toMotionEvent().apply {
+            view.getTouchListener()?.onTouch(view, this)
+            recycle()
+        }
     }
 
     /**
@@ -155,5 +170,34 @@ class InterceptedViewImpl(private val view: ViewGroup) {
      */
     private fun shouldIntercept(direction: InterceptedDirection): Boolean {
         return (interceptFlags and direction.v) != 0
+    }
+
+    data class MotionEventSnapshot(
+        val action: Int,
+        val downTime: Long,
+        val eventTime: Long,
+        val x: Float,
+        val y: Float,
+        val metaState: Int
+    )
+    private fun MotionEvent.toSnapshot(): MotionEventSnapshot {
+        return MotionEventSnapshot(
+            action = this.action,
+            downTime = this.downTime,
+            eventTime = this.eventTime,
+            x = this.x,
+            y = this.y,
+            metaState = this.metaState
+        )
+    }
+    private fun MotionEventSnapshot.toMotionEvent(): MotionEvent {
+        return MotionEvent.obtain(
+            downTime,
+            eventTime,
+            action,
+            x,
+            y,
+            metaState
+        )
     }
 }
