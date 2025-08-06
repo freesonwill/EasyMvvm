@@ -4,8 +4,11 @@ import android.content.Context
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.MotionEvent
+import android.view.View
 import android.view.ViewConfiguration
 import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager2.widget.ViewPager2
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.R
 import arch.cayenne.lib.common.utils.ext.getTouchListener
@@ -19,6 +22,11 @@ class InterceptedViewImpl(private val view: ViewGroup) {
     private val TAG = "InterceptedViewImpl"
     private var isIntercepting = false
     private var downEventSnapshot: MotionEventSnapshot? = null
+    private lateinit var canScrollView : View
+    private var lastX = -1f
+    private var lastY = -1f
+    private var interceptFlags: Int = 0
+    private var touchSlop: Int = ViewConfiguration.get(view.context).scaledTouchSlop
 
     enum class InterceptedDirection(val v: Int) {
         UP(0x01), //上滑
@@ -26,11 +34,6 @@ class InterceptedViewImpl(private val view: ViewGroup) {
         LEFT(0x04),//左滑
         RIGHT(0x08) //右滑
     }
-
-    private var lastX = -1f
-    private var lastY = -1f
-    private var interceptFlags: Int = 0
-    private var touchSlop: Int = ViewConfiguration.get(view.context).scaledTouchSlop
 
     fun init(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) {
         context.theme.obtainStyledAttributes(
@@ -58,8 +61,17 @@ class InterceptedViewImpl(private val view: ViewGroup) {
                         else -> 0
                     }
                 }
+                val canScrollViewId = ta.getResourceId(R.styleable.InterceptedView_canScrollView, View.NO_ID)
                 this.interceptFlags = interceptedDirection
                 this.touchSlop = touchSlop
+                view.post { //canScrollView需要延迟一帧获取
+                    var canScrollView = if(canScrollViewId == View.NO_ID) view else view.findViewById<View>(canScrollViewId)
+                    if(canScrollView is ViewPager2){
+                        val recyclerView = canScrollView.getChildAt(0) as? RecyclerView
+                        canScrollView = recyclerView
+                    }
+                    this.canScrollView = canScrollView
+                }
             } finally {
                 ta.recycle()
             }
@@ -91,7 +103,7 @@ class InterceptedViewImpl(private val view: ViewGroup) {
             MotionEvent.ACTION_MOVE -> {
                 if (!isIntercepting
                     && !canScrollInDirection(e) //方向上能否滑动
-                    && isInterceptConditionMet(e) //
+                    && isInterceptConditionMet(e) //是否满足拦截条件
                 ) {
                     isIntercepting = true
                     //因为在Move事件中拦截，所以需要发送一个假的DOWN事件给TouchListener
@@ -100,6 +112,16 @@ class InterceptedViewImpl(private val view: ViewGroup) {
 
             }
         }
+        /*"""aaaa----
+            ${MotionEvent.actionToString(e.action)},
+            e.x:${e.x}, e.y:${e.y}
+            e.rawX:${e.rawX}, e.rawY:${e.rawY}
+            lastX:$lastX, lastY:$lastY
+            isDirectionScroll:${isInterceptConditionMet(e)}, interceptFlags:$interceptFlags, slot:$touchSlop
+            canScrollDirection:${canScrollInDirection(e)}
+            intercepted:$isIntercepting
+            calculateInterceptedType:${calculateInterceptedType(e)}
+        """.logd(TAG)*/
         return isIntercepting
     }
 
@@ -156,10 +178,10 @@ class InterceptedViewImpl(private val view: ViewGroup) {
     private fun canScrollInDirection(e: MotionEvent): Boolean {
         val (direction) = calculateInterceptedType(e)
         return when (direction) {
-            InterceptedDirection.UP -> view.canScrollVertically(-1)
-            InterceptedDirection.DOWN -> view.canScrollVertically(1)
-            InterceptedDirection.LEFT -> view.canScrollHorizontally(-1)
-            InterceptedDirection.RIGHT -> view.canScrollHorizontally(1)
+            InterceptedDirection.UP -> canScrollView.canScrollVertically(1) //是否还能上滑
+            InterceptedDirection.DOWN -> canScrollView.canScrollVertically(-1) //是否下滑
+            InterceptedDirection.LEFT -> canScrollView.canScrollHorizontally(1) //是否还能左滑
+            InterceptedDirection.RIGHT -> canScrollView.canScrollHorizontally(-1) //是否还能右滑
         }
     }
 

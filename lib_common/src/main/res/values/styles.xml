@@ -91,6 +91,7 @@
             <flag name="LEFT" value="0x04" />
             <flag name="RIGHT" value="0x08" />
         </attr>
+        <attr name="canScrollView" format="reference" />
     </declare-styleable>
 
 </resources>
