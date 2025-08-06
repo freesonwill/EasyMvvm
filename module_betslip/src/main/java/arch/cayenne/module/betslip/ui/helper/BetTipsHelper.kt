@@ -42,7 +42,7 @@ class BetTipsHelper {
             // 顯示 PopupWindow
             popupWindow?.showAsDropDown(attachView, offX, 0)
 
-            this.root.postDelayed({ dismissTips() }, SHOW_TIME)
+//            this.root.postDelayed({ dismissTips() }, SHOW_TIME)
         }
     }
 

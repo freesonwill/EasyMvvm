@@ -11,7 +11,7 @@ class VideoAnimatorConstants {
         /**
          * 放大缩小动画的持续时间
          */
-        const val ZOOM_ANIMATION_DURATION = 300L
+        const val ZOOM_ANIMATION_DURATION = 200L
 
         /**
          * 隐藏操作栏的定时器

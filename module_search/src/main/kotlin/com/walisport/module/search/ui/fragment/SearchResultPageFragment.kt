@@ -210,6 +210,7 @@ class SearchResultPageFragment(val data: SearchResultBean) :
 
     private fun addSearchKeyWord(keyWord: String) {
         with(sharedViewModel) {
+            setCurrentKeyword(keyWord)
             addOneRecord(keyWord)
         }
     }

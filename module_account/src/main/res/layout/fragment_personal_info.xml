@@ -86,7 +86,7 @@
     <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:background="@color/input_box_2"
+        android:background="@drawable/bg_nick_name"
         android:id="@+id/ll_nick_name"
         android:layout_marginTop="@dimen/dp_10"
         android:layout_marginStart="@dimen/dp_12"
@@ -107,10 +107,10 @@
             android:imeOptions="actionDone"
             android:singleLine="true"
             android:hint="@string/personal_info_hint"
-            android:textColor="@color/main_text"
+            android:textColor="@color/nick_name_color_state"
             android:textColorHint="@color/secondary_text"
             android:layout_weight="1"
-            android:maxLength="8"
+            android:maxLength="6"
             tools:ignore="MissingConstraints" />
         <arch.cayenne.lib.skin.widget.SkinnableTextView
             android:id="@+id/tv_nick_name_length"

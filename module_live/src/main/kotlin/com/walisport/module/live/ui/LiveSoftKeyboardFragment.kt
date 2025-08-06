@@ -71,7 +71,6 @@ class LiveSoftKeyboardFragment :
     }
 
     override fun initView(savedInstanceState: Bundle?) {
-
         initTab()
         initSoftRecycler()
         initInputListener()
@@ -91,14 +90,20 @@ class LiveSoftKeyboardFragment :
         mBinding.liveChatIvKeyboard.setOnClickListener {
             chatViewModel.addSoftKeyBoardEvent(KeyBoardType.SOFT_KEYBOARD)
         }
+    }
+    @SuppressLint("ClickableViewAccessibility")
+    private fun initInputListener() {
 // 监听键盘的显示和隐藏
         ViewCompat.setOnApplyWindowInsetsListener(requireView()) { _: View?, insets: WindowInsetsCompat ->
-            if (insets.isVisible(WindowInsetsCompat.Type.ime())) {
+            val imeInsets = insets.getInsets(WindowInsetsCompat.Type.ime())
+            val isSoftVisible = imeInsets.bottom > 100.dp2px
+            if (isSoftVisible) {
                 // 键盘显示
                 if(isSoftKeyBoard){
                     return@setOnApplyWindowInsetsListener insets
                 }
                 isSoftKeyBoard = true
+                chatViewModel.softKeyBoardHeight = imeInsets.bottom
                 onSoftKeyBoardShow()
             } else {
                 // 键盘隐藏
@@ -110,20 +115,7 @@ class LiveSoftKeyboardFragment :
             }
             insets
         }
-    }
-    @SuppressLint("ClickableViewAccessibility")
-    private fun initInputListener() {
         mBinding.liveChatEtInput.apply {
-            //监听聚焦事件，不合格的展示软件盘一律拦截
-//            setOnFocusChangeListener { v, hasFocus ->
-//                "onFocusChange $hasFocus".logd("aaa")
-//                if (!hasFocus) {
-//                    return@setOnFocusChangeListener
-//                }
-//                if (chatViewModel.openSoftKeyBoardLiveData.value == false) {
-//                    hideSoftKeyBoard(1)
-//                }
-//            }
             //监听点击事件
             setOnTouchListener { v, event ->
                 if (event.action == MotionEvent.ACTION_UP) {
@@ -179,6 +171,7 @@ class LiveSoftKeyboardFragment :
         }
         chatViewModel.addSoftKeyBoardEvent(KeyBoardType.NONE,4)
         chatViewModel.sendMsgToChat(mViewModel.inputText)
+        mViewModel.inputText = ""
     }
 
     override suspend fun createObserver() {
@@ -402,10 +395,16 @@ class LiveSoftKeyboardFragment :
         EditTextUtils.hideKeyboard(activity, mBinding.liveChatEtInput)
     }
 
+    /**
+     *软键盘打开时调用
+     * */
     private fun onSoftKeyBoardShow() {
 
     }
 
+    /**
+     * 软件盘关闭时调用
+     * */
     private fun onSoftKeyBoardHide(){
         if(chatViewModel.softKeyBoardListener.value == KeyBoardType.SOFT_KEYBOARD){
             chatViewModel.addSoftKeyBoardEvent(KeyBoardType.NONE,5)

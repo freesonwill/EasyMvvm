@@ -1,10 +1,10 @@
 package arch.cayenne.module.home.data.repo
 
+import androidx.room.Transaction
 import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.base.data.repository.BaseRepository
 import arch.cayenne.lib.database.dao.InfoDao
 import arch.cayenne.lib.database.dao.TournamentDao
-import arch.cayenne.lib.database.entity.ChampionTournamentDataModel
 import arch.cayenne.lib.database.entity.SportTournamentCrossRef
 import arch.cayenne.lib.database.entity.TournamentBean
 import arch.cayenne.lib.websocket.WebSocketManager
@@ -33,30 +33,16 @@ class TournamentListRepository(
             }.build()
         }
         if (res.error == null && res.data != null) {
-            saveTournaments(
+            return saveTournaments(
                 playType = PlayType.CHAMPION.id,
                 sportId = sportId,
                 data = res.data!!
-            )
-            return ApiResponseState.Succeeded(
-                res.data!!.outrightMatchOrBuilderList.map {
-                    ChampionTournamentDataModel(
-                        id = it.tournamentId,
-                        championMatchId = it.matchId,
-                        sportId = it.sportId,
-                        playTypeId = PlayType.CHAMPION.id,
-                        name = it.tournamentName,
-                        simpleName = "",
-                        icon = it.tournamentIcon,
-                        weight = it.weight,
-                        hot = it.hot,
-                    )
-                }
             )
         }
         return ApiResponseState.Failed(res.error)
     }
 
+    @Transaction
     private suspend fun saveTournaments(
         playType: Int,
         sportId: Int,
@@ -90,7 +76,7 @@ class TournamentListRepository(
         tournamentDao.insert(tournamentList)
         tournamentDao.insertSportTournamentCrossRefs(refs)
         tournamentDao.deleteMissing(sportId, playType, refs.map { it.tournamentId })
-        return ApiResponseState.Succeeded(tournamentList)
+        return ApiResponseState.Succeeded(queryChampionTournaments(sportId))
     }
 
     suspend fun queryTournaments(playTypeId: Int, sportId: Int) = tournamentDao.queryTournaments(playTypeId, sportId)

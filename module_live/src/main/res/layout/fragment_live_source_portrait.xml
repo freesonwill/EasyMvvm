@@ -23,7 +23,7 @@
                 android:id="@+id/ct_source"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/video_source_portrait_height"
-                android:layout_marginTop="@dimen/video_source_portrait_margin_top"
+                android:translationY="@dimen/video_source_portrait_margin_top"
                 android:background="@color/video_source_fragment_bkg">
 
                 <arch.cayenne.lib.skin.widget.SkinnableTextView

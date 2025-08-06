@@ -41,6 +41,8 @@ class SearchFragment : SearchBaseFragment<SearchViewModel, FragmentSearchBinding
         }
     }
 
+
+
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
         setHistory()
@@ -56,17 +58,6 @@ class SearchFragment : SearchBaseFragment<SearchViewModel, FragmentSearchBinding
         //获取热门搜索
         mViewModel.getSearchHotWord { error ->
             error?.let { showToast(it.msg) }
-        }
-    }
-
-    override fun initListener() {
-        super.initListener()
-
-        parentFragmentManager.setFragmentResultListener(SEARCH_KEY, viewLifecycleOwner) { _, bundle ->
-            bundle.getString(SEARCH_KEY)?.let { keyword ->
-                updateSearchText(keyword)
-                mViewModel.getRecordByUID()
-            }
         }
     }
 

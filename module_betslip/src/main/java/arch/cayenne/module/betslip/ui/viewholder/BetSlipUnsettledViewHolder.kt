@@ -74,13 +74,11 @@ class BetSlipUnsettledViewHolder(binding: ViewBinding, betSlipType: BetSlipEnum)
 
             if (flag) {
                 val combo = R.string.title_combo_bet_odds.getString(order.comboK, order.comboV)
-                val comboValue = "$combo*${order.comboCount}"
+                val comboValue = combo //"$combo*${order.comboCount}" 修改为类似 2串1
                 it.betUnsettledTvCrossborderValue.text = comboValue
             }
-            it.groupEarlysettle.isVisible = order.earlySupport
-            if (order.earlySupport) {
-                it.betUnsettledTvEarlysettleValue.text = order.earlyBetAmount
-            }
+            it.groupEarlysettle.isVisible = order.earlyBetAmount.toMoney() > 0 //提前结算部分有金额才显示
+            it.betUnsettledTvEarlysettleValue.text = order.earlyBetAmount
             it.betUnsettledBtSettle.clickNoRepeat {
                 if (order.earlySettlePrice.settleStatus != 102) {
                     earlySettleSubmitListener?.onItemClick("", adapterPosition)

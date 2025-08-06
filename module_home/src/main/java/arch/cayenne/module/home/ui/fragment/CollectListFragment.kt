@@ -182,12 +182,13 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
                             arch.cayenne.lib.common.R.string.error_net.getString()
                         )
                     }
-                    DataState.DataEmpty -> {     //這個DataEmpty表示api抓不到任何資料了，有可能是頁面到底，或是從第一頁就抓不到資料
+                    DataState.NoMoreData -> {     //這個DataEmpty表示api抓不到任何資料了，有可能是頁面到底，或是從第一頁就抓不到資料
                         mViewModel.changePageEnd(true)
                         refreshLayout.finishLoadMore()
                         refreshLayout.setEnableLoadMore(false)
+                        matchAdapter.showNoMoreData(true)
                     }
-                    HomeState.Match.DataEmpty -> {  //這個DataEmpty表示真的從第一頁就抓不到資料，表示當前的選擇沒有任何賽事
+                    HomeState.Match.DataEmpty -> {  //這個DataEmpty表示確定真的從第一頁就抓不到資料，表示當前的選擇沒有任何賽事
                         loadingView.visibility = View.GONE
                         refreshLayout.finishRefresh()
                         clDynamics.visibility = View.VISIBLE

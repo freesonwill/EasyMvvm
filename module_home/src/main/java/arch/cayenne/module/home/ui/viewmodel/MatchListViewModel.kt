@@ -142,9 +142,7 @@ class MatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
                             if (page == 1 && isEmpty) {
                                 matchListChange.value = arrayListOf()
                                 setState(HomeState.Match.DataEmpty)
-                            }
-                            //如果返回成功，但是数据size小于10，则表明列表已经加载到底部
-                            if (size < 10) {
+                            } else if (size < BaseMatchRepository.DEFAULT_MATCH_SIZE) {   //如果返回成功，但是数据size小于10，则表明列表已经加载到底部
                                 setState(DataState.NoMoreData)
                             }
                         }

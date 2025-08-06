@@ -135,6 +135,7 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
         }
         mViewModel.onBetSheetListener.observe(viewLifecycleOwner) {
             setBetData(it)
+            setBetButtonByOdds(mViewModel.onReserveOddsListener.value, it.odds)
         }
         mViewModel.onBetWinMoney.observe(viewLifecycleOwner) {
             mBinding.tvBetMoney.isVisible = it.isNotEmpty() && it != "0"
@@ -159,15 +160,14 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
         }
 
         mViewModel.onReserveOddsListener.observe(viewLifecycleOwner) { odds ->
+            val currentOdds = mViewModel.onBetSheetListener.value?.odds ?: 0
             mBinding.btnReserve.isVisible = odds == null
             mBinding.clCancelReserve.isVisible = odds != null
-            if (odds == null) {
-                mBinding.tvBetHint.text = getString(R.string.btn_bet_hint)
-            } else {
-                mBinding.tvBetHint.text = getString(R.string.title_reserve)
+            if (odds != null) {
                 val value = "@${odds.getOdds()}"
                 mBinding.tvCancelReserve.text = value
             }
+            setBetButtonByOdds(odds, currentOdds)
         }
         mViewModel.betTypeListener.observe(viewLifecycleOwner) { type ->
             setBetTypeLayout(type)
@@ -207,6 +207,14 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
         mBinding.layoutBet.ivDelete.isVisible = false
     }
 
+    private fun setBetButtonByOdds(reserveOdds: Int?, currentOdds: Int) {
+        if (reserveOdds == null || reserveOdds == currentOdds) {
+            mBinding.tvBetHint.text = getString(R.string.btn_bet_hint)
+        } else {
+            mBinding.tvBetHint.text = getString(R.string.title_reserve)
+        }
+    }
+
     override fun dismiss(key: String, value: String) {
         sendResult(key, value, R.id.singleBetFragment)
     }
@@ -215,14 +223,18 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
         sendResult(key, value, R.id.singleBetFragment)
     }
 
+    override fun doCustomShow() {
+        mBinding.etMoney.requestFocus()
+    }
+
     override fun doCustomHideEnd() {
         mViewModel.removeReserve()
         mViewModel.clearNumber()
+        showKeyboard()
     }
 
     private fun hideKeyboard() {
         ViewUtils.collapseView(mBinding.clKeyboard, mBinding.ivFakerView)
-        mBinding.etMoney.clearFocus()
         mBinding.clMoney.isFocusableInTouchMode = false
         mBinding.clMoney.isFocusable = false
     }
@@ -230,7 +242,6 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
     private fun showKeyboard() {
         if (!mBinding.clKeyboard.isVisible) {
             ViewUtils.expandView(mBinding.clKeyboard, mBinding.ivFakerView)
-            mBinding.etMoney.requestFocus()
             mBinding.clMoney.isFocusableInTouchMode = true
             mBinding.clMoney.isFocusable = true
         }

@@ -28,7 +28,6 @@ class PullRefreshLayout : SmartRefreshLayout {
     fun setLeagueMode() {
         post {
             header.setLeagueMode()
-            footer.setLeagueMode()
         }
     }
 }

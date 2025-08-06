@@ -58,7 +58,7 @@ abstract class BetDao : BaseDao<BetBean>() {
         status: BetStatusEnum = BetStatusEnum.PENDING
     ): Int
 
-    @Query("SELECT * FROM BetSelectionBean WHERE betId = :betId")
+    @Query("SELECT * FROM BetSelectionBean WHERE betId = :betId ORDER BY createTime DESC")
     abstract suspend fun getSelections(betId: Long): List<BetSelectionBean>
 
     @Query(
@@ -99,7 +99,7 @@ abstract class BetDao : BaseDao<BetBean>() {
                 "        WHERE status = :status" +
                 "        ORDER BY betId DESC" +
                 "        LIMIT 1" +
-                "    )"
+                "    ) ORDER BY createTime DESC"
     )
     abstract fun observeCurrentSelections(status: BetStatusEnum = BetStatusEnum.PENDING): Flow<List<BetSelectionBean>>
 
@@ -176,4 +176,9 @@ abstract class BetDao : BaseDao<BetBean>() {
         "UPDATE BetSelectionBean SET marketName = :marketName, name = :name, leagueName = :leagueName, matchName = :matchName WHERE betId = :betId AND selectionId = :selectionId"
     )
     abstract suspend fun updateLanguage(betId: Long, selectionId: Long, marketName: String, name: String, leagueName: String, matchName: String)
+
+    @Query(
+        "UPDATE BetSelectionBean SET odds = :odds WHERE betId = :betId AND selectionId = :selectionId"
+    )
+    abstract suspend fun updateOdds(betId: Long, selectionId: Long, odds: Int)
 }

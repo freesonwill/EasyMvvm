@@ -169,11 +169,20 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
                     null
                 )
             } else {
-                betSelectionAdapter.submitList(it)
+                val lastSize = betSelectionAdapter.itemCount
+                betSelectionAdapter.submitList(it) {
+                    if (it.size > lastSize) {
+                        mBinding.rvBet.scrollToPosition(0)
+                    }
+                }
             }
         }
         mViewModel.onComboMultiBetBeanListener.observe(viewLifecycleOwner) { data ->
+            val lastSize = comboMultiBetAdapter.itemCount
             comboMultiBetAdapter.submitList(data) {
+                if (data.size > lastSize) {
+                    mBinding.rvMultiBet.scrollToPosition(0)
+                }
                 if (data.size <= 1) {
                     mBinding.rvMultiBet.layoutParams = mBinding.rvMultiBet.layoutParams.apply {
                         this.height = getMultiItemHeight()

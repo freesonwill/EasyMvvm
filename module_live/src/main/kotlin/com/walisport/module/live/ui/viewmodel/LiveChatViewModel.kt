@@ -217,7 +217,7 @@ class LiveChatViewModel(private val chatRepo: LiveChatRepository) : BaseViewMode
     /**
      *更新软件盘显示
      * */
-    fun updateSoftKeyBoard() {
+    fun updateKeyBoard() {
         if (currentSoftKeyboard.value == softKeyBoardListener.value) {
             return
         }

@@ -179,13 +179,11 @@ class CommonRepository(
     //读取用户系统配置信息
     private fun getSystemSetting(): Setting {
         val language = getLanguageType()
-        val oddsType = getOddsType()
         val sysGoal = getNotifyMatchType(MATCH_GOAL)
         val sysKick = getNotifyMatchType(MATCH_KICK)
         val app = getNotifyMatchType(MATCH_APP)
         return Setting.newBuilder().apply {
             lang = language          //语言类型
-            oddType = oddsType       //赔率显示类型
             systemGoal = sysGoal     //系统通知-进球
             systemKickOff = sysKick  //系统通知-开球
             appGoal = app            //app内通知-开球
@@ -224,10 +222,6 @@ class CommonRepository(
             LanguageType.LANGUAGE_PT.value -> "pt-PT"
             else -> "zh-CN"
         }
-    }
-
-    private fun getOddsType(): Int {
-        return userDataManager.getValue(UserDataKey.KEY_ODDS, 0)
     }
 
     private fun getSystemBet(): Boolean {

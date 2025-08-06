@@ -2,6 +2,7 @@ package arch.cayenne.module.home.ui.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.base.data.remote.ApiResponseState.Start.dataAs
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
@@ -9,6 +10,7 @@ import arch.cayenne.lib.common.data.repo.BalanceRepository
 import arch.cayenne.lib.database.entity.InfoBean
 import arch.cayenne.lib.database.entity.MatchWithMarkets
 import arch.cayenne.module.home.data.constants.HomeState
+import arch.cayenne.module.home.data.repo.BaseMatchRepository
 import arch.cayenne.module.home.data.repo.CollectListRepository
 import galaxy.common.proto.Common
 import kotlinx.coroutines.Dispatchers
@@ -52,10 +54,12 @@ class CollectListViewModel : BaseMatchViewModel<CollectListRepository>() {
                 if (it is ApiResponseState.Failed) {
                     matchListChange.value = arrayListOf()
                 } else if (it is ApiResponseState.Succeeded<*>) {
-                    val isEmpty = (it.dataAs<List<Common.Match>>()?.size ?: 0) == 0
-                    if (page == 1 && isEmpty) {
+                    val size = it.dataAs<List<Common.Match>>()?.size ?: 0
+                    if (page == 1 && size == 0) {
                         matchListChange.value = arrayListOf()
                         setState(HomeState.Match.DataEmpty)
+                    } else if (size < BaseMatchRepository.DEFAULT_MATCH_SIZE) {
+                        setState(DataState.NoMoreData)
                     }
                 }
             })

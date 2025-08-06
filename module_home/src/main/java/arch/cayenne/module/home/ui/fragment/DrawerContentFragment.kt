@@ -17,6 +17,7 @@ import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.module.account.data.constants.KeyConfig
 import arch.cayenne.module.home.R
 import arch.cayenne.module.home.databinding.FragmentDrawerContentBinding
@@ -46,11 +47,6 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
             ViewCompat.setOnApplyWindowInsetsListener(requireActivity().window.decorView, null)
             insets
         }
-    }
-
-    override fun initData() {
-        super.initData()
-        mViewModel.getMessageList()
     }
 
     override fun initListener() {
@@ -113,10 +109,19 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
                 launch {
                     selectedSkinType.observe(viewLifecycleOwner) {
                         refreshDefaultNickName()
+                        mViewModel.getMessageList()
                     }
                 }
                 notificationBean.observeEvent(viewLifecycleOwner,this@DrawerContentFragment) { list ->
-                    if (list.isEmpty()) return@observeEvent
+                    if (list.isEmpty()) {
+                        with (mBinding) {
+                            itemNotification1.visibility = View.GONE
+                            itemNotification2.visibility = View.GONE
+                            clNotificationHeader.setBackgroundResource(arch.cayenne.lib.common.R.drawable.ripple_effect.getSkinnableResourceId())
+                        }
+                        return@observeEvent
+                    }
+                    mBinding.clNotificationHeader.setBackgroundResource(arch.cayenne.lib.common.R.drawable.ripple_effect_top.getSkinnableResourceId())
                     val untilIndex = if (list.size < 2) list.size else 2
                     for(i in 0 until untilIndex) {
                         val item = list[i]
@@ -128,11 +133,14 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
                                 //status = 1未读 2已读 3删除
                                 ivMessage1Dot.visibility = if (item.state == 2) View.INVISIBLE else View.VISIBLE
                                 tvTime1.text = DateUtils.getMessageTime(item.createTime)
+                                itemNotification1.setBackgroundResource(arch.cayenne.lib.common.R.drawable.ripple_effect_bottom.getSkinnableResourceId())
                             } else {
                                 itemNotification2.visibility = View.VISIBLE
                                 tvMessage2.text = item.title
                                 ivMessage2Dot.visibility = if (item.state == 2) View.INVISIBLE else View.VISIBLE
                                 tvTime2.text = DateUtils.getMessageTime(item.createTime)
+                                itemNotification1.setBackgroundResource(arch.cayenne.lib.common.R.drawable.ripple_effect_rectangle.getSkinnableResourceId())
+                                itemNotification2.setBackgroundResource(arch.cayenne.lib.common.R.drawable.ripple_effect_bottom.getSkinnableResourceId())
                             }
                         }
                     }
@@ -140,6 +148,11 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
         }
 
     }
+
+    private fun Int.getSkinnableResourceId(): Int {
+        return SkinnableResourceManager.getTargetResourceId(requireContext(), this)
+    }
+
     private fun refreshDefaultNickName() {
         val defaultResId = mViewModel.getDefaultResId()
         with(mBinding) {

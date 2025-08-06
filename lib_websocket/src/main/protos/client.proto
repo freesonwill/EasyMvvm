@@ -554,7 +554,7 @@ message OrderStatus {
 
 //600-1010: 异常推送
 message AberrantNotify {
-    int32 code = 1;   //状态 1:挤号，2:token失效
+    int32 code = 1;   //状态 1:挤号，2:token失效, 3:系统维护
 }
 
 //600-1011: app内通知
@@ -627,6 +627,25 @@ message MatchLiveStreamReq {
 message MatchLiveStreamResp {
     int64 match_id = 1; //required 比赛id
     repeated MatchLiveStream streams = 2; //视频流列表
+}
+
+//800-1001: 反馈标签列表
+message FeedbackLabelListReq {
+
+}
+
+message FeedbackLabelListResp {
+    repeated galaxy.common.proto.FeedbackLabel feedback_label = 1; //反馈标签
+}
+
+//800-1002: 添加反馈内容
+message FeedbackContentAddReq {
+    repeated int32 feedbackTypeCode =1;
+    string content = 2;
+}
+
+message FeedbackContentAddResp {
+
 }
 
 

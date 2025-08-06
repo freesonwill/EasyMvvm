@@ -2,6 +2,9 @@ syntax = "proto3";
 
 package galaxy.common.proto;
 
+//空数据
+message Empty {
+}
 
 //比赛
 message Match {
@@ -65,6 +68,7 @@ message Market {
     int32 status = 6;         //0-默认 1-新增 2-修改 3-删除 (仅在推送时使用)
     int32 style = 7;          //0-默认 1-一列 2-两列 3-三列 4-波胆
     repeated int32 market_category = 8; //盘口分类
+    int32 weight = 9; //权重
 }
 
 //盘口详情
@@ -145,7 +149,7 @@ message Order {
     string early_bet_amount = 12;        //提前结算总本金
     string early_return_amount = 13;    //提前结算派彩金额
     int32 early_count = 14;      //已经提前结算的次数
-    int32 result_status = 15;           //订单结果, 0-未结算 1-赢 2-和局 3-输 4-输一半 5-赢一半 6-退款 7-提前结算
+    int32 result_status = 15;           //订单结果, 0-未结算 1-赢 2-和局 3-输 4-赢半 5-输半 6-退款 7-提前结算
     EarlySettlePrice early_settle_price = 16; //提前结算报价
 }
 
@@ -247,7 +251,6 @@ message Tournament {
 
 //系统设置
 message Setting {
-    int32 odd_type = 1;                     //赔率类型, 0-欧盘 1-香港盘
     NotifyMatchType system_goal = 2;        //系统通知-进球
     NotifyMatchType system_kick_off = 3;    //系统通知-开球
     NotifyMatchType app_goal = 4;           //app内通知-开球
@@ -317,6 +320,10 @@ message DailyMatchCount {
     int32 count = 2;    //比赛数量
 }
 
-//空数据
-message Empty {
+//反馈标签
+message FeedbackLabel{
+    int32 code = 1;
+    string name = 2;
 }
+
+
