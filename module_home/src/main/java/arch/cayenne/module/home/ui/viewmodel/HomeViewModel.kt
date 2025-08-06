@@ -2,7 +2,6 @@ package arch.cayenne.module.home.ui.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.room.Transaction
 import arch.cayenne.lib.base.data.constants.DataState
@@ -20,7 +19,6 @@ import arch.cayenne.lib.database.entity.ChampionTournamentDataModel
 import arch.cayenne.lib.database.entity.InfoBean
 import arch.cayenne.lib.database.entity.SportDataModel
 import arch.cayenne.lib.database.entity.TournamentDataModel
-import arch.cayenne.lib.skin.SkinnableManager
 import arch.cayenne.module.home.data.constants.HomeState
 import arch.cayenne.module.home.data.constants.PlayType
 import arch.cayenne.module.home.data.constants.playTypeToShowType
@@ -37,12 +35,10 @@ import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
-import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.core.component.inject
-import org.koin.core.parameter.parametersOf
 import plugin.koin.KoinViewModel
 
 @KoinViewModel
@@ -55,14 +51,9 @@ class HomeViewModel : BaseViewModel() {
     private val _currentPlayTypeId: MutableStateFlow<Int> = MutableStateFlow(PlayType.TODAY.id)
     val currentPlayTypeId: Int
         get() = _currentPlayTypeId.value
-    val playTypeIndexChange: LiveData<Event<Int>> = _currentPlayTypeId.transform {
-        when(it) {
-            PlayType.TODAY.id -> emit(Event(0))
-            PlayType.EARLY.id -> emit(Event(1))
-            PlayType.CHAMPION.id -> emit(Event(2))
-            else -> Unit
-        }
-    }.asLiveData(Dispatchers.Main)
+    private val _playTypeIndexChange: MutableLiveData<Event<Int>> = MutableLiveData<Event<Int>>()
+    val playTypeIndexChange: LiveData<Event<Int>> = _playTypeIndexChange
+
 
     private val _currentSportId: MutableStateFlow<Int> = MutableStateFlow(SportEnum.Default.id)
     val currentSportId: Int
@@ -106,6 +97,16 @@ class HomeViewModel : BaseViewModel() {
     }
 
     init {
+        viewModelScope.launch {
+            _currentPlayTypeId.collect {
+                when(it) {
+                    PlayType.TODAY.id -> _playTypeIndexChange.value = Event(0)
+                    PlayType.EARLY.id -> _playTypeIndexChange.value = Event(1)
+                    PlayType.CHAMPION.id -> _playTypeIndexChange.value = Event(2)
+                    else -> Unit
+                }
+            }
+        }
         viewModelScope.launch(Dispatchers.IO) {
             repository.observeSportsMatchCount()
                 .combine(_currentPlayTypeId) { list, playTypeId ->
