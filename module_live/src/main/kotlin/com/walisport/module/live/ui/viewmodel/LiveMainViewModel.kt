@@ -122,7 +122,9 @@ class LiveMainViewModel(
                 repo.getMatchRes(matchId)
             },{
                 if (it is ApiResponseState.Succeeded<*>) {
-                    _mainMatch.value = it.data!! as LiveMatchBean? // 主线程更新 LiveData
+                    it.data.let {data->
+                        _mainMatch.value = data as LiveMatchBean? // 主线程更新 LiveData
+                    }
                 }
             })
     }
