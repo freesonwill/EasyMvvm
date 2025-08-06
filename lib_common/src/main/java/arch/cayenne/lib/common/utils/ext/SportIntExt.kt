@@ -70,11 +70,11 @@ object SportIntExt {
 
         val numberFormat = NumberFormat.getNumberInstance(Locale.US).apply {
             maximumFractionDigits = 2
-            minimumFractionDigits = if (stripped.scale() > 0) 2 else 0
+            minimumFractionDigits = 0
             isGroupingUsed = true // 千分位
         }
 
-        return numberFormat.format(value)
+        return numberFormat.format(stripped)
     }
 
     fun Long.getFormalMoney(odds: Int): String {
@@ -88,11 +88,11 @@ object SportIntExt {
 
         val numberFormat = NumberFormat.getNumberInstance(Locale.US).apply {
             maximumFractionDigits = 2
-            minimumFractionDigits = if (stripped.scale() > 0) 2 else 0
+            minimumFractionDigits = 0
             isGroupingUsed = true // 千分位
         }
 
-        return numberFormat.format(decimal)
+        return numberFormat.format(stripped)
     }
 
     fun Long.getFormalMoney(money: Long): String {
@@ -106,11 +106,11 @@ object SportIntExt {
 
         val numberFormat = NumberFormat.getNumberInstance(Locale.US).apply {
             maximumFractionDigits = 2
-            minimumFractionDigits = if (stripped.scale() > 0) 2 else 0
+            minimumFractionDigits = 0
             isGroupingUsed = true // 千分位
         }
 
-        return numberFormat.format(decimal)
+        return numberFormat.format(stripped)
     }
 
     /**
