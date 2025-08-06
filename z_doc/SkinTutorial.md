@@ -55,7 +55,9 @@ override fun onAttachedToWindow() {
 }
 ```
 
-注:  - 如果是自定义属性，可以lib_skin->res->values->attrs 在对应的styleable中添加自定义属性，并在helper中获取对应的值，updateSkin方法中更新
+注:  
+- 如果是自定义属性，可以lib_skin->res->values->attrs 在对应的styleable中添加自定义属性，并在helper中获取对应的值，updateSkin方法中更新
+- skinnableFontWeight,在SKinnableTextView SkinnableButton SkinnableEditext中新增skinnableFontWeight "app:skinnableFontWeight=500 " 设置默认字体下的fontWeight属性
 
 ## 4. 多语言切换
 
