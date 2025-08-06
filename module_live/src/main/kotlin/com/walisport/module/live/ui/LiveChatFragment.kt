@@ -300,7 +300,7 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
                     it.liveChatTvStatus.setText(R.string.live_chat_end)
                 }
 
-                MatchStatus.IN_PROGRESS, MatchStatus.PAUSED, MatchStatus.INTERRUPTED -> {
+                MatchStatus.POSTPONED, MatchStatus.NOT_STARTED, MatchStatus.IN_PROGRESS, MatchStatus.DELAYED, MatchStatus.PAUSED -> {
                     updateChatList()
                 }
 
