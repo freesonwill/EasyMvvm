@@ -10,6 +10,7 @@ import arch.cayenne.lib.base.ui.adapter.PagerAdapter
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+import arch.cayenne.lib.common.utils.ext.touchBackPressed
 import arch.cayenne.lib.common.utils.helper.doSmartAnim
 import com.walisport.module.message.R
 import com.walisport.module.message.databinding.FragmentMessageMainBinding
@@ -88,6 +89,7 @@ class MessageMainFragment : BaseFragment<MessageMainViewModel, FragmentMessageMa
 
             }
         })
+        mBinding.root.touchBackPressed()
     }
 
     //未读消息红点显示
