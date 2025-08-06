@@ -207,21 +207,14 @@ class MatchListPagerFragment :
                         )
                         homeViewModel.changeState(DataState.NetworkUnavailable)
                     }
-                    DataState.DataEmpty -> {     //這個DataEmpty表示api抓不到任何資料了，有可能是頁面到底，或是從第一頁就抓不到資料
+                    DataState.NoMoreData -> {     //這個DataEmpty表示api抓不到任何資料了，有可能是頁面到底，或是從第一頁就抓不到資料
                         mViewModel.changePageEnd(true)
                         refreshLayout.finishLoadMore()
                         refreshLayout.setEnableLoadMore(false)
                         matchAdapter.showNoMoreData(true)
                     }
 
-                    DataState.NoMoreData -> {
-                        mViewModel.changePageEnd(true)
-                        refreshLayout.setEnableLoadMore(false)
-                        refreshLayout.finishLoadMoreWithNoMoreData()
-                        matchAdapter.showNoMoreData(true)
-                    }
-
-                    HomeState.Match.DataEmpty -> {  //這個DataEmpty表示真的從第一頁就抓不到資料，表示當前的選擇沒有任何賽事
+                    HomeState.Match.DataEmpty -> {  //這個DataEmpty表示確定真的從第一頁就抓不到資料，表示當前的選擇沒有任何賽事
                         lvMatchLoading.visibility = View.GONE
                         refreshLayout.finishRefresh()
                         clDynamics.visibility = View.VISIBLE
@@ -281,7 +274,6 @@ class MatchListPagerFragment :
             mViewModel.setPlayTypeId(this.getInt(ARG_PLAY_TYPE_ID))
             mViewModel.setPosition(this.getInt(ARG_POSITION))
         }
-//        mViewModel.startObserveMatch()
     }
 
     fun startObserveMatch() {
