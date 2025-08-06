@@ -11,7 +11,7 @@ import kotlin.reflect.KClass
 
 
 /**
- * 充值主页
+ * 钱包主页
  */
 class TopUpMainFragment : BaseFragment<TopUpMainViewModel, FragmentTopupMainBinding>() {
 

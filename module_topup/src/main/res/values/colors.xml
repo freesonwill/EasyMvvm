@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="wallet_menu_line">#1d1f29</color>
+    <color name="wallet_menu_title">#FFFFFF</color>
+    <color name="wallet_title">#929298</color>
+    <color name="wallet_ripper">#F3F3F4</color>
+    <color name="wallet_balance">#FFFFFF</color>
+    <color name="btn_withdraw">#24EE8A</color>
+</resources>
