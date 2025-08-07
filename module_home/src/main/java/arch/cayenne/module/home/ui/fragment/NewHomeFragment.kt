@@ -119,6 +119,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
         mBinding.layoutContainer.llDateFilterContainer.visibility = View.GONE
         mBinding.layoutContainer.llOtherDate.visibility = View.GONE
         mBinding.ivTournamentMore.visibility = View.GONE
+        mBinding.llHomeTournamentMore.visibility = View.GONE
     }
 
     //init 二級導航欄位
@@ -206,8 +207,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             // 初始化 TabLayout end more跟手動畫
             tlLeagueList.setupEndTabMoreAnimation(
                 mBinding.ivTournamentMore,
-                mBinding.llHomeTournamentMore,
-                triggerRatio = 0.8f
+                mBinding.llHomeTournamentMore
             )
         }
 
@@ -453,7 +453,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             )
             vpGameList.adapter = leaguePagerAdapter
             vpGameList.offsetLeftAndRight(1)
-
+            mBinding.ivTournamentMore.visibility = View.VISIBLE
             // 使用 reflexMargin 擴展方法設置更小的 tab 間距
             tlLeagueList.reflexMargin(2.dp2px, 2.dp2px, 1.dp2px)
 

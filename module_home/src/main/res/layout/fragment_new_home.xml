@@ -281,8 +281,8 @@
             android:layout_marginBottom="@dimen/dp_4"
             android:background="@drawable/shape_tournament_more_bg"
             android:orientation="horizontal"
-            android:visibility="gone"
             android:gravity="center"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@+id/v_league_more_mask"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/v_league_more_mask">
@@ -294,16 +294,18 @@
                 android:layout_gravity="center_vertical"
                 android:layout_marginEnd="@dimen/dp_4"
                 android:layout_marginBottom="@dimen/dp_1"
+                android:layout_marginStart="@dimen/dp_2"
                 android:text="@string/home_tournament_more"
                 android:textColor="@color/secondary_text"
                 android:textSize="@dimen/sp_14" />
 
             <arch.cayenne.lib.skin.widget.SkinnableImageView
-                android:layout_width="10dp"
-                android:layout_height="8dp"
+                android:layout_width="11dp"
+                android:layout_height="11dp"
                 android:layout_gravity="center_vertical"
-                android:layout_marginTop="@dimen/dp_1"
                 android:layout_marginBottom="@dimen/dp_1"
+                android:layout_marginStart="@dimen/dp_1"
+                android:layout_marginTop="@dimen/dp_2"
                 android:src="@drawable/ic_tournament_more" />
         </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
 
@@ -314,10 +316,10 @@
             android:paddingStart="@dimen/dp_18"
             android:paddingTop="@dimen/dp_13"
             android:paddingEnd="@dimen/dp_10"
-            android:paddingBottom="@dimen/dp_16"
+            android:paddingBottom="@dimen/dp_15"
             android:src="@drawable/ic_league_tabs_expand"
-            app:layout_constraintBottom_toBottomOf="@+id/v_league_more_mask"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="@+id/v_league_more_mask"
             app:layout_constraintTop_toTopOf="@+id/v_league_more_mask" />
 
         <FrameLayout
