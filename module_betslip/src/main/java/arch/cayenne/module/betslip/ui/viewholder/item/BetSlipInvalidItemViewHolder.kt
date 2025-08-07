@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import androidx.core.view.isVisible
 import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.common.data.constants.SportEnum
+import arch.cayenne.lib.common.utils.ext.SportDisplayOddsExt.getDisplayOdds
 import arch.cayenne.lib.database.entity.BetSlipSelectionData
 import arch.cayenne.lib.database.entity.OrderSelectionBean
 import arch.cayenne.module.betslip.R
@@ -38,7 +39,7 @@ class BetSlipInvalidItemViewHolder(binding: ViewBinding) :
                 Glide.with(betInvalidIvBall.context).load(SportEnum.getSportEnumById(match.sportId)?.resId ?: SportEnum.Default.resId).into(betInvalidIvBall)
                 betInvalidTvRace.text = match.matchName
                 betInvalidTvIntroduce.text = item.selectionName
-                betInvalidTvAodds.text = expectOdds(binding.root.resources.getString(R.string.live_bet_except_odds, item.odds))
+                betInvalidTvAodds.text = expectOdds(binding.root.resources.getString(R.string.live_bet_except_odds, item.odds.getDisplayOdds()))
                 betInvalidTvMatchStatus.isVisible = item.inPlay
                 betInvalidTvScore.text = item.marketName + "  (${whenScoreIsNull(item.betScore)})"
                 betInvalidTvStart.text = BetSlipDateUtil.getMDHm(match.startTime)
