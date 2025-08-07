@@ -144,6 +144,11 @@ data class SelectionBeanLite(
     var trend: Int = 0,
 )
 
+data class OldSelectionLite(
+    val selectionId: Long,
+    val odds: Int,
+)
+
 data class MatchWithMarkets(
     val match: MatchBean,
     val markets: List<MarketWithSelections>
