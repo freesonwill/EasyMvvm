@@ -9,7 +9,7 @@ import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.data.repo.BalanceRepository
 import arch.cayenne.lib.common.ui.viewmodel.Event
 import arch.cayenne.lib.common.ui.viewmodel.NumberCalculatorViewModel
-import arch.cayenne.lib.common.utils.ext.SportMoneyOddsExt.getDisplayFormalMoney
+import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
 import arch.cayenne.lib.common.utils.ext.SportMoneyOddsExt.reserveDisplayOdds
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
 import arch.cayenne.lib.database.entity.BetSelectionBean
@@ -86,7 +86,7 @@ class SingleBetViewModel(
         addSource(_onBetSheetListener) { data ->
             if (_onReserveOddsListener.value == null) {
                 odds = data.odds
-                value = editValue.toMoney().getDisplayFormalMoney(odds)
+                value = editValue.toMoney().getMoney(odds)
             }
         }
         addSource(_onReserveOddsListener) { reserveOdds ->
@@ -97,7 +97,7 @@ class SingleBetViewModel(
             } else {
                 odds = reserveOdds
             }
-            value = editValue.toMoney().getDisplayFormalMoney(odds)
+            value = editValue.toMoney().getMoney(odds)
         }
         addSource(onEditNumber) {
             val money = if (it.isEmpty()) {
@@ -110,7 +110,7 @@ class SingleBetViewModel(
             value = if (money.isEmpty()) {
                 "0.00"
             } else {
-                money.toMoney().getDisplayFormalMoney(odds)
+                money.toMoney().getMoney(odds)
             }
         }
     }
