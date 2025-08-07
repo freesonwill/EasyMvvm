@@ -7,6 +7,7 @@ import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.view.updatePadding
 import androidx.core.widget.TextViewCompat
 import androidx.recyclerview.widget.DefaultItemAnimator
@@ -158,7 +159,10 @@ class SearchResultRaceAdapter: BaseAdapter<SearchResultRaceItemType, BaseViewHol
                             isEnabled = !basicInfo.betStop
                             isSelected = collect
 
-                            (drawable as? LayerDrawable)?.let {
+                            val drawable = AppCompatResources.getDrawable(context, R.drawable.layer_search_result_favorite)?.mutate() as? LayerDrawable
+                            setImageDrawable(drawable)
+
+                            drawable?.let {
                                 animateFavoriteIcon(it, isSelected, force = true)
                             }
 
@@ -166,7 +170,7 @@ class SearchResultRaceAdapter: BaseAdapter<SearchResultRaceItemType, BaseViewHol
                                 onFavoriteClick?.invoke(itemData)
                                 isSelected = !isSelected
 
-                                (drawable as? LayerDrawable)?.let {
+                                drawable?.let {
                                     animateFavoriteIcon(it, isSelected, force = false)
                                 }
                             }
