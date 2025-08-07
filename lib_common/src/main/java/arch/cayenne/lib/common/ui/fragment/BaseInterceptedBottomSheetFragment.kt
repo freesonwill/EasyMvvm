@@ -29,13 +29,18 @@ abstract class BaseInterceptedBottomSheetFragment<VM : BaseViewModel, VB : ViewB
 
                 override fun onHorizontalScroll(offsetX: Float) {
                     Log.d("abcd", "+++++ $offsetX")
-                    sheetContainer?.translationY = offsetX
+                    sheetContainer?.translationY = offsetX * 1.5f
                 }
 
                 override fun onActionUp() {
-                    resetSheetTranslation()
+                    val translationY = sheetContainer?.translationY ?: 0f
+                    val height = sheetContainer?.height ?: 0
+                    if (translationY >= height / 2) {
+                        dialog?.onBackPressed()
+                    } else {
+                        resetSheetTranslation()
+                    }
                 }
-
             })
         }
     }
