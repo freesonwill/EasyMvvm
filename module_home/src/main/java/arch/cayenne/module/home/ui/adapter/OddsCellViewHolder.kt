@@ -8,6 +8,7 @@ import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
 import arch.cayenne.lib.database.entity.SelectionBeanLite
 import arch.cayenne.module.home.data.constants.OddsCellState
 import arch.cayenne.module.home.databinding.ItemOddsCellBinding
+import java.lang.ref.WeakReference
 
 class OddsCellViewHolder(
     private val mBinding: ItemOddsCellBinding,
@@ -27,8 +28,7 @@ class OddsCellViewHolder(
                     it.getLocationOnScreen(location)
                     val x = location[0] + it.width / 2
                     val y = location[1] + it.height / 2
-                    clOddsCell.isSelected = !clOddsCell.isSelected
-                    onMatchItemClickListener?.onOddsCellClick(item, x.toFloat(), y.toFloat())
+                    onMatchItemClickListener?.onOddsCellClick(WeakReference(clOddsCell), item, x.toFloat(), y.toFloat())
                 }
             }
         }

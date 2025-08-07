@@ -8,10 +8,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.animation.addListener
-import androidx.core.view.isInvisible
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.SimpleItemAnimator
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.common.data.constants.AnimationConstants
 import arch.cayenne.module.betslip.data.constants.Config
 import arch.cayenne.module.betslip.databinding.FragmentSportPickerBinding
 import arch.cayenne.module.betslip.ui.adapter.SportPickerAdapter
@@ -88,7 +88,7 @@ class SportPickerFragment private constructor(): BaseFragment<SportPickerViewMod
         }
     }
 
-    override fun createObserver() {
+    override suspend fun createObserver() {
         mViewModel.onSportListener.observe(viewLifecycleOwner){
             sportAdapter.submitList(it) {
                 if (mBinding.clFilter.visibility != View.VISIBLE) {
@@ -122,9 +122,9 @@ class SportPickerFragment private constructor(): BaseFragment<SportPickerViewMod
                     mBinding.maskView.visibility = View.VISIBLE
                 })
             }
-        val maskAlphaAnimate = ObjectAnimator.ofFloat(mBinding.maskView, "alpha", 0f, 0.5f)
+        val maskAlphaAnimate = ObjectAnimator.ofFloat(mBinding.maskView, "alpha", 0f, 0.75f)
         AnimatorSet().apply {
-            duration = 300
+            duration = AnimationConstants.DIALOG_POPUP_DURATION
             playTogether(contentAnimate, maskAlphaAnimate)
             start()
         }
@@ -141,9 +141,9 @@ class SportPickerFragment private constructor(): BaseFragment<SportPickerViewMod
                     dismiss()
                 })
             }
-        val maskAlphaAnimate = ObjectAnimator.ofFloat(mBinding.maskView, "alpha", 0.5f, 0f)
+        val maskAlphaAnimate = ObjectAnimator.ofFloat(mBinding.maskView, "alpha", 0.75f, 0f)
         AnimatorSet().apply {
-            duration = 300
+            duration = AnimationConstants.DIALOG_POPUP_DURATION
             playTogether(contentAnimate, maskAlphaAnimate)
             start()
         }

@@ -8,8 +8,16 @@
         android:id="@+id/soft_recycler"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-
         app:layout_constraintTop_toTopOf="parent"
         />
+    <arch.cayenne.lib.skin.widget.SkinnableImageView
+        android:id="@+id/emoji_del"
+        android:layout_width="89dp"
+        android:layout_height="46dp"
+        android:layout_marginEnd="@dimen/dp_2"
+        android:src="@drawable/icon_emoji_del"
+        android:scaleType="fitXY"
+        app:layout_constraintBottom_toBottomOf="@id/soft_recycler"
+        app:layout_constraintRight_toRightOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

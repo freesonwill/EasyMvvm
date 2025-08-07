@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asFlow
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.data.model.UnPeekLiveData
+import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
@@ -26,6 +27,7 @@ import galaxy.client.proto.Sloth
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
@@ -73,8 +75,8 @@ class LiveMainViewModel(
     private val _observeMainMatch = MutableLiveData<LiveMatchBean>()
     val observeMainMatch: LiveData<LiveMatchBean> = _observeMainMatch
     val currentBalanceChange by lazy { MutableLiveData<InfoBean>() }
-    fun observeConnectStateFlow(): Flow<ConnectState> = repo.observeConnectStateFlow()
-
+    fun observeLoginChange(): Flow<Boolean> = repo.observeLoginChange()
+    private var observeMatchBeanJob: Job? = null
     //监听matchId和sportId，并设置1s的防抖
     @OptIn(FlowPreview::class)
     val matchIdSportIdObserver: Flow<Pair<Long, Int>> =
@@ -116,19 +118,20 @@ class LiveMainViewModel(
     }
 
     fun getMainMatch(matchId: Long) {
-        viewModelScope.launch {
-            val result = withContext(Dispatchers.IO) {
+            callApi({
                 repo.getMatchRes(matchId)
-            }
-            result?.let {
-                _mainMatch.value = it  // 主线程更新 LiveData
-
-            }
-        }
+            },{
+                if (it is ApiResponseState.Succeeded<*>) {
+                    it.data.let {data->
+                        _mainMatch.value = data as LiveMatchBean? // 主线程更新 LiveData
+                    }
+                }
+            })
     }
 
     fun observeMatchBean(matchId: Long) {
-        viewModelScope.launch {
+        observeMatchBeanJob?.cancel()
+        observeMatchBeanJob = viewModelScope.launch {
             repo.observeMatchBean(matchId).collect {
                 _observeMainMatch.value = it
             }

@@ -8,17 +8,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     >
-<arch.cayenne.lib.common.ui.view.DynamicStateLayout
-    android:id="@+id/clDynamics"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
-    android:background="@color/app_bg"
-    android:orientation="vertical">
+
 <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
     android:id="@+id/liveMain"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/app_bg"
+    android:fitsSystemWindows="true"
     android:orientation="vertical">
 
     <arch.cayenne.lib.common.ui.view.TitleBarView
@@ -36,53 +32,71 @@
     <arch.cayenne.lib.skin.widget.SkinnableTabLayout
         android:id="@+id/tabLayout"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_40"
+        android:layout_height="@dimen/dp_36"
         android:background="@color/live_main_tab_bg"
-        android:paddingBottom="2dp"
-        app:tabGravity="start"
-        app:tabMode="fixed"
         app:tabIndicatorHeight="0dp"
+        app:tabMode="fixed"
+        app:tabMinWidth="@dimen/dp_60"
+        app:tabMaxWidth="65dp"
+        app:tabPaddingStart="0dp"
+        android:layout_marginEnd="10dp"
+        app:tabPaddingEnd="0dp"
         app:tabRippleColor="@null"
+        android:layout_marginTop="@dimen/dp_2"
+        android:paddingBottom="@dimen/dp_1"
         tools:ignore="SpeakableTextPresentCheck" />
-
-    <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/vp_page"
+    <com.walisport.module.live.ui.widget.CustomTabIndicator
+        android:id="@+id/customIndicator"
+        android:layout_marginEnd="10dp"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:clipChildren="false"
-        android:clipToPadding="false"
-        android:overScrollMode="ifContentScrolls"
-        android:paddingStart="0dp"
-        android:paddingEnd="0dp" />
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/fragment_fake_view_pager"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:clipChildren="false"
-        android:clipToPadding="false"
-        android:overScrollMode="ifContentScrolls"
-        android:paddingStart="0dp"
-        android:paddingEnd="0dp"
-        app:layout_constraintBottom_toBottomOf="@id/vp_page"
-        app:layout_constraintEnd_toEndOf="@id/vp_page"
-        app:layout_constraintStart_toStartOf="@id/vp_page"
-        app:layout_constraintTop_toTopOf="@id/vp_page" />
+        android:layout_height="3dp"
+        android:background="@color/live_main_tab_bg"
+         />
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/vp_page"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:overScrollMode="ifContentScrolls"
+            android:paddingStart="0dp"
+            android:paddingEnd="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/fragment_fake_view_pager"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:overScrollMode="ifContentScrolls"
+            android:paddingStart="0dp"
+            android:paddingEnd="0dp"
+            app:layout_constraintBottom_toBottomOf="@id/vp_page"
+            app:layout_constraintEnd_toEndOf="@id/vp_page"
+            app:layout_constraintStart_toStartOf="@id/vp_page"
+            app:layout_constraintTop_toTopOf="@id/vp_page" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
 
+<com.google.android.material.navigation.NavigationView
+    android:id="@+id/navigation_view"
+    android:layout_width="312dp"
+    android:layout_height="match_parent"
+    android:layout_gravity="end"
+    app:drawerLayoutCornerSize="0dp">
 
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragment_drawer_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+</com.google.android.material.navigation.NavigationView>
 
-</arch.cayenne.lib.common.ui.view.DynamicStateLayout>
-    <com.google.android.material.navigation.NavigationView
-        android:id="@+id/navigation_view"
-        android:layout_width="312dp"
-        android:layout_height="match_parent"
-        android:layout_gravity="end"
-        app:drawerLayoutCornerSize="0dp">
-
-        <androidx.fragment.app.FragmentContainerView
-            android:id="@+id/fragment_drawer_content"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </com.google.android.material.navigation.NavigationView>
 </arch.cayenne.module.home.ui.view.LiveScrollDrawerLayout>

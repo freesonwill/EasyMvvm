@@ -12,8 +12,6 @@ import arch.cayenne.lib.database.entity.MatchWithMarkets
 import arch.cayenne.module.bet.repo.BetRepository
 import arch.cayenne.module.home.data.repo.ChampionRepository
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
@@ -32,8 +30,6 @@ class ChampionViewModel : BaseViewModel() {
     val matchWithMarketsChange by lazy { MutableLiveData<MatchWithMarkets?>() }
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading : LiveData<Boolean> = _isLoading
-
-    private val refreshAllBet = MutableStateFlow(Unit)
 
     override fun initViewModel() {
         super.initViewModel()
@@ -58,7 +54,6 @@ class ChampionViewModel : BaseViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             betRepository.observerAllBet
                 .distinctUntilChanged()
-                .combine(refreshAllBet) { beans, _ -> beans }
                 .collect { betSelectionBeans ->
                 if (matchWithMarketsChange.value == null) return@collect
                 val matchWithMarkets = championRepository.getOnCurrentMatch(matchId, betSelectionBeans.map { it.selectionId })
@@ -82,7 +77,7 @@ class ChampionViewModel : BaseViewModel() {
         this.matchId = matchId
     }
     fun getChampionDetail() {
-        _isLoading.value = true
+        _isLoading.value = matchWithMarketsChange.value == null
         viewModelScope.launch(Dispatchers.IO) {
             val matchWithMarkets = championRepository.getChampionDetail(matchId)
             withContext(Dispatchers.Main) {
@@ -90,13 +85,6 @@ class ChampionViewModel : BaseViewModel() {
                 _isLoading.value = false
             }
         }
-    }
-
-    /**
-     * 因為一點擊下去就會先高亮投注選項，所以如果遇到失敗等等問題，要再強迫observerAllBet重來一次，把目前有點擊的選項更新一次
-     * */
-    fun triggerAllBetRefresh() {
-        refreshAllBet.value = Unit
     }
 
     fun subscribeMatch() {

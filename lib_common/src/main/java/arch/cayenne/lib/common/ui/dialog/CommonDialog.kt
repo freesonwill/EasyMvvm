@@ -1,6 +1,5 @@
 package arch.cayenne.lib.common.ui.dialog
 
-import android.content.DialogInterface
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.View
@@ -8,18 +7,16 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import arch.cayenne.lib.base.ui.fragment.BaseDialogFragment
 import arch.cayenne.lib.base.ui.viewmodel.EmptyViewModel
+import arch.cayenne.lib.common.R
 import arch.cayenne.lib.common.databinding.DialogCommonBinding
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import kotlin.reflect.KClass
 
 class CommonDialog : BaseDialogFragment<EmptyViewModel, DialogCommonBinding>() {
-    override val vbClass: KClass<DialogCommonBinding>
-        get() = DialogCommonBinding::class
-    override val vmClass: KClass<EmptyViewModel>
-        get() = EmptyViewModel::class
-    override val dialogBackground: Drawable?
-        get() = SkinnableResourceManager.getDrawable(
+    override val vbClass: KClass<DialogCommonBinding> get() = DialogCommonBinding::class
+    override val vmClass: KClass<EmptyViewModel> get() = EmptyViewModel::class
+    override val dialogBackground: Drawable? get() = SkinnableResourceManager.getDrawable(
             requireContext(),
             arch.cayenne.lib.base.R.drawable.bg_base_dialog
         )
@@ -80,6 +77,7 @@ class CommonDialog : BaseDialogFragment<EmptyViewModel, DialogCommonBinding>() {
     }
 
 
+
     fun setOnOkClickListener(listener: () -> Unit) {
         onOkClick = listener
     }
@@ -91,6 +89,7 @@ class CommonDialog : BaseDialogFragment<EmptyViewModel, DialogCommonBinding>() {
     override fun onStart() {
         super.onStart()
         dialog?.window?.apply {
+            setWindowAnimations(R.style.CommonDialogAnimation)
             setLayout(280f.dp2px, ViewGroup.LayoutParams.WRAP_CONTENT)
         }
     }

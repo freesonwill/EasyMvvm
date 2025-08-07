@@ -18,8 +18,7 @@
         <arch.cayenne.lib.skin.widget.SkinnableTabLayout
             android:id="@+id/tabLayout"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_32"
-            android:layout_marginTop="@dimen/dp_12"
+            android:layout_height="@dimen/dp_56"
             android:background="@color/main_background"
             app:layout_constraintTop_toTopOf="parent"
             app:sportTabBackground="@drawable/selector_betslip_tab"
@@ -28,6 +27,7 @@
             app:tabIndicatorColor="@android:color/transparent"
             app:tabIndicatorFullWidth="false"
             app:tabIndicatorHeight="0dp"
+            android:paddingTop="@dimen/dp_12"
             app:tabMode="scrollable"
             app:tabRippleColor="@null"
             app:tabSelectedTextColor="@color/text_on_theme_color"
@@ -35,35 +35,26 @@
             app:tabTextColor="@color/secondary_text"
             tools:ignore="SpeakableTextPresentCheck" />
 
-        <arch.cayenne.lib.common.ui.view.InnerViewPager2Container
-            android:id="@+id/inner_viewpager"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tabLayout">
+<!--        <arch.cayenne.lib.common.ui.view.InnerViewPager2Container-->
+<!--            android:id="@+id/inner_viewpager"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="0dp"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            app:layout_constraintLeft_toLeftOf="parent"-->
+<!--            app:layout_constraintRight_toRightOf="parent"-->
+<!--            app:layout_constraintTop_toBottomOf="@id/tabLayout">-->
 
             <androidx.viewpager2.widget.ViewPager2
                 android:id="@+id/view_pager"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tabLayout"
                 android:layout_marginHorizontal="@dimen/dp_8"
-                android:layout_marginTop="@dimen/dp_12"
                 android:orientation="horizontal" />
 
-        </arch.cayenne.lib.common.ui.view.InnerViewPager2Container>
-
-        <ImageView
-            android:id="@+id/iv_faker"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toBottomOf="@id/inner_viewpager"
-            app:layout_constraintEnd_toEndOf="@id/inner_viewpager"
-            app:layout_constraintStart_toStartOf="@id/inner_viewpager"
-            app:layout_constraintTop_toTopOf="@id/inner_viewpager" />
-
-
-
+<!--        </arch.cayenne.lib.common.ui.view.InnerViewPager2Container>-->
     </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
 </layout>

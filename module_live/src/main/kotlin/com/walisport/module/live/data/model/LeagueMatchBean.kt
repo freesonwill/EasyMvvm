@@ -8,8 +8,9 @@ data class LeagueMatchBean @JvmOverloads constructor(
     val match: List<MatchBean>,      //比赛列表
     val tournamentName: String,      //联赛名称
     val tournamentShortName: String, //联赛缩写
+    val size:Int,                    //联赛比赛总数
     val logo: String,                //联赛图标
-    val color: String                 //联赛日程页渐变背景色
+    val color: String                //联赛日程页渐变背景色
 )
 
 data class MatchBean @JvmOverloads constructor(

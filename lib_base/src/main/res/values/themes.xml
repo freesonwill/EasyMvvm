@@ -7,12 +7,15 @@
 
     <style name="BottomSheetDialogTheme" parent="Theme.MaterialComponents.Light.Dialog">
         <item name="bottomSheetStyle">@style/ArchButtonSheetStyle</item>
-        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowBackground">@color/black_75</item>
+<!--        <item name="android:statusBarColor">@color/black_75</item>-->
     </style>
 
     <style name="ArchButtonSheetStyle" parent="Widget.Design.BottomSheet.Modal">
         <item name="android:background">@drawable/bg_base_bottom_sheet_dialog</item>
         <item name="behavior_peekHeight">auto</item>
+        <item name="android:windowExitAnimation">@null</item>
+        <item name="android:windowEnterAnimation">@null</item>
     </style>
 
     <style name="BaseSideSheetDialogTheme" parent="ThemeOverlay.Material3.SideSheetDialog">

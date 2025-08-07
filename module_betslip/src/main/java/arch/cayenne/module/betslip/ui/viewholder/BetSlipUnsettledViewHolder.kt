@@ -1,12 +1,13 @@
 package arch.cayenne.module.betslip.ui.viewholder
 
-import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
-import arch.cayenne.lib.common.ui.view.ProgressDrawable
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
+import arch.cayenne.lib.common.utils.ext.SportDisplayOddsExt.getDisplayOdds
+import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
+import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.getDetailFormatDate
 import arch.cayenne.lib.database.entity.BetSlipData
@@ -53,36 +54,39 @@ class BetSlipUnsettledViewHolder(binding: ViewBinding, betSlipType: BetSlipEnum)
             it.betUnsettledTvDate.text = order.betTime.getDetailFormatDate()
 
             // 支援提前結算 且 仍有可結算次數 且 可結算金額大於等於最小結算金額
-            it.betUnsettledBtSettle.isEnabled =
-                order.earlySupport && order.earlySettleTimes < order.earlySettlePrice.settleTotal && BetSlipUtils.calculateMinSettlePrice(
-                    order.betAmount, order.earlyBetAmount, order.earlySettlePrice.settleMin
-                )
+            val settlePrice = BetSlipUtils.earlySettlePrice(
+                order.betAmount, order.earlyBetAmount, order.earlySettlePrice.price
+            )
+            val isCanSettle = settlePrice.toMoney() > 1000 && order.earlySupport
+            it.betUnsettledBtSettle.isEnabled = isCanSettle
+            it.betUnsettledBtSettle.isVisible = isCanSettle
             it.betUnsettledBtSettle.tag = adapterPosition
             it.betUnsettledTvBetcodeValue.text = order.betId
-            it.betUnsettledTvOddsValue.text = order.odds
-            val betAmount = "${CurrencySymbols.getSymbol(order.currency)}${order.betAmount}"
+            it.betUnsettledTvOddsValue.text = order.odds.getDisplayOdds()
+            val betAmount = "${CurrencySymbols.getSymbol(order.currency)}${order.betAmount.toMoney().getFormalMoney()}"
             it.betUnsettledTvBettingValue.text = betAmount
             val exceptAmount = "${CurrencySymbols.getSymbol(order.currency)}${BetSlipUtils.expectMaxAmount(order.betAmount, order.odds)}"
             it.betUnsettledTvExceptValue.text = exceptAmount
-            val earlyAmount = "${CurrencySymbols.getSymbol(order.currency)}${BetSlipUtils.earlySettlePrice(order.betAmount, order.earlyBetAmount)}"
-            it.betUnsettledBtAmount.text = earlyAmount
+            it.betUnsettledTvExcept.setTextRes(if(order.comboType == 0) R.string.live_bet_except_win else R.string.live_bet_except_max_win)
+            val earlyAmountStr = "${CurrencySymbols.getSymbol(order.currency)}${settlePrice}"
+            it.betUnsettledBtAmount.text = earlyAmountStr
             val flag = order.comboType != 0  // 0 - 单关 1-串关 2-全窜关
             it.groupCrossborder.isVisible = flag
+
             if (flag) {
                 val combo = R.string.title_combo_bet_odds.getString(order.comboK, order.comboV)
-                val comboValue = "$combo*${order.comboCount}"
+                val comboValue = combo //"$combo*${order.comboCount}" 修改为类似 2串1
                 it.betUnsettledTvCrossborderValue.text = comboValue
             }
-            it.groupEarlysettle.isVisible = order.earlySupport
-            if (order.earlySupport) {
-                it.betUnsettledTvEarlysettleValue.text = order.earlyBetAmount
-            }
+            it.groupEarlysettle.isVisible = order.earlyBetAmount.toMoney() > 0 //提前结算部分有金额才显示
+            it.betUnsettledTvEarlysettleValue.text = order.earlyBetAmount
             it.betUnsettledBtSettle.clickNoRepeat {
                 if (order.earlySettlePrice.settleStatus != 102) {
                     earlySettleSubmitListener?.onItemClick("", adapterPosition)
                 }
             }
         }
+
         earlySettleStatus(order.earlySettlePrice.settleStatus)
     }
 
@@ -95,14 +99,12 @@ class BetSlipUnsettledViewHolder(binding: ViewBinding, betSlipType: BetSlipEnum)
                 it.betUnsettledBtTv.setTextRes(R.string.live_bet_in_early_settle)
                 it.betUnsettledBtAmount.isVisible = false
                 it.betUnsettledBtProgress.isVisible = true
-                it.betUnsettledBtProgress.setImageDrawable(ProgressDrawable())
             } else {
                 it.betUnsettledBtTv.setTextRes(R.string.live_bet_early_settle,"1","2")
                 it.betUnsettledBtAmount.isVisible = true
                 it.betUnsettledBtProgress.isVisible = false
             }
         }
-
     }
 
     fun setEarlySettleSubmitListener(listener: RecyclerItemListener<String>) {

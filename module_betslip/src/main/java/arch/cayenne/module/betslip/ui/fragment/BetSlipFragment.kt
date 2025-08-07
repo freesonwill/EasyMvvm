@@ -9,7 +9,7 @@ import arch.cayenne.lib.base.ui.adapter.PagerAdapter
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.removeAllTips
-import arch.cayenne.lib.common.utils.helper.ViewPagerAnimHelper
+import arch.cayenne.lib.common.utils.helper.doSmartAnim
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
@@ -31,9 +31,6 @@ class BetSlipFragment :
         FragmentLiveBetSlipLayoutBinding::class
     override val vmClass: KClass<BetSlipPageViewModel> = BetSlipPageViewModel::class
     private val betSlipFilterViewModel: BetSlipFilterViewModel by viewModel()
-    private val viewPagerAnimHelper by lazy {
-        ViewPagerAnimHelper()
-    }
 
     override fun initView(savedInstanceState: Bundle?) {
         initMenu()
@@ -49,7 +46,7 @@ class BetSlipFragment :
 
     override fun onResume() {
         super.onResume()
-        betSlipFilterViewModel.checkUpdate()
+//        betSlipFilterViewModel.checkUpdate()
     }
 
 
@@ -82,11 +79,7 @@ class BetSlipFragment :
             tabLayout.clearOnTabSelectedListeners()
             tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab?) {
-                    viewPagerAnimHelper.doDirectViewPagerAnim(
-                        targetPosition = tab?.position ?: 0,
-                        viewPager = mBinding.viewPager,
-                        fakeViewPager = mBinding.ivFaker
-                    )
+                    mBinding.viewPager.doSmartAnim(targetPosition = tab?.position ?: 0)
                 }
 
                 override fun onTabUnselected(tab: TabLayout.Tab?) {
@@ -112,14 +105,13 @@ class BetSlipFragment :
                 val marginStart: Int = 8f.dp2px
                 for (i in 0 until mTabStrip.childCount) {
                     val tabView = mTabStrip.getChildAt(i)
-                    //设置tab左右间距为10dp  注意这里不能使用Padding 因为源码中线的宽度是根据 tabView的宽度来设置的
+                    //设置tab左右间距为8dp  注意这里不能使用Padding 因为源码中线的宽度是根据 tabView的宽度来设置的
                     val params = tabView.layoutParams as LinearLayout.LayoutParams
-                    params.leftMargin = marginStart
+                      params.leftMargin = marginStart
                     params.height = 32.dp2px
                     when (i) {
                         0, 1, 2 -> {
                             params.width = 74.dp2px
-                            params.rightMargin = marginStart
                         }
 
                         else -> {
@@ -138,7 +130,7 @@ class BetSlipFragment :
     override fun initListener() {
     }
 
-    override fun createObserver() {
+    override suspend fun createObserver() {
     }
 
 

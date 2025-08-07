@@ -32,7 +32,7 @@ class EMailVerifyFragment: BaseFragment<EmptyViewModel, FragmentEmailVerifyBindi
     override fun initListener() {
     }
 
-    override fun createObserver() {
+    override suspend fun createObserver() {
     }
     companion object {
         private const val ARG_POSITION = "arg_position"

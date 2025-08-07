@@ -1,5 +1,6 @@
 package arch.cayenne.module.betslip.data.constants
 
+import arch.cayenne.lib.common.utils.ext.SportStringExt.toOdds
 import arch.cayenne.lib.database.entity.BetSlipOrderBean
 import arch.cayenne.lib.database.entity.BetSlipReserveBean
 import arch.cayenne.lib.database.entity.EarlySettlePriceBean
@@ -23,7 +24,7 @@ object CommonExtension {
             comboK = comboK,
             comboV = comboV,
             comboCount = comboCount,
-            odds = odds,
+            odds = odds.toOdds(),
             status = status,
             earlySupport = earlySupport,
             earlyBetAmount = earlyBetAmount,
@@ -40,7 +41,7 @@ object CommonExtension {
         return OrderSelectionBean(
             selectionId = selectionId,
             selectionName = selectionName,
-            odds = odds,
+            odds = odds.toOdds(),
             marketName = marketName,
             marketId = marketId,
             specifier = specifier,
@@ -76,7 +77,7 @@ object CommonExtension {
         return ReserveOrderSelectionBean(
             selectionId = selectionId,
             selectionName = selectionName,
-            odds = odds,
+            odds = odds.toOdds(),
             marketName = marketName,
             marketId = marketId,
             specifier = specifier,

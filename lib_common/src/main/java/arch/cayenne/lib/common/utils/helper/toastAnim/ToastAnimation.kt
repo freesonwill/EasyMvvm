@@ -20,4 +20,12 @@ interface ToastAnimation {
     fun getLayoutParams(view: View): WindowManager.LayoutParams
     suspend fun playShowAnim(view: View)
     suspend fun playDismissAnim(view: View)
+
+    suspend fun playQueueAnim(view: View) {
+
+    }
+
+    fun isPlayQueueAnim(): Boolean {
+        return false
+    }
 }

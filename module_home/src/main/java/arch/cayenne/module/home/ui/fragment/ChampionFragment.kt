@@ -4,6 +4,8 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -44,8 +46,23 @@ class ChampionFragment : BaseFragment<ChampionViewModel, FragmentChampionBinding
     override fun initData() {
         super.initData()
         mViewModel.setMatchId(args.matchId)
-        mViewModel.subscribeMatch()
-        mViewModel.getChampionDetail()
+    }
+
+    override fun onCreateAnimation(transit: Int, enter: Boolean, nextAnim: Int): Animation? {
+        return if (enter && nextAnim != 0) {
+            val animation = AnimationUtils.loadAnimation(requireContext(), nextAnim)
+            animation.setAnimationListener(object : Animation.AnimationListener {
+                override fun onAnimationStart(animation: Animation?) {}
+                override fun onAnimationEnd(animation: Animation?) {
+                    mViewModel.subscribeMatch()
+                    mViewModel.getChampionDetail()
+                }
+                override fun onAnimationRepeat(animation: Animation?) {}
+            })
+            animation
+        } else {
+            super.onCreateAnimation(transit, enter, nextAnim)
+        }
     }
 
     override fun initView(savedInstanceState: Bundle?) {
@@ -60,16 +77,14 @@ class ChampionFragment : BaseFragment<ChampionViewModel, FragmentChampionBinding
                     .into(tittleBarBinding.ivLandscapeLeagueIcon)
                 tittleBarBinding.tvCompetitionName.text = args.name
             }
+            rvChampion.itemAnimator = null
             rvChampion.apply {
                 championAdapter = ChampionItemAdapter(object : OnChampionItemClickListener {
                     override fun onOddsCellClick(selection: SelectionBeanLite) {
                         lifecycleScope.launch {
                             val status = mViewModel.setSelection(selection.selectionId)
-                            if (status is AddSelectionStatus.Failure) {
-                                mViewModel.triggerAllBetRefresh()
-                            }
                             if (status is AddSelectionStatus.Success.Single) {
-                                BetSheetFragment.newInstance().show(requireActivity().supportFragmentManager)
+                                BetSheetFragment.show(requireActivity())
                             } else if (status is AddSelectionStatus.Failure.DisableComboForParlay) {
                                 showToast(getString(R.string.disabled_to_combo))
                             } else if (status is AddSelectionStatus.Failure.DisableComboForProvider) {
@@ -95,7 +110,7 @@ class ChampionFragment : BaseFragment<ChampionViewModel, FragmentChampionBinding
         }
     }
 
-    override fun createObserver() {
+    override suspend fun createObserver() {
         mViewModel.currentBalanceChange.observe(viewLifecycleOwner) {
             tittleBarBinding.tvMoney.text =
                 getString(R.string.balance_format, CurrencySymbols.getSymbol(it.currency), it.balance.getFormalMoney())

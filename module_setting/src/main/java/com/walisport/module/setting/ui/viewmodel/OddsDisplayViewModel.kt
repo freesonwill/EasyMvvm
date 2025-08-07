@@ -3,7 +3,6 @@ package com.walisport.module.setting.ui.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.common.data.constants.OddsDisplayEnum
 import com.walisport.module.setting.data.OddsDisplayRepository
@@ -22,12 +21,7 @@ class OddsDisplayViewModel(private val repo: OddsDisplayRepository): BaseViewMod
 
     //设置赔率方式
     fun setOddsType(type: OddsDisplayEnum) {
-        callApi( {
-            repo.setOddsType(type)
-        }, {
-            if (it is ApiResponseState.Succeeded<*>) {
-                _displayType.value = type
-            }
-        })
+        repo.setOddsType(type)
+        _displayType.value = type
     }
 }

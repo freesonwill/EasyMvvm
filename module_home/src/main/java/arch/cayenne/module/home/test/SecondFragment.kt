@@ -36,7 +36,7 @@ class SecondFragment : BaseFragment<EmptyViewModel, FragmentTestSecondBinding>()
         }
     }
 
-    override fun createObserver() {
+    override suspend fun createObserver() {
     }
 
     override fun onStop() {

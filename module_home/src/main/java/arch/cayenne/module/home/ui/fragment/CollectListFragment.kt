@@ -22,6 +22,7 @@ import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
+import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.helper.showToast
@@ -39,6 +40,7 @@ import arch.cayenne.module.home.ui.view.decoration.MatchCardItemDecoration
 import arch.cayenne.module.home.ui.viewmodel.CollectListViewModel
 import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
 import kotlinx.coroutines.launch
+import java.lang.ref.WeakReference
 import kotlin.reflect.KClass
 
 /**
@@ -49,7 +51,6 @@ import kotlin.reflect.KClass
 class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectListBinding>() {
     override val vbClass: KClass<FragmentCollectListBinding> = FragmentCollectListBinding::class
     override val vmClass: KClass<CollectListViewModel> = CollectListViewModel::class
-    override val keepViewOnNavigation: Boolean = true
     private val titleBarBinding: TitleBarFavoriteBinding by lazy {
         TitleBarFavoriteBinding.inflate(LayoutInflater.from(context), mBinding.titleBar, false)
     }
@@ -81,14 +82,17 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
                     mViewModel.removeMatchCollect(item)
                 }
 
-                override fun onOddsCellClick(selection: SelectionBeanLite, x: Float, y: Float) {
+                override fun onOddsCellClick(cell: WeakReference<View>, selection: SelectionBeanLite, x: Float, y: Float) {
                     lifecycleScope.launch {
+                        cell.get()?.isSelected = true
                         val status = mViewModel.setSelection(selection.selectionId)
-                        if (status is AddSelectionStatus.Failure) {
-                            mViewModel.triggerAllBetRefresh()
+
+                        if (status !is AddSelectionStatus.Success) {
+                            cell.get()?.isSelected = false
                         }
+
                         if (status is AddSelectionStatus.Success.Single) {
-                            BetSheetFragment.newInstance().show(requireActivity().supportFragmentManager)
+                            BetSheetFragment.show(requireActivity())
                         } else if (status is AddSelectionStatus.Failure.DisableComboForParlay) {
                             showToast(getString(R.string.disabled_to_combo))
                         } else if (status is AddSelectionStatus.Failure.DisableComboForProvider) {
@@ -139,10 +143,11 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
         titleBarBinding.llWalletEntry.clickNoRepeat {
             navigate(Uri.parse("walisport://module_topup/topUpFragment"))
         }
+        titleBarBinding.llWalletEntry.addScaleOnTouchAnimation(titleBarBinding.ivWalletAdd)
     }
 
     @SuppressLint("SetTextI18n")
-    override fun createObserver() {
+    override suspend fun createObserver() {
         mViewModel.currentBalanceChange.observe(viewLifecycleOwner) {
             titleBarBinding.tvMoney.text = "${CurrencySymbols.getSymbol(it.currency)} ${it.balance.getFormalMoney()}"
         }
@@ -175,12 +180,13 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
                             arch.cayenne.lib.common.R.string.error_net.getString()
                         )
                     }
-                    DataState.DataEmpty -> {     //這個DataEmpty表示api抓不到任何資料了，有可能是頁面到底，或是從第一頁就抓不到資料
+                    DataState.NoMoreData -> {     //這個DataEmpty表示api抓不到任何資料了，有可能是頁面到底，或是從第一頁就抓不到資料
                         mViewModel.changePageEnd(true)
                         refreshLayout.finishLoadMore()
                         refreshLayout.setEnableLoadMore(false)
+                        matchAdapter.showNoMoreData(true)
                     }
-                    HomeState.Match.DataEmpty -> {  //這個DataEmpty表示真的從第一頁就抓不到資料，表示當前的選擇沒有任何賽事
+                    HomeState.Match.DataEmpty -> {  //這個DataEmpty表示確定真的從第一頁就抓不到資料，表示當前的選擇沒有任何賽事
                         loadingView.visibility = View.GONE
                         refreshLayout.finishRefresh()
                         clDynamics.visibility = View.VISIBLE

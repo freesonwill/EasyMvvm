@@ -142,8 +142,6 @@ abstract class LiveMatchDao : BaseDao<LiveMatchBean>() {
         startTime: Long,
     )
 
-
-    @Transaction
     open suspend fun insertFullMatch(
         matches: List<LiveMatchBean>,
         markets: List<LiveMarketBean>,

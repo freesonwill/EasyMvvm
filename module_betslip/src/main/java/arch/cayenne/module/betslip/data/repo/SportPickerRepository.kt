@@ -21,7 +21,7 @@ class SportPickerRepository(
                     sportId = it.sportId,
                     sportName = it.sportName
                 )
-            })
+            }.sortedBy { it.sportId })
         }
     }
 

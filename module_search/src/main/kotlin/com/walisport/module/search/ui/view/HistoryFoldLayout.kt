@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import com.walisport.module.search.R
 import com.walisport.module.search.utils.FoldUtils
+import kotlin.math.max
 
 /**
  * @author: caomei
@@ -67,38 +68,61 @@ class HistoryFoldLayout @JvmOverloads constructor(
     }
 
     private fun refreshFoldView() {
+        if(!canFold) return
+
         FoldUtils.removeFromParent(upFoldView!!)
         FoldUtils.removeFromParent(downFoldView!!)
-        if (canFold) {
-            addView(downFoldView)
-            if (fold) {
-                FoldUtils.removeFromParent(upFoldView!!)
-                val upIndex = index(index, surplusWidth)
-                addView(upFoldView, upIndex)
-            } else {
-                FoldUtils.removeFromParent(downFoldView!!)
-                addView(downFoldView)
+
+        if (fold) {
+            getIndex().let {
+                if(it >= 0) addView(upFoldView, it)
             }
+        } else {
+            addView(downFoldView)
         }
     }
 
-    private fun index(index: Int, surplusWidth: Int): Int {
-        var upIndex = index
-        var upWidth: Int = FoldUtils.getViewWidth(upFoldView!!)
-        //当剩余空间大于等于展开View宽度直接加入index+1
-        if (surplusWidth >= upWidth) {
-            upIndex = index + 1
-        } else { //找到对应的位置
-            for (i in index downTo 0) {
-                val view = getChildAt(i)
-                val viewWidth: Int = FoldUtils.getViewWidth(view)
-                upWidth -= viewWidth
-                if (upWidth <= 0) {
-                    upIndex = i
-                    break
+    /**
+     * 計算按鈕的索引位置。
+     * 如果剛好全部項目都能放下，回傳 -1（表示不用顯示按鈕）。
+     */
+    private fun getIndex(): Int {
+        // 按鈕寬度
+        val btnWidth = max(FoldUtils.getViewWidth(upFoldView!!), FoldUtils.getViewWidth(downFoldView!!))
+        val maxWidth = measuredWidth    // 當前容器最大寬度
+        val maxLine = mFoldLines        // 最多允許的行數
+        var tempWidth = 0               // 累積當前行的總寬度
+        var tempLine = 0                // 累積目前是第幾行（從 0 開始）
+        var tempLineCount = 0           // 當前行放了幾個元素
+
+        for(i in 0 until childCount) {
+            val childView = getChildAt(i)
+            val space = if (tempLineCount > 0) mHorizontalSpacing else 0
+            val childWidth = FoldUtils.getViewWidth(childView) + space
+
+            if(tempWidth + childWidth < maxWidth) {
+                // 如果加上這個元素後還不會超過行寬，就放進當前行
+                tempWidth += childWidth
+                tempLineCount++
+            } else {
+                // 換行處理
+                tempLine++
+                if(tempLine >= maxLine) {
+                    // 已達允許行數上限，不能再換行了
+                    return when {
+                        i == childCount -1 -> -1                // 剛好全部項目都能放下，不用顯示按鈕
+                        tempWidth + btnWidth <= maxWidth -> i   // 如果當前行還放得下按鈕，就讓按鈕和前面項目共存
+                        else -> i - 1                           // 否則回退一個元素，空出空間讓按鈕顯示
+                    }
+                } else {
+                    // 開啟新的一行，重設行內寬度與計數
+                    tempLineCount = 0
+                    tempWidth = childWidth
                 }
             }
         }
-        return upIndex
+
+        // 所有元素都能顯示，無需折疊
+        return -1
     }
 }

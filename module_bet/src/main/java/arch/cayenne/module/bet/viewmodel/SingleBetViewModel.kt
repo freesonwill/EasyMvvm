@@ -9,8 +9,11 @@ import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.data.repo.BalanceRepository
 import arch.cayenne.lib.common.ui.viewmodel.Event
 import arch.cayenne.lib.common.ui.viewmodel.NumberCalculatorViewModel
+import arch.cayenne.lib.common.utils.ext.SportDisplayOddsExt.getDisplayOdds
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
+import arch.cayenne.lib.common.utils.ext.SportDisplayOddsExt.reserveDisplayOdds
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
+import arch.cayenne.lib.common.utils.ext.SportStringExt.toOdds
 import arch.cayenne.lib.database.entity.BetSelectionBean
 import arch.cayenne.lib.database.entity.BetTypeEnum
 import arch.cayenne.lib.database.entity.InfoBean
@@ -54,7 +57,7 @@ class SingleBetViewModel(
         val checkEligibility = {
             val betSheet = _onBetSheetListener.value
             val editNumber = onEditNumber.value
-            val odds = _onReserveOddsListener.value
+            val odds = _onReserveOddsListener.value?.reserveDisplayOdds()
 
             value = if (betSheet == null || editNumber == null) {
                 false
@@ -66,7 +69,7 @@ class SingleBetViewModel(
                 if (odds == null) {
                     isBetSheetActive && isMoneyValid
                 } else {
-                    isBetSheetActive && isMoneyValid && odds > betSheet.odds
+                    isBetSheetActive && isMoneyValid && odds >= betSheet.odds
                 }
             }
         }
@@ -81,11 +84,14 @@ class SingleBetViewModel(
         get() = CurrencySymbols.getSymbol(_onBalanceListener.value?.currency ?: "")
 
     private val _onBetWinMoney = MediatorLiveData<String>().apply {
-        var odds = 1
+        var odds = 100
+        fun getOdds(): Int {
+            return odds.getDisplayOdds().toOdds()
+        }
         addSource(_onBetSheetListener) { data ->
             if (_onReserveOddsListener.value == null) {
                 odds = data.odds
-                value = editValue.toMoney().getMoney(odds)
+                value = editValue.toMoney().getMoney(getOdds())
             }
         }
         addSource(_onReserveOddsListener) { reserveOdds ->
@@ -96,7 +102,7 @@ class SingleBetViewModel(
             } else {
                 odds = reserveOdds
             }
-            value = editValue.toMoney().getMoney(odds)
+            value = editValue.toMoney().getMoney(getOdds())
         }
         addSource(onEditNumber) {
             val money = if (it.isEmpty()) {
@@ -109,7 +115,7 @@ class SingleBetViewModel(
             value = if (money.isEmpty()) {
                 "0.00"
             } else {
-                money.toMoney().getMoney(odds)
+                money.toMoney().getMoney(getOdds())
             }
         }
     }
@@ -136,12 +142,14 @@ class SingleBetViewModel(
             launch {
                 balanceRepo.observeBalance().collect {
                     _onBalanceListener.value = it
-                    setRemainingNumber(it.balance)
+                    if (it != null) {
+                        setRemainingNumber(it.balance)
+                    }
                 }
             }
             launch {
-                betRepo.getBetType()?.let {
-                    _betTypeListener.value = it
+                betRepo.observeBetType().collect {
+                    _betTypeListener.value = it ?: BetTypeEnum.SINGLE
                 }
             }
         }
@@ -152,10 +160,11 @@ class SingleBetViewModel(
             return false
         }
         val money = onEditNumber.value?.toMoney() ?: return false
-        val reserveOdds = _onReserveOddsListener.value
+        val currentOdds = _onBetSheetListener.value?.odds ?: 0
+        val reserveOdds = _onReserveOddsListener.value?.reserveDisplayOdds()
 
         viewModelScope.launch {
-            if (reserveOdds == null) {
+            if (reserveOdds == null || reserveOdds == currentOdds) {
                 val isSuccess = async {
                     betRepo.saveToSingle()
                 }.await()
@@ -184,6 +193,12 @@ class SingleBetViewModel(
 
     fun saveToCombo() {
         betRepo.saveToCombo()
+    }
+
+    fun saveToSingle() {
+        viewModelScope.launch {
+            betRepo.saveToSingle()
+        }
     }
 
     fun saveToReserve(odds: Int) {

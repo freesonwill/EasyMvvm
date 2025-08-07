@@ -43,6 +43,6 @@ class CompleteAccountFragment: BaseFragment<EmptyViewModel, FragmentCompleteAcco
 
     }
 
-    override fun createObserver() {
+    override suspend fun createObserver() {
     }
 }

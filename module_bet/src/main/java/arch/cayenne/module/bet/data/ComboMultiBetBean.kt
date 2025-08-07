@@ -17,7 +17,7 @@ data class ComboMultiBetBean(
     val serialValue: Int = 1, // 多少串一關，0為全串關
     val comboK: Int = 1, // 3串2的3
     val comboV: Int = 1, // 3串2的2
-    val sumOdds: Int, // 串關後賠率加總
+    var sumOdds: Int, // 串關後賠率加總
     val count: Int = 1, // 場次組合數量
     var inputMoney: Long = 0,
     val minAmount: Long,
@@ -29,3 +29,8 @@ data class ComboMultiBetBean(
     val maxWinMoney: Long
         get() = inputMoney.getMoney(sumOdds).toMoney()
 }
+
+data class ComboMultiBetOddsBean(
+    val serialValue: Int = 1,
+    val sumOdds: Int
+)

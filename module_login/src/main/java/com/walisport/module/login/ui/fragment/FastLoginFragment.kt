@@ -38,7 +38,7 @@ class FastLoginFragment : BaseFragment<EmptyViewModel, FragmentFastLoginBinding>
        }
     }
 
-    override fun createObserver() {
+    override suspend fun createObserver() {
 
     }
 }

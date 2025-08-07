@@ -1,6 +1,7 @@
 package arch.cayenne.lib.common
 
-import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
+import arch.cayenne.lib.common.utils.ext.SportIntExt
+import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
 import org.junit.Test
 
 
@@ -24,12 +25,7 @@ class ExampleUnitTest {
         println("get int from string: ")
 
         println("int multiply int")  // 0
-        println(198.getOdds(1))    // 1.98
-        println(1000.getOdds(1))   // 10.00
-        println(10.getOdds(1))     // 0.1
-        println(1.getOdds(1))      // 0.01
-        println(1234.getOdds(1))   // 12.34
-        println(200.getOdds(2))    // 4
-        println(255.getOdds(3))    // 7.65
+        println(1000000L.getFormalMoney())   // 10.00
+
     }
 }

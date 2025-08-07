@@ -9,13 +9,17 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
+import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
-import arch.cayenne.lib.common.ui.view.DynamicStateLayout
+import arch.cayenne.lib.common.ui.view.DynamicStateLayout.States
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
-import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
+import arch.cayenne.lib.common.utils.ext.NavResultExt.sendResult
+import arch.cayenne.lib.common.utils.ext.NavigationExt.navigateUp
+import arch.cayenne.lib.common.utils.ext.ResourceExt.getDrawable
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
+import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import com.bumptech.glide.Glide
 import com.walisport.module.live.R
@@ -64,11 +68,10 @@ class LiveLeagueFragment : BaseFragment<LeagueViewModel, FragmentLeagueBinding>(
         leagueLogo = arguments?.getString("leagueLogo") ?: ""
         mBinding.apply {
             refreshLayout.setLeagueMode()
-            refreshLayout.setOnRefreshListener {
-                mViewModel.getMatchLeagueData(leagueID)
-            }
+            //禁用下拉刷新，支持上拉加载更多
+            refreshLayout.setEnableRefresh(false)
             refreshLayout.setOnLoadMoreListener {
-                mViewModel.getMoreMatchLeagueData(leagueID)
+                mViewModel.getMoreMatchLeagueList(leagueID)
             }
             recyclerLeague.apply {
                 layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
@@ -82,37 +85,55 @@ class LiveLeagueFragment : BaseFragment<LeagueViewModel, FragmentLeagueBinding>(
         standsAdapter.setOnItemClickListener { pos ->
             val matchId = standsAdapter.currentList[pos].matchId
             val sportId = standsAdapter.currentList[pos].sportId
-            navigate(
-                LiveLeagueFragmentDirections.actionLeagueFragmentToLiveMainFragment(
-                    matchId,
-                    sportId
-                )
-            )
+            val result = Bundle().apply {
+                putLong("matchId", matchId)
+                putInt("sportId", sportId)
+            }
+            sendResult(LiveMainFragment.CHANGE_MATCH, result)
+            navigateUp()
         }
     }
 
     override fun initData() {
         super.initData()
-        mViewModel.getMatchLeagueData(leagueID)
+        mViewModel.getMatchLeagueList(leagueID)
     }
 
     override fun initListener() {
-        mBinding.ivLeagueClose.clickNoRepeat {
+        mBinding.ivLeagueClose.apply { addScaleOnTouchAnimation() }.clickNoRepeat {
             findNavController().navigateUp()
         }
     }
 
-    override fun createObserver() {
+    override suspend fun createObserver() {
+        mViewModel.apiStateListener.observe(viewLifecycleOwner) {
+            if (it == DataState.NoMoreData) {
+                mBinding.refreshLayout.setNoMoreData(true)
+                mBinding.refreshLayout.setEnableLoadMore(false)
+                mBinding.refreshLayout.finishLoadMoreWithNoMoreData()
+            } else if (it == DataState.NetworkUnavailable) {
+                mBinding.refreshLayout.setNoMoreData(true)
+                mBinding.refreshLayout.setEnableLoadMore(false)
+                mBinding.recyclerLeague.visibility = View.GONE //网络异常时需隐藏列表
+                mBinding.leagueRoot.background = arch.cayenne.lib.common.R.color.black.getDrawable()
+                mBinding.leagueMain.setState(
+                    States.NETWORK_ANOMALY,
+                    arch.cayenne.lib.common.R.string.error_net.getString()
+                )
+            }
+        }
         mViewModel.leagueData.observe(viewLifecycleOwner) {
-            mBinding.refreshLayout.finishRefresh()
             mBinding.refreshLayout.finishLoadMore()
             it?.let {
                 mBinding.leagueMain.setVisibilityGone()
-                if (it.match.isEmpty() && standsAdapter.currentList.isEmpty()) {
-                    mBinding.leagueMain.setState(
-                        DynamicStateLayout.States.DATA_EMPTY,
-                        R.string.lineup_empty.getString()
-                    )
+                mBinding.recyclerLeague.visibility = View.VISIBLE
+                if (it.match.isEmpty()) {
+                    if (standsAdapter.itemCount == 0) {
+                        mBinding.leagueMain.setState(
+                            States.DATA_EMPTY,
+                            R.string.lineup_empty.getString()
+                        )
+                    }
                 } else {
                     //更新设置背景色
                     var startColor = Color.parseColor("#377c46")
@@ -125,15 +146,12 @@ class LiveLeagueFragment : BaseFragment<LeagueViewModel, FragmentLeagueBinding>(
                     )
                     gradientDrawable.shape = GradientDrawable.RECTANGLE
                     mBinding.leagueRoot.background = gradientDrawable
-                    //更新联赛数据
-                    mBinding.leagueRoot.postDelayed({
-                        standsAdapter.submitList(it.match)
-                    }, 1000)
                 }
+                standsAdapter.submitList(it.match)
             } ?: run {
-                if (standsAdapter.currentList.isEmpty()) {
+                if (standsAdapter.itemCount == 0) {
                     mBinding.leagueMain.setState(
-                        DynamicStateLayout.States.DATA_EMPTY,
+                        States.DATA_EMPTY,
                         R.string.lineup_empty.getString()
                     )
                 }

@@ -56,7 +56,7 @@ class HandicapCornerFragment :
 
     }
 
-    override fun createObserver() {
+    override suspend fun createObserver() {
         mViewModel.cornerBallData.observe(viewLifecycleOwner) {
             if (it != null) {
                 cornerAdapter.submitList(it)

@@ -21,7 +21,7 @@ data class BetSlipOrderBean (
     val comboK: Int,
     val comboV: Int,
     val comboCount: Int,
-    val odds: String,                          // 賠率
+    val odds: Int,                          // 賠率
     val status: Int,                           // 訂單狀態：1投注確認中，2拒單，3取消訂單，4接單成功，5已結算
     var earlySupport: Boolean,                 // 是否支持提前結算
     val earlyBetAmount: String,                // 提前結算總本金
@@ -37,7 +37,7 @@ data class BetSlipOrderBean (
 data class OrderSelectionBean(
     val selectionId: Long,          // 投注项id
     val selectionName: String,      // 选项名称
-    val odds: String,               // 下注赔率
+    val odds: Int,               // 下注赔率
     val marketName: String,         // 盘口名称
     val marketId: Long,             // 盘口id
     val specifier: String,          // 盘口说明符

@@ -1,7 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<shape xmlns:android="http://schemas.android.com/apk/res/android"
-    android:shape="rectangle">
-    <solid android:color="#1AFFFFFF" />
-    <stroke android:width="@dimen/dp_1" android:color="#14FFFFFF"/>
-    <corners android:radius="@dimen/dp_12" />
-</shape>
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    android:color="#232530"
+    android:enterFadeDuration="50"
+    android:exitFadeDuration="50">
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="#1AFFFFFF" />
+            <stroke
+                android:width="@dimen/dp_1"
+                android:color="#14FFFFFF" />
+            <corners android:radius="@dimen/dp_12" />
+        </shape>
+    </item>
+</ripple>

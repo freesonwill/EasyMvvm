@@ -40,6 +40,8 @@ class SearchFragment : SearchBaseFragment<SearchViewModel, FragmentSearchBinding
         }
     }
 
+
+
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
         setHistory()
@@ -57,18 +59,7 @@ class SearchFragment : SearchBaseFragment<SearchViewModel, FragmentSearchBinding
         }
     }
 
-    override fun initListener() {
-        super.initListener()
-
-        parentFragmentManager.setFragmentResultListener(SEARCH_KEY, viewLifecycleOwner) { _, bundle ->
-            bundle.getString(SEARCH_KEY)?.let { keyword ->
-                updateSearchText(keyword)
-                mViewModel.getRecordByUID()
-            }
-        }
-    }
-
-    override fun createObserver() {
+    override suspend fun createObserver() {
         super.createObserver()
         with(contentBinding) {
             with(mViewModel) {

@@ -10,7 +10,4 @@
     <!-- 圓角 -->
     <corners
         android:radius="8dp" />
-
-    <solid
-        android:color="#80FFFFFF" />
 </shape>

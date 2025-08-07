@@ -25,7 +25,7 @@ class HomeBetSlipRepository(
                 sportName = it.sportName,
                 isSelected = ids.contains(it.sportId)
             )
-        }
+        }.sortedBy { it.sportId }
     }
 
 }

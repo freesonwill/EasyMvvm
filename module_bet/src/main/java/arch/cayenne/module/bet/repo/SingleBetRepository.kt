@@ -1,6 +1,8 @@
 package arch.cayenne.module.bet.repo
 
 import arch.cayenne.lib.base.data.repository.BaseRepository
+import arch.cayenne.lib.common.data.constants.UserDataKey
+import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.database.dao.BetDao
 import arch.cayenne.lib.database.entity.BetDetailBean
 import arch.cayenne.lib.database.entity.BetResultStatusEnum
@@ -18,6 +20,7 @@ import kotlinx.coroutines.withContext
 class SingleBetRepository(
     override val scope: CoroutineScope,
     private val betDao: BetDao,
+    manager: UserDataManager,
     private val remoteManager: BettingRemoteManager
 ) : BaseRepository() {
 
@@ -26,25 +29,43 @@ class SingleBetRepository(
     private val comboFlow =
         MutableSharedFlow<ComboMultiBetBean>(replay = 1, extraBufferCapacity = 1)
 
+    private val observerOddsDisplay = manager.observe<Int>(UserDataKey.KEY_ODDS)
+    private val observerLanguage = manager.observe<String>(UserDataKey.KEY_LANGUAGE)
+
     val isConnected: Boolean
         get() = remoteManager.isConnected
 
     init {
         scope.launch {
-            betDao.getCurrentBet()?.let { bet ->
-                launch {
-                    betDao.observeSelections(bet.betId).collect {
-                        val data = it.firstOrNull() ?: return@collect
-                        selectionFlow.emit(data)
-                    }
-                }
-                // TODO 之後可能改為盤口變動就須獲取限額
-                launch {
-                    val selection = betDao.getSelections(bet.betId)
-                    val data = selection.firstOrNull() ?: return@launch
-                    setComboMulti(data)
+            launch {
+                observerLanguage.collect {
+                    updateLanguage()
                 }
             }
+            launch {
+                betDao.observeCurrentSelections().collect {
+                    if (it.isNotEmpty() && it.size == 1) {
+                        val data = it.first()
+                        val isInit = comboFlow.replayCache.isEmpty()
+                        setSelectionForCheckOdds(data)
+                        if (isInit) {
+                            setComboMulti(data)
+                        }
+                    }
+                }
+            }
+            launch {
+                observerOddsDisplay.collect {
+                    updateOdds()
+                }
+            }
+
+        }
+    }
+
+    private fun setSelectionForCheckOdds(selection: BetSelectionBean) {
+        scope.launch {
+            selectionFlow.emit(selection)
         }
     }
 
@@ -73,8 +94,8 @@ class SingleBetRepository(
 
     fun observeSelectionBean(): Flow<BetSelectionBean> = selectionFlow
     fun observeComboBean(): Flow<ComboMultiBetBean> = comboFlow
-    suspend fun getBetType(): BetTypeEnum? =
-        withContext(scope.coroutineContext) { betDao.getCurrentBet()?.betType }
+
+    fun observeBetType(): Flow<BetTypeEnum?> = betDao.observeCurrentBetType()
 
     fun removeBet() {
         scope.launch {
@@ -180,4 +201,45 @@ class SingleBetRepository(
         }
     }
 
+    private fun updateLanguage() {
+        scope.launch {
+            betDao.getCurrentBet()?.let { bet ->
+                betDao.getSelections(bet.betId).forEach { selection ->
+                    remoteManager.getMatchReq(selection.matchId)?.let { newMatch ->
+                        newMatch.markets.find { market ->
+                            market.selections.find { it.selectionId == selection.selectionId } != null
+                        }?.let { market ->
+                            val marketName = market.market.marketName
+                            val name =
+                                market.selections.find { it.selectionId == selection.selectionId }?.name
+                                    ?: selection.name
+                            val leagueName = newMatch.match.basicInfo.tournamentName
+                            val matchName = newMatch.match.basicInfo.matchName
+                            betDao.updateLanguage(
+                                bet.betId,
+                                selection.selectionId,
+                                marketName = marketName,
+                                name = name,
+                                leagueName = leagueName,
+                                matchName = matchName
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun updateOdds() {
+        scope.launch {
+            betDao.getCurrentBet()?.let { bet ->
+                betDao.getSelections(bet.betId).let { selection ->
+                    if (selection.isNotEmpty() && selection.size == 1) {
+                        val data = selection.first()
+                        setSelectionForCheckOdds(data)
+                    }
+                }
+            }
+        }
+    }
 }

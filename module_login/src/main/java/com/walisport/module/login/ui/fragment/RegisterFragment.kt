@@ -36,6 +36,6 @@ class RegisterFragment: BaseFragment<EmptyViewModel, FragmentRegisterBinding>() 
 
     }
 
-    override fun createObserver() {
+    override suspend fun createObserver() {
     }
 }

@@ -29,9 +29,9 @@ object FragmentExt {
                 override fun handleOnBackPressed() {
                     val intercepted = onIntercept()
                     if (intercepted) return
-                    // 放行自己，并触发系统默认行为
-                    isEnabled = false
-                    requireActivity().onBackPressedDispatcher.onBackPressed()
+                    isEnabled = false  // 放行自己，并触发系统默认行为
+                    requireActivity().onBackPressedDispatcher.onBackPressed() //触发系统默认的回退逻辑
+                    isEnabled = true // 这里需要重新启用回调，以便下次可以再次拦截
                 }
             }
         )

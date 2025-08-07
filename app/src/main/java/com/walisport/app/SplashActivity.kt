@@ -85,8 +85,8 @@ class SplashActivity : BaseActivity<SplashViewModel, ActivitySplashBinding>() {
         Pair<Int, String>(BuildConfig.uid, BuildConfig.token)
     } else if (BuildConfig.BUILD_TYPE != "release") {
         listOf(
-            Pair(55468822, "NTU0Njg4MjJfMTc1MzUxMTIyMjkwMjpUcTRtTlVhSWNYUUlnTW1M"),
-            Pair(55468823, "NTU0Njg4MjNfMTc1MzUxMTI2MzgwNjplS3RFUmpMSXpHcDZOeWx2"),
+            Pair(55468822, "NTU0Njg4MjJfMTc1NDEwOTI4MTMwMzpiMDRsSmxXazF1TkVpYzBh"),
+            Pair(55468823, "NTU0Njg4MjNfMTc1NDEwOTMyMTA2NjpYNFFYakZtdmdLcVZDNzdE"),
             Pair(55468824, "NTU0Njg4MjRfMTc1MzUxMTI5MzMzNDp2aDlwaW9WdkExd2V4Sm5u"),
             Pair(55468825, "NTU0Njg4MjVfMTc1MzUxMTMyMzE0NzpJaHl3SHppWGkzaDAxNllq"),
             Pair(55468826, "NTU0Njg4MjZfMTc1MzUxMTM0OTU4NzoyS3htQnpYbjU2SnZtS3lH")
@@ -133,7 +133,7 @@ class SplashActivity : BaseActivity<SplashViewModel, ActivitySplashBinding>() {
         }
     }
 
-    override fun createObserver() {
+    override suspend fun createObserver() {
         mViewModel.homeTimeSeconds.observe(this) { seconds ->
             if (seconds > 0) {
                 mBinding.splashCounterDown.text =

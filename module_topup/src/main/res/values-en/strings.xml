@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="fragment_title">Top Up</string>
+    <string name="fragment_title">Wallet</string>
+    <string name="balance">Balance</string>
+    <string name="recharge">Recharge</string>
+    <string name="withdrawal">WithDraw</string>
+    <string name="recharge_record">Recharge Record</string>
+    <string name="withdrawal_record">Withdrawal Record</string>
 </resources>

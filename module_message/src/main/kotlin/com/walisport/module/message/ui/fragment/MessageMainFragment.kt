@@ -1,33 +1,19 @@
 package com.walisport.module.message.ui.fragment
 
-import android.annotation.SuppressLint
-import android.graphics.Rect
 import android.graphics.Typeface
 import android.os.Bundle
 import android.view.View
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import arch.cayenne.lib.base.data.constants.StatusBarMode
-import arch.cayenne.lib.base.data.model.StatusBarConfig
+import androidx.viewpager2.widget.ViewPager2
+import arch.cayenne.lib.base.data.model.PagerBean
+import arch.cayenne.lib.base.ui.adapter.PagerAdapter
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
-import arch.cayenne.lib.common.ui.dialog.CommonDialog
-import arch.cayenne.lib.common.ui.view.DynamicStateLayout.States
-import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
-import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
-import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+import arch.cayenne.lib.common.utils.helper.doSmartAnim
 import com.walisport.module.message.R
-import com.walisport.module.message.data.NotificationBean
 import com.walisport.module.message.databinding.FragmentMessageMainBinding
-import com.walisport.module.message.ui.adapter.MessageAdapter
-import com.walisport.module.message.ui.view.DeleteAnimator
 import com.walisport.module.message.ui.viewmodel.MessageMainViewModel
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.regex.Matcher
-import java.util.regex.Pattern
 import kotlin.reflect.KClass
 
 /**
@@ -38,7 +24,6 @@ class MessageMainFragment : BaseFragment<MessageMainViewModel, FragmentMessageMa
 
     override val vbClass: KClass<FragmentMessageMainBinding> = FragmentMessageMainBinding::class
     override val vmClass: KClass<MessageMainViewModel> = MessageMainViewModel::class
-    private var msgAdapter = MessageAdapter()
 
     companion object {
         const val MSG_ALL = 0
@@ -48,137 +33,117 @@ class MessageMainFragment : BaseFragment<MessageMainViewModel, FragmentMessageMa
         const val MSG_PAY = 4
     }
 
-    class MessageDecoration(
-        private val spacing: Int = 12.dp2px,
-        private val leftRight: Int = 8.dp2px,
-        private val bottomSpacing: Int = 20.dp2px,
-    ) : RecyclerView.ItemDecoration() {
-        override fun getItemOffsets(
-            outRect: Rect,
-            view: View,
-            parent: RecyclerView,
-            state: RecyclerView.State
-        ) {
-            val position = parent.getChildAdapterPosition(view)
-            val itemCount = parent.adapter?.itemCount ?: 0
-            outRect.top = if (position == 0) spacing else spacing / 2
-            outRect.bottom = if (position == itemCount - 1) bottomSpacing else spacing / 2
-            outRect.left = leftRight
-            outRect.right = leftRight
-        }
-    }
-
     override fun initView(savedInstanceState: Bundle?) {
         with(mBinding) {
             titleBar.loadGeneralTitleBar(R.string.notification_message, {
                 findNavController().navigateUp()
             })
-            refreshLayout.setOnRefreshListener {
-                mViewModel.getMessageList()
-            }
-            refreshLayout.setOnLoadMoreListener {
-                mViewModel.getMoreMessageList()
-            }
-            recyclerMessage.apply {
-                itemAnimator = DeleteAnimator()
-                layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-                adapter = msgAdapter
-                for (i in 0 until itemDecorationCount) {
-                    removeItemDecorationAt(i)
-                }
-                addItemDecoration(MessageDecoration())
-            }
-            msgAdapter.setOnItemClickListener(object : MessageAdapter.OnClickListener {
-                override fun onDelete(id: Long) {
-                    showConfirmDialog(id)
-                }
-
-                override fun onDetail(item: NotificationBean) {
-                    val content = getText(item.content)
-                    val url = getImageUrl(item.content)
-                    val time = getTime(item.createTime)
-                    navigate(
-                        MessageMainFragmentDirections.actionMessageMainFragmentToMessageDetailFragment()
-                            .apply {
-                                arguments.putString("title", item.title)
-                                arguments.putInt("type", item.type)
-                                arguments.putString("time", time)
-                                arguments.putString("content", content)
-                                arguments.putString("url", url)
-                            })
-                    mViewModel.setMessageRead(item.id)
-                }
-            })
+            val list = listOf(
+                PagerBean("") { MessageListFragment.newInstance(MSG_ALL) },
+                PagerBean("") { MessageListFragment.newInstance(MSG_SYS) },
+                PagerBean("") { MessageListFragment.newInstance(MSG_ACT) },
+                PagerBean("") { MessageListFragment.newInstance(MSG_MAT) },
+                PagerBean("") { MessageListFragment.newInstance(MSG_PAY) },
+            )
+            vpMessage.offscreenPageLimit = list.size
+            vpMessage.adapter = PagerAdapter(childFragmentManager, lifecycle, list)
         }
     }
 
     override fun initListener() {
         mBinding.layMsgAll.addScaleOnTouchAnimation()
         mBinding.layMsgAll.clickNoRepeat {
-            selectMessageType(MSG_ALL)
+            selectMessageType(MSG_ALL, true)
         }
         mBinding.layMsgSys.addScaleOnTouchAnimation()
         mBinding.layMsgSys.clickNoRepeat {
-            selectMessageType(MSG_SYS)
+            selectMessageType(MSG_SYS, true)
         }
         mBinding.layMsgAct.addScaleOnTouchAnimation()
         mBinding.layMsgAct.clickNoRepeat {
-            selectMessageType(MSG_ACT)
+            selectMessageType(MSG_ACT, true)
         }
         mBinding.layMsgMatch.addScaleOnTouchAnimation()
         mBinding.layMsgMatch.clickNoRepeat {
-            selectMessageType(MSG_MAT)
+            selectMessageType(MSG_MAT, true)
         }
         mBinding.layMsgPay.addScaleOnTouchAnimation()
         mBinding.layMsgPay.clickNoRepeat {
-            selectMessageType(MSG_PAY)
+            selectMessageType(MSG_PAY, true)
         }
-        selectMessageType(MSG_ALL)
+        selectMessageType(MSG_ALL, false)
+        mBinding.vpMessage.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageScrolled(
+                position: Int,
+                positionOffset: Float,
+                positionOffsetPixels: Int
+            ) {
+            }
+
+            override fun onPageSelected(position: Int) {
+                selectMessageType(position, false)
+            }
+
+            override fun onPageScrollStateChanged(state: Int) {
+
+            }
+        })
     }
 
-    override fun createObserver() {
-        mViewModel.notificationBean.observe(viewLifecycleOwner) {
-            mBinding.refreshLayout.finishRefresh()
-            mBinding.refreshLayout.finishLoadMore()
+    //未读消息红点显示
+    override suspend fun createObserver() {
+        mViewModel.allUnreadMsg.observe(viewLifecycleOwner) {
             it.let {
-                if (it.isEmpty()) {
-                    mBinding.emptyState.visibility = View.VISIBLE
-                    mBinding.emptyState.setState(
-                        States.DATA_EMPTY,
-                        arch.cayenne.lib.common.R.string.data_empty.getString()
-                    )
+                if (it > 0) {
+                    mBinding.ivMsgAllUnread.visibility = View.VISIBLE
                 } else {
-                    mBinding.emptyState.visibility = View.GONE
-                    msgAdapter.submitList(it)
+                    mBinding.ivMsgAllUnread.visibility = View.INVISIBLE
                 }
             }
         }
-        mViewModel.notificationSelect.observe(viewLifecycleOwner) {
-            mBinding.refreshLayout.finishRefresh()
-            mBinding.refreshLayout.finishLoadMore()
+        mViewModel.sysUnreadMsg.observe(viewLifecycleOwner) {
             it.let {
-                if (it.isEmpty()) {
-                    mBinding.emptyState.visibility = View.VISIBLE
-                    mBinding.emptyState.setState(
-                        States.DATA_EMPTY,
-                        arch.cayenne.lib.common.R.string.data_empty.getString()
-                    )
+                if (it > 0) {
+                    mBinding.ivMsgSysUnread.visibility = View.VISIBLE
                 } else {
-                    mBinding.emptyState.visibility = View.GONE
-                    msgAdapter.submitList(it)
+                    mBinding.ivMsgSysUnread.visibility = View.INVISIBLE
+                }
+            }
+        }
+        mViewModel.actUnreadMsg.observe(viewLifecycleOwner) {
+            it.let {
+                if (it > 0) {
+                    mBinding.ivMsgActUnread.visibility = View.VISIBLE
+                } else {
+                    mBinding.ivMsgActUnread.visibility = View.INVISIBLE
+                }
+            }
+        }
+        mViewModel.matUnreadMsg.observe(viewLifecycleOwner) {
+            it.let {
+                if (it > 0) {
+                    mBinding.ivMsgMatUnread.visibility = View.VISIBLE
+                } else {
+                    mBinding.ivMsgMatUnread.visibility = View.INVISIBLE
+                }
+            }
+        }
+        mViewModel.payUnreadMsg.observe(viewLifecycleOwner) {
+            it.let {
+                if (it > 0) {
+                    mBinding.ivMsgPayUnread.visibility = View.VISIBLE
+                } else {
+                    mBinding.ivMsgPayUnread.visibility = View.INVISIBLE
                 }
             }
         }
     }
 
-    override fun initData() {
-        super.initData()
-        mViewModel.getMessageList()
-        mBinding.emptyState.setState(States.LOADING, "")
-    }
-
-    private fun selectMessageType(type: Int) {
-        mViewModel.selectMessage(type)
+    private fun selectMessageType(type: Int, anim: Boolean) {
+        //ViewPager切换动画
+        if (anim) {
+            mBinding.vpMessage.doSmartAnim(targetPosition = type)
+        }
         mBinding.ivMsgAll.isSelected = false
         mBinding.ivMsgSys.isSelected = false
         mBinding.ivMsgAct.isSelected = false
@@ -217,55 +182,8 @@ class MessageMainFragment : BaseFragment<MessageMainViewModel, FragmentMessageMa
             MSG_PAY -> {
                 mBinding.tvMsgPay.isSelected = true
                 mBinding.ivMsgPay.isSelected = true
-                mBinding.tvMsgMat.typeface = Typeface.defaultFromStyle(Typeface.BOLD)
+                mBinding.tvMsgPay.typeface = Typeface.defaultFromStyle(Typeface.BOLD)
             }
         }
-    }
-
-    private fun showConfirmDialog(id: Long) {
-        CommonDialog.newInstance(
-            "",
-            getString(R.string.notification_delete),
-            getString(R.string.notification_confirm),
-            getString(R.string.notification_cancel),
-        ).also {
-            it.setOnOkClickListener {
-                mViewModel.deleteMessage(id)
-            }
-            it.show(childFragmentManager)
-        }
-    }
-
-    override fun onStart() {
-        super.onStart()
-        StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND()
-        setStatusBar(StatusBarConfig, mBinding.root)
-    }
-
-    private fun getText(html: String): String {
-        var content = ""
-        val pattern: Pattern = Pattern.compile("<p>(.*?)</p>")
-        val matcher: Matcher = pattern.matcher(html)
-        while (matcher.find()) {
-            content = matcher.group(1)?.toString() ?: ""
-        }
-        return content
-    }
-
-    private fun getImageUrl(html: String): String {
-        var url = ""
-        val pattern: Pattern = Pattern.compile("<url>(.*?)</url>")
-        val matcher: Matcher = pattern.matcher(html)
-        while (matcher.find()) {
-            url = matcher.group(1)?.toString() ?: ""
-        }
-        return url
-    }
-
-    @SuppressLint("SimpleDateFormat")
-    private fun getTime(timestamp: Long): String {
-        val date = Date(timestamp)
-        val sdf = SimpleDateFormat("MM-dd HH:mm")
-        return sdf.format(date)
     }
 }

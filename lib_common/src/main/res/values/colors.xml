@@ -131,4 +131,5 @@
     <color name="progress_text">#FFFFFF</color>
 
     <color name="color_mask">#40000000</color>
+    <color name="color_toast">#30303D</color>
 </resources>

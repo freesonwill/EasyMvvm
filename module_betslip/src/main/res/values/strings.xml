@@ -17,6 +17,8 @@
     <string name="live_bet_reserve_bet">预约投注</string>
     <string name="live_bet_cross_border">串关方式</string>
     <string name="live_bet_except_max_win">预计最高可赢</string>
+    <string name="live_bet_except_win">预计可赢</string>
+    <string name="live_bet_reserve_win">预约可赢</string>
     <string name="live_bet_cancel_reserve">取消预约</string>
     <string name="live_bet_modify_odds">修改赔率</string>
     <string name="live_bet_odds">赔率</string>
@@ -55,6 +57,8 @@
     <string name="keyboard_double">双倍</string>
     <string name="btn_cancel">取消</string>
     <string name="lineup_empty">暂无数据，请换个试一试~</string>
+    <string name="betslip_list_empty">暂无订单</string>
+
     <string name="title_betslip">注单</string>
 
     <string name="cancel_reserve_success">取消预约成功</string>

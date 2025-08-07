@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- 未選中圖示（在上層，會淡出） -->
+    <item android:id="@+id/unselect"
+        android:drawable="@drawable/ic_search_result_favorite_unselect" />
+
+    <!-- 選中圖示（在下層，會淡入） -->
+    <item android:id="@+id/selected"
+        android:drawable="@drawable/ic_search_result_favorite_selected" />
+</layer-list>

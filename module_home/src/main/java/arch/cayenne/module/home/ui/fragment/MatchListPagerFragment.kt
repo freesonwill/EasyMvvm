@@ -9,9 +9,9 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.SimpleItemAnimator
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
@@ -34,6 +34,7 @@ import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
 import arch.cayenne.module.home.ui.viewmodel.MatchListViewModel
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
+import java.lang.ref.WeakReference
 import kotlin.reflect.KClass
 
 class MatchListPagerFragment :
@@ -41,7 +42,6 @@ class MatchListPagerFragment :
     override val vbClass: KClass<FragmentMatchListPagerBinding> =
         FragmentMatchListPagerBinding::class
     override val vmClass: KClass<MatchListViewModel> = MatchListViewModel::class
-    override val keepViewOnNavigation: Boolean = false
     private val homeViewModel: HomeViewModel by sharedViewModel<HomeViewModel, NewHomeFragment>()
     private lateinit var matchAdapter: MatchItemAdapter
     private val gameLayoutManager by lazy { LinearLayoutManager(context) }
@@ -67,14 +67,17 @@ class MatchListPagerFragment :
                     mViewModel.addMatchCollect(item, !item.match.collect)
                 }
 
-                override fun onOddsCellClick(selection: SelectionBeanLite, x: Float, y: Float) {
+                override fun onOddsCellClick(cell: WeakReference<View>, selection: SelectionBeanLite, x: Float, y: Float) {
                     lifecycleScope.launch {
+                        cell.get()?.isSelected = true
                         val status = mViewModel.setSelection(selection.selectionId)
-                        if (status !is AddSelectionStatus.Failure) {
-                            mViewModel.triggerAllBetRefresh()
+
+                        if (status !is AddSelectionStatus.Success) {
+                            cell.get()?.isSelected = false
                         }
+
                         if (status is AddSelectionStatus.Success.Single) {
-                            BetSheetFragment.newInstance().show(requireActivity().supportFragmentManager)
+                            BetSheetFragment.show(requireActivity())
                         } else if (status is AddSelectionStatus.Failure.DisableComboForParlay) {
                             showToast(getString(R.string.disabled_to_combo))
                         } else if (status is AddSelectionStatus.Failure.DisableComboForProvider) {
@@ -93,7 +96,7 @@ class MatchListPagerFragment :
                 this.adapter = matchAdapter
                 addItemDecoration(decoration)
             }
-            (rvHomeGameList.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
+            rvHomeGameList.itemAnimator  = null
             rvHomeGameList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                     super.onScrollStateChanged(recyclerView, newState)
@@ -170,7 +173,7 @@ class MatchListPagerFragment :
 
     private val matchListObserver = Observer <List<MatchWithMarkets>> { matchList ->
         val preEmpty = matchAdapter.currentList.isEmpty()
-
+        "MatchListChange livedata Observed~ ${matchList.map { it.match.matchId }}".logi(this::class.java.simpleName)
         matchAdapter.submitList(matchList)
         mBinding.rvHomeGameList.doOnPreDraw {
             subscribeVisibleMatch()
@@ -181,7 +184,7 @@ class MatchListPagerFragment :
         }
 
     }
-    override fun createObserver() {
+    override suspend fun createObserver() {
 
         homeViewModel.timer.observeEvent(viewLifecycleOwner, this) {
             mViewModel.updateMatchLiveData()
@@ -204,12 +207,14 @@ class MatchListPagerFragment :
                         )
                         homeViewModel.changeState(DataState.NetworkUnavailable)
                     }
-                    DataState.DataEmpty -> {     //這個DataEmpty表示api抓不到任何資料了，有可能是頁面到底，或是從第一頁就抓不到資料
+                    DataState.NoMoreData -> {     //這個DataEmpty表示api抓不到任何資料了，有可能是頁面到底，或是從第一頁就抓不到資料
                         mViewModel.changePageEnd(true)
                         refreshLayout.finishLoadMore()
                         refreshLayout.setEnableLoadMore(false)
+                        matchAdapter.showNoMoreData(true)
                     }
-                    HomeState.Match.DataEmpty -> {  //這個DataEmpty表示真的從第一頁就抓不到資料，表示當前的選擇沒有任何賽事
+
+                    HomeState.Match.DataEmpty -> {  //這個DataEmpty表示確定真的從第一頁就抓不到資料，表示當前的選擇沒有任何賽事
                         lvMatchLoading.visibility = View.GONE
                         refreshLayout.finishRefresh()
                         clDynamics.visibility = View.VISIBLE
@@ -232,7 +237,7 @@ class MatchListPagerFragment :
                     HomeState.Match.LoadingNext -> {
                         clDynamics.visibility = View.GONE
                     }
-                    DataState.LoadSuccess -> {
+                    DataState.LoadSuccess, HomeState.Match.LoadSuccess -> {
                         lvMatchLoading.visibility = View.GONE
                         if (refreshLayout.isRefreshing) refreshLayout.finishRefresh()
                         refreshLayout.finishLoadMore()
@@ -245,7 +250,8 @@ class MatchListPagerFragment :
         }
 
         homeViewModel.selectedDate.observeEvent(viewLifecycleOwner, this) { date ->
-            if (homeViewModel.currentPlayTypeId != mViewModel.getPlayTypeId()
+            if (date  == HomeViewModel.DEFAULT_DATE
+                || homeViewModel.currentPlayTypeId != mViewModel.getPlayTypeId()
                 || homeViewModel.currentSportId != mViewModel.getSportId())
                 return@observeEvent
             refreshListByDate(date)
@@ -268,6 +274,9 @@ class MatchListPagerFragment :
             mViewModel.setPlayTypeId(this.getInt(ARG_PLAY_TYPE_ID))
             mViewModel.setPosition(this.getInt(ARG_POSITION))
         }
+    }
+
+    fun startObserveMatch() {
         mViewModel.startObserveMatch()
     }
 

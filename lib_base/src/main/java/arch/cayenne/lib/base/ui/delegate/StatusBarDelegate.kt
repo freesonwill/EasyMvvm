@@ -4,7 +4,6 @@ import android.app.Activity
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.MarginLayoutParams
-import android.view.WindowManager
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.children
@@ -37,10 +36,6 @@ class StatusBarDelegate : IStatusBar {
     }
 
     constructor(fragment: DialogFragment) {
-//        fragment.dialog?.window?.let { window ->
-//            window.addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
-//            window.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
-//        }
         immersionBar = ImmersionBar.with(fragment)
     }
 
@@ -69,7 +64,12 @@ class StatusBarDelegate : IStatusBar {
         //默认
         when (val statusBarMode = config.statusBarType) {
             StatusBarMode.DEFAULT -> {
-                immersionBar.statusBarColor(config.statusBarColor)//设置状态栏颜色
+                try {//防止找不到颜色报错
+                    immersionBar.statusBarColor(config.statusBarColor)//设置状态栏颜色
+                }catch (e:Exception){
+                    e.printStackTrace()
+                    immersionBar.statusBarColor(android.R.color.black)//设置状态栏颜色
+                }
                 immersionBar.hideBar(BarHide.FLAG_SHOW_BAR) //状态栏显示
                     .fullScreen(false) //退出全屏模式
                     .navigationBarColor(config.statusBarColor) // 设置虚拟导航栏颜色

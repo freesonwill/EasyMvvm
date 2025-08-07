@@ -41,7 +41,7 @@
     <string name="match_title_win">独赢</string>
     <string name="match_title_handicap">让球</string>
     <string name="match_title_over_under">大小</string>
-    <string name="drawer_recharge">充值</string>
+    <string name="drawer_recharge">钱包</string>
     <string name="drawer_bet_slip">注单</string>
     <string name="drawer_common_function">常用功能</string>
     <string name="drawer_tutorial">教程</string>
@@ -64,4 +64,5 @@
     <string name="balance_format">%s%s</string>
     <string name="format_month_year" translatable="false">%1$s %2$s</string>
     <string name="collect_list_empty">暂无收藏</string>
+    <string name="no_more_data">没有更多了</string>
 </resources>

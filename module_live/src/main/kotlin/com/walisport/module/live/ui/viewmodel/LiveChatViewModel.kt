@@ -32,6 +32,7 @@ class LiveChatViewModel(private val chatRepo: LiveChatRepository) : BaseViewMode
     private val _newMsgFLow = MutableStateFlow<MsgNotify?>(null)
     private val _checkBetAmountLiveData = MutableLiveData<CheckBetResultEnum>()
     private val _softKeyBoardListener = MutableStateFlow(KeyBoardType.NONE)
+    private val _openSoftKeyBoardLiveData = MutableLiveData<Boolean>()
 
     //检查是否可以发送消息
     var checkBetAmountLiveData: LiveData<CheckBetResultEnum> = _checkBetAmountLiveData
@@ -66,8 +67,13 @@ class LiveChatViewModel(private val chatRepo: LiveChatRepository) : BaseViewMode
     //监听LiveSoftKeyBoardFragment点击事件
     val softKeyBoardListener: StateFlow<KeyBoardType> = _softKeyBoardListener
 
+    //打开软件盘
+    val openSoftKeyBoardLiveData:LiveData<Boolean> = _openSoftKeyBoardLiveData
+
     val toastLiveData: MutableLiveData<String> = MutableLiveData()
 
+    //软件盘高度
+    var softKeyBoardHeight:Int = 0
 
     fun setArguments(matchId: Long?) {
         this.matchId = matchId
@@ -182,6 +188,7 @@ class LiveChatViewModel(private val chatRepo: LiveChatRepository) : BaseViewMode
                     _currentSoftKeyboard.value = softKeyBoardListener.value
                 }
                 null -> {
+                    toastLiveData.value = R.string.insufficient_fali.getString()
                     _softKeyBoardListener.value = KeyBoardType.NONE
                 }
             }
@@ -210,9 +217,11 @@ class LiveChatViewModel(private val chatRepo: LiveChatRepository) : BaseViewMode
     /**
      *更新软件盘显示
      * */
-    fun updateSoftKeyBoard() {
+    fun updateKeyBoard() {
+        if (currentSoftKeyboard.value == softKeyBoardListener.value) {
+            return
+        }
         _currentSoftKeyboard.value = softKeyBoardListener.value
-
     }
 
     /**
@@ -259,11 +268,28 @@ class LiveChatViewModel(private val chatRepo: LiveChatRepository) : BaseViewMode
         msgLists.add(msgLists.size, msg)
     }
 
-    fun addSoftKeyBoardEvent(keyBoardType: KeyBoardType) {
+    /**
+     * 由于系统特性，当软件盘出现时，再次点击Editext软件盘会消失
+     * 消失后会显示
+     * */
+    fun addSoftKeyBoardEvent(keyBoardType: KeyBoardType,flag:Int = 0) {
+        if(keyBoardType == _softKeyBoardListener.value){
+            return
+        }
         _softKeyBoardListener.tryEmit(keyBoardType)
     }
 
-    fun getConnectStateFlow(): StateFlow<SocketConnectState> = chatRepo.getConnectStateFlow()
+    /**
+     * 控制软件盘的开关
+     * @param softKeyBoarVisible true显示软件盘  false 关闭软件盘
+     * */
+    fun updateSoftKeyBoard(softKeyBoarVisible:Boolean){
+        if(softKeyBoarVisible == _openSoftKeyBoardLiveData.value){
+            return
+        }
+        _openSoftKeyBoardLiveData.value = softKeyBoarVisible
+    }
 
+    fun getConnectStateFlow(): StateFlow<SocketConnectState> = chatRepo.getConnectStateFlow()
 
 }

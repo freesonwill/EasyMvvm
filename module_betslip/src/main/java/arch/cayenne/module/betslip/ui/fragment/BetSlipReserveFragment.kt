@@ -7,7 +7,7 @@ import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
 import arch.cayenne.lib.common.ui.dialog.CommonDialog
 import arch.cayenne.lib.common.ui.fragment.ReserveDialogFragment
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
-import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
+import arch.cayenne.lib.common.utils.ext.SportDisplayOddsExt.getDisplayOdds
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toOdds
 import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.database.entity.BetSlipReserveBean
@@ -15,6 +15,7 @@ import arch.cayenne.lib.database.entity.BetSlipSelectionData
 import arch.cayenne.lib.database.entity.ReserveOrderSelectionBean
 import arch.cayenne.module.betslip.R
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
+import arch.cayenne.module.betslip.data.constants.LoadDataType
 import arch.cayenne.module.betslip.databinding.FragmentLiveBetslipReserveBinding
 import arch.cayenne.module.betslip.ui.adapter.BetSlipAdapter
 import arch.cayenne.module.betslip.ui.adapter.BetSlipReserveAdapter
@@ -23,8 +24,7 @@ import arch.cayenne.module.betslip.utisl.BetSlipViewExt.betSlipInit
 import kotlin.reflect.KClass
 
 //注单预约
-class BetSlipReserveFragment :
-    BaseBetSlipFragment<ReserveSlipViewModel, FragmentLiveBetslipReserveBinding>() {
+class BetSlipReserveFragment : BaseBetSlipFragment<ReserveSlipViewModel, FragmentLiveBetslipReserveBinding>() {
     override val vbClass: KClass<FragmentLiveBetslipReserveBinding> =
         FragmentLiveBetslipReserveBinding::class
     override val vmClass: KClass<ReserveSlipViewModel> = ReserveSlipViewModel::class
@@ -51,14 +51,14 @@ class BetSlipReserveFragment :
                         childFragmentManager.clearFragmentResultListener(ReserveDialogFragment.KEY_RESULT)
                         if (bundle.getString(ReserveDialogFragment.KEY_RESULT) == ReserveDialogFragment.VALUE_RESERVE_COMPLETE) {
                             val odds = bundle.getInt(ReserveDialogFragment.KEY_ODDS_RESULT)
-                            mViewModel.modifyReserve(bean, odds.getOdds())
+                            mViewModel.modifyReserve(bean, odds.getDisplayOdds())
                         }
                     }
                     ReserveDialogFragment.newInstance(
                         locationX,
                         locationY,
                         viewHeight,
-                        odds = bean.selection.odds.toOdds()
+                        odds = bean.selection.odds.getDisplayOdds().toOdds()
                     ).show(childFragmentManager)
                 }
             }
@@ -107,12 +107,13 @@ class BetSlipReserveFragment :
     override fun initListener() {
     }
 
-    override fun createObserver() {
+    override suspend fun createObserver() {
         super.createObserver()
         mViewModel.reserveLiveData.observe(viewLifecycleOwner) {
-            val recyclerViewState = mBinding.recyclerView.layoutManager?.onSaveInstanceState()
-            betSlipAdapter.submitList(it) {
-                mBinding.recyclerView.layoutManager?.onRestoreInstanceState(recyclerViewState)
+            betSlipAdapter.submitList(it){
+                val position = if (mViewModel.loadDataType == LoadDataType.LOAD_MORE) betSlipAdapter.itemCount - 1 else 0
+                mBinding.recyclerView.scrollToPosition(position)
+                mViewModel.loadDataType = LoadDataType.NONE
             }
         }
         mViewModel.cancelReserveLiveData.observe(viewLifecycleOwner) { event ->

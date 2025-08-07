@@ -1,15 +1,16 @@
 package com.walisport.module.live.ui
 
 import android.os.Bundle
-import android.view.ViewGroup
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ViewUtils.getStatusBarHeight
+import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import com.walisport.module.live.data.constants.MatchStatus
 import com.walisport.module.live.databinding.FragmentLiveMatchMediaBinding
 import com.walisport.module.live.ui.viewmodel.LiveMainViewModel
 import com.walisport.module.live.ui.viewmodel.LiveMatchMediaViewModel
+import kotlinx.coroutines.delay
 import kotlin.reflect.KClass
 
 
@@ -33,7 +34,8 @@ class LiveMatchMediaFragment :
 
     }
 
-    override fun createObserver() {
+    override suspend fun createObserver() {
+        delay(250)
         //监听比赛id变化
         mainViewModel.matchId.observe(viewLifecycleOwner) {
             mViewModel.setMatchId(it)
@@ -171,30 +173,21 @@ class LiveMatchMediaFragment :
     private fun showChooseSourceView() {
         val location = IntArray(2)
         mBinding.root.getLocationOnScreen(location)
-        val x = location[0]
         val y =
-            location[1] + mBinding.root.measuredHeight - getStatusBarHeight(requireContext())
-        LiveVideoSourcePortraitFragment().apply {
+            location[1] + mBinding.root.measuredHeight
+
+        val height = requireActivity().resources.displayMetrics.heightPixels - y
+
+        LiveSourceFragment().apply {
             arguments = Bundle().apply {
                 putLong("matchId", mViewModel.matchId())
                 putInt(
-                    arch.cayenne.lib.base.ui.fragment.LocationFixedDialogFragment.POSITION_X,
-                    x
-                )
-                putInt(
-                    arch.cayenne.lib.base.ui.fragment.LocationFixedDialogFragment.POSITION_Y,
-                    y
-                )
-                putInt(
-                    arch.cayenne.lib.base.ui.fragment.LocationFixedDialogFragment.WIDTH,
-                    ViewGroup.LayoutParams.MATCH_PARENT
-                )
-                putInt(
-                    arch.cayenne.lib.base.ui.fragment.LocationFixedDialogFragment.HEIGHT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT
+                    LiveSourceFragment.HEIGHT,
+                    height
                 )
             }
             show(this@LiveMatchMediaFragment.childFragmentManager)
+
         }
     }
 

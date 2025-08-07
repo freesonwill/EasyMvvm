@@ -10,6 +10,8 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.toColorInt
 import androidx.core.net.toUri
 import androidx.core.os.bundleOf
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -37,7 +39,6 @@ import com.walisport.module.search.ui.fragment.SearchDatePickerFragment.Companio
 import com.walisport.module.search.ui.fragment.SearchDatePickerFragment.Companion.DATE_PICKER_RESULT_KEY
 import com.walisport.module.search.ui.fragment.SearchDatePickerFragment.Companion.DATE_PICKER_RESULT_START
 import com.walisport.module.search.ui.fragment.SearchDatePickerFragment.Companion.DATE_PICKER_RESULT_TIME_IN_MILLIS
-import com.walisport.module.search.ui.fragment.SearchResultBaseFragment.Companion.GO_BACK_TO_MAIN
 import com.walisport.module.search.ui.viewmodel.SearchResultDirectMatchViewModel
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -113,7 +114,7 @@ class SearchResultDirectMatchFragment :
         }
     }
 
-    override fun createObserver() {
+    override suspend fun createObserver() {
         super.createObserver()
         with(mViewModel) {
             launch(Lifecycle.State.STARTED) {
@@ -197,7 +198,9 @@ class SearchResultDirectMatchFragment :
     override fun onResume() {
         super.onResume()
         requireView().post {
-            updateStatusSearchBar()
+            if (isAdded && view != null) {
+                updateStatusSearchBar()
+            }
         }
     }
 
@@ -321,7 +324,15 @@ class SearchResultDirectMatchFragment :
 
         datePicker =
             SearchDatePickerFragment.Builder().apply {
-                setMarginTop(contentBinding.clBasicInfo.height + contentBinding.clDate.height + 14.dp2px)
+                val statusBarHeight =
+                    ViewCompat.getRootWindowInsets(requireView())
+                        ?.getInsets(WindowInsetsCompat.Type.statusBars())?.top ?: 0
+                val clDateBottom = run {
+                    IntArray(2).apply {
+                        contentBinding.clDate.getLocationOnScreen(this)
+                    }[1] + contentBinding.clDate.height
+                }
+                setMarginTop(clDateBottom - statusBarHeight)
                 setMarginStart(8.dp2px)
                 setMarginEnd(8.dp2px)
                 setSchemeDates(mViewModel.racedDateMap)

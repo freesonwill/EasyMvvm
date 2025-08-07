@@ -30,7 +30,7 @@ class LiveVideoShareFragment : BaseFragment<LiveVideoPlayerViewModel, FragmentLi
         }
     }
 
-    override fun createObserver() {
+    override suspend fun createObserver() {
 
     }
 

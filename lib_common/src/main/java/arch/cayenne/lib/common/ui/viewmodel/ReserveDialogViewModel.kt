@@ -9,6 +9,10 @@ import arch.cayenne.lib.common.utils.ext.SportStringExt.toOdds
 
 class ReserveDialogViewModel(repo: ReserveDialogRepository) : NumberCalculatorViewModel() {
 
+    companion object {
+        private const val ODDS_LIMIT = 999900L
+    }
+
     private val _displayType = MutableLiveData(repo.getOddsType())
 
     private val _isConfirmEnable = MediatorLiveData<Boolean>().apply {
@@ -37,8 +41,8 @@ class ReserveDialogViewModel(repo: ReserveDialogRepository) : NumberCalculatorVi
     val minOdds = 1
 
     fun init(odds: Int) {
-        setRemainingNumber(Long.MAX_VALUE)
-        setNumberLimit(minOdds.toLong(), Long.MAX_VALUE)
+        setRemainingNumber(ODDS_LIMIT)
+        setNumberLimit(minOdds.toLong(), ODDS_LIMIT)
         setEditNumber(odds.toLong())
     }
 

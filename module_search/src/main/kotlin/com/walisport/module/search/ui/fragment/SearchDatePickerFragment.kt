@@ -18,6 +18,9 @@ import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.animation.doOnEnd
 import androidx.core.animation.doOnStart
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.doOnLayout
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
@@ -45,6 +48,10 @@ class SearchDatePickerFragment private constructor(): BaseFragment<SearchDatePic
 
     private val sharedViewModel: SearchBaseViewModel by sharedViewModel<SearchBaseViewModel, SearchFragment>()
 
+    enum class AnimState {
+        EXPANDING, EXPAND, COLLAPSING, COLLAPSE
+    }
+
     private val defaultAnimDuration = 300L
 
     private var marginTop: Int = 0
@@ -54,6 +61,8 @@ class SearchDatePickerFragment private constructor(): BaseFragment<SearchDatePic
     private var schemeDates: Map<String, com.haibin.calendarview.Calendar> = emptyMap()
     private var rangeStartDate: Calendar = Calendar.getInstance()
     private var rangeEndDate: Calendar = Calendar.getInstance().apply { add(Calendar.MONTH, 1) }
+    private var heightAnimator: ValueAnimator? = null
+    private var currentAnimState: AnimState? = null
 
     // 回傳結果的Bundle
     private val resultBundle by lazy { Bundle() }
@@ -141,7 +150,6 @@ class SearchDatePickerFragment private constructor(): BaseFragment<SearchDatePic
                 setCalendarTitle(curYear, curMonth)
             }
             maskView.background = createMaskGradient()
-            setMaskViewAlpha(true)
             expandView()
         }
     }
@@ -163,22 +171,26 @@ class SearchDatePickerFragment private constructor(): BaseFragment<SearchDatePic
                 mViewModel.setMaskClickable(false)
                 calendarView.clearSingleSelect()
                 sendResult(null)
-                setMaskViewAlpha(false)
                 collapseView()
             }
             tvConfirm.clickNoRepeat {
                 mViewModel.setMaskClickable(false)
                 sendResult()
-                setMaskViewAlpha(false)
                 collapseView()
             }
-            maskView.clickNoRepeat {
-                close()
+            maskView.setOnClickListener {
+                when(currentAnimState) {
+                    AnimState.EXPANDING -> collapseView()
+                    AnimState.EXPAND -> {
+                        close()
+                    }
+                    else -> expandView()
+                }
             }
         }
     }
 
-    override fun createObserver() {
+    override suspend fun createObserver() {
         launch(Lifecycle.State.STARTED) {
             sharedViewModel.currentLanguage.collect {
                 // 更新日曆標題
@@ -244,7 +256,7 @@ class SearchDatePickerFragment private constructor(): BaseFragment<SearchDatePic
     private fun createMaskGradient(): Drawable {
         val defaultColor = 0x80000000
         val defaultStartAt = 0.3f
-        val defaultStopAt = 0.8f
+        val defaultStopAt = 0.7f
         return object : Drawable() {
             private val paint = Paint()
             private lateinit var shader: LinearGradient
@@ -352,10 +364,27 @@ class SearchDatePickerFragment private constructor(): BaseFragment<SearchDatePic
         }
     }
 
+    private fun getFullyHeight(): Int {
+        with(mBinding.clCalendar) {
+            measure(
+                View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY),
+                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+            )
+            return measuredHeight
+        }
+    }
+
     private fun expandView() {
         with(mBinding.clCalendar) {
-            post {
-                ValueAnimator.ofInt(1, height).apply {
+            layoutParams = layoutParams.apply { height = 1 }
+            doOnLayout {
+                val currentHeight = (heightAnimator?.animatedValue as? Int) ?: height
+                val fullyHeight = getFullyHeight()
+                val startHeight =
+                    if(fullyHeight == currentHeight) 1 else currentHeight
+                heightAnimator?.cancel()
+
+                heightAnimator = ValueAnimator.ofInt(startHeight, fullyHeight).apply {
                     addUpdateListener {
                         layoutParams =
                             layoutParams.apply {
@@ -365,12 +394,15 @@ class SearchDatePickerFragment private constructor(): BaseFragment<SearchDatePic
                     duration = defaultAnimDuration
                     interpolator = DecelerateInterpolator()
                     doOnStart {
+                        currentAnimState = AnimState.EXPANDING
                         layoutParams =
                             layoutParams.apply {
-                                height = 1
+                                height = startHeight
                             }
                         visibility = View.VISIBLE
+                        setMaskViewAlpha(true)
                     }
+                    doOnEnd { currentAnimState = AnimState.EXPAND }
                     start()
                 }
             }
@@ -379,7 +411,10 @@ class SearchDatePickerFragment private constructor(): BaseFragment<SearchDatePic
 
     private fun collapseView() {
         with(mBinding.clCalendar) {
-            ValueAnimator.ofInt(height, 1).apply {
+            val currentHeight = (heightAnimator?.animatedValue as? Int) ?: height
+            heightAnimator?.cancel()
+
+            heightAnimator = ValueAnimator.ofInt(currentHeight, 1).apply {
                 addUpdateListener {
                     layoutParams =
                         layoutParams.apply {
@@ -388,10 +423,17 @@ class SearchDatePickerFragment private constructor(): BaseFragment<SearchDatePic
                 }
                 duration = defaultAnimDuration
                 interpolator = DecelerateInterpolator()
+                doOnStart {
+                    currentAnimState = AnimState.COLLAPSING
+                    setMaskViewAlpha(false)
+                }
                 doOnEnd {
+                    currentAnimState = AnimState.COLLAPSE
                     visibility = View.INVISIBLE
                     mBinding.root.postDelayed({
-                        dismiss()
+                        if(currentAnimState == AnimState.COLLAPSE) {
+                            dismiss()
+                        }
                     }, 100L)
                 }
                 start()
@@ -402,7 +444,6 @@ class SearchDatePickerFragment private constructor(): BaseFragment<SearchDatePic
     fun close() {
         if(mViewModel.isMaskClickable) {
             sendResult(selectedDate)
-            setMaskViewAlpha(false)
             collapseView()
         }
     }

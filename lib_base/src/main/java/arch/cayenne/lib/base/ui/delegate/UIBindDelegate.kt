@@ -9,12 +9,16 @@ import android.view.ViewGroup
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.lifecycleScope
 import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.base.ui._interface.IView
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.base.utils.ext.FragmentExt.isRootFragment
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
 
 
 /**
@@ -25,13 +29,11 @@ import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
  * @property uiOwner: UI宿主
  * @property vmProvider： 提供viewModel
  * @property vbProvider： 提供viewBinding
- * @property keepViewOnNavigation: 在导航（Navigation）时是否保留 View（原生的会销毁）
  */
 class UIBindDelegate<UIOwner, VM, VB>(
     private val uiOwner: UIOwner,
     private val vmProvider: () -> VM,
     private val vbProvider: (container: ViewGroup?) -> VB,
-    private val keepViewOnNavigation:Boolean
 ) where UIOwner : IView, UIOwner : LifecycleOwner,
         VM : BaseViewModel,
         VB : ViewBinding {
@@ -48,22 +50,18 @@ class UIBindDelegate<UIOwner, VM, VB>(
             
     fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?):View {
         destroyRunnable?.let { binding.root.removeCallbacks(it) }
-        if(_binding == null || !keepViewOnNavigation) {
-            firstInit = true
-            _binding = vbProvider(container)
-            _viewModel = vmProvider()
-            (binding as? ViewDataBinding)?.let {
-                it.lifecycleOwner = if (uiOwner is Fragment) uiOwner.viewLifecycleOwner else uiOwner
-            }
-        } else {
-            firstInit = false
+        firstInit = true
+        _binding = vbProvider(container)
+        _viewModel = vmProvider()
+        (binding as? ViewDataBinding)?.let {
+            it.lifecycleOwner = if (uiOwner is Fragment) uiOwner.viewLifecycleOwner else uiOwner
         }
         if(logEnabled) "onCreateView==>$uiOwner".logd(TAG)
         return _binding!!.root
     }
 
     fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        if(firstInit) {
+        uiOwner.lifecycleScope.launch {
             //根Fragment或者Activity需要fitsSystemWindows设置为true
             view.fitsSystemWindows = (uiOwner is Fragment && uiOwner.isRootFragment)
                     || uiOwner is Activity
@@ -71,12 +69,10 @@ class UIBindDelegate<UIOwner, VM, VB>(
             viewModel.initViewModel()
             uiOwner.initView(savedInstanceState)
             uiOwner.initListener()
-            uiOwner.createObserver()
+            createObserver(uiOwner)
             uiOwner.initData()
-        } else {
-            uiOwner.createObserver()
+            if(logEnabled) "onViewCreated==>$uiOwner".logd(TAG)
         }
-        if(logEnabled) "onViewCreated==>$uiOwner".logd(TAG)
     }
 
     fun onStart(){
@@ -85,6 +81,10 @@ class UIBindDelegate<UIOwner, VM, VB>(
 
     fun onResume() {
         if(logEnabled) "onResume==>$uiOwner".logd(TAG)
+        if(firstInit) {
+            uiOwner.lazyLoadData()
+            firstInit = false
+        }
     }
 
     fun onPause() {
@@ -96,7 +96,6 @@ class UIBindDelegate<UIOwner, VM, VB>(
     }
 
     fun onDestroyView() {
-        if(!keepViewOnNavigation) performDestroy()
         if(logEnabled) "onDestroyView==>$uiOwner".logd(TAG)
     }
 
@@ -154,5 +153,24 @@ class UIBindDelegate<UIOwner, VM, VB>(
                 uiOwner.lifecycle.removeObserver(this)
             }
         })
+    }
+
+    private suspend fun createObserver(uiOwner: UIOwner) {
+        @Suppress("DEPRECATION")
+        when (val state = uiOwner.createObserverAtState()) {
+            Lifecycle.State.CREATED -> {
+                uiOwner.createObserver()
+            }
+            Lifecycle.State.STARTED ->{
+                uiOwner.lifecycleScope.launchWhenStarted { uiOwner.createObserver() }
+            }
+            Lifecycle.State.RESUMED -> {
+                uiOwner.lifecycleScope.launchWhenResumed { uiOwner.createObserver() }
+            }
+
+            else -> {
+                throw IllegalStateException("Unsupported lifecycle state: $state for createObserver")
+            }
+        }
     }
 }

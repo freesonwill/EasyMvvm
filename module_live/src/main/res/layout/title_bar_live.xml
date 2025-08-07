@@ -11,7 +11,7 @@
     <arch.cayenne.lib.skin.widget.SkinnableImageView
         android:id="@+id/iv_back"
         style="@style/CustomToolbarImgStyle"
-        app:srcCompat="@drawable/bg_left_arrow"
+        app:srcCompat="@drawable/universal_icon_back"
         tools:ignore="MissingConstraints" />
 
     <androidx.appcompat.widget.LinearLayoutCompat

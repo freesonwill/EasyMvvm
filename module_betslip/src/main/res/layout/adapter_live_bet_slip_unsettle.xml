@@ -241,11 +241,10 @@
             android:layout_height="wrap_content"
             android:textColor="@color/color_016f4a"
             android:textSize="@dimen/sp_16" />
-        <androidx.appcompat.widget.AppCompatImageView
+        <arch.cayenne.lib.common.ui.view.LoadingView
             android:id="@+id/bet_unsettled_bt_progress"
             android:layout_width="@dimen/dp_24"
             android:layout_height="@dimen/dp_24"
-            android:scaleType="fitXY"
             android:visibility="gone"
             />
     </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
@@ -259,7 +258,7 @@
         android:id="@+id/group_crossborder"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:constraint_referenced_ids="bet_unsettled_tv_crossborder,bet_unsettled_tv_crossborder_value,iv_tip" />
+        app:constraint_referenced_ids="bet_unsettled_tv_crossborder,bet_unsettled_tv_crossborder_value" />
 
     <androidx.constraintlayout.widget.Group
         android:id="@+id/group_earlysettle"

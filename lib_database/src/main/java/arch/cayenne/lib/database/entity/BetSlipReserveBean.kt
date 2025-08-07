@@ -20,7 +20,7 @@ data class BetSlipReserveBean(
 data class ReserveOrderSelectionBean(
     val selectionId: Long,          // 投注项 id
     val selectionName: String,      // 选项名称
-    var odds: String,               // 预约下注赔率
+    var odds: Int,               // 预约下注赔率
     val marketName: String,         // 盘口名称
     val marketId: Long,             // 盘口 id
     val specifier: String,          // 盘口说明符

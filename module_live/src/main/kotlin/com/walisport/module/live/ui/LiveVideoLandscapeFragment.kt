@@ -14,7 +14,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.LinearInterpolator
 import android.widget.LinearLayout
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintLayout.GONE
 import androidx.constraintlayout.widget.ConstraintLayout.VISIBLE
 import androidx.core.animation.doOnEnd
@@ -24,7 +23,9 @@ import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
+import arch.cayenne.lib.common.utils.DensityInfo
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.startSafeAnimateSet
 import arch.cayenne.lib.common.utils.ext.startSafeObjectAnimator
@@ -32,6 +33,7 @@ import arch.cayenne.lib.qyplayer.GlobalConfig
 import arch.cayenne.lib.qyplayer.transformFromPlayerConfig
 import arch.cayenne.lib.qyplayer.transformToPlayerConfig
 import arch.cayenne.lib.qyplayer.ui.widget.LivePlayerView
+import arch.cayenne.lib.qyplayer.ui.widget.QYRenderView
 import arch.cayenne.lib.skin.res.SkinnableResourceManager.getDrawable
 import com.bumptech.glide.Glide
 import com.walisport.module.live.R
@@ -98,6 +100,12 @@ class LiveVideoLandscapeFragment :
 
         initVideoView()
         scheduleHideButtons()
+
+        view?.postDelayed({
+            setStatisticsView()
+            setChooseSourceView()
+            setShareView()
+        }, 200)
     }
 
     private fun initVideoView() {
@@ -172,6 +180,7 @@ class LiveVideoLandscapeFragment :
     }
 
     override fun initListener() {
+        mBinding.ivBack.addScaleOnTouchAnimation()
         mBinding.ivBack.clickNoRepeat {
             findNavController().navigateUp()
         }
@@ -198,7 +207,7 @@ class LiveVideoLandscapeFragment :
             }
         }
 
-
+        mBinding.ivShare.addScaleOnTouchAnimation()
         mBinding.ivShare.clickNoRepeat {
             hideButtons()
             reduce(
@@ -208,10 +217,10 @@ class LiveVideoLandscapeFragment :
             ) {
                 videoViewFullScreen = false
             }
-            setShareView()
             showShareView()
         }
 
+        mBinding.llChooseSource.addScaleOnTouchAnimation()
         mBinding.llChooseSource.clickNoRepeat {
             hideButtons()
             reduce(
@@ -222,16 +231,16 @@ class LiveVideoLandscapeFragment :
                 videoViewFullScreen = false
             }
 
-            setChooseSourceView()
             showChooseSourceView()
         }
 
+        mBinding.tvStatistics.addScaleOnTouchAnimation()
         mBinding.tvStatistics.clickNoRepeat {
             hideButtons()
             reduce(
                 targetWidth = mBinding.root.measuredWidth - mBinding.fragmentStatistics.measuredWidth - VIDEO_MARGIN_HORIZONTAL.dp2px * 2,
                 targetHeight = 209.dp2px,
-                targetHorizontalMargin = VIDEO_MARGIN_HORIZONTAL.dp2px
+                targetHorizontalMargin = (VIDEO_MARGIN_HORIZONTAL.dp2px * 1.6).toInt()
             ) {
                 videoViewFullScreen = false
             }
@@ -240,6 +249,7 @@ class LiveVideoLandscapeFragment :
             showStatisticsView()
         }
 
+        mBinding.ivSoundToggle.addScaleOnTouchAnimation()
         mBinding.ivSoundToggle.clickNoRepeat {
             scheduleHideButtons()
             mViewModel.changeMuteStatus()
@@ -247,7 +257,7 @@ class LiveVideoLandscapeFragment :
 
     }
 
-    override fun createObserver() {
+    override suspend fun createObserver() {
         with(mViewModel) {
             liveVideoBean.observe(viewLifecycleOwner) {
                 it?.let {
@@ -403,57 +413,50 @@ class LiveVideoLandscapeFragment :
      * 放大视频播放区
      */
     private fun enlarge(onEndAction: () -> Unit) {
-        //width， height， marginStart, marginTop
-        val currentHeight = mBinding.videoArea.measuredHeight
-        val targetWidth = mBinding.root.measuredWidth
-        val currentWidth = mBinding.videoArea.measuredWidth
-        val targetHeight = mBinding.root.measuredHeight
-        val currentMarginTop =
-            (mBinding.videoArea.layoutParams as ConstraintLayout.LayoutParams).topMargin
-        val targetMarginTop = 0
-        val currentMarginStart =
-            (mBinding.videoArea.layoutParams as ConstraintLayout.LayoutParams).marginStart
-        val targetMarginStart = 0
+        val renderView: QYRenderView =
+            mBinding.root.findViewById(arch.cayenne.lib.qyplayer.R.id.renderView)
+
+        val currentScaleX = renderView.scaleX
+        val targetScaleX = 1.0f
+        val currentScaleY = renderView.scaleY
+        val targetScaleY = 1.0f
+
+        val currentTranslationX = renderView.translationX
+        val targetTranslationX = 0f
+        val currentTranslationY = renderView.translationY
+        val targetTranslationY = 0f
 
         mBinding.root.startSafeAnimateSet({
             playTogether(
-                ValueAnimator.ofInt(currentHeight, targetHeight).apply {
+                ValueAnimator.ofFloat(currentScaleX, targetScaleX).apply {
                     addUpdateListener {
-                        val lp = mBinding.videoArea.layoutParams
-                        lp.height = it.animatedValue as Int
-
-                        mBinding.videoArea.layoutParams = lp
+                        renderView.scaleX = it.animatedValue as Float
+                        mBinding.ctLoading.scaleX = it.animatedValue as Float
+                        mBinding.ctError.scaleX = it.animatedValue as Float
                     }
                 },
-                ValueAnimator.ofInt(currentWidth, targetWidth).apply {
+                ValueAnimator.ofFloat(currentScaleY, targetScaleY).apply {
                     addUpdateListener {
-                        val lp = mBinding.videoArea.layoutParams
-                        lp.width = it.animatedValue as Int
-
-                        mBinding.videoArea.layoutParams = lp
+                        renderView.scaleY = it.animatedValue as Float
+                        mBinding.ctLoading.scaleY = it.animatedValue as Float
+                        mBinding.ctError.scaleY = it.animatedValue as Float
                     }
                 },
-                ValueAnimator.ofInt(currentMarginTop, targetMarginTop).apply {
+                ValueAnimator.ofFloat(currentTranslationX, targetTranslationX).apply {
                     addUpdateListener {
-                        val lp =
-                            mBinding.videoArea.layoutParams as ConstraintLayout.LayoutParams
-                        lp.topMargin = it.animatedValue as Int
-
-                        mBinding.videoArea.layoutParams = lp
-
+                        renderView.translationX = it.animatedValue as Float
+                        mBinding.ctLoading.translationX = it.animatedValue as Float
+                        mBinding.ctError.translationX = it.animatedValue as Float
                     }
                 },
-                ValueAnimator.ofInt(currentMarginStart, targetMarginStart).apply {
-                    addUpdateListener {
-                        val lp =
-                            mBinding.videoArea.layoutParams as ConstraintLayout.LayoutParams
-                        lp.marginStart = it.animatedValue as Int
-                        lp.marginEnd = it.animatedValue as Int
-
-                        mBinding.videoArea.layoutParams = lp
-
-                    }
-                })
+//                ValueAnimator.ofFloat(currentTranslationY, targetTranslationY).apply {
+//                    addUpdateListener {
+//                        renderView.translationY = it.animatedValue as Float
+//                        mBinding.ctLoading.translationY = it.animatedValue as Float
+//                        mBinding.ctError.translationY = it.animatedValue as Float
+//                    }
+//                }
+            )
             doOnEnd {
                 mBinding.videoViewContainer.background =
                     getDrawable(requireContext(), arch.cayenne.lib.common.R.color.black)
@@ -471,52 +474,54 @@ class LiveVideoLandscapeFragment :
         targetHorizontalMargin: Int,
         onEndAction: () -> Unit
     ) {
-        //width， height， marginStart, marginTop
+
+        val renderView: QYRenderView =
+            mBinding.root.findViewById(arch.cayenne.lib.qyplayer.R.id.renderView)
+
         val currentHeight = mBinding.root.measuredHeight
         val currentWidth = mBinding.root.measuredWidth
-        val currentMarginTop = 0
-        val targetMarginTop = (currentHeight - targetHeight) / 2
-        val currentMarginStart = 0
+        val currentScaleX = 1.0f
+        val targetScaleX = targetWidth.toFloat() / currentWidth
+
+        val currentScaleY = 1.0f
+        val targetScaleY = targetHeight.toFloat() / currentHeight
+
+        val currentTranslationX = 0f
+        val targetTranslationX = -targetHorizontalMargin.toFloat() * 4
+
+        val currentTranslationY = 0f
+        val targetTranslationY = (currentHeight.toFloat() - targetHeight) / 2
+
 
         mBinding.root.startSafeAnimateSet({
             playTogether(
-                ValueAnimator.ofInt(currentHeight, targetHeight).apply {
+                ValueAnimator.ofFloat(currentScaleX, targetScaleX).apply {
                     addUpdateListener {
-                        val lp = mBinding.videoArea.layoutParams
-                        lp.height = it.animatedValue as Int
-
-                        mBinding.videoArea.layoutParams = lp
+                        renderView.scaleX = it.animatedValue as Float
+                        mBinding.ctLoading.scaleX = it.animatedValue as Float
+                        mBinding.ctError.scaleX = it.animatedValue as Float
                     }
                 },
-                ValueAnimator.ofInt(currentWidth, targetWidth).apply {
+                ValueAnimator.ofFloat(currentScaleY, targetScaleY).apply {
                     addUpdateListener {
-                        val lp = mBinding.videoArea.layoutParams
-                        lp.width = it.animatedValue as Int
-
-                        mBinding.videoArea.layoutParams = lp
+                        renderView.scaleY = it.animatedValue as Float
+                        mBinding.ctLoading.scaleY = it.animatedValue as Float
+                        mBinding.ctError.scaleY = it.animatedValue as Float
                     }
                 },
-                ValueAnimator.ofInt(currentMarginTop, targetMarginTop).apply {
+                ValueAnimator.ofFloat(currentTranslationX, targetTranslationX).apply {
                     addUpdateListener {
-                        val lp =
-                            mBinding.videoArea.layoutParams as ConstraintLayout.LayoutParams
-                        lp.topMargin = it.animatedValue as Int
-
-                        mBinding.videoArea.layoutParams = lp
+                        renderView.translationX = it.animatedValue as Float
+                        mBinding.ctLoading.translationX = it.animatedValue as Float
+                        mBinding.ctError.translationX = it.animatedValue as Float
 
                     }
                 },
-                ValueAnimator.ofInt(currentMarginStart, targetHorizontalMargin).apply {
-                    addUpdateListener {
-                        val lp =
-                            mBinding.videoArea.layoutParams as ConstraintLayout.LayoutParams
-                        lp.marginStart = it.animatedValue as Int
-                        lp.marginEnd = it.animatedValue as Int
-
-                        mBinding.videoArea.layoutParams = lp
-
-                    }
-                })
+//                ValueAnimator.ofFloat(currentTranslationY, targetTranslationY).apply {
+//                    addUpdateListener {
+//                    }
+//                }
+            )
             doOnEnd {
                 mBinding.videoViewContainer.background =
                     getDrawable(requireContext(), R.drawable.bg_shape_video_view_reduced)
@@ -568,6 +573,16 @@ class LiveVideoLandscapeFragment :
         super.onDestroy()
         StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND()
         setStatusBar(StatusBarConfig, mBinding.root)
+
+        val metrics = resources.displayMetrics
+
+        //density和scaledDensity被篡改，尝试恢复
+        if (metrics.density != DensityInfo.density && DensityInfo.density > 0) {
+            metrics.density = DensityInfo.density
+        }
+        if (metrics.scaledDensity != DensityInfo.scaledDensity && DensityInfo.scaledDensity > 0) {
+            metrics.scaledDensity = DensityInfo.scaledDensity
+        }
     }
 
 
@@ -588,14 +603,11 @@ class LiveVideoLandscapeFragment :
      * 视频分享页入场动画
      */
     private fun showShareView() {
-        val currentMarginStart =
-            (mBinding.fragmentShare.layoutParams as ConstraintLayout.LayoutParams).marginStart
-        val targetMarginStart = -mBinding.fragmentShare.measuredWidth
-        ValueAnimator.ofInt(currentMarginStart, targetMarginStart).apply {
+        val currentTranslationX = 0f
+        val targetTranslationX = -mBinding.fragmentShare.measuredWidth.toFloat()
+        ValueAnimator.ofFloat(currentTranslationX, targetTranslationX).apply {
             addUpdateListener {
-                val lp = mBinding.fragmentShare.layoutParams as ConstraintLayout.LayoutParams
-                lp.marginStart = it.animatedValue as Int
-                mBinding.fragmentShare.layoutParams = lp
+                mBinding.fragmentShare.translationX = it.animatedValue as Float
             }
             setDuration(ZOOM_ANIMATION_DURATION)
             start()
@@ -606,15 +618,13 @@ class LiveVideoLandscapeFragment :
      * 视频分享页退场动画
      */
     private fun hideShareView(onEndAction: () -> Unit) {
-        val currentMarginStart =
-            (mBinding.fragmentShare.layoutParams as ConstraintLayout.LayoutParams).marginStart
-        val targetMarginStart = 0
-        ValueAnimator.ofInt(currentMarginStart, targetMarginStart).apply {
+        val currentTranslationX = mBinding.fragmentShare.translationX
+        val targetTranslationX = 0f
+        ValueAnimator.ofFloat(currentTranslationX, targetTranslationX).apply {
             addUpdateListener {
-                val lp = mBinding.fragmentShare.layoutParams as ConstraintLayout.LayoutParams
-                lp.marginStart = it.animatedValue as Int
+                mBinding.fragmentShare.translationX = it.animatedValue as Float
 
-                mBinding.fragmentShare.layoutParams = lp
+                "mBinding.fragmentShare.translationX :${mBinding.fragmentShare.translationX}".logd("animIssue")
 
             }
             doOnEnd { onEndAction() }
@@ -643,17 +653,12 @@ class LiveVideoLandscapeFragment :
      *视频源页入场动画
      */
     private fun showChooseSourceView() {
-        val currentMarginStart =
-            (mBinding.fragmentChooseSource.layoutParams as ConstraintLayout.LayoutParams).marginStart
-        val targetMarginStart = -mBinding.fragmentChooseSource.measuredWidth
+        val currentTranslationX = 0f
+        val targetTranslationX = -mBinding.fragmentChooseSource.measuredWidth.toFloat()
 
-        ValueAnimator.ofInt(currentMarginStart, targetMarginStart).apply {
+        ValueAnimator.ofFloat(currentTranslationX, targetTranslationX).apply {
             addUpdateListener {
-                val lp = mBinding.fragmentChooseSource.layoutParams as ConstraintLayout.LayoutParams
-                lp.marginStart = it.animatedValue as Int
-
-                mBinding.fragmentChooseSource.layoutParams = lp
-
+                mBinding.fragmentChooseSource.translationX = it.animatedValue as Float
             }
             setDuration(ZOOM_ANIMATION_DURATION)
             start()
@@ -664,16 +669,15 @@ class LiveVideoLandscapeFragment :
      * 视频源页面退场动画
      */
     private fun hideChooseSourceView(onEndAction: () -> Unit) {
-        val currentMarginStart =
-            (mBinding.fragmentChooseSource.layoutParams as ConstraintLayout.LayoutParams).marginStart
-        val targetMarginStart = 0
-        ValueAnimator.ofInt(currentMarginStart, targetMarginStart).apply {
+        val currentTranslationX = mBinding.fragmentChooseSource.translationX
+        val targetTranslationX = 0f
+        ValueAnimator.ofFloat(currentTranslationX, targetTranslationX).apply {
             addUpdateListener {
-                val lp = mBinding.fragmentChooseSource.layoutParams as ConstraintLayout.LayoutParams
-                lp.marginStart = it.animatedValue as Int
+                mBinding.fragmentChooseSource.translationX = it.animatedValue as Float
 
-                mBinding.fragmentChooseSource.layoutParams = lp
-
+                "mBinding.fragmentChooseSource.translationX:${mBinding.fragmentChooseSource.translationX}".logd(
+                    "animIssue"
+                )
             }
             doOnEnd { onEndAction() }
             setDuration(ZOOM_ANIMATION_DURATION)
@@ -699,15 +703,11 @@ class LiveVideoLandscapeFragment :
      * 赛况页入场动画
      */
     private fun showStatisticsView() {
-        val currentMarginStart =
-            (mBinding.fragmentStatistics.layoutParams as ConstraintLayout.LayoutParams).marginStart
-        val targetMarginStart = -mBinding.fragmentStatistics.measuredWidth
-        ValueAnimator.ofInt(currentMarginStart, targetMarginStart).apply {
+        val currentTranslationX = 0f
+        val targetTranslationX = -mBinding.fragmentStatistics.measuredWidth.toFloat()
+        ValueAnimator.ofFloat(currentTranslationX, targetTranslationX).apply {
             addUpdateListener {
-                val lp = mBinding.fragmentStatistics.layoutParams as ConstraintLayout.LayoutParams
-                lp.marginStart = it.animatedValue as Int
-
-                mBinding.fragmentStatistics.layoutParams = lp
+                mBinding.fragmentStatistics.translationX = it.animatedValue as Float
 
             }
             setDuration(ZOOM_ANIMATION_DURATION)
@@ -719,15 +719,13 @@ class LiveVideoLandscapeFragment :
      * 赛况页退场动画
      */
     private fun hideStatisticsView(onEndAction: () -> Unit) {
-        val currentMarginStart =
-            (mBinding.fragmentStatistics.layoutParams as ConstraintLayout.LayoutParams).marginStart
-        val targetMarginStart = 0
-        ValueAnimator.ofInt(currentMarginStart, targetMarginStart).apply {
+        val currentTranslationX = mBinding.fragmentStatistics.translationX
+        val targetTranslationX = 0f
+        ValueAnimator.ofFloat(currentTranslationX, targetTranslationX).apply {
             addUpdateListener {
-                val lp = mBinding.fragmentStatistics.layoutParams as ConstraintLayout.LayoutParams
-                lp.marginStart = it.animatedValue as Int
 
-                mBinding.fragmentStatistics.layoutParams = lp
+
+                mBinding.fragmentStatistics.translationX = it.animatedValue as Float
 
             }
             doOnEnd { onEndAction() }
@@ -740,30 +738,20 @@ class LiveVideoLandscapeFragment :
      * 移除分享页，视频源页，赛况页
      */
     private fun hideFragment() {
-        val fragment = childFragmentManager.findFragmentByTag(LiveVideoShareFragment.TAG)
-
-        if (fragment is LiveVideoShareFragment) {
+        if (mBinding.fragmentShare.translationX.toInt() != 0) {
             hideShareView {
-                childFragmentManager.beginTransaction().remove(fragment).commit()
             }
         }
 
-        val fragment2 = childFragmentManager.findFragmentByTag(LiveVideoSourceLandscapeFragment.TAG)
-
-        if (fragment2 is LiveVideoSourceLandscapeFragment) {
+        if (mBinding.fragmentChooseSource.translationX.toInt() != 0) {
             hideChooseSourceView {
-                childFragmentManager.beginTransaction().remove(fragment2).commit()
             }
         }
 
-        val fragment3 = childFragmentManager.findFragmentByTag(LiveVideoStatisticsFragment.TAG)
-
-        if (fragment3 is LiveVideoStatisticsFragment) {
+        if (mBinding.fragmentStatistics.translationX.toInt() != 0) {
             hideStatisticsView {
-                childFragmentManager.beginTransaction().remove(fragment3).commit()
             }
         }
-
 
     }
 
@@ -780,7 +768,7 @@ class LiveVideoLandscapeFragment :
                 //没有暂停按钮，
             }
 
-            PlayerState.CACHING, PlayerState.CONNECTING -> {
+            PlayerState.CONNECTING -> {
                 // 创建旋转动画
                 loadingAnim = mBinding.ivVideoLoading.startSafeObjectAnimator(
                     "rotation",  // 属性名称
