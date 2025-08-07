@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewTreeObserver
 import androidx.fragment.app.setFragmentResult
 import arch.cayenne.lib.base.ui.fragment.BaseDialogFragment
-import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toOdds
 import arch.cayenne.lib.common.ui.view.NumberKeyboardView
 import kotlin.reflect.KClass
@@ -18,6 +17,7 @@ import androidx.core.view.isVisible
 import arch.cayenne.lib.common.databinding.FragmentReserveDialogBinding
 import arch.cayenne.lib.common.ui.viewmodel.ReserveDialogViewModel
 import arch.cayenne.lib.common.utils.ViewUtils
+import arch.cayenne.lib.common.utils.ext.SportDisplayOddsExt.getDisplayOdds
 
 class ReserveDialogFragment private constructor() : BaseDialogFragment<ReserveDialogViewModel, FragmentReserveDialogBinding>() {
 
@@ -164,7 +164,7 @@ class ReserveDialogFragment private constructor() : BaseDialogFragment<ReserveDi
             }
 
             override fun getOtherText(): String {
-                return "+${mViewModel.minOdds.getOdds()}"
+                return "+${mViewModel.minOdds.getDisplayOdds()}"
             }
 
         })

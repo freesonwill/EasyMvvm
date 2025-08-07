@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import androidx.core.view.isVisible
 import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.common.data.constants.SportEnum
+import arch.cayenne.lib.common.utils.ext.SportDisplayOddsExt.getDisplayOdds
 import arch.cayenne.lib.database.entity.BetSlipSelectionData
 import arch.cayenne.lib.database.entity.OrderSelectionBean
 import arch.cayenne.module.betslip.databinding.ItemLiveBetSlipUnsettleBinding
@@ -34,7 +35,7 @@ class BetSlipUnsettledItemViewHolder(binding: ViewBinding):
                 Glide.with(betUnsettledIvBall.context).load(SportEnum.getSportEnumById(match.sportId)?.resId ?: SportEnum.Default.resId).into(betUnsettledIvBall)
                 betUnsettledTvRace.text = match.matchName
                 betUnsettledTvIntroduce.text = item.selectionName
-                betUnsettledTvAodds.text = expectOdds("@${item.odds}")
+                betUnsettledTvAodds.text = expectOdds("@${item.odds.getDisplayOdds()}")
                 betUnsettledTvStatus.isVisible = item.inPlay
                 val score = item.marketName + "  (${whenScoreIsNull(item.betScore)})"
                 betUnsettledTvScore.text = score

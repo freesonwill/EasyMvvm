@@ -1,15 +1,10 @@
 package arch.cayenne.module.bet.util
 
 import android.animation.ObjectAnimator
-import android.animation.ValueAnimator
 import android.view.View
 import android.view.animation.LinearInterpolator
-import android.widget.ImageView
 import androidx.core.animation.addListener
-import androidx.core.animation.doOnEnd
-import androidx.core.animation.doOnStart
 import androidx.core.content.ContextCompat
-import androidx.core.view.drawToBitmap
 import androidx.core.view.isVisible
 import androidx.core.view.postDelayed
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds

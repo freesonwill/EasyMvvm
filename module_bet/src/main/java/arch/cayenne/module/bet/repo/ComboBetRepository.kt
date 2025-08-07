@@ -1,7 +1,6 @@
 package arch.cayenne.module.bet.repo
 
 import arch.cayenne.lib.base.data.repository.BaseRepository
-import arch.cayenne.lib.common.data.constants.OddsDisplayEnum
 import arch.cayenne.lib.common.data.constants.UserDataKey
 import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
@@ -20,7 +19,6 @@ import galaxy.client.proto.Client
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -38,7 +36,6 @@ class ComboBetRepository(
 
     private val observerOddsDisplay = manager.observe<Int>(UserDataKey.KEY_ODDS)
     private val observerLanguage = manager.observe<String>(UserDataKey.KEY_LANGUAGE)
-    private var oddsDisplayEnum: OddsDisplayEnum? = null
 
     val isConnected: Boolean
         get() = remoteManager.isConnected
@@ -52,7 +49,7 @@ class ComboBetRepository(
                     } else {
                         selectionFlow.replayCache.first().size
                     }
-                    selectionFlow.emit(it)
+                    setSelectionForCheckOdds(it)
                     if (lastSize != it.size) {
                         val emptyRisk = getEmptyRiskList(it.size)
                         if (emptyRisk.isNotEmpty()) {
@@ -68,11 +65,7 @@ class ComboBetRepository(
                 }
             }
             launch {
-                observerOddsDisplay.onStart {
-                    val value = manager.getValue(UserDataKey.KEY_ODDS, OddsDisplayEnum.EU.value)
-                    oddsDisplayEnum =  OddsDisplayEnum.entries[value]
-                }.collect {
-                    oddsDisplayEnum =  OddsDisplayEnum.entries[it]
+                observerOddsDisplay.collect {
                     updateOdds()
                 }
             }
@@ -246,14 +239,9 @@ class ComboBetRepository(
         data: List<BetSelectionBean>,
         riskList: List<ComboRiskDataModel>
     ): List<ComboMultiBetBean> {
+
         val result = mutableListOf<ComboMultiBetBean>()
-        val oddsList = data.map {
-            if (oddsDisplayEnum == OddsDisplayEnum.EU) {
-                it.odds
-            } else {
-                it.odds + 100
-            }
-        }
+        val oddsList = data.map { it.odds }
         val n = data.size
 
         val riskMap = riskList.associateBy { it.serialValue }
@@ -267,12 +255,7 @@ class ComboBetRepository(
                     0 -> 0
                     else -> oddsList.combinations(k)
                         .sumOf { it.reduce { acc, l ->
-                            val odds = if (oddsDisplayEnum == OddsDisplayEnum.EU) {
-                                acc.getOdds(l)
-                            } else {
-                                (acc.getOdds(l).toOdds() - 100).getOdds()
-                            }
-                            odds.toOdds()
+                            acc.getOdds(l).toOdds()
                         } }
                 }
                 val count = when (k) {
@@ -344,14 +327,9 @@ class ComboBetRepository(
         riskList: List<ComboRiskDataModel>
     ): Map<Int, ComboMultiBetOddsBean> {
         val result = hashMapOf<Int, ComboMultiBetOddsBean>()
-        val oddsList = data.map {
-            if (oddsDisplayEnum == OddsDisplayEnum.EU) {
-                it.odds
-            } else {
-                it.odds + 100
-            }
-        }
+        val oddsList = data.map { it.odds }
         val n = data.size
+//        val oddsDisplayEnum = getOddsDisplay()
 
         val riskMap = riskList.associateBy { it.serialValue }
         var totalSumOdds = 0
@@ -362,12 +340,7 @@ class ComboBetRepository(
                     0 -> 0
                     else -> oddsList.combinations(k)
                         .sumOf { it.reduce { acc, l ->
-                            val odds = if (oddsDisplayEnum == OddsDisplayEnum.EU) {
-                                acc.getOdds(l)
-                            } else {
-                                (acc.getOdds(l).toOdds() - 100).getOdds()
-                            }
-                            odds.toOdds()
+                            acc.getOdds(l).toOdds()
                         } }
                 }
                 totalSumOdds += odds
@@ -439,21 +412,22 @@ class ComboBetRepository(
     private fun updateOdds() {
         scope.launch {
             betDao.getCurrentBet()?.let { bet ->
-                betDao.getSelections(bet.betId).forEach { selection ->
-                    remoteManager.getMatchReq(selection.matchId)?.let { newMatch ->
-                        newMatch.markets.find { market ->
-                            market.selections.find { it.selectionId == selection.selectionId } != null
-                        }?.selections?.find { it.selectionId == selection.selectionId }
-                            ?.let { newSelection ->
-                                betDao.updateOdds(
-                                    bet.betId,
-                                    selection.selectionId,
-                                    newSelection.odds
-                                )
-                            }
+                val selections = betDao.getSelections(bet.betId)
+                val multi = comboMultiBetFlow.replayCache.firstOrNull()
+                setSelectionForCheckOdds(selections)
+
+                if (selections.isNotEmpty() && !multi.isNullOrEmpty()) {
+                    updateMultiOdds(selections, multi)
+                } else if (selections.isNotEmpty() && multi == null) {
+                    calculateMultiBetSums(selections, getEmptyRiskList(selections.size)).let {
+                        comboMultiBetFlow.emit(it)
                     }
                 }
             }
         }
+    }
+
+    private suspend fun setSelectionForCheckOdds(selections: List<BetSelectionBean>) {
+        selectionFlow.emit(selections)
     }
 }

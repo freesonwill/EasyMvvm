@@ -35,19 +35,22 @@ class SingleBetRepository(
     val isConnected: Boolean
         get() = remoteManager.isConnected
 
-    private var init = false
-
     init {
         scope.launch {
+            launch {
+                observerLanguage.collect {
+                    updateLanguage()
+                }
+            }
             launch {
                 betDao.observeCurrentSelections().collect {
                     if (it.isNotEmpty() && it.size == 1) {
                         val data = it.first()
-                        selectionFlow.emit(data)
-                        if (!init) {
+                        val isInit = comboFlow.replayCache.isEmpty()
+                        setSelectionForCheckOdds(data)
+                        if (isInit) {
                             setComboMulti(data)
                         }
-                        init = true
                     }
                 }
             }
@@ -56,11 +59,13 @@ class SingleBetRepository(
                     updateOdds()
                 }
             }
-            launch {
-                observerLanguage.collect {
-                    updateLanguage()
-                }
-            }
+
+        }
+    }
+
+    private fun setSelectionForCheckOdds(selection: BetSelectionBean) {
+        scope.launch {
+            selectionFlow.emit(selection)
         }
     }
 
@@ -228,18 +233,10 @@ class SingleBetRepository(
     private fun updateOdds() {
         scope.launch {
             betDao.getCurrentBet()?.let { bet ->
-                betDao.getSelections(bet.betId).forEach { selection ->
-                    remoteManager.getMatchReq(selection.matchId)?.let { newMatch ->
-                        newMatch.markets.find { market ->
-                            market.selections.find { it.selectionId == selection.selectionId } != null
-                        }?.selections?.find { it.selectionId == selection.selectionId }
-                            ?.let { newSelection ->
-                                betDao.updateOdds(
-                                    bet.betId,
-                                    selection.selectionId,
-                                    newSelection.odds
-                                )
-                            }
+                betDao.getSelections(bet.betId).let { selection ->
+                    if (selection.isNotEmpty() && selection.size == 1) {
+                        val data = selection.first()
+                        setSelectionForCheckOdds(data)
                     }
                 }
             }

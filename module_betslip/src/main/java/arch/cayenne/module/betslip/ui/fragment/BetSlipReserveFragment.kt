@@ -7,7 +7,7 @@ import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
 import arch.cayenne.lib.common.ui.dialog.CommonDialog
 import arch.cayenne.lib.common.ui.fragment.ReserveDialogFragment
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
-import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
+import arch.cayenne.lib.common.utils.ext.SportDisplayOddsExt.getDisplayOdds
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toOdds
 import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.database.entity.BetSlipReserveBean
@@ -51,14 +51,14 @@ class BetSlipReserveFragment : BaseBetSlipFragment<ReserveSlipViewModel, Fragmen
                         childFragmentManager.clearFragmentResultListener(ReserveDialogFragment.KEY_RESULT)
                         if (bundle.getString(ReserveDialogFragment.KEY_RESULT) == ReserveDialogFragment.VALUE_RESERVE_COMPLETE) {
                             val odds = bundle.getInt(ReserveDialogFragment.KEY_ODDS_RESULT)
-                            mViewModel.modifyReserve(bean, odds.getOdds())
+                            mViewModel.modifyReserve(bean, odds.getDisplayOdds())
                         }
                     }
                     ReserveDialogFragment.newInstance(
                         locationX,
                         locationY,
                         viewHeight,
-                        odds = bean.selection.odds.toOdds()
+                        odds = bean.selection.odds.getDisplayOdds().toOdds()
                     ).show(childFragmentManager)
                 }
             }
