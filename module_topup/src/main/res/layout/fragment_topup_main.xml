@@ -9,9 +9,10 @@
             type="com.walisport.module.topup.ui.viewmodel.TopUpMainViewModel" />
     </data>
 
-    <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
+    <arch.cayenne.lib.common.ui.view.InterceptedConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        app:interceptedDirection = "RIGHT"
         android:background="@color/title_bg">
 
         <!-- 标题 -->
@@ -22,5 +23,5 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-    </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
+    </arch.cayenne.lib.common.ui.view.InterceptedConstraintLayout>
 </layout>

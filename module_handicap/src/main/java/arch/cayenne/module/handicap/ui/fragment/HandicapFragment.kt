@@ -12,6 +12,7 @@ import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.removeAllTips
+import arch.cayenne.lib.common.utils.ext.touchBackPressed
 import arch.cayenne.lib.common.utils.helper.doSmartAnim
 import arch.cayenne.module.handicap.R
 import arch.cayenne.module.handicap.databinding.FragmentHandicapBinding
@@ -97,7 +98,7 @@ class HandicapFragment : BaseFragment<HandicapViewModel, FragmentHandicapBinding
     }
 
     override fun initListener() {
-
+    mBinding.root.touchBackPressed()
     }
 
     override suspend fun createObserver() {

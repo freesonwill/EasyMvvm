@@ -44,6 +44,8 @@ import kotlinx.coroutines.flow.filter
 import kotlin.reflect.KClass
 import arch.cayenne.lib.common.utils.ext.DimensionExt.px2sp
 import arch.cayenne.lib.common.utils.ext.DimensionExt.px2dp
+import arch.cayenne.lib.common.utils.ext.touchBackPressed
+
 /**
  * 直播详情页
  */
@@ -73,7 +75,6 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
             DrawerLayout.LOCK_MODE_LOCKED_CLOSED,
             GravityCompat.END
         )
-        mBinding.drawerLayout.setParentFragment(this)
     }
 
     //init DrawerLayout Content
@@ -100,6 +101,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
     }
 
     override fun initListener() {
+        mBinding.liveMain.touchBackPressed()
         with(titleBarBinding) {
             ivBack.clickNoRepeat {
                 //软件盘开启后直接关闭软件盘，不返回

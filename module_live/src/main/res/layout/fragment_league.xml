@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<arch.cayenne.lib.skin.widget.SkinnableConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<arch.cayenne.lib.common.ui.view.InterceptedConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/league_root"
+    app:interceptedDirection = "RIGHT"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bg_shape_league">
@@ -79,10 +80,11 @@
             app:layout_constraintTop_toTopOf="parent"
             app:srlEnablePreviewInEditMode="true">
 
-            <androidx.recyclerview.widget.RecyclerView
+            <arch.cayenne.lib.common.ui.view.InterceptedRecyclerView
                 android:id="@+id/recycler_league"
+                app:interceptedDirection = "RIGHT"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
         </arch.cayenne.lib.common.ui.view.PullRefreshLayout>
     </arch.cayenne.lib.common.ui.view.DynamicStateLayout>
-</arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
+</arch.cayenne.lib.common.ui.view.InterceptedConstraintLayout>

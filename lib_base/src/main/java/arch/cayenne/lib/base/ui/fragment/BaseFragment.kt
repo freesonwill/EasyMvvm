@@ -2,9 +2,7 @@ package arch.cayenne.lib.base.ui.fragment
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.GestureDetector
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.CallSuper
@@ -25,7 +23,6 @@ import arch.cayenne.lib.base.ui.delegate.StatusBarDelegate
 import arch.cayenne.lib.base.ui.delegate.UIBindDelegate
 import arch.cayenne.lib.base.ui._interface.IStatusBar
 import arch.cayenne.lib.base.ui._interface.IView
-import arch.cayenne.lib.base.ui._interface.OnSwipeTouchListener
 import arch.cayenne.lib.base.utils.ext.FragmentExt.handleBackPressed
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart

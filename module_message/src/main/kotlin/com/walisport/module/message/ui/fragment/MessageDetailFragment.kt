@@ -6,6 +6,7 @@ import android.view.View
 import androidx.navigation.fragment.findNavController
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getDrawable
+import arch.cayenne.lib.common.utils.ext.touchBackPressed
 import com.bumptech.glide.Glide
 import com.walisport.module.message.R
 import com.walisport.module.message.databinding.FragmentMessageDetailBinding
@@ -54,6 +55,7 @@ class MessageDetailFragment : BaseFragment<MessageMainViewModel, FragmentMessage
                 MSG_PAY -> ivDetailIcon.background = R.drawable.icon_message_cz.getDrawable()
             }
         }
+        mBinding.root.touchBackPressed()
     }
 
     override fun initListener() {

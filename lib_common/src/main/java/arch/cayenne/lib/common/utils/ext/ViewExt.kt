@@ -22,8 +22,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.view.children
 import androidx.recyclerview.widget.RecyclerView
-import arch.cayenne.lib.base.ui._interface.OnSwipeTouchListener
 import arch.cayenne.lib.common.R
+import arch.cayenne.lib.common.ui.view.OnSwipeTouchListener
 import com.google.android.material.shape.CornerFamily
 import com.google.android.material.shape.MaterialShapeDrawable
 import com.google.android.material.shape.ShapeAppearanceModel
@@ -423,7 +423,7 @@ fun View.addRippleEffect(
 //侧滑退出当前fragment
 fun View.touchBackPressed(){
     setOnTouchListener(object : OnSwipeTouchListener() {
-        override fun onSwipeLeft() {
+        override fun onSwipeRight() {
             requireActivity().onBackPressedDispatcher.onBackPressed()
         }
     })

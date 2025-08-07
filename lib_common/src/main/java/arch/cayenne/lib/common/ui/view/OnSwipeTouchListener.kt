@@ -1,17 +1,16 @@
-package arch.cayenne.lib.base.ui._interface
+package arch.cayenne.lib.common.ui.view
 
 import android.annotation.SuppressLint
 import android.view.MotionEvent
 import android.view.View
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
-
+import arch.cayenne.lib.base.utils.LogUtils
 open class OnSwipeTouchListener: View.OnTouchListener {
     private var startX: Float = 0f
     private var startY: Float = 0f
     private var startTime: Long = 0L
-    private val SWIPE_THRESHOLD = 100 // 按下和抬起的滑动距离
-    private val SWIPE_MAX_TIME = 1000 // 按下和抬起的时间间隔
-    private val thresholdY = 50 // Y轴滑动阀值
+    private val SWIPE_THRESHOLD = 200 // 按下和抬起的X轴滑动距离
+    private val SWIPE_MAX_TIME = 1500 // 按下和抬起的时间间隔
+    private val thresholdY = 100 // Y轴滑动阀值
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouch(v: View, event: MotionEvent): Boolean {
@@ -31,19 +30,21 @@ open class OnSwipeTouchListener: View.OnTouchListener {
                 val diffX = endX - startX
                 val diffY = endY - startY
                 val timeDiff = endTime - startTime
-                if (diffX > SWIPE_THRESHOLD && timeDiff <= SWIPE_MAX_TIME&&diffY<=thresholdY) {
-                    onSwipeLeft()
+                LogUtils.e("OnSwipeTouchListener-----SWIPE_THRESHOLD${SWIPE_THRESHOLD}---diffX-${diffX}--diffY${diffY}---timeDiff${timeDiff}")
+                if (diffX > SWIPE_THRESHOLD && timeDiff <= SWIPE_MAX_TIME && diffY < thresholdY) {
+                    onSwipeRight()
                     return true
                 }
-                startTime = 0
+                startTime = 0L
+                return event.action == MotionEvent.ACTION_UP
             }
             MotionEvent.ACTION_CANCEL-> {
-                startTime = 0
+                startTime = 0L
             }
         }
         return false
     }
 
 
-    open fun onSwipeLeft() {}
+    open fun onSwipeRight() {}
 }

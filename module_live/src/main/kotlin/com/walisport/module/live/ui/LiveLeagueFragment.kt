@@ -94,6 +94,7 @@ class LiveLeagueFragment : BaseFragment<LeagueViewModel, FragmentLeagueBinding>(
             navigateUp()
         }
         mBinding.recyclerLeague.touchBackPressed()
+        mBinding.root.touchBackPressed()
     }
 
     override fun initData() {

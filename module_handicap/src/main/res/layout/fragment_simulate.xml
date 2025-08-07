@@ -10,9 +10,10 @@
             type="arch.cayenne.module.handicap.ui.viewmodel.SimulateViewModel" />
     </data>
 
-    <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
+    <arch.cayenne.lib.common.ui.view.InterceptedConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        app:interceptedDirection="RIGHT"
         android:background="@color/background">
 
         <arch.cayenne.lib.common.ui.view.TitleBarView
@@ -36,5 +37,5 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-    </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
+    </arch.cayenne.lib.common.ui.view.InterceptedConstraintLayout>
 </layout>

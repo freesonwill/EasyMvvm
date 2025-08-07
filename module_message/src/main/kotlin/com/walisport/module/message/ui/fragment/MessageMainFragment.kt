@@ -49,6 +49,7 @@ class MessageMainFragment : BaseFragment<MessageMainViewModel, FragmentMessageMa
             vpMessage.offscreenPageLimit = list.size
             vpMessage.adapter = PagerAdapter(childFragmentManager, lifecycle, list)
         }
+        mBinding.root.touchBackPressed()
     }
 
     override fun initListener() {
