@@ -9,4 +9,12 @@
     <string name="invalid_password">Password must be >5 characters</string>
     <string name="login_failed">"Login failed"</string>
     <string name="login_second_fragment">login_second_fragment</string>
+    <string name="mobile_verify">手机号注册</string>
+    <string name="email_verify">邮箱注册</string>
+    <string name="identity_verify">身份验证</string>
+    <string name="current_device_account">当前设备账号</string>
+    <string name="confirm_logout_title">确认退出登录？</string>
+    <string name="confirm_logout">确认退出</string>
+    <string name="cancel_logout">取消</string>
+
 </resources>
