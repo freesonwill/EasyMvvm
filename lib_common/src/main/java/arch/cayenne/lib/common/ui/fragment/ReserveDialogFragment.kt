@@ -17,7 +17,7 @@ import androidx.core.view.isVisible
 import arch.cayenne.lib.common.databinding.FragmentReserveDialogBinding
 import arch.cayenne.lib.common.ui.viewmodel.ReserveDialogViewModel
 import arch.cayenne.lib.common.utils.ViewUtils
-import arch.cayenne.lib.common.utils.ext.SportMoneyOddsExt.getDisplayOdds
+import arch.cayenne.lib.common.utils.ext.SportDisplayOddsExt.getDisplayOdds
 
 class ReserveDialogFragment private constructor() : BaseDialogFragment<ReserveDialogViewModel, FragmentReserveDialogBinding>() {
 

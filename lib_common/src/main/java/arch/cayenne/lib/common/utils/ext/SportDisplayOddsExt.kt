@@ -9,7 +9,7 @@ import java.math.RoundingMode
 /**
  * 負責最終顯示於畫面上的賠率與金額，根據歐洲盤或香港盤做變化
  */
-object SportMoneyOddsExt {
+object SportDisplayOddsExt {
 
     private val manager: UserDataManager = inject<UserDataManager>(UserDataManager::class.java).value
     private val oddsType: Int get() = manager.getValue(UserDataKey.KEY_ODDS, 0)

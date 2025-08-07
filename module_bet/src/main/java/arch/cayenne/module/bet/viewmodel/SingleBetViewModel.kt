@@ -10,7 +10,7 @@ import arch.cayenne.lib.common.data.repo.BalanceRepository
 import arch.cayenne.lib.common.ui.viewmodel.Event
 import arch.cayenne.lib.common.ui.viewmodel.NumberCalculatorViewModel
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
-import arch.cayenne.lib.common.utils.ext.SportMoneyOddsExt.reserveDisplayOdds
+import arch.cayenne.lib.common.utils.ext.SportDisplayOddsExt.reserveDisplayOdds
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
 import arch.cayenne.lib.database.entity.BetSelectionBean
 import arch.cayenne.lib.database.entity.BetTypeEnum
