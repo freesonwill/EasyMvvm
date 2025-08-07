@@ -58,7 +58,7 @@ class BetSlipReserveFragment : BaseBetSlipFragment<ReserveSlipViewModel, Fragmen
                         locationX,
                         locationY,
                         viewHeight,
-                        odds = bean.selection.odds.toOdds()
+                        odds = bean.selection.odds.getDisplayOdds().toOdds()
                     ).show(childFragmentManager)
                 }
             }
