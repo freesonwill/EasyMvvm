@@ -23,7 +23,8 @@ abstract class BaseInterceptedBottomSheetFragment<VM : BaseViewModel, VB : ViewB
         if (v is InterceptedConstraintLayout) {
             val tikTokGesture = TikTokGesture(v)
             tikTokGesture.setListener(object : TikTokGesture.TikTokGestureListener {
-                override fun onHorizontalFling() {
+                override fun onFlingToRight() {
+                    dialog?.onBackPressed()
                 }
 
                 override fun onHorizontalScroll(offsetX: Float) {

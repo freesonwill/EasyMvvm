@@ -7,15 +7,15 @@ import android.view.View
 import kotlin.math.abs
 
 @SuppressLint("ClickableViewAccessibility")
-class TikTokGesture(view: View) : GestureDetector.SimpleOnGestureListener() {
+class TikTokGesture(private val view: View) : GestureDetector.SimpleOnGestureListener() {
 
-    private val gesture: GestureDetector
+    private val gesture: GestureDetector = GestureDetector(view.context, this)
     private var listener: TikTokGestureListener? = null
 
     init {
-        gesture = GestureDetector(view.context, this)
         view.setOnTouchListener { _, event ->
             if (event.action == MotionEvent.ACTION_UP || event.action == MotionEvent.ACTION_CANCEL) {
+                view.parent.requestDisallowInterceptTouchEvent(false)
                 listener?.onActionUp()
             }
             gesture.onTouchEvent(event)
@@ -32,6 +32,11 @@ class TikTokGesture(view: View) : GestureDetector.SimpleOnGestureListener() {
         velocityX: Float,
         velocityY: Float
     ): Boolean {
+        // 判斷是否為明顯的水平快速滑動
+        if (abs(velocityX) > abs(velocityY) && abs(velocityX) > 600) {
+            listener?.onFlingToRight()
+            return true
+        }
         return super.onFling(e1, e2, velocityX, velocityY)
     }
 
@@ -45,6 +50,7 @@ class TikTokGesture(view: View) : GestureDetector.SimpleOnGestureListener() {
         val isHorizontal = abs(distanceX) > abs(distanceY)
         if (isHorizontal && e2.x > e1.x) {
             val distance = e2.x - e1.x
+            view.parent.requestDisallowInterceptTouchEvent(true)
             listener?.onHorizontalScroll(distance)
         }
         return super.onScroll(e1, e2, distanceX, distanceY)
@@ -55,7 +61,7 @@ class TikTokGesture(view: View) : GestureDetector.SimpleOnGestureListener() {
     }
 
     interface TikTokGestureListener {
-        fun onHorizontalFling()
+        fun onFlingToRight()
         fun onHorizontalScroll(offsetX: Float)
         fun onActionUp()
     }
