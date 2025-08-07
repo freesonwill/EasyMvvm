@@ -10,6 +10,7 @@ import arch.cayenne.lib.common.data.repo.BalanceRepository
 import arch.cayenne.lib.common.ui.viewmodel.Event
 import arch.cayenne.lib.common.ui.viewmodel.NumberCalculatorViewModel
 import arch.cayenne.lib.common.utils.ext.SportMoneyOddsExt.getDisplayFormalMoney
+import arch.cayenne.lib.common.utils.ext.SportMoneyOddsExt.reserveDisplayOdds
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
 import arch.cayenne.lib.database.entity.BetSelectionBean
 import arch.cayenne.lib.database.entity.BetTypeEnum
@@ -54,7 +55,7 @@ class SingleBetViewModel(
         val checkEligibility = {
             val betSheet = _onBetSheetListener.value
             val editNumber = onEditNumber.value
-            val odds = _onReserveOddsListener.value
+            val odds = _onReserveOddsListener.value?.reserveDisplayOdds()
 
             value = if (betSheet == null || editNumber == null) {
                 false
@@ -155,7 +156,7 @@ class SingleBetViewModel(
         }
         val money = onEditNumber.value?.toMoney() ?: return false
         val currentOdds = _onBetSheetListener.value?.odds ?: 0
-        val reserveOdds = _onReserveOddsListener.value
+        val reserveOdds = _onReserveOddsListener.value?.reserveDisplayOdds()
 
         viewModelScope.launch {
             if (reserveOdds == null || reserveOdds == currentOdds) {
