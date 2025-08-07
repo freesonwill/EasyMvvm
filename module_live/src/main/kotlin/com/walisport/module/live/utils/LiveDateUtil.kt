@@ -33,6 +33,10 @@ object LiveDateUtil {
         val timeFormatter = SimpleDateFormat("HH:mm", Locale.getDefault()).apply {
             this.timeZone = timeZone
         }
+
+        val sameYearDateFormatter = SimpleDateFormat("MM-dd", Locale.getDefault()).apply {
+            this.timeZone = timeZone
+        }
         val dateFormatter = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).apply {
             this.timeZone = timeZone
         }
@@ -55,10 +59,13 @@ object LiveDateUtil {
                 calendarInput.get(Calendar.MONTH) == calendarNow.get(Calendar.MONTH) &&
                 calendarInput.get(Calendar.DAY_OF_MONTH) == calendarNow.get(Calendar.DAY_OF_MONTH) + 1
 
+        val isSameYear = calendarInput.get(Calendar.YEAR) == calendarNow.get(Calendar.YEAR)
+
         // 确定日期部分
         val datePart = when {
             isSameDay -> "今天"
             isTomorrow -> "明天"
+            isSameYear -> sameYearDateFormatter.format(date)
             else -> dateFormatter.format(date)
         }
 
