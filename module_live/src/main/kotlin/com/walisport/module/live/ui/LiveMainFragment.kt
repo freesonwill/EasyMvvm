@@ -5,7 +5,9 @@ import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
+import android.view.GestureDetector
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
 import androidx.core.view.GravityCompat
@@ -42,6 +44,8 @@ import kotlinx.coroutines.flow.filter
 import kotlin.reflect.KClass
 import arch.cayenne.lib.common.utils.ext.DimensionExt.px2sp
 import arch.cayenne.lib.common.utils.ext.DimensionExt.px2dp
+import arch.cayenne.lib.common.utils.ext.touchBackPressed
+
 /**
  * 直播详情页
  */
@@ -97,6 +101,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
     }
 
     override fun initListener() {
+        mBinding.liveMain.touchBackPressed()
         with(titleBarBinding) {
             ivBack.clickNoRepeat {
                 //软件盘开启后直接关闭软件盘，不返回

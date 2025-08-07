@@ -46,7 +46,7 @@ import java.util.Date
 import java.util.Locale
 import kotlin.reflect.KClass
 import arch.cayenne.lib.common.R as RC
-
+import arch.cayenne.lib.common.utils.ext.touchBackPressed
 class SearchResultDirectMatchFragment :
     SearchBaseFragment<SearchResultDirectMatchViewModel, FragmentSearchResultDirectMatchBinding>() {
     override val vmClass: KClass<SearchResultDirectMatchViewModel>
@@ -103,6 +103,8 @@ class SearchResultDirectMatchFragment :
             }
             tvDate.text = dateHintStr
         }
+        mBinding.root.touchBackPressed()
+        contentBinding.recyclerView.touchBackPressed()
     }
 
     override fun initData() {

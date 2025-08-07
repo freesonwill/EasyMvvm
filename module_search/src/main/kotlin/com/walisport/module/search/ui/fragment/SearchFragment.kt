@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import arch.cayenne.lib.common.ui.dialog.CommonDialog
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+import arch.cayenne.lib.common.utils.ext.touchBackPressed
 import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import com.walisport.module.search.R
@@ -46,6 +47,7 @@ class SearchFragment : SearchBaseFragment<SearchViewModel, FragmentSearchBinding
         super.initView(savedInstanceState)
         setHistory()
         setHotWords()
+        mBinding.root.touchBackPressed()
     }
 
     override fun initData() {

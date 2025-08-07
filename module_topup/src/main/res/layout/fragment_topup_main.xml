@@ -9,7 +9,8 @@
             type="com.walisport.module.topup.ui.viewmodel.TopUpMainViewModel" />
     </data>
 
-    <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
+    <arch.cayenne.lib.common.ui.view.InterceptedConstraintLayout
+        app:interceptedDirection = "RIGHT"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <LinearLayout
@@ -62,7 +63,6 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/dp_16"
                     android:layout_marginTop="@dimen/dp_8"
-                    android:text="￥10000.00"
                     android:textColor="@color/wallet_balance"
                     android:textSize="@dimen/sp_26"
                     android:textStyle="bold"
@@ -231,5 +231,5 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
-    </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
+    </arch.cayenne.lib.common.ui.view.InterceptedConstraintLayout>
 </layout>
