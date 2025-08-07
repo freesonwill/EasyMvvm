@@ -40,7 +40,7 @@ class TopUpMainFragment : BaseFragment<TopUpMainViewModel, FragmentTopupMainBind
     }
 
     override fun initListener() {
-
+        mBinding.root.touchBackPressed()
     }
 
     override suspend fun createObserver() {

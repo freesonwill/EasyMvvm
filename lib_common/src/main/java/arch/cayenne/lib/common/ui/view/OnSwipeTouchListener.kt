@@ -30,7 +30,7 @@ open class OnSwipeTouchListener: View.OnTouchListener {
                 val diffX = endX - startX
                 val diffY = endY - startY
                 val timeDiff = endTime - startTime
-                LogUtils.e("OnSwipeTouchListener-----SWIPE_THRESHOLD${SWIPE_THRESHOLD}---diffX-${diffX}--diffY${diffY}---timeDiff${timeDiff}")
+                //LogUtils.e("OnSwipeTouchListener-----SWIPE_THRESHOLD${SWIPE_THRESHOLD}---diffX-${diffX}--diffY${diffY}---timeDiff${timeDiff}")
                 if (diffX > SWIPE_THRESHOLD && timeDiff <= SWIPE_MAX_TIME && diffY < thresholdY) {
                     onSwipeRight()
                     return true
