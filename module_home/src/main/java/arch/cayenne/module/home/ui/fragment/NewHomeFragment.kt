@@ -478,10 +478,12 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                         mViewModel.setCalendarState(HomeCalendarFragment.States.CALENDAR_CLOSE_NOTHING)
                     }
                 )
-                val selectedPosition = tournaments.indexOfFirst { it.isSelected }
-                getSelectedRecently31Scheduled(selectedPosition)
-                tlLeagueList.post{ layoutMediator.selectTabWithoutAnimation(selectedPosition) }
-                vpGameList.post { gameListPageCallback?.onPageScrollStateChanged(SCROLL_STATE_IDLE) }
+                if (tournaments.isNotEmpty()) {
+                    val selectedPosition = tournaments.indexOfFirst { it.isSelected }
+                    tlLeagueList.setScrollPosition(selectedPosition, 0f, true)
+                    tlLeagueList.post { layoutMediator.selectTabWithoutAnimation(selectedPosition) }
+                    vpGameList.post { gameListPageCallback?.onPageScrollStateChanged(SCROLL_STATE_IDLE) }
+                }
             }
         }
     }
