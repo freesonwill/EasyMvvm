@@ -14,6 +14,7 @@ import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import arch.cayenne.lib.base.ui.fragment.BasePreLoadBottomSheerFragment
+import arch.cayenne.lib.common.ui.fragment.BaseInterceptedBottomSheetFragment
 import arch.cayenne.module.bet.R
 import arch.cayenne.module.bet.data.Config
 import arch.cayenne.module.bet.data.Config.KEY_RESULT
@@ -25,7 +26,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlin.reflect.KClass
 
 class BetSheetFragment private constructor() :
-    BasePreLoadBottomSheerFragment<BetSheetViewModel, FragmentBetSheetBinding>() {
+    BaseInterceptedBottomSheetFragment<BetSheetViewModel, FragmentBetSheetBinding>() {
 
     companion object {
 
