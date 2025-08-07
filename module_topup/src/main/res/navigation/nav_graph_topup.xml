@@ -12,6 +12,16 @@
         tools:layout="@layout/fragment_topup_main">
 
         <deepLink app:uri="walisport://module_topup/topUpFragment" />
+        <action
+            android:id="@+id/action_topUpMainFragment_to_topUpDetailFragment"
+            app:destination="@id/topUpDetailFragment" />
     </fragment>
+
+
+    <fragment
+        android:id="@+id/topUpDetailFragment"
+        android:name="com.walisport.module.topup.ui.fragment.TopUpDetailFragment"
+        android:label="TopUpDetailFragment" />
+
 
 </navigation>
