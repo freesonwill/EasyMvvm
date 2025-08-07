@@ -113,10 +113,6 @@ class TournamentListFragment :
                         (event?.keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_DOWN)
                     ) {
                         hideKeyboardAndClearFocus(requireContext())
-                        val keyword = text?.toString()?.trim().orEmpty()
-                        if (hasInput()) {
-                            mViewModel.searchTournament(keyword)
-                        }
                         true
                     } else {
                         false
@@ -126,8 +122,12 @@ class TournamentListFragment :
                 addTextChangedListener(object : TextWatcher {
                     override fun afterTextChanged(s: Editable?) {
                         val keyword = s?.toString()?.trim().orEmpty()
-                        if (keyword.isEmpty() && !mBinding.ceSearch.hasFocus()) {
-                            mViewModel.setSearchMode(false)
+                        if (keyword.isEmpty()) {
+                                mViewModel.setSearchMode(false)
+                        } else {
+                            // 有輸入內容時自動開始搜尋
+                            mViewModel.setSearchMode(true)
+                            mViewModel.searchTournament(keyword)
                         }
                     }
 
