@@ -31,6 +31,7 @@ class MatchItemViewHolder(
     private val viewPool: RecycledViewPool
 ) : BaseViewHolder(mBinding) {
     private var oddsColumnAdapter: OddsColumnAdapter = OddsColumnAdapter(onMatchItemClickListener)
+
     init {
         //右半盤口
         val defaultTitleList = listOf(
@@ -82,7 +83,9 @@ class MatchItemViewHolder(
                 })
             }
 
-            val drawable = ContextCompat.getDrawable(root.context, R.drawable.layer_favorite_crossfade)?.mutate()
+            val drawable =
+                ContextCompat.getDrawable(root.context, R.drawable.layer_favorite_crossfade)
+                    ?.mutate()
             ivFavorite.setImageDrawable(drawable)
         }
     }
@@ -109,6 +112,7 @@ class MatchItemViewHolder(
                 tvGameStatus.visibility = View.VISIBLE
                 tvGameStatus.text = liveInfo.period
                 tvGameTime.text = liveClock(liveInfo.clock, liveInfo.clockModified)
+                tvGameTime.visibility = if (liveInfo.rollClock) View.VISIBLE else View.GONE
             } else {
                 tvRoll.visibility = View.GONE
                 tvGameStatus.visibility = View.GONE
@@ -173,6 +177,9 @@ class MatchItemViewHolder(
             if ("clock" in changes) {
                 tvGameTime.text = liveClock(liveInfo.clock, liveInfo.clockModified)
             }
+            if ("rollClock" in changes) {
+                tvGameTime.visibility = if (liveInfo.rollClock) View.VISIBLE else View.GONE
+            }
             if ("score" in changes) {
                 if (basicInfo.status == 5) {
                     tvAwayScore.text = liveInfo.awayScore.toString()
@@ -213,8 +220,18 @@ class MatchItemViewHolder(
         val unselected = layers.findDrawableByLayerId(R.id.background)
         val selectedDrawable = layers.findDrawableByLayerId(R.id.foreground)
         // 做 alpha 淡入淡出動畫
-        val fadeIn = ObjectAnimator.ofInt(selectedDrawable, "alpha", if (selected) 0 else 255, if (selected) 255 else 0)
-        val fadeOut = ObjectAnimator.ofInt(unselected, "alpha", if (selected) 255 else 0, if (selected) 0 else 255)
+        val fadeIn = ObjectAnimator.ofInt(
+            selectedDrawable,
+            "alpha",
+            if (selected) 0 else 255,
+            if (selected) 255 else 0
+        )
+        val fadeOut = ObjectAnimator.ofInt(
+            unselected,
+            "alpha",
+            if (selected) 255 else 0,
+            if (selected) 0 else 255
+        )
 
         fadeIn.duration = if (force) 0 else 200
         fadeOut.duration = if (force) 0 else 200
@@ -223,6 +240,6 @@ class MatchItemViewHolder(
         fadeOut.start()
     }
 
-    private fun liveClock(clock: Int, modified: Long) : String =
+    private fun liveClock(clock: Int, modified: Long): String =
         (clock).toMinuteSecondFormat()
 }

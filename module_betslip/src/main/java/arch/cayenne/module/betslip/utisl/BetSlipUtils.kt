@@ -3,17 +3,15 @@ package arch.cayenne.module.betslip.utisl
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
-import arch.cayenne.lib.common.utils.ext.SportStringExt.toOdds
 
 internal object BetSlipUtils {
 
     /**
      * 计算预计最高金额
      * */
-    fun expectMaxAmount(betAmount: String, odds: String): String {
+    fun expectMaxAmount(betAmount: String, odds: Int): String {
         val nBetAmount = betAmount.toMoney()
-        val nOdds = odds.toOdds()
-        val result = nBetAmount.getMoney(nOdds).toMoney().minus(nBetAmount)
+        val result = nBetAmount.getMoney(odds).toMoney().minus(nBetAmount)
         return result.getFormalMoney()
     }
 

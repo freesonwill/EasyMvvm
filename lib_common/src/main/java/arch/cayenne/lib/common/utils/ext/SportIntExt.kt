@@ -44,12 +44,12 @@ object SportIntExt {
     }
 
     /***
-     * @param multiply 乘數: 通常為賠率
+     * @param odds 乘數: 通常為賠率
      */
-    fun Long.getMoney(multiply: Int): String {
-        if (this == 0L || multiply == 0) return "0" // ← 明確處理 0
+    fun Long.getMoney(odds: Int): String {
+        if (this == 0L || odds <= 0) return "0" // ← 明確處理 0
 
-        val result = this * multiply
+        val result = this * odds
         val decimal = BigDecimal(result).divide(BigDecimal(10000))
             .setScale(2, RoundingMode.DOWN)
         return if (decimal.stripTrailingZeros().scale() <= 0) {
@@ -70,17 +70,17 @@ object SportIntExt {
 
         val numberFormat = NumberFormat.getNumberInstance(Locale.US).apply {
             maximumFractionDigits = 2
-            minimumFractionDigits = if (stripped.scale() > 0) 2 else 0
+            minimumFractionDigits = 0
             isGroupingUsed = true // 千分位
         }
 
-        return numberFormat.format(value)
+        return numberFormat.format(stripped)
     }
 
-    fun Long.getFormalMoney(multiply: Int): String {
-        if (this == 0L || multiply == 0) return "0" // ← 明確處理 0
+    fun Long.getFormalMoney(odds: Int): String {
+        if (this == 0L || odds <= 0) return "0" // ← 明確處理 0
 
-        val result = this * multiply
+        val result = this * odds
         val decimal = BigDecimal(result).divide(BigDecimal(10000))
             .setScale(2, RoundingMode.DOWN)
 
@@ -88,17 +88,17 @@ object SportIntExt {
 
         val numberFormat = NumberFormat.getNumberInstance(Locale.US).apply {
             maximumFractionDigits = 2
-            minimumFractionDigits = if (stripped.scale() > 0) 2 else 0
+            minimumFractionDigits = 0
             isGroupingUsed = true // 千分位
         }
 
-        return numberFormat.format(decimal)
+        return numberFormat.format(stripped)
     }
 
-    fun Long.getFormalMoney(multiply: Long): String {
-        if (this == 0L || multiply == 0L) return "0" // ← 明確處理 0
+    fun Long.getFormalMoney(money: Long): String {
+        if (this == 0L || money == 0L) return "0" // ← 明確處理 0
 
-        val result = this * multiply
+        val result = this * money
         val decimal = BigDecimal(result).divide(BigDecimal(10000))
             .setScale(2, RoundingMode.DOWN)
 
@@ -106,29 +106,27 @@ object SportIntExt {
 
         val numberFormat = NumberFormat.getNumberInstance(Locale.US).apply {
             maximumFractionDigits = 2
-            minimumFractionDigits = if (stripped.scale() > 0) 2 else 0
+            minimumFractionDigits = 0
             isGroupingUsed = true // 千分位
         }
 
-        return numberFormat.format(decimal)
+        return numberFormat.format(stripped)
     }
 
     /**
      * @return string: 1234 轉換為 12.34, 1000 轉換為 10.00
      */
     fun Int.getOdds(): String {
-        if (this == 0) return "0"
+        if (this <= 0) return "0"
 
-        val rate = this / 100f
-        val adjusted = if (rate < 0.01f) 0.01f else rate
-
-        return adjusted.toBigDecimal().stripTrailingZeros().toPlainString()
+        val decimal = BigDecimal(this).divide(BigDecimal(100))
+        return decimal.setScale(2, RoundingMode.DOWN).stripTrailingZeros().toPlainString()
     }
 
-    fun Int.getOdds(multiply: Int): String {
-        if (this == 0 || multiply == 0) return "0" // ← 明確處理 0
+    fun Int.getOdds(odds: Int): String {
+        if (this <= 0 || odds <= 0) return "0" // ← 明確處理 0
 
-        val result = this * multiply
+        val result = this * odds
         val decimal = BigDecimal(result).divide(BigDecimal(10000))
         return decimal.setScale(2, RoundingMode.DOWN).stripTrailingZeros().toPlainString()
     }

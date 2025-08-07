@@ -5,6 +5,7 @@ import androidx.core.view.isVisible
 import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
+import arch.cayenne.lib.common.utils.ext.SportDisplayOddsExt.getDisplayOdds
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
@@ -49,7 +50,7 @@ class BetSlipSettledViewHolder(binding: ViewBinding, betSlipType: BetSlipEnum) :
         mBinding.also {
             it.betSettledTvDate.text = order.betTime.getDetailFormatDate()
             it.betSettledTvBetcodeValue.text = order.betId
-            it.betSettledTvOddsValue.text = order.odds
+            it.betSettledTvOddsValue.text = order.odds.getDisplayOdds()
             val betAmount = "${CurrencySymbols.getSymbol(order.currency)}${order.betAmount.toMoney().getFormalMoney()}"
             it.betSettledTvBettingValue.text = betAmount
             settledStatus(order)
