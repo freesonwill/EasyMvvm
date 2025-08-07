@@ -29,14 +29,20 @@ class HandicapFragment : BaseFragment<HandicapViewModel, FragmentHandicapBinding
 
     override val vbClass: KClass<FragmentHandicapBinding> = FragmentHandicapBinding::class
     override val vmClass: KClass<HandicapViewModel> = HandicapViewModel::class
-    private val args : HandicapFragmentArgs by navArgs()
+    private val args: HandicapFragmentArgs by navArgs()
 
     override fun initView(savedInstanceState: Bundle?) {
         with(mBinding) {
             titleBar.loadGeneralTitleBar(
                 R.string.handicap_lesson.getString(),
                 { findNavController().navigateUp() },
-                { navigate(HandicapFragmentDirections.actionHandicapFragmentToSimulateFragment(homeId = args.homeId)) },
+                {
+                    navigate(
+                        HandicapFragmentDirections.actionHandicapFragmentToSimulateFragment(
+                            homeId = args.homeId
+                        )
+                    )
+                },
                 R.string.simulate_bet.getString()
             )
             val array = resources.getStringArray(R.array.handicap_tabs)
@@ -55,7 +61,7 @@ class HandicapFragment : BaseFragment<HandicapViewModel, FragmentHandicapBinding
         }
     }
 
-    private fun setViewPagerAnim(){
+    private fun setViewPagerAnim() {
         mBinding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 tab?.let {
@@ -98,7 +104,7 @@ class HandicapFragment : BaseFragment<HandicapViewModel, FragmentHandicapBinding
     }
 
     override fun initListener() {
-    mBinding.root.touchBackPressed()
+        mBinding.root.touchBackPressed()
     }
 
     override suspend fun createObserver() {
