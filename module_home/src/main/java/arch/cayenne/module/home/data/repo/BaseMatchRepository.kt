@@ -13,7 +13,7 @@ import arch.cayenne.lib.database.dao.MatchDao
 import arch.cayenne.lib.database.entity.MatchBeanLite
 import arch.cayenne.lib.database.entity.MatchLiveInfoBean
 import arch.cayenne.lib.database.entity.MatchWithMarkets
-import arch.cayenne.lib.database.entity.SelectionBean
+import arch.cayenne.lib.database.entity.SelectionBeanLite
 import arch.cayenne.lib.websocket.WebSocketManager
 import arch.cayenne.lib.websocket.data.ApiCode
 import arch.cayenne.lib.websocket.extension.observeProtoMessage
@@ -211,14 +211,16 @@ abstract class BaseMatchRepository(
     }
 
     suspend fun getSelectionInsertBean(matchId: Long, selectionId: Long): BetInsertBean? = withContext(scope.coroutineContext) {
-        val match = matchDao.getOneMatchById(matchId, isEuropeOddsDisplay)
-        val selectionBean = matchDao.getSelectionById(selectionId)
+        val match = matchDao.getOneMatchById(matchId, true)  //給注單的賠率一律為歐洲盤
+        val selectionBean = match.markets
+            .flatMap { it.selections }
+            .find { selectionBeanLite -> selectionBeanLite.selectionId == selectionId } ?: return@withContext null
         matchSelectionInsertBean(match, selectionBean)
     }
 
     private fun matchSelectionInsertBean(
         match: MatchWithMarkets,
-        selectionBean: SelectionBean
+        selectionBean: SelectionBeanLite
     ): BetInsertBean? {
         match.markets.find { market ->
             market.selections.find { it.selectionId == selectionBean.selectionId } != null
