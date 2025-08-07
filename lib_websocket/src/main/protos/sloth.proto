@@ -253,16 +253,17 @@ message MatchLineupDetail {
 
 // 球队积分项
 message TeamStats {
-  int32 team_id = 1;             // 球队id
-  int32 points = 2;              // 积分
-  int32 total = 3;               // 比赛场次
-  int32 won = 4;                 // 胜的场次
-  int32 draw = 5;                // 平的场次
-  int32 loss = 6;               // 负的场次
-  int32 goals = 7;              // 进球
-  int32 goals_against = 8;      // 失球
-  string team_name = 9;          // 球队名称
+  int32 team_id = 1;              // 球队id
+  int32 points = 2;               // 积分
+  int32 total = 3;                // 比赛场次
+  int32 won = 4;                  // 胜的场次
+  int32 draw = 5;                 // 平的场次
+  int32 loss = 6;                 // 负的场次
+  int32 goals = 7;                // 进球
+  int32 goals_against = 8;        // 失球
+  string team_name = 9;           // 球队名称
   string team_logo = 10;          // 球队logo
+  int32 promotion_id = 11;        // 升降级Id
 }
 // 积分榜信息
 message Table {
@@ -272,10 +273,18 @@ message Table {
   int32 stage_id = 4;            // 所属阶段id
   repeated TeamStats rows = 5;   // 球队积分项
 }
+// 升降级列表
+message Promotions {
+  string color = 1;     // 颜色值
+  int32 id = 2;         // 升降级id
+  string name_zh = 3;   // 中文名称
+  string name_en = 5;   // 英文名称
+}
 
 // 包含多个积分榜
 message CompetitionTables {
   repeated Table tables = 1;          // 积分榜列表
+  repeated Promotions promotions = 2; // 升降级列表
 }
 
 // ================================================== 赛季积分榜结束 ==================================================
