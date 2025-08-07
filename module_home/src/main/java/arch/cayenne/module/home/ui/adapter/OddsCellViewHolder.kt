@@ -4,7 +4,7 @@ import android.animation.ValueAnimator
 import android.view.View
 import androidx.core.animation.addListener
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
-import arch.cayenne.lib.common.utils.ext.SportDisplayOddsExt.getDisplayOdds
+import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
 import arch.cayenne.lib.database.entity.SelectionBeanLite
 import arch.cayenne.module.home.data.constants.OddsCellState
 import arch.cayenne.module.home.databinding.ItemOddsCellBinding
@@ -18,7 +18,7 @@ class OddsCellViewHolder(
     fun bind(item: SelectionBeanLite) {
         with(mBinding) {
             tvShortName.text = item.shortName
-            tvOdds.text = item.odds.getDisplayOdds()
+            tvOdds.text = item.odds.getOdds()
             val isActive = item.active
             updateState(isActive, item.isSelected)
 
@@ -42,8 +42,8 @@ class OddsCellViewHolder(
         with(mBinding) {
 
             if ("odds" in diff) {
-                if (tvOdds.text.toString() != item.odds.getDisplayOdds()) {
-                    tvOdds.text = item.odds.getDisplayOdds()
+                if (tvOdds.text.toString() != item.odds.getOdds()) {
+                    tvOdds.text = item.odds.getOdds()
                 }
             }
 
