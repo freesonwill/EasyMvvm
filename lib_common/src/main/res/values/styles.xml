@@ -82,5 +82,15 @@
         <item name="android:windowExitAnimation">@anim/dialog_scale_out</item>
     </style>
 
+    <declare-styleable name="InterceptedView">
+        <attr name="touchSlop" format="integer|string" />
+        <attr name="interceptedDirection" format="flags">
+            <flag name="NONE" value="0x00" />
+            <flag name="UP" value="0x01" />
+            <flag name="DOWN" value="0x02" />
+            <flag name="LEFT" value="0x04" />
+            <flag name="RIGHT" value="0x08" />
+        </attr>
+    </declare-styleable>
 
 </resources>

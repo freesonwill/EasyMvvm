@@ -18,6 +18,7 @@ import androidx.core.graphics.createBitmap
 import androidx.core.os.bundleOf
 import androidx.core.view.doOnLayout
 import androidx.core.widget.TextViewCompat
+import androidx.fragment.app.setFragmentResult
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
@@ -30,7 +31,6 @@ import arch.cayenne.lib.base.ui.fragment.getViewBind
 import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.common.ui.view.ClearableEditText
-import arch.cayenne.lib.common.utils.ext.NavResultExt.sendResult
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
@@ -38,7 +38,6 @@ import arch.cayenne.lib.skin.res.SkinnableResourceManager.getDrawable
 import arch.cayenne.lib.skin.widget.SkinnableImageView
 import com.walisport.module.search.R
 import com.walisport.module.search.databinding.FragmentSearchBaseBinding
-import com.walisport.module.search.ui.fragment.SearchResultBaseFragment.Companion.GO_BACK_TO_MAIN
 import com.walisport.module.search.ui.viewmodel.SearchBaseViewModel
 import kotlinx.coroutines.launch
 import java.util.Locale
@@ -84,6 +83,11 @@ abstract class SearchBaseFragment<VM : BaseViewModel, CVB : ViewBinding>: BaseFr
 
     private var canSearch: Boolean = true
 
+    override fun onResume() {
+        super.onResume()
+        updateSearchText(getCurrentKeyword())
+    }
+
     @CallSuper
     override fun initView(savedInstanceState: Bundle?) {
         inflateContentLayout()
@@ -126,17 +130,28 @@ abstract class SearchBaseFragment<VM : BaseViewModel, CVB : ViewBinding>: BaseFr
     @CallSuper
     open fun toSearchResult(word: String) {
         parentFragmentManager.clearFragmentResult(GO_BACK_TO_MAIN)
-        if (findNavController().currentDestination?.id != R.id.searchFragment) {
-            parentFragmentManager.setFragmentResult(SEARCH_KEY, bundleOf(SEARCH_KEY to word))
-            findNavController().popBackStack(R.id.searchResultBaseFragment, false)
-        } else {
-            sendResult(
-                key = SEARCH_KEY,
-                value = word,
-                destinationId = R.id.searchFragment,
-                navController = findNavController()
-            )
-            findNavController().navigate(R.id.searchResultBaseFragment, null, navOptions)
+        when {
+            this is SearchResultDirectMatchFragment && word == mViewModel.currentTitle -> {
+                // DirectMatch頁且關鍵字相同，呼叫子頁自身再次搜索功能
+                with(mViewModel) {
+                    val id = directMatchId ?: return
+                    val type = directMatchType ?: return
+                    // 重置選擇日期
+                    setSelectedDate(null)
+                    getSearchResult(id = id.toString(), type = type)
+                }
+            }
+            this is SearchFragment -> {
+                // 在SearchFragment中，直接跳轉到SearchResultBaseFragment
+                setCurrentKeyword(word)
+                findNavController().navigate(R.id.searchResultBaseFragment, null, navOptions)
+            }
+            else -> {
+                // 在其他Fragment中，要popBackStack到SearchResultBaseFragment
+                setCurrentKeyword(word)
+                setFragmentResult(FROM_POP_BACK, bundleOf(FROM_POP_BACK to true))
+                findNavController().popBackStack(R.id.searchResultBaseFragment, false)
+            }
         }
     }
 
@@ -147,15 +162,23 @@ abstract class SearchBaseFragment<VM : BaseViewModel, CVB : ViewBinding>: BaseFr
         }
     }
 
+    protected fun getCurrentKeyword(): String {
+        return sharedViewModel.getCurrentKeyword() ?: ""
+    }
+
+    private fun setCurrentKeyword(keyword: String) {
+        sharedViewModel.setCurrentKeyword(keyword)
+    }
+
     protected fun setTempScreenShot() {
         val view = mBinding.clRoot
         view.doOnLayout {
-        val bitmap = createBitmap(view.width, view.height)
-        val canvas = Canvas(bitmap)
-        view.draw(canvas)
+            val bitmap = createBitmap(view.width, view.height)
+            val canvas = Canvas(bitmap)
+            view.draw(canvas)
 
-        sharedViewModel.setTempScreenShot(bitmap)
-            }
+            sharedViewModel.setTempScreenShot(bitmap)
+        }
     }
 
     protected fun getTempScreenShot(): Bitmap? {
@@ -187,10 +210,7 @@ abstract class SearchBaseFragment<VM : BaseViewModel, CVB : ViewBinding>: BaseFr
 
     private fun setBackPressHandler(onBackPress: (() -> Boolean)? = null) {
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
-            closeDatePicker()
-
             if(onBackPress?.invoke() == true) return@addCallback
-
             isEnabled = false
             requireActivity().onBackPressedDispatcher.onBackPressed()
         }
@@ -400,6 +420,7 @@ abstract class SearchBaseFragment<VM : BaseViewModel, CVB : ViewBinding>: BaseFr
     }
 
     companion object {
-        const val SEARCH_KEY = "searchKey"
+        const val FROM_POP_BACK = "from_pop_back"
+        const val GO_BACK_TO_MAIN = "GO_BACK_TO_MAIN"
     }
 }

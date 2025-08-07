@@ -32,7 +32,6 @@ class LiveMainRepository(
     fun observeLoginChange() = database.infoDao().observeIsLogin()
     // 500-1003: 获取比赛详情
     @SuppressLint("SuspiciousIndentation")
-    @Transaction
     suspend fun getMatchRes(matchId: Long):ApiResponseState = withContext(scope.coroutineContext)  {
         clearMatchCache()
         val state :ApiResponseState= remoteManager.getMatchReq(scope, matchId)

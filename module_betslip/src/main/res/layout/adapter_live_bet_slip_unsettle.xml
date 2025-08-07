@@ -258,7 +258,7 @@
         android:id="@+id/group_crossborder"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:constraint_referenced_ids="bet_unsettled_tv_crossborder,bet_unsettled_tv_crossborder_value,iv_tip" />
+        app:constraint_referenced_ids="bet_unsettled_tv_crossborder,bet_unsettled_tv_crossborder_value" />
 
     <androidx.constraintlayout.widget.Group
         android:id="@+id/group_earlysettle"
