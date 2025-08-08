@@ -5,6 +5,7 @@
     <string name="recharge">Recharge</string>
     <string name="withdrawal">WithDraw</string>
     <string name="recommend">Recommend</string>
+    <string name="select_tx_method">Select Withdraw Method</string>
     <string name="select_method">Select Pay Method</string>
     <string name="current_balance">Current Balance: ￥1,100.00</string>
     <string name="recharge_record">Recharge Record</string>
