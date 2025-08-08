@@ -1,5 +1,6 @@
 package arch.cayenne.lib.base.ui.fragment
 
+import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
@@ -27,6 +28,7 @@ import arch.cayenne.lib.base.ui._interface.IStatusBar
 import arch.cayenne.lib.base.ui._interface.IView
 import arch.cayenne.lib.base.ui.delegate.StatusBarDelegate
 import arch.cayenne.lib.base.ui.delegate.UIBindDelegate
+import arch.cayenne.lib.base.ui.gesture.TikTokGesture
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -183,6 +185,7 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
         setBackGroundOnclick()
         removeDim()
         setStatusBar()
+        setGesture()
     }
 
     protected open fun setBackGroundOnclick() {
@@ -345,6 +348,45 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
         }
 
         return result
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private fun setGesture() {
+        val v = mBinding.root
+        val tikTokGesture = TikTokGesture(v)
+        tikTokGesture.setListener(object : TikTokGesture.TikTokGestureListener {
+            override fun onFlingToRight() {
+                dialog?.onBackPressed()
+            }
+
+            override fun onHorizontalScroll(offsetX: Float) {
+                sheetContainer?.translationY = offsetX * 1.5f
+            }
+
+            override fun onActionUp() {
+                val translationY = sheetContainer?.translationY ?: 0f
+                val height = sheetContainer?.height ?: 0
+                if (translationY >= height / 2) {
+                    dialog?.onBackPressed()
+                } else {
+                    resetSheetTranslation()
+                }
+            }
+        })
+    }
+
+    private fun resetSheetTranslation() {
+        sheetContainer?.let {
+            ValueAnimator.ofFloat(it.translationY, 0f).apply {
+                duration = 100
+                addUpdateListener { animation ->
+                    val value = animation.animatedValue as Float
+                    it.translationY = value
+                }
+                start()
+            }
+        }
+
     }
 }
 

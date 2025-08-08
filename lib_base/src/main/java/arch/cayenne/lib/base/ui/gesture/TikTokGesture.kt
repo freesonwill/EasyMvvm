@@ -1,4 +1,4 @@
-package arch.cayenne.lib.common.ui.gesture
+package arch.cayenne.lib.base.ui.gesture
 
 import android.annotation.SuppressLint
 import android.view.GestureDetector
