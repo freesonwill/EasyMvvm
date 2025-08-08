@@ -5,7 +5,7 @@
     <data>
         <variable
             name="model"
-            type="com.walisport.module.topup.ui.viewmodel.TopUpMainViewModel" />
+            type="com.walisport.module.topup.ui.viewmodel.WalletViewModel" />
     </data>
 
     <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
