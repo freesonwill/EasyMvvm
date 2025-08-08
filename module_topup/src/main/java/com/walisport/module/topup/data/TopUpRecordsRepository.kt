@@ -1,5 +1,6 @@
 package com.walisport.module.topup.data
 
+import androidx.lifecycle.MutableLiveData
 import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.base.data.repository.BaseRepository
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoneyForScale
@@ -17,15 +18,16 @@ class TopUpRecordsRepository(
 ) : BaseRepository() {
     override val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
 
-    private val collectMatchChange by lazy { MutableStateFlow<List<RechargeRecordBean>>(listOf()) }  //CollectMatchCrossRef
+    val recordListChange by lazy { MutableStateFlow<List<RechargeRecordBean>>(listOf()) }  //CollectMatchCrossRef
 
-    fun clearCurrentMatch() {
-        collectMatchChange.value = emptyList<RechargeRecordBean>()
+    fun clearCurrentList() {
+        recordListChange.value = emptyList<RechargeRecordBean>()
     }
 
-    suspend fun getCollectData(page: Int): ApiResponseState = withContext(scope.coroutineContext) {
+    suspend fun getListData(page: Int): ApiResponseState = withContext(scope.coroutineContext) {
         delay(1000)
-        val last = collectMatchChange.value.maxByOrNull { it.id }?.id
+        //取最后一条的id做分页标记
+        val last = recordListChange.value.maxByOrNull { it.id }?.id
 
         val dataList = mutableListOf<RechargeRecordBean>()
         //每页10条测试数据
@@ -33,7 +35,7 @@ class TopUpRecordsRepository(
             dataList.add(RechargeRecordBean((page - 1) * 10 + i, Random.nextLong(0, 10000).getMoneyForScale()))
         }
 
-        collectMatchChange.value += dataList
+        recordListChange.value += dataList
         return@withContext ApiResponseState.Succeeded(dataList)
 
     }

@@ -12,56 +12,58 @@
     <arch.cayenne.lib.common.ui.view.InterceptedConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:interceptedDirection = "RIGHT"
-        android:background="@color/app_bg">
+        android:background="@color/app_bg"
+        app:interceptedDirection="RIGHT">
 
         <arch.cayenne.lib.common.ui.view.TitleBarView
             android:id="@+id/titleBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent" />
 
         <arch.cayenne.lib.common.ui.view.PullRefreshLayout
             android:id="@+id/refreshLayout"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            app:layout_constraintTop_toBottomOf="@+id/titleBar"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/titleBar"
             app:srlEnablePreviewInEditMode="true">
-            <arch.cayenne.lib.common.ui.view.InterceptedRecyclerView
+
+            <arch.cayenne.lib.skin.widget.SkinnableRecyclerView
                 android:id="@+id/rv_collect_list"
                 android:layout_width="match_parent"
-                android:background="#161823"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_12"
                 android:layout_marginEnd="@dimen/dp_12"
-                android:focusableInTouchMode="true"
+                android:background="#161823"
                 android:focusable="true"
-                android:layout_height="match_parent"
-                app:interceptedDirection = "RIGHT"
-                app:touchSlop = "DEFAULT"
-                />
+                android:focusableInTouchMode="true"
+                app:interceptedDirection="RIGHT"
+                app:touchSlop="DEFAULT" />
         </arch.cayenne.lib.common.ui.view.PullRefreshLayout>
+
         <arch.cayenne.lib.common.ui.view.DynamicStateLayout
             android:id="@+id/cl_dynamics"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:visibility="gone"/>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <arch.cayenne.lib.common.ui.view.LoadingView
             android:id="@+id/loading_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintTop_toTopOf="parent" />
 
     </arch.cayenne.lib.common.ui.view.InterceptedConstraintLayout>
 </layout>

@@ -1,16 +1,16 @@
 package com.walisport.module.topup.ui.viewmodel
 
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.data.constants.DataState
+import arch.cayenne.lib.base.data.model.UnPeekLiveData
 import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.base.data.remote.ApiResponseState.Start.dataAs
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
+import arch.cayenne.lib.common.ui.viewmodel.Event
 import arch.cayenne.lib.database.entity.RechargeRecordBean
 import com.walisport.module.topup.data.TopUpRecordsRepository
 import com.walisport.module.topup.data.constants.LoadingState
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import okhttp3.internal.toImmutableList
 import plugin.koin.KoinViewModel
@@ -21,24 +21,27 @@ class TopUpRecordsViewModel(private val repository: TopUpRecordsRepository) : Ba
     private var page = 1
     private var isPageEnd = false
 
-    val recordListChange by lazy { MutableLiveData<List<RechargeRecordBean>>() }
+    private val _recordListChange: UnPeekLiveData<List<RechargeRecordBean>> = UnPeekLiveData()
+
+    val recordListChange: UnPeekLiveData<List<RechargeRecordBean>> = _recordListChange
 
 
     override fun initViewModel() {
         super.initViewModel()
+
+        viewModelScope.launch {
+            repository.recordListChange.collect {
+                _recordListChange.value = it
+            }
+        }
     }
 
     fun reload() {
         changePageEnd(false)
         page = 1
-        val preState = apiStateListener.value
+        clearCurrentList()
         setState(LoadingState.Refreshing)
-        viewModelScope.launch(Dispatchers.IO) {
-            clearCurrentMatch()
-            if (preState == LoadingState.DataEmpty || preState == DataState.NetworkUnavailable) {
-                getListData()
-            }
-        }
+        getListData()
     }
 
     fun loadNextPage() {
@@ -57,15 +60,15 @@ class TopUpRecordsViewModel(private val repository: TopUpRecordsRepository) : Ba
         isPageEnd = b
     }
 
-    private fun clearCurrentMatch() {
-        repository.clearCurrentMatch()
+    private fun clearCurrentList() {
+        repository.clearCurrentList()
     }
 
     fun getListData() {
         viewModelScope.launch {
             "获取充值记录 $page".logd(TAG)
             callApi({
-                repository.getCollectData(page)
+                repository.getListData(page)
             }, {
                 if (it is ApiResponseState.Failed) {
                     recordListChange.value = arrayListOf()
@@ -77,9 +80,11 @@ class TopUpRecordsViewModel(private val repository: TopUpRecordsRepository) : Ba
                         setState(LoadingState.DataEmpty)
                     } else if (size < TopUpRecordsRepository.DEFAULT_LIST_SIZE) {
                         setState(DataState.NoMoreData)
+                        recordListChange.value = mergeList(recordListChange.value, list)
+                    } else {
+                        setState(LoadingState.LoadSuccess)
+                        recordListChange.value = mergeList(recordListChange.value, list)
                     }
-
-                    recordListChange.value = mergeList(recordListChange.value, list)
 
                 }
             })

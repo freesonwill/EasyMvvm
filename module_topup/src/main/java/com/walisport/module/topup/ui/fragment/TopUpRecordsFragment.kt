@@ -10,6 +10,7 @@ import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
+import arch.cayenne.lib.common.utils.ext.NavResultExt.observeResult
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.touchBackPressed
@@ -87,6 +88,7 @@ class TopUpRecordsFragment : BaseFragment<TopUpRecordsViewModel, FragmentTopupRe
         mViewModel.recordListChange.observe(viewLifecycleOwner) { recordBeanList ->
             listAdapter.submitList(recordBeanList)
         }
+
 
         mViewModel.apiStateListener.observe(viewLifecycleOwner) { state ->
             with(mBinding) {
