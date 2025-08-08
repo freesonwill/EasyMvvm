@@ -5,6 +5,7 @@ import arch.cayenne.lib.base.data.DefaultInitializer
 import com.walisport.module.topup.data.TopUpMainRepository
 import com.walisport.module.topup.ui.viewmodel.TopUpDetailViewModel
 import com.walisport.module.topup.ui.viewmodel.TopUpMainViewModel
+import com.walisport.module.topup.ui.viewmodel.TopUpRecordsViewModel
 import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.core.context.loadKoinModules
 import org.koin.core.module.Module
@@ -23,6 +24,7 @@ class TopUpModuleInitializer : DefaultInitializer<String> {
     private val viewModules = module {
         viewModelOf(::TopUpMainViewModel)
         viewModelOf(::TopUpDetailViewModel)
+        viewModelOf(::TopUpRecordsViewModel)
     }
 
     private val repoModules = module {

@@ -13,8 +13,8 @@
 
         <deepLink app:uri="walisport://module_topup/topUpFragment" />
         <action
-            android:id="@+id/action_topUpMainFragment_to_topUpDetailFragment"
-            app:destination="@id/topUpDetailFragment" />
+            android:id="@+id/action_topUpMainFragment_to_topUpRecordsFragment"
+            app:destination="@id/topUpRecordsFragment" />
     </fragment>
 
 
@@ -22,6 +22,14 @@
         android:id="@+id/topUpDetailFragment"
         android:name="com.walisport.module.topup.ui.fragment.TopUpDetailFragment"
         android:label="TopUpDetailFragment" />
+    <fragment
+        android:id="@+id/topUpRecordsFragment"
+        android:name="com.walisport.module.topup.ui.fragment.TopUpRecordsFragment"
+        android:label="TopUpRecordsFragment" >
+        <action
+            android:id="@+id/action_topUpRecordsFragment_to_topUpDetailFragment"
+            app:destination="@id/topUpDetailFragment" />
+    </fragment>
 
 
 </navigation>
