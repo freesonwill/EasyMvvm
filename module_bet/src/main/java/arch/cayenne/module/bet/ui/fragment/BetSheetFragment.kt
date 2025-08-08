@@ -116,6 +116,12 @@ class BetSheetFragment private constructor() :
     }
 
     override fun initListener() {
+        setOnEndListener {
+            val f = mBinding.mainNav.getFragment<Fragment>().childFragmentManager.primaryNavigationFragment
+            if (f is BetSheetListener) {
+                f.doCustomHideEnd()
+            }
+        }
     }
 
     override fun onStart() {
@@ -240,13 +246,8 @@ class BetSheetFragment private constructor() :
         }
     }
 
-    override fun customHide(onEnd: (() -> Unit)?) {
-        super.customHide {
-            val f = mBinding.mainNav.getFragment<Fragment>().childFragmentManager.primaryNavigationFragment
-            if (f is BetSheetListener) {
-                f.doCustomHideEnd()
-            }
-        }
+    override fun customHide() {
+        super.customHide()
         mViewModel.unregister()
     }
 
@@ -254,6 +255,8 @@ class BetSheetFragment private constructor() :
         super.setCustomCollapseSetting()
         mViewModel.removeSingleBet()
     }
+
+
 }
 
 interface BetSheetListener {

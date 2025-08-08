@@ -21,6 +21,8 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 
 abstract class BasePreLoadBottomSheerFragment<VM : BaseViewModel, VB : ViewBinding> : BaseBottomSheetFragment<VM, VB>() {
 
+    private var onEndListener: (() -> Unit)? = null
+
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val dialog = object : BottomSheetDialog(requireContext(), theme) {
             override fun onBackPressed() {
@@ -83,7 +85,7 @@ abstract class BasePreLoadBottomSheerFragment<VM : BaseViewModel, VB : ViewBindi
         }
     }
 
-    private fun setBehavior(view: View) {
+    override fun setBehavior(view: View) {
         val bottomSheet = (view.parent as? View) ?: return
         val params = bottomSheet.layoutParams as? CoordinatorLayout.LayoutParams ?: return
         val unhideableBehavior = UnhideableBottomSheetBehavior<View>(requireContext(), null)
@@ -92,7 +94,7 @@ abstract class BasePreLoadBottomSheerFragment<VM : BaseViewModel, VB : ViewBindi
                 if ((newState == BottomSheetBehavior.STATE_COLLAPSED || newState == BottomSheetBehavior.STATE_HIDDEN)) {
                     if (this@BasePreLoadBottomSheerFragment.isResumed) {
                         isDismissing = true
-                        setCustomCollapseSetting()
+                        customHide()
                     }
 
                 }
@@ -109,6 +111,7 @@ abstract class BasePreLoadBottomSheerFragment<VM : BaseViewModel, VB : ViewBindi
     @CallSuper
     protected open fun setCustomCollapseSetting() {
         dialog?.window?.decorView?.visibility = View.INVISIBLE
+        sheetContainer?.translationY = 0f
         backgroundView?.visibility = View.INVISIBLE
         sheetContainer?.visibility = View.INVISIBLE
         mBinding.root.visibility = View.INVISIBLE
@@ -118,16 +121,16 @@ abstract class BasePreLoadBottomSheerFragment<VM : BaseViewModel, VB : ViewBindi
             behavior.isHideable = false
             behavior.state = BottomSheetBehavior.STATE_COLLAPSED
         }
+        onEndListener?.invoke()
     }
 
-    private fun playExitAnimations(onEnd: (() -> Unit)? = null) {
+    override fun playExitAnimations() {
         val sheetContainerSheetAnim = AnimationUtils.loadAnimation(requireContext(), R.anim.slide_bottom_sheet_down)
         sheetContainerSheetAnim.setAnimationListener(object : Animation.AnimationListener {
             override fun onAnimationStart(animation: Animation?) {
                 backgroundView?.visibility = View.INVISIBLE
             }
             override fun onAnimationEnd(animation: Animation?) {
-                onEnd?.invoke()
                 setCustomCollapseSetting()
             }
 
@@ -168,16 +171,22 @@ abstract class BasePreLoadBottomSheerFragment<VM : BaseViewModel, VB : ViewBindi
     }
 
     @CallSuper
-    open fun customHide(onEnd: (() -> Unit)? = null)  {
+    open fun customHide()  {
         if (!isDismissing) {
             isDismissing = true
-            playExitAnimations(onEnd)
+            playExitAnimations()
+        } else {
+            setCustomCollapseSetting()
         }
+    }
+
+    fun setOnEndListener(listener: (() -> Unit)?) {
+        onEndListener = listener
     }
 }
 
 class UnhideableBottomSheetBehavior<V : View>(context: Context, attrs: AttributeSet?) :
-    BottomSheetBehavior<V>(context, attrs) {
+    ScrollBottomSheetBehavior<V>(context, attrs) {
 
     // 覆寫 setState 方法，這是最直接的攔截點
     override fun setState(state: Int) {
