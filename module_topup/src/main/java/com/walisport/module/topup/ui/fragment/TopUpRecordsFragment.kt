@@ -10,7 +10,6 @@ import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
-import arch.cayenne.lib.common.utils.ext.NavResultExt.observeResult
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.touchBackPressed
@@ -18,7 +17,7 @@ import arch.cayenne.lib.database.entity.RechargeRecordBean
 import com.walisport.module.topup.R
 import com.walisport.module.topup.databinding.FragmentTopupRecordsBinding
 import com.walisport.module.topup.data.constants.LoadingState
-import com.walisport.module.topup.ui.adapter.OnMatchItemClickListener
+import com.walisport.module.topup.ui.adapter.OnItemClickListener
 import com.walisport.module.topup.ui.adapter.TopupRecordItemAdapter
 import com.walisport.module.topup.ui.viewmodel.TopUpRecordsViewModel
 import kotlin.reflect.KClass
@@ -56,8 +55,8 @@ class TopUpRecordsFragment : BaseFragment<TopUpRecordsViewModel, FragmentTopupRe
             }
 
 
-            listAdapter = TopupRecordItemAdapter(object : OnMatchItemClickListener {
-                override fun onLiveEntryClick(item: RechargeRecordBean) {
+            listAdapter = TopupRecordItemAdapter(object : OnItemClickListener {
+                override fun onEntryClick(item: RechargeRecordBean) {
                     navigate(R.id.action_topUpRecordsFragment_to_topUpDetailFragment)
                 }
 

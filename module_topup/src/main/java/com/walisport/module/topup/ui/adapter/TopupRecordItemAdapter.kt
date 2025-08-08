@@ -9,12 +9,11 @@ import arch.cayenne.lib.database.entity.RechargeRecordBean
 import com.walisport.module.topup.databinding.ItemRechargeRecordBinding
 import com.walisport.module.topup.ui.adapter.compare.TopupRecordItemCompare
 
-class TopupRecordItemAdapter(private val onMatchItemClickListener: OnMatchItemClickListener? = null) :
+class TopupRecordItemAdapter(private val itemClickListener: OnItemClickListener? = null) :
     BaseAdapter<RechargeRecordBean, RechargeRecordItemViewHolder, ItemRechargeRecordBinding>(
         TopupRecordItemCompare()
     ) {
 
-    private val viewPool = RecyclerView.RecycledViewPool()
     private var showNoMoreData: Boolean = false
 
     override fun convertPlus(
@@ -25,7 +24,7 @@ class TopupRecordItemAdapter(private val onMatchItemClickListener: OnMatchItemCl
         val item = getItem(position)
         holder.init(item)
         binding.root.setOnClickListener {
-            onMatchItemClickListener?.onLiveEntryClick(getItem(holder.adapterPosition))
+            itemClickListener?.onEntryClick(getItem(holder.adapterPosition))
         }
     }
 
@@ -41,17 +40,7 @@ class TopupRecordItemAdapter(private val onMatchItemClickListener: OnMatchItemCl
         binding: ItemRechargeRecordBinding,
         viewType: Int
     ): RechargeRecordItemViewHolder {
-        return RechargeRecordItemViewHolder(binding, onMatchItemClickListener, viewPool)
-    }
-
-    override fun onBindViewHolder(
-        holder: RechargeRecordItemViewHolder,
-        position: Int,
-        payloads: MutableList<Any>
-    ) {
-
-        super.onBindViewHolder(holder, position, payloads)
-
+        return RechargeRecordItemViewHolder(binding)
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -61,6 +50,6 @@ class TopupRecordItemAdapter(private val onMatchItemClickListener: OnMatchItemCl
     }
 }
 
-interface OnMatchItemClickListener {
-    fun onLiveEntryClick(item: RechargeRecordBean)
+interface OnItemClickListener {
+    fun onEntryClick(item: RechargeRecordBean)
 }
