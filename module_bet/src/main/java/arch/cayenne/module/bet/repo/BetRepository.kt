@@ -2,10 +2,10 @@ package arch.cayenne.module.bet.repo
 
 import arch.cayenne.lib.base.data.repository.BaseRepository
 import arch.cayenne.lib.database.dao.BetDao
-import arch.cayenne.lib.database.entity.AddSelectionStatus
 import arch.cayenne.lib.database.entity.BetBean
 import arch.cayenne.lib.database.entity.BetSelectionLiteBean
 import arch.cayenne.module.bet.BettingRemoteManager
+import arch.cayenne.module.bet.data.AddSelectionStatus
 import arch.cayenne.module.bet.data.BetInsertBean
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
