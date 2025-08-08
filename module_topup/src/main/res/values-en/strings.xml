@@ -6,4 +6,6 @@
     <string name="withdrawal">WithDraw</string>
     <string name="recharge_record">Recharge Record</string>
     <string name="withdrawal_record">Withdrawal Record</string>
+    <string name="fragment_topup_detail_title">Recharge Details</string>
+
 </resources>
