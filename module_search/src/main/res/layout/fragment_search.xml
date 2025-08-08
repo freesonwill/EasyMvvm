@@ -81,7 +81,7 @@
             </arch.cayenne.lib.skin.widget.SkinnableRelativeLayout>
         </arch.cayenne.lib.skin.widget.SkinnableRelativeLayout>
 
-        <com.walisport.module.search.ui.view.HistoryFoldLayout
+        <com.walisport.module.search.ui.view.FlowLayout
             android:id="@+id/hf_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

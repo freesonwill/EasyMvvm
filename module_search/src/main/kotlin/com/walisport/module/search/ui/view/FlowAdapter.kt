@@ -1,173 +1,111 @@
 package com.walisport.module.search.ui.view;
 
-import android.view.View
+import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.viewbinding.ViewBinding
 
 /**
- * @author: caomei
- * @date: 2025/4/22 14:18
- * @description: 流布局适配器
+ * 通用 FlowLayout Adapter，負責資料與 ViewBinding 的橋接邏輯
+ * @param T 資料型別
+ * @param VH ViewHolder 類型，需繼承 FlowViewHolder
+ * @param VB ViewBinding 類型
  */
-abstract class FlowAdapter<T> {
+abstract class FlowAdapter<T, VH : FlowViewHolder, VB : ViewBinding> {
+
+    // 資料集合
+    private var data: MutableList<T> = mutableListOf()
+
+    // 資料更新監聽器，通常由 FlowLayout 實作
     private var onDataChangedListener: OnDataChangedListener? = null
 
-    private var data: MutableList<T>? = null
+    /**
+     * 綁定資料與視圖邏輯，供子類實作
+     */
+    abstract fun convertPlus(holder: VH, binding: VB, position: Int)
 
     /**
-     * 子View创建
-     *
-     * @param parent
-     * @param item
-     * @param position
-     * @return
+     * 建立 ViewBinding，供子類自訂 inflate 邏輯
      */
-    abstract fun getView(parent: ViewGroup?, item: T, position: Int): View?
+    abstract fun createViewBinding(inflater: LayoutInflater, parent: ViewGroup, viewType: Int): VB
 
     /**
-     * 初始化View
-     *
-     * @param view
-     * @param item
-     * @param position
-     * @return
+     * 建立 ViewHolder，供子類自訂實作
      */
-    abstract fun initView(view: View?, item: T, position: Int)
-
+    abstract fun createViewHolder(binding: VB, viewType: Int): VH
 
     /**
-     * 折叠View 默认不设置
-     *
-     * @return
+     * 對外建立 ViewHolder 的統一入口
      */
-    fun foldView(): View? {
-        return null
+    fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
+        val binding = createViewBinding(LayoutInflater.from(parent.context), parent, viewType)
+        return createViewHolder(binding, viewType)
     }
 
-
-    val count: Int
-        /**
-         * 数据的数量
-         *
-         * @return
-         */
-        get() = if (this.data == null) 0 else data!!.size
-
     /**
-     * 获取数据
-     *
-     * @return
+     * 對外綁定資料與 ViewHolder
      */
-    fun getData(): List<T>? {
-        return data
+    @Suppress("UNCHECKED_CAST")
+    fun onBindViewHolder(holder: VH, position: Int) {
+        convertPlus(holder, holder.binding as VB, position)
     }
 
+    /**
+     * 回傳資料筆數
+     */
+    fun getItemCount(): Int = data.size
 
     /**
-     * 设置新数据
-     *
-     * @param data
+     * 取得指定位置的資料
      */
-    fun setNewData(data: MutableList<T>) {
-        this.data = data
-        notifyDataChanged()
-    }
-
+    fun getItem(position: Int): T = data[position]
 
     /**
-     * 添加数据
-     *
-     * @param data
+     * 取得整份資料清單（唯讀）
      */
-    fun addData(data: List<T>) {
-        if (this.data == null) {
-            this.data = ArrayList()
-        }
-        this.data!!.addAll(data)
+    fun getData(): List<T> = data
+
+    /**
+     * 設定新資料，會取代原有內容並觸發更新
+     */
+    fun setNewData(newData: List<T>) {
+        data.clear()
+        data.addAll(newData)
         notifyDataChanged()
     }
 
     /**
-     * 删除某个item
-     *
-     * @param position
+     * 刪除指定位置的資料，並觸發更新
      */
     fun deleteData(position: Int) {
-        this.data!!.remove(this.data!![position])
+        data.removeAt(position)
         notifyDataChanged()
     }
 
     /**
-     * 删除所有item
+     * 刪除所有資料，並觸發更新
      */
     fun deleteAllData() {
-        this.data!!.clear()
+        data.clear()
         notifyDataChanged()
     }
 
     /**
-     * 添加数据
-     *
-     * @param index
-     * @param data
-     */
-    fun addData(index: Int, data: List<T>) {
-        if (this.data == null) {
-            this.data = ArrayList()
-        }
-        this.data!!.addAll(index, data)
-        notifyDataChanged()
-    }
-
-
-    /**
-     * 添加数据
-     *
-     * @param data
-     */
-    fun addData(temp: T) {
-        if (this.data == null) {
-            this.data = ArrayList()
-        }
-        if (this.data!!.contains(temp)) {
-            return
-        }
-        this.data!!.add(temp)
-        if (this.data!!.size > 20) {//超过20条就截取最新20条
-            val list = this.data!!.takeLast(20)
-            this.data!!.clear()
-            this.data!!.addAll(list)
-        }
-        notifyDataChanged()
-    }
-
-
-    /**
-     * 获取指定位置的数据
-     *
-     * @param position
-     * @return
-     */
-    fun getItem(position: Int): T? {
-        if (this.data != null && position >= 0 && position < data!!.size) {
-            return data!![position]
-        }
-        return null
-    }
-
-
-    /**
-     * 刷新数据
+     * 通知資料更新，觸發 listener 回調
      */
     fun notifyDataChanged() {
-        if (this.onDataChangedListener != null) {
-            onDataChangedListener!!.onChanged()
-        }
+        onDataChangedListener?.onChanged()
     }
 
+    /**
+     * 設定資料更新監聽器
+     */
     fun setOnDataChangedListener(listener: OnDataChangedListener?) {
         this.onDataChangedListener = listener
     }
 
+    /**
+     * 資料更新回調介面，由 FlowLayout 實作接收
+     */
     interface OnDataChangedListener {
         fun onChanged()
     }
