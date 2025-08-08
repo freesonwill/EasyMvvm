@@ -152,7 +152,7 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
     @SuppressLint("SetTextI18n")
     override suspend fun createObserver() {
         mViewModel.currentBalanceChange.observe(viewLifecycleOwner) {
-            titleBarBinding.tvMoney.text = "${CurrencySymbols.getSymbol(it.currency)} ${it.balance.getFormalMoney()}"
+            titleBarBinding.tvMoney.text = "${CurrencySymbols.getSymbol(it?.currency?:"")} ${(it?.balance?:0L).getFormalMoney()}"
         }
         homeViewModel.timer.observeEvent(viewLifecycleOwner, this) {
             mViewModel.updateMatchLiveData()
