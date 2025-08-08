@@ -14,12 +14,11 @@ import arch.cayenne.lib.common.ui.view.DynamicStateLayout.States
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.TabLayoutExt.reflexMargin
-import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.clickNoRepeatSingle
 import arch.cayenne.lib.common.utils.ext.removeAllTips
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.helper.showToast
-import arch.cayenne.lib.database.entity.AddSelectionStatus
+import arch.cayenne.module.bet.data.AddSelectionStatus
 import arch.cayenne.module.bet.ui.fragment.BetSheetFragment
 import arch.cayenne.module.bet.viewmodel.FloatingButtonControlViewModel
 import com.google.android.material.tabs.TabLayout
@@ -78,12 +77,10 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
                         }
                         if (status is AddSelectionStatus.Success.Single) {
                             BetSheetFragment.show(requireActivity())
-                        } else if (status is AddSelectionStatus.Failure.DisableComboForParlay) {
-                            showToast(getString(R.string.disabled_to_combo))
-                        } else if (status is AddSelectionStatus.Failure.DisableComboForProvider) {
-                            showToast(getString(R.string.disabled_to_combo_for_provider))
-                        } else if (status is AddSelectionStatus.Failure.NetworkDisconnected) {
-                            showToast(getString(arch.cayenne.lib.common.R.string.toast_server_disconnected))
+                        } else if (status is AddSelectionStatus.Failure) {
+                            status.msg?.let {
+                                showToast(it)
+                            }
                         } else if (status is AddSelectionStatus.Success.Combo || status is AddSelectionStatus.Success.Update) {
                             fabViewModel.setClickAnimation(x, y)
                         }

@@ -18,9 +18,10 @@ import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
 import arch.cayenne.lib.common.utils.helper.showToast
-import arch.cayenne.lib.database.entity.AddSelectionStatus
 import arch.cayenne.lib.database.entity.SelectionBeanLite
+import arch.cayenne.module.bet.data.AddSelectionStatus
 import arch.cayenne.module.bet.ui.fragment.BetSheetFragment
+import arch.cayenne.module.bet.viewmodel.FloatingButtonControlViewModel
 import arch.cayenne.module.home.R
 import arch.cayenne.module.home.databinding.FragmentChampionBinding
 import arch.cayenne.module.home.databinding.TitleBarChampionBinding
@@ -30,6 +31,7 @@ import arch.cayenne.module.home.ui.view.decoration.MatchCardItemDecoration
 import arch.cayenne.module.home.ui.viewmodel.ChampionViewModel
 import com.bumptech.glide.Glide
 import kotlinx.coroutines.launch
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import kotlin.reflect.KClass
 
 class ChampionFragment : BaseFragment<ChampionViewModel, FragmentChampionBinding>() {
@@ -38,6 +40,7 @@ class ChampionFragment : BaseFragment<ChampionViewModel, FragmentChampionBinding
     override val vmClass: KClass<ChampionViewModel> = ChampionViewModel::class
     private val args: ChampionFragmentArgs by navArgs()
     private lateinit var championAdapter: ChampionItemAdapter
+    private val fabViewModel: FloatingButtonControlViewModel by activityViewModel()
 
     private val tittleBarBinding: TitleBarChampionBinding by lazy {
         TitleBarChampionBinding.inflate(LayoutInflater.from(context), mBinding.titleBar, false)
@@ -83,14 +86,15 @@ class ChampionFragment : BaseFragment<ChampionViewModel, FragmentChampionBinding
                     override fun onOddsCellClick(selection: SelectionBeanLite) {
                         lifecycleScope.launch {
                             val status = mViewModel.setSelection(selection.selectionId)
+
                             if (status is AddSelectionStatus.Success.Single) {
                                 BetSheetFragment.show(requireActivity())
-                            } else if (status is AddSelectionStatus.Failure.DisableComboForParlay) {
-                                showToast(getString(R.string.disabled_to_combo))
-                            } else if (status is AddSelectionStatus.Failure.DisableComboForProvider) {
-                                showToast(getString(R.string.disabled_to_combo_for_provider))
-                            } else if (status is AddSelectionStatus.Failure.NetworkDisconnected) {
-                                showToast(getString(arch.cayenne.lib.common.R.string.toast_server_disconnected))
+                            } else if (status is AddSelectionStatus.Failure) {
+                                status.msg?.let {
+                                    showToast(it)
+                                }
+                            } else if (status is AddSelectionStatus.Success.Combo || status is AddSelectionStatus.Success.Update) {
+                                fabViewModel.setClickAnimation(x, y)
                             }
                         }
                     }

@@ -6,9 +6,9 @@ import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.common.data.repo.BalanceRepository
-import arch.cayenne.lib.database.entity.AddSelectionStatus
 import arch.cayenne.lib.database.entity.InfoBean
 import arch.cayenne.lib.database.entity.MatchWithMarkets
+import arch.cayenne.module.bet.data.AddSelectionStatus
 import arch.cayenne.module.bet.repo.BetRepository
 import arch.cayenne.module.home.data.repo.ChampionRepository
 import kotlinx.coroutines.Dispatchers
