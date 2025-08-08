@@ -227,7 +227,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         }
         mViewModel.currentBalanceChange.observe(viewLifecycleOwner) {
             titleBarBinding.tvMoney.text =
-                "${CurrencySymbols.getSymbol(it?.currency ?: "")} ${(it?.balance?:0L).getFormalMoney()}"
+                "${CurrencySymbols.getSymbol(it?.currency ?: "")}${(it?.balance?:0L).getFormalMoney()}"
         }
         mViewModel.mainMatch.observe(viewLifecycleOwner) {
             it?.let {
