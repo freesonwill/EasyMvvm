@@ -1,0 +1,7 @@
+<!-- res/interpolator/ease_out_quad.xml -->
+<pathInterpolator
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:controlX1="0.25"
+    android:controlY1="0.46"
+    android:controlX2="0.45"
+    android:controlY2="0.94" />
