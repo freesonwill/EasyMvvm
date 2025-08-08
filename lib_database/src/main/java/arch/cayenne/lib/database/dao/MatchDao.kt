@@ -14,6 +14,7 @@ import arch.cayenne.lib.database.entity.MatchBean
 import arch.cayenne.lib.database.entity.MatchBeanLite
 import arch.cayenne.lib.database.entity.MatchMarketCrossRef
 import arch.cayenne.lib.database.entity.MatchWithMarkets
+import arch.cayenne.lib.database.entity.OldSelectionLite
 import arch.cayenne.lib.database.entity.SelectionBean
 import arch.cayenne.lib.database.entity.SelectionBeanLite
 import arch.cayenne.lib.database.entity.TournamentMatchRef
@@ -120,8 +121,11 @@ abstract class MatchDao : BaseDao<MatchBean>() {
     abstract suspend fun getSelectionById(selectionId: Long): SelectionBean
 
     @Transaction
-    @Query("SELECT * FROM SelectionBean WHERE selectionId IN (:selectionIds)")
-    abstract suspend fun getSelectionsByIds(selectionIds: List<Long>): List<SelectionBean>
+    @Query("SELECT bean.selectionId as selectionId, " +
+            "CASE WHEN :isEuropeOddsDisplay THEN bean.odds ELSE bean.odds - 100 END as odds " +
+            "FROM SelectionBean bean " +
+            "WHERE selectionId IN (:selectionIds)")
+    abstract suspend fun getOddSelectionsByIds(selectionIds: List<Long>, isEuropeOddsDisplay: Boolean): List<OldSelectionLite>
 
     @Query("DELETE FROM MatchBean" )
     abstract fun deleteMatchBean()
@@ -285,8 +289,7 @@ abstract class MatchDao : BaseDao<MatchBean>() {
                 )
             }
         }
-        val oldOdds =
-            getSelectionsByIds(selections.map { it.selectionId }).associate { it.selectionId to it.odds }
+        val oldOdds = getOddSelectionsByIds(selections.map { it.selectionId }, isEuropeOddsDisplay)
         insertMarkets(markets)
         insertSelections(selections)
         insertMatchMarketCrossRef(marketCrossRef)
@@ -297,8 +300,8 @@ abstract class MatchDao : BaseDao<MatchBean>() {
             //加入賠率趨勢
             it.markets.forEach { markets ->
                 markets.selections.forEach { selection ->
-                    if (oldOdds.containsKey(selection.selectionId)) {
-                        selection.trend = selection.odds - oldOdds[selection.selectionId]!!
+                    oldOdds.find {oldOdd ->  oldOdd.selectionId == selection.selectionId }?.apply {
+                        selection.trend = selection.odds - this.odds
                     }
                 }
             }

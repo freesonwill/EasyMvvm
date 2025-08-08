@@ -21,6 +21,7 @@ import arch.cayenne.lib.common.utils.ext.ResourceExt.getDrawable
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+import arch.cayenne.lib.common.utils.ext.touchBackPressed
 import com.bumptech.glide.Glide
 import com.walisport.module.live.R
 import com.walisport.module.live.databinding.FragmentLeagueBinding
@@ -92,6 +93,8 @@ class LiveLeagueFragment : BaseFragment<LeagueViewModel, FragmentLeagueBinding>(
             sendResult(LiveMainFragment.CHANGE_MATCH, result)
             navigateUp()
         }
+        mBinding.recyclerLeague.touchBackPressed()
+        mBinding.root.touchBackPressed()
     }
 
     override fun initData() {

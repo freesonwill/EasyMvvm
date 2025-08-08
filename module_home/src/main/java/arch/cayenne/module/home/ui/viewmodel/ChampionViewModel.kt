@@ -26,7 +26,7 @@ class ChampionViewModel : BaseViewModel() {
     private val balanceRepository: BalanceRepository by inject()
 
     private var matchId: Long = 0
-    val currentBalanceChange by lazy { MutableLiveData<InfoBean>() }
+    val currentBalanceChange by lazy { MutableLiveData<InfoBean?>() }
     val matchWithMarketsChange by lazy { MutableLiveData<MatchWithMarkets?>() }
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading : LiveData<Boolean> = _isLoading
@@ -44,7 +44,7 @@ class ChampionViewModel : BaseViewModel() {
             }
         }
         viewModelScope.launch(Dispatchers.IO) {
-            balanceRepository.observeBalance().collect {
+            balanceRepository.observeInfo().collect {
                 withContext(Dispatchers.Main) {
                     currentBalanceChange.value = it
                 }

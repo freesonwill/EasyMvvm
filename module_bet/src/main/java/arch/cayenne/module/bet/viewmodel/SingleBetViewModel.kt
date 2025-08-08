@@ -10,8 +10,8 @@ import arch.cayenne.lib.common.data.repo.BalanceRepository
 import arch.cayenne.lib.common.ui.viewmodel.Event
 import arch.cayenne.lib.common.ui.viewmodel.NumberCalculatorViewModel
 import arch.cayenne.lib.common.utils.ext.SportDisplayOddsExt.getDisplayOdds
-import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
 import arch.cayenne.lib.common.utils.ext.SportDisplayOddsExt.reserveDisplayOdds
+import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toOdds
 import arch.cayenne.lib.database.entity.BetSelectionBean
@@ -44,8 +44,8 @@ class SingleBetViewModel(
     private val _onComboMultiBetBeanListener = MutableLiveData<ComboMultiBetBean>()
     val onComboMultiBetBeanListener: LiveData<ComboMultiBetBean> get() = _onComboMultiBetBeanListener
 
-    private val _onBalanceListener = MutableLiveData<InfoBean>()
-    val onBalanceListener: LiveData<InfoBean> get() = _onBalanceListener
+    private val _onBalanceListener = MutableLiveData<InfoBean?>()
+    val onBalanceListener: LiveData<InfoBean?> get() = _onBalanceListener
 
     private val _betTypeListener = MutableLiveData<BetTypeEnum?>()
     val betTypeListener: LiveData<BetTypeEnum?> get() = _betTypeListener
@@ -140,7 +140,7 @@ class SingleBetViewModel(
                 }
             }
             launch {
-                balanceRepo.observeBalance().collect {
+                balanceRepo.observeInfo().collect {
                     _onBalanceListener.value = it
                     if (it != null) {
                         setRemainingNumber(it.balance)

@@ -8,11 +8,14 @@
             type="com.walisport.module.message.ui.viewmodel.MessageMainViewModel" />
     </data>
 
-    <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
+    <arch.cayenne.lib.common.ui.view.InterceptedConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/title_bg"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        app:interceptedDirection="RIGHT"
+        app:canScrollView="@id/vp_message"
+        >
 
         <arch.cayenne.lib.common.ui.view.TitleBarView
             android:id="@+id/title_bar"
@@ -228,5 +231,5 @@
             android:layout_marginTop="@dimen/dp_5"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@id/lay_top" />
-    </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
+    </arch.cayenne.lib.common.ui.view.InterceptedConstraintLayout>
 </layout>

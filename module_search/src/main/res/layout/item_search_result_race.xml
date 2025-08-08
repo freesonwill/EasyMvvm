@@ -176,7 +176,7 @@
         android:focusable="true"
         android:padding="8dp"
         android:scaleType="centerInside"
-        android:src="@drawable/ic_search_result_favorite_selector"
+        android:src="@drawable/layer_search_result_favorite"
         app:layout_constraintEnd_toStartOf="@id/btn_bet"
         app:layout_constraintTop_toTopOf="@id/btn_bet" />
 

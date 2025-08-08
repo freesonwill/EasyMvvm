@@ -61,7 +61,7 @@ class HomeViewModel : BaseViewModel() {
 
     private val repository: HomeRepository by inject()
     private val balanceRepository: BalanceRepository by inject()
-    val currentBalanceChange by lazy { MutableLiveData<InfoBean>() }
+    val currentBalanceChange by lazy { MutableLiveData<InfoBean?>() }
 
     val sportsStatistical by lazy { MutableLiveData<Event<List<SportDataModel>>>() }
 
@@ -242,7 +242,7 @@ class HomeViewModel : BaseViewModel() {
         "HomeViewModel initViewModel".logd(this::class.java.simpleName)
         //觀察餘額變化
         viewModelScope.launch(Dispatchers.IO) {
-            balanceRepository.observeBalance().collect {
+            balanceRepository.observeInfo().collect {
                 withContext(Dispatchers.Main) {
                     currentBalanceChange.value = it
                 }

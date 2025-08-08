@@ -1,10 +1,13 @@
 package com.walisport.module.search.ui.adapter
 
+import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
+import android.graphics.drawable.LayerDrawable
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.view.updatePadding
 import androidx.core.widget.TextViewCompat
 import androidx.recyclerview.widget.DefaultItemAnimator
@@ -155,9 +158,21 @@ class SearchResultRaceAdapter: BaseAdapter<SearchResultRaceItemType, BaseViewHol
                         btnFavorite.apply {
                             isEnabled = !basicInfo.betStop
                             isSelected = collect
+
+                            val drawable = AppCompatResources.getDrawable(context, R.drawable.layer_search_result_favorite)?.mutate() as? LayerDrawable
+                            setImageDrawable(drawable)
+
+                            drawable?.let {
+                                animateFavoriteIcon(it, isSelected, force = true)
+                            }
+
                             clickNoRepeat {
                                 onFavoriteClick?.invoke(itemData)
                                 isSelected = !isSelected
+
+                                drawable?.let {
+                                    animateFavoriteIcon(it, isSelected, force = false)
+                                }
                             }
                         }
                         btnBet.apply {
@@ -216,6 +231,35 @@ class SearchResultRaceAdapter: BaseAdapter<SearchResultRaceItemType, BaseViewHol
             }
         }
         return holder
+    }
+
+    private fun animateFavoriteIcon(
+        drawable: LayerDrawable,
+        selected: Boolean,
+        force: Boolean
+    ) {
+        val unselected = drawable.findDrawableByLayerId(R.id.unselect)
+        val selectedDrawable = drawable.findDrawableByLayerId(R.id.selected)
+
+        val fadeIn = ObjectAnimator.ofInt(
+            selectedDrawable,
+            "alpha",
+            if (selected) 0 else 255,
+            if (selected) 255 else 0
+        )
+        val fadeOut = ObjectAnimator.ofInt(
+            unselected,
+            "alpha",
+            if (selected) 255 else 0,
+            if (selected) 0 else 255
+        )
+
+        val duration = if (force) 0L else 200L
+        fadeIn.duration = duration
+        fadeOut.duration = duration
+
+        fadeIn.start()
+        fadeOut.start()
     }
 
     /**

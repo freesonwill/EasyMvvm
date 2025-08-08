@@ -25,6 +25,7 @@ import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
+import arch.cayenne.lib.common.utils.ext.touchBackPressed
 import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.database.entity.AddSelectionStatus
 import arch.cayenne.lib.database.entity.MatchWithMarkets
@@ -121,6 +122,8 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
                 }
             })
         }
+        mBinding.rvCollectList.touchBackPressed()
+        mBinding.root.touchBackPressed()
     }
 
     override fun onCreateAnimation(transit: Int, enter: Boolean, nextAnim: Int): Animation? {
@@ -149,7 +152,7 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
     @SuppressLint("SetTextI18n")
     override suspend fun createObserver() {
         mViewModel.currentBalanceChange.observe(viewLifecycleOwner) {
-            titleBarBinding.tvMoney.text = "${CurrencySymbols.getSymbol(it.currency)} ${it.balance.getFormalMoney()}"
+            titleBarBinding.tvMoney.text = "${CurrencySymbols.getSymbol(it?.currency?:"")} ${(it?.balance?:0L).getFormalMoney()}"
         }
         homeViewModel.timer.observeEvent(viewLifecycleOwner, this) {
             mViewModel.updateMatchLiveData()

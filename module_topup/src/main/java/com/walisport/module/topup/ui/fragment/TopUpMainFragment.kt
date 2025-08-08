@@ -6,6 +6,7 @@ import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
+import arch.cayenne.lib.common.utils.ext.touchBackPressed
 import com.walisport.module.topup.R
 import com.walisport.module.topup.databinding.FragmentTopupMainBinding
 import com.walisport.module.topup.ui.viewmodel.TopUpMainViewModel
@@ -39,7 +40,7 @@ class TopUpMainFragment : BaseFragment<TopUpMainViewModel, FragmentTopupMainBind
     }
 
     override fun initListener() {
-
+        mBinding.root.touchBackPressed()
     }
 
     override suspend fun createObserver() {

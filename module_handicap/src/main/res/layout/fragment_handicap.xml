@@ -10,7 +10,9 @@
             type="arch.cayenne.module.handicap.ui.viewmodel.HandicapViewModel" />
     </data>
 
-    <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
+    <arch.cayenne.lib.common.ui.view.InterceptedConstraintLayout
+        app:interceptedDirection="RIGHT"
+        app:canScrollView="@id/viewpager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/background">
@@ -52,5 +54,5 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tabLayout" />
-    </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
+    </arch.cayenne.lib.common.ui.view.InterceptedConstraintLayout>
 </layout>
