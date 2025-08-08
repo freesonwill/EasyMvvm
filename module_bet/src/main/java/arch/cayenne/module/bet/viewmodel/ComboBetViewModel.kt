@@ -26,8 +26,8 @@ class ComboBetViewModel(
     private val _onBetListListener = MutableLiveData<List<BetSelectionBean>>()
     val onBetListListener: LiveData<List<BetSelectionBean>> get() = _onBetListListener
 
-    private val _onBalanceListener = MutableLiveData<InfoBean>()
-    val onBalanceListener: LiveData<InfoBean> get() = _onBalanceListener
+    private val _onBalanceListener = MutableLiveData<InfoBean?>()
+    val onBalanceListener: LiveData<InfoBean?> get() = _onBalanceListener
 
     private val _onCanBetListener = MediatorLiveData(false).apply {
         val updateCanBet = {
@@ -151,7 +151,7 @@ class ComboBetViewModel(
                 }
             }
             launch {
-                balanceRepo.observeBalance().collect {
+                balanceRepo.observeInfo().collect {
                     _onBalanceListener.value = it
                 }
             }

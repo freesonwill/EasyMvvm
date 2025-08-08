@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<arch.cayenne.lib.skin.widget.SkinnableConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<arch.cayenne.lib.common.ui.view.InterceptedConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    app:interceptedDirection="RIGHT"
+    app:touchSlop="DEFAULT"
+    android:focusableInTouchMode="true"
+    android:focusable="true"
     android:backgroundTint="@color/bottom_sheet_main_background"
     android:background="@drawable/bg_base_bottom_sheet_dialog">
 
@@ -14,4 +18,4 @@
         app:defaultNavHost="false"
         app:layout_constraintBottom_toBottomOf="parent" />
 
-</arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
+</arch.cayenne.lib.common.ui.view.InterceptedConstraintLayout>

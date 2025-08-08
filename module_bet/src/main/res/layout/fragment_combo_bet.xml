@@ -51,12 +51,12 @@
             app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <arch.cayenne.lib.common.ui.view.BottomSheetRecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_bet"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginHorizontal="10dp"
-        android:nestedScrollingEnabled="false"
+        android:nestedScrollingEnabled="true"
         app:layout_constraintTop_toBottomOf="@id/cl_title_bet"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toTopOf="@id/cl_multi_bet"
@@ -131,12 +131,13 @@
                 app:layout_constraintTop_toTopOf="parent" />
         </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
 
-        <arch.cayenne.lib.common.ui.view.BottomSheetRecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_multi_bet"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingHorizontal="12dp"
             android:paddingBottom="10dp"
+            android:nestedScrollingEnabled="true"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
             tools:itemCount="1"

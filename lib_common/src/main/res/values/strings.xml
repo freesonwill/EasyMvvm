@@ -20,4 +20,7 @@
     <string name="btn_confirm">确定</string>
     <string name="title_rate">达到此赔率时自动投注</string>
     <string name="toast_server_disconnected">服务器已断开连接</string>
+    <string name="disabled_to_combo">当前赛事不支持串关</string>
+    <string name="disabled_to_combo_for_provider">暂不支持该赛事组合，请尝试其他赛事选择</string>
+    <string name="disabled_to_combo_for_over_limit">最多选择10个投注项</string>
 </resources>
