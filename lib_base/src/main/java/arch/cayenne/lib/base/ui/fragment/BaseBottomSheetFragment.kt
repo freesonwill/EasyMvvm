@@ -399,10 +399,28 @@ open class ScrollBottomSheetBehavior<V : View>(context: Context, attrs: Attribut
 
     override fun setNestedScrollingChildRef(v: View) {
         val prev = mNestedScrollingChildRef?.get()
-        if (prev != null && prev === v) {
+        if (prev === v) {
             return
         }
 
+        // 更新本地引用
+        mNestedScrollingChildRef = WeakReference(v)
+
+        // 停掉上一個 child 的 nested scroll，避免競爭
+        if (prev != null) {
+            try {
+                ViewCompat.stopNestedScroll(prev)
+                ViewCompat.stopNestedScroll(prev, ViewCompat.TYPE_TOUCH)
+                ViewCompat.stopNestedScroll(prev, ViewCompat.TYPE_NON_TOUCH)
+            } catch (_: Throwable) {}
+        }
+
+        // 強制覆寫父類私有欄位 nestedScrollingChildRef
+        setParentNestedChildByReflection(v)
+    }
+
+    private fun updateNestedScrollingChildRef(v: View) {
+        val prev = mNestedScrollingChildRef?.get()
         // 更新本地引用
         mNestedScrollingChildRef = WeakReference(v)
 
@@ -442,7 +460,7 @@ open class ScrollBottomSheetBehavior<V : View>(context: Context, attrs: Attribut
             coordinatorLayout, child, directTargetChild, target, axes, type
         )
         // 父類會在這裡重設 nestedScrollingChildRef → 再覆寫一次我們指定的 child
-        mNestedScrollingChildRef?.get()?.let { setNestedScrollingChildRef(it) }
+        mNestedScrollingChildRef?.get()?.let { updateNestedScrollingChildRef(it) }
         return accepted
     }
 
