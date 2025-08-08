@@ -32,10 +32,16 @@ class TikTokGesture(private val view: View) : GestureDetector.SimpleOnGestureLis
         velocityX: Float,
         velocityY: Float
     ): Boolean {
-        // 判斷是否為明顯的水平快速滑動
-        if (abs(velocityX) > abs(velocityY) && abs(velocityX) > 600) {
-            listener?.onFlingToRight()
-            return true
+        if (e1 == null)  return super.onFling(null, e2, velocityX, velocityY)
+        if (abs(e2.rawX - e1.rawX) > abs(e2.rawY - e1.rawY)) {
+            val timeDiff = e2.eventTime - e1.eventTime
+            val xDiff = e2.rawX - e1.rawX
+            val velocity = if (timeDiff > 0) xDiff / timeDiff * 2000 else 0f // px/s
+            if (velocity > 5000) {
+                listener?.onFlingToRight()
+                return true
+            }
+
         }
         return super.onFling(e1, e2, velocityX, velocityY)
     }
