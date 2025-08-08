@@ -83,7 +83,7 @@ abstract class BasePreLoadBottomSheerFragment<VM : BaseViewModel, VB : ViewBindi
         }
     }
 
-    private fun setBehavior(view: View) {
+    override fun setBehavior(view: View) {
         val bottomSheet = (view.parent as? View) ?: return
         val params = bottomSheet.layoutParams as? CoordinatorLayout.LayoutParams ?: return
         val unhideableBehavior = UnhideableBottomSheetBehavior<View>(requireContext(), null)
@@ -178,7 +178,7 @@ abstract class BasePreLoadBottomSheerFragment<VM : BaseViewModel, VB : ViewBindi
 }
 
 class UnhideableBottomSheetBehavior<V : View>(context: Context, attrs: AttributeSet?) :
-    BottomSheetBehavior<V>(context, attrs) {
+    ScrollBottomSheetBehavior<V>(context, attrs) {
 
     // 覆寫 setState 方法，這是最直接的攔截點
     override fun setState(state: Int) {

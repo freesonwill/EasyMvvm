@@ -52,6 +52,7 @@ class TikTokGesture(private val view: View) : GestureDetector.SimpleOnGestureLis
             val distance = e2.x - e1.x
             view.parent.requestDisallowInterceptTouchEvent(true)
             listener?.onHorizontalScroll(distance)
+            return true
         }
         return super.onScroll(e1, e2, distanceX, distanceY)
     }

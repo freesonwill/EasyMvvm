@@ -2,7 +2,6 @@ package arch.cayenne.lib.common.ui.fragment
 
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.base.ui.fragment.BasePreLoadBottomSheerFragment
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
@@ -28,7 +27,6 @@ abstract class BaseInterceptedBottomSheetFragment<VM : BaseViewModel, VB : ViewB
                 }
 
                 override fun onHorizontalScroll(offsetX: Float) {
-                    Log.d("abcd", "+++++ $offsetX")
                     sheetContainer?.translationY = offsetX * 1.5f
                 }
 

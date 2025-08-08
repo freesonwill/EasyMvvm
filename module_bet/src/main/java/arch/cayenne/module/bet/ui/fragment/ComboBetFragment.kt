@@ -99,6 +99,7 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
                 mViewModel.getBetSize()
             }
             setLayoutMinHeight()
+            initMultiBetLayoutHeight()
             super.onViewCreated(view, savedInstanceState)
         }
     }
@@ -236,6 +237,13 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
             ViewGroup.LayoutParams.WRAP_CONTENT
         }
         mBinding.rvBet.layoutParams = lp
+    }
+
+    private fun initMultiBetLayoutHeight() {
+        val multiContextHeight = getMultiItemHeight() * 3
+        val multiTitleHeight = mBinding.clMultiBetTitle.height +
+            (mBinding.clMultiBetTitle.layoutParams as ConstraintLayout.LayoutParams).bottomMargin
+        mBinding.clMultiBet.maxHeight = multiTitleHeight + multiContextHeight
     }
 
     private fun forceUpdateLayout() {
