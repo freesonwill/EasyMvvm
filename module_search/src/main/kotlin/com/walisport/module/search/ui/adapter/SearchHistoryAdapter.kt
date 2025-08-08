@@ -1,51 +1,100 @@
 package com.walisport.module.search.ui.adapter
 
-import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.widget.AppCompatTextView
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
-import arch.cayenne.lib.skin.widget.SkinnableImageView
-import com.walisport.module.search.R
+import com.walisport.module.search.databinding.ItemSearchHistoryBinding
 import com.walisport.module.search.ui.view.FlowAdapter
+import com.walisport.module.search.ui.view.FlowViewHolder
 
 /**
- * @author: caomei
- * @date: 2025/4/22 16:01
- * @description: 测试适配器
+ * 提供給 FlowLayout 使用的搜尋紀錄 Adapter，支援刪除模式與點擊搜尋功能。
+ *
+ * @param closeAction 點擊關閉按鈕時的回調，帶入該項目位置與文字。
+ * @param onSearch 點擊項目文字時的回調，預設為空操作。
  */
 class SearchHistoryAdapter(
-    var closeAction: (position: Int, text: String?) -> Unit,
-    var onSearch: (key: String?) -> Unit = {}
-) : FlowAdapter<String?>() {
-    var isDelete: Boolean = false
+    var closeAction: (position: Int, text: String) -> Unit,
+    var onSearch: (key: String) -> Unit = {}
+) : FlowAdapter<String, FlowViewHolder, ItemSearchHistoryBinding>() {
 
-    @SuppressLint("InflateParams")
-    override fun getView(parent: ViewGroup?, item: String?, position: Int): View {
-        return LayoutInflater.from(parent?.context).inflate(R.layout.item_search_history, null)
+    // 是否處於刪除模式，決定是否顯示關閉按鈕
+    private var isDelete: Boolean = false
+
+    /**
+     * 綁定資料與 view，根據是否為刪除模式決定關閉按鈕顯示與點擊行為。
+     *
+     * @param holder ViewHolder，內含 ViewBinding。
+     * @param binding 該項目的 ViewBinding 實例。
+     * @param position 該項目的位置。
+     */
+    override fun convertPlus(
+        holder: FlowViewHolder,
+        binding: ItemSearchHistoryBinding,
+        position: Int
+    ) {
+        with(binding) {
+            val data = getData()[position]
+
+            // 顯示文字（最多 7 字，多餘加省略號）
+            itemTv.text =
+                if (data.isEmpty() || data.length <= 7) data
+                else data.take(7) + "..."
+
+            // 控制關閉按鈕的顯示與點擊事件
+            ivClose.apply {
+                visibility = if (isDelete) View.VISIBLE else View.GONE
+                clickNoRepeat {
+                    closeAction.invoke(position, data)
+                }
+            }
+
+            // 點擊項目本身的行為：刪除或搜尋
+            itemSearchHistory.clickNoRepeat {
+                if (isDelete) closeAction.invoke(position, data)
+                else onSearch(data)
+            }
+        }
     }
 
-    override fun initView(view: View?, item: String?, position: Int) {
-        view?.findViewById<SkinnableImageView>(R.id.ivClose)?.apply {
-            visibility =
-                if (isDelete) View.VISIBLE
-                else View.GONE
+    /**
+     * 建立 ViewBinding 實例，供 ViewHolder 使用。
+     *
+     * @param inflater LayoutInflater。
+     * @param parent 父容器 ViewGroup。
+     * @param viewType 項目類型（未使用）。
+     */
+    override fun createViewBinding(
+        inflater: LayoutInflater,
+        parent: ViewGroup,
+        viewType: Int
+    ): ItemSearchHistoryBinding {
+        return ItemSearchHistoryBinding.inflate(
+            LayoutInflater.from(parent.context), parent, false
+        )
+    }
 
-            clickNoRepeat {
-                closeAction.invoke(position, item)
-            }
-        }
+    /**
+     * 建立 ViewHolder，包裝 ViewBinding。
+     *
+     * @param binding ViewBinding 實例。
+     * @param viewType 項目類型（未使用）。
+     */
+    override fun createViewHolder(
+        binding: ItemSearchHistoryBinding,
+        viewType: Int
+    ): FlowViewHolder {
+        return FlowViewHolder(binding)
+    }
 
-        view?.findViewById<AppCompatTextView>(R.id.item_tv)?.apply {
-            text =
-                if (item?.isNotEmpty() == true && item.length > 7) item.take(7) + "..."
-                else item
-        }
-        view?.findViewById<View>(R.id.item_search_history)?.apply {
-            setOnClickListener {
-                onSearch(item)
-            }
-        }
+    /**
+     * 設定是否為刪除模式，並刷新畫面。
+     *
+     * @param isDelete 是否進入刪除模式。
+     */
+    fun setDeleteMode(isDelete: Boolean) {
+        this.isDelete = isDelete
+        notifyDataChanged()
     }
 }
