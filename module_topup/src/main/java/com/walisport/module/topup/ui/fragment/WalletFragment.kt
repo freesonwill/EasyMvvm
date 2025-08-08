@@ -9,17 +9,17 @@ import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.touchBackPressed
 import com.walisport.module.topup.R
-import com.walisport.module.topup.databinding.FragmentTopupMainBinding
+import com.walisport.module.topup.databinding.FragmentWalletBinding
 import com.walisport.module.topup.ui.viewmodel.TopUpMainViewModel
 import kotlin.reflect.KClass
-
 
 /**
  * 钱包主页
  */
-class TopUpMainFragment : BaseFragment<TopUpMainViewModel, FragmentTopupMainBinding>() {
 
-    override val vbClass: KClass<FragmentTopupMainBinding> = FragmentTopupMainBinding::class
+class WalletFragment : BaseFragment<TopUpMainViewModel, FragmentWalletBinding>() {
+
+    override val vbClass: KClass<FragmentWalletBinding> = FragmentWalletBinding::class
     override val vmClass: KClass<TopUpMainViewModel> = TopUpMainViewModel::class
 
     private var defaultImmColor: Int = 0
@@ -42,18 +42,23 @@ class TopUpMainFragment : BaseFragment<TopUpMainViewModel, FragmentTopupMainBind
 
     override fun initListener() {
         mBinding.root.touchBackPressed()
-
-        mBinding.settingNotice.setOnClickListener{
-            navigate(R.id.action_topUpMainFragment_to_topUpRecordsFragment)
+        mBinding.btnWalletRecharge.setOnClickListener{
+            navigate(R.id.action_walletFragment_to_topUpFragment)
+        }
+        mBinding.btnWalletWithdraw.setOnClickListener{
+            navigate(R.id.action_walletFragment_to_withdrawFragment)
+        }
+        mBinding.layWithdrawRecord.setOnClickListener{
+            navigate(R.id.action_walletFragment_to_withdrawRecordFragment)
+        }
+        mBinding.layTopUpRecord.setOnClickListener{
+            navigate(R.id.action_walletFragment_to_topUpRecordFragment)
         }
     }
 
     override suspend fun createObserver() {
-
     }
 
-
     override fun initData() {
-        super.initData()
     }
 }

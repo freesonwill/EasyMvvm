@@ -3,16 +3,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-
         <variable
             name="model"
             type="com.walisport.module.topup.ui.viewmodel.TopUpMainViewModel" />
     </data>
 
-    <arch.cayenne.lib.common.ui.view.InterceptedConstraintLayout
-        app:interceptedDirection = "RIGHT"
+    <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <LinearLayout
             android:id="@+id/llConttnet"
             android:layout_width="match_parent"
@@ -31,7 +30,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_166"
                 android:layout_marginStart="@dimen/dp_12"
-                android:layout_marginTop="@dimen/dp_100"
+                android:layout_marginTop="@dimen/dp_22"
                 android:layout_marginEnd="@dimen/dp_12"
                 android:background="@drawable/bg_shape_item_top">
 
@@ -58,15 +57,29 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <arch.cayenne.lib.skin.widget.SkinnableTextView
-                    android:id="@+id/tv_wallet_balance"
+                    android:id="@+id/tv_wallet_coin"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/dp_16"
-                    android:layout_marginTop="@dimen/dp_8"
+                    android:layout_marginTop="@dimen/dp_11"
+                    android:text="￥"
+                    android:textColor="@color/wallet_balance"
+                    android:textSize="@dimen/sp_20"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/icon_wallet" />
+
+                <arch.cayenne.lib.skin.widget.SkinnableTextView
+                    android:id="@+id/tv_wallet_balance"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_6"
+                    android:layout_marginStart="@dimen/dp_2"
+                    android:text="1,100.00"
                     android:textColor="@color/wallet_balance"
                     android:textSize="@dimen/sp_26"
                     android:textStyle="bold"
-                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/tv_wallet_coin"
                     app:layout_constraintTop_toBottomOf="@+id/icon_wallet" />
 
                 <arch.cayenne.lib.skin.widget.SkinnableImageView
@@ -84,7 +97,7 @@
                     android:layout_width="@dimen/dp_150"
                     android:layout_height="@dimen/dp_44"
                     android:layout_marginStart="@dimen/dp_16"
-                    android:layout_marginTop="@dimen/dp_18"
+                    android:layout_marginTop="@dimen/dp_28"
                     android:background="@drawable/bg_shape_withdraw"
                     android:gravity="center"
                     android:text="@string/withdrawal"
@@ -98,7 +111,7 @@
                     android:layout_width="@dimen/dp_150"
                     android:layout_height="@dimen/dp_44"
                     android:layout_marginEnd="@dimen/dp_16"
-                    android:layout_marginTop="@dimen/dp_18"
+                    android:layout_marginTop="@dimen/dp_28"
                     android:background="@drawable/bg_shape_recharge"
                     android:gravity="center"
                     android:text="@string/recharge"
@@ -109,17 +122,16 @@
             </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
 
             <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
-                android:id="@+id/lay_recharge"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_52"
                 android:layout_marginStart="@dimen/dp_12"
-                android:layout_marginTop="@dimen/dp_12"
+                android:layout_marginTop="@dimen/dp_30"
                 android:layout_marginEnd="@dimen/dp_12"
                 android:background="@drawable/bg_shape_item_top"
                 app:layout_constraintTop_toBottomOf="@+id/lay_wallet">
 
                 <arch.cayenne.lib.skin.widget.SkinnableRippleView
-                    android:id="@+id/setting_notice"
+                    android:id="@+id/lay_topUp_record"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     app:rv_bgType="top"
@@ -180,6 +192,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/lay_recharge">
 
                 <arch.cayenne.lib.skin.widget.SkinnableRippleView
+                    android:id="@+id/lay_withdraw_record"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     app:rv_bgType="bottom"
@@ -231,5 +244,5 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
-    </arch.cayenne.lib.common.ui.view.InterceptedConstraintLayout>
+    </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
 </layout>

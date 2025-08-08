@@ -8,16 +8,14 @@ import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.touchBackPressed
 import com.walisport.module.topup.R
-import com.walisport.module.topup.databinding.FragmentTopupDetailBinding
 import com.walisport.module.topup.databinding.FragmentTopupRecordsBinding
-import com.walisport.module.topup.ui.viewmodel.TopUpDetailViewModel
 import com.walisport.module.topup.ui.viewmodel.TopUpRecordsViewModel
 import kotlin.reflect.KClass
-
 
 /**
  * 充值记录列表页
  */
+
 class TopUpRecordsFragment : BaseFragment<TopUpRecordsViewModel, FragmentTopupRecordsBinding>() {
 
     override val vbClass: KClass<FragmentTopupRecordsBinding> = FragmentTopupRecordsBinding::class
