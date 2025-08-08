@@ -7,17 +7,17 @@ import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import com.walisport.module.topup.R
 import com.walisport.module.topup.databinding.FragmentTopupBinding
-import com.walisport.module.topup.ui.viewmodel.TopUpMainViewModel
+import com.walisport.module.topup.ui.viewmodel.TopUpViewModel
 import kotlin.reflect.KClass
 
 /**
  * 充值页面
  */
 
-class TopUpFragment : BaseFragment<TopUpMainViewModel, FragmentTopupBinding>() {
+class TopUpFragment : BaseFragment<TopUpViewModel, FragmentTopupBinding>() {
 
     override val vbClass: KClass<FragmentTopupBinding> = FragmentTopupBinding::class
-    override val vmClass: KClass<TopUpMainViewModel> = TopUpMainViewModel::class
+    override val vmClass: KClass<TopUpViewModel> = TopUpViewModel::class
 
     companion object {
         const val ALI_PAY = "AliPay"

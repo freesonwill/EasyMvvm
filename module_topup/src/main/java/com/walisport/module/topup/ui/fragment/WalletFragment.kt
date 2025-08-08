@@ -10,17 +10,17 @@ import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.touchBackPressed
 import com.walisport.module.topup.R
 import com.walisport.module.topup.databinding.FragmentWalletBinding
-import com.walisport.module.topup.ui.viewmodel.TopUpMainViewModel
+import com.walisport.module.topup.ui.viewmodel.WalletViewModel
 import kotlin.reflect.KClass
 
 /**
  * 钱包主页
  */
 
-class WalletFragment : BaseFragment<TopUpMainViewModel, FragmentWalletBinding>() {
+class WalletFragment : BaseFragment<WalletViewModel, FragmentWalletBinding>() {
 
     override val vbClass: KClass<FragmentWalletBinding> = FragmentWalletBinding::class
-    override val vmClass: KClass<TopUpMainViewModel> = TopUpMainViewModel::class
+    override val vmClass: KClass<WalletViewModel> = WalletViewModel::class
 
     private var defaultImmColor: Int = 0
 

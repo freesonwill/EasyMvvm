@@ -6,17 +6,17 @@ import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import com.walisport.module.topup.R
 import com.walisport.module.topup.databinding.FragmentWithdrawBinding
-import com.walisport.module.topup.ui.viewmodel.TopUpMainViewModel
+import com.walisport.module.topup.ui.viewmodel.WithdrawViewModel
 import kotlin.reflect.KClass
 
 /**
  * 提现页面
  */
 
-class WithdrawFragment : BaseFragment<TopUpMainViewModel, FragmentWithdrawBinding>() {
+class WithdrawFragment : BaseFragment<WithdrawViewModel, FragmentWithdrawBinding>() {
 
     override val vbClass: KClass<FragmentWithdrawBinding> = FragmentWithdrawBinding::class
-    override val vmClass: KClass<TopUpMainViewModel> = TopUpMainViewModel::class
+    override val vmClass: KClass<WithdrawViewModel> = WithdrawViewModel::class
 
     override fun initView(savedInstanceState: Bundle?) {
         with(mBinding) {
