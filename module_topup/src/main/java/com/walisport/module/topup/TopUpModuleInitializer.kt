@@ -3,9 +3,13 @@ package com.walisport.module.topup
 import android.content.Context
 import arch.cayenne.lib.base.data.DefaultInitializer
 import com.walisport.module.topup.data.TopUpMainRepository
+import com.walisport.module.topup.ui.viewmodel.WalletViewModel
+import com.walisport.module.topup.ui.viewmodel.TopUpViewModel
 import com.walisport.module.topup.ui.viewmodel.TopUpDetailViewModel
-import com.walisport.module.topup.ui.viewmodel.TopUpMainViewModel
 import com.walisport.module.topup.ui.viewmodel.TopUpRecordsViewModel
+import com.walisport.module.topup.ui.viewmodel.WithdrawViewModel
+import com.walisport.module.topup.ui.viewmodel.WithdrawDetailViewModel
+import com.walisport.module.topup.ui.viewmodel.WithdrawRecordsViewModel
 import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.core.context.loadKoinModules
 import org.koin.core.module.Module
@@ -22,9 +26,13 @@ class TopUpModuleInitializer : DefaultInitializer<String> {
     }
 
     private val viewModules = module {
-        viewModelOf(::TopUpMainViewModel)
+        viewModelOf(::WalletViewModel)
+        viewModelOf(::TopUpViewModel)
         viewModelOf(::TopUpDetailViewModel)
         viewModelOf(::TopUpRecordsViewModel)
+        viewModelOf(::WithdrawViewModel)
+        viewModelOf(::WithdrawDetailViewModel)
+        viewModelOf(::WithdrawRecordsViewModel)
     }
 
     private val repoModules = module {

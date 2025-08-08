@@ -6,7 +6,7 @@
 
         <variable
             name="model"
-            type="com.walisport.module.topup.ui.viewmodel.TopUpDetailViewModel" />
+            type="com.walisport.module.topup.ui.viewmodel.TopUpRecordsViewModel" />
     </data>
 
     <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
