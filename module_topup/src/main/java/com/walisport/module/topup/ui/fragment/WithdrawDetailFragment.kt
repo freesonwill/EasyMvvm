@@ -3,13 +3,16 @@ package com.walisport.module.topup.ui.fragment
 import android.os.Bundle
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import com.walisport.module.topup.databinding.FragmentWithdrawDetailBinding
-import com.walisport.module.topup.ui.viewmodel.WithdrawViewModel
+import com.walisport.module.topup.ui.viewmodel.WithdrawDetailViewModel
 import kotlin.reflect.KClass
 
-class WithdrawDetailFragment : BaseFragment<WithdrawViewModel, FragmentWithdrawDetailBinding>() {
+/**
+ * 提现记录详情页
+ */
+class WithdrawDetailFragment : BaseFragment<WithdrawDetailViewModel, FragmentWithdrawDetailBinding>() {
 
     override val vbClass: KClass<FragmentWithdrawDetailBinding> = FragmentWithdrawDetailBinding::class
-    override val vmClass: KClass<WithdrawViewModel> = WithdrawViewModel::class
+    override val vmClass: KClass<WithdrawDetailViewModel> = WithdrawDetailViewModel::class
 
     override fun initView(savedInstanceState: Bundle?) {
     }

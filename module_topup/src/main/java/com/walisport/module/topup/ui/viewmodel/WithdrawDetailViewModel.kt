@@ -8,6 +8,4 @@ class WithdrawDetailViewModel(private val repo: TopUpMainRepository) : BaseViewM
     override fun initViewModel() {
         super.initViewModel()
     }
-
-
 }
