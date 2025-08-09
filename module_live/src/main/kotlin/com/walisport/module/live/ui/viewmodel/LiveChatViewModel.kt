@@ -33,7 +33,6 @@ class LiveChatViewModel(private val chatRepo: LiveChatRepository) : BaseViewMode
     private val _checkBetAmountLiveData = MutableLiveData<CheckBetResultEnum>()
     private val _softKeyBoardListener = MutableStateFlow(KeyBoardType.CHAT)
     private val _openSoftKeyBoardLiveData = MutableLiveData<Boolean>()
-    private val _keyBoardHeightListener = MutableLiveData<KeyBoardType>(KeyBoardType.CHAT)
 
     //整个表情键盘页面的整体高度
     var keyBoardHeight: Int = 0
@@ -76,8 +75,6 @@ class LiveChatViewModel(private val chatRepo: LiveChatRepository) : BaseViewMode
 
     val toastLiveData: MutableLiveData<String> = MutableLiveData()
 
-    //修键盘页高度
-    val keyBoardHeightListener:LiveData<KeyBoardType> = _keyBoardHeightListener
 
     //软件盘高度
     var softKeyBoardHeight:Int = 0
@@ -299,10 +296,6 @@ class LiveChatViewModel(private val chatRepo: LiveChatRepository) : BaseViewMode
 //            return
 //        }
         _openSoftKeyBoardLiveData.value = softKeyBoarVisible
-    }
-
-    fun updateKeyBoardHeight(type:KeyBoardType){
-        _keyBoardHeightListener.value = type
     }
 
     fun getConnectStateFlow(): StateFlow<SocketConnectState> = chatRepo.getConnectStateFlow()

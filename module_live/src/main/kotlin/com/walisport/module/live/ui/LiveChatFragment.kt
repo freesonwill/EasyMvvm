@@ -41,6 +41,7 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
         initFragment()
         initTab()
         updateChatUi()
+        showChat(8)
     }
 
     private fun initTab() {
@@ -98,6 +99,11 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
 
     private fun initFragment() {
         val fragment = LiveSoftKeyboardFragment()
+        fragment.softKeyHeightHelper = object :LiveSoftKeyboardFragment.SoftKeyHeightHelper{
+            override fun changeSoftKeyBoardHeight(height: Int, isSoftToEmoji: Boolean) {
+                mBinding.liveChatKeyboard.layoutParams.height = height //修改键盘高度为整页聊天页的高度
+            }
+        }
         childFragmentManager.beginTransaction()
             .replace(mBinding.liveChatKeyboard.id, fragment, LiveSoftKeyboardFragment.TAG).commit()
     }
@@ -141,10 +147,7 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
             showToast(it)
         }
 
-        mViewModel.keyBoardHeightListener.observe(viewLifecycleOwner) {
-            val height = if (it == KeyBoardType.EMOJI) mViewModel.keyBoardHeight else 62.dp2px
-            mBinding.liveChatKeyboard.layoutParams.height = height //修改键盘高度为整页聊天页的高度
-        }
+
 
         viewLifecycleOwner.lifecycleScope.launch {
             launch {

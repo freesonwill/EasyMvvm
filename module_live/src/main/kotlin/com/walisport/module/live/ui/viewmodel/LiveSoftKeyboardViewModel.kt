@@ -105,6 +105,7 @@ class LiveSoftKeyboardViewModel : BaseViewModel() {
     val EMOJI_TO_SOFT:Int = 4
     val EMOJI_TO_CHAT:Int = 5
     val SOFT_TO_CHAT:Int = 6
+    val CHAT_TO_CHAT:Int = 7
 
     /**
      * 判断动画类型
@@ -115,7 +116,7 @@ class LiveSoftKeyboardViewModel : BaseViewModel() {
                 return when(listenerValue){
                     KeyBoardType.EMOJI -> CHAT_TO_EMOJI
                     KeyBoardType.SOFT_KEYBOARD -> CHAT_TO_SOFT
-                    KeyBoardType.CHAT -> -1
+                    KeyBoardType.CHAT -> CHAT_TO_CHAT
                 }
             }
             KeyBoardType.SOFT_KEYBOARD ->{
