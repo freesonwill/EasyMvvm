@@ -11,6 +11,9 @@
     <string name="recharge_record">Recharge Record</string>
     <string name="withdrawal_record">Withdrawal Record</string>
 
+    <string name="fragment_topup_detail_title">Recharge Details</string>
+    <string name="recharge_list_empty">No recharge records available</string>
+
     <string name="pay_ali">AliPay</string>
     <string name="pay_wechat">WeChatPay</string>
     <string name="pay_ee">EE Wallet</string>
