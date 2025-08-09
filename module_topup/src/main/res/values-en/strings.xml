@@ -16,6 +16,17 @@
     <string name="recharge_info_empty">No recharge information available</string>
     <string name="copied_to_clipboard">Copied to clipboard</string>
 
+    <string name="pay_success">Payment successful</string>
+    <string name="pay_failure">Payment failed</string>
+    <string name="pay_un_confirm">Payment pending confirmation</string>
+    <string name="order_number">Order Number</string>
+    <string name="payment_method">Payment method</string>
+    <string name="payment_status">Transaction status</string>
+    <string name="transaction_create_time">Creation time</string>
+    <string name="recharge_detail">Recharge Detail</string>
+
+
+
 
 
     <string name="pay_ali">AliPay</string>

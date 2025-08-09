@@ -10,6 +10,7 @@ import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.utils.DateUtils
 import arch.cayenne.lib.common.utils.copyToClipboard
+import arch.cayenne.lib.common.utils.ext.ResourceExt.getColor
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.touchBackPressed
 import arch.cayenne.lib.common.utils.helper.showToast
@@ -64,16 +65,31 @@ class TopUpDetailFragment : BaseFragment<TopUpDetailViewModel, FragmentTopupDeta
                 tvMoneySymbol.text = "¥"
                 tvAmount.text = bean.amount
 
-                tvOrderNumberTitle.text = "订单号"
+                tvOrderNumberTitle.text = R.string.order_number.getString()
                 tvOrderNumber.text = bean.transactionId
 
-                tvPayMethodTitle.text = "支付方式"
+                tvPayMethodTitle.text = R.string.payment_method.getString()
                 tvPayMethod.text = "银行卡"
 
-                tvPayStatusTitle.text = "交易状态"
-                tvPayStatus.text = "支付成功"
+                tvPayStatusTitle.text = R.string.payment_status.getString()
+                when (bean.status) {
+                    0 -> {
+                        tvPayStatus.text = R.string.pay_success.getString()
+                        tvPayStatus.setTextColor(R.color.pay_success.getColor())
+                    }
 
-                tvTimestampTitle.text = "创建时间"
+                    1 -> {
+                        tvPayStatus.text = R.string.pay_failure.getString()
+                        tvPayStatus.setTextColor(R.color.pay_failure.getColor())
+                    }
+
+                    else -> {
+                        tvPayStatus.text = R.string.pay_un_confirm.getString()
+                        tvPayStatus.setTextColor(R.color.pay_un_confirm.getColor())
+                    }
+                }
+
+                tvTimestampTitle.text = R.string.transaction_create_time.getString()
                 tvTimestamp.text = DateUtils.getDisplayStr(bean.timestamp, "yyyy.MM.dd HH:mm")
             }
 
@@ -109,7 +125,7 @@ class TopUpDetailFragment : BaseFragment<TopUpDetailViewModel, FragmentTopupDeta
                     DataState.LoadSuccess -> {
                         loadingView.visibility = View.GONE
                         clDynamics.visibility = View.GONE
-                        llContent.visibility= View.VISIBLE
+                        llContent.visibility = View.VISIBLE
                     }
                 }
             }
