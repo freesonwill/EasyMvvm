@@ -1,4 +1,4 @@
-package arch.cayenne.lib.database.entity
+package com.walisport.module.topup.data.entity
 
 /**
  *
@@ -6,6 +6,6 @@ package arch.cayenne.lib.database.entity
  * @description:
  */
 data class RechargeRecordBean(
-    val transactionId: Int, //充值记录id
+    val transactionId: String, //充值记录id
     val amount: String, //充值金额或数量
 )

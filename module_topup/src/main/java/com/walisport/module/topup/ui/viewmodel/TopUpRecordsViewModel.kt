@@ -7,10 +7,9 @@ import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.base.data.remote.ApiResponseState.Start.dataAs
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
-import arch.cayenne.lib.common.ui.viewmodel.Event
-import arch.cayenne.lib.database.entity.RechargeRecordBean
 import com.walisport.module.topup.data.TopUpRecordsRepository
 import com.walisport.module.topup.data.constants.LoadingState
+import com.walisport.module.topup.data.entity.RechargeRecordBean
 import kotlinx.coroutines.launch
 import okhttp3.internal.toImmutableList
 import plugin.koin.KoinViewModel

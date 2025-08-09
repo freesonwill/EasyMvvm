@@ -13,6 +13,10 @@
 
     <string name="fragment_topup_detail_title">Recharge Details</string>
     <string name="recharge_list_empty">No recharge records available</string>
+    <string name="recharge_info_empty">No recharge information available</string>
+    <string name="copied_to_clipboard">Copied to clipboard</string>
+
+
 
     <string name="pay_ali">AliPay</string>
     <string name="pay_wechat">WeChatPay</string>

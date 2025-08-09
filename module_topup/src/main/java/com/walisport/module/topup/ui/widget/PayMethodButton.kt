@@ -62,7 +62,7 @@ class PayMethodButton @JvmOverloads constructor(
         }
     }
 
-    fun setPayMethodSelected(isSelected: Boolean){
+    fun setPayMethodSelected(isSelected: Boolean) {
         mBinding.tvPayMethod.isSelected = isSelected
         mBinding.layButton.isSelected = isSelected
     }

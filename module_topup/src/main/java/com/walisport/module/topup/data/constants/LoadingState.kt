@@ -7,7 +7,7 @@ import arch.cayenne.lib.base.data.constants.DataState
  * @date: 2025/8/8 17:02
  * @description:
  */
-sealed class LoadingState:DataState {
+sealed class LoadingState : DataState {
     data object Loading : LoadingState()
     data object LoadSuccess : LoadingState()
     data object Refreshing : LoadingState()

@@ -13,9 +13,11 @@ import kotlin.reflect.KClass
  * 充值记录记录列表页
  */
 
-class WithdrawRecordsFragment : BaseFragment<WithdrawRecordsViewModel, FragmentWithdrawRecordsBinding>() {
+class WithdrawRecordsFragment :
+    BaseFragment<WithdrawRecordsViewModel, FragmentWithdrawRecordsBinding>() {
 
-    override val vbClass: KClass<FragmentWithdrawRecordsBinding> = FragmentWithdrawRecordsBinding::class
+    override val vbClass: KClass<FragmentWithdrawRecordsBinding> =
+        FragmentWithdrawRecordsBinding::class
     override val vmClass: KClass<WithdrawRecordsViewModel> = WithdrawRecordsViewModel::class
 
     override fun initView(savedInstanceState: Bundle?) {

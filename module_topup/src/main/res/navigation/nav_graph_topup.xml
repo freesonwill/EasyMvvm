@@ -52,7 +52,7 @@
     <fragment
         android:id="@+id/topUpRecordsFragment"
         android:name="com.walisport.module.topup.ui.fragment.TopUpRecordsFragment"
-        android:label="TopUpRecordsFragment" >
+        android:label="TopUpRecordsFragment">
 
         <action
             android:id="@+id/action_topUpRecordsFragment_to_topUpDetailFragment"
