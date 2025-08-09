@@ -9,9 +9,11 @@ import kotlin.reflect.KClass
 /**
  * 提现记录详情页
  */
-class WithdrawDetailFragment : BaseFragment<WithdrawDetailViewModel, FragmentWithdrawDetailBinding>() {
+class WithdrawDetailFragment :
+    BaseFragment<WithdrawDetailViewModel, FragmentWithdrawDetailBinding>() {
 
-    override val vbClass: KClass<FragmentWithdrawDetailBinding> = FragmentWithdrawDetailBinding::class
+    override val vbClass: KClass<FragmentWithdrawDetailBinding> =
+        FragmentWithdrawDetailBinding::class
     override val vmClass: KClass<WithdrawDetailViewModel> = WithdrawDetailViewModel::class
 
     override fun initView(savedInstanceState: Bundle?) {

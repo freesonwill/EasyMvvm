@@ -1,13 +1,20 @@
 package com.walisport.module.topup.ui.fragment
 
 import android.os.Bundle
+import android.view.View
 import androidx.navigation.fragment.findNavController
+import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.common.ui.view.DynamicStateLayout
+import arch.cayenne.lib.common.utils.DateUtils
+import arch.cayenne.lib.common.utils.copyToClipboard
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.touchBackPressed
+import arch.cayenne.lib.common.utils.helper.showToast
 import com.walisport.module.topup.R
+import com.walisport.module.topup.data.constants.LoadingState
 import com.walisport.module.topup.databinding.FragmentTopupDetailBinding
 import com.walisport.module.topup.ui.viewmodel.TopUpDetailViewModel
 import kotlin.reflect.KClass
@@ -30,6 +37,9 @@ class TopUpDetailFragment : BaseFragment<TopUpDetailViewModel, FragmentTopupDeta
                 findNavController().navigateUp()
             })
         }
+
+        val transactionId = arguments?.getString("transactionId") ?: ""
+        mViewModel.setTransactionId(transactionId)
     }
 
     override fun onStart() {
@@ -40,14 +50,76 @@ class TopUpDetailFragment : BaseFragment<TopUpDetailViewModel, FragmentTopupDeta
 
     override fun initListener() {
         mBinding.root.touchBackPressed()
+        mBinding.ivCopy.setOnClickListener {
+            copyToClipboard(mBinding.tvOrderNumber.text as String?) {
+                showToast(R.string.copied_to_clipboard.getString())
+            }
+        }
     }
 
     override suspend fun createObserver() {
+
+        mViewModel.dataBean.observe(viewLifecycleOwner) { bean ->
+            with(mBinding) {
+                tvMoneySymbol.text = "¥"
+                tvAmount.text = bean.amount
+
+                tvOrderNumberTitle.text = "订单号"
+                tvOrderNumber.text = bean.transactionId
+
+                tvPayMethodTitle.text = "支付方式"
+                tvPayMethod.text = "银行卡"
+
+                tvPayStatusTitle.text = "交易状态"
+                tvPayStatus.text = "支付成功"
+
+                tvTimestampTitle.text = "创建时间"
+                tvTimestamp.text = DateUtils.getDisplayStr(bean.timestamp, "yyyy.MM.dd HH:mm")
+            }
+
+        }
+
+        mViewModel.apiStateListener.observe(viewLifecycleOwner) { state ->
+            with(mBinding) {
+                when (state) {
+                    DataState.NetworkUnavailable -> {
+                        loadingView.visibility = View.GONE
+                        clDynamics.visibility = View.VISIBLE
+                        clDynamics.setState(
+                            DynamicStateLayout.States.NETWORK_ANOMALY,
+                            arch.cayenne.lib.common.R.string.error_net.getString()
+                        )
+                    }
+
+                    LoadingState.DataEmpty -> {
+                        loadingView.visibility = View.GONE
+                        clDynamics.visibility = View.VISIBLE
+                        clDynamics.setState(
+                            DynamicStateLayout.States.DATA_EMPTY,
+                            R.string.recharge_info_empty.getString()
+                        )
+                    }
+
+                    LoadingState.Loading -> {
+                        loadingView.visibility = View.VISIBLE
+                        clDynamics.visibility = View.GONE
+
+                    }
+
+                    DataState.LoadSuccess -> {
+                        loadingView.visibility = View.GONE
+                        clDynamics.visibility = View.GONE
+                        llContent.visibility= View.VISIBLE
+                    }
+                }
+            }
+        }
 
     }
 
 
     override fun initData() {
         super.initData()
+        mViewModel.queryData()
     }
 }

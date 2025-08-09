@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="PayMethodButton">
-        <attr name="type" format="string"/>
-        <attr name="recommend" format="boolean"/>
+        <attr name="type" format="string" />
+        <attr name="recommend" format="boolean" />
     </declare-styleable>
 </resources>

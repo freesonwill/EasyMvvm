@@ -3,8 +3,8 @@ package com.walisport.module.topup.data
 import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.base.data.repository.BaseRepository
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoneyForScale
-import arch.cayenne.lib.database.entity.RechargeRecordBean
 import com.walisport.module.topup.TopUpRemoteManager
+import com.walisport.module.topup.data.entity.RechargeRecordBean
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -33,7 +33,7 @@ class TopUpRecordsRepository(
         for (i in 0 until DEFAULT_LIST_SIZE) {
             dataList.add(
                 RechargeRecordBean(
-                    (page - 1) * 10 + i,
+                    ((page - 1) * 10 + i).toString(),
                     "¥${Random.nextLong(0, 10000).getMoneyForScale()}"
                 )
             )

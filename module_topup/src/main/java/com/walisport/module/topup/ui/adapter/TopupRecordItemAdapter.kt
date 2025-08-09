@@ -3,9 +3,8 @@ package com.walisport.module.topup.ui.adapter
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.ui.adapter.BaseAdapter
-import arch.cayenne.lib.database.entity.RechargeRecordBean
+import com.walisport.module.topup.data.entity.RechargeRecordBean
 import com.walisport.module.topup.databinding.ItemRechargeRecordBinding
 import com.walisport.module.topup.ui.adapter.compare.TopupRecordItemCompare
 

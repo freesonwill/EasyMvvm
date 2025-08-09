@@ -2,6 +2,7 @@ package com.walisport.module.topup
 
 import android.content.Context
 import arch.cayenne.lib.base.data.DefaultInitializer
+import com.walisport.module.topup.data.TopUpDetailRepository
 import com.walisport.module.topup.data.TopUpMainRepository
 import com.walisport.module.topup.data.TopUpRecordsRepository
 import com.walisport.module.topup.ui.viewmodel.TopUpDetailViewModel
@@ -39,7 +40,7 @@ class TopUpModuleInitializer : DefaultInitializer<String> {
     private val repoModules = module {
         factoryOf(::TopUpMainRepository)
         factoryOf(::TopUpRecordsRepository)
-
+        factoryOf(::TopUpDetailRepository)
     }
 
     private val managerModule = module {

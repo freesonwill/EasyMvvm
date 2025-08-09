@@ -2,7 +2,7 @@ package com.walisport.module.topup.ui.adapter
 
 import android.annotation.SuppressLint
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
-import arch.cayenne.lib.database.entity.RechargeRecordBean
+import com.walisport.module.topup.data.entity.RechargeRecordBean
 import com.walisport.module.topup.databinding.ItemRechargeRecordBinding
 
 class RechargeRecordItemViewHolder(
