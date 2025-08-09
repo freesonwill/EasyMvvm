@@ -20,9 +20,9 @@
     <string name="pay_failure">Payment failed</string>
     <string name="pay_un_confirm">Payment pending confirmation</string>
     <string name="order_number">Order Number</string>
-    <string name="payment_method">Payment method</string>
-    <string name="payment_status">Transaction status</string>
-    <string name="transaction_create_time">Creation time</string>
+    <string name="payment_method">Payment Method</string>
+    <string name="payment_status">Transaction Status</string>
+    <string name="transaction_create_time">Creation Time</string>
     <string name="recharge_detail">Recharge Detail</string>
 
 
