@@ -34,7 +34,6 @@ class FeedbackMainFragment : BaseFragment<FeedbackMainViewModel, FragmentFeedbac
         mBinding.root.touchBackPressed()
     }
 
-
     override fun initListener() {
         mBinding.editFeedback.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -49,23 +48,6 @@ class FeedbackMainFragment : BaseFragment<FeedbackMainViewModel, FragmentFeedbac
                 mViewModel.setTextInputted(inputLength > 0)
             }
         })
-
-        // 将 CheckBox 放入列表
-        val checkBoxes = listOf(
-            mBinding.checkbox1,
-            mBinding.checkbox2,
-            mBinding.checkbox3,
-            mBinding.checkbox4,
-            mBinding.checkbox5,
-            mBinding.checkbox6
-        )
-
-        // 设置监听器
-        checkBoxes.forEach { checkBox ->
-            checkBox.setOnCheckedChangeListener { _, _ ->
-                mViewModel.setCheckBoxSelected(checkBoxes.any { it.isChecked })
-            }
-        }
 
         mBinding.buttonSubmit.clickNoRepeat {
             if (mViewModel.checkBoxSelected.value != true) {
@@ -84,11 +66,17 @@ class FeedbackMainFragment : BaseFragment<FeedbackMainViewModel, FragmentFeedbac
             btnEnabled.observe(viewLifecycleOwner) {
                 mBinding.buttonSubmit.isEnabled = it
             }
+            feedbackLabelList.observe(viewLifecycleOwner) {
+                it.forEach{label->
+
+                }
+            }
         }
     }
 
 
     override fun initData() {
+        mViewModel.getFeedbackLabelList()
         super.initData()
     }
 

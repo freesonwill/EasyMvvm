@@ -3,7 +3,9 @@ package com.walisport.module.feedback.ui.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
+import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
+import com.walisport.module.feedback.data.FeedbackLabel
 import com.walisport.module.feedback.data.FeedbackMainRepository
 import plugin.koin.KoinViewModel
 
@@ -17,6 +19,22 @@ class FeedbackMainViewModel(private val repo: FeedbackMainRepository) : BaseView
 
     private val _textInputted: MutableLiveData<Boolean> = MutableLiveData(false)
     val textInputted: LiveData<Boolean> = _textInputted
+
+    private val _feedbackLabelList = MutableLiveData<List<FeedbackLabel>?>()
+    val feedbackLabelList: LiveData<List<FeedbackLabel>?> = _feedbackLabelList
+
+
+    fun getFeedbackLabelList(){
+        callApi({
+            repo.getFeedbackLabelList()
+        },{
+            if (it is ApiResponseState.Succeeded<*>) {
+                it.data.let {data->
+                    _feedbackLabelList.value = data as List<FeedbackLabel>? // 主线程更新 LiveData
+                }
+            }
+        })
+    }
 
     //checkBoxSelected和textInputted均为true时， btnEnabled才能为true
     val btnEnabled = MediatorLiveData<Boolean>().apply {
