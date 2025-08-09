@@ -62,7 +62,6 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
     override fun initListener() {
 
         mBinding.main.setOnTouchListener { v, event ->
-            "main down ${event.action}".logd("aaa")
             if (event.action == MotionEvent.ACTION_DOWN && mViewModel.currentSoftKeyboard.value != KeyBoardType.CHAT) {
                 showChat(8)
                 return@setOnTouchListener true
@@ -208,11 +207,9 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
 //        val height = if (emojiKeyBoardVisible && isEmoji) keyBoardHeight else 62.dp2px
 //        if (isEmoji) {
 //            var translationsY = keyBoardHeight - 83.dp2px //83为12dp输入到顶部的距离和62dp输入框layout的整体高度
-//            "translationY $translationsY".logd("aaa")
 //            // 当软件盘弹出时，和表情键盘切换，表情键盘的上升高度应该减去软件盘的高度
 //            translationsY =
 //                if (mViewModel.currentSoftKeyboard.value == KeyBoardType.SOFT_KEYBOARD) translationsY - mViewModel.softKeyBoardHeight else translationsY
-//            "translationY1 $translationsY".logd("aaa")
 //
 //            //表情键盘显示时从表情键盘的高度向上移动  表情键盘下滑时的高度应该为除了输入框外的表情键盘高度
 //            val params = if (emojiKeyBoardVisible) floatArrayOf(

@@ -81,7 +81,6 @@ class LiveSoftKeyboardFragment :
 
     override fun onStop() {
         super.onStop()
-        "onStop ".logd("aaa")
 //        activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
         hideSoftKeyBoard(4)
     }
@@ -122,14 +121,12 @@ class LiveSoftKeyboardFragment :
                 }
                 isSoftKeyBoard = true
                 chatViewModel.softKeyBoardHeight = imeInsets.bottom
-                "软件盘高度  ${chatViewModel.softKeyBoardHeight}".logd("aaa")
                 onSoftKeyBoardShow()
             } else {
                 // 键盘隐藏
                 if(!isSoftKeyBoard){
                     return@setOnApplyWindowInsetsListener insets
                 }
-                "软件盘高度1  ${imeInsets.bottom}".logd("aaa")
                 isSoftKeyBoard = false
                 onSoftKeyBoardHide()
             }
@@ -202,7 +199,6 @@ class LiveSoftKeyboardFragment :
             }
         }
         chatViewModel.openSoftKeyBoardLiveData.observe(viewLifecycleOwner){
-            "openSoftkeyBoardLiveData ${it}  isSoftKeyBoard $isSoftKeyBoard".logd("aaa")
             if(it && !isSoftKeyBoard){  //显示软件盘状态 it == true  当前软件盘没有收缩状态
                 openSoftKeyBoard()
                 mBinding.liveChatEtInput.requestFocus()
@@ -351,7 +347,6 @@ class LiveSoftKeyboardFragment :
             // 起始点为软件盘的高度 动画开始高度为整个表情键盘的高度下降到软件盘高度 因此topDistance - softKeyBoardHeight 截止点为topDistance
             mViewModel.SOFT_TO_EMOJI -> {
                 val startY = topDistance - chatViewModel.softKeyBoardHeight
-                "SOFT_TO_EMOJI start $startY".logd("aaa")
                 startY.toFloat()
             }
             mViewModel.EMOJI_TO_SOFT -> {
@@ -432,7 +427,6 @@ class LiveSoftKeyboardFragment :
      * 展示聊天界面
      * */
     fun showChat() {
-        "showCHat ".logd("aaa")
         mBinding.apply {
             liveChatIvEmoji.isVisible = true
             liveChatTvSend.isVisible = false
@@ -456,8 +450,6 @@ class LiveSoftKeyboardFragment :
      * 展示软件盘
      * */
     private fun showSoftKeyBoard() {
-        "showSoftKeyBoard ".logd("aaa")
-
         mBinding.apply {
             liveChatTvSend.isVisible = true
             liveChatIvEmoji.isVisible = true
@@ -480,7 +472,6 @@ class LiveSoftKeyboardFragment :
      * 展示表情界面
      * */
     private fun showEmoji() {
-        "showEmoji ".logd("aaa")
         mBinding.apply {
 //            mBinding.liveChatEtInput.requestFocus()
 //            mBinding.liveChatEtInput.setSelection(mBinding.liveChatEtInput.text?.length ?: 0)
@@ -559,7 +550,6 @@ class LiveSoftKeyboardFragment :
      * 软件盘关闭时调用
      * */
     private fun onSoftKeyBoardHide(){
-        "onSoftkeyBoardHide ${chatViewModel.softKeyBoardListener.value}".logd("aaa")
         if(chatViewModel.softKeyBoardListener.value == KeyBoardType.SOFT_KEYBOARD){
             chatViewModel.addSoftKeyBoardEvent(KeyBoardType.CHAT,5)
         }

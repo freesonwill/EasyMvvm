@@ -271,7 +271,6 @@ class LiveChatViewModel(private val chatRepo: LiveChatRepository) : BaseViewMode
         if(keyBoardType == _softKeyBoardListener.value){
             return
         }
-        "addSoftKeyBoard  $keyBoardType  flag$flag".logd("aaa")
         _softKeyBoardListener.tryEmit(keyBoardType)
     }
 
@@ -282,7 +281,6 @@ class LiveChatViewModel(private val chatRepo: LiveChatRepository) : BaseViewMode
         if (currentSoftKeyboard.value == softKeyBoardListener.value) {
             return
         }
-        "updateSoftKeyBoard  ${softKeyBoardListener.value}".logd("aaa")
         _currentSoftKeyboard.value = softKeyBoardListener.value
     }
 
@@ -291,7 +289,6 @@ class LiveChatViewModel(private val chatRepo: LiveChatRepository) : BaseViewMode
      * @param softKeyBoarVisible true显示软件盘  false 关闭软件盘
      * */
     fun updateSoftKeyBoard(softKeyBoarVisible:Boolean){
-//        "updateSoftKeyBoard ${softKeyBoarVisible} ${_openSoftKeyBoardLiveData.value}".logd("aaa")
 //        if(softKeyBoarVisible == _openSoftKeyBoardLiveData.value){
 //            return
 //        }
