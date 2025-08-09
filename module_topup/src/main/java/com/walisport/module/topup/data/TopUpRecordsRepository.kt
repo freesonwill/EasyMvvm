@@ -1,6 +1,5 @@
 package com.walisport.module.topup.data
 
-import androidx.lifecycle.MutableLiveData
 import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.base.data.repository.BaseRepository
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoneyForScale
@@ -32,7 +31,12 @@ class TopUpRecordsRepository(
         val dataList = mutableListOf<RechargeRecordBean>()
         //每页10条测试数据
         for (i in 0 until DEFAULT_LIST_SIZE) {
-            dataList.add(RechargeRecordBean((page - 1) * 10 + i, Random.nextLong(0, 10000).getMoneyForScale()))
+            dataList.add(
+                RechargeRecordBean(
+                    (page - 1) * 10 + i,
+                    "¥${Random.nextLong(0, 10000).getMoneyForScale()}"
+                )
+            )
         }
 
         recordListChange.value += dataList
