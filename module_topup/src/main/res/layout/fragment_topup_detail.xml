@@ -71,20 +71,22 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_12"
-                android:layout_marginTop="@dimen/dp_30"
+                android:layout_marginTop="@dimen/dp_27"
                 android:layout_marginEnd="@dimen/dp_12"
                 android:background="@drawable/bg_recharge_detail"
                 android:orientation="vertical">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_52">
+                    android:layout_height="@dimen/dp_52"
+                    android:layout_marginStart="@dimen/dp_12"
+                    android:layout_marginEnd="@dimen/dp_12"
+                    android:background="@drawable/bg_recharge_detail_info">
 
                     <arch.cayenne.lib.skin.widget.SkinnableTextView
                         android:id="@+id/tv_order_number_title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/dp_12"
                         android:textColor="@color/main_text"
                         android:textSize="@dimen/sp_15"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -95,7 +97,7 @@
                         android:id="@+id/tv_order_number"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="@dimen/dp_16"
+                        android:layout_marginEnd="@dimen/dp_4"
                         android:textColor="@color/secondary_text"
                         android:textSize="@dimen/sp_15"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -106,7 +108,7 @@
                         android:id="@+id/iv_copy"
                         android:layout_width="@dimen/dp_32"
                         android:layout_height="@dimen/dp_32"
-                        android:layout_marginEnd="@dimen/dp_6"
+                        android:layout_marginEnd="-6dp"
                         android:padding="@dimen/dp_6"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -115,22 +117,18 @@
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_1"
-                    android:layout_marginStart="@dimen/dp_12"
-                    android:layout_marginEnd="@dimen/dp_12"
-                    android:background="@color/input_box" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_52">
+                    android:layout_height="@dimen/dp_52"
+                    android:layout_marginStart="@dimen/dp_12"
+                    android:layout_marginEnd="@dimen/dp_12"
+                    android:background="@drawable/bg_recharge_detail_info">
 
                     <arch.cayenne.lib.skin.widget.SkinnableTextView
                         android:id="@+id/tv_pay_method_title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/dp_12"
                         android:textColor="@color/main_text"
                         android:textSize="@dimen/sp_15"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -141,7 +139,6 @@
                         android:id="@+id/tv_pay_method"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="@dimen/dp_12"
                         android:textColor="@color/secondary_text"
                         android:textSize="@dimen/sp_15"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -151,22 +148,18 @@
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_1"
-                    android:layout_marginStart="@dimen/dp_12"
-                    android:layout_marginEnd="@dimen/dp_12"
-                    android:background="@color/input_box" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_52">
+                    android:layout_height="@dimen/dp_52"
+                    android:layout_marginStart="@dimen/dp_12"
+                    android:layout_marginEnd="@dimen/dp_12"
+                    android:background="@drawable/bg_recharge_detail_info">
 
                     <arch.cayenne.lib.skin.widget.SkinnableTextView
                         android:id="@+id/tv_pay_status_title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/dp_12"
                         android:textColor="@color/main_text"
                         android:textSize="@dimen/sp_15"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -177,7 +170,6 @@
                         android:id="@+id/tv_pay_status"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="@dimen/dp_12"
                         android:textColor="@color/secondary_text"
                         android:textSize="@dimen/sp_15"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -187,22 +179,17 @@
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_1"
-                    android:layout_marginStart="@dimen/dp_12"
-                    android:layout_marginEnd="@dimen/dp_12"
-                    android:background="@color/input_box" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_52">
+                    android:layout_height="@dimen/dp_52"
+                    android:layout_marginStart="@dimen/dp_12"
+                    android:layout_marginEnd="@dimen/dp_12">
 
                     <arch.cayenne.lib.skin.widget.SkinnableTextView
                         android:id="@+id/tv_timestamp_title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/dp_12"
                         android:textColor="@color/main_text"
                         android:textSize="@dimen/sp_15"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -213,7 +200,6 @@
                         android:id="@+id/tv_timestamp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="@dimen/dp_12"
                         android:textColor="@color/secondary_text"
                         android:textSize="@dimen/sp_15"
                         app:layout_constraintBottom_toBottomOf="parent"

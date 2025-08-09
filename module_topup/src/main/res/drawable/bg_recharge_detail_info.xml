@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- 背景填充（可选） -->
+
+    <item
+        android:height="@dimen/dp_1"
+        android:gravity="bottom">
+
+        <shape>
+            <solid android:color="@color/input_box" /> <!-- 背景颜色 -->
+        </shape>
+
+    </item>
+</layer-list>
