@@ -23,6 +23,7 @@ import androidx.viewpager2.widget.ViewPager2.SCROLL_STATE_IDLE
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
@@ -75,7 +76,9 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
 
     //    private val tournamentListFragment  = TournamentListFragment.newInstance()
     private var isExpanded = false
+
     override fun initView(savedInstanceState: Bundle?) {
+        "KC_ NewHomeFragment initView".logd()
         initPlayTypeLayout()
         initSportLayout()
         initTournamentLayout()
@@ -445,14 +448,15 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
 
     private fun setTournamentAndViewPagerLayout(tournaments: List<TournamentDataModel>) {
         with(mBinding.layoutContainer) {
-            leaguePagerAdapter = LeaguePagerAdapter(
-                fragmentManager = childFragmentManager,
-                lifecycle = viewLifecycleOwner.lifecycle,
-                tournament = tournaments,
-                playTypeId = mViewModel.currentPlayTypeId
-            )
-            vpGameList.adapter = leaguePagerAdapter
-            vpGameList.offsetLeftAndRight(1)
+            if (leaguePagerAdapter == null) {
+                leaguePagerAdapter = LeaguePagerAdapter(
+                    fragmentManager = childFragmentManager,
+                    lifecycle = viewLifecycleOwner.lifecycle,
+                )
+                vpGameList.adapter = leaguePagerAdapter
+                vpGameList.offsetLeftAndRight(1)
+            }
+            leaguePagerAdapter!!.setData(mViewModel.currentPlayTypeId, tournaments)
 
             // 使用 reflexMargin 擴展方法設置更小的 tab 間距
             tlLeagueList.reflexMargin(2.dp2px, 2.dp2px, 1.dp2px)

@@ -1,18 +1,28 @@
 package arch.cayenne.module.home.ui.adapter
 
+import android.annotation.SuppressLint
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import arch.cayenne.lib.database.entity.TournamentDataModel
+import arch.cayenne.module.home.data.constants.PlayType
 import arch.cayenne.module.home.ui.fragment.MatchListPagerFragment
 
 class LeaguePagerAdapter(
     fragmentManager: FragmentManager,
     lifecycle: Lifecycle,
-    private var tournament: List<TournamentDataModel>,
-    private val playTypeId: Int
 ) : FragmentStateAdapter(fragmentManager, lifecycle) {
+
+    private var tournament = arrayListOf<TournamentDataModel>()
+    private var playTypeId: Int = PlayType.TODAY.id
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun setData(playTypeId: Int, list: List<TournamentDataModel>) {
+        this.playTypeId = playTypeId
+        tournament = ArrayList(list)
+        notifyDataSetChanged()
+    }
 
     override fun getItemId(position: Int): Long {
         return playTypeId * 10000L + position

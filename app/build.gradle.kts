@@ -67,6 +67,7 @@ android {
 dependencies {
     implementation(project(":lib_common"))
     implementation(project(":lib_websocket"))
+    implementation(project(":lib_http"))
     implementation(project(":lib_base"))
     implementation(project(":module_home"))
     implementation(project(":module_bet"))
