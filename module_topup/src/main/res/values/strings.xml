@@ -22,6 +22,13 @@
     <string name="recharge_list_empty">暂无充值记录</string>
     <string name="recharge_info_empty">暂无充值信息</string>
     <string name="copied_to_clipboard">已复制到剪贴板</string>
+    <string name="pay_success">支付成功</string>
+    <string name="pay_failure">支付失败</string>
+    <string name="pay_un_confirm">支付确定中</string>
+    <string name="order_number">订单号</string>
+    <string name="payment_method">支付方式</string>
+    <string name="payment_status">交易状态</string>
+    <string name="transaction_create_time">创建时间</string>
 
 
 </resources>
