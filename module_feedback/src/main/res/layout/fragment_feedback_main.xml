@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -9,9 +10,10 @@
             type="com.walisport.module.feedback.ui.viewmodel.FeedbackMainViewModel" />
     </data>
 
-    <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
+    <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:orientation="vertical"
         android:background="@color/title_bg">
 
         <!-- 标题 -->
@@ -54,68 +56,24 @@
         </androidx.appcompat.widget.LinearLayoutCompat>
 
         <!-- 反馈类型 -->
-        <arch.cayenne.lib.skin.widget.SkinnableCheckBox
-            android:id="@+id/checkbox1"
-            style="@style/feedback_checkbox"
+        <com.google.android.flexbox.FlexboxLayout
+            android:layout_marginBottom="@dimen/dp_13"
+            android:id="@+id/flexboxLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:flexWrap="wrap"
             android:layout_marginStart="@dimen/dp_20"
-            android:layout_marginTop="@dimen/dp_96"
-            android:checked="true"
-            android:text="@string/deposit_issue"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <arch.cayenne.lib.skin.widget.SkinnableCheckBox
-            android:id="@+id/checkbox2"
-            style="@style/feedback_checkbox"
-            android:layout_marginTop="@dimen/dp_96"
-            android:text="@string/gameplay_issue"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <arch.cayenne.lib.skin.widget.SkinnableCheckBox
-            android:id="@+id/checkbox3"
-            style="@style/feedback_checkbox"
-            android:layout_marginTop="@dimen/dp_96"
-            android:layout_marginEnd="@dimen/dp_20"
-            android:text="@string/stream_issue"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-
-        <arch.cayenne.lib.skin.widget.SkinnableCheckBox
-            android:id="@+id/checkbox4"
-            style="@style/feedback_checkbox"
-            android:layout_marginStart="@dimen/dp_20"
-            android:layout_marginTop="@dimen/dp_142"
-            android:text="@string/ui_optimization"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <arch.cayenne.lib.skin.widget.SkinnableCheckBox
-            android:id="@+id/checkbox5"
-            style="@style/feedback_checkbox"
-            android:layout_marginTop="@dimen/dp_142"
-            android:text="@string/withdrawal_issue"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <arch.cayenne.lib.skin.widget.SkinnableCheckBox
-            android:id="@+id/checkbox6"
-            style="@style/feedback_checkbox"
-            android:layout_marginTop="@dimen/dp_142"
-            android:layout_marginEnd="@dimen/dp_20"
-            android:text="@string/other_suggestions"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:justifyContent="flex_start"
+            app:alignItems="flex_start"
+            tools:ignore="MissingClass"
+            android:layout_marginEnd="@dimen/dp_10"
+            />
 
 
         <!-- 反馈描述 -->
         <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_218"
             android:paddingStart="@dimen/dp_20"
             android:paddingEnd="@dimen/dp_20"
             app:layout_constraintStart_toStartOf="parent"
@@ -151,8 +109,8 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_200"
             android:layout_marginStart="@dimen/dp_20"
-            android:layout_marginTop="@dimen/dp_248"
             android:layout_marginEnd="@dimen/dp_20"
+            android:layout_marginTop="@dimen/dp_13"
             android:background="@drawable/edit_text_background"
             android:gravity="top|start"
             android:hint="@string/edit_text_hint"
@@ -176,6 +134,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/dp_12"
             android:layout_marginBottom="@dimen/dp_12"
+            android:layout_marginStart="@dimen/dp_20"
             android:textColor="@color/feedback_text_color_hint"
             android:textSize="@dimen/sp_14"
             app:layout_constraintBottom_toBottomOf="@id/edit_feedback"
@@ -187,7 +146,6 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_48"
             android:layout_marginStart="@dimen/dp_20"
-            android:layout_marginTop="@dimen/dp_472"
             android:layout_marginEnd="@dimen/dp_20"
             android:background="@drawable/button_bkg"
             android:text="@string/submit"
@@ -197,5 +155,5 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-    </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
+    </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
 </layout>
