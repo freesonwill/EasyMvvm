@@ -173,6 +173,6 @@ class BetResultFragment : BaseFragment<BetResultViewModel, FragmentBetResultBind
     }
 
     override fun doCustomHideEnd() {
-        navigate(BetResultFragmentDirections.actionBetResultFragmentToSingleBetFragment(), null)
+        navigate(BetResultFragmentDirections.actionBetResultFragmentToSingleBetFragment(Config.VALUE_RESULT_TO_SINGLE), null)
     }
 }
