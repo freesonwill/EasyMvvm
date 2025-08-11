@@ -55,30 +55,35 @@ class BetSheetFragment private constructor() :
     override val vmClass: KClass<BetSheetViewModel>
         get() = BetSheetViewModel::class
 
-    private lateinit var controller: NavController
+    private var controller: NavController? = null
 
     private val dismissObserver = Observer<String> { value ->
-        val v = mBinding.root
         when (value) {
             VALUE_DISMISS -> customHide()
+        }
+    }
+
+    private val actionObserver = Observer<String> { value ->
+        val v = mBinding.root
+        when (value) {
             Config.VALUE_SINGLE_TO_RESULT -> {
                 ViewHelper.collapseView(v) {
-                    controller.navigate(SingleBetFragmentDirections.actionSingleBetFragmentToBetResultFragment(), null)
+                    controller?.navigate(SingleBetFragmentDirections.actionSingleBetFragmentToBetResultFragment(), null)
                 }
             }
             Config.VALUE_COMBO_TO_RESULT -> {
                 ViewHelper.collapseView(v) {
-                    controller.navigate(ComboBetFragmentDirections.actionComboBetFragmentToBetResultFragment(), null)
+                    controller?.navigate(ComboBetFragmentDirections.actionComboBetFragmentToBetResultFragment(), null)
                 }
             }
             Config.VALUE_RESULT_TO_SINGLE -> {
                 ViewHelper.collapseView(v) {
-                    controller.navigate(BetResultFragmentDirections.actionBetResultFragmentToSingleBetFragment(), null)
+                    controller?.navigate(BetResultFragmentDirections.actionBetResultFragmentToSingleBetFragment(), null)
                 }
             }
             Config.VALUE_RESULT_TO_COMBO -> {
                 ViewHelper.collapseView(v) {
-                    controller.navigate(BetResultFragmentDirections.actionBetResultFragmentToComboBetFragment(), null)
+                    controller?.navigate(BetResultFragmentDirections.actionBetResultFragmentToComboBetFragment(), null)
                 }
             }
         }
@@ -202,14 +207,15 @@ class BetSheetFragment private constructor() :
 
     private fun checkCurrentDir(size: Int): Boolean {
         return if (size <= 1) {
-            controller.currentDestination?.label != "SingleBetFragment"
+            controller?.currentDestination?.label != "SingleBetFragment"
         } else {
-            controller.currentDestination?.label != "ComboBetFragment"
+            controller?.currentDestination?.label != "ComboBetFragment"
         }
     }
 
     private fun removeLastObserver() {
         lastLiveData?.removeObserver(dismissObserver)
+        lastLiveData?.removeObserver(actionObserver)
         lastLiveData = null
     }
 
@@ -218,6 +224,7 @@ class BetSheetFragment private constructor() :
 
         lastLiveData = backStackEntry.savedStateHandle.getLiveData<String>(KEY_RESULT).apply {
             observe(viewLifecycleOwner, dismissObserver)
+            observe(viewLifecycleOwner, actionObserver)
         }
     }
 
