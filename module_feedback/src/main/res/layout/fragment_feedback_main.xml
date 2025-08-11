@@ -62,21 +62,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:flexWrap="wrap"
-            android:paddingTop="@dimen/dp_5"
+            android:layout_marginStart="@dimen/dp_20"
             app:justifyContent="flex_start"
             app:alignItems="flex_start"
             tools:ignore="MissingClass"
-            android:layout_marginEnd="@dimen/dp_13"
+            android:layout_marginEnd="@dimen/dp_10"
             />
-
-       <!-- <arch.cayenne.lib.skin.widget.SkinnableCheckBox
-            android:id="@+id/checkbox6"
-            style="@style/feedback_checkbox"
-            android:layout_marginTop="@dimen/dp_142"
-            android:layout_marginEnd="@dimen/dp_20"
-            android:text="@string/other_suggestions"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />-->
 
 
         <!-- 反馈描述 -->
@@ -119,6 +110,7 @@
             android:layout_height="@dimen/dp_200"
             android:layout_marginStart="@dimen/dp_20"
             android:layout_marginEnd="@dimen/dp_20"
+            android:layout_marginTop="@dimen/dp_13"
             android:background="@drawable/edit_text_background"
             android:gravity="top|start"
             android:hint="@string/edit_text_hint"
@@ -142,6 +134,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/dp_12"
             android:layout_marginBottom="@dimen/dp_12"
+            android:layout_marginStart="@dimen/dp_20"
             android:textColor="@color/feedback_text_color_hint"
             android:textSize="@dimen/sp_14"
             app:layout_constraintBottom_toBottomOf="@id/edit_feedback"

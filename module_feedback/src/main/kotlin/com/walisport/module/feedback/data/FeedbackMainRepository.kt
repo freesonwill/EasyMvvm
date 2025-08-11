@@ -3,6 +3,7 @@ package com.walisport.module.feedback.data
 import android.annotation.SuppressLint
 import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.base.data.repository.BaseRepository
+import com.google.protobuf.ByteString
 import com.walisport.module.feedback.FeedbackRemoteManager
 import com.walisport.module.live.data.toFeedbackLabelData
 import galaxy.common.proto.Common
@@ -29,5 +30,9 @@ class FeedbackMainRepository(
     }
 
 
+    //提交数据
+    suspend fun feedbackContentAdd(content:String,code: ByteString):ApiResponseState = withContext(scope.coroutineContext) {
+        return@withContext(remoteManager.feedbackContentAddReq(scope,code,content))
+    }
 }
 

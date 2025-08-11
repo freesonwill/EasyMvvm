@@ -81,6 +81,7 @@ enum class ApiCode(val mid: Short, val sid: Short) {
     ABERRANT_NOTIFY(600,1010), //600-1010: 异常推送
 
     FEEDBACK_LABEL(800,1001), //800-1001: 反馈标签列表
+    FEEDBACK_LABEL_ADD(800,1002), //800-1002: 添加反馈内容
 
     ;
     companion object{
