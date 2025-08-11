@@ -35,7 +35,6 @@ class FeedbackMainViewModel(private val repo: FeedbackMainRepository) : BaseView
         }, {
             if (it is ApiResponseState.Succeeded<*>) {
                 it.data.let { data ->
-                    LogUtils.e("getFeedbackLabelListRep--------_feedbackLabelList${data}")
                     _feedbackLabelList.value = data as List<FeedbackLabel>? // 主线程更新 LiveData
                 }
             }
