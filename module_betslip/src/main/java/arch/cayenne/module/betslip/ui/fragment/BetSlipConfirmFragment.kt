@@ -3,7 +3,9 @@ package arch.cayenne.module.betslip.ui.fragment
 import android.net.Uri
 import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
+import arch.cayenne.lib.common.utils.copyToClipboard
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
+import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.database.entity.BetSlipSelectionData
 import arch.cayenne.lib.database.entity.OrderSelectionBean
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
@@ -39,6 +41,13 @@ class BetSlipConfirmFragment : BaseBetSlipFragment<ConfirmingSlipViewModel, Frag
                     val matchId = data.matchBasic.matchId
                     val sportId = data.matchBasic.sportId
                     navigate(Uri.parse("walisport://module_live/liveFragment?matchId=${matchId}&sportId=${sportId}"))
+                }
+            }
+        })
+        betSlipAdapter.setBetSlipListener(object : BetSlipAdapter.BetSlipListener {
+            override fun onCopyClip(number: String) {
+                copyToClipboard(number) {
+                    showToast(getString(arch.cayenne.lib.common.R.string.copy_to_clip))
                 }
             }
         })

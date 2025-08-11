@@ -20,6 +20,8 @@ import arch.cayenne.lib.database.entity.BetSlipSelectionData
 
 abstract class BaseBetSlipViewHolder<VB: ViewBinding>(binding: ViewBinding, betSlipType: BetSlipEnum) : BaseViewHolder(binding), BetSlipAdapterViewHolderInterface {
 
+    protected var mBetSlipListener: BetSlipAdapter.BetSlipListener? = null
+
     companion object {
         private const val EXPANDED_SIZE = 3
     }
@@ -31,11 +33,13 @@ abstract class BaseBetSlipViewHolder<VB: ViewBinding>(binding: ViewBinding, betS
     }
     private var expandedEnum = BetSlipExpandedEnum.NONE
 
-
     fun setLiveListener(listener: BetSlipAdapter.BetSlipLiveListener?) {
         adapter.setLiveListener(listener)
     }
-    
+
+    fun setBetSlipListener(listener: BetSlipAdapter.BetSlipListener?) {
+        this.mBetSlipListener = listener
+    }
 
     protected fun initItemView(recyclerView: RecyclerView) {
         val manager = LinearLayoutManager(recyclerView.context)

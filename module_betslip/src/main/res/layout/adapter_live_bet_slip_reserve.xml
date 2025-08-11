@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/shape_betslip_card">
 
     <arch.cayenne.lib.skin.widget.SkinnableView
@@ -17,12 +18,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_12"
-        android:text="2024/11/14 05:03"
         android:textColor="@color/secondary_text"
         android:textSize="@dimen/sp_13"
         app:layout_constraintBottom_toBottomOf="@id/bet_reserve_iv_top"
         app:layout_constraintLeft_toLeftOf="@id/bet_reserve_iv_top"
-        app:layout_constraintTop_toTopOf="@id/bet_reserve_iv_top" />
+        app:layout_constraintTop_toTopOf="@id/bet_reserve_iv_top"
+        tools:text="2024/11/14 05:03" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_selection"
@@ -44,8 +45,8 @@
     <arch.cayenne.lib.skin.widget.SkinnableView
         android:layout_width="0dp"
         android:layout_height="2dp"
-        android:layout_marginEnd="6dp"
         android:layout_marginStart="12dp"
+        android:layout_marginEnd="6dp"
         android:background="@drawable/bet_district_line"
         app:layout_constraintBottom_toBottomOf="@id/bet_reserve_iv_avava"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -80,11 +81,11 @@
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_20"
         android:layout_marginEnd="@dimen/dp_12"
-        android:text="\@1.85"
         android:textColor="@color/main_text"
         android:textSize="@dimen/sp_14"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@id/bet_reserve_tv_odds" />
+        app:layout_constraintTop_toTopOf="@id/bet_reserve_tv_odds"
+        tools:text="\@1.85" />
 
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/bet_reserve_tv_betting"
@@ -102,11 +103,11 @@
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_20"
         android:layout_marginEnd="@dimen/dp_12"
-        android:text="$1000"
         android:textColor="@color/main_text"
         android:textSize="@dimen/sp_14"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@id/bet_reserve_tv_betting" />
+        app:layout_constraintTop_toTopOf="@id/bet_reserve_tv_betting"
+        tools:text="$1000" />
 
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/bet_reserve_tv_except"
@@ -124,11 +125,11 @@
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_20"
         android:layout_marginEnd="@dimen/dp_12"
-        android:text="$2312"
         android:textColor="@color/main_text"
         android:textSize="@dimen/sp_14"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@id/bet_reserve_tv_except" />
+        app:layout_constraintTop_toTopOf="@id/bet_reserve_tv_except"
+        tools:text="$2312" />
 
 
     <arch.cayenne.lib.skin.widget.SkinnableTextView
@@ -138,28 +139,26 @@
         android:layout_marginTop="@dimen/dp_24"
         android:background="@drawable/shape_cancel_reserve"
         android:foreground="@drawable/bg_click_mask_8dp"
+        android:gravity="center"
         android:text="@string/live_bet_cancel_reserve"
         android:textColor="@color/brand_color"
         android:textSize="@dimen/sp_15"
-        android:gravity="center"
-        app:layout_constraintTop_toBottomOf="@id/bet_reserve_tv_except"
         app:layout_constraintLeft_toLeftOf="@id/bet_reserve_tv_date"
-        />
+        app:layout_constraintTop_toBottomOf="@id/bet_reserve_tv_except" />
 
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/bet_reserve_bt_modify"
         android:layout_width="207dp"
         android:layout_height="48dp"
+        android:layout_marginStart="@dimen/dp_8"
         android:background="@drawable/selector_send_button"
         android:foreground="@drawable/bg_click_mask_8dp"
+        android:gravity="center"
         android:text="@string/live_bet_modify_odds"
         android:textColor="@color/text_on_theme_color"
         android:textSize="@dimen/sp_15"
-        android:gravity="center"
-        app:layout_constraintTop_toTopOf="@id/bet_reserve_bt_cancel"
         app:layout_constraintLeft_toRightOf="@id/bet_reserve_bt_cancel"
-        android:layout_marginStart="@dimen/dp_8"
-        />
+        app:layout_constraintTop_toTopOf="@id/bet_reserve_bt_cancel" />
 
     <View
         android:layout_width="match_parent"
