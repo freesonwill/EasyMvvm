@@ -5,13 +5,25 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal">
 
-    <arch.cayenne.lib.skin.widget.SkinnableImageView
-        android:id="@+id/iv"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_marginStart="@dimen/dp_6"
-        android:layout_marginTop="@dimen/dp_12"
-        android:layout_marginEnd="@dimen/dp_6" />
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <arch.cayenne.lib.skin.widget.SkinnableImageView
+            android:id="@+id/iv"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="@dimen/dp_6"
+            android:layout_marginTop="@dimen/dp_4"
+            android:layout_marginBottom="@dimen/dp_8"
+            android:layout_marginEnd="@dimen/dp_6" />
+        <TextView
+            android:id="@+id/tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/sp_11"
+            android:layout_gravity="center"
+            />
+    </FrameLayout>
 
 </LinearLayout>
 

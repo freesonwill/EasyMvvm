@@ -85,6 +85,13 @@ class LiveSoftKeyboardFragment :
         hideSoftKeyBoard(4)
     }
 
+    override fun onDestroy() {
+        mBinding.keyboardEmojiRecycler.adapter?.let {
+            (it as SoftAdapter).animHelper?.cleanup()
+        }
+        super.onDestroy()
+    }
+
     override fun initView(savedInstanceState: Bundle?) {
         initTab()
         initSoftRecycler()
@@ -156,7 +163,6 @@ class LiveSoftKeyboardFragment :
             //监听聚焦事件，不合格的展示软件盘一律拦截
             setOnFocusChangeListener { v, hasFocus ->
                 //如果当前点击事件 softkeyboardlisterner 和 当前状态currentKeyboardListener 一致可以过滤掉聚焦事件
-                "onFouceCHangeListener openSoftkeyboadLiveData ${chatViewModel.openSoftKeyBoardLiveData.value} hasFouce $hasFocus".logd("aaa")
                 if (chatViewModel.openSoftKeyBoardLiveData.value == true) { //要打开软件盘并且软件盘在收缩中
                    openSoftKeyBoard()
                 }
