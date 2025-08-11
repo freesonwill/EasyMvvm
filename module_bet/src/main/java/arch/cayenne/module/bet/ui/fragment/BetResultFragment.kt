@@ -11,9 +11,12 @@ import arch.cayenne.lib.common.ui.view.BetResultToastView
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavResultExt.sendResult
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
+import arch.cayenne.lib.common.utils.ext.SportDisplayOddsExt.getDisplayOdds
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
+import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
+import arch.cayenne.lib.common.utils.ext.SportStringExt.toOdds
 import arch.cayenne.lib.database.entity.BetDetailBean
 import arch.cayenne.lib.database.entity.BetResultStatusEnum
 import arch.cayenne.lib.database.entity.BetTypeEnum
@@ -144,7 +147,12 @@ class BetResultFragment : BaseFragment<BetResultViewModel, FragmentBetResultBind
         val total = "$symbols${data.sumOf { it.inputMoney }.getFormalMoney()}"
         mBinding.tvAmountMoney.text = total
         val win =
-            "$symbols${data.sumOf { it.inputMoney.getMoney(it.sumOdds).toMoney() }.getFormalMoney()}"
+            "$symbols${
+                data.sumOf {
+                    it.inputMoney.getMoney((if (data.size == 1) it.sumOdds.getDisplayOdds() else it.sumOdds.getOdds()).toOdds())
+                        .toMoney()
+                }.getFormalMoney()
+            }"
         mBinding.tvMaxWinMoney.text = win
     }
 
@@ -175,7 +183,10 @@ class BetResultFragment : BaseFragment<BetResultViewModel, FragmentBetResultBind
 
     override fun doCustomHideEnd() {
         if (findNavController().currentDestination?.id == R.id.betResultFragment) {
-            navigate(BetResultFragmentDirections.actionBetResultFragmentToSingleBetFragment(Config.VALUE_RESULT_TO_SINGLE), null)
+            navigate(
+                BetResultFragmentDirections.actionBetResultFragmentToSingleBetFragment(Config.VALUE_RESULT_TO_SINGLE),
+                null
+            )
         }
     }
 }
