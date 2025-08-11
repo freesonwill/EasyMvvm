@@ -1,4 +1,4 @@
-<!-- res/interpolator/ease_in_quad.xml -->
+<!-- EaseInQuad -->
 <pathInterpolator
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:controlX1="0.55"
