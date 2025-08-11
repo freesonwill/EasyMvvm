@@ -110,6 +110,7 @@
                         android:layout_height="@dimen/dp_32"
                         android:layout_marginEnd="-6dp"
                         android:padding="@dimen/dp_6"
+                        android:stateListAnimator="@animator/layout_alpha_animator"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent"

@@ -12,6 +12,8 @@ import arch.cayenne.lib.common.utils.DateUtils
 import arch.cayenne.lib.common.utils.copyToClipboard
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getColor
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
+import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
+import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.touchBackPressed
 import arch.cayenne.lib.common.utils.helper.showToast
 import com.walisport.module.topup.R
@@ -51,7 +53,7 @@ class TopUpDetailFragment : BaseFragment<TopUpDetailViewModel, FragmentTopupDeta
 
     override fun initListener() {
         mBinding.root.touchBackPressed()
-        mBinding.ivCopy.setOnClickListener {
+        mBinding.ivCopy.clickNoRepeat {
             copyToClipboard(mBinding.tvOrderNumber.text as String?) {
                 showToast(R.string.copied_to_clipboard.getString())
             }
