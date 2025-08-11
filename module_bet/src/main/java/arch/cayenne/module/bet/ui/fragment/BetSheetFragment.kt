@@ -13,7 +13,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
-import arch.cayenne.lib.base.ui.fragment.BasePreLoadBottomSheerFragment
+import arch.cayenne.lib.base.ui.fragment.BasePreLoadBottomSheetFragment
 import arch.cayenne.module.bet.R
 import arch.cayenne.module.bet.data.Config
 import arch.cayenne.module.bet.data.Config.KEY_RESULT
@@ -25,7 +25,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlin.reflect.KClass
 
 class BetSheetFragment private constructor() :
-    BasePreLoadBottomSheerFragment<BetSheetViewModel, FragmentBetSheetBinding>() {
+    BasePreLoadBottomSheetFragment<BetSheetViewModel, FragmentBetSheetBinding>() {
 
     companion object {
 
@@ -44,7 +44,7 @@ class BetSheetFragment private constructor() :
             val f = manager.findFragmentByTag(TAG)
             if (f == null) {
                 BetSheetFragment().show(manager, TAG)
-            } else if (f is BasePreLoadBottomSheerFragment<*, *>) {
+            } else if (f is BasePreLoadBottomSheetFragment<*, *>) {
                 f.customShow()
             }
         }
@@ -146,15 +146,18 @@ class BetSheetFragment private constructor() :
             behavior.isFitToContents = true
             behavior.state = BottomSheetBehavior.STATE_COLLAPSED
             behavior.saveFlags = BottomSheetBehavior.SAVE_HIDEABLE
+            behavior.maxHeight = getMaxHeight()
         }
     }
 
     private fun initMaxHeight() {
-        val screenHeight = resources.displayMetrics.heightPixels
-        val maxFragmentHeight = (screenHeight * 0.75).toInt()
-        mBinding.root.maxHeight = maxFragmentHeight
+        mBinding.root.maxHeight = getMaxHeight()
     }
 
+    private fun getMaxHeight(): Int {
+        val screenHeight = resources.displayMetrics.heightPixels
+        return (screenHeight * 0.75).toInt()
+    }
     private fun setStartDestination(size: Int) {
         val navController = NavHostFragment.findNavController(mBinding.mainNav.getFragment()).apply {
             controller = this

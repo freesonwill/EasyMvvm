@@ -16,6 +16,7 @@ import android.view.animation.AnimationUtils
 import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
 import androidx.annotation.CallSuper
+import androidx.appcompat.app.AppCompatDialog
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.FragmentManager
@@ -202,7 +203,7 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
     }
 
     private fun setSheetContainer() {
-        val d = dialog as BottomSheetDialog
+        val d = dialog as AppCompatDialog
         val root = d.findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)?.parent as ViewGroup
 
         backgroundView = root.getChildAt(0)
