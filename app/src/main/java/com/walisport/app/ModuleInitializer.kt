@@ -14,19 +14,28 @@ import arch.cayenne.lib.common.CommonModuleInitializer
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.helper.TimesExitOnBackPressedHelper
 import arch.cayenne.lib.common.utils.helper.showToast
+import arch.cayenne.lib.database.DatabaseModuleInitializer
+import arch.cayenne.lib.http.HttpModuleInitializer
+import arch.cayenne.lib.http._interface.IApi
 import arch.cayenne.lib.websocket.SocketModuleInitializer
-import arch.cayenne.lib.websocket.WebSocketManager
 import arch.cayenne.module.home.HomeModuleInitializer
+import com.walisport.app.data.PreLoadDataModel
 import com.walisport.app.data.repo.MainRepository
+import com.walisport.app.data.repo.ModuleRepository
 import com.walisport.app.data.repo.SplashRepository
 import com.walisport.app.ui.viewmodel.MainViewModel
 import com.walisport.app.ui.viewmodel.SplashViewModel
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.core.context.GlobalContext
 import org.koin.core.context.loadKoinModules
 import org.koin.core.module.Module
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
+import retrofit2.Response
+import retrofit2.http.Body
+import retrofit2.http.POST
 
 /**
  * @author: zhangsan
@@ -77,24 +86,20 @@ class ModuleInitializer : DefaultInitializer<String> {
         "$TAG create ....".logd(TAG)
         loadKoinModules(moduleList)
         (context as Application).registerActivityLifecycleCallbacks(activityLifecycleCallback)
-        startSocket()
+        val moduleRepository = GlobalContext.get().get<ModuleRepository>()
+        moduleRepository.preLoadHome()
+        moduleRepository.startSocket()
         return TAG
     }
 
     override fun dependencies(): List<Class<out Initializer<*>>> {
         return super.dependencies() + listOf(
             SocketModuleInitializer::class.java,
+            HttpModuleInitializer::class.java,
+            DatabaseModuleInitializer::class.java,
             CommonModuleInitializer::class.java,
             HomeModuleInitializer::class.java,
         )
-    }
-
-
-
-    //开始连接服务器
-    private fun startSocket() {
-        val socketManager: WebSocketManager = GlobalContext.get().get()
-        socketManager.connect("wss://betwavepro.ja700.com/fb-ws")
     }
 
     private val viewModules = module {
@@ -102,8 +107,19 @@ class ModuleInitializer : DefaultInitializer<String> {
         viewModelOf(::SplashViewModel)
     }
     private val repoModules = module {
+        factory {
+            CoroutineScope(Dispatchers.IO)
+        }
+        factory { ModuleRepository(get(), get(), get(named("preLoadHome")), get()) }
         factory { (scope: CoroutineScope) -> MainRepository(scope, get(), get(), get(), get()) }
         factory { (scope: CoroutineScope) -> SplashRepository(scope, get(), get()) }
     }
     private val moduleList: List<Module> = listOf(viewModules, repoModules)
 }
+
+interface IPreLoadHomeApi : IApi {
+    @POST("sport_server/game/firstLoad")
+    suspend fun postPreLoad(@Body params: Map<String, String>): Response<PreLoadDataModel>
+}
+
+

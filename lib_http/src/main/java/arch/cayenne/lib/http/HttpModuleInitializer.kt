@@ -4,6 +4,7 @@ import android.content.Context
 import arch.cayenne.lib.base.data.DefaultInitializer
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import org.koin.core.context.loadKoinModules
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 
@@ -18,7 +19,8 @@ class HttpModuleInitializer : DefaultInitializer<String> {
     override fun create(context: Context): String {
         "$TAG create ....".logd(TAG)
         loadKoinModules(module {
-            single {  HttpClient.Builder("http://co-api.51wnl.com",5000).build()  }
+            single(named("wnlApi")) {  HttpClient.Builder("http://co-api.51wnl.com",5000).build()  }
+            single(named("preLoadHome")) {  HttpClient.Builder("https://betwavepro.ja700.com/",5000).build()  }
         })
         return TAG
     }
