@@ -31,6 +31,9 @@ class BounceTabLayoutContainer @JvmOverloads constructor(
     private val touchSlop = ViewConfiguration.get(context).scaledTouchSlop          // 系統判定滑動動作的最小拖動距離
     private val maxOverScroll by lazy { 150 * resources.displayMetrics.density }    // 最大允許 overScroll 的距離（以 dp 表示）
     private val overScrollThreshold = 5f                                            // 觸發 overScroll 的最小移動距離
+    private var skipAnim = false                                                    // 是否跳過動畫，默認為 false
+    private var skipAnimRunnable: Runnable? = null
+    private val layoutHandler = android.os.Handler(context.mainLooper)
     private val tabLayout: TabLayout?
         get() = getChildAt(0) as? TabLayout
     private val canScrollLeft: Boolean
@@ -42,9 +45,6 @@ class BounceTabLayoutContainer @JvmOverloads constructor(
             if (slidingStrip.isEmpty()) return false
 
             val lastTab = slidingStrip.getChildAt(slidingStrip.childCount - 1) ?: return false
-
-            // 取得 slidingStrip 的 translationX（因為可能被 scroll 移動）
-            val stripTranslationX = slidingStrip.translationX
 
             // 最後一個 tab 的右邊界
             val lastTabRight = lastTab.right
@@ -180,7 +180,7 @@ class BounceTabLayoutContainer @JvmOverloads constructor(
         val dragFactor = (totalDraggedX / maxOverScroll).coerceIn(0f, 1.5f)
         val velocityFactor = (abs(velocityX) * 1000).coerceIn(0f, 100f)
 
-        val weightedPower = 0.3f * dragFactor + 0.7f * (velocityFactor / 100f)
+        val weightedPower = 0.5f * dragFactor + 0.5f * (velocityFactor / 100f)
         return (20f + weightedPower * 80f).coerceIn(50f, 300f)
     }
 
@@ -188,6 +188,8 @@ class BounceTabLayoutContainer @JvmOverloads constructor(
      * 執行彈性回彈動畫，並根據拖曳強度調整初始位移
      */
     private fun animateBounceBack() {
+        if(skipAnim) return
+
         tabLayout?.let { layout ->
             val offset = computeBounceOffset()
             val duration = (200 + (offset / 100f) * 200).toLong().coerceIn(200, 400)
@@ -237,7 +239,7 @@ class BounceTabLayoutContainer @JvmOverloads constructor(
     }
 
     /**
-     * 監控 TabLayout 停止滑動後，若處於邊緣時觸發補償動畫
+     * 監控 TabLayout 停止滑動後，若處於邊緣時觸發補償動畫(Fling用）
      */
     private fun setupEdgeBounceOnScrollStop() {
         val layout = tabLayout ?: return
@@ -251,6 +253,22 @@ class BounceTabLayoutContainer @JvmOverloads constructor(
                 scrollIdleRunnable?.let { layout.removeCallbacks(it) }
 
                 scrollIdleRunnable = Runnable {
+                    // 這裡代表已經停止滾動
+                    if (skipAnim) {
+                        // 取消先前尚未執行的任務
+                        skipAnimRunnable?.let { layoutHandler.removeCallbacks(it) }
+
+                        // 建立新的 Runnable
+                        skipAnimRunnable = Runnable {
+                            skipAnim = false
+                        }
+
+                        // 延遲排程 50ms
+                        skipAnimRunnable?.let {
+                            layoutHandler.postDelayed(it, 50L)
+                        }
+                    }
+
                     if (!canScrollLeft || !canScrollRight) onScrollStoppedIfAtEdge()
                 }
 
@@ -262,7 +280,7 @@ class BounceTabLayoutContainer @JvmOverloads constructor(
     }
 
     /**
-     * 滾動結束且在邊緣時，檢查是否需要觸發補償動畫
+     * 滾動結束且在邊緣時，檢查是否需要觸發補償動畫(Fling用）
      */
     private fun onScrollStoppedIfAtEdge() {
         tabLayout?.let { layout ->
@@ -281,5 +299,13 @@ class BounceTabLayoutContainer @JvmOverloads constructor(
                 animateBounceBack()
             }
         }
+    }
+
+    /**
+     * 設置是否跳過動畫
+     * @param skip 是否跳過動畫，默認為 false
+     */
+    fun setSkipAnim(skip: Boolean) {
+        skipAnim = skip
     }
 }
