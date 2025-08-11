@@ -26,11 +26,12 @@ class CustomTabLayoutMediator(
      * 執行 TabLayout 滾動到指定位置
      * 用映射的方式叫用 animationTo 或 setScrollPosition 來控制是否需要 smoothScroll 效果
      * @param position 目標位置
-     * @param noAnim 是否不需要動畫效果，默認為 false
+     * @param noTabAnim 是否不需要 TabLayout 的動畫效果，默認為 false
+     * @param noViewPagerAnim 是否不需要動畫效果，默認為 false
      */
-    private fun doOnClick(position: Int, noAnim: Boolean = false) {
+    private fun doOnClick(position: Int, noTabAnim: Boolean = false, noViewPagerAnim: Boolean = false) {
         try {
-            if (!noAnim) {
+            if (!noTabAnim) {
                 TabLayout::class.java
                     .getDeclaredMethod("animateToTab", Int::class.java)
                     .apply {
@@ -38,6 +39,9 @@ class CustomTabLayoutMediator(
                         invoke(tabLayout, position)
                     }
             } else {
+                // 如果是 BounceTabLayoutContainer，則跳過回彈動畫
+                (tabLayout.parent as? BounceTabLayoutContainer)?.setSkipAnim(true)
+
                 TabLayout::class.java
                     .getDeclaredMethod(
                         "setScrollPosition",
@@ -54,7 +58,7 @@ class CustomTabLayoutMediator(
                 viewPager.getAnimHelper().resetHistory()
             }
 
-            skipAnyAnim = noAnim
+            skipAnyAnim = noViewPagerAnim
             tabLayout.getTabAt(position)?.select()
         } catch (e: Exception) {
             e.printStackTrace()
@@ -99,7 +103,7 @@ class CustomTabLayoutMediator(
         if(tabLayout is CustomTabLayout) {
             // 設置自訂的 ClickListener
             tabLayout.onTabClick = { position ->
-                doOnClick(position, true)
+                doOnClick(position, noTabAnim = false, noViewPagerAnim = true)
             }
         }
     }
@@ -120,7 +124,7 @@ class CustomTabLayoutMediator(
     fun isAttached(): Boolean = attached
 
     fun selectTabWithoutAnimation(position: Int) {
-        doOnClick(position, true)
+        doOnClick(position = position, noTabAnim = true, noViewPagerAnim = true)
     }
 
     internal fun populateTabsFromPagerAdapter() {
@@ -180,6 +184,9 @@ class CustomTabLayoutMediator(
         private val afterTabSelected: ((position: Int) -> Unit)?
     ) : TabLayout.OnTabSelectedListener {
         override fun onTabSelected(tab: TabLayout.Tab) {
+            // 如果是 BounceTabLayoutContainer，則跳過回彈動畫
+            (tab.parent?.parent as? BounceTabLayoutContainer)?.setSkipAnim(skipAnyAnim)
+
             if (skipAnyAnim) {
                 viewPager.setCurrentItem(tab.position, false)
                 skipAnyAnim = false
