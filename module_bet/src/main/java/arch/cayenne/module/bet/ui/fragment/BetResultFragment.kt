@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.SimpleItemAnimator
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.ui.view.BetResultToastView
@@ -173,6 +174,8 @@ class BetResultFragment : BaseFragment<BetResultViewModel, FragmentBetResultBind
     }
 
     override fun doCustomHideEnd() {
-        navigate(BetResultFragmentDirections.actionBetResultFragmentToSingleBetFragment(Config.VALUE_RESULT_TO_SINGLE), null)
+        if (findNavController().currentDestination?.id == R.id.betResultFragment) {
+            navigate(BetResultFragmentDirections.actionBetResultFragmentToSingleBetFragment(Config.VALUE_RESULT_TO_SINGLE), null)
+        }
     }
 }
