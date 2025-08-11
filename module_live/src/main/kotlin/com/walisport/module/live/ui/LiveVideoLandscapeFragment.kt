@@ -14,6 +14,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.LinearInterpolator
 import android.widget.LinearLayout
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintLayout.GONE
 import androidx.constraintlayout.widget.ConstraintLayout.VISIBLE
 import androidx.core.animation.doOnEnd
@@ -24,7 +25,9 @@ import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.DensityInfo
+import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.lib.common.utils.ext.ResourceExt.getDimensionPixelSize
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.startSafeAnimateSet
@@ -106,6 +109,52 @@ class LiveVideoLandscapeFragment :
             setChooseSourceView()
             setShareView()
         }, 200)
+
+
+        initMargins()
+    }
+
+    //调整按钮的margin值， 保证其位于视频播放区域内
+    private fun initMargins() {
+        var screenWidth = resources.displayMetrics.widthPixels
+        var screenHeight = resources.displayMetrics.heightPixels
+
+
+        //调整成横屏的宽高
+        if (screenWidth < screenHeight) {
+            val a = screenWidth
+            screenWidth = screenHeight
+            screenHeight = a
+        }
+
+        screenWidth += ViewUtils.getStatusBarHeight(requireContext())
+        
+
+        val videoAreaWidth = screenHeight / 1080L * 1920L
+        val leftSpacing = (screenWidth - videoAreaWidth) / 2
+
+        if (leftSpacing <= 0) {
+            return
+        }
+
+        val initialMarginStart = arch.cayenne.lib.common.R.dimen.dp_36.getDimensionPixelSize()
+        val lp = mBinding.ivBack.layoutParams as ConstraintLayout.LayoutParams
+        lp.marginStart = (initialMarginStart + leftSpacing).toInt()
+        mBinding.ivBack.layoutParams = lp
+
+
+        val shareLp = mBinding.ivShare.layoutParams as ConstraintLayout.LayoutParams
+        shareLp.marginEnd = (initialMarginStart + leftSpacing).toInt()
+        mBinding.ivShare.layoutParams = shareLp
+
+        val soundLp = mBinding.ivSoundToggle.layoutParams as ConstraintLayout.LayoutParams
+        soundLp.marginStart = (initialMarginStart + leftSpacing).toInt()
+        mBinding.ivSoundToggle.layoutParams = soundLp
+
+        val statisticLp = mBinding.tvStatistics.layoutParams as ConstraintLayout.LayoutParams
+        statisticLp.marginEnd = (initialMarginStart + leftSpacing).toInt()
+        mBinding.tvStatistics.layoutParams = statisticLp
+
     }
 
     private fun initVideoView() {
