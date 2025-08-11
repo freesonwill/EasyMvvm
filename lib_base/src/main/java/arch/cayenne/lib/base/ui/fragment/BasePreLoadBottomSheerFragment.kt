@@ -110,8 +110,11 @@ abstract class BasePreLoadBottomSheerFragment<VM : BaseViewModel, VB : ViewBindi
 
     @CallSuper
     protected open fun setCustomCollapseSetting() {
-        dialog?.window?.decorView?.visibility = View.INVISIBLE
         sheetContainer?.translationY = 0f
+
+        onEndListener?.invoke()
+        dialog?.window?.decorView?.visibility = View.INVISIBLE
+
         backgroundView?.visibility = View.INVISIBLE
         sheetContainer?.visibility = View.INVISIBLE
         mBinding.root.visibility = View.INVISIBLE
@@ -121,7 +124,6 @@ abstract class BasePreLoadBottomSheerFragment<VM : BaseViewModel, VB : ViewBindi
             behavior.isHideable = false
             behavior.state = BottomSheetBehavior.STATE_COLLAPSED
         }
-        onEndListener?.invoke()
     }
 
     override fun playExitAnimations() {
