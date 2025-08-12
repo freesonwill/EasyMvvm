@@ -52,7 +52,7 @@
             app:tabRippleColor="@null"
             android:layout_marginTop="@dimen/dp_2"
             tools:ignore="SpeakableTextPresentCheck" />
-        <com.walisport.module.live.ui.widget.CustomTabIndicator
+        <arch.cayenne.lib.common.ui.view.CustomTabIndicator
             android:id="@+id/customIndicator"
             android:layout_marginEnd="10dp"
             android:layout_width="match_parent"

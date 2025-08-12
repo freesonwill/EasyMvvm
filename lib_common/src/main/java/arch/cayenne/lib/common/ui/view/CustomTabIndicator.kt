@@ -1,28 +1,32 @@
-package com.walisport.module.live.ui.widget
+package arch.cayenne.lib.common.ui.view
 
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.util.AttributeSet
-import android.view.View
 import androidx.core.content.ContextCompat
 import arch.cayenne.lib.skin.widget.SkinnableView
-import com.walisport.module.live.R
-
+import kotlin.apply
+import arch.cayenne.lib.common.R
 class CustomTabIndicator(context: Context, attrs: AttributeSet) : SkinnableView(context, attrs) {
     private val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         style = Paint.Style.FILL
-        color = ContextCompat.getColor(context, R.color.tab_indicator_color) // 指示器颜色
+        color = ContextCompat.getColor(context,
+           R.color.tab_indicator_color
+        ) // 指示器颜色
     }
 
     private var indicatorWidth = 0f
     private var indicatorHeight = dpToPx(2f) // 指示器高度
     private var cornerRadius = dpToPx(2f) // 圆角半径
-    private var currentPosition = 1
+    private var currentPosition = 0
     private var positionOffset = 0f
     private var tabWidth = 0f
     fun getCurrentPosition(): Int {
         return currentPosition
+    }
+    fun setCurrentPosition(currentPosition:Int) {
+         this.currentPosition = currentPosition
     }
 
     override fun onDraw(canvas: Canvas) {
@@ -46,9 +50,9 @@ class CustomTabIndicator(context: Context, attrs: AttributeSet) : SkinnableView(
     }
 
     // 设置单个 Tab 的宽度和指示器宽度
-    fun setTabWidth(width: Float) {
+    fun setTabWidth(width: Float,tabIndicatorWidth : Float = 0.45f) {
         tabWidth = width
-        indicatorWidth = width * 0.45f // 指示器宽度为 Tab 宽度的 60%
+        indicatorWidth = width * tabIndicatorWidth // 指示器宽度为 Tab 宽度的 45%
         invalidate()
     }
 
