@@ -136,8 +136,9 @@ class HomeViewModel : BaseViewModel() {
                         setCurrentSport(selectedSportId)
                         list.firstOrNull {data -> data.id == selectedSportId }?.isSelected = true
                     }
-                        "KC_ 準備送出sport的live data".logd()
-                    launch(Dispatchers.Main) {
+                    val start = System.currentTimeMillis()
+                    withContext(Dispatchers.Main.immediate) {
+                        "KC_ 準備送出sport的live data ${System.currentTimeMillis() - start}".logd()
                         sportsStatistical.value = Event(list)
                     }
 
@@ -180,32 +181,32 @@ class HomeViewModel : BaseViewModel() {
                                 repository.getTournament(currentPlayTypeId, currentSportId, it)
                             }
                         "KC_ 收到Tournament的collect_1".logd()
-                        withContext(Dispatchers.Main) {
-                            val list = mutableListOf<TournamentDataModel>()
-                            if (it.isEmpty()) {
-                                tournaments.value = Event(arrayListOf())
-                                return@withContext
-                            }
-                            list.add(
-                                TournamentDataModel.createAllItem(
-                                    currentPlayTypeId,
-                                    currentSportId
-                                )
+                        val list = mutableListOf<TournamentDataModel>()
+                        if (it.isEmpty()) {
+                            launch(Dispatchers.Main) { tournaments.value = Event(arrayListOf()) }
+                            return@collect
+                        }
+                        list.add(
+                            TournamentDataModel.createAllItem(
+                                currentPlayTypeId,
+                                currentSportId
                             )
-                            list.addAll(it)
-                            "KC_ 收到Tournament的collect_2".logd()
-                            if (selectedTournament == null) {
-                                setCurrentTournamentId(0)
-                                list.find { it.id == 0 }?.isSelected = true
-                            } else if (!it.any { data -> data.id == selectedTournament.id }) {  //有在目前聯賽中，但是沒有在前10筆資料中，所以新增第11筆，並且點擊它
-                                setCurrentTournamentId(selectedTournament.id)
-                                selectedTournament.isSelected = true
-                                list.add(selectedTournament)
-                            } else {
-                                list.find { it.id == selectedTournament.id }?.isSelected = true
-                                setCurrentTournamentId(selectedTournament.id)
-                            }
-                            "KC_ 準備送出tournaments的live data".logd()
+                        )
+                        list.addAll(it)
+                        "KC_ 收到Tournament的collect_2".logd()
+                        if (selectedTournament == null) {
+                            setCurrentTournamentId(0)
+                            list.find { it.id == 0 }?.isSelected = true
+                        } else if (!it.any { data -> data.id == selectedTournament.id }) {  //有在目前聯賽中，但是沒有在前10筆資料中，所以新增第11筆，並且點擊它
+                            setCurrentTournamentId(selectedTournament.id)
+                            selectedTournament.isSelected = true
+                            list.add(selectedTournament)
+                        } else {
+                            list.find { it.id == selectedTournament.id }?.isSelected = true
+                            setCurrentTournamentId(selectedTournament.id)
+                        }
+                        "KC_ 準備送出tournaments的live data".logd()
+                        launch(Dispatchers.Main) {
                             tournaments.value = Event(list)
                             setState(HomeState.Tournament.LoadSuccess)
                         }
@@ -223,8 +224,8 @@ class HomeViewModel : BaseViewModel() {
                 .collect {
                     launch(Dispatchers.Main) {
                         setCurrentPlayType(currentPlayTypeId)
-                        setCurrentSport(currentSportId)
                     }
+                    setCurrentSport(currentSportId)
                 }
         }
     }
@@ -309,7 +310,7 @@ class HomeViewModel : BaseViewModel() {
     fun setCurrentSport(sportId: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             "KC_ 收到sport的collect_3_1".logd()
-            withContext(Dispatchers.Main) {
+            launch(Dispatchers.Main) {
                 _selectedDate.value = Event(DEFAULT_DATE)  //先送出一個初始值，避免MatchListPage生成時會拿到舊值先拿取資料
             }
             "KC_ 收到sport的collect_3_2".logd()
@@ -423,7 +424,7 @@ class HomeViewModel : BaseViewModel() {
             var count = 0L
             while (isActive) {
                 delay(1000L)
-                withContext(Dispatchers.Main) {
+                launch(Dispatchers.Main) {
                     _timer.value = Event(count++)
                 }
             }
