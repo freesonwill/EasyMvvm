@@ -79,11 +79,12 @@ abstract class BasePreLoadBottomSheetFragment<VM : BaseViewModel, VB : ViewBindi
 
     private fun setCustomExpendSetting() {
         unhideableDialog?.showDialog()
-
-        sheetContainer?.let {
-            val behavior = BottomSheetBehavior.from(it)
-            behavior.isHideable = true
-            behavior.state = BottomSheetBehavior.STATE_EXPANDED
+        mBinding.root.post {
+            sheetContainer?.let {
+                val behavior = BottomSheetBehavior.from(it)
+                behavior.isHideable = true
+                behavior.state = BottomSheetBehavior.STATE_EXPANDED
+            }
         }
     }
 
@@ -116,15 +117,16 @@ abstract class BasePreLoadBottomSheetFragment<VM : BaseViewModel, VB : ViewBindi
 
         onEndListener?.invoke()
         unhideableDialog?.hideDialog()
+        mBinding.root.post {
+            backgroundView?.visibility = View.INVISIBLE
+            sheetContainer?.visibility = View.INVISIBLE
+            mBinding.root.visibility = View.INVISIBLE
 
-        backgroundView?.visibility = View.INVISIBLE
-        sheetContainer?.visibility = View.INVISIBLE
-        mBinding.root.visibility = View.INVISIBLE
-
-        sheetContainer?.let {
-            val behavior = BottomSheetBehavior.from(it)
-            behavior.isHideable = false
-            behavior.state = BottomSheetBehavior.STATE_COLLAPSED
+            sheetContainer?.let {
+                val behavior = BottomSheetBehavior.from(it)
+                behavior.isHideable = false
+                behavior.state = BottomSheetBehavior.STATE_COLLAPSED
+            }
         }
     }
 
