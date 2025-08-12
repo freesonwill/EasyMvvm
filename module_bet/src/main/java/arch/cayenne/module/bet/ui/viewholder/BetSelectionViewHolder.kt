@@ -7,7 +7,7 @@ import arch.cayenne.module.bet.util.ViewHelper
 
 class BetSelectionViewHolder(private val mBinding: ItemBetSheetBinding): BaseViewHolder(mBinding) {
 
-    fun init(bean: BetSelectionBean) {
-        ViewHelper.bindBetSheet(bean, mBinding)
+    fun init(size: Int, bean: BetSelectionBean) {
+        ViewHelper.bindBetSheet(size, bean, mBinding)
     }
 }

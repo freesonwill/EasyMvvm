@@ -336,6 +336,19 @@
                 android:text="@string/drawer_tutorial" />
         </LinearLayout>
     </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_login"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_margin="@dimen/dp_16"
+        android:text="登录"
+        android:background="@drawable/selector_send_button"
+        android:gravity="center"
+        android:textColor="@android:color/black"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/cl_drawer_common_function"/>
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_drawer_bottom"
         android:layout_width="match_parent"

@@ -1,14 +1,11 @@
 package com.walisport.module.live.data
 
 import android.annotation.SuppressLint
-import androidx.room.Transaction
 import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.base.data.repository.BaseRepository
 import arch.cayenne.lib.database.GameDatabase
 import arch.cayenne.lib.database.entity.InfoBean
-import arch.cayenne.lib.database.entity.LiveMatchBean
 import arch.cayenne.lib.database.entity.SelectionsEdit
-import arch.cayenne.lib.websocket.data.ConnectState
 import com.walisport.module.live.LiveRemoteManager
 import galaxy.client.proto.Client.MatchBasicUpdate
 import galaxy.client.proto.Sloth
@@ -27,7 +24,7 @@ class LiveMainRepository(
 ) : BaseRepository() {
 
     override val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
-    fun observeBalance(): Flow<InfoBean> = database.infoDao().observeBalance().flowOn(Dispatchers.IO)
+    fun observeInfo(): Flow<InfoBean?> = database.infoDao().observeInfo().flowOn(Dispatchers.IO)
     fun observeMatchBean(matchId: Long) = database.liveMatchDao().observeMatchById(matchId).flowOn(Dispatchers.IO)
     fun observeLoginChange() = database.infoDao().observeIsLogin()
     // 500-1003: 获取比赛详情

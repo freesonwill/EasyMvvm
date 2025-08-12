@@ -17,7 +17,7 @@ class BetSelectionAdapter(private val onBetSelectionClickListener: OnBetSelectio
         binding: ItemBetSheetBinding,
         position: Int
     ) {
-        holder.init(getItem(position))
+        holder.init(itemCount, getItem(position))
         binding.ivDelete.isVisible = onBetSelectionClickListener != null
         binding.ivDelete.setOnClickListener {
             onBetSelectionClickListener?.onDeleteClick(getItem(holder.adapterPosition))

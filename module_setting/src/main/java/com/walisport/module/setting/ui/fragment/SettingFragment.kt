@@ -10,6 +10,7 @@ import arch.cayenne.lib.common.data.constants.LanguageType
 import arch.cayenne.lib.common.data.constants.OddsDisplayEnum
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+import arch.cayenne.lib.common.utils.ext.touchBackPressed
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import com.walisport.module.setting.BuildConfig
 import com.walisport.module.setting.R
@@ -39,6 +40,7 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
             mBinding.tvVersion.text =
                 "ver.${pi.versionName}_${arch.cayenne.lib.common.BuildConfig.BUILD_TIME}"
         }
+        mBinding.root.touchBackPressed()
     }
 
     override fun initListener() {

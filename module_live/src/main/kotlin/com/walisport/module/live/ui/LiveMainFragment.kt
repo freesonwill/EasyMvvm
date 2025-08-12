@@ -1,6 +1,7 @@
 package com.walisport.module.live.ui
 
 import android.animation.ValueAnimator
+import android.annotation.SuppressLint
 import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
@@ -15,16 +16,20 @@ import androidx.navigation.fragment.findNavController
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.data.model.PagerBean
 import arch.cayenne.lib.base.ui.adapter.PagerAdapter
+import arch.cayenne.lib.base.ui.animation.EaseCubicInterpolator
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
+import arch.cayenne.lib.common.utils.ext.DimensionExt.px2sp
+import arch.cayenne.lib.common.utils.ext.setDrawerInterpolator
 import arch.cayenne.lib.common.utils.ext.NavResultExt.observeResult
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.removeAllTips
+import arch.cayenne.lib.common.utils.ext.touchBackPressed
 import arch.cayenne.lib.common.utils.helper.doSmartAnim
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.lib.skin.widget.SkinnableTextView
@@ -40,8 +45,7 @@ import com.walisport.module.live.ui.viewmodel.LiveMainViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.filter
 import kotlin.reflect.KClass
-import arch.cayenne.lib.common.utils.ext.DimensionExt.px2sp
-import arch.cayenne.lib.common.utils.ext.DimensionExt.px2dp
+
 /**
  * 直播详情页
  */
@@ -67,6 +71,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         setVideoView()
         loadFragment()
         mViewModel.observeMatchInfoNotify()
+        mBinding.drawerLayout.setDrawerInterpolator(150,EaseCubicInterpolator.EaseOut())
         mBinding.drawerLayout.setDrawerLockMode(
             DrawerLayout.LOCK_MODE_LOCKED_CLOSED,
             GravityCompat.END
@@ -97,6 +102,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
     }
 
     override fun initListener() {
+        mBinding.liveMain.touchBackPressed()
         with(titleBarBinding) {
             ivBack.clickNoRepeat {
                 //软件盘开启后直接关闭软件盘，不返回
@@ -178,6 +184,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         return Lifecycle.State.RESUMED
     }
 
+    @SuppressLint("SetTextI18n")
     override suspend fun createObserver() {
         observeResult<Bundle>(CHANGE_MATCH) {
             val newArgs: LiveMainFragmentArgs = LiveMainFragmentArgs.fromBundle(it)
@@ -223,7 +230,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         }
         mViewModel.currentBalanceChange.observe(viewLifecycleOwner) {
             titleBarBinding.tvMoney.text =
-                "${CurrencySymbols.getSymbol(it.currency)} ${it.balance.getFormalMoney()}"
+                "${CurrencySymbols.getSymbol(it?.currency ?: "")}${(it?.balance?:0L).getFormalMoney()}"
         }
         mViewModel.mainMatch.observe(viewLifecycleOwner) {
             it?.let {
@@ -254,6 +261,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
 
     //比赛ID发生变化,取消订阅,数据请空
     private fun updateMatchId(matchId: Long) {
+        mBinding.customIndicator.setCurrentPosition(1)
         mBinding.tabLayout.getTabAt(1)?.select()
         mBinding.vpPage.setCurrentItem(1, true)
         mViewModel.matchId.value?.let {
@@ -317,6 +325,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                 tab.view.setOnClickListener { /* Handle click */ }
             }.attach()
             tabLayout.clearOnTabSelectedListeners()
+            mBinding.customIndicator.setCurrentPosition(1)
             tabLayout.getTabAt(1)?.select()
             vpPage.setCurrentItem(1, false)
             tabLayout.removeAllTips()

@@ -10,6 +10,7 @@ import androidx.navigation.fragment.navArgs
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.utils.ext.NavResultExt.sendResult
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
+import arch.cayenne.lib.common.utils.ext.touchBackPressed
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.module.handicap.R
 import arch.cayenne.module.handicap.databinding.FragmentSimulateBinding
@@ -36,6 +37,7 @@ class SimulateFragment : BaseFragment<SimulateViewModel, FragmentSimulateBinding
     }
 
     override fun initListener() {
+        mBinding.root.touchBackPressed()
     }
 
     override suspend fun createObserver() {

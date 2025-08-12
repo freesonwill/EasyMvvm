@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<arch.cayenne.lib.skin.widget.SkinnableConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/main_background">
+    <!-- 左右邊距的 Guideline -->
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_start"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="24dp" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_end"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_end="24dp" />
+]<arch.cayenne.lib.common.ui.view.TitleBarView
+    android:id="@+id/titleBar"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/dp_46"
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"/>
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tv_title"
+        android:text="切换账号"
+        android:textColor="@color/main_text"
+        android:textSize="@dimen/sp_30"
+        app:layout_constraintTop_toBottomOf="@id/titleBar"
+        app:layout_constraintStart_toStartOf="@id/guideline_start"
+     />
+
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tv_welcome_title"
+        android:text="欢迎使用瓦力体育"
+        android:textColor="@color/main_text"
+        app:layout_constraintTop_toBottomOf="@id/tv_title"
+        app:layout_constraintStart_toStartOf="@id/guideline_start"
+    />
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tv_enter_mobile_no"
+        android:text="输入手机号"
+        android:textColor="@color/main_text"
+        android:layout_marginTop="@dimen/dp_60"
+        app:layout_constraintTop_toBottomOf="@id/tv_welcome_title"
+        app:layout_constraintStart_toStartOf="@id/guideline_start"
+        />
+    <!-- 手機號碼輸入框 (複合元件) -->
+    <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
+        android:id="@+id/ll_phone_input"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="@dimen/dp_10"
+        android:addStatesFromChildren="true"
+        android:background="@drawable/ic_keyboard_2_selector"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        app:layout_constraintEnd_toEndOf="@id/guideline_end"
+        app:layout_constraintStart_toStartOf="@id/guideline_start"
+        app:layout_constraintTop_toBottomOf="@id/tv_enter_mobile_no">
+
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
+            android:id="@+id/tv_country_code"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="+86 ▼"
+            android:textColor="@color/main_text"
+            android:textSize="16sp" />
+
+        <arch.cayenne.lib.skin.widget.SkinnableView
+            android:layout_width="1dp"
+            android:layout_height="24dp"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="12dp"
+            android:background="@color/vertical_divider" />
+
+        <arch.cayenne.lib.common.ui.view.ClearableEditText
+            android:id="@+id/et_phone_number"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@null"
+            android:gravity="center_vertical"
+            android:hint="请输入手机号码"
+            android:inputType="phone"
+            android:textColor="@color/main_text"
+            android:textColorHint="@color/secondary_text" />
+
+    </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
+        android:id="@+id/tv_set_password_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="设置密码"
+        android:textColor="@color/main_text"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="@id/guideline_start"
+        app:layout_constraintTop_toBottomOf="@id/ll_phone_input" />
+    <!-- 密碼輸入框 -->
+    <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:background="@drawable/ic_keyboard_2_selector"
+        android:id="@+id/ll_password"
+        android:layout_marginTop="@dimen/dp_10"
+        android:addStatesFromChildren="true"
+        app:layout_constraintEnd_toEndOf="@id/guideline_end"
+        app:layout_constraintStart_toStartOf="@id/guideline_start"
+        app:layout_constraintTop_toBottomOf="@id/tv_set_password_title">
+        <arch.cayenne.lib.skin.widget.SkinnableImageView
+            android:layout_width="@dimen/dp_18"
+            android:layout_height="@dimen/dp_18"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginEnd="@dimen/dp_10"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/ic_lock" />
+        <arch.cayenne.lib.common.ui.view.ClearableEditText
+            android:id="@+id/et_password"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:drawablePadding="16dp"
+            android:hint="请输入密码"
+            android:background="@null"
+            android:inputType="textPassword"
+            android:textColor="@color/main_text"
+            android:textColorHint="@color/input_words"
+            tools:ignore="MissingConstraints"
+            />
+    </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
+        android:id="@+id/tv_forgot_password"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="设置密码"
+        android:textColor="@color/main_text"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="@id/guideline_end"
+        app:layout_constraintTop_toBottomOf="@id/ll_password" />
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_next"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="@dimen/dp_10"
+        android:background="@drawable/selector_send_button"
+        android:gravity="center"
+        android:text="下一步"
+        android:textColor="@android:color/black"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="@id/guideline_end"
+        app:layout_constraintStart_toStartOf="@id/guideline_start"
+        app:layout_constraintTop_toBottomOf="@id/tv_forgot_password" />
+</arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>

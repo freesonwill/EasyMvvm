@@ -19,9 +19,9 @@ import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.helper.showToast
-import arch.cayenne.lib.database.entity.AddSelectionStatus
 import arch.cayenne.lib.database.entity.MatchWithMarkets
 import arch.cayenne.lib.database.entity.SelectionBeanLite
+import arch.cayenne.module.bet.data.AddSelectionStatus
 import arch.cayenne.module.bet.ui.fragment.BetSheetFragment
 import arch.cayenne.module.bet.viewmodel.FloatingButtonControlViewModel
 import arch.cayenne.module.home.R
@@ -32,6 +32,7 @@ import arch.cayenne.module.home.ui.adapter.OnMatchItemClickListener
 import arch.cayenne.module.home.ui.view.decoration.MatchCardItemDecoration
 import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
 import arch.cayenne.module.home.ui.viewmodel.MatchListViewModel
+import com.walisport.module.message.ui.view.DeleteAnimator
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import java.lang.ref.WeakReference
@@ -78,12 +79,10 @@ class MatchListPagerFragment :
 
                         if (status is AddSelectionStatus.Success.Single) {
                             BetSheetFragment.show(requireActivity())
-                        } else if (status is AddSelectionStatus.Failure.DisableComboForParlay) {
-                            showToast(getString(R.string.disabled_to_combo))
-                        } else if (status is AddSelectionStatus.Failure.DisableComboForProvider) {
-                            showToast(getString(R.string.disabled_to_combo_for_provider))
-                        } else if (status is AddSelectionStatus.Failure.NetworkDisconnected) {
-                            showToast(getString(arch.cayenne.lib.common.R.string.toast_server_disconnected))
+                        } else if (status is AddSelectionStatus.Failure) {
+                            status.msg?.let {
+                                showToast(it)
+                            }
                         } else if (status is AddSelectionStatus.Success.Combo || status is AddSelectionStatus.Success.Update) {
                             fabViewModel.setClickAnimation(x, y)
                         }
@@ -95,6 +94,7 @@ class MatchListPagerFragment :
                 this.layoutManager = gameLayoutManager
                 this.adapter = matchAdapter
                 addItemDecoration(decoration)
+                itemAnimator = DeleteAnimator()
             }
             rvHomeGameList.itemAnimator  = null
             rvHomeGameList.addOnScrollListener(object : RecyclerView.OnScrollListener() {

@@ -9,8 +9,11 @@ import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.data.repo.BalanceRepository
 import arch.cayenne.lib.common.ui.viewmodel.Event
 import arch.cayenne.lib.common.ui.viewmodel.NumberCalculatorViewModel
-import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
+import arch.cayenne.lib.common.utils.ext.SportDisplayOddsExt.getDisplayOdds
+import arch.cayenne.lib.common.utils.ext.SportDisplayOddsExt.reserveDisplayOdds
+import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
+import arch.cayenne.lib.common.utils.ext.SportStringExt.toOdds
 import arch.cayenne.lib.database.entity.BetSelectionBean
 import arch.cayenne.lib.database.entity.BetTypeEnum
 import arch.cayenne.lib.database.entity.InfoBean
@@ -41,8 +44,8 @@ class SingleBetViewModel(
     private val _onComboMultiBetBeanListener = MutableLiveData<ComboMultiBetBean>()
     val onComboMultiBetBeanListener: LiveData<ComboMultiBetBean> get() = _onComboMultiBetBeanListener
 
-    private val _onBalanceListener = MutableLiveData<InfoBean>()
-    val onBalanceListener: LiveData<InfoBean> get() = _onBalanceListener
+    private val _onBalanceListener = MutableLiveData<InfoBean?>()
+    val onBalanceListener: LiveData<InfoBean?> get() = _onBalanceListener
 
     private val _betTypeListener = MutableLiveData<BetTypeEnum?>()
     val betTypeListener: LiveData<BetTypeEnum?> get() = _betTypeListener
@@ -54,7 +57,7 @@ class SingleBetViewModel(
         val checkEligibility = {
             val betSheet = _onBetSheetListener.value
             val editNumber = onEditNumber.value
-            val odds = _onReserveOddsListener.value
+            val odds = _onReserveOddsListener.value?.reserveDisplayOdds()
 
             value = if (betSheet == null || editNumber == null) {
                 false
@@ -81,11 +84,14 @@ class SingleBetViewModel(
         get() = CurrencySymbols.getSymbol(_onBalanceListener.value?.currency ?: "")
 
     private val _onBetWinMoney = MediatorLiveData<String>().apply {
-        var odds = 1
+        var odds = 100
+        fun getOdds(): Int {
+            return odds.getDisplayOdds().toOdds()
+        }
         addSource(_onBetSheetListener) { data ->
             if (_onReserveOddsListener.value == null) {
                 odds = data.odds
-                value = editValue.toMoney().getFormalMoney(odds)
+                value = editValue.toMoney().getMoney(getOdds())
             }
         }
         addSource(_onReserveOddsListener) { reserveOdds ->
@@ -96,7 +102,7 @@ class SingleBetViewModel(
             } else {
                 odds = reserveOdds
             }
-            value = editValue.toMoney().getFormalMoney(odds)
+            value = editValue.toMoney().getMoney(getOdds())
         }
         addSource(onEditNumber) {
             val money = if (it.isEmpty()) {
@@ -109,7 +115,7 @@ class SingleBetViewModel(
             value = if (money.isEmpty()) {
                 "0.00"
             } else {
-                money.toMoney().getFormalMoney(odds)
+                money.toMoney().getMoney(getOdds())
             }
         }
     }
@@ -134,7 +140,7 @@ class SingleBetViewModel(
                 }
             }
             launch {
-                balanceRepo.observeBalance().collect {
+                balanceRepo.observeInfo().collect {
                     _onBalanceListener.value = it
                     if (it != null) {
                         setRemainingNumber(it.balance)
@@ -155,7 +161,7 @@ class SingleBetViewModel(
         }
         val money = onEditNumber.value?.toMoney() ?: return false
         val currentOdds = _onBetSheetListener.value?.odds ?: 0
-        val reserveOdds = _onReserveOddsListener.value
+        val reserveOdds = _onReserveOddsListener.value?.reserveDisplayOdds()
 
         viewModelScope.launch {
             if (reserveOdds == null || reserveOdds == currentOdds) {

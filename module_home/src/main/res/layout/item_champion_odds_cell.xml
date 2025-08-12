@@ -41,7 +41,6 @@
         <arch.cayenne.lib.skin.widget.SkinnableTextView
             android:id="@+id/tv_odds"
             style="@style/OddsTextStyle"
-            android:fontFamily="sans-serif"
             android:textFontWeight="500"
             android:layout_marginEnd="@dimen/dp_12"
             app:layout_constraintEnd_toEndOf="parent"

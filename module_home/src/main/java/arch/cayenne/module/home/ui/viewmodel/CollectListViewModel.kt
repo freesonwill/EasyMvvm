@@ -28,12 +28,12 @@ import plugin.koin.KoinViewModel
 class CollectListViewModel : BaseMatchViewModel<CollectListRepository>() {
     override val repository : CollectListRepository by inject()
     private val balanceRepository: BalanceRepository by inject()
-    val currentBalanceChange by lazy { MutableLiveData<InfoBean>() }
+    val currentBalanceChange by lazy { MutableLiveData<InfoBean?>() }
 
     override fun initViewModel() {
         super.initViewModel()
         viewModelScope.launch(Dispatchers.IO) {
-            balanceRepository.observeBalance().collect {
+            balanceRepository.observeInfo().collect {
                 withContext(Dispatchers.Main) {
                     currentBalanceChange.value = it
                 }

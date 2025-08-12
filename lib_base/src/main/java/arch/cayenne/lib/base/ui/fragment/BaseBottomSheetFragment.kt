@@ -1,10 +1,12 @@
 package arch.cayenne.lib.base.ui.fragment
 
+import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -14,7 +16,11 @@ import android.view.animation.AnimationUtils
 import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
 import androidx.annotation.CallSuper
+import androidx.appcompat.app.AppCompatDialog
+import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.view.ViewCompat
 import androidx.fragment.app.FragmentManager
+import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.base.R
 import arch.cayenne.lib.base.data.constants.StatusBarMode
@@ -23,11 +29,16 @@ import arch.cayenne.lib.base.ui._interface.IStatusBar
 import arch.cayenne.lib.base.ui._interface.IView
 import arch.cayenne.lib.base.ui.delegate.StatusBarDelegate
 import arch.cayenne.lib.base.ui.delegate.UIBindDelegate
+import arch.cayenne.lib.base.ui.gesture.TikTokGesture
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import org.koin.androidx.viewmodel.ext.android.viewModelForClass
+import java.lang.ref.WeakReference
+import java.lang.reflect.Field
 import kotlin.reflect.KClass
+
 
 abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
     BottomSheetDialogFragment(), IView {
@@ -42,7 +53,11 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
     protected val mViewModel: VM get() = uiBind.viewModel
     abstract val vbClass: KClass<VB>
     abstract val vmClass: KClass<VM>
-    private val uiBind by lazy { UIBindDelegate(uiOwner = this, vmProvider = ::createVM, vbProvider = ::createVB,) }
+    private val uiBind by lazy { UIBindDelegate(
+        uiOwner = this,
+        vmProvider = ::createVM,
+        vbProvider = ::createVB
+    ) }
 
     protected open fun createVB(container: ViewGroup?): VB {
         return getViewBind(vbClass, container, false)
@@ -114,6 +129,7 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
                 }
 
                 override fun onAnimationEnd(animation: Animation?) {
+                    setRvTouch()
                 }
 
                 override fun onAnimationRepeat(animation: Animation?) {}
@@ -122,7 +138,7 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
         }
     }
 
-    protected fun playExitAnimations() {
+    protected open fun playExitAnimations() {
         val sheetContainerSheetAnim = AnimationUtils.loadAnimation(requireContext(), R.anim.slide_bottom_sheet_down)
         sheetContainerSheetAnim.setAnimationListener(object : Animation.AnimationListener {
             override fun onAnimationStart(animation: Animation?) {
@@ -159,6 +175,7 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         uiBind.onViewCreated(view, savedInstanceState)
+        setBehavior(view)
     }
 
     @CallSuper
@@ -169,6 +186,7 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
         setBackGroundOnclick()
         removeDim()
         setStatusBar()
+        setGesture()
     }
 
     protected open fun setBackGroundOnclick() {
@@ -185,11 +203,19 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
     }
 
     private fun setSheetContainer() {
-        val d = dialog as BottomSheetDialog
+        val d = dialog as AppCompatDialog
         val root = d.findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)?.parent as ViewGroup
 
         backgroundView = root.getChildAt(0)
         sheetContainer = root.findViewById(com.google.android.material.R.id.design_bottom_sheet)
+    }
+
+    protected open fun setBehavior(view: View) {
+        val bottomSheet = (view.parent as? View) ?: return
+        val params = bottomSheet.layoutParams as? CoordinatorLayout.LayoutParams ?: return
+        val scrollBehavior = ScrollBottomSheetBehavior<View>(requireContext(), null)
+        params.behavior = scrollBehavior
+        bottomSheet.layoutParams = params
     }
 
     @CallSuper
@@ -278,4 +304,165 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
     private fun setDim(amount: Float) {
         dialog?.window?.setDimAmount(amount)
     }
+
+    private fun setRvTouch() {
+        val rv = findAllRecyclerViews(mBinding.root)
+        rv.forEach {
+            it.addOnItemTouchListener(object : RecyclerView.OnItemTouchListener {
+                override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
+                    setScrollable(rv)
+                    return false
+                }
+
+                override fun onTouchEvent(rv: RecyclerView, e: MotionEvent) {
+
+                }
+
+                override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {
+                }
+
+            })
+        }
+    }
+
+    private fun setScrollable(recyclerView: RecyclerView) {
+        val params = sheetContainer?.layoutParams
+        if (params is CoordinatorLayout.LayoutParams) {
+            val behavior = params.behavior
+            if (behavior != null && behavior is BottomSheetBehaviorInterface) {
+                behavior.setNestedScrollingChildRef(recyclerView)
+            }
+        }
+    }
+
+    private fun findAllRecyclerViews(root: View): List<RecyclerView> {
+        val result = mutableListOf<RecyclerView>()
+
+        if (root is RecyclerView) {
+            result.add(root)
+        }
+
+        if (root is ViewGroup) {
+            for (i in 0 until root.childCount) {
+                result.addAll(findAllRecyclerViews(root.getChildAt(i)))
+            }
+        }
+
+        return result
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private fun setGesture() {
+        val v = mBinding.root
+        val tikTokGesture = TikTokGesture(v)
+        tikTokGesture.setListener(object : TikTokGesture.TikTokGestureListener {
+            override fun onFlingToRight() {
+                dialog?.onBackPressed()
+            }
+
+            override fun onHorizontalScroll(offsetX: Float) {
+                sheetContainer?.translationY = offsetX * 1.5f
+            }
+
+            override fun onActionUp() {
+                val translationY = sheetContainer?.translationY ?: 0f
+                val height = sheetContainer?.height ?: 0
+                if (translationY >= height / 2) {
+                    dialog?.onBackPressed()
+                } else {
+                    resetSheetTranslation()
+                }
+            }
+        })
+    }
+
+    private fun resetSheetTranslation() {
+        sheetContainer?.let {
+            ValueAnimator.ofFloat(it.translationY, 0f).apply {
+                duration = 100
+                addUpdateListener { animation ->
+                    val value = animation.animatedValue as Float
+                    it.translationY = value
+                }
+                start()
+            }
+        }
+
+    }
+}
+
+interface BottomSheetBehaviorInterface {
+    fun setNestedScrollingChildRef(v: View)
+}
+open class ScrollBottomSheetBehavior<V : View>(context: Context, attrs: AttributeSet?) : BottomSheetBehavior<V>(context, attrs), BottomSheetBehaviorInterface {
+
+    private var mNestedScrollingChildRef: WeakReference<View>? = null
+
+    override fun setNestedScrollingChildRef(v: View) {
+        val prev = mNestedScrollingChildRef?.get()
+        if (prev === v) {
+            return
+        }
+
+        // 更新本地引用
+        mNestedScrollingChildRef = WeakReference(v)
+
+        // 停掉上一個 child 的 nested scroll，避免競爭
+        if (prev != null) {
+            try {
+                ViewCompat.stopNestedScroll(prev)
+                ViewCompat.stopNestedScroll(prev, ViewCompat.TYPE_TOUCH)
+                ViewCompat.stopNestedScroll(prev, ViewCompat.TYPE_NON_TOUCH)
+            } catch (_: Throwable) {}
+        }
+
+        // 強制覆寫父類私有欄位 nestedScrollingChildRef
+        setParentNestedChildByReflection(v)
+    }
+
+    private fun updateNestedScrollingChildRef(v: View) {
+        val prev = mNestedScrollingChildRef?.get()
+        // 更新本地引用
+        mNestedScrollingChildRef = WeakReference(v)
+
+        // 停掉上一個 child 的 nested scroll，避免競爭
+        if (prev != null) {
+            try {
+                ViewCompat.stopNestedScroll(prev)
+                ViewCompat.stopNestedScroll(prev, ViewCompat.TYPE_TOUCH)
+                ViewCompat.stopNestedScroll(prev, ViewCompat.TYPE_NON_TOUCH)
+            } catch (_: Throwable) {}
+        }
+
+        // 強制覆寫父類私有欄位 nestedScrollingChildRef
+        setParentNestedChildByReflection(v)
+    }
+
+    private fun setParentNestedChildByReflection(v: View) {
+        try {
+            val field: Field =
+                BottomSheetBehavior::class.java.getDeclaredField("nestedScrollingChildRef")
+            field.isAccessible = true
+            field.set(this, WeakReference(v))
+        } catch (_: Throwable) {
+            // 版本差異時可加 log
+        }
+    }
+
+    override fun onStartNestedScroll(
+        coordinatorLayout: CoordinatorLayout,
+        child: V,
+        directTargetChild: View,
+        target: View,
+        axes: Int,
+        type: Int
+    ): Boolean {
+        val accepted = super.onStartNestedScroll(
+            coordinatorLayout, child, directTargetChild, target, axes, type
+        )
+        // 父類會在這裡重設 nestedScrollingChildRef → 再覆寫一次我們指定的 child
+        mNestedScrollingChildRef?.get()?.let { updateNestedScrollingChildRef(it) }
+        return accepted
+    }
+
 }

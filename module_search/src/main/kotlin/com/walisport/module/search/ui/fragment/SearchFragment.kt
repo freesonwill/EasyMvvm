@@ -3,6 +3,7 @@ package com.walisport.module.search.ui.fragment
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -10,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import arch.cayenne.lib.common.ui.dialog.CommonDialog
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+import arch.cayenne.lib.common.utils.ext.touchBackPressed
 import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import com.walisport.module.search.R
@@ -46,6 +48,7 @@ class SearchFragment : SearchBaseFragment<SearchViewModel, FragmentSearchBinding
         super.initView(savedInstanceState)
         setHistory()
         setHotWords()
+        mBinding.root.touchBackPressed()
     }
 
     override fun initData() {
@@ -65,7 +68,6 @@ class SearchFragment : SearchBaseFragment<SearchViewModel, FragmentSearchBinding
             with(mViewModel) {
                 searchRecord.observe(viewLifecycleOwner) {
                     historyAdapter?.setNewData(it.reversed().toMutableList())
-                    hfList.updateView()
                     clHistory.visibility = if (it.isEmpty()) View.GONE else View.VISIBLE
                 }
                 searchHotWord.observe(viewLifecycleOwner) {
@@ -99,13 +101,16 @@ class SearchFragment : SearchBaseFragment<SearchViewModel, FragmentSearchBinding
                         mViewModel.getRecordByUID()
                     },
                     onSearch = { content ->
-                        content?.let {
+                        content.let {
                             updateSearchText(content)
                             toSearchResult(content)
                         }
                     }
                 )
-                hfList.setAdapter(historyAdapter)
+                hfList.apply {
+                    setAdapter(historyAdapter)
+                    setMaxFoldLines(2)
+                }
 
                 //删除图标，点击进入删除模式
                 ivClickShowDelete.clickNoRepeat {
@@ -188,8 +193,8 @@ class SearchFragment : SearchBaseFragment<SearchViewModel, FragmentSearchBinding
     private fun setHistoryButton() {
         with(contentBinding) {
             isEditor = !isEditor
-            historyAdapter?.isDelete = isEditor
-            hfList.setEditor(isEditor)
+            historyAdapter?.setDeleteMode(isEditor)
+            hfList.setDeleteMode(isEditor)
             if (isEditor) {
                 ivClickShowDelete.visibility = View.GONE
                 llShowCompleted.visibility = View.VISIBLE

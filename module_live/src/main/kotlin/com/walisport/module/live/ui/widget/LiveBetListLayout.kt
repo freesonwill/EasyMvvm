@@ -7,9 +7,6 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import androidx.core.view.isVisible
-import androidx.lifecycle.findViewTreeLifecycleOwner
-import androidx.lifecycle.lifecycleScope
-import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.clickNoRepeatSingle
 import arch.cayenne.lib.skin.widget.SkinnableLinearLayout
 import com.walisport.module.live.data.LiveOddsStatusEnum
@@ -18,11 +15,8 @@ import com.walisport.module.live.databinding.LiveBetContentItemLayoutOneBinding
 import com.walisport.module.live.databinding.LiveBetContentItemLayoutThreeBinding
 import com.walisport.module.live.databinding.LiveBetContentItemLayoutTowBinding
 import com.walisport.module.live.databinding.LiveBetContentListItemLayoutBinding
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-
+import arch.cayenne.lib.common.utils.ext.SportStringExt.toOdds
+import arch.cayenne.lib.common.utils.ext.SportDisplayOddsExt.getDisplayOdds
 class LiveBetListLayout @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
@@ -225,11 +219,12 @@ class LiveBetListLayout @JvmOverloads constructor(
         lockView: View
     ) {
         with(binding) {
+            var oddsInt :Int = odds.toOdds()
             when (this) {
                 is LiveBetContentItemLayoutOneBinding -> {
                     if (active) isOddsStatus(oddStatus, imgTop, imgDown)
                     tvBetDuelLeft.text = name
-                    tvBetDuelRight.text = odds
+                    tvBetDuelRight.text = oddsInt.getDisplayOdds()
                     sclOne.isSelected = isCombo
                     sclOne.clickNoRepeatSingle() {
                         handleClick(marketId, isCombo, callback, sclOne) }
@@ -237,7 +232,7 @@ class LiveBetListLayout @JvmOverloads constructor(
                 is LiveBetContentItemLayoutTowBinding -> {
                     if (active) isOddsStatus(oddStatus, imgTop, imgDown)
                     tvBetDuelLeft.text = name
-                    tvBetDuelRight.text = odds
+                    tvBetDuelRight.text = oddsInt.getDisplayOdds()
                     sclTow.isSelected = isCombo
                     sclTow.clickNoRepeatSingle {
                         handleClick(marketId, isCombo, callback, sclTow) }
@@ -245,7 +240,7 @@ class LiveBetListLayout @JvmOverloads constructor(
                 is LiveBetContentItemLayoutThreeBinding -> {
                     if (active) isOddsStatus(oddStatus, imgTop, imgDown)
                     tvBetDuelLeft.text = name
-                    tvBetDuelRight.text = odds
+                    tvBetDuelRight.text = oddsInt.getDisplayOdds()
                     sclThree.isSelected = isCombo
                     sclThree.clickNoRepeatSingle {
                         handleClick(marketId, isCombo, callback, sclThree) }

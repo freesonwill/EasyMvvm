@@ -1,17 +1,13 @@
 package arch.cayenne.module.bet.util
 
 import android.animation.ObjectAnimator
-import android.animation.ValueAnimator
 import android.view.View
 import android.view.animation.LinearInterpolator
-import android.widget.ImageView
 import androidx.core.animation.addListener
-import androidx.core.animation.doOnEnd
-import androidx.core.animation.doOnStart
 import androidx.core.content.ContextCompat
-import androidx.core.view.drawToBitmap
 import androidx.core.view.isVisible
 import androidx.core.view.postDelayed
+import arch.cayenne.lib.common.utils.ext.SportDisplayOddsExt.getDisplayOdds
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
 import arch.cayenne.lib.database.entity.BetSelectionBean
 import arch.cayenne.lib.database.entity.OddsStatusEnum
@@ -19,8 +15,12 @@ import arch.cayenne.module.bet.databinding.ItemBetSheetBinding
 
 internal object ViewHelper {
 
-    fun bindBetSheet(bean: BetSelectionBean, binding: ItemBetSheetBinding) {
-        val odds = "@${bean.odds.getOdds()}"
+    fun bindBetSheet(size: Int, bean: BetSelectionBean, binding: ItemBetSheetBinding) {
+        val odds = if (size == 1) {
+            "@${bean.odds.getDisplayOdds()}"
+        } else {
+            "@${bean.odds.getOdds()}"
+        }
         binding.tvOdds.text = odds
 
         binding.tvSelectionName.text = bean.name

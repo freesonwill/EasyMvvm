@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<arch.cayenne.lib.skin.widget.SkinnableConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<arch.cayenne.lib.common.ui.view.InterceptedConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    app:interceptedDirection="RIGHT"
+    app:canScrollView="@id/view_pager"
     android:background="@color/main_background">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -20,7 +23,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-
+    
         <arch.cayenne.lib.skin.widget.SkinnableTextView
             android:id="@+id/tv_title"
             android:layout_width="wrap_content"
@@ -37,25 +40,41 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <arch.cayenne.lib.skin.widget.SkinnableTabLayout
-        android:id="@+id/tab_layout"
+    <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
+        android:id="@+id/LLTabLayout"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_40"
-        android:background="@android:color/transparent"
+        android:orientation="vertical"
+        android:background="@color/tran_0"
         app:layout_constraintTop_toBottomOf="@id/cl_title"
-        app:tabIndicator="@drawable/bg_indicator"
-        app:tabIndicatorAnimationMode="elastic"
-        app:tabIndicatorColor="@color/green_for_white_bg"
-        app:tabIndicatorFullWidth="false"
-        app:tabIndicatorHeight="8dp"
-        app:tabPaddingBottom="0dp"
-        app:tabPaddingEnd="0dp"
-        app:tabPaddingStart="0dp"
-        app:tabPaddingTop="0dp"
-        app:tabRippleColor="@null"
-        app:tabSelectedTextColor="@color/main_text"
-        app:tabTextAppearance="@style/BetSlipTabTextStyle"
-        app:tabTextColor="@color/secondary_text" />
+        >
+        <arch.cayenne.lib.skin.widget.SkinnableTabLayout
+            android:id="@+id/tab_layout"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            app:tabIndicatorHeight="0dp"
+            app:tabMode="fixed"
+            app:tabMinWidth="@dimen/dp_100"
+            android:background="@android:color/transparent"
+            app:tabMaxWidth="@dimen/dp_80"
+            app:tabPaddingStart="0dp"
+            app:tabPaddingEnd="0dp"
+            app:tabRippleColor="@null"
+            android:layout_marginTop="@dimen/dp_9"
+            app:tabSelectedTextColor="@color/main_text"
+            app:tabTextAppearance="@style/BetSlipTabTextStyle"
+            app:tabTextColor="@color/secondary_text"
+            tools:ignore="SpeakableTextPresentCheck" />
+        <arch.cayenne.lib.common.ui.view.CustomTabIndicator
+            android:id="@+id/customIndicator"
+            android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:layout_marginTop="@dimen/dp_6"
+            android:background="@android:color/transparent"
+            app:tabTextAppearance="@style/BetSlipTabTextStyle"
+            app:tabTextColor="@color/secondary_text"
+            />
+    </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_filter"
@@ -64,7 +83,7 @@
         android:layout_marginHorizontal="8dp"
         android:paddingTop="6dp"
         android:paddingBottom="12dp"
-        app:layout_constraintTop_toBottomOf="@id/tab_layout">
+        app:layout_constraintTop_toBottomOf="@id/LLTabLayout">
 
         <arch.cayenne.lib.skin.widget.SkinnableTextView
             android:id="@+id/tv_sport_filter"
@@ -113,4 +132,4 @@
         android:layout_marginHorizontal="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/cl_filter" />
-</arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
+</arch.cayenne.lib.common.ui.view.InterceptedConstraintLayout>

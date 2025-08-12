@@ -15,16 +15,16 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.setFragmentResult
 import arch.cayenne.lib.base.ui.fragment.BaseDialogFragment
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
+import arch.cayenne.lib.common.ui.view.NumberKeyboardView
 import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
 import arch.cayenne.lib.common.utils.helper.showToast
+import arch.cayenne.module.bet.R
 import arch.cayenne.module.bet.data.Config.KEY_RESULT
 import arch.cayenne.module.bet.data.Config.VALUE_MONEY_INPUT
-import arch.cayenne.module.bet.R
 import arch.cayenne.module.bet.databinding.FragmentComboBetMoneyKeyboardDialogBinding
-import arch.cayenne.lib.common.ui.view.NumberKeyboardView
 import arch.cayenne.module.bet.viewmodel.ComboBetMoneyKeyboardDialogViewModel
 import kotlin.reflect.KClass
 
@@ -164,8 +164,8 @@ class ComboBetMoneyKeyboardDialogFragment private constructor():
                 showToast(msg)
             }
         }
-        mViewModel.onBalanceListener.observe(viewLifecycleOwner) {
-            mBinding.tvMoney.text = CurrencySymbols.getSymbol(it.currency)
+        mViewModel.onCurrencyListener.observe(viewLifecycleOwner) {
+            mBinding.tvMoney.text = CurrencySymbols.getSymbol(it)
         }
     }
 

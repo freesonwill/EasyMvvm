@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<arch.cayenne.lib.skin.widget.SkinnableConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/card_background">
+    <!-- 1. 頂部工具列 -->
+    <arch.cayenne.lib.common.ui.view.TitleBarView
+        android:id="@+id/titleBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
+    <!-- Logo 和 App 名稱 (與登入頁相同) -->
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_logo"
+        android:layout_width="128dp"
+        android:layout_height="80dp"
+        android:layout_marginTop="100dp"
+        android:src="@drawable/icon_login_logo"
+        app:layout_constraintTop_toBottomOf="@id/titleBar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        />
+
+    <!-- 左右邊距的 Guideline -->
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_start"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="32dp" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_end"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_end="32dp" />
+
+    <!-- 用戶名輸入框 -->
+    <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:background="@drawable/ic_keyboard_2_selector"
+        android:id="@+id/ll_username"
+        android:layout_marginTop="@dimen/dp_70"
+        android:addStatesFromChildren="true"
+        app:layout_constraintEnd_toEndOf="@id/guideline_end"
+        app:layout_constraintStart_toStartOf="@id/guideline_start"
+        app:layout_constraintTop_toBottomOf="@id/iv_logo">
+        <arch.cayenne.lib.skin.widget.SkinnableImageView
+            android:layout_width="@dimen/dp_18"
+            android:layout_height="@dimen/dp_18"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginEnd="@dimen/dp_10"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/ic_person" />
+        <arch.cayenne.lib.common.ui.view.ClearableEditText
+            android:id="@+id/et_username"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:hint="请输入用户名"
+            android:background="@null"
+            android:inputType="text"
+            android:textColor="@color/main_text"
+            android:textColorHint="@color/input_words"
+            tools:ignore="MissingConstraints"
+            /></arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
+
+    <!-- 密碼輸入框 -->
+    <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:background="@drawable/ic_keyboard_2_selector"
+        android:id="@+id/ll_password"
+        android:layout_marginTop="@dimen/dp_10"
+        android:addStatesFromChildren="true"
+        app:layout_constraintEnd_toEndOf="@id/guideline_end"
+        app:layout_constraintStart_toStartOf="@id/guideline_start"
+        app:layout_constraintTop_toBottomOf="@id/ll_username">
+        <arch.cayenne.lib.skin.widget.SkinnableImageView
+            android:layout_width="@dimen/dp_18"
+            android:layout_height="@dimen/dp_18"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginEnd="@dimen/dp_10"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/ic_lock" />
+        <arch.cayenne.lib.common.ui.view.ClearableEditText
+            android:id="@+id/et_password"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:drawablePadding="16dp"
+            android:hint="请输入密码"
+            android:background="@null"
+            android:inputType="textPassword"
+            android:textColor="@color/main_text"
+            android:textColorHint="@color/input_words"
+            tools:ignore="MissingConstraints"
+            />
+    </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
+    <!-- 確認密碼輸入框 -->
+    <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:background="@drawable/ic_keyboard_2_selector"
+        android:id="@+id/ll_confirm_password"
+        android:layout_marginTop="@dimen/dp_10"
+        android:addStatesFromChildren="true"
+        app:layout_constraintEnd_toEndOf="@id/guideline_end"
+        app:layout_constraintStart_toStartOf="@id/guideline_start"
+        app:layout_constraintTop_toBottomOf="@id/ll_password">
+        <arch.cayenne.lib.skin.widget.SkinnableImageView
+            android:layout_width="@dimen/dp_18"
+            android:layout_height="@dimen/dp_18"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginEnd="@dimen/dp_10"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/ic_lock" />
+        <arch.cayenne.lib.common.ui.view.ClearableEditText
+            android:id="@+id/et_confirm_password"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:drawablePadding="16dp"
+            android:hint="请输入密码"
+            android:background="@null"
+            android:inputType="textPassword"
+            android:textColor="@color/main_text"
+            android:textColorHint="@color/input_words"
+            tools:ignore="MissingConstraints"
+            />
+    </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
+
+    <!-- 註冊按鈕 (圖片上文字是登录，但邏輯上應為註冊) -->
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_register"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="24dp"
+        android:gravity="center"
+        android:background="@drawable/selector_send_button"
+        android:text="注册"
+        android:textColor="@android:color/black"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="@id/guideline_end"
+        app:layout_constraintStart_toStartOf="@id/guideline_start"
+        app:layout_constraintTop_toBottomOf="@id/ll_confirm_password" />
+
+    <!-- 底部連結 -->
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
+        android:id="@+id/tv_go_to_login"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="账号登录"
+        android:textColor="@color/link_text_color"
+        android:textSize="14sp"
+        app:layout_constraintStart_toStartOf="@id/guideline_start"
+        app:layout_constraintEnd_toEndOf="@id/guideline_end"
+        app:layout_constraintTop_toBottomOf="@+id/btn_register" />
+
+
+</arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>

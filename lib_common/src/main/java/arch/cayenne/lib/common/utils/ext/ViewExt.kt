@@ -4,6 +4,7 @@ import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.animation.TimeInterpolator
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.ContextWrapper
 import android.content.res.ColorStateList
 import android.graphics.Bitmap
@@ -18,9 +19,11 @@ import android.view.View.OnAttachStateChangeListener
 import android.view.animation.DecelerateInterpolator
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.view.children
 import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.common.R
+import arch.cayenne.lib.common.ui.view.OnSwipeTouchListener
 import com.google.android.material.shape.CornerFamily
 import com.google.android.material.shape.MaterialShapeDrawable
 import com.google.android.material.shape.ShapeAppearanceModel
@@ -416,4 +419,27 @@ fun View.addRippleEffect(
     val rippleDrawable = RippleDrawable(rippleColorState, backgroundDrawable, null)
 
     this.background = rippleDrawable
+}
+//侧滑退出当前fragment
+fun View.touchBackPressed(){
+    setOnTouchListener(object : OnSwipeTouchListener() {
+        override fun onSwipeRight() {
+            requireActivity().onBackPressedDispatcher.onBackPressed()
+        }
+    })
+}
+
+fun View.getTouchListener(): View.OnTouchListener? {
+    return try {
+        val listenerInfoField = View::class.java.getDeclaredField("mListenerInfo")
+        listenerInfoField.isAccessible = true
+        val listenerInfo = listenerInfoField.get(this)
+
+        val touchListenerField = listenerInfo.javaClass.getDeclaredField("mOnTouchListener")
+        touchListenerField.isAccessible = true
+        touchListenerField.get(listenerInfo) as? View.OnTouchListener
+    } catch (e: Exception) {
+        e.printStackTrace()
+        null
+    }
 }

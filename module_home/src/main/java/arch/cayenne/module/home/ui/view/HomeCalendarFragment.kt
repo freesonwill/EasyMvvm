@@ -13,14 +13,16 @@ import android.graphics.Rect
 import android.graphics.Shader
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.view.animation.DecelerateInterpolator
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.animation.doOnEnd
 import androidx.core.animation.doOnStart
 import androidx.core.view.doOnLayout
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.R as RC
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.extractDate
@@ -28,182 +30,194 @@ import arch.cayenne.lib.common.utils.ext.toChineseMonth
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.module.home.R
 import arch.cayenne.module.home.databinding.HomeTourPopupCalendarViewBinding
-import arch.cayenne.module.home.ui.viewmodel.HomeCalendarViewModel
 import arch.cayenne.module.home.utils.DateUtils
 import com.haibin.calendarview.Calendar
 import com.haibin.calendarview.CalendarView
 import galaxy.common.proto.Common
-import kotlin.reflect.KClass
 
-class HomeCalendarFragment private constructor() : BaseFragment<HomeCalendarViewModel, HomeTourPopupCalendarViewBinding>() {
-    override val vbClass: KClass<HomeTourPopupCalendarViewBinding>
-        get() = HomeTourPopupCalendarViewBinding::class
-    override val vmClass: KClass<HomeCalendarViewModel>
-        get() = HomeCalendarViewModel::class
-
+class HomeCalendarFragment private constructor() : Fragment() {
     enum class AnimState {
         EXPANDING, EXPAND, COLLAPSING, COLLAPSE
     }
     enum class States {
         CALENDAR_CLOSE_NOTHING // 加载中
     }
+    private val fragmentTag = this.javaClass.simpleName
     private val defaultAnimDuration = 300L
-
     private var onDataSelectedListener: ((String) -> Unit)? = null
-    private var onCalendarDismissListener: (() -> Unit)? = null
     private var onResetDateListener: (()-> Unit)? = null
     private var onDismissListener: (()-> Unit)? = null
     private var range: List<Common.DailyMatchCount>? = null
     private var marginTop: Int = 0
-
     private var maskView: View? = null
     private var heightAnimator: ValueAnimator? = null
     private var currentAnimState: AnimState? = null
     private var tabSelectedDate: String = "0"
+    // 1. 一個私有的、可為 null 的 backing property，用來實際儲存綁定物件。
+    private var mBinding: HomeTourPopupCalendarViewBinding? = null
 
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        // 初始化 _binding
+        mBinding = HomeTourPopupCalendarViewBinding.inflate(inflater, container, false)
+        return mBinding!!.root
+    }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        with(mBinding.clCalendarPopupRoot) {
-            visibility = View.INVISIBLE
-            layoutParams = (layoutParams as ConstraintLayout.LayoutParams).apply {
-                topMargin = this@HomeCalendarFragment.marginTop
+        initView()
+        initListener()
+        mBinding?.let { binding->
+            with(binding.clCalendarPopupRoot) {
+                visibility = View.INVISIBLE
+                layoutParams = (layoutParams as ConstraintLayout.LayoutParams).apply {
+                    topMargin = this@HomeCalendarFragment.marginTop
+                }
             }
         }
     }
 
-    override fun initView(savedInstanceState: Bundle?) {
-        with(mBinding) {
-            clCalendarPopupRoot.apply {
-                bringToFront()
-                setBackgroundResource(
-                    R.drawable.shape_home_calendar_background.getSkinnableResourceId()
-                )
-            }
+    override fun onDestroyView() {
+        super.onDestroyView()
+        mBinding = null
+    }
 
-            //update weekview color
-            calendarView.apply {
-                setWeeColor(
-                    R.color.home_calendar_background.getSkinnableColor(),
+    private fun initView() {
+        mBinding?.let { binding->
+            with(binding) {
+                clCalendarPopupRoot.apply {
+                    bringToFront()
+                    setBackgroundResource(
+                        R.drawable.shape_home_calendar_background.getSkinnableResourceId()
+                    )
+                }
+
+                //update weekview color
+                calendarView.apply {
+                    setWeeColor(
+                        R.color.home_calendar_background.getSkinnableColor(),
+                        RC.color.secondary_text.getSkinnableColor()
+                    )
+                    //update calendarView textColor
+                    setTextColor(
+                        RC.color.main_text.getSkinnableColor(),
+                        RC.color.explanation_text.getSkinnableColor(),
+                        RC.color.explanation_text.getSkinnableColor(),
+                        RC.color.main_text.getSkinnableColor(),
+                        RC.color.main_text.getSkinnableColor(),
+                    )
+                    setSelectedColor(
+                        resources.getColor(R.color.home_calendar_selected_theme_color, null),
+                        resources.getColor(RC.color.white, null),
+                        resources.getColor(RC.color.white, null)
+                    )
+                }
+
+                //update current month title text color
+                tvCurrentMonth.setTextColor(
                     RC.color.secondary_text.getSkinnableColor()
                 )
-                //update calendarView textColor
-                setTextColor(
-                    RC.color.main_text.getSkinnableColor(),
-                    RC.color.explanation_text.getSkinnableColor(),
-                    RC.color.explanation_text.getSkinnableColor(),
-                    RC.color.main_text.getSkinnableColor(),
-                    RC.color.main_text.getSkinnableColor(),
+
+                //update previous and next month button drawable
+                ivLeftClick.setImageResource(
+                    R.drawable.ic_calendar_arrow_left.getSkinnableResourceId()
                 )
-                setSelectedColor(
-                    resources.getColor(R.color.home_calendar_selected_theme_color, null),
-                    resources.getColor(RC.color.white, null),
-                    resources.getColor(RC.color.white, null)
+                ivRightClick.setImageResource(
+                    R.drawable.ic_calendar_arrow_right.getSkinnableResourceId()
                 )
+
+                //update calendarView button
+                calendarBtnCancel.apply {
+                    setBackgroundResource(
+                        R.drawable.shape_home_calendar_cancel.getSkinnableResourceId()
+                    )
+                    setTextColor(
+                        RC.color.title_bar.getSkinnableColor()
+                    )
+                }
+                calendarBtnOk.setBackgroundResource(
+                    R.drawable.shape_home_calendar_ok.getSkinnableResourceId()
+                )
+
+                maskView?.background = createMaskGradient()
+                setSchemeDate()
+                expandView()
             }
-
-            //update current month title text color
-            tvCurrentMonth.setTextColor(
-                RC.color.secondary_text.getSkinnableColor()
-            )
-
-            //update previous and next month button drawable
-            ivLeftClick.setImageResource(
-                R.drawable.ic_calendar_arrow_left.getSkinnableResourceId()
-            )
-            ivRightClick.setImageResource(
-                R.drawable.ic_calendar_arrow_right.getSkinnableResourceId()
-            )
-
-            //update calendarView button
-            calendarBtnCancel.apply {
-                setBackgroundResource(
-                    R.drawable.shape_home_calendar_cancel.getSkinnableResourceId()
-                )
-                setTextColor(
-                    RC.color.title_bar.getSkinnableColor()
-                )
-            }
-            calendarBtnOk.setBackgroundResource(
-                R.drawable.shape_home_calendar_ok.getSkinnableResourceId()
-            )
-
-            maskView?.background = createMaskGradient()
-            setSchemeDate()
-            expandView()
         }
+
     }
 
     @SuppressLint("DefaultLocale")
-    override fun initListener() {
-        with(mBinding) {
-            // 獲取當前日期
-            val year = "${calendarView.selectedCalendar.year}"
-            val month = String.format("%02d", calendarView.selectedCalendar.month)
-            val day = String.format("%02d", calendarView.selectedCalendar.day)
-            var selectedDate =
-                if (tabSelectedDate == "0") "$year$month$day"
-                else tabSelectedDate
+    private fun initListener() {
+        mBinding?.let {binding->
+            with(binding) {
+                // 獲取當前日期
+                val year = "${calendarView.selectedCalendar.year}"
+                val month = String.format("%02d", calendarView.selectedCalendar.month)
+                val day = String.format("%02d", calendarView.selectedCalendar.day)
+                var selectedDate =
+                    if (tabSelectedDate == "0") "$year$month$day"
+                    else tabSelectedDate
 
-            // 透過 binding 操作 Popup 內部的 View
-            ivRightClick.clickNoRepeat {
-                calendarView.scrollToNext(true)
-            }
-            ivLeftClick.clickNoRepeat {
-                calendarView.scrollToPre(true)
-            }
-
-            calendarBtnCancel.clickNoRepeat {
-                calendarView.scrollToCurrent()
-                val minRangeDate = calendarView.minRangeCalendar
-                calendarView.scrollToCalendar(
-                    minRangeDate.year,
-                    minRangeDate.month,
-                    minRangeDate.day
-                )
-                onResetDateListener?.invoke()
-                collapseView()
-            }
-            calendarBtnOk.clickNoRepeat {
-                setSelectedDateTab(selectedDate)
-                collapseView()
-            }
-
-            setCurrentDate()
-            calendarView.setOnCalendarSelectListener(object :
-                CalendarView.OnCalendarSelectListener {
-                override fun onCalendarOutOfRange(calendar: Calendar?) = Unit
-                override fun onCalendarSelect(calendar: Calendar?, isClick: Boolean) {
-                    if (calendar == null) return
-                    selectedDate = "$calendar"
-                    tvCurrentMonth.text =
-                        resources.getString(
-                            R.string.format_month_year,
-                            calendar.month.toChineseMonth(),
-                            calendar.year.toString()
-                        )
-
-                    //控制左右按鈕的enabled
-                    if (calendar.month > calendarView.curMonth) {
-                        ivRightClick.isEnabled = false
-                        ivLeftClick.isEnabled = true
-                    } else {
-                        ivRightClick.isEnabled = true
-                        ivLeftClick.isEnabled = false
-                    }
+                // 透過 binding 操作 Popup 內部的 View
+                ivRightClick.clickNoRepeat {
+                    calendarView.scrollToNext(true)
                 }
-            })
+                ivLeftClick.clickNoRepeat {
+                    calendarView.scrollToPre(true)
+                }
 
-            maskView?.setOnClickListener {
-                when(currentAnimState) {
-                    AnimState.EXPANDING,
-                    AnimState.EXPAND -> collapseView()
-                    else -> expandView()
+                calendarBtnCancel.clickNoRepeat {
+                    calendarView.scrollToCurrent()
+                    val minRangeDate = calendarView.minRangeCalendar
+                    calendarView.scrollToCalendar(
+                        minRangeDate.year,
+                        minRangeDate.month,
+                        minRangeDate.day
+                    )
+                    onResetDateListener?.invoke()
+                    collapseView()
+                }
+                calendarBtnOk.clickNoRepeat {
+                    setSelectedDateTab(selectedDate)
+                }
+
+                setCurrentDate()
+                calendarView.setOnCalendarSelectListener(object :
+                    CalendarView.OnCalendarSelectListener {
+                    override fun onCalendarOutOfRange(calendar: Calendar?) = Unit
+                    override fun onCalendarSelect(calendar: Calendar?, isClick: Boolean) {
+                        if (calendar == null) return
+                        selectedDate = "$calendar"
+                        tvCurrentMonth.text =
+                            resources.getString(
+                                R.string.format_month_year,
+                                calendar.month.toChineseMonth(),
+                                calendar.year.toString()
+                            )
+
+                        //控制左右按鈕的enabled
+                        if (calendar.month > calendarView.curMonth) {
+                            ivRightClick.isEnabled = false
+                            ivLeftClick.isEnabled = true
+                        } else {
+                            ivRightClick.isEnabled = true
+                            ivLeftClick.isEnabled = false
+                        }
+                    }
+                })
+
+                maskView?.setOnClickListener {
+                    when(currentAnimState) {
+                        AnimState.EXPANDING,
+                        AnimState.EXPAND -> collapseView()
+                        else -> expandView()
+                    }
                 }
             }
         }
     }
-
-    override suspend fun createObserver() = Unit
 
     private fun Int.getSkinnableColor(): Int{
         return SkinnableResourceManager.getColor(requireContext(), this)
@@ -214,83 +228,97 @@ class HomeCalendarFragment private constructor() : BaseFragment<HomeCalendarView
     }
 
     private fun getFullyHeight(): Int {
-        with(mBinding.clCalendarPopupRoot) {
-            measure(
-                View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY),
-                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
-            )
-            return measuredHeight
-        }
+        return mBinding?.clCalendarPopupRoot?.let { view ->
+            // 確保 view 的寬度不是 0，否則測量無意義
+            if (view.width == 0) return@let 0
+
+            val widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(view.width, View.MeasureSpec.EXACTLY)
+            val heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+            view.measure(widthMeasureSpec, heightMeasureSpec)
+
+            // let 區塊的最後一行是其回傳值
+            view.measuredHeight
+        } ?: 0
     }
 
     private fun expandView() {
-        with(mBinding.clCalendarPopupRoot) {
-            layoutParams = layoutParams.apply { height = 1 }
-            doOnLayout {
-                val currentHeight = (heightAnimator?.animatedValue as? Int) ?: height
-                val fullyHeight = getFullyHeight()
-                val startHeight =
-                    if(fullyHeight == currentHeight) 1 else currentHeight
-                heightAnimator?.cancel()
+       mBinding?.let { binding->
+           with(binding.clCalendarPopupRoot) {
+               layoutParams = layoutParams.apply { height = 1 }
+               doOnLayout {
+                   val currentHeight = (heightAnimator?.animatedValue as? Int) ?: height
+                   val fullyHeight = getFullyHeight()
+                   val startHeight =
+                       if(fullyHeight == currentHeight) 1 else currentHeight
+                   heightAnimator?.cancel()
 
-                heightAnimator = ValueAnimator.ofInt(startHeight, fullyHeight).apply {
-                    addUpdateListener {
-                        updateHeight(it.animatedValue as Int)
-                        requireView()
-                    }
-                    duration = defaultAnimDuration
-                    interpolator = DecelerateInterpolator()
-                    doOnStart {
-                        currentAnimState = AnimState.EXPANDING
-                        layoutParams =
-                            layoutParams.apply {
-                                height = startHeight
-                            }
-                        visibility = View.VISIBLE
-                        setMaskViewAlpha(true)
-                    }
-                    doOnEnd { currentAnimState = AnimState.EXPAND }
-                    start()
-                }
-            }
-        }
+                   heightAnimator = ValueAnimator.ofInt(startHeight, fullyHeight).apply {
+                       addUpdateListener {
+                           updateHeight(it.animatedValue as Int)
+                           binding.clCalendarPopupRoot
+                               .doOnLayout {
+                                   requireView()
+                               }
+
+                       }
+                       duration = defaultAnimDuration
+                       interpolator = DecelerateInterpolator()
+                       doOnStart {
+                           currentAnimState = AnimState.EXPANDING
+                           layoutParams =
+                               layoutParams.apply {
+                                   height = startHeight
+                               }
+                           visibility = View.VISIBLE
+                           setMaskViewAlpha(true)
+                       }
+                       doOnEnd { currentAnimState = AnimState.EXPAND }
+                       start()
+                   }
+               }
+           }
+
+       }
     }
     fun callDismiss() {
         collapseView()
     }
     private fun collapseView() {
-        with(mBinding.clCalendarPopupRoot) {
-            val currentHeight = (heightAnimator?.animatedValue as? Int) ?: height
-            heightAnimator?.cancel()
+       this.mBinding?.let { binding ->
+           with(binding.clCalendarPopupRoot) {
+               val currentHeight = (heightAnimator?.animatedValue as? Int) ?: height
+               heightAnimator?.cancel()
 
-            heightAnimator = ValueAnimator.ofInt(currentHeight, 1).apply {
-                addUpdateListener {
-                    updateHeight(it.animatedValue as Int)
-                    requireView()
-                }
-                duration = defaultAnimDuration
-                interpolator = DecelerateInterpolator()
-                doOnStart {
-                    currentAnimState = AnimState.COLLAPSING
-                    setMaskViewAlpha(false)
-                }
-                doOnEnd {
-                    currentAnimState = AnimState.COLLAPSE
-                    visibility = View.INVISIBLE
-                    mBinding.clCalendarPopupRoot.postDelayed({
-                        if(currentAnimState == AnimState.COLLAPSE) {
-                            dismiss()
-                            onDismissListener?.invoke()
-                        }
-                    }, 100L)
-                }
-                start()
-            }
-        }
+               heightAnimator = ValueAnimator.ofInt(currentHeight, 1).apply {
+                   addUpdateListener {
+                       updateHeight(it.animatedValue as Int)
+                       requireView()
+                   }
+                   duration = defaultAnimDuration
+                   interpolator = DecelerateInterpolator()
+                   doOnStart {
+                       currentAnimState = AnimState.COLLAPSING
+                       setMaskViewAlpha(false)
+                   }
+                   doOnEnd {
+                       currentAnimState = AnimState.COLLAPSE
+                       visibility = View.INVISIBLE
+                       mBinding?.clCalendarPopupRoot?.postDelayed({
+                           if(currentAnimState == AnimState.COLLAPSE) {
+                               dismiss()
+                               onDismissListener?.invoke()
+                           }
+                       }, 100L)
+                   }
+                   start()
+               }
+           }
+
+       }
     }
 
     private fun updateHeight(height: Int) {
-        mBinding.clCalendarPopupRoot.apply {
+        mBinding?.clCalendarPopupRoot?.apply {
             layoutParams = layoutParams.apply { this.height = height }
             requireView()
         }
@@ -361,7 +389,7 @@ class HomeCalendarFragment private constructor() : BaseFragment<HomeCalendarView
 
     fun show(manager: FragmentManager, containerId: Int, tabSelectedDate: String) {
         this.tabSelectedDate = tabSelectedDate
-        val lastFragment = manager.findFragmentByTag(TAG)
+        val lastFragment = manager.findFragmentByTag(fragmentTag)
         if (lastFragment == null || !lastFragment.isAdded) {
             manager.beginTransaction()
                 .setReorderingAllowed(true)
@@ -372,7 +400,7 @@ class HomeCalendarFragment private constructor() : BaseFragment<HomeCalendarView
 
     private fun dismiss() {
         if (parentFragment != null) {
-            mBinding.clCalendarPopupRoot.post {
+            mBinding?.clCalendarPopupRoot?.post {
                 parentFragmentManager.beginTransaction()
                     .setReorderingAllowed(true)
                     .remove(this)
@@ -382,37 +410,47 @@ class HomeCalendarFragment private constructor() : BaseFragment<HomeCalendarView
     }
 
     private fun setCurrentDate() {
-        val currentYear = mBinding.calendarView.curYear
-        val currentMonth = mBinding.calendarView.curMonth
+        val currentYear = mBinding?.calendarView?.curYear ?: 0
+        val currentMonth = mBinding?.calendarView?.curMonth ?: 0
         //日期tab為全部時標記為今日
         if (tabSelectedDate == "0") {
-            mBinding.calendarView.scrollToCurrent(true)
-            mBinding.tvCurrentMonth.text = resources.getString(
-                R.string.format_month_year,
-                currentMonth.toChineseMonth(),
-                currentYear.toString()
-            )
+            mBinding?.let { binding->
+                binding.calendarView.scrollToCurrent(true)
+                binding.tvCurrentMonth.text = resources.getString(
+                    R.string.format_month_year,
+                    currentMonth.toChineseMonth(),
+                    currentYear.toString()
+                )
+
+            }
         } else {
             val result = tabSelectedDate.extractDate()
             result?.let {
                 val (year, month, day) = it
-                with(mBinding) {
-                    calendarView.scrollToCalendar(year, month, day)
-                    tvCurrentMonth.text = resources.getString(
-                        R.string.format_month_year,
-                        month.toChineseMonth(),
-                        year.toString()
-                    )
+                mBinding?.let { binding->
+                    with(binding) {
+                        calendarView.scrollToCalendar(year, month, day)
+                        tvCurrentMonth.text = resources.getString(
+                            R.string.format_month_year,
+                            month.toChineseMonth(),
+                            year.toString()
+                        )
+                    }
                 }
             } ?: run {
-                val curYear = mBinding.calendarView.curYear
-                val curMonth = mBinding.calendarView.curMonth
-                mBinding.calendarView.scrollToCurrent(true)
-                mBinding.tvCurrentMonth.text = resources.getString(
-                    R.string.format_month_year,
-                    curMonth.toChineseMonth(),
-                    curYear.toString()
-                )
+                mBinding?.let { binding->
+                   with(binding) {
+                       val curYear = calendarView.curYear
+                       val curMonth = calendarView.curMonth
+                       calendarView.scrollToCurrent(true)
+                       tvCurrentMonth.text = resources.getString(
+                           R.string.format_month_year,
+                           curMonth.toChineseMonth(),
+                           curYear.toString()
+                       )
+                   }
+
+                }
             }
         }
     }
@@ -446,21 +484,23 @@ class HomeCalendarFragment private constructor() : BaseFragment<HomeCalendarView
             val endDateTriple = list.last()
             val endDateArray = endDateTriple.day.split("-")
             //設定可以選取的日期區間，目前設定為31天
-            with(mBinding) {
-                calendarView.setRange(
-                    startDateArray[0].toInt(),
-                    startDateArray[1].toInt(),
-                    startDateArray[2].toInt(),
-                    endDateArray[0].toInt(),
-                    endDateArray[1].toInt(),
-                    endDateArray[2].toInt()
-                )
-                calendarView.setSchemeDate(map)
-                calendarView.scrollToCalendar(
-                    startDateArray[0].toInt(),
-                    startDateArray[1].toInt(),
-                    startDateArray[2].toInt()
-                )
+            this.mBinding?.let { binding->
+                with (binding) {
+                    calendarView.setRange(
+                        startDateArray[0].toInt(),
+                        startDateArray[1].toInt(),
+                        startDateArray[2].toInt(),
+                        endDateArray[0].toInt(),
+                        endDateArray[1].toInt(),
+                        endDateArray[2].toInt()
+                    )
+                    calendarView.setSchemeDate(map)
+                    calendarView.scrollToCalendar(
+                        startDateArray[0].toInt(),
+                        startDateArray[1].toInt(),
+                        startDateArray[2].toInt()
+                    )
+                }
             }
         }
     }
@@ -488,7 +528,6 @@ class HomeCalendarFragment private constructor() : BaseFragment<HomeCalendarView
      */
     class Builder {
         private var onDateSelectedListener: ((String) -> Unit)? = null
-        private var onCalendarDismissListener: (()-> Unit)? = null
         private var onResetDateListener: (()-> Unit)? = null
         private var onDismissListener: (()-> Unit)? = null
         private var range: List<Common.DailyMatchCount>? = null
@@ -500,9 +539,6 @@ class HomeCalendarFragment private constructor() : BaseFragment<HomeCalendarView
          */
         fun setOnDateSelectedListener(listener: (String) -> Unit) = apply {
             this.onDateSelectedListener = listener
-        }
-        fun setOnCalendarDismissListener(listener: () -> Unit) = apply {
-            this.onCalendarDismissListener = listener
         }
         fun setOnResetDateListener(listener: () -> Unit) = apply {
             this.onResetDateListener = listener
@@ -521,7 +557,6 @@ class HomeCalendarFragment private constructor() : BaseFragment<HomeCalendarView
         }
         fun build(): HomeCalendarFragment {
             return HomeCalendarFragment().apply {
-                this.onCalendarDismissListener = this@Builder.onCalendarDismissListener
                 this.onResetDateListener = this@Builder.onResetDateListener
                 this.onDataSelectedListener = this@Builder.onDateSelectedListener
                 this.onDismissListener = this@Builder.onDismissListener

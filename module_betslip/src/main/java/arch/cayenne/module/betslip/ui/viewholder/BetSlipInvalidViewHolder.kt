@@ -3,6 +3,7 @@ package arch.cayenne.module.betslip.ui.viewholder
 import androidx.core.content.ContextCompat
 import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
+import arch.cayenne.lib.common.utils.ext.SportDisplayOddsExt.getDisplayOdds
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
@@ -28,6 +29,9 @@ class BetSlipInvalidViewHolder(binding: ViewBinding, betSlipType: BetSlipEnum) :
             mBinding.ilMore.llMore.clickNoRepeat {
                 sendData(item)
             }
+            mBinding.ivCopyClip.clickNoRepeat {
+                mBetSlipListener?.onCopyClip(item.betId)
+            }
         }
     }
 
@@ -48,7 +52,7 @@ class BetSlipInvalidViewHolder(binding: ViewBinding, betSlipType: BetSlipEnum) :
             tvUnit3.text = ContextCompat.getString(binding.root.context, R.string.live_bet_on)
             tvUnit4.text = ContextCompat.getString(binding.root.context, R.string.live_bet_except_max_win)
             tvUnit1Value.text = item.betId
-            tvUnit2Value.text = item.odds
+            tvUnit2Value.text = item.odds.getDisplayOdds()
             val betAmount = "${CurrencySymbols.getSymbol(item.currency)}${item.betAmount.toMoney().getFormalMoney()}"
             tvUnit3Value.text = betAmount
             val exceptAmount = "${CurrencySymbols.getSymbol(item.currency)}${BetSlipUtils.expectMaxAmount(item.betAmount, item.odds)}"

@@ -24,11 +24,15 @@ open class BetSlipAdapter(private val betSlipType: BetSlipEnum) :
     BaseAdapter<BetSlipData, BaseBetSlipViewHolder<*>, ViewBinding>(BetSlipCompare()) {
 
     private var liveListener: BetSlipLiveListener? = null
+    private var betSlipListener: BetSlipListener? = null
 
     fun setLiveListener(liveListener: BetSlipLiveListener) {
         this.liveListener = liveListener
     }
 
+    fun setBetSlipListener(betSlipListener: BetSlipListener) {
+        this.betSlipListener = betSlipListener
+    }
 
     override fun createViewBinding(
         inflater: LayoutInflater, parent: ViewGroup, viewType: Int
@@ -51,17 +55,8 @@ open class BetSlipAdapter(private val betSlipType: BetSlipEnum) :
             BetSlipEnum.Invalid -> BetSlipInvalidViewHolder(binding, betSlipType)
         }
         holder.createViewHolder()
-//        holder.setExpandedListener(object : RecyclerItemListener<BetSlipExpandedEnum> {
-//                override fun onItemClick(item: BetSlipExpandedEnum?, position: Int) {
-//                    val holderPosition = holder.adapterPosition
-//                    Log.d("abcd", " $$$ $position  $holderPosition")
-//                    val status =
-//                        if (getItem(holderPosition).expandedEnum == BetSlipExpandedEnum.Fold) BetSlipExpandedEnum.Expanded else BetSlipExpandedEnum.Fold
-//                    currentList[holderPosition].expandedEnum = status
-//                    notifyItemChanged(holderPosition)
-//                }
-//        })
         holder.setLiveListener(liveListener)
+        holder.setBetSlipListener(betSlipListener)
         return holder
     }
 
@@ -76,4 +71,7 @@ open class BetSlipAdapter(private val betSlipType: BetSlipEnum) :
         fun onLiveButtonClick(data: BetSlipSelectionData)
     }
 
+    interface BetSlipListener {
+        fun onCopyClip(number: String)
+    }
 }

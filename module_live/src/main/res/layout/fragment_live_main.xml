@@ -9,8 +9,10 @@
     android:layout_height="match_parent"
     >
 
-<arch.cayenne.lib.skin.widget.SkinnableLinearLayout
+<arch.cayenne.lib.common.ui.view.InterceptedLinearLayout
     android:id="@+id/liveMain"
+    app:interceptedDirection="RIGHT"
+    app:canScrollView="@id/vp_page"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/app_bg"
@@ -29,29 +31,36 @@
         android:layout_height="@dimen/dp_211" />
 
 
-    <arch.cayenne.lib.skin.widget.SkinnableTabLayout
-        android:id="@+id/tabLayout"
+    <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_36"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
         android:background="@color/live_main_tab_bg"
-        app:tabIndicatorHeight="0dp"
-        app:tabMode="fixed"
-        app:tabMinWidth="@dimen/dp_60"
-        app:tabMaxWidth="65dp"
-        app:tabPaddingStart="0dp"
-        android:layout_marginEnd="10dp"
-        app:tabPaddingEnd="0dp"
-        app:tabRippleColor="@null"
-        android:layout_marginTop="@dimen/dp_2"
-        android:paddingBottom="@dimen/dp_1"
-        tools:ignore="SpeakableTextPresentCheck" />
-    <com.walisport.module.live.ui.widget.CustomTabIndicator
-        android:id="@+id/customIndicator"
-        android:layout_marginEnd="10dp"
-        android:layout_width="match_parent"
-        android:layout_height="3dp"
-        android:background="@color/live_main_tab_bg"
-         />
+        >
+        <arch.cayenne.lib.skin.widget.SkinnableTabLayout
+            android:id="@+id/tabLayout"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_36"
+            app:tabIndicatorHeight="0dp"
+            app:tabMode="fixed"
+            app:tabMinWidth="@dimen/dp_60"
+            android:background="@color/live_main_tab_bg"
+            app:tabMaxWidth="65dp"
+            app:tabPaddingStart="0dp"
+            android:layout_marginEnd="10dp"
+            app:tabPaddingEnd="0dp"
+            app:tabRippleColor="@null"
+            android:layout_marginTop="@dimen/dp_2"
+            tools:ignore="SpeakableTextPresentCheck" />
+        <arch.cayenne.lib.common.ui.view.CustomTabIndicator
+            android:id="@+id/customIndicator"
+            android:layout_marginEnd="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:background="@color/live_main_tab_bg"
+            />
+    </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -68,23 +77,8 @@
             android:paddingEnd="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/fragment_fake_view_pager"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:clipChildren="false"
-            android:clipToPadding="false"
-            android:overScrollMode="ifContentScrolls"
-            android:paddingStart="0dp"
-            android:paddingEnd="0dp"
-            app:layout_constraintBottom_toBottomOf="@id/vp_page"
-            app:layout_constraintEnd_toEndOf="@id/vp_page"
-            app:layout_constraintStart_toStartOf="@id/vp_page"
-            app:layout_constraintTop_toTopOf="@id/vp_page" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
-</arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
+</arch.cayenne.lib.common.ui.view.InterceptedLinearLayout>
 
 <com.google.android.material.navigation.NavigationView
     android:id="@+id/navigation_view"

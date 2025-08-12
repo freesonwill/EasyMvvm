@@ -12,7 +12,6 @@ import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.database.entity.InfoBean
 import arch.cayenne.lib.database.entity.LiveMatchBean
 import arch.cayenne.lib.database.entity.SelectionsEdit
-import arch.cayenne.lib.websocket.data.ConnectState
 import arch.cayenne.lib.websocket.data.SocketConnectState
 import com.walisport.module.live.data.BetOnMenuStatus
 import com.walisport.module.live.data.LiveMainRepository
@@ -25,14 +24,12 @@ import com.walisport.module.live.data.model.Stat
 import com.walisport.module.live.data.repository.LiveChatRepository
 import galaxy.client.proto.Sloth
 import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import plugin.koin.KoinViewModel
 
 @KoinViewModel
@@ -74,7 +71,7 @@ class LiveMainViewModel(
     //监听数据变化
     private val _observeMainMatch = MutableLiveData<LiveMatchBean>()
     val observeMainMatch: LiveData<LiveMatchBean> = _observeMainMatch
-    val currentBalanceChange by lazy { MutableLiveData<InfoBean>() }
+    val currentBalanceChange by lazy { MutableLiveData<InfoBean?>() }
     fun observeLoginChange(): Flow<Boolean> = repo.observeLoginChange()
     private var observeMatchBeanJob: Job? = null
     //监听matchId和sportId，并设置1s的防抖
@@ -87,7 +84,7 @@ class LiveMainViewModel(
         super.initViewModel()
         //监听余额变化
         viewModelScope.launch {
-            repo.observeBalance().collect {
+            repo.observeInfo().collect {
                 currentBalanceChange.value = it
             }
         }

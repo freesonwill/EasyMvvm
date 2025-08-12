@@ -25,11 +25,13 @@ import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
+import arch.cayenne.lib.common.utils.ext.touchBackPressed
 import arch.cayenne.lib.common.utils.helper.showToast
-import arch.cayenne.lib.database.entity.AddSelectionStatus
 import arch.cayenne.lib.database.entity.MatchWithMarkets
 import arch.cayenne.lib.database.entity.SelectionBeanLite
+import arch.cayenne.module.bet.data.AddSelectionStatus
 import arch.cayenne.module.bet.ui.fragment.BetSheetFragment
+import arch.cayenne.module.bet.viewmodel.FloatingButtonControlViewModel
 import arch.cayenne.module.home.R
 import arch.cayenne.module.home.data.constants.HomeState
 import arch.cayenne.module.home.databinding.FragmentCollectListBinding
@@ -40,6 +42,7 @@ import arch.cayenne.module.home.ui.view.decoration.MatchCardItemDecoration
 import arch.cayenne.module.home.ui.viewmodel.CollectListViewModel
 import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
 import kotlinx.coroutines.launch
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import java.lang.ref.WeakReference
 import kotlin.reflect.KClass
 
@@ -57,6 +60,7 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
     private lateinit var matchAdapter: MatchItemAdapter
     private val gameLayoutManager by lazy { LinearLayoutManager(context) }
     private val homeViewModel: HomeViewModel by sharedViewModel<HomeViewModel, NewHomeFragment>()
+    private val fabViewModel: FloatingButtonControlViewModel by activityViewModel()
 
     override fun initView(savedInstanceState: Bundle?) {
         with (mBinding) {
@@ -93,12 +97,12 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
 
                         if (status is AddSelectionStatus.Success.Single) {
                             BetSheetFragment.show(requireActivity())
-                        } else if (status is AddSelectionStatus.Failure.DisableComboForParlay) {
-                            showToast(getString(R.string.disabled_to_combo))
-                        } else if (status is AddSelectionStatus.Failure.DisableComboForProvider) {
-                            showToast(getString(R.string.disabled_to_combo_for_provider))
-                        } else if (status is AddSelectionStatus.Failure.NetworkDisconnected) {
-                            showToast(getString(arch.cayenne.lib.common.R.string.toast_server_disconnected))
+                        } else if (status is AddSelectionStatus.Failure) {
+                            status.msg?.let {
+                                showToast(it)
+                            }
+                        } else if (status is AddSelectionStatus.Success.Combo || status is AddSelectionStatus.Success.Update) {
+                            fabViewModel.setClickAnimation(x, y)
                         }
                     }
                 }
@@ -121,6 +125,8 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
                 }
             })
         }
+        mBinding.rvCollectList.touchBackPressed()
+        mBinding.root.touchBackPressed()
     }
 
     override fun onCreateAnimation(transit: Int, enter: Boolean, nextAnim: Int): Animation? {
@@ -149,7 +155,7 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
     @SuppressLint("SetTextI18n")
     override suspend fun createObserver() {
         mViewModel.currentBalanceChange.observe(viewLifecycleOwner) {
-            titleBarBinding.tvMoney.text = "${CurrencySymbols.getSymbol(it.currency)} ${it.balance.getFormalMoney()}"
+            titleBarBinding.tvMoney.text = "${CurrencySymbols.getSymbol(it?.currency?:"")} ${(it?.balance?:0L).getFormalMoney()}"
         }
         homeViewModel.timer.observeEvent(viewLifecycleOwner, this) {
             mViewModel.updateMatchLiveData()

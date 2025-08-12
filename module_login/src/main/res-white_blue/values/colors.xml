@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="link_text_color_white_blue">#00D271</color>
+    <color name="keyboard_2_white_blue">#FFFFFF</color>
+    <color name="login_green_white_blue">#00D271</color>
+    <color name="identity_background_white_blue">#F3F3F4</color>
+    <color name="vertical_divider_white_blue">#929298</color>
+</resources>

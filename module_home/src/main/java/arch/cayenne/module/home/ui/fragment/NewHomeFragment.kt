@@ -22,11 +22,13 @@ import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import androidx.viewpager2.widget.ViewPager2.SCROLL_STATE_IDLE
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
+import arch.cayenne.lib.base.ui.animation.EaseCubicInterpolator
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.lib.common.utils.ext.setDrawerInterpolator
 import arch.cayenne.lib.common.utils.ext.NavResultExt.observeResult
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
@@ -119,6 +121,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
         mBinding.layoutContainer.llDateFilterContainer.visibility = View.GONE
         mBinding.layoutContainer.llOtherDate.visibility = View.GONE
         mBinding.ivTournamentMore.visibility = View.GONE
+        mBinding.llHomeTournamentMore.visibility = View.GONE
     }
 
     //init 二級導航欄位
@@ -206,8 +209,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             // 初始化 TabLayout end more跟手動畫
             tlLeagueList.setupEndTabMoreAnimation(
                 mBinding.ivTournamentMore,
-                mBinding.llHomeTournamentMore,
-                triggerRatio = 0.8f
+                mBinding.llHomeTournamentMore
             )
         }
 
@@ -396,6 +398,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 R.color.drawer_scrim_color
             )
         )
+        mBinding.drawerLayout.setDrawerInterpolator(150,EaseCubicInterpolator.EaseOut())
         if (drawerContentFragment == null) {
             drawerContentFragment = DrawerContentFragment()
             drawerContentFragment?.also {
@@ -453,7 +456,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             )
             vpGameList.adapter = leaguePagerAdapter
             vpGameList.offsetLeftAndRight(1)
-
+            mBinding.ivTournamentMore.visibility = View.VISIBLE
             // 使用 reflexMargin 擴展方法設置更小的 tab 間距
             tlLeagueList.reflexMargin(2.dp2px, 2.dp2px, 1.dp2px)
 
@@ -478,10 +481,12 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                         mViewModel.setCalendarState(HomeCalendarFragment.States.CALENDAR_CLOSE_NOTHING)
                     }
                 )
-                val selectedPosition = tournaments.indexOfFirst { it.isSelected }
-                getSelectedRecently31Scheduled(selectedPosition)
-                tlLeagueList.post{ layoutMediator.selectTabWithoutAnimation(selectedPosition) }
-                vpGameList.post { gameListPageCallback?.onPageScrollStateChanged(SCROLL_STATE_IDLE) }
+                if (tournaments.isNotEmpty()) {
+                    val selectedPosition = tournaments.indexOfFirst { it.isSelected }
+                    tlLeagueList.setScrollPosition(selectedPosition, 0f, true)
+                    tlLeagueList.post { layoutMediator.selectTabWithoutAnimation(selectedPosition) }
+                    vpGameList.post { gameListPageCallback?.onPageScrollStateChanged(SCROLL_STATE_IDLE) }
+                }
             }
         }
     }
@@ -543,14 +548,12 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
         }
 
         mViewModel.currentBalanceChange.observe(viewLifecycleOwner) {
-            it?.let {
-                mBinding.tvWalletBalance.text =
-                    getString(
-                        R.string.balance_format,
-                        CurrencySymbols.getSymbol(it.currency),
-                        it.balance.getFormalMoney()
-                    )
-            }
+            mBinding.tvWalletBalance.text =
+                getString(
+                    R.string.balance_format,
+                    CurrencySymbols.getSymbol(it?.currency?:""),
+                    (it?.balance?:0L).getFormalMoney()
+                )
         }
 
         mViewModel.navigationToChampion.observeEvent(viewLifecycleOwner, this) { data ->

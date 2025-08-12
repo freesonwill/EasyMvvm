@@ -1,11 +1,13 @@
 package arch.cayenne.module.betslip.ui.fragment
 
+import android.animation.ValueAnimator
 import android.content.res.Resources
 import android.graphics.Typeface
 import android.os.Bundle
 import android.text.TextPaint
 import android.util.TypedValue
 import android.view.Gravity
+import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.TextView
 import androidx.fragment.app.FragmentManager
 import androidx.navigation.fragment.findNavController
@@ -14,6 +16,7 @@ import arch.cayenne.lib.base.ui.adapter.PagerAdapter
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.removeAllTips
+import arch.cayenne.lib.common.utils.ext.touchBackPressed
 import arch.cayenne.lib.common.utils.helper.doSmartAnim
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.module.betslip.R
@@ -35,7 +38,6 @@ class HomeBetSlipFragment : BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsl
     override val vbClass: KClass<FragmentHomeBetslipBinding> = FragmentHomeBetslipBinding::class
     override val vmClass: KClass<HomeBetSlipViewModel> = HomeBetSlipViewModel::class
     private val betSlipFilterViewModel: BetSlipFilterViewModel by viewModel()
-
     override fun initView(savedInstanceState: Bundle?) {
         val array = resources.getStringArray(R.array.bet_slip_menus)
         val list = listOf(
@@ -69,6 +71,7 @@ class HomeBetSlipFragment : BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsl
         mBinding.tvSportFilter.setOnClickListener {
             showSportFilter()
         }
+        mBinding.root.touchBackPressed()
     }
 
     override suspend fun createObserver() {
@@ -132,6 +135,8 @@ class HomeBetSlipFragment : BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsl
             mBinding.tabLayout.clearOnTabSelectedListeners()
             mBinding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab?) {
+                    // 动画更新指示器位置
+                    animateIndicatorToPosition(tab?.position ?: 0)
                     (tab?.customView as? TextView)?.setTypeface(null, Typeface.BOLD)
                     mBinding.viewPager.doSmartAnim(targetPosition = tab?.position ?: 0)
                 }
@@ -145,6 +150,11 @@ class HomeBetSlipFragment : BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsl
             })
         }
         mBinding.tabLayout.removeAllTips()
+        mBinding.tabLayout.post {
+            // 计算单个 Tab 的宽度
+            val tabWidth = mBinding.tabLayout.width.toFloat() / mBinding.tabLayout.tabCount
+            mBinding.customIndicator.setTabWidth(tabWidth, 0.27f)
+        }
     }
 
     private fun showDateFilter() {
@@ -233,5 +243,16 @@ class HomeBetSlipFragment : BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsl
                 0, 0, R.mipmap.ic_bet_slip_filter, 0
             )
         }
+    }
+
+    private fun animateIndicatorToPosition(position: Int) {
+        val animator = ValueAnimator.ofFloat(mBinding.customIndicator.getCurrentPosition().toFloat(), position.toFloat())
+        animator.duration = 100 // 动画持续时间
+        animator.interpolator = AccelerateDecelerateInterpolator()
+        animator.addUpdateListener { animation ->
+            val progress = animation.animatedValue as Float
+            mBinding.customIndicator.setIndicatorPosition(progress.toInt(), progress % 1f)
+        }
+        animator.start()
     }
 }

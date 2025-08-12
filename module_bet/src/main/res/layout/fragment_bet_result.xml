@@ -42,12 +42,12 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/ll_top" />
 
-    <arch.cayenne.lib.common.ui.view.BottomSheetRecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_bet"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="20dp"
-        android:nestedScrollingEnabled="false"
+        android:nestedScrollingEnabled="true"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toTopOf="@+id/rv_combo_odds"
         app:layout_constraintTop_toBottomOf="@id/tv_hint"
