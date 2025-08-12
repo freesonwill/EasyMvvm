@@ -96,10 +96,9 @@ class MessageListFragment : BaseFragment<MessageMainViewModel, FragmentMessageLi
 
     override fun initData() {
         super.initData()
-        //不需要每个fragment请求一次接口
         if (msgType == MSG_ALL) {
             mViewModel.getMessageList(MSG_ALL)
-            mBinding.emptyState.setState(States.LOADING, "")
+            mBinding.loadingView.visibility = View.VISIBLE
         }
     }
 
@@ -109,6 +108,7 @@ class MessageListFragment : BaseFragment<MessageMainViewModel, FragmentMessageLi
             mBinding.refreshLayout.finishLoadMore()
             when (state) {
                 DataState.NetworkUnavailable -> {
+                    mBinding.loadingView.visibility = View.GONE
                     if (msgAdapter.itemCount == 0) {
                         mBinding.emptyState.visibility = View.VISIBLE
                         mBinding.emptyState.setState(
@@ -122,6 +122,7 @@ class MessageListFragment : BaseFragment<MessageMainViewModel, FragmentMessageLi
         mViewModel.notificationBean.observe(viewLifecycleOwner) {
             mBinding.refreshLayout.finishRefresh()
             mBinding.refreshLayout.finishLoadMore()
+            mBinding.loadingView.visibility = View.GONE
             it.let {
                 if (it.isEmpty()) {
                     msgAdapter.submitList(it)
