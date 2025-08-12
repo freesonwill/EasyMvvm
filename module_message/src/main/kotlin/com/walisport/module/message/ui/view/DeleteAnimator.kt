@@ -8,18 +8,26 @@ import android.view.View
 import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import androidx.recyclerview.widget.SimpleItemAnimator
+import kotlin.math.max
 
 class DeleteAnimator : SimpleItemAnimator() {
 
     private var sDefaultInterpolator: TimeInterpolator? = null
-
     private val mPendingRemovals = ArrayList<ViewHolder>()
+    private val mPendingAdditions = ArrayList<ViewHolder>()
     private val mPendingMoves: ArrayList<MoveInfo> = ArrayList()
+    private val mPendingChanges: ArrayList<ChangeInfo> = ArrayList()
 
+    private val mAdditionsList = ArrayList<ArrayList<ViewHolder>>()
     private val mMovesList: ArrayList<ArrayList<MoveInfo>> = ArrayList()
+    private val mChangesList: ArrayList<ArrayList<ChangeInfo>> = ArrayList()
 
+    private val mAddAnimations = ArrayList<ViewHolder>()
     private val mMoveAnimations = ArrayList<ViewHolder>()
     private val mRemoveAnimations = ArrayList<ViewHolder>()
+    private val mChangeAnimations = ArrayList<ViewHolder>()
+
+    private val animDuration = 150L
 
     class MoveInfo(
         var holder: ViewHolder,
@@ -63,7 +71,9 @@ class DeleteAnimator : SimpleItemAnimator() {
     override fun runPendingAnimations() {
         val removalsPending = mPendingRemovals.isNotEmpty()
         val movesPending = mPendingMoves.isNotEmpty()
-        if (!removalsPending && !movesPending) {
+        val changesPending = mPendingChanges.isNotEmpty()
+        val additionsPending = mPendingAdditions.isNotEmpty()
+        if (!removalsPending && !movesPending && !additionsPending && !changesPending) {
             return
         }
         for (holder: ViewHolder? in mPendingRemovals) {
@@ -87,9 +97,59 @@ class DeleteAnimator : SimpleItemAnimator() {
             }
             if (removalsPending) {
                 val view: View = moves[0].holder.itemView
-                ViewCompat.postOnAnimationDelayed(view, mover, getRemoveDuration())
+                ViewCompat.postOnAnimationDelayed(view, mover, animDuration)
             } else {
                 mover.run()
+            }
+        }
+        if (changesPending) {
+            val changes: ArrayList<ChangeInfo> = ArrayList()
+            changes.addAll(mPendingChanges)
+            mChangesList.add(changes)
+            mPendingChanges.clear()
+            val changer = Runnable {
+                for (change: ChangeInfo? in changes) {
+                    if (change != null) {
+                        animateChangeImpl(change)
+                    }
+                }
+                changes.clear()
+                mChangesList.remove(changes)
+            }
+            if (removalsPending) {
+                val holder: ViewHolder = changes[0].oldHolder
+                ViewCompat.postOnAnimationDelayed(holder.itemView, changer, animDuration)
+            } else {
+                changer.run()
+            }
+        }
+        if (additionsPending) {
+            val additions = ArrayList<ViewHolder>()
+            additions.addAll(mPendingAdditions)
+            mAdditionsList.add(additions)
+            mPendingAdditions.clear()
+            val adder = Runnable {
+                for (holder: ViewHolder? in additions) {
+                    if (holder != null) {
+                        animateAddImpl(holder)
+                    }
+                }
+                additions.clear()
+                mAdditionsList.remove(additions)
+            }
+            if (removalsPending || movesPending || changesPending) {
+                val removeDuration: Long = if (removalsPending) animDuration else 0
+                val moveDuration: Long = if (movesPending) animDuration else 0
+                val changeDuration: Long = if (changesPending) animDuration else 0
+                val totalDelay =
+                    (removeDuration + max(
+                        moveDuration.toDouble(),
+                        changeDuration.toDouble()
+                    )).toLong()
+                val view = additions[0].itemView
+                ViewCompat.postOnAnimationDelayed(view, adder, totalDelay)
+            } else {
+                adder.run()
             }
         }
     }
@@ -104,7 +164,7 @@ class DeleteAnimator : SimpleItemAnimator() {
         val view = holder.itemView
         val animation = view.animate()
         mRemoveAnimations.add(holder)
-        animation.setDuration(250L).alpha(0f).setListener(
+        animation.setDuration(animDuration).alpha(0f).setListener(
             object : AnimatorListenerAdapter() {
                 override fun onAnimationStart(animator: Animator) {
                     dispatchRemoveStarting(holder)
@@ -123,7 +183,31 @@ class DeleteAnimator : SimpleItemAnimator() {
     override fun animateAdd(holder: ViewHolder): Boolean {
         resetAnimation(holder)
         holder.itemView.alpha = 0f
+        mPendingAdditions.add(holder)
         return true
+    }
+
+    private fun animateAddImpl(holder: ViewHolder) {
+        val view = holder.itemView
+        val animation = view.animate()
+        mAddAnimations.add(holder)
+        animation.alpha(1f).setDuration(animDuration)
+            .setListener(object : AnimatorListenerAdapter() {
+                override fun onAnimationStart(animator: Animator) {
+                    dispatchAddStarting(holder)
+                }
+
+                override fun onAnimationCancel(animator: Animator) {
+                    view.alpha = 1f
+                }
+
+                override fun onAnimationEnd(animator: Animator) {
+                    animation.setListener(null)
+                    dispatchAddFinished(holder)
+                    mAddAnimations.remove(holder)
+                    dispatchFinishedWhenDone()
+                }
+            }).start()
     }
 
     override fun animateMove(
@@ -210,7 +294,56 @@ class DeleteAnimator : SimpleItemAnimator() {
             newHolder.itemView.translationY = -deltaY.toFloat()
             newHolder.itemView.alpha = 0f
         }
+        mPendingChanges.add(ChangeInfo(oldHolder, newHolder!!, fromX, fromY, toX, toY))
         return true
+    }
+
+    private fun animateChangeImpl(changeInfo: ChangeInfo) {
+        val holder: ViewHolder = changeInfo.oldHolder
+        val view = if (holder == null) null else holder.itemView
+        val newHolder: ViewHolder = changeInfo.newHolder
+        val newView = if (newHolder != null) newHolder.itemView else null
+        if (view != null) {
+            val oldViewAnim = view.animate().setDuration(animDuration)
+            mChangeAnimations.add(changeInfo.oldHolder)
+            oldViewAnim.translationX((changeInfo.toX - changeInfo.fromX).toFloat())
+            oldViewAnim.translationY((changeInfo.toY - changeInfo.fromY).toFloat())
+            oldViewAnim.alpha(0f).setListener(object : AnimatorListenerAdapter() {
+                override fun onAnimationStart(animator: Animator) {
+                    dispatchChangeStarting(changeInfo.oldHolder, true)
+                }
+
+                override fun onAnimationEnd(animator: Animator) {
+                    oldViewAnim.setListener(null)
+                    view.alpha = 1f
+                    view.translationX = 0f
+                    view.translationY = 0f
+                    dispatchChangeFinished(changeInfo.oldHolder, true)
+                    mChangeAnimations.remove(changeInfo.oldHolder)
+                    dispatchFinishedWhenDone()
+                }
+            }).start()
+        }
+        if (newView != null) {
+            val newViewAnimation = newView.animate()
+            mChangeAnimations.add(changeInfo.newHolder)
+            newViewAnimation.translationX(0f).translationY(0f).setDuration(animDuration)
+                .alpha(1f).setListener(object : AnimatorListenerAdapter() {
+                    override fun onAnimationStart(animator: Animator) {
+                        dispatchChangeStarting(changeInfo.newHolder, false)
+                    }
+
+                    override fun onAnimationEnd(animator: Animator) {
+                        newViewAnimation.setListener(null)
+                        newView.alpha = 1f
+                        newView.translationX = 0f
+                        newView.translationY = 0f
+                        dispatchChangeFinished(changeInfo.newHolder, false)
+                        mChangeAnimations.remove(changeInfo.newHolder)
+                        dispatchFinishedWhenDone()
+                    }
+                }).start()
+        }
     }
 
     private fun endChangeAnimation(infoList: MutableList<ChangeInfo>, item: ViewHolder) {
@@ -261,9 +394,22 @@ class DeleteAnimator : SimpleItemAnimator() {
                 mPendingMoves.removeAt(i)
             }
         }
+        endChangeAnimation(mPendingChanges, item)
         if (mPendingRemovals.remove(item)) {
             view.alpha = 1f
             dispatchRemoveFinished(item)
+        }
+        if (mPendingAdditions.remove(item)) {
+            view.alpha = 1f
+            dispatchAddFinished(item)
+        }
+
+        for (i in mChangesList.indices.reversed()) {
+            val changes: ArrayList<ChangeInfo> = mChangesList[i]
+            endChangeAnimation(changes, item)
+            if (changes.isEmpty()) {
+                mChangesList.removeAt(i)
+            }
         }
         for (i in mMovesList.indices.reversed()) {
             val moves: ArrayList<MoveInfo> = mMovesList[i]
@@ -281,12 +427,39 @@ class DeleteAnimator : SimpleItemAnimator() {
                 }
             }
         }
+        for (i in mAdditionsList.indices.reversed()) {
+            val additions = mAdditionsList[i]
+            if (additions.remove(item)) {
+                view.alpha = 1f
+                dispatchAddFinished(item)
+                if (additions.isEmpty()) {
+                    mAdditionsList.removeAt(i)
+                }
+            }
+        }
+
+        // animations should be ended by the cancel above.
         if (mRemoveAnimations.remove(item)) {
             throw IllegalStateException(
                 "after animation is cancelled, item should not be in "
                         + "mRemoveAnimations list"
             )
         }
+
+        if (mAddAnimations.remove(item)) {
+            throw IllegalStateException(
+                ("after animation is cancelled, item should not be in "
+                        + "mAddAnimations list")
+            )
+        }
+
+        if (mChangeAnimations.remove(item)) {
+            throw IllegalStateException(
+                ("after animation is cancelled, item should not be in "
+                        + "mChangeAnimations list")
+            )
+        }
+
         if (mMoveAnimations.remove(item)) {
             throw IllegalStateException(
                 ("after animation is cancelled, item should not be in "
@@ -305,11 +478,17 @@ class DeleteAnimator : SimpleItemAnimator() {
     }
 
     override fun isRunning(): Boolean {
-        return (mPendingMoves.isNotEmpty()
+        return (((mPendingAdditions.isNotEmpty()
+                || mPendingChanges.isNotEmpty()
+                || mPendingMoves.isNotEmpty()
                 || mPendingRemovals.isNotEmpty()
                 || mMoveAnimations.isNotEmpty()
                 || mRemoveAnimations.isNotEmpty()
-                || mMovesList.isNotEmpty())
+                || mAddAnimations.isNotEmpty()
+                || mChangeAnimations.isNotEmpty()
+                || mMovesList.isNotEmpty()
+                || mAdditionsList.isNotEmpty()
+                || mChangesList.isNotEmpty())))
     }
 
     fun dispatchFinishedWhenDone() {
@@ -334,9 +513,22 @@ class DeleteAnimator : SimpleItemAnimator() {
             dispatchRemoveFinished(item)
             mPendingRemovals.removeAt(i)
         }
+        count = mPendingAdditions.size
+        for (i in count - 1 downTo 0) {
+            val item = mPendingAdditions[i]
+            item.itemView.alpha = 1f
+            dispatchAddFinished(item)
+            mPendingAdditions.removeAt(i)
+        }
+        count = mPendingChanges.size
+        for (i in count - 1 downTo 0) {
+            endChangeAnimationIfNecessary(mPendingChanges[i])
+        }
+        mPendingChanges.clear()
         if (!isRunning()) {
             return
         }
+
         var listCount = mMovesList.size
         for (i in listCount - 1 downTo 0) {
             val moves: ArrayList<MoveInfo> = mMovesList[i]
@@ -354,8 +546,38 @@ class DeleteAnimator : SimpleItemAnimator() {
                 }
             }
         }
+        listCount = mAdditionsList.size
+        for (i in listCount - 1 downTo 0) {
+            val additions = mAdditionsList[i]
+            count = additions.size
+            for (j in count - 1 downTo 0) {
+                val item = additions[j]
+                val view = item.itemView
+                view.alpha = 1f
+                dispatchAddFinished(item)
+                additions.removeAt(j)
+                if (additions.isEmpty()) {
+                    mAdditionsList.remove(additions)
+                }
+            }
+        }
+        listCount = mChangesList.size
+        for (i in listCount - 1 downTo 0) {
+            val changes: ArrayList<ChangeInfo> = mChangesList[i]
+            count = changes.size
+            for (j in count - 1 downTo 0) {
+                endChangeAnimationIfNecessary(changes[j])
+                if (changes.isEmpty()) {
+                    mChangesList.remove(changes)
+                }
+            }
+        }
+
         cancelAll(mRemoveAnimations)
         cancelAll(mMoveAnimations)
+        cancelAll(mAddAnimations)
+        cancelAll(mChangeAnimations)
+
         dispatchAnimationsFinished()
     }
 
