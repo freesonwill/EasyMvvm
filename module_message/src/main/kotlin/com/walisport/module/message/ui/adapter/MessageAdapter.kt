@@ -137,6 +137,12 @@ class MessageAdapter : BaseAdapter<NotificationBean, BaseViewHolder, ViewBinding
         return getItem(position).type
     }
 
+    @SuppressLint("NotifyDataSetChanged")
+    fun notifyData(data: List<NotificationBean>) {
+        submitList(data)
+        notifyDataSetChanged()
+    }
+
     fun setOnItemClickListener(listener: OnClickListener) {
         clicklistener = listener
     }
