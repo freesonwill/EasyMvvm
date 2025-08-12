@@ -44,7 +44,7 @@ dependencies {
     implementation(project(":module_betslip"))
     implementation(project(":module_account"))
     implementation(project(":module_message"))
-    implementation(libs.icu4j)
+    implementation(libs.tinyPinyin)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
