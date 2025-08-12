@@ -6,7 +6,7 @@ package com.walisport.module.live.data.constants
  * @description: 判断当前界面键盘类型
  */
 enum class KeyBoardType {
-    NONE,
+    CHAT,
     SOFT_KEYBOARD,
     EMOJI
 }
