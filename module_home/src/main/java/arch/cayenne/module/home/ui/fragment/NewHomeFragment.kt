@@ -1,11 +1,13 @@
 package arch.cayenne.module.home.ui.fragment
 
+import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.LinearLayout
 import androidx.core.view.GravityCompat
 import androidx.core.view.ViewCompat
@@ -40,6 +42,7 @@ import arch.cayenne.lib.common.utils.ext.getFormatDate
 import arch.cayenne.lib.common.utils.helper.BounceEdgeEffectHelper
 import arch.cayenne.lib.database.entity.TournamentDataModel
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
+import arch.cayenne.lib.skin.widget.SkinnableTextView
 import arch.cayenne.module.home.R
 import arch.cayenne.module.home.data.constants.HomeState
 import arch.cayenne.module.home.data.constants.PlayType
@@ -101,15 +104,24 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             PlayType.entries.forEach {
                 tlHome.addTab(tlHome.newTab().setText(it.titleRes))
             }
+            tlHome.post {
+                // 计算单个 Tab 的宽度
+                val tabWidth = tlHome.width.toFloat() / tlHome.tabCount
+                mBinding.customIndicator.setTabWidth(tabWidth, 0.27f)
+            }
             tlHome.addOnTabSelectedListener(object : OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab?) {
+                    // 动画更新指示器位置
+                    animateIndicatorToPosition(tab?.position ?: 0)
                     tab?.position?.apply {
                         mViewModel.setCalendarState(HomeCalendarFragment.States.CALENDAR_CLOSE_NOTHING)
                         mViewModel.setCurrentPlayType(PlayType.entries[this].id)
                     }
                 }
 
-                override fun onTabUnselected(tab: TabLayout.Tab?) {}
+                override fun onTabUnselected(tab: TabLayout.Tab?) {
+
+                }
                 override fun onTabReselected(tab: TabLayout.Tab?) {}
             })
         }
@@ -649,4 +661,14 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
         return super.onBackPressed()
     }
 
+    private fun animateIndicatorToPosition(position: Int) {
+        val animator = ValueAnimator.ofFloat(mBinding.customIndicator.getCurrentPosition().toFloat(), position.toFloat())
+        animator.duration = 100 // 动画持续时间
+        animator.interpolator = AccelerateDecelerateInterpolator()
+        animator.addUpdateListener { animation ->
+            val progress = animation.animatedValue as Float
+            mBinding.customIndicator.setIndicatorPosition(progress.toInt(), progress % 1f)
+        }
+        animator.start()
+    }
 }
