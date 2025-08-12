@@ -258,6 +258,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
 
     //比赛ID发生变化,取消订阅,数据请空
     private fun updateMatchId(matchId: Long) {
+        mBinding.customIndicator.setCurrentPosition(1)
         mBinding.tabLayout.getTabAt(1)?.select()
         mBinding.vpPage.setCurrentItem(1, true)
         mViewModel.matchId.value?.let {
@@ -321,6 +322,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                 tab.view.setOnClickListener { /* Handle click */ }
             }.attach()
             tabLayout.clearOnTabSelectedListeners()
+            mBinding.customIndicator.setCurrentPosition(1)
             tabLayout.getTabAt(1)?.select()
             vpPage.setCurrentItem(1, false)
             tabLayout.removeAllTips()
