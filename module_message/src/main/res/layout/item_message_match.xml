@@ -136,6 +136,7 @@
             android:id="@+id/lay_detail"
             android:layout_width="match_parent"
             android:background="@drawable/ripple_effect_bottom"
+            android:layout_margin="@dimen/dp_1"
             android:layout_height="@dimen/dp_45">
 
             <arch.cayenne.lib.skin.widget.SkinnableTextView

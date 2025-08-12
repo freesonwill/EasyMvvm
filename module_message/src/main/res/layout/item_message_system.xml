@@ -7,7 +7,7 @@
     <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_200"
-        android:background="@drawable/shape_message_bg">
+        android:background="@color/color_f3f3f4">
 
         <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
             android:id="@+id/lay_title"
@@ -111,6 +111,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_42"
             android:background="@drawable/ripple_effect_bottom"
+            android:layout_margin="@dimen/dp_1"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">

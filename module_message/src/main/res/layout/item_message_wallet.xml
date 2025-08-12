@@ -7,8 +7,8 @@
     <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:background="@drawable/shape_message_bg">
+        android:background="@drawable/shape_message_bg"
+        android:orientation="vertical">
 
         <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
             android:layout_width="match_parent"
@@ -30,18 +30,18 @@
                 android:layout_height="@dimen/dp_10"
                 android:layout_marginTop="-1dp"
                 android:layout_marginEnd="-1dp"
-                android:visibility="invisible"
                 android:background="@drawable/icon_notice_unread"
+                android:visibility="invisible"
                 app:layout_constraintEnd_toEndOf="@+id/iv_msg_icon"
-                app:layout_constraintTop_toTopOf="@+id/iv_msg_icon"/>
+                app:layout_constraintTop_toTopOf="@+id/iv_msg_icon" />
 
             <ImageView
                 android:id="@+id/iv_msg_delete"
                 android:layout_width="@dimen/dp_20"
                 android:layout_height="@dimen/dp_20"
                 android:layout_marginEnd="@dimen/dp_12"
-                android:stateListAnimator="@animator/layout_alpha_animator"
                 android:background="@drawable/icon_message_delete"
+                android:stateListAnimator="@animator/layout_alpha_animator"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -65,42 +65,42 @@
             android:layout_height="@dimen/dp_1"
             android:layout_marginStart="@dimen/dp_12"
             android:layout_marginEnd="@dimen/dp_12"
-            android:background="@color/msg_line"/>
+            android:background="@color/msg_line" />
 
         <arch.cayenne.lib.skin.widget.SkinnableTextView
             android:id="@+id/tv_pay_state"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
             android:layout_marginTop="@dimen/dp_22"
-            android:textColor="#666666"
-            android:textSize="@dimen/sp_12"
             android:gravity="center_horizontal"
-            android:layout_gravity="center_horizontal"/>
+            android:textColor="#666666"
+            android:textSize="@dimen/sp_12" />
 
         <arch.cayenne.lib.skin.widget.SkinnableTextView
             android:id="@+id/tv_pay_money"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center_horizontal"
             android:textColor="@color/msg_title"
             android:textSize="@dimen/sp_30"
-            android:textStyle="bold"
-            android:gravity="center_horizontal"
-            android:layout_gravity="center_horizontal"/>
+            android:textStyle="bold" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             android:layout_marginStart="@dimen/dp_12"
             android:layout_marginTop="@dimen/dp_12"
-            android:layout_marginEnd="@dimen/dp_12">
+            android:layout_marginEnd="@dimen/dp_12"
+            android:orientation="horizontal">
 
             <arch.cayenne.lib.skin.widget.SkinnableTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:text="支付方式"
                 android:textColor="@color/msg_type"
-                android:textSize="@dimen/sp_13"
-                android:text="支付方式"/>
+                android:textSize="@dimen/sp_13" />
 
             <arch.cayenne.lib.skin.widget.SkinnableTextView
                 android:id="@+id/tv_pay_method"
@@ -108,24 +108,24 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_15"
                 android:textColor="@color/msg_title"
-                android:textSize="@dimen/sp_13"/>
+                android:textSize="@dimen/sp_13" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             android:layout_marginStart="@dimen/dp_12"
             android:layout_marginTop="@dimen/dp_12"
             android:layout_marginEnd="@dimen/dp_12"
-            android:layout_marginBottom="@dimen/dp_15">
+            android:layout_marginBottom="@dimen/dp_15"
+            android:orientation="horizontal">
 
             <arch.cayenne.lib.skin.widget.SkinnableTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:text="支付时间"
                 android:textColor="@color/msg_type"
-                android:textSize="@dimen/sp_13"
-                android:text="支付时间"/>
+                android:textSize="@dimen/sp_13" />
 
             <arch.cayenne.lib.skin.widget.SkinnableTextView
                 android:id="@+id/tv_pay_time"
@@ -133,7 +133,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_15"
                 android:textColor="@color/msg_title"
-                android:textSize="@dimen/sp_13"/>
+                android:textSize="@dimen/sp_13" />
         </LinearLayout>
 
         <arch.cayenne.lib.skin.widget.SkinnableView
@@ -141,13 +141,14 @@
             android:layout_height="@dimen/dp_1"
             android:layout_marginStart="@dimen/dp_12"
             android:layout_marginEnd="@dimen/dp_12"
-            android:background="@color/msg_line"/>
+            android:background="@color/msg_line" />
 
         <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
             android:id="@+id/lay_detail"
             android:layout_width="match_parent"
-            android:background="@drawable/ripple_effect_bottom"
-            android:layout_height="@dimen/dp_45">
+            android:layout_height="@dimen/dp_45"
+            android:layout_margin="@dimen/dp_1"
+            android:background="@drawable/ripple_effect_bottom">
 
             <arch.cayenne.lib.skin.widget.SkinnableTextView
                 android:layout_width="wrap_content"
@@ -156,9 +157,9 @@
                 android:layout_marginTop="@dimen/dp_12"
                 android:layout_marginEnd="@dimen/dp_12"
                 android:layout_marginBottom="@dimen/dp_15"
+                android:text="@string/notification_detail"
                 android:textColor="@color/msg_title"
                 android:textSize="@dimen/sp_12"
-                android:text="@string/notification_detail"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
