@@ -1,16 +1,13 @@
 package com.walisport.module.message.ui.fragment
 
 import android.annotation.SuppressLint
-import android.graphics.Rect
 import android.os.Bundle
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.ui.dialog.CommonDialog
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout.States
-import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import com.walisport.module.message.R
@@ -32,23 +29,6 @@ class MessageListFragment : BaseFragment<MessageMainViewModel, FragmentMessageLi
     private var msgAdapter = MessageAdapter()
     private var msgType = 0
 
-    class MessageDecoration(
-        private val spacing: Int = 12.dp2px,
-        private val leftRight: Int = 8.dp2px,
-        private val bottomSpacing: Int = 20.dp2px,
-    ) : RecyclerView.ItemDecoration() {
-        override fun getItemOffsets(
-            outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State
-        ) {
-            val position = parent.getChildAdapterPosition(view)
-            val itemCount = parent.adapter?.itemCount ?: 0
-            outRect.top = if (position == 0) spacing else spacing / 2
-            outRect.bottom = if (position == itemCount - 1) bottomSpacing else spacing / 2
-            outRect.left = leftRight
-            outRect.right = leftRight
-        }
-    }
-
     override fun initView(savedInstanceState: Bundle?) {
         msgType = arguments?.getInt(MSG_TYPE) ?: 0
         with(mBinding) {
@@ -62,10 +42,6 @@ class MessageListFragment : BaseFragment<MessageMainViewModel, FragmentMessageLi
                 itemAnimator = DeleteAnimator()
                 layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
                 adapter = msgAdapter
-                for (i in 0 until itemDecorationCount) {
-                    removeItemDecorationAt(i)
-                }
-                addItemDecoration(MessageDecoration())
             }
             msgAdapter.setOnItemClickListener(object : MessageAdapter.OnClickListener {
                 override fun onDelete(id: Long) {

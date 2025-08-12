@@ -27,8 +27,6 @@ class DeleteAnimator : SimpleItemAnimator() {
     private val mRemoveAnimations = ArrayList<ViewHolder>()
     private val mChangeAnimations = ArrayList<ViewHolder>()
 
-    private val animDuration = 150L
-
     class MoveInfo(
         var holder: ViewHolder,
         var fromX: Int,
@@ -97,7 +95,7 @@ class DeleteAnimator : SimpleItemAnimator() {
             }
             if (removalsPending) {
                 val view: View = moves[0].holder.itemView
-                ViewCompat.postOnAnimationDelayed(view, mover, animDuration)
+                ViewCompat.postOnAnimationDelayed(view, mover, getRemoveDuration())
             } else {
                 mover.run()
             }
@@ -118,7 +116,7 @@ class DeleteAnimator : SimpleItemAnimator() {
             }
             if (removalsPending) {
                 val holder: ViewHolder = changes[0].oldHolder
-                ViewCompat.postOnAnimationDelayed(holder.itemView, changer, animDuration)
+                ViewCompat.postOnAnimationDelayed(holder.itemView, changer, getRemoveDuration())
             } else {
                 changer.run()
             }
@@ -138,9 +136,9 @@ class DeleteAnimator : SimpleItemAnimator() {
                 mAdditionsList.remove(additions)
             }
             if (removalsPending || movesPending || changesPending) {
-                val removeDuration: Long = if (removalsPending) animDuration else 0
-                val moveDuration: Long = if (movesPending) animDuration else 0
-                val changeDuration: Long = if (changesPending) animDuration else 0
+                val removeDuration: Long = if (removalsPending) getRemoveDuration() else 0
+                val moveDuration: Long = if (movesPending) getMoveDuration() else 0
+                val changeDuration: Long = if (changesPending) getChangeDuration() else 0
                 val totalDelay =
                     (removeDuration + max(
                         moveDuration.toDouble(),
@@ -164,7 +162,7 @@ class DeleteAnimator : SimpleItemAnimator() {
         val view = holder.itemView
         val animation = view.animate()
         mRemoveAnimations.add(holder)
-        animation.setDuration(animDuration).alpha(0f).setListener(
+        animation.setDuration(250L).alpha(0f).setListener(
             object : AnimatorListenerAdapter() {
                 override fun onAnimationStart(animator: Animator) {
                     dispatchRemoveStarting(holder)
@@ -191,7 +189,7 @@ class DeleteAnimator : SimpleItemAnimator() {
         val view = holder.itemView
         val animation = view.animate()
         mAddAnimations.add(holder)
-        animation.alpha(1f).setDuration(animDuration)
+        animation.alpha(1f).setDuration(getAddDuration())
             .setListener(object : AnimatorListenerAdapter() {
                 override fun onAnimationStart(animator: Animator) {
                     dispatchAddStarting(holder)
@@ -304,7 +302,9 @@ class DeleteAnimator : SimpleItemAnimator() {
         val newHolder: ViewHolder = changeInfo.newHolder
         val newView = if (newHolder != null) newHolder.itemView else null
         if (view != null) {
-            val oldViewAnim = view.animate().setDuration(animDuration)
+            val oldViewAnim = view.animate().setDuration(
+                getChangeDuration()
+            )
             mChangeAnimations.add(changeInfo.oldHolder)
             oldViewAnim.translationX((changeInfo.toX - changeInfo.fromX).toFloat())
             oldViewAnim.translationY((changeInfo.toY - changeInfo.fromY).toFloat())
@@ -327,7 +327,7 @@ class DeleteAnimator : SimpleItemAnimator() {
         if (newView != null) {
             val newViewAnimation = newView.animate()
             mChangeAnimations.add(changeInfo.newHolder)
-            newViewAnimation.translationX(0f).translationY(0f).setDuration(animDuration)
+            newViewAnimation.translationX(0f).translationY(0f).setDuration(getChangeDuration())
                 .alpha(1f).setListener(object : AnimatorListenerAdapter() {
                     override fun onAnimationStart(animator: Animator) {
                         dispatchChangeStarting(changeInfo.newHolder, false)
