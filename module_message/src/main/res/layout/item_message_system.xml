@@ -7,7 +7,7 @@
     <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_200"
-        android:background="@color/color_f3f3f4">
+        android:background="@drawable/shape_message_bg">
 
         <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
             android:id="@+id/lay_title"

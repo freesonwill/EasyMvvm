@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.ui.dialog.CommonDialog
-import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout.States
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
@@ -125,7 +124,7 @@ class MessageListFragment : BaseFragment<MessageMainViewModel, FragmentMessageLi
             mBinding.loadingView.visibility = View.GONE
             it.let {
                 if (it.isEmpty()) {
-                    msgAdapter.submitList(it)
+                    msgAdapter.notifyData(it)
                     mBinding.emptyState.visibility = View.VISIBLE
                     mBinding.emptyState.setState(
                         States.DATA_EMPTY,
@@ -134,7 +133,7 @@ class MessageListFragment : BaseFragment<MessageMainViewModel, FragmentMessageLi
                 } else {
                     mBinding.emptyState.visibility = View.GONE
                     if (msgType == MSG_ALL) {
-                        msgAdapter.submitList(it)
+                        msgAdapter.notifyData(it)
                     } else {
                         val temp = it.filter { res -> res.type == msgType }
                         if (temp.isEmpty()) {
@@ -143,10 +142,8 @@ class MessageListFragment : BaseFragment<MessageMainViewModel, FragmentMessageLi
                                 States.DATA_EMPTY,
                                 arch.cayenne.lib.common.R.string.data_empty.getString()
                             )
-                        } else {
-                            msgAdapter.submitList(temp)
                         }
-
+                        msgAdapter.notifyData(temp)
                     }
                 }
             }
