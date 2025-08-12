@@ -46,7 +46,6 @@ class LiveEmojiAdapter() :
                     val nBinding = binding as ItemEmojiLayoutBinding
                     nBinding.iv.tag = position
                     nBinding.iv.setImageResource(resId)
-                    nBinding.tv.text = "$position"
                 }
 
                 is ItemBidEmojiLayoutBinding -> {

@@ -172,7 +172,6 @@ class LiveSoftKeyboardFragment :
                 if (event.action == MotionEvent.ACTION_UP) {
                     if (chatViewModel.softKeyBoardListener.value != KeyBoardType.SOFT_KEYBOARD) {
                         chatViewModel.addSoftKeyBoardEvent(KeyBoardType.SOFT_KEYBOARD)
-                        chatViewModel.updateSoftKeyBoard(true)
                     }
                     return@setOnTouchListener true
                 }
@@ -215,11 +214,11 @@ class LiveSoftKeyboardFragment :
             }
         }
         chatViewModel.softKeyBoardListener.collect{
-//            val flag1 = !chatViewModel.checkSoftKeyboardVisible()
-//            if (it != KeyBoardType.CHAT && flag1) {
-//                chatViewModel.checkSoftKeyBoardBetAmount()
-//                return@collect
-//            }
+            val flag1 = !chatViewModel.checkSoftKeyboardVisible()
+            if (it != KeyBoardType.CHAT && flag1) {
+                chatViewModel.checkSoftKeyBoardBetAmount()
+                return@collect
+            }
             showChangeAnimation()
         }
     }
@@ -352,10 +351,11 @@ class LiveSoftKeyboardFragment :
             }
             // 起始点为软件盘的高度 动画开始高度为整个表情键盘的高度下降到软件盘高度 因此topDistance - softKeyBoardHeight 截止点为topDistance
             mViewModel.SOFT_TO_EMOJI -> {
-                val startY = topDistance - chatViewModel.softKeyBoardHeight
+                val startY = topDistance - chatViewModel.softKeyBoardHeight -30.dp2px
                 startY.toFloat()
             }
             mViewModel.EMOJI_TO_SOFT -> {
+                chatViewModel.updateSoftKeyBoard(true)
                 0f
             }
             mViewModel.EMOJI_TO_CHAT -> {
@@ -388,7 +388,7 @@ class LiveSoftKeyboardFragment :
         val animSet = AnimatorSet().apply {
             duration = 150
             if(animationType == mViewModel.SOFT_TO_EMOJI || animationType == mViewModel.EMOJI_TO_SOFT)
-                playTogether(translationAnim,alphaAnim,valueAnim)
+                playTogether(translationAnim,alphaAnim)
             else
                 playTogether(translationAnim,alphaAnim)
             addListener(onStart = {
@@ -401,6 +401,7 @@ class LiveSoftKeyboardFragment :
                         chatViewModel.updateSoftKeyBoard(false)
                         val startY = topDistance - chatViewModel.softKeyBoardHeight
                         mBinding.main.translationY = startY.toFloat()
+                        softKeyHeightHelper?.changeSoftKeyBoardHeight(chatViewModel.keyBoardHeight)
                         chatViewModel.updateKeyBoard()
                     }
                     mViewModel.EMOJI_TO_SOFT -> {
@@ -415,6 +416,8 @@ class LiveSoftKeyboardFragment :
                     chatViewModel.updateKeyBoard()
                 }else if(animationType == mViewModel.EMOJI_TO_CHAT){
                     softKeyHeightHelper?.changeSoftKeyBoardHeight(62.dp2px)
+                    chatViewModel.updateKeyBoard()
+                }else if(animationType == mViewModel.SOFT_TO_EMOJI){
                     chatViewModel.updateKeyBoard()
                 }
                 mBinding.main.translationY = 0f

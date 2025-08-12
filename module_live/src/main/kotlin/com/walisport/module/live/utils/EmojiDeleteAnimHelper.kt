@@ -48,15 +48,15 @@ class EmojiDeleteAnimHelper(private val recyclerView: RecyclerView) {
             }
         })
         recyclerView.post {
-            deleteButtonBottom = recyclerView.bottom
-            deleteButtonTop = deleteButtonBottom - 46.dp2px
+            deleteButtonBottom = recyclerView.bottom+30.dp2px
+            deleteButtonTop = deleteButtonBottom - 46.dp2px-30.dp2px
             updateTargetItemsVisibility()
         }
 
         // 添加布局完成监听确保状态正确
-//        recyclerView.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
-//            ensureAllNonTargetItemsVisible()
-//        }
+        recyclerView.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
+            ensureAllNonTargetItemsVisible()
+        }
     }
 
     private fun updateTargetItemsVisibility() {
