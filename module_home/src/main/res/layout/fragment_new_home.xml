@@ -44,29 +44,6 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <!-- 主導航 (包含 "今日"、"早盤"、"冠軍") -->
-
-           <!-- <arch.cayenne.lib.skin.widget.SkinnableTabLayout
-                android:id="@+id/tl_home"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginStart="@dimen/dp_12"
-                android:background="@android:color/transparent"
-                android:clipChildren="false"
-                android:clipToPadding="false"
-                android:paddingTop="@dimen/dp_10"
-                android:paddingBottom="@dimen/dp_12"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/ll_wallet_entry"
-                app:layout_constraintHorizontal_bias="0"
-                app:layout_constraintStart_toEndOf="@+id/iv_home_sidebar"
-                app:layout_constraintTop_toTopOf="parent"
-                app:tabGravity="start"
-
-                app:tabMode="scrollable"
-                app:tabRippleColor="@null"
-                app:tabSelectedTextColor="@color/sport_item_text_select"
-                app:tabTextAppearance="@style/HomeTabLayoutTextAppearance"
-                app:tabTextColor="@color/home_secondary_text" />-->
             <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
                 android:id="@+id/LLTabLayout"
                 android:layout_width="wrap_content"
