@@ -14,6 +14,7 @@ import android.widget.TextView
 import androidx.core.view.GravityCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentManager.FragmentLifecycleCallbacks
@@ -21,9 +22,9 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.SimpleItemAnimator
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import androidx.viewpager2.widget.ViewPager2.SCROLL_STATE_IDLE
+import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.animation.EaseCubicInterpolator
@@ -32,7 +33,6 @@ import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
-import arch.cayenne.lib.common.utils.ext.setDrawerInterpolator
 import arch.cayenne.lib.common.utils.ext.NavResultExt.observeResult
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
@@ -41,10 +41,10 @@ import arch.cayenne.lib.common.utils.ext.TabLayoutExt.setupEndTabMoreAnimation
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.getFormatDate
+import arch.cayenne.lib.common.utils.ext.setDrawerInterpolator
 import arch.cayenne.lib.common.utils.helper.BounceEdgeEffectHelper
 import arch.cayenne.lib.database.entity.TournamentDataModel
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
-import arch.cayenne.lib.skin.widget.SkinnableTextView
 import arch.cayenne.module.home.R
 import arch.cayenne.module.home.data.constants.HomeState
 import arch.cayenne.module.home.data.constants.PlayType
@@ -82,12 +82,11 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
 
     //    private val tournamentListFragment  = TournamentListFragment.newInstance()
     private var isExpanded = false
+
     override fun initView(savedInstanceState: Bundle?) {
         initPlayTypeLayout()
         initSportLayout()
         initTournamentLayout()
-        initDrawerContent()
-        (mBinding.rvSportsList.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
     }
 
     override fun onStart() {
@@ -101,6 +100,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
     private fun initPlayTypeLayout() {
         with(mBinding) {
             ivHomeSidebar.clickNoRepeat {
+                initDrawerContent()
                 drawerLayout.openDrawer(GravityCompat.START)
             }
             PlayType.entries.forEach {
@@ -149,6 +149,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
     private fun initSportLayout() {
         mBinding.apply {
             rvSportsList.apply {
+                itemAnimator = null
                 layoutManager =
                     LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
                 edgeEffectFactory = BounceEdgeEffectHelper(requireContext())
@@ -412,6 +413,16 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
 
     //init DrawerLayout Content
     private fun initDrawerContent() {
+        if (drawerContentFragment != null) {
+            return
+        }
+        drawerContentFragment = DrawerContentFragment()
+        drawerContentFragment?.also {
+            it.setOnFunctionClickListener {
+//                    mBinding.drawerLayout.closeDrawer(GravityCompat.START)
+            }
+        }
+
         //蒙層顏色依照版型作變化
         mBinding.drawerLayout.setScrimColor(
             SkinnableResourceManager.getColor(
@@ -420,14 +431,6 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             )
         )
         mBinding.drawerLayout.setDrawerInterpolator(150,EaseCubicInterpolator().easeOut())
-        if (drawerContentFragment == null) {
-            drawerContentFragment = DrawerContentFragment()
-            drawerContentFragment?.also {
-                it.setOnFunctionClickListener {
-//                    mBinding.drawerLayout.closeDrawer(GravityCompat.START)
-                }
-            }
-        }
         childFragmentManager.beginTransaction()
             .replace(
                 mBinding.fragmentDrawerContent.id,
@@ -469,15 +472,17 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
 
     private fun setTournamentAndViewPagerLayout(tournaments: List<TournamentDataModel>) {
         with(mBinding.layoutContainer) {
-            leaguePagerAdapter = LeaguePagerAdapter(
-                fragmentManager = childFragmentManager,
-                lifecycle = viewLifecycleOwner.lifecycle,
-                tournament = tournaments,
-                playTypeId = mViewModel.currentPlayTypeId
-            )
-            vpGameList.adapter = leaguePagerAdapter
-            vpGameList.offsetLeftAndRight(1)
+            if (leaguePagerAdapter == null) {
+                leaguePagerAdapter = LeaguePagerAdapter(
+                    fragmentManager = childFragmentManager,
+                    lifecycle = viewLifecycleOwner.lifecycle,
+                )
+                vpGameList.adapter = leaguePagerAdapter
+                vpGameList.offsetLeftAndRight(1)
+            }
+            leaguePagerAdapter!!.setData(mViewModel.currentPlayTypeId, tournaments)
             mBinding.ivTournamentMore.visibility = View.VISIBLE
+
             // 使用 reflexMargin 擴展方法設置更小的 tab 間距
             tlLeagueList.reflexMargin(2.dp2px, 2.dp2px, 1.dp2px)
 
@@ -549,6 +554,16 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 navigate(NewHomeFragmentDirections.actionNewHomeFragmentToHomeBetSlipFragment())
             }
             llBetEntry.addScaleOnTouchAnimation()
+
+            mBinding.drawerLayout.addDrawerListener(object : DrawerLayout.DrawerListener {
+                override fun onDrawerSlide(drawerView: View, slideOffset: Float) {}
+                override fun onDrawerOpened(drawerView: View) {
+                    initDrawerContent()
+                }
+                override fun onDrawerClosed(drawerView: View) {}
+                override fun onDrawerStateChanged(newState: Int) {}
+
+            })
         }
     }
 
@@ -616,6 +631,9 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                         mBinding.layoutContainer.llDateFilterContainer.visibility = View.VISIBLE
                         mBinding.layoutContainer.llOtherDate.visibility = View.VISIBLE
                     }
+                }
+                is DataState.NetworkUnavailable, DataState.NoMoreData, HomeState.Match.LoadSuccess, HomeState.Match.DataEmpty -> {
+                    initDrawerContent()
                 }
                 else -> Unit
             }
