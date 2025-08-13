@@ -49,12 +49,11 @@ open class OrderSlipRepository(
             if (matchId == -1L) null else matchId
         )
         return@withContext if (result.error == null && result.data != null) {
-            val data = result.data!!.orderList.map { it.toOrderBean(type) }
+            val currency = infoDao.getCurrency()
+            val data = result.data!!.orderList.map { it.toOrderBean(type, currency) }
             if (data.isEmpty()) {
                 betSlipOrderDao.deleteByType(type)
             } else {
-                val currency = infoDao.getCurrency()
-                data.forEach { it.currency = currency }
                 betSlipOrderDao.insert(data)
                 betSlipOrderDao.deleteMissing(type, data.map { it.betId })
             }
@@ -84,9 +83,8 @@ open class OrderSlipRepository(
             if (matchId == -1L) null else matchId
         )
         if (result.error == null && result.data != null) {
-            val data = result.data!!.orderList.map { it.toOrderBean(type) }
             val currency = infoDao.getCurrency()
-            data.forEach { it.currency = currency }
+            val data = result.data!!.orderList.map { it.toOrderBean(type, currency) }
             betSlipOrderDao.insert(data)
             ApiResponseState.Succeeded(data)
         } else {

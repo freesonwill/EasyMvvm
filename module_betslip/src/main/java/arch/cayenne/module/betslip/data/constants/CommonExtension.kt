@@ -13,7 +13,7 @@ import galaxy.common.proto.Common
 
 object CommonExtension {
 
-    fun Common.Order.toOrderBean(betSlipType: Int): BetSlipOrderBean {
+    fun Common.Order.toOrderBean(betSlipType: Int, currency: String): BetSlipOrderBean {
         return BetSlipOrderBean(
             betId = betId,
             betTime = betTime,
@@ -34,7 +34,7 @@ object CommonExtension {
             resultStatus = resultStatus,
             earlySettlePrice = earlySettlePrice.toEarlySettlePriceBean(),
             betSlipType = betSlipType,
-            currency = ""
+            currency = currency
         )
     }
 
