@@ -40,6 +40,9 @@
         <action
             android:id="@+id/action_loginFragment_to_fastLoginFragment"
             app:destination="@id/fastLoginFragment" />
+        <action
+            android:id="@+id/action_loginFragment_to_registerNewAccountFragment"
+            app:destination="@id/registerNewAccountFragment" />
     </fragment>
 
     <fragment
@@ -75,6 +78,22 @@
         android:id="@+id/completeAccountFragment"
         android:name="com.walisport.module.login.ui.fragment.CompleteAccountFragment"
         android:label="CompleteAccountFragment" />
+    <fragment
+        android:id="@+id/registerNewAccountFragment"
+        android:name="com.walisport.module.login.ui.fragment.RegisterNewAccountFragment"
+        android:label="RegisterNewAccountFragment" />
+    <fragment
+        android:id="@+id/newMobileVerifyFragment"
+        android:name="com.walisport.module.login.ui.fragment.NewMobileVerifyFragment"
+        android:label="NewMobileVerifyFragment" />
+    <fragment
+        android:id="@+id/setNewPasswordFragment"
+        android:name="com.walisport.module.login.ui.fragment.SetNewPasswordFragment"
+        android:label="SetNewPasswordFragment" />
+    <fragment
+        android:id="@+id/registerFormalAccountFragment"
+        android:name="com.walisport.module.login.ui.fragment.RegisterFormalAccountFragment"
+        android:label="RegisterFormalAccountFragment" />
 
 
 </navigation>
