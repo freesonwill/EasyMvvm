@@ -61,8 +61,8 @@ class ModuleRepository(
 
     @Transaction
     private fun savePreLoadData(data: PreLoadDataModel) {
-        try {
-            scope.launch(Dispatchers.IO) {
+        scope.launch(Dispatchers.IO) {
+            try {
                 //新增sport進入Database
                 val sportBeans = arrayListOf<SportBean>()
                 data.statistical.forEach {  play ->
@@ -80,7 +80,6 @@ class ModuleRepository(
                     }
                 }
                 sportDao.insert(sportBeans)
-
                 //新增聯賽進入Database
                 val playTypeId = data.statistical.firstOrNull()?.playType ?: PlayType.TODAY.id
 
@@ -123,7 +122,6 @@ class ModuleRepository(
                 }
                 tournamentDao.insert(tournamentList)
                 tournamentDao.insertSportTournamentCrossRefs(refs)
-
                 val tournamentId = 0  //default沒給，只能預設為是全部聯賽
                 val matchFullData = data.match.toRoomData()
                 "新增比賽 tournamentId = ${tournamentId} matchId = ${matchFullData.match.map { it.matchId }} 進入資料庫".logi(
@@ -146,11 +144,12 @@ class ModuleRepository(
                     marketCrossRef = matchFullData.matchMarketCrossRefs,
                     marketSelectCrossRefs = matchFullData.marketSelectCrossRefs,
                 )
-            }
 
-        } catch (e: Exception) {
-            e.printStackTrace()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
+
     }
 
     //开始连接服务器
