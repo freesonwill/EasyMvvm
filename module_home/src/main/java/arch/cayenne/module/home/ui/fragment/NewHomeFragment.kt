@@ -2,6 +2,7 @@ package arch.cayenne.module.home.ui.fragment
 
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
+import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.core.view.GravityCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -117,10 +119,17 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                         mViewModel.setCalendarState(HomeCalendarFragment.States.CALENDAR_CLOSE_NOTHING)
                         mViewModel.setCurrentPlayType(PlayType.entries[this].id)
                     }
+                    tab?.let {
+                        // 设置选中Tab为粗体
+                        (it.view.getChildAt(1) as? TextView)?.typeface = Typeface.DEFAULT_BOLD
+                    }
                 }
 
                 override fun onTabUnselected(tab: TabLayout.Tab?) {
-
+                    tab?.let {
+                        // 设置默认
+                        (it.view.getChildAt(1) as? TextView)?.typeface = Typeface.DEFAULT
+                    }
                 }
                 override fun onTabReselected(tab: TabLayout.Tab?) {}
             })
