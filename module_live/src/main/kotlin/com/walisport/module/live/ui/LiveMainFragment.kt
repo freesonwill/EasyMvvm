@@ -71,7 +71,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         setVideoView()
         loadFragment()
         mViewModel.observeMatchInfoNotify()
-        mBinding.drawerLayout.setDrawerInterpolator(150,EaseCubicInterpolator.EaseOut())
+        mBinding.drawerLayout.setDrawerInterpolator(150,EaseCubicInterpolator().easeOut())
         mBinding.drawerLayout.setDrawerLockMode(
             DrawerLayout.LOCK_MODE_LOCKED_CLOSED,
             GravityCompat.END
