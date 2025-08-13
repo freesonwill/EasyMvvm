@@ -127,7 +127,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
 
                 override fun onTabUnselected(tab: TabLayout.Tab?) {
                     tab?.let {
-                        // 设置选中Tab为粗体
+                        // 设置默认
                         (it.view.getChildAt(1) as? TextView)?.typeface = Typeface.DEFAULT
                     }
                 }
