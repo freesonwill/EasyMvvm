@@ -153,7 +153,7 @@ class TopUpRecordsFragment : BaseFragment<TopUpRecordsViewModel, FragmentTopupRe
 
     override fun initData() {
         super.initData()
-        mViewModel.getListData()
+        //mViewModel.getListData()
     }
 
     override fun onStart() {
