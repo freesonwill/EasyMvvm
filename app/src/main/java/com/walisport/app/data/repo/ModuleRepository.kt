@@ -6,6 +6,7 @@ import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.common.data.constants.LanguageType
+import arch.cayenne.lib.common.data.constants.SportEnum
 import arch.cayenne.lib.database.GameDatabase
 import arch.cayenne.lib.database.entity.SportBean
 import arch.cayenne.lib.database.entity.SportTournamentCrossRef
@@ -13,6 +14,7 @@ import arch.cayenne.lib.database.entity.TournamentBean
 import arch.cayenne.lib.database.entity.TournamentMatchRef
 import arch.cayenne.lib.http.HttpClient
 import arch.cayenne.lib.websocket.WebSocketManager
+import arch.cayenne.module.home.data.constants.PlayType
 import arch.cayenne.module.home.data.constants.playTypeToShowType
 import arch.cayenne.module.home.data.repo.HomeRepository
 import com.walisport.app.IPreLoadHomeApi
@@ -80,24 +82,21 @@ class ModuleRepository(
                 sportDao.insert(sportBeans)
 
                 //新增聯賽進入Database
-                val playTypeItem = data.statistical.first()
-                val sport = data.statistical.first().sportStatistical.first { (it.matchCount ?: 0) > 0 }  //第一個會被點擊的sport
+                val playTypeId = data.statistical.firstOrNull()?.playType ?: PlayType.TODAY.id
 
                 val tournamentList = mutableListOf<TournamentBean>()
                 val refs = mutableListOf<SportTournamentCrossRef>().apply {
                     add(
-                        tournamentDao.getSportTournamentCrossRef(playTypeItem.playType, sport.sportId, 0) ?: run {
-                            SportTournamentCrossRef(
-                                tournamentId = 0,
-                                playType = playTypeItem.playType,
-                                sportId = sport.sportId,
-                                hot = false,
-                                weight = Int.MAX_VALUE,
-                                index = 0,
-                                coordinateY = 0,
-                                matchId = null,
-                            )
-                        }
+                        SportTournamentCrossRef(
+                            tournamentId = 0,
+                            playType = playTypeId,
+                            sportId = data.tournament.getOrNull(0)?.sportId ?: SportEnum.Soccer.id,
+                            hot = false,
+                            weight = Int.MAX_VALUE,
+                            index = 0,
+                            coordinateY = 0,
+                            matchId = null,
+                        )
                     )
                 }
                 data.tournament.forEachIndexed { index, tournament ->
@@ -110,22 +109,16 @@ class ModuleRepository(
                         )
                     )
                     refs.add(
-                        tournamentDao.getSportTournamentCrossRef(playTypeItem.playType, sport.sportId, tournament.id)?.copy(
+                        SportTournamentCrossRef(
+                            tournamentId = tournament.id,
+                            playType = playTypeId,
+                            sportId = tournament.sportId,
                             hot = tournament.hot,
                             weight = tournament.weight,
                             index = index+1,
-                        ) ?: run {
-                            SportTournamentCrossRef(
-                                tournamentId = tournament.id,
-                                playType = playTypeItem.playType,
-                                sportId = sport.sportId,
-                                hot = tournament.hot,
-                                weight = tournament.weight,
-                                index = index+1,
-                                coordinateY = 0,
-                                matchId = null,
-                            )
-                        }
+                            coordinateY = 0,
+                            matchId = null,
+                        )
                     )
                 }
                 tournamentDao.insert(tournamentList)
@@ -137,7 +130,7 @@ class ModuleRepository(
                     HomeRepository::class.java.simpleName)
                 val tournamentMatchRefs = data.match.mapIndexed { index, match ->
                     TournamentMatchRef(
-                        playType = playTypeItem.playType,
+                        playType = playTypeId,
                         tournamentId = tournamentId,
                         page = 0,
                         date = 0,//default沒給，只能預設為是今日

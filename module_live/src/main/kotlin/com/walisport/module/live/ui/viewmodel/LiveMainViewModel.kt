@@ -24,6 +24,7 @@ import com.walisport.module.live.data.model.Stat
 import com.walisport.module.live.data.repository.LiveChatRepository
 import galaxy.client.proto.Sloth
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
@@ -86,6 +87,13 @@ class LiveMainViewModel(
         viewModelScope.launch {
             repo.observeInfo().collect {
                 currentBalanceChange.value = it
+            }
+        }
+        //监听技术统计推送
+        viewModelScope.launch(Dispatchers.IO) {
+            repo.observeMatchStaticsNotify().collect {
+                val temp = getMatchLiveData(it)
+                _statisticData.postValue(temp)
             }
         }
     }
@@ -171,16 +179,6 @@ class LiveMainViewModel(
     fun unregisterStatisticsNotify() {
         viewModelScope.launch {
             repo.unregisterStatisticsNotify()
-        }
-    }
-
-    //监听比赛技术统计推送
-    fun observeMatchStaticsNotify() {
-        viewModelScope.launch {
-            repo.observeMatchStaticsNotify().collect {
-                val temp = getMatchLiveData(it)
-                _statisticData.value = temp
-            }
         }
     }
 
