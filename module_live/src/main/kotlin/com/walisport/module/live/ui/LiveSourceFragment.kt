@@ -170,7 +170,13 @@ class LiveSourceFragment :
                 if (event.action == MotionEvent.ACTION_DOWN) {
                     val dialogBounds = Rect()
                     decorView.getHitRect(dialogBounds)
+
+                    val contentBounds = Rect()
+                    mBinding.llRoot.getHitRect(contentBounds)
                     if (!dialogBounds.contains(event.x.toInt(), event.y.toInt())) {
+                        dismiss() // 手动调用 dismiss
+                        true
+                    } else if (!contentBounds.contains(event.x.toInt(), event.y.toInt())) {
                         dismiss() // 手动调用 dismiss
                         true
                     } else {
