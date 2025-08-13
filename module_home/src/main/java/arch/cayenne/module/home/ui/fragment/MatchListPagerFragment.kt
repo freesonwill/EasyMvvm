@@ -176,7 +176,7 @@ class MatchListPagerFragment :
         mBinding.rvHomeGameList.doOnPreDraw {
             subscribeVisibleMatch()
             if (preEmpty && matchList.isNotEmpty()) {
-                homeViewModel.changeState(HomeState.Match.LoadSuccess)
+                mViewModel.changeState(HomeState.Match.LoadSuccess)
                 setMatchListPosition()
             }
         }

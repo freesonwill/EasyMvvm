@@ -65,6 +65,10 @@ class MatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
 
     fun getSportId() = _sportId
 
+    fun changeState(state: DataState) {
+        setState(state)
+    }
+
     fun startObserveMatch() {
         if (observeJob != null) return
         observeJob = viewModelScope.launch {
@@ -92,7 +96,6 @@ class MatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
                 )
                 "Collect observeMatchChange result：${list.map { it.match.matchId }}".logi(this@MatchListViewModel::class.java.simpleName)
                 withContext(Dispatchers.Main) {
-                    setState(HomeState.Match.LoadSuccess)
                     matchListChange.value = list
                 }
             }

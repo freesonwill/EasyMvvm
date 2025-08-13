@@ -10,6 +10,7 @@ import android.widget.LinearLayout
 import androidx.core.view.GravityCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentManager.FragmentLifecycleCallbacks
@@ -17,9 +18,9 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.SimpleItemAnimator
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import androidx.viewpager2.widget.ViewPager2.SCROLL_STATE_IDLE
+import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
@@ -82,8 +83,6 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
         initPlayTypeLayout()
         initSportLayout()
         initTournamentLayout()
-        initDrawerContent()
-        (mBinding.rvSportsList.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
     }
 
     override fun onStart() {
@@ -97,6 +96,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
     private fun initPlayTypeLayout() {
         with(mBinding) {
             ivHomeSidebar.clickNoRepeat {
+                initDrawerContent()
                 drawerLayout.openDrawer(GravityCompat.START)
             }
             PlayType.entries.forEach {
@@ -128,6 +128,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
     private fun initSportLayout() {
         mBinding.apply {
             rvSportsList.apply {
+                itemAnimator = null
                 layoutManager =
                     LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
                 edgeEffectFactory = BounceEdgeEffectHelper(requireContext())
@@ -392,6 +393,16 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
 
     //init DrawerLayout Content
     private fun initDrawerContent() {
+        if (drawerContentFragment != null) {
+            return
+        }
+        drawerContentFragment = DrawerContentFragment()
+        drawerContentFragment?.also {
+            it.setOnFunctionClickListener {
+//                    mBinding.drawerLayout.closeDrawer(GravityCompat.START)
+            }
+        }
+
         //蒙層顏色依照版型作變化
         mBinding.drawerLayout.setScrimColor(
             SkinnableResourceManager.getColor(
@@ -399,14 +410,6 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 R.color.drawer_scrim_color
             )
         )
-        if (drawerContentFragment == null) {
-            drawerContentFragment = DrawerContentFragment()
-            drawerContentFragment?.also {
-                it.setOnFunctionClickListener {
-//                    mBinding.drawerLayout.closeDrawer(GravityCompat.START)
-                }
-            }
-        }
         childFragmentManager.beginTransaction()
             .replace(
                 mBinding.fragmentDrawerContent.id,
@@ -529,6 +532,16 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 navigate(NewHomeFragmentDirections.actionNewHomeFragmentToHomeBetSlipFragment())
             }
             llBetEntry.addScaleOnTouchAnimation()
+
+            mBinding.drawerLayout.addDrawerListener(object : DrawerLayout.DrawerListener {
+                override fun onDrawerSlide(drawerView: View, slideOffset: Float) {}
+                override fun onDrawerOpened(drawerView: View) {
+                    initDrawerContent()
+                }
+                override fun onDrawerClosed(drawerView: View) {}
+                override fun onDrawerStateChanged(newState: Int) {}
+
+            })
         }
     }
 
@@ -596,6 +609,9 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                         mBinding.layoutContainer.llDateFilterContainer.visibility = View.VISIBLE
                         mBinding.layoutContainer.llOtherDate.visibility = View.VISIBLE
                     }
+                }
+                is DataState.NetworkUnavailable, DataState.NoMoreData, HomeState.Match.LoadSuccess, HomeState.Match.DataEmpty -> {
+                    initDrawerContent()
                 }
                 else -> Unit
             }
