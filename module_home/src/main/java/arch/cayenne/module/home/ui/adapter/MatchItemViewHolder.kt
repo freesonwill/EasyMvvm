@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.RecycledViewPool
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.SportStringExt.limitTitleLength
 import arch.cayenne.lib.common.utils.ext.toLocalDateTimeString
@@ -30,7 +31,7 @@ class MatchItemViewHolder(
     private val onMatchItemClickListener: OnMatchItemClickListener?,
     private val viewPool: RecycledViewPool
 ) : BaseViewHolder(mBinding) {
-    private var oddsColumnAdapter: OddsColumnAdapter = OddsColumnAdapter(onMatchItemClickListener)
+    private val oddsColumnAdapter: OddsColumnAdapter  by lazy { OddsColumnAdapter(onMatchItemClickListener) }
 
     init {
         //右半盤口
@@ -99,6 +100,10 @@ class MatchItemViewHolder(
             val basicInfo = data.match.basicInfo
             val liveInfo = data.match.liveInfo
 
+            val selectionsGrouped = data.markets.map { it.market to it.selections }
+            "KC_ oddsColumnAdapter.submitList ${data.match.basicInfo.matchName}".logd()
+            oddsColumnAdapter.submitList(selectionsGrouped)
+
             //賽事資訊
             setIconWithDefault(
                 basicInfo.tournamentIcon,
@@ -143,9 +148,6 @@ class MatchItemViewHolder(
                 tvAwayScore.text = ""
                 tvHomeScore.text = ""
             }
-
-            val selectionsGrouped = data.markets.map { it.market to it.selections }
-            oddsColumnAdapter.submitList(selectionsGrouped)
         }
     }
 
