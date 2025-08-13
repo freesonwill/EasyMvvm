@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.View
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
-import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout.States
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
@@ -37,7 +36,7 @@ class LiveVideoStatisticsFragment :
         mViewModel.setMatchId(matchId)
         mBinding.viewTechStatic.setFullScreenMode()
         mBinding.viewTechEvent.setFullScreenMode()
-        mBinding.mainLayout.setState(DynamicStateLayout.States.LOADING, "")
+        mBinding.mainLayout.setState(States.LOADING, "")
     }
 
     override fun initData() {
@@ -77,7 +76,7 @@ class LiveVideoStatisticsFragment :
                 if (it.matchTrendData.data.isEmpty()) {
                     mBinding.llContent.visibility = View.INVISIBLE
                     mBinding.mainLayout.setState(
-                        DynamicStateLayout.States.DATA_EMPTY,
+                        States.DATA_EMPTY,
                         R.string.lineup_empty.getString()
                     )
                 } else {
