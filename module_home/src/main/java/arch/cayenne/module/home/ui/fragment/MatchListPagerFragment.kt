@@ -32,6 +32,7 @@ import arch.cayenne.module.home.ui.adapter.OnMatchItemClickListener
 import arch.cayenne.module.home.ui.view.decoration.MatchCardItemDecoration
 import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
 import arch.cayenne.module.home.ui.viewmodel.MatchListViewModel
+import com.walisport.module.message.ui.view.DeleteAnimator
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import java.lang.ref.WeakReference
@@ -93,6 +94,7 @@ class MatchListPagerFragment :
                 this.layoutManager = gameLayoutManager
                 this.adapter = matchAdapter
                 addItemDecoration(decoration)
+                itemAnimator = DeleteAnimator()
             }
             rvHomeGameList.itemAnimator  = null
             rvHomeGameList.addOnScrollListener(object : RecyclerView.OnScrollListener() {

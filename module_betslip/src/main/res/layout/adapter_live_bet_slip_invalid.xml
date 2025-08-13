@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/shape_betslip_card">
@@ -21,24 +22,24 @@
         android:gravity="center"
         android:paddingStart="3.5dp"
         android:paddingEnd="4.5dp"
-        android:text="@string/live_bet_reserve_expired"
         android:textColor="@color/color_2c3c3e"
         android:textSize="@dimen/sp_13"
         app:layout_constraintBottom_toBottomOf="@id/bet_expired_iv_top"
         app:layout_constraintLeft_toLeftOf="@id/bet_expired_iv_top"
-        app:layout_constraintTop_toTopOf="@id/bet_expired_iv_top" />
+        app:layout_constraintTop_toTopOf="@id/bet_expired_iv_top"
+        tools:text="@string/live_bet_reserve_expired" />
 
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/bet_expired_tv_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_8"
-        android:text="2024/11/14 05:03"
         android:textColor="@color/secondary_text"
         android:textSize="@dimen/sp_13"
         app:layout_constraintBottom_toBottomOf="@id/bet_expired_tv_status"
         app:layout_constraintLeft_toRightOf="@id/bet_expired_tv_status"
-        app:layout_constraintTop_toTopOf="@id/bet_expired_tv_status" />
+        app:layout_constraintTop_toTopOf="@id/bet_expired_tv_status"
+        tools:text="2024/11/14 05:03" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_selection"
@@ -98,16 +99,27 @@
         app:layout_constraintLeft_toLeftOf="@id/bet_expired_tv_status"
         app:layout_constraintTop_toBottomOf="@id/bet_expired_iv_avava" />
 
+    <arch.cayenne.lib.skin.widget.SkinnableImageView
+        android:id="@+id/iv_copy_clip"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginEnd="6dp"
+        android:padding="8dp"
+        android:src="@drawable/icon_copy_clip"
+        app:layout_constraintBottom_toBottomOf="@id/tv_unit1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tv_unit1" />
+
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/tv_unit1_value"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_20"
-        android:layout_marginEnd="@dimen/dp_12"
-        android:text="2025021112000001"
         android:textColor="@color/main_text"
         android:textSize="@dimen/sp_14"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@id/tv_unit1" />
+        app:layout_constraintBottom_toBottomOf="@id/tv_unit1"
+        app:layout_constraintEnd_toStartOf="@id/iv_copy_clip"
+        app:layout_constraintTop_toTopOf="@id/tv_unit1"
+        tools:text="2025021112000001" />
 
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/tv_unit2"
@@ -125,11 +137,11 @@
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_20"
         android:layout_marginEnd="@dimen/dp_12"
-        android:text="\@1.85"
         android:textColor="@color/main_text"
         android:textSize="@dimen/sp_14"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@id/tv_unit2" />
+        app:layout_constraintTop_toTopOf="@id/tv_unit2"
+        tools:text="\@1.85" />
 
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/tv_unit3"
@@ -147,11 +159,11 @@
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_20"
         android:layout_marginEnd="@dimen/dp_12"
-        android:text="$1000"
         android:textColor="@color/main_text"
         android:textSize="@dimen/sp_14"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@id/tv_unit3" />
+        app:layout_constraintTop_toTopOf="@id/tv_unit3"
+        tools:text="$1000" />
 
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/tv_unit4"
@@ -169,12 +181,11 @@
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_20"
         android:layout_marginEnd="@dimen/dp_12"
-        android:text="$2312"
         android:textColor="@color/main_text"
         android:textSize="@dimen/sp_14"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@id/tv_unit4" />
-
+        app:layout_constraintTop_toTopOf="@id/tv_unit4"
+        tools:text="$2312" />
 
     <View
         android:layout_width="match_parent"

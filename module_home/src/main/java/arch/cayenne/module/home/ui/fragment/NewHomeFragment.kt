@@ -1,11 +1,13 @@
 package arch.cayenne.module.home.ui.fragment
 
+import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.LinearLayout
 import androidx.core.view.GravityCompat
 import androidx.core.view.ViewCompat
@@ -23,12 +25,14 @@ import androidx.viewpager2.widget.ViewPager2.SCROLL_STATE_IDLE
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
+import arch.cayenne.lib.base.ui.animation.EaseCubicInterpolator
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.lib.common.utils.ext.setDrawerInterpolator
 import arch.cayenne.lib.common.utils.ext.NavResultExt.observeResult
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
@@ -40,6 +44,7 @@ import arch.cayenne.lib.common.utils.ext.getFormatDate
 import arch.cayenne.lib.common.utils.helper.BounceEdgeEffectHelper
 import arch.cayenne.lib.database.entity.TournamentDataModel
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
+import arch.cayenne.lib.skin.widget.SkinnableTextView
 import arch.cayenne.module.home.R
 import arch.cayenne.module.home.data.constants.HomeState
 import arch.cayenne.module.home.data.constants.PlayType
@@ -102,15 +107,24 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             PlayType.entries.forEach {
                 tlHome.addTab(tlHome.newTab().setText(it.titleRes))
             }
+            tlHome.post {
+                // 计算单个 Tab 的宽度
+                val tabWidth = tlHome.width.toFloat() / tlHome.tabCount
+                mBinding.customIndicator.setTabWidth(tabWidth, 0.27f)
+            }
             tlHome.addOnTabSelectedListener(object : OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab?) {
+                    // 动画更新指示器位置
+                    animateIndicatorToPosition(tab?.position ?: 0)
                     tab?.position?.apply {
                         mViewModel.setCalendarState(HomeCalendarFragment.States.CALENDAR_CLOSE_NOTHING)
                         mViewModel.setCurrentPlayType(PlayType.entries[this].id)
                     }
                 }
 
-                override fun onTabUnselected(tab: TabLayout.Tab?) {}
+                override fun onTabUnselected(tab: TabLayout.Tab?) {
+
+                }
                 override fun onTabReselected(tab: TabLayout.Tab?) {}
             })
         }
@@ -122,6 +136,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
         mBinding.layoutContainer.llDateFilterContainer.visibility = View.GONE
         mBinding.layoutContainer.llOtherDate.visibility = View.GONE
         mBinding.ivTournamentMore.visibility = View.GONE
+        mBinding.llHomeTournamentMore.visibility = View.GONE
     }
 
     //init 二級導航欄位
@@ -210,8 +225,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             // 初始化 TabLayout end more跟手動畫
             tlLeagueList.setupEndTabMoreAnimation(
                 mBinding.ivTournamentMore,
-                mBinding.llHomeTournamentMore,
-                triggerRatio = 0.8f
+                mBinding.llHomeTournamentMore
             )
         }
 
@@ -410,6 +424,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 R.color.drawer_scrim_color
             )
         )
+        mBinding.drawerLayout.setDrawerInterpolator(150,EaseCubicInterpolator.EaseOut())
         childFragmentManager.beginTransaction()
             .replace(
                 mBinding.fragmentDrawerContent.id,
@@ -460,7 +475,6 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 vpGameList.offsetLeftAndRight(1)
             }
             leaguePagerAdapter!!.setData(mViewModel.currentPlayTypeId, tournaments)
-
             // 使用 reflexMargin 擴展方法設置更小的 tab 間距
             tlLeagueList.reflexMargin(2.dp2px, 2.dp2px, 1.dp2px)
 
@@ -666,4 +680,14 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
         return super.onBackPressed()
     }
 
+    private fun animateIndicatorToPosition(position: Int) {
+        val animator = ValueAnimator.ofFloat(mBinding.customIndicator.getCurrentPosition().toFloat(), position.toFloat())
+        animator.duration = 100 // 动画持续时间
+        animator.interpolator = AccelerateDecelerateInterpolator()
+        animator.addUpdateListener { animation ->
+            val progress = animation.animatedValue as Float
+            mBinding.customIndicator.setIndicatorPosition(progress.toInt(), progress % 1f)
+        }
+        animator.start()
+    }
 }

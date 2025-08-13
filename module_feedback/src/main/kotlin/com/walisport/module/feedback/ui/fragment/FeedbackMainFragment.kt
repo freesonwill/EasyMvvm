@@ -3,12 +3,17 @@ package com.walisport.module.feedback.ui.fragment
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.LayoutInflater
+import android.widget.CheckBox
 import androidx.navigation.fragment.findNavController
+import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.touchBackPressed
 import arch.cayenne.lib.common.utils.helper.showToast
+import com.google.protobuf.ByteString
 import com.walisport.module.feedback.R
 import com.walisport.module.feedback.databinding.FragmentFeedbackMainBinding
 import com.walisport.module.feedback.ui.viewmodel.FeedbackMainViewModel
@@ -29,11 +34,8 @@ class FeedbackMainFragment : BaseFragment<FeedbackMainViewModel, FragmentFeedbac
                 findNavController().navigateUp()
             })
         }
-        //默认会选中一个
-        mViewModel.setCheckBoxSelected(true)
         mBinding.root.touchBackPressed()
     }
-
 
     override fun initListener() {
         mBinding.editFeedback.addTextChangedListener(object : TextWatcher {
@@ -50,33 +52,15 @@ class FeedbackMainFragment : BaseFragment<FeedbackMainViewModel, FragmentFeedbac
             }
         })
 
-        // 将 CheckBox 放入列表
-        val checkBoxes = listOf(
-            mBinding.checkbox1,
-            mBinding.checkbox2,
-            mBinding.checkbox3,
-            mBinding.checkbox4,
-            mBinding.checkbox5,
-            mBinding.checkbox6
-        )
-
-        // 设置监听器
-        checkBoxes.forEach { checkBox ->
-            checkBox.setOnCheckedChangeListener { _, _ ->
-                mViewModel.setCheckBoxSelected(checkBoxes.any { it.isChecked })
-            }
+        mBinding.buttonSubmit.clickNoRepeat(2000) {
+            val codeArray: ByteString = mViewModel.feedbackLabelList.value?.let { labels ->
+                mViewModel.feedbackLabelsToByteString(labels)
+            }!!
+            mViewModel.feedbackContentAdd(
+                mBinding.tvEditTextLength.text.toString().trim(),
+                codeArray
+            )
         }
-
-        mBinding.buttonSubmit.clickNoRepeat {
-            if (mViewModel.checkBoxSelected.value != true) {
-                showToast(getString(R.string.select_feedback_type))
-            } else if (mViewModel.textInputted.value != true) {
-                showToast(getString(R.string.enter_feedback_description))
-            } else {
-                showToast(getString(R.string.no_interface))
-            }
-        }
-
     }
 
     override suspend fun createObserver() {
@@ -84,13 +68,40 @@ class FeedbackMainFragment : BaseFragment<FeedbackMainViewModel, FragmentFeedbac
             btnEnabled.observe(viewLifecycleOwner) {
                 mBinding.buttonSubmit.isEnabled = it
             }
+            feedbackLabelList.observe(viewLifecycleOwner) {
+                it!!.withIndex().forEach { (index, label) ->
+                    val flexboxView = LayoutInflater.from(requireContext())
+                        .inflate(
+                            R.layout.feedback_label_flexbox_view,
+                            mBinding.flexboxLayout,
+                            false
+                        )
+                    var checkBox = flexboxView.findViewById<CheckBox>(R.id.checkbox)
+                    checkBox.text = label.name
+                    checkBox.isSelected = it[index].flags
+                    checkBox.setOnCheckedChangeListener { _, bool ->
+                        it[index].flags = bool
+                        hasTrueFlags()
+                    }
+                    mBinding.flexboxLayout.addView(flexboxView)
+                }
+            }
+            feedbackContentAdd.observe(viewLifecycleOwner) {
+                if (it){
+                    showToast(getString(R.string.feedback_meg))
+                    requireActivity().onBackPressedDispatcher.onBackPressed()
+                }
+            }
         }
     }
 
-
-    override fun initData() {
-        super.initData()
+    fun hasTrueFlags() {
+        val bol: Boolean = mViewModel.feedbackLabelList.value?.any { it.flags } ?: false
+        mViewModel.setCheckBoxSelected(bol)
     }
 
-
+    override fun initData() {
+        mViewModel.getFeedbackLabelList()
+        super.initData()
+    }
 }

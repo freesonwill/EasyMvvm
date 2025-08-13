@@ -16,11 +16,13 @@ import androidx.navigation.fragment.findNavController
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.data.model.PagerBean
 import arch.cayenne.lib.base.ui.adapter.PagerAdapter
+import arch.cayenne.lib.base.ui.animation.EaseCubicInterpolator
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.utils.ext.DimensionExt.px2sp
+import arch.cayenne.lib.common.utils.ext.setDrawerInterpolator
 import arch.cayenne.lib.common.utils.ext.NavResultExt.observeResult
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
@@ -69,6 +71,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         setVideoView()
         loadFragment()
         mViewModel.observeMatchInfoNotify()
+        mBinding.drawerLayout.setDrawerInterpolator(150,EaseCubicInterpolator.EaseOut())
         mBinding.drawerLayout.setDrawerLockMode(
             DrawerLayout.LOCK_MODE_LOCKED_CLOSED,
             GravityCompat.END
@@ -227,7 +230,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         }
         mViewModel.currentBalanceChange.observe(viewLifecycleOwner) {
             titleBarBinding.tvMoney.text =
-                "${CurrencySymbols.getSymbol(it?.currency ?: "")} ${(it?.balance?:0L).getFormalMoney()}"
+                "${CurrencySymbols.getSymbol(it?.currency ?: "")}${(it?.balance?:0L).getFormalMoney()}"
         }
         mViewModel.mainMatch.observe(viewLifecycleOwner) {
             it?.let {
@@ -244,7 +247,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                 titleBarBinding.tvCompetitionName.text = it.basicInfo.matchName
                 //比赛开始后开启聊天服务
                 val code = it.basicInfo.status
-                if (code in arrayOf(2, 5, 8)) {
+                if (code in arrayOf(1, 4, 5, 6, 8)) {
                     mViewModel.startChatServer()
                 }
             }
@@ -258,6 +261,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
 
     //比赛ID发生变化,取消订阅,数据请空
     private fun updateMatchId(matchId: Long) {
+        mBinding.customIndicator.setCurrentPosition(1)
         mBinding.tabLayout.getTabAt(1)?.select()
         mBinding.vpPage.setCurrentItem(1, true)
         mViewModel.matchId.value?.let {
@@ -321,6 +325,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                 tab.view.setOnClickListener { /* Handle click */ }
             }.attach()
             tabLayout.clearOnTabSelectedListeners()
+            mBinding.customIndicator.setCurrentPosition(1)
             tabLayout.getTabAt(1)?.select()
             vpPage.setCurrentItem(1, false)
             tabLayout.removeAllTips()

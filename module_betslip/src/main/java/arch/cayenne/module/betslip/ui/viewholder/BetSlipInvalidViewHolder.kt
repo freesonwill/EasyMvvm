@@ -29,6 +29,9 @@ class BetSlipInvalidViewHolder(binding: ViewBinding, betSlipType: BetSlipEnum) :
             mBinding.ilMore.llMore.clickNoRepeat {
                 sendData(item)
             }
+            mBinding.ivCopyClip.clickNoRepeat {
+                mBetSlipListener?.onCopyClip(item.betId)
+            }
         }
     }
 

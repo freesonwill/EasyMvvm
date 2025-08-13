@@ -24,15 +24,18 @@ import kotlinx.coroutines.launch
 
 class LiveChatViewModel(private val chatRepo: LiveChatRepository) : BaseViewModel() {
     private var matchId: Long? = null
-    private val _currentSoftKeyboard = MutableStateFlow(KeyBoardType.NONE)
+    private val _currentSoftKeyboard = MutableStateFlow(KeyBoardType.CHAT)
     private val _loginLiveData = MutableLiveData<ChatLoginResponseData?>()
     private val _sendMsgResultLiveData = MutableLiveData<ChatSendMsgResponse?>()
     private val _sendMsgLiveData = MutableLiveData<String>()
     private val _historyLiveData = MutableLiveData<Boolean>()
     private val _newMsgFLow = MutableStateFlow<MsgNotify?>(null)
     private val _checkBetAmountLiveData = MutableLiveData<CheckBetResultEnum>()
-    private val _softKeyBoardListener = MutableStateFlow(KeyBoardType.NONE)
+    private val _softKeyBoardListener = MutableStateFlow(KeyBoardType.CHAT)
     private val _openSoftKeyBoardLiveData = MutableLiveData<Boolean>()
+
+    //整个表情键盘页面的整体高度
+    var keyBoardHeight: Int = 0
 
     //检查是否可以发送消息
     var checkBetAmountLiveData: LiveData<CheckBetResultEnum> = _checkBetAmountLiveData
@@ -71,6 +74,7 @@ class LiveChatViewModel(private val chatRepo: LiveChatRepository) : BaseViewMode
     val openSoftKeyBoardLiveData:LiveData<Boolean> = _openSoftKeyBoardLiveData
 
     val toastLiveData: MutableLiveData<String> = MutableLiveData()
+
 
     //软件盘高度
     var softKeyBoardHeight:Int = 0
@@ -178,18 +182,18 @@ class LiveChatViewModel(private val chatRepo: LiveChatRepository) : BaseViewMode
             when (_checkBetAmountLiveData.value) {
                 CheckBetResultEnum.BET_AMOUNT_INVALID -> {
                     toastLiveData.value = R.string.insufficient_bet_amount.getString()
-                    _softKeyBoardListener.value = KeyBoardType.NONE
+                    _softKeyBoardListener.value = KeyBoardType.CHAT
                 }
                 CheckBetResultEnum.BALANCE_INVALID -> {
                     toastLiveData.value = R.string.insufficient_balance.getString()
-                    _softKeyBoardListener.value = KeyBoardType.NONE
+                    _softKeyBoardListener.value = KeyBoardType.CHAT
                 }
                 CheckBetResultEnum.SUCCESS -> {
                     _currentSoftKeyboard.value = softKeyBoardListener.value
                 }
                 null -> {
                     toastLiveData.value = R.string.insufficient_fali.getString()
-                    _softKeyBoardListener.value = KeyBoardType.NONE
+                    _softKeyBoardListener.value = KeyBoardType.CHAT
                 }
             }
         }
@@ -211,17 +215,6 @@ class LiveChatViewModel(private val chatRepo: LiveChatRepository) : BaseViewMode
             }
             _historyLiveData.value = resp?.msgs == null
         }
-    }
-
-
-    /**
-     *更新软件盘显示
-     * */
-    fun updateKeyBoard() {
-        if (currentSoftKeyboard.value == softKeyBoardListener.value) {
-            return
-        }
-        _currentSoftKeyboard.value = softKeyBoardListener.value
     }
 
     /**
@@ -249,7 +242,9 @@ class LiveChatViewModel(private val chatRepo: LiveChatRepository) : BaseViewMode
      * 添加本地数据
      * */
     fun addLocalMsg(content: String) {
-
+        if (_loginLiveData.value == null) {
+            return
+        }
         val id = System.currentTimeMillis().toString()
         val user = _loginLiveData.value!!
         val msg = ChatMsg(
@@ -280,13 +275,23 @@ class LiveChatViewModel(private val chatRepo: LiveChatRepository) : BaseViewMode
     }
 
     /**
+     *更新软件盘显示
+     * */
+    fun updateKeyBoard() {
+        if (currentSoftKeyboard.value == softKeyBoardListener.value) {
+            return
+        }
+        _currentSoftKeyboard.value = softKeyBoardListener.value
+    }
+
+    /**
      * 控制软件盘的开关
      * @param softKeyBoarVisible true显示软件盘  false 关闭软件盘
      * */
     fun updateSoftKeyBoard(softKeyBoarVisible:Boolean){
-        if(softKeyBoarVisible == _openSoftKeyBoardLiveData.value){
-            return
-        }
+//        if(softKeyBoarVisible == _openSoftKeyBoardLiveData.value){
+//            return
+//        }
         _openSoftKeyBoardLiveData.value = softKeyBoarVisible
     }
 

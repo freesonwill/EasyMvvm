@@ -25,6 +25,13 @@
         <item name="layout_constrainedWidth">true</item>
     </style>
 
+
+    <style name="live_odds_text">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@drawable/live_bet_list_odds_selected_text</item>
+        <item name="android:textSize">@dimen/sp_14</item>
+    </style>
     <style name="NoAnimationDialog">
         <item name="android:windowEnterAnimation">@null</item>
         <item name="android:windowExitAnimation">@null</item>

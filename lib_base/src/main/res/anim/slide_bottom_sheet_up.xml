@@ -2,5 +2,5 @@
 <translate xmlns:android="http://schemas.android.com/apk/res/android"
     android:duration="100"
     android:fromYDelta="100%p"
-    android:interpolator="@android:interpolator/linear"
+    android:interpolator="@anim/interpolator_ease_out_cubic"
     android:toYDelta="0" />

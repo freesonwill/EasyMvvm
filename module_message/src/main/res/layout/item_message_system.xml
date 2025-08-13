@@ -5,6 +5,7 @@
     android:layout_height="wrap_content">
 
     <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
+        android:id="@+id/lay_msg_item"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_200"
         android:background="@drawable/shape_message_bg">
@@ -111,6 +112,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_42"
             android:background="@drawable/ripple_effect_bottom"
+            android:layout_margin="@dimen/dp_1"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">
@@ -149,4 +151,11 @@
                 app:layout_constraintTop_toTopOf="parent" />
         </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
     </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_12"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lay_msg_item"/>
 </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>

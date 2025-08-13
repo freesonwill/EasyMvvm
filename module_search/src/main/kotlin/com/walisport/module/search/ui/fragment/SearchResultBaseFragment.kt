@@ -190,6 +190,11 @@ class SearchResultBaseFragment :
     }
 
     private fun navigateTo(action: NavDirections) {
-        findNavController().navigate(action)
+        with(findNavController()) {
+            // 避免轉跳前用戶已經返回前一頁造成 Crash
+            if (isAdded && currentDestination?.id == R.id.searchResultBaseFragment) {
+                navigate(action)
+            }
+        }
     }
 }

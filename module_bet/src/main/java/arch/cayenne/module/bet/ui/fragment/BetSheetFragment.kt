@@ -13,7 +13,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
-import arch.cayenne.lib.base.ui.fragment.BasePreLoadBottomSheerFragment
+import arch.cayenne.lib.base.ui.fragment.BasePreLoadBottomSheetFragment
 import arch.cayenne.module.bet.R
 import arch.cayenne.module.bet.data.Config
 import arch.cayenne.module.bet.data.Config.KEY_RESULT
@@ -25,7 +25,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlin.reflect.KClass
 
 class BetSheetFragment private constructor() :
-    BasePreLoadBottomSheerFragment<BetSheetViewModel, FragmentBetSheetBinding>() {
+    BasePreLoadBottomSheetFragment<BetSheetViewModel, FragmentBetSheetBinding>() {
 
     companion object {
 
@@ -44,7 +44,7 @@ class BetSheetFragment private constructor() :
             val f = manager.findFragmentByTag(TAG)
             if (f == null) {
                 BetSheetFragment().show(manager, TAG)
-            } else if (f is BasePreLoadBottomSheerFragment<*, *>) {
+            } else if (f is BasePreLoadBottomSheetFragment<*, *>) {
                 f.customShow()
             }
         }
@@ -55,30 +55,35 @@ class BetSheetFragment private constructor() :
     override val vmClass: KClass<BetSheetViewModel>
         get() = BetSheetViewModel::class
 
-    private lateinit var controller: NavController
+    private var controller: NavController? = null
 
     private val dismissObserver = Observer<String> { value ->
-        val v = mBinding.root
         when (value) {
             VALUE_DISMISS -> customHide()
+        }
+    }
+
+    private val actionObserver = Observer<String> { value ->
+        val v = mBinding.root
+        when (value) {
             Config.VALUE_SINGLE_TO_RESULT -> {
                 ViewHelper.collapseView(v) {
-                    controller.navigate(SingleBetFragmentDirections.actionSingleBetFragmentToBetResultFragment(), null)
+                    controller?.navigate(SingleBetFragmentDirections.actionSingleBetFragmentToBetResultFragment(), null)
                 }
             }
             Config.VALUE_COMBO_TO_RESULT -> {
                 ViewHelper.collapseView(v) {
-                    controller.navigate(ComboBetFragmentDirections.actionComboBetFragmentToBetResultFragment(), null)
+                    controller?.navigate(ComboBetFragmentDirections.actionComboBetFragmentToBetResultFragment(), null)
                 }
             }
             Config.VALUE_RESULT_TO_SINGLE -> {
                 ViewHelper.collapseView(v) {
-                    controller.navigate(BetResultFragmentDirections.actionBetResultFragmentToSingleBetFragment(), null)
+                    controller?.navigate(BetResultFragmentDirections.actionBetResultFragmentToSingleBetFragment(), null)
                 }
             }
             Config.VALUE_RESULT_TO_COMBO -> {
                 ViewHelper.collapseView(v) {
-                    controller.navigate(BetResultFragmentDirections.actionBetResultFragmentToComboBetFragment(), null)
+                    controller?.navigate(BetResultFragmentDirections.actionBetResultFragmentToComboBetFragment(), null)
                 }
             }
         }
@@ -141,15 +146,18 @@ class BetSheetFragment private constructor() :
             behavior.isFitToContents = true
             behavior.state = BottomSheetBehavior.STATE_COLLAPSED
             behavior.saveFlags = BottomSheetBehavior.SAVE_HIDEABLE
+            behavior.maxHeight = getMaxHeight()
         }
     }
 
     private fun initMaxHeight() {
-        val screenHeight = resources.displayMetrics.heightPixels
-        val maxFragmentHeight = (screenHeight * 0.75).toInt()
-        mBinding.root.maxHeight = maxFragmentHeight
+        mBinding.root.maxHeight = getMaxHeight()
     }
 
+    private fun getMaxHeight(): Int {
+        val screenHeight = resources.displayMetrics.heightPixels
+        return (screenHeight * 0.75).toInt()
+    }
     private fun setStartDestination(size: Int) {
         val navController = NavHostFragment.findNavController(mBinding.mainNav.getFragment()).apply {
             controller = this
@@ -202,14 +210,15 @@ class BetSheetFragment private constructor() :
 
     private fun checkCurrentDir(size: Int): Boolean {
         return if (size <= 1) {
-            controller.currentDestination?.label != "SingleBetFragment"
+            controller?.currentDestination?.label != "SingleBetFragment"
         } else {
-            controller.currentDestination?.label != "ComboBetFragment"
+            controller?.currentDestination?.label != "ComboBetFragment"
         }
     }
 
     private fun removeLastObserver() {
         lastLiveData?.removeObserver(dismissObserver)
+        lastLiveData?.removeObserver(actionObserver)
         lastLiveData = null
     }
 
@@ -218,6 +227,7 @@ class BetSheetFragment private constructor() :
 
         lastLiveData = backStackEntry.savedStateHandle.getLiveData<String>(KEY_RESULT).apply {
             observe(viewLifecycleOwner, dismissObserver)
+            observe(viewLifecycleOwner, actionObserver)
         }
     }
 

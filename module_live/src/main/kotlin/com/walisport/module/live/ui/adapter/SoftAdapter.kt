@@ -13,6 +13,7 @@ import com.walisport.module.live.data.constants.EmojiTypeEnum
 import com.walisport.module.live.data.model.EmojiData
 import com.walisport.module.live.data.model.SoftData
 import com.walisport.module.live.databinding.ItemSoftAdapterBinding
+import com.walisport.module.live.utils.EmojiDeleteAnimHelper
 
 /**
  * @author: wenxi
@@ -23,18 +24,21 @@ class SoftAdapter :
     BaseAdapter<SoftData, SoftAdapter.SoftViewHolder, ItemSoftAdapterBinding>(compare = SoftDataCompare()) {
     private var itemListener: RecyclerItemListener<EmojiData>? = null
     var delListener:(() ->Unit)? = null
+    var animHelper:EmojiDeleteAnimHelper? = null
 
     fun setItemListener(itemListener: RecyclerItemListener<EmojiData>) {
         this.itemListener = itemListener
     }
 
     inner class SoftViewHolder(val nBinding: ItemSoftAdapterBinding) : BaseViewHolder(nBinding) {
+
         fun iniAdapter() {
             val adapter = LiveEmojiAdapter()
             adapter.setItemListener(itemListener)
             val manager = GridLayoutManager(nBinding.softRecycler.context,8)
             nBinding.softRecycler.layoutManager = manager
             nBinding.softRecycler.adapter = adapter
+            animHelper = EmojiDeleteAnimHelper(nBinding.softRecycler)
         }
         fun initListener(){
             nBinding.emojiDel.setOnClickListener {

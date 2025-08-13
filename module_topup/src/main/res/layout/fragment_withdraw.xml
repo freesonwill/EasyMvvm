@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<arch.cayenne.lib.skin.widget.SkinnableLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/title_bg"
+    android:orientation="vertical">
+
+    <arch.cayenne.lib.common.ui.view.TitleBarView
+        android:id="@+id/title_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
+        android:id="@+id/lay_recharge_method"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_105"
+        android:layout_marginStart="@dimen/dp_12"
+        android:layout_marginTop="@dimen/dp_20"
+        android:layout_marginEnd="@dimen/dp_12"
+        android:background="@drawable/bg_shape_item_round">
+
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
+            android:id="@+id/tv_tip_method"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_12"
+            android:layout_marginTop="@dimen/dp_12"
+            android:text="@string/select_tx_method"
+            android:textColor="@color/wallet_title"
+            android:textSize="@dimen/sp_15"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <LinearLayout
+            android:id="@+id/lay_first"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_48"
+            android:layout_marginHorizontal="@dimen/dp_12"
+            android:layout_marginTop="@dimen/dp_8"
+            android:orientation="horizontal"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_tip_method">
+
+            <com.walisport.module.topup.ui.widget.PayMethodButton
+                android:id="@+id/btn_pay_ali"
+                android:layout_width="@dimen/dp_103"
+                android:layout_height="@dimen/dp_48"
+                android:layout_weight="1"
+                app:recommend="true"
+                app:type="EE" />
+
+            <com.walisport.module.topup.ui.widget.PayMethodButton
+                android:id="@+id/btn_pay_wechat"
+                android:layout_width="@dimen/dp_103"
+                android:layout_height="@dimen/dp_48"
+                android:layout_weight="1"
+                app:recommend="true"
+                app:type="BANK" />
+
+            <com.walisport.module.topup.ui.widget.PayMethodButton
+                android:id="@+id/btn_pay_ee"
+                android:layout_width="@dimen/dp_103"
+                android:layout_height="@dimen/dp_48"
+                android:layout_weight="1"
+                app:recommend="false"
+                app:type="EE" />
+        </LinearLayout>
+    </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
+
+</arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
