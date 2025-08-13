@@ -95,19 +95,23 @@ object SportIntExt {
         return numberFormat.format(stripped)
     }
 
-    fun Long.getFormalMoney(money: Long): String {
+    fun Long.getFormalMoney(money: Long, scale: Int = 2): String {
         if (this == 0L || money == 0L) return "0" // ← 明確處理 0
 
         val result = this * money
-        val decimal = BigDecimal(result).divide(BigDecimal(10000))
-            .setScale(2, RoundingMode.DOWN)
+
+        // 動態計算分母：100 * 10^scale
+        val divisor = BigDecimal(100).multiply(BigDecimal.TEN.pow(scale))
+
+        val decimal = BigDecimal(result)
+            .divide(divisor, 2, RoundingMode.DOWN) // 最終顯示仍保留 2 位小數
 
         val stripped = decimal.stripTrailingZeros()
 
         val numberFormat = NumberFormat.getNumberInstance(Locale.US).apply {
             maximumFractionDigits = 2
             minimumFractionDigits = 0
-            isGroupingUsed = true // 千分位
+            isGroupingUsed = true
         }
 
         return numberFormat.format(stripped)

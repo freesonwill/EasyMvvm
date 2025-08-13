@@ -58,7 +58,7 @@ class BetSlipUnsettledViewHolder(binding: ViewBinding, betSlipType: BetSlipEnum)
 
             // 支援提前結算 且 仍有可結算次數 且 可結算金額大於等於最小結算金額
             val settlePrice = BetSlipUtils.earlySettlePrice(
-                order.betAmount, order.earlyBetAmount, order.earlySettlePrice.price.toMoney()
+                order.betAmount, order.earlyBetAmount, order.earlySettlePrice.price
             )
             val isCanSettle = settlePrice.toMoney() > 1000 && order.earlySupport
             it.betUnsettledBtSettle.isEnabled = isCanSettle
