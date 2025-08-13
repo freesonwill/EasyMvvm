@@ -95,6 +95,7 @@ abstract class BaseBetSlipFragment<VM: BaseBetSlipViewModel, VB : ViewBinding>: 
                  val newState = if (DataState.DataEmpty == state) DynamicStateLayout.States.DATA_EMPTY else DynamicStateLayout.States.NETWORK_ANOMALY
                  dynamicState.setState(newState,getString(resId))
              }
+             DataState.NoMoreData,
              DataState.LoadSuccess -> {
                  dynamicState.showEmptyData(false, recyclerView)
              }
