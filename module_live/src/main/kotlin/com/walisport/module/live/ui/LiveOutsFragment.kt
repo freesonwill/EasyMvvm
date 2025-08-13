@@ -67,7 +67,6 @@ class LiveOutsFragment : BaseFragment<LiveOutsViewModel, FragmentLiveOutsBinding
             mainViewModel.mainMatch.observe(viewLifecycleOwner) {
                 it?.let {
                     mainViewModel.registerStatisticsNotify(it.matchId)
-                    mainViewModel.observeMatchStaticsNotify()
                     homeName = it.basicInfo.homeTeam
                     homeLogo = it.basicInfo.homeTeamIcon
                     awayName = it.basicInfo.awayTeam
