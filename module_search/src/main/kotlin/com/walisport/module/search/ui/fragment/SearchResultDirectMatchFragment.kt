@@ -103,7 +103,7 @@ class SearchResultDirectMatchFragment :
             }
             tvDate.text = dateHintStr
         }
-        mBinding.root.touchBackPressed()
+        contentBinding.root.touchBackPressed()
         contentBinding.recyclerView.touchBackPressed()
     }
 
