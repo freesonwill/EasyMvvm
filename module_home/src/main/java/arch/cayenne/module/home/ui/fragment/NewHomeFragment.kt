@@ -410,7 +410,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 R.color.drawer_scrim_color
             )
         )
-        mBinding.drawerLayout.setDrawerInterpolator(150,EaseCubicInterpolator.EaseOut())
+        mBinding.drawerLayout.setDrawerInterpolator(150,EaseCubicInterpolator().easeOut())
         if (drawerContentFragment == null) {
             drawerContentFragment = DrawerContentFragment()
             drawerContentFragment?.also {
