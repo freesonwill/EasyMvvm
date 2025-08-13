@@ -81,7 +81,7 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
                 navigatePage(arch.cayenne.lib.res.R.string.nav_module_message_fragment.deeplink())
             }
             llRecharge.clickNoRepeat {
-                //navigatePage(arch.cayenne.lib.res.R.string.nav_module_topup_fragment.deeplink())
+                navigatePage(arch.cayenne.lib.res.R.string.nav_module_topup_fragment.deeplink())
             }
             llRecharge.addScaleOnTouchAnimation()
             llDrawerTutorial.clickNoRepeat {

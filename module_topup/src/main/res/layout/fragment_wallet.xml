@@ -11,20 +11,23 @@
 
     <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/title_bg">
+
+        <arch.cayenne.lib.common.ui.view.TitleBarView
+            android:id="@+id/title_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
 
         <LinearLayout
             android:id="@+id/llConttnet"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:background="@color/title_bg"
             app:layout_constraintTop_toTopOf="parent">
-
-            <arch.cayenne.lib.common.ui.view.TitleBarView
-                android:id="@+id/title_bar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
 
             <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
                 android:id="@+id/lay_wallet"
