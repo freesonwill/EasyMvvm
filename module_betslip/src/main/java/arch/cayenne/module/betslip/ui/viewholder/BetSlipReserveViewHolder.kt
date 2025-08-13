@@ -67,7 +67,7 @@ class BetSlipReserveViewHolder(binding: ViewBinding, betSlipType: BetSlipEnum) :
             val selection = order.selection
             betReserveTvDate.text = order.reserveTime.getDetailFormatDate()
             betReserveTvOddsValue.text = selection.odds.getDisplayOdds()
-            val betAmount = "${CurrencySymbols.getSymbol(order.currency)}${order.betAmount.toMoney().getFormalMoney()}"
+            val betAmount = "${CurrencySymbols.getSymbol(order.currency)}${order.betAmount.getFormalMoney()}"
             betReserveTvBettingValue.text = betAmount
             val exceptAmount = "${CurrencySymbols.getSymbol(order.currency)}${BetSlipUtils.expectMaxAmount(order.betAmount, selection.odds)}"
             betReserveTvExceptValue.text = exceptAmount

@@ -50,7 +50,8 @@ class UnsettleRepository(
             notifyScope = scope.launch {
                 remoteManager.registerEarlySettleNotify().collect { res ->
                     if (res.error == null && res.data != null) {
-                        val newData = res.data!!.order.toOrderBean(BetSlipEnum.UnSettled.value)
+                        val currency = infoDao.getCurrency()
+                        val newData = res.data!!.order.toOrderBean(BetSlipEnum.UnSettled.value, currency)
                         updateEarlySettleData(newData)
                     }
                 }

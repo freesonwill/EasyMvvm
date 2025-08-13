@@ -54,16 +54,16 @@ class BetSlipSettledViewHolder(binding: ViewBinding, betSlipType: BetSlipEnum) :
             it.betSettledTvDate.text = order.betTime.getDetailFormatDate()
             it.betSettledTvBetcodeValue.text = order.betId
             it.betSettledTvOddsValue.text = order.odds.getDisplayOdds()
-            val betAmount = "${CurrencySymbols.getSymbol(order.currency)}${order.betAmount.toMoney().getFormalMoney()}"
+            val betAmount = "${CurrencySymbols.getSymbol(order.currency)}${order.betAmount.getFormalMoney()}"
             it.betSettledTvBettingValue.text = betAmount
             settledStatus(order)
 
             val hasPartSettled =
                 BetSlipResultOrderStatusEnum.getStatus(order.resultStatus) == BetSlipResultOrderStatusEnum.EarlySettle
-            val earlyAmount = "${CurrencySymbols.getSymbol(order.currency)}${order.earlyBetAmount.toMoney().getFormalMoney()}"
+            val earlyAmount = "${CurrencySymbols.getSymbol(order.currency)}${order.earlyBetAmount.getFormalMoney()}"
             mBinding.betSettledTvPartValue.text = earlyAmount
             val amount =
-                (if (hasPartSettled) order.earlyReturnAmount else order.returnAmount).toMoney()
+                (if (hasPartSettled) order.earlyReturnAmount else order.returnAmount)
             it.betSettledTvExceptValue.text =
                 if (amount >= 0) "${CurrencySymbols.getSymbol(order.currency)}${amount.getFormalMoney()}" else "-${CurrencySymbols.getSymbol(order.currency)}${amount.getFormalMoney()}"
 
