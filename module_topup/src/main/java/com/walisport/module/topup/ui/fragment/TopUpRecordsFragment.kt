@@ -84,12 +84,9 @@ class TopUpRecordsFragment : BaseFragment<TopUpRecordsViewModel, FragmentTopupRe
     }
 
     override suspend fun createObserver() {
-
         mViewModel.recordListChange.observe(viewLifecycleOwner) { recordBeanList ->
             listAdapter.submitList(recordBeanList)
         }
-
-
         mViewModel.apiStateListener.observe(viewLifecycleOwner) { state ->
             with(mBinding) {
                 when (state) {
@@ -153,6 +150,7 @@ class TopUpRecordsFragment : BaseFragment<TopUpRecordsViewModel, FragmentTopupRe
 
     override fun initData() {
         super.initData()
+        mBinding.loadingView.visibility = View.GONE
         //mViewModel.getListData()
     }
 
