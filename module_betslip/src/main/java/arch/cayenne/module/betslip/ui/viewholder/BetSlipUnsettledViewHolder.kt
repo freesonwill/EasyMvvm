@@ -58,7 +58,7 @@ class BetSlipUnsettledViewHolder(binding: ViewBinding, betSlipType: BetSlipEnum)
 
             // 支援提前結算 且 仍有可結算次數 且 可結算金額大於等於最小結算金額
             val settlePrice = BetSlipUtils.earlySettlePrice(
-                order.betAmount, order.earlyBetAmount, order.earlySettlePrice.price
+                order.betAmount, order.earlyBetAmount, order.earlySettlePrice.price.toMoney()
             )
             val isCanSettle = settlePrice.toMoney() > 1000 && order.earlySupport
             it.betUnsettledBtSettle.isEnabled = isCanSettle
@@ -66,7 +66,7 @@ class BetSlipUnsettledViewHolder(binding: ViewBinding, betSlipType: BetSlipEnum)
             it.betUnsettledBtSettle.tag = adapterPosition
             it.betUnsettledTvBetcodeValue.text = order.betId
             it.betUnsettledTvOddsValue.text = order.odds.getDisplayOdds()
-            val betAmount = "${CurrencySymbols.getSymbol(order.currency)}${order.betAmount.toMoney().getFormalMoney()}"
+            val betAmount = "${CurrencySymbols.getSymbol(order.currency)}${(order.betAmount - order.earlyBetAmount).getFormalMoney()}"
             it.betUnsettledTvBettingValue.text = betAmount
             val exceptAmount = "${CurrencySymbols.getSymbol(order.currency)}${BetSlipUtils.expectMaxAmount(order.betAmount, order.odds)}"
             it.betUnsettledTvExceptValue.text = exceptAmount
@@ -78,11 +78,10 @@ class BetSlipUnsettledViewHolder(binding: ViewBinding, betSlipType: BetSlipEnum)
 
             if (flag) {
                 val combo = R.string.title_combo_bet_odds.getString(order.comboK, order.comboV)
-                val comboValue = combo //"$combo*${order.comboCount}" 修改为类似 2串1
-                it.betUnsettledTvCrossborderValue.text = comboValue
+                it.betUnsettledTvCrossborderValue.text = combo
             }
-            it.groupEarlysettle.isVisible = order.earlyBetAmount.toMoney() > 0 //提前结算部分有金额才显示
-            it.betUnsettledTvEarlysettleValue.text = order.earlyBetAmount
+            it.groupEarlysettle.isVisible = order.earlyBetAmount > 0 //提前结算部分有金额才显示
+            it.betUnsettledTvEarlysettleValue.text = order.earlyBetAmount.getFormalMoney()
             it.betUnsettledBtSettle.clickNoRepeat {
                 if (order.earlySettlePrice.settleStatus != 102) {
                     earlySettleSubmitListener?.onItemClick("", adapterPosition)

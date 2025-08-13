@@ -12,7 +12,7 @@ abstract class BetSlipReserveDao : BaseDao<BetSlipReserveBean>() {
     abstract fun observeReserveBean(): Flow<List<BetSlipReserveBean>>
 
     @Query("UPDATE BetSlipReserveBean SET odds = :newOdds WHERE reserveId = :reserveId")
-    abstract suspend fun updateOdds(reserveId: String, newOdds: String)
+    abstract suspend fun updateOdds(reserveId: String, newOdds: Int)
 
     @Query("DELETE FROM BetSlipReserveBean WHERE reserveId = :reserveId")
     abstract suspend fun deleteById(reserveId: String)

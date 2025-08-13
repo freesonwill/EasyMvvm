@@ -91,8 +91,8 @@ class ReserveSlipRepository(
 
     suspend fun reserveUpdate(
         reserveId: String,
-        amount: String,
-        newOdds: String
+        amount: Long,
+        newOdds: Int
     ): Client.ReserveUpdateResp? {
         return remoteManager.reserveUpdateReq(reserveId, amount, newOdds).apply {
             if (this?.success == true) {

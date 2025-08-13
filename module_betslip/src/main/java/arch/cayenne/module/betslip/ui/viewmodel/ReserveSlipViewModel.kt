@@ -54,7 +54,7 @@ class ReserveSlipViewModel(private val repo: ReserveSlipRepository) : BaseBetSli
     /**
      * 修改预约
      * */
-    fun modifyReserve(order: BetSlipReserveBean, newOdds: String) {
+    fun modifyReserve(order: BetSlipReserveBean, newOdds: Int) {
         viewModelScope.launch {
             val result = repo.reserveUpdate(order.reserveId, order.betAmount, newOdds)
             _modifyOddsLiveData.value = Event(result?.success ?: false)
