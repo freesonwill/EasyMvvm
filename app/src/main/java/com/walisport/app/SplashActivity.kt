@@ -85,7 +85,7 @@ class SplashActivity : BaseActivity<SplashViewModel, ActivitySplashBinding>() {
         Pair<Int, String>(BuildConfig.uid, BuildConfig.token)
     } else if (BuildConfig.BUILD_TYPE != "release") {
         listOf(
-            Pair(55468822, "NTU0Njg4MjJfMTc1NDk3MjQxOTk0MDp2cW41d0p4T2VFc3hQNHZL"),
+            Pair(55468822, "NTU0Njg4MjJfMTc1NTA1OTU4MzE1OTpyZnQybDIwZzg5SDdnR21p"),
             Pair(55468823, "NTU0Njg4MjNfMTc1NDk3MjgwNDY3NzpiNjRyMDJ2Y3RUeXc5SVd5"),
             Pair(55468824, "NTU0Njg4MjRfMTc1NDk3Mjg2MDg2OTo2UUU1bmZ3VlpjUjh4ZTk5"),
             Pair(55468825, "NTU0Njg4MjVfMTc1NDk3MjkyODAyMTphVjdUOEcxSG1OTDR6Sjlw"),
