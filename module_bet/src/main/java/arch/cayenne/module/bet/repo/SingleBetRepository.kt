@@ -156,7 +156,7 @@ class SingleBetRepository(
                             orderId = "",
                             sumOdds = selection.odds,
                             inputMoney = money,
-                            status = BetResultStatusEnum.CONFIRMING
+                            status = if (resp != null && !resp.isSuccessful) BetResultStatusEnum.REJECT else BetResultStatusEnum.CONFIRMING
                         )
                     }
                     betDao.insertDetail(detailBean)
