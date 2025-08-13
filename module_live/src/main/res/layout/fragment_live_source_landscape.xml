@@ -1,18 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
-
-    <data>
-
-        <variable
-            name="model"
-            type="com.walisport.module.live.ui.viewmodel.LiveVideoPlayerViewModel" />
-    </data>
 
 
-    <LinearLayout
-        android:layout_width="@dimen/dp_375"
+<arch.cayenne.lib.skin.widget.SkinnableLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="@dimen/dp_375"
+    android:layout_height="match_parent"
+    android:background="@color/main_background"
+    android:orientation="vertical">
+
+    <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
+        android:layout_width="match_parent"
         android:layout_height="@dimen/dp_275"
         android:layout_gravity="center_vertical"
+        android:layout_marginTop="@dimen/dp_50"
         android:orientation="vertical">
 
         <arch.cayenne.lib.skin.widget.SkinnableTextView
@@ -30,6 +29,7 @@
             android:layout_weight="1" />
 
 
-    </LinearLayout>
+    </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
+</arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
 
-</layout>
+
