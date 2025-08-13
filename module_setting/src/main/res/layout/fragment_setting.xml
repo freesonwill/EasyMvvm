@@ -172,7 +172,7 @@
             android:layout_marginEnd="@dimen/dp_12"
             android:background="@drawable/bg_set_item_rect">
 
-            <arch.cayenne.lib.skin.widget.SkinnableRippleView
+             <arch.cayenne.lib.skin.widget.SkinnableRippleView
                 android:id="@+id/setting_bg"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
