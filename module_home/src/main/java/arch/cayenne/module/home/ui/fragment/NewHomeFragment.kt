@@ -27,12 +27,10 @@ import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.animation.EaseCubicInterpolator
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
-import arch.cayenne.lib.common.utils.ext.setDrawerInterpolator
 import arch.cayenne.lib.common.utils.ext.NavResultExt.observeResult
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
@@ -41,10 +39,10 @@ import arch.cayenne.lib.common.utils.ext.TabLayoutExt.setupEndTabMoreAnimation
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.getFormatDate
+import arch.cayenne.lib.common.utils.ext.setDrawerInterpolator
 import arch.cayenne.lib.common.utils.helper.BounceEdgeEffectHelper
 import arch.cayenne.lib.database.entity.TournamentDataModel
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
-import arch.cayenne.lib.skin.widget.SkinnableTextView
 import arch.cayenne.module.home.R
 import arch.cayenne.module.home.data.constants.HomeState
 import arch.cayenne.module.home.data.constants.PlayType
@@ -84,7 +82,6 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
     private var isExpanded = false
 
     override fun initView(savedInstanceState: Bundle?) {
-        "KC_ NewHomeFragment initView".logd()
         initPlayTypeLayout()
         initSportLayout()
         initTournamentLayout()
@@ -475,6 +472,8 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 vpGameList.offsetLeftAndRight(1)
             }
             leaguePagerAdapter!!.setData(mViewModel.currentPlayTypeId, tournaments)
+            mBinding.ivTournamentMore.visibility = View.VISIBLE
+
             // 使用 reflexMargin 擴展方法設置更小的 tab 間距
             tlLeagueList.reflexMargin(2.dp2px, 2.dp2px, 1.dp2px)
 

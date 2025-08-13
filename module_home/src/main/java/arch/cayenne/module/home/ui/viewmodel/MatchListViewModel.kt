@@ -4,7 +4,6 @@ import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.base.data.remote.ApiResponseState.Start.dataAs
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.database.entity.MatchWithMarkets
 import arch.cayenne.module.home.data.constants.HomeState
@@ -96,9 +95,7 @@ class MatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
                     currentDateRefs.map { it.matchId }
                 )
                 "Collect observeMatchChange result：${list.map { it.match.matchId }}".logi(this@MatchListViewModel::class.java.simpleName)
-                val start = System.currentTimeMillis()
                 withContext(Dispatchers.Main) {
-                    "KC_ 準備送出match list的live data ${System.currentTimeMillis() - start}".logd()
                     matchListChange.value = list
                 }
             }
