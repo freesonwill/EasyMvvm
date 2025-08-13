@@ -50,7 +50,11 @@ object TabLayoutExt {
         var isInTransition = false // 防止動畫重疊
 
         val animate = fun() {
-
+            if (this.tabCount <= 1) {
+                ivMore.visibility = View.INVISIBLE
+                llMore.visibility = View.INVISIBLE
+                return
+            }
             val tabStrip = getChildAt(0) as? LinearLayout ?: return
             val lastTab = tabStrip.getChildAt(tabStrip.childCount - 1) ?: return
 

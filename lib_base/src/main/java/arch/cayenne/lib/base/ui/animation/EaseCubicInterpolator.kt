@@ -4,32 +4,29 @@ import android.view.animation.Interpolator
 
 /**
  * @date: 2025/8/11
- * @description: 📦 三次缓动插值器集合
+ * @description: 📦 三次缓动插值器
  *
- * - EaseInCubic:   慢进快出
- * - EaseOutCubic:  快进慢出
- * - EaseInOutCubic: 慢进快中快出慢
+ * - easeIn:   慢进快出
+ * - easeOut:  快进慢出
+ * - easeOut: 慢进快中快出慢
  */
-object EaseCubicInterpolator {
-
+class EaseCubicInterpolator : IEaseInterpolator {
     /**
      * 🚀 缓入（三次缓入）
      * 公式: f(x) = x³
      */
-    class EaseIn : Interpolator {
-        override fun getInterpolation(x: Float): Float {
-            return x * x * x
-        }
+    override fun easeIn(): Interpolator {
+        return Interpolator { x -> x * x * x }
     }
 
     /**
      * 🚀 缓出（三次缓出）
      * 公式: f(x) = 1 - (1 - x)³
      */
-    class EaseOut : Interpolator {
-        override fun getInterpolation(x: Float): Float {
+    override fun easeOut(): Interpolator {
+        return Interpolator { x ->
             val t = 1f - x
-            return 1f - t * t * t
+            1f - t * t * t
         }
     }
 
@@ -39,9 +36,9 @@ object EaseCubicInterpolator {
      *   if x < 0.5: 4x³
      *   else: 1 - ((-2x + 2)³ / 2)
      */
-    class EaseInOut : Interpolator {
-        override fun getInterpolation(x: Float): Float {
-            return if (x < 0.5f) {
+    override fun easeInOut(): Interpolator {
+        return Interpolator { x ->
+            if (x < 0.5f) {
                 4f * x * x * x
             } else {
                 val t = -2f * x + 2f
