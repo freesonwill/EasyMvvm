@@ -10,11 +10,6 @@
         android:label="SingleBetFragment"
         tools:layout="@layout/fragment_single_bet">
         <action
-            android:id="@+id/action_singleBetFragment_to_betResultFragment"
-            app:destination="@id/betResultFragment"
-            app:popUpToInclusive="true"
-            app:popUpTo="@id/singleBetFragment" />
-        <action
             android:id="@+id/action_singleBetFragment_to_comboBetFragment"
             app:destination="@id/comboBetFragment"
             app:popUpTo="@id/singleBetFragment"
@@ -37,26 +32,6 @@
             app:destination="@id/singleBetFragment"
             app:popUpToInclusive="true"
             app:popUpTo="@id/comboBetFragment" />
-        <action
-            android:id="@+id/action_comboBetFragment_to_betResultFragment"
-            app:destination="@id/betResultFragment"
-            app:popUpTo="@id/comboBetFragment"
-            app:popUpToInclusive="true" />
-    </fragment>
-
-    <fragment
-        android:id="@+id/betResultFragment"
-        android:name="arch.cayenne.module.bet.ui.fragment.BetResultFragment"
-        android:label="BetResultFragment"
-        tools:layout="@layout/fragment_bet_result" >
-        <action
-            android:id="@+id/action_betResultFragment_to_singleBetFragment"
-            app:destination="@id/singleBetFragment" />
-        <action
-            android:id="@+id/action_betResultFragment_to_comboBetFragment"
-            app:destination="@id/comboBetFragment"
-            app:popUpTo="@id/betResultFragment"
-            app:popUpToInclusive="true" />
     </fragment>
 
 

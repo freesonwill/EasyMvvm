@@ -150,7 +150,8 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
             val isSuccess = mViewModel.sendBet()
             if (isSuccess) {
                 mViewModel.onBetListListener.removeObservers(viewLifecycleOwner)
-                showExitAnim(value = Config.VALUE_COMBO_TO_RESULT)
+                BetResultFragment.newInstance().show(requireActivity().supportFragmentManager)
+                dismiss()
             }
         }
     }

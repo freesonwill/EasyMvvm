@@ -5,12 +5,15 @@ import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.view.inputmethod.InputMethodManager
@@ -184,7 +187,7 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
         uiBind.onStart()
         setSheetContainer()
         setBackGroundOnclick()
-        removeDim()
+        setDim(0.75f)
         setStatusBar()
         setGesture()
     }
@@ -297,12 +300,22 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
         super.dismiss()
     }
 
-    protected fun removeDim() {
+    protected fun hideDim() {
         dialog?.window?.setDimAmount(0f)
+        dialog?.window?.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
+        dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
     }
 
-    private fun setDim(amount: Float) {
+    protected fun showDim() {
+        dialog?.window?.setDimAmount(0.75f)
+        dialog?.window?.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
+        dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+    }
+
+    protected fun setDim(amount: Float) {
         dialog?.window?.setDimAmount(amount)
+        dialog?.window?.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
+        dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
     }
 
     private fun setRvTouch() {
