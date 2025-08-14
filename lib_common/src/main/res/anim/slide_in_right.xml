@@ -1,12 +1,13 @@
 <!-- slide_in_right.xml -->
 <set xmlns:android="http://schemas.android.com/apk/res/android">
     <translate
-        android:duration="287"
+        android:duration="150"
         android:fromXDelta="100%"
         android:toXDelta="0%"
-        android:interpolator="@anim/interpolator_ease_custom_cubic"/>
+        android:interpolator="@anim/interpolator_ease_out_cubic"
+        />
     <alpha
-        android:duration="287"
+        android:duration="150"
         android:fromAlpha="1.0"
         android:toAlpha="1.0" />
 </set>
