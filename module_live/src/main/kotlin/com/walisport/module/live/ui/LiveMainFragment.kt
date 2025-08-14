@@ -1,6 +1,5 @@
 package com.walisport.module.live.ui
 
-import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.graphics.Typeface
 import android.net.Uri
@@ -8,7 +7,7 @@ import android.os.Bundle
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
-import android.view.animation.AccelerateDecelerateInterpolator
+import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.Lifecycle
@@ -45,7 +44,8 @@ import com.walisport.module.live.ui.viewmodel.LiveMainViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.filter
 import kotlin.reflect.KClass
-
+import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import com.walisport.module.live.utils.TextViewExt.setBottomDrawable
 /**
  * 直播详情页
  */
@@ -143,8 +143,6 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
 
         mBinding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
-                // 动画更新指示器位置
-                animateIndicatorToPosition(tab?.position ?: 0)
                 tab?.let {
                     mBinding.vpPage.doSmartAnim(targetPosition = tab.position)
                 }
@@ -155,7 +153,12 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                             R.color.tab_selected_text_color
                         )
                     )
-                    textView.textSize = 15f.px2sp
+                    textView.setBottomDrawable(context?.let {
+                        ContextCompat.getDrawable(
+                            it,
+                            R.drawable.live_tab_indicator
+                        )
+                    }, 1.dp2px)
                     textView.typeface = Typeface.DEFAULT_BOLD
                 }
             }
@@ -168,7 +171,12 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                             R.color.video_tab_text_color
                         )
                     )
-                    textView.textSize = 15f.px2sp
+                    textView.setBottomDrawable(context?.let {
+                        ContextCompat.getDrawable(
+                            it,
+                            R.drawable.live_tab_indicatort_tan
+                        )
+                    }, 0.dp2px)
                     textView.typeface = Typeface.DEFAULT
                 }
             }
@@ -261,7 +269,6 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
 
     //比赛ID发生变化,取消订阅,数据请空
     private fun updateMatchId(matchId: Long) {
-        mBinding.customIndicator.setCurrentPosition(1)
         mBinding.tabLayout.getTabAt(1)?.select()
         mBinding.vpPage.setCurrentItem(1, true)
         mViewModel.matchId.value?.let {
@@ -310,6 +317,12 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                 tab.text = list[position].title
                 tab.setCustomView(R.layout.custom_tab)
                 tab.customView?.findViewById<SkinnableTextView>(R.id.tabText)?.apply {
+                    setBottomDrawable(context?.let {
+                        ContextCompat.getDrawable(
+                            it,
+                            if (position == tabSelectPosition) R.drawable.live_tab_indicator else R.drawable.live_tab_indicatort_tan
+                        )
+                    },  if (position == tabSelectPosition) 1.dp2px else 0.dp2px)
                     text = list[position].title
                     setTextColor(
                         SkinnableResourceManager.getColor(
@@ -317,7 +330,6 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                             if (position == tabSelectPosition) R.color.tab_selected_text_color else R.color.video_tab_text_color
                         )
                     )
-                    textSize = 15f.px2sp
                     typeface =
                         if (position == tabSelectPosition) Typeface.DEFAULT_BOLD else Typeface.DEFAULT
 
@@ -325,14 +337,9 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                 tab.view.setOnClickListener { /* Handle click */ }
             }.attach()
             tabLayout.clearOnTabSelectedListeners()
-            mBinding.customIndicator.setCurrentPosition(1)
             tabLayout.getTabAt(1)?.select()
             vpPage.setCurrentItem(1, false)
             tabLayout.removeAllTips()
-            tabLayout.post {
-            // 计算单个 Tab 的宽度
-            val tabWidth = mBinding.tabLayout.width.toFloat() / mBinding.tabLayout.tabCount
-            mBinding.customIndicator.setTabWidth(tabWidth)}
         }
     }
 
@@ -393,15 +400,5 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
             return true
         }
         return super.onBackPressed()
-    }
-    private fun animateIndicatorToPosition(position: Int) {
-        val animator = ValueAnimator.ofFloat(mBinding.customIndicator.getCurrentPosition().toFloat(), position.toFloat())
-        animator.duration = 100 // 动画持续时间
-        animator.interpolator = AccelerateDecelerateInterpolator()
-        animator.addUpdateListener { animation ->
-            val progress = animation.animatedValue as Float
-            mBinding.customIndicator.setIndicatorPosition(progress.toInt(), progress % 1f)
-        }
-        animator.start()
     }
 }
