@@ -54,25 +54,19 @@ class NoticeFragment : BaseFragment<SettingViewModel, FragmentNoticeBinding>() {
             val bet = mViewModel.getSystemBet()
             val fav = mViewModel.getSystemFav()
             val all = mViewModel.getSystemAll()
-            mBinding.noticeGoal.postDelayed({
-                showMatchNoticeDialog(TYPE_SYS_GOAL, bet, fav, all)
-            }, 150)
+            showMatchNoticeDialog(TYPE_SYS_GOAL, bet, fav, all)
         }
         mBinding.noticeStart.clickNoRepeat {
             val bet = mViewModel.getKickBet()
             val fav = mViewModel.getKickFav()
             val all = mViewModel.getKickAll()
-            mBinding.noticeStart.postDelayed({
-                showMatchNoticeDialog(TYPE_SYS_MATCH, bet, fav, all)
-            }, 150)
+            showMatchNoticeDialog(TYPE_SYS_MATCH, bet, fav, all)
         }
         mBinding.noticeAppGoal.clickNoRepeat {
             val bet = mViewModel.getAppBet()
             val fav = mViewModel.getAppFav()
             val all = mViewModel.getAppAll()
-            mBinding.noticeAppGoal.postDelayed({
-                showMatchNoticeDialog(TYPE_APP_GOAL, bet, fav, all)
-            }, 150)
+            showMatchNoticeDialog(TYPE_APP_GOAL, bet, fav, all)
         }
     }
 
@@ -122,12 +116,6 @@ class NoticeFragment : BaseFragment<SettingViewModel, FragmentNoticeBinding>() {
                 override fun onClickAll(isChecked: Boolean) {
                     allBool = isChecked
                     setToggleValue(type, betBool, favBool, allBool)
-                }
-
-                override fun onClickClose() {
-                    mBinding.titleBar.postDelayed({
-                        dialog?.dismiss()
-                    }, 300)
                 }
             })
         }.show(fragmentManager)
