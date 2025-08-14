@@ -215,15 +215,16 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 }
 
                 //呼叫日曆popup元件
-                val tabSelectedDate = if (tlDateList.selectedTabPosition >= 0) {
-                    tlDateList.getTabAt(tlDateList.selectedTabPosition)?.let { tab ->
-                        getFuture31Days().find { it.first == tab.tag }?.let { triple ->
-                            tab.view.isSelected = false
-                            triple.third.getFormatDate().split("/").toYYYYMMDD()
-                        } ?: "0"
-                    } ?: "0"
+                val targetTab = tlDateList.getTabAt(tlDateList.selectedTabPosition)
+                val tabSelectedDate = if (targetTab != null) {
+                    targetTab.run {
+                        view.post { view.isSelected = false }
+                        getFuture31Days().find { it.first == tag }?.third?.getFormatDate()
+                            ?.split("/")?.toYYYYMMDD()
+                            ?: "0"
+                    }
                 } else {
-                    tvTabAll.isSelected = false
+                    tvTabAll.post { tvTabAll.isSelected = false }
                     "0"
                 }
                 showHomeCalendar(tabSelectedDate)
