@@ -69,9 +69,8 @@ class ReserveSlipRepository(
             size
         )
         return@withContext if (result.error == null && result.data != null) {
-            val data = result.data!!.orderList.map { it.toReserveOrderBean() }
             val currency = infoDao.getCurrency()
-            data.forEach { it.currency = currency }
+            val data = result.data!!.orderList.map { it.toReserveOrderBean(currency) }
             betSlipReserveDao.insert(data)
             ApiResponseState.Succeeded(data)
         } else {

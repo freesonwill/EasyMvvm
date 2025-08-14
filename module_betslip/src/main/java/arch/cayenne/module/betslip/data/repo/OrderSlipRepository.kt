@@ -19,7 +19,8 @@ open class OrderSlipRepository(
     remoteManager: BetSlipRemoteManager
 ) : BaseBetSlipRepository(scope, remoteManager) {
 
-    private val _observeOrderBeanFlow = MutableSharedFlow<List<BetSlipOrderBean>>()
+    private val _observeOrderBeanFlow =
+        MutableSharedFlow<List<BetSlipOrderBean>>(replay = 1, extraBufferCapacity = 1)
     val observeOrderBeanFlow: Flow<List<BetSlipOrderBean>> = _observeOrderBeanFlow
 
     fun registerObserveOrderBean(type: Int) {
@@ -37,7 +38,7 @@ open class OrderSlipRepository(
         cursorBetTime: Long?,
         size: Int,
         sportIds: List<Int>,
-        matchId: Long,
+        matchId: Long
     ): ApiResponseState = withContext(scope.coroutineContext) {
         val result = remoteManager.getOrderReq(
             type,
@@ -46,7 +47,7 @@ open class OrderSlipRepository(
             cursorBetTime,
             size,
             if (sportIds.size == 1 && sportIds.first() == -1) null else sportIds,
-            if (matchId == -1L) null else matchId
+            matchId
         )
         return@withContext if (result.error == null && result.data != null) {
             val currency = infoDao.getCurrency()
@@ -94,7 +95,7 @@ open class OrderSlipRepository(
     }
 
 
-    fun deleteAll(type: Int) {
+    fun deleteAll(type: Int, matchId: Long) {
         scope.launch {
             betSlipOrderDao.deleteByType(type)
         }

@@ -63,14 +63,14 @@ object CommonExtension {
         )
     }
 
-    fun Common.ReserveOrder.toReserveOrderBean(): BetSlipReserveBean {
+    fun Common.ReserveOrder.toReserveOrderBean(currency: String): BetSlipReserveBean {
         return BetSlipReserveBean(
             reserveId = reserveId,
             reserveTime = reserveTime,
             betAmount = betAmount.toMoney(),
             selection = selection.toReserveOrderSelectionBean(),
             betStatus = status,
-            currency = ""
+            currency = currency
         )
     }
 
