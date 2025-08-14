@@ -51,7 +51,7 @@ open class ToastDefaultAnimation: ToastAnimation {
     private suspend fun playAnim(view: View, show: Boolean): Int {
         return suspendCancellableCoroutine { continuation ->
             view.apply {
-                val start = if (show) 0f else 1f
+                val start = if (show) 0.6f else 1f
                 val end = if (!show) 0f else 1f
                 val anim = ValueAnimator.ofFloat(start, end).apply {
                     duration = animDuration
