@@ -1,5 +1,6 @@
 package arch.cayenne.module.betslip.data.constants
 
+import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toOdds
 import arch.cayenne.lib.database.entity.BetSlipOrderBean
 import arch.cayenne.lib.database.entity.BetSlipReserveBean
@@ -12,13 +13,13 @@ import galaxy.common.proto.Common
 
 object CommonExtension {
 
-    fun Common.Order.toOrderBean(betSlipType: Int): BetSlipOrderBean {
+    fun Common.Order.toOrderBean(betSlipType: Int, currency: String, liveMatchId: Long?): BetSlipOrderBean {
         return BetSlipOrderBean(
             betId = betId,
             betTime = betTime,
             settleTime = settleTime,
-            betAmount = betAmount,
-            returnAmount = returnAmount,
+            betAmount = betAmount.toMoney(),
+            returnAmount = returnAmount.toMoney(),
             selectionsList = selectionsList.map { it.toOrderSelectionBean() },
             comboType = comboType,
             comboK = comboK,
@@ -27,17 +28,18 @@ object CommonExtension {
             odds = odds.toOdds(),
             status = status,
             earlySupport = earlySupport,
-            earlyBetAmount = earlyBetAmount,
-            earlyReturnAmount = earlyReturnAmount,
+            earlyBetAmount = earlyBetAmount.toMoney(),
+            earlyReturnAmount = earlyReturnAmount.toMoney(),
             earlySettleTimes = earlyCount,
             resultStatus = resultStatus,
             earlySettlePrice = earlySettlePrice.toEarlySettlePriceBean(),
             betSlipType = betSlipType,
-            currency = ""
+            currency = currency,
+            liveMatchId = liveMatchId ?: -1L
         )
     }
 
-    fun Common.OrderSelection.toOrderSelectionBean(): OrderSelectionBean {
+    private fun Common.OrderSelection.toOrderSelectionBean(): OrderSelectionBean {
         return OrderSelectionBean(
             selectionId = selectionId,
             selectionName = selectionName,
@@ -53,7 +55,7 @@ object CommonExtension {
         )
     }
 
-    fun Common.EarlySettlePrice.toEarlySettlePriceBean(): EarlySettlePriceBean {
+    private fun Common.EarlySettlePrice.toEarlySettlePriceBean(): EarlySettlePriceBean {
         return EarlySettlePriceBean(
             price = price,
             settleTotal = settleTotal,
@@ -62,18 +64,19 @@ object CommonExtension {
         )
     }
 
-    fun Common.ReserveOrder.toReserveOrderBean(): BetSlipReserveBean {
+    fun Common.ReserveOrder.toReserveOrderBean(currency: String, matchId: Long?): BetSlipReserveBean {
         return BetSlipReserveBean(
             reserveId = reserveId,
             reserveTime = reserveTime,
-            betAmount = betAmount,
+            betAmount = betAmount.toMoney(),
             selection = selection.toReserveOrderSelectionBean(),
             betStatus = status,
-            currency = ""
+            currency = currency,
+            liveMatchId = matchId ?: -1L
         )
     }
 
-    fun Common.ReserveOrderSelection.toReserveOrderSelectionBean(): ReserveOrderSelectionBean {
+    private fun Common.ReserveOrderSelection.toReserveOrderSelectionBean(): ReserveOrderSelectionBean {
         return ReserveOrderSelectionBean(
             selectionId = selectionId,
             selectionName = selectionName,
@@ -86,7 +89,7 @@ object CommonExtension {
         )
     }
 
-    fun Common.MatchBasicInfo.toMatchBasicInfoBean(): MatchBasicInfoBean {
+    private fun Common.MatchBasicInfo.toMatchBasicInfoBean(): MatchBasicInfoBean {
         return MatchBasicInfoBean(
             matchId = matchId,
             matchName = matchName,
@@ -111,7 +114,7 @@ object CommonExtension {
         )
     }
 
-    fun Common.MatchLiveInfo.toMatchLiveInfoBean(): MatchLiveInfoBean {
+    private fun Common.MatchLiveInfo.toMatchLiveInfoBean(): MatchLiveInfoBean {
         return MatchLiveInfoBean(
             clock = clock,
             rollClock = rollClock,

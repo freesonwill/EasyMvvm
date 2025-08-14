@@ -51,7 +51,7 @@ class BetSlipReserveFragment : BaseBetSlipFragment<ReserveSlipViewModel, Fragmen
                         childFragmentManager.clearFragmentResultListener(ReserveDialogFragment.KEY_RESULT)
                         if (bundle.getString(ReserveDialogFragment.KEY_RESULT) == ReserveDialogFragment.VALUE_RESERVE_COMPLETE) {
                             val odds = bundle.getInt(ReserveDialogFragment.KEY_ODDS_RESULT)
-                            mViewModel.modifyReserve(bean, odds.getDisplayOdds())
+                            mViewModel.modifyReserve(bean, odds.getDisplayOdds().toOdds())
                         }
                     }
                     ReserveDialogFragment.newInstance(

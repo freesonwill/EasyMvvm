@@ -26,12 +26,13 @@ class ReserveSlipViewModel(private val repo: ReserveSlipRepository) : BaseBetSli
     private val _modifyOddsLiveData: MutableLiveData<Event<Boolean>> = MutableLiveData()
     val modifyOddsLiveData: LiveData<Event<Boolean>> = _modifyOddsLiveData
 
+    private var type: BetSlipEnum? = null
     private var lastCount = 0
     var loadDataType: LoadDataType = LoadDataType.NONE
 
     init {
         viewModelScope.launch {
-            repo.observeReserveBean().collect { data ->
+            repo.observeReserveBeanFlow.collect { data ->
                 if (lastCount != 0 && data.isEmpty()) {
                     setState(DataState.DataEmpty)
                 }
@@ -54,7 +55,7 @@ class ReserveSlipViewModel(private val repo: ReserveSlipRepository) : BaseBetSli
     /**
      * 修改预约
      * */
-    fun modifyReserve(order: BetSlipReserveBean, newOdds: String) {
+    fun modifyReserve(order: BetSlipReserveBean, newOdds: Int) {
         viewModelScope.launch {
             val result = repo.reserveUpdate(order.reserveId, order.betAmount, newOdds)
             _modifyOddsLiveData.value = Event(result?.success ?: false)
@@ -63,15 +64,29 @@ class ReserveSlipViewModel(private val repo: ReserveSlipRepository) : BaseBetSli
 
     override fun refreshData(status: BetSlipEnum) {
         loadDataType = LoadDataType.REFRESH_ING
+        if (type == null) {
+            type = BetSlipEnum.Reserve
+            repo.registerObserveReserveBeanFlow(matchId)
+        }
         callApi({
-            repo.getReserveOrder(
-                startTime,
-                endTime,
-                sportIds,
-                matchId,
-                null,
-                SIZE
-            )
+            if (matchId == -1L) {
+                repo.getReserveOrder(
+                    startTime,
+                    endTime,
+                    null,
+                    SIZE
+                )
+            } else {
+                repo.getLiveReserveOrder(
+                    startTime,
+                    endTime,
+                    sportIds,
+                    matchId,
+                    null,
+                    SIZE
+                )
+            }
+
         })
     }
 
@@ -79,14 +94,23 @@ class ReserveSlipViewModel(private val repo: ReserveSlipRepository) : BaseBetSli
         loadDataType = LoadDataType.LOAD_MORE
         val list = _reserveLiveData.value
         callApi({
-            repo.loadMoreReserveOrder(
-                startTime,
-                endTime,
-                sportIds,
-                matchId,
-                list?.lastOrNull()?.reserveTime,
-                SIZE
-            )
+            if (matchId == -1L) {
+                repo.loadMoreReserveOrder(
+                    startTime,
+                    endTime,
+                    list?.lastOrNull()?.reserveTime,
+                    SIZE
+                )
+            } else {
+                repo.loadLiveMoreReserveOrder(
+                    startTime,
+                    endTime,
+                    sportIds,
+                    matchId,
+                    list?.lastOrNull()?.reserveTime,
+                    SIZE
+                )
+            }
         }, {
             if (it is ApiResponseState.Failed) {
                 setState(DataState.NetworkUnavailable)
@@ -99,6 +123,6 @@ class ReserveSlipViewModel(private val repo: ReserveSlipRepository) : BaseBetSli
     }
 
     override fun deleteAll() {
-        repo.deleteAll()
+        repo.deleteAll(matchId)
     }
 }

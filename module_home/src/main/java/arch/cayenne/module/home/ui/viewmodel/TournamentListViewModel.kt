@@ -13,7 +13,7 @@ import arch.cayenne.module.home.data.TournamentListItem
 import arch.cayenne.module.home.data.constants.HomeState
 import arch.cayenne.module.home.data.repo.TournamentListRepository
 import arch.cayenne.module.home.ui.fragment.TournamentListType
-import com.ibm.icu.text.Transliterator
+import com.github.promeg.pinyinhelper.Pinyin
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
@@ -27,7 +27,6 @@ class TournamentListViewModel : BaseViewModel() {
     private var sportId = -1
     private var playTypeId = 2
     private val repo: TournamentListRepository by inject()
-    private val transliterator: Transliterator by inject()
 
     private var lastGroupedList: List<TournamentListItem> = emptyList()
     private var _tournamentList: List<BaseTournamentData> = emptyList()
@@ -164,8 +163,7 @@ class TournamentListViewModel : BaseViewModel() {
             val displayList = mutableListOf<TournamentListItem>()
 
             tournaments.forEach { tournament ->
-                val pinyin = transliterator.transliterate(tournament.name).trim()
-                val firstChar = pinyin.firstOrNull()?.uppercaseChar()
+                val firstChar = tournament.name.firstOrNull()?.let { Pinyin.toPinyin(it).firstOrNull()?.uppercaseChar() }
                 when {
                     tournament.hot -> hotList.add(tournament)
                     firstChar != null && firstChar in 'A'..'Z' -> {

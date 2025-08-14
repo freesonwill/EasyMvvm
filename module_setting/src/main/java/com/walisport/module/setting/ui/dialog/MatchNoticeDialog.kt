@@ -41,7 +41,7 @@ class MatchNoticeDialog : BaseBottomSheetFragment<EmptyViewModel, DialogMatchNot
             clicklistener?.onClickAll(isChecked)
         }
         mBinding.tvClose.clickNoRepeat {
-            clicklistener?.onClickClose()
+            super.dismiss()
         }
     }
 
@@ -53,6 +53,5 @@ class MatchNoticeDialog : BaseBottomSheetFragment<EmptyViewModel, DialogMatchNot
         fun onClickBet(isChecked: Boolean)
         fun onClickFav(isChecked: Boolean)
         fun onClickAll(isChecked: Boolean)
-        fun onClickClose()
     }
 }

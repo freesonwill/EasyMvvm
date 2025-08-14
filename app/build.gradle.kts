@@ -9,6 +9,10 @@ plugins {
 apply(from = rootProject.file("gradle/flavor.gradle"))
 apply(from = rootProject.file("gradle/_sign.gradle"))
 
+val prop = Properties().apply {
+    load(project.rootProject.file("local.properties").inputStream())
+}
+
 android {
     namespace = "com.walisport.app"
     compileSdk = 34
@@ -22,8 +26,6 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        val prop = Properties()
-        prop.load(project.rootProject.file("local.properties").inputStream())
         buildConfigField("int", "uid", prop.getProperty("user.uid"))
         buildConfigField("String", "token", prop.getProperty("user.token").let { it->"\"$it\"" })
 
@@ -67,6 +69,7 @@ android {
 dependencies {
     implementation(project(":lib_common"))
     implementation(project(":lib_websocket"))
+    implementation(project(":lib_http"))
     implementation(project(":lib_base"))
     implementation(project(":module_home"))
     implementation(project(":module_bet"))
@@ -91,6 +94,8 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     implementation(libs.immersionbar)
     debugImplementation(libs.leakcanary)
-    debugImplementation(project(":external:blockcanary"))
+    if(prop.getProperty("PERF_BLOCK_CANARY","false").toBoolean()) {
+        debugImplementation(project(":external:blockcanary"))
+    }
     debugImplementation(project(":external:lib_perf"))
 }

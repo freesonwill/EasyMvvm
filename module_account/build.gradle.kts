@@ -40,7 +40,6 @@ dependencies {
     implementation(project(":lib_common"))
     implementation(project(":lib_res"))
     implementation(project(":lib_websocket"))
-    implementation(libs.icu4j)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

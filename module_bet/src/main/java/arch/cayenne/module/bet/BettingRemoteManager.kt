@@ -15,6 +15,7 @@ import arch.cayenne.lib.database.entity.SelectionBeanLite
 import arch.cayenne.lib.websocket.WebSocketManager
 import arch.cayenne.lib.websocket.data.ApiCode
 import arch.cayenne.lib.websocket.data.ConnectState
+import arch.cayenne.lib.websocket.data.ResponseTimeOutError
 import arch.cayenne.lib.websocket.extension.observeProtoMessage
 import arch.cayenne.lib.websocket.extension.sendAndWaitProtoMessageResponse
 import arch.cayenne.module.bet.data.BetNotifySelectionBean
@@ -89,7 +90,16 @@ class BettingRemoteManager(
                 data.orderStatus,
             )
         } else {
-            null
+            if (res.error is ResponseTimeOutError) {
+                null
+            } else {
+                SingleBetDataModel(
+                    isSuccessful = false,
+                    message = res.error?.msg ?: "",
+                    orderId = "",
+                    orderStatus = -1
+                )
+            }
         }
     }
 
@@ -119,7 +129,14 @@ class BettingRemoteManager(
                 data.message
             )
         } else {
-            null
+            if (res.error is ResponseTimeOutError) {
+                null
+            } else {
+                ReserveBetDataModel(
+                    false,
+                    res.error?.msg ?: ""
+                )
+            }
         }
     }
 
@@ -168,7 +185,15 @@ class BettingRemoteManager(
                 placeBetInfo
             )
         } else {
-            null
+            if (res.error is ResponseTimeOutError) {
+                null
+            } else {
+                ComboBetDataModel(
+                    false,
+                    res.error?.msg ?: "",
+                    emptyList()
+                )
+            }
         }
     }
 

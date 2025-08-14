@@ -2,8 +2,9 @@ package com.walisport.module.live.ui
 
 import android.os.Bundle
 import android.view.View
+import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
-import arch.cayenne.lib.common.ui.view.DynamicStateLayout
+import arch.cayenne.lib.common.ui.view.DynamicStateLayout.States
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import com.walisport.module.live.R
@@ -35,13 +36,13 @@ class LiveVideoStatisticsFragment :
         mViewModel.setMatchId(matchId)
         mBinding.viewTechStatic.setFullScreenMode()
         mBinding.viewTechEvent.setFullScreenMode()
+        mBinding.mainLayout.setState(States.LOADING, "")
     }
 
     override fun initData() {
         super.initData()
         mViewModel.getMainMatch(mViewModel.matchId())
         mainViewModel.registerStatisticsNotify(mViewModel.matchId())
-        mainViewModel.observeMatchStaticsNotify()
     }
 
     override fun initListener() {
@@ -54,7 +55,19 @@ class LiveVideoStatisticsFragment :
                 val awayName = it.basicInfo.awayTeam
                 val homeLogo = it.basicInfo.homeTeamIcon
                 val awayLogo = it.basicInfo.awayTeamIcon
+                mBinding.viewTechStatic.setScore(it.liveInfo.score)
+                mBinding.viewTechEvent.setTeamInfo(homeName, awayName, homeLogo, awayLogo)
                 mBinding.viewTechStatic.setTeamInfo(homeName, awayName, homeLogo, awayLogo)
+            }
+        }
+        mainViewModel.apiStateListener.observe(viewLifecycleOwner) { state ->
+            when (state) {
+                DataState.NetworkUnavailable -> {
+                    mBinding.mainLayout.setState(
+                        States.NETWORK_ANOMALY,
+                        arch.cayenne.lib.common.R.string.error_net.getString()
+                    )
+                }
             }
         }
         mainViewModel.statisticData.observe(viewLifecycleOwner) {
@@ -63,7 +76,7 @@ class LiveVideoStatisticsFragment :
                 if (it.matchTrendData.data.isEmpty()) {
                     mBinding.llContent.visibility = View.INVISIBLE
                     mBinding.mainLayout.setState(
-                        DynamicStateLayout.States.DATA_EMPTY,
+                        States.DATA_EMPTY,
                         R.string.lineup_empty.getString()
                     )
                 } else {

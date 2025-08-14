@@ -5,6 +5,7 @@ import android.view.View
 import androidx.core.animation.addListener
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
+import arch.cayenne.lib.common.utils.ext.clickNoRepeatSingle
 import arch.cayenne.lib.database.entity.SelectionBeanLite
 import arch.cayenne.module.home.data.constants.OddsCellState
 import arch.cayenne.module.home.databinding.ItemOddsCellBinding
@@ -22,7 +23,7 @@ class OddsCellViewHolder(
             val isActive = item.active
             updateState(isActive, item.isSelected)
 
-            clOddsCell.setOnClickListener {
+            clOddsCell.clickNoRepeatSingle {
                 if (isActive) {
                     val location = IntArray(2)
                     it.getLocationOnScreen(location)

@@ -3,10 +3,13 @@ package arch.cayenne.module.betslip.data.repo
 import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.database.dao.BetSlipReserveDao
 import arch.cayenne.lib.database.dao.InfoDao
+import arch.cayenne.lib.database.entity.BetSlipReserveBean
 import arch.cayenne.module.betslip.BetSlipRemoteManager
 import arch.cayenne.module.betslip.data.constants.CommonExtension.toReserveOrderBean
 import galaxy.client.proto.Client
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -17,31 +20,38 @@ class ReserveSlipRepository(
     remoteManager: BetSlipRemoteManager
 ) : BaseBetSlipRepository(scope, remoteManager) {
 
-    fun observeReserveBean() = betSlipReserveDao.observeReserveBean()
+    private val _observeReserveBeanFlow =
+        MutableSharedFlow<List<BetSlipReserveBean>>(replay = 1, extraBufferCapacity = 1)
+    val observeReserveBeanFlow: Flow<List<BetSlipReserveBean>> = _observeReserveBeanFlow
+
+    fun registerObserveReserveBeanFlow(liveMatchId: Long) {
+        scope.launch {
+            betSlipReserveDao.observeReserveBeanByMatchId(liveMatchId).collect {
+                _observeReserveBeanFlow.emit(it)
+            }
+        }
+    }
 
     suspend fun getReserveOrder(
         startTime: Long?,
         endTime: Long?,
-        sportIds: List<Int>,
-        matchId: Long,
         cursorBetTime: Long?,
         size: Int,
     ): ApiResponseState = withContext(scope.coroutineContext) {
         val result = remoteManager.getReserveOrder(
             startTime,
             endTime,
-            if (sportIds.size == 1 && sportIds.first() == -1) null else sportIds,
-            if (matchId == -1L) null else matchId,
+            null,
+            null,
             cursorBetTime,
             size
         )
         return@withContext if (result.error == null && result.data != null) {
-            val data = result.data!!.orderList.map { it.toReserveOrderBean() }
+            val currency = infoDao.getCurrency()
+            val data = result.data!!.orderList.map { it.toReserveOrderBean(currency, null) }
             if (data.isEmpty()) {
                 betSlipReserveDao.deleteAll()
             } else {
-                val currency = infoDao.getCurrency()
-                data.forEach { it.currency = currency }
                 betSlipReserveDao.insert(data)
                 betSlipReserveDao.deleteMissing(data.map { it.reserveId })
             }
@@ -52,7 +62,64 @@ class ReserveSlipRepository(
         }
     }
 
+    suspend fun getLiveReserveOrder(
+        startTime: Long?,
+        endTime: Long?,
+        sportIds: List<Int>,
+        matchId: Long,
+        cursorBetTime: Long?,
+        size: Int,
+    ): ApiResponseState = withContext(scope.coroutineContext) {
+        val result = remoteManager.getReserveOrder(
+            startTime,
+            endTime,
+            sportIds,
+            matchId,
+            cursorBetTime,
+            size
+        )
+        return@withContext if (result.error == null && result.data != null) {
+            val currency = infoDao.getCurrency()
+            val data = result.data!!.orderList.map { it.toReserveOrderBean(currency, matchId) }
+            if (data.isEmpty()) {
+                betSlipReserveDao.deleteAllByMatchId(matchId)
+            } else {
+                betSlipReserveDao.insert(data)
+                betSlipReserveDao.deleteMissingByMatchId(data.map { it.reserveId }, matchId)
+            }
+            ApiResponseState.Succeeded(data)
+        } else {
+            betSlipReserveDao.deleteAllByMatchId(matchId)
+            ApiResponseState.Failed(result.error)
+        }
+    }
+
     suspend fun loadMoreReserveOrder(
+        startTime: Long?,
+        endTime: Long?,
+        cursorBetTime: Long?,
+        size: Int,
+    ): ApiResponseState = withContext(scope.coroutineContext) {
+        val result = remoteManager.getReserveOrder(
+            startTime,
+            endTime,
+            null,
+            null,
+            cursorBetTime,
+            size
+        )
+        return@withContext if (result.error == null && result.data != null) {
+            val currency = infoDao.getCurrency()
+            val data = result.data!!.orderList.map { it.toReserveOrderBean(currency, null) }
+            betSlipReserveDao.insert(data)
+            ApiResponseState.Succeeded(data)
+        } else {
+            betSlipReserveDao.deleteAll()
+            ApiResponseState.Failed(result.error)
+        }
+    }
+
+    suspend fun loadLiveMoreReserveOrder(
         startTime: Long?,
         endTime: Long?,
         sportIds: List<Int>,
@@ -69,13 +136,12 @@ class ReserveSlipRepository(
             size
         )
         return@withContext if (result.error == null && result.data != null) {
-            val data = result.data!!.orderList.map { it.toReserveOrderBean() }
             val currency = infoDao.getCurrency()
-            data.forEach { it.currency = currency }
+            val data = result.data!!.orderList.map { it.toReserveOrderBean(currency, matchId) }
             betSlipReserveDao.insert(data)
             ApiResponseState.Succeeded(data)
         } else {
-            betSlipReserveDao.deleteAll()
+            betSlipReserveDao.deleteAllByMatchId(matchId)
             ApiResponseState.Failed(result.error)
         }
     }
@@ -91,8 +157,8 @@ class ReserveSlipRepository(
 
     suspend fun reserveUpdate(
         reserveId: String,
-        amount: String,
-        newOdds: String
+        amount: Long,
+        newOdds: Int
     ): Client.ReserveUpdateResp? {
         return remoteManager.reserveUpdateReq(reserveId, amount, newOdds).apply {
             if (this?.success == true) {
@@ -101,9 +167,9 @@ class ReserveSlipRepository(
         }
     }
 
-    fun deleteAll() {
+    fun deleteAll(matchId: Long) {
         scope.launch {
-            betSlipReserveDao.deleteAll()
+            betSlipReserveDao.deleteAllByMatchId(matchId)
         }
     }
 

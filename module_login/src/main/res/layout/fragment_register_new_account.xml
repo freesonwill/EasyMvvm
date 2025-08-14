@@ -7,118 +7,105 @@
     android:layout_height="match_parent"
     android:background="@color/main_background"
    >
-    <arch.cayenne.lib.common.ui.view.TitleBarView
-        android:id="@+id/titleBar"
+    <!-- Logo 和 App 名稱 -->
+    <arch.cayenne.lib.skin.widget.SkinnableView
+        android:id="@+id/iv_logo"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_46"
+        android:layout_height="match_parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:background="@drawable/login_background"
+        />
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_start"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_begin="24dp" />
+        app:layout_constraintGuide_begin="@dimen/dp_20" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_end"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_end="24dp" />
+        app:layout_constraintGuide_end="@dimen/dp_20" />
+    <arch.cayenne.lib.skin.widget.SkinnableImageView
+        android:id="@+id/iv_login_title"
+        android:layout_width="@dimen/dp_120"
+        android:layout_height="@dimen/dp_42"
+        android:src="@drawable/ic_register_new_account"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="@id/guideline_start"
+        />
+    <arch.cayenne.lib.skin.widget.SkinnableImageView
+        android:id="@+id/iv_login_logo"
+        android:layout_width="177dp"
+        android:layout_height="70dp"
+        android:src="@drawable/ic_login_logo"
+        app:layout_constraintTop_toTopOf="@id/iv_login_title"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
+        android:id="@+id/tv_login_subtitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_8"
+        android:textSize="@dimen/sp_14"
+        android:text="@string/welcome_use_app"
+        android:textColor="@color/explanation_text"
+        app:layout_constraintTop_toBottomOf="@id/iv_login_title"
+        app:layout_constraintStart_toStartOf="@id/guideline_start"
+        />
     <TextView
         android:id="@+id/tv_verify_phone_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="40dp"
-        android:text="验证手机"
+        android:text="@string/setting_account"
         android:textColor="@color/main_text"
         android:textSize="16sp"
         app:layout_constraintStart_toStartOf="@id/guideline_start"
-        app:layout_constraintTop_toBottomOf="@id/titleBar" />
+        app:layout_constraintTop_toBottomOf="@id/tv_login_subtitle" />
 
     <!-- 手機號碼輸入框 (複合元件) -->
     <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
-        android:id="@+id/ll_phone_input"
+        android:id="@+id/ll_setting_account"
         android:layout_width="0dp"
         android:layout_height="50dp"
         android:layout_marginTop="@dimen/dp_10"
         android:addStatesFromChildren="true"
         android:background="@drawable/ic_keyboard_2_selector"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
         app:layout_constraintEnd_toEndOf="@id/guideline_end"
         app:layout_constraintStart_toStartOf="@id/guideline_start"
         app:layout_constraintTop_toBottomOf="@id/tv_verify_phone_title">
 
-        <TextView
-            android:id="@+id/tv_country_code"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="+86 ▼"
-            android:textColor="@color/main_text"
-            android:textSize="16sp" />
-
-        <arch.cayenne.lib.skin.widget.SkinnableView
-            android:layout_width="1dp"
-            android:layout_height="24dp"
-            android:layout_marginStart="12dp"
-            android:layout_marginEnd="12dp"
-            android:background="@color/vertical_divider" />
-
         <arch.cayenne.lib.common.ui.view.ClearableEditText
-            android:id="@+id/et_phone_number"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@null"
-            android:gravity="center_vertical"
-            android:hint="请输入手机号码"
-            android:inputType="phone"
-            android:textColor="@color/main_text"
-            android:textColorHint="@color/secondary_text" />
-
-    </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
-
-
-    <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
-        android:id="@+id/cl_verification_code"
-        android:layout_width="0dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="@dimen/dp_10"
-        android:addStatesFromChildren="true"
-        android:background="@drawable/ic_keyboard_2_selector"
-        app:layout_constraintEnd_toEndOf="@id/guideline_end"
-        app:layout_constraintStart_toStartOf="@id/guideline_start"
-        app:layout_constraintTop_toBottomOf="@id/ll_phone_input">
-
-        <arch.cayenne.lib.skin.widget.SkinnableEditText
-            android:id="@+id/et_verification_code"
+            android:id="@+id/et_setting_account"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@null"
             android:gravity="center_vertical"
-            android:hint="输入验证码"
+            android:hint="@string/account_enter_hint"
             android:inputType="number"
-            android:paddingStart="16dp"
+            android:layout_marginStart="16dp"
             android:paddingEnd="16dp"
-            android:maxLength="6"
+            android:maxLength="12"
             android:textColor="@color/main_text"
-            android:textColorHint="@color/secondary_text" />
-        <arch.cayenne.lib.skin.widget.SkinnableTextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/tv_get_verification_code"
-            android:text="获取验证码"
-            android:textColor="@color/login_green"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
-    </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
-
+            android:textColorHint="@color/input_words" />
+    </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
+        android:id="@+id/tv_setting_account_error"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_4"
+        android:textColor="@color/red_team"
+        app:layout_constraintTop_toBottomOf="@id/ll_setting_account"
+        app:layout_constraintStart_toStartOf="@id/guideline_start"
+        app:layout_constraintEnd_toEndOf="@id/guideline_end"
+        android:visibility="gone"
+        />
 
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/tv_set_password_title"
@@ -129,7 +116,7 @@
         android:textColor="@color/main_text"
         android:textSize="16sp"
         app:layout_constraintStart_toStartOf="@id/guideline_start"
-        app:layout_constraintTop_toBottomOf="@id/cl_verification_code" />
+        app:layout_constraintTop_toBottomOf="@id/tv_setting_account_error" />
     <!-- 密碼輸入框 -->
     <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
         android:layout_width="0dp"
@@ -141,37 +128,41 @@
         app:layout_constraintEnd_toEndOf="@id/guideline_end"
         app:layout_constraintStart_toStartOf="@id/guideline_start"
         app:layout_constraintTop_toBottomOf="@id/tv_set_password_title">
-        <arch.cayenne.lib.skin.widget.SkinnableImageView
-            android:layout_width="@dimen/dp_18"
-            android:layout_height="@dimen/dp_18"
-            android:layout_marginStart="@dimen/dp_16"
-            android:layout_marginEnd="@dimen/dp_10"
-            android:layout_gravity="center_vertical"
-            android:src="@drawable/ic_lock" />
-        <arch.cayenne.lib.common.ui.view.ClearableEditText
+        <com.walisport.module.login.ui.view.PasswordVisibilityEditText
             android:id="@+id/et_password"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:drawablePadding="16dp"
-            android:hint="请输入密码"
+            android:layout_marginStart="16dp"
+            android:hint="@string/please_enter_seven_twelve"
+            android:gravity="center_vertical"
             android:background="@null"
+            android:maxLength="12"
             android:inputType="textPassword"
             android:textColor="@color/main_text"
             android:textColorHint="@color/input_words"
             tools:ignore="MissingConstraints"
             />
     </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
-    <TextView
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
+        android:id="@+id/tv_setting_password_error"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_4"
+        app:layout_constraintTop_toBottomOf="@id/ll_password"
+        app:layout_constraintStart_toStartOf="@id/guideline_start"
+        app:layout_constraintEnd_toEndOf="@id/guideline_end"
+        android:visibility="gone"
+        />
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/tv_set_password_again_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-
         android:layout_marginTop="32dp"
-        android:text="设置密码"
+        android:text="@string/tv_set_password_again"
         android:textColor="@color/main_text"
         android:textSize="16sp"
         app:layout_constraintStart_toStartOf="@id/guideline_start"
-        app:layout_constraintTop_toBottomOf="@id/ll_password" />
+        app:layout_constraintTop_toBottomOf="@id/tv_setting_password_error" />
     <!-- 確認密碼輸入框 -->
     <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
         android:layout_width="0dp"
@@ -183,19 +174,13 @@
         app:layout_constraintEnd_toEndOf="@id/guideline_end"
         app:layout_constraintStart_toStartOf="@id/guideline_start"
         app:layout_constraintTop_toBottomOf="@id/tv_set_password_again_title">
-        <arch.cayenne.lib.skin.widget.SkinnableImageView
-            android:layout_width="@dimen/dp_18"
-            android:layout_height="@dimen/dp_18"
-            android:layout_marginStart="@dimen/dp_16"
-            android:layout_marginEnd="@dimen/dp_10"
-            android:layout_gravity="center_vertical"
-            android:src="@drawable/ic_lock" />
-        <arch.cayenne.lib.common.ui.view.ClearableEditText
+        <com.walisport.module.login.ui.view.PasswordVisibilityEditText
             android:id="@+id/et_confirm_password"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:drawablePadding="16dp"
-            android:hint="请输入密码"
+            android:layout_marginStart="16dp"
+            android:maxLength="12"
+            android:hint="@string/confirm_password_same"
             android:background="@null"
             android:inputType="textPassword"
             android:textColor="@color/main_text"
@@ -203,7 +188,17 @@
             tools:ignore="MissingConstraints"
             />
     </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
-
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
+        android:id="@+id/tv_confirm_password_error"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/red_team"
+        android:layout_marginTop="@dimen/dp_4"
+        app:layout_constraintTop_toBottomOf="@id/ll_confirm_password"
+        app:layout_constraintStart_toStartOf="@id/guideline_start"
+        app:layout_constraintEnd_toEndOf="@id/guideline_end"
+        android:visibility="gone"
+        />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_next"
@@ -212,11 +207,21 @@
         android:layout_marginTop="@dimen/dp_45"
         android:background="@drawable/selector_send_button"
         android:gravity="center"
-        android:text="下一步"
+        android:text="@string/register"
         android:textColor="@android:color/black"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="@id/guideline_end"
         app:layout_constraintStart_toStartOf="@id/guideline_start"
         app:layout_constraintTop_toBottomOf="@id/ll_confirm_password" />
-
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
+        android:id="@+id/tv_have_account"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="已有账号登录"
+        android:textColor="@color/login_green"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="@id/guideline_start"
+        app:layout_constraintEnd_toEndOf="@id/guideline_end"
+        app:layout_constraintTop_toBottomOf="@id/btn_next" />
 </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>

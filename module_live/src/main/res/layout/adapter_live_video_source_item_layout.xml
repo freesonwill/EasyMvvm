@@ -6,7 +6,7 @@
 
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/iv_thumb"
-        android:layout_width="@dimen/dp_103"
+        android:layout_width="@dimen/dp_101"
         android:layout_height="@dimen/dp_60"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -15,7 +15,7 @@
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/playing_bkg"
-        android:layout_width="@dimen/dp_103"
+        android:layout_width="@dimen/dp_101"
         android:layout_height="@dimen/dp_60"
         android:background="@drawable/video_source_playing_bkg"
         android:gravity="center"
@@ -38,7 +38,7 @@
         android:id="@+id/tv_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginStart="@dimen/dp_14"
         android:layout_marginBottom="@dimen/dp_4"
         android:ellipsize="end"
         android:maxWidth="@dimen/dp_130"
@@ -52,7 +52,7 @@
         android:id="@+id/tv_subtitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginStart="@dimen/dp_14"
         android:layout_marginBottom="@dimen/dp_9"
         android:ellipsize="end"
         android:maxWidth="@dimen/dp_130"

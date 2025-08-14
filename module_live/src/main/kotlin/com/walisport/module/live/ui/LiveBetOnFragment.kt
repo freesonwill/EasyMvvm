@@ -221,7 +221,7 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
                     mViewModel.getMarketType(it.matchId)
                 }
             }
-            mViewModel.observerSelectionComboByMatchId(it.matchId)
+            mainViewModel.matchId.value?.let { matchId -> mViewModel.observerSelectionComboByMatchId(matchId) }
         }
         mViewModel.marketType.observe(viewLifecycleOwner) { list ->
             if (list!!.isEmpty()) {

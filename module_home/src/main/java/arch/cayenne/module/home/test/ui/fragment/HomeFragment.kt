@@ -34,6 +34,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.getKoin
+import org.koin.core.qualifier.named
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -180,7 +181,7 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>() {
             )*/
         }
         mBinding.http.clickNoRepeat {
-            val httpClient = getKoin().get<HttpClient>()
+            val httpClient = getKoin().get<HttpClient>(named("wnlApi"))
             launch {
                 val api = httpClient.create(ITestApi::class.java)
                 //Get

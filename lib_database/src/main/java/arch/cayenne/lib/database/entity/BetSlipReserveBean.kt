@@ -5,16 +5,19 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import java.util.Currency
 
-@Entity(tableName = "BetSlipReserveBean")
+@Entity(
+    tableName = "BetSlipReserveBean",
+    primaryKeys = ["reserveId", "liveMatchId"]
+)
 data class BetSlipReserveBean(
-    @PrimaryKey
     val reserveId: String,          // 下注 ID
     val reserveTime: Long,          // 預約時間（毫秒時間戳）
-    val betAmount: String,          // 下注金額（字串格式）
+    val betAmount: Long,          // 下注金額（字串格式）
     @Embedded
     val selection: ReserveOrderSelectionBean, // 預約選項（需要定義對應的資料類型）
     val betStatus: Int,                 // 狀態：0-預約中, 1-成功, 2-失敗, 3-取消
-    var currency: String
+    val currency: String,
+    val liveMatchId: Long
 ) : BetSlipData
 
 data class ReserveOrderSelectionBean(

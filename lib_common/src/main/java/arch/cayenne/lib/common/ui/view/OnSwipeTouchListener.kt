@@ -2,6 +2,7 @@ package arch.cayenne.lib.common.ui.view
 
 import android.view.MotionEvent
 import android.view.View
+import arch.cayenne.lib.base.utils.LogUtils
 
 open class OnSwipeTouchListener : View.OnTouchListener {
     private var startX: Float = 0f
@@ -19,18 +20,19 @@ open class OnSwipeTouchListener : View.OnTouchListener {
                     startY = event.y
                     startTime = event.eventTime
                 }
-                return false
+                return true
             }
 
             MotionEvent.ACTION_UP -> {
                 val endX = event.x
                 val endY = event.y
                 val endTime = event.eventTime
-                val diffX = endX - startX
-                val diffY = endY - startY
+                val diffX = kotlin.math.abs(endX - startX)
+                val diffY = kotlin.math.abs(endY - startY)
                 val timeDiff = endTime - startTime
+                // LogUtils.e("OnSwipeTouchListener-----SWIPE_THRESHOLD${SWIPE_THRESHOLD}---diffX-${diffX}--diffY${diffY}--thresholdY${thresholdY}--${diffY < thresholdY}--timeDiff${timeDiff}")
                 startTime = 0L
-                if (diffX > SWIPE_THRESHOLD && timeDiff <= SWIPE_MAX_TIME && diffY < thresholdY) {
+                if (startX < endX && diffX > SWIPE_THRESHOLD && timeDiff <= SWIPE_MAX_TIME && diffY < thresholdY) {
                     onSwipeRight()
                     return true
                 }

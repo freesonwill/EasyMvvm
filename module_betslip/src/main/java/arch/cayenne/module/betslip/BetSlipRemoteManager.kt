@@ -1,16 +1,14 @@
 package arch.cayenne.module.betslip
 
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
-import arch.cayenne.lib.database.entity.BetSlipOrderBean
-import arch.cayenne.lib.database.entity.BetSlipReserveBean
+import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
+import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
 import arch.cayenne.lib.websocket.WebSocketManager
 import arch.cayenne.lib.websocket.data.ApiCode
 import arch.cayenne.lib.websocket.data.ConnectState
 import arch.cayenne.lib.websocket.data.SocketResponseData
 import arch.cayenne.lib.websocket.extension.observeProtoMessage
 import arch.cayenne.lib.websocket.extension.sendAndWaitProtoMessageResponse
-import arch.cayenne.module.betslip.data.constants.CommonExtension.toOrderBean
-import arch.cayenne.module.betslip.data.constants.CommonExtension.toReserveOrderBean
 import com.google.gson.Gson
 import galaxy.client.proto.Client
 import galaxy.client.proto.Client.EarlySettlePriceReq
@@ -148,8 +146,8 @@ class BetSlipRemoteManager(
 
     suspend fun reserveUpdateReq(
         reserveId: String,
-        amount: String,
-        odds: String
+        amount: Long,
+        odds: Int
     ): ReserveUpdateResp? {
         val result = socketManager.sendAndWaitProtoMessageResponse<ReserveUpdateResp>(
             scope = scope,
@@ -158,8 +156,8 @@ class BetSlipRemoteManager(
         ) {
             ReserveUpdateReq.newBuilder().apply {
                 this.reserveId = reserveId
-                this.amount = amount
-                this.odds = odds
+                this.amount = amount.getMoney()
+                this.odds = odds.getOdds()
             }.build()
         }
         "reserveUpdateReq reserveId $reserveId amount $amount odds $odds  \n result ${Gson().toJson(result)}".logd(TAG)
