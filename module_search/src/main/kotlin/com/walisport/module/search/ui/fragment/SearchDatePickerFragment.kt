@@ -149,7 +149,6 @@ class SearchDatePickerFragment private constructor(): BaseFragment<SearchDatePic
                 )
                 setCalendarTitle(curYear, curMonth)
             }
-            maskView.background = createMaskGradient()
             expandView()
         }
     }
@@ -251,46 +250,6 @@ class SearchDatePickerFragment private constructor(): BaseFragment<SearchDatePic
                 .get(this) as? WeekBar
         }.onFailure { it.printStackTrace() }
             .getOrNull()
-    }
-
-    private fun createMaskGradient(): Drawable {
-        val defaultColor = 0x80000000
-        val defaultStartAt = 0.3f
-        val defaultStopAt = 0.7f
-        return object : Drawable() {
-            private val paint = Paint()
-            private lateinit var shader: LinearGradient
-
-            override fun onBoundsChange(bounds: Rect) {
-                super.onBoundsChange(bounds)
-                shader = LinearGradient(
-                    0f, bounds.bottom.toFloat(),
-                    0f, bounds.top.toFloat(),
-                    intArrayOf(defaultColor.toInt(), defaultColor.toInt(), Color.TRANSPARENT),
-                    floatArrayOf(0f, defaultStartAt, defaultStopAt),
-                    Shader.TileMode.CLAMP
-                )
-                paint.shader = shader
-            }
-
-            override fun draw(canvas: Canvas) {
-                canvas.drawRect(bounds, paint)
-            }
-
-            override fun setAlpha(alpha: Int) {
-                paint.alpha = alpha
-            }
-
-            @Deprecated(
-                message = "Deprecated in Java",
-                replaceWith = ReplaceWith("PixelFormat.OPAQUE", "android.graphics.PixelFormat")
-            )
-            override fun getOpacity(): Int = PixelFormat.TRANSLUCENT
-
-            override fun setColorFilter(colorFilter: ColorFilter?) {
-                paint.colorFilter = colorFilter
-            }
-        }
     }
 
     private fun setCalendarTitle(year: Int, month: Int) {
