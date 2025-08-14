@@ -6,10 +6,8 @@ import android.view.Gravity
 import android.view.View
 import android.view.WindowManager
 import androidx.core.animation.addListener
-import kotlinx.coroutines.suspendCancellableCoroutine
-import kotlin.coroutines.resume
 
-open class ToastDefaultAnimation: ToastAnimation {
+open class ToastDefaultAnimation : ToastAnimation {
 
     override val animDuration: Long
         get() = 150L
@@ -41,48 +39,45 @@ open class ToastDefaultAnimation: ToastAnimation {
     }
 
     override suspend fun playShowAnim(view: View) {
-        playAnim(view, true)
+        playBounceAnimation(view)
     }
 
     override suspend fun playDismissAnim(view: View) {
-        playAnim(view, false)
-    }
-
-    private suspend fun playAnim(view: View, show: Boolean): Int {
-        return suspendCancellableCoroutine { continuation ->
-            view.apply {
-                val start = if (show) 0.6f else 1f
-                val end = if (!show) 0f else 1f
-                val anim = ValueAnimator.ofFloat(start, end).apply {
-                    duration = animDuration
-                    addUpdateListener { animation ->
-                        val p = animation.animatedValue as Float
-                        scaleX = p
-                        alpha = p
-                        scaleY = p
+        view.apply {
+            val start = 1f
+            val end = 0f
+            ValueAnimator.ofFloat(start, end).apply {
+                duration = animDuration
+                addUpdateListener { animation ->
+                    val p = animation.animatedValue as Float
+//                    scaleX = p
+                    alpha = p
+//                    scaleY = p
+                }
+                addListener(
+                    onStart = {
+//                        scaleX = start
+                        alpha = start
+//                        scaleY = start
                     }
-                    var isCanceled = false
-                    addListener(
-                        onStart = {
-                            scaleX = start
-                            alpha = start
-                            scaleY = start
-                        },
-                        onCancel = {
-                            isCanceled = true
-                            continuation.resume(-1)
-                        },
-                        onEnd = {
-                            if (isCanceled) return@addListener
-                            continuation.resume(200)
-                        }
-                    )
-                    start()
-                }
-                continuation.invokeOnCancellation {
-                    if (anim.isRunning) anim.cancel()
-                }
+                )
+                start()
             }
         }
+    }
+
+    private fun playBounceAnimation(view: View) {
+        view.animate()
+            .scaleX(1.2f)
+            .scaleY(1.2f)
+            .setDuration(75)
+            .withEndAction {
+                view.animate()
+                    .scaleX(1f)
+                    .scaleY(1f)
+                    .setDuration(75)
+                    .start()
+            }
+            .start()
     }
 }
