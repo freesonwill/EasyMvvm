@@ -7,9 +7,11 @@ import androidx.room.PrimaryKey
 interface BetSlipData
 interface BetSlipSelectionData
 
-@Entity(tableName = "BetSlipOrderBean")
+@Entity(
+    tableName = "BetSlipOrderBean",
+    primaryKeys = ["betId", "liveMatchId"]
+)
 data class BetSlipOrderBean (
-    @PrimaryKey
     val betId: String,                         // 下注id
     val betTime: Long,                         // 下注時間
     val settleTime: Long,                      // 結算時間
@@ -30,7 +32,8 @@ data class BetSlipOrderBean (
     @Embedded
     val earlySettlePrice: EarlySettlePriceBean, // 提前結算報價
     var betSlipType: Int,
-    var currency: String//币种
+    var currency: String,//币种
+    val liveMatchId: Long
 ): BetSlipData
 
 data class OrderSelectionBean(

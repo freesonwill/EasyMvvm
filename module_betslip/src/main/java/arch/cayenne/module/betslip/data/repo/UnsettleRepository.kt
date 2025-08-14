@@ -23,6 +23,7 @@ class UnsettleRepository(
     private var notifyScope: Job? = null
 
     suspend fun earlySettle(
+        matchId: Long,
         betId: String,
         amount: String,
         expectPrice: String,
@@ -32,7 +33,7 @@ class UnsettleRepository(
             remoteManager.earlySettleReq(betId, amount, expectPrice, acceptPriceReduce).apply {
                 if (this?.success == true) {
                     betSlipOrderDao.updateToPendingEarlySettle(betId)
-                    registerEarlySettleNotify()
+                    registerEarlySettleNotify(matchId)
                 }
             }
         }
@@ -45,13 +46,13 @@ class UnsettleRepository(
         }
     }
 
-    private fun registerEarlySettleNotify() {
+    private fun registerEarlySettleNotify(matchId: Long) {
         if (notifyScope == null) {
             notifyScope = scope.launch {
                 remoteManager.registerEarlySettleNotify().collect { res ->
                     if (res.error == null && res.data != null) {
                         val currency = infoDao.getCurrency()
-                        val newData = res.data!!.order.toOrderBean(BetSlipEnum.UnSettled.value, currency)
+                        val newData = res.data!!.order.toOrderBean(BetSlipEnum.UnSettled.value, currency, matchId)
                         updateEarlySettleData(newData)
                     }
                 }

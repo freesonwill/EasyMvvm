@@ -19,12 +19,13 @@ open class OrderSlipRepository(
     remoteManager: BetSlipRemoteManager
 ) : BaseBetSlipRepository(scope, remoteManager) {
 
-    private val _observeOrderBeanFlow = MutableSharedFlow<List<BetSlipOrderBean>>()
+    private val _observeOrderBeanFlow =
+        MutableSharedFlow<List<BetSlipOrderBean>>(replay = 1, extraBufferCapacity = 1)
     val observeOrderBeanFlow: Flow<List<BetSlipOrderBean>> = _observeOrderBeanFlow
 
-    fun registerObserveOrderBean(type: Int) {
+    fun registerObserveOrderBean(type: Int, liveMatchId: Long) {
         scope.launch {
-            betSlipOrderDao.observeOrderBean(type).collect {
+            betSlipOrderDao.observeOrderBeanByMatchId(type, liveMatchId).collect {
                 _observeOrderBeanFlow.emit(it)
             }
         }
@@ -35,9 +36,7 @@ open class OrderSlipRepository(
         startTime: Long?,
         endTime: Long?,
         cursorBetTime: Long?,
-        size: Int,
-        sportIds: List<Int>,
-        matchId: Long,
+        size: Int
     ): ApiResponseState = withContext(scope.coroutineContext) {
         val result = remoteManager.getOrderReq(
             type,
@@ -45,12 +44,12 @@ open class OrderSlipRepository(
             endTime,
             cursorBetTime,
             size,
-            if (sportIds.size == 1 && sportIds.first() == -1) null else sportIds,
-            if (matchId == -1L) null else matchId
+            null,
+            null
         )
         return@withContext if (result.error == null && result.data != null) {
             val currency = infoDao.getCurrency()
-            val data = result.data!!.orderList.map { it.toOrderBean(type, currency) }
+            val data = result.data!!.orderList.map { it.toOrderBean(type, currency, null) }
             if (data.isEmpty()) {
                 betSlipOrderDao.deleteByType(type)
             } else {
@@ -64,7 +63,68 @@ open class OrderSlipRepository(
         }
     }
 
+    suspend fun getLiveOrder(
+        type: Int,
+        startTime: Long?,
+        endTime: Long?,
+        cursorBetTime: Long?,
+        size: Int,
+        sportIds: List<Int>,
+        matchId: Long
+    ): ApiResponseState = withContext(scope.coroutineContext) {
+        val result = remoteManager.getOrderReq(
+            type,
+            startTime,
+            endTime,
+            cursorBetTime,
+            size,
+            sportIds,
+            matchId
+        )
+        return@withContext if (result.error == null && result.data != null) {
+            val currency = infoDao.getCurrency()
+            val data = result.data!!.orderList.map { it.toOrderBean(type, currency, matchId) }
+            if (data.isEmpty()) {
+                betSlipOrderDao.deleteByTypeAndMatchId(type, matchId)
+            } else {
+                betSlipOrderDao.insert(data)
+                betSlipOrderDao.deleteMissingByMatchId(type, data.map { it.betId }, matchId)
+            }
+            ApiResponseState.Succeeded(data)
+        } else {
+            betSlipOrderDao.deleteByTypeAndMatchId(type, matchId)
+            ApiResponseState.Failed(result.error)
+        }
+    }
+
     suspend fun loadMoreOrder(
+        type: Int,
+        startTime: Long?,
+        endTime: Long?,
+        cursorBetTime: Long?,
+        size: Int
+    ): ApiResponseState = withContext(scope.coroutineContext) {
+        val result = remoteManager.getOrderReq(
+            type,
+            startTime,
+            endTime,
+            cursorBetTime,
+            size,
+            null,
+            null
+        )
+        if (result.error == null && result.data != null) {
+            val currency = infoDao.getCurrency()
+            val data = result.data!!.orderList.map { it.toOrderBean(type, currency, null) }
+            betSlipOrderDao.insert(data)
+            ApiResponseState.Succeeded(data)
+        } else {
+            betSlipOrderDao.deleteByType(type)
+            ApiResponseState.Failed(result.error)
+        }
+    }
+
+    suspend fun loadLiveMoreOrder(
         type: Int,
         startTime: Long?,
         endTime: Long?,
@@ -79,24 +139,24 @@ open class OrderSlipRepository(
             endTime,
             cursorBetTime,
             size,
-            if (sportIds.size == 1 && sportIds.first() == -1) null else sportIds,
-            if (matchId == -1L) null else matchId
+            sportIds,
+            matchId
         )
         if (result.error == null && result.data != null) {
             val currency = infoDao.getCurrency()
-            val data = result.data!!.orderList.map { it.toOrderBean(type, currency) }
+            val data = result.data!!.orderList.map { it.toOrderBean(type, currency, matchId) }
             betSlipOrderDao.insert(data)
             ApiResponseState.Succeeded(data)
         } else {
-            betSlipOrderDao.deleteByType(type)
+            betSlipOrderDao.deleteByTypeAndMatchId(type, matchId)
             ApiResponseState.Failed(result.error)
         }
     }
 
 
-    fun deleteAll(type: Int) {
+    fun deleteAll(type: Int, matchId: Long) {
         scope.launch {
-            betSlipOrderDao.deleteByType(type)
+            betSlipOrderDao.deleteByTypeAndMatchId(type, matchId)
         }
     }
 }

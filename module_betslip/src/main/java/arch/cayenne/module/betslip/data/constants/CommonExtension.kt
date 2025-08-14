@@ -13,7 +13,7 @@ import galaxy.common.proto.Common
 
 object CommonExtension {
 
-    fun Common.Order.toOrderBean(betSlipType: Int, currency: String): BetSlipOrderBean {
+    fun Common.Order.toOrderBean(betSlipType: Int, currency: String, liveMatchId: Long?): BetSlipOrderBean {
         return BetSlipOrderBean(
             betId = betId,
             betTime = betTime,
@@ -34,7 +34,8 @@ object CommonExtension {
             resultStatus = resultStatus,
             earlySettlePrice = earlySettlePrice.toEarlySettlePriceBean(),
             betSlipType = betSlipType,
-            currency = currency
+            currency = currency,
+            liveMatchId = liveMatchId ?: -1L
         )
     }
 
@@ -63,18 +64,19 @@ object CommonExtension {
         )
     }
 
-    fun Common.ReserveOrder.toReserveOrderBean(): BetSlipReserveBean {
+    fun Common.ReserveOrder.toReserveOrderBean(currency: String, matchId: Long?): BetSlipReserveBean {
         return BetSlipReserveBean(
             reserveId = reserveId,
             reserveTime = reserveTime,
             betAmount = betAmount.toMoney(),
             selection = selection.toReserveOrderSelectionBean(),
             betStatus = status,
-            currency = ""
+            currency = currency,
+            liveMatchId = matchId ?: -1L
         )
     }
 
-    fun Common.ReserveOrderSelection.toReserveOrderSelectionBean(): ReserveOrderSelectionBean {
+    private fun Common.ReserveOrderSelection.toReserveOrderSelectionBean(): ReserveOrderSelectionBean {
         return ReserveOrderSelectionBean(
             selectionId = selectionId,
             selectionName = selectionName,
@@ -87,7 +89,7 @@ object CommonExtension {
         )
     }
 
-    fun Common.MatchBasicInfo.toMatchBasicInfoBean(): MatchBasicInfoBean {
+    private fun Common.MatchBasicInfo.toMatchBasicInfoBean(): MatchBasicInfoBean {
         return MatchBasicInfoBean(
             matchId = matchId,
             matchName = matchName,
@@ -112,7 +114,7 @@ object CommonExtension {
         )
     }
 
-    fun Common.MatchLiveInfo.toMatchLiveInfoBean(): MatchLiveInfoBean {
+    private fun Common.MatchLiveInfo.toMatchLiveInfoBean(): MatchLiveInfoBean {
         return MatchLiveInfoBean(
             clock = clock,
             rollClock = rollClock,
