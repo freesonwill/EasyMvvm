@@ -39,6 +39,7 @@ import com.walisport.module.search.utils.IconScaleAnimUtil.enableScaleIcon
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import kotlin.reflect.KClass
+import androidx.core.graphics.toColorInt
 
 class SearchDatePickerFragment private constructor(): BaseFragment<SearchDatePickerViewModel, FragmentSearchDatePickerBinding>() {
     override val vbClass: KClass<FragmentSearchDatePickerBinding>
@@ -149,7 +150,29 @@ class SearchDatePickerFragment private constructor(): BaseFragment<SearchDatePic
                 )
                 setCalendarTitle(curYear, curMonth)
             }
-            maskView.background = createMaskGradient()
+            maskView.background = object : Drawable() {
+                override fun draw(canvas: Canvas) {
+                    val paint = Paint()
+                    // 上半部分
+                    paint.color = Color.TRANSPARENT
+                    canvas.drawRect(0f, 0f, bounds.width().toFloat(), mBinding.clCalendar.top.toFloat(), paint)
+
+                    // 下半部
+                    paint.color = "#BF000000".toColorInt()
+                    canvas.drawRect(
+                        0f,
+                        mBinding.clCalendar.top.toFloat(),
+                        bounds.width().toFloat(),
+                        bounds.height().toFloat(),
+                        paint
+                    )
+                }
+
+                override fun setAlpha(alpha: Int) = Unit
+                override fun setColorFilter(colorFilter: ColorFilter?) = Unit
+                @Suppress("OVERRIDE_DEPRECATION")
+                override fun getOpacity(): Int = PixelFormat.TRANSLUCENT
+            }
             expandView()
         }
     }
@@ -251,46 +274,6 @@ class SearchDatePickerFragment private constructor(): BaseFragment<SearchDatePic
                 .get(this) as? WeekBar
         }.onFailure { it.printStackTrace() }
             .getOrNull()
-    }
-
-    private fun createMaskGradient(): Drawable {
-        val defaultColor = 0x80000000
-        val defaultStartAt = 0.3f
-        val defaultStopAt = 0.7f
-        return object : Drawable() {
-            private val paint = Paint()
-            private lateinit var shader: LinearGradient
-
-            override fun onBoundsChange(bounds: Rect) {
-                super.onBoundsChange(bounds)
-                shader = LinearGradient(
-                    0f, bounds.bottom.toFloat(),
-                    0f, bounds.top.toFloat(),
-                    intArrayOf(defaultColor.toInt(), defaultColor.toInt(), Color.TRANSPARENT),
-                    floatArrayOf(0f, defaultStartAt, defaultStopAt),
-                    Shader.TileMode.CLAMP
-                )
-                paint.shader = shader
-            }
-
-            override fun draw(canvas: Canvas) {
-                canvas.drawRect(bounds, paint)
-            }
-
-            override fun setAlpha(alpha: Int) {
-                paint.alpha = alpha
-            }
-
-            @Deprecated(
-                message = "Deprecated in Java",
-                replaceWith = ReplaceWith("PixelFormat.OPAQUE", "android.graphics.PixelFormat")
-            )
-            override fun getOpacity(): Int = PixelFormat.TRANSLUCENT
-
-            override fun setColorFilter(colorFilter: ColorFilter?) {
-                paint.colorFilter = colorFilter
-            }
-        }
     }
 
     private fun setCalendarTitle(year: Int, month: Int) {
