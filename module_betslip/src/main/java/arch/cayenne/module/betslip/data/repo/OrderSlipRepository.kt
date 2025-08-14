@@ -25,16 +25,9 @@ open class OrderSlipRepository(
 
     fun registerObserveOrderBean(type: Int, liveMatchId: Long) {
         scope.launch {
-            if (liveMatchId == -1L) {
-                betSlipOrderDao.observeOrderBean(type).collect {
-                    _observeOrderBeanFlow.emit(it)
-                }
-            } else {
-                betSlipOrderDao.observeOrderBeanByMatchId(type, liveMatchId).collect {
-                    _observeOrderBeanFlow.emit(it)
-                }
+            betSlipOrderDao.observeOrderBeanByMatchId(type, liveMatchId).collect {
+                _observeOrderBeanFlow.emit(it)
             }
-
         }
     }
 
@@ -95,7 +88,7 @@ open class OrderSlipRepository(
                 betSlipOrderDao.deleteByTypeAndMatchId(type, matchId)
             } else {
                 betSlipOrderDao.insert(data)
-                betSlipOrderDao.deleteMissingByMatchId(type, matchId, data.map { it.betId })
+                betSlipOrderDao.deleteMissingByMatchId(type, data.map { it.betId }, matchId)
             }
             ApiResponseState.Succeeded(data)
         } else {
@@ -163,11 +156,7 @@ open class OrderSlipRepository(
 
     fun deleteAll(type: Int, matchId: Long) {
         scope.launch {
-            if (matchId == -1L) {
-                betSlipOrderDao.deleteByType(type)
-            } else {
-                betSlipOrderDao.deleteByTypeAndMatchId(type, matchId)
-            }
+            betSlipOrderDao.deleteByTypeAndMatchId(type, matchId)
         }
     }
 }

@@ -26,6 +26,7 @@ class ReserveSlipViewModel(private val repo: ReserveSlipRepository) : BaseBetSli
     private val _modifyOddsLiveData: MutableLiveData<Event<Boolean>> = MutableLiveData()
     val modifyOddsLiveData: LiveData<Event<Boolean>> = _modifyOddsLiveData
 
+    private var type: BetSlipEnum? = null
     private var lastCount = 0
     var loadDataType: LoadDataType = LoadDataType.NONE
 
@@ -63,6 +64,10 @@ class ReserveSlipViewModel(private val repo: ReserveSlipRepository) : BaseBetSli
 
     override fun refreshData(status: BetSlipEnum) {
         loadDataType = LoadDataType.REFRESH_ING
+        if (type == null) {
+            type = BetSlipEnum.Reserve
+            repo.registerObserveReserveBeanFlow(matchId)
+        }
         callApi({
             if (matchId == -1L) {
                 repo.getReserveOrder(

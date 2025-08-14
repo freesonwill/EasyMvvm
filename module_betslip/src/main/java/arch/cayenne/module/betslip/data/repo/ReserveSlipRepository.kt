@@ -22,7 +22,15 @@ class ReserveSlipRepository(
 
     private val _observeReserveBeanFlow =
         MutableSharedFlow<List<BetSlipReserveBean>>(replay = 1, extraBufferCapacity = 1)
-    val observeReserveBeanFlow: Flow<List<BetSlipReserveBean>> = betSlipReserveDao.observeReserveBean()
+    val observeReserveBeanFlow: Flow<List<BetSlipReserveBean>> = _observeReserveBeanFlow
+
+    fun registerObserveReserveBeanFlow(liveMatchId: Long) {
+        scope.launch {
+            betSlipReserveDao.observeReserveBeanByMatchId(liveMatchId).collect {
+                _observeReserveBeanFlow.emit(it)
+            }
+        }
+    }
 
     suspend fun getReserveOrder(
         startTime: Long?,
@@ -77,7 +85,7 @@ class ReserveSlipRepository(
                 betSlipReserveDao.deleteAllByMatchId(matchId)
             } else {
                 betSlipReserveDao.insert(data)
-                betSlipReserveDao.deleteMissingByMatchId(matchId, data.map { it.reserveId })
+                betSlipReserveDao.deleteMissingByMatchId(data.map { it.reserveId }, matchId)
             }
             ApiResponseState.Succeeded(data)
         } else {
@@ -161,11 +169,7 @@ class ReserveSlipRepository(
 
     fun deleteAll(matchId: Long) {
         scope.launch {
-            if (matchId == -1L) {
-                betSlipReserveDao.deleteAll()
-            } else {
-                betSlipReserveDao.deleteAllByMatchId(matchId)
-            }
+            betSlipReserveDao.deleteAllByMatchId(matchId)
         }
     }
 
