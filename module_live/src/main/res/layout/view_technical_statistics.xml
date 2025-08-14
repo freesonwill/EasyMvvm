@@ -16,7 +16,7 @@
         android:paddingStart="@dimen/dp_12"
         android:paddingEnd="0dp"
         android:text="@string/technical_statistics"
-        android:textColor="@color/video_tab_text_color"
+        android:textColor="@color/standing_title"
         android:textSize="@dimen/sp_14" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -43,8 +43,9 @@
             android:gravity="center_vertical"
             android:maxWidth="@dimen/dp_100"
             android:singleLine="true"
-            android:textColor="@color/standing_text"
+            android:textColor="@color/standing_team"
             android:textSize="@dimen/sp_15"
+            app:skinnableFontWeight="700"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/iv_home_logo"
             app:layout_constraintTop_toTopOf="parent" />
@@ -63,8 +64,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
-            android:textColor="@color/standing_text"
+            android:textColor="@color/standing_team"
             android:textSize="@dimen/sp_16"
+            app:skinnableFontWeight="700"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -87,8 +89,9 @@
             android:gravity="center_vertical"
             android:maxWidth="@dimen/dp_100"
             android:singleLine="true"
-            android:textColor="@color/standing_text"
+            android:textColor="@color/standing_team"
             android:textSize="@dimen/sp_15"
+            app:skinnableFontWeight="700"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/iv_away_logo"
             app:layout_constraintTop_toTopOf="parent" />
