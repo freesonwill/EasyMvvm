@@ -107,15 +107,8 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             PlayType.entries.forEach {
                 tlHome.addTab(tlHome.newTab().setText(it.titleRes))
             }
-            tlHome.post {
-                // 计算单个 Tab 的宽度
-                val tabWidth = tlHome.width.toFloat() / tlHome.tabCount
-                mBinding.customIndicator.setTabWidth(tabWidth, 0.27f)
-            }
             tlHome.addOnTabSelectedListener(object : OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab?) {
-                    // 动画更新指示器位置
-                    animateIndicatorToPosition(tab?.position ?: 0)
                     tab?.position?.apply {
                         mViewModel.setCalendarState(HomeCalendarFragment.States.CALENDAR_CLOSE_NOTHING)
                         mViewModel.setCurrentPlayType(PlayType.entries[this].id)
@@ -690,14 +683,4 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
         return super.onBackPressed()
     }
 
-    private fun animateIndicatorToPosition(position: Int) {
-        val animator = ValueAnimator.ofFloat(mBinding.customIndicator.getCurrentPosition().toFloat(), position.toFloat())
-        animator.duration = 100 // 动画持续时间
-        animator.interpolator = AccelerateDecelerateInterpolator()
-        animator.addUpdateListener { animation ->
-            val progress = animation.animatedValue as Float
-            mBinding.customIndicator.setIndicatorPosition(progress.toInt(), progress % 1f)
-        }
-        animator.start()
-    }
 }
