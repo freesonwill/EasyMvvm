@@ -40,6 +40,7 @@ import arch.cayenne.lib.common.utils.ext.TabLayoutExt.reflexMargin
 import arch.cayenne.lib.common.utils.ext.TabLayoutExt.setupEndTabMoreAnimation
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+import arch.cayenne.lib.common.utils.ext.clickNoRepeatSingle
 import arch.cayenne.lib.common.utils.ext.getFormatDate
 import arch.cayenne.lib.common.utils.ext.setDrawerInterpolator
 import arch.cayenne.lib.common.utils.helper.BounceEdgeEffectHelper
@@ -534,22 +535,22 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
         with(mBinding) {
             llWalletEntry.apply {
                 addScaleOnTouchAnimation(ivWalletAdd)
-            }.setOnClickListener {
+            }.clickNoRepeatSingle {
                 mViewModel.setCalendarState(HomeCalendarFragment.States.CALENDAR_CLOSE_NOTHING)
                 //navigate(Uri.parse("walisport://module_home/homeFragment"))
                 navigate(Uri.parse("walisport://module_topup/topUpFragment"))
             }
-            llFavoriteEntry.setOnClickListener {
+            llFavoriteEntry.clickNoRepeatSingle {
                 mViewModel.setCalendarState(HomeCalendarFragment.States.CALENDAR_CLOSE_NOTHING)
                 navigate(NewHomeFragmentDirections.actionNewHomeFragmentToCollectListFragment())
             }
             llFavoriteEntry.addScaleOnTouchAnimation()
-            llSearchEntry.setOnClickListener {
+            llSearchEntry.clickNoRepeatSingle {
                 mViewModel.setCalendarState(HomeCalendarFragment.States.CALENDAR_CLOSE_NOTHING)
                 navigate(arch.cayenne.lib.res.R.string.nav_module_search_fragment.deeplink())
             }
             llSearchEntry.addScaleOnTouchAnimation()
-            llBetEntry.setOnClickListener {
+            llBetEntry.clickNoRepeatSingle {
                 mViewModel.setCalendarState(HomeCalendarFragment.States.CALENDAR_CLOSE_NOTHING)
                 navigate(NewHomeFragmentDirections.actionNewHomeFragmentToHomeBetSlipFragment())
             }
