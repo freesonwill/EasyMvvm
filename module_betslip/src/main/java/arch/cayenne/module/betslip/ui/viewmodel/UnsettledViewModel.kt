@@ -29,7 +29,7 @@ class UnsettledViewModel(private val repo: UnsettleRepository): OrderSlipViewMod
      * */
     fun earlyPartSettled(betId: String, money: String, expectPrice: String) {
         viewModelScope.launch {
-            val result = repo.earlySettle(betId, money, expectPrice, false)
+            val result = repo.earlySettle(matchId, betId, money, expectPrice, false)
             _earlySettledResultLiveData.value = Event(result?.success ?: false)
         }
     }

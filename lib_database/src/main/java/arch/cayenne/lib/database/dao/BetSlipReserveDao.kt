@@ -20,6 +20,12 @@ abstract class BetSlipReserveDao : BaseDao<BetSlipReserveBean>() {
     @Query("DELETE FROM BetSlipReserveBean WHERE reserveId NOT IN (:keepIds)")
     abstract suspend fun deleteMissing(keepIds: List<String>)
 
+    @Query("DELETE FROM BetSlipReserveBean WHERE liveMatchId = :matchId and reserveId NOT IN (:keepIds)")
+    abstract suspend fun deleteMissingByMatchId(matchId: Long, keepIds: List<String>)
+
     @Query("DELETE FROM BetSlipReserveBean")
     abstract suspend fun deleteAll()
+
+    @Query("DELETE FROM BetSlipReserveBean WHERE liveMatchId = :matchId")
+    abstract suspend fun deleteAllByMatchId(matchId: Long)
 }

@@ -1,6 +1,5 @@
 package arch.cayenne.module.betslip.ui.fragment
 
-import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
@@ -110,7 +109,9 @@ abstract class BaseBetSlipFragment<VM: BaseBetSlipViewModel, VB : ViewBinding>: 
     }
 
     override fun onDestroy() {
-        mViewModel.deleteAll()
+        if (filterViewModel != null) {
+            mViewModel.deleteAll()
+        }
         super.onDestroy()
     }
 }
