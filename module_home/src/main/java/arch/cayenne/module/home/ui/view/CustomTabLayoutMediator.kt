@@ -17,6 +17,7 @@ class CustomTabLayoutMediator(
     private var adapter: RecyclerView.Adapter<*>? = null
     private var attached = false
     private var skipAnyAnim = false
+    private var afterTabSelectedCallback: ((position: Int) -> Unit)? = null // 存储afterTabSelected回调
 
     private var onPageChangeCallback: TabLayoutOnPageChangeCallback? = null
     private var onTabSelectedListener: TabLayout.OnTabSelectedListener? = null
@@ -81,7 +82,8 @@ class CustomTabLayoutMediator(
         )
         attached = true
 
-        // 清空之前的切換紀錄
+        this.afterTabSelectedCallback = afterTabSelected
+
         viewPager.getAnimHelper().resetHistory()
 
         onPageChangeCallback = TabLayoutOnPageChangeCallback(tabLayout).also {
@@ -121,10 +123,12 @@ class CustomTabLayoutMediator(
         attached = false
     }
 
-    fun isAttached(): Boolean = attached
-
     fun selectTabWithoutAnimation(position: Int) {
         doOnClick(position = position, noTabAnim = true, noViewPagerAnim = true)
+    }
+
+    private fun getAfterTabSelectedCallback(): ((position: Int) -> Unit)? {
+        return afterTabSelectedCallback
     }
 
     internal fun populateTabsFromPagerAdapter() {
@@ -147,35 +151,223 @@ class CustomTabLayoutMediator(
         private val tabLayoutRef = WeakReference(tabLayout)
         private var previousScrollState = ViewPager2.SCROLL_STATE_IDLE
         private var scrollState = ViewPager2.SCROLL_STATE_IDLE
+        private var lastPosition = 0
+        private var lastPositionOffset = 0f
+        private var isUserScrolling = false
+
+        private var targetPosition = 0 // 目标页面位置
+        private var isUserInteracting = false // 用户是否正在交互
+        private var currentPagePosition = 0 // 当前页面位置
+        private var lastValidPosition = 0 // 最后一个有效位置，用于左滑时的位置校正
+        private var isLeftSwiping = false // 标记是否正在左滑
+        private var leftSwipeStartPosition = 0 // 左滑开始时的位置
 
         override fun onPageScrollStateChanged(state: Int) {
             previousScrollState = scrollState
             scrollState = state
+
+            // 更新滑动状态
+            isUserScrolling = state == ViewPager2.SCROLL_STATE_DRAGGING
+            isUserInteracting = state == ViewPager2.SCROLL_STATE_DRAGGING
+
             tabLayoutRef.get()?.let {
                 try {
                     val method = TabLayout::class.java.getDeclaredMethod("updateViewPagerScrollState", Int::class.java)
                     method.isAccessible = true
                     method.invoke(it, scrollState)
+
+                    if (it is CustomTabLayout) {
+                        if (state == ViewPager2.SCROLL_STATE_IDLE) {
+                            it.resetScrollState()
+                        }
+                    }
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
             }
-        }
 
-        // 移除 TabLayout 原生的 select tab 邏輯，避免觸發原生的滑動效果
-        override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) = Unit
+            when (state) {
+                ViewPager2.SCROLL_STATE_DRAGGING -> {
+                    // 开始拖动时记录当前页面位置
+                    currentPagePosition = viewPager.currentItem
+                    lastValidPosition = currentPagePosition
+                    targetPosition = currentPagePosition
+                    isLeftSwiping = false
+                    leftSwipeStartPosition = currentPagePosition
+                }
 
-        override fun onPageSelected(position: Int) {
-            val tabLayout = tabLayoutRef.get() ?: return
-            if (position != tabLayout.selectedTabPosition && position < tabLayout.tabCount) {
-                // 設置自訂的滑動效果
-                doOnClick(position)
+                ViewPager2.SCROLL_STATE_IDLE -> {
+                    if (isUserInteracting && targetPosition != viewPager.currentItem) {
+                        viewPager.setCurrentItem(targetPosition, true)
+                        // TabLayoutMediator自動同步TabLayout的選中狀態
+                    }
+                    isUserInteracting = false
+                    isLeftSwiping = false
+                }
             }
         }
 
-        fun reset() {
-            previousScrollState = ViewPager2.SCROLL_STATE_IDLE
-            scrollState = ViewPager2.SCROLL_STATE_IDLE
+        override fun onPageScrolled(
+            position: Int,
+            positionOffset: Float,
+            positionOffsetPixels: Int
+        ) {
+            val tabLayout = tabLayoutRef.get() ?: return
+
+            if (position == lastPosition && positionOffset == lastPositionOffset) return
+
+            lastPosition = position
+            lastPositionOffset = positionOffset
+
+            if (isUserInteracting) {
+                val adapterItemCount = viewPager.adapter?.itemCount ?: 0
+                if (adapterItemCount == 0) return
+
+                when {
+                    position == currentPagePosition -> {
+                        if (positionOffset > 0.5f && position < adapterItemCount - 1) {
+                            // 向右滑超過50%切換下一頁
+                            targetPosition = position + 1
+                            updateTabLayoutToPositionSmooth(
+                                tabLayout,
+                                targetPosition,
+                                positionOffset
+                            )
+                        } else if (positionOffset < 0.5f) {
+                            // 滑動未超過50%，恢復原頁
+                            targetPosition = currentPagePosition
+                            updateTabLayoutToPositionSmooth(
+                                tabLayout,
+                                targetPosition,
+                                1f - positionOffset
+                            )
+                        }
+                    }
+
+                    position == currentPagePosition - 1 -> {
+                        isLeftSwiping = true
+                        leftSwipeStartPosition = currentPagePosition
+                        
+                        if (positionOffset > 0.5f) {
+                            // 左滑
+                            targetPosition = position
+                            lastValidPosition = position
+                            updateTabLayoutToPositionSmooth(
+                                tabLayout,
+                                targetPosition,
+                                positionOffset
+                            )
+                        } else {
+                            // 恢復原頁面
+                            if (positionOffset < 0.3f) {
+                                targetPosition = currentPagePosition
+                                updateTabLayoutToPositionSmooth(
+                                    tabLayout,
+                                    targetPosition,
+                                    1f - positionOffset
+                                )
+                            } else {
+                                targetPosition = position
+                                updateTabLayoutToPositionSmooth(
+                                    tabLayout,
+                                    targetPosition,
+                                    positionOffset
+                                )
+                            }
+                        }
+                    }
+
+                    position == currentPagePosition + 1 -> {
+                        // 右滑
+                        if (positionOffset < 0.5f) {
+                            // 恢復原頁
+                            targetPosition = currentPagePosition
+                            updateTabLayoutToPositionSmooth(
+                                tabLayout,
+                                targetPosition,
+                                1f - positionOffset
+                            )
+                        } else {
+                            // 滑超過50%，切換下一頁
+                            targetPosition = position
+                            lastValidPosition = position
+                            updateTabLayoutToPositionSmooth(
+                                tabLayout,
+                                targetPosition,
+                                positionOffset
+                            )
+                        }
+                    }
+
+                    else -> {
+                        // 左滑
+                        if (isLeftSwiping && position < leftSwipeStartPosition) {
+                            if (position >= 0) {
+                                targetPosition = position
+                                updateTabLayoutToPositionSmooth(tabLayout, targetPosition, 0.5f)
+                            }
+                        } else if (position < currentPagePosition) {
+                            targetPosition = maxOf(0, currentPagePosition - 1)
+                            updateTabLayoutToPositionSmooth(tabLayout, targetPosition, 0.5f)
+                        } else if (position > currentPagePosition) {
+                            targetPosition = minOf(adapterItemCount - 1, currentPagePosition + 1)
+                            updateTabLayoutToPositionSmooth(tabLayout, targetPosition, 0.5f)
+                        }
+                    }
+                }
+            }
+        }
+
+        private fun updateTabLayoutToPositionSmooth(
+            tabLayout: TabLayout,
+            position: Int,
+            progress: Float
+        ) {
+            if (position < 0 || position >= tabLayout.tabCount) return
+
+            try {
+                val smoothPosition = when {
+                    position == currentPagePosition -> currentPagePosition.toFloat()
+                    position < currentPagePosition -> currentPagePosition - 1 + progress
+                    else -> currentPagePosition + progress
+                }
+
+                // 使用反射直接更新TabLayout，不觸發ViewPager2事件
+                val method = TabLayout::class.java.getDeclaredMethod(
+                    "setScrollPosition",
+                    Int::class.java,
+                    Float::class.java,
+                    Boolean::class.java,
+                    Boolean::class.java
+                )
+                method.isAccessible = true
+                method.invoke(tabLayout, position, smoothPosition - position, true, false)
+
+                // 更新CustomTabLayout的預先選中狀態
+                if (tabLayout is CustomTabLayout) {
+                    tabLayout.setPreSelectedPosition(position)
+                }
+
+                val afterTabSelectedCallback = getAfterTabSelectedCallback()
+                afterTabSelectedCallback?.invoke(position)
+
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+
+        override fun onPageSelected(position: Int) {
+            val tabLayout = tabLayoutRef.get() ?: return
+
+            // 当ViewPager2明确地定位在新页面上时调用
+            if (tabLayout is CustomTabLayout) {
+                tabLayout.setPreSelectedPosition(position) // 确保CustomTabLayout视觉上提交到这个选择
+            }
+
+            if (position != tabLayout.selectedTabPosition && position < tabLayout.tabCount) {
+                // 设置自定义的滑动效果
+                doOnClick(position)
+            }
         }
     }
 
