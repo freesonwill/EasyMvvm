@@ -9,10 +9,12 @@ import androidx.core.animation.addListener
 
 open class ToastDefaultAnimation : ToastAnimation {
 
-    override val animDuration: Long
-        get() = 150L
+    override val showAnimDuration: Long
+        get() = 100L
     override val showDuration: Long
         get() = 2_000L
+    override val dismissAnimDuration: Long
+        get() = 150L
 
     override fun getQueueTag(): String? {
         return this.javaClass.simpleName
@@ -47,18 +49,14 @@ open class ToastDefaultAnimation : ToastAnimation {
             val start = 1f
             val end = 0f
             ValueAnimator.ofFloat(start, end).apply {
-                duration = animDuration
+                duration = dismissAnimDuration
                 addUpdateListener { animation ->
                     val p = animation.animatedValue as Float
-//                    scaleX = p
                     alpha = p
-//                    scaleY = p
                 }
                 addListener(
                     onStart = {
-//                        scaleX = start
                         alpha = start
-//                        scaleY = start
                     }
                 )
                 start()
@@ -70,12 +68,12 @@ open class ToastDefaultAnimation : ToastAnimation {
         view.animate()
             .scaleX(1.2f)
             .scaleY(1.2f)
-            .setDuration(75)
+            .setDuration(showAnimDuration)
             .withEndAction {
                 view.animate()
                     .scaleX(1f)
                     .scaleY(1f)
-                    .setDuration(75)
+                    .setDuration(showAnimDuration)
                     .start()
             }
             .start()

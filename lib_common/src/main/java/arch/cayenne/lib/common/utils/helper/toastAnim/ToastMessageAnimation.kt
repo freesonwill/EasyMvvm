@@ -53,11 +53,15 @@ class ToastMessageAnimation: ToastDefaultAnimation() {
         lastTranslationY = targetPosition
         animator?.cancel()
         animator = ValueAnimator.ofInt(layoutParams.y, targetPosition).apply {
-            duration = animDuration
+            duration = showAnimDuration
             addUpdateListener { animation ->
                 val value = animation.animatedValue as Int
-                layoutParams.y = value
-                windowManager.updateViewLayout(v, layoutParams)
+                if (v.isAttachedToWindow) {
+                    layoutParams.y = value
+                    windowManager.updateViewLayout(v, layoutParams)
+                } else {
+                    this.cancel()
+                }
             }
             start()
         }
