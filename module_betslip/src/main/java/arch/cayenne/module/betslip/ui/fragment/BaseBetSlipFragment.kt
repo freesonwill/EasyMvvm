@@ -109,9 +109,7 @@ abstract class BaseBetSlipFragment<VM: BaseBetSlipViewModel, VB : ViewBinding>: 
     }
 
     override fun onDestroy() {
-        if (filterViewModel != null) {
-            mViewModel.deleteAll()
-        }
+        mViewModel.deleteAll()
         super.onDestroy()
     }
 }
