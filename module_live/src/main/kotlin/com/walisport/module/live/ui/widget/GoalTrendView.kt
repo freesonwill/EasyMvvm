@@ -123,14 +123,18 @@ class GoalTrendView @JvmOverloads constructor(
                 lastCandle = left + unitWidth
                 val right = left + lineWidth - 3
                 val value = trendList[i]
+                val high = bgHigh * (value / 100f)
                 if (value > 0) {
-                    val high = bgHigh * (value / 100f)
                     val top = rectY + bgHigh - high + 3
                     val bottom = top + high - 3
                     canvas.drawRect(RectF(left, top, right, bottom), red)
                 } else {
-                    val top = rectY + bgHigh + 6
-                    val bottom = rectY + bgHigh - value + padding
+                    val top = rectY + bgHigh + 4
+                    val bottom = if (value >= -3) {
+                        top + 1 //当value值很小时应该存在一条横线而非空
+                    } else {
+                        top - high - 6
+                    }
                     canvas.drawRect(RectF(left, top, right, bottom), blue)
                 }
             }
