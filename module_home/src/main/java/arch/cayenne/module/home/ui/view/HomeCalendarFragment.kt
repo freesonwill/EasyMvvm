@@ -139,8 +139,6 @@ class HomeCalendarFragment private constructor() : Fragment() {
                 calendarBtnOk.setBackgroundResource(
                     R.drawable.shape_home_calendar_ok.getSkinnableResourceId()
                 )
-
-                maskView?.background = createMaskGradient()
                 setSchemeDate()
                 expandView()
             }
@@ -321,46 +319,6 @@ class HomeCalendarFragment private constructor() : Fragment() {
         mBinding?.clCalendarPopupRoot?.apply {
             layoutParams = layoutParams.apply { this.height = height }
             requireView()
-        }
-    }
-
-    private fun createMaskGradient(): Drawable {
-        val defaultColor = 0x80000000
-        val defaultStartAt = 0.2f
-        val defaultStopAt = 0.5f
-        return object : Drawable() {
-            private val paint = Paint()
-            private lateinit var shader: LinearGradient
-
-            override fun onBoundsChange(bounds: Rect) {
-                super.onBoundsChange(bounds)
-                shader = LinearGradient(
-                    0f, bounds.bottom.toFloat(),
-                    0f, bounds.top.toFloat(),
-                    intArrayOf(defaultColor.toInt(), defaultColor.toInt(), Color.TRANSPARENT),
-                    floatArrayOf(0f, defaultStartAt, defaultStopAt),
-                    Shader.TileMode.CLAMP
-                )
-                paint.shader = shader
-            }
-
-            override fun draw(canvas: Canvas) {
-                canvas.drawRect(bounds, paint)
-            }
-
-            override fun setAlpha(alpha: Int) {
-                paint.alpha = alpha
-            }
-
-            @Deprecated(
-                message = "Deprecated in Java",
-                replaceWith = ReplaceWith("PixelFormat.OPAQUE", "android.graphics.PixelFormat")
-            )
-            override fun getOpacity(): Int = PixelFormat.TRANSLUCENT
-
-            override fun setColorFilter(colorFilter: ColorFilter?) {
-                paint.colorFilter = colorFilter
-            }
         }
     }
 
