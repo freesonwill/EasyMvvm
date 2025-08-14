@@ -76,6 +76,7 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
     //#endregion VB,VM
     //设置颜色，默认根据主题颜色设定
     private val statusBar: IStatusBar by lazy { StatusBarDelegate(this) }
+    private var showAnimEndListener: (() -> Unit)? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -117,6 +118,10 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
         statusBar.configStatusBar().statusBarColor = R.color.black_75
     }
 
+    fun setShowAnimEndListener(listener: () -> Unit) {
+        showAnimEndListener = listener
+    }
+
 
     protected open fun enterAnimation():Animation = AnimationUtils.loadAnimation(requireContext(),R.anim.slide_bottom_sheet_up)
 
@@ -133,6 +138,7 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
 
                 override fun onAnimationEnd(animation: Animation?) {
                     setRvTouch()
+                    showAnimEndListener?.invoke()
                 }
 
                 override fun onAnimationRepeat(animation: Animation?) {}

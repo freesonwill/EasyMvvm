@@ -38,12 +38,15 @@ class BetSheetFragment private constructor() :
             }
         }
 
-        fun show(activity: FragmentActivity) {
+        fun show(activity: FragmentActivity, showAnimEndListener: (() -> Unit)? = null) {
             val manager = activity.supportFragmentManager
             val f = manager.findFragmentByTag(TAG)
             if (f == null) {
                 BetSheetFragment().show(manager, TAG)
             } else if (f is BasePreLoadBottomSheetFragment<*, *>) {
+                showAnimEndListener?.let {
+                    f.setShowAnimEndListener(showAnimEndListener)
+                }
                 f.customShow()
             }
         }

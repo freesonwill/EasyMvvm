@@ -258,8 +258,11 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
             val isSuccess = mViewModel.sendBet()
             if (isSuccess) {
                 mViewModel.onBetSheetListener.removeObservers(viewLifecycleOwner)
-                BetResultFragment.newInstance().show(requireActivity().supportFragmentManager)
-                dismiss()
+                val f = BetResultFragment.newInstance()
+                f.setShowAnimEndListener {
+                    dismiss()
+                }
+                f.show(requireActivity().supportFragmentManager)
             }
         }
     }
