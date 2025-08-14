@@ -341,6 +341,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:alpha="0"
+            android:background="@color/drawer_scrim_color"
             android:clickable="true"
             android:focusable="true"
             android:visibility="gone"
