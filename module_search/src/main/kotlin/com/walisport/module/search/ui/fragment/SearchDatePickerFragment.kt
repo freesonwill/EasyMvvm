@@ -39,6 +39,7 @@ import com.walisport.module.search.utils.IconScaleAnimUtil.enableScaleIcon
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import kotlin.reflect.KClass
+import androidx.core.graphics.toColorInt
 
 class SearchDatePickerFragment private constructor(): BaseFragment<SearchDatePickerViewModel, FragmentSearchDatePickerBinding>() {
     override val vbClass: KClass<FragmentSearchDatePickerBinding>
@@ -148,6 +149,29 @@ class SearchDatePickerFragment private constructor(): BaseFragment<SearchDatePic
                     rangeEndDate.get(Calendar.DAY_OF_MONTH)
                 )
                 setCalendarTitle(curYear, curMonth)
+            }
+            maskView.background = object : Drawable() {
+                override fun draw(canvas: Canvas) {
+                    val paint = Paint()
+                    // 上半部分
+                    paint.color = Color.TRANSPARENT
+                    canvas.drawRect(0f, 0f, bounds.width().toFloat(), mBinding.clCalendar.top.toFloat(), paint)
+
+                    // 下半部
+                    paint.color = "#BF000000".toColorInt()
+                    canvas.drawRect(
+                        0f,
+                        mBinding.clCalendar.top.toFloat(),
+                        bounds.width().toFloat(),
+                        bounds.height().toFloat(),
+                        paint
+                    )
+                }
+
+                override fun setAlpha(alpha: Int) = Unit
+                override fun setColorFilter(colorFilter: ColorFilter?) = Unit
+                @Suppress("OVERRIDE_DEPRECATION")
+                override fun getOpacity(): Int = PixelFormat.TRANSLUCENT
             }
             expandView()
         }
