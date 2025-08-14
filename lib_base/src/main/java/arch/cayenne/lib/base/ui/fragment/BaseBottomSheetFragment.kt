@@ -37,6 +37,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import org.koin.androidx.viewmodel.ext.android.viewModelForClass
 import java.lang.ref.WeakReference
 import java.lang.reflect.Field
+import kotlin.math.abs
 import kotlin.reflect.KClass
 
 
@@ -355,13 +356,16 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
     private fun setGesture() {
         val v = mBinding.root
         val tikTokGesture = TikTokGesture(v)
+        val scroller = SmoothScroller()
         tikTokGesture.setListener(object : TikTokGesture.TikTokGestureListener {
             override fun onFlingToRight() {
                 dialog?.onBackPressed()
             }
 
             override fun onHorizontalScroll(offsetX: Float) {
-                sheetContainer?.translationY = offsetX * 1.5f
+                sheetContainer?.let {
+                    scroller.smoothSetTranslationY(it, offsetX * 1.5f)
+                }
             }
 
             override fun onActionUp() {
@@ -465,4 +469,33 @@ open class ScrollBottomSheetBehavior<V : View>(context: Context, attrs: Attribut
         return accepted
     }
 
+}
+
+class SmoothScroller {
+
+    private var currentY = 0f
+    private var targetY = 0f
+    private var isAnimating = false
+
+    fun smoothSetTranslationY(view: View, y: Float) {
+        targetY = y
+        if (!isAnimating) {
+            currentY = view.translationY
+            isAnimating = true
+            view.postOnAnimation(object : Runnable {
+                override fun run() {
+                    val dy = targetY - currentY
+                    if (abs(dy) < 0.5f) {
+                        currentY = targetY
+                        view.translationY = currentY
+                        isAnimating = false
+                        return
+                    }
+                    currentY += dy * 0.3f
+                    view.translationY = currentY
+                    view.postOnAnimation(this)
+                }
+            })
+        }
+    }
 }
