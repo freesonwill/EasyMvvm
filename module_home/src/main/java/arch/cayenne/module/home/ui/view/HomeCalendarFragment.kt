@@ -3,15 +3,6 @@ package arch.cayenne.module.home.ui.view
 import android.animation.Animator
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.ColorFilter
-import android.graphics.LinearGradient
-import android.graphics.Paint
-import android.graphics.PixelFormat
-import android.graphics.Rect
-import android.graphics.Shader
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View

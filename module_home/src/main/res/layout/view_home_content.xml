@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<arch.cayenne.lib.skin.widget.SkinnableConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<arch.cayenne.module.home.ui.view.ClickSearchConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/view_container_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:ignore="MissingDefaultResource">
@@ -149,4 +150,4 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ll_date_filter_container" />
-</arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
+</arch.cayenne.module.home.ui.view.ClickSearchConstraintLayout>
