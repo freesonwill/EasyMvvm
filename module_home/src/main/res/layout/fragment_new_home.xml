@@ -8,7 +8,7 @@
     android:fitsSystemWindows="true">
 
 
-    <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
+    <arch.cayenne.module.home.ui.view.ClickSearchConstraintLayout
         android:id="@+id/cl_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -335,7 +335,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/cl_second_navbar" />
-
         <View
             android:id="@+id/view_calendar_mask"
             android:layout_width="match_parent"
@@ -348,7 +347,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-    </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
+    </arch.cayenne.module.home.ui.view.ClickSearchConstraintLayout>
     <!-- 左侧滑出的導航菜單 -->
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/navigation_view"
