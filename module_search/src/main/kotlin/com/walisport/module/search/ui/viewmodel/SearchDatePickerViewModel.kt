@@ -9,7 +9,15 @@ class SearchDatePickerViewModel: BaseViewModel() {
     val isMaskClickable: Boolean
         get() = _isMaskClickable
 
+    private var _resultTime: Long? = null
+    val resultTime: Long?
+        get() = _resultTime
+
     fun setMaskClickable(clickable: Boolean) {
         _isMaskClickable = clickable
+    }
+
+    fun setResultTime(time: Long?) {
+        _resultTime = time
     }
 }
