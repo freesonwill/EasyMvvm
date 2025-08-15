@@ -280,6 +280,10 @@ abstract class SearchBaseFragment<VM : BaseViewModel, CVB : ViewBinding>: BaseFr
                     }
                 }
 
+                getSearchEditText().setOnFocusChangeListener { _, isFocus ->
+                    if(!isFocus) updateSearchBtnColor()
+                }
+
                 getSearchBtn().apply {
                     TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(
                         this,
