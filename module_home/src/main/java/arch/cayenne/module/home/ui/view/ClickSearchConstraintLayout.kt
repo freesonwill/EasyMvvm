@@ -31,12 +31,7 @@ class ClickSearchConstraintLayout @JvmOverloads constructor(
             MotionEvent.ACTION_DOWN -> {
                 downX = ev.x
                 downY = ev.y
-//                potentialTargetChild = findDeepestTargetView(this, ev.x, ev.y)
-//                val targetName = getSafeViewName(potentialTargetChild)
-//                Log.d("INTERCEPT", "DOWN: 潛在目標是 $targetName")
-//                if (targetName.contains("no-id")) {
-                    potentialTargetChild = findTargetChild(ev)
-//                }
+                potentialTargetChild = findTargetChild(ev)
                 return false
             }
             MotionEvent.ACTION_MOVE -> {
@@ -69,22 +64,4 @@ class ClickSearchConstraintLayout @JvmOverloads constructor(
         }
         return null
     }
-//    private fun findDeepestTargetView(vg: ViewGroup, x: Float, y: Float): View? {
-//        // ... 遞迴搜尋邏輯保持不變 ...
-//        for (i in vg.childCount - 1 downTo 0) {
-//            val child = vg.getChildAt(i)
-//            if (x >= child.left && x < child.right && y >= child.top && y < child.bottom) {
-//                if (child is ViewGroup) {
-//                    val newX = x - child.left
-//                    val newY = y - child.top
-//                    val deeperTarget = findDeepestTargetView(child, newX, newY)
-//                    if (deeperTarget != null) {
-//                        return deeperTarget
-//                    }
-//                }
-//                return child
-//            }
-//        }
-//        return null
-//    }
 }

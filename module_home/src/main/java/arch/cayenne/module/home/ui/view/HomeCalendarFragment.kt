@@ -37,7 +37,8 @@ class HomeCalendarFragment private constructor() : Fragment() {
     private val defaultAnimDuration = 300L
     private var onDataSelectedListener: ((String) -> Unit)? = null
     private var onResetDateListener: (()-> Unit)? = null
-    private var onDismissListener: (()-> Unit)? = null
+    private var onBeforeDismissAnimListener: (()-> Unit)? = null
+    private var onAfterDismissAnimListener: (()-> Unit)? = null
     private var range: List<Common.DailyMatchCount>? = null
     private var marginTop: Int = 0
     private var maskView: View? = null
@@ -269,9 +270,7 @@ class HomeCalendarFragment private constructor() : Fragment() {
 
        }
     }
-    fun callDismiss() {
-        collapseView()
-    }
+
     private fun collapseView() {
        this.mBinding?.let { binding ->
            with(binding.clCalendarPopupRoot) {
@@ -288,6 +287,7 @@ class HomeCalendarFragment private constructor() : Fragment() {
                    doOnStart {
                        currentAnimState = AnimState.COLLAPSING
                        setMaskViewAlpha(false)
+                       onBeforeDismissAnimListener?.invoke()
                    }
                    doOnEnd {
                        currentAnimState = AnimState.COLLAPSE
@@ -295,7 +295,7 @@ class HomeCalendarFragment private constructor() : Fragment() {
                        mBinding?.clCalendarPopupRoot?.postDelayed({
                            if(currentAnimState == AnimState.COLLAPSE) {
                                dismiss()
-                               onDismissListener?.invoke()
+                               onAfterDismissAnimListener?.invoke()
                            }
                        }, 100L)
                    }
@@ -345,6 +345,14 @@ class HomeCalendarFragment private constructor() : Fragment() {
                 .add(containerId, this, this.javaClass.simpleName)
                 .commit()
         }
+    }
+
+    fun callDismiss() {
+        collapseView()
+    }
+
+    fun getAnimState(): AnimState? {
+        return currentAnimState
     }
 
     private fun dismiss() {
@@ -478,7 +486,8 @@ class HomeCalendarFragment private constructor() : Fragment() {
     class Builder {
         private var onDateSelectedListener: ((String) -> Unit)? = null
         private var onResetDateListener: (()-> Unit)? = null
-        private var onDismissListener: (()-> Unit)? = null
+        private var onAfterDismissAnimListener: (()-> Unit)? = null
+        private var onBeforeDismissAnimListener: (() -> Unit)? = null
         private var range: List<Common.DailyMatchCount>? = null
         private var marginTop: Int = 0
         private var maskView: View? = null
@@ -492,8 +501,11 @@ class HomeCalendarFragment private constructor() : Fragment() {
         fun setOnResetDateListener(listener: () -> Unit) = apply {
             this.onResetDateListener = listener
         }
-        fun setOnDismissListener(listener: () -> Unit) = apply {
-            this.onDismissListener = listener
+        fun setOnAfterDismissAnimListener(listener: () -> Unit) = apply {
+            this.onAfterDismissAnimListener = listener
+        }
+        fun setOnBeforeDismissAnimListener(listener: () -> Unit) = apply {
+            this.onBeforeDismissAnimListener = listener
         }
         fun setRange(range: List<Common.DailyMatchCount>) = apply {
             this.range = range
@@ -508,7 +520,8 @@ class HomeCalendarFragment private constructor() : Fragment() {
             return HomeCalendarFragment().apply {
                 this.onResetDateListener = this@Builder.onResetDateListener
                 this.onDataSelectedListener = this@Builder.onDateSelectedListener
-                this.onDismissListener = this@Builder.onDismissListener
+                this.onBeforeDismissAnimListener = this@Builder.onBeforeDismissAnimListener
+                this.onAfterDismissAnimListener = this@Builder.onAfterDismissAnimListener
                 this.range = this@Builder.range
                 this.marginTop = this@Builder.marginTop
                 this.maskView = this@Builder.maskView

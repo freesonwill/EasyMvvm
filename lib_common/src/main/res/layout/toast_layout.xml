@@ -5,7 +5,8 @@
     android:layout_height="wrap_content"
     android:background="@drawable/bg_broder_toast"
     android:paddingHorizontal="16dp"
-    android:paddingVertical="14dp">
+    android:paddingVertical="14dp"
+    android:elevation="4dp">
 
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/toast_text"

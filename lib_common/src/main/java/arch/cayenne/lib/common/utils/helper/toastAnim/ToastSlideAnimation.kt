@@ -11,10 +11,12 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 
 class ToastSlideAnimation(private val statusHeight: Int): ToastAnimation {
-    override val animDuration: Long
+    override val showAnimDuration: Long
         get() = 200L
     override val showDuration: Long
         get() = 3_000L
+    override val dismissAnimDuration: Long
+        get() = showAnimDuration
 
     override fun getQueueTag(): String? {
         return this.javaClass.simpleName
@@ -63,7 +65,7 @@ class ToastSlideAnimation(private val statusHeight: Int): ToastAnimation {
                 val start = if (show) -(statusHeight + h).toFloat() else statusHeight.toFloat()
                 val end = if (show) statusHeight.toFloat() else -(statusHeight + h).toFloat()
                 val anim = ValueAnimator.ofFloat(start, end).apply {
-                    duration = animDuration
+                    duration = showAnimDuration
                     addUpdateListener { animation ->
                         translationY = animation.animatedValue as Float
                     }

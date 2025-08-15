@@ -49,6 +49,7 @@ class ToastHelper private constructor() {
                     item.gesture?.clearGesture(v)
                     item.scope.launch {
                         item.animInterface.playDismissAnim(v)
+                        delay(item.animInterface.dismissAnimDuration)
                         removeToast(context, tag)
                     }
                 }
@@ -95,6 +96,7 @@ class ToastHelper private constructor() {
             if (toastGesture == null || toastGesture.canAutoRemove()) {
                 toastGesture?.clearGesture(view)
                 animInterface.playDismissAnim(view)
+                delay(animInterface.dismissAnimDuration)
                 removeToast(context, tag)
             }
         }
