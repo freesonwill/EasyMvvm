@@ -49,10 +49,7 @@ class SearchRecommendListFragment : BaseFragment<SearchRecommendListViewModel, F
             launch(Lifecycle.State.RESUMED) {
                 launch {
                     searchRecommendList.collect { list ->
-                        recommendAdapter.submitList(list) {
-                            mBinding.clSearchRecommend.visibility =
-                                if (list.isNotEmpty()) View.VISIBLE else View.GONE
-                        }
+                        recommendAdapter.submitList(list)
                     }
                 }
             }
@@ -62,6 +59,10 @@ class SearchRecommendListFragment : BaseFragment<SearchRecommendListViewModel, F
     fun updateKeyword(keyword: String?, failedHandler: ((error: ApiFailedState?) -> Unit)? = null) {
         mViewModel.getSearchRecommendList(keyword, failedHandler)
         recommendAdapter.updateMatchKeyword(keyword)
+    }
+
+    fun show() {
+        mBinding.clSearchRecommend.visibility = View.VISIBLE
     }
 
     fun dismiss() {
