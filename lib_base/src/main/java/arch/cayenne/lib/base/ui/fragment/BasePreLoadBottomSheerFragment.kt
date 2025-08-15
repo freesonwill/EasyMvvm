@@ -114,6 +114,7 @@ abstract class BasePreLoadBottomSheetFragment<VM : BaseViewModel, VB : ViewBindi
     @CallSuper
     protected open fun setCustomCollapseSetting() {
         sheetContainer?.translationY = 0f
+        sheetContainer?.scrollY = 0
 
         onEndListener?.invoke()
         unhideableDialog?.hideDialog()

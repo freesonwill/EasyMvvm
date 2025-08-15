@@ -356,7 +356,6 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
     private fun setGesture() {
         val v = mBinding.root
         val tikTokGesture = TikTokGesture(v)
-        val scroller = SmoothScroller()
         tikTokGesture.setListener(object : TikTokGesture.TikTokGestureListener {
             override fun onFlingToRight() {
                 dialog?.onBackPressed()
@@ -364,29 +363,35 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
 
             override fun onHorizontalScroll(offsetX: Float) {
                 sheetContainer?.let {
-                    scroller.smoothSetTranslationY(it, offsetX * 1.5f)
+                    val offset = (offsetX * 1.3).toInt()
+                    it.scrollTo(0, -offset)
                 }
             }
 
             override fun onActionUp() {
-                val translationY = sheetContainer?.translationY ?: 0f
-                val height = sheetContainer?.height ?: 0
-                if (translationY >= height / 2) {
-                    dialog?.onBackPressed()
-                } else {
-                    resetSheetTranslation()
+                sheetContainer?.let {
+                    val offsetY = abs(it.scrollY)
+                    if (offsetY == 0) return
+
+                    val height = it.height
+                    if (offsetY >= height / 2) {
+                        dialog?.onBackPressed()
+                    } else {
+                        resetSheetTranslation()
+                    }
                 }
+
             }
         })
     }
 
     private fun resetSheetTranslation() {
         sheetContainer?.let {
-            ValueAnimator.ofFloat(it.translationY, 0f).apply {
+            ValueAnimator.ofInt(it.scrollY, 0).apply {
                 duration = 100
                 addUpdateListener { animation ->
-                    val value = animation.animatedValue as Float
-                    it.translationY = value
+                    val value = animation.animatedValue as Int
+                    it.scrollY = value
                 }
                 start()
             }
@@ -469,33 +474,4 @@ open class ScrollBottomSheetBehavior<V : View>(context: Context, attrs: Attribut
         return accepted
     }
 
-}
-
-class SmoothScroller {
-
-    private var currentY = 0f
-    private var targetY = 0f
-    private var isAnimating = false
-
-    fun smoothSetTranslationY(view: View, y: Float) {
-        targetY = y
-        if (!isAnimating) {
-            currentY = view.translationY
-            isAnimating = true
-            view.postOnAnimation(object : Runnable {
-                override fun run() {
-                    val dy = targetY - currentY
-                    if (abs(dy) < 0.5f) {
-                        currentY = targetY
-                        view.translationY = currentY
-                        isAnimating = false
-                        return
-                    }
-                    currentY += dy * 0.3f
-                    view.translationY = currentY
-                    view.postOnAnimation(this)
-                }
-            })
-        }
-    }
 }
