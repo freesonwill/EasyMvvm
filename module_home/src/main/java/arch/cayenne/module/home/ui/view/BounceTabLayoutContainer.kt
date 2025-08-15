@@ -77,6 +77,7 @@ class BounceTabLayoutContainer @JvmOverloads constructor(
                 lastX = ev.x
                 initialTouchX = ev.x
                 activePointerId = ev.getPointerId(0)
+                skipAnim = false
             }
 
             MotionEvent.ACTION_MOVE -> {
@@ -120,6 +121,7 @@ class BounceTabLayoutContainer @JvmOverloads constructor(
                 lastX = event.x
                 initialTouchX = event.x
                 activePointerId = event.getPointerId(0)
+                skipAnim = false
             }
 
             MotionEvent.ACTION_MOVE -> {
