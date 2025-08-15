@@ -230,7 +230,7 @@ abstract class SearchBaseFragment<VM : BaseViewModel, CVB : ViewBinding>: BaseFr
                 //设置标题
                 titleBar.loadSearchTitleBar(
                     hint = titleBarHintStr,
-                    afterTextChanged = { text, binding ->
+                    afterTextChanged = { text, _ ->
                         if (!canSearch) return@loadSearchTitleBar
 
                         val count = text?.length ?: 0
@@ -240,16 +240,20 @@ abstract class SearchBaseFragment<VM : BaseViewModel, CVB : ViewBinding>: BaseFr
                         }
 
                         // 搜索自动补充词汇
-                        if(recommendListFragment.onClickListener == null) {
-                            recommendListFragment.onClickListener = { recommendWord ->
-                                updateSearchText(recommendWord) {
-                                    toSearchResult(recommendWord)
-                                    recommendListFragment.dismiss()
+                        recommendListFragment.apply {
+                            if(onClickListener == null) {
+                                onClickListener = { recommendWord ->
+                                    updateSearchText(recommendWord) {
+                                        toSearchResult(recommendWord)
+                                        dismiss()
+                                    }
                                 }
                             }
-                        }
-                        with(text?.toString()) {
-                            recommendListFragment.updateKeyword(this, apiFailedHandler)
+                            text?.toString().let { keyword ->
+                                updateKeyword(keyword, apiFailedHandler)
+                                if(keyword?.isNotBlank() == true) show()
+                                else dismiss()
+                            }
                         }
                         updateSearchBtnColor()
                     },
@@ -274,23 +278,6 @@ abstract class SearchBaseFragment<VM : BaseViewModel, CVB : ViewBinding>: BaseFr
                         setImageDrawable(
                             getDrawable(requireContext(), R.drawable.ic_search_left_arrow)
                         )
-                    }
-                }
-
-                getSearchEditText().apply {
-                    setOnFocusChangeListener { _, isFocused ->
-                        updateSearchBtnColor()
-                        if (isFocused) {
-                            closeDatePicker()
-                            if (text?.isNotEmpty() == true) {
-                                recommendListFragment.updateKeyword(text.toString(), apiFailedHandler)
-                            }
-                        }
-                    }
-                    setOnClickListener {
-                        if (text?.isNotEmpty() == true) {
-                            recommendListFragment.updateKeyword(text?.toString(), apiFailedHandler)
-                        }
                     }
                 }
 
