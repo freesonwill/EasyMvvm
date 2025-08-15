@@ -41,10 +41,11 @@
 
             <ImageView
                 android:id="@+id/iv_msg_delete"
-                android:layout_width="@dimen/dp_20"
-                android:layout_height="@dimen/dp_20"
+                android:layout_width="@dimen/dp_30"
+                android:layout_height="@dimen/dp_30"
+                android:padding="@dimen/dp_5"
                 android:layout_marginEnd="@dimen/dp_12"
-                android:background="@drawable/icon_message_delete"
+                android:src="@drawable/icon_message_delete"
                 android:stateListAnimator="@animator/layout_alpha_animator"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
