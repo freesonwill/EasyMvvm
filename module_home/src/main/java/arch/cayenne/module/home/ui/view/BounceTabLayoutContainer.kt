@@ -252,8 +252,10 @@ class BounceTabLayoutContainer @JvmOverloads constructor(
             val currentScrollX = layout.scrollX
             if (currentScrollX != lastScrollX) {
                 lastScrollX = currentScrollX
-                scrollIdleRunnable?.let { layout.removeCallbacks(it) }
-
+                scrollIdleRunnable?.let {
+                    layout.removeCallbacks(it)
+                    skipAnimRunnable?.let { layoutHandler.removeCallbacks(it) }
+                }
                 scrollIdleRunnable = Runnable {
                     // 這裡代表已經停止滾動
                     if (skipAnim) {
@@ -263,15 +265,16 @@ class BounceTabLayoutContainer @JvmOverloads constructor(
                         // 建立新的 Runnable
                         skipAnimRunnable = Runnable {
                             skipAnim = false
+                            skipAnimRunnable = null
                         }
 
                         // 延遲排程 50ms
                         skipAnimRunnable?.let {
                             layoutHandler.postDelayed(it, 50L)
                         }
+                    } else {
+                        if (!canScrollLeft || !canScrollRight) onScrollStoppedIfAtEdge()
                     }
-
-                    if (!canScrollLeft || !canScrollRight) onScrollStoppedIfAtEdge()
                 }
 
                 layout.doOnLayout {

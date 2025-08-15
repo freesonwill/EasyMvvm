@@ -32,6 +32,9 @@ class CustomTabLayoutMediator(
      */
     private fun doOnClick(position: Int, noTabAnim: Boolean = false, noViewPagerAnim: Boolean = false) {
         try {
+            // 如果是 BounceTabLayoutContainer，則跳過回彈動畫
+            (tabLayout.parent as? BounceTabLayoutContainer)?.setSkipAnim(true)
+
             if (!noTabAnim) {
                 TabLayout::class.java
                     .getDeclaredMethod("animateToTab", Int::class.java)
@@ -40,9 +43,6 @@ class CustomTabLayoutMediator(
                         invoke(tabLayout, position)
                     }
             } else {
-                // 如果是 BounceTabLayoutContainer，則跳過回彈動畫
-                (tabLayout.parent as? BounceTabLayoutContainer)?.setSkipAnim(true)
-
                 TabLayout::class.java
                     .getDeclaredMethod(
                         "setScrollPosition",
@@ -377,7 +377,7 @@ class CustomTabLayoutMediator(
     ) : TabLayout.OnTabSelectedListener {
         override fun onTabSelected(tab: TabLayout.Tab) {
             // 如果是 BounceTabLayoutContainer，則跳過回彈動畫
-            (tab.parent?.parent as? BounceTabLayoutContainer)?.setSkipAnim(skipAnyAnim)
+            (tab.parent?.parent as? BounceTabLayoutContainer)?.setSkipAnim(true)
 
             if (skipAnyAnim) {
                 viewPager.setCurrentItem(tab.position, false)
