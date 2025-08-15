@@ -327,7 +327,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 val statusBarHeight =
                     ViewCompat.getRootWindowInsets(requireView())
                         ?.getInsets(WindowInsetsCompat.Type.statusBars())?.top ?: 0
-                val marginTopHeight = mBinding.clSecondNavbar.bottom + llDateFilterContainer.bottom - statusBarHeight
+                val marginTopHeight = mBinding.clSecondNavbar.bottom + tlDateList.bottom + statusBarHeight
                 setMarginTop(marginTopHeight)
                 setMaskView(mBinding.viewCalendarMask)
                 // 取得 maskView 的 LayoutParams
