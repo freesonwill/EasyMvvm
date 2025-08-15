@@ -37,7 +37,7 @@ class MessageAdapter : BaseAdapter<NotificationBean, BaseViewHolder, ViewBinding
                 binding.ivMsgDelete.setOnClickListener {
                     clicklistener?.onDelete(item.id)
                 }
-                binding.layDetail.setOnClickListener {
+                binding.root.setOnClickListener {
                     clicklistener?.onDetail(item)
                 }
                 if (item.state == 0) {
@@ -54,7 +54,7 @@ class MessageAdapter : BaseAdapter<NotificationBean, BaseViewHolder, ViewBinding
                 binding.ivMsgDelete.setOnClickListener {
                     clicklistener?.onDelete(item.id)
                 }
-                binding.layDetail.setOnClickListener {
+                binding.root.setOnClickListener {
                     clicklistener?.onDetail(item)
                 }
                 if (item.state == 0) {
@@ -71,7 +71,7 @@ class MessageAdapter : BaseAdapter<NotificationBean, BaseViewHolder, ViewBinding
                 binding.ivMsgDelete.setOnClickListener {
                     clicklistener?.onDelete(item.id)
                 }
-                binding.layDetail.setOnClickListener {
+                binding.root.setOnClickListener {
                     clicklistener?.onDetail(item)
                 }
                 if (item.state == 0) {
@@ -86,7 +86,7 @@ class MessageAdapter : BaseAdapter<NotificationBean, BaseViewHolder, ViewBinding
                 binding.ivMsgDelete.apply { addScaleOnTouchAnimation() }.setOnClickListener {
                     clicklistener?.onDelete(item.id)
                 }
-                binding.layDetail.setOnClickListener {
+                binding.root.setOnClickListener {
                     clicklistener?.onDetail(item)
                 }
                 if (item.state == 0) {
