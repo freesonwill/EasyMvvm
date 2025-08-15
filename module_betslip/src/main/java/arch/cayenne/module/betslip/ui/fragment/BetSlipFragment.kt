@@ -78,8 +78,8 @@ class BetSlipFragment :
 
             tabLayout.clearOnTabSelectedListeners()
             tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-                override fun onTabSelected(tab: TabLayout.Tab?) {
-                    mBinding.viewPager.doSmartAnim(targetPosition = tab?.position ?: 0)
+                override fun onTabSelected(tab: TabLayout.Tab) {
+                    mBinding.viewPager.doSmartAnim(targetPosition = tab.position)
                 }
 
                 override fun onTabUnselected(tab: TabLayout.Tab?) {
