@@ -45,6 +45,10 @@ fun ViewPager2.doSmartAnim(targetPosition: Int) {
             if (helper.targetHistory.isEmpty()) {
                 helper.printLog("targetHistory 為空，等待加入目前頁面")
                 post {
+                    if (helper.targetHistory.isEmpty()) {
+                        helper.printLog("post 執行時 targetHistory 為空，跳過 doSmartAnim")
+                        return@post
+                    }
                     helper.printLog("目前頁面為 $currentItem，加入 targetHistory，並重新發送需求")
                     helper.pushToHistory(currentItem)
                     doSmartAnim(targetPosition)
@@ -228,7 +232,7 @@ class ViewPagerAnimHelper(private val viewPager: ViewPager2) {
                     }
                 }
 
-                captureViewPagerFroFake {
+                captureViewPagerForFake {
                     viewPager.apply {
                         alpha = 0f
                         setCurrentItem(lastPosition, false)
@@ -262,7 +266,7 @@ class ViewPagerAnimHelper(private val viewPager: ViewPager2) {
         job = scope.launch {
             printLog("doSwitchBack: 啟動新動畫 job, 從（$secondLastPosition）到（${lastPosition}）")
             suspendCancellableCoroutine {
-                captureViewPagerFroFake(oldVpX) {
+                captureViewPagerForFake(oldVpX) {
                     viewPager.apply {
                         alpha = 0f
                         setCurrentItem(lastPosition, false)
@@ -312,7 +316,7 @@ class ViewPagerAnimHelper(private val viewPager: ViewPager2) {
         }
     }
 
-    private fun captureViewPagerFroFake(x: Float = 0f, onReady: (() -> Unit)? = null) {
+    private fun captureViewPagerForFake(x: Float = 0f, onReady: (() -> Unit)? = null) {
         fakeViewPager.apply {
             setImageBitmap(viewPager.drawToBitmap())
             bringToFront()
