@@ -98,7 +98,6 @@ abstract class SearchBaseFragment<VM : BaseViewModel, CVB : ViewBinding>: BaseFr
     }
 
     override fun initListener() {
-        mBinding.root.touchBackPressed()
     }
 
     @CallSuper

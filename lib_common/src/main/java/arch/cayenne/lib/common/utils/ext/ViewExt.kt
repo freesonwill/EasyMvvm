@@ -420,11 +420,12 @@ fun View.addRippleEffect(
 
     this.background = rippleDrawable
 }
+
 //侧滑退出当前fragment
-fun View.touchBackPressed(){
+fun View.touchBackPressed(boo: Boolean = true){
     setOnTouchListener(object : OnSwipeTouchListener() {
         override fun onSwipeRight() {
-            requireActivity().onBackPressedDispatcher.onBackPressed()
+            if (boo) { requireActivity().onBackPressedDispatcher.onBackPressed() }
         }
     })
 }
