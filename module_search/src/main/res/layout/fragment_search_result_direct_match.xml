@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<arch.cayenne.lib.skin.widget.SkinnableConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<arch.cayenne.lib.common.ui.view.InterceptedConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/cl_root"
+    app:interceptedDirection = "RIGHT"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:background="#420049">
@@ -163,4 +164,4 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/cl_date" />
     </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
-</arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
+</arch.cayenne.lib.common.ui.view.InterceptedConstraintLayout>

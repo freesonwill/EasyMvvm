@@ -99,10 +99,14 @@ class SearchResultDirectMatchFragment :
             }
             tvDate.text = dateHintStr
         }
-        contentBinding.root.touchBackPressed()
-        contentBinding.recyclerView.touchBackPressed()
+        setTouchBackPressed(true)
     }
 
+
+    private fun setTouchBackPressed(bool: Boolean){
+        contentBinding.root.touchBackPressed(bool)
+        contentBinding.recyclerView.touchBackPressed(bool)
+    }
     override fun initData() {
         super.initData()
         doSearch()
@@ -337,6 +341,7 @@ class SearchResultDirectMatchFragment :
     }
 
     private fun setDateBarStatus(isOpen: Boolean) {
+        setTouchBackPressed(!isOpen)
         with(contentBinding) {
             ivDateArrow.rotation =
                 if (isOpen) 180f else 0f
