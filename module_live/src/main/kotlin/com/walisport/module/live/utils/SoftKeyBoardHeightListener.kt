@@ -34,7 +34,6 @@ internal class SoftKeyBoardHeightListener(private val activity: Activity) : Popu
         inputMethodMode = INPUT_METHOD_NEEDED
 
         parentView = activity.findViewById(android.R.id.content)
-        "parentView ${parentView != null}".logd("aaa")
         width = 0
         height = WindowManager.LayoutParams.MATCH_PARENT
 
@@ -48,7 +47,6 @@ internal class SoftKeyBoardHeightListener(private val activity: Activity) : Popu
     fun start() {
 //        parentView?.addOnAttachStateChangeListener(object : OnAttachStateChangeListener {
 //            override fun onViewAttachedToWindow(view: View) {
-//                "onViewAttached".logd("aaa")
 //                if (!isShowing && parentView?.windowToken != null) {
 //                    setBackgroundDrawable(ColorDrawable(0))
 //                    showAtLocation(parentView, Gravity.NO_GRAVITY, 0, 0)
@@ -56,7 +54,6 @@ internal class SoftKeyBoardHeightListener(private val activity: Activity) : Popu
 //            }
 //
 //            override fun onViewDetachedFromWindow(view: View) {
-//                "onViewDetachedFromWindow".logd("aaa")
 //
 //            }
 //        })

@@ -17,13 +17,11 @@
         android:layout_height="match_parent"
         android:background="@color/main_background">
 
+        <arch.cayenne.lib.common.ui.view.DynamicStateLayout
+            android:id="@+id/dynamic_state"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
 
-        <androidx.constraintlayout.widget.Group
-            android:id="@+id/live_chat_group_status"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            app:constraint_referenced_ids="live_chat_iv_status,live_chat_tv_status" />
 
         <androidx.constraintlayout.widget.Group
             android:id="@+id/live_chat_group_chat"
@@ -31,26 +29,6 @@
             android:layout_height="wrap_content"
             app:constraint_referenced_ids="live_chat_recycler,live_chat_keyboard" />
 
-        <arch.cayenne.lib.skin.widget.SkinnableImageView
-            android:id="@+id/live_chat_iv_status"
-            android:layout_width="@dimen/dp_180"
-            android:layout_height="@dimen/dp_180"
-            android:layout_marginTop="@dimen/dp_60"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <arch.cayenne.lib.skin.widget.SkinnableTextView
-            android:id="@+id/live_chat_tv_status"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_12"
-            android:textColor="@color/secondary_text"
-            android:textFontWeight="500"
-            android:textSize="@dimen/sp_13"
-            app:layout_constraintLeft_toLeftOf="@id/live_chat_iv_status"
-            app:layout_constraintRight_toRightOf="@id/live_chat_iv_status"
-            app:layout_constraintTop_toBottomOf="@id/live_chat_iv_status" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/live_chat_recycler"

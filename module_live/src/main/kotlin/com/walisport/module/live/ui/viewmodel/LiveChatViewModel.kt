@@ -268,6 +268,7 @@ class LiveChatViewModel(private val chatRepo: LiveChatRepository) : BaseViewMode
      * 消失后会显示
      * */
     fun addSoftKeyBoardEvent(keyBoardType: KeyBoardType,flag:Int = 0) {
+
         if(keyBoardType == _softKeyBoardListener.value){
             return
         }
@@ -288,7 +289,7 @@ class LiveChatViewModel(private val chatRepo: LiveChatRepository) : BaseViewMode
      * 控制软件盘的开关
      * @param softKeyBoarVisible true显示软件盘  false 关闭软件盘
      * */
-    fun updateSoftKeyBoard(softKeyBoarVisible:Boolean){
+    fun updateSoftKeyBoard(softKeyBoarVisible:Boolean,flag: Int){
 //        if(softKeyBoarVisible == _openSoftKeyBoardLiveData.value){
 //            return
 //        }

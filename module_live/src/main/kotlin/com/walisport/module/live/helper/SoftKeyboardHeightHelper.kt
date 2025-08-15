@@ -25,7 +25,6 @@ class SoftKeyboardHeightHelper() {
         softKeyboardHeightListener?.registerKeyboardHeightListener(object :
             SoftKeyBoardHeightListener.KeyboardHeightListener {
             override fun onKeyboardHeightChanged(height: Int) {
-                "height change $height".logd("aaa")
                 if (height > 150.dp2px) {
                 }
             }

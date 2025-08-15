@@ -1,22 +1,21 @@
 package com.walisport.module.live.ui
 
-import android.animation.AnimatorSet
-import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
-import android.content.Context
+import android.app.Activity
 import android.os.Bundle
 import android.view.MotionEvent
-import android.view.View
-import android.view.WindowManager
+import android.view.ViewTreeObserver
 import androidx.activity.addCallback
-import androidx.core.animation.addListener
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
-import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.lib.common.ui.view.DynamicStateLayout
+import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.websocket.chat.data.ChatMsg
@@ -25,6 +24,7 @@ import com.walisport.module.live.R
 import com.walisport.module.live.data.constants.KeyBoardType
 import com.walisport.module.live.data.constants.MatchStatus
 import com.walisport.module.live.databinding.FragmentLiveChatBinding
+import com.walisport.module.live.helper.SoftKeyboardHeightHelper
 import com.walisport.module.live.ui.adapter.LiveChatAdapter
 import com.walisport.module.live.ui.viewmodel.LiveChatViewModel
 import com.walisport.module.live.ui.viewmodel.LiveMainViewModel
@@ -36,6 +36,7 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
     override val vbClass: KClass<FragmentLiveChatBinding> = FragmentLiveChatBinding::class
     override val vmClass: KClass<LiveChatViewModel> = LiveChatViewModel::class
     private val mainViewModel: LiveMainViewModel by sharedViewModel<LiveMainViewModel, LiveMainFragment>()
+//    private val softKeyboardHeightHelper: SoftKeyboardHeightHelper = SoftKeyboardHeightHelper()
 
     override fun initView(savedInstanceState: Bundle?) {
         initFragment()
@@ -63,7 +64,7 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
 
         mBinding.main.setOnTouchListener { v, event ->
             if (event.action == MotionEvent.ACTION_DOWN && mViewModel.currentSoftKeyboard.value != KeyBoardType.CHAT) {
-                showChat(8)
+                showChat(9)
                 return@setOnTouchListener true
             }
             return@setOnTouchListener false
@@ -98,11 +99,11 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
 
     private fun initFragment() {
         val fragment = LiveSoftKeyboardFragment()
-        fragment.softKeyHeightHelper = object :LiveSoftKeyboardFragment.SoftKeyHeightHelper{
-            override fun changeSoftKeyBoardHeight(height: Int, isSoftToEmoji: Boolean) {
-                mBinding.liveChatKeyboard.layoutParams.height = height //修改键盘高度为整页聊天页的高度
-            }
-        }
+//        fragment.softKeyHeightHelper = object :LiveSoftKeyboardFragment.SoftKeyHeightHelper{
+//            override fun changeSoftKeyBoardHeight(height: Int, isSoftToEmoji: Boolean) {
+//                mBinding.liveChatKeyboard.layoutParams.height = height //修改键盘高度为整页聊天页的高度
+//            }
+//        }
         childFragmentManager.beginTransaction()
             .replace(mBinding.liveChatKeyboard.id, fragment, LiveSoftKeyboardFragment.TAG).commit()
     }
@@ -189,6 +190,15 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
             }
         }
     }
+
+    override fun onStart() {
+        super.onStart()
+//     startSoftKeyboardHeight(requireActivity())
+    }
+
+//    fun startSoftKeyboardHeight(activity: FragmentActivity){
+//        softKeyboardHeightHelper.startListener(activity)
+//    }
 
     /**
      * 显示聊天界面时隐藏键盘界面
@@ -302,9 +312,8 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
             when (status) {
                 MatchStatus.FINISHED, MatchStatus.CANCELED, MatchStatus.ABANDONED -> {
                     it.liveChatGroupChat.isVisible = false
-                    it.liveChatGroupStatus.isVisible = true
-                    it.liveChatIvStatus.setBackgroundResource(arch.cayenne.lib.common.R.drawable.icon_close)
-                    it.liveChatTvStatus.setText(R.string.live_chat_end)
+
+                    it.dynamicState.setState(DynamicStateLayout.States.CLOSE,R.string.live_chat_end.getString())
                 }
 
                 MatchStatus.POSTPONED, MatchStatus.NOT_STARTED, MatchStatus.IN_PROGRESS, MatchStatus.DELAYED, MatchStatus.PAUSED -> {
@@ -313,9 +322,7 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
 
                 else -> {
                     it.liveChatGroupChat.isVisible = false
-                    it.liveChatGroupStatus.isVisible = true
-                    it.liveChatIvStatus.setBackgroundResource(arch.cayenne.lib.common.R.drawable.icon_empty)
-                    it.liveChatTvStatus.setText(R.string.live_chat_empty)
+                    it.dynamicState.setState(DynamicStateLayout.States.DATA_EMPTY,R.string.live_chat_empty.getString())
                 }
             }
         }
@@ -326,13 +333,11 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
             if (mViewModel.msgLists.isEmpty()) {
                 liveChatRecycler.isVisible = false
                 liveChatKeyboard.isVisible = true
-                liveChatGroupStatus.isVisible = true
-                liveChatIvStatus.setBackgroundResource(arch.cayenne.lib.common.R.drawable.icon_empty)
-                liveChatTvStatus.setText(R.string.live_chat_first_chat)
+                dynamicState.setState(DynamicStateLayout.States.DATA_EMPTY,R.string.live_chat_first_chat.getString())
             } else {
                 liveChatRecycler.isVisible = true
                 liveChatKeyboard.isVisible = true
-                liveChatGroupStatus.isVisible = false
+                dynamicState.isVisible = false
             }
         }
     }
