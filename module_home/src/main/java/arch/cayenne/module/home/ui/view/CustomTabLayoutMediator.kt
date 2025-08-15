@@ -377,7 +377,7 @@ class CustomTabLayoutMediator(
     ) : TabLayout.OnTabSelectedListener {
         override fun onTabSelected(tab: TabLayout.Tab) {
             // 如果是 BounceTabLayoutContainer，則跳過回彈動畫
-            (tab.parent?.parent as? BounceTabLayoutContainer)?.setSkipAnim(skipAnyAnim)
+            (tab.parent?.parent as? BounceTabLayoutContainer)?.setSkipAnim(true)
 
             if (skipAnyAnim) {
                 viewPager.setCurrentItem(tab.position, false)
