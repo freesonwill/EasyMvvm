@@ -1,6 +1,5 @@
 package arch.cayenne.module.home.ui.fragment
 
-import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.graphics.Typeface
 import android.net.Uri
@@ -8,7 +7,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.view.GravityCompat
@@ -345,9 +343,8 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 setOnResetDateListener {
                     resetDateTabs()
                 }
-                setOnDismissListener {
+                setOnBeforeDismissAnimListener {
                     llOtherDate.isSelected = false
-                    customPopup = null
 
                     // 重置日期tab選擇狀態
                     tlDateList.getTabAt(tlDateList.selectedTabPosition)?.let {
@@ -355,6 +352,9 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                             it.view.isSelected = true
                         }
                     } ?: run { tvTabAll.isSelected = true }
+                }
+                setOnAfterDismissAnimListener {
+                    customPopup = null
                 }
             }.build()
 
@@ -636,7 +636,8 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
         mViewModel.calendarStates.observe(viewLifecycleOwner) {
             when (it) {
                 HomeCalendarFragment.States.CALENDAR_CLOSE_NOTHING -> {
-                    if (customPopup != null) {
+                    if (customPopup != null &&
+                        customPopup?.getAnimState() != HomeCalendarFragment.AnimState.COLLAPSING) {
                         customPopup?.callDismiss()
                     }
                 }
