@@ -35,10 +35,6 @@ import com.walisport.module.search.data.model.SearchResultTeamBean
 import com.walisport.module.search.data.model.SearchResultTournamentBean
 import com.walisport.module.search.databinding.FragmentSearchResultDirectMatchBinding
 import com.walisport.module.search.ui.adapter.SearchResultRaceAdapter
-import com.walisport.module.search.ui.fragment.SearchDatePickerFragment.Companion.DATE_PICKER_RESULT_END
-import com.walisport.module.search.ui.fragment.SearchDatePickerFragment.Companion.DATE_PICKER_RESULT_KEY
-import com.walisport.module.search.ui.fragment.SearchDatePickerFragment.Companion.DATE_PICKER_RESULT_START
-import com.walisport.module.search.ui.fragment.SearchDatePickerFragment.Companion.DATE_PICKER_RESULT_TIME_IN_MILLIS
 import com.walisport.module.search.ui.viewmodel.SearchResultDirectMatchViewModel
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -298,32 +294,6 @@ class SearchResultDirectMatchFragment :
 
     private fun openDatePicker() {
         val oldDate = mViewModel.getSelectedDate()
-
-        childFragmentManager.setFragmentResultListener(DATE_PICKER_RESULT_KEY, viewLifecycleOwner) { _, bundle ->
-            childFragmentManager.clearFragmentResultListener(DATE_PICKER_RESULT_KEY)
-
-            setDateBarStatus(false)
-            datePicker = null
-
-            val newDate =
-                bundle.getLong(DATE_PICKER_RESULT_TIME_IN_MILLIS)
-                    .takeIf { bundle.containsKey(DATE_PICKER_RESULT_TIME_IN_MILLIS) }
-                    ?.let { Date(it) }
-            mViewModel.setSelectedDate(newDate)
-            contentBinding.clDate.isSelected = newDate != null
-
-            if (oldDate != newDate) {
-                mViewModel.directMatchType?.let { type ->
-                    mViewModel.getSearchResult(
-                        mViewModel.directMatchId.toString(),
-                        type,
-                        bundle.getLong(DATE_PICKER_RESULT_START),
-                        bundle.getLong(DATE_PICKER_RESULT_END)
-                    )
-                }
-            }
-        }
-
         datePicker =
             SearchDatePickerFragment.Builder().apply {
                 val statusBarHeight =
@@ -338,11 +308,32 @@ class SearchResultDirectMatchFragment :
                 setMarginStart(8.dp2px)
                 setMarginEnd(8.dp2px)
                 setSchemeDates(mViewModel.racedDateMap)
+                setOnBeforeDismissAnimListener {
+                    setDateBarStatus(false)
+                }
+                setOnAfterDismissAnimListener { startTime: Long?, endTime: Long?, timeInMills: Long? ->
+                    datePicker = null
+
+                    val newDate = timeInMills?.let { Date(it) }
+                    mViewModel.setSelectedDate(newDate)
+                    contentBinding.clDate.isSelected = newDate != null
+
+                    if (oldDate != newDate) {
+                        mViewModel.directMatchType?.let { type ->
+                            mViewModel.getSearchResult(
+                                mViewModel.directMatchId.toString(),
+                                type,
+                                startTime,
+                                endTime
+                            )
+                        }
+                    }
+                }
                 mViewModel.getSelectedDate()?.time?.let { setSelectedDate(it) }
             }.build()
 
-        datePicker?.show(childFragmentManager, contentBinding.clRoot.id)
         setDateBarStatus(true)
+        datePicker?.show(childFragmentManager, contentBinding.clRoot.id)
     }
 
     private fun setDateBarStatus(isOpen: Boolean) {
