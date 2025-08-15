@@ -189,6 +189,10 @@ abstract class BasePreLoadBottomSheetFragment<VM : BaseViewModel, VB : ViewBindi
     fun setOnEndListener(listener: (() -> Unit)?) {
         onEndListener = listener
     }
+
+    override fun dismiss() {
+        customHide()
+    }
 }
 
 class UnhideableBottomSheetBehavior<V : View>(context: Context, attrs: AttributeSet?) :
