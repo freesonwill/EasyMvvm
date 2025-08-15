@@ -228,12 +228,12 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
         }
 
         mBinding.ivTournamentMore.apply {addScaleOnTouchAnimation()}.clickNoRepeat {
-            toggleTournamentMoreSection(true, TournamentListType.MORE)
             mViewModel.setCalendarState(HomeCalendarFragment.States.CALENDAR_CLOSE_NOTHING)
+            toggleTournamentMoreSection(true, TournamentListType.MORE)
         }
         mBinding.llHomeTournamentMore.clickNoRepeat {
-            toggleTournamentMoreSection(true, TournamentListType.MORE)
             mViewModel.setCalendarState(HomeCalendarFragment.States.CALENDAR_CLOSE_NOTHING)
+            toggleTournamentMoreSection(true, TournamentListType.MORE)
         }
     }
 
@@ -355,10 +355,11 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 }
                 setOnAfterDismissAnimListener {
                     customPopup = null
+                    mBinding.llCalendar.visibility = View.GONE
                 }
             }.build()
-
-            customPopup?.show(childFragmentManager, mBinding.clMain.id, tabSelectedDate)
+            mBinding.llCalendar.visibility = View.VISIBLE
+            customPopup?.show(childFragmentManager, mBinding.llCalendar.id, tabSelectedDate)
         }
     }
 
