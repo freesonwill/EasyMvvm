@@ -27,7 +27,7 @@ class SportsListAdapter(
             // 依據選中狀態設定 UI
             root.isSelected = sport.isSelected
             tvSportIcon.isSelected = root.isSelected
-
+            root.isEnabled = sport.matchCount > 0
             // 設定點擊事件
             root.setOnClickListener {
                 if (!tvSportIcon.isEnabled) return@setOnClickListener
