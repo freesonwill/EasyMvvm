@@ -65,7 +65,6 @@ class MatchListPagerFragment :
                 }
 
                 override fun onFavoriteClick(item: MatchWithMarkets) {
-                    showToast("测试Toast弹窗")
                     mViewModel.addMatchCollect(item, !item.match.collect)
                 }
 
