@@ -32,11 +32,11 @@ class InterceptedLinearLayout @JvmOverloads constructor(
         return impl.onTouchEvent(e) || super.onTouchEvent(e)
     }
 
-    override fun getInterceptedDirections(): List<@Direction.Flag Int> {
+    override fun getInterceptedDirections(): List<Direction> {
         return impl.getInterceptedDirections()
     }
 
-    override fun setInterceptedDirection(@Direction.Flag direction: Int) {
-        impl.setInterceptedDirection(direction)
+    override fun setInterceptedDirection(first: Direction, vararg other: Direction) {
+        impl.setInterceptedDirection(first,*other)
     }
 }

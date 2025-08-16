@@ -12,7 +12,6 @@ import androidx.viewpager2.widget.ViewPager2
 import arch.cayenne.lib.common.R
 import arch.cayenne.lib.common.ui.view._interface.IInterceptedView
 import arch.cayenne.lib.common.ui.view._interface.Direction
-import arch.cayenne.lib.common.ui.view._interface.Direction.split
 import arch.cayenne.lib.common.utils.ext.getTouchListener
 import kotlin.math.abs
 
@@ -38,9 +37,15 @@ class InterceptedViewImpl(private val view: ViewGroup) : IInterceptedView {
             0
         ).let { ta ->
             try {
-                val interceptedDirection = ta.getInt(R.styleable.InterceptedView_interceptedDirection, 0x00)
+                val interceptedDirection =
+                    ta.getInt(R.styleable.InterceptedView_interceptedDirection, 0x00)
                 val touchSlop = let {
-                    val tv = TypedValue().apply { ta.getValue(R.styleable.InterceptedView_touchSlop, this)}
+                    val tv = TypedValue().apply {
+                        ta.getValue(
+                            R.styleable.InterceptedView_touchSlop,
+                            this
+                        )
+                    }
                     when (tv.type) {
                         TypedValue.TYPE_STRING -> {
                             if (tv.string.toString().equals("DEFAULT", ignoreCase = true)) {
@@ -50,18 +55,24 @@ class InterceptedViewImpl(private val view: ViewGroup) : IInterceptedView {
                                 0
                             }
                         }
+
                         TypedValue.TYPE_INT_DEC, TypedValue.TYPE_INT_HEX -> {
                             tv.data
                         }
+
                         else -> 0
                     }
                 }
-                val canScrollViewId = ta.getResourceId(R.styleable.InterceptedView_canScrollView, View.NO_ID)
+                val canScrollViewId =
+                    ta.getResourceId(R.styleable.InterceptedView_canScrollView, View.NO_ID)
                 this.interceptFlags = interceptedDirection
                 this.touchSlop = touchSlop
                 view.post { //canScrollView需要延迟一帧获取
-                    var canScrollView = if(canScrollViewId == View.NO_ID) view else view.findViewById<View>(canScrollViewId)
-                    if(canScrollView is ViewPager2){
+                    var canScrollView =
+                        if (canScrollViewId == View.NO_ID) view else view.findViewById<View>(
+                            canScrollViewId
+                        )
+                    if (canScrollView is ViewPager2) {
                         val recyclerView = canScrollView.getChildAt(0) as? RecyclerView
                         canScrollView = recyclerView
                     }
@@ -74,12 +85,14 @@ class InterceptedViewImpl(private val view: ViewGroup) : IInterceptedView {
         //"init---$view,interceptFlags:$interceptFlags,touchSlop:$touchSlop".logd(TAG)
     }
 
-    override fun getInterceptedDirections(): List<@Direction.Flag Int> {
-        return interceptFlags.split()
+    override fun getInterceptedDirections(): List<Direction> {
+        return Direction.entries.filter { interceptFlags and it.v != 0 }
     }
 
-    override fun setInterceptedDirection(@Direction.Flag direction: Int) {
-        interceptFlags = direction
+    override fun setInterceptedDirection(first: Direction, vararg other: Direction) {
+        interceptFlags = other.fold(first.v) { acc, dir ->
+            acc or dir.v
+        }
     }
 
     fun onInterceptTouchEvent(e: MotionEvent): Boolean {
@@ -139,7 +152,7 @@ class InterceptedViewImpl(private val view: ViewGroup) : IInterceptedView {
      * @param e MotionEvent
      * @return Pair<InterceptedDirection, Float> 拦截方向和偏移量
      */
-    private fun calculateInterceptedType(e: MotionEvent): Pair<@Direction.Flag Int, Float> {
+    private fun calculateInterceptedType(e: MotionEvent): Pair<Direction, Float> {
         val deltaX = e.rawX - lastX
         val deltaY = e.rawY - lastY
         return when {
@@ -186,8 +199,8 @@ class InterceptedViewImpl(private val view: ViewGroup) : IInterceptedView {
      * @param direction
      * @return
      */
-    private fun shouldIntercept(@Direction.Flag direction: Int): Boolean {
-        return (interceptFlags and direction) != 0
+    private fun shouldIntercept(direction: Direction): Boolean {
+        return (interceptFlags and direction.v) != 0
     }
 
     data class MotionEventSnapshot(
@@ -198,6 +211,7 @@ class InterceptedViewImpl(private val view: ViewGroup) : IInterceptedView {
         val y: Float,
         val metaState: Int
     )
+
     private fun MotionEvent.toSnapshot(): MotionEventSnapshot {
         return MotionEventSnapshot(
             action = this.action,
@@ -208,6 +222,7 @@ class InterceptedViewImpl(private val view: ViewGroup) : IInterceptedView {
             metaState = this.metaState
         )
     }
+
     private fun MotionEventSnapshot.toMotionEvent(): MotionEvent {
         return MotionEvent.obtain(
             downTime,
