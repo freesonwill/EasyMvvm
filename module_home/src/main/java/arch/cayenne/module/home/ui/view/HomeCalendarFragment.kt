@@ -87,6 +87,7 @@ class HomeCalendarFragment private constructor() : Fragment() {
 
                 //update weekview color
                 calendarView.apply {
+                    setSelectSingleMode()
                     setWeeColor(
                         R.color.home_calendar_background.getSkinnableColor(),
                         RC.color.secondary_text.getSkinnableColor()
