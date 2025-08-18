@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.Observer
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.ui.fragment.ReserveDialogFragment
@@ -34,6 +35,13 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
 
     override val vbClass: KClass<FragmentSingleBetBinding> = FragmentSingleBetBinding::class
     override val vmClass: KClass<SingleBetViewModel> = SingleBetViewModel::class
+
+    private val selectionObserver by lazy {
+        Observer<BetSelectionBean> {
+            setBetData(it)
+            setBetButtonByOdds(mViewModel.onReserveOddsListener.value, it.odds)
+        }
+    }
 
     override fun initView(savedInstanceState: Bundle?) {
         ViewUtils.hideKeyboard(requireContext(), mBinding.etMoney) {
@@ -135,10 +143,7 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
             val length = it.length
             mBinding.etMoney.setSelection(length)
         }
-        mViewModel.onBetSheetListener.observe(viewLifecycleOwner) {
-            setBetData(it)
-            setBetButtonByOdds(mViewModel.onReserveOddsListener.value, it.odds)
-        }
+        mViewModel.onBetSheetListener.observe(viewLifecycleOwner, selectionObserver)
         mViewModel.onBetWinMoney.observe(viewLifecycleOwner) {
             mBinding.tvBetMoney.isVisible = it.isNotEmpty() && it != "0"
             val money = getString(R.string.btn_bet_win_money).format(mViewModel.moneySymbol, it)
@@ -233,6 +238,7 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
         mViewModel.removeReserve()
         mViewModel.clearNumber()
         showKeyboard()
+        mViewModel.onBetSheetListener.observe(viewLifecycleOwner, selectionObserver)
     }
 
     private fun hideKeyboard() {
