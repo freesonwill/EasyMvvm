@@ -4,13 +4,10 @@ import android.os.Bundle
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.SimpleItemAnimator
-import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.ui.fragment.BaseBottomSheetFragment
 import arch.cayenne.lib.common.ui.view.BetResultToastView
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
-import arch.cayenne.lib.common.utils.ext.NavResultExt.sendResult
-import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.SportDisplayOddsExt.getDisplayOdds
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
@@ -21,7 +18,6 @@ import arch.cayenne.lib.database.entity.BetDetailBean
 import arch.cayenne.lib.database.entity.BetResultStatusEnum
 import arch.cayenne.lib.database.entity.BetTypeEnum
 import arch.cayenne.module.bet.R
-import arch.cayenne.module.bet.data.Config
 import arch.cayenne.module.bet.databinding.FragmentBetResultBinding
 import arch.cayenne.module.bet.ui.adapter.BetSelectionAdapter
 import arch.cayenne.module.bet.ui.adapter.ResultMultiBetAdapter
@@ -30,8 +26,13 @@ import arch.cayenne.module.bet.viewmodel.BetResultViewModel
 import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
 
-class BetResultFragment : BaseFragment<BetResultViewModel, FragmentBetResultBinding>(),
-    BetSheetListener, BetResultToastView.Block {
+class BetResultFragment private constructor(): BaseBottomSheetFragment<BetResultViewModel, FragmentBetResultBinding>(), BetResultToastView.Block {
+
+    companion object {
+        fun newInstance(): BetResultFragment {
+            return BetResultFragment()
+        }
+    }
     override val vbClass: KClass<FragmentBetResultBinding> = FragmentBetResultBinding::class
     override val vmClass: KClass<BetResultViewModel> = BetResultViewModel::class
     private val betSelectionAdapter by lazy { BetSelectionAdapter() }
@@ -59,9 +60,9 @@ class BetResultFragment : BaseFragment<BetResultViewModel, FragmentBetResultBind
         mBinding.btnContinueBet.setOnClickListener {
             lifecycleScope.launch {
                 mViewModel.continueBet()?.let { type ->
-                    when (type) {
-                        BetTypeEnum.SINGLE, BetTypeEnum.RESERVE -> showExitAnim(value = Config.VALUE_RESULT_TO_SINGLE)
-                        BetTypeEnum.COMBO -> showExitAnim(value = Config.VALUE_RESULT_TO_COMBO)
+                    BetSheetFragment.show(requireActivity()) {
+                        hideDim()
+                        dismiss()
                     }
                 }
             }
@@ -170,23 +171,6 @@ class BetResultFragment : BaseFragment<BetResultViewModel, FragmentBetResultBind
             layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
             mBinding.root.minHeight = 0
             mBinding.rvBet.layoutParams = layoutParams
-        }
-    }
-
-    override fun dismiss(key: String, value: String) {
-        sendResult(key, value, R.id.betResultFragment)
-    }
-
-    override fun showExitAnim(key: String, value: String) {
-        sendResult(key, value, R.id.betResultFragment)
-    }
-
-    override fun doCustomHideEnd() {
-        if (findNavController().currentDestination?.id == R.id.betResultFragment) {
-            navigate(
-                BetResultFragmentDirections.actionBetResultFragmentToSingleBetFragment(Config.VALUE_RESULT_TO_SINGLE),
-                null
-            )
         }
     }
 }

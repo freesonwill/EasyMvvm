@@ -9,8 +9,9 @@ import android.view.ViewConfiguration
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.R
+import arch.cayenne.lib.common.ui.view._interface.IInterceptedView
+import arch.cayenne.lib.common.ui.view._interface.Direction
 import arch.cayenne.lib.common.utils.ext.getTouchListener
 import kotlin.math.abs
 
@@ -18,22 +19,15 @@ import kotlin.math.abs
  * @date: 2025/8/4 18:53
  * @description:手势拦截实现类
  */
-class InterceptedViewImpl(private val view: ViewGroup) {
+class InterceptedViewImpl(private val view: ViewGroup) : IInterceptedView {
     private val TAG = "InterceptedViewImpl"
     private var isIntercepting = false
     private var downEventSnapshot: MotionEventSnapshot? = null
-    private lateinit var canScrollView : View
+    private lateinit var canScrollView: View
     private var lastX = -1f
     private var lastY = -1f
     private var interceptFlags: Int = 0
     private var touchSlop: Int = ViewConfiguration.get(view.context).scaledTouchSlop
-
-    enum class InterceptedDirection(val v: Int) {
-        UP(0x01), //上滑
-        DOWN(0x02), //下滑
-        LEFT(0x04),//左滑
-        RIGHT(0x08) //右滑
-    }
 
     fun init(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) {
         context.theme.obtainStyledAttributes(
@@ -43,9 +37,15 @@ class InterceptedViewImpl(private val view: ViewGroup) {
             0
         ).let { ta ->
             try {
-                val interceptedDirection = ta.getInt(R.styleable.InterceptedView_interceptedDirection, 0x00)
+                val interceptedDirection =
+                    ta.getInt(R.styleable.InterceptedView_interceptedDirection, 0x00)
                 val touchSlop = let {
-                    val tv = TypedValue().apply { ta.getValue(R.styleable.InterceptedView_touchSlop, this)}
+                    val tv = TypedValue().apply {
+                        ta.getValue(
+                            R.styleable.InterceptedView_touchSlop,
+                            this
+                        )
+                    }
                     when (tv.type) {
                         TypedValue.TYPE_STRING -> {
                             if (tv.string.toString().equals("DEFAULT", ignoreCase = true)) {
@@ -55,18 +55,24 @@ class InterceptedViewImpl(private val view: ViewGroup) {
                                 0
                             }
                         }
+
                         TypedValue.TYPE_INT_DEC, TypedValue.TYPE_INT_HEX -> {
                             tv.data
                         }
+
                         else -> 0
                     }
                 }
-                val canScrollViewId = ta.getResourceId(R.styleable.InterceptedView_canScrollView, View.NO_ID)
+                val canScrollViewId =
+                    ta.getResourceId(R.styleable.InterceptedView_canScrollView, View.NO_ID)
                 this.interceptFlags = interceptedDirection
                 this.touchSlop = touchSlop
                 view.post { //canScrollView需要延迟一帧获取
-                    var canScrollView = if(canScrollViewId == View.NO_ID) view else view.findViewById<View>(canScrollViewId)
-                    if(canScrollView is ViewPager2){
+                    var canScrollView =
+                        if (canScrollViewId == View.NO_ID) view else view.findViewById<View>(
+                            canScrollViewId
+                        )
+                    if (canScrollView is ViewPager2) {
                         val recyclerView = canScrollView.getChildAt(0) as? RecyclerView
                         canScrollView = recyclerView
                     }
@@ -79,12 +85,14 @@ class InterceptedViewImpl(private val view: ViewGroup) {
         //"init---$view,interceptFlags:$interceptFlags,touchSlop:$touchSlop".logd(TAG)
     }
 
-    fun setIntercept(d: InterceptedDirection) {
-        this.interceptFlags = interceptFlags or d.v
+    override fun getInterceptedDirections(): List<Direction> {
+        return Direction.entries.filter { interceptFlags and it.v != 0 }
     }
 
-    fun removeIntercept(v: InterceptedDirection) {
-        interceptFlags = interceptFlags and (v.v.inv())
+    override fun setInterceptedDirection(first: Direction, vararg other: Direction) {
+        interceptFlags = other.fold(first.v) { acc, dir ->
+            acc or dir.v
+        }
     }
 
     fun onInterceptTouchEvent(e: MotionEvent): Boolean {
@@ -144,18 +152,18 @@ class InterceptedViewImpl(private val view: ViewGroup) {
      * @param e MotionEvent
      * @return Pair<InterceptedDirection, Float> 拦截方向和偏移量
      */
-    private fun calculateInterceptedType(e: MotionEvent): Pair<InterceptedDirection, Float> {
+    private fun calculateInterceptedType(e: MotionEvent): Pair<Direction, Float> {
         val deltaX = e.rawX - lastX
         val deltaY = e.rawY - lastY
         return when {
             abs(deltaY) > abs(deltaX) -> {
-                if (e.rawY < lastY) InterceptedDirection.UP to -deltaY
-                else InterceptedDirection.DOWN to deltaY
+                if (e.rawY < lastY) Direction.UP to -deltaY
+                else Direction.DOWN to deltaY
             }
 
             else -> {
-                if (e.rawX < lastX) InterceptedDirection.LEFT to -deltaX
-                else InterceptedDirection.RIGHT to deltaX
+                if (e.rawX < lastX) Direction.LEFT to -deltaX
+                else Direction.RIGHT to deltaX
             }
         }
     }
@@ -178,10 +186,11 @@ class InterceptedViewImpl(private val view: ViewGroup) {
     private fun canScrollInDirection(e: MotionEvent): Boolean {
         val (direction) = calculateInterceptedType(e)
         return when (direction) {
-            InterceptedDirection.UP -> canScrollView.canScrollVertically(1) //是否还能上滑
-            InterceptedDirection.DOWN -> canScrollView.canScrollVertically(-1) //是否下滑
-            InterceptedDirection.LEFT -> canScrollView.canScrollHorizontally(1) //是否还能左滑
-            InterceptedDirection.RIGHT -> canScrollView.canScrollHorizontally(-1) //是否还能右滑
+            Direction.UP -> canScrollView.canScrollVertically(1) //是否还能上滑
+            Direction.DOWN -> canScrollView.canScrollVertically(-1) //是否下滑
+            Direction.LEFT -> canScrollView.canScrollHorizontally(1) //是否还能左滑
+            Direction.RIGHT -> canScrollView.canScrollHorizontally(-1) //是否还能右滑
+            else -> throw IllegalStateException("Unsupported direction: $direction")
         }
     }
 
@@ -190,7 +199,7 @@ class InterceptedViewImpl(private val view: ViewGroup) {
      * @param direction
      * @return
      */
-    private fun shouldIntercept(direction: InterceptedDirection): Boolean {
+    private fun shouldIntercept(direction: Direction): Boolean {
         return (interceptFlags and direction.v) != 0
     }
 
@@ -202,6 +211,7 @@ class InterceptedViewImpl(private val view: ViewGroup) {
         val y: Float,
         val metaState: Int
     )
+
     private fun MotionEvent.toSnapshot(): MotionEventSnapshot {
         return MotionEventSnapshot(
             action = this.action,
@@ -212,6 +222,7 @@ class InterceptedViewImpl(private val view: ViewGroup) {
             metaState = this.metaState
         )
     }
+
     private fun MotionEventSnapshot.toMotionEvent(): MotionEvent {
         return MotionEvent.obtain(
             downTime,

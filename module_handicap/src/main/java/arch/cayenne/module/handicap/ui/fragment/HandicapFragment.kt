@@ -65,7 +65,6 @@ class HandicapFragment : BaseFragment<HandicapViewModel, FragmentHandicapBinding
         mBinding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 tab?.let {
-                    "1111".loge("测试")
                     mBinding.viewpager.doSmartAnim(targetPosition = tab.position)
                 }
             }

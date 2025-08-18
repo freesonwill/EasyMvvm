@@ -1,19 +1,18 @@
 package arch.cayenne.module.betslip.ui.fragment
 
-import android.animation.ValueAnimator
 import android.content.res.Resources
 import android.graphics.Typeface
 import android.os.Bundle
 import android.text.TextPaint
 import android.util.TypedValue
 import android.view.Gravity
-import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.TextView
 import androidx.fragment.app.FragmentManager
 import androidx.navigation.fragment.findNavController
 import arch.cayenne.lib.base.data.model.PagerBean
 import arch.cayenne.lib.base.ui.adapter.PagerAdapter
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.common.ui.viewmodel.observeEvent
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.removeAllTips
 import arch.cayenne.lib.common.utils.ext.touchBackPressed
@@ -66,10 +65,11 @@ class HomeBetSlipFragment : BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsl
             }
         }
         mBinding.tvDateFilter.setOnClickListener {
+            mViewModel.setSportViewCollapse()
             showDateFilter()
         }
         mBinding.tvSportFilter.setOnClickListener {
-            showSportFilter()
+            mViewModel.toggleSportView()
         }
         mBinding.root.touchBackPressed()
     }
@@ -87,6 +87,13 @@ class HomeBetSlipFragment : BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsl
             }
 
             mBinding.tvSportFilter.text = displayText
+        }
+        mViewModel.isShowSportView.observeEvent(viewLifecycleOwner, this) {
+            if (it) {
+                showSportFilter()
+            } else {
+                hideSportFilter()
+            }
         }
     }
 
@@ -135,8 +142,7 @@ class HomeBetSlipFragment : BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsl
             mBinding.tabLayout.clearOnTabSelectedListeners()
             mBinding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab?) {
-                    // 动画更新指示器位置
-                    animateIndicatorToPosition(tab?.position ?: 0)
+                    mViewModel.setSportViewCollapse()
                     (tab?.customView as? TextView)?.setTypeface(null, Typeface.BOLD)
                     mBinding.viewPager.doSmartAnim(targetPosition = tab?.position ?: 0)
                 }
@@ -150,11 +156,6 @@ class HomeBetSlipFragment : BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsl
             })
         }
         mBinding.tabLayout.removeAllTips()
-        mBinding.tabLayout.post {
-            // 计算单个 Tab 的宽度
-            val tabWidth = mBinding.tabLayout.width.toFloat() / mBinding.tabLayout.tabCount
-            mBinding.customIndicator.setTabWidth(tabWidth, 0.27f)
-        }
     }
 
     private fun showDateFilter() {
@@ -213,12 +214,17 @@ class HomeBetSlipFragment : BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsl
                 setFilterText(mBinding.tvSportFilter, false)
             }
             SportPickerFragment.newInstance(
-                mBinding.clTitle.height + mBinding.clFilter.height + mBinding.tabLayout.height,
                 it.map { bean ->
                     bean.sportId
                 }
-            ).show(childFragmentManager, mBinding.main.id)
+            ).show(childFragmentManager, mBinding.fragmentSportFilter.id)
         }
+    }
+
+    private fun hideSportFilter() {
+        val f = childFragmentManager.findFragmentByTag(SportPickerFragment::class.java.simpleName) as? SportPickerFragment ?: return
+        f.collapseView()
+        setFilterText(mBinding.tvSportFilter, false)
     }
 
     private fun setFilterText(view: TextView, isSelected: Boolean) {
@@ -243,16 +249,5 @@ class HomeBetSlipFragment : BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsl
                 0, 0, R.mipmap.ic_bet_slip_filter, 0
             )
         }
-    }
-
-    private fun animateIndicatorToPosition(position: Int) {
-        val animator = ValueAnimator.ofFloat(mBinding.customIndicator.getCurrentPosition().toFloat(), position.toFloat())
-        animator.duration = 100 // 动画持续时间
-        animator.interpolator = AccelerateDecelerateInterpolator()
-        animator.addUpdateListener { animation ->
-            val progress = animation.animatedValue as Float
-            mBinding.customIndicator.setIndicatorPosition(progress.toInt(), progress % 1f)
-        }
-        animator.start()
     }
 }

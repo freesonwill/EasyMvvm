@@ -11,17 +11,22 @@ abstract class BetSlipOrderDao : BaseDao<BetSlipOrderBean>() {
     @Query("SELECT * FROM BetSlipOrderBean WHERE betId = :betId LIMIT 1")
     abstract suspend fun getOrderBeanById(betId: String): BetSlipOrderBean?
 
-    @Query("SELECT * FROM BetSlipOrderBean WHERE betSlipType = :type ORDER BY betTime DESC")
-    abstract fun observeOrderBean(type: Int): Flow<List<BetSlipOrderBean>>
+    @Query("SELECT * FROM BetSlipOrderBean WHERE betSlipType = :type and liveMatchId = :matchId ORDER BY betTime DESC")
+    abstract fun observeOrderBeanByMatchId(type: Int, matchId: Long = -1L): Flow<List<BetSlipOrderBean>>
 
-    @Query("DELETE FROM BetSlipOrderBean WHERE betId = :betId")
-    abstract suspend fun deleteById(betId: String)
+    suspend fun deleteMissing(type: Int, keepIds: List<String>) {
+        deleteMissingByMatchId(type, keepIds, -1L)
+    }
 
-    @Query("DELETE FROM BetSlipOrderBean WHERE betSlipType = :type AND betId NOT IN (:keepIds)")
-    abstract suspend fun deleteMissing(type: Int, keepIds: List<String>)
+    suspend fun deleteByType(type: Int) {
+        deleteByTypeAndMatchId(type, -1L)
+    }
 
-    @Query("DELETE FROM BetSlipOrderBean WHERE betSlipType = :type")
-    abstract suspend fun deleteByType(type: Int)
+    @Query("DELETE FROM BetSlipOrderBean WHERE betSlipType = :type and liveMatchId = :matchId AND betId NOT IN (:keepIds)")
+    abstract suspend fun deleteMissingByMatchId(type: Int, keepIds: List<String>, matchId: Long)
+
+    @Query("DELETE FROM BetSlipOrderBean WHERE betSlipType = :type and liveMatchId = :matchId")
+    abstract suspend fun deleteByTypeAndMatchId(type: Int, matchId: Long)
 
     @Query("UPDATE BetSlipOrderBean SET settleStatus = :settleStatus WHERE betId = :betId")
     abstract suspend fun updateToPendingEarlySettle(betId: String, settleStatus: Int = 102)

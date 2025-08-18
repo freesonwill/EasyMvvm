@@ -13,13 +13,12 @@ import com.walisport.module.setting.databinding.DialogOddsDisplayBinding
 import com.walisport.module.setting.ui.viewmodel.OddsDisplayViewModel
 import kotlin.reflect.KClass
 
-class OddsDisplayDialogFragment :
-    BaseBottomSheetFragment<OddsDisplayViewModel, DialogOddsDisplayBinding>() {
+class OddsDisplayDialogFragment : BaseBottomSheetFragment<OddsDisplayViewModel, DialogOddsDisplayBinding>() {
+
     override val vbClass: KClass<DialogOddsDisplayBinding>
         get() = DialogOddsDisplayBinding::class
     override val vmClass: KClass<OddsDisplayViewModel>
         get() = OddsDisplayViewModel::class
-
     private var clicklistener: OnClickListener? = null
 
     val lang: String = "Language"
@@ -82,22 +81,16 @@ class OddsDisplayDialogFragment :
         mBinding.itemHk.clickNoRepeat {
             mViewModel.setOddsType(OddsDisplayEnum.HK)
             clicklistener?.onClickHK()
-            dialogDismiss()
+            super.dismiss()
         }
         mBinding.itemEp.clickNoRepeat {
             mViewModel.setOddsType(OddsDisplayEnum.EU)
             clicklistener?.onClickEP()
-            dialogDismiss()
+            super.dismiss()
         }
         mBinding.tvClose.clickNoRepeat {
             super.dismiss()
         }
-    }
-
-    private fun dialogDismiss() {
-        mBinding.root.postDelayed({
-            super.dismiss()
-        }, 300)
     }
 
     fun setOnItemClickListener(listener: OnClickListener) {

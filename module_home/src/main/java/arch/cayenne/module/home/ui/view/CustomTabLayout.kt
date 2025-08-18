@@ -16,16 +16,26 @@ import arch.cayenne.lib.skin.widget.helper.SkinnableViewFlowHelper
 import com.google.android.material.tabs.TabLayout
 import kotlin.math.hypot
 
-class CustomTabLayout: TabLayout {
+class CustomTabLayout : TabLayout {
     private val TAG = SkinnableTabLayout::class.java.simpleName
 
     /** For SkinnableTabLayout Start */
     private val backgroundTintHelper = SkinnableBackGroundHelper(this)
     private val tabLayoutHelper = SkinnableTabLayoutHelper(this)
     private val flowHelper = SkinnableViewFlowHelper()
+
     /** For SkinnableTabLayout End */
 
     var onTabClick: ((Int) -> Unit)? = null
+
+    // 滑動狀態追蹤
+    private var isScrolling = false
+    private var scrollStartTime = 0L
+    private val scrollThreshold = 150L // 滑動閥值（毫秒）
+
+    // 預選中狀態追蹤
+    private var preSelectedPosition = -1
+    private var isPreSelecting = false
 
     constructor(context: Context) : super(context) {
         initView(context)
@@ -96,17 +106,35 @@ class CustomTabLayout: TabLayout {
                 MotionEvent.ACTION_DOWN -> {
                     downX = event.x
                     downY = event.y
+                    scrollStartTime = System.currentTimeMillis()
+                    isScrolling = false
                     true
                 }
+
+                MotionEvent.ACTION_MOVE -> {
+                    val dx = event.x - downX
+                    val dy = event.y - downY
+                    val distance = hypot(dx, dy)
+
+                    // 移動距離超過閥值則記為滑動狀態
+                    if (distance > touchSlop) {
+                        isScrolling = true
+                    }
+                    true
+                }
+
                 MotionEvent.ACTION_UP -> {
                     val dx = event.x - downX
                     val dy = event.y - downY
                     val distance = hypot(dx, dy)
-                    if (distance < touchSlop) {
+                    val timeElapsed = System.currentTimeMillis() - scrollStartTime
+
+                    if (distance < touchSlop && timeElapsed < scrollThreshold && !isScrolling) {
                         onTabClick?.invoke(tab.position)
                     }
                     true
                 }
+
                 else -> true
             }
         }
@@ -117,5 +145,43 @@ class CustomTabLayout: TabLayout {
         if (index < 0 || index >= tabCount) return null
         val tabStrip = getChildAt(0) as? ViewGroup ?: return null
         return tabStrip.getChildAt(index)
+    }
+
+    /**
+     * 重置滑動狀態
+     */
+    fun resetScrollState() {
+        isScrolling = false
+        scrollStartTime = 0L
+    }
+
+    /**
+     * 設置預選中狀態
+     */
+    fun setPreSelectedPosition(position: Int) {
+        if (position != preSelectedPosition) {
+            preSelectedPosition = position
+            isPreSelecting = position != -1
+            updatePreSelectionVisual()
+        }
+    }
+
+    /**
+     * 更新預選中狀態
+     */
+    private fun updatePreSelectionVisual() {
+        // 清除所有tab的預選中狀態
+        for (i in 0 until tabCount) {
+            val tab = getTabAt(i)
+            tab?.let {
+                val tabView = getTabView(it)
+                tabView?.let { view ->
+                    // 重置所有tab的視覺效果
+                    view.alpha = 1.0f
+                    view.scaleX = 1.0f
+                    view.scaleY = 1.0f
+                }
+            }
+        }
     }
 }

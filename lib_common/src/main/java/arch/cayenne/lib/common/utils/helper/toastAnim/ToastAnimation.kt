@@ -5,8 +5,9 @@ import android.view.WindowManager
 
 interface ToastAnimation {
 
-    val animDuration: Long
+    val showAnimDuration: Long
     val showDuration: Long
+    val dismissAnimDuration: Long
 
     /**
      * 获取队列标识符, 如果列隊有相同標示符則會先dismiss前一個

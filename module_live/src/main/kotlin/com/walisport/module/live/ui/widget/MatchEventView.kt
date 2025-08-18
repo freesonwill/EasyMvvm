@@ -2,6 +2,7 @@ package com.walisport.module.live.ui.widget
 
 import android.content.Context
 import android.util.AttributeSet
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -45,10 +46,12 @@ class MatchEventView @JvmOverloads constructor(
         }
     }
 
-    //全屏直播模式下的文字直播控件，不要圆角背景
+    //全屏直播模式下的文字直播控件，不要圆角背景，字体大小颜色都要有调整
     fun setFullScreenMode() {
         mBinding.tvEventTitle.background = null
         mBinding.root.background = null
+        mBinding.tvHomeCountry.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f)
+        mBinding.tvAwayCountry.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f)
     }
 
     //设置比赛双方名称和LOGO

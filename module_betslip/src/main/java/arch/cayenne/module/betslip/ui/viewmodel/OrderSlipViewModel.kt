@@ -41,18 +41,29 @@ open class OrderSlipViewModel(private val repo: OrderSlipRepository): BaseBetSli
         loadDataType = LoadDataType.REFRESH_ING
         if (type == null) {
             type = status
-            repo.registerObserveOrderBean(status.value)
+            repo.registerObserveOrderBean(status.value, matchId)
         }
         callApi({
-            repo.getOrder(
-                status.value,
-                startTime,
-                endTime,
-                null,
-                SIZE,
-                sportIds,
-                matchId,
-            )
+            if (matchId == -1L) {
+                repo.getOrder(
+                    status.value,
+                    startTime,
+                    endTime,
+                    null,
+                    SIZE
+                )
+            } else {
+                repo.getLiveOrder(
+                    status.value,
+                    startTime,
+                    endTime,
+                    null,
+                    SIZE,
+                    sportIds,
+                    matchId
+                )
+            }
+
         })
     }
 
@@ -60,15 +71,25 @@ open class OrderSlipViewModel(private val repo: OrderSlipRepository): BaseBetSli
         loadDataType = LoadDataType.LOAD_MORE
         val list = _orderLiveData.value
         callApi({
-            repo.loadMoreOrder(
-                status.value,
-                startTime,
-                endTime,
-                list?.lastOrNull()?.betTime,
-                SIZE,
-                sportIds,
-                matchId,
-            )
+            if (matchId == -1L) {
+                repo.loadMoreOrder(
+                    status.value,
+                    startTime,
+                    endTime,
+                    list?.lastOrNull()?.betTime,
+                    SIZE
+                )
+            } else {
+                repo.loadLiveMoreOrder(
+                    status.value,
+                    startTime,
+                    endTime,
+                    list?.lastOrNull()?.betTime,
+                    SIZE,
+                    sportIds,
+                    matchId
+                )
+            }
         }, {
             if (it is ApiResponseState.Failed) {
                 setState(DataState.NetworkUnavailable)
@@ -82,7 +103,7 @@ open class OrderSlipViewModel(private val repo: OrderSlipRepository): BaseBetSli
 
     override fun deleteAll() {
         type?.let {
-            repo.deleteAll(it.value)
+            repo.deleteAll(it.value, matchId)
             type = null
         }
     }

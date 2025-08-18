@@ -8,7 +8,7 @@
     android:fitsSystemWindows="true">
 
 
-    <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
+    <arch.cayenne.module.home.ui.view.ClickSearchConstraintLayout
         android:id="@+id/cl_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -45,45 +45,37 @@
 
 
             <!-- 主導航 (包含 "今日"、"早盤"、"冠軍") -->
-            <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
-                android:id="@+id/LLTabLayout"
+            <arch.cayenne.lib.skin.widget.SkinnableTabLayout
+                android:id="@+id/tl_home"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:layout_marginStart="@dimen/dp_2"
-                android:paddingTop="@dimen/dp_10"
-                android:paddingBottom="@dimen/dp_12"
-                android:background="@color/tran_0"
+
+                android:background="@android:color/transparent"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:paddingTop="@dimen/dp_12"
+                android:paddingBottom="@dimen/dp_10"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/ll_wallet_entry"
                 app:layout_constraintHorizontal_bias="0"
                 app:layout_constraintStart_toEndOf="@+id/iv_home_sidebar"
                 app:layout_constraintTop_toTopOf="parent"
-                >
-                <arch.cayenne.lib.skin.widget.SkinnableTabLayout
-                    android:id="@+id/tl_home"
-                    android:layout_width="wrap_content"
-                    android:layout_height="@dimen/dp_26"
-                    app:tabIndicatorHeight="0dp"
-                    android:clipChildren="false"
-                    android:clipToPadding="false"
-                    app:tabMode="scrollable"
-                    app:tabMinWidth="@dimen/dp_57"
-                    android:background="@android:color/transparent"
-                    app:tabRippleColor="@null"
-                    app:tabSelectedTextColor="@color/sport_item_text_select"
-                    app:tabTextAppearance="@style/HomeTabLayoutTextAppearance"
-                    app:tabTextColor="@color/home_secondary_text"
-                    tools:ignore="SpeakableTextPresentCheck" />
-                <arch.cayenne.lib.common.ui.view.CustomTabIndicator
-                    android:id="@+id/customIndicator"
-                    android:layout_width="match_parent"
-                    android:layout_height="3dp"
-                    android:background="@android:color/transparent"
-                    app:tabTextAppearance="@style/BetSlipTabTextStyle"
-                    app:tabTextColor="@color/secondary_text"
-                    />
-            </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
+                app:tabGravity="start"
+                app:tabIndicator="@drawable/shape_home_tab_indicator"
+                app:tabIndicatorAnimationDuration="0"
+                app:tabIndicatorAnimationMode="elastic"
+                app:tabIndicatorColor="@color/tab_indicator_color"
+                app:tabIndicatorFullWidth="false"
+                app:tabIndicatorGravity="bottom"
+                app:tabIndicatorHeight="2dp"
+                app:tabMinWidth="34dp"
+                app:tabMode="scrollable"
+                app:tabRippleColor="@null"
+                app:tabPaddingBottom="@dimen/dp_4"
+                app:tabSelectedTextColor="@color/sport_item_text_select"
+                app:tabTextAppearance="@style/HomeTabLayoutTextAppearance"
+                app:tabTextColor="@color/home_secondary_text" />
+
             <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
                 android:id="@+id/ll_wallet_entry"
                 android:layout_width="wrap_content"
@@ -332,6 +324,28 @@
             app:layout_constraintBottom_toBottomOf="@+id/v_league_more_mask"
             app:layout_constraintTop_toTopOf="@+id/v_league_more_mask" />
 
+        <View
+            android:id="@+id/view_calendar_mask"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:alpha="0"
+            android:background="@color/drawer_scrim_color"
+            android:clickable="true"
+            android:focusable="true"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+        <FrameLayout
+            android:id="@+id/ll_calendar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="parent" />
         <FrameLayout
             android:id="@+id/ll_tournaments_dropdown"
             android:layout_width="match_parent"
@@ -344,18 +358,8 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/cl_second_navbar" />
 
-        <View
-            android:id="@+id/view_calendar_mask"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:alpha="0"
-            android:clickable="true"
-            android:focusable="true"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
 
-    </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
+    </arch.cayenne.module.home.ui.view.ClickSearchConstraintLayout>
     <!-- 左侧滑出的導航菜單 -->
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/navigation_view"

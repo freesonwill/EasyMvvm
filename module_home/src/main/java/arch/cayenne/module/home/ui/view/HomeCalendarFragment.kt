@@ -3,15 +3,6 @@ package arch.cayenne.module.home.ui.view
 import android.animation.Animator
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.ColorFilter
-import android.graphics.LinearGradient
-import android.graphics.Paint
-import android.graphics.PixelFormat
-import android.graphics.Rect
-import android.graphics.Shader
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -46,16 +37,17 @@ class HomeCalendarFragment private constructor() : Fragment() {
     private val defaultAnimDuration = 300L
     private var onDataSelectedListener: ((String) -> Unit)? = null
     private var onResetDateListener: (()-> Unit)? = null
-    private var onDismissListener: (()-> Unit)? = null
+    private var onBeforeDismissAnimListener: (()-> Unit)? = null
+    private var onAfterDismissAnimListener: (()-> Unit)? = null
     private var range: List<Common.DailyMatchCount>? = null
     private var marginTop: Int = 0
     private var maskView: View? = null
     private var heightAnimator: ValueAnimator? = null
     private var currentAnimState: AnimState? = null
-    private var tabSelectedDate: String = "0"
+    private val allDay = "0"
+    private var tabSelectedDate: String = allDay
     // 1. 一個私有的、可為 null 的 backing property，用來實際儲存綁定物件。
     private var mBinding: HomeTourPopupCalendarViewBinding? = null
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -139,8 +131,6 @@ class HomeCalendarFragment private constructor() : Fragment() {
                 calendarBtnOk.setBackgroundResource(
                     R.drawable.shape_home_calendar_ok.getSkinnableResourceId()
                 )
-
-                maskView?.background = createMaskGradient()
                 setSchemeDate()
                 expandView()
             }
@@ -157,7 +147,7 @@ class HomeCalendarFragment private constructor() : Fragment() {
                 val month = String.format("%02d", calendarView.selectedCalendar.month)
                 val day = String.format("%02d", calendarView.selectedCalendar.day)
                 var selectedDate =
-                    if (tabSelectedDate == "0") "$year$month$day"
+                    if (tabSelectedDate == allDay) allDay
                     else tabSelectedDate
 
                 // 透過 binding 操作 Popup 內部的 View
@@ -176,6 +166,7 @@ class HomeCalendarFragment private constructor() : Fragment() {
                         minRangeDate.month,
                         minRangeDate.day
                     )
+                    binding.calendarView.clearSingleSelect()
                     onResetDateListener?.invoke()
                     collapseView()
                 }
@@ -280,9 +271,7 @@ class HomeCalendarFragment private constructor() : Fragment() {
 
        }
     }
-    fun callDismiss() {
-        collapseView()
-    }
+
     private fun collapseView() {
        this.mBinding?.let { binding ->
            with(binding.clCalendarPopupRoot) {
@@ -299,6 +288,7 @@ class HomeCalendarFragment private constructor() : Fragment() {
                    doOnStart {
                        currentAnimState = AnimState.COLLAPSING
                        setMaskViewAlpha(false)
+                       onBeforeDismissAnimListener?.invoke()
                    }
                    doOnEnd {
                        currentAnimState = AnimState.COLLAPSE
@@ -306,7 +296,7 @@ class HomeCalendarFragment private constructor() : Fragment() {
                        mBinding?.clCalendarPopupRoot?.postDelayed({
                            if(currentAnimState == AnimState.COLLAPSE) {
                                dismiss()
-                               onDismissListener?.invoke()
+                               onAfterDismissAnimListener?.invoke()
                            }
                        }, 100L)
                    }
@@ -321,46 +311,6 @@ class HomeCalendarFragment private constructor() : Fragment() {
         mBinding?.clCalendarPopupRoot?.apply {
             layoutParams = layoutParams.apply { this.height = height }
             requireView()
-        }
-    }
-
-    private fun createMaskGradient(): Drawable {
-        val defaultColor = 0x80000000
-        val defaultStartAt = 0.2f
-        val defaultStopAt = 0.5f
-        return object : Drawable() {
-            private val paint = Paint()
-            private lateinit var shader: LinearGradient
-
-            override fun onBoundsChange(bounds: Rect) {
-                super.onBoundsChange(bounds)
-                shader = LinearGradient(
-                    0f, bounds.bottom.toFloat(),
-                    0f, bounds.top.toFloat(),
-                    intArrayOf(defaultColor.toInt(), defaultColor.toInt(), Color.TRANSPARENT),
-                    floatArrayOf(0f, defaultStartAt, defaultStopAt),
-                    Shader.TileMode.CLAMP
-                )
-                paint.shader = shader
-            }
-
-            override fun draw(canvas: Canvas) {
-                canvas.drawRect(bounds, paint)
-            }
-
-            override fun setAlpha(alpha: Int) {
-                paint.alpha = alpha
-            }
-
-            @Deprecated(
-                message = "Deprecated in Java",
-                replaceWith = ReplaceWith("PixelFormat.OPAQUE", "android.graphics.PixelFormat")
-            )
-            override fun getOpacity(): Int = PixelFormat.TRANSLUCENT
-
-            override fun setColorFilter(colorFilter: ColorFilter?) {
-                paint.colorFilter = colorFilter
-            }
         }
     }
 
@@ -398,6 +348,14 @@ class HomeCalendarFragment private constructor() : Fragment() {
         }
     }
 
+    fun callDismiss() {
+        collapseView()
+    }
+
+    fun getAnimState(): AnimState? {
+        return currentAnimState
+    }
+
     private fun dismiss() {
         if (parentFragment != null) {
             mBinding?.clCalendarPopupRoot?.post {
@@ -413,7 +371,7 @@ class HomeCalendarFragment private constructor() : Fragment() {
         val currentYear = mBinding?.calendarView?.curYear ?: 0
         val currentMonth = mBinding?.calendarView?.curMonth ?: 0
         //日期tab為全部時標記為今日
-        if (tabSelectedDate == "0") {
+        if (tabSelectedDate == allDay) {
             mBinding?.let { binding->
                 binding.calendarView.scrollToCurrent(true)
                 binding.tvCurrentMonth.text = resources.getString(
@@ -421,7 +379,8 @@ class HomeCalendarFragment private constructor() : Fragment() {
                     currentMonth.toChineseMonth(),
                     currentYear.toString()
                 )
-
+                binding.calendarView.clearSingleSelect()
+                tabSelectedDate = allDay
             }
         } else {
             val result = tabSelectedDate.extractDate()
@@ -457,7 +416,12 @@ class HomeCalendarFragment private constructor() : Fragment() {
 
     //選取日期後按確定時連動至早盤日期tab,選取對應的日期
     private fun setSelectedDateTab(selectedDate: String) {
-        onDataSelectedListener?.invoke(DateUtils.getMonthDay(selectedDate))
+        if (selectedDate == allDay) {
+            //如果選擇的是全部日期，則不需要進行任何操作
+            onDataSelectedListener?.invoke(selectedDate)
+        } else {
+            onDataSelectedListener?.invoke(DateUtils.getMonthDay(selectedDate))
+        }
         // 通常選擇完資料後，會自動關閉 popup
         collapseView()
     }
@@ -529,7 +493,8 @@ class HomeCalendarFragment private constructor() : Fragment() {
     class Builder {
         private var onDateSelectedListener: ((String) -> Unit)? = null
         private var onResetDateListener: (()-> Unit)? = null
-        private var onDismissListener: (()-> Unit)? = null
+        private var onAfterDismissAnimListener: (()-> Unit)? = null
+        private var onBeforeDismissAnimListener: (() -> Unit)? = null
         private var range: List<Common.DailyMatchCount>? = null
         private var marginTop: Int = 0
         private var maskView: View? = null
@@ -543,8 +508,11 @@ class HomeCalendarFragment private constructor() : Fragment() {
         fun setOnResetDateListener(listener: () -> Unit) = apply {
             this.onResetDateListener = listener
         }
-        fun setOnDismissListener(listener: () -> Unit) = apply {
-            this.onDismissListener = listener
+        fun setOnAfterDismissAnimListener(listener: () -> Unit) = apply {
+            this.onAfterDismissAnimListener = listener
+        }
+        fun setOnBeforeDismissAnimListener(listener: () -> Unit) = apply {
+            this.onBeforeDismissAnimListener = listener
         }
         fun setRange(range: List<Common.DailyMatchCount>) = apply {
             this.range = range
@@ -559,7 +527,8 @@ class HomeCalendarFragment private constructor() : Fragment() {
             return HomeCalendarFragment().apply {
                 this.onResetDateListener = this@Builder.onResetDateListener
                 this.onDataSelectedListener = this@Builder.onDateSelectedListener
-                this.onDismissListener = this@Builder.onDismissListener
+                this.onBeforeDismissAnimListener = this@Builder.onBeforeDismissAnimListener
+                this.onAfterDismissAnimListener = this@Builder.onAfterDismissAnimListener
                 this.range = this@Builder.range
                 this.marginTop = this@Builder.marginTop
                 this.maskView = this@Builder.maskView

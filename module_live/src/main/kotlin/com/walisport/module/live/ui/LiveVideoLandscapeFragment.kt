@@ -507,8 +507,6 @@ class LiveVideoLandscapeFragment :
 //                }
             )
             doOnEnd {
-                mBinding.videoViewContainer.background =
-                    getDrawable(requireContext(), arch.cayenne.lib.common.R.color.black)
                 onEndAction()
             }
         }, duration = ZOOM_ANIMATION_DURATION, start = true)
@@ -572,8 +570,6 @@ class LiveVideoLandscapeFragment :
 //                }
             )
             doOnEnd {
-                mBinding.videoViewContainer.background =
-                    getDrawable(requireContext(), R.drawable.bg_shape_video_view_reduced)
                 onEndAction()
             }
         }, duration = ZOOM_ANIMATION_DURATION, start = true)

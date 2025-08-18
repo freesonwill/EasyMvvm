@@ -2,9 +2,7 @@
     <translate
         android:duration="150"
         android:fromXDelta="0%"
-        android:toXDelta="-25%"
-        android:interpolator="@anim/interpolator_ease_out_cubic"
-        />
+        android:toXDelta="-100%" />
     <alpha
         android:duration="150"
         android:fromAlpha="1.0"

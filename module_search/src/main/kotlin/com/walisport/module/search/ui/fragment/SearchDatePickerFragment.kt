@@ -39,6 +39,7 @@ import com.walisport.module.search.utils.IconScaleAnimUtil.enableScaleIcon
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import kotlin.reflect.KClass
+import androidx.core.graphics.toColorInt
 
 class SearchDatePickerFragment private constructor(): BaseFragment<SearchDatePickerViewModel, FragmentSearchDatePickerBinding>() {
     override val vbClass: KClass<FragmentSearchDatePickerBinding>
@@ -52,7 +53,7 @@ class SearchDatePickerFragment private constructor(): BaseFragment<SearchDatePic
         EXPANDING, EXPAND, COLLAPSING, COLLAPSE
     }
 
-    private val defaultAnimDuration = 300L
+    private val defaultAnimDuration = 150L
 
     private var marginTop: Int = 0
     private var marginStart: Int = 0
@@ -63,9 +64,8 @@ class SearchDatePickerFragment private constructor(): BaseFragment<SearchDatePic
     private var rangeEndDate: Calendar = Calendar.getInstance().apply { add(Calendar.MONTH, 1) }
     private var heightAnimator: ValueAnimator? = null
     private var currentAnimState: AnimState? = null
-
-    // 回傳結果的Bundle
-    private val resultBundle by lazy { Bundle() }
+    private var onBeforeDismissAnimListener: (()-> Unit)? = null
+    private var onAfterDismissAnimListener: ((startTime: Long?, endTime: Long?, timeInMills: Long?)-> Unit)? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -149,7 +149,29 @@ class SearchDatePickerFragment private constructor(): BaseFragment<SearchDatePic
                 )
                 setCalendarTitle(curYear, curMonth)
             }
-            maskView.background = createMaskGradient()
+            maskView.background = object : Drawable() {
+                override fun draw(canvas: Canvas) {
+                    val paint = Paint()
+                    // 上半部分
+                    paint.color = Color.TRANSPARENT
+                    canvas.drawRect(0f, 0f, bounds.width().toFloat(), mBinding.clCalendar.top.toFloat(), paint)
+
+                    // 下半部
+                    paint.color = "#BF000000".toColorInt()
+                    canvas.drawRect(
+                        0f,
+                        mBinding.clCalendar.top.toFloat(),
+                        bounds.width().toFloat(),
+                        bounds.height().toFloat(),
+                        paint
+                    )
+                }
+
+                override fun setAlpha(alpha: Int) = Unit
+                override fun setColorFilter(colorFilter: ColorFilter?) = Unit
+                @Suppress("OVERRIDE_DEPRECATION")
+                override fun getOpacity(): Int = PixelFormat.TRANSLUCENT
+            }
             expandView()
         }
     }
@@ -251,46 +273,6 @@ class SearchDatePickerFragment private constructor(): BaseFragment<SearchDatePic
                 .get(this) as? WeekBar
         }.onFailure { it.printStackTrace() }
             .getOrNull()
-    }
-
-    private fun createMaskGradient(): Drawable {
-        val defaultColor = 0x80000000
-        val defaultStartAt = 0.3f
-        val defaultStopAt = 0.7f
-        return object : Drawable() {
-            private val paint = Paint()
-            private lateinit var shader: LinearGradient
-
-            override fun onBoundsChange(bounds: Rect) {
-                super.onBoundsChange(bounds)
-                shader = LinearGradient(
-                    0f, bounds.bottom.toFloat(),
-                    0f, bounds.top.toFloat(),
-                    intArrayOf(defaultColor.toInt(), defaultColor.toInt(), Color.TRANSPARENT),
-                    floatArrayOf(0f, defaultStartAt, defaultStopAt),
-                    Shader.TileMode.CLAMP
-                )
-                paint.shader = shader
-            }
-
-            override fun draw(canvas: Canvas) {
-                canvas.drawRect(bounds, paint)
-            }
-
-            override fun setAlpha(alpha: Int) {
-                paint.alpha = alpha
-            }
-
-            @Deprecated(
-                message = "Deprecated in Java",
-                replaceWith = ReplaceWith("PixelFormat.OPAQUE", "android.graphics.PixelFormat")
-            )
-            override fun getOpacity(): Int = PixelFormat.TRANSLUCENT
-
-            override fun setColorFilter(colorFilter: ColorFilter?) {
-                paint.colorFilter = colorFilter
-            }
-        }
     }
 
     private fun setCalendarTitle(year: Int, month: Int) {
@@ -426,6 +408,7 @@ class SearchDatePickerFragment private constructor(): BaseFragment<SearchDatePic
                 doOnStart {
                     currentAnimState = AnimState.COLLAPSING
                     setMaskViewAlpha(false)
+                    onBeforeDismissAnimListener?.invoke()
                 }
                 doOnEnd {
                     currentAnimState = AnimState.COLLAPSE
@@ -433,6 +416,13 @@ class SearchDatePickerFragment private constructor(): BaseFragment<SearchDatePic
                     mBinding.root.postDelayed({
                         if(currentAnimState == AnimState.COLLAPSE) {
                             dismiss()
+                            mViewModel.resultTime.let { time ->
+                                onAfterDismissAnimListener?.invoke(
+                                    time?.toDateStartTime(),
+                                    time?.toDateEndTime(),
+                                    time
+                                )
+                            }
                         }
                     }, 100L)
                 }
@@ -460,7 +450,6 @@ class SearchDatePickerFragment private constructor(): BaseFragment<SearchDatePic
 
     private fun dismiss() {
         if (parentFragment != null) {
-            parentFragmentManager.setFragmentResult(DATE_PICKER_RESULT_KEY, resultBundle)
             mBinding.clCalendar.post {
                 parentFragmentManager.beginTransaction()
                     .setReorderingAllowed(true)
@@ -471,20 +460,7 @@ class SearchDatePickerFragment private constructor(): BaseFragment<SearchDatePic
     }
 
     private fun sendResult(date: Long? = mBinding.calendarView.selectedCalendar.timeInMillis) {
-        with(date) {
-            this?.let {
-                resultBundle.putLong(DATE_PICKER_RESULT_START, toDateStartTime())
-                resultBundle.putLong(DATE_PICKER_RESULT_END, toDateEndTime())
-                resultBundle.putLong(DATE_PICKER_RESULT_TIME_IN_MILLIS, this)
-            }
-        }
-    }
-
-    companion object {
-        const val DATE_PICKER_RESULT_KEY = "DATE_PICKER_RESULT_KEY"
-        const val DATE_PICKER_RESULT_START = "DATE_PICKER_RESULT_START"
-        const val DATE_PICKER_RESULT_END = "DATE_PICKER_RESULT_END"
-        const val DATE_PICKER_RESULT_TIME_IN_MILLIS = "DATE_PICKER_RESULT_TIME_IN_MILLIS"
+        mViewModel.setResultTime(date)
     }
 
     class Builder {
@@ -495,6 +471,8 @@ class SearchDatePickerFragment private constructor(): BaseFragment<SearchDatePic
         private var schemeDates: Map<String, com.haibin.calendarview.Calendar> = emptyMap()
         private var rangeStartDate: Calendar = Calendar.getInstance()
         private var rangeEndDate: Calendar = Calendar.getInstance().apply { add(Calendar.MONTH, 1) }
+        private var onAfterDismissAnimListener: ((startTime: Long?, endTime: Long?, timeInMills: Long?)-> Unit)? = null
+        private var onBeforeDismissAnimListener: (() -> Unit)? = null
 
         fun setMarginTop(value: Int) {
             marginTop = value
@@ -521,6 +499,14 @@ class SearchDatePickerFragment private constructor(): BaseFragment<SearchDatePic
             rangeEndDate = end
         }
 
+        fun setOnAfterDismissAnimListener(listener: (startTime: Long?, endTime: Long?, timeInMills: Long?) -> Unit) = apply {
+            this.onAfterDismissAnimListener = listener
+        }
+
+        fun setOnBeforeDismissAnimListener(listener: () -> Unit) = apply {
+            this.onBeforeDismissAnimListener = listener
+        }
+
         fun build(): SearchDatePickerFragment {
             return SearchDatePickerFragment().apply {
                 this.marginTop = this@Builder.marginTop
@@ -530,6 +516,8 @@ class SearchDatePickerFragment private constructor(): BaseFragment<SearchDatePic
                 this.schemeDates = this@Builder.schemeDates
                 this.rangeStartDate = this@Builder.rangeStartDate
                 this.rangeEndDate = this@Builder.rangeEndDate
+                this.onBeforeDismissAnimListener = this@Builder.onBeforeDismissAnimListener
+                this.onAfterDismissAnimListener = this@Builder.onAfterDismissAnimListener
             }
         }
     }

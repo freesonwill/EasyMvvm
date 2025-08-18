@@ -18,22 +18,64 @@ class BounceTabLayoutContainer @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null
 ) : FrameLayout(context, attrs) {
 
-    private var lastX = 0f                                                          // 上一次觸控的 X 座標
-    private var initialTouchX = 0f                                                  // DOWN 當下的初始 X 座標
-    private var activePointerId = MotionEvent.INVALID_POINTER_ID                    // 當前有效的 pointer id，用於多點觸控追蹤
-    private var isUserTouching = false                                              // 是否正在手指觸控中
-    private var isOverScrolling = false                                             // 是否處於 overScroll 狀態中
-    private var startIntercept = false                                              // 是否決定攔截此事件序列
-    private var hasDraggedEnough = false                                            // 是否拖動距離已超過 touchSlop 門檻
-    private var totalDraggedX = 0f                                                  // 累積拖曳的距離，用來計算回彈強度
-    private var velocityX = 0f                                                      // 拖曳速度（以像素/毫秒為單位）
-    private var lastMoveTime = 0L                                                   // 上一次移動的時間戳，用來計算速度
-    private val touchSlop = ViewConfiguration.get(context).scaledTouchSlop          // 系統判定滑動動作的最小拖動距離
-    private val maxOverScroll by lazy { 150 * resources.displayMetrics.density }    // 最大允許 overScroll 的距離（以 dp 表示）
-    private val overScrollThreshold = 5f                                            // 觸發 overScroll 的最小移動距離
-    private var skipAnim = false                                                    // 是否跳過動畫，默認為 false
-    private var skipAnimRunnable: Runnable? = null
-    private val layoutHandler = android.os.Handler(context.mainLooper)
+    companion object {
+        private const val MIN_PULL_DISTANCE = 0.005f
+        private const val BOUNCE_DURATION = 400L // 增加動畫時長，讓彈動速度再慢一點點
+        private const val DAMPING_FACTOR = 0.5f // 降低阻尼因子，讓拉動更敏感
+        private const val MAX_TRANSLATION_RATIO = 0.25f // 增加最大拉動距離比例
+        private const val CLICK_THRESHOLD = 8f // 點擊判定閾值，比 touchSlop 小
+        private const val OVERSHOOT_TENSION = 1.6f // 降低 OvershootInterpolator 的張力參數，讓回彈更柔和
+        private const val PULL_SENSITIVITY = 1.0f // 調整拉動敏感度為 1.0f，確保拖動距離的一致性
+    }
+
+    // 可配置的回彈參數
+    var bounceDistanceRatio: Float = MAX_TRANSLATION_RATIO
+        set(value) {
+            field = value.coerceIn(0.1f, 0.5f) // 限制在合理範圍內
+            updateMaxTranslation()
+        }
+
+    var bounceDampingFactor: Float = DAMPING_FACTOR
+        set(value) {
+            field = value.coerceIn(0.3f, 0.8f) // 限制在合理範圍內
+        }
+
+    var bounceDuration: Long = BOUNCE_DURATION
+        set(value) {
+            field = value.coerceIn(200L, 500L) // 限制在合理範圍內
+        }
+
+    var overshootTension: Float = OVERSHOOT_TENSION
+        set(value) {
+            field = value.coerceIn(1.0f, 3.0f) // 限制在合理範圍內
+        }
+
+    var pullSensitivity: Float = PULL_SENSITIVITY
+        set(value) {
+            field = value.coerceIn(0.8f, 2.0f) // 限制在合理範圍內
+        }
+
+    private var lastX = 0f
+    private var initialTouchX = 0f
+    private var activePointerId = MotionEvent.INVALID_POINTER_ID
+    private var isOverScrolling = false
+    private var totalPullDistance = 0f
+    private val touchSlop = ViewConfiguration.get(context).scaledTouchSlop
+    private var maxTranslation = 0f
+    private var isAnimating = false
+    private var isPulling = false
+    private var isClickable = true // 是否為點擊事件
+    private var hasMoved = false // 是否已經移動
+    private var isAtLeftEdge = false
+    private var isAtRightEdge = false
+
+    init {
+        doOnLayout {
+            updateEdgeState()
+            updateMaxTranslation()
+        }
+    }
+
     private val tabLayout: TabLayout?
         get() = getChildAt(0) as? TabLayout
     private val canScrollLeft: Boolean
@@ -55,11 +97,19 @@ class BounceTabLayoutContainer @JvmOverloads constructor(
             return lastTabRight > visibleRight + 1 // 加 1 是容錯
         }
 
-    init {
-        // 初始化時設置邊緣滑動停止檢查器
-        doOnLayout {
-            setupEdgeBounceOnScrollStop()
-        }
+    /**
+     * 更新邊界狀態
+     */
+    private fun updateEdgeState() {
+        isAtLeftEdge = !canScrollLeft
+        isAtRightEdge = !canScrollRight
+    }
+
+    /**
+     * 更新最大拉動距離
+     */
+    private fun updateMaxTranslation() {
+        maxTranslation = width * bounceDistanceRatio
     }
 
     /**
@@ -71,12 +121,13 @@ class BounceTabLayoutContainer @JvmOverloads constructor(
         when (ev.actionMasked) {
             MotionEvent.ACTION_DOWN -> {
                 layout.animate().cancel()
-                resetTouchState()
-                isUserTouching = true
-                hasDraggedEnough = false
+                resetState()
                 lastX = ev.x
                 initialTouchX = ev.x
                 activePointerId = ev.getPointerId(0)
+                isClickable = true
+                hasMoved = false
+                updateEdgeState()
             }
 
             MotionEvent.ACTION_MOVE -> {
@@ -87,12 +138,14 @@ class BounceTabLayoutContainer @JvmOverloads constructor(
                 val dx = x - lastX
                 val totalDx = abs(x - initialTouchX)
 
-                if (totalDx > touchSlop) hasDraggedEnough = true
+                // 檢查是否移動超過點擊閾值
+                if (totalDx > CLICK_THRESHOLD) {
+                    hasMoved = true
+                    isClickable = false
+                }
 
-                updateVelocity(dx)
-
-                if (isUserTouching && hasDraggedEnough && shouldOverScroll(dx)) {
-                    startIntercept = true
+                // 關鍵邏輯：在邊界時立即攔截，但避免誤攔截點擊
+                if (hasMoved && shouldOverScroll(dx)) {
                     lastX = x
                     return true
                 }
@@ -100,7 +153,13 @@ class BounceTabLayoutContainer @JvmOverloads constructor(
                 lastX = x
             }
 
-            MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> resetTouchState()
+            MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                // 如果是點擊事件，不攔截
+                if (isClickable && !hasMoved) {
+                    return false
+                }
+                resetState()
+            }
         }
 
         return false
@@ -116,10 +175,13 @@ class BounceTabLayoutContainer @JvmOverloads constructor(
         when (event.actionMasked) {
             MotionEvent.ACTION_DOWN -> {
                 layout.animate().cancel()
-                resetTouchState()
+                resetState()
                 lastX = event.x
                 initialTouchX = event.x
                 activePointerId = event.getPointerId(0)
+                isClickable = true
+                hasMoved = false
+                updateEdgeState()
             }
 
             MotionEvent.ACTION_MOVE -> {
@@ -128,184 +190,136 @@ class BounceTabLayoutContainer @JvmOverloads constructor(
 
                 val x = event.getX(index)
                 val dx = x - lastX
+                val totalDx = abs(x - initialTouchX)
 
-                if (startIntercept || shouldOverScroll(dx)) {
-                    isOverScrolling = true
-                    applyDampingTranslation(layout, dx)
+                // 檢查是否移動超過點擊閾值
+                if (totalDx > CLICK_THRESHOLD) {
+                    hasMoved = true
+                    isClickable = false
                 }
 
-                totalDraggedX += abs(dx)
-                updateVelocity(dx)
+                // 實時更新邊界狀態
+                updateEdgeState()
+
+                // 處理 overscroll
+                if (shouldOverScroll(dx)) {
+                    isOverScrolling = true
+                    applyPullEffect(layout, dx)
+                }
+
                 lastX = x
             }
 
             MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
-                if (isOverScrolling && totalDraggedX > 10f) {
-                    animateBounceBack()
+                if (isOverScrolling && totalPullDistance > MIN_PULL_DISTANCE) {
+                    startBounceAnimation()
                 } else {
-                    resetTouchState()
+                    resetState()
                 }
             }
         }
 
-        return isOverScrolling || startIntercept
+        // 只有在處理 overscroll 時才返回 true
+        return isOverScrolling
     }
 
     /**
-     * 根據位移 dx 與時間差，更新 velocityX（速度）
+     * 應用拉動效果
      */
-    private fun updateVelocity(dx: Float) {
-        val now = System.currentTimeMillis()
-        val dt = now - lastMoveTime
-        if (dt > 0) velocityX = dx / dt
-        lastMoveTime = now
+    private fun applyPullEffect(layout: View, dx: Float) {
+        if (isAnimating) return
+
+        val sign = when {
+            isAtLeftEdge && dx > 0 -> 1      // 左邊界向右拉動
+            isAtRightEdge && dx < 0 -> -1    // 右邊界向左拉動
+            else -> return
+        }
+
+        // 使用敏感度參數讓拉動更流暢
+        val deltaDistance = abs(dx) / width * pullSensitivity
+        totalPullDistance += deltaDistance
+
+        // 使用可配置的阻尼因子
+        val targetTranslation = sign * width * totalPullDistance * bounceDampingFactor
+        val clampedTranslation = targetTranslation.coerceIn(-maxTranslation, maxTranslation)
+
+        layout.translationX = clampedTranslation
+        isPulling = true
     }
 
     /**
-     * 對 layout 套用 damping（阻尼）效果
+     * 開始回彈動畫
      */
-    private fun applyDampingTranslation(layout: View, dx: Float) {
-        val percentPulled = (layout.translationX / maxOverScroll).coerceIn(-1f, 1f)
-        val resistance = 1f - abs(percentPulled)
-        val damping = 0.15f + 0.35f * resistance * resistance * resistance
-        val newTranslation = layout.translationX + dx * damping
-        layout.translationX = newTranslation.coerceIn(-maxOverScroll, maxOverScroll)
-    }
-
-    /**
-     * 根據「拖曳距離」與「滑動速度」來動態計算出彈回動畫的初始位移（bounce offset），
-     * 讓回彈效果根據用戶的操作力道呈現不同的強度。
-     */
-    private fun computeBounceOffset(): Float {
-        val dragFactor = (totalDraggedX / maxOverScroll).coerceIn(0f, 1.5f)
-        val velocityFactor = (abs(velocityX) * 1000).coerceIn(0f, 100f)
-
-        val weightedPower = 0.5f * dragFactor + 0.5f * (velocityFactor / 100f)
-        return (20f + weightedPower * 80f).coerceIn(50f, 300f)
-    }
-
-    /**
-     * 執行彈性回彈動畫，並根據拖曳強度調整初始位移
-     */
-    private fun animateBounceBack() {
-        if(skipAnim) return
+    private fun startBounceAnimation() {
+        isAnimating = true
+        isPulling = false
 
         tabLayout?.let { layout ->
-            val offset = computeBounceOffset()
-            val duration = (200 + (offset / 100f) * 200).toLong().coerceIn(200, 400)
-
-            if (layout.translationX == 0f && !isOverScrolling) {
-                val directionOffset = when {
-                    !canScrollLeft -> offset
-                    !canScrollRight -> -offset
-                    else -> 0f
-                }
-                layout.translationX = directionOffset
-            }
-
             layout.animate()
                 .translationX(0f)
-                .setDuration(duration)
-                .setInterpolator(OvershootInterpolator(2f))
-                .withEndAction { resetTouchState() }
+                .setDuration(bounceDuration)
+                .setInterpolator(OvershootInterpolator(overshootTension))
+                .withEndAction {
+                    resetState()
+                }
                 .start()
         }
     }
 
     /**
-     * 判斷是否應該觸發 overScroll 邏輯
+     * 判斷是否應該觸發 overScroll - 優化邊界檢測
      */
     private fun shouldOverScroll(dx: Float): Boolean {
-        val canScrollLeft = canScrollLeft
-        val canScrollRight = canScrollRight
-        val isAtLeft = !canScrollLeft && dx > overScrollThreshold
-        val isAtRight = !canScrollRight && dx < -overScrollThreshold
-        val isNearLeft = !canScrollLeft && dx > 0
-        val isNearRight = !canScrollRight && dx < 0
+        // 如果已經在 overScroll 狀態，繼續允許
+        if (isOverScrolling) return true
 
-        return isOverScrolling || isAtLeft || isAtRight || isNearLeft || isNearRight
+        // 精確的邊界檢測：在邊界且有拖動意圖時觸發
+        return (isAtLeftEdge && dx > 0) || (isAtRightEdge && dx < 0)
     }
 
     /**
-     * 重置整個觸控與狀態變數
+     * 重置所有狀態
      */
-    private fun resetTouchState() {
+    private fun resetState() {
+        isAnimating = false
         isOverScrolling = false
-        startIntercept = false
-        isUserTouching = false
-        hasDraggedEnough = false
+        isPulling = false
+        totalPullDistance = 0f
+        isClickable = true
+        hasMoved = false
+        tabLayout?.translationX = 0f
         activePointerId = MotionEvent.INVALID_POINTER_ID
-        totalDraggedX = 0f
-    }
-
-    /**
-     * 監控 TabLayout 停止滑動後，若處於邊緣時觸發補償動畫(Fling用）
-     */
-    private fun setupEdgeBounceOnScrollStop() {
-        val layout = tabLayout ?: return
-        var lastScrollX = layout.scrollX
-        var scrollIdleRunnable: Runnable? = null
-
-        layout.viewTreeObserver.addOnScrollChangedListener {
-            val currentScrollX = layout.scrollX
-            if (currentScrollX != lastScrollX) {
-                lastScrollX = currentScrollX
-                scrollIdleRunnable?.let { layout.removeCallbacks(it) }
-
-                scrollIdleRunnable = Runnable {
-                    // 這裡代表已經停止滾動
-                    if (skipAnim) {
-                        // 取消先前尚未執行的任務
-                        skipAnimRunnable?.let { layoutHandler.removeCallbacks(it) }
-
-                        // 建立新的 Runnable
-                        skipAnimRunnable = Runnable {
-                            skipAnim = false
-                        }
-
-                        // 延遲排程 50ms
-                        skipAnimRunnable?.let {
-                            layoutHandler.postDelayed(it, 50L)
-                        }
-                    }
-
-                    if (!canScrollLeft || !canScrollRight) onScrollStoppedIfAtEdge()
-                }
-
-                layout.doOnLayout {
-                    layout.postDelayed(scrollIdleRunnable, 30L)
-                }
-            }
-        }
-    }
-
-    /**
-     * 滾動結束且在邊緣時，檢查是否需要觸發補償動畫(Fling用）
-     */
-    private fun onScrollStoppedIfAtEdge() {
-        tabLayout?.let { layout ->
-            if (layout.translationX != 0f && !isOverScrolling) {
-                animateBounceBack()
-                return
-            }
-
-            val isAtEdge = !canScrollLeft || !canScrollRight
-            if (isUserTouching && hasDraggedEnough && isAtEdge && layout.translationX == 0f) {
-                animateBounceBack()
-            }
-
-            if (!isUserTouching && isAtEdge && layout.translationX == 0f) {
-                totalDraggedX = (abs(velocityX) * 1000 * 30).coerceIn(20f, 300f)
-                animateBounceBack()
-            }
-        }
     }
 
     /**
      * 設置是否跳過動畫
-     * @param skip 是否跳過動畫，默認為 false
      */
     fun setSkipAnim(skip: Boolean) {
-        skipAnim = skip
+        isAnimating = skip
+        if (skip) {
+            tabLayout?.translationX = 0f
+            resetState()
+        }
+        updateEdgeState()
+    }
+
+    /**
+     * 設置回彈效果參數
+     */
+    fun setBounceConfig(
+        distanceRatio: Float? = null,
+        dampingFactor: Float? = null,
+        duration: Long? = null,
+        tension: Float? = null,
+        sensitivity: Float? = null
+    ) {
+        distanceRatio?.let { bounceDistanceRatio = it }
+        dampingFactor?.let { bounceDampingFactor = it }
+        duration?.let { bounceDuration = it }
+        tension?.let { overshootTension = it }
+        sensitivity?.let { pullSensitivity = it }
+
+        // 立即更新最大拉動距離
+        updateMaxTranslation()
     }
 }
