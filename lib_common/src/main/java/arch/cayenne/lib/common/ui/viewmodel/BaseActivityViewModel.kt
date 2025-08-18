@@ -3,14 +3,16 @@ package arch.cayenne.lib.common.ui.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import arch.cayenne.lib.base.data.remote.ApiResponseState
+import arch.cayenne.lib.base.data.remote.ApiResponseState.Start.dataAs
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.common.data.constants.AppNotifyBean
+import arch.cayenne.lib.common.data.constants.LoginEnum
 import arch.cayenne.lib.common.data.repo.CommonRepository
 import arch.cayenne.lib.database.entity.BetResultLiteBean
 import arch.cayenne.lib.websocket.data.ConnectState
-import arch.cayenne.lib.websocket.data.SocketResponseError
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -23,10 +25,10 @@ import org.koin.core.parameter.parametersOf
  * */
 abstract class BaseActivityViewModel : BaseViewModel() {
     private val commonRepository: CommonRepository by inject { parametersOf(viewModelScope) }
+    abstract val shouldBeAutoLogin: Boolean
 
-    // 每個activity針對登入和離線錯誤都有不同的處理，接收到相對應的livedata後各自處理
-    val loginIsSuccess = MutableLiveData<Boolean>()
-    val loginError = MutableLiveData<SocketResponseError>()
+    private val _loginResult = MutableLiveData<LoginEnum>()
+    val loginResult: LiveData<LoginEnum> = _loginResult
     private val _betResultListener = MutableLiveData<List<BetResultLiteBean>>()
     val betResultListener: LiveData<List<BetResultLiteBean>> get() = _betResultListener
 
@@ -37,6 +39,7 @@ abstract class BaseActivityViewModel : BaseViewModel() {
     private val _aberrantNotify = MutableLiveData<Int>()
     val aberrantNotify : LiveData<Int> = _aberrantNotify
 
+
     override fun initViewModel() {
         super.initViewModel()
         viewModelScope.launch(Dispatchers.IO) {
@@ -45,7 +48,7 @@ abstract class BaseActivityViewModel : BaseViewModel() {
                     when (connectState) {
                         is ConnectState.ConnectSuccess -> {
                             "Connection Success".logi(BaseActivityViewModel::class.java.simpleName)
-                            login()
+                            if (shouldBeAutoLogin) login()
                         }
                         is ConnectState.ConnectFailure, ConnectState.NetworkUnavailable -> {
                             "Connection Failure -> $connectState".loge(BaseActivityViewModel::class.java.simpleName)
@@ -90,25 +93,29 @@ abstract class BaseActivityViewModel : BaseViewModel() {
 
     //當連線成功時，自動地去做補登入
     private fun login() {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
+
             if (commonRepository.checkIsLogin()) {
-                withContext(Dispatchers.Main) {
-                    loginIsSuccess.value = true
-                }
+                _loginResult.value = LoginEnum.SUCCESSFUL
                 return@launch
             }
-            val result = commonRepository.sendLogin()
-            withContext(Dispatchers.Main) {
-                when (result.error) {
-                    null -> {
-                        "Login  Is Success? = ${result.data?.success}".logi(this@BaseActivityViewModel::class.java.simpleName)
-                        loginIsSuccess.value = result.data?.success == true
-                    }
-                    else -> {   //其餘錯誤
-                        loginError.value = result.error!!
-                    }
-                }
-            }
+            callApi({
+                commonRepository.sendLogin()
+            }, {
+               if (it is ApiResponseState.Succeeded<*>) {
+                   val result = it.dataAs<Boolean>()
+                   if (result == null) {
+                       "Login is failure! api response parse failed!".loge(TAG)
+                       _loginResult.value = LoginEnum.API_FAILURE
+                   } else {
+                       _loginResult.value = if (result) LoginEnum.SUCCESSFUL else LoginEnum.NOT_SUCCESSFUL
+                   }
+
+               } else if (it is ApiResponseState.Failed){
+                   "Login is failure! msg = ${it.error?.msg}".loge(TAG)
+                   _loginResult.value = LoginEnum.API_FAILURE
+               }
+            }, false)
         }
     }
 

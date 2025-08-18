@@ -16,20 +16,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         />
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/splash_counter_down"
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/dp_36"
-        android:layout_marginTop="@dimen/dp_15"
-        android:layout_marginEnd="@dimen/dp_20"
-        android:background="@drawable/splash_counter_down_bkg"
-        android:text="@string/splash_counter_down_skip"
-        android:textColor="@color/splash_counter_down_skip"
-        android:textSize="@dimen/sp_14"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-
     <androidx.appcompat.widget.AppCompatImageView
         android:layout_width="@dimen/dp_148"
         android:layout_height="@dimen/dp_24"

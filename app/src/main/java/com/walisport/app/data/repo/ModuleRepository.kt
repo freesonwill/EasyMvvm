@@ -36,7 +36,6 @@ class ModuleRepository(
     val tournamentDao = database.tournamentDao()
 
     fun preLoadHome() {
-//        val httpClient = GlobalContext.get().get<HttpClient>(named("firstApi"))
         val api = httpClient.create(IPreLoadHomeApi::class.java)
         scope.launch(Dispatchers.IO) {
             httpClient.safeRequest(

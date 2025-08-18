@@ -4,8 +4,8 @@ import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.common.data.constants.SkinType
 import arch.cayenne.lib.common.ui.viewmodel.BaseActivityViewModel
 import com.walisport.app.data.repo.MainRepository
-import org.koin.core.parameter.parametersOf
 import org.koin.core.component.inject
+import org.koin.core.parameter.parametersOf
 
 /**
  * @author: zhangsan
@@ -15,8 +15,9 @@ import org.koin.core.component.inject
 class MainViewModel : BaseActivityViewModel() {
 
     private val repository: MainRepository by inject { parametersOf(viewModelScope) }
+    override val shouldBeAutoLogin: Boolean = true
 
-    init {
+        init {
         repository.loadSportList()
         repository.observeSystemNotify()
     }

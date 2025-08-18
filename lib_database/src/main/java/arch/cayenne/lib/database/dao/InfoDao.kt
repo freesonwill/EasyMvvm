@@ -30,7 +30,7 @@ abstract class InfoDao: BaseDao<InfoBean>() {
     abstract fun observeCurrency(): Flow<String?>
 
     @Query("SELECT login FROM InfoBean limit 1")
-    abstract suspend fun isLogin(): Boolean
+    abstract suspend fun isLogin(): Boolean?
 
     @Query("SELECT login FROM InfoBean limit 1")
     abstract fun observeIsLogin(): Flow<Boolean>

@@ -6,6 +6,7 @@ import androidx.lifecycle.Lifecycle
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.launch
+import arch.cayenne.lib.common.data.constants.LoginEnum
 import arch.cayenne.lib.common.ui.BaseNavActivity
 import arch.cayenne.lib.common.ui.dialog.CommonDialog
 import arch.cayenne.lib.common.ui.view.BetResultToastView
@@ -26,8 +27,6 @@ import com.walisport.app.ui.viewmodel.MainViewModel
 import com.walisport.module.message.ui.fragment.AppNotifyFragment
 import com.walisport.module.message.ui.view.AppNotifyToastView
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.withContext
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import kotlin.reflect.KClass
 import kotlin.system.exitProcess
@@ -93,6 +92,16 @@ class MainActivity : BaseNavActivity<MainViewModel>() {
                 }.show(supportFragmentManager)
             } else if (code == 2) {
                 //TODO go to login page
+            }
+        }
+        mViewModel.loginResult.observe(this) { login ->
+            if (login == null) return@observe
+            when(login) {
+                LoginEnum.SUCCESSFUL -> Unit
+                LoginEnum.NOT_SUCCESSFUL -> {
+                    //TODO 跳到登入頁
+                }
+                LoginEnum.API_FAILURE -> Unit
             }
         }
     }
