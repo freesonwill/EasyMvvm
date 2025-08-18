@@ -12,6 +12,7 @@ import androidx.navigation.fragment.findNavController
 import arch.cayenne.lib.base.data.model.PagerBean
 import arch.cayenne.lib.base.ui.adapter.PagerAdapter
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.common.ui.viewmodel.observeEvent
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.removeAllTips
 import arch.cayenne.lib.common.utils.ext.touchBackPressed
@@ -64,10 +65,11 @@ class HomeBetSlipFragment : BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsl
             }
         }
         mBinding.tvDateFilter.setOnClickListener {
+            mViewModel.setSportViewCollapse()
             showDateFilter()
         }
         mBinding.tvSportFilter.setOnClickListener {
-            showSportFilter()
+            mViewModel.toggleSportView()
         }
         mBinding.root.touchBackPressed()
     }
@@ -85,6 +87,13 @@ class HomeBetSlipFragment : BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsl
             }
 
             mBinding.tvSportFilter.text = displayText
+        }
+        mViewModel.isShowSportView.observeEvent(viewLifecycleOwner, this) {
+            if (it) {
+                showSportFilter()
+            } else {
+                hideSportFilter()
+            }
         }
     }
 
@@ -133,6 +142,7 @@ class HomeBetSlipFragment : BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsl
             mBinding.tabLayout.clearOnTabSelectedListeners()
             mBinding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab?) {
+                    mViewModel.setSportViewCollapse()
                     (tab?.customView as? TextView)?.setTypeface(null, Typeface.BOLD)
                     mBinding.viewPager.doSmartAnim(targetPosition = tab?.position ?: 0)
                 }
@@ -204,12 +214,17 @@ class HomeBetSlipFragment : BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsl
                 setFilterText(mBinding.tvSportFilter, false)
             }
             SportPickerFragment.newInstance(
-                mBinding.clTitle.height + mBinding.clFilter.height + mBinding.tabLayout.height,
                 it.map { bean ->
                     bean.sportId
                 }
-            ).show(childFragmentManager, mBinding.main.id)
+            ).show(childFragmentManager, mBinding.fragmentSportFilter.id)
         }
+    }
+
+    private fun hideSportFilter() {
+        val f = childFragmentManager.findFragmentByTag(SportPickerFragment::class.java.simpleName) as? SportPickerFragment ?: return
+        f.collapseView()
+        setFilterText(mBinding.tvSportFilter, false)
     }
 
     private fun setFilterText(view: TextView, isSelected: Boolean) {
