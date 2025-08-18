@@ -3,15 +3,17 @@ package com.walisport.app
 import android.content.Intent
 import android.os.Bundle
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.lifecycle.lifecycleScope
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.BaseActivity
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
-import arch.cayenne.lib.common.data.constants.LoginEnum
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import com.walisport.app.databinding.ActivitySplashBinding
 import com.walisport.app.ui.MainActivity
 import com.walisport.app.ui.viewmodel.SplashViewModel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlin.random.Random
 import kotlin.reflect.KClass
 
@@ -127,6 +129,11 @@ class SplashActivity : BaseActivity<SplashViewModel, ActivitySplashBinding>() {
         super.initData()
         "uid:$uid, token:$token".logd(TAG)
         mViewModel.saveUserData(uid, token)  //TODO 實作登入頁後就不需要這個了
+        lifecycleScope.launch {
+            delay(100)
+            jumpToMainActivity()
+        }
+
     }
 
     override fun initListener() {
@@ -134,23 +141,7 @@ class SplashActivity : BaseActivity<SplashViewModel, ActivitySplashBinding>() {
     }
 
     override suspend fun createObserver() {
-        mViewModel.loginResult.observe(this) { login ->
-            if (login == null) return@observe
-            when(login) {
-                LoginEnum.SUCCESSFUL -> {
-                    jumpToMainActivity()
-                }
-                LoginEnum.NOT_SUCCESSFUL -> {
-                    //TODO 跳到登入頁
-                }
-                LoginEnum.API_FAILURE -> {
 
-                }
-            }
-        }
-        mViewModel.hasAnyMatch.observe(this) {
-            if (it) jumpToMainActivity()
-        }
     }
 
     private fun jumpToMainActivity() {

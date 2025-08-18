@@ -25,6 +25,7 @@ import org.koin.core.parameter.parametersOf
  * */
 abstract class BaseActivityViewModel : BaseViewModel() {
     private val commonRepository: CommonRepository by inject { parametersOf(viewModelScope) }
+    abstract val shouldBeAutoLogin: Boolean
 
     private val _loginResult = MutableLiveData<LoginEnum>()
     val loginResult: LiveData<LoginEnum> = _loginResult
@@ -38,6 +39,7 @@ abstract class BaseActivityViewModel : BaseViewModel() {
     private val _aberrantNotify = MutableLiveData<Int>()
     val aberrantNotify : LiveData<Int> = _aberrantNotify
 
+
     override fun initViewModel() {
         super.initViewModel()
         viewModelScope.launch(Dispatchers.IO) {
@@ -46,7 +48,7 @@ abstract class BaseActivityViewModel : BaseViewModel() {
                     when (connectState) {
                         is ConnectState.ConnectSuccess -> {
                             "Connection Success".logi(BaseActivityViewModel::class.java.simpleName)
-                            login()
+                            if (shouldBeAutoLogin) login()
                         }
                         is ConnectState.ConnectFailure, ConnectState.NetworkUnavailable -> {
                             "Connection Failure -> $connectState".loge(BaseActivityViewModel::class.java.simpleName)
@@ -92,6 +94,7 @@ abstract class BaseActivityViewModel : BaseViewModel() {
     //當連線成功時，自動地去做補登入
     private fun login() {
         viewModelScope.launch {
+
             if (commonRepository.checkIsLogin()) {
                 _loginResult.value = LoginEnum.SUCCESSFUL
                 return@launch

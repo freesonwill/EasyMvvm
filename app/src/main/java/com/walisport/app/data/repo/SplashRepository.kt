@@ -6,7 +6,6 @@ import arch.cayenne.lib.common.data.constants.SkinType
 import arch.cayenne.lib.common.data.constants.UserDataKey
 import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.common.utils.helper.CountDownHelper
-import arch.cayenne.lib.database.dao.MatchDao
 import arch.cayenne.lib.websocket.WebSocketManager
 import kotlinx.coroutines.CoroutineScope
 
@@ -14,14 +13,11 @@ class SplashRepository(
     override val scope: CoroutineScope,
     private val socketManager: WebSocketManager,
     private val userDataManager: UserDataManager,
-    private val matchDao: MatchDao,
 ) : BaseRepository() {
 
     private val countDownHelper = CountDownHelper()
     internal var countDown: Int by countDownHelper::countDown
     internal val isCountDownStart by countDownHelper::isCountDownStart
-
-    fun observeHasAnyMatch() = matchDao.observeHasAnyMatch()
 
     init {
         countDown = 2_000

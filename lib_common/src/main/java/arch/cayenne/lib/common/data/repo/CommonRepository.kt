@@ -2,6 +2,7 @@ package arch.cayenne.lib.common.data.repo
 
 import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.base.data.repository.BaseRepository
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.common.data.constants.LanguageType
 import arch.cayenne.lib.common.data.constants.UserDataKey
 import arch.cayenne.lib.common.data.manager.UserDataManager
@@ -40,7 +41,7 @@ class CommonRepository(
     fun getBetResultFlow(): Flow<List<BetResultLiteBean>> = betResultFlow
 
     suspend fun checkIsLogin(): Boolean {
-        return infoDao.isLogin()
+        return infoDao.isLogin()?: false
     }
 
     suspend fun sendLogin(): ApiResponseState {
@@ -50,6 +51,7 @@ class CommonRepository(
         if (uid == -1 || token == "") {
             return ApiResponseState.Succeeded(false)
         }
+        "send login".logi(this::class.java.simpleName)
         val loginResp = socketManager.sendAndWaitProtoMessageResponse<Client.LoginResp>(
             scope = scope,
             dispatcher = Dispatchers.IO,
@@ -63,7 +65,6 @@ class CommonRepository(
 
             }.build()
         }
-
         if (loginResp.data != null && loginResp.data!!.success) {
             val balanceBean = getBalance()
             infoDao.insert(
