@@ -97,14 +97,18 @@ class BetSlipUnsettledViewHolder(binding: ViewBinding, betSlipType: BetSlipEnum)
      * */
     private fun earlySettleStatus(settleStatus: Int) {
         mBinding.also {
-            if (settleStatus == 102) {
-                it.betUnsettledBtTv.setTextRes(R.string.live_bet_in_early_settle)
-                it.betUnsettledBtAmount.isVisible = false
-                it.betUnsettledBtProgress.isVisible = true
-            } else {
-                it.betUnsettledBtTv.setTextRes(R.string.live_bet_early_settle,"1","2")
-                it.betUnsettledBtAmount.isVisible = true
-                it.betUnsettledBtProgress.isVisible = false
+            when (settleStatus) {
+                102 -> {
+                    it.betUnsettledBtProgress.isVisible = true
+                    it.betUnsettledBtSettle.isEnabled = false
+                }
+                1000 -> {
+                    it.betUnsettledBtProgress.isVisible = true
+                    it.betUnsettledBtSettle.isEnabled = false
+                }
+                else -> {
+                    it.betUnsettledBtProgress.isVisible = false
+                }
             }
         }
     }
