@@ -14,13 +14,11 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
-import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.core.animation.addListener
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -322,23 +320,17 @@ class LiveSoftKeyboardFragment :
         when (animationType) {
             //展示软件盘
             mViewModel.CHAT_TO_SOFT -> {
-                updateMainHeight(KeyBoardType.SOFT_KEYBOARD)
                 chatViewModel.updateSoftKeyBoard(true, 1)
                 chatViewModel.updateKeyBoard()
             }
             //软件盘切换到聊天
             mViewModel.SOFT_TO_CHAT -> {
-                updateMainHeight(KeyBoardType.CHAT)
                 chatViewModel.updateSoftKeyBoard(false, 2)
                 chatViewModel.updateKeyBoard()
             }
             //软件盘切换到表情键盘
             mViewModel.SOFT_TO_EMOJI -> {
-                updateMainHeight(KeyBoardType.EMOJI)
-                chatViewModel.updateKeyBoard()
-                chatViewModel.updateSoftKeyBoard(false, 3)
-
-//                startAnimation(animationType)
+                startAnimation(animationType)
             }
             //展示表情键盘
             mViewModel.CHAT_TO_EMOJI -> {
@@ -347,10 +339,7 @@ class LiveSoftKeyboardFragment :
 
             //表情键盘切换到软件盘
             mViewModel.EMOJI_TO_SOFT -> {
-//                startAnimation(animationType)
-                chatViewModel.updateSoftKeyBoard(true, 3)
-                updateMainHeight(KeyBoardType.SOFT_KEYBOARD)
-                chatViewModel.updateKeyBoard()
+                startAnimation(animationType)
             }
             //表情键盘切换到聊天
             mViewModel.EMOJI_TO_CHAT -> {
@@ -363,74 +352,54 @@ class LiveSoftKeyboardFragment :
 
     @SuppressLint("Recycle")
     private fun startAnimation(animationType: Int) {
-        val topDistance =
-            chatViewModel.keyBoardHeight - 83.dp2px //83为12dp输入到顶部的距离和62dp输入框layout的整体高度
-        updateMainHeight(chatViewModel.softKeyBoardListener.value)
+        val topValue = 21.dp2px //  21 输入框到顶部的距离
+        val bottomValue = chatViewModel.keyBoardHeight - 62.dp2px
+        val mainMaxHeight = chatViewModel.keyBoardHeight - 21.dp2px //有21dp到顶部的距离
+        val mainMinHeight = 62.dp2px
+        val mainStartHeight: Int = mBinding.main.height
+        var mainEndHeight: Int = 0
+        var translationStart: Float = 0f
+        var translationEnd: Float = 0f
 
-        val translationStart: Float = when (animationType) {
+        when (animationType) {
             mViewModel.CHAT_TO_EMOJI -> {
-                topDistance.toFloat()
+                translationStart = bottomValue.toFloat()
+                translationEnd = topValue.toFloat()
+                mainEndHeight = mainMaxHeight
             }
             // 起始点为软件盘的高度 动画开始高度为整个表情键盘的高度下降到软件盘高度 因此topDistance - softKeyBoardHeight 截止点为topDistance
             mViewModel.SOFT_TO_EMOJI -> {
-                0f
+                translationStart = (chatViewModel.softKeyBoardHeight + 62.dp2px).toFloat()
+                translationEnd = topValue.toFloat()
+                mainEndHeight = mainMaxHeight
             }
 
             mViewModel.EMOJI_TO_SOFT -> {
-                chatViewModel.updateSoftKeyBoard(true, 4)
-                0f
+                translationStart = topValue.toFloat()
+                translationEnd =
+                    (chatViewModel.keyBoardHeight - chatViewModel.softKeyBoardHeight - 21.dp2px - 62.dp2px).toFloat()
+                mainEndHeight = mainMinHeight
             }
 
             mViewModel.EMOJI_TO_CHAT -> {
-                0f
+                translationStart = topValue.toFloat()
+                translationEnd = (chatViewModel.keyBoardHeight - 21.dp2px - 62.dp2px).toFloat()
+                mainEndHeight = mainMinHeight
             }
 
-            else -> -1F
+            else -> {}
         }
-        val translationEnd: Float = when (animationType) {
-            mViewModel.CHAT_TO_EMOJI -> {
-                0f
-            }
+        val alphaParam = if (animationType in intArrayOf(mViewModel.CHAT_TO_EMOJI, mViewModel.SOFT_TO_EMOJI)) floatArrayOf(0f, 1f) else floatArrayOf(1f, 0f)
 
-            mViewModel.SOFT_TO_EMOJI -> {
-                val value = -(mBinding.noneContent.height).toFloat()
-                value
-            }
-
-            mViewModel.EMOJI_TO_SOFT -> {
-                val emojiHeight = mBinding.emojiContent.height
-                val startY = emojiHeight - chatViewModel.softKeyBoardHeight-62.dp2px
-
-                startY.toFloat()
-            }
-
-            mViewModel.EMOJI_TO_CHAT -> {
-                topDistance.toFloat()
-            }
-
-            else -> -1F
-        }
-        val translationAnim =
-            ObjectAnimator.ofFloat(mBinding.main, "translationY", translationStart, translationEnd)
-        val alphaParam = if (animationType in intArrayOf(
-                mViewModel.CHAT_TO_EMOJI,
-                mViewModel.SOFT_TO_EMOJI
-            )
-        ) floatArrayOf(0f, 1f) else floatArrayOf(1f, 0f)
+        val translationAnim = ObjectAnimator.ofFloat(mBinding.main, "translationY", translationStart, translationEnd)
         val alphaAnim = ObjectAnimator.ofFloat(mBinding.emojiContent, "alpha", *alphaParam)
-        val valueParam = if (animationType == mViewModel.EMOJI_TO_SOFT) intArrayOf(
-            chatViewModel.keyBoardHeight,
-            62.dp2px
-        ) else intArrayOf(62.dp2px, chatViewModel.keyBoardHeight)
-        val valueAnim = ValueAnimator.ofInt(*valueParam)
+        val valueAnim = ValueAnimator.ofInt(mainStartHeight,mainEndHeight)
         valueAnim.addUpdateListener {
+            mBinding.main.layoutParams.height = it.animatedValue as Int
         }
         val animSet = AnimatorSet().apply {
             duration = 150
-            if (animationType == mViewModel.SOFT_TO_EMOJI || animationType == mViewModel.EMOJI_TO_SOFT)
-                playTogether(translationAnim, alphaAnim)
-            else
-                playTogether(translationAnim, alphaAnim)
+            playTogether(translationAnim, alphaAnim,valueAnim)
             addListener(onStart = {
                 when (animationType) {
                     mViewModel.CHAT_TO_EMOJI -> {
@@ -454,47 +423,11 @@ class LiveSoftKeyboardFragment :
                     chatViewModel.updateKeyBoard()
                 } else if (animationType == mViewModel.EMOJI_TO_CHAT) {
                     chatViewModel.updateKeyBoard()
-                } else if (animationType == mViewModel.SOFT_TO_EMOJI) {
-                    mBinding.apply {
-                        noneContent.isVisible = false
-                        val lp = emojiContent.layoutParams as LinearLayout.LayoutParams
-                        lp.height = chatViewModel.keyBoardHeight - 62.dp2px
-                        emojiContent.layoutParams = lp
-                    }
-                }
+                } 
                 mBinding.main.translationY = 0f
             })
             start()
         }
-    }
-
-
-    fun updateMainHeight(keyBoardType: KeyBoardType) {
-
-//        var emojiHeight: Int = 0
-        mBinding.apply {
-//            main.layoutParams.height = chatViewModel.keyBoardHeight
-
-            when (keyBoardType) {
-                KeyBoardType.SOFT_KEYBOARD -> {
-                    main.layoutParams.height = 62.dp2px
-                    noneContent.isVisible = false
-                }
-
-                KeyBoardType.CHAT -> {
-                    main.layoutParams.height = 62.dp2px
-                    noneContent.isVisible = false
-                }
-                KeyBoardType.EMOJI -> {
-                    main.layoutParams.height = chatViewModel.keyBoardHeight
-                    noneContent.isVisible = false
-//                    emojiHeight = chatViewModel.keyBoardHeight -62.dp2px -30 -11
-                }
-            }
-//            val emojiLp = emojiContent.layoutParams as LinearLayout.LayoutParams
-//            emojiContent.layoutParams.height = emojiLp
-        }
-
     }
 
 
@@ -566,7 +499,7 @@ class LiveSoftKeyboardFragment :
         }
         updateEmojiView(true)
         updateWhenKeyBoardVisible(KeyBoardType.EMOJI)
-        "emojiVIsibs ${mBinding.keyboardEmojiRecycler.isVisible}".logd("aaa")
+        "emojiVIsibs keyboardEmojiRecycler ${mBinding.keyboardEmojiRecycler.isVisible}  ${mBinding.keyboardEmojiRecycler.height} emojiContent ${mBinding.emojiContent.isVisible} ${mBinding.emojiContent.height}  ${mBinding.emojiContent.alpha}".logd("aaa")
     }
 
     private fun updateEmojiView(isVisible: Boolean) {
@@ -587,11 +520,11 @@ class LiveSoftKeyboardFragment :
             mViewModel.languageManager.getLanguage()
         )
         //聊天界面、表情键盘和表情键盘对应的topMargin不同
-        mBinding.main.apply {
-            val lp = layoutParams as FrameLayout.LayoutParams
-            lp.topMargin = if (type == KeyBoardType.EMOJI) 21.dp2px else 0
-            layoutParams = lp
-        }
+//        mBinding.main.apply {
+//            val lp = layoutParams as FrameLayout.LayoutParams
+//            lp.topMargin = if (type == KeyBoardType.EMOJI) 21.dp2px else 0
+//            layoutParams = lp
+//        }
         mBinding.liveChatLlInput.backgroundTintList = SkinnableResourceManager.getColorStateList(
             requireContext(),
             if (type == KeyBoardType.CHAT) arch.cayenne.lib.common.R.color.input_box_2 else arch.cayenne.lib.res.R.color.card_ooo_background

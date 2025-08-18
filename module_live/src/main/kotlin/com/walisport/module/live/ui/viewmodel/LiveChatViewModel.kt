@@ -293,6 +293,7 @@ class LiveChatViewModel(private val chatRepo: LiveChatRepository) : BaseViewMode
 //        if(softKeyBoarVisible == _openSoftKeyBoardLiveData.value){
 //            return
 //        }
+        "updateSoftKeyBoard $softKeyBoarVisible  rflag $flag".logd("aaa")
         _openSoftKeyBoardLiveData.value = softKeyBoarVisible
     }
 

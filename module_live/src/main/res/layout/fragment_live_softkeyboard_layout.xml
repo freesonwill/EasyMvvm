@@ -12,17 +12,8 @@
     <LinearLayout
         android:id="@+id/main"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/black_75"
+        android:layout_height="wrap_content"
         android:orientation="vertical">
-
-        <View
-            android:id="@+id/none_content"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:background="@color/red"
-            android:visibility="gone"
-            />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/input_content"
@@ -127,9 +118,10 @@
         <LinearLayout
             android:id="@+id/emoji_content"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="match_parent"
             android:orientation="vertical"
-            android:layout_weight="1">
+            android:visibility="gone"
+            >
 
             <arch.cayenne.lib.skin.widget.SkinnableTabLayout
                 android:id="@+id/keyboard_tb"
@@ -171,12 +163,10 @@
                 android:id="@+id/keyboard_emoji_recycler"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1"
-                android:background="@color/black_75"
                 android:layout_marginTop="@dimen/dp_12"
-                app:layout_constraintTop_toBottomOf="@id/keyboard_tv_all"
+                android:layout_weight="1"
                 app:layout_constraintBottom_toTopOf="@id/bottom"
-                />
+                app:layout_constraintTop_toBottomOf="@id/keyboard_tv_all" />
 
             <View
                 android:id="@+id/bottom"
