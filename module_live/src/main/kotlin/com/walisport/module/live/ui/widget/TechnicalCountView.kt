@@ -2,16 +2,15 @@ package com.walisport.module.live.ui.widget
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.drawable.Drawable
+import android.graphics.Typeface
 import android.util.AttributeSet
+import android.util.TypedValue
 import android.view.Gravity
 import android.view.LayoutInflater
 import androidx.appcompat.widget.AppCompatTextView
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
-import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.lib.skin.widget.SkinnableLinearLayout
 import com.bumptech.glide.Glide
-import com.walisport.module.live.R
 import com.walisport.module.live.data.EventEnum
 import com.walisport.module.live.data.model.MatchHalfTeamStats
 import com.walisport.module.live.data.model.MatchTrendData
@@ -42,10 +41,19 @@ class TechnicalCountView @JvmOverloads constructor(
         unitWidth = (width - 24.dp2px) / 90f
     }
 
-    //全屏直播模式下的技术统计控件，不要圆角背景
+    //全屏直播模式下的技术统计控件，不要圆角背景，字体大小颜色都要有调整
     fun setFullScreenMode() {
         mBinding.tvStatisticsTitle.background = null
         mBinding.root.background = null
+        mBinding.tvStatisticsTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, 17f)
+        mBinding.tvStatisticsTitle.typeface = Typeface.defaultFromStyle(Typeface.BOLD)
+        mBinding.tvHomeName.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f)
+        mBinding.tvAwayName.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f)
+        mBinding.tvScore.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f)
+        mBinding.tvTechJg.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f)
+        mBinding.tvDangerAttack.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f)
+        mBinding.tvBallControlRate.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f)
+        mBinding.viewGoalTrend.setFullScreenMode()
     }
 
     //设置比赛双方名称和LOGO

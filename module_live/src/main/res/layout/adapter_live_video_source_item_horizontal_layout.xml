@@ -20,12 +20,13 @@
         android:gravity="center"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="@id/iv_thumb"
+        android:clipChildren="true"
         app:layout_constraintTop_toTopOf="@id/iv_thumb">
 
         <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/animationView"
-            android:layout_width="@dimen/dp_63"
-            android:layout_height="@dimen/dp_48"
+            android:layout_width="@dimen/dp_189"
+            android:layout_height="@dimen/dp_96"
             android:scaleType="centerCrop"
             app:lottie_autoPlay="true"
             app:lottie_fileName="playing_animation.json"

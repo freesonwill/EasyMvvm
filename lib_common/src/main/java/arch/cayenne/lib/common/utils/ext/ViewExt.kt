@@ -4,24 +4,27 @@ import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.animation.TimeInterpolator
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.ContextWrapper
 import android.content.res.ColorStateList
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
+import android.graphics.Rect
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.RippleDrawable
+import android.os.Build
 import android.util.TypedValue
 import android.view.MotionEvent
 import android.view.View
 import android.view.View.OnAttachStateChangeListener
 import android.view.animation.DecelerateInterpolator
 import android.widget.ImageView
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.core.animation.addListener
 import androidx.core.view.children
 import androidx.recyclerview.widget.RecyclerView
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.R
 import arch.cayenne.lib.common.ui.view.OnSwipeTouchListener
 import com.google.android.material.shape.CornerFamily
@@ -29,7 +32,7 @@ import com.google.android.material.shape.MaterialShapeDrawable
 import com.google.android.material.shape.ShapeAppearanceModel
 
 private var lastClickTime: Long = 0L
-
+private const val TAG = "ViewExt"
 /**
  * 将view转为bitmap
  */
@@ -348,6 +351,7 @@ fun RecyclerView.enableRecyclerViewBounce(
         false
     }
 }
+
 /**
  * 水波纹效果，支持自定义圆角和颜色
  *
@@ -420,11 +424,58 @@ fun View.addRippleEffect(
 
     this.background = rippleDrawable
 }
+
+fun View.startPageAnimation(vararg otherViews: View) {
+    val views = listOf(this, *otherViews)
+
+    // Step1: 计算平均中心点（屏幕坐标）
+    val unionRect = views.fold(Rect()) { acc,view->
+        val rect = Rect()
+        view.getGlobalVisibleRect(rect)
+        acc.union(rect)
+        acc
+    }
+    val avgX = unionRect.centerX().toFloat()
+    val avgY = unionRect.centerY().toFloat()
+
+    // Step2: 保存原始 pivot，创建动画
+    val originalPivots = views.map { it.pivotX to it.pivotY }
+    val animators = views.map { view ->
+        val location = view.locationOnScreen
+        view.pivotX = avgX - location[0]
+        view.pivotY = avgY - location[1]
+        AnimatorSet().apply {
+            playTogether(
+                ObjectAnimator.ofFloat(view, "alpha", 0.3f, 1f),
+                ObjectAnimator.ofFloat(view, "scaleX", 0.92f, 1f),
+                ObjectAnimator.ofFloat(view, "scaleY", 0.92f, 1f)
+            )
+            duration = 200
+        }
+    }
+
+    // Step3: 统一执行动画并还原 pivot
+    views.forEach { it.animate().cancel() }
+    AnimatorSet().apply {
+        playTogether(animators)
+        addListener(onEnd = {
+            views.forEachIndexed { index, view ->
+                val (pivotX,pivotY) = originalPivots[index]
+                view.pivotX = pivotX
+                view.pivotY = pivotY
+            }
+        })
+        start()
+    }
+}
+
+
+
 //侧滑退出当前fragment
-fun View.touchBackPressed(){
+fun View.touchBackPressed(boo: Boolean = true){
     setOnTouchListener(object : OnSwipeTouchListener() {
         override fun onSwipeRight() {
-            requireActivity().onBackPressedDispatcher.onBackPressed()
+            if (boo) { requireActivity().onBackPressedDispatcher.onBackPressed() }
         }
     })
 }
@@ -442,4 +493,32 @@ fun View.getTouchListener(): View.OnTouchListener? {
         e.printStackTrace()
         null
     }
+}
+
+inline val View.locationOnScreen: IntArray
+    get() {
+        val pos = IntArray(2)
+        this.getLocationOnScreen(pos)
+        return pos
+    }
+
+inline val View.locationInWindow: IntArray
+    get() {
+        val pos = IntArray(2)
+        this.getLocationInWindow(pos)
+        return pos
+    }
+
+inline val View.locationInSurface: IntArray
+    @RequiresApi(Build.VERSION_CODES.Q) get() {
+        val pos = IntArray(2)
+        this.getLocationInSurface(pos)
+        return pos
+    }
+
+//是否在View区域内
+fun View.isInArea(rawX: Float, rawY: Float): Boolean {
+    val rawXY = IntArray(2)
+    getLocationOnScreen(rawXY)
+    return rawX >= rawXY[0] && rawX <= (rawXY[0] + width) && rawY >= rawXY[1] && rawY <= (rawXY[1] + height)
 }

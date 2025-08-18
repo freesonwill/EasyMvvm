@@ -200,7 +200,7 @@ class HomeRepository(
     }
     suspend fun getCurrentSelectedSportId(playType: Int): Int? = getCurrentHomeSelectedData(playType)?.sportId
 
-    suspend fun updateSelectedTournamentId(playType: Int, tournamentId: Int) {
+    suspend fun updateSelectedTournamentId(playType: Int, tournamentId: Int) = withContext(Dispatchers.IO){
         getCurrentHomeSelectedData(playType)
             ?.takeIf { it.tournamentId != tournamentId }
             ?.copy(tournamentId = tournamentId)

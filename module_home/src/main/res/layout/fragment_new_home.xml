@@ -8,7 +8,7 @@
     android:fitsSystemWindows="true">
 
 
-    <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
+    <arch.cayenne.module.home.ui.view.ClickSearchConstraintLayout
         android:id="@+id/cl_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -324,6 +324,28 @@
             app:layout_constraintBottom_toBottomOf="@+id/v_league_more_mask"
             app:layout_constraintTop_toTopOf="@+id/v_league_more_mask" />
 
+        <View
+            android:id="@+id/view_calendar_mask"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:alpha="0"
+            android:background="@color/drawer_scrim_color"
+            android:clickable="true"
+            android:focusable="true"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+        <FrameLayout
+            android:id="@+id/ll_calendar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="parent" />
         <FrameLayout
             android:id="@+id/ll_tournaments_dropdown"
             android:layout_width="match_parent"
@@ -336,19 +358,8 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/cl_second_navbar" />
 
-        <View
-            android:id="@+id/view_calendar_mask"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:alpha="0"
-            android:background="@color/drawer_scrim_color"
-            android:clickable="true"
-            android:focusable="true"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
 
-    </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
+    </arch.cayenne.module.home.ui.view.ClickSearchConstraintLayout>
     <!-- 左侧滑出的導航菜單 -->
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/navigation_view"
