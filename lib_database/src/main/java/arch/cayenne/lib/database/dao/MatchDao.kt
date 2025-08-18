@@ -157,6 +157,9 @@ abstract class MatchDao : BaseDao<MatchBean>() {
     @Query("DELETE FROM MarketSelectCrossRef WHERE matchId IN (:matchIds) " )
     abstract fun deleteMarketSelectCrossRef(matchIds: List<Long>)
 
+    @Query("SELECT EXISTS(SELECT 1 FROM MatchBean LIMIT 1)")
+    abstract fun observeHasAnyMatch(): Flow<Boolean>
+
     //收到notify時，match不是全收到，沒收到的那些也是不會變動的，所以只更新有收到的參數
     @Query("UPDATE MatchBean " +
             "SET basic_status = :status, " +

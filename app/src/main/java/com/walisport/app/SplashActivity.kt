@@ -134,7 +134,7 @@ class SplashActivity : BaseActivity<SplashViewModel, ActivitySplashBinding>() {
     }
 
     override suspend fun createObserver() {
-        mViewModel.loginResult.observe(this) {login ->
+        mViewModel.loginResult.observe(this) { login ->
             if (login == null) return@observe
             when(login) {
                 LoginEnum.SUCCESSFUL -> {
@@ -147,6 +147,9 @@ class SplashActivity : BaseActivity<SplashViewModel, ActivitySplashBinding>() {
 
                 }
             }
+        }
+        mViewModel.hasAnyMatch.observe(this) {
+            if (it) jumpToMainActivity()
         }
     }
 

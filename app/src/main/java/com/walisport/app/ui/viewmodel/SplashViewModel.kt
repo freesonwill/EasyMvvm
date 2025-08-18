@@ -1,6 +1,9 @@
 package com.walisport.app.ui.viewmodel
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.common.data.constants.SkinType
 import arch.cayenne.lib.common.ui.viewmodel.BaseActivityViewModel
 import arch.cayenne.lib.skin.LanguageManager
@@ -15,6 +18,18 @@ class SplashViewModel : BaseActivityViewModel() {
     private val repository: SplashRepository by inject { parametersOf(viewModelScope) }
     private val skinManager: SkinnableManager by inject { parametersOf(viewModelScope) }
     private val languageManager:LanguageManager by inject { parametersOf(viewModelScope) }
+
+    private val _hasAnyMatch = MutableLiveData<Boolean>()
+    val hasAnyMatch: LiveData<Boolean> = _hasAnyMatch
+
+    init {
+        viewModelScope.launch {
+            repository.observeHasAnyMatch().collect {
+                "Database has match, jump to main immediate".logi(TAG)
+                _hasAnyMatch.value = it
+            }
+        }
+    }
 
     fun saveUserData(uid: Int, token: String) {
         repository.saveUserData(uid, token)
