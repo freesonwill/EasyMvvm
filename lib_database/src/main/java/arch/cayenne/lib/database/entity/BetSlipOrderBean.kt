@@ -55,6 +55,6 @@ data class EarlySettlePriceBean(
     val price: String,          // 提前結算 1 元的報價（如 0.92）
     val settleTotal: Int,       // 最大有效提前結算次數
     val settleMin: String,      // 單次最小結算本金
-    val settleStatus: Int       // 狀態：1-投注確認中, 2-拒單, ..., 102-提前結算進行中
+    val settleStatus: Int       // //投注确认中，2拒单，3取消订单，4接单成功，5已结算,101 预约提前结算中,102 提前结算进行中, 1000- 本地端點擊提前結算按鈕用
 )
 

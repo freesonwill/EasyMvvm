@@ -129,7 +129,7 @@ abstract class BasePreLoadBottomSheetFragment<VM : BaseViewModel, VB : ViewBindi
     }
 
     override fun playExitAnimations() {
-        val sheetContainerSheetAnim = AnimationUtils.loadAnimation(requireContext(), R.anim.slide_bottom_sheet_down)
+        val sheetContainerSheetAnim = exitAnimation()
         sheetContainerSheetAnim.setAnimationListener(object : Animation.AnimationListener {
             override fun onAnimationStart(animation: Animation?) {
                 backgroundView?.visibility = View.INVISIBLE
