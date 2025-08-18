@@ -44,10 +44,10 @@ class HomeCalendarFragment private constructor() : Fragment() {
     private var maskView: View? = null
     private var heightAnimator: ValueAnimator? = null
     private var currentAnimState: AnimState? = null
-    private var tabSelectedDate: String = "0"
+    private val allDay = "0"
+    private var tabSelectedDate: String = allDay
     // 1. 一個私有的、可為 null 的 backing property，用來實際儲存綁定物件。
     private var mBinding: HomeTourPopupCalendarViewBinding? = null
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -147,7 +147,7 @@ class HomeCalendarFragment private constructor() : Fragment() {
                 val month = String.format("%02d", calendarView.selectedCalendar.month)
                 val day = String.format("%02d", calendarView.selectedCalendar.day)
                 var selectedDate =
-                    if (tabSelectedDate == "0") "$year$month$day"
+                    if (tabSelectedDate == allDay) allDay
                     else tabSelectedDate
 
                 // 透過 binding 操作 Popup 內部的 View
@@ -166,6 +166,7 @@ class HomeCalendarFragment private constructor() : Fragment() {
                         minRangeDate.month,
                         minRangeDate.day
                     )
+                    binding.calendarView.clearSingleSelect()
                     onResetDateListener?.invoke()
                     collapseView()
                 }
@@ -370,7 +371,7 @@ class HomeCalendarFragment private constructor() : Fragment() {
         val currentYear = mBinding?.calendarView?.curYear ?: 0
         val currentMonth = mBinding?.calendarView?.curMonth ?: 0
         //日期tab為全部時標記為今日
-        if (tabSelectedDate == "0") {
+        if (tabSelectedDate == allDay) {
             mBinding?.let { binding->
                 binding.calendarView.scrollToCurrent(true)
                 binding.tvCurrentMonth.text = resources.getString(
@@ -378,7 +379,8 @@ class HomeCalendarFragment private constructor() : Fragment() {
                     currentMonth.toChineseMonth(),
                     currentYear.toString()
                 )
-
+                binding.calendarView.clearSingleSelect()
+                tabSelectedDate = allDay
             }
         } else {
             val result = tabSelectedDate.extractDate()
@@ -414,7 +416,12 @@ class HomeCalendarFragment private constructor() : Fragment() {
 
     //選取日期後按確定時連動至早盤日期tab,選取對應的日期
     private fun setSelectedDateTab(selectedDate: String) {
-        onDataSelectedListener?.invoke(DateUtils.getMonthDay(selectedDate))
+        if (selectedDate == allDay) {
+            //如果選擇的是全部日期，則不需要進行任何操作
+            onDataSelectedListener?.invoke(selectedDate)
+        } else {
+            onDataSelectedListener?.invoke(DateUtils.getMonthDay(selectedDate))
+        }
         // 通常選擇完資料後，會自動關閉 popup
         collapseView()
     }
