@@ -23,6 +23,8 @@ class PullRefreshFooter(context: Context) : ClassicsFooter(context) {
         oldState: RefreshState,
         newState: RefreshState
     ) {
+        mTextFinish = ""
+        mTextFailed = ""
         when (newState) {
             RefreshState.PullUpToLoad -> {
                 mTitleText.text = R.string.load_more_up.getString()

@@ -30,7 +30,7 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
     override val vmClass: KClass<DrawerContentViewModel> = DrawerContentViewModel::class
     private var onFunctionClick: (() -> Unit)? = null
     //note:login入口開關
-    private val showBtnLogin = true
+    private val showBtnLogin = false
     companion object {
         const val TAG = "DrawerContentFragment"
     }
@@ -98,7 +98,7 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
                 onFunctionClick?.invoke()
                 navigate(NewHomeFragmentDirections.actionNewHomeFragmentToHomeBetSlipFragment())
             }
-            llBetSlip.addScaleOnTouchAnimation(ivBetSlip)
+            llBetSlip.addScaleOnTouchAnimation()
             btnLogin.clickNoRepeat {
                 navigatePage(arch.cayenne.lib.res.R.string.nav_module_login_fragment.deeplink("userId" to "abcd"))
             }

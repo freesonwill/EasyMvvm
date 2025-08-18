@@ -6,14 +6,12 @@ import android.graphics.PixelFormat
 import android.view.Gravity
 import android.view.View
 import android.view.WindowManager
-import androidx.core.animation.addListener
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
-import kotlinx.coroutines.suspendCancellableCoroutine
-import kotlin.coroutines.resume
 
 class ToastMessageAnimation: ToastDefaultAnimation() {
 
-    private var lastTranslationY = -1
+    private var lastTranslationY = 0
+    private var animator: ValueAnimator? = null
 
     override fun getLayoutParams(view: View): WindowManager.LayoutParams {
         val layoutParams = WindowManager.LayoutParams()
@@ -22,7 +20,8 @@ class ToastMessageAnimation: ToastDefaultAnimation() {
         layoutParams.format = PixelFormat.TRANSLUCENT
         layoutParams.flags = (WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
                 or WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
-                or WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+                or WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
+                or WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
         layoutParams.gravity = Gravity.TOP
         layoutParams.y = getPositionY(view)
         return layoutParams
@@ -41,41 +40,31 @@ class ToastMessageAnimation: ToastDefaultAnimation() {
         return h / 2 - (view.measuredHeight / 2)
     }
 
-    private suspend fun playSqueezeToTopAnimation(v: View): Int {
+    private fun playSqueezeToTopAnimation(v: View) {
+        if (lastTranslationY < 0) return
         val windowManager = v.context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
-        return suspendCancellableCoroutine { continuation ->
-            val layoutParams = v.layoutParams as WindowManager.LayoutParams
-            val height = (v.height + 8.dp2px)
-            val targetPosition = if (lastTranslationY == layoutParams.y || lastTranslationY == -1) {
-                layoutParams.y - height
-            } else {
-                layoutParams.y - height - (layoutParams.y - lastTranslationY)
-            }
-            lastTranslationY = targetPosition
-            val anim = ValueAnimator.ofInt(layoutParams.y, targetPosition).apply {
-                duration = animDuration
-                addUpdateListener { animation ->
-                    val value = animation.animatedValue as Int
+        val layoutParams = v.layoutParams as WindowManager.LayoutParams
+        val height = (v.height + 8.dp2px)
+        val targetPosition = if (lastTranslationY == layoutParams.y || lastTranslationY == 0) {
+            layoutParams.y - height
+        } else {
+            layoutParams.y - height - (layoutParams.y - lastTranslationY)
+        }
+        lastTranslationY = targetPosition
+        animator?.cancel()
+        animator = ValueAnimator.ofInt(layoutParams.y, targetPosition).apply {
+            duration = showAnimDuration
+            addUpdateListener { animation ->
+                val value = animation.animatedValue as Int
+                if (v.isAttachedToWindow) {
                     layoutParams.y = value
                     windowManager.updateViewLayout(v, layoutParams)
+                } else {
+                    this.cancel()
                 }
-                var isCanceled = false
-                addListener(
-                    onCancel = {
-                        isCanceled = true
-                        continuation.resume(-1)
-                    },
-                    onEnd = {
-                        if (isCanceled) return@addListener
-                        continuation.resume(200)
-                    }
-                )
-                start()
             }
-            continuation.invokeOnCancellation {
-                if (anim.isRunning) anim.cancel()
-            }
-
+            start()
         }
+
     }
 }

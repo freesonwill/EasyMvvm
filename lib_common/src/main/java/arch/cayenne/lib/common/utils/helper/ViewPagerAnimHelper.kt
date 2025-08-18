@@ -19,6 +19,7 @@ import arch.cayenne.lib.common.utils.ext.startSafeAnimateSet
 import arch.cayenne.lib.common.utils.helper.ViewPagerAnimHelper.Companion.getAnimHelper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.math.max
@@ -39,73 +40,93 @@ fun ViewPager2.doSmartAnim(targetPosition: Int) {
      */
     getAnimHelper()
         .let { helper ->
-            helper.printLog("當前 targetHistory=[${helper.targetHistory.joinToString(",")}], targetPosition=$targetPosition")
-            helper.printLog("收到 doSmartAnim 請求，lastPosition=${if(helper.targetHistory.isEmpty()) "為空" else helper.lastPosition},targetPosition=$targetPosition")
-
-            if (helper.targetHistory.isEmpty()) {
-                helper.printLog("targetHistory 為空，等待加入目前頁面")
-                post {
-                    helper.printLog("目前頁面為 $currentItem，加入 targetHistory，並重新發送需求")
-                    helper.pushToHistory(currentItem)
-                    doSmartAnim(targetPosition)
-                }
-                return
+            helper.preJob?.apply {
+                cancel()
+                helper.printLog("doSmartAnim: 取消 preJob")
             }
 
-            if (targetPosition == helper.lastPosition) {
-                helper.printLog("目的地與上一個相同（$targetPosition），跳過動畫")
-                return
-            }
+            helper.preJob = helper.scope.launch {
+                helper.printLog("doSmartAnim: 啟動新的 preJob")
+                helper.printLog("當前 targetHistory=[${helper.targetHistory.joinToString(",")}], targetPosition=$targetPosition")
+                helper.printLog("收到 doSmartAnim 請求，lastPosition=${if (helper.targetHistory.isEmpty()) "為空" else helper.lastPosition},targetPosition=$targetPosition")
 
-            val secondLast = if (helper.targetHistory.size >= 2) helper.secondLastPosition else null
-            val isSwitchingBack = targetPosition == secondLast
-            val isAnimating = helper.job?.isActive == true
-
-            if(!isAnimating) {
-                if (targetPosition in listOf(helper.lastPosition - 1, helper.lastPosition + 1)) {
-                    helper.printLog("目的地（$targetPosition）與上一個（${helper.lastPosition}）相鄰，執行 ViewPager 預設動畫")
-                    helper.pushToHistory(targetPosition)
-                    setCurrentItem(targetPosition, true)
-                    return
-                } else {
-                    helper.printLog("執行正常動畫 doAnim")
-                    helper.pushToHistory(targetPosition)
-                    helper.doAnim()
+                if (helper.targetHistory.isEmpty()) {
+                    helper.printLog("targetHistory 為空，等待加入目前頁面")
+                    helper.printLog("doSmartAnim: 取消當前 retryJob")
+                    helper.retryJob?.cancel()
+                    helper.retryJob = helper.scope.launch {
+                        helper.printLog("doSmartAnim: 啟動新的 retryJob")
+                        delay(50L)
+                        helper.printLog("目前頁面為 $currentItem，加入 targetHistory，並重新發送需求")
+                        helper.pushToHistory(currentItem)
+                        doSmartAnim(targetPosition)
+                    }
+                    return@launch
                 }
-            } else {
-                if (isSwitchingBack) {
-                    helper.printLog("偵測到動畫中來回切換，執行 doSwitchBack")
-                    helper.pushToHistory(targetPosition)
-                    helper.doSwitchBack()
-                } else {
-                    val isInBetween = targetPosition in min(helper.lastPosition, helper.secondLastPosition)..max(helper.lastPosition, helper.secondLastPosition)
-                    val isNearBy = targetPosition in listOf(helper.lastPosition - 1, helper.lastPosition + 1)
-                    val dealyDuration = 5L
 
-                    val action =
-                        if (isInBetween) {
-                            {
-                                helper.printLog("目標頁（$targetPosition）在原動畫起（${helper.secondLastPosition}）訖（${helper.lastPosition}）頁之間")
-                                helper.pushToHistory(targetPosition)
-                                postDelayed({ helper.doAnim(helper.secondAnimDuration) }, dealyDuration)
-                                Unit
+                if (targetPosition == helper.lastPosition) {
+                    helper.printLog("目的地與上一個相同（$targetPosition），跳過動畫")
+                    return@launch
+                }
+
+                val secondLast =
+                    if (helper.targetHistory.size >= 2) helper.secondLastPosition else null
+                val isSwitchingBack = targetPosition == secondLast
+                val isAnimating = helper.job?.isActive == true
+
+                if (!isAnimating) {
+                    if (targetPosition in listOf(helper.lastPosition - 1, helper.lastPosition + 1)) {
+                        helper.printLog("目的地（$targetPosition）與上一個（${helper.lastPosition}）相鄰，執行 ViewPager 預設動畫")
+                        helper.pushToHistory(targetPosition)
+                        setCurrentItem(targetPosition, true)
+                        return@launch
+                    } else {
+                        helper.printLog("執行正常動畫 doAnim")
+                        helper.pushToHistory(targetPosition)
+                        helper.doAnim()
+                    }
+                } else {
+                    if (isSwitchingBack) {
+                        helper.printLog("偵測到動畫中來回切換，執行 doSwitchBack")
+                        helper.pushToHistory(targetPosition)
+                        helper.doSwitchBack()
+                    } else {
+                        val isInBetween = targetPosition in min(
+                            helper.lastPosition,
+                            helper.secondLastPosition
+                        )..max(helper.lastPosition, helper.secondLastPosition)
+                        val isNearBy = targetPosition in listOf(
+                            helper.lastPosition - 1,
+                            helper.lastPosition + 1
+                        )
+                        val dealyDuration = 5L
+
+                        val action =
+                            if (isInBetween) {
+                                {
+                                    helper.printLog("目標頁（$targetPosition）在原動畫起（${helper.secondLastPosition}）訖（${helper.lastPosition}）頁之間")
+                                    helper.pushToHistory(targetPosition)
+                                    postDelayed({ helper.doAnim(helper.secondAnimDuration) }, dealyDuration)
+                                    Unit
+                                }
+                            } else if (isNearBy) {
+                                {
+                                    helper.printLog("目的地（$targetPosition）與上一個（${helper.lastPosition}）相鄰，執行 ViewPager 預設動畫")
+                                    helper.pushToHistory(targetPosition)
+                                    setCurrentItem(targetPosition, true)
+                                }
+                            } else {
+                                {
+                                    val direction =
+                                        if (targetPosition > helper.lastPosition) "大於原動畫目標頁" else "小於原動畫起始頁"
+                                    helper.printLog("目標頁（$targetPosition）$direction（${helper.lastPosition}），執行新動畫 doAnim")
+                                    helper.pushToHistory(targetPosition)
+                                    postDelayed({ helper.doAnim(helper.secondAnimDuration) }, dealyDuration)
+                                    Unit
+                                }
                             }
-                        } else if (isNearBy) {
-                            {
-                                helper.printLog("目的地（$targetPosition）與上一個（${helper.lastPosition}）相鄰，執行 ViewPager 預設動畫")
-                                helper.pushToHistory(targetPosition)
-                                setCurrentItem(targetPosition, true)
-                            }
-                        } else {
-                            {
-                                val direction = if (targetPosition > helper.lastPosition) "大於原動畫目標頁" else "小於原動畫起始頁"
-                                helper.printLog("目標頁（$targetPosition）$direction（${helper.lastPosition}），執行新動畫 doAnim")
-                                helper.pushToHistory(targetPosition)
-                                postDelayed({ helper.doAnim(helper.secondAnimDuration) }, dealyDuration)
-                                Unit
-                            }
-                        }
-                    helper.doSpeedUp(action)
+                        helper.doSpeedUp(action)
+                    }
                 }
             }
         }
@@ -120,8 +141,10 @@ class ViewPagerAnimHelper(private val viewPager: ViewPager2) {
     private val isPrev: Boolean
         get() = lastPosition > secondLastPosition
 
-    private val scope: CoroutineScope = viewPager.findViewTreeLifecycleOwner()!!.lifecycleScope
+    internal val scope: CoroutineScope = viewPager.findViewTreeLifecycleOwner()!!.lifecycleScope
+    internal var preJob: Job? = null
     internal var job: Job? = null
+    internal var retryJob: Job? = null
 
     private val fakeViewPager: ImageView
 
@@ -162,6 +185,18 @@ class ViewPagerAnimHelper(private val viewPager: ViewPager2) {
     fun resetHistory() {
         printLog("resetHistory: 清空 targetHistory")
         targetHistory.clear()
+        preJob?.apply {
+            cancel()
+            printLog("resetHistory: 取消當前 preJob")
+        }
+        job?.apply {
+            cancel()
+            printLog("resetHistory: 取消當前 job")
+        }
+        retryJob?.apply {
+            cancel()
+            printLog("resetHistory: 取消當前 retryJob")
+        }
     }
 
     internal fun pushToHistory(position: Int) {
@@ -174,7 +209,8 @@ class ViewPagerAnimHelper(private val viewPager: ViewPager2) {
     internal fun printLog(message: String) {
         val fragment = viewPager.findFragment<Fragment>()
         val name = fragment::class.java.simpleName
-        if(canLog) println("[$TAG][$name] $message")
+        val jobHash = preJob?.hashCode()?.let { "[$it]" }
+        if(canLog) println("[$TAG][$name]$jobHash $message")
     }
 
     internal fun doAnim(duration: Long = defaultDuration) {
@@ -228,7 +264,7 @@ class ViewPagerAnimHelper(private val viewPager: ViewPager2) {
                     }
                 }
 
-                captureViewPagerFroFake {
+                captureViewPagerForFake {
                     viewPager.apply {
                         alpha = 0f
                         setCurrentItem(lastPosition, false)
@@ -262,7 +298,7 @@ class ViewPagerAnimHelper(private val viewPager: ViewPager2) {
         job = scope.launch {
             printLog("doSwitchBack: 啟動新動畫 job, 從（$secondLastPosition）到（${lastPosition}）")
             suspendCancellableCoroutine {
-                captureViewPagerFroFake(oldVpX) {
+                captureViewPagerForFake(oldVpX) {
                     viewPager.apply {
                         alpha = 0f
                         setCurrentItem(lastPosition, false)
@@ -312,7 +348,7 @@ class ViewPagerAnimHelper(private val viewPager: ViewPager2) {
         }
     }
 
-    private fun captureViewPagerFroFake(x: Float = 0f, onReady: (() -> Unit)? = null) {
+    private fun captureViewPagerForFake(x: Float = 0f, onReady: (() -> Unit)? = null) {
         fakeViewPager.apply {
             setImageBitmap(viewPager.drawToBitmap())
             bringToFront()

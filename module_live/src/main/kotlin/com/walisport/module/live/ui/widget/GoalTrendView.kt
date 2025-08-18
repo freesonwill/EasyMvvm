@@ -55,6 +55,7 @@ class GoalTrendView @JvmOverloads constructor(
     private var unitWidth = 3.dp2px.toFloat()//每单元的最大宽度
     private var lineWidth = 2.dp2px.toFloat()//每根竖线的宽度
     private var viewWidth = 0f //View控件的宽度
+    private var padding = 6f
 
     init {
         green.color = 0xFF24EE8A.toInt()  //绿色
@@ -74,6 +75,10 @@ class GoalTrendView @JvmOverloads constructor(
         fiveBlue.style = Paint.Style.FILL
         tenBlue.color = tenBlueColor
         tenBlue.style = Paint.Style.FILL
+    }
+
+    fun setFullScreenMode() {
+        padding = 0f
     }
 
     fun setData(data: MatchTrendData) {
@@ -115,24 +120,28 @@ class GoalTrendView @JvmOverloads constructor(
         if (trendSize > 0) {
             for (i in 0..<trendSize) {
                 val left = i * unitWidth
-                lastCandle = left
+                lastCandle = left + unitWidth
                 val right = left + lineWidth - 3
                 val value = trendList[i]
+                val high = bgHigh * (value / 100f)
                 if (value > 0) {
-                    val high = bgHigh * (value / 100f)
                     val top = rectY + bgHigh - high + 3
                     val bottom = top + high - 3
                     canvas.drawRect(RectF(left, top, right, bottom), red)
                 } else {
-                    val top = rectY + bgHigh + 6
-                    val bottom = rectY + bgHigh - value + 6
+                    val top = rectY + bgHigh + 4
+                    val bottom = if (value >= -3) {
+                        top + 1 //当value值很小时应该存在一条横线而非空
+                    } else {
+                        top - high - 6
+                    }
                     canvas.drawRect(RectF(left, top, right, bottom), blue)
                 }
             }
             //绘制最后一根绿柱
-            val top = rectY + 3
-            val right = lastCandle + lineWidth - 3
-            val bottom = 4 * rectH + rectY - 6
+            val top = rectY
+            val right = lastCandle
+            val bottom = 4 * rectH + rectY
             canvas.drawRect(RectF(lastCandle, top, right, bottom), green)
         }
         //绘制比赛事件图标

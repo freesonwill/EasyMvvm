@@ -81,11 +81,19 @@ class SplashActivity : BaseActivity<SplashViewModel, ActivitySplashBinding>() {
     //55468826
     //token=NTU0Njg4MjZfMTc1MTM1NDgxMzUwMjoyNVJHMnVObXVhNnk5NnpC
 
+    //qatest
+    //55469215
+    //NTU0NjkyMTVfMTc1NTI2MjU1NjI0NTpveXFjVzFTc3h5TTJwY1Z6
+
+    //tiger_test
+    //55469214
+    //NTU0NjkyMTRfMTc1NTI1Mjg5NDMzMTpiNlhJeVphb0xOQVFnNWpS
+
     private val pair: Pair<Int, String> = if (BuildConfig.BUILD_TYPE == "debug") {
         Pair<Int, String>(BuildConfig.uid, BuildConfig.token)
     } else if (BuildConfig.BUILD_TYPE != "release") {
         listOf(
-            Pair(55468822, "NTU0Njg4MjJfMTc1NTA1OTU4MzE1OTpyZnQybDIwZzg5SDdnR21p"),
+            Pair(55468822, "NTU0Njg4MjJfMTc1NTE2NzgxMzA0MDpkaGFZSUFsR1MzTlljQ3lZ"),
             Pair(55468823, "NTU0Njg4MjNfMTc1NDk3MjgwNDY3NzpiNjRyMDJ2Y3RUeXc5SVd5"),
             Pair(55468824, "NTU0Njg4MjRfMTc1NDk3Mjg2MDg2OTo2UUU1bmZ3VlpjUjh4ZTk5"),
             Pair(55468825, "NTU0Njg4MjVfMTc1NDk3MjkyODAyMTphVjdUOEcxSG1OTDR6Sjlw"),

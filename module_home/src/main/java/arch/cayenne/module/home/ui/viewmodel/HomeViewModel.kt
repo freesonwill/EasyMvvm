@@ -316,7 +316,7 @@ class HomeViewModel : BaseViewModel() {
 
     //切換當前的三級選項(聯賽)
     fun setCurrentTournamentId(tournamentId: Int) {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
             repository.updateSelectedTournamentId(currentPlayTypeId, tournamentId)
         }
     }

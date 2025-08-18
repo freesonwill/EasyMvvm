@@ -152,7 +152,7 @@ class MessageListFragment : BaseFragment<MessageMainViewModel, FragmentMessageLi
 
     private fun getImageUrl(html: String): String {
         var url = ""
-        val pattern: Pattern = Pattern.compile("<url>(.*?)</url>")
+        val pattern: Pattern = Pattern.compile("<img\\s+[^>]*?src\\s*=\\s*([\"'])(.*?)([\"'])")
         val matcher: Matcher = pattern.matcher(html)
         while (matcher.find()) {
             url = matcher.group(1)?.toString() ?: ""
