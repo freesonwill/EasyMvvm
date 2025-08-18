@@ -433,7 +433,6 @@ class LiveSoftKeyboardFragment :
                 translationStart = bottomValue.toFloat()
                 translationEnd = topValue.toFloat()
                 mainEndHeight = mainMaxHeight
-                "chatToemoji mainStart ${mainStartHeight} mainEnd ${mainEndHeight} y start:$translationStart end:$translationEnd".logd("aaa")
             }
             // 起始点为软件盘的高度 动画开始高度为整个表情键盘的高度下降到软件盘高度 因此topDistance - softKeyBoardHeight 截止点为topDistance
             mViewModel.SOFT_TO_EMOJI -> {
@@ -574,7 +573,6 @@ class LiveSoftKeyboardFragment :
         }
         updateEmojiView(true)
         updateWhenKeyBoardVisible(KeyBoardType.EMOJI)
-        "emojiVIsibs keyboardEmojiRecycler ${mBinding.keyboardEmojiRecycler.isVisible}  ${mBinding.keyboardEmojiRecycler.height} emojiContent ${mBinding.emojiContent.isVisible} ${mBinding.emojiContent.height}  ${mBinding.emojiContent.alpha}".logd("aaa")
     }
 
     private fun updateEmojiView(isVisible: Boolean) {
