@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
+import android.view.animation.PathInterpolator
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
@@ -71,7 +72,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         setVideoView()
         loadFragment()
         mViewModel.observeMatchInfoNotify()
-        mBinding.drawerLayout.setDrawerInterpolator(150,EaseCubicInterpolator().easeOut())
+        mBinding.drawerLayout.setDrawerInterpolator(150, PathInterpolator(0.33f, 0.66f, 0f,1f))
         mBinding.drawerLayout.setDrawerLockMode(
             DrawerLayout.LOCK_MODE_LOCKED_CLOSED,
             GravityCompat.END

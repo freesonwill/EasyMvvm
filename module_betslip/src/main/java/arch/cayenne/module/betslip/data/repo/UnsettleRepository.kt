@@ -39,11 +39,14 @@ class UnsettleRepository(
         }
     }
 
-    suspend fun earlySettledPrice(betId: String): List<Common.EarlySettlePrice>? {
+    suspend fun earlySettledPrice(betId: String): List<Common.EarlySettlePrice>? = withContext(scope.coroutineContext) {
+        betSlipOrderDao.updateToPendingEarlySettle(betId, 1000)
         val resp = remoteManager.earlySettlePriceReq(betId)
-        return withContext(scope.coroutineContext) {
-            resp?.priceList
+        val data = resp?.priceList
+        if (!data.isNullOrEmpty()) {
+            betSlipOrderDao.updateToPendingEarlySettle(betId, data.first().settleStatus)
         }
+        resp?.priceList
     }
 
     private fun registerEarlySettleNotify(matchId: Long) {

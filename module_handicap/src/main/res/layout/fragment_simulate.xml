@@ -32,8 +32,8 @@
             android:layout_marginStart="@dimen/dp_12"
             android:layout_marginTop="@dimen/dp_50"
             android:layout_marginEnd="@dimen/dp_12"
-            android:inAnimation="@anim/flipper_slide_out_left"
-            android:outAnimation="@anim/flipper_slide_in_right"
+            android:inAnimation="@anim/flipper_slide_in"
+            android:outAnimation="@anim/flipper_slide_out"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

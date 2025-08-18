@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
-import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.Fragment
 import arch.cayenne.lib.base.ui.fragment.BasePreLoadBottomSheetFragment
 import arch.cayenne.lib.common.ui.view.NumberKeyboardView
 import arch.cayenne.lib.common.utils.ViewUtils
@@ -24,7 +24,7 @@ import kotlin.reflect.KClass
 /**
  * 提前结算报价
  * */
-class BetSlipEarlySettledFragment private constructor() :
+class BetSlipEarlySettledFragment :
     BasePreLoadBottomSheetFragment<EarlySettledKeyboardViewModel, FragmentEarlySettledNumberKeyboardBinding>() {
 
     companion object {
@@ -33,11 +33,11 @@ class BetSlipEarlySettledFragment private constructor() :
         private const val BET_AMOUNT_CURRENCY = "bet_amount_currency"
         private const val TAG = "BetSlipEarlySettledFragment"
 
-        fun create(fragmentManager: FragmentManager): BetSlipEarlySettledFragment {
-            val f = fragmentManager.findFragmentByTag(TAG) as? BetSlipEarlySettledFragment
+        fun create(fragment: Fragment): BetSlipEarlySettledFragment {
+            val f = fragment.childFragmentManager.findFragmentByTag(TAG) as? BetSlipEarlySettledFragment
             return if (f == null) {
                 val newF = BetSlipEarlySettledFragment()
-                newF.show(fragmentManager, TAG)
+                newF.customAttach(fragment, TAG)
                 newF
             } else {
                 f
@@ -45,13 +45,13 @@ class BetSlipEarlySettledFragment private constructor() :
         }
 
         fun show(
-            fragmentManager: FragmentManager,
+            fragment: Fragment,
             money: String,
             minAmount: String,
             currency: String
         ): BetSlipEarlySettledFragment {
-            val f = fragmentManager.findFragmentByTag(TAG) as? BetSlipEarlySettledFragment
-            val newF = f ?: create(fragmentManager)
+            val f = fragment.childFragmentManager.findFragmentByTag(TAG) as? BetSlipEarlySettledFragment
+            val newF = f ?: create(fragment)
             newF.apply {
                 arguments = Bundle().apply {
                     putString(BET_AMOUNT_MONEY, money)
