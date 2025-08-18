@@ -1,5 +1,6 @@
 package arch.cayenne.lib.common.data.repo
 
+import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.base.data.repository.BaseRepository
 import arch.cayenne.lib.common.data.constants.LanguageType
 import arch.cayenne.lib.common.data.constants.UserDataKey
@@ -14,8 +15,6 @@ import arch.cayenne.lib.database.entity.InfoBean
 import arch.cayenne.lib.database.entity.SingleBetResultBean
 import arch.cayenne.lib.websocket.WebSocketManager
 import arch.cayenne.lib.websocket.data.ApiCode
-import arch.cayenne.lib.websocket.data.LoginTokenFailedError
-import arch.cayenne.lib.websocket.data.SocketResponseData
 import arch.cayenne.lib.websocket.extension.observeProtoMessage
 import arch.cayenne.lib.websocket.extension.sendAndWaitProtoMessageResponse
 import galaxy.client.proto.Client
@@ -44,18 +43,12 @@ class CommonRepository(
         return infoDao.isLogin()
     }
 
-    suspend fun sendLogin(): SocketResponseData<Client.LoginResp> {
+    suspend fun sendLogin(): ApiResponseState {
         val uid = userDataManager.getValue(UserDataKey.KEY_UID, -1)
         val token = userDataManager.getValue(UserDataKey.KEY_TOKEN, "")
         //沒有Token
         if (uid == -1 || token == "") {
-            return SocketResponseData(
-                mid = ApiCode.LOGIN.mid,
-                sid = ApiCode.LOGIN.sid,
-                rid = 0,
-                data = null,
-                error = LoginTokenFailedError()
-            )
+            return ApiResponseState.Succeeded(false)
         }
         val loginResp = socketManager.sendAndWaitProtoMessageResponse<Client.LoginResp>(
             scope = scope,
@@ -81,8 +74,9 @@ class CommonRepository(
                     loginResp.data!!.success
                 )
             )
+            return ApiResponseState.Succeeded(loginResp.data!!.success)
         }
-        return loginResp
+        return ApiResponseState.Failed(loginResp.error)
     }
 
     //登入成功後主動取得餘額

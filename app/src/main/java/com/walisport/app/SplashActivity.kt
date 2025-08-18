@@ -2,17 +2,13 @@ package com.walisport.app
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Toast
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.lifecycle.Lifecycle
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.BaseActivity
-import arch.cayenne.lib.base.ui.launch
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
+import arch.cayenne.lib.common.data.constants.LoginEnum
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
-import arch.cayenne.lib.websocket.data.LoginTokenFailedError
-import arch.cayenne.lib.websocket.data.ResponseTimeOutError
 import com.walisport.app.databinding.ActivitySplashBinding
 import com.walisport.app.ui.MainActivity
 import com.walisport.app.ui.viewmodel.SplashViewModel
@@ -134,43 +130,21 @@ class SplashActivity : BaseActivity<SplashViewModel, ActivitySplashBinding>() {
     }
 
     override fun initListener() {
-        mBinding.apply {
-            splashCounterDown.setOnClickListener {
-                mViewModel.ignore.value =  true
-            }
-        }
+
     }
 
     override suspend fun createObserver() {
-        mViewModel.homeTimeSeconds.observe(this) { seconds ->
-            if (seconds > 0) {
-                mBinding.splashCounterDown.text =
-                    getString(R.string.splash_counter_down_skip, seconds.toString())
-            } else {
-                mBinding.splashCounterDown.text = getString(R.string.splash_skip)
-            }
-
-        }
-        launch(Lifecycle.State.RESUMED) {
-            mViewModel.jumpToMainOrLogin.collect {
-                if (!it) {
-                    //TODO 跳到登入頁
-                } else {
+        mViewModel.loginResult.observe(this) {login ->
+            if (login == null) return@observe
+            when(login) {
+                LoginEnum.SUCCESSFUL -> {
                     jumpToMainActivity()
                 }
-            }
-        }
-
-        mViewModel.loginError.observe(this) {
-            when(it) {
-                is LoginTokenFailedError -> {   //準備登入時沒有取得token或是uid
+                LoginEnum.NOT_SUCCESSFUL -> {
                     //TODO 跳到登入頁
                 }
-                is ResponseTimeOutError -> {    //send login timeout
-                    Toast.makeText(this, it.msg, Toast.LENGTH_LONG).show()
-                }
-                else -> {   //其餘錯誤
-                    Toast.makeText(this, it.msg, Toast.LENGTH_LONG).show()
+                LoginEnum.API_FAILURE -> {
+
                 }
             }
         }

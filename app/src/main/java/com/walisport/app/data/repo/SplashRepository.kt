@@ -8,7 +8,6 @@ import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.common.utils.helper.CountDownHelper
 import arch.cayenne.lib.websocket.WebSocketManager
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.SharedFlow
 
 class SplashRepository(
     override val scope: CoroutineScope,
@@ -18,7 +17,6 @@ class SplashRepository(
 
     private val countDownHelper = CountDownHelper()
     internal var countDown: Int by countDownHelper::countDown
-    internal val countDownSecondsLD: SharedFlow<Int> by countDownHelper::countDownSecondsLD
     internal val isCountDownStart by countDownHelper::isCountDownStart
 
     init {
