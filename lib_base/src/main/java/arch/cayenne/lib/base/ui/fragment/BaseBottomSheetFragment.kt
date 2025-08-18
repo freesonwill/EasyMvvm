@@ -12,7 +12,8 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
-import android.view.animation.AnimationUtils
+import android.view.animation.PathInterpolator
+import android.view.animation.TranslateAnimation
 import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
 import androidx.annotation.CallSuper
@@ -115,7 +116,25 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
     }
 
 
-    protected open fun enterAnimation():Animation = AnimationUtils.loadAnimation(requireContext(),R.anim.slide_bottom_sheet_up)
+    protected open fun enterAnimation(): Animation = TranslateAnimation(
+        Animation.RELATIVE_TO_PARENT, 0f,
+        Animation.RELATIVE_TO_PARENT, 0f,
+        Animation.RELATIVE_TO_PARENT, 1f,
+        Animation.RELATIVE_TO_PARENT, 0f
+    ).apply {
+        duration = 150
+        interpolator = PathInterpolator(0.33f, 1f, 0.5f, 1f)
+    }
+
+    protected open fun exitAnimation(): Animation = TranslateAnimation(
+        Animation.RELATIVE_TO_PARENT, 0f,
+        Animation.RELATIVE_TO_PARENT, 0f,
+        Animation.RELATIVE_TO_PARENT, 0f,
+        Animation.RELATIVE_TO_PARENT, 1f
+    ).apply {
+        duration = 150
+        interpolator = PathInterpolator(0.33f, 1f, 0.5f, 1f)
+    }
 
     protected fun playEnterAnimations() {
         sheetContainer?.let {  scv ->
@@ -139,7 +158,7 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
     }
 
     protected open fun playExitAnimations() {
-        val sheetContainerSheetAnim = AnimationUtils.loadAnimation(requireContext(), R.anim.slide_bottom_sheet_down)
+        val sheetContainerSheetAnim = exitAnimation()
         sheetContainerSheetAnim.setAnimationListener(object : Animation.AnimationListener {
             override fun onAnimationStart(animation: Animation?) {
                 backgroundView?.visibility = View.INVISIBLE
