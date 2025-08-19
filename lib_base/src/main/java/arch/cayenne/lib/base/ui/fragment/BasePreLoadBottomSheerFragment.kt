@@ -11,8 +11,6 @@ import androidx.annotation.CallSuper
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
-import androidx.lifecycle.DefaultLifecycleObserver
-import androidx.lifecycle.LifecycleOwner
 import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.base.R
 import arch.cayenne.lib.base.ui.view.UnhideableBottomSheetDialog
@@ -131,7 +129,7 @@ abstract class BasePreLoadBottomSheetFragment<VM : BaseViewModel, VB : ViewBindi
     }
 
     override fun playExitAnimations() {
-        val sheetContainerSheetAnim = AnimationUtils.loadAnimation(requireContext(), R.anim.slide_bottom_sheet_down)
+        val sheetContainerSheetAnim = exitAnimation()
         sheetContainerSheetAnim.setAnimationListener(object : Animation.AnimationListener {
             override fun onAnimationStart(animation: Animation?) {
                 backgroundView?.visibility = View.INVISIBLE
@@ -155,12 +153,7 @@ abstract class BasePreLoadBottomSheetFragment<VM : BaseViewModel, VB : ViewBindi
     }
 
     fun customAttach(fragment: Fragment, newTag: String) {
-        show(fragment.requireActivity().supportFragmentManager, newTag)
-        fragment.lifecycle.addObserver(object : DefaultLifecycleObserver {
-            override fun onDestroy(owner: LifecycleOwner) {
-                superDismiss()
-            }
-        })
+        show(fragment.childFragmentManager, newTag)
     }
 
     @CallSuper
@@ -188,6 +181,10 @@ abstract class BasePreLoadBottomSheetFragment<VM : BaseViewModel, VB : ViewBindi
 
     fun setOnEndListener(listener: (() -> Unit)?) {
         onEndListener = listener
+    }
+
+    override fun dismiss() {
+        customHide()
     }
 }
 

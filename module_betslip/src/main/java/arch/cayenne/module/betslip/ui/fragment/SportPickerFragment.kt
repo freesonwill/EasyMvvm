@@ -3,10 +3,7 @@ package arch.cayenne.module.betslip.ui.fragment
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.animation.addListener
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.SimpleItemAnimator
@@ -21,12 +18,9 @@ import kotlin.reflect.KClass
 class SportPickerFragment private constructor(): BaseFragment<SportPickerViewModel, FragmentSportPickerBinding>() {
 
     companion object {
-        const val TAG = "SportPickerFragment"
-        private const val ANCHOR_Y = "anchorY"
-        fun newInstance(anchorY: Int, sportIds: List<Int>): SportPickerFragment {
+        fun newInstance(sportIds: List<Int>): SportPickerFragment {
             return SportPickerFragment().apply {
                 arguments = Bundle().apply {
-                    putInt(ANCHOR_Y, anchorY)
                     putIntArray(Config.VALUE_SELECTED_SPORT_ID, sportIds.toIntArray())
                 }
             }
@@ -47,21 +41,9 @@ class SportPickerFragment private constructor(): BaseFragment<SportPickerViewMod
         })
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        return super.onCreateView(inflater, container, savedInstanceState).apply {
-            mBinding.clFilter.visibility = View.INVISIBLE
-            val anchorY = requireArguments().getInt(ANCHOR_Y, 0)
-            val lp = mBinding.clFilter.layoutParams as ConstraintLayout.LayoutParams
-            lp.topMargin = anchorY
-            mBinding.clFilter.layoutParams = lp
-        }
-    }
-
     override fun initView(savedInstanceState: Bundle?) {
+        mBinding.clFilter.visibility = View.INVISIBLE
+        mBinding.maskView.visibility = View.INVISIBLE
         mBinding.rvSport.adapter = sportAdapter
         (mBinding.rvSport.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
     }
@@ -81,9 +63,6 @@ class SportPickerFragment private constructor(): BaseFragment<SportPickerViewMod
             sendResult()
         }
         mBinding.maskView.setOnClickListener {
-            collapseView()
-        }
-        mBinding.topMaskView.setOnClickListener {
             collapseView()
         }
     }
@@ -130,7 +109,8 @@ class SportPickerFragment private constructor(): BaseFragment<SportPickerViewMod
         }
     }
 
-    private fun collapseView() {
+    fun collapseView() {
+        mBinding.root.bringToFront()
         val clContent = mBinding.clContent
         val targetHeight = clContent.height
         val contentAnimate =

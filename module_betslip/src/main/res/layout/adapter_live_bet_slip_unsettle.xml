@@ -226,7 +226,7 @@
         app:layout_constraintTop_toTopOf="@id/bet_unsettled_tv_except"
         tools:text="$2312" />
 
-    <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
+    <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
         android:id="@+id/bet_unsettled_bt_settle"
         android:layout_width="@dimen/dp_335"
         android:layout_height="@dimen/dp_48"
@@ -245,21 +245,34 @@
             android:layout_height="wrap_content"
             android:text="@string/live_bet_early_settle"
             android:textColor="@color/text_on_theme_color"
-            android:textSize="@dimen/sp_16" />
+            android:textSize="@dimen/sp_16"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/bet_unsettled_bt_amount"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <arch.cayenne.lib.skin.widget.SkinnableTextView
             android:id="@+id/bet_unsettled_bt_amount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/color_016f4a"
-            android:textSize="@dimen/sp_16" />
+            android:textSize="@dimen/sp_16"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/bet_unsettled_bt_tv"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <arch.cayenne.lib.common.ui.view.LoadingView
             android:id="@+id/bet_unsettled_bt_progress"
             android:layout_width="@dimen/dp_24"
             android:layout_height="@dimen/dp_24"
-            android:visibility="gone" />
-    </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
 
     <View
         android:layout_width="match_parent"

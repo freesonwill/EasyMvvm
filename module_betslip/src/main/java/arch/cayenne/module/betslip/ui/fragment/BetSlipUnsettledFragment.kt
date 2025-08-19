@@ -3,11 +3,9 @@ package arch.cayenne.module.betslip.ui.fragment
 import android.net.Uri
 import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
 import arch.cayenne.lib.common.utils.copyToClipboard
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
-import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
 import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.database.entity.BetSlipOrderBean
 import arch.cayenne.lib.database.entity.BetSlipSelectionData
@@ -70,11 +68,11 @@ class BetSlipUnsettledFragment :
                 val money = BetSlipUtils.earlySettlePrice(
                     order.betAmount, order.earlyBetAmount, order.earlySettlePrice.price
                 )
-                BetSlipEarlySettledFragment.instance(money, it.settleMin,order.currency).apply {
+                BetSlipEarlySettledFragment.show(this, money, it.settleMin,order.currency).apply {
                     setOnEarlySettleListener { money ->
                         mViewModel.earlyPartSettled(it.betId, money, it.price)
                     }
-                }.show(childFragmentManager)
+                }
             }
         }
     }
@@ -128,5 +126,10 @@ class BetSlipUnsettledFragment :
 
     override fun getBetSlipEnum(): BetSlipEnum {
         return BetSlipEnum.UnSettled
+    }
+
+    override fun onResume() {
+        super.onResume()
+        BetSlipEarlySettledFragment.create(this)
     }
 }

@@ -4,7 +4,8 @@ import android.os.Bundle
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
-import arch.cayenne.lib.base.ui.fragment.BaseBottomSheetFragment
+import androidx.fragment.app.Fragment
+import arch.cayenne.lib.base.ui.fragment.BasePreLoadBottomSheetFragment
 import arch.cayenne.lib.common.ui.view.NumberKeyboardView
 import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
@@ -23,26 +24,43 @@ import kotlin.reflect.KClass
 /**
  * 提前结算报价
  * */
-class BetSlipEarlySettledFragment private constructor() :
-    BaseBottomSheetFragment<EarlySettledKeyboardViewModel, FragmentEarlySettledNumberKeyboardBinding>() {
+class BetSlipEarlySettledFragment :
+    BasePreLoadBottomSheetFragment<EarlySettledKeyboardViewModel, FragmentEarlySettledNumberKeyboardBinding>() {
 
     companion object {
         private const val BET_AMOUNT_MONEY = "bet_amount_money"
         private const val BET_AMOUNT_MIN = "bet_amount_min"
         private const val BET_AMOUNT_CURRENCY = "bet_amount_currency"
+        private const val TAG = "BetSlipEarlySettledFragment"
 
-        fun instance(
+        fun create(fragment: Fragment): BetSlipEarlySettledFragment {
+            val f = fragment.childFragmentManager.findFragmentByTag(TAG) as? BetSlipEarlySettledFragment
+            return if (f == null) {
+                val newF = BetSlipEarlySettledFragment()
+                newF.customAttach(fragment, TAG)
+                newF
+            } else {
+                f
+            }
+        }
+
+        fun show(
+            fragment: Fragment,
             money: String,
             minAmount: String,
-            currency: String,
+            currency: String
         ): BetSlipEarlySettledFragment {
-            return BetSlipEarlySettledFragment().apply {
+            val f = fragment.childFragmentManager.findFragmentByTag(TAG) as? BetSlipEarlySettledFragment
+            val newF = f ?: create(fragment)
+            newF.apply {
                 arguments = Bundle().apply {
                     putString(BET_AMOUNT_MONEY, money)
                     putString(BET_AMOUNT_MIN, minAmount)
                     putString(BET_AMOUNT_CURRENCY, currency)
                 }
             }
+            newF.customShow()
+            return newF
         }
     }
 
@@ -84,6 +102,17 @@ class BetSlipEarlySettledFragment private constructor() :
     private fun setCurrency() {
         val currency = requireArguments().getString(BET_AMOUNT_CURRENCY) ?: ""
         mViewModel.setMoneyCurrency(currency)
+    }
+
+    private fun setAmount() {
+        val betAmount = requireArguments().getString(BET_AMOUNT_MONEY) ?: "0"
+        val minAmount = requireArguments().getString(BET_AMOUNT_MIN) ?: "0"
+        val decimalDigitsCount = getDecimalDigitsCount(betAmount)
+        mViewModel.setDecimalNumber(decimalDigitsCount)
+        mViewModel.setAmountMoney(
+            betAmount.toMoneyForScale(decimalDigitsCount),
+            minAmount.toMoney()
+        )
     }
 
     private fun initTab(tabLayout: SkinnableTabLayout) {
@@ -132,19 +161,6 @@ class BetSlipEarlySettledFragment private constructor() :
                 e.printStackTrace()
             }
         }
-    }
-
-    override fun initData() {
-        super.initData()
-        setCurrency()
-        val betAmount = arguments?.getString(BET_AMOUNT_MONEY) ?: "0"
-        val minAmount = arguments?.getString(BET_AMOUNT_MIN) ?: "0"
-        val decimalDigitsCount = getDecimalDigitsCount(betAmount)
-        mViewModel.setDecimalNumber(decimalDigitsCount)
-        mViewModel.setAmountMoney(
-            betAmount.toMoneyForScale(decimalDigitsCount),
-            minAmount.toMoney()
-        )
     }
 
     override fun initListener() {
@@ -196,7 +212,8 @@ class BetSlipEarlySettledFragment private constructor() :
             val money = it.ifEmpty {
                 "0.00"
             }
-            mBinding.tvBetMoney.text = getString(R.string.refund_amount).format(mViewModel.currencySymbol,money)
+            mBinding.tvBetMoney.text =
+                getString(R.string.refund_amount).format(mViewModel.currencySymbol, money)
         }
         mViewModel.currencySymbolListener.observe(viewLifecycleOwner) {
             mBinding.tvMoney.text = it
@@ -225,5 +242,11 @@ class BetSlipEarlySettledFragment private constructor() :
             )
             dismiss()
         }
+    }
+
+    override fun customShow() {
+        setCurrency()
+        setAmount()
+        super.customShow()
     }
 }

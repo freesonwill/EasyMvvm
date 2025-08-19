@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
+import arch.cayenne.lib.common.ui.viewmodel.Event
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.getFormatDate
 import arch.cayenne.module.betslip.R
@@ -14,6 +15,9 @@ import arch.cayenne.module.betslip.data.repo.HomeBetSlipRepository
 import kotlinx.coroutines.launch
 
 class HomeBetSlipViewModel(private val repo: HomeBetSlipRepository) : BaseViewModel() {
+
+    private val _isShowSportView = MutableLiveData<Event<Boolean>>()
+    val isShowSportView: LiveData<Event<Boolean>> get() = _isShowSportView
 
     private val _onDateFilter = MutableLiveData<DateFilterBean>()
     val onDateFilter: LiveData<DateFilterBean> get() = _onDateFilter
@@ -58,5 +62,17 @@ class HomeBetSlipViewModel(private val repo: HomeBetSlipRepository) : BaseViewMo
                 _onSportFilter.value = repo.getSportByIds(ids)
             }
         }
+    }
+
+    fun setSportViewExpend() {
+        _isShowSportView.value = Event(true)
+    }
+
+    fun setSportViewCollapse() {
+        _isShowSportView.value = Event(false)
+    }
+
+    fun toggleSportView() {
+        _isShowSportView.value = Event(!(_isShowSportView.value?.peekContent() ?: false))
     }
 }
