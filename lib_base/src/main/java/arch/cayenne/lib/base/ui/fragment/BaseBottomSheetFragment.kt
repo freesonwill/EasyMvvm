@@ -130,7 +130,7 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
         Animation.RELATIVE_TO_PARENT, 1f,
         Animation.RELATIVE_TO_PARENT, 0f
     ).apply {
-        duration = 150
+        duration = 300
         interpolator = PathInterpolator(0.33f, 1f, 0.5f, 1f)
     }
 
@@ -140,7 +140,7 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
         Animation.RELATIVE_TO_PARENT, 0f,
         Animation.RELATIVE_TO_PARENT, 1f
     ).apply {
-        duration = 150
+        duration = 300
         interpolator = PathInterpolator(0.33f, 1f, 0.5f, 1f)
     }
 
