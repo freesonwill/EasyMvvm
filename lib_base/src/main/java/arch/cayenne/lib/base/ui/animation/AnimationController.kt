@@ -19,8 +19,8 @@ object AnimationController {
             Animation.RELATIVE_TO_SELF, 0f,
             Animation.RELATIVE_TO_SELF, 0f
         ).apply {
-            duration = 240
-            interpolator = PathInterpolator(0.4f, 0f, 0.2f, 1f)
+            duration = 300
+            interpolator = PathInterpolator(0.36f, 0.66f, 0.04f, 1f)
         }
     )
 
@@ -32,8 +32,8 @@ object AnimationController {
             Animation.RELATIVE_TO_SELF, 0f,
             Animation.RELATIVE_TO_SELF, 0f
         ).apply {
-            duration = 240
-            interpolator = PathInterpolator(0.4f, 0f, 0.2f, 1f)
+            duration = 300
+            interpolator = PathInterpolator(0.36f, 0.66f, 0.04f, 1f)
         }
     )
 
@@ -45,8 +45,8 @@ object AnimationController {
             Animation.RELATIVE_TO_SELF, 0f,
             Animation.RELATIVE_TO_SELF, 0f
         ).apply {
-            duration = 240
-            interpolator = PathInterpolator(0.4f, 0f, 0.2f, 1f)
+            duration = 300
+            interpolator = PathInterpolator(0.36f, 0.66f, 0.04f, 1f)
             fillAfter = true // 动画结束后保持最终位置
         }
     )
@@ -59,8 +59,8 @@ object AnimationController {
             Animation.RELATIVE_TO_SELF, 0f,
             Animation.RELATIVE_TO_SELF, 0f
         ).apply {
-            duration = 240
-            interpolator = PathInterpolator(0.4f, 0f, 0.2f, 1f)
+            duration = 300
+            interpolator = PathInterpolator(0.36f, 0.66f, 0.04f, 1f)
             fillAfter = true // 动画结束后保持最终位置
         }
     )
