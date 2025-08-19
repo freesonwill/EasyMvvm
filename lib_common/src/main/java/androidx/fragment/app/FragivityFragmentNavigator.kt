@@ -31,7 +31,7 @@ class FragivityFragmentNavigator(
 ) : Navigator<FragmentNavigator.Destination>() {
 
     private val backStack = ArrayDeque<Int>()
-    private val backNavOptionStack = ArrayDeque<NavOptions>()
+    private val backNavOptionStack = ArrayDeque<NavOptions?>()
     private val descendingBackStack = backStack.asReversed()
     // 用于记录Fragment的延迟隐藏状态
     private val fragmentDelayedHideMap = mutableMapOf<String, Boolean>()
@@ -277,8 +277,8 @@ class FragivityFragmentNavigator(
                 }
             },false)
 
-            backNavOptionStack.add(navOptions)
         }
+        backNavOptionStack.add(navOptions)
         //"navOptions-->$navOptions,backNavOptionStack:$backNavOptionStack".logd(TAG)
         return intArrayOf(enterAnim,exitAnim,popEnterAnim,popExitAnim)
     }
@@ -389,7 +389,7 @@ class FragivityFragmentNavigator(
      * 退出弹窗动画
      */
     private fun exitPopupAnim() {
-        val lastNavOption = backNavOptionStack.removeLast()
+        val lastNavOption = backNavOptionStack.removeLast() ?: return
         val popEnterAnim = lastNavOption.popEnterAnim
         val popExitAnim = lastNavOption.popExitAnim
         //"popEnterAnim:$popExitAnim,popExitAnim:$popExitAnim,backNavOptionStack:${backNavOptionStack}".logd(TAG)
