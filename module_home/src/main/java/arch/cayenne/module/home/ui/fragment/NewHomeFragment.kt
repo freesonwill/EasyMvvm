@@ -426,7 +426,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 R.color.drawer_scrim_color
             )
         )
-        mBinding.drawerLayout.setDrawerInterpolator(240,PathInterpolator(0.33f, 0.66f, 0f,1f))
+        mBinding.drawerLayout.setDrawerInterpolator(300,PathInterpolator(0.36f, 0.66f, 0.04f,1f))
         childFragmentManager.beginTransaction()
             .replace(
                 mBinding.fragmentDrawerContent.id,
