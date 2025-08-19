@@ -25,8 +25,8 @@
             android:id="@+id/action_liveMainFragment_to_leagueFragment"
             app:destination="@id/leagueFragment"
             app:enterAnim="@anim/slide_bottom_to_top"
-            app:exitAnim="@null"
-            app:popEnterAnim="@null"
+            app:exitAnim="@anim/no_anim"
+            app:popEnterAnim="@anim/no_anim"
             app:popExitAnim="@anim/slide_top_to_bottom"/>
 
         <action

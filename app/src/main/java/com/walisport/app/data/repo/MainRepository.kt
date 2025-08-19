@@ -4,6 +4,7 @@ import arch.cayenne.lib.base.data.repository.BaseRepository
 import arch.cayenne.lib.common.data.constants.SkinType
 import arch.cayenne.lib.common.data.constants.UserDataKey
 import arch.cayenne.lib.common.data.manager.UserDataManager
+import arch.cayenne.lib.database.dao.InfoDao
 import arch.cayenne.lib.database.dao.MessageDao
 import arch.cayenne.lib.database.dao.SportDao
 import arch.cayenne.lib.database.entity.MessageBean
@@ -28,8 +29,11 @@ class MainRepository(
     private val userDataManager: UserDataManager,
     private val socketManager: WebSocketManager,
     private val sportDao: SportDao,
-    private val msgDao: MessageDao
+    private val msgDao: MessageDao,
+    private val infoDao: InfoDao,
 ) : BaseRepository() {
+
+    suspend fun observeLoginChange() = infoDao.observeIsLogin()
 
     //获取皮肤背景
     fun getSkinType(): String {

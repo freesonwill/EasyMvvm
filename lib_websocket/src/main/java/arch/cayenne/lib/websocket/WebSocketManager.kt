@@ -10,6 +10,7 @@ import arch.cayenne.lib.websocket.data.ConnectState
 import arch.cayenne.lib.websocket.data.IRequest
 import arch.cayenne.lib.websocket.data.IResponse
 import arch.cayenne.lib.websocket.data.ISocket
+import arch.cayenne.lib.websocket.data.SocketRequestData
 import arch.cayenne.lib.websocket.data.ThreadSafeAutoIncrementID
 import arch.cayenne.lib.websocket.extension.asRemoteRequest
 import galaxy.client.proto.Client
@@ -39,6 +40,8 @@ class WebSocketManager(
     private var retryCount = 0
     //线程安全的自增Rid
     private val ridGenerator by lazy { ThreadSafeAutoIncrementID(max = 0xFFF) } //4095
+
+    var isLoggingIn = false  //是否正在登錄中
     fun nextRid() = ridGenerator.id.toShort()
 
     private var networkCallback: ConnectivityManager.NetworkCallback? = null
@@ -118,7 +121,14 @@ class WebSocketManager(
         stopHeartbeat()
     }
 
-    fun send(data: IRequest): IResponse? {
+    suspend fun send(data: IRequest): IResponse? {
+        if (isLoggingIn) {     //如果現在正在登入中的話，就掛起這個request，等到登入結束後再送出
+            delay(100)
+            return send(data)
+        }
+        if (data is SocketRequestData && ApiCode.of(data.mid, data.sid) == ApiCode.LOGIN) {
+            isLoggingIn = true
+        }
         return socket.send(data)
     }
 
