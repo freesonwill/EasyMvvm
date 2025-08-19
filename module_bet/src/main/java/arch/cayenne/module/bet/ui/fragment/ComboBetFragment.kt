@@ -19,8 +19,6 @@ import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.ui.dialog.CommonDialog
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
-import arch.cayenne.lib.common.utils.ext.NavResultExt.sendResult
-import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.helper.showToast
@@ -28,7 +26,6 @@ import arch.cayenne.lib.database.entity.BetSelectionBean
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.module.bet.R
 import arch.cayenne.module.bet.data.ComboMultiBetBean
-import arch.cayenne.module.bet.data.Config
 import arch.cayenne.module.bet.data.Config.KEY_RESULT
 import arch.cayenne.module.bet.data.Config.VALUE_MONEY_INPUT
 import arch.cayenne.module.bet.databinding.FragmentComboBetBinding
@@ -162,18 +159,7 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
     override fun createObserverAtState(): Lifecycle.State = Lifecycle.State.RESUMED
     override suspend fun createObserver() {
         mViewModel.onBetListListener.observe(viewLifecycleOwner) {
-            if (it.isEmpty()) {
-                dismiss()
-                return@observe
-            }
-            if (it.size == 1) {
-                navigate(
-                    ComboBetFragmentDirections.actionComboBetFragmentToSingleBetFragment(
-                        Config.VALUE_COMBO_TO_SINGLE
-                    ),
-                    null
-                )
-            } else {
+            if (it.size > 1) {
                 val lastSize = betSelectionAdapter.itemCount
                 betSelectionAdapter.submitList(it) {
                     if (it.size > lastSize) {
@@ -183,6 +169,7 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
             }
         }
         mViewModel.onComboMultiBetBeanListener.observe(viewLifecycleOwner) { data ->
+            if (data.isEmpty()) return@observe
             val lastSize = comboMultiBetAdapter.itemCount
             comboMultiBetAdapter.submitList(data) {
                 if (data.size > lastSize) {
@@ -442,11 +429,9 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
     }
 
     override fun dismiss(key: String, value: String) {
-        sendResult(key, value, R.id.comboBetFragment)
-    }
-
-    override fun showExitAnim(key: String, value: String) {
-        sendResult(key, value, R.id.comboBetFragment)
+        parentFragmentManager.setFragmentResult(key, Bundle().apply {
+            putString(key, value)
+        })
     }
 
     override fun doCustomHideEnd() {
@@ -454,8 +439,6 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
             if (it.isNotEmpty()) {
                 mViewModel.setExpandMultiLayout(false)
                 mViewModel.clearBetMoney()
-            } else {
-                navigate(ComboBetFragmentDirections.actionComboBetFragmentToSingleBetFragment(), null)
             }
         }
 

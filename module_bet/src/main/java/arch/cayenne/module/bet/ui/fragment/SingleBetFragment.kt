@@ -11,7 +11,6 @@ import arch.cayenne.lib.common.ui.fragment.ReserveDialogFragment
 import arch.cayenne.lib.common.ui.view.NumberKeyboardView
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
 import arch.cayenne.lib.common.utils.ViewUtils
-import arch.cayenne.lib.common.utils.ext.NavResultExt.sendResult
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
@@ -24,7 +23,6 @@ import arch.cayenne.lib.database.entity.BetSelectionBean
 import arch.cayenne.lib.database.entity.BetTypeEnum
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.module.bet.R
-import arch.cayenne.module.bet.data.Config
 import arch.cayenne.module.bet.databinding.FragmentSingleBetBinding
 import arch.cayenne.module.bet.util.ViewHelper
 import arch.cayenne.module.bet.viewmodel.SingleBetViewModel
@@ -66,14 +64,7 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
             override fun getOtherText(): String {
                 return getString(R.string.btn_max)
             }
-
         })
-        val type = SingleBetFragmentArgs.fromBundle(requireArguments()).from
-        if (type == Config.VALUE_COMBO_TO_SINGLE) {
-            setBetTypeLayout(BetTypeEnum.COMBO)
-        } else {
-            setBetTypeLayout(BetTypeEnum.SINGLE)
-        }
     }
 
     override fun initListener() {
@@ -223,11 +214,9 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
     }
 
     override fun dismiss(key: String, value: String) {
-        sendResult(key, value, R.id.singleBetFragment)
-    }
-
-    override fun showExitAnim(key: String, value: String) {
-        sendResult(key, value, R.id.singleBetFragment)
+        parentFragmentManager.setFragmentResult(key, Bundle().apply {
+            putString(key, value)
+        })
     }
 
     override fun doCustomShow() {

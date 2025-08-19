@@ -5,20 +5,13 @@ import android.os.Bundle
 import android.view.ContextThemeWrapper
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.FrameLayout
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
-import androidx.navigation.NavController
-import androidx.navigation.fragment.NavHostFragment
 import arch.cayenne.lib.base.ui.fragment.BasePreLoadBottomSheetFragment
 import arch.cayenne.module.bet.R
 import arch.cayenne.module.bet.data.Config.KEY_RESULT
 import arch.cayenne.module.bet.data.Config.VALUE_DISMISS
 import arch.cayenne.module.bet.databinding.FragmentBetSheetBinding
-import arch.cayenne.module.bet.util.ViewHelper
 import arch.cayenne.module.bet.viewmodel.BetSheetViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlin.reflect.KClass
@@ -57,49 +50,37 @@ class BetSheetFragment private constructor() :
     override val vmClass: KClass<BetSheetViewModel>
         get() = BetSheetViewModel::class
 
-    private var controller: NavController? = null
-
-    private val dismissObserver = Observer<String> { value ->
-        when (value) {
-            VALUE_DISMISS -> customHide()
-        }
+    private val singleFragment by lazy {
+        SingleBetFragment()
     }
 
-    private var lastLiveData: LiveData<String>? = null
+    private val comboFragment by lazy {
+        ComboBetFragment()
+    }
 
     override fun onGetLayoutInflater(savedInstanceState: Bundle?): LayoutInflater {
         val contextThemeWrapper = ContextThemeWrapper(requireContext(), R.style.BetModuleTheme)
         return super.onGetLayoutInflater(savedInstanceState).cloneInContext(contextThemeWrapper)
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        return super.onCreateView(inflater, container, savedInstanceState).apply {
-            initMaxHeight()
-        }
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        initDestination()
-        super.onViewCreated(view, savedInstanceState)
-    }
-
-
     override fun initView(savedInstanceState: Bundle?) {
+        initFragment()
     }
 
-    private fun initDestination() {
-        setStartDestination(mViewModel.count)
+    private fun initFragment() {
+        childFragmentManager.beginTransaction()
+            .add(mBinding.main.id, comboFragment, ComboBetFragment::class.java.simpleName)
+            .hide(comboFragment)
+            .add(mBinding.main.id, singleFragment, SingleBetFragment::class.java.simpleName)
+            .commit()
     }
 
     override fun initListener() {
         setOnEndListener {
-            val f = mBinding.mainNav.getFragment<Fragment>().childFragmentManager.primaryNavigationFragment
-            if (f is BetSheetListener) {
-                f.doCustomHideEnd()
+            childFragmentManager.fragments.forEach {
+                if (it is BetSheetListener) {
+                    it.doCustomHideEnd()
+                }
             }
         }
     }
@@ -121,94 +102,35 @@ class BetSheetFragment private constructor() :
             behavior.isFitToContents = true
             behavior.state = BottomSheetBehavior.STATE_COLLAPSED
             behavior.saveFlags = BottomSheetBehavior.SAVE_HIDEABLE
-            behavior.maxHeight = getMaxHeight()
         }
-    }
-
-    private fun initMaxHeight() {
-        mBinding.root.maxHeight = getMaxHeight()
-    }
-
-    private fun getMaxHeight(): Int {
-        val screenHeight = resources.displayMetrics.heightPixels
-        return (screenHeight * 0.75).toInt()
-    }
-    private fun setStartDestination(size: Int) {
-        val navController = NavHostFragment.findNavController(mBinding.mainNav.getFragment()).apply {
-            controller = this
-        }
-        val navGraph = navController.navInflater.inflate(R.navigation.nav_bet)
-
-        if (size <= 1) {
-            navGraph.setStartDestination(R.id.singleBetFragment)
-        } else {
-            navGraph.setStartDestination(R.id.comboBetFragment)
-        }
-        navController.setGraph(navGraph, Bundle())
     }
 
     override suspend fun createObserver() {
-        // navigation的fragment沒有收起彈窗方法，必須靠回調頂層bottom sheet收起彈窗
-        val navController = NavHostFragment.findNavController(mBinding.mainNav.getFragment())
-        navController.addOnDestinationChangedListener { _, destination, bundle ->
-            removeLastObserver()
-            handleDismissObserve(navController, destination.id)
-        }
-        var lastCount = 0
-        mViewModel.betSheetSizeListener.observe(viewLifecycleOwner) {
-            if (lastCount == it) return@observe
-            if (isDismissing) {
-                if (lastCount < 2 && it >= 2) {
-                    if (checkCurrentDir(it)) {
-                        removeLastObserver()
-                        mBinding.root.postDelayed({
-                            if (lastLiveData == null) {
-                                setStartDestination(2)
-                            }
-                        }, 300L)
-                    }
-                } else if (it <= 1) {
-                    if (checkCurrentDir(it)) {
-                        removeLastObserver()
-                        mBinding.root.postDelayed({
-                            if (lastLiveData == null) {
-                                setStartDestination(1)
-                            }
-                        }, 300L)
-                    }
-                }
+        childFragmentManager.setFragmentResultListener(
+            KEY_RESULT,
+            viewLifecycleOwner
+        ) { _, bundle ->
+            val result = bundle.getString(KEY_RESULT)
+            if (result == VALUE_DISMISS) {
+                customHide()
             }
-            lastCount = it
         }
-    }
-
-    private fun checkCurrentDir(size: Int): Boolean {
-        return if (size <= 1) {
-            controller?.currentDestination?.label != "SingleBetFragment"
-        } else {
-            controller?.currentDestination?.label != "ComboBetFragment"
+        mViewModel.betSheetSizeListener.observe(viewLifecycleOwner) {
+            if (it <= 1) {
+                childFragmentManager.beginTransaction()
+                    .hide(comboFragment)
+                    .show(singleFragment)
+                    .commit()
+            } else {
+                childFragmentManager.beginTransaction()
+                    .hide(singleFragment)
+                    .show(comboFragment)
+                    .commit()
+            }
+            if (it == 0) {
+                customHide()
+            }
         }
-    }
-
-    private fun removeLastObserver() {
-        lastLiveData?.removeObserver(dismissObserver)
-        lastLiveData = null
-    }
-
-    private fun handleDismissObserve(navController: NavController, destinationId: Int) {
-        val backStackEntry = navController.getBackStackEntry(destinationId)
-
-        lastLiveData = backStackEntry.savedStateHandle.getLiveData<String>(KEY_RESULT).apply {
-            observe(viewLifecycleOwner, dismissObserver)
-        }
-    }
-
-    private fun showEnterAnim() {
-        if (lastLiveData == null) return
-        val v = mBinding.root
-        if (v.translationY == 0f) return
-        val h = v.height.toFloat()
-        ViewHelper.expandView(v, h)
     }
 
     override fun onDismiss(dialog: DialogInterface) {
@@ -217,14 +139,12 @@ class BetSheetFragment private constructor() :
     }
 
     override fun customShow() {
-        if (lastLiveData == null) {
-            initDestination()
-        }
         mViewModel.register()
         super.customShow()
-        val f = mBinding.mainNav.getFragment<Fragment>().childFragmentManager.primaryNavigationFragment
-        if (f is BetSheetListener) {
-            f.doCustomShow()
+        childFragmentManager.fragments.forEach {
+            if (it is BetSheetListener) {
+                it.doCustomShow()
+            }
         }
     }
 
@@ -243,7 +163,6 @@ class BetSheetFragment private constructor() :
 
 interface BetSheetListener {
     fun dismiss(key: String = KEY_RESULT, value: String = VALUE_DISMISS)
-    fun showExitAnim(key: String = KEY_RESULT, value: String)
     fun doCustomHideEnd()
     fun doCustomShow() {
 

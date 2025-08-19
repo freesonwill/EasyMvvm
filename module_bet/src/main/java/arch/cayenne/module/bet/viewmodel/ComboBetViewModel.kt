@@ -120,13 +120,7 @@ class ComboBetViewModel(
         viewModelScope.launch {
             launch {
                 repo.observeComboBet().collect {
-                    if (it.isEmpty()) {
-                        _onBetListListener.value = emptyList()
-                    } else if (it.size == 1) {
-                        _onBetListListener.value = it
-                    } else {
-                        setBetList(it)
-                    }
+                    _onBetListListener.value = it
                 }
             }
             launch {
@@ -199,10 +193,6 @@ class ComboBetViewModel(
         _onComboMultiBetBeanListener.value = data
     }
 
-    private fun setBetList(betList: List<BetSelectionBean>) {
-        _onBetListListener.value = betList
-    }
-
     fun toggleMultiLayoutExpend() {
         _onMultiLayoutExpendListener.value = _onMultiLayoutExpendListener.value?.not() ?: true
     }
@@ -214,7 +204,8 @@ class ComboBetViewModel(
     }
 
     fun clearBetMoney() {
-        _onComboMultiBetBeanListener.value = _onComboMultiBetBeanListener.value?.map {
+        val data = _onComboMultiBetBeanListener.value ?: return
+        _onComboMultiBetBeanListener.value = data.map {
             if (it.inputMoney > 0) {
                 it.copy(inputMoney = 0L)
             } else {
