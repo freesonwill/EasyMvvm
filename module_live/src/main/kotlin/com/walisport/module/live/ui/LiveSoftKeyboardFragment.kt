@@ -378,8 +378,7 @@ class LiveSoftKeyboardFragment :
 
             mViewModel.EMOJI_TO_SOFT -> {
                 translationStart = topValue.toFloat()
-                translationEnd =
-                    (chatViewModel.keyBoardHeight - chatViewModel.softKeyBoardHeight - 21.dp2px - 62.dp2px).toFloat()
+                translationEnd = (chatViewModel.keyBoardHeight - chatViewModel.softKeyBoardHeight - 21.dp2px - 62.dp2px).toFloat()
                 mainEndHeight = mainMinHeight
             }
 
@@ -391,8 +390,6 @@ class LiveSoftKeyboardFragment :
 
             else -> {}
         }
-
-
         val alphaParam = if (animationType in intArrayOf(mViewModel.CHAT_TO_EMOJI, mViewModel.SOFT_TO_EMOJI)) floatArrayOf(0f, 1f) else floatArrayOf(1f, 0f)
 
         val translationAnim = ObjectAnimator.ofFloat(mBinding.main, "translationY", translationStart, translationEnd)
@@ -402,7 +399,7 @@ class LiveSoftKeyboardFragment :
             mBinding.main.layoutParams.height = it.animatedValue as Int
         }
         val animSet = AnimatorSet().apply {
-            duration = 300
+            duration = 450
             playTogether(translationAnim, alphaAnim)
             addListener(onStart = {
                 when (animationType) {
@@ -433,8 +430,6 @@ class LiveSoftKeyboardFragment :
 //                    val emojiHeight = chatViewModel.keyBoardHeight-21.dp2px -62.dp2px
 //                    mBinding.main.layoutParams.height = mainMaxHeight
 //                    mBinding.emojiContent.layoutParams.height = emojiHeight
-//                    "end soft_to_emoji mainMaxHeight $mainMaxHeight   emojiHeight $emojiHeight  ".logd("aaa")
-//               "${mBinding.keyboardEmojiRecycler.layoutParams.height}   softKeyBoard ${ chatViewModel.softKeyBoardHeight} emojiContent ${mBinding.emojiContent.layoutParams.height}  tranY ${mBinding.emojiContent.translationY}  top ${mBinding.emojiContent.top}  ${mBinding.emojiContent.bottom}".logd("aaa")
                 }
                 mBinding.main.translationY = 0f
             })
@@ -562,7 +557,11 @@ class LiveSoftKeyboardFragment :
      *软键盘打开时调用
      * */
     private fun onSoftKeyBoardShow() {
-        chatViewModel.softKeyBoardHeight = getSupportSoftInputHeight()
+        if(chatViewModel.softKeyBoardHeight == 0){
+            val height = getSupportSoftInputHeight()
+            chatViewModel.saveUpdateSoftKeyBoardHeight(height)
+        }
+
 //        mBinding.apply {
 //            mBinding.emojiContent.isVisible = false
 //            mBinding.emojiContent.layoutParams.height = chatViewModel.softKeyBoardHeight
