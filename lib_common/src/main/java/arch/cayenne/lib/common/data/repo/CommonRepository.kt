@@ -65,6 +65,7 @@ class CommonRepository(
 
             }.build()
         }
+        socketManager.isLoggingIn = false
         if (loginResp.data != null && loginResp.data!!.success) {
             val balanceBean = getBalance()
             infoDao.insert(
