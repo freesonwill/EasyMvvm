@@ -213,11 +213,11 @@ class TournamentListFragment :
                         loadingView.visibility = View.GONE
                     }
                     HomeState.TournamentListState.InitList -> {
+                        groupTop.visibility = View.VISIBLE
                         setupAZIndex()
                     }
                     HomeState.TournamentListState.RestoreList -> {
                         clDynamics.visibility = View.GONE
-                        groupTop.visibility = View.VISIBLE
                         llIndexContainer.visibility = View.VISIBLE
                     }
                     HomeState.TournamentListState.ListDataEmpty -> {
