@@ -350,72 +350,6 @@ class LiveSoftKeyboardFragment :
         }
     }
 
-//    private fun startAnimation(animationType:Int){
-//        val maxEmojiHeight = (chatViewModel.keyBoardHeight - 62.dp2px - 21.dp2px).toFloat() //输入框高度 62 到顶部的外边距 21
-//        val minEmojiHeight = 0f
-//        var startEmojiHeight:Float = 0f
-//        var endEmojiHeight:Float = 0f
-//        when (animationType) {
-//            mViewModel.CHAT_TO_EMOJI -> {
-//                startEmojiHeight = minEmojiHeight
-//                endEmojiHeight = maxEmojiHeight
-//            }
-//            mViewModel.SOFT_TO_EMOJI -> {
-//                startEmojiHeight = chatViewModel.softKeyBoardHeight.toFloat()
-//                endEmojiHeight = maxEmojiHeight
-//            }
-//
-//            mViewModel.EMOJI_TO_SOFT -> {
-//                startEmojiHeight = maxEmojiHeight
-//                endEmojiHeight = minEmojiHeight
-//            }
-//
-//            mViewModel.EMOJI_TO_CHAT -> {
-//                startEmojiHeight = maxEmojiHeight
-//                endEmojiHeight = minEmojiHeight
-//            }
-//            else -> {}
-//        }
-//        val alphaParam = if (animationType in intArrayOf(mViewModel.CHAT_TO_EMOJI, mViewModel.SOFT_TO_EMOJI)) floatArrayOf(0f, 1f) else floatArrayOf(1f, 0f)
-//
-//        val valueAnim = ValueAnimator.ofFloat(startEmojiHeight,endEmojiHeight)
-//        val alphaAnim = ObjectAnimator.ofFloat(mBinding.emojiContent, "alpha", *alphaParam)
-//
-//        val animSet = AnimatorSet().apply {
-//            duration = 1000
-//            playTogether(alphaAnim,valueAnim)
-//            addListener(onStart = {
-//                when (animationType) {
-//                    mViewModel.CHAT_TO_EMOJI -> {
-//                        mBinding.emojiContent.isVisible = true
-//                        chatViewModel.updateKeyBoard()
-//                    }
-//
-//                    mViewModel.SOFT_TO_EMOJI -> {
-//                        mBinding.main.layoutParams.height = chatViewModel.softKeyBoardHeight+62
-//                        mBinding.emojiContent.isVisible = true
-//                        chatViewModel.updateKeyBoard()
-//                        chatViewModel.updateSoftKeyBoard(false, 3)
-//                    }
-//
-//                    mViewModel.EMOJI_TO_SOFT -> {
-//                        chatViewModel.updateSoftKeyBoard(true, 6)
-//                    }
-//
-//                    else -> {}
-//                }
-//
-//            }, onEnd = {
-//                if (animationType == mViewModel.EMOJI_TO_SOFT) {
-//                    chatViewModel.updateKeyBoard()
-//                } else if (animationType == mViewModel.EMOJI_TO_CHAT) {
-//                    chatViewModel.updateKeyBoard()
-//                }
-//            })
-//            start()
-//        }
-//    }
-
 
     @SuppressLint("Recycle")
     private fun startAnimation(animationType: Int) {
@@ -436,8 +370,8 @@ class LiveSoftKeyboardFragment :
             }
             // 起始点为软件盘的高度 动画开始高度为整个表情键盘的高度下降到软件盘高度 因此topDistance - softKeyBoardHeight 截止点为topDistance
             mViewModel.SOFT_TO_EMOJI -> {
-                translationStart = (chatViewModel.softKeyBoardHeight + 62.dp2px).toFloat()
-                translationEnd = topValue.toFloat()
+                translationStart = (chatViewModel.softKeyBoardHeight+62.dp2px).toFloat()
+                translationEnd = 0f
                 mainStartHeight = chatViewModel.softKeyBoardHeight+62.dp2px
                 mainEndHeight = mainMaxHeight
             }
@@ -476,17 +410,15 @@ class LiveSoftKeyboardFragment :
                         mBinding.main.layoutParams.height = mainMaxHeight
                         chatViewModel.updateKeyBoard()
                     }
-
                     mViewModel.SOFT_TO_EMOJI -> {
-                        chatViewModel.updateSoftKeyBoard(false, 3)
                         mBinding.main.layoutParams.height = mainMaxHeight
+//                        mBinding.emojiContent.layoutParams.height = chatViewModel.softKeyBoardHeight
                         chatViewModel.updateKeyBoard()
+                        chatViewModel.updateSoftKeyBoard(false, 3)
                     }
-
                     mViewModel.EMOJI_TO_SOFT -> {
                         chatViewModel.updateSoftKeyBoard(true, 6)
                     }
-
                     else -> {}
                 }
 
@@ -497,6 +429,12 @@ class LiveSoftKeyboardFragment :
                 } else if (animationType == mViewModel.EMOJI_TO_CHAT) {
                     mBinding.main.layoutParams.height = mainMinHeight
                     chatViewModel.updateKeyBoard()
+                }else if(animationType == mViewModel.SOFT_TO_EMOJI){
+//                    val emojiHeight = chatViewModel.keyBoardHeight-21.dp2px -62.dp2px
+//                    mBinding.main.layoutParams.height = mainMaxHeight
+//                    mBinding.emojiContent.layoutParams.height = emojiHeight
+//                    "end soft_to_emoji mainMaxHeight $mainMaxHeight   emojiHeight $emojiHeight  ".logd("aaa")
+//               "${mBinding.keyboardEmojiRecycler.layoutParams.height}   softKeyBoard ${ chatViewModel.softKeyBoardHeight} emojiContent ${mBinding.emojiContent.layoutParams.height}  tranY ${mBinding.emojiContent.translationY}  top ${mBinding.emojiContent.top}  ${mBinding.emojiContent.bottom}".logd("aaa")
                 }
                 mBinding.main.translationY = 0f
             })
