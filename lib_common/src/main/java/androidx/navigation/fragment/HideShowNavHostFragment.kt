@@ -5,7 +5,7 @@ import android.view.View
 import androidx.fragment.app.FragivityFragmentNavigator
 import androidx.navigation.Navigator
 import arch.cayenne.lib.base.ui.fragment.launch
-import arch.cayenne.lib.common.ui.anim.AnimationController
+import arch.cayenne.lib.base.ui.animation.AnimationController
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
 
@@ -36,10 +36,10 @@ class HideShowNavHostFragment : NavHostFragment() {
         super.onViewCreated(view, savedInstanceState)
         launch {
             merge(
-                AnimationController.defaultEnterAnim.map { "enter" to it },
-                AnimationController.defaultExiAnim.map { "exit" to it },
-                AnimationController.defaultPopEnterAnim.map { "popEnter" to it },
-                AnimationController.defaultPopExitAnim.map { "popExit" to it }
+                AnimationController.routeEnterAnim.map { "enter" to it },
+                AnimationController.routeExiAnim.map { "exit" to it },
+                AnimationController.routePopEnterAnim.map { "popEnter" to it },
+                AnimationController.routePopExitAnim.map { "popExit" to it }
             ).collect { (type, anim) ->
                 when (type) {
                     "enter" -> navigator.setEnterAnim(anim)

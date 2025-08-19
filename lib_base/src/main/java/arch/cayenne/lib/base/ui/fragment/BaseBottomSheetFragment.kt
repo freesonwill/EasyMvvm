@@ -15,8 +15,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.view.animation.Animation
-import android.view.animation.PathInterpolator
-import android.view.animation.TranslateAnimation
 import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
 import androidx.annotation.CallSuper
@@ -31,6 +29,7 @@ import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui._interface.IStatusBar
 import arch.cayenne.lib.base.ui._interface.IView
+import arch.cayenne.lib.base.ui.animation.AnimationController
 import arch.cayenne.lib.base.ui.delegate.StatusBarDelegate
 import arch.cayenne.lib.base.ui.delegate.UIBindDelegate
 import arch.cayenne.lib.base.ui.gesture.TikTokGesture
@@ -124,25 +123,9 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
     }
 
 
-    protected open fun enterAnimation(): Animation = TranslateAnimation(
-        Animation.RELATIVE_TO_PARENT, 0f,
-        Animation.RELATIVE_TO_PARENT, 0f,
-        Animation.RELATIVE_TO_PARENT, 1f,
-        Animation.RELATIVE_TO_PARENT, 0f
-    ).apply {
-        duration = 300
-        interpolator = PathInterpolator(0.33f, 1f, 0.5f, 1f)
-    }
+    protected open fun enterAnimation(): Animation = AnimationController.popupEnterAnim.value
 
-    protected open fun exitAnimation(): Animation = TranslateAnimation(
-        Animation.RELATIVE_TO_PARENT, 0f,
-        Animation.RELATIVE_TO_PARENT, 0f,
-        Animation.RELATIVE_TO_PARENT, 0f,
-        Animation.RELATIVE_TO_PARENT, 1f
-    ).apply {
-        duration = 300
-        interpolator = PathInterpolator(0.33f, 1f, 0.5f, 1f)
-    }
+    protected open fun exitAnimation(): Animation = AnimationController.popupExitAnim.value
 
     protected fun playEnterAnimations() {
         sheetContainer?.let {  scv ->

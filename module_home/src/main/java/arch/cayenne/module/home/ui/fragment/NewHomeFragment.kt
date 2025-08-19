@@ -26,6 +26,7 @@ import androidx.viewpager2.widget.ViewPager2.SCROLL_STATE_IDLE
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
+import arch.cayenne.lib.base.ui.animation.AnimationController
 import arch.cayenne.lib.base.ui.animation.EaseCubicInterpolator
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
@@ -426,7 +427,9 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 R.color.drawer_scrim_color
             )
         )
-        mBinding.drawerLayout.setDrawerInterpolator(300,PathInterpolator(0.36f, 0.66f, 0.04f,1f))
+        mBinding.drawerLayout.setDrawerInterpolator(
+            AnimationController.drawerEnterAnim.value.duration,
+            AnimationController.drawerEnterAnim.value.interpolator);
         childFragmentManager.beginTransaction()
             .replace(
                 mBinding.fragmentDrawerContent.id,

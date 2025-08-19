@@ -6,7 +6,7 @@ import android.os.Bundle
 
 /**
  * @date: 2025/8/18 19:54
- * @description:
+ * @description: ActivityLifecycleCallbacks的简化接口实现
  */
 interface SimpleActivityLifecycleCallbacks : Application.ActivityLifecycleCallbacks {
     override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {}
