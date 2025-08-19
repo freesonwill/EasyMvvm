@@ -96,7 +96,6 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
                 mViewModel.getBetSize()
             }
             setLayoutMinHeight()
-            initMultiBetLayoutHeight()
             super.onViewCreated(view, savedInstanceState)
         }
     }
@@ -230,13 +229,6 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
         mBinding.rvBet.layoutParams = lp
     }
 
-    private fun initMultiBetLayoutHeight() {
-        val multiContextHeight = getMultiItemHeight() * 3
-        val multiTitleHeight = mBinding.clMultiBetTitle.height +
-            (mBinding.clMultiBetTitle.layoutParams as ConstraintLayout.LayoutParams).bottomMargin
-        mBinding.clMultiBet.maxHeight = multiTitleHeight + multiContextHeight
-    }
-
     private fun forceUpdateLayout() {
         if (betSelectionAdapter.itemCount == 0 || mViewModel.onBetListListener.value?.size == 1) return
         adjustLayoutHeight()
@@ -284,26 +276,7 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
         }
     }
 
-    // 獲取除串關方式外已使用的高度
-    private fun getMultiLayoutMargin(): Int {
-        val multiBottomMargin =
-            (mBinding.clMultiBet.layoutParams as ConstraintLayout.LayoutParams).bottomMargin
-        val buttonBottomMargin =
-            (mBinding.clBottomButton.layoutParams as ConstraintLayout.LayoutParams).bottomMargin
-        val buttonHeight = mBinding.clBottomButton.height
-        val underMargin = multiBottomMargin + buttonBottomMargin + buttonHeight
-        val topMargin = 22.dp2px
-        return topMargin + underMargin
-    }
-
     private fun setMultiLayoutHeight() {
-        val screenHeight = getScreenHeight() ?: return
-        val maxFragmentHeight = (screenHeight * 0.75).toInt()
-
-        val totalMargin = getMultiLayoutMargin()
-
-        val maxHeight = maxFragmentHeight - totalMargin
-        mBinding.clMultiBet.maxHeight = maxHeight
 
         mBinding.rvMultiBet.layoutParams = mBinding.rvMultiBet.layoutParams.apply {
             this.height = getMultiItemHeight()
@@ -339,7 +312,7 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
         }
         val currentHeight = mBinding.rvMultiBet.height
         mBinding.rvMultiBet.post {
-            val itemHeight = getMultiItemHeight()
+            val itemHeight = if (isExpanded) getRealMultiItemHeight() else getMultiItemHeight()
             val targetHeight = itemHeight * if (isExpanded) adapter.itemCount.coerceAtMost(3) else adapter.itemCount.coerceAtMost(1)
 
             val animator = ValueAnimator.ofInt(currentHeight, targetHeight).apply {
@@ -395,6 +368,18 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
 //            firstVisibleItemView.height + 11.dp2px
 //        }
         return 90.dp2px
+    }
+
+    private fun getRealMultiItemHeight(): Int {
+        val layoutManager = mBinding.rvMultiBet.layoutManager as? LinearLayoutManager
+        val firstVisibleItemView =
+            layoutManager?.findViewByPosition(layoutManager.findFirstVisibleItemPosition())
+        return if (firstVisibleItemView == null) {
+            getMultiItemHeight()
+        } else {
+            // 不知道為什麼高度會少bottom空白間距
+            firstVisibleItemView.height + 12.dp2px
+        }
     }
 
     private fun getBetItemHeight(): Int {
