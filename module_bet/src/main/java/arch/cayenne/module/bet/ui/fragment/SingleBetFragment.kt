@@ -2,6 +2,7 @@ package arch.cayenne.module.bet.ui.fragment
 
 import android.os.Bundle
 import android.view.View
+import android.view.ViewTreeObserver
 import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
@@ -65,6 +66,33 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
                 return getString(R.string.btn_max)
             }
         })
+    }
+
+    override fun onStart() {
+        super.onStart()
+        setMaxHeight()
+    }
+
+    private fun setMaxHeight() {
+        mBinding.root.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                mBinding.root.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                val screenHeight = getScreenHeight() ?: return
+                val maxHeight = (screenHeight * 0.75f).toInt()
+                val actualHeight = mBinding.main.height
+                val scale = maxHeight.toFloat() / actualHeight.toFloat()
+                if (actualHeight > maxHeight) {
+                    mBinding.main.pivotY = actualHeight.toFloat()
+                    mBinding.main.scaleY = scale
+                    mBinding.root.maxHeight = maxHeight
+                }
+            }
+        })
+    }
+
+    private fun getScreenHeight(): Int? {
+        // 检查 context 是否不为空
+        return context?.resources?.displayMetrics?.heightPixels
     }
 
     override fun initListener() {

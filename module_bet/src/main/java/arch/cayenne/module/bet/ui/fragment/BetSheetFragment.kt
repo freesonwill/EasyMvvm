@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.ContextThemeWrapper
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewTreeObserver
 import android.widget.FrameLayout
 import androidx.fragment.app.FragmentActivity
 import arch.cayenne.lib.base.ui.fragment.BasePreLoadBottomSheetFragment
@@ -70,7 +71,7 @@ class BetSheetFragment private constructor() :
     private fun initFragment() {
         childFragmentManager.beginTransaction()
             .add(mBinding.main.id, comboFragment, ComboBetFragment::class.java.simpleName)
-            .hide(comboFragment)
+//            .hide(comboFragment)
             .add(mBinding.main.id, singleFragment, SingleBetFragment::class.java.simpleName)
             .commit()
     }
