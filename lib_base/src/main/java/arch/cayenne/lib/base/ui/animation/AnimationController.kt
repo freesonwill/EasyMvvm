@@ -6,7 +6,6 @@ import android.view.animation.Interpolator
 import android.view.animation.PathInterpolator
 import android.view.animation.TranslateAnimation
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlin.reflect.KMutableProperty0
 
 /**
  * @date: 2025/8/18 19:31
@@ -24,7 +23,7 @@ object AnimationController {
 
     fun setRouteAnim(duration: Long, interpolator: Interpolator) {
         //从右往左进入
-        updateFlow(::routeEnterAnim, TranslateAnimation(
+        _routeEnterAnim = updateFlow(_routeEnterAnim, TranslateAnimation(
             Animation.RELATIVE_TO_PARENT, 1f,
             Animation.RELATIVE_TO_PARENT, 0f,
             Animation.RELATIVE_TO_SELF, 0f,
@@ -32,7 +31,7 @@ object AnimationController {
         ).apply { this.duration = duration; this.interpolator = interpolator })
 
         //从左往右退出
-        updateFlow(::routeExiAnim, TranslateAnimation(
+        _routeExiAnim = updateFlow(_routeExiAnim, TranslateAnimation(
             Animation.RELATIVE_TO_PARENT, 0f,
             Animation.RELATIVE_TO_PARENT, -0.25f,
             Animation.RELATIVE_TO_SELF, 0f,
@@ -40,7 +39,7 @@ object AnimationController {
         ).apply { this.duration = duration; this.interpolator = interpolator })
 
         //从左往右进入
-        updateFlow(::routePopEnterAnim, TranslateAnimation(
+        _routePopEnterAnim = updateFlow(_routePopEnterAnim, TranslateAnimation(
             Animation.RELATIVE_TO_PARENT, -0.25f,
             Animation.RELATIVE_TO_PARENT, 0f,
             Animation.RELATIVE_TO_SELF, 0f,
@@ -48,7 +47,7 @@ object AnimationController {
         ).apply { this.duration = duration; this.interpolator = interpolator })
 
         //从右往左退出
-        updateFlow(::routePopExitAnim, TranslateAnimation(
+        _routePopExitAnim = updateFlow(_routePopExitAnim, TranslateAnimation(
             Animation.RELATIVE_TO_PARENT, 0f,
             Animation.RELATIVE_TO_PARENT, 1f,
             Animation.RELATIVE_TO_SELF, 0f,
@@ -57,7 +56,7 @@ object AnimationController {
     }
 
     fun setPopupAnim(duration: Long, interpolator: Interpolator) {
-        updateFlow(::popupEnterAnim, TranslateAnimation(
+        _popupEnterAnim = updateFlow(_popupEnterAnim, TranslateAnimation(
             Animation.RELATIVE_TO_PARENT, 0f,
             Animation.RELATIVE_TO_PARENT, 0f,
             Animation.RELATIVE_TO_PARENT, 1f,
@@ -65,7 +64,7 @@ object AnimationController {
         ).apply { this.duration = duration; this.interpolator = interpolator })
 
 
-        updateFlow(::popupExitAnim, TranslateAnimation(
+        _popupExitAnim = updateFlow(_popupExitAnim, TranslateAnimation(
             Animation.RELATIVE_TO_PARENT, 0f,
             Animation.RELATIVE_TO_PARENT, 0f,
             Animation.RELATIVE_TO_PARENT, 0f,
@@ -75,58 +74,70 @@ object AnimationController {
     }
 
     fun setDrawerAnim(duration: Long, interpolator: Interpolator) {
-        updateFlow(::drawerEnterAnim, AnimationSet(false)
+        _drawerEnterAnim = updateFlow(_drawerEnterAnim, AnimationSet(false)
             .apply { this.duration = duration; this.interpolator = interpolator })
     }
 
     fun setScrollBarAnim(duration: Long, interpolator: Interpolator) {
-        updateFlow(::scrollBarAnim, AnimationSet(false)
+        _scrollBarAnim = updateFlow(_scrollBarAnim, AnimationSet(false)
             .apply { this.duration = duration; this.interpolator = interpolator })
     }
 
     fun setZoomInAnim(duration: Long, interpolator: Interpolator) {
-        updateFlow(::zoomInAnim, AnimationSet(false)
+        _zoomInAnim = updateFlow(_zoomInAnim, AnimationSet(false)
             .apply { this.duration = duration; this.interpolator = interpolator })
     }
 
 
-    lateinit var routeEnterAnim: MutableStateFlow<Animation>
-        private set
+    private var _routeEnterAnim: MutableStateFlow<Animation>? = null
+    val routeEnterAnim: MutableStateFlow<Animation>
+        get() = _routeEnterAnim!!
+
+    private var _routeExiAnim: MutableStateFlow<Animation>? = null
+    val routeExiAnim: MutableStateFlow<Animation>
+        get() = _routeExiAnim!!
 
 
-    lateinit var routeExiAnim: MutableStateFlow<Animation>
-        private set
+    private var _routePopEnterAnim: MutableStateFlow<Animation>? = null
+    val routePopEnterAnim: MutableStateFlow<Animation>
+        get() = _routePopEnterAnim!!
+
+    private var _routePopExitAnim: MutableStateFlow<Animation>? = null
+    val routePopExitAnim: MutableStateFlow<Animation>
+        get() = _routePopExitAnim!!
 
 
-    lateinit var routePopEnterAnim: MutableStateFlow<Animation>
-        private set
+    private var _popupEnterAnim: MutableStateFlow<Animation>? = null
+    val popupEnterAnim: MutableStateFlow<Animation>
+        get() = _popupEnterAnim!!
 
-    lateinit var routePopExitAnim: MutableStateFlow<Animation>
-        private set
 
-    lateinit var popupEnterAnim: MutableStateFlow<Animation>
-        private set
+    private var _popupExitAnim: MutableStateFlow<Animation>? = null
+    val popupExitAnim: MutableStateFlow<Animation>
+        get() = _popupExitAnim!!
 
-    lateinit var popupExitAnim: MutableStateFlow<Animation>
-        private set
 
-    lateinit var drawerEnterAnim: MutableStateFlow<Animation>
-        private set
+    private var _drawerEnterAnim: MutableStateFlow<Animation>? = null
+    val drawerEnterAnim: MutableStateFlow<Animation>
+        get() = _drawerEnterAnim!!
 
-    lateinit var scrollBarAnim: MutableStateFlow<Animation>
-        private set
-    lateinit var zoomInAnim: MutableStateFlow<Animation>
-        private set
+    private var _scrollBarAnim: MutableStateFlow<Animation>? = null
+    val scrollBarAnim: MutableStateFlow<Animation>
+        get() = _scrollBarAnim!!
+
+    private var _zoomInAnim: MutableStateFlow<Animation>? = null
+    val zoomInAnim: MutableStateFlow<Animation> get() =_zoomInAnim!!
+
 
     private fun <T : Animation> updateFlow(
-        flowRef: KMutableProperty0<MutableStateFlow<T>>,
+        flow: MutableStateFlow<Animation>?,
         animation: T
-    ) {
-        // 这里必须确保 flowRef 是 lateinit var 的引用
-        if ((flowRef as KMutableProperty0<*>).isLateinit) {
-            flowRef.set(MutableStateFlow(animation))
+    ): MutableStateFlow<Animation> {
+        return if (flow == null) {
+            MutableStateFlow(animation)
         } else {
-            flowRef.get().value = animation
+            flow.value = animation
+            flow
         }
     }
 }
