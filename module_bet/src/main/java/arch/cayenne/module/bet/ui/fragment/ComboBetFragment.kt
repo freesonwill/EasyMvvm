@@ -31,9 +31,6 @@ import arch.cayenne.module.bet.ui.adapter.BetSelectionAdapter
 import arch.cayenne.module.bet.ui.adapter.ComboMultiBetAdapter
 import arch.cayenne.module.bet.util.BetSheetDecoration
 import arch.cayenne.module.bet.viewmodel.ComboBetViewModel
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import kotlin.math.min
 import kotlin.reflect.KClass
 
 class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding>(),
@@ -88,11 +85,6 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
         })
     }
 
-    override fun onStart() {
-        super.onStart()
-        setLayoutMaxHeight()
-    }
-
     override fun initView(savedInstanceState: Bundle?) {
         (mBinding.rvMultiBet.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
         mBinding.rvMultiBet.itemAnimator = null
@@ -105,7 +97,7 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
         mBinding.rvMultiBet.adapter = comboMultiBetAdapter
         setSumBetMoney(emptyList())
         setMultiLayoutHeight()
-
+        setLayoutMaxHeight()
     }
 
     override fun initListener() {

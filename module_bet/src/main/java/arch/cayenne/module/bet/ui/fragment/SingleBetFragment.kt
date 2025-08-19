@@ -66,10 +66,6 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
                 return getString(R.string.btn_max)
             }
         })
-    }
-
-    override fun onStart() {
-        super.onStart()
         setMaxHeight()
     }
 
