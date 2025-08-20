@@ -18,6 +18,9 @@ abstract class TournamentDao: BaseDao<TournamentBean>() {
     @Query("SELECT * FROM SportTournamentCrossRef WHERE playType = :playTypeId AND sportId = :sportId ANd tournamentId = :tournamentId ")
     abstract suspend fun getSportTournamentCrossRef(playTypeId: Int, sportId: Int, tournamentId: Int): SportTournamentCrossRef?
 
+    @Query("SELECT * FROM SportTournamentCrossRef WHERE playType = :playTypeId AND sportId = :sportId ")
+    abstract suspend fun getSportTournamentCrossRef(playTypeId: Int, sportId: Int): List<SportTournamentCrossRef>?
+
     @Query("UPDATE SportTournamentCrossRef SET coordinateY = :coordinate WHERE playType = :playTypeId AND sportId = :sportId AND tournamentId = :tournamentId ")
     abstract suspend fun updateRefCoordinate(playTypeId: Int, sportId: Int, tournamentId: Int, coordinate: Int)
 
