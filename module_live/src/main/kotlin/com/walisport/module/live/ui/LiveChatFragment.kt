@@ -115,7 +115,7 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
         }
 
         mainViewModel.mainMatch.observe(viewLifecycleOwner) {
-            updateChatUi()
+            updateChatUi(it)
         }
 
         mViewModel.loginLiveData.observe(viewLifecycleOwner) {
