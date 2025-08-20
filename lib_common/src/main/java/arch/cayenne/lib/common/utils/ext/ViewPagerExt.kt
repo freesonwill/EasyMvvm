@@ -20,11 +20,11 @@ fun TabLayout.removeAllTips() {
     }
 }
 
- fun ViewPager2.setupViewPagerScroll(tabLayout: SkinnableTabLayout,customIndicator: CustomTabIndicator,skipAnyAnim: ((Boolean) -> Unit)? = null) {
+ fun ViewPager2.setupViewPagerScroll(tabLayout: SkinnableTabLayout,customIndicator: CustomTabIndicator,tabIndicatorWidth : Float = 0.45f,skipAnyAnim: ((Boolean) -> Unit)? = null) {
     tabLayout.post {
         // 计算单个 Tab 的宽度
         val tabWidth = tabLayout.width.toFloat() / tabLayout.tabCount
-        customIndicator.setTabWidth(tabWidth)
+        customIndicator.setTabWidth(tabWidth,tabIndicatorWidth)
     }
     var lastSwitchedPage: Int = 0 // 记录上一次切换的页面，防止重复切换
     this.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
