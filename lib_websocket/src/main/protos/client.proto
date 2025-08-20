@@ -185,9 +185,10 @@ message SingleBetReq {
 
 message SingleBetResp {
     bool success = 1;
-    string message = 2;  // 例如："Bet placed successfully."
-    string order_id = 3;
-    int32 order_status = 4;  // 订单状态 0创建成功，1确认中，2拒单，3取消订单，4接单成功，5已结算
+    int32 code = 2; // 1:盘口状态 已经改变 需要刷新  2:创建订单失  3:扣款失败
+    string message = 3;  // 例如："Bet placed successfully."
+    string order_id = 4;
+    int32 order_status = 5;  // 订单状态 0创建成功，1确认中，2拒单，3取消订单，4接单成功，5已结算
 }
 
 // 500-1010: 多关下注
@@ -198,8 +199,9 @@ message MultipleBetReq {
 
 message MultipleBetResp {
     bool success = 1;
-    string message = 2;  // 例如："Bet placed successfully."
-    repeated galaxy.common.proto.PlaceBetInfo place_bet_info = 3;
+    int32 code = 2; // 1:盘口状态 已经改变 需要刷新  2:创建订单失  3:扣款失败
+    string message = 3;  // 例如："Bet placed successfully."
+    repeated galaxy.common.proto.PlaceBetInfo place_bet_info = 4;
 }
 
 // 500-1011: 发起提前结算
