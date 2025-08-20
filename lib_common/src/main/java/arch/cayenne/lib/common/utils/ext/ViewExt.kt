@@ -3,6 +3,7 @@ package arch.cayenne.lib.common.utils.ext
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.animation.TimeInterpolator
+import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.content.ContextWrapper
 import android.content.res.ColorStateList
@@ -18,6 +19,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.View.OnAttachStateChangeListener
 import android.view.animation.DecelerateInterpolator
+import android.view.animation.PathInterpolator
 import android.widget.ImageView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -26,6 +28,7 @@ import androidx.core.view.children
 import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.R
+import arch.cayenne.lib.common.ui.view.CustomTabIndicator
 import arch.cayenne.lib.common.ui.view.OnSwipeTouchListener
 import com.google.android.material.shape.CornerFamily
 import com.google.android.material.shape.MaterialShapeDrawable
@@ -469,7 +472,16 @@ fun View.startPageAnimation(vararg otherViews: View) {
     }
 }
 
-
+fun CustomTabIndicator.animateIndicatorToPosition(position: Int,duration:Long) {
+    val animator = ValueAnimator.ofFloat(this.getCurrentPosition().toFloat(), position.toFloat())
+    animator.duration = duration // 动画持续时间
+    animator.interpolator =PathInterpolator(0f, 0f, 1f, 1f)//cubic-bezier(0, 0, 1, 1)
+    animator.addUpdateListener { animation ->
+        val progress = animation.animatedValue as Float
+        setIndicatorPosition(progress.toInt(), progress % 1f)
+    }
+    animator.start()
+}
 
 //侧滑退出当前fragment
 fun View.touchBackPressed(boo: Boolean = true){

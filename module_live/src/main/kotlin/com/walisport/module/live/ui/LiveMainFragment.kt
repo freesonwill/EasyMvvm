@@ -13,12 +13,16 @@ import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.DefaultItemAnimator
+import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager2.widget.ViewPager2
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.data.model.PagerBean
 import arch.cayenne.lib.base.ui.adapter.PagerAdapter
 import arch.cayenne.lib.base.ui.animation.EaseCubicInterpolator
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
+import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.utils.ext.DimensionExt.px2sp
@@ -46,7 +50,11 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.filter
 import kotlin.reflect.KClass
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.lib.common.utils.ext.animateIndicatorToPosition
 import com.walisport.module.live.utils.TextViewExt.setBottomDrawable
+import java.lang.reflect.Field
+import kotlin.math.abs
+
 /**
  * 直播详情页
  */
@@ -60,6 +68,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
     override val vmClass: KClass<LiveMainViewModel> = LiveMainViewModel::class
     private lateinit var args: LiveMainFragmentArgs
     private var drawerContentFragment: LiveBetOnMenuFragment? = null
+    private var skipAnyAnim = false
     private val titleBarBinding: TitleBarLiveBinding by lazy {
         TitleBarLiveBinding.inflate(LayoutInflater.from(context), mBinding.titleBar, false)
     }
@@ -72,7 +81,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         setVideoView()
         loadFragment()
         mViewModel.observeMatchInfoNotify()
-        mBinding.drawerLayout.setDrawerInterpolator(150, PathInterpolator(0.33f, 0.66f, 0f,1f))
+        mBinding.drawerLayout.setDrawerInterpolator(150, PathInterpolator(0.33f, 0.66f, 0f, 1f))
         mBinding.drawerLayout.setDrawerLockMode(
             DrawerLayout.LOCK_MODE_LOCKED_CLOSED,
             GravityCompat.END
@@ -145,7 +154,11 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         mBinding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 tab?.let {
-                    mBinding.vpPage.doSmartAnim(targetPosition = tab.position)
+                    if (skipAnyAnim) {
+                        // 动画更新指示器位置
+                        mBinding.customIndicator.animateIndicatorToPosition(tab?.position ?: 0, 0)
+                        mBinding.vpPage.setCurrentItem(tab.position, false)
+                    }
                 }
                 tab?.view?.findViewById<SkinnableTextView>(R.id.tabText)?.let { textView ->
                     textView.setTextColor(
@@ -154,12 +167,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                             R.color.tab_selected_text_color
                         )
                     )
-                    textView.setBottomDrawable(context?.let {
-                        ContextCompat.getDrawable(
-                            it,
-                            R.drawable.live_tab_indicator
-                        )
-                    }, 1.dp2px)
+                    textView.textSize = 15f.px2sp
                     textView.typeface = Typeface.DEFAULT_BOLD
                 }
             }
@@ -172,12 +180,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                             R.color.video_tab_text_color
                         )
                     )
-                    textView.setBottomDrawable(context?.let {
-                        ContextCompat.getDrawable(
-                            it,
-                            R.drawable.live_tab_indicatort_tan
-                        )
-                    }, 0.dp2px)
+                    textView.textSize = 15f.px2sp
                     textView.typeface = Typeface.DEFAULT
                 }
             }
@@ -186,6 +189,10 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                 // Handle reselect if needed
             }
         })
+        // 設置300ms動畫
+        setViewPagerAnimationDuration(mBinding.vpPage, 300)
+        // 自定義滑動行為
+        setupViewPagerScroll(mBinding.vpPage)
 
     }
 
@@ -197,7 +204,9 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
     override suspend fun createObserver() {
         observeResult<Bundle>(CHANGE_MATCH) {
             val newArgs: LiveMainFragmentArgs = LiveMainFragmentArgs.fromBundle(it)
-            "observeResult-->newArgs--->$newArgs,args:${args},extras:${it},${this.args.equal(newArgs)}".logd(TAG)
+            "observeResult-->newArgs--->$newArgs,args:${args},extras:${it},${this.args.equal(newArgs)}".logd(
+                TAG
+            )
             if (this.args.equal(newArgs)) return@observeResult
             this.args = newArgs
             updateMatchId(newArgs.matchId)
@@ -239,7 +248,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         }
         mViewModel.currentBalanceChange.observe(viewLifecycleOwner) {
             titleBarBinding.tvMoney.text =
-                "${CurrencySymbols.getSymbol(it?.currency ?: "")}${(it?.balance?:0L).getFormalMoney()}"
+                "${CurrencySymbols.getSymbol(it?.currency ?: "")}${(it?.balance ?: 0L).getFormalMoney()}"
         }
         mViewModel.mainMatch.observe(viewLifecycleOwner) {
             it?.let {
@@ -318,12 +327,6 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                 tab.text = list[position].title
                 tab.setCustomView(R.layout.custom_tab)
                 tab.customView?.findViewById<SkinnableTextView>(R.id.tabText)?.apply {
-                    setBottomDrawable(context?.let {
-                        ContextCompat.getDrawable(
-                            it,
-                            if (position == tabSelectPosition) R.drawable.live_tab_indicator else R.drawable.live_tab_indicatort_tan
-                        )
-                    },  if (position == tabSelectPosition) 1.dp2px else 0.dp2px)
                     text = list[position].title
                     setTextColor(
                         SkinnableResourceManager.getColor(
@@ -331,6 +334,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                             if (position == tabSelectPosition) R.color.tab_selected_text_color else R.color.video_tab_text_color
                         )
                     )
+                    textSize = 15f.px2sp
                     typeface =
                         if (position == tabSelectPosition) Typeface.DEFAULT_BOLD else Typeface.DEFAULT
 
@@ -401,5 +405,92 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
             return true
         }
         return super.onBackPressed()
+    }
+
+    private fun setViewPagerAnimationDuration(viewPager: ViewPager2, duration: Long) {
+        try {
+            // 通過反射獲取 ViewPager2 內部的 RecyclerView
+            val recyclerViewField: Field = ViewPager2::class.java.getDeclaredField("mRecyclerView")
+            recyclerViewField.isAccessible = true
+            val recyclerView = recyclerViewField.get(viewPager) as RecyclerView
+
+            // 設置自定義 ItemAnimator
+            val animator = DefaultItemAnimator().apply {
+                addDuration = duration // 添加動畫時長
+                removeDuration = duration // 移除動畫時長
+                moveDuration = duration // 移動動畫時長
+                changeDuration = duration // 改變動畫時長
+            }
+            recyclerView.itemAnimator = animator
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    private fun setupViewPagerScroll(viewPager: ViewPager2) {
+        mBinding.tabLayout.post {
+            // 计算单个 Tab 的宽度
+            val tabWidth = mBinding.tabLayout.width.toFloat() / mBinding.tabLayout.tabCount
+            mBinding.customIndicator.setTabWidth(tabWidth)
+        }
+        var lastSwitchedPage: Int = 0 // 记录上一次切换的页面，防止重复切换
+        viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageScrollStateChanged(state: Int) {
+                when (state) {
+                    ViewPager2.SCROLL_STATE_DRAGGING -> {
+                        // 开始滑动时，记录初始页面位置并重置偏移量
+                        LogUtils.d("开始滑动，初始页面：${viewPager.currentItem}")
+                        skipAnyAnim = false
+                        lastSwitchedPage = viewPager.currentItem
+                    }
+
+                    ViewPager2.SCROLL_STATE_IDLE -> {
+                        skipAnyAnim = true
+                        // 滑动结束，基于初始页面和偏移量决定是否切换
+                        LogUtils.d("滑动结束, 当前页面：${viewPager.currentItem}")
+                    }
+                }
+            }
+
+            override fun onPageScrolled(
+                position: Int,
+                positionOffset: Float,
+                positionOffsetPixels: Int
+            ) {
+                val totalItems = viewPager.adapter?.itemCount ?: 0
+                val currentPage = viewPager.currentItem
+                val adjustedOffset = if (position == currentPage) {
+                    // 左滑
+                    positionOffset
+                } else if (position == currentPage - 1) {
+                    // 右滑
+                    -(1.0f - positionOffset)
+                } else {
+                    0.0f // 默认情况
+                }
+                LogUtils.d("onPageScrolled, adjustedOffset: $adjustedOffset, position: $position, currentPage: $currentPage")
+                // 左滑：adjustedOffset > 0.5，切换到下一页
+                if (adjustedOffset > 0.5f && currentPage < totalItems - 1 && lastSwitchedPage != currentPage + 1) {
+                    lastSwitchedPage = currentPage + 1
+                    mBinding.customIndicator.animateIndicatorToPosition(lastSwitchedPage, 250)
+                    mBinding.tabLayout.getTabAt(lastSwitchedPage)?.select()
+                }
+                // 右滑：adjustedOffset < -0.5，切换到上一页
+                else if (adjustedOffset < -0.5f && currentPage > 0 && lastSwitchedPage != currentPage - 1) {
+                    lastSwitchedPage = currentPage - 1
+                    mBinding.customIndicator.animateIndicatorToPosition(lastSwitchedPage, 250)
+                    mBinding.tabLayout.getTabAt(lastSwitchedPage)?.select()
+                }
+                // 滑动未超过 50%，恢复到当前页面
+                else if (abs(adjustedOffset) <= 0.5f && lastSwitchedPage != currentPage) {
+                    lastSwitchedPage = currentPage
+                    mBinding.customIndicator.animateIndicatorToPosition(lastSwitchedPage, 250)
+                    mBinding.tabLayout.getTabAt(lastSwitchedPage)?.select()
+                }
+            }
+
+        })
+        // 启用手动滑动
+        viewPager.isUserInputEnabled = true
     }
 }
