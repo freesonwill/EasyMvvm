@@ -11,6 +11,7 @@ import arch.cayenne.lib.database.entity.BetStatusEnum
 import arch.cayenne.lib.database.entity.BetTypeEnum
 import arch.cayenne.module.bet.BettingRemoteManager
 import arch.cayenne.module.bet.data.ComboMultiBetBean
+import galaxy.client.proto.Client
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -103,12 +104,11 @@ class SingleBetRepository(
         }
     }
 
-    fun saveToCombo() {
-        scope.launch {
-            betDao.getCurrentBet()?.let {
-                betDao.updateBetType(it.betId, BetTypeEnum.COMBO)
-            }
+    suspend fun saveToCombo(): Boolean = withContext(scope.coroutineContext) {
+        betDao.getCurrentBet()?.let {
+            betDao.updateBetType(it.betId, BetTypeEnum.COMBO)
         }
+        true
     }
 
     suspend fun saveToReserve(odds: Int) = withContext(scope.coroutineContext) {
@@ -132,6 +132,7 @@ class SingleBetRepository(
                     val betId = it.betId
                     betDao.updateBetStatus(betId, BetStatusEnum.BETTING)
                     val selection = betDao.getSelections(betId).first()
+                    unregister(selection)
 
                     val tempDetail = BetDetailBean(
                         betId = betId,
@@ -166,6 +167,22 @@ class SingleBetRepository(
         }
     }
 
+    private fun unregister(selection: BetSelectionBean) {
+        scope.launch {
+            remoteManager.unregisterMatchMarketNotify(
+                listOf(
+                    Client.MarketIdBase.newBuilder()
+                        .setMatchId(selection.matchId)
+                        .addMarketId(selection.marketId)
+                        .build()
+                )
+            )
+            selection.oddsStatus = null
+            betDao.updateSelection(selection)
+
+        }
+    }
+
     suspend fun saveToSingle() = withContext(scope.coroutineContext) {
         betDao.getCurrentBet()?.let { bet ->
             return@withContext betDao.updateBetType(bet.betId, BetTypeEnum.SINGLE) == 1
@@ -181,6 +198,7 @@ class SingleBetRepository(
                     betDao.updateBetStatus(betId, BetStatusEnum.BETTING)
 
                     val selection = betDao.getSelections(betId).first()
+                    unregister(selection)
                     val detail = betDao.getDetail(betId).first()
 
                     val resp = remoteManager.reserveBet(selection, detail.sumOdds, money)

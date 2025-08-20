@@ -5,7 +5,7 @@ import android.view.View
 import android.view.ViewTreeObserver
 import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.ui.fragment.ReserveDialogFragment
@@ -27,6 +27,7 @@ import arch.cayenne.module.bet.R
 import arch.cayenne.module.bet.databinding.FragmentSingleBetBinding
 import arch.cayenne.module.bet.util.ViewHelper
 import arch.cayenne.module.bet.viewmodel.SingleBetViewModel
+import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
 
 class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBinding>(),
@@ -34,13 +35,6 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
 
     override val vbClass: KClass<FragmentSingleBetBinding> = FragmentSingleBetBinding::class
     override val vmClass: KClass<SingleBetViewModel> = SingleBetViewModel::class
-
-    private val selectionObserver by lazy {
-        Observer<BetSelectionBean> {
-            setBetData(it)
-            setBetButtonByOdds(mViewModel.onReserveOddsListener.value, it.odds)
-        }
-    }
 
     override fun initView(savedInstanceState: Bundle?) {
         ViewUtils.hideKeyboard(requireContext(), mBinding.etMoney) {
@@ -93,7 +87,12 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
 
     override fun initListener() {
         mBinding.ivClose.apply { addScaleOnTouchAnimation() }.setOnClickListener {
-            dismiss()
+            val type = mViewModel.betTypeListener.value
+            if (type == BetTypeEnum.COMBO) {
+                dismiss()
+            } else {
+                mViewModel.removeBet()
+            }
         }
         mBinding.btnBack.setOnClickListener {
             mViewModel.backNumber()
@@ -120,8 +119,10 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
             mViewModel.setNumber(500000)
         }
         mBinding.btnCollusion.setOnClickListener {
-            mViewModel.saveToCombo()
-            dismiss()
+            lifecycleScope.launch {
+                mViewModel.saveToCombo()
+                dismiss()
+            }
         }
         mBinding.clBet.setOnClickListener {
             sendBet()
@@ -146,8 +147,7 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
             showKeyboard()
         }
         mBinding.btnDelete.setOnClickListener {
-            mViewModel.saveToSingle()
-            dismiss()
+            mViewModel.removeBet()
         }
     }
 
@@ -158,7 +158,10 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
             val length = it.length
             mBinding.etMoney.setSelection(length)
         }
-        mViewModel.onBetSheetListener.observe(viewLifecycleOwner, selectionObserver)
+        mViewModel.onBetSheetListener.observe(viewLifecycleOwner) {
+            setBetData(it)
+            setBetButtonByOdds(mViewModel.onReserveOddsListener.value, it.odds)
+        }
         mViewModel.onBetWinMoney.observe(viewLifecycleOwner) {
             mBinding.tvBetMoney.isVisible = it.isNotEmpty() && it != "0"
             val money = getString(R.string.btn_bet_win_money).format(mViewModel.moneySymbol, it)
@@ -251,7 +254,6 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
         mViewModel.removeReserve()
         mViewModel.clearNumber()
         showKeyboard()
-        mViewModel.onBetSheetListener.observe(viewLifecycleOwner, selectionObserver)
     }
 
     private fun hideKeyboard() {
@@ -276,7 +278,6 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
         } else {
             val isSuccess = mViewModel.sendBet()
             if (isSuccess) {
-                mViewModel.onBetSheetListener.removeObservers(viewLifecycleOwner)
                 val f = BetResultFragment.newInstance()
                 f.setShowAnimEndListener {
                     dismiss()

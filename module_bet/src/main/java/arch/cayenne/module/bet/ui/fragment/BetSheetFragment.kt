@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.ContextThemeWrapper
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewTreeObserver
 import android.widget.FrameLayout
 import androidx.fragment.app.FragmentActivity
 import arch.cayenne.lib.base.ui.fragment.BasePreLoadBottomSheetFragment
@@ -150,16 +149,10 @@ class BetSheetFragment private constructor() :
     }
 
     override fun customHide() {
-        super.customHide()
         mViewModel.unregister()
-    }
-
-    override fun setCustomCollapseSetting() {
-        super.setCustomCollapseSetting()
         mViewModel.removeSingleBet()
+        super.customHide()
     }
-
-
 }
 
 interface BetSheetListener {

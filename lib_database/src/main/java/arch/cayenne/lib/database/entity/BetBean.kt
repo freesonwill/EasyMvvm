@@ -78,7 +78,8 @@ enum class BetTypeEnum {
 enum class BetStatusEnum {
     PENDING, // 待下注
     BETTING, // 下注中
-    COMPLETE // 下注完成, 完成並非成功!!
+    COMPLETE, // 下注完成, 完成並非成功!!
+    DONE
 }
 
 enum class OddsStatusEnum {
