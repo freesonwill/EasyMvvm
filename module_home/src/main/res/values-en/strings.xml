@@ -1,3 +1,18 @@
 <resources>
     <string name="no_more_data">No more data</string>
+    <string name="title_today">today</string>
+    <string name="title_early">early</string>
+    <string name="title_champion">champion</string>
+    <string name="title_soccer">soccer</string>
+    <string name="title_volleyball">volley</string>
+    <string name="title_basketball">basket</string>
+    <string name="title_rugby">rugby</string>
+    <string name="title_baseball">base</string>
+    <string name="title_tennis">tennis</string>
+    <string name="title_handball">hand</string>
+    <string name="title_pingpong">ping</string>
+    <string name="title_golf">golf</string>
+    <string name="title_hockey">hockey</string>
+    <string name="title_snooker">snooker</string>
+    <string name="title_badminton">badminton</string>
 </resources>
