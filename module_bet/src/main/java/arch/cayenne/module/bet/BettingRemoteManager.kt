@@ -1,6 +1,5 @@
 package arch.cayenne.module.bet
 
-import android.util.Log
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
@@ -173,7 +172,6 @@ class BettingRemoteManager(
         }
         return if (res.error == null && res.data != null) {
             val data = res.data!!
-            Log.d("abcd", "data ${data.toString()}")
             val placeBetInfo = data.placeBetInfoList.map {
                 ComboMultiBetInfo(
                     orderId = it.orderId,

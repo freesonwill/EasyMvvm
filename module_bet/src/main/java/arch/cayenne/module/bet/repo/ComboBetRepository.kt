@@ -1,6 +1,5 @@
 package arch.cayenne.module.bet.repo
 
-import android.util.Log
 import arch.cayenne.lib.base.data.repository.BaseRepository
 import arch.cayenne.lib.common.data.constants.UserDataKey
 import arch.cayenne.lib.common.data.manager.UserDataManager
@@ -200,7 +199,6 @@ class ComboBetRepository(
                     betDao.insertDetail(tempDetail)
 
                     val resp = remoteManager.comboBet(selection, multiBet)
-                    Log.d("abcd", "res $resp")
                     val detailBean = if (resp != null && resp.isSuccessful) {
                         multiBet.map { bean ->
                             val res = resp.data.first { it.serialValue == bean.serialValue }
