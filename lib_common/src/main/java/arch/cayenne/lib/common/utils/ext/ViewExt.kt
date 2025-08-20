@@ -25,7 +25,9 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.animation.addListener
 import androidx.core.view.children
+import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager2.widget.ViewPager2
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.R
 import arch.cayenne.lib.common.ui.view.CustomTabIndicator
@@ -33,6 +35,7 @@ import arch.cayenne.lib.common.ui.view.OnSwipeTouchListener
 import com.google.android.material.shape.CornerFamily
 import com.google.android.material.shape.MaterialShapeDrawable
 import com.google.android.material.shape.ShapeAppearanceModel
+import java.lang.reflect.Field
 
 private var lastClickTime: Long = 0L
 private const val TAG = "ViewExt"
@@ -472,6 +475,26 @@ fun View.startPageAnimation(vararg otherViews: View) {
     }
 }
 
+//改变ViewPager2 內部的 RecyclerView动画时间
+private fun ViewPager2.setViewPagerAnimationDuration(duration: Long) {
+    try {
+        // 通過反射獲取 ViewPager2 內部的 RecyclerView
+        val recyclerViewField: Field = ViewPager2::class.java.getDeclaredField("mRecyclerView")
+        recyclerViewField.isAccessible = true
+        val recyclerView = recyclerViewField.get(this) as RecyclerView
+
+        // 設置自定義 ItemAnimator
+        val animator = DefaultItemAnimator().apply {
+            addDuration = duration // 添加動畫時長
+            removeDuration = duration // 移除動畫時長
+            moveDuration = duration // 移動動畫時長
+            changeDuration = duration // 改變動畫時長
+        }
+        recyclerView.itemAnimator = animator
+    } catch (e: Exception) {
+        e.printStackTrace()
+    }
+}
 fun CustomTabIndicator.animateIndicatorToPosition(position: Int,duration:Long) {
     val animator = ValueAnimator.ofFloat(this.getCurrentPosition().toFloat(), position.toFloat())
     animator.duration = duration // 动画持续时间

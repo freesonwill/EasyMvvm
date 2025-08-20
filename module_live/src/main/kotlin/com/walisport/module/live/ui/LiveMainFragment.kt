@@ -68,7 +68,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
     override val vmClass: KClass<LiveMainViewModel> = LiveMainViewModel::class
     private lateinit var args: LiveMainFragmentArgs
     private var drawerContentFragment: LiveBetOnMenuFragment? = null
-    private var skipAnyAnim = false
+    private var skipAnyAnim = true
     private val titleBarBinding: TitleBarLiveBinding by lazy {
         TitleBarLiveBinding.inflate(LayoutInflater.from(context), mBinding.titleBar, false)
     }
@@ -156,7 +156,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                 tab?.let {
                     if (skipAnyAnim) {
                         // 动画更新指示器位置
-                        mBinding.customIndicator.animateIndicatorToPosition(tab?.position ?: 0, 0)
+                        mBinding.customIndicator.animateIndicatorToPosition(tab.position, 0)
                         mBinding.vpPage.setCurrentItem(tab.position, false)
                     }
                 }
@@ -189,8 +189,6 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                 // Handle reselect if needed
             }
         })
-        // 設置300ms動畫
-        setViewPagerAnimationDuration(mBinding.vpPage, 300)
         // 自定義滑動行為
         setupViewPagerScroll(mBinding.vpPage)
 
@@ -280,7 +278,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
     //比赛ID发生变化,取消订阅,数据请空
     private fun updateMatchId(matchId: Long) {
         mBinding.tabLayout.getTabAt(1)?.select()
-        mBinding.vpPage.setCurrentItem(1, true)
+        mBinding.vpPage.setCurrentItem(1, false)
         mViewModel.matchId.value?.let {
             deleteDataAndSubscriptions(matchId)
             mViewModel.setMatchId(matchId)
@@ -405,26 +403,6 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
             return true
         }
         return super.onBackPressed()
-    }
-
-    private fun setViewPagerAnimationDuration(viewPager: ViewPager2, duration: Long) {
-        try {
-            // 通過反射獲取 ViewPager2 內部的 RecyclerView
-            val recyclerViewField: Field = ViewPager2::class.java.getDeclaredField("mRecyclerView")
-            recyclerViewField.isAccessible = true
-            val recyclerView = recyclerViewField.get(viewPager) as RecyclerView
-
-            // 設置自定義 ItemAnimator
-            val animator = DefaultItemAnimator().apply {
-                addDuration = duration // 添加動畫時長
-                removeDuration = duration // 移除動畫時長
-                moveDuration = duration // 移動動畫時長
-                changeDuration = duration // 改變動畫時長
-            }
-            recyclerView.itemAnimator = animator
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
     }
 
     private fun setupViewPagerScroll(viewPager: ViewPager2) {
