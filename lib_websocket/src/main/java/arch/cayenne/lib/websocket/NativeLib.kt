@@ -79,7 +79,7 @@ class NativeLib : ISecurity<IRequest, ByteArray, IResponse> {
 
     override fun encrypt(data: IRequest): ByteArray? {
         if (data !is SocketRequestData) return null
-        "Request加密 -> api:${ApiCode.of(data.mid, data.sid)} rid = ${data.rid} data = ${data.payloadByteArray}".logi(TAG)
+        "封包加密 -> api:${ApiCode.of(data.mid, data.sid)} rid = ${data.rid} data = ${data.payloadByteArray}".logi(TAG)
         return newPack(
             mid = data.mid,
             sid = data.sid,
