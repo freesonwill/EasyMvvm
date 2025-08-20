@@ -208,7 +208,11 @@ class HomeViewModel : BaseViewModel() {
         }
         viewModelScope.launch(Dispatchers.IO) {
             repository.observeLoginChange()
-                .filter { it && apiStateListener.value == DataState.NetworkUnavailable }
+                .filter {
+                    it && (apiStateListener.value == DataState.NetworkUnavailable
+                            || apiStateListener.value == HomeState.Sport.LoadFailure
+                            || apiStateListener.value == HomeState.Tournament.LoadFailure)
+                }
                 .collect {
                     launch(Dispatchers.Main) {
                         setCurrentPlayType(currentPlayTypeId)

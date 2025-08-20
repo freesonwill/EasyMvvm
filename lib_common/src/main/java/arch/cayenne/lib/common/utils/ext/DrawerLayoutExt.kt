@@ -12,7 +12,7 @@ import androidx.drawerlayout.widget.DrawerLayout
  */
 
 fun DrawerLayout.setDrawerInterpolator(
-    fixedDuration: Int? = null,
+    fixedDuration: Long? = null,
     interpolator: Interpolator? = null
 ) {
     val draggerFields = listOf("mLeftDragger", "mRightDragger")
@@ -43,7 +43,7 @@ fun DrawerLayout.setDrawerInterpolator(
             val newScroller = when (oldScroller) {
                 is OverScroller -> object : OverScroller(context, interpolatorNew) {
                     override fun startScroll(sx: Int, sy: Int, dx: Int, dy: Int, duration: Int) {
-                        super.startScroll(sx, sy, dx, dy, fixedDuration ?: duration)
+                        super.startScroll(sx, sy, dx, dy, fixedDuration?.toInt() ?: duration)
                     }
                 }
 
@@ -55,7 +55,7 @@ fun DrawerLayout.setDrawerInterpolator(
                         dy: Int,
                         duration: Int
                     ) {
-                        super.startScroll(startX, startY, dx, dy, fixedDuration ?: duration)
+                        super.startScroll(startX, startY, dx, dy, fixedDuration?.toInt() ?: duration)
                     }
                 }
 

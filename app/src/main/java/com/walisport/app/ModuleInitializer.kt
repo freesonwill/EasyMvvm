@@ -111,7 +111,7 @@ class ModuleInitializer : DefaultInitializer<String> {
             CoroutineScope(Dispatchers.IO)
         }
         factory { ModuleRepository(get(), get(), get(named("preLoadHome")), get()) }
-        factory { (scope: CoroutineScope) -> MainRepository(scope, get(), get(), get(), get()) }
+        factory { (scope: CoroutineScope) -> MainRepository(scope, get(), get(), get(), get(), get()) }
         factory { (scope: CoroutineScope) -> SplashRepository(scope, get(), get()) }
     }
     private val moduleList: List<Module> = listOf(viewModules, repoModules)
