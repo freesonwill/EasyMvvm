@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import arch.cayenne.lib.base.ui.adapter.BaseAdapter
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
+import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.database.entity.SportDataModel
 import arch.cayenne.module.home.data.constants.SportType
@@ -20,7 +21,8 @@ class SportsListAdapter(
         val sportType = SportType.fromId(sport.id) ?: SportType.Init
         val context = holder.itemView.context
         binding.apply {
-            tvSportTitle.text = context.getString(sportType.titleResId)
+            //使用ResourceExt 获取languageManager当前语言
+            tvSportTitle.text = sportType.titleResId.getString()
             tvSportIcon.isEnabled = sport.matchCount > 0
             tvSportIcon.setImageResource(if (tvSportIcon.isEnabled) sportType.iconResActive else sportType.iconResInactive)
 

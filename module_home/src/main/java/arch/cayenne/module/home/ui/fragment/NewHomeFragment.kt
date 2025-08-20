@@ -104,9 +104,12 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 initDrawerContent()
                 drawerLayout.openDrawer(GravityCompat.START)
             }
+            val tabResList = mutableListOf<Int>()
             PlayType.entries.forEach {
+                tabResList.add(it.titleRes)
                 tlHome.addTab(tlHome.newTab().setText(it.titleRes))
             }
+            tlHome.setTabResArray(tabResList.toIntArray())
             tlHome.addOnTabSelectedListener(object : OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab?) {
                     tab?.position?.apply {
@@ -670,6 +673,10 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 }
                 else -> Unit
             }
+        }
+        mViewModel.languageManager.languageFlow.collect{
+            //sportAdapter需要监听切换语言更新
+            sportsListAdapter.notifyDataSetChanged()
         }
     }
 
