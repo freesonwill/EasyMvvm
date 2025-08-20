@@ -87,6 +87,10 @@ class SplashActivity : BaseActivity<SplashViewModel, ActivitySplashBinding>() {
     //55469214
     //NTU0NjkyMTRfMTc1NTI1Mjg5NDMzMTpiNlhJeVphb0xOQVFnNWpS
 
+    //yuze  test
+    //55469174
+    //NTU0NjkxNzRfMTc1MzYwNzAxOTAwMjpYWUQ0Tm12Vjc1YTlDTnFi
+
     private val pair: Pair<Int, String> = if (BuildConfig.BUILD_TYPE == "debug") {
         Pair<Int, String>(BuildConfig.uid, BuildConfig.token)
     } else if (BuildConfig.BUILD_TYPE != "release") {
