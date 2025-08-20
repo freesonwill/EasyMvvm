@@ -5,7 +5,7 @@ import android.view.View
 import android.view.ViewTreeObserver
 import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.ui.fragment.ReserveDialogFragment
@@ -27,6 +27,7 @@ import arch.cayenne.module.bet.R
 import arch.cayenne.module.bet.databinding.FragmentSingleBetBinding
 import arch.cayenne.module.bet.util.ViewHelper
 import arch.cayenne.module.bet.viewmodel.SingleBetViewModel
+import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
 
 class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBinding>(),
@@ -86,7 +87,12 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
 
     override fun initListener() {
         mBinding.ivClose.apply { addScaleOnTouchAnimation() }.setOnClickListener {
-            dismiss()
+            val type = mViewModel.betTypeListener.value
+            if (type == BetTypeEnum.COMBO) {
+                dismiss()
+            } else {
+                mViewModel.removeBet()
+            }
         }
         mBinding.btnBack.setOnClickListener {
             mViewModel.backNumber()
@@ -113,8 +119,10 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
             mViewModel.setNumber(500000)
         }
         mBinding.btnCollusion.setOnClickListener {
-            mViewModel.saveToCombo()
-            dismiss()
+            lifecycleScope.launch {
+                mViewModel.saveToCombo()
+                dismiss()
+            }
         }
         mBinding.clBet.setOnClickListener {
             sendBet()
@@ -139,8 +147,7 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
             showKeyboard()
         }
         mBinding.btnDelete.setOnClickListener {
-            mViewModel.saveToSingle()
-            dismiss()
+            mViewModel.removeBet()
         }
     }
 

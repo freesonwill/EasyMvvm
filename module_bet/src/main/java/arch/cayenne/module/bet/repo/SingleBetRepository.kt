@@ -104,12 +104,11 @@ class SingleBetRepository(
         }
     }
 
-    fun saveToCombo() {
-        scope.launch {
-            betDao.getCurrentBet()?.let {
-                betDao.updateBetType(it.betId, BetTypeEnum.COMBO)
-            }
+    suspend fun saveToCombo(): Boolean = withContext(scope.coroutineContext) {
+        betDao.getCurrentBet()?.let {
+            betDao.updateBetType(it.betId, BetTypeEnum.COMBO)
         }
+        true
     }
 
     suspend fun saveToReserve(odds: Int) = withContext(scope.coroutineContext) {

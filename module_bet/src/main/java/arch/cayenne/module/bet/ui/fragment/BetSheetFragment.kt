@@ -149,16 +149,10 @@ class BetSheetFragment private constructor() :
     }
 
     override fun customHide() {
-        super.customHide()
         mViewModel.unregister()
-    }
-
-    override fun setCustomCollapseSetting() {
-        super.setCustomCollapseSetting()
         mViewModel.removeSingleBet()
+        super.customHide()
     }
-
-
 }
 
 interface BetSheetListener {
