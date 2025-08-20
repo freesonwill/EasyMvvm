@@ -54,7 +54,7 @@ import arch.cayenne.lib.common.utils.ext.animateIndicatorToPosition
 import com.walisport.module.live.utils.TextViewExt.setBottomDrawable
 import java.lang.reflect.Field
 import kotlin.math.abs
-
+import arch.cayenne.lib.common.utils.ext.setupViewPagerScroll
 /**
  * 直播详情页
  */
@@ -190,8 +190,9 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
             }
         })
         // 自定義滑動行為
-        setupViewPagerScroll(mBinding.vpPage)
-
+        mBinding.vpPage.setupViewPagerScroll(mBinding.tabLayout,mBinding.customIndicator){
+            skipAnyAnim = it
+        }
     }
 
     override fun createObserverAtState(): Lifecycle.State {
@@ -403,72 +404,5 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
             return true
         }
         return super.onBackPressed()
-    }
-
-    private fun setupViewPagerScroll(viewPager: ViewPager2) {
-        mBinding.tabLayout.post {
-            // 计算单个 Tab 的宽度
-            val tabWidth = mBinding.tabLayout.width.toFloat() / mBinding.tabLayout.tabCount
-            mBinding.customIndicator.setTabWidth(tabWidth)
-        }
-        var lastSwitchedPage: Int = 0 // 记录上一次切换的页面，防止重复切换
-        viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-            override fun onPageScrollStateChanged(state: Int) {
-                when (state) {
-                    ViewPager2.SCROLL_STATE_DRAGGING -> {
-                        // 开始滑动时，记录初始页面位置并重置偏移量
-                        LogUtils.d("开始滑动，初始页面：${viewPager.currentItem}")
-                        skipAnyAnim = false
-                        lastSwitchedPage = viewPager.currentItem
-                    }
-
-                    ViewPager2.SCROLL_STATE_IDLE -> {
-                        skipAnyAnim = true
-                        // 滑动结束，基于初始页面和偏移量决定是否切换
-                        LogUtils.d("滑动结束, 当前页面：${viewPager.currentItem}")
-                    }
-                }
-            }
-
-            override fun onPageScrolled(
-                position: Int,
-                positionOffset: Float,
-                positionOffsetPixels: Int
-            ) {
-                val totalItems = viewPager.adapter?.itemCount ?: 0
-                val currentPage = viewPager.currentItem
-                val adjustedOffset = if (position == currentPage) {
-                    // 左滑
-                    positionOffset
-                } else if (position == currentPage - 1) {
-                    // 右滑
-                    -(1.0f - positionOffset)
-                } else {
-                    0.0f // 默认情况
-                }
-                LogUtils.d("onPageScrolled, adjustedOffset: $adjustedOffset, position: $position, currentPage: $currentPage")
-                // 左滑：adjustedOffset > 0.5，切换到下一页
-                if (adjustedOffset > 0.5f && currentPage < totalItems - 1 && lastSwitchedPage != currentPage + 1) {
-                    lastSwitchedPage = currentPage + 1
-                    mBinding.customIndicator.animateIndicatorToPosition(lastSwitchedPage, 250)
-                    mBinding.tabLayout.getTabAt(lastSwitchedPage)?.select()
-                }
-                // 右滑：adjustedOffset < -0.5，切换到上一页
-                else if (adjustedOffset < -0.5f && currentPage > 0 && lastSwitchedPage != currentPage - 1) {
-                    lastSwitchedPage = currentPage - 1
-                    mBinding.customIndicator.animateIndicatorToPosition(lastSwitchedPage, 250)
-                    mBinding.tabLayout.getTabAt(lastSwitchedPage)?.select()
-                }
-                // 滑动未超过 50%，恢复到当前页面
-                else if (abs(adjustedOffset) <= 0.5f && lastSwitchedPage != currentPage) {
-                    lastSwitchedPage = currentPage
-                    mBinding.customIndicator.animateIndicatorToPosition(lastSwitchedPage, 250)
-                    mBinding.tabLayout.getTabAt(lastSwitchedPage)?.select()
-                }
-            }
-
-        })
-        // 启用手动滑动
-        viewPager.isUserInputEnabled = true
     }
 }
