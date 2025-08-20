@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavDirections
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.ui.fragment.launch
@@ -193,7 +194,13 @@ class SearchResultBaseFragment :
         with(findNavController()) {
             // 避免轉跳前用戶已經返回前一頁造成 Crash
             if (isAdded && currentDestination?.id == R.id.searchResultBaseFragment) {
-                navigate(action)
+                val navOptions = NavOptions.Builder()
+                    .setEnterAnim(0)
+                    .setExitAnim(0)
+                    .setPopEnterAnim(0)
+                    .setPopExitAnim(0)
+                    .build()
+                navigate(action, navOptions)
             }
         }
     }
