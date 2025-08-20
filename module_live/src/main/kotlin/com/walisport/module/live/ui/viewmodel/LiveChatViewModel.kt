@@ -5,6 +5,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
+import arch.cayenne.lib.common.data.constants.UserDataKey
+import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.websocket.chat.data.ChatLoginResponseData
 import arch.cayenne.lib.websocket.chat.data.ChatMsg
@@ -22,7 +24,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class LiveChatViewModel(private val chatRepo: LiveChatRepository) : BaseViewModel() {
+class LiveChatViewModel(private val chatRepo: LiveChatRepository,private val userDataManager: UserDataManager) : BaseViewModel() {
     private var matchId: Long? = null
     private val _currentSoftKeyboard = MutableStateFlow(KeyBoardType.CHAT)
     private val _loginLiveData = MutableLiveData<ChatLoginResponseData?>()
@@ -81,6 +83,7 @@ class LiveChatViewModel(private val chatRepo: LiveChatRepository) : BaseViewMode
 
     fun setArguments(matchId: Long?) {
         this.matchId = matchId
+        softKeyBoardHeight = userDataManager.getValue(UserDataKey.KEY_SOFT_KEYBOARD_HEIGHT,0)
     }
 
     /**
@@ -297,5 +300,13 @@ class LiveChatViewModel(private val chatRepo: LiveChatRepository) : BaseViewMode
     }
 
     fun getConnectStateFlow(): StateFlow<SocketConnectState> = chatRepo.getConnectStateFlow()
+
+    fun saveUpdateSoftKeyBoardHeight(softHeight:Int){
+        if(softKeyBoardHeight != softHeight){
+            softKeyBoardHeight = softHeight
+            userDataManager.setKeyValue(UserDataKey.KEY_SOFT_KEYBOARD_HEIGHT,softKeyBoardHeight)
+        }
+    }
+
 
 }

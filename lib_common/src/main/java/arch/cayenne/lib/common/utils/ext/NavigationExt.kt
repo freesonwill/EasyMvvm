@@ -24,10 +24,10 @@ object NavigationExt {
     private const val TAG = "NavigationExt"
     private val defaultNavOptions by lazy {
         NavOptions.Builder()
-            .setEnterAnim(R.anim.slide_in_right)  // 新页面进入动画 从右划入
-            .setExitAnim(R.anim.slide_out_left)   // 旧页面退出动画 <--
-            .setPopEnterAnim(R.anim.slide_in_left) // 返回时，新页面进入动画
-            .setPopExitAnim(R.anim.slide_out_right) // 返回时，当前页面退出动画
+            //.setEnterAnim(R.anim.slide_in_right)  // 新页面进入动画 从右划入
+            //.setExitAnim(R.anim.slide_out_left)   // 旧页面退出动画 <--
+            //.setPopEnterAnim(R.anim.slide_in_left) // 返回时，新页面进入动画
+            //.setPopExitAnim(R.anim.slide_out_right) // 返回时，当前页面退出动画
             .build()
     }
 
@@ -111,8 +111,8 @@ object NavigationExt {
     ) {
         val options = ActivityOptions.makeCustomAnimation(
             this,
-            navOptions.enterAnim,
-            navOptions.exitAnim,
+            R.anim.slide_in_right,
+            R.anim.slide_out_left,
         )
         startActivity(intent, options.toBundle())
     }

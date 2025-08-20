@@ -35,7 +35,7 @@ class LiveMatchMediaFragment :
     }
 
     override suspend fun createObserver() {
-        delay(250)
+        delay(320)
         //监听比赛id变化
         mainViewModel.matchId.observe(viewLifecycleOwner) {
             mViewModel.setMatchId(it)

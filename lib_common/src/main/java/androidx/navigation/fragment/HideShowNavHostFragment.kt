@@ -1,8 +1,13 @@
 package androidx.navigation.fragment
 
+import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.FragivityFragmentNavigator
 import androidx.navigation.Navigator
+import arch.cayenne.lib.base.ui.fragment.launch
+import arch.cayenne.lib.base.ui.animation.AnimationController
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.merge
 
 /**
  * @author DBoy
@@ -10,17 +15,41 @@ import androidx.navigation.Navigator
  * Class 描述 : Hide - Show NavHostFragment
  */
 class HideShowNavHostFragment : NavHostFragment() {
+    private lateinit var navigator: FragivityFragmentNavigator
 
     /**
      * @return 使用自己的FragmentNavigator 虽然是废弃的，但是源码实现最终都是调用这里返回Navigator
      */
     override fun createFragmentNavigator(): Navigator<out FragmentNavigator.Destination> {
-//        return ReusingFragmentNavigator(requireContext(), childFragmentManager, containerId)
+        //return ReusingFragmentNavigator(requireContext(), childFragmentManager, containerId)
         //return MyFragmentNavigator(requireContext(), childFragmentManager, containerId)
-        return FragivityFragmentNavigator(requireContext(), childFragmentManager, containerId)
-
+        return FragivityFragmentNavigator(
+            requireContext(),
+            childFragmentManager,
+            containerId
+        ).apply {
+            navigator = this
+        }
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        launch {
+            merge(
+                AnimationController.routeEnterAnim.map { "enter" to it },
+                AnimationController.routeExiAnim.map { "exit" to it },
+                AnimationController.routePopEnterAnim.map { "popEnter" to it },
+                AnimationController.routePopExitAnim.map { "popExit" to it }
+            ).collect { (type, anim) ->
+                when (type) {
+                    "enter" -> navigator.setEnterAnim(anim)
+                    "exit" -> navigator.setExitAnim(anim)
+                    "popEnter" -> navigator.setPopEnterAnim(anim)
+                    "popExit" -> navigator.setPopExitAnim(anim)
+                }
+            }
+        }
+    }
 
     private val containerId: Int
         get() {

@@ -74,9 +74,7 @@ abstract class BaseMatchViewModel<REPO: BaseMatchRepository> : BaseViewModel() {
         if (isPageEnd) {
             return
         }
-        if (apiStateListener.value != HomeState.Match.LoadSuccess) {
-            return
-        }
+
         page++
         setState(HomeState.Match.LoadingNext)
         getMatchListData()
