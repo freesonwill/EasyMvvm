@@ -68,7 +68,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="invisible"
-        app:constraint_referenced_ids="iv_home_league_collapse,ll_search_bar,tv_tournament_section_title" />
+        app:constraint_referenced_ids="ll_search_bar,tv_tournament_section_title" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_tournament_list"
