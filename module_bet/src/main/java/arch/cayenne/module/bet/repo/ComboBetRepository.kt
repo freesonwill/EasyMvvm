@@ -182,6 +182,7 @@ class ComboBetRepository(
                     betDao.updateBetStatus(betId, BetStatusEnum.BETTING)
 
                     val selection = betDao.getSelections(betId)
+                    unregister(selection)
                     val tempDetail = multiBet.map { bean ->
                         BetDetailBean(
                             serialValue = bean.serialValue,
@@ -231,6 +232,21 @@ class ComboBetRepository(
                     betDao.insertDetail(detailBean)
                     betDao.updateBetStatus(betId, BetStatusEnum.COMPLETE)
                 }
+            }
+        }
+    }
+
+    private fun unregister(selections: List<BetSelectionBean>) {
+        scope.launch {
+            remoteManager.unregisterMatchMarketNotify(selections.map {
+                Client.MarketIdBase.newBuilder()
+                    .setMatchId(it.matchId)
+                    .addMarketId(it.marketId)
+                    .build()
+            })
+            selections.forEach {
+                it.oddsStatus = null
+                betDao.updateSelection(it)
             }
         }
     }

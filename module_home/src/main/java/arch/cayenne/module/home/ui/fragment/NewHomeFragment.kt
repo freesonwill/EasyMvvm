@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.PathInterpolator
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.view.GravityCompat
@@ -27,7 +26,6 @@ import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.animation.AnimationController
-import arch.cayenne.lib.base.ui.animation.EaseCubicInterpolator
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
@@ -104,9 +102,12 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 initDrawerContent()
                 drawerLayout.openDrawer(GravityCompat.START)
             }
+            val tabResList = mutableListOf<Int>()
             PlayType.entries.forEach {
+                tabResList.add(it.titleRes)
                 tlHome.addTab(tlHome.newTab().setText(it.titleRes))
             }
+            tlHome.setTabResArray(tabResList.toIntArray())
             tlHome.addOnTabSelectedListener(object : OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab?) {
                     tab?.position?.apply {
@@ -274,7 +275,6 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
         lifecycleScope.launch {
             mViewModel.selectedDate(0L)
         }
-
     }
 
     /***
@@ -670,6 +670,10 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 }
                 else -> Unit
             }
+        }
+        mViewModel.languageManager.languageFlow.collect{
+            //sportAdapter需要监听切换语言更新
+            sportsListAdapter.notifyDataSetChanged()
         }
     }
 

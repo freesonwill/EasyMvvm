@@ -71,4 +71,7 @@ class BetResultViewModel(private val repo: BetResultRepository) : BaseViewModel(
     }
 
     suspend fun continueBet() = repo.continueBet()
+    fun sendDone() {
+        repo.sendDone()
+    }
 }

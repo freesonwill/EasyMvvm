@@ -1,6 +1,7 @@
 package arch.cayenne.lib.skin.widget.helper
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.res.TypedArray
 import android.util.AttributeSet
 import arch.cayenne.lib.skin.R
@@ -14,9 +15,12 @@ class SkinnableTabLayoutHelper(mView: TabLayout) : SkinnableHelper(mView) {
     private var tabBackground: Int = INVALID_ID
     private var textColor: Int = INVALID_ID
     private var textSelectedColor: Int = INVALID_ID
-
+    private var tabResArray:IntArray = intArrayOf()
     override val mView: TabLayout
         get() = super.mView as TabLayout
+
+    private var stringContext: Context? = null //更新语言
+    private var lastLanguage: Locale? = null
 
     @SuppressLint("Recycle", "PrivateResource")
     override fun loadFromAttributes(attrs: AttributeSet?, defStyleAttr: Int) {
@@ -34,8 +38,10 @@ class SkinnableTabLayoutHelper(mView: TabLayout) : SkinnableHelper(mView) {
             a?.recycle()
         }
         updateSkin(SkinMsgType.SELF)
+    }
 
-
+    fun updateTabResArray(resArray:IntArray){
+        tabResArray = resArray
     }
 
     override fun updateSkin(msgType: SkinMsgType) {
@@ -63,5 +69,39 @@ class SkinnableTabLayoutHelper(mView: TabLayout) : SkinnableHelper(mView) {
             tab.view.setBackgroundResource(resourcesManager.getTargetResourceId(mView.context, tabBackground))
         }
     }
+
+    /**
+     * 更新语言时，更新context的configuration local
+     * */
+    fun refreshContext(locale: Locale?) {
+        if (lastLanguage == locale) {
+            return
+        }
+        lastLanguage = locale
+        val configuration = mView.context.resources.configuration
+        configuration.setLocale(locale)
+        stringContext = mView.context.applicationContext.createConfigurationContext(configuration)
+    }
+
+
+    /**
+     * 更新tab语言
+     * */
+    fun updateLanguage(locale: Locale){
+        if (tabResArray.size != mView.tabCount) {
+            return
+        }
+
+        refreshContext(locale)
+        for (i in 0 until mView.tabCount) {
+            if(checkResourceIdValid(tabResArray[i])){
+                mView.getTabAt(i)?.let {
+                    it.text = resourcesManager.getTextResourceText(stringContext ?: mView.context, tabResArray[i],)
+                }
+            }
+        }
+    }
+
+
 
 }

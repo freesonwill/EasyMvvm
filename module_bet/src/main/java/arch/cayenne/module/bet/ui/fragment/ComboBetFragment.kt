@@ -122,7 +122,6 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
         mBinding.clBet.setOnClickListener {
             val isSuccess = mViewModel.sendBet()
             if (isSuccess) {
-                mViewModel.onBetListListener.removeObservers(viewLifecycleOwner)
                 val f = BetResultFragment.newInstance()
                 f.setShowAnimEndListener {
                     dismiss()

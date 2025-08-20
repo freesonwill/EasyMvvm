@@ -4,8 +4,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
-import android.view.animation.Animation
-import android.view.animation.AnimationUtils
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -51,20 +49,10 @@ class ChampionFragment : BaseFragment<ChampionViewModel, FragmentChampionBinding
         mViewModel.setMatchId(args.matchId)
     }
 
-    override fun onCreateAnimation(transit: Int, enter: Boolean, nextAnim: Int): Animation? {
-        return if (enter && nextAnim != 0) {
-            val animation = AnimationUtils.loadAnimation(requireContext(), nextAnim)
-            animation.setAnimationListener(object : Animation.AnimationListener {
-                override fun onAnimationStart(animation: Animation?) {}
-                override fun onAnimationEnd(animation: Animation?) {
-                    mViewModel.subscribeMatch()
-                    mViewModel.getChampionDetail()
-                }
-                override fun onAnimationRepeat(animation: Animation?) {}
-            })
-            animation
-        } else {
-            super.onCreateAnimation(transit, enter, nextAnim)
+    override fun onFragmentAnimEnd(isEnter: Boolean) {
+        if (isEnter) {
+            mViewModel.subscribeMatch()
+            mViewModel.getChampionDetail()
         }
     }
 

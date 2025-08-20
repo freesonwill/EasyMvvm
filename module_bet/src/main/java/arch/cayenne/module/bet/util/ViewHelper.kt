@@ -11,6 +11,7 @@ import arch.cayenne.lib.common.utils.ext.SportDisplayOddsExt.getDisplayOdds
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
 import arch.cayenne.lib.database.entity.BetSelectionBean
 import arch.cayenne.lib.database.entity.OddsStatusEnum
+import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.module.bet.databinding.ItemBetSheetBinding
 
 internal object ViewHelper {
@@ -36,12 +37,14 @@ internal object ViewHelper {
             OddsStatusEnum.DOWN -> ContextCompat.getColor(binding.root.context, arch.cayenne.module.bet.R.color.red)
             else -> null
         }
+        val originColor = SkinnableResourceManager.getColor(binding.root.context, arch.cayenne.lib.common.R.color.main_text)
         if (oddsColor != null) {
-            val originColor = binding.tvOdds.currentTextColor
             binding.tvOdds.setTextColor(oddsColor)
             binding.tvOdds.postDelayed(2_000L) {
                 binding.tvOdds.setTextColor(originColor)
             }
+        } else {
+            binding.tvOdds.setTextColor(originColor)
         }
     }
 

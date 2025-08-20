@@ -20,6 +20,7 @@ import arch.cayenne.lib.database.entity.InfoBean
 import arch.cayenne.module.bet.data.ComboMultiBetBean
 import arch.cayenne.module.bet.repo.SingleBetRepository
 import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 
 class SingleBetViewModel(
@@ -129,7 +130,7 @@ class SingleBetViewModel(
         setNumberLimit(0L, 0L)
         viewModelScope.launch {
             launch {
-                betRepo.observeSelectionBean().collect {
+                betRepo.observeSelectionBean().distinctUntilChanged().collect {
                     setBetSheet(it)
                 }
             }
@@ -191,9 +192,7 @@ class SingleBetViewModel(
         _onReserveOddsListener.value = null
     }
 
-    fun saveToCombo() {
-        betRepo.saveToCombo()
-    }
+    suspend fun saveToCombo() = betRepo.saveToCombo()
 
     fun saveToSingle() {
         viewModelScope.launch {

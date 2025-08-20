@@ -4,16 +4,15 @@ import android.os.Bundle
 import android.widget.LinearLayout
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.viewpager2.widget.ViewPager2
 import arch.cayenne.lib.base.data.model.PagerBean
 import arch.cayenne.lib.base.ui.adapter.PagerAdapter
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.removeAllTips
 import arch.cayenne.lib.common.utils.ext.touchBackPressed
-import arch.cayenne.lib.common.utils.helper.doSmartAnim
 import arch.cayenne.module.handicap.R
 import arch.cayenne.module.handicap.databinding.FragmentHandicapBinding
 import arch.cayenne.module.handicap.ui.viewmodel.HandicapViewModel
@@ -30,6 +29,7 @@ class HandicapFragment : BaseFragment<HandicapViewModel, FragmentHandicapBinding
     override val vbClass: KClass<FragmentHandicapBinding> = FragmentHandicapBinding::class
     override val vmClass: KClass<HandicapViewModel> = HandicapViewModel::class
     private val args: HandicapFragmentArgs by navArgs()
+    private var skipAnyAnim = true
 
     override fun initView(savedInstanceState: Bundle?) {
         with(mBinding) {
@@ -62,10 +62,25 @@ class HandicapFragment : BaseFragment<HandicapViewModel, FragmentHandicapBinding
     }
 
     private fun setViewPagerAnim() {
+        mBinding.viewpager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageScrollStateChanged(state: Int) {
+                when (state) {
+                    ViewPager2.SCROLL_STATE_DRAGGING -> {
+                        skipAnyAnim = false
+                    }
+
+                    ViewPager2.SCROLL_STATE_IDLE -> {
+                        skipAnyAnim = true
+                    }
+                }
+            }
+        })
         mBinding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 tab?.let {
-                    mBinding.viewpager.doSmartAnim(targetPosition = tab.position)
+                    if (skipAnyAnim) {
+                        mBinding.viewpager.setCurrentItem(tab.position, false)
+                    }
                 }
             }
 

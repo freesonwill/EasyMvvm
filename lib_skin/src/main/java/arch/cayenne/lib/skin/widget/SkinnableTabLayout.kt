@@ -37,6 +37,10 @@ class SkinnableTabLayout : TabLayout {
             backgroundTintHelper.updateSkin()
             tabLayoutHelper.updateSkin()
         }
+
+        flowHelper.startLanguageFlow {
+            tabLayoutHelper.updateLanguage(it)
+        }
     }
 
     private fun initView(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) {
@@ -67,6 +71,10 @@ class SkinnableTabLayout : TabLayout {
     override fun onDetachedFromWindow() {
         flowHelper.destroyFlow()
         super.onDetachedFromWindow()
+    }
+    //设置Tab时添加tabResArray，语言切换时更新tab
+    fun setTabResArray(tabResArray: IntArray){
+        tabLayoutHelper.updateTabResArray(tabResArray)
     }
 
 }
