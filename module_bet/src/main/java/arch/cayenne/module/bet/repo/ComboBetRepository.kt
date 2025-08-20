@@ -44,22 +44,24 @@ class ComboBetRepository(
         scope.launch {
             launch {
                 betDao.observeCurrentSelections().collect {
-                    val lastSize = if (selectionFlow.replayCache.isEmpty()) {
-                        0
-                    } else {
-                        selectionFlow.replayCache.first().size
-                    }
-                    setSelectionForCheckOdds(it)
-                    if (lastSize != it.size) {
-                        val emptyRisk = getEmptyRiskList(it.size)
-                        if (emptyRisk.isNotEmpty()) {
-                            comboMultiBetFlow.emit(calculateMultiBetSums(it, emptyRisk))
+                    if (it.size > 1) {
+                        val lastSize = if (selectionFlow.replayCache.isEmpty()) {
+                            0
+                        } else {
+                            selectionFlow.replayCache.first().size
                         }
-                        setComboMulti(it)
-                    } else {
-                        if (comboMultiBetFlow.replayCache.isNotEmpty()) {
-                            val multi = comboMultiBetFlow.replayCache.first()
-                            updateMultiOdds(it, multi)
+                        setSelectionForCheckOdds(it)
+                        if (lastSize != it.size) {
+                            val emptyRisk = getEmptyRiskList(it.size)
+                            if (emptyRisk.isNotEmpty()) {
+                                comboMultiBetFlow.emit(calculateMultiBetSums(it, emptyRisk))
+                            }
+                            setComboMulti(it)
+                        } else {
+                            if (comboMultiBetFlow.replayCache.isNotEmpty()) {
+                                val multi = comboMultiBetFlow.replayCache.first()
+                                updateMultiOdds(it, multi)
+                            }
                         }
                     }
                 }
@@ -161,8 +163,6 @@ class ComboBetRepository(
                                 .build()
                         )
                     )
-                    val selections = betDao.getSelections(bet.betId)
-                    setComboMulti(selections)
                 }
             }
         }

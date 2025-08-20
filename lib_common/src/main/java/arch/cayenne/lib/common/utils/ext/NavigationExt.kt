@@ -13,7 +13,10 @@ import androidx.navigation.NavOptions
 import androidx.navigation.Navigator
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logw
 import arch.cayenne.lib.common.R
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 /**
  * @author: zhangsan
@@ -83,6 +86,7 @@ object NavigationExt {
         navigatorExtras: Navigator.Extras? = null,
         @IdRes viewId: Int = R.id.nav_host
     ) {
+        if(isNavigationDebounced("$this,deepLink:$deepLink")) return
         findNavController(viewId).navigate(deepLink, navOptions, navigatorExtras)
     }
 
@@ -91,6 +95,7 @@ object NavigationExt {
         navOptions: NavOptions? = defaultNavOptions,
         @IdRes viewId: Int = R.id.nav_host
     ) {
+        if(isNavigationDebounced("$this,directions:$directions")) return
         val navController = findNavController(viewId)
         navController.navigate(directions, mergedNavOption(navController,directions, navOptions))
     }
@@ -102,6 +107,7 @@ object NavigationExt {
         navigatorExtras: Navigator.Extras? = null,
         @IdRes viewId: Int = R.id.nav_host
     ) {
+        if(isNavigationDebounced("$this,args:$args")) return
         findNavController(viewId).navigate(resId, args, navOptions, navigatorExtras)
     }
 
@@ -109,6 +115,7 @@ object NavigationExt {
         intent: Intent,
         navOptions: NavOptions = defaultNavOptions,
     ) {
+        if(isNavigationDebounced("$this,intent:$intent")) return
         val options = ActivityOptions.makeCustomAnimation(
             this,
             R.anim.slide_in_right,
@@ -125,12 +132,29 @@ object NavigationExt {
         return findNavController(viewId).popBackStack()
     }
 
+
+    /**
+     * 执行防抖的导航操作
+     */
+    private var lastNavigateTime = 0L
+    private fun isNavigationDebounced(reason: String): Boolean {
+        val isDebounced = System.currentTimeMillis() - lastNavigateTime < 500L
+        if(!isDebounced) {
+            lastNavigateTime = System.currentTimeMillis()
+        } else {
+            val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.getDefault())
+            "navigation blocked by debounce,lastNavigateTime:${sdf.format(lastNavigateTime)},reason:$reason".logw(TAG)
+        }
+        return isDebounced
+    }
+
     /** Fragment的默认跳转 **/
     fun Fragment.navigate(
         deepLink: Uri,
         navOptions: NavOptions? = defaultNavOptions,
         navigatorExtras: Navigator.Extras? = null
     ) {
+        if(isNavigationDebounced("$this,uri:$deepLink")) return
         findNavController().navigate(deepLink, navOptions, navigatorExtras)
     }
 
@@ -138,10 +162,10 @@ object NavigationExt {
         directions: NavDirections,
         navOptions: NavOptions? = defaultNavOptions
     ) {
+        if(isNavigationDebounced("$this")) return
         val navController = findNavController()
-        navController.navigate(directions,mergedNavOption(navController,directions,navOptions))
+        navController.navigate(directions, mergedNavOption(navController, directions, navOptions))
     }
-
 
     fun Fragment.navigate(
         @IdRes resId: Int,
@@ -149,6 +173,7 @@ object NavigationExt {
         navOptions: NavOptions? = defaultNavOptions,
         navigatorExtras: Navigator.Extras? = null
     ) {
+        if(isNavigationDebounced("$this")) return
         findNavController().navigate(resId, args, navOptions, navigatorExtras)
     }
 

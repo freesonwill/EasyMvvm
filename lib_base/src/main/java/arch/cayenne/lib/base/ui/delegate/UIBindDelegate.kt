@@ -13,6 +13,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.viewbinding.ViewBinding
+import arch.cayenne.lib.base.BuildConfig
 import arch.cayenne.lib.base.ui._interface.IView
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.base.utils.ext.FragmentExt.isRootFragment
@@ -46,8 +47,8 @@ class UIBindDelegate<UIOwner, VM, VB>(
     //是否第一次初始化
     private var firstInit: Boolean = false
     private var destroyRunnable:Runnable? = null
-    private val logEnabled = true
-            
+    private val logEnabled = if(uiOwner is Fragment) { uiOwner.isRootFragment } else true
+
     fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?):View {
         destroyRunnable?.let { binding.root.removeCallbacks(it) }
         firstInit = true
