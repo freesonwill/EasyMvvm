@@ -57,6 +57,28 @@ object AnimationController {
             duration,
             interpolator,
         ))
+
+        //从上往下
+        routeEnterAnimTBFlow = updateFlow(routeEnterAnimTBFlow, TranslateAnimationOption(
+            Animation.RELATIVE_TO_PARENT, 0f,
+            Animation.RELATIVE_TO_PARENT, 0f,
+            Animation.RELATIVE_TO_PARENT, -1f,
+            Animation.RELATIVE_TO_PARENT, 0f,
+            duration,
+            interpolator,
+        ))
+        val noAnimationOption = SimpleAnimationOption(0,LinearInterpolatorOption())
+        routeExitAnimTBFlow = updateFlow(routeExitAnimTBFlow, noAnimationOption)
+        routePopEnterAnimTBFlow = updateFlow(routePopEnterAnimTBFlow, noAnimationOption)
+        //从下往上
+        routePopExitAnimTBFlow = updateFlow(routePopExitAnimTBFlow, TranslateAnimationOption(
+            Animation.RELATIVE_TO_SELF, 0f,
+            Animation.RELATIVE_TO_SELF, 0f,
+            Animation.RELATIVE_TO_SELF, 0f,
+            Animation.RELATIVE_TO_SELF, -1f,
+            duration,
+            interpolator,
+        ))
     }
 
     fun setPopupAnim(duration: Long, interpolator: IInterpolatorOption) {
@@ -91,42 +113,63 @@ object AnimationController {
         zoomInAnimFlow = updateFlow(zoomInAnimFlow, SimpleAnimationOption(duration, interpolator))
     }
 
-    var routeEnterAnimFlow: MutableStateFlow<TranslateAnimationOption>? = null;private set
-    val routeEnterAnim: TranslateAnimationOption
+    /***** 路由默认动画 *****/
+    var routeEnterAnimFlow: MutableStateFlow<IAnimationOption>? = null;private set
+    val routeEnterAnim: IAnimationOption
         get() = routeEnterAnimFlow!!.value
 
-    var routeExiAnimFlow: MutableStateFlow<TranslateAnimationOption>? = null;private set
-    val routeExiAnim: TranslateAnimationOption
+    var routeExiAnimFlow: MutableStateFlow<IAnimationOption>? = null;private set
+    val routeExitAnim: IAnimationOption
         get() = routeExiAnimFlow!!.value
 
 
-    var routePopEnterAnimFlow: MutableStateFlow<TranslateAnimationOption>? = null;private set
-    val routePopEnterAnim: TranslateAnimationOption
+    var routePopEnterAnimFlow: MutableStateFlow<IAnimationOption>? = null;private set
+    val routePopEnterAnim: IAnimationOption
         get() = routePopEnterAnimFlow!!.value
 
-    var routePopExitAnimFlow: MutableStateFlow<TranslateAnimationOption>? = null;private set
-    val routePopExitAnim: TranslateAnimationOption
+    var routePopExitAnimFlow: MutableStateFlow<IAnimationOption>? = null;private set
+    val routePopExitAnim: IAnimationOption
         get() = routePopExitAnimFlow!!.value
 
+    /***** 路由上下动画 *****/
+    var routeEnterAnimTBFlow: MutableStateFlow<IAnimationOption>? = null;private set
+    val routeEnterAnimTB: IAnimationOption
+        get() = routeEnterAnimTBFlow!!.value
 
-    private var popupEnterAnimFlow: MutableStateFlow<TranslateAnimationOption>? = null
-    val popupEnterAnim: TranslateAnimationOption
+    var routeExitAnimTBFlow: MutableStateFlow<IAnimationOption>? = null;private set
+    val routeExitAnimTB: IAnimationOption
+        get() = routeExitAnimTBFlow!!.value
+
+
+    var routePopEnterAnimTBFlow: MutableStateFlow<IAnimationOption>? = null;private set
+    val routePopEnterAnimTB: IAnimationOption
+        get() = routePopEnterAnimTBFlow!!.value
+
+    var routePopExitAnimTBFlow: MutableStateFlow<IAnimationOption>? = null;private set
+    val routePopExitAnimTB: IAnimationOption
+        get() = routePopExitAnimTBFlow!!.value
+
+    /****** popup动画 ****/
+    private var popupEnterAnimFlow: MutableStateFlow<IAnimationOption>? = null
+    val popupEnterAnim: IAnimationOption
         get() = popupEnterAnimFlow!!.value
 
 
-    private var popupExitAnimFlow: MutableStateFlow<TranslateAnimationOption>? = null
-    val popupExitAnim: TranslateAnimationOption
+    private var popupExitAnimFlow: MutableStateFlow<IAnimationOption>? = null
+    val popupExitAnim: IAnimationOption
         get() = popupExitAnimFlow!!.value
 
-
+    /****** drawer动画 ****/
     private var drawerEnterAnimFlow: MutableStateFlow<SimpleAnimationOption>? = null
     val drawerEnterAnim: SimpleAnimationOption
         get() = drawerEnterAnimFlow!!.value
 
+    /****** scrollBar动画 ****/
     private var scrollBarAnimFlow: MutableStateFlow<SimpleAnimationOption>? = null
     val scrollBarAnim: SimpleAnimationOption
         get() = scrollBarAnimFlow!!.value
 
+    /****** zoomIn动画 ****/
     private var zoomInAnimFlow: MutableStateFlow<SimpleAnimationOption>? = null
     val zoomInAnim: SimpleAnimationOption get() = zoomInAnimFlow!!.value
 
