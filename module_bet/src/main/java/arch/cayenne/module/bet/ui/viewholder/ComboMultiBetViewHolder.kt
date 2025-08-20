@@ -1,7 +1,9 @@
 package arch.cayenne.module.bet.ui.viewholder
 
 import android.annotation.SuppressLint
-import android.text.TextPaint
+import android.text.StaticLayout
+import android.view.ViewTreeObserver
+import android.widget.TextView
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
@@ -17,13 +19,18 @@ class ComboMultiBetViewHolder(private val mBinding: ItemComboMultiBetBinding, pr
     fun bind(item: ComboMultiBetBean) {
         val combo = getString(R.string.title_combo_bet_odds).format(item.comboK, item.comboV)
         val title = "$combo @${item.sumOdds.getOdds()}"
-        val isTooLong = isTextTooLong(title, mBinding.tvTitleCombo.textSize, mBinding.tvTitleCombo.width)
-        mBinding.tvTitleCombo.text = if (isTooLong) {
-            "$combo\n@${item.sumOdds.getOdds()}"
-        } else {
-            title
-        }
-        mBinding.tvTitleCombo.maxLines = if (isTooLong) 2 else 1
+        mBinding.tvTitleCombo.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                mBinding.tvTitleCombo.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                val isTooLong = isTextTooLong(mBinding.tvTitleCombo, title)
+                mBinding.tvTitleCombo.text = if (isTooLong) {
+                    "$combo\n@${item.sumOdds.getOdds()}"
+                } else {
+                    title
+                }
+                mBinding.tvTitleCombo.maxLines = if (isTooLong) 2 else 1
+            }
+        })
         val multi = "${item.count}x"
         mBinding.tvMulti.text = multi
 
@@ -55,9 +62,11 @@ class ComboMultiBetViewHolder(private val mBinding: ItemComboMultiBetBinding, pr
         mBinding.tvMaxMoney.text = maxMoney
     }
 
-    private fun isTextTooLong(text: String, textSizePx: Float, maxWidth: Int): Boolean {
-        val paint = TextPaint().apply { this.textSize = textSizePx }
-        val textWidth = paint.measureText(text)
-        return textWidth > maxWidth
+    private fun isTextTooLong(textView: TextView, text: String): Boolean {
+        val maxWidthPx = textView.measuredWidth - textView.paddingLeft - textView.paddingRight
+        val paint = textView.paint
+        val staticLayout = StaticLayout.Builder.obtain(text, 0, text.length, paint, maxWidthPx)
+            .build()
+        return staticLayout.lineCount > 1
     }
 }
