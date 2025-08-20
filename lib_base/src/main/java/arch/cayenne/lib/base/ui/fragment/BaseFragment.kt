@@ -170,7 +170,7 @@ abstract class BaseFragment<VM : BaseViewModel, VB : ViewBinding> : Fragment(), 
     }
 
     /**
-     * 返回事件处理
+     * Fragment進出動畫結束通知
      *
      * @param isEnter true-進入Fragment的動畫結束，false-離開Fragment的動畫結束
      */
