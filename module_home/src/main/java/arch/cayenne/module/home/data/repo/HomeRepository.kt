@@ -101,6 +101,7 @@ class HomeRepository(
             }.build()
         }
         return@withContext if (res.error == null && res.data != null) {
+            "联赛资料 開始存入DB ".logi(this::class.java.simpleName)
             saveTournaments(playType, sportId, res.data!!)
         } else {
             ApiResponseState.Failed(res.error)
@@ -113,9 +114,10 @@ class HomeRepository(
         data: Client.ListTournamentResp
     ): ApiResponseState.Succeeded<*> {
         val tournamentList = mutableListOf<TournamentBean>()
+        val oldRef = tournamentDao.getSportTournamentCrossRef(playType, sportId)
         val refs = mutableListOf<SportTournamentCrossRef>().apply {
             add(
-                tournamentDao.getSportTournamentCrossRef(playType, sportId, 0) ?: run {
+                oldRef?.firstOrNull { it.tournamentId == 0 } ?: run {
                     SportTournamentCrossRef(
                         tournamentId = 0,
                         playType = playType,
@@ -139,7 +141,7 @@ class HomeRepository(
                 )
             )
             refs.add(
-                tournamentDao.getSportTournamentCrossRef(playType, sportId, tournament.id)?.copy(
+                oldRef?.firstOrNull { it.tournamentId == tournament.id }?.copy(
                 hot = tournament.hot,
                 weight = tournament.weight,
                 index = index+1,
@@ -157,7 +159,7 @@ class HomeRepository(
                 }
             )
         }
-
+        "联赛资料 開始insert ".logi(this::class.java.simpleName)
         tournamentDao.insert(tournamentList)
         tournamentDao.insertSportTournamentCrossRefs(refs)
         tournamentDao.deleteMissing(sportId, playType, refs.map { it.tournamentId })

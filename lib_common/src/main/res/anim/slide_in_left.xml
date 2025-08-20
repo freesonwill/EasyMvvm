@@ -1,13 +1,9 @@
 <!-- slide_out_left.xml -->
 <set xmlns:android="http://schemas.android.com/apk/res/android">
     <translate
-        android:duration="150"
+        android:duration="300"
         android:fromXDelta="-25%"
         android:toXDelta="0%"
-        android:interpolator="@anim/interpolator_ease_out_cubic"
+        android:interpolator="@anim/interpolator_bezier_custom"
         />
-    <alpha
-        android:duration="150"
-        android:fromAlpha="1.0"
-        android:toAlpha="1.0" />
 </set>

@@ -283,9 +283,6 @@ class ComboBetMoneyKeyboardDialogFragment private constructor():
             .alpha(0f)
             .setDuration(200)
             .setInterpolator(android.view.animation.DecelerateInterpolator())
-            .withStartAction {
-                removeDim()
-            }
             .withEndAction {
                 super.dismiss()
             }

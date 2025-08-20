@@ -19,6 +19,7 @@ import androidx.viewpager2.widget.ViewPager2
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.data.model.PagerBean
 import arch.cayenne.lib.base.ui.adapter.PagerAdapter
+import arch.cayenne.lib.base.ui.animation.AnimationController
 import arch.cayenne.lib.base.ui.animation.EaseCubicInterpolator
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
@@ -81,7 +82,10 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         setVideoView()
         loadFragment()
         mViewModel.observeMatchInfoNotify()
-        mBinding.drawerLayout.setDrawerInterpolator(150, PathInterpolator(0.33f, 0.66f, 0f, 1f))
+        mBinding.drawerLayout.setDrawerInterpolator(
+            AnimationController.drawerEnterAnim.value.duration,
+            AnimationController.drawerEnterAnim.value.interpolator
+        )
         mBinding.drawerLayout.setDrawerLockMode(
             DrawerLayout.LOCK_MODE_LOCKED_CLOSED,
             GravityCompat.END

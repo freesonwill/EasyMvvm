@@ -4,6 +4,8 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.View
+import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import androidx.core.os.bundleOf
 import androidx.fragment.app.FragmentTransaction.OP_ADD
@@ -16,6 +18,7 @@ import androidx.navigation.fragment.FragmentNavigator
 import arch.cayenne.lib.base.ui._interface.OnNewIntentListener
 import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
+import arch.cayenne.lib.common.R
 import arch.cayenne.lib.common.utils.ext.FragmentExt.plusAssign
 import arch.cayenne.lib.common.utils.ext.FragmentExt.replaceAll
 import kotlinx.coroutines.delay
@@ -28,12 +31,34 @@ class FragivityFragmentNavigator(
 ) : Navigator<FragmentNavigator.Destination>() {
 
     private val backStack = ArrayDeque<Int>()
+    private val backNavOptionStack = ArrayDeque<NavOptions?>()
     private val descendingBackStack = backStack.asReversed()
     // 用于记录Fragment的延迟隐藏状态
     private val fragmentDelayedHideMap = mutableMapOf<String, Boolean>()
     private var mIsPendingAddToBackStackOperation = false
     private var mIsPendingPopBackStackOperation = false
     private val savedIds = mutableSetOf<String>()
+
+    private var enterAnimDefault: Animation? = null
+    private var exitAnimDefault: Animation? = null
+    private var popEnterAnimDefault: Animation? = null
+    private var popExitAnimDefault: Animation? = null
+
+    fun setEnterAnim(anim: Animation?) {
+        enterAnimDefault = anim
+    }
+
+    fun setExitAnim(anim: Animation?) {
+        exitAnimDefault = anim
+    }
+
+    fun setPopEnterAnim(anim: Animation?) {
+        popEnterAnimDefault = anim
+    }
+
+    fun setPopExitAnim(anim: Animation?) {
+        popExitAnimDefault = anim
+    }
 
     init {
         // Need to cooperate with ReportFragmentManager
@@ -105,31 +130,10 @@ class FragivityFragmentNavigator(
         }
 
         val ft = fragmentManager.beginTransaction()
-
         val isPushTo = args?.getBoolean(KEY_PUSH_TO, false) == true
-        var enterAnim: Int
-        var exitAnim: Int
-        var popEnterAnim: Int
-        var popExitAnim: Int
-        if (isPushTo) {
-            enterAnim = args?.getInt(KEY_ENTER_ANIM) ?: -1
-            exitAnim = args?.getInt(KEY_EXIT_ANIM) ?: -1
-            popEnterAnim = args?.getInt(KEY_POP_ENTER_ANIM) ?: -1
-            popExitAnim = args?.getInt(KEY_POP_EXIT_ANIM) ?: -1
-        } else {
-            enterAnim = navOptions?.enterAnim ?: -1
-            exitAnim = navOptions?.exitAnim ?: -1
-            popEnterAnim = navOptions?.popEnterAnim ?: -1
-            popExitAnim = navOptions?.popExitAnim ?: -1
-        }
-
-        if (enterAnim != -1 || exitAnim != -1 || popEnterAnim != -1 || popExitAnim != -1) {
-            enterAnim = if (enterAnim != -1) enterAnim else -1
-            exitAnim = if (exitAnim != -1) exitAnim else -1
-            popEnterAnim = if (popEnterAnim != -1) popEnterAnim else -1
-            popExitAnim = if (popExitAnim != -1) popExitAnim else -1
-            ft.setCustomAnimations(enterAnim, exitAnim, popEnterAnim, popExitAnim)
-        }
+        val (enterAnim,exitAnim,popEnterAnim,popExitAnim) = setupAnimation(args,navOptions,ft,isPushTo)
+        //"enterAnim:$enterAnim,exitAnim:$exitAnim,popEnterAnim:$popEnterAnim,popExitAnim:$popExitAnim".logd(TAG)
+        //"enterAnimDefault:$enterAnimDefault,exitAnimDefault:$exitAnimDefault,popEnterAnimDefault:$popEnterAnimDefault,popExitAnimDefault:$popExitAnimDefault".logd(TAG)
 
         val destId = destination.id
         val initialNavigation = backStack.isEmpty() || isPushTo
@@ -233,6 +237,52 @@ class FragivityFragmentNavigator(
         return null
     }
 
+    private fun setupAnimation(args: Bundle?,
+                               navOptions: NavOptions?,
+                               ft: FragmentTransaction,
+                               isPushTo:Boolean,
+    ):IntArray {
+        var enterAnim: Int
+        var exitAnim: Int
+        var popEnterAnim: Int
+        var popExitAnim: Int
+        if (isPushTo) {
+            enterAnim = args?.getInt(KEY_ENTER_ANIM) ?: -1
+            exitAnim = args?.getInt(KEY_EXIT_ANIM) ?: -1
+            popEnterAnim = args?.getInt(KEY_POP_ENTER_ANIM) ?: -1
+            popExitAnim = args?.getInt(KEY_POP_EXIT_ANIM) ?: -1
+        } else {
+            enterAnim = navOptions?.enterAnim ?: -1
+            exitAnim = navOptions?.exitAnim ?: -1
+            popEnterAnim = navOptions?.popEnterAnim ?: -1
+            popExitAnim = navOptions?.popExitAnim ?: -1
+        }
+
+        if (enterAnim != -1 || exitAnim != -1 || popEnterAnim != -1 || popExitAnim != -1) {
+            enterAnim = if (enterAnim != -1) enterAnim else -1
+            exitAnim = if (exitAnim != -1) exitAnim else -1
+            popEnterAnim = if (popEnterAnim != -1) popEnterAnim else -1
+            popExitAnim = if (popExitAnim != -1) popExitAnim else -1
+            ft.setCustomAnimations(enterAnim, exitAnim, popEnterAnim, popExitAnim)
+        }
+        if(navOptions != null) {
+            val currentFragment = fragmentManager.primaryNavigationFragment
+            fragmentManager.registerFragmentLifecycleCallbacks(object :FragmentManager.FragmentLifecycleCallbacks() {
+                override fun onFragmentViewCreated(fm: FragmentManager, f: Fragment, v: View, savedInstanceState: Bundle?) {
+                    //"onFragmentViewCreated-->$navOptions,currentFragment:$currentFragment,f:$f".logd(TAG)
+                    fm.unregisterFragmentLifecycleCallbacks(this)
+                    //your logic
+                    if(enterAnim.let { it == -1 && it != R.anim.no_anim }) enterAnimDefault?.let { f.requireView().startAnimation(it) }
+                    if(exitAnim.let { it == -1 && it != R.anim.no_anim }) exitAnimDefault?.let { currentFragment?.view?.startAnimation(it)  }
+                }
+            },false)
+
+        }
+        backNavOptionStack.add(navOptions)
+        //"navOptions-->$navOptions,backNavOptionStack:$backNavOptionStack".logd(TAG)
+        return intArrayOf(enterAnim,exitAnim,popEnterAnim,popExitAnim)
+    }
+
     private fun generateBackStackName(backStackIndex: Int, destinationId: Int): String {
         return "${backStackIndex}#${destinationId}"
     }
@@ -262,11 +312,13 @@ class FragivityFragmentNavigator(
                               tag:String,
                               action:(isImmediate:Boolean)->Unit
     ){
-        //"execAfterAnim==>$nextFragment,enterAnim:$enterAnim,exitAnim:$exitAnim,tag:${tag}".logd(TAG)
-        if (exitAnim == -1 && enterAnim != -1) { //没有动画需要延时
+       //"execAfterAnim==>$nextFragment,enterAnim:$enterAnim,exitAnim:$exitAnim,tag:${tag},enterAnimDefault:$enterAnimDefault".logd(TAG)
+        if ((exitAnim == -1 || exitAnim == R.anim.no_anim) && (enterAnim != -1 || enterAnimDefault != null)) { //没有退出动画需要延时隐藏
             nextFragment.launch(Lifecycle.State.RESUMED, lifecycleScope = nextFragment.lifecycleScope) {
-                val anim = AnimationUtils.loadAnimation(nextFragment.requireContext(), enterAnim)
-                val duration = anim.duration
+                val duration = if(enterAnim != -1) {
+                    val anim = AnimationUtils.loadAnimation(nextFragment.requireContext(), enterAnim)
+                    anim.duration
+                } else enterAnimDefault!!.duration
                 //"execAfterAnim==>$nextFragment,duration:$duration".logd(TAG)
                 delay(duration)
                 action(false)
@@ -301,12 +353,10 @@ class FragivityFragmentNavigator(
         return true
     }
 
-
     override fun popBackStack(): Boolean {
         if (backStack.isEmpty()) {
             return false
         }
-
         if (fragmentManager.isStateSaved) {
             Log.i(TAG, "Ignoring popBackStack() call: FragmentManager has already saved its state")
             return false
@@ -331,7 +381,41 @@ class FragivityFragmentNavigator(
             mIsPendingPopBackStackOperation = true
         }
         backStack.removeLast()
+        exitPopupAnim()
         return true
+    }
+
+    /**
+     * 退出弹窗动画
+     */
+    private fun exitPopupAnim() {
+        val lastNavOption = backNavOptionStack.removeLast() ?: return
+        val popEnterAnim = lastNavOption.popEnterAnim
+        val popExitAnim = lastNavOption.popExitAnim
+        //"popEnterAnim:$popExitAnim,popExitAnim:$popExitAnim,backNavOptionStack:${backNavOptionStack}".logd(TAG)
+        val manager = fragmentManager
+        val popEnterAnimDefault = popEnterAnimDefault
+        val popExitAnimDefault = popExitAnimDefault
+        manager.registerFragmentLifecycleCallbacks(object : FragmentManager.FragmentLifecycleCallbacks() {
+            override fun onFragmentStarted(fm: FragmentManager, f: Fragment) {
+                //"onFragmentStarted-->$lastNavOption,currentFragment:$currentFragment,f:$f".logd(TAG)
+                fm.unregisterFragmentLifecycleCallbacks(this)
+                if (popEnterAnim == -1) popEnterAnimDefault?.let {
+                    f.requireView().startAnimation(it)
+                }
+            }
+
+            override fun onFragmentStopped(fm: FragmentManager, f: Fragment) {
+                //"onFragmentStopped-->$lastNavOption,currentFragment:$currentFragment,f:$f".logd(TAG)
+                if (popExitAnim == -1) popExitAnimDefault?.let { anim ->
+                    f.requireView().startAnimation(anim)
+                }
+            }
+
+            override fun onFragmentDestroyed(fm: FragmentManager, f: Fragment) {
+                //"onFragmentDestroyed-->$lastNavOption,currentFragment:$currentFragment".logd(TAG)
+            }
+        },false)
     }
 
     override fun onSaveState(): Bundle {

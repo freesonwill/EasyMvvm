@@ -2,15 +2,16 @@ package arch.cayenne.module.bet.ui.fragment
 
 import android.os.Bundle
 import android.view.View
+import android.view.ViewTreeObserver
 import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.Observer
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.ui.fragment.ReserveDialogFragment
 import arch.cayenne.lib.common.ui.view.NumberKeyboardView
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
 import arch.cayenne.lib.common.utils.ViewUtils
-import arch.cayenne.lib.common.utils.ext.NavResultExt.sendResult
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
@@ -23,7 +24,6 @@ import arch.cayenne.lib.database.entity.BetSelectionBean
 import arch.cayenne.lib.database.entity.BetTypeEnum
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.module.bet.R
-import arch.cayenne.module.bet.data.Config
 import arch.cayenne.module.bet.databinding.FragmentSingleBetBinding
 import arch.cayenne.module.bet.util.ViewHelper
 import arch.cayenne.module.bet.viewmodel.SingleBetViewModel
@@ -34,6 +34,13 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
 
     override val vbClass: KClass<FragmentSingleBetBinding> = FragmentSingleBetBinding::class
     override val vmClass: KClass<SingleBetViewModel> = SingleBetViewModel::class
+
+    private val selectionObserver by lazy {
+        Observer<BetSelectionBean> {
+            setBetData(it)
+            setBetButtonByOdds(mViewModel.onReserveOddsListener.value, it.odds)
+        }
+    }
 
     override fun initView(savedInstanceState: Bundle?) {
         ViewUtils.hideKeyboard(requireContext(), mBinding.etMoney) {
@@ -58,14 +65,30 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
             override fun getOtherText(): String {
                 return getString(R.string.btn_max)
             }
-
         })
-        val type = SingleBetFragmentArgs.fromBundle(requireArguments()).from
-        if (type == Config.VALUE_COMBO_TO_SINGLE) {
-            setBetTypeLayout(BetTypeEnum.COMBO)
-        } else {
-            setBetTypeLayout(BetTypeEnum.SINGLE)
-        }
+        setMaxHeight()
+    }
+
+    private fun setMaxHeight() {
+        mBinding.root.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                mBinding.root.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                val screenHeight = getScreenHeight() ?: return
+                val maxHeight = (screenHeight * 0.75f).toInt()
+                val actualHeight = mBinding.main.height
+                val scale = maxHeight.toFloat() / actualHeight.toFloat()
+                if (actualHeight > maxHeight) {
+                    mBinding.main.pivotY = actualHeight.toFloat()
+                    mBinding.main.scaleY = scale
+                    mBinding.root.maxHeight = maxHeight
+                }
+            }
+        })
+    }
+
+    private fun getScreenHeight(): Int? {
+        // 检查 context 是否不为空
+        return context?.resources?.displayMetrics?.heightPixels
     }
 
     override fun initListener() {
@@ -135,10 +158,7 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
             val length = it.length
             mBinding.etMoney.setSelection(length)
         }
-        mViewModel.onBetSheetListener.observe(viewLifecycleOwner) {
-            setBetData(it)
-            setBetButtonByOdds(mViewModel.onReserveOddsListener.value, it.odds)
-        }
+        mViewModel.onBetSheetListener.observe(viewLifecycleOwner, selectionObserver)
         mViewModel.onBetWinMoney.observe(viewLifecycleOwner) {
             mBinding.tvBetMoney.isVisible = it.isNotEmpty() && it != "0"
             val money = getString(R.string.btn_bet_win_money).format(mViewModel.moneySymbol, it)
@@ -218,11 +238,9 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
     }
 
     override fun dismiss(key: String, value: String) {
-        sendResult(key, value, R.id.singleBetFragment)
-    }
-
-    override fun showExitAnim(key: String, value: String) {
-        sendResult(key, value, R.id.singleBetFragment)
+        parentFragmentManager.setFragmentResult(key, Bundle().apply {
+            putString(key, value)
+        })
     }
 
     override fun doCustomShow() {
@@ -233,6 +251,7 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
         mViewModel.removeReserve()
         mViewModel.clearNumber()
         showKeyboard()
+        mViewModel.onBetSheetListener.observe(viewLifecycleOwner, selectionObserver)
     }
 
     private fun hideKeyboard() {

@@ -166,6 +166,7 @@ class HomeViewModel : BaseViewModel() {
                     }
                 }
                 .collect {
+                    "联赛资料  collect ".logi(this@HomeViewModel::class.java.simpleName)
                     if (currentPlayTypeId != PlayType.CHAMPION.id) {
                         val selectedTournament =
                             repository.getCurrentSelectedTournamentId(currentPlayTypeId)?.let {
@@ -173,7 +174,7 @@ class HomeViewModel : BaseViewModel() {
                             }
                         val list = mutableListOf<TournamentDataModel>()
                         if (it.isEmpty()) {
-                            launch(Dispatchers.Main) { tournaments.value = Event(arrayListOf()) }
+//                            launch(Dispatchers.Main) { tournaments.value = Event(arrayListOf()) }
                             return@collect
                         }
                         list.add(
@@ -184,6 +185,7 @@ class HomeViewModel : BaseViewModel() {
                         )
                         list.addAll(it)
                         if (selectedTournament == null) {
+                            "联赛资料 setCurrentTournamentId(0) ".logi(this@HomeViewModel::class.java.simpleName)
                             setCurrentTournamentId(0)
                             list.find { it.id == 0 }?.isSelected = true
                         } else if (!it.any { data -> data.id == selectedTournament.id }) {  //有在目前聯賽中，但是沒有在前10筆資料中，所以新增第11筆，並且點擊它
@@ -195,6 +197,7 @@ class HomeViewModel : BaseViewModel() {
                             setCurrentTournamentId(selectedTournament.id)
                         }
                         launch(Dispatchers.Main) {
+                            "送出联赛资料到UI".logi(this@HomeViewModel::class.java.simpleName)
                             tournaments.value = Event(list)
                             setState(HomeState.Tournament.LoadSuccess)
                         }
@@ -208,7 +211,11 @@ class HomeViewModel : BaseViewModel() {
         }
         viewModelScope.launch(Dispatchers.IO) {
             repository.observeLoginChange()
-                .filter { it && apiStateListener.value == DataState.NetworkUnavailable }
+                .filter {
+                    it && (apiStateListener.value == DataState.NetworkUnavailable
+                            || apiStateListener.value == HomeState.Sport.LoadFailure
+                            || apiStateListener.value == HomeState.Tournament.LoadFailure)
+                }
                 .collect {
                     launch(Dispatchers.Main) {
                         setCurrentPlayType(currentPlayTypeId)
@@ -328,6 +335,7 @@ class HomeViewModel : BaseViewModel() {
                 repository.getTenTournaments(currentPlayTypeId, currentSportId)
             }, {
                 if (it is ApiResponseState.Succeeded<*>) {
+                    "联赛资料 存入DB完成 ".logi(this@HomeViewModel::class.java.simpleName)
                     setState(HomeState.Tournament.LoadSuccess)
                 } else if (it is ApiResponseState.Failed) {
                     if ((tournaments.value?.peekContent() == null || tournaments.value?.peekContent()?.isEmpty() == true)) {

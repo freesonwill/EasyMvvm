@@ -2,6 +2,7 @@ package com.walisport.module.live.ui.viewmodel
 
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.data.constants.SportEnum
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.skin.LanguageManager
@@ -111,6 +112,7 @@ class LiveSoftKeyboardViewModel : BaseViewModel() {
      * 判断动画类型
      * */
      fun getAnimationType(listenerValue:KeyBoardType,currentValue:KeyBoardType):Int{
+
         return  when(currentValue){
             KeyBoardType.CHAT ->{
                 return when(listenerValue){

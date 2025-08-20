@@ -26,6 +26,7 @@ import androidx.viewpager2.widget.ViewPager2.SCROLL_STATE_IDLE
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
+import arch.cayenne.lib.base.ui.animation.AnimationController
 import arch.cayenne.lib.base.ui.animation.EaseCubicInterpolator
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
@@ -62,7 +63,6 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import kotlinx.coroutines.launch
 import java.util.Locale
-import kotlin.math.abs
 import kotlin.reflect.KClass
 
 class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
@@ -427,7 +427,9 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 R.color.drawer_scrim_color
             )
         )
-        mBinding.drawerLayout.setDrawerInterpolator(240,PathInterpolator(0.33f, 0.66f, 0f,1f))
+        mBinding.drawerLayout.setDrawerInterpolator(
+            AnimationController.drawerEnterAnim.value.duration,
+            AnimationController.drawerEnterAnim.value.interpolator);
         childFragmentManager.beginTransaction()
             .replace(
                 mBinding.fragmentDrawerContent.id,
@@ -523,7 +525,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
 
     override fun initData() {
         super.initData()
-        mViewModel.setCurrentPlayType(PlayType.TODAY.id)
+//        mViewModel.setCurrentPlayType(PlayType.TODAY.id)
     }
 
     override fun initListener() {
