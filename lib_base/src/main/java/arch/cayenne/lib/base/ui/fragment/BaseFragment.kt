@@ -18,11 +18,11 @@ import androidx.navigation.fragment.findNavController
 import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.base.R
 import arch.cayenne.lib.base.data.model.StatusBarConfig
-import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
-import arch.cayenne.lib.base.ui.delegate.StatusBarDelegate
-import arch.cayenne.lib.base.ui.delegate.UIBindDelegate
 import arch.cayenne.lib.base.ui._interface.IStatusBar
 import arch.cayenne.lib.base.ui._interface.IView
+import arch.cayenne.lib.base.ui.delegate.StatusBarDelegate
+import arch.cayenne.lib.base.ui.delegate.UIBindDelegate
+import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.base.utils.ext.FragmentExt.handleBackPressed
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
@@ -167,6 +167,15 @@ abstract class BaseFragment<VM : BaseViewModel, VB : ViewBinding> : Fragment(), 
      */
     open fun onBackPressed():Boolean {
         return false
+    }
+
+    /**
+     * 返回事件处理
+     *
+     * @param isEnter true-進入Fragment的動畫結束，false-離開Fragment的動畫結束
+     */
+    open fun onFragmentAnimEnd(isEnter: Boolean) {
+
     }
 }
 

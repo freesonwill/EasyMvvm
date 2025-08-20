@@ -16,8 +16,8 @@ import androidx.navigation.NavOptions
 import androidx.navigation.Navigator
 import androidx.navigation.fragment.FragmentNavigator
 import arch.cayenne.lib.base.ui._interface.OnNewIntentListener
+import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.R
 import arch.cayenne.lib.common.utils.ext.FragmentExt.plusAssign
 import arch.cayenne.lib.common.utils.ext.FragmentExt.replaceAll
@@ -272,8 +272,34 @@ class FragivityFragmentNavigator(
                     //"onFragmentViewCreated-->$navOptions,currentFragment:$currentFragment,f:$f".logd(TAG)
                     fm.unregisterFragmentLifecycleCallbacks(this)
                     //your logic
-                    if(enterAnim.let { it == -1 && it != R.anim.no_anim }) enterAnimDefault?.let { f.requireView().startAnimation(it) }
-                    if(exitAnim.let { it == -1 && it != R.anim.no_anim }) exitAnimDefault?.let { currentFragment?.view?.startAnimation(it)  }
+                    if(enterAnim.let { it == -1 && it != R.anim.no_anim }) {
+                        enterAnimDefault?.let {
+                            (f as? BaseFragment<*, *>)?.apply {
+                                it.setAnimationListener(object : Animation.AnimationListener {
+                                    override fun onAnimationStart(animation: Animation?) {}
+                                    override fun onAnimationEnd(animation: Animation?) { this@apply.onFragmentAnimEnd(true) }
+                                    override fun onAnimationRepeat(animation: Animation?) {}
+                                })
+                            }
+                            f.requireView().startAnimation(it)
+                        } ?: run { (f as? BaseFragment<*, *>)?.onFragmentAnimEnd(true) }
+                    } else {
+                        (f as? BaseFragment<*, *>)?.onFragmentAnimEnd(true)
+                    }
+                    if(exitAnim.let { it == -1 && it != R.anim.no_anim }) {
+                        exitAnimDefault?.let {
+                            (currentFragment as? BaseFragment<*, *>)?.apply {
+                                it.setAnimationListener(object : Animation.AnimationListener {
+                                    override fun onAnimationStart(animation: Animation?) {}
+                                    override fun onAnimationEnd(animation: Animation?) { this@apply.onFragmentAnimEnd(false) }
+                                    override fun onAnimationRepeat(animation: Animation?) {}
+                                })
+                            }
+                            currentFragment?.view?.startAnimation(it)
+                        } ?: run { (currentFragment as? BaseFragment<*, *>)?.onFragmentAnimEnd(false) }
+                    } else {
+                        (currentFragment as? BaseFragment<*, *>)?.onFragmentAnimEnd(false)
+                    }
                 }
             },false)
 
