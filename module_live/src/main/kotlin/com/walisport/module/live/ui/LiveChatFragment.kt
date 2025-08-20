@@ -18,7 +18,6 @@ import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.helper.showToast
-import arch.cayenne.lib.database.entity.LiveMatchBean
 import arch.cayenne.lib.websocket.chat.data.ChatMsg
 import arch.cayenne.lib.websocket.data.SocketConnectState
 import com.walisport.module.live.R
@@ -115,7 +114,7 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
         }
 
         mainViewModel.mainMatch.observe(viewLifecycleOwner) {
-            updateChatUi(it)
+            updateChatUi()
         }
 
         mViewModel.loginLiveData.observe(viewLifecycleOwner) {
@@ -305,21 +304,21 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
     /**
      * 进入直播间不成功时修改
      * */
-    fun updateChatUi(matchBean: LiveMatchBean? = null) {
-
+    fun updateChatUi() {
         //比赛状态 0-已结束 1-推迟 2-中断 3-取消 4-未开赛 5-进行中 6-延迟 7-废弃 8-暂停
         val code = mainViewModel.mainMatch.value?.basicInfo?.status
-        val status = MatchStatus.entries.find { status -> status.code == code }
-        if(matchBean?.liveInfo?.charRoom == true){
-            updateChatList()
-            return
-        }
+//        val status = MatchStatus.entries.find { status -> status.code == code }
+        val status= MatchStatus.IN_PROGRESS
         mBinding.also {
             when (status) {
                 MatchStatus.FINISHED, MatchStatus.CANCELED, MatchStatus.ABANDONED -> {
                     it.liveChatGroupChat.isVisible = false
 
                     it.dynamicState.setState(DynamicStateLayout.States.CLOSE,R.string.live_chat_end.getString())
+                }
+
+                MatchStatus.POSTPONED, MatchStatus.NOT_STARTED, MatchStatus.IN_PROGRESS, MatchStatus.DELAYED, MatchStatus.PAUSED -> {
+                    updateChatList()
                 }
 
                 else -> {
