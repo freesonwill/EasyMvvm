@@ -4,7 +4,11 @@ import arch.cayenne.lib.base.data.repository.BaseRepository
 import arch.cayenne.lib.database.dao.BetDao
 import arch.cayenne.lib.database.dao.InfoDao
 import arch.cayenne.lib.database.entity.BetBean
+import arch.cayenne.lib.database.entity.BetSelectionBean
+import arch.cayenne.lib.database.entity.BetStatusEnum
 import arch.cayenne.lib.database.entity.BetTypeEnum
+import arch.cayenne.module.bet.BettingRemoteManager
+import galaxy.client.proto.Client
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -14,7 +18,8 @@ import kotlinx.coroutines.withContext
 class BetResultRepository(
     override val scope: CoroutineScope,
     private val infoDao: InfoDao,
-    private val betDao: BetDao
+    private val betDao: BetDao,
+    private val remoteManager: BettingRemoteManager
 ) : BaseRepository() {
 
     private val lastBetOrderFlow = MutableSharedFlow<BetBean>(replay = 1, extraBufferCapacity = 1)
@@ -68,6 +73,25 @@ class BetResultRepository(
         betDao.insertSelection(newSelections)
         betDao.insertDetail(newDetails)
 
+        register(newSelections)
         newBet.betType
+    }
+
+    private fun register(selections: List<BetSelectionBean>) {
+        scope.launch {
+            remoteManager.registerMatchMarketNotify(selections.map {
+                Client.MarketIdBase.newBuilder()
+                    .setMatchId(it.matchId)
+                    .addMarketId(it.marketId)
+                    .build()
+            })
+        }
+    }
+
+    fun sendDone() {
+        scope.launch {
+            val lastBet = betDao.getLastBetOrder() ?: return@launch
+            betDao.updateBetStatus(lastBet.betId, BetStatusEnum.DONE)
+        }
     }
 }

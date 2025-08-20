@@ -1,5 +1,6 @@
 package arch.cayenne.module.bet.repo
 
+import android.util.Log
 import arch.cayenne.lib.base.data.repository.BaseRepository
 import arch.cayenne.lib.common.data.constants.UserDataKey
 import arch.cayenne.lib.common.data.manager.UserDataManager
@@ -182,6 +183,7 @@ class ComboBetRepository(
                     betDao.updateBetStatus(betId, BetStatusEnum.BETTING)
 
                     val selection = betDao.getSelections(betId)
+                    unregister(selection)
                     val tempDetail = multiBet.map { bean ->
                         BetDetailBean(
                             serialValue = bean.serialValue,
@@ -198,6 +200,7 @@ class ComboBetRepository(
                     betDao.insertDetail(tempDetail)
 
                     val resp = remoteManager.comboBet(selection, multiBet)
+                    Log.d("abcd", "res $resp")
                     val detailBean = if (resp != null && resp.isSuccessful) {
                         multiBet.map { bean ->
                             val res = resp.data.first { it.serialValue == bean.serialValue }
@@ -231,6 +234,21 @@ class ComboBetRepository(
                     betDao.insertDetail(detailBean)
                     betDao.updateBetStatus(betId, BetStatusEnum.COMPLETE)
                 }
+            }
+        }
+    }
+
+    private fun unregister(selections: List<BetSelectionBean>) {
+        scope.launch {
+            remoteManager.unregisterMatchMarketNotify(selections.map {
+                Client.MarketIdBase.newBuilder()
+                    .setMatchId(it.matchId)
+                    .addMarketId(it.marketId)
+                    .build()
+            })
+            selections.forEach {
+                it.oddsStatus = null
+                betDao.updateSelection(it)
             }
         }
     }

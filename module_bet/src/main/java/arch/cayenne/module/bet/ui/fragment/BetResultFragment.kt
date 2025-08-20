@@ -69,6 +69,7 @@ class BetResultFragment private constructor(): BaseBottomSheetFragment<BetResult
         }
         mBinding.btnConfirm.setOnClickListener {
             dismiss()
+            mViewModel.sendDone()
         }
     }
 
