@@ -267,8 +267,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                 }
                 titleBarBinding.tvCompetitionName.text = it.basicInfo.matchName
                 //比赛开始后开启聊天服务
-                val code = it.basicInfo.status
-                if (code in arrayOf(1, 4, 5, 6, 8)) {
+                if (it.liveInfo.charRoom) {
                     mViewModel.startChatServer()
                 }
             }
