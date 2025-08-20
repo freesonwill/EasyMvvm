@@ -6,6 +6,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import androidx.annotation.IdRes
+import androidx.fragment.app.FragivityFragmentNavigator
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.NavDirections
@@ -13,6 +14,8 @@ import androidx.navigation.NavOptions
 import androidx.navigation.Navigator
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
+import arch.cayenne.lib.base.ui.animation.AnimationController
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logw
 import arch.cayenne.lib.common.R
 import java.text.SimpleDateFormat
@@ -100,6 +103,14 @@ object NavigationExt {
         navController.navigate(directions, mergedNavOption(navController,directions, navOptions))
     }
 
+    private fun setupDefaultAnim(args: Bundle):Bundle{
+        args.putString(FragivityFragmentNavigator.KEY_ENTER_ANIM, AnimationController.routeEnterAnim.toJson())
+        args.putString(FragivityFragmentNavigator.KEY_EXIT_ANIM, AnimationController.routeExiAnim.toJson())
+        args.putString(FragivityFragmentNavigator.KEY_POP_ENTER_ANIM, AnimationController.routePopEnterAnim.toJson())
+        args.putString(FragivityFragmentNavigator.KEY_POP_EXIT_ANIM, AnimationController.routePopExitAnim.toJson())
+        return args
+    }
+
     fun Activity.navigate(
         @IdRes resId: Int,
         args: Bundle? = null,
@@ -155,7 +166,16 @@ object NavigationExt {
         navigatorExtras: Navigator.Extras? = null
     ) {
         if(isNavigationDebounced("$this,uri:$deepLink")) return
-        findNavController().navigate(deepLink, navOptions, navigatorExtras)
+        val args = setupDefaultAnim(Bundle())
+        // 将 Bundle 转 queryString
+        val uriWithArgs = deepLink.buildUpon().apply {
+            for (key in args.keySet()) {
+                val value = args.get(key)?.toString() ?: continue
+                appendQueryParameter(key, value)
+            }
+        }.build()
+        //"deepLink--->$deepLink,uriWithArgs:$uriWithArgs".logd(TAG)
+        findNavController().navigate(uriWithArgs,navOptions, navigatorExtras)
     }
 
     fun Fragment.navigate(
@@ -164,16 +184,18 @@ object NavigationExt {
     ) {
         if(isNavigationDebounced("$this")) return
         val navController = findNavController()
+        setupDefaultAnim(directions.arguments)
         navController.navigate(directions, mergedNavOption(navController, directions, navOptions))
     }
 
     fun Fragment.navigate(
         @IdRes resId: Int,
-        args: Bundle? = null,
+        args: Bundle = Bundle(),
         navOptions: NavOptions? = defaultNavOptions,
         navigatorExtras: Navigator.Extras? = null
     ) {
         if(isNavigationDebounced("$this")) return
+        setupDefaultAnim(args)
         findNavController().navigate(resId, args, navOptions, navigatorExtras)
     }
 

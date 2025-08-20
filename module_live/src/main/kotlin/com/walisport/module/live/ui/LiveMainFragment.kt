@@ -83,8 +83,8 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         loadFragment()
         mViewModel.observeMatchInfoNotify()
         mBinding.drawerLayout.setDrawerInterpolator(
-            AnimationController.drawerEnterAnim.value.duration,
-            AnimationController.drawerEnterAnim.value.interpolator
+            AnimationController.drawerEnterAnim.duration,
+            AnimationController.drawerEnterAnim.interpolator.toInterpolator()
         )
         mBinding.drawerLayout.setDrawerLockMode(
             DrawerLayout.LOCK_MODE_LOCKED_CLOSED,
