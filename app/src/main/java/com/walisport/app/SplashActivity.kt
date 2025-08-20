@@ -87,7 +87,7 @@ class SplashActivity : BaseActivity<SplashViewModel, ActivitySplashBinding>() {
     //55469214
     //NTU0NjkyMTRfMTc1NTI1Mjg5NDMzMTpiNlhJeVphb0xOQVFnNWpS
 
-    //yuze  test
+    //yz  test
     //55469174
     //NTU0NjkxNzRfMTc1MzYwNzAxOTAwMjpYWUQ0Tm12Vjc1YTlDTnFi
 
