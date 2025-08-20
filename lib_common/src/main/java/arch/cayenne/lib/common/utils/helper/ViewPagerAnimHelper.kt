@@ -4,10 +4,9 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.AnimatorSet
 import android.animation.ValueAnimator
+import android.view.Choreographer
 import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.view.doOnLayout
-import androidx.core.view.doOnPreDraw
 import androidx.core.view.drawToBitmap
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -22,6 +21,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlin.coroutines.resume
 import kotlin.math.max
 import kotlin.math.min
 
@@ -222,63 +222,61 @@ class ViewPagerAnimHelper(private val viewPager: ViewPager2) {
 
         job = scope.launch {
             printLog("doAnim: 啟動新動畫 job, 從（$secondLastPosition）到（${lastPosition}）")
-            suspendCancellableCoroutine {
-                if(reset == null) {
-                    reset = {
-                        printLog("動畫結束，執行 reset()")
-                        fakeViewPager.apply {
-                            isVisible = false
-                            translationX = 0f
-                            setImageDrawable(null)
-                        }
-                        viewPager.apply {
-                            alpha = 1f
-                            translationX = 0f
-                        }
-                        job?.cancel()
-                        job = null
-                        customOnAnimEnd = null
-
-
+            if(reset == null) {
+                reset = {
+                    printLog("動畫結束，執行 reset()")
+                    fakeViewPager.apply {
+                        isVisible = false
+                        translationX = 0f
+                        setImageDrawable(null)
                     }
-                }
-
-                if (animatorListener == null) {
-                    printLog("初始化 animatorListener")
-                    animatorListener = object : AnimatorListenerAdapter() {
-                        override fun onAnimationStart(animation: Animator, isReverse: Boolean) {
-                            printLog("動畫開始")
-                            viewPager.alpha = 1f
-                        }
-
-                        override fun onAnimationEnd(animation: Animator) {
-                            printLog("動畫正常結束")
-                            customOnAnimEnd?.invoke()
-                            reset?.invoke()
-                        }
-
-                        override fun onAnimationCancel(animation: Animator) {
-                            printLog("動畫被取消")
-                            reset?.invoke()
-                        }
-                    }
-                }
-
-                captureViewPagerForFake {
                     viewPager.apply {
-                        alpha = 0f
-                        setCurrentItem(lastPosition, false)
-                        doOnPreDraw {
-                            printLog("開始設定並啟動動畫")
-                            configAndStartAnimatorSet(
-                                vpStart = if (isPrev) viewPager.width * 1f else viewPager.width * -1f,
-                                vpEnd = 0f,
-                                fakeStart = 0f,
-                                fakeEnd = if (isPrev) viewPager.width * -1f else viewPager.width * 1f,
-                                duration = duration
-                            )
-                        }
+                        alpha = 1f
+                        translationX = 0f
                     }
+                    job?.cancel()
+                    job = null
+                    customOnAnimEnd = null
+
+
+                }
+            }
+
+            if (animatorListener == null) {
+                printLog("初始化 animatorListener")
+                animatorListener = object : AnimatorListenerAdapter() {
+                    override fun onAnimationStart(animation: Animator, isReverse: Boolean) {
+                        printLog("動畫開始")
+                        viewPager.alpha = 1f
+                    }
+
+                    override fun onAnimationEnd(animation: Animator) {
+                        printLog("動畫正常結束")
+                        customOnAnimEnd?.invoke()
+                        reset?.invoke()
+                    }
+
+                    override fun onAnimationCancel(animation: Animator) {
+                        printLog("動畫被取消")
+                        reset?.invoke()
+                    }
+                }
+            }
+
+            captureViewPagerForFake {
+                viewPager.apply {
+                    alpha = 0f
+                    setCurrentItem(lastPosition, false)
+
+                    awaitFrame()
+                    printLog("開始設定並啟動動畫")
+                    configAndStartAnimatorSet(
+                        vpStart = if (isPrev) viewPager.width * 1f else viewPager.width * -1f,
+                        vpEnd = 0f,
+                        fakeStart = 0f,
+                        fakeEnd = if (isPrev) viewPager.width * -1f else viewPager.width * 1f,
+                        duration = duration
+                    )
                 }
             }
         }
@@ -297,22 +295,20 @@ class ViewPagerAnimHelper(private val viewPager: ViewPager2) {
         }
         job = scope.launch {
             printLog("doSwitchBack: 啟動新動畫 job, 從（$secondLastPosition）到（${lastPosition}）")
-            suspendCancellableCoroutine {
-                captureViewPagerForFake(oldVpX) {
-                    viewPager.apply {
-                        alpha = 0f
-                        setCurrentItem(lastPosition, false)
-                        doOnLayout {
-                            printLog("開始設定並啟動動畫（來回切換）")
-                            viewPager.translationX = oldFakeX
-                            configAndStartAnimatorSet(
-                                vpStart = oldFakeX,
-                                vpEnd = 0f,
-                                fakeStart = oldVpX,
-                                fakeEnd = if (isPrev) viewPager.width * -1f else viewPager.width * 1f
-                            )
-                        }
-                    }
+            captureViewPagerForFake(oldVpX) {
+                viewPager.apply {
+                    alpha = 0f
+                    setCurrentItem(lastPosition, false)
+
+                    awaitFrame()
+                    printLog("開始設定並啟動動畫（來回切換）")
+                    viewPager.translationX = oldFakeX
+                    configAndStartAnimatorSet(
+                        vpStart = oldFakeX,
+                        vpEnd = 0f,
+                        fakeStart = oldVpX,
+                        fakeEnd = if (isPrev) viewPager.width * -1f else viewPager.width * 1f
+                    )
                 }
             }
         }
@@ -333,36 +329,34 @@ class ViewPagerAnimHelper(private val viewPager: ViewPager2) {
 
         job = scope.launch {
             printLog("doSpeedUp: 啟動新動畫 job")
-            suspendCancellableCoroutine {
-                viewPager.apply {
-                    printLog("doSpeedUp: 開始設定並啟動動畫")
-                    configAndStartAnimatorSet(
-                        vpStart = oldVpX,
-                        vpEnd = 0f,
-                        fakeStart = oldFakeX,
-                        fakeEnd = if (isPrev) viewPager.width * -1f else viewPager.width * 1f,
-                        duration = secondAnimDuration
-                    )
-                }
+            viewPager.apply {
+                printLog("doSpeedUp: 開始設定並啟動動畫")
+                configAndStartAnimatorSet(
+                    vpStart = oldVpX,
+                    vpEnd = 0f,
+                    fakeStart = oldFakeX,
+                    fakeEnd = if (isPrev) viewPager.width * -1f else viewPager.width * 1f,
+                    duration = secondAnimDuration
+                )
             }
         }
     }
 
-    private fun captureViewPagerForFake(x: Float = 0f, onReady: (() -> Unit)? = null) {
+    private suspend fun captureViewPagerForFake(x: Float = 0f, onReady: (suspend () -> Unit)? = null) {
         fakeViewPager.apply {
             setImageBitmap(viewPager.drawToBitmap())
             bringToFront()
             translationX = x
             isVisible = true
 
-            doOnLayout {
-                onReady?.invoke()
-            }
+            awaitFrame()
+            onReady?.invoke()
         }
     }
 
-    private fun configAndStartAnimatorSet(vpStart: Float, vpEnd: Float, fakeStart: Float, fakeEnd: Float, duration: Long = defaultDuration) {
-        viewPager.doOnPreDraw {
+    private suspend fun configAndStartAnimatorSet(vpStart: Float, vpEnd: Float, fakeStart: Float, fakeEnd: Float, duration: Long = defaultDuration) {
+        viewPager.apply {
+            awaitFrame()
             printLog("configAndStartAnimatorSet: 開始設定動畫值")
             setValueAnimators(vpStart, vpEnd, fakeStart, fakeEnd)
             animatorSet = viewPager.startSafeAnimateSet(
@@ -398,6 +392,14 @@ class ViewPagerAnimHelper(private val viewPager: ViewPager2) {
         }
 
         printLog("setValueAnimators: animator 建立完成")
+    }
+
+    private suspend fun awaitFrame() = suspendCancellableCoroutine { cont ->
+        val callback = Choreographer.FrameCallback { cont.resume(Unit) }
+        Choreographer.getInstance().postFrameCallback(callback)
+        cont.invokeOnCancellation {
+            Choreographer.getInstance().removeFrameCallback(callback)
+        }
     }
 
     companion object {
