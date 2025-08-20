@@ -16,7 +16,6 @@ import com.google.protobuf.GeneratedMessageLite
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterIsInstance
@@ -39,12 +38,10 @@ inline fun <reified T: GeneratedMessageLite<*,*>> WebSocketManager.observeProtoM
     .filter { it.mid == apiCode.mid && it.sid == apiCode.sid }
     .map {
         try {
-
             val proto = it.originProto?.let { byteArray ->
                 T::class.java.getMethod("parseFrom", ByteArray::class.java)
                     .invoke(null, byteArray) as T
             }
-
             val error = runCatching { T::class.java.getMethod("getMessage").invoke(proto) as String }
                 .getOrNull().let{ if( it.isNullOrEmpty()) null else it }
             if(error == null) {
@@ -78,9 +75,11 @@ suspend inline fun<reified T: GeneratedMessageLite<*,*>> WebSocketManager.sendAn
     timeout: Long = responseTimeout,
     crossinline request: () -> GeneratedMessageLite<*, *>
 ): SocketResponseData<T> = withContext(Dispatchers.IO){
+    val apiStart = System.currentTimeMillis()
     val rid = nextRid()
     val errorRes = send(request.invoke().asRemoteRequest(apiCode, rid))
     return@withContext if (errorRes != null && errorRes is SocketResponseError) {
+        "api:$apiCode overall execution time is: ${System.currentTimeMillis() - apiStart}ms".logi(WebSocketManager::class.java.name)
         SocketResponseData(
             mid = apiCode.mid,
             sid = apiCode.sid,
@@ -92,6 +91,7 @@ suspend inline fun<reified T: GeneratedMessageLite<*,*>> WebSocketManager.sendAn
         val responseData = withTimeoutOrNull(timeout) {
             observeProtoMessage<T>(apiCode).filter { it.rid == rid }.first()
         }
+        "api:$apiCode overall execution time is: ${System.currentTimeMillis() - apiStart}ms".logi(WebSocketManager::class.java.name)
         responseData ?: SocketResponseData(
             mid = apiCode.mid,
             sid = apiCode.sid,
