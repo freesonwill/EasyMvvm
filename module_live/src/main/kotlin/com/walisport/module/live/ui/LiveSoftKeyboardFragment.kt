@@ -215,11 +215,11 @@ class LiveSoftKeyboardFragment :
             }
         }
         chatViewModel.softKeyBoardListener.collect {
-//            val flag1 = !chatViewModel.checkSoftKeyboardVisible()
-//            if (it != KeyBoardType.CHAT && flag1) {
-//                chatViewModel.checkSoftKeyBoardBetAmount()
-//                return@collect
-//            }
+            val flag1 = !chatViewModel.checkSoftKeyboardVisible()
+            if (it != KeyBoardType.CHAT && flag1) {
+                chatViewModel.checkSoftKeyBoardBetAmount()
+                return@collect
+            }
             showChangeAnimation()
         }
     }
