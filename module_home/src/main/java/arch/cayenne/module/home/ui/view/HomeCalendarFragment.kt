@@ -150,7 +150,14 @@ class HomeCalendarFragment private constructor() : Fragment() {
                 var selectedDate =
                     if (tabSelectedDate == allDay) allDay
                     else tabSelectedDate
-
+                calendarView.setOnMonthChangeListener { year, month ->
+                    tvCurrentMonth.text =
+                        resources.getString(
+                            R.string.format_month_year,
+                            month.toChineseMonth(),
+                            year.toString()
+                        )
+                }
                 // 透過 binding 操作 Popup 內部的 View
                 ivRightClick.clickNoRepeat {
                     calendarView.scrollToNext(true)
