@@ -127,7 +127,7 @@ class BetSheetFragment private constructor() :
                     .show(comboFragment)
                     .commit()
             }
-            if (it == 0) {
+            if (it == 0 && !isDismissing) {
                 customHide()
             }
         }
