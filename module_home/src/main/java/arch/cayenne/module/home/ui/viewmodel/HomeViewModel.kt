@@ -19,6 +19,7 @@ import arch.cayenne.lib.database.entity.ChampionTournamentDataModel
 import arch.cayenne.lib.database.entity.InfoBean
 import arch.cayenne.lib.database.entity.SportDataModel
 import arch.cayenne.lib.database.entity.TournamentDataModel
+import arch.cayenne.lib.skin.LanguageManager
 import arch.cayenne.module.home.data.constants.HomeState
 import arch.cayenne.module.home.data.constants.PlayType
 import arch.cayenne.module.home.data.constants.playTypeToShowType
@@ -92,6 +93,10 @@ class HomeViewModel : BaseViewModel() {
 
     private val _calendarStates = MutableLiveData<HomeCalendarFragment.States>()
     val calendarStates = _calendarStates
+
+    //监听语言切换，对没有设置自动切换语言的view及时更新
+    val languageManager:LanguageManager by inject()
+
     fun notifyTournamentSlideOutEnd() {
         _tournamentSlideOutEnd.value = Event(Unit)
     }

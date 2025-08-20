@@ -674,6 +674,10 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 else -> Unit
             }
         }
+        mViewModel.languageManager.languageFlow.collect{
+            //sportAdapter需要监听切换语言更新
+            sportsListAdapter.notifyDataSetChanged()
+        }
     }
 
     private fun createTournamentTabView(

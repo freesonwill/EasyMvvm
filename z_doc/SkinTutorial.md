@@ -93,5 +93,6 @@ apply(from = rootProject.file("gradle/_suffixes.gradle.kts"))
 
 注:  - Tablayout的 tabBackground属性设置了以后会在换肤后造成阴影，SportTablayout使用sportTabBackground替换tabBackgroun
 - 动态创建Skinnable TextView Button EditText 时，设置textColor setTextColorRes
+- SkinnableTablayout 新增setTabResArray 及时更新tab.text切换语言 ，如果时customView需要监听languageManager.languageFlow自己做切换
 
 
