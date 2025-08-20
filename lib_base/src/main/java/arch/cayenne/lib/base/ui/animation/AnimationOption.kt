@@ -18,7 +18,8 @@ import java.lang.reflect.Type
  */
 abstract class IAnimationOption(
     val type: Type,
-    @Transient open val duration: Long
+    @Transient open val duration: Long,
+    @Transient open val interpolator: IInterpolatorOption
 ) {
     abstract fun toAnimation(): Animation
 
@@ -79,8 +80,8 @@ class IInterpolatorOptionDeserializer : JsonDeserializer<IInterpolatorOption> {
 }
 data class SimpleAnimationOption(
     override val duration: Long,
-    val interpolator: IInterpolatorOption
-) : IAnimationOption(Type.SimpleAnimation, duration) {
+    override val interpolator: IInterpolatorOption
+) : IAnimationOption(Type.SimpleAnimation, duration,interpolator) {
 
     override fun toAnimation(): Animation {
         return AnimationSet(false).also {
@@ -100,8 +101,8 @@ data class TranslateAnimationOption(
     val toYType: Int,
     val toYValue: Float,
     override val duration: Long,
-    val interpolator: IInterpolatorOption,
-) : IAnimationOption(Type.TranslateAnimation, duration) {
+    override val interpolator: IInterpolatorOption,
+) : IAnimationOption(Type.TranslateAnimation, duration,interpolator) {
     override fun toAnimation(): TranslateAnimation {
         return TranslateAnimation(
             fromXType, fromXValue,
