@@ -13,6 +13,9 @@ import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.DefaultItemAnimator
+import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager2.widget.ViewPager2
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.data.model.PagerBean
 import arch.cayenne.lib.base.ui.adapter.PagerAdapter
@@ -20,6 +23,7 @@ import arch.cayenne.lib.base.ui.animation.AnimationController
 import arch.cayenne.lib.base.ui.animation.EaseCubicInterpolator
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
+import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.utils.ext.DimensionExt.px2sp
@@ -47,7 +51,11 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.filter
 import kotlin.reflect.KClass
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.lib.common.utils.ext.animateIndicatorToPosition
 import com.walisport.module.live.utils.TextViewExt.setBottomDrawable
+import java.lang.reflect.Field
+import kotlin.math.abs
+import arch.cayenne.lib.common.utils.ext.setupViewPagerScroll
 /**
  * 直播详情页
  */
@@ -61,6 +69,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
     override val vmClass: KClass<LiveMainViewModel> = LiveMainViewModel::class
     private lateinit var args: LiveMainFragmentArgs
     private var drawerContentFragment: LiveBetOnMenuFragment? = null
+    private var skipAnyAnim = true
     private val titleBarBinding: TitleBarLiveBinding by lazy {
         TitleBarLiveBinding.inflate(LayoutInflater.from(context), mBinding.titleBar, false)
     }
@@ -149,7 +158,11 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         mBinding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 tab?.let {
-                    mBinding.vpPage.doSmartAnim(targetPosition = tab.position)
+                    if (skipAnyAnim) {
+                        // 动画更新指示器位置
+                        mBinding.customIndicator.animateIndicatorToPosition(tab.position, 0)
+                        mBinding.vpPage.setCurrentItem(tab.position, false)
+                    }
                 }
                 tab?.view?.findViewById<SkinnableTextView>(R.id.tabText)?.let { textView ->
                     textView.setTextColor(
@@ -158,12 +171,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                             R.color.tab_selected_text_color
                         )
                     )
-                    textView.setBottomDrawable(context?.let {
-                        ContextCompat.getDrawable(
-                            it,
-                            R.drawable.live_tab_indicator
-                        )
-                    }, 1.dp2px)
+                    textView.textSize = 15f.px2sp
                     textView.typeface = Typeface.DEFAULT_BOLD
                 }
             }
@@ -176,12 +184,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                             R.color.video_tab_text_color
                         )
                     )
-                    textView.setBottomDrawable(context?.let {
-                        ContextCompat.getDrawable(
-                            it,
-                            R.drawable.live_tab_indicatort_tan
-                        )
-                    }, 0.dp2px)
+                    textView.textSize = 15f.px2sp
                     textView.typeface = Typeface.DEFAULT
                 }
             }
@@ -190,7 +193,10 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                 // Handle reselect if needed
             }
         })
-
+        // 自定義滑動行為
+        mBinding.vpPage.setupViewPagerScroll(mBinding.tabLayout,mBinding.customIndicator){
+            skipAnyAnim = it
+        }
     }
 
     override fun createObserverAtState(): Lifecycle.State {
@@ -201,7 +207,9 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
     override suspend fun createObserver() {
         observeResult<Bundle>(CHANGE_MATCH) {
             val newArgs: LiveMainFragmentArgs = LiveMainFragmentArgs.fromBundle(it)
-            "observeResult-->newArgs--->$newArgs,args:${args},extras:${it},${this.args.equal(newArgs)}".logd(TAG)
+            "observeResult-->newArgs--->$newArgs,args:${args},extras:${it},${this.args.equal(newArgs)}".logd(
+                TAG
+            )
             if (this.args.equal(newArgs)) return@observeResult
             this.args = newArgs
             updateMatchId(newArgs.matchId)
@@ -243,7 +251,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         }
         mViewModel.currentBalanceChange.observe(viewLifecycleOwner) {
             titleBarBinding.tvMoney.text =
-                "${CurrencySymbols.getSymbol(it?.currency ?: "")}${(it?.balance?:0L).getFormalMoney()}"
+                "${CurrencySymbols.getSymbol(it?.currency ?: "")}${(it?.balance ?: 0L).getFormalMoney()}"
         }
         mViewModel.mainMatch.observe(viewLifecycleOwner) {
             it?.let {
@@ -275,7 +283,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
     //比赛ID发生变化,取消订阅,数据请空
     private fun updateMatchId(matchId: Long) {
         mBinding.tabLayout.getTabAt(1)?.select()
-        mBinding.vpPage.setCurrentItem(1, true)
+        mBinding.vpPage.setCurrentItem(1, false)
         mViewModel.matchId.value?.let {
             deleteDataAndSubscriptions(matchId)
             mViewModel.setMatchId(matchId)
@@ -322,12 +330,6 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                 tab.text = list[position].title
                 tab.setCustomView(R.layout.custom_tab)
                 tab.customView?.findViewById<SkinnableTextView>(R.id.tabText)?.apply {
-                    setBottomDrawable(context?.let {
-                        ContextCompat.getDrawable(
-                            it,
-                            if (position == tabSelectPosition) R.drawable.live_tab_indicator else R.drawable.live_tab_indicatort_tan
-                        )
-                    },  if (position == tabSelectPosition) 1.dp2px else 0.dp2px)
                     text = list[position].title
                     setTextColor(
                         SkinnableResourceManager.getColor(
@@ -335,6 +337,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                             if (position == tabSelectPosition) R.color.tab_selected_text_color else R.color.video_tab_text_color
                         )
                     )
+                    textSize = 15f.px2sp
                     typeface =
                         if (position == tabSelectPosition) Typeface.DEFAULT_BOLD else Typeface.DEFAULT
 
