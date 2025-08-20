@@ -7,23 +7,16 @@ import android.os.Bundle
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
-import android.view.animation.PathInterpolator
-import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.DefaultItemAnimator
-import androidx.recyclerview.widget.RecyclerView
-import androidx.viewpager2.widget.ViewPager2
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.data.model.PagerBean
 import arch.cayenne.lib.base.ui.adapter.PagerAdapter
 import arch.cayenne.lib.base.ui.animation.AnimationController
-import arch.cayenne.lib.base.ui.animation.EaseCubicInterpolator
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
-import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.utils.ext.DimensionExt.px2sp
@@ -35,7 +28,6 @@ import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.removeAllTips
 import arch.cayenne.lib.common.utils.ext.touchBackPressed
-import arch.cayenne.lib.common.utils.helper.doSmartAnim
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.lib.skin.widget.SkinnableTextView
 import arch.cayenne.module.betslip.ui.fragment.BetSlipFragment
@@ -50,11 +42,7 @@ import com.walisport.module.live.ui.viewmodel.LiveMainViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.filter
 import kotlin.reflect.KClass
-import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.animateIndicatorToPosition
-import com.walisport.module.live.utils.TextViewExt.setBottomDrawable
-import java.lang.reflect.Field
-import kotlin.math.abs
 import arch.cayenne.lib.common.utils.ext.setupViewPagerScroll
 /**
  * 直播详情页
@@ -83,8 +71,8 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         loadFragment()
         mViewModel.observeMatchInfoNotify()
         mBinding.drawerLayout.setDrawerInterpolator(
-            AnimationController.drawerEnterAnim.value.duration,
-            AnimationController.drawerEnterAnim.value.interpolator
+            AnimationController.drawerEnterAnim.duration,
+            AnimationController.drawerEnterAnim.interpolator.toInterpolator()
         )
         mBinding.drawerLayout.setDrawerLockMode(
             DrawerLayout.LOCK_MODE_LOCKED_CLOSED,
@@ -146,7 +134,12 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                                 }
                                 arguments.putString("leagueName", mViewModel.leagueName.value)
                                 arguments.putString("leagueLogo", mViewModel.leagueLogo.value)
-                            })
+                            },
+                        enterAnim = AnimationController.routeEnterAnimTB,
+                        exitAnim = AnimationController.routeExitAnimTB,
+                        popEnterAnim = AnimationController.routePopEnterAnimTB,
+                        popExitAnim = AnimationController.routePopExitAnimTB,
+                    )
                 }
             }
 
