@@ -10,8 +10,10 @@ import arch.cayenne.lib.base.ui.adapter.PagerAdapter
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+import arch.cayenne.lib.common.utils.ext.setupViewPagerScroll
 import arch.cayenne.lib.common.utils.ext.touchBackPressed
 import arch.cayenne.lib.common.utils.helper.doSmartAnim
+import arch.cayenne.lib.skin.widget.SkinnableTextView
 import com.walisport.module.message.R
 import com.walisport.module.message.databinding.FragmentMessageMainBinding
 import com.walisport.module.message.ui.viewmodel.MessageMainViewModel
@@ -25,7 +27,7 @@ class MessageMainFragment : BaseFragment<MessageMainViewModel, FragmentMessageMa
 
     override val vbClass: KClass<FragmentMessageMainBinding> = FragmentMessageMainBinding::class
     override val vmClass: KClass<MessageMainViewModel> = MessageMainViewModel::class
-
+    private var historyTypePosition : Int = -1
     companion object {
         const val MSG_ALL = 0
         const val MSG_SYS = 1
@@ -55,41 +57,29 @@ class MessageMainFragment : BaseFragment<MessageMainViewModel, FragmentMessageMa
     override fun initListener() {
         mBinding.layMsgAll.addScaleOnTouchAnimation()
         mBinding.layMsgAll.clickNoRepeat {
-            selectMessageType(MSG_ALL, true)
+            select(MSG_ALL, historyTypePosition)
         }
         mBinding.layMsgSys.addScaleOnTouchAnimation()
         mBinding.layMsgSys.clickNoRepeat {
-            selectMessageType(MSG_SYS, true)
+            select(MSG_SYS, historyTypePosition)
         }
         mBinding.layMsgAct.addScaleOnTouchAnimation()
         mBinding.layMsgAct.clickNoRepeat {
-            selectMessageType(MSG_ACT, true)
+            select(MSG_ACT, historyTypePosition)
         }
         mBinding.layMsgMatch.addScaleOnTouchAnimation()
         mBinding.layMsgMatch.clickNoRepeat {
-            selectMessageType(MSG_MAT, true)
+            select(MSG_MAT, historyTypePosition)
         }
         mBinding.layMsgPay.addScaleOnTouchAnimation()
         mBinding.layMsgPay.clickNoRepeat {
-            selectMessageType(MSG_PAY, true)
+            select(MSG_PAY, historyTypePosition)
         }
-        selectMessageType(MSG_ALL, false)
-        mBinding.vpMessage.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-            override fun onPageScrolled(
-                position: Int,
-                positionOffset: Float,
-                positionOffsetPixels: Int
-            ) {
-            }
+        select(MSG_ALL, historyTypePosition)
 
-            override fun onPageSelected(position: Int) {
-                selectMessageType(position, false)
-            }
-
-            override fun onPageScrollStateChanged(state: Int) {
-
-            }
-        })
+        mBinding.vpMessage.setupViewPagerScroll{
+            select(it, historyTypePosition,true)
+        }
         mBinding.root.touchBackPressed()
     }
 
@@ -142,51 +132,44 @@ class MessageMainFragment : BaseFragment<MessageMainViewModel, FragmentMessageMa
         }
     }
 
-    private fun selectMessageType(type: Int, anim: Boolean) {
-        //ViewPager切换动画
-        if (anim) {
-            mBinding.vpMessage.doSmartAnim(targetPosition = type)
+
+    private fun select(type: Int, historyType :Int,skipAnyAnim: Boolean = false) {
+        if (type!=historyType){
+            if (!skipAnyAnim) mBinding.vpMessage.setCurrentItem(type, false)
+            selectMessageType(type,true)
+            selectMessageType(historyType,false)
+            historyTypePosition = type
         }
-        mBinding.ivMsgAll.isSelected = false
-        mBinding.ivMsgSys.isSelected = false
-        mBinding.ivMsgAct.isSelected = false
-        mBinding.ivMsgMat.isSelected = false
-        mBinding.ivMsgPay.isSelected = false
-        mBinding.tvMsgAll.isSelected = false
-        mBinding.tvMsgSys.isSelected = false
-        mBinding.tvMsgAct.isSelected = false
-        mBinding.tvMsgMat.isSelected = false
-        mBinding.tvMsgPay.isSelected = false
+    }
+
+    private fun selectMessageType(type: Int,select: Boolean) {
+        var textView : SkinnableTextView? =null
         when (type) {
             MSG_ALL -> {
-                mBinding.ivMsgAll.isSelected = true
-                mBinding.tvMsgAll.isSelected = true
-                mBinding.tvMsgAll.typeface = Typeface.defaultFromStyle(Typeface.BOLD)
+                mBinding.layMsgAll.isSelected = select
+                textView= mBinding.tvMsgAll
             }
 
             MSG_SYS -> {
-                mBinding.ivMsgSys.isSelected = true
-                mBinding.tvMsgSys.isSelected = true
-                mBinding.tvMsgSys.typeface = Typeface.defaultFromStyle(Typeface.BOLD)
+                mBinding.layMsgSys.isSelected = select
+                textView= mBinding.tvMsgSys
             }
 
             MSG_ACT -> {
-                mBinding.ivMsgAct.isSelected = true
-                mBinding.tvMsgAct.isSelected = true
-                mBinding.tvMsgAct.typeface = Typeface.defaultFromStyle(Typeface.BOLD)
+                mBinding.layMsgAct.isSelected = select
+                textView= mBinding.tvMsgAct
             }
 
             MSG_MAT -> {
-                mBinding.ivMsgMat.isSelected = true
-                mBinding.tvMsgMat.isSelected = true
-                mBinding.tvMsgMat.typeface = Typeface.defaultFromStyle(Typeface.BOLD)
+                mBinding.layMsgMatch.isSelected = select
+                textView= mBinding.tvMsgMat
             }
 
             MSG_PAY -> {
-                mBinding.tvMsgPay.isSelected = true
-                mBinding.ivMsgPay.isSelected = true
-                mBinding.tvMsgPay.typeface = Typeface.defaultFromStyle(Typeface.BOLD)
+                mBinding.layMsgPay.isSelected = select
+                textView= mBinding.tvMsgPay
             }
         }
+        textView?.typeface = if (select) Typeface.DEFAULT_BOLD else Typeface.DEFAULT
     }
 }
