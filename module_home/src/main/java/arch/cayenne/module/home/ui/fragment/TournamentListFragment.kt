@@ -14,6 +14,7 @@ import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.core.view.isVisible
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
@@ -23,7 +24,6 @@ import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.enableRecyclerViewBounce
-import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.module.home.R
 import arch.cayenne.module.home.data.TournamentListItem
 import arch.cayenne.module.home.data.constants.HomeState
@@ -42,7 +42,7 @@ class TournamentListFragment :
         FragmentTournamentListBinding::class
     override val vmClass: KClass<TournamentListViewModel> = TournamentListViewModel::class
 
-    private val subHomeViewModel: SubHomeViewModel by sharedViewModel<SubHomeViewModel, SubHomeFragment>()
+    private val subHomeViewModel: SubHomeViewModel by viewModels({ requireParentFragment() })
     private lateinit var adapter: TournamentSectionAdapter
     private var pendingJumpIndex: Int? = null // 用來判斷是否為點擊字母列表來跳選列表分類，null代表非自動跳轉狀態
     private var stickyHeaderDecoration: StickyHeaderItemDecoration? = null
