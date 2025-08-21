@@ -25,4 +25,5 @@
     <string name="search_dialog_cancel">取消</string>
     <string name="search_result_sub_title_tournament">%1$s 赛季</string>
     <string name="search_result_no_more_data">没有更多了</string>
+    <string name="search_no_history_record">暂无搜索数据</string>
 </resources>
