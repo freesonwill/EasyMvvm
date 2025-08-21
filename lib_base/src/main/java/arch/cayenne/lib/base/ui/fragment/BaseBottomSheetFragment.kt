@@ -35,6 +35,7 @@ import arch.cayenne.lib.base.ui.delegate.StatusBarDelegate
 import arch.cayenne.lib.base.ui.delegate.UIBindDelegate
 import arch.cayenne.lib.base.ui.gesture.TikTokGesture
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -181,7 +182,7 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
                 d, "alpha",
                 alpha, 0
             ).apply {
-                this.duration = 120L
+                this.duration = endAnimation.duration
                 this.interpolator = endAnimation.interpolator
                 addUpdateListener { animation ->
                     val value = animation.animatedValue as Int
