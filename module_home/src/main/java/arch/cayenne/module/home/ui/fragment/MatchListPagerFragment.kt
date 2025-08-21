@@ -5,6 +5,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import androidx.core.view.doOnPreDraw
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -45,7 +46,7 @@ class MatchListPagerFragment :
         FragmentMatchListPagerBinding::class
     override val vmClass: KClass<MatchListViewModel> = MatchListViewModel::class
     private val homeViewModel: HomeViewModel by sharedViewModel<HomeViewModel, NewHomeFragment>()
-    private val subHomeViewModel: SubHomeViewModel by sharedViewModel<SubHomeViewModel, SubHomeFragment>()
+    private val subHomeViewModel: SubHomeViewModel by viewModels({ requireParentFragment() })
     private lateinit var matchAdapter: MatchItemAdapter
     private val gameLayoutManager by lazy { LinearLayoutManager(context) }
     private val fabViewModel: FloatingButtonControlViewModel by activityViewModel()
