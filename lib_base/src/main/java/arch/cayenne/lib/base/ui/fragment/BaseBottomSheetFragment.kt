@@ -181,7 +181,7 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
                 d, "alpha",
                 alpha, 0
             ).apply {
-                this.duration = endAnimation.duration
+                this.duration = 120L
                 this.interpolator = endAnimation.interpolator
                 addUpdateListener { animation ->
                     val value = animation.animatedValue as Int
