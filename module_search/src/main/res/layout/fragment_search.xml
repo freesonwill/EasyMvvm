@@ -2,17 +2,15 @@
 <arch.cayenne.lib.common.ui.view.InterceptedConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    app:interceptedDirection = "RIGHT"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    app:interceptedDirection="RIGHT">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_history"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="visible">
+        app:layout_constraintTop_toTopOf="parent">
 
         <arch.cayenne.lib.skin.widget.SkinnableRelativeLayout
             android:id="@+id/rl_text_delete"
@@ -24,6 +22,7 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <arch.cayenne.lib.skin.widget.SkinnableTextView
+                android:id="@+id/tv_history_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/history_record"
@@ -31,6 +30,7 @@
                 android:textSize="15sp" />
 
             <arch.cayenne.lib.skin.widget.SkinnableRelativeLayout
+                android:id="@+id/rl_history_delete"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
@@ -80,6 +80,18 @@
                 </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
             </arch.cayenne.lib.skin.widget.SkinnableRelativeLayout>
         </arch.cayenne.lib.skin.widget.SkinnableRelativeLayout>
+
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
+            android:id="@+id/text_no_history"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:text="@string/search_no_history_record"
+            android:textColor="@color/search_history_no_data"
+            android:textSize="15sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/rl_text_delete" />
 
         <com.walisport.module.search.ui.view.FlowLayout
             android:id="@+id/hf_list"
