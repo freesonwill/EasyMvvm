@@ -112,14 +112,6 @@ class HomeCalendarFragment private constructor() : Fragment() {
                     RC.color.secondary_text.getSkinnableColor()
                 )
 
-                //update previous and next month button drawable
-                ivLeftClick.setImageResource(
-                    R.drawable.ic_calendar_arrow_left.getSkinnableResourceId()
-                )
-                ivRightClick.setImageResource(
-                    R.drawable.ic_calendar_arrow_right.getSkinnableResourceId()
-                )
-
                 //update calendarView button
                 calendarBtnCancel.apply {
                     setBackgroundResource(
@@ -133,12 +125,30 @@ class HomeCalendarFragment private constructor() : Fragment() {
                     R.drawable.shape_home_calendar_ok.getSkinnableResourceId()
                 )
                 setSchemeDate()
+                setCalendarScrollable()
                 expandView()
             }
         }
 
     }
-
+    private fun setCalendarScrollable() {
+        mBinding?.let {binding ->
+            with (binding) {
+                val minRange = calendarView.minRangeCalendar
+                val maxRange = calendarView.maxRangeCalendar
+                if (minRange.year == maxRange.year && minRange.month == maxRange.month) {
+                    ivLeftClick.isEnabled = false
+                    ivRightClick.isEnabled = false
+                    calendarView.setMonthViewScrollable(false)
+                } else {
+                    //控制左右按鈕的enabled
+                    calendarView.setMonthViewScrollable(true)
+                    val isEnabledLeft = compareCurrentYearMonth(minRange.year,minRange.month,maxRange.year,maxRange.month)
+                    enabledLeftArrowButton(isEnabledLeft)
+                }
+            }
+        }
+    }
     @SuppressLint("DefaultLocale")
     private fun initListener() {
         mBinding?.let {binding->
@@ -157,6 +167,9 @@ class HomeCalendarFragment private constructor() : Fragment() {
                             month.toChineseMonth(),
                             year.toString()
                         )
+                    //控制左右按鈕的enabled
+                    val isEnabledLeft = compareCurrentYearMonth(year,month,calendarView.curYear,calendarView.curMonth)
+                    enabledLeftArrowButton(isEnabledLeft)
                 }
                 // 透過 binding 操作 Popup 內部的 View
                 ivRightClick.clickNoRepeat {
@@ -197,13 +210,8 @@ class HomeCalendarFragment private constructor() : Fragment() {
                             )
 
                         //控制左右按鈕的enabled
-                        if (calendar.month > calendarView.curMonth) {
-                            ivRightClick.isEnabled = false
-                            ivLeftClick.isEnabled = true
-                        } else {
-                            ivRightClick.isEnabled = true
-                            ivLeftClick.isEnabled = false
-                        }
+                        val isEnabledLeft = compareCurrentYearMonth(calendar.year,calendar.month,calendarView.curYear,calendarView.curMonth)
+                        enabledLeftArrowButton(isEnabledLeft)
                     }
                 })
 
@@ -215,6 +223,18 @@ class HomeCalendarFragment private constructor() : Fragment() {
                     }
                 }
             }
+        }
+    }
+
+    private fun HomeTourPopupCalendarViewBinding.enabledLeftArrowButton(
+        isEnabledLeft: Boolean
+    ) {
+        if (isEnabledLeft) {
+            ivRightClick.isEnabled = false
+            ivLeftClick.isEnabled = true
+        } else {
+            ivRightClick.isEnabled = true
+            ivLeftClick.isEnabled = false
         }
     }
 
@@ -493,6 +513,20 @@ class HomeCalendarFragment private constructor() : Fragment() {
     fun updateRange(range: List<Common.DailyMatchCount>) {
         this.range = range
         setSchemeDate()
+    }
+    fun compareCurrentYearMonth(curYear: Int, curMonth: Int, year2: Int, month2: Int) : Boolean {
+        val result = when {
+            curYear > year2 -> true
+            curYear < year2 -> false
+            else -> { // 年份相同，比較月份
+                when {
+                    curMonth > month2 -> true
+                    curMonth < month2 -> false
+                    else -> false
+                }
+            }
+        }
+        return result
     }
 
     /**
