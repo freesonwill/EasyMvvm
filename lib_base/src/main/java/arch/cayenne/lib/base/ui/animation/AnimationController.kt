@@ -2,72 +2,22 @@ package arch.cayenne.lib.base.ui.animation
 
 import android.view.animation.Animation
 import kotlinx.coroutines.flow.MutableStateFlow
-
 /**
  * @date: 2025/8/18 19:31
  * @description: 动画全局控制器
  */
 object AnimationController {
-    /***** 路由默认动画 *****/
-    var routeEnterAnimFlow: MutableStateFlow<IAnimationOption?> = MutableStateFlow(null)
-    val routeEnterAnim: IAnimationOption?
-        get() = routeEnterAnimFlow.value
-
-    var routeExiAnimFlow: MutableStateFlow<IAnimationOption?> = MutableStateFlow(null)
-    val routeExitAnim: IAnimationOption?
-        get() = routeExiAnimFlow.value
-
-
-    var routePopEnterAnimFlow: MutableStateFlow<IAnimationOption?> = MutableStateFlow(null)
-    val routePopEnterAnim: IAnimationOption?
-        get() = routePopEnterAnimFlow.value
-
-    var routePopExitAnimFlow: MutableStateFlow<IAnimationOption?> = MutableStateFlow(null)
-    val routePopExitAnim: IAnimationOption?
-        get() = routePopExitAnimFlow.value
-
-    /***** 路由上下动画 *****/
-    var routeEnterAnimTBFlow: MutableStateFlow<IAnimationOption?> = MutableStateFlow(null)
-    val routeEnterAnimTB: IAnimationOption?
-        get() = routeEnterAnimTBFlow.value
-
-    var routeExitAnimTBFlow: MutableStateFlow<IAnimationOption?> = MutableStateFlow(null)
-    val routeExitAnimTB: IAnimationOption?
-        get() = routeExitAnimTBFlow.value
-
-
-    var routePopEnterAnimTBFlow: MutableStateFlow<IAnimationOption?> = MutableStateFlow(null)
-    val routePopEnterAnimTB: IAnimationOption?
-        get() = routePopEnterAnimTBFlow.value
-
-    var routePopExitAnimTBFlow: MutableStateFlow<IAnimationOption?> = MutableStateFlow(null)
-    val routePopExitAnimTB: IAnimationOption?
-        get() = routePopExitAnimTBFlow.value
-
-    /****** popup动画 ****/
-    private var popupEnterAnimFlow: MutableStateFlow<IAnimationOption?> = MutableStateFlow(null)
-    val popupEnterAnim: IAnimationOption?
-        get() = popupEnterAnimFlow.value
-
-
-    private var popupExitAnimFlow: MutableStateFlow<IAnimationOption?> = MutableStateFlow(null)
-    val popupExitAnim: IAnimationOption?
-        get() = popupExitAnimFlow.value
-
-    /****** drawer动画 ****/
-    private var drawerEnterAnimFlow: MutableStateFlow<IAnimationOption?> = MutableStateFlow(null)
-    val drawerEnterAnim: IAnimationOption?
-        get() = drawerEnterAnimFlow.value
-
-    /****** scrollBar动画 ****/
-    private var scrollBarAnimFlow: MutableStateFlow<IAnimationOption?> = MutableStateFlow(null)
-    val scrollBarAnim: IAnimationOption?
-        get() = scrollBarAnimFlow.value
-
-    /****** zoomIn动画 ****/
-    private var zoomInAnimFlow: MutableStateFlow<IAnimationOption?> = MutableStateFlow(null)
-    val zoomInAnim: IAnimationOption?
-        get() = zoomInAnimFlow.value
+    enum class AnimType {
+        routeEnter,routeExit,routePopEnter,routePopExit,
+        routeEnterTB,routeExitTB,routePopEnterTB,routePopExitTB,
+        popupEnter,popupExit,
+        drawerEnter,
+        scrollbar,
+        zoomIn,
+    }
+    private val animMap = mutableMapOf<AnimType,MutableStateFlow<IAnimationOption?>>().apply {
+        AnimType.entries.forEach { put(it, MutableStateFlow(null)) }
+    }
 
     init {
         setRouteAnim(300, PathInterpolatorOption(0.36f, 0.66f, 0.04f, 1f))
@@ -76,10 +26,14 @@ object AnimationController {
         setDrawerAnim(300, PathInterpolatorOption(0.36f, 0.66f, 0.04f, 1f))
         setScrollBarAnim(250, PathInterpolatorOption(0f, 0f, 1f, 1f))
     }
+    operator fun get(key:AnimType) = animMap[key]!!.value
+    operator fun set(key:AnimType, animation:IAnimationOption?) {
+        animMap[key]!!.value = animation
+    }
 
     fun setRouteAnim(duration: Long, interpolator: IInterpolatorOption) {
         //从右往左进入
-        routeEnterAnimFlow.value = TranslateAnimationOption(
+        this[AnimType.routeEnter] = TranslateAnimationOption(
             Animation.RELATIVE_TO_PARENT, 1f,
             Animation.RELATIVE_TO_PARENT, 0f,
             Animation.RELATIVE_TO_SELF, 0f,
@@ -88,7 +42,7 @@ object AnimationController {
             interpolator)
 
         //从左往右退出
-        routeExiAnimFlow.value = TranslateAnimationOption(
+        this[AnimType.routeExit] = TranslateAnimationOption(
             Animation.RELATIVE_TO_PARENT, 0f,
             Animation.RELATIVE_TO_PARENT, -0.25f,
             Animation.RELATIVE_TO_SELF, 0f,
@@ -98,7 +52,7 @@ object AnimationController {
         )
 
         //从左往右进入
-        routePopEnterAnimFlow.value = TranslateAnimationOption(
+        this[AnimType.routePopEnter] = TranslateAnimationOption(
             Animation.RELATIVE_TO_PARENT, -0.25f,
             Animation.RELATIVE_TO_PARENT, 0f,
             Animation.RELATIVE_TO_SELF, 0f,
@@ -108,7 +62,7 @@ object AnimationController {
         )
 
         //从右往左退出
-        routePopExitAnimFlow.value = TranslateAnimationOption(
+        this[AnimType.routePopExit] = TranslateAnimationOption(
             Animation.RELATIVE_TO_PARENT, 0f,
             Animation.RELATIVE_TO_PARENT, 1f,
             Animation.RELATIVE_TO_SELF, 0f,
@@ -118,7 +72,7 @@ object AnimationController {
         )
 
         //从上往下
-        routeEnterAnimTBFlow.value = TranslateAnimationOption(
+        this[AnimType.routeEnterTB] = TranslateAnimationOption(
             Animation.RELATIVE_TO_PARENT, 0f,
             Animation.RELATIVE_TO_PARENT, 0f,
             Animation.RELATIVE_TO_PARENT, -1f,
@@ -126,10 +80,10 @@ object AnimationController {
             duration,
             interpolator,
         )
-        routeExitAnimTBFlow.value = null
-        routePopEnterAnimTBFlow.value = null
+        this[AnimType.routeExitTB] = null
+        this[AnimType.routePopEnterTB] = null
         //从下往上
-        routePopExitAnimTBFlow.value = TranslateAnimationOption(
+        this[AnimType.routePopExitTB] = TranslateAnimationOption(
             Animation.RELATIVE_TO_SELF, 0f,
             Animation.RELATIVE_TO_SELF, 0f,
             Animation.RELATIVE_TO_SELF, 0f,
@@ -140,7 +94,7 @@ object AnimationController {
     }
 
     fun setPopupAnim(duration: Long, interpolator: IInterpolatorOption) {
-        popupEnterAnimFlow.value = TranslateAnimationOption(
+        this[AnimType.popupEnter] = TranslateAnimationOption(
             Animation.RELATIVE_TO_PARENT, 0f,
             Animation.RELATIVE_TO_PARENT, 0f,
             Animation.RELATIVE_TO_PARENT, 1f,
@@ -149,7 +103,7 @@ object AnimationController {
             interpolator,
         )
 
-        popupExitAnimFlow.value = TranslateAnimationOption(
+        this[AnimType.popupExit] = TranslateAnimationOption(
             Animation.RELATIVE_TO_PARENT, 0f,
             Animation.RELATIVE_TO_PARENT, 0f,
             Animation.RELATIVE_TO_PARENT, 0f,
@@ -160,14 +114,15 @@ object AnimationController {
     }
 
     fun setDrawerAnim(duration: Long, interpolator: IInterpolatorOption) {
-        drawerEnterAnimFlow.value = SimpleAnimationOption(duration, interpolator)
+        this[AnimType.drawerEnter] = SimpleAnimationOption(duration, interpolator)
     }
 
     fun setScrollBarAnim(duration: Long, interpolator: IInterpolatorOption) {
-        scrollBarAnimFlow.value = SimpleAnimationOption(duration, interpolator)
+        this[AnimType.scrollbar] = SimpleAnimationOption(duration, interpolator)
     }
 
     fun setZoomInAnim(duration: Long, interpolator: IInterpolatorOption) {
-        zoomInAnimFlow.value = SimpleAnimationOption(duration, interpolator)
+        this[AnimType.zoomIn] = SimpleAnimationOption(duration, interpolator)
     }
 }
+
