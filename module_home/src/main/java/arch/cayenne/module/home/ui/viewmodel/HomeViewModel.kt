@@ -282,7 +282,7 @@ class HomeViewModel : BaseViewModel() {
         getCurrentSportStatistical()
     }
 
-    fun getCurrentSportStatistical() {
+    private fun getCurrentSportStatistical() {
         setState(HomeState.Sport.Loading)
         callApi({
             repository.getSportStatistical()
@@ -290,6 +290,7 @@ class HomeViewModel : BaseViewModel() {
             if (it is ApiResponseState.Succeeded<*>) {
                 setState(HomeState.Sport.LoadSuccess)
             } else if (it is ApiResponseState.Failed) {
+                //TODO 當球類錯誤時，要通知底下
                 if (tournaments.value?.peekContent() == null || tournaments.value?.peekContent()?.isEmpty() == true) {
                     "Get Sport List Failure set only all into tournaments livedata".loge(this::class.java.simpleName)
                     tournaments.value = Event(

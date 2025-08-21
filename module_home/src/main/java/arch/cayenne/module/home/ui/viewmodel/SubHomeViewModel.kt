@@ -1,4 +1,9 @@
 package arch.cayenne.module.home.ui.viewmodel
 
-class SubHomeViewModel {
+import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
+import plugin.koin.KoinViewModel
+
+@KoinViewModel
+class SubHomeViewModel: BaseViewModel() {
+
 }

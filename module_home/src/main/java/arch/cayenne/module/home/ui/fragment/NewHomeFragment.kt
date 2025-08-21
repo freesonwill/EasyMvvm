@@ -1,6 +1,5 @@
 package arch.cayenne.module.home.ui.fragment
 
-import android.annotation.SuppressLint
 import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
@@ -8,8 +7,6 @@ import android.view.View
 import android.widget.TextView
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
@@ -17,23 +14,18 @@ import arch.cayenne.lib.base.ui.animation.AnimationController
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
-import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.NavResultExt.observeResult
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
-import arch.cayenne.lib.common.utils.ext.clickNoRepeatSingle
 import arch.cayenne.lib.common.utils.ext.setDrawerInterpolator
-import arch.cayenne.lib.common.utils.helper.BounceEdgeEffectHelper
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.module.home.R
 import arch.cayenne.module.home.data.constants.HomeState
 import arch.cayenne.module.home.data.constants.PlayType
 import arch.cayenne.module.home.databinding.FragmentNewHomeBinding
-import arch.cayenne.module.home.ui.adapter.SportsListAdapter
 import arch.cayenne.module.home.ui.adapter.SubHomePagerAdapter
-import arch.cayenne.module.home.ui.view.HomeCalendarFragment
 import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
@@ -43,20 +35,12 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
     override val vbClass: KClass<FragmentNewHomeBinding> = FragmentNewHomeBinding::class
     override val vmClass: KClass<HomeViewModel> = HomeViewModel::class
     private var drawerContentFragment: DrawerContentFragment? = null
-    private val sportsListAdapter by lazy {
-        SportsListAdapter { id ->
-            if (mViewModel.currentSportId == id) return@SportsListAdapter
-            mViewModel.setCurrentSport(id)
-        }
-    }
-
 
     //    private val tournamentListFragment  = TournamentListFragment.newInstance()
     private var isExpanded = false
 
     override fun initView(savedInstanceState: Bundle?) {
         initPlayTypeLayout()
-        initSportLayout()
     }
 
     override fun onStart() {
@@ -127,20 +111,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
 //        }
     }
 
-    //init 二級導航欄位
-    private fun initSportLayout() {
-        mBinding.apply {
-            rvSportsList.apply {
-                itemAnimator = null
-                layoutManager =
-                    LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-                edgeEffectFactory = BounceEdgeEffectHelper(requireContext())
-                overScrollMode = RecyclerView.OVER_SCROLL_ALWAYS
-                isNestedScrollingEnabled = false
-                adapter = sportsListAdapter
-            }
-        }
-    }
+
 
     //init DrawerLayout Content
     private fun initDrawerContent() {
@@ -186,37 +157,13 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
 
     override fun initListener() {
         with(mBinding) {
-           setTopMaskListener()
             llWalletEntry.apply {
                 addScaleOnTouchAnimation(ivWalletAdd)
             }.setOnClickListener {
                 //navigate(Uri.parse("walisport://module_home/homeFragment"))
                 navigate(Uri.parse("walisport://module_topup/topUpFragment"))
             }
-            llFavoriteEntry.setOnClickListener {
-                navigate(NewHomeFragmentDirections.actionNewHomeFragmentToCollectListFragment())
-            }
-            llFavoriteEntry.addScaleOnTouchAnimation()
-            llSearchEntry.setOnClickListener {
-                navigate(arch.cayenne.lib.res.R.string.nav_module_search_fragment.deeplink())
-            }
-            llSearchEntry.addScaleOnTouchAnimation()
-            llBetEntry.clickNoRepeatSingle {
-                //navigate(Uri.parse("walisport://module_home/homeFragment"))
-                navigate(Uri.parse("walisport://module_topup/topUpFragment"))
-            }
-            llFavoriteEntry.clickNoRepeatSingle {
-                navigate(NewHomeFragmentDirections.actionNewHomeFragmentToCollectListFragment())
-            }
-            llFavoriteEntry.addScaleOnTouchAnimation()
-            llSearchEntry.clickNoRepeatSingle {
-                navigate(arch.cayenne.lib.res.R.string.nav_module_search_fragment.deeplink())
-            }
-            llSearchEntry.addScaleOnTouchAnimation()
-            llBetEntry.clickNoRepeatSingle {
-                navigate(NewHomeFragmentDirections.actionNewHomeFragmentToHomeBetSlipFragment())
-            }
-            llBetEntry.addScaleOnTouchAnimation()
+
 
             mBinding.drawerLayout.addDrawerListener(object : DrawerLayout.DrawerListener {
                 override fun onDrawerSlide(drawerView: View, slideOffset: Float) {}
@@ -229,26 +176,9 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             })
         }
     }
-    @SuppressLint("ClickableViewAccessibility")
-    private fun setTopMaskListener() {
-        with (mBinding) {
-            clMain.setOnChildClickedInterceptedListener { view ->
-                when (view) {
-                    clFirstNavbar,clSecondNavbar->{
-                        mViewModel.setCalendarState(HomeCalendarFragment.States.CALENDAR_CLOSE_NOTHING)
-                    }
-                    else-> Unit
-                }
-            }
-        }
-    }
-    @SuppressLint("NotifyDataSetChanged")
+
+
     override suspend fun createObserver() {
-        mViewModel.sportsStatistical.observeEvent(viewLifecycleOwner, this) {
-            sportsListAdapter.submitList(it)
-        }
-
-
         mViewModel.notifyToChampion.observeEvent(viewLifecycleOwner, this) {
 //            toggleTournamentMoreSection(true, TournamentListType.CHAMPION)
         }
@@ -279,10 +209,6 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 }
                 else -> Unit
             }
-        }
-        mViewModel.languageManager.languageFlow.collect{
-            //sportAdapter需要监听切换语言更新
-            sportsListAdapter.notifyDataSetChanged()
         }
     }
 
