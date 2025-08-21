@@ -5,6 +5,7 @@ import android.app.ActivityOptions
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.os.Parcelable
 import androidx.annotation.IdRes
 import androidx.fragment.app.FragivityFragmentNavigator
 import androidx.fragment.app.Fragment
@@ -197,9 +198,12 @@ object NavigationExt {
     ) {
         if(isNavigationDebounced("$this")) return
         val navController = findNavController()
-        setupDefaultAnim(directions.arguments,enterAnim,exitAnim,popEnterAnim,popExitAnim)
-        navController.navigate(directions,mergedNavOption(navController, directions, navOptions))
+        val args = setupDefaultAnim(directions.arguments,enterAnim,exitAnim,popEnterAnim,popExitAnim)
+        //directions中的arguments还是getter方法，不是Field，对其修改无效。折中调用actionId + bundle
+        navController.navigate(directions.actionId,args,mergedNavOption(navController, directions, navOptions))
     }
+
+
 
     fun Fragment.navigate(
         @IdRes resId: Int,
