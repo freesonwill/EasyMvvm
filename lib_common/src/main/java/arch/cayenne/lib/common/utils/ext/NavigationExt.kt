@@ -169,10 +169,10 @@ object NavigationExt {
         deepLink: Uri,
         navOptions: NavOptions? = defaultNavOptions,
         navigatorExtras: Navigator.Extras? = null,
-        enterAnim:IAnimationOption = AnimationController.routeEnterAnim,
-        exitAnim:IAnimationOption = AnimationController.routeExitAnim,
-        popEnterAnim:IAnimationOption = AnimationController.routePopEnterAnim,
-        popExitAnim:IAnimationOption = AnimationController.routePopExitAnim,
+        enterAnim:IAnimationOption? = AnimationController.routeEnterAnim,
+        exitAnim:IAnimationOption? = AnimationController.routeExitAnim,
+        popEnterAnim:IAnimationOption? = AnimationController.routePopEnterAnim,
+        popExitAnim:IAnimationOption? = AnimationController.routePopExitAnim,
     ) {
         if(isNavigationDebounced("$this,uri:$deepLink")) return
         val args = setupDefaultAnim(Bundle(),enterAnim,exitAnim,popEnterAnim,popExitAnim)
@@ -190,15 +190,15 @@ object NavigationExt {
     fun Fragment.navigate(
         directions: NavDirections,
         navOptions: NavOptions? = defaultNavOptions,
-        enterAnim:IAnimationOption = AnimationController.routeEnterAnim,
-        exitAnim:IAnimationOption = AnimationController.routeExitAnim,
-        popEnterAnim:IAnimationOption = AnimationController.routePopEnterAnim,
-        popExitAnim:IAnimationOption = AnimationController.routePopExitAnim,
+        enterAnim:IAnimationOption? = AnimationController.routeEnterAnim,
+        exitAnim:IAnimationOption? = AnimationController.routeExitAnim,
+        popEnterAnim:IAnimationOption? = AnimationController.routePopEnterAnim,
+        popExitAnim:IAnimationOption? = AnimationController.routePopExitAnim,
     ) {
         if(isNavigationDebounced("$this")) return
         val navController = findNavController()
         setupDefaultAnim(directions.arguments,enterAnim,exitAnim,popEnterAnim,popExitAnim)
-        navController.navigate(directions, mergedNavOption(navController, directions, navOptions))
+        navController.navigate(directions,mergedNavOption(navController, directions, navOptions))
     }
 
     fun Fragment.navigate(
@@ -206,10 +206,10 @@ object NavigationExt {
         args: Bundle = Bundle(),
         navOptions: NavOptions? = defaultNavOptions,
         navigatorExtras: Navigator.Extras? = null,
-        enterAnim:IAnimationOption = AnimationController.routeEnterAnim,
-        exitAnim:IAnimationOption = AnimationController.routeExitAnim,
-        popEnterAnim:IAnimationOption = AnimationController.routePopEnterAnim,
-        popExitAnim:IAnimationOption = AnimationController.routePopExitAnim,
+        enterAnim:IAnimationOption? = AnimationController.routeEnterAnim,
+        exitAnim:IAnimationOption? = AnimationController.routeExitAnim,
+        popEnterAnim:IAnimationOption? = AnimationController.routePopEnterAnim,
+        popExitAnim:IAnimationOption? = AnimationController.routePopExitAnim,
     ) {
         if(isNavigationDebounced("$this")) return
         setupDefaultAnim(args,enterAnim,exitAnim,popEnterAnim,popExitAnim)
