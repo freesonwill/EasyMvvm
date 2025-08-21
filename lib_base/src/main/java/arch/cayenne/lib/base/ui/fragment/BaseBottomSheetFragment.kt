@@ -133,6 +133,7 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
             val sheetAnim = enterAnimation()
             sheetAnim.setAnimationListener(object : Animation.AnimationListener {
                 override fun onAnimationStart(animation: Animation?) {
+                    showDim()
                     backgroundView?.visibility = View.VISIBLE
                     scv.visibility = View.VISIBLE
                     mBinding.root.visibility = View.VISIBLE
@@ -156,6 +157,7 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
                 backgroundView?.visibility = View.INVISIBLE
             }
             override fun onAnimationEnd(animation: Animation?) {
+                hideDim()
                 try {
                     superDismiss()
                 } catch (e: Exception) {
@@ -195,7 +197,7 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
         uiBind.onStart()
         setSheetContainer()
         setBackGroundOnclick()
-        setDim(0.75f)
+        hideDim()
         setStatusBar()
         setGesture()
     }
@@ -316,14 +318,8 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
 
     protected fun showDim() {
         dialog?.window?.setDimAmount(0.75f)
-        dialog?.window?.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
-        dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-    }
-
-    protected fun setDim(amount: Float) {
-        dialog?.window?.setDimAmount(amount)
-        dialog?.window?.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
-        dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog?.window?.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
+        dialog?.window?.setBackgroundDrawableResource(R.color.black_75)
     }
 
     private fun setRvTouch() {
