@@ -24,7 +24,7 @@ inline fun <reified F : Fragment> Fragment.findRelative(): F {
     while (queued.isNotEmpty()) {
         val current = queued.removeFirst()
         when {
-            current is F -> return current
+            current is F && this.isMyAncestor(current) -> return current
             visited.contains(current) -> continue
         }
         visited.add(current)
@@ -40,3 +40,10 @@ val Fragment.rootFragment: Fragment
             root = root.requireParentFragment()
         return root
     }
+
+fun Fragment.isMyAncestor(target: Fragment): Boolean {
+    val root = this
+    if (root.parentFragment == null) return false
+    if (root.requireParentFragment().hashCode() == target.hashCode()) return true
+    return root.requireParentFragment().isMyAncestor(target)
+}

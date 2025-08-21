@@ -31,7 +31,7 @@ import arch.cayenne.module.home.databinding.FragmentTournamentListBinding
 import arch.cayenne.module.home.databinding.ItemTournamentHeaderBinding
 import arch.cayenne.module.home.ui.adapter.TournamentSectionAdapter
 import arch.cayenne.module.home.ui.view.decoration.StickyHeaderItemDecoration
-import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
+import arch.cayenne.module.home.ui.viewmodel.SubHomeViewModel
 import arch.cayenne.module.home.ui.viewmodel.TournamentListViewModel
 import kotlin.reflect.KClass
 
@@ -42,7 +42,7 @@ class TournamentListFragment :
         FragmentTournamentListBinding::class
     override val vmClass: KClass<TournamentListViewModel> = TournamentListViewModel::class
 
-    private val homeViewModel: HomeViewModel by sharedViewModel<HomeViewModel, NewHomeFragment>()
+    private val subHomeViewModel: SubHomeViewModel by sharedViewModel<SubHomeViewModel, SubHomeFragment>()
     private lateinit var adapter: TournamentSectionAdapter
     private var pendingJumpIndex: Int? = null // 用來判斷是否為點擊字母列表來跳選列表分類，null代表非自動跳轉狀態
     private var stickyHeaderDecoration: StickyHeaderItemDecoration? = null
@@ -69,9 +69,9 @@ class TournamentListFragment :
             ceSearch.imeOptions = EditorInfo.IME_ACTION_SEARCH
             adapter = TournamentSectionAdapter(
                 onTournamentClick = { tournament ->
-                    homeViewModel.onTournamentListSelected(tournament)
+                    subHomeViewModel.onTournamentListSelected(tournament)
                     if (mViewModel.getType() == TournamentListType.MORE) {
-                        homeViewModel.requestCollapseTournamentDropdown()
+                        subHomeViewModel.requestCollapseTournamentDropdown()
                     }
                 }
             )
@@ -150,7 +150,7 @@ class TournamentListFragment :
             }
 
             ivHomeLeagueCollapse.apply{addScaleOnTouchAnimation()}.setOnClickListener {
-                homeViewModel.requestCollapseTournamentDropdown()
+                subHomeViewModel.requestCollapseTournamentDropdown()
             }
 
             rvTournamentList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -358,7 +358,7 @@ class TournamentListFragment :
         
         // 通知聯賽收回上滑動畫已結束
         if (mViewModel.getType() == TournamentListType.MORE) {
-            homeViewModel.notifyTournamentSlideOutEnd()
+            subHomeViewModel.notifyTournamentSlideOutEnd()
         }
     }
 

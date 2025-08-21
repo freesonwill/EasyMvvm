@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.TextView
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.viewpager2.widget.ViewPager2
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
@@ -94,6 +95,15 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             )
             vpSub.offscreenPageLimit = 1
             vpSub.isUserInputEnabled = false
+            vpSub.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+                override fun onPageSelected(position: Int) {
+                    super.onPageSelected(position)
+                    val fragment = childFragmentManager.findFragmentByTag("f$position")
+                    if (fragment is SubHomeFragment) {
+                        fragment.onSelected()
+                    }
+                }
+            })
         }
     }
 
