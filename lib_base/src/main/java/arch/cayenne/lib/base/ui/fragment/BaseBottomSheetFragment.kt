@@ -1,5 +1,6 @@
 package arch.cayenne.lib.base.ui.fragment
 
+import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.app.Dialog
@@ -34,6 +35,7 @@ import arch.cayenne.lib.base.ui.delegate.StatusBarDelegate
 import arch.cayenne.lib.base.ui.delegate.UIBindDelegate
 import arch.cayenne.lib.base.ui.gesture.TikTokGesture
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -72,6 +74,7 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
 
     //navigation跳转时是否保留view（true:保留；false：销毁）
     open val keepViewOnNavigation: Boolean = false
+
     //#endregion VB,VM
     //#endregion VB,VM
     //设置颜色，默认根据主题颜色设定
@@ -128,7 +131,8 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
     protected open fun exitAnimation(): Animation = AnimationController.popupExitAnim!!.toAnimation()
 
     protected fun playEnterAnimations() {
-        sheetContainer?.let {  scv ->
+        showDim()
+        sheetContainer?.let { scv ->
             // bottom sheet 上滑動畫
             val sheetAnim = enterAnimation()
             sheetAnim.setAnimationListener(object : Animation.AnimationListener {
@@ -156,6 +160,7 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
                 backgroundView?.visibility = View.INVISIBLE
             }
             override fun onAnimationEnd(animation: Animation?) {
+                hideDim()
                 try {
                     superDismiss()
                 } catch (e: Exception) {
@@ -165,8 +170,27 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
 
             override fun onAnimationRepeat(animation: Animation?) {}
         })
-
         sheetContainer?.startAnimation(sheetContainerSheetAnim)
+        playHideDimAnimation(sheetContainerSheetAnim)
+    }
+
+
+    protected fun playHideDimAnimation(endAnimation: Animation) {
+        dialog?.window?.decorView?.background?.let { d ->
+            val alpha = (0.75f * 255).toInt()
+            ObjectAnimator.ofInt(
+                d, "alpha",
+                alpha, 0
+            ).apply {
+                this.duration = endAnimation.duration
+                this.interpolator = endAnimation.interpolator
+                addUpdateListener { animation ->
+                    val value = animation.animatedValue as Int
+                    d.alpha = value
+                }
+                start()
+            }
+        }
     }
 
     @CallSuper
@@ -195,7 +219,7 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
         uiBind.onStart()
         setSheetContainer()
         setBackGroundOnclick()
-        setDim(0.75f)
+        hideDim()
         setStatusBar()
         setGesture()
     }
@@ -312,18 +336,14 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
         dialog?.window?.setDimAmount(0f)
         dialog?.window?.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
         dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog?.window?.decorView?.background?.alpha = (0.75f * 255).toInt()
     }
 
     protected fun showDim() {
         dialog?.window?.setDimAmount(0.75f)
-        dialog?.window?.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
-        dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-    }
-
-    protected fun setDim(amount: Float) {
-        dialog?.window?.setDimAmount(amount)
-        dialog?.window?.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
-        dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog?.window?.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
+        dialog?.window?.setBackgroundDrawableResource(R.color.black)
+        dialog?.window?.decorView?.background?.alpha = (0.75f * 255).toInt()
     }
 
     private fun setRvTouch() {
