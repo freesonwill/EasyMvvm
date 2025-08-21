@@ -5,6 +5,7 @@ import android.app.ActivityOptions
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.os.Parcelable
 import androidx.annotation.IdRes
 import androidx.fragment.app.FragivityFragmentNavigator
 import androidx.fragment.app.Fragment
@@ -169,10 +170,10 @@ object NavigationExt {
         deepLink: Uri,
         navOptions: NavOptions? = defaultNavOptions,
         navigatorExtras: Navigator.Extras? = null,
-        enterAnim:IAnimationOption = AnimationController.routeEnterAnim,
-        exitAnim:IAnimationOption = AnimationController.routeExitAnim,
-        popEnterAnim:IAnimationOption = AnimationController.routePopEnterAnim,
-        popExitAnim:IAnimationOption = AnimationController.routePopExitAnim,
+        enterAnim:IAnimationOption? = AnimationController.routeEnterAnim,
+        exitAnim:IAnimationOption? = AnimationController.routeExitAnim,
+        popEnterAnim:IAnimationOption? = AnimationController.routePopEnterAnim,
+        popExitAnim:IAnimationOption? = AnimationController.routePopExitAnim,
     ) {
         if(isNavigationDebounced("$this,uri:$deepLink")) return
         val args = setupDefaultAnim(Bundle(),enterAnim,exitAnim,popEnterAnim,popExitAnim)
@@ -190,26 +191,29 @@ object NavigationExt {
     fun Fragment.navigate(
         directions: NavDirections,
         navOptions: NavOptions? = defaultNavOptions,
-        enterAnim:IAnimationOption = AnimationController.routeEnterAnim,
-        exitAnim:IAnimationOption = AnimationController.routeExitAnim,
-        popEnterAnim:IAnimationOption = AnimationController.routePopEnterAnim,
-        popExitAnim:IAnimationOption = AnimationController.routePopExitAnim,
+        enterAnim:IAnimationOption? = AnimationController.routeEnterAnim,
+        exitAnim:IAnimationOption? = AnimationController.routeExitAnim,
+        popEnterAnim:IAnimationOption? = AnimationController.routePopEnterAnim,
+        popExitAnim:IAnimationOption? = AnimationController.routePopExitAnim,
     ) {
         if(isNavigationDebounced("$this")) return
         val navController = findNavController()
-        setupDefaultAnim(directions.arguments,enterAnim,exitAnim,popEnterAnim,popExitAnim)
-        navController.navigate(directions, mergedNavOption(navController, directions, navOptions))
+        val args = setupDefaultAnim(directions.arguments,enterAnim,exitAnim,popEnterAnim,popExitAnim)
+        //directions中的arguments还是getter方法，不是Field，对其修改无效。折中调用actionId + bundle
+        navController.navigate(directions.actionId,args,mergedNavOption(navController, directions, navOptions))
     }
+
+
 
     fun Fragment.navigate(
         @IdRes resId: Int,
         args: Bundle = Bundle(),
         navOptions: NavOptions? = defaultNavOptions,
         navigatorExtras: Navigator.Extras? = null,
-        enterAnim:IAnimationOption = AnimationController.routeEnterAnim,
-        exitAnim:IAnimationOption = AnimationController.routeExitAnim,
-        popEnterAnim:IAnimationOption = AnimationController.routePopEnterAnim,
-        popExitAnim:IAnimationOption = AnimationController.routePopExitAnim,
+        enterAnim:IAnimationOption? = AnimationController.routeEnterAnim,
+        exitAnim:IAnimationOption? = AnimationController.routeExitAnim,
+        popEnterAnim:IAnimationOption? = AnimationController.routePopEnterAnim,
+        popExitAnim:IAnimationOption? = AnimationController.routePopExitAnim,
     ) {
         if(isNavigationDebounced("$this")) return
         setupDefaultAnim(args,enterAnim,exitAnim,popEnterAnim,popExitAnim)
