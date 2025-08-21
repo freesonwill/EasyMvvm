@@ -1,5 +1,6 @@
 package arch.cayenne.lib.base.ui.fragment
 
+import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.app.Dialog
@@ -72,6 +73,7 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
 
     //navigation跳转时是否保留view（true:保留；false：销毁）
     open val keepViewOnNavigation: Boolean = false
+
     //#endregion VB,VM
     //#endregion VB,VM
     //设置颜色，默认根据主题颜色设定
@@ -128,12 +130,12 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
     protected open fun exitAnimation(): Animation = AnimationController.popupExitAnim.toAnimation()
 
     protected fun playEnterAnimations() {
-        sheetContainer?.let {  scv ->
+        showDim()
+        sheetContainer?.let { scv ->
             // bottom sheet 上滑動畫
             val sheetAnim = enterAnimation()
             sheetAnim.setAnimationListener(object : Animation.AnimationListener {
                 override fun onAnimationStart(animation: Animation?) {
-                    showDim()
                     backgroundView?.visibility = View.VISIBLE
                     scv.visibility = View.VISIBLE
                     mBinding.root.visibility = View.VISIBLE
@@ -167,8 +169,27 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
 
             override fun onAnimationRepeat(animation: Animation?) {}
         })
-
         sheetContainer?.startAnimation(sheetContainerSheetAnim)
+        playHideDimAnimation(sheetContainerSheetAnim)
+    }
+
+
+    protected fun playHideDimAnimation(endAnimation: Animation) {
+        dialog?.window?.decorView?.background?.let { d ->
+            val alpha = (0.75f * 255).toInt()
+            ObjectAnimator.ofInt(
+                d, "alpha",
+                alpha, 0
+            ).apply {
+                this.duration = endAnimation.duration
+                this.interpolator = endAnimation.interpolator
+                addUpdateListener { animation ->
+                    val value = animation.animatedValue as Int
+                    d.alpha = value
+                }
+                start()
+            }
+        }
     }
 
     @CallSuper
@@ -314,12 +335,14 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
         dialog?.window?.setDimAmount(0f)
         dialog?.window?.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
         dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog?.window?.decorView?.background?.alpha = (0.75f * 255).toInt()
     }
 
     protected fun showDim() {
         dialog?.window?.setDimAmount(0.75f)
         dialog?.window?.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
-        dialog?.window?.setBackgroundDrawableResource(R.color.black_75)
+        dialog?.window?.setBackgroundDrawableResource(R.color.black)
+        dialog?.window?.decorView?.background?.alpha = (0.75f * 255).toInt()
     }
 
     private fun setRvTouch() {
