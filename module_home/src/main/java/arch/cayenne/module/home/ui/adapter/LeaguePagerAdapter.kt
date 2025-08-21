@@ -25,7 +25,7 @@ class LeaguePagerAdapter(
     }
 
     override fun getItemId(position: Int): Long {
-        return playTypeId * 10000L + position
+        return position.toLong()
     }
 
     override fun getItemCount(): Int = tournament.size
