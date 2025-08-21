@@ -59,9 +59,14 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 drawerLayout.openDrawer(GravityCompat.START)
             }
             val tabResList = mutableListOf<Int>()
-            PlayType.entries.forEach {
-                tabResList.add(it.titleRes)
-                tlHome.addTab(tlHome.newTab().setText(it.titleRes))
+            PlayType.entries.forEachIndexed { index, playType ->
+                tabResList.add(playType.titleRes)
+                tlHome.addTab(
+                    tlHome.newTab().apply {
+                        setText(playType.titleRes)
+                        if (index == 0) (this.view.getChildAt(1) as? TextView)?.typeface = Typeface.DEFAULT_BOLD
+                    }
+                )
             }
             tlHome.setTabResArray(tabResList.toIntArray())
             tlHome.addOnTabSelectedListener(object : OnTabSelectedListener {
@@ -71,6 +76,8 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                         if (PlayType.entries[this].id != PlayType.CHAMPION.id) {
                             vpSub.setCurrentItem(this, false)
                         }
+
+                        (childFragmentManager.findFragmentByTag("f$this") as? SubHomeFragment)?.onSelected()
                     }
                     tab?.let {
                         // 设置选中Tab为粗体
@@ -98,10 +105,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             vpSub.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
                 override fun onPageSelected(position: Int) {
                     super.onPageSelected(position)
-                    val fragment = childFragmentManager.findFragmentByTag("f$position")
-                    if (fragment is SubHomeFragment) {
-                        fragment.onSelected()
-                    }
+
                 }
             })
         }
