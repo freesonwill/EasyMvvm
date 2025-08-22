@@ -132,9 +132,9 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
     }
 
 
-    protected open fun enterAnimation(): Animation = AnimationController.popupEnterAnim.toAnimation()
+    protected open fun enterAnimation(): Animation = AnimationController.popupEnterAnim!!.toAnimation()
 
-    protected open fun exitAnimation(): Animation = AnimationController.popupExitAnim.toAnimation()
+    protected open fun exitAnimation(): Animation = AnimationController.popupExitAnim!!.toAnimation()
 
     protected fun playEnterAnimations() {
         dimController.showDim()
