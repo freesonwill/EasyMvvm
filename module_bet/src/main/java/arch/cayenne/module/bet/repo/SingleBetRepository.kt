@@ -1,5 +1,6 @@
 package arch.cayenne.module.bet.repo
 
+import android.util.Log
 import arch.cayenne.lib.base.data.repository.BaseRepository
 import arch.cayenne.lib.common.data.constants.UserDataKey
 import arch.cayenne.lib.common.data.manager.UserDataManager
@@ -161,7 +162,9 @@ class SingleBetRepository(
                         )
                     }
                     betDao.insertDetail(detailBean)
-                    betDao.updateBetStatus(betId, BetStatusEnum.COMPLETE)
+                    betDao.getCurrentBet(BetStatusEnum.BETTING)?.let { bettingBet ->
+                        betDao.updateBetStatus(bettingBet.betId, BetStatusEnum.COMPLETE)
+                    }
                 }
             }
         }
@@ -213,7 +216,9 @@ class SingleBetRepository(
                         status = status
                     )
                     betDao.insertDetail(detailBean)
-                    betDao.updateBetStatus(betId, BetStatusEnum.COMPLETE)
+                    betDao.getCurrentBet(BetStatusEnum.BETTING)?.let { bettingBet ->
+                        betDao.updateBetStatus(bettingBet.betId, BetStatusEnum.COMPLETE)
+                    }
                 }
             }
         }

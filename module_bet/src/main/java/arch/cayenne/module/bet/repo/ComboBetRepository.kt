@@ -230,7 +230,9 @@ class ComboBetRepository(
                         }
                     }
                     betDao.insertDetail(detailBean)
-                    betDao.updateBetStatus(betId, BetStatusEnum.COMPLETE)
+                    betDao.getCurrentBet(BetStatusEnum.BETTING)?.let { bettingBet ->
+                        betDao.updateBetStatus(bettingBet.betId, BetStatusEnum.COMPLETE)
+                    }
                 }
             }
         }
