@@ -73,7 +73,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                     tab?.position?.apply {
                         mViewModel.setCurrentPlayType(PlayType.entries[this].id)
                         vpSub.setCurrentItem(this, false)
-                        (childFragmentManager.findFragmentByTag("f$this") as? SubHomeFragment)?.onSelected()
+                        (childFragmentManager.findFragmentByTag("f$this") as? SubHomeFragment)?.onFragmentSelected()
                     }
                     tab?.let {
                         // 设置选中Tab为粗体
@@ -83,6 +83,9 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 }
 
                 override fun onTabUnselected(tab: TabLayout.Tab?) {
+                    tab?.position?.apply {
+                        (childFragmentManager.findFragmentByTag("f$this") as? SubHomeFragment)?.onFragmentUnSelected()
+                    }
                     tab?.let {
                         // 设置默认
                         (it.view.getChildAt(1) as? TextView)?.typeface = Typeface.DEFAULT

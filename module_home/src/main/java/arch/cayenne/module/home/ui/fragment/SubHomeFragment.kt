@@ -190,10 +190,15 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
         }
     }
 
-    fun onSelected() {
+    fun onFragmentSelected() {
         mViewModel.getCurrentSportStatistical()
         mViewModel.getCurrentTournament()
     }
+    fun onFragmentUnSelected() {
+        mViewModel.requestCollapseTournamentDropdown()
+        mViewModel.setCalendarState(HomeCalendarFragment.States.CALENDAR_CLOSE_NOTHING)
+    }
+
 
     //init 二級導航欄位
     private fun initSportLayout() {
