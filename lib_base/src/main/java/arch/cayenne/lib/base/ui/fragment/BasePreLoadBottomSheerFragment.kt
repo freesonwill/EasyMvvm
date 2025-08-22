@@ -160,6 +160,18 @@ abstract class BasePreLoadBottomSheetFragment<VM : BaseViewModel, VB : ViewBindi
         }
     }
 
+    fun customShow(other: ObjectAnimator) {
+        if (sheetContainer?.visibility == View.INVISIBLE) {
+            isDismissing = true
+        }
+        if (isDismissing) {
+            isDismissing = false
+            setCustomExpendSetting()
+            otherViewAnimation = WeakReference(other)
+            playEnterAnimationWithOtherSheetDialogEnd()
+        }
+    }
+
     @CallSuper
     open fun customHide()  {
         if (!isDismissing) {
@@ -178,7 +190,7 @@ abstract class BasePreLoadBottomSheetFragment<VM : BaseViewModel, VB : ViewBindi
         customHide()
     }
 
-    protected fun getHideAnimator(): ObjectAnimator? {
+    override fun getHideAnimator(): ObjectAnimator? {
         val sheet = sheetContainer ?: return null
         val exit = exitAnimation()
         return ObjectAnimator.ofFloat(

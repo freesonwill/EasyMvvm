@@ -60,7 +60,7 @@ class BetResultFragment private constructor(): BaseBottomSheetFragment<BetResult
         mBinding.btnContinueBet.setOnClickListener {
             lifecycleScope.launch {
                 mViewModel.continueBet()?.let { type ->
-                    BetSheetFragment.show(requireActivity())
+                    BetSheetFragment.show(requireActivity(), getHideAnimator())
                 }
             }
         }

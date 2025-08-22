@@ -7,6 +7,7 @@ import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.AttributeSet
@@ -23,7 +24,6 @@ import androidx.appcompat.app.AppCompatDialog
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.animation.doOnEnd
 import androidx.core.animation.doOnStart
-import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
@@ -134,7 +134,6 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
     protected open fun exitAnimation(): Animation = AnimationController.popupExitAnim.toAnimation()
 
     protected fun playEnterAnimations() {
-        showDim()
         sheetContainer?.let { scv ->
             // bottom sheet 上滑動畫
             val sheetAnim = enterAnimation()
@@ -176,12 +175,10 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
                 mBinding.root.visibility = View.VISIBLE
             }
             doOnEnd {
-                showDim()
                 setRvTouch()
                 otherViewAnimation = null
             }
         }
-
         AnimatorSet().apply {
             playTogether(sheetAnimator, otherSheetAnimator)
             start()
@@ -200,20 +197,9 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
             }
         }
     ) {
-        val view = sheetContainer ?: return
-        val background = dialog?.window?.decorView?.background ?: return
         val sheetContainerSheetAnim = exitAnimation()
 
-        val sheetAnimator = ObjectAnimator.ofFloat(
-            view, "translationY", 0f, view.height.toFloat()
-        ).apply {
-            addUpdateListener { animation ->
-                val value = animation.animatedValue as Float
-                view.translationY = value
-            }
-            duration = sheetContainerSheetAnim.duration
-            // 假設你的 exitAnimation 使用這個插值器
-            interpolator = sheetContainerSheetAnim.interpolator
+        val sheetAnimator = getHideAnimator()?.apply {
             doOnStart {
                 doStart?.invoke()
             }
@@ -223,24 +209,9 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
         }
 
         val alpha = (0.75f * 255).toInt()
-        val dimAnimator = ObjectAnimator.ofInt(
-            background, "alpha",
-            alpha, 0
-        ).apply {
-            duration = sheetContainerSheetAnim.duration
-            // 假設你的 exitAnimation 使用這個插值器
-            interpolator = sheetContainerSheetAnim.interpolator
-            addUpdateListener { animation ->
-                val value = animation.animatedValue as Int
-                background.alpha = value
-            }
-            doOnEnd {
-                hideDim()
-            }
-        }
 
         AnimatorSet().apply {
-            playTogether(sheetAnimator, dimAnimator)
+            playTogether(sheetAnimator)
             duration = sheetContainerSheetAnim.duration
             interpolator = sheetContainerSheetAnim.interpolator
             start()
@@ -394,17 +365,26 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
     private fun initDim() {
         dialog?.window?.setDimAmount(0f)
         dialog?.window?.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
-        dialog?.window?.setBackgroundDrawable(ColorDrawable(ContextCompat.getColor(requireContext(), R.color.black)))
-        dialog?.window?.decorView?.background?.alpha = if (otherViewAnimation == null) (0.75f * 255).toInt() else 0
-
+        dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
     }
 
-    protected fun hideDim() {
-        dialog?.window?.decorView?.background?.alpha = 0
-    }
-
-    protected fun showDim() {
-        dialog?.window?.decorView?.background?.alpha = (0.75f * 255).toInt()
+    protected open fun getHideAnimator(): ObjectAnimator? {
+        val sheet = sheetContainer ?: return null
+        val exit = exitAnimation()
+        return ObjectAnimator.ofFloat(
+            sheet, "translationY", 0f, sheet.height.toFloat()
+        ).apply {
+            addUpdateListener { animation ->
+                val value = animation.animatedValue as Float
+                sheet.translationY = value
+            }
+            duration = exit.duration
+            // 假設你的 exitAnimation 使用這個插值器
+            interpolator = exit.interpolator
+            doOnEnd {
+                superDismiss()
+            }
+        }
     }
 
     private fun setRvTouch() {

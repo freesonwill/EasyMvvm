@@ -7,7 +7,6 @@ import android.view.ContextThemeWrapper
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
-import androidx.core.animation.doOnEnd
 import androidx.fragment.app.FragmentActivity
 import arch.cayenne.lib.base.ui.fragment.BasePreLoadBottomSheetFragment
 import arch.cayenne.module.bet.R
@@ -43,7 +42,7 @@ class BetSheetFragment private constructor() :
                 if (withOtherSheetHide == null) {
                     f.customShow()
                 } else {
-                    f.customShowWithOtherSheetHide(withOtherSheetHide)
+                    f.customShow(withOtherSheetHide)
                 }
             }
         }
