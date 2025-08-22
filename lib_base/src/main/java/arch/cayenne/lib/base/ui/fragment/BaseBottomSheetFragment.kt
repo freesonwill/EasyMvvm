@@ -45,6 +45,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import org.koin.androidx.viewmodel.ext.android.viewModelForClass
 import java.lang.ref.WeakReference
 import java.lang.reflect.Field
+import kotlin.math.abs
 import kotlin.reflect.KClass
 
 
@@ -448,28 +449,36 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
             }
 
             override fun onHorizontalScroll(offsetX: Float) {
-                sheetContainer?.translationY = offsetX * 1.5f
+                sheetContainer?.let {
+                    val offset = (offsetX * 1.3).toInt()
+                    it.scrollTo(0, -offset)
+                }
             }
 
             override fun onActionUp() {
-                val translationY = sheetContainer?.translationY ?: 0f
-                val height = sheetContainer?.height ?: 0
-                if (translationY >= height / 2) {
-                    dialog?.onBackPressed()
-                } else {
-                    resetSheetTranslation()
+                sheetContainer?.let {
+                    val offsetY = abs(it.scrollY)
+                    if (offsetY == 0) return
+
+                    val height = it.height
+                    if (offsetY >= height / 2) {
+                        dialog?.onBackPressed()
+                    } else {
+                        resetSheetTranslation()
+                    }
                 }
+
             }
         })
     }
 
     private fun resetSheetTranslation() {
         sheetContainer?.let {
-            ValueAnimator.ofFloat(it.translationY, 0f).apply {
+            ValueAnimator.ofInt(it.scrollY, 0).apply {
                 duration = 100
                 addUpdateListener { animation ->
-                    val value = animation.animatedValue as Float
-                    it.translationY = value
+                    val value = animation.animatedValue as Int
+                    it.scrollY = value
                 }
                 start()
             }
