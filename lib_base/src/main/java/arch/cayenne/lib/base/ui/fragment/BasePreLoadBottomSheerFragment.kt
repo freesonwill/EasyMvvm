@@ -6,13 +6,11 @@ import android.os.Bundle
 import android.util.AttributeSet
 import android.view.View
 import android.view.animation.Animation
-import android.view.animation.AnimationUtils
 import androidx.annotation.CallSuper
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewbinding.ViewBinding
-import arch.cayenne.lib.base.R
 import arch.cayenne.lib.base.ui.view.UnhideableBottomSheetDialog
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -136,11 +134,12 @@ abstract class BasePreLoadBottomSheetFragment<VM : BaseViewModel, VB : ViewBindi
             }
             override fun onAnimationEnd(animation: Animation?) {
                 setCustomCollapseSetting()
+                showDim()
             }
 
             override fun onAnimationRepeat(animation: Animation?) {}
         })
-
+        playHideDimAnimation(sheetContainerSheetAnim)
         sheetContainer?.startAnimation(sheetContainerSheetAnim)
     }
 

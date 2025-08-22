@@ -137,8 +137,8 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             )
         )
         mBinding.drawerLayout.setDrawerInterpolator(
-            AnimationController.drawerEnterAnim.value.duration,
-            AnimationController.drawerEnterAnim.value.interpolator);
+            AnimationController.drawerEnterAnim!!.duration,
+            AnimationController.drawerEnterAnim!!.interpolator.toInterpolator());
         childFragmentManager.beginTransaction()
             .replace(
                 mBinding.fragmentDrawerContent.id,

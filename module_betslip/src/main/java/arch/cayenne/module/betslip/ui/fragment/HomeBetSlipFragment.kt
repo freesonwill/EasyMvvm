@@ -14,7 +14,9 @@ import arch.cayenne.lib.base.ui.adapter.PagerAdapter
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.lib.common.utils.ext.animateIndicatorToPosition
 import arch.cayenne.lib.common.utils.ext.removeAllTips
+import arch.cayenne.lib.common.utils.ext.setupViewPagerScroll
 import arch.cayenne.lib.common.utils.ext.touchBackPressed
 import arch.cayenne.lib.common.utils.helper.doSmartAnim
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
@@ -37,6 +39,7 @@ class HomeBetSlipFragment : BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsl
     override val vbClass: KClass<FragmentHomeBetslipBinding> = FragmentHomeBetslipBinding::class
     override val vmClass: KClass<HomeBetSlipViewModel> = HomeBetSlipViewModel::class
     private val betSlipFilterViewModel: BetSlipFilterViewModel by viewModel()
+    private var skipAnyAnim = true
     override fun initView(savedInstanceState: Bundle?) {
         val array = resources.getStringArray(R.array.bet_slip_menus)
         val list = listOf(
@@ -143,8 +146,12 @@ class HomeBetSlipFragment : BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsl
             mBinding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab?) {
                     mViewModel.setSportViewCollapse()
+                    if (skipAnyAnim) {
+                        // 动画更新指示器位置
+                        mBinding.customIndicator.animateIndicatorToPosition(tab?.position?:0, 0)
+                        mBinding.viewPager.setCurrentItem(tab?.position?:0, false)
+                    }
                     (tab?.customView as? TextView)?.setTypeface(null, Typeface.BOLD)
-                    mBinding.viewPager.doSmartAnim(targetPosition = tab?.position ?: 0)
                 }
 
                 override fun onTabUnselected(tab: TabLayout.Tab?) {
@@ -156,6 +163,10 @@ class HomeBetSlipFragment : BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsl
             })
         }
         mBinding.tabLayout.removeAllTips()
+        // 自定義滑動行為
+        mBinding.viewPager.setupViewPagerScroll(mBinding.tabLayout,mBinding.customIndicator,0.27f){
+            skipAnyAnim = it
+        }
     }
 
     private fun showDateFilter() {

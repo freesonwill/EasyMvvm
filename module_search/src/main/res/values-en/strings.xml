@@ -25,4 +25,5 @@
     <string name="search_result_no_data">No data available</string>
     <string name="search_result_sub_title_tournament">%1$s Season</string>
     <string name="search_result_no_more_data">No more data</string>
+    <string name="search_no_history_record">No search data</string>
 </resources>

@@ -65,7 +65,6 @@
             app:layout_constraintTop_toBottomOf="@id/tvCurrentMonth"
             app:min_year="2024"
             app:month_view="arch.cayenne.module.home.ui.view.HomeCalendarMonthView"
-            app:month_view_scrollable="true"
             app:other_month_text_color="#606060"
             app:scheme_text_color="#ff0000"
             app:scheme_theme_color="@android:color/transparent"
