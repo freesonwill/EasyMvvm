@@ -452,6 +452,7 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
                 sheetContainer?.let {
                     val offset = (offsetX * 1.3).toInt()
                     it.scrollTo(0, -offset)
+                    setDimByScroll(offset)
                 }
             }
 
@@ -479,11 +480,18 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
                 addUpdateListener { animation ->
                     val value = animation.animatedValue as Int
                     it.scrollY = value
+                    setDimByScroll(abs(value))
                 }
                 start()
             }
         }
+    }
 
+    private fun setDimByScroll(scrollY: Int) {
+        val h = sheetContainer?.height ?: return
+        val dimAlpha = DimController.TARGET_DIM
+        val targetDim = dimAlpha - dimAlpha * (scrollY.toFloat() / h.toFloat())
+        dimController.setDimAlpha(targetDim)
     }
 }
 
@@ -566,6 +574,7 @@ open class ScrollBottomSheetBehavior<V : View>(context: Context, attrs: Attribut
 class DimController private constructor() {
 
     companion object {
+        val TARGET_DIM = 0.75f
         val instance: DimController by lazy {
             DimController()
         }
@@ -598,12 +607,16 @@ class DimController private constructor() {
     }
 
     fun showDim() {
-        dimView?.alpha = 0.75f
+        dimView?.alpha = TARGET_DIM
+    }
+
+    fun setDimAlpha(alpha: Float) {
+        dimView?.alpha = alpha.coerceIn(0f, 1f)
     }
 
     fun getHideAnimator(): ObjectAnimator? {
-        dimView ?: return null
-        return ObjectAnimator.ofFloat(dimView!!, "alpha", 0.75f, 0f).apply {
+        val v = dimView ?: return null
+        return ObjectAnimator.ofFloat(v, "alpha", v.alpha, 0f).apply {
             addUpdateListener {
                 val value = it.animatedValue as Float
                 dimView?.alpha = value
