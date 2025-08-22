@@ -390,7 +390,8 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
                 val statusBarHeight =
                     ViewCompat.getRootWindowInsets(requireView())
                         ?.getInsets(WindowInsetsCompat.Type.statusBars())?.top ?: 0
-                val marginTopHeight = tlDateList.bottom + statusBarHeight
+
+                val marginTopHeight = mBinding.clSecondNavbar.height + tlLeagueList.height + tlDateList.height
                 setMarginTop(marginTopHeight)
                 setMaskView(mBinding.viewCalendarMask)
                 // 取得 maskView 的 LayoutParams
@@ -554,16 +555,18 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
     @SuppressLint("ClickableViewAccessibility")
     private fun setTopMaskListener() {
         with (mBinding) {
-            when (view) {
-                //TODO 補上clFirstNavbar點擊的動作
-                clSecondNavbar->{
-                    mViewModel.setCalendarState(HomeCalendarFragment.States.CALENDAR_CLOSE_NOTHING)
+            clSubMain.setOnChildClickedInterceptedListener { view ->
+                when (view) {
+                    clSecondNavbar, layoutContainer.viewContainerRoot -> {
+                        mViewModel.setCalendarState(HomeCalendarFragment.States.CALENDAR_CLOSE_NOTHING)
+                    }
+                    else-> Unit
                 }
-                else-> Unit
             }
-            layoutContainer.viewContainerRoot.setOnChildClickedInterceptedListener { view ->
-                mViewModel.setCalendarState(HomeCalendarFragment.States.CALENDAR_CLOSE_NOTHING)
-            }
+
+//            layoutContainer.viewContainerRoot.setOnChildClickedInterceptedListener { view ->
+//                mViewModel.setCalendarState(HomeCalendarFragment.States.CALENDAR_CLOSE_NOTHING)
+//            }
         }
     }
 

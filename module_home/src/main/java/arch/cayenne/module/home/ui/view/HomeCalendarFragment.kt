@@ -14,7 +14,6 @@ import androidx.core.animation.doOnStart
 import androidx.core.view.doOnLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import arch.cayenne.lib.common.R as RC
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.extractDate
 import arch.cayenne.lib.common.utils.ext.toChineseMonth
@@ -25,6 +24,7 @@ import arch.cayenne.module.home.utils.DateUtils
 import com.haibin.calendarview.Calendar
 import com.haibin.calendarview.CalendarView
 import galaxy.common.proto.Common
+import arch.cayenne.lib.common.R as RC
 
 class HomeCalendarFragment private constructor() : Fragment() {
     enum class AnimState {
@@ -219,7 +219,7 @@ class HomeCalendarFragment private constructor() : Fragment() {
                     when(currentAnimState) {
                         AnimState.EXPANDING,
                         AnimState.EXPAND -> collapseView()
-                        else -> expandView()
+                        else -> Unit
                     }
                 }
             }
