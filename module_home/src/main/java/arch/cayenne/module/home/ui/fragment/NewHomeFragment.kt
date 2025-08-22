@@ -11,6 +11,7 @@ import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.animation.AnimationController
+import arch.cayenne.lib.base.ui.animation.AnimationController.AnimType
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
@@ -140,8 +141,8 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             )
         )
         mBinding.drawerLayout.setDrawerInterpolator(
-            AnimationController.drawerEnterAnim!!.duration,
-            AnimationController.drawerEnterAnim!!.interpolator.toInterpolator());
+            AnimationController[AnimType.drawerEnter]!!.duration,
+            AnimationController[AnimType.drawerEnter]!!.interpolator.toInterpolator())
         childFragmentManager.beginTransaction()
             .replace(
                 mBinding.fragmentDrawerContent.id,
