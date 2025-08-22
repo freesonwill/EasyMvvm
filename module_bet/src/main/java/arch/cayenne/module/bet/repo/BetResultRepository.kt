@@ -74,6 +74,8 @@ class BetResultRepository(
         betDao.insertDetail(newDetails)
 
         register(newSelections)
+        betDao.updateBetStatus(lastBet.betId, BetStatusEnum.DONE)
+
         newBet.betType
     }
 

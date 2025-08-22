@@ -171,4 +171,9 @@ class BetResultFragment private constructor(): BaseBottomSheetFragment<BetResult
             mBinding.rvBet.layoutParams = layoutParams
         }
     }
+
+    override fun onStop() {
+        super.onStop()
+        mViewModel.sendDone()
+    }
 }

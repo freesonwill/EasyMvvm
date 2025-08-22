@@ -192,7 +192,6 @@ abstract class BasePreLoadBottomSheetFragment<VM : BaseViewModel, VB : ViewBindi
 
     override fun getHideAnimator(): ObjectAnimator? {
         val sheet = sheetContainer ?: return null
-        val exit = exitAnimation()
         return ObjectAnimator.ofFloat(
             sheet, "translationY", 0f, sheet.height.toFloat()
         ).apply {
@@ -200,9 +199,6 @@ abstract class BasePreLoadBottomSheetFragment<VM : BaseViewModel, VB : ViewBindi
                 val value = animation.animatedValue as Float
                 sheet.translationY = value
             }
-            duration = exit.duration
-            // 假設你的 exitAnimation 使用這個插值器
-            interpolator = exit.interpolator
             doOnEnd {
                 setCustomCollapseSetting()
             }

@@ -8,6 +8,7 @@ import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
+import android.graphics.PixelFormat
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.AttributeSet
@@ -83,6 +84,7 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
     private val statusBar: IStatusBar by lazy { StatusBarDelegate(this) }
 
     protected var otherViewAnimation: WeakReference<ObjectAnimator>? = null
+    private val dimController by lazy { DimController.instance }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -134,6 +136,7 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
     protected open fun exitAnimation(): Animation = AnimationController.popupExitAnim.toAnimation()
 
     protected fun playEnterAnimations() {
+        dimController.showDim()
         sheetContainer?.let { scv ->
             // bottom sheet 上滑動畫
             val sheetAnim = enterAnimation()
@@ -200,6 +203,8 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
         val sheetContainerSheetAnim = exitAnimation()
 
         val sheetAnimator = getHideAnimator()?.apply {
+            duration = sheetContainerSheetAnim.duration
+            interpolator = sheetContainerSheetAnim.interpolator
             doOnStart {
                 doStart?.invoke()
             }
@@ -208,10 +213,13 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
             }
         }
 
-        val alpha = (0.75f * 255).toInt()
+        val dimAnimator = dimController.getHideAnimator()?.apply {
+            duration = sheetContainerSheetAnim.duration
+            interpolator = sheetContainerSheetAnim.interpolator
+        }
 
         AnimatorSet().apply {
-            playTogether(sheetAnimator)
+            playTogether(sheetAnimator, dimAnimator)
             duration = sheetContainerSheetAnim.duration
             interpolator = sheetContainerSheetAnim.interpolator
             start()
@@ -366,11 +374,11 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
         dialog?.window?.setDimAmount(0f)
         dialog?.window?.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
         dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dimController.init(requireContext())
     }
 
     protected open fun getHideAnimator(): ObjectAnimator? {
         val sheet = sheetContainer ?: return null
-        val exit = exitAnimation()
         return ObjectAnimator.ofFloat(
             sheet, "translationY", 0f, sheet.height.toFloat()
         ).apply {
@@ -378,9 +386,6 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
                 val value = animation.animatedValue as Float
                 sheet.translationY = value
             }
-            duration = exit.duration
-            // 假設你的 exitAnimation 使用這個插值器
-            interpolator = exit.interpolator
             doOnEnd {
                 superDismiss()
             }
@@ -545,6 +550,56 @@ open class ScrollBottomSheetBehavior<V : View>(context: Context, attrs: Attribut
         // 父類會在這裡重設 nestedScrollingChildRef → 再覆寫一次我們指定的 child
         mNestedScrollingChildRef?.get()?.let { updateNestedScrollingChildRef(it) }
         return accepted
+    }
+
+}
+
+class DimController private constructor() {
+
+    companion object {
+        val instance: DimController by lazy {
+            DimController()
+        }
+    }
+
+    private var dimView: View? = null
+
+    fun init(context: Context) {
+        if (dimView != null) return
+        val v = View(context).apply {
+            setBackgroundColor(Color.BLACK)
+            alpha = 0f
+        }
+
+        val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+
+        val params = WindowManager.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.MATCH_PARENT
+        )
+        params.flags = (WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
+                or WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
+                or WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+                or WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+        params.type = WindowManager.LayoutParams.TYPE_APPLICATION_ATTACHED_DIALOG
+
+        params.format = PixelFormat.TRANSLUCENT
+        windowManager.addView(v, params)
+        dimView = v
+    }
+
+    fun showDim() {
+        dimView?.alpha = 0.75f
+    }
+
+    fun getHideAnimator(): ObjectAnimator? {
+        dimView ?: return null
+        return ObjectAnimator.ofFloat(dimView!!, "alpha", 0.75f, 0f).apply {
+            addUpdateListener {
+                val value = it.animatedValue as Float
+                dimView?.alpha = value
+            }
+        }
     }
 
 }

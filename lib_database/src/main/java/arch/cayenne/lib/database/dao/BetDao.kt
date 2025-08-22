@@ -125,9 +125,9 @@ abstract class BetDao : BaseDao<BetBean>() {
         type: BetTypeEnum = BetTypeEnum.COMBO
     ): Flow<Int>
 
-    @Query("SELECT COUNT(*) FROM BetSelectionBean WHERE betId = ( SELECT betId FROM BetBean WHERE status = :status ORDER BY betId DESC LIMIT 1)")
+    @Query("SELECT COUNT(*) FROM BetSelectionBean WHERE betId = ( SELECT betId FROM BetBean WHERE status != :status ORDER BY betId DESC LIMIT 1)")
     abstract fun observeCurrentCount(
-        status: BetStatusEnum = BetStatusEnum.PENDING
+        status: BetStatusEnum = BetStatusEnum.DONE
     ): Flow<Int>
 
     @Query("DELETE FROM BetBean WHERE betId = :betId")
