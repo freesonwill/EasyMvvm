@@ -188,7 +188,6 @@ class SubHomeViewModel: BaseViewModel() {
     }
 
     fun getCurrentSportStatistical() {
-        //TODO 當今日、早盤點擊時，需要觸發
         setState(HomeState.Sport.Loading)
         callApi({
             repository.getSportStatistical()

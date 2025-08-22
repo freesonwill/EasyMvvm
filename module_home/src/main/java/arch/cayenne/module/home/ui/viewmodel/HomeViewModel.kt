@@ -99,7 +99,6 @@ class HomeViewModel : BaseViewModel() {
 
     @Transaction
     private suspend fun resetAll() {
-        //TODO 需要測試，感覺沒有作用到
         repository.clearAllCache()
         withContext(Dispatchers.Main) {
             setCurrentPlayType(PlayType.TODAY.id)
