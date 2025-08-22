@@ -245,6 +245,7 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
         super.onViewCreated(view, savedInstanceState)
         uiBind.onViewCreated(view, savedInstanceState)
         setBehavior(view)
+        setBehaviorOnScroll(view)
     }
 
     @CallSuper
@@ -285,6 +286,34 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
         val scrollBehavior = ScrollBottomSheetBehavior<View>(requireContext(), null)
         params.behavior = scrollBehavior
         bottomSheet.layoutParams = params
+    }
+
+    private fun setBehaviorOnScroll(view: View) {
+        val bottomSheet = (view.parent as? View) ?: return
+        val params = bottomSheet.layoutParams as? CoordinatorLayout.LayoutParams ?: return
+        val scrollBehavior = params.behavior as? ScrollBottomSheetBehavior ?: return
+        scrollBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+            var isDragging = false
+            var offsetY = 0f
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                if (newState == BottomSheetBehavior.STATE_DRAGGING) {
+                    isDragging = true
+                    offsetY = bottomSheet.y
+                } else if (newState == BottomSheetBehavior.STATE_COLLAPSED || newState == BottomSheetBehavior.STATE_HIDDEN) {
+                    if (isDragging) {
+                        playExitAnimations()
+                    }
+                    isDragging = false
+                }
+            }
+
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                if (isDragging) {
+                    val y = bottomSheet.y - offsetY
+                    setDimByScroll(abs(y.toInt()))
+                }
+            }
+        })
     }
 
     @CallSuper

@@ -61,12 +61,6 @@ abstract class BasePreLoadBottomSheetFragment<VM : BaseViewModel, VB : ViewBindi
         return dialog
     }
 
-    @CallSuper
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        setBehavior(view)
-    }
-
     override fun setBackGroundOnclick() {
         backgroundView?.setOnClickListener {
             if (isCancelable) {
@@ -92,7 +86,7 @@ abstract class BasePreLoadBottomSheetFragment<VM : BaseViewModel, VB : ViewBindi
         val unhideableBehavior = UnhideableBottomSheetBehavior<View>(requireContext(), null)
         unhideableBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {
-                if ((newState == BottomSheetBehavior.STATE_COLLAPSED || newState == BottomSheetBehavior.STATE_HIDDEN)) {
+                if (newState == BottomSheetBehavior.STATE_COLLAPSED || newState == BottomSheetBehavior.STATE_HIDDEN) {
                     if (this@BasePreLoadBottomSheetFragment.isResumed) {
                         isDismissing = true
                         customHide()
