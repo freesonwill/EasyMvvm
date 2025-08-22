@@ -136,13 +136,13 @@
     <string name="event_jiao">角球</string>
     <string name="event_yellow">黄牌</string>
     <string name="event_red">红牌</string>
-    <string name="event_jg">进攻</string>
+    <string name="event_jg">进攻</string>Å
     <string name="event_lhbh">两黄变红</string>
     <string name="event_yue">越位</string>
     <string name="event_ryq">任意球</string>
     <string name="event_qmq">球门球</string>
     <string name="event_up">换上</string>
-    <string name="event_down">换下</string>
+    <string name="event_down">换下</string>Å
     <string name="event_hr">换人</string>
 
     <string name="event_sm">射门</string>
@@ -155,4 +155,5 @@
     <string name="event_cqs">传球数</string>
     <string name="event_cqcgl">传球成功率</string>
     <string name="event_pj">扑救</string>
+    <string name="lineup_user_name_empty">暂无数据</string>
 </resources>
