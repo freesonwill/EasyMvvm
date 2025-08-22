@@ -299,10 +299,7 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
                 if (newState == BottomSheetBehavior.STATE_DRAGGING) {
                     isDragging = true
                     offsetY = bottomSheet.y
-                } else if (newState == BottomSheetBehavior.STATE_COLLAPSED || newState == BottomSheetBehavior.STATE_HIDDEN) {
-                    if (isDragging) {
-                        playExitAnimations()
-                    }
+                } else if (newState == BottomSheetBehavior.STATE_HIDDEN || newState == BottomSheetBehavior.STATE_EXPANDED || newState == BottomSheetBehavior.STATE_COLLAPSED) {
                     isDragging = false
                 }
             }
@@ -603,7 +600,7 @@ open class ScrollBottomSheetBehavior<V : View>(context: Context, attrs: Attribut
 class DimController private constructor() {
 
     companion object {
-        val TARGET_DIM = 0.75f
+        const val TARGET_DIM = 0.75f
         val instance: DimController by lazy {
             DimController()
         }
