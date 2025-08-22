@@ -7,7 +7,6 @@ import android.view.View
 import android.widget.TextView
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.viewpager2.widget.ViewPager2
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
@@ -73,10 +72,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 override fun onTabSelected(tab: TabLayout.Tab?) {
                     tab?.position?.apply {
                         mViewModel.setCurrentPlayType(PlayType.entries[this].id)
-                        if (PlayType.entries[this].id != PlayType.CHAMPION.id) {
-                            vpSub.setCurrentItem(this, false)
-                        }
-
+                        vpSub.setCurrentItem(this, false)
                         (childFragmentManager.findFragmentByTag("f$this") as? SubHomeFragment)?.onSelected()
                     }
                     tab?.let {
@@ -98,16 +94,10 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             vpSub.adapter = SubHomePagerAdapter(
                 fragmentManager = childFragmentManager,
                 lifecycle = viewLifecycleOwner.lifecycle,
-                playTypes = listOf(PlayType.TODAY, PlayType.EARLY)
+                playTypes = listOf(PlayType.TODAY, PlayType.EARLY, PlayType.CHAMPION)
             )
             vpSub.offscreenPageLimit = 1
             vpSub.isUserInputEnabled = false
-            vpSub.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-                override fun onPageSelected(position: Int) {
-                    super.onPageSelected(position)
-
-                }
-            })
         }
     }
 

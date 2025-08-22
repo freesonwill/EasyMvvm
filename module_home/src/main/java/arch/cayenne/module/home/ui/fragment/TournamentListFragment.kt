@@ -63,6 +63,11 @@ class TournamentListFragment :
         }
     }
 
+    fun changeSportId(sportId: Int) {
+        mViewModel.setSportId(sportId)
+        mViewModel.getTournaments()
+    }
+
     override fun initView(savedInstanceState: Bundle?) {
         with(mBinding) {
             ceSearch.hint = getString(R.string.tournament_section_title)

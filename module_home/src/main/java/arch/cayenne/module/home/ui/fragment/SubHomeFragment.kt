@@ -78,8 +78,12 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
 
 
     override fun initView(savedInstanceState: Bundle?) {
-        initTournamentLayout()
         initSportLayout()
+        if (mViewModel.currentPlayTypeId == PlayType.CHAMPION.id) {
+            initChampionTournamentLayout()
+        } else {
+            initTournamentLayout()
+        }
         if (mViewModel.currentPlayTypeId == PlayType.EARLY.id) {
             mBinding.layoutContainer.llDateFilterContainer.visibility = View.VISIBLE
             mBinding.layoutContainer.llOtherDate.visibility = View.VISIBLE
@@ -118,6 +122,11 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
 
     @SuppressLint("NotifyDataSetChanged")
     override suspend fun createObserver() {
+        mViewModel.currentSportIdChange.observeEvent(viewLifecycleOwner, this) {
+            if (mViewModel.currentPlayTypeId != PlayType.CHAMPION.id) return@observeEvent
+            (childFragmentManager.findFragmentByTag(PlayType.CHAMPION.name) as? TournamentListFragment)?.changeSportId(it)
+        }
+
         mViewModel.sportsStatistical.observeEvent(viewLifecycleOwner, this) {
             sportsListAdapter.submitList(it)
         }
@@ -201,7 +210,7 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
         }
     }
 
-    //init 三級導航欄位與日期
+    //init 三級導航欄位與日期，只有今日和早盤有
     @SuppressLint("DefaultLocale")
     private fun initTournamentLayout() {
         // 取得未來 31 天 (MMDD, 星期, timeStamp)
@@ -576,6 +585,18 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
             root.setBackgroundResource(R.drawable.selector_league_tab_bg)
         }
         return tabBinding.root
+    }
+
+    private fun initChampionTournamentLayout() {
+        val tournamentListFragment = TournamentListFragment.newInstance(
+            playTypeId = PlayType.CHAMPION.id,
+            sportId = mViewModel.currentSportId,
+            type = TournamentListType.CHAMPION
+        )
+        childFragmentManager.beginTransaction()
+            .replace(R.id.fl_champion_container, tournamentListFragment, PlayType.CHAMPION.name)
+            .commit()
+
     }
 
     companion object {

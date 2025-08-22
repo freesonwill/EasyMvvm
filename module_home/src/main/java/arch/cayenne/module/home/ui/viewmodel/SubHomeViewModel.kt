@@ -46,6 +46,9 @@ class SubHomeViewModel: BaseViewModel() {
     val currentSportId: Int
         get() = _currentSportId.value
 
+    private val _currentSportIdChange =  MutableLiveData<Event<Int>>()
+    val currentSportIdChange: LiveData<Event<Int>> = _currentSportIdChange
+
     private val _selectedDate = MutableLiveData<Event<Long>>() // Pair<leagueId, date>
     val selectedDate: MutableLiveData<Event<Long>> = _selectedDate
 
@@ -161,6 +164,14 @@ class SubHomeViewModel: BaseViewModel() {
         }
 
         viewModelScope.launch(Dispatchers.IO) {
+            _currentSportId.collect {
+                launch(Dispatchers.Main) {
+                    _currentSportIdChange.value = Event(it)
+                }
+            }
+        }
+
+        viewModelScope.launch(Dispatchers.IO) {
             repository.observeLoginChange()
                 .filter {
                     it && (apiStateListener.value == DataState.NetworkUnavailable
@@ -209,15 +220,11 @@ class SubHomeViewModel: BaseViewModel() {
             }
             _currentSportId.value = sportId
             repository.updateSelectedSportId(currentPlayTypeId, currentSportId)
-//            if (currentPlayTypeId != PlayType.CHAMPION.id) {
+            if (currentPlayTypeId != PlayType.CHAMPION.id) {
                 "On setCurrentSport -> Clear Tournaments LiveData & Update Tournaments from API".logi(this::class.java.simpleName)
                 setCurrentSelectedDate()   //目前日期跟著球類走，ex:早盤日期目前是7.11，不管點擊哪一個聯賽都是7.11資料，所以設定完當前選擇的球類後先設定日期
                 getCurrentTournament()
-//            } else {
-//                launch(Dispatchers.Main) {
-//                    _notifyToChampion.value = Event(Unit)
-//                }
-//            }
+            }
         }
     }
 
@@ -328,9 +335,7 @@ class SubHomeViewModel: BaseViewModel() {
                 tournaments.value = Event(currentList.map { it.apply { isSelected = tournament.id == id } })
             }
         } else if (tournament is ChampionTournamentDataModel) {
-            //TODO 到冠軍頁去
-//            _navigateToChampion.value = Event(tournament)
-
+            _navigateToChampion.value = Event(tournament)
         }
     }
 
