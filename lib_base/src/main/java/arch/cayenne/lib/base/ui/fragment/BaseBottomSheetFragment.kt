@@ -1,12 +1,12 @@
 package arch.cayenne.lib.base.ui.fragment
 
+import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.AttributeSet
@@ -21,6 +21,9 @@ import android.widget.FrameLayout
 import androidx.annotation.CallSuper
 import androidx.appcompat.app.AppCompatDialog
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.animation.doOnEnd
+import androidx.core.animation.doOnStart
+import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
@@ -78,7 +81,8 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
     //#endregion VB,VM
     //设置颜色，默认根据主题颜色设定
     private val statusBar: IStatusBar by lazy { StatusBarDelegate(this) }
-    private var showAnimEndListener: (() -> Unit)? = null
+
+    protected var otherViewAnimation: WeakReference<ObjectAnimator>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -108,7 +112,11 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
         }
 
         dialog.setOnShowListener {
-            playEnterAnimations()
+            if (otherViewAnimation == null) {
+                playEnterAnimations()
+            } else {
+                playEnterAnimationWithOtherSheetDialogEnd()
+            }
         }
 
         return dialog
@@ -118,10 +126,6 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
         StatusBarConfig.statusBarType = StatusBarMode.DEFAULT
         statusBar.setStatusBar(StatusBarConfig, mBinding.root)
         statusBar.configStatusBar().statusBarColor = R.color.black_75
-    }
-
-    fun setShowAnimEndListener(listener: () -> Unit) {
-        showAnimEndListener = listener
     }
 
 
@@ -143,7 +147,6 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
 
                 override fun onAnimationEnd(animation: Animation?) {
                     setRvTouch()
-                    showAnimEndListener?.invoke()
                 }
 
                 override fun onAnimationRepeat(animation: Animation?) {}
@@ -152,43 +155,95 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
         }
     }
 
-    protected open fun playExitAnimations() {
-        val sheetContainerSheetAnim = exitAnimation()
-        sheetContainerSheetAnim.setAnimationListener(object : Animation.AnimationListener {
-            override fun onAnimationStart(animation: Animation?) {
-                backgroundView?.visibility = View.INVISIBLE
+    protected fun playEnterAnimationWithOtherSheetDialogEnd() {
+        val sheet = sheetContainer ?: return
+        val otherSheetAnimator = otherViewAnimation?.get() ?: return
+        // bottom sheet 上滑動畫
+        val sheetContainerSheetAnim = enterAnimation()
+        val sheetAnimator = ObjectAnimator.ofFloat(
+            sheet, "translationY", sheet.height.toFloat(), 0f
+        ).apply {
+            addUpdateListener { animation ->
+                val value = animation.animatedValue as Float
+                sheet.translationY = value
             }
-            override fun onAnimationEnd(animation: Animation?) {
-                hideDim()
-                try {
-                    superDismiss()
-                } catch (e: Exception) {
-                    dismissAllowingStateLoss()
-                }
+            duration = sheetContainerSheetAnim.duration
+            // 假設你的 exitAnimation 使用這個插值器
+            interpolator = sheetContainerSheetAnim.interpolator
+            doOnStart {
+                backgroundView?.visibility = View.VISIBLE
+                sheet.visibility = View.VISIBLE
+                mBinding.root.visibility = View.VISIBLE
             }
+            doOnEnd {
+                showDim()
+                setRvTouch()
+                otherViewAnimation = null
+            }
+        }
 
-            override fun onAnimationRepeat(animation: Animation?) {}
-        })
-        sheetContainer?.startAnimation(sheetContainerSheetAnim)
-        playHideDimAnimation(sheetContainerSheetAnim)
+        AnimatorSet().apply {
+            playTogether(sheetAnimator, otherSheetAnimator)
+            start()
+        }
     }
 
-
-    protected fun playHideDimAnimation(endAnimation: Animation) {
-        dialog?.window?.decorView?.background?.let { d ->
-            val alpha = (0.75f * 255).toInt()
-            ObjectAnimator.ofInt(
-                d, "alpha",
-                alpha, 0
-            ).apply {
-                this.duration = 120L
-                this.interpolator = endAnimation.interpolator
-                addUpdateListener { animation ->
-                    val value = animation.animatedValue as Int
-                    d.alpha = value
-                }
-                start()
+    protected open fun playExitAnimations(
+        doStart: (() -> Unit)? = {
+            backgroundView?.visibility = View.INVISIBLE
+        },
+        doEnd: (() -> Unit)? = {
+            try {
+                superDismiss()
+            } catch (e: Exception) {
+                dismissAllowingStateLoss()
             }
+        }
+    ) {
+        val view = sheetContainer ?: return
+        val background = dialog?.window?.decorView?.background ?: return
+        val sheetContainerSheetAnim = exitAnimation()
+
+        val sheetAnimator = ObjectAnimator.ofFloat(
+            view, "translationY", 0f, view.height.toFloat()
+        ).apply {
+            addUpdateListener { animation ->
+                val value = animation.animatedValue as Float
+                view.translationY = value
+            }
+            duration = sheetContainerSheetAnim.duration
+            // 假設你的 exitAnimation 使用這個插值器
+            interpolator = sheetContainerSheetAnim.interpolator
+            doOnStart {
+                doStart?.invoke()
+            }
+            doOnEnd {
+                doEnd?.invoke()
+            }
+        }
+
+        val alpha = (0.75f * 255).toInt()
+        val dimAnimator = ObjectAnimator.ofInt(
+            background, "alpha",
+            alpha, 0
+        ).apply {
+            duration = sheetContainerSheetAnim.duration
+            // 假設你的 exitAnimation 使用這個插值器
+            interpolator = sheetContainerSheetAnim.interpolator
+            addUpdateListener { animation ->
+                val value = animation.animatedValue as Int
+                background.alpha = value
+            }
+            doOnEnd {
+                hideDim()
+            }
+        }
+
+        AnimatorSet().apply {
+            playTogether(sheetAnimator, dimAnimator)
+            duration = sheetContainerSheetAnim.duration
+            interpolator = sheetContainerSheetAnim.interpolator
+            start()
         }
     }
 
@@ -218,7 +273,7 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
         uiBind.onStart()
         setSheetContainer()
         setBackGroundOnclick()
-        hideDim()
+        initDim()
         setStatusBar()
         setGesture()
     }
@@ -309,6 +364,11 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
         }
     }
 
+    fun showWithOtherSheetDialogHide(manager: FragmentManager, animator: ObjectAnimator) {
+        otherViewAnimation = WeakReference(animator)
+        show(manager)
+    }
+
     override fun show(manager: FragmentManager, tag: String?) {
         val f = manager.findFragmentByTag(tag)
         if (f == null || !f.isAdded) {
@@ -331,17 +391,19 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
         super.dismiss()
     }
 
-    protected fun hideDim() {
+    private fun initDim() {
         dialog?.window?.setDimAmount(0f)
         dialog?.window?.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
-        dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        dialog?.window?.decorView?.background?.alpha = (0.75f * 255).toInt()
+        dialog?.window?.setBackgroundDrawable(ColorDrawable(ContextCompat.getColor(requireContext(), R.color.black)))
+        dialog?.window?.decorView?.background?.alpha = if (otherViewAnimation == null) (0.75f * 255).toInt() else 0
+
+    }
+
+    protected fun hideDim() {
+        dialog?.window?.decorView?.background?.alpha = 0
     }
 
     protected fun showDim() {
-        dialog?.window?.setDimAmount(0.75f)
-        dialog?.window?.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
-        dialog?.window?.setBackgroundDrawableResource(R.color.black)
         dialog?.window?.decorView?.background?.alpha = (0.75f * 255).toInt()
     }
 
