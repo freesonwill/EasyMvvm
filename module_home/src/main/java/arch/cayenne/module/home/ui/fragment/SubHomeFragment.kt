@@ -557,16 +557,22 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
         with (mBinding) {
             clSubMain.setOnChildClickedInterceptedListener { view ->
                 when (view) {
-                    clSecondNavbar, layoutContainer.viewContainerRoot -> {
+                    clSecondNavbar -> {
                         mViewModel.setCalendarState(HomeCalendarFragment.States.CALENDAR_CLOSE_NOTHING)
                     }
                     else-> Unit
                 }
             }
-
-//            layoutContainer.viewContainerRoot.setOnChildClickedInterceptedListener { view ->
-//                mViewModel.setCalendarState(HomeCalendarFragment.States.CALENDAR_CLOSE_NOTHING)
-//            }
+            with(layoutContainer) {
+                viewContainerRoot.setOnChildClickedInterceptedListener { view ->
+                    when(view) {
+                        tlContainer, llDateFilterContainer,llOtherDate -> {
+                            mViewModel.setCalendarState(HomeCalendarFragment.States.CALENDAR_CLOSE_NOTHING)
+                        }
+                        else -> Unit
+                    }
+                }
+            }
         }
     }
 
