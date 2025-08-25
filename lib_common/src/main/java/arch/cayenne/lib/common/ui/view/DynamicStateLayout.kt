@@ -43,7 +43,7 @@ class DynamicStateLayout @JvmOverloads constructor(
                 binding.root.visibility = VISIBLE
                 //图片
                 binding.ivIcon.visibility = VISIBLE
-                binding.ivIcon.background = SkinnableResourceManager.getDrawable(context, R.drawable.icon_empty)
+                binding.ivIcon.setBackgroundResource(R.drawable.icon_empty)
                 //说明文字
                 binding.tvMessage.visibility = VISIBLE
                 binding.tvMessage.text = msg
@@ -58,7 +58,7 @@ class DynamicStateLayout @JvmOverloads constructor(
                 binding.root.visibility = VISIBLE
                 //图片
                 binding.ivIcon.visibility = VISIBLE
-                binding.ivIcon.background = SkinnableResourceManager.getDrawable(context, R.drawable.icon_error_net)
+                binding.ivIcon.setBackgroundResource( R.drawable.icon_error_net)
                 //说明文字
                 binding.tvMessage.visibility = VISIBLE
                 binding.tvMessage.text = msg
@@ -78,7 +78,7 @@ class DynamicStateLayout @JvmOverloads constructor(
                 binding.root.visibility = VISIBLE
                 //图片
                 binding.ivIcon.visibility = VISIBLE
-                binding.ivIcon.background = SkinnableResourceManager.getDrawable(context, R.drawable.icon_close)
+                binding.ivIcon.setBackgroundResource( R.drawable.icon_close)
                 //说明文字
                 binding.tvMessage.visibility = VISIBLE
                 binding.tvMessage.text = msg
