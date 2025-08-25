@@ -11,6 +11,7 @@ import arch.cayenne.lib.base.ui.BaseActivity
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.common.CommonModuleInitializer
+import arch.cayenne.lib.common.data.constants.PreloadEnum
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.helper.TimesExitOnBackPressedHelper
 import arch.cayenne.lib.common.utils.helper.showToast
@@ -19,7 +20,7 @@ import arch.cayenne.lib.http.HttpModuleInitializer
 import arch.cayenne.lib.http._interface.IApi
 import arch.cayenne.lib.websocket.SocketModuleInitializer
 import arch.cayenne.module.home.HomeModuleInitializer
-import com.walisport.app.data.PreLoadDataModel
+import com.walisport.app.data.PreloadDataModel
 import com.walisport.app.data.repo.MainRepository
 import com.walisport.app.data.repo.ModuleRepository
 import com.walisport.app.data.repo.SplashRepository
@@ -27,6 +28,7 @@ import com.walisport.app.ui.viewmodel.MainViewModel
 import com.walisport.app.ui.viewmodel.SplashViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
 import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.core.context.GlobalContext
 import org.koin.core.context.loadKoinModules
@@ -107,10 +109,9 @@ class ModuleInitializer : DefaultInitializer<String> {
         viewModelOf(::SplashViewModel)
     }
     private val repoModules = module {
-        factory {
-            CoroutineScope(Dispatchers.IO)
-        }
-        factory { ModuleRepository(get(), get(), get(named("preLoadHome")), get()) }
+        factory { CoroutineScope(Dispatchers.IO) }
+        single { MutableStateFlow(PreloadEnum.INIT) }
+        factory { ModuleRepository(get(), get(), get(named("preLoadHome")), get(), get()) }
         factory { (scope: CoroutineScope) -> MainRepository(scope, get(), get(), get(), get(), get()) }
         factory { (scope: CoroutineScope) -> SplashRepository(scope, get(), get()) }
     }
@@ -119,7 +120,7 @@ class ModuleInitializer : DefaultInitializer<String> {
 
 interface IPreLoadHomeApi : IApi {
     @POST("sport_server/game/firstLoad")
-    suspend fun postPreLoad(@Body params: Map<String, String>): Response<PreLoadDataModel>
+    suspend fun postPreLoad(@Body params: Map<String, String>): Response<PreloadDataModel>
 }
 
 
