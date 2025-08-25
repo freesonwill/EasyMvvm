@@ -46,7 +46,7 @@ class ModuleRepository(
                     api.postPreLoad(
                         mapOf(
                             "lang" to LanguageType.LANGUAGE_SIMPLE.value,
-                            "oddType" to "0"
+                            "provider" to "3"  //default provider => FB
                         )
                     )
                 },
