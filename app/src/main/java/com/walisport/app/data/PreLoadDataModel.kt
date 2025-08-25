@@ -11,7 +11,7 @@ import arch.cayenne.lib.database.entity.MatchMarketCrossRef
 import arch.cayenne.lib.database.entity.SelectionBean
 import arch.cayenne.module.home.data.model.MatchFullData
 
-data class PreLoadDataModel(
+data class PreloadDataModel(
     val statistical: List<PlayTypeItem>,
     val tournament: List<Tournament>,
     val match: List<Match>,

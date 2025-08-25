@@ -4,6 +4,7 @@ import androidx.room.Transaction
 import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.base.data.repository.BaseRepository
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
+import arch.cayenne.lib.common.data.constants.PreloadEnum
 import arch.cayenne.lib.common.data.constants.UserDataKey
 import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.database.GameDatabase
@@ -21,13 +22,15 @@ import arch.cayenne.module.home.data.constants.playTypeToShowType
 import galaxy.client.proto.Client
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.withContext
 
 class HomeRepository(
     override val scope: CoroutineScope,
     private val socketManager: WebSocketManager,
     private val userDataManager: UserDataManager,
-    private val database: GameDatabase
+    private val database: GameDatabase,
+    private val preloadResultChange: MutableStateFlow<PreloadEnum>
 ) : BaseRepository() {
     private val sportDao = database.sportDao()
     private val tournamentDao = database.tournamentDao()
@@ -41,6 +44,8 @@ class HomeRepository(
     fun observeLanguageChange() = userDataManager.observe<String>(UserDataKey.KEY_LANGUAGE)
 
     suspend fun observeLoginChange() = infoDao.observeIsLogin()
+
+    fun isPreloadSuccess() = preloadResultChange.value == PreloadEnum.SUCCESS
 
     suspend fun getTournament(playTypeId: Int, sportId: Int, tournamentId: Int): TournamentDataModel? = tournamentDao.queryTournament(playTypeId, sportId, tournamentId)
 

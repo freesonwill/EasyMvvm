@@ -174,7 +174,8 @@ class SubHomeViewModel: BaseViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             repository.observeLoginChange()
                 .filter {
-                    it && (apiStateListener.value == DataState.NetworkUnavailable
+                    it && (!repository.isPreloadSuccess()
+                            || apiStateListener.value == DataState.NetworkUnavailable
                             || apiStateListener.value == HomeState.Sport.LoadFailure
                             || apiStateListener.value == HomeState.Tournament.LoadFailure)
                 }
@@ -229,6 +230,7 @@ class SubHomeViewModel: BaseViewModel() {
 
     fun getCurrentTournament() {
         viewModelScope.launch {
+            if (currentSportId == -1) return@launch
             setState(HomeState.Tournament.Loading)
             callApi({
                 repository.getTenTournaments(currentPlayTypeId, currentSportId)
