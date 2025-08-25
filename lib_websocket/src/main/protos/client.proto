@@ -44,7 +44,7 @@ message PingBackReq {
 //7-101: 首开数据
 message FirstLoadMatchReq {
     string lang = 1;      // client端语言，可不传，默认 zh-CN
-    int32 odd_type = 2;   //赔率类型, 0-欧盘 1-香港盘
+    int32 provider = 2;   //供应商数据, 0-默认 1-sr  2-bg  3-fb  4-后台自定义
 }
 
 message FirstLoadMatchResp {
@@ -185,10 +185,10 @@ message SingleBetReq {
 
 message SingleBetResp {
     bool success = 1;
-    int32 code = 2; // 1:盘口状态 已经改变 需要刷新  2:创建订单失  3:扣款失败
+    int32 code = 2;
     string message = 3;  // 例如："Bet placed successfully."
     string order_id = 4;
-    int32 order_status = 5;  // 订单状态 0创建成功，1确认中，2拒单，3取消订单，4接单成功，5已结算
+    int32 order_status = 5;  // 订单状态 1确认中，2拒单，3取消订单，4接单成功，5已结算
 }
 
 // 500-1010: 多关下注
@@ -199,7 +199,7 @@ message MultipleBetReq {
 
 message MultipleBetResp {
     bool success = 1;
-    int32 code = 2; // 1:盘口状态 已经改变 需要刷新  2:创建订单失  3:扣款失败
+    int32 code = 2;
     string message = 3;  // 例如："Bet placed successfully."
     repeated galaxy.common.proto.PlaceBetInfo place_bet_info = 4;
 }
