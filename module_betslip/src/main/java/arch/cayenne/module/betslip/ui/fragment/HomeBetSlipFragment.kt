@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.text.TextPaint
 import android.util.TypedValue
 import android.view.Gravity
+import android.view.ViewTreeObserver
 import android.widget.TextView
 import androidx.fragment.app.FragmentManager
 import androidx.navigation.fragment.findNavController
@@ -18,7 +19,6 @@ import arch.cayenne.lib.common.utils.ext.animateIndicatorToPosition
 import arch.cayenne.lib.common.utils.ext.removeAllTips
 import arch.cayenne.lib.common.utils.ext.setupViewPagerScroll
 import arch.cayenne.lib.common.utils.ext.touchBackPressed
-import arch.cayenne.lib.common.utils.helper.doSmartAnim
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.module.betslip.R
 import arch.cayenne.module.betslip.data.constants.BetSlipDateFilterEnum
@@ -50,6 +50,15 @@ class HomeBetSlipFragment : BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsl
             PagerBean(array[4]) { BetSlipInvalidFragment() },
         )
         setPage(list)
+        mBinding.root.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                mBinding.root.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                mBinding.root.post {
+                    mBinding.viewPager.offscreenPageLimit = list.size
+                }
+            }
+
+        })
     }
 
     override fun initData() {
