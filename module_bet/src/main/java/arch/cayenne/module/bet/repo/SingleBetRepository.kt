@@ -1,6 +1,5 @@
 package arch.cayenne.module.bet.repo
 
-import android.util.Log
 import arch.cayenne.lib.base.data.repository.BaseRepository
 import arch.cayenne.lib.common.data.constants.UserDataKey
 import arch.cayenne.lib.common.data.manager.UserDataManager
@@ -68,6 +67,12 @@ class SingleBetRepository(
     private fun setSelectionForCheckOdds(selection: BetSelectionBean) {
         scope.launch {
             selectionFlow.emit(selection)
+            betDao.getCurrentBet()?.let {
+                val detail = betDao.getDetail(it.betId).firstOrNull()
+                if (detail != null) {
+                    betDao.updateDetailOdds(it.betId, detail.serialValue, selection.odds)
+                }
+            }
         }
     }
 
@@ -126,6 +131,25 @@ class SingleBetRepository(
         false
     }
 
+    fun setMoney(money: Long) {
+        scope.launch {
+            betDao.getCurrentBet()?.let {
+                val detail = betDao.getDetail(it.betId).firstOrNull()
+                if (detail != null) {
+                    betDao.updateDetailMoney(it.betId, detail.serialValue, money)
+                } else {
+                    val selection = betDao.getSelections(it.betId).first()
+                    val newDetail = BetDetailBean(
+                        betId = it.betId,
+                        sumOdds = selection.odds,
+                        inputMoney = money
+                    )
+                    betDao.insertDetail(newDetail)
+                }
+            }
+        }
+    }
+
     fun sendBet(money: Long) {
         scope.launch {
             betDao.getCurrentBet()?.let {
@@ -135,33 +159,22 @@ class SingleBetRepository(
                     val selection = betDao.getSelections(betId).first()
                     unregister(selection)
 
-                    val tempDetail = BetDetailBean(
-                        betId = betId,
-                        orderId = "",
-                        sumOdds = selection.odds,
-                        inputMoney = money,
-                        status = BetResultStatusEnum.CONFIRMING
-                    )
-                    betDao.insertDetail(tempDetail)
-                    val resp = remoteManager.singleBet(selection, money)
-                    val detailBean = if (resp != null && resp.isSuccessful) {
+                    val tempDetail = betDao.getDetail(betId).firstOrNull() ?: run {
                         BetDetailBean(
                             betId = betId,
-                            orderId = resp.orderId,
                             sumOdds = selection.odds,
-                            inputMoney = money,
-                            status = BetResultStatusEnum.getStatusByCode(resp.orderStatus)
-                        )
-                    } else {
-                        BetDetailBean(
-                            betId = betId,
-                            orderId = "",
-                            sumOdds = selection.odds,
-                            inputMoney = money,
-                            status = if (resp != null && !resp.isSuccessful) BetResultStatusEnum.REJECT else BetResultStatusEnum.CONFIRMING
-                        )
+                            inputMoney = money
+                        ).apply {
+                            betDao.insertDetail(this)
+                        }
                     }
-                    betDao.insertDetail(detailBean)
+                    betDao.updateDetailStatus(tempDetail.betId, tempDetail.serialValue, BetResultStatusEnum.CONFIRMING)
+                    val resp = remoteManager.singleBet(selection, money)
+                    if (resp != null && resp.isSuccessful) {
+                        betDao.updateDetailStatus(tempDetail.betId, tempDetail.serialValue, status = BetResultStatusEnum.getStatusByCode(resp.orderStatus))
+                    } else {
+                        betDao.updateDetailStatus(tempDetail.betId, tempDetail.serialValue, status = if (resp != null && !resp.isSuccessful) BetResultStatusEnum.REJECT else BetResultStatusEnum.CONFIRMING)
+                    }
                     betDao.getCurrentBet(BetStatusEnum.BETTING)?.let { bettingBet ->
                         betDao.updateBetStatus(bettingBet.betId, BetStatusEnum.COMPLETE)
                     }
@@ -208,14 +221,8 @@ class SingleBetRepository(
                     val status =
                         if (resp?.isSuccessful == true) BetResultStatusEnum.SUCCESS_BET else BetResultStatusEnum.REJECT
 
-                    val detailBean = BetDetailBean(
-                        betId = betId,
-                        orderId = "",
-                        sumOdds = detail.sumOdds,
-                        inputMoney = money,
-                        status = status
-                    )
-                    betDao.insertDetail(detailBean)
+
+                    betDao.updateDetailStatus(detail.betId, detail.serialValue, status)
                     betDao.getCurrentBet(BetStatusEnum.BETTING)?.let { bettingBet ->
                         betDao.updateBetStatus(bettingBet.betId, BetStatusEnum.COMPLETE)
                     }

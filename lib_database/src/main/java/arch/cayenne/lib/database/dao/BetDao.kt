@@ -113,7 +113,7 @@ abstract class BetDao : BaseDao<BetBean>() {
             "        WHERE status != :status" +
             "        ORDER BY betId DESC" +
             "        LIMIT 1" +
-            "    )"
+            "    ) and inputMoney > 0"
     )
     abstract fun observeCurrentDetail(status: BetStatusEnum = BetStatusEnum.DONE): Flow<List<BetDetailBean>>
 
@@ -179,4 +179,20 @@ abstract class BetDao : BaseDao<BetBean>() {
         "UPDATE BetSelectionBean SET odds = :odds WHERE betId = :betId AND selectionId = :selectionId"
     )
     abstract suspend fun updateOdds(betId: Long, selectionId: Long, odds: Int)
+
+    @Query(
+        "UPDATE BetDetailBean SET sumOdds = :odds WHERE betId = :betId AND serialValue = :serialValue"
+    )
+    abstract suspend fun updateDetailOdds(betId: Long, serialValue: Int, odds: Int)
+
+    @Query(
+        "UPDATE BetDetailBean SET inputMoney = :money WHERE betId = :betId AND serialValue = :serialValue"
+    )
+    abstract suspend fun updateDetailMoney(betId: Long, serialValue: Int, money: Long)
+
+    @Query(
+        "UPDATE BetDetailBean SET status = :status WHERE betId = :betId AND serialValue = :serialValue"
+    )
+    abstract suspend fun updateDetailStatus(betId: Long, serialValue: Int, status: BetResultStatusEnum)
+
 }
