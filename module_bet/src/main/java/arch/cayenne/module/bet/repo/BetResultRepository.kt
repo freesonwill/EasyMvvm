@@ -4,6 +4,7 @@ import arch.cayenne.lib.base.data.repository.BaseRepository
 import arch.cayenne.lib.database.dao.BetDao
 import arch.cayenne.lib.database.dao.InfoDao
 import arch.cayenne.lib.database.entity.BetBean
+import arch.cayenne.lib.database.entity.BetDetailBean
 import arch.cayenne.lib.database.entity.BetSelectionBean
 import arch.cayenne.lib.database.entity.BetStatusEnum
 import arch.cayenne.lib.database.entity.BetTypeEnum
@@ -22,31 +23,46 @@ class BetResultRepository(
     private val remoteManager: BettingRemoteManager
 ) : BaseRepository() {
 
-    private val lastBetOrderFlow = MutableSharedFlow<BetBean>(replay = 1, extraBufferCapacity = 1)
+    private val betTypeFlow =
+        MutableSharedFlow<BetTypeEnum>(replay = 1, extraBufferCapacity = 1)
+    private val selectionFlow =
+        MutableSharedFlow<List<BetSelectionBean>>(replay = 1, extraBufferCapacity = 1)
+    private val detailFlow =
+        MutableSharedFlow<List<BetDetailBean>>(replay = 1, extraBufferCapacity = 1)
 
     init {
         scope.launch {
             launch {
-                betDao.observeLastBetOrder().collect { bet ->
-                    bet?.let {
-                        lastBetOrderFlow.emit(it)
+                betDao.observeCurrentBetType().collect { type ->
+                    type?.let {
+                        betTypeFlow.emit(it)
+                    }
+                }
+            }
+            launch {
+                betDao.observeCurrentSelections().collect { selections ->
+                    if (selections.isNotEmpty()) {
+                        selectionFlow.emit(selections)
+                    }
+                }
+            }
+            launch {
+                betDao.observeCurrentDetail().collect { detail ->
+                    if (detail.isNotEmpty()) {
+                        detailFlow.emit(detail)
                     }
                 }
             }
         }
     }
 
+    fun observeBetType(): Flow<BetTypeEnum> = betTypeFlow
+    fun observeSelections(): Flow<List<BetSelectionBean>> = selectionFlow
+    fun observeDetail(): Flow<List<BetDetailBean>> = detailFlow
+
     suspend fun getCurrency(): String = withContext(scope.coroutineContext) {
         infoDao.getCurrency()
     }
-
-    fun observeLastBetOrder(): Flow<BetBean> = lastBetOrderFlow
-
-    suspend fun getSelection(betId: Long) = withContext(scope.coroutineContext) {
-        betDao.getSelections(betId)
-    }
-
-    fun observeDetail(betId: Long) = betDao.observeDetail(betId)
 
     suspend fun continueBet(): BetTypeEnum? = withContext(scope.coroutineContext) {
         val lastBet = betDao.getLastBetOrder() ?: return@withContext null

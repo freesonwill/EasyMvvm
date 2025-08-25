@@ -34,14 +34,6 @@ abstract class BetDao : BaseDao<BetBean>() {
         status: BetStatusEnum = BetStatusEnum.COMPLETE
     ): BetBean?
 
-    @Query("SELECT * FROM BetBean WHERE status IN (:statuses) ORDER BY betId DESC LIMIT 1")
-    abstract fun observeLastBetOrder(
-        statuses: List<BetStatusEnum> = listOf(
-            BetStatusEnum.COMPLETE,
-            BetStatusEnum.BETTING
-        )
-    ): Flow<BetBean?>
-
     @Query("SELECT * FROM BetBean WHERE status = :status ORDER BY betId DESC LIMIT 1")
     abstract suspend fun getCurrentBet(status: BetStatusEnum = BetStatusEnum.PENDING): BetBean?
 
@@ -116,6 +108,15 @@ abstract class BetDao : BaseDao<BetBean>() {
     @Query("SELECT * FROM BetDetailBean WHERE betId = :betId")
     abstract fun observeDetail(betId: Long): Flow<List<BetDetailBean>>
 
+    @Query("SELECT * FROM BetDetailBean WHERE betId = (" +
+            "        SELECT betId FROM BetBean" +
+            "        WHERE status != :status" +
+            "        ORDER BY betId DESC" +
+            "        LIMIT 1" +
+            "    )"
+    )
+    abstract fun observeCurrentDetail(status: BetStatusEnum = BetStatusEnum.DONE): Flow<List<BetDetailBean>>
+
     @Query("UPDATE BetDetailBean SET status = :status WHERE orderId = :order")
     abstract suspend fun updateDetailResult(order: String, status: BetResultStatusEnum)
 
@@ -162,12 +163,12 @@ abstract class BetDao : BaseDao<BetBean>() {
     @Query(
         "SELECT betType FROM BetBean WHERE betId = (" +
                 "        SELECT betId FROM BetBean" +
-                "        WHERE status = :status" +
+                "        WHERE status != :status" +
                 "        ORDER BY betId DESC" +
                 "        LIMIT 1" +
                 "    )"
     )
-    abstract fun observeCurrentBetType(status: BetStatusEnum = BetStatusEnum.PENDING): Flow<BetTypeEnum?>
+    abstract fun observeCurrentBetType(status: BetStatusEnum = BetStatusEnum.DONE): Flow<BetTypeEnum?>
 
     @Query(
         "UPDATE BetSelectionBean SET marketName = :marketName, name = :name, leagueName = :leagueName, matchName = :matchName WHERE betId = :betId AND selectionId = :selectionId"

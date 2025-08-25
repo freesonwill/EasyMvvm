@@ -78,11 +78,6 @@ class BetResultFragment private constructor(): BaseBottomSheetFragment<BetResult
                     adjustLayoutHeight(it.size > 2)
                 }
             }
-            mBinding.tvMaxWin.text = if (it.size == 1 && mViewModel.type == BetTypeEnum.SINGLE) {
-                getString(R.string.title_result_win_single_bet)
-            } else {
-                getString(R.string.title_result_win_combo_bet)
-            }
         }
         mViewModel.onDetailListener.observe(viewLifecycleOwner) {
             setAmount(it)
@@ -90,6 +85,13 @@ class BetResultFragment private constructor(): BaseBottomSheetFragment<BetResult
         }
         mViewModel.onBetModeListener.observe(viewLifecycleOwner) {
             setBetMode(it.first, it.second)
+        }
+        mViewModel.betType.observe(viewLifecycleOwner) {
+            mBinding.tvMaxWin.text = if (mViewModel.betType.value == BetTypeEnum.SINGLE) {
+                getString(R.string.title_result_win_single_bet)
+            } else {
+                getString(R.string.title_result_win_combo_bet)
+            }
         }
     }
 
