@@ -1,11 +1,13 @@
 package arch.cayenne.module.bet.ui.fragment
 
+import android.animation.ObjectAnimator
 import android.os.Bundle
 import android.view.ViewGroup
 import androidx.core.view.isVisible
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.SimpleItemAnimator
-import arch.cayenne.lib.base.ui.fragment.BaseBottomSheetFragment
+import arch.cayenne.lib.base.ui.fragment.BasePreLoadBottomSheetFragment
 import arch.cayenne.lib.common.ui.view.BetResultToastView
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.SportDisplayOddsExt.getDisplayOdds
@@ -26,11 +28,32 @@ import arch.cayenne.module.bet.viewmodel.BetResultViewModel
 import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
 
-class BetResultFragment private constructor(): BaseBottomSheetFragment<BetResultViewModel, FragmentBetResultBinding>(), BetResultToastView.Block {
+class BetResultFragment : BasePreLoadBottomSheetFragment<BetResultViewModel, FragmentBetResultBinding>(), BetResultToastView.Block {
 
     companion object {
-        fun newInstance(): BetResultFragment {
-            return BetResultFragment()
+
+        private const val TAG = "BetResultFragment"
+
+        fun create(activity: FragmentActivity) {
+            val manager = activity.supportFragmentManager
+            val f = manager.findFragmentByTag(TAG)
+            if (f == null) {
+                BetResultFragment().customAttach(activity, TAG)
+            }
+        }
+
+        fun show(activity: FragmentActivity, withOtherSheetHide: ObjectAnimator? = null) {
+            val manager = activity.supportFragmentManager
+            val f = manager.findFragmentByTag(TAG)
+            if (f == null) {
+                BetResultFragment().show(manager, TAG)
+            } else if (f is BasePreLoadBottomSheetFragment<*, *>) {
+                if (withOtherSheetHide == null) {
+                    f.customShow()
+                } else {
+                    f.customShow(withOtherSheetHide)
+                }
+            }
         }
     }
     override val vbClass: KClass<FragmentBetResultBinding> = FragmentBetResultBinding::class
@@ -58,15 +81,23 @@ class BetResultFragment private constructor(): BaseBottomSheetFragment<BetResult
 
     override fun initListener() {
         mBinding.btnContinueBet.setOnClickListener {
+            clearAllObserve()
             lifecycleScope.launch {
-                mViewModel.continueBet()?.let { type ->
+                mViewModel.continueBet()?.let {
                     BetSheetFragment.show(requireActivity(), getHideAnimator())
                 }
             }
         }
         mBinding.btnConfirm.setOnClickListener {
+            clearAllObserve()
             dismiss()
             mViewModel.sendDone()
+        }
+        setOnEndListener {
+            mViewModel.sendDone()
+            lifecycleScope.launch {
+                createObserver()
+            }
         }
     }
 
@@ -86,8 +117,8 @@ class BetResultFragment private constructor(): BaseBottomSheetFragment<BetResult
         mViewModel.onBetModeListener.observe(viewLifecycleOwner) {
             setBetMode(it.first, it.second)
         }
-        mViewModel.betType.observe(viewLifecycleOwner) {
-            mBinding.tvMaxWin.text = if (mViewModel.betType.value == BetTypeEnum.SINGLE) {
+        mViewModel.onBetType.observe(viewLifecycleOwner) {
+            mBinding.tvMaxWin.text = if (mViewModel.onBetType.value == BetTypeEnum.SINGLE) {
                 getString(R.string.title_result_win_single_bet)
             } else {
                 getString(R.string.title_result_win_combo_bet)
@@ -174,8 +205,10 @@ class BetResultFragment private constructor(): BaseBottomSheetFragment<BetResult
         }
     }
 
-    override fun onStop() {
-        super.onStop()
-        mViewModel.sendDone()
+    private fun clearAllObserve() {
+        mViewModel.onBetType.removeObservers(viewLifecycleOwner)
+        mViewModel.onBetModeListener.removeObservers(viewLifecycleOwner)
+        mViewModel.onBetSheetListener.removeObservers(viewLifecycleOwner)
+        mViewModel.onDetailListener.removeObservers(viewLifecycleOwner)
     }
 }

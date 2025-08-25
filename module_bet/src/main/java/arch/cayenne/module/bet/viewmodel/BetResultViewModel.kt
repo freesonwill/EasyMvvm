@@ -21,39 +21,42 @@ class BetResultViewModel(private val repo: BetResultRepository) : BaseViewModel(
     private val _onDetailListener = MutableLiveData<List<BetDetailBean>>()
     val onDetailListener: LiveData<List<BetDetailBean>> get() = _onDetailListener
 
-    private val _betType = MutableLiveData<BetTypeEnum>()
-    val betType: LiveData<BetTypeEnum> get() = _betType
+    private val _onBetType = MutableLiveData<BetTypeEnum>()
+    val onBetType: LiveData<BetTypeEnum> get() = _onBetType
 
-    private val _onBetModeListener = MediatorLiveData<Pair<BetTypeEnum, BetResultStatusEnum>>().apply {
-        fun set(status: BetResultStatusEnum, type: BetTypeEnum) {
-            value = Pair(type, status)
-        }
-
-        fun getStatus(data: List<BetDetailBean>): BetResultStatusEnum {
-            val status = if (data.any { it.status == BetResultStatusEnum.CONFIRMING || it.status == null }) {
-                BetResultStatusEnum.CONFIRMING
-            } else if (data.all { it.status == BetResultStatusEnum.SUCCESS_BET }) {
-                BetResultStatusEnum.SUCCESS_BET
-            } else {
-                BetResultStatusEnum.REJECT
+    private val _onBetModeListener =
+        MediatorLiveData<Pair<BetTypeEnum, BetResultStatusEnum>>().apply {
+            fun set(status: BetResultStatusEnum, type: BetTypeEnum) {
+                value = Pair(type, status)
             }
-            return status
+
+            fun getStatus(data: List<BetDetailBean>): BetResultStatusEnum {
+                val status =
+                    if (data.any { it.status == BetResultStatusEnum.CONFIRMING || it.status == null }) {
+                        BetResultStatusEnum.CONFIRMING
+                    } else if (data.all { it.status == BetResultStatusEnum.SUCCESS_BET }) {
+                        BetResultStatusEnum.SUCCESS_BET
+                    } else if (data.isEmpty()) {
+                        BetResultStatusEnum.CREATE
+                    } else {
+                        BetResultStatusEnum.REJECT
+                    }
+                return status
+            }
+            addSource(_onDetailListener) {
+                val type = _onBetType.value ?: return@addSource
+                val status = getStatus(it)
+                set(status, type)
+            }
+            addSource(_onBetType) {
+                val detail = _onDetailListener.value ?: return@addSource
+                val status = getStatus(detail)
+                set(status, it)
+            }
         }
-        addSource(_onDetailListener) {
-            val type = _betType.value ?: return@addSource
-            val status = getStatus(it)
-            set(status, type)
-        }
-        addSource(_betType) {
-            val detail = _onDetailListener.value ?: return@addSource
-            val status = getStatus(detail)
-            set(status, it)
-        }
-    }
     val onBetModeListener: LiveData<Pair<BetTypeEnum, BetResultStatusEnum>> get() = _onBetModeListener
 
     private val _currencyListener = MutableLiveData<String>()
-
 
 
     val moneySymbol: String
@@ -63,7 +66,7 @@ class BetResultViewModel(private val repo: BetResultRepository) : BaseViewModel(
         viewModelScope.launch {
             launch {
                 repo.observeBetType().collect { type ->
-                    _betType.value = type
+                    _onBetType.value = type
                 }
             }
             launch {
@@ -83,6 +86,7 @@ class BetResultViewModel(private val repo: BetResultRepository) : BaseViewModel(
     }
 
     suspend fun continueBet() = repo.continueBet()
+
     fun sendDone() {
         repo.sendDone()
     }

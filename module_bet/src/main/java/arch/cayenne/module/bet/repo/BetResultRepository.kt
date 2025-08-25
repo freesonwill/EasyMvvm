@@ -13,6 +13,7 @@ import galaxy.client.proto.Client
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -33,21 +34,21 @@ class BetResultRepository(
     init {
         scope.launch {
             launch {
-                betDao.observeCurrentBetType().collect { type ->
+                betDao.observeCurrentBetType().distinctUntilChanged().collect { type ->
                     type?.let {
                         betTypeFlow.emit(it)
                     }
                 }
             }
             launch {
-                betDao.observeCurrentSelections().collect { selections ->
+                betDao.observeCurrentSelections().distinctUntilChanged().collect { selections ->
                     if (selections.isNotEmpty()) {
                         selectionFlow.emit(selections)
                     }
                 }
             }
             launch {
-                betDao.observeCurrentDetail().collect { detail ->
+                betDao.observeCurrentDetail().distinctUntilChanged().collect { detail ->
                     if (detail.isNotEmpty()) {
                         detailFlow.emit(detail)
                     }

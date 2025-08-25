@@ -68,6 +68,7 @@ class BetSheetFragment private constructor() :
 
     override fun initView(savedInstanceState: Bundle?) {
         initFragment()
+        BetResultFragment.create(requireActivity())
     }
 
     private fun initFragment() {
@@ -118,8 +119,7 @@ class BetSheetFragment private constructor() :
                 customHide()
             } else if (result == VALUE_TO_RESULT) {
                 val sheetAnimator = getHideAnimator() ?: return@setFragmentResultListener
-                val f = BetResultFragment.newInstance()
-                f.showWithOtherSheetDialogHide(requireActivity().supportFragmentManager, sheetAnimator)
+                BetResultFragment.show(requireActivity(), sheetAnimator)
             }
         }
         mViewModel.betSheetSizeListener.observe(viewLifecycleOwner) {
