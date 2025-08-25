@@ -165,7 +165,7 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
                     mBinding.LLCBetOn.visibility = View.GONE
                     mBinding.ivMenu.visibility = View.GONE
                     mBinding.clDynamics.setState(
-                        States.NETWORK_ANOMALY,
+                        States.NETWORK_ANOMALY(),
                         arch.cayenne.lib.common.R.string.error_net.getString()
                     )
                 }

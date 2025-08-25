@@ -98,7 +98,7 @@ class TopUpRecordsFragment : BaseFragment<TopUpRecordsViewModel, FragmentTopupRe
                         refreshLayout.setEnableLoadMore(false)
                         clDynamics.visibility = View.VISIBLE
                         clDynamics.setState(
-                            DynamicStateLayout.States.NETWORK_ANOMALY,
+                            DynamicStateLayout.States.NETWORK_ANOMALY(),
                             arch.cayenne.lib.common.R.string.error_net.getString()
                         )
                     }

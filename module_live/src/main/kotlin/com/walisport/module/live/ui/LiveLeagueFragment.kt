@@ -120,7 +120,7 @@ class LiveLeagueFragment : BaseFragment<LeagueViewModel, FragmentLeagueBinding>(
                 mBinding.recyclerLeague.visibility = View.GONE //网络异常时需隐藏列表
                 mBinding.leagueRoot.background = arch.cayenne.lib.common.R.color.black.getDrawable()
                 mBinding.leagueMain.setState(
-                    States.NETWORK_ANOMALY,
+                    States.NETWORK_ANOMALY(),
                     arch.cayenne.lib.common.R.string.error_net.getString()
                 )
             }

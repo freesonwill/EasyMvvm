@@ -63,7 +63,7 @@ class LiveLineupFragment : BaseFragment<LiveLineupViewModel, FragmentLiveLineupB
                 DataState.NetworkUnavailable->{
                     mBinding.llContent.visibility = View.INVISIBLE
                     mBinding.main.setState(
-                        States.NETWORK_ANOMALY,
+                        States.NETWORK_ANOMALY(),
                         arch.cayenne.lib.common.R.string.error_net.getString()
                     )
                 }

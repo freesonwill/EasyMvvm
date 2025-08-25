@@ -87,7 +87,7 @@ class MessageListFragment : BaseFragment<MessageMainViewModel, FragmentMessageLi
                     if (msgAdapter.itemCount == 0) {
                         mBinding.emptyState.visibility = View.VISIBLE
                         mBinding.emptyState.setState(
-                            States.NETWORK_ANOMALY,
+                            States.NETWORK_ANOMALY(),
                             arch.cayenne.lib.common.R.string.error_net.getString()
                         )
                     }
