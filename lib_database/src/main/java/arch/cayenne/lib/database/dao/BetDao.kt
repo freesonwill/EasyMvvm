@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Transaction
 import androidx.room.Update
 import arch.cayenne.lib.database.entity.BetBean
 import arch.cayenne.lib.database.entity.BetDetailBean
@@ -194,5 +195,9 @@ abstract class BetDao : BaseDao<BetBean>() {
         "UPDATE BetDetailBean SET status = :status WHERE betId = :betId AND serialValue = :serialValue"
     )
     abstract suspend fun updateDetailStatus(betId: Long, serialValue: Int, status: BetResultStatusEnum)
+
+    @Transaction
+    @Update
+    abstract suspend fun updateDetail(detail: BetDetailBean)
 
 }

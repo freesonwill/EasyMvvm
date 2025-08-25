@@ -171,9 +171,12 @@ class SingleBetRepository(
                     betDao.updateDetailStatus(tempDetail.betId, tempDetail.serialValue, BetResultStatusEnum.CONFIRMING)
                     val resp = remoteManager.singleBet(selection, money)
                     if (resp != null && resp.isSuccessful) {
-                        betDao.updateDetailStatus(tempDetail.betId, tempDetail.serialValue, status = BetResultStatusEnum.getStatusByCode(resp.orderStatus))
+                        tempDetail.orderId = resp.orderId
+                        tempDetail.status = BetResultStatusEnum.getStatusByCode(resp.orderStatus)
+                        betDao.updateDetail(tempDetail)
                     } else {
-                        betDao.updateDetailStatus(tempDetail.betId, tempDetail.serialValue, status = if (resp != null && !resp.isSuccessful) BetResultStatusEnum.REJECT else BetResultStatusEnum.CONFIRMING)
+                        tempDetail.status = if (resp != null && !resp.isSuccessful) BetResultStatusEnum.REJECT else BetResultStatusEnum.CONFIRMING
+                        betDao.updateDetail(tempDetail)
                     }
                     betDao.getCurrentBet(BetStatusEnum.BETTING)?.let { bettingBet ->
                         betDao.updateBetStatus(bettingBet.betId, BetStatusEnum.COMPLETE)
