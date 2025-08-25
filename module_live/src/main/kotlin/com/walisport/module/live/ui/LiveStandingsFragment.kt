@@ -73,7 +73,7 @@ class LiveStandingsFragment : BaseFragment<LiveStandingsViewModel, FragmentLiveS
                 when (state) {
                     DataState.NetworkUnavailable -> {
                         mBinding.mainLayout.setState(
-                            States.NETWORK_ANOMALY,
+                            States.NETWORK_ANOMALY(),
                             arch.cayenne.lib.common.R.string.error_net.getString()
                         )
                     }

@@ -7,7 +7,6 @@ import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.data.remote.ApiResponseState
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.core.component.KoinComponent
@@ -18,7 +17,6 @@ import org.koin.core.component.KoinComponent
  * @description:
  */
 abstract class BaseViewModel : ViewModel(), KoinComponent {
-
     protected val TAG = this.javaClass.simpleName
 
     private val _apiStateListener = MutableLiveData<DataState>()

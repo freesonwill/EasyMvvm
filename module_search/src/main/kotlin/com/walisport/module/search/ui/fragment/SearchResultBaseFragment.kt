@@ -142,7 +142,9 @@ class SearchResultBaseFragment :
     private fun setEmptyView(state: DataState) {
         with(contentBinding) {
             val layoutState =
-                if(state == DataState.NetworkUnavailable) DynamicStateLayout.States.NETWORK_ANOMALY
+                if(state == DataState.NetworkUnavailable) DynamicStateLayout.States.NETWORK_ANOMALY(
+                    onRefresh = ::doSearch
+                )
                 else DynamicStateLayout.States.DATA_EMPTY
             val errorStr =
                 if(state == DataState.NetworkUnavailable) {
@@ -150,11 +152,7 @@ class SearchResultBaseFragment :
                 } else {
                     R.string.no_search_result.toTranslatedStr()
                 }
-            val onRefresh: (() -> Unit)? =
-                if(state == DataState.NetworkUnavailable) { ::doSearch }
-                else null
-
-            dynamicState.setState(layoutState, errorStr, onRefresh)
+            dynamicState.setState(layoutState, errorStr)
         }
     }
 

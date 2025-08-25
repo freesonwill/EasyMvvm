@@ -15,6 +15,7 @@ import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.data.model.PagerBean
 import arch.cayenne.lib.base.ui.adapter.PagerAdapter
 import arch.cayenne.lib.base.ui.animation.AnimationController
+import arch.cayenne.lib.base.ui.animation.AnimationController.AnimType
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
@@ -71,9 +72,8 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         loadFragment()
         mViewModel.observeMatchInfoNotify()
         mBinding.drawerLayout.setDrawerInterpolator(
-            AnimationController.drawerEnterAnim!!.duration,
-            AnimationController.drawerEnterAnim!!.interpolator.toInterpolator()
-        )
+            AnimationController[AnimType.drawerEnter]!!.duration,
+            AnimationController[AnimType.drawerEnter]!!.interpolator.toInterpolator())
         mBinding.drawerLayout.setDrawerLockMode(
             DrawerLayout.LOCK_MODE_LOCKED_CLOSED,
             GravityCompat.END
@@ -135,10 +135,10 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                                 arguments.putString("leagueName", mViewModel.leagueName.value)
                                 arguments.putString("leagueLogo", mViewModel.leagueLogo.value)
                             },
-                        enterAnim = AnimationController.routeEnterAnimTB,
-                        exitAnim = AnimationController.routeExitAnimTB,
-                        popEnterAnim = AnimationController.routePopEnterAnimTB,
-                        popExitAnim = AnimationController.routePopExitAnimTB,
+                        enterAnim = AnimationController[AnimType.routeEnterTB],
+                        exitAnim = AnimationController[AnimType.routeExitTB],
+                        popEnterAnim = AnimationController[AnimType.routePopEnterTB],
+                        popExitAnim = AnimationController[AnimType.routePopExitTB],
                     )
                 }
             }

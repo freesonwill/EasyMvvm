@@ -6,6 +6,7 @@ import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.common.data.constants.LanguageType
+import arch.cayenne.lib.common.data.constants.PreloadEnum
 import arch.cayenne.lib.common.data.constants.SportEnum
 import arch.cayenne.lib.database.GameDatabase
 import arch.cayenne.lib.database.entity.SportBean
@@ -18,10 +19,11 @@ import arch.cayenne.module.home.data.constants.PlayType
 import arch.cayenne.module.home.data.constants.playTypeToShowType
 import arch.cayenne.module.home.data.repo.HomeRepository
 import com.walisport.app.IPreLoadHomeApi
-import com.walisport.app.data.PreLoadDataModel
+import com.walisport.app.data.PreloadDataModel
 import com.walisport.app.data.toRoomData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
 class ModuleRepository(
@@ -29,6 +31,7 @@ class ModuleRepository(
     private val database: GameDatabase,
     private val httpClient: HttpClient,
     private val socketManager: WebSocketManager,
+    private val preloadResultChange: MutableStateFlow<PreloadEnum>
 ): BaseRepository() {
     private val TAG = this.javaClass.simpleName
     val matchDao = database.matchDao()
@@ -43,23 +46,25 @@ class ModuleRepository(
                     api.postPreLoad(
                         mapOf(
                             "lang" to LanguageType.LANGUAGE_SIMPLE.value,
-                            "oddType" to "0"
+                            "provider" to "3"  //default provider => FB
                         )
                     )
                 },
                 onSuccess = {
                     "response------>${it}".logd(TAG)
                     savePreLoadData(it)
+                    preloadResultChange.value = PreloadEnum.SUCCESS
                 },
                 onFailure = { code, msg, throwable ->
                     "response------>$code,$msg,$throwable".loge(TAG)
+                    preloadResultChange.value = PreloadEnum.FAILURE
                 }
             )
         }
     }
 
     @Transaction
-    private fun savePreLoadData(data: PreLoadDataModel) {
+    private fun savePreLoadData(data: PreloadDataModel) {
         scope.launch(Dispatchers.IO) {
             try {
                 //新增sport進入Database
@@ -156,3 +161,4 @@ class ModuleRepository(
         socketManager.connect("wss://betwavepro.ja700.com/fb-ws")
     }
 }
+

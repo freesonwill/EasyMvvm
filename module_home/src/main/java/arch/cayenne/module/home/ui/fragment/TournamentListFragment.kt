@@ -14,6 +14,7 @@ import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.core.view.isVisible
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
@@ -23,7 +24,6 @@ import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.enableRecyclerViewBounce
-import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.module.home.R
 import arch.cayenne.module.home.data.TournamentListItem
 import arch.cayenne.module.home.data.constants.HomeState
@@ -31,7 +31,7 @@ import arch.cayenne.module.home.databinding.FragmentTournamentListBinding
 import arch.cayenne.module.home.databinding.ItemTournamentHeaderBinding
 import arch.cayenne.module.home.ui.adapter.TournamentSectionAdapter
 import arch.cayenne.module.home.ui.view.decoration.StickyHeaderItemDecoration
-import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
+import arch.cayenne.module.home.ui.viewmodel.SubHomeViewModel
 import arch.cayenne.module.home.ui.viewmodel.TournamentListViewModel
 import kotlin.reflect.KClass
 
@@ -42,7 +42,7 @@ class TournamentListFragment :
         FragmentTournamentListBinding::class
     override val vmClass: KClass<TournamentListViewModel> = TournamentListViewModel::class
 
-    private val homeViewModel: HomeViewModel by sharedViewModel<HomeViewModel, NewHomeFragment>()
+    private val subHomeViewModel: SubHomeViewModel by viewModels({ requireParentFragment() })
     private lateinit var adapter: TournamentSectionAdapter
     private var pendingJumpIndex: Int? = null // 用來判斷是否為點擊字母列表來跳選列表分類，null代表非自動跳轉狀態
     private var stickyHeaderDecoration: StickyHeaderItemDecoration? = null
@@ -63,15 +63,20 @@ class TournamentListFragment :
         }
     }
 
+    fun changeSportId(sportId: Int) {
+        mViewModel.setSportId(sportId)
+        mViewModel.getTournaments()
+    }
+
     override fun initView(savedInstanceState: Bundle?) {
         with(mBinding) {
             ceSearch.hint = getString(R.string.tournament_section_title)
             ceSearch.imeOptions = EditorInfo.IME_ACTION_SEARCH
             adapter = TournamentSectionAdapter(
                 onTournamentClick = { tournament ->
-                    homeViewModel.onTournamentListSelected(tournament)
+                    subHomeViewModel.onTournamentListSelected(tournament)
                     if (mViewModel.getType() == TournamentListType.MORE) {
-                        homeViewModel.requestCollapseTournamentDropdown()
+                        subHomeViewModel.requestCollapseTournamentDropdown()
                     }
                 }
             )
@@ -150,7 +155,7 @@ class TournamentListFragment :
             }
 
             ivHomeLeagueCollapse.apply{addScaleOnTouchAnimation()}.setOnClickListener {
-                homeViewModel.requestCollapseTournamentDropdown()
+                subHomeViewModel.requestCollapseTournamentDropdown()
             }
 
             rvTournamentList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -197,7 +202,7 @@ class TournamentListFragment :
                     }
                     is DataState.NetworkUnavailable -> {
                         clDynamics.setState(
-                            DynamicStateLayout.States.NETWORK_ANOMALY,
+                            DynamicStateLayout.States.NETWORK_ANOMALY(),
                             arch.cayenne.lib.common.R.string.error_net.getString()
                         )
                         clDynamics.visibility = View.VISIBLE
@@ -358,7 +363,7 @@ class TournamentListFragment :
         
         // 通知聯賽收回上滑動畫已結束
         if (mViewModel.getType() == TournamentListType.MORE) {
-            homeViewModel.notifyTournamentSlideOutEnd()
+            subHomeViewModel.notifyTournamentSlideOutEnd()
         }
     }
 

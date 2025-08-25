@@ -3,10 +3,10 @@ package arch.cayenne.module.home.ui.view
 import android.content.Context
 import android.graphics.Rect
 import android.util.AttributeSet
-import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewConfiguration
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logw
 import arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
 import kotlin.math.abs
 
@@ -44,7 +44,7 @@ class ClickSearchConstraintLayout @JvmOverloads constructor(
             }
             MotionEvent.ACTION_UP -> {
                 if (potentialTargetChild != null) {
-                    Log.w("INTERCEPT", "攔截條件滿足！正在攔截... 父層將處理這次點擊。")
+                    "攔截條件滿足！正在攔截... 父層將處理這次點擊 ${potentialTargetChild!!.id}".logw(this::class.java.simpleName)
                     listener?.invoke(potentialTargetChild!!)
                     potentialTargetChild = null
                 }

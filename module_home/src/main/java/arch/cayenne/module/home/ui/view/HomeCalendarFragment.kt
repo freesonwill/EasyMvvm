@@ -14,7 +14,7 @@ import androidx.core.animation.doOnStart
 import androidx.core.view.doOnLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import arch.cayenne.lib.common.R as RC
+import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.extractDate
 import arch.cayenne.lib.common.utils.ext.toChineseMonth
@@ -25,6 +25,8 @@ import arch.cayenne.module.home.utils.DateUtils
 import com.haibin.calendarview.Calendar
 import com.haibin.calendarview.CalendarView
 import galaxy.common.proto.Common
+import kotlinx.coroutines.delay
+import arch.cayenne.lib.common.R as RC
 
 class HomeCalendarFragment private constructor() : Fragment() {
     enum class AnimState {
@@ -219,7 +221,7 @@ class HomeCalendarFragment private constructor() : Fragment() {
                     when(currentAnimState) {
                         AnimState.EXPANDING,
                         AnimState.EXPAND -> collapseView()
-                        else -> expandView()
+                        else -> Unit
                     }
                 }
             }
@@ -316,7 +318,9 @@ class HomeCalendarFragment private constructor() : Fragment() {
                    doOnStart {
                        currentAnimState = AnimState.COLLAPSING
                        setMaskViewAlpha(false)
-                       onBeforeDismissAnimListener?.invoke()
+                       mBinding?.clCalendarPopupRoot?.postDelayed({
+                           onBeforeDismissAnimListener?.invoke()
+                       },50L)
                    }
                    doOnEnd {
                        currentAnimState = AnimState.COLLAPSE

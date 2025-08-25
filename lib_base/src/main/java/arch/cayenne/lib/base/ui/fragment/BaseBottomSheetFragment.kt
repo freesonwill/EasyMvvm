@@ -35,6 +35,7 @@ import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui._interface.IStatusBar
 import arch.cayenne.lib.base.ui._interface.IView
 import arch.cayenne.lib.base.ui.animation.AnimationController
+import arch.cayenne.lib.base.ui.animation.AnimationController.AnimType
 import arch.cayenne.lib.base.ui.delegate.StatusBarDelegate
 import arch.cayenne.lib.base.ui.delegate.UIBindDelegate
 import arch.cayenne.lib.base.ui.gesture.TikTokGesture
@@ -132,9 +133,9 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
     }
 
 
-    protected open fun enterAnimation(): Animation = AnimationController.popupEnterAnim!!.toAnimation()
+    protected open fun enterAnimation(): Animation = AnimationController[AnimType.popupEnter]!!.toAnimation()
 
-    protected open fun exitAnimation(): Animation = AnimationController.popupExitAnim!!.toAnimation()
+    protected open fun exitAnimation(): Animation = AnimationController[AnimType.popupExit]!!.toAnimation()
 
     protected fun playEnterAnimations() {
         dimController.showDim()

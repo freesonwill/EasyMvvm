@@ -5,6 +5,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import androidx.core.view.doOnPreDraw
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -32,6 +33,7 @@ import arch.cayenne.module.home.ui.adapter.OnMatchItemClickListener
 import arch.cayenne.module.home.ui.view.decoration.MatchCardItemDecoration
 import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
 import arch.cayenne.module.home.ui.viewmodel.MatchListViewModel
+import arch.cayenne.module.home.ui.viewmodel.SubHomeViewModel
 import com.walisport.module.message.ui.view.DeleteAnimator
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
@@ -44,6 +46,7 @@ class MatchListPagerFragment :
         FragmentMatchListPagerBinding::class
     override val vmClass: KClass<MatchListViewModel> = MatchListViewModel::class
     private val homeViewModel: HomeViewModel by sharedViewModel<HomeViewModel, NewHomeFragment>()
+    private val subHomeViewModel: SubHomeViewModel by viewModels({ requireParentFragment() })
     private lateinit var matchAdapter: MatchItemAdapter
     private val gameLayoutManager by lazy { LinearLayoutManager(context) }
     private val fabViewModel: FloatingButtonControlViewModel by activityViewModel()
@@ -130,7 +133,7 @@ class MatchListPagerFragment :
         val firstViewTop = firstView?.top ?: 0
         val itemHeight = firstView?.height ?: 0
         val scrollY = firstPos * itemHeight - firstViewTop
-        homeViewModel.updateCoordinate(
+        subHomeViewModel.updateCoordinate(
             playTypeId = mViewModel.getPlayTypeId(),
             sportId = mViewModel.getSportId(),
             tournamentId = mViewModel.getTournamentId(),
@@ -140,7 +143,7 @@ class MatchListPagerFragment :
 
     private fun setMatchListPosition() {
         lifecycleScope.launch {
-            val position = homeViewModel.getCurrentPageCoordinate(
+            val position = subHomeViewModel.getCurrentPageCoordinate(
                 playTypeId = mViewModel.getPlayTypeId(),
                 sportId = mViewModel.getSportId(),
                 tournamentId = mViewModel.getTournamentId()
@@ -202,7 +205,7 @@ class MatchListPagerFragment :
                         refreshLayout.setEnableLoadMore(false)
                         clDynamics.visibility = View.VISIBLE
                         clDynamics.setState(
-                            DynamicStateLayout.States.NETWORK_ANOMALY,
+                            DynamicStateLayout.States.NETWORK_ANOMALY(),
                             arch.cayenne.lib.common.R.string.error_net.getString()
                         )
                         homeViewModel.changeState(DataState.NetworkUnavailable)
@@ -248,11 +251,10 @@ class MatchListPagerFragment :
             }
 
         }
-
-        homeViewModel.selectedDate.observeEvent(viewLifecycleOwner, this) { date ->
+        subHomeViewModel.selectedDate.observeEvent(viewLifecycleOwner, this) { date ->
             if (date  == HomeViewModel.DEFAULT_DATE
-                || homeViewModel.currentPlayTypeId != mViewModel.getPlayTypeId()
-                || homeViewModel.currentSportId != mViewModel.getSportId())
+                || subHomeViewModel.currentPlayTypeId != mViewModel.getPlayTypeId()
+                || subHomeViewModel.currentSportId != mViewModel.getSportId())
                 return@observeEvent
             refreshListByDate(date)
         }
