@@ -23,9 +23,9 @@ class ConnectFailedFragment : BaseFragment<EmptyViewModel, FragmentConnectFailed
 
     override fun initView(savedInstanceState: Bundle?) {
         with(mBinding) {
-            dsl.setState(DynamicStateLayout.States.NETWORK_ANOMALY, getString(R.string.error_net)){
-                refreshListener?.invoke()
-            }
+            dsl.setState(DynamicStateLayout.States.NETWORK_ANOMALY(onRefresh = { refreshListener?.invoke()}),
+                getString(R.string.error_net)
+            )
             mBinding.clFailed.visibility = View.GONE
             mBinding.root.visibility = View.GONE
         }

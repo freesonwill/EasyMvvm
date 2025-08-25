@@ -202,7 +202,7 @@ class TournamentListFragment :
                     }
                     is DataState.NetworkUnavailable -> {
                         clDynamics.setState(
-                            DynamicStateLayout.States.NETWORK_ANOMALY,
+                            DynamicStateLayout.States.NETWORK_ANOMALY(),
                             arch.cayenne.lib.common.R.string.error_net.getString()
                         )
                         clDynamics.visibility = View.VISIBLE
