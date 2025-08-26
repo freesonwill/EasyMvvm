@@ -16,6 +16,9 @@ import plugin.koin.KoinViewModel
 class SearchViewModel : BaseViewModel() {
     private val repository: SearchRepository by inject { parametersOf(viewModelScope) }
 
+    /** 監聽登入狀態變化 */
+    fun observeLoginChange() = repository.observeLoginChange()
+
     /** 歷史搜尋紀錄 */
     private val _recordList = MutableLiveData<List<String>>()
     val searchRecord: LiveData<List<String>> = _recordList
@@ -62,8 +65,7 @@ class SearchViewModel : BaseViewModel() {
                     }
                     else -> Unit
                 }
-            },
-            false
+            }
         )
     }
 }

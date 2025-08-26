@@ -16,9 +16,11 @@ import com.walisport.module.search.data.model.SearchResultPlayerBean
 import com.walisport.module.search.data.model.SearchResultTeamBean
 import com.walisport.module.search.data.model.SearchResultTournamentBean
 import com.walisport.module.search.data.repo.SearchRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
@@ -51,6 +53,16 @@ class SearchResultDirectMatchViewModel: BaseViewModel() {
     val directMatchId: Int?
         get() = _directMatchId
 
+    /** 篩選時間(開始) */
+    private var _startTime: Long? = null
+    val startTime: Long?
+        get() = _startTime
+
+    /** 篩選時間(結束) */
+    private var _endTime: Long? = null
+    val endTime: Long?
+        get() = _endTime
+
     /** 當前頁面標題 */
     private var _currentTitle: String? = null
     val currentTitle: String?
@@ -60,6 +72,9 @@ class SearchResultDirectMatchViewModel: BaseViewModel() {
     private var _raceDateMap: MutableMap<String, Calendar> = mutableMapOf()
     val racedDateMap: Map<String, Calendar>
         get() = _raceDateMap
+
+    /** 監聽登入狀態變化 */
+    fun observeLoginChange() = repository.observeLoginChange()
 
     /** 取得精準搜尋結果 */
     fun getSearchResult(data: SearchResultBean) {
@@ -163,6 +178,12 @@ class SearchResultDirectMatchViewModel: BaseViewModel() {
             }
             else -> Unit
         }
+    }
+
+    /** 設定篩選時間 */
+    fun setFilterTime(startTime: Long?, endTime: Long?) {
+        _startTime = startTime
+        _endTime = endTime
     }
 
     /** 新增收藏賽事 */

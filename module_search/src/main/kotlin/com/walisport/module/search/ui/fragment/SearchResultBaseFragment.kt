@@ -22,6 +22,7 @@ import com.walisport.module.search.data.constants.SearchTypeEnum
 import com.walisport.module.search.data.model.SearchResultBean
 import com.walisport.module.search.databinding.FragmentSearchResultBaseBinding
 import com.walisport.module.search.ui.viewmodel.SearchResultBaseViewModel
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
 import arch.cayenne.lib.common.R as RC
@@ -125,6 +126,12 @@ class SearchResultBaseFragment :
                         }
                     }
                 }
+
+                launch {
+                    observeLoginChange()
+                        .filter { it && apiStateListener.value == DataState.NetworkUnavailable }
+                        .collect { doSearch() }
+                }
             }
         }
     }
@@ -142,9 +149,7 @@ class SearchResultBaseFragment :
     private fun setEmptyView(state: DataState) {
         with(contentBinding) {
             val layoutState =
-                if(state == DataState.NetworkUnavailable) DynamicStateLayout.States.NETWORK_ANOMALY(
-                    onRefresh = ::doSearch
-                )
+                if(state == DataState.NetworkUnavailable) DynamicStateLayout.States.NETWORK_ANOMALY()
                 else DynamicStateLayout.States.DATA_EMPTY
             val errorStr =
                 if(state == DataState.NetworkUnavailable) {
@@ -152,6 +157,7 @@ class SearchResultBaseFragment :
                 } else {
                     R.string.no_search_result.toTranslatedStr()
                 }
+
             dynamicState.setState(layoutState, errorStr)
         }
     }

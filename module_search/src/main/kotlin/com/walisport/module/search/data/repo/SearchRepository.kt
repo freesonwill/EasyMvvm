@@ -4,6 +4,7 @@ import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.base.data.repository.BaseRepository
 import arch.cayenne.lib.common.data.constants.UserDataKey
 import arch.cayenne.lib.common.data.manager.UserDataManager
+import arch.cayenne.lib.database.GameDatabase
 import arch.cayenne.lib.websocket.WebSocketManager
 import arch.cayenne.lib.websocket.data.ApiCode
 import arch.cayenne.lib.websocket.extension.sendAndWaitProtoMessageResponse
@@ -28,8 +29,14 @@ import kotlinx.coroutines.withContext
 class SearchRepository(
     override val scope: CoroutineScope,
     private val socketManager: WebSocketManager,
-    private val userDataManager: UserDataManager
+    private val userDataManager: UserDataManager,
+    private val database: GameDatabase
 ) : BaseRepository() {
+
+    private val infoDao = database.infoDao()
+
+    /** * 监听登录状态变化 */
+    fun observeLoginChange() = infoDao.observeIsLogin()
 
     /** * 删除一条搜索记录
      * @param keyword 要删除的关键字
