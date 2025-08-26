@@ -87,6 +87,7 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
 
     protected var otherViewAnimation: WeakReference<ObjectAnimator>? = null
     private val dimController by lazy { DimController.instance }
+    protected open var isGestureEnable = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -253,6 +254,9 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
     override fun onStart() {
         super.onStart()
         uiBind.onStart()
+        mBinding.root.isFocusable = true
+        mBinding.root.isFocusableInTouchMode = true
+        mBinding.root.isClickable = true
         setSheetContainer()
         setBackGroundOnclick()
         initDim()
@@ -290,6 +294,7 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
     }
 
     private fun setBehaviorOnScroll(view: View) {
+        if (!isGestureEnable) return
         val bottomSheet = (view.parent as? View) ?: return
         val params = bottomSheet.layoutParams as? CoordinatorLayout.LayoutParams ?: return
         val scrollBehavior = params.behavior as? ScrollBottomSheetBehavior ?: return
@@ -468,6 +473,7 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
 
     @SuppressLint("ClickableViewAccessibility")
     private fun setGesture() {
+        if (!isGestureEnable) return
         val v = mBinding.root
         val tikTokGesture = TikTokGesture(v)
         tikTokGesture.setListener(object : TikTokGesture.TikTokGestureListener {

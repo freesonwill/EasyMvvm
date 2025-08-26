@@ -138,13 +138,16 @@ class SingleBetRepository(
                 if (detail != null) {
                     betDao.updateDetailMoney(it.betId, detail.serialValue, money)
                 } else {
-                    val selection = betDao.getSelections(it.betId).first()
-                    val newDetail = BetDetailBean(
-                        betId = it.betId,
-                        sumOdds = selection.odds,
-                        inputMoney = money
-                    )
-                    betDao.insertDetail(newDetail)
+                    val selection = betDao.getSelections(it.betId)
+                    if (selection.isNotEmpty()) {
+                        val data = selection.first()
+                        val newDetail = BetDetailBean(
+                            betId = it.betId,
+                            sumOdds = data.odds,
+                            inputMoney = money
+                        )
+                        betDao.insertDetail(newDetail)
+                    }
                 }
             }
         }

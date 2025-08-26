@@ -72,6 +72,7 @@ class BetResultFragment : BasePreLoadBottomSheetFragment<BetResultViewModel, Fra
     }
 
     override fun initView(savedInstanceState: Bundle?) {
+        isGestureEnable = false
         (mBinding.rvComboOdds.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
         (mBinding.rvBet.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
         mBinding.rvComboOdds.itemAnimator = null
@@ -99,8 +100,8 @@ class BetResultFragment : BasePreLoadBottomSheetFragment<BetResultViewModel, Fra
             val behavior = BottomSheetBehavior.from(sheet)
 
             behavior.isDraggable = false
-            behavior.skipCollapsed = true  // ← 允許收合
-            behavior.isHideable = true      // ← 允許向下滑關閉
+            behavior.skipCollapsed = false  // ← 允許收合
+            behavior.isHideable = false      // ← 允許向下滑關閉
             behavior.isFitToContents = true
             behavior.state = BottomSheetBehavior.STATE_COLLAPSED
             behavior.saveFlags = BottomSheetBehavior.SAVE_HIDEABLE
