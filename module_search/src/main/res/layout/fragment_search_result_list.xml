@@ -1,42 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<arch.cayenne.lib.skin.widget.SkinnableConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/search_main_bg">
+
     <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
         android:id="@+id/LLTabLayout"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_40"
-        android:orientation="vertical"
         android:layout_marginStart="@dimen/dp_13"
         android:layout_marginEnd="@dimen/dp_13"
         android:background="@color/tran_0"
+        android:orientation="vertical"
         tools:ignore="MissingConstraints">
+
         <arch.cayenne.lib.skin.widget.SkinnableTabLayout
             android:id="@+id/tlSearch"
             android:layout_width="match_parent"
             android:layout_height="20dp"
-            app:tabIndicatorHeight="0dp"
-            app:tabMode="fixed"
-            app:tabMinWidth="85dp"
-            android:background="@android:color/transparent"
-            app:tabPaddingStart="0dp"
-            app:tabPaddingEnd="0dp"
-            app:tabRippleColor="@null"
             android:layout_marginTop="@dimen/dp_9"
+            android:background="@android:color/transparent"
+            app:tabIndicatorHeight="0dp"
+            app:tabMinWidth="85dp"
+            app:tabMode="fixed"
+            app:tabPaddingEnd="0dp"
+            app:tabPaddingStart="0dp"
+            app:tabRippleColor="@null"
             app:tabSelectedTextColor="@color/tab_item_text_select"
             app:tabTextAppearance="@style/SearchTabLayoutTextAppearance"
             app:tabTextColor="@color/secondary_text"
             tools:ignore="SpeakableTextPresentCheck" />
+
         <arch.cayenne.lib.common.ui.view.CustomTabIndicator
             android:id="@+id/customIndicator"
             android:layout_width="match_parent"
             android:layout_height="3dp"
             android:layout_marginTop="@dimen/dp_4"
-            android:background="@android:color/transparent"
-            />
+            android:background="@android:color/transparent" />
     </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
 
     <androidx.viewpager2.widget.ViewPager2
@@ -47,4 +49,4 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/LLTabLayout" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
