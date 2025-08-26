@@ -126,7 +126,7 @@
 
             <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
                 android:id="@+id/ll_common_amount"
-                android:layout_width="62dp"
+                android:layout_width="61dp"
                 android:layout_height="wrap_content"
                 android:background="@drawable/shape_6dp"
                 android:backgroundTint="@color/keyboard_1"

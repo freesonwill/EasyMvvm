@@ -19,7 +19,7 @@
 
     <arch.cayenne.lib.skin.widget.SkinnableEditText
         android:id="@+id/et_money"
-        android:layout_width="150dp"
+        android:layout_width="127dp"
         android:layout_height="36dp"
         android:background="@drawable/shape_8dp"
         android:backgroundTint="@color/input_box"
