@@ -2,7 +2,10 @@ package arch.cayenne.module.bet.ui.fragment
 
 import android.animation.ObjectAnimator
 import android.os.Bundle
+import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
@@ -25,6 +28,7 @@ import arch.cayenne.module.bet.ui.adapter.BetSelectionAdapter
 import arch.cayenne.module.bet.ui.adapter.ResultMultiBetAdapter
 import arch.cayenne.module.bet.util.BetSheetDecoration
 import arch.cayenne.module.bet.viewmodel.BetResultViewModel
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
 
@@ -77,6 +81,30 @@ class BetResultFragment : BasePreLoadBottomSheetFragment<BetResultViewModel, Fra
 
         val decoration = BetSheetDecoration(6.dp2px, 12.dp2px)
         mBinding.rvBet.addItemDecoration(decoration)
+
+        val screenHeight = resources.displayMetrics.heightPixels
+        val maxFragmentHeight = (screenHeight * 0.75).toInt()
+        mBinding.root.maxHeight = maxFragmentHeight
+    }
+
+    override fun onStart() {
+        super.onStart()
+        setFitToContents()
+    }
+
+    private fun setFitToContents() {
+        val bottomSheet =
+            dialog?.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet) as? FrameLayout
+        bottomSheet?.let { sheet ->
+            val behavior = BottomSheetBehavior.from(sheet)
+
+            behavior.isDraggable = false
+            behavior.skipCollapsed = true  // ← 允許收合
+            behavior.isHideable = true      // ← 允許向下滑關閉
+            behavior.isFitToContents = true
+            behavior.state = BottomSheetBehavior.STATE_COLLAPSED
+            behavior.saveFlags = BottomSheetBehavior.SAVE_HIDEABLE
+        }
     }
 
     override fun initListener() {
@@ -193,14 +221,17 @@ class BetResultFragment : BasePreLoadBottomSheetFragment<BetResultViewModel, Fra
     }
 
     private fun adjustLayoutHeight(full: Boolean) {
+        val screenHeight = resources.displayMetrics.heightPixels
+        val maxFragmentHeight = (screenHeight * 0.75).toInt()
         if (full) {
-            val screenHeight = resources.displayMetrics.heightPixels
-            val maxFragmentHeight = (screenHeight * 0.75).toInt()
             mBinding.root.minHeight = maxFragmentHeight
+            val layoutParams = mBinding.rvBet.layoutParams as ConstraintLayout.LayoutParams
+            layoutParams.height = 0
+            mBinding.rvBet.layoutParams = layoutParams
         } else {
+            mBinding.root.minHeight = 0
             val layoutParams = mBinding.rvBet.layoutParams
             layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
-            mBinding.root.minHeight = 0
             mBinding.rvBet.layoutParams = layoutParams
         }
     }
