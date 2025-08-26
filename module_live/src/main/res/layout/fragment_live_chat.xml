@@ -11,17 +11,12 @@
             type="com.walisport.module.live.ui.viewmodel.LiveChatViewModel" />
     </data>
 
-    <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
+    <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
         android:id="@+id/main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/main_background">
-
-        <arch.cayenne.lib.common.ui.view.DynamicStateLayout
-            android:id="@+id/dynamic_state"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
-
+        android:background="@color/main_background"
+        android:orientation="vertical">
 
         <androidx.constraintlayout.widget.Group
             android:id="@+id/live_chat_group_chat"
@@ -29,26 +24,124 @@
             android:layout_height="wrap_content"
             app:constraint_referenced_ids="live_chat_recycler,live_chat_keyboard" />
 
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/live_chat_recycler"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layout_list"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginTop="@dimen/dp_12"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginBottom="@dimen/dp_62"
-            />
+            android:layout_height="match_parent">
+
+            <arch.cayenne.lib.common.ui.view.DynamicStateLayout
+                android:id="@+id/dynamic_state"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/live_chat_recycler"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginTop="@dimen/dp_12"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/input_content"
+                />
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/input_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingVertical="@dimen/dp_11"
+                app:layout_constraintBottom_toBottomOf="parent"
+                >
+
+                <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
+                    android:id="@+id/live_chat_ll_input"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_marginStart="@dimen/dp_10"
+                    android:background="@drawable/shape_20"
+                    android:backgroundTint="@color/card_ooo_background"
+                    android:orientation="horizontal"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toLeftOf="@id/live_chat_tv_send"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <com.walisport.module.live.ui.widget.EmojiEditTextView
+                        android:id="@+id/live_chat_et_input"
+                        android:layout_width="0dp"
+                        android:layout_height="40dp"
+                        android:layout_weight="1"
+                        android:background="@null"
+                        android:gravity="center_vertical"
+                        android:hint="@string/live_chat_talk"
+                        android:imeActionLabel="@string/send"
+                        android:imeOptions="actionSend"
+                        android:inputType="text"
+                        android:paddingStart="@dimen/dp_16"
+                        android:textColor="@color/main_text"
+                        android:textColorHint="@color/secondary_text"
+                        android:textSize="@dimen/sp_15" />
+
+                    <arch.cayenne.lib.skin.widget.SkinnableTextView
+                        android:id="@+id/live_chat_tv_size"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginHorizontal="5dp"
+                        android:text="0/20"
+                        android:textColor="@color/secondary_text"
+                        android:textSize="10sp" />
+
+                    <arch.cayenne.lib.skin.widget.SkinnableImageView
+                        android:id="@+id/live_chat_iv_keyboard"
+                        android:layout_width="@dimen/dp_25"
+                        android:layout_height="@dimen/dp_25"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginEnd="7.85dp"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/icon_softkeyboard"
+                        android:stateListAnimator="@animator/layout_alpha_animator" />
+
+                    <arch.cayenne.lib.skin.widget.SkinnableImageView
+                        android:id="@+id/live_chat_iv_emoji"
+                        android:layout_width="@dimen/dp_25"
+                        android:layout_height="@dimen/dp_25"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginEnd="7.85dp"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/icon_input_emoji"
+                        android:stateListAnimator="@animator/layout_alpha_animator"
+                        android:visibility="gone" />
+
+                </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
+
+                <arch.cayenne.lib.skin.widget.SkinnableTextView
+                    android:id="@+id/live_chat_tv_send"
+                    android:layout_width="@dimen/dp_60"
+                    android:layout_height="40dp"
+                    android:layout_marginStart="@dimen/dp_4"
+                    android:layout_marginEnd="@dimen/dp_8"
+                    android:background="@drawable/bg_keyboard_send"
+                    android:gravity="center"
+                    android:stateListAnimator="@animator/layout_alpha_animator"
+                    android:text="@string/send"
+                    android:textColor="@color/text_on_theme_color"
+                    app:layout_constraintBottom_toBottomOf="@id/live_chat_ll_input"
+                    app:layout_constraintLeft_toRightOf="@id/live_chat_ll_input"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/live_chat_ll_input" />
+
+                <!--            </FrameLayout>-->
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/live_chat_keyboard"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintVertical_bias="1"
-            />
+            android:layout_height="match_parent" />
 
-    </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
+    </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
 
 </layout>

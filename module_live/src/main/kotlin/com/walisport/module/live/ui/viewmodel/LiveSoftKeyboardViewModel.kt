@@ -100,43 +100,5 @@ class LiveSoftKeyboardViewModel : BaseViewModel() {
         return arrayListOf(SoftData(EmojiTypeEnum.NORMAL,getNormalEmojis()),SoftData(EmojiTypeEnum.BID,getBidEmojis()))
     }
 
-    val CHAT_TO_EMOJI:Int = 1
-    val CHAT_TO_SOFT:Int = 2
-    val SOFT_TO_EMOJI:Int = 3
-    val EMOJI_TO_SOFT:Int = 4
-    val EMOJI_TO_CHAT:Int = 5
-    val SOFT_TO_CHAT:Int = 6
-    val CHAT_TO_CHAT:Int = 7
-
-    /**
-     * 判断动画类型
-     * */
-     fun getAnimationType(listenerValue:KeyBoardType,currentValue:KeyBoardType):Int{
-
-        return  when(currentValue){
-            KeyBoardType.CHAT ->{
-                return when(listenerValue){
-                    KeyBoardType.EMOJI -> CHAT_TO_EMOJI
-                    KeyBoardType.SOFT_KEYBOARD -> CHAT_TO_SOFT
-                    KeyBoardType.CHAT -> CHAT_TO_CHAT
-                }
-            }
-            KeyBoardType.SOFT_KEYBOARD ->{
-                return when(listenerValue){
-                    KeyBoardType.CHAT -> SOFT_TO_CHAT
-                    KeyBoardType.EMOJI -> SOFT_TO_EMOJI
-                    KeyBoardType.SOFT_KEYBOARD -> -1
-                }
-            }
-            KeyBoardType.EMOJI ->{
-                return when(listenerValue){
-                    KeyBoardType.CHAT -> EMOJI_TO_CHAT
-                    KeyBoardType.SOFT_KEYBOARD -> EMOJI_TO_SOFT
-                    KeyBoardType.EMOJI -> -1
-                }
-            }
-        }
-    }
-
 
 }

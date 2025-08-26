@@ -13,13 +13,18 @@ import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewTreeObserver
+import android.view.ViewTreeObserver.*
 import android.view.inputmethod.EditorInfo
 import android.widget.ImageView
 import android.widget.LinearLayout
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.animation.addListener
 import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
+import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
@@ -31,6 +36,9 @@ import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.removeAllTips
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
+import arch.cayenne.lib.skin.widget.SkinnableImageView
+import arch.cayenne.lib.skin.widget.SkinnableLinearLayout
+import arch.cayenne.lib.skin.widget.SkinnableTextView
 import com.google.android.material.tabs.TabLayout
 import com.walisport.module.live.R
 import com.walisport.module.live.data.constants.KeyBoardType
@@ -39,9 +47,12 @@ import com.walisport.module.live.databinding.FragmentLiveSoftkeyboardLayoutBindi
 import com.walisport.module.live.ui.adapter.SoftAdapter
 import com.walisport.module.live.ui.viewmodel.LiveChatViewModel
 import com.walisport.module.live.ui.viewmodel.LiveSoftKeyboardViewModel
+import com.walisport.module.live.ui.widget.EmojiEditTextView
 import com.walisport.module.live.utils.EditTextUtils
 import com.walisport.module.live.utils.EmojiEditFilter
 import com.walisport.module.live.utils.EmojiUtils.BID_EMOJI_REGEX
+import com.walisport.module.live.utils.softkeyboard.KeyBoardInsetsCallBack
+import com.walisport.module.live.utils.softkeyboard.KeyBoardListener
 import kotlinx.coroutines.launch
 import java.util.regex.Pattern
 import kotlin.reflect.KClass
@@ -59,6 +70,32 @@ class LiveSoftKeyboardFragment :
     private var isSoftKeyBoard: Boolean = false
 //    var softKeyHeightHelper:SoftKeyHeightHelper? = null
 
+    private lateinit var liveChatIvEmoji: SkinnableImageView
+    private lateinit var liveChatTvSend: SkinnableTextView
+    private lateinit var liveChatIvKeyboard: SkinnableImageView
+    private lateinit var liveChatEtInput: EmojiEditTextView
+    private lateinit var liveChatTvSize: SkinnableTextView
+    private lateinit var liveChatLlInput: SkinnableLinearLayout
+    private lateinit var inputContent:ConstraintLayout
+
+
+    fun setInputView(
+        liveChatIvEmoji: SkinnableImageView,
+        liveChatTvSend: SkinnableTextView,
+        liveChatIvKeyboard: SkinnableImageView,
+        liveChatEtInput: EmojiEditTextView,
+        liveChatTvSize: SkinnableTextView,
+        liveChatLlInput: SkinnableLinearLayout,
+        inputContent:ConstraintLayout
+    ) {
+        this.liveChatIvEmoji = liveChatIvEmoji
+        this.liveChatTvSend = liveChatTvSend
+        this.liveChatIvKeyboard = liveChatIvKeyboard
+        this.liveChatEtInput = liveChatEtInput
+        this.liveChatTvSize = liveChatTvSize
+        this.liveChatLlInput = liveChatLlInput
+        this.inputContent = inputContent
+    }
 
     //表情点击
     private val itemListener = object : RecyclerItemListener<EmojiData> {
@@ -68,7 +105,7 @@ class LiveSoftKeyboardFragment :
                 chatViewModel.sendMsgToChat(item.key)
                 return
             }
-            mBinding.liveChatEtInput.text?.append(item?.key)
+            liveChatEtInput.text?.append(item?.key)
         }
     }
 
@@ -79,7 +116,6 @@ class LiveSoftKeyboardFragment :
 
     override fun onStop() {
         super.onStop()
-//        activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
         hideSoftKeyBoard(4)
     }
 
@@ -98,23 +134,21 @@ class LiveSoftKeyboardFragment :
 
     @SuppressLint("SetTextI18n", "ClickableViewAccessibility")
     override fun initListener() {
-        mBinding.liveChatIvEmoji.setOnTouchListener { v, event ->
+
+        liveChatIvEmoji.setOnTouchListener { v, event ->
             if (event.action == MotionEvent.ACTION_DOWN) {
                 chatViewModel.addSoftKeyBoardEvent(KeyBoardType.EMOJI)
             }
             return@setOnTouchListener true
         }
-        mBinding.liveChatTvSend.setOnClickListener {
+        liveChatTvSend.setOnClickListener {
             sendText()
         }
-        mBinding.liveChatIvKeyboard.setOnClickListener {
+        liveChatIvKeyboard.setOnClickListener {
             chatViewModel.addSoftKeyBoardEvent(KeyBoardType.SOFT_KEYBOARD)
         }
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-    }
 
     @SuppressLint("ClickableViewAccessibility")
     private fun initInputListener() {
@@ -128,7 +162,6 @@ class LiveSoftKeyboardFragment :
                     return@setOnApplyWindowInsetsListener insets
                 }
                 isSoftKeyBoard = true
-//                chatViewModel.softKeyBoardHeight = imeInsets.bottom
                 onSoftKeyBoardShow()
             } else {
                 // 键盘隐藏
@@ -142,7 +175,7 @@ class LiveSoftKeyboardFragment :
         }
 
 
-        mBinding.liveChatEtInput.apply {
+        liveChatEtInput.apply {
             //设置发送按钮
             imeOptions = EditorInfo.IME_ACTION_SEND
             setImeActionLabel(
@@ -160,12 +193,15 @@ class LiveSoftKeyboardFragment :
                 return@setOnEditorActionListener false
             }
             //输入拦截
-            filters = arrayOf(EmojiEditFilter(mBinding.liveChatTvSize))
+            filters = arrayOf(EmojiEditFilter(liveChatTvSize))
             //监听聚焦事件，不合格的展示软件盘一律拦截
             setOnFocusChangeListener { v, hasFocus ->
+                "hasFocus $hasFocus  openSoftKeyBoardLiveData ${chatViewModel.openSoftKeyBoardLiveData.value}".logd("aaa")
                 //如果当前点击事件 softkeyboardlisterner 和 当前状态currentKeyboardListener 一致可以过滤掉聚焦事件
                 if (chatViewModel.openSoftKeyBoardLiveData.value == true) { //要打开软件盘并且软件盘在收缩中
                     openSoftKeyBoard()
+                }else{
+                    hideSoftKeyBoard(1)
                 }
             }
             //监听点击事件
@@ -186,7 +222,7 @@ class LiveSoftKeyboardFragment :
      * 发送消息
      * */
     private fun sendText() {
-        val text: String = mBinding.liveChatEtInput.text?.toString() ?: ""
+        val text: String = liveChatEtInput.text?.toString() ?: ""
         if (text.isEmpty()) {
             return
         }
@@ -207,21 +243,13 @@ class LiveSoftKeyboardFragment :
         chatViewModel.openSoftKeyBoardLiveData.observe(viewLifecycleOwner) {
             if (it && !isSoftKeyBoard) {  //显示软件盘状态 it == true  当前软件盘没有收缩状态
                 openSoftKeyBoard()
-                mBinding.liveChatEtInput.requestFocus()
+                liveChatEtInput.requestFocus()
             } else if (!it && isSoftKeyBoard) { // 隐藏软件盘状态  it== false 当前软件盘弹出状态
                 hideSoftKeyBoard(2)
-                mBinding.liveChatEtInput.clearFocus()
+                liveChatEtInput.clearFocus()
+            }
+        }
 
-            }
-        }
-        chatViewModel.softKeyBoardListener.collect {
-            val flag1 = !chatViewModel.checkSoftKeyboardVisible()
-            if (it != KeyBoardType.CHAT && flag1) {
-                chatViewModel.checkSoftKeyBoardBetAmount()
-                return@collect
-            }
-            showChangeAnimation()
-        }
     }
 
     private fun initTab() {
@@ -283,8 +311,8 @@ class LiveSoftKeyboardFragment :
             val softAdapter = SoftAdapter()
             softAdapter.setItemListener(itemListener)
             softAdapter.delListener = {
-                mBinding.liveChatEtInput.apply {
-                    if (mBinding.liveChatEtInput.text?.length == 0) {
+                liveChatEtInput.apply {
+                    if (liveChatEtInput.text?.length == 0) {
                         return@apply
                     }
                     dispatchKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DEL))
@@ -312,136 +340,6 @@ class LiveSoftKeyboardFragment :
         }
     }
 
-    private fun showChangeAnimation() {
-        val animationType: Int = mViewModel.getAnimationType(
-            chatViewModel.softKeyBoardListener.value,
-            chatViewModel.currentSoftKeyboard.value
-        )
-        when (animationType) {
-            //展示软件盘
-            mViewModel.CHAT_TO_SOFT -> {
-                chatViewModel.updateSoftKeyBoard(true, 1)
-                chatViewModel.updateKeyBoard()
-            }
-            //软件盘切换到聊天
-            mViewModel.SOFT_TO_CHAT -> {
-                chatViewModel.updateSoftKeyBoard(false, 2)
-                chatViewModel.updateKeyBoard()
-            }
-            //软件盘切换到表情键盘
-            mViewModel.SOFT_TO_EMOJI -> {
-                startAnimation(animationType)
-            }
-            //展示表情键盘
-            mViewModel.CHAT_TO_EMOJI -> {
-                startAnimation(animationType)
-            }
-
-            //表情键盘切换到软件盘
-            mViewModel.EMOJI_TO_SOFT -> {
-                startAnimation(animationType)
-            }
-            //表情键盘切换到聊天
-            mViewModel.EMOJI_TO_CHAT -> {
-                startAnimation(animationType)
-            }
-
-            else -> {}
-        }
-    }
-
-
-    @SuppressLint("Recycle")
-    private fun startAnimation(animationType: Int) {
-        val topValue = 21.dp2px //  21 输入框到顶部的距离
-        val bottomValue = chatViewModel.keyBoardHeight - 62.dp2px
-        val mainMaxHeight = chatViewModel.keyBoardHeight - 21.dp2px //有21dp到顶部的距离
-        val mainMinHeight = 62.dp2px
-        var mainStartHeight: Int = mBinding.main.height
-        var mainEndHeight: Int = 0
-        var translationStart: Float = 0f
-        var translationEnd: Float = 0f
-
-        when (animationType) {
-            mViewModel.CHAT_TO_EMOJI -> {
-                translationStart = bottomValue.toFloat()
-                translationEnd = topValue.toFloat()
-                mainEndHeight = mainMaxHeight
-            }
-            // 起始点为软件盘的高度 动画开始高度为整个表情键盘的高度下降到软件盘高度 因此topDistance - softKeyBoardHeight 截止点为topDistance
-            mViewModel.SOFT_TO_EMOJI -> {
-                translationStart = (chatViewModel.softKeyBoardHeight+62.dp2px).toFloat()
-                translationEnd = 0f
-                mainStartHeight = chatViewModel.softKeyBoardHeight+62.dp2px
-                mainEndHeight = mainMaxHeight
-            }
-
-            mViewModel.EMOJI_TO_SOFT -> {
-                translationStart = topValue.toFloat()
-                translationEnd = (chatViewModel.keyBoardHeight - chatViewModel.softKeyBoardHeight - 21.dp2px - 62.dp2px).toFloat()
-                mainEndHeight = mainMinHeight
-            }
-
-            mViewModel.EMOJI_TO_CHAT -> {
-                translationStart = topValue.toFloat()
-                translationEnd = (chatViewModel.keyBoardHeight - 21.dp2px - 62.dp2px).toFloat()
-                mainEndHeight = mainMinHeight
-            }
-
-            else -> {}
-        }
-        val alphaParam = if (animationType in intArrayOf(mViewModel.CHAT_TO_EMOJI, mViewModel.SOFT_TO_EMOJI)) floatArrayOf(0f, 1f) else floatArrayOf(1f, 0f)
-
-        val translationAnim = ObjectAnimator.ofFloat(mBinding.main, "translationY", translationStart, translationEnd)
-        val alphaAnim = ObjectAnimator.ofFloat(mBinding.emojiContent, "alpha", *alphaParam)
-        val valueAnim = ValueAnimator.ofInt(mainStartHeight,mainEndHeight)
-        valueAnim.addUpdateListener {
-            mBinding.main.layoutParams.height = it.animatedValue as Int
-        }
-        val animSet = AnimatorSet().apply {
-            duration = 450
-            playTogether(translationAnim, alphaAnim)
-            addListener(onStart = {
-                when (animationType) {
-                    mViewModel.CHAT_TO_EMOJI -> {
-                        mBinding.main.layoutParams.height = mainMaxHeight
-                        chatViewModel.updateKeyBoard()
-                    }
-                    mViewModel.SOFT_TO_EMOJI -> {
-                        mBinding.main.layoutParams.height = mainMaxHeight
-//                        mBinding.emojiContent.layoutParams.height = chatViewModel.softKeyBoardHeight
-                        chatViewModel.updateKeyBoard()
-                        chatViewModel.updateSoftKeyBoard(false, 3)
-                    }
-                    mViewModel.EMOJI_TO_SOFT -> {
-                        chatViewModel.updateSoftKeyBoard(true, 6)
-                    }
-                    else -> {}
-                }
-
-            }, onEnd = {
-                if (animationType == mViewModel.EMOJI_TO_SOFT) {
-                    mBinding.main.layoutParams.height = mainMinHeight
-                    chatViewModel.updateKeyBoard()
-                } else if (animationType == mViewModel.EMOJI_TO_CHAT) {
-                    mBinding.main.layoutParams.height = mainMinHeight
-                    chatViewModel.updateKeyBoard()
-                }else if(animationType == mViewModel.SOFT_TO_EMOJI){
-//                    val emojiHeight = chatViewModel.keyBoardHeight-21.dp2px -62.dp2px
-//                    mBinding.main.layoutParams.height = mainMaxHeight
-//                    mBinding.emojiContent.layoutParams.height = emojiHeight
-                }
-                mBinding.main.translationY = 0f
-            })
-            start()
-        }
-    }
-
-
-    override fun onResume() {
-        super.onResume()
-    }
-
     /**
      * 展示聊天界面
      * */
@@ -450,16 +348,10 @@ class LiveSoftKeyboardFragment :
             liveChatIvEmoji.isVisible = true
 //            liveChatTvSend.isVisible = false
             liveChatIvKeyboard.isVisible = false
-            liveChatTvSize.isVisible = false
 //            liveChatIvShare.isVisible = true
             liveChatEtInput.text?.clear()
-            main.setBackgroundResource(
-                SkinnableResourceManager.getTargetResourceId(
-                    requireContext(),
-                    arch.cayenne.lib.common.R.color.main_background
-                )
-            )
         }
+        liveChatTvSize.isVisible = false
         updateEmojiView(false)
         updateWhenKeyBoardVisible(KeyBoardType.CHAT)
 //        hideSoftKeyBoard(3)
@@ -474,12 +366,7 @@ class LiveSoftKeyboardFragment :
             liveChatIvEmoji.isVisible = true
             liveChatTvSize.isVisible = true
             liveChatIvKeyboard.isVisible = false
-            main.setBackgroundResource(
-                SkinnableResourceManager.getTargetResourceId(
-                    requireContext(),
-                    arch.cayenne.lib.common.R.color.card_background
-                )
-            )
+
 //            liveChatEtInput.requestFocus()
         }
         updateEmojiView(false)
@@ -497,12 +384,6 @@ class LiveSoftKeyboardFragment :
             liveChatIvEmoji.isVisible = false
 //            liveChatTvSend.isVisible = true
             liveChatTvSize.isVisible = true
-            main.setBackgroundResource(
-                SkinnableResourceManager.getTargetResourceId(
-                    requireContext(),
-                    arch.cayenne.lib.common.R.color.card_background
-                )
-            )
         }
         updateEmojiView(true)
         updateWhenKeyBoardVisible(KeyBoardType.EMOJI)
@@ -520,55 +401,43 @@ class LiveSoftKeyboardFragment :
      * */
     private fun updateWhenKeyBoardVisible(type: KeyBoardType) {
         //聊天界面和软件盘、表情键盘的hint展示不同
-        mBinding.liveChatEtInput.hint = SkinnableResourceManager.getString(
+        liveChatEtInput.hint = SkinnableResourceManager.getString(
             requireContext(),
             if (type == KeyBoardType.CHAT) R.string.live_chat_talk else R.string.live_chat_speak,
             mViewModel.languageManager.getLanguage()
         )
-        //聊天界面、表情键盘和表情键盘对应的topMargin不同
-//        mBinding.main.apply {
-//            val lp = layoutParams as FrameLayout.LayoutParams
-//            lp.topMargin = if (type == KeyBoardType.EMOJI) 21.dp2px else 0
-//            layoutParams = lp
-//        }
-        mBinding.liveChatLlInput.backgroundTintList = SkinnableResourceManager.getColorStateList(
+        liveChatLlInput.backgroundTintList = SkinnableResourceManager.getColorStateList(
             requireContext(),
             if (type == KeyBoardType.CHAT) arch.cayenne.lib.common.R.color.input_box_2 else arch.cayenne.lib.res.R.color.card_ooo_background
         )
+        val mainColor =  if(type == KeyBoardType.CHAT)  arch.cayenne.lib.common.R.color.main_background  else  arch.cayenne.lib.common.R.color.card_background
+        mBinding.main.setBackgroundResource(SkinnableResourceManager.getTargetResourceId(requireContext(), mainColor))
+        inputContent.setBackgroundResource(SkinnableResourceManager.getTargetResourceId(requireContext(), mainColor))
     }
 
     /**
      *打开软件盘
      * */
     private fun openSoftKeyBoard() {
-        EditTextUtils.showKeyboard(activity, mBinding.liveChatEtInput)
-        mBinding.liveChatEtInput.requestFocus()
+        EditTextUtils.showKeyboard(activity, liveChatEtInput)
+        liveChatEtInput.requestFocus()
     }
 
     /**
      * 禁用软件盘
      * */
     private fun hideSoftKeyBoard(flag: Int) {
-        mBinding.liveChatEtInput.clearFocus()
-        EditTextUtils.hideKeyboard(activity, mBinding.liveChatEtInput)
+        liveChatEtInput.clearFocus()
+        EditTextUtils.hideKeyboard(activity, liveChatEtInput)
     }
 
     /**
      *软键盘打开时调用
      * */
     private fun onSoftKeyBoardShow() {
-        if(chatViewModel.softKeyBoardHeight == 0){
-            val height = getSupportSoftInputHeight()
-            chatViewModel.saveUpdateSoftKeyBoardHeight(height)
-        }
-
-//        mBinding.apply {
-//            mBinding.emojiContent.isVisible = false
-//            mBinding.emojiContent.layoutParams.height = chatViewModel.softKeyBoardHeight
-//            noneContent.isVisible = true
-//            val height = chatViewModel.keyBoardHeight - chatViewModel.softKeyBoardHeight - 62.dp2px
-//            noneContent.layoutParams.height = height
-//            emojiContent.layoutParams.height = chatViewModel.softKeyBoardHeight
+//        if (chatViewModel.softKeyBoardHeight == 0) {
+//            val height = getSupportSoftInputHeight()
+//            chatViewModel.saveUpdateSoftKeyBoardHeight(height)
 //        }
     }
 
@@ -576,15 +445,9 @@ class LiveSoftKeyboardFragment :
      * 软件盘关闭时调用
      * */
     private fun onSoftKeyBoardHide() {
-
-//        if (chatViewModel.softKeyBoardListener.value == KeyBoardType.SOFT_KEYBOARD) {
-//            chatViewModel.addSoftKeyBoardEvent(KeyBoardType.CHAT, 5)
-//        }
     }
 
-    interface SoftKeyHeightHelper {
-        fun changeSoftKeyBoardHeight(height: Int, isSoftToEmoji: Boolean = false)
-    }
+
 
     companion object {
         const val TAG: String = "LiveSoftKeyboardFragment"

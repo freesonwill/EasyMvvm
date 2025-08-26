@@ -17,6 +17,7 @@ import arch.cayenne.lib.websocket.data.SocketConnectState
 import com.walisport.module.live.R
 import com.walisport.module.live.data.constants.CheckBetResultEnum
 import com.walisport.module.live.data.constants.KeyBoardType
+import com.walisport.module.live.data.constants.KeyboardActionType
 import com.walisport.module.live.data.repository.LiveChatRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -307,6 +308,37 @@ class LiveChatViewModel(private val chatRepo: LiveChatRepository,private val use
             userDataManager.setKeyValue(UserDataKey.KEY_SOFT_KEYBOARD_HEIGHT,softKeyBoardHeight)
         }
     }
+
+    /**
+     * 判断动画类型
+     * */
+    fun getAnimationType(listenerValue:KeyBoardType,currentValue:KeyBoardType):KeyboardActionType{
+
+        return  when(currentValue){
+            KeyBoardType.CHAT ->{
+                return when(listenerValue){
+                    KeyBoardType.EMOJI -> KeyboardActionType.CHAT_TO_EMOJI
+                    KeyBoardType.SOFT_KEYBOARD -> KeyboardActionType.CHAT_TO_SOFT
+                    KeyBoardType.CHAT -> KeyboardActionType.NONE
+                }
+            }
+            KeyBoardType.SOFT_KEYBOARD ->{
+                return when(listenerValue){
+                    KeyBoardType.CHAT -> KeyboardActionType.SOFT_TO_CHAT
+                    KeyBoardType.EMOJI -> KeyboardActionType.SOFT_TO_EMOJI
+                    KeyBoardType.SOFT_KEYBOARD -> KeyboardActionType.SOFT_TO_SOFT
+                }
+            }
+            KeyBoardType.EMOJI ->{
+                return when(listenerValue){
+                    KeyBoardType.CHAT -> KeyboardActionType.EMOJI_TO_CHAT
+                    KeyBoardType.SOFT_KEYBOARD ->KeyboardActionType.EMOJI_TO_SOFT
+                    KeyBoardType.EMOJI ->KeyboardActionType.NONE
+                }
+            }
+        }
+    }
+
 
 
 }
