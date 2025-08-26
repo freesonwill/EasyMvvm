@@ -70,6 +70,7 @@ class BetResultFragment : BasePreLoadBottomSheetFragment<BetResultViewModel, Fra
             }
         })
     }
+    private var isFull: Boolean? = null
 
     override fun initView(savedInstanceState: Bundle?) {
         isGestureEnable = false
@@ -222,6 +223,7 @@ class BetResultFragment : BasePreLoadBottomSheetFragment<BetResultViewModel, Fra
     }
 
     private fun adjustLayoutHeight(full: Boolean) {
+        if (this.isFull == full) return
         val screenHeight = resources.displayMetrics.heightPixels
         val maxFragmentHeight = (screenHeight * 0.75).toInt()
         if (full) {
@@ -235,6 +237,7 @@ class BetResultFragment : BasePreLoadBottomSheetFragment<BetResultViewModel, Fra
             layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
             mBinding.rvBet.layoutParams = layoutParams
         }
+        this.isFull = full
     }
 
     private fun clearAllObserve() {
