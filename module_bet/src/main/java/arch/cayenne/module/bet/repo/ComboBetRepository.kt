@@ -236,10 +236,12 @@ class ComboBetRepository(
                     val resp = remoteManager.comboBet(selection, multiBet)
                     if (resp != null && resp.isSuccessful) {
                         tempDetail.forEach { detail ->
-                            val res = resp.data.first { it.serialValue == detail.serialValue }
-                            detail.orderId = res.orderId
-                            detail.status = BetResultStatusEnum.getStatusByCode(res.orderStatus)
-                            betDao.updateDetail(detail)
+                            val info = resp.data.find { it.serialValue == detail.serialValue }
+                            if (info != null) {
+                                detail.orderId = info.orderId
+                                detail.status = BetResultStatusEnum.getStatusByCode(info.orderStatus)
+                                betDao.updateDetail(detail)
+                            }
                         }
                     } else {
                         tempDetail.map { detail ->
