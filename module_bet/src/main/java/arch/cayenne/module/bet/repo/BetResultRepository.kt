@@ -50,7 +50,7 @@ class BetResultRepository(
             launch {
                 betDao.observeCurrentDetail().distinctUntilChanged().collect { detail ->
                     if (detail.isNotEmpty()) {
-                        detailFlow.emit(detail)
+                        detailFlow.emit(sortDetail(detail))
                     }
                 }
             }
@@ -60,6 +60,36 @@ class BetResultRepository(
     fun observeBetType(): Flow<BetTypeEnum> = betTypeFlow
     fun observeSelections(): Flow<List<BetSelectionBean>> = selectionFlow
     fun observeDetail(): Flow<List<BetDetailBean>> = detailFlow
+
+    private fun sortDetail(data: List<BetDetailBean>): List<BetDetailBean> {
+        val n = data.size
+        return data.sortedWith { a, b ->
+            val aIsOne = a.comboV == 1
+            val bIsOne = b.comboV == 1
+
+            val aIsMain = aIsOne && a.comboK == n
+            val bIsMain = bIsOne && b.comboK == n
+
+            when {
+                // 優先顯示 maxComboK 且 comboV == 1 的那一筆
+                aIsMain && !bIsMain -> -1
+                !aIsMain && bIsMain -> 1
+
+                // 接著顯示其他 comboV == 1 的，comboK 升序
+                aIsOne && bIsOne -> a.comboK.compareTo(b.comboK)
+
+                // comboV == 1 的優先於 comboV != 1
+                aIsOne && !bIsOne -> -1
+                !aIsOne && bIsOne -> 1
+
+                // 最後 comboV != 1 的，依 comboK 升序，再 comboV 升序
+                else -> {
+                    val k = a.comboK.compareTo(b.comboK)
+                    if (k != 0) k else a.comboV.compareTo(b.comboV)
+                }
+            }
+        }
+    }
 
     suspend fun getCurrency(): String = withContext(scope.coroutineContext) {
         infoDao.getCurrency()
