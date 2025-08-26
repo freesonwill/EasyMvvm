@@ -32,7 +32,6 @@ import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.common.ui.view.ClearableEditText
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
-import arch.cayenne.lib.common.utils.ext.touchBackPressed
 import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.lib.skin.res.SkinnableResourceManager.getDrawable
@@ -332,12 +331,12 @@ abstract class SearchBaseFragment<VM : BaseViewModel, CVB : ViewBinding>: BaseFr
             )
     }
 
-    protected fun updateStatusSearchBar() {
+    protected fun updateStatusSearchBar(updateSearchBarBackground: Boolean = true) {
         updateStatusTitleBar()
         updateTitleBarBackIcon()
         updateSearchTextColor()
         updateSearchBtnColor()
-        updateSearchBarBackground()
+        if(updateSearchBarBackground) updateSearchBarBackground()
     }
 
     private fun isDirectMatch(): Boolean {

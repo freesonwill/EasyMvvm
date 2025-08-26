@@ -96,7 +96,7 @@ class SearchResultRaceAdapter: BaseAdapter<SearchResultRaceItemType, BaseViewHol
 
                 with(itemBinding) {
                     with(itemData) {
-                        tvTitle.text = basicInfo.matchName
+                        tvTitle.text = basicInfo.tournamentName
                         tvTime.text = run {
                             when (basicInfo.status) {
                                 MatchStatusEnum.ONGOING ->
