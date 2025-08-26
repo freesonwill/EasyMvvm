@@ -9,6 +9,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.SimpleItemAnimator
 import arch.cayenne.lib.base.ui.fragment.BasePreLoadBottomSheetFragment
 import arch.cayenne.lib.common.ui.view.BetResultToastView
@@ -136,7 +137,9 @@ class BetResultFragment : BasePreLoadBottomSheetFragment<BetResultViewModel, Fra
             mBinding.rvComboOdds.isVisible = it.size > 1
             betSelectionAdapter.submitList(it) {
                 mBinding.rvBet.post {
-                    adjustLayoutHeight(it.size > 2)
+                    if (it.size in 1..3) {
+                        calculateLayoutHeight(it.size)
+                    }
                 }
             }
         }
@@ -222,9 +225,23 @@ class BetResultFragment : BasePreLoadBottomSheetFragment<BetResultViewModel, Fra
         detailAdapter.submitList(data)
     }
 
+    private fun calculateLayoutHeight(size: Int) {
+        val screenHeight = getScreenHeight() ?: return
+        val maxFragmentHeight = (screenHeight * 0.75).toInt()
+
+        val topHeight = mBinding.llTop.height
+        val hintHeight = mBinding.tvHint.height + (mBinding.tvHint.layoutParams as ConstraintLayout.LayoutParams).topMargin
+        val comboOddsHeight = (if (size == 0) 0 else getComboOddsItemHeight() * size) + (if (size == 0) 0 else (mBinding.rvComboOdds.layoutParams as ConstraintLayout.LayoutParams).bottomMargin)
+        val betMoneyHeight = mBinding.clComboBetMoney.height + (mBinding.clComboBetMoney.layoutParams as ConstraintLayout.LayoutParams).bottomMargin
+        val buttonHeight = mBinding.btnContinueBet.height + (mBinding.btnContinueBet.layoutParams as ConstraintLayout.LayoutParams).bottomMargin
+        val selectionHeight = getSelectionItemHeight() * size + (mBinding.rvBet.layoutParams as ConstraintLayout.LayoutParams).topMargin
+        val totalHeight = topHeight + hintHeight + comboOddsHeight + betMoneyHeight + buttonHeight + selectionHeight
+        adjustLayoutHeight(totalHeight > maxFragmentHeight)
+    }
+
     private fun adjustLayoutHeight(full: Boolean) {
         if (this.isFull == full) return
-        val screenHeight = resources.displayMetrics.heightPixels
+        val screenHeight = getScreenHeight() ?: return
         val maxFragmentHeight = (screenHeight * 0.75).toInt()
         if (full) {
             mBinding.root.minHeight = maxFragmentHeight
@@ -238,6 +255,27 @@ class BetResultFragment : BasePreLoadBottomSheetFragment<BetResultViewModel, Fra
             mBinding.rvBet.layoutParams = layoutParams
         }
         this.isFull = full
+    }
+
+    private fun getScreenHeight(): Int? {
+        // 检查 context 是否不为空
+        return context?.resources?.displayMetrics?.heightPixels
+    }
+
+    private fun getComboOddsItemHeight(): Int {
+        val layoutManager = mBinding.rvComboOdds.layoutManager as? LinearLayoutManager
+        val firstVisibleItemView =
+            layoutManager?.findViewByPosition(layoutManager.findFirstVisibleItemPosition())
+         // 不知道為什麼高度會少bottom空白間距
+        return firstVisibleItemView?.height ?: 36.dp2px
+    }
+
+    private fun getSelectionItemHeight(): Int {
+        val layoutManager = mBinding.rvBet.layoutManager as? LinearLayoutManager
+        val firstVisibleItemView =
+            layoutManager?.findViewByPosition(layoutManager.findFirstVisibleItemPosition())
+        // 不知道為什麼高度會少bottom空白間距
+        return firstVisibleItemView?.height ?: 140.dp2px
     }
 
     private fun clearAllObserve() {
