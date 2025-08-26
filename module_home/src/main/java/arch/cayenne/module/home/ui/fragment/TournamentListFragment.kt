@@ -11,6 +11,8 @@ import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.core.view.isVisible
@@ -353,6 +355,25 @@ class TournamentListFragment :
             this.targetPosition = targetPosition
         }
     }
+    override fun onCreateAnimation(transit: Int, enter: Boolean, nextAnim: Int): Animation? {
+        if (enter && nextAnim == R.anim.slide_in_from_top) {
+            val animation = AnimationUtils.loadAnimation(activity, nextAnim)
+            animation.setAnimationListener(object : Animation.AnimationListener {
+                override fun onAnimationStart(animation: Animation?) {
+                    view?.alpha = 1f // 確保動畫開始時完全不透明
+                }
+
+                override fun onAnimationEnd(animation: Animation?) {
+                    view?.alpha = 1f // 確保動畫結束時完全不透明
+                }
+
+                override fun onAnimationRepeat(animation: Animation?) {}
+            })
+            return animation
+        }
+        return super.onCreateAnimation(transit, enter, nextAnim)
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         stickyHeaderDecoration?.let {
