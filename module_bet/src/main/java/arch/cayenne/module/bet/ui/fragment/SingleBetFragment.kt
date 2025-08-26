@@ -303,7 +303,7 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
         mBinding.btnReserve.getLocationInWindow(location)
         ReserveDialogFragment.newInstance(
             location.first() + mBinding.btnReserve.width / 2,
-            location.last(),
+            location.last() - ViewUtils.getStatusBarHeight(requireContext()),
             mBinding.btnReserve.height,
             odds = odds
         ).show(childFragmentManager)
