@@ -238,7 +238,9 @@ class SearchResultDirectMatchFragment :
 
     private fun setEmptyView(state: DataState) {
         val layoutState =
-            if(state == DataState.NetworkUnavailable) DynamicStateLayout.States.NETWORK_ANOMALY
+            if(state == DataState.NetworkUnavailable) DynamicStateLayout.States.NETWORK_ANOMALY(
+                onRefresh = ::doSearch
+            )
             else DynamicStateLayout.States.DATA_EMPTY
         val errorStr =
             if(state == DataState.NetworkUnavailable) {
@@ -246,11 +248,8 @@ class SearchResultDirectMatchFragment :
             } else {
                 R.string.no_search_result.toTranslatedStr()
             }
-        val onRefresh: (() -> Unit)? =
-            if(state == DataState.NetworkUnavailable) { ::doSearch }
-            else null
 
-        contentBinding.dynamicState.setState(layoutState, errorStr, onRefresh)
+        contentBinding.dynamicState.setState(layoutState, errorStr)
     }
 
     private fun setRaceView() {

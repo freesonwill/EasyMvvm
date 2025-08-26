@@ -15,7 +15,6 @@ import kotlinx.coroutines.flow.merge
  * Class 描述 : Hide - Show NavHostFragment
  */
 class HideShowNavHostFragment : NavHostFragment() {
-    private lateinit var navigator: FragivityFragmentNavigator
 
     /**
      * @return 使用自己的FragmentNavigator 虽然是废弃的，但是源码实现最终都是调用这里返回Navigator
@@ -27,28 +26,7 @@ class HideShowNavHostFragment : NavHostFragment() {
             requireContext(),
             childFragmentManager,
             containerId
-        ).apply {
-            navigator = this
-        }
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        launch {
-            merge(
-                AnimationController.routeEnterAnim.map { "enter" to it },
-                AnimationController.routeExiAnim.map { "exit" to it },
-                AnimationController.routePopEnterAnim.map { "popEnter" to it },
-                AnimationController.routePopExitAnim.map { "popExit" to it }
-            ).collect { (type, anim) ->
-                when (type) {
-                    "enter" -> navigator.setEnterAnim(anim)
-                    "exit" -> navigator.setExitAnim(anim)
-                    "popEnter" -> navigator.setPopEnterAnim(anim)
-                    "popExit" -> navigator.setPopExitAnim(anim)
-                }
-            }
-        }
+        )
     }
 
     private val containerId: Int

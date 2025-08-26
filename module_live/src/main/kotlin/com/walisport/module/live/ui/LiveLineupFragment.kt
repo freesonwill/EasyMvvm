@@ -63,7 +63,7 @@ class LiveLineupFragment : BaseFragment<LiveLineupViewModel, FragmentLiveLineupB
                 DataState.NetworkUnavailable->{
                     mBinding.llContent.visibility = View.INVISIBLE
                     mBinding.main.setState(
-                        States.NETWORK_ANOMALY,
+                        States.NETWORK_ANOMALY(),
                         arch.cayenne.lib.common.R.string.error_net.getString()
                     )
                 }
@@ -192,9 +192,9 @@ class LiveLineupFragment : BaseFragment<LiveLineupViewModel, FragmentLiveLineupB
         )
         binding.apply {
             loadLineupHeadImage(ivLogo,data.logo)
-            stvName.text = data.name
+            stvName.text =  nameIsEmpty(data.name)
             tvNumber.text = data.shirtNumber.toString()
-            tvPosition.text = getPositionFromString(data.position)?.description
+            tvPosition.text = getPositionFromString(data.position)?.description?:"-"
         }
         mBinding.llcHomeSubstitute.addView(binding.root)
     }
@@ -207,9 +207,9 @@ class LiveLineupFragment : BaseFragment<LiveLineupViewModel, FragmentLiveLineupB
         )
         binding.apply {
             loadLineupHeadImage(ivLogo,data.logo)
-            stvName.text = data.name
+            stvName.text =  nameIsEmpty(data.name)
             tvNumber.text = data.shirtNumber.toString()
-            tvPosition.text = getPositionFromString(data.position)?.description
+            tvPosition.text = getPositionFromString(data.position)?.description?:"-"
         }
         mBinding.llcAwaySubstitute.addView(binding.root)
     }
@@ -218,7 +218,7 @@ class LiveLineupFragment : BaseFragment<LiveLineupViewModel, FragmentLiveLineupB
     @SuppressLint("SetTextI18n")
     private fun incidents(list: List<PlayerIncident>, positionName: String, isHome: Boolean) {
         list.forEach { itData ->
-            LogUtils.d("homeIncidents,itData.inPlayer-name${itData.inPlayer.name}---itData.outPlayer-name${itData.outPlayer.name}")
+           // LogUtils.d("homeIncidents,itData.inPlayer-name${itData.inPlayer.name}---itData.outPlayer-name${itData.outPlayer.name}")
             if (itData.inPlayer.name.isNotEmpty()) {
                 isIncidents = true
                 val binding = LineupSubstitutionItemBinding.inflate(
@@ -227,16 +227,16 @@ class LiveLineupFragment : BaseFragment<LiveLineupViewModel, FragmentLiveLineupB
                     false
                 )
                 binding.apply {
-                    homeTopName.text = itData.inPlayer.name
-                    homePositionName.text = getPositionFromString(positionName)?.description
+                    homeTopName.text = nameIsEmpty(itData.inPlayer.name)
+                    homePositionName.text =getPositionFromString(positionName)?.description?:"-"
                     homeTopNumber.text =
                         allPlayerInfo.find { it.id == itData.inPlayer.id }?.shirtNumber.toString()
                     loadLineupHeadImage(homeTopLogo,
                         allPlayerInfo.find { it.id == itData.inPlayer.id }?.logUrl.toString()
                     )
                     homeTopBottom.text = "${itData.time}'"
-                    homeBottomName.text = itData.outPlayer.name
-                    homeBottomPosition.text = getPositionFromString(positionName)?.description
+                    homeBottomName.text = nameIsEmpty(itData.outPlayer.name)
+                    homeBottomPosition.text = getPositionFromString(positionName)?.description?:"-"
                     homeBottomNumber.text =
                         allPlayerInfo.find { it.id == itData.outPlayer.id }?.shirtNumber.toString()
                     loadLineupHeadImage(homeBottomLogo,
@@ -320,5 +320,9 @@ class LiveLineupFragment : BaseFragment<LiveLineupViewModel, FragmentLiveLineupB
                 .into(imageView)
     }
 
+
+    fun nameIsEmpty(name: String): String{
+        return if (name.isEmpty()) getString(R.string.lineup_user_name_empty).toString() else name
+    }
     data class LineupPlayerInfo(val id: Int, val logUrl: String, val shirtNumber: Int)
 }

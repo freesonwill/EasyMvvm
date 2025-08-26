@@ -20,15 +20,15 @@ class DynamicStateLayout @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : SkinnableConstraintLayout(context, attrs, defStyleAttr) {
 
-    //数据为空,网络异常,关闭
+    //刷新，数据为空,网络异常,关闭
     val binding = LayoutEmptyErrorCloseBinding.inflate(LayoutInflater.from(context), this, false)
 
-    enum class States {
-        LOADING,//加载中
-        DATA_EMPTY,//数据为空
-        NETWORK_ANOMALY,//网络异常
-        CLOSE,//关闭
-        NULL,
+    sealed class States {
+        object LOADING:States()//加载中
+        object DATA_EMPTY:States()//数据为空
+        class NETWORK_ANOMALY(val onRefresh: (() -> Unit)? = null):States()//网络异常
+        object CLOSE:States()//关闭
+        object NULL:States()
     }
 
     /**
@@ -37,13 +37,13 @@ class DynamicStateLayout @JvmOverloads constructor(
     private var loadingAnim: ObjectAnimator? = null
 
     // 设置当前状态
-    fun setState(state: States, msg: String, onRefresh: (() -> Unit)? = null) {
+    fun setState(state: States, msg: String) {
         when (state) {
             States.DATA_EMPTY -> {
                 binding.root.visibility = VISIBLE
                 //图片
                 binding.ivIcon.visibility = VISIBLE
-                binding.ivIcon.background = SkinnableResourceManager.getDrawable(context, R.drawable.icon_empty)
+                binding.ivIcon.setBackgroundResource(R.drawable.icon_empty)
                 //说明文字
                 binding.tvMessage.visibility = VISIBLE
                 binding.tvMessage.text = msg
@@ -54,16 +54,16 @@ class DynamicStateLayout @JvmOverloads constructor(
                 loadingAnim?.cancel()
             }
 
-            States.NETWORK_ANOMALY -> {
+            is States.NETWORK_ANOMALY -> {
                 binding.root.visibility = VISIBLE
                 //图片
                 binding.ivIcon.visibility = VISIBLE
-                binding.ivIcon.background = SkinnableResourceManager.getDrawable(context, R.drawable.icon_error_net)
+                binding.ivIcon.setBackgroundResource( R.drawable.icon_error_net)
                 //说明文字
                 binding.tvMessage.visibility = VISIBLE
                 binding.tvMessage.text = msg
                 //刷新按钮
-                onRefresh?.apply {
+                state.onRefresh?.apply {
                     binding.btnRefresh.visibility = VISIBLE
                     clickNoRepeat { this.invoke() }
                 } ?: run {
@@ -78,7 +78,7 @@ class DynamicStateLayout @JvmOverloads constructor(
                 binding.root.visibility = VISIBLE
                 //图片
                 binding.ivIcon.visibility = VISIBLE
-                binding.ivIcon.background = SkinnableResourceManager.getDrawable(context, R.drawable.icon_close)
+                binding.ivIcon.setBackgroundResource( R.drawable.icon_close)
                 //说明文字
                 binding.tvMessage.visibility = VISIBLE
                 binding.tvMessage.text = msg

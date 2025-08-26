@@ -9,6 +9,8 @@ import androidx.core.view.children
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.RecyclerView
+import arch.cayenne.lib.common.utils.ext.setupViewPagerScroll
+import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.walisport.module.search.R
 import com.walisport.module.search.databinding.FragmentSearchResultListBinding
@@ -16,7 +18,7 @@ import com.walisport.module.search.ui.adapter.SearchResultPagerAdapter
 import com.walisport.module.search.ui.viewmodel.SearchResultListViewModel
 import java.util.Locale
 import kotlin.reflect.KClass
-
+import arch.cayenne.lib.common.utils.ext.animateIndicatorToPosition
 class SearchResultListFragment :
     SearchBaseFragment<SearchResultListViewModel, FragmentSearchResultListBinding>() {
     override val vmClass: KClass<SearchResultListViewModel>
@@ -26,10 +28,30 @@ class SearchResultListFragment :
 
     private val args: SearchResultListFragmentArgs by navArgs()
     private var tabMediator: TabLayoutMediator? = null
-
+    private var skipAnyAnim = true
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
         setViewPager()
+        // 自定義滑動行為
+        contentBinding.viewPager.setupViewPagerScroll(contentBinding.tlSearch,contentBinding.customIndicator,0.20f){
+            skipAnyAnim = it
+        }
+        contentBinding.tlSearch.clearOnTabSelectedListeners()
+        contentBinding.tlSearch.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab?) {
+                if (skipAnyAnim) {
+                    // 动画更新指示器位置
+                    contentBinding.customIndicator.animateIndicatorToPosition(tab?.position?:0, 0)
+                    contentBinding.viewPager.setCurrentItem(tab?.position?:0, false)
+                }
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab?) {
+            }
+
+            override fun onTabReselected(tab: TabLayout.Tab?) {
+            }
+        })
     }
 
     override fun initData() {

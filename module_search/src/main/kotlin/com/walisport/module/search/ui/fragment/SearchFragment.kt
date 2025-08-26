@@ -18,6 +18,7 @@ import com.walisport.module.search.R
 import com.walisport.module.search.databinding.FragmentSearchBinding
 import com.walisport.module.search.ui.adapter.HotWordAdapter
 import com.walisport.module.search.ui.adapter.SearchHistoryAdapter
+import com.walisport.module.search.ui.view.FlowAdapter
 import com.walisport.module.search.ui.viewmodel.SearchViewModel
 import kotlin.reflect.KClass
 
@@ -41,8 +42,6 @@ class SearchFragment : SearchBaseFragment<SearchViewModel, FragmentSearchBinding
             toSearchResult(hotWord)
         }
     }
-
-
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
@@ -68,7 +67,8 @@ class SearchFragment : SearchBaseFragment<SearchViewModel, FragmentSearchBinding
             with(mViewModel) {
                 searchRecord.observe(viewLifecycleOwner) {
                     historyAdapter?.setNewData(it.reversed().toMutableList())
-                    clHistory.visibility = if (it.isEmpty()) View.GONE else View.VISIBLE
+                    textNoHistory.visibility = if (it.isEmpty()) View.VISIBLE else View.GONE
+                    rlHistoryDelete.visibility = if (it.isEmpty()) View.GONE else View.VISIBLE
                 }
                 searchHotWord.observe(viewLifecycleOwner) {
                     hotWordAdapter.submitList(it)
@@ -147,44 +147,7 @@ class SearchFragment : SearchBaseFragment<SearchViewModel, FragmentSearchBinding
             //热门搜索
             rvHotWord.apply {
                 layoutManager = GridLayoutManager(context, 2)
-                adapter = hotWordAdapter.apply {
-                    if (itemDecorationCount == 0) {
-                        addItemDecoration(object : ItemDecoration() {
-                            private val dividerHeight = 0.5f.dp2px
-                            private val paint = Paint().apply {
-                                color = SkinnableResourceManager.getColor(
-                                    context,
-                                    R.color.search_divider
-                                )
-                                strokeWidth = dividerHeight.toFloat()
-                            }
-
-                            override fun onDraw(
-                                canvas: Canvas,
-                                parent: RecyclerView,
-                                state: RecyclerView.State
-                            ) {
-                                val spanCount = 2
-                                val itemCount = parent.adapter?.itemCount ?: 0
-                                val totalRowCount = (itemCount + spanCount - 1) / spanCount
-
-                                for (i in 0 until parent.childCount) {
-                                    val child = parent.getChildAt(i)
-                                    val position = parent.getChildAdapterPosition(child)
-                                    val currentRow = position / spanCount
-                                    val isLastRow = currentRow == totalRowCount - 1
-
-                                    if (!isLastRow) {
-                                        val left = child.left.toFloat()
-                                        val right = child.right.toFloat()
-                                        val y = child.bottom.toFloat()
-                                        canvas.drawLine(left, y, right, y, paint)
-                                    }
-                                }
-                            }
-                        })
-                    }
-                }
+                adapter = hotWordAdapter
                 itemAnimator = null
             }
         }

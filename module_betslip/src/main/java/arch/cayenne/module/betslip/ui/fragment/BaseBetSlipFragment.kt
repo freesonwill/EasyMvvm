@@ -91,7 +91,7 @@ abstract class BaseBetSlipFragment<VM: BaseBetSlipViewModel, VB : ViewBinding>: 
              DataState.NetworkUnavailable ->{
                  dynamicState.showEmptyData(true, recyclerView)
                  val resId = if(DataState.DataEmpty == state)  R.string.betslip_list_empty else  arch.cayenne.lib.common.R.string.error_net
-                 val newState = if (DataState.DataEmpty == state) DynamicStateLayout.States.DATA_EMPTY else DynamicStateLayout.States.NETWORK_ANOMALY
+                 val newState = if (DataState.DataEmpty == state) DynamicStateLayout.States.DATA_EMPTY else DynamicStateLayout.States.NETWORK_ANOMALY()
                  dynamicState.setState(newState,getString(resId))
              }
              DataState.NoMoreData,
