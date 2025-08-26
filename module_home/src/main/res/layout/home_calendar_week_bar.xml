@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/ll_week"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/dp_20"
-    android:background="#FFFFFF"
-    android:minHeight="@dimen/dp_20"
+    android:layout_height="match_parent"
+    android:minHeight="50dp"
     android:orientation="horizontal"
     tools:ignore="HardcodedText">
 
     <TextView
         android:layout_width="0dp"
-        android:layout_height="match_parent"
+        android:layout_height="18dp"
         android:layout_weight="1"
-        android:layout_marginStart="@dimen/dp_8"
+        android:layout_marginStart="@dimen/dp_10"
         android:gravity="center"
         android:text="@string/sun"
         android:textColor="@color/black"
@@ -21,7 +21,7 @@
 
     <TextView
         android:layout_width="0dp"
-        android:layout_height="match_parent"
+        android:layout_height="18dp"
         android:layout_weight="1"
         android:gravity="center"
         android:text="@string/mon"
@@ -30,7 +30,7 @@
 
     <TextView
         android:layout_width="0dp"
-        android:layout_height="match_parent"
+        android:layout_height="18dp"
         android:layout_weight="1"
         android:gravity="center"
         android:text="@string/tue"
@@ -39,7 +39,7 @@
 
     <TextView
         android:layout_width="0dp"
-        android:layout_height="match_parent"
+        android:layout_height="18dp"
         android:layout_weight="1"
         android:gravity="center"
         android:text="@string/wed"
@@ -48,7 +48,7 @@
 
     <TextView
         android:layout_width="0dp"
-        android:layout_height="match_parent"
+        android:layout_height="18dp"
         android:layout_weight="1"
         android:gravity="center"
         android:text="@string/thu"
@@ -57,7 +57,7 @@
 
     <TextView
         android:layout_width="0dp"
-        android:layout_height="match_parent"
+        android:layout_height="18dp"
         android:layout_weight="1"
         android:gravity="center"
         android:text="@string/fri"
@@ -66,9 +66,9 @@
 
     <TextView
         android:layout_width="0dp"
-        android:layout_height="match_parent"
+        android:layout_height="@dimen/dp_18"
         android:layout_weight="1"
-        android:layout_marginEnd="@dimen/dp_8"
+        android:layout_marginEnd="@dimen/dp_10"
         android:gravity="center"
         android:text="@color/black"
         android:textColor="#e1e1e1"
