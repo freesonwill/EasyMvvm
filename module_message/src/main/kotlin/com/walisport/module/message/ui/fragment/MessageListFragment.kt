@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
-import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.ui.dialog.CommonDialog
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout.States
@@ -78,21 +77,10 @@ class MessageListFragment : BaseFragment<MessageMainViewModel, FragmentMessageLi
     }
 
     override suspend fun createObserver() {
-        mViewModel.apiStateListener.observe(viewLifecycleOwner) { state ->
+        mViewModel.apiStateListener.observe(viewLifecycleOwner) {
             mBinding.refreshLayout.finishRefresh()
             mBinding.refreshLayout.finishLoadMore()
-            when (state) {
-                DataState.NetworkUnavailable -> {
-                    mBinding.loadingView.visibility = View.GONE
-                    if (msgAdapter.itemCount == 0) {
-                        mBinding.emptyState.visibility = View.VISIBLE
-                        mBinding.emptyState.setState(
-                            States.NETWORK_ANOMALY(),
-                            arch.cayenne.lib.common.R.string.error_net.getString()
-                        )
-                    }
-                }
-            }
+            mBinding.loadingView.visibility = View.GONE
         }
         mViewModel.notificationBean.observe(viewLifecycleOwner) {
             mBinding.refreshLayout.finishRefresh()
