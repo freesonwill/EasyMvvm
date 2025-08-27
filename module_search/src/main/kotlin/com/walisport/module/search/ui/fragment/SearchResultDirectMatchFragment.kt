@@ -24,6 +24,7 @@ import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
@@ -43,6 +44,8 @@ import java.util.Locale
 import kotlin.reflect.KClass
 import arch.cayenne.lib.common.R as RC
 import arch.cayenne.lib.common.utils.ext.touchBackPressed
+import kotlinx.coroutines.flow.filter
+
 class SearchResultDirectMatchFragment :
     SearchBaseFragment<SearchResultDirectMatchViewModel, FragmentSearchResultDirectMatchBinding>() {
     override val vmClass: KClass<SearchResultDirectMatchViewModel>
@@ -60,7 +63,8 @@ class SearchResultDirectMatchFragment :
     private val linearAdapter by lazy {
         SearchResultRaceAdapter().apply {
             onBetClick = { match ->
-                findNavController().navigate("walisport://module_live/liveFragment?matchId=${match.matchId}&sportId=${match.basicInfo.sportId}".toUri())
+                navigate("walisport://module_live/liveFragment?matchId=${match.matchId}&sportId=${match.basicInfo.sportId}".toUri())
+                requireView().postDelayed({ updateStatusSearchBar(false) }, 200L)
             }
             onFavoriteClick = { match ->
                 lifecycleScope.launch {
@@ -181,6 +185,12 @@ class SearchResultDirectMatchFragment :
                                 )
                     }
                 }
+
+                launch {
+                    observeLoginChange()
+                        .filter { it && apiStateListener.value == DataState.NetworkUnavailable }
+                        .collect { doSearch() }
+                }
             }
         }
     }
@@ -226,21 +236,37 @@ class SearchResultDirectMatchFragment :
     }
 
     private fun doSearch() {
-        args.data?.let { data ->
-            mViewModel.getSearchResult(data)
-        }
-        args.id?.let { id ->
-            args.type.let { type ->
-                mViewModel.getSearchResult(id, type)
+        with(mViewModel) {
+            // 斷網重連
+            if(directMatchId != null && directMatchType != null) {
+                getSearchResult(
+                    directMatchId.toString(),
+                    directMatchType!!,
+                    startTime,
+                    endTime
+                )
+                return
+            }
+
+            // SearchResultBaseFragment 來的
+            args.data?.let { data ->
+                mViewModel.getSearchResult(data)
+                return
+            }
+
+            // SearchListFragment 來的
+            args.id?.let { id ->
+                args.type.let { type ->
+                    mViewModel.getSearchResult(id, type)
+                    return
+                }
             }
         }
     }
 
     private fun setEmptyView(state: DataState) {
         val layoutState =
-            if(state == DataState.NetworkUnavailable) DynamicStateLayout.States.NETWORK_ANOMALY(
-                onRefresh = ::doSearch
-            )
+            if(state == DataState.NetworkUnavailable) DynamicStateLayout.States.NETWORK_ANOMALY()
             else DynamicStateLayout.States.DATA_EMPTY
         val errorStr =
             if(state == DataState.NetworkUnavailable) {
@@ -296,47 +322,50 @@ class SearchResultDirectMatchFragment :
     }
 
     private fun openDatePicker() {
-        val oldDate = mViewModel.getSelectedDate()
-        datePicker =
-            SearchDatePickerFragment.Builder().apply {
-                val statusBarHeight =
-                    ViewCompat.getRootWindowInsets(requireView())
-                        ?.getInsets(WindowInsetsCompat.Type.statusBars())?.top ?: 0
-                val clDateBottom = run {
-                    IntArray(2).apply {
-                        contentBinding.clDate.getLocationOnScreen(this)
-                    }[1] + contentBinding.clDate.height
-                }
-                setMarginTop(clDateBottom - statusBarHeight)
-                setMarginStart(8.dp2px)
-                setMarginEnd(8.dp2px)
-                setSchemeDates(mViewModel.racedDateMap)
-                setOnBeforeDismissAnimListener {
-                    setDateBarStatus(false)
-                }
-                setOnAfterDismissAnimListener { startTime: Long?, endTime: Long?, timeInMills: Long? ->
-                    datePicker = null
+        with(mViewModel) {
+            val oldDate = getSelectedDate()
+            datePicker =
+                SearchDatePickerFragment.Builder().apply {
+                    val statusBarHeight =
+                        ViewCompat.getRootWindowInsets(requireView())
+                            ?.getInsets(WindowInsetsCompat.Type.statusBars())?.top ?: 0
+                    val clDateBottom = run {
+                        IntArray(2).apply {
+                            contentBinding.clDate.getLocationOnScreen(this)
+                        }[1] + contentBinding.clDate.height
+                    }
+                    setMarginTop(clDateBottom - statusBarHeight)
+                    setMarginStart(8.dp2px)
+                    setMarginEnd(8.dp2px)
+                    setSchemeDates(racedDateMap)
+                    setOnBeforeDismissAnimListener {
+                        setDateBarStatus(false)
+                    }
+                    setOnAfterDismissAnimListener { startTime: Long?, endTime: Long?, timeInMills: Long? ->
+                        datePicker = null
 
-                    val newDate = timeInMills?.let { Date(it) }
-                    mViewModel.setSelectedDate(newDate)
-                    contentBinding.clDate.isSelected = newDate != null
+                        val newDate = timeInMills?.let { Date(it) }
+                        setSelectedDate(newDate)
+                        contentBinding.clDate.isSelected = newDate != null
 
-                    if (oldDate != newDate) {
-                        mViewModel.directMatchType?.let { type ->
-                            mViewModel.getSearchResult(
-                                mViewModel.directMatchId.toString(),
-                                type,
-                                startTime,
-                                endTime
-                            )
+                        if (oldDate != newDate) {
+                            directMatchType?.let { type ->
+                                getSearchResult(
+                                    directMatchId.toString(),
+                                    type,
+                                    startTime,
+                                    endTime
+                                )
+                                setFilterTime(startTime, endTime)
+                            }
                         }
                     }
-                }
-                mViewModel.getSelectedDate()?.time?.let { setSelectedDate(it) }
-            }.build()
+                    getSelectedDate()?.time?.let { setSelectedDate(it) }
+                }.build()
 
-        setDateBarStatus(true)
-        datePicker?.show(childFragmentManager, contentBinding.clRoot.id)
+            setDateBarStatus(true)
+            datePicker?.show(childFragmentManager, contentBinding.clRoot.id)
+        }
     }
 
     private fun setDateBarStatus(isOpen: Boolean) {
