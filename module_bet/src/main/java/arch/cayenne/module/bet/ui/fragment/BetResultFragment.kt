@@ -1,11 +1,17 @@
 package arch.cayenne.module.bet.ui.fragment
 
+import android.animation.ObjectAnimator
 import android.os.Bundle
+import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.SimpleItemAnimator
-import arch.cayenne.lib.base.ui.fragment.BaseBottomSheetFragment
+import arch.cayenne.lib.base.ui.fragment.BasePreLoadBottomSheetFragment
 import arch.cayenne.lib.common.ui.view.BetResultToastView
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.SportDisplayOddsExt.getDisplayOdds
@@ -23,14 +29,36 @@ import arch.cayenne.module.bet.ui.adapter.BetSelectionAdapter
 import arch.cayenne.module.bet.ui.adapter.ResultMultiBetAdapter
 import arch.cayenne.module.bet.util.BetSheetDecoration
 import arch.cayenne.module.bet.viewmodel.BetResultViewModel
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
 
-class BetResultFragment private constructor(): BaseBottomSheetFragment<BetResultViewModel, FragmentBetResultBinding>(), BetResultToastView.Block {
+class BetResultFragment : BasePreLoadBottomSheetFragment<BetResultViewModel, FragmentBetResultBinding>(), BetResultToastView.Block {
 
     companion object {
-        fun newInstance(): BetResultFragment {
-            return BetResultFragment()
+
+        private const val TAG = "BetResultFragment"
+
+        fun create(activity: FragmentActivity) {
+            val manager = activity.supportFragmentManager
+            val f = manager.findFragmentByTag(TAG)
+            if (f == null) {
+                BetResultFragment().customAttach(activity, TAG)
+            }
+        }
+
+        fun show(activity: FragmentActivity, withOtherSheetHide: ObjectAnimator? = null) {
+            val manager = activity.supportFragmentManager
+            val f = manager.findFragmentByTag(TAG)
+            if (f == null) {
+                BetResultFragment().show(manager, TAG)
+            } else if (f is BasePreLoadBottomSheetFragment<*, *>) {
+                if (withOtherSheetHide == null) {
+                    f.customShow()
+                } else {
+                    f.customShow(withOtherSheetHide)
+                }
+            }
         }
     }
     override val vbClass: KClass<FragmentBetResultBinding> = FragmentBetResultBinding::class
@@ -43,8 +71,10 @@ class BetResultFragment private constructor(): BaseBottomSheetFragment<BetResult
             }
         })
     }
+    private var isFull: Boolean? = null
 
     override fun initView(savedInstanceState: Bundle?) {
+        isGestureEnable = false
         (mBinding.rvComboOdds.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
         (mBinding.rvBet.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
         mBinding.rvComboOdds.itemAnimator = null
@@ -54,22 +84,51 @@ class BetResultFragment private constructor(): BaseBottomSheetFragment<BetResult
 
         val decoration = BetSheetDecoration(6.dp2px, 12.dp2px)
         mBinding.rvBet.addItemDecoration(decoration)
+
+        val screenHeight = resources.displayMetrics.heightPixels
+        val maxFragmentHeight = (screenHeight * 0.75).toInt()
+        mBinding.root.maxHeight = maxFragmentHeight
+    }
+
+    override fun onStart() {
+        setFitToContents()
+        super.onStart()
+    }
+
+    private fun setFitToContents() {
+        val bottomSheet =
+            dialog?.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet) as? FrameLayout
+        bottomSheet?.let { sheet ->
+            val behavior = BottomSheetBehavior.from(sheet)
+
+            behavior.isDraggable = false
+            behavior.skipCollapsed = false  // ← 允許收合
+            behavior.isHideable = false      // ← 允許向下滑關閉
+            behavior.isFitToContents = true
+            behavior.state = BottomSheetBehavior.STATE_COLLAPSED
+            behavior.saveFlags = BottomSheetBehavior.SAVE_HIDEABLE
+        }
     }
 
     override fun initListener() {
         mBinding.btnContinueBet.setOnClickListener {
+            clearAllObserve()
             lifecycleScope.launch {
-                mViewModel.continueBet()?.let { type ->
-                    BetSheetFragment.show(requireActivity()) {
-                        hideDim()
-                        dismiss()
-                    }
+                mViewModel.continueBet()?.let {
+                    BetSheetFragment.show(requireActivity(), getHideAnimator())
                 }
             }
         }
         mBinding.btnConfirm.setOnClickListener {
+            clearAllObserve()
             dismiss()
             mViewModel.sendDone()
+        }
+        setOnEndListener {
+            mViewModel.sendDone()
+            lifecycleScope.launch {
+                createObserver()
+            }
         }
     }
 
@@ -78,13 +137,10 @@ class BetResultFragment private constructor(): BaseBottomSheetFragment<BetResult
             mBinding.rvComboOdds.isVisible = it.size > 1
             betSelectionAdapter.submitList(it) {
                 mBinding.rvBet.post {
-                    adjustLayoutHeight(it.size > 2)
+                    if (it.size in 1..3) {
+                        calculateLayoutHeight(it.size)
+                    }
                 }
-            }
-            mBinding.tvMaxWin.text = if (it.size == 1 && mViewModel.type == BetTypeEnum.SINGLE) {
-                getString(R.string.title_result_win_single_bet)
-            } else {
-                getString(R.string.title_result_win_combo_bet)
             }
         }
         mViewModel.onDetailListener.observe(viewLifecycleOwner) {
@@ -93,6 +149,13 @@ class BetResultFragment private constructor(): BaseBottomSheetFragment<BetResult
         }
         mViewModel.onBetModeListener.observe(viewLifecycleOwner) {
             setBetMode(it.first, it.second)
+        }
+        mViewModel.onBetType.observe(viewLifecycleOwner) {
+            mBinding.tvMaxWin.text = if (mViewModel.onBetType.value == BetTypeEnum.SINGLE) {
+                getString(R.string.title_result_win_single_bet)
+            } else {
+                getString(R.string.title_result_win_combo_bet)
+            }
         }
     }
 
@@ -162,16 +225,63 @@ class BetResultFragment private constructor(): BaseBottomSheetFragment<BetResult
         detailAdapter.submitList(data)
     }
 
+    private fun calculateLayoutHeight(size: Int) {
+        val screenHeight = getScreenHeight() ?: return
+        val maxFragmentHeight = (screenHeight * 0.75).toInt()
+
+        val topHeight = mBinding.llTop.height
+        val hintHeight = mBinding.tvHint.height + (mBinding.tvHint.layoutParams as ConstraintLayout.LayoutParams).topMargin
+        val comboOddsHeight = (if (size == 0) 0 else getComboOddsItemHeight() * size) + (if (size == 0) 0 else (mBinding.rvComboOdds.layoutParams as ConstraintLayout.LayoutParams).bottomMargin)
+        val betMoneyHeight = mBinding.clComboBetMoney.height + (mBinding.clComboBetMoney.layoutParams as ConstraintLayout.LayoutParams).bottomMargin
+        val buttonHeight = mBinding.btnContinueBet.height + (mBinding.btnContinueBet.layoutParams as ConstraintLayout.LayoutParams).bottomMargin
+        val selectionHeight = getSelectionItemHeight() * size + (mBinding.rvBet.layoutParams as ConstraintLayout.LayoutParams).topMargin
+        val totalHeight = topHeight + hintHeight + comboOddsHeight + betMoneyHeight + buttonHeight + selectionHeight
+        adjustLayoutHeight(totalHeight > maxFragmentHeight)
+    }
+
     private fun adjustLayoutHeight(full: Boolean) {
+        if (this.isFull == full) return
+        val screenHeight = getScreenHeight() ?: return
+        val maxFragmentHeight = (screenHeight * 0.75).toInt()
         if (full) {
-            val screenHeight = resources.displayMetrics.heightPixels
-            val maxFragmentHeight = (screenHeight * 0.75).toInt()
             mBinding.root.minHeight = maxFragmentHeight
+            val layoutParams = mBinding.rvBet.layoutParams as ConstraintLayout.LayoutParams
+            layoutParams.height = 0
+            mBinding.rvBet.layoutParams = layoutParams
         } else {
+            mBinding.root.minHeight = 0
             val layoutParams = mBinding.rvBet.layoutParams
             layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
-            mBinding.root.minHeight = 0
             mBinding.rvBet.layoutParams = layoutParams
         }
+        this.isFull = full
+    }
+
+    private fun getScreenHeight(): Int? {
+        // 检查 context 是否不为空
+        return context?.resources?.displayMetrics?.heightPixels
+    }
+
+    private fun getComboOddsItemHeight(): Int {
+        val layoutManager = mBinding.rvComboOdds.layoutManager as? LinearLayoutManager
+        val firstVisibleItemView =
+            layoutManager?.findViewByPosition(layoutManager.findFirstVisibleItemPosition())
+         // 不知道為什麼高度會少bottom空白間距
+        return firstVisibleItemView?.height ?: 36.dp2px
+    }
+
+    private fun getSelectionItemHeight(): Int {
+        val layoutManager = mBinding.rvBet.layoutManager as? LinearLayoutManager
+        val firstVisibleItemView =
+            layoutManager?.findViewByPosition(layoutManager.findFirstVisibleItemPosition())
+        // 不知道為什麼高度會少bottom空白間距
+        return firstVisibleItemView?.height ?: 140.dp2px
+    }
+
+    private fun clearAllObserve() {
+        mViewModel.onBetType.removeObservers(viewLifecycleOwner)
+        mViewModel.onBetModeListener.removeObservers(viewLifecycleOwner)
+        mViewModel.onBetSheetListener.removeObservers(viewLifecycleOwner)
+        mViewModel.onDetailListener.removeObservers(viewLifecycleOwner)
     }
 }

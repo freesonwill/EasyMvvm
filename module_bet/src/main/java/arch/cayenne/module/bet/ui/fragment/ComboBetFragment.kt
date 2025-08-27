@@ -122,11 +122,7 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
         mBinding.clBet.setOnClickListener {
             val isSuccess = mViewModel.sendBet()
             if (isSuccess) {
-                val f = BetResultFragment.newInstance()
-                f.setShowAnimEndListener {
-                    dismiss()
-                }
-                f.show(requireActivity().supportFragmentManager)
+                navToResult()
             }
         }
     }
@@ -411,6 +407,12 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
     }
 
     override fun dismiss(key: String, value: String) {
+        parentFragmentManager.setFragmentResult(key, Bundle().apply {
+            putString(key, value)
+        })
+    }
+
+    override fun navToResult(key: String, value: String) {
         parentFragmentManager.setFragmentResult(key, Bundle().apply {
             putString(key, value)
         })

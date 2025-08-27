@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Transaction
 import androidx.room.Update
 import arch.cayenne.lib.database.entity.BetBean
 import arch.cayenne.lib.database.entity.BetDetailBean
@@ -33,14 +34,6 @@ abstract class BetDao : BaseDao<BetBean>() {
     abstract suspend fun getLastBetOrder(
         status: BetStatusEnum = BetStatusEnum.COMPLETE
     ): BetBean?
-
-    @Query("SELECT * FROM BetBean WHERE status IN (:statuses) ORDER BY betId DESC LIMIT 1")
-    abstract fun observeLastBetOrder(
-        statuses: List<BetStatusEnum> = listOf(
-            BetStatusEnum.COMPLETE,
-            BetStatusEnum.BETTING
-        )
-    ): Flow<BetBean?>
 
     @Query("SELECT * FROM BetBean WHERE status = :status ORDER BY betId DESC LIMIT 1")
     abstract suspend fun getCurrentBet(status: BetStatusEnum = BetStatusEnum.PENDING): BetBean?
@@ -116,6 +109,15 @@ abstract class BetDao : BaseDao<BetBean>() {
     @Query("SELECT * FROM BetDetailBean WHERE betId = :betId")
     abstract fun observeDetail(betId: Long): Flow<List<BetDetailBean>>
 
+    @Query("SELECT * FROM BetDetailBean WHERE betId = (" +
+            "        SELECT betId FROM BetBean" +
+            "        WHERE status != :status" +
+            "        ORDER BY betId DESC" +
+            "        LIMIT 1" +
+            "    ) and inputMoney > 0"
+    )
+    abstract fun observeCurrentDetail(status: BetStatusEnum = BetStatusEnum.DONE): Flow<List<BetDetailBean>>
+
     @Query("UPDATE BetDetailBean SET status = :status WHERE orderId = :order")
     abstract suspend fun updateDetailResult(order: String, status: BetResultStatusEnum)
 
@@ -125,9 +127,9 @@ abstract class BetDao : BaseDao<BetBean>() {
         type: BetTypeEnum = BetTypeEnum.COMBO
     ): Flow<Int>
 
-    @Query("SELECT COUNT(*) FROM BetSelectionBean WHERE betId = ( SELECT betId FROM BetBean WHERE status = :status ORDER BY betId DESC LIMIT 1)")
+    @Query("SELECT COUNT(*) FROM BetSelectionBean WHERE betId = ( SELECT betId FROM BetBean WHERE status != :status ORDER BY betId DESC LIMIT 1)")
     abstract fun observeCurrentCount(
-        status: BetStatusEnum = BetStatusEnum.PENDING
+        status: BetStatusEnum = BetStatusEnum.DONE
     ): Flow<Int>
 
     @Query("DELETE FROM BetBean WHERE betId = :betId")
@@ -162,12 +164,12 @@ abstract class BetDao : BaseDao<BetBean>() {
     @Query(
         "SELECT betType FROM BetBean WHERE betId = (" +
                 "        SELECT betId FROM BetBean" +
-                "        WHERE status = :status" +
+                "        WHERE status != :status" +
                 "        ORDER BY betId DESC" +
                 "        LIMIT 1" +
                 "    )"
     )
-    abstract fun observeCurrentBetType(status: BetStatusEnum = BetStatusEnum.PENDING): Flow<BetTypeEnum?>
+    abstract fun observeCurrentBetType(status: BetStatusEnum = BetStatusEnum.DONE): Flow<BetTypeEnum?>
 
     @Query(
         "UPDATE BetSelectionBean SET marketName = :marketName, name = :name, leagueName = :leagueName, matchName = :matchName WHERE betId = :betId AND selectionId = :selectionId"
@@ -178,4 +180,24 @@ abstract class BetDao : BaseDao<BetBean>() {
         "UPDATE BetSelectionBean SET odds = :odds WHERE betId = :betId AND selectionId = :selectionId"
     )
     abstract suspend fun updateOdds(betId: Long, selectionId: Long, odds: Int)
+
+    @Query(
+        "UPDATE BetDetailBean SET sumOdds = :odds WHERE betId = :betId AND serialValue = :serialValue"
+    )
+    abstract suspend fun updateDetailOdds(betId: Long, serialValue: Int, odds: Int)
+
+    @Query(
+        "UPDATE BetDetailBean SET inputMoney = :money WHERE betId = :betId AND serialValue = :serialValue"
+    )
+    abstract suspend fun updateDetailMoney(betId: Long, serialValue: Int, money: Long)
+
+    @Query(
+        "UPDATE BetDetailBean SET status = :status WHERE betId = :betId AND serialValue = :serialValue"
+    )
+    abstract suspend fun updateDetailStatus(betId: Long, serialValue: Int, status: BetResultStatusEnum)
+
+    @Transaction
+    @Update
+    abstract suspend fun updateDetail(detail: BetDetailBean)
+
 }

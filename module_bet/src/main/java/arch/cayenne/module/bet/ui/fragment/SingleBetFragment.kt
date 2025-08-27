@@ -246,6 +246,12 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
         })
     }
 
+    override fun navToResult(key: String, value: String) {
+        parentFragmentManager.setFragmentResult(key, Bundle().apply {
+            putString(key, value)
+        })
+    }
+
     override fun doCustomShow() {
         mBinding.etMoney.requestFocus()
     }
@@ -278,11 +284,7 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
         } else {
             val isSuccess = mViewModel.sendBet()
             if (isSuccess) {
-                val f = BetResultFragment.newInstance()
-                f.setShowAnimEndListener {
-                    dismiss()
-                }
-                f.show(requireActivity().supportFragmentManager)
+                navToResult()
             }
         }
     }
