@@ -8,7 +8,7 @@
     <arch.cayenne.lib.skin.widget.SkinnableView
         android:id="@+id/top_triangle"
         android:layout_width="32dp"
-        android:layout_height="10dp"
+        android:layout_height="12dp"
         android:layout_marginEnd="14dp"
         android:background="@drawable/bg_triangle_up"
         app:layout_constraintBottom_toTopOf="@id/cl_calculator"
@@ -21,7 +21,9 @@
         android:layout_height="wrap_content"
         android:background="@drawable/shape_12dp"
         android:backgroundTint="@color/keyboard_3"
-        android:padding="12dp"
+        android:paddingHorizontal="12dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="12dp"
         app:layout_constraintBottom_toBottomOf="@id/bottom_triangle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -64,7 +66,7 @@
 
         <GridLayout
             android:id="@+id/gl_other"
-            android:layout_width="wrap_content"
+            android:layout_width="62dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:columnCount="1"
@@ -74,37 +76,37 @@
 
             <arch.cayenne.lib.skin.widget.SkinnableImageButton
                 android:id="@+id/btn_back"
-                style="@style/NumberKeyboardButton"
-                android:foreground="@drawable/bg_click_mask_6dp_white_blue"
+                style="@style/NumberKeyboardTextButton"
                 android:layout_width="62dp"
                 android:layout_height="48dp"
                 android:layout_marginBottom="2dp"
                 android:backgroundTint="@color/keyboard_1"
+                android:foreground="@drawable/bg_click_mask_6dp_white_blue"
                 android:scaleType="center"
                 android:src="@drawable/icon_keyboard_back" />
 
             <arch.cayenne.lib.skin.widget.SkinnableTextView
                 android:id="@+id/btn_clear"
-                style="@style/NumberKeyboardButton"
-                android:foreground="@drawable/bg_click_mask_6dp_white_blue"
+                style="@style/NumberKeyboardTextButton"
                 android:layout_width="62dp"
                 android:layout_height="48dp"
                 android:layout_marginTop="2dp"
                 android:layout_marginBottom="2dp"
                 android:backgroundTint="@color/keyboard_1"
+                android:foreground="@drawable/bg_click_mask_6dp_white_blue"
                 android:text="@string/btn_clear"
                 android:textSize="12sp" />
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_confirm"
                 style="@style/ButtonStyle"
-                android:foreground="@drawable/bg_click_mask_6dp_white_blue"
                 android:layout_width="62dp"
                 android:layout_height="96dp"
                 android:layout_columnWeight="2"
                 android:layout_marginTop="2dp"
                 android:layout_marginBottom="2dp"
                 android:backgroundTint="@color/brand_color"
+                android:foreground="@drawable/bg_click_mask_6dp_white_blue"
                 android:text="@string/btn_confirm"
                 android:textSize="12sp" />
 
@@ -117,10 +119,10 @@
         android:layout_width="32dp"
         android:layout_height="10dp"
         android:layout_marginEnd="14dp"
-        android:visibility="gone"
         android:background="@drawable/bg_triangle_down"
-        app:layout_constraintTop_toBottomOf="@id/cl_calculator"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/cl_calculator" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -22,15 +22,12 @@ class ResultMultiBetAdapter(private val listener: OnResultMultiBetListener) :
     ) {
         val item = getItem(holder.adapterPosition)
         val combo = holder.getString(R.string.title_combo_bet_odds).format(item.comboK, item.comboV)
-        binding.tvCombo.text = combo
-        val odds ="@${item.sumOdds.getDisplayOdds()}"
-        binding.tvOdds.text = odds
+        val odds ="$combo @${item.sumOdds.getDisplayOdds()}"
+
+        binding.tvCombo.text = odds
         val money = "${listener.getMoneySymbol()}${item.inputMoney.getFormalMoney()}"
-        binding.tvBetMoney.text = money
-
-        val multi = "${item.count} x"
-        binding.tvPlus.text = multi
-
+        val multi = "${item.count} x $money"
+        binding.tvBetMoney.text = multi
     }
 
     override fun createViewBinding(
