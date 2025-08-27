@@ -50,13 +50,16 @@ class MessageMainFragment : BaseFragment<MessageMainViewModel, FragmentMessageMa
                 PagerBean("") { MessageListFragment.newInstance(MSG_MAT) },
                 PagerBean("") { MessageListFragment.newInstance(MSG_PAY) },
             )
-            launch (Lifecycle.State.RESUMED){
-                delay(500)
-                vpMessage.offscreenPageLimit = list.size
-            }
             vpMessage.adapter = PagerAdapter(childFragmentManager, lifecycle, list)
         }
         mBinding.root.touchBackPressed()
+    }
+
+    override fun onFragmentAnimEnd(isEnter: Boolean) {
+        super.onFragmentAnimEnd(isEnter)
+        if (isEnter) {
+            mBinding.vpMessage.offscreenPageLimit = 5
+        }
     }
 
     override fun initListener() {
