@@ -1,13 +1,16 @@
 package com.walisport.module.search.ui.fragment
 
+import android.graphics.Rect
 import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.common.ui.dialog.CommonDialog
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
+import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.touchBackPressed
 import arch.cayenne.lib.common.utils.helper.showToast
@@ -166,6 +169,21 @@ class SearchFragment : SearchBaseFragment<SearchViewModel, FragmentSearchBinding
                 layoutManager = GridLayoutManager(context, 2)
                 adapter = hotWordAdapter
                 itemAnimator = null
+                if(itemDecorationCount == 0) {
+                    addItemDecoration(object: RecyclerView.ItemDecoration(){
+                        override fun getItemOffsets(
+                            outRect: Rect,
+                            view: View,
+                            parent: RecyclerView,
+                            state: RecyclerView.State
+                        ) {
+                            super.getItemOffsets(outRect, view, parent, state)
+                            val position = parent.getChildAdapterPosition(view)
+                            if(position == RecyclerView.NO_POSITION) return
+                            outRect.left = if(position % 2 != 0) 17.dp2px else 0
+                        }
+                    })
+                }
             }
         }
     }
