@@ -3,20 +3,21 @@ package com.walisport.module.message.ui.fragment
 import android.graphics.Typeface
 import android.os.Bundle
 import android.view.View
+import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
-import androidx.viewpager2.widget.ViewPager2
 import arch.cayenne.lib.base.data.model.PagerBean
 import arch.cayenne.lib.base.ui.adapter.PagerAdapter
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.setupViewPagerScroll
 import arch.cayenne.lib.common.utils.ext.touchBackPressed
-import arch.cayenne.lib.common.utils.helper.doSmartAnim
 import arch.cayenne.lib.skin.widget.SkinnableTextView
 import com.walisport.module.message.R
 import com.walisport.module.message.databinding.FragmentMessageMainBinding
 import com.walisport.module.message.ui.viewmodel.MessageMainViewModel
+import kotlinx.coroutines.delay
 import kotlin.reflect.KClass
 
 /**
@@ -27,7 +28,8 @@ class MessageMainFragment : BaseFragment<MessageMainViewModel, FragmentMessageMa
 
     override val vbClass: KClass<FragmentMessageMainBinding> = FragmentMessageMainBinding::class
     override val vmClass: KClass<MessageMainViewModel> = MessageMainViewModel::class
-    private var historyTypePosition : Int = -1
+    private var historyTypePosition: Int = -1
+
     companion object {
         const val MSG_ALL = 0
         const val MSG_SYS = 1
@@ -48,7 +50,10 @@ class MessageMainFragment : BaseFragment<MessageMainViewModel, FragmentMessageMa
                 PagerBean("") { MessageListFragment.newInstance(MSG_MAT) },
                 PagerBean("") { MessageListFragment.newInstance(MSG_PAY) },
             )
-            vpMessage.offscreenPageLimit = list.size
+            launch (Lifecycle.State.RESUMED){
+                delay(500)
+                vpMessage.offscreenPageLimit = list.size
+            }
             vpMessage.adapter = PagerAdapter(childFragmentManager, lifecycle, list)
         }
         mBinding.root.touchBackPressed()
@@ -77,10 +82,9 @@ class MessageMainFragment : BaseFragment<MessageMainViewModel, FragmentMessageMa
         }
         select(MSG_ALL, historyTypePosition)
 
-        mBinding.vpMessage.setupViewPagerScroll{
-            select(it, historyTypePosition,true)
+        mBinding.vpMessage.setupViewPagerScroll {
+            select(it, historyTypePosition, true)
         }
-        mBinding.root.touchBackPressed()
     }
 
     //未读消息红点显示
@@ -133,41 +137,41 @@ class MessageMainFragment : BaseFragment<MessageMainViewModel, FragmentMessageMa
     }
 
 
-    private fun select(type: Int, historyType :Int,skipAnyAnim: Boolean = false) {
-        if (type!=historyType){
+    private fun select(type: Int, historyType: Int, skipAnyAnim: Boolean = false) {
+        if (type != historyType) {
             if (!skipAnyAnim) mBinding.vpMessage.setCurrentItem(type, false)
-            selectMessageType(type,true)
-            selectMessageType(historyType,false)
+            selectMessageType(type, true)
+            selectMessageType(historyType, false)
             historyTypePosition = type
         }
     }
 
-    private fun selectMessageType(type: Int,select: Boolean) {
-        var textView : SkinnableTextView? =null
+    private fun selectMessageType(type: Int, select: Boolean) {
+        var textView: SkinnableTextView? = null
         when (type) {
             MSG_ALL -> {
                 mBinding.layMsgAll.isSelected = select
-                textView= mBinding.tvMsgAll
+                textView = mBinding.tvMsgAll
             }
 
             MSG_SYS -> {
                 mBinding.layMsgSys.isSelected = select
-                textView= mBinding.tvMsgSys
+                textView = mBinding.tvMsgSys
             }
 
             MSG_ACT -> {
                 mBinding.layMsgAct.isSelected = select
-                textView= mBinding.tvMsgAct
+                textView = mBinding.tvMsgAct
             }
 
             MSG_MAT -> {
                 mBinding.layMsgMatch.isSelected = select
-                textView= mBinding.tvMsgMat
+                textView = mBinding.tvMsgMat
             }
 
             MSG_PAY -> {
                 mBinding.layMsgPay.isSelected = select
-                textView= mBinding.tvMsgPay
+                textView = mBinding.tvMsgPay
             }
         }
         textView?.typeface = if (select) Typeface.DEFAULT_BOLD else Typeface.DEFAULT
