@@ -15,7 +15,6 @@ import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.base.ui.view.UnhideableBottomSheetDialog
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import java.lang.ref.WeakReference
 
 abstract class BasePreLoadBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> : BaseBottomSheetFragment<VM, VB>() {
 
@@ -37,7 +36,7 @@ abstract class BasePreLoadBottomSheetFragment<VM : BaseViewModel, VB : ViewBindi
             override fun onStart() {
                 super.onStart()
                 hideSheet()
-                setCustomExpendSetting()
+                setCustomCollapseSetting()
                 hideDialog()
                 isDismissing = true
             }
@@ -105,7 +104,7 @@ abstract class BasePreLoadBottomSheetFragment<VM : BaseViewModel, VB : ViewBindi
 
     @CallSuper
     protected open fun setCustomCollapseSetting() {
-        sheetContainer?.translationY = 0f
+        sheetContainer?.translationY = mBinding.root.height.toFloat()
         sheetContainer?.scrollY = 0
 
         onEndListener?.invoke()
@@ -162,7 +161,7 @@ abstract class BasePreLoadBottomSheetFragment<VM : BaseViewModel, VB : ViewBindi
         if (isDismissing) {
             isDismissing = false
             setCustomExpendSetting()
-            otherViewAnimation = WeakReference(other)
+            otherViewAnimation = other
             playEnterAnimationWithOtherSheetDialogEnd()
         }
     }

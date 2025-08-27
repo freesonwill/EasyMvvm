@@ -9,7 +9,6 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.PixelFormat
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.AttributeSet
 import android.view.LayoutInflater
@@ -25,6 +24,7 @@ import androidx.appcompat.app.AppCompatDialog
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.animation.doOnEnd
 import androidx.core.animation.doOnStart
+import androidx.core.graphics.drawable.toDrawable
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
@@ -54,7 +54,6 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
     BottomSheetDialogFragment(), IView {
 
     protected val TAG by lazy { this::class.java.simpleName }
-    private var mScrollY: Int? = null
     protected var backgroundView: View? = null
     protected var sheetContainer: View? = null
     protected var isDismissing = false
@@ -85,7 +84,7 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
     //设置颜色，默认根据主题颜色设定
     private val statusBar: IStatusBar by lazy { StatusBarDelegate(this) }
 
-    protected var otherViewAnimation: WeakReference<ObjectAnimator>? = null
+    protected var otherViewAnimation: ObjectAnimator? = null
     private val dimController by lazy { DimController.instance }
     protected open var isGestureEnable = true
 
@@ -139,32 +138,46 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
     protected open fun exitAnimation(): Animation = AnimationController[AnimType.popupExit]!!.toAnimation()
 
     protected fun playEnterAnimations() {
-        dimController.showDim()
-        sheetContainer?.let { scv ->
-            // bottom sheet 上滑動畫
-            val sheetAnim = enterAnimation()
-            sheetAnim.setAnimationListener(object : Animation.AnimationListener {
-                override fun onAnimationStart(animation: Animation?) {
-                    backgroundView?.visibility = View.VISIBLE
-                    scv.visibility = View.VISIBLE
-                    mBinding.root.visibility = View.VISIBLE
-                }
+        val sheet = sheetContainer ?: return
 
-                override fun onAnimationEnd(animation: Animation?) {
-                    setRvTouch()
-                }
-
-                override fun onAnimationRepeat(animation: Animation?) {}
-            })
-            scv.startAnimation(sheetAnim)
+        val sheetAnim = enterAnimation()
+        val offY = sheet.translationY
+        val startY = sheet.height.toFloat()
+        if (offY != startY) {
+            sheet.translationY = sheet.height.toFloat()
+        }
+        val animation = ObjectAnimator.ofFloat(
+            sheet, "translationY", sheet.height.toFloat(), 0f
+        ).apply {
+            addUpdateListener { animation ->
+                val value = animation.animatedValue as Float
+                sheet.translationY = value
+            }
+            duration = sheetAnim.duration
+            // 假設你的 exitAnimation 使用這個插值器
+            interpolator = sheetAnim.interpolator
+            doOnStart {
+                dimController.showDim()
+                backgroundView?.visibility = View.VISIBLE
+                sheet.visibility = View.VISIBLE
+                mBinding.root.visibility = View.VISIBLE
+            }
+        }
+        sheet.post {
+            animation.start()
         }
     }
 
     protected fun playEnterAnimationWithOtherSheetDialogEnd() {
         val sheet = sheetContainer ?: return
-        val otherSheetAnimator = otherViewAnimation?.get() ?: return
+        val otherSheetAnimator = otherViewAnimation?.clone() ?: return
         // bottom sheet 上滑動畫
         val sheetContainerSheetAnim = enterAnimation()
+        val offY = sheet.translationY
+        val startY = sheet.height.toFloat()
+        if (offY != startY) {
+            sheet.translationY = sheet.height.toFloat()
+        }
         val sheetAnimator = ObjectAnimator.ofFloat(
             sheet, "translationY", sheet.height.toFloat(), 0f
         ).apply {
@@ -185,10 +198,13 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
                 otherViewAnimation = null
             }
         }
-        AnimatorSet().apply {
+        val animatorSet = AnimatorSet().apply {
             playTogether(sheetAnimator, otherSheetAnimator)
-            start()
         }
+        sheet.post {
+            animatorSet.start()
+        }
+
     }
 
     protected open fun playExitAnimations(
@@ -198,7 +214,7 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
         doEnd: (() -> Unit)? = {
             try {
                 superDismiss()
-            } catch (e: Exception) {
+            } catch (_: Exception) {
                 dismissAllowingStateLoss()
             }
         }
@@ -377,7 +393,7 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
     }
 
     fun showWithOtherSheetDialogHide(manager: FragmentManager, animator: ObjectAnimator) {
-        otherViewAnimation = WeakReference(animator)
+        otherViewAnimation = animator
         show(manager)
     }
 
@@ -406,7 +422,7 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
     private fun initDim() {
         dialog?.window?.setDimAmount(0f)
         dialog?.window?.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
-        dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog?.window?.setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
         dimController.init(requireContext())
     }
 

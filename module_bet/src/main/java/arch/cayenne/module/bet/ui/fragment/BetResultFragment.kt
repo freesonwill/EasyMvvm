@@ -91,8 +91,8 @@ class BetResultFragment : BasePreLoadBottomSheetFragment<BetResultViewModel, Fra
     }
 
     override fun onStart() {
-        super.onStart()
         setFitToContents()
+        super.onStart()
     }
 
     private fun setFitToContents() {
