@@ -30,7 +30,6 @@
         android:textColor="@color/main_text"
         android:textSize="15sp"
         android:textStyle="bold"
-        app:skinnableFontWeight="500"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/tv_selection_name"
         app:layout_constraintBottom_toBottomOf="@id/tv_selection_name"/>

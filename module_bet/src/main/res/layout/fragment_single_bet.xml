@@ -195,7 +195,6 @@
                         android:textColor="@color/main_text"
                         android:textSize="15sp"
                         android:textStyle="bold"
-                        app:skinnableFontWeight="500"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
