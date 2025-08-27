@@ -428,9 +428,12 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
 
     protected open fun getHideAnimator(): ObjectAnimator? {
         val sheet = sheetContainer ?: return null
+        val anim = exitAnimation()
         return ObjectAnimator.ofFloat(
             sheet, "translationY", 0f, sheet.height.toFloat()
         ).apply {
+            duration = anim.duration
+            interpolator = anim.interpolator
             addUpdateListener { animation ->
                 val value = animation.animatedValue as Float
                 sheet.translationY = value
