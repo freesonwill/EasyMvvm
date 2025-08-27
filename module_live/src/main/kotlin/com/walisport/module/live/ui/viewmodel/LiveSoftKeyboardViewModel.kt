@@ -11,6 +11,7 @@ import com.walisport.module.live.data.constants.BidEmojiEnum
 import com.walisport.module.live.data.constants.EmojiEnum
 import com.walisport.module.live.data.constants.EmojiTypeEnum
 import com.walisport.module.live.data.constants.KeyBoardType
+import com.walisport.module.live.data.constants.KeyboardActionType
 import com.walisport.module.live.data.model.EmojiData
 import com.walisport.module.live.data.model.KeyBoardTabData
 import com.walisport.module.live.data.model.SoftData
@@ -101,4 +102,33 @@ class LiveSoftKeyboardViewModel : BaseViewModel() {
     }
 
 
+    /**
+     * 判断动画类型
+     * */
+    fun getAnimationType(listenerValue:KeyBoardType,currentValue:KeyBoardType): KeyboardActionType {
+
+        return  when(currentValue){
+            KeyBoardType.CHAT ->{
+                return when(listenerValue){
+                    KeyBoardType.EMOJI -> KeyboardActionType.CHAT_TO_EMOJI
+                    KeyBoardType.SOFT_KEYBOARD -> KeyboardActionType.CHAT_TO_SOFT
+                    KeyBoardType.CHAT -> KeyboardActionType.CHAT_TO_CHAT
+                }
+            }
+            KeyBoardType.SOFT_KEYBOARD ->{
+                return when(listenerValue){
+                    KeyBoardType.CHAT -> KeyboardActionType.SOFT_TO_CHAT
+                    KeyBoardType.EMOJI -> KeyboardActionType.SOFT_TO_EMOJI
+                    KeyBoardType.SOFT_KEYBOARD -> KeyboardActionType.SOFT_TO_SOFT
+                }
+            }
+            KeyBoardType.EMOJI ->{
+                return when(listenerValue){
+                    KeyBoardType.CHAT -> KeyboardActionType.EMOJI_TO_CHAT
+                    KeyBoardType.SOFT_KEYBOARD -> KeyboardActionType.EMOJI_TO_SOFT
+                    KeyBoardType.EMOJI -> KeyboardActionType.NONE
+                }
+            }
+        }
+    }
 }

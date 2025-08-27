@@ -27,15 +27,15 @@ import kotlinx.coroutines.launch
 
 class LiveChatViewModel(private val chatRepo: LiveChatRepository,private val userDataManager: UserDataManager) : BaseViewModel() {
     private var matchId: Long? = null
-    private val _currentSoftKeyboard = MutableStateFlow(KeyBoardType.CHAT)
+//    private val _currentSoftKeyboard = MutableStateFlow(KeyBoardType.CHAT)
     private val _loginLiveData = MutableLiveData<ChatLoginResponseData?>()
     private val _sendMsgResultLiveData = MutableLiveData<ChatSendMsgResponse?>()
     private val _sendMsgLiveData = MutableLiveData<String>()
     private val _historyLiveData = MutableLiveData<Boolean>()
     private val _newMsgFLow = MutableStateFlow<MsgNotify?>(null)
     private val _checkBetAmountLiveData = MutableLiveData<CheckBetResultEnum>()
-    private val _softKeyBoardListener = MutableStateFlow(KeyBoardType.CHAT)
-    private val _openSoftKeyBoardLiveData = MutableLiveData<Boolean>()
+//    private val _softKeyBoardListener = MutableStateFlow(KeyBoardType.CHAT)
+    private val _updateKeyboardUiStatus = MutableLiveData(KeyBoardType.CHAT)
 
     //整个表情键盘页面的整体高度
     var keyBoardHeight: Int = 0
@@ -46,8 +46,8 @@ class LiveChatViewModel(private val chatRepo: LiveChatRepository,private val use
     //消息列表
     val msgLists: MutableList<ChatMsg> = mutableListOf()
 
-    //当前显示的键盘类型
-    val currentSoftKeyboard: StateFlow<KeyBoardType> = _currentSoftKeyboard
+//    //当前显示的键盘类型
+//    val currentSoftKeyboard: StateFlow<KeyBoardType> = _currentSoftKeyboard
 
     //监听新消息
     val newMsgFlow: Flow<MsgNotify?> = _newMsgFLow
@@ -70,17 +70,27 @@ class LiveChatViewModel(private val chatRepo: LiveChatRepository,private val use
     //查询历史消息返回结果
     val historyLiveData: LiveData<Boolean> = _historyLiveData
 
-    //监听LiveSoftKeyBoardFragment点击事件
-    val softKeyBoardListener: StateFlow<KeyBoardType> = _softKeyBoardListener
+//    //监听LiveSoftKeyBoardFragment点击事件
+//    val softKeyBoardListener: StateFlow<KeyBoardType> = _softKeyBoardListener
 
-    //打开软件盘
-    val openSoftKeyBoardLiveData:LiveData<Boolean> = _openSoftKeyBoardLiveData
+    //更新键盘盘状态
+    val updateKeyboardUiStatus:LiveData<KeyBoardType> = _updateKeyboardUiStatus
 
     val toastLiveData: MutableLiveData<String> = MutableLiveData()
 
 
     //软件盘高度
     var softKeyBoardHeight:Int = 0
+
+    //软件盘状态 true 打开 false 关闭
+    var softKeyboardStatus:Boolean = false
+
+    //键盘点击的意向
+    var clickKeyBoardType:KeyBoardType = KeyBoardType.CHAT
+
+    //当前键盘状态
+    var currentKeyBoardType:KeyBoardType = KeyBoardType.CHAT
+
 
     fun setArguments(matchId: Long?) {
         this.matchId = matchId
@@ -186,18 +196,19 @@ class LiveChatViewModel(private val chatRepo: LiveChatRepository,private val use
             when (_checkBetAmountLiveData.value) {
                 CheckBetResultEnum.BET_AMOUNT_INVALID -> {
                     toastLiveData.value = R.string.insufficient_bet_amount.getString()
-                    _softKeyBoardListener.value = KeyBoardType.CHAT
+                    clickKeyBoardType = KeyBoardType.CHAT
                 }
                 CheckBetResultEnum.BALANCE_INVALID -> {
                     toastLiveData.value = R.string.insufficient_balance.getString()
-                    _softKeyBoardListener.value = KeyBoardType.CHAT
+                    clickKeyBoardType = KeyBoardType.CHAT
                 }
                 CheckBetResultEnum.SUCCESS -> {
-                    _currentSoftKeyboard.value = softKeyBoardListener.value
+//                    TODO liveData 通知更新ui
+//                    updateKeyBoard()
                 }
                 null -> {
                     toastLiveData.value = R.string.insufficient_fali.getString()
-                    _softKeyBoardListener.value = KeyBoardType.CHAT
+                    clickKeyBoardType = KeyBoardType.CHAT
                 }
             }
         }
@@ -272,33 +283,32 @@ class LiveChatViewModel(private val chatRepo: LiveChatRepository,private val use
      * 消失后会显示
      * */
     fun addSoftKeyBoardEvent(keyBoardType: KeyBoardType,flag:Int = 0) {
-
-        if(keyBoardType == _softKeyBoardListener.value){
+        if(keyBoardType == clickKeyBoardType){
             return
         }
-        _softKeyBoardListener.tryEmit(keyBoardType)
+        this.clickKeyBoardType = keyBoardType
     }
 
     /**
      *更新软件盘显示
      * */
     fun updateKeyBoard() {
-        if (currentSoftKeyboard.value == softKeyBoardListener.value) {
+        if (currentKeyBoardType == clickKeyBoardType) {
             return
         }
-        _currentSoftKeyboard.value = softKeyBoardListener.value
+        currentKeyBoardType = clickKeyBoardType
     }
 
     /**
      * 控制软件盘的开关
      * @param softKeyBoarVisible true显示软件盘  false 关闭软件盘
      * */
-    fun updateSoftKeyBoard(softKeyBoarVisible:Boolean,flag: Int){
+//    fun updateSoftKeyBoard(softKeyBoarVisible:Boolean,flag: Int){
 //        if(softKeyBoarVisible == _openSoftKeyBoardLiveData.value){
 //            return
 //        }
-        _openSoftKeyBoardLiveData.value = softKeyBoarVisible
-    }
+//        _openSoftKeyBoardLiveData.value = softKeyBoarVisible
+//    }
 
     fun getConnectStateFlow(): StateFlow<SocketConnectState> = chatRepo.getConnectStateFlow()
 
@@ -309,35 +319,11 @@ class LiveChatViewModel(private val chatRepo: LiveChatRepository,private val use
         }
     }
 
-    /**
-     * 判断动画类型
-     * */
-    fun getAnimationType(listenerValue:KeyBoardType,currentValue:KeyBoardType):KeyboardActionType{
-
-        return  when(currentValue){
-            KeyBoardType.CHAT ->{
-                return when(listenerValue){
-                    KeyBoardType.EMOJI -> KeyboardActionType.CHAT_TO_EMOJI
-                    KeyBoardType.SOFT_KEYBOARD -> KeyboardActionType.CHAT_TO_SOFT
-                    KeyBoardType.CHAT -> KeyboardActionType.NONE
-                }
-            }
-            KeyBoardType.SOFT_KEYBOARD ->{
-                return when(listenerValue){
-                    KeyBoardType.CHAT -> KeyboardActionType.SOFT_TO_CHAT
-                    KeyBoardType.EMOJI -> KeyboardActionType.SOFT_TO_EMOJI
-                    KeyBoardType.SOFT_KEYBOARD -> KeyboardActionType.SOFT_TO_SOFT
-                }
-            }
-            KeyBoardType.EMOJI ->{
-                return when(listenerValue){
-                    KeyBoardType.CHAT -> KeyboardActionType.EMOJI_TO_CHAT
-                    KeyBoardType.SOFT_KEYBOARD ->KeyboardActionType.EMOJI_TO_SOFT
-                    KeyBoardType.EMOJI ->KeyboardActionType.NONE
-                }
-            }
-        }
+    fun updateKeyBoardUi(keyBoardType: KeyBoardType,flag:Int){
+        addSoftKeyBoardEvent(keyBoardType,flag)
+        _updateKeyboardUiStatus.value = keyBoardType
     }
+
 
 
 
