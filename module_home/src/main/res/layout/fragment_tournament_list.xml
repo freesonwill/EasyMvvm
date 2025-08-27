@@ -7,6 +7,18 @@
     android:layout_height="match_parent"
     android:background="@color/champions_list">
 
+    <View
+        android:id="@+id/view_tournament_mask"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:alpha="0"
+        android:background="@color/drawer_scrim_color"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/tv_tournament_section_title"
         android:layout_width="match_parent"
