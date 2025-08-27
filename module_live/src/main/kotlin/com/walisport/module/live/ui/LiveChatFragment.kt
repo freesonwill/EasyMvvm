@@ -24,7 +24,6 @@ import com.walisport.module.live.databinding.FragmentLiveChatBinding
 import com.walisport.module.live.ui.adapter.LiveChatAdapter
 import com.walisport.module.live.ui.viewmodel.LiveChatViewModel
 import com.walisport.module.live.ui.viewmodel.LiveMainViewModel
-import com.walisport.module.live.utils.softkeyboard.LiveSoftKeyboardHelper
 import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
 
@@ -246,7 +245,6 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
 
     override fun onStop() {
         mViewModel.leaveRoom()
-        LiveSoftKeyboardHelper.getInstance().unregisterKeyBoardListener()
         super.onStop()
     }
 }

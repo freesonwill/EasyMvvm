@@ -58,9 +58,9 @@ class LiveSoftKeyboardFragment :
         get() = LiveSoftKeyboardViewModel::class
     private val chatViewModel: LiveChatViewModel by sharedViewModel<LiveChatViewModel, LiveChatFragment>()
     private var emojiKeyBoardHeight:Int = 0
-
     //监听软件的显示隐藏状态
     private var isSoftKeyBoard: Boolean = false
+
 //    var softKeyHeightHelper:SoftKeyHeightHelper? = null
 
 
@@ -78,6 +78,7 @@ class LiveSoftKeyboardFragment :
 
     override fun onStop() {
         super.onStop()
+        ViewCompat.setWindowInsetsAnimationCallback(requireActivity().window.decorView, null)
         hideSoftKeyBoard(4)
     }
 
@@ -136,7 +137,8 @@ class LiveSoftKeyboardFragment :
                         KeyboardActionType.CHAT_TO_SOFT -> {
                         }
                         KeyboardActionType.SOFT_TO_SOFT ->{
-                            keyboardChangeClick(KeyBoardType.CHAT)
+                            changeKeyboardUi(KeyBoardType.CHAT)
+                            chatViewModel.addSoftKeyBoardEvent(KeyBoardType.CHAT)
                         }
                         KeyboardActionType.SOFT_TO_CHAT -> {
                         }
@@ -160,20 +162,21 @@ class LiveSoftKeyboardFragment :
 
                 override fun onAnimEnd() {
                     val animationType = mViewModel.getAnimationType(chatViewModel.clickKeyBoardType, chatViewModel.currentKeyBoardType)
-                    "onAnimEnd   ${animationType in arrayOf(
-                        KeyboardActionType.CHAT_TO_SOFT,
-                        KeyboardActionType.SOFT_TO_CHAT,
-                        KeyboardActionType.EMOJI_TO_SOFT,
-                        KeyboardActionType.SOFT_TO_SOFT)} $animationType softKeyBoardListener  ${chatViewModel.clickKeyBoardType} currentSoftKeyboard ${ chatViewModel.currentKeyBoardType}".logd("aaa")
+//                    "onAnimEnd   ${animationType in arrayOf(
+//                        KeyboardActionType.CHAT_TO_SOFT,
+//                        KeyboardActionType.SOFT_TO_CHAT,
+//                        KeyboardActionType.EMOJI_TO_SOFT,
+//                        KeyboardActionType.SOFT_TO_SOFT)} $animationType softKeyBoardListener  ${chatViewModel.clickKeyBoardType} currentSoftKeyboard ${ chatViewModel.currentKeyBoardType}".logd("aaa")
                     if(animationType == KeyboardActionType.NONE){
                         return
                     }
                     if (animationType in arrayOf(KeyboardActionType.CHAT_TO_SOFT, KeyboardActionType.SOFT_TO_CHAT, KeyboardActionType.EMOJI_TO_SOFT, KeyboardActionType.SOFT_TO_SOFT)) {
                         when (animationType) {
                             KeyboardActionType.EMOJI_TO_SOFT,
-                            KeyboardActionType.SOFT_TO_SOFT,
                             KeyboardActionType.CHAT_TO_SOFT -> {
                                 changeKeyboardUi(KeyBoardType.SOFT_KEYBOARD)
+                            }
+                            KeyboardActionType.SOFT_TO_SOFT ->{
                             }
                             KeyboardActionType.SOFT_TO_CHAT -> {
                                 changeKeyboardUi(KeyBoardType.CHAT)
@@ -259,13 +262,13 @@ class LiveSoftKeyboardFragment :
             //输入拦截
             filters = arrayOf(EmojiEditFilter(mBinding.liveChatTvSize))
             //监听聚焦事件，不合格的展示软件盘一律拦截
-            setOnFocusChangeListener { v, hasFocus ->
-                "hasFocus $hasFocus  openSoftKeyBoardLiveData ${chatViewModel.softKeyboardStatus}".logd("aaa")
+//            setOnFocusChangeListener { v, hasFocus ->
+//                "hasFocus $hasFocus  openSoftKeyBoardLiveData ${chatViewModel.softKeyboardStatus}".logd("aaa")
                 //如果当前点击事件 softkeyboardlisterner 和 当前状态currentKeyboardListener 一致可以过滤掉聚焦事件
 //                if (chatViewModel.softKeyboardStatus) { //要打开软件盘并且软件盘在收缩中
 //                    openSoftKeyBoard()
 //                }
-            }
+//            }
             //监听点击事件
             setOnTouchListener { v, event ->
                 if (event.action == MotionEvent.ACTION_UP) {
@@ -296,42 +299,19 @@ class LiveSoftKeyboardFragment :
         chatViewModel.updateKeyboardUiStatus.observe(viewLifecycleOwner){
             keyboardChangeClick(it,1)
         }
-
-//        viewLifecycleOwner.lifecycleScope.launch {
-//            chatViewModel.currentSoftKeyboard.collect {
-//                when (it) {
-//                    KeyBoardType.SOFT_KEYBOARD -> showSoftKeyBoard()
-//                    KeyBoardType.EMOJI -> showEmoji()
-//                    KeyBoardType.CHAT -> showChat()
-//                }
-//            }
-//        }
-//        chatViewModel.openSoftKeyBoardLiveData.observe(viewLifecycleOwner) {
-//            if (it && !isSoftKeyBoard) {  //显示软件盘状态 it == true  当前软件盘没有收缩状态
-//                openSoftKeyBoard()
-//                mBinding.liveChatEtInput.requestFocus()
-//            } else if (!it && isSoftKeyBoard) { // 隐藏软件盘状态  it== false 当前软件盘弹出状态
-//                hideSoftKeyBoard(2)
-//                mBinding.liveChatEtInput.clearFocus()
-//            }
-//        }
-
-//        chatViewModel.softKeyBoardListener.collect {
-//            val flag1 = !chatViewModel.checkSoftKeyboardVisible()
-//            if (it != KeyBoardType.CHAT && flag1) {
-//                chatViewModel.checkSoftKeyBoardBetAmount()
-//                return@collect
-//            }
-//        showKeyboardAnimation()
-//        }
     }
 
     private fun softKeyboardChange(value:Boolean,flag: Int){
         chatViewModel.softKeyboardStatus = value
-        "softKeyboardChange  value $value $isSoftKeyBoard".logd("aaa")
-        if (value && !isSoftKeyBoard) {  //显示软件盘状态 it == true  当前软件盘没有收缩状态
+        "softKeyboardChange  value $value $isSoftKeyBoard  flag $flag".logd("aaa")
+//        if (value && !isSoftKeyBoard) {  //显示软件盘状态 it == true  当前软件盘没有收缩状态
+//            openSoftKeyBoard()
+//        } else if (!value && isSoftKeyBoard) { // 隐藏软件盘状态  it== false 当前软件盘弹出状态
+//            hideSoftKeyBoard(2)
+//        }
+        if (value) {  //显示软件盘状态 it == true  当前软件盘没有收缩状态
             openSoftKeyBoard()
-        } else if (!value && isSoftKeyBoard) { // 隐藏软件盘状态  it== false 当前软件盘弹出状态
+        } else if (!value) { // 隐藏软件盘状态  it== false 当前软件盘弹出状态
             hideSoftKeyBoard(2)
         }
     }
@@ -558,8 +538,8 @@ class LiveSoftKeyboardFragment :
      *打开软件盘
      * */
     private fun openSoftKeyBoard() {
-        "打开软件盘".logd("aaa")
-        mBinding.liveChatEtInput.requestFocus()
+//        "打开软件盘".logd("aaa")
+//        mBinding.liveChatEtInput.requestFocus()
         EditTextUtils.showKeyboard(activity, mBinding.liveChatEtInput)
     }
 
@@ -567,27 +547,15 @@ class LiveSoftKeyboardFragment :
      * 禁用软件盘
      * */
     private fun hideSoftKeyBoard(flag: Int) {
-        "关闭软件盘 $flag".logd("aaa")
+//        "关闭软件盘 $flag".logd("aaa")
         EditTextUtils.hideKeyboard(activity, mBinding.liveChatEtInput)
     }
 
-    /**
-     *软键盘打开时调用
-     * */
     private fun onSoftKeyBoardShow() {
-//        if (chatViewModel.softKeyBoardHeight == 0) {
-//            val height = getSupportSoftInputHeight()
-//            chatViewModel.saveUpdateSoftKeyBoardHeight(height)
-//        }
     }
 
-    /**
-     * 软件盘关闭时调用
-     * */
     private fun onSoftKeyBoardHide() {
     }
-
-
 
     companion object {
         const val TAG: String = "LiveSoftKeyboardFragment"

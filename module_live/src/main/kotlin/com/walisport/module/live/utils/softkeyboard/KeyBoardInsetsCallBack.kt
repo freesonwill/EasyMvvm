@@ -1,15 +1,28 @@
 package com.walisport.module.live.utils.softkeyboard
 
+import android.view.View
 import androidx.core.graphics.Insets
 import androidx.core.view.WindowInsetsAnimationCompat
 import androidx.core.view.WindowInsetsAnimationCompat.BoundsCompat
 import androidx.core.view.WindowInsetsCompat
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
+import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 
 class KeyBoardInsetsCallBack(dispatchMode: Int, private val keyboardListener: KeyBoardListener) :
     RootViewDeferringInsetsCallback(dispatchMode) {
     constructor(keyboardListener: KeyBoardListener) : this(DISPATCH_MODE_STOP, keyboardListener)
 
+    private var navigationBarHeight: Int = 0
+    private var hasNavigationBar: Boolean = false
+    //监听软件的显示隐藏状态
+    private var isSoftKeyBoard: Boolean = false
+
+
+
+
+
     override fun onPrepare(animation: WindowInsetsAnimationCompat) {
+
     }
 
     override fun onStart(
