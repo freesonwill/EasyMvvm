@@ -84,6 +84,8 @@ class TournamentListFragment :
             )
             rvTournamentList.layoutManager = LinearLayoutManager(context)
             rvTournamentList.adapter = adapter
+            // 關閉 RecyclerView 項目默認的淡入/變更動畫，避免展開時出現透明度變化
+            rvTournamentList.itemAnimator = null
             rvTournamentList.enableRecyclerViewBounce(
                 maxOverscroll = 80f
             )

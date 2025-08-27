@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="48dp"
+    xmlns:tools="http://schemas.android.com/tools"
     android:gravity="center_vertical"
     android:background="@color/champions_list"
     android:paddingHorizontal="@dimen/dp_16"
@@ -10,11 +11,10 @@
 
     <ImageView
         android:id="@+id/iv_header_hot"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:layout_marginBottom="@dimen/dp_12"
+        android:layout_width="22dp"
+        android:layout_height="22dp"
+        android:layout_marginBottom="@dimen/dp_10"
         android:src="@drawable/ic_hot_league_index"
-        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -23,13 +23,14 @@
         android:id="@+id/tv_header_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="2.5dp"
-        android:layout_marginBottom="@dimen/dp_12"
+        android:layout_marginStart="6dp"
+        android:layout_marginBottom="@dimen/dp_10"
         android:textColor="@color/secondary_text"
         android:textSize="14sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/iv_header_hot"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="熱門" />
 
     <arch.cayenne.lib.skin.widget.SkinnableView
         android:layout_width="match_parent"
