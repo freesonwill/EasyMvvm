@@ -105,4 +105,13 @@
 
     </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
 
+    <View
+        android:id="@+id/mask_view_top"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:alpha="0"
+        android:clickable="true"
+        android:focusable="true"
+        app:layout_constraintTop_toTopOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
