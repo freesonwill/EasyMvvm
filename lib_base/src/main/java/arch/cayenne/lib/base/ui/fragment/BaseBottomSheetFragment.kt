@@ -152,12 +152,12 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
             addUpdateListener { animation ->
                 val value = animation.animatedValue as Float
                 sheet.translationY = value
+                dimController.showDim()
             }
             duration = sheetAnim.duration
             // 假設你的 exitAnimation 使用這個插值器
             interpolator = sheetAnim.interpolator
             doOnStart {
-                dimController.showDim()
                 backgroundView?.visibility = View.VISIBLE
                 sheet.visibility = View.VISIBLE
                 mBinding.root.visibility = View.VISIBLE
@@ -545,6 +545,14 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
         val targetDim = dimAlpha - dimAlpha * (scrollY.toFloat() / h.toFloat())
         dimController.setDimAlpha(targetDim)
     }
+
+    protected fun hideDim() {
+        dimController.setDimAlpha(0f)
+    }
+
+    protected fun showDim() {
+        dimController.showDim()
+    }
 }
 
 interface BottomSheetBehaviorInterface {
@@ -659,6 +667,7 @@ class DimController private constructor() {
     }
 
     fun showDim() {
+        if (dimView?.alpha == TARGET_DIM) return
         dimView?.alpha = TARGET_DIM
     }
 
