@@ -1,12 +1,10 @@
 package arch.cayenne.module.home.ui.fragment
 
-import android.annotation.SuppressLint
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -152,47 +150,26 @@ class MatchListPagerFragment :
         }
     }
 
-    @SuppressLint("NotifyDataSetChanged")
-    override fun onHiddenChanged(hidden: Boolean) {
-        super.onHiddenChanged(hidden)
-        if (hidden) {
-            //暫時移除訂閱
-            mViewModel.cancelSubscribeMatch(mViewModel.getCurrentSubscribeMatchSet())
-            mViewModel.stopMatchSubscribeNotify()
-            if (mViewModel.matchListChange.hasObservers()) {
-                mViewModel.matchListChange.removeObserver(matchListObserver)
-            }
-        } else {
-            //把暫時移除的訂閱加回來
-            mViewModel.startMatchSubscribeNotify()
-            mViewModel.subscribeMatch(mViewModel.getCurrentSubscribeMatchSet())
-            if (!mViewModel.matchListChange.hasObservers()) {
-                mViewModel.matchListChange.observe(viewLifecycleOwner, matchListObserver)
-            }
-        }
-    }
     override fun initListener() {
     }
 
-    private val matchListObserver = Observer <List<MatchWithMarkets>> { matchList ->
-        val preEmpty = matchAdapter.currentList.isEmpty()
-        "MatchListChange livedata Observed~ ${matchList.map { it.match.matchId }}".logi(this::class.java.simpleName)
-        matchAdapter.submitList(matchList)
-        mBinding.rvHomeGameList.doOnPreDraw {
-            subscribeVisibleMatch()
-            if (preEmpty && matchList.isNotEmpty()) {
-                mViewModel.changeState(HomeState.Match.LoadSuccess)
-                setMatchListPosition()
-            }
-        }
-
-    }
     override suspend fun createObserver() {
 
         homeViewModel.timer.observeEvent(viewLifecycleOwner, this) {
             mViewModel.updateMatchLiveData()
         }
-        mViewModel.matchListChange.observe(viewLifecycleOwner, matchListObserver)
+        mViewModel.matchListChange.observe(viewLifecycleOwner) { matchList ->
+            val preEmpty = matchAdapter.currentList.isEmpty()
+            "MatchListChange livedata Observed~ ${matchList.map { it.match.matchId }}".logi(this::class.java.simpleName)
+            matchAdapter.submitList(matchList)
+            mBinding.rvHomeGameList.doOnPreDraw {
+                subscribeVisibleMatch()
+                if (preEmpty && matchList.isNotEmpty()) {
+                    mViewModel.changeState(HomeState.Match.LoadSuccess)
+                    setMatchListPosition()
+                }
+            }
+        }
 
         mViewModel.apiStateListener.observe(viewLifecycleOwner) {
             with(mBinding) {
@@ -280,6 +257,21 @@ class MatchListPagerFragment :
 
     fun startObserveMatch() {
         mViewModel.startObserveMatch()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        //把暫時移除的訂閱加回來
+        mViewModel.startMatchSubscribeNotify()
+        mViewModel.subscribeMatch(mViewModel.getCurrentSubscribeMatchSet())
+    }
+
+    override fun onPause() {
+        super.onPause()
+        //暫時移除訂閱
+        mViewModel.cancelSubscribeMatch(mViewModel.getCurrentSubscribeMatchSet())
+        mViewModel.stopMatchSubscribeNotify()
+
     }
 
 
