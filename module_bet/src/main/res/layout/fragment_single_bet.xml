@@ -144,7 +144,7 @@
                         android:id="@+id/tv_reserve_hint"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="2dp"
+                        android:layout_marginStart="1.14dp"
                         android:gravity="center"
                         android:text="@string/btn_reserve"
                         android:textColor="@color/text_on_theme_color"
@@ -157,8 +157,8 @@
 
                     <ImageView
                         android:id="@+id/iv_reserve_hint"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="10dp"
+                        android:layout_height="10dp"
                         android:src="@drawable/icon_add"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toStartOf="@id/tv_reserve_hint"
@@ -438,7 +438,7 @@
                     android:id="@+id/tv_collusion_hint"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="2dp"
+                    android:layout_marginStart="0.57dp"
                     android:gravity="center"
                     android:text="@string/btn_collusion"
                     android:textColor="@color/text_on_theme_color"
@@ -451,8 +451,8 @@
 
                 <ImageView
                     android:id="@+id/iv_collusion_hint"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="10dp"
+                    android:layout_height="10dp"
                     android:src="@drawable/icon_add"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@id/tv_collusion_hint"
