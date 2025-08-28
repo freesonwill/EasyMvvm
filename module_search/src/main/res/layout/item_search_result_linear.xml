@@ -32,6 +32,7 @@
         app:layout_constraintBottom_toBottomOf="@id/iv_icon"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/iv_icon"
+        app:skinnableFontWeight="500"
         tools:text="托马斯" />
 
     <arch.cayenne.lib.skin.widget.SkinnableView
