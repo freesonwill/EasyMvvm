@@ -11,7 +11,6 @@ import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.View
-import android.view.animation.DecelerateInterpolator
 import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.animation.doOnEnd
@@ -20,6 +19,8 @@ import androidx.core.graphics.toColorInt
 import androidx.core.view.doOnLayout
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
+import arch.cayenne.lib.base.ui.animation.AnimationController
+import arch.cayenne.lib.base.ui.animation.AnimationController.AnimType
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
@@ -48,8 +49,6 @@ class SearchDatePickerFragment private constructor(): BaseFragment<SearchDatePic
     enum class AnimState {
         EXPANDING, EXPAND, COLLAPSING, COLLAPSE
     }
-
-    private val defaultAnimDuration = 150L
 
     private var marginTop: Int = 0
     private var marginStart: Int = 0
@@ -344,7 +343,10 @@ class SearchDatePickerFragment private constructor(): BaseFragment<SearchDatePic
             post {
                 animate()
                     .alpha(if (visible) 1f else 0f)
-                    .setDuration(defaultAnimDuration)
+                    .setDuration(
+                        if (visible) AnimationController[AnimType.popupEnter]!!.duration
+                        else AnimationController[AnimType.popupExit]!!.duration
+                    )
                     .start()
             }
         }
@@ -376,8 +378,10 @@ class SearchDatePickerFragment private constructor(): BaseFragment<SearchDatePic
                             translationY = (offset - fullyHeight).toFloat()
                         }
                     }
-                    duration = defaultAnimDuration
-                    interpolator = DecelerateInterpolator()
+                    AnimationController[AnimType.popupEnter]!!.let {
+                        duration = it.duration
+                        interpolator = it.interpolator.toInterpolator()
+                    }
                     doOnStart {
                         currentAnimState = AnimState.EXPANDING
                         clipBounds = Rect(0, fullyHeight - startHeight, width, fullyHeight)
@@ -404,8 +408,10 @@ class SearchDatePickerFragment private constructor(): BaseFragment<SearchDatePic
                         translationY = (offset - getFullyHeight()).toFloat()
                     }
                 }
-                duration = defaultAnimDuration
-                interpolator = DecelerateInterpolator()
+                AnimationController[AnimType.popupExit]!!.let {
+                    duration = it.duration
+                    interpolator = it.interpolator.toInterpolator()
+                }
                 doOnStart {
                     currentAnimState = AnimState.COLLAPSING
                     setMaskViewAlpha(false)
