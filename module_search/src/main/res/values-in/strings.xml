@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="please_input_content">Silakan masukkan konten</string>
+    <string name="search_bar_hint">Silakan masukkan nama acara atau nama tim</string>
     <string name="delete_all">Hapus Semua</string>
     <string name="search_finish">Selesai</string>
     <string name="history_record">Riwayat Pencarian</string>

@@ -56,6 +56,18 @@
         <item name="android:gravity">center</item>
     </style>
 
+    <style name="NumberKeyboardTextButton">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">0dp</item>
+        <item name="android:layout_columnWeight">1</item>
+        <item name="android:layout_rowWeight">1</item>
+        <item name="android:background">@drawable/shape_6dp</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/keyboard_number</item>
+        <item name="android:gravity">center</item>
+    </style>
+
     <style name="ButtonStyle">
         <item name="android:background">@drawable/selector_button</item>
         <item name="android:textColor">@color/text_on_theme_color</item>

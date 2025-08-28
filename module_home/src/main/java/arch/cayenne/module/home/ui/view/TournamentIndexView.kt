@@ -46,8 +46,8 @@ class TournamentIndexView @JvmOverloads constructor(
     companion object {
         private const val MAX_SCALE = 1.8f // 最大縮放比例
         private const val ANIMATION_DURATION = 150L // 動畫時長
-        private const val ITEM_WIDTH_DP = 24
-        private const val ITEM_HEIGHT_DP = 18
+        private const val ITEM_WIDTH_DP = 22
+        private const val ITEM_HEIGHT_DP = 15
         private const val TEXT_SIZE_SP = 11f
         private const val MAX_TRANSLATION_X_DP = 80 // 選中字母的最大位移
     }
@@ -102,12 +102,14 @@ class TournamentIndexView @JvmOverloads constructor(
     private fun createLetterView(letter: Char, index: Int): View {
         return if (letter == '*') {
             ImageView(context).apply {
-                layoutParams = LayoutParams(ITEM_WIDTH_DP.dp2px, ITEM_HEIGHT_DP.dp2px).apply {
+                layoutParams = LayoutParams(ITEM_WIDTH_DP.dp2px, (ITEM_HEIGHT_DP + 2).dp2px).apply {
                     gravity = Gravity.END
                     // 為第一個字母添加上方邊距，避免放大時被切到
                     topMargin = ((MAX_SCALE - 1f) * ITEM_HEIGHT_DP.dp2px / 2f).toInt()
+                    bottomMargin = 1.dp2px
                 }
                 scaleType = ImageView.ScaleType.FIT_CENTER
+                setPadding(0, 2.dp2px, 0, 0)
             }
         } else {
             TextView(context).apply {

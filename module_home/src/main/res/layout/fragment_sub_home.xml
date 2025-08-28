@@ -237,6 +237,17 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="parent" />
+
+    <View
+        android:id="@+id/v_tournament_list_mask"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:alpha="1"
+        android:background="@color/drawer_scrim_color"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cl_second_navbar" />
+
     <FrameLayout
         android:id="@+id/ll_tournaments_dropdown"
         android:layout_width="match_parent"

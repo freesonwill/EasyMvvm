@@ -1,5 +1,5 @@
 <resources>
-    <string name="please_input_content">Please enter content</string>
+    <string name="search_bar_hint">Please enter the event name or team name</string>
     <string name="delete_all">Delete All</string>
     <string name="search_finish">Finish</string>
     <string name="history_record">Search History</string>

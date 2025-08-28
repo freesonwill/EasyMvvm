@@ -79,7 +79,7 @@ abstract class SearchBaseFragment<VM : BaseViewModel, CVB : ViewBinding>: BaseFr
     }
 
     private val titleBarHintStr: String
-        get() = R.string.please_input_content.toTranslatedStr()
+        get() = R.string.search_bar_hint.toTranslatedStr()
 
     private var canSearch: Boolean = true
 

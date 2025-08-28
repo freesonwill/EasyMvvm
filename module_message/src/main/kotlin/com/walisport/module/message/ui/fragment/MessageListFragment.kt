@@ -3,8 +3,10 @@ package com.walisport.module.message.ui.fragment
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.View
+import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.common.ui.dialog.CommonDialog
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout.States
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
@@ -70,9 +72,11 @@ class MessageListFragment : BaseFragment<MessageMainViewModel, FragmentMessageLi
 
     override fun initData() {
         super.initData()
-        if (msgType == MSG_ALL) {
-            mViewModel.getMessageList(MSG_ALL)
-            mBinding.loadingView.visibility = View.VISIBLE
+        launch(Lifecycle.State.RESUMED) {
+            if (msgType == MSG_ALL) {
+                mBinding.emptyState.setState(States.LOADING,"")
+                mViewModel.getMessageList(MSG_ALL)
+            }
         }
     }
 
@@ -80,12 +84,11 @@ class MessageListFragment : BaseFragment<MessageMainViewModel, FragmentMessageLi
         mViewModel.apiStateListener.observe(viewLifecycleOwner) {
             mBinding.refreshLayout.finishRefresh()
             mBinding.refreshLayout.finishLoadMore()
-            mBinding.loadingView.visibility = View.GONE
         }
         mViewModel.notificationBean.observe(viewLifecycleOwner) {
             mBinding.refreshLayout.finishRefresh()
             mBinding.refreshLayout.finishLoadMore()
-            mBinding.loadingView.visibility = View.GONE
+            mBinding.emptyState.setVisibilityGone()
             it.let {
                 if (it.isEmpty()) {
                     msgAdapter.notifyData(it)

@@ -121,12 +121,39 @@ class ComboBetRepository(
                         maxAmount = bean.maxAmount
                     )
                 }
+                saveDetail(multiBet)
                 comboMultiBetFlow.emit(multiBet)
             } else {
                 comboMultiBetFlow.emit(calculateMultiBetSums(data, getEmptyRiskList(data.size)))
             }
         } ?: run {
             comboMultiBetFlow.emit(calculateMultiBetSums(data, getEmptyRiskList(data.size)))
+        }
+    }
+
+    private fun saveDetail(multiBet: List<ComboMultiBetBean>) {
+        scope.launch {
+            betDao.getCurrentBet()?.let { bet ->
+                val betId = bet.betId
+                val currentDetail = betDao.getDetail(betId)
+                multiBet.forEach { multiBet ->
+                    if (currentDetail.find { it.serialValue == multiBet.serialValue && it.comboK == multiBet.comboK && it.comboV == multiBet.comboV} == null) {
+                        BetDetailBean(
+                            serialValue = multiBet.serialValue,
+                            betId = betId,
+                            comboK = multiBet.comboK,
+                            comboV = multiBet.comboV,
+                            sumOdds = multiBet.sumOdds,
+                            count = multiBet.count,
+                            inputMoney = 0L
+                        ).apply {
+                            betDao.insertDetail(this)
+                        }
+                    } else {
+                        betDao.updateDetailOdds(betId, multiBet.serialValue, multiBet.sumOdds)
+                    }
+                }
+            }
         }
     }
 
@@ -140,6 +167,7 @@ class ComboBetRepository(
                 multi.sumOdds
             }
         }
+        saveDetail(multiBet)
         scope.launch {
             comboMultiBetFlow.emit(multiBet)
         }
@@ -183,38 +211,8 @@ class ComboBetRepository(
 
                     val selection = betDao.getSelections(betId)
                     unregister(selection)
-                    val tempDetail = multiBet.map { bean ->
-                        BetDetailBean(
-                            serialValue = bean.serialValue,
-                            betId = betId,
-                            comboK = bean.comboK,
-                            comboV = bean.comboV,
-                            orderId = "",
-                            sumOdds = bean.sumOdds,
-                            count = bean.count,
-                            inputMoney = bean.inputMoney,
-                            status = BetResultStatusEnum.CONFIRMING
-                        )
-                    }
-                    betDao.insertDetail(tempDetail)
-
-                    val resp = remoteManager.comboBet(selection, multiBet)
-                    val detailBean = if (resp != null && resp.isSuccessful) {
-                        multiBet.map { bean ->
-                            val res = resp.data.first { it.serialValue == bean.serialValue }
-                            BetDetailBean(
-                                serialValue = bean.serialValue,
-                                betId = betId,
-                                comboK = bean.comboK,
-                                comboV = bean.comboV,
-                                orderId = res.orderId,
-                                sumOdds = bean.sumOdds,
-                                count = bean.count,
-                                inputMoney = bean.inputMoney,
-                                status = BetResultStatusEnum.getStatusByCode(res.orderStatus)
-                            )
-                        }
-                    } else {
+                    val currentDetail = betDao.getDetail(betId)
+                    val tempDetail = if (currentDetail.isEmpty()) {
                         multiBet.map { bean ->
                             BetDetailBean(
                                 serialValue = bean.serialValue,
@@ -225,12 +223,35 @@ class ComboBetRepository(
                                 sumOdds = bean.sumOdds,
                                 count = bean.count,
                                 inputMoney = bean.inputMoney,
-                                status = BetResultStatusEnum.FAIL
+                                status = BetResultStatusEnum.CONFIRMING
                             )
+                        }.apply {
+                            betDao.insertDetail(this)
+                        }
+                    } else {
+                        currentDetail
+                    }
+
+
+                    val resp = remoteManager.comboBet(selection, multiBet)
+                    if (resp != null && resp.isSuccessful) {
+                        tempDetail.forEach { detail ->
+                            val info = resp.data.find { it.serialValue == detail.serialValue }
+                            if (info != null) {
+                                detail.orderId = info.orderId
+                                detail.status = BetResultStatusEnum.getStatusByCode(info.orderStatus)
+                                betDao.updateDetail(detail)
+                            }
+                        }
+                    } else {
+                        tempDetail.map { detail ->
+
+                            betDao.updateDetailStatus(detail.betId, detail.serialValue, BetResultStatusEnum.FAIL)
                         }
                     }
-                    betDao.insertDetail(detailBean)
-                    betDao.updateBetStatus(betId, BetStatusEnum.COMPLETE)
+                    betDao.getCurrentBet(BetStatusEnum.BETTING)?.let { bettingBet ->
+                        betDao.updateBetStatus(bettingBet.betId, BetStatusEnum.COMPLETE)
+                    }
                 }
             }
         }
@@ -445,5 +466,13 @@ class ComboBetRepository(
 
     private suspend fun setSelectionForCheckOdds(selections: List<BetSelectionBean>) {
         selectionFlow.emit(selections)
+    }
+
+    fun setMoney(serialValue: Int, money: Long) {
+        scope.launch {
+            betDao.getCurrentBet()?.let { bet ->
+                betDao.updateDetailMoney(bet.betId, serialValue, money)
+            }
+        }
     }
 }

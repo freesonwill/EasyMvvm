@@ -1,5 +1,6 @@
 package arch.cayenne.module.bet.ui.fragment
 
+import android.animation.ObjectAnimator
 import android.content.DialogInterface
 import android.os.Bundle
 import android.view.ContextThemeWrapper
@@ -11,6 +12,7 @@ import arch.cayenne.lib.base.ui.fragment.BasePreLoadBottomSheetFragment
 import arch.cayenne.module.bet.R
 import arch.cayenne.module.bet.data.Config.KEY_RESULT
 import arch.cayenne.module.bet.data.Config.VALUE_DISMISS
+import arch.cayenne.module.bet.data.Config.VALUE_TO_RESULT
 import arch.cayenne.module.bet.databinding.FragmentBetSheetBinding
 import arch.cayenne.module.bet.viewmodel.BetSheetViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -31,16 +33,17 @@ class BetSheetFragment private constructor() :
             }
         }
 
-        fun show(activity: FragmentActivity, showAnimEndListener: (() -> Unit)? = null) {
+        fun show(activity: FragmentActivity, withOtherSheetHide: ObjectAnimator? = null) {
             val manager = activity.supportFragmentManager
             val f = manager.findFragmentByTag(TAG)
             if (f == null) {
                 BetSheetFragment().show(manager, TAG)
             } else if (f is BasePreLoadBottomSheetFragment<*, *>) {
-                showAnimEndListener?.let {
-                    f.setShowAnimEndListener(showAnimEndListener)
+                if (withOtherSheetHide == null) {
+                    f.customShow()
+                } else {
+                    f.customShow(withOtherSheetHide)
                 }
-                f.customShow()
             }
         }
     }
@@ -65,6 +68,7 @@ class BetSheetFragment private constructor() :
 
     override fun initView(savedInstanceState: Bundle?) {
         initFragment()
+        BetResultFragment.create(requireActivity())
     }
 
     private fun initFragment() {
@@ -113,6 +117,9 @@ class BetSheetFragment private constructor() :
             val result = bundle.getString(KEY_RESULT)
             if (result == VALUE_DISMISS) {
                 customHide()
+            } else if (result == VALUE_TO_RESULT) {
+                val sheetAnimator = getHideAnimator() ?: return@setFragmentResultListener
+                BetResultFragment.show(requireActivity(), sheetAnimator)
             }
         }
         mViewModel.betSheetSizeListener.observe(viewLifecycleOwner) {
@@ -157,6 +164,7 @@ class BetSheetFragment private constructor() :
 
 interface BetSheetListener {
     fun dismiss(key: String = KEY_RESULT, value: String = VALUE_DISMISS)
+    fun navToResult(key: String = KEY_RESULT, value: String = VALUE_TO_RESULT)
     fun doCustomHideEnd()
     fun doCustomShow() {
 

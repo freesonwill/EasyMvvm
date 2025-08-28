@@ -169,6 +169,7 @@ class ComboBetViewModel(
                     rate
                 }
             }
+            repo.setMoney(serialValue, money)
             setMultiBetBean(updatedList)
         }
     }

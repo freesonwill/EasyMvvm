@@ -3,6 +3,9 @@ package arch.cayenne.module.home.ui.view
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
+import android.graphics.Typeface
+import android.os.Build
+import arch.cayenne.lib.common.utils.ext.DimensionExt.sp2px
 import com.haibin.calendarview.Calendar
 import com.haibin.calendarview.MonthView
 import kotlin.math.min
@@ -53,6 +56,18 @@ class HomeCalendarMonthView(context: Context?) : MonthView(context) {
         val baselineY = mTextBaseLine + y
         val cx = x + mItemWidth / 2
         val isInRange = isInRange(calendar)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            val dayFontWeight = 500
+            val dayTypeface = Typeface.create(Typeface.DEFAULT,dayFontWeight,false)
+            mSelectTextPaint.typeface = dayTypeface
+            mCurDayTextPaint.typeface = dayTypeface
+            mSchemeTextPaint.typeface = dayTypeface
+            mOtherMonthTextPaint.typeface = dayTypeface
+        }
+        mSelectTextPaint.textSize = 14.sp2px
+        mCurDayTextPaint.textSize = 14.sp2px
+        mSchemeTextPaint.textSize = 14.sp2px
+        mOtherMonthTextPaint.textSize = 14.sp2px
         if (isSelected) {
             canvas.drawText(
                 calendar.day.toString(),
