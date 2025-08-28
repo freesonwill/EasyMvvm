@@ -3,7 +3,10 @@ package com.walisport.module.search.ui.view
 import android.content.Context
 import android.view.LayoutInflater
 import android.widget.TextView
+import androidx.core.view.doOnLayout
+import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import com.haibin.calendarview.WeekBar
+import com.walisport.module.search.R
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -12,7 +15,7 @@ class SearchCustomWeekBar(context: Context?) : WeekBar(context) {
     private var locale: Locale = Locale.getDefault()
 
     init {
-        LayoutInflater.from(context).inflate(com.haibin.calendarview.R.layout.cv_week_bar, this, true)
+        LayoutInflater.from(context).inflate(R.layout.view_search_custom_week_bar, this, true)
     }
 
     override fun onWeekStartChange(weekStart: Int) {
