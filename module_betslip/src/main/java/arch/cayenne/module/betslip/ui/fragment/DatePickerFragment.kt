@@ -73,6 +73,7 @@ class DatePickerFragment private constructor() :
     }
 
     override fun initView(savedInstanceState: Bundle?) {
+        isGestureEnable = false
         val layoutManager = GridLayoutManager(requireContext(), 30) // 每行3格
         layoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {

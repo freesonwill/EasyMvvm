@@ -3,8 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:paddingTop="10dp"
+    android:layout_height="41dp"
+    android:paddingTop="11dp"
     android:paddingBottom="10dp">
 
     <arch.cayenne.lib.skin.widget.SkinnableTextView
@@ -14,8 +14,10 @@
         android:textColor="@color/search_title"
         android:textSize="15sp"
         android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:skinnableFontWeight="400"
         tools:text="世界杯" />
 
     <androidx.appcompat.widget.AppCompatTextView
@@ -25,8 +27,10 @@
         android:textColor="@color/hot_word"
         android:textSize="15sp"
         android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:skinnableFontWeight="400"
         tools:text="世界杯"
         tools:visibility="visible" />
 

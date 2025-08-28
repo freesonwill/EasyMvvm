@@ -36,6 +36,7 @@ import com.walisport.module.search.data.model.SearchResultTeamBean
 import com.walisport.module.search.data.model.SearchResultTournamentBean
 import com.walisport.module.search.databinding.FragmentSearchResultDirectMatchBinding
 import com.walisport.module.search.ui.adapter.SearchResultRaceAdapter
+import com.walisport.module.search.ui.fragment.SearchDatePickerFragment.AnimState
 import com.walisport.module.search.ui.viewmodel.SearchResultDirectMatchViewModel
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -338,9 +339,6 @@ class SearchResultDirectMatchFragment :
                     setMarginStart(8.dp2px)
                     setMarginEnd(8.dp2px)
                     setSchemeDates(racedDateMap)
-                    setOnBeforeDismissAnimListener {
-                        setDateBarStatus(false)
-                    }
                     setOnAfterDismissAnimListener { startTime: Long?, endTime: Long?, timeInMills: Long? ->
                         datePicker = null
 
@@ -360,6 +358,8 @@ class SearchResultDirectMatchFragment :
                             }
                         }
                     }
+                    setOnBeforeDismissAnimListener { setDateBarStatus(false) }
+                    setOnBeforeExpandAnimListener { setDateBarStatus(true) }
                     getSelectedDate()?.time?.let { setSelectedDate(it) }
                 }.build()
 

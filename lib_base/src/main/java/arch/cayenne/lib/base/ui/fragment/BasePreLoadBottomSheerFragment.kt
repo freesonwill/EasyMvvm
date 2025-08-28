@@ -1,15 +1,18 @@
 package arch.cayenne.lib.base.ui.fragment
 
+import android.animation.ObjectAnimator
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
 import android.util.AttributeSet
 import android.view.View
-import android.view.animation.Animation
 import androidx.annotation.CallSuper
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.animation.doOnEnd
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.FragmentManager
 import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.base.ui.view.UnhideableBottomSheetDialog
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
@@ -35,7 +38,7 @@ abstract class BasePreLoadBottomSheetFragment<VM : BaseViewModel, VB : ViewBindi
             override fun onStart() {
                 super.onStart()
                 hideSheet()
-                setCustomExpendSetting()
+                setCustomCollapseSetting()
                 hideDialog()
                 isDismissing = true
             }
@@ -53,16 +56,11 @@ abstract class BasePreLoadBottomSheetFragment<VM : BaseViewModel, VB : ViewBindi
 
             override fun hide() {
                 systemHide = true
+                setSystemHide()
             }
         }
         unhideableDialog = dialog
         return dialog
-    }
-
-    @CallSuper
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        setBehavior(view)
     }
 
     override fun setBackGroundOnclick() {
@@ -90,7 +88,7 @@ abstract class BasePreLoadBottomSheetFragment<VM : BaseViewModel, VB : ViewBindi
         val unhideableBehavior = UnhideableBottomSheetBehavior<View>(requireContext(), null)
         unhideableBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {
-                if ((newState == BottomSheetBehavior.STATE_COLLAPSED || newState == BottomSheetBehavior.STATE_HIDDEN)) {
+                if (newState == BottomSheetBehavior.STATE_COLLAPSED || newState == BottomSheetBehavior.STATE_HIDDEN) {
                     if (this@BasePreLoadBottomSheetFragment.isResumed) {
                         isDismissing = true
                         customHide()
@@ -109,7 +107,8 @@ abstract class BasePreLoadBottomSheetFragment<VM : BaseViewModel, VB : ViewBindi
 
     @CallSuper
     protected open fun setCustomCollapseSetting() {
-        sheetContainer?.translationY = 0f
+        sheetContainer?.translationY = mBinding.root.height.toFloat()
+        sheetContainer?.scrollY = 0
 
         onEndListener?.invoke()
         unhideableDialog?.hideDialog()
@@ -126,21 +125,12 @@ abstract class BasePreLoadBottomSheetFragment<VM : BaseViewModel, VB : ViewBindi
         }
     }
 
-    override fun playExitAnimations() {
-        val sheetContainerSheetAnim = exitAnimation()
-        sheetContainerSheetAnim.setAnimationListener(object : Animation.AnimationListener {
-            override fun onAnimationStart(animation: Animation?) {
-                backgroundView?.visibility = View.INVISIBLE
-            }
-            override fun onAnimationEnd(animation: Animation?) {
-                setCustomCollapseSetting()
-                showDim()
-            }
-
-            override fun onAnimationRepeat(animation: Animation?) {}
+    override fun playExitAnimations(doStart: (() -> Unit)?, doEnd: (() -> Unit)?) {
+        super.playExitAnimations({
+            backgroundView?.visibility = View.INVISIBLE
+        }, {
+            setCustomCollapseSetting()
         })
-        playHideDimAnimation(sheetContainerSheetAnim)
-        sheetContainer?.startAnimation(sheetContainerSheetAnim)
     }
 
     fun customDetach() {
@@ -165,14 +155,25 @@ abstract class BasePreLoadBottomSheetFragment<VM : BaseViewModel, VB : ViewBindi
             setCustomExpendSetting()
             playEnterAnimations()
         }
+    }
 
+    fun customShow(other: ObjectAnimator) {
+        if (sheetContainer?.visibility == View.INVISIBLE) {
+            isDismissing = true
+        }
+        if (isDismissing) {
+            isDismissing = false
+            setCustomExpendSetting()
+            otherViewAnimation = other
+            playEnterAnimationWithOtherSheetDialogEnd()
+        }
     }
 
     @CallSuper
     open fun customHide()  {
         if (!isDismissing) {
             isDismissing = true
-            playExitAnimations()
+            this.playExitAnimations()
         } else {
             setCustomCollapseSetting()
         }
@@ -184,6 +185,39 @@ abstract class BasePreLoadBottomSheetFragment<VM : BaseViewModel, VB : ViewBindi
 
     override fun dismiss() {
         customHide()
+    }
+
+    override fun getHideAnimator(): ObjectAnimator? {
+        val sheet = sheetContainer ?: return null
+        val anim = exitAnimation()
+        return ObjectAnimator.ofFloat(
+            sheet, "translationY", 0f, sheet.height.toFloat()
+        ).apply {
+            duration = anim.duration
+            interpolator = anim.interpolator
+            addUpdateListener { animation ->
+                val value = animation.animatedValue as Float
+                sheet.translationY = value
+            }
+            doOnEnd {
+                setCustomCollapseSetting()
+            }
+        }
+    }
+
+    private fun setSystemHide() {
+        fun findDialogFragment(fragmentManager: FragmentManager) {
+            fragmentManager.fragments.forEach {
+                if (it is DialogFragment) {
+                    it.dismissAllowingStateLoss()
+                } else {
+                    findDialogFragment(it.childFragmentManager)
+                }
+            }
+        }
+        findDialogFragment(childFragmentManager)
+        setCustomCollapseSetting()
+        hideDim()
     }
 }
 
