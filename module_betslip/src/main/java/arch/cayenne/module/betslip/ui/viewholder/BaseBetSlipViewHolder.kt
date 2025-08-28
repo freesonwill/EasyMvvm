@@ -42,7 +42,9 @@ abstract class BaseBetSlipViewHolder<VB: ViewBinding>(binding: ViewBinding, betS
     }
 
     protected fun initItemView(recyclerView: RecyclerView) {
+        val manager = LinearLayoutManager(recyclerView.context)
         recyclerView.also {
+            it.layoutManager = manager
             it.itemAnimator = null
             it.adapter = adapter
         }
