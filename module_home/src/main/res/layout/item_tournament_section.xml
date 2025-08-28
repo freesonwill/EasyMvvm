@@ -3,10 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="49dp"
+    android:layout_height="48dp"
     android:background="@color/champions_list"
     android:gravity="center_vertical"
-    android:paddingTop="@dimen/dp_1"
     android:orientation="horizontal"
     android:paddingHorizontal="@dimen/dp_16">
 
@@ -15,7 +14,7 @@
         android:layout_width="@dimen/dp_22"
         android:layout_height="@dimen/dp_22"
         android:src="@drawable/ic_default_tournament"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/v_divider"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -26,12 +25,13 @@
         android:layout_marginStart="@dimen/dp_6"
         android:textColor="@color/home_main_text"
         android:textSize="15sp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/v_divider"
         app:layout_constraintStart_toEndOf="@+id/tv_section_icon"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="聯賽名稱" />
 
     <arch.cayenne.lib.skin.widget.SkinnableView
+        android:id="@+id/v_divider"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_1"
         android:background="@color/home_list_separator"

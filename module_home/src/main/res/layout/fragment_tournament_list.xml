@@ -23,19 +23,19 @@
         android:id="@+id/tv_tournament_section_title"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_52"
-        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginStart="@dimen/dp_17"
         android:paddingTop="@dimen/dp_16"
         android:text="@string/tournament_section_title"
         android:textColor="@color/home_main_text"
         android:textSize="15sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="選聯賽" />
 
     <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
         android:id="@+id/ll_search_bar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_36"
-        android:layout_marginTop="@dimen/dp_2"
         android:layout_marginHorizontal="@dimen/dp_16"
         android:background="@drawable/home_search_rounded_background"
         android:gravity="center_vertical"
@@ -69,7 +69,7 @@
         android:id="@+id/iv_home_league_collapse"
         android:layout_width="63dp"
         android:layout_height="@dimen/dp_52"
-        android:paddingStart="24dp"
+        android:paddingStart="25dp"
         android:paddingTop="@dimen/dp_16"
         android:paddingBottom="@dimen/dp_14"
         android:src="@drawable/ic_league_tabs_collapse"
@@ -99,13 +99,12 @@
         android:id="@+id/ll_index_container"
         android:layout_width="160dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_48"
+        android:layout_marginTop="@dimen/dp_52"
         android:gravity="end"
-        android:paddingEnd="@dimen/dp_6"
+        android:paddingEnd="@dimen/dp_7"
         android:paddingBottom="4dp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@+id/rv_tournament_list" />
     <arch.cayenne.lib.common.ui.view.LoadingView
         android:id="@+id/loading_view"
         android:layout_width="wrap_content"
