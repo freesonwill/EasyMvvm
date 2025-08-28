@@ -68,11 +68,11 @@
         android:layout_marginEnd="@dimen/dp_12"
         android:fontFamily="sans-serif"
         android:textColor="@color/main_text"
-        app:skinnableFontWeight="500"
         android:textSize="@dimen/sp_14"
         app:layout_constraintBottom_toBottomOf="@id/bet_confirm_tv_introduce"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@id/bet_confirm_tv_introduce"
+        app:skinnableFontWeight="500"
         tools:text="@string/live_bet_except_odds" />
 
     <arch.cayenne.lib.skin.widget.SkinnableTextView
@@ -98,10 +98,10 @@
         android:layout_marginStart="@dimen/dp_6"
         android:textColor="@color/secondary_text"
         android:textSize="@dimen/sp_14"
-        app:layout_constraintBottom_toBottomOf="@id/bet_confirm_tv_status"
         app:layout_constraintLeft_toRightOf="@id/bet_confirm_tv_status"
         app:layout_constraintTop_toTopOf="@id/bet_confirm_tv_status"
-        app:layout_goneMarginStart="0dp" />
+        app:layout_goneMarginStart="0dp"
+        app:layout_goneMarginTop="12dp" />
 
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/bet_confirm_tv_start"
@@ -114,7 +114,7 @@
         app:layout_constraintBottom_toTopOf="@id/line"
         app:layout_constraintLeft_toLeftOf="@id/bet_confirm_iv_ball"
         app:layout_constraintTop_toBottomOf="@id/bet_confirm_tv_score"
-        app:layout_goneMarginBottom="14dp"
+        app:layout_goneMarginBottom="6dp"
         tools:ignore="HardcodedText"
         tools:text="11月14日 15:00" />
 

@@ -93,7 +93,6 @@
         tools:ignore="HardcodedText"
         tools:text="中国 +0.5" />
 
-
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/bet_settled_tv_aodds"
         android:layout_width="wrap_content"
@@ -101,11 +100,11 @@
         android:layout_marginEnd="@dimen/dp_12"
         android:fontFamily="sans-serif"
         android:textColor="@color/main_text"
-        app:skinnableFontWeight="500"
         android:textSize="@dimen/sp_14"
         app:layout_constraintBottom_toBottomOf="@id/bet_settled_tv_introduce"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@id/bet_settled_tv_introduce"
+        app:skinnableFontWeight="500"
         tools:text="\@1.85" />
 
     <arch.cayenne.lib.skin.widget.SkinnableTextView
@@ -119,6 +118,7 @@
         android:paddingHorizontal="8dp"
         android:paddingVertical="0.5dp"
         android:text="@string/live_bet_grounder"
+        android:visibility="gone"
         android:textColor="@color/color_15b264"
         android:textSize="@dimen/sp_13"
         app:layout_constraintLeft_toLeftOf="@id/bet_settled_iv_ball"
@@ -131,10 +131,11 @@
         android:layout_marginStart="6dp"
         android:textColor="@color/secondary_text"
         android:textSize="@dimen/sp_14"
-        app:layout_constraintBottom_toBottomOf="@+id/bet_settled_tv_status"
         app:layout_constraintLeft_toRightOf="@id/bet_settled_tv_status"
         app:layout_constraintTop_toTopOf="@+id/bet_settled_tv_status"
-        app:layout_goneMarginStart="0dp" />
+        app:layout_goneMarginStart="0dp"
+        android:layout_marginBottom="-12dp"
+        app:layout_goneMarginTop="12dp" />
 
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/bet_settled_tv_score1"
@@ -147,7 +148,7 @@
         app:layout_constraintBottom_toTopOf="@id/line"
         app:layout_constraintLeft_toLeftOf="@id/bet_settled_iv_ball"
         app:layout_constraintTop_toBottomOf="@id/bet_settled_tv_score"
-        app:layout_goneMarginBottom="14dp"
+        app:layout_goneMarginBottom="6dp"
         app:skinnableFontWeight="600"
         tools:text="2-1" />
 
