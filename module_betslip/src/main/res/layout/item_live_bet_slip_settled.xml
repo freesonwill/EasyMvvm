@@ -101,13 +101,11 @@
         android:layout_marginEnd="@dimen/dp_12"
         android:fontFamily="sans-serif"
         android:textColor="@color/main_text"
-        android:textFontWeight="500"
+        app:skinnableFontWeight="500"
         android:textSize="@dimen/sp_14"
         app:layout_constraintBottom_toBottomOf="@id/bet_settled_tv_introduce"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@id/bet_settled_tv_introduce"
-        tools:ignore="HardcodedText"
-        tools:targetApi="p"
         tools:text="\@1.85" />
 
     <arch.cayenne.lib.skin.widget.SkinnableTextView
@@ -151,7 +149,6 @@
         app:layout_constraintTop_toBottomOf="@id/bet_settled_tv_score"
         app:layout_goneMarginBottom="14dp"
         app:skinnableFontWeight="600"
-        tools:targetApi="p"
         tools:text="2-1" />
 
     <arch.cayenne.lib.skin.widget.SkinnableView
