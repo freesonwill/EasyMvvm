@@ -84,7 +84,6 @@ class BetSlipReserveFragment : BaseBetSlipFragment<ReserveSlipViewModel, Fragmen
                 }
             }
         })
-
         mBinding.recyclerView.also {
             it.layoutManager = LinearLayoutManager(requireContext())
             it.adapter = betSlipAdapter

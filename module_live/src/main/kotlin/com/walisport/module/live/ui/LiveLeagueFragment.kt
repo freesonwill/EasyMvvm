@@ -36,7 +36,7 @@ class LiveLeagueFragment : BaseFragment<LeagueViewModel, FragmentLeagueBinding>(
 
     override val vbClass: KClass<FragmentLeagueBinding> = FragmentLeagueBinding::class
     override val vmClass: KClass<LeagueViewModel> = LeagueViewModel::class
-    private val standsAdapter = LeagueAdapter()
+    private val standsAdapter by lazy { LeagueAdapter() }
     private var leagueID: Int = 0
     private var leagueName: String = ""
     private var leagueLogo: String = ""

@@ -52,7 +52,6 @@ class BetSlipSettledFragment :
                 }
             }
         })
-
         mBinding.recyclerView.also {
             it.layoutManager = LinearLayoutManager(requireContext())
             it.adapter = betSlipAdapter
