@@ -17,10 +17,6 @@ class KeyBoardInsetsCallBack(dispatchMode: Int, private val keyboardListener: Ke
     //监听软件的显示隐藏状态
     private var isSoftKeyBoard: Boolean = false
 
-
-
-
-
     override fun onPrepare(animation: WindowInsetsAnimationCompat) {
 
     }
@@ -29,6 +25,16 @@ class KeyBoardInsetsCallBack(dispatchMode: Int, private val keyboardListener: Ke
         animation: WindowInsetsAnimationCompat,
         bounds: BoundsCompat
     ): BoundsCompat {
+        if (animation.typeMask and WindowInsetsCompat.Type.ime() != 0) {
+
+            // 计算目标键盘高度（从bounds推断）
+          val  targetKeyboardHeight = calculateTargetKeyboardHeight(bounds)
+            val moveDistance = calculateMoveDistance(bounds)
+            "键盘高度 $targetKeyboardHeight   移动距离 $moveDistance".logd("aaa")
+            keyboardListener.onAnimStart(moveDistance)
+
+        }
+
         keyboardListener.onAnimStart(bounds.upperBound.bottom - bounds.lowerBound.bottom)
         return super.onStart(animation, bounds)
     }
@@ -52,6 +58,87 @@ class KeyBoardInsetsCallBack(dispatchMode: Int, private val keyboardListener: Ke
     override fun onEnd(animation: WindowInsetsAnimationCompat) {
         keyboardListener.onAnimEnd()
     }
+
+    /**
+     * 计算目标键盘高度
+     */
+    private fun calculateTargetKeyboardHeight(bounds: BoundsCompat): Int {
+        val totalHeightChange = bounds.upperBound.bottom - bounds.lowerBound.bottom
+        return if (totalHeightChange > 0) {
+            // 键盘弹出，高度为正
+            if (hasNavigationBar) {
+                (totalHeightChange - navigationBarHeight).coerceAtLeast(0)
+            } else {
+                totalHeightChange
+            }
+        } else {
+            // 键盘收起，高度为0
+            0
+        }
+    }
+
+    /**
+     * 计算移动距离
+     */
+    private fun calculateMoveDistance(bounds: BoundsCompat): Int {
+        val rawMoveDistance = bounds.upperBound.bottom - bounds.lowerBound.bottom
+        return if (hasNavigationBar) {
+            // 减去导航栏高度的影响
+            (rawMoveDistance - navigationBarHeight).coerceAtLeast(0)
+        } else {
+            rawMoveDistance.coerceAtLeast(0)
+        }
+    }
+
+    /**
+     * 计算当前键盘高度
+     */
+    private fun calculateCurrentKeyboardHeight(insets: WindowInsetsCompat): Int {
+        val imeInsets = insets.getInsets(WindowInsetsCompat.Type.ime())
+
+        return if (imeInsets.bottom > 0) {
+            if (hasNavigationBar && imeInsets.bottom >= navigationBarHeight) {
+                // 减去导航栏高度
+                (imeInsets.bottom - navigationBarHeight).coerceAtLeast(0)
+            } else {
+                imeInsets.bottom
+            }
+        } else {
+            0
+        }
+    }
+
+    /**
+     * 计算垂直偏移量（用于动画）
+     */
+    private fun calculateVerticalOffset(insets: WindowInsetsCompat): Int {
+        val imeInsets = insets.getInsets(WindowInsetsCompat.Type.ime())
+        val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+
+        return if (imeInsets.bottom > 0) {
+            // 键盘显示时的偏移量
+            -(imeInsets.bottom - systemBars.bottom)
+        } else {
+            // 键盘隐藏时的偏移量
+            systemBars.bottom
+        }
+    }
+
+    /**
+     * 更新系统栏高度信息
+     */
+    private fun updateSystemBarHeights(insets: WindowInsetsCompat) {
+        // 获取导航栏高度
+        val navBars = insets.getInsets(WindowInsetsCompat.Type.navigationBars())
+        navigationBarHeight = navBars.bottom
+        hasNavigationBar = navigationBarHeight > 0
+
+        // 获取状态栏高度
+        val statusBars = insets.getInsets(WindowInsetsCompat.Type.statusBars())
+     val   statusBarHeight = statusBars.top
+    }
+
+
 
     companion object {
         val KEYBOARD_TYPE: Int = WindowInsetsCompat.Type.ime()

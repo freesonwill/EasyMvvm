@@ -63,7 +63,6 @@ class LiveSoftKeyboardFragment :
 
 //    var softKeyHeightHelper:SoftKeyHeightHelper? = null
 
-
     //表情点击
     private val itemListener = object : RecyclerItemListener<EmojiData> {
         override fun onItemClick(item: EmojiData?, position: Int) {
@@ -106,10 +105,10 @@ class LiveSoftKeyboardFragment :
     private fun calculationLayoutSize() {
         mBinding.apply {
             chatViewModel.keyBoardHeight = mBinding.main.height
-            emojiKeyBoardHeight = chatViewModel.keyBoardHeight - 62.dp2px -21.dp2px
-            emojiContent.layoutParams.height = emojiKeyBoardHeight
+//            emojiKeyBoardHeight = chatViewModel.keyBoardHeight - 62.dp2px -21.dp2px
+//            emojiContent.layoutParams.height = emojiKeyBoardHeight
             screenContent.layoutParams.height = chatViewModel.keyBoardHeight
-            main.layoutParams.height = chatViewModel.keyBoardHeight+emojiKeyBoardHeight
+//            main.layoutParams.height = chatViewModel.keyBoardHeight+emojiKeyBoardHeight
         }
     }
 
@@ -117,73 +116,72 @@ class LiveSoftKeyboardFragment :
         val keyBoardInsetsCallBack =
             KeyBoardInsetsCallBack(object : KeyBoardListener {
                 override fun onAnimStart(moveDistance: Int) {
-                    val animationType = mViewModel.getAnimationType(chatViewModel.clickKeyBoardType, chatViewModel.currentKeyBoardType)
-                    "onAnimStart $animationType softKeyBoardListener  ${chatViewModel.clickKeyBoardType} currentSoftKeyboard ${ chatViewModel.currentKeyBoardType}".logd("aaa")
-                    if(animationType == KeyboardActionType.NONE){
-                        return
-                    }
-                    when (animationType) {
-                        KeyboardActionType.SOFT_TO_EMOJI -> {
-                        }
-                        KeyboardActionType.EMOJI_TO_SOFT -> {
-                            panelAnimateTo(-moveDistance)
-                        }
-                        KeyboardActionType.CHAT_TO_EMOJI -> {
-                        }
-                        KeyboardActionType.EMOJI_TO_CHAT -> {
-                            panelAnimateTo(0)
-
-                        }
-                        KeyboardActionType.CHAT_TO_SOFT -> {
-                        }
-                        KeyboardActionType.SOFT_TO_SOFT ->{
-                            changeKeyboardUi(KeyBoardType.CHAT)
-                            chatViewModel.addSoftKeyBoardEvent(KeyBoardType.CHAT)
-                        }
-                        KeyboardActionType.SOFT_TO_CHAT -> {
-                        }
-                        else ->{}
-                    }
+//                    val animationType = mViewModel.getAnimationType(chatViewModel.clickKeyBoardType, chatViewModel.currentKeyBoardType)
+//                    "onAnimStart $animationType softKeyBoardListener  ${chatViewModel.clickKeyBoardType} currentSoftKeyboard ${ chatViewModel.currentKeyBoardType}".logd("aaa")
+//                    if(animationType == KeyboardActionType.NONE){
+//                        return
+//                    }
+//                    when (animationType) {
+//                        KeyboardActionType.SOFT_TO_EMOJI -> {
+//                        }
+//                        KeyboardActionType.EMOJI_TO_SOFT -> {
+//                            panelAnimateTo(-moveDistance)
+//                        }
+//                        KeyboardActionType.CHAT_TO_EMOJI -> {
+//                        }
+//                        KeyboardActionType.EMOJI_TO_CHAT -> {
+//                            panelAnimateTo(0)
+//                        }
+//                        KeyboardActionType.CHAT_TO_SOFT -> {
+//                        }
+//                        KeyboardActionType.SOFT_TO_SOFT ->{
+//                            changeKeyboardUi(KeyBoardType.CHAT)
+//                            chatViewModel.addSoftKeyBoardEvent(KeyBoardType.CHAT)
+//                        }
+//                        KeyboardActionType.SOFT_TO_CHAT -> {
+//                        }
+//                        else ->{}
+//                    }
                 }
 
                 override fun onAnimDoing(offsetX: Int, offsetY: Int) {
-                    val animationType = mViewModel.getAnimationType(chatViewModel.clickKeyBoardType, chatViewModel.currentKeyBoardType)
-//                    "onDoing type $animationType $offsetY  ".logd("aaa")
-                    if(animationType == KeyboardActionType.NONE){
-                        return
-                    }
-                    if (animationType in arrayOf(
-                            KeyboardActionType.CHAT_TO_SOFT,
-                            KeyboardActionType.SOFT_TO_CHAT,
-                            KeyboardActionType.SOFT_TO_SOFT)) {
-                        mBinding.main.translationY = offsetY.toFloat()
-                    }
+//                    val animationType = mViewModel.getAnimationType(chatViewModel.clickKeyBoardType, chatViewModel.currentKeyBoardType)
+////                    "onDoing type $animationType $offsetY  ".logd("aaa")
+//                    if(animationType == KeyboardActionType.NONE){
+//                        return
+//                    }
+//                    if (animationType in arrayOf(
+//                            KeyboardActionType.CHAT_TO_SOFT,
+//                            KeyboardActionType.SOFT_TO_CHAT,
+//                            KeyboardActionType.SOFT_TO_SOFT)) {
+//                        mBinding.main.translationY = offsetY.toFloat()
+//                    }
                 }
 
                 override fun onAnimEnd() {
-                    val animationType = mViewModel.getAnimationType(chatViewModel.clickKeyBoardType, chatViewModel.currentKeyBoardType)
-//                    "onAnimEnd   ${animationType in arrayOf(
-//                        KeyboardActionType.CHAT_TO_SOFT,
-//                        KeyboardActionType.SOFT_TO_CHAT,
-//                        KeyboardActionType.EMOJI_TO_SOFT,
-//                        KeyboardActionType.SOFT_TO_SOFT)} $animationType softKeyBoardListener  ${chatViewModel.clickKeyBoardType} currentSoftKeyboard ${ chatViewModel.currentKeyBoardType}".logd("aaa")
-                    if(animationType == KeyboardActionType.NONE){
-                        return
-                    }
-                    if (animationType in arrayOf(KeyboardActionType.CHAT_TO_SOFT, KeyboardActionType.SOFT_TO_CHAT, KeyboardActionType.EMOJI_TO_SOFT, KeyboardActionType.SOFT_TO_SOFT)) {
-                        when (animationType) {
-                            KeyboardActionType.EMOJI_TO_SOFT,
-                            KeyboardActionType.CHAT_TO_SOFT -> {
-                                changeKeyboardUi(KeyBoardType.SOFT_KEYBOARD)
-                            }
-                            KeyboardActionType.SOFT_TO_SOFT ->{
-                            }
-                            KeyboardActionType.SOFT_TO_CHAT -> {
-                                changeKeyboardUi(KeyBoardType.CHAT)
-                            }
-                            else -> {}
-                        }
-                    }
+//                    val animationType = mViewModel.getAnimationType(chatViewModel.clickKeyBoardType, chatViewModel.currentKeyBoardType)
+////                    "onAnimEnd   ${animationType in arrayOf(
+////                        KeyboardActionType.CHAT_TO_SOFT,
+////                        KeyboardActionType.SOFT_TO_CHAT,
+////                        KeyboardActionType.EMOJI_TO_SOFT,
+////                        KeyboardActionType.SOFT_TO_SOFT)} $animationType softKeyBoardListener  ${chatViewModel.clickKeyBoardType} currentSoftKeyboard ${ chatViewModel.currentKeyBoardType}".logd("aaa")
+//                    if(animationType == KeyboardActionType.NONE){
+//                        return
+//                    }
+//                    if (animationType in arrayOf(KeyboardActionType.CHAT_TO_SOFT, KeyboardActionType.SOFT_TO_CHAT, KeyboardActionType.EMOJI_TO_SOFT, KeyboardActionType.SOFT_TO_SOFT)) {
+//                        when (animationType) {
+//                            KeyboardActionType.EMOJI_TO_SOFT,
+//                            KeyboardActionType.CHAT_TO_SOFT -> {
+//                                changeKeyboardUi(KeyBoardType.SOFT_KEYBOARD)
+//                            }
+//                            KeyboardActionType.SOFT_TO_SOFT ->{
+//                            }
+//                            KeyboardActionType.SOFT_TO_CHAT -> {
+//                                changeKeyboardUi(KeyBoardType.CHAT)
+//                            }
+//                            else -> {}
+//                        }
+//                    }
                 }
             })
         WindowCompat.setDecorFitsSystemWindows(requireActivity().window, false)
@@ -228,8 +226,25 @@ class LiveSoftKeyboardFragment :
                 if (isSoftKeyBoard) {
                     return@setOnApplyWindowInsetsListener insets
                 }
+                // 获取导航栏高度
+                val navBars = insets.getInsets(WindowInsetsCompat.Type.navigationBars())
+               val navigationBarHeight = navBars.bottom
+
+                // 获取系统栏（状态栏+导航栏）
+                val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+                // 获取IME键盘
+                val imeInsets = insets.getInsets(WindowInsetsCompat.Type.ime())
+                chatViewModel.softKeyBoardHeight = if (imeInsets.bottom >= navigationBarHeight) {
+                    // 键盘显示时，减去导航栏高度
+                    imeInsets.bottom - navigationBarHeight
+                } else {
+                    imeInsets.bottom
+                }
+                "softKeyBoardHeight ${chatViewModel.softKeyBoardHeight} $navigationBarHeight systembar ${systemBars.bottom}".logd("aaa")
                 isSoftKeyBoard = true
                 onSoftKeyBoardShow()
+                //消费掉insets,防止继续传递
+                return@setOnApplyWindowInsetsListener  WindowInsetsCompat.CONSUMED
             } else {
                 // 键盘隐藏
                 if (!isSoftKeyBoard) {
@@ -237,8 +252,9 @@ class LiveSoftKeyboardFragment :
                 }
                 isSoftKeyBoard = false
                 onSoftKeyBoardHide()
+                //消费掉insets,防止继续传递
+                return@setOnApplyWindowInsetsListener  WindowInsetsCompat.CONSUMED
             }
-            insets
         }
 
 
@@ -336,16 +352,20 @@ class LiveSoftKeyboardFragment :
             chatViewModel.clickKeyBoardType,
             chatViewModel.currentKeyBoardType
         )
+        chatViewModel.softKeyBoardHeight = 455
         "showChangeAnimation $animationType listener: ${chatViewModel.clickKeyBoardType} current ${ chatViewModel.currentKeyBoardType}".logd("aaa")
+        val softKeyBoardTransY = chatViewModel.softKeyBoardHeight+62.dp2px
         when (animationType) {
             KeyboardActionType.CHAT_TO_CHAT -> changeKeyboardUi(KeyBoardType.CHAT)
             //展示软件盘
             KeyboardActionType.CHAT_TO_SOFT -> {
                 softKeyboardChange(true,1)
+                panelAnimateTo(-softKeyBoardTransY)
             }
             //软件盘切换到聊天
             KeyboardActionType.SOFT_TO_CHAT -> {
                 softKeyboardChange(false, 2)
+                panelAnimateTo(0)
             }
 //            //软件盘切换到表情键盘
             KeyboardActionType.SOFT_TO_EMOJI -> {
@@ -363,6 +383,7 @@ class LiveSoftKeyboardFragment :
             //表情键盘切换到软件盘
             KeyboardActionType.EMOJI_TO_SOFT -> {
                 softKeyboardChange(true, 4)
+                panelAnimateTo(-softKeyBoardTransY)
             }
             //表情键盘切换到聊天
             KeyboardActionType.EMOJI_TO_CHAT -> {
@@ -516,7 +537,7 @@ class LiveSoftKeyboardFragment :
     private fun updateEmojiView(isVisible: Boolean) {
         mBinding.apply {
             liveChatIvKeyboard.isVisible = isVisible
-            emojiContent.isVisible = isVisible
+//            emojiContent.isVisible = isVisible
         }
     }
 
@@ -552,6 +573,8 @@ class LiveSoftKeyboardFragment :
     }
 
     private fun onSoftKeyBoardShow() {
+//        chatViewModel.softKeyBoardHeight = getSupportSoftInputHeight()
+//        "softKeyBoardHeight ${chatViewModel.softKeyBoardHeight}".logd("aaa")
     }
 
     private fun onSoftKeyBoardHide() {
