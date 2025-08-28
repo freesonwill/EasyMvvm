@@ -48,9 +48,14 @@ class RecommendAdapter(var onClick: ((String) -> Unit?)? = null) :
     override fun convertPlus(holder: BaseViewHolder, binding: ViewBinding, position: Int) {
         val word = getItem(position)
         if (binding is ItemRecommendBinding) {
-            binding.clRoot.updatePadding(
-                top = if (position == 0) 0 else binding.clRoot.paddingTop
-            )
+            binding.clRoot.apply {
+                layoutParams.apply {
+                    height = if (position == 0) height - paddingTop else height
+                }
+                updatePadding(
+                    top = if (position == 0) 0 else binding.clRoot.paddingTop
+                )
+            }
             binding.tvTitle.text = getHighlightedText(holder.itemView.context, word, keyword)
             holder.itemView.clickNoRepeat {
                 onClick?.invoke(word)
