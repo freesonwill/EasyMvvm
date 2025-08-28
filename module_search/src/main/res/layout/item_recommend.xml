@@ -5,8 +5,8 @@
     android:id="@+id/cl_root"
     android:layout_width="match_parent"
     android:layout_height="45dp"
-    android:paddingTop="12dp"
-    android:paddingBottom="12dp">
+    android:paddingTop="@dimen/search_recommend_item_padding_vertical"
+    android:paddingBottom="@dimen/search_recommend_item_padding_vertical">
 
     <arch.cayenne.lib.skin.widget.SkinnableImageView
         android:id="@+id/iv_search"
