@@ -49,12 +49,16 @@ class MatchListPagerFragment :
     private val gameLayoutManager by lazy { LinearLayoutManager(context) }
     private val fabViewModel: FloatingButtonControlViewModel by activityViewModel()
 
+    private var dataObserver: RecyclerView.AdapterDataObserver? = null
+    private var userRequestedScrollToTop = false
+
     override fun initView(savedInstanceState: Bundle?) {
         mBinding.apply {
             refreshLayout.setEnableLoadMore(true)
             refreshLayout.setEnableScrollContentWhenLoaded(true)
             refreshLayout.setOnRefreshListener {
                 mViewModel.reload()
+                userRequestedScrollToTop = true
             }
             refreshLayout.setOnLoadMoreListener {
                 mViewModel.loadNextPage()
@@ -90,6 +94,18 @@ class MatchListPagerFragment :
                     }
                 }
             })
+            dataObserver = object : RecyclerView.AdapterDataObserver() {
+                override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+                    if (positionStart == 0 && userRequestedScrollToTop) {
+                        mBinding.rvHomeGameList.post {
+                            mBinding.rvHomeGameList.scrollToPosition(0)
+                        }
+                        userRequestedScrollToTop = false // 重置標誌位
+                    }
+                }
+            }
+            matchAdapter.registerAdapterDataObserver(dataObserver!!)
+
             val decoration = MatchCardItemDecoration(12.dp2px)
             mBinding.rvHomeGameList.apply {
                 this.layoutManager = gameLayoutManager
@@ -259,6 +275,11 @@ class MatchListPagerFragment :
         mViewModel.startObserveMatch()
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        dataObserver?.apply { matchAdapter.unregisterAdapterDataObserver(this) }
+    }
+
     override fun onResume() {
         super.onResume()
         //把暫時移除的訂閱加回來
@@ -271,7 +292,6 @@ class MatchListPagerFragment :
         //暫時移除訂閱
         mViewModel.cancelSubscribeMatch(mViewModel.getCurrentSubscribeMatchSet())
         mViewModel.stopMatchSubscribeNotify()
-
     }
 
 
