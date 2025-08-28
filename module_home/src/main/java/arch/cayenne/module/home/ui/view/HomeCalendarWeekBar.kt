@@ -1,8 +1,11 @@
 package arch.cayenne.module.home.ui.view
 
 import android.content.Context
+import android.graphics.Typeface
+import android.os.Build
 import android.view.LayoutInflater
 import android.widget.TextView
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.module.home.R
 import arch.cayenne.module.home.databinding.HomeCalendarWeekBarBinding
 import com.haibin.calendarview.Calendar
@@ -38,6 +41,17 @@ class HomeCalendarWeekBar(context: Context?) : WeekBar(context) {
         }
     }
 
+    override fun setTextSize(size: Int) {
+        super.setTextSize(size)
+        "month view setTextSize:$size".logd()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            val dayFontWeight = 500
+            val dayTypeface = Typeface.create(Typeface.DEFAULT,dayFontWeight,false)
+            for (i in 0 until childCount) {
+                (getChildAt(i) as TextView).typeface = dayTypeface
+            }
+        }
+    }
     /**
      * 或者周文本，这个方法仅供父类使用
      * @param index index
