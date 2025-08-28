@@ -8,12 +8,15 @@ import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.BaseActivity
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
+import arch.cayenne.lib.common.data.constants.UserDataKey
+import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import com.walisport.app.databinding.ActivitySplashBinding
 import com.walisport.app.ui.MainActivity
 import com.walisport.app.ui.viewmodel.SplashViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import org.koin.java.KoinJavaComponent.inject
 import kotlin.random.Random
 import kotlin.reflect.KClass
 
@@ -92,7 +95,7 @@ class SplashActivity : BaseActivity<SplashViewModel, ActivitySplashBinding>() {
     //NTU0NjkxNzRfMTc1MzYwNzAxOTAwMjpYWUQ0Tm12Vjc1YTlDTnFi
 
     private val pair: Pair<Int, String> = if (BuildConfig.BUILD_TYPE == "debug") {
-        Pair<Int, String>(BuildConfig.uid, BuildConfig.token)
+        Pair(BuildConfig.uid, BuildConfig.token)
     } else if (BuildConfig.BUILD_TYPE != "release") {
         listOf(
             Pair(55468822, "NTU0Njg4MjJfMTc1NTE2NzgxMzA0MDpkaGFZSUFsR1MzTlljQ3lZ"),
@@ -104,9 +107,14 @@ class SplashActivity : BaseActivity<SplashViewModel, ActivitySplashBinding>() {
     } else {
         Pair(0, "")
     }
+    private val manager: UserDataManager by inject(UserDataManager::class.java)
 
-    private val uid = pair.first
-    private val token = pair.second
+    private val uid = manager.getValue(UserDataKey.KEY_UID,-1).let {
+        if(it == -1) pair.first else it
+    }
+    private val token = manager.getValue(UserDataKey.KEY_TOKEN,"").let {
+        it.ifEmpty { pair.second }
+    }
 
     override val vbClass: KClass<ActivitySplashBinding> = ActivitySplashBinding::class
     override val vmClass: KClass<SplashViewModel> = SplashViewModel::class

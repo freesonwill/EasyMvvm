@@ -1,7 +1,10 @@
 package arch.cayenne.lib.base.ui.animation
 
 import android.view.animation.Animation
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
+
 /**
  * @date: 2025/8/18 19:31
  * @description: 动画全局控制器
@@ -19,16 +22,18 @@ object AnimationController {
         AnimType.entries.forEach { put(it, MutableStateFlow(null)) }
     }
 
-    init {
-        setRouteAnim(300, PathInterpolatorOption(0.36f, 0.66f, 0.04f, 1f))
-        setZoomInAnim(330, PathInterpolatorOption(0.5f, 1f, 0.89f, 1f))
-        setPopupAnim(300, PathInterpolatorOption(0.33f, 1f, 0.5f, 1f))
-        setDrawerAnim(300, PathInterpolatorOption(0.36f, 0.66f, 0.04f, 1f))
-        setScrollBarAnim(250, PathInterpolatorOption(0f, 0f, 1f, 1f))
-    }
     operator fun get(key:AnimType) = animMap[key]!!.value
     operator fun set(key:AnimType, animation:IAnimationOption?) {
         animMap[key]!!.value = animation
+    }
+
+    /**
+     * 获取flow，适合需要监听的情况
+     * @param key
+     * @return
+     */
+    fun getFlow(key:AnimType): Flow<IAnimationOption?> {
+        return animMap[key]!!.asSharedFlow()
     }
 
     fun setRouteAnim(duration: Long, interpolator: IInterpolatorOption) {
