@@ -16,8 +16,10 @@ import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.base.ui.adapter.BaseAdapter
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.lib.common.utils.ext.ResourceExt.getDrawable
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
+import arch.cayenne.lib.skin.widget.SkinnableButton
 import com.bumptech.glide.Glide
 import com.walisport.module.search.R
 import com.walisport.module.search.data.constants.MatchStatusEnum
@@ -72,7 +74,7 @@ class SearchResultRaceAdapter: BaseAdapter<SearchResultRaceItemType, BaseViewHol
 
                 headerBinding.tvTitle.apply {
                     updatePadding(
-                        top = if (position == 0) 4.dp2px else paddingTop
+                        top = if (position == 0) 6.dp2px else paddingTop
                     )
                     text =
                         run {
@@ -134,8 +136,22 @@ class SearchResultRaceAdapter: BaseAdapter<SearchResultRaceItemType, BaseViewHol
                         tvNameHomeTeam.text = basicInfo.homeTeam
                         tvNameAwayTeam.text = basicInfo.awayTeam
                         listOf(
-                            Pair(tvScoreHomeTeam, "${basicInfo.liveInfo?.homeScore ?: "-"}"),
-                            Pair(tvScoreAwayTeam, "${basicInfo.liveInfo?.awayScore ?: "-"}")
+                            Pair(
+                                tvScoreHomeTeam,
+                                basicInfo.liveInfo?.homeScore.run {
+                                    if(basicInfo.status == MatchStatusEnum.ONGOING || basicInfo.status == MatchStatusEnum.ENDED) this?.toString() ?: "0"
+                                    else if(this == null || this == 0) "-"
+                                    else this.toString()
+                                }
+                            ),
+                            Pair(
+                                tvScoreAwayTeam,
+                                basicInfo.liveInfo?.awayScore.run {
+                                    if(basicInfo.status == MatchStatusEnum.ONGOING || basicInfo.status == MatchStatusEnum.ENDED) this?.toString() ?: "0"
+                                    else if(this == null || this == 0) "-"
+                                    else this.toString()
+                                }
+                            )
                         ).forEach { (textView, score) ->
                             textView.text = score
                             textView.setTextColor(
@@ -156,27 +172,34 @@ class SearchResultRaceAdapter: BaseAdapter<SearchResultRaceItemType, BaseViewHol
                             ivArrowTeamAway.visibility = View.GONE
                         }
                         btnFavorite.apply {
-                            isEnabled = !basicInfo.betStop
+                            isEnabled = !basicInfo.betStop && basicInfo.status != MatchStatusEnum.ENDED
                             isSelected = collect
 
-                            val drawable = AppCompatResources.getDrawable(context, R.drawable.layer_search_result_favorite)?.mutate() as? LayerDrawable
-                            setImageDrawable(drawable)
-
-                            drawable?.let {
-                                animateFavoriteIcon(it, isSelected, force = true)
-                            }
-
-                            clickNoRepeat {
-                                onFavoriteClick?.invoke(itemData)
-                                isSelected = !isSelected
+                            if(isEnabled) {
+                                val drawable = AppCompatResources.getDrawable(
+                                    context,
+                                    R.drawable.layer_search_result_favorite
+                                )?.mutate() as? LayerDrawable
+                                setImageDrawable(drawable)
 
                                 drawable?.let {
-                                    animateFavoriteIcon(it, isSelected, force = false)
+                                    animateFavoriteIcon(it, isSelected, force = true)
                                 }
+
+                                clickNoRepeat {
+                                    onFavoriteClick?.invoke(itemData)
+                                    isSelected = !isSelected
+
+                                    drawable?.let {
+                                        animateFavoriteIcon(it, isSelected, force = false)
+                                    }
+                                }
+                            } else {
+                                setImageDrawable(R.drawable.ic_search_result_favorite_disable.getDrawable())
                             }
                         }
                         btnBet.apply {
-                            if(basicInfo.betStop) {
+                            if(basicInfo.betStop || basicInfo.status == MatchStatusEnum.ENDED) {
                                 text =
                                     SkinnableResourceManager.getString(
                                         holder.itemView.context,
