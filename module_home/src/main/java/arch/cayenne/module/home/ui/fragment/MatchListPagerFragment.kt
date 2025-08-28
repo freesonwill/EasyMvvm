@@ -16,6 +16,7 @@ import arch.cayenne.lib.common.ui.viewmodel.observeEvent
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
+import arch.cayenne.lib.common.utils.ext.scrollToBottomWithLoadMore
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.database.entity.MatchWithMarkets
@@ -98,7 +99,7 @@ class MatchListPagerFragment :
                 addItemDecoration(decoration)
                 itemAnimator = DeleteAnimator()
             }
-            rvHomeGameList.itemAnimator  = null
+            rvHomeGameList.itemAnimator = null
             rvHomeGameList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                     super.onScrollStateChanged(recyclerView, newState)
@@ -109,11 +110,11 @@ class MatchListPagerFragment :
                 }
 
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                    val layoutManager = recyclerView.layoutManager as LinearLayoutManager?
-                    val lastItemPos = layoutManager!!.findLastCompletelyVisibleItemPosition()
-                    if (lastItemPos > matchAdapter.itemCount - 4 && canLoadMore) {
-                        canLoadMore = false //加载完毕后才可以去加载下一页
-                        mViewModel.loadNextPage()
+                    rvHomeGameList.scrollToBottomWithLoadMore {
+                        if (canLoadMore) {
+                            canLoadMore = false
+                            mViewModel.loadNextPage()
+                        }
                     }
                 }
             })

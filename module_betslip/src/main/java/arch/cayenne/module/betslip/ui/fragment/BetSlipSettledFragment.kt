@@ -27,7 +27,6 @@ class BetSlipSettledFragment :
     override val betSlipAdapter: BetSlipAdapter by lazy {
         BetSlipAdapter(getBetSlipEnum())
     }
-    private var canLoadMore = false
 
     override fun initView(savedInstanceState: Bundle?) {
         initRecycler()
@@ -59,17 +58,6 @@ class BetSlipSettledFragment :
             it.adapter = betSlipAdapter
             it.betSlipInit()
         }
-        //滑动到底部之前进行提前预加载
-        mBinding.recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                val layoutManager = recyclerView.layoutManager as LinearLayoutManager?
-                val lastItemPos = layoutManager!!.findLastCompletelyVisibleItemPosition()
-                if (lastItemPos > betSlipAdapter.itemCount - 4 && canLoadMore) {
-                    canLoadMore = false
-                    mViewModel.loadMoreData(BetSlipEnum.Settled)
-                }
-            }
-        })
     }
 
     private fun initLoadRefresh() {
@@ -89,7 +77,6 @@ class BetSlipSettledFragment :
     override suspend fun createObserver() {
         super.createObserver()
         mViewModel.orderLiveData.observe(viewLifecycleOwner) {
-            canLoadMore = true
             betSlipAdapter.submitList(it) {
                 val position = if (mViewModel.loadDataType == LoadDataType.LOAD_MORE) betSlipAdapter.itemCount - 1 else 0
                 mBinding.recyclerView.scrollToPosition(position)

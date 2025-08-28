@@ -12,6 +12,7 @@ import arch.cayenne.lib.common.ui.dialog.CommonDialog
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout.States
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
+import arch.cayenne.lib.common.utils.ext.scrollToBottomWithLoadMore
 import com.walisport.module.message.R
 import com.walisport.module.message.data.NotificationBean
 import com.walisport.module.message.databinding.FragmentMessageListBinding
@@ -68,11 +69,11 @@ class MessageListFragment : BaseFragment<MessageMainViewModel, FragmentMessageLi
             })
             recyclerMessage.addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                    val layoutManager = recyclerView.layoutManager as LinearLayoutManager?
-                    val lastItemPos = layoutManager!!.findLastCompletelyVisibleItemPosition()
-                    if (lastItemPos > msgAdapter.itemCount - 4 && canLoadMore) {
-                        canLoadMore = false //加载完毕后才可以去加载下一页
-                        mViewModel.getMoreMessageList()
+                    recyclerMessage.scrollToBottomWithLoadMore {
+                        if (canLoadMore) {
+                            canLoadMore = false
+                            mViewModel.getMoreMessageList()
+                        }
                     }
                 }
             })
