@@ -137,8 +137,8 @@ class SearchResultPageFragment(val data: SearchResultBean) :
                             MarginLayoutParams.MATCH_PARENT,
                             MarginLayoutParams.MATCH_PARENT
                         ).apply {
-                            marginStart = 21.dp2px
-                            marginEnd = 21.dp2px
+                            marginStart = 15.dp2px
+                            marginEnd = 15.dp2px
                         }
                         if (itemDecorationCount == 0) {
                             addItemDecoration(object : ItemDecoration() {
@@ -157,8 +157,6 @@ class SearchResultPageFragment(val data: SearchResultBean) :
                                         }
 
                                         else -> {
-                                            outRect.right =
-                                                if (position % spanCount == 0 || position % spanCount == 1) 12.dp2px else 0
                                             outRect.bottom = 12.dp2px
                                         }
                                     }
