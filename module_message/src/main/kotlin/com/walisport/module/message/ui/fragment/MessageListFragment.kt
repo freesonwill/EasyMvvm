@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.common.ui.dialog.CommonDialog
@@ -27,8 +28,9 @@ class MessageListFragment : BaseFragment<MessageMainViewModel, FragmentMessageLi
 
     override val vbClass: KClass<FragmentMessageListBinding> = FragmentMessageListBinding::class
     override val vmClass: KClass<MessageMainViewModel> = MessageMainViewModel::class
-    private var msgAdapter = MessageAdapter()
+    private val msgAdapter by lazy { MessageAdapter() }
     private var msgType = 0
+    private var canLoadMore = false
 
     override fun initView(savedInstanceState: Bundle?) {
         msgType = arguments?.getInt(MSG_TYPE) ?: 0
@@ -62,6 +64,16 @@ class MessageListFragment : BaseFragment<MessageMainViewModel, FragmentMessageLi
                             arguments.putString("url", url)
                         })
                     mViewModel.setMessageRead(item.id)
+                }
+            })
+            recyclerMessage.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    val layoutManager = recyclerView.layoutManager as LinearLayoutManager?
+                    val lastItemPos = layoutManager!!.findLastCompletelyVisibleItemPosition()
+                    if (lastItemPos > msgAdapter.itemCount - 4 && canLoadMore) {
+                        canLoadMore = false //加载完毕后才可以去加载下一页
+                        mViewModel.getMoreMessageList()
+                    }
                 }
             })
         }
@@ -112,6 +124,7 @@ class MessageListFragment : BaseFragment<MessageMainViewModel, FragmentMessageLi
                         }
                         msgAdapter.notifyData(temp)
                     }
+                    canLoadMore = true
                 }
             }
         }

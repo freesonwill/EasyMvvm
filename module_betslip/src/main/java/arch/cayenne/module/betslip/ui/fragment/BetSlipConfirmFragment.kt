@@ -3,6 +3,7 @@ package arch.cayenne.module.betslip.ui.fragment
 import android.net.Uri
 import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.common.utils.copyToClipboard
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.helper.showToast
@@ -26,6 +27,7 @@ class BetSlipConfirmFragment : BaseBetSlipFragment<ConfirmingSlipViewModel, Frag
     override val betSlipAdapter: BetSlipAdapter by lazy {
         BetSlipAdapter(getBetSlipEnum())
     }
+    private var canLoadMore = false
 
     override fun initView(savedInstanceState: Bundle?) {
         initRecycler()
@@ -51,12 +53,22 @@ class BetSlipConfirmFragment : BaseBetSlipFragment<ConfirmingSlipViewModel, Frag
                 }
             }
         })
-
         mBinding.recyclerView.also {
             it.layoutManager = LinearLayoutManager(requireContext())
             it.adapter = betSlipAdapter
             it.betSlipInit()
         }
+        //滑动到底部之前进行提前预加载
+        mBinding.recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                val layoutManager = recyclerView.layoutManager as LinearLayoutManager?
+                val lastItemPos = layoutManager!!.findLastCompletelyVisibleItemPosition()
+                if (lastItemPos > betSlipAdapter.itemCount - 4 && canLoadMore) {
+                    canLoadMore = false
+                    mViewModel.loadMoreData(BetSlipEnum.Confirming)
+                }
+            }
+        })
         initLoadRefresh()
     }
 
@@ -78,6 +90,7 @@ class BetSlipConfirmFragment : BaseBetSlipFragment<ConfirmingSlipViewModel, Frag
     override suspend fun createObserver() {
         super.createObserver()
         mViewModel.orderLiveData.observe(viewLifecycleOwner) {
+            canLoadMore = true
             betSlipAdapter.submitList(it){
                 val position = if (mViewModel.loadDataType == LoadDataType.LOAD_MORE) betSlipAdapter.itemCount - 1 else 0
                 mBinding.recyclerView.scrollToPosition(position)

@@ -3,6 +3,7 @@ package arch.cayenne.module.betslip.ui.fragment
 import android.net.Uri
 import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
 import arch.cayenne.lib.common.ui.dialog.CommonDialog
 import arch.cayenne.lib.common.ui.fragment.ReserveDialogFragment
@@ -27,6 +28,7 @@ import kotlin.reflect.KClass
 class BetSlipReserveFragment : BaseBetSlipFragment<ReserveSlipViewModel, FragmentLiveBetslipReserveBinding>() {
     override val vbClass: KClass<FragmentLiveBetslipReserveBinding> =
         FragmentLiveBetslipReserveBinding::class
+    private var canLoadMore = false
     override val vmClass: KClass<ReserveSlipViewModel> = ReserveSlipViewModel::class
     override val betSlipAdapter: BetSlipReserveAdapter by lazy {
         BetSlipReserveAdapter(object : RecyclerItemListener<BetSlipReserveBean> {
@@ -84,12 +86,22 @@ class BetSlipReserveFragment : BaseBetSlipFragment<ReserveSlipViewModel, Fragmen
                 }
             }
         })
-
         mBinding.recyclerView.also {
             it.layoutManager = LinearLayoutManager(requireContext())
             it.adapter = betSlipAdapter
             it.betSlipInit()
         }
+        //滑动到底部之前进行提前预加载
+        mBinding.recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                val layoutManager = recyclerView.layoutManager as LinearLayoutManager?
+                val lastItemPos = layoutManager!!.findLastCompletelyVisibleItemPosition()
+                if (lastItemPos > betSlipAdapter.itemCount - 4 && canLoadMore) {
+                    canLoadMore = false
+                    mViewModel.loadMoreData(BetSlipEnum.Reserve)
+                }
+            }
+        })
     }
 
     private fun initLoadRefresh() {
@@ -110,6 +122,7 @@ class BetSlipReserveFragment : BaseBetSlipFragment<ReserveSlipViewModel, Fragmen
     override suspend fun createObserver() {
         super.createObserver()
         mViewModel.reserveLiveData.observe(viewLifecycleOwner) {
+            canLoadMore = true
             betSlipAdapter.submitList(it){
                 val position = if (mViewModel.loadDataType == LoadDataType.LOAD_MORE) betSlipAdapter.itemCount - 1 else 0
                 mBinding.recyclerView.scrollToPosition(position)

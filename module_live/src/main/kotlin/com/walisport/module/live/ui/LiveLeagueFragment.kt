@@ -36,7 +36,8 @@ class LiveLeagueFragment : BaseFragment<LeagueViewModel, FragmentLeagueBinding>(
 
     override val vbClass: KClass<FragmentLeagueBinding> = FragmentLeagueBinding::class
     override val vmClass: KClass<LeagueViewModel> = LeagueViewModel::class
-    private val standsAdapter = LeagueAdapter()
+    private val standsAdapter by lazy { LeagueAdapter() }
+    private var canLoadMore = false
     private var leagueID: Int = 0
     private var leagueName: String = ""
     private var leagueLogo: String = ""
@@ -96,6 +97,16 @@ class LiveLeagueFragment : BaseFragment<LeagueViewModel, FragmentLeagueBinding>(
             sendResult(LiveMainFragment.CHANGE_MATCH, result)
             navigateUp()
         }
+        mBinding.recyclerLeague.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                val layoutManager = recyclerView.layoutManager as LinearLayoutManager?
+                val lastItemPos = layoutManager!!.findLastCompletelyVisibleItemPosition()
+                if (lastItemPos > standsAdapter.itemCount - 4 && canLoadMore) {
+                    canLoadMore = false //加载完毕后才可以去加载下一页
+                    mViewModel.getMoreMatchLeagueList(leagueID)
+                }
+            }
+        })
         mBinding.recyclerLeague.touchBackPressed()
         mBinding.root.touchBackPressed()
     }
@@ -164,6 +175,7 @@ class LiveLeagueFragment : BaseFragment<LeagueViewModel, FragmentLeagueBinding>(
                     mBinding.leagueRoot.background = gradientDrawable
                 }
                 standsAdapter.submitList(it.match)
+                canLoadMore = true
             } ?: run {
                 if (standsAdapter.itemCount == 0) {
                     mBinding.leagueMain.setState(

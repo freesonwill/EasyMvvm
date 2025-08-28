@@ -46,6 +46,7 @@ class MatchListPagerFragment :
     private val homeViewModel: HomeViewModel by sharedViewModel<HomeViewModel, NewHomeFragment>()
     private val subHomeViewModel: SubHomeViewModel by viewModels({ requireParentFragment() })
     private lateinit var matchAdapter: MatchItemAdapter
+    private var canLoadMore = false
     private val gameLayoutManager by lazy { LinearLayoutManager(context) }
     private val fabViewModel: FloatingButtonControlViewModel by activityViewModel()
 
@@ -101,14 +102,21 @@ class MatchListPagerFragment :
             rvHomeGameList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                     super.onScrollStateChanged(recyclerView, newState)
-                    // 滑動停止時觸發
                     if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                         subscribeVisibleMatch()
                         updateMatchListPosition()
                     }
                 }
-            })
 
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    val layoutManager = recyclerView.layoutManager as LinearLayoutManager?
+                    val lastItemPos = layoutManager!!.findLastCompletelyVisibleItemPosition()
+                    if (lastItemPos > matchAdapter.itemCount - 4 && canLoadMore) {
+                        canLoadMore = false //加载完毕后才可以去加载下一页
+                        mViewModel.loadNextPage()
+                    }
+                }
+            })
         }
     }
 
@@ -162,6 +170,7 @@ class MatchListPagerFragment :
             val preEmpty = matchAdapter.currentList.isEmpty()
             "MatchListChange livedata Observed~ ${matchList.map { it.match.matchId }}".logi(this::class.java.simpleName)
             matchAdapter.submitList(matchList)
+            canLoadMore = true
             mBinding.rvHomeGameList.doOnPreDraw {
                 subscribeVisibleMatch()
                 if (preEmpty && matchList.isNotEmpty()) {
