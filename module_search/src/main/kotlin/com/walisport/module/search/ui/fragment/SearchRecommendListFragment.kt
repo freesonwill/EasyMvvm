@@ -2,6 +2,7 @@ package com.walisport.module.search.ui.fragment
 
 import android.graphics.Canvas
 import android.graphics.Paint
+import android.graphics.Rect
 import android.os.Bundle
 import android.view.View
 import androidx.activity.addCallback
@@ -49,6 +50,7 @@ class SearchRecommendListFragment : BaseFragment<SearchRecommendListViewModel, F
             launch(Lifecycle.State.RESUMED) {
                 launch {
                     searchRecommendList.collect { list ->
+                        println("RecommendAdapter list: $list")
                         recommendAdapter.submitList(list)
                     }
                 }
@@ -84,6 +86,17 @@ class SearchRecommendListFragment : BaseFragment<SearchRecommendListViewModel, F
                                     R.color.search_divider
                                 )
                                 strokeWidth = dividerHeight.toFloat()
+                            }
+
+                            override fun getItemOffsets(
+                                outRect: Rect,
+                                view: View,
+                                parent: RecyclerView,
+                                state: RecyclerView.State
+                            ) {
+                                super.getItemOffsets(outRect, view, parent, state)
+                                val position = parent.getChildAdapterPosition(view)
+                                outRect.top = if (position == 0) -resources.getDimension(R.dimen.search_recommend_item_padding_vertical).toInt() else 0
                             }
 
                             override fun onDraw(

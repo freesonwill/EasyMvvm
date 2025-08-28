@@ -8,7 +8,6 @@ import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
-import androidx.core.view.updatePadding
 import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.base.ui.adapter.BaseAdapter
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
@@ -48,14 +47,6 @@ class RecommendAdapter(var onClick: ((String) -> Unit?)? = null) :
     override fun convertPlus(holder: BaseViewHolder, binding: ViewBinding, position: Int) {
         val word = getItem(position)
         if (binding is ItemRecommendBinding) {
-            binding.clRoot.apply {
-                layoutParams.apply {
-                    height = if (position == 0) height - paddingTop else height
-                }
-                updatePadding(
-                    top = if (position == 0) 0 else binding.clRoot.paddingTop
-                )
-            }
             binding.tvTitle.text = getHighlightedText(holder.itemView.context, word, keyword)
             holder.itemView.clickNoRepeat {
                 onClick?.invoke(word)
