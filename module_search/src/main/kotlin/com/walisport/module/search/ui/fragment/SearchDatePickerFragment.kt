@@ -56,8 +56,9 @@ class SearchDatePickerFragment private constructor(): BaseFragment<SearchDatePic
     private var marginEnd: Int = 0
     private var selectedDate: Long? = null
     private var schemeDates: Map<String, com.haibin.calendarview.Calendar> = emptyMap()
-    private var rangeStartDate: Calendar = Calendar.getInstance()
-    private var rangeEndDate: Calendar = Calendar.getInstance().apply { add(Calendar.MONTH, 1) }
+    // 比照 H5 版本，預設 range 為今天的前一天到一個月後
+    private var rangeStartDate: Calendar = Calendar.getInstance().apply { add(Calendar.DAY_OF_MONTH, -1) }
+    private var rangeEndDate: Calendar = (rangeStartDate.clone() as Calendar).apply { add(Calendar.MONTH, 1) }
     private var heightAnimator: ValueAnimator? = null
     private var currentAnimState: AnimState? = null
     private var onBeforeDismissAnimListener: (() -> Unit)? = null
@@ -146,7 +147,6 @@ class SearchDatePickerFragment private constructor(): BaseFragment<SearchDatePic
                     ),
                     Color.TRANSPARENT
                 )
-                scrollToSelectedDate()
                 addSchemeDate(schemeDates)
                 setRange(
                     rangeStartDate.get(Calendar.YEAR),
@@ -156,6 +156,7 @@ class SearchDatePickerFragment private constructor(): BaseFragment<SearchDatePic
                     rangeEndDate.get(Calendar.MONTH) + 1,
                     rangeEndDate.get(Calendar.DAY_OF_MONTH)
                 )
+                scrollToSelectedDate()
                 setCalendarTitle(curYear, curMonth)
             }
             maskView.background = object : Drawable() {
@@ -469,8 +470,8 @@ class SearchDatePickerFragment private constructor(): BaseFragment<SearchDatePic
         private var marginEnd: Int = 0
         private var selectedDate: Long? = null
         private var schemeDates: Map<String, com.haibin.calendarview.Calendar> = emptyMap()
-        private var rangeStartDate: Calendar = Calendar.getInstance()
-        private var rangeEndDate: Calendar = Calendar.getInstance().apply { add(Calendar.MONTH, 1) }
+        private var rangeStartDate: Calendar? = null
+        private var rangeEndDate: Calendar? = null
         private var onAfterDismissAnimListener: ((startTime: Long?, endTime: Long?, timeInMills: Long?) -> Unit)? = null
         private var onBeforeDismissAnimListener: (() -> Unit)? = null
         private var onBeforeExpandAnimListener: (() -> Unit)? = null
@@ -519,8 +520,8 @@ class SearchDatePickerFragment private constructor(): BaseFragment<SearchDatePic
                 this.marginEnd = this@Builder.marginEnd
                 this.selectedDate = this@Builder.selectedDate
                 this.schemeDates = this@Builder.schemeDates
-                this.rangeStartDate = this@Builder.rangeStartDate
-                this.rangeEndDate = this@Builder.rangeEndDate
+                this@Builder.rangeStartDate?.let { this.rangeStartDate = it }
+                this@Builder.rangeEndDate?.let { this.rangeEndDate = it }
                 this.onBeforeDismissAnimListener = this@Builder.onBeforeDismissAnimListener
                 this.onAfterDismissAnimListener = this@Builder.onAfterDismissAnimListener
                 this.onBeforeExpandAnimListener = this@Builder.onBeforeExpandAnimListener
