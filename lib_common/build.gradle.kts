@@ -67,5 +67,7 @@ dependencies {
     api(libs.glide)
     api(libs.calendarview)
     kapt(libs.glidecompiler)
+    api(libs.utilcodex)
+    api(libs.gson)
     implementation(libs.brv)
 }

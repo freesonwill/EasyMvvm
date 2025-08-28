@@ -1,6 +1,7 @@
 package arch.cayenne.lib.common.data.manager
 
 import arch.cayenne.lib.common.data.constants.UserDataKey
+import com.blankj.utilcode.util.GsonUtils
 import com.tencent.mmkv.MMKV
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.Flow
@@ -9,31 +10,38 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 class UserDataManager {
     val mmkv = MMKV.defaultMMKV()
     private val flows = mutableMapOf<UserDataKey, MutableSharedFlow<Any?>>()
-
     private fun getFlow(key: UserDataKey) = flows.getOrPut(key) { MutableSharedFlow(replay = 1,
         onBufferOverflow = BufferOverflow.DROP_OLDEST) }
 
-    fun <T> setKeyValue(key: UserDataKey, value: T) {
+    fun <T> setKeyValue(
+        key: UserDataKey,
+        value: T?,
+        serializer:(str:T?)->String? = { GsonUtils.toJson(it) }
+    ) {
         when (value) {
             is String -> mmkv.putString(key.key, value)
             is Boolean -> mmkv.putBoolean(key.key, value)
             is Int -> mmkv.putInt(key.key, value)
             is Long -> mmkv.putLong(key.key, value)
             is Float -> mmkv.putFloat(key.key, value)
-            else -> throw IllegalArgumentException("❌ Unsupported type: ${value!!::class}")
+            else -> mmkv.putString(key.key,serializer(value))
         }
         notifyChanged(key, value)
     }
 
-    inline fun < reified T> getValue(key: UserDataKey, default: T): T {
+    inline fun <reified T> getValue(
+        key: UserDataKey,
+        default: T? = null,
+        noinline deserializer: (String?) -> T? = { GsonUtils.fromJson(it, T::class.java) }
+    ): T {
         return when (default) {
-            is String -> mmkv.getString(key.key, default)
-            is Boolean -> mmkv.getBoolean(key.key, default)
-            is Int -> mmkv.getInt(key.key, default)
-            is Long -> mmkv.getLong(key.key, default)
-            is Float -> mmkv.getFloat(key.key, default)
-            else -> throw IllegalStateException("❌ Unsupported type: ${T::class}")
-        } as T
+            is String -> mmkv.decodeString(key.key, default) as T
+            is Boolean -> mmkv.decodeBool(key.key, default) as T
+            is Int -> mmkv.decodeInt(key.key, default) as T
+            is Long -> mmkv.decodeLong(key.key, default) as T
+            is Float -> mmkv.decodeFloat(key.key, default) as T
+            else -> deserializer(mmkv.decodeString(key.key)) as T
+        }
     }
 
     private fun notifyChanged(key: UserDataKey, value: Any?) {
