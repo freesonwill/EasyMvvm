@@ -1,8 +1,6 @@
 package arch.cayenne.module.betslip.ui.fragment
 
 import android.animation.ObjectAnimator
-import android.content.Context
-import android.graphics.Color
 import android.graphics.PixelFormat
 import android.os.Bundle
 import android.view.Gravity
@@ -13,6 +11,7 @@ import androidx.core.animation.doOnStart
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.SimpleItemAnimator
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.ui.fragment.DimController
 import arch.cayenne.lib.common.data.constants.AnimationConstants
 import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.module.betslip.data.constants.Config
@@ -48,11 +47,14 @@ class SportPickerFragment private constructor() :
         })
     }
 
-    private var dimView: View? = null
+    private val dimController by lazy {
+        DimController.instance
+    }
 
     override fun initView(savedInstanceState: Bundle?) {
-        mBinding.root.visibility = View.INVISIBLE
         initDim()
+
+        mBinding.root.visibility = View.INVISIBLE
         mBinding.rvSport.adapter = sportAdapter
         (mBinding.rvSport.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
     }
@@ -85,53 +87,42 @@ class SportPickerFragment private constructor() :
         }
     }
 
-    private fun initDim() {
-        val windowManager = requireContext().getSystemService(Context.WINDOW_SERVICE) as WindowManager
-
+    private fun getTopY(): Int {
         // 取得目標 View 在螢幕上的位置
         val location = IntArray(2)
         val targetView = mBinding.root
-        mBinding.root.getLocationOnScreen(location)
-        val targetViewBottomY = location[1] + targetView.height
+        targetView.getLocationOnScreen(location)
+        return location[1]
+    }
+
+    private fun initDim() {
 
         // 獲取螢幕總高度
         val screenHeight = resources.displayMetrics.heightPixels
 
-        // 創建 dim View
-        dimView = View(requireActivity()).apply {
-            setBackgroundColor(Color.BLACK)
-            alpha = 0.75f
-            visibility = View.INVISIBLE
-            setOnClickListener {
-                collapseView()
-            }
-        }
-
-
         val params = WindowManager.LayoutParams(
             WindowManager.LayoutParams.MATCH_PARENT, // 寬度填滿
-            screenHeight - targetViewBottomY + ViewUtils.getNavigationBarHeight(requireContext()), // 高度：從目標 View 底部到螢幕底部
-            WindowManager.LayoutParams.TYPE_APPLICATION_PANEL, // 視窗類型，適合附加在 Activity 上
-            // flags
-            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
+            screenHeight + ViewUtils.getNavigationBarHeight(requireContext()),
+            0,
+            WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
+                    or WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
                     or WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
-                    or WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL,
-            PixelFormat.TRANSLUCENT
+                    or WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+            PixelFormat.TRANSLUCENT,
         )
-        params.gravity = Gravity.TOP or Gravity.START
-        params.y = targetViewBottomY
 
-        // 6. 將 View 添加到 window
-        windowManager.addView(dimView, params)
+        params.gravity = Gravity.TOP or Gravity.START
+        dimController.hideDim()
+        dimController.updateLayoutParams(params)
+        mBinding.maskBottomView.setOnClickListener {
+            collapseView()
+        }
+        dimController.setTranslationY(getTopY().toFloat())
     }
 
     private fun removeDim() {
-        val v = dimView ?: return
-        dimView = null
-        v.alpha = 0f
+        dimController.hideDim()
         mBinding.maskView.alpha = 0f
-        val windowManager = requireContext().getSystemService(Context.WINDOW_SERVICE) as WindowManager
-        windowManager.removeView(v)
         mBinding.maskView.visibility = View.GONE
     }
 
@@ -150,15 +141,15 @@ class SportPickerFragment private constructor() :
     private fun expandView() {
         mBinding.root.bringToFront()
         val root = mBinding.root
-        val height = root.height
+        val height = mBinding.clFilter.height
+
+        val startY = getTopY().toFloat()
         ObjectAnimator.ofFloat(root, "translationY", -height.toFloat(), 0f).apply {
             duration = AnimationConstants.DIALOG_POPUP_DURATION
             addUpdateListener {
                 val value = it.animatedValue as Float
-                dimView?.translationY = height + value
-                if (dimView?.visibility != View.VISIBLE) {
-                    dimView?.visibility = View.VISIBLE
-                }
+                dimController.showDim()
+                dimController.setTranslationY(startY + (height + value))
             }
             doOnStart{
                 mBinding.root.visibility = View.VISIBLE
@@ -170,7 +161,7 @@ class SportPickerFragment private constructor() :
     fun collapseView() {
         mBinding.root.bringToFront()
         val root = mBinding.root
-        val targetHeight = root.height
+        val targetHeight = mBinding.clFilter.height
         ObjectAnimator.ofFloat(root, "translationY", 0f, -targetHeight.toFloat()).apply {
             duration = AnimationConstants.DIALOG_POPUP_DURATION
             addUpdateListener {
@@ -206,5 +197,10 @@ class SportPickerFragment private constructor() :
     override fun onBackPressed(): Boolean {
         collapseView()
         return super.onBackPressed()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        dimController.reset()
     }
 }
