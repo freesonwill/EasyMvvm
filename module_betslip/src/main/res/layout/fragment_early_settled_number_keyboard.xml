@@ -28,7 +28,8 @@
             android:textStyle="bold"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:skinnableFontWeight="500" />
 
         <arch.cayenne.lib.skin.widget.SkinnableTextView
             android:id="@+id/tv1"
@@ -39,7 +40,8 @@
             android:textColor="@color/main_text"
             android:textStyle="bold"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_title" />
+            app:layout_constraintTop_toBottomOf="@id/tv_title"
+            app:skinnableFontWeight="500" />
 
         <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
             android:id="@+id/cl_money"
@@ -86,7 +88,8 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/tv_money"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:skinnableFontWeight="600" />
         </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
 
         <arch.cayenne.lib.skin.widget.SkinnableTabLayout
@@ -145,7 +148,8 @@
                     android:textColor="@color/keyboard_number"
                     android:textSize="14sp"
                     android:textStyle="bold"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:skinnableFontWeight="500" />
 
                 <arch.cayenne.lib.skin.widget.SkinnableView
                     android:layout_width="match_parent"
@@ -166,7 +170,8 @@
                     android:textColor="@color/keyboard_number"
                     android:textSize="14sp"
                     android:textStyle="bold"
-                    app:layout_constraintTop_toBottomOf="@id/btn_100" />
+                    app:layout_constraintTop_toBottomOf="@id/btn_100"
+                    app:skinnableFontWeight="500" />
 
                 <arch.cayenne.lib.skin.widget.SkinnableView
                     android:layout_width="match_parent"
@@ -187,7 +192,8 @@
                     android:textColor="@color/keyboard_number"
                     android:textSize="14sp"
                     android:textStyle="bold"
-                    app:layout_constraintTop_toBottomOf="@id/btn_500" />
+                    app:layout_constraintTop_toBottomOf="@id/btn_500"
+                    app:skinnableFontWeight="500" />
 
                 <arch.cayenne.lib.skin.widget.SkinnableView
                     android:layout_width="match_parent"
@@ -208,7 +214,8 @@
                     android:textColor="@color/keyboard_number"
                     android:textSize="14sp"
                     android:textStyle="bold"
-                    app:layout_constraintTop_toBottomOf="@id/btn_1000" />
+                    app:layout_constraintTop_toBottomOf="@id/btn_1000"
+                    app:skinnableFontWeight="500" />
 
                 <arch.cayenne.lib.skin.widget.SkinnableView
                     android:layout_width="match_parent"
@@ -229,7 +236,8 @@
                     android:textColor="@color/keyboard_number"
                     android:textSize="14sp"
                     android:textStyle="bold"
-                    app:layout_constraintTop_toBottomOf="@id/btn_2000" />
+                    app:layout_constraintTop_toBottomOf="@id/btn_2000"
+                    app:skinnableFontWeight="500" />
             </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
 
             <arch.cayenne.lib.common.ui.view.NumberKeyboardView
@@ -268,7 +276,8 @@
                     android:backgroundTint="@color/keyboard_1"
                     android:foreground="@drawable/bg_click_mask_6dp_white_blue"
                     android:text="@string/btn_clear"
-                    android:textSize="12sp" />
+                    android:textSize="12sp"
+                    app:skinnableFontWeight="500" />
 
                 <arch.cayenne.lib.skin.widget.SkinnableTextView
                     android:id="@+id/btn_double"
@@ -280,7 +289,8 @@
                     android:enabled="false"
                     android:foreground="@drawable/bg_click_mask_6dp_white_blue"
                     android:text="@string/keyboard_double"
-                    android:textSize="12sp" />
+                    android:textSize="12sp"
+                    app:skinnableFontWeight="500" />
 
                 <arch.cayenne.lib.skin.widget.SkinnableImageButton
                     android:id="@+id/btn_collapse"
@@ -336,7 +346,7 @@
             app:layout_constraintStart_toEndOf="@id/btn_cancel"
             app:layout_constraintTop_toTopOf="@id/btn_cancel">
 
-            <TextView
+            <arch.cayenne.lib.skin.widget.SkinnableTextView
                 android:id="@+id/tv_bet_hint"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -347,9 +357,10 @@
                 app:layout_constraintBottom_toTopOf="@id/tv_bet_money"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:skinnableFontWeight="500" />
 
-            <TextView
+            <arch.cayenne.lib.skin.widget.SkinnableTextView
                 android:id="@+id/tv_bet_money"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -359,7 +370,8 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tv_bet_hint" />
+                app:layout_constraintTop_toBottomOf="@id/tv_bet_hint"
+                app:skinnableFontWeight="500" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 
@@ -374,7 +386,9 @@
         android:gravity="center"
         android:text="@string/refund_amount_include_principal"
         android:textColor="@color/color_311700"
+        android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@id/cl_bottom_button"
-        app:layout_constraintEnd_toEndOf="@id/cl_bottom_button" />
+        app:layout_constraintEnd_toEndOf="@id/cl_bottom_button"
+        app:skinnableFontWeight="500" />
 
 </arch.cayenne.lib.common.ui.view.InterceptedConstraintLayout>

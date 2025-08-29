@@ -19,10 +19,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/main_text"
-        android:textStyle="bold"
         android:textSize="14sp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@id/tv_combo"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/tv_combo" />
+        app:layout_constraintTop_toTopOf="@id/tv_combo"
+        app:skinnableFontWeight="600" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

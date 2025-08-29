@@ -89,7 +89,6 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
         }
         if (mViewModel.currentPlayTypeId == PlayType.EARLY.id) {
             mBinding.layoutContainer.llDateFilterContainer.visibility = View.VISIBLE
-            mBinding.layoutContainer.llOtherDate.visibility = View.VISIBLE
         }
     }
 

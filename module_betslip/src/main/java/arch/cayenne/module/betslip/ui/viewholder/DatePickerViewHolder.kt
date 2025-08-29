@@ -33,5 +33,6 @@ class DatePickerViewHolder(private val mBinding: ItemDateBinding) : BaseViewHold
             mBinding.tvTitle.setTextColor(ContextCompat.getColor(itemView.context, arch.cayenne.lib.common.R.color.secondary_text))
         }
         mBinding.ivCancel.isVisible = adapterPosition == itemCount - 1 && isSelected
+        mBinding.tvTitle.setFontWeight(if (isSelected) 500 else 400)
     }
 }

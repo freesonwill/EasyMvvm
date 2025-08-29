@@ -33,6 +33,7 @@
             android:textColor="@color/navigation_bar"
             android:textSize="17sp"
             android:textStyle="bold"
+            app:skinnableFontWeight="500"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
