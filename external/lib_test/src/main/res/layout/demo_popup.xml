@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/shape_1"
     android:baselineAligned="false"
-    tools:ignore="HardcodedText">
+    >
 
     <LinearLayout
         android:id="@+id/topLayout"
@@ -47,9 +47,11 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/topLayout">
+        app:layout_constraintTop_toBottomOf="@id/topLayout"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:paddingBottom="@dimen/dp_40"
+        >
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -62,7 +64,6 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/dp_11"
                 android:background="@drawable/shape_2"
-
                 android:orientation="vertical"
                 android:paddingHorizontal="@dimen/dp_5"
                 android:paddingTop="@dimen/dp_11"

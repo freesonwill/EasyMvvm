@@ -158,7 +158,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                 tab?.let {
                     if (skipAnyAnim) {
                         enableAnimation = false
-                        mBinding.customIndicator.animateIndicatorToPosition(tab.position, 210)
+                        mBinding.customIndicator.animateIndicatorToPosition(tab.position)
                         mBinding.vpPage.setCurrentItem(tab.position,false)
                         // mBinding.vpPage.doSmartAnim(tab.position)
                     }
@@ -237,19 +237,19 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                 // 左滑：adjustedOffset > 0.5，切换到下一页
                 if (adjustedOffset > 0.5f && currentPage < totalItems - 1 && lastSwitchedPage != currentPage + 1) {
                     lastSwitchedPage = currentPage + 1
-                    mBinding.customIndicator.animateIndicatorToPosition(lastSwitchedPage, 210)
+                    mBinding.customIndicator.animateIndicatorToPosition(lastSwitchedPage)
                     mBinding.tabLayout.getTabAt(lastSwitchedPage)?.select()
                 }
                 // 右滑：adjustedOffset < -0.5，切换到上一页
                 else if (adjustedOffset < -0.5f && currentPage > 0 && lastSwitchedPage != currentPage - 1) {
                     lastSwitchedPage = currentPage - 1
-                    mBinding.customIndicator.animateIndicatorToPosition(lastSwitchedPage, 210)
+                    mBinding.customIndicator.animateIndicatorToPosition(lastSwitchedPage)
                     mBinding.tabLayout.getTabAt(lastSwitchedPage)?.select()
                 }
                 // 滑动未超过 50%，恢复到当前页面
                 else if (abs(adjustedOffset) <= 0.5f && lastSwitchedPage != currentPage) {
                     lastSwitchedPage = currentPage
-                    mBinding.customIndicator.animateIndicatorToPosition(lastSwitchedPage, 210)
+                    mBinding.customIndicator.animateIndicatorToPosition(lastSwitchedPage)
                     mBinding.tabLayout.getTabAt(lastSwitchedPage)?.select()
                 }
             }
