@@ -8,8 +8,10 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
+import androidx.startup.Initializer
 import arch.cayenne.lib.base.data.DefaultInitializer
 import arch.cayenne.lib.base.ui._interface.SimpleActivityLifecycleCallbacks
+import arch.cayenne.lib.common.CommonModuleInitializer
 import arch.cayenne.lib.common.data.constants.UserDataKey
 import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
@@ -46,8 +48,8 @@ class TestModuleInitializer : DefaultInitializer<Unit> {
                                 .setBottomBorderMargin(100.dp2px.toFloat())
                                 .setOnClickListener {
                                     XPopup.Builder(activity)
+                                        .moveUpToKeyboard(false)
                                         .isViewMode(false)
-                                        .autoOpenSoftInput(true)
                                         .asCustom(DemoPopup(activity)).show()
                                 }
                                 .build()
@@ -79,5 +81,9 @@ class TestModuleInitializer : DefaultInitializer<Unit> {
             val d:DemoData? = DemoData.getDemoData(manager,key)
             DemoData.setDemoData(manager, key, d?:data, d == null)
         }
+    }
+
+    override fun dependencies(): List<Class<out Initializer<*>>> {
+        return super.dependencies() + CommonModuleInitializer::class.java
     }
 }
