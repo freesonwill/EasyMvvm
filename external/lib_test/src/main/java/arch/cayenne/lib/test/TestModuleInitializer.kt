@@ -46,8 +46,8 @@ class TestModuleInitializer : DefaultInitializer<Unit> {
                                 .setBottomBorderMargin(100.dp2px.toFloat())
                                 .setOnClickListener {
                                     XPopup.Builder(activity)
+                                        .moveUpToKeyboard(false)
                                         .isViewMode(false)
-                                        .autoOpenSoftInput(true)
                                         .asCustom(DemoPopup(activity)).show()
                                 }
                                 .build()
