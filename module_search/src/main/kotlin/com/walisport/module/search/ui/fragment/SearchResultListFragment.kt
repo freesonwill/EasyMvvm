@@ -8,9 +8,9 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.os.bundleOf
 import androidx.core.view.children
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.RecyclerView
+import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.animateIndicatorToPosition
 import arch.cayenne.lib.common.utils.ext.setupViewPagerScroll
 import com.google.android.material.tabs.TabLayout
@@ -115,7 +115,7 @@ class SearchResultListFragment :
                                 .actionSearchResultListFragmentToSearchResultDirectMatchFragment(
                                     null, keyword, id, type
                                 )
-                        findNavController().navigate(action, navOptions)
+                        navigate(action)
                     }
                 (viewPager.getChildAt(0) as? RecyclerView)?.overScrollMode = View.OVER_SCROLL_NEVER
 
