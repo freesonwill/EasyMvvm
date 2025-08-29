@@ -497,10 +497,13 @@ private fun ViewPager2.setViewPagerAnimationDuration(duration: Long) {
         e.printStackTrace()
     }
 }
-fun CustomTabIndicator.animateIndicatorToPosition(position: Int,duration:Long) {
+fun CustomTabIndicator.animateIndicatorToPosition(position: Int,
+                                                  duration:Long = AnimationController[AnimType.scrollbar]!!.duration,
+                                                  interpolator: TimeInterpolator = AnimationController[AnimType.scrollbar]!!.interpolator.toInterpolator()
+) {
     val animator = ValueAnimator.ofFloat(this.getCurrentPosition().toFloat(), position.toFloat())
     animator.duration = duration // 动画持续时间
-    animator.interpolator =PathInterpolator(0f, 0f, 1f, 1f)//cubic-bezier(0, 0, 1, 1)
+    animator.interpolator = interpolator
     animator.addUpdateListener { animation ->
         val progress = animation.animatedValue as Float
         setIndicatorPosition(progress.toInt(), progress % 1f)

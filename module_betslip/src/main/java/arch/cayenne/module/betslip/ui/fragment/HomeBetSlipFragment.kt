@@ -153,14 +153,14 @@ class HomeBetSlipFragment : BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsl
         mBinding.root.post {
             mBinding.tabLayout.clearOnTabSelectedListeners()
             mBinding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-                override fun onTabSelected(tab: TabLayout.Tab?) {
+                override fun onTabSelected(tab: TabLayout.Tab) {
                     mViewModel.setSportViewCollapse()
                     if (skipAnyAnim) {
                         // 动画更新指示器位置
-                        mBinding.customIndicator.animateIndicatorToPosition(tab?.position?:0, 0)
-                        mBinding.viewPager.setCurrentItem(tab?.position?:0, false)
+                        mBinding.customIndicator.animateIndicatorToPosition(tab.position, 0)
+                        mBinding.viewPager.setCurrentItem(tab.position, false)
                     }
-                    (tab?.customView as? TextView)?.setTypeface(null, Typeface.BOLD)
+                    (tab.customView as? TextView)?.setTypeface(null, Typeface.BOLD)
                 }
 
                 override fun onTabUnselected(tab: TabLayout.Tab?) {
