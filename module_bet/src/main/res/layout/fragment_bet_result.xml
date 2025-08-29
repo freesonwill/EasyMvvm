@@ -28,7 +28,8 @@
             android:layout_marginStart="5dp"
             android:textColor="@color/main_text"
             android:textSize="17sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            app:skinnableFontWeight="500" />
     </LinearLayout>
 
     <arch.cayenne.lib.skin.widget.SkinnableTextView
@@ -109,7 +110,8 @@
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="@id/tv_amount"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/tv_amount" />
+            app:layout_constraintTop_toTopOf="@id/tv_amount"
+            app:skinnableFontWeight="600" />
 
         <arch.cayenne.lib.skin.widget.SkinnableTextView
             android:id="@+id/tv_max_win_money"
@@ -119,7 +121,8 @@
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="@id/tv_max_win"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/tv_max_win" />
+            app:layout_constraintTop_toTopOf="@id/tv_max_win"
+            app:skinnableFontWeight="600" />
     </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
 
     <arch.cayenne.lib.skin.widget.SkinnableButton
@@ -156,6 +159,7 @@
         app:layout_constraintBottom_toBottomOf="@id/btn_continue_bet"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/btn_continue_bet"
-        app:layout_constraintTop_toTopOf="@id/btn_continue_bet" />
+        app:layout_constraintTop_toTopOf="@id/btn_continue_bet"
+        app:skinnableFontWeight="500" />
 
 </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
