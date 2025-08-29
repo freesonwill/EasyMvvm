@@ -16,6 +16,7 @@ import arch.cayenne.lib.common.data.constants.UserDataKey
 import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.test.data.bean.DemoData
+import com.blankj.utilcode.util.ScreenUtils
 import com.lxj.xpopup.XPopup
 import com.petterp.floatingx.assist.FxDisplayMode
 import com.petterp.floatingx.assist.FxGravity
@@ -48,7 +49,9 @@ class TestModuleInitializer : DefaultInitializer<Unit> {
                                 .setBottomBorderMargin(100.dp2px.toFloat())
                                 .setOnClickListener {
                                     XPopup.Builder(activity)
-                                        .moveUpToKeyboard(false)
+                                        .moveUpToKeyboard(true)
+                                        .autoOpenSoftInput(true)
+                                        .maxHeight((ScreenUtils.getScreenHeight()*0.5f).toInt())
                                         .isViewMode(false)
                                         .asCustom(DemoPopup(activity)).show()
                                 }
