@@ -175,28 +175,38 @@ class SportPickerFragment private constructor() :
             duration = AnimationConstants.DIALOG_POPUP_DURATION
             addUpdateListener {
                 val value = it.animatedValue as Float
-                dimController.setTranslationY(startY + (targetHeight + value))
+                if (dimAnimator.isRunning) {
+                    dimController.setTranslationY(startY + (targetHeight + value))
+                }
             }
             doOnEnd {
                 mBinding.root.visibility = View.INVISIBLE
-                mBinding.maskView.alpha = 0f
-                mBinding.maskView.visibility = View.GONE
                 dismiss()
             }
         }
-        val sheetBgAnimator = ObjectAnimator.ofFloat(mBinding.maskView, "alpha", 1f, 0f).apply {
-            duration = dimAnimator.duration
-            interpolator = dimAnimator.interpolator
-            addUpdateListener {
-                val value = it.animatedValue as Float
-                mBinding.maskView.alpha = value
+        dimController.setDimAlphaListener(viewLifecycleOwner, object : DimController.DimAlphaListener {
+            override fun onDimAlphaChanged(alpha: Float) {
+                if (mBinding.maskView.alpha == 0.75f) {
+                    mBinding.maskView.alpha = alpha
+                } else {
+                    if (alpha == DimController.TARGET_DIM) {
+                        dimAnimator.cancel()
+                        dimController.reset()
+                    } else {
+                        mBinding.maskView.alpha = alpha
+                        if (alpha == 0f) {
+                            mBinding.maskView.visibility = View.GONE
+                        }
+                    }
+                }
             }
-        }
+        })
 
         dimAnimator.duration = sheetAnimator.duration
         dimAnimator.interpolator = sheetAnimator.interpolator
+
         AnimatorSet().apply {
-            playTogether(sheetAnimator, dimAnimator, sheetBgAnimator)
+            playTogether(sheetAnimator, dimAnimator)
             start()
         }
     }
@@ -208,12 +218,6 @@ class SportPickerFragment private constructor() :
         val targetHeight = mBinding.clFilter.height
         return ObjectAnimator.ofFloat(root, "translationY", 0f, -targetHeight.toFloat()).apply {
             duration = AnimationConstants.DIALOG_POPUP_DURATION
-//            addUpdateListener {
-//                if (mBinding.maskView.visibility != View.GONE) {
-//
-//
-//                }
-//            }
             doOnStart {
                 dimController.reset()
                 mBinding.maskView.alpha = 0f
@@ -249,10 +253,5 @@ class SportPickerFragment private constructor() :
     override fun onBackPressed(): Boolean {
         collapseView()
         return super.onBackPressed()
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        dimController.reset()
     }
 }

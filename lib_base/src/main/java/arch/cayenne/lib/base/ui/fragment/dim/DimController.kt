@@ -8,6 +8,8 @@ import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 
 class DimController private constructor() {
 
@@ -19,10 +21,11 @@ class DimController private constructor() {
     }
 
     private var dimView: View? = null
+    private var listenerMap = mutableMapOf<Int, DimAlphaListener>()
 
     fun init(context: Context) {
         if (dimView != null) {
-//            reset()
+            checkLayoutParams()
             return
         }
         val v = View(context).apply {
@@ -34,6 +37,16 @@ class DimController private constructor() {
         val params = getBasicLayoutParams()
         windowManager.addView(v, params)
         dimView = v
+    }
+
+    fun checkLayoutParams() {
+        val v = dimView ?: return
+        val params = v.layoutParams as WindowManager.LayoutParams
+        val basicParams = getBasicLayoutParams()
+        if (params.width != basicParams.width || params.height != basicParams.height) {
+            updateLayoutParams(basicParams)
+            v.translationY = 0f
+        }
     }
 
     private fun getBasicLayoutParams(): WindowManager.LayoutParams {
@@ -69,15 +82,18 @@ class DimController private constructor() {
     fun showDim() {
         if (dimView?.alpha == TARGET_DIM) return
         dimView?.alpha = TARGET_DIM
+        setAlphaChange(TARGET_DIM)
     }
 
     fun hideDim() {
         if (dimView?.alpha == 0f) return
         dimView?.alpha = 0f
+        setAlphaChange(0f)
     }
 
     fun setDimAlpha(alpha: Float) {
         dimView?.alpha = alpha.coerceIn(0f, 1f)
+        setAlphaChange(alpha)
     }
 
     fun setTranslationY(y: Float) {
@@ -97,8 +113,30 @@ class DimController private constructor() {
             addUpdateListener {
                 val value = it.animatedValue as Float
                 v.alpha = value
+                setAlphaChange(value)
             }
         }
+    }
+
+    private fun setAlphaChange(alpha: Float) {
+        listenerMap.values.forEach { l ->
+            l.onDimAlphaChanged(alpha)
+        }
+    }
+
+    fun setDimAlphaListener(lifecycleOwner: LifecycleOwner, listener: DimAlphaListener) {
+        val id = lifecycleOwner.hashCode()
+        listenerMap[id] = listener
+        lifecycleOwner.lifecycle.addObserver(object : DefaultLifecycleObserver {
+            override fun onDestroy(owner: LifecycleOwner) {
+                listenerMap.remove(id)
+                owner.lifecycle.removeObserver(this) // 移除 observer，避免多餘引用
+            }
+        })
+    }
+
+    interface DimAlphaListener {
+        fun onDimAlphaChanged(alpha: Float)
     }
 
 }
