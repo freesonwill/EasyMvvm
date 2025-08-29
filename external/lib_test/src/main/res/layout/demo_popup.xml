@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     android:background="@drawable/shape_1"
     android:baselineAligned="false"
-    android:fitsSystemWindows="true"
     tools:ignore="HardcodedText">
 
     <LinearLayout
@@ -81,7 +80,7 @@
                         android:layout_height="wrap_content"
                         android:text="uid:" />
 
-                    <EditText
+                    <arch.cayenne.lib.common.ui.view.LastCursorEditText
                         android:id="@+id/tvUid"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -110,7 +109,7 @@
                         android:layout_height="wrap_content"
                         android:text="token:" />
 
-                    <EditText
+                    <arch.cayenne.lib.common.ui.view.LastCursorEditText
                         android:id="@+id/tvToken"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -180,7 +179,7 @@
                         android:textColor="#111111"
                         android:textSize="@dimen/sp_12" />
 
-                    <EditText
+                    <arch.cayenne.lib.common.ui.view.LastCursorEditText
                         android:id="@+id/data1Time"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -210,7 +209,7 @@
                             android:layout_height="wrap_content"
                             android:text="X:" />
 
-                        <EditText
+                        <arch.cayenne.lib.common.ui.view.LastCursorEditText
                             android:id="@+id/data1X1"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
@@ -229,7 +228,7 @@
                             android:paddingHorizontal="@dimen/dp_5"
                             android:text="Y:" />
 
-                        <EditText
+                        <arch.cayenne.lib.common.ui.view.LastCursorEditText
                             android:id="@+id/data1Y1"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
@@ -261,7 +260,7 @@
                             android:layout_height="wrap_content"
                             android:text="X:" />
 
-                        <EditText
+                        <arch.cayenne.lib.common.ui.view.LastCursorEditText
                             android:id="@+id/data1X2"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
@@ -280,7 +279,7 @@
                             android:paddingHorizontal="@dimen/dp_5"
                             android:text="Y:" />
 
-                        <EditText
+                        <arch.cayenne.lib.common.ui.view.LastCursorEditText
                             android:id="@+id/data1Y2"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
@@ -344,7 +343,7 @@
                         android:textColor="#111111"
                         android:textSize="@dimen/sp_12" />
 
-                    <EditText
+                    <arch.cayenne.lib.common.ui.view.LastCursorEditText
                         android:id="@+id/data2Time"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -374,7 +373,7 @@
                             android:layout_height="wrap_content"
                             android:text="X:" />
 
-                        <EditText
+                        <arch.cayenne.lib.common.ui.view.LastCursorEditText
                             android:id="@+id/data2X1"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
@@ -393,7 +392,7 @@
                             android:paddingHorizontal="@dimen/dp_5"
                             android:text="Y:" />
 
-                        <EditText
+                        <arch.cayenne.lib.common.ui.view.LastCursorEditText
                             android:id="@+id/data2Y1"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
@@ -425,7 +424,7 @@
                             android:layout_height="wrap_content"
                             android:text="X:" />
 
-                        <EditText
+                        <arch.cayenne.lib.common.ui.view.LastCursorEditText
                             android:id="@+id/data2X2"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
@@ -444,7 +443,7 @@
                             android:paddingHorizontal="@dimen/dp_5"
                             android:text="Y:" />
 
-                        <EditText
+                        <arch.cayenne.lib.common.ui.view.LastCursorEditText
                             android:id="@+id/data2Y2"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
@@ -508,7 +507,7 @@
                         android:textColor="#111111"
                         android:textSize="@dimen/sp_12" />
 
-                    <EditText
+                    <arch.cayenne.lib.common.ui.view.LastCursorEditText
                         android:id="@+id/data3Time"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -538,7 +537,7 @@
                             android:layout_height="wrap_content"
                             android:text="X:" />
 
-                        <EditText
+                        <arch.cayenne.lib.common.ui.view.LastCursorEditText
                             android:id="@+id/data3X1"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
@@ -557,7 +556,7 @@
                             android:paddingHorizontal="@dimen/dp_5"
                             android:text="Y:" />
 
-                        <EditText
+                        <arch.cayenne.lib.common.ui.view.LastCursorEditText
                             android:id="@+id/data3Y1"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
@@ -589,7 +588,7 @@
                             android:layout_height="wrap_content"
                             android:text="X:" />
 
-                        <EditText
+                        <arch.cayenne.lib.common.ui.view.LastCursorEditText
                             android:id="@+id/data3X2"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
@@ -608,7 +607,7 @@
                             android:paddingHorizontal="@dimen/dp_5"
                             android:text="Y:" />
 
-                        <EditText
+                        <arch.cayenne.lib.common.ui.view.LastCursorEditText
                             android:id="@+id/data3Y2"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
@@ -672,7 +671,7 @@
                         android:textColor="#111111"
                         android:textSize="@dimen/sp_12" />
 
-                    <EditText
+                    <arch.cayenne.lib.common.ui.view.LastCursorEditText
                         android:id="@+id/data4Time"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -702,7 +701,7 @@
                             android:layout_height="wrap_content"
                             android:text="X:" />
 
-                        <EditText
+                        <arch.cayenne.lib.common.ui.view.LastCursorEditText
                             android:id="@+id/data4X1"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
@@ -721,7 +720,7 @@
                             android:paddingHorizontal="@dimen/dp_5"
                             android:text="Y:" />
 
-                        <EditText
+                        <arch.cayenne.lib.common.ui.view.LastCursorEditText
                             android:id="@+id/data4Y1"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
@@ -753,7 +752,7 @@
                             android:layout_height="wrap_content"
                             android:text="X:" />
 
-                        <EditText
+                        <arch.cayenne.lib.common.ui.view.LastCursorEditText
                             android:id="@+id/data4X2"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
@@ -772,7 +771,7 @@
                             android:paddingHorizontal="@dimen/dp_5"
                             android:text="Y:" />
 
-                        <EditText
+                        <arch.cayenne.lib.common.ui.view.LastCursorEditText
                             android:id="@+id/data4Y2"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
@@ -836,7 +835,7 @@
                         android:textColor="#111111"
                         android:textSize="@dimen/sp_12" />
 
-                    <EditText
+                    <arch.cayenne.lib.common.ui.view.LastCursorEditText
                         android:id="@+id/data5Time"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -866,7 +865,7 @@
                             android:layout_height="wrap_content"
                             android:text="X:" />
 
-                        <EditText
+                        <arch.cayenne.lib.common.ui.view.LastCursorEditText
                             android:id="@+id/data5X1"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
@@ -885,7 +884,7 @@
                             android:paddingHorizontal="@dimen/dp_5"
                             android:text="Y:" />
 
-                        <EditText
+                        <arch.cayenne.lib.common.ui.view.LastCursorEditText
                             android:id="@+id/data5Y1"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
@@ -917,7 +916,7 @@
                             android:layout_height="wrap_content"
                             android:text="X:" />
 
-                        <EditText
+                        <arch.cayenne.lib.common.ui.view.LastCursorEditText
                             android:id="@+id/data5X2"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
@@ -936,7 +935,7 @@
                             android:paddingHorizontal="@dimen/dp_5"
                             android:text="Y:" />
 
-                        <EditText
+                        <arch.cayenne.lib.common.ui.view.LastCursorEditText
                             android:id="@+id/data5Y2"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
