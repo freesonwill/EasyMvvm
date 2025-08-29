@@ -96,8 +96,9 @@
         <arch.cayenne.lib.skin.widget.SkinnableTabLayout
             android:id="@+id/ll_tab"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_36"
+            android:layout_height="46dp"
             android:layout_marginTop="@dimen/dp_10"
+            android:paddingBottom="10dp"
             android:background="@color/main_background"
             app:layout_constraintTop_toBottomOf="@id/cl_money"
             app:sportTabBackground="@drawable/selector_keyboard_tab_percent"
@@ -124,7 +125,6 @@
             android:id="@+id/cl_keyboard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
             app:layout_constraintBottom_toBottomOf="@id/cl_bottom_button"
             app:layout_constraintTop_toBottomOf="@id/ll_tab">
 
