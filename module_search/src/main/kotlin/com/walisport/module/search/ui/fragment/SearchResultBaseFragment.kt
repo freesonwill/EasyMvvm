@@ -60,13 +60,15 @@ class SearchResultBaseFragment :
                     // 避免中間頁閃爍，實現從 SearchResultListFragment / SearchResultDirectMatchFragment
                     // 直接返回 SearchFragment 的流暢轉場效果
                     (requireActivity().window.decorView as ViewGroup).apply {
-                        ImageView(requireContext()).apply {
-                            layoutParams = ViewGroup.LayoutParams(
-                                ViewGroup.LayoutParams.MATCH_PARENT,
-                                ViewGroup.LayoutParams.MATCH_PARENT
-                            )
-                            setImageBitmap(getTempScreenShot())
-                        }.let { overlay ->
+                        getTempScreenShot()?.run {
+                            ImageView(requireContext()).apply {
+                                layoutParams = ViewGroup.LayoutParams(
+                                    ViewGroup.LayoutParams.MATCH_PARENT,
+                                    ViewGroup.LayoutParams.MATCH_PARENT
+                                )
+                                setImageBitmap(this@run)
+                            }
+                        }?.let { overlay ->
                             addView(overlay, childCount)
                             overlay.doOnLayout {
                                 parentFragmentManager.apply {
@@ -82,6 +84,7 @@ class SearchResultBaseFragment :
                                                             override fun onAnimationStart(p0: Animation?) = Unit
                                                             override fun onAnimationEnd(p0: Animation?) {
                                                                 removeView(overlay)
+                                                                clearTempScreenShot()
                                                             }
                                                         })
                                                     }?.let { anim ->
@@ -138,7 +141,6 @@ class SearchResultBaseFragment :
 
     override fun onDestroyView() {
         super.onDestroyView()
-        clearTempScreenShot()
     }
 
     private fun doSearch() {

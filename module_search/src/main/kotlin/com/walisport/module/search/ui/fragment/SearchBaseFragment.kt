@@ -31,6 +31,7 @@ import arch.cayenne.lib.base.ui.fragment.getViewBind
 import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.common.ui.view.ClearableEditText
+import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
@@ -53,13 +54,6 @@ abstract class SearchBaseFragment<VM : BaseViewModel, CVB : ViewBinding>: BaseFr
     protected val contentBinding get() = _contentBinding!!
 
     private val sharedViewModel: SearchBaseViewModel by sharedViewModel<SearchBaseViewModel, SearchFragment>()
-
-    protected val navOptions = NavOptions.Builder()
-        .setEnterAnim(RC.anim.slide_in_right)
-        .setExitAnim(RC.anim.slide_out_left)
-        .setPopEnterAnim(RC.anim.slide_in_left)
-        .setPopExitAnim(RC.anim.slide_out_right)
-        .build()
 
     private val apiFailedHandler: (ApiFailedState?) -> Unit = { error ->
         error?.let{ showToast(error.msg) }
@@ -145,7 +139,7 @@ abstract class SearchBaseFragment<VM : BaseViewModel, CVB : ViewBinding>: BaseFr
             this is SearchFragment -> {
                 // 在SearchFragment中，直接跳轉到SearchResultBaseFragment
                 setCurrentKeyword(word)
-                findNavController().navigate(R.id.searchResultBaseFragment, null, navOptions)
+                navigate(R.id.searchResultBaseFragment)
             }
             else -> {
                 // 在其他Fragment中，要popBackStack到SearchResultBaseFragment
