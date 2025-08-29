@@ -50,7 +50,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_119"
                 android:text="@string/live_video_loading"
-                android:textColor="@color/color_E5FFFFFF"
+                android:textColor="#929298"
                 android:textSize="@dimen/sp_13"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
