@@ -9,10 +9,12 @@ import android.view.Gravity
 import android.view.ViewTreeObserver
 import android.widget.TextView
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import arch.cayenne.lib.base.data.model.PagerBean
 import arch.cayenne.lib.base.ui.adapter.PagerAdapter
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.common.data.constants.AnimationConstants
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.animateIndicatorToPosition
@@ -28,6 +30,8 @@ import arch.cayenne.module.betslip.ui.viewmodel.BetSlipFilterViewModel
 import arch.cayenne.module.betslip.ui.viewmodel.HomeBetSlipViewModel
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import kotlin.reflect.KClass
 
@@ -179,6 +183,7 @@ class HomeBetSlipFragment : BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsl
     }
 
     private fun showDateFilter() {
+        val sportView = childFragmentManager.findFragmentByTag(SportPickerFragment::class.java.simpleName) as? SportPickerFragment
         mViewModel.onDateFilter.value?.let {
             setFilterText(mBinding.tvDateFilter, true)
             childFragmentManager.setFragmentResultListener(
@@ -213,7 +218,18 @@ class HomeBetSlipFragment : BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsl
                 } else {
                     null
                 }
-            DatePickerFragment.newInstance(it.date, time).show(childFragmentManager)
+            val filterView = DatePickerFragment.newInstance(it.date, time)
+            if (sportView == null) {
+                filterView.show(childFragmentManager)
+            } else {
+                lifecycleScope.launch {
+                    // TODO 暫時匹配h5動畫，等新需求提供後再修改
+                    delay(AnimationConstants.DIALOG_POPUP_DURATION / 2)
+                    filterView.show(childFragmentManager)
+                }
+//                val sportViewCollapseAnimator = sportView.getCollapseAnimator()
+//                filterView.showWithOtherSheetDialogHide(childFragmentManager, sportViewCollapseAnimator)
+            }
         }
     }
 

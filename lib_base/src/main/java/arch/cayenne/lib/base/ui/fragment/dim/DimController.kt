@@ -22,7 +22,7 @@ class DimController private constructor() {
 
     fun init(context: Context) {
         if (dimView != null) {
-            reset()
+//            reset()
             return
         }
         val v = View(context).apply {

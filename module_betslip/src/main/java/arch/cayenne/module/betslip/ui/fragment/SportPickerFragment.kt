@@ -1,5 +1,6 @@
 package arch.cayenne.module.betslip.ui.fragment
 
+import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.graphics.PixelFormat
 import android.os.Bundle
@@ -50,6 +51,8 @@ class SportPickerFragment private constructor() :
     private val dimController by lazy {
         DimController.instance
     }
+
+    private var isShow = false
 
     override fun initView(savedInstanceState: Bundle?) {
         initDim()
@@ -112,7 +115,7 @@ class SportPickerFragment private constructor() :
         )
 
         params.gravity = Gravity.TOP or Gravity.START
-        dimController.hideDim()
+//        dimController.hideDim()
         dimController.updateLayoutParams(params)
         mBinding.maskBottomView.setOnClickListener {
             collapseView()
@@ -139,6 +142,8 @@ class SportPickerFragment private constructor() :
     }
 
     private fun expandView() {
+        if (isShow) return
+        isShow = true
         mBinding.root.bringToFront()
         val root = mBinding.root
         val height = mBinding.clFilter.height
@@ -159,13 +164,60 @@ class SportPickerFragment private constructor() :
     }
 
     fun collapseView() {
+        if (!isShow) return
+        val dimAnimator = dimController.getHideAnimator() ?: return
+        isShow = false
         mBinding.root.bringToFront()
         val root = mBinding.root
-        val targetHeight = mBinding.clFilter.height
-        ObjectAnimator.ofFloat(root, "translationY", 0f, -targetHeight.toFloat()).apply {
+        val targetHeight = mBinding.clFilter.height.toFloat()
+        val startY = getTopY().toFloat()
+        val sheetAnimator = ObjectAnimator.ofFloat(root, "translationY", 0f, -targetHeight).apply {
             duration = AnimationConstants.DIALOG_POPUP_DURATION
             addUpdateListener {
-                removeDim()
+                val value = it.animatedValue as Float
+                dimController.setTranslationY(startY + (targetHeight + value))
+            }
+            doOnEnd {
+                mBinding.root.visibility = View.INVISIBLE
+                mBinding.maskView.alpha = 0f
+                mBinding.maskView.visibility = View.GONE
+                dismiss()
+            }
+        }
+        val sheetBgAnimator = ObjectAnimator.ofFloat(mBinding.maskView, "alpha", 1f, 0f).apply {
+            duration = dimAnimator.duration
+            interpolator = dimAnimator.interpolator
+            addUpdateListener {
+                val value = it.animatedValue as Float
+                mBinding.maskView.alpha = value
+            }
+        }
+
+        dimAnimator.duration = sheetAnimator.duration
+        dimAnimator.interpolator = sheetAnimator.interpolator
+        AnimatorSet().apply {
+            playTogether(sheetAnimator, dimAnimator, sheetBgAnimator)
+            start()
+        }
+    }
+
+    fun getCollapseAnimator(): ObjectAnimator? {
+        if (!isShow) return null
+        isShow = false
+        val root = mBinding.root
+        val targetHeight = mBinding.clFilter.height
+        return ObjectAnimator.ofFloat(root, "translationY", 0f, -targetHeight.toFloat()).apply {
+            duration = AnimationConstants.DIALOG_POPUP_DURATION
+//            addUpdateListener {
+//                if (mBinding.maskView.visibility != View.GONE) {
+//
+//
+//                }
+//            }
+            doOnStart {
+                dimController.reset()
+                mBinding.maskView.alpha = 0f
+                mBinding.maskView.visibility = View.GONE
             }
             doOnEnd {
                 mBinding.root.visibility = View.INVISIBLE

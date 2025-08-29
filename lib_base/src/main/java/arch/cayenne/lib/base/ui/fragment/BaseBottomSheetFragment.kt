@@ -152,7 +152,7 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
             addUpdateListener { animation ->
                 val value = animation.animatedValue as Float
                 sheet.translationY = value
-                dimController.showDim()
+                showDim()
             }
             duration = sheetAnim.duration
             // 假設你的 exitAnimation 使用這個插值器
@@ -184,6 +184,7 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
             addUpdateListener { animation ->
                 val value = animation.animatedValue as Float
                 sheet.translationY = value
+                showDim()
             }
             duration = sheetContainerSheetAnim.duration
             // 假設你的 exitAnimation 使用這個插值器
@@ -392,7 +393,7 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
         }
     }
 
-    fun showWithOtherSheetDialogHide(manager: FragmentManager, animator: ObjectAnimator) {
+    fun showWithOtherSheetDialogHide(manager: FragmentManager, animator: ObjectAnimator?) {
         otherViewAnimation = animator
         show(manager)
     }
@@ -547,7 +548,7 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
     }
 
     protected fun hideDim() {
-        dimController.setDimAlpha(0f)
+        dimController.hideDim()
     }
 
     protected fun showDim() {
