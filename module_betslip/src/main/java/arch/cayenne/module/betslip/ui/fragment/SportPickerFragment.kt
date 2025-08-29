@@ -11,7 +11,7 @@ import androidx.core.animation.doOnStart
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.SimpleItemAnimator
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
-import arch.cayenne.lib.base.ui.fragment.DimController
+import arch.cayenne.lib.base.ui.fragment.dim.DimController
 import arch.cayenne.lib.common.data.constants.AnimationConstants
 import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.module.betslip.data.constants.Config
