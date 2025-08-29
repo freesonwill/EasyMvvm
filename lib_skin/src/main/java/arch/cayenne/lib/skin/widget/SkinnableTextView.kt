@@ -103,4 +103,8 @@ class SkinnableTextView : AppCompatTextView {
     fun updateLanguage(locale: Locale) {
         textHelper.updateLanguage(locale)
     }
+
+    fun setFontWeight(weight: Int) {
+        textHelper.setFontWeight(weight)
+    }
 }

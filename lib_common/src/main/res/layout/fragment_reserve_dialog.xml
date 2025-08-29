@@ -39,7 +39,8 @@
             app:layout_constraintBottom_toBottomOf="@id/et_rate"
             app:layout_constraintEnd_toStartOf="@id/et_rate"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/et_rate" />
+            app:layout_constraintTop_toTopOf="@id/et_rate"
+            app:skinnableFontWeight="500" />
 
         <arch.cayenne.lib.skin.widget.SkinnableEditText
             android:id="@+id/et_rate"
@@ -52,7 +53,8 @@
             android:textSize="14sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:skinnableFontWeight="500" />
 
         <arch.cayenne.lib.common.ui.view.NumberKeyboardView
             android:id="@+id/number_keyboard"
@@ -95,7 +97,8 @@
                 android:backgroundTint="@color/keyboard_1"
                 android:foreground="@drawable/bg_click_mask_6dp_white_blue"
                 android:text="@string/btn_clear"
-                android:textSize="12sp" />
+                android:textSize="12sp"
+                app:skinnableFontWeight="500" />
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_confirm"
@@ -108,7 +111,8 @@
                 android:backgroundTint="@color/brand_color"
                 android:foreground="@drawable/bg_click_mask_6dp_white_blue"
                 android:text="@string/btn_confirm"
-                android:textSize="12sp" />
+                android:textSize="12sp"
+                app:skinnableFontWeight="500" />
 
         </GridLayout>
 

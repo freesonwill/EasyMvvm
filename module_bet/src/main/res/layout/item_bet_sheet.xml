@@ -20,7 +20,8 @@
         android:textStyle="bold"
         app:layout_constraintEnd_toStartOf="@id/tv_odds"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:skinnableFontWeight="500" />
 
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/tv_odds"
@@ -30,9 +31,10 @@
         android:textColor="@color/main_text"
         android:textSize="15sp"
         android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@id/tv_selection_name"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/tv_selection_name"
-        app:layout_constraintBottom_toBottomOf="@id/tv_selection_name"/>
+        app:skinnableFontWeight="600" />
 
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/tv_status"

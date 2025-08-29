@@ -80,11 +80,12 @@
                 android:textColor="@color/navigation_bar"
                 android:textSize="15sp"
                 android:textStyle="bold"
+                app:skinnableFontWeight="500"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/tv_confirm"
                 app:layout_constraintStart_toStartOf="parent" />
 
-            <TextView
+            <arch.cayenne.lib.skin.widget.SkinnableTextView
                 android:id="@+id/tv_confirm"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -96,6 +97,7 @@
                 android:textColor="#000000"
                 android:textSize="15sp"
                 android:textStyle="bold"
+                app:skinnableFontWeight="500"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/tv_reset" />
