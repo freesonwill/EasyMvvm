@@ -85,7 +85,7 @@ class SimulateFragment : BaseFragment<SimulateViewModel, FragmentSimulateBinding
             }
             if (item.id < size) {
                 val tip = getString(R.string.next_question)
-                itemBinding.btnNext.text = String.format("%s(%s/%s)", tip, item.id, list.size)
+                itemBinding.btnNext.text = String.format("%s   (%s/%s)", tip, item.id, list.size)
             } else {
                 itemBinding.btnNext.text = getString(R.string.go_to_bet)
             }

@@ -25,7 +25,7 @@
             android:id="@+id/tv_question"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_14"
+            android:layout_marginStart="@dimen/dp_11"
             android:layout_marginTop="@dimen/dp_65"
             android:gravity="center"
             android:textColor="@color/item_name"
@@ -37,8 +37,8 @@
             android:id="@+id/iv_question_home"
             android:layout_width="@dimen/dp_36"
             android:layout_height="@dimen/dp_36"
-            android:layout_marginStart="@dimen/dp_47"
-            android:layout_marginTop="@dimen/dp_112"
+            android:layout_marginStart="@dimen/dp_43"
+            android:layout_marginTop="@dimen/dp_108"
             android:background="@drawable/icon_home_cloth"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -58,8 +58,8 @@
             android:id="@+id/iv_question_away"
             android:layout_width="@dimen/dp_36"
             android:layout_height="@dimen/dp_36"
-            android:layout_marginTop="@dimen/dp_112"
-            android:layout_marginEnd="@dimen/dp_47"
+            android:layout_marginTop="@dimen/dp_108"
+            android:layout_marginEnd="@dimen/dp_43"
             android:background="@drawable/icon_away_cloth"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -79,7 +79,7 @@
             android:id="@+id/tv_score"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_128"
+            android:layout_marginTop="@dimen/dp_125"
             android:textColor="@color/item_name"
             android:textSize="@dimen/sp_22"
             app:layout_constraintEnd_toEndOf="parent"
@@ -91,8 +91,8 @@
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_30"
             android:minWidth="@dimen/dp_86"
-            android:layout_marginStart="@dimen/dp_22"
-            android:layout_marginBottom="@dimen/dp_20"
+            android:layout_marginStart="@dimen/dp_17"
+            android:layout_marginBottom="@dimen/dp_18"
             android:paddingStart="@dimen/dp_10"
             android:paddingEnd="@dimen/dp_10"
             android:gravity="center"
@@ -123,8 +123,8 @@
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_30"
             android:minWidth="@dimen/dp_86"
-            android:layout_marginEnd="@dimen/dp_22"
-            android:layout_marginBottom="@dimen/dp_20"
+            android:layout_marginEnd="@dimen/dp_17"
+            android:layout_marginBottom="@dimen/dp_18"
             android:paddingStart="@dimen/dp_10"
             android:paddingEnd="@dimen/dp_10"
             android:gravity="center"
@@ -163,13 +163,13 @@
             android:id="@+id/iv_tip"
             android:layout_width="@dimen/dp_24"
             android:layout_height="@dimen/dp_24"
-            android:layout_marginTop="@dimen/dp_30"/>
+            android:layout_marginTop="@dimen/dp_46"/>
 
         <arch.cayenne.lib.skin.widget.SkinnableTextView
             android:id="@+id/tv_tip"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_10"
+            android:layout_marginTop="@dimen/dp_9"
             android:textColor="@color/item_name"
             android:textSize="@dimen/sp_15" />
 
@@ -180,7 +180,6 @@
             android:layout_marginStart="@dimen/dp_20"
             android:layout_marginTop="@dimen/dp_16"
             android:layout_marginEnd="@dimen/dp_20"
-            android:lineSpacingMultiplier="1.2"
             android:textColor="@color/color_929298"
             android:textSize="@dimen/sp_14" />
 
@@ -188,7 +187,7 @@
             android:id="@+id/btn_next"
             android:layout_width="@dimen/dp_207"
             android:layout_height="@dimen/dp_48"
-            android:layout_marginTop="@dimen/dp_32"
+            android:layout_marginTop="@dimen/dp_54"
             android:background="@drawable/bg_shape_simulate_button"
             android:gravity="center"
             android:textColor="@color/item_name"
