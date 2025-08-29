@@ -73,7 +73,7 @@ class TestModuleInitializer : DefaultInitializer<Unit> {
             UserDataKey.KEY_ANIM_ZOOM to DemoData(330, 0.5f, 1f, 0.89f, 1f),
             UserDataKey.KEY_ANIM_POPUP to DemoData(300, 0.33f, 1f, 0.5f, 1f),
             UserDataKey.KEY_ANIM_DRAWER to DemoData(250, 0.42f, 0.1f, 0.5f, 1f),
-            UserDataKey.KEY_ANIM_SCROLLBAR to DemoData(250, 0f, 0f, 1f, 1f)
+            UserDataKey.KEY_ANIM_SCROLLBAR to DemoData(210, 0f, 0f, 1f, 1f)
         )
         val manager = getKoin().get<UserDataManager>()
         defaultData.forEach { (key, data) ->

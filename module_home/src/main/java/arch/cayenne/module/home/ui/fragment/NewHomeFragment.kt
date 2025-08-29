@@ -13,6 +13,7 @@ import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.animation.AnimationController
 import arch.cayenne.lib.base.ui.animation.AnimationController.AnimType
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
 import arch.cayenne.lib.common.utils.ext.NavResultExt.observeResult
@@ -141,9 +142,6 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 R.color.drawer_scrim_color
             )
         )
-        mBinding.drawerLayout.setDrawerInterpolator(
-            AnimationController[AnimType.drawerEnter]!!.duration,
-            AnimationController[AnimType.drawerEnter]!!.interpolator.toInterpolator())
         childFragmentManager.beginTransaction()
             .replace(
                 mBinding.fragmentDrawerContent.id,
@@ -188,6 +186,12 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
 
 
     override suspend fun createObserver() {
+        launch {
+            AnimationController.getFlow(AnimType.drawerEnter).collect {
+                if(it == null) return@collect
+                mBinding.drawerLayout.setDrawerInterpolator(it.duration, it.interpolator.toInterpolator())
+            }
+        }
         mViewModel.notifyToChampion.observeEvent(viewLifecycleOwner, this) {
 //            toggleTournamentMoreSection(true, TournamentListType.CHAMPION)
         }

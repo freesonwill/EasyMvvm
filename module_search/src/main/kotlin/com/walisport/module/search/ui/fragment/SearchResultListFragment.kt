@@ -45,15 +45,13 @@ class SearchResultListFragment :
                 clearOnTabSelectedListeners()
                 addOnTabSelectedListener(object :
                     TabLayout.OnTabSelectedListener {
-                    override fun onTabSelected(tab: TabLayout.Tab?) {
+                    override fun onTabSelected(tab: TabLayout.Tab) {
                         if (skipAnyAnim) {
                             // 动画更新指示器位置
-                            customIndicator.animateIndicatorToPosition(
-                                tab?.position ?: 0, 0
-                            )
-                            viewPager.setCurrentItem(tab?.position ?: 0, false)
+                            customIndicator.animateIndicatorToPosition(tab.position, 0)
+                            viewPager.setCurrentItem(tab.position, false)
                         }
-                        tab?.let { updateTabTypeface(it, true) }
+                        tab.let { updateTabTypeface(it, true) }
                     }
                     override fun onTabUnselected(tab: TabLayout.Tab?) {
                         tab?.let { updateTabTypeface(it, false) }
