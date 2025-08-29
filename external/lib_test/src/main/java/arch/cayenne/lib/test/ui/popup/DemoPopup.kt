@@ -11,7 +11,6 @@ import arch.cayenne.lib.test.data.bean.DemoData
 import arch.cayenne.lib.test.databinding.DemoPopupBinding
 import arch.cayenne.lib.test.ui.popup.DemoShowPopup
 import com.blankj.utilcode.util.ScreenUtils
-import com.blankj.utilcode.util.ToastUtils
 import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.core.BottomPopupView
 import org.koin.java.KoinJavaComponent.inject
@@ -20,7 +19,6 @@ import kotlin.getValue
 class DemoPopup(context: Context) : BottomPopupView(context) {
     private var vb: DemoPopupBinding? = null
     private val manager: UserDataManager by inject(UserDataManager::class.java)
-    private var originalMode:Int? = null
 
     override fun getImplLayoutId(): Int { return R.layout.demo_popup }
     override fun getPopupHeight(): Int {
@@ -30,8 +28,6 @@ class DemoPopup(context: Context) : BottomPopupView(context) {
     override fun onCreate() {
         super.onCreate()
         vb = DemoPopupBinding.bind(popupImplView)
-        /*val height = ScreenUtils.getScreenHeight() * 2/3
-        vb!!.root.layoutParams.height = height*/
 
         vb?.apply {
             tvUid.setText(manager.getValue<Int>(UserDataKey.KEY_UID,0).toString())
@@ -77,25 +73,25 @@ class DemoPopup(context: Context) : BottomPopupView(context) {
             tvOk.clickNoRepeat {
                 if(!checkedDataValid()) return@clickNoRepeat
 
-                val uid = tvUid.text.trim().toString().toInt()
-                val token = tvToken.text.trim().toString()
+                val uid = tvUid.text!!.trim().toString().toInt()
+                val token = tvToken.text!!.trim().toString()
                 manager.setKeyValue(UserDataKey.KEY_UID,uid)
                 manager.setKeyValue(UserDataKey.KEY_TOKEN,token)
 
                 val data1 = DemoData(
-                    data1Time.text.trim().toString().toLong(), data1X1.text.trim().toString().toFloat(), data1Y1.text.trim().toString().toFloat(), data1X2.text.trim().toString().toFloat(), data1Y2.text.trim().toString().toFloat()
+                    data1Time.text!!.trim().toString().toLong(), data1X1.text!!.trim().toString().toFloat(), data1Y1.text!!.trim().toString().toFloat(), data1X2.text!!.trim().toString().toFloat(), data1Y2.text!!.trim().toString().toFloat()
                 )
                 val data2 = DemoData(
-                    data2Time.text.trim().toString().toLong(), data2X1.text.trim().toString().toFloat(), data2Y1.text.trim().toString().toFloat(), data2X2.text.trim().toString().toFloat(), data2Y2.text.trim().toString().toFloat()
+                    data2Time.text!!.trim().toString().toLong(), data2X1.text!!.trim().toString().toFloat(), data2Y1.text!!.trim().toString().toFloat(), data2X2.text!!.trim().toString().toFloat(), data2Y2.text!!.trim().toString().toFloat()
                 )
                 val data3 = DemoData(
-                    data3Time.text.trim().toString().toLong(), data3X1.text.trim().toString().toFloat(), data3Y1.text.trim().toString().toFloat(), data3X2.text.trim().toString().toFloat(), data3Y2.text.trim().toString().toFloat()
+                    data3Time.text!!.trim().toString().toLong(), data3X1.text!!.trim().toString().toFloat(), data3Y1.text!!.trim().toString().toFloat(), data3X2.text!!.trim().toString().toFloat(), data3Y2.text!!.trim().toString().toFloat()
                 )
                 val data4 = DemoData(
-                    data4Time.text.trim().toString().toLong(), data4X1.text.trim().toString().toFloat(), data4Y1.text.trim().toString().toFloat(), data4X2.text.trim().toString().toFloat(), data4Y2.text.trim().toString().toFloat()
+                    data4Time.text!!.trim().toString().toLong(), data4X1.text!!.trim().toString().toFloat(), data4Y1.text!!.trim().toString().toFloat(), data4X2.text!!.trim().toString().toFloat(), data4Y2.text!!.trim().toString().toFloat()
                 )
                 val data5 = DemoData(
-                    data5Time.text.trim().toString().toLong(), data5X1.text.trim().toString().toFloat(), data5Y1.text.trim().toString().toFloat(), data5X2.text.trim().toString().toFloat(), data5Y2.text.trim().toString().toFloat()
+                    data5Time.text!!.trim().toString().toLong(), data5X1.text!!.trim().toString().toFloat(), data5Y1.text!!.trim().toString().toFloat(), data5X2.text!!.trim().toString().toFloat(), data5Y2.text!!.trim().toString().toFloat()
                 )
                 DemoData.setDemoData(manager,UserDataKey.KEY_ANIM_ROUTE, data1)
                 DemoData.setDemoData(manager,UserDataKey.KEY_ANIM_ZOOM, data2)
@@ -108,54 +104,54 @@ class DemoPopup(context: Context) : BottomPopupView(context) {
             tvShow1.clickNoRepeat {
                 XPopup.Builder(context).isViewMode(false).asCustom(DemoShowPopup(context,
                     DemoData(
-                        data1Time.text.trim().toString().toLong(),
-                        data1X1.text.trim().toString().toFloat(),
-                        data1Y1.text.trim().toString().toFloat(),
-                        data1X2.text.trim().toString().toFloat(),
-                        data1Y2.text.trim().toString().toFloat())
+                        data1Time.text!!.trim().toString().toLong(),
+                        data1X1.text!!.trim().toString().toFloat(),
+                        data1Y1.text!!.trim().toString().toFloat(),
+                        data1X2.text!!.trim().toString().toFloat(),
+                        data1Y2.text!!.trim().toString().toFloat())
                     )
                 ).show()
             }
             tvShow2.clickNoRepeat {
                 XPopup.Builder(context).isViewMode(false).asCustom(DemoShowPopup(context,
                     DemoData(
-                        data2Time.text.trim().toString().toLong(),
-                        data2X1.text.trim().toString().toFloat(),
-                        data2Y1.text.trim().toString().toFloat(),
-                        data2X2.text.trim().toString().toFloat(),
-                        data2Y2.text.trim().toString().toFloat())
+                        data2Time.text!!.trim().toString().toLong(),
+                        data2X1.text!!.trim().toString().toFloat(),
+                        data2Y1.text!!.trim().toString().toFloat(),
+                        data2X2.text!!.trim().toString().toFloat(),
+                        data2Y2.text!!.trim().toString().toFloat())
                     )
                 ).show()
             }
             tvShow3.clickNoRepeat {
                 XPopup.Builder(context).isViewMode(false).asCustom(DemoShowPopup(context,
                     DemoData(
-                        data3Time.text.trim().toString().toLong(),
-                        data3X1.text.trim().toString().toFloat(),
-                        data3Y1.text.trim().toString().toFloat(),
-                        data3X2.text.trim().toString().toFloat(),
-                        data3Y2.text.trim().toString().toFloat())
+                        data3Time.text!!.trim().toString().toLong(),
+                        data3X1.text!!.trim().toString().toFloat(),
+                        data3Y1.text!!.trim().toString().toFloat(),
+                        data3X2.text!!.trim().toString().toFloat(),
+                        data3Y2.text!!.trim().toString().toFloat())
                     )
                 ).show()
             }
             tvShow4.clickNoRepeat {
                 XPopup.Builder(context).isViewMode(false).asCustom(DemoShowPopup(context,
                     DemoData(
-                        data4Time.text.trim().toString().toLong(),
-                        data4X1.text.trim().toString().toFloat(),
-                        data4Y1.text.trim().toString().toFloat(),
-                        data4X2.text.trim().toString().toFloat(),
-                        data4Y2.text.trim().toString().toFloat())
+                        data4Time.text!!.trim().toString().toLong(),
+                        data4X1.text!!.trim().toString().toFloat(),
+                        data4Y1.text!!.trim().toString().toFloat(),
+                        data4X2.text!!.trim().toString().toFloat(),
+                        data4Y2.text!!.trim().toString().toFloat())
                 )).show()
             }
             tvShow5.clickNoRepeat {
                 XPopup.Builder(context).isViewMode(false).asCustom(DemoShowPopup(context,
                     DemoData(
-                        data5Time.text.trim().toString().toLong(),
-                        data5X1.text.trim().toString().toFloat(),
-                        data5Y1.text.trim().toString().toFloat(),
-                        data5X2.text.trim().toString().toFloat(),
-                        data5Y2.text.trim().toString().toFloat())
+                        data5Time.text!!.trim().toString().toLong(),
+                        data5X1.text!!.trim().toString().toFloat(),
+                        data5Y1.text!!.trim().toString().toFloat(),
+                        data5X2.text!!.trim().toString().toFloat(),
+                        data5Y2.text!!.trim().toString().toFloat())
                 )).show()
             }
             arrayOf(
@@ -170,27 +166,15 @@ class DemoPopup(context: Context) : BottomPopupView(context) {
         }
     }
     private fun checkedDataValid():Boolean{
-        if((vb!!.tvUid.text).trim().length < 8){
+        if((vb!!.tvUid.text!!).trim().length < 8){
             showToast("uid位数<8")
             return false
         }
-        if((vb!!.tvToken.text).trim().length < 52){
+        if((vb!!.tvToken.text!!).trim().length < 52){
             showToast("token位数<52")
             return false
         }
         return true
-    }
-    override fun onShow() {
-        super.onShow()
-        /*(context as? Activity)?.window?.let { window->
-            originalMode = window.attributes.softInputMode
-            window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
-        }*/
-    }
-
-    override fun onDismiss() {
-        super.onDismiss()
-        //originalMode?.let { (context as? Activity)?.window?.setSoftInputMode(it) }
     }
 
     private class InputFilterMinMax(
