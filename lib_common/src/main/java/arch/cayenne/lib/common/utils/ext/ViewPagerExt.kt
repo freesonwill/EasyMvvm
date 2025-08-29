@@ -67,21 +67,18 @@ fun TabLayout.removeAllTips() {
                 lastSwitchedPage = currentPage + 1
                 customIndicator.animateIndicatorToPosition(lastSwitchedPage, 200)
                 tabLayout.getTabAt(lastSwitchedPage)?.select()
-                LogUtils.e("setupViewPagerScroll-------左滑")
             }
             // 右滑：adjustedOffset < -0.5，切换到上一页
             else if (adjustedOffset < -0.5f && currentPage > 0 && lastSwitchedPage != currentPage - 1) {
                 lastSwitchedPage = currentPage - 1
                 customIndicator.animateIndicatorToPosition(lastSwitchedPage, 200)
                 tabLayout.getTabAt(lastSwitchedPage)?.select()
-                LogUtils.e("setupViewPagerScroll-------右滑")
             }
             // 滑动未超过 50%，恢复到当前页面
             else if (abs(adjustedOffset) <= 0.5f && lastSwitchedPage != currentPage) {
                 lastSwitchedPage = currentPage
                 customIndicator.animateIndicatorToPosition(lastSwitchedPage, 200)
                 tabLayout.getTabAt(lastSwitchedPage)?.select()
-                LogUtils.e("setupViewPagerScroll-------滑动未超过")
             }
         }
     })
