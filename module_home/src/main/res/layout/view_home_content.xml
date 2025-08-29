@@ -51,7 +51,8 @@
         android:background="@color/data_bg"
         android:clipChildren="false"
         android:clipToPadding="false"
-        android:paddingHorizontal="@dimen/dp_8"
+        android:paddingStart="@dimen/dp_8"
+        android:paddingEnd="0dp"
         android:visibility="gone"
         app:layout_constraintEnd_toStartOf="@id/ll_other_date"
         app:layout_constraintStart_toStartOf="parent"
@@ -97,14 +98,6 @@
             app:tabSelectedTextColor="@color/date_text_select"
             app:tabTextColor="@color/date_text_unselect" />
     </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
-    <!--因為其他日期按扭是固定，先加上陰影，待figma規格更新再調整效果-->
-    <arch.cayenne.lib.skin.widget.SkinnableView
-        android:layout_width="23dp"
-        android:layout_height="0dp"
-        android:background="@drawable/gradient_sport_list"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/ll_other_date"
-        app:layout_constraintTop_toTopOf="@id/ll_other_date" />
     <!--其他日期view-->
     <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
         android:id="@+id/ll_other_date"
