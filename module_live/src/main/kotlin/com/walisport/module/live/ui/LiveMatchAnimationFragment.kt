@@ -1,10 +1,13 @@
 package com.walisport.module.live.ui
 
+import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
+import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.os.Message
 import android.view.View
+import android.view.animation.LinearInterpolator
 import android.webkit.ValueCallback
 import android.webkit.WebChromeClient
 import android.webkit.WebView
@@ -15,6 +18,7 @@ import arch.cayenne.lib.common.utils.DensityInfo
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getColor
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
+import arch.cayenne.lib.common.utils.ext.startSafeObjectAnimator
 import com.github.lzyzsd.jsbridge.BridgeWebViewClient
 import com.github.lzyzsd.jsbridge.DefaultHandler
 import com.walisport.module.live.R
@@ -47,6 +51,11 @@ class LiveMatchAnimationFragment :
 //     * 隐藏操作栏的定时Job
 //     */
 //    private var scheduledHideButtonsJob: Job? = null
+
+    /**
+     * 动画加载时的loading
+     */
+    private var loadingAnim: ObjectAnimator? = null
 
 
     override fun initView(savedInstanceState: Bundle?) {
@@ -180,6 +189,24 @@ class LiveMatchAnimationFragment :
                     resend.sendToTarget()
                 }
 
+                override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
+                    super.onPageStarted(view, url, favicon)
+                    // 创建旋转动画
+                    loadingAnim = mBinding.ivVideoLoading.startSafeObjectAnimator(
+                        "rotation",  // 属性名称
+                        0f, 360f // 从 0 度旋转到 360 度
+                    ).run {
+                        // 设置动画属性
+                        setDuration(1000) // 持续时间 1 秒
+                        repeatCount = ObjectAnimator.INFINITE // 无限循环
+                        interpolator = LinearInterpolator() // 匀速旋转
+
+                        // 启动动画
+                        start()
+                        this
+                    }
+                }
+
                 override fun onPageFinished(view: WebView, url: String?) {
                     view.settings.apply {
                         blockNetworkImage = false
@@ -187,6 +214,8 @@ class LiveMatchAnimationFragment :
                             loadsImagesAutomatically = true
                         }
                     }
+                    loadingAnim?.cancel()
+                    mBinding.ctLoading.visibility = View.GONE
                     visibility = View.VISIBLE
                     super.onPageFinished(view, url)
                 }

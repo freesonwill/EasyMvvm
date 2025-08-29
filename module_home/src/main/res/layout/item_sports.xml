@@ -11,7 +11,6 @@
         android:id="@+id/tv_sport_icon"
         android:layout_width="34dp"
         android:layout_height="34dp"
-        android:padding="@dimen/dp_1"
         android:background="@drawable/selector_bg_home_sport_item"
         android:scaleType="fitXY" />
 
@@ -20,6 +19,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
+        android:layout_marginTop="@dimen/dp_2"
         android:textColor="@color/selector_sport_tab_text_color"
         android:textSize="12sp"
         tools:text="足球" />

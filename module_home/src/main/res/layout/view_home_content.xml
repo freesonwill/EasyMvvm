@@ -5,6 +5,7 @@
     android:id="@+id/view_container_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:paddingTop="@dimen/dp_1"
     tools:ignore="MissingDefaultResource">
 
     <arch.cayenne.lib.skin.widget.SkinnableView
@@ -31,8 +32,9 @@
             android:clipChildren="false"
             android:clipToPadding="false"
             android:overScrollMode="never"
-            android:paddingVertical="@dimen/dp_9"
-            android:paddingStart="@dimen/dp_6"
+            android:paddingStart="@dimen/dp_9"
+            android:paddingTop="@dimen/dp_10"
+            android:paddingBottom="@dimen/dp_8"
             android:paddingEnd="35dp"
             app:tabGravity="start"
             app:tabIndicator="@null"

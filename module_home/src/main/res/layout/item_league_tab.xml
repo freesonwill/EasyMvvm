@@ -3,18 +3,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_height="@dimen/dp_32"
     android:layout_width="wrap_content"
-    android:minWidth="68dp"
+    android:minWidth="67dp"
     android:background="@android:color/transparent"
     android:gravity="center"
     android:orientation="horizontal"
-    android:paddingHorizontal="@dimen/dp_12"
-    android:paddingVertical="@dimen/dp_6">
+    android:paddingStart="@dimen/dp_10"
+    android:paddingTop="@dimen/dp_7"
+    android:paddingEnd="@dimen/dp_11"
+    android:paddingBottom="@dimen/dp_5">
 
     <ImageView
         android:id="@+id/iv_league_icon"
         android:layout_width="16dp"
         android:layout_height="16dp"
-        android:layout_marginEnd="3dp" />
+        android:layout_marginEnd="4dp" />
 
     <TextView
         android:id="@+id/tv_league_name"

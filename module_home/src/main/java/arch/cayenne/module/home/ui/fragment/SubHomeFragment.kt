@@ -235,6 +235,18 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
                 edgeEffectFactory = BounceEdgeEffectHelper(requireContext())
                 overScrollMode = RecyclerView.OVER_SCROLL_ALWAYS
                 isNestedScrollingEnabled = false
+                addItemDecoration(object : RecyclerView.ItemDecoration() {
+                    override fun getItemOffsets(
+                        outRect: android.graphics.Rect,
+                        view: View,
+                        parent: RecyclerView,
+                        state: RecyclerView.State
+                    ) {
+                        val pos = parent.getChildAdapterPosition(view)
+                        val last = (parent.adapter?.itemCount ?: 0) - 1
+                        outRect.right = if (pos == last) 0 else 4.dp2px   // marginEnd
+                    }
+                })
                 adapter = sportsListAdapter
             }
         }

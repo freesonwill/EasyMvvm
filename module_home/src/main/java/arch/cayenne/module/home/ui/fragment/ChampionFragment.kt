@@ -90,7 +90,7 @@ class ChampionFragment : BaseFragment<ChampionViewModel, FragmentChampionBinding
 
                 this.adapter = championAdapter
                 layoutManager = LinearLayoutManager(context)
-                addItemDecoration(MatchCardItemDecoration(12.dp2px, 7.dp2px))
+                addItemDecoration(MatchCardItemDecoration(12.dp2px))
             }
         }
 
