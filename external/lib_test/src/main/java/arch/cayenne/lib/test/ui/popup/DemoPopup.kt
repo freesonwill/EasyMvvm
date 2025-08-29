@@ -5,6 +5,7 @@ import android.text.Spanned
 import arch.cayenne.lib.common.data.constants.UserDataKey
 import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.test.R
 import arch.cayenne.lib.test.data.bean.DemoData
 import arch.cayenne.lib.test.databinding.DemoPopupBinding
@@ -170,11 +171,11 @@ class DemoPopup(context: Context) : BottomPopupView(context) {
     }
     private fun checkedDataValid():Boolean{
         if((vb!!.tvUid.text).trim().length < 8){
-            ToastUtils.showShort("uid位数<8")
+            showToast("uid位数<8")
             return false
         }
         if((vb!!.tvToken.text).trim().length < 52){
-            ToastUtils.showShort("token位数<52")
+            showToast("token位数<52")
             return false
         }
         return true
