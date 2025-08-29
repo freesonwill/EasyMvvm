@@ -8,7 +8,6 @@ import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
-import android.graphics.PixelFormat
 import android.os.Bundle
 import android.util.AttributeSet
 import android.view.LayoutInflater
@@ -38,6 +37,7 @@ import arch.cayenne.lib.base.ui.animation.AnimationController
 import arch.cayenne.lib.base.ui.animation.AnimationController.AnimType
 import arch.cayenne.lib.base.ui.delegate.StatusBarDelegate
 import arch.cayenne.lib.base.ui.delegate.UIBindDelegate
+import arch.cayenne.lib.base.ui.fragment.dim.DimController
 import arch.cayenne.lib.base.ui.gesture.TikTokGesture
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -140,6 +140,7 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
     protected fun playEnterAnimations() {
         val sheet = sheetContainer ?: return
 
+        dimController.checkLayoutParams()
         val sheetAnim = enterAnimation()
         val offY = sheet.translationY
         val startY = sheet.height.toFloat()
@@ -152,7 +153,7 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
             addUpdateListener { animation ->
                 val value = animation.animatedValue as Float
                 sheet.translationY = value
-                dimController.showDim()
+                showDim()
             }
             duration = sheetAnim.duration
             // 假設你的 exitAnimation 使用這個插值器
@@ -172,6 +173,7 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
         val sheet = sheetContainer ?: return
         val otherSheetAnimator = otherViewAnimation?.clone() ?: return
         // bottom sheet 上滑動畫
+        dimController.checkLayoutParams()
         val sheetContainerSheetAnim = enterAnimation()
         val offY = sheet.translationY
         val startY = sheet.height.toFloat()
@@ -184,6 +186,7 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
             addUpdateListener { animation ->
                 val value = animation.animatedValue as Float
                 sheet.translationY = value
+                showDim()
             }
             duration = sheetContainerSheetAnim.duration
             // 假設你的 exitAnimation 使用這個插值器
@@ -392,7 +395,7 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
         }
     }
 
-    fun showWithOtherSheetDialogHide(manager: FragmentManager, animator: ObjectAnimator) {
+    fun showWithOtherSheetDialogHide(manager: FragmentManager, animator: ObjectAnimator?) {
         otherViewAnimation = animator
         show(manager)
     }
@@ -547,7 +550,7 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
     }
 
     protected fun hideDim() {
-        dimController.setDimAlpha(0f)
+        dimController.hideDim()
     }
 
     protected fun showDim() {
@@ -577,7 +580,8 @@ open class ScrollBottomSheetBehavior<V : View>(context: Context, attrs: Attribut
                 ViewCompat.stopNestedScroll(prev)
                 ViewCompat.stopNestedScroll(prev, ViewCompat.TYPE_TOUCH)
                 ViewCompat.stopNestedScroll(prev, ViewCompat.TYPE_NON_TOUCH)
-            } catch (_: Throwable) {}
+            } catch (_: Throwable) {
+            }
         }
 
         // 強制覆寫父類私有欄位 nestedScrollingChildRef
@@ -595,7 +599,8 @@ open class ScrollBottomSheetBehavior<V : View>(context: Context, attrs: Attribut
                 ViewCompat.stopNestedScroll(prev)
                 ViewCompat.stopNestedScroll(prev, ViewCompat.TYPE_TOUCH)
                 ViewCompat.stopNestedScroll(prev, ViewCompat.TYPE_NON_TOUCH)
-            } catch (_: Throwable) {}
+            } catch (_: Throwable) {
+            }
         }
 
         // 強制覆寫父類私有欄位 nestedScrollingChildRef
@@ -627,62 +632,6 @@ open class ScrollBottomSheetBehavior<V : View>(context: Context, attrs: Attribut
         // 父類會在這裡重設 nestedScrollingChildRef → 再覆寫一次我們指定的 child
         mNestedScrollingChildRef?.get()?.let { updateNestedScrollingChildRef(it) }
         return accepted
-    }
-
-}
-
-class DimController private constructor() {
-
-    companion object {
-        const val TARGET_DIM = 0.75f
-        val instance: DimController by lazy {
-            DimController()
-        }
-    }
-
-    private var dimView: View? = null
-
-    fun init(context: Context) {
-        if (dimView != null) return
-        val v = View(context).apply {
-            setBackgroundColor(Color.BLACK)
-            alpha = 0f
-        }
-
-        val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
-
-        val params = WindowManager.LayoutParams(
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.MATCH_PARENT
-        )
-        params.flags = (WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
-                or WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
-                or WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
-                or WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-        params.type = WindowManager.LayoutParams.TYPE_APPLICATION_ATTACHED_DIALOG
-
-        params.format = PixelFormat.TRANSLUCENT
-        windowManager.addView(v, params)
-        dimView = v
-    }
-
-    fun showDim() {
-        if (dimView?.alpha == TARGET_DIM) return
-        dimView?.alpha = TARGET_DIM
-    }
-
-    fun setDimAlpha(alpha: Float) {
-        dimView?.alpha = alpha.coerceIn(0f, 1f)
-    }
-
-    fun getHideAnimator(): ObjectAnimator? {
-        val v = dimView ?: return null
-        return ObjectAnimator.ofFloat(v, "alpha", v.alpha, 0f).apply {
-            addUpdateListener {
-                val value = it.animatedValue as Float
-                dimView?.alpha = value
-            }
-        }
     }
 
 }
