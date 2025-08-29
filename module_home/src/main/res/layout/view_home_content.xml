@@ -109,8 +109,9 @@
     <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
         android:id="@+id/ll_other_date"
         android:layout_width="56dp"
-        android:layout_height="@dimen/dp_52"
+        android:layout_height="@dimen/dp_50"
         android:layout_marginTop="@dimen/dp_6"
+        android:layout_marginBottom="@dimen/dp_6"
         android:layout_marginEnd="@dimen/dp_5"
         android:background="@drawable/selector_other_date_tab_bg"
         android:gravity="center"
@@ -124,22 +125,21 @@
             android:id="@+id/tv_date"
             android:layout_width="@dimen/dp_16"
             android:layout_height="@dimen/dp_16"
-            android:layout_marginTop="@dimen/dp_5"
-            android:layout_weight="1"
+            android:layout_marginTop="@dimen/dp_2"
+            android:layout_marginBottom="@dimen/dp_2"
             android:gravity="center"
             android:src="@drawable/selector_other_date_icon"
             android:duplicateParentState="true"/>
 
         <arch.cayenne.lib.skin.widget.SkinnableTextView
             android:id="@+id/tv_week_day"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="-2dp"
-            android:layout_weight="1"
-            android:gravity="top"
+            android:layout_width="52dp"
+            android:layout_height="18dp"
+            android:gravity="center_horizontal"
             android:text="@string/tab_text_other_day"
             android:textColor="@color/selector_other_date_text"
             android:textSize="13sp"
+            app:skinnableFontWeight="400"
             android:duplicateParentState="true"/>
     </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
 
