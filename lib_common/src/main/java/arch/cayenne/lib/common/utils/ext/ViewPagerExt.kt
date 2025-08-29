@@ -65,19 +65,19 @@ fun TabLayout.removeAllTips() {
             // 左滑：adjustedOffset > 0.5，切换到下一页
             if (adjustedOffset > 0.5f && currentPage < totalItems - 1 && lastSwitchedPage != currentPage + 1) {
                 lastSwitchedPage = currentPage + 1
-                customIndicator.animateIndicatorToPosition(lastSwitchedPage, 200)
+                customIndicator.animateIndicatorToPosition(lastSwitchedPage, 210)
                 tabLayout.getTabAt(lastSwitchedPage)?.select()
             }
             // 右滑：adjustedOffset < -0.5，切换到上一页
             else if (adjustedOffset < -0.5f && currentPage > 0 && lastSwitchedPage != currentPage - 1) {
                 lastSwitchedPage = currentPage - 1
-                customIndicator.animateIndicatorToPosition(lastSwitchedPage, 200)
+                customIndicator.animateIndicatorToPosition(lastSwitchedPage, 210)
                 tabLayout.getTabAt(lastSwitchedPage)?.select()
             }
             // 滑动未超过 50%，恢复到当前页面
             else if (abs(adjustedOffset) <= 0.5f && lastSwitchedPage != currentPage) {
                 lastSwitchedPage = currentPage
-                customIndicator.animateIndicatorToPosition(lastSwitchedPage, 200)
+                customIndicator.animateIndicatorToPosition(lastSwitchedPage, 210)
                 tabLayout.getTabAt(lastSwitchedPage)?.select()
             }
         }
