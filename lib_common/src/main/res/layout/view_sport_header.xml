@@ -13,7 +13,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_32"
         android:layout_marginBottom="@dimen/dp_20"
-        android:background="@android:color/transparent"
         android:maxLines="1"
         android:textColor="@color/progress_text"
         android:textSize="@dimen/sp_13"
