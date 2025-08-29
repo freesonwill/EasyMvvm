@@ -1,8 +1,11 @@
 package arch.cayenne.lib.common.utils.ext
 
+import android.annotation.SuppressLint
+import android.view.MotionEvent
 import androidx.appcompat.widget.TooltipCompat
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
+import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.common.ui.view.CustomTabIndicator
 import arch.cayenne.lib.skin.widget.SkinnableTabLayout
 import com.google.android.material.tabs.TabLayout
@@ -62,19 +65,19 @@ fun TabLayout.removeAllTips() {
             // 左滑：adjustedOffset > 0.5，切换到下一页
             if (adjustedOffset > 0.5f && currentPage < totalItems - 1 && lastSwitchedPage != currentPage + 1) {
                 lastSwitchedPage = currentPage + 1
-                customIndicator.animateIndicatorToPosition(lastSwitchedPage, 250)
+                customIndicator.animateIndicatorToPosition(lastSwitchedPage, 210)
                 tabLayout.getTabAt(lastSwitchedPage)?.select()
             }
             // 右滑：adjustedOffset < -0.5，切换到上一页
             else if (adjustedOffset < -0.5f && currentPage > 0 && lastSwitchedPage != currentPage - 1) {
                 lastSwitchedPage = currentPage - 1
-                customIndicator.animateIndicatorToPosition(lastSwitchedPage, 250)
+                customIndicator.animateIndicatorToPosition(lastSwitchedPage, 210)
                 tabLayout.getTabAt(lastSwitchedPage)?.select()
             }
             // 滑动未超过 50%，恢复到当前页面
             else if (abs(adjustedOffset) <= 0.5f && lastSwitchedPage != currentPage) {
                 lastSwitchedPage = currentPage
-                customIndicator.animateIndicatorToPosition(lastSwitchedPage, 250)
+                customIndicator.animateIndicatorToPosition(lastSwitchedPage, 210)
                 tabLayout.getTabAt(lastSwitchedPage)?.select()
             }
         }

@@ -171,3 +171,12 @@ fun Activity.showToast(msg: String) {
 fun Activity.showToast(view: View, toastAnimation: ToastAnimation, toastGesture: ToastGesture? = null) {
     ToastHelper.instance.showToast(view, toastAnimation, toastGesture)
 }
+
+
+fun View.showToast(msg: String) {
+    val inflater = LayoutInflater.from(context)
+    val layout = ToastLayoutBinding.inflate(inflater, null, false)
+
+    layout.toastText.text = msg
+    ToastHelper.instance.showToast(layout.root, ToastMessageAnimation(), null)
+}
