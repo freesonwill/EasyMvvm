@@ -107,7 +107,7 @@ class MatchListPagerFragment :
                 }
             }
             matchAdapter.registerAdapterDataObserver(dataObserver!!)
-
+            //賽事卡片之間的間閣
             val decoration = MatchCardItemDecoration(12.dp2px)
             mBinding.rvHomeGameList.apply {
                 this.layoutManager = gameLayoutManager
