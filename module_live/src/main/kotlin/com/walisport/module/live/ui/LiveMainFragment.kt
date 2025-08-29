@@ -5,8 +5,10 @@ import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.LinearLayout
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.Lifecycle
@@ -22,6 +24,7 @@ import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.utils.ext.DimensionExt.px2sp
+import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.setDrawerInterpolator
 import arch.cayenne.lib.common.utils.ext.NavResultExt.observeResult
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
@@ -156,7 +159,8 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                     if (skipAnyAnim) {
                         enableAnimation = false
                         mBinding.customIndicator.animateIndicatorToPosition(tab.position, 210)
-                        mBinding.vpPage.doSmartAnim(tab.position)
+                        mBinding.vpPage.setCurrentItem(tab.position,false)
+                        // mBinding.vpPage.doSmartAnim(tab.position)
                     }
                 }
                 tab?.view?.findViewById<SkinnableTextView>(R.id.tabText)?.let { textView ->
@@ -383,6 +387,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                 delay(500)
                 vpPage.offscreenPageLimit = list.size
             }
+
             TabLayoutMediator(tabLayout, vpPage) { tab, position ->
                 tab.text = list[position].title
                 tab.setCustomView(R.layout.custom_tab)
@@ -403,12 +408,12 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
             }.attach()
             tabLayout.clearOnTabSelectedListeners()
             tabLayout.post{
-                tabLayout.getTabAt(1)?.select()
+                mBinding.customIndicator.animateIndicatorToPosition(1, 0)
+                mBinding.vpPage.setCurrentItem(1,false)
             }
             tabLayout.removeAllTips()
         }
     }
-
     private fun refreshBetSlip() {
         val adapter = mBinding.vpPage.adapter?.let { it as PagerAdapter }
         val tag = "f${adapter?.getItemId(0)}"
