@@ -7,7 +7,7 @@
     <string name="menu_odds_display">赔率显示</string>
     <string name="menu_notice_set">通知设置</string>
     <string name="menu_background_set">背景设置</string>
-    <string name="menu_language_set">语言设置</string>
+    <string name="menu_language_set">语言</string>
     <string name="menu_language_simple">简体中文</string>
     <string name="menu_language_english">English</string>
     <string name="menu_language_indonesia">Indonesia</string>
@@ -34,7 +34,7 @@
     <string name="notice_game">开赛通知</string>
     <string name="notice_bet">已投注的赛事</string>
     <string name="notice_favourite">已收藏的赛事</string>
-    <string name="notice_all">所有滚动赛事</string>
-    <string name="display_odds_ben">(显示赔率包含本金)</string>
-    <string name="display_odds_not">(显示赔率不包含本金)</string>
+    <string name="notice_all">所有滚球赛事</string>
+    <string name="display_odds_ben">(显示赔率包含本金）</string>
+    <string name="display_odds_not">(显示赔率不包含本金）</string>
 </resources>
