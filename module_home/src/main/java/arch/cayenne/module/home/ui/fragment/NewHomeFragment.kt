@@ -59,15 +59,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 drawerLayout.openDrawer(GravityCompat.START)
             }
             val tabResList = mutableListOf<Int>()
-            PlayType.entries.forEachIndexed { index, playType ->
-                tabResList.add(playType.titleRes)
-                tlHome.addTab(
-                    tlHome.newTab().apply {
-                        setText(playType.titleRes)
-                        if (index == 0) (this.view.getChildAt(1) as? TextView)?.typeface = Typeface.DEFAULT_BOLD
-                    }
-                )
-            }
+
             tlHome.setTabResArray(tabResList.toIntArray())
             tlHome.addOnTabSelectedListener(object : OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab?) {
@@ -94,6 +86,15 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 }
                 override fun onTabReselected(tab: TabLayout.Tab?) {}
             })
+            PlayType.entries.forEachIndexed { index, playType ->
+                tabResList.add(playType.titleRes)
+                tlHome.addTab(
+                    tab = tlHome.newTab().apply {
+                        setText(playType.titleRes)
+                    },
+                    setSelected = index == 0
+                )
+            }
 
             vpSub.adapter = SubHomePagerAdapter(
                 fragmentManager = childFragmentManager,

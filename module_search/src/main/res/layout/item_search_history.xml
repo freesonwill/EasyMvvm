@@ -6,10 +6,10 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:background="@drawable/shape_search_item"
-    android:paddingLeft="10dp"
-    android:paddingTop="5dp"
-    android:paddingRight="10dp"
-    android:paddingBottom="5dp"
+    android:paddingStart="9dp"
+    android:paddingTop="4.5dp"
+    android:paddingEnd="9dp"
+    android:paddingBottom="4.5dp"
     tools:ignore="MissingDefaultResource">
 
     <androidx.appcompat.widget.LinearLayoutCompat

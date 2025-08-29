@@ -50,7 +50,6 @@ class BetSlipInvalidFragment : BaseBetSlipFragment<OrderSlipViewModel, FragmentL
                 }
             }
         })
-
         mBinding.recyclerView.also {
             it.layoutManager = LinearLayoutManager(requireContext())
             it.adapter = betSlipAdapter

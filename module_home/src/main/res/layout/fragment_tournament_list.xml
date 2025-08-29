@@ -7,17 +7,30 @@
     android:layout_height="match_parent"
     android:background="@color/champions_list">
 
+    <View
+        android:id="@+id/view_tournament_mask"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:alpha="0"
+        android:background="@color/drawer_scrim_color"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/tv_tournament_section_title"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_48"
-        android:layout_marginStart="@dimen/dp_16"
+        android:layout_height="@dimen/dp_52"
+        android:layout_marginStart="@dimen/dp_17"
         android:paddingTop="@dimen/dp_16"
         android:text="@string/tournament_section_title"
         android:textColor="@color/home_main_text"
         android:textSize="15sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="選聯賽" />
 
     <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
         android:id="@+id/ll_search_bar"
@@ -54,11 +67,11 @@
 
     <arch.cayenne.lib.skin.widget.SkinnableImageView
         android:id="@+id/iv_home_league_collapse"
-        android:layout_width="65dp"
-        android:layout_height="@dimen/dp_48"
-        android:paddingStart="@dimen/dp_20"
-        android:paddingTop="@dimen/dp_12"
-        android:paddingBottom="@dimen/dp_12"
+        android:layout_width="63dp"
+        android:layout_height="@dimen/dp_52"
+        android:paddingStart="25dp"
+        android:paddingTop="@dimen/dp_16"
+        android:paddingBottom="@dimen/dp_14"
         android:src="@drawable/ic_league_tabs_collapse"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -88,11 +101,10 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_52"
         android:gravity="end"
-        android:paddingEnd="@dimen/dp_11"
+        android:paddingEnd="@dimen/dp_7"
         android:paddingBottom="4dp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@+id/rv_tournament_list" />
     <arch.cayenne.lib.common.ui.view.LoadingView
         android:id="@+id/loading_view"
         android:layout_width="wrap_content"

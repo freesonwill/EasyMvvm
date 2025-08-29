@@ -24,11 +24,11 @@ class DynamicStateLayout @JvmOverloads constructor(
     val binding = LayoutEmptyErrorCloseBinding.inflate(LayoutInflater.from(context), this, false)
 
     sealed class States {
-        object LOADING:States()//加载中
-        object DATA_EMPTY:States()//数据为空
+        data object LOADING:States()//加载中
+        data object DATA_EMPTY:States()//数据为空
         class NETWORK_ANOMALY(val onRefresh: (() -> Unit)? = null):States()//网络异常
-        object CLOSE:States()//关闭
-        object NULL:States()
+        data object CLOSE:States()//关闭
+        data object NULL:States()
     }
 
     /**
