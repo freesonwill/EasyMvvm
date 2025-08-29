@@ -226,9 +226,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginBottom="24dp"
+        app:layout_goneMarginBottom="16dp"
         android:text="@string/live_bet_except_max_win"
         android:textColor="@color/secondary_text"
         android:textSize="@dimen/sp_14"
+        app:layout_constraintBottom_toTopOf="@id/bet_unsettled_bt_settle"
         app:layout_constraintLeft_toLeftOf="@id/bet_unsettled_tv_date"
         app:layout_constraintStart_toStartOf="@+id/bet_unsettled_tv_betting"
         app:layout_constraintTop_toBottomOf="@id/bet_unsettled_tv_betting" />
@@ -250,15 +253,13 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_48"
         android:layout_marginHorizontal="12dp"
-        android:layout_marginTop="@dimen/dp_24"
         android:layout_marginBottom="@dimen/dp_16"
         android:background="@drawable/selector_send_button"
         android:foreground="@drawable/bg_click_mask_8dp"
         android:gravity="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/bet_unsettled_tv_except">
+        app:layout_constraintRight_toRightOf="parent">
 
         <arch.cayenne.lib.skin.widget.SkinnableTextView
             android:id="@+id/bet_unsettled_bt_tv"
