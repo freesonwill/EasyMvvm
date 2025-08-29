@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/bg_shape_round_rect_top"
+    android:background="@drawable/bg_shape_set_dialog"
     app:layout_constraintBottom_toBottomOf="parent">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -34,7 +34,7 @@
         <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
             android:id="@+id/item_ep"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_52">
+            android:layout_height="@dimen/dp_56">
 
             <arch.cayenne.lib.skin.widget.SkinnableImageView
                 android:layout_width="@dimen/dp_20"
@@ -49,7 +49,7 @@
                 android:id="@+id/tv_menu_ep"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_60"
+                android:layout_marginStart="@dimen/dp_54"
                 android:text="@string/menu_europe"
                 android:textColor="@color/notice_title"
                 android:textSize="@dimen/sp_16"
@@ -76,7 +76,7 @@
                 android:id="@+id/radio_ep"
                 android:layout_width="@dimen/dp_16"
                 android:layout_height="@dimen/dp_16"
-                android:layout_marginEnd="@dimen/dp_20"
+                android:layout_marginEnd="@dimen/dp_26"
                 android:background="@drawable/selector_radio_button"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -94,7 +94,7 @@
         <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
             android:id="@+id/item_hk"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_52">
+            android:layout_height="@dimen/dp_56">
 
             <arch.cayenne.lib.skin.widget.SkinnableImageView
                 android:layout_width="@dimen/dp_20"
@@ -109,7 +109,7 @@
                 android:id="@+id/tv_menu_hk"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_60"
+                android:layout_marginStart="@dimen/dp_54"
                 android:text="@string/menu_hk"
                 android:textColor="@color/notice_title"
                 android:textSize="@dimen/sp_16"
@@ -136,7 +136,7 @@
                 android:id="@+id/radio_hk"
                 android:layout_width="@dimen/dp_16"
                 android:layout_height="@dimen/dp_16"
-                android:layout_marginEnd="@dimen/dp_20"
+                android:layout_marginEnd="@dimen/dp_26"
                 android:background="@drawable/selector_radio_button"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -145,13 +145,13 @@
 
         <arch.cayenne.lib.skin.widget.SkinnableView
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_5"
+            android:layout_height="@dimen/dp_8"
             android:background="@color/notice_line" />
 
         <arch.cayenne.lib.skin.widget.SkinnableTextView
             android:id="@+id/tv_close"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_60"
+            android:layout_height="@dimen/dp_46"
             android:gravity="center"
             android:text="@string/shut_down"
             android:textColor="@color/notice_close"
