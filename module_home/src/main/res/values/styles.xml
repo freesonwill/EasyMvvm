@@ -2,7 +2,7 @@
 <resources>
 
     <style name="HomeTabLayoutTextAppearance" parent="TextAppearance.Design.Tab">
-        <item name="android:textSize">17sp</item>
+        <item name="android:textSize">16sp</item>
     </style>
 
     <style name="OddsShortNameStyle">
