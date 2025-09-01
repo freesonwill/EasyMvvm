@@ -4,23 +4,26 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
+    <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
         android:id="@+id/lay_msg_item"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
+        android:layout_height="@dimen/dp_200"
         android:background="@drawable/shape_message_bg">
 
         <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
+            android:id="@+id/lay_title"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_42">
+            android:layout_height="@dimen/dp_42"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
                 android:id="@+id/iv_msg_icon"
                 android:layout_width="@dimen/dp_24"
                 android:layout_height="@dimen/dp_24"
                 android:layout_marginStart="@dimen/dp_12"
-                android:background="@drawable/icon_message_hd"
+                android:background="@drawable/icon_message_wh"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -41,9 +44,9 @@
                 android:layout_width="@dimen/dp_30"
                 android:layout_height="@dimen/dp_30"
                 android:padding="@dimen/dp_5"
-                android:layout_marginEnd="@dimen/dp_12"
-                android:stateListAnimator="@animator/layout_alpha_animator"
+                android:layout_marginEnd="@dimen/dp_6"
                 android:src="@drawable/icon_message_delete"
+                android:stateListAnimator="@animator/layout_alpha_animator"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -53,85 +56,86 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_46"
-                android:text="@string/notice_act"
+                android:text="@string/notice_sys"
                 android:textColor="@color/msg_type"
                 android:textSize="@dimen/sp_13"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
-        </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
 
-        <arch.cayenne.lib.skin.widget.SkinnableView
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_1"
-            android:layout_marginStart="@dimen/dp_12"
-            android:layout_marginEnd="@dimen/dp_12"
-            android:background="@color/msg_line"/>
+            <arch.cayenne.lib.skin.widget.SkinnableView
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_1"
+                android:layout_marginStart="@dimen/dp_12"
+                android:layout_marginEnd="@dimen/dp_12"
+                android:background="@color/msg_line"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+        </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
 
         <arch.cayenne.lib.skin.widget.SkinnableTextView
             android:id="@+id/tv_msg_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_12"
-            android:layout_marginTop="@dimen/dp_12"
+            android:layout_marginTop="@dimen/dp_10"
             android:textColor="@color/msg_title"
             android:textSize="@dimen/sp_15"
             android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/lay_title"
+            app:layout_constraintStart_toStartOf="parent"/>
 
         <arch.cayenne.lib.skin.widget.SkinnableTextView
             android:id="@+id/tv_msg_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_12"
-            android:layout_marginTop="@dimen/dp_4"
+            android:layout_marginTop="@dimen/dp_3"
             android:textColor="@color/msg_type"
             android:textSize="@dimen/sp_11"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/tv_msg_title"
+            app:layout_constraintStart_toStartOf="parent"/>
 
         <arch.cayenne.lib.skin.widget.SkinnableTextView
             android:id="@+id/tv_msg_content"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_12"
-            android:layout_marginTop="@dimen/dp_12"
+            android:layout_marginTop="@dimen/dp_15"
             android:layout_marginEnd="@dimen/dp_12"
-            android:layout_marginBottom="@dimen/dp_15"
             android:textColor="@color/msg_title"
             android:textSize="@dimen/sp_12"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <arch.cayenne.lib.skin.widget.SkinnableView
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_1"
-            android:layout_marginStart="@dimen/dp_12"
-            android:layout_marginEnd="@dimen/dp_12"
-            android:background="@color/msg_line"/>
+            app:layout_constraintTop_toBottomOf="@+id/tv_msg_time"
+            app:layout_constraintStart_toStartOf="parent"/>
 
         <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
             android:id="@+id/lay_detail"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_45"
+            android:layout_height="@dimen/dp_40"
+            android:background="@drawable/ripple_effect_bottom"
             android:layout_margin="@dimen/dp_1"
-            android:background="@drawable/ripple_effect_bottom">
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <arch.cayenne.lib.skin.widget.SkinnableView
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_1"
+                android:layout_marginStart="@dimen/dp_12"
+                android:layout_marginEnd="@dimen/dp_12"
+                android:background="@color/msg_line"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <arch.cayenne.lib.skin.widget.SkinnableTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_12"
-                android:layout_marginTop="@dimen/dp_12"
-                android:layout_marginEnd="@dimen/dp_12"
-                android:layout_marginBottom="@dimen/dp_15"
+                android:layout_marginTop="@dimen/dp_1"
+                android:text="@string/notification_detail"
                 android:textColor="@color/msg_title"
                 android:textSize="@dimen/sp_12"
-                android:text="@string/notification_detail"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -139,17 +143,17 @@
             <ImageView
                 android:layout_width="@dimen/dp_20"
                 android:layout_height="@dimen/dp_20"
-                android:layout_marginEnd="@dimen/dp_12"
+                android:layout_marginEnd="@dimen/dp_10"
                 android:background="@drawable/icon_message_arrow"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
         </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
-    </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
+    </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_12"
+        android:layout_height="@dimen/dp_13"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/lay_msg_item"/>
