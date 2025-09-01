@@ -3,10 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/ll_odds_cell"
     android:layout_width="match_parent"
-    android:layout_height="43dp"
+    android:layout_height="44dp"
     android:background="@drawable/selector_match_odds_cell"
-    android:gravity="center"
-    android:orientation="vertical">
+    android:gravity="center">
     <!-- 灰色遮罩 -->
     <arch.cayenne.lib.skin.widget.SkinnableView
         android:id="@+id/v_trend_highlight"
@@ -25,8 +24,9 @@
 
         <arch.cayenne.lib.skin.widget.SkinnableTextView
             android:id="@+id/tv_short_name"
-            style="@style/OddsShortNameStyle"
             android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textColor="@color/selector_league_tab_tint"
             android:textSize="14sp"
             android:gravity="start"
             android:lines="1"
@@ -41,13 +41,13 @@
         <arch.cayenne.lib.skin.widget.SkinnableTextView
             android:id="@+id/tv_odds"
             style="@style/OddsTextStyle"
-            android:textFontWeight="500"
+            app:skinnableFontWeight="500"
             android:layout_marginEnd="@dimen/dp_12"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             tools:text="1.33"
-            tools:targetApi="p"/>
+            tools:targetApi="p" />
 
         <arch.cayenne.lib.skin.widget.SkinnableImageView
             android:id="@+id/iv_lock"

@@ -24,8 +24,8 @@ class FlowLayout @JvmOverloads constructor(
 ) : ViewGroup(context, attrs, defStyleAttr), OnDataChangedListener {
 
     // 子項目之間的水平/垂直間距（單位為 px）
-    private val horizontalSpacing = 4.dp2px
-    private val verticalSpacing = 4.dp2px
+    private val horizontalSpacing = 8.5f.dp2px
+    private val verticalSpacing = 8.5f.dp2px
 
     // 最大可折疊行數，預設為 1 行
     private var maxFoldLines = 1

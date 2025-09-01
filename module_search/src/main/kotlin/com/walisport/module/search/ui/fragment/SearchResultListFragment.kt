@@ -1,14 +1,17 @@
 package com.walisport.module.search.ui.fragment
 
+import android.graphics.Typeface
 import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.core.os.bundleOf
 import androidx.core.view.children
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.RecyclerView
+import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
+import arch.cayenne.lib.common.utils.ext.animateIndicatorToPosition
 import arch.cayenne.lib.common.utils.ext.setupViewPagerScroll
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
@@ -18,7 +21,7 @@ import com.walisport.module.search.ui.adapter.SearchResultPagerAdapter
 import com.walisport.module.search.ui.viewmodel.SearchResultListViewModel
 import java.util.Locale
 import kotlin.reflect.KClass
-import arch.cayenne.lib.common.utils.ext.animateIndicatorToPosition
+
 class SearchResultListFragment :
     SearchBaseFragment<SearchResultListViewModel, FragmentSearchResultListBinding>() {
     override val vmClass: KClass<SearchResultListViewModel>
@@ -32,26 +35,33 @@ class SearchResultListFragment :
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
         setViewPager()
-        // 自定義滑動行為
-        contentBinding.viewPager.setupViewPagerScroll(contentBinding.tlSearch,contentBinding.customIndicator,0.20f){
-            skipAnyAnim = it
+
+        with(contentBinding) {
+            // 自定義滑動行為
+            viewPager.setupViewPagerScroll(tlSearch, customIndicator, 0.20f) {
+                skipAnyAnim = it
+            }
+            tlSearch.apply {
+                clearOnTabSelectedListeners()
+                addOnTabSelectedListener(object :
+                    TabLayout.OnTabSelectedListener {
+                    override fun onTabSelected(tab: TabLayout.Tab) {
+                        if (skipAnyAnim) {
+                            // 动画更新指示器位置
+                            customIndicator.animateIndicatorToPosition(tab.position, 0)
+                            viewPager.setCurrentItem(tab.position, false)
+                        }
+                        tab.let { updateTabTypeface(it, true) }
+                    }
+                    override fun onTabUnselected(tab: TabLayout.Tab?) {
+                        tab?.let { updateTabTypeface(it, false) }
+                    }
+                    override fun onTabReselected(tab: TabLayout.Tab?) {
+                        tab?.let { updateTabTypeface(it, true) }
+                    }
+                })
+            }
         }
-        contentBinding.tlSearch.clearOnTabSelectedListeners()
-        contentBinding.tlSearch.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-            override fun onTabSelected(tab: TabLayout.Tab?) {
-                if (skipAnyAnim) {
-                    // 动画更新指示器位置
-                    contentBinding.customIndicator.animateIndicatorToPosition(tab?.position?:0, 0)
-                    contentBinding.viewPager.setCurrentItem(tab?.position?:0, false)
-                }
-            }
-
-            override fun onTabUnselected(tab: TabLayout.Tab?) {
-            }
-
-            override fun onTabReselected(tab: TabLayout.Tab?) {
-            }
-        })
     }
 
     override fun initData() {
@@ -80,6 +90,16 @@ class SearchResultListFragment :
         super.onDestroyView()
     }
 
+    private fun updateTabTypeface(tab: TabLayout.Tab, isBold: Boolean) {
+        tab.view.children.find { it is TextView }?.let {
+            (it as TextView).apply {
+                post {
+                    setTypeface(null, if (isBold) Typeface.BOLD else Typeface.NORMAL)
+                }
+            }
+        }
+    }
+
     private fun setViewPager() {
         with(contentBinding) {
             if (viewPager.adapter == null) {
@@ -93,7 +113,7 @@ class SearchResultListFragment :
                                 .actionSearchResultListFragmentToSearchResultDirectMatchFragment(
                                     null, keyword, id, type
                                 )
-                        findNavController().navigate(action, navOptions)
+                        navigate(action)
                     }
                 (viewPager.getChildAt(0) as? RecyclerView)?.overScrollMode = View.OVER_SCROLL_NEVER
 
@@ -121,6 +141,7 @@ class SearchResultListFragment :
                     }
 
                 switchTab(0, false)
+                tlSearch.getTabAt(0)?.let { updateTabTypeface(it, true) }
             }
         }
     }

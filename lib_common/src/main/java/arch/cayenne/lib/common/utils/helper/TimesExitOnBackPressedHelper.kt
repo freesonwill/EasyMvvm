@@ -41,7 +41,7 @@ class TimesExitOnBackPressedHelper(
             remain--
             if (remain == 0) {
                 ToastHelper.instance.forceCancel()
-                activity.finish()
+                activity.finishAndRemoveTask()
                 remain = times
                 exitProcess(0)
             } else {

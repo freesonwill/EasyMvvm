@@ -3,6 +3,7 @@ package arch.cayenne.module.home.ui.view
 import android.animation.Animator
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
+import android.graphics.Rect
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -14,6 +15,7 @@ import androidx.core.animation.doOnStart
 import androidx.core.view.doOnLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import arch.cayenne.lib.base.ui.animation.AnimationController
 import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.extractDate
@@ -36,7 +38,6 @@ class HomeCalendarFragment private constructor() : Fragment() {
         CALENDAR_CLOSE_NOTHING // 加载中
     }
     private val fragmentTag = this.javaClass.simpleName
-    private val defaultAnimDuration = 300L
     private var onDataSelectedListener: ((String) -> Unit)? = null
     private var onResetDateListener: (()-> Unit)? = null
     private var onBeforeDismissAnimListener: (()-> Unit)? = null
@@ -265,31 +266,26 @@ class HomeCalendarFragment private constructor() : Fragment() {
     private fun expandView() {
        mBinding?.let { binding->
            with(binding.clCalendarPopupRoot) {
-               layoutParams = layoutParams.apply { height = 1 }
                doOnLayout {
                    val currentHeight = (heightAnimator?.animatedValue as? Int) ?: height
                    val fullyHeight = getFullyHeight()
                    val startHeight =
                        if(fullyHeight == currentHeight) 1 else currentHeight
                    heightAnimator?.cancel()
-
+                   val enterAnim = AnimationController[AnimationController.AnimType.popupEnter]!!
                    heightAnimator = ValueAnimator.ofInt(startHeight, fullyHeight).apply {
                        addUpdateListener {
-                           updateHeight(it.animatedValue as Int)
-                           binding.clCalendarPopupRoot
-                               .doOnLayout {
-                                   requireView()
-                               }
-
+                           (it.animatedValue as Int).let { offset ->
+                               clipBounds = Rect(0, fullyHeight - offset, width, fullyHeight)
+                               translationY = (offset - fullyHeight).toFloat()
+                           }
                        }
-                       duration = defaultAnimDuration
-                       interpolator = DecelerateInterpolator()
+                       duration = enterAnim.duration
+                       interpolator = enterAnim.interpolator.toInterpolator()
                        doOnStart {
                            currentAnimState = AnimState.EXPANDING
-                           layoutParams =
-                               layoutParams.apply {
-                                   height = startHeight
-                               }
+                           clipBounds = Rect(0, fullyHeight - startHeight, width, fullyHeight)
+                           translationY = (startHeight - fullyHeight).toFloat()
                            visibility = View.VISIBLE
                            setMaskViewAlpha(true)
                        }
@@ -303,40 +299,43 @@ class HomeCalendarFragment private constructor() : Fragment() {
     }
 
     private fun collapseView() {
-       this.mBinding?.let { binding ->
-           with(binding.clCalendarPopupRoot) {
-               val currentHeight = (heightAnimator?.animatedValue as? Int) ?: height
-               heightAnimator?.cancel()
+        this.mBinding?.let { binding ->
+            with(binding.clCalendarPopupRoot) {
+                val currentHeight = (heightAnimator?.animatedValue as? Int) ?: height
+                heightAnimator?.cancel()
+                val exitAnim = AnimationController[AnimationController.AnimType.popupExit]!!
+                heightAnimator = ValueAnimator.ofInt(currentHeight, 1).apply {
+                    addUpdateListener {
+                        (it.animatedValue as Int).let { offset ->
+                            clipBounds = Rect(0, getFullyHeight() - offset, width, getFullyHeight())
+                            translationY = (offset - getFullyHeight()).toFloat()
+                        }
+                    }
+                    duration = exitAnim.duration
+                    interpolator = exitAnim.interpolator.toInterpolator()
 
-               heightAnimator = ValueAnimator.ofInt(currentHeight, 1).apply {
-                   addUpdateListener {
-                       updateHeight(it.animatedValue as Int)
-                       requireView()
-                   }
-                   duration = defaultAnimDuration
-                   interpolator = DecelerateInterpolator()
-                   doOnStart {
-                       currentAnimState = AnimState.COLLAPSING
-                       setMaskViewAlpha(false)
-                       mBinding?.clCalendarPopupRoot?.postDelayed({
-                           onBeforeDismissAnimListener?.invoke()
-                       },50L)
-                   }
-                   doOnEnd {
-                       currentAnimState = AnimState.COLLAPSE
-                       visibility = View.INVISIBLE
-                       mBinding?.clCalendarPopupRoot?.postDelayed({
-                           if(currentAnimState == AnimState.COLLAPSE) {
-                               dismiss()
-                               onAfterDismissAnimListener?.invoke()
-                           }
-                       }, 100L)
-                   }
-                   start()
-               }
-           }
+                    doOnStart {
+                        currentAnimState = AnimState.COLLAPSING
+                        setMaskViewAlpha(false)
+                        mBinding?.clCalendarPopupRoot?.postDelayed({
+                            onBeforeDismissAnimListener?.invoke()
+                        },50L)
+                    }
+                    doOnEnd {
+                        currentAnimState = AnimState.COLLAPSE
+                        visibility = View.INVISIBLE
+                        mBinding?.clCalendarPopupRoot?.postDelayed({
+                            if(currentAnimState == AnimState.COLLAPSE) {
+                                dismiss()
+                                onAfterDismissAnimListener?.invoke()
+                            }
+                        }, 100L)
+                    }
+                    start()
+                }
+            }
 
-       }
+        }
     }
 
     private fun updateHeight(height: Int) {
@@ -351,7 +350,7 @@ class HomeCalendarFragment private constructor() : Fragment() {
             it.post {
                 it.animate()
                     .alpha(if (visible) 1f else 0f)
-                    .setDuration(defaultAnimDuration)
+                    .setDuration(AnimationController[AnimationController.AnimType.popupEnter]!!.duration)
                     .setListener(object: Animator.AnimatorListener{
                         override fun onAnimationStart(p0: Animator) {
                             if(visible) it.visibility = View.VISIBLE

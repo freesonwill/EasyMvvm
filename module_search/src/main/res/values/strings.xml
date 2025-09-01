@@ -1,5 +1,5 @@
 <resources>
-    <string name="please_input_content">请输入内容</string>
+    <string name="search_bar_hint">请输入赛事名或队伍名</string>
     <string name="delete_all">全部删除</string>
     <string name="search_finish">完成</string>
     <string name="history_record">历史搜索</string>
@@ -15,7 +15,7 @@
     <string name="search_result_more">更多</string>
     <string name="search_result_btn_bet">投注</string>
     <string name="search_result_btn_bet_finish">已结束</string>
-    <string name="search_result_race_date_format_display">MM月dd日 EEEE</string>
+    <string name="search_result_race_date_format_display">M月dd日 EEEE</string>
     <string name="search_result_race_calendar_title">%1$s %2$s</string>
     <string name="search_dialog_reset">重置</string>
     <string name="search_dialog_confirm">确认</string>

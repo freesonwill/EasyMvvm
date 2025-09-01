@@ -27,4 +27,9 @@ enum class UserDataKey(val key: String) {
 
     KEY_SOFT_KEYBOARD_HEIGHT("soft_keyboard_height"),
 
+    KEY_ANIM_ROUTE("KEY_ANIM_ROUTE"),
+    KEY_ANIM_ZOOM("KEY_ANIM_ZOOM"),
+    KEY_ANIM_POPUP("KEY_ANIM_POPUP"),
+    KEY_ANIM_DRAWER("KEY_ANIM_DRAWER"),
+    KEY_ANIM_SCROLLBAR("KEY_ANIM_SCROLLBAR")
 }

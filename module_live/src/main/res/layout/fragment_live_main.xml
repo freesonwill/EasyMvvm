@@ -34,31 +34,32 @@
     <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
         android:background="@color/live_main_tab_bg"
-        >
+        android:layout_marginStart="6dp"
+        android:orientation="vertical">
+
         <arch.cayenne.lib.skin.widget.SkinnableTabLayout
             android:id="@+id/tabLayout"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_36"
-            app:tabIndicatorHeight="0dp"
-            app:tabMode="fixed"
-            app:tabMinWidth="@dimen/dp_60"
-            android:background="@color/live_main_tab_bg"
-            app:tabMaxWidth="65dp"
-            app:tabPaddingStart="0dp"
-            android:layout_marginEnd="10dp"
-            app:tabPaddingEnd="0dp"
-            app:tabRippleColor="@null"
             android:layout_marginTop="@dimen/dp_2"
+            android:layout_marginEnd="10dp"
+            android:background="@color/live_main_tab_bg"
+            app:tabIndicatorHeight="0dp"
+            app:tabMaxWidth="60dp"
+            app:tabMinWidth="60dp"
+            app:tabMode="fixed"
+            app:tabPaddingEnd="0dp"
+            app:tabPaddingStart="0dp"
+            app:tabRippleColor="@null"
             tools:ignore="SpeakableTextPresentCheck" />
+
         <arch.cayenne.lib.common.ui.view.CustomTabIndicator
             android:id="@+id/customIndicator"
-            android:layout_marginEnd="10dp"
             android:layout_width="match_parent"
             android:layout_height="3dp"
-            android:background="@color/live_main_tab_bg"
-            />
+            android:layout_marginEnd="13dp"
+            android:background="@color/live_main_tab_bg" />
     </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout

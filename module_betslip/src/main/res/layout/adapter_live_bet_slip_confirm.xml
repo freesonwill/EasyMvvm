@@ -6,45 +6,55 @@
     android:layout_height="wrap_content"
     android:background="@drawable/shape_betslip_card">
 
-    <arch.cayenne.lib.skin.widget.SkinnableView
+    <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
         android:id="@+id/bet_confirm_iv_top"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_37"
-        android:background="@drawable/bg_card_top"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/bet_confirm_tv_confirm"
-        android:layout_width="@dimen/dp_73"
-        android:layout_height="@dimen/dp_21"
-        android:layout_marginStart="@dimen/dp_12"
-        android:layout_marginTop="@dimen/dp_8"
-        android:background="@drawable/bg_bet_confirming"
-        android:gravity="center"
-        android:textColor="@color/color_2c3c3e"
-        android:textSize="@dimen/sp_13"
-        app:layout_constraintBottom_toBottomOf="@id/bet_confirm_iv_top"
-        app:layout_constraintLeft_toLeftOf="@id/bet_confirm_iv_top"
-        app:layout_constraintTop_toTopOf="@id/bet_confirm_iv_top"
-        tools:text="投注确认中" />
-
-    <arch.cayenne.lib.skin.widget.SkinnableTextView
-        android:id="@+id/bet_confirm_tv_date"
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_8"
-        android:textColor="@color/secondary_text"
-        android:textSize="@dimen/sp_13"
-        app:layout_constraintBottom_toBottomOf="@id/bet_confirm_tv_confirm"
-        app:layout_constraintLeft_toRightOf="@id/bet_confirm_tv_confirm"
-        app:layout_constraintTop_toTopOf="@id/bet_confirm_tv_confirm"
-        tools:text="2024/11/14 05:03" />
+        android:background="@drawable/bg_card_top"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
+            android:id="@+id/bet_confirm_tv_confirm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="8dp"
+            android:layout_marginStart="12dp"
+            android:background="@drawable/bg_bet_confirming"
+            android:gravity="center"
+            android:paddingHorizontal="4dp"
+            android:paddingVertical="0.5dp"
+            android:textColor="@color/color_2c3c3e"
+            android:textSize="@dimen/sp_13"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:skinnableFontWeight="500"
+            tools:text="输一半" />
+
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
+            android:id="@+id/bet_confirm_tv_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:textColor="@color/secondary_text"
+            android:textSize="@dimen/sp_13"
+            app:layout_constraintBottom_toBottomOf="@id/bet_confirm_tv_confirm"
+            app:layout_constraintLeft_toRightOf="@id/bet_confirm_tv_confirm"
+            app:layout_constraintTop_toTopOf="@id/bet_confirm_tv_confirm"
+            tools:text="2024/11/14 05:03" />
+    </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_selection"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/bet_confirm_iv_top" />
+        android:orientation="vertical"
+        android:paddingTop="2dp"
+        android:paddingBottom="0dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintTop_toBottomOf="@id/bet_confirm_iv_top"
+        tools:itemCount="2"
+        tools:listitem="@layout/item_live_bet_slip_confirm" />
 
     <include
         android:id="@+id/il_more"
@@ -91,23 +101,24 @@
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/bet_confirm_tv_betcode"
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/dp_20"
-        android:layout_marginTop="@dimen/dp_27"
+        android:layout_height="wrap_content"
+        android:layout_margin="12dp"
         android:text="@string/live_bet_bet_num"
         android:textColor="@color/secondary_text"
         android:textSize="@dimen/sp_14"
-        app:layout_constraintLeft_toLeftOf="@id/bet_confirm_tv_confirm"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/bet_confirm_iv_avava" />
 
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/bet_confirm_tv_betcode_value"
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/dp_20"
+        android:layout_height="wrap_content"
         android:textColor="@color/main_text"
         android:textSize="@dimen/sp_14"
         app:layout_constraintBottom_toBottomOf="@id/bet_confirm_tv_betcode"
         app:layout_constraintEnd_toStartOf="@id/iv_copy_clip"
         app:layout_constraintTop_toTopOf="@id/bet_confirm_tv_betcode"
+        app:skinnableFontWeight="500"
         tools:text="2025021112000001" />
 
     <arch.cayenne.lib.skin.widget.SkinnableImageView
@@ -115,7 +126,7 @@
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:layout_marginEnd="6dp"
-        android:padding="8dp"
+        android:padding="6dp"
         android:src="@drawable/icon_copy_clip"
         app:layout_constraintBottom_toBottomOf="@id/bet_confirm_tv_betcode"
         app:layout_constraintEnd_toEndOf="parent"
@@ -124,7 +135,7 @@
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/bet_confirm_tv_odds"
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/dp_20"
+        android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_10"
         android:text="@string/live_bet_odds"
         android:textColor="@color/secondary_text"
@@ -135,18 +146,19 @@
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/bet_confirm_tv_odds_value"
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/dp_20"
+        android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/dp_12"
         android:textColor="@color/main_text"
         android:textSize="@dimen/sp_14"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@id/bet_confirm_tv_odds"
+        app:skinnableFontWeight="500"
         tools:text="\@1.85" />
 
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/bet_confirm_tv_betting"
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/dp_20"
+        android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_10"
         android:text="@string/live_bet_on"
         android:textColor="@color/secondary_text"
@@ -156,8 +168,8 @@
 
     <arch.cayenne.lib.skin.widget.SkinnableImageView
         android:id="@+id/iv_tip"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="26dp"
+        android:layout_height="26dp"
         android:padding="4dp"
         app:layout_constraintBottom_toBottomOf="@id/bet_confirm_tv_betting"
         app:layout_constraintLeft_toRightOf="@id/bet_confirm_tv_betting"
@@ -167,38 +179,38 @@
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/bet_confirm_tv_betting_value"
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/dp_20"
+        android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/dp_12"
         android:textColor="@color/main_text"
         android:textSize="@dimen/sp_14"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@id/bet_confirm_tv_betting"
+        app:skinnableFontWeight="500"
         tools:text="$1000" />
 
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/bet_confirm_tv_except"
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/dp_20"
-        android:layout_marginTop="@dimen/dp_10"
-        android:text="@string/live_bet_except_max_win"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="16dp"
+        android:text="@string/live_bet_win_lose_amount"
         android:textColor="@color/secondary_text"
         android:textSize="@dimen/sp_14"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="@id/bet_confirm_tv_betcode"
         app:layout_constraintTop_toBottomOf="@id/bet_confirm_tv_betting" />
 
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/bet_confirm_tv_except_value"
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/dp_20"
+        android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/dp_12"
         android:textColor="@color/main_text"
         android:textSize="@dimen/sp_14"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@id/bet_confirm_tv_except"
+        app:skinnableFontWeight="500"
         tools:text="$2312" />
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_16"
-        app:layout_constraintTop_toBottomOf="@id/bet_confirm_tv_except" />
 </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>

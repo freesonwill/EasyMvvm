@@ -5,12 +5,15 @@ import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.LinearLayout
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
+import androidx.viewpager2.widget.ViewPager2
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.data.model.PagerBean
 import arch.cayenne.lib.base.ui.adapter.PagerAdapter
@@ -21,6 +24,7 @@ import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.utils.ext.DimensionExt.px2sp
+import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.setDrawerInterpolator
 import arch.cayenne.lib.common.utils.ext.NavResultExt.observeResult
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
@@ -45,6 +49,9 @@ import kotlinx.coroutines.flow.filter
 import kotlin.reflect.KClass
 import arch.cayenne.lib.common.utils.ext.animateIndicatorToPosition
 import arch.cayenne.lib.common.utils.ext.setupViewPagerScroll
+import arch.cayenne.lib.common.utils.helper.doSmartAnim
+import kotlin.math.abs
+
 /**
  * 直播详情页
  */
@@ -59,6 +66,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
     private lateinit var args: LiveMainFragmentArgs
     private var drawerContentFragment: LiveBetOnMenuFragment? = null
     private var skipAnyAnim = true
+    private var enableAnimation = false
     private val titleBarBinding: TitleBarLiveBinding by lazy {
         TitleBarLiveBinding.inflate(LayoutInflater.from(context), mBinding.titleBar, false)
     }
@@ -71,9 +79,6 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         setVideoView()
         loadFragment()
         mViewModel.observeMatchInfoNotify()
-        mBinding.drawerLayout.setDrawerInterpolator(
-            AnimationController[AnimType.drawerEnter]!!.duration,
-            AnimationController[AnimType.drawerEnter]!!.interpolator.toInterpolator())
         mBinding.drawerLayout.setDrawerLockMode(
             DrawerLayout.LOCK_MODE_LOCKED_CLOSED,
             GravityCompat.END
@@ -152,9 +157,10 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 tab?.let {
                     if (skipAnyAnim) {
-                        // 动画更新指示器位置
-                        mBinding.customIndicator.animateIndicatorToPosition(tab.position, 0)
-                        mBinding.vpPage.setCurrentItem(tab.position, false)
+                        enableAnimation = false
+                        mBinding.customIndicator.animateIndicatorToPosition(tab.position)
+                        mBinding.vpPage.setCurrentItem(tab.position,false)
+                        // mBinding.vpPage.doSmartAnim(tab.position)
                     }
                 }
                 tab?.view?.findViewById<SkinnableTextView>(R.id.tabText)?.let { textView ->
@@ -186,10 +192,70 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                 // Handle reselect if needed
             }
         })
-        // 自定義滑動行為
-        mBinding.vpPage.setupViewPagerScroll(mBinding.tabLayout,mBinding.customIndicator){
-            skipAnyAnim = it
+        setupViewPagerScroll()
+    }
+
+    fun setupViewPagerScroll() {
+        mBinding.tabLayout.post {
+            // 计算单个 Tab 的宽度
+            val tabWidth = mBinding.tabLayout.width.toFloat() / mBinding.tabLayout.tabCount
+            mBinding.customIndicator.setTabWidth(tabWidth, 0.45f)
         }
+        var lastSwitchedPage: Int = 0 // 记录上一次切换的页面，防止重复切换
+        mBinding.vpPage.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageScrollStateChanged(state: Int) {
+                when (state) {
+                    ViewPager2.SCROLL_STATE_DRAGGING -> {
+                        skipAnyAnim = false
+                        enableAnimation = true
+                        lastSwitchedPage = mBinding.vpPage.currentItem
+                    }
+
+                    ViewPager2.SCROLL_STATE_IDLE -> {
+                        skipAnyAnim = true
+                    }
+                }
+            }
+
+            override fun onPageScrolled(
+                position: Int,
+                positionOffset: Float,
+                positionOffsetPixels: Int
+            ) {
+                if (!enableAnimation) return
+                val totalItems = mBinding.vpPage.adapter?.itemCount ?: 0
+                val currentPage = mBinding.vpPage.currentItem
+                val adjustedOffset = if (position == currentPage) {
+                    // 左滑
+                    positionOffset
+                } else if (position == currentPage - 1) {
+                    // 右滑
+                    -(1.0f - positionOffset)
+                } else {
+                    0.0f // 默认情况
+                }
+                // 左滑：adjustedOffset > 0.5，切换到下一页
+                if (adjustedOffset > 0.5f && currentPage < totalItems - 1 && lastSwitchedPage != currentPage + 1) {
+                    lastSwitchedPage = currentPage + 1
+                    mBinding.customIndicator.animateIndicatorToPosition(lastSwitchedPage)
+                    mBinding.tabLayout.getTabAt(lastSwitchedPage)?.select()
+                }
+                // 右滑：adjustedOffset < -0.5，切换到上一页
+                else if (adjustedOffset < -0.5f && currentPage > 0 && lastSwitchedPage != currentPage - 1) {
+                    lastSwitchedPage = currentPage - 1
+                    mBinding.customIndicator.animateIndicatorToPosition(lastSwitchedPage)
+                    mBinding.tabLayout.getTabAt(lastSwitchedPage)?.select()
+                }
+                // 滑动未超过 50%，恢复到当前页面
+                else if (abs(adjustedOffset) <= 0.5f && lastSwitchedPage != currentPage) {
+                    lastSwitchedPage = currentPage
+                    mBinding.customIndicator.animateIndicatorToPosition(lastSwitchedPage)
+                    mBinding.tabLayout.getTabAt(lastSwitchedPage)?.select()
+                }
+            }
+        })
+        // 启用手动滑动
+        mBinding.vpPage.isUserInputEnabled = true
     }
 
     override fun createObserverAtState(): Lifecycle.State {
@@ -198,11 +264,15 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
 
     @SuppressLint("SetTextI18n")
     override suspend fun createObserver() {
+        launch {
+            AnimationController.getFlow(AnimType.drawerEnter).collect {
+                if(it == null) return@collect
+                mBinding.drawerLayout.setDrawerInterpolator(it.duration, it.interpolator.toInterpolator())
+            }
+        }
         observeResult<Bundle>(CHANGE_MATCH) {
             val newArgs: LiveMainFragmentArgs = LiveMainFragmentArgs.fromBundle(it)
-            "observeResult-->newArgs--->$newArgs,args:${args},extras:${it},${this.args.equal(newArgs)}".logd(
-                TAG
-            )
+            "observeResult-->newArgs--->$newArgs,args:${args},extras:${it},${this.args.equal(newArgs)}".logd(TAG)
             if (this.args.equal(newArgs)) return@observeResult
             this.args = newArgs
             updateMatchId(newArgs.matchId)
@@ -275,7 +345,6 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
     //比赛ID发生变化,取消订阅,数据请空
     private fun updateMatchId(matchId: Long) {
         mBinding.tabLayout.getTabAt(1)?.select()
-        mBinding.vpPage.setCurrentItem(1, false)
         mViewModel.matchId.value?.let {
             deleteDataAndSubscriptions(matchId)
             mViewModel.setMatchId(matchId)
@@ -318,6 +387,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                 delay(500)
                 vpPage.offscreenPageLimit = list.size
             }
+
             TabLayoutMediator(tabLayout, vpPage) { tab, position ->
                 tab.text = list[position].title
                 tab.setCustomView(R.layout.custom_tab)
@@ -337,12 +407,13 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                 tab.view.setOnClickListener { /* Handle click */ }
             }.attach()
             tabLayout.clearOnTabSelectedListeners()
-            tabLayout.getTabAt(1)?.select()
-            vpPage.setCurrentItem(1, false)
+            tabLayout.post{
+                mBinding.customIndicator.animateIndicatorToPosition(1, 0)
+                mBinding.vpPage.setCurrentItem(1,false)
+            }
             tabLayout.removeAllTips()
         }
     }
-
     private fun refreshBetSlip() {
         val adapter = mBinding.vpPage.adapter?.let { it as PagerAdapter }
         val tag = "f${adapter?.getItemId(0)}"

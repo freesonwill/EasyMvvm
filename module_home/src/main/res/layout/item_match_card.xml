@@ -115,7 +115,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                app:layout_constraintGuide_percent="0.46" />
+                app:layout_constraintGuide_begin="161dp" />
             <!-- Guideline 對齊第一個 child 的中心 -->
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guide_child1_center"
@@ -136,8 +136,8 @@
 
                 <arch.cayenne.lib.skin.widget.SkinnableImageView
                     android:id="@+id/iv_home_icon"
-                    android:layout_width="22dp"
-                    android:layout_height="22dp"
+                    android:layout_width="26dp"
+                    android:layout_height="26dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -146,9 +146,10 @@
                     android:id="@+id/tv_home_name"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="4dp"
+                    android:layout_marginStart="6dp"
                     android:textColor="@color/home_main_text"
                     android:textSize="14sp"
+                    android:layout_marginBottom="@dimen/dp_2"
                     app:layout_constrainedWidth="true"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@id/tv_home_score"
@@ -176,6 +177,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_16"
+                android:layout_marginBottom="@dimen/dp_1"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/guideline_vertical_inner"
                 app:layout_constraintStart_toStartOf="parent"
@@ -183,8 +185,8 @@
 
                 <arch.cayenne.lib.skin.widget.SkinnableImageView
                     android:id="@+id/iv_away_icon"
-                    android:layout_width="22dp"
-                    android:layout_height="22dp"
+                    android:layout_width="26dp"
+                    android:layout_height="26dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -193,7 +195,7 @@
                     android:id="@+id/tv_away_name"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="4dp"
+                    android:layout_marginStart="6dp"
                     android:textColor="@color/home_main_text"
                     android:textSize="14sp"
                     app:layout_constrainedWidth="true"
@@ -292,10 +294,10 @@
         <arch.cayenne.lib.skin.widget.SkinnableImageView
             android:id="@+id/iv_favorite"
             android:layout_width="@dimen/dp_46"
-            android:layout_height="@dimen/dp_34"
-            android:paddingTop="@dimen/dp_2"
-            android:paddingEnd="@dimen/dp_12"
-            android:paddingBottom="@dimen/dp_10"
+            android:layout_height="35dp"
+            android:paddingTop="@dimen/dp_3"
+            android:paddingEnd="@dimen/dp_2"
+            android:paddingBottom="@dimen/dp_9"
             android:src="@drawable/layer_favorite_crossfade"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
@@ -308,7 +310,7 @@
         android:layout_height="@dimen/dp_28"
         android:gravity="center_horizontal|bottom"
         android:text="@string/no_more_data"
-        android:textColor="@color/secondary_text"
+        android:textColor="@color/progress_text"
         android:textSize="@dimen/sp_13"
         android:visibility="gone" />
 </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>

@@ -3,7 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/cl_root"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_marginStart="6dp"
+    android:layout_marginEnd="6dp">
 
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/tv_more"
@@ -16,7 +18,8 @@
         app:layout_constraintEnd_toStartOf="@id/iv_more"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:skinnableFontWeight="500" />
 
     <arch.cayenne.lib.skin.widget.SkinnableImageView
         android:id="@+id/iv_more"
@@ -29,5 +32,5 @@
         app:layout_constraintStart_toEndOf="@id/tv_more"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_search_result_more" />
-    
+
 </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>

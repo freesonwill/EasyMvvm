@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/tran_0"
     android:clickable="true"
     android:focusable="true">
 
@@ -12,11 +11,22 @@
         android:id="@+id/mask_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:background="#BF000000"
+        android:background="@color/black"
+        android:alpha="0.75"
         android:clickable="true"
         android:focusable="true"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintBottom_toBottomOf="@id/cl_filter"
+        app:layout_constraintTop_toTopOf="@id/cl_filter" />
+
+    <View
+        android:id="@+id/mask_bottom_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/tran_0"
+        android:clickable="true"
+        android:focusable="true"
+        app:layout_constraintTop_toBottomOf="@id/cl_filter"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_filter"
@@ -38,7 +48,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
-                android:layout_marginTop="18dp"
+                android:layout_marginTop="17dp"
                 android:text="@string/sport_picker_title"
                 android:textColor="@color/secondary_text"
                 app:layout_constraintStart_toStartOf="parent"
@@ -49,7 +59,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="15dp"
-                android:layout_marginTop="21dp"
+                android:layout_marginTop="12dp"
                 android:layout_marginBottom="15dp"
                 app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
                 app:layout_constraintBottom_toTopOf="@id/tv_reset"
@@ -70,11 +80,12 @@
                 android:textColor="@color/navigation_bar"
                 android:textSize="15sp"
                 android:textStyle="bold"
+                app:skinnableFontWeight="500"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/tv_confirm"
                 app:layout_constraintStart_toStartOf="parent" />
 
-            <TextView
+            <arch.cayenne.lib.skin.widget.SkinnableTextView
                 android:id="@+id/tv_confirm"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -86,12 +97,12 @@
                 android:textColor="#000000"
                 android:textSize="15sp"
                 android:textStyle="bold"
+                app:skinnableFontWeight="500"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/tv_reset" />
 
         </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
-
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -5,24 +5,22 @@ import android.annotation.SuppressLint
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.ColorFilter
-import android.graphics.LinearGradient
 import android.graphics.Paint
 import android.graphics.PixelFormat
 import android.graphics.Rect
-import android.graphics.Shader
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.View
-import android.view.animation.DecelerateInterpolator
 import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.animation.doOnEnd
 import androidx.core.animation.doOnStart
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
+import androidx.core.graphics.toColorInt
 import androidx.core.view.doOnLayout
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
+import arch.cayenne.lib.base.ui.animation.AnimationController
+import arch.cayenne.lib.base.ui.animation.AnimationController.AnimType
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
@@ -39,7 +37,6 @@ import com.walisport.module.search.utils.IconScaleAnimUtil.enableScaleIcon
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import kotlin.reflect.KClass
-import androidx.core.graphics.toColorInt
 
 class SearchDatePickerFragment private constructor(): BaseFragment<SearchDatePickerViewModel, FragmentSearchDatePickerBinding>() {
     override val vbClass: KClass<FragmentSearchDatePickerBinding>
@@ -53,19 +50,31 @@ class SearchDatePickerFragment private constructor(): BaseFragment<SearchDatePic
         EXPANDING, EXPAND, COLLAPSING, COLLAPSE
     }
 
-    private val defaultAnimDuration = 150L
-
     private var marginTop: Int = 0
     private var marginStart: Int = 0
     private var marginEnd: Int = 0
     private var selectedDate: Long? = null
     private var schemeDates: Map<String, com.haibin.calendarview.Calendar> = emptyMap()
-    private var rangeStartDate: Calendar = Calendar.getInstance()
-    private var rangeEndDate: Calendar = Calendar.getInstance().apply { add(Calendar.MONTH, 1) }
+    // 比照 H5 版本，預設 range 為今天的前一天到一個月後
+    private var rangeStartDate: Calendar = Calendar.getInstance().apply { add(Calendar.DAY_OF_MONTH, -1) }
+    private var rangeEndDate: Calendar = (rangeStartDate.clone() as Calendar).apply { add(Calendar.MONTH, 1) }
     private var heightAnimator: ValueAnimator? = null
     private var currentAnimState: AnimState? = null
-    private var onBeforeDismissAnimListener: (()-> Unit)? = null
+    private var onBeforeDismissAnimListener: (() -> Unit)? = null
     private var onAfterDismissAnimListener: ((startTime: Long?, endTime: Long?, timeInMills: Long?)-> Unit)? = null
+    private var onBeforeExpandAnimListener: (() -> Unit)? = null
+    private val maskClickListener = {
+        currentAnimState?.let { state ->
+            if(!mViewModel.isMaskClickable) return@let
+            when(state) {
+                AnimState.EXPANDING -> collapseView()
+                AnimState.EXPAND -> {
+                    close()
+                }
+                else -> expandView()
+            }
+        }
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -137,7 +146,6 @@ class SearchDatePickerFragment private constructor(): BaseFragment<SearchDatePic
                     ),
                     Color.TRANSPARENT
                 )
-                scrollToSelectedDate()
                 addSchemeDate(schemeDates)
                 setRange(
                     rangeStartDate.get(Calendar.YEAR),
@@ -147,6 +155,7 @@ class SearchDatePickerFragment private constructor(): BaseFragment<SearchDatePic
                     rangeEndDate.get(Calendar.MONTH) + 1,
                     rangeEndDate.get(Calendar.DAY_OF_MONTH)
                 )
+                scrollToSelectedDate()
                 setCalendarTitle(curYear, curMonth)
             }
             maskView.background = object : Drawable() {
@@ -172,6 +181,7 @@ class SearchDatePickerFragment private constructor(): BaseFragment<SearchDatePic
                 @Suppress("OVERRIDE_DEPRECATION")
                 override fun getOpacity(): Int = PixelFormat.TRANSLUCENT
             }
+            maskViewTop.layoutParams.height = this@SearchDatePickerFragment.marginTop
             expandView()
         }
     }
@@ -200,15 +210,8 @@ class SearchDatePickerFragment private constructor(): BaseFragment<SearchDatePic
                 sendResult()
                 collapseView()
             }
-            maskView.setOnClickListener {
-                when(currentAnimState) {
-                    AnimState.EXPANDING -> collapseView()
-                    AnimState.EXPAND -> {
-                        close()
-                    }
-                    else -> expandView()
-                }
-            }
+            maskView.setOnClickListener { maskClickListener.invoke() }
+            maskViewTop.setOnClickListener { maskClickListener.invoke() }
         }
     }
 
@@ -340,7 +343,10 @@ class SearchDatePickerFragment private constructor(): BaseFragment<SearchDatePic
             post {
                 animate()
                     .alpha(if (visible) 1f else 0f)
-                    .setDuration(defaultAnimDuration)
+                    .setDuration(
+                        if (visible) AnimationController[AnimType.popupEnter]!!.duration
+                        else AnimationController[AnimType.popupExit]!!.duration
+                    )
                     .start()
             }
         }
@@ -358,7 +364,6 @@ class SearchDatePickerFragment private constructor(): BaseFragment<SearchDatePic
 
     private fun expandView() {
         with(mBinding.clCalendar) {
-            layoutParams = layoutParams.apply { height = 1 }
             doOnLayout {
                 val currentHeight = (heightAnimator?.animatedValue as? Int) ?: height
                 val fullyHeight = getFullyHeight()
@@ -368,21 +373,22 @@ class SearchDatePickerFragment private constructor(): BaseFragment<SearchDatePic
 
                 heightAnimator = ValueAnimator.ofInt(startHeight, fullyHeight).apply {
                     addUpdateListener {
-                        layoutParams =
-                            layoutParams.apply {
-                                height = it.animatedValue as Int
-                            }
+                        (it.animatedValue as Int).let { offset ->
+                            clipBounds = Rect(0, fullyHeight - offset, width, fullyHeight)
+                            translationY = (offset - fullyHeight).toFloat()
+                        }
                     }
-                    duration = defaultAnimDuration
-                    interpolator = DecelerateInterpolator()
+                    AnimationController[AnimType.popupEnter]!!.let {
+                        duration = it.duration
+                        interpolator = it.interpolator.toInterpolator()
+                    }
                     doOnStart {
                         currentAnimState = AnimState.EXPANDING
-                        layoutParams =
-                            layoutParams.apply {
-                                height = startHeight
-                            }
+                        clipBounds = Rect(0, fullyHeight - startHeight, width, fullyHeight)
+                        translationY = (startHeight - fullyHeight).toFloat()
                         visibility = View.VISIBLE
                         setMaskViewAlpha(true)
+                        onBeforeExpandAnimListener?.invoke()
                     }
                     doOnEnd { currentAnimState = AnimState.EXPAND }
                     start()
@@ -395,16 +401,17 @@ class SearchDatePickerFragment private constructor(): BaseFragment<SearchDatePic
         with(mBinding.clCalendar) {
             val currentHeight = (heightAnimator?.animatedValue as? Int) ?: height
             heightAnimator?.cancel()
-
             heightAnimator = ValueAnimator.ofInt(currentHeight, 1).apply {
                 addUpdateListener {
-                    layoutParams =
-                        layoutParams.apply {
-                            height = it.animatedValue as Int
-                        }
+                    (it.animatedValue as Int).let { offset ->
+                        clipBounds = Rect(0, getFullyHeight() - offset, width, getFullyHeight())
+                        translationY = (offset - getFullyHeight()).toFloat()
+                    }
                 }
-                duration = defaultAnimDuration
-                interpolator = DecelerateInterpolator()
+                AnimationController[AnimType.popupExit]!!.let {
+                    duration = it.duration
+                    interpolator = it.interpolator.toInterpolator()
+                }
                 doOnStart {
                     currentAnimState = AnimState.COLLAPSING
                     setMaskViewAlpha(false)
@@ -469,10 +476,11 @@ class SearchDatePickerFragment private constructor(): BaseFragment<SearchDatePic
         private var marginEnd: Int = 0
         private var selectedDate: Long? = null
         private var schemeDates: Map<String, com.haibin.calendarview.Calendar> = emptyMap()
-        private var rangeStartDate: Calendar = Calendar.getInstance()
-        private var rangeEndDate: Calendar = Calendar.getInstance().apply { add(Calendar.MONTH, 1) }
-        private var onAfterDismissAnimListener: ((startTime: Long?, endTime: Long?, timeInMills: Long?)-> Unit)? = null
+        private var rangeStartDate: Calendar? = null
+        private var rangeEndDate: Calendar? = null
+        private var onAfterDismissAnimListener: ((startTime: Long?, endTime: Long?, timeInMills: Long?) -> Unit)? = null
         private var onBeforeDismissAnimListener: (() -> Unit)? = null
+        private var onBeforeExpandAnimListener: (() -> Unit)? = null
 
         fun setMarginTop(value: Int) {
             marginTop = value
@@ -507,6 +515,10 @@ class SearchDatePickerFragment private constructor(): BaseFragment<SearchDatePic
             this.onBeforeDismissAnimListener = listener
         }
 
+        fun setOnBeforeExpandAnimListener(listener: () -> Unit) = apply {
+            this.onBeforeExpandAnimListener = listener
+        }
+
         fun build(): SearchDatePickerFragment {
             return SearchDatePickerFragment().apply {
                 this.marginTop = this@Builder.marginTop
@@ -514,10 +526,11 @@ class SearchDatePickerFragment private constructor(): BaseFragment<SearchDatePic
                 this.marginEnd = this@Builder.marginEnd
                 this.selectedDate = this@Builder.selectedDate
                 this.schemeDates = this@Builder.schemeDates
-                this.rangeStartDate = this@Builder.rangeStartDate
-                this.rangeEndDate = this@Builder.rangeEndDate
+                this@Builder.rangeStartDate?.let { this.rangeStartDate = it }
+                this@Builder.rangeEndDate?.let { this.rangeEndDate = it }
                 this.onBeforeDismissAnimListener = this@Builder.onBeforeDismissAnimListener
                 this.onAfterDismissAnimListener = this@Builder.onAfterDismissAnimListener
+                this.onBeforeExpandAnimListener = this@Builder.onBeforeExpandAnimListener
             }
         }
     }

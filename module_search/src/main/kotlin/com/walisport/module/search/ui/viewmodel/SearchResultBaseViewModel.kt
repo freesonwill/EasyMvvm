@@ -20,6 +20,9 @@ import plugin.koin.KoinViewModel
 class SearchResultBaseViewModel: BaseViewModel() {
     private val repository: SearchRepository by inject { parametersOf(viewModelScope) }
 
+    /** 監聽登入狀態變化 */
+    fun observeLoginChange() = repository.observeLoginChange()
+
     /** 搜尋結果頁 UI 狀態 */
     private val _uiState = MutableSharedFlow<SearchResultUiState>()
     val uiState: SharedFlow<SearchResultUiState> = _uiState.asSharedFlow()

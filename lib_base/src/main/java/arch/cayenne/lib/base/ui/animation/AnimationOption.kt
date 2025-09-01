@@ -29,7 +29,8 @@ abstract class IAnimationOption(
     }
 
     companion object {
-        fun fromJson(json: String): IAnimationOption {
+        fun fromJson(json: String?): IAnimationOption? {
+            if(json == null) return null
             val type: Type = when {
                 json.contains("TranslateAnimation") -> Type.TranslateAnimation
                 json.contains("SimpleAnimation") -> Type.SimpleAnimation
@@ -44,8 +45,8 @@ abstract class IAnimationOption(
             }
         }
 
-        fun toJson(option: IAnimationOption): String {
-            return gson.toJson(option)
+        fun toJson(option: IAnimationOption?): String? {
+            return option?.let { gson.toJson(option) }
         }
     }
 

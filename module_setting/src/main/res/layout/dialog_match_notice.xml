@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/bg_shape_round_rect_top"
+    android:background="@drawable/bg_shape_set_dialog"
     app:layout_constraintBottom_toBottomOf="parent">
 
     <LinearLayout
@@ -143,7 +143,7 @@
             <arch.cayenne.lib.skin.widget.SkinnableTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_40"
+                android:layout_marginStart="@dimen/dp_41"
                 android:text="@string/notice_bet"
                 android:textColor="@color/notice_title"
                 android:textSize="@dimen/sp_15"
@@ -155,7 +155,8 @@
                 android:id="@+id/toggle_bet"
                 android:layout_width="@dimen/dp_46"
                 android:layout_height="@dimen/dp_26"
-                android:layout_marginEnd="@dimen/dp_20"
+                android:layout_marginEnd="@dimen/dp_12"
+                android:layout_marginTop="@dimen/dp_2"
                 android:background="@drawable/selector_toggle_button"
                 android:textOff=""
                 android:textOn=""
@@ -175,7 +176,7 @@
         <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
             android:id="@+id/fav_item"
             android:layout_width="match_parent"
-            android:layout_height="67dp"
+            android:layout_height="@dimen/dp_62"
             android:clickable="true"
             android:focusable="true">
 
@@ -191,7 +192,7 @@
             <arch.cayenne.lib.skin.widget.SkinnableTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_40"
+                android:layout_marginStart="@dimen/dp_41"
                 android:text="@string/notice_favourite"
                 android:textColor="@color/notice_title"
                 android:textSize="@dimen/sp_15"
@@ -203,7 +204,8 @@
                 android:id="@+id/toggle_fav"
                 android:layout_width="@dimen/dp_46"
                 android:layout_height="@dimen/dp_26"
-                android:layout_marginEnd="@dimen/dp_20"
+                android:layout_marginEnd="@dimen/dp_12"
+                android:layout_marginTop="@dimen/dp_2"
                 android:background="@drawable/selector_toggle_button"
                 android:textOff=""
                 android:textOn=""
@@ -239,7 +241,7 @@
             <arch.cayenne.lib.skin.widget.SkinnableTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_40"
+                android:layout_marginStart="@dimen/dp_41"
                 android:text="@string/notice_all"
                 android:textColor="@color/notice_title"
                 android:textSize="@dimen/sp_15"
@@ -251,7 +253,8 @@
                 android:id="@+id/toggle_all"
                 android:layout_width="@dimen/dp_46"
                 android:layout_height="@dimen/dp_26"
-                android:layout_marginEnd="@dimen/dp_20"
+                android:layout_marginEnd="@dimen/dp_12"
+                android:layout_marginTop="@dimen/dp_2"
                 android:background="@drawable/selector_toggle_button"
                 android:textOff=""
                 android:textOn=""
@@ -268,7 +271,7 @@
         <arch.cayenne.lib.skin.widget.SkinnableTextView
             android:id="@+id/tv_close"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_60"
+            android:layout_height="@dimen/dp_46"
             android:gravity="center"
             android:text="@string/shut_down"
             android:textColor="@color/notice_close"

@@ -1,26 +1,28 @@
 package com.walisport.module.search.ui.fragment
 
-import android.graphics.Canvas
-import android.graphics.Paint
+import android.graphics.Rect
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
+import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.ItemDecoration
+import arch.cayenne.lib.base.data.constants.DataState
+import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.common.ui.dialog.CommonDialog
+import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.touchBackPressed
 import arch.cayenne.lib.common.utils.helper.showToast
-import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import com.walisport.module.search.R
 import com.walisport.module.search.databinding.FragmentSearchBinding
 import com.walisport.module.search.ui.adapter.HotWordAdapter
 import com.walisport.module.search.ui.adapter.SearchHistoryAdapter
-import com.walisport.module.search.ui.view.FlowAdapter
 import com.walisport.module.search.ui.viewmodel.SearchViewModel
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
+import arch.cayenne.lib.common.R as RC
 
 /**
  * @author: caomei
@@ -52,13 +54,7 @@ class SearchFragment : SearchBaseFragment<SearchViewModel, FragmentSearchBinding
 
     override fun initData() {
         super.initData()
-        //获取搜索记录
-        mViewModel.getRecordByUID()
-
-        //获取热门搜索
-        mViewModel.getSearchHotWord { error ->
-            error?.let { showToast(it.msg) }
-        }
+        getData()
     }
 
     override suspend fun createObserver() {
@@ -74,6 +70,20 @@ class SearchFragment : SearchBaseFragment<SearchViewModel, FragmentSearchBinding
                     hotWordAdapter.submitList(it)
                     clHotWord.visibility = if (it.isEmpty()) View.GONE else View.VISIBLE
                 }
+
+                launch(Lifecycle.State.STARTED) {
+                    launch {
+                        apiStateListener.observe(viewLifecycleOwner) { state ->
+                            switchUI(state)
+                        }
+                    }
+
+                    launch {
+                        observeLoginChange()
+                            .filter { it && apiStateListener.value == DataState.NetworkUnavailable }
+                            .collect { getData() }
+                    }
+                }
             }
         }
     }
@@ -88,6 +98,16 @@ class SearchFragment : SearchBaseFragment<SearchViewModel, FragmentSearchBinding
         historyAdapter = null
         contentBinding.rvHotWord.adapter = null
         super.onDestroyView()
+    }
+
+    private fun getData() {
+        //获取搜索记录
+        mViewModel.getRecordByUID()
+
+        //获取热门搜索
+        mViewModel.getSearchHotWord { error ->
+            error?.let { showToast(it.msg) }
+        }
     }
 
     private fun setHistory() {
@@ -149,6 +169,21 @@ class SearchFragment : SearchBaseFragment<SearchViewModel, FragmentSearchBinding
                 layoutManager = GridLayoutManager(context, 2)
                 adapter = hotWordAdapter
                 itemAnimator = null
+                if(itemDecorationCount == 0) {
+                    addItemDecoration(object: RecyclerView.ItemDecoration(){
+                        override fun getItemOffsets(
+                            outRect: Rect,
+                            view: View,
+                            parent: RecyclerView,
+                            state: RecyclerView.State
+                        ) {
+                            super.getItemOffsets(outRect, view, parent, state)
+                            val position = parent.getChildAdapterPosition(view)
+                            if(position == RecyclerView.NO_POSITION) return
+                            outRect.left = if(position % 2 != 0) 17.dp2px else 0
+                        }
+                    })
+                }
             }
         }
     }
@@ -166,5 +201,37 @@ class SearchFragment : SearchBaseFragment<SearchViewModel, FragmentSearchBinding
                 llShowCompleted.visibility = View.GONE
             }
         }
+    }
+
+    private fun switchUI(state: DataState) {
+        with(contentBinding) {
+            loadingView.visibility = if (state is DataState.Loading) View.VISIBLE else View.GONE
+            clHotWord.visibility = if (state is DataState.LoadSuccess) View.VISIBLE else View.GONE
+
+            when (state) {
+                is DataState.NetworkUnavailable,
+                is DataState.DataEmpty,
+                is DataState.None -> {
+                    setEmptyView(state)
+                    dynamicState.visibility = View.VISIBLE
+                }
+                else -> {
+                    dynamicState.visibility = View.GONE
+                }
+            }
+        }
+    }
+
+    private fun setEmptyView(state: DataState) {
+        val layoutState =
+            if(state == DataState.NetworkUnavailable) DynamicStateLayout.States.NETWORK_ANOMALY()
+            else DynamicStateLayout.States.DATA_EMPTY
+        val errorStr =
+            if(state == DataState.NetworkUnavailable) {
+                RC.string.error_net.toTranslatedStr()
+            } else {
+                R.string.no_search_result.toTranslatedStr()
+            }
+        contentBinding.dynamicState.setState(layoutState, errorStr)
     }
 }

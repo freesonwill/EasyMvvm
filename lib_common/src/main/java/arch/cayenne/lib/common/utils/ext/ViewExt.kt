@@ -28,7 +28,8 @@ import androidx.core.view.children
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
+import arch.cayenne.lib.base.ui.animation.AnimationController
+import arch.cayenne.lib.base.ui.animation.AnimationController.AnimType
 import arch.cayenne.lib.common.R
 import arch.cayenne.lib.common.ui.view.CustomTabIndicator
 import arch.cayenne.lib.common.ui.view.OnSwipeTouchListener
@@ -431,7 +432,7 @@ fun View.addRippleEffect(
     this.background = rippleDrawable
 }
 
-fun View.startPageAnimation(vararg otherViews: View) {
+fun View.startZoomInAnim(vararg otherViews: View) {
     val views = listOf(this, *otherViews)
 
     // Step1: 计算平均中心点（屏幕坐标）
@@ -456,7 +457,8 @@ fun View.startPageAnimation(vararg otherViews: View) {
                 ObjectAnimator.ofFloat(view, "scaleX", 0.92f, 1f),
                 ObjectAnimator.ofFloat(view, "scaleY", 0.92f, 1f)
             )
-            duration = 200
+            duration = AnimationController[AnimType.zoomIn]!!.duration
+            interpolator = AnimationController[AnimType.zoomIn]!!.interpolator.toInterpolator()
         }
     }
 
@@ -495,10 +497,13 @@ private fun ViewPager2.setViewPagerAnimationDuration(duration: Long) {
         e.printStackTrace()
     }
 }
-fun CustomTabIndicator.animateIndicatorToPosition(position: Int,duration:Long) {
+fun CustomTabIndicator.animateIndicatorToPosition(position: Int,
+                                                  duration:Long = AnimationController[AnimType.scrollbar]!!.duration,
+                                                  interpolator: TimeInterpolator = AnimationController[AnimType.scrollbar]!!.interpolator.toInterpolator()
+) {
     val animator = ValueAnimator.ofFloat(this.getCurrentPosition().toFloat(), position.toFloat())
     animator.duration = duration // 动画持续时间
-    animator.interpolator =PathInterpolator(0f, 0f, 1f, 1f)//cubic-bezier(0, 0, 1, 1)
+    animator.interpolator = interpolator
     animator.addUpdateListener { animation ->
         val progress = animation.animatedValue as Float
         setIndicatorPosition(progress.toInt(), progress % 1f)

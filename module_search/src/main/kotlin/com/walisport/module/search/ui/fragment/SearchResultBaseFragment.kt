@@ -22,6 +22,7 @@ import com.walisport.module.search.data.constants.SearchTypeEnum
 import com.walisport.module.search.data.model.SearchResultBean
 import com.walisport.module.search.databinding.FragmentSearchResultBaseBinding
 import com.walisport.module.search.ui.viewmodel.SearchResultBaseViewModel
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
 import arch.cayenne.lib.common.R as RC
@@ -59,13 +60,15 @@ class SearchResultBaseFragment :
                     // 避免中間頁閃爍，實現從 SearchResultListFragment / SearchResultDirectMatchFragment
                     // 直接返回 SearchFragment 的流暢轉場效果
                     (requireActivity().window.decorView as ViewGroup).apply {
-                        ImageView(requireContext()).apply {
-                            layoutParams = ViewGroup.LayoutParams(
-                                ViewGroup.LayoutParams.MATCH_PARENT,
-                                ViewGroup.LayoutParams.MATCH_PARENT
-                            )
-                            setImageBitmap(getTempScreenShot())
-                        }.let { overlay ->
+                        getTempScreenShot()?.run {
+                            ImageView(requireContext()).apply {
+                                layoutParams = ViewGroup.LayoutParams(
+                                    ViewGroup.LayoutParams.MATCH_PARENT,
+                                    ViewGroup.LayoutParams.MATCH_PARENT
+                                )
+                                setImageBitmap(this@run)
+                            }
+                        }?.let { overlay ->
                             addView(overlay, childCount)
                             overlay.doOnLayout {
                                 parentFragmentManager.apply {
@@ -81,6 +84,7 @@ class SearchResultBaseFragment :
                                                             override fun onAnimationStart(p0: Animation?) = Unit
                                                             override fun onAnimationEnd(p0: Animation?) {
                                                                 removeView(overlay)
+                                                                clearTempScreenShot()
                                                             }
                                                         })
                                                     }?.let { anim ->
@@ -125,13 +129,18 @@ class SearchResultBaseFragment :
                         }
                     }
                 }
+
+                launch {
+                    observeLoginChange()
+                        .filter { it && apiStateListener.value == DataState.NetworkUnavailable }
+                        .collect { doSearch() }
+                }
             }
         }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        clearTempScreenShot()
     }
 
     private fun doSearch() {
@@ -142,9 +151,7 @@ class SearchResultBaseFragment :
     private fun setEmptyView(state: DataState) {
         with(contentBinding) {
             val layoutState =
-                if(state == DataState.NetworkUnavailable) DynamicStateLayout.States.NETWORK_ANOMALY(
-                    onRefresh = ::doSearch
-                )
+                if(state == DataState.NetworkUnavailable) DynamicStateLayout.States.NETWORK_ANOMALY()
                 else DynamicStateLayout.States.DATA_EMPTY
             val errorStr =
                 if(state == DataState.NetworkUnavailable) {
@@ -152,6 +159,7 @@ class SearchResultBaseFragment :
                 } else {
                     R.string.no_search_result.toTranslatedStr()
                 }
+
             dynamicState.setState(layoutState, errorStr)
         }
     }

@@ -151,4 +151,22 @@
 
     </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
 
+    <arch.cayenne.lib.common.ui.view.DynamicStateLayout
+        android:id="@+id/dynamic_state"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/cl_history" />
+
+    <arch.cayenne.lib.common.ui.view.LoadingView
+        android:id="@+id/loading_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/cl_history" />
+
 </arch.cayenne.lib.common.ui.view.InterceptedConstraintLayout>

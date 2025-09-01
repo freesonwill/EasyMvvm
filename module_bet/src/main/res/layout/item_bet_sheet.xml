@@ -9,7 +9,8 @@
         android:id="@+id/tv_selection_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_margin="12dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="11dp"
         android:layout_marginEnd="4dp"
         android:ellipsize="end"
         android:gravity="start"
@@ -19,18 +20,21 @@
         android:textStyle="bold"
         app:layout_constraintEnd_toStartOf="@id/tv_odds"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:skinnableFontWeight="500" />
 
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/tv_odds"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="12dp"
+        android:layout_marginEnd="12dp"
         android:textColor="@color/main_text"
         android:textSize="15sp"
         android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@id/tv_selection_name"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@id/tv_selection_name"
+        app:skinnableFontWeight="600" />
 
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/tv_status"
@@ -43,7 +47,6 @@
         android:text="@string/title_playing"
         android:textColor="#15B264"
         android:textSize="13sp"
-        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@id/tv_market"
         app:layout_constraintStart_toStartOf="@id/tv_selection_name"
         app:layout_constraintTop_toTopOf="@id/tv_market" />
@@ -53,7 +56,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="11dp"
         android:textColor="@color/secondary_text"
         android:textSize="14sp"
         app:layout_constraintStart_toEndOf="@id/tv_status"
@@ -86,7 +89,7 @@
         android:id="@+id/tv_bet_stop"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="11dp"
         android:text="@string/bet_sheet_stop"
         android:textColor="#FE3666"
         android:textSize="15sp"

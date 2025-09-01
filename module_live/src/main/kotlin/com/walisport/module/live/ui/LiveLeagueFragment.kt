@@ -5,6 +5,7 @@ import android.graphics.Rect
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.view.View
+import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -13,6 +14,7 @@ import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout.States
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavResultExt.sendResult
@@ -27,13 +29,14 @@ import com.walisport.module.live.R
 import com.walisport.module.live.databinding.FragmentLeagueBinding
 import com.walisport.module.live.ui.adapter.LeagueAdapter
 import com.walisport.module.live.ui.viewmodel.LeagueViewModel
+import kotlinx.coroutines.flow.filter
 import kotlin.reflect.KClass
 
 class LiveLeagueFragment : BaseFragment<LeagueViewModel, FragmentLeagueBinding>() {
 
     override val vbClass: KClass<FragmentLeagueBinding> = FragmentLeagueBinding::class
     override val vmClass: KClass<LeagueViewModel> = LeagueViewModel::class
-    private val standsAdapter = LeagueAdapter()
+    private val standsAdapter by lazy { LeagueAdapter() }
     private var leagueID: Int = 0
     private var leagueName: String = ""
     private var leagueLogo: String = ""
@@ -109,6 +112,16 @@ class LiveLeagueFragment : BaseFragment<LeagueViewModel, FragmentLeagueBinding>(
     }
 
     override suspend fun createObserver() {
+        //网络断开重连后重新获取接口
+        launch(Lifecycle.State.RESUMED) {
+            mViewModel.observeLoginChange()
+                .filter { it && mViewModel.apiStateListener.value == DataState.NetworkUnavailable }
+                .collect {
+                    if (it) {
+                        mViewModel.getMatchLeagueList(leagueID)
+                    }
+                }
+        }
         mViewModel.apiStateListener.observe(viewLifecycleOwner) {
             if (it == DataState.NoMoreData) {
                 mBinding.refreshLayout.setNoMoreData(true)

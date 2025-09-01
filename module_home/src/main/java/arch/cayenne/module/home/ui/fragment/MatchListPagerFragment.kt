@@ -1,12 +1,10 @@
 package arch.cayenne.module.home.ui.fragment
 
-import android.annotation.SuppressLint
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -18,6 +16,7 @@ import arch.cayenne.lib.common.ui.viewmodel.observeEvent
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
+import arch.cayenne.lib.common.utils.ext.scrollToBottomWithLoadMore
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.database.entity.MatchWithMarkets
@@ -48,8 +47,12 @@ class MatchListPagerFragment :
     private val homeViewModel: HomeViewModel by sharedViewModel<HomeViewModel, NewHomeFragment>()
     private val subHomeViewModel: SubHomeViewModel by viewModels({ requireParentFragment() })
     private lateinit var matchAdapter: MatchItemAdapter
+    private var canLoadMore = false
     private val gameLayoutManager by lazy { LinearLayoutManager(context) }
     private val fabViewModel: FloatingButtonControlViewModel by activityViewModel()
+
+    private var dataObserver: RecyclerView.AdapterDataObserver? = null
+    private var userRequestedScrollToTop = false
 
     override fun initView(savedInstanceState: Bundle?) {
         mBinding.apply {
@@ -57,6 +60,7 @@ class MatchListPagerFragment :
             refreshLayout.setEnableScrollContentWhenLoaded(true)
             refreshLayout.setOnRefreshListener {
                 mViewModel.reload()
+                userRequestedScrollToTop = true
             }
             refreshLayout.setOnLoadMoreListener {
                 mViewModel.loadNextPage()
@@ -92,6 +96,18 @@ class MatchListPagerFragment :
                     }
                 }
             })
+            dataObserver = object : RecyclerView.AdapterDataObserver() {
+                override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+                    if (positionStart == 0 && userRequestedScrollToTop) {
+                        mBinding.rvHomeGameList.post {
+                            mBinding.rvHomeGameList.scrollToPosition(0)
+                        }
+                        userRequestedScrollToTop = false // 重置標誌位
+                    }
+                }
+            }
+            matchAdapter.registerAdapterDataObserver(dataObserver!!)
+            //賽事卡片之間的間閣
             val decoration = MatchCardItemDecoration(12.dp2px)
             mBinding.rvHomeGameList.apply {
                 this.layoutManager = gameLayoutManager
@@ -99,18 +115,25 @@ class MatchListPagerFragment :
                 addItemDecoration(decoration)
                 itemAnimator = DeleteAnimator()
             }
-            rvHomeGameList.itemAnimator  = null
+            rvHomeGameList.itemAnimator = null
             rvHomeGameList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                     super.onScrollStateChanged(recyclerView, newState)
-                    // 滑動停止時觸發
                     if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                         subscribeVisibleMatch()
                         updateMatchListPosition()
                     }
                 }
-            })
 
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    rvHomeGameList.scrollToBottomWithLoadMore {
+                        if (canLoadMore) {
+                            canLoadMore = false
+                            mViewModel.loadNextPage()
+                        }
+                    }
+                }
+            })
         }
     }
 
@@ -152,47 +175,27 @@ class MatchListPagerFragment :
         }
     }
 
-    @SuppressLint("NotifyDataSetChanged")
-    override fun onHiddenChanged(hidden: Boolean) {
-        super.onHiddenChanged(hidden)
-        if (hidden) {
-            //暫時移除訂閱
-            mViewModel.cancelSubscribeMatch(mViewModel.getCurrentSubscribeMatchSet())
-            mViewModel.stopMatchSubscribeNotify()
-            if (mViewModel.matchListChange.hasObservers()) {
-                mViewModel.matchListChange.removeObserver(matchListObserver)
-            }
-        } else {
-            //把暫時移除的訂閱加回來
-            mViewModel.startMatchSubscribeNotify()
-            mViewModel.subscribeMatch(mViewModel.getCurrentSubscribeMatchSet())
-            if (!mViewModel.matchListChange.hasObservers()) {
-                mViewModel.matchListChange.observe(viewLifecycleOwner, matchListObserver)
-            }
-        }
-    }
     override fun initListener() {
     }
 
-    private val matchListObserver = Observer <List<MatchWithMarkets>> { matchList ->
-        val preEmpty = matchAdapter.currentList.isEmpty()
-        "MatchListChange livedata Observed~ ${matchList.map { it.match.matchId }}".logi(this::class.java.simpleName)
-        matchAdapter.submitList(matchList)
-        mBinding.rvHomeGameList.doOnPreDraw {
-            subscribeVisibleMatch()
-            if (preEmpty && matchList.isNotEmpty()) {
-                mViewModel.changeState(HomeState.Match.LoadSuccess)
-                setMatchListPosition()
-            }
-        }
-
-    }
     override suspend fun createObserver() {
 
         homeViewModel.timer.observeEvent(viewLifecycleOwner, this) {
             mViewModel.updateMatchLiveData()
         }
-        mViewModel.matchListChange.observe(viewLifecycleOwner, matchListObserver)
+        mViewModel.matchListChange.observe(viewLifecycleOwner) { matchList ->
+            val preEmpty = matchAdapter.currentList.isEmpty()
+            "MatchListChange livedata Observed~ ${matchList.map { it.match.matchId }}".logi(this::class.java.simpleName)
+            matchAdapter.submitList(matchList)
+            canLoadMore = true
+            mBinding.rvHomeGameList.doOnPreDraw {
+                subscribeVisibleMatch()
+                if (preEmpty && matchList.isNotEmpty()) {
+                    mViewModel.changeState(HomeState.Match.LoadSuccess)
+                    setMatchListPosition()
+                }
+            }
+        }
 
         mViewModel.apiStateListener.observe(viewLifecycleOwner) {
             with(mBinding) {
@@ -280,6 +283,25 @@ class MatchListPagerFragment :
 
     fun startObserveMatch() {
         mViewModel.startObserveMatch()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        dataObserver?.apply { matchAdapter.unregisterAdapterDataObserver(this) }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        //把暫時移除的訂閱加回來
+        mViewModel.startMatchSubscribeNotify()
+        mViewModel.subscribeMatch(mViewModel.getCurrentSubscribeMatchSet())
+    }
+
+    override fun onPause() {
+        super.onPause()
+        //暫時移除訂閱
+        mViewModel.cancelSubscribeMatch(mViewModel.getCurrentSubscribeMatchSet())
+        mViewModel.stopMatchSubscribeNotify()
     }
 
 

@@ -1,5 +1,6 @@
 package arch.cayenne.lib.base.ui.fragment
 
+import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
@@ -7,7 +8,6 @@ import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.AttributeSet
 import android.view.LayoutInflater
@@ -21,6 +21,9 @@ import android.widget.FrameLayout
 import androidx.annotation.CallSuper
 import androidx.appcompat.app.AppCompatDialog
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.animation.doOnEnd
+import androidx.core.animation.doOnStart
+import androidx.core.graphics.drawable.toDrawable
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
@@ -34,15 +37,16 @@ import arch.cayenne.lib.base.ui.animation.AnimationController
 import arch.cayenne.lib.base.ui.animation.AnimationController.AnimType
 import arch.cayenne.lib.base.ui.delegate.StatusBarDelegate
 import arch.cayenne.lib.base.ui.delegate.UIBindDelegate
+import arch.cayenne.lib.base.ui.fragment.dim.DimController
 import arch.cayenne.lib.base.ui.gesture.TikTokGesture
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import org.koin.androidx.viewmodel.ext.android.viewModelForClass
 import java.lang.ref.WeakReference
 import java.lang.reflect.Field
+import kotlin.math.abs
 import kotlin.reflect.KClass
 
 
@@ -50,7 +54,6 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
     BottomSheetDialogFragment(), IView {
 
     protected val TAG by lazy { this::class.java.simpleName }
-    private var mScrollY: Int? = null
     protected var backgroundView: View? = null
     protected var sheetContainer: View? = null
     protected var isDismissing = false
@@ -80,7 +83,10 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
     //#endregion VB,VM
     //设置颜色，默认根据主题颜色设定
     private val statusBar: IStatusBar by lazy { StatusBarDelegate(this) }
-    private var showAnimEndListener: (() -> Unit)? = null
+
+    protected var otherViewAnimation: ObjectAnimator? = null
+    private val dimController by lazy { DimController.instance }
+    protected open var isGestureEnable = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -110,7 +116,11 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
         }
 
         dialog.setOnShowListener {
-            playEnterAnimations()
+            if (otherViewAnimation == null) {
+                playEnterAnimations()
+            } else {
+                playEnterAnimationWithOtherSheetDialogEnd()
+            }
         }
 
         return dialog
@@ -122,75 +132,119 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
         statusBar.configStatusBar().statusBarColor = R.color.black_75
     }
 
-    fun setShowAnimEndListener(listener: () -> Unit) {
-        showAnimEndListener = listener
-    }
-
 
     protected open fun enterAnimation(): Animation = AnimationController[AnimType.popupEnter]!!.toAnimation()
 
     protected open fun exitAnimation(): Animation = AnimationController[AnimType.popupExit]!!.toAnimation()
 
     protected fun playEnterAnimations() {
-        showDim()
-        sheetContainer?.let { scv ->
-            // bottom sheet 上滑動畫
-            val sheetAnim = enterAnimation()
-            sheetAnim.setAnimationListener(object : Animation.AnimationListener {
-                override fun onAnimationStart(animation: Animation?) {
-                    backgroundView?.visibility = View.VISIBLE
-                    scv.visibility = View.VISIBLE
-                    mBinding.root.visibility = View.VISIBLE
-                }
+        val sheet = sheetContainer ?: return
 
-                override fun onAnimationEnd(animation: Animation?) {
-                    setRvTouch()
-                    showAnimEndListener?.invoke()
-                }
-
-                override fun onAnimationRepeat(animation: Animation?) {}
-            })
-            scv.startAnimation(sheetAnim)
+        dimController.checkLayoutParams()
+        val sheetAnim = enterAnimation()
+        val offY = sheet.translationY
+        val startY = sheet.height.toFloat()
+        if (offY != startY) {
+            sheet.translationY = sheet.height.toFloat()
+        }
+        val animation = ObjectAnimator.ofFloat(
+            sheet, "translationY", sheet.height.toFloat(), 0f
+        ).apply {
+            addUpdateListener { animation ->
+                val value = animation.animatedValue as Float
+                sheet.translationY = value
+                showDim()
+            }
+            duration = sheetAnim.duration
+            // 假設你的 exitAnimation 使用這個插值器
+            interpolator = sheetAnim.interpolator
+            doOnStart {
+                backgroundView?.visibility = View.VISIBLE
+                sheet.visibility = View.VISIBLE
+                mBinding.root.visibility = View.VISIBLE
+            }
+        }
+        sheet.post {
+            animation.start()
         }
     }
 
-    protected open fun playExitAnimations() {
-        val sheetContainerSheetAnim = exitAnimation()
-        sheetContainerSheetAnim.setAnimationListener(object : Animation.AnimationListener {
-            override fun onAnimationStart(animation: Animation?) {
-                backgroundView?.visibility = View.INVISIBLE
+    protected fun playEnterAnimationWithOtherSheetDialogEnd() {
+        val sheet = sheetContainer ?: return
+        val otherSheetAnimator = otherViewAnimation?.clone() ?: return
+        // bottom sheet 上滑動畫
+        dimController.checkLayoutParams()
+        val sheetContainerSheetAnim = enterAnimation()
+        val offY = sheet.translationY
+        val startY = sheet.height.toFloat()
+        if (offY != startY) {
+            sheet.translationY = sheet.height.toFloat()
+        }
+        val sheetAnimator = ObjectAnimator.ofFloat(
+            sheet, "translationY", sheet.height.toFloat(), 0f
+        ).apply {
+            addUpdateListener { animation ->
+                val value = animation.animatedValue as Float
+                sheet.translationY = value
+                showDim()
             }
-            override fun onAnimationEnd(animation: Animation?) {
-                hideDim()
-                try {
-                    superDismiss()
-                } catch (e: Exception) {
-                    dismissAllowingStateLoss()
-                }
+            duration = sheetContainerSheetAnim.duration
+            // 假設你的 exitAnimation 使用這個插值器
+            interpolator = sheetContainerSheetAnim.interpolator
+            doOnStart {
+                backgroundView?.visibility = View.VISIBLE
+                sheet.visibility = View.VISIBLE
+                mBinding.root.visibility = View.VISIBLE
             }
+            doOnEnd {
+                setRvTouch()
+                otherViewAnimation = null
+            }
+        }
+        val animatorSet = AnimatorSet().apply {
+            playTogether(sheetAnimator, otherSheetAnimator)
+        }
+        sheet.post {
+            animatorSet.start()
+        }
 
-            override fun onAnimationRepeat(animation: Animation?) {}
-        })
-        sheetContainer?.startAnimation(sheetContainerSheetAnim)
-        playHideDimAnimation(sheetContainerSheetAnim)
     }
 
-
-    protected fun playHideDimAnimation(endAnimation: Animation) {
-        dialog?.window?.decorView?.background?.let { d ->
-            val alpha = (0.75f * 255).toInt()
-            ObjectAnimator.ofInt(
-                d, "alpha",
-                alpha, 0
-            ).apply {
-                this.duration = endAnimation.duration
-                this.interpolator = endAnimation.interpolator
-                addUpdateListener { animation ->
-                    val value = animation.animatedValue as Int
-                    d.alpha = value
-                }
-                start()
+    protected open fun playExitAnimations(
+        doStart: (() -> Unit)? = {
+            backgroundView?.visibility = View.INVISIBLE
+        },
+        doEnd: (() -> Unit)? = {
+            try {
+                superDismiss()
+            } catch (_: Exception) {
+                dismissAllowingStateLoss()
             }
+        }
+    ) {
+        val sheetContainerSheetAnim = exitAnimation()
+
+        val sheetAnimator = getHideAnimator()?.apply {
+            duration = sheetContainerSheetAnim.duration
+            interpolator = sheetContainerSheetAnim.interpolator
+            doOnStart {
+                doStart?.invoke()
+            }
+            doOnEnd {
+                doEnd?.invoke()
+            }
+        }
+
+        val dimAnimator = dimController.getHideAnimator()?.apply {
+            duration = sheetContainerSheetAnim.duration
+            interpolator = sheetContainerSheetAnim.interpolator
+        }
+
+        AnimatorSet().apply {
+            playTogether(sheetAnimator, dimAnimator)
+            duration = sheetContainerSheetAnim.duration
+            interpolator = sheetContainerSheetAnim.interpolator
+            start()
         }
     }
 
@@ -212,15 +266,19 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
         super.onViewCreated(view, savedInstanceState)
         uiBind.onViewCreated(view, savedInstanceState)
         setBehavior(view)
+        setBehaviorOnScroll(view)
     }
 
     @CallSuper
     override fun onStart() {
         super.onStart()
         uiBind.onStart()
+        mBinding.root.isFocusable = true
+        mBinding.root.isFocusableInTouchMode = true
+        mBinding.root.isClickable = true
         setSheetContainer()
         setBackGroundOnclick()
-        hideDim()
+        initDim()
         setStatusBar()
         setGesture()
     }
@@ -252,6 +310,32 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
         val scrollBehavior = ScrollBottomSheetBehavior<View>(requireContext(), null)
         params.behavior = scrollBehavior
         bottomSheet.layoutParams = params
+    }
+
+    private fun setBehaviorOnScroll(view: View) {
+        if (!isGestureEnable) return
+        val bottomSheet = (view.parent as? View) ?: return
+        val params = bottomSheet.layoutParams as? CoordinatorLayout.LayoutParams ?: return
+        val scrollBehavior = params.behavior as? ScrollBottomSheetBehavior ?: return
+        scrollBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+            var isDragging = false
+            var offsetY = 0f
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                if (newState == BottomSheetBehavior.STATE_DRAGGING) {
+                    isDragging = true
+                    offsetY = bottomSheet.y
+                } else if (newState == BottomSheetBehavior.STATE_HIDDEN || newState == BottomSheetBehavior.STATE_EXPANDED || newState == BottomSheetBehavior.STATE_COLLAPSED) {
+                    isDragging = false
+                }
+            }
+
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                if (isDragging) {
+                    val y = bottomSheet.y - offsetY
+                    setDimByScroll(abs(y.toInt()))
+                }
+            }
+        })
     }
 
     @CallSuper
@@ -311,6 +395,11 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
         }
     }
 
+    fun showWithOtherSheetDialogHide(manager: FragmentManager, animator: ObjectAnimator?) {
+        otherViewAnimation = animator
+        show(manager)
+    }
+
     override fun show(manager: FragmentManager, tag: String?) {
         val f = manager.findFragmentByTag(tag)
         if (f == null || !f.isAdded) {
@@ -333,18 +422,29 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
         super.dismiss()
     }
 
-    protected fun hideDim() {
+    private fun initDim() {
         dialog?.window?.setDimAmount(0f)
         dialog?.window?.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
-        dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        dialog?.window?.decorView?.background?.alpha = (0.75f * 255).toInt()
+        dialog?.window?.setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
+        dimController.init(requireContext())
     }
 
-    protected fun showDim() {
-        dialog?.window?.setDimAmount(0.75f)
-        dialog?.window?.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
-        dialog?.window?.setBackgroundDrawableResource(R.color.black)
-        dialog?.window?.decorView?.background?.alpha = (0.75f * 255).toInt()
+    protected open fun getHideAnimator(): ObjectAnimator? {
+        val sheet = sheetContainer ?: return null
+        val anim = exitAnimation()
+        return ObjectAnimator.ofFloat(
+            sheet, "translationY", 0f, sheet.height.toFloat()
+        ).apply {
+            duration = anim.duration
+            interpolator = anim.interpolator
+            addUpdateListener { animation ->
+                val value = animation.animatedValue as Float
+                sheet.translationY = value
+            }
+            doOnEnd {
+                superDismiss()
+            }
+        }
     }
 
     private fun setRvTouch() {
@@ -395,6 +495,7 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
 
     @SuppressLint("ClickableViewAccessibility")
     private fun setGesture() {
+        if (!isGestureEnable) return
         val v = mBinding.root
         val tikTokGesture = TikTokGesture(v)
         tikTokGesture.setListener(object : TikTokGesture.TikTokGestureListener {
@@ -403,33 +504,57 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
             }
 
             override fun onHorizontalScroll(offsetX: Float) {
-                sheetContainer?.translationY = offsetX * 1.5f
+                sheetContainer?.let {
+                    val offset = (offsetX * 1.3).toInt()
+                    it.scrollTo(0, -offset)
+                    setDimByScroll(offset)
+                }
             }
 
             override fun onActionUp() {
-                val translationY = sheetContainer?.translationY ?: 0f
-                val height = sheetContainer?.height ?: 0
-                if (translationY >= height / 2) {
-                    dialog?.onBackPressed()
-                } else {
-                    resetSheetTranslation()
+                sheetContainer?.let {
+                    val offsetY = abs(it.scrollY)
+                    if (offsetY == 0) return
+
+                    val height = it.height
+                    if (offsetY >= height / 2) {
+                        dialog?.onBackPressed()
+                    } else {
+                        resetSheetTranslation()
+                    }
                 }
+
             }
         })
     }
 
     private fun resetSheetTranslation() {
         sheetContainer?.let {
-            ValueAnimator.ofFloat(it.translationY, 0f).apply {
+            ValueAnimator.ofInt(it.scrollY, 0).apply {
                 duration = 100
                 addUpdateListener { animation ->
-                    val value = animation.animatedValue as Float
-                    it.translationY = value
+                    val value = animation.animatedValue as Int
+                    it.scrollY = value
+                    setDimByScroll(abs(value))
                 }
                 start()
             }
         }
+    }
 
+    private fun setDimByScroll(scrollY: Int) {
+        val h = sheetContainer?.height ?: return
+        val dimAlpha = DimController.TARGET_DIM
+        val targetDim = dimAlpha - dimAlpha * (scrollY.toFloat() / h.toFloat())
+        dimController.setDimAlpha(targetDim)
+    }
+
+    protected fun hideDim() {
+        dimController.hideDim()
+    }
+
+    protected fun showDim() {
+        dimController.showDim()
     }
 }
 
@@ -455,7 +580,8 @@ open class ScrollBottomSheetBehavior<V : View>(context: Context, attrs: Attribut
                 ViewCompat.stopNestedScroll(prev)
                 ViewCompat.stopNestedScroll(prev, ViewCompat.TYPE_TOUCH)
                 ViewCompat.stopNestedScroll(prev, ViewCompat.TYPE_NON_TOUCH)
-            } catch (_: Throwable) {}
+            } catch (_: Throwable) {
+            }
         }
 
         // 強制覆寫父類私有欄位 nestedScrollingChildRef
@@ -473,7 +599,8 @@ open class ScrollBottomSheetBehavior<V : View>(context: Context, attrs: Attribut
                 ViewCompat.stopNestedScroll(prev)
                 ViewCompat.stopNestedScroll(prev, ViewCompat.TYPE_TOUCH)
                 ViewCompat.stopNestedScroll(prev, ViewCompat.TYPE_NON_TOUCH)
-            } catch (_: Throwable) {}
+            } catch (_: Throwable) {
+            }
         }
 
         // 強制覆寫父類私有欄位 nestedScrollingChildRef

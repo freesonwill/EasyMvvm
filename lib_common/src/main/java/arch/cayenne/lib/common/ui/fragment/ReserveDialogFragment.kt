@@ -17,6 +17,7 @@ import androidx.core.view.isVisible
 import arch.cayenne.lib.common.databinding.FragmentReserveDialogBinding
 import arch.cayenne.lib.common.ui.viewmodel.ReserveDialogViewModel
 import arch.cayenne.lib.common.utils.ViewUtils
+import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.SportDisplayOddsExt.getDisplayOdds
 
 class ReserveDialogFragment private constructor() : BaseDialogFragment<ReserveDialogViewModel, FragmentReserveDialogBinding>() {
@@ -101,9 +102,9 @@ class ReserveDialogFragment private constructor() : BaseDialogFragment<ReserveDi
                 val triangleWidth = triangle.measuredWidth
                 val triangleHeight = triangle.measuredHeight
 
-                (triangle.layoutParams as ConstraintLayout.LayoutParams).marginEnd = usableWidth - positionX - triangleWidth / 2
+                (triangle.layoutParams as ConstraintLayout.LayoutParams).marginEnd = usableWidth - positionX - triangleWidth / 2 - 10.dp2px
 
-                layoutParams.x = 0
+                layoutParams.x = 10.dp2px
                 layoutParams.y = if (isFull) positionY - popHeight + triangleHeight else positionY - triangleHeight + viewHeight
 
                 it.attributes = layoutParams

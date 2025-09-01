@@ -256,4 +256,11 @@ open class SkinnableTextHelper(mView: TextView) : LanguageHelper(mView) {
                 mView.setTypeface(Typeface.create(Typeface.DEFAULT,fontWeight,false))
         }
     }
+
+    fun setFontWeight(weight: Int) {
+        if(fontWeight != weight){
+            fontWeight = weight
+            setFontWeight()
+        }
+    }
 }

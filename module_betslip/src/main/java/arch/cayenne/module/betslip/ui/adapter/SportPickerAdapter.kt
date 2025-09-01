@@ -31,6 +31,7 @@ class SportPickerAdapter(private val listener: SportPickerListener) : BaseAdapte
         binding.root.setOnClickListener {
             listener.onSportSelected(bean.sportId)
         }
+        binding.tvTitle.setFontWeight(if (bean.isSelected) 500 else 400)
     }
 
     override fun createViewBinding(

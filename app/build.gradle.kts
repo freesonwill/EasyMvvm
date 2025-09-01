@@ -98,4 +98,5 @@ dependencies {
         debugImplementation(project(":external:blockcanary"))
     }
     debugImplementation(project(":external:lib_perf"))
+    implementation(project(":external:lib_test"))
 }

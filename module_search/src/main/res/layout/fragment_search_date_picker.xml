@@ -66,12 +66,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
+            android:paddingStart="4dp"
+            android:paddingEnd="4dp"
+            android:paddingBottom="7dp"
             app:calendar_height="40dp"
             app:day_text_size="14sp"
             app:layout_constraintTop_toBottomOf="@id/tv_calendar_title"
-            app:week_bar_view="com.walisport.module.search.ui.view.SearchCustomWeekBar"
             app:month_view="com.walisport.module.search.ui.view.SearchCustomMonthView"
-            app:week_bar_height="17dp"
+            app:week_bar_height="30dp"
+            app:week_bar_view="com.walisport.module.search.ui.view.SearchCustomWeekBar"
             app:week_text_size="13sp" />
 
         <arch.cayenne.lib.skin.widget.SkinnableTextView
@@ -104,5 +107,14 @@
             app:layout_constraintTop_toBottomOf="@id/calendar_view" />
 
     </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
+
+    <View
+        android:id="@+id/mask_view_top"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:alpha="0"
+        android:clickable="true"
+        android:focusable="true"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

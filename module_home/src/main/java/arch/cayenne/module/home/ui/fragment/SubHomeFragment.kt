@@ -1,5 +1,6 @@
 package arch.cayenne.module.home.ui.fragment
 
+import android.animation.Animator
 import android.annotation.SuppressLint
 import android.net.Uri
 import android.os.Bundle
@@ -62,6 +63,8 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
 
     private var isExpanded = false
 
+    private val defaultAnimDuration = 300L
+
     private val sportsListAdapter by lazy {
         SportsListAdapter { id ->
             if (mViewModel.currentSportId == id) return@SportsListAdapter
@@ -86,7 +89,29 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
         }
         if (mViewModel.currentPlayTypeId == PlayType.EARLY.id) {
             mBinding.layoutContainer.llDateFilterContainer.visibility = View.VISIBLE
-            mBinding.layoutContainer.llOtherDate.visibility = View.VISIBLE
+        }
+    }
+
+    private fun setMaskViewAlpha(visible: Boolean) {
+        mBinding.vTournamentListMask.let {
+            it.post {
+                it.animate()
+                    .alpha(if (visible) 1f else 0f)
+                    .setDuration(defaultAnimDuration)
+                    .setListener(object : Animator.AnimatorListener {
+                        override fun onAnimationStart(p0: Animator) {
+                            if (visible) it.visibility = View.VISIBLE
+                        }
+
+                        override fun onAnimationEnd(p0: Animator) {
+                            if (!visible) it.visibility = View.GONE
+                        }
+
+                        override fun onAnimationCancel(p0: Animator) = Unit
+                        override fun onAnimationRepeat(p0: Animator) = Unit
+                    })
+                    .start()
+            }
         }
     }
 
@@ -210,6 +235,18 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
                 edgeEffectFactory = BounceEdgeEffectHelper(requireContext())
                 overScrollMode = RecyclerView.OVER_SCROLL_ALWAYS
                 isNestedScrollingEnabled = false
+                addItemDecoration(object : RecyclerView.ItemDecoration() {
+                    override fun getItemOffsets(
+                        outRect: android.graphics.Rect,
+                        view: View,
+                        parent: RecyclerView,
+                        state: RecyclerView.State
+                    ) {
+                        val pos = parent.getChildAdapterPosition(view)
+                        val last = (parent.adapter?.itemCount ?: 0) - 1
+                        outRect.right = if (pos == last) 0 else 4.dp2px   // marginEnd
+                    }
+                })
                 adapter = sportsListAdapter
             }
         }
@@ -357,6 +394,9 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
             if (fm.findFragmentByTag(tag) != null) return
             container.visibility = View.VISIBLE
 
+            // 展開時顯示遮罩層
+            setMaskViewAlpha(true)
+
             val tournamentListFragment = TournamentListFragment.newInstance(mViewModel.currentPlayTypeId, mViewModel.currentSportId, type)
 
             fm.beginTransaction().apply {
@@ -372,6 +412,10 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
 
         } else {
             val fragment = fm.findFragmentByTag(tag) ?: return
+
+            // 收回時隱藏遮罩層
+            setMaskViewAlpha(false)
+            
             fm.beginTransaction().apply {
                 if (type == TournamentListType.MORE) {
                     setCustomAnimations(0, R.anim.slide_out_to_top)
@@ -381,6 +425,7 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
             }
         }
     }
+
 
     private fun showHomeCalendar(tabSelectedDate: String) {
         with(mBinding.layoutContainer) {
@@ -445,7 +490,7 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
             if (indexOfTabs != -1) {
                 tlDateList.getTabAt(indexOfTabs)?.select()
             } else {
-                tlDateList.addTab(createDateTab(dateTriple.first, dateTriple.second), true)
+               tlDateList.addTabAndScrollPrecisely(createDateTab(dateTriple.first, dateTriple.second))
                 setupDateTabLayoutParams(tlDateList, false)
             }
         }

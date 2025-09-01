@@ -3,34 +3,48 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/cl_root"
-    android:layout_width="match_parent"
+    android:layout_width="359dp"
     android:layout_height="108dp"
     android:background="@drawable/shape_search_result_race_item_bg"
     android:paddingStart="12dp"
-    android:paddingTop="10dp"
+    android:paddingTop="11dp"
     android:paddingEnd="12dp"
     android:paddingBottom="10dp">
 
-    <androidx.constraintlayout.widget.Barrier
-        android:id="@+id/barrier_score_start"
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guide_score_start"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:barrierDirection="start"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="195dp" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier_score_end"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="end"
         app:constraint_referenced_ids="tv_score_home_team,tv_score_away_team" />
 
     <androidx.constraintlayout.widget.Barrier
-        android:id="@+id/barrier_arrow_start"
+        android:id="@+id/barrier_score_arrow_end"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:barrierDirection="start"
-        app:constraint_referenced_ids="iv_arrow_team_away,iv_arrow_team_home" />
+        app:barrierDirection="end"
+        app:constraint_referenced_ids="iv_arrow_team_home,iv_arrow_team_away" />
 
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/tv_title"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:gravity="start"
+        android:lines="1"
         android:textColor="@color/search_result_race_text_1"
         android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:skinnableFontWeight="400"
         tools:text="英超" />
 
     <arch.cayenne.lib.skin.widget.SkinnableTextView
@@ -41,10 +55,10 @@
         android:layout_marginBottom="22dp"
         android:textColor="@color/search_result_race_text_1"
         android:textSize="14sp"
-        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@id/iv_icon_away_team"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/iv_icon_home_team"
+        app:skinnableFontWeight="500"
         tools:text="09:00" />
 
     <arch.cayenne.lib.skin.widget.SkinnableView
@@ -80,35 +94,35 @@
         android:singleLine="true"
         android:textColor="@color/search_result_race_team_name"
         android:textSize="14sp"
-        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@id/iv_icon_home_team"
-        app:layout_constraintEnd_toEndOf="@id/barrier_score_start"
+        app:layout_constraintEnd_toStartOf="@id/guide_score_start"
         app:layout_constraintStart_toEndOf="@id/iv_icon_home_team"
         app:layout_constraintTop_toTopOf="@id/iv_icon_home_team"
+        app:skinnableFontWeight="500"
         tools:text="阿根廷" />
 
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/tv_score_home_team"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="6dp"
         android:gravity="center"
         android:textColor="@color/search_result_race_team_name"
-        android:textStyle="bold"
+        android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="@id/iv_icon_home_team"
-        app:layout_constraintEnd_toStartOf="@id/barrier_arrow_start"
-        app:layout_constraintStart_toStartOf="@id/barrier_score_start"
+        app:layout_constraintEnd_toEndOf="@id/barrier_score_end"
+        app:layout_constraintStart_toStartOf="@id/guide_score_start"
         app:layout_constraintTop_toTopOf="@id/iv_icon_home_team"
+        app:skinnableFontWeight="600"
         tools:text="2" />
 
     <arch.cayenne.lib.skin.widget.SkinnableImageView
         android:id="@+id/iv_arrow_team_home"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="5dp"
+        android:layout_marginStart="6dp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@id/iv_icon_home_team"
-        app:layout_constraintEnd_toStartOf="@id/btn_favorite"
+        app:layout_constraintStart_toStartOf="@id/barrier_score_end"
         app:layout_constraintTop_toTopOf="@id/iv_icon_home_team"
         app:srcCompat="@drawable/ic_search_result_current_team"
         tools:visibility="visible" />
@@ -133,35 +147,35 @@
         android:singleLine="true"
         android:textColor="@color/search_result_race_team_name"
         android:textSize="14sp"
-        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@id/iv_icon_away_team"
-        app:layout_constraintEnd_toEndOf="@id/barrier_score_start"
+        app:layout_constraintEnd_toStartOf="@id/guide_score_start"
         app:layout_constraintStart_toEndOf="@id/iv_icon_away_team"
         app:layout_constraintTop_toTopOf="@id/iv_icon_away_team"
+        app:skinnableFontWeight="500"
         tools:text="马恩岛" />
 
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/tv_score_away_team"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="6dp"
         android:gravity="center"
         android:textColor="@color/search_result_race_team_name"
-        android:textStyle="bold"
+        android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="@id/iv_icon_away_team"
-        app:layout_constraintEnd_toStartOf="@id/barrier_arrow_start"
-        app:layout_constraintStart_toStartOf="@id/barrier_score_start"
+        app:layout_constraintEnd_toEndOf="@id/barrier_score_end"
+        app:layout_constraintStart_toStartOf="@id/guide_score_start"
         app:layout_constraintTop_toTopOf="@id/iv_icon_away_team"
+        app:skinnableFontWeight="600"
         tools:text="299" />
 
     <arch.cayenne.lib.skin.widget.SkinnableImageView
         android:id="@+id/iv_arrow_team_away"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="5dp"
+        android:layout_marginStart="6dp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@id/iv_icon_away_team"
-        app:layout_constraintEnd_toStartOf="@id/btn_favorite"
+        app:layout_constraintStart_toStartOf="@id/barrier_score_end"
         app:layout_constraintTop_toTopOf="@id/iv_icon_away_team"
         app:srcCompat="@drawable/ic_search_result_current_team"
         tools:visibility="visible" />
@@ -191,10 +205,10 @@
         android:padding="7dp"
         android:textColor="@color/btn_search_result_bet_text"
         android:textSize="14sp"
-        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:skinnableFontWeight="500"
         tools:text="@string/search_result_btn_bet" />
 
 </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>

@@ -51,7 +51,6 @@ class BetSlipConfirmFragment : BaseBetSlipFragment<ConfirmingSlipViewModel, Frag
                 }
             }
         })
-
         mBinding.recyclerView.also {
             it.layoutManager = LinearLayoutManager(requireContext())
             it.adapter = betSlipAdapter

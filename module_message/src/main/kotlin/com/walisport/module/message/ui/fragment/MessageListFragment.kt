@@ -3,13 +3,16 @@ package com.walisport.module.message.ui.fragment
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.View
+import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
-import arch.cayenne.lib.base.data.constants.DataState
+import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.common.ui.dialog.CommonDialog
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout.States
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
+import arch.cayenne.lib.common.utils.ext.scrollToBottomWithLoadMore
 import com.walisport.module.message.R
 import com.walisport.module.message.data.NotificationBean
 import com.walisport.module.message.databinding.FragmentMessageListBinding
@@ -26,8 +29,9 @@ class MessageListFragment : BaseFragment<MessageMainViewModel, FragmentMessageLi
 
     override val vbClass: KClass<FragmentMessageListBinding> = FragmentMessageListBinding::class
     override val vmClass: KClass<MessageMainViewModel> = MessageMainViewModel::class
-    private var msgAdapter = MessageAdapter()
+    private val msgAdapter by lazy { MessageAdapter() }
     private var msgType = 0
+    private var canLoadMore = false
 
     override fun initView(savedInstanceState: Bundle?) {
         msgType = arguments?.getInt(MSG_TYPE) ?: 0
@@ -63,6 +67,16 @@ class MessageListFragment : BaseFragment<MessageMainViewModel, FragmentMessageLi
                     mViewModel.setMessageRead(item.id)
                 }
             })
+            recyclerMessage.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    recyclerMessage.scrollToBottomWithLoadMore {
+                        if (canLoadMore) {
+                            canLoadMore = false
+                            mViewModel.getMoreMessageList()
+                        }
+                    }
+                }
+            })
         }
     }
 
@@ -71,33 +85,23 @@ class MessageListFragment : BaseFragment<MessageMainViewModel, FragmentMessageLi
 
     override fun initData() {
         super.initData()
-        if (msgType == MSG_ALL) {
-            mViewModel.getMessageList(MSG_ALL)
-            mBinding.loadingView.visibility = View.VISIBLE
+        launch(Lifecycle.State.RESUMED) {
+            if (msgType == MSG_ALL) {
+                mBinding.emptyState.setState(States.LOADING,"")
+                mViewModel.getMessageList(MSG_ALL)
+            }
         }
     }
 
     override suspend fun createObserver() {
-        mViewModel.apiStateListener.observe(viewLifecycleOwner) { state ->
+        mViewModel.apiStateListener.observe(viewLifecycleOwner) {
             mBinding.refreshLayout.finishRefresh()
             mBinding.refreshLayout.finishLoadMore()
-            when (state) {
-                DataState.NetworkUnavailable -> {
-                    mBinding.loadingView.visibility = View.GONE
-                    if (msgAdapter.itemCount == 0) {
-                        mBinding.emptyState.visibility = View.VISIBLE
-                        mBinding.emptyState.setState(
-                            States.NETWORK_ANOMALY(),
-                            arch.cayenne.lib.common.R.string.error_net.getString()
-                        )
-                    }
-                }
-            }
         }
         mViewModel.notificationBean.observe(viewLifecycleOwner) {
             mBinding.refreshLayout.finishRefresh()
             mBinding.refreshLayout.finishLoadMore()
-            mBinding.loadingView.visibility = View.GONE
+            mBinding.emptyState.setVisibilityGone()
             it.let {
                 if (it.isEmpty()) {
                     msgAdapter.notifyData(it)
@@ -121,6 +125,7 @@ class MessageListFragment : BaseFragment<MessageMainViewModel, FragmentMessageLi
                         }
                         msgAdapter.notifyData(temp)
                     }
+                    canLoadMore = true
                 }
             }
         }

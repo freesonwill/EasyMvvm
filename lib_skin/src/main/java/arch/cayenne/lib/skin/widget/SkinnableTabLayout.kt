@@ -5,12 +5,9 @@ import android.util.AttributeSet
 import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.tabs.TabLayout
-import arch.cayenne.lib.skin.SkinnableManager
 import arch.cayenne.lib.skin.widget.helper.SkinnableBackGroundHelper
 import arch.cayenne.lib.skin.widget.helper.SkinnableTabLayoutHelper
 import arch.cayenne.lib.skin.widget.helper.SkinnableViewFlowHelper
-import kotlinx.coroutines.launch
-import org.koin.java.KoinJavaComponent.inject
 
 class SkinnableTabLayout : TabLayout {
     private val backgroundTintHelper = SkinnableBackGroundHelper(this)
@@ -61,6 +58,35 @@ class SkinnableTabLayout : TabLayout {
     override fun addTab(tab: Tab, setSelected: Boolean) {
         super.addTab(tab, setSelected)
         tabLayoutHelper.updateTabBackground(tab)
+    }
+    /**
+     * 在 TabLayout 尾部新增一個 Tab，並精準地向左滾動一小段距離以顯示它
+     * @param tab 新增Tab
+     * @param extraPaddingDp 額外向左滾動的 padding (DP 單位)
+     */
+    fun addTabAndScrollPrecisely(tab: Tab, extraPaddingDp: Int = 16) {
+        addTab(tab) // 第二個參數 true 表示同時選中它
+        post {
+            val newTabView = tab.view
+
+            // 3. 計算需要滾動的距離
+            // 新 Tab 的右邊緣位置
+            val tabRight = newTabView.right
+            // TabLayout 的可見寬度
+            val layoutWidth = width
+
+            // 如果 Tab 的右邊緣超出了可見寬度
+            if (tabRight > layoutWidth) {
+                // 計算超出的距離
+                val scrollAmount = tabRight - layoutWidth
+                // 增加額外的 padding
+                val extraPaddingPx = (extraPaddingDp * resources.displayMetrics.density).toInt()
+                // 4. 執行平滑滾動
+                smoothScrollBy(scrollAmount + extraPaddingPx, 0)
+                post { tab.select() }
+
+            }
+        }
     }
 
     override fun addTab(tab: Tab) {

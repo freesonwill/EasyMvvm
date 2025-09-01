@@ -18,7 +18,7 @@
         app:layout_goneMarginEnd="8dp"
         app:layout_goneMarginTop="8dp">
 
-        <TextView
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
             android:id="@+id/tv_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

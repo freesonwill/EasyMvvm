@@ -106,6 +106,7 @@ class SingleBetViewModel(
             value = editValue.toMoney().getMoney(getOdds())
         }
         addSource(onEditNumber) {
+            betRepo.setMoney(it.toMoney())
             val money = if (it.isEmpty()) {
                 "0"
             } else if (it.last() == '.') {

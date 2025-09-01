@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="please_input_content">Por favor, insira o conteúdo</string>
+    <string name="search_bar_hint">Por favor, digite o nome do evento ou nome da equipe</string>
     <string name="delete_all">Excluir Tudo</string>
     <string name="search_finish">Concluído</string>
     <string name="history_record">Histórico de Pesquisa</string>
