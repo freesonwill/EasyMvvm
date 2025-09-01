@@ -18,7 +18,7 @@
         android:id="@+id/lay_top"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="@dimen/dp_6"
+        android:layout_marginHorizontal="@dimen/dp_4"
         android:layout_marginTop="@dimen/dp_10"
         android:orientation="horizontal"
         app:layout_constraintTop_toBottomOf="@id/title_bar">
