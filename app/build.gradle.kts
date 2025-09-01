@@ -37,7 +37,7 @@ android {
             buildConfigField("String", "users", escapedJson.let { "\"$it\"" })
             //user.name优先user.uid
             (userList.find { it.name == name } ?: userList.find { it.uid == uid })?.let { user ->
-                if(name.isNullOrEmpty()) buildConfigField("String", "name", user.name.let { "\"$it\"" })
+                //if(name.isNullOrEmpty()) buildConfigField("String", "name", user.name.let { "\"$it\"" })
                 buildConfigField("int", "uid", user.uid)
                 buildConfigField("String", "token", user.token.let { "\"$it\"" })
             }?: error("both user.name:${name} and user.uid:${uid} not defined in properties")

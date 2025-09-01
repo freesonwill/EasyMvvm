@@ -25,11 +25,11 @@ import arch.cayenne.lib.common.BuildConfig as BuildConfigCom
 class SplashActivity : BaseActivity<SplashViewModel, ActivitySplashBinding>() {
     data class UserConfig(val name: String, val uid: String, val token: String)
 
+    private val users by lazy { GsonUtils.fromJson(BuildConfig.users,Array<UserConfig>::class.java)  }
     private val pair: Pair<Int, String> = if (BuildConfig.BUILD_TYPE == "debug") {
         Pair(BuildConfig.uid, BuildConfig.token)
     } else if (BuildConfig.BUILD_TYPE != "release") {
-        GsonUtils.fromJson(BuildConfig.users,Array<UserConfig>::class.java)
-            .filter { it.name.startsWith("qatest") }
+            users.filter { it.name.startsWith("qatest") }
             .map { it.uid.toInt() to it.token }
             .let { it[Random.nextInt(it.size)] }
     } else {
@@ -37,6 +37,7 @@ class SplashActivity : BaseActivity<SplashViewModel, ActivitySplashBinding>() {
     }
     private val manager: UserDataManager by inject(UserDataManager::class.java)
 
+    private var name:String? = null
     private var uid = 0
     private var token:String = ""
 
@@ -64,7 +65,7 @@ class SplashActivity : BaseActivity<SplashViewModel, ActivitySplashBinding>() {
     override fun initData() {
         super.initData()
         initUidToken()
-        "uid:$uid, token:$token".logd(TAG)
+        "name:${name}, uid:$uid, token:$token".logd(TAG)
         mViewModel.saveUserData(uid, token)  //TODO 實作登入頁後就不需要這個了
         lifecycleScope.launch {
             delay(100)
@@ -86,6 +87,7 @@ class SplashActivity : BaseActivity<SplashViewModel, ActivitySplashBinding>() {
         token = manager.getValue(UserDataKey.KEY_TOKEN,"").let {
             it.ifEmpty { pair.second }
         }
+        name = users.find { it.uid== uid.toString() }?.name
     }
 
     override fun initListener() {
