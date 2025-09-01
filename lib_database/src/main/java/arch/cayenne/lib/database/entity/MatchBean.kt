@@ -126,6 +126,7 @@ data class MarketWithSelections(
 
 data class MarketBeanLite(
     @PrimaryKey val marketId: Long,
+    val ownerMatchId: Long,
     val marketName: String,
     val status: Int,
     var defaultSelectionCount: Int, //這場比賽這個盤口底下的選項個數(ex: 全場讓球底下有三個選項，有可能三個都是佔位符)
@@ -135,6 +136,7 @@ data class SelectionBeanLite(
     val selectionId: Long,
     val detailActive: Boolean,
     val matchId: Long,
+    val marketId: Long,
     val name: String,
     val shortName: String?,
     val odds: Int,
