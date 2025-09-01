@@ -22,6 +22,7 @@ data class BetDetailBean(
     val comboK: Int = 1, // 3串2的3
     val comboV: Int = 1, // 3串2的2
     var sumOdds: Int, // 串關後賠率加總
+    var odds: Int,
     val count: Int = 1, // 場次組合數量
     var inputMoney: Long,
     var status: BetResultStatusEnum? = null

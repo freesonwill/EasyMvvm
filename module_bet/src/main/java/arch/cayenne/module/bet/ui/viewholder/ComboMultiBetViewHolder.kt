@@ -18,7 +18,7 @@ class ComboMultiBetViewHolder(private val mBinding: ItemComboMultiBetBinding, pr
     @SuppressLint("ClickableViewAccessibility")
     fun bind(item: ComboMultiBetBean) {
         val combo = getString(R.string.title_combo_bet_odds).format(item.comboK, item.comboV)
-        val title = "$combo @${item.sumOdds.getOdds()}"
+        val title = "$combo @${item.odds.getOdds()}"
         mBinding.tvTitleCombo.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
                 mBinding.tvTitleCombo.viewTreeObserver.removeOnGlobalLayoutListener(this)

@@ -209,12 +209,12 @@ class BetResultFragment : BasePreLoadBottomSheetFragment<BetResultViewModel, Fra
 
     private fun setAmount(data: List<BetDetailBean>) {
         val symbols = mViewModel.moneySymbol
-        val total = "$symbols${data.sumOf { it.inputMoney }.getFormalMoney()}"
+        val total = "$symbols${data.sumOf { it.inputMoney * it.count }.getFormalMoney()}"
         mBinding.tvAmountMoney.text = total
         val win =
             "$symbols${
                 data.sumOf {
-                    it.inputMoney.getMoney((if (data.size == 1) it.sumOdds.getDisplayOdds() else it.sumOdds.getOdds()).toOdds())
+                    it.inputMoney.getMoney((if (data.size == 1) it.sumOdds.getDisplayOdds() else (it.odds * it.count).getOdds()).toOdds())
                         .toMoney()
                 }.getFormalMoney()
             }"

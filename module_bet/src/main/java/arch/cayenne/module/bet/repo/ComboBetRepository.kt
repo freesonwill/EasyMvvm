@@ -3,8 +3,6 @@ package arch.cayenne.module.bet.repo
 import arch.cayenne.lib.base.data.repository.BaseRepository
 import arch.cayenne.lib.common.data.constants.UserDataKey
 import arch.cayenne.lib.common.data.manager.UserDataManager
-import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
-import arch.cayenne.lib.common.utils.ext.SportStringExt.toOdds
 import arch.cayenne.lib.database.dao.BetDao
 import arch.cayenne.lib.database.entity.BetDetailBean
 import arch.cayenne.lib.database.entity.BetResultStatusEnum
@@ -21,6 +19,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.math.BigDecimal
+import java.math.RoundingMode
 
 class ComboBetRepository(
     override val scope: CoroutineScope,
@@ -116,6 +116,7 @@ class ComboBetRepository(
                         comboK = bean.comboK,
                         comboV = bean.comboV,
                         sumOdds = bean.sumOdds,
+                        odds = bean.odds,
                         count = bean.count,
                         minAmount = bean.minAmount,
                         maxAmount = bean.maxAmount
@@ -137,13 +138,14 @@ class ComboBetRepository(
                 val betId = bet.betId
                 val currentDetail = betDao.getDetail(betId)
                 multiBet.forEach { multiBet ->
-                    if (currentDetail.find { it.serialValue == multiBet.serialValue && it.comboK == multiBet.comboK && it.comboV == multiBet.comboV} == null) {
+                    if (currentDetail.find { it.serialValue == multiBet.serialValue && it.comboK == multiBet.comboK && it.comboV == multiBet.comboV && it.count == multiBet.count} == null) {
                         BetDetailBean(
                             serialValue = multiBet.serialValue,
                             betId = betId,
                             comboK = multiBet.comboK,
                             comboV = multiBet.comboV,
                             sumOdds = multiBet.sumOdds,
+                            odds = multiBet.odds,
                             count = multiBet.count,
                             inputMoney = 0L
                         ).apply {
@@ -212,7 +214,7 @@ class ComboBetRepository(
                     val selection = betDao.getSelections(betId)
                     unregister(selection)
                     val currentDetail = betDao.getDetail(betId)
-                    val tempDetail = if (currentDetail.isEmpty()) {
+                    val tempDetail = currentDetail.ifEmpty {
                         multiBet.map { bean ->
                             BetDetailBean(
                                 serialValue = bean.serialValue,
@@ -221,6 +223,7 @@ class ComboBetRepository(
                                 comboV = bean.comboV,
                                 orderId = "",
                                 sumOdds = bean.sumOdds,
+                                odds = bean.odds,
                                 count = bean.count,
                                 inputMoney = bean.inputMoney,
                                 status = BetResultStatusEnum.CONFIRMING
@@ -228,8 +231,6 @@ class ComboBetRepository(
                         }.apply {
                             betDao.insertDetail(this)
                         }
-                    } else {
-                        currentDetail
                     }
 
 
@@ -290,10 +291,16 @@ class ComboBetRepository(
                 val combinations = data.combinations(k)
                 val odds = when (k) {
                     0 -> 0
-                    else -> oddsList.combinations(k)
-                        .sumOf { it.reduce { acc, l ->
-                            acc.getOdds(l).toOdds()
-                        } }
+                    else -> {
+                        val combinationData = oddsList.combinations(k)
+                        val sumOdds = combinationData
+                            .sumOf {
+                                it.reduce { acc, l ->
+                                    acc * l
+                                }
+                            }
+                        sumOdds.getScaleOdds((combinationData.first().size - 1) * 2)
+                    }
                 }
                 val count = when (k) {
                     0 -> 0
@@ -309,6 +316,7 @@ class ComboBetRepository(
                             comboK = n,
                             comboV = totalCount,
                             sumOdds = totalSumOdds,
+                            odds = totalSumOdds / totalCount,
                             count = totalCount,
                             minAmount = risk.minAmount,
                             maxAmount = risk.maxAmount
@@ -321,6 +329,7 @@ class ComboBetRepository(
                             comboK = k,
                             comboV = 1,
                             sumOdds = odds,
+                            odds = odds / count,
                             count = count,
                             minAmount = risk.minAmount,
                             maxAmount = risk.maxAmount
@@ -359,6 +368,11 @@ class ComboBetRepository(
         }
     }
 
+    private fun Int.getScaleOdds(scale: Int): Int {
+        val divisor = BigDecimal.TEN.pow(scale)
+        return this.toBigDecimal().divide(divisor, scale, RoundingMode.DOWN).toInt()
+    }
+
     private fun calculateMultiBetOddsSums(
         data: List<BetSelectionBean>,
         riskList: List<ComboRiskDataModel>
@@ -375,10 +389,16 @@ class ComboBetRepository(
             riskMap[k]?.let { risk ->
                 val odds = when (k) {
                     0 -> 0
-                    else -> oddsList.combinations(k)
-                        .sumOf { it.reduce { acc, l ->
-                            acc.getOdds(l).toOdds()
-                        } }
+                    else -> {
+                        val combinationData = oddsList.combinations(k)
+                        val sumOdds = combinationData
+                            .sumOf {
+                                it.reduce { acc, l ->
+                                    acc * l
+                                }
+                            }
+                        sumOdds.getScaleOdds((combinationData.first().size - 1) * 2)
+                    }
                 }
                 totalSumOdds += odds
 
