@@ -197,11 +197,10 @@ class LiveChatViewModel(
      *首次检查聊天权限投注额度和余额失败后
      * 每次点击软件盘都查询投注额 根据结果判断是否显示软件盘
      * */
-    fun checkSoftKeyBoardBetAmount() {
+    fun checkSoftKeyBoardBetAmount(keyBoardType: KeyBoardType, flag: Int = 0) {
         viewModelScope.launch {
             val code = chatRepo.checkBetAmount()?.code
             _checkBetAmountLiveData.value = CheckBetResultEnum.getCheckBetResult(code ?: -1)
-
             when (_checkBetAmountLiveData.value) {
                 CheckBetResultEnum.BET_AMOUNT_INVALID -> {
                     toastLiveData.value = R.string.insufficient_bet_amount.getString()
@@ -214,8 +213,7 @@ class LiveChatViewModel(
                 }
 
                 CheckBetResultEnum.SUCCESS -> {
-//                    TODO liveData 通知更新ui
-//                    updateKeyBoard()
+                    updateKeyBoardUi(keyBoardType,flag)
                 }
 
                 null -> {
@@ -252,7 +250,6 @@ class LiveChatViewModel(
             CheckBetResultEnum.BET_AMOUNT_INVALID, CheckBetResultEnum.BALANCE_INVALID -> {
                 false
             }
-
             CheckBetResultEnum.SUCCESS -> true
             null -> false
         }
