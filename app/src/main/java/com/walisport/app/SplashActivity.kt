@@ -20,6 +20,7 @@ import kotlinx.coroutines.launch
 import org.koin.java.KoinJavaComponent.inject
 import kotlin.random.Random
 import kotlin.reflect.KClass
+import arch.cayenne.lib.common.BuildConfig as BuildConfigCom
 
 class SplashActivity : BaseActivity<SplashViewModel, ActivitySplashBinding>() {
     data class UserConfig(val name: String, val uid: String, val token: String)
@@ -36,12 +37,8 @@ class SplashActivity : BaseActivity<SplashViewModel, ActivitySplashBinding>() {
     }
     private val manager: UserDataManager by inject(UserDataManager::class.java)
 
-    private val uid = manager.getValue(UserDataKey.KEY_UID,-1).let {
-        if(it == -1) pair.first else it
-    }
-    private val token = manager.getValue(UserDataKey.KEY_TOKEN,"").let {
-        it.ifEmpty { pair.second }
-    }
+    private var uid = 0
+    private var token:String = ""
 
     override val vbClass: KClass<ActivitySplashBinding> = ActivitySplashBinding::class
     override val vmClass: KClass<SplashViewModel> = SplashViewModel::class
@@ -66,13 +63,29 @@ class SplashActivity : BaseActivity<SplashViewModel, ActivitySplashBinding>() {
 
     override fun initData() {
         super.initData()
+        initUidToken()
         "uid:$uid, token:$token".logd(TAG)
         mViewModel.saveUserData(uid, token)  //TODO 實作登入頁後就不需要這個了
         lifecycleScope.launch {
             delay(100)
             jumpToMainActivity()
         }
+    }
 
+    private fun initUidToken(){
+        "manager.BUILD_TIME:${manager.getValue(UserDataKey.KEY_BUILD_TIME,"")},BuildConfig.BUILD_TIME:${BuildConfigCom.BUILD_TIME}".logd(TAG)
+        //重新安装时，清理uid，token，否则会引发踢下线的bug
+        if(manager.getValue(UserDataKey.KEY_BUILD_TIME,"") != BuildConfigCom.BUILD_TIME){
+            manager.setKeyValue(UserDataKey.KEY_BUILD_TIME,BuildConfigCom.BUILD_TIME)
+            manager.removeValueForKey(UserDataKey.KEY_UID)
+            manager.removeValueForKey(UserDataKey.KEY_TOKEN)
+        }
+        uid = manager.getValue(UserDataKey.KEY_UID,-1).let {
+            if(it == -1) pair.first else it
+        }
+        token = manager.getValue(UserDataKey.KEY_TOKEN,"").let {
+            it.ifEmpty { pair.second }
+        }
     }
 
     override fun initListener() {
