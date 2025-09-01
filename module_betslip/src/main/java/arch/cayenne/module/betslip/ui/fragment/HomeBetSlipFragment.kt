@@ -145,7 +145,13 @@ class HomeBetSlipFragment : BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsl
                     text = pager[position].title
                     gravity = Gravity.CENTER
                     setTextSize(TypedValue.COMPLEX_UNIT_SP, 15f)
-                    setTextColor(SkinnableResourceManager.getColor(requireContext(), arch.cayenne.lib.common.R.color.main_text))
+                    if (position == 0) {
+                        setTypeface(null, Typeface.BOLD)
+                        setTextColor(SkinnableResourceManager.getColor(requireContext(), arch.cayenne.lib.common.R.color.main_text))
+                    } else {
+                        setTypeface(null, Typeface.NORMAL)
+                        setTextColor(SkinnableResourceManager.getColorStateList(requireContext(), arch.cayenne.lib.common.R.color.secondary_text))
+                    }
                     if (!shouldDistributeEvenly) {
                         setPadding(18.dp2px, 0, 18.dp2px, 0)
                     }
@@ -155,6 +161,11 @@ class HomeBetSlipFragment : BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsl
             }.attach()
         }
         mBinding.root.post {
+            (mBinding.tabLayout.getTabAt(0)?.customView as? TextView)?.apply {
+                setTypeface(null, Typeface.BOLD)
+                setTextColor(SkinnableResourceManager.getColor(requireContext(), arch.cayenne.lib.common.R.color.main_text))
+            }
+
             mBinding.tabLayout.clearOnTabSelectedListeners()
             mBinding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab) {
@@ -164,11 +175,17 @@ class HomeBetSlipFragment : BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsl
                         mBinding.customIndicator.animateIndicatorToPosition(tab.position, 0)
                         mBinding.viewPager.setCurrentItem(tab.position, false)
                     }
-                    (tab.customView as? TextView)?.setTypeface(null, Typeface.BOLD)
+                    (tab.customView as? TextView)?.apply {
+                        setTypeface(null, Typeface.BOLD)
+                        setTextColor(SkinnableResourceManager.getColor(requireContext(), arch.cayenne.lib.common.R.color.main_text))
+                    }
                 }
 
                 override fun onTabUnselected(tab: TabLayout.Tab?) {
-                    (tab?.customView as? TextView)?.setTypeface(null, Typeface.NORMAL)
+                    (tab?.customView as? TextView)?.apply {
+                        setTypeface(null, Typeface.NORMAL)
+                        setTextColor(SkinnableResourceManager.getColorStateList(requireContext(), arch.cayenne.lib.common.R.color.secondary_text))
+                    }
                 }
 
                 override fun onTabReselected(tab: TabLayout.Tab?) {
