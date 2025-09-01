@@ -83,6 +83,7 @@ class SingleBetRepository(
                     val detailBean =
                         ComboMultiBetBean(
                             sumOdds = selection.odds,
+                            odds = selection.odds,
                             minAmount = risk.minAmount,
                             maxAmount = risk.maxAmount,
                         )
@@ -92,6 +93,7 @@ class SingleBetRepository(
                 comboFlow.emit(
                     ComboMultiBetBean(
                         sumOdds = selection.odds,
+                        odds = selection.odds,
                         minAmount = 0,
                         maxAmount = 0
                     )
