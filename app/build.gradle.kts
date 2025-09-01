@@ -1,3 +1,4 @@
+import com.google.gson.Gson
 import java.util.Properties
 
 plugins {
@@ -26,8 +27,21 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        buildConfigField("int", "uid", prop.getProperty("user.uid"))
-        buildConfigField("String", "token", prop.getProperty("user.token").let { it->"\"$it\"" })
+        val uid = prop.getProperty("user.uid")?.also { buildConfigField("int", "uid", it) }
+        val token = prop.getProperty("user.token")?.also { buildConfigField("String", "token", it.let { "\"$it\"" }) }
+        val name = prop.getProperty("user.name")?.also {  buildConfigField("String", "name", it.let { "\"$it\"" })}
+        providers.gradleProperty("users").orNull?.let { users->
+            data class UserConfig(val name: String, val uid: String, val token: String)
+            val userList: List<UserConfig> = Gson().fromJson(users, Array<UserConfig>::class.java).toList()
+            val escapedJson = users.replace("\\", "\\\\").replace("\"", "\\\"")
+            buildConfigField("String", "users", escapedJson.let { "\"$it\"" })
+            //user.name优先user.uid
+            (userList.find { it.name == name } ?: userList.find { it.uid == uid })?.let { user ->
+                if(name.isNullOrEmpty()) buildConfigField("String", "name", user.name.let { "\"$it\"" })
+                buildConfigField("int", "uid", user.uid)
+                buildConfigField("String", "token", user.token.let { "\"$it\"" })
+            }?: error("both user.name:${name} and user.uid:${uid} not defined in properties")
+        }
 
         ndk {
             //abiFilters 'armeabi-v7a', 'x86', 'arm64-v8a', 'x86_64'
