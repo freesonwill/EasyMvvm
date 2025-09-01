@@ -138,13 +138,14 @@ class ComboBetRepository(
                 val betId = bet.betId
                 val currentDetail = betDao.getDetail(betId)
                 multiBet.forEach { multiBet ->
-                    if (currentDetail.find { it.serialValue == multiBet.serialValue && it.comboK == multiBet.comboK && it.comboV == multiBet.comboV} == null) {
+                    if (currentDetail.find { it.serialValue == multiBet.serialValue && it.comboK == multiBet.comboK && it.comboV == multiBet.comboV && it.count == multiBet.count} == null) {
                         BetDetailBean(
                             serialValue = multiBet.serialValue,
                             betId = betId,
                             comboK = multiBet.comboK,
                             comboV = multiBet.comboV,
                             sumOdds = multiBet.sumOdds,
+                            odds = multiBet.odds,
                             count = multiBet.count,
                             inputMoney = 0L
                         ).apply {
@@ -221,7 +222,8 @@ class ComboBetRepository(
                                 comboK = bean.comboK,
                                 comboV = bean.comboV,
                                 orderId = "",
-                                sumOdds = bean.odds * bean.count,
+                                sumOdds = bean.sumOdds,
+                                odds = bean.odds,
                                 count = bean.count,
                                 inputMoney = bean.inputMoney,
                                 status = BetResultStatusEnum.CONFIRMING

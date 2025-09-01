@@ -125,6 +125,7 @@ class SingleBetRepository(
                 BetDetailBean(
                     betId = it.betId,
                     sumOdds = odds,
+                    odds = odds,
                     inputMoney = 0L
                 )
             )
@@ -146,6 +147,7 @@ class SingleBetRepository(
                         val newDetail = BetDetailBean(
                             betId = it.betId,
                             sumOdds = data.odds,
+                            odds = data.odds,
                             inputMoney = money
                         )
                         betDao.insertDetail(newDetail)
@@ -168,6 +170,7 @@ class SingleBetRepository(
                         BetDetailBean(
                             betId = betId,
                             sumOdds = selection.odds,
+                            odds = selection.odds,
                             inputMoney = money
                         ).apply {
                             betDao.insertDetail(this)
