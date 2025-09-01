@@ -10,14 +10,15 @@ import arch.cayenne.lib.common.utils.ext.getFormatDate
 import arch.cayenne.module.betslip.R
 import arch.cayenne.module.betslip.data.constants.BetSlipDateFilterEnum
 import arch.cayenne.module.betslip.data.model.DateFilterBean
+import arch.cayenne.module.betslip.data.model.HomeSlipShowTypeEnum
 import arch.cayenne.module.betslip.data.model.SportFilterBean
 import arch.cayenne.module.betslip.data.repo.HomeBetSlipRepository
 import kotlinx.coroutines.launch
 
 class HomeBetSlipViewModel(private val repo: HomeBetSlipRepository) : BaseViewModel() {
 
-    private val _isShowSportView = MutableLiveData<Event<Boolean>>()
-    val isShowSportView: LiveData<Event<Boolean>> get() = _isShowSportView
+    private val _onShowTypeListener = MutableLiveData<Event<HomeSlipShowTypeEnum>>()
+    val onShowTypeListener: LiveData<Event<HomeSlipShowTypeEnum>> get() = _onShowTypeListener
 
     private val _onDateFilter = MutableLiveData<DateFilterBean>()
     val onDateFilter: LiveData<DateFilterBean> get() = _onDateFilter
@@ -64,15 +65,12 @@ class HomeBetSlipViewModel(private val repo: HomeBetSlipRepository) : BaseViewMo
         }
     }
 
-    fun setSportViewExpend() {
-        _isShowSportView.value = Event(true)
-    }
-
-    fun setSportViewCollapse() {
-        _isShowSportView.value = Event(false)
-    }
-
-    fun toggleSportView() {
-        _isShowSportView.value = Event(!(_isShowSportView.value?.peekContent() ?: false))
+    fun setShowType(type: HomeSlipShowTypeEnum) {
+        val current = _onShowTypeListener.value?.peekContent()
+        if (current == type && current != HomeSlipShowTypeEnum.NONE) {
+            _onShowTypeListener.value = Event(HomeSlipShowTypeEnum.NONE)
+        } else {
+            _onShowTypeListener.value = Event(type)
+        }
     }
 }

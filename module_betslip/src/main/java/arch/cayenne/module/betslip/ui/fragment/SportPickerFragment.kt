@@ -90,22 +90,16 @@ class SportPickerFragment private constructor() :
         }
     }
 
-    private fun getTopY(): Int {
-        // 取得目標 View 在螢幕上的位置
-        val location = IntArray(2)
-        val targetView = mBinding.root
-        targetView.getLocationOnScreen(location)
-        return location[1]
-    }
-
     private fun initDim() {
 
         // 獲取螢幕總高度
         val screenHeight = resources.displayMetrics.heightPixels
 
+        val navigatorHeight = ViewUtils.getNavigationBarHeight(requireContext())
+
         val params = WindowManager.LayoutParams(
             WindowManager.LayoutParams.MATCH_PARENT, // 寬度填滿
-            screenHeight + ViewUtils.getNavigationBarHeight(requireContext()),
+            screenHeight + navigatorHeight,
             0,
             WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
                     or WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
@@ -115,23 +109,15 @@ class SportPickerFragment private constructor() :
         )
 
         params.gravity = Gravity.TOP or Gravity.START
-//        dimController.hideDim()
         dimController.updateLayoutParams(params)
-        mBinding.maskBottomView.setOnClickListener {
+        mBinding.maskView.setOnClickListener {
             collapseView()
         }
-        dimController.setTranslationY(getTopY().toFloat())
-    }
-
-    private fun removeDim() {
-        dimController.hideDim()
-        mBinding.maskView.alpha = 0f
-        mBinding.maskView.visibility = View.GONE
+        dimController.setTranslationY(screenHeight.toFloat())
     }
 
     fun dismiss() {
         if (parentFragment != null) {
-            parentFragmentManager.setFragmentResult(Config.KEY_RESULT, resultBundle)
             mBinding.clFilter.post {
                 parentFragmentManager.beginTransaction()
                     .setReorderingAllowed(true) // 避免 layout 重新整理過猛
@@ -145,19 +131,14 @@ class SportPickerFragment private constructor() :
         if (isShow) return
         isShow = true
         mBinding.root.bringToFront()
-        val root = mBinding.root
+        val root = mBinding.clFilter
         val height = mBinding.clFilter.height
 
-        val startY = getTopY().toFloat()
         ObjectAnimator.ofFloat(root, "translationY", -height.toFloat(), 0f).apply {
             duration = AnimationConstants.DIALOG_POPUP_DURATION
-            addUpdateListener {
-                val value = it.animatedValue as Float
-                dimController.showDim()
-                dimController.setTranslationY(startY + (height + value))
-            }
             doOnStart{
                 mBinding.root.visibility = View.VISIBLE
+                dimController.showDim()
             }
             start()
         }
@@ -168,65 +149,27 @@ class SportPickerFragment private constructor() :
         val dimAnimator = dimController.getHideAnimator() ?: return
         isShow = false
         mBinding.root.bringToFront()
-        val root = mBinding.root
+        val root = mBinding.clFilter
         val targetHeight = mBinding.clFilter.height.toFloat()
-        val startY = getTopY().toFloat()
-        val sheetAnimator = ObjectAnimator.ofFloat(root, "translationY", 0f, -targetHeight).apply {
+        val sheetAnimator = ObjectAnimator.ofFloat(root, "translationY", root.translationY, -targetHeight).apply {
             duration = AnimationConstants.DIALOG_POPUP_DURATION
-            addUpdateListener {
-                val value = it.animatedValue as Float
-                if (dimAnimator.isRunning) {
-                    dimController.setTranslationY(startY + (targetHeight + value))
-                }
-            }
             doOnEnd {
                 mBinding.root.visibility = View.INVISIBLE
                 dismiss()
             }
-        }
-        dimController.setDimAlphaListener(viewLifecycleOwner, object : DimController.DimAlphaListener {
-            override fun onDimAlphaChanged(alpha: Float) {
-                if (mBinding.maskView.alpha == 0.75f) {
-                    mBinding.maskView.alpha = alpha
-                } else {
-                    if (alpha == DimController.TARGET_DIM) {
-                        dimAnimator.cancel()
-                        dimController.reset()
-                    } else {
-                        mBinding.maskView.alpha = alpha
-                        if (alpha == 0f) {
-                            mBinding.maskView.visibility = View.GONE
-                        }
-                    }
-                }
+            doOnStart {
+                parentFragmentManager.setFragmentResult(Config.KEY_RESULT, resultBundle)
             }
-        })
+        }
+        val maskAnimator = ObjectAnimator.ofFloat(mBinding.maskView, "alpha", mBinding.maskView.alpha, 0f)
 
+        maskAnimator.duration = sheetAnimator.duration
+        maskAnimator.interpolator = sheetAnimator.interpolator
         dimAnimator.duration = sheetAnimator.duration
         dimAnimator.interpolator = sheetAnimator.interpolator
 
         AnimatorSet().apply {
-            playTogether(sheetAnimator, dimAnimator)
-            start()
-        }
-    }
-
-    fun getCollapseAnimator(): ObjectAnimator? {
-        if (!isShow) return null
-        isShow = false
-        val root = mBinding.root
-        val targetHeight = mBinding.clFilter.height
-        return ObjectAnimator.ofFloat(root, "translationY", 0f, -targetHeight.toFloat()).apply {
-            duration = AnimationConstants.DIALOG_POPUP_DURATION
-            doOnStart {
-                dimController.reset()
-                mBinding.maskView.alpha = 0f
-                mBinding.maskView.visibility = View.GONE
-            }
-            doOnEnd {
-                mBinding.root.visibility = View.INVISIBLE
-                dismiss()
-            }
+            playTogether(sheetAnimator, dimAnimator, maskAnimator)
             start()
         }
     }
@@ -253,5 +196,12 @@ class SportPickerFragment private constructor() :
     override fun onBackPressed(): Boolean {
         collapseView()
         return super.onBackPressed()
+    }
+
+    override fun onDestroy() {
+        if (isShow) {
+            dimController.hideDim()
+        }
+        super.onDestroy()
     }
 }
