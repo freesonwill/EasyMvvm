@@ -490,7 +490,7 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
             if (indexOfTabs != -1) {
                 tlDateList.getTabAt(indexOfTabs)?.select()
             } else {
-                tlDateList.addTab(createDateTab(dateTriple.first, dateTriple.second), true)
+               tlDateList.addTabAndScrollPrecisely(createDateTab(dateTriple.first, dateTriple.second))
                 setupDateTabLayoutParams(tlDateList, false)
             }
         }
