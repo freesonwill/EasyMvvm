@@ -25,16 +25,21 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class LiveChatViewModel(private val chatRepo: LiveChatRepository,private val userDataManager: UserDataManager) : BaseViewModel() {
+class LiveChatViewModel(
+    private val chatRepo: LiveChatRepository,
+    private val userDataManager: UserDataManager
+) : BaseViewModel() {
     private var matchId: Long? = null
-//    private val _currentSoftKeyboard = MutableStateFlow(KeyBoardType.CHAT)
+
+    //    private val _currentSoftKeyboard = MutableStateFlow(KeyBoardType.CHAT)
     private val _loginLiveData = MutableLiveData<ChatLoginResponseData?>()
     private val _sendMsgResultLiveData = MutableLiveData<ChatSendMsgResponse?>()
     private val _sendMsgLiveData = MutableLiveData<String>()
     private val _historyLiveData = MutableLiveData<Boolean>()
     private val _newMsgFLow = MutableStateFlow<MsgNotify?>(null)
     private val _checkBetAmountLiveData = MutableLiveData<CheckBetResultEnum>()
-//    private val _softKeyBoardListener = MutableStateFlow(KeyBoardType.CHAT)
+
+    //    private val _softKeyBoardListener = MutableStateFlow(KeyBoardType.CHAT)
     private val _updateKeyboardUiStatus = MutableLiveData(KeyBoardType.CHAT)
 
     //整个表情键盘页面的整体高度
@@ -74,27 +79,31 @@ class LiveChatViewModel(private val chatRepo: LiveChatRepository,private val use
 //    val softKeyBoardListener: StateFlow<KeyBoardType> = _softKeyBoardListener
 
     //更新键盘盘状态
-    val updateKeyboardUiStatus:LiveData<KeyBoardType> = _updateKeyboardUiStatus
+    val updateKeyboardUiStatus: LiveData<KeyBoardType> = _updateKeyboardUiStatus
 
     val toastLiveData: MutableLiveData<String> = MutableLiveData()
 
 
     //软件盘高度
-    var softKeyBoardHeight:Int = 0
+    var softKeyBoardHeight: Int = 0
+
+    //软件盘弹出时间
+//    var softKeyBoardDuration: Long = 170L
 
     //软件盘状态 true 打开 false 关闭
-    var softKeyboardStatus:Boolean = false
+    var softKeyboardStatus: Boolean = false
 
     //键盘点击的意向
-    var clickKeyBoardType:KeyBoardType = KeyBoardType.CHAT
+    var clickKeyBoardType: KeyBoardType = KeyBoardType.CHAT
 
     //当前键盘状态
-    var currentKeyBoardType:KeyBoardType = KeyBoardType.CHAT
+    var currentKeyBoardType: KeyBoardType = KeyBoardType.CHAT
 
 
     fun setArguments(matchId: Long?) {
         this.matchId = matchId
         softKeyBoardHeight = userDataManager.getValue(UserDataKey.KEY_SOFT_KEYBOARD_HEIGHT,0)
+//        softKeyBoardDuration = userDataManager.getValue(UserDataKey.KEY_SOFT_KEYBOARD_DURATION,0)
     }
 
     /**
@@ -198,14 +207,17 @@ class LiveChatViewModel(private val chatRepo: LiveChatRepository,private val use
                     toastLiveData.value = R.string.insufficient_bet_amount.getString()
                     clickKeyBoardType = KeyBoardType.CHAT
                 }
+
                 CheckBetResultEnum.BALANCE_INVALID -> {
                     toastLiveData.value = R.string.insufficient_balance.getString()
                     clickKeyBoardType = KeyBoardType.CHAT
                 }
+
                 CheckBetResultEnum.SUCCESS -> {
 //                    TODO liveData 通知更新ui
 //                    updateKeyBoard()
                 }
+
                 null -> {
                     toastLiveData.value = R.string.insufficient_fali.getString()
                     clickKeyBoardType = KeyBoardType.CHAT
@@ -235,11 +247,12 @@ class LiveChatViewModel(private val chatRepo: LiveChatRepository,private val use
     /**
      * 弹出软件盘 表情键盘时检查是否可以继续弹出对应键盘
      * */
-     fun checkSoftKeyboardVisible(): Boolean {
+    fun checkSoftKeyboardVisible(): Boolean {
         return when (checkBetAmountLiveData.value) { //聊天权限不足时每弹出都需要检查权限
             CheckBetResultEnum.BET_AMOUNT_INVALID, CheckBetResultEnum.BALANCE_INVALID -> {
                 false
             }
+
             CheckBetResultEnum.SUCCESS -> true
             null -> false
         }
@@ -282,8 +295,8 @@ class LiveChatViewModel(private val chatRepo: LiveChatRepository,private val use
      * 由于系统特性，当软件盘出现时，再次点击Editext软件盘会消失
      * 消失后会显示
      * */
-    fun addSoftKeyBoardEvent(keyBoardType: KeyBoardType,flag:Int = 0) {
-        if(keyBoardType == clickKeyBoardType){
+    fun addSoftKeyBoardEvent(keyBoardType: KeyBoardType, flag: Int = 0) {
+        if (keyBoardType == clickKeyBoardType) {
             return
         }
         this.clickKeyBoardType = keyBoardType
@@ -312,19 +325,15 @@ class LiveChatViewModel(private val chatRepo: LiveChatRepository,private val use
 
     fun getConnectStateFlow(): StateFlow<SocketConnectState> = chatRepo.getConnectStateFlow()
 
-    fun saveUpdateSoftKeyBoardHeight(softHeight:Int){
-        if(softKeyBoardHeight != softHeight){
-            softKeyBoardHeight = softHeight
-            userDataManager.setKeyValue(UserDataKey.KEY_SOFT_KEYBOARD_HEIGHT,softKeyBoardHeight)
-        }
+    fun saveUpdateSoftKeyBoardHeight() {
+        userDataManager.setKeyValue(UserDataKey.KEY_SOFT_KEYBOARD_HEIGHT, softKeyBoardHeight)
+//        userDataManager.setKeyValue(UserDataKey.KEY_SOFT_KEYBOARD_DURATION, softKeyBoardDuration)
     }
 
-    fun updateKeyBoardUi(keyBoardType: KeyBoardType,flag:Int){
-        addSoftKeyBoardEvent(keyBoardType,flag)
+    fun updateKeyBoardUi(keyBoardType: KeyBoardType, flag: Int) {
+        addSoftKeyBoardEvent(keyBoardType, flag)
         _updateKeyboardUiStatus.value = keyBoardType
     }
-
-
 
 
 }

@@ -18,12 +18,13 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/screen_content"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            >
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/input_content"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_62"
+                android:layout_height="wrap_content"
                 app:layout_constraintBottom_toBottomOf="parent"
                 android:paddingVertical="@dimen/dp_11">
 

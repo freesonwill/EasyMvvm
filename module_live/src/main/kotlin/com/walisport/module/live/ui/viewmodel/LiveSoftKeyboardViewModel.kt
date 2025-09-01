@@ -2,9 +2,7 @@ package com.walisport.module.live.ui.viewmodel
 
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.data.constants.SportEnum
-import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.skin.LanguageManager
 import com.walisport.module.live.R
 import com.walisport.module.live.data.constants.BidEmojiEnum
@@ -15,7 +13,6 @@ import com.walisport.module.live.data.constants.KeyboardActionType
 import com.walisport.module.live.data.model.EmojiData
 import com.walisport.module.live.data.model.KeyBoardTabData
 import com.walisport.module.live.data.model.SoftData
-import com.walisport.module.live.ui.LiveChatFragment
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
 
@@ -105,7 +102,7 @@ class LiveSoftKeyboardViewModel : BaseViewModel() {
     /**
      * 判断动画类型
      * */
-    fun getAnimationType(listenerValue:KeyBoardType,currentValue:KeyBoardType): KeyboardActionType {
+    fun getKeyBoardActionType(listenerValue:KeyBoardType, currentValue:KeyBoardType): KeyboardActionType {
 
         return  when(currentValue){
             KeyBoardType.CHAT ->{

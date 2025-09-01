@@ -61,30 +61,29 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
     @SuppressLint("ClickableViewAccessibility")
     override fun initListener() {
 
-//        mBinding.main.setOnTouchListener { v, event ->
-//            if (event.action == MotionEvent.ACTION_DOWN && mViewModel.currentKeyBoardType != KeyBoardType.CHAT) {
-//                showChat(9)
-//                return@setOnTouchListener true
-//            }
-//            return@setOnTouchListener false
-//        }
-//        mBinding.liveChatRecycler.addOnItemTouchListener(object : RecyclerView.OnItemTouchListener {
-//            override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
-//                if (e.action == MotionEvent.ACTION_UP && mViewModel.currentKeyBoardType != KeyBoardType.CHAT) {
-//                    showChat(7)
-//                }
-//                return false
-//            }
-//
-//            override fun onTouchEvent(rv: RecyclerView, e: MotionEvent) {
-//            }
-//
-//            override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {
-//            }
-//        })
+        mBinding.main.setOnTouchListener { v, event ->
+            if (event.action == MotionEvent.ACTION_DOWN && mViewModel.currentKeyBoardType != KeyBoardType.CHAT) {
+                showChat(9)
+                return@setOnTouchListener true
+            }
+            return@setOnTouchListener false
+        }
+        mBinding.liveChatRecycler.addOnItemTouchListener(object : RecyclerView.OnItemTouchListener {
+            override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
+                if (e.action == MotionEvent.ACTION_UP && mViewModel.currentKeyBoardType != KeyBoardType.CHAT) {
+                    showChat(7)
+                }
+                return false
+            }
+
+            override fun onTouchEvent(rv: RecyclerView, e: MotionEvent) {
+            }
+
+            override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {
+            }
+        })
 
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
-            "onBack ${mViewModel.currentKeyBoardType}".logd("aaa")
             if (mViewModel.currentKeyBoardType != KeyBoardType.CHAT) {
                 showChat(1)
             } else {
