@@ -118,7 +118,6 @@ class SportPickerFragment private constructor() :
 
     fun dismiss() {
         if (parentFragment != null) {
-            parentFragmentManager.setFragmentResult(Config.KEY_RESULT, resultBundle)
             mBinding.clFilter.post {
                 parentFragmentManager.beginTransaction()
                     .setReorderingAllowed(true) // 避免 layout 重新整理過猛
@@ -157,6 +156,9 @@ class SportPickerFragment private constructor() :
             doOnEnd {
                 mBinding.root.visibility = View.INVISIBLE
                 dismiss()
+            }
+            doOnStart {
+                parentFragmentManager.setFragmentResult(Config.KEY_RESULT, resultBundle)
             }
         }
         val maskAnimator = ObjectAnimator.ofFloat(mBinding.maskView, "alpha", mBinding.maskView.alpha, 0f)

@@ -1,7 +1,7 @@
 package arch.cayenne.module.betslip.ui.fragment
 
-import android.content.DialogInterface
 import android.os.Bundle
+import android.view.View
 import android.view.animation.Animation
 import android.view.animation.LinearInterpolator
 import android.view.animation.TranslateAnimation
@@ -243,12 +243,14 @@ class DatePickerFragment private constructor() :
         initDayPicker(calendar)
     }
 
+    override fun playExitAnimations(doStart: (() -> Unit)?, doEnd: (() -> Unit)?) {
+        super.playExitAnimations({
+            backgroundView?.visibility = View.INVISIBLE
+            if (!resultBundle.containsKey(Config.VALUE_SELECTED_DATE)) {
+                // 如果沒有選擇日期，則清除結果
+                parentFragmentManager.setFragmentResult(Config.KEY_RESULT, resultBundle)
+            }
 
-    override fun onDismiss(dialog: DialogInterface) {
-        if (!resultBundle.containsKey(Config.VALUE_SELECTED_DATE)) {
-            // 如果沒有選擇日期，則清除結果
-            parentFragmentManager.setFragmentResult(Config.KEY_RESULT, resultBundle)
-        }
-        super.onDismiss(dialog)
+        }, doEnd)
     }
 }
