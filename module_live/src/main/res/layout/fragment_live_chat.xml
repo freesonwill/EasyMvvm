@@ -15,12 +15,8 @@
         android:id="@+id/main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/main_background">
-
-        <arch.cayenne.lib.common.ui.view.DynamicStateLayout
-            android:id="@+id/dynamic_state"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+        android:background="@color/main_background"
+        android:orientation="vertical">
 
 
         <androidx.constraintlayout.widget.Group
@@ -29,26 +25,29 @@
             android:layout_height="wrap_content"
             app:constraint_referenced_ids="live_chat_recycler,live_chat_keyboard" />
 
+        <arch.cayenne.lib.common.ui.view.DynamicStateLayout
+            android:id="@+id/dynamic_state"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/live_chat_recycler"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginTop="@dimen/dp_12"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginBottom="@dimen/dp_62"
+            app:layout_constraintBottom_toBottomOf="parent"
             />
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/live_chat_keyboard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintVertical_bias="1"
             />
 
     </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
+
+
 
 </layout>
