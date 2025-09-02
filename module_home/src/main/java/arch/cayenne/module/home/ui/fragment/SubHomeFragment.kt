@@ -504,7 +504,7 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
                     val params = layoutParams as LinearLayout.LayoutParams
                     params.width = 56.dp2px
                     params.height = 50.dp2px
-                    params.marginStart = 5.dp2px
+                    params.marginStart = 4.dp2px
                     layoutParams = params
                     setBackgroundResource(R.drawable.selector_date_tab_bg)
                     if (clearSelected) isSelected = false
