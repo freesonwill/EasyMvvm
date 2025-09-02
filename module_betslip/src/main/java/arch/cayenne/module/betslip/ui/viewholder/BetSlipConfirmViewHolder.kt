@@ -52,7 +52,8 @@ class BetSlipConfirmViewHolder(binding: ViewBinding, betSlipType: BetSlipEnum) :
             item.let { order ->
                 it.betConfirmTvDate.text = order.betTime.getDetailFormatDate()
                 it.betConfirmTvBetcodeValue.text = order.betId
-                it.betConfirmTvOddsValue.text = order.odds.getDisplayOdds()
+                val odds = "@${order.odds.getDisplayOdds()}"
+                it.betConfirmTvOddsValue.text = odds
                 val betAmount = "${CurrencySymbols.getSymbol(order.currency)}${order.betAmount.getFormalMoney()}"
                 it.betConfirmTvBettingValue.text = betAmount
                 val exceptAmount = "${CurrencySymbols.getSymbol(order.currency)}${BetSlipUtils.expectMaxAmount(order.betAmount, order.odds)}"
