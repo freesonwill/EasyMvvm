@@ -65,7 +65,8 @@ class BetSlipUnsettledViewHolder(binding: ViewBinding, betSlipType: BetSlipEnum)
             it.betUnsettledBtSettle.isVisible = isCanSettle
             it.betUnsettledBtSettle.tag = adapterPosition
             it.betUnsettledTvBetcodeValue.text = order.betId
-            it.betUnsettledTvOddsValue.text = order.odds.getDisplayOdds()
+            val odds = "@${order.odds.getDisplayOdds()}"
+            it.betUnsettledTvOddsValue.text = odds
             val betAmount = "${CurrencySymbols.getSymbol(order.currency)}${(order.betAmount - order.earlyBetAmount).getFormalMoney()}"
             it.betUnsettledTvBettingValue.text = betAmount
             val exceptAmount = "${CurrencySymbols.getSymbol(order.currency)}${BetSlipUtils.expectMaxAmount(order.betAmount, order.odds)}"
@@ -77,7 +78,7 @@ class BetSlipUnsettledViewHolder(binding: ViewBinding, betSlipType: BetSlipEnum)
             it.groupCrossborder.isVisible = flag
 
             if (flag) {
-                val combo = R.string.title_combo_bet_odds.getString(order.comboK, order.comboV)
+                val combo = "${R.string.title_combo_bet_odds.getString(order.comboK, order.comboV)}*${order.comboCount}"
                 it.betUnsettledTvCrossborderValue.text = combo
             }
             it.groupEarlysettle.isVisible = order.earlyBetAmount > 0 //提前结算部分有金额才显示
