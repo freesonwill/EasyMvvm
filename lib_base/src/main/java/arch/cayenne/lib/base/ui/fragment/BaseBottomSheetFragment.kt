@@ -148,7 +148,6 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
         }
         val sheet = sheetContainer ?: return
 
-        dimController.checkLayoutParams()
         val sheetAnim = enterAnimation()
         val offY = sheet.translationY
         val startY = sheet.height.toFloat()
@@ -181,7 +180,6 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
         val sheet = sheetContainer ?: return
         val otherSheetAnimator = otherViewAnimation?.clone() ?: return
         // bottom sheet 上滑動畫
-        dimController.checkLayoutParams()
         val sheetContainerSheetAnim = enterAnimation()
         val offY = sheet.translationY
         val startY = sheet.height.toFloat()

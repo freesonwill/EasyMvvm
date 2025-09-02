@@ -27,6 +27,7 @@ class DimController private constructor() {
 
     private var dimView: View? = null
     private var hostMap = mutableMapOf<Int, DimInterface>()
+    private var canChangeDim = true
 
     fun findAnyShowing(host: DimInterface): Boolean {
         return if (hostMap.isEmpty()) {
@@ -41,7 +42,6 @@ class DimController private constructor() {
     private fun init(host: DimInterface) {
         register(host)
         if (dimView != null) {
-            checkLayoutParams()
             return
         }
         val context = host.getHostFragment().requireContext()
@@ -70,16 +70,6 @@ class DimController private constructor() {
         })
     }
 
-    fun checkLayoutParams() {
-        val v = dimView ?: return
-        val params = v.layoutParams as WindowManager.LayoutParams
-        val basicParams = getBasicLayoutParams()
-        if (params.width != basicParams.width || params.height != basicParams.height) {
-            updateLayoutParams(basicParams)
-            v.translationY = 0f
-        }
-    }
-
     private fun getBasicLayoutParams(): WindowManager.LayoutParams {
         val params = WindowManager.LayoutParams(
             ViewGroup.LayoutParams.MATCH_PARENT,
@@ -95,44 +85,27 @@ class DimController private constructor() {
         return params
     }
 
-    fun updateLayoutParams(params: WindowManager.LayoutParams) {
-        val v = dimView ?: return
-        val currentParams = v.layoutParams as WindowManager.LayoutParams
-        currentParams.width = params.width
-        currentParams.height = params.height
-        currentParams.x = params.x
-        currentParams.y = params.y
-        currentParams.flags = params.flags
-        currentParams.format = params.format
-        currentParams.gravity = params.gravity
+    fun stopChangeDim() {
+        canChangeDim = false
+    }
 
-        val windowManager = v.context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
-        windowManager.updateViewLayout(v, currentParams)
+    fun allowChangeDim() {
+        canChangeDim = true
     }
 
     fun showDim() {
-        if (dimView?.alpha == TARGET_DIM) return
+        if (dimView?.alpha == TARGET_DIM || !canChangeDim) return
         dimView?.alpha = TARGET_DIM
     }
 
     fun hideDim() {
-        if (dimView?.alpha == 0f) return
+        if (dimView?.alpha == 0f || !canChangeDim) return
         dimView?.alpha = 0f
     }
 
     fun setDimAlpha(alpha: Float) {
+        if (!canChangeDim) return
         dimView?.alpha = alpha.coerceIn(0f, 1f)
-    }
-
-    fun setTranslationY(y: Float) {
-        dimView?.translationY = y
-    }
-
-    fun reset() {
-        val v = dimView ?: return
-        val params = getBasicLayoutParams()
-        updateLayoutParams(params)
-        v.translationY = 0f
     }
 
     fun getHideAnimator(): ObjectAnimator? {
@@ -140,7 +113,9 @@ class DimController private constructor() {
         return ObjectAnimator.ofFloat(v, "alpha", v.alpha, 0f).apply {
             addUpdateListener {
                 val value = it.animatedValue as Float
-                v.alpha = value
+                if (!canChangeDim) {
+                    v.alpha = value
+                }
             }
             doOnEnd {
                 hideDim()

@@ -50,9 +50,10 @@ class SportPickerFragment private constructor() :
         })
     }
 
-    private val dimController by lazy {
+    private val dimController: DimController by lazy {
         DimController.getInstance(this)
     }
+    private var dimView: View? = null
 
     private var isShow = false
 
@@ -78,6 +79,9 @@ class SportPickerFragment private constructor() :
         mBinding.tvConfirm.setOnClickListener {
             sendResult()
         }
+        mBinding.maskView.setOnClickListener {
+            collapseView()
+        }
     }
 
     override suspend fun createObserver() {
@@ -102,7 +106,7 @@ class SportPickerFragment private constructor() :
         val params = WindowManager.LayoutParams(
             WindowManager.LayoutParams.MATCH_PARENT, // 寬度填滿
             screenHeight + navigatorHeight,
-            0,
+            WindowManager.LayoutParams.TYPE_APPLICATION_ATTACHED_DIALOG,
             WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
                     or WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
                     or WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
@@ -111,11 +115,16 @@ class SportPickerFragment private constructor() :
         )
 
         params.gravity = Gravity.TOP or Gravity.START
-        dimController.updateLayoutParams(params)
-        mBinding.maskView.setOnClickListener {
-            collapseView()
+
+        val windowManager = requireContext().getSystemService(Context.WINDOW_SERVICE) as WindowManager
+
+        val v = View(context).apply {
+            setBackgroundColor(Color.BLACK)
+            alpha = 0f
+            dimView = this
+            translationY = screenHeight.toFloat()
         }
-        dimController.setTranslationY(screenHeight.toFloat())
+        windowManager.addView(v, params)
     }
 
     fun dismiss() {
@@ -140,7 +149,7 @@ class SportPickerFragment private constructor() :
             duration = AnimationConstants.DIALOG_POPUP_DURATION
             doOnStart{
                 mBinding.root.visibility = View.VISIBLE
-                dimController.showDim()
+                dimView?.alpha = 0.75f
             }
             start()
         }
@@ -148,7 +157,7 @@ class SportPickerFragment private constructor() :
 
     fun collapseView() {
         if (!isShow) return
-        val dimAnimator = dimController.getHideAnimator() ?: return
+        val dim = dimView ?: return
         isShow = false
         mBinding.root.bringToFront()
         val root = mBinding.clFilter
@@ -157,6 +166,7 @@ class SportPickerFragment private constructor() :
             duration = AnimationConstants.DIALOG_POPUP_DURATION
             doOnEnd {
                 mBinding.root.visibility = View.INVISIBLE
+                removeDim()
                 dismiss()
             }
             doOnStart {
@@ -164,6 +174,12 @@ class SportPickerFragment private constructor() :
             }
         }
         val maskAnimator = ObjectAnimator.ofFloat(mBinding.maskView, "alpha", mBinding.maskView.alpha, 0f)
+        val dimAnimator = ObjectAnimator.ofFloat(dim, "alpha", dimView?.alpha ?: 0.75f, 0f).apply {
+            addUpdateListener {
+                val value = it.animatedValue as Float
+                dim.alpha = value
+            }
+        }
 
         maskAnimator.duration = sheetAnimator.duration
         maskAnimator.interpolator = sheetAnimator.interpolator
@@ -195,6 +211,13 @@ class SportPickerFragment private constructor() :
         collapseView()
     }
 
+    private fun removeDim() {
+        val dim = dimView ?: return
+        val windowManager = requireContext().getSystemService(Context.WINDOW_SERVICE) as WindowManager
+        windowManager.removeView(dim)
+        dimView = null
+    }
+
     override fun onBackPressed(): Boolean {
         collapseView()
         return super.onBackPressed()
@@ -202,13 +225,17 @@ class SportPickerFragment private constructor() :
 
     override fun onDestroy() {
         if (isShow) {
-            dimController.hideDim()
+            removeDim()
         }
         super.onDestroy()
     }
 
     override fun getIsDismissing(): Boolean {
         return isDetached
+    }
+
+    override fun getIsDismissing(): Boolean {
+        return true
     }
 
     override fun getHostFragment(): Fragment {
