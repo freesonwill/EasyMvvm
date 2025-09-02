@@ -37,20 +37,28 @@ class FloatingButtonFragment private constructor(): BaseFragment<FloatingButtonV
 
     override fun initListener() {
         mBinding.fab.setPerformClick {
-            findSimilarDialog(requireActivity().supportFragmentManager)
-            BetSheetFragment.show(requireActivity())
+            val f = findSimilarDialog(requireActivity().supportFragmentManager)
+            if (f == null) {
+                BetSheetFragment.show(requireActivity())
+            } else {
+                f.collapse {
+                    BetSheetFragment.show(requireActivity())
+                }
+            }
         }
     }
 
-    private fun findSimilarDialog(fragmentManager: FragmentManager) {
-        val fragments = fragmentManager.fragments
-        for (fragment in fragments) {
+    private fun findSimilarDialog(fragmentManager: FragmentManager): SimilarDialogInterface? {
+        fragmentManager.fragments.forEach { fragment ->
             if (fragment is SimilarDialogInterface && fragment.isVisible) {
-                fragment.collapse()
-            } else {
-                findSimilarDialog(fragment.childFragmentManager)
+                return fragment
+            }
+            val childResult = findSimilarDialog(fragment.childFragmentManager)
+            if (childResult != null) {
+                return childResult
             }
         }
+        return null
     }
 
     override suspend fun createObserver() {

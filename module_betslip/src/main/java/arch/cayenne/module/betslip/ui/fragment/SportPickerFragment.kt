@@ -242,7 +242,7 @@ class SportPickerFragment private constructor() :
         super.onDestroy()
     }
 
-    override fun collapse() {
+    override fun collapse(doSomething: (() -> Unit)?) {
         isShow = false
         mBinding.root.bringToFront()
         val root = mBinding.clFilter
@@ -267,12 +267,11 @@ class SportPickerFragment private constructor() :
                 removeDim()
             }
             doOnStart {
-                dimController.stopChangeDim()
                 lifecycleScope.launch {
                     delay(AnimationConstants.DIALOG_POPUP_DURATION / 2)
                     this.cancel()
                     removeDim()
-                    dimController.allowChangeDim()
+                    doSomething?.invoke()
                 }
             }
         }
