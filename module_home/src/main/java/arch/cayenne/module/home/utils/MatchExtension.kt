@@ -8,9 +8,13 @@ import arch.cayenne.lib.database.entity.MatchWithMarkets
  * @param selectedIds : 自己可以帶已知的selection id ，這樣可以少一次query
  * */
 suspend fun List<MatchWithMarkets>.setSelected(betDao: BetDao, selectedIds: List<Long>? = null): List<MatchWithMarkets> {
-    this.forEach { match ->
-        match.setSelected(betDao, selectedIds)
-    }
+    val betSelections = selectedIds ?: betDao.getCurrentSelectionIds().toSet()  //在投注單內的內容
+    this.flatMap { it.markets }
+        .forEach { market ->
+            market.selections.forEach {
+                it.isSelected = betSelections.contains(it.selectionId)
+            }
+        }
     return this
 }
 

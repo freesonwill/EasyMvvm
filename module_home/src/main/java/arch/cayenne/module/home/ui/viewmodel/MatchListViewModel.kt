@@ -10,6 +10,7 @@ import arch.cayenne.module.home.data.constants.HomeState
 import arch.cayenne.module.home.data.constants.PlayType
 import arch.cayenne.module.home.data.constants.SportType
 import arch.cayenne.module.home.data.repo.BaseMatchRepository
+import arch.cayenne.module.home.data.repo.BaseMatchRepository.Companion.DEFAULT_MATCH_SIZE
 import arch.cayenne.module.home.data.repo.MatchListRepository
 import arch.cayenne.module.home.utils.DateUtils
 import galaxy.common.proto.Common
@@ -88,6 +89,7 @@ class MatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
                     getMatchListData()
                     return@collect
                 }
+
                 //一次拿到當前頁面全部資料，會超過一頁，所以需要重新看一下page
                 page = currentDateRefs.maxOfOrNull { it.page } ?: 0
                 //拿到ref後藉由ref拿到這個時間段的match id，再去資料庫把這些賽史資料串起來
@@ -96,6 +98,10 @@ class MatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
                 )
                 "Collect observeMatchChange result：${list.map { it.match.matchId }}".logi(this@MatchListViewModel::class.java.simpleName)
                 withContext(Dispatchers.Main) {
+                    //第一次http拿到的資料量過少，會影響到拉取更新資料需要等待，所以跟api補上拿取更多一點的資料
+                    if (apiStateListener.value == null && list.size < DEFAULT_MATCH_SIZE) {
+                        loadNextPage()
+                    }
                     matchListChange.value = list
                 }
             }

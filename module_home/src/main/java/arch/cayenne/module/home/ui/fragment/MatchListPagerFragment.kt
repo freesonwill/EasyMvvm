@@ -47,7 +47,6 @@ class MatchListPagerFragment :
     private val homeViewModel: HomeViewModel by sharedViewModel<HomeViewModel, NewHomeFragment>()
     private val subHomeViewModel: SubHomeViewModel by viewModels({ requireParentFragment() })
     private lateinit var matchAdapter: MatchItemAdapter
-    private var canLoadMore = false
     private val gameLayoutManager by lazy { LinearLayoutManager(context) }
     private val fabViewModel: FloatingButtonControlViewModel by activityViewModel()
 
@@ -61,9 +60,6 @@ class MatchListPagerFragment :
             refreshLayout.setOnRefreshListener {
                 mViewModel.reload()
                 userRequestedScrollToTop = true
-            }
-            refreshLayout.setOnLoadMoreListener {
-                mViewModel.loadNextPage()
             }
 
             matchAdapter = MatchItemAdapter(object : OnMatchItemClickListener {
@@ -126,11 +122,11 @@ class MatchListPagerFragment :
                 }
 
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                    rvHomeGameList.scrollToBottomWithLoadMore {
-                        if (canLoadMore) {
-                            canLoadMore = false
-                            mViewModel.loadNextPage()
+                    rvHomeGameList.scrollToBottomWithLoadMore(minScrollCount = 8) {
+                        if (mViewModel.apiStateListener.value == DataState.Loading || mViewModel.apiStateListener.value == HomeState.Match.Loading) {
+                            return@scrollToBottomWithLoadMore
                         }
+                        mViewModel.loadNextPage()
                     }
                 }
             })
@@ -187,12 +183,12 @@ class MatchListPagerFragment :
             val preEmpty = matchAdapter.currentList.isEmpty()
             "MatchListChange livedata Observed~ ${matchList.map { it.match.matchId }}".logi(this::class.java.simpleName)
             matchAdapter.submitList(matchList)
-            canLoadMore = true
             mBinding.rvHomeGameList.doOnPreDraw {
                 subscribeVisibleMatch()
                 if (preEmpty && matchList.isNotEmpty()) {
                     mViewModel.changeState(HomeState.Match.LoadSuccess)
                     setMatchListPosition()
+
                 }
             }
         }
