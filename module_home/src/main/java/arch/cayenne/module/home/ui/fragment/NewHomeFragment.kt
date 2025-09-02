@@ -97,7 +97,6 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                     setSelected = index == 0
                 )
             }
-            tlHome.removeAllTips()
 
             vpSub.adapter = SubHomePagerAdapter(
                 fragmentManager = childFragmentManager,
@@ -210,6 +209,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
 
         mViewModel.playTypeIndexChange.observeEvent(viewLifecycleOwner, this) {
             mBinding.tlHome.getTabAt(it)?.select()
+            mBinding.tlHome.removeAllTips()
             resetHomeView()
         }
 
