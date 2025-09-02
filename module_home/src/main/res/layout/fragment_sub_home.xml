@@ -42,7 +42,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <arch.cayenne.lib.skin.widget.SkinnableImageView
-            android:layout_width="15dp"
+            android:layout_width="14dp"
             android:layout_height="match_parent"
             android:layout_marginEnd="@dimen/dp_4"
             android:src="@drawable/gradient_sport_list"
