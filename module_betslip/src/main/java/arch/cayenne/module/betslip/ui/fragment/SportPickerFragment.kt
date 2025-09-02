@@ -2,6 +2,8 @@ package arch.cayenne.module.betslip.ui.fragment
 
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
+import android.content.Context
+import android.graphics.Color
 import android.graphics.PixelFormat
 import android.os.Bundle
 import android.view.Gravity
@@ -9,20 +11,27 @@ import android.view.View
 import android.view.WindowManager
 import androidx.core.animation.doOnEnd
 import androidx.core.animation.doOnStart
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.SimpleItemAnimator
+import arch.cayenne.lib.base.ui._interface.SimilarDialogInterface
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.dim.DimController
+import arch.cayenne.lib.base.ui.fragment.dim.DimInterface
 import arch.cayenne.lib.common.data.constants.AnimationConstants
 import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.module.betslip.data.constants.Config
 import arch.cayenne.module.betslip.databinding.FragmentSportPickerBinding
 import arch.cayenne.module.betslip.ui.adapter.SportPickerAdapter
 import arch.cayenne.module.betslip.ui.viewmodel.SportPickerViewModel
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
 
 class SportPickerFragment private constructor() :
-    BaseFragment<SportPickerViewModel, FragmentSportPickerBinding>() {
+    BaseFragment<SportPickerViewModel, FragmentSportPickerBinding>(), SimilarDialogInterface, DimInterface {
 
     companion object {
         fun newInstance(sportIds: List<Int>): SportPickerFragment {
@@ -48,9 +57,10 @@ class SportPickerFragment private constructor() :
         })
     }
 
-    private val dimController by lazy {
-        DimController.instance
+    private val dimController: DimController by lazy {
+        DimController.getInstance(this)
     }
+    private var dimView: View? = null
 
     private var isShow = false
 
@@ -76,6 +86,9 @@ class SportPickerFragment private constructor() :
         mBinding.tvConfirm.setOnClickListener {
             sendResult()
         }
+        mBinding.maskView.setOnClickListener {
+            collapseView()
+        }
     }
 
     override suspend fun createObserver() {
@@ -100,7 +113,7 @@ class SportPickerFragment private constructor() :
         val params = WindowManager.LayoutParams(
             WindowManager.LayoutParams.MATCH_PARENT, // 寬度填滿
             screenHeight + navigatorHeight,
-            0,
+            WindowManager.LayoutParams.TYPE_APPLICATION_ATTACHED_DIALOG,
             WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
                     or WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
                     or WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
@@ -109,11 +122,16 @@ class SportPickerFragment private constructor() :
         )
 
         params.gravity = Gravity.TOP or Gravity.START
-        dimController.updateLayoutParams(params)
-        mBinding.maskView.setOnClickListener {
-            collapseView()
+
+        val windowManager = requireContext().getSystemService(Context.WINDOW_SERVICE) as WindowManager
+
+        val v = View(context).apply {
+            setBackgroundColor(Color.BLACK)
+            alpha = 0f
+            dimView = this
+            translationY = screenHeight.toFloat()
         }
-        dimController.setTranslationY(screenHeight.toFloat())
+        windowManager.addView(v, params)
     }
 
     fun dismiss() {
@@ -128,6 +146,11 @@ class SportPickerFragment private constructor() :
     }
 
     private fun expandView() {
+        if (dimController.findAnyShowing(this)) {
+            parentFragmentManager.setFragmentResult(Config.KEY_RESULT, resultBundle)
+            dismiss()
+            return
+        }
         if (isShow) return
         isShow = true
         mBinding.root.bringToFront()
@@ -138,7 +161,7 @@ class SportPickerFragment private constructor() :
             duration = AnimationConstants.DIALOG_POPUP_DURATION
             doOnStart{
                 mBinding.root.visibility = View.VISIBLE
-                dimController.showDim()
+                dimView?.alpha = 0.75f
             }
             start()
         }
@@ -146,7 +169,7 @@ class SportPickerFragment private constructor() :
 
     fun collapseView() {
         if (!isShow) return
-        val dimAnimator = dimController.getHideAnimator() ?: return
+        val dim = dimView ?: return
         isShow = false
         mBinding.root.bringToFront()
         val root = mBinding.clFilter
@@ -155,6 +178,7 @@ class SportPickerFragment private constructor() :
             duration = AnimationConstants.DIALOG_POPUP_DURATION
             doOnEnd {
                 mBinding.root.visibility = View.INVISIBLE
+                removeDim()
                 dismiss()
             }
             doOnStart {
@@ -162,6 +186,12 @@ class SportPickerFragment private constructor() :
             }
         }
         val maskAnimator = ObjectAnimator.ofFloat(mBinding.maskView, "alpha", mBinding.maskView.alpha, 0f)
+        val dimAnimator = ObjectAnimator.ofFloat(dim, "alpha", dimView?.alpha ?: 0.75f, 0f).apply {
+            addUpdateListener {
+                val value = it.animatedValue as Float
+                dim.alpha = value
+            }
+        }
 
         maskAnimator.duration = sheetAnimator.duration
         maskAnimator.interpolator = sheetAnimator.interpolator
@@ -193,6 +223,13 @@ class SportPickerFragment private constructor() :
         collapseView()
     }
 
+    private fun removeDim() {
+        val dim = dimView ?: return
+        val windowManager = requireContext().getSystemService(Context.WINDOW_SERVICE) as WindowManager
+        windowManager.removeView(dim)
+        dimView = null
+    }
+
     override fun onBackPressed(): Boolean {
         collapseView()
         return super.onBackPressed()
@@ -200,8 +237,61 @@ class SportPickerFragment private constructor() :
 
     override fun onDestroy() {
         if (isShow) {
-            dimController.hideDim()
+            removeDim()
         }
         super.onDestroy()
+    }
+
+    override fun collapse(doSomething: (() -> Unit)?) {
+        isShow = false
+        mBinding.root.bringToFront()
+        val root = mBinding.clFilter
+        val targetHeight = mBinding.clFilter.height.toFloat()
+        val sheetAnimator = ObjectAnimator.ofFloat(root, "translationY", root.translationY, -targetHeight).apply {
+            duration = AnimationConstants.DIALOG_POPUP_DURATION
+            doOnEnd {
+                mBinding.root.visibility = View.INVISIBLE
+                dismiss()
+            }
+            doOnStart {
+                parentFragmentManager.setFragmentResult(Config.KEY_RESULT, resultBundle)
+            }
+        }
+        val maskAnimator = ObjectAnimator.ofFloat(mBinding.maskView, "alpha", mBinding.maskView.alpha, 0f)
+        val dimAnimator = ObjectAnimator.ofFloat(dimView, "alpha", dimView?.alpha ?: 0.75f, 0f).apply {
+            addUpdateListener {
+                val value = it.animatedValue as Float
+                dimView?.alpha = value
+            }
+            doOnEnd {
+                removeDim()
+            }
+            doOnStart {
+                lifecycleScope.launch {
+                    delay(AnimationConstants.DIALOG_POPUP_DURATION / 2)
+                    this.cancel()
+                    removeDim()
+                    doSomething?.invoke()
+                }
+            }
+        }
+
+        maskAnimator.duration = sheetAnimator.duration
+        maskAnimator.interpolator = sheetAnimator.interpolator
+        dimAnimator.duration = sheetAnimator.duration
+        dimAnimator.interpolator = sheetAnimator.interpolator
+
+        AnimatorSet().apply {
+            playTogether(sheetAnimator, dimAnimator, maskAnimator)
+            start()
+        }
+    }
+
+    override fun getIsDismissing(): Boolean {
+        return true
+    }
+
+    override fun getHostFragment(): Fragment {
+        return this
     }
 }

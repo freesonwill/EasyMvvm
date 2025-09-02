@@ -10,6 +10,8 @@ import android.view.animation.AccelerateDecelerateInterpolator
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.animation.doOnEnd
+import androidx.fragment.app.FragmentManager
+import arch.cayenne.lib.base.ui._interface.SimilarDialogInterface
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.module.bet.databinding.FragmentFloatingButtonBinding
 import arch.cayenne.module.bet.viewmodel.FloatingButtonViewModel
@@ -35,8 +37,28 @@ class FloatingButtonFragment private constructor(): BaseFragment<FloatingButtonV
 
     override fun initListener() {
         mBinding.fab.setPerformClick {
-            BetSheetFragment.show(requireActivity())
+            val f = findSimilarDialog(requireActivity().supportFragmentManager)
+            if (f == null) {
+                BetSheetFragment.show(requireActivity())
+            } else {
+                f.collapse {
+                    BetSheetFragment.show(requireActivity())
+                }
+            }
         }
+    }
+
+    private fun findSimilarDialog(fragmentManager: FragmentManager): SimilarDialogInterface? {
+        fragmentManager.fragments.forEach { fragment ->
+            if (fragment is SimilarDialogInterface && fragment.isVisible) {
+                return fragment
+            }
+            val childResult = findSimilarDialog(fragment.childFragmentManager)
+            if (childResult != null) {
+                return childResult
+            }
+        }
+        return null
     }
 
     override suspend fun createObserver() {
