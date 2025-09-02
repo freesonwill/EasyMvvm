@@ -39,8 +39,7 @@
                     android:layout_height="wrap_content"
                     android:textColor="@color/item_name"
                     android:textSize="@dimen/sp_15"
-                    android:textStyle="bold"
-                    android:layout_marginEnd="@dimen/dp_3"/>
+                    android:textStyle="bold"/>
 
                 <arch.cayenne.lib.skin.widget.SkinnableTextView
                     android:id="@+id/tv_item_let_tip"
@@ -48,7 +47,7 @@
                     android:layout_height="wrap_content"
                     android:textColor="@color/color_929298"
                     android:textSize="@dimen/sp_15"
-                    android:layout_marginStart="@dimen/dp_3"/>
+                    android:layout_marginStart="@dimen/dp_7"/>
             </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
         </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
 
