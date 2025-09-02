@@ -2,6 +2,8 @@ package arch.cayenne.module.betslip.ui.fragment
 
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
+import android.content.Context
+import android.graphics.Color
 import android.graphics.PixelFormat
 import android.os.Bundle
 import android.view.Gravity
@@ -11,7 +13,9 @@ import androidx.core.animation.doOnEnd
 import androidx.core.animation.doOnStart
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.SimpleItemAnimator
+import arch.cayenne.lib.base.ui._interface.SimilarDialogInterface
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.dim.DimController
 import arch.cayenne.lib.base.ui.fragment.dim.DimInterface
@@ -21,10 +25,13 @@ import arch.cayenne.module.betslip.data.constants.Config
 import arch.cayenne.module.betslip.databinding.FragmentSportPickerBinding
 import arch.cayenne.module.betslip.ui.adapter.SportPickerAdapter
 import arch.cayenne.module.betslip.ui.viewmodel.SportPickerViewModel
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
 
 class SportPickerFragment private constructor() :
-    BaseFragment<SportPickerViewModel, FragmentSportPickerBinding>(), DimInterface {
+    BaseFragment<SportPickerViewModel, FragmentSportPickerBinding>(), SimilarDialogInterface, DimInterface {
 
     companion object {
         fun newInstance(sportIds: List<Int>): SportPickerFragment {
@@ -139,6 +146,11 @@ class SportPickerFragment private constructor() :
     }
 
     private fun expandView() {
+        if (dimController.findAnyShowing(this)) {
+            parentFragmentManager.setFragmentResult(Config.KEY_RESULT, resultBundle)
+            dismiss()
+            return
+        }
         if (isShow) return
         isShow = true
         mBinding.root.bringToFront()
@@ -230,8 +242,50 @@ class SportPickerFragment private constructor() :
         super.onDestroy()
     }
 
-    override fun getIsDismissing(): Boolean {
-        return isDetached
+    override fun collapse() {
+        isShow = false
+        mBinding.root.bringToFront()
+        val root = mBinding.clFilter
+        val targetHeight = mBinding.clFilter.height.toFloat()
+        val sheetAnimator = ObjectAnimator.ofFloat(root, "translationY", root.translationY, -targetHeight).apply {
+            duration = AnimationConstants.DIALOG_POPUP_DURATION
+            doOnEnd {
+                mBinding.root.visibility = View.INVISIBLE
+                dismiss()
+            }
+            doOnStart {
+                parentFragmentManager.setFragmentResult(Config.KEY_RESULT, resultBundle)
+            }
+        }
+        val maskAnimator = ObjectAnimator.ofFloat(mBinding.maskView, "alpha", mBinding.maskView.alpha, 0f)
+        val dimAnimator = ObjectAnimator.ofFloat(dimView, "alpha", dimView?.alpha ?: 0.75f, 0f).apply {
+            addUpdateListener {
+                val value = it.animatedValue as Float
+                dimView?.alpha = value
+            }
+            doOnEnd {
+                removeDim()
+            }
+            doOnStart {
+                dimController.stopChangeDim()
+                lifecycleScope.launch {
+                    delay(AnimationConstants.DIALOG_POPUP_DURATION / 2)
+                    this.cancel()
+                    removeDim()
+                    dimController.allowChangeDim()
+                }
+            }
+        }
+
+        maskAnimator.duration = sheetAnimator.duration
+        maskAnimator.interpolator = sheetAnimator.interpolator
+        dimAnimator.duration = sheetAnimator.duration
+        dimAnimator.interpolator = sheetAnimator.interpolator
+
+        AnimatorSet().apply {
+            playTogether(sheetAnimator, dimAnimator, maskAnimator)
+            start()
+        }
     }
 
     override fun getIsDismissing(): Boolean {
