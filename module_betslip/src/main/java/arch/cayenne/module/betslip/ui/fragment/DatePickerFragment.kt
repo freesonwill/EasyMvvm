@@ -253,4 +253,12 @@ class DatePickerFragment private constructor() :
 
         }, doEnd)
     }
+
+    override fun dismiss() {
+        if (resultBundle.isEmpty) {
+            // 如果沒有選擇日期，則清除結果
+            parentFragmentManager.setFragmentResult(Config.KEY_RESULT, resultBundle)
+        }
+        super.dismiss()
+    }
 }

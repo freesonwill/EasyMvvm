@@ -8,6 +8,7 @@ import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import androidx.core.animation.doOnEnd
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 
@@ -15,19 +16,35 @@ class DimController private constructor() {
 
     companion object {
         const val TARGET_DIM = 0.75f
-        val instance: DimController by lazy {
+        private val instance: DimController by lazy {
             DimController()
+        }
+        fun getInstance(host: DimInterface): DimController {
+            instance.init(host)
+            return instance
         }
     }
 
     private var dimView: View? = null
-    private var listenerMap = mutableMapOf<Int, DimAlphaListener>()
+    private var hostMap = mutableMapOf<Int, DimInterface>()
 
-    fun init(context: Context) {
+    fun findAnyShowing(host: DimInterface): Boolean {
+        return if (hostMap.isEmpty()) {
+            false
+        } else {
+            hostMap.any {
+                !it.value.getIsDismissing() && it.value != host
+            }
+        }
+    }
+
+    private fun init(host: DimInterface) {
+        register(host)
         if (dimView != null) {
             checkLayoutParams()
             return
         }
+        val context = host.getHostFragment().requireContext()
         val v = View(context).apply {
             setBackgroundColor(Color.BLACK)
             alpha = 0f
@@ -37,6 +54,20 @@ class DimController private constructor() {
         val params = getBasicLayoutParams()
         windowManager.addView(v, params)
         dimView = v
+    }
+
+    private fun register(host: DimInterface) {
+        val code = host.hashCode()
+        if (hostMap.containsKey(code)) return
+        val f = host.getHostFragment()
+        val lifecycleOwner = f.viewLifecycleOwner
+        hostMap[code] = host
+        lifecycleOwner.lifecycle.addObserver(object : DefaultLifecycleObserver {
+            override fun onDestroy(owner: LifecycleOwner) {
+                hostMap.remove(code)
+                owner.lifecycle.removeObserver(this) // 移除 observer，避免多餘引用
+            }
+        })
     }
 
     fun checkLayoutParams() {
@@ -82,18 +113,15 @@ class DimController private constructor() {
     fun showDim() {
         if (dimView?.alpha == TARGET_DIM) return
         dimView?.alpha = TARGET_DIM
-        setAlphaChange(TARGET_DIM)
     }
 
     fun hideDim() {
         if (dimView?.alpha == 0f) return
         dimView?.alpha = 0f
-        setAlphaChange(0f)
     }
 
     fun setDimAlpha(alpha: Float) {
         dimView?.alpha = alpha.coerceIn(0f, 1f)
-        setAlphaChange(alpha)
     }
 
     fun setTranslationY(y: Float) {
@@ -113,30 +141,10 @@ class DimController private constructor() {
             addUpdateListener {
                 val value = it.animatedValue as Float
                 v.alpha = value
-                setAlphaChange(value)
+            }
+            doOnEnd {
+                hideDim()
             }
         }
     }
-
-    private fun setAlphaChange(alpha: Float) {
-        listenerMap.values.forEach { l ->
-            l.onDimAlphaChanged(alpha)
-        }
-    }
-
-    fun setDimAlphaListener(lifecycleOwner: LifecycleOwner, listener: DimAlphaListener) {
-        val id = lifecycleOwner.hashCode()
-        listenerMap[id] = listener
-        lifecycleOwner.lifecycle.addObserver(object : DefaultLifecycleObserver {
-            override fun onDestroy(owner: LifecycleOwner) {
-                listenerMap.remove(id)
-                owner.lifecycle.removeObserver(this) // 移除 observer，避免多餘引用
-            }
-        })
-    }
-
-    interface DimAlphaListener {
-        fun onDimAlphaChanged(alpha: Float)
-    }
-
 }

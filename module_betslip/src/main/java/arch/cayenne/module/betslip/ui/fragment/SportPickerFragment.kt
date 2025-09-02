@@ -9,10 +9,12 @@ import android.view.View
 import android.view.WindowManager
 import androidx.core.animation.doOnEnd
 import androidx.core.animation.doOnStart
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.SimpleItemAnimator
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.dim.DimController
+import arch.cayenne.lib.base.ui.fragment.dim.DimInterface
 import arch.cayenne.lib.common.data.constants.AnimationConstants
 import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.module.betslip.data.constants.Config
@@ -22,7 +24,7 @@ import arch.cayenne.module.betslip.ui.viewmodel.SportPickerViewModel
 import kotlin.reflect.KClass
 
 class SportPickerFragment private constructor() :
-    BaseFragment<SportPickerViewModel, FragmentSportPickerBinding>() {
+    BaseFragment<SportPickerViewModel, FragmentSportPickerBinding>(), DimInterface {
 
     companion object {
         fun newInstance(sportIds: List<Int>): SportPickerFragment {
@@ -49,7 +51,7 @@ class SportPickerFragment private constructor() :
     }
 
     private val dimController by lazy {
-        DimController.instance
+        DimController.getInstance(this)
     }
 
     private var isShow = false
@@ -203,5 +205,13 @@ class SportPickerFragment private constructor() :
             dimController.hideDim()
         }
         super.onDestroy()
+    }
+
+    override fun getIsDismissing(): Boolean {
+        return isDetached
+    }
+
+    override fun getHostFragment(): Fragment {
+        return this
     }
 }
