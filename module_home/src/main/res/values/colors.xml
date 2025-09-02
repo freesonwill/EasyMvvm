@@ -13,6 +13,7 @@
     <color name="bg_sport_unselect">#3F434B</color>
     <color name="bg_other_date_selected">#1A24EE8A</color>
     <color name="bg_sport_list_gradient_start">#00232530</color>
+    <color name="bg_sport_list_gradient_center">#99232530</color>
     <color name="sport_item_text_select">#FFFFFF</color>
     <color name="sport_item_text_unselect">#929298</color>
     <color name="bg_league_item_selected">#24EE8A</color>
