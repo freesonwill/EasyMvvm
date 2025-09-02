@@ -76,15 +76,10 @@ class HomeCalendarFragment private constructor() : Fragment() {
     }
 
     private fun initView() {
-        mBinding?.let { binding->
-            with(binding) {
-                setSkinColor()
-                setSchemeDate()
-                setCalendarScrollable()
-                expandView()
-            }
-        }
-
+        setSkinColor()
+        setSchemeDate()
+        setCalendarScrollable()
+        expandView()
     }
     fun setSkinColor() {
         mBinding?.let { binding->
