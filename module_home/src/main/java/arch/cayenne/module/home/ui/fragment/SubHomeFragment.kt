@@ -147,6 +147,11 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
 
     @SuppressLint("NotifyDataSetChanged")
     override suspend fun createObserver() {
+        mViewModel.selectedSkinType.observeEvent(viewLifecycleOwner, this) {
+            if (customPopup != null) {
+                customPopup!!.setSkinColor()
+            }
+        }
         mViewModel.currentSportIdChange.observeEvent(viewLifecycleOwner, this) {
             if (mViewModel.currentPlayTypeId != PlayType.CHAMPION.id) return@observeEvent
             (childFragmentManager.findFragmentByTag(PlayType.CHAMPION.name) as? TournamentListFragment)?.changeSportId(it)

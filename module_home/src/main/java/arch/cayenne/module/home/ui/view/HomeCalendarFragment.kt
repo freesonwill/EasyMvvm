@@ -8,7 +8,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.DecelerateInterpolator
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.animation.doOnEnd
 import androidx.core.animation.doOnStart
@@ -16,7 +15,6 @@ import androidx.core.view.doOnLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import arch.cayenne.lib.base.ui.animation.AnimationController
-import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.extractDate
 import arch.cayenne.lib.common.utils.ext.toChineseMonth
@@ -27,7 +25,6 @@ import arch.cayenne.module.home.utils.DateUtils
 import com.haibin.calendarview.Calendar
 import com.haibin.calendarview.CalendarView
 import galaxy.common.proto.Common
-import kotlinx.coroutines.delay
 import arch.cayenne.lib.common.R as RC
 
 class HomeCalendarFragment private constructor() : Fragment() {
@@ -81,6 +78,17 @@ class HomeCalendarFragment private constructor() : Fragment() {
     private fun initView() {
         mBinding?.let { binding->
             with(binding) {
+                setSkinColor()
+                setSchemeDate()
+                setCalendarScrollable()
+                expandView()
+            }
+        }
+
+    }
+    fun setSkinColor() {
+        mBinding?.let { binding->
+            with(binding) {
                 clCalendarPopupRoot.apply {
                     bringToFront()
                     setBackgroundResource(
@@ -127,12 +135,8 @@ class HomeCalendarFragment private constructor() : Fragment() {
                 calendarBtnOk.setBackgroundResource(
                     R.drawable.shape_home_calendar_ok.getSkinnableResourceId()
                 )
-                setSchemeDate()
-                setCalendarScrollable()
-                expandView()
             }
         }
-
     }
     private fun setCalendarScrollable() {
         mBinding?.let {binding ->
