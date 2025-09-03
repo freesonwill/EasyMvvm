@@ -45,6 +45,10 @@ class UnsettleRepository(
         val data = resp?.priceList
         if (!data.isNullOrEmpty()) {
             betSlipOrderDao.updateToPendingEarlySettle(betId, data.first().settleStatus)
+            val price = data.first().price.toFloatOrNull() ?: 0f
+            if (price <= 0f) {
+                betSlipOrderDao.updateCannotEarlySettle(betId)
+            }
         }
         resp?.priceList
     }
