@@ -101,7 +101,9 @@ class MainActivity : BaseNavActivity<MainViewModel>() {
                 LoginEnum.NOT_SUCCESSFUL -> {
                     //TODO 跳到登入頁
                 }
-                LoginEnum.API_FAILURE -> Unit
+                is LoginEnum.API_FAILURE -> {
+                    showToast(login.error)
+                }
             }
         }
     }
