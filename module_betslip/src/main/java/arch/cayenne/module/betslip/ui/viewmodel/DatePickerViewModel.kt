@@ -8,6 +8,7 @@ import arch.cayenne.lib.common.utils.ext.getFormatDate
 import arch.cayenne.module.betslip.R
 import arch.cayenne.module.betslip.data.constants.BetSlipDateFilterEnum
 import arch.cayenne.module.betslip.data.model.DateFilterBean
+import java.util.Calendar
 
 class DatePickerViewModel : BaseViewModel() {
 
@@ -15,6 +16,19 @@ class DatePickerViewModel : BaseViewModel() {
     val dateTitleListener: LiveData<List<DateFilterBean>> get() = _dateTitleListener
 
     private val _customTimeListener = MutableLiveData<Long?>()
+
+    val getCustomTime: Long
+        get() {
+            return _customTimeListener.value?.let {
+                val calendar = Calendar.getInstance()
+                calendar.timeInMillis = it
+                calendar.set(Calendar.HOUR_OF_DAY, 23)
+                calendar.set(Calendar.MINUTE, 59)
+                calendar.set(Calendar.SECOND, 59)
+                calendar.set(Calendar.MILLISECOND, 999)
+                calendar.timeInMillis
+            } ?: System.currentTimeMillis()
+        }
 
     init {
         val data = BetSlipDateFilterEnum.entries.map {

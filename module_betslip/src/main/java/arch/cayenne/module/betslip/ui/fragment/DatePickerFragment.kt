@@ -122,6 +122,9 @@ class DatePickerFragment private constructor() :
             val date = mViewModel.getSelectedDate()
             bundle.apply {
                 putString(Config.VALUE_SELECTED_DATE, date.name)
+                if (date == BetSlipDateFilterEnum.CUSTOM) {
+                    putLong(Config.VALUE_SELECTED_MILLISECOND, mViewModel.getCustomTime)
+                }
             }
             parentFragmentManager.setFragmentResult(Config.KEY_RESULT, bundle)
             dismiss()
