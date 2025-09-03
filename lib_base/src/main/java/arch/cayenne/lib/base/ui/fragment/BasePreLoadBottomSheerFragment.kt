@@ -71,7 +71,8 @@ abstract class BasePreLoadBottomSheetFragment<VM : BaseViewModel, VB : ViewBindi
         }
     }
 
-    private fun setCustomExpendSetting() {
+    @CallSuper
+    protected open fun setCustomExpendSetting() {
         unhideableDialog?.showDialog()
         mBinding.root.post {
             sheetContainer?.let {
