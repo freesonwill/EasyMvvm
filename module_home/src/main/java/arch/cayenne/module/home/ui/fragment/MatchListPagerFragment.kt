@@ -56,7 +56,7 @@ class MatchListPagerFragment :
 
     override fun initView(savedInstanceState: Bundle?) {
         mBinding.apply {
-            refreshLayout.setEnableLoadMore(false)
+            refreshLayout.setEnableLoadMore(true)
             refreshLayout.setEnableScrollContentWhenLoaded(true)
             refreshLayout.setOnRefreshListener {
                 mViewModel.reload()
@@ -143,16 +143,16 @@ class MatchListPagerFragment :
     }
 
     private fun subscribeVisibleMatch() {
-//        val firstVisible = gameLayoutManager.findFirstVisibleItemPosition()
-//        val lastVisible = gameLayoutManager.findLastVisibleItemPosition()
-//        if (firstVisible >= 0 && lastVisible <= matchAdapter.itemCount) {
-//            mViewModel.compareSubscribeMatch(
-//                matchAdapter.currentList
-//                    .slice(firstVisible..lastVisible)
-//                    .map { it.match.matchId }
-//                    .toSet()
-//            )
-//        }
+        val firstVisible = gameLayoutManager.findFirstVisibleItemPosition()
+        val lastVisible = gameLayoutManager.findLastVisibleItemPosition()
+        if (firstVisible >= 0 && lastVisible <= matchAdapter.itemCount) {
+            mViewModel.compareSubscribeMatch(
+                matchAdapter.currentList
+                    .slice(firstVisible..lastVisible)
+                    .map { it.match.matchId }
+                    .toSet()
+            )
+        }
     }
 
     private fun updateMatchListPosition() {
@@ -185,9 +185,9 @@ class MatchListPagerFragment :
 
     override suspend fun createObserver() {
 
-//        homeViewModel.timer.observeEvent(viewLifecycleOwner, this) {
-//            mViewModel.updateMatchLiveData()
-//        }
+        homeViewModel.timer.observeEvent(viewLifecycleOwner, this) {
+            mViewModel.updateMatchLiveData()
+        }
         mViewModel.matchListChange.observe(viewLifecycleOwner) { matchList ->
             val preEmpty = matchAdapter.currentList.isEmpty()
             "MatchListChange livedata Observed~ ${matchList.map { it.match.matchId }}".logi(this::class.java.simpleName)
@@ -216,7 +216,7 @@ class MatchListPagerFragment :
                         lvMatchLoading.visibility = View.GONE
                         refreshLayout.finishRefresh()
                         refreshLayout.finishLoadMore()
-                        refreshLayout.setEnableLoadMore(false)
+                        refreshLayout.finishLoadMoreWithNoMoreData()
                         clDynamics.visibility = View.VISIBLE
                         clDynamics.setState(
                             DynamicStateLayout.States.NETWORK_ANOMALY(),
@@ -226,7 +226,7 @@ class MatchListPagerFragment :
                     }
                     DataState.NoMoreData -> {     //這個DataEmpty表示api抓不到任何資料了，有可能是頁面到底，或是從第一頁就抓不到資料
                         mViewModel.changePageEnd(true)
-                        refreshLayout.finishLoadMore()
+                        refreshLayout.finishLoadMoreWithNoMoreData()
                         refreshLayout.setEnableLoadMore(false)
                         hasNoMore = true
                     }
@@ -243,12 +243,11 @@ class MatchListPagerFragment :
                     HomeState.Match.Loading -> {
                         lvMatchLoading.visibility = View.VISIBLE
                         clDynamics.visibility = View.GONE
-//                        refreshLayout.setEnableLoadMore(true)
                         homeViewModel.changeState(HomeState.Match.Loading)
                     }
                     HomeState.Match.Refreshing -> {
                         clDynamics.visibility = View.GONE
-//                        refreshLayout.setEnableLoadMore(true)
+                        refreshLayout.resetNoMoreData()
                     }
                     HomeState.Match.LoadingNext -> {
                         clDynamics.visibility = View.GONE
