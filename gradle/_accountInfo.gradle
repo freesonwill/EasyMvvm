@@ -46,7 +46,7 @@ android {
 
 class UserConfig {
     String name
-    String uid
+    int uid
     String token
 }
 
