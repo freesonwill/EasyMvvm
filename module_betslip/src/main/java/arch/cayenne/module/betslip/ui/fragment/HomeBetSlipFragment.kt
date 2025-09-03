@@ -233,7 +233,7 @@ class HomeBetSlipFragment : BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsl
                 } else {
                     null
                 }
-            DatePickerFragment.show(this, it.date, time)
+            DatePickerFragment.find(this, it.date, time).customShow()
         }
     }
 

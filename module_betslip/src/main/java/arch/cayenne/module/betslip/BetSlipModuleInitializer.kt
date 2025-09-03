@@ -18,6 +18,7 @@ import arch.cayenne.module.betslip.data.repo.UnsettleRepository
 import arch.cayenne.module.betslip.ui.viewmodel.BetSlipFilterViewModel
 import arch.cayenne.module.betslip.ui.viewmodel.BetSlipOtherSettingViewModel
 import arch.cayenne.module.betslip.ui.viewmodel.ConfirmingSlipViewModel
+import arch.cayenne.module.betslip.ui.viewmodel.DateNumberViewModel
 import arch.cayenne.module.betslip.ui.viewmodel.DatePickerViewModel
 import arch.cayenne.module.betslip.ui.viewmodel.EarlySettledKeyboardViewModel
 import arch.cayenne.module.betslip.ui.viewmodel.HomeBetSlipViewModel
@@ -57,6 +58,7 @@ class BetSlipModuleInitializer: DefaultInitializer<String> {
         viewModelOf(::UnsettledViewModel)
         viewModelOf(::BetSlipOtherSettingViewModel)
         viewModelOf(::ConfirmingSlipViewModel)
+        viewModelOf(::DateNumberViewModel)
     }
 
     private val repoModules = module {

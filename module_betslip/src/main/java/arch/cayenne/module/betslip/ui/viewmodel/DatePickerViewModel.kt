@@ -12,18 +12,11 @@ import java.util.Calendar
 
 class DatePickerViewModel : BaseViewModel() {
 
-    enum class Page {
-        TIME, DATE
-    }
-
     private val _dateTitleListener = MutableLiveData<List<DateFilterBean>>()
     val dateTitleListener: LiveData<List<DateFilterBean>> get() = _dateTitleListener
 
     private val _customTimeListener = MutableLiveData<Long?>()
     val customTimeListener: LiveData<Long?> get() = _customTimeListener
-
-    private val _pageListener = MutableLiveData<Page>()
-    val pageListener: LiveData<Page> get() = _pageListener
 
     val calendar: Calendar = Calendar.getInstance()
 
@@ -99,16 +92,5 @@ class DatePickerViewModel : BaseViewModel() {
             }
         }
         return BetSlipDateFilterEnum.ALL
-    }
-
-    fun turnToDatePicker() {
-        if (_customTimeListener.value == null) {
-            setCustomTime(System.currentTimeMillis())
-        }
-        _pageListener.value = Page.DATE
-    }
-
-    fun backToTimePicker() {
-        _pageListener.value = Page.TIME
     }
 }
