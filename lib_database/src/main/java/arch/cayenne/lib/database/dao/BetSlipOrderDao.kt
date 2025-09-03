@@ -31,9 +31,6 @@ abstract class BetSlipOrderDao : BaseDao<BetSlipOrderBean>() {
     @Query("UPDATE BetSlipOrderBean SET settleStatus = :settleStatus WHERE betId = :betId")
     abstract suspend fun updateToPendingEarlySettle(betId: String, settleStatus: Int = 102)
 
-    @Query("UPDATE BetSlipOrderBean SET betSlipType = :type WHERE betId = :betId")
-    abstract suspend fun updateBetSlipType(betId: String, type: Int)
-
     @Query("UPDATE BetSlipOrderBean SET earlySupport = 0 WHERE betId = :betId")
     abstract suspend fun updateCannotEarlySettle(betId: String)
 
