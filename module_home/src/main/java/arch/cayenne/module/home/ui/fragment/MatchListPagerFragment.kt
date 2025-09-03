@@ -134,16 +134,16 @@ class MatchListPagerFragment :
     }
 
     private fun subscribeVisibleMatch() {
-        val firstVisible = gameLayoutManager.findFirstVisibleItemPosition()
-        val lastVisible = gameLayoutManager.findLastVisibleItemPosition()
-        if (firstVisible >= 0 && lastVisible <= matchAdapter.itemCount) {
-            mViewModel.compareSubscribeMatch(
-                matchAdapter.currentList
-                    .slice(firstVisible..lastVisible)
-                    .map { it.match.matchId }
-                    .toSet()
-            )
-        }
+//        val firstVisible = gameLayoutManager.findFirstVisibleItemPosition()
+//        val lastVisible = gameLayoutManager.findLastVisibleItemPosition()
+//        if (firstVisible >= 0 && lastVisible <= matchAdapter.itemCount) {
+//            mViewModel.compareSubscribeMatch(
+//                matchAdapter.currentList
+//                    .slice(firstVisible..lastVisible)
+//                    .map { it.match.matchId }
+//                    .toSet()
+//            )
+//        }
     }
 
     private fun updateMatchListPosition() {
@@ -176,12 +176,13 @@ class MatchListPagerFragment :
 
     override suspend fun createObserver() {
 
-        homeViewModel.timer.observeEvent(viewLifecycleOwner, this) {
-            mViewModel.updateMatchLiveData()
-        }
+//        homeViewModel.timer.observeEvent(viewLifecycleOwner, this) {
+//            mViewModel.updateMatchLiveData()
+//        }
         mViewModel.matchListChange.observe(viewLifecycleOwner) { matchList ->
             val preEmpty = matchAdapter.currentList.isEmpty()
             "MatchListChange livedata Observed~ ${matchList.map { it.match.matchId }}".logi(this::class.java.simpleName)
+            "KC_ 收到資料".logi()
             matchAdapter.submitList(matchList)
             mBinding.rvHomeGameList.doOnPreDraw {
                 subscribeVisibleMatch()
@@ -240,6 +241,7 @@ class MatchListPagerFragment :
                         clDynamics.visibility = View.GONE
                     }
                     DataState.LoadSuccess, HomeState.Match.LoadSuccess -> {
+                        "KC_ 收到狀態完成！".logi()
                         lvMatchLoading.visibility = View.GONE
                         if (refreshLayout.isRefreshing) refreshLayout.finishRefresh()
                         refreshLayout.finishLoadMore()
