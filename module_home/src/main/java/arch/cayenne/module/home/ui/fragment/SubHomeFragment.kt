@@ -8,8 +8,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
@@ -300,7 +298,7 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
             }
 
             // 其他日期 Tab 設定
-            llOtherDate.clickNoRepeat {
+            llOtherDate.setOnClickListener {
                 // 轉換日期格式為 YYYYMMDD 給 DatePicker 使用
                 fun List<String>.toYYYYMMDD(): String {
                     val year = this[0]
@@ -434,13 +432,7 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
 
     private fun showHomeCalendar(tabSelectedDate: String) {
         with(mBinding.layoutContainer) {
-            llOtherDate.isSelected = true
-
             customPopup = HomeCalendarFragment.Builder().apply {
-                val statusBarHeight =
-                    ViewCompat.getRootWindowInsets(requireView())
-                        ?.getInsets(WindowInsetsCompat.Type.statusBars())?.top ?: 0
-
                 val marginTopHeight = mBinding.clSecondNavbar.height + tlLeagueList.height + tlDateList.height
                 setMarginTop(marginTopHeight)
                 setMaskView(mBinding.viewCalendarMask)
@@ -459,13 +451,20 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
                 }
                 setOnBeforeDismissAnimListener {
                     llOtherDate.isSelected = false
-
                     // 重置日期tab選擇狀態
                     tlDateList.getTabAt(tlDateList.selectedTabPosition)?.let {
                         if(!it.view.isSelected) {
                             it.view.isSelected = true
                         }
                     } ?: run { tvTabAll.isSelected = true }
+                }
+                setOnBeforeExpandAnimListener {
+                    llOtherDate.isSelected = true
+                }
+                setOnAfterExpandAnimListener {
+                    if (!llOtherDate.isSelected) {
+                        llOtherDate.isSelected = true
+                    }
                 }
                 setOnAfterDismissAnimListener {
                     customPopup = null
@@ -476,7 +475,6 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
             customPopup?.show(childFragmentManager, mBinding.llCalendar.id, tabSelectedDate)
         }
     }
-
     //選取日期後按確定時連動至早盤日期tab,選取對應的日期
     private fun setSelectedDateTab(dateTriple: Triple<String, String, Long>?) {
         with(mBinding.layoutContainer) {

@@ -37,6 +37,8 @@ class HomeCalendarFragment private constructor() : Fragment() {
     private val fragmentTag = this.javaClass.simpleName
     private var onDataSelectedListener: ((String) -> Unit)? = null
     private var onResetDateListener: (()-> Unit)? = null
+    private var onBeforeExpandAnimListener: (() -> Unit)? = null
+    private var onAfterExpandAnimListener: (() -> Unit)? = null
     private var onBeforeDismissAnimListener: (()-> Unit)? = null
     private var onAfterDismissAnimListener: (()-> Unit)? = null
     private var range: List<Common.DailyMatchCount>? = null
@@ -73,6 +75,8 @@ class HomeCalendarFragment private constructor() : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         mBinding = null
+        maskView = null
+        heightAnimator = null
     }
 
     private fun initView() {
@@ -287,8 +291,12 @@ class HomeCalendarFragment private constructor() : Fragment() {
                            translationY = (startHeight - fullyHeight).toFloat()
                            visibility = View.VISIBLE
                            setMaskViewAlpha(true)
+                           onBeforeExpandAnimListener?.invoke()
                        }
-                       doOnEnd { currentAnimState = AnimState.EXPAND }
+                       doOnEnd {
+                           currentAnimState = AnimState.EXPAND
+                           onAfterExpandAnimListener?.invoke()
+                       }
                        start()
                    }
                }
@@ -316,19 +324,19 @@ class HomeCalendarFragment private constructor() : Fragment() {
                     doOnStart {
                         currentAnimState = AnimState.COLLAPSING
                         setMaskViewAlpha(false)
-                        mBinding?.clCalendarPopupRoot?.postDelayed({
-                            onBeforeDismissAnimListener?.invoke()
-                        },50L)
+                        mBinding?.clCalendarPopupRoot?.postDelayed( {
+                                onBeforeDismissAnimListener?.invoke()
+                        },10L)
                     }
                     doOnEnd {
                         currentAnimState = AnimState.COLLAPSE
                         visibility = View.INVISIBLE
-                        mBinding?.clCalendarPopupRoot?.postDelayed({
+                        mBinding?.clCalendarPopupRoot?.postDelayed(  {
                             if(currentAnimState == AnimState.COLLAPSE) {
                                 dismiss()
                                 onAfterDismissAnimListener?.invoke()
                             }
-                        }, 100L)
+                        },10L)
                     }
                     start()
                 }
@@ -539,6 +547,8 @@ class HomeCalendarFragment private constructor() : Fragment() {
         private var onResetDateListener: (()-> Unit)? = null
         private var onAfterDismissAnimListener: (()-> Unit)? = null
         private var onBeforeDismissAnimListener: (() -> Unit)? = null
+        private var onBeforeExpandAnimListener: (() -> Unit)? = null
+        private var onAfterExpandAnimListener: (() -> Unit)? = null
         private var range: List<Common.DailyMatchCount>? = null
         private var marginTop: Int = 0
         private var maskView: View? = null
@@ -558,6 +568,12 @@ class HomeCalendarFragment private constructor() : Fragment() {
         fun setOnBeforeDismissAnimListener(listener: () -> Unit) = apply {
             this.onBeforeDismissAnimListener = listener
         }
+        fun setOnBeforeExpandAnimListener(listener: () -> Unit) = apply {
+            this.onBeforeExpandAnimListener = listener
+        }
+        fun setOnAfterExpandAnimListener(listener: () -> Unit) = apply {
+            this.onAfterExpandAnimListener = listener
+        }
         fun setRange(range: List<Common.DailyMatchCount>) = apply {
             this.range = range
         }
@@ -573,6 +589,8 @@ class HomeCalendarFragment private constructor() : Fragment() {
                 this.onDataSelectedListener = this@Builder.onDateSelectedListener
                 this.onBeforeDismissAnimListener = this@Builder.onBeforeDismissAnimListener
                 this.onAfterDismissAnimListener = this@Builder.onAfterDismissAnimListener
+                this.onBeforeExpandAnimListener = this@Builder.onBeforeExpandAnimListener
+                this.onAfterExpandAnimListener = this@Builder.onAfterExpandAnimListener
                 this.range = this@Builder.range
                 this.marginTop = this@Builder.marginTop
                 this.maskView = this@Builder.maskView
