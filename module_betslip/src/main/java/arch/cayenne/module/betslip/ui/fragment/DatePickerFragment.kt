@@ -1,14 +1,14 @@
 package arch.cayenne.module.betslip.ui.fragment
 
 import android.os.Bundle
-import android.view.View
 import android.view.animation.Animation
 import android.view.animation.LinearInterpolator
 import android.view.animation.TranslateAnimation
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.SimpleItemAnimator
-import arch.cayenne.lib.base.ui.fragment.BaseBottomSheetFragment
+import arch.cayenne.lib.base.ui.fragment.BasePreLoadBottomSheetFragment
 import arch.cayenne.lib.common.data.constants.AnimationConstants
 import arch.cayenne.module.betslip.R
 import arch.cayenne.module.betslip.data.constants.BetSlipDateFilterEnum
@@ -21,27 +21,37 @@ import java.util.Calendar
 import kotlin.reflect.KClass
 
 class DatePickerFragment private constructor() :
-    BaseBottomSheetFragment<DatePickerViewModel, FragmentDatePickerBinding>() {
+    BasePreLoadBottomSheetFragment<DatePickerViewModel, FragmentDatePickerBinding>() {
 
     companion object {
-        private const val KEY_DATE = "key_date"
-        fun newInstance(defaultDate: BetSlipDateFilterEnum, customTime: Long? = null): DatePickerFragment {
-            return DatePickerFragment().apply {
-                arguments = Bundle().apply {
-                    putString(KEY_DATE, defaultDate.name)
-                    customTime?.let {
-                        putLong(Config.VALUE_SELECTED_MILLISECOND, it)
-                    }
-                }
+        private const val TAG = "DatePickerFragment"
+
+        fun create(fragment: Fragment): DatePickerFragment {
+            val f = fragment.childFragmentManager.findFragmentByTag(TAG) as? DatePickerFragment
+            return if (f == null) {
+                val newF = DatePickerFragment()
+                newF.customAttach(fragment, TAG)
+                newF
+            } else {
+                f
             }
+        }
+
+        fun show(
+            fragment: Fragment,
+            defaultDate: BetSlipDateFilterEnum,
+            customTime: Long? = null
+        ): DatePickerFragment {
+            val f = fragment.childFragmentManager.findFragmentByTag(TAG) as? DatePickerFragment
+            val newF = f ?: create(fragment)
+            newF.setDate(defaultDate, customTime)
+            newF.customShow()
+            return newF
         }
     }
 
     override val vbClass: KClass<FragmentDatePickerBinding> = FragmentDatePickerBinding::class
     override val vmClass: KClass<DatePickerViewModel> = DatePickerViewModel::class
-    private val resultBundle by lazy {
-        Bundle()
-    }
 
     private val datePickerAdapter by lazy {
         DatePickerAdapter(object :
@@ -59,6 +69,7 @@ class DatePickerFragment private constructor() :
             }
         })
     }
+
     override fun enterAnimation(): Animation {
         val slideIn = TranslateAnimation(
             Animation.RELATIVE_TO_PARENT, 0f,
@@ -101,18 +112,19 @@ class DatePickerFragment private constructor() :
         }
         mBinding.tvConfirm.setOnClickListener {
             val page = mViewModel.pageListener.value
+            val bundle = Bundle()
             if (page == DatePickerViewModel.Page.DATE) {
-                resultBundle.apply {
+                bundle.apply {
                     putString(Config.VALUE_SELECTED_DATE, BetSlipDateFilterEnum.CUSTOM.name)
                     putLong(Config.VALUE_SELECTED_MILLISECOND, mViewModel.getCustomTime)
                 }
             } else {
                 val date = mViewModel.getSelectedDate()
-                resultBundle.apply {
+                bundle.apply {
                     putString(Config.VALUE_SELECTED_DATE, date.name)
                 }
             }
-            parentFragmentManager.setFragmentResult(Config.KEY_RESULT, resultBundle)
+            parentFragmentManager.setFragmentResult(Config.KEY_RESULT, bundle)
             dismiss()
         }
         mBinding.yearPicker.setOnValueChangedListener { _, _, newVal ->
@@ -134,20 +146,38 @@ class DatePickerFragment private constructor() :
             calendar.set(Calendar.MONTH, month - 1)
             calendar.set(Calendar.DAY_OF_MONTH, newVal)
         }
+        setOnEndListener {
+            val page = mViewModel.pageListener.value
+            if (page == DatePickerViewModel.Page.DATE) {
+                mViewModel.backToTimePicker()
+            }
+            if (arguments?.containsKey(Config.VALUE_SELECTED_DATE) == false) {
+                // 如果沒有選擇日期，則清除結果
+                parentFragmentManager.setFragmentResult(Config.KEY_RESULT, Bundle())
+            }
+        }
     }
 
-    override fun initData() {
-        super.initData()
-        requireArguments().getString(KEY_DATE)?.let {
-            val date = BetSlipDateFilterEnum.valueOf(it)
-            if (date == BetSlipDateFilterEnum.CUSTOM) {
-                if (requireArguments().containsKey(Config.VALUE_SELECTED_MILLISECOND)) {
-                    val time = requireArguments().getLong(Config.VALUE_SELECTED_MILLISECOND)
-                    mViewModel.setCustomTime(time)
-                }
+    private fun setDate(defaultDate: BetSlipDateFilterEnum, customTime: Long? = null) {
+        if (defaultDate == BetSlipDateFilterEnum.CUSTOM) {
+            if (customTime != null) {
+                mViewModel.setCustomTime(customTime)
             }
-            mViewModel.setSelected(date.ordinal)
         }
+        mViewModel.setSelected(defaultDate.ordinal)
+    }
+
+    override fun customShow() {
+        arguments = null
+        super.customShow()
+    }
+
+    override fun customHide() {
+        if (arguments == null || requireArguments().isEmpty) {
+            // 如果沒有選擇日期，則清除結果
+            parentFragmentManager.setFragmentResult(Config.KEY_RESULT, Bundle())
+        }
+        super.customHide()
     }
 
     override suspend fun createObserver() {
@@ -241,24 +271,5 @@ class DatePickerFragment private constructor() :
         mBinding.dayPicker.displayedValues = null
         calendar.set(Calendar.DAY_OF_MONTH, newDay)
         initDayPicker(calendar)
-    }
-
-    override fun playExitAnimations(doStart: (() -> Unit)?, doEnd: (() -> Unit)?) {
-        super.playExitAnimations({
-            backgroundView?.visibility = View.INVISIBLE
-            if (!resultBundle.containsKey(Config.VALUE_SELECTED_DATE)) {
-                // 如果沒有選擇日期，則清除結果
-                parentFragmentManager.setFragmentResult(Config.KEY_RESULT, resultBundle)
-            }
-
-        }, doEnd)
-    }
-
-    override fun dismiss() {
-        if (resultBundle.isEmpty) {
-            // 如果沒有選擇日期，則清除結果
-            parentFragmentManager.setFragmentResult(Config.KEY_RESULT, resultBundle)
-        }
-        super.dismiss()
     }
 }
