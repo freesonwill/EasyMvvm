@@ -44,11 +44,10 @@ class BetSlipFragment :
         betSlipFilterViewModel.setIds(matchId, sportId)
     }
 
-    override fun onResume() {
-        super.onResume()
-//        betSlipFilterViewModel.checkUpdate()
+    override fun lazyLoadData() {
+        super.lazyLoadData()
+        mBinding.viewPager.offscreenPageLimit = 5
     }
-
 
     private fun initMenu() {
         with(mBinding) {

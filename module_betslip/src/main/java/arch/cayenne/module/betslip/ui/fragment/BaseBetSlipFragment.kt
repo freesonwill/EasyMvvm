@@ -36,6 +36,7 @@ abstract class BaseBetSlipFragment<VM: BaseBetSlipViewModel, VB : ViewBinding>: 
     private val recyclerView:RecyclerView by lazy { mBinding.root.findViewById(R.id.recyclerView) }
     private val dynamicState:DynamicStateLayout by lazy { mBinding.root.findViewById(R.id.empty_state) }
     private val refreshLayout:PullRefreshLayout by lazy { mBinding.root.findViewById(R.id.refreshLayout) }
+    private var firstLoading:Boolean = true
 
     abstract fun getBetSlipEnum(): BetSlipEnum
 
@@ -99,8 +100,12 @@ abstract class BaseBetSlipFragment<VM: BaseBetSlipViewModel, VB : ViewBinding>: 
                  dynamicState.showEmptyData(false, recyclerView)
              }
              DataState.Loading ->{
+                 if(!firstLoading){ //firstLoading只在第一次加载的时候展示，其余静默加载
+                     return
+                 }
                  dynamicState.showEmptyData(true, recyclerView)
                  dynamicState.setState(DynamicStateLayout.States.LOADING, arch.cayenne.lib.common.R.string.loading.getString())
+                 firstLoading = false
              }
              else ->{
 
