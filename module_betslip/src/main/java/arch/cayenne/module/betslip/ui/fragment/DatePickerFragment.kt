@@ -51,8 +51,13 @@ class DatePickerFragment private constructor() :
         }
     }
 
+    enum class Direction {
+        DATE, TIME
+    }
+
     override val vbClass: KClass<FragmentDatePickerBinding> = FragmentDatePickerBinding::class
     override val vmClass: KClass<DatePickerViewModel> = DatePickerViewModel::class
+    private var direction = Direction.DATE
 
     private val datePickerAdapter by lazy {
         DatePickerAdapter(object :
@@ -60,6 +65,7 @@ class DatePickerFragment private constructor() :
             override fun onCustomClick() {
                 DateNumberFragment.find(this@DatePickerFragment).apply {
                     getHideAnimator()?.let { animator ->
+                        direction = Direction.TIME
                         customShow(animator)
                     }
                 }
@@ -120,12 +126,6 @@ class DatePickerFragment private constructor() :
             parentFragmentManager.setFragmentResult(Config.KEY_RESULT, bundle)
             dismiss()
         }
-        setOnEndListener {
-            if (arguments?.containsKey(Config.VALUE_SELECTED_DATE) == false) {
-                // 如果沒有選擇日期，則清除結果
-                parentFragmentManager.setFragmentResult(Config.KEY_RESULT, Bundle())
-            }
-        }
     }
 
 
@@ -138,13 +138,14 @@ class DatePickerFragment private constructor() :
         mViewModel.setSelected(defaultDate.ordinal)
     }
 
-    override fun customShow() {
+    override fun setCustomExpendSetting() {
+        super.setCustomExpendSetting()
         arguments = null
-        super.customShow()
+        direction = Direction.DATE
     }
 
     override fun customHide() {
-        if (arguments == null || requireArguments().isEmpty) {
+        if (arguments == null && direction == Direction.DATE) {
             // 如果沒有選擇日期，則清除結果
             parentFragmentManager.setFragmentResult(Config.KEY_RESULT, Bundle())
         }

@@ -7,6 +7,7 @@ import arch.cayenne.module.betslip.R
 import arch.cayenne.module.betslip.data.constants.BetSlipDateFilterEnum
 import arch.cayenne.module.betslip.data.constants.Config
 import arch.cayenne.module.betslip.databinding.FragmentDateNumberBinding
+import arch.cayenne.module.betslip.ui.fragment.DatePickerFragment.Direction
 import arch.cayenne.module.betslip.ui.viewmodel.DateNumberViewModel
 import java.util.Calendar
 import kotlin.reflect.KClass
@@ -35,6 +36,7 @@ class DateNumberFragment: BasePreLoadBottomSheetFragment<DateNumberViewModel, Fr
 
     override val vbClass: KClass<FragmentDateNumberBinding> = FragmentDateNumberBinding::class
     override val vmClass: KClass<DateNumberViewModel> = DateNumberViewModel::class
+    private var direction = Direction.TIME
 
     override fun initView(savedInstanceState: Bundle?) {
         mBinding.yearPicker.setOnValueChangedListener { _, _, newVal ->
@@ -62,13 +64,16 @@ class DateNumberFragment: BasePreLoadBottomSheetFragment<DateNumberViewModel, Fr
         mBinding.tvCancel.setOnClickListener {
             parentFragment?.let { parentFragment ->
                 getHideAnimator()?.let { animator ->
+                    direction = Direction.DATE
                     DatePickerFragment.find(parentFragment).customShow(animator)
                 }
             }
         }
         mBinding.tvConfirm.setOnClickListener {
             parentFragment?.let { parentFragment ->
-                val bundle = Bundle()
+                val bundle = Bundle().apply {
+                    arguments = this
+                }
                 bundle.apply {
                     putString(Config.VALUE_SELECTED_DATE, BetSlipDateFilterEnum.CUSTOM.name)
                     putLong(Config.VALUE_SELECTED_MILLISECOND, mViewModel.getCustomTime)
@@ -152,5 +157,18 @@ class DateNumberFragment: BasePreLoadBottomSheetFragment<DateNumberViewModel, Fr
 
     fun reset() {
         mViewModel.setCustomTime(null)
+    }
+
+    override fun setCustomExpendSetting() {
+        super.setCustomExpendSetting()
+        arguments = null
+        direction = Direction.TIME
+    }
+
+    override fun customHide() {
+        if (arguments == null && direction == Direction.TIME) {
+            parentFragment?.parentFragmentManager?.setFragmentResult(Config.KEY_RESULT, Bundle())
+        }
+        super.customHide()
     }
 }
