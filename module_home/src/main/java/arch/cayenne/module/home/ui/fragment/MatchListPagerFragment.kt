@@ -55,7 +55,7 @@ class MatchListPagerFragment :
 
     override fun initView(savedInstanceState: Bundle?) {
         mBinding.apply {
-            refreshLayout.setEnableLoadMore(true)
+            refreshLayout.setEnableLoadMore(false)
             refreshLayout.setEnableScrollContentWhenLoaded(true)
             refreshLayout.setOnRefreshListener {
                 mViewModel.reload()
@@ -122,10 +122,18 @@ class MatchListPagerFragment :
                 }
 
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+//                    with(rvHomeGameList) {
+//                        mViewModel.matchListChange.value?: return
+//                        val layoutManager = this.layoutManager as LinearLayoutManager?
+//                        val lastItemPos = layoutManager!!.findLastCompletelyVisibleItemPosition()
+//                        val itemCount = mViewModel.matchListChange.value!! - 8
+//                        if (lastItemPos > itemCount && lastItemPos > 1) {
+//
+//                        }
+//                    }
+
                     rvHomeGameList.scrollToBottomWithLoadMore(minScrollCount = 8) {
-                        if (mViewModel.apiStateListener.value == DataState.Loading || mViewModel.apiStateListener.value == HomeState.Match.Loading) {
-                            return@scrollToBottomWithLoadMore
-                        }
+                        if (mViewModel.apiStateListener.value != HomeState.Match.LoadSuccess) return@scrollToBottomWithLoadMore
                         mViewModel.loadNextPage()
                     }
                 }
@@ -186,15 +194,17 @@ class MatchListPagerFragment :
             matchAdapter.submitList(matchList)
             mBinding.rvHomeGameList.doOnPreDraw {
                 subscribeVisibleMatch()
-                if (preEmpty && matchList.isNotEmpty()) {
+                if (matchList.isNotEmpty()) {
                     mViewModel.changeState(HomeState.Match.LoadSuccess)
-                    setMatchListPosition()
-
+                    if (preEmpty) {
+                        setMatchListPosition()
+                    }
                 }
             }
         }
 
         mViewModel.apiStateListener.observe(viewLifecycleOwner) {
+            "KC_ state: ${it::class.java.name}".logi()
             with(mBinding) {
                 when(it) {
                     DataState.NetworkUnavailable -> {
@@ -230,12 +240,12 @@ class MatchListPagerFragment :
                     HomeState.Match.Loading -> {
                         lvMatchLoading.visibility = View.VISIBLE
                         clDynamics.visibility = View.GONE
-                        refreshLayout.setEnableLoadMore(true)
+//                        refreshLayout.setEnableLoadMore(true)
                         homeViewModel.changeState(HomeState.Match.Loading)
                     }
                     HomeState.Match.Refreshing -> {
                         clDynamics.visibility = View.GONE
-                        refreshLayout.setEnableLoadMore(true)
+//                        refreshLayout.setEnableLoadMore(true)
                     }
                     HomeState.Match.LoadingNext -> {
                         clDynamics.visibility = View.GONE
@@ -244,7 +254,7 @@ class MatchListPagerFragment :
                         "KC_ 收到狀態完成！".logi()
                         lvMatchLoading.visibility = View.GONE
                         if (refreshLayout.isRefreshing) refreshLayout.finishRefresh()
-                        refreshLayout.finishLoadMore()
+                        refreshLayout.finishLoadMore(0)
                         clDynamics.visibility = View.GONE
                         homeViewModel.changeState(HomeState.Match.LoadSuccess)
                     }

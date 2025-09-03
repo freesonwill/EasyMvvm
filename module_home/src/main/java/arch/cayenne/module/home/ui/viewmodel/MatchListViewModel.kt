@@ -144,6 +144,7 @@ class MatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
                 {
                     if (it is ApiResponseState.Failed) {
                         matchListChange.value = arrayListOf()
+                        setState(DataState.NetworkUnavailable)
                     } else if (it is ApiResponseState.Succeeded<*>) {
                         val size = it.dataAs<List<Common.Match>>()?.size ?: 0
                         val isEmpty = size == 0
@@ -154,7 +155,7 @@ class MatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
                             setState(DataState.NoMoreData)
                         }
                     }
-                }
+                },autoUpdateState = false
             )
         }
     }
