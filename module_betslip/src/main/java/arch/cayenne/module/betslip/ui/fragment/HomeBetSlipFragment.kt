@@ -61,6 +61,7 @@ class HomeBetSlipFragment : BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsl
             }
 
         })
+        SportPickerFragment.create(childFragmentManager, mBinding.fragmentSportFilter.id)
     }
 
     override fun initData() {
@@ -253,11 +254,9 @@ class HomeBetSlipFragment : BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsl
                 }
                 setFilterText(mBinding.tvSportFilter, false)
             }
-            SportPickerFragment.newInstance(
-                it.map { bean ->
-                    bean.sportId
-                }
-            ).show(childFragmentManager, mBinding.fragmentSportFilter.id)
+            SportPickerFragment.create(childFragmentManager, mBinding.fragmentSportFilter.id).show(it.map { bean ->
+                bean.sportId
+            })
         }
     }
 
