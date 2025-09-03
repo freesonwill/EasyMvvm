@@ -98,14 +98,14 @@ class HandicapFragment : BaseFragment<HandicapViewModel, FragmentHandicapBinding
         tabLayout.post {
             try {
                 val mTabStrip = tabLayout.getChildAt(0) as LinearLayout
-                val marginStart: Int = 8f.dp2px
+                val marginStart: Int = 9.dp2px
                 for (i in 0 until mTabStrip.childCount) {
                     val tabView = mTabStrip.getChildAt(i)
                     val params = tabView.layoutParams as LinearLayout.LayoutParams
                     params.height = 32.dp2px
                     params.width = 96.dp2px
-                    params.topMargin = 6.dp2px
-                    params.bottomMargin = 6.dp2px
+                    params.topMargin = 7.dp2px
+                    params.bottomMargin = 7.dp2px
                     params.leftMargin = marginStart
                     params.rightMargin = marginStart
                     tabView.layoutParams = params

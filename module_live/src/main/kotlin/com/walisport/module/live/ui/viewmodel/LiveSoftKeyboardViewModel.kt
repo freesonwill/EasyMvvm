@@ -2,19 +2,17 @@ package com.walisport.module.live.ui.viewmodel
 
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.data.constants.SportEnum
-import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.skin.LanguageManager
 import com.walisport.module.live.R
 import com.walisport.module.live.data.constants.BidEmojiEnum
 import com.walisport.module.live.data.constants.EmojiEnum
 import com.walisport.module.live.data.constants.EmojiTypeEnum
 import com.walisport.module.live.data.constants.KeyBoardType
+import com.walisport.module.live.data.constants.KeyboardActionType
 import com.walisport.module.live.data.model.EmojiData
 import com.walisport.module.live.data.model.KeyBoardTabData
 import com.walisport.module.live.data.model.SoftData
-import com.walisport.module.live.ui.LiveChatFragment
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
 
@@ -100,43 +98,34 @@ class LiveSoftKeyboardViewModel : BaseViewModel() {
         return arrayListOf(SoftData(EmojiTypeEnum.NORMAL,getNormalEmojis()),SoftData(EmojiTypeEnum.BID,getBidEmojis()))
     }
 
-    val CHAT_TO_EMOJI:Int = 1
-    val CHAT_TO_SOFT:Int = 2
-    val SOFT_TO_EMOJI:Int = 3
-    val EMOJI_TO_SOFT:Int = 4
-    val EMOJI_TO_CHAT:Int = 5
-    val SOFT_TO_CHAT:Int = 6
-    val CHAT_TO_CHAT:Int = 7
 
     /**
      * 判断动画类型
      * */
-     fun getAnimationType(listenerValue:KeyBoardType,currentValue:KeyBoardType):Int{
+    fun getKeyBoardActionType(listenerValue:KeyBoardType, currentValue:KeyBoardType): KeyboardActionType {
 
         return  when(currentValue){
             KeyBoardType.CHAT ->{
                 return when(listenerValue){
-                    KeyBoardType.EMOJI -> CHAT_TO_EMOJI
-                    KeyBoardType.SOFT_KEYBOARD -> CHAT_TO_SOFT
-                    KeyBoardType.CHAT -> CHAT_TO_CHAT
+                    KeyBoardType.EMOJI -> KeyboardActionType.CHAT_TO_EMOJI
+                    KeyBoardType.SOFT_KEYBOARD -> KeyboardActionType.CHAT_TO_SOFT
+                    KeyBoardType.CHAT -> KeyboardActionType.CHAT_TO_CHAT
                 }
             }
             KeyBoardType.SOFT_KEYBOARD ->{
                 return when(listenerValue){
-                    KeyBoardType.CHAT -> SOFT_TO_CHAT
-                    KeyBoardType.EMOJI -> SOFT_TO_EMOJI
-                    KeyBoardType.SOFT_KEYBOARD -> -1
+                    KeyBoardType.CHAT -> KeyboardActionType.SOFT_TO_CHAT
+                    KeyBoardType.EMOJI -> KeyboardActionType.SOFT_TO_EMOJI
+                    KeyBoardType.SOFT_KEYBOARD -> KeyboardActionType.SOFT_TO_SOFT
                 }
             }
             KeyBoardType.EMOJI ->{
                 return when(listenerValue){
-                    KeyBoardType.CHAT -> EMOJI_TO_CHAT
-                    KeyBoardType.SOFT_KEYBOARD -> EMOJI_TO_SOFT
-                    KeyBoardType.EMOJI -> -1
+                    KeyBoardType.CHAT -> KeyboardActionType.EMOJI_TO_CHAT
+                    KeyBoardType.SOFT_KEYBOARD -> KeyboardActionType.EMOJI_TO_SOFT
+                    KeyBoardType.EMOJI -> KeyboardActionType.NONE
                 }
             }
         }
     }
-
-
 }

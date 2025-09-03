@@ -29,6 +29,11 @@ class UserDataManager {
         notifyChanged(key, value)
     }
 
+    fun removeValueForKey(key:UserDataKey){
+        mmkv.removeValueForKey(key.key)
+        flows.remove(key)
+    }
+
     inline fun <reified T> getValue(
         key: UserDataKey,
         default: T? = null,

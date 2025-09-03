@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.text.TextPaint
 import android.util.TypedValue
 import android.view.Gravity
+import android.view.View
 import android.view.ViewTreeObserver
 import android.widget.TextView
 import androidx.fragment.app.FragmentManager
@@ -25,6 +26,7 @@ import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.module.betslip.R
 import arch.cayenne.module.betslip.data.constants.BetSlipDateFilterEnum
 import arch.cayenne.module.betslip.data.constants.Config
+import arch.cayenne.module.betslip.data.model.HomeSlipShowTypeEnum
 import arch.cayenne.module.betslip.databinding.FragmentHomeBetslipBinding
 import arch.cayenne.module.betslip.ui.viewmodel.BetSlipFilterViewModel
 import arch.cayenne.module.betslip.ui.viewmodel.HomeBetSlipViewModel
@@ -74,18 +76,16 @@ class HomeBetSlipFragment : BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsl
         mBinding.ivBack.setOnClickListener {
             // 有tag代表是透過fragment manager添加而來，而非navigation
             if (tag == HomeBetSlipFragment.TAG) {
-                
                 parentFragmentManager.popBackStack(HomeBetSlipFragment.TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE)
             } else {
                 findNavController().navigateUp()
             }
         }
         mBinding.tvDateFilter.setOnClickListener {
-            mViewModel.setSportViewCollapse()
-            showDateFilter()
+            mViewModel.setShowType(HomeSlipShowTypeEnum.DATE)
         }
         mBinding.tvSportFilter.setOnClickListener {
-            mViewModel.toggleSportView()
+            mViewModel.setShowType(HomeSlipShowTypeEnum.SPORT)
         }
         mBinding.root.touchBackPressed()
     }
@@ -104,12 +104,16 @@ class HomeBetSlipFragment : BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsl
 
             mBinding.tvSportFilter.text = displayText
         }
-        mViewModel.isShowSportView.observeEvent(viewLifecycleOwner, this) {
-            if (it) {
-                showSportFilter()
-            } else {
-                hideSportFilter()
+        mViewModel.onShowTypeListener.observeEvent(viewLifecycleOwner, this) {
+            when (it) {
+                HomeSlipShowTypeEnum.DATE -> showDateFilter()
+                HomeSlipShowTypeEnum.SPORT -> showSportFilter()
+                HomeSlipShowTypeEnum.NONE -> {
+                    hideSportFilter()
+                }
             }
+            mBinding.tvSportFilter.visibility = if (it == HomeSlipShowTypeEnum.SPORT || it == HomeSlipShowTypeEnum.NONE) View.VISIBLE else View.INVISIBLE
+            mBinding.tvDateFilter.visibility = if (it == HomeSlipShowTypeEnum.DATE || it == HomeSlipShowTypeEnum.NONE) View.VISIBLE else View.INVISIBLE
         }
     }
 
@@ -145,7 +149,13 @@ class HomeBetSlipFragment : BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsl
                     text = pager[position].title
                     gravity = Gravity.CENTER
                     setTextSize(TypedValue.COMPLEX_UNIT_SP, 15f)
-                    setTextColor(SkinnableResourceManager.getColor(requireContext(), arch.cayenne.lib.common.R.color.main_text))
+                    if (position == 0) {
+                        setTypeface(null, Typeface.BOLD)
+                        setTextColor(SkinnableResourceManager.getColor(requireContext(), arch.cayenne.lib.common.R.color.main_text))
+                    } else {
+                        setTypeface(null, Typeface.NORMAL)
+                        setTextColor(SkinnableResourceManager.getColorStateList(requireContext(), arch.cayenne.lib.common.R.color.secondary_text))
+                    }
                     if (!shouldDistributeEvenly) {
                         setPadding(18.dp2px, 0, 18.dp2px, 0)
                     }
@@ -155,20 +165,30 @@ class HomeBetSlipFragment : BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsl
             }.attach()
         }
         mBinding.root.post {
+            (mBinding.tabLayout.getTabAt(0)?.customView as? TextView)?.apply {
+                setTypeface(null, Typeface.BOLD)
+                setTextColor(SkinnableResourceManager.getColor(requireContext(), arch.cayenne.lib.common.R.color.main_text))
+            }
             mBinding.tabLayout.clearOnTabSelectedListeners()
             mBinding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab) {
-                    mViewModel.setSportViewCollapse()
+                    mViewModel.setShowType(HomeSlipShowTypeEnum.NONE)
                     if (skipAnyAnim) {
                         // 动画更新指示器位置
                         mBinding.customIndicator.animateIndicatorToPosition(tab.position, 0)
                         mBinding.viewPager.setCurrentItem(tab.position, false)
                     }
-                    (tab.customView as? TextView)?.setTypeface(null, Typeface.BOLD)
+                    (tab.customView as? TextView)?.apply {
+                        setTypeface(null, Typeface.BOLD)
+                        setTextColor(SkinnableResourceManager.getColor(requireContext(), arch.cayenne.lib.common.R.color.main_text))
+                    }
                 }
 
                 override fun onTabUnselected(tab: TabLayout.Tab?) {
-                    (tab?.customView as? TextView)?.setTypeface(null, Typeface.NORMAL)
+                    (tab?.customView as? TextView)?.apply {
+                        setTypeface(null, Typeface.NORMAL)
+                        setTextColor(SkinnableResourceManager.getColorStateList(requireContext(), arch.cayenne.lib.common.R.color.secondary_text))
+                    }
                 }
 
                 override fun onTabReselected(tab: TabLayout.Tab?) {
@@ -190,7 +210,7 @@ class HomeBetSlipFragment : BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsl
                 Config.KEY_RESULT,
                 viewLifecycleOwner
             ) { _, bundle ->
-                childFragmentManager.clearFragmentResultListener(Config.KEY_RESULT)
+                mViewModel.setShowType(HomeSlipShowTypeEnum.NONE)
                 if (bundle.containsKey(Config.VALUE_SELECTED_DATE)) {
                     bundle.getString(Config.VALUE_SELECTED_DATE)?.let { result ->
                         val date = BetSlipDateFilterEnum.valueOf(result)
@@ -240,7 +260,7 @@ class HomeBetSlipFragment : BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsl
                 Config.KEY_RESULT,
                 viewLifecycleOwner
             ) { _, bundle ->
-                childFragmentManager.clearFragmentResultListener(Config.KEY_RESULT)
+                mViewModel.setShowType(HomeSlipShowTypeEnum.NONE)
                 if (bundle.containsKey(Config.VALUE_SELECTED_SPORT_ID)) {
                     bundle.getIntArray(Config.VALUE_SELECTED_SPORT_ID)?.toList()?.let { ids ->
                         mViewModel.setSportFilter(ids)
@@ -264,6 +284,7 @@ class HomeBetSlipFragment : BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsl
     }
 
     private fun setFilterText(view: TextView, isSelected: Boolean) {
+        childFragmentManager.clearFragmentResult(Config.KEY_RESULT)
         if (isSelected) {
             view.setTextColor(
                 SkinnableResourceManager.getColorStateList(

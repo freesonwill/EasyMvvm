@@ -1,14 +1,10 @@
 package com.walisport.module.live.ui
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.os.Bundle
 import android.view.MotionEvent
-import android.view.ViewTreeObserver
 import androidx.activity.addCallback
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
-import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -25,7 +21,6 @@ import com.walisport.module.live.R
 import com.walisport.module.live.data.constants.KeyBoardType
 import com.walisport.module.live.data.constants.MatchStatus
 import com.walisport.module.live.databinding.FragmentLiveChatBinding
-import com.walisport.module.live.helper.SoftKeyboardHeightHelper
 import com.walisport.module.live.ui.adapter.LiveChatAdapter
 import com.walisport.module.live.ui.viewmodel.LiveChatViewModel
 import com.walisport.module.live.ui.viewmodel.LiveMainViewModel
@@ -37,13 +32,11 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
     override val vbClass: KClass<FragmentLiveChatBinding> = FragmentLiveChatBinding::class
     override val vmClass: KClass<LiveChatViewModel> = LiveChatViewModel::class
     private val mainViewModel: LiveMainViewModel by sharedViewModel<LiveMainViewModel, LiveMainFragment>()
-//    private val softKeyboardHeightHelper: SoftKeyboardHeightHelper = SoftKeyboardHeightHelper()
 
     override fun initView(savedInstanceState: Bundle?) {
         initFragment()
         initTab()
         updateChatUi()
-        showChat(8)
     }
 
     private fun initTab() {
@@ -54,17 +47,22 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
         mBinding.liveChatRecycler.itemAnimator = null
     }
 
+    override fun onPause() {
+        super.onPause()
+        showChat(6)
+    }
+
     override fun onResume() {
         super.onResume()
         //软件盘时获取的高度有误，onResume时获取固定值
-        mViewModel.keyBoardHeight = mBinding.main.height
+//        mBinding.liveChatKeyboard.translationY = -62.dp2px.toFloat()
     }
 
     @SuppressLint("ClickableViewAccessibility")
     override fun initListener() {
 
         mBinding.main.setOnTouchListener { v, event ->
-            if (event.action == MotionEvent.ACTION_DOWN && mViewModel.currentSoftKeyboard.value != KeyBoardType.CHAT) {
+            if (event.action == MotionEvent.ACTION_DOWN && mViewModel.currentKeyBoardType != KeyBoardType.CHAT) {
                 showChat(9)
                 return@setOnTouchListener true
             }
@@ -72,7 +70,7 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
         }
         mBinding.liveChatRecycler.addOnItemTouchListener(object : RecyclerView.OnItemTouchListener {
             override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
-                if (e.action == MotionEvent.ACTION_UP && mViewModel.currentSoftKeyboard.value != KeyBoardType.CHAT) {
+                if (e.action == MotionEvent.ACTION_UP && mViewModel.currentKeyBoardType != KeyBoardType.CHAT) {
                     showChat(7)
                 }
                 return false
@@ -86,7 +84,7 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
         })
 
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
-            if (mViewModel.currentSoftKeyboard.value != KeyBoardType.CHAT) {
+            if (mViewModel.currentKeyBoardType != KeyBoardType.CHAT) {
                 showChat(1)
             } else {
                 if (activity == null) {
@@ -100,11 +98,6 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
 
     private fun initFragment() {
         val fragment = LiveSoftKeyboardFragment()
-//        fragment.softKeyHeightHelper = object :LiveSoftKeyboardFragment.SoftKeyHeightHelper{
-//            override fun changeSoftKeyBoardHeight(height: Int, isSoftToEmoji: Boolean) {
-//                mBinding.liveChatKeyboard.layoutParams.height = height //修改键盘高度为整页聊天页的高度
-//            }
-//        }
         childFragmentManager.beginTransaction()
             .replace(mBinding.liveChatKeyboard.id, fragment, LiveSoftKeyboardFragment.TAG).commit()
     }
@@ -148,8 +141,6 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
             showToast(it)
         }
 
-
-
         viewLifecycleOwner.lifecycleScope.launch {
             launch {
                 mViewModel.newMsgFlow.collect {
@@ -167,113 +158,21 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
                 }
             }
 
-            launch {
-//                mViewModel.softKeyBoardListener.collect {
-////                    val flag1 = !mViewModel.checkSoftKeyboardVisible()
-////                    if (it != KeyBoardType.NONE && flag1) {
-////                        mViewModel.checkSoftKeyBoardBetAmount()
-////                        return@collect
-////                    }
-//                    when (it) {
-//                        KeyBoardType.EMOJI -> { //展开emoji键盘
-//                            showChatAnimation(true, true)
-//                        }
-//
-//                        else -> {//展开其他键盘
-//                            if (mViewModel.currentSoftKeyboard.value == KeyBoardType.EMOJI) { //展开其他键盘时，需要先向下移动表情键盘
-//                                showChatAnimation(false, true)
-//                            } else { //软件盘和聊天界面切换
-//                                showChatAnimation(false, isEmoji = false)
-//                            }
-//                        }
-//                    }
-//                }
-            }
         }
     }
-
-    override fun onStart() {
-        super.onStart()
-//     startSoftKeyboardHeight(requireActivity())
-    }
-
-//    fun startSoftKeyboardHeight(activity: FragmentActivity){
-//        softKeyboardHeightHelper.startListener(activity)
-//    }
 
     /**
      * 显示聊天界面时隐藏键盘界面
      * */
     private fun showChat(flag: Int) {
-        mViewModel.addSoftKeyBoardEvent(KeyBoardType.CHAT, flag)
+        mViewModel.updateKeyBoardUi(KeyBoardType.CHAT,flag)
     }
-
-
-    /**
-     * 如果要隐藏和显示表情键盘时使用动画
-     * @param emojiKeyBoardVisible 表情键盘显示或者隐藏
-     * @param isEmoji 是否表情键盘相关的活动
-     * */
-//    private fun showChatAnimation(emojiKeyBoardVisible: Boolean, isEmoji: Boolean) {
-//        val height = if (emojiKeyBoardVisible && isEmoji) keyBoardHeight else 62.dp2px
-//        if (isEmoji) {
-//            var translationsY = keyBoardHeight - 83.dp2px //83为12dp输入到顶部的距离和62dp输入框layout的整体高度
-//            // 当软件盘弹出时，和表情键盘切换，表情键盘的上升高度应该减去软件盘的高度
-//            translationsY =
-//                if (mViewModel.currentSoftKeyboard.value == KeyBoardType.SOFT_KEYBOARD) translationsY - mViewModel.softKeyBoardHeight else translationsY
-//
-//            //表情键盘显示时从表情键盘的高度向上移动  表情键盘下滑时的高度应该为除了输入框外的表情键盘高度
-//            val params = if (emojiKeyBoardVisible) floatArrayOf(
-//                translationsY.toFloat(),
-//                0f
-//            ) else floatArrayOf(0f, translationsY.toFloat())
-//            //同时伴随渐隐渐显
-//            val alphaParam =
-//                if (emojiKeyBoardVisible) floatArrayOf(0f, 1f) else floatArrayOf(1f, 0f)
-//
-//            val transAnimation =
-//                ObjectAnimator.ofFloat(mBinding.liveChatKeyboard, "translationY", *params)
-//            val alphaAnimation =
-//                ObjectAnimator.ofFloat(mBinding.liveChatKeyboard, "alpha", *alphaParam)
-//            val animatorSet = AnimatorSet()
-//            animatorSet.addListener(onStart = {
-//                if (emojiKeyBoardVisible) {//显示表情键盘
-//                    mBinding.liveChatKeyboard.layoutParams.height = height //修改键盘高度为整页聊天页的高度
-//                    mViewModel.updateKeyBoard()//显示表情键盘相关view，如果有软件显示，则伴随软件盘的下移
-//                    mViewModel.updateSoftKeyBoard(false)
-//                } else {//隐藏表情键盘
-//                    if (mViewModel.softKeyBoardListener.value == KeyBoardType.SOFT_KEYBOARD) { //如果要显示的是软件盘提前打开软件盘，并伴随表情键盘的下移
-//                        mViewModel.updateSoftKeyBoard(true) //打开软件盘
-//                    }
-//                }
-//            }, onEnd = {
-//                if (!emojiKeyBoardVisible) {// 表情键盘隐藏
-//                    mBinding.liveChatKeyboard.layoutParams.height = height //动画完毕后调整键盘页高度为输入框高度
-//                    mBinding.liveChatKeyboard.translationY = 0f
-//                    mViewModel.updateKeyBoard() //显示对应的聊天 和软件盘界面
-//                }
-//                mBinding.liveChatKeyboard.alpha = 1f
-//            })
-//            animatorSet.duration = 1000L
-//            animatorSet.playTogether(transAnimation, alphaAnimation)
-//            animatorSet.start()
-//        } else { //和表情键盘无关，不用显示动画
-//            mViewModel.updateKeyBoard()
-//            mBinding.liveChatKeyboard.layoutParams.height = height
-//        }
-//    }
-
-    private fun showChatAnimation(emojiKeyBoardVisible: Boolean, isEmoji: Boolean) {
-
-    }
-
-
 
     /**
      * 判断键盘是否在显示中
      * */
     fun isSoftKeyboardVisible(): Boolean {
-        val flag = mViewModel.currentSoftKeyboard.value != KeyBoardType.CHAT
+        val flag = mViewModel.currentKeyBoardType != KeyBoardType.CHAT
         if (flag) {
             showChat(3)
         }

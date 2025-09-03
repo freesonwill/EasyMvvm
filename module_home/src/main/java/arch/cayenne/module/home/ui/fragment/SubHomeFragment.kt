@@ -147,6 +147,11 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
 
     @SuppressLint("NotifyDataSetChanged")
     override suspend fun createObserver() {
+        mViewModel.selectedSkinType.observeEvent(viewLifecycleOwner, this) {
+            if (customPopup != null) {
+                customPopup!!.setSkinColor()
+            }
+        }
         mViewModel.currentSportIdChange.observeEvent(viewLifecycleOwner, this) {
             if (mViewModel.currentPlayTypeId != PlayType.CHAMPION.id) return@observeEvent
             (childFragmentManager.findFragmentByTag(PlayType.CHAMPION.name) as? TournamentListFragment)?.changeSportId(it)
@@ -504,7 +509,7 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
                     val params = layoutParams as LinearLayout.LayoutParams
                     params.width = 56.dp2px
                     params.height = 50.dp2px
-                    params.marginStart = 5.dp2px
+                    params.marginStart = 4.dp2px
                     layoutParams = params
                     setBackgroundResource(R.drawable.selector_date_tab_bg)
                     if (clearSelected) isSelected = false

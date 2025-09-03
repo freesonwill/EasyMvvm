@@ -5,6 +5,7 @@
             <gradient
                 android:angle="0"
                 android:endColor="@color/bg_card_white_blue"
+                android:centerColor="@color/bg_sport_list_gradient_center_white_blue"
                 android:startColor="@color/bg_sport_list_gradient_start_white_blue"
                 android:type="linear" />
         </shape>
