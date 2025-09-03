@@ -1,5 +1,7 @@
 package arch.cayenne.lib.common.data.constants
 
-enum class LoginEnum(val code: Int) {
-    SUCCESSFUL(-1), NOT_SUCCESSFUL(1), API_FAILURE(2)
+sealed class LoginEnum(val code: Int) {
+    object SUCCESSFUL:LoginEnum(-1)
+    object NOT_SUCCESSFUL:LoginEnum(1)
+    data class API_FAILURE(val error:String?):LoginEnum(2)
 }
