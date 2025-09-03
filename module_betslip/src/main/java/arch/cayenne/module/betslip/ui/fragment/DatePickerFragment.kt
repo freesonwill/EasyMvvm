@@ -67,6 +67,7 @@ class DatePickerFragment private constructor() :
 
             override fun onDateClick(position: Int) {
                 mViewModel.setSelected(position)
+                DateNumberFragment.find(this@DatePickerFragment).reset()
             }
 
             override fun onCancelClick() {
@@ -126,6 +127,7 @@ class DatePickerFragment private constructor() :
             }
         }
     }
+
 
     private fun setDate(defaultDate: BetSlipDateFilterEnum, customTime: Long? = null) {
         if (defaultDate == BetSlipDateFilterEnum.CUSTOM) {

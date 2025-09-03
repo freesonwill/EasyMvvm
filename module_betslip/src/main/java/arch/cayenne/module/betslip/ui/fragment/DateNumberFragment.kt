@@ -1,10 +1,11 @@
 package arch.cayenne.module.betslip.ui.fragment
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import arch.cayenne.lib.base.ui.fragment.BasePreLoadBottomSheetFragment
 import arch.cayenne.module.betslip.R
+import arch.cayenne.module.betslip.data.constants.BetSlipDateFilterEnum
+import arch.cayenne.module.betslip.data.constants.Config
 import arch.cayenne.module.betslip.databinding.FragmentDateNumberBinding
 import arch.cayenne.module.betslip.ui.viewmodel.DateNumberViewModel
 import java.util.Calendar
@@ -47,19 +48,18 @@ class DateNumberFragment: BasePreLoadBottomSheetFragment<DateNumberViewModel, Fr
             updateDayPicker(year, newVal, day)
         }
         mBinding.dayPicker.setOnValueChangedListener { _, _, newVal ->
-//            val year = mBinding.yearPicker.value
-//            val month = mBinding.monthPicker.value
-//
-//            val calendar = mViewModel.calendar
-//            calendar.set(Calendar.YEAR, year)
-//            calendar.set(Calendar.MONTH, month - 1)
-//            calendar.set(Calendar.DAY_OF_MONTH, newVal)
+            val year = mBinding.yearPicker.value
+            val month = mBinding.monthPicker.value
+
+            val calendar = mViewModel.calendar
+            calendar.set(Calendar.YEAR, year)
+            calendar.set(Calendar.MONTH, month - 1)
+            calendar.set(Calendar.DAY_OF_MONTH, newVal)
         }
     }
 
     override fun initListener() {
         mBinding.tvCancel.setOnClickListener {
-            Log.d("abcd", "++++++ $parentFragment")
             parentFragment?.let { parentFragment ->
                 getHideAnimator()?.let { animator ->
                     DatePickerFragment.find(parentFragment).customShow(animator)
@@ -67,7 +67,25 @@ class DateNumberFragment: BasePreLoadBottomSheetFragment<DateNumberViewModel, Fr
             }
         }
         mBinding.tvConfirm.setOnClickListener {
-            dismiss()
+            parentFragment?.let { parentFragment ->
+                val bundle = Bundle()
+                bundle.apply {
+                    putString(Config.VALUE_SELECTED_DATE, BetSlipDateFilterEnum.CUSTOM.name)
+                    putLong(Config.VALUE_SELECTED_MILLISECOND, mViewModel.getCustomTime)
+                }
+                parentFragment.parentFragmentManager.setFragmentResult(Config.KEY_RESULT, bundle)
+                dismiss()
+            }
+        }
+    }
+
+    override suspend fun createObserver() {
+        super.createObserver()
+        mViewModel.customTimeListener.observe(viewLifecycleOwner) { time ->
+            val c = mViewModel.calendar
+            initYearPicker(c)
+            initMonthPicker(c)
+            initDayPicker(c)
         }
     }
 
@@ -121,14 +139,18 @@ class DateNumberFragment: BasePreLoadBottomSheetFragment<DateNumberViewModel, Fr
     }
 
     private fun updateDayPicker(year: Int, month: Int, day: Int) {
-//        val calendar = mViewModel.calendar
-//        calendar.set(Calendar.YEAR, year)
-//        calendar.set(Calendar.MONTH, month - 1)
-//        calendar.set(Calendar.DAY_OF_MONTH, 1)
-//        val maxDay = calendar.getActualMaximum(Calendar.DAY_OF_MONTH)
-//        val newDay = if (day > maxDay) maxDay else day
-//        mBinding.dayPicker.displayedValues = null
-//        calendar.set(Calendar.DAY_OF_MONTH, newDay)
-//        initDayPicker(calendar)
+        val calendar = mViewModel.calendar
+        calendar.set(Calendar.YEAR, year)
+        calendar.set(Calendar.MONTH, month - 1)
+        calendar.set(Calendar.DAY_OF_MONTH, 1)
+        val maxDay = calendar.getActualMaximum(Calendar.DAY_OF_MONTH)
+        val newDay = if (day > maxDay) maxDay else day
+        mBinding.dayPicker.displayedValues = null
+        calendar.set(Calendar.DAY_OF_MONTH, newDay)
+        initDayPicker(calendar)
+    }
+
+    fun reset() {
+        mViewModel.setCustomTime(null)
     }
 }
