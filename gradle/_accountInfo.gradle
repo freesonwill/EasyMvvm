@@ -1,0 +1,100 @@
+import groovy.json.JsonSlurper
+
+apply from: rootProject.file("gradle/_propLoader.gradle")
+
+def localProps = loadLocalProps()
+//def localProps = new Properties()
+//localProps.load(rootProject.file("local.properties").newDataInputStream())
+
+android {
+    defaultConfig {
+
+        //在脚本里直接 project.findProperty("user.uid") 或 prop.getProperty("user.uid") 都能取
+        project.findProperty("users")?.with { users ->
+            //使用JsonSlurper代替Gson，否则需要引用gson仓库
+            def userList = new JsonSlurper().parseText(users.toString()) as List<UserConfig>
+
+            def escapedJson = users.toString().replace("\\", "\\\\").replace("\"", "\\\"")
+            buildConfigField "String", "users", escapedJson.with{"\"$it\""}
+
+            // user.name 优先 user.uid
+            def name = localProps.getProperty("user.name")
+            def uid = localProps.getProperty("user.uid")
+            def user = userList.find { it.name == name } ?: userList.find { it.uid == uid }
+            if (user != null) {
+                buildConfigField "int", "uid", user.uid.toString()
+                buildConfigField "String", "token", user.token.with{"\"$it\""}
+            } else {
+                //throw new GradleException("both user.name:${name} and user.uid:${uid} not defined in properties")
+                logger.warn("both user.name:${name} and user.uid:${uid} not defined in properties")
+            }
+        }
+
+        /*localProps.getProperty("user.name")?.with { name ->
+            buildConfigField "String", "name", name.with{"\"$it\""}
+        }*/
+
+        localProps.getProperty("user.uid")?.with { uid ->
+            buildConfigField "int", "uid", uid
+        }
+
+        localProps.getProperty("user.token")?.with { token ->
+            buildConfigField "String", "token", token.with{"\"$it\""}
+        }
+    }
+}
+
+class UserConfig {
+    String name
+    String uid
+    String token
+}
+
+
+/** findProperty与getProperty区别
+
+ 1️⃣ project.findProperty("key")
+
+ 作用域：Gradle Project 对象 的属性（包括 gradle.properties、命令行 -P 传入的属性）。
+
+ 返回值：如果找不到，返回 null。
+
+ 典型用法：
+
+ // gradle.properties 或命令行 -Puid=1001
+ def uid = project.findProperty("uid")
+ println uid
+
+
+ 特点：
+
+ 可以访问 全局和模块级的 Gradle 属性。
+
+ 可以在命令行动态传参，优先级比 gradle.properties 高。
+
+ 适合在 build 脚本里读取参数或配置。
+
+
+ 2️⃣ Properties.getProperty("key")
+
+ 作用域：Java Properties 对象里的键值对，例如从 local.properties 文件 load 的。
+
+ 返回值：如果找不到，返回 null（或可以用 getProperty("key", defaultValue) 提供默认值）。
+
+ 典型用法：
+
+ def prop = new Properties()
+ prop.load(new FileInputStream(rootProject.file("local.properties")))
+ def uid = prop.getProperty("user.uid")
+ println uid
+
+
+ 特点：
+
+ 只能访问 你自己 load 的 Properties 文件。
+
+ 不受命令行 -P 影响。
+
+ 用于读取本地配置文件、API Key 等。
+
+ */
