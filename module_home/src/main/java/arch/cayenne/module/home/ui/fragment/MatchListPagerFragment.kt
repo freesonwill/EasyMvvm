@@ -123,16 +123,6 @@ class MatchListPagerFragment :
                 }
 
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-//                    with(rvHomeGameList) {
-//                        mViewModel.matchListChange.value?: return
-//                        val layoutManager = this.layoutManager as LinearLayoutManager?
-//                        val lastItemPos = layoutManager!!.findLastCompletelyVisibleItemPosition()
-//                        val itemCount = mViewModel.matchListChange.value!! - 8
-//                        if (lastItemPos > itemCount && lastItemPos > 1) {
-//
-//                        }
-//                    }
-
                     rvHomeGameList.scrollToBottomWithLoadMore(minScrollCount = 8) {
                         if (mViewModel.apiStateListener.value != HomeState.Match.LoadSuccess) return@scrollToBottomWithLoadMore
                         mViewModel.loadNextPage()
@@ -215,8 +205,6 @@ class MatchListPagerFragment :
                         mViewModel.changePageEnd(true)
                         lvMatchLoading.visibility = View.GONE
                         refreshLayout.finishRefresh()
-//                        refreshLayout.finishLoadMore()
-//                        refreshLayout.finishLoadMoreWithNoMoreData()
                         clDynamics.visibility = View.VISIBLE
                         clDynamics.setState(
                             DynamicStateLayout.States.NETWORK_ANOMALY(),
@@ -226,8 +214,7 @@ class MatchListPagerFragment :
                     }
                     DataState.NoMoreData -> {     //這個DataEmpty表示api抓不到任何資料了，有可能是頁面到底，或是從第一頁就抓不到資料
                         mViewModel.changePageEnd(true)
-//                        refreshLayout.finishLoadMoreWithNoMoreData()
-//                        refreshLayout.setEnableLoadMore(false)
+                        matchAdapter.showNoMoreData(true)
                         hasNoMore = true
                     }
                     HomeState.Match.DataEmpty -> {  //這個DataEmpty表示確定真的從第一頁就抓不到資料，表示當前的選擇沒有任何賽事
@@ -247,7 +234,7 @@ class MatchListPagerFragment :
                     }
                     HomeState.Match.Refreshing -> {
                         clDynamics.visibility = View.GONE
-//                        refreshLayout.resetNoMoreData()
+                        matchAdapter.showNoMoreData(false)
                     }
                     HomeState.Match.LoadingNext -> {
                         clDynamics.visibility = View.GONE
@@ -256,7 +243,6 @@ class MatchListPagerFragment :
                         "KC_ 收到狀態完成！".logi()
                         lvMatchLoading.visibility = View.GONE
                         if (refreshLayout.isRefreshing) refreshLayout.finishRefresh()
-//                        refreshLayout.finishLoadMore(0)
                         clDynamics.visibility = View.GONE
                         homeViewModel.changeState(HomeState.Match.LoadSuccess)
                     }

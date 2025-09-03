@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.ui.adapter.BaseAdapter
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.database.entity.MatchWithMarkets
 import arch.cayenne.lib.database.entity.SelectionBeanLite
@@ -19,11 +20,23 @@ class MatchItemAdapter(private val onMatchItemClickListener: OnMatchItemClickLis
     private val viewPool = RecyclerView.RecycledViewPool()
     private var showNoMoreData: Boolean = false
 
+    override fun getItemViewType(position: Int): Int {
+        return super.getItemViewType(position)
+    }
+
+    override fun submitList(list: List<MatchWithMarkets?>?) {
+        if (showNoMoreData) {
+
+        }
+        super.submitList(list)
+    }
+
     override fun convertPlus(
         holder: MatchItemViewHolder,
         binding: ItemMatchCardBinding,
         position: Int
     ) {
+        val start = System.currentTimeMillis()
         val item = getItem(position)
         holder.init(item)
         binding.root.setOnClickListener {
@@ -32,11 +45,17 @@ class MatchItemAdapter(private val onMatchItemClickListener: OnMatchItemClickLis
         binding.ivFavorite.apply { addScaleOnTouchAnimation() }.setOnClickListener {
             onMatchItemClickListener?.onFavoriteClick(getItem(holder.adapterPosition))
         }
-        if (position == itemCount - 1 && showNoMoreData) {
-            binding.tvNoMoreData.visibility = View.VISIBLE
+        if (position == itemCount - 1) {
+            if (showNoMoreData) {
+                binding.tvNoMoreData.visibility = View.VISIBLE
+            } else {
+                binding.tvNoMoreData.visibility = View.GONE
+            }
         } else {
             binding.tvNoMoreData.visibility = View.GONE
         }
+        val end = System.currentTimeMillis()
+        "KC_ convertPlus cost: ${end - start} ms".logi()
     }
 
     override fun createViewBinding(
@@ -70,7 +89,6 @@ class MatchItemAdapter(private val onMatchItemClickListener: OnMatchItemClickLis
     @SuppressLint("NotifyDataSetChanged")
     fun showNoMoreData(hasNoMore: Boolean) {
         showNoMoreData = hasNoMore
-        notifyDataSetChanged()
     }
 }
 
