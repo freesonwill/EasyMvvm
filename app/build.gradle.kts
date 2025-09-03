@@ -9,10 +9,9 @@ plugins {
 
 apply(from = rootProject.file("gradle/flavor.gradle"))
 apply(from = rootProject.file("gradle/_sign.gradle"))
+apply(from = rootProject.file("gradle/_accountInfo.gradle"))
 
-val prop = Properties().apply {
-    load(project.rootProject.file("local.properties").inputStream())
-}
+val localProps = (extra["loadLocalProps"] as groovy.lang.Closure<*>).call() as Properties
 
 android {
     namespace = "com.walisport.app"
@@ -26,22 +25,6 @@ android {
         versionName = "0.0.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-
-        val uid = prop.getProperty("user.uid")?.also { buildConfigField("int", "uid", it) }
-        val token = prop.getProperty("user.token")?.also { buildConfigField("String", "token", it.let { "\"$it\"" }) }
-        val name = prop.getProperty("user.name")?.also {  buildConfigField("String", "name", it.let { "\"$it\"" })}
-        providers.gradleProperty("users").orNull?.let { users->
-            data class UserConfig(val name: String, val uid: String, val token: String)
-            val userList: List<UserConfig> = Gson().fromJson(users, Array<UserConfig>::class.java).toList()
-            val escapedJson = users.replace("\\", "\\\\").replace("\"", "\\\"")
-            buildConfigField("String", "users", escapedJson.let { "\"$it\"" })
-            //user.name优先user.uid
-            (userList.find { it.name == name } ?: userList.find { it.uid == uid })?.let { user ->
-                //if(name.isNullOrEmpty()) buildConfigField("String", "name", user.name.let { "\"$it\"" })
-                buildConfigField("int", "uid", user.uid)
-                buildConfigField("String", "token", user.token.let { "\"$it\"" })
-            }?: error("both user.name:${name} and user.uid:${uid} not defined in properties")
-        }
 
         ndk {
             //abiFilters 'armeabi-v7a', 'x86', 'arm64-v8a', 'x86_64'
@@ -108,7 +91,7 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     implementation(libs.immersionbar)
     debugImplementation(libs.leakcanary)
-    if(prop.getProperty("PERF_BLOCK_CANARY","false").toBoolean()) {
+    if(localProps.getProperty("PERF_BLOCK_CANARY","false").toBoolean()) {
         debugImplementation(project(":external:blockcanary"))
     }
     debugImplementation(project(":external:lib_perf"))

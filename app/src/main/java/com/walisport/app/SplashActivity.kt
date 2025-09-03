@@ -23,15 +23,16 @@ import kotlin.reflect.KClass
 import arch.cayenne.lib.common.BuildConfig as BuildConfigCom
 
 class SplashActivity : BaseActivity<SplashViewModel, ActivitySplashBinding>() {
-    data class UserConfig(val name: String, val uid: String, val token: String)
+    data class UserConfig(val name: String, val uid: Int, val token: String)
 
     private val users by lazy { GsonUtils.fromJson(BuildConfig.users,Array<UserConfig>::class.java)  }
     private val pair: Pair<Int, String> = if (BuildConfig.BUILD_TYPE == "debug") {
         Pair(BuildConfig.uid, BuildConfig.token)
     } else if (BuildConfig.BUILD_TYPE != "release") {
             users.filter { it.name.startsWith("qatest") }
-            .map { it.uid.toInt() to it.token }
+            .map { it.uid to it.token }
             .let { it[Random.nextInt(it.size)] }
+            //Pair(55468822, "NTU0Njg4MjJfMTc1MTM1NTAxMDI3MDppUjNheWVyczZ4S3dyVEFX") //固定uid,token时放开
     } else {
         Pair(0, "")
     }
@@ -87,7 +88,7 @@ class SplashActivity : BaseActivity<SplashViewModel, ActivitySplashBinding>() {
         token = manager.getValue(UserDataKey.KEY_TOKEN,"").let {
             it.ifEmpty { pair.second }
         }
-        name = users.find { it.uid== uid.toString() }?.name
+        name = users.find { it.uid== uid }?.name
     }
 
     override fun initListener() {
