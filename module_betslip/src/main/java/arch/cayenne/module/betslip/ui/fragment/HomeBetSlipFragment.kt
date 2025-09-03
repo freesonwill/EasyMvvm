@@ -210,7 +210,6 @@ class HomeBetSlipFragment : BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsl
                 Config.KEY_RESULT,
                 viewLifecycleOwner
             ) { _, bundle ->
-                childFragmentManager.clearFragmentResultListener(Config.KEY_RESULT)
                 mViewModel.setShowType(HomeSlipShowTypeEnum.NONE)
                 if (bundle.containsKey(Config.VALUE_SELECTED_DATE)) {
                     bundle.getString(Config.VALUE_SELECTED_DATE)?.let { result ->
@@ -261,7 +260,6 @@ class HomeBetSlipFragment : BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsl
                 Config.KEY_RESULT,
                 viewLifecycleOwner
             ) { _, bundle ->
-                childFragmentManager.clearFragmentResultListener(Config.KEY_RESULT)
                 mViewModel.setShowType(HomeSlipShowTypeEnum.NONE)
                 if (bundle.containsKey(Config.VALUE_SELECTED_SPORT_ID)) {
                     bundle.getIntArray(Config.VALUE_SELECTED_SPORT_ID)?.toList()?.let { ids ->
@@ -286,6 +284,7 @@ class HomeBetSlipFragment : BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsl
     }
 
     private fun setFilterText(view: TextView, isSelected: Boolean) {
+        childFragmentManager.clearFragmentResult(Config.KEY_RESULT)
         if (isSelected) {
             view.setTextColor(
                 SkinnableResourceManager.getColorStateList(
