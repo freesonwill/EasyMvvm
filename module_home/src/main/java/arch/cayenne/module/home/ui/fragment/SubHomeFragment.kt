@@ -663,6 +663,14 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
 
     }
 
+    override fun onBackPressed(): Boolean {
+        if(isExpanded && mViewModel.currentPlayTypeId != PlayType.CHAMPION.id){
+            toggleTournamentMoreSection(false, TournamentListType.MORE)
+            return true
+        }
+        return super.onBackPressed()
+    }
+
     companion object {
         private const val ARG_PLAY_TYPE_ID = "play_type_id"
         fun newInstance(playTypeId: Int): SubHomeFragment {
