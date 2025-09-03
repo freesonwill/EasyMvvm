@@ -212,6 +212,7 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
             mViewModel.compareSubscribeMatch(
                 matchAdapter.currentList
                     .slice(firstVisible..lastVisible)
+                    .filterIsInstance<MatchWithMarkets>()
                     .map { it.match.matchId }
                     .toSet()
             )

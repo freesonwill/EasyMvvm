@@ -151,10 +151,12 @@ data class OldSelectionLite(
     val odds: Int,
 )
 
+interface MatchListItem
+
 data class MatchWithMarkets(
     val match: MatchBean,
     val markets: List<MarketWithSelections>
-)
+): MatchListItem
 
 //用來做notify收到時組合起來更新資料表用的
 data class MatchBeanLite(
