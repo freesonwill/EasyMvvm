@@ -343,6 +343,7 @@ class BettingRemoteManager(
                             selectionId = originSelection.selectionId,
                             detailActive = originMarketDetail.active,
                             matchId = originMatch.matchId,
+                            marketId = originMarket.marketId,
                             name = originSelection.name,
                             shortName = originSelection.shortName,
                             odds = originSelection.odds.toOdds(),
@@ -356,6 +357,7 @@ class BettingRemoteManager(
                 MarketWithSelections(
                     market = MarketBeanLite(
                         marketId = originMarket.marketId,
+                        ownerMatchId = originMatch.matchId,
                         marketName = originMarket.marketName,
                         status = originMarket.status,
                         defaultSelectionCount = originMarket.marketDetailList.flatMap { it.selectionList }

@@ -1,4 +1,12 @@
 <resources>
     <string name="app_name">瓦力体育</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="bet_title">注单</string>
+    <string-array name="bet_slip_menus">
+        <item>未结算</item>
+        <item>确认中</item>
+        <item>已结算</item>
+        <item>预约</item>
+        <item>失效</item>
+    </string-array>
 </resources>

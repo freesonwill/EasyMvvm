@@ -8,14 +8,13 @@ import android.util.TypedValue
 import android.view.Gravity
 import android.view.View
 import android.view.ViewTreeObserver
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import arch.cayenne.lib.base.data.model.PagerBean
 import arch.cayenne.lib.base.ui.adapter.PagerAdapter
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
-import arch.cayenne.lib.common.data.constants.AnimationConstants
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.animateIndicatorToPosition
@@ -32,8 +31,6 @@ import arch.cayenne.module.betslip.ui.viewmodel.BetSlipFilterViewModel
 import arch.cayenne.module.betslip.ui.viewmodel.HomeBetSlipViewModel
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import kotlin.reflect.KClass
 
@@ -47,7 +44,7 @@ class HomeBetSlipFragment : BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsl
     private val betSlipFilterViewModel: BetSlipFilterViewModel by viewModel()
     private var skipAnyAnim = true
     override fun initView(savedInstanceState: Bundle?) {
-        val array = resources.getStringArray(R.array.bet_slip_menus)
+        val array = SkinnableResourceManager.getStringArray(requireContext(),arch.cayenne.lib.res.R.array.bet_slip_menus)
         val list = listOf(
             PagerBean(array[0]) { BetSlipUnsettledFragment() },
             PagerBean(array[1]) { BetSlipConfirmFragment() },
@@ -144,6 +141,10 @@ class HomeBetSlipFragment : BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsl
 
             TabLayoutMediator(mBinding.tabLayout, mBinding.viewPager) { tab, position ->
                 val textView = TextView(requireContext()).apply {
+                    layoutParams = LinearLayout.LayoutParams(
+                        if (shouldDistributeEvenly) LinearLayout.LayoutParams.MATCH_PARENT else LinearLayout.LayoutParams.WRAP_CONTENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                    )
                     maxLines = 1
                     isSingleLine = true
                     ellipsize = null
@@ -157,13 +158,20 @@ class HomeBetSlipFragment : BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsl
                         setTypeface(null, Typeface.NORMAL)
                         setTextColor(SkinnableResourceManager.getColorStateList(requireContext(), arch.cayenne.lib.common.R.color.secondary_text))
                     }
-                    if (!shouldDistributeEvenly) {
+                    if (shouldDistributeEvenly) {
+                        setPadding(0, 0, 0, 0)
+
+                    } else {
                         setPadding(18.dp2px, 0, 18.dp2px, 0)
                     }
+//                    setBackgroundColor(if (position % 2 == 0) SkinnableResourceManager.getColor(requireContext(), arch.cayenne.lib.common.R.color.red_team) else SkinnableResourceManager.getColor(requireContext(), arch.cayenne.lib.res.R.color.money_color))
                     typeface = Typeface.DEFAULT
                 }
                 tab.customView = textView
             }.attach()
+//            if (shouldDistributeEvenly) {
+//                adjustTabSpacing(mBinding.tabLayout)
+//            }
         }
         mBinding.root.post {
             (mBinding.tabLayout.getTabAt(0)?.customView as? TextView)?.apply {
@@ -203,8 +211,52 @@ class HomeBetSlipFragment : BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsl
         }
     }
 
+    private fun adjustTabSpacing(tabLayout: TabLayout) {
+        tabLayout.post {
+            val tabStrip = tabLayout.getChildAt(0) as? LinearLayout ?: return@post
+            val tabCount = tabLayout.tabCount
+            if (tabCount <= 1) return@post
+
+            // 計算所有 tab 的總寬度
+            var totalTabWidth = 0
+            for (i in 0 until tabCount) {
+                val tabView = tabStrip.getChildAt(i)
+                tabView.measure(0, 0)
+                totalTabWidth += tabView.measuredWidth
+            }
+
+            // 剩餘寬度（預留兩邊 18dp）
+            val remaining = tabLayout.measuredWidth - totalTabWidth - 18.dp2px * 2
+            val spacing = remaining / (tabCount - 1)
+
+            for (i in 0 until tabCount) {
+                val tabView = tabStrip.getChildAt(i)
+                val lp = (tabView.layoutParams as LinearLayout.LayoutParams).apply {
+                    when (i) {
+                        0 -> {
+                            marginStart = 18.dp2px
+                            marginEnd = spacing / 2
+                        }
+                        tabCount - 1 -> {
+                            marginStart = spacing / 2
+                            marginEnd = 18.dp2px
+                        }
+                        else -> {
+                            marginStart = spacing / 2
+                            marginEnd = spacing / 2
+                        }
+                    }
+                }
+                lp.width = LinearLayout.LayoutParams.WRAP_CONTENT  // 關鍵：改成 wrap_content
+                lp.weight = 0f
+                tabView.layoutParams = lp
+            }
+
+            tabStrip.requestLayout()
+        }
+    }
+
     private fun showDateFilter() {
-        val sportView = childFragmentManager.findFragmentByTag(SportPickerFragment::class.java.simpleName) as? SportPickerFragment
         mViewModel.onDateFilter.value?.let {
             setFilterText(mBinding.tvDateFilter, true)
             childFragmentManager.setFragmentResultListener(
@@ -239,18 +291,7 @@ class HomeBetSlipFragment : BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsl
                 } else {
                     null
                 }
-            val filterView = DatePickerFragment.newInstance(it.date, time)
-            if (sportView == null) {
-                filterView.show(childFragmentManager)
-            } else {
-                lifecycleScope.launch {
-                    // TODO 暫時匹配h5動畫，等新需求提供後再修改
-                    delay(AnimationConstants.DIALOG_POPUP_DURATION / 2)
-                    filterView.show(childFragmentManager)
-                }
-//                val sportViewCollapseAnimator = sportView.getCollapseAnimator()
-//                filterView.showWithOtherSheetDialogHide(childFragmentManager, sportViewCollapseAnimator)
-            }
+            DatePickerFragment.find(this, it.date, time).customShow()
         }
     }
 
@@ -305,5 +346,10 @@ class HomeBetSlipFragment : BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsl
                 0, 0, R.mipmap.ic_bet_slip_filter, 0
             )
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        DatePickerFragment.create(this)
     }
 }

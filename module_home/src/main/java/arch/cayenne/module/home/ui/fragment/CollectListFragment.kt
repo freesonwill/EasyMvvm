@@ -164,8 +164,7 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
                         mViewModel.changePageEnd(true)
                         loadingView.visibility = View.GONE
                         refreshLayout.finishRefresh()
-                        refreshLayout.finishLoadMore()
-                        refreshLayout.setEnableLoadMore(false)
+                        matchAdapter.showNoMoreData(false)
                         clDynamics.visibility = View.VISIBLE
                         clDynamics.setState(
                             DynamicStateLayout.States.NETWORK_ANOMALY(),
@@ -174,14 +173,11 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
                     }
                     DataState.NoMoreData -> {     //這個DataEmpty表示api抓不到任何資料了，有可能是頁面到底，或是從第一頁就抓不到資料
                         mViewModel.changePageEnd(true)
-                        refreshLayout.finishLoadMore()
-                        refreshLayout.setEnableLoadMore(false)
                         matchAdapter.showNoMoreData(true)
                     }
                     HomeState.Match.DataEmpty -> {  //這個DataEmpty表示確定真的從第一頁就抓不到資料，表示當前的選擇沒有任何賽事
                         loadingView.visibility = View.GONE
                         refreshLayout.finishRefresh()
-                        refreshLayout.setEnableLoadMore(false)
                         clDynamics.visibility = View.VISIBLE
                         clDynamics.setState(
                             DynamicStateLayout.States.DATA_EMPTY,
@@ -191,11 +187,10 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
                     HomeState.Match.Loading -> {
                         loadingView.visibility = View.VISIBLE
                         clDynamics.visibility = View.GONE
-                        refreshLayout.setEnableLoadMore(true)
                     }
                     HomeState.Match.Refreshing -> {
                         clDynamics.visibility = View.GONE
-                        refreshLayout.setEnableLoadMore(true)
+                        matchAdapter.showNoMoreData(false)
                     }
                     HomeState.Match.LoadingNext -> {
                         clDynamics.visibility = View.GONE
@@ -203,7 +198,6 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
                     DataState.LoadSuccess -> {
                         loadingView.visibility = View.GONE
                         if (refreshLayout.isRefreshing) refreshLayout.finishRefresh()
-                        refreshLayout.finishLoadMore()
                         clDynamics.visibility = View.GONE
                     }
                 }
@@ -218,6 +212,7 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
             mViewModel.compareSubscribeMatch(
                 matchAdapter.currentList
                     .slice(firstVisible..lastVisible)
+                    .filterIsInstance<MatchWithMarkets>()
                     .map { it.match.matchId }
                     .toSet()
             )

@@ -79,7 +79,7 @@ suspend inline fun<reified T: GeneratedMessageLite<*,*>> WebSocketManager.sendAn
     val rid = nextRid()
     val errorRes = send(request.invoke().asRemoteRequest(apiCode, rid))
     return@withContext if (errorRes != null && errorRes is SocketResponseError) {
-        "api:$apiCode overall execution time is: ${System.currentTimeMillis() - apiStart}ms".logi(WebSocketManager::class.java.name)
+        "api:$apiCode rid:$rid overall execution time is: ${System.currentTimeMillis() - apiStart}ms".logi(WebSocketManager::class.java.name)
         SocketResponseData(
             mid = apiCode.mid,
             sid = apiCode.sid,
@@ -91,7 +91,7 @@ suspend inline fun<reified T: GeneratedMessageLite<*,*>> WebSocketManager.sendAn
         val responseData = withTimeoutOrNull(timeout) {
             observeProtoMessage<T>(apiCode).filter { it.rid == rid }.first()
         }
-        "api:$apiCode overall execution time is: ${System.currentTimeMillis() - apiStart}ms".logi(WebSocketManager::class.java.name)
+        "api:$apiCode rid:$rid overall execution time is: ${System.currentTimeMillis() - apiStart}ms".logi(WebSocketManager::class.java.name)
         responseData ?: SocketResponseData(
             mid = apiCode.mid,
             sid = apiCode.sid,

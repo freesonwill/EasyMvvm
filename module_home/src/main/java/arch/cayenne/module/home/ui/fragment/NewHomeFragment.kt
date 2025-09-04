@@ -235,10 +235,6 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             mBinding.drawerLayout.closeDrawer(GravityCompat.START)
             return true
         }
-//        if(isExpanded && mViewModel.currentPlayTypeId != PlayType.CHAMPION.id){
-//            toggleTournamentMoreSection(false, TournamentListType.MORE)
-//            return true
-//        }
         return super.onBackPressed()
     }
 

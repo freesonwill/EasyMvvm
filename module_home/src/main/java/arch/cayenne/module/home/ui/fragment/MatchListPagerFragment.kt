@@ -47,24 +47,19 @@ class MatchListPagerFragment :
     private val homeViewModel: HomeViewModel by sharedViewModel<HomeViewModel, NewHomeFragment>()
     private val subHomeViewModel: SubHomeViewModel by viewModels({ requireParentFragment() })
     private lateinit var matchAdapter: MatchItemAdapter
-    private var canLoadMore = false
     private val gameLayoutManager by lazy { LinearLayoutManager(context) }
     private val fabViewModel: FloatingButtonControlViewModel by activityViewModel()
 
     private var dataObserver: RecyclerView.AdapterDataObserver? = null
     private var userRequestedScrollToTop = false
-    private var hasNoMore = false
 
     override fun initView(savedInstanceState: Bundle?) {
         mBinding.apply {
-            refreshLayout.setEnableLoadMore(true)
+            refreshLayout.setEnableLoadMore(false)
             refreshLayout.setEnableScrollContentWhenLoaded(true)
             refreshLayout.setOnRefreshListener {
                 mViewModel.reload()
                 userRequestedScrollToTop = true
-            }
-            refreshLayout.setOnLoadMoreListener {
-                mViewModel.loadNextPage()
             }
 
             matchAdapter = MatchItemAdapter(object : OnMatchItemClickListener {
@@ -127,11 +122,9 @@ class MatchListPagerFragment :
                 }
 
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                    rvHomeGameList.scrollToBottomWithLoadMore {
-                        if (canLoadMore) {
-                            canLoadMore = false
-                            mViewModel.loadNextPage()
-                        }
+                    rvHomeGameList.scrollToBottomWithLoadMore(minScrollCount = 8) {
+                        if (mViewModel.apiStateListener.value != HomeState.Match.LoadSuccess) return@scrollToBottomWithLoadMore
+                        mViewModel.loadNextPage()
                     }
                 }
             })
@@ -145,6 +138,7 @@ class MatchListPagerFragment :
             mViewModel.compareSubscribeMatch(
                 matchAdapter.currentList
                     .slice(firstVisible..lastVisible)
+                    .filterIsInstance<MatchWithMarkets>()
                     .map { it.match.matchId }
                     .toSet()
             )
@@ -188,28 +182,27 @@ class MatchListPagerFragment :
             val preEmpty = matchAdapter.currentList.isEmpty()
             "MatchListChange livedata Observed~ ${matchList.map { it.match.matchId }}".logi(this::class.java.simpleName)
             matchAdapter.submitList(matchList)
-            if (hasNoMore) {
-                matchAdapter.showNoMoreData(true)
-            }
-            canLoadMore = true
             mBinding.rvHomeGameList.doOnPreDraw {
-                subscribeVisibleMatch()
-                if (preEmpty && matchList.isNotEmpty()) {
+                if (mBinding.rvHomeGameList.scrollState == RecyclerView.SCROLL_STATE_IDLE) {
+                    subscribeVisibleMatch()
+                }
+                if (matchList.isNotEmpty()) {
                     mViewModel.changeState(HomeState.Match.LoadSuccess)
-                    setMatchListPosition()
+                    if (preEmpty) {
+                        setMatchListPosition()
+                    }
                 }
             }
         }
 
         mViewModel.apiStateListener.observe(viewLifecycleOwner) {
+            "MatchListPagerFragment playType: ${mViewModel.getPlayTypeId()} tournament: ${mViewModel.getTournamentId()} state change ${it::class.java.name}".logi(this::class.java.name)
             with(mBinding) {
                 when(it) {
                     DataState.NetworkUnavailable -> {
                         mViewModel.changePageEnd(true)
                         lvMatchLoading.visibility = View.GONE
                         refreshLayout.finishRefresh()
-                        refreshLayout.finishLoadMore()
-                        refreshLayout.setEnableLoadMore(false)
                         clDynamics.visibility = View.VISIBLE
                         clDynamics.setState(
                             DynamicStateLayout.States.NETWORK_ANOMALY(),
@@ -219,9 +212,7 @@ class MatchListPagerFragment :
                     }
                     DataState.NoMoreData -> {     //這個DataEmpty表示api抓不到任何資料了，有可能是頁面到底，或是從第一頁就抓不到資料
                         mViewModel.changePageEnd(true)
-                        refreshLayout.finishLoadMore()
-                        refreshLayout.setEnableLoadMore(false)
-                        hasNoMore = true
+                        matchAdapter.showNoMoreData(true)
                     }
                     HomeState.Match.DataEmpty -> {  //這個DataEmpty表示確定真的從第一頁就抓不到資料，表示當前的選擇沒有任何賽事
                         lvMatchLoading.visibility = View.GONE
@@ -236,12 +227,11 @@ class MatchListPagerFragment :
                     HomeState.Match.Loading -> {
                         lvMatchLoading.visibility = View.VISIBLE
                         clDynamics.visibility = View.GONE
-                        refreshLayout.setEnableLoadMore(true)
                         homeViewModel.changeState(HomeState.Match.Loading)
                     }
                     HomeState.Match.Refreshing -> {
                         clDynamics.visibility = View.GONE
-                        refreshLayout.setEnableLoadMore(true)
+                        matchAdapter.showNoMoreData(false)
                     }
                     HomeState.Match.LoadingNext -> {
                         clDynamics.visibility = View.GONE
@@ -249,7 +239,6 @@ class MatchListPagerFragment :
                     DataState.LoadSuccess, HomeState.Match.LoadSuccess -> {
                         lvMatchLoading.visibility = View.GONE
                         if (refreshLayout.isRefreshing) refreshLayout.finishRefresh()
-                        refreshLayout.finishLoadMore()
                         clDynamics.visibility = View.GONE
                         homeViewModel.changeState(HomeState.Match.LoadSuccess)
                     }

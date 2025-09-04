@@ -71,7 +71,7 @@ abstract class BaseMatchViewModel<REPO: BaseMatchRepository> : BaseViewModel() {
     }
 
     fun loadNextPage() {
-        if (isPageEnd) {
+        if (isPageEnd || apiStateListener.value == DataState.Loading) {
             return
         }
 

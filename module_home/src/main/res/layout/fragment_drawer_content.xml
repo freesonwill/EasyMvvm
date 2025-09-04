@@ -304,7 +304,7 @@
                 android:gravity="center_vertical"
                 android:textSize="@dimen/sp_13"
                 android:textColor="@color/drawer_common_function_text"
-                android:text="@string/drawer_bet_slip" />
+                android:text="@string/bet_title" />
         </LinearLayout>
         <LinearLayout
             android:layout_width="wrap_content"

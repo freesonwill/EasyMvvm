@@ -12,28 +12,22 @@ import java.util.Calendar
 
 class DatePickerViewModel : BaseViewModel() {
 
-    enum class Page {
-        TIME, DATE
-    }
-
     private val _dateTitleListener = MutableLiveData<List<DateFilterBean>>()
     val dateTitleListener: LiveData<List<DateFilterBean>> get() = _dateTitleListener
 
     private val _customTimeListener = MutableLiveData<Long?>()
-    val customTimeListener: LiveData<Long?> get() = _customTimeListener
-
-    private val _pageListener = MutableLiveData<Page>()
-    val pageListener: LiveData<Page> get() = _pageListener
-
-    val calendar: Calendar = Calendar.getInstance()
 
     val getCustomTime: Long
         get() {
-            calendar.set(Calendar.HOUR_OF_DAY, 23)
-            calendar.set(Calendar.MINUTE, 59)
-            calendar.set(Calendar.SECOND, 59)
-            calendar.set(Calendar.MILLISECOND, 999)
-            return calendar.timeInMillis
+            return _customTimeListener.value?.let {
+                val calendar = Calendar.getInstance()
+                calendar.timeInMillis = it
+                calendar.set(Calendar.HOUR_OF_DAY, 23)
+                calendar.set(Calendar.MINUTE, 59)
+                calendar.set(Calendar.SECOND, 59)
+                calendar.set(Calendar.MILLISECOND, 999)
+                calendar.timeInMillis
+            } ?: System.currentTimeMillis()
         }
 
     init {
@@ -47,7 +41,6 @@ class DatePickerViewModel : BaseViewModel() {
     }
 
     fun setCustomTime(time: Long?) {
-        calendar.timeInMillis = time ?: System.currentTimeMillis()
         _customTimeListener.value = time
     }
 
@@ -99,16 +92,5 @@ class DatePickerViewModel : BaseViewModel() {
             }
         }
         return BetSlipDateFilterEnum.ALL
-    }
-
-    fun turnToDatePicker() {
-        if (_customTimeListener.value == null) {
-            setCustomTime(System.currentTimeMillis())
-        }
-        _pageListener.value = Page.DATE
-    }
-
-    fun backToTimePicker() {
-        _pageListener.value = Page.TIME
     }
 }
