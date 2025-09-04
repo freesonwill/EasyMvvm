@@ -299,6 +299,9 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
 
             // 其他日期 Tab 設定
             llOtherDate.setOnClickListener {
+                if (customPopup != null) {
+                    return@setOnClickListener
+                }
                 // 轉換日期格式為 YYYYMMDD 給 DatePicker 使用
                 fun List<String>.toYYYYMMDD(): String {
                     val year = this[0]
