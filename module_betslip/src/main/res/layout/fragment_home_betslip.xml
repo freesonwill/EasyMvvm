@@ -5,9 +5,9 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:interceptedDirection="RIGHT"
+    android:background="@color/main_background"
     app:canScrollView="@id/view_pager"
-    android:background="@color/main_background">
+    app:interceptedDirection="RIGHT">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_title"
@@ -19,63 +19,68 @@
             android:id="@+id/iv_back"
             style="@style/CustomToolbarImgStyle"
             android:layout_marginStart="@dimen/dp_10"
-            app:srcCompat="@drawable/universal_icon_back"
+            android:layout_marginVertical="7dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-    
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/universal_icon_back" />
+
         <arch.cayenne.lib.skin.widget.SkinnableTextView
             android:id="@+id/tv_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginVertical="12dp"
+            android:layout_marginVertical="11dp"
             android:text="@string/title_betslip"
             android:textColor="@color/navigation_bar"
             android:textSize="17sp"
             android:textStyle="bold"
-            app:skinnableFontWeight="500"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:skinnableFontWeight="500" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
+    <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
         android:id="@+id/LLTabLayout"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_40"
-        android:orientation="vertical"
+        android:layout_height="wrap_content"
         android:background="@color/tran_0"
-        app:layout_constraintTop_toBottomOf="@id/cl_title"
-        >
+        android:orientation="vertical"
+        app:layout_constraintTop_toBottomOf="@id/cl_title">
+
         <arch.cayenne.lib.skin.widget.SkinnableTabLayout
             android:id="@+id/tab_layout"
             android:layout_width="match_parent"
-            android:layout_height="20dp"
-            app:tabIndicatorHeight="0dp"
-            app:tabMode="fixed"
-            app:tabMinWidth="@dimen/dp_100"
+            android:layout_height="21dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="9dp"
             android:background="@android:color/transparent"
-            app:tabMaxWidth="@dimen/dp_80"
-            app:tabPaddingStart="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tabIndicatorHeight="0dp"
+            app:tabMinWidth="0dp"
+            app:tabPaddingBottom="0dp"
             app:tabPaddingEnd="0dp"
+            app:tabPaddingStart="0dp"
+            app:tabPaddingTop="0dp"
             app:tabRippleColor="@null"
-            android:layout_marginTop="@dimen/dp_9"
             app:tabSelectedTextColor="@color/main_text"
             app:tabTextAppearance="@style/BetSlipTabTextStyle"
             app:tabTextColor="@color/secondary_text"
             tools:ignore="SpeakableTextPresentCheck" />
+
         <arch.cayenne.lib.common.ui.view.CustomTabIndicator
             android:id="@+id/customIndicator"
             android:layout_width="match_parent"
-            android:layout_height="3dp"
-            android:layout_marginTop="@dimen/dp_6"
+            android:layout_height="2dp"
+            android:layout_marginTop="2dp"
             android:background="@android:color/transparent"
+            app:layout_constraintTop_toBottomOf="@id/tab_layout"
             app:tabTextAppearance="@style/BetSlipTabTextStyle"
-            app:tabTextColor="@color/secondary_text"
-            />
-    </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
+            app:tabTextColor="@color/secondary_text" />
+    </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_filter"
@@ -140,6 +145,6 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:elevation="8dp"
-        app:layout_constraintTop_toBottomOf="@id/cl_filter"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/cl_filter" />
 </arch.cayenne.lib.common.ui.view.InterceptedConstraintLayout>

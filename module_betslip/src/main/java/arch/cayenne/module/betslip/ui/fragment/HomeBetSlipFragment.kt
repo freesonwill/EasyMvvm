@@ -8,6 +8,7 @@ import android.util.TypedValue
 import android.view.Gravity
 import android.view.View
 import android.view.ViewTreeObserver
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.fragment.app.FragmentManager
 import androidx.navigation.fragment.findNavController
@@ -140,6 +141,10 @@ class HomeBetSlipFragment : BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsl
 
             TabLayoutMediator(mBinding.tabLayout, mBinding.viewPager) { tab, position ->
                 val textView = TextView(requireContext()).apply {
+                    layoutParams = LinearLayout.LayoutParams(
+                        if (shouldDistributeEvenly) LinearLayout.LayoutParams.MATCH_PARENT else LinearLayout.LayoutParams.WRAP_CONTENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                    )
                     maxLines = 1
                     isSingleLine = true
                     ellipsize = null
@@ -153,13 +158,20 @@ class HomeBetSlipFragment : BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsl
                         setTypeface(null, Typeface.NORMAL)
                         setTextColor(SkinnableResourceManager.getColorStateList(requireContext(), arch.cayenne.lib.common.R.color.secondary_text))
                     }
-                    if (!shouldDistributeEvenly) {
+                    if (shouldDistributeEvenly) {
+                        setPadding(0, 0, 0, 0)
+
+                    } else {
                         setPadding(18.dp2px, 0, 18.dp2px, 0)
                     }
+//                    setBackgroundColor(if (position % 2 == 0) SkinnableResourceManager.getColor(requireContext(), arch.cayenne.lib.common.R.color.red_team) else SkinnableResourceManager.getColor(requireContext(), arch.cayenne.lib.res.R.color.money_color))
                     typeface = Typeface.DEFAULT
                 }
                 tab.customView = textView
             }.attach()
+//            if (shouldDistributeEvenly) {
+//                adjustTabSpacing(mBinding.tabLayout)
+//            }
         }
         mBinding.root.post {
             (mBinding.tabLayout.getTabAt(0)?.customView as? TextView)?.apply {
@@ -196,6 +208,51 @@ class HomeBetSlipFragment : BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsl
         // 自定義滑動行為
         mBinding.viewPager.setupViewPagerScroll(mBinding.tabLayout,mBinding.customIndicator,0.27f){
             skipAnyAnim = it
+        }
+    }
+
+    private fun adjustTabSpacing(tabLayout: TabLayout) {
+        tabLayout.post {
+            val tabStrip = tabLayout.getChildAt(0) as? LinearLayout ?: return@post
+            val tabCount = tabLayout.tabCount
+            if (tabCount <= 1) return@post
+
+            // 計算所有 tab 的總寬度
+            var totalTabWidth = 0
+            for (i in 0 until tabCount) {
+                val tabView = tabStrip.getChildAt(i)
+                tabView.measure(0, 0)
+                totalTabWidth += tabView.measuredWidth
+            }
+
+            // 剩餘寬度（預留兩邊 18dp）
+            val remaining = tabLayout.measuredWidth - totalTabWidth - 18.dp2px * 2
+            val spacing = remaining / (tabCount - 1)
+
+            for (i in 0 until tabCount) {
+                val tabView = tabStrip.getChildAt(i)
+                val lp = (tabView.layoutParams as LinearLayout.LayoutParams).apply {
+                    when (i) {
+                        0 -> {
+                            marginStart = 18.dp2px
+                            marginEnd = spacing / 2
+                        }
+                        tabCount - 1 -> {
+                            marginStart = spacing / 2
+                            marginEnd = 18.dp2px
+                        }
+                        else -> {
+                            marginStart = spacing / 2
+                            marginEnd = spacing / 2
+                        }
+                    }
+                }
+                lp.width = LinearLayout.LayoutParams.WRAP_CONTENT  // 關鍵：改成 wrap_content
+                lp.weight = 0f
+                tabView.layoutParams = lp
+            }
+
+            tabStrip.requestLayout()
         }
     }
 
