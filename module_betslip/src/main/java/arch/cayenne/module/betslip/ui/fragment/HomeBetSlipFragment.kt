@@ -164,7 +164,7 @@ class HomeBetSlipFragment : BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsl
                     } else {
                         setPadding(18.dp2px, 0, 18.dp2px, 0)
                     }
-                    setBackgroundColor(if (position % 2 == 0) SkinnableResourceManager.getColor(requireContext(), arch.cayenne.lib.common.R.color.red_team) else SkinnableResourceManager.getColor(requireContext(), arch.cayenne.lib.res.R.color.money_color))
+//                    setBackgroundColor(if (position % 2 == 0) SkinnableResourceManager.getColor(requireContext(), arch.cayenne.lib.common.R.color.red_team) else SkinnableResourceManager.getColor(requireContext(), arch.cayenne.lib.res.R.color.money_color))
                     typeface = Typeface.DEFAULT
                 }
                 tab.customView = textView
