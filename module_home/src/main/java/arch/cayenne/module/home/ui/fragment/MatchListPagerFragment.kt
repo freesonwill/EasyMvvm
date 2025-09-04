@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -179,26 +180,27 @@ class MatchListPagerFragment :
     override fun initListener() {
     }
 
+    val matchListObserver = Observer<List<MatchWithMarkets>> { matchList ->
+        val preEmpty = matchAdapter.currentList.isEmpty()
+        "MatchListChange livedata Observed~ ${matchList.map { it.match.matchId }}".logi(this::class.java.simpleName)
+        matchAdapter.submitList(matchList)
+        if (hasNoMore) {
+            matchAdapter.showNoMoreData(true)
+        }
+        canLoadMore = true
+        mBinding.rvHomeGameList.doOnPreDraw {
+            subscribeVisibleMatch()
+            if (preEmpty && matchList.isNotEmpty()) {
+                mViewModel.changeState(HomeState.Match.LoadSuccess)
+                setMatchListPosition()
+            }
+        }
+    }
+
     override suspend fun createObserver() {
 
         homeViewModel.timer.observeEvent(viewLifecycleOwner, this) {
             mViewModel.updateMatchLiveData()
-        }
-        mViewModel.matchListChange.observe(viewLifecycleOwner) { matchList ->
-            val preEmpty = matchAdapter.currentList.isEmpty()
-            "MatchListChange livedata Observed~ ${matchList.map { it.match.matchId }}".logi(this::class.java.simpleName)
-            matchAdapter.submitList(matchList)
-            if (hasNoMore) {
-                matchAdapter.showNoMoreData(true)
-            }
-            canLoadMore = true
-            mBinding.rvHomeGameList.doOnPreDraw {
-                subscribeVisibleMatch()
-                if (preEmpty && matchList.isNotEmpty()) {
-                    mViewModel.changeState(HomeState.Match.LoadSuccess)
-                    setMatchListPosition()
-                }
-            }
         }
 
         mViewModel.apiStateListener.observe(viewLifecycleOwner) {
@@ -282,10 +284,18 @@ class MatchListPagerFragment :
             mViewModel.setPlayTypeId(this.getInt(ARG_PLAY_TYPE_ID))
             mViewModel.setPosition(this.getInt(ARG_POSITION))
         }
+        "KC_ MatchListPagerFragment playType: ${mViewModel.getPlayTypeId()} sportId: ${mViewModel.getSportId()} leagueId: ${mViewModel.getTournamentId()}".logi()
+        startObserveMatch()
     }
 
     fun startObserveMatch() {
         mViewModel.startObserveMatch()
+    }
+
+    fun startObserveMatchListChange() {
+        if (!mViewModel.matchListChange.hasObservers()) {
+            mViewModel.matchListChange.observe(viewLifecycleOwner, matchListObserver)
+        }
     }
 
     override fun onDestroy() {
