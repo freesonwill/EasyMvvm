@@ -227,7 +227,7 @@ class MatchListPagerFragment :
                         homeViewModel.changeState(HomeState.Match.LoadSuccess)
                     }
                     HomeState.Match.Loading -> {
-                        lvMatchLoading.visibility = View.VISIBLE
+//                        lvMatchLoading.visibility = View.VISIBLE
                         clDynamics.visibility = View.GONE
                         homeViewModel.changeState(HomeState.Match.Loading)
                     }
