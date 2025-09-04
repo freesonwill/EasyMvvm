@@ -31,23 +31,26 @@ import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
 
 class SportPickerFragment private constructor() :
-    BaseFragment<SportPickerViewModel, FragmentSportPickerBinding>(), SimilarDialogInterface, DimInterface {
+    BaseFragment<SportPickerViewModel, FragmentSportPickerBinding>(), SimilarDialogInterface,
+    DimInterface {
 
     companion object {
-        fun newInstance(sportIds: List<Int>): SportPickerFragment {
-            return SportPickerFragment().apply {
-                arguments = Bundle().apply {
-                    putIntArray(Config.VALUE_SELECTED_SPORT_ID, sportIds.toIntArray())
+        private const val TAG = "SportPickerFragment"
+
+        fun create(manager: FragmentManager, containerId: Int): SportPickerFragment {
+            val f = manager.findFragmentByTag(TAG)
+            return if (f == null) {
+                SportPickerFragment().apply {
+                    create(manager, containerId)
                 }
+            } else {
+                f as SportPickerFragment
             }
         }
     }
 
     override val vbClass: KClass<FragmentSportPickerBinding> = FragmentSportPickerBinding::class
     override val vmClass: KClass<SportPickerViewModel> = SportPickerViewModel::class
-    private val resultBundle by lazy {
-        Bundle()
-    }
 
     private val sportAdapter: SportPickerAdapter by lazy {
         SportPickerAdapter(object : SportPickerAdapter.SportPickerListener {
@@ -73,9 +76,6 @@ class SportPickerFragment private constructor() :
     }
 
     override fun initData() {
-        requireArguments().getIntArray(Config.VALUE_SELECTED_SPORT_ID)?.let { sportIds ->
-            mViewModel.setSelectedById(sportIds)
-        }
     }
 
     override fun initListener() {
@@ -87,19 +87,14 @@ class SportPickerFragment private constructor() :
             sendResult()
         }
         mBinding.maskView.setOnClickListener {
+            parentFragmentManager.setFragmentResult(Config.KEY_RESULT, Bundle())
             collapseView()
         }
     }
 
     override suspend fun createObserver() {
         mViewModel.onSportListener.observe(viewLifecycleOwner) {
-            sportAdapter.submitList(it) {
-                if (mBinding.root.visibility != View.VISIBLE) {
-                    mBinding.root.post {
-                        expandView()
-                    }
-                }
-            }
+            sportAdapter.submitList(it)
         }
     }
 
@@ -123,7 +118,8 @@ class SportPickerFragment private constructor() :
 
         params.gravity = Gravity.TOP or Gravity.START
 
-        val windowManager = requireContext().getSystemService(Context.WINDOW_SERVICE) as WindowManager
+        val windowManager =
+            requireContext().getSystemService(Context.WINDOW_SERVICE) as WindowManager
 
         val v = View(context).apply {
             setBackgroundColor(Color.BLACK)
@@ -134,21 +130,9 @@ class SportPickerFragment private constructor() :
         windowManager.addView(v, params)
     }
 
-    fun dismiss() {
-        if (parentFragment != null) {
-            mBinding.clFilter.post {
-                parentFragmentManager.beginTransaction()
-                    .setReorderingAllowed(true) // 避免 layout 重新整理過猛
-                    .remove(this)
-                    .commitAllowingStateLoss()
-            }
-        }
-    }
-
     private fun expandView() {
         if (dimController.findAnyShowing(this)) {
-            parentFragmentManager.setFragmentResult(Config.KEY_RESULT, resultBundle)
-            dismiss()
+            parentFragmentManager.setFragmentResult(Config.KEY_RESULT, Bundle())
             return
         }
         if (isShow) return
@@ -159,9 +143,11 @@ class SportPickerFragment private constructor() :
 
         ObjectAnimator.ofFloat(root, "translationY", -height.toFloat(), 0f).apply {
             duration = AnimationConstants.DIALOG_POPUP_DURATION
-            doOnStart{
+            doOnStart {
                 mBinding.root.visibility = View.VISIBLE
+                mBinding.maskView.visibility = View.VISIBLE
                 dimView?.alpha = 0.75f
+                mBinding.maskView.alpha = 0.75f
             }
             start()
         }
@@ -174,18 +160,16 @@ class SportPickerFragment private constructor() :
         mBinding.root.bringToFront()
         val root = mBinding.clFilter
         val targetHeight = mBinding.clFilter.height.toFloat()
-        val sheetAnimator = ObjectAnimator.ofFloat(root, "translationY", root.translationY, -targetHeight).apply {
-            duration = AnimationConstants.DIALOG_POPUP_DURATION
-            doOnEnd {
-                mBinding.root.visibility = View.INVISIBLE
-                removeDim()
-                dismiss()
+        val sheetAnimator =
+            ObjectAnimator.ofFloat(root, "translationY", root.translationY, -targetHeight).apply {
+                duration = AnimationConstants.DIALOG_POPUP_DURATION
+                doOnEnd {
+                    mBinding.root.visibility = View.INVISIBLE
+                    hideDim()
+                }
             }
-            doOnStart {
-                parentFragmentManager.setFragmentResult(Config.KEY_RESULT, resultBundle)
-            }
-        }
-        val maskAnimator = ObjectAnimator.ofFloat(mBinding.maskView, "alpha", mBinding.maskView.alpha, 0f)
+        val maskAnimator =
+            ObjectAnimator.ofFloat(mBinding.maskView, "alpha", mBinding.maskView.alpha, 0f)
         val dimAnimator = ObjectAnimator.ofFloat(dim, "alpha", dimView?.alpha ?: 0.75f, 0f).apply {
             addUpdateListener {
                 val value = it.animatedValue as Float
@@ -204,28 +188,41 @@ class SportPickerFragment private constructor() :
         }
     }
 
-    fun show(manager: FragmentManager, containerId: Int) {
-        val lastFragment = manager.findFragmentByTag(TAG)
-        if (lastFragment == null || !lastFragment.isAdded) {
+    private fun create(manager: FragmentManager, containerId: Int) {
+        val f = manager.findFragmentByTag(TAG)
+        if (f == null || !f.isAdded) {
             manager.beginTransaction()
                 .setReorderingAllowed(true)
-                .add(containerId, this, this.javaClass.simpleName)
+                .add(containerId, this, TAG)
                 .commit()
         }
     }
 
+    fun show(sportIds: List<Int> = emptyList()) {
+        mViewModel.setSelectedById(sportIds.toIntArray())
+        expandView()
+    }
+
     private fun sendResult() {
         val bean = mViewModel.getSelectedSportBean()
-        resultBundle.putIntArray(
-            Config.VALUE_SELECTED_SPORT_ID,
-            bean.map { it.sportId }.toIntArray()
-        )
+        parentFragmentManager.setFragmentResult(Config.KEY_RESULT, Bundle().apply {
+            putIntArray(
+                Config.VALUE_SELECTED_SPORT_ID,
+                bean.map { it.sportId }.toIntArray()
+            )
+        })
         collapseView()
+    }
+
+    private fun hideDim() {
+        val dim = dimView ?: return
+        dim.alpha = 0f
     }
 
     private fun removeDim() {
         val dim = dimView ?: return
-        val windowManager = requireContext().getSystemService(Context.WINDOW_SERVICE) as WindowManager
+        val windowManager =
+            requireContext().getSystemService(Context.WINDOW_SERVICE) as WindowManager
         windowManager.removeView(dim)
         dimView = null
     }
@@ -236,9 +233,7 @@ class SportPickerFragment private constructor() :
     }
 
     override fun onDestroy() {
-        if (isShow) {
-            removeDim()
-        }
+        removeDim()
         super.onDestroy()
     }
 
@@ -247,34 +242,36 @@ class SportPickerFragment private constructor() :
         mBinding.root.bringToFront()
         val root = mBinding.clFilter
         val targetHeight = mBinding.clFilter.height.toFloat()
-        val sheetAnimator = ObjectAnimator.ofFloat(root, "translationY", root.translationY, -targetHeight).apply {
-            duration = AnimationConstants.DIALOG_POPUP_DURATION
-            doOnEnd {
-                mBinding.root.visibility = View.INVISIBLE
-                dismiss()
-            }
-            doOnStart {
-                parentFragmentManager.setFragmentResult(Config.KEY_RESULT, resultBundle)
-            }
-        }
-        val maskAnimator = ObjectAnimator.ofFloat(mBinding.maskView, "alpha", mBinding.maskView.alpha, 0f)
-        val dimAnimator = ObjectAnimator.ofFloat(dimView, "alpha", dimView?.alpha ?: 0.75f, 0f).apply {
-            addUpdateListener {
-                val value = it.animatedValue as Float
-                dimView?.alpha = value
-            }
-            doOnEnd {
-                removeDim()
-            }
-            doOnStart {
-                lifecycleScope.launch {
-                    delay(AnimationConstants.DIALOG_POPUP_DURATION / 2)
-                    this.cancel()
-                    removeDim()
-                    doSomething?.invoke()
+        val sheetAnimator =
+            ObjectAnimator.ofFloat(root, "translationY", root.translationY, -targetHeight).apply {
+                duration = AnimationConstants.DIALOG_POPUP_DURATION
+                doOnEnd {
+                    mBinding.root.visibility = View.INVISIBLE
+                }
+                doOnStart {
+                    parentFragmentManager.setFragmentResult(Config.KEY_RESULT, Bundle())
                 }
             }
-        }
+        val maskAnimator =
+            ObjectAnimator.ofFloat(mBinding.maskView, "alpha", mBinding.maskView.alpha, 0f)
+        val dimAnimator =
+            ObjectAnimator.ofFloat(dimView, "alpha", dimView?.alpha ?: 0.75f, 0f).apply {
+                addUpdateListener {
+                    val value = it.animatedValue as Float
+                    dimView?.alpha = value
+                }
+                doOnEnd {
+                    hideDim()
+                }
+                doOnStart {
+                    lifecycleScope.launch {
+                        delay(AnimationConstants.DIALOG_POPUP_DURATION / 2)
+                        this.cancel()
+                        hideDim()
+                        doSomething?.invoke()
+                    }
+                }
+            }
 
         maskAnimator.duration = sheetAnimator.duration
         maskAnimator.interpolator = sheetAnimator.interpolator

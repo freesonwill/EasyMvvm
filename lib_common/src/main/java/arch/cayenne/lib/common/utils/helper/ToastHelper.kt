@@ -160,7 +160,7 @@ fun Fragment.showToast(view: View, toastAnimation: ToastAnimation, toastGesture:
     ToastHelper.instance.showToast(view, toastAnimation, toastGesture)
 }
 
-fun Activity.showToast(msg: String) {
+fun Activity.showToast(msg: String?) {
     val inflater = LayoutInflater.from(this)
     val layout = ToastLayoutBinding.inflate(inflater, null, false)
 
@@ -173,7 +173,7 @@ fun Activity.showToast(view: View, toastAnimation: ToastAnimation, toastGesture:
 }
 
 
-fun View.showToast(msg: String) {
+fun View.showToast(msg: String?) {
     val inflater = LayoutInflater.from(context)
     val layout = ToastLayoutBinding.inflate(inflater, null, false)
 

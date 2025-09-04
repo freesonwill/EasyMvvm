@@ -30,7 +30,7 @@ class NavigationBarHelper(
             // 检测导航栏状态
             checkNavigationBarState(insets)
             checkKeyBoardState(insets)
-            WindowInsetsCompat.CONSUMED
+            insets
         }
         // 立即请求WindowInsets更新
         ViewCompat.requestApplyInsets(rootView)

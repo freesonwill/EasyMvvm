@@ -16,6 +16,9 @@ abstract class SportDao : BaseDao<SportBean>() {
     abstract fun observeSportsMatchCount(filter: List<Int>): Flow<List<SportDataModel>>
 
     @Query("SELECT sportId, sportName FROM SportBean WHERE type = :type")
+    abstract fun observeAllSports(type: ShowType = ShowType.ALL): Flow<List<SportLiteBean>>
+
+    @Query("SELECT sportId, sportName FROM SportBean WHERE type = :type")
     abstract fun getAllSports(type: ShowType = ShowType.ALL): List<SportLiteBean>
 
     @Query("SELECT sportId, sportName FROM SportBean WHERE sportId IN (:ids) AND type = :type")
