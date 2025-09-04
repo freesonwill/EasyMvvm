@@ -5,8 +5,8 @@
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/tv_no_more_data"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_28"
-        android:gravity="center_horizontal|bottom"
+        android:layout_height="@dimen/dp_20"
+        android:gravity="center"
         android:text="@string/no_more_data"
         android:textColor="@color/progress_text"
         android:textSize="@dimen/sp_13" />
