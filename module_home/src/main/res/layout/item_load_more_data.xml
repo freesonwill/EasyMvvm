@@ -4,10 +4,14 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:gravity="center">
-    <arch.cayenne.lib.common.ui.view.LoadingView
-        android:id="@+id/lv_loading"
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/dp_28" />
+
+    <arch.cayenne.lib.skin.widget.SkinnableImageView
+        android:id="@+id/iv_progress"
+        android:layout_width="@dimen/dp_15"
+        android:layout_height="@dimen/dp_15"
+        android:layout_marginEnd="@dimen/dp_5"
+        android:src="@drawable/icon_loading" />
+
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/tv_no_more_data"
         android:layout_width="wrap_content"

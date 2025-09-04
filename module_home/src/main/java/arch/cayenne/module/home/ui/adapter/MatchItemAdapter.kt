@@ -65,11 +65,7 @@ class MatchItemAdapter(private val onMatchItemClickListener: OnMatchItemClickLis
                     onMatchItemClickListener?.onFavoriteClick((getItem(position) as MatchWithMarkets))
                 }
             }
-            is MatchNoMoreData -> Unit
-            is MatchLoadMoreData -> {
-                val loadMoreDataBinding = binding as ItemLoadMoreDataBinding
-                loadMoreDataBinding.lvLoading.hideTextView()
-            }
+            is MatchNoMoreData,MatchLoadMoreData -> Unit
         }
     }
 
