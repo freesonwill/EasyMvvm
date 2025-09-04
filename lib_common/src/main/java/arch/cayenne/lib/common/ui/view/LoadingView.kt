@@ -30,6 +30,10 @@ class LoadingView : LinearLayout {
         binding = ViewLoadingBinding.inflate(inflater, this)
     }
 
+    fun hideTextView() {
+        binding.tvLoading.visibility = View.GONE
+    }
+
     override fun onVisibilityChanged(changedView: View, visibility: Int) {
         if (visibility == View.VISIBLE) {
             loadingAnim?.cancel()
