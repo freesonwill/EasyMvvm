@@ -5,6 +5,7 @@ import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
 import android.util.AttributeSet
+import android.util.Log
 import android.view.View
 import androidx.annotation.CallSuper
 import androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -46,6 +47,7 @@ abstract class BasePreLoadBottomSheetFragment<VM : BaseViewModel, VB : ViewBindi
             var systemHide = false
 
             override fun show() {
+                Log.d("abcd", "show")
                 if (systemHide) {
                     systemHide = false
                     return
@@ -55,9 +57,11 @@ abstract class BasePreLoadBottomSheetFragment<VM : BaseViewModel, VB : ViewBindi
             }
 
             override fun hide() {
+                Log.d("abcd", "hide")
                 systemHide = true
                 setSystemHide()
             }
+
         }
         unhideableDialog = dialog
         return dialog
@@ -217,8 +221,9 @@ abstract class BasePreLoadBottomSheetFragment<VM : BaseViewModel, VB : ViewBindi
             }
         }
         findDialogFragment(childFragmentManager)
-        setCustomCollapseSetting()
-        hideDim()
+        customHide()
+//        setCustomCollapseSetting()
+//        hideDim()
     }
 }
 
