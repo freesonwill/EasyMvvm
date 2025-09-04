@@ -52,7 +52,6 @@ class MatchListPagerFragment :
 
     private var dataObserver: RecyclerView.AdapterDataObserver? = null
     private var userRequestedScrollToTop = false
-    private var hasNoMore = false
 
     override fun initView(savedInstanceState: Bundle?) {
         mBinding.apply {
@@ -184,11 +183,10 @@ class MatchListPagerFragment :
             "MatchListChange livedata Observed~ ${matchList.map { it.match.matchId }}".logi(this::class.java.simpleName)
             "KC_ 收到資料".logi()
             matchAdapter.submitList(matchList)
-            if (hasNoMore) {
-                matchAdapter.showNoMoreData(true)
-            }
             mBinding.rvHomeGameList.doOnPreDraw {
-                subscribeVisibleMatch()
+                if (mBinding.rvHomeGameList.scrollState == RecyclerView.SCROLL_STATE_IDLE) {
+                    subscribeVisibleMatch()
+                }
                 if (matchList.isNotEmpty()) {
                     mViewModel.changeState(HomeState.Match.LoadSuccess)
                     if (preEmpty) {
@@ -216,7 +214,6 @@ class MatchListPagerFragment :
                     DataState.NoMoreData -> {     //這個DataEmpty表示api抓不到任何資料了，有可能是頁面到底，或是從第一頁就抓不到資料
                         mViewModel.changePageEnd(true)
                         matchAdapter.showNoMoreData(true)
-                        hasNoMore = true
                     }
                     HomeState.Match.DataEmpty -> {  //這個DataEmpty表示確定真的從第一頁就抓不到資料，表示當前的選擇沒有任何賽事
                         lvMatchLoading.visibility = View.GONE
