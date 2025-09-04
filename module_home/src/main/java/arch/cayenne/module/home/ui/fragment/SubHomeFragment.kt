@@ -6,10 +6,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.LinearLayout
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -465,13 +462,7 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
             customPopup = HomeCalendarFragment.Builder().apply {
                 val marginTopHeight = mBinding.clSecondNavbar.height + tlLeagueList.height + tlDateList.height
                 setMarginTop(marginTopHeight)
-                setMaskView(mBinding.viewCalendarMask)
                 // 取得 maskView 的 LayoutParams
-                val params = mBinding.viewCalendarMask.layoutParams as ViewGroup.MarginLayoutParams
-                // 設定 topMargin
-                params.topMargin = marginTopHeight
-                // 將修改後的 LayoutParams 重新應用到 maskView
-                mBinding.viewCalendarMask.layoutParams = params
                 mViewModel.recently7DayMatchScheduleCount.value?.peekContent()?.let { setRange(it) }
                 setOnDateSelectedListener { selectedDate ->
                     setSelectedDateTab(getFuture31Days().find { it.first == selectedDate })

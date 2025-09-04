@@ -43,7 +43,6 @@ class HomeCalendarFragment private constructor() : Fragment() {
     private var onAfterDismissAnimListener: (()-> Unit)? = null
     private var range: List<Common.DailyMatchCount>? = null
     private var marginTop: Int = 0
-    private var maskView: View? = null
     private var heightAnimator: ValueAnimator? = null
     private var currentAnimState: AnimState? = null
     private val allDay = "0"
@@ -69,13 +68,17 @@ class HomeCalendarFragment private constructor() : Fragment() {
                     topMargin = this@HomeCalendarFragment.marginTop
                 }
             }
+            with(binding.maskView) {
+                layoutParams = (layoutParams as ConstraintLayout.LayoutParams).apply {
+                    topMargin = this@HomeCalendarFragment.marginTop
+                }
+            }
         }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         mBinding = null
-        maskView = null
         heightAnimator = null
     }
 
@@ -160,9 +163,6 @@ class HomeCalendarFragment private constructor() : Fragment() {
         mBinding?.let {binding->
             with(binding) {
                 // 獲取當前日期
-                val year = "${calendarView.selectedCalendar.year}"
-                val month = String.format("%02d", calendarView.selectedCalendar.month)
-                val day = String.format("%02d", calendarView.selectedCalendar.day)
                 var selectedDate =
                     if (tabSelectedDate == allDay) allDay
                     else tabSelectedDate
@@ -221,7 +221,7 @@ class HomeCalendarFragment private constructor() : Fragment() {
                     }
                 })
 
-                maskView?.setOnClickListener {
+                maskView.setOnClickListener {
                     when(currentAnimState) {
                         AnimState.EXPANDING,
                         AnimState.EXPAND -> collapseView()
@@ -345,15 +345,8 @@ class HomeCalendarFragment private constructor() : Fragment() {
         }
     }
 
-    private fun updateHeight(height: Int) {
-        mBinding?.clCalendarPopupRoot?.apply {
-            layoutParams = layoutParams.apply { this.height = height }
-            requireView()
-        }
-    }
-
     private fun setMaskViewAlpha(visible: Boolean) {
-        maskView?.let {
+        mBinding?.maskView?.let {
             it.post {
                 it.animate()
                     .alpha(if (visible) 1f else 0f)
@@ -551,7 +544,6 @@ class HomeCalendarFragment private constructor() : Fragment() {
         private var onAfterExpandAnimListener: (() -> Unit)? = null
         private var range: List<Common.DailyMatchCount>? = null
         private var marginTop: Int = 0
-        private var maskView: View? = null
 
         /**
          * 提供一個公開的方法讓外部設定監聽器
@@ -580,9 +572,7 @@ class HomeCalendarFragment private constructor() : Fragment() {
         fun setMarginTop(value: Int) {
             this.marginTop = value
         }
-        fun setMaskView(maskView: View) = apply {
-            this.maskView = maskView
-        }
+
         fun build(): HomeCalendarFragment {
             return HomeCalendarFragment().apply {
                 this.onResetDateListener = this@Builder.onResetDateListener
@@ -593,7 +583,6 @@ class HomeCalendarFragment private constructor() : Fragment() {
                 this.onAfterExpandAnimListener = this@Builder.onAfterExpandAnimListener
                 this.range = this@Builder.range
                 this.marginTop = this@Builder.marginTop
-                this.maskView = this@Builder.maskView
             }
         }
     }

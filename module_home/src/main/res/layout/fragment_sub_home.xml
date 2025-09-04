@@ -234,18 +234,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/v_league_more_mask" />
 
-    <View
-        android:id="@+id/view_calendar_mask"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:alpha="0"
-        android:background="@color/drawer_scrim_color"
-        android:clickable="true"
-        android:focusable="true"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <FrameLayout
         android:id="@+id/ll_calendar"
         android:layout_width="match_parent"
