@@ -97,7 +97,6 @@ class MatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
                     currentDateRefs.map { it.matchId }
                 )
                 "Collect observeMatchChange result：${list.map { it.match.matchId }}".logi(this@MatchListViewModel::class.java.simpleName)
-                "KC_ 準備送出資料".logi()
                 withContext(Dispatchers.Main) {
                     //第一次http拿到的資料量過少，會影響到拉取更新資料需要等待，所以跟api補上拿取更多一點的資料
                     if (apiStateListener.value == null && list.size < DEFAULT_MATCH_SIZE) {

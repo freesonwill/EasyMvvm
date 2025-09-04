@@ -181,7 +181,6 @@ class MatchListPagerFragment :
         mViewModel.matchListChange.observe(viewLifecycleOwner) { matchList ->
             val preEmpty = matchAdapter.currentList.isEmpty()
             "MatchListChange livedata Observed~ ${matchList.map { it.match.matchId }}".logi(this::class.java.simpleName)
-            "KC_ 收到資料".logi()
             matchAdapter.submitList(matchList)
             mBinding.rvHomeGameList.doOnPreDraw {
                 if (mBinding.rvHomeGameList.scrollState == RecyclerView.SCROLL_STATE_IDLE) {
@@ -197,7 +196,7 @@ class MatchListPagerFragment :
         }
 
         mViewModel.apiStateListener.observe(viewLifecycleOwner) {
-            "KC_ state: ${it::class.java.name}".logi()
+            "MatchListPagerFragment playType: ${mViewModel.getPlayTypeId()} tournament: ${mViewModel.getTournamentId()} state change ${it::class.java.name}".logi(this::class.java.name)
             with(mBinding) {
                 when(it) {
                     DataState.NetworkUnavailable -> {
@@ -238,7 +237,6 @@ class MatchListPagerFragment :
                         clDynamics.visibility = View.GONE
                     }
                     DataState.LoadSuccess, HomeState.Match.LoadSuccess -> {
-                        "KC_ 收到狀態完成！".logi()
                         lvMatchLoading.visibility = View.GONE
                         if (refreshLayout.isRefreshing) refreshLayout.finishRefresh()
                         clDynamics.visibility = View.GONE

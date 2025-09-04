@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.base.ui.adapter.BaseAdapter
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.database.entity.MatchListItem
 import arch.cayenne.lib.database.entity.MatchWithMarkets
@@ -51,7 +50,6 @@ class MatchItemAdapter(private val onMatchItemClickListener: OnMatchItemClickLis
         binding: ViewBinding,
         position: Int
     ) {
-        val start = System.currentTimeMillis()
         val item = getItem(position)
         when(item) {
             is MatchWithMarkets -> {
@@ -73,9 +71,6 @@ class MatchItemAdapter(private val onMatchItemClickListener: OnMatchItemClickLis
                 loadMoreDataBinding.lvLoading.hideTextView()
             }
         }
-
-        val end = System.currentTimeMillis()
-        "KC_ convertPlus cost: ${end - start} ms".logi()
     }
 
     override fun createViewBinding(

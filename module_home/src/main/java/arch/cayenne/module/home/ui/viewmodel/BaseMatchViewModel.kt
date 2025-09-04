@@ -76,7 +76,6 @@ abstract class BaseMatchViewModel<REPO: BaseMatchRepository> : BaseViewModel() {
         }
 
         page++
-        "KC_ 開始讀取下一頁！".logi()
         setState(HomeState.Match.LoadingNext)
         getMatchListData()
     }
