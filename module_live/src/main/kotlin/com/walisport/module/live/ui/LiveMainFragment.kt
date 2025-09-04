@@ -159,8 +159,8 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                     if (skipAnyAnim) {
                         enableAnimation = false
                         mBinding.customIndicator.animateIndicatorToPosition(tab.position)
-                        mBinding.vpPage.setCurrentItem(tab.position,false)
-                        // mBinding.vpPage.doSmartAnim(tab.position)
+//                        mBinding.vpPage.setCurrentItem(tab.position,false)
+                         mBinding.vpPage.doSmartAnim(tab.position)
                     }
                 }
                 tab?.view?.findViewById<SkinnableTextView>(R.id.tabText)?.let { textView ->
