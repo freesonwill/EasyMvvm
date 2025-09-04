@@ -51,7 +51,7 @@ class BetSlipFragment :
 
     private fun initMenu() {
         with(mBinding) {
-            val array = SkinnableResourceManager.getStringArray(requireContext(),R.array.bet_slip_menus)
+            val array = SkinnableResourceManager.getStringArray(requireContext(),arch.cayenne.lib.res.R.array.bet_slip_menus)
             val list = listOf(
                 PagerBean(array[0]) {
                     BetSlipUnsettledFragment()

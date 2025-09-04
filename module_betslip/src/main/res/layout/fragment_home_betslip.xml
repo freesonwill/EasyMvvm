@@ -30,7 +30,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginVertical="11dp"
-            android:text="@string/title_betslip"
+            android:text="@string/bet_title"
             android:textColor="@color/navigation_bar"
             android:textSize="17sp"
             android:textStyle="bold"
