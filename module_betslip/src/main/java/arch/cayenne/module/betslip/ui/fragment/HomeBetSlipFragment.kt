@@ -44,6 +44,8 @@ class HomeBetSlipFragment : BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsl
     override val vmClass: KClass<HomeBetSlipViewModel> = HomeBetSlipViewModel::class
     private val betSlipFilterViewModel: BetSlipFilterViewModel by viewModel()
     private var skipAnyAnim = true
+    private var enableAnim:Boolean = false
+
     override fun initView(savedInstanceState: Bundle?) {
         val array = SkinnableResourceManager.getStringArray(requireContext(),arch.cayenne.lib.res.R.array.bet_slip_menus)
         val list = listOf(
@@ -184,9 +186,9 @@ class HomeBetSlipFragment : BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsl
                 override fun onTabSelected(tab: TabLayout.Tab) {
                     mViewModel.setShowType(HomeSlipShowTypeEnum.NONE)
                     if (skipAnyAnim) {
+                        enableAnim = false
                         // 动画更新指示器位置
-                        mBinding.customIndicator.animateIndicatorToPosition(tab.position, 0)
-//                        mBinding.viewPager.setCurrentItem(tab.position, false)
+                        mBinding.customIndicator.animateIndicatorToPosition(tab.position)
                         mBinding.viewPager.doSmartAnim(targetPosition = tab.position)
 
                     }
@@ -209,9 +211,15 @@ class HomeBetSlipFragment : BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsl
         }
         mBinding.tabLayout.removeAllTips()
         // 自定義滑動行為
-        mBinding.viewPager.setupViewPagerScroll(mBinding.tabLayout,mBinding.customIndicator,0.27f){
+        mBinding.viewPager.setupViewPagerScroll(mBinding.tabLayout,mBinding.customIndicator,0.27f, skipAnyAnim = {
             skipAnyAnim = it
-        }
+        }, enableAnimation = {
+            if(it == null){
+                return@setupViewPagerScroll enableAnim
+            }
+            enableAnim = it
+            return@setupViewPagerScroll enableAnim
+        })
     }
 
     private fun adjustTabSpacing(tabLayout: TabLayout) {
