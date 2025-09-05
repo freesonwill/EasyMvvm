@@ -44,7 +44,7 @@ class HomeBetSlipFragment : BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsl
     private val betSlipFilterViewModel: BetSlipFilterViewModel by viewModel()
     private var skipAnyAnim = true
     override fun initView(savedInstanceState: Bundle?) {
-        val array = resources.getStringArray(R.array.bet_slip_menus)
+        val array = SkinnableResourceManager.getStringArray(requireContext(),arch.cayenne.lib.res.R.array.bet_slip_menus)
         val list = listOf(
             PagerBean(array[0]) { BetSlipUnsettledFragment() },
             PagerBean(array[1]) { BetSlipConfirmFragment() },

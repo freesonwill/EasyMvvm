@@ -159,8 +159,8 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                     if (skipAnyAnim) {
                         enableAnimation = false
                         mBinding.customIndicator.animateIndicatorToPosition(tab.position)
-                        mBinding.vpPage.setCurrentItem(tab.position,false)
-                        // mBinding.vpPage.doSmartAnim(tab.position)
+//                        mBinding.vpPage.setCurrentItem(tab.position,false)
+                         mBinding.vpPage.doSmartAnim(tab.position)
                     }
                 }
                 tab?.view?.findViewById<SkinnableTextView>(R.id.tabText)?.let { textView ->
@@ -374,7 +374,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         val tabSelectPosition = 1
         with(mBinding) {
             val list = listOf(
-                PagerBean(R.string.live_note_order.getString()) { BetSlipFragment() },
+                PagerBean(arch.cayenne.lib.res.R.string.bet_title.getString()) { BetSlipFragment() },
                 PagerBean(R.string.live_bet_on.getString()) { LiveBetOnFragment() },
                 PagerBean(R.string.live_chat.getString()) { LiveChatFragment() },
                 PagerBean(R.string.live_outs.getString()) { LiveOutsFragment() },

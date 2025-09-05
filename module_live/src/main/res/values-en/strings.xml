@@ -1,6 +1,5 @@
 <resources>
     <string name="video_landscape_choose_video_source">Chose Commentary</string>
-    <string name="live_note_order">Bet slip</string>
     <string name="live_bet_on">Betting</string>
     <string name="live_chat">Chat</string>
     <string name="live_outs">Match results</string>

@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -216,17 +217,38 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
             mViewModel.getCurrentSportStatistical()
             mViewModel.getCurrentTournament()
         }
+
+        // 觀察目前 playType 的更多按鈕狀態
+        mViewModel.currentMoreState.observe(viewLifecycleOwner) { isLlMoreVisible ->
+            setMoreButtonVisibility(isLlMoreVisible)
+        }
     }
 
     fun onFragmentSelected() {
+        mViewModel.notifyCurrentMoreState()
+        
         mViewModel.getCurrentSportStatistical()
         mViewModel.getCurrentTournament()
     }
+
+    // 設置更多按鈕的顯示狀態
     fun onFragmentUnSelected() {
+        mViewModel.setMoreButtonStateForCurrent(mBinding.llHomeTournamentMore.isVisible)
         mViewModel.requestCollapseTournamentDropdown()
         mViewModel.setCalendarState(HomeCalendarFragment.States.CALENDAR_CLOSE_NOTHING)
     }
 
+    private fun setMoreButtonVisibility(isLlMoreVisible: Boolean) {
+        if (isLlMoreVisible) {
+            // 顯示 llMore，隱藏 ivMore
+            mBinding.ivTournamentMore.visibility = View.GONE
+            mBinding.llHomeTournamentMore.visibility = View.VISIBLE
+        } else {
+            // 顯示 ivMore，隱藏 llMore
+            mBinding.ivTournamentMore.visibility = View.VISIBLE
+            mBinding.llHomeTournamentMore.visibility = View.GONE
+        }
+    }
 
     //init 二級導航欄位
     private fun initSportLayout() {
@@ -338,7 +360,10 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
             tlLeagueList.setupEndTabMoreAnimation(
                 mBinding.ivTournamentMore,
                 mBinding.llHomeTournamentMore
-            )
+            ) { isLlMoreVisible ->
+                // 更新 ViewModel 狀態
+                mViewModel.setMoreButtonStateForCurrent(isLlMoreVisible)
+            }
         }
 
         mBinding.ivTournamentMore.apply {addScaleOnTouchAnimation()}.clickNoRepeat {
