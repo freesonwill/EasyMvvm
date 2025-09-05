@@ -2,6 +2,8 @@ package arch.cayenne.lib.skin.widget
 
 import android.content.Context
 import android.util.AttributeSet
+import androidx.annotation.AnyRes
+import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.lifecycle.lifecycleScope
@@ -40,9 +42,17 @@ open class SkinnableRecyclerView : RecyclerView {
         backgroundHelper.loadFromAttributes(attrs, defStyleAttr)
     }
 
-    override fun setBackgroundResource(@DrawableRes resId: Int) {
+    override fun setBackgroundResource(resId: Int) {
         super.setBackgroundResource(resId)
-        backgroundHelper.setSrcId(resId)
+        backgroundHelper.updateBackground(resId)
+    }
+
+    fun setTintColorRes(@ColorRes resId: Int){
+        backgroundHelper.updateBackgroundTintId(resId)
+    }
+
+    fun setForegroundRes(@AnyRes resId: Int){
+        backgroundHelper.updateForegroundId(resId)
     }
 
     override fun onDetachedFromWindow() {

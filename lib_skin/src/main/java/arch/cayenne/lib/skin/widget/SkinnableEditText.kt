@@ -2,6 +2,7 @@ package arch.cayenne.lib.skin.widget
 
 import android.content.Context
 import android.util.AttributeSet
+import androidx.annotation.AnyRes
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
@@ -98,6 +99,19 @@ open class SkinnableEditText : AppCompatEditText {
 
     fun setTextHitRes(@StringRes stringRes:Int,vararg formatArg:Any = emptyArray()){
         mTextHelper.updateHint(stringRes,*formatArg)
+    }
+
+
+    fun setBackgroundRes(@DrawableRes resId: Int) {
+        mBackgroundTintHelper.updateBackground(resId)
+    }
+
+    fun setTintColorRes(@ColorRes resId: Int){
+        mBackgroundTintHelper.updateBackgroundTintId(resId)
+    }
+
+    fun setForegroundRes(@AnyRes resId: Int){
+        mBackgroundTintHelper.updateForegroundId(resId)
     }
 
 

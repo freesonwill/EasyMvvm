@@ -2,6 +2,7 @@ package arch.cayenne.lib.skin.widget
 
 import android.content.Context
 import android.util.AttributeSet
+import androidx.annotation.AnyRes
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
@@ -49,11 +50,6 @@ class SkinnableTextView : AppCompatTextView {
         textHelper.loadFromAttributes(attrs, defStyleAttr)
     }
 
-    override fun setBackgroundResource(@DrawableRes resId: Int) {
-        super.setBackgroundResource(resId)
-        backgroundTintHelper.setSrcId(resId)
-    }
-
     override fun setTextAppearance(resId: Int) {
         setTextAppearance(context, resId)
     }
@@ -95,16 +91,29 @@ class SkinnableTextView : AppCompatTextView {
        textHelper.updateText(stringRes,*formatArgs)
     }
 
-    override fun onDetachedFromWindow() {
-        flowHelper.destroyFlow()
-        super.onDetachedFromWindow()
-    }
-
     fun updateLanguage(locale: Locale) {
         textHelper.updateLanguage(locale)
     }
 
     fun setFontWeight(weight: Int) {
         textHelper.setFontWeight(weight)
+    }
+
+    override fun setBackgroundResource(resId: Int) {
+        super.setBackgroundResource(resId)
+        backgroundTintHelper.updateBackground(resId)
+    }
+
+    fun setTintColorRes(@ColorRes resId: Int){
+        backgroundTintHelper.updateBackgroundTintId(resId)
+    }
+
+    fun setForegroundRes(@AnyRes resId: Int){
+        backgroundTintHelper.updateForegroundId(resId)
+    }
+
+    override fun onDetachedFromWindow() {
+        flowHelper.destroyFlow()
+        super.onDetachedFromWindow()
     }
 }

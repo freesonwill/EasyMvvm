@@ -2,6 +2,8 @@ package arch.cayenne.lib.skin.widget
 
 import android.content.Context
 import android.util.AttributeSet
+import androidx.annotation.AnyRes
+import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.appcompat.widget.AppCompatToggleButton
@@ -53,11 +55,6 @@ class SkinnableToggleButton : AppCompatToggleButton {
         mTextHelper.loadFromAttributes(attrs, defStyleAttr)
     }
 
-    override fun setBackgroundResource(@DrawableRes resId: Int) {
-        super.setBackgroundResource(resId)
-        mBackgroundTintHelper.setSrcId(resId)
-    }
-
     override fun setTextAppearance(resId: Int) {
         setTextAppearance(context, resId)
     }
@@ -91,6 +88,18 @@ class SkinnableToggleButton : AppCompatToggleButton {
         mTextHelper.updateText(stringRes)
     }
 
+    override fun setBackgroundResource(resId: Int) {
+        super.setBackgroundResource(resId)
+        mBackgroundTintHelper.updateBackground(resId)
+    }
+
+    fun setTintColorRes(@ColorRes resId: Int){
+        mBackgroundTintHelper.updateBackgroundTintId(resId)
+    }
+
+    fun setForegroundRes(@AnyRes resId: Int){
+        mBackgroundTintHelper.updateForegroundId(resId)
+    }
 
     override fun onDetachedFromWindow() {
         flowHelper.destroyFlow()

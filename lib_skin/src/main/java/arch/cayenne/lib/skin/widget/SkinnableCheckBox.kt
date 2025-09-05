@@ -3,6 +3,9 @@ package arch.cayenne.lib.skin.widget
 import android.content.Context
 import android.content.res.ColorStateList
 import android.util.AttributeSet
+import androidx.annotation.AnyRes
+import androidx.annotation.ColorRes
+import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.appcompat.widget.AppCompatCheckBox
 import androidx.lifecycle.findViewTreeLifecycleOwner
@@ -60,6 +63,19 @@ class SkinnableCheckBox : AppCompatCheckBox {
 
     fun setHintRes(@StringRes stringRes: Int,vararg formatArgs:Any = emptyArray()){
         textHelper.updateHint(stringRes,*formatArgs)
+    }
+
+    override fun setBackgroundResource(@DrawableRes resId: Int) {
+        super.setBackgroundResource(resId)
+        backgroundTintHelper.updateBackground(resId)
+    }
+
+    fun setTintColorRes(@ColorRes resId: Int){
+        backgroundTintHelper.updateBackgroundTintId(resId)
+    }
+
+    fun setForegroundRes(@AnyRes resId: Int){
+        backgroundTintHelper.updateForegroundId(resId)
     }
 
     override fun onDetachedFromWindow() {

@@ -3,6 +3,7 @@ package arch.cayenne.lib.skin.widget
 import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
+import androidx.annotation.AnyRes
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
@@ -59,11 +60,6 @@ class SkinnableButton : AppCompatButton {
         mTextHelper.loadFromAttributes(attrs, defStyleAttr)
     }
 
-    override fun setBackgroundResource(@DrawableRes resId: Int) {
-        super.setBackgroundResource(resId)
-        mBackgroundTintHelper.setSrcId(resId)
-    }
-
     override fun setTextAppearance(resId: Int) {
         setTextAppearance(context, resId)
     }
@@ -97,8 +93,21 @@ class SkinnableButton : AppCompatButton {
         mTextHelper.updateText(stringRes,*formatArgs)
     }
 
+    override fun setBackgroundResource(@DrawableRes resId: Int) {
+        super.setBackgroundResource(resId)
+        mBackgroundTintHelper.setSrcId(resId)
+    }
+
     fun setHintRes(@StringRes stringRes: Int,vararg formatArgs:Any = emptyArray()){
         mTextHelper.updateHint(stringRes,*formatArgs)
+    }
+
+    fun setTintColorRes(@ColorRes resId: Int){
+        mBackgroundTintHelper.updateBackgroundTintId(resId)
+    }
+
+    fun setForegroundRes(@AnyRes resId: Int){
+        mBackgroundTintHelper.updateForegroundId(resId)
     }
 
     /**

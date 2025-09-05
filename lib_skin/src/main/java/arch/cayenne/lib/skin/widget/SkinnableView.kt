@@ -3,6 +3,8 @@ package arch.cayenne.lib.skin.widget
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
+import androidx.annotation.AnyRes
+import androidx.annotation.ColorRes
 import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import arch.cayenne.lib.skin.SkinnableManager
@@ -40,6 +42,19 @@ open class SkinnableView : View {
         backgroundTintHelper = SkinnableBackGroundHelper(this)
         backgroundTintHelper.loadFromAttributes(attrs, defStyleAttr)
 
+    }
+
+    override fun setBackgroundResource(resId: Int) {
+        super.setBackgroundResource(resId)
+        backgroundTintHelper.updateBackground(resId)
+    }
+
+    fun setTintColorRes(@ColorRes resId: Int){
+        backgroundTintHelper.updateBackgroundTintId(resId)
+    }
+
+    fun setForegroundRes(@AnyRes resId: Int){
+        backgroundTintHelper.updateForegroundId(resId)
     }
 
     override fun onDetachedFromWindow() {

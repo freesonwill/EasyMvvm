@@ -9,6 +9,8 @@ import android.graphics.RectF
 import android.graphics.Shader
 import android.graphics.drawable.BitmapDrawable
 import android.util.AttributeSet
+import androidx.annotation.AnyRes
+import androidx.annotation.ColorRes
 import androidx.appcompat.widget.AppCompatImageButton
 import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.lifecycle.lifecycleScope
@@ -59,7 +61,15 @@ class SkinnableImageButton : AppCompatImageButton{
 
     override fun setBackgroundResource(resId: Int) {
         super.setBackgroundResource(resId)
-        backgroundHelper.setSrcId(resId)
+        backgroundHelper.updateBackground(resId)
+    }
+
+    fun setTintColorRes(@ColorRes resId: Int){
+        backgroundHelper.updateBackgroundTintId(resId)
+    }
+
+    fun setForegroundRes(@AnyRes resId: Int){
+        backgroundHelper.updateForegroundId(resId)
     }
 
     override fun setImageResource(resId: Int) {
