@@ -11,8 +11,6 @@ import android.widget.LinearLayout
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -288,30 +286,41 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
             //聯賽
             vpGameList.isSaveEnabled = false
             vpGameList.adapter = null
+            vpGameList.offscreenPageLimit = 10
             //如果往右往左滑動，等待滑動完成後，再去開始startObserveMatch
             gameListPageCallback = object : ViewPager2.OnPageChangeCallback(){
+                override fun onPageSelected(position: Int) {
+                    super.onPageSelected(position)
+                    if (vpGameList.scrollState != SCROLL_STATE_IDLE) return
+                    startObservePageMatchListChange()
+                }
                 override fun onPageScrollStateChanged(state: Int) {
                     super.onPageScrollStateChanged(state)
                     if (state == SCROLL_STATE_IDLE) {
-                        val itemId = leaguePagerAdapter?.getItemId(vpGameList.currentItem)?: return
-                        val fragment = childFragmentManager.findFragmentByTag("f$itemId") ?: return
-                        if (fragment is MatchListPagerFragment) {
-                            fragment.startObserveMatch()
-                        }
+                        startObservePageMatchListChange()
+                    }
+                }
+                fun startObservePageMatchListChange() {
+                    val itemId = leaguePagerAdapter?.getItemId(vpGameList.currentItem)?: return
+                    val fragment = childFragmentManager.findFragmentByTag("f$itemId") ?: return
+                    if (fragment is MatchListPagerFragment) {
+                        fragment.startObserveMatchListChange()
                     }
                 }
             }
             vpGameList.registerOnPageChangeCallback(gameListPageCallback!!)
+
+            //現在offscreenPageLimit = 10，所以基本上所有的MatchListPageFragment都會在一開始生成，所以目前需求不需要這段code
             //如果直接點擊聯賽到ViewPager還沒生成的MatchListPageFragment聯賽的話，這個MatchListPageFragment會生成並且attach上去，所以在這裡需要做attach完成後的startObserveMatch
-            childFragmentManager.registerFragmentLifecycleCallbacks(object : FragmentManager.FragmentLifecycleCallbacks() {
-                override fun onFragmentViewCreated(fm: FragmentManager, f: Fragment, v: View, savedInstanceState: Bundle?) {
-                    super.onFragmentViewCreated(fm, f, v, savedInstanceState)
-                    val currentItemId = "f${leaguePagerAdapter?.getItemId(vpGameList.currentItem)}"
-                    if (f is MatchListPagerFragment && f.tag == currentItemId) {
-                        f.startObserveMatch()
-                    }
-                }
-            }, false)
+//            childFragmentManager.registerFragmentLifecycleCallbacks(object : FragmentManager.FragmentLifecycleCallbacks() {
+//                override fun onFragmentViewCreated(fm: FragmentManager, f: Fragment, v: View, savedInstanceState: Bundle?) {
+//                    super.onFragmentViewCreated(fm, f, v, savedInstanceState)
+//                    val currentItemId = "f${leaguePagerAdapter?.getItemId(vpGameList.currentItem)}"
+//                    if (f is MatchListPagerFragment && f.tag == currentItemId) {
+//                        f.startObserveMatchListChange()
+//                    }
+//                }
+//            }, false)
 
             // 日期 Tab 設定, 固定 "全部"
             updateDateTabs(tlDateList, dateTabs)

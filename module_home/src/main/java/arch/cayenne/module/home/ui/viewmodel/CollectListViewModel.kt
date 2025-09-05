@@ -52,12 +52,13 @@ class CollectListViewModel : BaseMatchViewModel<CollectListRepository>() {
                 repository.getCollectData(page)
             }, {
                 if (it is ApiResponseState.Failed) {
+                    setState(DataState.NetworkUnavailable)
                     matchListChange.value = arrayListOf()
                 } else if (it is ApiResponseState.Succeeded<*>) {
                     val size = it.dataAs<List<Common.Match>>()?.size ?: 0
                     if (page == 1 && size == 0) {
-                        matchListChange.value = arrayListOf()
                         setState(HomeState.Match.DataEmpty)
+                        matchListChange.value = arrayListOf()
                     } else if (size < BaseMatchRepository.DEFAULT_MATCH_SIZE) {
                         setState(DataState.NoMoreData)
                     }
