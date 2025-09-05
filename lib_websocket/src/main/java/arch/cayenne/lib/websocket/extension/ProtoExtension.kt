@@ -38,23 +38,26 @@ inline fun <reified T: GeneratedMessageLite<*,*>> WebSocketManager.observeProtoM
     .filter { it.mid == apiCode.mid && it.sid == apiCode.sid }
     .map {
         try {
+            val TAG = WebSocketManager::class.java.simpleName
             val proto = it.originProto?.let { byteArray ->
                 T::class.java.getMethod("parseFrom", ByteArray::class.java)
                     .invoke(null, byteArray) as T
             }
-            val error = runCatching { T::class.java.getMethod("getMessage").invoke(proto) as String }
-                .getOrNull().let{ if( it.isNullOrEmpty()) null else it }
-            if(error == null) {
-                "sendAndWaitProtoMessageResponse map proto apiCode:$apiCode,rid:${it.rid},success".logi(WebSocketManager::class.java.simpleName)
+            val success:Boolean = runCatching { T::class.java.getMethod("getSuccess").invoke(proto) as Boolean }
+                .getOrNull() ?: true
+            val error:String = runCatching { T::class.java.getMethod("getMessage").invoke(proto) as String }
+                .getOrNull() ?: ""
+            if(success) {
+                "sendAndWaitProtoMessageResponse map proto apiCode:$apiCode,rid:${it.rid},success".logi(TAG)
             } else {
-                "sendAndWaitProtoMessageResponse map proto apiCode:$apiCode,rid:${it.rid},error:$error".loge(WebSocketManager::class.java.simpleName)
+                "sendAndWaitProtoMessageResponse map proto apiCode:$apiCode,rid:${it.rid},error:$error".loge(TAG)
             }
             return@map SocketResponseData(
                 mid = it.mid,
                 sid = it.sid,
                 rid = it.rid,
-                data = error ?.let { null } ?:proto,
-                error = error ?.let { SimpleResponseError(it) }
+                data = if(success) proto else null,
+                error = if(!success) SimpleResponseError(error) else null
             )
         } catch (e: Exception) {
             e.printStackTrace()
