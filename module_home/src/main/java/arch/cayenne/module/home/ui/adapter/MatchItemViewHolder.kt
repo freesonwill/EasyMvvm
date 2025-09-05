@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView.RecycledViewPool
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.SportStringExt.limitTitleLength
+import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.toLocalDateTimeString
 import arch.cayenne.lib.common.utils.ext.toMinuteSecondFormat
 import arch.cayenne.lib.database.entity.MatchWithMarkets
@@ -146,6 +147,14 @@ class MatchItemViewHolder(
                 tvAwayScore.text = ""
                 tvHomeScore.text = ""
             }
+
+            root.setOnClickListener {
+                onMatchItemClickListener?.onLiveEntryClick(data)
+            }
+
+            ivFavorite.apply { addScaleOnTouchAnimation() }.setOnClickListener {
+                onMatchItemClickListener?.onFavoriteClick(data)
+            }
         }
     }
 
@@ -211,6 +220,9 @@ class MatchItemViewHolder(
             }
             if ("collect" in changes) {
                 setFavoriteIcon(item.match.collect, false)
+                ivFavorite.apply { addScaleOnTouchAnimation() }.setOnClickListener {
+                    onMatchItemClickListener?.onFavoriteClick(item)
+                }
             }
         }
     }
