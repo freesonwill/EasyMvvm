@@ -66,13 +66,10 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
                 findNavController().navigateUp()
             }
 
-            refreshLayout.setEnableLoadMore(true)
+            refreshLayout.setEnableLoadMore(false)
             refreshLayout.setEnableScrollContentWhenLoaded(true)
             refreshLayout.setOnRefreshListener {
                 mViewModel.reload()
-            }
-            refreshLayout.setOnLoadMoreListener {
-                mViewModel.loadNextPage()
             }
 
             matchAdapter = MatchItemAdapter(object : OnMatchItemClickListener {
@@ -86,16 +83,20 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
 
                 override fun onOddsCellClick(cell: WeakReference<View>, selection: SelectionBeanLite, x: Float, y: Float) {
                     lifecycleScope.launch {
-                        cell.get()?.isSelected = true
+                        if (mViewModel.getCurrentSelectionCount() == 0) {
+                            BetSheetFragment.show(requireActivity()) {
+                                cell.get()?.isSelected = true
+                            }
+                        } else {
+                            cell.get()?.isSelected = true
+                        }
                         val status = mViewModel.setSelection(selection.selectionId)
 
                         if (status !is AddSelectionStatus.Success) {
                             cell.get()?.isSelected = false
                         }
 
-                        if (status is AddSelectionStatus.Success.Single) {
-                            BetSheetFragment.show(requireActivity())
-                        } else if (status is AddSelectionStatus.Failure) {
+                        if (status is AddSelectionStatus.Failure) {
                             status.msg?.let {
                                 showToast(it)
                             }
@@ -178,6 +179,7 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
                     HomeState.Match.DataEmpty -> {  //這個DataEmpty表示確定真的從第一頁就抓不到資料，表示當前的選擇沒有任何賽事
                         loadingView.visibility = View.GONE
                         refreshLayout.finishRefresh()
+                        matchAdapter.showNoMoreData(false)
                         clDynamics.visibility = View.VISIBLE
                         clDynamics.setState(
                             DynamicStateLayout.States.DATA_EMPTY,

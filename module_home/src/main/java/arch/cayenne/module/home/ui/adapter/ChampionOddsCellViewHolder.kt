@@ -8,10 +8,11 @@ import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
 import arch.cayenne.lib.database.entity.SelectionBeanLite
 import arch.cayenne.module.home.data.constants.OddsCellState
 import arch.cayenne.module.home.databinding.ItemChampionOddsCellBinding
+import java.lang.ref.WeakReference
 
 class ChampionOddsCellViewHolder(
     private val mBinding: ItemChampionOddsCellBinding,
-    private val onOddsClick: (SelectionBeanLite, Boolean) -> Unit
+    private val onOddsClick: (cell: WeakReference<View>, SelectionBeanLite, Boolean) -> Unit
 ) : BaseViewHolder(mBinding) {
     private var currentState: OddsCellState = OddsCellState.VISIBLE
     fun bind(item: SelectionBeanLite) {
@@ -24,7 +25,7 @@ class ChampionOddsCellViewHolder(
             llOddsCell.setOnClickListener {
                 if (item.active) {
                     val isSelected = !(llOddsCell.isSelected)
-                    onOddsClick(item, isSelected)
+                    onOddsClick(WeakReference(llOddsCell), item, isSelected)
                 }
             }
         }

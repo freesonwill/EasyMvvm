@@ -7,6 +7,7 @@ import android.view.ContextThemeWrapper
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
+import androidx.core.animation.doOnStart
 import androidx.fragment.app.FragmentActivity
 import arch.cayenne.lib.base.ui.fragment.BasePreLoadBottomSheetFragment
 import arch.cayenne.module.bet.R
@@ -44,6 +45,23 @@ class BetSheetFragment private constructor() :
                 } else {
                     f.customShow(withOtherSheetHide)
                 }
+            }
+        }
+
+        fun show(activity: FragmentActivity, doSomething: () -> Unit) {
+            val manager = activity.supportFragmentManager
+            val f = manager.findFragmentByTag(TAG)
+            if (f == null) {
+                BetSheetFragment().show(manager, TAG)
+            } else if (f is BasePreLoadBottomSheetFragment<*, *>) {
+                val anim = ObjectAnimator.ofFloat(null, "alpha", 0f, 0f).apply {
+                    doOnStart {
+                        f.view?.post {
+                            doSomething.invoke()
+                        }
+                    }
+                }
+                f.customShow(anim)
             }
         }
     }
