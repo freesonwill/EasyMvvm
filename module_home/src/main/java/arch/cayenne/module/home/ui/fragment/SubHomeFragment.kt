@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import androidx.viewpager2.widget.ViewPager2.SCROLL_STATE_IDLE
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
@@ -319,9 +320,9 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
             }
 
             // 其他日期 Tab 設定
-            llOtherDate.setOnClickListener {
+            llOtherDate.clickNoRepeat {
                 if (customPopup != null) {
-                    return@setOnClickListener
+                    return@clickNoRepeat
                 }
                 // 轉換日期格式為 YYYYMMDD 給 DatePicker 使用
                 fun List<String>.toYYYYMMDD(): String {
@@ -344,7 +345,9 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
                     tvTabAll.post { tvTabAll.isSelected = false }
                     "0"
                 }
-                showHomeCalendar(tabSelectedDate)
+                launch {
+                    showHomeCalendar(tabSelectedDate)
+                }
             }
 
             // 初始化 TabLayout end more跟手動畫
@@ -460,9 +463,6 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
     private fun showHomeCalendar(tabSelectedDate: String) {
         with(mBinding.layoutContainer) {
             customPopup = HomeCalendarFragment.Builder().apply {
-                val marginTopHeight = mBinding.clSecondNavbar.height + tlLeagueList.height + tlDateList.height
-                setMarginTop(marginTopHeight)
-                // 取得 maskView 的 LayoutParams
                 mViewModel.recently7DayMatchScheduleCount.value?.peekContent()?.let { setRange(it) }
                 setOnDateSelectedListener { selectedDate ->
                     setSelectedDateTab(getFuture31Days().find { it.first == selectedDate })
@@ -489,11 +489,11 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
                 }
                 setOnAfterDismissAnimListener {
                     customPopup = null
-                    mBinding.llCalendar.visibility = View.GONE
+                    llCalendar.visibility = View.GONE
                 }
             }.build()
-            mBinding.llCalendar.visibility = View.VISIBLE
-            customPopup?.show(childFragmentManager, mBinding.llCalendar.id, tabSelectedDate)
+            llCalendar.visibility = View.VISIBLE
+            customPopup?.show(childFragmentManager, llCalendar.id, tabSelectedDate)
         }
     }
     //選取日期後按確定時連動至早盤日期tab,選取對應的日期
@@ -636,7 +636,9 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
                 viewContainerRoot.setOnChildClickedInterceptedListener { view ->
                     when(view) {
                         tlContainer, llDateFilterContainer,llOtherDate -> {
-                            mViewModel.setCalendarState(HomeCalendarFragment.States.CALENDAR_CLOSE_NOTHING)
+                            lifecycleScope.launch {
+                                mViewModel.setCalendarState(HomeCalendarFragment.States.CALENDAR_CLOSE_NOTHING)
+                            }
                         }
                         else -> Unit
                     }

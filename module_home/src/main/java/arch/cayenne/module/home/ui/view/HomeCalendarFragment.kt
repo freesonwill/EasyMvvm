@@ -326,7 +326,7 @@ class HomeCalendarFragment private constructor() : Fragment() {
                         setMaskViewAlpha(false)
                         mBinding?.clCalendarPopupRoot?.postDelayed( {
                                 onBeforeDismissAnimListener?.invoke()
-                        },30L)
+                        },50L)
                     }
                     doOnEnd {
                         currentAnimState = AnimState.COLLAPSE
