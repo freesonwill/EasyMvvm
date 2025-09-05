@@ -142,14 +142,14 @@ class MatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
                 },
                 {
                     if (it is ApiResponseState.Failed) {
-                        matchListChange.value = arrayListOf()
                         setState(DataState.NetworkUnavailable)
+                        matchListChange.value = arrayListOf()
                     } else if (it is ApiResponseState.Succeeded<*>) {
                         val size = it.dataAs<List<Common.Match>>()?.size ?: 0
                         val isEmpty = size == 0
                         if (page == 1 && isEmpty) {
-                            matchListChange.value = arrayListOf()
                             setState(HomeState.Match.DataEmpty)
+                            matchListChange.value = arrayListOf()
                         } else if (size < BaseMatchRepository.DEFAULT_MATCH_SIZE) {   //如果返回成功，但是数据size小于10，则表明列表已经加载到底部
                             setState(DataState.NoMoreData)
                         }

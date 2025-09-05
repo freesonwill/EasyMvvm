@@ -37,9 +37,10 @@ class MatchItemAdapter(private val onMatchItemClickListener: OnMatchItemClickLis
 
     override fun submitList(list: List<MatchListItem?>?) {
         val l = list?.toMutableList()
-        if (showNoMoreData) {
+        val isEmpty = (l?.size ?: 0) == 0
+        if (!isEmpty && showNoMoreData) {
             l?.add(MatchNoMoreData)
-        } else {
+        } else if (!isEmpty) {
             l?.add(MatchLoadMoreData)
         }
         super.submitList(l)

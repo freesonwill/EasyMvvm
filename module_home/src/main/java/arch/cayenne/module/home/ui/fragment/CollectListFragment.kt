@@ -66,13 +66,10 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
                 findNavController().navigateUp()
             }
 
-            refreshLayout.setEnableLoadMore(true)
+            refreshLayout.setEnableLoadMore(false)
             refreshLayout.setEnableScrollContentWhenLoaded(true)
             refreshLayout.setOnRefreshListener {
                 mViewModel.reload()
-            }
-            refreshLayout.setOnLoadMoreListener {
-                mViewModel.loadNextPage()
             }
 
             matchAdapter = MatchItemAdapter(object : OnMatchItemClickListener {
@@ -178,6 +175,7 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
                     HomeState.Match.DataEmpty -> {  //這個DataEmpty表示確定真的從第一頁就抓不到資料，表示當前的選擇沒有任何賽事
                         loadingView.visibility = View.GONE
                         refreshLayout.finishRefresh()
+                        matchAdapter.showNoMoreData(false)
                         clDynamics.visibility = View.VISIBLE
                         clDynamics.setState(
                             DynamicStateLayout.States.DATA_EMPTY,

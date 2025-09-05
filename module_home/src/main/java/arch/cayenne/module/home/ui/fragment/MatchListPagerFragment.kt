@@ -205,6 +205,7 @@ class MatchListPagerFragment :
                         mViewModel.changePageEnd(true)
                         lvMatchLoading.visibility = View.GONE
                         refreshLayout.finishRefresh()
+                        matchAdapter.showNoMoreData(false)
                         clDynamics.visibility = View.VISIBLE
                         clDynamics.setState(
                             DynamicStateLayout.States.NETWORK_ANOMALY(),
@@ -219,6 +220,7 @@ class MatchListPagerFragment :
                     HomeState.Match.DataEmpty -> {  //這個DataEmpty表示確定真的從第一頁就抓不到資料，表示當前的選擇沒有任何賽事
                         lvMatchLoading.visibility = View.GONE
                         refreshLayout.finishRefresh()
+                        matchAdapter.showNoMoreData(false)
                         clDynamics.visibility = View.VISIBLE
                         clDynamics.setState(
                             DynamicStateLayout.States.DATA_EMPTY,
