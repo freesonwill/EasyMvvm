@@ -1,7 +1,7 @@
 package com.walisport.module.live.data
 
-import arch.cayenne.lib.database.entity.LiveMarketListBean
-import arch.cayenne.lib.database.entity.LiveMarketSelectionBean
+import com.walisport.module.live.data.model.LiveMarketListBean
+import com.walisport.module.live.data.model.LiveMarketSelectionBean
 import arch.cayenne.lib.database.entity.LiveSelectionBean
 import arch.cayenne.lib.database.entity.MarketMenuBean
 
@@ -33,7 +33,6 @@ fun List<MarketMenuBean>.toData(selections:List<LiveSelectionBean>,code: String)
                 LiveMarketListBean(
                     marketId = menuBean.marketId,
                     marketName = menuBean.marketName,
-                    isSelect = menuBean.isSelect,
                     code = menuBean.code,
                     list = matchingSelections
                 )

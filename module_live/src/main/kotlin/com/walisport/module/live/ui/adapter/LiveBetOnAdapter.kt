@@ -9,8 +9,8 @@ import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.base.ui.adapter.BaseAdapter
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
-import arch.cayenne.lib.database.entity.LiveMarketListBean
-import arch.cayenne.lib.database.entity.LiveMarketSelectionBean
+import com.walisport.module.live.data.model.LiveMarketListBean
+import com.walisport.module.live.data.model.LiveMarketSelectionBean
 import arch.cayenne.lib.database.entity.SelectionsEdit
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DecodeFormat
@@ -18,6 +18,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.walisport.module.live.data.LiveOddsStatusEnum
 import com.walisport.module.live.data.constants.StatesArrange
 import com.walisport.module.live.databinding.AdapterLiveBetItemLayoutBinding
+import java.lang.ref.WeakReference
 
 class LiveBetOnAdapter(var callback: LivBetListCallback) :
     BaseAdapter<LiveMarketListBean, LiveBetOnAdapter.LiveBetOnViewHolder, ViewBinding>(
@@ -27,9 +28,6 @@ class LiveBetOnAdapter(var callback: LivBetListCallback) :
     private var homeLogo: String? = ""
     private var awayName: String? = ""
     private var awayLogo: String? = ""
-    private var selectionComboId: Long? = null
-    private var beforePosition: Int = -1
-    private var isNotify = false
     private var notifySelectionsId: List<SelectionsEdit>? = null
 
     inner class LiveBetOnViewHolder(binding: ViewBinding) : BaseViewHolder(binding) {
@@ -52,16 +50,6 @@ class LiveBetOnAdapter(var callback: LivBetListCallback) :
                 } else {
                     viewBinding.clBet.visibility = View.GONE
                 }
-                val isCombo: Boolean = if (selectionComboId == null) {
-                    false
-                } else if (selectionComboId == listIt.selectionId) {
-                    true
-                } else {
-                    false
-                }
-                if (isCombo) {
-                    beforePosition = position
-                }
                 var status =
                     notifySelectionsId?.find { it.selectionId == listIt.selectionId }?.selectionId
                         ?: 0L
@@ -76,11 +64,10 @@ class LiveBetOnAdapter(var callback: LivBetListCallback) :
                     listIt.selectionId,
                     listIt.active,
                     if (status == 0L) LiveOddsStatusEnum.SAME.status else listIt.oddsStatus,
-                    isNotify,
-                    isCombo,
-                ) { it, x, y ->
+                    isSelected = listIt.isSelect
+                ) { v, it, x, y ->
                     callback.itemListCallback(
-                        it, listIt.selectionId, x, y, position, beforePosition
+                        v, it, listIt.selectionId, x, y,
                     )
                 }
             }
@@ -92,7 +79,6 @@ class LiveBetOnAdapter(var callback: LivBetListCallback) :
         homeLogo: String,
         awayName: String,
         awayLogo: String,
-        isNotify: Boolean,
         notifySelectionsId: List<SelectionsEdit>?
     ) {
         this.notifySelectionsId = emptyList()
@@ -100,17 +86,7 @@ class LiveBetOnAdapter(var callback: LivBetListCallback) :
         this.homeLogo = homeLogo
         this.awayName = awayName
         this.awayLogo = awayLogo
-        this.isNotify = isNotify
         this.notifySelectionsId = notifySelectionsId
-    }
-
-    fun setSelectionComboId(selectionComboId: Long?, isNotify: Boolean = true) {
-        this.isNotify = isNotify
-        this.selectionComboId = selectionComboId
-    }
-
-    fun getBeforePosition():Int{
-        return beforePosition
     }
 
     override fun convertPlus(holder: LiveBetOnViewHolder, binding: ViewBinding, position: Int) {
@@ -151,7 +127,7 @@ fun loadLogoImage(context: View, imageView: ImageView, url: String?) {
 
 interface LivBetListCallback {
     fun itemListCallback(
-        marketI: Long, selectionId: Long, x: Float, y: Float, position: Int, beforePosition: Int
+        cell: WeakReference<View>, marketI: Long, selectionId: Long, x: Float, y: Float
     )
 }
 
