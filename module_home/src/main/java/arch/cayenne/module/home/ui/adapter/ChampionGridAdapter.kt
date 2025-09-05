@@ -1,14 +1,16 @@
 package arch.cayenne.module.home.ui.adapter
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import arch.cayenne.lib.base.ui.adapter.BaseAdapter
 import arch.cayenne.lib.database.entity.SelectionBeanLite
 import arch.cayenne.module.home.databinding.ItemChampionOddsCellBinding
 import arch.cayenne.module.home.ui.adapter.compare.OddDiffCompare
+import java.lang.ref.WeakReference
 
 class ChampionGridAdapter(
-    private val onOddsClick: (SelectionBeanLite, Boolean) -> Unit
+    private val onOddsClick: (cell: WeakReference<View>, SelectionBeanLite, Boolean) -> Unit
 ) : BaseAdapter<SelectionBeanLite, ChampionOddsCellViewHolder, ItemChampionOddsCellBinding>(OddDiffCompare()){
     override fun convertPlus(
         holder: ChampionOddsCellViewHolder,
