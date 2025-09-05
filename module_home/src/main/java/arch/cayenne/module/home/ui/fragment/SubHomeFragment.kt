@@ -16,6 +16,7 @@ import androidx.viewpager2.widget.ViewPager2
 import androidx.viewpager2.widget.ViewPager2.SCROLL_STATE_IDLE
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
@@ -43,6 +44,7 @@ import arch.cayenne.module.home.ui.viewmodel.SubHomeViewModel
 import arch.cayenne.module.home.utils.DateUtils
 import com.bumptech.glide.Glide
 import com.google.android.material.tabs.TabLayout
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.Locale
 import kotlin.reflect.KClass
@@ -329,9 +331,9 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
             }
 
             // 其他日期 Tab 設定
-            llOtherDate.clickNoRepeat {
+            llOtherDate.setOnClickListener {
                 if (customPopup != null) {
-                    return@clickNoRepeat
+                    return@setOnClickListener
                 }
                 // 轉換日期格式為 YYYYMMDD 給 DatePicker 使用
                 fun List<String>.toYYYYMMDD(): String {
@@ -355,6 +357,7 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
                     "0"
                 }
                 launch {
+                    delay(20)
                     showHomeCalendar(tabSelectedDate)
                 }
             }
