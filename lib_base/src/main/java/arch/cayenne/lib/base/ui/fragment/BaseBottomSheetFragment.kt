@@ -160,7 +160,7 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
             addUpdateListener { animation ->
                 val value = animation.animatedValue as Float
                 sheet.translationY = value
-                showDim()
+
             }
             duration = sheetAnim.duration
             // 假設你的 exitAnimation 使用這個插值器
@@ -169,6 +169,9 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
                 backgroundView?.visibility = View.VISIBLE
                 sheet.visibility = View.VISIBLE
                 mBinding.root.visibility = View.VISIBLE
+                mBinding.root.post {
+                    showDim()
+                }
             }
         }
         sheet.post {
@@ -192,7 +195,6 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
             addUpdateListener { animation ->
                 val value = animation.animatedValue as Float
                 sheet.translationY = value
-                showDim()
             }
             duration = sheetContainerSheetAnim.duration
             // 假設你的 exitAnimation 使用這個插值器
@@ -201,6 +203,9 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
                 backgroundView?.visibility = View.VISIBLE
                 sheet.visibility = View.VISIBLE
                 mBinding.root.visibility = View.VISIBLE
+                mBinding.root.post {
+                    showDim()
+                }
             }
             doOnEnd {
                 setRvTouch()

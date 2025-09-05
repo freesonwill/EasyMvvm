@@ -58,6 +58,7 @@ abstract class BasePreLoadBottomSheetFragment<VM : BaseViewModel, VB : ViewBindi
                 systemHide = true
                 setSystemHide()
             }
+
         }
         unhideableDialog = dialog
         return dialog
@@ -217,8 +218,9 @@ abstract class BasePreLoadBottomSheetFragment<VM : BaseViewModel, VB : ViewBindi
             }
         }
         findDialogFragment(childFragmentManager)
-        setCustomCollapseSetting()
-        hideDim()
+        customHide()
+//        setCustomCollapseSetting()
+//        hideDim()
     }
 }
 

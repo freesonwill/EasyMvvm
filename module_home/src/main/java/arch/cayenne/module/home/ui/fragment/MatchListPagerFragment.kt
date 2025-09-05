@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -73,16 +74,21 @@ class MatchListPagerFragment :
 
                 override fun onOddsCellClick(cell: WeakReference<View>, selection: SelectionBeanLite, x: Float, y: Float) {
                     lifecycleScope.launch {
-                        cell.get()?.isSelected = true
+                        if (mViewModel.getCurrentSelectionCount() == 0) {
+                            BetSheetFragment.show(requireActivity()) {
+                                cell.get()?.isSelected = true
+                            }
+                        } else {
+                            cell.get()?.isSelected = true
+                        }
+
                         val status = mViewModel.setSelection(selection.selectionId)
 
                         if (status !is AddSelectionStatus.Success) {
                             cell.get()?.isSelected = false
                         }
 
-                        if (status is AddSelectionStatus.Success.Single) {
-                            BetSheetFragment.show(requireActivity())
-                        } else if (status is AddSelectionStatus.Failure) {
+                        if (status is AddSelectionStatus.Failure) {
                             status.msg?.let {
                                 showToast(it)
                             }
@@ -173,26 +179,27 @@ class MatchListPagerFragment :
     override fun initListener() {
     }
 
+    val matchListObserver = Observer<List<MatchWithMarkets>> { matchList ->
+        val preEmpty = matchAdapter.currentList.isEmpty()
+        "MatchListChange livedata Observed~ ${matchList.map { it.match.matchId }}".logi(this::class.java.simpleName)
+        matchAdapter.submitList(matchList)
+        mBinding.rvHomeGameList.doOnPreDraw {
+            if (mBinding.rvHomeGameList.scrollState == RecyclerView.SCROLL_STATE_IDLE) {
+                subscribeVisibleMatch()
+            }
+            if (matchList.isNotEmpty()) {
+                mViewModel.changeState(HomeState.Match.LoadSuccess)
+                if (preEmpty) {
+                    setMatchListPosition()
+                }
+            }
+        }
+    }
+
     override suspend fun createObserver() {
 
         homeViewModel.timer.observeEvent(viewLifecycleOwner, this) {
             mViewModel.updateMatchLiveData()
-        }
-        mViewModel.matchListChange.observe(viewLifecycleOwner) { matchList ->
-            val preEmpty = matchAdapter.currentList.isEmpty()
-            "MatchListChange livedata Observed~ ${matchList.map { it.match.matchId }}".logi(this::class.java.simpleName)
-            matchAdapter.submitList(matchList)
-            mBinding.rvHomeGameList.doOnPreDraw {
-                if (mBinding.rvHomeGameList.scrollState == RecyclerView.SCROLL_STATE_IDLE) {
-                    subscribeVisibleMatch()
-                }
-                if (matchList.isNotEmpty()) {
-                    mViewModel.changeState(HomeState.Match.LoadSuccess)
-                    if (preEmpty) {
-                        setMatchListPosition()
-                    }
-                }
-            }
         }
 
         mViewModel.apiStateListener.observe(viewLifecycleOwner) {
@@ -203,6 +210,7 @@ class MatchListPagerFragment :
                         mViewModel.changePageEnd(true)
                         lvMatchLoading.visibility = View.GONE
                         refreshLayout.finishRefresh()
+                        matchAdapter.showNoMoreData(false)
                         clDynamics.visibility = View.VISIBLE
                         clDynamics.setState(
                             DynamicStateLayout.States.NETWORK_ANOMALY(),
@@ -217,6 +225,7 @@ class MatchListPagerFragment :
                     HomeState.Match.DataEmpty -> {  //這個DataEmpty表示確定真的從第一頁就抓不到資料，表示當前的選擇沒有任何賽事
                         lvMatchLoading.visibility = View.GONE
                         refreshLayout.finishRefresh()
+                        matchAdapter.showNoMoreData(false)
                         clDynamics.visibility = View.VISIBLE
                         clDynamics.setState(
                             DynamicStateLayout.States.DATA_EMPTY,
@@ -225,7 +234,7 @@ class MatchListPagerFragment :
                         homeViewModel.changeState(HomeState.Match.LoadSuccess)
                     }
                     HomeState.Match.Loading -> {
-                        lvMatchLoading.visibility = View.VISIBLE
+//                        lvMatchLoading.visibility = View.VISIBLE
                         clDynamics.visibility = View.GONE
                         homeViewModel.changeState(HomeState.Match.Loading)
                     }
@@ -271,10 +280,18 @@ class MatchListPagerFragment :
             mViewModel.setPlayTypeId(this.getInt(ARG_PLAY_TYPE_ID))
             mViewModel.setPosition(this.getInt(ARG_POSITION))
         }
+        "KC_ MatchListPagerFragment playType: ${mViewModel.getPlayTypeId()} sportId: ${mViewModel.getSportId()} leagueId: ${mViewModel.getTournamentId()}".logi()
+        startObserveMatch()
     }
 
     fun startObserveMatch() {
         mViewModel.startObserveMatch()
+    }
+
+    fun startObserveMatchListChange() {
+        if (!mViewModel.matchListChange.hasObservers()) {
+            mViewModel.matchListChange.observe(viewLifecycleOwner, matchListObserver)
+        }
     }
 
     override fun onDestroy() {

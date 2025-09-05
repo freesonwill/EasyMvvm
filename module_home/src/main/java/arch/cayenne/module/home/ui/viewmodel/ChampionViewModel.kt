@@ -111,4 +111,5 @@ class ChampionViewModel : BaseViewModel() {
         }
     }
 
+    fun getCurrentSelectionCount(): Int = betRepository.count
 }

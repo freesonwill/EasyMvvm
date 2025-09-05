@@ -1,9 +1,11 @@
 package arch.cayenne.module.home.ui.adapter
 
 import android.annotation.SuppressLint
+import android.app.Application
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.base.ui.adapter.BaseAdapter
@@ -18,6 +20,7 @@ import arch.cayenne.module.home.databinding.ItemLoadMoreDataBinding
 import arch.cayenne.module.home.databinding.ItemMatchCardBinding
 import arch.cayenne.module.home.databinding.ItemNoMoreDataBinding
 import arch.cayenne.module.home.ui.adapter.compare.MatchItemCompare
+import org.koin.java.KoinJavaComponent.getKoin
 import java.lang.ref.WeakReference
 
 class MatchItemAdapter(private val onMatchItemClickListener: OnMatchItemClickListener? = null) :
@@ -25,6 +28,13 @@ class MatchItemAdapter(private val onMatchItemClickListener: OnMatchItemClickLis
 
     private val viewPool = RecyclerView.RecycledViewPool()
     private var showNoMoreData: Boolean = false
+
+    private val mAnimation by lazy {
+        AnimationUtils.loadAnimation(
+            getKoin().get<Application>(),
+            arch.cayenne.lib.common.R.anim.anim_loading
+        )
+    }
 
     override fun getItemViewType(position: Int): Int {
         return when (getItem(position)) {
@@ -37,9 +47,10 @@ class MatchItemAdapter(private val onMatchItemClickListener: OnMatchItemClickLis
 
     override fun submitList(list: List<MatchListItem?>?) {
         val l = list?.toMutableList()
-        if (showNoMoreData) {
+        val isEmpty = (l?.size ?: 0) == 0
+        if (!isEmpty && showNoMoreData) {
             l?.add(MatchNoMoreData)
-        } else {
+        } else if (!isEmpty) {
             l?.add(MatchLoadMoreData)
         }
         super.submitList(l)
@@ -68,7 +79,7 @@ class MatchItemAdapter(private val onMatchItemClickListener: OnMatchItemClickLis
             is MatchNoMoreData -> Unit
             is MatchLoadMoreData -> {
                 val loadMoreDataBinding = binding as ItemLoadMoreDataBinding
-                loadMoreDataBinding.lvLoading.hideTextView()
+                loadMoreDataBinding.ivProgress.startAnimation(mAnimation)
             }
         }
     }

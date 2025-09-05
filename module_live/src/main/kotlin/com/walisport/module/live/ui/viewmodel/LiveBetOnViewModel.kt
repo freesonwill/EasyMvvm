@@ -1,11 +1,12 @@
 package com.walisport.module.live.ui.viewmodel
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.data.model.UnPeekLiveData
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
-import arch.cayenne.lib.database.entity.LiveMarketListBean
+import com.walisport.module.live.data.model.LiveMarketListBean
 import arch.cayenne.lib.database.entity.LiveSelectionBean
 import arch.cayenne.lib.database.entity.MarketMenuBean
 import arch.cayenne.lib.database.entity.MarketTypeBean
@@ -37,16 +38,30 @@ class LiveBetOnViewModel : BaseViewModel() {
     private val _getMarketList = MutableLiveData<List<MarketMenuBean>?>()
     val getMarketList: LiveData<List<MarketMenuBean>?> = _getMarketList
 
-    private val _liveMarketListBean = UnPeekLiveData<List<LiveMarketListBean>?>()
-    val liveMarketListBean: UnPeekLiveData<List<LiveMarketListBean>?> = _liveMarketListBean
+    //监听串关数据变化
+    private val _observerSelectionCombo = MutableLiveData<Long?>()
+
+    private val _liveMarketListBean = MediatorLiveData<List<LiveMarketListBean>?>().apply {
+        addSource(_observerSelectionCombo) { targetSelectionId ->
+            val currentMarketList = this.value ?: return@addSource
+
+            this.value = currentMarketList.map { marketBean ->
+                val updatedSelectionList = marketBean.list.map { selectionBean ->
+                    if (targetSelectionId == null) {
+                        selectionBean.copy(isSelect = false)
+                    } else {
+                        selectionBean.copy(isSelect = (selectionBean.selectionId == targetSelectionId))
+                    }
+                }
+                marketBean.copy(list = updatedSelectionList)
+            }
+        }
+    }
+    val liveMarketListBean: LiveData<List<LiveMarketListBean>?> = _liveMarketListBean
 
     //监听盘口筛选变化
     private val _observeMarketMenu = MutableLiveData<MutableList<Int>>()
     val observeMarketMenu: LiveData<MutableList<Int>> = _observeMarketMenu
-
-    //监听串关数据变化
-    private val _observerSelectionCombo = MutableLiveData<Long?>()
-    val observerSelectionCombo: LiveData<Long?> = _observerSelectionCombo
 
     fun getMarketType(matchId: Long) {
         viewModelScope.launch {
@@ -140,4 +155,6 @@ class LiveBetOnViewModel : BaseViewModel() {
             }
         }
     }
+
+    fun getCurrentSelectionCount(): Int = betRepository.count
 }

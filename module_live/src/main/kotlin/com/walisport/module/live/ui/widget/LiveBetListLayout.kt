@@ -17,6 +17,8 @@ import com.walisport.module.live.databinding.LiveBetContentItemLayoutTowBinding
 import com.walisport.module.live.databinding.LiveBetContentListItemLayoutBinding
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toOdds
 import arch.cayenne.lib.common.utils.ext.SportDisplayOddsExt.getDisplayOdds
+import java.lang.ref.WeakReference
+
 class LiveBetListLayout @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
@@ -42,21 +44,19 @@ class LiveBetListLayout @JvmOverloads constructor(
         marketId: Long,
         active: Boolean,
         oddStatus: Int,
-        isNotify: Boolean,
-        isCombo: Boolean,
-        callback: (Long, Float, Float) -> Unit
+        isSelected: Boolean,
+        callback: (WeakReference<View>, Long, Float, Float) -> Unit
     ) {
-        this.isNotify = isNotify
         if (num == 0) {
             clearAllArranges()
         }
 
         when (state) {
-            StatesArrange.DEFAULT_ARRANGE -> addToDefaultArrange(num, name, odds, marketId, active, oddStatus, isCombo, callback)
-            StatesArrange.ONE_ARRANGE -> addToOneArrange(name, odds, marketId, active, oddStatus, isCombo, callback)
-            StatesArrange.TOW_ARRANGE -> addToTowArrange(num, name, odds, marketId, active, oddStatus, isCombo, callback)
-            StatesArrange.THREE_ARRANGE -> addToThreeArrange(num, name, odds, marketId, active, oddStatus, isCombo, callback)
-            StatesArrange.BO_DIAN -> addToBoDian( name, odds, marketId, active, oddStatus, isCombo, callback)
+            StatesArrange.DEFAULT_ARRANGE -> addToDefaultArrange(num, name, odds, marketId, active, oddStatus, isSelected, callback)
+            StatesArrange.ONE_ARRANGE -> addToOneArrange(name, odds, marketId, active, oddStatus, isSelected, callback)
+            StatesArrange.TOW_ARRANGE -> addToTowArrange(num, name, odds, marketId, active, oddStatus, isSelected, callback)
+            StatesArrange.THREE_ARRANGE -> addToThreeArrange(num, name, odds, marketId, active, oddStatus, isSelected, callback)
+            StatesArrange.BO_DIAN -> addToBoDian( name, odds, marketId, active, oddStatus, isSelected, callback)
             null -> Unit // Handle null state gracefully
         }
     }
@@ -77,12 +77,12 @@ class LiveBetListLayout @JvmOverloads constructor(
         marketId: Long,
         active: Boolean,
         oddStatus: Int,
-        isCombo: Boolean,
-        callback: (Long, Float, Float) -> Unit
+        isSelected: Boolean,
+        callback: (WeakReference<View>, Long, Float, Float) -> Unit
     ) {
         when (num % StatesArrange.DEFAULT_ARRANGE.value) {
-            0 -> binding.llcOneArrange.addView(createViewOne(name, odds, marketId, active, oddStatus, isCombo, callback))
-            1 -> binding.llcTowArrange.addView(createViewTow(name, odds, marketId, active, oddStatus, isCombo, callback))
+            0 -> binding.llcOneArrange.addView(createViewOne(name, odds, marketId, active, oddStatus, isSelected, callback))
+            1 -> binding.llcTowArrange.addView(createViewTow(name, odds, marketId, active, oddStatus, isSelected, callback))
             else ->{}
         }
         binding.llcTowArrange.isVisible = true
@@ -95,10 +95,10 @@ class LiveBetListLayout @JvmOverloads constructor(
         marketId: Long,
         active: Boolean,
         oddStatus: Int,
-        isCombo: Boolean,
-        callback: (Long, Float, Float) -> Unit
+        isSelected: Boolean,
+        callback: (WeakReference<View>, Long, Float, Float) -> Unit
     ) {
-        binding.llcOneArrange.addView(createViewOne(name, odds, marketId, active, oddStatus, isCombo, callback))
+        binding.llcOneArrange.addView(createViewOne(name, odds, marketId, active, oddStatus, isSelected, callback))
         binding.llcTowArrange.isVisible = false
         binding.llcThreeArrange.isVisible = false
     }
@@ -110,12 +110,12 @@ class LiveBetListLayout @JvmOverloads constructor(
         marketId: Long,
         active: Boolean,
         oddStatus: Int,
-        isCombo: Boolean,
-        callback: (Long, Float, Float) -> Unit
+        isSelected: Boolean,
+        callback: (WeakReference<View>, Long, Float, Float) -> Unit
     ) {
         when (num % StatesArrange.TOW_ARRANGE.value) {
-            0 -> binding.llcOneArrange.addView(createViewOne(name, odds, marketId, active, oddStatus, isCombo, callback))
-            1 -> binding.llcTowArrange.addView(createViewTow(name, odds, marketId, active, oddStatus, isCombo, callback))
+            0 -> binding.llcOneArrange.addView(createViewOne(name, odds, marketId, active, oddStatus, isSelected, callback))
+            1 -> binding.llcTowArrange.addView(createViewTow(name, odds, marketId, active, oddStatus, isSelected, callback))
         }
         binding.llcTowArrange.isVisible = true
         binding.llcThreeArrange.isVisible = false
@@ -128,13 +128,13 @@ class LiveBetListLayout @JvmOverloads constructor(
         marketId: Long,
         active: Boolean,
         oddStatus: Int,
-        isCombo: Boolean,
-        callback: (Long, Float, Float) -> Unit
+        isSelected: Boolean,
+        callback: (WeakReference<View>, Long, Float, Float) -> Unit
     ) {
         when (num % StatesArrange.THREE_ARRANGE.value) {
-            0 -> binding.llcOneArrange.addView(createViewOne(name, odds, marketId, active, oddStatus, isCombo, callback))
-            1 -> binding.llcTowArrange.addView(createViewTow(name, odds, marketId, active, oddStatus, isCombo, callback))
-            2 -> binding.llcThreeArrange.addView(createViewThree(name, odds, marketId, active, oddStatus, isCombo, callback))
+            0 -> binding.llcOneArrange.addView(createViewOne(name, odds, marketId, active, oddStatus, isSelected, callback))
+            1 -> binding.llcTowArrange.addView(createViewTow(name, odds, marketId, active, oddStatus, isSelected, callback))
+            2 -> binding.llcThreeArrange.addView(createViewThree(name, odds, marketId, active, oddStatus, isSelected, callback))
         }
         binding.llcTowArrange.isVisible = true
         binding.llcThreeArrange.isVisible = true
@@ -146,25 +146,25 @@ class LiveBetListLayout @JvmOverloads constructor(
         marketId: Long,
         active: Boolean,
         oddStatus: Int,
-        isCombo: Boolean,
-        callback: (Long, Float, Float) -> Unit
+        isSelected: Boolean,
+        callback: (WeakReference<View>, Long, Float, Float) -> Unit
     ) {
         name.split("-").takeIf { it.size == 2 }?.let { parts ->
             val left = parts[0].toIntOrNull() ?: return
             val right = parts[1].toIntOrNull() ?: return
             when {
-                left > right -> binding.llcOneArrange.addView(createViewOne(name, odds, marketId, active, oddStatus, isCombo, callback))
+                left > right -> binding.llcOneArrange.addView(createViewOne(name, odds, marketId, active, oddStatus, isSelected, callback))
                 left == right -> binding.llcTowArrange.apply {
                     isVisible = true
-                    addView(createViewTow(name, odds, marketId, active, oddStatus, isCombo, callback))
+                    addView(createViewTow(name, odds, marketId, active, oddStatus, isSelected, callback))
                 }
                 left < right -> binding.llcThreeArrange.apply {
                     isVisible = true
-                    addView(createViewThree(name, odds, marketId, active, oddStatus, isCombo, callback))
+                    addView(createViewThree(name, odds, marketId, active, oddStatus, isSelected, callback))
                 }
                 else ->{}
             }
-        } ?: binding.llcOther.addView(createViewTow(name, odds, marketId, active, oddStatus, isCombo, callback))
+        } ?: binding.llcOther.addView(createViewTow(name, odds, marketId, active, oddStatus, isSelected, callback))
     }
 
     private fun createViewOne(
@@ -173,10 +173,10 @@ class LiveBetListLayout @JvmOverloads constructor(
         marketId: Long,
         active: Boolean,
         oddStatus: Int,
-        isCombo: Boolean,
-        callback: (Long, Float, Float) -> Unit
+        isSelected: Boolean,
+        callback: (WeakReference<View>, Long, Float, Float) -> Unit
     ): View = LiveBetContentItemLayoutOneBinding.inflate(LayoutInflater.from(context), binding.root, false).run {
-        setupView(this, name, odds, marketId, active, oddStatus, isCombo, callback, sclOne, sclOneLock)
+        setupView(this, name, odds, marketId, active, oddStatus, isSelected, callback, sclOne, sclOneLock)
         root
     }
 
@@ -186,10 +186,10 @@ class LiveBetListLayout @JvmOverloads constructor(
         marketId: Long,
         active: Boolean,
         oddStatus: Int,
-        isCombo: Boolean,
-        callback: (Long, Float, Float) -> Unit
+        isSelected: Boolean,
+        callback: (WeakReference<View>, Long, Float, Float) -> Unit
     ): View = LiveBetContentItemLayoutTowBinding.inflate(LayoutInflater.from(context), binding.root, false).run {
-        setupView(this, name, odds, marketId, active, oddStatus, isCombo, callback, sclTow, sclTowLock)
+        setupView(this, name, odds, marketId, active, oddStatus, isSelected, callback, sclTow, sclTowLock)
         root
     }
 
@@ -199,10 +199,10 @@ class LiveBetListLayout @JvmOverloads constructor(
         marketId: Long,
         active: Boolean,
         oddStatus: Int,
-        isCombo: Boolean,
-        callback: (Long, Float, Float) -> Unit
+        isSelected: Boolean,
+        callback: (WeakReference<View>, Long, Float, Float) -> Unit
     ): View = LiveBetContentItemLayoutThreeBinding.inflate(LayoutInflater.from(context), binding.root, false).run {
-        setupView(this, name, odds, marketId, active, oddStatus, isCombo, callback, sclThree, sclThreeLock)
+        setupView(this, name, odds, marketId, active, oddStatus, isSelected, callback, sclThree, sclThreeLock)
         root
     }
 
@@ -213,8 +213,8 @@ class LiveBetListLayout @JvmOverloads constructor(
         marketId: Long,
         active: Boolean,
         oddStatus: Int,
-        isCombo: Boolean,
-        callback: (Long, Float, Float) -> Unit,
+        isSelected: Boolean,
+        callback: (WeakReference<View>, Long, Float, Float) -> Unit,
         selectableView: View,
         lockView: View
     ) {
@@ -225,25 +225,28 @@ class LiveBetListLayout @JvmOverloads constructor(
                     if (active) isOddsStatus(oddStatus, imgTop, imgDown)
                     tvBetDuelLeft.text = name
                     tvBetDuelRight.text = oddsInt.getDisplayOdds()
-                    sclOne.isSelected = isCombo
-                    sclOne.clickNoRepeatSingle() {
-                        handleClick(marketId, isCombo, callback, sclOne) }
+                    sclOne.isSelected = isSelected
+                    sclOne.clickNoRepeatSingle {
+                        handleClick(marketId, callback, sclOne)
+                    }
                 }
                 is LiveBetContentItemLayoutTowBinding -> {
                     if (active) isOddsStatus(oddStatus, imgTop, imgDown)
                     tvBetDuelLeft.text = name
                     tvBetDuelRight.text = oddsInt.getDisplayOdds()
-                    sclTow.isSelected = isCombo
+                    sclTow.isSelected = isSelected
                     sclTow.clickNoRepeatSingle {
-                        handleClick(marketId, isCombo, callback, sclTow) }
+                        handleClick(marketId, callback, sclTow)
+                    }
                 }
                 is LiveBetContentItemLayoutThreeBinding -> {
                     if (active) isOddsStatus(oddStatus, imgTop, imgDown)
                     tvBetDuelLeft.text = name
                     tvBetDuelRight.text = oddsInt.getDisplayOdds()
-                    sclThree.isSelected = isCombo
+                    sclThree.isSelected = isSelected
                     sclThree.clickNoRepeatSingle {
-                        handleClick(marketId, isCombo, callback, sclThree) }
+                        handleClick(marketId, callback, sclThree)
+                    }
                 }
                 else ->{}
             }
@@ -255,12 +258,12 @@ class LiveBetListLayout @JvmOverloads constructor(
 
 
 
-    private fun handleClick(marketId: Long, isCombo: Boolean, callback: (Long, Float, Float) -> Unit, view: View) {
+    private fun handleClick(marketId: Long, callback: (WeakReference<View>, Long, Float, Float) -> Unit, view: View) {
         val location = IntArray(2)
         view.getLocationOnScreen(location)
         val x = location[0] + view.width / 2
         val y = location[1] + view.height / 2
-        callback(marketId,x.toFloat(),y.toFloat())
+        callback(WeakReference(view), marketId,x.toFloat(),y.toFloat())
     }
 
     private fun isOddsStatus(oddStatus: Int, top: View, down: View) {
