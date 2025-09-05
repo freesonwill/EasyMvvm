@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.animateIndicatorToPosition
 import arch.cayenne.lib.common.utils.ext.setupViewPagerScroll
+import arch.cayenne.lib.common.utils.helper.doSmartAnim
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.walisport.module.search.R
@@ -32,24 +33,31 @@ class SearchResultListFragment :
     private val args: SearchResultListFragmentArgs by navArgs()
     private var tabMediator: TabLayoutMediator? = null
     private var skipAnyAnim = true
+    private var enableAnim = false
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
         setViewPager()
 
         with(contentBinding) {
             // 自定義滑動行為
-            viewPager.setupViewPagerScroll(tlSearch, customIndicator, 0.20f) {
-                skipAnyAnim = it
-            }
+            viewPager.setupViewPagerScroll(tlSearch, customIndicator, 0.20f,skipAnyAnim = { skipAnyAnim = it }, enableAnimation = {
+                if(it == null){
+                    return@setupViewPagerScroll enableAnim
+                }
+                enableAnim = it
+                return@setupViewPagerScroll enableAnim            })
             tlSearch.apply {
                 clearOnTabSelectedListeners()
                 addOnTabSelectedListener(object :
                     TabLayout.OnTabSelectedListener {
                     override fun onTabSelected(tab: TabLayout.Tab) {
                         if (skipAnyAnim) {
+                            enableAnim = false
                             // 动画更新指示器位置
-                            customIndicator.animateIndicatorToPosition(tab.position, 0)
-                            viewPager.setCurrentItem(tab.position, false)
+                            customIndicator.animateIndicatorToPosition(tab.position)
+//                            viewPager.setCurrentItem(tab.position, false)
+                            viewPager.doSmartAnim(tab.position)
+
                         }
                         tab.let { updateTabTypeface(it, true) }
                     }
