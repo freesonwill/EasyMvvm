@@ -159,19 +159,19 @@ class MatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
         }
     }
 
-    fun addMatchCollect(item: MatchWithMarkets, collect: Boolean) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val matchWithMarket = repository.matchCollect(item, collect)
+    suspend fun addMatchCollect(item: MatchWithMarkets, collect: Boolean): Boolean = withContext(Dispatchers.IO) {
+        val resp = repository.matchCollect(item, collect)
+        if (resp is ApiResponseState.Succeeded<*>) {
+            val matchWithMarket = resp.dataAs<MatchWithMarkets>() ?: return@withContext false
             val old = matchListChange.value!!.toMutableList()
-            matchWithMarket?.apply {
-                val index = old.indexOfFirst { it.match.matchId == matchWithMarket.match.matchId }
-                if (index != -1) {
-                    old[index] = matchWithMarket
-                }
-            }
+            val index = old.indexOfFirst { it.match.matchId == matchWithMarket.match.matchId }
+            if (index != -1) { old[index] = matchWithMarket }
             withContext(Dispatchers.Main) {
                 matchListChange.value = old
             }
+            return@withContext true
+        } else {
+            return@withContext false
         }
     }
 

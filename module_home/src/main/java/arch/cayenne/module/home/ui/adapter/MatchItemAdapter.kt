@@ -6,11 +6,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
+import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.base.ui.adapter.BaseAdapter
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
-import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.database.entity.MatchListItem
 import arch.cayenne.lib.database.entity.MatchWithMarkets
 import arch.cayenne.lib.database.entity.SelectionBeanLite
@@ -66,15 +66,6 @@ class MatchItemAdapter(private val onMatchItemClickListener: OnMatchItemClickLis
             is MatchWithMarkets -> {
                 val matchItemViewHolder = (holder as MatchItemViewHolder)
                 matchItemViewHolder.init(item)
-                val matchBinding = binding as ItemMatchCardBinding
-                matchBinding.root.setOnClickListener {
-                    val position = matchItemViewHolder.absoluteAdapterPosition
-                    onMatchItemClickListener?.onLiveEntryClick((getItem(position) as MatchWithMarkets))
-                }
-                matchBinding.ivFavorite.apply { addScaleOnTouchAnimation() }.setOnClickListener {
-                    val position = matchItemViewHolder.absoluteAdapterPosition
-                    onMatchItemClickListener?.onFavoriteClick((getItem(position) as MatchWithMarkets))
-                }
             }
             is MatchNoMoreData -> Unit
             is MatchLoadMoreData -> {
@@ -139,6 +130,6 @@ class MatchItemAdapter(private val onMatchItemClickListener: OnMatchItemClickLis
 
 interface OnMatchItemClickListener {
     fun onLiveEntryClick(item: MatchWithMarkets)
-    fun onFavoriteClick(item: MatchWithMarkets)
+    fun onFavoriteClick(view: ImageView, item: MatchWithMarkets)
     fun onOddsCellClick(cell: WeakReference<View>, selection: SelectionBeanLite, x: Float, y: Float)
 }
