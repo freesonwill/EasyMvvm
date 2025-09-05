@@ -200,4 +200,6 @@ abstract class BaseMatchViewModel<REPO: BaseMatchRepository> : BaseViewModel() {
     }
 
     abstract fun clearCurrentMatch()
+
+    fun getCurrentSelectionCount(): Int = betRepository.count
 }

@@ -9,6 +9,7 @@ import arch.cayenne.module.bet.data.AddSelectionStatus
 import arch.cayenne.module.bet.data.BetInsertBean
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -23,12 +24,25 @@ class BetRepository(
         private const val MAX_LIMIT_SIZE = 10
     }
 
-    val observerAllBet: Flow<List<BetSelectionLiteBean>> = betDao.observeCurrentLiteSelections()
+    var count: Int = 0
+        private set
+
+    private val _observerAllBet = MutableSharedFlow<List<BetSelectionLiteBean>>(replay = 1, extraBufferCapacity = 1)
+    val observerAllBet: Flow<List<BetSelectionLiteBean>> get() = _observerAllBet
     fun observerSelectionByMatchId(matchId: Long): Flow<Long?> =
         betDao.observeCurrentSelectionsByMatchId(matchId).distinctUntilChanged()
 
     val isConnected: Boolean
         get() = remoteManager.isConnected
+
+    init {
+        scope.launch {
+            betDao.observeCurrentLiteSelections().distinctUntilChanged().collect {
+                count = it.size
+                _observerAllBet.emit(it)
+            }
+        }
+    }
 
     /***
      * 新增投注資料
