@@ -54,7 +54,7 @@ class SearchResultListFragment :
                         if (skipAnyAnim) {
                             enableAnim = false
                             // 动画更新指示器位置
-                            customIndicator.animateIndicatorToPosition(tab.position)
+                            customIndicator.animateIndicatorToPosition(tab.position,0)
 //                            viewPager.setCurrentItem(tab.position, false)
                             viewPager.doSmartAnim(tab.position)
 
