@@ -48,7 +48,7 @@ inline fun <reified T: GeneratedMessageLite<*,*>> WebSocketManager.observeProtoM
             val error:String = runCatching { T::class.java.getMethod("getMessage").invoke(proto) as String }
                 .getOrNull() ?: ""
             if(success) {
-                "sendAndWaitProtoMessageResponse map proto apiCode:$apiCode,rid:${it.rid},success".logi(TAG)
+                "sendAndWaitProtoMessageResponse map proto apiCode:$apiCode,rid:${it.rid},success:$success".logi(TAG)
             } else {
                 "sendAndWaitProtoMessageResponse map proto apiCode:$apiCode,rid:${it.rid},error:$error".loge(TAG)
             }

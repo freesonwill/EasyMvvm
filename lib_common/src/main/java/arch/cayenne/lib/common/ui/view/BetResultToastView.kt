@@ -7,6 +7,7 @@ import android.widget.LinearLayout
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.R
 import arch.cayenne.lib.common.data.constants.SportEnum
 import arch.cayenne.lib.common.databinding.LayoutBetResultToastBinding
@@ -21,9 +22,13 @@ class BetResultToastView: LinearLayout {
         fun canShowToast(activity: FragmentActivity): Boolean {
             fun checkFragments(fragments: List<Fragment>): Boolean {
                 for (fragment in fragments) {
-                    if (fragment is Block && fragment.isResumed) return false
+                    if (fragment is Block && fragment.isResumed && fragment.view?.isVisible == true) {
+                        return false
+                    }
                     if (fragment.isAdded) {
-                        if (!checkFragments(fragment.childFragmentManager.fragments)) return false
+                        if (!checkFragments(fragment.childFragmentManager.fragments)) {
+                            return false
+                        }
                     }
                 }
                 return true
