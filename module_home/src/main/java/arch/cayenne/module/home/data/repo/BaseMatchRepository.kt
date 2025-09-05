@@ -97,7 +97,7 @@ abstract class BaseMatchRepository(
      * 收藏賽事或是取消收藏賽事
      * **/
     @Transaction
-    suspend fun matchCollect(item: MatchWithMarkets, collect: Boolean): MatchWithMarkets? {
+    suspend fun matchCollect(item: MatchWithMarkets, collect: Boolean): ApiResponseState {
         val res = if (collect) {
             socketManager.sendAndWaitProtoMessageResponse<Client.AddCollectResp>(
                 scope = scope,
@@ -121,9 +121,10 @@ abstract class BaseMatchRepository(
         }
         if (res.error == null && res.data != null) {
             matchDao.updateOnlyMatchCollect(item.match.matchId, collect)
-            return matchDao.getOneMatchById(item.match.matchId, isEuropeOddsDisplay).setSelected(betDao)
+            return ApiResponseState.Succeeded(matchDao.getOneMatchById(item.match.matchId, isEuropeOddsDisplay).setSelected(betDao))
+        } else {
+            return ApiResponseState.Failed(res.error)
         }
-        return null
     }
 
     /**

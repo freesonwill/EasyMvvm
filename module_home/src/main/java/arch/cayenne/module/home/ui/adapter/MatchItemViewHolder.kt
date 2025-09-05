@@ -1,9 +1,7 @@
 package arch.cayenne.module.home.ui.adapter
 
-import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.graphics.Rect
-import android.graphics.drawable.LayerDrawable
 import android.text.TextUtils
 import android.view.Gravity
 import android.view.View
@@ -24,6 +22,7 @@ import arch.cayenne.lib.database.entity.MatchWithMarkets
 import arch.cayenne.lib.skin.widget.SkinnableTextView
 import arch.cayenne.module.home.R
 import arch.cayenne.module.home.databinding.ItemMatchCardBinding
+import arch.cayenne.module.home.utils.setFavoriteIcon
 import com.bumptech.glide.Glide
 
 class MatchItemViewHolder(
@@ -93,9 +92,6 @@ class MatchItemViewHolder(
 
     @SuppressLint("SetTextI18n")
     fun init(data: MatchWithMarkets) {
-//        oddsColumnAdapter.onOddsClick = { selection, b ->
-//            onMatchItemClickListener?.onOddsCellClick(data, selection)
-//        }
         with(mBinding) {
             val basicInfo = data.match.basicInfo
             val liveInfo = data.match.liveInfo
@@ -138,7 +134,7 @@ class MatchItemViewHolder(
                 if (liveInfo.liveVideo) R.drawable.ic_live_video else R.drawable.ic_live_video_disabled
             )
 
-            setFavoriteIcon(data.match.collect, true)
+            mBinding.ivFavorite.setFavoriteIcon(data.match.collect, true)
 
             if (basicInfo.status == 5) {
                 tvAwayScore.text = liveInfo.awayScore.toString()
@@ -153,7 +149,7 @@ class MatchItemViewHolder(
             }
 
             ivFavorite.apply { addScaleOnTouchAnimation() }.setOnClickListener {
-                onMatchItemClickListener?.onFavoriteClick(data)
+                onMatchItemClickListener?.onFavoriteClick(ivFavorite, data)
             }
         }
     }
@@ -172,6 +168,10 @@ class MatchItemViewHolder(
         with(mBinding) {
             val basicInfo = item.match.basicInfo
             val liveInfo = item.match.liveInfo
+
+            ivFavorite.apply { addScaleOnTouchAnimation() }.setOnClickListener {
+                onMatchItemClickListener?.onFavoriteClick(ivFavorite, item)
+            }
 
             if ("status" in changes) {
                 if (basicInfo.status == 5) {  //開賽中
@@ -219,37 +219,10 @@ class MatchItemViewHolder(
                 oddsColumnAdapter.submitList(selectionsGrouped)
             }
             if ("collect" in changes) {
-                setFavoriteIcon(item.match.collect, false)
-                ivFavorite.apply { addScaleOnTouchAnimation() }.setOnClickListener {
-                    onMatchItemClickListener?.onFavoriteClick(item)
-                }
+                if (mBinding.ivFavorite.isSelected == item.match.collect) return
+                mBinding.ivFavorite.setFavoriteIcon(item.match.collect, false)
             }
         }
-    }
-
-    private fun setFavoriteIcon(selected: Boolean, force: Boolean) {
-        val layers = mBinding.ivFavorite.drawable as LayerDrawable
-        val unselected = layers.findDrawableByLayerId(R.id.background)
-        val selectedDrawable = layers.findDrawableByLayerId(R.id.foreground)
-        // 做 alpha 淡入淡出動畫
-        val fadeIn = ObjectAnimator.ofInt(
-            selectedDrawable,
-            "alpha",
-            if (selected) 0 else 255,
-            if (selected) 255 else 0
-        )
-        val fadeOut = ObjectAnimator.ofInt(
-            unselected,
-            "alpha",
-            if (selected) 255 else 0,
-            if (selected) 0 else 255
-        )
-
-        fadeIn.duration = if (force) 0 else 200
-        fadeOut.duration = if (force) 0 else 200
-
-        fadeIn.start()
-        fadeOut.start()
     }
 
     private fun liveClock(clock: Int, modified: Long): String =

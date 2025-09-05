@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
+import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.base.ui.adapter.BaseAdapter
@@ -129,6 +130,6 @@ class MatchItemAdapter(private val onMatchItemClickListener: OnMatchItemClickLis
 
 interface OnMatchItemClickListener {
     fun onLiveEntryClick(item: MatchWithMarkets)
-    fun onFavoriteClick(item: MatchWithMarkets)
+    fun onFavoriteClick(view: ImageView, item: MatchWithMarkets)
     fun onOddsCellClick(cell: WeakReference<View>, selection: SelectionBeanLite, x: Float, y: Float)
 }
