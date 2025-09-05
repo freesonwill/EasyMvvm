@@ -21,6 +21,7 @@ import arch.cayenne.lib.common.utils.ext.animateIndicatorToPosition
 import arch.cayenne.lib.common.utils.ext.removeAllTips
 import arch.cayenne.lib.common.utils.ext.setupViewPagerScroll
 import arch.cayenne.lib.common.utils.ext.touchBackPressed
+import arch.cayenne.lib.common.utils.helper.doSmartAnim
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.module.betslip.R
 import arch.cayenne.module.betslip.data.constants.BetSlipDateFilterEnum
@@ -185,7 +186,9 @@ class HomeBetSlipFragment : BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsl
                     if (skipAnyAnim) {
                         // 动画更新指示器位置
                         mBinding.customIndicator.animateIndicatorToPosition(tab.position, 0)
-                        mBinding.viewPager.setCurrentItem(tab.position, false)
+//                        mBinding.viewPager.setCurrentItem(tab.position, false)
+                        mBinding.viewPager.doSmartAnim(targetPosition = tab.position)
+
                     }
                     (tab.customView as? TextView)?.apply {
                         setTypeface(null, Typeface.BOLD)
