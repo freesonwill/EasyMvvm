@@ -31,6 +31,7 @@ import com.walisport.module.live.ui.viewmodel.LiveBetOnViewModel
 import com.walisport.module.live.ui.viewmodel.LiveMainViewModel
 import kotlinx.coroutines.delay
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
+import java.lang.ref.WeakReference
 import kotlin.math.abs
 import kotlin.reflect.KClass
 
@@ -43,8 +44,6 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
     private var tabList: MutableList<String> = mutableListOf()
     private var tabPosition: List<Int> = mutableListOf(0, 0)
     private lateinit var liveBetOnAdapter: LiveBetOnAdapter
-    private var mCurrentItemPosition: Int = 0
-    private var selectionComboId: Long? = null
     private var isTabClicked: Boolean = false
     private lateinit var viewPager2: ViewPager2
     private var startX = 0f
@@ -62,22 +61,27 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
                 this@LiveBetOnFragment.context, LinearLayoutManager.VERTICAL, false
             )
             liveBetOnAdapter = LiveBetOnAdapter(object : LivBetListCallback {
+
                 override fun itemListCallback(
+                    cell: WeakReference<View>,
                     marketI: Long,
                     selectionId: Long,
                     x: Float,
-                    y: Float,
-                    position: Int,
-                    beforePosition: Int
+                    y: Float
                 ) {
-                    mCurrentItemPosition = position
                     launch {
+                        if (mViewModel.getCurrentSelectionCount() == 0) {
+                            BetSheetFragment.show(requireActivity()) {
+                                cell.get()?.isSelected = true
+                            }
+                        } else {
+                            cell.get()?.isSelected = true
+                        }
+
                         val status = mainViewModel.matchId.value?.let {
                             mViewModel.setSelection(it, selectionId)
                         }
-                        if (status is AddSelectionStatus.Success.Single) {
-                            BetSheetFragment.show(requireActivity())
-                        } else if (status is AddSelectionStatus.Failure) {
+                        if (status is AddSelectionStatus.Failure) {
                             status.msg?.let {
                                 showToast(it)
                             }
@@ -209,7 +213,6 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
             liveBetOnAdapter.submitList(emptyList())
             tabList.clear()
             tabPosition = mutableListOf(0, 0)
-            selectionComboId = null
             mBinding.tabLayout.removeAllTabs()
             // bool bet_stop = 18;         // false: 未停止投注, true: 已停止投注
             if (it != null) {
@@ -259,7 +262,7 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
                     baseInfo?.homeTeam.toString(),
                     baseInfo?.homeTeamIcon.toString(),
                     baseInfo?.awayTeam.toString(),
-                    baseInfo?.awayTeamIcon.toString(), true,
+                    baseInfo?.awayTeamIcon.toString(),
                     selectionsEdit
                 )
                 liveBetOnAdapter.submitList(it)
@@ -287,20 +290,6 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
                     mBinding.tabLayout.selectedTabPosition - 1
                 )?.code).toString()
             )
-        }
-        //串关数据变动
-        mViewModel.observerSelectionCombo.observe(viewLifecycleOwner) {
-            selectionComboId = it
-            liveBetOnAdapter.setSelectionComboId(selectionComboId, false)
-            if (liveBetOnAdapter.getBeforePosition() == -1) {
-                it?.let {  comboIdByMarketPosition(it)?.let { position ->
-                    liveBetOnAdapter.notifyItemChanged(position) }  }
-            } else {
-                if(liveBetOnAdapter.getBeforePosition()!=mCurrentItemPosition){
-                    liveBetOnAdapter.notifyItemChanged(mCurrentItemPosition)
-                }
-                liveBetOnAdapter.notifyItemChanged(liveBetOnAdapter.getBeforePosition())
-            }
         }
     }
 
