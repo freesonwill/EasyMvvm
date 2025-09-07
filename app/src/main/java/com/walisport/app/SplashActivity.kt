@@ -100,7 +100,7 @@ class SplashActivity : BaseActivity<SplashViewModel, ActivitySplashBinding>() {
     }
 
     private fun jumpToMainActivity() {
-        navigate(Intent(this, MainActivity::class.java))
+        navigate(Intent(this, MainActivity::class.java), 0, 0)
         finish()
     }
 
