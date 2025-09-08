@@ -7,7 +7,7 @@ import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 
 class MatchCardItemDecoration(
     private val bottomSpacePx: Int,
-    private val itemSpacePx: Int = 7.dp2px
+    private val itemSpacePx: Int = 6.dp2px
 ) : RecyclerView.ItemDecoration() {
     override fun getItemOffsets(
         outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State
