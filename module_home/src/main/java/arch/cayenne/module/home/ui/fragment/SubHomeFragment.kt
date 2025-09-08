@@ -286,6 +286,7 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
             //聯賽
             vpGameList.isSaveEnabled = false
             vpGameList.adapter = null
+            vpGameList.isUserInputEnabled = false
             vpGameList.offscreenPageLimit = 10
             //如果往右往左滑動，等待滑動完成後，再去開始startObserveMatch
             gameListPageCallback = object : ViewPager2.OnPageChangeCallback(){
