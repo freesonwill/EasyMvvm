@@ -1,6 +1,5 @@
 package arch.cayenne.module.home.ui.view
 
-import android.animation.Animator
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.graphics.Rect
@@ -15,6 +14,8 @@ import androidx.core.view.doOnLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import arch.cayenne.lib.base.ui.animation.AnimationController
+import arch.cayenne.lib.base.ui.animation.AnimationController.AnimType
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.extractDate
 import arch.cayenne.lib.common.utils.ext.toChineseMonth
@@ -61,16 +62,18 @@ class HomeCalendarFragment private constructor() : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         initView()
         initListener()
-        mBinding?.let { binding->
-            with(binding.clCalendarPopupRoot) {
-                visibility = View.INVISIBLE
-                layoutParams = (layoutParams as ConstraintLayout.LayoutParams).apply {
-                    topMargin = this@HomeCalendarFragment.marginTop
+        if (this.marginTop > 0) {
+            mBinding?.let { binding->
+                with(binding.clCalendarPopupRoot) {
+                    visibility = View.INVISIBLE
+                    layoutParams = (layoutParams as ConstraintLayout.LayoutParams).apply {
+                        topMargin = this@HomeCalendarFragment.marginTop
+                    }
                 }
-            }
-            with(binding.maskView) {
-                layoutParams = (layoutParams as ConstraintLayout.LayoutParams).apply {
-                    topMargin = this@HomeCalendarFragment.marginTop
+                with(binding.maskView) {
+                    layoutParams = (layoutParams as ConstraintLayout.LayoutParams).apply {
+                        topMargin = this@HomeCalendarFragment.marginTop
+                    }
                 }
             }
         }
@@ -274,6 +277,7 @@ class HomeCalendarFragment private constructor() : Fragment() {
                    val fullyHeight = getFullyHeight()
                    val startHeight =
                        if(fullyHeight == currentHeight) 1 else currentHeight
+                   "startHeight: $startHeight, fullyHeight: $fullyHeight,currentHeight:$currentHeight".logd()
                    heightAnimator?.cancel()
                    val enterAnim = AnimationController[AnimationController.AnimType.popupEnter]!!
                    heightAnimator = ValueAnimator.ofInt(startHeight, fullyHeight).apply {
@@ -350,19 +354,10 @@ class HomeCalendarFragment private constructor() : Fragment() {
             it.post {
                 it.animate()
                     .alpha(if (visible) 1f else 0f)
-                    .setDuration(AnimationController[AnimationController.AnimType.popupEnter]!!.duration)
-                    .setListener(object: Animator.AnimatorListener{
-                        override fun onAnimationStart(p0: Animator) {
-                            if(visible) it.visibility = View.VISIBLE
-                        }
-
-                        override fun onAnimationEnd(p0: Animator) {
-                            if(!visible) it.visibility = View.GONE
-                        }
-
-                        override fun onAnimationCancel(p0: Animator) = Unit
-                        override fun onAnimationRepeat(p0: Animator) = Unit
-                    })
+                    .setDuration(
+                        if (visible) AnimationController[AnimType.popupEnter]!!.duration
+                        else AnimationController[AnimType.popupExit]!!.duration
+                    )
                     .start()
             }
         }
