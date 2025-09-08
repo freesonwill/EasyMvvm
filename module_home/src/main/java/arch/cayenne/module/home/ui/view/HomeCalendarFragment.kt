@@ -15,7 +15,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import arch.cayenne.lib.base.ui.animation.AnimationController
 import arch.cayenne.lib.base.ui.animation.AnimationController.AnimType
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.extractDate
 import arch.cayenne.lib.common.utils.ext.toChineseMonth
@@ -277,7 +276,6 @@ class HomeCalendarFragment private constructor() : Fragment() {
                    val fullyHeight = getFullyHeight()
                    val startHeight =
                        if(fullyHeight == currentHeight) 1 else currentHeight
-                   "startHeight: $startHeight, fullyHeight: $fullyHeight,currentHeight:$currentHeight".logd()
                    heightAnimator?.cancel()
                    val enterAnim = AnimationController[AnimationController.AnimType.popupEnter]!!
                    heightAnimator = ValueAnimator.ofInt(startHeight, fullyHeight).apply {
