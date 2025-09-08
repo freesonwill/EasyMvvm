@@ -23,19 +23,22 @@ fun TabLayout.removeAllTips() {
     }
 }
 
- fun ViewPager2.setupViewPagerScroll(tabLayout: SkinnableTabLayout,customIndicator: CustomTabIndicator,tabIndicatorWidth : Float = 0.45f,skipAnyAnim: ((Boolean) -> Unit)? = null) {
+ fun ViewPager2.setupViewPagerScroll(tabLayout: SkinnableTabLayout,customIndicator: CustomTabIndicator,tabIndicatorWidth : Float = 0.45f,skipAnyAnim: ((Boolean) -> Unit)? = null,
+                                     enableAnimation:(value:Boolean?)->Boolean) {
     tabLayout.post {
         // 计算单个 Tab 的宽度
         val tabWidth = tabLayout.width.toFloat() / tabLayout.tabCount
         customIndicator.setTabWidth(tabWidth,tabIndicatorWidth)
     }
     var lastSwitchedPage: Int = 0 // 记录上一次切换的页面，防止重复切换
+
     this.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
         override fun onPageScrollStateChanged(state: Int) {
             when (state) {
                 ViewPager2.SCROLL_STATE_DRAGGING -> {
                     // 开始滑动时，记录初始页面位置并重置偏移量
                     skipAnyAnim?.invoke(false)
+                    enableAnimation.invoke(true)
                     lastSwitchedPage = currentItem
                 }
 
@@ -51,6 +54,7 @@ fun TabLayout.removeAllTips() {
             positionOffset: Float,
             positionOffsetPixels: Int
         ) {
+            if(!enableAnimation(null))return
             val totalItems = adapter?.itemCount ?: 0
             val currentPage = currentItem
             val adjustedOffset = if (position == currentPage) {

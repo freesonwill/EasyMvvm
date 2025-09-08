@@ -5,6 +5,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.ImageView
 import androidx.core.view.doOnPreDraw
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -77,8 +78,11 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
                     navigate(Uri.parse("walisport://module_live/liveFragment?matchId=${item.match.matchId}&sportId=${item.match.basicInfo.sportId}"))
                 }
 
-                override fun onFavoriteClick(item: MatchWithMarkets) {
-                    mViewModel.removeMatchCollect(item)
+                override fun onFavoriteClick(view: ImageView, item: MatchWithMarkets) {
+                    lifecycleScope.launch {
+                        mViewModel.removeMatchCollect(item)
+                    }
+
                 }
 
                 override fun onOddsCellClick(cell: WeakReference<View>, selection: SelectionBeanLite, x: Float, y: Float) {

@@ -130,13 +130,14 @@ object NavigationExt {
 
     fun Activity.navigate(
         intent: Intent,
-        navOptions: NavOptions = defaultNavOptions,
+        enterResId: Int = R.anim.slide_in_right,
+        exitResId: Int = R.anim.slide_out_left,
     ) {
         if(isNavigationDebounced("$this,intent:$intent")) return
         val options = ActivityOptions.makeCustomAnimation(
             this,
-            R.anim.slide_in_right,
-            R.anim.slide_out_left,
+            enterResId,
+            exitResId,
         )
         startActivity(intent, options.toBundle())
     }

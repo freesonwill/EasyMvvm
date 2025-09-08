@@ -89,9 +89,7 @@ class CollectListViewModel : BaseMatchViewModel<CollectListRepository>() {
     }
 
 
-    fun removeMatchCollect(item: MatchWithMarkets) {
-        viewModelScope.launch(Dispatchers.IO) {
-            repository.removeMatchCollect(item)
-        }
+    suspend fun removeMatchCollect(item: MatchWithMarkets) = withContext(Dispatchers.IO) {
+        return@withContext repository.removeMatchCollect(item)
     }
 }

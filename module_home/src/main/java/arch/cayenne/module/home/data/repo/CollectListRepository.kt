@@ -69,10 +69,12 @@ class CollectListRepository(
     }
 
     @Transaction
-    suspend fun removeMatchCollect(item: MatchWithMarkets) {
-        if (matchCollect(item, false) != null) {
+    suspend fun removeMatchCollect(item: MatchWithMarkets): ApiResponseState {
+        val resp = matchCollect(item, false)
+        if (resp is ApiResponseState.Succeeded<*>) {
             collectMatchChange.value = collectMatchChange.value - item.match.matchId
         }
+        return resp
     }
 
     fun observeMatchChange() : Flow<Map<Long, CollectMatchRef>> = collectMatchChange

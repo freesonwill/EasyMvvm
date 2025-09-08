@@ -75,8 +75,10 @@ class BetSlipInvalidFragment : BaseBetSlipFragment<OrderSlipViewModel, FragmentL
         super.createObserver()
         mViewModel.orderLiveData.observe(viewLifecycleOwner) {
             betSlipAdapter.submitList(it){
-                val position = if (mViewModel.loadDataType == LoadDataType.LOAD_MORE) betSlipAdapter.itemCount - 1 else 0
-                mBinding.recyclerView.scrollToPosition(position)
+                if (mViewModel.loadDataType == LoadDataType.LOAD_MORE){
+                    val position =  betSlipAdapter.itemCount - 1
+                    mBinding.recyclerView.scrollToPosition(position)
+                }
                 mViewModel.loadDataType = LoadDataType.NONE
             }
         }

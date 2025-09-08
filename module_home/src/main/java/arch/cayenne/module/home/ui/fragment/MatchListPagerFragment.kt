@@ -3,6 +3,7 @@ package arch.cayenne.module.home.ui.fragment
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import android.widget.ImageView
 import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -34,6 +35,7 @@ import arch.cayenne.module.home.ui.view.decoration.MatchCardItemDecoration
 import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
 import arch.cayenne.module.home.ui.viewmodel.MatchListViewModel
 import arch.cayenne.module.home.ui.viewmodel.SubHomeViewModel
+import arch.cayenne.module.home.utils.setFavoriteIcon
 import com.walisport.module.message.ui.view.DeleteAnimator
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
@@ -68,8 +70,13 @@ class MatchListPagerFragment :
                     navigate(Uri.parse("walisport://module_live/liveFragment?matchId=${item.match.matchId}&sportId=${item.match.basicInfo.sportId}"))
                 }
 
-                override fun onFavoriteClick(item: MatchWithMarkets) {
-                    mViewModel.addMatchCollect(item, !item.match.collect)
+                override fun onFavoriteClick(view: ImageView, item: MatchWithMarkets) {
+                    lifecycleScope.launch {
+                        view.setFavoriteIcon(!item.match.collect, false) //先點亮或點暗收藏按鈕
+                        val success = mViewModel.addMatchCollect(item, !item.match.collect)
+                        if (!success) view.setFavoriteIcon(!view.isSelected, true) //失敗了需要復原回來
+                    }
+
                 }
 
                 override fun onOddsCellClick(cell: WeakReference<View>, selection: SelectionBeanLite, x: Float, y: Float) {
@@ -280,7 +287,7 @@ class MatchListPagerFragment :
             mViewModel.setPlayTypeId(this.getInt(ARG_PLAY_TYPE_ID))
             mViewModel.setPosition(this.getInt(ARG_POSITION))
         }
-        "KC_ MatchListPagerFragment playType: ${mViewModel.getPlayTypeId()} sportId: ${mViewModel.getSportId()} leagueId: ${mViewModel.getTournamentId()}".logi()
+        "MatchListPagerFragment playType: ${mViewModel.getPlayTypeId()} sportId: ${mViewModel.getSportId()} leagueId: ${mViewModel.getTournamentId()}".logi()
         startObserveMatch()
     }
 
