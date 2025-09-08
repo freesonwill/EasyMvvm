@@ -40,6 +40,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_8"
             android:src="@drawable/ic_drawer_arrow_right"
+            android:stateListAnimator="@animator/layout_alpha_animator"
             app:layout_constraintStart_toEndOf="@id/tv_title_nickname"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent" />
