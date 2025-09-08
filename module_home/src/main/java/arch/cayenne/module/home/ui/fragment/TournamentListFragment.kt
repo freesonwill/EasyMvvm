@@ -132,7 +132,7 @@ class TournamentListFragment :
                     override fun afterTextChanged(s: Editable?) {
                         val keyword = s?.toString()?.trim().orEmpty()
                         if (keyword.isEmpty()) {
-                                mViewModel.setSearchMode(false)
+                            mViewModel.setSearchMode(false)
                         } else {
                             // 有輸入內容時自動開始搜尋
                             mViewModel.setSearchMode(true)
@@ -283,7 +283,7 @@ class TournamentListFragment :
         val index = mViewModel.getHeaderIndex(letter) ?: return
         val layoutManager =
             mBinding.rvTournamentList.layoutManager as? LinearLayoutManager ?: return
-        
+
         pendingJumpIndex = index
         // 直接設置選中的字母
         mBinding.llIndexContainer.setSelectedLetter(letter)
@@ -383,7 +383,7 @@ class TournamentListFragment :
         }
         stickyHeaderDecoration = null
         pendingJumpIndex = null
-        
+
         // 通知聯賽收回上滑動畫已結束
         if (mViewModel.getType() == TournamentListType.MORE) {
             subHomeViewModel.notifyTournamentSlideOutEnd()
