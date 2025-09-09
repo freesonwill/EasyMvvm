@@ -16,7 +16,6 @@ import androidx.viewpager2.widget.ViewPager2
 import androidx.viewpager2.widget.ViewPager2.SCROLL_STATE_IDLE
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
@@ -293,16 +292,29 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
                 override fun onPageSelected(position: Int) {
                     super.onPageSelected(position)
                     if (vpGameList.scrollState != SCROLL_STATE_IDLE) return
-                    startObservePageMatchListChange()
+                    startObservePageMatchListChange(vpGameList.currentItem)
+                    if (vpGameList.currentItem - 1 >= 0) {
+                        startObservePageMatchListChange(vpGameList.currentItem - 1)
+                    }
+                    if (vpGameList.currentItem + 1 < (vpGameList.adapter?.itemCount ?: 0)) {
+                        startObservePageMatchListChange(vpGameList.currentItem + 1)
+                    }
+
                 }
                 override fun onPageScrollStateChanged(state: Int) {
                     super.onPageScrollStateChanged(state)
                     if (state == SCROLL_STATE_IDLE) {
-                        startObservePageMatchListChange()
+                        startObservePageMatchListChange(vpGameList.currentItem)
+                        if (vpGameList.currentItem - 1 >= 0) {
+                            startObservePageMatchListChange(vpGameList.currentItem - 1)
+                        }
+                        if (vpGameList.currentItem + 1 < (vpGameList.adapter?.itemCount ?: 0)) {
+                            startObservePageMatchListChange(vpGameList.currentItem + 1)
+                        }
                     }
                 }
-                fun startObservePageMatchListChange() {
-                    val itemId = leaguePagerAdapter?.getItemId(vpGameList.currentItem)?: return
+                fun startObservePageMatchListChange(position: Int) {
+                    val itemId = leaguePagerAdapter?.getItemId(position)?: return
                     val fragment = childFragmentManager.findFragmentByTag("f$itemId") ?: return
                     if (fragment is MatchListPagerFragment) {
                         fragment.startObserveMatchListChange()
