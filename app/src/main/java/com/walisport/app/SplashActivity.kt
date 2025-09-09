@@ -69,7 +69,7 @@ class SplashActivity : BaseActivity<SplashViewModel, ActivitySplashBinding>() {
         "name:${name}, uid:$uid, token:$token".logd(TAG)
         mViewModel.saveUserData(uid, token)  //TODO 實作登入頁後就不需要這個了
         lifecycleScope.launch {
-            delay(300)
+            delay(500)
             jumpToMainActivity()
         }
     }
