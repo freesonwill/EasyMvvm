@@ -126,7 +126,9 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
             }
         }
 
-        return dialog
+        return dialog.apply {
+            window?.setType(WindowManager.LayoutParams.TYPE_APPLICATION_SUB_PANEL)
+        }
     }
 
     private fun setStatusBar() {

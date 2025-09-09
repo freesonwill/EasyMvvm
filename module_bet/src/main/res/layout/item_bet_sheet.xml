@@ -56,12 +56,19 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
-        android:layout_marginTop="11dp"
+        android:layout_marginTop="10dp"
         android:textColor="@color/secondary_text"
         android:textSize="14sp"
         app:layout_constraintStart_toEndOf="@id/tv_status"
         app:layout_constraintTop_toBottomOf="@id/tv_selection_name"
         app:layout_goneMarginStart="0dp" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/bottom_barrier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="tv_status,tv_market" />
 
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/tv_match_name"
@@ -71,7 +78,7 @@
         android:textColor="@color/secondary_text"
         android:textSize="14sp"
         app:layout_constraintStart_toStartOf="@id/tv_selection_name"
-        app:layout_constraintTop_toBottomOf="@id/tv_market" />
+        app:layout_constraintTop_toBottomOf="@id/bottom_barrier" />
 
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/tv_league_name"
