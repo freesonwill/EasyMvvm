@@ -211,6 +211,9 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
                 showToast(getString(arch.cayenne.lib.common.R.string.toast_server_disconnected))
             }
         }
+        mViewModel.oddsChangeListener.observe(viewLifecycleOwner) {
+            mBinding.tvOddsChange.text = SkinnableResourceManager.getString(requireContext(), it.textRes)
+        }
     }
 
     private fun setBetTypeLayout(type: BetTypeEnum?) {

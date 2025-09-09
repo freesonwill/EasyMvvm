@@ -11,6 +11,7 @@ import arch.cayenne.lib.database.entity.BetStatusEnum
 import arch.cayenne.lib.database.entity.BetTypeEnum
 import arch.cayenne.module.bet.BettingRemoteManager
 import arch.cayenne.module.bet.data.ComboMultiBetBean
+import arch.cayenne.module.bet.data.OddsChangeEnum
 import galaxy.client.proto.Client
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -36,6 +37,9 @@ class SingleBetRepository(
     val isConnected: Boolean
         get() = remoteManager.isConnected
 
+    private val _oddsChangeFlow = MutableSharedFlow<OddsChangeEnum>(replay = 1, extraBufferCapacity = 1)
+    val oddsChangeFlow: Flow<OddsChangeEnum> = _oddsChangeFlow
+
     init {
         scope.launch {
             launch {
@@ -60,7 +64,12 @@ class SingleBetRepository(
                     updateOdds()
                 }
             }
-
+            launch {
+                manager.observe<Int>(UserDataKey.KEY_ODDS_CHANGE).collect { oddsValue ->
+                    val odds =  OddsChangeEnum.entries.firstOrNull { oddsValue == it.value } ?: OddsChangeEnum.ANY
+                    _oddsChangeFlow.emit(odds)
+                }
+            }
         }
     }
 

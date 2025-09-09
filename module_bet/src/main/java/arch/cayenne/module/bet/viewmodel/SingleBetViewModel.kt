@@ -18,6 +18,7 @@ import arch.cayenne.lib.database.entity.BetSelectionBean
 import arch.cayenne.lib.database.entity.BetTypeEnum
 import arch.cayenne.lib.database.entity.InfoBean
 import arch.cayenne.module.bet.data.ComboMultiBetBean
+import arch.cayenne.module.bet.data.OddsChangeEnum
 import arch.cayenne.module.bet.repo.SingleBetRepository
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -127,6 +128,9 @@ class SingleBetViewModel(
     private val _networkConnectedEvent = MutableLiveData<Event<DataState>>()
     val networkConnectedEvent: LiveData<Event<DataState>> get() = _networkConnectedEvent
 
+    private val _oddsChangeListener = MutableLiveData<OddsChangeEnum>()
+    val oddsChangeListener: LiveData<OddsChangeEnum> = _oddsChangeListener
+
     init {
         setNumberLimit(0L, 0L)
         viewModelScope.launch {
@@ -152,6 +156,11 @@ class SingleBetViewModel(
             launch {
                 betRepo.observeBetType().collect {
                     _betTypeListener.value = it ?: BetTypeEnum.SINGLE
+                }
+            }
+            launch {
+                betRepo.oddsChangeFlow.collect {
+                    _oddsChangeListener.value = it
                 }
             }
         }

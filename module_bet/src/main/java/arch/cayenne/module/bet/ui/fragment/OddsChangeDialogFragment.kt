@@ -21,6 +21,7 @@ import arch.cayenne.module.bet.viewmodel.OddsChangeViewModel
 import kotlin.reflect.KClass
 import androidx.core.graphics.drawable.toDrawable
 import arch.cayenne.lib.common.utils.ViewUtils
+import arch.cayenne.module.bet.data.OddsChangeEnum
 
 class OddsChangeDialogFragment private constructor() :
     BaseDialogFragment<OddsChangeViewModel, FragmentOddsChangeBinding>() {
@@ -62,6 +63,32 @@ class OddsChangeDialogFragment private constructor() :
     }
 
     override fun initListener() {
+        mBinding.clAny.setOnClickListener {
+            handleSelection(OddsChangeEnum.ANY)
+        }
+
+        mBinding.clBetter.setOnClickListener {
+            handleSelection(OddsChangeEnum.BETTER)
+        }
+
+        mBinding.clNone.setOnClickListener {
+            handleSelection(OddsChangeEnum.NO_CHANGE)
+        }
+    }
+
+
+    private fun handleSelection(selection: OddsChangeEnum) {
+        mViewModel.saveOddsChange(selection)
+        dismiss()
+    }
+
+    override suspend fun createObserver() {
+        super.createObserver()
+        mViewModel.oddsChangeListener.observe(viewLifecycleOwner) {
+            mBinding.ivAny.isSelected = it == OddsChangeEnum.ANY
+            mBinding.ivBetter.isSelected = it == OddsChangeEnum.BETTER
+            mBinding.ivNone.isSelected = it == OddsChangeEnum.NO_CHANGE
+        }
     }
 
     override fun onStart() {
