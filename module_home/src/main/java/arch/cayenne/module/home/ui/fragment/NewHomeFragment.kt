@@ -46,10 +46,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
 
     override fun initView(savedInstanceState: Bundle?) {
         initPlayTypeLayout()
-        childFragmentManager.setFragmentResultListener(getString(R.string.new_home_vp_sub_key), this) { requestKey, bundle ->
-            val isEnabled = bundle.getBoolean(getString(R.string.key_enable_horizontal_scroll))
-            setIsUserInputEnabled(isEnabled)
-        }
+        setReceiveHorizontalScrollResult()
     }
 
     override fun onStart() {
@@ -126,7 +123,12 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
         }
     }
 
-
+    private fun setReceiveHorizontalScrollResult() {
+        childFragmentManager.setFragmentResultListener(getString(R.string.new_home_vp_sub_key), this) { requestKey, bundle ->
+            val isEnabled = bundle.getBoolean(getString(R.string.key_enable_horizontal_scroll))
+            setIsUserInputEnabled(isEnabled)
+        }
+    }
 
     //init DrawerLayout Content
     private fun initDrawerContent() {
