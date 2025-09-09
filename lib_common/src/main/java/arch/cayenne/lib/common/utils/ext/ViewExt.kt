@@ -454,8 +454,8 @@ fun View.startZoomInAnim(vararg otherViews: View) {
         AnimatorSet().apply {
             playTogether(
                 ObjectAnimator.ofFloat(view, "alpha", 0.3f, 1f),
-                ObjectAnimator.ofFloat(view, "scaleX", 0.92f, 1f),
-                ObjectAnimator.ofFloat(view, "scaleY", 0.92f, 1f)
+                ObjectAnimator.ofFloat(view, "scaleX", 0.95f, 1f),
+                ObjectAnimator.ofFloat(view, "scaleY", 0.95f, 1f)
             )
             duration = AnimationController[AnimType.zoomIn]!!.duration
             interpolator = AnimationController[AnimType.zoomIn]!!.interpolator.toInterpolator()
