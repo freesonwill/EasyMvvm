@@ -46,12 +46,18 @@ class OddsChangeDialogFragment private constructor() :
 //    private var bottomDimView: View? = null
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        return super.onCreateDialog(savedInstanceState).apply {
-            window?.setType(WindowManager.LayoutParams.TYPE_APPLICATION)
-            setOnDismissListener {
-                dimView?.alpha = 0f
-//                bottomDimView?.alpha = 0f
+        return object : Dialog(requireContext(), theme) {
+            override fun cancel() {
+                if (!mBinding.root.isEnabled) return
+                // 讓系統其他地方調用 dismiss 時也會觸發動畫
+                if (mBinding.root.translationX == 0f) {
+                    doExitAnim()
+                } else {
+                    super.dismiss()
+                }
             }
+        }.apply {
+            window?.setType(WindowManager.LayoutParams.TYPE_APPLICATION)
         }
     }
 
@@ -79,7 +85,7 @@ class OddsChangeDialogFragment private constructor() :
 
     private fun handleSelection(selection: OddsChangeEnum) {
         mViewModel.saveOddsChange(selection)
-        dismiss()
+        doExitAnim()
     }
 
     override suspend fun createObserver() {
@@ -96,10 +102,6 @@ class OddsChangeDialogFragment private constructor() :
         super.onStart()
         initDim()
         setDialogPosition()
-    }
-
-    override fun onResume() {
-        super.onResume()
     }
 
     private fun initDim() {
@@ -139,17 +141,20 @@ class OddsChangeDialogFragment private constructor() :
         dimV.setRect(centerX, centerY, width, height, 6.dp2px.toFloat())
     }
 
+    private fun showDim() {
+        if (dimView == null) {
+            initDim()
+        }
+        val v = dimView ?: return
+        v.alpha = 0.75f
+    }
+
     private fun clearDim() {
         val windowManager = requireActivity().windowManager
         dimView?.let {
             windowManager.removeView(it)
             dimView = null
         }
-    }
-
-    override fun onDestroy() {
-        clearDim()
-        super.onDestroy()
     }
 
     private fun setDialogPosition() {
@@ -189,8 +194,9 @@ class OddsChangeDialogFragment private constructor() :
                         mBinding.root.scaleY = 0f
                         mBinding.root.alpha = 0f
 
+
                         // 開始動畫
-                        mBinding.root.animate()
+                        val animator = mBinding.root.animate()
                             .scaleX(1f)
                             .scaleY(1f)
                             .alpha(1f)
@@ -199,10 +205,11 @@ class OddsChangeDialogFragment private constructor() :
                             .withStartAction {
                                 mBinding.root.visibility = View.VISIBLE
                             }
-                            .withStartAction {
-                                dimView?.alpha = 0.75f
-                            }
-                            .start()
+
+                        showDim()
+                        mBinding.root.post {
+                            animator.start()
+                        }
                     }
 
                 }
@@ -218,5 +225,26 @@ class OddsChangeDialogFragment private constructor() :
         val params = mBinding.triangle.layoutParams as ConstraintLayout.LayoutParams
         params.rightMargin = params.rightMargin - px + 6.dp2px
         mBinding.triangle.layoutParams = params
+    }
+
+    private fun doExitAnim() {
+        if (!mBinding.root.isEnabled) return
+        mBinding.root.isEnabled = false
+
+        clearDim()
+
+        mBinding.root.animate()
+            .scaleX(0f)
+            .scaleY(0f)
+            .alpha(0f)
+            .setDuration(200)
+            .setInterpolator(android.view.animation.DecelerateInterpolator())
+            .withStartAction {
+                removeDim()
+            }
+            .withEndAction {
+                super.dismiss()
+            }
+            .start()
     }
 }
