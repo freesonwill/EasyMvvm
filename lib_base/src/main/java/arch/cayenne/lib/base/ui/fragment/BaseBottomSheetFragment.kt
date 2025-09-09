@@ -146,6 +146,7 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
             dismiss()
             return
         }
+        prepareShowDim()
         val sheet = sheetContainer ?: return
 
         val sheetAnim = enterAnimation()
@@ -183,6 +184,7 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
         val sheet = sheetContainer ?: return
         val otherSheetAnimator = otherViewAnimation?.clone() ?: return
         // bottom sheet 上滑動畫
+        prepareShowDim()
         val sheetContainerSheetAnim = enterAnimation()
         val offY = sheet.translationY
         val startY = sheet.height.toFloat()
@@ -266,7 +268,6 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
         savedInstanceState: Bundle?
     ): View {
         uiBind.onCreateView(inflater, container, savedInstanceState)
-        setKeyboardEvent()
         return mBinding.root.apply {
             this.visibility = View.INVISIBLE
         }
@@ -382,18 +383,6 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
     @CallSuper
     override fun onNewIntent(intent: Intent) {
         uiBind.onNewIntent(intent)
-    }
-
-    @SuppressLint("ClickableViewAccessibility")
-    private fun setKeyboardEvent() {
-        mBinding.root.setOnTouchListener { v, event ->
-            if (event.action == MotionEvent.ACTION_DOWN) {
-                val manager =
-                    requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                manager.hideSoftInputFromWindow(v.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
-            }
-            false
-        }
     }
 
     override suspend fun createObserver() {
@@ -572,6 +561,10 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
             return
         }
         dimController.hideDim()
+    }
+
+    protected fun prepareShowDim() {
+        dimController.prepareShowDim()
     }
 
     protected fun showDim() {
