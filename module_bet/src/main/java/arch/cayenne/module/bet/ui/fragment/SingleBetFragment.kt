@@ -1,5 +1,6 @@
 package arch.cayenne.module.bet.ui.fragment
 
+import android.graphics.Rect
 import android.os.Bundle
 import android.view.View
 import android.view.ViewTreeObserver
@@ -148,6 +149,11 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
         }
         mBinding.btnDelete.setOnClickListener {
             mViewModel.removeBet()
+        }
+        mBinding.tvOddsChange.setOnClickListener { v ->
+            val globalRect = Rect()
+            v.getGlobalVisibleRect(globalRect)
+            OddsChangeDialogFragment.instance(globalRect).show(childFragmentManager)
         }
     }
 

@@ -14,6 +14,7 @@ import arch.cayenne.module.bet.viewmodel.ComboBetMoneyKeyboardDialogViewModel
 import arch.cayenne.module.bet.viewmodel.ComboBetViewModel
 import arch.cayenne.module.bet.viewmodel.FloatingButtonControlViewModel
 import arch.cayenne.lib.common.ui.viewmodel.ReserveDialogViewModel
+import arch.cayenne.module.bet.viewmodel.OddsChangeViewModel
 import arch.cayenne.module.bet.viewmodel.SingleBetViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -48,6 +49,7 @@ class BetModuleInitializer: DefaultInitializer<String> {
         viewModelOf(::ComboBetMoneyKeyboardDialogViewModel)
         viewModelOf(::BetSheetViewModel)
         viewModelOf(::FloatingButtonControlViewModel)
+        viewModelOf(::OddsChangeViewModel)
     }
     private val repoModules = module {
         factoryOf(::FloatingButtonRepository)
