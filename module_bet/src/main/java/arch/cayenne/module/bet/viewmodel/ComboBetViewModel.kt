@@ -12,6 +12,7 @@ import arch.cayenne.lib.common.ui.viewmodel.Event
 import arch.cayenne.lib.database.entity.BetSelectionBean
 import arch.cayenne.lib.database.entity.InfoBean
 import arch.cayenne.module.bet.data.ComboMultiBetBean
+import arch.cayenne.module.bet.data.OddsChangeEnum
 import arch.cayenne.module.bet.repo.ComboBetRepository
 import kotlinx.coroutines.launch
 
@@ -116,6 +117,9 @@ class ComboBetViewModel(
     private val _networkConnectedEvent = MutableLiveData<Event<DataState>>()
     val networkConnectedEvent: LiveData<Event<DataState>> get() = _networkConnectedEvent
 
+    private val _oddsChangeListener = MutableLiveData<OddsChangeEnum>()
+    val oddsChangeListener: LiveData<OddsChangeEnum> get() = _oddsChangeListener
+
     init {
         viewModelScope.launch {
             launch {
@@ -147,6 +151,11 @@ class ComboBetViewModel(
             launch {
                 balanceRepo.observeInfo().collect {
                     _onBalanceListener.value = it
+                }
+            }
+            launch {
+                repo.observeOddsChange().collect {
+                    _oddsChangeListener.value = it
                 }
             }
         }

@@ -74,7 +74,7 @@
         android:layout_marginTop="12dp"
         android:layout_marginBottom="10dp"
         android:background="@drawable/bg_bet_sheet"
-        app:layout_constraintBottom_toTopOf="@id/cl_bottom_button">
+        app:layout_constraintBottom_toTopOf="@id/tv_odds_change">
 
         <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
             android:id="@+id/cl_multi_bet_title"
@@ -147,6 +147,23 @@
             tools:listitem="@layout/item_combo_multi_bet" />
 
     </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
+
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
+        android:id="@+id/tv_odds_change"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:layout_marginStart="10dp"
+        android:background="@drawable/shape_6dp"
+        android:backgroundTint="@color/keyboard_2"
+        android:drawablePadding="6dp"
+        android:paddingVertical="5dp"
+        android:paddingStart="12dp"
+        android:paddingEnd="11dp"
+        android:textColor="@color/keyboard_number"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/cl_bottom_button"
+        app:drawableEndCompat="@drawable/icon_odds_arrow_down" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_bottom_button"

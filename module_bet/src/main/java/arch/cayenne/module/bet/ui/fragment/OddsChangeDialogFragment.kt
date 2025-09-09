@@ -20,6 +20,7 @@ import arch.cayenne.module.bet.databinding.FragmentOddsChangeBinding
 import arch.cayenne.module.bet.viewmodel.OddsChangeViewModel
 import kotlin.reflect.KClass
 import androidx.core.graphics.drawable.toDrawable
+import androidx.core.view.isVisible
 import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.module.bet.data.OddsChangeEnum
 
@@ -160,6 +161,7 @@ class OddsChangeDialogFragment private constructor() :
     private fun setDialogPosition() {
         dialog?.window?.let { window ->
 
+            val screenHeight = resources.displayMetrics.heightPixels
             window.setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
             window.setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
 
@@ -171,10 +173,16 @@ class OddsChangeDialogFragment private constructor() :
                 View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
             )
 
+            val isShowTop = rect.bottom + mBinding.root.measuredHeight + 10.dp2px < screenHeight
+
             val layoutParams = window.attributes
             layoutParams.gravity = Gravity.TOP or Gravity.START
             layoutParams.x = 10.dp2px
-            layoutParams.y = rect.bottom + 10.dp2px - ViewUtils.getStatusBarHeight(requireContext())
+            layoutParams.y = if (isShowTop) {
+                rect.bottom + 10.dp2px - ViewUtils.getStatusBarHeight(requireContext())
+            } else {
+                rect.top - mBinding.content.measuredHeight - mBinding.triangleBottom.measuredHeight - 10.dp2px - ViewUtils.getStatusBarHeight(requireContext())
+            }
             window.attributes = layoutParams
 
             mBinding.root.viewTreeObserver.addOnGlobalLayoutListener(object :
@@ -183,13 +191,15 @@ class OddsChangeDialogFragment private constructor() :
                     mBinding.root.viewTreeObserver.removeOnGlobalLayoutListener(this)
 
                     // 先設定 triangle 位置
-                    setTrianglePosition(positionX)
+                    setTrianglePosition(isShowTop, positionX)
 
                     mBinding.root.post {
 
+                        val triangle = if (isShowTop) mBinding.triangleTop else mBinding.triangleBottom
+
                         // 動畫初始狀態
-                        mBinding.root.pivotX = mBinding.triangle.x + mBinding.triangle.width / 2
-                        mBinding.root.pivotY = 0f
+                        mBinding.root.pivotX = triangle.x + triangle.width / 2
+                        mBinding.root.pivotY = if (isShowTop) 0f else mBinding.root.height.toFloat()
                         mBinding.root.scaleX = 0f
                         mBinding.root.scaleY = 0f
                         mBinding.root.alpha = 0f
@@ -218,13 +228,20 @@ class OddsChangeDialogFragment private constructor() :
     }
 
 
-    private fun setTrianglePosition(targetPositionX: Int) {
+    private fun setTrianglePosition(isShowTop: Boolean, targetPositionX: Int) {
+        val trangle = if (isShowTop) {
+            mBinding.triangleBottom.isVisible = false
+            mBinding.triangleTop
+        } else {
+            mBinding.triangleTop.isVisible = false
+            mBinding.triangleBottom
+        }
         val triangleLocation = IntArray(2)
-        mBinding.triangle.getLocationOnScreen(triangleLocation)
-        val px = targetPositionX - triangleLocation.first() - mBinding.triangle.width
-        val params = mBinding.triangle.layoutParams as ConstraintLayout.LayoutParams
+        trangle.getLocationOnScreen(triangleLocation)
+        val px = targetPositionX - triangleLocation.first() - trangle.width
+        val params = trangle.layoutParams as ConstraintLayout.LayoutParams
         params.rightMargin = params.rightMargin - px + 6.dp2px
-        mBinding.triangle.layoutParams = params
+        trangle.layoutParams = params
     }
 
     private fun doExitAnim() {
@@ -239,9 +256,6 @@ class OddsChangeDialogFragment private constructor() :
             .alpha(0f)
             .setDuration(200)
             .setInterpolator(android.view.animation.DecelerateInterpolator())
-            .withStartAction {
-                removeDim()
-            }
             .withEndAction {
                 super.dismiss()
             }

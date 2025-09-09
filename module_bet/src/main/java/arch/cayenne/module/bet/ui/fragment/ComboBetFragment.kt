@@ -1,6 +1,7 @@
 package arch.cayenne.module.bet.ui.fragment
 
 import android.animation.ValueAnimator
+import android.graphics.Rect
 import android.os.Bundle
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
@@ -125,6 +126,11 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
                 navToResult()
             }
         }
+        mBinding.tvOddsChange.setOnClickListener { v ->
+            val globalRect = Rect()
+            v.getGlobalVisibleRect(globalRect)
+            OddsChangeDialogFragment.instance(globalRect).show(childFragmentManager)
+        }
     }
 
     override fun createObserverAtState(): Lifecycle.State = Lifecycle.State.RESUMED
@@ -191,6 +197,9 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
                 showToast(getString(arch.cayenne.lib.common.R.string.toast_server_disconnected))
             }
         }
+        mViewModel.oddsChangeListener.observe(viewLifecycleOwner) {
+            mBinding.tvOddsChange.text = SkinnableResourceManager.getString(requireContext(), it.textRes)
+        }
     }
 
     private fun forceUpdateLayout() {
@@ -220,7 +229,9 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
 
         val betSheetHeight = getBetItemHeight() * (mViewModel.onBetListListener.value?.size ?: 2).coerceAtLeast(2)
 
-        val contentHeight = betSheetHeight + topTitleHeight + multiBetHeight + bottomButtonHeight
+        val oddsChangeHeight = mBinding.tvOddsChange.height + (mBinding.tvOddsChange.layoutParams as ConstraintLayout.LayoutParams).bottomMargin
+
+        val contentHeight = betSheetHeight + topTitleHeight + multiBetHeight + bottomButtonHeight + oddsChangeHeight
         val isFull =
             contentHeight >= maxFragmentHeight
 
@@ -271,7 +282,9 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
 
         val betSheetHeight = getBetItemHeight() * 2
 
-        val contentHeight = betSheetHeight + topTitleHeight + multiBetHeight + bottomButtonHeight
+        val oddsChangeHeight = mBinding.tvOddsChange.height + (mBinding.tvOddsChange.layoutParams as ConstraintLayout.LayoutParams).bottomMargin
+
+        val contentHeight = betSheetHeight + topTitleHeight + multiBetHeight + bottomButtonHeight + oddsChangeHeight
         val isFull =
             contentHeight >= maxFragmentHeight
 
