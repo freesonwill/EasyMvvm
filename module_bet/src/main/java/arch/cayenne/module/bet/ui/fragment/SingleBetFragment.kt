@@ -1,13 +1,18 @@
 package arch.cayenne.module.bet.ui.fragment
 
+import android.animation.ObjectAnimator
 import android.graphics.Rect
 import android.os.Bundle
 import android.view.View
 import android.view.ViewTreeObserver
+import android.view.animation.LinearInterpolator
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import arch.cayenne.lib.base.data.constants.DataState
+import arch.cayenne.lib.base.ui.animation.IInterpolatorOption
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.ui.fragment.ReserveDialogFragment
 import arch.cayenne.lib.common.ui.view.NumberKeyboardView
@@ -151,9 +156,7 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
             mViewModel.removeBet()
         }
         mBinding.tvOddsChange.setOnClickListener { v ->
-            val globalRect = Rect()
-            v.getGlobalVisibleRect(globalRect)
-            OddsChangeDialogFragment.instance(globalRect).show(childFragmentManager)
+            showOddsChangeDialog()
         }
     }
 
@@ -318,5 +321,20 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
             mBinding.btnReserve.height,
             odds = odds
         ).show(childFragmentManager)
+    }
+
+    private fun showOddsChangeDialog() {
+        val globalRect = Rect()
+        mBinding.clOddsChange.getGlobalVisibleRect(globalRect)
+        val f = OddsChangeDialogFragment.instance(globalRect)
+
+        val animator = ObjectAnimator.ofFloat(mBinding.ivOddsChange, "rotation", 0f, 180f)
+        animator.duration = 200 // 旋轉持續時間，單位毫秒
+        animator.interpolator = LinearInterpolator() // 線性插值器，讓旋轉更平滑
+        f.setOnDismissListener {
+            animator.reverse()
+        }
+        f.show(childFragmentManager)
+        animator.start()
     }
 }

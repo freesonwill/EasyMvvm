@@ -45,6 +45,7 @@ class OddsChangeDialogFragment private constructor() :
 
     private var dimView: View? = null
     private var bottomDimView: View? = null
+    private var dismissListener: (() -> Unit)? = null
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return object : Dialog(requireContext(), theme) {
@@ -285,6 +286,13 @@ class OddsChangeDialogFragment private constructor() :
             .withEndAction {
                 super.dismiss()
             }
+            .withStartAction {
+                dismissListener?.invoke()
+            }
             .start()
+    }
+
+    fun setOnDismissListener(listener: () -> Unit) {
+        this.dismissListener = listener
     }
 }
