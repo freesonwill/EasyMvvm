@@ -94,13 +94,15 @@ class DimController private constructor() {
         canChangeDim = true
     }
 
+    fun prepareShowDim() {
+        val v = dimView ?: return
+        v.isVisible = true
+    }
+
     fun showDim() {
         val v = dimView ?: return
         if (v.alpha == TARGET_DIM || !canChangeDim) return
-        v.isVisible = true
-        v.post {
-            v.alpha = TARGET_DIM
-        }
+        v.alpha = TARGET_DIM
     }
 
     fun hideDim() {

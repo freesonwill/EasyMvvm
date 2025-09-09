@@ -146,6 +146,7 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
             dismiss()
             return
         }
+        prepareShowDim()
         val sheet = sheetContainer ?: return
 
         val sheetAnim = enterAnimation()
@@ -183,6 +184,7 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
         val sheet = sheetContainer ?: return
         val otherSheetAnimator = otherViewAnimation?.clone() ?: return
         // bottom sheet 上滑動畫
+        prepareShowDim()
         val sheetContainerSheetAnim = enterAnimation()
         val offY = sheet.translationY
         val startY = sheet.height.toFloat()
@@ -559,6 +561,10 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
             return
         }
         dimController.hideDim()
+    }
+
+    protected fun prepareShowDim() {
+        dimController.prepareShowDim()
     }
 
     protected fun showDim() {
