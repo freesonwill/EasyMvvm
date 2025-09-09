@@ -20,6 +20,7 @@ import arch.cayenne.lib.websocket.extension.observeProtoMessage
 import arch.cayenne.lib.websocket.extension.sendAndWaitProtoMessageResponse
 import arch.cayenne.module.bet.data.BetNotifySelectionBean
 import arch.cayenne.module.bet.data.ComboMultiBetBean
+import arch.cayenne.module.bet.data.OddsChangeEnum
 import arch.cayenne.module.bet.data.remote.ComboBetDataModel
 import arch.cayenne.module.bet.data.remote.ComboMultiBetInfo
 import arch.cayenne.module.bet.data.remote.ComboRiskDataModel
@@ -67,7 +68,7 @@ class BettingRemoteManager(
         }
     }
 
-    suspend fun singleBet(bean: BetSelectionBean, money: Long): SingleBetDataModel? {
+    suspend fun singleBet(bean: BetSelectionBean, money: Long, oddsChange: OddsChangeEnum): SingleBetDataModel? {
         val res = socketManager.sendAndWaitProtoMessageResponse<Client.SingleBetResp>(
             scope = scope,
             dispatcher = Dispatchers.IO,
@@ -78,7 +79,7 @@ class BettingRemoteManager(
                 this.selectionId = bean.selectionId
                 this.odds = bean.odds.getOdds()
                 this.betAmount = money.getMoney()
-                this.oddsChange = 2
+                this.oddsChange = oddsChange.value
             }.build()
         }
         return if (res.error == null && res.data != null) {

@@ -129,7 +129,7 @@ class SingleBetViewModel(
     val networkConnectedEvent: LiveData<Event<DataState>> get() = _networkConnectedEvent
 
     private val _oddsChangeListener = MutableLiveData<OddsChangeEnum>()
-    val oddsChangeListener: LiveData<OddsChangeEnum> = _oddsChangeListener
+    val oddsChangeListener: LiveData<OddsChangeEnum> get() = _oddsChangeListener
 
     init {
         setNumberLimit(0L, 0L)
@@ -159,7 +159,7 @@ class SingleBetViewModel(
                 }
             }
             launch {
-                betRepo.oddsChangeFlow.collect {
+                betRepo.observeOddsChange().collect {
                     _oddsChangeListener.value = it
                 }
             }
@@ -171,6 +171,7 @@ class SingleBetViewModel(
             return false
         }
         val money = onEditNumber.value?.toMoney() ?: return false
+        val oddsChange = _oddsChangeListener.value ?: return false
         val currentOdds = _onBetSheetListener.value?.odds ?: 0
         val reserveOdds = _onReserveOddsListener.value?.reserveDisplayOdds()
 
@@ -180,7 +181,7 @@ class SingleBetViewModel(
                     betRepo.saveToSingle()
                 }.await()
                 if (isSuccess) {
-                    betRepo.sendBet(money)
+                    betRepo.sendBet(money, oddsChange)
                 }
             } else {
                 val isSuccess = async {
