@@ -72,7 +72,7 @@
         android:layout_marginTop="12dp"
         android:layout_marginBottom="10dp"
         android:background="@drawable/bg_bet_sheet"
-        app:layout_constraintBottom_toTopOf="@id/tv_odds_change">
+        app:layout_constraintBottom_toTopOf="@id/cl_odds_change">
 
         <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
             android:id="@+id/cl_multi_bet_title"
@@ -146,22 +146,42 @@
 
     </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
 
-    <arch.cayenne.lib.skin.widget.SkinnableTextView
-        android:id="@+id/tv_odds_change"
+    <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
+        android:id="@+id/cl_odds_change"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
+        android:layout_marginBottom="12dp"
         android:layout_marginStart="10dp"
         android:background="@drawable/shape_6dp"
         android:backgroundTint="@color/keyboard_2"
-        android:drawablePadding="6dp"
-        android:paddingVertical="5dp"
-        android:paddingStart="12dp"
-        android:paddingEnd="11dp"
-        android:textColor="@color/keyboard_number"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/cl_bottom_button"
-        app:drawableEndCompat="@drawable/icon_odds_arrow_down" />
+        app:layout_constraintBottom_toTopOf="@id/cl_bottom_button">
+
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
+            android:id="@+id/tv_odds_change"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginVertical="5dp"
+            android:textColor="@color/keyboard_number"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <arch.cayenne.lib.skin.widget.SkinnableImageView
+            android:id="@+id/iv_odds_change"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="11dp"
+            android:layout_marginStart="6dp"
+            android:layout_marginEnd="11dp"
+            android:src="@drawable/icon_odds_arrow_down"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/tv_odds_change"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_bottom_button"

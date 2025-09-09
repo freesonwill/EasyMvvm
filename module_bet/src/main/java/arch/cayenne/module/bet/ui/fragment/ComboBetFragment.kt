@@ -1,5 +1,6 @@
 package arch.cayenne.module.bet.ui.fragment
 
+import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.graphics.Rect
 import android.os.Bundle
@@ -127,9 +128,7 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
             }
         }
         mBinding.tvOddsChange.setOnClickListener { v ->
-            val globalRect = Rect()
-            v.getGlobalVisibleRect(globalRect)
-            OddsChangeDialogFragment.instance(globalRect).show(childFragmentManager)
+            showOddsChangeDialog()
         }
     }
 
@@ -229,7 +228,7 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
 
         val betSheetHeight = getBetItemHeight() * (mViewModel.onBetListListener.value?.size ?: 2).coerceAtLeast(2)
 
-        val oddsChangeHeight = mBinding.tvOddsChange.height + (mBinding.tvOddsChange.layoutParams as ConstraintLayout.LayoutParams).bottomMargin
+        val oddsChangeHeight = mBinding.clOddsChange.height + (mBinding.clOddsChange.layoutParams as ConstraintLayout.LayoutParams).bottomMargin
 
         val contentHeight = betSheetHeight + topTitleHeight + multiBetHeight + bottomButtonHeight + oddsChangeHeight
         val isFull =
@@ -282,7 +281,7 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
 
         val betSheetHeight = getBetItemHeight() * 2
 
-        val oddsChangeHeight = mBinding.tvOddsChange.height + (mBinding.tvOddsChange.layoutParams as ConstraintLayout.LayoutParams).bottomMargin
+        val oddsChangeHeight = mBinding.clOddsChange.height + (mBinding.clOddsChange.layoutParams as ConstraintLayout.LayoutParams).bottomMargin
 
         val contentHeight = betSheetHeight + topTitleHeight + multiBetHeight + bottomButtonHeight + oddsChangeHeight
         val isFull =
@@ -441,4 +440,18 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
 
     }
 
+    private fun showOddsChangeDialog() {
+        val globalRect = Rect()
+        mBinding.clOddsChange.getGlobalVisibleRect(globalRect)
+        val f = OddsChangeDialogFragment.instance(globalRect)
+
+        val animator = ObjectAnimator.ofFloat(mBinding.ivOddsChange, "rotation", 0f, 180f)
+        animator.duration = 200 // 旋轉持續時間，單位毫秒
+        animator.interpolator = LinearInterpolator() // 線性插值器，讓旋轉更平滑
+        f.setOnDismissListener {
+            animator.reverse()
+        }
+        f.show(childFragmentManager)
+        animator.start()
+    }
 }
