@@ -46,6 +46,10 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
 
     override fun initView(savedInstanceState: Bundle?) {
         initPlayTypeLayout()
+        childFragmentManager.setFragmentResultListener(getString(R.string.new_home_vp_sub_key), this) { requestKey, bundle ->
+            val isEnabled = bundle.getBoolean(getString(R.string.key_enable_horizontal_scroll))
+            setIsUserInputEnabled(isEnabled)
+        }
     }
 
     override fun onStart() {
@@ -226,7 +230,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
         }
     }
     //設置是否允許水平滑動ViewPager，預設是可以滑動
-    fun setIsUserInputEnabled(isUserInputEnabled: Boolean) {
+    private fun setIsUserInputEnabled(isUserInputEnabled: Boolean) {
         mBinding.vpSub.isUserInputEnabled = isUserInputEnabled
     }
 
