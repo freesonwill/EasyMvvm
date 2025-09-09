@@ -26,6 +26,7 @@ import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.enableRecyclerViewBounce
+import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.module.home.R
 import arch.cayenne.module.home.data.TournamentListItem
 import arch.cayenne.module.home.data.constants.HomeState
@@ -274,6 +275,8 @@ class TournamentListFragment :
         with(mBinding.llIndexContainer) {
             // 設置要顯示的字母列表(*代表熱門圖示)
             indexTitles = mViewModel.getAvailableIndexLetters().map { it.toString() }
+            normalTextColorResId = SkinnableResourceManager.getTargetResourceId(requireContext(), R.color.custom_filter_side_bar_text)
+            selectedTextColorResId = SkinnableResourceManager.getTargetResourceId(requireContext(), R.color.custom_filter_side_bar_text)
             // 設置字母選中的監聽
             onIndexSelectedListener = object: CustomFilterSideBarView.OnIndexSelectedListener {
                 override fun onIndexSelected(index: Int, letter: String, isTouching: Boolean) {
