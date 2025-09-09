@@ -347,13 +347,11 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
                 val targetTab = tlDateList.getTabAt(tlDateList.selectedTabPosition)
                 val tabSelectedDate = if (targetTab != null) {
                     targetTab.run {
-                        view.post { view.isSelected = false }
                         getFuture31Days().find { it.first == tag }?.third?.getFormatDate()
                             ?.split("/")?.toYYYYMMDD()
                             ?: "0"
                     }
                 } else {
-                    tvTabAll.post { tvTabAll.isSelected = false }
                     "0"
                 }
                 launch {

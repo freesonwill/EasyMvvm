@@ -11,7 +11,7 @@
         android:id="@+id/item_match_card"
         android:layout_width="match_parent"
         android:layout_height="213dp"
-        android:background="@drawable/bg_match_item_card">
+        android:background="@mipmap/bg_match_card">
 
         <!-- 頂部賽事名稱 -->
         <arch.cayenne.lib.skin.widget.SkinnableImageView
