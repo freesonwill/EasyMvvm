@@ -9,6 +9,7 @@ import arch.cayenne.lib.base.ui.adapter.PagerAdapter
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.removeAllTips
+import arch.cayenne.lib.common.utils.ext.setupHorizontalScrollDegree
 import arch.cayenne.lib.common.utils.helper.doSmartAnim
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import com.google.android.material.tabs.TabLayout
@@ -74,6 +75,7 @@ class BetSlipFragment :
             TabLayoutMediator(tabLayout, viewPager) { tab, position ->
                 tab.text = list[position].title
             }.attach()
+            viewPager.setupHorizontalScrollDegree()
 
             tabLayout.clearOnTabSelectedListeners()
             tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {

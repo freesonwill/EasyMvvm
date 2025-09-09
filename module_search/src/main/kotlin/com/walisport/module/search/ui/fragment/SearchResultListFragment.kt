@@ -12,6 +12,7 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.animateIndicatorToPosition
+import arch.cayenne.lib.common.utils.ext.setupHorizontalScrollDegree
 import arch.cayenne.lib.common.utils.ext.setupViewPagerScroll
 import arch.cayenne.lib.common.utils.helper.doSmartAnim
 import com.google.android.material.tabs.TabLayout
@@ -39,6 +40,7 @@ class SearchResultListFragment :
         setViewPager()
 
         with(contentBinding) {
+            viewPager.setupHorizontalScrollDegree()
             // 自定義滑動行為
             viewPager.setupViewPagerScroll(tlSearch, customIndicator, 0.20f,skipAnyAnim = { skipAnyAnim = it }, enableAnimation = {
                 if(it == null){

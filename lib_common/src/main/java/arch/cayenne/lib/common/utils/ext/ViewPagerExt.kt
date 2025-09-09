@@ -1,15 +1,18 @@
 package arch.cayenne.lib.common.utils.ext
 
-import android.annotation.SuppressLint
 import android.view.MotionEvent
 import androidx.appcompat.widget.TooltipCompat
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.OnItemTouchListener
 import androidx.viewpager2.widget.ViewPager2
-import arch.cayenne.lib.base.utils.LogUtils
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
+import arch.cayenne.lib.common.R
 import arch.cayenne.lib.common.ui.view.CustomTabIndicator
 import arch.cayenne.lib.skin.widget.SkinnableTabLayout
 import com.google.android.material.tabs.TabLayout
+import java.lang.Math.toDegrees
 import kotlin.math.abs
+import kotlin.math.atan2
 
 fun TabLayout.removeAllTips() {
     post {
@@ -147,10 +150,65 @@ fun ViewPager2.setupViewPagerScroll(positionCall: ((Int) -> Unit)? = null) {
  * @param b
  */
 @JvmOverloads
-fun ViewPager2.setClipChilds(b: Boolean) {
+fun ViewPager2.setClipChilds(b: Boolean = true) {
     val view = getChildAt(0)
     if (view is RecyclerView) {
         view.clipChildren = b
         view.clipChildren = b
+    }
+}
+
+/**
+ * 配置横向滚动角度，滚动角度小于d为横向，否则为竖向
+ * @param d
+ */
+fun ViewPager2.setupHorizontalScrollDegree(d:Int = 25){
+    (getChildAt(0) as RecyclerView).apply {
+        val lis = getTag(R.id.tag_on_item_touch_listener) as OnItemTouchListener?
+        if(lis != null) removeOnItemTouchListener(lis)
+        addOnItemTouchListener(object : OnItemTouchListener {
+            private var mLastTouchX:Float = 0f
+            private var mLastTouchY:Float = 0f
+            private var hasJudged = false
+            private var mTouchSlop = 0
+            private val TAG = "ViewPager2"
+
+            override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
+                when(e.action){
+                    MotionEvent.ACTION_DOWN -> {
+                        mLastTouchX = e.x
+                        mLastTouchY = e.y
+                        hasJudged = false
+                        //"angle--------ACTION_DOWN->$mLastTouchX,$mLastTouchY".logd(TAG)
+                        mTouchSlop = 5 //ViewConfiguration.get(context!!).scaledTouchSlop
+                    }
+                    MotionEvent.ACTION_MOVE -> {
+                        if(hasJudged) return false
+                        val dx = e.x - mLastTouchX
+                        val dy = e.y - mLastTouchY
+                        if(abs(dx) > mTouchSlop || abs(dy) > mTouchSlop) {
+                            hasJudged = true
+                            val angle = toDegrees(atan2(abs(dy.toDouble()), abs(dx.toDouble())))
+                            if(angle < d) {
+                                requestDisallowInterceptTouchEvent(false) //拦截，横向滑动
+                            } else {
+                                requestDisallowInterceptTouchEvent(true) //不拦截，竖向滑动
+                            }
+                            //"angle--------ACTION_MOVE->$angle,mLastTouchX:$mLastTouchX,mLastTouchY:$mLastTouchY,mTouchSlop:$mTouchSlop".logd(TAG)
+                        }
+                    }
+                    MotionEvent.ACTION_UP ->{ }
+                }
+                return false
+            }
+
+            override fun onTouchEvent(rv: RecyclerView, e: MotionEvent) {
+                //"onTouchEvent----${MotionEvent.actionToString(e.action)},${e.x},${e.y}".logd(TAG)
+            }
+
+            override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {
+                //"onRequestDisallowInterceptTouchEvent----$disallowIntercept".logd(TAG)
+            }
+        }.apply { setTag(R.id.tag_on_item_touch_listener,this) })
     }
 }
