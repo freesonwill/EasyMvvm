@@ -6,6 +6,7 @@ import android.content.Context
 import android.os.Bundle
 import android.util.AttributeSet
 import android.view.View
+import android.view.WindowManager
 import androidx.annotation.CallSuper
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.animation.doOnEnd
@@ -61,7 +62,9 @@ abstract class BasePreLoadBottomSheetFragment<VM : BaseViewModel, VB : ViewBindi
 
         }
         unhideableDialog = dialog
-        return dialog
+        return dialog.apply {
+            window?.setType(WindowManager.LayoutParams.TYPE_APPLICATION_SUB_PANEL)
+        }
     }
 
     override fun setBackGroundOnclick() {
