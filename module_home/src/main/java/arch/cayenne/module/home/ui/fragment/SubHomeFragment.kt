@@ -16,7 +16,6 @@ import androidx.viewpager2.widget.ViewPager2
 import androidx.viewpager2.widget.ViewPager2.SCROLL_STATE_IDLE
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
@@ -491,6 +490,7 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
                             it.view.isSelected = true
                         }
                     } ?: run { tvTabAll.isSelected = true }
+                    (parentFragment as? NewHomeFragment)?.setIsUserInputEnabled(true)
                 }
                 setOnBeforeExpandAnimListener {
                     llOtherDate.isSelected = true
@@ -499,6 +499,7 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
                     if (!llOtherDate.isSelected) {
                         llOtherDate.isSelected = true
                     }
+                    (parentFragment as? NewHomeFragment)?.setIsUserInputEnabled(false)
                 }
                 setOnAfterDismissAnimListener {
                     customPopup = null

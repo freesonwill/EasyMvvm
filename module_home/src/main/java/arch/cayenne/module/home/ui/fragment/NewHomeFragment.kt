@@ -225,8 +225,10 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             }
         }
     }
-
-
+    //設置是否允許水平滑動ViewPager，預設是可以滑動
+    fun setIsUserInputEnabled(isUserInputEnabled: Boolean) {
+        mBinding.vpSub.isUserInputEnabled = isUserInputEnabled
+    }
 
     override fun onBackPressed(): Boolean {
         //如果抽屉打开，截获此次返回事件，关闭抽屉
