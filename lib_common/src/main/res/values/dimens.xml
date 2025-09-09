@@ -1,6 +1,6 @@
 <resources>
-    <dimen name="title_bar_padding_end">10dp</dimen>
-    <dimen name="title_bar_padding_start">10dp</dimen>
+    <dimen name="title_bar_padding_end">8dp</dimen>
+    <dimen name="title_bar_padding_start">8dp</dimen>
     <dimen name="dp_1">1dp</dimen>
     <dimen name="dp_2">2dp</dimen>
     <dimen name="dp_3">3dp</dimen>
@@ -102,6 +102,7 @@
     <dimen name="dp_160">160dp</dimen>
     <dimen name="dp_162">162dp</dimen>
     <dimen name="dp_166">166dp</dimen>
+    <dimen name="dp_168">168dp</dimen>
     <dimen name="dp_170">170dp</dimen>
     <dimen name="dp_180">180dp</dimen>
     <dimen name="dp_189">189dp</dimen>
@@ -132,6 +133,7 @@
     <dimen name="sp_15">15sp</dimen>
     <dimen name="sp_16">16sp</dimen>
     <dimen name="sp_17">17sp</dimen>
+    <dimen name="sp_19">19sp</dimen>
     <dimen name="sp_20">20sp</dimen>
     <dimen name="sp_22">22sp</dimen>
     <dimen name="sp_24">24sp</dimen>

@@ -22,8 +22,8 @@ class IdentityVerifyPagerAdapter(
 
     override fun createFragment(position: Int): Fragment {
         return when (position) {
-            0->return MobileVerifyFragment.newInstance(position)
-            else -> return EMailVerifyFragment.newInstance(position)
+            0-> MobileVerifyFragment.newInstance(position)
+            else ->  EMailVerifyFragment.newInstance(position)
         }
     }
 }

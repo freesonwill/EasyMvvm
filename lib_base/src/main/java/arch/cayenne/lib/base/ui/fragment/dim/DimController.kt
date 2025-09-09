@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.core.animation.doOnEnd
+import androidx.core.view.isVisible
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 
@@ -94,14 +95,24 @@ class DimController private constructor() {
         canChangeDim = true
     }
 
+    fun prepareShowDim() {
+        val v = dimView ?: return
+        v.isVisible = true
+    }
+
     fun showDim() {
-        if (dimView?.alpha == TARGET_DIM || !canChangeDim) return
-        dimView?.alpha = TARGET_DIM
+        val v = dimView ?: return
+        if (v.alpha == TARGET_DIM || !canChangeDim) return
+        v.alpha = TARGET_DIM
     }
 
     fun hideDim() {
-        if (dimView?.alpha == 0f || !canChangeDim) return
-        dimView?.alpha = 0f
+        val v = dimView ?: return
+        if (v.alpha == 0f || !canChangeDim) return
+        v.alpha = 0f
+        v.post {
+            v.isVisible = false
+        }
     }
 
     fun setDimAlpha(alpha: Float) {
@@ -119,7 +130,9 @@ class DimController private constructor() {
                 }
             }
             doOnEnd {
-                hideDim()
+                v.post {
+                    v.isVisible = false
+                }
             }
         }
     }

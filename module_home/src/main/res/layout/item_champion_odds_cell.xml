@@ -4,7 +4,7 @@
     android:id="@+id/ll_odds_cell"
     android:layout_width="match_parent"
     android:layout_height="44dp"
-    android:background="@drawable/selector_match_odds_cell"
+    android:background="@drawable/selector_champion_odds_cell"
     android:gravity="center">
     <!-- 灰色遮罩 -->
     <arch.cayenne.lib.skin.widget.SkinnableView

@@ -3,4 +3,5 @@
     <color name="title_bg_classic">#0e0f19</color>
     <color name="title_bar_classic">#e6e6e6</color>
     <color name="app_bg_classic">#0e0f19</color>
+    <color name="loading_text_classic">#929298</color>
 </resources>

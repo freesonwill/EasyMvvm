@@ -45,15 +45,20 @@ class CollectListViewModel : BaseMatchViewModel<CollectListRepository>() {
         repository.clearCurrentMatch()
     }
 
-    override fun getMatchListData() {
+    override fun getMatchListData(loadMatchType: LoadMatchType) {
         viewModelScope.launch {
             "取得收藏賽事 $page".logi()
             callApi({
                 repository.getCollectData(page)
             }, {
                 if (it is ApiResponseState.Failed) {
-                    setState(DataState.NetworkUnavailable)
-                    matchListChange.value = arrayListOf()
+                    if (loadMatchType == LoadMatchType.NEXT_PAGE) {
+                        setState(HomeState.Match.LoadNextFailure)
+                        matchListChange.value = matchListChange.value
+                    } else {
+                        setState(DataState.NetworkUnavailable)
+                        matchListChange.value = arrayListOf()
+                    }
                 } else if (it is ApiResponseState.Succeeded<*>) {
                     val size = it.dataAs<List<Common.Match>>()?.size ?: 0
                     if (page == 1 && size == 0) {
@@ -61,6 +66,8 @@ class CollectListViewModel : BaseMatchViewModel<CollectListRepository>() {
                         matchListChange.value = arrayListOf()
                     } else if (size < BaseMatchRepository.DEFAULT_MATCH_SIZE) {
                         setState(DataState.NoMoreData)
+                    } else {
+                        setState(HomeState.Match.LoadSuccess)
                     }
                 }
             })
@@ -71,7 +78,7 @@ class CollectListViewModel : BaseMatchViewModel<CollectListRepository>() {
         viewModelScope.launch(Dispatchers.IO) {
             repository.observeMatchChange().collect { ref ->
                 if (ref.isEmpty()) {
-                    getMatchListData()
+                    getMatchListData(LoadMatchType.FIRST_LOAD)
                     return@collect
                 }
                 val currentRefs = ref.values.toList().sortedBy { it.order }

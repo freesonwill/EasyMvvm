@@ -135,10 +135,14 @@ class MatchListPagerFragment :
                 }
 
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                    rvHomeGameList.scrollToBottomWithLoadMore(minScrollCount = 8) {
+                    rvHomeGameList.scrollToBottomWithLoadMore(minScrollCount = 8,{
                         if (mViewModel.apiStateListener.value != HomeState.Match.LoadSuccess) return@scrollToBottomWithLoadMore
                         mViewModel.loadNextPage()
-                    }
+                    }, {
+                        if (mViewModel.apiStateListener.value == HomeState.Match.LoadNextFailure) {
+                            mViewModel.loadNextPage()
+                        }
+                    })
                 }
             })
         }
@@ -195,7 +199,6 @@ class MatchListPagerFragment :
                 subscribeVisibleMatch()
             }
             if (matchList.isNotEmpty()) {
-                mViewModel.changeState(HomeState.Match.LoadSuccess)
                 if (preEmpty) {
                     setMatchListPosition()
                 }
@@ -213,26 +216,30 @@ class MatchListPagerFragment :
             "MatchListPagerFragment playType: ${mViewModel.getPlayTypeId()} tournament: ${mViewModel.getTournamentId()} state change ${it::class.java.name}".logi(this::class.java.name)
             with(mBinding) {
                 when(it) {
-                    DataState.NetworkUnavailable -> {
-                        mViewModel.changePageEnd(true)
+                    DataState.NetworkUnavailable, HomeState.Match.LoadNextFailure -> {
+
                         lvMatchLoading.visibility = View.GONE
                         refreshLayout.finishRefresh()
-                        matchAdapter.showNoMoreData(false)
-                        clDynamics.visibility = View.VISIBLE
-                        clDynamics.setState(
-                            DynamicStateLayout.States.NETWORK_ANOMALY(),
-                            arch.cayenne.lib.common.R.string.error_net.getString()
-                        )
+                        matchAdapter.setLastItemType(MatchItemAdapter.LAST_ITEM_NONE)
+                        if (it == DataState.NetworkUnavailable){
+                            clDynamics.visibility = View.VISIBLE
+                            mViewModel.changePageEnd(true)
+                            clDynamics.setState(
+                                DynamicStateLayout.States.NETWORK_ANOMALY(),
+                                arch.cayenne.lib.common.R.string.error_net.getString()
+                            )
+                        }
+
                         homeViewModel.changeState(DataState.NetworkUnavailable)
                     }
                     DataState.NoMoreData -> {     //這個DataEmpty表示api抓不到任何資料了，有可能是頁面到底，或是從第一頁就抓不到資料
                         mViewModel.changePageEnd(true)
-                        matchAdapter.showNoMoreData(true)
+                        matchAdapter.setLastItemType(MatchItemAdapter.LAST_ITEM_NO_MORE)
                     }
                     HomeState.Match.DataEmpty -> {  //這個DataEmpty表示確定真的從第一頁就抓不到資料，表示當前的選擇沒有任何賽事
                         lvMatchLoading.visibility = View.GONE
                         refreshLayout.finishRefresh()
-                        matchAdapter.showNoMoreData(false)
+                        matchAdapter.setLastItemType(MatchItemAdapter.LAST_ITEM_NONE)
                         clDynamics.visibility = View.VISIBLE
                         clDynamics.setState(
                             DynamicStateLayout.States.DATA_EMPTY,
@@ -247,7 +254,7 @@ class MatchListPagerFragment :
                     }
                     HomeState.Match.Refreshing -> {
                         clDynamics.visibility = View.GONE
-                        matchAdapter.showNoMoreData(false)
+                        matchAdapter.setLastItemType(MatchItemAdapter.LAST_ITEM_LOAD_MORE)
                     }
                     HomeState.Match.LoadingNext -> {
                         clDynamics.visibility = View.GONE

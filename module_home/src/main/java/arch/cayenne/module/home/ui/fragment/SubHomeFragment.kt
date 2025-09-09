@@ -6,10 +6,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.LinearLayout
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -18,6 +15,8 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import androidx.viewpager2.widget.ViewPager2.SCROLL_STATE_IDLE
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.ui.fragment.launch
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
@@ -45,6 +44,7 @@ import arch.cayenne.module.home.ui.viewmodel.SubHomeViewModel
 import arch.cayenne.module.home.utils.DateUtils
 import com.bumptech.glide.Glide
 import com.google.android.material.tabs.TabLayout
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.Locale
 import kotlin.reflect.KClass
@@ -286,6 +286,7 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
             //聯賽
             vpGameList.isSaveEnabled = false
             vpGameList.adapter = null
+            vpGameList.isUserInputEnabled = false
             vpGameList.offscreenPageLimit = 10
             //如果往右往左滑動，等待滑動完成後，再去開始startObserveMatch
             gameListPageCallback = object : ViewPager2.OnPageChangeCallback(){
@@ -331,7 +332,10 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
             }
 
             // 其他日期 Tab 設定
-            llOtherDate.clickNoRepeat {
+            llOtherDate.setOnClickListener {
+                if (customPopup != null) {
+                    return@setOnClickListener
+                }
                 // 轉換日期格式為 YYYYMMDD 給 DatePicker 使用
                 fun List<String>.toYYYYMMDD(): String {
                     val year = this[0]
@@ -344,16 +348,17 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
                 val targetTab = tlDateList.getTabAt(tlDateList.selectedTabPosition)
                 val tabSelectedDate = if (targetTab != null) {
                     targetTab.run {
-                        view.post { view.isSelected = false }
                         getFuture31Days().find { it.first == tag }?.third?.getFormatDate()
                             ?.split("/")?.toYYYYMMDD()
                             ?: "0"
                     }
                 } else {
-                    tvTabAll.post { tvTabAll.isSelected = false }
                     "0"
                 }
-                showHomeCalendar(tabSelectedDate)
+                launch {
+                    delay(20)
+                    showHomeCalendar(tabSelectedDate)
+                }
             }
 
             // 初始化 TabLayout end more跟手動畫
@@ -468,22 +473,7 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
 
     private fun showHomeCalendar(tabSelectedDate: String) {
         with(mBinding.layoutContainer) {
-            llOtherDate.isSelected = true
-
             customPopup = HomeCalendarFragment.Builder().apply {
-                val statusBarHeight =
-                    ViewCompat.getRootWindowInsets(requireView())
-                        ?.getInsets(WindowInsetsCompat.Type.statusBars())?.top ?: 0
-
-                val marginTopHeight = mBinding.clSecondNavbar.height + tlLeagueList.height + tlDateList.height
-                setMarginTop(marginTopHeight)
-                setMaskView(mBinding.viewCalendarMask)
-                // 取得 maskView 的 LayoutParams
-                val params = mBinding.viewCalendarMask.layoutParams as ViewGroup.MarginLayoutParams
-                // 設定 topMargin
-                params.topMargin = marginTopHeight
-                // 將修改後的 LayoutParams 重新應用到 maskView
-                mBinding.viewCalendarMask.layoutParams = params
                 mViewModel.recently7DayMatchScheduleCount.value?.peekContent()?.let { setRange(it) }
                 setOnDateSelectedListener { selectedDate ->
                     setSelectedDateTab(getFuture31Days().find { it.first == selectedDate })
@@ -493,7 +483,6 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
                 }
                 setOnBeforeDismissAnimListener {
                     llOtherDate.isSelected = false
-
                     // 重置日期tab選擇狀態
                     tlDateList.getTabAt(tlDateList.selectedTabPosition)?.let {
                         if(!it.view.isSelected) {
@@ -501,16 +490,23 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
                         }
                     } ?: run { tvTabAll.isSelected = true }
                 }
+                setOnBeforeExpandAnimListener {
+                    llOtherDate.isSelected = true
+                }
+                setOnAfterExpandAnimListener {
+                    if (!llOtherDate.isSelected) {
+                        llOtherDate.isSelected = true
+                    }
+                }
                 setOnAfterDismissAnimListener {
                     customPopup = null
-                    mBinding.llCalendar.visibility = View.GONE
+                    llCalendar.visibility = View.GONE
                 }
             }.build()
-            mBinding.llCalendar.visibility = View.VISIBLE
-            customPopup?.show(childFragmentManager, mBinding.llCalendar.id, tabSelectedDate)
+            llCalendar.visibility = View.VISIBLE
+            customPopup?.show(childFragmentManager, llCalendar.id, tabSelectedDate)
         }
     }
-
     //選取日期後按確定時連動至早盤日期tab,選取對應的日期
     private fun setSelectedDateTab(dateTriple: Triple<String, String, Long>?) {
         with(mBinding.layoutContainer) {
@@ -651,7 +647,9 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
                 viewContainerRoot.setOnChildClickedInterceptedListener { view ->
                     when(view) {
                         tlContainer, llDateFilterContainer,llOtherDate -> {
-                            mViewModel.setCalendarState(HomeCalendarFragment.States.CALENDAR_CLOSE_NOTHING)
+                            lifecycleScope.launch {
+                                mViewModel.setCalendarState(HomeCalendarFragment.States.CALENDAR_CLOSE_NOTHING)
+                            }
                         }
                         else -> Unit
                     }

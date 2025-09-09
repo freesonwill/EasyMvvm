@@ -26,6 +26,8 @@ sealed class HomeState: DataState {
 
         data object DataEmpty : Match()
 
+        data object LoadNextFailure : Match()
+
     }
 
     sealed class Schedule: HomeState() {
