@@ -46,6 +46,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
 
     override fun initView(savedInstanceState: Bundle?) {
         initPlayTypeLayout()
+        setReceiveHorizontalScrollResult()
     }
 
     override fun onStart() {
@@ -122,7 +123,12 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
         }
     }
 
-
+    private fun setReceiveHorizontalScrollResult() {
+        childFragmentManager.setFragmentResultListener(getString(R.string.new_home_vp_sub_key), this) { requestKey, bundle ->
+            val isEnabled = bundle.getBoolean(getString(R.string.key_enable_horizontal_scroll))
+            setIsUserInputEnabled(isEnabled)
+        }
+    }
 
     //init DrawerLayout Content
     private fun initDrawerContent() {
@@ -225,8 +231,10 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             }
         }
     }
-
-
+    //設置是否允許水平滑動ViewPager，預設是可以滑動
+    private fun setIsUserInputEnabled(isUserInputEnabled: Boolean) {
+        mBinding.vpSub.isUserInputEnabled = isUserInputEnabled
+    }
 
     override fun onBackPressed(): Boolean {
         //如果抽屉打开，截获此次返回事件，关闭抽屉

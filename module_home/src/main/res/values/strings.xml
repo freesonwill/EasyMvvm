@@ -62,4 +62,6 @@
     <string name="format_month_year" translatable="false">%1$s %2$s</string>
     <string name="collect_list_empty">暂无收藏</string>
     <string name="no_more_data">没有更多了</string>
+    <string name="key_enable_horizontal_scroll">enableHorizontalScroll</string>
+    <string name="new_home_vp_sub_key">newHomeVpSubKey</string>
 </resources>

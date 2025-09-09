@@ -513,6 +513,7 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
                             it.view.isSelected = true
                         }
                     } ?: run { tvTabAll.isSelected = true }
+                    enableHorizontalScroll(true)
                 }
                 setOnBeforeExpandAnimListener {
                     llOtherDate.isSelected = true
@@ -521,6 +522,7 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
                     if (!llOtherDate.isSelected) {
                         llOtherDate.isSelected = true
                     }
+                    enableHorizontalScroll(false)
                 }
                 setOnAfterDismissAnimListener {
                     customPopup = null
@@ -706,7 +708,14 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
         }
         return tabBinding.root
     }
-
+    private fun enableHorizontalScroll(isEnabled: Boolean) {
+        val key = getString(R.string.new_home_vp_sub_key)
+        val result = Bundle().apply {
+            putBoolean(getString(R.string.key_enable_horizontal_scroll), isEnabled)
+        }
+        // 使用 parentFragmentManager 發送結果
+        parentFragmentManager.setFragmentResult(key, result)
+    }
     private fun initChampionTournamentLayout() {
         val tournamentListFragment = TournamentListFragment.newInstance(
             playTypeId = PlayType.CHAMPION.id,
