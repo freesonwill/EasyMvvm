@@ -1,22 +1,19 @@
 package com.walisport.module.live.ui
 
 import android.graphics.Color
-import android.graphics.Rect
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout.States
-import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavResultExt.sendResult
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigateUp
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getDrawable
@@ -27,8 +24,10 @@ import arch.cayenne.lib.common.utils.ext.touchBackPressed
 import com.bumptech.glide.Glide
 import com.walisport.module.live.R
 import com.walisport.module.live.databinding.FragmentLeagueBinding
+import com.walisport.module.live.databinding.ItemWeekDayBinding
 import com.walisport.module.live.ui.adapter.LeagueAdapter
 import com.walisport.module.live.ui.viewmodel.LeagueViewModel
+import com.walisport.module.live.ui.widget.LeagueItemDecoration
 import kotlinx.coroutines.flow.filter
 import kotlin.reflect.KClass
 
@@ -37,26 +36,10 @@ class LiveLeagueFragment : BaseFragment<LeagueViewModel, FragmentLeagueBinding>(
     override val vbClass: KClass<FragmentLeagueBinding> = FragmentLeagueBinding::class
     override val vmClass: KClass<LeagueViewModel> = LeagueViewModel::class
     private val standsAdapter by lazy { LeagueAdapter() }
+    private var leagueItemDecoration: LeagueItemDecoration? = null
     private var leagueID: Int = 0
     private var leagueName: String = ""
     private var leagueLogo: String = ""
-
-    class LeagueItemDecoration(
-        private val spacing: Int = 12.dp2px,
-        private val leftRight: Int = 8.dp2px,
-        private val bottomSpacing: Int = 20.dp2px,
-    ) : ItemDecoration() {
-        override fun getItemOffsets(
-            outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State
-        ) {
-            val position = parent.getChildAdapterPosition(view)
-            val itemCount = parent.adapter?.itemCount ?: 0
-            outRect.top = if (position == 0) spacing else spacing / 2
-            outRect.bottom = if (position == itemCount - 1) bottomSpacing else spacing / 2
-            outRect.left = leftRight
-            outRect.right = leftRight
-        }
-    }
 
     override fun onStart() {
         super.onStart()
@@ -80,7 +63,7 @@ class LiveLeagueFragment : BaseFragment<LeagueViewModel, FragmentLeagueBinding>(
             recyclerLeague.apply {
                 layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
                 adapter = standsAdapter
-                addItemDecoration(LeagueItemDecoration())
+
             }
             tvLeagueName.text = leagueName
         }
@@ -96,8 +79,38 @@ class LiveLeagueFragment : BaseFragment<LeagueViewModel, FragmentLeagueBinding>(
             sendResult(LiveMainFragment.CHANGE_MATCH, result)
             navigateUp()
         }
+        initStickyHeader()
         mBinding.recyclerLeague.touchBackPressed()
         mBinding.root.touchBackPressed()
+    }
+
+    private fun initStickyHeader() {
+        leagueItemDecoration = LeagueItemDecoration(
+            isHeader = { position ->
+                standsAdapter.currentList.getOrNull(position)!!.isWeekHead
+            },
+            createHeaderView = { context, parent ->
+                ItemWeekDayBinding.inflate(LayoutInflater.from(context), parent, false).root
+            },
+            bindHeaderView = { v, position ->
+                val item = standsAdapter.currentList.getOrNull(position)
+                val binding = ItemWeekDayBinding.bind(v)
+                item?.let {
+                    val itemColor = item.itemColor
+                    if (itemColor.isEmpty()) {
+                        val color = Color.parseColor("#377c46")
+                        binding.layoutWeekDay.setBackgroundColor(color)
+                    } else {
+                        val color = Color.parseColor(itemColor)
+                        binding.layoutWeekDay.setBackgroundColor(color)
+                    }
+                    binding.tvLeagueWeek.text = item.weekDay
+                }
+            }
+        )
+        leagueItemDecoration?.let {
+            mBinding.recyclerLeague.addItemDecoration(it)
+        }
     }
 
     override fun initData() {
@@ -121,6 +134,9 @@ class LiveLeagueFragment : BaseFragment<LeagueViewModel, FragmentLeagueBinding>(
                         mViewModel.getMatchLeagueList(leagueID)
                     }
                 }
+        }
+        mViewModel.activeHeaderIndex.observe(viewLifecycleOwner) { _ ->
+            mBinding.recyclerLeague.invalidateItemDecorations()
         }
         mViewModel.apiStateListener.observe(viewLifecycleOwner) {
             if (it == DataState.NoMoreData) {
@@ -151,17 +167,7 @@ class LiveLeagueFragment : BaseFragment<LeagueViewModel, FragmentLeagueBinding>(
                         )
                     }
                 } else {
-                    //更新设置背景色
-                    var startColor = Color.parseColor("#377c46")
-                    if (it.color.isNotEmpty()) {
-                        startColor = Color.parseColor(it.color)
-                    }
-                    val endColor = Color.parseColor("#000000")
-                    val gradientDrawable = GradientDrawable(
-                        GradientDrawable.Orientation.TOP_BOTTOM, intArrayOf(startColor, endColor)
-                    )
-                    gradientDrawable.shape = GradientDrawable.RECTANGLE
-                    mBinding.leagueRoot.background = gradientDrawable
+                    setGradientBackground(it.color)
                 }
                 standsAdapter.submitList(it.match)
             } ?: run {
@@ -173,5 +179,20 @@ class LiveLeagueFragment : BaseFragment<LeagueViewModel, FragmentLeagueBinding>(
                 }
             }
         }
+    }
+
+    private fun setGradientBackground(color: String) {
+        var startColor = Color.parseColor("#377c46")
+        if (color.isNotEmpty()) {
+            startColor = Color.parseColor(color)
+        }
+        val endColor = Color.parseColor("#000000")
+        val gradientDrawable = GradientDrawable(
+            GradientDrawable.Orientation.TOP_BOTTOM, intArrayOf(startColor, endColor)
+        )
+        gradientDrawable.shape = GradientDrawable.RECTANGLE
+        mBinding.leagueRoot.background = gradientDrawable
+        mBinding.leagueBar.setBackgroundColor(startColor)
+        mBinding.leagueBody.background = gradientDrawable
     }
 }
