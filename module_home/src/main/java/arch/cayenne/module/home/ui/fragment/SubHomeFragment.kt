@@ -3,6 +3,7 @@ package arch.cayenne.module.home.ui.fragment
 import android.animation.Animator
 import android.annotation.SuppressLint
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -16,7 +17,6 @@ import androidx.viewpager2.widget.ViewPager2
 import androidx.viewpager2.widget.ViewPager2.SCROLL_STATE_IDLE
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
@@ -294,6 +294,7 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
                     super.onPageSelected(position)
                     if (vpGameList.scrollState != SCROLL_STATE_IDLE) return
                     startObservePageMatchListChange()
+
                 }
                 override fun onPageScrollStateChanged(state: Int) {
                     super.onPageScrollStateChanged(state)
@@ -302,10 +303,33 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
                     }
                 }
                 fun startObservePageMatchListChange() {
-                    val itemId = leaguePagerAdapter?.getItemId(vpGameList.currentItem)?: return
+                    val currentPosition = vpGameList.currentItem
+                    val itemId = leaguePagerAdapter?.getItemId(currentPosition)?: return
                     val fragment = childFragmentManager.findFragmentByTag("f$itemId") ?: return
                     if (fragment is MatchListPagerFragment) {
                         fragment.startObserveMatchListChange()
+                    }
+                    //如果版本號小於30的低階手機，就不做預載左右兩頁
+                    if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.R) return
+
+                    if (currentPosition - 1 >= 0) {
+                        leaguePagerAdapter?.getItemId(currentPosition - 1)?.also { preItemId ->
+                            childFragmentManager.findFragmentByTag("f$preItemId").also { preFragment ->
+                                if (preFragment is MatchListPagerFragment) {
+                                    preFragment.startObserveMatchListChange()
+                                }
+                            }
+                        }
+                    }
+
+                    if (vpGameList.currentItem + 1 < (vpGameList.adapter?.itemCount ?: 0)) {
+                        leaguePagerAdapter?.getItemId(vpGameList.currentItem + 1)?.also { preItemId ->
+                            childFragmentManager.findFragmentByTag("f$preItemId").also { preFragment ->
+                                if (preFragment is MatchListPagerFragment) {
+                                    preFragment.startObserveMatchListChange()
+                                }
+                            }
+                        }
                     }
                 }
             }
