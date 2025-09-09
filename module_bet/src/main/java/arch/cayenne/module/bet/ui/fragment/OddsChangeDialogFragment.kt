@@ -44,7 +44,7 @@ class OddsChangeDialogFragment private constructor() :
     override val vmClass: KClass<OddsChangeViewModel> = OddsChangeViewModel::class
 
     private var dimView: View? = null
-//    private var bottomDimView: View? = null
+    private var bottomDimView: View? = null
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return object : Dialog(requireContext(), theme) {
@@ -117,7 +117,7 @@ class OddsChangeDialogFragment private constructor() :
             dimView = this
         }
 
-        val bottomParams = WindowManager.LayoutParams(
+        val dimParams = WindowManager.LayoutParams(
             ViewGroup.LayoutParams.MATCH_PARENT,
             ViewGroup.LayoutParams.MATCH_PARENT,
             WindowManager.LayoutParams.TYPE_APPLICATION_SUB_PANEL,
@@ -127,11 +127,11 @@ class OddsChangeDialogFragment private constructor() :
                     or WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
             PixelFormat.TRANSLUCENT
         )
-        bottomParams.token = dialog?.window?.decorView?.windowToken
+        dimParams.token = dialog?.window?.decorView?.windowToken
 
         val windowManager =
             requireContext().getSystemService(Context.WINDOW_SERVICE) as WindowManager
-        windowManager.addView(dimV, bottomParams)
+        windowManager.addView(dimV, dimParams)
 
         val rect = requireArguments().getParcelable<Rect>(RECT_KET) ?: return
         val centerX = rect.centerX()
@@ -140,14 +140,36 @@ class OddsChangeDialogFragment private constructor() :
         val height = rect.height()
 
         dimV.setRect(centerX, centerY, width, height, 6.dp2px.toFloat())
+
+        val bottomDimV = View(requireContext()).apply {
+            setBackgroundColor(Color.BLACK)
+            alpha = 0f
+            bottomDimView = this
+            translationY = screenHeight.toFloat()
+        }
+        val bottomDimParams = WindowManager.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            screenHeight + navigationHeight,
+            WindowManager.LayoutParams.TYPE_APPLICATION_SUB_PANEL,
+            WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
+                    or WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
+                    or WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+                    or WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+            PixelFormat.TRANSLUCENT
+        )
+        bottomDimParams.token = dialog?.window?.decorView?.windowToken
+        bottomDimParams.gravity = Gravity.TOP or Gravity.START
+        windowManager.addView(bottomDimV, bottomDimParams)
     }
 
     private fun showDim() {
-        if (dimView == null) {
+        if (dimView == null || bottomDimView == null) {
             initDim()
         }
         val v = dimView ?: return
+        val bv = bottomDimView ?: return
         v.alpha = 0.75f
+        bv.alpha = 0.75f
     }
 
     private fun clearDim() {
@@ -155,6 +177,10 @@ class OddsChangeDialogFragment private constructor() :
         dimView?.let {
             windowManager.removeView(it)
             dimView = null
+        }
+        bottomDimView?.let {
+            windowManager.removeView(it)
+            bottomDimView = null
         }
     }
 
