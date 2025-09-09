@@ -224,7 +224,7 @@ class ComboBetRepository(
         }
     }
 
-    fun sendBet(multiBet: List<ComboMultiBetBean>) {
+    fun sendBet(multiBet: List<ComboMultiBetBean>, oddsChangeEnum: OddsChangeEnum) {
         scope.launch {
             betDao.getCurrentBet()?.let { bet ->
                 if (bet.betType == BetTypeEnum.COMBO) {
@@ -254,7 +254,7 @@ class ComboBetRepository(
                     }
 
 
-                    val resp = remoteManager.comboBet(selection, multiBet)
+                    val resp = remoteManager.comboBet(selection, multiBet, oddsChangeEnum)
                     if (resp != null && resp.isSuccessful) {
                         tempDetail.forEach { detail ->
                             val info = resp.data.find { it.serialValue == detail.serialValue }

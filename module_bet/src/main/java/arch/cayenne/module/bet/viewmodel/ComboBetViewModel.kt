@@ -187,9 +187,10 @@ class ComboBetViewModel(
         if (!checkNetwork()) {
             return false
         }
+        val oddsChangeEnum = _oddsChangeListener.value ?: return false
         return _onComboMultiBetBeanListener.value?.filter { it.inputMoney != 0L }?.let {
             if (it.isNotEmpty()) {
-                repo.sendBet(it)
+                repo.sendBet(it, oddsChangeEnum)
                 true
             } else {
                 false

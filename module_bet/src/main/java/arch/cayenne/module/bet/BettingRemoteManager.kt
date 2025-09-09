@@ -143,7 +143,8 @@ class BettingRemoteManager(
 
     suspend fun comboBet(
         beans: List<BetSelectionBean>,
-        multi: List<ComboMultiBetBean>
+        multi: List<ComboMultiBetBean>,
+        oddsChange: OddsChangeEnum
     ): ComboBetDataModel? {
         val res = socketManager.sendAndWaitProtoMessageResponse<Client.MultipleBetResp>(
             scope = scope,
@@ -165,7 +166,7 @@ class BettingRemoteManager(
                         Common.BetCombo.newBuilder().apply {
                             this.serialValue = it.serialValue
                             this.betAmount = it.inputMoney.getMoney()
-                            this.oddsChange = 2
+                            this.oddsChange = oddsChange.value
                         }.build()
                     }
                 )
