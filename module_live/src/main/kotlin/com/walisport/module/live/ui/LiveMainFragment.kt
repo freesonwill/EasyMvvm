@@ -158,7 +158,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                 tab?.let {
                     if (skipAnyAnim) {
                         enableAnimation = false
-                        mBinding.customIndicator.animateIndicatorToPosition(tab.position,0)
+                        mBinding.customIndicator.animateIndicatorToPosition(tab.position,210)
 //                        mBinding.vpPage.setCurrentItem(tab.position,false)
                          mBinding.vpPage.doSmartAnim(tab.position)
                     }
