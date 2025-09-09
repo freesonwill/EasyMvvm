@@ -4,6 +4,7 @@ import android.animation.ObjectAnimator
 import android.content.Context
 import android.graphics.Color
 import android.graphics.PixelFormat
+import android.graphics.Rect
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
@@ -45,7 +46,7 @@ class DimController private constructor() {
             return
         }
         val context = host.getHostFragment().requireContext()
-        val v = View(context).apply {
+        val v = DimView(context).apply {
             setBackgroundColor(Color.BLACK)
             alpha = 0f
         }
@@ -121,5 +122,17 @@ class DimController private constructor() {
                 hideDim()
             }
         }
+    }
+
+    fun setRect(rect: Rect, radius: Float) {
+        val centerX = rect.centerX()
+        val centerY = rect.centerY()
+        val width = rect.width()
+        val height = rect.height()
+        (dimView as? DimView)?.setRect(centerX, centerY, width, height, radius)
+    }
+
+    fun clearRect() {
+        (dimView as? DimView)?.clearRect()
     }
 }
