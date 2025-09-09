@@ -188,7 +188,7 @@ class HomeBetSlipFragment : BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsl
                     if (skipAnyAnim) {
                         enableAnim = false
                         // 动画更新指示器位置
-                        mBinding.customIndicator.animateIndicatorToPosition(tab.position,0)
+                        mBinding.customIndicator.animateIndicatorToPosition(tab.position,210)
                         mBinding.viewPager.doSmartAnim(targetPosition = tab.position)
 
                     }
