@@ -58,6 +58,7 @@ class OddsChangeDialogFragment private constructor() :
         get() = null
 
     override fun initView(savedInstanceState: Bundle?) {
+        mBinding.ivAny.isSelected = true
     }
 
     override fun initListener() {
