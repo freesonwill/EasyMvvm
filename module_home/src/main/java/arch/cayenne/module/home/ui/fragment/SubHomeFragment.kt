@@ -3,6 +3,7 @@ package arch.cayenne.module.home.ui.fragment
 import android.animation.Animator
 import android.annotation.SuppressLint
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -292,32 +293,43 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
                 override fun onPageSelected(position: Int) {
                     super.onPageSelected(position)
                     if (vpGameList.scrollState != SCROLL_STATE_IDLE) return
-                    startObservePageMatchListChange(vpGameList.currentItem)
-                    if (vpGameList.currentItem - 1 >= 0) {
-                        startObservePageMatchListChange(vpGameList.currentItem - 1)
-                    }
-                    if (vpGameList.currentItem + 1 < (vpGameList.adapter?.itemCount ?: 0)) {
-                        startObservePageMatchListChange(vpGameList.currentItem + 1)
-                    }
+                    startObservePageMatchListChange()
 
                 }
                 override fun onPageScrollStateChanged(state: Int) {
                     super.onPageScrollStateChanged(state)
                     if (state == SCROLL_STATE_IDLE) {
-                        startObservePageMatchListChange(vpGameList.currentItem)
-                        if (vpGameList.currentItem - 1 >= 0) {
-                            startObservePageMatchListChange(vpGameList.currentItem - 1)
-                        }
-                        if (vpGameList.currentItem + 1 < (vpGameList.adapter?.itemCount ?: 0)) {
-                            startObservePageMatchListChange(vpGameList.currentItem + 1)
-                        }
+                        startObservePageMatchListChange()
                     }
                 }
-                fun startObservePageMatchListChange(position: Int) {
-                    val itemId = leaguePagerAdapter?.getItemId(position)?: return
+                fun startObservePageMatchListChange() {
+                    val currentPosition = vpGameList.currentItem
+                    val itemId = leaguePagerAdapter?.getItemId(currentPosition)?: return
                     val fragment = childFragmentManager.findFragmentByTag("f$itemId") ?: return
                     if (fragment is MatchListPagerFragment) {
                         fragment.startObserveMatchListChange()
+                    }
+                    //如果版本號小於30的低階手機，就不做預載左右兩頁
+                    if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.R) return
+
+                    if (currentPosition - 1 >= 0) {
+                        leaguePagerAdapter?.getItemId(currentPosition - 1)?.also { preItemId ->
+                            childFragmentManager.findFragmentByTag("f$preItemId").also { preFragment ->
+                                if (preFragment is MatchListPagerFragment) {
+                                    preFragment.startObserveMatchListChange()
+                                }
+                            }
+                        }
+                    }
+
+                    if (vpGameList.currentItem + 1 < (vpGameList.adapter?.itemCount ?: 0)) {
+                        leaguePagerAdapter?.getItemId(vpGameList.currentItem + 1)?.also { preItemId ->
+                            childFragmentManager.findFragmentByTag("f$preItemId").also { preFragment ->
+                                if (preFragment is MatchListPagerFragment) {
+                                    preFragment.startObserveMatchListChange()
+                                }
+                            }
+                        }
                     }
                 }
             }

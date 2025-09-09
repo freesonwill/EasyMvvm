@@ -13,7 +13,6 @@ fun RecyclerView.scrollToBottomWithLoadMore(
     val lastItemPos = layoutManager!!.findLastCompletelyVisibleItemPosition()
     val itemCount = this.adapter!!.itemCount - minScrollCount
     if (lastItemPos > itemCount && lastItemPos > 1) {
-        "KC_ lastItemPos = ${lastItemPos} itemCount = $itemCount".logi()
         onEndAction()
     }
     if (lastItemPos == this.adapter!!.itemCount - 1) {
