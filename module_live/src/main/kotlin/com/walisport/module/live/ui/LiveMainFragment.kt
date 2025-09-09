@@ -48,6 +48,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.filter
 import kotlin.reflect.KClass
 import arch.cayenne.lib.common.utils.ext.animateIndicatorToPosition
+import arch.cayenne.lib.common.utils.ext.setupHorizontalScrollDegree
 import arch.cayenne.lib.common.utils.ext.setupViewPagerScroll
 import arch.cayenne.lib.common.utils.helper.doSmartAnim
 import kotlin.math.abs
@@ -256,6 +257,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         })
         // 启用手动滑动
         mBinding.vpPage.isUserInputEnabled = true
+        mBinding.vpPage.setupHorizontalScrollDegree()
     }
 
     override fun createObserverAtState(): Lifecycle.State {
