@@ -14,6 +14,7 @@ import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.TabLayoutExt
 import arch.cayenne.lib.common.utils.ext.TabLayoutExt.addOnTabSelectedListener2
 import arch.cayenne.lib.common.utils.ext.removeAllTips
+import arch.cayenne.lib.common.utils.ext.startZoomInAnim
 import arch.cayenne.lib.common.utils.ext.touchBackPressed
 import arch.cayenne.module.handicap.R
 import arch.cayenne.module.handicap.databinding.FragmentHandicapBinding
@@ -79,10 +80,9 @@ class HandicapFragment : BaseFragment<HandicapViewModel, FragmentHandicapBinding
         })
         mBinding.tabLayout.addOnTabSelectedListener2(object : TabLayoutExt.OnTabSelectedListener2 {
             override fun onTabSelected(tab: TabLayout.Tab, isTabClick: Boolean) {
-                tab.let {
-                    if (skipAnyAnim) {
-                        mBinding.viewpager.setCurrentItem(tab.position, false)
-                    }
+                if (skipAnyAnim) {
+                    if(isTabClick) mBinding.viewpager.startZoomInAnim()
+                    mBinding.viewpager.setCurrentItem(tab.position, false)
                 }
             }
 
