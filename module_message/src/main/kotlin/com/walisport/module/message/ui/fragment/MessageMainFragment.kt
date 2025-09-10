@@ -12,6 +12,7 @@ import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.setupViewPagerScroll
+import arch.cayenne.lib.common.utils.ext.startZoomInAnim
 import arch.cayenne.lib.common.utils.ext.touchBackPressed
 import arch.cayenne.lib.skin.widget.SkinnableTextView
 import com.walisport.module.message.R
@@ -142,7 +143,10 @@ class MessageMainFragment : BaseFragment<MessageMainViewModel, FragmentMessageMa
 
     private fun select(type: Int, historyType: Int, skipAnyAnim: Boolean = false) {
         if (type != historyType) {
-            if (!skipAnyAnim) mBinding.vpMessage.setCurrentItem(type, false)
+            if (!skipAnyAnim) {
+                mBinding.vpMessage.setCurrentItem(type, false)
+                mBinding.vpMessage.startZoomInAnim()
+            }
             selectMessageType(type, true)
             selectMessageType(historyType, false)
             historyTypePosition = type
