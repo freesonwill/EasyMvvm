@@ -182,10 +182,10 @@ class LiveLeagueFragment : BaseFragment<LeagueViewModel, FragmentLeagueBinding>(
     }
 
     private fun setGradientBackground(color: String) {
-        var startColor = Color.parseColor("#377c46")
-        if (color.isNotEmpty()) {
-            startColor = Color.parseColor(color)
+        if (color.isEmpty()) {
+            return
         }
+        val startColor = Color.parseColor(color)
         val endColor = Color.parseColor("#000000")
         val gradientDrawable = GradientDrawable(
             GradientDrawable.Orientation.TOP_BOTTOM, intArrayOf(startColor, endColor)
