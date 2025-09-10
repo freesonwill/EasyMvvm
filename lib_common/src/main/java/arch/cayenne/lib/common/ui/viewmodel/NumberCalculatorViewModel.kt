@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.common.data.constants.NumberOverEnum
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoneyForScale
+import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoneyForScale
 
 open class NumberCalculatorViewModel : BaseViewModel() {
@@ -36,7 +37,13 @@ open class NumberCalculatorViewModel : BaseViewModel() {
 
         val newValue = if (current.contains('.')) {
             val decimalPart = current.substringAfter('.', "")
-            if (decimalPart.length >= decimalNumber) return  // 最多兩位小數，直接返回不修改
+            if (decimalPart.length >= decimalNumber) {
+                val currentNumber = current.toMoney()
+                if (currentNumber >= remainingNumber && number != 0) {
+                    setOverNumberListener(NumberOverEnum.OVER_REMAINING)
+                }
+                return
+            }
             current + number
         } else {
             current + number
