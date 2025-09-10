@@ -31,20 +31,7 @@ class LeagueItemDecoration(
             parent.width,
             parent.paddingTop + headerView.measuredHeight
         )
-        val contactPoint = headerView.bottom
-        val childInContact = getChildInContact(parent, contactPoint)
-        val childPos = childInContact?.let { parent.getChildAdapterPosition(it) } ?: -1
-        var offset = 0f
-        if (childPos != -1 && isHeader(childPos) && childPos > headerPos) {
-            val overlap = childInContact!!.top - headerView.height
-            if (overlap < 0) {
-                offset = overlap.toFloat()
-            }
-        }
-        c.save()
-        c.translate(0f, offset)
         headerView.draw(c)
-        c.restore()
     }
 
     private fun findCurrentHeaderPosition(from: Int): Int {

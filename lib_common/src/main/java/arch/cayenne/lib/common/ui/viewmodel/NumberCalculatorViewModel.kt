@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.common.data.constants.NumberOverEnum
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoneyForScale
+import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoneyForScale
 
 open class NumberCalculatorViewModel : BaseViewModel() {
@@ -36,7 +37,13 @@ open class NumberCalculatorViewModel : BaseViewModel() {
 
         val newValue = if (current.contains('.')) {
             val decimalPart = current.substringAfter('.', "")
-            if (decimalPart.length >= decimalNumber) return  // 最多兩位小數，直接返回不修改
+            if (decimalPart.length >= decimalNumber) {
+                val currentNumber = current.toMoney()
+                if (currentNumber >= remainingNumber && number != 0) {
+                    setOverNumberListener(NumberOverEnum.OVER_REMAINING)
+                }
+                return
+            }
             current + number
         } else {
             current + number
@@ -55,7 +62,11 @@ open class NumberCalculatorViewModel : BaseViewModel() {
     }
 
     fun setMaxMoney() {
-        setEditNumber(maxMoney)
+        if (remainingNumber > maxMoney) {
+            setEditNumber(maxMoney)
+        } else {
+            setEditNumber(remainingNumber)
+        }
     }
 
     fun setNumber(number: Long) {
@@ -75,8 +86,18 @@ open class NumberCalculatorViewModel : BaseViewModel() {
                     it.substring(0, it.length - 1)
                 } else {
                     it
+                }.toMoney()
+                if (money == remainingNumber || money == maxMoney) {
+                    return
                 }
-                setEditNumber(money.toMoneyForScale(decimalNumber) * 2)
+                val doubleMoney = money * 2
+                if (doubleMoney > remainingNumber) {
+                    setEditNumber(remainingNumber)
+                } else if (doubleMoney > maxMoney) {
+                    setEditNumber(maxMoney)
+                } else {
+                    setEditNumber(doubleMoney)
+                }
             }
         } ?: ""
     }

@@ -631,7 +631,7 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
                 if (tournaments.isNotEmpty()) {
                     val selectedPosition = tournaments.indexOfFirst { it.isSelected }
                     tlLeagueList.setScrollPosition(selectedPosition, 0f, true)
-                    tlLeagueList.post { layoutMediator.selectTabWithAnimation(selectedPosition) }
+                    tlLeagueList.post { layoutMediator.selectTabWithoutAnimation(selectedPosition) }
                     vpGameList.post { gameListPageCallback?.onPageScrollStateChanged(SCROLL_STATE_IDLE) }
                 }
             }
