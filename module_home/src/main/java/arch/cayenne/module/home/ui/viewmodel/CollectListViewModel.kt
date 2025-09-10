@@ -48,6 +48,7 @@ class CollectListViewModel : BaseMatchViewModel<CollectListRepository>() {
     override fun getMatchListData(loadMatchType: LoadMatchType) {
         viewModelScope.launch {
             "取得收藏賽事 $page".logi()
+            setState(HomeState.Match.Loading)
             callApi({
                 repository.getCollectData(page)
             }, {

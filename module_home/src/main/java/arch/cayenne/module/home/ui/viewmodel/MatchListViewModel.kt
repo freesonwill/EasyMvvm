@@ -102,6 +102,13 @@ class MatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
                     if (apiStateListener.value == null && list.size < DEFAULT_MATCH_SIZE) {
                         loadNextPage()
                     }
+                    if (page == 1 && list.isEmpty()) {
+                        setState(HomeState.Match.DataEmpty)
+                    } else if (list.size % DEFAULT_MATCH_SIZE != 0) {
+                        setState(DataState.NoMoreData)
+                    } else {
+                        setState(HomeState.Match.LoadSuccess)
+                    }
                     matchListChange.value = list
                 }
             }
@@ -111,6 +118,7 @@ class MatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
     //取得分頁的比賽列表
     override fun getMatchListData(loadMatchType: LoadMatchType) {
         viewModelScope.launch {
+            setState(HomeState.Match.Loading)
             val (startTime, endTime) = if (_selectedDate.value == 0L) { //ALL
                 if (_playType == PlayType.EARLY.id) {
                     DateUtils.getFutureDays(1, Locale.getDefault())[0].third.let {
