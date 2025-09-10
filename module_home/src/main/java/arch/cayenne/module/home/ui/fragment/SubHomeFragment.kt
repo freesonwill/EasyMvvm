@@ -380,7 +380,7 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
         //如果記憶體過低，就不做預載左右兩頁
         val memInfo = ActivityManager.MemoryInfo()
         actManager.getMemoryInfo(memInfo)
-        if (actManager.isLowRamDevice || memInfo.totalMem < LOW_MEMORY_THRESHOLD) return
+        if (actManager.isLowRamDevice || memInfo.availMem < LOW_MEMORY_THRESHOLD) return
 
         if (currentPosition - 1 >= 0) {
             leaguePagerAdapter?.getItemId(currentPosition - 1)?.also { preItemId ->
