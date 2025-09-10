@@ -40,4 +40,6 @@
     <color name="calendar_cancel_button_white_blue">#E9FDF3</color>
     <color name="home_calendar_background_white_blue">#F3F3F4</color>
     <color name="other_date_text_selected_white_blue">#00D271</color>
+
+    <color name="tournament_list_search_text_white_blue">#000000</color>
 </resources>
