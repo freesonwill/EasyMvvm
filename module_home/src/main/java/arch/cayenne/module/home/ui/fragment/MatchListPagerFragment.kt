@@ -217,7 +217,6 @@ class MatchListPagerFragment :
             with(mBinding) {
                 when(it) {
                     DataState.NetworkUnavailable, HomeState.Match.LoadNextFailure -> {
-
                         lvMatchLoading.visibility = View.GONE
                         refreshLayout.finishRefresh()
                         matchAdapter.setLastItemType(MatchItemAdapter.LAST_ITEM_NONE)
@@ -234,6 +233,7 @@ class MatchListPagerFragment :
                     }
                     DataState.NoMoreData -> {     //這個DataEmpty表示api抓不到任何資料了，有可能是頁面到底，或是從第一頁就抓不到資料
                         mViewModel.changePageEnd(true)
+                        clDynamics.visibility = View.GONE
                         matchAdapter.setLastItemType(MatchItemAdapter.LAST_ITEM_NO_MORE)
                     }
                     HomeState.Match.DataEmpty -> {  //這個DataEmpty表示確定真的從第一頁就抓不到資料，表示當前的選擇沒有任何賽事
@@ -279,6 +279,7 @@ class MatchListPagerFragment :
     }
 
     private fun refreshListByDate(date: Long) {
+        mViewModel.changeState(HomeState.Match.Loading)
         if (date.toInt() == 0) {
             //切換後選回全部
             mViewModel.setSelectedDate(0)
