@@ -158,7 +158,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                 tab.let {
                     if (skipAnyAnim) {
                         enableAnimation = false
-                        mBinding.customIndicator.animateIndicatorToPosition(tab.position,210)
+                        mBinding.customIndicator.animateIndicatorToPosition(tab.position)
                         //mBinding.vpPage.setCurrentItem(tab.position,false)
                         //mBinding.vpPage.doSmartAnim(tab.position)
                         val vp = mBinding.vpPage
@@ -422,7 +422,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
             }.attach()
             tabLayout.clearOnTabSelectedListeners()
             tabLayout.post{
-                mBinding.customIndicator.animateIndicatorToPosition(1, 0)
+                mBinding.customIndicator.animateIndicatorToPosition(1, false)
                 mBinding.vpPage.setCurrentItem(1,false)
             }
             tabLayout.removeAllTips()
