@@ -18,8 +18,8 @@
         <arch.cayenne.lib.skin.widget.SkinnableImageView
             android:id="@+id/iv_back"
             style="@style/CustomToolbarImgStyle"
-            android:layout_marginStart="@dimen/dp_10"
             android:layout_marginVertical="7dp"
+            android:layout_marginStart="@dimen/dp_10"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -91,43 +91,83 @@
         android:paddingBottom="12dp"
         app:layout_constraintTop_toBottomOf="@id/LLTabLayout">
 
-        <arch.cayenne.lib.skin.widget.SkinnableTextView
-            android:id="@+id/tv_sport_filter"
+        <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
+            android:id="@+id/cl_sport_filter"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:background="@drawable/bg_filter"
-            android:drawablePadding="4dp"
-            android:ellipsize="end"
             android:foreground="@drawable/bg_filter_mask"
-            android:maxLines="1"
-            android:paddingVertical="6dp"
-            android:paddingStart="14dp"
-            android:paddingEnd="11dp"
-            android:textColor="@color/main_text"
-            app:drawableEndCompat="@mipmap/ic_bet_slip_filter"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/tv_date_filter"
             app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintWidth_default="wrap"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/cl_date_filter"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintWidth_default="wrap" />
+            app:layout_constraintTop_toTopOf="parent">
 
-        <arch.cayenne.lib.skin.widget.SkinnableTextView
-            android:id="@+id/tv_date_filter"
+            <arch.cayenne.lib.skin.widget.SkinnableTextView
+                android:id="@+id/tv_sport_filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:layout_marginStart="14dp"
+                android:layout_marginVertical="5dp"
+                android:textColor="@color/main_text"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <arch.cayenne.lib.skin.widget.SkinnableImageView
+                android:id="@+id/iv_sport_filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_bet_slip_filter"
+                android:layout_marginStart="4dp"
+                android:layout_marginEnd="12dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toEndOf="@id/tv_sport_filter"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+
+        </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
+
+        <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
+            android:id="@+id/cl_date_filter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/bg_filter"
-            android:drawablePadding="4dp"
             android:foreground="@drawable/bg_filter_mask"
-            android:paddingVertical="6dp"
-            android:paddingStart="14dp"
-            android:paddingEnd="11dp"
-            android:textColor="@color/main_text"
-            app:drawableEndCompat="@mipmap/ic_bet_slip_filter"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent">
+
+            <arch.cayenne.lib.skin.widget.SkinnableTextView
+                android:id="@+id/tv_date_filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="14dp"
+                android:layout_marginVertical="5dp"
+                android:textColor="@color/main_text"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/iv_date_filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_bet_slip_filter"
+                android:layout_marginStart="4dp"
+                android:layout_marginEnd="12dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toEndOf="@id/tv_date_filter"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+
+        </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
+
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

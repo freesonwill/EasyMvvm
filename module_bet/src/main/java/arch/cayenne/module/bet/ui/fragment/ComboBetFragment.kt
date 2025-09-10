@@ -446,7 +446,7 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
         val f = OddsChangeDialogFragment.instance(globalRect)
 
         val animator = ObjectAnimator.ofFloat(mBinding.ivOddsChange, "rotation", 0f, 180f)
-        animator.duration = 200 // 旋轉持續時間，單位毫秒
+        animator.duration = 100 // 旋轉持續時間，單位毫秒
         animator.interpolator = LinearInterpolator() // 線性插值器，讓旋轉更平滑
         f.setOnDismissListener {
             animator.reverse()
