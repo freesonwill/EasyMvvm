@@ -1,5 +1,9 @@
 package arch.cayenne.module.betslip.ui.fragment
 
+import android.animation.AnimatorSet
+import android.animation.ArgbEvaluator
+import android.animation.ObjectAnimator
+import android.animation.ValueAnimator
 import android.content.res.Resources
 import android.graphics.Typeface
 import android.os.Bundle
@@ -8,8 +12,11 @@ import android.util.TypedValue
 import android.view.Gravity
 import android.view.View
 import android.view.ViewTreeObserver
+import android.view.animation.LinearInterpolator
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.FragmentManager
 import androidx.navigation.fragment.findNavController
 import arch.cayenne.lib.base.data.model.PagerBean
@@ -83,10 +90,10 @@ class HomeBetSlipFragment : BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsl
                 findNavController().navigateUp()
             }
         }
-        mBinding.tvDateFilter.setOnClickListener {
+        mBinding.clDateFilter.setOnClickListener {
             mViewModel.setShowType(HomeSlipShowTypeEnum.DATE)
         }
-        mBinding.tvSportFilter.setOnClickListener {
+        mBinding.clSportFilter.setOnClickListener {
             mViewModel.setShowType(HomeSlipShowTypeEnum.SPORT)
         }
         mBinding.root.touchBackPressed()
@@ -114,8 +121,8 @@ class HomeBetSlipFragment : BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsl
                     hideSportFilter()
                 }
             }
-            mBinding.tvSportFilter.visibility = if (it == HomeSlipShowTypeEnum.SPORT || it == HomeSlipShowTypeEnum.NONE) View.VISIBLE else View.INVISIBLE
-            mBinding.tvDateFilter.visibility = if (it == HomeSlipShowTypeEnum.DATE || it == HomeSlipShowTypeEnum.NONE) View.VISIBLE else View.INVISIBLE
+            mBinding.clSportFilter.visibility = if (it == HomeSlipShowTypeEnum.SPORT || it == HomeSlipShowTypeEnum.NONE) View.VISIBLE else View.INVISIBLE
+            mBinding.clDateFilter.visibility = if (it == HomeSlipShowTypeEnum.DATE || it == HomeSlipShowTypeEnum.NONE) View.VISIBLE else View.INVISIBLE
         }
     }
 
@@ -271,7 +278,7 @@ class HomeBetSlipFragment : BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsl
 
     private fun showDateFilter() {
         mViewModel.onDateFilter.value?.let {
-            setFilterText(mBinding.tvDateFilter, true)
+            setFilterText(mBinding.tvDateFilter, mBinding.ivDateFilter, true)
             childFragmentManager.setFragmentResultListener(
                 Config.KEY_RESULT,
                 viewLifecycleOwner
@@ -296,7 +303,7 @@ class HomeBetSlipFragment : BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsl
                         }
                     }
                 }
-                setFilterText(mBinding.tvDateFilter, false)
+                setFilterText(mBinding.tvDateFilter, mBinding.ivDateFilter, false)
             }
             val time =
                 if (it.date == BetSlipDateFilterEnum.CUSTOM && mViewModel.customTime != null) {
@@ -310,7 +317,7 @@ class HomeBetSlipFragment : BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsl
 
     private fun showSportFilter() {
         mViewModel.onSportFilter.value?.let {
-            setFilterText(mBinding.tvSportFilter, true)
+            setFilterText(mBinding.tvSportFilter, mBinding.ivSportFilter, true)
             childFragmentManager.setFragmentResultListener(
                 Config.KEY_RESULT,
                 viewLifecycleOwner
@@ -322,7 +329,7 @@ class HomeBetSlipFragment : BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsl
                         betSlipFilterViewModel.setIds(-1, ids)
                     }
                 }
-                setFilterText(mBinding.tvSportFilter, false)
+                setFilterText(mBinding.tvSportFilter, mBinding.ivSportFilter, false)
             }
             SportPickerFragment.create(childFragmentManager, mBinding.fragmentSportFilter.id).show(it.map { bean ->
                 bean.sportId
@@ -333,32 +340,62 @@ class HomeBetSlipFragment : BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsl
     private fun hideSportFilter() {
         val f = childFragmentManager.findFragmentByTag(SportPickerFragment::class.java.simpleName) as? SportPickerFragment ?: return
         f.collapseView()
-        setFilterText(mBinding.tvSportFilter, false)
+        setFilterText(mBinding.tvSportFilter, mBinding.ivSportFilter, false)
     }
 
-    private fun setFilterText(view: TextView, isSelected: Boolean) {
+    private fun setFilterText(tv: TextView, iv: ImageView, isSelected: Boolean) {
         childFragmentManager.clearFragmentResult(Config.KEY_RESULT)
-        if (isSelected) {
-            view.setTextColor(
-                SkinnableResourceManager.getColorStateList(
-                    requireContext(),
-                    arch.cayenne.lib.common.R.color.green_for_white_bg
-                )
-            )
-            view.setCompoundDrawablesRelativeWithIntrinsicBounds(
-                0, 0, R.mipmap.ic_bet_slip_filter_selected, 0
-            )
+        val animatorSet = AnimatorSet()
+
+        val startColor = tv.currentTextColor
+        val endColor = if (isSelected) {
+            SkinnableResourceManager.getColor(requireContext(), arch.cayenne.lib.common.R.color.green_for_white_bg)
         } else {
-            view.setTextColor(
-                SkinnableResourceManager.getColorStateList(
-                    requireContext(),
-                    arch.cayenne.lib.common.R.color.main_text
-                )
-            )
-            view.setCompoundDrawablesRelativeWithIntrinsicBounds(
-                0, 0, R.mipmap.ic_bet_slip_filter, 0
-            )
+            SkinnableResourceManager.getColor(requireContext(), arch.cayenne.lib.common.R.color.main_text)
         }
+        val textColorAnimator = ObjectAnimator.ofObject(
+            tv,
+            "textColor",
+            ArgbEvaluator(),
+            startColor,
+            endColor
+        )
+        val currentRotation = iv.rotation
+        // 假設 0 度是朝下，180 度是朝上
+        val targetRotation = if (isSelected) 180f else 0f
+
+        val rotationAnimator = ObjectAnimator.ofFloat(iv, "rotation", currentRotation, targetRotation)
+
+        val arrowStartColor = if (isSelected) {
+            SkinnableResourceManager.getColor(requireContext(), arch.cayenne.lib.common.R.color.secondary_text)
+        } else {
+            SkinnableResourceManager.getColor(requireContext(), arch.cayenne.lib.common.R.color.green_for_white_bg)
+        }
+        val arrowEndColor = if (isSelected) {
+            SkinnableResourceManager.getColor(requireContext(), arch.cayenne.lib.common.R.color.green_for_white_bg)
+        } else {
+            SkinnableResourceManager.getColor(requireContext(), arch.cayenne.lib.common.R.color.secondary_text)
+        }
+
+        // --- c. ImageView 箭頭顏色漸變動畫 ---
+        val arrowColorAnimator = ValueAnimator.ofObject(
+            ArgbEvaluator(),
+            arrowStartColor,
+            arrowEndColor
+        )
+        arrowColorAnimator.addUpdateListener { animator ->
+            val animatedColor = animator.animatedValue as Int
+            iv.drawable?.let { drawable ->
+                // 確保 drawable 是可變的，這樣 tint 不會影響其他地方使用此 drawable 的 View
+                val wrappedDrawable = DrawableCompat.wrap(drawable).mutate()
+                DrawableCompat.setTint(wrappedDrawable, animatedColor)
+                iv.setImageDrawable(wrappedDrawable) // 更新 ImageView
+            }
+        }
+        animatorSet.playTogether(textColorAnimator, rotationAnimator, arrowColorAnimator)
+        animatorSet.duration = 200
+        animatorSet.interpolator = LinearInterpolator()
+        animatorSet.start()
     }
 
     override fun onResume() {
