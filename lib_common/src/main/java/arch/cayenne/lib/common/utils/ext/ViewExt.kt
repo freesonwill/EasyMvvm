@@ -19,7 +19,6 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.View.OnAttachStateChangeListener
 import android.view.animation.DecelerateInterpolator
-import android.view.animation.PathInterpolator
 import android.widget.ImageView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -454,8 +453,8 @@ fun View.startZoomInAnim(vararg otherViews: View) {
         AnimatorSet().apply {
             playTogether(
                 ObjectAnimator.ofFloat(view, "alpha", 0.3f, 1f),
-                ObjectAnimator.ofFloat(view, "scaleX", 0.95f, 1f),
-                ObjectAnimator.ofFloat(view, "scaleY", 0.95f, 1f)
+                ObjectAnimator.ofFloat(view, "scaleX", 0.995f, 1f),
+                ObjectAnimator.ofFloat(view, "scaleY", 0.995f, 1f)
             )
             duration = AnimationController[AnimType.zoomIn]!!.duration
             interpolator = AnimationController[AnimType.zoomIn]!!.interpolator.toInterpolator()
