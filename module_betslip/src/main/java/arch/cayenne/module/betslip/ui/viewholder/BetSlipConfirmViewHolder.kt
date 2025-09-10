@@ -9,6 +9,7 @@ import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.getDetailFormatDate
 import arch.cayenne.lib.database.entity.BetSlipData
 import arch.cayenne.lib.database.entity.BetSlipOrderBean
+import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.module.betslip.R
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
 import arch.cayenne.module.betslip.databinding.AdapterLiveBetSlipConfirmBinding
@@ -54,8 +55,10 @@ class BetSlipConfirmViewHolder(binding: ViewBinding, betSlipType: BetSlipEnum) :
                 it.betConfirmTvBetcodeValue.text = order.betId
                 val odds = "@${order.odds.getDisplayOdds()}"
                 it.betConfirmTvOddsValue.text = odds
+
                 val betAmount = "${CurrencySymbols.getSymbol(order.currency)}${order.betAmount.getFormalMoney()}"
                 it.betConfirmTvBettingValue.text = betAmount
+
                 val exceptAmount = "${CurrencySymbols.getSymbol(order.currency)}${BetSlipUtils.expectMaxAmount(order.betAmount, order.odds)}"
                 it.betConfirmTvExceptValue.text = exceptAmount
                 it.betConfirmTvExcept.setTextRes(if(order.comboType == 0) R.string.live_bet_except_win else R.string.live_bet_except_max_win)

@@ -12,6 +12,7 @@ import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.getDetailFormatDate
 import arch.cayenne.lib.database.entity.BetSlipData
 import arch.cayenne.lib.database.entity.BetSlipOrderBean
+import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.module.betslip.R
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
 import arch.cayenne.module.betslip.databinding.AdapterLiveBetSlipUnsettleBinding
@@ -67,8 +68,15 @@ class BetSlipUnsettledViewHolder(binding: ViewBinding, betSlipType: BetSlipEnum)
             it.betUnsettledTvBetcodeValue.text = order.betId
             val odds = "@${order.odds.getDisplayOdds()}"
             it.betUnsettledTvOddsValue.text = odds
+
             val betAmount = "${CurrencySymbols.getSymbol(order.currency)}${(order.betAmount - order.earlyBetAmount).getFormalMoney()}"
             it.betUnsettledTvBettingValue.text = betAmount
+            it.betUnsettledTvBetting.text = if (order.earlyBetAmount > 0L) {
+                SkinnableResourceManager.getString(itemView.context, R.string.live_bet_on_remaining)
+            } else {
+                SkinnableResourceManager.getString(itemView.context, R.string.live_bet_on)
+            }
+
             val exceptAmount = "${CurrencySymbols.getSymbol(order.currency)}${BetSlipUtils.expectMaxAmount(order.betAmount, order.odds)}"
             it.betUnsettledTvExceptValue.text = exceptAmount
             it.betUnsettledTvExcept.setTextRes(if(order.comboType == 0) R.string.live_bet_except_win else R.string.live_bet_except_max_win)

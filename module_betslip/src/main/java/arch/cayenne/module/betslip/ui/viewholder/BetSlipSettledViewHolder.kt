@@ -54,8 +54,15 @@ class BetSlipSettledViewHolder(binding: ViewBinding, betSlipType: BetSlipEnum) :
             it.betSettledTvBetcodeValue.text = order.betId
             val odds = "@${order.odds.getDisplayOdds()}"
             it.betSettledTvOddsValue.text = odds
+
             val betAmount = "${CurrencySymbols.getSymbol(order.currency)}${order.betAmount.getFormalMoney()}"
             it.betSettledTvBettingValue.text = betAmount
+            it.betSettledTvBetting.text = if (order.earlyBetAmount > 0L) {
+                SkinnableResourceManager.getString(itemView.context, R.string.live_bet_on_remaining)
+            } else {
+                SkinnableResourceManager.getString(itemView.context, R.string.live_bet_on)
+            }
+
             settledStatus(order)
 
             val hasPartSettled =
