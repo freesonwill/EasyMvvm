@@ -131,6 +131,7 @@ class LiveLeagueFragment : BaseFragment<LeagueViewModel, FragmentLeagueBinding>(
                 .filter { it && mViewModel.apiStateListener.value == DataState.NetworkUnavailable }
                 .collect {
                     if (it) {
+                        setGradientBackground("#377c46")
                         mViewModel.getMatchLeagueList(leagueID)
                     }
                 }
@@ -148,6 +149,8 @@ class LiveLeagueFragment : BaseFragment<LeagueViewModel, FragmentLeagueBinding>(
                 mBinding.refreshLayout.setEnableLoadMore(false)
                 mBinding.recyclerLeague.visibility = View.GONE //网络异常时需隐藏列表
                 mBinding.leagueRoot.background = arch.cayenne.lib.common.R.color.black.getDrawable()
+                mBinding.leagueBar.background = null
+                mBinding.leagueBody.background = null
                 mBinding.leagueMain.setState(
                     States.NETWORK_ANOMALY(),
                     arch.cayenne.lib.common.R.string.error_net.getString()
