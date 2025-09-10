@@ -3,8 +3,17 @@ package arch.cayenne.lib.common.utils.ext
 import android.annotation.SuppressLint
 import android.os.SystemClock
 import android.view.View
+import android.view.ViewGroup
 import android.widget.LinearLayout
+import androidx.lifecycle.findViewTreeLifecycleOwner
+import androidx.lifecycle.lifecycleScope
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
+import com.google.android.material.tabs.TabLayout.Tab
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withTimeout
 
 /**
  * @date: 2025/5/30 11:55
@@ -316,4 +325,48 @@ object TabLayoutExt {
             userDragActiveUntil = 0L
         }
     }
+
+    /**
+     * OnTabSelectedListener增加isTabClick属性
+     */
+    interface OnTabSelectedListener2 {
+        fun onTabSelected(tab: Tab, isTabClick: Boolean)
+        fun onTabUnselected(tab: Tab, isTabClick: Boolean)
+        fun onTabReselected(tab: Tab, isTabClick: Boolean)
+    }
+
+    fun TabLayout.addOnTabSelectedListener2(lis: OnTabSelectedListener2) {
+        clearOnTabSelectedListener()
+        var isTabClick = false
+        addOnTabSelectedListener(object : OnTabSelectedListener {
+            override fun onTabSelected(tab: Tab) {
+                lis.onTabSelected(tab, isTabClick)
+            }
+
+            override fun onTabUnselected(tab: Tab) {
+                lis.onTabUnselected(tab, isTabClick)
+            }
+
+            override fun onTabReselected(tab: Tab) {
+                lis.onTabReselected(tab, isTabClick)
+            }
+        }.apply { setTag(88888888, this) })
+
+        //setOnClickListener
+        findViewTreeLifecycleOwner()!!.lifecycleScope.launch {
+            withTimeout(200) { while (tabCount == 0) delay(1) }
+            for (i in 0 until tabCount) {
+                val tabView = (getChildAt(0) as ViewGroup).getChildAt(i)
+                tabView.setOnClickListener {
+                    isTabClick = true
+                    post { isTabClick = false }
+                }
+            }
+        }
+    }
+
+    fun TabLayout.clearOnTabSelectedListener() {
+        removeOnTabSelectedListener(getTag(88888888) as OnTabSelectedListener?)
+    }
 }
+
