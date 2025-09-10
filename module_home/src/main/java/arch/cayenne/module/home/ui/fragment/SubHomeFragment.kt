@@ -291,51 +291,6 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
             vpGameList.isUserInputEnabled = false
             vpGameList.offscreenPageLimit = 10
             //如果往右往左滑動，等待滑動完成後，再去開始startObserveMatch
-            gameListPageCallback = object : ViewPager2.OnPageChangeCallback(){
-                override fun onPageSelected(position: Int) {
-                    super.onPageSelected(position)
-                    if (vpGameList.scrollState != SCROLL_STATE_IDLE) return
-                    startObservePageMatchListChange()
-
-                }
-                override fun onPageScrollStateChanged(state: Int) {
-                    super.onPageScrollStateChanged(state)
-                    if (state == SCROLL_STATE_IDLE) {
-                        startObservePageMatchListChange()
-                    }
-                }
-                fun startObservePageMatchListChange() {
-                    val currentPosition = vpGameList.currentItem
-                    val itemId = leaguePagerAdapter?.getItemId(currentPosition)?: return
-                    val fragment = childFragmentManager.findFragmentByTag("f$itemId") ?: return
-                    if (fragment is MatchListPagerFragment) {
-                        fragment.startObserveMatchListChange()
-                    }
-                    //如果版本號小於30的低階手機，就不做預載左右兩頁
-                    if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.R) return
-
-                    if (currentPosition - 1 >= 0) {
-                        leaguePagerAdapter?.getItemId(currentPosition - 1)?.also { preItemId ->
-                            childFragmentManager.findFragmentByTag("f$preItemId").also { preFragment ->
-                                if (preFragment is MatchListPagerFragment) {
-                                    preFragment.startObserveMatchListChange()
-                                }
-                            }
-                        }
-                    }
-
-                    if (vpGameList.currentItem + 1 < (vpGameList.adapter?.itemCount ?: 0)) {
-                        leaguePagerAdapter?.getItemId(vpGameList.currentItem + 1)?.also { preItemId ->
-                            childFragmentManager.findFragmentByTag("f$preItemId").also { preFragment ->
-                                if (preFragment is MatchListPagerFragment) {
-                                    preFragment.startObserveMatchListChange()
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            vpGameList.registerOnPageChangeCallback(gameListPageCallback!!)
 
             //現在offscreenPageLimit = 10，所以基本上所有的MatchListPageFragment都會在一開始生成，所以目前需求不需要這段code
             //如果直接點擊聯賽到ViewPager還沒生成的MatchListPageFragment聯賽的話，這個MatchListPageFragment會生成並且attach上去，所以在這裡需要做attach完成後的startObserveMatch
@@ -404,6 +359,37 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
         mBinding.llHomeTournamentMore.clickNoRepeat {
             mViewModel.setCalendarState(HomeCalendarFragment.States.CALENDAR_CLOSE_NOTHING)
             toggleTournamentMoreSection(true, TournamentListType.MORE)
+        }
+    }
+
+    fun startObservePageMatchListChange(position: Int) {
+        val currentPosition = position
+        val itemId = leaguePagerAdapter?.getItemId(currentPosition)?: return
+        val fragment = childFragmentManager.findFragmentByTag("f$itemId") ?: return
+        if (fragment is MatchListPagerFragment) {
+            fragment.startObserveMatchListChange()
+        }
+        //如果版本號小於30的低階手機，就不做預載左右兩頁
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2) return
+
+        if (currentPosition - 1 >= 0) {
+            leaguePagerAdapter?.getItemId(currentPosition - 1)?.also { preItemId ->
+                childFragmentManager.findFragmentByTag("f$preItemId").also { preFragment ->
+                    if (preFragment is MatchListPagerFragment) {
+                        preFragment.startObserveMatchListChange()
+                    }
+                }
+            }
+        }
+
+        if (currentPosition + 1 < (mBinding.layoutContainer.vpGameList.adapter?.itemCount ?: 0)) {
+            leaguePagerAdapter?.getItemId(currentPosition + 1)?.also { preItemId ->
+                childFragmentManager.findFragmentByTag("f$preItemId").also { preFragment ->
+                    if (preFragment is MatchListPagerFragment) {
+                        preFragment.startObserveMatchListChange()
+                    }
+                }
+            }
         }
     }
 
@@ -639,6 +625,7 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
                     afterTabSelected = { position ->
                         getSelectedRecently31Scheduled(position)
                         tournaments.getOrNull(position)?.id?.let { id -> mViewModel.setCurrentTournamentId(id)}
+                        startObservePageMatchListChange(position)
                     }
                 )
                 if (tournaments.isNotEmpty()) {
