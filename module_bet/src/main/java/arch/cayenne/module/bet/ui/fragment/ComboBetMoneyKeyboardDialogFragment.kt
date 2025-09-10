@@ -94,7 +94,6 @@ class ComboBetMoneyKeyboardDialogFragment private constructor():
         mBinding.root.visibility = View.INVISIBLE
 
         ViewUtils.hideKeyboard(requireContext(), mBinding.etMoney)
-        mBinding.etMoney.requestFocus()
         initKeyboard()
 
         mBinding.numberKeyboard.setOnCalculatorClickListener(object :
