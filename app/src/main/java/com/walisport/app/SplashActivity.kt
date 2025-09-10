@@ -76,12 +76,6 @@ class SplashActivity : BaseActivity<SplashViewModel, ActivitySplashBinding>() {
 
     private fun initUidToken(){
         "manager.BUILD_TIME:${manager.getValue(UserDataKey.KEY_BUILD_TIME,"")},BuildConfig.BUILD_TIME:${BuildConfigCom.BUILD_TIME}".logd(TAG)
-        //重新安装时，清理uid，token，否则会引发踢下线的bug
-        if(manager.getValue(UserDataKey.KEY_BUILD_TIME,"") != BuildConfigCom.BUILD_TIME){
-            manager.setKeyValue(UserDataKey.KEY_BUILD_TIME,BuildConfigCom.BUILD_TIME)
-            manager.removeValueForKey(UserDataKey.KEY_UID)
-            manager.removeValueForKey(UserDataKey.KEY_TOKEN)
-        }
         uid = manager.getValue(UserDataKey.KEY_UID,-1).let {
             if(it == -1) pair.first else it
         }
