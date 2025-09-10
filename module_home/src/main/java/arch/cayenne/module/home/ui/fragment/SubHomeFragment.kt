@@ -9,6 +9,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -292,17 +294,16 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
             vpGameList.offscreenPageLimit = 10
             //如果往右往左滑動，等待滑動完成後，再去開始startObserveMatch
 
-            //現在offscreenPageLimit = 10，所以基本上所有的MatchListPageFragment都會在一開始生成，所以目前需求不需要這段code
             //如果直接點擊聯賽到ViewPager還沒生成的MatchListPageFragment聯賽的話，這個MatchListPageFragment會生成並且attach上去，所以在這裡需要做attach完成後的startObserveMatch
-//            childFragmentManager.registerFragmentLifecycleCallbacks(object : FragmentManager.FragmentLifecycleCallbacks() {
-//                override fun onFragmentViewCreated(fm: FragmentManager, f: Fragment, v: View, savedInstanceState: Bundle?) {
-//                    super.onFragmentViewCreated(fm, f, v, savedInstanceState)
-//                    val currentItemId = "f${leaguePagerAdapter?.getItemId(vpGameList.currentItem)}"
-//                    if (f is MatchListPagerFragment && f.tag == currentItemId) {
-//                        f.startObserveMatchListChange()
-//                    }
-//                }
-//            }, false)
+            childFragmentManager.registerFragmentLifecycleCallbacks(object : FragmentManager.FragmentLifecycleCallbacks() {
+                override fun onFragmentViewCreated(fm: FragmentManager, f: Fragment, v: View, savedInstanceState: Bundle?) {
+                    super.onFragmentViewCreated(fm, f, v, savedInstanceState)
+                    val firstFragmentItemId  = leaguePagerAdapter?.getItemId(0)?: return
+                    if (f.tag == "f$firstFragmentItemId") {
+                        startObservePageMatchListChange(0)
+                    }
+                }
+            }, false)
 
             // 日期 Tab 設定, 固定 "全部"
             updateDateTabs(tlDateList, dateTabs)
@@ -362,6 +363,10 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
         }
     }
 
+    /**
+     * 讓相對應的position的MatchListPagerFragment內的matchListChange livedata可以開始observe比賽列表
+     * 也就是開始繪製Match List的RecyclerView
+     * */
     fun startObservePageMatchListChange(position: Int) {
         val currentPosition = position
         val itemId = leaguePagerAdapter?.getItemId(currentPosition)?: return
