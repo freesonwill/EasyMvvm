@@ -86,8 +86,18 @@ open class NumberCalculatorViewModel : BaseViewModel() {
                     it.substring(0, it.length - 1)
                 } else {
                     it
+                }.toMoney()
+                if (money == remainingNumber || money == maxMoney) {
+                    return
                 }
-                setEditNumber(money.toMoneyForScale(decimalNumber) * 2)
+                val doubleMoney = money * 2
+                if (doubleMoney > remainingNumber) {
+                    setEditNumber(remainingNumber)
+                } else if (doubleMoney > maxMoney) {
+                    setEditNumber(maxMoney)
+                } else {
+                    setEditNumber(doubleMoney)
+                }
             }
         } ?: ""
     }
