@@ -21,6 +21,8 @@ import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.lib.common.utils.ext.TabLayoutExt
+import arch.cayenne.lib.common.utils.ext.TabLayoutExt.addOnTabSelectedListener2
 import arch.cayenne.lib.common.utils.ext.removeAllTips
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
@@ -383,9 +385,9 @@ class LiveSoftKeyboardFragment :
         }
         mBinding.keyboardTb.removeAllTips()
 
-        mBinding.keyboardTb.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-            override fun onTabSelected(tab: TabLayout.Tab?) {
-                tab?.let {
+        mBinding.keyboardTb.addOnTabSelectedListener2(object : TabLayoutExt.OnTabSelectedListener2 {
+            override fun onTabSelected(tab:TabLayout.Tab, isTabClick: Boolean) {
+                tab.let {
                     val position = it.position
                     val iv = tab.view.findViewById<ImageView>(R.id.iv)
                     iv.setImageResource(list[position].select)
@@ -407,15 +409,15 @@ class LiveSoftKeyboardFragment :
                 }
             }
 
-            override fun onTabUnselected(tab: TabLayout.Tab?) {
-                tab?.let {
+            override fun onTabUnselected(tab:TabLayout.Tab, isTabClick: Boolean) {
+                tab.let {
                     val position = it.position
                     val iv = tab.view.findViewById<ImageView>(R.id.iv)
                     iv.setImageResource(list[position].normal)
                 }
             }
 
-            override fun onTabReselected(tab: TabLayout.Tab?) {
+            override fun onTabReselected(tab:TabLayout.Tab, isTabClick: Boolean) {
             }
         })
     }

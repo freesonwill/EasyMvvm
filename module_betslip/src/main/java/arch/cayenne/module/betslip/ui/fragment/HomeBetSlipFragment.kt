@@ -25,10 +25,13 @@ import arch.cayenne.lib.base.ui.adapter.PagerAdapter
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.lib.common.utils.ext.TabLayoutExt
+import arch.cayenne.lib.common.utils.ext.TabLayoutExt.addOnTabSelectedListener2
 import arch.cayenne.lib.common.utils.ext.animateIndicatorToPosition
 import arch.cayenne.lib.common.utils.ext.removeAllTips
 import arch.cayenne.lib.common.utils.ext.setupHorizontalScrollDegree
 import arch.cayenne.lib.common.utils.ext.setupViewPagerScroll
+import arch.cayenne.lib.common.utils.ext.startZoomInAnim
 import arch.cayenne.lib.common.utils.ext.touchBackPressed
 import arch.cayenne.lib.common.utils.helper.doSmartAnim
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
@@ -191,15 +194,22 @@ class HomeBetSlipFragment : BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsl
                 setTextColor(SkinnableResourceManager.getColor(requireContext(), arch.cayenne.lib.common.R.color.main_text))
             }
             mBinding.tabLayout.clearOnTabSelectedListeners()
-            mBinding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-                override fun onTabSelected(tab: TabLayout.Tab) {
+
+            mBinding.tabLayout.addOnTabSelectedListener2(object : TabLayoutExt.OnTabSelectedListener2 {
+                override fun onTabSelected(tab: TabLayout.Tab,isTabClick:Boolean) {
                     mViewModel.setShowType(HomeSlipShowTypeEnum.NONE)
                     if (skipAnyAnim) {
                         enableAnim = false
                         // 动画更新指示器位置
-                        mBinding.customIndicator.animateIndicatorToPosition(tab.position,210)
-                        mBinding.viewPager.doSmartAnim(targetPosition = tab.position)
-
+                        mBinding.customIndicator.animateIndicatorToPosition(tab.position)
+                        //mBinding.viewPager.doSmartAnim(targetPosition = tab.position)
+                        val vp = mBinding.viewPager
+                        if(isTabClick) {
+                            vp.setCurrentItem(tab.position, false)
+                            vp.startZoomInAnim()
+                        } else {
+                            vp.doSmartAnim(tab.position)
+                        }
                     }
                     (tab.customView as? TextView)?.apply {
                         setTypeface(null, Typeface.BOLD)
@@ -207,14 +217,14 @@ class HomeBetSlipFragment : BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsl
                     }
                 }
 
-                override fun onTabUnselected(tab: TabLayout.Tab?) {
-                    (tab?.customView as? TextView)?.apply {
+                override fun onTabUnselected(tab: TabLayout.Tab,isTabClick:Boolean) {
+                    (tab.customView as? TextView)?.apply {
                         setTypeface(null, Typeface.NORMAL)
                         setTextColor(SkinnableResourceManager.getColorStateList(requireContext(), arch.cayenne.lib.common.R.color.secondary_text))
                     }
                 }
 
-                override fun onTabReselected(tab: TabLayout.Tab?) {
+                override fun onTabReselected(tab: TabLayout.Tab,isTabClick:Boolean) {
                 }
             })
         }
