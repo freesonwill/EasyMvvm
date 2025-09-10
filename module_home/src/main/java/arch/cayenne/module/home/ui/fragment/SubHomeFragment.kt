@@ -2,8 +2,9 @@ package arch.cayenne.module.home.ui.fragment
 
 import android.animation.Animator
 import android.annotation.SuppressLint
+import android.app.ActivityManager
+import android.content.Context
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -67,6 +68,8 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
     private var isExpanded = false
 
     private val defaultAnimDuration = 300L
+
+    private val actManager by lazy { requireContext().getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager }
 
     private val sportsListAdapter by lazy {
         SportsListAdapter { id ->
@@ -374,8 +377,10 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
         if (fragment is MatchListPagerFragment) {
             fragment.startObserveMatchListChange()
         }
-        //如果版本號小於30的低階手機，就不做預載左右兩頁
-        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2) return
+        //如果記憶體過低，就不做預載左右兩頁
+        val memInfo = ActivityManager.MemoryInfo()
+        actManager.getMemoryInfo(memInfo)
+        if (actManager.isLowRamDevice || memInfo.totalMem < LOW_MEMORY_THRESHOLD) return
 
         if (currentPosition - 1 >= 0) {
             leaguePagerAdapter?.getItemId(currentPosition - 1)?.also { preItemId ->
@@ -731,6 +736,7 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
     }
 
     companion object {
+        const val LOW_MEMORY_THRESHOLD = 2_000_000_000L
         private const val ARG_PLAY_TYPE_ID = "play_type_id"
         fun newInstance(playTypeId: Int): SubHomeFragment {
             return SubHomeFragment().apply {
