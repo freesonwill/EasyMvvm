@@ -267,6 +267,12 @@
         tools:text="$2312" />
 
     <androidx.constraintlayout.widget.Group
+        android:id="@+id/group_early_settle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="bet_settled_tv_part,bet_settled_tv_part_value" />
+
+    <androidx.constraintlayout.widget.Group
         android:id="@+id/group_crossborder"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
