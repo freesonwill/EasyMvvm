@@ -81,7 +81,11 @@ class BetSlipUnsettledViewHolder(binding: ViewBinding, betSlipType: BetSlipEnum)
                 val combo = "${R.string.title_combo_bet_odds.getString(order.comboK, order.comboV)}*${order.comboCount}"
                 it.betUnsettledTvCrossborderValue.text = combo
             }
-            it.groupEarlysettle.isVisible = order.earlyBetAmount > 0 //提前结算部分有金额才显示
+
+            if (order.selectionsList.size == 1) {
+                it.groupEarlysettle.isVisible = order.earlyBetAmount > 0L
+            }
+
             it.betUnsettledTvEarlysettleValue.text = order.earlyBetAmount.getFormalMoney()
             it.betUnsettledBtSettle.clickNoRepeat {
                 if (order.earlySettlePrice.settleStatus != 102) {

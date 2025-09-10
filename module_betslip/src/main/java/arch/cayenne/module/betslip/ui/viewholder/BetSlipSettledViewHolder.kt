@@ -7,7 +7,6 @@ import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.SportDisplayOddsExt.getDisplayOdds
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
-import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.getDetailFormatDate
 import arch.cayenne.lib.database.entity.BetSlipData
@@ -61,6 +60,11 @@ class BetSlipSettledViewHolder(binding: ViewBinding, betSlipType: BetSlipEnum) :
 
             val hasPartSettled =
                 BetSlipResultOrderStatusEnum.getStatus(order.resultStatus) == BetSlipResultOrderStatusEnum.EarlySettle
+
+            if (order.selectionsList.size == 1) {
+                mBinding.groupEarlySettle.isVisible = order.earlyBetAmount > 0L
+            }
+
             val earlyAmount = "${CurrencySymbols.getSymbol(order.currency)}${order.earlyBetAmount.getFormalMoney()}"
             mBinding.betSettledTvPartValue.text = earlyAmount
             val amount =
