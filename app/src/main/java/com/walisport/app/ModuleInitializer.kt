@@ -36,8 +36,7 @@ import org.koin.core.module.Module
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import retrofit2.Response
-import retrofit2.http.Body
-import retrofit2.http.POST
+import retrofit2.http.GET
 
 /**
  * @author: zhangsan
@@ -119,8 +118,8 @@ class ModuleInitializer : DefaultInitializer<String> {
 }
 
 interface IPreLoadHomeApi : IApi {
-    @POST("sport_server/game/firstLoad")
-    suspend fun postPreLoad(@Body params: Map<String, String>): Response<PreloadDataModel>
+    @GET("sport_server/game/firstLoad")
+    suspend fun preLoad(): Response<PreloadDataModel>
 }
 
 
