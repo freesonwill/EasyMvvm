@@ -62,7 +62,11 @@ open class NumberCalculatorViewModel : BaseViewModel() {
     }
 
     fun setMaxMoney() {
-        setEditNumber(remainingNumber)
+        if (remainingNumber > maxMoney) {
+            setEditNumber(maxMoney)
+        } else {
+            setEditNumber(remainingNumber)
+        }
     }
 
     fun setNumber(number: Long) {
