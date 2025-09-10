@@ -79,7 +79,6 @@ class BetSlipEarlySettledFragment :
             ViewUtils.hideKeyboard(requireContext(), etMoney) { _ ->
                 showKeyboard()
             }
-            etMoney.requestFocus()
             numberKeyboard.setOnCalculatorClickListener(object :
                 NumberKeyboardView.OnCalculatorClickListener {
                 override fun onNumberClick(number: Int) {
@@ -250,5 +249,8 @@ class BetSlipEarlySettledFragment :
         setCurrency()
         setAmount()
         super.customShow()
+        mBinding.etMoney.post {
+            mBinding.etMoney.requestFocus()
+        }
     }
 }
