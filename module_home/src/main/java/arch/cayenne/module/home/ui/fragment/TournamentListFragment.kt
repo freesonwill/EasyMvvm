@@ -26,12 +26,14 @@ import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.enableRecyclerViewBounce
+import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.module.home.R
 import arch.cayenne.module.home.data.TournamentListItem
 import arch.cayenne.module.home.data.constants.HomeState
 import arch.cayenne.module.home.databinding.FragmentTournamentListBinding
 import arch.cayenne.module.home.databinding.ItemTournamentHeaderBinding
 import arch.cayenne.module.home.ui.adapter.TournamentSectionAdapter
+import arch.cayenne.module.home.ui.view.CustomFilterSideBarView
 import arch.cayenne.module.home.ui.view.decoration.StickyHeaderItemDecoration
 import arch.cayenne.module.home.ui.viewmodel.SubHomeViewModel
 import arch.cayenne.module.home.ui.viewmodel.TournamentListViewModel
@@ -271,10 +273,17 @@ class TournamentListFragment :
 
     private fun setupAZIndex() {
         with(mBinding.llIndexContainer) {
-            setLetters(mViewModel.getAvailableIndexLetters())
-            onLetterTouch = { letter ->
-                mViewModel.selectLetter(letter)
-                scrollToSection(letter)
+            // 設置要顯示的字母列表(*代表熱門圖示)
+            indexTitles = mViewModel.getAvailableIndexLetters().map { it.toString() }
+            textColorResId = SkinnableResourceManager.getTargetResourceId(requireContext(), R.color.custom_filter_side_bar_text)
+            // 設置字母選中的監聽
+            onIndexSelectedListener = object: CustomFilterSideBarView.OnIndexSelectedListener {
+                override fun onIndexSelected(index: Int, letter: String, isTouching: Boolean) {
+                    letter.firstOrNull()?.let {
+                        mViewModel.selectLetter(it)
+                        scrollToSection(it)
+                    }
+                }
             }
         }
     }
@@ -286,7 +295,7 @@ class TournamentListFragment :
 
         pendingJumpIndex = index
         // 直接設置選中的字母
-        mBinding.llIndexContainer.setSelectedLetter(letter)
+        mBinding.llIndexContainer.setSelectedTitle(letter.toString())
 
         val scroller = createFastScroller(context, layoutManager, index, 0.06f)
         layoutManager.startSmoothScroll(scroller)
@@ -300,7 +309,7 @@ class TournamentListFragment :
         val currentLetter = mViewModel.getAvailableIndexLetters().firstOrNull {
             mViewModel.getHeaderIndex(it) == currentIndex
         } ?: return
-        mBinding.llIndexContainer.setSelectedLetter(currentLetter)
+        mBinding.llIndexContainer.setSelectedTitle(currentLetter.toString())
     }
 
     private fun setupStickyHeader() {
