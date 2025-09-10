@@ -144,6 +144,7 @@ class ReserveDialogFragment private constructor() : BaseDialogFragment<ReserveDi
         mBinding.root.visibility = View.INVISIBLE
 
         ViewUtils.hideKeyboard(requireContext(), mBinding.etRate)
+        mBinding.etRate.requestFocus()
 
         val odds = requireArguments().getInt(ODDS_NUMBER, -1)
         if (odds != -1) {
