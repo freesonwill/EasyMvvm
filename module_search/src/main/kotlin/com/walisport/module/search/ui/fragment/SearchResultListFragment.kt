@@ -11,6 +11,8 @@ import androidx.core.view.children
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
+import arch.cayenne.lib.common.utils.ext.TabLayoutExt
+import arch.cayenne.lib.common.utils.ext.TabLayoutExt.addOnTabSelectedListener2
 import arch.cayenne.lib.common.utils.ext.animateIndicatorToPosition
 import arch.cayenne.lib.common.utils.ext.setupHorizontalScrollDegree
 import arch.cayenne.lib.common.utils.ext.setupViewPagerScroll
@@ -50,24 +52,23 @@ class SearchResultListFragment :
                 return@setupViewPagerScroll enableAnim            })
             tlSearch.apply {
                 clearOnTabSelectedListeners()
-                addOnTabSelectedListener(object :
-                    TabLayout.OnTabSelectedListener {
-                    override fun onTabSelected(tab: TabLayout.Tab) {
+                addOnTabSelectedListener2(object : TabLayoutExt.OnTabSelectedListener2 {
+                    override fun onTabSelected(tab: TabLayout.Tab, isTabClick: Boolean) {
                         if (skipAnyAnim) {
                             enableAnim = false
                             // 动画更新指示器位置
-                            customIndicator.animateIndicatorToPosition(tab.position,210)
+                            customIndicator.animateIndicatorToPosition(tab.position)
 //                            viewPager.setCurrentItem(tab.position, false)
                             viewPager.doSmartAnim(tab.position)
 
                         }
                         tab.let { updateTabTypeface(it, true) }
                     }
-                    override fun onTabUnselected(tab: TabLayout.Tab?) {
-                        tab?.let { updateTabTypeface(it, false) }
+                    override fun onTabUnselected(tab:TabLayout.Tab, isTabClick: Boolean) {
+                        tab.let { updateTabTypeface(it, false) }
                     }
-                    override fun onTabReselected(tab: TabLayout.Tab?) {
-                        tab?.let { updateTabTypeface(it, true) }
+                    override fun onTabReselected(tab:TabLayout.Tab, isTabClick: Boolean) {
+                        tab.let { updateTabTypeface(it, true) }
                     }
                 })
             }
