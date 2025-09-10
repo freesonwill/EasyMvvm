@@ -8,6 +8,7 @@ import android.content.res.Resources
 import android.graphics.Typeface
 import android.os.Bundle
 import android.text.TextPaint
+import android.util.Log
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.View
@@ -344,6 +345,8 @@ class HomeBetSlipFragment : BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsl
     }
 
     private fun setFilterText(tv: TextView, iv: ImageView, isSelected: Boolean) {
+        if (tv.isSelected == isSelected) return
+        tv.isSelected = isSelected
         childFragmentManager.clearFragmentResult(Config.KEY_RESULT)
         val animatorSet = AnimatorSet()
 
@@ -393,7 +396,7 @@ class HomeBetSlipFragment : BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsl
             }
         }
         animatorSet.playTogether(textColorAnimator, rotationAnimator, arrowColorAnimator)
-        animatorSet.duration = 200
+        animatorSet.duration = 100
         animatorSet.interpolator = LinearInterpolator()
         animatorSet.start()
     }
