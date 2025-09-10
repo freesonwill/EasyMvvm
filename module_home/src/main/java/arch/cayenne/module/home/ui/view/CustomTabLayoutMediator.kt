@@ -1,16 +1,11 @@
 package arch.cayenne.module.home.ui.view
 
-import android.animation.ValueAnimator
-import android.view.ViewGroup
-import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import arch.cayenne.lib.common.utils.helper.ViewPagerAnimHelper.Companion.getAnimHelper
 import arch.cayenne.lib.common.utils.helper.doSmartAnim
 import com.google.android.material.tabs.TabLayout
 import java.lang.ref.WeakReference
-import kotlin.math.abs
-import kotlin.math.max
 
 class CustomTabLayoutMediator(
     private val tabLayout: TabLayout,
@@ -30,17 +25,23 @@ class CustomTabLayoutMediator(
 
     /**
      * 執行 TabLayout 滾動到指定位置
-     * 使用自定義平滑滾動
+     * 用映射的方式叫用 animationTo 或 setScrollPosition 來控制是否需要 smoothScroll 效果
      * @param position 目標位置
-     * @param noTabAnim 是否不需要 TabLayout 的動畫效果
-     * @param noViewPagerAnim 是否不需要 ViewPager2 的動畫效果
+     * @param noTabAnim 是否不需要 TabLayout 的動畫效果，默認為 false
+     * @param noViewPagerAnim 是否不需要動畫效果，默認為 false
      */
     private fun doOnClick(position: Int, noTabAnim: Boolean = false, noViewPagerAnim: Boolean = false) {
         try {
+            // 如果是 BounceTabLayoutContainer，則跳過回彈動畫
+            (tabLayout.parent as? BounceTabLayoutContainer)?.setSkipAnim(true)
+
             if (!noTabAnim) {
-                if (position != tabLayout.selectedTabPosition) {
-                    smoothScrollToTab(position)
-                }
+                TabLayout::class.java
+                    .getDeclaredMethod("animateToTab", Int::class.java)
+                    .apply {
+                        isAccessible = true
+                        invoke(tabLayout, position)
+                    }
             } else {
                 TabLayout::class.java
                     .getDeclaredMethod(
@@ -62,42 +63,6 @@ class CustomTabLayoutMediator(
             tabLayout.getTabAt(position)?.select()
         } catch (e: Exception) {
             e.printStackTrace()
-        }
-    }
-
-    /**
-     * 自定義平滑滾動到指定 tab 位置
-     */
-    private fun smoothScrollToTab(position: Int) {
-        val slidingTabStrip = tabLayout.getChildAt(0) as? ViewGroup ?: return
-        val targetChild = slidingTabStrip.getChildAt(position) ?: return
-
-        // 計算目標滾動位置（將 tab 置中）
-        val targetChildCenter = targetChild.left + targetChild.width / 2
-        val tabLayoutCenter = tabLayout.width / 2
-        val targetScrollX = (targetChildCenter - tabLayoutCenter).toFloat()
-
-        // 限制滾動範圍
-        val maxScrollX = max(0, slidingTabStrip.width - tabLayout.width)
-        val clampedScrollX = targetScrollX.coerceIn(0f, maxScrollX.toFloat())
-
-        val currentScrollX = tabLayout.scrollX.toFloat()
-
-        // 如果距離很小，直接跳轉
-        if (abs(currentScrollX - clampedScrollX) < 2) {
-            tabLayout.scrollTo(clampedScrollX.toInt(), 0)
-            return
-        }
-
-        // 使用 ValueAnimator 平滑滾動
-        ValueAnimator.ofFloat(currentScrollX, clampedScrollX).apply {
-            duration = 250L
-            interpolator = FastOutSlowInInterpolator()
-            addUpdateListener { animator ->
-                val animatedValue = animator.animatedValue as Float
-                tabLayout.scrollTo(animatedValue.toInt(), 0)
-            }
-            start()
         }
     }
 
@@ -160,10 +125,6 @@ class CustomTabLayoutMediator(
 
     fun selectTabWithoutAnimation(position: Int) {
         doOnClick(position = position, noTabAnim = true, noViewPagerAnim = true)
-    }
-
-    fun selectTabWithAnimation(position: Int) {
-        doOnClick(position = position, noTabAnim = false, noViewPagerAnim = false)
     }
 
     private fun getAfterTabSelectedCallback(): ((position: Int) -> Unit)? {
