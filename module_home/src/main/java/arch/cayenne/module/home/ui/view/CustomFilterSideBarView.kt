@@ -19,7 +19,6 @@ import arch.cayenne.module.home.R
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
-import arch.cayenne.lib.common.R as RC
 
 class CustomFilterSideBarView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
@@ -38,26 +37,11 @@ class CustomFilterSideBarView @JvmOverloads constructor(
             requestLayout()
         }
 
-    // 背景顏色
-    var normalBackgroundColor: Int = Color.TRANSPARENT
-        set(value) {
-            field = value
-            invalidate()
-        }
-
     // 文字顏色
-    var normalTextColorResId: Int = R.color.brand_color_index_unselect
+    var textColorResId: Int = R.color.custom_filter_side_bar_text
         set(value) {
             field = value
-            normalTextColor = value.getColor()
-            invalidate()
-        }
-
-    // 選中文字顏色
-    var selectedTextColorResId: Int = RC.color.brand_color
-        set(value) {
-            field = value
-            selectedTextColor = value.getColor()
+            textColor = value.getColor()
             invalidate()
         }
 
@@ -68,8 +52,15 @@ class CustomFilterSideBarView @JvmOverloads constructor(
             requestLayout()
         }
 
-    // 最大偏移距離 (dp)
-    var maxOffset: Float = 50f.dp2px.toFloat()
+    // 圓弧的寬度
+    var ellipseWidth: Float = 50f.dp2px.toFloat()
+        set(value) {
+            field = value
+            invalidate()
+        }
+
+    // 圓弧的高度
+    var ellipseHeight: Float = 70f.dp2px.toFloat()
         set(value) {
             field = value
             invalidate()
@@ -82,19 +73,11 @@ class CustomFilterSideBarView @JvmOverloads constructor(
             invalidate()
         }
 
-    // 熱門圖標
-    var normalHotIconResId: Int = R.drawable.ic_hot_league_index_unselect
-        set(value) {
-            field = value
-            normalHotIconBitmap = value.getDrawable().toBitmap()
-            invalidate()
-        }
-
     // 熱門圖標-選中
-    var selectedHotIconResId: Int = R.drawable.ic_hot_league_index
+    var hotIconResId: Int = R.drawable.ic_hot_league_index
         set(value) {
             field = value
-            selectedHotIconBitmap = value.getDrawable().toBitmap()
+            hotIconBitmap = value.getDrawable().toBitmap()
             invalidate()
         }
 
@@ -102,17 +85,17 @@ class CustomFilterSideBarView @JvmOverloads constructor(
     val totalCount: Int
         get() = indexTitles.size
 
+    // 比照 iOS 沒被選中的項目 透明度設為 0.3f
+    private var unselectAlpha = 0.3f
+
     // 內部文字顏色變數
-    private var normalTextColor: Int
-    private var selectedTextColor: Int
+    private var textColor: Int
 
     // 內部 Bitmap 變數
-    private var normalHotIconBitmap: Bitmap
-    private var selectedHotIconBitmap: Bitmap
+    private var hotIconBitmap: Bitmap
 
     // 內部狀態
     private var itemHeight: Float = 0f
-    private var barHeight: Float = 0f
     private var firstItemBaselineY: Float = 16.dp2px.toFloat()
     private var currentIndex: Int = -1
     private var selectedIndex: Int = -1
@@ -129,10 +112,8 @@ class CustomFilterSideBarView @JvmOverloads constructor(
     private val backgroundPaint = Paint(Paint.ANTI_ALIAS_FLAG)
 
     init {
-        normalHotIconBitmap = normalHotIconResId.getDrawable().toBitmap()
-        selectedHotIconBitmap = selectedHotIconResId.getDrawable().toBitmap()
-        normalTextColor = normalTextColorResId.getColor()
-        selectedTextColor = selectedTextColorResId.getColor()
+        hotIconBitmap = hotIconResId.getDrawable().toBitmap()
+        textColor = textColorResId.getColor()
     }
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
@@ -142,7 +123,6 @@ class CustomFilterSideBarView @JvmOverloads constructor(
         textPaint.apply {
             textSize = this@CustomFilterSideBarView.textSize
             itemHeight = fontMetrics.bottom - fontMetrics.top
-            barHeight = indexTitles.size * itemHeight
         }
     }
 
@@ -151,70 +131,139 @@ class CustomFilterSideBarView @JvmOverloads constructor(
         super.onDraw(canvas)
         if (indexTitles.isEmpty()) return
 
-        // 重新繪製背景，不考慮 endPadding
         canvas.drawRect(
             width - normalViewWidth * 1.5f,
             0f,
             width - normalViewWidth * 0.5f,
             height.toFloat(),
-            backgroundPaint.apply { color = normalBackgroundColor }
+            backgroundPaint.apply { color = Color.TRANSPARENT }
         )
 
-        // 計算 maxX，現在它代表了靜態時的右側邊界
         val maxX = width - normalViewWidth * 0.5f
 
-        for (i in 0 until totalCount) {
-            val baseLineY = firstItemBaselineY + i * itemHeight
-            val scale = calculateItemScale(i)
-            val isSelected = i == currentIndex || i == selectedIndex
-            val alpha = if (isSelected) 1.0f else (1 - scale + 0.05f)
-            val textColor = if (isSelected) selectedTextColor else normalTextColor
-            val letter = indexTitles[i]
+        // 靜態狀態，沒有觸摸或動畫正在進行
+        if (!isTouching) {
+            for (i in 0 until totalCount) {
+                val baseLineY = firstItemBaselineY + i * itemHeight
+                val letter = indexTitles[i]
+                val isSelected = i == selectedIndex
+                val textColor = this@CustomFilterSideBarView.textColor
 
-            // 計算圓心 X，使其有向左凸出的圓弧效果
-            val centerX = maxX - maxOffset * scale
+                val drawSize = normalViewWidth
+                val rect = RectF(
+                    maxX - drawSize / 2,
+                    baseLineY - drawSize / 2,
+                    maxX + drawSize / 2,
+                    baseLineY + drawSize / 2
+                )
 
-            if(letter == "*") {
-                run {
-                    normalViewWidth * (1 + scale)
-                }.let { drawSize ->
-                    RectF(
-                        centerX - drawSize / 2,
-                        baseLineY - drawSize / 2,
-                        centerX + drawSize / 2,
-                        baseLineY + drawSize / 2
-                    )
-                }.let { rect ->
+                if (letter == "*") {
                     canvas.drawBitmap(
-                        if (isSelected) selectedHotIconBitmap else normalHotIconBitmap,
+                        hotIconBitmap,
                         null, rect,
                         Paint().apply {
-                            this.alpha = (alpha * 255).toInt()
+                            alpha = if (isSelected) 255 else (unselectAlpha * 255).toInt()
+                        }
+                    )
+                } else {
+                    canvas.drawText(
+                        letter, maxX,
+                        baseLineY - (textPaint.fontMetrics.ascent + textPaint.fontMetrics.descent) / 2,
+                        textPaint.apply {
+                            textSize = this@CustomFilterSideBarView.textSize
+                            color = textColor
+                            alpha = if (isSelected) 255 else (unselectAlpha * 255).toInt()
                         }
                     )
                 }
+            }
+            return
+        }
+
+        // 動態狀態，有觸摸在進行
+        val currentTouchY = touchY
+
+        val halfSizeY = ellipseHeight / 2f
+        val topY = currentTouchY - halfSizeY
+        val bottomY = currentTouchY + halfSizeY
+
+        for (i in 0 until totalCount) {
+            val baseLineY = firstItemBaselineY + i * itemHeight
+            val letter = indexTitles[i]
+            val isSelected = i == currentIndex
+
+            val scale: Float
+            val centerX: Float
+            val alpha: Float
+
+            val itemBottomY = baseLineY + itemHeight
+            val isInRange = baseLineY <= bottomY && itemBottomY > topY
+
+            if (isSelected) {
+                // 如果是固定的選中項目，使用固定的位移和縮放
+                scale = 1f
+                centerX = maxX - ellipseWidth
+                alpha = 1f
+            } else if (!isInRange) {
+                // 不在範圍內且未被選中的項目，保持靜態
+                scale = 0f
+                centerX = maxX
+                alpha = unselectAlpha
+            } else {
+                // 在範圍內但未被選中的項目，進行動態計算
+                val itemCenterY = baseLineY + itemHeight / 2
+
+                // H5 程式碼中的 distanceY
+                val distanceY = abs(itemCenterY - currentTouchY)
+
+                // H5 程式碼中的 m (水平位移)
+                val m = ellipseWidth * kotlin.math.sqrt(max(0f, 1f - (distanceY * distanceY) / (halfSizeY * halfSizeY)))
+
+                // H5 程式碼中的 distancePercent
+                val distancePercent = max(abs(distanceY / halfSizeY) - 0.1f, 0f)
+
+                // 縮放比例
+                val maxFontScale = 1f
+                val minFontScale = 0f
+                scale = max(maxFontScale - maxFontScale * distancePercent, minFontScale)
+
+                // 位移
+                centerX = maxX - m
+
+                // 透明度
+                // 原 H5 寫法為 max(distancePercent, 0.05f)
+                // 但因比照 iOS，最低透明度為 unselectAlpha (0.3f)
+                // 因此改寫為如下
+                alpha = min(distancePercent, unselectAlpha)
+            }
+
+            // 繪製內容
+            if (letter == "*") {
+                val drawSize = normalViewWidth * (1 + scale)
+                val rect = RectF(
+                    centerX - drawSize / 2,
+                    baseLineY - drawSize / 2,
+                    centerX + drawSize / 2,
+                    baseLineY + drawSize / 2
+                )
+                canvas.drawBitmap(
+                    hotIconBitmap,
+                    null, rect,
+                    Paint().apply {
+                        this.alpha = (alpha * 255).toInt()
+                    }
+                )
             } else {
                 canvas.drawText(
                     letter, centerX,
                     baseLineY - (textPaint.fontMetrics.ascent + textPaint.fontMetrics.descent) / 2,
                     textPaint.apply {
                         textSize = this@CustomFilterSideBarView.textSize * (1 + scale)
-                        color = textColor
+                        color = this@CustomFilterSideBarView.textColor
                         this.alpha = (alpha * 255).toInt()
                     }
                 )
             }
-        }
-    }
-
-    // 計算每個項目的縮放比例
-    private fun calculateItemScale(index: Int): Float {
-        if (!isTouching || currentIndex == -1) return 0f
-
-        return run {
-            abs(touchY - (index * itemHeight + itemHeight / 2))
-        }.run {
-            max(0f, 1f - this / maxOffset)
         }
     }
 
@@ -236,7 +285,7 @@ class CustomFilterSideBarView @JvmOverloads constructor(
         val y = event.y - firstItemBaselineY
         val index = (y / itemHeight).toInt()
         val letterIndex = min(max(0, index), totalCount - 1)
-        val letter = indexTitles[letterIndex]
+        val letter = indexTitles.getOrNull(letterIndex) ?: ""
 
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {
@@ -265,34 +314,24 @@ class CustomFilterSideBarView @JvmOverloads constructor(
     private fun handleTouchEnd(event: MotionEvent) {
         isTouching = false
 
-        // 將選中的索引設定為最後滾動到的currentIndex
-        // 如果currentIndex是有效的，就使用它
         if (currentIndex != -1) {
             selectedIndex = currentIndex
         } else {
-            // 如果currentIndex無效，才 fallback 到最後的觸控點
             val y = event.y - firstItemBaselineY
             val index = (y / itemHeight).toInt()
             val letterIndex = min(max(0, index), totalCount - 1)
             selectedIndex = letterIndex
         }
 
-        // 取得對應的 letter
-        val letter = indexTitles[selectedIndex]
-
-        // 清空 currentIndex
-        currentIndex = -1
+        val letter = indexTitles.getOrNull(selectedIndex) ?: ""
 
         onIndexSelectedListener?.onIndexSelected(selectedIndex, letter, false)
         parent.requestDisallowInterceptTouchEvent(false)
         invalidate()
     }
 
-
-    /**
-     * 設置選中索引
-     */
-    fun setSelectedIndex(index: Int) {
+    // 設置選中索引
+    private fun setSelectedIndex(index: Int) {
         val minCheck = max(index, 0)
         selectedIndex = min(minCheck, totalCount - 1)
         invalidate()
@@ -300,6 +339,7 @@ class CustomFilterSideBarView @JvmOverloads constructor(
 
     /**
      * 設置選中標題
+     * @param title 標題文字
      */
     fun setSelectedTitle(title: String) {
         val index = indexTitles.indexOf(title)
