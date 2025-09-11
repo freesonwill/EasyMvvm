@@ -3,7 +3,9 @@ package com.walisport.module.live.utils.softkeyboard
 import android.view.View
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
 
 /**
  * @author: wenxi
@@ -12,14 +14,16 @@ import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
  */
 class NavigationBarHelper(
     private val rootView: View,
-    private val navigationListener: NavigationListener
-) {
+    private val lifecycle: Lifecycle,
+    private var navigationListener: NavigationListener?
+):DefaultLifecycleObserver{
     private var navigationBarHeight: Int = 0
     private var isNavigationBarVisible: Boolean = false
     private var isKeyBoardVisible: Boolean = false
 
     init {
         setupWindowInsetsListener()
+        lifecycle.addObserver(this)
     }
 
     /**
@@ -34,6 +38,14 @@ class NavigationBarHelper(
         }
         // 立即请求WindowInsets更新
         ViewCompat.requestApplyInsets(rootView)
+    }
+
+    override fun onDestroy(owner: LifecycleOwner) {
+        super.onDestroy(owner)
+        lifecycle.removeObserver(this)
+        //remove OnApplyWindowInsetsListener when destroyed,otherwise it will cause fragment memory leak
+        ViewCompat.setOnApplyWindowInsetsListener(rootView,null)
+        navigationListener = null
     }
 
     /**
@@ -57,10 +69,10 @@ class NavigationBarHelper(
         if (height > 150 && !isKeyBoardVisible) {
             isKeyBoardVisible = true
             val keyBoardHeight = if(isNavigationBarVisible) height - navigationBarHeight else height
-            navigationListener.onSoftKeyBoardShow(keyBoardHeight)
+            navigationListener?.onSoftKeyBoardShow(keyBoardHeight)
         } else if (height < 150 && isKeyBoardVisible) {
             isKeyBoardVisible = false
-            navigationListener.onSoftKeyBoardHide()
+            navigationListener?.onSoftKeyBoardHide()
         }
     }
 

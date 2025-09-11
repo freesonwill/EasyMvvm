@@ -149,8 +149,9 @@ class LiveSoftKeyboardFragment :
 //        WindowCompat.setDecorFitsSystemWindows(requireActivity().window, false)
 //        ViewCompat.setWindowInsetsAnimationCallback(requireActivity().window.decorView, keyBoardInsetsCallBack)
 
-        val navigationBarHelper = NavigationBarHelper(requireActivity().window.decorView,object:NavigationListener{
+        NavigationBarHelper(requireActivity().window.decorView,lifecycle,object:NavigationListener{
             override fun setNavigationStatus(hasNavigation: Boolean, navigationHeight: Int) {
+
             }
 
             override fun onSoftKeyBoardHide() {
