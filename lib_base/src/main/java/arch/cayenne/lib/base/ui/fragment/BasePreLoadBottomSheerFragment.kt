@@ -6,13 +6,12 @@ import android.content.Context
 import android.os.Bundle
 import android.util.AttributeSet
 import android.view.View
+import android.view.WindowManager
 import androidx.annotation.CallSuper
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.animation.doOnEnd
-import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
-import androidx.fragment.app.FragmentManager
 import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.base.ui.view.UnhideableBottomSheetDialog
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
@@ -48,6 +47,9 @@ abstract class BasePreLoadBottomSheetFragment<VM : BaseViewModel, VB : ViewBindi
             override fun show() {
                 if (systemHide) {
                     systemHide = false
+                    if (!isDismissing) {
+                        setCustomExpendSetting()
+                    }
                     return
                 }
                 super.show()
@@ -56,12 +58,13 @@ abstract class BasePreLoadBottomSheetFragment<VM : BaseViewModel, VB : ViewBindi
 
             override fun hide() {
                 systemHide = true
-                setSystemHide()
             }
 
         }
         unhideableDialog = dialog
-        return dialog
+        return dialog.apply {
+            window?.setType(WindowManager.LayoutParams.TYPE_APPLICATION_SUB_PANEL)
+        }
     }
 
     override fun setBackGroundOnclick() {
@@ -205,22 +208,6 @@ abstract class BasePreLoadBottomSheetFragment<VM : BaseViewModel, VB : ViewBindi
                 setCustomCollapseSetting()
             }
         }
-    }
-
-    private fun setSystemHide() {
-        fun findDialogFragment(fragmentManager: FragmentManager) {
-            fragmentManager.fragments.forEach {
-                if (it is DialogFragment) {
-                    it.dismissAllowingStateLoss()
-                } else {
-                    findDialogFragment(it.childFragmentManager)
-                }
-            }
-        }
-        findDialogFragment(childFragmentManager)
-        customHide()
-//        setCustomCollapseSetting()
-//        hideDim()
     }
 }
 

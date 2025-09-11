@@ -43,7 +43,8 @@ class LiveLeagueRepository(
                         homeName = item.basicInfo.homeTeam,
                         awayLogo = item.basicInfo.awayTeamIcon,
                         awayName = item.basicInfo.awayTeam,
-                        startTime = item.basicInfo.startTime
+                        startTime = item.basicInfo.startTime,
+                        itemColor = result.data!!.color
                     )
                     val date = convertStampToDate(timeStamp)
                     if (!strList.contains(date)) {
@@ -56,7 +57,8 @@ class LiveLeagueRepository(
                                 homeName = "",
                                 awayLogo = "",
                                 awayName = "",
-                                startTime = 0L
+                                startTime = 0L,
+                                itemColor = result.data!!.color
                             )
                         )
                         strList.add(date)

@@ -11,6 +11,8 @@ import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoneyForScale
+import arch.cayenne.lib.common.utils.ext.TabLayoutExt
+import arch.cayenne.lib.common.utils.ext.TabLayoutExt.addOnTabSelectedListener2
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.skin.widget.SkinnableTabLayout
@@ -124,9 +126,9 @@ class BetSlipEarlySettledFragment :
             tabLayout.addTab(newTab)
         }
         reflexPadding(tabLayout)
-        tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-            override fun onTabSelected(tab: TabLayout.Tab?) {
-                val value: Int = when (tab?.position) {
+        tabLayout.addOnTabSelectedListener2(object : TabLayoutExt.OnTabSelectedListener2 {
+            override fun onTabSelected(tab:TabLayout.Tab, isTabClick: Boolean) {
+                val value: Int = when (tab.position) {
                     0 -> 100
                     1 -> 25
                     2 -> 50
@@ -136,10 +138,10 @@ class BetSlipEarlySettledFragment :
                 mViewModel.setPercentNumber(value)
             }
 
-            override fun onTabUnselected(tab: TabLayout.Tab?) {
+            override fun onTabUnselected(tab:TabLayout.Tab, isTabClick: Boolean) {
             }
 
-            override fun onTabReselected(tab: TabLayout.Tab?) {
+            override fun onTabReselected(tab:TabLayout.Tab, isTabClick: Boolean) {
             }
         })
     }

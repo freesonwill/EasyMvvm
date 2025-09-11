@@ -4,11 +4,13 @@ import android.animation.ObjectAnimator
 import android.content.Context
 import android.graphics.Color
 import android.graphics.PixelFormat
+import android.graphics.Rect
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.core.animation.doOnEnd
+import androidx.core.view.isVisible
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 
@@ -45,7 +47,7 @@ class DimController private constructor() {
             return
         }
         val context = host.getHostFragment().requireContext()
-        val v = View(context).apply {
+        val v = DimView(context).apply {
             setBackgroundColor(Color.BLACK)
             alpha = 0f
         }
@@ -93,14 +95,24 @@ class DimController private constructor() {
         canChangeDim = true
     }
 
+    fun prepareShowDim() {
+        val v = dimView ?: return
+        v.isVisible = true
+    }
+
     fun showDim() {
-        if (dimView?.alpha == TARGET_DIM || !canChangeDim) return
-        dimView?.alpha = TARGET_DIM
+        val v = dimView ?: return
+        if (v.alpha == TARGET_DIM || !canChangeDim) return
+        v.alpha = TARGET_DIM
     }
 
     fun hideDim() {
-        if (dimView?.alpha == 0f || !canChangeDim) return
-        dimView?.alpha = 0f
+        val v = dimView ?: return
+        if (v.alpha == 0f || !canChangeDim) return
+        v.alpha = 0f
+        v.post {
+            v.isVisible = false
+        }
     }
 
     fun setDimAlpha(alpha: Float) {
@@ -118,8 +130,22 @@ class DimController private constructor() {
                 }
             }
             doOnEnd {
-                hideDim()
+                v.post {
+                    v.isVisible = false
+                }
             }
         }
+    }
+
+    fun setRect(rect: Rect, radius: Float) {
+        val centerX = rect.centerX()
+        val centerY = rect.centerY()
+        val width = rect.width()
+        val height = rect.height()
+        (dimView as? DimView)?.setRect(centerX, centerY, width, height, radius)
+    }
+
+    fun clearRect() {
+        (dimView as? DimView)?.clearRect()
     }
 }

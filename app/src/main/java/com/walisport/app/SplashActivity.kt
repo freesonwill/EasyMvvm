@@ -69,19 +69,13 @@ class SplashActivity : BaseActivity<SplashViewModel, ActivitySplashBinding>() {
         "name:${name}, uid:$uid, token:$token".logd(TAG)
         mViewModel.saveUserData(uid, token)  //TODO 實作登入頁後就不需要這個了
         lifecycleScope.launch {
-            delay(100)
+            delay(500)
             jumpToMainActivity()
         }
     }
 
     private fun initUidToken(){
         "manager.BUILD_TIME:${manager.getValue(UserDataKey.KEY_BUILD_TIME,"")},BuildConfig.BUILD_TIME:${BuildConfigCom.BUILD_TIME}".logd(TAG)
-        //重新安装时，清理uid，token，否则会引发踢下线的bug
-        if(manager.getValue(UserDataKey.KEY_BUILD_TIME,"") != BuildConfigCom.BUILD_TIME){
-            manager.setKeyValue(UserDataKey.KEY_BUILD_TIME,BuildConfigCom.BUILD_TIME)
-            manager.removeValueForKey(UserDataKey.KEY_UID)
-            manager.removeValueForKey(UserDataKey.KEY_TOKEN)
-        }
         uid = manager.getValue(UserDataKey.KEY_UID,-1).let {
             if(it == -1) pair.first else it
         }
@@ -100,7 +94,7 @@ class SplashActivity : BaseActivity<SplashViewModel, ActivitySplashBinding>() {
     }
 
     private fun jumpToMainActivity() {
-        navigate(Intent(this, MainActivity::class.java))
+        navigate(Intent(this, MainActivity::class.java), 0, 0)
         finish()
     }
 

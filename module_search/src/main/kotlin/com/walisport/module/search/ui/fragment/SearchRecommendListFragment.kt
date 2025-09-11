@@ -50,7 +50,6 @@ class SearchRecommendListFragment : BaseFragment<SearchRecommendListViewModel, F
             launch(Lifecycle.State.RESUMED) {
                 launch {
                     searchRecommendList.collect { list ->
-                        println("RecommendAdapter list: $list")
                         recommendAdapter.submitList(list)
                     }
                 }

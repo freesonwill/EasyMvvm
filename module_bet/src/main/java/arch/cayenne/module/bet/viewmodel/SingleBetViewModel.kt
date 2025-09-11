@@ -18,6 +18,7 @@ import arch.cayenne.lib.database.entity.BetSelectionBean
 import arch.cayenne.lib.database.entity.BetTypeEnum
 import arch.cayenne.lib.database.entity.InfoBean
 import arch.cayenne.module.bet.data.ComboMultiBetBean
+import arch.cayenne.module.bet.data.OddsChangeEnum
 import arch.cayenne.module.bet.repo.SingleBetRepository
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -127,6 +128,9 @@ class SingleBetViewModel(
     private val _networkConnectedEvent = MutableLiveData<Event<DataState>>()
     val networkConnectedEvent: LiveData<Event<DataState>> get() = _networkConnectedEvent
 
+    private val _oddsChangeListener = MutableLiveData<OddsChangeEnum>()
+    val oddsChangeListener: LiveData<OddsChangeEnum> get() = _oddsChangeListener
+
     init {
         setNumberLimit(0L, 0L)
         viewModelScope.launch {
@@ -154,6 +158,11 @@ class SingleBetViewModel(
                     _betTypeListener.value = it ?: BetTypeEnum.SINGLE
                 }
             }
+            launch {
+                betRepo.observeOddsChange().collect {
+                    _oddsChangeListener.value = it
+                }
+            }
         }
     }
 
@@ -162,6 +171,7 @@ class SingleBetViewModel(
             return false
         }
         val money = onEditNumber.value?.toMoney() ?: return false
+        val oddsChange = _oddsChangeListener.value ?: return false
         val currentOdds = _onBetSheetListener.value?.odds ?: 0
         val reserveOdds = _onReserveOddsListener.value?.reserveDisplayOdds()
 
@@ -171,7 +181,7 @@ class SingleBetViewModel(
                     betRepo.saveToSingle()
                 }.await()
                 if (isSuccess) {
-                    betRepo.sendBet(money)
+                    betRepo.sendBet(money, oddsChange)
                 }
             } else {
                 val isSuccess = async {

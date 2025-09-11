@@ -12,11 +12,13 @@ import arch.cayenne.lib.database.entity.BetTypeEnum
 import arch.cayenne.module.bet.BettingRemoteManager
 import arch.cayenne.module.bet.data.ComboMultiBetBean
 import arch.cayenne.module.bet.data.ComboMultiBetOddsBean
+import arch.cayenne.module.bet.data.OddsChangeEnum
 import arch.cayenne.module.bet.data.remote.ComboRiskDataModel
 import galaxy.client.proto.Client
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.math.BigDecimal
@@ -36,6 +38,9 @@ class ComboBetRepository(
 
     private val observerOddsDisplay = manager.observe<Int>(UserDataKey.KEY_ODDS)
     private val observerLanguage = manager.observe<String>(UserDataKey.KEY_LANGUAGE)
+
+    private val oddsChangeFlow =
+        MutableSharedFlow<OddsChangeEnum>(replay = 1, extraBufferCapacity = 1)
 
     val isConnected: Boolean
         get() = remoteManager.isConnected
@@ -75,6 +80,19 @@ class ComboBetRepository(
                 observerLanguage.collect {
                     updateLanguage()
                 }
+            }
+            launch {
+                manager.observe<Int>(UserDataKey.KEY_ODDS_CHANGE)
+                    .onStart {
+                        val value =
+                            manager.getValue(UserDataKey.KEY_ODDS_CHANGE, OddsChangeEnum.ANY.value)
+                        val odds = OddsChangeEnum.fromValue(value)
+                        oddsChangeFlow.emit(odds)
+                    }
+                    .collect { oddsValue ->
+                        val odds = OddsChangeEnum.fromValue(oddsValue)
+                        oddsChangeFlow.emit(odds)
+                    }
             }
         }
     }
@@ -178,6 +196,8 @@ class ComboBetRepository(
     fun observeComboBet(): Flow<List<BetSelectionBean>> = selectionFlow
     fun observeComboMultiBet(): Flow<List<ComboMultiBetBean>> = comboMultiBetFlow
 
+    fun observeOddsChange(): Flow<OddsChangeEnum> = oddsChangeFlow
+
     fun removeSelection(selectionId: Long) {
         scope.launch {
             betDao.getCurrentBet()?.let { bet ->
@@ -204,7 +224,7 @@ class ComboBetRepository(
         }
     }
 
-    fun sendBet(multiBet: List<ComboMultiBetBean>) {
+    fun sendBet(multiBet: List<ComboMultiBetBean>, oddsChangeEnum: OddsChangeEnum) {
         scope.launch {
             betDao.getCurrentBet()?.let { bet ->
                 if (bet.betType == BetTypeEnum.COMBO) {
@@ -234,7 +254,7 @@ class ComboBetRepository(
                     }
 
 
-                    val resp = remoteManager.comboBet(selection, multiBet)
+                    val resp = remoteManager.comboBet(selection, multiBet, oddsChangeEnum)
                     if (resp != null && resp.isSuccessful) {
                         tempDetail.forEach { detail ->
                             val info = resp.data.find { it.serialValue == detail.serialValue }

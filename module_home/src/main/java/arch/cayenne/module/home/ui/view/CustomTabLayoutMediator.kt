@@ -105,7 +105,7 @@ class CustomTabLayoutMediator(
         if(tabLayout is CustomTabLayout) {
             // 設置自訂的 ClickListener
             tabLayout.onTabClick = { position ->
-                doOnClick(position, noTabAnim = false, noViewPagerAnim = true)
+                doOnClick(position, noTabAnim = false, noViewPagerAnim = false)
             }
         }
     }
@@ -388,8 +388,8 @@ class CustomTabLayoutMediator(
             afterTabSelected?.invoke(tab.position)
         }
 
-        override fun onTabUnselected(tab: TabLayout.Tab?) {}
-        override fun onTabReselected(tab: TabLayout.Tab?) {}
+        override fun onTabUnselected(tab:TabLayout.Tab) {}
+        override fun onTabReselected(tab:TabLayout.Tab) {}
     }
 
     private inner class PagerAdapterObserver : RecyclerView.AdapterDataObserver() {

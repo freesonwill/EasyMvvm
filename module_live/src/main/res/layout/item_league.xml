@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="@dimen/dp_94"
+    android:layout_marginBottom="@dimen/dp_12"
     android:id="@+id/item_root"
     android:background="@drawable/shape_bg_item_league"
     app:layout_constraintBottom_toBottomOf="parent"
@@ -14,7 +15,7 @@
         android:id="@+id/view_home"
         android:layout_width="@dimen/dp_48"
         android:layout_height="@dimen/dp_1"
-        android:layout_marginStart="@dimen/dp_45"
+        android:layout_marginStart="@dimen/dp_38"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
 
@@ -22,7 +23,7 @@
         android:id="@+id/view_away"
         android:layout_width="@dimen/dp_48"
         android:layout_height="@dimen/dp_1"
-        android:layout_marginEnd="@dimen/dp_45"
+        android:layout_marginEnd="@dimen/dp_38"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
 

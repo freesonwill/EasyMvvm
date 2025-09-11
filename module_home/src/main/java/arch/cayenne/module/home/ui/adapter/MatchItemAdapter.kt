@@ -1,16 +1,15 @@
 package arch.cayenne.module.home.ui.adapter
 
-import android.annotation.SuppressLint
 import android.app.Application
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
+import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.base.ui.adapter.BaseAdapter
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
-import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.database.entity.MatchListItem
 import arch.cayenne.lib.database.entity.MatchWithMarkets
 import arch.cayenne.lib.database.entity.SelectionBeanLite
@@ -29,6 +28,8 @@ class MatchItemAdapter(private val onMatchItemClickListener: OnMatchItemClickLis
     private val viewPool = RecyclerView.RecycledViewPool()
     private var showNoMoreData: Boolean = false
 
+    private var lastItemType: Int = LAST_ITEM_LOAD_MORE
+
     private val mAnimation by lazy {
         AnimationUtils.loadAnimation(
             getKoin().get<Application>(),
@@ -46,12 +47,15 @@ class MatchItemAdapter(private val onMatchItemClickListener: OnMatchItemClickLis
     }
 
     override fun submitList(list: List<MatchListItem?>?) {
-        val l = list?.toMutableList()
-        val isEmpty = (l?.size ?: 0) == 0
-        if (!isEmpty && showNoMoreData) {
-            l?.add(MatchNoMoreData)
-        } else if (!isEmpty) {
-            l?.add(MatchLoadMoreData)
+        val isEmpty = (list?.size ?: 0) == 0
+        val l = if (isEmpty || lastItemType == LAST_ITEM_NONE) {
+            list?.toMutableList()
+        } else if (lastItemType == LAST_ITEM_NO_MORE){
+            list?.toMutableList()?.apply { add(MatchNoMoreData) }
+        } else if (lastItemType == LAST_ITEM_LOAD_MORE) {
+            list?.toMutableList()?.apply { add(MatchLoadMoreData) }
+        } else {
+            list?.toMutableList()
         }
         super.submitList(l)
     }
@@ -66,15 +70,6 @@ class MatchItemAdapter(private val onMatchItemClickListener: OnMatchItemClickLis
             is MatchWithMarkets -> {
                 val matchItemViewHolder = (holder as MatchItemViewHolder)
                 matchItemViewHolder.init(item)
-                val matchBinding = binding as ItemMatchCardBinding
-                matchBinding.root.setOnClickListener {
-                    val position = matchItemViewHolder.absoluteAdapterPosition
-                    onMatchItemClickListener?.onLiveEntryClick((getItem(position) as MatchWithMarkets))
-                }
-                matchBinding.ivFavorite.apply { addScaleOnTouchAnimation() }.setOnClickListener {
-                    val position = matchItemViewHolder.absoluteAdapterPosition
-                    onMatchItemClickListener?.onFavoriteClick((getItem(position) as MatchWithMarkets))
-                }
             }
             is MatchNoMoreData -> Unit
             is MatchLoadMoreData -> {
@@ -125,20 +120,23 @@ class MatchItemAdapter(private val onMatchItemClickListener: OnMatchItemClickLis
         }
     }
 
-    @SuppressLint("NotifyDataSetChanged")
-    fun showNoMoreData(hasNoMore: Boolean) {
-        showNoMoreData = hasNoMore
+    fun setLastItemType(type: Int) {
+        lastItemType = type
     }
 
     companion object {
         private const val TYPE_MATCH_ITEM = 0
         private const val TYPE_NO_MORE_DATA = 1
         private const val TYPE_LOAD_MORE = 2
+
+        const val LAST_ITEM_NONE = 0
+        const val LAST_ITEM_LOAD_MORE = 1
+        const val LAST_ITEM_NO_MORE = 2
     }
 }
 
 interface OnMatchItemClickListener {
     fun onLiveEntryClick(item: MatchWithMarkets)
-    fun onFavoriteClick(item: MatchWithMarkets)
+    fun onFavoriteClick(view: ImageView, item: MatchWithMarkets)
     fun onOddsCellClick(cell: WeakReference<View>, selection: SelectionBeanLite, x: Float, y: Float)
 }

@@ -129,4 +129,5 @@
     <color name="background">#FF0E0F19</color>
     <color name="progress_text">#929298</color>
     <color name="color_mask">#40000000</color>
+    <color name="loading_text">#929298</color>
 </resources>

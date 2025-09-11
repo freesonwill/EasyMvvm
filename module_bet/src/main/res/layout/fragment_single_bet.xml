@@ -38,13 +38,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/bg_balance"
+                android:fontFamily="@font/sf_pro_display_bold"
+                android:gravity="center"
                 android:paddingHorizontal="8dp"
-                android:paddingTop="4dp"
-                android:paddingBottom="3dp"
                 android:textColor="@color/money_color"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                app:skinnableFontWeight="700"
+                android:textSize="13sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/iv_close"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -218,24 +216,60 @@
                 </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
 
+            <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
+                android:id="@+id/cl_odds_change"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/shape_6dp"
+                android:backgroundTint="@color/keyboard_2"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/cl_money">
+
+                <arch.cayenne.lib.skin.widget.SkinnableTextView
+                    android:id="@+id/tv_odds_change"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginVertical="5dp"
+                    android:textColor="@color/keyboard_number"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <arch.cayenne.lib.skin.widget.SkinnableImageView
+                    android:id="@+id/iv_odds_change"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="11dp"
+                    android:layout_marginStart="6dp"
+                    android:layout_marginEnd="11dp"
+                    android:src="@drawable/icon_odds_arrow_down"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/tv_odds_change"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
+
             <ImageView
                 android:id="@+id/iv_faker_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
+                android:layout_marginTop="10dp"
                 android:adjustViewBounds="true"
                 android:scaleType="centerCrop"
                 android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/cl_reserve" />
+                app:layout_constraintTop_toBottomOf="@id/cl_odds_change" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/cl_keyboard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
+                android:layout_marginTop="10dp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/cl_reserve">
+                app:layout_constraintTop_toBottomOf="@id/cl_odds_change">
 
                 <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
                     android:id="@+id/ll_common_amount"

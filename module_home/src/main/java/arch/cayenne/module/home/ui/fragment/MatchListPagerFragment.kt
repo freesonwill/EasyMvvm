@@ -3,6 +3,7 @@ package arch.cayenne.module.home.ui.fragment
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import android.widget.ImageView
 import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -34,6 +35,7 @@ import arch.cayenne.module.home.ui.view.decoration.MatchCardItemDecoration
 import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
 import arch.cayenne.module.home.ui.viewmodel.MatchListViewModel
 import arch.cayenne.module.home.ui.viewmodel.SubHomeViewModel
+import arch.cayenne.module.home.utils.setFavoriteIcon
 import com.walisport.module.message.ui.view.DeleteAnimator
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
@@ -68,8 +70,13 @@ class MatchListPagerFragment :
                     navigate(Uri.parse("walisport://module_live/liveFragment?matchId=${item.match.matchId}&sportId=${item.match.basicInfo.sportId}"))
                 }
 
-                override fun onFavoriteClick(item: MatchWithMarkets) {
-                    mViewModel.addMatchCollect(item, !item.match.collect)
+                override fun onFavoriteClick(view: ImageView, item: MatchWithMarkets) {
+                    lifecycleScope.launch {
+                        view.setFavoriteIcon(!item.match.collect, false) //先點亮或點暗收藏按鈕
+                        val success = mViewModel.addMatchCollect(item, !item.match.collect)
+                        if (!success) view.setFavoriteIcon(!view.isSelected, true) //失敗了需要復原回來
+                    }
+
                 }
 
                 override fun onOddsCellClick(cell: WeakReference<View>, selection: SelectionBeanLite, x: Float, y: Float) {
@@ -128,10 +135,14 @@ class MatchListPagerFragment :
                 }
 
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                    rvHomeGameList.scrollToBottomWithLoadMore(minScrollCount = 8) {
+                    rvHomeGameList.scrollToBottomWithLoadMore(minScrollCount = 8,{
                         if (mViewModel.apiStateListener.value != HomeState.Match.LoadSuccess) return@scrollToBottomWithLoadMore
                         mViewModel.loadNextPage()
-                    }
+                    }, {
+                        if (mViewModel.apiStateListener.value == HomeState.Match.LoadNextFailure) {
+                            mViewModel.loadNextPage()
+                        }
+                    })
                 }
             })
         }
@@ -188,7 +199,6 @@ class MatchListPagerFragment :
                 subscribeVisibleMatch()
             }
             if (matchList.isNotEmpty()) {
-                mViewModel.changeState(HomeState.Match.LoadSuccess)
                 if (preEmpty) {
                     setMatchListPosition()
                 }
@@ -206,26 +216,30 @@ class MatchListPagerFragment :
             "MatchListPagerFragment playType: ${mViewModel.getPlayTypeId()} tournament: ${mViewModel.getTournamentId()} state change ${it::class.java.name}".logi(this::class.java.name)
             with(mBinding) {
                 when(it) {
-                    DataState.NetworkUnavailable -> {
-                        mViewModel.changePageEnd(true)
+                    DataState.NetworkUnavailable, HomeState.Match.LoadNextFailure -> {
                         lvMatchLoading.visibility = View.GONE
                         refreshLayout.finishRefresh()
-                        matchAdapter.showNoMoreData(false)
-                        clDynamics.visibility = View.VISIBLE
-                        clDynamics.setState(
-                            DynamicStateLayout.States.NETWORK_ANOMALY(),
-                            arch.cayenne.lib.common.R.string.error_net.getString()
-                        )
+                        matchAdapter.setLastItemType(MatchItemAdapter.LAST_ITEM_NONE)
+                        if (it == DataState.NetworkUnavailable){
+                            clDynamics.visibility = View.VISIBLE
+                            mViewModel.changePageEnd(true)
+                            clDynamics.setState(
+                                DynamicStateLayout.States.NETWORK_ANOMALY(),
+                                arch.cayenne.lib.common.R.string.error_net.getString()
+                            )
+                        }
+
                         homeViewModel.changeState(DataState.NetworkUnavailable)
                     }
                     DataState.NoMoreData -> {     //這個DataEmpty表示api抓不到任何資料了，有可能是頁面到底，或是從第一頁就抓不到資料
                         mViewModel.changePageEnd(true)
-                        matchAdapter.showNoMoreData(true)
+                        clDynamics.visibility = View.GONE
+                        matchAdapter.setLastItemType(MatchItemAdapter.LAST_ITEM_NO_MORE)
                     }
                     HomeState.Match.DataEmpty -> {  //這個DataEmpty表示確定真的從第一頁就抓不到資料，表示當前的選擇沒有任何賽事
                         lvMatchLoading.visibility = View.GONE
                         refreshLayout.finishRefresh()
-                        matchAdapter.showNoMoreData(false)
+                        matchAdapter.setLastItemType(MatchItemAdapter.LAST_ITEM_NONE)
                         clDynamics.visibility = View.VISIBLE
                         clDynamics.setState(
                             DynamicStateLayout.States.DATA_EMPTY,
@@ -240,7 +254,7 @@ class MatchListPagerFragment :
                     }
                     HomeState.Match.Refreshing -> {
                         clDynamics.visibility = View.GONE
-                        matchAdapter.showNoMoreData(false)
+                        matchAdapter.setLastItemType(MatchItemAdapter.LAST_ITEM_LOAD_MORE)
                     }
                     HomeState.Match.LoadingNext -> {
                         clDynamics.visibility = View.GONE
@@ -265,6 +279,7 @@ class MatchListPagerFragment :
     }
 
     private fun refreshListByDate(date: Long) {
+        mViewModel.changeState(HomeState.Match.Loading)
         if (date.toInt() == 0) {
             //切換後選回全部
             mViewModel.setSelectedDate(0)
@@ -280,7 +295,7 @@ class MatchListPagerFragment :
             mViewModel.setPlayTypeId(this.getInt(ARG_PLAY_TYPE_ID))
             mViewModel.setPosition(this.getInt(ARG_POSITION))
         }
-        "KC_ MatchListPagerFragment playType: ${mViewModel.getPlayTypeId()} sportId: ${mViewModel.getSportId()} leagueId: ${mViewModel.getTournamentId()}".logi()
+        "MatchListPagerFragment playType: ${mViewModel.getPlayTypeId()} sportId: ${mViewModel.getSportId()} leagueId: ${mViewModel.getTournamentId()}".logi()
         startObserveMatch()
     }
 

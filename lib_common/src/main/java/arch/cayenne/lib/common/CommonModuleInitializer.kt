@@ -5,6 +5,7 @@ import android.os.Build
 import android.os.StrictMode
 import arch.cayenne.lib.base.data.DefaultInitializer
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
+import arch.cayenne.lib.common.data.constants.UserDataKey
 import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.common.data.repo.BalanceRepository
 import arch.cayenne.lib.common.data.repo.CommonRepository
@@ -21,6 +22,7 @@ import org.koin.core.context.loadKoinModules
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.factoryOf
 import org.koin.dsl.module
+import org.koin.mp.KoinPlatform.getKoin
 
 class CommonModuleInitializer : DefaultInitializer<String> {
     private val TAG = this.javaClass.simpleName
@@ -29,7 +31,19 @@ class CommonModuleInitializer : DefaultInitializer<String> {
         MMKV.initialize(context)
         loadKoinModules(moduleList)
         enableStrictMode()
+        clearUserDataManager()
         return TAG
+    }
+
+    /**
+     * 每次编译清除UserDataManager，防止代码设置的不生效
+     */
+    private fun clearUserDataManager(){
+        val manager = getKoin().get<UserDataManager>()
+        if(manager.getValue(UserDataKey.KEY_BUILD_TIME,"") != BuildConfig.BUILD_TIME){
+            UserDataKey.entries.forEach { manager.removeValueForKey(it) }
+            manager.setKeyValue(UserDataKey.KEY_BUILD_TIME, BuildConfig.BUILD_TIME)
+        }
     }
 
     private val moduleList: List<Module> = listOf(module {

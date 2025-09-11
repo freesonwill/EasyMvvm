@@ -59,8 +59,8 @@
             android:drawablePadding="@dimen/dp_10"
             android:imeOptions="actionSearch"
             android:singleLine="true"
-            android:textColor="@color/search_text"
-            android:textColorHint="@color/search_hint"
+            android:textColor="@color/tournament_list_search_text"
+            android:textColorHint="@color/tournament_list_search_hint"
             tools:ignore="MissingConstraints" />
     </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
 
@@ -70,6 +70,7 @@
         android:layout_width="63dp"
         android:layout_height="@dimen/dp_52"
         android:paddingStart="25dp"
+        android:paddingEnd="0dp"
         android:paddingTop="@dimen/dp_16"
         android:paddingBottom="@dimen/dp_14"
         android:src="@drawable/ic_league_tabs_collapse"
@@ -95,16 +96,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ll_search_bar" />
 
-    <arch.cayenne.module.home.ui.view.TournamentIndexView
+    <arch.cayenne.module.home.ui.view.CustomFilterSideBarView
         android:id="@+id/ll_index_container"
         android:layout_width="160dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="0dp"
         android:layout_marginTop="@dimen/dp_52"
+        android:layout_marginEnd="@dimen/dp_7"
+        android:layout_marginBottom="4dp"
         android:gravity="end"
-        android:paddingEnd="@dimen/dp_7"
-        android:paddingBottom="4dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/rv_tournament_list" />
+
     <arch.cayenne.lib.common.ui.view.LoadingView
         android:id="@+id/loading_view"
         android:layout_width="wrap_content"

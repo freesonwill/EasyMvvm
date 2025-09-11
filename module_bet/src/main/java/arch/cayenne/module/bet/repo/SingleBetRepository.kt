@@ -11,10 +11,12 @@ import arch.cayenne.lib.database.entity.BetStatusEnum
 import arch.cayenne.lib.database.entity.BetTypeEnum
 import arch.cayenne.module.bet.BettingRemoteManager
 import arch.cayenne.module.bet.data.ComboMultiBetBean
+import arch.cayenne.module.bet.data.OddsChangeEnum
 import galaxy.client.proto.Client
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -35,6 +37,9 @@ class SingleBetRepository(
 
     val isConnected: Boolean
         get() = remoteManager.isConnected
+
+    private val oddsChangeFlow =
+        MutableSharedFlow<OddsChangeEnum>(replay = 1, extraBufferCapacity = 1)
 
     init {
         scope.launch {
@@ -60,7 +65,19 @@ class SingleBetRepository(
                     updateOdds()
                 }
             }
-
+            launch {
+                manager.observe<Int>(UserDataKey.KEY_ODDS_CHANGE)
+                    .onStart {
+                        val value =
+                            manager.getValue(UserDataKey.KEY_ODDS_CHANGE, OddsChangeEnum.ANY.value)
+                        val odds = OddsChangeEnum.fromValue(value)
+                        oddsChangeFlow.emit(odds)
+                    }
+                    .collect { oddsValue ->
+                        val odds = OddsChangeEnum.fromValue(oddsValue)
+                        oddsChangeFlow.emit(odds)
+                    }
+            }
         }
     }
 
@@ -105,6 +122,8 @@ class SingleBetRepository(
     fun observeComboBean(): Flow<ComboMultiBetBean> = comboFlow
 
     fun observeBetType(): Flow<BetTypeEnum?> = betDao.observeCurrentBetType()
+
+    fun observeOddsChange(): Flow<OddsChangeEnum> = oddsChangeFlow
 
     fun removeBet() {
         scope.launch {
@@ -157,7 +176,7 @@ class SingleBetRepository(
         }
     }
 
-    fun sendBet(money: Long) {
+    fun sendBet(money: Long, oddsChange: OddsChangeEnum) {
         scope.launch {
             betDao.getCurrentBet()?.let {
                 if (it.betType == BetTypeEnum.SINGLE) {
@@ -176,14 +195,19 @@ class SingleBetRepository(
                             betDao.insertDetail(this)
                         }
                     }
-                    betDao.updateDetailStatus(tempDetail.betId, tempDetail.serialValue, BetResultStatusEnum.CONFIRMING)
-                    val resp = remoteManager.singleBet(selection, money)
+                    betDao.updateDetailStatus(
+                        tempDetail.betId,
+                        tempDetail.serialValue,
+                        BetResultStatusEnum.CONFIRMING
+                    )
+                    val resp = remoteManager.singleBet(selection, money, oddsChange)
                     if (resp != null && resp.isSuccessful) {
                         tempDetail.orderId = resp.orderId
                         tempDetail.status = BetResultStatusEnum.getStatusByCode(resp.orderStatus)
                         betDao.updateDetail(tempDetail)
                     } else {
-                        tempDetail.status = if (resp != null && !resp.isSuccessful) BetResultStatusEnum.REJECT else BetResultStatusEnum.CONFIRMING
+                        tempDetail.status =
+                            if (resp != null && !resp.isSuccessful) BetResultStatusEnum.REJECT else BetResultStatusEnum.CONFIRMING
                         betDao.updateDetail(tempDetail)
                     }
                     betDao.getCurrentBet(BetStatusEnum.BETTING)?.let { bettingBet ->
