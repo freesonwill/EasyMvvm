@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.graphics.PixelFormat
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
+import android.os.Build
 import android.os.Bundle
 import android.view.Gravity
 import android.view.View
@@ -120,17 +121,15 @@ class OddsChangeDialogFragment private constructor() :
             View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
         )
 
-        val isShowTop = rect.bottom + mBinding.root.measuredHeight + 10.dp2px < screenHeight
+        val isShowTop = rect.bottom + mBinding.content.measuredHeight + mBinding.triangleTop.measuredHeight + 10.dp2px < screenHeight
 
         val layoutParams = w.attributes
         layoutParams.gravity = Gravity.TOP or Gravity.START
         layoutParams.x = 10.dp2px
         layoutParams.y = if (isShowTop) {
-            rect.bottom + 10.dp2px - ViewUtils.getStatusBarHeight(requireContext())
+            rect.bottom + 10.dp2px
         } else {
-            rect.top - mBinding.content.measuredHeight - mBinding.triangleBottom.measuredHeight - 10.dp2px - ViewUtils.getStatusBarHeight(
-                requireContext()
-            )
+            rect.top - mBinding.content.measuredHeight - mBinding.triangleBottom.measuredHeight - 10.dp2px
         }
         w.attributes = layoutParams
 
@@ -180,6 +179,7 @@ class OddsChangeDialogFragment private constructor() :
         if (dimView != null && bottomDimView != null) return
 
         val screenHeight = resources.displayMetrics.heightPixels
+        val statusHeight = ViewUtils.getStatusBarHeight(requireContext())
         val navigationHeight = ViewUtils.getNavigationBarHeight(requireContext())
 
         val dimV = DimView(requireContext()).apply {
@@ -206,41 +206,38 @@ class OddsChangeDialogFragment private constructor() :
 
         val rect = requireArguments().getParcelable<Rect>(RECT_KET) ?: return
         val centerX = rect.centerX()
-        val centerY = rect.centerY()
+        val centerY = if (Build.VERSION.SDK_INT >= 30) rect.centerY() else rect.centerY() + statusHeight
         val width = rect.width()
         val height = rect.height()
 
         dimV.setRect(centerX, centerY, width, height, 6.dp2px.toFloat())
 
-        val bottomDimV = View(requireContext()).apply {
-            setBackgroundColor(Color.BLACK)
-            alpha = 0f
-            bottomDimView = this
-            translationY = screenHeight.toFloat()
+        if (Build.VERSION.SDK_INT < 30) {
+            val bottomDimV = View(requireContext()).apply {
+                setBackgroundColor(Color.BLACK)
+                alpha = 0f
+                bottomDimView = this
+                translationY = screenHeight.toFloat()
+            }
+            val bottomDimParams = WindowManager.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                screenHeight + navigationHeight,
+                WindowManager.LayoutParams.TYPE_APPLICATION_SUB_PANEL,
+                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
+                        or WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
+                        or WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+                        or WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                PixelFormat.TRANSLUCENT
+            )
+            bottomDimParams.token = dialog?.window?.decorView?.windowToken
+            bottomDimParams.gravity = Gravity.TOP or Gravity.START
+            windowManager.addView(bottomDimV, bottomDimParams)
         }
-        val bottomDimParams = WindowManager.LayoutParams(
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            screenHeight + navigationHeight,
-            WindowManager.LayoutParams.TYPE_APPLICATION_SUB_PANEL,
-            WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
-                    or WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
-                    or WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
-                    or WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
-            PixelFormat.TRANSLUCENT
-        )
-        bottomDimParams.token = dialog?.window?.decorView?.windowToken
-        bottomDimParams.gravity = Gravity.TOP or Gravity.START
-        windowManager.addView(bottomDimV, bottomDimParams)
     }
 
     private fun showDim() {
-        if (dimView == null || bottomDimView == null) {
-            initDim()
-        }
-        val v = dimView ?: return
-        val bv = bottomDimView ?: return
-        v.alpha = 0.75f
-        bv.alpha = 0.75f
+        dimView?.alpha = 0.75f
+        bottomDimView?.alpha = 0.75f
     }
 
     private fun clearDim() {
