@@ -14,7 +14,6 @@ import arch.cayenne.lib.base.ui.animation.AnimationController
 import arch.cayenne.lib.base.ui.animation.AnimationController.AnimType
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
 import arch.cayenne.lib.common.utils.ext.NavResultExt.observeResult
@@ -142,6 +141,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
 
     //init DrawerLayout Content
     private fun initDrawerContent() {
+         //避免重複創建
         if (drawerContentFragment != null) {
             return
         }
@@ -159,13 +159,16 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 R.color.drawer_scrim_color
             )
         )
-        childFragmentManager.beginTransaction()
-            .replace(
-                mBinding.fragmentDrawerContent.id,
-                drawerContentFragment!!,
-                DrawerContentFragment.TAG
-            )
-            .commitNow()
+        // 使用 view.post 將 commitNow 操作延遲到下一個訊息迴圈
+        mBinding.root.post {
+            childFragmentManager.beginTransaction()
+                .replace(
+                    mBinding.fragmentDrawerContent.id,
+                    drawerContentFragment!!,
+                    DrawerContentFragment.TAG
+                )
+                .commitNow()
+        }
         //如果由模拟投注页面跳转到首页需要关闭左侧菜单栏
         observeResult<String>("Drawer") {
             mBinding.drawerLayout.closeDrawer(GravityCompat.START,false)
