@@ -168,12 +168,6 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                         } else {
                             vp.doSmartAnim(tab.position)
                         }
-                        val recyclerView = mBinding.vpPage.getChildAt(0) as RecyclerView
-                        recyclerView.post {
-                            val viewHolder = recyclerView.findViewHolderForAdapterPosition(tab.position)
-                            val pageView = viewHolder!!.itemView
-                            pageView.startZoomInAnim()
-                        }
                     }
                 }
                 tab.view.findViewById<SkinnableTextView>(R.id.tabText)?.let { textView ->
