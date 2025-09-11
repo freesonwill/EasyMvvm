@@ -11,21 +11,22 @@ import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
+import android.view.Window
 import android.view.WindowManager
 import androidx.constraintlayout.widget.ConstraintLayout
-import arch.cayenne.lib.base.ui.fragment.BaseDialogFragment
+import androidx.core.graphics.drawable.toDrawable
+import androidx.core.view.isVisible
+import arch.cayenne.lib.base.ui.fragment.BasePositionDialogFragment
 import arch.cayenne.lib.base.ui.fragment.dim.DimView
+import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.module.bet.data.OddsChangeEnum
 import arch.cayenne.module.bet.databinding.FragmentOddsChangeBinding
 import arch.cayenne.module.bet.viewmodel.OddsChangeViewModel
 import kotlin.reflect.KClass
-import androidx.core.graphics.drawable.toDrawable
-import androidx.core.view.isVisible
-import arch.cayenne.lib.common.utils.ViewUtils
-import arch.cayenne.module.bet.data.OddsChangeEnum
 
 class OddsChangeDialogFragment private constructor() :
-    BaseDialogFragment<OddsChangeViewModel, FragmentOddsChangeBinding>() {
+    BasePositionDialogFragment<OddsChangeViewModel, FragmentOddsChangeBinding>() {
 
     companion object {
         private const val RECT_KET = "rect_key"
@@ -103,13 +104,82 @@ class OddsChangeDialogFragment private constructor() :
         removeDim()
         super.onStart()
         initDim()
-        setDialogPosition()
+    }
+
+    override fun setDialogPosition(w: Window) {
+
+        val screenHeight = resources.displayMetrics.heightPixels
+        w.setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        w.setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
+
+        val rect = requireArguments().getParcelable<Rect>(RECT_KET) ?: return
+        val positionX = rect.right
+
+        mBinding.root.measure(
+            View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+            View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+        )
+
+        val isShowTop = rect.bottom + mBinding.root.measuredHeight + 10.dp2px < screenHeight
+
+        val layoutParams = w.attributes
+        layoutParams.gravity = Gravity.TOP or Gravity.START
+        layoutParams.x = 10.dp2px
+        layoutParams.y = if (isShowTop) {
+            rect.bottom + 10.dp2px - ViewUtils.getStatusBarHeight(requireContext())
+        } else {
+            rect.top - mBinding.content.measuredHeight - mBinding.triangleBottom.measuredHeight - 10.dp2px - ViewUtils.getStatusBarHeight(
+                requireContext()
+            )
+        }
+        w.attributes = layoutParams
+
+        mBinding.root.viewTreeObserver.addOnGlobalLayoutListener(object :
+            ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                mBinding.root.viewTreeObserver.removeOnGlobalLayoutListener(this)
+
+                // 先設定 triangle 位置
+                setTrianglePosition(isShowTop, positionX)
+
+                mBinding.root.post {
+
+                    val triangle = if (isShowTop) mBinding.triangleTop else mBinding.triangleBottom
+
+                    // 動畫初始狀態
+                    mBinding.root.pivotX = triangle.x + triangle.width / 2
+                    mBinding.root.pivotY = if (isShowTop) 0f else mBinding.root.height.toFloat()
+                    mBinding.root.scaleX = 0f
+                    mBinding.root.scaleY = 0f
+                    mBinding.root.alpha = 0f
+
+
+                    // 開始動畫
+                    val animator = mBinding.root.animate()
+                        .scaleX(1f)
+                        .scaleY(1f)
+                        .alpha(1f)
+                        .setDuration(200)
+                        .setInterpolator(android.view.animation.DecelerateInterpolator())
+                        .withStartAction {
+                            mBinding.root.visibility = View.VISIBLE
+                        }
+
+                    showDim()
+                    mBinding.root.post {
+                        animator.start()
+                    }
+                }
+
+            }
+        })
     }
 
     private fun initDim() {
 
+        if (dimView != null && bottomDimView != null) return
+
         val screenHeight = resources.displayMetrics.heightPixels
-        val statusHeight = ViewUtils.getStatusBarHeight(requireContext())
         val navigationHeight = ViewUtils.getNavigationBarHeight(requireContext())
 
         val dimV = DimView(requireContext()).apply {
@@ -185,75 +255,6 @@ class OddsChangeDialogFragment private constructor() :
         }
     }
 
-    private fun setDialogPosition() {
-        dialog?.window?.let { window ->
-
-            val screenHeight = resources.displayMetrics.heightPixels
-            window.setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-            window.setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
-
-            val rect = requireArguments().getParcelable<Rect>(RECT_KET) ?: return
-            val positionX = rect.right
-
-            mBinding.root.measure(
-                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
-                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
-            )
-
-            val isShowTop = rect.bottom + mBinding.root.measuredHeight + 10.dp2px < screenHeight
-
-            val layoutParams = window.attributes
-            layoutParams.gravity = Gravity.TOP or Gravity.START
-            layoutParams.x = 10.dp2px
-            layoutParams.y = if (isShowTop) {
-                rect.bottom + 10.dp2px - ViewUtils.getStatusBarHeight(requireContext())
-            } else {
-                rect.top - mBinding.content.measuredHeight - mBinding.triangleBottom.measuredHeight - 10.dp2px - ViewUtils.getStatusBarHeight(requireContext())
-            }
-            window.attributes = layoutParams
-
-            mBinding.root.viewTreeObserver.addOnGlobalLayoutListener(object :
-                ViewTreeObserver.OnGlobalLayoutListener {
-                override fun onGlobalLayout() {
-                    mBinding.root.viewTreeObserver.removeOnGlobalLayoutListener(this)
-
-                    // 先設定 triangle 位置
-                    setTrianglePosition(isShowTop, positionX)
-
-                    mBinding.root.post {
-
-                        val triangle = if (isShowTop) mBinding.triangleTop else mBinding.triangleBottom
-
-                        // 動畫初始狀態
-                        mBinding.root.pivotX = triangle.x + triangle.width / 2
-                        mBinding.root.pivotY = if (isShowTop) 0f else mBinding.root.height.toFloat()
-                        mBinding.root.scaleX = 0f
-                        mBinding.root.scaleY = 0f
-                        mBinding.root.alpha = 0f
-
-
-                        // 開始動畫
-                        val animator = mBinding.root.animate()
-                            .scaleX(1f)
-                            .scaleY(1f)
-                            .alpha(1f)
-                            .setDuration(200)
-                            .setInterpolator(android.view.animation.DecelerateInterpolator())
-                            .withStartAction {
-                                mBinding.root.visibility = View.VISIBLE
-                            }
-
-                        showDim()
-                        mBinding.root.post {
-                            animator.start()
-                        }
-                    }
-
-                }
-            })
-        }
-    }
-
 
     private fun setTrianglePosition(isShowTop: Boolean, targetPositionX: Int) {
         val trangle = if (isShowTop) {
@@ -294,5 +295,10 @@ class OddsChangeDialogFragment private constructor() :
 
     fun setOnDismissListener(listener: () -> Unit) {
         this.dismissListener = listener
+    }
+
+    override fun onDestroy() {
+        clearDim()
+        super.onDestroy()
     }
 }
