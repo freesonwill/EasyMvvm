@@ -616,8 +616,9 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
                 vpGameList.offsetLeftAndRight(1)
             }
             leaguePagerAdapter!!.setData(mViewModel.currentPlayTypeId, tournaments)
-            mBinding.ivTournamentMore.visibility = View.VISIBLE
-
+            mBinding.ivTournamentMore.post {
+                mBinding.ivTournamentMore.visibility = if (tournaments.size > 1) View.VISIBLE else View.GONE
+            }
             // 使用 reflexMargin 擴展方法設置更小的 tab 間距
             tlLeagueList.reflexMargin(2.dp2px, 2.dp2px, 1.dp2px)
 

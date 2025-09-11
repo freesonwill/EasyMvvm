@@ -71,10 +71,7 @@ object TabLayoutExt {
 
         // 設置初始狀態
         fun setInitialState() {
-            ivMore.visibility = View.VISIBLE
-            ivMore.alpha = 1f
-            ivMore.scaleX = 1f
-            ivMore.scaleY = 1f
+            ivMore.visibility = View.GONE
             llMore.visibility = View.GONE
             llMore.alpha = 0f
             llMore.scaleX = 1f
