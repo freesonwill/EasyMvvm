@@ -22,6 +22,10 @@ abstract class SkinnableHelper (protected open val mView:View) {
      */
     abstract fun updateSkin(msgType: SkinMsgType = SkinMsgType.FLOW)
 
+    /**
+     * 检查传入的resourceId是否带了皮肤名，
+     * */
+
     open fun setSrcId(srcId: Int) {
         mSrcId = srcId
         updateSkin(SkinMsgType.SELF)

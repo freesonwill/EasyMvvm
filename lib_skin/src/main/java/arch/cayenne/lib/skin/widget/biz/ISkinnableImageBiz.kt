@@ -9,5 +9,5 @@ interface ISkinnableImageBiz :ISkinnableBiz {
 
      fun setImageResource(resId: Int)
 
-
+     fun getRadius(): Float
 }

@@ -8,6 +8,8 @@ import androidx.annotation.ColorRes
 import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import arch.cayenne.lib.skin.SkinnableManager
+import arch.cayenne.lib.skin.widget.biz.ISkinnableBiz
+import arch.cayenne.lib.skin.widget.biz.SkinnableBizBackgroundImpl
 import arch.cayenne.lib.skin.widget.helper.SkinnableBackGroundHelper
 import arch.cayenne.lib.skin.widget.helper.SkinnableViewFlowHelper
 import kotlinx.coroutines.launch
@@ -15,8 +17,7 @@ import org.koin.java.KoinJavaComponent.inject
 
 open class SkinnableView : View {
 
-    private lateinit var backgroundTintHelper: SkinnableBackGroundHelper
-    private val flowHelper = SkinnableViewFlowHelper()
+    private lateinit var biz: ISkinnableBiz
 
     constructor(context: Context) : super(context) {
         initView(context)
@@ -33,32 +34,29 @@ open class SkinnableView : View {
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        flowHelper.startSkinFlow(findViewTreeLifecycleOwner()?.lifecycleScope) {
-            backgroundTintHelper.updateSkin()
-        }
+        biz.onAttachedToWindow()
     }
 
     private fun initView(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) {
-        backgroundTintHelper = SkinnableBackGroundHelper(this)
-        backgroundTintHelper.loadFromAttributes(attrs, defStyleAttr)
-
+        biz = SkinnableBizBackgroundImpl(this)
+        biz.initView(context, attrs, defStyleAttr)
     }
 
     override fun setBackgroundResource(resId: Int) {
         super.setBackgroundResource(resId)
-        backgroundTintHelper.updateBackground(resId)
+        biz.updateBackground(resId)
     }
 
-    fun setTintColorRes(@ColorRes resId: Int){
-        backgroundTintHelper.updateBackgroundTintId(resId)
+    fun setTintColorRes(@ColorRes resId: Int) {
+        biz.updateBackgroundTintId(resId)
     }
 
-    fun setForegroundRes(@AnyRes resId: Int){
-        backgroundTintHelper.updateForegroundId(resId)
+    fun setForegroundRes(@AnyRes resId: Int) {
+        biz.updateForegroundId(resId)
     }
 
     override fun onDetachedFromWindow() {
-        flowHelper.destroyFlow()
+        biz.onDetachedFromWindow()
         super.onDetachedFromWindow()
     }
 

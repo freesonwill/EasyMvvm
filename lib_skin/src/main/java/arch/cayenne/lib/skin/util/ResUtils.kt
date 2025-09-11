@@ -1,6 +1,7 @@
 package arch.cayenne.lib.skin.util
 
 import android.content.Context
+import androidx.annotation.AnyRes
 import androidx.collection.LruCache
 
 object ResUtils {
@@ -16,4 +17,6 @@ object ResUtils {
         sResourceCache.put(key, resId)
         return resId
     }
+
+
 }

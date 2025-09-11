@@ -9,6 +9,8 @@ import androidx.annotation.StringRes
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.lifecycle.lifecycleScope
+import arch.cayenne.lib.skin.widget.biz.ISkinnableTextBiz
+import arch.cayenne.lib.skin.widget.biz.SkinnableBizTextImpl
 import arch.cayenne.lib.skin.widget.helper.SkinnableBackGroundHelper
 import arch.cayenne.lib.skin.widget.helper.SkinnableTextHelper
 import arch.cayenne.lib.skin.widget.helper.SkinnableViewFlowHelper
@@ -16,9 +18,7 @@ import java.util.Locale
 
 
 class SkinnableTextView : AppCompatTextView {
-    private val textHelper = SkinnableTextHelper(this)
-    private val backgroundTintHelper = SkinnableBackGroundHelper(this)
-    private val flowHelper = SkinnableViewFlowHelper()
+    private lateinit var biz:ISkinnableTextBiz
 
     constructor(context: Context) : super(context) {
         initView(context)
@@ -35,29 +35,23 @@ class SkinnableTextView : AppCompatTextView {
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        flowHelper.startSkinFlow(findViewTreeLifecycleOwner()?.lifecycleScope) {
-            backgroundTintHelper.updateSkin()
-            textHelper.updateSkin()
-        }
-        flowHelper.startLanguageFlow {
-            textHelper.updateLanguage(it)
-        }
+        biz.onAttachedToWindow()
 
     }
 
     private fun initView(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) {
-        backgroundTintHelper.loadFromAttributes(attrs, defStyleAttr)
-        textHelper.loadFromAttributes(attrs, defStyleAttr)
+        biz = SkinnableBizTextImpl(this)
+        biz.initView(context, attrs, defStyleAttr)
     }
 
     override fun setTextAppearance(resId: Int) {
-        setTextAppearance(context, resId)
+        biz.setTextAppearance(resId)
     }
 
     @Deprecated("Deprecated in Java")
     override fun setTextAppearance(context: Context, resId: Int) {
         super.setTextAppearance(context, resId)
-        textHelper.onSetTextAppearance(context, resId)
+        biz.setTextAppearance(context,resId)
     }
 
     override fun setCompoundDrawablesRelativeWithIntrinsicBounds(
@@ -67,14 +61,14 @@ class SkinnableTextView : AppCompatTextView {
         @DrawableRes bottom: Int
     ) {
         super.setCompoundDrawablesRelativeWithIntrinsicBounds(start, top, end, bottom)
-        textHelper.onSetCompoundDrawablesRelativeWithIntrinsicBounds(start, top, end, bottom)
+        biz.setCompoundDrawablesRelativeWithIntrinsicBounds(start, top, end, bottom)
     }
 
     /**
      * 动态代码创建时，获取TexColor ResId
      * */
      fun setTextColorRes(@ColorRes color: Int) {
-         textHelper.setTextColor(color)
+         biz.setTextColorRes(color)
     }
 
     override fun setCompoundDrawablesWithIntrinsicBounds(
@@ -84,36 +78,36 @@ class SkinnableTextView : AppCompatTextView {
         @DrawableRes bottom: Int
     ) {
         super.setCompoundDrawablesWithIntrinsicBounds(left, top, right, bottom)
-        textHelper.onSetCompoundDrawablesWithIntrinsicBounds(left, top, right, bottom)
+        biz.setCompoundDrawablesWithIntrinsicBounds(left, top, right, bottom)
     }
 
     fun setTextRes(@StringRes stringRes:Int,vararg formatArgs:Any = emptyArray()){
-       textHelper.updateText(stringRes,*formatArgs)
+       biz.setTextRes(stringRes,*formatArgs)
     }
 
     fun updateLanguage(locale: Locale) {
-        textHelper.updateLanguage(locale)
+        biz.updateLanguage(locale)
     }
 
     fun setFontWeight(weight: Int) {
-        textHelper.setFontWeight(weight)
+        biz.setFontWeight(weight)
     }
 
     override fun setBackgroundResource(resId: Int) {
         super.setBackgroundResource(resId)
-        backgroundTintHelper.updateBackground(resId)
+        biz.updateBackground(resId)
     }
 
     fun setTintColorRes(@ColorRes resId: Int){
-        backgroundTintHelper.updateBackgroundTintId(resId)
+        biz.updateBackgroundTintId(resId)
     }
 
     fun setForegroundRes(@AnyRes resId: Int){
-        backgroundTintHelper.updateForegroundId(resId)
+        biz.updateForegroundId(resId)
     }
 
     override fun onDetachedFromWindow() {
-        flowHelper.destroyFlow()
+        biz.onDetachedFromWindow()
         super.onDetachedFromWindow()
     }
 }

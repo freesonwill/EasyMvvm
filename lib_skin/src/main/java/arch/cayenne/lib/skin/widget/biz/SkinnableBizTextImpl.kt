@@ -6,6 +6,7 @@ import android.view.View
 import android.widget.TextView
 import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.lifecycle.lifecycleScope
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.skin.widget.helper.SkinnableBackGroundHelper
 import arch.cayenne.lib.skin.widget.helper.SkinnableTextHelper
 import arch.cayenne.lib.skin.widget.helper.SkinnableViewFlowHelper
@@ -16,22 +17,28 @@ import java.util.Locale
  * @date: 5/9/25 17:23
  * @description:
  */
-class SkinnableBizTextImpl(private val view: TextView):ISkinnableTextBiz {
+class SkinnableBizTextImpl(private val view: TextView) : ISkinnableTextBiz {
 
     lateinit var backgroundHelper: SkinnableBackGroundHelper private set
-    lateinit var flowHelper: SkinnableViewFlowHelper private set
     lateinit var mTextHelper: SkinnableTextHelper private set
+    lateinit var flowHelper: SkinnableViewFlowHelper private set
 
     override fun initView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) {
+        flowHelper = SkinnableViewFlowHelper()
         backgroundHelper = SkinnableBackGroundHelper(view)
         mTextHelper = SkinnableTextHelper(view)
-        flowHelper = SkinnableViewFlowHelper()
         backgroundHelper.loadFromAttributes(attrs, defStyleAttr)
+        mTextHelper.loadFromAttributes(attrs, defStyleAttr)
+
     }
 
     override fun onAttachedToWindow() {
         flowHelper.startSkinFlow(view.findViewTreeLifecycleOwner()?.lifecycleScope) {
             backgroundHelper.updateSkin()
+            mTextHelper.updateSkin()
+        }
+        flowHelper.startLanguageFlow {
+            mTextHelper.updateLanguage(it)
         }
     }
 
@@ -40,24 +47,31 @@ class SkinnableBizTextImpl(private val view: TextView):ISkinnableTextBiz {
     }
 
     override fun setTextAppearance(resId: Int) {
+        mTextHelper.onSetTextAppearance(view.context, resId)
     }
 
     override fun setTextAppearance(context: Context, resId: Int) {
+        mTextHelper.onSetTextAppearance(context, resId)
     }
 
     override fun setTextRes(stringRes: Int, vararg formatArgs: Any) {
+        mTextHelper.updateText(stringRes, *formatArgs)
     }
 
     override fun setHintRes(stringRes: Int, vararg formatArgs: Any) {
+        mTextHelper.updateHint(stringRes, *formatArgs)
     }
 
     override fun setTextColorRes(color: Int) {
+        mTextHelper.setTextColor(color)
     }
 
     override fun updateLanguage(locale: Locale) {
+        mTextHelper.updateLanguage(locale)
     }
 
     override fun setFontWeight(weight: Int) {
+        mTextHelper.setFontWeight(weight)
     }
 
     override fun setCompoundDrawablesRelativeWithIntrinsicBounds(
@@ -66,6 +80,7 @@ class SkinnableBizTextImpl(private val view: TextView):ISkinnableTextBiz {
         end: Int,
         bottom: Int
     ) {
+        mTextHelper.onSetCompoundDrawablesWithIntrinsicBounds(start, top, end, bottom)
     }
 
     override fun setCompoundDrawablesWithIntrinsicBounds(
@@ -74,18 +89,20 @@ class SkinnableBizTextImpl(private val view: TextView):ISkinnableTextBiz {
         right: Int,
         bottom: Int
     ) {
+        mTextHelper.onSetCompoundDrawablesWithIntrinsicBounds(left, top, right, bottom)
     }
-
 
 
     override fun updateBackground(resId: Int) {
-
+        backgroundHelper.updateBackground(resId)
     }
 
     override fun updateBackgroundTintId(resId: Int) {
+        backgroundHelper.updateBackgroundTintId(resId)
     }
 
     override fun updateForegroundId(resId: Int) {
+        backgroundHelper.updateForegroundId(resId)
     }
 
 }
