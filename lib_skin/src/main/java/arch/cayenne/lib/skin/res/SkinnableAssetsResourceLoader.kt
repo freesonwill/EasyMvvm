@@ -6,6 +6,7 @@ import android.content.res.ColorStateList
 import android.content.res.Resources
 import android.graphics.drawable.Drawable
 import android.os.Environment
+import androidx.annotation.AnyRes
 import androidx.core.content.res.ResourcesCompat
 import arch.cayenne.lib.skin.widget.helper.SkinnableHelper
 import java.io.File
@@ -78,6 +79,10 @@ class SkinnableAssetsResourceLoader(context: Context, private val _skinName: Str
         return _skinName
     }
 
+    override fun getOriginResourceId(context: Context, resName: String, @AnyRes resId: Int): Int {
+        return 0
+    }
+
     override fun setSecondarySkin(skinName: String) {
 
     }
@@ -104,7 +109,7 @@ class SkinnableAssetsResourceLoader(context: Context, private val _skinName: Str
             ?.packageName ?: ""
     }
 
-    fun getSkinPath(context: Context, skinName: String): String {
+    fun getSkinPath(context: Context, skinName: String,): String {
         return copySkinFromAssets(context, skinName)
     }
 

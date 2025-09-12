@@ -9,10 +9,14 @@ import android.graphics.RectF
 import android.graphics.Shader
 import android.graphics.drawable.BitmapDrawable
 import android.util.AttributeSet
+import androidx.annotation.AnyRes
+import androidx.annotation.ColorRes
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import arch.cayenne.lib.skin.SkinnableManager
+import arch.cayenne.lib.skin.widget.biz.ISkinnableImageBiz
+import arch.cayenne.lib.skin.widget.biz.SkinnableBizImageImpl
 import arch.cayenne.lib.skin.widget.helper.SkinnableBackGroundHelper
 import arch.cayenne.lib.skin.widget.helper.SkinnableImageHelper
 import arch.cayenne.lib.skin.widget.helper.SkinnableViewFlowHelper
@@ -21,13 +25,10 @@ import org.koin.java.KoinJavaComponent.inject
 
 
 class SkinnableImageView : AppCompatImageView{
-    private val backgroundHelper = SkinnableBackGroundHelper(this)
-    private val imageHelper = SkinnableImageHelper(this)
     private var mPaint: Paint? = null
     private var mRectF: RectF? = null
     private var mBitmapShader: BitmapShader? = null
-    private val flowHelper = SkinnableViewFlowHelper()
-
+    private lateinit var biz:ISkinnableImageBiz
     constructor(context: Context) : super(context) {
         initView(context)
     }
@@ -43,34 +44,38 @@ class SkinnableImageView : AppCompatImageView{
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        flowHelper.startSkinFlow(findViewTreeLifecycleOwner()?.lifecycleScope) {
-            backgroundHelper.updateSkin()
-            imageHelper.updateSkin()
-        }
+        biz.onAttachedToWindow()
 
     }
 
     private fun initView(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) {
-        backgroundHelper.loadFromAttributes(attrs, defStyleAttr)
-        imageHelper.loadFromAttributes(attrs, defStyleAttr)
+        biz = SkinnableBizImageImpl(this)
+        biz.initView(context, attrs, defStyleAttr)
         mPaint = Paint(Paint.ANTI_ALIAS_FLAG)
         mRectF = RectF()
     }
 
+    override fun setImageResource(resId: Int) {
+        super.setImageResource(resId)
+        biz.setImageResource(resId)
+    }
 
     override fun setBackgroundResource(resId: Int) {
         super.setBackgroundResource(resId)
-        backgroundHelper.setSrcId(resId)
+        biz.updateBackground(resId)
     }
 
-    override fun setImageResource(resId: Int) {
-        super.setImageResource(resId)
-        imageHelper.setSrcId(resId)
+    fun setTintColorRes(@ColorRes resId: Int){
+        biz.updateBackgroundTintId(resId)
+    }
+
+    fun setForegroundRes(@AnyRes resId: Int){
+        biz.updateForegroundId(resId)
     }
 
     @SuppressLint("DrawAllocation")
     override fun onDraw(canvas: Canvas) {
-        if(imageHelper.getRadius().toInt() != 0){
+        if(biz.getRadius().toInt() != 0){
             val drawable = drawable
             if (drawable == null) {
                 super.onDraw(canvas)
@@ -81,7 +86,7 @@ class SkinnableImageView : AppCompatImageView{
                 mBitmapShader = BitmapShader(bitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP)
                 mPaint?.setShader(mBitmapShader)
                 mRectF?.set(0f,0f,width.toFloat(),height.toFloat())
-                canvas.drawRoundRect(mRectF!!, imageHelper.getRadius(), imageHelper.getRadius(), mPaint!!)
+                canvas.drawRoundRect(mRectF!!, biz.getRadius(), biz.getRadius(), mPaint!!)
             } catch (e: ClassCastException) {
                 super.onDraw(canvas)
             }
@@ -91,7 +96,7 @@ class SkinnableImageView : AppCompatImageView{
     }
 
     override fun onDetachedFromWindow() {
-        flowHelper.destroyFlow()
+        biz.onDetachedFromWindow()
         super.onDetachedFromWindow()
     }
 

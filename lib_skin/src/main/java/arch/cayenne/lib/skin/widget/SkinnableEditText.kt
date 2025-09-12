@@ -2,6 +2,7 @@ package arch.cayenne.lib.skin.widget
 
 import android.content.Context
 import android.util.AttributeSet
+import androidx.annotation.AnyRes
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
@@ -10,15 +11,15 @@ import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import arch.cayenne.lib.skin.widget.helper.SkinnableTextHelper
 import arch.cayenne.lib.skin.SkinnableManager
+import arch.cayenne.lib.skin.widget.biz.ISkinnableTextBiz
+import arch.cayenne.lib.skin.widget.biz.SkinnableBizTextImpl
 import arch.cayenne.lib.skin.widget.helper.SkinnableBackGroundHelper
 import arch.cayenne.lib.skin.widget.helper.SkinnableViewFlowHelper
 import kotlinx.coroutines.launch
 import org.koin.java.KoinJavaComponent.inject
 
 open class SkinnableEditText : AppCompatEditText {
-    private lateinit var mTextHelper:SkinnableTextHelper
-    private lateinit var mBackgroundTintHelper:SkinnableBackGroundHelper
-    private val flowHelper = SkinnableViewFlowHelper()
+    private lateinit var biz:ISkinnableTextBiz
 
     constructor(context: Context) : super(context) {
         initView(context)
@@ -39,34 +40,22 @@ open class SkinnableEditText : AppCompatEditText {
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        flowHelper.startSkinFlow(findViewTreeLifecycleOwner()?.lifecycleScope) {
-            mBackgroundTintHelper.updateSkin()
-            mTextHelper.updateSkin()
-        }
-        flowHelper.startLanguageFlow {
-            mTextHelper.updateLanguage(it)
-        }
+        biz.onAttachedToWindow()
     }
 
     private fun initView(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) {
-        mTextHelper = SkinnableTextHelper(this)
-        mBackgroundTintHelper = SkinnableBackGroundHelper(this)
-        mBackgroundTintHelper.loadFromAttributes(attrs, defStyleAttr)
-        mTextHelper.loadFromAttributes(attrs, defStyleAttr)
+       biz = SkinnableBizTextImpl(this)
+       biz.initView(context,attrs,defStyleAttr)
     }
 
-    override fun setBackgroundResource(@DrawableRes resId: Int) {
-        super.setBackgroundResource(resId)
-        mBackgroundTintHelper.setSrcId(resId)
-    }
 
     override fun setTextAppearance(resId: Int) {
-        setTextAppearance(context, resId)
+        biz.setTextAppearance(context, resId)
     }
 
     override fun setTextAppearance(context: Context, resId: Int) {
         super.setTextAppearance(context, resId)
-        mTextHelper.onSetTextAppearance(context, resId)
+        biz.setTextAppearance(context, resId)
     }
 
     override fun setCompoundDrawablesRelativeWithIntrinsicBounds(
@@ -76,7 +65,7 @@ open class SkinnableEditText : AppCompatEditText {
         @DrawableRes bottom: Int
     ) {
         super.setCompoundDrawablesRelativeWithIntrinsicBounds(start, top, end, bottom)
-        mTextHelper.onSetCompoundDrawablesRelativeWithIntrinsicBounds(start, top, end, bottom)
+        biz.setCompoundDrawablesRelativeWithIntrinsicBounds(start, top, end, bottom)
     }
 
     override fun setCompoundDrawablesWithIntrinsicBounds(
@@ -86,23 +75,38 @@ open class SkinnableEditText : AppCompatEditText {
         @DrawableRes bottom: Int
     ) {
         super.setCompoundDrawablesWithIntrinsicBounds(left, top, right, bottom)
-        mTextHelper.onSetCompoundDrawablesWithIntrinsicBounds(left, top, right, bottom)
+        biz.setCompoundDrawablesWithIntrinsicBounds(left, top, right, bottom)
     }
 
     /**
      * 动态代码创建时，获取TexColor ResId
      * */
     fun setTextColorRes(@ColorRes color: Int) {
-        mTextHelper.setTextColor(color)
+        biz.setTextColorRes(color)
     }
 
     fun setTextHitRes(@StringRes stringRes:Int,vararg formatArg:Any = emptyArray()){
-        mTextHelper.updateHint(stringRes,*formatArg)
+        biz.setHintRes(stringRes,*formatArg)
+    }
+
+
+    override fun setBackgroundResource(@DrawableRes resId: Int) {
+        super.setBackgroundResource(resId)
+        biz.updateBackground(resId)
+    }
+
+
+    fun setTintColorRes(@ColorRes resId: Int){
+        biz.updateBackgroundTintId(resId)
+    }
+
+    fun setForegroundRes(@AnyRes resId: Int){
+        biz.updateForegroundId(resId)
     }
 
 
     override fun onDetachedFromWindow() {
-        flowHelper.destroyFlow()
+        biz.onDetachedFromWindow()
         super.onDetachedFromWindow()
     }
 

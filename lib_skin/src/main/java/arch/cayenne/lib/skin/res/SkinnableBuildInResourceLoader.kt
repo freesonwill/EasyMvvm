@@ -7,6 +7,7 @@ import android.graphics.drawable.Drawable
 import androidx.annotation.AnyRes
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.res.ResourcesCompat
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.skin.util.ResUtils
 import arch.cayenne.lib.skin.widget.helper.SkinnableHelper
 
@@ -72,11 +73,20 @@ class SkinnableBuildInResourceLoader(val _skinName: String) : SkinnableResourceL
     private fun getResId(context: Context, skinName: String, resId: Int): Int {
         val resName = context.resources.getResourceEntryName(resId) + "_" + skinName
         val type = context.resources.getResourceTypeName(resId)
-        return ResUtils.getResourceId(context, resName, type)
+        return ResUtils.getSuffixResourceId(context, resName, type)
     }
 
     override fun getSkinName(): String {
         return currentName
+    }
+
+    override fun getOriginResourceId(context: Context, resName: String, @AnyRes resId: Int): Int {
+        val type = context.resources.getResourceTypeName(resId)
+        val originId = ResUtils.getOriginalResourceId(context,resName,type)
+         if(originId == 0){
+             return resId
+         }
+        return originId
     }
 
     override fun setSecondarySkin(skinName: String) {
