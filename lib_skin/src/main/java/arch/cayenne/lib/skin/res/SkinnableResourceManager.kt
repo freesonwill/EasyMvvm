@@ -58,6 +58,13 @@ object SkinnableResourceManager {
     fun getTargetResourceId(context: Context, @AnyRes resId: Int): Int =
         resourceLoader.getTargetResourceId(context, resId)
 
+    fun getOriginResourceId(context: Context,resName:String,@AnyRes resId: Int):Int {
+        if(resourceLoader is SkinnableBuildInResourceLoader){
+            return resourceLoader.getOriginResourceId(context,resName,resId)
+        }
+        return  resId
+    }
+
     /**
      * 由于android资源缓存加载不会自动更新已存在的资源
      * 需要使用的时候自己去设置local

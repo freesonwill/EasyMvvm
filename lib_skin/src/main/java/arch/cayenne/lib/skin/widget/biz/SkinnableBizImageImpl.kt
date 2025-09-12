@@ -39,19 +39,23 @@ class SkinnableBizImageImpl(private val view: ImageView) : ISkinnableImageBiz {
     }
 
     override fun updateBackground(resId: Int) {
-        backgroundHelper.updateBackground(resId)
+        val nResId = flowHelper.checkOriginId(view.context,resId)
+        backgroundHelper.updateBackground(nResId)
     }
 
     override fun updateBackgroundTintId(resId: Int) {
-        backgroundHelper.updateBackgroundTintId(resId)
+        val nResId = flowHelper.checkOriginId(view.context,resId)
+        backgroundHelper.updateBackgroundTintId(nResId)
     }
 
     override fun updateForegroundId(resId: Int) {
-        backgroundHelper.updateForegroundId(resId)
+        val nResId = flowHelper.checkOriginId(view.context,resId)
+        backgroundHelper.updateForegroundId(nResId)
     }
 
     override fun setImageResource(resId: Int) {
-        imageHelper.setSrcId(resId)
+        val nResId = flowHelper.checkOriginId(view.context,resId)
+        imageHelper.setSrcId(nResId)
     }
 
     override fun getRadius(): Float {

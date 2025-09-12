@@ -1,7 +1,11 @@
 package arch.cayenne.lib.skin.widget.helper
 
+import android.annotation.SuppressLint
+import android.content.Context
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.skin.LanguageManager
 import arch.cayenne.lib.skin.SkinnableManager
+import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -12,8 +16,8 @@ import java.util.Locale
 class SkinnableViewFlowHelper {
     private var skinFlowJob: Job? = null
     private var languageFlowJob: Job? = null
-    private val sportSkinManager: SkinnableManager by inject(SkinnableManager::class.java)
-    private val languageManager:LanguageManager by inject(LanguageManager::class.java)
+    private val skinManager: SkinnableManager by inject(SkinnableManager::class.java)
+    private val languageManager: LanguageManager by inject(LanguageManager::class.java)
     private val TAG = this@SkinnableViewFlowHelper::class.java.simpleName
     private var lastSkin: String = ""
 
@@ -26,7 +30,7 @@ class SkinnableViewFlowHelper {
             return
         }
         skinFlowJob = scope?.launch(Dispatchers.IO) {
-            sportSkinManager.skinFlow.collect {
+            skinManager.skinFlow.collect {
                 if (it == lastSkin) {
                     return@collect
                 }
@@ -57,6 +61,25 @@ class SkinnableViewFlowHelper {
 //        skinFlowJob = null
         languageFlowJob?.cancel()
         languageFlowJob = null
+    }
+
+    /**
+     * 检查传入的resourceId是否带了皮肤名，如果带了皮肤名就返回原id
+     * */
+    @SuppressLint("SuspiciousIndentation")
+    fun checkOriginId(context: Context, resId: Int): Int {
+        val resName = context.resources.getResourceEntryName(resId)
+        val id = skinManager.getSkinNameArray()?.let { skinNames ->
+            if (skinNames.isEmpty()) return@let resId
+            val suffix = skinNames.find { resName.endsWith(it) }
+            return@let suffix?.let {
+                val originName = resName.replace("_$suffix", "")
+                val originId =
+                    SkinnableResourceManager.getOriginResourceId(context, originName, resId)
+                return originId
+            } ?: resId
+        } ?: resId
+        return id
     }
 
 }

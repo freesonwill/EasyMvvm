@@ -55,10 +55,6 @@ override fun onAttachedToWindow() {
 }
 ```
 
-注:  
-- 如果是自定义属性，可以lib_skin->res->values->attrs 在对应的styleable中添加自定义属性，并在helper中获取对应的值，updateSkin方法中更新
-- skinnableFontWeight,在SKinnableTextView SkinnableButton SkinnableEditext中新增skinnableFontWeight "app:skinnableFontWeight=500 " 设置默认字体下的fontWeight属性
-
 ## 4. 多语言切换
 
 - （1）调用SportSkinManager中的changeLanguage方法
@@ -91,8 +87,10 @@ apply(from = rootProject.file("gradle/_suffixes.gradle.kts"))
 ./gradlew checkDuplicateColorNames   
 ```
 
-注:  - Tablayout的 tabBackground属性设置了以后会在换肤后造成阴影，SportTablayout使用sportTabBackground替换tabBackgroun
-- 动态创建Skinnable TextView Button EditText 时，设置textColor setTextColorRes
+注: 
+- 如果是自定义属性，可以lib_skin->res->values->attrs 在对应的styleable中添加自定义属性，并在helper中获取对应的值，updateSkin方法中更新
+- skinnableFontWeight,在SKinnableTextView SkinnableButton SkinnableEditext中新增skinnableFontWeight "app:skinnableFontWeight=500 " 设置默认字体下的fontWeight属性
+- Tablayout的 tabBackground属性设置了以后会在换肤后造成阴影，SportTablayout使用sportTabBackground替换tabBackground
 - SkinnableTablayout 新增setTabResArray 及时更新tab.text切换语言 ，如果时customView需要监听languageManager.languageFlow自己做切换
-
+- 动态创建Skinnable TextView Button EditText 时，设置textColor setTextColorRes
 
