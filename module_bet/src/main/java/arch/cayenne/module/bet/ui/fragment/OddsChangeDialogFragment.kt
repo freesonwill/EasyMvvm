@@ -1,9 +1,12 @@
 package arch.cayenne.module.bet.ui.fragment
 
 import android.app.Dialog
+import android.graphics.Color
+import android.graphics.PixelFormat
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
@@ -12,6 +15,8 @@ import android.view.WindowManager
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
 import arch.cayenne.lib.base.ui.fragment.BasePositionDialogFragment
+import arch.cayenne.lib.base.ui.fragment.dim.DimView
+import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.module.bet.data.OddsChangeEnum
 import arch.cayenne.module.bet.databinding.FragmentOddsChangeBinding
@@ -36,6 +41,9 @@ class OddsChangeDialogFragment private constructor() :
 
     override val vbClass: KClass<FragmentOddsChangeBinding> = FragmentOddsChangeBinding::class
     override val vmClass: KClass<OddsChangeViewModel> = OddsChangeViewModel::class
+
+    private var topDimView: View? = null
+    private var bottomDimView: View? = null
     private var dismissListener: (() -> Unit)? = null
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -95,6 +103,7 @@ class OddsChangeDialogFragment private constructor() :
 
     override fun onStart() {
         removeDim()
+        digDim()
         super.onStart()
         initDim()
     }
@@ -120,7 +129,8 @@ class OddsChangeDialogFragment private constructor() :
             View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
         )
 
-        val isShowTop = rect.bottom + mBinding.content.measuredHeight + mBinding.triangleTop.measuredHeight + 10.dp2px < screenHeight
+        val isShowTop =
+            rect.bottom + mBinding.content.measuredHeight + mBinding.triangleTop.measuredHeight + 10.dp2px < screenHeight
 
         val layoutParams = mBinding.main.layoutParams as ConstraintLayout.LayoutParams
 
@@ -173,7 +183,55 @@ class OddsChangeDialogFragment private constructor() :
     }
 
     private fun initDim() {
-        clearDim()
+        if (topDimView != null && bottomDimView != null) return
+        mBinding.dim.alpha = 0f
+
+        val screenHeight = resources.displayMetrics.heightPixels
+        val statusHeight = ViewUtils.getStatusBarHeight(requireContext())
+        val navigationHeight = ViewUtils.getNavigationBarHeight(requireContext())
+        val decorViewHeight = requireActivity().window.decorView.height
+
+        val topDimV = DimView(requireContext()).apply {
+            setBackgroundColor(Color.BLACK)
+            alpha = 0f
+            topDimView = this
+        }
+
+        val topDimParams = WindowManager.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            statusHeight,
+            WindowManager.LayoutParams.TYPE_APPLICATION_SUB_PANEL,
+            WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
+                    or WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+            PixelFormat.TRANSLUCENT
+        )
+        topDimParams.gravity = Gravity.TOP or Gravity.START
+        topDimParams.token = dialog?.window?.decorView?.windowToken
+
+        val windowManager = requireActivity().windowManager
+        windowManager.addView(topDimV, topDimParams)
+
+        val bottomDimV = View(requireContext()).apply {
+            setBackgroundColor(Color.BLACK)
+            alpha = 0f
+            bottomDimView = this
+        }
+
+        val bottomDimParams = WindowManager.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            navigationHeight,
+            WindowManager.LayoutParams.TYPE_APPLICATION_SUB_PANEL,
+            WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
+                    or WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+            PixelFormat.TRANSLUCENT
+        )
+        bottomDimParams.token = dialog?.window?.decorView?.windowToken
+        bottomDimParams.gravity = Gravity.TOP or Gravity.START
+        bottomDimParams.y = maxOf(screenHeight, decorViewHeight - navigationHeight)
+        windowManager.addView(bottomDimV, bottomDimParams)
+    }
+
+    private fun digDim() {
         val rect = requireArguments().getParcelable<Rect>(RECT_KET) ?: return
         val centerX = rect.centerX()
         val centerY = rect.centerY()
@@ -185,10 +243,22 @@ class OddsChangeDialogFragment private constructor() :
 
     private fun showDim() {
         mBinding.dim.alpha = 0.75f
+        topDimView?.alpha = 0.75f
+        bottomDimView?.alpha = 0.75f
     }
 
     private fun clearDim() {
         mBinding.dim.alpha = 0f
+
+        val windowManager = requireActivity().windowManager
+        topDimView?.let {
+            windowManager.removeView(it)
+            topDimView = null
+        }
+        bottomDimView?.let {
+            windowManager.removeView(it)
+            bottomDimView = null
+        }
     }
 
 
