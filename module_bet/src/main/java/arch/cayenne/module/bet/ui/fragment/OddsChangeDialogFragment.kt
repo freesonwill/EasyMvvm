@@ -181,6 +181,7 @@ class OddsChangeDialogFragment private constructor() :
         val screenHeight = resources.displayMetrics.heightPixels
         val statusHeight = ViewUtils.getStatusBarHeight(requireContext())
         val navigationHeight = ViewUtils.getNavigationBarHeight(requireContext())
+        val decorViewHeight = requireActivity().window.decorView.height
 
         val dimV = DimView(requireContext()).apply {
             setBackgroundColor(Color.BLACK)
@@ -206,7 +207,7 @@ class OddsChangeDialogFragment private constructor() :
 
         val rect = requireArguments().getParcelable<Rect>(RECT_KET) ?: return
         val centerX = rect.centerX()
-        val centerY = if (Build.VERSION.SDK_INT >= 30) rect.centerY() else rect.centerY() + statusHeight
+        val centerY = if (decorViewHeight - navigationHeight == screenHeight) rect.centerY() + statusHeight else rect.centerY()
         val width = rect.width()
         val height = rect.height()
 
