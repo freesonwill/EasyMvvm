@@ -112,16 +112,12 @@ class BetSlipUnsettledViewHolder(binding: ViewBinding, betSlipType: BetSlipEnum)
         mBinding.also {
             when (settleStatus) {
                 102 -> {
-                    it.betUnsettledBtProgress.isVisible = true
                     it.betUnsettledBtSettle.isEnabled = false
                 }
                 1000 -> {
-                    it.betUnsettledBtProgress.isVisible = true
                     it.betUnsettledBtSettle.isEnabled = false
                 }
-                else -> {
-                    it.betUnsettledBtProgress.isVisible = false
-                }
+                else -> Unit
             }
         }
     }

@@ -2,11 +2,8 @@ package com.walisport.module.live.ui
 
 import android.os.Bundle
 import android.view.View
-import androidx.lifecycle.Lifecycle
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
-import arch.cayenne.lib.base.ui.fragment.launch
-import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout.States
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
@@ -39,7 +36,7 @@ class LiveOutsFragment : BaseFragment<LiveOutsViewModel, FragmentLiveOutsBinding
     private lateinit var awayLogo: String
 
     override fun initView(savedInstanceState: Bundle?) {
-        mBinding.mainLayout.setState(DynamicStateLayout.States.LOADING, "")
+
     }
 
     override fun initListener() {

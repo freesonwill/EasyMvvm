@@ -203,9 +203,6 @@ class TournamentListFragment :
         mViewModel.apiStateListener.observe(viewLifecycleOwner) {
             with(mBinding) {
                 when(it) {
-                    is DataState.Loading -> {
-                        loadingView.visibility = View.VISIBLE
-                    }
                     is DataState.NetworkUnavailable -> {
                         clDynamics.setState(
                             DynamicStateLayout.States.NETWORK_ANOMALY(),
@@ -214,14 +211,12 @@ class TournamentListFragment :
                         clDynamics.visibility = View.VISIBLE
                         groupTop.visibility = View.GONE
                         llIndexContainer.visibility = View.GONE
-                        loadingView.visibility = View.GONE
                     }
                     is DataState.LoadSuccess -> {
                         clDynamics.visibility = View.GONE
                         groupTop.visibility = View.VISIBLE
                         ivHomeLeagueCollapse.isVisible = mViewModel.getType() == TournamentListType.MORE
                         llIndexContainer.visibility = View.VISIBLE
-                        loadingView.visibility = View.GONE
                     }
                     HomeState.TournamentListState.InitList -> {
                         groupTop.visibility = View.VISIBLE
@@ -239,7 +234,6 @@ class TournamentListFragment :
                         clDynamics.visibility = View.VISIBLE
                         groupTop.visibility = View.GONE
                         llIndexContainer.visibility = View.GONE
-                        loadingView.visibility = View.GONE
                     }
 
                     HomeState.TournamentListState.SearchMatch -> {

@@ -28,8 +28,6 @@ class ChampionViewModel : BaseViewModel() {
     private var matchId: Long = 0
     val currentBalanceChange by lazy { MutableLiveData<InfoBean?>() }
     val matchWithMarketsChange by lazy { MutableLiveData<MatchWithMarkets?>() }
-    private val _isLoading = MutableLiveData<Boolean>()
-    val isLoading : LiveData<Boolean> = _isLoading
 
     override fun initViewModel() {
         super.initViewModel()
@@ -77,12 +75,10 @@ class ChampionViewModel : BaseViewModel() {
         this.matchId = matchId
     }
     fun getChampionDetail() {
-        _isLoading.value = matchWithMarketsChange.value == null
         viewModelScope.launch(Dispatchers.IO) {
             val matchWithMarkets = championRepository.getChampionDetail(matchId)
             withContext(Dispatchers.Main) {
                 matchWithMarketsChange.value = matchWithMarkets
-                _isLoading.value = false
             }
         }
     }

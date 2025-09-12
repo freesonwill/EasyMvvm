@@ -87,7 +87,6 @@ class MessageListFragment : BaseFragment<MessageMainViewModel, FragmentMessageLi
         super.initData()
         launch(Lifecycle.State.RESUMED) {
             if (msgType == MSG_ALL) {
-                mBinding.emptyState.setState(States.LOADING,"")
                 mViewModel.getMessageList(MSG_ALL)
             }
         }

@@ -101,7 +101,6 @@ class TopUpDetailFragment : BaseFragment<TopUpDetailViewModel, FragmentTopupDeta
             with(mBinding) {
                 when (state) {
                     DataState.NetworkUnavailable -> {
-                        loadingView.visibility = View.GONE
                         clDynamics.visibility = View.VISIBLE
                         clDynamics.setState(
                             DynamicStateLayout.States.NETWORK_ANOMALY(),
@@ -110,7 +109,6 @@ class TopUpDetailFragment : BaseFragment<TopUpDetailViewModel, FragmentTopupDeta
                     }
 
                     LoadingState.DataEmpty -> {
-                        loadingView.visibility = View.GONE
                         clDynamics.visibility = View.VISIBLE
                         clDynamics.setState(
                             DynamicStateLayout.States.DATA_EMPTY,
@@ -119,13 +117,11 @@ class TopUpDetailFragment : BaseFragment<TopUpDetailViewModel, FragmentTopupDeta
                     }
 
                     LoadingState.Loading -> {
-                        loadingView.visibility = View.VISIBLE
                         clDynamics.visibility = View.GONE
 
                     }
 
                     DataState.LoadSuccess -> {
-                        loadingView.visibility = View.GONE
                         clDynamics.visibility = View.GONE
                         llContent.visibility = View.VISIBLE
                     }

@@ -52,7 +52,6 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
     private var startY = 0f
     override fun initView(savedInstanceState: Bundle?) {
         initAdapter()
-        mBinding.clDynamics.setState(States.LOADING, "")
     }
 
 
@@ -63,7 +62,6 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
                 this@LiveBetOnFragment.context, LinearLayoutManager.VERTICAL, false
             )
             liveBetOnAdapter = LiveBetOnAdapter(object : LivBetListCallback {
-
                 override fun itemListCallback(
                     cell: WeakReference<View>,
                     marketI: Long,
@@ -195,8 +193,8 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
                 }
             }
         })
+
         mainViewModel.matchId.observe(viewLifecycleOwner) {
-            mBinding.clDynamics.setState(States.LOADING, "")
             mBinding.LLCBetOn.visibility = View.GONE
             mBinding.ivMenu.visibility = View.GONE
         }
