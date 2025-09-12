@@ -30,6 +30,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import arch.cayenne.lib.base.ui.animation.AnimationController
 import arch.cayenne.lib.base.ui.animation.AnimationController.AnimType
+import arch.cayenne.lib.base.ui.animation.ScaleAnimationOption
 import arch.cayenne.lib.common.R
 import arch.cayenne.lib.common.ui.view.CustomTabIndicator
 import arch.cayenne.lib.common.ui.view.OnSwipeTouchListener
@@ -447,15 +448,19 @@ fun View.startZoomInAnim(vararg otherViews: View) {
 
     // Step2: 保存原始 pivot，创建动画
     val originalPivots = views.map { it.pivotX to it.pivotY }
+    val fromAlpha = (AnimationController[AnimType.zoomIn] as ScaleAnimationOption).alpha[0]
+    val toAlpha = (AnimationController[AnimType.zoomIn] as ScaleAnimationOption).alpha[1]
+    val fromScale = (AnimationController[AnimType.zoomIn] as ScaleAnimationOption).scale[0]
+    val toScale = (AnimationController[AnimType.zoomIn] as ScaleAnimationOption).scale[1]
     val animators = views.map { view ->
         val location = view.locationOnScreen
         view.pivotX = avgX - location[0]
         view.pivotY = avgY - location[1]
         AnimatorSet().apply {
             playTogether(
-                ObjectAnimator.ofFloat(view, "alpha", 0.3f, 1f),
-                ObjectAnimator.ofFloat(view, "scaleX", 0.995f, 1f),
-                ObjectAnimator.ofFloat(view, "scaleY", 0.995f, 1f)
+                ObjectAnimator.ofFloat(view, "alpha", fromAlpha, toAlpha),
+                ObjectAnimator.ofFloat(view, "scaleX", fromScale, toScale),
+                ObjectAnimator.ofFloat(view, "scaleY", fromScale, toScale)
             )
             duration = AnimationController[AnimType.zoomIn]!!.duration
             interpolator = AnimationController[AnimType.zoomIn]!!.interpolator.toInterpolator()
