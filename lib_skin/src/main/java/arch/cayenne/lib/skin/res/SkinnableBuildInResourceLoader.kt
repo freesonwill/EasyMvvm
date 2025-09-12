@@ -83,7 +83,6 @@ class SkinnableBuildInResourceLoader(val _skinName: String) : SkinnableResourceL
     override fun getOriginResourceId(context: Context, resName: String, @AnyRes resId: Int): Int {
         val type = context.resources.getResourceTypeName(resId)
         val originId = ResUtils.getOriginalResourceId(context,resName,type)
-        "originId $originId resName $resName resId $resId".logd("aaa")
          if(originId == 0){
              return resId
          }
