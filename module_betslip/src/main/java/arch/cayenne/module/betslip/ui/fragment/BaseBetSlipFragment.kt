@@ -104,7 +104,6 @@ abstract class BaseBetSlipFragment<VM: BaseBetSlipViewModel, VB : ViewBinding>: 
                      return
                  }
                  dynamicState.showEmptyData(true, recyclerView)
-                 dynamicState.setState(DynamicStateLayout.States.LOADING, arch.cayenne.lib.common.R.string.loading.getString())
                  firstLoading = false
              }
              else ->{

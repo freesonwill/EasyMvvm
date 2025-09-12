@@ -217,7 +217,6 @@ class MatchListPagerFragment :
             with(mBinding) {
                 when(it) {
                     DataState.NetworkUnavailable, HomeState.Match.LoadNextFailure -> {
-                        lvMatchLoading.visibility = View.GONE
                         refreshLayout.finishRefresh()
                         matchAdapter.setLastItemType(MatchItemAdapter.LAST_ITEM_NONE)
                         if (it == DataState.NetworkUnavailable){
@@ -237,7 +236,6 @@ class MatchListPagerFragment :
                         matchAdapter.setLastItemType(MatchItemAdapter.LAST_ITEM_NO_MORE)
                     }
                     HomeState.Match.DataEmpty -> {  //這個DataEmpty表示確定真的從第一頁就抓不到資料，表示當前的選擇沒有任何賽事
-                        lvMatchLoading.visibility = View.GONE
                         refreshLayout.finishRefresh()
                         matchAdapter.setLastItemType(MatchItemAdapter.LAST_ITEM_NONE)
                         clDynamics.visibility = View.VISIBLE
@@ -260,7 +258,6 @@ class MatchListPagerFragment :
                         clDynamics.visibility = View.GONE
                     }
                     DataState.LoadSuccess, HomeState.Match.LoadSuccess -> {
-                        lvMatchLoading.visibility = View.GONE
                         if (refreshLayout.isRefreshing) refreshLayout.finishRefresh()
                         clDynamics.visibility = View.GONE
                         homeViewModel.changeState(HomeState.Match.LoadSuccess)

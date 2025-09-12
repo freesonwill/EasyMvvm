@@ -178,7 +178,6 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
                 when (state) {
                     DataState.NetworkUnavailable, HomeState.Match.LoadNextFailure -> {
                         mViewModel.changePageEnd(true)
-                        loadingView.visibility = View.GONE
                         refreshLayout.finishRefresh()
                         matchAdapter.setLastItemType(MatchItemAdapter.LAST_ITEM_NONE)
                         if (state == DataState.NetworkUnavailable) {
@@ -195,7 +194,6 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
                         matchAdapter.setLastItemType(MatchItemAdapter.LAST_ITEM_NO_MORE)
                     }
                     HomeState.Match.DataEmpty -> {  //這個DataEmpty表示確定真的從第一頁就抓不到資料，表示當前的選擇沒有任何賽事
-                        loadingView.visibility = View.GONE
                         refreshLayout.finishRefresh()
                         matchAdapter.setLastItemType(MatchItemAdapter.LAST_ITEM_LOAD_MORE)
                         clDynamics.visibility = View.VISIBLE
@@ -205,7 +203,6 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
                         )
                     }
                     HomeState.Match.Loading -> {
-                        loadingView.visibility = View.VISIBLE
                         clDynamics.visibility = View.GONE
                     }
                     HomeState.Match.Refreshing -> {
@@ -216,7 +213,6 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
                         clDynamics.visibility = View.GONE
                     }
                     DataState.LoadSuccess -> {
-                        loadingView.visibility = View.GONE
                         if (refreshLayout.isRefreshing) refreshLayout.finishRefresh()
                         clDynamics.visibility = View.GONE
                     }
