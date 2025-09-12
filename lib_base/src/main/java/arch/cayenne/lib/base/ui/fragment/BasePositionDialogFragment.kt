@@ -12,6 +12,7 @@ abstract class BasePositionDialogFragment<VM : BaseViewModel, VB : ViewBinding>:
         super.onStart()
         if (!isShowing) {
             isShowing = true
+            initDialog()
             showDialog()
         }
     }
@@ -19,6 +20,10 @@ abstract class BasePositionDialogFragment<VM : BaseViewModel, VB : ViewBinding>:
     private fun showDialog() {
         val w = dialog?.window ?: return
         setDialogPosition(w)
+    }
+
+    protected open fun initDialog() {
+
     }
 
     override fun onDestroy() {

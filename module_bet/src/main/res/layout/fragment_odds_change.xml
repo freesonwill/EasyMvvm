@@ -4,149 +4,163 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
-    <arch.cayenne.lib.skin.widget.SkinnableView
-        android:id="@+id/triangle_top"
-        android:layout_width="32dp"
-        android:layout_height="10dp"
-        android:layout_marginEnd="20dp"
-        android:background="@drawable/bg_odds_change_triangle_up"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <arch.cayenne.lib.base.ui.fragment.dim.DimView
+        android:id="@+id/dim"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
-    <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
-        android:id="@+id/content"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/main"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/shape_6dp"
-        android:backgroundTint="@color/keyboard_2"
-        android:paddingHorizontal="12dp"
-        android:paddingVertical="8dp"
-        app:layout_constraintBottom_toTopOf="@id/triangle_bottom"
+        android:layout_marginStart="10dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/triangle_top">
+        app:layout_constraintTop_toTopOf="parent">
 
-        <RadioGroup
+        <arch.cayenne.lib.skin.widget.SkinnableView
+            android:id="@+id/triangle_top"
+            android:layout_width="32dp"
+            android:layout_height="10dp"
+            android:layout_marginEnd="20dp"
+            android:background="@drawable/bg_odds_change_triangle_up"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
+            android:id="@+id/content"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:background="@drawable/shape_6dp"
+            android:backgroundTint="@color/keyboard_2"
+            android:paddingHorizontal="12dp"
+            android:paddingVertical="8dp"
+            app:layout_constraintBottom_toTopOf="@id/triangle_bottom"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/triangle_top">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/cl_any"
-                android:layout_width="match_parent"
+            <RadioGroup
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
 
-                <arch.cayenne.lib.skin.widget.SkinnableTextView
-                    android:id="@+id/tv_any"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginVertical="9dp"
-                    android:text="@string/title_odds_change_any"
-                    android:textColor="@color/keyboard_number"
-                    android:textSize="13sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/cl_any"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
-                <arch.cayenne.lib.skin.widget.SkinnableImageView
-                    android:id="@+id/iv_any"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="70dp"
-                    android:background="@drawable/selector_odds_change"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="1"
-                    app:layout_constraintHorizontal_chainStyle="spread_inside"
-                    app:layout_constraintStart_toEndOf="@id/tv_any"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    <arch.cayenne.lib.skin.widget.SkinnableTextView
+                        android:id="@+id/tv_any"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="9dp"
+                        android:text="@string/title_odds_change_any"
+                        android:textColor="@color/keyboard_number"
+                        android:textSize="13sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
-                <arch.cayenne.lib.skin.widget.SkinnableView
-                    android:layout_width="0dp"
-                    android:layout_height="1dp"
-                    android:background="@color/input_box"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent" />
+                    <arch.cayenne.lib.skin.widget.SkinnableImageView
+                        android:id="@+id/iv_any"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="70dp"
+                        android:background="@drawable/selector_odds_change"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="1"
+                        app:layout_constraintHorizontal_chainStyle="spread_inside"
+                        app:layout_constraintStart_toEndOf="@id/tv_any"
+                        app:layout_constraintTop_toTopOf="parent" />
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                    <arch.cayenne.lib.skin.widget.SkinnableView
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:background="@color/input_box"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent" />
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/cl_better"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
-                <arch.cayenne.lib.skin.widget.SkinnableTextView
-                    android:id="@+id/tv_better"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginVertical="9dp"
-                    android:text="@string/title_odds_change_better"
-                    android:textColor="@color/keyboard_number"
-                    android:textSize="13sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/cl_better"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
-                <arch.cayenne.lib.skin.widget.SkinnableImageView
-                    android:id="@+id/iv_better"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="70dp"
-                    android:background="@drawable/selector_odds_change"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/tv_better"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    <arch.cayenne.lib.skin.widget.SkinnableTextView
+                        android:id="@+id/tv_better"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="9dp"
+                        android:text="@string/title_odds_change_better"
+                        android:textColor="@color/keyboard_number"
+                        android:textSize="13sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
-                <arch.cayenne.lib.skin.widget.SkinnableView
-                    android:layout_width="0dp"
-                    android:layout_height="1dp"
-                    android:background="@color/input_box"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent" />
+                    <arch.cayenne.lib.skin.widget.SkinnableImageView
+                        android:id="@+id/iv_better"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="70dp"
+                        android:background="@drawable/selector_odds_change"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/tv_better"
+                        app:layout_constraintTop_toTopOf="parent" />
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                    <arch.cayenne.lib.skin.widget.SkinnableView
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:background="@color/input_box"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent" />
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/cl_none"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
-                <arch.cayenne.lib.skin.widget.SkinnableTextView
-                    android:id="@+id/tv_none"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginVertical="9dp"
-                    android:text="@string/title_odds_change_none"
-                    android:textColor="@color/keyboard_number"
-                    android:textSize="13sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/cl_none"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
-                <arch.cayenne.lib.skin.widget.SkinnableImageView
-                    android:id="@+id/iv_none"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="70dp"
-                    android:background="@drawable/selector_odds_change"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/tv_none"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    <arch.cayenne.lib.skin.widget.SkinnableTextView
+                        android:id="@+id/tv_none"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="9dp"
+                        android:text="@string/title_odds_change_none"
+                        android:textColor="@color/keyboard_number"
+                        android:textSize="13sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                    <arch.cayenne.lib.skin.widget.SkinnableImageView
+                        android:id="@+id/iv_none"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="70dp"
+                        android:background="@drawable/selector_odds_change"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/tv_none"
+                        app:layout_constraintTop_toTopOf="parent" />
 
-        </RadioGroup>
-    </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <arch.cayenne.lib.skin.widget.SkinnableView
-        android:id="@+id/triangle_bottom"
-        android:layout_width="32dp"
-        android:layout_height="10dp"
-        android:layout_marginEnd="20dp"
-        android:background="@drawable/bg_odds_change_triangle_down"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+            </RadioGroup>
+        </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
+
+        <arch.cayenne.lib.skin.widget.SkinnableView
+            android:id="@+id/triangle_bottom"
+            android:layout_width="32dp"
+            android:layout_height="10dp"
+            android:layout_marginEnd="20dp"
+            android:background="@drawable/bg_odds_change_triangle_down"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
