@@ -21,28 +21,24 @@ abstract class IAnimationOption(
     @Transient open val duration: Long,
     @Transient open val interpolator: IInterpolatorOption
 ) {
-    abstract fun toAnimation(): Animation
+    open fun toAnimation(): Animation {
+        return AnimationSet(false).also {
+            it.duration = duration
+            it.interpolator = interpolator.toInterpolator()
+        }
+    }
 
-    enum class Type {
-        TranslateAnimation,
-        SimpleAnimation,
+    enum class Type(val clazz: Class<out IAnimationOption>) {
+        TranslateAnimation(TranslateAnimationOption::class.java),
+        SimpleAnimation(SimpleAnimationOption::class.java),
+        ScaleAnimation(ScaleAnimationOption::class.java)
     }
 
     companion object {
         fun fromJson(json: String?): IAnimationOption? {
             if(json == null) return null
-            val type: Type = when {
-                json.contains("TranslateAnimation") -> Type.TranslateAnimation
-                json.contains("SimpleAnimation") -> Type.SimpleAnimation
-                else -> throw IllegalStateException("cannot find type for $json")
-            }
-            return when (type) {
-                Type.TranslateAnimation ->
-                    gson.fromJson(json, TranslateAnimationOption::class.java)
-
-                Type.SimpleAnimation ->
-                    gson.fromJson(json, SimpleAnimationOption::class.java)
-            }
+            val type = Type.entries.find { json.contains(it.toString()) } ?: throw IllegalStateException("cannot find type for $json")
+            return gson.fromJson(json,type.clazz)
         }
 
         fun toJson(option: IAnimationOption?): String? {
@@ -82,15 +78,14 @@ class IInterpolatorOptionDeserializer : JsonDeserializer<IInterpolatorOption> {
 data class SimpleAnimationOption(
     override val duration: Long,
     override val interpolator: IInterpolatorOption
-) : IAnimationOption(Type.SimpleAnimation, duration,interpolator) {
+) : IAnimationOption(Type.SimpleAnimation, duration,interpolator)
 
-    override fun toAnimation(): Animation {
-        return AnimationSet(false).also {
-            it.duration = duration
-            it.interpolator = interpolator.toInterpolator()
-        }
-    }
-}
+data class ScaleAnimationOption(
+    override val duration: Long,
+    override val interpolator: IInterpolatorOption,
+    val alpha:FloatArray,
+    val scale:FloatArray
+) : IAnimationOption(Type.ScaleAnimation, duration,interpolator)
 
 data class TranslateAnimationOption(
     val fromXType: Int,
