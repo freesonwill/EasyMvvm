@@ -31,10 +31,13 @@
             android:paddingBottom="@dimen/dp_1"
             android:textColor="@color/secondary_text"
             android:textSize="13sp"
+            android:singleLine="true"
+            android:ellipsize="end"
+            android:maxWidth="@dimen/dp_310"
             app:layout_constraintBottom_toBottomOf="@id/iv_tournament_icon"
             app:layout_constraintStart_toEndOf="@id/iv_tournament_icon"
-            app:layout_constraintTop_toTopOf="@id/iv_tournament_icon"
-            tools:text="2026美加墨世界盃" />
+            app:layout_constraintTop_toTopOf="@id/iv_tournament_icon" />
+
         <!-- 上下半場 + 比賽時間 -->
         <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
             android:id="@+id/cl_left_info_entry"
