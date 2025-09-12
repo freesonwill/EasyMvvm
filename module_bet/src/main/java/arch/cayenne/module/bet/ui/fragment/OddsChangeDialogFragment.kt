@@ -8,6 +8,7 @@ import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
@@ -205,9 +206,11 @@ class OddsChangeDialogFragment private constructor() :
             requireContext().getSystemService(Context.WINDOW_SERVICE) as WindowManager
         windowManager.addView(dimV, dimParams)
 
+        Log.d("abcd", "decorViewHeight: $decorViewHeight, screenHeight: $screenHeight, statusHeight: $statusHeight, navigationHeight: $navigationHeight")
+
         val rect = requireArguments().getParcelable<Rect>(RECT_KET) ?: return
         val centerX = rect.centerX()
-        val centerY = if (decorViewHeight - navigationHeight == screenHeight) rect.centerY() + statusHeight else rect.centerY()
+        val centerY = if (decorViewHeight - navigationHeight == screenHeight || decorViewHeight == screenHeight) rect.centerY() + statusHeight else rect.centerY()
         val width = rect.width()
         val height = rect.height()
 
