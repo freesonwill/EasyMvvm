@@ -324,9 +324,15 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
     }
 
     private fun showOddsChangeDialog() {
-        val globalRect = Rect()
-        mBinding.clOddsChange.getGlobalVisibleRect(globalRect)
-        val f = OddsChangeDialogFragment.instance(globalRect)
+        val location = IntArray(2)
+        mBinding.clOddsChange.getLocationInWindow(location)
+
+        val x = location.first()
+        val y = location.last() - ViewUtils.getStatusBarHeight(requireContext())
+        val width = mBinding.clOddsChange.width
+        val height = mBinding.clOddsChange.height
+        val rect = Rect(x, y, x + width, y + height)
+        val f = OddsChangeDialogFragment.instance(rect)
 
         val animator = ObjectAnimator.ofFloat(mBinding.ivOddsChange, "rotation", 0f, 180f)
         animator.duration = 100 // 旋轉持續時間，單位毫秒
