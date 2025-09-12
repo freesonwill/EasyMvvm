@@ -36,11 +36,11 @@ class SettingRepository(
     }
 
     fun getSystemBet(): Boolean {
-        return manager.getValue(UserDataKey.KEY_SYSTEM_BET, false)
+        return manager.getValue(UserDataKey.KEY_SYSTEM_BET, true)
     }
 
     fun getSystemFav(): Boolean {
-        return manager.getValue(UserDataKey.KEY_SYSTEM_FAV, false)
+        return manager.getValue(UserDataKey.KEY_SYSTEM_FAV, true)
     }
 
     fun getSystemAll(): Boolean {
@@ -55,11 +55,11 @@ class SettingRepository(
     }
 
     fun getKickBet(): Boolean {
-        return manager.getValue(UserDataKey.KEY_KICK_BET, false)
+        return manager.getValue(UserDataKey.KEY_KICK_BET, true)
     }
 
     fun getKickFav(): Boolean {
-        return manager.getValue(UserDataKey.KEY_KICK_FAV, false)
+        return manager.getValue(UserDataKey.KEY_KICK_FAV, true)
     }
 
     fun getKickAll(): Boolean {
@@ -74,11 +74,11 @@ class SettingRepository(
     }
 
     fun getAppBet(): Boolean {
-        return manager.getValue(UserDataKey.KEY_APP_BET, false)
+        return manager.getValue(UserDataKey.KEY_APP_BET, true)
     }
 
     fun getAppFav(): Boolean {
-        return manager.getValue(UserDataKey.KEY_APP_FAV, false)
+        return manager.getValue(UserDataKey.KEY_APP_FAV, true)
     }
 
     fun getAppAll(): Boolean {
