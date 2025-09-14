@@ -58,7 +58,7 @@ abstract class BaseMatchViewModel<REPO: BaseMatchRepository> : BaseViewModel() {
             repository.observeLoginChange()
                 .filter { it }
                 .collect {
-                    if (apiStateListener.value == DataState.NetworkUnavailable) {
+                    if (apiStateListener.value == null || apiStateListener.value == DataState.NetworkUnavailable) {
                         getMatchListData(LoadMatchType.RETRY)
                     } else {
                         launch(Dispatchers.Main) {
