@@ -123,6 +123,10 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
             mViewModel.toggleMultiLayoutExpend()
         }
         mBinding.clBet.setOnClickListener {
+            if (mViewModel.getSumBetAmount() > mViewModel.balance) {
+                showToast(getString(arch.cayenne.lib.common.R.string.toast_over_remaining))
+                return@setOnClickListener
+            }
             val isSuccess = mViewModel.sendBet()
             if (isSuccess) {
                 navToResult()

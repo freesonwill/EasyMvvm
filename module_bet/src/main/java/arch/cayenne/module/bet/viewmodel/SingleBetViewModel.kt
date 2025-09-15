@@ -49,6 +49,9 @@ class SingleBetViewModel(
     private val _onBalanceListener = MutableLiveData<InfoBean?>()
     val onBalanceListener: LiveData<InfoBean?> get() = _onBalanceListener
 
+    val balance: Long
+        get() = _onBalanceListener.value?.balance ?: 0L
+
     private val _betTypeListener = MutableLiveData<BetTypeEnum?>()
     val betTypeListener: LiveData<BetTypeEnum?> get() = _betTypeListener
 
@@ -148,9 +151,9 @@ class SingleBetViewModel(
             launch {
                 balanceRepo.observeInfo().collect {
                     _onBalanceListener.value = it
-                    if (it != null) {
-                        setRemainingNumber(it.balance)
-                    }
+//                    if (it != null) {
+//                        setRemainingNumber(it.balance)
+//                    }
                 }
             }
             launch {
@@ -164,6 +167,7 @@ class SingleBetViewModel(
                 }
             }
         }
+        setRemainingNumber(Long.MAX_VALUE)
     }
 
     fun sendBet(): Boolean {
