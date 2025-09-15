@@ -1,8 +1,10 @@
 package com.walisport.app
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.core.splashscreen.SplashScreenViewProvider
 import androidx.lifecycle.lifecycleScope
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
@@ -54,8 +56,15 @@ class SplashActivity : BaseActivity<SplashViewModel, ActivitySplashBinding>() {
         return StatusBarConfig
     }
 
+    private var keep: Boolean = true
+
     override fun onCreate(savedInstanceState: Bundle?) {
-        installSplashScreen()
+        val splashScreen = installSplashScreen()
+        //splashScreen.setKeepOnScreenCondition { keep }
+        // Android 14 默认也会对第一个 Activity 做 Splash / launch animation，可以在 SplashScreen.setOnExitAnimationListener 里直接移除动画
+        splashScreen.setOnExitAnimationListener { splashViewProvider:SplashScreenViewProvider ->
+            splashViewProvider.remove()
+        }
         super.onCreate(savedInstanceState)
     }
 
@@ -69,7 +78,8 @@ class SplashActivity : BaseActivity<SplashViewModel, ActivitySplashBinding>() {
         "name:${name}, uid:$uid, token:$token".logd(TAG)
         mViewModel.saveUserData(uid, token)  //TODO 實作登入頁後就不需要這個了
         lifecycleScope.launch {
-            delay(500)
+            keep = false
+            delay(0)
             jumpToMainActivity()
         }
     }

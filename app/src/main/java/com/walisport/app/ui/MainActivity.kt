@@ -1,5 +1,6 @@
 package com.walisport.app.ui
 
+import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.Lifecycle
@@ -51,6 +52,12 @@ class MainActivity : BaseNavActivity<MainViewModel>() {
         createBetSheet()
         fabFragment.show(this)
         notifyFragment.show(this)
+        //Android 14 默认也会对第一个 Activity 做 Splash / launch animation，可以在 SplashScreen.setOnExitAnimationListener 里直接移除动画
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            splashScreen.setOnExitAnimationListener { splashViewProvider ->
+                splashViewProvider.remove()
+            }
+        }
     }
 
     override suspend fun createObserver() {
