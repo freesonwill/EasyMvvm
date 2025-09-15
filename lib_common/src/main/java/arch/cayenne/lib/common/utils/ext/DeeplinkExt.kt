@@ -86,4 +86,12 @@ object DeeplinkExt {
     fun @receiver:StringRes Int.deeplink(): Uri {
         return Uri.parse(this.getString())
     }
+
+    /**
+     * 不传参时候会有二义性，补充一个
+     * @return
+     */
+    fun String.deeplink(): Uri {
+        return Uri.parse(this)
+    }
 }
