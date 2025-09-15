@@ -252,4 +252,20 @@ class SingleBetViewModel(
         }
         return true
     }
+
+    fun checkOddsPass(): Boolean {
+        val oddsChange = _oddsChangeListener.value ?: return false
+        if (oddsChange == OddsChangeEnum.ANY) {
+            return true
+        }
+        val initialOdds = _onBetSheetListener.value?.initialOdds ?: return false
+        val currentOdds = _onBetSheetListener.value?.odds ?: return false
+        if (oddsChange == OddsChangeEnum.NO_CHANGE && initialOdds != currentOdds) {
+            return false
+        }
+        if (oddsChange == OddsChangeEnum.BETTER && currentOdds < initialOdds) {
+            return false
+        }
+        return true
+    }
 }

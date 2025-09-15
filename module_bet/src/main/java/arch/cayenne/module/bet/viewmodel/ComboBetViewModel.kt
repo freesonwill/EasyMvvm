@@ -241,4 +241,20 @@ class ComboBetViewModel(
         }
         return true
     }
+
+    fun checkOddsPass(): Boolean {
+        val oddsChange = _oddsChangeListener.value ?: return false
+        if (oddsChange == OddsChangeEnum.ANY) {
+            return true
+        }
+        val anyChange = _onBetListListener.value?.any { it.initialOdds != it.odds } ?: return false
+        if (oddsChange == OddsChangeEnum.NO_CHANGE && anyChange) {
+            return false
+        }
+        val anyWorse = _onBetListListener.value?.any { it.initialOdds > it.odds } ?: return false
+        if (oddsChange == OddsChangeEnum.BETTER && anyWorse) {
+            return false
+        }
+        return true
+    }
 }
