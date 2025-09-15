@@ -321,6 +321,8 @@ class MatchListPagerFragment :
 
     override fun onPause() {
         super.onPause()
+        //如果切换时正在滚动则停止滚动
+        mBinding.rvHomeGameList.stopScroll()
         //暫時移除訂閱
         mViewModel.cancelSubscribeMatch(mViewModel.getCurrentSubscribeMatchSet())
         mViewModel.stopMatchSubscribeNotify()
