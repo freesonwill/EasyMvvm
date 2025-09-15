@@ -344,4 +344,8 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
         f.show(childFragmentManager)
         animator.start()
     }
+
+    override fun getBlockingSlideView(): View? {
+        return mBinding.clKeyboard
+    }
 }

@@ -13,7 +13,8 @@ class TikTokGesture(private val view: View) : GestureDetector.SimpleOnGestureLis
     private var listener: TikTokGestureListener? = null
 
     init {
-        view.setOnTouchListener { _, event ->
+        view.setOnTouchListener { v, event ->
+            if (!v.isEnabled) return@setOnTouchListener false
             if (event.action == MotionEvent.ACTION_UP || event.action == MotionEvent.ACTION_CANCEL) {
                 view.parent.requestDisallowInterceptTouchEvent(false)
                 listener?.onActionUp()

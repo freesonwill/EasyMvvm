@@ -15,6 +15,7 @@ import arch.cayenne.module.bet.data.Config.KEY_RESULT
 import arch.cayenne.module.bet.data.Config.VALUE_DISMISS
 import arch.cayenne.module.bet.data.Config.VALUE_TO_RESULT
 import arch.cayenne.module.bet.databinding.FragmentBetSheetBinding
+import arch.cayenne.module.bet.ui.view.BlockSlideConstrainLayout
 import arch.cayenne.module.bet.viewmodel.BetSheetViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlin.reflect.KClass
@@ -87,6 +88,14 @@ class BetSheetFragment private constructor() :
     override fun initView(savedInstanceState: Bundle?) {
         initFragment()
         BetResultFragment.create(requireActivity())
+        mBinding.root.setBlockSlideListener(object : BlockSlideConstrainLayout.BlockSlideListener {
+            override fun getBlockingRect(): View? {
+                if (!singleFragment.isHidden) {
+                    return singleFragment.getBlockingSlideView()
+                }
+                return null
+            }
+        })
     }
 
     private fun initFragment() {
@@ -196,5 +205,8 @@ interface BetSheetListener {
     fun doCustomHideEnd()
     fun doCustomShow() {
 
+    }
+    fun getBlockingSlideView(): View? {
+        return null
     }
 }
