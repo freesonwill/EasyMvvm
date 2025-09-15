@@ -560,3 +560,25 @@ fun View.isInArea(rawX: Float, rawY: Float): Boolean {
     getLocationOnScreen(rawXY)
     return rawX >= rawXY[0] && rawX <= (rawXY[0] + width) && rawY >= rawXY[1] && rawY <= (rawXY[1] + height)
 }
+
+
+
+/**
+ * 切换页面时淡入淡出动画
+ * @param doSwitchPage 切换页面的操作
+ */
+fun View.startFadeAnim(doSwitchPage: () -> Unit) {
+    animate().cancel()
+    animate()
+        .alpha(0.5f)
+        .setDuration(125)
+        .withEndAction {
+            doSwitchPage.invoke()
+            alpha = 0.5f
+            animate()
+                .alpha(1f)
+                .setDuration(125)
+                .start()
+        }
+        .start()
+}

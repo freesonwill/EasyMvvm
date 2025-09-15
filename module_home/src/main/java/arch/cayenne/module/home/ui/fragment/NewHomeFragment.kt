@@ -26,7 +26,7 @@ import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.removeAllTips
 import arch.cayenne.lib.common.utils.ext.setDrawerInterpolator
 import arch.cayenne.lib.common.utils.ext.setupHorizontalScrollDegree
-import arch.cayenne.lib.common.utils.ext.startZoomInAnim
+import arch.cayenne.lib.common.utils.ext.startFadeAnim
 import arch.cayenne.lib.common.utils.helper.doSmartAnim
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.module.home.R
@@ -69,37 +69,6 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             val tabResList = mutableListOf<Int>()
 
             tlHome.setTabResArray(tabResList.toIntArray())
-            tlHome.addOnTabSelectedListener2(object : TabLayoutExt.OnTabSelectedListener2 {
-                override fun onTabSelected(tab: TabLayout.Tab, isTabClick:Boolean) {
-                    tab.position.apply {
-                        mViewModel.setCurrentPlayType(PlayType.entries[this].id)
-                        val vp = mBinding.vpSub
-                        if(isTabClick) {
-                            vp.setCurrentItem(this, false)
-                            vp.startZoomInAnim()
-                        } else {
-                            vp.doSmartAnim(this)
-                        }
-                        (childFragmentManager.findFragmentByTag("f$this") as? SubHomeFragment)?.onFragmentSelected()
-                    }
-                    tab.let {
-                        // 设置选中Tab为粗体
-                        (it.view.getChildAt(1) as? TextView)?.typeface = Typeface.DEFAULT_BOLD
-                    }
-
-                }
-
-                override fun onTabUnselected(tab: TabLayout.Tab, isTabClick:Boolean) {
-                    tab.position.apply {
-                        (childFragmentManager.findFragmentByTag("f$this") as? SubHomeFragment)?.onFragmentUnSelected()
-                    }
-                    tab.let {
-                        // 设置默认
-                        (it.view.getChildAt(1) as? TextView)?.typeface = Typeface.DEFAULT
-                    }
-                }
-                override fun onTabReselected(tab: TabLayout.Tab, isTabClick:Boolean) {}
-            })
 
             PlayType.entries.forEachIndexed { index, playType ->
                 tabResList.add(playType.titleRes)
@@ -125,7 +94,36 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
 
             TabLayoutMediator(tlHome, vpSub) { tab, position ->
                 tab.setText(PlayType.entries[position].titleRes)
-            }.attach()
+            }.apply {
+                attach()
+
+                // 取消TabLayoutMediator預設的選中監聽，改用自定義的，動畫效果才不會被覆蓋
+                // 或是可以直接不用 TabLayoutMediator
+                tlHome.clearOnTabSelectedListeners()
+                tlHome.addOnTabSelectedListener2(object : TabLayoutExt.OnTabSelectedListener2 {
+                    override fun onTabSelected(tab: TabLayout.Tab, isTabClick:Boolean) {
+                        mViewModel.setCurrentPlayType(PlayType.entries[tab.position].id)
+                        (childFragmentManager.findFragmentByTag("f${tab.position}") as? SubHomeFragment)?.onFragmentSelected()
+                        // 设置选中Tab为粗体
+                        (tab.view.getChildAt(1) as? TextView)?.typeface = Typeface.DEFAULT_BOLD
+
+                        if(isTabClick) {
+                            vpSub.startFadeAnim {
+                                vpSub.setCurrentItem(tab.position, false)
+                            }
+                        } else {
+                            vpSub.doSmartAnim(tab.position)
+                        }
+                    }
+
+                    override fun onTabUnselected(tab: TabLayout.Tab, isTabClick:Boolean) {
+                        (childFragmentManager.findFragmentByTag("f${tab.position}") as? SubHomeFragment)?.onFragmentUnSelected()
+                        // 设置默认
+                        (tab.view.getChildAt(1) as? TextView)?.typeface = Typeface.DEFAULT
+                    }
+                    override fun onTabReselected(tab: TabLayout.Tab, isTabClick:Boolean) = Unit
+                })
+            }
 
             vpSub.offscreenPageLimit = 1
             vpSub.setupHorizontalScrollDegree()

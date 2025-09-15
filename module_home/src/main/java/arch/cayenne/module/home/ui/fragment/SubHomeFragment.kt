@@ -33,6 +33,7 @@ import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.clickNoRepeatSingle
 import arch.cayenne.lib.common.utils.ext.getFormatDate
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
+import arch.cayenne.lib.common.utils.ext.startFadeAnim
 import arch.cayenne.lib.common.utils.helper.BounceEdgeEffectHelper
 import arch.cayenne.lib.database.entity.TournamentDataModel
 import arch.cayenne.module.home.R
@@ -74,7 +75,11 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
     private val sportsListAdapter by lazy {
         SportsListAdapter { id ->
             if (mViewModel.currentSportId == id) return@SportsListAdapter
-            mViewModel.setCurrentSport(id)
+
+            // 執行淡入淡出動畫
+            mBinding.layoutContainer.viewContainerRoot.startFadeAnim {
+                mViewModel.setCurrentSport(id)
+            }
         }
     }
 
@@ -411,8 +416,12 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
 
                 tab.tag?.apply {
                     val dateTimestamp = getFuture31Days().find { it.first == this }?.third ?: return
-                    lifecycleScope.launch {
-                        mViewModel.selectedDate(dateTimestamp)
+
+                    // 執行淡入淡出動畫
+                    mBinding.layoutContainer.vpGameList.startFadeAnim {
+                        lifecycleScope.launch {
+                            mViewModel.selectedDate(dateTimestamp)
+                        }
                     }
                 }
             }
