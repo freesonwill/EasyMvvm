@@ -294,6 +294,8 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
         val curAmount = mViewModel.editValue.toMoney()
         if (curAmount < minAmount) {
             showToast(getString(R.string.hint_less_min_amount))
+        } else if (curAmount > mViewModel.balance) {
+            showToast(getString(arch.cayenne.lib.common.R.string.toast_over_remaining))
         } else {
             val isSuccess = mViewModel.sendBet()
             if (isSuccess) {
