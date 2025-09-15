@@ -125,11 +125,15 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
         mBinding.clBet.setOnClickListener {
             if (mViewModel.getSumBetAmount() > mViewModel.balance) {
                 showToast(getString(arch.cayenne.lib.common.R.string.toast_over_remaining))
-                return@setOnClickListener
-            }
-            val isSuccess = mViewModel.sendBet()
-            if (isSuccess) {
-                navToResult()
+            } else if (!mViewModel.checkOddsPass()) {
+                mViewModel.oddsChangeListener.value?.toastRes?.let {
+                    showToast(getString(it))
+                }
+            } else {
+                val isSuccess = mViewModel.sendBet()
+                if (isSuccess) {
+                    navToResult()
+                }
             }
         }
         mBinding.tvOddsChange.setOnClickListener { v ->
