@@ -27,6 +27,7 @@ data class BetInsertBean(
             selectionId = selectionId,
             name = name,
             odds = odds,
+            initialOdds = odds,
             leagueName = leagueName,
             matchName = matchName,
             isActive = isActive,
