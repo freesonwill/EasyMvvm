@@ -7,9 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/app_bg"
-    android:fitsSystemWindows="false"
-   >
-
+    android:fitsSystemWindows="false">
 
     <ImageView
         android:id="@+id/bgLightSet"
@@ -22,7 +20,7 @@
         android:id="@+id/llConttnet"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_20"
+        android:layout_marginTop="@dimen/dp_50"
         android:orientation="vertical">
 
         <arch.cayenne.lib.common.ui.view.TitleBarView
@@ -34,7 +32,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_20"
+            android:layout_marginTop="@dimen/dp_21"
             android:orientation="horizontal">
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -45,8 +43,8 @@
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/iv_black_green"
-                    android:layout_width="@dimen/dp_105"
-                    android:layout_height="@dimen/dp_154"
+                    android:layout_width="@dimen/dp_106"
+                    android:layout_height="@dimen/dp_156"
                     android:background="@drawable/bg_theme_green"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -87,8 +85,8 @@
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/iv_white_green"
-                    android:layout_width="@dimen/dp_105"
-                    android:layout_height="@dimen/dp_154"
+                    android:layout_width="@dimen/dp_106"
+                    android:layout_height="@dimen/dp_156"
                     android:background="@drawable/bg_theme_white_green"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
