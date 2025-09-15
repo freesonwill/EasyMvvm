@@ -231,10 +231,11 @@ class ComboBetMoneyKeyboardDialogFragment private constructor():
             mViewModel.setNumberLimit(minNumber, maxNumber)
         }
 
-        val remainingMoney = requireArguments().getLong(REMAINING_MONEY_NUMBER, -1L)
-        if (remainingMoney != -1L) {
-            mViewModel.setRemainingNumber(remainingMoney)
-        }
+//        val remainingMoney = requireArguments().getLong(REMAINING_MONEY_NUMBER, -1L)
+//        if (remainingMoney != -1L) {
+//            mViewModel.setRemainingNumber(remainingMoney)
+//        }
+        mViewModel.setRemainingNumber(Long.MAX_VALUE)
 
         val currentMoney = requireArguments().getLong(CURRENT_MONEY_NUMBER, -1L)
         if (currentMoney != -1L) {

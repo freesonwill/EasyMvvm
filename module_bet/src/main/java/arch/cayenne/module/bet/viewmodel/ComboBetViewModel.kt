@@ -30,6 +30,9 @@ class ComboBetViewModel(
     private val _onBalanceListener = MutableLiveData<InfoBean?>()
     val onBalanceListener: LiveData<InfoBean?> get() = _onBalanceListener
 
+    val balance: Long
+        get() = _onBalanceListener.value?.balance ?: 0L
+
     private val _onCanBetListener = MediatorLiveData(false).apply {
         val updateCanBet = {
             val betList = _onBetListListener.value
@@ -181,6 +184,10 @@ class ComboBetViewModel(
             repo.setMoney(serialValue, money)
             setMultiBetBean(updatedList)
         }
+    }
+
+    fun getSumBetAmount(): Long {
+        return _onComboMultiBetBeanListener.value?.sumOf { it.inputMoney } ?: 0L
     }
 
     fun sendBet(): Boolean {
