@@ -49,6 +49,7 @@ import kotlinx.coroutines.flow.filter
 import kotlin.reflect.KClass
 import arch.cayenne.lib.common.utils.ext.animateIndicatorToPosition
 import arch.cayenne.lib.common.utils.ext.setupHorizontalScrollDegree
+import arch.cayenne.lib.common.utils.ext.startFadeAnim
 import arch.cayenne.lib.common.utils.ext.startZoomInAnim
 import arch.cayenne.lib.common.utils.helper.doSmartAnim
 import kotlin.math.abs
@@ -159,12 +160,12 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                     if (skipAnyAnim) {
                         enableAnimation = false
                         mBinding.customIndicator.animateIndicatorToPosition(tab.position)
-                        //mBinding.vpPage.setCurrentItem(tab.position,false)
-                        //mBinding.vpPage.doSmartAnim(tab.position)
                         val vp = mBinding.vpPage
                         if(isTabClick) {
-                            vp.setCurrentItem(tab.position, false)
-                            vp.startZoomInAnim()
+                            vp.startFadeAnim {
+                                vp.setCurrentItem(tab.position, false)
+                                it.invoke()
+                            }
                         } else {
                             vp.doSmartAnim(tab.position)
                         }
