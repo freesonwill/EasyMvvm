@@ -2,11 +2,14 @@ package arch.cayenne.lib.common.ui.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import arch.cayenne.lib.base.ui.adapter.BaseAdapter
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
+import arch.cayenne.lib.common.R
 import arch.cayenne.lib.common.data.constants.QuickAmountEnum
 import arch.cayenne.lib.common.databinding.ItemQuickAmountBinding
+import arch.cayenne.lib.skin.res.SkinnableResourceManager
 
 class QuickAmountAdapter(
     private val onItemClick: (Long) -> Unit
@@ -14,20 +17,23 @@ class QuickAmountAdapter(
     QuickAmountCompare()
 ) {
 
-    companion object {
-        private const val MAX_DISPLAY_COUNT = 5
-    }
-
     override fun convertPlus(
         holder: BaseViewHolder,
         binding: ItemQuickAmountBinding,
         position: Int
     ) {
         val item = getItem(position)
+        val context = binding.root.context
         binding.tvTitle.text = item.value.toString()
         binding.root.setOnClickListener {
             onItemClick(item.getAmount())
         }
+        binding.root.foreground = when (position) {
+            0 -> SkinnableResourceManager.getDrawable(context, R.drawable.bg_click_mask_top_6dp)
+            itemCount - 1 -> SkinnableResourceManager.getDrawable(context, R.drawable.bg_click_mask_bottom_6dp)
+            else -> SkinnableResourceManager.getDrawable(context, R.drawable.bg_click_mask)
+        }
+        binding.line.isVisible = position < itemCount - 1
     }
 
     override fun createViewBinding(
@@ -43,12 +49,6 @@ class QuickAmountAdapter(
         viewType: Int
     ): BaseViewHolder {
         return getBaseViewHolder(binding)
-    }
-
-    override fun getItemCount(): Int {
-        // 回傳完整列表數量和最大顯示數量的較小值。
-        // 這確保了如果你的列表少於五個，它只會顯示現有的項目。
-        return minOf(currentList.size, MAX_DISPLAY_COUNT)
     }
 }
 

@@ -64,7 +64,6 @@ class BlockSlideConstrainLayout @JvmOverloads constructor(
                 if (dx > touchSlop || dy > touchSlop) {
                     isDragging = true
                     parent.requestDisallowInterceptTouchEvent(true)
-                    return true
                 }
             }
         }
@@ -81,7 +80,6 @@ class BlockSlideConstrainLayout @JvmOverloads constructor(
                     this.isEnabled = true
                 }
             }
-            return true // Consume the event since we are dragging
         }
         return super.onTouchEvent(event)
     }

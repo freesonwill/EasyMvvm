@@ -6,11 +6,14 @@ import android.os.Bundle
 import android.view.View
 import android.view.ViewTreeObserver
 import android.view.animation.LinearInterpolator
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.common.data.constants.QuickAmountEnum
+import arch.cayenne.lib.common.ui.adapter.QuickAmountAdapter
 import arch.cayenne.lib.common.ui.fragment.ReserveDialogFragment
 import arch.cayenne.lib.common.ui.view.NumberKeyboardView
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
@@ -39,10 +42,20 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
     override val vbClass: KClass<FragmentSingleBetBinding> = FragmentSingleBetBinding::class
     override val vmClass: KClass<SingleBetViewModel> = SingleBetViewModel::class
 
+    private val quickAmountAdapter: QuickAmountAdapter by lazy {
+        QuickAmountAdapter {
+            mViewModel.setNumber(it)
+        }
+    }
+
+
     override fun initView(savedInstanceState: Bundle?) {
         ViewUtils.hideKeyboard(requireContext(), mBinding.etMoney) {
             showKeyboard()
         }
+
+        mBinding.rvQuickAmount.adapter = quickAmountAdapter
+        quickAmountAdapter.submitList(QuickAmountEnum.entries)
 
         mBinding.numberKeyboard.setOnCalculatorClickListener(object :
             NumberKeyboardView.OnCalculatorClickListener {
@@ -62,6 +75,7 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
                 return getString(R.string.btn_max)
             }
         })
+
         setMaxHeight()
     }
 
@@ -104,21 +118,6 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
         }
         mBinding.btnDouble.setOnClickListener {
             mViewModel.doubleNumber()
-        }
-        mBinding.btn100.setOnClickListener {
-            mViewModel.setNumber(10000)
-        }
-        mBinding.btn500.setOnClickListener {
-            mViewModel.setNumber(50000)
-        }
-        mBinding.btn1000.setOnClickListener {
-            mViewModel.setNumber(100000)
-        }
-        mBinding.btn2000.setOnClickListener {
-            mViewModel.setNumber(200000)
-        }
-        mBinding.btn5000.setOnClickListener {
-            mViewModel.setNumber(500000)
         }
         mBinding.btnCollusion.setOnClickListener {
             lifecycleScope.launch {
