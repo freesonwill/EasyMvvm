@@ -1,4 +1,4 @@
-package arch.cayenne.module.bet.ui.view
+package arch.cayenne.lib.common.ui.view
 
 import android.content.Context
 import android.graphics.Rect
@@ -6,7 +6,6 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewConfiguration
-import arch.cayenne.lib.common.ui.view.InterceptedConstraintLayout
 import kotlin.math.abs
 
 class BlockSlideConstrainLayout @JvmOverloads constructor(
