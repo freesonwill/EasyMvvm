@@ -67,7 +67,7 @@ class CommonModuleInitializer : DefaultInitializer<String> {
             StrictMode.ThreadPolicy.Builder()
                 .detectNetwork()   // 检测网络操作
                 //.detectDiskReads() // 检测磁盘读取，File.exists()这个会触发警告，暂时关闭
-                .apply { if(!arrayOf("OPPO","vivo","Google","OnePlus").contains(Build.MANUFACTURER)) detectDiskWrites() } // 检测磁盘写入
+                //.apply { if(!arrayOf("OPPO","vivo","Google","OnePlus").contains(Build.MANUFACTURER)) detectDiskWrites() } // 检测磁盘写入
                 .detectCustomSlowCalls()
                 .penaltyLog() // 日志输出
                 .penaltyDeath() // 崩溃

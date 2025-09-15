@@ -21,7 +21,7 @@
     <style name="Theme.Wsl.Android.Splash" parent="Theme.SplashScreen">
         <item name="windowSplashScreenBackground">@color/splash_bg</item>
         <item name="windowSplashScreenAnimatedIcon">@drawable/splash_background</item>
-        <item name="postSplashScreenTheme">@style/Theme.Wsl.Android</item>
+        <item name="postSplashScreenTheme">@style/Theme.Wsl.Android.Main</item>
         <item name="android:windowFullscreen">false</item>
         <item name="android:windowLightStatusBar">false</item>
     </style>
