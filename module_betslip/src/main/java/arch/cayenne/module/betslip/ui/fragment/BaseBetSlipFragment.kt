@@ -45,9 +45,7 @@ abstract class BaseBetSlipFragment<VM: BaseBetSlipViewModel, VB : ViewBinding>: 
             onFilterChangeListener.observe(viewLifecycleOwner) {
                 mViewModel.setIds(it.matchId, it.sportIds)
                 mViewModel.setTime(it.startTime, it.endTime)
-                if(it.matchId == -1L){ //首页注单加载使用
-                    refreshData()
-                }
+                refreshData()
             }
         }
         mViewModel.apiStateListener.observe(viewLifecycleOwner) {
