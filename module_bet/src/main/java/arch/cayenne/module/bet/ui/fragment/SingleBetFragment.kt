@@ -262,6 +262,9 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
 
     override fun doCustomShow() {
         mBinding.root.post {
+            mBinding.etMoney.isCursorVisible = true
+            mBinding.etMoney.isFocusableInTouchMode = true
+            mBinding.etMoney.isFocusable = true
             mBinding.etMoney.requestFocus()
         }
     }

@@ -162,7 +162,8 @@ abstract class BasePreLoadBottomSheetFragment<VM : BaseViewModel, VB : ViewBindi
         }
     }
 
-    fun customShow(other: ObjectAnimator) {
+    @CallSuper
+    open fun customShow(other: ObjectAnimator) {
         if (sheetContainer?.visibility == View.INVISIBLE) {
             isDismissing = true
         }
