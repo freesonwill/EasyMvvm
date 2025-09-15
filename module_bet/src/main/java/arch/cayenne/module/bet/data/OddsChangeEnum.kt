@@ -9,7 +9,7 @@ enum class OddsChangeEnum(val value: Int, val textRes: Int, val toastRes: Int? =
 
     companion object {
         fun fromValue(value: Int): OddsChangeEnum {
-            return entries.firstOrNull { it.value == value } ?: ANY
+            return entries.find { it.value == value } ?: ANY
         }
     }
 }
