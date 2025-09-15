@@ -451,8 +451,9 @@ class CustomTabLayoutMediator(
             } else {
                 // 判斷是否是點擊Tab觸發的，是的話執行淡入淡出動畫，否則執行滑動動畫
                 if(isTabClick) {
-                    viewPager.startFadeAnim {
+                    viewPager.startFadeAnim { onComplete ->
                         viewPager.setCurrentItem(tab.position, false)
+                        onComplete.invoke()
                     }
                     isTabClick = false
                 } else {

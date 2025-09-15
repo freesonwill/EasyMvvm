@@ -4,6 +4,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
+import androidx.core.view.doOnLayout
 import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -20,6 +21,7 @@ import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.scrollToBottomWithLoadMore
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
+import arch.cayenne.lib.common.utils.ext.startFadeAnim
 import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.database.entity.MatchWithMarkets
 import arch.cayenne.lib.database.entity.SelectionBeanLite
@@ -37,6 +39,7 @@ import arch.cayenne.module.home.ui.viewmodel.MatchListViewModel
 import arch.cayenne.module.home.ui.viewmodel.SubHomeViewModel
 import arch.cayenne.module.home.utils.setFavoriteIcon
 import com.walisport.module.message.ui.view.DeleteAnimator
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import java.lang.ref.WeakReference
@@ -53,6 +56,8 @@ class MatchListPagerFragment :
     private val gameLayoutManager by lazy { LinearLayoutManager(context) }
     private val fabViewModel: FloatingButtonControlViewModel by activityViewModel()
 
+    // 用於淡入淡出動畫時監聽api是否已經回傳
+    private var animationObserver: Observer<DataState>? = null
     private var dataObserver: RecyclerView.AdapterDataObserver? = null
     private var userRequestedScrollToTop = false
 
@@ -193,15 +198,44 @@ class MatchListPagerFragment :
     val matchListObserver = Observer<List<MatchWithMarkets>> { matchList ->
         val preEmpty = matchAdapter.currentList.isEmpty()
         "MatchListChange livedata Observed~ ${matchList.map { it.match.matchId }}".logi(this::class.java.simpleName)
-        matchAdapter.submitList(matchList)
-        mBinding.rvHomeGameList.doOnPreDraw {
-            if (mBinding.rvHomeGameList.scrollState == RecyclerView.SCROLL_STATE_IDLE) {
-                subscribeVisibleMatch()
-            }
-            if (matchList.isNotEmpty()) {
-                if (preEmpty) {
-                    setMatchListPosition()
+
+        val action = {
+            matchAdapter.submitList(matchList)
+            mBinding.rvHomeGameList.doOnPreDraw {
+                if (mBinding.rvHomeGameList.scrollState == RecyclerView.SCROLL_STATE_IDLE) {
+                    subscribeVisibleMatch()
                 }
+                if (matchList.isNotEmpty()) {
+                    if (preEmpty) {
+                        setMatchListPosition()
+                    }
+                }
+            }
+
+            // 把 clDynamics 的顯示控制移到這裡，避免淡入淡出動畫時閃爍
+            mBinding.clDynamics.visibility =
+                if(matchList.isEmpty()) View.VISIBLE else View.GONE
+        }
+
+        // 執行淡入淡出動畫
+        with(mViewModel) {
+            if(getLastTournamentId() != getTournamentId() || getLastSelectedDate() != getSelectedDate()) {
+                setLastState(getTournamentId(), getSelectedDate())
+                mBinding.clMatchRoot.startFadeAnim { onComplete ->
+                    lifecycleScope.launch {
+                        action.invoke()
+
+                        animationObserver = Observer { dataState ->
+                            if(dataState !in listOf(null, DataState.None, DataState.Loading)) {
+                                animationObserver?.let { apiStateListener.removeObserver(it) }
+                                onComplete.invoke()
+                            }
+                        }
+                        animationObserver?.let { apiStateListener.observe(viewLifecycleOwner, it) }
+                    }
+                }
+            } else {
+                action.invoke()
             }
         }
     }
@@ -220,7 +254,6 @@ class MatchListPagerFragment :
                         refreshLayout.finishRefresh()
                         matchAdapter.setLastItemType(MatchItemAdapter.LAST_ITEM_NONE)
                         if (it == DataState.NetworkUnavailable){
-                            clDynamics.visibility = View.VISIBLE
                             mViewModel.changePageEnd(true)
                             clDynamics.setState(
                                 DynamicStateLayout.States.NETWORK_ANOMALY(),
@@ -233,13 +266,11 @@ class MatchListPagerFragment :
                     DataState.NoMoreData -> {     //這個DataEmpty表示api抓不到任何資料了，有可能是頁面到底，或是從第一頁就抓不到資料
                         refreshLayout.finishRefresh()
                         mViewModel.changePageEnd(true)
-                        clDynamics.visibility = View.GONE
                         matchAdapter.setLastItemType(MatchItemAdapter.LAST_ITEM_NO_MORE)
                     }
                     HomeState.Match.DataEmpty -> {  //這個DataEmpty表示確定真的從第一頁就抓不到資料，表示當前的選擇沒有任何賽事
                         refreshLayout.finishRefresh()
                         matchAdapter.setLastItemType(MatchItemAdapter.LAST_ITEM_NONE)
-                        clDynamics.visibility = View.VISIBLE
                         clDynamics.setState(
                             DynamicStateLayout.States.DATA_EMPTY,
                             R.string.lineup_empty.getString()
@@ -247,20 +278,15 @@ class MatchListPagerFragment :
                         homeViewModel.changeState(HomeState.Match.LoadSuccess)
                     }
                     HomeState.Match.Loading -> {
-//                        lvMatchLoading.visibility = View.VISIBLE
-                        clDynamics.visibility = View.GONE
                         homeViewModel.changeState(HomeState.Match.Loading)
                     }
                     HomeState.Match.Refreshing -> {
-                        clDynamics.visibility = View.GONE
                         matchAdapter.setLastItemType(MatchItemAdapter.LAST_ITEM_LOAD_MORE)
                     }
                     HomeState.Match.LoadingNext -> {
-                        clDynamics.visibility = View.GONE
                     }
                     DataState.LoadSuccess, HomeState.Match.LoadSuccess -> {
                         if (refreshLayout.isRefreshing) refreshLayout.finishRefresh()
-                        clDynamics.visibility = View.GONE
                         homeViewModel.changeState(HomeState.Match.LoadSuccess)
                     }
                 }

@@ -108,8 +108,9 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                         (tab.view.getChildAt(1) as? TextView)?.typeface = Typeface.DEFAULT_BOLD
 
                         if(isTabClick) {
-                            vpSub.startFadeAnim {
+                            vpSub.startFadeAnim { onComplete ->
                                 vpSub.setCurrentItem(tab.position, false)
+                                onComplete.invoke()
                             }
                         } else {
                             vpSub.doSmartAnim(tab.position)
