@@ -2,6 +2,7 @@ package com.walisport.app.ui
 
 import android.os.Build
 import android.os.Bundle
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.Lifecycle
 import arch.cayenne.lib.base.data.constants.StatusBarMode
@@ -44,6 +45,11 @@ class MainActivity : BaseNavActivity<MainViewModel>() {
         AppNotifyFragment.newInstance()
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        installSplashScreen()
+        super.onCreate(savedInstanceState)
+    }
+
     override fun initView(savedInstanceState: Bundle?) {
         val metrics = resources.displayMetrics
         DensityInfo.density = metrics.density
@@ -52,12 +58,6 @@ class MainActivity : BaseNavActivity<MainViewModel>() {
         createBetSheet()
         fabFragment.show(this)
         notifyFragment.show(this)
-        //Android 14 默认也会对第一个 Activity 做 Splash / launch animation，可以在 SplashScreen.setOnExitAnimationListener 里直接移除动画
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            splashScreen.setOnExitAnimationListener { splashViewProvider ->
-                splashViewProvider.remove()
-            }
-        }
     }
 
     override suspend fun createObserver() {
