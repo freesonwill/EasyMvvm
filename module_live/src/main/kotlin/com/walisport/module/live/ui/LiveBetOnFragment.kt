@@ -137,10 +137,10 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
 
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                // 滑动到底部时禁用 ViewPager2
-                if (!recyclerView.canScrollVertically(1)) {
-                    viewPager2.isUserInputEnabled = false
-                }
+                // 滑动到底部时禁用 ViewPager2   投注不满屏幕时导致左右都不能滑动
+//                if (!recyclerView.canScrollVertically(1)) {
+//                    viewPager2.isUserInputEnabled = false
+//                }
             }
         })
         mBinding.tabLayout.addOnTabSelectedListener2(object : TabLayoutExt.OnTabSelectedListener2 {
