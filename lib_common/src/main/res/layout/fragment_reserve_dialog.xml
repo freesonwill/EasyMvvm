@@ -52,6 +52,11 @@
             android:textColor="@color/main_text"
             android:textSize="14sp"
             android:textStyle="bold"
+            android:cursorVisible="true"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:inputType="numberDecimal"
+            android:textCursorDrawable="@drawable/shape_edittext_cursor"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:skinnableFontWeight="500" />

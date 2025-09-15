@@ -6,13 +6,10 @@ import android.os.Bundle
 import android.view.View
 import android.view.ViewTreeObserver
 import android.view.animation.LinearInterpolator
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import arch.cayenne.lib.base.data.constants.DataState
-import arch.cayenne.lib.base.ui.animation.IInterpolatorOption
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.ui.fragment.ReserveDialogFragment
 import arch.cayenne.lib.common.ui.view.NumberKeyboardView
@@ -46,7 +43,6 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
         ViewUtils.hideKeyboard(requireContext(), mBinding.etMoney) {
             showKeyboard()
         }
-        mBinding.etMoney.requestFocus()
 
         mBinding.numberKeyboard.setOnCalculatorClickListener(object :
             NumberKeyboardView.OnCalculatorClickListener {
@@ -265,7 +261,12 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
     }
 
     override fun doCustomShow() {
-        mBinding.etMoney.requestFocus()
+        mBinding.root.post {
+            mBinding.etMoney.isCursorVisible = true
+            mBinding.etMoney.isFocusableInTouchMode = true
+            mBinding.etMoney.isFocusable = true
+            mBinding.etMoney.requestFocus()
+        }
     }
 
     override fun doCustomHideEnd() {

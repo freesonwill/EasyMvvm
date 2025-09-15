@@ -22,13 +22,15 @@ object ViewUtils {
 
     @SuppressLint("ClickableViewAccessibility")
     fun hideKeyboard(context: Context, view: EditText, onClick:((v: View) -> Unit)? = null) {
+        view.showSoftInputOnFocus = false
         val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(view.windowToken, 0)
-        view.setOnTouchListener { v, event ->
-            if(event.action == MotionEvent.ACTION_UP){
-                onClick?.invoke(v)
-            }
-            true
+        view.setOnClickListener { v ->
+            onClick?.invoke(v)
+        }
+        view.post {
+            view.isCursorVisible = true
+            view.requestFocus()
         }
     }
 
