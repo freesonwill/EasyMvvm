@@ -38,6 +38,9 @@ abstract class BetDao : BaseDao<BetBean>() {
     @Query("SELECT * FROM BetBean WHERE status = :status ORDER BY betId DESC LIMIT 1")
     abstract suspend fun getCurrentBet(status: BetStatusEnum = BetStatusEnum.PENDING): BetBean?
 
+    @Query("SELECT * FROM BetBean WHERE status = :status ORDER BY betId DESC LIMIT 1")
+    abstract fun observeCurrentBet(status: BetStatusEnum = BetStatusEnum.PENDING): Flow<BetBean?>
+
     @Query("UPDATE BetBean SET status = :status WHERE betId = :betId")
     abstract suspend fun updateBetStatus(betId: Long, status: BetStatusEnum)
 
