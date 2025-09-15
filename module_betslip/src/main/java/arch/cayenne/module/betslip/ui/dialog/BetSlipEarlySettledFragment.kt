@@ -1,6 +1,7 @@
 package arch.cayenne.module.betslip.ui.dialog
 
 import android.os.Bundle
+import android.view.View
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
@@ -8,6 +9,7 @@ import androidx.fragment.app.Fragment
 import arch.cayenne.lib.base.ui.fragment.BasePreLoadBottomSheetFragment
 import arch.cayenne.lib.common.data.constants.QuickAmountEnum
 import arch.cayenne.lib.common.ui.adapter.QuickAmountAdapter
+import arch.cayenne.lib.common.ui.view.BlockSlideConstrainLayout
 import arch.cayenne.lib.common.ui.view.NumberKeyboardView
 import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
@@ -90,6 +92,12 @@ class BetSlipEarlySettledFragment :
 
             rvQuickAmount.adapter = quickAmountAdapter
             quickAmountAdapter.submitList(QuickAmountEnum.entries)
+
+            root.setBlockSlideListener(object : BlockSlideConstrainLayout.BlockSlideListener {
+                override fun getBlockingRect(): View? {
+                    return clKeyboard
+                }
+            })
 
             numberKeyboard.setOnCalculatorClickListener(object :
                 NumberKeyboardView.OnCalculatorClickListener {
