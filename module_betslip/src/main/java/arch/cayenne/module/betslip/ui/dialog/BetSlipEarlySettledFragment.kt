@@ -6,6 +6,8 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import arch.cayenne.lib.base.ui.fragment.BasePreLoadBottomSheetFragment
+import arch.cayenne.lib.common.data.constants.QuickAmountEnum
+import arch.cayenne.lib.common.ui.adapter.QuickAmountAdapter
 import arch.cayenne.lib.common.ui.view.NumberKeyboardView
 import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
@@ -72,6 +74,12 @@ class BetSlipEarlySettledFragment :
         get() = EarlySettledKeyboardViewModel::class
     private var onEarlySettleClick: ((money: String) -> Unit)? = null
 
+    private val quickAmountAdapter: QuickAmountAdapter by lazy {
+        QuickAmountAdapter {
+            mViewModel.setNumber(it)
+        }
+    }
+
     override fun initView(savedInstanceState: Bundle?) {
 
         with(mBinding) {
@@ -79,6 +87,10 @@ class BetSlipEarlySettledFragment :
             ViewUtils.hideKeyboard(requireContext(), etMoney) { _ ->
                 showKeyboard()
             }
+
+            rvQuickAmount.adapter = quickAmountAdapter
+            quickAmountAdapter.submitList(QuickAmountEnum.entries)
+
             numberKeyboard.setOnCalculatorClickListener(object :
                 NumberKeyboardView.OnCalculatorClickListener {
                 override fun onNumberClick(number: Int) {
@@ -166,11 +178,6 @@ class BetSlipEarlySettledFragment :
 
     override fun initListener() {
         mBinding.apply {
-            btn100.setOnClickListener { mViewModel.setNumber(10000) }
-            btn500.setOnClickListener { mViewModel.setNumber(50000) }
-            btn1000.setOnClickListener { mViewModel.setNumber(100000) }
-            btn2000.setOnClickListener { mViewModel.setNumber(200000) }
-            btn5000.setOnClickListener { mViewModel.setNumber(500000) }
             btnBack.setOnClickListener { mViewModel.backNumber() }
             btnClear.setOnClickListener { mViewModel.clearNumber() }
             btnDouble.setOnClickListener { mViewModel.doubleNumber() }
