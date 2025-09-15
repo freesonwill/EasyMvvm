@@ -284,6 +284,7 @@
                     android:background="@drawable/shape_6dp"
                     android:backgroundTint="@color/keyboard_1"
                     android:orientation="vertical"
+                    android:nestedScrollingEnabled="false"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
