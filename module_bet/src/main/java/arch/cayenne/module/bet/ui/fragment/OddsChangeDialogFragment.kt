@@ -67,6 +67,8 @@ class OddsChangeDialogFragment private constructor() :
 
     override fun initView(savedInstanceState: Bundle?) {
         mBinding.ivAny.isSelected = true
+        mBinding.dim.visibility = View.INVISIBLE
+        mBinding.main.visibility = View.INVISIBLE
     }
 
     override fun initListener() {
@@ -169,7 +171,8 @@ class OddsChangeDialogFragment private constructor() :
                         .setDuration(200)
                         .setInterpolator(android.view.animation.DecelerateInterpolator())
                         .withStartAction {
-                            mBinding.root.visibility = View.VISIBLE
+                            mBinding.dim.visibility = View.VISIBLE
+                            mBinding.main.visibility = View.VISIBLE
                         }
 
                     showDim()
