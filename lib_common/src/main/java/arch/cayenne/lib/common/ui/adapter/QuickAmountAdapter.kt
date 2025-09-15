@@ -5,23 +5,27 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import arch.cayenne.lib.base.ui.adapter.BaseAdapter
-import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
 import arch.cayenne.lib.common.R
 import arch.cayenne.lib.common.data.constants.QuickAmountEnum
+import arch.cayenne.lib.common.data.constants.QuickAmountKeyboardEnum
 import arch.cayenne.lib.common.databinding.ItemQuickAmountBinding
+import arch.cayenne.lib.common.ui.viewholder.ComboQuickAmountViewHolder
+import arch.cayenne.lib.common.ui.viewholder.DefaultQuickAmountViewHolder
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 
 class QuickAmountAdapter(
+    private val type: QuickAmountKeyboardEnum = QuickAmountKeyboardEnum.SINGLE,
     private val onItemClick: (Long) -> Unit
-): BaseAdapter<QuickAmountEnum, BaseViewHolder, ItemQuickAmountBinding>(
+): BaseAdapter<QuickAmountEnum, DefaultQuickAmountViewHolder, ItemQuickAmountBinding>(
     QuickAmountCompare()
 ) {
 
     override fun convertPlus(
-        holder: BaseViewHolder,
+        holder: DefaultQuickAmountViewHolder,
         binding: ItemQuickAmountBinding,
         position: Int
     ) {
+        holder.initView()
         val item = getItem(position)
         val context = binding.root.context
         binding.tvTitle.text = item.value.toString()
@@ -47,8 +51,12 @@ class QuickAmountAdapter(
     override fun createViewHolder(
         binding: ItemQuickAmountBinding,
         viewType: Int
-    ): BaseViewHolder {
-        return getBaseViewHolder(binding)
+    ): DefaultQuickAmountViewHolder {
+        return if (type == QuickAmountKeyboardEnum.COMBO) {
+            ComboQuickAmountViewHolder(binding)
+        } else {
+            DefaultQuickAmountViewHolder(binding)
+        }
     }
 }
 

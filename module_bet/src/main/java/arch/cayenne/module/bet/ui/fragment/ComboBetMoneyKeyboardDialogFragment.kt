@@ -28,6 +28,9 @@ import arch.cayenne.module.bet.databinding.FragmentComboBetMoneyKeyboardDialogBi
 import arch.cayenne.module.bet.viewmodel.ComboBetMoneyKeyboardDialogViewModel
 import kotlin.reflect.KClass
 import androidx.core.graphics.drawable.toDrawable
+import arch.cayenne.lib.common.data.constants.QuickAmountEnum
+import arch.cayenne.lib.common.data.constants.QuickAmountKeyboardEnum
+import arch.cayenne.lib.common.ui.adapter.QuickAmountAdapter
 
 class ComboBetMoneyKeyboardDialogFragment private constructor():
     BasePositionDialogFragment<ComboBetMoneyKeyboardDialogViewModel, FragmentComboBetMoneyKeyboardDialogBinding>() {
@@ -71,6 +74,12 @@ class ComboBetMoneyKeyboardDialogFragment private constructor():
 
     override val dialogBackground: Drawable?
         get() = null
+
+    private val quickAmountAdapter: QuickAmountAdapter by lazy {
+        QuickAmountAdapter(QuickAmountKeyboardEnum.COMBO) {
+            mViewModel.setNumber(it)
+        }
+    }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return object : Dialog(requireContext(), theme) {
@@ -152,6 +161,9 @@ class ComboBetMoneyKeyboardDialogFragment private constructor():
         ViewUtils.hideKeyboard(requireContext(), mBinding.etMoney)
         initKeyboard()
 
+        mBinding.rvQuickAmount.adapter = quickAmountAdapter
+        quickAmountAdapter.submitList(QuickAmountEnum.entries)
+
         mBinding.numberKeyboard.setOnCalculatorClickListener(object :
             NumberKeyboardView.OnCalculatorClickListener {
             override fun onNumberClick(number: Int) {
@@ -185,22 +197,6 @@ class ComboBetMoneyKeyboardDialogFragment private constructor():
         }
         mBinding.btnDouble.setOnClickListener {
             mViewModel.doubleNumber()
-        }
-        // TODO 有時間改成adapter
-        mBinding.btn100.setOnClickListener {
-            mViewModel.setNumber(10000)
-        }
-        mBinding.btn500.setOnClickListener {
-            mViewModel.setNumber(50000)
-        }
-        mBinding.btn1000.setOnClickListener {
-            mViewModel.setNumber(100000)
-        }
-        mBinding.btn2000.setOnClickListener {
-            mViewModel.setNumber(200000)
-        }
-        mBinding.btn5000.setOnClickListener {
-            mViewModel.setNumber(500000)
         }
     }
 

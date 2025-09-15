@@ -13,3 +13,9 @@ enum class QuickAmountEnum(val value: Int) {
         return (value * 100).toLong()
     }
 }
+
+enum class QuickAmountKeyboardEnum {
+    SINGLE,
+    COMBO,
+    EARLY_SETTLE
+}
