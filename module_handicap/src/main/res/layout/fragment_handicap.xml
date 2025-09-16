@@ -39,7 +39,7 @@
             app:tabIndicatorColor="@android:color/transparent"
             app:tabIndicatorFullWidth="false"
             app:tabIndicatorHeight="0dp"
-            app:tabMode="auto"
+            app:tabMode="fixed"
             app:tabPaddingStart="@dimen/dp_14"
             app:tabRippleColor="@null"
             app:tabSelectedTextColor="@color/tab_select_text_color"
