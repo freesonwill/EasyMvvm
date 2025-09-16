@@ -187,6 +187,10 @@ class BetSlipEarlySettledFragment :
     override fun initListener() {
         mBinding.apply {
             btnBack.setOnClickListener { mViewModel.backNumber() }
+            btnBack.setOnLongClickListener { view ->
+                mViewModel.clearNumber()
+                true
+            }
             btnClear.setOnClickListener { mViewModel.clearNumber() }
             btnDouble.setOnClickListener { mViewModel.doubleNumber() }
             btnCollapse.setOnClickListener {
