@@ -126,11 +126,8 @@ object AnimationController {
         this[AnimType.scrollbar] = SimpleAnimationOption(duration, interpolator)
     }
 
-    fun setZoomInAnim(duration: Long, interpolator: IInterpolatorOption,
-                      alpha:FloatArray,
-                      scale:FloatArray,
-    ) {
-        this[AnimType.zoomIn] = ScaleAnimationOption(duration, interpolator, alpha, scale)
+    fun setZoomInAnim(duration: Long, interpolator: IInterpolatorOption) {
+        this[AnimType.zoomIn] = SimpleAnimationOption(duration, interpolator)
     }
 }
 

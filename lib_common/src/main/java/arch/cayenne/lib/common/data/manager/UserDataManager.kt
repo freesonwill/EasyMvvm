@@ -34,16 +34,10 @@ class UserDataManager {
         flows.remove(key)
     }
 
-    /**
-     * 获取基础类型
-     * @param T
-     * @param key
-     * @param default
-     * @return 非空
-     */
     inline fun <reified T> getValue(
         key: UserDataKey,
-        default: T,
+        default: T? = null,
+        noinline deserializer: (String?) -> T? = { GsonUtils.fromJson(it, T::class.java) }
     ): T {
         return when (default) {
             is String -> mmkv.decodeString(key.key, default) as T
@@ -51,23 +45,8 @@ class UserDataManager {
             is Int -> mmkv.decodeInt(key.key, default) as T
             is Long -> mmkv.decodeLong(key.key, default) as T
             is Float -> mmkv.decodeFloat(key.key, default) as T
-            else -> throw IllegalStateException("❌ Unsupported primitive type: ${T::class} ")
+            else -> deserializer(mmkv.decodeString(key.key)) as T
         }
-    }
-
-    /**
-     * 获取对象类型
-     *
-     * @param T
-     * @param key
-     * @param deserializer
-     * @return 可空
-     */
-    inline fun <reified T> getValue(
-        key: UserDataKey,
-        noinline deserializer: (String?) -> T? = { GsonUtils.fromJson(it, T::class.java) }
-    ): T? {
-        return deserializer(mmkv.decodeString(key.key))
     }
 
     private fun notifyChanged(key: UserDataKey, value: Any?) {
