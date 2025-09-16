@@ -112,6 +112,10 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
         mBinding.btnBack.setOnClickListener {
             mViewModel.backNumber()
         }
+        mBinding.btnBack.setOnLongClickListener { view ->
+            mViewModel.clearNumber()
+            true
+        }
         mBinding.btnClear.setOnClickListener {
             mViewModel.clearNumber()
         }
