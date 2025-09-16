@@ -73,7 +73,9 @@ class TestModuleInitializer : DefaultInitializer<Unit> {
     private fun initAnimationController() {
         val defaultData = mapOf(
             UserDataKey.KEY_ANIM_ROUTE to DemoData(300, 0.36f, 0.66f, 0.04f, 1f),
-            UserDataKey.KEY_ANIM_ZOOM to DemoData(250, 0.5f, 1f, 0.89f, 1f),
+            UserDataKey.KEY_ANIM_ZOOM to DemoData.ScaleDemoData(250, 0.5f, 1f, 0.89f, 1f,
+                alpha = floatArrayOf(0.3f,1f), scale = floatArrayOf(0.995f,1f)
+            ),
             UserDataKey.KEY_ANIM_POPUP to DemoData(300, 0.33f, 1f, 0.5f, 1f),
             UserDataKey.KEY_ANIM_DRAWER to DemoData(250, 0.42f, 0.1f, 0.5f, 1f),
             UserDataKey.KEY_ANIM_SCROLLBAR to DemoData(210, 0f, 0f, 1f, 1f)

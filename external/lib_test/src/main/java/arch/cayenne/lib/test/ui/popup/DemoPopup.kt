@@ -33,40 +33,46 @@ class DemoPopup(context: Context) : BottomPopupView(context) {
             tvUid.setText(manager.getValue<Int>(UserDataKey.KEY_UID,0).toString())
             tvToken.setText(manager.getValue<String>(UserDataKey.KEY_TOKEN,""))
 
-            val data1 = DemoData.getDemoData(manager,UserDataKey.KEY_ANIM_ROUTE)!!
-            data1Time.setText(data1.duration.toString())
-            data1X1.setText(data1.controlX1.toString())
-            data1Y1.setText(data1.controlY1.toString())
-            data1X2.setText(data1.controlX2.toString())
-            data1Y2.setText(data1.controlY2.toString())
+            val data1 = DemoData.getDemoData<DemoData>(manager,UserDataKey.KEY_ANIM_ROUTE)!!.apply {
+                data1Time.setText(duration.toString())
+                data1X1.setText(controlX1.toString())
+                data1Y1.setText(controlY1.toString())
+                data1X2.setText(controlX2.toString())
+                data1Y2.setText(controlY2.toString())
+            }
 
-            val data2 = DemoData.getDemoData(manager,UserDataKey.KEY_ANIM_ZOOM)!!
-            data2Time.setText(data2.duration.toString())
-            data2X1.setText(data2.controlX1.toString())
-            data2Y1.setText(data2.controlY1.toString())
-            data2X2.setText(data2.controlX2.toString())
-            data2Y2.setText(data2.controlY2.toString())
+            val data2 = DemoData.getDemoData<DemoData.ScaleDemoData>(manager,UserDataKey.KEY_ANIM_ZOOM)!!.apply {
+                data2Time.setText(duration.toString())
+                data2X1.setText(controlX1.toString())
+                data2Y1.setText(controlY1.toString())
+                data2X2.setText(controlX2.toString())
+                data2Y2.setText(controlY2.toString())
+                data2ScaleFrom.setText(scale[0].toString())
+            }
 
-            val data3 = DemoData.getDemoData(manager,UserDataKey.KEY_ANIM_POPUP)!!
-            data3Time.setText(data3.duration.toString())
-            data3X1.setText(data3.controlX1.toString())
-            data3Y1.setText(data3.controlY1.toString())
-            data3X2.setText(data3.controlX2.toString())
-            data3Y2.setText(data3.controlY2.toString())
+            val data3 = DemoData.getDemoData<DemoData>(manager,UserDataKey.KEY_ANIM_POPUP)!!.apply {
+                data3Time.setText(duration.toString())
+                data3X1.setText(controlX1.toString())
+                data3Y1.setText(controlY1.toString())
+                data3X2.setText(controlX2.toString())
+                data3Y2.setText(controlY2.toString())
+            }
 
-            val data4 = DemoData.getDemoData(manager,UserDataKey.KEY_ANIM_DRAWER)!!
-            data4Time.setText(data4.duration.toString())
-            data4X1.setText(data4.controlX1.toString())
-            data4Y1.setText(data4.controlY1.toString())
-            data4X2.setText(data4.controlX2.toString())
-            data4Y2.setText(data4.controlY2.toString())
+            val data4 = DemoData.getDemoData<DemoData>(manager,UserDataKey.KEY_ANIM_DRAWER)!!.apply {
+                data4Time.setText(duration.toString())
+                data4X1.setText(controlX1.toString())
+                data4Y1.setText(controlY1.toString())
+                data4X2.setText(controlX2.toString())
+                data4Y2.setText(controlY2.toString())
+            }
 
-            val data5 = DemoData.getDemoData(manager,UserDataKey.KEY_ANIM_SCROLLBAR)!!
-            data5Time.setText(data5.duration.toString())
-            data5X1.setText(data5.controlX1.toString())
-            data5Y1.setText(data5.controlY1.toString())
-            data5X2.setText(data5.controlX2.toString())
-            data5Y2.setText(data5.controlY2.toString())
+            val data5 = DemoData.getDemoData<DemoData>(manager,UserDataKey.KEY_ANIM_SCROLLBAR)!!.apply {
+                data5Time.setText(duration.toString())
+                data5X1.setText(controlX1.toString())
+                data5Y1.setText(controlY1.toString())
+                data5X2.setText(controlX2.toString())
+                data5Y2.setText(controlY2.toString())
+            }
 
 
             tvCancel.clickNoRepeat { dismiss() }
@@ -78,26 +84,48 @@ class DemoPopup(context: Context) : BottomPopupView(context) {
                 manager.setKeyValue(UserDataKey.KEY_UID,uid)
                 manager.setKeyValue(UserDataKey.KEY_TOKEN,token)
 
-                val data1 = DemoData(
-                    data1Time.text!!.trim().toString().toLong(), data1X1.text!!.trim().toString().toFloat(), data1Y1.text!!.trim().toString().toFloat(), data1X2.text!!.trim().toString().toFloat(), data1Y2.text!!.trim().toString().toFloat()
+                val routeDemoData = DemoData(
+                    data1Time.text!!.trim().toString().toLong(),
+                    data1X1.text!!.trim().toString().toFloat(),
+                    data1Y1.text!!.trim().toString().toFloat(),
+                    data1X2.text!!.trim().toString().toFloat(),
+                    data1Y2.text!!.trim().toString().toFloat()
                 )
-                val data2 = DemoData(
-                    data2Time.text!!.trim().toString().toLong(), data2X1.text!!.trim().toString().toFloat(), data2Y1.text!!.trim().toString().toFloat(), data2X2.text!!.trim().toString().toFloat(), data2Y2.text!!.trim().toString().toFloat()
+                val scaleDemoData = DemoData.ScaleDemoData(
+                    data2Time.text!!.trim().toString().toLong(),
+                    data2X1.text!!.trim().toString().toFloat(),
+                    data2Y1.text!!.trim().toString().toFloat(),
+                    data2X2.text!!.trim().toString().toFloat(),
+                    data2Y2.text!!.trim().toString().toFloat(),
+                    floatArrayOf(data2.alpha[0],data2.alpha[1]),
+                    floatArrayOf(data2ScaleFrom.text!!.trim().toString().toFloat(),data2.scale[1])
                 )
-                val data3 = DemoData(
-                    data3Time.text!!.trim().toString().toLong(), data3X1.text!!.trim().toString().toFloat(), data3Y1.text!!.trim().toString().toFloat(), data3X2.text!!.trim().toString().toFloat(), data3Y2.text!!.trim().toString().toFloat()
+                val popupDemoData = DemoData(
+                    data3Time.text!!.trim().toString().toLong(),
+                    data3X1.text!!.trim().toString().toFloat(),
+                    data3Y1.text!!.trim().toString().toFloat(),
+                    data3X2.text!!.trim().toString().toFloat(),
+                    data3Y2.text!!.trim().toString().toFloat()
                 )
-                val data4 = DemoData(
-                    data4Time.text!!.trim().toString().toLong(), data4X1.text!!.trim().toString().toFloat(), data4Y1.text!!.trim().toString().toFloat(), data4X2.text!!.trim().toString().toFloat(), data4Y2.text!!.trim().toString().toFloat()
+                val drawerDemoData = DemoData(
+                    data4Time.text!!.trim().toString().toLong(),
+                    data4X1.text!!.trim().toString().toFloat(),
+                    data4Y1.text!!.trim().toString().toFloat(),
+                    data4X2.text!!.trim().toString().toFloat(),
+                    data4Y2.text!!.trim().toString().toFloat()
                 )
-                val data5 = DemoData(
-                    data5Time.text!!.trim().toString().toLong(), data5X1.text!!.trim().toString().toFloat(), data5Y1.text!!.trim().toString().toFloat(), data5X2.text!!.trim().toString().toFloat(), data5Y2.text!!.trim().toString().toFloat()
+                val scrollBarDemoData = DemoData(
+                    data5Time.text!!.trim().toString().toLong(),
+                    data5X1.text!!.trim().toString().toFloat(),
+                    data5Y1.text!!.trim().toString().toFloat(),
+                    data5X2.text!!.trim().toString().toFloat(),
+                    data5Y2.text!!.trim().toString().toFloat()
                 )
-                DemoData.setDemoData(manager,UserDataKey.KEY_ANIM_ROUTE, data1)
-                DemoData.setDemoData(manager,UserDataKey.KEY_ANIM_ZOOM, data2)
-                DemoData.setDemoData(manager,UserDataKey.KEY_ANIM_POPUP, data3)
-                DemoData.setDemoData(manager,UserDataKey.KEY_ANIM_DRAWER, data4)
-                DemoData.setDemoData(manager,UserDataKey.KEY_ANIM_SCROLLBAR, data5)
+                DemoData.setDemoData(manager,UserDataKey.KEY_ANIM_ROUTE, routeDemoData)
+                DemoData.setDemoData(manager,UserDataKey.KEY_ANIM_ZOOM, scaleDemoData)
+                DemoData.setDemoData(manager,UserDataKey.KEY_ANIM_POPUP, popupDemoData)
+                DemoData.setDemoData(manager,UserDataKey.KEY_ANIM_DRAWER, drawerDemoData)
+                DemoData.setDemoData(manager,UserDataKey.KEY_ANIM_SCROLLBAR, scrollBarDemoData)
                 dismiss()
             }
 
