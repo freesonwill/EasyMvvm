@@ -134,9 +134,5 @@ class BetSlipUnsettledFragment :
 
     override fun onResume() {
         super.onResume()
-        BetSlipEarlySettledFragment.create(this)
-        mBinding.root.post {
-            BetSlipEarlySettledFragment.show(this, "100", "100","100")
-        }
     }
 }
