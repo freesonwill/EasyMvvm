@@ -31,6 +31,7 @@ import arch.cayenne.lib.common.utils.ext.animateIndicatorToPosition
 import arch.cayenne.lib.common.utils.ext.removeAllTips
 import arch.cayenne.lib.common.utils.ext.setupHorizontalScrollDegree
 import arch.cayenne.lib.common.utils.ext.setupViewPagerScroll
+import arch.cayenne.lib.common.utils.ext.startFadeAnim
 import arch.cayenne.lib.common.utils.ext.startZoomInAnim
 import arch.cayenne.lib.common.utils.ext.touchBackPressed
 import arch.cayenne.lib.common.utils.helper.doSmartAnim
@@ -205,8 +206,12 @@ class HomeBetSlipFragment : BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsl
                         //mBinding.viewPager.doSmartAnim(targetPosition = tab.position)
                         val vp = mBinding.viewPager
                         if(isTabClick) {
-                            vp.setCurrentItem(tab.position, false)
-                            vp.startZoomInAnim()
+//                            vp.setCurrentItem(tab.position, false)
+//                            vp.startZoomInAnim()
+                            vp.startFadeAnim {
+                                vp.setCurrentItem(tab.position, false)
+                                it.invoke()
+                            }
                         } else {
                             vp.doSmartAnim(tab.position)
                         }

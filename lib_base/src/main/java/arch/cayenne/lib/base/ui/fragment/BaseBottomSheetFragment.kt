@@ -460,7 +460,9 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
         rv.forEach {
             it.addOnItemTouchListener(object : RecyclerView.OnItemTouchListener {
                 override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
-                    setScrollable(rv)
+                    if (rv.isNestedScrollingEnabled) {
+                        setScrollable(rv)
+                    }
                     return false
                 }
 
