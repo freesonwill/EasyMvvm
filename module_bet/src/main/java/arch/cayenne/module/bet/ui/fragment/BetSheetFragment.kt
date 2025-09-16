@@ -54,15 +54,9 @@ class BetSheetFragment private constructor() :
             val f = manager.findFragmentByTag(TAG)
             if (f == null) {
                 BetSheetFragment().show(manager, TAG)
-            } else if (f is BasePreLoadBottomSheetFragment<*, *>) {
-                val anim = ObjectAnimator.ofFloat(null, "alpha", 0f, 0f).apply {
-                    doOnStart {
-                        f.view?.post {
-                            doSomething.invoke()
-                        }
-                    }
-                }
-                f.customShow(anim)
+            } else if (f is BetSheetFragment) {
+                f.setDoStart(doSomething)
+                f.customShow()
             }
         }
     }
@@ -71,6 +65,8 @@ class BetSheetFragment private constructor() :
         get() = FragmentBetSheetBinding::class
     override val vmClass: KClass<BetSheetViewModel>
         get() = BetSheetViewModel::class
+
+    private var doStart: (() -> Unit)? = null
 
     private val singleFragment by lazy {
         SingleBetFragment()
@@ -180,6 +176,14 @@ class BetSheetFragment private constructor() :
                 it.doCustomShow()
             }
         }
+    }
+
+    fun setDoStart(doStart: (() -> Unit)?) {
+        this.doStart = doStart
+    }
+
+    override fun playEnterAnimations(doStart: (() -> Unit)?, doEnd: (() -> Unit)?) {
+        super.playEnterAnimations(this.doStart, doEnd)
     }
 
     override fun customHide() {

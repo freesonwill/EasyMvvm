@@ -137,7 +137,10 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
 
     protected open fun exitAnimation(): Animation = AnimationController[AnimType.popupExit]!!.toAnimation()
 
-    protected fun playEnterAnimations() {
+    protected open fun playEnterAnimations(
+        doStart: (() -> Unit)? = null,
+        doEnd: (() -> Unit)? = null
+    ) {
         if (dimController.findAnyShowing(this)) {
             isDismissing = true
             dismiss()
@@ -168,9 +171,11 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
                 mBinding.root.visibility = View.VISIBLE
                 mBinding.root.post {
                     showDim()
+                    doStart?.invoke()
                 }
             }
             doOnEnd {
+                doEnd?.invoke()
                 setRvTouch()
                 otherViewAnimation = null
             }
