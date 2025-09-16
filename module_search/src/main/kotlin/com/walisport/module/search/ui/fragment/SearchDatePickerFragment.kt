@@ -254,6 +254,7 @@ class SearchDatePickerFragment private constructor(): BaseFragment<SearchDatePic
                     .apply { set(Calendar.DAY_OF_MONTH, 1) }
                     .let { next -> !after(next) || isSameDay(next) }
             }
+        alpha = if (isEnabled) 1f else 0.5f
     }
 
     @SuppressLint("DiscouragedApi")
