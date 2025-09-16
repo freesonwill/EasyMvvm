@@ -8,7 +8,7 @@
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/splash_bg"
-        android:layout_width="222dp"
+        android:layout_width="272dp"
         android:layout_height="222dp"
         android:scaleType="centerCrop"
         android:src="@drawable/splash_background"
