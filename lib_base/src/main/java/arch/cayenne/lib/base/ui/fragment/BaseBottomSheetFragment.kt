@@ -153,11 +153,15 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
         if (offY != startY) {
             sheet.translationY = sheet.height.toFloat()
         }
-        val animation = ObjectAnimator.ofFloat(
-            sheet, "translationY", sheet.height.toFloat(), 0f
-        ).apply {
+        val animation = ObjectAnimator.ofFloat(sheet, "translationY", sheet.height.toFloat(), 0f)
+        val animatorSet = AnimatorSet().apply {
             duration = sheetAnim.duration
             interpolator = sheetAnim.interpolator
+            if (otherSheetAnimator == null) {
+                play(animation)
+            } else {
+                playTogether(animation, otherSheetAnimator)
+            }
             doOnStart {
                 backgroundView?.visibility = View.VISIBLE
                 sheet.visibility = View.VISIBLE
@@ -171,19 +175,8 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
                 otherViewAnimation = null
             }
         }
-        if (otherViewAnimation == null) {
-            sheet.post {
-                animation.start()
-            }
-        } else {
-            val animatorSet = AnimatorSet().apply {
-                duration = sheetAnim.duration
-                interpolator = sheetAnim.interpolator
-                playTogether(animation, otherSheetAnimator)
-            }
-            sheet.post {
-                animatorSet.start()
-            }
+        sheet.post {
+            animatorSet.start()
         }
     }
 
@@ -199,9 +192,16 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
             }
         }
     ) {
+        val sheet = sheetContainer ?: return
+
         val sheetContainerSheetAnim = exitAnimation()
 
-        val sheetAnimator = getHideAnimator()?.apply {
+        val sheetAnimator = ObjectAnimator.ofFloat(sheet, "translationY", sheet.translationY, sheet.height.toFloat())
+
+        val dimAnimator = dimController.getHideAnimator()
+
+        AnimatorSet().apply {
+            playTogether(sheetAnimator, dimAnimator)
             duration = sheetContainerSheetAnim.duration
             interpolator = sheetContainerSheetAnim.interpolator
             doOnStart {
@@ -210,17 +210,6 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
             doOnEnd {
                 doEnd?.invoke()
             }
-        }
-
-        val dimAnimator = dimController.getHideAnimator()?.apply {
-            duration = sheetContainerSheetAnim.duration
-            interpolator = sheetContainerSheetAnim.interpolator
-        }
-
-        AnimatorSet().apply {
-            playTogether(sheetAnimator, dimAnimator)
-            duration = sheetContainerSheetAnim.duration
-            interpolator = sheetContainerSheetAnim.interpolator
             start()
         }
     }
@@ -523,7 +512,7 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
     }
 
     protected fun hideDim() {
-        if (dimController.findAnyShowing(this)) {
+        if (dimController.findAnyShowing(this) || !isDismissing) {
             return
         }
         dimController.hideDim()
@@ -534,6 +523,7 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
     }
 
     protected fun showDim() {
+        if (isDismissing) return
         dimController.showDim()
     }
 }
