@@ -89,6 +89,7 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
     protected var otherViewAnimation: ObjectAnimator? = null
     private val dimController by lazy { DimController.getInstance(this) }
     protected open var isGestureEnable = true
+    private var popupAnimatorSet: AnimatorSet? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -178,8 +179,11 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
                 doEnd?.invoke()
                 setRvTouch()
                 otherViewAnimation = null
+                popupAnimatorSet = null
             }
         }
+        popupAnimatorSet?.cancel()
+        popupAnimatorSet = animatorSet
         sheet.post {
             animatorSet.start()
         }
@@ -205,7 +209,7 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
 
         val dimAnimator = dimController.getHideAnimator()
 
-        AnimatorSet().apply {
+        val animatorSet = AnimatorSet().apply {
             playTogether(sheetAnimator, dimAnimator)
             duration = sheetContainerSheetAnim.duration
             interpolator = sheetContainerSheetAnim.interpolator
@@ -214,8 +218,13 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
             }
             doOnEnd {
                 doEnd?.invoke()
+                popupAnimatorSet = null
             }
-            start()
+        }
+        popupAnimatorSet?.cancel()
+        popupAnimatorSet = animatorSet
+        sheet.post {
+            animatorSet.start()
         }
     }
 

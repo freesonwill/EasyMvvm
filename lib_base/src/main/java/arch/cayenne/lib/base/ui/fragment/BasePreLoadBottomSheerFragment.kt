@@ -121,6 +121,7 @@ abstract class BasePreLoadBottomSheetFragment<VM : BaseViewModel, VB : ViewBindi
             backgroundView?.visibility = View.INVISIBLE
             sheetContainer?.visibility = View.INVISIBLE
             mBinding.root.visibility = View.INVISIBLE
+            hideDim()
 
             sheetContainer?.let {
                 val behavior = BottomSheetBehavior.from(it)
