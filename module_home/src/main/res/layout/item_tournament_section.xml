@@ -25,10 +25,13 @@
         android:layout_marginStart="@dimen/dp_6"
         android:textColor="@color/home_main_text"
         android:textSize="15sp"
+        android:ellipsize="end"
+        android:maxWidth="300dp"
+        android:singleLine="true"
         app:layout_constraintBottom_toTopOf="@+id/v_divider"
         app:layout_constraintStart_toEndOf="@+id/tv_section_icon"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="聯賽名稱" />
+        tools:text="聯賽名稱聯賽名稱聯賽名稱聯賽名稱聯賽名稱聯賽名稱" />
 
     <arch.cayenne.lib.skin.widget.SkinnableView
         android:id="@+id/v_divider"
