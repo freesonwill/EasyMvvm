@@ -60,7 +60,7 @@ class LiveLineupFragment : BaseFragment<LiveLineupViewModel, FragmentLiveLineupB
     override suspend fun createObserver() {
         mainViewModel.apiStateListener.observe(viewLifecycleOwner) { state ->
             when (state) {
-                DataState.NetworkUnavailable->{
+                DataState.NetworkUnavailable -> {
                     mBinding.llContent.visibility = View.INVISIBLE
                     mBinding.main.setState(
                         States.NETWORK_ANOMALY(),
@@ -70,38 +70,36 @@ class LiveLineupFragment : BaseFragment<LiveLineupViewModel, FragmentLiveLineupB
             }
         }
 
-            mViewModel.matchLineupDetail.observe(viewLifecycleOwner) { it ->
-                it?.let {
-                    mBinding.main.setVisibilityGone()
-                    if (it.away.isEmpty()) {
-                        mBinding.llContent.visibility = View.INVISIBLE
-                        mBinding.main.setState(
-                            DynamicStateLayout.States.DATA_EMPTY,
-                            R.string.lineup_empty.getString()
-                        )
-                    }else{
-                        mBinding.llContent.post{
-                           mBinding.llContent.visibility = View.VISIBLE
-                            upData(it)
-                        }
-                    }
-                } ?: run {
+        mViewModel.matchLineupDetail.observe(viewLifecycleOwner) { it ->
+            it?.let {
+                mBinding.main.setVisibilityGone()
+                if (it.away.isEmpty()) {
+                    mBinding.llContent.visibility = View.INVISIBLE
                     mBinding.main.setState(
-                        DynamicStateLayout.States.DATA_EMPTY,
+                        States.DATA_EMPTY,
                         R.string.lineup_empty.getString()
                     )
+                } else {
+                    mBinding.llContent.visibility = View.VISIBLE
+                    upData(it)
                 }
+            } ?: run {
+                mBinding.main.setState(
+                    States.DATA_EMPTY,
+                    R.string.lineup_empty.getString()
+                )
             }
-            //监听比赛详情数据
-            mainViewModel.mainMatch.observe(viewLifecycleOwner) {
-                it?.let {
-                    mBinding.homeSubstituteName.text = it.basicInfo.homeTeam
-                    mBinding.awaySubstituteName.text = it.basicInfo.awayTeam
-                    mBinding.homeIncidentsName.text = it.basicInfo.homeTeam
-                    mBinding.awayIncidentsName.text = it.basicInfo.awayTeam
-                    mViewModel.geMatchLineupDetail(it.matchId)
-                }
+        }
+        //监听比赛详情数据
+        mainViewModel.mainMatch.observe(viewLifecycleOwner) {
+            it?.let {
+                mBinding.homeSubstituteName.text = it.basicInfo.homeTeam
+                mBinding.awaySubstituteName.text = it.basicInfo.awayTeam
+                mBinding.homeIncidentsName.text = it.basicInfo.homeTeam
+                mBinding.awayIncidentsName.text = it.basicInfo.awayTeam
+                mViewModel.geMatchLineupDetail(it.matchId)
             }
+        }
     }
 
     // repeated Player home = 6;        // 主队阵型球员列表
@@ -118,7 +116,7 @@ class LiveLineupFragment : BaseFragment<LiveLineupViewModel, FragmentLiveLineupB
         Glide.with(this).load(data.homeLogo).into(mBinding.homeSubstituteLogo)
         Glide.with(this).load(data.awayLogo).into(mBinding.awaySubstituteLogo)
         removeAllViews()
-        LogUtils.dTag(TAG, "MatchLineupDetail----->${data}")
+        // LogUtils.dTag(TAG, "MatchLineupDetail----->${data}")
         data.home.forEach { i ->
             //是否是首发
             if (i.first == 1) {
@@ -191,10 +189,10 @@ class LiveLineupFragment : BaseFragment<LiveLineupViewModel, FragmentLiveLineupB
             false
         )
         binding.apply {
-            loadLineupHeadImage(ivLogo,data.logo)
-            stvName.text =  nameIsEmpty(data.name)
+            loadLineupHeadImage(ivLogo, data.logo)
+            stvName.text = nameIsEmpty(data.name)
             tvNumber.text = data.shirtNumber.toString()
-            tvPosition.text = getPositionFromString(data.position)?.description?:"-"
+            tvPosition.text = getPositionFromString(data.position)?.description ?: "-"
         }
         mBinding.llcHomeSubstitute.addView(binding.root)
     }
@@ -206,10 +204,10 @@ class LiveLineupFragment : BaseFragment<LiveLineupViewModel, FragmentLiveLineupB
             false
         )
         binding.apply {
-            loadLineupHeadImage(ivLogo,data.logo)
-            stvName.text =  nameIsEmpty(data.name)
+            loadLineupHeadImage(ivLogo, data.logo)
+            stvName.text = nameIsEmpty(data.name)
             tvNumber.text = data.shirtNumber.toString()
-            tvPosition.text = getPositionFromString(data.position)?.description?:"-"
+            tvPosition.text = getPositionFromString(data.position)?.description ?: "-"
         }
         mBinding.llcAwaySubstitute.addView(binding.root)
     }
@@ -218,7 +216,7 @@ class LiveLineupFragment : BaseFragment<LiveLineupViewModel, FragmentLiveLineupB
     @SuppressLint("SetTextI18n")
     private fun incidents(list: List<PlayerIncident>, positionName: String, isHome: Boolean) {
         list.forEach { itData ->
-           // LogUtils.d("homeIncidents,itData.inPlayer-name${itData.inPlayer.name}---itData.outPlayer-name${itData.outPlayer.name}")
+            // LogUtils.d("homeIncidents,itData.inPlayer-name${itData.inPlayer.name}---itData.outPlayer-name${itData.outPlayer.name}")
             if (itData.inPlayer.name.isNotEmpty()) {
                 isIncidents = true
                 val binding = LineupSubstitutionItemBinding.inflate(
@@ -228,18 +226,21 @@ class LiveLineupFragment : BaseFragment<LiveLineupViewModel, FragmentLiveLineupB
                 )
                 binding.apply {
                     homeTopName.text = nameIsEmpty(itData.inPlayer.name)
-                    homePositionName.text =getPositionFromString(positionName)?.description?:"-"
+                    homePositionName.text = getPositionFromString(positionName)?.description ?: "-"
                     homeTopNumber.text =
                         allPlayerInfo.find { it.id == itData.inPlayer.id }?.shirtNumber.toString()
-                    loadLineupHeadImage(homeTopLogo,
+                    loadLineupHeadImage(
+                        homeTopLogo,
                         allPlayerInfo.find { it.id == itData.inPlayer.id }?.logUrl.toString()
                     )
                     homeTopBottom.text = "${itData.time}'"
                     homeBottomName.text = nameIsEmpty(itData.outPlayer.name)
-                    homeBottomPosition.text = getPositionFromString(positionName)?.description?:"-"
+                    homeBottomPosition.text =
+                        getPositionFromString(positionName)?.description ?: "-"
                     homeBottomNumber.text =
                         allPlayerInfo.find { it.id == itData.outPlayer.id }?.shirtNumber.toString()
-                    loadLineupHeadImage(homeBottomLogo,
+                    loadLineupHeadImage(
+                        homeBottomLogo,
                         allPlayerInfo.find { it.id == itData.outPlayer.id }?.logUrl.toString()
                     )
                     homeTopNumber.setBackgroundResource(if (isHome) R.drawable.circle_badge else R.drawable.circle_badge_blue)
@@ -264,13 +265,13 @@ class LiveLineupFragment : BaseFragment<LiveLineupViewModel, FragmentLiveLineupB
         binding.apply {
             shirtNumber.text = data.shirtNumber.toString()
             tvName.text = data.name
-            loadLineupHeadImage(imageLogo,data.logo)
+            loadLineupHeadImage(imageLogo, data.logo)
             shirtNumber.setBackgroundResource(if (isTopView) R.drawable.circle_badge else R.drawable.circle_badge_blue)
         }
         return binding.root
     }
 
-    private fun initPlayer(data:MatchLineupDetail) {
+    private fun initPlayer(data: MatchLineupDetail) {
         data.home.forEach { i ->
             allPlayerInfo.add(
                 LineupPlayerInfo(
@@ -309,20 +310,21 @@ class LiveLineupFragment : BaseFragment<LiveLineupViewModel, FragmentLiveLineupB
     }
 
     fun loadLineupHeadImage(imageView: ImageView, url: String) {
-            val requestOptions = RequestOptions()
-                .override(28.dp2px,28.dp2px) // 指定宽高
-                .format(DecodeFormat.PREFER_RGB_565)
-            Glide.with(this@LiveLineupFragment)
-                .load(url)
-                .apply(requestOptions)
-                .thumbnail(0.5f)
-                .error(R.drawable.lineup_head_default)
-                .into(imageView)
+        val requestOptions = RequestOptions()
+            .override(28.dp2px, 28.dp2px) // 指定宽高
+            .format(DecodeFormat.PREFER_RGB_565)
+        Glide.with(this@LiveLineupFragment)
+            .load(url)
+            .apply(requestOptions)
+            .thumbnail(0.5f)
+            .error(R.drawable.lineup_head_default)
+            .into(imageView)
     }
 
 
-    fun nameIsEmpty(name: String): String{
+    fun nameIsEmpty(name: String): String {
         return if (name.isEmpty()) getString(R.string.lineup_user_name_empty).toString() else name
     }
+
     data class LineupPlayerInfo(val id: Int, val logUrl: String, val shirtNumber: Int)
 }
