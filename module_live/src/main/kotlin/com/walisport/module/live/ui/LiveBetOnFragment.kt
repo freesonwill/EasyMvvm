@@ -19,6 +19,7 @@ import arch.cayenne.lib.common.utils.ext.TabLayoutExt.reflexMargin
 import arch.cayenne.lib.common.utils.ext.clickNoRepeatSingle
 import arch.cayenne.lib.common.utils.ext.removeAllTips
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
+import arch.cayenne.lib.common.utils.ext.startFadeAnim
 import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.module.bet.data.AddSelectionStatus
 import arch.cayenne.module.bet.ui.fragment.BetSheetFragment
@@ -252,20 +253,23 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
         }
 
         //根据盘口分类code获取盘口列表
-        mViewModel.liveMarketListBean.observe(viewLifecycleOwner) {
+        mViewModel.liveMarketListBean.observe(viewLifecycleOwner) {data ->
             launch {
                 val baseInfo = mainViewModel.mainMatch.value?.basicInfo
                 val selectionsEdit = mainViewModel.getSelectionsEditAll()
                 // LogUtils.dTag("盘口推","---------------${selectionEdit}")
                 mBinding.clDynamics.setVisibilityGone()
-                liveBetOnAdapter.setData(
-                    baseInfo?.homeTeam.toString(),
-                    baseInfo?.homeTeamIcon.toString(),
-                    baseInfo?.awayTeam.toString(),
-                    baseInfo?.awayTeamIcon.toString(),
-                    selectionsEdit
-                )
-                liveBetOnAdapter.submitList(it)
+                mBinding.rvBetList.startFadeAnim {
+                    liveBetOnAdapter.setData(
+                        baseInfo?.homeTeam.toString(),
+                        baseInfo?.homeTeamIcon.toString(),
+                        baseInfo?.awayTeam.toString(),
+                        baseInfo?.awayTeamIcon.toString(),
+                        selectionsEdit
+                    )
+                    liveBetOnAdapter.submitList(data)
+                    it.invoke()
+                }
             }
         }
 
