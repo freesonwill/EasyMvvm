@@ -152,18 +152,11 @@ abstract class BasePreLoadBottomSheetFragment<VM : BaseViewModel, VB : ViewBindi
 
     @CallSuper
     open fun customShow() {
-        if (sheetContainer?.visibility == View.INVISIBLE) {
-            isDismissing = true
-        }
-        if (isDismissing) {
-            isDismissing = false
-            setCustomExpendSetting()
-            playEnterAnimations()
-        }
+        this.customShow(null)
     }
 
     @CallSuper
-    open fun customShow(other: ObjectAnimator) {
+    open fun customShow(other: ObjectAnimator? = null) {
         if (sheetContainer?.visibility == View.INVISIBLE) {
             isDismissing = true
         }
@@ -171,7 +164,7 @@ abstract class BasePreLoadBottomSheetFragment<VM : BaseViewModel, VB : ViewBindi
             isDismissing = false
             setCustomExpendSetting()
             otherViewAnimation = other
-            playEnterAnimationWithOtherSheetDialogEnd()
+            playEnterAnimations()
         }
     }
 

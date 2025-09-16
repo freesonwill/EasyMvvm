@@ -172,17 +172,7 @@ class BetSheetFragment private constructor() :
         super.onDismiss(dialog)
     }
 
-    override fun customShow() {
-        mViewModel.register()
-        super.customShow()
-        childFragmentManager.fragments.forEach {
-            if (it is BetSheetListener) {
-                it.doCustomShow()
-            }
-        }
-    }
-
-    override fun customShow(other: ObjectAnimator) {
+    override fun customShow(other: ObjectAnimator?) {
         mViewModel.register()
         super.customShow(other)
         childFragmentManager.fragments.forEach {

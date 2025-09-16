@@ -118,11 +118,7 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
         }
 
         dialog.setOnShowListener {
-            if (otherViewAnimation == null) {
-                playEnterAnimations()
-            } else {
-                playEnterAnimationWithOtherSheetDialogEnd()
-            }
+            playEnterAnimations()
         }
 
         return dialog.apply {
@@ -149,6 +145,7 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
         }
         prepareShowDim()
         val sheet = sheetContainer ?: return
+        val otherSheetAnimator = otherViewAnimation
 
         val sheetAnim = enterAnimation()
         val offY = sheet.translationY
@@ -159,49 +156,8 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
         val animation = ObjectAnimator.ofFloat(
             sheet, "translationY", sheet.height.toFloat(), 0f
         ).apply {
-            addUpdateListener { animation ->
-                val value = animation.animatedValue as Float
-                sheet.translationY = value
-
-            }
             duration = sheetAnim.duration
-            // 假設你的 exitAnimation 使用這個插值器
             interpolator = sheetAnim.interpolator
-            doOnStart {
-                backgroundView?.visibility = View.VISIBLE
-                sheet.visibility = View.VISIBLE
-                mBinding.root.visibility = View.VISIBLE
-                mBinding.root.post {
-                    showDim()
-                }
-            }
-        }
-        sheet.post {
-            animation.start()
-        }
-    }
-
-    protected fun playEnterAnimationWithOtherSheetDialogEnd() {
-        val sheet = sheetContainer ?: return
-        val otherSheetAnimator = otherViewAnimation?.clone() ?: return
-        // bottom sheet 上滑動畫
-        prepareShowDim()
-        val sheetContainerSheetAnim = enterAnimation()
-        val offY = sheet.translationY
-        val startY = sheet.height.toFloat()
-        if (offY != startY) {
-            sheet.translationY = sheet.height.toFloat()
-        }
-        val sheetAnimator = ObjectAnimator.ofFloat(
-            sheet, "translationY", sheet.height.toFloat(), 0f
-        ).apply {
-            addUpdateListener { animation ->
-                val value = animation.animatedValue as Float
-                sheet.translationY = value
-            }
-            duration = sheetContainerSheetAnim.duration
-            // 假設你的 exitAnimation 使用這個插值器
-            interpolator = sheetContainerSheetAnim.interpolator
             doOnStart {
                 backgroundView?.visibility = View.VISIBLE
                 sheet.visibility = View.VISIBLE
@@ -215,13 +171,20 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
                 otherViewAnimation = null
             }
         }
-        val animatorSet = AnimatorSet().apply {
-            playTogether(sheetAnimator, otherSheetAnimator)
+        if (otherViewAnimation == null) {
+            sheet.post {
+                animation.start()
+            }
+        } else {
+            val animatorSet = AnimatorSet().apply {
+                duration = sheetAnim.duration
+                interpolator = sheetAnim.interpolator
+                playTogether(animation, otherSheetAnimator)
+            }
+            sheet.post {
+                animatorSet.start()
+            }
         }
-        sheet.post {
-            animatorSet.start()
-        }
-
     }
 
     protected open fun playExitAnimations(
