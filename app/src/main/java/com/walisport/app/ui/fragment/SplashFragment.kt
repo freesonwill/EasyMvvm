@@ -79,7 +79,7 @@ class SplashFragment : BaseFragment<SplashViewModel, ActivitySplash2Binding>() {
         val splashScreen = requireActivity().installSplashScreen()
         //splashScreen.setKeepOnScreenCondition { keep }
         lifecycleScope.launch {
-            delay(0)
+            delay(500)
             keep = false
             jumpToMainActivity()
         }
@@ -121,7 +121,10 @@ class SplashFragment : BaseFragment<SplashViewModel, ActivitySplash2Binding>() {
             NavOptions.Builder()
                 .setPopUpTo(R.id.splashFragment, inclusive = true) // 清空栈顶到导航图的起点
                 .setLaunchSingleTop(true)                     // 避免重复实例化相同目的地
-                .build()
+                .build(),
+            enterAnim = null,
+            exitAnim = null
+
         )
     }
 }
