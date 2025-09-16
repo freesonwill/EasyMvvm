@@ -67,6 +67,10 @@ class TournamentListFragment :
         }
     }
 
+    fun reloadAllData() {
+        mViewModel.getTournaments()
+    }
+
     fun changeSportId(sportId: Int) {
         mViewModel.setSportId(sportId)
         mViewModel.getTournaments()
