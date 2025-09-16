@@ -92,7 +92,6 @@ class TopUpRecordsFragment : BaseFragment<TopUpRecordsViewModel, FragmentTopupRe
                 when (state) {
                     DataState.NetworkUnavailable -> {
                         mViewModel.changePageEnd(true)
-                        loadingView.visibility = View.GONE
                         refreshLayout.finishRefresh()
                         refreshLayout.finishLoadMore()
                         refreshLayout.setEnableLoadMore(false)
@@ -111,7 +110,6 @@ class TopUpRecordsFragment : BaseFragment<TopUpRecordsViewModel, FragmentTopupRe
                     }
 
                     LoadingState.DataEmpty -> {  //這個DataEmpty表示確定真的從第一頁就抓不到資料，表示當前的選擇沒有任何賽事
-                        loadingView.visibility = View.GONE
                         refreshLayout.finishRefresh()
                         clDynamics.visibility = View.VISIBLE
                         clDynamics.setState(
@@ -121,7 +119,6 @@ class TopUpRecordsFragment : BaseFragment<TopUpRecordsViewModel, FragmentTopupRe
                     }
 
                     LoadingState.Loading -> {
-                        loadingView.visibility = View.VISIBLE
                         clDynamics.visibility = View.GONE
                         refreshLayout.setEnableLoadMore(true)
                     }
@@ -136,7 +133,6 @@ class TopUpRecordsFragment : BaseFragment<TopUpRecordsViewModel, FragmentTopupRe
                     }
 
                     DataState.LoadSuccess -> {
-                        loadingView.visibility = View.GONE
                         if (refreshLayout.isRefreshing) refreshLayout.finishRefresh()
                         refreshLayout.finishLoadMore()
                         clDynamics.visibility = View.GONE
@@ -144,14 +140,6 @@ class TopUpRecordsFragment : BaseFragment<TopUpRecordsViewModel, FragmentTopupRe
                 }
             }
         }
-
-    }
-
-
-    override fun initData() {
-        super.initData()
-        mBinding.loadingView.visibility = View.GONE
-        //mViewModel.getListData()
     }
 
     override fun onStart() {

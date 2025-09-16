@@ -63,7 +63,7 @@ class NativeLib : ISecurity<IRequest, ByteArray, IResponse> {
                 val sid = (unpack[1] as Int).toShort()
                 val rid = (unpack[2] as Int).toShort()
                 val jsonPayload = unpack[3] as ByteArray
-                "封包解密 api:${ApiCode.of(mid,sid)} proto=${jsonPayload}".logi(TAG)
+                "封包解密 api:${ApiCode.of(mid,sid)} rid:$rid proto=${jsonPayload}".logi(TAG)
                 SocketOriginResponseData(
                     mid = mid,
                     sid = sid,
@@ -79,7 +79,7 @@ class NativeLib : ISecurity<IRequest, ByteArray, IResponse> {
 
     override fun encrypt(data: IRequest): ByteArray? {
         if (data !is SocketRequestData) return null
-        "封包加密 -> api:${ApiCode.of(data.mid, data.sid)} rid = ${data.rid} data = ${data.payloadByteArray}".logi(TAG)
+        "封包加密 -> api:${ApiCode.of(data.mid, data.sid)} rid:${data.rid} data = ${data.payloadByteArray}".logi(TAG)
         return newPack(
             mid = data.mid,
             sid = data.sid,

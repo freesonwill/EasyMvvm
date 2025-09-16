@@ -1,3 +1,4 @@
+import com.google.gson.Gson
 import java.util.Properties
 
 plugins {
@@ -8,10 +9,9 @@ plugins {
 
 apply(from = rootProject.file("gradle/flavor.gradle"))
 apply(from = rootProject.file("gradle/_sign.gradle"))
+apply(from = rootProject.file("gradle/_accountInfo.gradle"))
 
-val prop = Properties().apply {
-    load(project.rootProject.file("local.properties").inputStream())
-}
+val localProps = (extra["loadLocalProps"] as groovy.lang.Closure<*>).call() as Properties
 
 android {
     namespace = "com.walisport.app"
@@ -25,9 +25,6 @@ android {
         versionName = "0.0.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-
-        buildConfigField("int", "uid", prop.getProperty("user.uid"))
-        buildConfigField("String", "token", prop.getProperty("user.token").let { it->"\"$it\"" })
 
         ndk {
             //abiFilters 'armeabi-v7a', 'x86', 'arm64-v8a', 'x86_64'
@@ -94,7 +91,7 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     implementation(libs.immersionbar)
     debugImplementation(libs.leakcanary)
-    if(prop.getProperty("PERF_BLOCK_CANARY","false").toBoolean()) {
+    if(localProps.getProperty("PERF_BLOCK_CANARY","false").toBoolean()) {
         debugImplementation(project(":external:blockcanary"))
     }
     debugImplementation(project(":external:lib_perf"))

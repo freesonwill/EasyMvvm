@@ -43,11 +43,7 @@ class ModuleRepository(
         scope.launch(Dispatchers.IO) {
             httpClient.safeRequest(
                 request = {
-                    api.postPreLoad(
-                        mapOf(
-                            "lang" to LanguageType.LANGUAGE_SIMPLE.value,
-                            "provider" to "3"  //default provider => FB
-                        )
+                    api.preLoad(
                     )
                 },
                 onSuccess = {

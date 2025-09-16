@@ -22,6 +22,7 @@ data class BetDetailBean(
     val comboK: Int = 1, // 3串2的3
     val comboV: Int = 1, // 3串2的2
     var sumOdds: Int, // 串關後賠率加總
+    var odds: Int,
     val count: Int = 1, // 場次組合數量
     var inputMoney: Long,
     var status: BetResultStatusEnum? = null
@@ -48,6 +49,7 @@ data class BetSelectionBean(
     val selectionId: Long, // 盘口ID
     var name: String, // 盘口名称 ex. 中國 (+1.5)
     var odds: Int, // 盘口赔率 ex. 1.9
+    val initialOdds: Int, // 初始赔率
     var leagueName: String, // 联赛名称 ex. 世界盃
     var matchName: String, // 赛事名称 ex. 中國 vs 日本
     var isActive: Boolean, // 是否停止下注

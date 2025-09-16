@@ -4,16 +4,16 @@ import android.app.Dialog
 import android.content.DialogInterface
 import android.content.res.Resources
 import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
+import android.view.Window
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.setFragmentResult
-import arch.cayenne.lib.base.ui.fragment.BaseDialogFragment
+import arch.cayenne.lib.base.ui.fragment.BasePositionDialogFragment
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.ui.view.NumberKeyboardView
 import arch.cayenne.lib.common.utils.ViewUtils
@@ -27,9 +27,13 @@ import arch.cayenne.module.bet.data.Config.VALUE_MONEY_INPUT
 import arch.cayenne.module.bet.databinding.FragmentComboBetMoneyKeyboardDialogBinding
 import arch.cayenne.module.bet.viewmodel.ComboBetMoneyKeyboardDialogViewModel
 import kotlin.reflect.KClass
+import androidx.core.graphics.drawable.toDrawable
+import arch.cayenne.lib.common.data.constants.QuickAmountEnum
+import arch.cayenne.lib.common.data.constants.QuickAmountKeyboardEnum
+import arch.cayenne.lib.common.ui.adapter.QuickAmountAdapter
 
 class ComboBetMoneyKeyboardDialogFragment private constructor():
-    BaseDialogFragment<ComboBetMoneyKeyboardDialogViewModel, FragmentComboBetMoneyKeyboardDialogBinding>() {
+    BasePositionDialogFragment<ComboBetMoneyKeyboardDialogViewModel, FragmentComboBetMoneyKeyboardDialogBinding>() {
 
     companion object {
         private const val POSITION_X = "positionX"
@@ -71,6 +75,12 @@ class ComboBetMoneyKeyboardDialogFragment private constructor():
     override val dialogBackground: Drawable?
         get() = null
 
+    private val quickAmountAdapter: QuickAmountAdapter by lazy {
+        QuickAmountAdapter(QuickAmountKeyboardEnum.COMBO) {
+            mViewModel.setNumber(it)
+        }
+    }
+
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return object : Dialog(requireContext(), theme) {
             override fun cancel() {
@@ -85,17 +95,74 @@ class ComboBetMoneyKeyboardDialogFragment private constructor():
         }
     }
 
-    override fun onStart() {
-        super.onStart()
-        setDialogPosition()
+    override fun setDialogPosition(w: Window) {
+        val marginInPx = 16.dp2px
+        val screenWidth = Resources.getSystem().displayMetrics.widthPixels
+        val maxWidth = screenWidth - marginInPx * 2
+        w.setLayout(maxWidth, ViewGroup.LayoutParams.WRAP_CONTENT)
+        w.setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
+
+        val positionX = requireArguments().getInt(POSITION_X, -1)
+        val positionY = requireArguments().getInt(POSITION_Y, -1)
+
+        if (positionX != -1 && positionY != -1) {
+            mBinding.root.measure(
+                View.MeasureSpec.makeMeasureSpec(maxWidth, View.MeasureSpec.EXACTLY),
+                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+            )
+            val dialogHeight = mBinding.root.measuredHeight
+
+            val statusBarHeight =  ViewUtils.getStatusBarHeight(requireContext())
+
+            val layoutParams = w.attributes
+            layoutParams.gravity = Gravity.TOP or Gravity.END
+            val triangleHeight = mBinding.triangle.measuredHeight // 預設高度
+            layoutParams.x = 10.dp2px
+            layoutParams.y = positionY - dialogHeight - statusBarHeight - triangleHeight
+            w.attributes = layoutParams
+
+            mBinding.root.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    mBinding.root.viewTreeObserver.removeOnGlobalLayoutListener(this)
+
+                    // 先設定 triangle 位置
+                    setTrianglePosition(positionX)
+
+                    mBinding.root.post {
+
+                        // 動畫初始狀態
+                        mBinding.root.pivotX = mBinding.triangle.x + mBinding.triangle.width / 2
+                        mBinding.root.pivotY = dialogHeight.toFloat()
+                        mBinding.root.scaleX = 0f
+                        mBinding.root.scaleY = 0f
+                        mBinding.root.alpha = 0f
+
+                        // 開始動畫
+                        mBinding.root.animate()
+                            .scaleX(1f)
+                            .scaleY(1f)
+                            .alpha(1f)
+                            .setDuration(200)
+                            .setInterpolator(android.view.animation.DecelerateInterpolator())
+                            .withStartAction {
+                                mBinding.root.visibility = View.VISIBLE
+                            }
+                            .start()
+                    }
+
+                }
+            })
+        }
     }
 
     override fun initView(savedInstanceState: Bundle?) {
         mBinding.root.visibility = View.INVISIBLE
 
         ViewUtils.hideKeyboard(requireContext(), mBinding.etMoney)
-        mBinding.etMoney.requestFocus()
         initKeyboard()
+
+        mBinding.rvQuickAmount.adapter = quickAmountAdapter
+        quickAmountAdapter.submitList(QuickAmountEnum.entries)
 
         mBinding.numberKeyboard.setOnCalculatorClickListener(object :
             NumberKeyboardView.OnCalculatorClickListener {
@@ -131,22 +198,6 @@ class ComboBetMoneyKeyboardDialogFragment private constructor():
         mBinding.btnDouble.setOnClickListener {
             mViewModel.doubleNumber()
         }
-        // TODO 有時間改成adapter
-        mBinding.btn100.setOnClickListener {
-            mViewModel.setNumber(10000)
-        }
-        mBinding.btn500.setOnClickListener {
-            mViewModel.setNumber(50000)
-        }
-        mBinding.btn1000.setOnClickListener {
-            mViewModel.setNumber(100000)
-        }
-        mBinding.btn2000.setOnClickListener {
-            mViewModel.setNumber(200000)
-        }
-        mBinding.btn5000.setOnClickListener {
-            mViewModel.setNumber(500000)
-        }
     }
 
     override suspend fun createObserver() {
@@ -176,76 +227,15 @@ class ComboBetMoneyKeyboardDialogFragment private constructor():
             mViewModel.setNumberLimit(minNumber, maxNumber)
         }
 
-        val remainingMoney = requireArguments().getLong(REMAINING_MONEY_NUMBER, -1L)
-        if (remainingMoney != -1L) {
-            mViewModel.setRemainingNumber(remainingMoney)
-        }
+//        val remainingMoney = requireArguments().getLong(REMAINING_MONEY_NUMBER, -1L)
+//        if (remainingMoney != -1L) {
+//            mViewModel.setRemainingNumber(remainingMoney)
+//        }
+        mViewModel.setRemainingNumber(Long.MAX_VALUE)
 
         val currentMoney = requireArguments().getLong(CURRENT_MONEY_NUMBER, -1L)
         if (currentMoney != -1L) {
             mViewModel.setNumber(currentMoney)
-        }
-    }
-
-    private fun setDialogPosition() {
-        dialog?.window?.let { window ->
-            val marginInPx = 16.dp2px
-            val screenWidth = Resources.getSystem().displayMetrics.widthPixels
-            val maxWidth = screenWidth - marginInPx * 2
-            window.setLayout(maxWidth, ViewGroup.LayoutParams.WRAP_CONTENT)
-            window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-
-            val positionX = requireArguments().getInt(POSITION_X, -1)
-            val positionY = requireArguments().getInt(POSITION_Y, -1)
-
-            if (positionX != -1 && positionY != -1) {
-                mBinding.root.measure(
-                    View.MeasureSpec.makeMeasureSpec(maxWidth, View.MeasureSpec.EXACTLY),
-                    View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
-                )
-                val dialogHeight = mBinding.root.measuredHeight
-
-                val statusBarHeight =  ViewUtils.getStatusBarHeight(requireContext())
-
-                val layoutParams = window.attributes
-                layoutParams.gravity = Gravity.TOP or Gravity.END
-                val triangleHeight = mBinding.triangle.measuredHeight // 預設高度
-                layoutParams.x = 10.dp2px
-                layoutParams.y = positionY - dialogHeight - statusBarHeight - triangleHeight
-                window.attributes = layoutParams
-
-                mBinding.root.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
-                    override fun onGlobalLayout() {
-                        mBinding.root.viewTreeObserver.removeOnGlobalLayoutListener(this)
-
-                        // 先設定 triangle 位置
-                        setTrianglePosition(positionX)
-
-                        mBinding.root.post {
-
-                            // 動畫初始狀態
-                            mBinding.root.pivotX = mBinding.triangle.x + mBinding.triangle.width / 2
-                            mBinding.root.pivotY = dialogHeight.toFloat()
-                            mBinding.root.scaleX = 0f
-                            mBinding.root.scaleY = 0f
-                            mBinding.root.alpha = 0f
-
-                            // 開始動畫
-                            mBinding.root.animate()
-                                .scaleX(1f)
-                                .scaleY(1f)
-                                .alpha(1f)
-                                .setDuration(200)
-                                .setInterpolator(android.view.animation.DecelerateInterpolator())
-                                .withStartAction {
-                                    mBinding.root.visibility = View.VISIBLE
-                                }
-                                .start()
-                        }
-
-                    }
-                })
-            }
         }
     }
 

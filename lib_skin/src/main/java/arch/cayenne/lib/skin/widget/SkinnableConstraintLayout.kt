@@ -2,9 +2,12 @@ package arch.cayenne.lib.skin.widget
 
 import android.content.Context
 import android.util.AttributeSet
+import androidx.annotation.AnyRes
+import androidx.annotation.ColorRes
+import androidx.annotation.DrawableRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import arch.cayenne.lib.skin.widget.biz.ISkinnableBiz
-import arch.cayenne.lib.skin.widget.biz.SkinnableBizImpl
+import arch.cayenne.lib.skin.widget.biz.SkinnableBizBackgroundImpl
 
 open class SkinnableConstraintLayout : ConstraintLayout {
     private lateinit var biz:ISkinnableBiz
@@ -27,8 +30,21 @@ open class SkinnableConstraintLayout : ConstraintLayout {
     }
 
     private fun initView(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) {
-        biz = SkinnableBizImpl(this)
+        biz = SkinnableBizBackgroundImpl(this)
         biz.initView(context, attrs, defStyleAttr)
+    }
+
+    override fun setBackgroundResource(@DrawableRes resId: Int) {
+        super.setBackgroundResource(resId)
+        biz.updateBackground(resId)
+    }
+
+    fun setTintColorRes(@ColorRes resId: Int){
+        biz.updateBackgroundTintId(resId)
+    }
+
+    fun setForegroundRes(@AnyRes resId: Int){
+        biz.updateForegroundId(resId)
     }
 
     override fun onDetachedFromWindow() {

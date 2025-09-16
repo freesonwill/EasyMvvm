@@ -5,6 +5,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.ImageView
 import androidx.core.view.doOnPreDraw
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -22,6 +23,7 @@ import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+import arch.cayenne.lib.common.utils.ext.scrollToBottomWithLoadMore
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.ext.touchBackPressed
 import arch.cayenne.lib.common.utils.helper.showToast
@@ -66,13 +68,10 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
                 findNavController().navigateUp()
             }
 
-            refreshLayout.setEnableLoadMore(true)
+            refreshLayout.setEnableLoadMore(false)
             refreshLayout.setEnableScrollContentWhenLoaded(true)
             refreshLayout.setOnRefreshListener {
                 mViewModel.reload()
-            }
-            refreshLayout.setOnLoadMoreListener {
-                mViewModel.loadNextPage()
             }
 
             matchAdapter = MatchItemAdapter(object : OnMatchItemClickListener {
@@ -80,22 +79,29 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
                     navigate(Uri.parse("walisport://module_live/liveFragment?matchId=${item.match.matchId}&sportId=${item.match.basicInfo.sportId}"))
                 }
 
-                override fun onFavoriteClick(item: MatchWithMarkets) {
-                    mViewModel.removeMatchCollect(item)
+                override fun onFavoriteClick(view: ImageView, item: MatchWithMarkets) {
+                    lifecycleScope.launch {
+                        mViewModel.removeMatchCollect(item)
+                    }
+
                 }
 
                 override fun onOddsCellClick(cell: WeakReference<View>, selection: SelectionBeanLite, x: Float, y: Float) {
                     lifecycleScope.launch {
-                        cell.get()?.isSelected = true
+                        if (mViewModel.getCurrentSelectionCount() == 0) {
+                            BetSheetFragment.show(requireActivity()) {
+                                cell.get()?.isSelected = true
+                            }
+                        } else {
+                            cell.get()?.isSelected = true
+                        }
                         val status = mViewModel.setSelection(selection.selectionId)
 
                         if (status !is AddSelectionStatus.Success) {
                             cell.get()?.isSelected = false
                         }
 
-                        if (status is AddSelectionStatus.Success.Single) {
-                            BetSheetFragment.show(requireActivity())
-                        } else if (status is AddSelectionStatus.Failure) {
+                        if (status is AddSelectionStatus.Failure) {
                             status.msg?.let {
                                 showToast(it)
                             }
@@ -120,6 +126,16 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
                     if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                         subscribeVisibleMatch()
                     }
+                }
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    rvCollectList.scrollToBottomWithLoadMore(minScrollCount = 8, {
+                        if (mViewModel.apiStateListener.value != HomeState.Match.LoadSuccess) return@scrollToBottomWithLoadMore
+                        mViewModel.loadNextPage()
+                    }, {
+                        if (mViewModel.apiStateListener.value == HomeState.Match.LoadNextFailure) {
+                            mViewModel.loadNextPage()
+                        }
+                    })
                 }
             })
         }
@@ -160,28 +176,26 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
         mViewModel.apiStateListener.observe(viewLifecycleOwner) { state ->
             with(mBinding) {
                 when (state) {
-                    DataState.NetworkUnavailable -> {
+                    DataState.NetworkUnavailable, HomeState.Match.LoadNextFailure -> {
                         mViewModel.changePageEnd(true)
-                        loadingView.visibility = View.GONE
                         refreshLayout.finishRefresh()
-                        refreshLayout.finishLoadMore()
-                        refreshLayout.setEnableLoadMore(false)
-                        clDynamics.visibility = View.VISIBLE
-                        clDynamics.setState(
-                            DynamicStateLayout.States.NETWORK_ANOMALY(),
-                            arch.cayenne.lib.common.R.string.error_net.getString()
-                        )
+                        matchAdapter.setLastItemType(MatchItemAdapter.LAST_ITEM_NONE)
+                        if (state == DataState.NetworkUnavailable) {
+                            clDynamics.visibility = View.VISIBLE
+                            clDynamics.setState(
+                                DynamicStateLayout.States.NETWORK_ANOMALY(),
+                                arch.cayenne.lib.common.R.string.error_net.getString()
+                            )
+                        }
                     }
                     DataState.NoMoreData -> {     //這個DataEmpty表示api抓不到任何資料了，有可能是頁面到底，或是從第一頁就抓不到資料
+                        clDynamics.visibility = View.GONE
                         mViewModel.changePageEnd(true)
-                        refreshLayout.finishLoadMore()
-                        refreshLayout.setEnableLoadMore(false)
-                        matchAdapter.showNoMoreData(true)
+                        matchAdapter.setLastItemType(MatchItemAdapter.LAST_ITEM_NO_MORE)
                     }
                     HomeState.Match.DataEmpty -> {  //這個DataEmpty表示確定真的從第一頁就抓不到資料，表示當前的選擇沒有任何賽事
-                        loadingView.visibility = View.GONE
                         refreshLayout.finishRefresh()
-                        refreshLayout.setEnableLoadMore(false)
+                        matchAdapter.setLastItemType(MatchItemAdapter.LAST_ITEM_LOAD_MORE)
                         clDynamics.visibility = View.VISIBLE
                         clDynamics.setState(
                             DynamicStateLayout.States.DATA_EMPTY,
@@ -189,21 +203,17 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
                         )
                     }
                     HomeState.Match.Loading -> {
-                        loadingView.visibility = View.VISIBLE
                         clDynamics.visibility = View.GONE
-                        refreshLayout.setEnableLoadMore(true)
                     }
                     HomeState.Match.Refreshing -> {
                         clDynamics.visibility = View.GONE
-                        refreshLayout.setEnableLoadMore(true)
+                        matchAdapter.setLastItemType(MatchItemAdapter.LAST_ITEM_LOAD_MORE)
                     }
                     HomeState.Match.LoadingNext -> {
                         clDynamics.visibility = View.GONE
                     }
                     DataState.LoadSuccess -> {
-                        loadingView.visibility = View.GONE
                         if (refreshLayout.isRefreshing) refreshLayout.finishRefresh()
-                        refreshLayout.finishLoadMore()
                         clDynamics.visibility = View.GONE
                     }
                 }
@@ -218,6 +228,7 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
             mViewModel.compareSubscribeMatch(
                 matchAdapter.currentList
                     .slice(firstVisible..lastVisible)
+                    .filterIsInstance<MatchWithMarkets>()
                     .map { it.match.matchId }
                     .toSet()
             )

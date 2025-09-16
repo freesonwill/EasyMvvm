@@ -1,23 +1,25 @@
 package arch.cayenne.module.home.ui.adapter.compare
 
 import androidx.recyclerview.widget.DiffUtil
+import arch.cayenne.lib.database.entity.MatchListItem
 import arch.cayenne.lib.database.entity.MatchWithMarkets
 
-class MatchItemCompare : DiffUtil.ItemCallback<MatchWithMarkets>() {
-    override fun areItemsTheSame(oldItem: MatchWithMarkets, newItem: MatchWithMarkets): Boolean {
-        return oldItem.match.matchId == newItem.match.matchId
+class MatchItemCompare : DiffUtil.ItemCallback<MatchListItem>() {
+    override fun areItemsTheSame(oldItem: MatchListItem, newItem: MatchListItem): Boolean {
+        return if (oldItem is MatchWithMarkets && newItem is MatchWithMarkets) {
+            oldItem.match.matchId == newItem.match.matchId
+        } else {
+            oldItem == newItem
+        }
     }
 
-    override fun areContentsTheSame(oldItem: MatchWithMarkets, newItem: MatchWithMarkets): Boolean {
-//        val b1 = compareMatchIsSame(oldItem.match, newItem.match)
-//        val b2 = compareLiveInfoIsSame(oldItem.match.liveInfo, newItem.match.liveInfo)
-//        val b3 = oldItem.markets.size == newItem.markets.size
-//        oldItem.markets.map { it.market.marketId } == newItem.markets.map { it.market.marketId }
-        return oldItem == newItem
-
-//        return true
+    override fun areContentsTheSame(oldItem: MatchListItem, newItem: MatchListItem): Boolean {
+        return if (oldItem is MatchWithMarkets && newItem is MatchWithMarkets){
+            oldItem == newItem
+        } else true
     }
-    override fun getChangePayload(oldItem: MatchWithMarkets, newItem: MatchWithMarkets): Any? {
+    override fun getChangePayload(oldItem: MatchListItem, newItem: MatchListItem): Any? {
+        if (oldItem !is MatchWithMarkets || newItem !is MatchWithMarkets) return mutableSetOf<String>()
         val diff = mutableSetOf<String>()
         val oldLiveInfo = oldItem.match.liveInfo
         val newLiveInfo = newItem.match.liveInfo

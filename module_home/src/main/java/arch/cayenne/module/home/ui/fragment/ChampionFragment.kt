@@ -30,6 +30,7 @@ import arch.cayenne.module.home.ui.viewmodel.ChampionViewModel
 import com.bumptech.glide.Glide
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
+import java.lang.ref.WeakReference
 import kotlin.reflect.KClass
 
 class ChampionFragment : BaseFragment<ChampionViewModel, FragmentChampionBinding>() {
@@ -71,13 +72,21 @@ class ChampionFragment : BaseFragment<ChampionViewModel, FragmentChampionBinding
             rvChampion.itemAnimator = null
             rvChampion.apply {
                 championAdapter = ChampionItemAdapter(object : OnChampionItemClickListener {
-                    override fun onOddsCellClick(selection: SelectionBeanLite) {
+                    override fun onOddsCellClick(
+                        cell: WeakReference<View>,
+                        selection: SelectionBeanLite
+                    ) {
                         lifecycleScope.launch {
+                            if (mViewModel.getCurrentSelectionCount() == 0) {
+                                BetSheetFragment.show(requireActivity()) {
+                                    cell.get()?.isSelected = true
+                                }
+                            } else {
+                                cell.get()?.isSelected = true
+                            }
                             val status = mViewModel.setSelection(selection.selectionId)
 
-                            if (status is AddSelectionStatus.Success.Single) {
-                                BetSheetFragment.show(requireActivity())
-                            } else if (status is AddSelectionStatus.Failure) {
+                            if (status is AddSelectionStatus.Failure) {
                                 status.msg?.let {
                                     showToast(it)
                                 }
@@ -119,13 +128,6 @@ class ChampionFragment : BaseFragment<ChampionViewModel, FragmentChampionBinding
                         R.string.lineup_empty.getString()
                     )
                 }
-            }
-        }
-        mViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
-            if (!isLoading) {
-                mBinding.loadingView.visibility = View.GONE
-            } else {
-                mBinding.loadingView.visibility = View.VISIBLE
             }
         }
     }

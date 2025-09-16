@@ -19,12 +19,12 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.View.OnAttachStateChangeListener
 import android.view.animation.DecelerateInterpolator
-import android.view.animation.PathInterpolator
 import android.widget.ImageView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.animation.addListener
 import androidx.core.view.children
+import androidx.core.view.doOnPreDraw
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
@@ -454,8 +454,8 @@ fun View.startZoomInAnim(vararg otherViews: View) {
         AnimatorSet().apply {
             playTogether(
                 ObjectAnimator.ofFloat(view, "alpha", 0.3f, 1f),
-                ObjectAnimator.ofFloat(view, "scaleX", 0.92f, 1f),
-                ObjectAnimator.ofFloat(view, "scaleY", 0.92f, 1f)
+                ObjectAnimator.ofFloat(view, "scaleX", 0.995f, 1f),
+                ObjectAnimator.ofFloat(view, "scaleY", 0.995f, 1f)
             )
             duration = AnimationController[AnimType.zoomIn]!!.duration
             interpolator = AnimationController[AnimType.zoomIn]!!.interpolator.toInterpolator()
@@ -497,10 +497,9 @@ private fun ViewPager2.setViewPagerAnimationDuration(duration: Long) {
         e.printStackTrace()
     }
 }
-fun CustomTabIndicator.animateIndicatorToPosition(position: Int,
-                                                  duration:Long = AnimationController[AnimType.scrollbar]!!.duration,
-                                                  interpolator: TimeInterpolator = AnimationController[AnimType.scrollbar]!!.interpolator.toInterpolator()
-) {
+fun CustomTabIndicator.animateIndicatorToPosition(position: Int,smoothScroll:Boolean = true) {
+    val duration:Long = if(smoothScroll) AnimationController[AnimType.scrollbar]!!.duration else 0
+    val interpolator: TimeInterpolator = AnimationController[AnimType.scrollbar]!!.interpolator.toInterpolator()
     val animator = ValueAnimator.ofFloat(this.getCurrentPosition().toFloat(), position.toFloat())
     animator.duration = duration // 动画持续时间
     animator.interpolator = interpolator
@@ -561,4 +560,30 @@ fun View.isInArea(rawX: Float, rawY: Float): Boolean {
     val rawXY = IntArray(2)
     getLocationOnScreen(rawXY)
     return rawX >= rawXY[0] && rawX <= (rawXY[0] + width) && rawY >= rawXY[1] && rawY <= (rawXY[1] + height)
+}
+
+
+
+/**
+ * 切换页面时淡入淡出动画
+ * @param doSwitchPage 执行切换页面的操作，传入一个回调函数 onComplete，在页面切换完成后调用该回调函数以触发淡入动画
+ */
+fun View.startFadeAnim(doSwitchPage: (onComplete: () -> Unit) -> Unit) {
+    animate().cancel()
+    animate()
+        .alpha(0.5f)
+        .setDuration(125)
+        .withEndAction {
+            doSwitchPage.invoke {
+                // 等待畫面已經完成繪製後，再執行淡入動畫
+                doOnPreDraw {
+                    alpha = 0.5f
+                    animate()
+                        .alpha(1f)
+                        .setDuration(125)
+                        .start()
+                }
+            }
+        }
+        .start()
 }

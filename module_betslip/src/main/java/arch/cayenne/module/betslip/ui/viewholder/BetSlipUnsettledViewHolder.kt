@@ -12,6 +12,7 @@ import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.getDetailFormatDate
 import arch.cayenne.lib.database.entity.BetSlipData
 import arch.cayenne.lib.database.entity.BetSlipOrderBean
+import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.module.betslip.R
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
 import arch.cayenne.module.betslip.databinding.AdapterLiveBetSlipUnsettleBinding
@@ -65,9 +66,17 @@ class BetSlipUnsettledViewHolder(binding: ViewBinding, betSlipType: BetSlipEnum)
             it.betUnsettledBtSettle.isVisible = isCanSettle
             it.betUnsettledBtSettle.tag = adapterPosition
             it.betUnsettledTvBetcodeValue.text = order.betId
-            it.betUnsettledTvOddsValue.text = order.odds.getDisplayOdds()
+            val odds = "@${order.odds.getDisplayOdds()}"
+            it.betUnsettledTvOddsValue.text = odds
+
             val betAmount = "${CurrencySymbols.getSymbol(order.currency)}${(order.betAmount - order.earlyBetAmount).getFormalMoney()}"
             it.betUnsettledTvBettingValue.text = betAmount
+            it.betUnsettledTvBetting.text = if (order.earlyBetAmount > 0L) {
+                SkinnableResourceManager.getString(itemView.context, R.string.live_bet_on_remaining)
+            } else {
+                SkinnableResourceManager.getString(itemView.context, R.string.live_bet_on)
+            }
+
             val exceptAmount = "${CurrencySymbols.getSymbol(order.currency)}${BetSlipUtils.expectMaxAmount(order.betAmount, order.odds)}"
             it.betUnsettledTvExceptValue.text = exceptAmount
             it.betUnsettledTvExcept.setTextRes(if(order.comboType == 0) R.string.live_bet_except_win else R.string.live_bet_except_max_win)
@@ -77,10 +86,14 @@ class BetSlipUnsettledViewHolder(binding: ViewBinding, betSlipType: BetSlipEnum)
             it.groupCrossborder.isVisible = flag
 
             if (flag) {
-                val combo = R.string.title_combo_bet_odds.getString(order.comboK, order.comboV)
+                val combo = "${R.string.title_combo_bet_odds.getString(order.comboK, order.comboV)}*${order.comboCount}"
                 it.betUnsettledTvCrossborderValue.text = combo
             }
-            it.groupEarlysettle.isVisible = order.earlyBetAmount > 0 //提前结算部分有金额才显示
+
+            if (order.selectionsList.size == 1) {
+                it.groupEarlysettle.isVisible = order.earlyBetAmount > 0L
+            }
+
             it.betUnsettledTvEarlysettleValue.text = order.earlyBetAmount.getFormalMoney()
             it.betUnsettledBtSettle.clickNoRepeat {
                 if (order.earlySettlePrice.settleStatus != 102) {
@@ -99,16 +112,12 @@ class BetSlipUnsettledViewHolder(binding: ViewBinding, betSlipType: BetSlipEnum)
         mBinding.also {
             when (settleStatus) {
                 102 -> {
-                    it.betUnsettledBtProgress.isVisible = true
                     it.betUnsettledBtSettle.isEnabled = false
                 }
                 1000 -> {
-                    it.betUnsettledBtProgress.isVisible = true
                     it.betUnsettledBtSettle.isEnabled = false
                 }
-                else -> {
-                    it.betUnsettledBtProgress.isVisible = false
-                }
+                else -> Unit
             }
         }
     }

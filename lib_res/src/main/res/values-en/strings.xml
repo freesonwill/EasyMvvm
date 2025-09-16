@@ -1,2 +1,13 @@
 <resources>
+    <string name="app_name">WaliSport</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="bet_title">betslip</string>
+
+    <string-array name="bet_slip_menus">
+        <item>unsettle</item>
+        <item>confirm</item>
+        <item>settled</item>
+        <item>reserv</item>
+        <item>invalid</item>
+    </string-array>
 </resources>

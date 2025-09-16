@@ -67,4 +67,5 @@
     <color name="progress_text_white_blue">#929298</color>
 
     <color name="color_mask_white_blue">#80F4F4F4</color>
+    <color name="loading_text_white_blue">#222222</color>
 </resources>

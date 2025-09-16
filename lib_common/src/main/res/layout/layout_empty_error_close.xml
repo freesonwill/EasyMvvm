@@ -49,7 +49,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_12"
             android:text="@string/loading"
-            android:textColor="@color/main_text"
+            android:textColor="@color/loading_text"
             android:textSize="@dimen/sp_14" />
     </androidx.appcompat.widget.LinearLayoutCompat>
 

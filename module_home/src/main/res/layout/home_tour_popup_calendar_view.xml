@@ -4,7 +4,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
+    <View
+        android:id="@+id/mask_view"
+        android:background="@color/black_75"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:alpha="0"
+        android:clickable="true"
+        android:focusable="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
     <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
         android:id="@+id/cl_calendar_popup_root"
         android:layout_width="match_parent"
@@ -54,7 +63,7 @@
         <com.haibin.calendarview.CalendarView
             android:id="@+id/calendarView"
             android:layout_width="match_parent"
-            android:layout_height="263dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_12"
             app:calendar_height="40dp"
             app:calendar_padding_left="@dimen/dp_7"
@@ -84,7 +93,7 @@
             android:id="@+id/calendar_btn_cancel"
             android:layout_width="0dp"
             android:layout_height="@dimen/dp_48"
-            android:layout_marginTop="@dimen/dp_12"
+            android:layout_marginTop="@dimen/dp_8"
             android:background="@drawable/shape_home_calendar_cancel"
             android:gravity="center"
             android:text="@string/home_calendar_reset"
@@ -100,7 +109,7 @@
             android:id="@+id/calendar_btn_ok"
             android:layout_width="0dp"
             android:layout_height="@dimen/dp_48"
-            android:layout_marginTop="@dimen/dp_12"
+            android:layout_marginTop="@dimen/dp_8"
             android:background="@drawable/shape_home_calendar_ok"
             android:gravity="center"
             android:text="@string/home_calendar_ok"

@@ -1,6 +1,6 @@
 <resources>
-    <dimen name="title_bar_padding_end">10dp</dimen>
-    <dimen name="title_bar_padding_start">10dp</dimen>
+    <dimen name="title_bar_padding_end">8dp</dimen>
+    <dimen name="title_bar_padding_start">8dp</dimen>
     <dimen name="dp_1">1dp</dimen>
     <dimen name="dp_2">2dp</dimen>
     <dimen name="dp_3">3dp</dimen>
@@ -24,6 +24,7 @@
     <dimen name="dp_20">20dp</dimen>
     <dimen name="dp_21">21dp</dimen>
     <dimen name="dp_22">22dp</dimen>
+    <dimen name="dp_23">23dp</dimen>
     <dimen name="dp_27">27dp</dimen>
     <dimen name="dp_24">24dp</dimen>
     <dimen name="dp_25">25dp</dimen>
@@ -67,6 +68,7 @@
     <dimen name="dp_73">73dp</dimen>
     <dimen name="dp_74">74dp</dimen>
     <dimen name="dp_75">75dp</dimen>
+    <dimen name="dp_76">76dp</dimen>
     <dimen name="dp_80">80dp</dimen>
     <dimen name="dp_84">84dp</dimen>
     <dimen name="dp_86">86dp</dimen>
@@ -79,6 +81,7 @@
     <dimen name="dp_103">103dp</dimen>
     <dimen name="dp_104">104dp</dimen>
     <dimen name="dp_105">105dp</dimen>
+    <dimen name="dp_106">106dp</dimen>
     <dimen name="dp_108">108dp</dimen>
     <dimen name="dp_110">110dp</dimen>
     <dimen name="dp_119">119dp</dimen>
@@ -96,10 +99,12 @@
     <dimen name="dp_150">150dp</dimen>
     <dimen name="dp_153">153dp</dimen>
     <dimen name="dp_154">154dp</dimen>
+    <dimen name="dp_156">156dp</dimen>
     <dimen name="dp_158">158dp</dimen>
     <dimen name="dp_160">160dp</dimen>
     <dimen name="dp_162">162dp</dimen>
     <dimen name="dp_166">166dp</dimen>
+    <dimen name="dp_168">168dp</dimen>
     <dimen name="dp_170">170dp</dimen>
     <dimen name="dp_180">180dp</dimen>
     <dimen name="dp_189">189dp</dimen>
@@ -114,6 +119,7 @@
     <dimen name="dp_253">253dp</dimen>
     <dimen name="dp_263">263dp</dimen>
     <dimen name="dp_275">275dp</dimen>
+    <dimen name="dp_310">310dp</dimen>
     <dimen name="dp_335">335dp</dimen>
     <dimen name="dp_359">359dp</dimen>
     <dimen name="dp_372">372dp</dimen>
@@ -130,6 +136,7 @@
     <dimen name="sp_15">15sp</dimen>
     <dimen name="sp_16">16sp</dimen>
     <dimen name="sp_17">17sp</dimen>
+    <dimen name="sp_19">19sp</dimen>
     <dimen name="sp_20">20sp</dimen>
     <dimen name="sp_22">22sp</dimen>
     <dimen name="sp_24">24sp</dimen>

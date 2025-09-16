@@ -94,15 +94,23 @@ abstract class MatchDao : BaseDao<MatchBean>() {
     abstract suspend fun getMatchByIds(matchIds: List<Long>) : List<MatchBean>
 
     @Transaction
-    @Query("SELECT market.marketId as marketId, market.marketName as marketName, market.status as status, ref.selectionCount as defaultSelectionCount " +
+    @Query("SELECT ref.matchId as ownerMatchId, market.marketId as marketId, market.marketName as marketName, market.status as status, ref.selectionCount as defaultSelectionCount " +
             "FROM MarketBean market " +
             "INNER JOIN  MatchMarketCrossRef ref ON ref.matchId = :matchId " +
             "WHERE market.marketId = ref.marketId ORDER BY ref.`index` ")
     abstract suspend fun getMarkets(matchId: Long): List<MarketBeanLite>
 
     @Transaction
+    @Query("SELECT ref.matchId as ownerMatchId, market.marketId as marketId, market.marketName as marketName, market.status as status, ref.selectionCount as defaultSelectionCount " +
+            "FROM MarketBean market " +
+            "INNER JOIN MatchMarketCrossRef ref ON ref.matchId IN (:matchIds) " +
+            "WHERE market.marketId = ref.marketId ORDER BY ref.matchId, ref.`index` ") // 按 matchId 排序有助於後續分組
+    abstract suspend fun getMarketsForMatches(matchIds: List<Long>): List<MarketBeanLite>
+
+    @Transaction
     @Query("SELECT sel.selectionId as selectionId, " +
                 "ref.matchId as matchId,  " +
+                "ref.marketId as marketId, " +
                 "sel.detail_active as detailActive, " +
                 "sel.name as name, " +
                 "sel.shortName as shortName, " +
@@ -115,6 +123,23 @@ abstract class MatchDao : BaseDao<MatchBean>() {
             "INNER JOIN  MarketSelectCrossRef ref ON ref.matchId = :matchId AND ref.marketId = :marketId " +
             "WHERE sel.selectionId = ref.selectionId ORDER BY ref.`order`")
     abstract suspend fun getSelectionLites(matchId: Long, marketId: Long, isEuropeOddsDisplay: Boolean = true): List<SelectionBeanLite>
+
+    @Transaction
+    @Query("SELECT sel.selectionId as selectionId, " +
+            "ref.matchId as matchId, " +
+            "ref.marketId as marketId, " +
+            "sel.detail_active as detailActive, " +
+            "sel.name as name, " +
+            "sel.shortName as shortName, " +
+            "CASE WHEN :isEuropeOddsDisplay THEN sel.odds ELSE sel.odds - 100 END as odds, " +
+            "sel.active as active, " +
+            "sel.parlay as parlay, " +
+            "0 as isSelected," +
+            "0 as trend " +
+            "FROM SelectionBean sel " +
+            "INNER JOIN  MarketSelectCrossRef ref ON ref.matchId IN (:matchIds) " +
+            "WHERE sel.selectionId = ref.selectionId ORDER BY ref.`order`")
+    abstract suspend fun getSelectionLites(matchIds: List<Long>, isEuropeOddsDisplay: Boolean = true): List<SelectionBeanLite>
 
     @Transaction
     @Query("SELECT * FROM SelectionBean WHERE selectionId = :selectionId")
@@ -307,21 +332,6 @@ abstract class MatchDao : BaseDao<MatchBean>() {
             }
         }
     }
-
-    @Transaction
-    open suspend fun getFullMatch(playType: Int, tournamentId: Int, page: Int, date: Long, isEurope: Boolean): List<MatchWithMarkets> {
-        return queryAllMatch(playType, tournamentId, page, date).map { matchBean ->
-            val markets = getMarkets(matchBean.matchId).map { marketBean ->
-                val selections = specialHandling(
-                    marketBean.marketId,
-                    getSelectionLites(matchBean.matchId, marketBean.marketId, isEurope)
-                )
-
-                MarketWithSelections(marketBean, selections)
-            }
-            MatchWithMarkets(matchBean, markets)
-        }
-    }
     //針對market id不同selection做些特殊處理
     private fun specialHandling(marketId: Long, originSelections: List<SelectionBeanLite>): List<SelectionBeanLite> {
 //        return if (marketId == 1L && originSelections.size == 3) {
@@ -336,12 +346,13 @@ abstract class MatchDao : BaseDao<MatchBean>() {
 
     @Transaction
     open suspend fun getOneMatchByIds(matchId: List<Long>, isEuropeOddsDisplay: Boolean): List<MatchWithMarkets> {
-        return getMatchByIds(matchId).map { matchBean ->
-            val markets = getMarkets(matchBean.matchId).map { marketBean ->
-                val selections = specialHandling(
-                    marketBean.marketId,
-                    getSelectionLites(matchBean.matchId, marketBean.marketId, isEuropeOddsDisplay)
-                )
+        val matchBeans = getMatchByIds(matchId)
+        val marketBeans = getMarketsForMatches(matchId)
+        val selectionBeans = getSelectionLites(matchId, isEuropeOddsDisplay)
+
+        return matchBeans.map { matchBean ->
+            val markets = marketBeans.filter { marketBean -> marketBean.ownerMatchId == matchBean.matchId }.map { marketBean ->
+                val selections = selectionBeans.filter { selectionBean -> selectionBean.matchId == matchBean.matchId && selectionBean.marketId == marketBean.marketId }
                 MarketWithSelections(marketBean, selections)
             }
             MatchWithMarkets(matchBean, markets)

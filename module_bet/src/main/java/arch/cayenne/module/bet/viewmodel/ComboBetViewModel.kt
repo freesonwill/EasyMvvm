@@ -12,6 +12,7 @@ import arch.cayenne.lib.common.ui.viewmodel.Event
 import arch.cayenne.lib.database.entity.BetSelectionBean
 import arch.cayenne.lib.database.entity.InfoBean
 import arch.cayenne.module.bet.data.ComboMultiBetBean
+import arch.cayenne.module.bet.data.OddsChangeEnum
 import arch.cayenne.module.bet.repo.ComboBetRepository
 import kotlinx.coroutines.launch
 
@@ -28,6 +29,9 @@ class ComboBetViewModel(
 
     private val _onBalanceListener = MutableLiveData<InfoBean?>()
     val onBalanceListener: LiveData<InfoBean?> get() = _onBalanceListener
+
+    val balance: Long
+        get() = _onBalanceListener.value?.balance ?: 0L
 
     private val _onCanBetListener = MediatorLiveData(false).apply {
         val updateCanBet = {
@@ -116,6 +120,9 @@ class ComboBetViewModel(
     private val _networkConnectedEvent = MutableLiveData<Event<DataState>>()
     val networkConnectedEvent: LiveData<Event<DataState>> get() = _networkConnectedEvent
 
+    private val _oddsChangeListener = MutableLiveData<OddsChangeEnum>()
+    val oddsChangeListener: LiveData<OddsChangeEnum> get() = _oddsChangeListener
+
     init {
         viewModelScope.launch {
             launch {
@@ -149,6 +156,11 @@ class ComboBetViewModel(
                     _onBalanceListener.value = it
                 }
             }
+            launch {
+                repo.observeOddsChange().collect {
+                    _oddsChangeListener.value = it
+                }
+            }
         }
     }
 
@@ -174,13 +186,18 @@ class ComboBetViewModel(
         }
     }
 
+    fun getSumBetAmount(): Long {
+        return _onComboMultiBetBeanListener.value?.sumOf { it.inputMoney } ?: 0L
+    }
+
     fun sendBet(): Boolean {
         if (!checkNetwork()) {
             return false
         }
+        val oddsChangeEnum = _oddsChangeListener.value ?: return false
         return _onComboMultiBetBeanListener.value?.filter { it.inputMoney != 0L }?.let {
             if (it.isNotEmpty()) {
-                repo.sendBet(it)
+                repo.sendBet(it, oddsChangeEnum)
                 true
             } else {
                 false
@@ -220,6 +237,22 @@ class ComboBetViewModel(
     private fun checkNetwork(): Boolean {
         if (!repo.isConnected) {
             _networkConnectedEvent.value = Event(DataState.NetworkUnavailable)
+            return false
+        }
+        return true
+    }
+
+    fun checkOddsPass(): Boolean {
+        val oddsChange = _oddsChangeListener.value ?: return false
+        if (oddsChange == OddsChangeEnum.ANY) {
+            return true
+        }
+        val anyChange = _onBetListListener.value?.any { it.initialOdds != it.odds } ?: return false
+        if (oddsChange == OddsChangeEnum.NO_CHANGE && anyChange) {
+            return false
+        }
+        val anyWorse = _onBetListListener.value?.any { it.initialOdds > it.odds } ?: return false
+        if (oddsChange == OddsChangeEnum.BETTER && anyWorse) {
             return false
         }
         return true

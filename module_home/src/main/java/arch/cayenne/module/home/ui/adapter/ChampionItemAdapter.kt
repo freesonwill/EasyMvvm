@@ -1,12 +1,14 @@
 package arch.cayenne.module.home.ui.adapter
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import arch.cayenne.lib.base.ui.adapter.BaseAdapter
 import arch.cayenne.lib.database.entity.MarketWithSelections
 import arch.cayenne.lib.database.entity.SelectionBeanLite
 import arch.cayenne.module.home.databinding.ItemChampionCardBinding
 import arch.cayenne.module.home.ui.adapter.compare.ChampionItemCompare
+import java.lang.ref.WeakReference
 
 class ChampionItemAdapter(private val onChampionItemClickListener: OnChampionItemClickListener? = null) :
     BaseAdapter<MarketWithSelections, ChampionItemViewHolder, ItemChampionCardBinding>(ChampionItemCompare()) {
@@ -52,5 +54,5 @@ class ChampionItemAdapter(private val onChampionItemClickListener: OnChampionIte
 }
 
 interface OnChampionItemClickListener {
-    fun onOddsCellClick(selection: SelectionBeanLite)
+    fun onOddsCellClick(cell: WeakReference<View>, selection: SelectionBeanLite)
 }

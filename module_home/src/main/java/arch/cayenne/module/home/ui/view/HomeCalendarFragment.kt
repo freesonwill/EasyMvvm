@@ -1,6 +1,5 @@
 package arch.cayenne.module.home.ui.view
 
-import android.animation.Animator
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.graphics.Rect
@@ -8,7 +7,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.DecelerateInterpolator
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.animation.doOnEnd
 import androidx.core.animation.doOnStart
@@ -16,7 +14,7 @@ import androidx.core.view.doOnLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import arch.cayenne.lib.base.ui.animation.AnimationController
-import arch.cayenne.lib.base.ui.fragment.launch
+import arch.cayenne.lib.base.ui.animation.AnimationController.AnimType
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.extractDate
 import arch.cayenne.lib.common.utils.ext.toChineseMonth
@@ -27,7 +25,6 @@ import arch.cayenne.module.home.utils.DateUtils
 import com.haibin.calendarview.Calendar
 import com.haibin.calendarview.CalendarView
 import galaxy.common.proto.Common
-import kotlinx.coroutines.delay
 import arch.cayenne.lib.common.R as RC
 
 class HomeCalendarFragment private constructor() : Fragment() {
@@ -40,11 +37,12 @@ class HomeCalendarFragment private constructor() : Fragment() {
     private val fragmentTag = this.javaClass.simpleName
     private var onDataSelectedListener: ((String) -> Unit)? = null
     private var onResetDateListener: (()-> Unit)? = null
+    private var onBeforeExpandAnimListener: (() -> Unit)? = null
+    private var onAfterExpandAnimListener: (() -> Unit)? = null
     private var onBeforeDismissAnimListener: (()-> Unit)? = null
     private var onAfterDismissAnimListener: (()-> Unit)? = null
     private var range: List<Common.DailyMatchCount>? = null
     private var marginTop: Int = 0
-    private var maskView: View? = null
     private var heightAnimator: ValueAnimator? = null
     private var currentAnimState: AnimState? = null
     private val allDay = "0"
@@ -63,11 +61,18 @@ class HomeCalendarFragment private constructor() : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         initView()
         initListener()
-        mBinding?.let { binding->
-            with(binding.clCalendarPopupRoot) {
-                visibility = View.INVISIBLE
-                layoutParams = (layoutParams as ConstraintLayout.LayoutParams).apply {
-                    topMargin = this@HomeCalendarFragment.marginTop
+        if (this.marginTop > 0) {
+            mBinding?.let { binding->
+                with(binding.clCalendarPopupRoot) {
+                    visibility = View.INVISIBLE
+                    layoutParams = (layoutParams as ConstraintLayout.LayoutParams).apply {
+                        topMargin = this@HomeCalendarFragment.marginTop
+                    }
+                }
+                with(binding.maskView) {
+                    layoutParams = (layoutParams as ConstraintLayout.LayoutParams).apply {
+                        topMargin = this@HomeCalendarFragment.marginTop
+                    }
                 }
             }
         }
@@ -76,9 +81,16 @@ class HomeCalendarFragment private constructor() : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         mBinding = null
+        heightAnimator = null
     }
 
     private fun initView() {
+        setSkinColor()
+        setSchemeDate()
+        setCalendarScrollable()
+        expandView()
+    }
+    fun setSkinColor() {
         mBinding?.let { binding->
             with(binding) {
                 clCalendarPopupRoot.apply {
@@ -127,12 +139,8 @@ class HomeCalendarFragment private constructor() : Fragment() {
                 calendarBtnOk.setBackgroundResource(
                     R.drawable.shape_home_calendar_ok.getSkinnableResourceId()
                 )
-                setSchemeDate()
-                setCalendarScrollable()
-                expandView()
             }
         }
-
     }
     private fun setCalendarScrollable() {
         mBinding?.let {binding ->
@@ -157,9 +165,6 @@ class HomeCalendarFragment private constructor() : Fragment() {
         mBinding?.let {binding->
             with(binding) {
                 // 獲取當前日期
-                val year = "${calendarView.selectedCalendar.year}"
-                val month = String.format("%02d", calendarView.selectedCalendar.month)
-                val day = String.format("%02d", calendarView.selectedCalendar.day)
                 var selectedDate =
                     if (tabSelectedDate == allDay) allDay
                     else tabSelectedDate
@@ -218,7 +223,7 @@ class HomeCalendarFragment private constructor() : Fragment() {
                     }
                 })
 
-                maskView?.setOnClickListener {
+                maskView.setOnClickListener {
                     when(currentAnimState) {
                         AnimState.EXPANDING,
                         AnimState.EXPAND -> collapseView()
@@ -288,8 +293,12 @@ class HomeCalendarFragment private constructor() : Fragment() {
                            translationY = (startHeight - fullyHeight).toFloat()
                            visibility = View.VISIBLE
                            setMaskViewAlpha(true)
+                           onBeforeExpandAnimListener?.invoke()
                        }
-                       doOnEnd { currentAnimState = AnimState.EXPAND }
+                       doOnEnd {
+                           currentAnimState = AnimState.EXPAND
+                           onAfterExpandAnimListener?.invoke()
+                       }
                        start()
                    }
                }
@@ -317,19 +326,19 @@ class HomeCalendarFragment private constructor() : Fragment() {
                     doOnStart {
                         currentAnimState = AnimState.COLLAPSING
                         setMaskViewAlpha(false)
-                        mBinding?.clCalendarPopupRoot?.postDelayed({
-                            onBeforeDismissAnimListener?.invoke()
+                        mBinding?.clCalendarPopupRoot?.postDelayed( {
+                                onBeforeDismissAnimListener?.invoke()
                         },50L)
                     }
                     doOnEnd {
                         currentAnimState = AnimState.COLLAPSE
                         visibility = View.INVISIBLE
-                        mBinding?.clCalendarPopupRoot?.postDelayed({
+                        mBinding?.clCalendarPopupRoot?.postDelayed(  {
                             if(currentAnimState == AnimState.COLLAPSE) {
                                 dismiss()
                                 onAfterDismissAnimListener?.invoke()
                             }
-                        }, 100L)
+                        },10L)
                     }
                     start()
                 }
@@ -338,31 +347,15 @@ class HomeCalendarFragment private constructor() : Fragment() {
         }
     }
 
-    private fun updateHeight(height: Int) {
-        mBinding?.clCalendarPopupRoot?.apply {
-            layoutParams = layoutParams.apply { this.height = height }
-            requireView()
-        }
-    }
-
     private fun setMaskViewAlpha(visible: Boolean) {
-        maskView?.let {
+        mBinding?.maskView?.let {
             it.post {
                 it.animate()
                     .alpha(if (visible) 1f else 0f)
-                    .setDuration(AnimationController[AnimationController.AnimType.popupEnter]!!.duration)
-                    .setListener(object: Animator.AnimatorListener{
-                        override fun onAnimationStart(p0: Animator) {
-                            if(visible) it.visibility = View.VISIBLE
-                        }
-
-                        override fun onAnimationEnd(p0: Animator) {
-                            if(!visible) it.visibility = View.GONE
-                        }
-
-                        override fun onAnimationCancel(p0: Animator) = Unit
-                        override fun onAnimationRepeat(p0: Animator) = Unit
-                    })
+                    .setDuration(
+                        if (visible) AnimationController[AnimType.popupEnter]!!.duration
+                        else AnimationController[AnimType.popupExit]!!.duration
+                    )
                     .start()
             }
         }
@@ -540,9 +533,10 @@ class HomeCalendarFragment private constructor() : Fragment() {
         private var onResetDateListener: (()-> Unit)? = null
         private var onAfterDismissAnimListener: (()-> Unit)? = null
         private var onBeforeDismissAnimListener: (() -> Unit)? = null
+        private var onBeforeExpandAnimListener: (() -> Unit)? = null
+        private var onAfterExpandAnimListener: (() -> Unit)? = null
         private var range: List<Common.DailyMatchCount>? = null
         private var marginTop: Int = 0
-        private var maskView: View? = null
 
         /**
          * 提供一個公開的方法讓外部設定監聽器
@@ -559,24 +553,29 @@ class HomeCalendarFragment private constructor() : Fragment() {
         fun setOnBeforeDismissAnimListener(listener: () -> Unit) = apply {
             this.onBeforeDismissAnimListener = listener
         }
+        fun setOnBeforeExpandAnimListener(listener: () -> Unit) = apply {
+            this.onBeforeExpandAnimListener = listener
+        }
+        fun setOnAfterExpandAnimListener(listener: () -> Unit) = apply {
+            this.onAfterExpandAnimListener = listener
+        }
         fun setRange(range: List<Common.DailyMatchCount>) = apply {
             this.range = range
         }
         fun setMarginTop(value: Int) {
             this.marginTop = value
         }
-        fun setMaskView(maskView: View) = apply {
-            this.maskView = maskView
-        }
+
         fun build(): HomeCalendarFragment {
             return HomeCalendarFragment().apply {
                 this.onResetDateListener = this@Builder.onResetDateListener
                 this.onDataSelectedListener = this@Builder.onDateSelectedListener
                 this.onBeforeDismissAnimListener = this@Builder.onBeforeDismissAnimListener
                 this.onAfterDismissAnimListener = this@Builder.onAfterDismissAnimListener
+                this.onBeforeExpandAnimListener = this@Builder.onBeforeExpandAnimListener
+                this.onAfterExpandAnimListener = this@Builder.onAfterExpandAnimListener
                 this.range = this@Builder.range
                 this.marginTop = this@Builder.marginTop
-                this.maskView = this@Builder.maskView
             }
         }
     }

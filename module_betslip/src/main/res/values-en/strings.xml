@@ -1,10 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="bet_slip_menus">
-        <item>unsettle</item>
-        <item>confirm</item>
-        <item>settled</item>
-        <item>reserv</item>
-        <item>invalid</item>
-    </string-array>
+
 </resources>

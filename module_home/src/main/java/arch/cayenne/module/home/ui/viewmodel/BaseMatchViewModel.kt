@@ -22,7 +22,7 @@ import org.koin.core.component.inject
 
 abstract class BaseMatchViewModel<REPO: BaseMatchRepository> : BaseViewModel() {
 
-    protected abstract fun getMatchListData()
+    protected abstract fun getMatchListData(loadMatchType: LoadMatchType)
 
     protected abstract val repository: REPO
 
@@ -58,8 +58,8 @@ abstract class BaseMatchViewModel<REPO: BaseMatchRepository> : BaseViewModel() {
             repository.observeLoginChange()
                 .filter { it }
                 .collect {
-                    if (apiStateListener.value == DataState.NetworkUnavailable) {
-                        getMatchListData()
+                    if (apiStateListener.value == null || apiStateListener.value == DataState.NetworkUnavailable) {
+                        getMatchListData(LoadMatchType.RETRY)
                     } else {
                         launch(Dispatchers.Main) {
                             subscribeMatch(getCurrentSubscribeMatchSet())
@@ -71,13 +71,13 @@ abstract class BaseMatchViewModel<REPO: BaseMatchRepository> : BaseViewModel() {
     }
 
     fun loadNextPage() {
-        if (isPageEnd) {
+        if (isPageEnd || apiStateListener.value == DataState.Loading) {
             return
         }
 
         page++
         setState(HomeState.Match.LoadingNext)
-        getMatchListData()
+        getMatchListData(LoadMatchType.NEXT_PAGE)
     }
 
     fun compareSubscribeMatch(ids: Set<Long>) {
@@ -190,7 +190,7 @@ abstract class BaseMatchViewModel<REPO: BaseMatchRepository> : BaseViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             clearCurrentMatch()
             if (preState == HomeState.Match.DataEmpty || preState == DataState.NetworkUnavailable) {
-                getMatchListData()
+                getMatchListData(LoadMatchType.RELOAD)
             }
         }
     }
@@ -200,4 +200,10 @@ abstract class BaseMatchViewModel<REPO: BaseMatchRepository> : BaseViewModel() {
     }
 
     abstract fun clearCurrentMatch()
+
+    fun getCurrentSelectionCount(): Int = betRepository.count
+}
+
+enum class LoadMatchType {
+    NEXT_PAGE, RELOAD, RETRY, FIRST_LOAD,
 }

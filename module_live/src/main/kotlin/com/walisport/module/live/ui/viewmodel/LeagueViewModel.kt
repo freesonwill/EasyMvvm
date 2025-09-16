@@ -17,9 +17,9 @@ class LeagueViewModel : BaseViewModel() {
     private val repo: LiveLeagueRepository by inject { parametersOf(viewModelScope) }
     private val _leagueData = MutableLiveData<LeagueMatchBean>()
     val leagueData: LiveData<LeagueMatchBean> get() = _leagueData
-
+    private val _activeHeaderIndex = MutableLiveData<Int?>()
+    val activeHeaderIndex: LiveData<Int?> get() = _activeHeaderIndex
     fun observeLoginChange(): Flow<Boolean> = repo.observeLoginChange()
-
     private var cursorMatchId: Long = 0L
     private var cursorMatchStartTime: Long = 0L
 
@@ -81,5 +81,11 @@ class LeagueViewModel : BaseViewModel() {
                 }
             }
         }, autoUpdateState = false)
+    }
+
+    fun setActiveHeaderIndex(index: Int?) {
+        if (_activeHeaderIndex.value != index) {
+            _activeHeaderIndex.value = index
+        }
     }
 }

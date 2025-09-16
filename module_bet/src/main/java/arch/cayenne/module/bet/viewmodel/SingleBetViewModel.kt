@@ -18,6 +18,7 @@ import arch.cayenne.lib.database.entity.BetSelectionBean
 import arch.cayenne.lib.database.entity.BetTypeEnum
 import arch.cayenne.lib.database.entity.InfoBean
 import arch.cayenne.module.bet.data.ComboMultiBetBean
+import arch.cayenne.module.bet.data.OddsChangeEnum
 import arch.cayenne.module.bet.repo.SingleBetRepository
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -47,6 +48,9 @@ class SingleBetViewModel(
 
     private val _onBalanceListener = MutableLiveData<InfoBean?>()
     val onBalanceListener: LiveData<InfoBean?> get() = _onBalanceListener
+
+    val balance: Long
+        get() = _onBalanceListener.value?.balance ?: 0L
 
     private val _betTypeListener = MutableLiveData<BetTypeEnum?>()
     val betTypeListener: LiveData<BetTypeEnum?> get() = _betTypeListener
@@ -127,6 +131,9 @@ class SingleBetViewModel(
     private val _networkConnectedEvent = MutableLiveData<Event<DataState>>()
     val networkConnectedEvent: LiveData<Event<DataState>> get() = _networkConnectedEvent
 
+    private val _oddsChangeListener = MutableLiveData<OddsChangeEnum>()
+    val oddsChangeListener: LiveData<OddsChangeEnum> get() = _oddsChangeListener
+
     init {
         setNumberLimit(0L, 0L)
         viewModelScope.launch {
@@ -144,9 +151,9 @@ class SingleBetViewModel(
             launch {
                 balanceRepo.observeInfo().collect {
                     _onBalanceListener.value = it
-                    if (it != null) {
-                        setRemainingNumber(it.balance)
-                    }
+//                    if (it != null) {
+//                        setRemainingNumber(it.balance)
+//                    }
                 }
             }
             launch {
@@ -154,7 +161,13 @@ class SingleBetViewModel(
                     _betTypeListener.value = it ?: BetTypeEnum.SINGLE
                 }
             }
+            launch {
+                betRepo.observeOddsChange().collect {
+                    _oddsChangeListener.value = it
+                }
+            }
         }
+        setRemainingNumber(Long.MAX_VALUE)
     }
 
     fun sendBet(): Boolean {
@@ -162,6 +175,7 @@ class SingleBetViewModel(
             return false
         }
         val money = onEditNumber.value?.toMoney() ?: return false
+        val oddsChange = _oddsChangeListener.value ?: return false
         val currentOdds = _onBetSheetListener.value?.odds ?: 0
         val reserveOdds = _onReserveOddsListener.value?.reserveDisplayOdds()
 
@@ -171,7 +185,7 @@ class SingleBetViewModel(
                     betRepo.saveToSingle()
                 }.await()
                 if (isSuccess) {
-                    betRepo.sendBet(money)
+                    betRepo.sendBet(money, oddsChange)
                 }
             } else {
                 val isSuccess = async {
@@ -234,6 +248,22 @@ class SingleBetViewModel(
     private fun checkNetwork(): Boolean {
         if (!betRepo.isConnected) {
             _networkConnectedEvent.value = Event(DataState.NetworkUnavailable)
+            return false
+        }
+        return true
+    }
+
+    fun checkOddsPass(): Boolean {
+        val oddsChange = _oddsChangeListener.value ?: return false
+        if (oddsChange == OddsChangeEnum.ANY) {
+            return true
+        }
+        val initialOdds = _onBetSheetListener.value?.initialOdds ?: return false
+        val currentOdds = _onBetSheetListener.value?.odds ?: return false
+        if (oddsChange == OddsChangeEnum.NO_CHANGE && initialOdds != currentOdds) {
+            return false
+        }
+        if (oddsChange == OddsChangeEnum.BETTER && currentOdds < initialOdds) {
             return false
         }
         return true

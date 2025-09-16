@@ -37,6 +37,9 @@ class MessageAdapter : BaseAdapter<NotificationBean, BaseViewHolder, ViewBinding
                 binding.ivMsgDelete.setOnClickListener {
                     clicklistener?.onDelete(item.id)
                 }
+                binding.layDetail.setOnClickListener {
+                    clicklistener?.onDetail(item)
+                }
                 binding.root.setOnClickListener {
                     clicklistener?.onDetail(item)
                 }
@@ -53,6 +56,9 @@ class MessageAdapter : BaseAdapter<NotificationBean, BaseViewHolder, ViewBinding
                 binding.tvMsgContent.text = getHtmlText(item.content)
                 binding.ivMsgDelete.setOnClickListener {
                     clicklistener?.onDelete(item.id)
+                }
+                binding.layDetail.setOnClickListener {
+                    clicklistener?.onDetail(item)
                 }
                 binding.root.setOnClickListener {
                     clicklistener?.onDetail(item)
@@ -71,6 +77,9 @@ class MessageAdapter : BaseAdapter<NotificationBean, BaseViewHolder, ViewBinding
                 binding.ivMsgDelete.setOnClickListener {
                     clicklistener?.onDelete(item.id)
                 }
+                binding.layDetail.setOnClickListener {
+                    clicklistener?.onDetail(item)
+                }
                 binding.root.setOnClickListener {
                     clicklistener?.onDetail(item)
                 }
@@ -85,6 +94,9 @@ class MessageAdapter : BaseAdapter<NotificationBean, BaseViewHolder, ViewBinding
             is ItemMessageWalletBinding -> {
                 binding.ivMsgDelete.apply { addScaleOnTouchAnimation() }.setOnClickListener {
                     clicklistener?.onDelete(item.id)
+                }
+                binding.layDetail.setOnClickListener {
+                    clicklistener?.onDetail(item)
                 }
                 binding.root.setOnClickListener {
                     clicklistener?.onDetail(item)

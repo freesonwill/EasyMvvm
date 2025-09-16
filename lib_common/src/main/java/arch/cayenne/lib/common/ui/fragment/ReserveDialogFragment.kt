@@ -6,21 +6,22 @@ import android.view.Gravity
 import android.view.View
 import android.view.ViewTreeObserver
 import androidx.fragment.app.setFragmentResult
-import arch.cayenne.lib.base.ui.fragment.BaseDialogFragment
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toOdds
 import arch.cayenne.lib.common.ui.view.NumberKeyboardView
 import kotlin.reflect.KClass
 import android.content.DialogInterface
 import android.graphics.drawable.Drawable
+import android.view.Window
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
+import arch.cayenne.lib.base.ui.fragment.BasePositionDialogFragment
 import arch.cayenne.lib.common.databinding.FragmentReserveDialogBinding
 import arch.cayenne.lib.common.ui.viewmodel.ReserveDialogViewModel
 import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.SportDisplayOddsExt.getDisplayOdds
 
-class ReserveDialogFragment private constructor() : BaseDialogFragment<ReserveDialogViewModel, FragmentReserveDialogBinding>() {
+class ReserveDialogFragment private constructor() : BasePositionDialogFragment<ReserveDialogViewModel, FragmentReserveDialogBinding>() {
 
     companion object {
         private const val LOCATION_X = "locationX"
@@ -65,78 +66,74 @@ class ReserveDialogFragment private constructor() : BaseDialogFragment<ReserveDi
         }
     }
 
-    override fun onStart() {
-        super.onStart()
-        dialog?.window?.let {
+    override fun setDialogPosition(w: Window) {
+        val positionX = requireArguments().getInt(LOCATION_X, -1)
+        val positionY = requireArguments().getInt(LOCATION_Y, -1)
 
-            val positionX = requireArguments().getInt(LOCATION_X, -1)
-            val positionY = requireArguments().getInt(LOCATION_Y, -1)
+        if (positionX != -1 && positionY != -1) {
+            val viewHeight = requireArguments().getInt(VIEW_HEIGHT, 0)
 
-            if (positionX != -1 && positionY != -1) {
-                val viewHeight = requireArguments().getInt(VIEW_HEIGHT, 0)
+            val layoutParams = w.attributes
+            layoutParams.gravity = Gravity.TOP or Gravity.END
 
-                val layoutParams = it.attributes
-                layoutParams.gravity = Gravity.TOP or Gravity.END
+            val pop = mBinding.root
+            pop.measure(
+                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+            )
+            val popHeight = pop.measuredHeight
 
-                val pop = mBinding.root
-                pop.measure(
-                    View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
-                    View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
-                )
-                val popHeight = pop.measuredHeight
+            val metrics = requireContext().resources.displayMetrics
+            val usableWidth = metrics.widthPixels
+            val usableHeight = metrics.heightPixels
+            val isFull = positionY + popHeight + viewHeight > usableHeight
 
-                val metrics = requireContext().resources.displayMetrics
-                val usableWidth = metrics.widthPixels
-                val usableHeight = metrics.heightPixels
-                val isFull = positionY + popHeight + viewHeight > usableHeight
+            mBinding.topTriangle.isVisible = !isFull
+            mBinding.bottomTriangle.isVisible = isFull
 
-                mBinding.topTriangle.isVisible = !isFull
-                mBinding.bottomTriangle.isVisible = isFull
+            val triangle = if (isFull) mBinding.bottomTriangle else mBinding.topTriangle
+            triangle.measure(
+                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+            )
 
-                val triangle = if (isFull) mBinding.bottomTriangle else mBinding.topTriangle
-                triangle.measure(
-                    View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
-                    View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
-                )
+            val triangleWidth = triangle.measuredWidth
+            val triangleHeight = triangle.measuredHeight
 
-                val triangleWidth = triangle.measuredWidth
-                val triangleHeight = triangle.measuredHeight
+            (triangle.layoutParams as ConstraintLayout.LayoutParams).marginEnd = usableWidth - positionX - triangleWidth / 2 - 10.dp2px
 
-                (triangle.layoutParams as ConstraintLayout.LayoutParams).marginEnd = usableWidth - positionX - triangleWidth / 2 - 10.dp2px
+            layoutParams.x = 10.dp2px
+            layoutParams.y = if (isFull) positionY - popHeight + triangleHeight else positionY - triangleHeight + viewHeight
 
-                layoutParams.x = 10.dp2px
-                layoutParams.y = if (isFull) positionY - popHeight + triangleHeight else positionY - triangleHeight + viewHeight
+            w.attributes = layoutParams
 
-                it.attributes = layoutParams
+            mBinding.root.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    mBinding.root.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                    // 動畫初始狀態
+                    mBinding.root.pivotX = triangle.x + triangle.width / 2
+                    mBinding.root.pivotY = if (isFull) mBinding.root.height.toFloat() else 0f
+                    mBinding.root.scaleX = 0f
+                    mBinding.root.scaleY = 0f
+                    mBinding.root.alpha = 0f
 
-                mBinding.root.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
-                    override fun onGlobalLayout() {
-                        mBinding.root.viewTreeObserver.removeOnGlobalLayoutListener(this)
-                        // 動畫初始狀態
-                        mBinding.root.pivotX = triangle.x + triangle.width / 2
-                        mBinding.root.pivotY = if (isFull) mBinding.root.height.toFloat() else 0f
-                        mBinding.root.scaleX = 0f
-                        mBinding.root.scaleY = 0f
-                        mBinding.root.alpha = 0f
+                    // 開始動畫
+                    mBinding.root.animate()
+                        .scaleX(1f)
+                        .scaleY(1f)
+                        .alpha(1f)
+                        .setDuration(200)
+                        .setInterpolator(android.view.animation.DecelerateInterpolator())
+                        .withStartAction {
+                            removeDim()
+                        }
+                        .withStartAction {
+                            mBinding.root.visibility = View.VISIBLE
+                        }
+                        .start()
+                }
+            })
 
-                        // 開始動畫
-                        mBinding.root.animate()
-                            .scaleX(1f)
-                            .scaleY(1f)
-                            .alpha(1f)
-                            .setDuration(200)
-                            .setInterpolator(android.view.animation.DecelerateInterpolator())
-                            .withStartAction {
-                                removeDim()
-                            }
-                            .withStartAction {
-                                mBinding.root.visibility = View.VISIBLE
-                            }
-                            .start()
-                    }
-                })
-
-            }
         }
     }
 
@@ -144,7 +141,6 @@ class ReserveDialogFragment private constructor() : BaseDialogFragment<ReserveDi
         mBinding.root.visibility = View.INVISIBLE
 
         ViewUtils.hideKeyboard(requireContext(), mBinding.etRate)
-        mBinding.etRate.requestFocus()
 
         val odds = requireArguments().getInt(ODDS_NUMBER, -1)
         if (odds != -1) {

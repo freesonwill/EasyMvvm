@@ -1,12 +1,9 @@
-package arch.cayenne.lib.database.entity
+package com.walisport.module.live.data.model
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
 
 data class LiveMarketListBean(
     val marketId: Long = 0, // 注区id
     val marketName: String = "", // 注区名称
-    var isSelect: Boolean = false,// 是否选中
     val code: String = "", // 盘口id
     var list:List<LiveMarketSelectionBean>
 )
@@ -22,5 +19,6 @@ data class LiveMarketSelectionBean(
     val marketId: Long,
     val marketName: String,
     val style: Int,//0-默认 1-一列 2-两列 3-三列 4-波胆
-    val oddsStatus: Int
+    val oddsStatus: Int,
+    var isSelect: Boolean = false,// 是否选中
 )

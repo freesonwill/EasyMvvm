@@ -106,14 +106,14 @@ abstract class BaseActivityViewModel : BaseViewModel() {
                    val result = it.dataAs<Boolean>()
                    if (result == null) {
                        "Login is failure! api response parse failed!".loge(TAG)
-                       _loginResult.value = LoginEnum.API_FAILURE
+                       _loginResult.value = LoginEnum.API_FAILURE("Login is failure! api response parse failed!")
                    } else {
                        _loginResult.value = if (result) LoginEnum.SUCCESSFUL else LoginEnum.NOT_SUCCESSFUL
                    }
 
                } else if (it is ApiResponseState.Failed){
                    "Login is failure! msg = ${it.error?.msg}".loge(TAG)
-                   _loginResult.value = LoginEnum.API_FAILURE
+                   _loginResult.value = LoginEnum.API_FAILURE(it.error?.msg)
                }
             }, false)
         }

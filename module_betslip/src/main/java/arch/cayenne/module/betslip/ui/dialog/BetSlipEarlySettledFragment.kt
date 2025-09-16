@@ -1,16 +1,22 @@
 package arch.cayenne.module.betslip.ui.dialog
 
 import android.os.Bundle
+import android.view.View
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import arch.cayenne.lib.base.ui.fragment.BasePreLoadBottomSheetFragment
+import arch.cayenne.lib.common.data.constants.QuickAmountEnum
+import arch.cayenne.lib.common.ui.adapter.QuickAmountAdapter
+import arch.cayenne.lib.common.ui.view.BlockSlideConstrainLayout
 import arch.cayenne.lib.common.ui.view.NumberKeyboardView
 import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoneyForScale
+import arch.cayenne.lib.common.utils.ext.TabLayoutExt
+import arch.cayenne.lib.common.utils.ext.TabLayoutExt.addOnTabSelectedListener2
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.skin.widget.SkinnableTabLayout
@@ -70,6 +76,12 @@ class BetSlipEarlySettledFragment :
         get() = EarlySettledKeyboardViewModel::class
     private var onEarlySettleClick: ((money: String) -> Unit)? = null
 
+    private val quickAmountAdapter: QuickAmountAdapter by lazy {
+        QuickAmountAdapter {
+            mViewModel.setNumber(it)
+        }
+    }
+
     override fun initView(savedInstanceState: Bundle?) {
 
         with(mBinding) {
@@ -77,7 +89,16 @@ class BetSlipEarlySettledFragment :
             ViewUtils.hideKeyboard(requireContext(), etMoney) { _ ->
                 showKeyboard()
             }
-            etMoney.requestFocus()
+
+            rvQuickAmount.adapter = quickAmountAdapter
+            quickAmountAdapter.submitList(QuickAmountEnum.entries)
+
+            root.setBlockSlideListener(object : BlockSlideConstrainLayout.BlockSlideListener {
+                override fun getBlockingRect(): View? {
+                    return clKeyboard
+                }
+            })
+
             numberKeyboard.setOnCalculatorClickListener(object :
                 NumberKeyboardView.OnCalculatorClickListener {
                 override fun onNumberClick(number: Int) {
@@ -124,9 +145,9 @@ class BetSlipEarlySettledFragment :
             tabLayout.addTab(newTab)
         }
         reflexPadding(tabLayout)
-        tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-            override fun onTabSelected(tab: TabLayout.Tab?) {
-                val value: Int = when (tab?.position) {
+        tabLayout.addOnTabSelectedListener2(object : TabLayoutExt.OnTabSelectedListener2 {
+            override fun onTabSelected(tab:TabLayout.Tab, isTabClick: Boolean) {
+                val value: Int = when (tab.position) {
                     0 -> 100
                     1 -> 25
                     2 -> 50
@@ -136,10 +157,10 @@ class BetSlipEarlySettledFragment :
                 mViewModel.setPercentNumber(value)
             }
 
-            override fun onTabUnselected(tab: TabLayout.Tab?) {
+            override fun onTabUnselected(tab:TabLayout.Tab, isTabClick: Boolean) {
             }
 
-            override fun onTabReselected(tab: TabLayout.Tab?) {
+            override fun onTabReselected(tab:TabLayout.Tab, isTabClick: Boolean) {
             }
         })
     }
@@ -165,11 +186,6 @@ class BetSlipEarlySettledFragment :
 
     override fun initListener() {
         mBinding.apply {
-            btn100.setOnClickListener { mViewModel.setNumber(10000) }
-            btn500.setOnClickListener { mViewModel.setNumber(50000) }
-            btn1000.setOnClickListener { mViewModel.setNumber(100000) }
-            btn2000.setOnClickListener { mViewModel.setNumber(200000) }
-            btn5000.setOnClickListener { mViewModel.setNumber(500000) }
             btnBack.setOnClickListener { mViewModel.backNumber() }
             btnClear.setOnClickListener { mViewModel.clearNumber() }
             btnDouble.setOnClickListener { mViewModel.doubleNumber() }
@@ -248,5 +264,8 @@ class BetSlipEarlySettledFragment :
         setCurrency()
         setAmount()
         super.customShow()
+        mBinding.etMoney.post {
+            mBinding.etMoney.requestFocus()
+        }
     }
 }

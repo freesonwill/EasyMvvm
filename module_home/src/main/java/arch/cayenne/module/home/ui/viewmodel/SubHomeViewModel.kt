@@ -15,6 +15,7 @@ import arch.cayenne.lib.database.entity.BaseTournamentData
 import arch.cayenne.lib.database.entity.ChampionTournamentDataModel
 import arch.cayenne.lib.database.entity.SportDataModel
 import arch.cayenne.lib.database.entity.TournamentDataModel
+import arch.cayenne.lib.skin.SkinnableManager
 import arch.cayenne.module.home.data.constants.HomeState
 import arch.cayenne.module.home.data.constants.PlayType
 import arch.cayenne.module.home.data.constants.playTypeToShowType
@@ -30,6 +31,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.core.component.inject
+import org.koin.core.parameter.parametersOf
 import plugin.koin.KoinViewModel
 
 @KoinViewModel
@@ -69,9 +71,24 @@ class SubHomeViewModel: BaseViewModel() {
 
     private val _navigateToChampion = MutableLiveData<Event<ChampionTournamentDataModel>>()
     val navigationToChampion: LiveData<Event<ChampionTournamentDataModel>> = _navigateToChampion
+    private val skinManager: SkinnableManager by inject { parametersOf(viewModelScope) }
+    private val _selectedSkinType = MutableLiveData<Event<String>>()
+    val selectedSkinType: LiveData<Event<String>> = _selectedSkinType
+
+    // 以 playType 記錄更多按鈕狀態：true 表示 llMore 顯示，false 表示 ivMore 顯示
+    private val moreStateByPlayType: MutableMap<Int, Boolean> = mutableMapOf()
+
+    // 當前 playType 的狀態（供 UI 觀察）
+    private val _currentMoreState = MutableLiveData(false)
+    val currentMoreState: LiveData<Boolean> = _currentMoreState
 
     override fun initViewModel() {
         super.initViewModel()
+        viewModelScope.launch {
+            skinManager.skinFlow.collect {
+                _selectedSkinType.value = Event(it)
+            }
+        }
         viewModelScope.launch(Dispatchers.IO) {
             repository.observeSportsMatchCount()
                 .map {
@@ -342,10 +359,26 @@ class SubHomeViewModel: BaseViewModel() {
 
     fun setPlayTypeId(id: Int) {
         currentPlayTypeId = id
+        _currentMoreState.value = moreStateByPlayType[currentPlayTypeId] ?: false
     }
 
     fun setCalendarState(state: HomeCalendarFragment.States) {
         _calendarStates.value = state
     }
 
+    /**
+     * 設置目前 playType 的更多按鈕顯示狀態
+     * @param isLlMoreVisible true 表示 llMore 顯示；false 表示 ivMore 顯示
+     */
+    fun setMoreButtonStateForCurrent(isLlMoreVisible: Boolean) {
+        moreStateByPlayType[currentPlayTypeId] = isLlMoreVisible
+        _currentMoreState.value = isLlMoreVisible
+    }
+
+    /**
+     * 通知當前 playType 的狀態給觀察者
+     */
+    fun notifyCurrentMoreState() {
+        _currentMoreState.value = moreStateByPlayType[currentPlayTypeId] ?: false
+    }
 }

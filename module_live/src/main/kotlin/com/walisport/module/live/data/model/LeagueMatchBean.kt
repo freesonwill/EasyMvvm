@@ -23,5 +23,6 @@ data class MatchBean @JvmOverloads constructor(
     val homeName: String,
     val awayLogo: String,
     val awayName: String,
-    val startTime: Long
+    val startTime: Long,
+    val itemColor: String
 )

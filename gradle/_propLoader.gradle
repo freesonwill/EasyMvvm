@@ -1,0 +1,12 @@
+//load local.properties only once
+ext.loadLocalProps = {
+    if (!rootProject.hasProperty("localProps")) {
+        def props = new Properties()
+        def file = rootProject.file("local.properties")
+        if (file.exists()) {
+            file.withInputStream { props.load(it) }
+        }
+        rootProject.ext.localProps = props
+    }
+    return rootProject.ext.localProps
+}

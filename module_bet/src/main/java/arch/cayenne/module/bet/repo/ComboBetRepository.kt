@@ -3,8 +3,6 @@ package arch.cayenne.module.bet.repo
 import arch.cayenne.lib.base.data.repository.BaseRepository
 import arch.cayenne.lib.common.data.constants.UserDataKey
 import arch.cayenne.lib.common.data.manager.UserDataManager
-import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
-import arch.cayenne.lib.common.utils.ext.SportStringExt.toOdds
 import arch.cayenne.lib.database.dao.BetDao
 import arch.cayenne.lib.database.entity.BetDetailBean
 import arch.cayenne.lib.database.entity.BetResultStatusEnum
@@ -14,13 +12,17 @@ import arch.cayenne.lib.database.entity.BetTypeEnum
 import arch.cayenne.module.bet.BettingRemoteManager
 import arch.cayenne.module.bet.data.ComboMultiBetBean
 import arch.cayenne.module.bet.data.ComboMultiBetOddsBean
+import arch.cayenne.module.bet.data.OddsChangeEnum
 import arch.cayenne.module.bet.data.remote.ComboRiskDataModel
 import galaxy.client.proto.Client
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.math.BigDecimal
+import java.math.RoundingMode
 
 class ComboBetRepository(
     override val scope: CoroutineScope,
@@ -36,6 +38,9 @@ class ComboBetRepository(
 
     private val observerOddsDisplay = manager.observe<Int>(UserDataKey.KEY_ODDS)
     private val observerLanguage = manager.observe<String>(UserDataKey.KEY_LANGUAGE)
+
+    private val oddsChangeFlow =
+        MutableSharedFlow<OddsChangeEnum>(replay = 1, extraBufferCapacity = 1)
 
     val isConnected: Boolean
         get() = remoteManager.isConnected
@@ -75,6 +80,19 @@ class ComboBetRepository(
                 observerLanguage.collect {
                     updateLanguage()
                 }
+            }
+            launch {
+                manager.observe<Int>(UserDataKey.KEY_ODDS_CHANGE)
+                    .onStart {
+                        val value =
+                            manager.getValue(UserDataKey.KEY_ODDS_CHANGE, OddsChangeEnum.ANY.value)
+                        val odds = OddsChangeEnum.fromValue(value)
+                        oddsChangeFlow.emit(odds)
+                    }
+                    .collect { oddsValue ->
+                        val odds = OddsChangeEnum.fromValue(oddsValue)
+                        oddsChangeFlow.emit(odds)
+                    }
             }
         }
     }
@@ -116,6 +134,7 @@ class ComboBetRepository(
                         comboK = bean.comboK,
                         comboV = bean.comboV,
                         sumOdds = bean.sumOdds,
+                        odds = bean.odds,
                         count = bean.count,
                         minAmount = bean.minAmount,
                         maxAmount = bean.maxAmount
@@ -137,13 +156,14 @@ class ComboBetRepository(
                 val betId = bet.betId
                 val currentDetail = betDao.getDetail(betId)
                 multiBet.forEach { multiBet ->
-                    if (currentDetail.find { it.serialValue == multiBet.serialValue && it.comboK == multiBet.comboK && it.comboV == multiBet.comboV} == null) {
+                    if (currentDetail.find { it.serialValue == multiBet.serialValue && it.comboK == multiBet.comboK && it.comboV == multiBet.comboV && it.count == multiBet.count} == null) {
                         BetDetailBean(
                             serialValue = multiBet.serialValue,
                             betId = betId,
                             comboK = multiBet.comboK,
                             comboV = multiBet.comboV,
                             sumOdds = multiBet.sumOdds,
+                            odds = multiBet.odds,
                             count = multiBet.count,
                             inputMoney = 0L
                         ).apply {
@@ -176,6 +196,8 @@ class ComboBetRepository(
     fun observeComboBet(): Flow<List<BetSelectionBean>> = selectionFlow
     fun observeComboMultiBet(): Flow<List<ComboMultiBetBean>> = comboMultiBetFlow
 
+    fun observeOddsChange(): Flow<OddsChangeEnum> = oddsChangeFlow
+
     fun removeSelection(selectionId: Long) {
         scope.launch {
             betDao.getCurrentBet()?.let { bet ->
@@ -202,7 +224,7 @@ class ComboBetRepository(
         }
     }
 
-    fun sendBet(multiBet: List<ComboMultiBetBean>) {
+    fun sendBet(multiBet: List<ComboMultiBetBean>, oddsChangeEnum: OddsChangeEnum) {
         scope.launch {
             betDao.getCurrentBet()?.let { bet ->
                 if (bet.betType == BetTypeEnum.COMBO) {
@@ -212,7 +234,7 @@ class ComboBetRepository(
                     val selection = betDao.getSelections(betId)
                     unregister(selection)
                     val currentDetail = betDao.getDetail(betId)
-                    val tempDetail = if (currentDetail.isEmpty()) {
+                    val tempDetail = currentDetail.ifEmpty {
                         multiBet.map { bean ->
                             BetDetailBean(
                                 serialValue = bean.serialValue,
@@ -221,6 +243,7 @@ class ComboBetRepository(
                                 comboV = bean.comboV,
                                 orderId = "",
                                 sumOdds = bean.sumOdds,
+                                odds = bean.odds,
                                 count = bean.count,
                                 inputMoney = bean.inputMoney,
                                 status = BetResultStatusEnum.CONFIRMING
@@ -228,12 +251,10 @@ class ComboBetRepository(
                         }.apply {
                             betDao.insertDetail(this)
                         }
-                    } else {
-                        currentDetail
                     }
 
 
-                    val resp = remoteManager.comboBet(selection, multiBet)
+                    val resp = remoteManager.comboBet(selection, multiBet, oddsChangeEnum)
                     if (resp != null && resp.isSuccessful) {
                         tempDetail.forEach { detail ->
                             val info = resp.data.find { it.serialValue == detail.serialValue }
@@ -290,10 +311,16 @@ class ComboBetRepository(
                 val combinations = data.combinations(k)
                 val odds = when (k) {
                     0 -> 0
-                    else -> oddsList.combinations(k)
-                        .sumOf { it.reduce { acc, l ->
-                            acc.getOdds(l).toOdds()
-                        } }
+                    else -> {
+                        val combinationData = oddsList.combinations(k)
+                        val sumOdds = combinationData
+                            .sumOf {
+                                it.reduce { acc, l ->
+                                    acc * l
+                                }
+                            }
+                        sumOdds.getScaleOdds((combinationData.first().size - 1) * 2)
+                    }
                 }
                 val count = when (k) {
                     0 -> 0
@@ -309,6 +336,7 @@ class ComboBetRepository(
                             comboK = n,
                             comboV = totalCount,
                             sumOdds = totalSumOdds,
+                            odds = totalSumOdds / totalCount,
                             count = totalCount,
                             minAmount = risk.minAmount,
                             maxAmount = risk.maxAmount
@@ -321,6 +349,7 @@ class ComboBetRepository(
                             comboK = k,
                             comboV = 1,
                             sumOdds = odds,
+                            odds = odds / count,
                             count = count,
                             minAmount = risk.minAmount,
                             maxAmount = risk.maxAmount
@@ -359,6 +388,11 @@ class ComboBetRepository(
         }
     }
 
+    private fun Int.getScaleOdds(scale: Int): Int {
+        val divisor = BigDecimal.TEN.pow(scale)
+        return this.toBigDecimal().divide(divisor, scale, RoundingMode.DOWN).toInt()
+    }
+
     private fun calculateMultiBetOddsSums(
         data: List<BetSelectionBean>,
         riskList: List<ComboRiskDataModel>
@@ -375,10 +409,16 @@ class ComboBetRepository(
             riskMap[k]?.let { risk ->
                 val odds = when (k) {
                     0 -> 0
-                    else -> oddsList.combinations(k)
-                        .sumOf { it.reduce { acc, l ->
-                            acc.getOdds(l).toOdds()
-                        } }
+                    else -> {
+                        val combinationData = oddsList.combinations(k)
+                        val sumOdds = combinationData
+                            .sumOf {
+                                it.reduce { acc, l ->
+                                    acc * l
+                                }
+                            }
+                        sumOdds.getScaleOdds((combinationData.first().size - 1) * 2)
+                    }
                 }
                 totalSumOdds += odds
 

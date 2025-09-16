@@ -171,10 +171,6 @@ class SearchResultBaseFragment :
             if(!isLoading) {
                 setEmptyView(state)
             }
-
-            loadingView.visibility =
-                if (isLoading) View.VISIBLE
-                else View.GONE
             dynamicState.visibility =
                 if (!isLoading) View.VISIBLE
                 else View.GONE

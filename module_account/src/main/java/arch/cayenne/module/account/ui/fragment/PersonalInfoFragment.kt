@@ -3,8 +3,8 @@ package arch.cayenne.module.account.ui.fragment
 import android.graphics.Rect
 import android.os.Bundle
 import android.text.TextWatcher
-import android.view.LayoutInflater
 import android.view.View
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
@@ -16,7 +16,6 @@ import arch.cayenne.lib.common.utils.ext.touchBackPressed
 import arch.cayenne.module.account.R
 import arch.cayenne.module.account.data.constants.KeyConfig
 import arch.cayenne.module.account.databinding.FragmentPersonalInfoBinding
-import arch.cayenne.module.account.databinding.TitleBarPersonalInfoBinding
 import arch.cayenne.module.account.ui.adapter.PersonalInfoAdapter
 import arch.cayenne.module.account.ui.viewmodel.PersonalInfoViewModel
 import kotlin.reflect.KClass
@@ -29,9 +28,6 @@ import kotlin.reflect.KClass
 class  PersonalInfoFragment : BaseFragment<PersonalInfoViewModel, FragmentPersonalInfoBinding>() {
     override val vbClass: KClass<FragmentPersonalInfoBinding> = FragmentPersonalInfoBinding::class
     override val vmClass: KClass<PersonalInfoViewModel> = PersonalInfoViewModel::class
-    private val titleBarBinding: TitleBarPersonalInfoBinding by lazy {
-        TitleBarPersonalInfoBinding.inflate(LayoutInflater.from(context), mBinding.titleBar, false)
-    }
     private var personalInfoAdapter = PersonalInfoAdapter()
     private val nickNameMaxLength = 6
     override fun initView(savedInstanceState: Bundle?) {
@@ -39,10 +35,11 @@ class  PersonalInfoFragment : BaseFragment<PersonalInfoViewModel, FragmentPerson
             override fun canScrollVertically() = false
         }
         with(mBinding) {
-            titleBar.loadDynamicsTitleBar(titleBarBinding.root)
+            mBinding.titleBar.loadGeneralTitleBar(R.string.personal_info_title, {
+                findNavController().navigateUp()
+            })
             rvPersonalHeadGrid.layoutManager = layoutManager
             val spanCount = 4
-            val spacingOutSide = 34.dp2px
             val spacingTop = 16.dp2px
             val spacingBottom = 24.dp2px
             rvPersonalHeadGrid.addItemDecoration(object : RecyclerView.ItemDecoration() {

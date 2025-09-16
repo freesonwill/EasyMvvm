@@ -69,12 +69,12 @@ class MessageListFragment : BaseFragment<MessageMainViewModel, FragmentMessageLi
             })
             recyclerMessage.addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                    recyclerMessage.scrollToBottomWithLoadMore {
+                    recyclerMessage.scrollToBottomWithLoadMore(onEndAction = {
                         if (canLoadMore) {
                             canLoadMore = false
                             mViewModel.getMoreMessageList()
                         }
-                    }
+                    })
                 }
             })
         }
@@ -87,7 +87,6 @@ class MessageListFragment : BaseFragment<MessageMainViewModel, FragmentMessageLi
         super.initData()
         launch(Lifecycle.State.RESUMED) {
             if (msgType == MSG_ALL) {
-                mBinding.emptyState.setState(States.LOADING,"")
                 mViewModel.getMessageList(MSG_ALL)
             }
         }

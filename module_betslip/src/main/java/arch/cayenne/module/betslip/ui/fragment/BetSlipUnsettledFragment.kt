@@ -2,8 +2,10 @@ package arch.cayenne.module.betslip.ui.fragment
 
 import android.net.Uri
 import android.os.Bundle
+import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
+import arch.cayenne.lib.common.ui.view.BlockSlideConstrainLayout
 import arch.cayenne.lib.common.utils.copyToClipboard
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.helper.showToast
@@ -45,8 +47,10 @@ class BetSlipUnsettledFragment :
         super.createObserver()
             mViewModel.orderLiveData.observe(viewLifecycleOwner) {
                 betSlipAdapter.submitList(it) {
-                    val position = if (mViewModel.loadDataType == LoadDataType.LOAD_MORE) betSlipAdapter.itemCount - 1 else 0
-                    mBinding.recyclerView.scrollToPosition(position)
+                    if (mViewModel.loadDataType == LoadDataType.LOAD_MORE){
+                        val position =  betSlipAdapter.itemCount - 1
+                        mBinding.recyclerView.scrollToPosition(position)
+                    }
                     mViewModel.loadDataType = LoadDataType.NONE
                 }
         }
@@ -131,5 +135,8 @@ class BetSlipUnsettledFragment :
     override fun onResume() {
         super.onResume()
         BetSlipEarlySettledFragment.create(this)
+        mBinding.root.post {
+            BetSlipEarlySettledFragment.show(this, "100", "100","100")
+        }
     }
 }

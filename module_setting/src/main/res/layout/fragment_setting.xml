@@ -31,22 +31,13 @@
             android:textSize="@dimen/sp_15" />
 
         <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
+            android:id="@+id/setting_odds"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_52"
             android:layout_marginStart="@dimen/dp_12"
             android:layout_marginTop="@dimen/dp_10"
             android:layout_marginEnd="@dimen/dp_12"
-            android:background="@drawable/bg_set_item">
-
-            <arch.cayenne.lib.skin.widget.SkinnableRippleView
-                android:id="@+id/setting_odds"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:rv_bgType="round"
-                app:rv_color="@color/ripper"
-                app:rv_rippleCorner="@dimen/dp_12"
-                app:rv_rippleDuration="100"
-                app:rv_type="simpleRipple" />
+            android:background="@drawable/ripple_effect">
 
             <arch.cayenne.lib.skin.widget.SkinnableImageView
                 android:layout_width="@dimen/dp_20"
@@ -105,22 +96,13 @@
             android:textSize="@dimen/sp_15" />
 
         <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
+            android:id="@+id/setting_notice"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_52"
             android:layout_marginStart="@dimen/dp_12"
             android:layout_marginTop="@dimen/dp_10"
             android:layout_marginEnd="@dimen/dp_12"
-            android:background="@drawable/bg_set_item_top">
-
-            <arch.cayenne.lib.skin.widget.SkinnableRippleView
-                android:id="@+id/setting_notice"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:rv_bgType="top"
-                app:rv_color="@color/ripper"
-                app:rv_rippleCorner="@dimen/dp_12"
-                app:rv_rippleDuration="100"
-                app:rv_type="simpleRipple" />
+            android:background="@drawable/ripple_effect_top">
 
             <arch.cayenne.lib.skin.widget.SkinnableImageView
                 android:layout_width="@dimen/dp_20"
@@ -166,21 +148,12 @@
         </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
 
         <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
+            android:id="@+id/setting_bg"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_52"
             android:layout_marginStart="@dimen/dp_12"
             android:layout_marginEnd="@dimen/dp_12"
-            android:background="@drawable/bg_set_item_rect">
-
-             <arch.cayenne.lib.skin.widget.SkinnableRippleView
-                android:id="@+id/setting_bg"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:rv_bgType="rect"
-                app:rv_color="@color/ripper"
-                app:rv_rippleCorner="@dimen/dp_12"
-                app:rv_rippleDuration="100"
-                app:rv_type="simpleRipple" />
+            android:background="@drawable/ripple_effect_rectangle">
 
             <arch.cayenne.lib.skin.widget.SkinnableImageView
                 android:layout_width="@dimen/dp_20"
@@ -226,21 +199,12 @@
         </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
 
         <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
+            android:id="@+id/setting_language"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_52"
             android:layout_marginStart="@dimen/dp_12"
             android:layout_marginEnd="@dimen/dp_12"
-            android:background="@drawable/bg_set_item_bottom">
-
-            <arch.cayenne.lib.skin.widget.SkinnableRippleView
-                android:id="@+id/setting_language"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:rv_bgType="bottom"
-                app:rv_color="@color/ripper"
-                app:rv_rippleCorner="@dimen/dp_12"
-                app:rv_rippleDuration="100"
-                app:rv_type="simpleRipple" />
+            android:background="@drawable/ripple_effect_bottom">
 
             <arch.cayenne.lib.skin.widget.SkinnableImageView
                 android:layout_width="@dimen/dp_20"

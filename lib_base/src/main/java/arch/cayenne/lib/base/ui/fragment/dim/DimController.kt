@@ -4,10 +4,13 @@ import android.animation.ObjectAnimator
 import android.content.Context
 import android.graphics.Color
 import android.graphics.PixelFormat
+import android.graphics.Rect
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import androidx.core.animation.doOnEnd
+import androidx.core.view.isVisible
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 
@@ -15,20 +18,36 @@ class DimController private constructor() {
 
     companion object {
         const val TARGET_DIM = 0.75f
-        val instance: DimController by lazy {
+        private val instance: DimController by lazy {
             DimController()
+        }
+        fun getInstance(host: DimInterface): DimController {
+            instance.init(host)
+            return instance
         }
     }
 
     private var dimView: View? = null
-    private var listenerMap = mutableMapOf<Int, DimAlphaListener>()
+    private var hostMap = mutableMapOf<Int, DimInterface>()
+    private var canChangeDim = true
 
-    fun init(context: Context) {
+    fun findAnyShowing(host: DimInterface): Boolean {
+        return if (hostMap.isEmpty()) {
+            false
+        } else {
+            hostMap.any {
+                !it.value.getIsDismissing() && it.value != host
+            }
+        }
+    }
+
+    private fun init(host: DimInterface) {
+        register(host)
         if (dimView != null) {
-            checkLayoutParams()
             return
         }
-        val v = View(context).apply {
+        val context = host.getHostFragment().requireContext()
+        val v = DimView(context).apply {
             setBackgroundColor(Color.BLACK)
             alpha = 0f
         }
@@ -39,14 +58,18 @@ class DimController private constructor() {
         dimView = v
     }
 
-    fun checkLayoutParams() {
-        val v = dimView ?: return
-        val params = v.layoutParams as WindowManager.LayoutParams
-        val basicParams = getBasicLayoutParams()
-        if (params.width != basicParams.width || params.height != basicParams.height) {
-            updateLayoutParams(basicParams)
-            v.translationY = 0f
-        }
+    private fun register(host: DimInterface) {
+        val code = host.hashCode()
+        if (hostMap.containsKey(code)) return
+        val f = host.getHostFragment()
+        val lifecycleOwner = f.viewLifecycleOwner
+        hostMap[code] = host
+        lifecycleOwner.lifecycle.addObserver(object : DefaultLifecycleObserver {
+            override fun onDestroy(owner: LifecycleOwner) {
+                hostMap.remove(code)
+                owner.lifecycle.removeObserver(this) // 移除 observer，避免多餘引用
+            }
+        })
     }
 
     private fun getBasicLayoutParams(): WindowManager.LayoutParams {
@@ -64,47 +87,37 @@ class DimController private constructor() {
         return params
     }
 
-    fun updateLayoutParams(params: WindowManager.LayoutParams) {
-        val v = dimView ?: return
-        val currentParams = v.layoutParams as WindowManager.LayoutParams
-        currentParams.width = params.width
-        currentParams.height = params.height
-        currentParams.x = params.x
-        currentParams.y = params.y
-        currentParams.flags = params.flags
-        currentParams.format = params.format
-        currentParams.gravity = params.gravity
+    fun stopChangeDim() {
+        canChangeDim = false
+    }
 
-        val windowManager = v.context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
-        windowManager.updateViewLayout(v, currentParams)
+    fun allowChangeDim() {
+        canChangeDim = true
+    }
+
+    fun prepareShowDim() {
+        val v = dimView ?: return
+        v.isVisible = true
     }
 
     fun showDim() {
-        if (dimView?.alpha == TARGET_DIM) return
-        dimView?.alpha = TARGET_DIM
-        setAlphaChange(TARGET_DIM)
+        val v = dimView ?: return
+        if (v.alpha == TARGET_DIM || !canChangeDim) return
+        v.alpha = TARGET_DIM
     }
 
     fun hideDim() {
-        if (dimView?.alpha == 0f) return
-        dimView?.alpha = 0f
-        setAlphaChange(0f)
+        val v = dimView ?: return
+        if (v.alpha == 0f || !canChangeDim) return
+        v.alpha = 0f
+        v.post {
+            v.isVisible = false
+        }
     }
 
     fun setDimAlpha(alpha: Float) {
+        if (!canChangeDim) return
         dimView?.alpha = alpha.coerceIn(0f, 1f)
-        setAlphaChange(alpha)
-    }
-
-    fun setTranslationY(y: Float) {
-        dimView?.translationY = y
-    }
-
-    fun reset() {
-        val v = dimView ?: return
-        val params = getBasicLayoutParams()
-        updateLayoutParams(params)
-        v.translationY = 0f
     }
 
     fun getHideAnimator(): ObjectAnimator? {
@@ -112,31 +125,27 @@ class DimController private constructor() {
         return ObjectAnimator.ofFloat(v, "alpha", v.alpha, 0f).apply {
             addUpdateListener {
                 val value = it.animatedValue as Float
-                v.alpha = value
-                setAlphaChange(value)
+                if (!canChangeDim) {
+                    v.alpha = value
+                }
+            }
+            doOnEnd {
+                v.post {
+                    v.isVisible = false
+                }
             }
         }
     }
 
-    private fun setAlphaChange(alpha: Float) {
-        listenerMap.values.forEach { l ->
-            l.onDimAlphaChanged(alpha)
-        }
+    fun setRect(rect: Rect, radius: Float) {
+        val centerX = rect.centerX()
+        val centerY = rect.centerY()
+        val width = rect.width()
+        val height = rect.height()
+        (dimView as? DimView)?.setRect(centerX, centerY, width, height, radius)
     }
 
-    fun setDimAlphaListener(lifecycleOwner: LifecycleOwner, listener: DimAlphaListener) {
-        val id = lifecycleOwner.hashCode()
-        listenerMap[id] = listener
-        lifecycleOwner.lifecycle.addObserver(object : DefaultLifecycleObserver {
-            override fun onDestroy(owner: LifecycleOwner) {
-                listenerMap.remove(id)
-                owner.lifecycle.removeObserver(this) // 移除 observer，避免多餘引用
-            }
-        })
+    fun clearRect() {
+        (dimView as? DimView)?.clearRect()
     }
-
-    interface DimAlphaListener {
-        fun onDimAlphaChanged(alpha: Float)
-    }
-
 }

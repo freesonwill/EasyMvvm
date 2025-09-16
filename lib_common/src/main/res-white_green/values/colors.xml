@@ -20,4 +20,5 @@
     <color name="card_background_white_green">#FFFFFF</color>
     <color name="champions_list_white_green">#FEFFFE</color>
     <color name="card_odds_background_white_green">#F3F3F4</color>
+    <color name="loading_text_white_green">#222222</color>
 </resources>

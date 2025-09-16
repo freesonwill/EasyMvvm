@@ -13,6 +13,8 @@ import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout.States
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
+import arch.cayenne.lib.common.utils.ext.TabLayoutExt
+import arch.cayenne.lib.common.utils.ext.TabLayoutExt.addOnTabSelectedListener2
 import arch.cayenne.lib.common.utils.ext.TabLayoutExt.reflexMargin
 import arch.cayenne.lib.common.utils.ext.clickNoRepeatSingle
 import arch.cayenne.lib.common.utils.ext.removeAllTips
@@ -31,6 +33,7 @@ import com.walisport.module.live.ui.viewmodel.LiveBetOnViewModel
 import com.walisport.module.live.ui.viewmodel.LiveMainViewModel
 import kotlinx.coroutines.delay
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
+import java.lang.ref.WeakReference
 import kotlin.math.abs
 import kotlin.reflect.KClass
 
@@ -43,15 +46,12 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
     private var tabList: MutableList<String> = mutableListOf()
     private var tabPosition: List<Int> = mutableListOf(0, 0)
     private lateinit var liveBetOnAdapter: LiveBetOnAdapter
-    private var mCurrentItemPosition: Int = 0
-    private var selectionComboId: Long? = null
     private var isTabClicked: Boolean = false
     private lateinit var viewPager2: ViewPager2
     private var startX = 0f
     private var startY = 0f
     override fun initView(savedInstanceState: Bundle?) {
         initAdapter()
-        mBinding.clDynamics.setState(States.LOADING, "")
     }
 
 
@@ -63,21 +63,25 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
             )
             liveBetOnAdapter = LiveBetOnAdapter(object : LivBetListCallback {
                 override fun itemListCallback(
+                    cell: WeakReference<View>,
                     marketI: Long,
                     selectionId: Long,
                     x: Float,
-                    y: Float,
-                    position: Int,
-                    beforePosition: Int
+                    y: Float
                 ) {
-                    mCurrentItemPosition = position
                     launch {
+                        if (mViewModel.getCurrentSelectionCount() == 0) {
+                            BetSheetFragment.show(requireActivity()) {
+                                cell.get()?.isSelected = true
+                            }
+                        } else {
+                            cell.get()?.isSelected = true
+                        }
+
                         val status = mainViewModel.matchId.value?.let {
                             mViewModel.setSelection(it, selectionId)
                         }
-                        if (status is AddSelectionStatus.Success.Single) {
-                            BetSheetFragment.show(requireActivity())
-                        } else if (status is AddSelectionStatus.Failure) {
+                        if (status is AddSelectionStatus.Failure) {
                             status.msg?.let {
                                 showToast(it)
                             }
@@ -133,14 +137,14 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
 
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                // 滑动到底部时禁用 ViewPager2
-                if (!recyclerView.canScrollVertically(1)) {
-                    viewPager2.isUserInputEnabled = false
-                }
+                // 滑动到底部时禁用 ViewPager2   投注不满屏幕时导致左右都不能滑动
+//                if (!recyclerView.canScrollVertically(1)) {
+//                    viewPager2.isUserInputEnabled = false
+//                }
             }
         })
-        mBinding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-            override fun onTabSelected(tab: TabLayout.Tab) {
+        mBinding.tabLayout.addOnTabSelectedListener2(object : TabLayoutExt.OnTabSelectedListener2 {
+            override fun onTabSelected(tab: TabLayout.Tab, isTabClick: Boolean) {
                 isTabClicked = true
                 mViewModel.getMarketList(
                     (if (tab.position == 0) "" else mViewModel.marketType.value?.get(
@@ -149,8 +153,8 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
                 )
             }
 
-            override fun onTabUnselected(tab: TabLayout.Tab?) {}
-            override fun onTabReselected(tab: TabLayout.Tab?) {}
+            override fun onTabUnselected(tab:TabLayout.Tab, isTabClick: Boolean) {}
+            override fun onTabReselected(tab:TabLayout.Tab, isTabClick: Boolean) {}
         })
 
         mBinding.ivMenu.clickNoRepeatSingle{
@@ -189,8 +193,8 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
                 }
             }
         })
+
         mainViewModel.matchId.observe(viewLifecycleOwner) {
-            mBinding.clDynamics.setState(States.LOADING, "")
             mBinding.LLCBetOn.visibility = View.GONE
             mBinding.ivMenu.visibility = View.GONE
         }
@@ -209,7 +213,6 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
             liveBetOnAdapter.submitList(emptyList())
             tabList.clear()
             tabPosition = mutableListOf(0, 0)
-            selectionComboId = null
             mBinding.tabLayout.removeAllTabs()
             // bool bet_stop = 18;         // false: 未停止投注, true: 已停止投注
             if (it != null) {
@@ -259,7 +262,7 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
                     baseInfo?.homeTeam.toString(),
                     baseInfo?.homeTeamIcon.toString(),
                     baseInfo?.awayTeam.toString(),
-                    baseInfo?.awayTeamIcon.toString(), true,
+                    baseInfo?.awayTeamIcon.toString(),
                     selectionsEdit
                 )
                 liveBetOnAdapter.submitList(it)
@@ -287,20 +290,6 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
                     mBinding.tabLayout.selectedTabPosition - 1
                 )?.code).toString()
             )
-        }
-        //串关数据变动
-        mViewModel.observerSelectionCombo.observe(viewLifecycleOwner) {
-            selectionComboId = it
-            liveBetOnAdapter.setSelectionComboId(selectionComboId, false)
-            if (liveBetOnAdapter.getBeforePosition() == -1) {
-                it?.let {  comboIdByMarketPosition(it)?.let { position ->
-                    liveBetOnAdapter.notifyItemChanged(position) }  }
-            } else {
-                if(liveBetOnAdapter.getBeforePosition()!=mCurrentItemPosition){
-                    liveBetOnAdapter.notifyItemChanged(mCurrentItemPosition)
-                }
-                liveBetOnAdapter.notifyItemChanged(liveBetOnAdapter.getBeforePosition())
-            }
         }
     }
 

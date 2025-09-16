@@ -3,8 +3,11 @@ package arch.cayenne.module.home.ui.fragment
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import android.widget.ImageView
+import androidx.core.view.doOnLayout
 import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -18,6 +21,7 @@ import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.scrollToBottomWithLoadMore
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
+import arch.cayenne.lib.common.utils.ext.startFadeAnim
 import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.database.entity.MatchWithMarkets
 import arch.cayenne.lib.database.entity.SelectionBeanLite
@@ -33,7 +37,9 @@ import arch.cayenne.module.home.ui.view.decoration.MatchCardItemDecoration
 import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
 import arch.cayenne.module.home.ui.viewmodel.MatchListViewModel
 import arch.cayenne.module.home.ui.viewmodel.SubHomeViewModel
+import arch.cayenne.module.home.utils.setFavoriteIcon
 import com.walisport.module.message.ui.view.DeleteAnimator
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import java.lang.ref.WeakReference
@@ -47,23 +53,21 @@ class MatchListPagerFragment :
     private val homeViewModel: HomeViewModel by sharedViewModel<HomeViewModel, NewHomeFragment>()
     private val subHomeViewModel: SubHomeViewModel by viewModels({ requireParentFragment() })
     private lateinit var matchAdapter: MatchItemAdapter
-    private var canLoadMore = false
     private val gameLayoutManager by lazy { LinearLayoutManager(context) }
     private val fabViewModel: FloatingButtonControlViewModel by activityViewModel()
 
+    // 用於淡入淡出動畫時監聽api是否已經回傳
+    private var animationObserver: Observer<DataState>? = null
     private var dataObserver: RecyclerView.AdapterDataObserver? = null
     private var userRequestedScrollToTop = false
 
     override fun initView(savedInstanceState: Bundle?) {
         mBinding.apply {
-            refreshLayout.setEnableLoadMore(true)
+            refreshLayout.setEnableLoadMore(false)
             refreshLayout.setEnableScrollContentWhenLoaded(true)
             refreshLayout.setOnRefreshListener {
                 mViewModel.reload()
                 userRequestedScrollToTop = true
-            }
-            refreshLayout.setOnLoadMoreListener {
-                mViewModel.loadNextPage()
             }
 
             matchAdapter = MatchItemAdapter(object : OnMatchItemClickListener {
@@ -71,22 +75,32 @@ class MatchListPagerFragment :
                     navigate(Uri.parse("walisport://module_live/liveFragment?matchId=${item.match.matchId}&sportId=${item.match.basicInfo.sportId}"))
                 }
 
-                override fun onFavoriteClick(item: MatchWithMarkets) {
-                    mViewModel.addMatchCollect(item, !item.match.collect)
+                override fun onFavoriteClick(view: ImageView, item: MatchWithMarkets) {
+                    lifecycleScope.launch {
+                        view.setFavoriteIcon(!item.match.collect, false) //先點亮或點暗收藏按鈕
+                        val success = mViewModel.addMatchCollect(item, !item.match.collect)
+                        if (!success) view.setFavoriteIcon(!view.isSelected, true) //失敗了需要復原回來
+                    }
+
                 }
 
                 override fun onOddsCellClick(cell: WeakReference<View>, selection: SelectionBeanLite, x: Float, y: Float) {
                     lifecycleScope.launch {
-                        cell.get()?.isSelected = true
+                        if (mViewModel.getCurrentSelectionCount() == 0) {
+                            BetSheetFragment.show(requireActivity()) {
+                                cell.get()?.isSelected = true
+                            }
+                        } else {
+                            cell.get()?.isSelected = true
+                        }
+
                         val status = mViewModel.setSelection(selection.selectionId)
 
                         if (status !is AddSelectionStatus.Success) {
                             cell.get()?.isSelected = false
                         }
 
-                        if (status is AddSelectionStatus.Success.Single) {
-                            BetSheetFragment.show(requireActivity())
-                        } else if (status is AddSelectionStatus.Failure) {
+                        if (status is AddSelectionStatus.Failure) {
                             status.msg?.let {
                                 showToast(it)
                             }
@@ -126,12 +140,14 @@ class MatchListPagerFragment :
                 }
 
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                    rvHomeGameList.scrollToBottomWithLoadMore {
-                        if (canLoadMore) {
-                            canLoadMore = false
+                    rvHomeGameList.scrollToBottomWithLoadMore(minScrollCount = 8,{
+                        if (mViewModel.apiStateListener.value != HomeState.Match.LoadSuccess) return@scrollToBottomWithLoadMore
+                        mViewModel.loadNextPage()
+                    }, {
+                        if (mViewModel.apiStateListener.value == HomeState.Match.LoadNextFailure) {
                             mViewModel.loadNextPage()
                         }
-                    }
+                    })
                 }
             })
         }
@@ -144,6 +160,7 @@ class MatchListPagerFragment :
             mViewModel.compareSubscribeMatch(
                 matchAdapter.currentList
                     .slice(firstVisible..lastVisible)
+                    .filterIsInstance<MatchWithMarkets>()
                     .map { it.match.matchId }
                     .toSet()
             )
@@ -178,52 +195,82 @@ class MatchListPagerFragment :
     override fun initListener() {
     }
 
+    val matchListObserver = Observer<List<MatchWithMarkets>> { matchList ->
+        val preEmpty = matchAdapter.currentList.isEmpty()
+        "MatchListChange livedata Observed~ ${matchList.map { it.match.matchId }}".logi(this::class.java.simpleName)
+
+        val action = {
+            matchAdapter.submitList(matchList)
+            mBinding.rvHomeGameList.doOnPreDraw {
+                if (mBinding.rvHomeGameList.scrollState == RecyclerView.SCROLL_STATE_IDLE) {
+                    subscribeVisibleMatch()
+                }
+                if (matchList.isNotEmpty()) {
+                    if (preEmpty) {
+                        setMatchListPosition()
+                    }
+                }
+            }
+
+            // 把 clDynamics 的顯示控制移到這裡，避免淡入淡出動畫時閃爍
+            mBinding.clDynamics.visibility =
+                if(matchList.isEmpty()) View.VISIBLE else View.GONE
+        }
+
+        // 執行淡入淡出動畫
+        with(mViewModel) {
+            if(getLastTournamentId() != getTournamentId() || getLastSelectedDate() != getSelectedDate()) {
+                setLastState(getTournamentId(), getSelectedDate())
+                mBinding.clMatchRoot.startFadeAnim { onComplete ->
+                    lifecycleScope.launch {
+                        action.invoke()
+
+                        animationObserver = Observer { dataState ->
+                            if(dataState !in listOf(null, DataState.None, DataState.Loading)) {
+                                animationObserver?.let { apiStateListener.removeObserver(it) }
+                                onComplete.invoke()
+                            }
+                        }
+                        animationObserver?.let { apiStateListener.observe(viewLifecycleOwner, it) }
+                    }
+                }
+            } else {
+                action.invoke()
+            }
+        }
+    }
+
     override suspend fun createObserver() {
 
         homeViewModel.timer.observeEvent(viewLifecycleOwner, this) {
             mViewModel.updateMatchLiveData()
         }
-        mViewModel.matchListChange.observe(viewLifecycleOwner) { matchList ->
-            val preEmpty = matchAdapter.currentList.isEmpty()
-            "MatchListChange livedata Observed~ ${matchList.map { it.match.matchId }}".logi(this::class.java.simpleName)
-            matchAdapter.submitList(matchList)
-            canLoadMore = true
-            mBinding.rvHomeGameList.doOnPreDraw {
-                subscribeVisibleMatch()
-                if (preEmpty && matchList.isNotEmpty()) {
-                    mViewModel.changeState(HomeState.Match.LoadSuccess)
-                    setMatchListPosition()
-                }
-            }
-        }
 
         mViewModel.apiStateListener.observe(viewLifecycleOwner) {
+            "MatchListPagerFragment playType: ${mViewModel.getPlayTypeId()} tournament: ${mViewModel.getTournamentId()} state change ${it::class.java.name}".logi(this::class.java.name)
             with(mBinding) {
                 when(it) {
-                    DataState.NetworkUnavailable -> {
-                        mViewModel.changePageEnd(true)
-                        lvMatchLoading.visibility = View.GONE
+                    DataState.NetworkUnavailable, HomeState.Match.LoadNextFailure -> {
                         refreshLayout.finishRefresh()
-                        refreshLayout.finishLoadMore()
-                        refreshLayout.setEnableLoadMore(false)
-                        clDynamics.visibility = View.VISIBLE
-                        clDynamics.setState(
-                            DynamicStateLayout.States.NETWORK_ANOMALY(),
-                            arch.cayenne.lib.common.R.string.error_net.getString()
-                        )
+                        matchAdapter.setLastItemType(MatchItemAdapter.LAST_ITEM_NONE)
+                        if (it == DataState.NetworkUnavailable){
+                            mViewModel.changePageEnd(true)
+                            clDynamics.setState(
+                                DynamicStateLayout.States.NETWORK_ANOMALY(),
+                                arch.cayenne.lib.common.R.string.error_net.getString()
+                            )
+                        }
+
                         homeViewModel.changeState(DataState.NetworkUnavailable)
                     }
                     DataState.NoMoreData -> {     //這個DataEmpty表示api抓不到任何資料了，有可能是頁面到底，或是從第一頁就抓不到資料
-                        mViewModel.changePageEnd(true)
-                        refreshLayout.finishLoadMore()
-                        refreshLayout.setEnableLoadMore(false)
-                        refreshLayout.postDelayed({ matchAdapter.showNoMoreData(true) }, 500L)
-                    }
-
-                    HomeState.Match.DataEmpty -> {  //這個DataEmpty表示確定真的從第一頁就抓不到資料，表示當前的選擇沒有任何賽事
-                        lvMatchLoading.visibility = View.GONE
                         refreshLayout.finishRefresh()
-                        clDynamics.visibility = View.VISIBLE
+                        mViewModel.changePageEnd(true)
+                        matchAdapter.setLastItemType(MatchItemAdapter.LAST_ITEM_NO_MORE)
+                    }
+                    HomeState.Match.DataEmpty -> {  //這個DataEmpty表示確定真的從第一頁就抓不到資料，表示當前的選擇沒有任何賽事
+                        refreshLayout.finishRefresh()
+                        matchAdapter.setLastItemType(MatchItemAdapter.LAST_ITEM_NONE)
                         clDynamics.setState(
                             DynamicStateLayout.States.DATA_EMPTY,
                             R.string.lineup_empty.getString()
@@ -231,23 +278,15 @@ class MatchListPagerFragment :
                         homeViewModel.changeState(HomeState.Match.LoadSuccess)
                     }
                     HomeState.Match.Loading -> {
-                        lvMatchLoading.visibility = View.VISIBLE
-                        clDynamics.visibility = View.GONE
-                        refreshLayout.setEnableLoadMore(true)
                         homeViewModel.changeState(HomeState.Match.Loading)
                     }
                     HomeState.Match.Refreshing -> {
-                        clDynamics.visibility = View.GONE
-                        refreshLayout.setEnableLoadMore(true)
+                        matchAdapter.setLastItemType(MatchItemAdapter.LAST_ITEM_LOAD_MORE)
                     }
                     HomeState.Match.LoadingNext -> {
-                        clDynamics.visibility = View.GONE
                     }
                     DataState.LoadSuccess, HomeState.Match.LoadSuccess -> {
-                        lvMatchLoading.visibility = View.GONE
                         if (refreshLayout.isRefreshing) refreshLayout.finishRefresh()
-                        refreshLayout.finishLoadMore()
-                        clDynamics.visibility = View.GONE
                         homeViewModel.changeState(HomeState.Match.LoadSuccess)
                     }
                 }
@@ -264,6 +303,7 @@ class MatchListPagerFragment :
     }
 
     private fun refreshListByDate(date: Long) {
+        mViewModel.changeState(HomeState.Match.Loading)
         if (date.toInt() == 0) {
             //切換後選回全部
             mViewModel.setSelectedDate(0)
@@ -279,10 +319,18 @@ class MatchListPagerFragment :
             mViewModel.setPlayTypeId(this.getInt(ARG_PLAY_TYPE_ID))
             mViewModel.setPosition(this.getInt(ARG_POSITION))
         }
+        "MatchListPagerFragment playType: ${mViewModel.getPlayTypeId()} sportId: ${mViewModel.getSportId()} leagueId: ${mViewModel.getTournamentId()}".logi()
+        startObserveMatch()
     }
 
     fun startObserveMatch() {
         mViewModel.startObserveMatch()
+    }
+
+    fun startObserveMatchListChange() {
+        if (!mViewModel.matchListChange.hasObservers()) {
+            mViewModel.matchListChange.observe(viewLifecycleOwner, matchListObserver)
+        }
     }
 
     override fun onDestroy() {
@@ -299,6 +347,8 @@ class MatchListPagerFragment :
 
     override fun onPause() {
         super.onPause()
+        //如果切换时正在滚动则停止滚动
+        mBinding.rvHomeGameList.stopScroll()
         //暫時移除訂閱
         mViewModel.cancelSubscribeMatch(mViewModel.getCurrentSubscribeMatchSet())
         mViewModel.stopMatchSubscribeNotify()

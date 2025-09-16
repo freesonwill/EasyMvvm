@@ -3,11 +3,16 @@ package arch.cayenne.lib.skin.widget
 import android.content.Context
 import android.content.res.ColorStateList
 import android.util.AttributeSet
+import androidx.annotation.AnyRes
+import androidx.annotation.ColorRes
+import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.appcompat.widget.AppCompatCheckBox
 import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import arch.cayenne.lib.skin.SkinnableManager
+import arch.cayenne.lib.skin.widget.biz.ISkinnableTextBiz
+import arch.cayenne.lib.skin.widget.biz.SkinnableBizTextImpl
 import arch.cayenne.lib.skin.widget.helper.SkinnableBackGroundHelper
 import arch.cayenne.lib.skin.widget.helper.SkinnableTextHelper
 import arch.cayenne.lib.skin.widget.helper.SkinnableViewFlowHelper
@@ -15,9 +20,7 @@ import kotlinx.coroutines.launch
 import org.koin.java.KoinJavaComponent.inject
 
 class SkinnableCheckBox : AppCompatCheckBox {
-    private val textHelper = SkinnableTextHelper(this)
-    private val backgroundTintHelper = SkinnableBackGroundHelper(this)
-    private val flowHelper = SkinnableViewFlowHelper()
+      private lateinit var biz:ISkinnableTextBiz
 
     constructor(context: Context) : super(context) {
         initView(context)
@@ -34,36 +37,37 @@ class SkinnableCheckBox : AppCompatCheckBox {
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-
-        flowHelper.startSkinFlow(findViewTreeLifecycleOwner()?.lifecycleScope) {
-            backgroundTintHelper.updateSkin()
-            textHelper.updateSkin()
-        }
-        flowHelper.startLanguageFlow {
-            textHelper.updateLanguage(it)
-        }
+        biz.onAttachedToWindow()
     }
 
     private fun initView(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) {
-        backgroundTintHelper.loadFromAttributes(attrs, defStyleAttr)
-        textHelper.loadFromAttributes(attrs, defStyleAttr)
-    }
-
-
-    override fun setTextColor(colors: ColorStateList?) {
-        super.setTextColor(colors)
+        biz = SkinnableBizTextImpl(this)
+        biz.initView(context,attrs,defStyleAttr)
     }
 
     fun setTextRes(@StringRes stringRes:Int,vararg formatArgs:Any = emptyArray()){
-        textHelper.updateText(stringRes,*formatArgs)
+        biz.setTextRes(stringRes,*formatArgs)
     }
 
     fun setHintRes(@StringRes stringRes: Int,vararg formatArgs:Any = emptyArray()){
-        textHelper.updateHint(stringRes,*formatArgs)
+        biz.setHintRes(stringRes,*formatArgs)
+    }
+
+    override fun setBackgroundResource(@DrawableRes resId: Int) {
+        super.setBackgroundResource(resId)
+        biz.updateBackground(resId)
+    }
+
+    fun setTintColorRes(@ColorRes resId: Int){
+        biz.updateBackgroundTintId(resId)
+    }
+
+    fun setForegroundRes(@AnyRes resId: Int){
+        biz.updateForegroundId(resId)
     }
 
     override fun onDetachedFromWindow() {
-        flowHelper.destroyFlow()
+        biz.onDetachedFromWindow()
         super.onDetachedFromWindow()
     }
 

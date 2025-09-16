@@ -40,4 +40,11 @@
     <string name="btn_result_continue_bet">续投</string>
 
     <string name="hint_less_min_amount">小于最小投注额</string>
+
+    <string name="title_odds_change_any">接受任何赔率变化</string>
+    <string name="title_odds_change_better">自动接受更好的赔率</string>
+    <string name="title_odds_change_none">不接受任何赔率变化</string>
+
+    <string name="toast_odds_change_better">赔率已降低，请重新投注</string>
+    <string name="toast_odds_change_none">赔率已变更，请重新投注</string>
 </resources>

@@ -25,9 +25,8 @@ class HandicapLetBallFragment :
     private var letBallAdapter = LetBallAdapter()
 
     class StandingsItemDecoration(
-        private val spacing: Int = 12.dp2px,
+        private val btmSpacing: Int = 12.dp2px,
         private val leftRight: Int = 8.dp2px,
-        private val bottomSpacing: Int = 20.dp2px,
     ) : RecyclerView.ItemDecoration() {
         override fun getItemOffsets(
             outRect: Rect,
@@ -35,10 +34,7 @@ class HandicapLetBallFragment :
             parent: RecyclerView,
             state: RecyclerView.State
         ) {
-            val position = parent.getChildAdapterPosition(view)
-            val itemCount = parent.adapter?.itemCount ?: 0
-            outRect.top = if (position == 0) spacing else spacing / 2
-            outRect.bottom = if (position == itemCount - 1) bottomSpacing else spacing / 2
+            outRect.bottom = btmSpacing
             outRect.left = leftRight
             outRect.right = leftRight
         }

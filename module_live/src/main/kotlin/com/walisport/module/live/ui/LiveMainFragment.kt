@@ -5,14 +5,13 @@ import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
-import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.LinearLayout
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.data.model.PagerBean
@@ -24,12 +23,13 @@ import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.utils.ext.DimensionExt.px2sp
-import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.setDrawerInterpolator
 import arch.cayenne.lib.common.utils.ext.NavResultExt.observeResult
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
+import arch.cayenne.lib.common.utils.ext.TabLayoutExt
+import arch.cayenne.lib.common.utils.ext.TabLayoutExt.addOnTabSelectedListener2
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.removeAllTips
 import arch.cayenne.lib.common.utils.ext.touchBackPressed
@@ -48,7 +48,9 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.filter
 import kotlin.reflect.KClass
 import arch.cayenne.lib.common.utils.ext.animateIndicatorToPosition
-import arch.cayenne.lib.common.utils.ext.setupViewPagerScroll
+import arch.cayenne.lib.common.utils.ext.setupHorizontalScrollDegree
+import arch.cayenne.lib.common.utils.ext.startFadeAnim
+import arch.cayenne.lib.common.utils.ext.startZoomInAnim
 import arch.cayenne.lib.common.utils.helper.doSmartAnim
 import kotlin.math.abs
 
@@ -152,18 +154,24 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                 navigate(Uri.parse("walisport://module_topup/topUpFragment"))
             }
         }
-
-        mBinding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-            override fun onTabSelected(tab: TabLayout.Tab?) {
-                tab?.let {
+        mBinding.tabLayout.addOnTabSelectedListener2(object : TabLayoutExt.OnTabSelectedListener2 {
+            override fun onTabSelected(tab: TabLayout.Tab,isTabClick: Boolean) {
+                tab.let {
                     if (skipAnyAnim) {
                         enableAnimation = false
                         mBinding.customIndicator.animateIndicatorToPosition(tab.position)
-                        mBinding.vpPage.setCurrentItem(tab.position,false)
-                        // mBinding.vpPage.doSmartAnim(tab.position)
+                        val vp = mBinding.vpPage
+                        if(isTabClick) {
+                            vp.startFadeAnim {
+                                vp.setCurrentItem(tab.position, false)
+                                it.invoke()
+                            }
+                        } else {
+                            vp.doSmartAnim(tab.position)
+                        }
                     }
                 }
-                tab?.view?.findViewById<SkinnableTextView>(R.id.tabText)?.let { textView ->
+                tab.view.findViewById<SkinnableTextView>(R.id.tabText)?.let { textView ->
                     textView.setTextColor(
                         SkinnableResourceManager.getColor(
                             textView.context,
@@ -175,8 +183,8 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                 }
             }
 
-            override fun onTabUnselected(tab: TabLayout.Tab?) {
-                tab?.view?.findViewById<SkinnableTextView>(R.id.tabText)?.let { textView ->
+            override fun onTabUnselected(tab: TabLayout.Tab,isTabClick: Boolean) {
+                tab.view.findViewById<SkinnableTextView>(R.id.tabText)?.let { textView ->
                     textView.setTextColor(
                         SkinnableResourceManager.getColor(
                             textView.context,
@@ -188,7 +196,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                 }
             }
 
-            override fun onTabReselected(tab: TabLayout.Tab?) {
+            override fun onTabReselected(tab: TabLayout.Tab,isTabClick: Boolean) {
                 // Handle reselect if needed
             }
         })
@@ -256,6 +264,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         })
         // 启用手动滑动
         mBinding.vpPage.isUserInputEnabled = true
+        mBinding.vpPage.setupHorizontalScrollDegree()
     }
 
     override fun createObserverAtState(): Lifecycle.State {
@@ -374,7 +383,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         val tabSelectPosition = 1
         with(mBinding) {
             val list = listOf(
-                PagerBean(R.string.live_note_order.getString()) { BetSlipFragment() },
+                PagerBean(arch.cayenne.lib.res.R.string.bet_title.getString()) { BetSlipFragment() },
                 PagerBean(R.string.live_bet_on.getString()) { LiveBetOnFragment() },
                 PagerBean(R.string.live_chat.getString()) { LiveChatFragment() },
                 PagerBean(R.string.live_outs.getString()) { LiveOutsFragment() },
@@ -408,7 +417,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
             }.attach()
             tabLayout.clearOnTabSelectedListeners()
             tabLayout.post{
-                mBinding.customIndicator.animateIndicatorToPosition(1, 0)
+                mBinding.customIndicator.animateIndicatorToPosition(1, false)
                 mBinding.vpPage.setCurrentItem(1,false)
             }
             tabLayout.removeAllTips()

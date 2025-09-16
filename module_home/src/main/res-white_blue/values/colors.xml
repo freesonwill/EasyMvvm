@@ -11,6 +11,7 @@
     <color name="secondary_title_white_blue">@color/home_main_text_white_blue</color>
     <color name="bg_card_gradient_start_white_blue">#00fefffe</color>
     <color name="bg_sport_list_gradient_start_white_blue">#00F3F3F4</color>
+    <color name="bg_sport_list_gradient_center_white_blue">#99F3F3F4</color>
     <color name="tab_indicator_color_white_blue">@color/brand_color</color>
     <color name="bg_sport_selected_white_blue">@color/brand_color</color>
     <color name="bg_sport_unselect_white_blue">#E1E1E3</color>
@@ -39,4 +40,7 @@
     <color name="calendar_cancel_button_white_blue">#E9FDF3</color>
     <color name="home_calendar_background_white_blue">#F3F3F4</color>
     <color name="other_date_text_selected_white_blue">#00D271</color>
+    <color name="custom_filter_side_bar_text_white_blue">#00D271</color>
+
+    <color name="tournament_list_search_text_white_blue">#000000</color>
 </resources>

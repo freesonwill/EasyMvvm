@@ -1,11 +1,17 @@
 package arch.cayenne.module.home.ui.view
 
+import android.animation.ValueAnimator
+import android.view.ViewGroup
+import androidx.core.view.ViewCompat
+import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
+import arch.cayenne.lib.common.utils.ext.startFadeAnim
 import arch.cayenne.lib.common.utils.helper.ViewPagerAnimHelper.Companion.getAnimHelper
 import arch.cayenne.lib.common.utils.helper.doSmartAnim
 import com.google.android.material.tabs.TabLayout
 import java.lang.ref.WeakReference
+import kotlin.math.max
 
 class CustomTabLayoutMediator(
     private val tabLayout: TabLayout,
@@ -17,6 +23,7 @@ class CustomTabLayoutMediator(
     private var adapter: RecyclerView.Adapter<*>? = null
     private var attached = false
     private var skipAnyAnim = false
+    private var isTabClick = false  // 儲存點擊狀態
     private var afterTabSelectedCallback: ((position: Int) -> Unit)? = null // 存储afterTabSelected回调
 
     private var onPageChangeCallback: TabLayoutOnPageChangeCallback? = null
@@ -25,23 +32,17 @@ class CustomTabLayoutMediator(
 
     /**
      * 執行 TabLayout 滾動到指定位置
-     * 用映射的方式叫用 animationTo 或 setScrollPosition 來控制是否需要 smoothScroll 效果
+     * 使用自定義平滑滾動
      * @param position 目標位置
-     * @param noTabAnim 是否不需要 TabLayout 的動畫效果，默認為 false
-     * @param noViewPagerAnim 是否不需要動畫效果，默認為 false
+     * @param noTabAnim 是否不需要 TabLayout 的動畫效果
+     * @param noViewPagerAnim 是否不需要 ViewPager2 的動畫效果
      */
     private fun doOnClick(position: Int, noTabAnim: Boolean = false, noViewPagerAnim: Boolean = false) {
         try {
-            // 如果是 BounceTabLayoutContainer，則跳過回彈動畫
-            (tabLayout.parent as? BounceTabLayoutContainer)?.setSkipAnim(true)
-
             if (!noTabAnim) {
-                TabLayout::class.java
-                    .getDeclaredMethod("animateToTab", Int::class.java)
-                    .apply {
-                        isAccessible = true
-                        invoke(tabLayout, position)
-                    }
+                if (position != tabLayout.selectedTabPosition) {
+                    smoothScrollToTab(position)
+                }
             } else {
                 TabLayout::class.java
                     .getDeclaredMethod(
@@ -63,6 +64,64 @@ class CustomTabLayoutMediator(
             tabLayout.getTabAt(position)?.select()
         } catch (e: Exception) {
             e.printStackTrace()
+        }
+    }
+
+    /**
+     * 滾動到指定 tab 位置
+     */
+    private fun smoothScrollToTab(position: Int) {
+        // 原生 animateToTab
+        if (ViewCompat.isLaidOut(tabLayout) &&
+            doAnimateToTab(position)
+        ) {
+            return
+        }
+
+        //  自定義滾動
+        if (customSmoothScroll(position)) {
+            return
+        }
+    }
+
+    /**
+     * 原生 animateToTab 方法
+     */
+    private fun doAnimateToTab(position: Int): Boolean {
+        return try {
+            val method = TabLayout::class.java.getDeclaredMethod("animateToTab", Int::class.java)
+            method.isAccessible = true
+            method.invoke(tabLayout, position)
+            true
+        } catch (e: Exception) {
+            false
+        }
+    }
+
+    /**
+     * 自定義滾動（繞過 ViewCompat.isLaidOut 檢查）
+     */
+    private fun customSmoothScroll(position: Int): Boolean {
+        return try {
+            val slidingTabStrip = tabLayout.getChildAt(0) as? ViewGroup ?: return false
+            val targetChild = slidingTabStrip.getChildAt(position) ?: return false
+
+            val targetScrollX = (targetChild.left + targetChild.width / 2) - (tabLayout.width / 2)
+            val maxScrollX = max(0, slidingTabStrip.width - tabLayout.width)
+            val clampedScrollX = targetScrollX.coerceIn(0, maxScrollX)
+            val current = tabLayout.scrollX
+
+            ValueAnimator.ofInt(current, clampedScrollX).apply {
+                duration = 300L
+                interpolator = FastOutSlowInInterpolator()
+                addUpdateListener { animator ->
+                    tabLayout.scrollTo(animator.animatedValue as Int, 0)
+                }
+                start()
+            }
+            true
+        } catch (e: Exception) {
+            false
         }
     }
 
@@ -102,10 +161,12 @@ class CustomTabLayoutMediator(
 
         populateTabsFromPagerAdapter()
         tabLayout.setScrollPosition(viewPager.currentItem, 0f, true)
+
         if(tabLayout is CustomTabLayout) {
             // 設置自訂的 ClickListener
             tabLayout.onTabClick = { position ->
-                doOnClick(position, noTabAnim = false, noViewPagerAnim = true)
+                isTabClick = true
+                doOnClick(position, noTabAnim = false, noViewPagerAnim = false)
             }
         }
     }
@@ -115,6 +176,7 @@ class CustomTabLayoutMediator(
             adapter?.unregisterAdapterDataObserver(pagerAdapterObserver!!)
             pagerAdapterObserver = null
         }
+
         tabLayout.removeOnTabSelectedListener(onTabSelectedListener)
         viewPager.unregisterOnPageChangeCallback(onPageChangeCallback!!)
         onTabSelectedListener = null
@@ -125,6 +187,10 @@ class CustomTabLayoutMediator(
 
     fun selectTabWithoutAnimation(position: Int) {
         doOnClick(position = position, noTabAnim = true, noViewPagerAnim = true)
+    }
+
+    fun selectTabWithAnimation(position: Int) {
+        doOnClick(position = position, noTabAnim = false, noViewPagerAnim = false)
     }
 
     private fun getAfterTabSelectedCallback(): ((position: Int) -> Unit)? {
@@ -383,13 +449,22 @@ class CustomTabLayoutMediator(
                 viewPager.setCurrentItem(tab.position, false)
                 skipAnyAnim = false
             } else {
-                viewPager.doSmartAnim(targetPosition = tab.position)
+                // 判斷是否是點擊Tab觸發的，是的話執行淡入淡出動畫，否則執行滑動動畫
+                if(isTabClick) {
+                    viewPager.startFadeAnim { onComplete ->
+                        viewPager.setCurrentItem(tab.position, false)
+                        onComplete.invoke()
+                    }
+                    isTabClick = false
+                } else {
+                    viewPager.doSmartAnim(targetPosition = tab.position)
+                }
             }
             afterTabSelected?.invoke(tab.position)
         }
 
-        override fun onTabUnselected(tab: TabLayout.Tab?) {}
-        override fun onTabReselected(tab: TabLayout.Tab?) {}
+        override fun onTabUnselected(tab:TabLayout.Tab) {}
+        override fun onTabReselected(tab:TabLayout.Tab) {}
     }
 
     private inner class PagerAdapterObserver : RecyclerView.AdapterDataObserver() {

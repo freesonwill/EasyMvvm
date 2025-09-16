@@ -84,7 +84,7 @@ data class LiveInfo(
     val clockModified: Long,
     val homeScore: Int = 0,
     val awayScore: Int = 0,
-    val periodName: String
+    val periodName: String?
 )
 
 data class Market(
@@ -152,7 +152,7 @@ fun List<Match>.toRoomData() : MatchFullData {
                 liveInfo = MatchLiveInfoBean(
                     clock = match.basicInfo.liveInfo.clock,
                     rollClock = match.basicInfo.liveInfo.rollClock,
-                    period = match.basicInfo.liveInfo.periodName,
+                    period = match.basicInfo.liveInfo.periodName?:"",
                     score = match.basicInfo.liveInfo.score,
                     liveVideo = match.basicInfo.liveInfo.liveVideo,
                     charRoom = match.basicInfo.liveInfo.chatRoom,

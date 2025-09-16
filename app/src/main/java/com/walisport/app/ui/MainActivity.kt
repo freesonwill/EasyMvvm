@@ -1,6 +1,8 @@
 package com.walisport.app.ui
 
+import android.os.Build
 import android.os.Bundle
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.Lifecycle
 import arch.cayenne.lib.base.data.constants.StatusBarMode
@@ -41,6 +43,11 @@ class MainActivity : BaseNavActivity<MainViewModel>() {
     }
     private val notifyFragment: AppNotifyFragment by lazy {
         AppNotifyFragment.newInstance()
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        installSplashScreen()
+        super.onCreate(savedInstanceState)
     }
 
     override fun initView(savedInstanceState: Bundle?) {
@@ -101,7 +108,9 @@ class MainActivity : BaseNavActivity<MainViewModel>() {
                 LoginEnum.NOT_SUCCESSFUL -> {
                     //TODO 跳到登入頁
                 }
-                LoginEnum.API_FAILURE -> Unit
+                is LoginEnum.API_FAILURE -> {
+                    showToast(login.error)
+                }
             }
         }
     }

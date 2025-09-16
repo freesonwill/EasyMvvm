@@ -18,6 +18,8 @@ interface SkinnableResourceLoader {
 
     fun getSkinName(): String
 
+    fun getOriginResourceId(context: Context, resName: String, @AnyRes resId: Int):Int
+
     //给BuildInLoader设置 其他Loader没有效果
     fun setSecondarySkin(skinName: String)
 

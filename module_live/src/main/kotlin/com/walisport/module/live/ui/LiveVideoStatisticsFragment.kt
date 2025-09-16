@@ -36,7 +36,6 @@ class LiveVideoStatisticsFragment :
         mViewModel.setMatchId(matchId)
         mBinding.viewTechStatic.setFullScreenMode()
         mBinding.viewTechEvent.setFullScreenMode()
-        mBinding.mainLayout.setState(States.LOADING, "")
     }
 
     override fun initData() {

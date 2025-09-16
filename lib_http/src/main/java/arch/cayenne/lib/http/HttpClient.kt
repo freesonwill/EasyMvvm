@@ -2,24 +2,26 @@ package arch.cayenne.lib.http
 
 import androidx.annotation.UiThread
 import androidx.annotation.WorkerThread
-import arch.cayenne.lib.http.interceptor.DynamicBaseUrlInterceptor
-import okhttp3.Interceptor
-import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.CallAdapter
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
-import java.util.concurrent.TimeUnit
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.http._interface.IApi
 import arch.cayenne.lib.http.data.Result
+import arch.cayenne.lib.http.interceptor.DynamicBaseUrlInterceptor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import okhttp3.Interceptor
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import okhttp3.logging.HttpLoggingInterceptor.Level
+import org.koin.core.component.getScopeName
+import retrofit2.CallAdapter
 import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import java.io.IOException
 import java.net.SocketException
 import java.net.UnknownHostException
+import java.util.concurrent.TimeUnit
 
 /**
  * @author: zhangsan
@@ -91,6 +93,7 @@ class HttpClient private constructor(private val retrofit: Retrofit) {
      */
     // 网络请求封装函数，捕获OkHttp异常，切换线程
     private suspend fun <T> safeRequest(request: suspend () -> Response<T>) = flow {
+        val start = System.currentTimeMillis()
         emit(Result.Start) // 必须在 flow 的协程上下文中调用 emit
         try {
             // IO 线程执行网络请求
@@ -102,8 +105,10 @@ class HttpClient private constructor(private val retrofit: Retrofit) {
                 } else {
                     emit(Result.Failure(response.code(), "响应体为空", null))
                 }
+                "${request.getScopeName()} ${System.currentTimeMillis() - start} ms".logd(this@HttpClient.javaClass.simpleName)
             } else {
                 emit(Result.Failure(response.code(), response.message(), null))
+                "${request.getScopeName()} ${System.currentTimeMillis() - start} ms".logd(this@HttpClient.javaClass.simpleName)
             }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -117,6 +122,7 @@ class HttpClient private constructor(private val retrofit: Retrofit) {
                     Result.Failure(-1, "未知异常: ${e.localizedMessage}", e)
             }
             emit(failure)
+            "${request.getScopeName()} ${System.currentTimeMillis() - start} ms".logd(this@HttpClient.javaClass.simpleName)
         }
     }.flowOn(Dispatchers.IO)
 

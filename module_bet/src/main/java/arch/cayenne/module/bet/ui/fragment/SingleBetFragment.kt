@@ -1,13 +1,18 @@
 package arch.cayenne.module.bet.ui.fragment
 
+import android.animation.ObjectAnimator
+import android.graphics.Rect
 import android.os.Bundle
 import android.view.View
 import android.view.ViewTreeObserver
+import android.view.animation.LinearInterpolator
 import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.common.data.constants.QuickAmountEnum
+import arch.cayenne.lib.common.ui.adapter.QuickAmountAdapter
 import arch.cayenne.lib.common.ui.fragment.ReserveDialogFragment
 import arch.cayenne.lib.common.ui.view.NumberKeyboardView
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
@@ -36,11 +41,20 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
     override val vbClass: KClass<FragmentSingleBetBinding> = FragmentSingleBetBinding::class
     override val vmClass: KClass<SingleBetViewModel> = SingleBetViewModel::class
 
+    private val quickAmountAdapter: QuickAmountAdapter by lazy {
+        QuickAmountAdapter {
+            mViewModel.setNumber(it)
+        }
+    }
+
+
     override fun initView(savedInstanceState: Bundle?) {
         ViewUtils.hideKeyboard(requireContext(), mBinding.etMoney) {
             showKeyboard()
         }
-        mBinding.etMoney.requestFocus()
+
+        mBinding.rvQuickAmount.adapter = quickAmountAdapter
+        quickAmountAdapter.submitList(QuickAmountEnum.entries)
 
         mBinding.numberKeyboard.setOnCalculatorClickListener(object :
             NumberKeyboardView.OnCalculatorClickListener {
@@ -60,6 +74,7 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
                 return getString(R.string.btn_max)
             }
         })
+
         setMaxHeight()
     }
 
@@ -103,21 +118,6 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
         mBinding.btnDouble.setOnClickListener {
             mViewModel.doubleNumber()
         }
-        mBinding.btn100.setOnClickListener {
-            mViewModel.setNumber(10000)
-        }
-        mBinding.btn500.setOnClickListener {
-            mViewModel.setNumber(50000)
-        }
-        mBinding.btn1000.setOnClickListener {
-            mViewModel.setNumber(100000)
-        }
-        mBinding.btn2000.setOnClickListener {
-            mViewModel.setNumber(200000)
-        }
-        mBinding.btn5000.setOnClickListener {
-            mViewModel.setNumber(500000)
-        }
         mBinding.btnCollusion.setOnClickListener {
             lifecycleScope.launch {
                 mViewModel.saveToCombo()
@@ -148,6 +148,9 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
         }
         mBinding.btnDelete.setOnClickListener {
             mViewModel.removeBet()
+        }
+        mBinding.tvOddsChange.setOnClickListener { v ->
+            showOddsChangeDialog()
         }
     }
 
@@ -205,6 +208,9 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
                 showToast(getString(arch.cayenne.lib.common.R.string.toast_server_disconnected))
             }
         }
+        mViewModel.oddsChangeListener.observe(viewLifecycleOwner) {
+            mBinding.tvOddsChange.text = SkinnableResourceManager.getString(requireContext(), it.textRes)
+        }
     }
 
     private fun setBetTypeLayout(type: BetTypeEnum?) {
@@ -253,7 +259,12 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
     }
 
     override fun doCustomShow() {
-        mBinding.etMoney.requestFocus()
+        mBinding.root.post {
+            mBinding.etMoney.isCursorVisible = true
+            mBinding.etMoney.isFocusableInTouchMode = true
+            mBinding.etMoney.isFocusable = true
+            mBinding.etMoney.requestFocus()
+        }
     }
 
     override fun doCustomHideEnd() {
@@ -281,6 +292,12 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
         val curAmount = mViewModel.editValue.toMoney()
         if (curAmount < minAmount) {
             showToast(getString(R.string.hint_less_min_amount))
+        } else if (curAmount > mViewModel.balance) {
+            showToast(getString(arch.cayenne.lib.common.R.string.toast_over_remaining))
+        } else if (!mViewModel.checkOddsPass()) {
+            mViewModel.oddsChangeListener.value?.toastRes?.let {
+                showToast(getString(it))
+            }
         } else {
             val isSuccess = mViewModel.sendBet()
             if (isSuccess) {
@@ -309,5 +326,30 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
             mBinding.btnReserve.height,
             odds = odds
         ).show(childFragmentManager)
+    }
+
+    private fun showOddsChangeDialog() {
+        val location = IntArray(2)
+        mBinding.clOddsChange.getLocationInWindow(location)
+
+        val x = location.first()
+        val y = location.last() - ViewUtils.getStatusBarHeight(requireContext())
+        val width = mBinding.clOddsChange.width
+        val height = mBinding.clOddsChange.height
+        val rect = Rect(x, y, x + width, y + height)
+        val f = OddsChangeDialogFragment.instance(rect)
+
+        val animator = ObjectAnimator.ofFloat(mBinding.ivOddsChange, "rotation", 0f, 180f)
+        animator.duration = 100 // 旋轉持續時間，單位毫秒
+        animator.interpolator = LinearInterpolator() // 線性插值器，讓旋轉更平滑
+        f.setOnDismissListener {
+            animator.reverse()
+        }
+        f.show(childFragmentManager)
+        animator.start()
+    }
+
+    override fun getBlockingSlideView(): View? {
+        return mBinding.clKeyboard
     }
 }

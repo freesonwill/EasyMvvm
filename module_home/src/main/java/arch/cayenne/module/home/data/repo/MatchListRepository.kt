@@ -65,8 +65,7 @@ class MatchListRepository(
 
         if (resp.error == null && resp.data != null) {
             val matchFullData = resp.data!!.matchList.toRoomData()
-            "新增比賽 tournamentId = $tournamentId matchId = ${matchFullData.match.map { it.matchId }} 進入資料庫".logi(
-                HomeRepository::class.java.simpleName)
+            "新增比賽 tournamentId = $tournamentId matchId = ${matchFullData.match.map { it.matchId }} 進入資料庫".logi(HomeRepository::class.java.simpleName)
             val tournamentMatchRefs = resp.data!!.matchList.mapIndexed { index, match ->
                 TournamentMatchRef(
                     playType = playType,

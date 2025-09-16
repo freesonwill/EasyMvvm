@@ -7,7 +7,6 @@ import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.SportDisplayOddsExt.getDisplayOdds
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
-import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.getDetailFormatDate
 import arch.cayenne.lib.database.entity.BetSlipData
@@ -53,13 +52,26 @@ class BetSlipSettledViewHolder(binding: ViewBinding, betSlipType: BetSlipEnum) :
         mBinding.also {
             it.betSettledTvDate.text = order.betTime.getDetailFormatDate()
             it.betSettledTvBetcodeValue.text = order.betId
-            it.betSettledTvOddsValue.text = order.odds.getDisplayOdds()
+            val odds = "@${order.odds.getDisplayOdds()}"
+            it.betSettledTvOddsValue.text = odds
+
             val betAmount = "${CurrencySymbols.getSymbol(order.currency)}${order.betAmount.getFormalMoney()}"
             it.betSettledTvBettingValue.text = betAmount
+            it.betSettledTvBetting.text = if (order.earlyBetAmount > 0L) {
+                SkinnableResourceManager.getString(itemView.context, R.string.live_bet_on_remaining)
+            } else {
+                SkinnableResourceManager.getString(itemView.context, R.string.live_bet_on)
+            }
+
             settledStatus(order)
 
             val hasPartSettled =
                 BetSlipResultOrderStatusEnum.getStatus(order.resultStatus) == BetSlipResultOrderStatusEnum.EarlySettle
+
+            if (order.selectionsList.size == 1) {
+                mBinding.groupEarlySettle.isVisible = order.earlyBetAmount > 0L
+            }
+
             val earlyAmount = "${CurrencySymbols.getSymbol(order.currency)}${order.earlyBetAmount.getFormalMoney()}"
             mBinding.betSettledTvPartValue.text = earlyAmount
             val amount =
@@ -70,7 +82,7 @@ class BetSlipSettledViewHolder(binding: ViewBinding, betSlipType: BetSlipEnum) :
             val flag = order.comboType != 0  // 0 - 单关 1-串关 2-全窜关
             it.groupCrossborder.isVisible = flag
             if (flag) {
-                val combo = R.string.title_combo_bet_odds.getString(order.comboK, order.comboV)
+                val combo = "${R.string.title_combo_bet_odds.getString(order.comboK, order.comboV)}*${order.comboCount}"
                 val comboValue = combo //"$combo*${order.comboCount}" 修改为类似 2串1
                 it.betSettledTvCrossborderValue.text = comboValue
             }
