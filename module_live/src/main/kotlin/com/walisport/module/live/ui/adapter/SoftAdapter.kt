@@ -52,6 +52,7 @@ class SoftAdapter :
         binding: ItemSoftAdapterBinding,
         position: Int
     ) {
+        animHelper?.updateUi(position == 0)
         val data = getItem(position)
         binding.softRecycler.apply {
             isInvisible = false
