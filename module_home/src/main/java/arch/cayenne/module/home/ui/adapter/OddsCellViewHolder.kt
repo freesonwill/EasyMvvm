@@ -40,8 +40,7 @@ class OddsCellViewHolder(
                         }
                     }
 
-                    MotionEvent.ACTION_UP,
-                    MotionEvent.ACTION_CANCEL -> {
+                    MotionEvent.ACTION_UP -> {
                         if (isActive) {
                             val location = IntArray(2)
                             v.getLocationOnScreen(location)
@@ -53,6 +52,13 @@ class OddsCellViewHolder(
                                 x.toFloat(),
                                 y.toFloat()
                             )
+                        }
+                        v.isPressed = false
+                    }
+
+                    MotionEvent.ACTION_CANCEL -> {
+                        if (isActive) {
+                            v.isSelected = false
                         }
                         v.isPressed = false
                     }

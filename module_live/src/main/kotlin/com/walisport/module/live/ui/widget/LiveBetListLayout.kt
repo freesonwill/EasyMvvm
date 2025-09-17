@@ -243,10 +243,16 @@ class LiveBetListLayout @JvmOverloads constructor(
                                     }, 100L)
                                 }
                             }
-                            MotionEvent.ACTION_UP,
-                            MotionEvent.ACTION_CANCEL -> {
+                            MotionEvent.ACTION_UP -> {
                                 if (active) {
                                     handleClick(marketId, callback, v)
+                                }
+                                v.isPressed = false
+                            }
+
+                            MotionEvent.ACTION_CANCEL -> {
+                                if (active) {
+                                    v.isSelected = false
                                 }
                                 v.isPressed = false
                             }
@@ -273,10 +279,16 @@ class LiveBetListLayout @JvmOverloads constructor(
                                     }, 100L)
                                 }
                             }
-                            MotionEvent.ACTION_UP,
-                            MotionEvent.ACTION_CANCEL -> {
+                            MotionEvent.ACTION_UP -> {
                                 if (active) {
                                     handleClick(marketId, callback, v)
+                                }
+                                v.isPressed = false
+                            }
+
+                            MotionEvent.ACTION_CANCEL -> {
+                                if (active) {
+                                    v.isSelected = false
                                 }
                                 v.isPressed = false
                             }
@@ -303,10 +315,15 @@ class LiveBetListLayout @JvmOverloads constructor(
                                     }, 100L)
                                 }
                             }
-                            MotionEvent.ACTION_UP,
-                            MotionEvent.ACTION_CANCEL -> {
+                            MotionEvent.ACTION_UP -> {
                                 if (active) {
                                     handleClick(marketId, callback, v)
+                                }
+                                v.isPressed = false
+                            }
+                            MotionEvent.ACTION_CANCEL -> {
+                                if (active) {
+                                    v.isSelected = false
                                 }
                                 v.isPressed = false
                             }

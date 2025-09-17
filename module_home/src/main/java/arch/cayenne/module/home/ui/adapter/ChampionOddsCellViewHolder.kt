@@ -39,8 +39,7 @@ class ChampionOddsCellViewHolder(
                         }
                     }
 
-                    MotionEvent.ACTION_UP,
-                    MotionEvent.ACTION_CANCEL -> {
+                    MotionEvent.ACTION_UP -> {
                         if (isActive) {
                             val isSelected = !(llOddsCell.isSelected)
                             val location = IntArray(2)
@@ -54,6 +53,13 @@ class ChampionOddsCellViewHolder(
                                 x.toFloat(),
                                 y.toFloat()
                             )
+                        }
+                        v.isPressed = false
+                    }
+
+                    MotionEvent.ACTION_CANCEL -> {
+                        if (isActive) {
+                            v.isSelected = false
                         }
                         v.isPressed = false
                     }
