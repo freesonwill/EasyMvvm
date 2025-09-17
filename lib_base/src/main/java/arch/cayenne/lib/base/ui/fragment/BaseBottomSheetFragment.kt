@@ -20,6 +20,7 @@ import android.widget.FrameLayout
 import androidx.annotation.CallSuper
 import androidx.appcompat.app.AppCompatDialog
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.animation.doOnCancel
 import androidx.core.animation.doOnEnd
 import androidx.core.animation.doOnStart
 import androidx.core.graphics.drawable.toDrawable
@@ -140,6 +141,7 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
 
     protected open fun playEnterAnimations(
         doStart: (() -> Unit)? = null,
+        doCancel: (() -> Unit)? = null,
         doEnd: (() -> Unit)? = null
     ) {
         if (dimController.findAnyShowing(this)) {
@@ -174,6 +176,9 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
                     showDim()
                     doStart?.invoke()
                 }
+            }
+            doOnCancel {
+                doCancel?.invoke()
             }
             doOnEnd {
                 doEnd?.invoke()
