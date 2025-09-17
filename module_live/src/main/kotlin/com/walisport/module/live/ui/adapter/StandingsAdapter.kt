@@ -19,6 +19,7 @@ import com.walisport.module.live.data.model.StandingsBean
 import com.walisport.module.live.databinding.ItemStandingsBinding
 import com.walisport.module.live.databinding.ItemStandingsLayBinding
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 
 class StandingsAdapter :
     BaseAdapter<StandingsBean, BaseViewHolder, ViewBinding>(
@@ -74,6 +75,7 @@ class StandingsAdapter :
     private fun loadLogoImage(context: Context, imageView: ImageView, url: String) {
         val requestOptions = RequestOptions()
             .override(25.dp2px, 16.dp2px)
+            .diskCacheStrategy(DiskCacheStrategy.ALL)
             .format(DecodeFormat.PREFER_RGB_565)
         Glide.with(context)
             .load(url)
