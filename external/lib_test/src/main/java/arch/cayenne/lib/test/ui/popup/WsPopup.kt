@@ -79,7 +79,7 @@ class WsPopup(context: Context) : BottomPopupView(context), KoinComponent {
                     wsHomeDataCost += (end - start)
 
                     wsToday.text =
-                        "websocket今日数据: 平均：${"%.2f".format(wsHomeDataCost.toFloat() / wsHomeDataCount)} ms"
+                        "websocket今日数据 耗时：${end-start} ms"
 
 
                     if (res.error == null && res.data != null) {
@@ -101,18 +101,42 @@ class WsPopup(context: Context) : BottomPopupView(context), KoinComponent {
                         },
                         onSuccess = {
                             val end = System.currentTimeMillis()
-                            httpCount++
-                            httpCost += end - start
                             wsHttp.text =
-                                "http首开接口: 平均：${"%.2f".format(httpCost.toFloat() / httpCount)} ms"
+                                "http首开接口 耗时：${end - start} ms"
                             "response------>${it}".logd(TAG)
                         },
                         onFailure = { code, msg, throwable ->
                             val end = System.currentTimeMillis()
-                            httpCount++
-                            httpCost += end - start
                             wsHttp.text =
-                                "http首开接口: 平均：${"%.2f".format(httpCost.toFloat() / httpCount)} ms"
+                                "http首开接口 耗时：${end - start} ms"
+                            "response------>$code,$msg,$throwable".loge(TAG)
+
+                        }
+                    )
+                }
+            }
+
+
+            gameTest.clickNoRepeat {
+                val api = httpClient.create(IPreLoadHomeApi::class.java)
+                lifecycleScope.launch {
+                    val start = System.currentTimeMillis()
+                    "start request".logd(TAG)
+                    httpClient.safeRequest(
+                        request = {
+                            api.gameTest(
+                            )
+                        },
+                        onSuccess = {
+                            val end = System.currentTimeMillis()
+                            gameTest.text =
+                                "gameTest接口 耗时：${end - start} ms"
+                            "response------>${it}".logd(TAG)
+                        },
+                        onFailure = { code, msg, throwable ->
+                            val end = System.currentTimeMillis()
+                            gameTest.text =
+                                "gameTest接口 耗时：${end - start} ms"
                             "response------>$code,$msg,$throwable".loge(TAG)
 
                         }
@@ -125,5 +149,8 @@ class WsPopup(context: Context) : BottomPopupView(context), KoinComponent {
     interface IPreLoadHomeApi : IApi {
         @GET("sport_server/game/firstLoad")
         suspend fun preLoad(): Response<Any>
+
+        @GET("sport_server/game/")
+        suspend fun gameTest(): Response<Any>
     }
 }
