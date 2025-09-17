@@ -91,7 +91,6 @@ class LiveLineupFragment : BaseFragment<LiveLineupViewModel, FragmentLiveLineupB
                     mBinding.awaySubstituteName.text = it.basicInfo.awayTeam
                     mBinding.homeIncidentsName.text = it.basicInfo.homeTeam
                     mBinding.awayIncidentsName.text = it.basicInfo.awayTeam
-                    mBinding.llContent.removeAllViews()
                     mViewModel.geMatchLineupDetail(it.matchId)
                 }
             }
