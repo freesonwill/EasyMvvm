@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
+import arch.cayenne.lib.database.entity.BetTypeEnum
 import arch.cayenne.module.bet.repo.BetRepository
 import arch.cayenne.module.bet.repo.BetSheetRepository
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -47,4 +48,6 @@ class BetSheetViewModel(
     fun cancel() {
         betRepo.cancelAdd()
     }
+
+    suspend fun getBetType(): BetTypeEnum? = repo.getBetType()
 }

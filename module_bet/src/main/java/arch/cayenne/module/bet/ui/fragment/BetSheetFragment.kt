@@ -8,8 +8,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.lifecycleScope
 import arch.cayenne.lib.base.ui.fragment.BasePreLoadBottomSheetFragment
 import arch.cayenne.lib.common.ui.view.BlockSlideConstrainLayout
+import arch.cayenne.lib.database.entity.BetTypeEnum
 import arch.cayenne.module.bet.R
 import arch.cayenne.module.bet.data.Config.KEY_RESULT
 import arch.cayenne.module.bet.data.Config.VALUE_DISMISS
@@ -17,6 +19,7 @@ import arch.cayenne.module.bet.data.Config.VALUE_TO_RESULT
 import arch.cayenne.module.bet.databinding.FragmentBetSheetBinding
 import arch.cayenne.module.bet.viewmodel.BetSheetViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
 
 class BetSheetFragment private constructor() :
@@ -213,12 +216,22 @@ class BetSheetFragment private constructor() :
     }
 
     override fun playExitAnimations(doStart: (() -> Unit)?, doEnd: (() -> Unit)?) {
-        listener?.onDismiss()
+        lifecycleScope.launch {
+            val type = mViewModel.getBetType()
+            if (type != BetTypeEnum.COMBO) {
+                listener?.onDismiss()
+            }
+        }
         super.playExitAnimations(doStart, doEnd)
     }
 
     override fun customHide() {
-        listener?.onHide()
+        lifecycleScope.launch {
+            val type = mViewModel.getBetType()
+            if (type != BetTypeEnum.COMBO) {
+                listener?.onHide()
+            }
+        }
         mViewModel.unregister()
         mViewModel.removeSingleBet()
         super.customHide()

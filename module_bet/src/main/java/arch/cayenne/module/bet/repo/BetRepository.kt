@@ -40,10 +40,10 @@ class BetRepository(
     init {
         scope.launch {
             betDao.observeCurrentLiteSelections().distinctUntilChanged().collect {
+                count = it.size
                 if (lastAddSelectionId != null && it.size == 1) {
 
                 } else {
-                    count = it.size
                     _observerAllBet.emit(it)
                 }
                 lastAddSelectionId = null

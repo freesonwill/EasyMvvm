@@ -2,6 +2,7 @@ package arch.cayenne.module.home.ui.fragment
 
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import androidx.core.view.doOnPreDraw
@@ -84,10 +85,12 @@ class MatchListPagerFragment :
 
                 override fun onOddsCellClick(cell: WeakReference<View>, selection: SelectionBeanLite, x: Float, y: Float) {
                     lifecycleScope.launch {
+                        val v = cell.get()
+
                         val size = mViewModel.getCurrentSelectionCount()
+                        Log.d("abcd", "++++ $size")
                         if (size == 0) {
                             BetSheetFragment.show(requireActivity(), object : BetSheetFragment.ShowListener {
-                                val v = cell.get()
                                 override fun onShow() {
                                     v?.isSelected = true
                                 }
@@ -105,13 +108,15 @@ class MatchListPagerFragment :
                                 }
                             })
                         } else {
-                            cell.get()?.isSelected = true
+                            v?.let {
+                                it.isSelected = !it.isSelected
+                            }
                         }
 
                         val status = mViewModel.setSelection(selection.selectionId)
 
                         if (status !is AddSelectionStatus.Success) {
-                            cell.get()?.isSelected = false
+                            v?.isSelected = false
                         }
 
                         if (status is AddSelectionStatus.Failure) {
