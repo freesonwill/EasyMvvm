@@ -68,6 +68,7 @@ class TournamentListFragment :
     }
 
     fun reloadAllData() {
+        mBinding.rvTournamentList.scrollToPosition(0)
         mViewModel.getTournaments()
     }
 
