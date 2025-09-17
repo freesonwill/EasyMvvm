@@ -78,6 +78,7 @@ class LiveLineupFragment : BaseFragment<LiveLineupViewModel, FragmentLiveLineupB
                         upData(it)
                     }
                 } ?: run {
+                    mBinding.llContent.visibility = View.INVISIBLE
                     mBinding.main.setState(
                         States.DATA_EMPTY,
                         R.string.lineup_empty.getString()
@@ -90,6 +91,7 @@ class LiveLineupFragment : BaseFragment<LiveLineupViewModel, FragmentLiveLineupB
                     mBinding.awaySubstituteName.text = it.basicInfo.awayTeam
                     mBinding.homeIncidentsName.text = it.basicInfo.homeTeam
                     mBinding.awayIncidentsName.text = it.basicInfo.awayTeam
+                    mBinding.llContent.removeAllViews()
                     mViewModel.geMatchLineupDetail(it.matchId)
                 }
             }
