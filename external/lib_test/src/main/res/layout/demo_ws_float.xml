@@ -8,7 +8,7 @@
     android:background="@drawable/shape_ball_bg"
     android:gravity="center"
     android:padding="@dimen/dp_7"
-    android:text="ws"
+    android:text="网络"
     android:textColor="#00ff00"
     android:textSize="11sp" />
 
