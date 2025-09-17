@@ -1,11 +1,12 @@
 package arch.cayenne.module.home.ui.adapter
 
 import android.animation.ValueAnimator
+import android.annotation.SuppressLint
+import android.view.MotionEvent
 import android.view.View
 import androidx.core.animation.addListener
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
-import arch.cayenne.lib.common.utils.ext.clickNoRepeatSingle
 import arch.cayenne.lib.database.entity.SelectionBeanLite
 import arch.cayenne.module.home.data.constants.OddsCellState
 import arch.cayenne.module.home.databinding.ItemOddsCellBinding
@@ -16,6 +17,8 @@ class OddsCellViewHolder(
     private val onMatchItemClickListener: OnMatchItemClickListener?
 ) : BaseViewHolder(mBinding) {
     private var currentState: OddsCellState = OddsCellState.VISIBLE
+
+    @SuppressLint("ClickableViewAccessibility")
     fun bind(item: SelectionBeanLite) {
         with(mBinding) {
             tvShortName.text = item.shortName
@@ -23,14 +26,36 @@ class OddsCellViewHolder(
             val isActive = item.active
             updateState(isActive, item.isSelected)
 
-            clOddsCell.clickNoRepeatSingle {
-                if (isActive) {
-                    val location = IntArray(2)
-                    it.getLocationOnScreen(location)
-                    val x = location[0] + it.width / 2
-                    val y = location[1] + it.height / 2
-                    onMatchItemClickListener?.onOddsCellClick(WeakReference(clOddsCell), item, x.toFloat(), y.toFloat())
+            clOddsCell.isPressed = false
+            clOddsCell.setOnTouchListener { v, event ->
+                when (event.action) {
+                    MotionEvent.ACTION_DOWN -> {
+                        v.isPressed = true
+                        v.postDelayed({
+                            if (v.isPressed) {
+                                v.isSelected = true
+                            }
+                        }, 100L)
+                    }
+
+                    MotionEvent.ACTION_UP,
+                    MotionEvent.ACTION_CANCEL -> {
+                        if (isActive) {
+                            val location = IntArray(2)
+                            v.getLocationOnScreen(location)
+                            val x = location[0] + v.width / 2
+                            val y = location[1] + v.height / 2
+                            onMatchItemClickListener?.onOddsCellClick(
+                                WeakReference(clOddsCell),
+                                item,
+                                x.toFloat(),
+                                y.toFloat()
+                            )
+                        }
+                        v.isPressed = false
+                    }
                 }
+                true
             }
         }
     }
@@ -108,7 +133,7 @@ class OddsCellViewHolder(
     private fun updateState(active: Boolean, isSelected: Boolean) {
         currentState = if (active) OddsCellState.VISIBLE else OddsCellState.DEACTIVATED
         with(mBinding) {
-            root.visibility =  View.VISIBLE
+            root.visibility = View.VISIBLE
             tvShortName.visibility = if (active) View.VISIBLE else View.GONE
             tvOdds.visibility = if (active) View.VISIBLE else View.GONE
             ivLock.visibility = if (active) View.GONE else View.VISIBLE

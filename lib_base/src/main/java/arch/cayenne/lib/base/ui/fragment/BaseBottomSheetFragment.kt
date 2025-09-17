@@ -170,8 +170,8 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
                 backgroundView?.visibility = View.VISIBLE
                 sheet.visibility = View.VISIBLE
                 mBinding.root.visibility = View.VISIBLE
-                showDim()
                 mBinding.root.post {
+                    showDim()
                     doStart?.invoke()
                 }
             }
