@@ -89,7 +89,8 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
 
     protected var otherViewAnimation: ObjectAnimator? = null
     private val dimController by lazy { DimController.getInstance(this) }
-    protected open var isGestureEnable = true
+    protected open var isHorizontalGestureEnable = true
+    protected open var isVerticalGestureEnable = true
     private var popupAnimatorSet: AnimatorSet? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -144,11 +145,6 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
         doCancel: (() -> Unit)? = null,
         doEnd: (() -> Unit)? = null
     ) {
-        if (dimController.findAnyShowing(this)) {
-            isDismissing = true
-            dismiss()
-            return
-        }
         prepareShowDim()
         val sheet = sheetContainer ?: return
         val otherSheetAnimator = otherViewAnimation
@@ -297,7 +293,7 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
     }
 
     private fun setBehaviorOnScroll(view: View) {
-        if (!isGestureEnable) return
+        if (!isVerticalGestureEnable) return
         val bottomSheet = (view.parent as? View) ?: return
         val params = bottomSheet.layoutParams as? CoordinatorLayout.LayoutParams ?: return
         val scrollBehavior = params.behavior as? ScrollBottomSheetBehavior ?: return
@@ -316,7 +312,9 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
             override fun onSlide(bottomSheet: View, slideOffset: Float) {
                 if (isDragging) {
                     val y = bottomSheet.y - offsetY
-                    setDimByScroll(abs(y.toInt()))
+                    if (y > 0) {
+                        setDimByScroll(abs(y.toInt()))
+                    }
                 }
             }
         })
@@ -476,7 +474,7 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
 
     @SuppressLint("ClickableViewAccessibility")
     private fun setGesture() {
-        if (!isGestureEnable) return
+        if (!isHorizontalGestureEnable) return
         val v = mBinding.root
         val tikTokGesture = TikTokGesture(v)
         tikTokGesture.setListener(object : TikTokGesture.TikTokGestureListener {
@@ -621,6 +619,24 @@ open class ScrollBottomSheetBehavior<V : View>(context: Context, attrs: Attribut
         // 父類會在這裡重設 nestedScrollingChildRef → 再覆寫一次我們指定的 child
         mNestedScrollingChildRef?.get()?.let { updateNestedScrollingChildRef(it) }
         return accepted
+    }
+
+    private var lastY = 0f
+
+    override fun onInterceptTouchEvent(
+        parent: CoordinatorLayout,
+        child: V,
+        event: MotionEvent
+    ): Boolean {
+        when (event.actionMasked) {
+            MotionEvent.ACTION_DOWN -> lastY = event.rawY
+            MotionEvent.ACTION_MOVE -> {
+                val dy = event.rawY - lastY
+                // 如果是往上滑動則攔截
+                if (dy < 0) return true
+            }
+        }
+        return super.onInterceptTouchEvent(parent, child, event)
     }
 
 }

@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.ContextThemeWrapper
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.FrameLayout
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
 import arch.cayenne.lib.base.ui.fragment.BasePreLoadBottomSheetFragment
@@ -18,7 +17,6 @@ import arch.cayenne.module.bet.data.Config.VALUE_DISMISS
 import arch.cayenne.module.bet.data.Config.VALUE_TO_RESULT
 import arch.cayenne.module.bet.databinding.FragmentBetSheetBinding
 import arch.cayenne.module.bet.viewmodel.BetSheetViewModel
-import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
 
@@ -123,26 +121,6 @@ class BetSheetFragment private constructor() :
                     it.doCustomHideEnd()
                 }
             }
-        }
-    }
-
-    override fun onStart() {
-        super.onStart()
-        setFitToContents()
-    }
-
-    private fun setFitToContents() {
-        val bottomSheet =
-            dialog?.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet) as? FrameLayout
-        bottomSheet?.let { sheet ->
-            val behavior = BottomSheetBehavior.from(sheet)
-
-            behavior.isDraggable = true
-            behavior.skipCollapsed = true  // ← 允許收合
-            behavior.isHideable = true      // ← 允許向下滑關閉
-            behavior.isFitToContents = true
-            behavior.state = BottomSheetBehavior.STATE_COLLAPSED
-            behavior.saveFlags = BottomSheetBehavior.SAVE_HIDEABLE
         }
     }
 

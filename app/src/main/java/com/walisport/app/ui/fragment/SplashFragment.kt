@@ -79,7 +79,7 @@ class SplashFragment : BaseFragment<SplashViewModel, ActivitySplash2Binding>() {
         val splashScreen = requireActivity().installSplashScreen()
         //splashScreen.setKeepOnScreenCondition { keep }
         lifecycleScope.launch {
-            delay(500)
+            delay(300)
             keep = false
             jumpToMainActivity()
         }
