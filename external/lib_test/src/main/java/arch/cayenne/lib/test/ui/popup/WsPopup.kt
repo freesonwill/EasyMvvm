@@ -35,12 +35,12 @@ class WsPopup(context: Context) : BottomPopupView(context), KoinComponent {
 
     private val socketManager: WebSocketManager = getKoin().get()
 
-    var wsHomeDataCount: Long = 0
-    var wsHomeDataCost: Long = 0
+    private var wsHomeDataCount: Long = 0
+    private var wsHomeDataCost: Long = 0
 
-    var httpCount: Long = 0
+    private var httpCount: Long = 0
 
-    var httpCost: Long = 0
+    private var httpCost: Long = 0
 
     override fun getImplLayoutId(): Int {
         return R.layout.demo_ws_popup
@@ -78,7 +78,8 @@ class WsPopup(context: Context) : BottomPopupView(context), KoinComponent {
                     wsHomeDataCount++
                     wsHomeDataCost += (end - start)
 
-                    wsToday.text = "websocket今日数据: 平均：${wsHomeDataCost.toFloat() / wsHomeDataCount} ms"
+                    wsToday.text =
+                        "websocket今日数据: 平均：${"%.2f".format(wsHomeDataCost.toFloat() / wsHomeDataCount)} ms"
 
 
                     if (res.error == null && res.data != null) {
@@ -102,14 +103,16 @@ class WsPopup(context: Context) : BottomPopupView(context), KoinComponent {
                             val end = System.currentTimeMillis()
                             httpCount++
                             httpCost += end - start
-                            wsHttp.text = "http首开接口: 平均：${httpCost.toFloat() / httpCount} ms"
+                            wsHttp.text =
+                                "http首开接口: 平均：${"%.2f".format(httpCost.toFloat() / httpCount)} ms"
                             "response------>${it}".logd(TAG)
                         },
                         onFailure = { code, msg, throwable ->
                             val end = System.currentTimeMillis()
                             httpCount++
                             httpCost += end - start
-                            wsHttp.text = "http首开接口: 平均：${httpCost.toFloat() / httpCount} ms"
+                            wsHttp.text =
+                                "http首开接口: 平均：${"%.2f".format(httpCost.toFloat() / httpCount)} ms"
                             "response------>$code,$msg,$throwable".loge(TAG)
 
                         }
