@@ -213,11 +213,12 @@ class BetSheetFragment private constructor() :
     }
 
     override fun playExitAnimations(doStart: (() -> Unit)?, doEnd: (() -> Unit)?) {
-        listener?.onHide()
+        listener?.onDismiss()
         super.playExitAnimations(doStart, doEnd)
     }
 
     override fun customHide() {
+        listener?.onHide()
         mViewModel.unregister()
         mViewModel.removeSingleBet()
         super.customHide()
@@ -226,6 +227,7 @@ class BetSheetFragment private constructor() :
     interface ShowListener {
         fun onShow()
         fun onCancel()
+        fun onDismiss()
         fun onHide()
     }
 }

@@ -4,7 +4,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
-import androidx.core.view.doOnLayout
 import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -39,7 +38,6 @@ import arch.cayenne.module.home.ui.viewmodel.MatchListViewModel
 import arch.cayenne.module.home.ui.viewmodel.SubHomeViewModel
 import arch.cayenne.module.home.utils.setFavoriteIcon
 import com.walisport.module.message.ui.view.DeleteAnimator
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import java.lang.ref.WeakReference
@@ -86,10 +84,26 @@ class MatchListPagerFragment :
 
                 override fun onOddsCellClick(cell: WeakReference<View>, selection: SelectionBeanLite, x: Float, y: Float) {
                     lifecycleScope.launch {
-                        if (mViewModel.getCurrentSelectionCount() == 0) {
-                            BetSheetFragment.show(requireActivity()) {
-                                cell.get()?.isSelected = true
-                            }
+                        val size = mViewModel.getCurrentSelectionCount()
+                        if (size == 0) {
+                            BetSheetFragment.show(requireActivity(), object : BetSheetFragment.ShowListener {
+                                val v = cell.get()
+                                override fun onShow() {
+                                    v?.isSelected = true
+                                }
+
+                                override fun onCancel() {
+                                    v?.isSelected = false
+                                }
+
+                                override fun onDismiss() {
+                                    v?.isSelected = false
+                                }
+
+                                override fun onHide() {
+                                    v?.isSelected = false
+                                }
+                            })
                         } else {
                             cell.get()?.isSelected = true
                         }
