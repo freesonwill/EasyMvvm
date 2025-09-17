@@ -144,6 +144,22 @@ class HttpClient private constructor(private val retrofit: Retrofit) {
         }
     }
 
+    suspend fun <T> safeRequest(
+        @WorkerThread request: suspend () -> Response<T>,
+        @UiThread onStart: () -> Unit = {},
+        @UiThread onProgress: (progress: Int, total: Int) -> Unit = { _, _ -> },
+        @UiThread onResult: (success: Result.Success<out T>?,failure:Result.Failure?) -> Unit = {_,_-> }
+    ) {
+        safeRequest(request).collect {
+            when (it) {
+                is Result.Start -> onStart()
+                is Result.Progress -> onProgress(it.progress, it.total)
+                is Result.Success -> onResult(it,null)
+                is Result.Failure -> onResult(null,it)
+            }
+        }
+    }
+
     class Builder(private val baseUrl: String, private val timeout: Long = 15L) {
         private var interceptors = mutableListOf<Interceptor>()
         private var callAdapterFactory: CallAdapter.Factory? = null

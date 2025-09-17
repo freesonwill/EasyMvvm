@@ -34,18 +34,28 @@ class UserDataManager {
         flows.remove(key)
     }
 
-    inline fun <reified T> getValue(
-        key: UserDataKey,
-        default: T? = null,
-        noinline deserializer: (String?) -> T? = { GsonUtils.fromJson(it, T::class.java) }
-    ): T {
+    inline fun <reified T> getValue(key: UserDataKey, default: T): T {
         return when (default) {
-            is String -> mmkv.decodeString(key.key, default) as T
-            is Boolean -> mmkv.decodeBool(key.key, default) as T
-            is Int -> mmkv.decodeInt(key.key, default) as T
-            is Long -> mmkv.decodeLong(key.key, default) as T
-            is Float -> mmkv.decodeFloat(key.key, default) as T
-            else -> deserializer(mmkv.decodeString(key.key)) as T
+            is String -> mmkv.getString(key.key, default)
+            is Boolean -> mmkv.getBoolean(key.key, default)
+            is Int -> mmkv.getInt(key.key, default)
+            is Long -> mmkv.getLong(key.key, default)
+            is Float -> mmkv.getFloat(key.key, default)
+            else -> throw IllegalStateException("❌ Unsupported type: ${T::class}")
+        } as T
+    }
+
+    inline fun <reified T> getValue(key: UserDataKey): T? {
+        return when (T::class) {
+            String::class -> getValue(key,"") as T
+            Boolean::class -> getValue(key,false) as T
+            Int::class -> getValue(key,0) as T
+            Long::class -> getValue(key,0) as T
+            Float::class -> getValue(key,0) as T
+            else -> {
+                val json = mmkv.decodeString(key.key)
+                (if (json.isNullOrEmpty()) null else GsonUtils.fromJson(json, T::class.java))
+            }
         }
     }
 
