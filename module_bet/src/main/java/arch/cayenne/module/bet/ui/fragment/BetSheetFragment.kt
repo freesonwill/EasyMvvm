@@ -7,7 +7,6 @@ import android.view.ContextThemeWrapper
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
-import androidx.core.animation.doOnStart
 import androidx.fragment.app.FragmentActivity
 import arch.cayenne.lib.base.ui.fragment.BasePreLoadBottomSheetFragment
 import arch.cayenne.lib.common.ui.view.BlockSlideConstrainLayout
@@ -49,13 +48,14 @@ class BetSheetFragment private constructor() :
             }
         }
 
-        fun show(activity: FragmentActivity, doSomething: () -> Unit) {
+        fun show(activity: FragmentActivity, doCancel: (() -> Unit)? = null, doStart: () -> Unit) {
             val manager = activity.supportFragmentManager
             val f = manager.findFragmentByTag(TAG)
             if (f == null) {
                 BetSheetFragment().show(manager, TAG)
             } else if (f is BetSheetFragment) {
-                f.setDoStart(doSomething)
+                f.setDoStart(doStart)
+                f.setDoCancel(doCancel)
                 f.customShow()
             }
         }
@@ -67,6 +67,7 @@ class BetSheetFragment private constructor() :
         get() = BetSheetViewModel::class
 
     private var doStart: (() -> Unit)? = null
+    private var doCancel: (() -> Unit)? = null
 
     private val singleFragment by lazy {
         SingleBetFragment()
@@ -182,8 +183,19 @@ class BetSheetFragment private constructor() :
         this.doStart = doStart
     }
 
-    override fun playEnterAnimations(doStart: (() -> Unit)?, doEnd: (() -> Unit)?) {
-        super.playEnterAnimations(this.doStart, doEnd)
+    fun setDoCancel(doCancel: (() -> Unit)?) {
+        this.doCancel = doCancel
+    }
+
+    override fun playEnterAnimations(
+        doStart: (() -> Unit)?,
+        doCancel: (() -> Unit)?,
+        doEnd: (() -> Unit)?
+    ) {
+        super.playEnterAnimations(this.doStart, {
+            mViewModel.cancel()
+            doCancel?.invoke()
+        }, doEnd)
     }
 
     override fun customHide() {
