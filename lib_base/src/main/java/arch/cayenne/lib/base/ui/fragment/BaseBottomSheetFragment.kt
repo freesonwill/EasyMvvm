@@ -10,7 +10,6 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.util.AttributeSet
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -308,8 +307,9 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
             override fun onSlide(bottomSheet: View, slideOffset: Float) {
                 if (isDragging) {
                     val y = bottomSheet.y - offsetY
-                    Log.d("abcd", "${this@BaseBottomSheetFragment.javaClass.simpleName}   $y")
-                    setDimByScroll(abs(y.toInt()))
+                    if (y > 0) {
+                        setDimByScroll(abs(y.toInt()))
+                    }
                 }
             }
         })
@@ -614,6 +614,24 @@ open class ScrollBottomSheetBehavior<V : View>(context: Context, attrs: Attribut
         // 父類會在這裡重設 nestedScrollingChildRef → 再覆寫一次我們指定的 child
         mNestedScrollingChildRef?.get()?.let { updateNestedScrollingChildRef(it) }
         return accepted
+    }
+
+    private var lastY = 0f
+
+    override fun onInterceptTouchEvent(
+        parent: CoordinatorLayout,
+        child: V,
+        event: MotionEvent
+    ): Boolean {
+        when (event.actionMasked) {
+            MotionEvent.ACTION_DOWN -> lastY = event.rawY
+            MotionEvent.ACTION_MOVE -> {
+                val dy = event.rawY - lastY
+                // 如果是往上滑動，不攔截
+                if (dy < 0) return false
+            }
+        }
+        return super.onInterceptTouchEvent(parent, child, event)
     }
 
 }
