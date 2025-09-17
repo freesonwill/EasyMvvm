@@ -228,6 +228,32 @@ abstract class MatchDao : BaseDao<MatchBean>() {
         selections: List<SelectionBean>,
         marketCrossRef: List<MatchMarketCrossRef>,
         marketSelectCrossRefs: List<MarketSelectCrossRef>,
+        playType: Int,
+        tournamentId: Int,
+        date: Long,
+        isForce: Boolean,
+    ) : List<Long> {
+        if (isForce) {
+            deleteCurrentTournamentMatchRef(playType, tournamentId, date)
+        }
+        return insertMatch(
+            tournamentMatchRefs = tournamentMatchRefs,
+            matches = matches,
+            markets = markets,
+            selections = selections,
+            marketCrossRef = marketCrossRef,
+            marketSelectCrossRefs = marketSelectCrossRefs
+        )
+    }
+
+    @Transaction
+    open suspend fun insertMatch(
+        tournamentMatchRefs: List<TournamentMatchRef>,
+        matches: List<MatchBean>,
+        markets: List<MarketBean>,
+        selections: List<SelectionBean>,
+        marketCrossRef: List<MatchMarketCrossRef>,
+        marketSelectCrossRefs: List<MarketSelectCrossRef>,
     ) : List<Long> {
         val ids = insertTournamentMatchRef(tournamentMatchRefs)
         insertMatch(matches, markets, selections, marketCrossRef, marketSelectCrossRefs)

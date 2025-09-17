@@ -50,7 +50,10 @@ class CollectListViewModel : BaseMatchViewModel<CollectListRepository>() {
             "取得收藏賽事 $page".logi()
             setState(HomeState.Match.Loading)
             callApi({
-                repository.getCollectData(page)
+                repository.getCollectData(
+                    page = page,
+                    isForce = loadMatchType == LoadMatchType.RELOAD
+                )
             }, {
                 if (it is ApiResponseState.Failed) {
                     if (loadMatchType == LoadMatchType.NEXT_PAGE) {

@@ -29,9 +29,9 @@ class CollectListRepository(
 
     private val collectMatchChange by lazy { MutableStateFlow<Map<Long, CollectMatchRef>>(hashMapOf()) }  //CollectMatchCrossRef
 
-    suspend fun getCollectData(page: Int) : ApiResponseState {
+    suspend fun getCollectData(page: Int, isForce: Boolean = false) : ApiResponseState {
 
-        val last = collectMatchChange.value.maxByOrNull { it.value.order }?.value
+        val last = if (isForce) null else collectMatchChange.value.maxByOrNull { it.value.order }?.value
         val resp = socketManager.sendAndWaitProtoMessageResponse<Client.ListCollectResp>(
             scope = scope,
             dispatcher = Dispatchers.IO,

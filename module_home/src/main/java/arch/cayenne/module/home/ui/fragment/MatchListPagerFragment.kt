@@ -332,7 +332,7 @@ class MatchListPagerFragment :
     }
 
     fun reloadAllData() {
-        matchAdapter.submitList(arrayListOf())
+        mBinding.rvHomeGameList.scrollToPosition(0)
         mViewModel.reload()
     }
 
