@@ -12,9 +12,12 @@ import arch.cayenne.lib.test.databinding.DemoWsPopupBinding
 import arch.cayenne.lib.websocket.WebSocketManager
 import arch.cayenne.lib.websocket.data.ApiCode
 import arch.cayenne.lib.websocket.extension.sendAndWaitProtoMessageResponse
+import arch.cayenne.lib.websocket.data.ConnectState
 import com.lxj.xpopup.core.BottomPopupView
 import galaxy.client.proto.Client
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.qualifier.named
@@ -32,8 +35,8 @@ class WsPopup(context: Context) : BottomPopupView(context), KoinComponent {
 //    private val client: HttpClient by inject(named("preLoadHome"))
 
     val httpClient: HttpClient = getKoin().get(named("preLoadHome"))
-
     private val socketManager: WebSocketManager = getKoin().get()
+
 
     private var wsHomeDataCount: Long = 0
     private var wsHomeDataCost: Long = 0
@@ -41,6 +44,11 @@ class WsPopup(context: Context) : BottomPopupView(context), KoinComponent {
     private var httpCount: Long = 0
 
     private var httpCost: Long = 0
+
+    private var wsConnectCount: Long = 0
+
+    private var wsConnectCost: Long = 0
+    private var connectJob: Job? = null
 
     override fun getImplLayoutId(): Int {
         return R.layout.demo_ws_popup
@@ -52,6 +60,27 @@ class WsPopup(context: Context) : BottomPopupView(context), KoinComponent {
         super.onCreate()
         vb = DemoWsPopupBinding.bind(popupImplView)
         vb?.apply {
+            wsConnect.clickNoRepeat {
+//                connectJob?.cancel()
+//                newWebSocketManager.disconnect()
+                "start request".logd(TAG)
+                val newWebSocketManager: WebSocketManager = getKoin().get(named("test"))
+
+                connectJob = lifecycleScope.launch {
+                    val start = System.currentTimeMillis()
+                    newWebSocketManager.getConnectStateFlow().collect {
+                        if (it is ConnectState.ConnectSuccess) {
+                            val end = System.currentTimeMillis()
+                            wsConnectCount++
+                            wsConnectCost += (end - start)
+                            wsConnect.text = "websocket連接: 平均：${"%.2f".format(wsConnectCost.toFloat() / wsConnectCount)} ms   count = $wsConnectCount"
+                            newWebSocketManager.disconnect()
+                            connectJob?.cancel()
+                        }
+                    }
+                }
+                newWebSocketManager.connect("wss://betwavepro.ja700.com/fb-ws")
+            }
 
             wsToday.clickNoRepeat {
                 lifecycleScope.launch {
