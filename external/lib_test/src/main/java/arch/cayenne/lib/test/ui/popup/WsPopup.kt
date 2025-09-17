@@ -4,6 +4,9 @@ import android.content.Context
 import androidx.lifecycle.lifecycleScope
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
+import arch.cayenne.lib.common.data.repo.CommonRepository.Companion.MATCH_APP
+import arch.cayenne.lib.common.data.repo.CommonRepository.Companion.MATCH_GOAL
+import arch.cayenne.lib.common.data.repo.CommonRepository.Companion.MATCH_KICK
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.http.HttpClient
 import arch.cayenne.lib.http._interface.IApi
@@ -15,6 +18,8 @@ import arch.cayenne.lib.websocket.extension.sendAndWaitProtoMessageResponse
 import arch.cayenne.lib.websocket.data.ConnectState
 import com.lxj.xpopup.core.BottomPopupView
 import galaxy.client.proto.Client
+import galaxy.common.proto.Common
+import galaxy.common.proto.Common.Setting
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
@@ -50,6 +55,10 @@ class WsPopup(context: Context) : BottomPopupView(context), KoinComponent {
     private var wsConnectCost: Long = 0
     private var connectJob: Job? = null
 
+    private var wsLoginCount: Long = 0
+
+    private var wsLoginCost: Long = 0
+
     override fun getImplLayoutId(): Int {
         return R.layout.demo_ws_popup
     }
@@ -73,9 +82,47 @@ class WsPopup(context: Context) : BottomPopupView(context), KoinComponent {
                             val end = System.currentTimeMillis()
                             wsConnectCount++
                             wsConnectCost += (end - start)
-                            wsConnect.text = "websocket連接: 平均：${"%.2f".format(wsConnectCost.toFloat() / wsConnectCount)} ms   count = $wsConnectCount"
+                            wsConnect.text = "websocket連接: 花費：${(end - start)} ms"
                             newWebSocketManager.disconnect()
                             connectJob?.cancel()
+                        }
+                    }
+                }
+                newWebSocketManager.connect("wss://betwavepro.ja700.com/fb-ws")
+            }
+
+            wsLogin.clickNoRepeat {
+                val newWebSocketManager: WebSocketManager = getKoin().get(named("test"))
+                connectJob = lifecycleScope.launch {
+                    newWebSocketManager.getConnectStateFlow().collect {
+                        if (it is ConnectState.ConnectSuccess) {
+                            val start = System.currentTimeMillis()
+                            val uid = 55469250L
+                            val token = "NTU0NjkyNTBfMTc1ODA5NzMyMjI1MDoyellBMnpIc0lHOG02RjN3"
+                            launch {
+                                val res = newWebSocketManager.sendAndWaitProtoMessageResponse<Client.LoginResp>(
+                                        scope = lifecycleScope,
+                                        dispatcher = Dispatchers.IO,
+                                        apiCode = ApiCode.LOGIN,
+                                    ) {
+                                        Client.LoginReq.newBuilder().apply {
+                                            this.uid = uid
+                                            this.token = token
+                                            this.platform = 5
+                                            this.setting = getSystemSetting()
+                                        }.build()
+                                    }
+                                val end = System.currentTimeMillis()
+                                wsLoginCount++
+                                wsLoginCost += (end - start)
+                                newWebSocketManager.isLoggingIn = false
+                                if (res.error == null && res.data != null) {
+                                    wsLogin.text =
+                                        "websocket登錄: 平均：${"%.2f".format(wsLoginCost.toFloat() / wsLoginCount)} ms"
+                                }
+                                newWebSocketManager.disconnect()
+//                                connectJob?.cancel()
+                            }
                         }
                     }
                 }
@@ -149,6 +196,43 @@ class WsPopup(context: Context) : BottomPopupView(context), KoinComponent {
                 }
             }
         }
+    }
+
+    private fun getSystemSetting(): Setting {
+        val language = "zh-CN"
+        val sysGoal = getNotifyMatchType(MATCH_GOAL)
+        val sysKick = getNotifyMatchType(MATCH_KICK)
+        val app = getNotifyMatchType(MATCH_APP)
+        return Setting.newBuilder().apply {
+            lang = language          //语言类型
+            systemGoal = sysGoal     //系统通知-进球
+            systemKickOff = sysKick  //系统通知-开球
+            appGoal = app            //app内通知-开球
+        }.build()
+    }
+
+    private fun getNotifyMatchType(type: Int): Common.NotifyMatchType {
+        return Common.NotifyMatchType.newBuilder().apply {
+            when (type) {
+                MATCH_GOAL -> {
+                    betMatch = false
+                    collectMatch = false
+                    allMatch = false
+                }
+
+                MATCH_KICK -> {
+                    betMatch = false
+                    collectMatch = false
+                    allMatch = false
+                }
+
+                else -> {
+                    betMatch = false
+                    collectMatch = false
+                    allMatch = false
+                }
+            }
+        }.build()
     }
 
     interface IPreLoadHomeApi : IApi {
