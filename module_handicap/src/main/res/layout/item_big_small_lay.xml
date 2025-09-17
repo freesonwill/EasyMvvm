@@ -89,7 +89,7 @@
             android:layout_marginTop="@dimen/dp_10"
             android:gravity="top|center_horizontal"
             android:lines="2"
-            android:textColor="@color/color_666666"
+            android:textColor="@color/color_929298"
             android:textSize="@dimen/sp_12"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

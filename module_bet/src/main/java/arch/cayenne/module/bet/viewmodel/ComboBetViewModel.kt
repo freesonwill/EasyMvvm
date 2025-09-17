@@ -30,6 +30,9 @@ class ComboBetViewModel(
     private val _onBalanceListener = MutableLiveData<InfoBean?>()
     val onBalanceListener: LiveData<InfoBean?> get() = _onBalanceListener
 
+    val balance: Long
+        get() = _onBalanceListener.value?.balance ?: 0L
+
     private val _onCanBetListener = MediatorLiveData(false).apply {
         val updateCanBet = {
             val betList = _onBetListListener.value
@@ -183,6 +186,10 @@ class ComboBetViewModel(
         }
     }
 
+    fun getSumBetAmount(): Long {
+        return _onComboMultiBetBeanListener.value?.sumOf { it.inputMoney } ?: 0L
+    }
+
     fun sendBet(): Boolean {
         if (!checkNetwork()) {
             return false
@@ -230,6 +237,22 @@ class ComboBetViewModel(
     private fun checkNetwork(): Boolean {
         if (!repo.isConnected) {
             _networkConnectedEvent.value = Event(DataState.NetworkUnavailable)
+            return false
+        }
+        return true
+    }
+
+    fun checkOddsPass(): Boolean {
+        val oddsChange = _oddsChangeListener.value ?: return false
+        if (oddsChange == OddsChangeEnum.ANY) {
+            return true
+        }
+        val anyChange = _onBetListListener.value?.any { it.initialOdds != it.odds } ?: return false
+        if (oddsChange == OddsChangeEnum.NO_CHANGE && anyChange) {
+            return false
+        }
+        val anyWorse = _onBetListListener.value?.any { it.initialOdds > it.odds } ?: return false
+        if (oddsChange == OddsChangeEnum.BETTER && anyWorse) {
             return false
         }
         return true

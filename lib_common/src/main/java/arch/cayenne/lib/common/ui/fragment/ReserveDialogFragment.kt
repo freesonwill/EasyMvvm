@@ -141,7 +141,6 @@ class ReserveDialogFragment private constructor() : BasePositionDialogFragment<R
         mBinding.root.visibility = View.INVISIBLE
 
         ViewUtils.hideKeyboard(requireContext(), mBinding.etRate)
-        mBinding.etRate.requestFocus()
 
         val odds = requireArguments().getInt(ODDS_NUMBER, -1)
         if (odds != -1) {
@@ -171,6 +170,10 @@ class ReserveDialogFragment private constructor() : BasePositionDialogFragment<R
     override fun initListener() {
         mBinding.btnBack.setOnClickListener {
             mViewModel.backNumber()
+        }
+        mBinding.btnBack.setOnLongClickListener { view ->
+            mViewModel.clearNumber()
+            true
         }
         mBinding.btnClear.setOnClickListener {
             mViewModel.clearNumber()

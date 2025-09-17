@@ -148,8 +148,14 @@ class HomeCalendarFragment private constructor() : Fragment() {
                 val minRange = calendarView.minRangeCalendar
                 val maxRange = calendarView.maxRangeCalendar
                 if (minRange.year == maxRange.year && minRange.month == maxRange.month) {
-                    ivLeftClick.isEnabled = false
-                    ivRightClick.isEnabled = false
+                    ivLeftClick.apply {
+                        isEnabled = false
+                        alpha = 0.5f
+                    }
+                    ivRightClick.apply {
+                        isEnabled = false
+                        alpha = 0.5f
+                    }
                     calendarView.setMonthViewScrollable(false)
                 } else {
                     //控制左右按鈕的enabled
@@ -237,12 +243,13 @@ class HomeCalendarFragment private constructor() : Fragment() {
     private fun HomeTourPopupCalendarViewBinding.enabledLeftArrowButton(
         isEnabledLeft: Boolean
     ) {
-        if (isEnabledLeft) {
-            ivRightClick.isEnabled = false
-            ivLeftClick.isEnabled = true
-        } else {
-            ivRightClick.isEnabled = true
-            ivLeftClick.isEnabled = false
+        ivLeftClick.apply {
+            isEnabled = isEnabledLeft
+            alpha = if(isEnabled) 1.0f else 0.5f
+        }
+        ivRightClick.apply {
+            isEnabled = !isEnabledLeft
+            alpha = if(isEnabled) 1.0f else 0.5f
         }
     }
 

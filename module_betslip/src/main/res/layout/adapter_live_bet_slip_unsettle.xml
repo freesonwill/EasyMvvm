@@ -287,16 +287,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/bet_unsettled_bt_tv"
             app:layout_constraintTop_toTopOf="parent" />
-
-        <arch.cayenne.lib.common.ui.view.LoadingView
-            android:id="@+id/bet_unsettled_bt_progress"
-            android:layout_width="@dimen/dp_24"
-            android:layout_height="@dimen/dp_24"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
     </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
 
     <androidx.constraintlayout.widget.Group

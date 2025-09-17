@@ -6,6 +6,7 @@ import androidx.core.view.ViewCompat
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
+import arch.cayenne.lib.common.utils.ext.startFadeAnim
 import arch.cayenne.lib.common.utils.helper.ViewPagerAnimHelper.Companion.getAnimHelper
 import arch.cayenne.lib.common.utils.helper.doSmartAnim
 import com.google.android.material.tabs.TabLayout
@@ -22,6 +23,7 @@ class CustomTabLayoutMediator(
     private var adapter: RecyclerView.Adapter<*>? = null
     private var attached = false
     private var skipAnyAnim = false
+    private var isTabClick = false  // 儲存點擊狀態
     private var afterTabSelectedCallback: ((position: Int) -> Unit)? = null // 存储afterTabSelected回调
 
     private var onPageChangeCallback: TabLayoutOnPageChangeCallback? = null
@@ -163,6 +165,7 @@ class CustomTabLayoutMediator(
         if(tabLayout is CustomTabLayout) {
             // 設置自訂的 ClickListener
             tabLayout.onTabClick = { position ->
+                isTabClick = true
                 doOnClick(position, noTabAnim = false, noViewPagerAnim = false)
             }
         }
@@ -446,7 +449,16 @@ class CustomTabLayoutMediator(
                 viewPager.setCurrentItem(tab.position, false)
                 skipAnyAnim = false
             } else {
-                viewPager.doSmartAnim(targetPosition = tab.position)
+                // 判斷是否是點擊Tab觸發的，是的話執行淡入淡出動畫，否則執行滑動動畫
+                if(isTabClick) {
+                    viewPager.startFadeAnim { onComplete ->
+                        viewPager.setCurrentItem(tab.position, false)
+                        onComplete.invoke()
+                    }
+                    isTabClick = false
+                } else {
+                    viewPager.doSmartAnim(targetPosition = tab.position)
+                }
             }
             afterTabSelected?.invoke(tab.position)
         }

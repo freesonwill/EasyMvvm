@@ -49,6 +49,7 @@ data class BetSelectionBean(
     val selectionId: Long, // 盘口ID
     var name: String, // 盘口名称 ex. 中國 (+1.5)
     var odds: Int, // 盘口赔率 ex. 1.9
+    val initialOdds: Int, // 初始赔率
     var leagueName: String, // 联赛名称 ex. 世界盃
     var matchName: String, // 赛事名称 ex. 中國 vs 日本
     var isActive: Boolean, // 是否停止下注

@@ -14,8 +14,9 @@ import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.TabLayoutExt
 import arch.cayenne.lib.common.utils.ext.TabLayoutExt.addOnTabSelectedListener2
 import arch.cayenne.lib.common.utils.ext.removeAllTips
-import arch.cayenne.lib.common.utils.ext.startZoomInAnim
+import arch.cayenne.lib.common.utils.ext.startFadeAnim
 import arch.cayenne.lib.common.utils.ext.touchBackPressed
+import arch.cayenne.lib.common.utils.helper.doSmartAnim
 import arch.cayenne.module.handicap.R
 import arch.cayenne.module.handicap.databinding.FragmentHandicapBinding
 import arch.cayenne.module.handicap.ui.viewmodel.HandicapViewModel
@@ -55,11 +56,12 @@ class HandicapFragment : BaseFragment<HandicapViewModel, FragmentHandicapBinding
                 PagerBean(array[2]) { HandicapCornerFragment() },
             )
             viewpager.adapter = PagerAdapter(childFragmentManager, lifecycle, list)
-            TabLayoutMediator(tabLayout, viewpager) { tab, position ->
+            TabLayoutMediator(tabLayout, viewpager, true, false) { tab, position ->
                 tab.text = list[position].title
             }.attach()
-            setViewPagerAnim()
+            tabLayout.clearOnTabSelectedListeners()
             tabLayout.removeAllTips()
+            setViewPagerAnim()
             reflexPadding(tabLayout)
         }
     }
@@ -80,9 +82,17 @@ class HandicapFragment : BaseFragment<HandicapViewModel, FragmentHandicapBinding
         })
         mBinding.tabLayout.addOnTabSelectedListener2(object : TabLayoutExt.OnTabSelectedListener2 {
             override fun onTabSelected(tab: TabLayout.Tab, isTabClick: Boolean) {
-                if (skipAnyAnim) {
-                    if(isTabClick) mBinding.viewpager.startZoomInAnim()
-                    mBinding.viewpager.setCurrentItem(tab.position, false)
+                tab.let {
+                    if (skipAnyAnim) {
+                        if (isTabClick) {
+                            mBinding.viewpager.startFadeAnim { complete ->
+                                mBinding.viewpager.setCurrentItem(tab.position, false)
+                                complete.invoke()
+                            }
+                        } else {
+                            mBinding.viewpager.doSmartAnim(tab.position)
+                        }
+                    }
                 }
             }
 

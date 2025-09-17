@@ -49,6 +49,7 @@ import kotlinx.coroutines.flow.filter
 import kotlin.reflect.KClass
 import arch.cayenne.lib.common.utils.ext.animateIndicatorToPosition
 import arch.cayenne.lib.common.utils.ext.setupHorizontalScrollDegree
+import arch.cayenne.lib.common.utils.ext.startFadeAnim
 import arch.cayenne.lib.common.utils.ext.startZoomInAnim
 import arch.cayenne.lib.common.utils.helper.doSmartAnim
 import kotlin.math.abs
@@ -159,12 +160,12 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                     if (skipAnyAnim) {
                         enableAnimation = false
                         mBinding.customIndicator.animateIndicatorToPosition(tab.position)
-                        //mBinding.vpPage.setCurrentItem(tab.position,false)
-                        //mBinding.vpPage.doSmartAnim(tab.position)
                         val vp = mBinding.vpPage
                         if(isTabClick) {
-                            vp.setCurrentItem(tab.position, false)
-                            vp.startZoomInAnim()
+                            vp.startFadeAnim {
+                                vp.setCurrentItem(tab.position, false)
+                                it.invoke()
+                            }
                         } else {
                             vp.doSmartAnim(tab.position)
                         }
@@ -352,11 +353,15 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
 
     //比赛ID发生变化,取消订阅,数据请空
     private fun updateMatchId(matchId: Long) {
+        skipAnyAnim = false
+        mBinding.vpPage.setCurrentItem(1,false)
         mBinding.tabLayout.getTabAt(1)?.select()
+        mBinding.customIndicator.animateIndicatorToPosition(1,false)
         mViewModel.matchId.value?.let {
             deleteDataAndSubscriptions(matchId)
             mViewModel.setMatchId(matchId)
         }
+        skipAnyAnim = true
     }
 
     private fun deleteDataAndSubscriptions(matchId: Long) {

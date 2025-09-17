@@ -11,7 +11,7 @@ import arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
  * @date: 2025/8/4 17:23
  * @description: 支持手势拦截ConstraintLayout
  */
-class InterceptedConstraintLayout @JvmOverloads constructor(
+open class InterceptedConstraintLayout @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0

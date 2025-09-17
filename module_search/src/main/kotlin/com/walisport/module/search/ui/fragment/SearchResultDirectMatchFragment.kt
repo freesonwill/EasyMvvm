@@ -384,9 +384,7 @@ class SearchResultDirectMatchFragment :
 
     private fun switchUI(state: DataState) {
         with(contentBinding) {
-            loadingView.visibility = if (state is DataState.Loading) View.VISIBLE else View.GONE
             recyclerView.visibility = if (state is DataState.LoadSuccess) View.VISIBLE else View.GONE
-
             when (state) {
                 is DataState.NetworkUnavailable,
                 is DataState.DataEmpty,

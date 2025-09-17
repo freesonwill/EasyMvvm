@@ -431,7 +431,7 @@ class LiveVideoPlayerFragment :
                     0f, 360f // 从 0 度旋转到 360 度
                 ).run {
                     // 设置动画属性
-                    setDuration(1000) // 持续时间 1 秒
+                    setDuration(1500) // 持续时间 1.5 秒
                     repeatCount = ObjectAnimator.INFINITE // 无限循环
                     interpolator = LinearInterpolator() // 匀速旋转
 

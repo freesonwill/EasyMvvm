@@ -12,6 +12,7 @@ import arch.cayenne.lib.common.utils.ext.TabLayoutExt
 import arch.cayenne.lib.common.utils.ext.TabLayoutExt.addOnTabSelectedListener2
 import arch.cayenne.lib.common.utils.ext.removeAllTips
 import arch.cayenne.lib.common.utils.ext.setupHorizontalScrollDegree
+import arch.cayenne.lib.common.utils.ext.startFadeAnim
 import arch.cayenne.lib.common.utils.helper.doSmartAnim
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import com.google.android.material.tabs.TabLayout
@@ -81,7 +82,15 @@ class BetSlipFragment :
             tabLayout.clearOnTabSelectedListeners()
             tabLayout.addOnTabSelectedListener2(object : TabLayoutExt.OnTabSelectedListener2 {
                 override fun onTabSelected(tab: TabLayout.Tab, isTabClick: Boolean) {
-                    mBinding.viewPager.doSmartAnim(targetPosition = tab.position)
+//                    mBinding.viewPager.doSmartAnim(targetPosition = tab.position)
+                     if(isTabClick) {
+                         mBinding.viewPager.startFadeAnim {
+                             mBinding.viewPager.setCurrentItem(tab.position, false)
+                            it.invoke()
+                        }
+                    } else {
+                         mBinding.viewPager.doSmartAnim(tab.position)
+                    }
                 }
 
                 override fun onTabUnselected(tab: TabLayout.Tab, isTabClick: Boolean) {

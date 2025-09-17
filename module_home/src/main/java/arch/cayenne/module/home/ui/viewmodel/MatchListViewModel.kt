@@ -33,6 +33,9 @@ class MatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
     private var _position = -1
     private var _selectedDate = MutableStateFlow<Long>(0)
     override val repository: MatchListRepository by inject()
+    // 用來判斷是否需要執行淡入淡出動畫
+    private var _lastTournamentId: Int = -1
+    private var _lastSelectedDate: Long = -1L
 
     private var observeJob : Job? = null
 
@@ -60,11 +63,22 @@ class MatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
         _position = position
     }
 
+    fun setLastState(tournamentId: Int, selectedDate: Long) {
+        _lastTournamentId = tournamentId
+        _lastSelectedDate = selectedDate
+    }
+
     fun getPlayTypeId(): Int = _playType
 
     fun getTournamentId() = _tournamentId
 
     fun getSportId() = _sportId
+
+    fun getSelectedDate() = _selectedDate.value
+
+    fun getLastTournamentId() = _lastTournamentId
+
+    fun getLastSelectedDate() = _lastSelectedDate
 
     fun changeState(state: DataState) {
         setState(state)

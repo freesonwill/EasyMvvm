@@ -28,6 +28,9 @@ import arch.cayenne.module.bet.databinding.FragmentComboBetMoneyKeyboardDialogBi
 import arch.cayenne.module.bet.viewmodel.ComboBetMoneyKeyboardDialogViewModel
 import kotlin.reflect.KClass
 import androidx.core.graphics.drawable.toDrawable
+import arch.cayenne.lib.common.data.constants.QuickAmountEnum
+import arch.cayenne.lib.common.data.constants.QuickAmountKeyboardEnum
+import arch.cayenne.lib.common.ui.adapter.QuickAmountAdapter
 
 class ComboBetMoneyKeyboardDialogFragment private constructor():
     BasePositionDialogFragment<ComboBetMoneyKeyboardDialogViewModel, FragmentComboBetMoneyKeyboardDialogBinding>() {
@@ -71,6 +74,12 @@ class ComboBetMoneyKeyboardDialogFragment private constructor():
 
     override val dialogBackground: Drawable?
         get() = null
+
+    private val quickAmountAdapter: QuickAmountAdapter by lazy {
+        QuickAmountAdapter(QuickAmountKeyboardEnum.COMBO) {
+            mViewModel.setNumber(it)
+        }
+    }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return object : Dialog(requireContext(), theme) {
@@ -150,8 +159,10 @@ class ComboBetMoneyKeyboardDialogFragment private constructor():
         mBinding.root.visibility = View.INVISIBLE
 
         ViewUtils.hideKeyboard(requireContext(), mBinding.etMoney)
-        mBinding.etMoney.requestFocus()
         initKeyboard()
+
+        mBinding.rvQuickAmount.adapter = quickAmountAdapter
+        quickAmountAdapter.submitList(QuickAmountEnum.entries)
 
         mBinding.numberKeyboard.setOnCalculatorClickListener(object :
             NumberKeyboardView.OnCalculatorClickListener {
@@ -181,27 +192,15 @@ class ComboBetMoneyKeyboardDialogFragment private constructor():
         mBinding.btnBack.setOnClickListener {
             mViewModel.backNumber()
         }
+        mBinding.btnBack.setOnLongClickListener { view ->
+            mViewModel.clearNumber()
+            true
+        }
         mBinding.btnClear.setOnClickListener {
             mViewModel.clearNumber()
         }
         mBinding.btnDouble.setOnClickListener {
             mViewModel.doubleNumber()
-        }
-        // TODO 有時間改成adapter
-        mBinding.btn100.setOnClickListener {
-            mViewModel.setNumber(10000)
-        }
-        mBinding.btn500.setOnClickListener {
-            mViewModel.setNumber(50000)
-        }
-        mBinding.btn1000.setOnClickListener {
-            mViewModel.setNumber(100000)
-        }
-        mBinding.btn2000.setOnClickListener {
-            mViewModel.setNumber(200000)
-        }
-        mBinding.btn5000.setOnClickListener {
-            mViewModel.setNumber(500000)
         }
     }
 
@@ -232,10 +231,11 @@ class ComboBetMoneyKeyboardDialogFragment private constructor():
             mViewModel.setNumberLimit(minNumber, maxNumber)
         }
 
-        val remainingMoney = requireArguments().getLong(REMAINING_MONEY_NUMBER, -1L)
-        if (remainingMoney != -1L) {
-            mViewModel.setRemainingNumber(remainingMoney)
-        }
+//        val remainingMoney = requireArguments().getLong(REMAINING_MONEY_NUMBER, -1L)
+//        if (remainingMoney != -1L) {
+//            mViewModel.setRemainingNumber(remainingMoney)
+//        }
+        mViewModel.setRemainingNumber(Long.MAX_VALUE)
 
         val currentMoney = requireArguments().getLong(CURRENT_MONEY_NUMBER, -1L)
         if (currentMoney != -1L) {

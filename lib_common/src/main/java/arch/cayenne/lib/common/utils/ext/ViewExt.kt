@@ -24,6 +24,7 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.animation.addListener
 import androidx.core.view.children
+import androidx.core.view.doOnPreDraw
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
@@ -559,4 +560,30 @@ fun View.isInArea(rawX: Float, rawY: Float): Boolean {
     val rawXY = IntArray(2)
     getLocationOnScreen(rawXY)
     return rawX >= rawXY[0] && rawX <= (rawXY[0] + width) && rawY >= rawXY[1] && rawY <= (rawXY[1] + height)
+}
+
+
+
+/**
+ * 切换页面时淡入淡出动画
+ * @param doSwitchPage 执行切换页面的操作，传入一个回调函数 onComplete，在页面切换完成后调用该回调函数以触发淡入动画
+ */
+fun View.startFadeAnim(doSwitchPage: (onComplete: () -> Unit) -> Unit) {
+    animate().cancel()
+    animate()
+        .alpha(0.5f)
+        .setDuration(125)
+        .withEndAction {
+            doSwitchPage.invoke {
+                // 等待畫面已經完成繪製後，再執行淡入動畫
+                doOnPreDraw {
+                    alpha = 0.5f
+                    animate()
+                        .alpha(1f)
+                        .setDuration(125)
+                        .start()
+                }
+            }
+        }
+        .start()
 }

@@ -10,6 +10,7 @@ import android.widget.FrameLayout
 import androidx.core.animation.doOnStart
 import androidx.fragment.app.FragmentActivity
 import arch.cayenne.lib.base.ui.fragment.BasePreLoadBottomSheetFragment
+import arch.cayenne.lib.common.ui.view.BlockSlideConstrainLayout
 import arch.cayenne.module.bet.R
 import arch.cayenne.module.bet.data.Config.KEY_RESULT
 import arch.cayenne.module.bet.data.Config.VALUE_DISMISS
@@ -87,6 +88,14 @@ class BetSheetFragment private constructor() :
     override fun initView(savedInstanceState: Bundle?) {
         initFragment()
         BetResultFragment.create(requireActivity())
+        mBinding.root.setBlockSlideListener(object : BlockSlideConstrainLayout.BlockSlideListener {
+            override fun getBlockingRect(): View? {
+                if (!singleFragment.isHidden) {
+                    return singleFragment.getBlockingSlideView()
+                }
+                return null
+            }
+        })
     }
 
     private fun initFragment() {
@@ -173,6 +182,16 @@ class BetSheetFragment private constructor() :
         }
     }
 
+    override fun customShow(other: ObjectAnimator) {
+        mViewModel.register()
+        super.customShow(other)
+        childFragmentManager.fragments.forEach {
+            if (it is BetSheetListener) {
+                it.doCustomShow()
+            }
+        }
+    }
+
     override fun customHide() {
         mViewModel.unregister()
         mViewModel.removeSingleBet()
@@ -186,5 +205,8 @@ interface BetSheetListener {
     fun doCustomHideEnd()
     fun doCustomShow() {
 
+    }
+    fun getBlockingSlideView(): View? {
+        return null
     }
 }

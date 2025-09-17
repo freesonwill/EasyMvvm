@@ -18,6 +18,7 @@ import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.ui.dialog.CommonDialog
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
+import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
@@ -122,9 +123,17 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
             mViewModel.toggleMultiLayoutExpend()
         }
         mBinding.clBet.setOnClickListener {
-            val isSuccess = mViewModel.sendBet()
-            if (isSuccess) {
-                navToResult()
+            if (mViewModel.getSumBetAmount() > mViewModel.balance) {
+                showToast(getString(arch.cayenne.lib.common.R.string.toast_over_remaining))
+            } else if (!mViewModel.checkOddsPass()) {
+                mViewModel.oddsChangeListener.value?.toastRes?.let {
+                    showToast(getString(it))
+                }
+            } else {
+                val isSuccess = mViewModel.sendBet()
+                if (isSuccess) {
+                    navToResult()
+                }
             }
         }
         mBinding.tvOddsChange.setOnClickListener { v ->
@@ -441,9 +450,15 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
     }
 
     private fun showOddsChangeDialog() {
-        val globalRect = Rect()
-        mBinding.clOddsChange.getGlobalVisibleRect(globalRect)
-        val f = OddsChangeDialogFragment.instance(globalRect)
+        val location = IntArray(2)
+        mBinding.clOddsChange.getLocationInWindow(location)
+
+        val x = location.first()
+        val y = location.last() - ViewUtils.getStatusBarHeight(requireContext())
+        val width = mBinding.clOddsChange.width
+        val height = mBinding.clOddsChange.height
+        val rect = Rect(x, y, x + width, y + height)
+        val f = OddsChangeDialogFragment.instance(rect)
 
         val animator = ObjectAnimator.ofFloat(mBinding.ivOddsChange, "rotation", 0f, 180f)
         animator.duration = 100 // 旋轉持續時間，單位毫秒

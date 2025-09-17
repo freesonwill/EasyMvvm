@@ -22,6 +22,8 @@ class BetSheetRepository(
 ) : BaseRepository() {
 
     val observerBetCount: Flow<Int> = betDao.observeCurrentCount()
+
+    private var registerObserverJob: Job? = null
     private var loginStatusObserverJob: Job? = null
 
     init {
@@ -46,15 +48,18 @@ class BetSheetRepository(
     }
 
     fun register() {
-        scope.launch {
-            betDao.getCurrentBet()?.let { bet ->
-                val selections = betDao.getSelections(bet.betId)
-                remoteManager.registerMatchMarketNotify(selections.map {
-                    Client.MarketIdBase.newBuilder()
-                        .setMatchId(it.matchId)
-                        .addMarketId(it.marketId)
-                        .build()
-                })
+        registerObserverJob?.cancel()
+        registerObserverJob = scope.launch {
+            betDao.observeCurrentBet().collect { betBean ->
+                betBean?.let { bet ->
+                    val selections = betDao.getSelections(bet.betId)
+                    remoteManager.registerMatchMarketNotify(selections.map {
+                        Client.MarketIdBase.newBuilder()
+                            .setMatchId(it.matchId)
+                            .addMarketId(it.marketId)
+                            .build()
+                    })
+                }
             }
         }
     }
@@ -75,6 +80,8 @@ class BetSheetRepository(
                 }
             }
         }
+        registerObserverJob?.cancel()
+        registerObserverJob = null
     }
 
     fun removeSingleBet() {
