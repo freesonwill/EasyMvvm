@@ -353,11 +353,15 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
 
     //比赛ID发生变化,取消订阅,数据请空
     private fun updateMatchId(matchId: Long) {
+        skipAnyAnim = false
+        mBinding.vpPage.setCurrentItem(1,false)
         mBinding.tabLayout.getTabAt(1)?.select()
+        mBinding.customIndicator.animateIndicatorToPosition(1,false)
         mViewModel.matchId.value?.let {
             deleteDataAndSubscriptions(matchId)
             mViewModel.setMatchId(matchId)
         }
+        skipAnyAnim = true
     }
 
     private fun deleteDataAndSubscriptions(matchId: Long) {

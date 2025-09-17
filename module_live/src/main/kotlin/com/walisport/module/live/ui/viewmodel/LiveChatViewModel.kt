@@ -101,7 +101,13 @@ class LiveChatViewModel(
 
 
     fun setArguments(matchId: Long?) {
-        this.matchId = matchId
+        //直播间重新从联赛进入时，刷新matchId 重新进入聊天室
+        if(this.matchId != null && this.matchId != matchId){
+            this.matchId = matchId
+            enterRoom()
+        }else{
+            this.matchId = matchId
+        }
         softKeyBoardHeight = userDataManager.getValue(UserDataKey.KEY_SOFT_KEYBOARD_HEIGHT,0)
 //        softKeyBoardDuration = userDataManager.getValue(UserDataKey.KEY_SOFT_KEYBOARD_DURATION,0)
     }
@@ -129,7 +135,7 @@ class LiveChatViewModel(
      *进入聊天室
      * */
     fun enterRoom() {
-        if (matchId == null) {
+        if (matchId == null || _loginLiveData.value == null) {
             return
         }
         viewModelScope.launch {
@@ -148,7 +154,7 @@ class LiveChatViewModel(
      *推出聊天室
      * */
     fun leaveRoom() {
-        if (matchId == null) {
+        if (matchId == null || _loginLiveData.value == null) {
             return
         }
         viewModelScope.launch(Dispatchers.IO) {
