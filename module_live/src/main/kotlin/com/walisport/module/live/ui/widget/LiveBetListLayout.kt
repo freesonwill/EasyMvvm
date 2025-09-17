@@ -1,10 +1,12 @@
 package com.walisport.module.live.ui.widget
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import androidx.core.view.isVisible
 import arch.cayenne.lib.common.utils.ext.clickNoRepeatSingle
@@ -206,6 +208,7 @@ class LiveBetListLayout @JvmOverloads constructor(
         root
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private fun <T : Any> setupView(
         binding: T,
         name: String,
@@ -219,15 +222,36 @@ class LiveBetListLayout @JvmOverloads constructor(
         lockView: View
     ) {
         with(binding) {
-            var oddsInt :Int = odds.toOdds()
+            val oddsInt :Int = odds.toOdds()
             when (this) {
                 is LiveBetContentItemLayoutOneBinding -> {
                     if (active) isOddsStatus(oddStatus, imgTop, imgDown)
                     tvBetDuelLeft.text = name
                     tvBetDuelRight.text = oddsInt.getDisplayOdds()
                     sclOne.isSelected = isSelected
-                    sclOne.clickNoRepeatSingle {
-                        handleClick(marketId, callback, sclOne)
+
+                    sclOne.isPressed = false
+                    sclOne.setOnTouchListener { v, event ->
+                        when (event.action) {
+                            MotionEvent.ACTION_DOWN -> {
+                                v.isPressed = true
+                                if (active) {
+                                    v.postDelayed({
+                                        if (v.isPressed) {
+                                            v.isSelected = true
+                                        }
+                                    }, 100L)
+                                }
+                            }
+                            MotionEvent.ACTION_UP,
+                            MotionEvent.ACTION_CANCEL -> {
+                                if (active) {
+                                    handleClick(marketId, callback, v)
+                                }
+                                v.isPressed = false
+                            }
+                        }
+                        true
                     }
                 }
                 is LiveBetContentItemLayoutTowBinding -> {
@@ -235,8 +259,29 @@ class LiveBetListLayout @JvmOverloads constructor(
                     tvBetDuelLeft.text = name
                     tvBetDuelRight.text = oddsInt.getDisplayOdds()
                     sclTow.isSelected = isSelected
-                    sclTow.clickNoRepeatSingle {
-                        handleClick(marketId, callback, sclTow)
+
+                    sclTow.isPressed = false
+                    sclTow.setOnTouchListener { v, event ->
+                        when (event.action) {
+                            MotionEvent.ACTION_DOWN -> {
+                                v.isPressed = true
+                                if (active) {
+                                    v.postDelayed({
+                                        if (v.isPressed) {
+                                            v.isSelected = true
+                                        }
+                                    }, 100L)
+                                }
+                            }
+                            MotionEvent.ACTION_UP,
+                            MotionEvent.ACTION_CANCEL -> {
+                                if (active) {
+                                    handleClick(marketId, callback, v)
+                                }
+                                v.isPressed = false
+                            }
+                        }
+                        true
                     }
                 }
                 is LiveBetContentItemLayoutThreeBinding -> {
@@ -244,8 +289,29 @@ class LiveBetListLayout @JvmOverloads constructor(
                     tvBetDuelLeft.text = name
                     tvBetDuelRight.text = oddsInt.getDisplayOdds()
                     sclThree.isSelected = isSelected
-                    sclThree.clickNoRepeatSingle {
-                        handleClick(marketId, callback, sclThree)
+
+                    sclThree.isPressed = false
+                    sclThree.setOnTouchListener { v, event ->
+                        when (event.action) {
+                            MotionEvent.ACTION_DOWN -> {
+                                v.isPressed = true
+                                if (active) {
+                                    v.postDelayed({
+                                        if (v.isPressed) {
+                                            v.isSelected = true
+                                        }
+                                    }, 100L)
+                                }
+                            }
+                            MotionEvent.ACTION_UP,
+                            MotionEvent.ACTION_CANCEL -> {
+                                if (active) {
+                                    handleClick(marketId, callback, v)
+                                }
+                                v.isPressed = false
+                            }
+                        }
+                        true
                     }
                 }
                 else ->{}

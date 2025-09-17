@@ -31,11 +31,13 @@ class OddsCellViewHolder(
                 when (event.action) {
                     MotionEvent.ACTION_DOWN -> {
                         v.isPressed = true
-                        v.postDelayed({
-                            if (v.isPressed) {
-                                v.isSelected = true
-                            }
-                        }, 100L)
+                        if (isActive) {
+                            v.postDelayed({
+                                if (v.isPressed) {
+                                    v.isSelected = true
+                                }
+                            }, 100L)
+                        }
                     }
 
                     MotionEvent.ACTION_UP,
