@@ -50,6 +50,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
     override fun initView(savedInstanceState: Bundle?) {
         initPlayTypeLayout()
         setReceiveHorizontalScrollResult()
+        mBinding.drawerLayout.setLayerType(View.LAYER_TYPE_SOFTWARE, null)
     }
 
     override fun onStart() {
