@@ -298,11 +298,11 @@ class LiveSoftKeyboardFragment :
     }
 
     private fun keyboardChangeClick(keyBoardType: KeyBoardType, flag: Int = 0) {
-//        val flag1 = !chatViewModel.checkSoftKeyboardVisible()
-//        if (chatViewModel.clickKeyBoardType != KeyBoardType.CHAT && flag1) {
-//            chatViewModel.checkSoftKeyBoardBetAmount(keyBoardType,flag)
-//            return
-//        }
+        val flag1 = !chatViewModel.checkSoftKeyboardVisible()
+        if (chatViewModel.clickKeyBoardType != KeyBoardType.CHAT && flag1) {
+            chatViewModel.checkSoftKeyBoardBetAmount(keyBoardType,flag)
+            return
+        }
         chatViewModel.addSoftKeyBoardEvent(keyBoardType, flag)
         showKeyboardAnimation()
     }

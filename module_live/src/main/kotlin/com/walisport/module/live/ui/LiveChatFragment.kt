@@ -205,7 +205,7 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
      * 进入直播间不成功时修改
      * */
     fun updateChatUi(matchBean:LiveMatchBean? = null) {
-        if(true || matchBean?.liveInfo?.charRoom == true){
+        if(matchBean?.liveInfo?.charRoom == true){
             updateChatList()
             return
         }
