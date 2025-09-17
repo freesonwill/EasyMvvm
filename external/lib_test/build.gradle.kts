@@ -37,9 +37,11 @@ android {
 dependencies {
     implementation(project(":lib_base"))
     implementation(project(":lib_common"))
+
     implementation(libs.floatingx)
     implementation(libs.xpopup)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
+    implementation(project(":lib_http"))
 }
