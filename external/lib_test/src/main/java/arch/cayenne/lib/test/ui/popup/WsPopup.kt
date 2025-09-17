@@ -9,7 +9,12 @@ import arch.cayenne.lib.http.HttpClient
 import arch.cayenne.lib.http._interface.IApi
 import arch.cayenne.lib.test.R
 import arch.cayenne.lib.test.databinding.DemoWsPopupBinding
+import arch.cayenne.lib.websocket.WebSocketManager
+import arch.cayenne.lib.websocket.data.ApiCode
+import arch.cayenne.lib.websocket.extension.sendAndWaitProtoMessageResponse
 import com.lxj.xpopup.core.BottomPopupView
+import galaxy.client.proto.Client
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.qualifier.named
@@ -28,6 +33,11 @@ class WsPopup(context: Context) : BottomPopupView(context), KoinComponent {
 
     val httpClient: HttpClient = getKoin().get(named("preLoadHome"))
 
+    private val socketManager: WebSocketManager = getKoin().get()
+
+    var wsHomeDataCount: Long = 0
+    var wsHomeDataCost: Long = 0
+
     var httpCount: Long = 0
 
     var httpCost: Long = 0
@@ -43,7 +53,40 @@ class WsPopup(context: Context) : BottomPopupView(context), KoinComponent {
         vb = DemoWsPopupBinding.bind(popupImplView)
         vb?.apply {
 
-            wsToday.clickNoRepeat {  }
+            wsToday.clickNoRepeat {
+                lifecycleScope.launch {
+                    val start = System.currentTimeMillis()
+                    val last = null
+                    val res = socketManager.sendAndWaitProtoMessageResponse<Client.ListMatchResp>(
+                        scope = lifecycleScope,
+                        dispatcher = Dispatchers.IO,
+                        apiCode = ApiCode.LIST_MATCH,
+                    ) {
+                        Client.ListMatchReq.newBuilder().apply {
+                            this.sportId = 1
+                            this.playType = 2
+                            this.tournamentId = 0
+                            this.size = 10
+                            this.startTime = startTime
+                            this.endTime = endTime
+
+                        }.build()
+                    }
+
+                    val end = System.currentTimeMillis()
+
+                    wsHomeDataCount++
+                    wsHomeDataCost += (end - start)
+
+                    wsToday.text = "websocket今日数据: 平均：${wsHomeDataCost.toFloat() / wsHomeDataCount} ms"
+
+
+                    if (res.error == null && res.data != null) {
+                    } else {
+                        null
+                    }
+                }
+            }
 
             wsHttp.clickNoRepeat {
                 val api = httpClient.create(IPreLoadHomeApi::class.java)
