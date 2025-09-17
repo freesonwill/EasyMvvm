@@ -118,7 +118,7 @@ class WsPopup(context: Context) : BottomPopupView(context), KoinComponent {
                                 newWebSocketManager.isLoggingIn = false
                                 if (res.error == null && res.data != null) {
                                     wsLogin.text =
-                                        "websocket登錄: 平均：${"%.2f".format(wsLoginCost.toFloat() / wsLoginCount)} ms"
+                                        "websocket登錄: 耗时：${end-start} ms"
                                 }
                                 newWebSocketManager.disconnect()
 //                                connectJob?.cancel()
