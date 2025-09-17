@@ -15,6 +15,7 @@ import androidx.navigation.fragment.findNavController
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
+import arch.cayenne.lib.common.utils.ext.touchBackPressed
 import com.walisport.module.search.R
 import com.walisport.module.search.data.constants.SearchResultUiState.DirectMatch
 import com.walisport.module.search.data.constants.SearchResultUiState.ResultList
@@ -43,7 +44,7 @@ class SearchResultBaseFragment :
 
     override fun initListener() {
         super.initListener()
-
+        mBinding.root.touchBackPressed()
         parentFragmentManager.setFragmentResultListener(FROM_POP_BACK, viewLifecycleOwner) { _, bundle ->
             // 處理popBack過來的（再次搜尋的）
             bundle.getBoolean(FROM_POP_BACK).let {

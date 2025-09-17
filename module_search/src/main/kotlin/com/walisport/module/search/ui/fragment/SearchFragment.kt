@@ -50,6 +50,7 @@ class SearchFragment : SearchBaseFragment<SearchViewModel, FragmentSearchBinding
         setHistory()
         setHotWords()
         mBinding.root.touchBackPressed()
+        contentBinding.root.touchBackPressed()
     }
 
     override fun initData() {
