@@ -299,10 +299,12 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
         val scrollBehavior = params.behavior as? ScrollBottomSheetBehavior ?: return
         scrollBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
             var isDragging = false
+            var isOverHeight = false
             var offsetY = 0f
             override fun onStateChanged(bottomSheet: View, newState: Int) {
                 if (newState == BottomSheetBehavior.STATE_DRAGGING) {
                     isDragging = true
+                    isOverHeight = false
                     offsetY = bottomSheet.y
                 } else if (newState == BottomSheetBehavior.STATE_HIDDEN || newState == BottomSheetBehavior.STATE_EXPANDED || newState == BottomSheetBehavior.STATE_COLLAPSED) {
                     isDragging = false
@@ -312,12 +314,19 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
             override fun onSlide(bottomSheet: View, slideOffset: Float) {
                 if (isDragging) {
                     val y = bottomSheet.y - offsetY
+                    if (y >= bottomSheet.height && !isOverHeight) {
+                        isOverHeight = true
+                        whenSlideToCollapse()
+                    }
                     if (y > 0) {
                         setDimByScroll(abs(y.toInt()))
                     }
                 }
             }
         })
+    }
+
+    protected open fun whenSlideToCollapse() {
     }
 
     @CallSuper

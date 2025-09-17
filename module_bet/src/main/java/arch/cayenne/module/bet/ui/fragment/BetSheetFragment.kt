@@ -121,6 +121,7 @@ class BetSheetFragment private constructor() :
                     it.doCustomHideEnd()
                 }
             }
+            listener = null
         }
     }
 
@@ -213,6 +214,11 @@ class BetSheetFragment private constructor() :
         mViewModel.unregister()
         mViewModel.removeSingleBet()
         super.customHide()
+    }
+
+    override fun whenSlideToCollapse() {
+        listener?.onHide()
+        super.whenSlideToCollapse()
     }
 
     interface ShowListener {
