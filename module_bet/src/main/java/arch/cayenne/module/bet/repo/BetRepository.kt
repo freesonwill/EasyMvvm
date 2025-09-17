@@ -40,12 +40,18 @@ class BetRepository(
     init {
         scope.launch {
             betDao.observeCurrentLiteSelections().distinctUntilChanged().collect {
-                count = it.size
-                _observerAllBet.emit(it)
+                if (lastAddSelectionId != null && it.size == 1) {
+
+                } else {
+                    count = it.size
+                    _observerAllBet.emit(it)
+                }
+                lastAddSelectionId = null
             }
         }
     }
 
+    private var lastAddSelectionId: Long? = null
     private var addJob: Deferred<AddSelectionStatus>? = null
 
     /***
@@ -54,6 +60,7 @@ class BetRepository(
      */
     suspend fun setSelection(insertBean: BetInsertBean): AddSelectionStatus =
         withContext(scope.coroutineContext) {
+            lastAddSelectionId = insertBean.selectionId
             addJob = async {
                 val bet = betDao.getCurrentBet()
                 val betId = bet?.betId ?: betDao.insert(BetBean())
