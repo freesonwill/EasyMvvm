@@ -43,8 +43,9 @@ class WsPopup(context: Context) : BottomPopupView(context), KoinComponent {
         vb = DemoWsPopupBinding.bind(popupImplView)
         vb?.apply {
 
+            wsToday.clickNoRepeat {  }
+
             wsHttp.clickNoRepeat {
-                httpCount++
                 val api = httpClient.create(IPreLoadHomeApi::class.java)
                 lifecycleScope.launch {
                     val start = System.currentTimeMillis()
@@ -56,12 +57,14 @@ class WsPopup(context: Context) : BottomPopupView(context), KoinComponent {
                         },
                         onSuccess = {
                             val end = System.currentTimeMillis()
+                            httpCount++
                             httpCost += end - start
                             wsHttp.text = "http首开接口: 平均：${httpCost.toFloat() / httpCount} ms"
                             "response------>${it}".logd(TAG)
                         },
                         onFailure = { code, msg, throwable ->
                             val end = System.currentTimeMillis()
+                            httpCount++
                             httpCost += end - start
                             wsHttp.text = "http首开接口: 平均：${httpCost.toFloat() / httpCount} ms"
                             "response------>$code,$msg,$throwable".loge(TAG)
