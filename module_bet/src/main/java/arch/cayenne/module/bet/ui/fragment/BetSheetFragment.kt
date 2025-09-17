@@ -48,14 +48,24 @@ class BetSheetFragment private constructor() :
             }
         }
 
-        fun show(activity: FragmentActivity, doCancel: (() -> Unit)? = null, doStart: () -> Unit) {
+        fun show(activity: FragmentActivity, doStart: () -> Unit) {
             val manager = activity.supportFragmentManager
             val f = manager.findFragmentByTag(TAG)
             if (f == null) {
                 BetSheetFragment().show(manager, TAG)
             } else if (f is BetSheetFragment) {
                 f.setDoStart(doStart)
-                f.setDoCancel(doCancel)
+                f.customShow()
+            }
+        }
+
+        fun show(activity: FragmentActivity, listener: ShowListener) {
+            val manager = activity.supportFragmentManager
+            val f = manager.findFragmentByTag(TAG)
+            if (f == null) {
+                BetSheetFragment().show(manager, TAG)
+            } else if (f is BetSheetFragment) {
+                f.setShowListener(listener)
                 f.customShow()
             }
         }
@@ -67,7 +77,7 @@ class BetSheetFragment private constructor() :
         get() = BetSheetViewModel::class
 
     private var doStart: (() -> Unit)? = null
-    private var doCancel: (() -> Unit)? = null
+    private var listener: ShowListener? = null
 
     private val singleFragment by lazy {
         SingleBetFragment()
@@ -183,8 +193,8 @@ class BetSheetFragment private constructor() :
         this.doStart = doStart
     }
 
-    fun setDoCancel(doCancel: (() -> Unit)?) {
-        this.doCancel = doCancel
+    fun setShowListener(listener: ShowListener) {
+        this.listener = listener
     }
 
     override fun playEnterAnimations(
@@ -192,16 +202,31 @@ class BetSheetFragment private constructor() :
         doCancel: (() -> Unit)?,
         doEnd: (() -> Unit)?
     ) {
-        super.playEnterAnimations(this.doStart, {
+        super.playEnterAnimations({
+            doStart?.invoke()
+            listener?.onShow()
+        }, {
             mViewModel.cancel()
+            listener?.onCancel()
             doCancel?.invoke()
         }, doEnd)
+    }
+
+    override fun playExitAnimations(doStart: (() -> Unit)?, doEnd: (() -> Unit)?) {
+        listener?.onHide()
+        super.playExitAnimations(doStart, doEnd)
     }
 
     override fun customHide() {
         mViewModel.unregister()
         mViewModel.removeSingleBet()
         super.customHide()
+    }
+
+    interface ShowListener {
+        fun onShow()
+        fun onCancel()
+        fun onHide()
     }
 }
 
