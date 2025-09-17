@@ -142,11 +142,6 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
         doStart: (() -> Unit)? = null,
         doEnd: (() -> Unit)? = null
     ) {
-        if (dimController.findAnyShowing(this)) {
-            isDismissing = true
-            dismiss()
-            return
-        }
         prepareShowDim()
         val sheet = sheetContainer ?: return
         val otherSheetAnimator = otherViewAnimation
