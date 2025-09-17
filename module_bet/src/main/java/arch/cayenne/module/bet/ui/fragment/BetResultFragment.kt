@@ -74,7 +74,8 @@ class BetResultFragment : BasePreLoadBottomSheetFragment<BetResultViewModel, Fra
     private var isFull: Boolean? = null
 
     override fun initView(savedInstanceState: Bundle?) {
-        isGestureEnable = false
+        isHorizontalGestureEnable = false
+        isVerticalGestureEnable = false
         (mBinding.rvComboOdds.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
         (mBinding.rvBet.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
         mBinding.rvComboOdds.itemAnimator = null
@@ -88,26 +89,6 @@ class BetResultFragment : BasePreLoadBottomSheetFragment<BetResultViewModel, Fra
         val screenHeight = resources.displayMetrics.heightPixels
         val maxFragmentHeight = (screenHeight * 0.75).toInt()
         mBinding.root.maxHeight = maxFragmentHeight
-    }
-
-    override fun onStart() {
-        setFitToContents()
-        super.onStart()
-    }
-
-    private fun setFitToContents() {
-        val bottomSheet =
-            dialog?.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet) as? FrameLayout
-        bottomSheet?.let { sheet ->
-            val behavior = BottomSheetBehavior.from(sheet)
-
-            behavior.isDraggable = false
-            behavior.skipCollapsed = false  // ← 允許收合
-            behavior.isHideable = false      // ← 允許向下滑關閉
-            behavior.isFitToContents = true
-            behavior.state = BottomSheetBehavior.STATE_COLLAPSED
-            behavior.saveFlags = BottomSheetBehavior.SAVE_HIDEABLE
-        }
     }
 
     override fun initListener() {

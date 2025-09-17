@@ -10,6 +10,7 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.util.AttributeSet
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -88,7 +89,8 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
 
     protected var otherViewAnimation: ObjectAnimator? = null
     private val dimController by lazy { DimController.getInstance(this) }
-    protected open var isGestureEnable = true
+    protected open var isHorizontalGestureEnable = true
+    protected open var isVerticalGestureEnable = true
     private var popupAnimatorSet: AnimatorSet? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -287,7 +289,7 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
     }
 
     private fun setBehaviorOnScroll(view: View) {
-        if (!isGestureEnable) return
+        if (!isVerticalGestureEnable) return
         val bottomSheet = (view.parent as? View) ?: return
         val params = bottomSheet.layoutParams as? CoordinatorLayout.LayoutParams ?: return
         val scrollBehavior = params.behavior as? ScrollBottomSheetBehavior ?: return
@@ -306,6 +308,7 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
             override fun onSlide(bottomSheet: View, slideOffset: Float) {
                 if (isDragging) {
                     val y = bottomSheet.y - offsetY
+                    Log.d("abcd", "${this@BaseBottomSheetFragment.javaClass.simpleName}   $y")
                     setDimByScroll(abs(y.toInt()))
                 }
             }
@@ -466,7 +469,7 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
 
     @SuppressLint("ClickableViewAccessibility")
     private fun setGesture() {
-        if (!isGestureEnable) return
+        if (!isHorizontalGestureEnable) return
         val v = mBinding.root
         val tikTokGesture = TikTokGesture(v)
         tikTokGesture.setListener(object : TikTokGesture.TikTokGestureListener {
