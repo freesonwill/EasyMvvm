@@ -77,6 +77,7 @@ class SocketClientService(
     }
 
     private fun openWebSocket() {
+        "Socket Client -> openWebSocket".loge(TAG)
         val request = Request.Builder()
             .url(host)
             .build()
