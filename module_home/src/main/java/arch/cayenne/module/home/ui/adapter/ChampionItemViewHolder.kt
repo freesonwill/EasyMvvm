@@ -16,8 +16,8 @@ class ChampionItemViewHolder(
     private lateinit var oddsGridAdapter: ChampionGridAdapter
 
     fun init(data: MarketWithSelections) {
-        oddsGridAdapter = ChampionGridAdapter { v, selection, _ ->
-            onChampionItemClickListener?.onOddsCellClick(v, selection)
+        oddsGridAdapter = ChampionGridAdapter { v, selection, _, x, y ->
+            onChampionItemClickListener?.onOddsCellClick(v, selection, x, y)
         }
         with(mBinding) {
             tvMarketName.text = data.market.marketName

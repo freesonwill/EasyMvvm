@@ -7,13 +7,6 @@
             <solid android:color="@color/home_card_odds_background" />
         </shape>
     </item>
-    <!-- 選中狀態 -->
-    <item android:state_pressed="true">
-        <shape android:shape="rectangle">
-            <corners android:radius="8dp" />
-            <solid android:color="@color/brand_color" />
-        </shape>
-    </item>
     <item android:state_selected="true">
         <shape android:shape="rectangle">
             <corners android:radius="8dp" />

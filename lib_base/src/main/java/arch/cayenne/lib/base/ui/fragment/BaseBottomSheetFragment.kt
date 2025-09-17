@@ -89,6 +89,7 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
     protected var otherViewAnimation: ObjectAnimator? = null
     private val dimController by lazy { DimController.getInstance(this) }
     protected open var isGestureEnable = true
+    private var popupAnimatorSet: AnimatorSet? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -118,11 +119,7 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
         }
 
         dialog.setOnShowListener {
-            if (otherViewAnimation == null) {
-                playEnterAnimations()
-            } else {
-                playEnterAnimationWithOtherSheetDialogEnd()
-            }
+            playEnterAnimations()
         }
 
         return dialog.apply {
@@ -141,7 +138,10 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
 
     protected open fun exitAnimation(): Animation = AnimationController[AnimType.popupExit]!!.toAnimation()
 
-    protected fun playEnterAnimations() {
+    protected open fun playEnterAnimations(
+        doStart: (() -> Unit)? = null,
+        doEnd: (() -> Unit)? = null
+    ) {
         if (dimController.findAnyShowing(this)) {
             isDismissing = true
             dismiss()
@@ -149,6 +149,7 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
         }
         prepareShowDim()
         val sheet = sheetContainer ?: return
+        val otherSheetAnimator = otherViewAnimation
 
         val sheetAnim = enterAnimation()
         val offY = sheet.translationY
@@ -156,72 +157,36 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
         if (offY != startY) {
             sheet.translationY = sheet.height.toFloat()
         }
-        val animation = ObjectAnimator.ofFloat(
-            sheet, "translationY", sheet.height.toFloat(), 0f
-        ).apply {
-            addUpdateListener { animation ->
-                val value = animation.animatedValue as Float
-                sheet.translationY = value
-
-            }
+        val animation = ObjectAnimator.ofFloat(sheet, "translationY", sheet.height.toFloat(), 0f)
+        val animatorSet = AnimatorSet().apply {
             duration = sheetAnim.duration
-            // 假設你的 exitAnimation 使用這個插值器
             interpolator = sheetAnim.interpolator
+            if (otherSheetAnimator == null) {
+                play(animation)
+            } else {
+                playTogether(animation, otherSheetAnimator)
+            }
             doOnStart {
                 backgroundView?.visibility = View.VISIBLE
                 sheet.visibility = View.VISIBLE
                 mBinding.root.visibility = View.VISIBLE
                 mBinding.root.post {
                     showDim()
-                }
-            }
-        }
-        sheet.post {
-            animation.start()
-        }
-    }
-
-    protected fun playEnterAnimationWithOtherSheetDialogEnd() {
-        val sheet = sheetContainer ?: return
-        val otherSheetAnimator = otherViewAnimation?.clone() ?: return
-        // bottom sheet 上滑動畫
-        prepareShowDim()
-        val sheetContainerSheetAnim = enterAnimation()
-        val offY = sheet.translationY
-        val startY = sheet.height.toFloat()
-        if (offY != startY) {
-            sheet.translationY = sheet.height.toFloat()
-        }
-        val sheetAnimator = ObjectAnimator.ofFloat(
-            sheet, "translationY", sheet.height.toFloat(), 0f
-        ).apply {
-            addUpdateListener { animation ->
-                val value = animation.animatedValue as Float
-                sheet.translationY = value
-            }
-            duration = sheetContainerSheetAnim.duration
-            // 假設你的 exitAnimation 使用這個插值器
-            interpolator = sheetContainerSheetAnim.interpolator
-            doOnStart {
-                backgroundView?.visibility = View.VISIBLE
-                sheet.visibility = View.VISIBLE
-                mBinding.root.visibility = View.VISIBLE
-                mBinding.root.post {
-                    showDim()
+                    doStart?.invoke()
                 }
             }
             doOnEnd {
+                doEnd?.invoke()
                 setRvTouch()
                 otherViewAnimation = null
+                popupAnimatorSet = null
             }
         }
-        val animatorSet = AnimatorSet().apply {
-            playTogether(sheetAnimator, otherSheetAnimator)
-        }
+        popupAnimatorSet?.cancel()
+        popupAnimatorSet = animatorSet
         sheet.post {
             animatorSet.start()
         }
-
     }
 
     protected open fun playExitAnimations(
@@ -236,9 +201,16 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
             }
         }
     ) {
+        val sheet = sheetContainer ?: return
+
         val sheetContainerSheetAnim = exitAnimation()
 
-        val sheetAnimator = getHideAnimator()?.apply {
+        val sheetAnimator = ObjectAnimator.ofFloat(sheet, "translationY", sheet.translationY, sheet.height.toFloat())
+
+        val dimAnimator = dimController.getHideAnimator()
+
+        val animatorSet = AnimatorSet().apply {
+            playTogether(sheetAnimator, dimAnimator)
             duration = sheetContainerSheetAnim.duration
             interpolator = sheetContainerSheetAnim.interpolator
             doOnStart {
@@ -246,19 +218,13 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
             }
             doOnEnd {
                 doEnd?.invoke()
+                popupAnimatorSet = null
             }
         }
-
-        val dimAnimator = dimController.getHideAnimator()?.apply {
-            duration = sheetContainerSheetAnim.duration
-            interpolator = sheetContainerSheetAnim.interpolator
-        }
-
-        AnimatorSet().apply {
-            playTogether(sheetAnimator, dimAnimator)
-            duration = sheetContainerSheetAnim.duration
-            interpolator = sheetContainerSheetAnim.interpolator
-            start()
+        popupAnimatorSet?.cancel()
+        popupAnimatorSet = animatorSet
+        sheet.post {
+            animatorSet.start()
         }
     }
 
@@ -560,7 +526,7 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
     }
 
     protected fun hideDim() {
-        if (dimController.findAnyShowing(this)) {
+        if (dimController.findAnyShowing(this) || !isDismissing) {
             return
         }
         dimController.hideDim()
@@ -571,6 +537,7 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
     }
 
     protected fun showDim() {
+        if (isDismissing) return
         dimController.showDim()
     }
 }

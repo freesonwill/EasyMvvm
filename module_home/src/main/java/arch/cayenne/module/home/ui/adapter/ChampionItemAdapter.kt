@@ -54,5 +54,5 @@ class ChampionItemAdapter(private val onChampionItemClickListener: OnChampionIte
 }
 
 interface OnChampionItemClickListener {
-    fun onOddsCellClick(cell: WeakReference<View>, selection: SelectionBeanLite)
+    fun onOddsCellClick(cell: WeakReference<View>, selection: SelectionBeanLite, x: Float, y: Float)
 }
