@@ -10,7 +10,7 @@ import arch.cayenne.module.home.ui.adapter.compare.OddDiffCompare
 import java.lang.ref.WeakReference
 
 class ChampionGridAdapter(
-    private val onOddsClick: (cell: WeakReference<View>, SelectionBeanLite, Boolean) -> Unit
+    private val onOddsClick: (cell: WeakReference<View>, SelectionBeanLite, Boolean, x: Float, y: Float) -> Unit
 ) : BaseAdapter<SelectionBeanLite, ChampionOddsCellViewHolder, ItemChampionOddsCellBinding>(OddDiffCompare()){
     override fun convertPlus(
         holder: ChampionOddsCellViewHolder,

@@ -74,7 +74,9 @@ class ChampionFragment : BaseFragment<ChampionViewModel, FragmentChampionBinding
                 championAdapter = ChampionItemAdapter(object : OnChampionItemClickListener {
                     override fun onOddsCellClick(
                         cell: WeakReference<View>,
-                        selection: SelectionBeanLite
+                        selection: SelectionBeanLite,
+                        x: Float,
+                        y: Float
                     ) {
                         lifecycleScope.launch {
                             if (mViewModel.getCurrentSelectionCount() == 0) {

@@ -1,6 +1,8 @@
 package arch.cayenne.module.home.ui.adapter
 
 import android.animation.ValueAnimator
+import android.annotation.SuppressLint
+import android.view.MotionEvent
 import android.view.View
 import androidx.core.animation.addListener
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
@@ -12,9 +14,10 @@ import java.lang.ref.WeakReference
 
 class ChampionOddsCellViewHolder(
     private val mBinding: ItemChampionOddsCellBinding,
-    private val onOddsClick: (cell: WeakReference<View>, SelectionBeanLite, Boolean) -> Unit
+    private val onOddsClick: (cell: WeakReference<View>, SelectionBeanLite, Boolean, x: Float, y: Float) -> Unit
 ) : BaseViewHolder(mBinding) {
     private var currentState: OddsCellState = OddsCellState.VISIBLE
+    @SuppressLint("ClickableViewAccessibility")
     fun bind(item: SelectionBeanLite) {
         with(mBinding) {
             tvShortName.text = item.name
@@ -22,11 +25,38 @@ class ChampionOddsCellViewHolder(
             val isActive = item.active
             updateState(isActive, item.isSelected)
 
-            llOddsCell.setOnClickListener {
-                if (item.active) {
-                    val isSelected = !(llOddsCell.isSelected)
-                    onOddsClick(WeakReference(llOddsCell), item, isSelected)
+            llOddsCell.isPressed = false
+            llOddsCell.setOnTouchListener { v, event ->
+                when (event.action) {
+                    MotionEvent.ACTION_DOWN -> {
+                        v.isPressed = true
+                        v.postDelayed({
+                            if (v.isPressed) {
+                                v.isSelected = true
+                            }
+                        }, 100L)
+                    }
+
+                    MotionEvent.ACTION_UP,
+                    MotionEvent.ACTION_CANCEL -> {
+                        if (isActive) {
+                            val isSelected = !(llOddsCell.isSelected)
+                            val location = IntArray(2)
+                            v.getLocationOnScreen(location)
+                            val x = location[0] + v.width / 2
+                            val y = location[1] + v.height / 2
+                            onOddsClick(
+                                WeakReference(llOddsCell),
+                                item,
+                                isSelected,
+                                x.toFloat(),
+                                y.toFloat()
+                            )
+                        }
+                        v.isPressed = false
+                    }
                 }
+                true
             }
         }
     }
