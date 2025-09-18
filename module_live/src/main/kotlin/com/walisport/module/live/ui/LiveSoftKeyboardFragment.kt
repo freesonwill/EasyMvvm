@@ -1,5 +1,6 @@
 package com.walisport.module.live.ui
 
+import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.os.Bundle
@@ -65,6 +66,11 @@ class LiveSoftKeyboardFragment :
             mBinding.liveChatEtInput.text?.append(item?.key)
             etRequestFocus()
         }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        mBinding.keyboardEmojiRecycler.smoothScrollToPosition(0)
     }
 
     override fun onStop() {
@@ -392,19 +398,23 @@ class LiveSoftKeyboardFragment :
                     val position = it.position
                     val iv = tab.view.findViewById<ImageView>(R.id.iv)
                     iv.setImageResource(list[position].select)
+                    mBinding.keyboardEmojiRecycler.smoothScrollToPosition(position)
 
                     when (position) {
                         0 -> {
-                            mBinding.keyboardTvAll.isVisible = true
+                            if(mBinding.keyboardTvAll.isInvisible){
+                                tabChaneAnim(true, onStart = {
+                                    mBinding.keyboardTvAll.isInvisible = false
+                                })
+                            }
                         }
 
-                        1 -> {
-                            mBinding.keyboardTvAll.isVisible = false
-                            mBinding.keyboardEmojiRecycler.smoothScrollToPosition(position)
-                        }
-
-                        else -> {
-                            mBinding.keyboardTvAll.isVisible = false
+                        else ->{
+                            if(!mBinding.keyboardTvAll.isInvisible){
+                                tabChaneAnim(false, onEnd = {
+                                    mBinding.keyboardTvAll.isInvisible = true
+                                })
+                            }
                         }
                     }
                 }
@@ -422,6 +432,19 @@ class LiveSoftKeyboardFragment :
             }
         })
     }
+
+    private fun tabChaneAnim(tvShow:Boolean,onStart: (() -> Unit)? = null,onEnd: (() -> Unit)? = null){
+        val tvAnimAlpha = ObjectAnimator.ofFloat(mBinding.keyboardTvAll,"alpha", if(tvShow) 1f else 0f)
+        val tvAnimTransY = ObjectAnimator.ofFloat(mBinding.keyboardTvAll,"translationY",if(tvShow) 0f else -18.dp2px.toFloat() )
+        val emojiAnim = ObjectAnimator.ofFloat(mBinding.keyboardEmojiRecycler,"translationY",if(tvShow) 0f else -18.dp2px.toFloat())
+        val animSet = AnimatorSet()
+        animSet.duration = 250L
+        animSet.playTogether(tvAnimTransY,tvAnimAlpha,emojiAnim)
+        animSet.addListener(onStart = {onStart?.invoke()},onEnd = {onEnd?.invoke()})
+        animSet.start()
+    }
+
+
 
     private fun initSoftRecycler() {
         val snapHelper = PagerSnapHelper()

@@ -56,8 +56,6 @@ class HomeBetSlipFragment : BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsl
     override val vbClass: KClass<FragmentHomeBetslipBinding> = FragmentHomeBetslipBinding::class
     override val vmClass: KClass<HomeBetSlipViewModel> = HomeBetSlipViewModel::class
     private val betSlipFilterViewModel: BetSlipFilterViewModel by viewModel()
-    private var skipAnyAnim = true
-    private var enableAnim:Boolean = false
 
     override fun initView(savedInstanceState: Bundle?) {
         val array = SkinnableResourceManager.getStringArray(requireContext(),arch.cayenne.lib.res.R.array.bet_slip_menus)
@@ -155,7 +153,7 @@ class HomeBetSlipFragment : BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsl
             mBinding.tabLayout.tabGravity =
                 if (shouldDistributeEvenly) TabLayout.GRAVITY_FILL else TabLayout.GRAVITY_CENTER
 
-            TabLayoutMediator(mBinding.tabLayout, mBinding.viewPager) { tab, position ->
+            TabLayoutMediator(mBinding.tabLayout, mBinding.viewPager,false) { tab, position ->
                 val textView = TextView(requireContext()).apply {
                     layoutParams = LinearLayout.LayoutParams(
                         if (shouldDistributeEvenly) LinearLayout.LayoutParams.MATCH_PARENT else LinearLayout.LayoutParams.WRAP_CONTENT,
@@ -199,8 +197,6 @@ class HomeBetSlipFragment : BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsl
             mBinding.tabLayout.addOnTabSelectedListener2(object : TabLayoutExt.OnTabSelectedListener2 {
                 override fun onTabSelected(tab: TabLayout.Tab,isTabClick:Boolean) {
                     mViewModel.setShowType(HomeSlipShowTypeEnum.NONE)
-                    if (skipAnyAnim) {
-                        enableAnim = false
                         // 动画更新指示器位置
                         mBinding.customIndicator.animateIndicatorToPosition(tab.position)
                         //mBinding.viewPager.doSmartAnim(targetPosition = tab.position)
@@ -212,10 +208,7 @@ class HomeBetSlipFragment : BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsl
                                 vp.setCurrentItem(tab.position, false)
                                 it.invoke()
                             }
-                        } else {
-                            vp.doSmartAnim(tab.position)
                         }
-                    }
                     (tab.customView as? TextView)?.apply {
                         setTypeface(null, Typeface.BOLD)
                         setTextColor(SkinnableResourceManager.getColor(requireContext(), arch.cayenne.lib.common.R.color.main_text))
@@ -235,15 +228,7 @@ class HomeBetSlipFragment : BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsl
         }
         mBinding.tabLayout.removeAllTips()
         // 自定義滑動行為
-        mBinding.viewPager.setupViewPagerScroll(mBinding.tabLayout,mBinding.customIndicator,0.27f, skipAnyAnim = {
-            skipAnyAnim = it
-        }, enableAnimation = {
-            if(it == null){
-                return@setupViewPagerScroll enableAnim
-            }
-            enableAnim = it
-            return@setupViewPagerScroll enableAnim
-        })
+        mBinding.viewPager.setupViewPagerScroll(mBinding.tabLayout,mBinding.customIndicator,0.27f)
         mBinding.viewPager.setupHorizontalScrollDegree()
     }
 

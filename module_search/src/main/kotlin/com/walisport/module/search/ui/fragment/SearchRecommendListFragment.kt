@@ -15,6 +15,7 @@ import arch.cayenne.lib.base.data.remote.ApiFailedState
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.lib.common.utils.ext.touchBackPressed
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import com.walisport.module.search.R
 import com.walisport.module.search.databinding.FragmentSearchRecommendListBinding
@@ -41,6 +42,7 @@ class SearchRecommendListFragment : BaseFragment<SearchRecommendListViewModel, F
     override fun initView(savedInstanceState: Bundle?) {
         setRecommend()
         setBackPressHandler()
+        mBinding.root.touchBackPressed()
     }
 
     override fun initListener() =  Unit

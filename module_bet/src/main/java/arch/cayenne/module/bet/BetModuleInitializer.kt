@@ -23,6 +23,7 @@ import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.core.context.loadKoinModules
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.factoryOf
+import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
 class BetModuleInitializer: DefaultInitializer<String> {
@@ -57,7 +58,7 @@ class BetModuleInitializer: DefaultInitializer<String> {
         factoryOf(::SingleBetRepository)
         factoryOf(::ComboBetRepository)
         factoryOf(::BetResultRepository)
-        factoryOf(::BetRepository)
+        singleOf(::BetRepository)
         factoryOf(::BetSheetRepository)
         factoryOf(::OddsChangeRepository)
     }

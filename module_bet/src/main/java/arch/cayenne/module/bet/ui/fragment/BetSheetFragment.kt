@@ -6,8 +6,6 @@ import android.os.Bundle
 import android.view.ContextThemeWrapper
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.FrameLayout
-import androidx.core.animation.doOnStart
 import androidx.fragment.app.FragmentActivity
 import arch.cayenne.lib.base.ui.fragment.BasePreLoadBottomSheetFragment
 import arch.cayenne.lib.common.ui.view.BlockSlideConstrainLayout
@@ -17,7 +15,6 @@ import arch.cayenne.module.bet.data.Config.VALUE_DISMISS
 import arch.cayenne.module.bet.data.Config.VALUE_TO_RESULT
 import arch.cayenne.module.bet.databinding.FragmentBetSheetBinding
 import arch.cayenne.module.bet.viewmodel.BetSheetViewModel
-import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlin.reflect.KClass
 
 class BetSheetFragment private constructor() :
@@ -54,15 +51,9 @@ class BetSheetFragment private constructor() :
             val f = manager.findFragmentByTag(TAG)
             if (f == null) {
                 BetSheetFragment().show(manager, TAG)
-            } else if (f is BasePreLoadBottomSheetFragment<*, *>) {
-                val anim = ObjectAnimator.ofFloat(null, "alpha", 0f, 0f).apply {
-                    doOnStart {
-                        f.view?.post {
-                            doSomething.invoke()
-                        }
-                    }
-                }
-                f.customShow(anim)
+            } else if (f is BetSheetFragment) {
+                f.setDoStart(doSomething)
+                f.customShow()
             }
         }
     }
@@ -71,6 +62,8 @@ class BetSheetFragment private constructor() :
         get() = FragmentBetSheetBinding::class
     override val vmClass: KClass<BetSheetViewModel>
         get() = BetSheetViewModel::class
+
+    private var doStart: (() -> Unit)? = null
 
     private val singleFragment by lazy {
         SingleBetFragment()
@@ -116,26 +109,6 @@ class BetSheetFragment private constructor() :
         }
     }
 
-    override fun onStart() {
-        super.onStart()
-        setFitToContents()
-    }
-
-    private fun setFitToContents() {
-        val bottomSheet =
-            dialog?.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet) as? FrameLayout
-        bottomSheet?.let { sheet ->
-            val behavior = BottomSheetBehavior.from(sheet)
-
-            behavior.isDraggable = true
-            behavior.skipCollapsed = true  // ← 允許收合
-            behavior.isHideable = true      // ← 允許向下滑關閉
-            behavior.isFitToContents = true
-            behavior.state = BottomSheetBehavior.STATE_COLLAPSED
-            behavior.saveFlags = BottomSheetBehavior.SAVE_HIDEABLE
-        }
-    }
-
     override suspend fun createObserver() {
         childFragmentManager.setFragmentResultListener(
             KEY_RESULT,
@@ -172,17 +145,7 @@ class BetSheetFragment private constructor() :
         super.onDismiss(dialog)
     }
 
-    override fun customShow() {
-        mViewModel.register()
-        super.customShow()
-        childFragmentManager.fragments.forEach {
-            if (it is BetSheetListener) {
-                it.doCustomShow()
-            }
-        }
-    }
-
-    override fun customShow(other: ObjectAnimator) {
+    override fun customShow(other: ObjectAnimator?) {
         mViewModel.register()
         super.customShow(other)
         childFragmentManager.fragments.forEach {
@@ -190,6 +153,14 @@ class BetSheetFragment private constructor() :
                 it.doCustomShow()
             }
         }
+    }
+
+    fun setDoStart(doStart: (() -> Unit)?) {
+        this.doStart = doStart
+    }
+
+    override fun playEnterAnimations(doStart: (() -> Unit)?, doEnd: (() -> Unit)?) {
+        super.playEnterAnimations(this.doStart, doEnd)
     }
 
     override fun customHide() {

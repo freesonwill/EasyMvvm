@@ -5,7 +5,6 @@
     android:layout_height="@dimen/dp_94"
     android:layout_marginBottom="@dimen/dp_12"
     android:id="@+id/item_root"
-    android:background="@drawable/shape_bg_item_league"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent"

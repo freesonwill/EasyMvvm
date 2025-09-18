@@ -2,6 +2,7 @@ package com.walisport.module.live.ui.viewmodel
 
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.data.constants.SportEnum
 import arch.cayenne.lib.skin.LanguageManager
 import com.walisport.module.live.R
@@ -18,7 +19,7 @@ import org.koin.core.parameter.parametersOf
 
 class LiveSoftKeyboardViewModel : BaseViewModel() {
 
-    val languageManager:LanguageManager by inject { parametersOf(viewModelScope) }
+    val languageManager: LanguageManager by inject { parametersOf(viewModelScope) }
 
     fun tabMenus() =
         arrayListOf(
@@ -83,44 +84,59 @@ class LiveSoftKeyboardViewModel : BaseViewModel() {
         )
 
 
-   private fun getNormalEmojis(): List<EmojiData> {
+    private fun getNormalEmojis(): List<EmojiData> {
         val list = EmojiEnum.getEmojiMap().map {
             EmojiData(it.value, it.key)
         }.toMutableList()
         return list
     }
 
-   private fun getBidEmojis() = BidEmojiEnum.getEmojiMap().map {
+    private fun getBidEmojis() = BidEmojiEnum.getEmojiMap().map {
         EmojiData(it.value, it.key)
     }.toList()
 
-    fun softData():List<SoftData>{
-        return arrayListOf(SoftData(EmojiTypeEnum.NORMAL,getNormalEmojis()),SoftData(EmojiTypeEnum.BID,getBidEmojis()))
+    fun softData(): List<SoftData> {
+        val list: MutableList<SoftData> = mutableListOf()
+        for (i in 0..<tabMenus().size) {
+            if (i == 0) list.add(SoftData(EmojiTypeEnum.NORMAL, getNormalEmojis())) else list.add(
+                SoftData(
+                    EmojiTypeEnum.BID,
+                    getBidEmojis()
+                )
+            )
+        }
+        "listSize ${list.size}".logd("aaa")
+        return list
     }
 
 
     /**
      * 判断动画类型
      * */
-    fun getKeyBoardActionType(listenerValue:KeyBoardType, currentValue:KeyBoardType): KeyboardActionType {
+    fun getKeyBoardActionType(
+        listenerValue: KeyBoardType,
+        currentValue: KeyBoardType
+    ): KeyboardActionType {
 
-        return  when(currentValue){
-            KeyBoardType.CHAT ->{
-                return when(listenerValue){
+        return when (currentValue) {
+            KeyBoardType.CHAT -> {
+                return when (listenerValue) {
                     KeyBoardType.EMOJI -> KeyboardActionType.CHAT_TO_EMOJI
                     KeyBoardType.SOFT_KEYBOARD -> KeyboardActionType.CHAT_TO_SOFT
                     KeyBoardType.CHAT -> KeyboardActionType.CHAT_TO_CHAT
                 }
             }
-            KeyBoardType.SOFT_KEYBOARD ->{
-                return when(listenerValue){
+
+            KeyBoardType.SOFT_KEYBOARD -> {
+                return when (listenerValue) {
                     KeyBoardType.CHAT -> KeyboardActionType.SOFT_TO_CHAT
                     KeyBoardType.EMOJI -> KeyboardActionType.SOFT_TO_EMOJI
                     KeyBoardType.SOFT_KEYBOARD -> KeyboardActionType.SOFT_TO_SOFT
                 }
             }
-            KeyBoardType.EMOJI ->{
-                return when(listenerValue){
+
+            KeyBoardType.EMOJI -> {
+                return when (listenerValue) {
                     KeyBoardType.CHAT -> KeyboardActionType.EMOJI_TO_CHAT
                     KeyBoardType.SOFT_KEYBOARD -> KeyboardActionType.EMOJI_TO_SOFT
                     KeyBoardType.EMOJI -> KeyboardActionType.NONE
