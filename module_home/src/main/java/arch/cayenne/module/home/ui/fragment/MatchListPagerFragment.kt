@@ -258,7 +258,7 @@ class MatchListPagerFragment :
                                 arch.cayenne.lib.common.R.string.error_net.getString()
                             )
                         }
-
+                        showToast(arch.cayenne.lib.common.R.string.toast_server_disconnected.getString())
                         homeViewModel.changeState(DataState.NetworkUnavailable)
                     }
                     DataState.NoMoreData -> {     //這個DataEmpty表示api抓不到任何資料了，有可能是頁面到底，或是從第一頁就抓不到資料
@@ -286,6 +286,7 @@ class MatchListPagerFragment :
                     DataState.LoadSuccess, HomeState.Match.LoadSuccess -> {
                         if (refreshLayout.isRefreshing) refreshLayout.finishRefresh()
                         homeViewModel.changeState(HomeState.Match.LoadSuccess)
+                        matchAdapter.setLastItemType(MatchItemAdapter.LAST_ITEM_LOAD_MORE)
                     }
                 }
             }

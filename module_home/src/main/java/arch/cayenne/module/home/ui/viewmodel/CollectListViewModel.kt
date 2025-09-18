@@ -52,7 +52,7 @@ class CollectListViewModel : BaseMatchViewModel<CollectListRepository>() {
             callApi({
                 repository.getCollectData(
                     page = page,
-                    isForce = loadMatchType == LoadMatchType.RELOAD
+                    isForce = loadMatchType == LoadMatchType.RELOAD || loadMatchType == LoadMatchType.RETRY
                 )
             }, {
                 if (it is ApiResponseState.Failed) {

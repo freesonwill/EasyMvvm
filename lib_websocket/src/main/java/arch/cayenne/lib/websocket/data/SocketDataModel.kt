@@ -80,6 +80,11 @@ data class InvalidNetworkError(
     override val code: Int? = null
 ) : IResponse, SocketResponseError, ApiFailedState
 
+data class InvalidLoginError(
+    override val msg: String = "Not logged in yet!",
+    override val code: Int? = null
+) : IResponse, SocketResponseError, ApiFailedState
+
 data class InvalidEncryptDataError(
     override val msg: String = "Invalid encrypted data, decryption failed!",
     override val code: Int? = null
