@@ -134,6 +134,7 @@ class BetSheetFragment private constructor() :
             if (result == VALUE_DISMISS) {
                 customHide()
             } else if (result == VALUE_TO_RESULT) {
+                hideSelection()
                 val sheetAnimator = getHideAnimator() ?: return@setFragmentResultListener
                 BetResultFragment.show(requireActivity(), sheetAnimator)
             }
@@ -195,36 +196,37 @@ class BetSheetFragment private constructor() :
     }
 
     override fun playExitAnimations(doStart: (() -> Unit)?, doEnd: (() -> Unit)?) {
-        lifecycleScope.launch {
-            val type = mViewModel.getBetType()
-            if (type != BetTypeEnum.COMBO) {
-                listener?.onDismiss()
-            }
-        }
+        hideSelection()
         super.playExitAnimations(doStart, doEnd)
     }
 
     override fun customHide() {
-        lifecycleScope.launch {
-            val type = mViewModel.getBetType()
-            if (type != BetTypeEnum.COMBO) {
-                listener?.onHide()
-            }
-        }
+        hideSelection()
         mViewModel.unregister()
         mViewModel.removeSingleBet()
         super.customHide()
     }
 
     override fun whenSlideToCollapse() {
-        listener?.onHide()
+        hideSelection()
         super.whenSlideToCollapse()
+    }
+
+    private fun hideSelection() {
+        listener?.let {
+            lifecycleScope.launch {
+                val type = mViewModel.getBetType()
+                if (type != BetTypeEnum.COMBO) {
+                    it.onHide()
+                    listener = null
+                }
+            }
+        }
     }
 
     interface ShowListener {
         fun onShow()
         fun onCancel()
-        fun onDismiss()
         fun onHide()
     }
 }
