@@ -14,6 +14,7 @@ import arch.cayenne.lib.base.ui.animation.AnimationController
 import arch.cayenne.lib.base.ui.animation.AnimationController.AnimType
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
 import arch.cayenne.lib.common.utils.ext.NavResultExt.observeResult
@@ -50,7 +51,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
     override fun initView(savedInstanceState: Bundle?) {
         initPlayTypeLayout()
         setReceiveHorizontalScrollResult()
-        mBinding.drawerLayout.setLayerType(View.LAYER_TYPE_SOFTWARE, null)
+        setDrawerLayoutListener()
     }
 
     override fun onStart() {
@@ -59,7 +60,34 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
         setStatusBar(StatusBarConfig,mBinding.clMain)
         super.onStart()
     }
+    private fun setDrawerLayoutListener() {
+        with (mBinding) {
+            drawerLayout.setLayerType(View.LAYER_TYPE_NONE,null)
+            drawerLayout.addDrawerListener(object : DrawerLayout.DrawerListener {
+                override fun onDrawerSlide(drawerView: View, slideOffset: Float) {
+                    // 動畫滑動中...
+                    "onDrawerSlide slideOffset: $slideOffset".logd()
+                    if (slideOffset in 0.1f .. 0.99f && drawerLayout.layerType != View.LAYER_TYPE_NONE) {
+                        // 抽屜打開一半之前，使用軟體層
+                        drawerLayout.setLayerType(View.LAYER_TYPE_NONE, null)
+                    }
+                }
 
+                override fun onDrawerOpened(drawerView: View) {
+                    // 抽屜打開後
+                    drawerLayout.setLayerType(View.LAYER_TYPE_HARDWARE, null)
+                }
+
+                override fun onDrawerClosed(drawerView: View) {
+                    // 抽屜關閉後
+                    drawerLayout.setLayerType(View.LAYER_TYPE_NONE, null)
+                }
+
+                override fun onDrawerStateChanged(newState: Int) {
+                }
+            })
+        }
+    }
     //init 一級導航欄位
     private fun initPlayTypeLayout() {
         with(mBinding) {
