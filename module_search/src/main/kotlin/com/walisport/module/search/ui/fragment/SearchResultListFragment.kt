@@ -10,12 +10,14 @@ import androidx.core.os.bundleOf
 import androidx.core.view.children
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.RecyclerView
+import arch.cayenne.lib.common.utils.CustomTabIndicatorUtils
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.TabLayoutExt
 import arch.cayenne.lib.common.utils.ext.TabLayoutExt.addOnTabSelectedListener2
 import arch.cayenne.lib.common.utils.ext.animateIndicatorToPosition
 import arch.cayenne.lib.common.utils.ext.setupHorizontalScrollDegree
 import arch.cayenne.lib.common.utils.ext.setupViewPagerScroll
+import arch.cayenne.lib.common.utils.ext.startFadeAnim
 import arch.cayenne.lib.common.utils.ext.startZoomInAnim
 import arch.cayenne.lib.common.utils.helper.doSmartAnim
 import com.google.android.material.tabs.TabLayout
@@ -48,10 +50,13 @@ class SearchResultListFragment :
                 addOnTabSelectedListener2(object : TabLayoutExt.OnTabSelectedListener2 {
                     override fun onTabSelected(tab: TabLayout.Tab, isTabClick: Boolean) {
                             // 动画更新指示器位置
-                            customIndicator.animateIndicatorToPosition(tab.position)
                             if(isTabClick){
-                                //viewPager.setCurrentItem(tab.position, false)
-                                viewPager.startZoomInAnim()
+                                CustomTabIndicatorUtils.animateIndicatorToPosition(customIndicator,tab.position)
+                                val vp = viewPager
+                                vp.startFadeAnim {
+                                    vp.setCurrentItem(tab.position, false)
+                                    it.invoke()
+                                }
                         }
                         updateTabTypeface(tab, true)
                     }
@@ -89,6 +94,7 @@ class SearchResultListFragment :
         contentBinding.viewPager.adapter = null
         tabMediator?.detach()
         tabMediator = null
+        CustomTabIndicatorUtils.clear()
         super.onDestroyView()
     }
 
