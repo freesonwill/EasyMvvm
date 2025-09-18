@@ -145,7 +145,7 @@ class SingleBetViewModel(
             launch {
                 betRepo.observeComboBean().collect {
                     setComboMultiBet(it)
-                    setNumberLimit(it.minAmount, it.maxAmount)
+                    setNumberLimit(it.minAmount, Long.MAX_VALUE)
                 }
             }
             launch {
