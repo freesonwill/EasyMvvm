@@ -2,7 +2,6 @@ package arch.cayenne.module.home.ui.fragment
 
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import androidx.core.view.doOnPreDraw
@@ -297,6 +296,7 @@ class MatchListPagerFragment :
                         homeViewModel.changeState(HomeState.Match.Loading)
                     }
                     HomeState.Match.Refreshing -> {
+                        mViewModel.changePageEnd(false)
                         matchAdapter.setLastItemType(MatchItemAdapter.LAST_ITEM_LOAD_MORE)
                     }
                     HomeState.Match.LoadingNext -> {
@@ -304,6 +304,7 @@ class MatchListPagerFragment :
                     DataState.LoadSuccess, HomeState.Match.LoadSuccess -> {
                         if (refreshLayout.isRefreshing) refreshLayout.finishRefresh()
                         homeViewModel.changeState(HomeState.Match.LoadSuccess)
+                        mViewModel.changePageEnd(false)
                         matchAdapter.setLastItemType(MatchItemAdapter.LAST_ITEM_LOAD_MORE)
                     }
                 }

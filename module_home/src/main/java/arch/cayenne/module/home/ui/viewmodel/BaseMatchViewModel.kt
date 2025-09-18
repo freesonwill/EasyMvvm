@@ -58,15 +58,19 @@ abstract class BaseMatchViewModel<REPO: BaseMatchRepository> : BaseViewModel() {
             repository.observeLoginChange()
                 .filter { it }
                 .collect {
-                    if (apiStateListener.value == null) {
-                        getMatchListData(LoadMatchType.FIRST_LOAD)
-                    } else if (apiStateListener.value == DataState.NetworkUnavailable) {
-                        getMatchListData(LoadMatchType.RETRY)
-                    } else {
-                        launch(Dispatchers.Main) {
-                            subscribeMatch(getCurrentSubscribeMatchSet())
-                        }
+                    getMatchListData(LoadMatchType.RETRY)
+                    launch(Dispatchers.Main) {
+                        subscribeMatch(getCurrentSubscribeMatchSet())
                     }
+//                    if (apiStateListener.value == null) {
+//                        getMatchListData(LoadMatchType.FIRST_LOAD)
+//                    } else if (apiStateListener.value == DataState.NetworkUnavailable) {
+//                        getMatchListData(LoadMatchType.RETRY)
+//                    } else {
+//                        launch(Dispatchers.Main) {
+//                            subscribeMatch(getCurrentSubscribeMatchSet())
+//                        }
+//                    }
 
                 }
         }
