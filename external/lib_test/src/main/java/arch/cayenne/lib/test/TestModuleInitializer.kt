@@ -17,11 +17,15 @@ import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.test.data.bean.DemoData
 import arch.cayenne.lib.test.ui.popup.WsPopup
+import arch.cayenne.lib.websocket.WebSocketManager
 import com.blankj.utilcode.util.ScreenUtils
 import com.lxj.xpopup.XPopup
 import com.petterp.floatingx.assist.FxDisplayMode
 import com.petterp.floatingx.assist.FxGravity
 import com.petterp.floatingx.assist.helper.FxScopeHelper
+import org.koin.core.context.loadKoinModules
+import org.koin.core.qualifier.named
+import org.koin.dsl.module
 import org.koin.mp.KoinPlatform.getKoin
 
 /**
@@ -52,7 +56,12 @@ class TestModuleInitializer : DefaultInitializer<Unit> {
                 }
             }
         })
+        loadKoinModules(listOf(socketModules))
     }
+    private val socketModules = module {
+        factory(named("test")) { WebSocketManager(get(), get()) }
+    }
+
 
 
     private fun createAnimFloat(activity: Activity){

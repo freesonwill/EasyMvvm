@@ -20,10 +20,6 @@
         style="@style/ws_popup_btn"
         android:text="ws连接" />
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/ws_origin_connect"
-        style="@style/ws_popup_btn"
-        android:text="ws纯原生连接" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/ws_login"
@@ -39,5 +35,11 @@
         android:id="@+id/ws_http"
         style="@style/ws_popup_btn"
         android:text="http首开接口" />
+
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/gameTest"
+        style="@style/ws_popup_btn"
+        android:text="gameTest接口" />
 
 </androidx.appcompat.widget.LinearLayoutCompat>
