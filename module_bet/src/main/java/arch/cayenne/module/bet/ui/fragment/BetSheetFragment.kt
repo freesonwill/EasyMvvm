@@ -49,17 +49,6 @@ class BetSheetFragment private constructor() :
             }
         }
 
-        fun show(activity: FragmentActivity, doStart: () -> Unit) {
-            val manager = activity.supportFragmentManager
-            val f = manager.findFragmentByTag(TAG)
-            if (f == null) {
-                BetSheetFragment().show(manager, TAG)
-            } else if (f is BetSheetFragment) {
-                f.setDoStart(doStart)
-                f.customShow()
-            }
-        }
-
         fun show(activity: FragmentActivity, listener: ShowListener) {
             val manager = activity.supportFragmentManager
             val f = manager.findFragmentByTag(TAG)
