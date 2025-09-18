@@ -111,4 +111,8 @@ class BetSheetRepository(
         loginStatusObserverJob?.cancel()
         loginStatusObserverJob = null
     }
+
+    suspend fun getBetType(): BetTypeEnum? = withContext(scope.coroutineContext) {
+        betDao.getCurrentBet()?.betType
+    }
 }

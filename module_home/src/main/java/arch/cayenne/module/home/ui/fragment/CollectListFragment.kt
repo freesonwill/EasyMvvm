@@ -88,24 +88,42 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
 
                 override fun onOddsCellClick(cell: WeakReference<View>, selection: SelectionBeanLite, x: Float, y: Float) {
                     lifecycleScope.launch {
-                        if (mViewModel.getCurrentSelectionCount() == 0) {
-                            BetSheetFragment.show(requireActivity()) {
-                                cell.get()?.isSelected = true
-                            }
-                        } else {
-                            cell.get()?.isSelected = true
-                        }
+                        val v = cell.get()
                         val status = mViewModel.setSelection(selection.selectionId)
+                        when (status) {
+                            is AddSelectionStatus.Success.Single -> {
+                                BetSheetFragment.show(requireActivity(), object : BetSheetFragment.ShowListener {
+                                    override fun onShow() {
+                                        v?.isSelected = true
+                                    }
 
-                        if (status !is AddSelectionStatus.Success) {
-                            cell.get()?.isSelected = false
+                                    override fun onCancel() {
+                                        v?.isSelected = false
+                                    }
+
+                                    override fun onHide() {
+                                        v?.isSelected = false
+                                    }
+                                })
+                            }
+
+                            is AddSelectionStatus.Success.Combo, is AddSelectionStatus.Success.Update -> {
+                                v?.isSelected = true
+                            }
+
+                            is AddSelectionStatus.Others.Remove -> {
+                                v?.isSelected = false
+                            }
+
+                            is AddSelectionStatus.Failure -> {
+                                v?.isSelected = false
+                                status.msg?.let {
+                                    showToast(it)
+                                }
+                            }
                         }
 
-                        if (status is AddSelectionStatus.Failure) {
-                            status.msg?.let {
-                                showToast(it)
-                            }
-                        } else if (status is AddSelectionStatus.Success.Combo || status is AddSelectionStatus.Success.Update) {
+                        if (status is AddSelectionStatus.Success.Combo || status is AddSelectionStatus.Success.Update) {
                             fabViewModel.setClickAnimation(x, y)
                         }
                     }

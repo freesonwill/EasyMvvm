@@ -21,6 +21,7 @@ sealed class AddSelectionStatus {
         data object DisableComboForProvider : Failure(arch.cayenne.lib.common.R.string.disabled_to_combo_for_provider.getString()) // 串關限制（供應商不同）
         data object MaxLimit : Failure(arch.cayenne.lib.common.R.string.disabled_to_combo_for_over_limit.getString())   // 超過最大選擇數量
         data object Fail : Failure()       // 其他錯誤
+        data object AddAfterCancel : Failure() // 取消後再添加
     }
 
     sealed class Others : AddSelectionStatus() {

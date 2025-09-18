@@ -20,6 +20,7 @@ import android.widget.FrameLayout
 import androidx.annotation.CallSuper
 import androidx.appcompat.app.AppCompatDialog
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.animation.doOnCancel
 import androidx.core.animation.doOnEnd
 import androidx.core.animation.doOnStart
 import androidx.core.graphics.drawable.toDrawable
@@ -141,6 +142,7 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
 
     protected open fun playEnterAnimations(
         doStart: (() -> Unit)? = null,
+        doCancel: (() -> Unit)? = null,
         doEnd: (() -> Unit)? = null
     ) {
         prepareShowDim()
@@ -170,6 +172,9 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
                     showDim()
                     doStart?.invoke()
                 }
+            }
+            doOnCancel {
+                doCancel?.invoke()
             }
             doOnEnd {
                 doEnd?.invoke()
@@ -294,10 +299,12 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
         val scrollBehavior = params.behavior as? ScrollBottomSheetBehavior ?: return
         scrollBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
             var isDragging = false
+            var isOverHeight = false
             var offsetY = 0f
             override fun onStateChanged(bottomSheet: View, newState: Int) {
                 if (newState == BottomSheetBehavior.STATE_DRAGGING) {
                     isDragging = true
+                    isOverHeight = false
                     offsetY = bottomSheet.y
                 } else if (newState == BottomSheetBehavior.STATE_HIDDEN || newState == BottomSheetBehavior.STATE_EXPANDED || newState == BottomSheetBehavior.STATE_COLLAPSED) {
                     isDragging = false
@@ -307,12 +314,19 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
             override fun onSlide(bottomSheet: View, slideOffset: Float) {
                 if (isDragging) {
                     val y = bottomSheet.y - offsetY
+                    if (y >= bottomSheet.height && !isOverHeight) {
+                        isOverHeight = true
+                        whenSlideToCollapse()
+                    }
                     if (y > 0) {
                         setDimByScroll(abs(y.toInt()))
                     }
                 }
             }
         })
+    }
+
+    protected open fun whenSlideToCollapse() {
     }
 
     @CallSuper

@@ -8,6 +8,8 @@ import arch.cayenne.module.bet.BettingRemoteManager
 import arch.cayenne.module.bet.data.AddSelectionStatus
 import arch.cayenne.module.bet.data.BetInsertBean
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -43,6 +45,7 @@ class BetRepository(
             }
         }
     }
+    private var addJob: Deferred<AddSelectionStatus>? = null
 
     /***
      * 新增投注資料
@@ -50,69 +53,83 @@ class BetRepository(
      */
     suspend fun setSelection(insertBean: BetInsertBean): AddSelectionStatus =
         withContext(scope.coroutineContext) {
-            val bet = betDao.getCurrentBet()
-            val betId = bet?.betId ?: betDao.insert(BetBean())
+            addJob = async {
+                val bet = betDao.getCurrentBet()
+                val betId = bet?.betId ?: betDao.insert(BetBean())
 
-            val selections = betDao.getSelections(betId)
-            val existing = selections.find { it.matchId == insertBean.matchId }
+                val selections = betDao.getSelections(betId)
+                val existing = selections.find { it.matchId == insertBean.matchId }
 
-            val liteBean = BetSelectionLiteBean(
-                matchId = insertBean.matchId,
-                selectionId = insertBean.selectionId
-            )
-
-            if (existing?.selectionId == insertBean.selectionId) {
-                scope.launch {
-                    betDao.removeBetSelectionByMatchId(betId, insertBean.matchId)
-                    checkBetBeanType(betId)
-                }
-                return@withContext AddSelectionStatus.Others.Remove
-            }
-
-            if (existing == null && selections.size >= MAX_LIMIT_SIZE) {
-                return@withContext AddSelectionStatus.Failure.MaxLimit
-            }
-
-
-            if (existing == null) {
-                if (!insertBean.isParlay && selections.isNotEmpty()) {
-                    return@withContext AddSelectionStatus.Failure.DisableComboForParlay
-                } else if (selections.isNotEmpty() && insertBean.provider != selections.first().provider) {
-                    return@withContext AddSelectionStatus.Failure.DisableComboForProvider
-                }
-                scope.launch {
-                    val newBean = insertBean.toBetSelectionBean(betId)
-                    betDao.insertSelection(newBean)
-                    checkBetBeanType(betId)
-                }
-                return@withContext if (selections.isEmpty()) {
-                    AddSelectionStatus.Success.Single
-                } else {
-                    AddSelectionStatus.Success.Combo
-                }
-            } else {
-                if (!insertBean.isParlay) {
-                    return@withContext AddSelectionStatus.Failure.DisableComboForParlay
-                } else if (insertBean.provider != existing.provider) {
-                    return@withContext AddSelectionStatus.Failure.DisableComboForProvider
-                }
-                scope.launch {
-                    val newBean = insertBean.toBetSelectionBean(betId)
-                    betDao.updateSelection(newBean)
-
-                    checkBetBeanType(betId)
-                }
-                return@withContext AddSelectionStatus.Success.Update(
-                    existing.selectionId,
-                    liteBean.selectionId
+                val liteBean = BetSelectionLiteBean(
+                    matchId = insertBean.matchId,
+                    selectionId = insertBean.selectionId
                 )
+
+                if (existing?.selectionId == insertBean.selectionId) {
+                    scope.launch {
+                        betDao.removeBetSelectionByMatchId(betId, insertBean.matchId)
+                        checkBetBeanType(betId)
+                    }
+                    return@async AddSelectionStatus.Others.Remove
+                }
+
+                if (existing == null && selections.size >= MAX_LIMIT_SIZE) {
+                    return@async AddSelectionStatus.Failure.MaxLimit
+                }
+
+
+                if (existing == null) {
+                    if (!insertBean.isParlay && selections.isNotEmpty()) {
+                        return@async AddSelectionStatus.Failure.DisableComboForParlay
+                    } else if (selections.isNotEmpty() && insertBean.provider != selections.first().provider) {
+                        return@async AddSelectionStatus.Failure.DisableComboForProvider
+                    }
+                    scope.launch {
+                        val newBean = insertBean.toBetSelectionBean(betId)
+                        betDao.insertSelection(newBean)
+                        checkBetBeanType(betId)
+                    }
+                    return@async if (selections.isEmpty()) {
+                        AddSelectionStatus.Success.Single
+                    } else {
+                        AddSelectionStatus.Success.Combo
+                    }
+                } else {
+                    if (!insertBean.isParlay) {
+                        return@async AddSelectionStatus.Failure.DisableComboForParlay
+                    } else if (insertBean.provider != existing.provider) {
+                        return@async AddSelectionStatus.Failure.DisableComboForProvider
+                    }
+                    scope.launch {
+                        val newBean = insertBean.toBetSelectionBean(betId)
+                        betDao.updateSelection(newBean)
+
+                        checkBetBeanType(betId)
+                    }
+                    return@async AddSelectionStatus.Success.Update(
+                        existing.selectionId,
+                        liteBean.selectionId
+                    )
+                }
             }
+            return@withContext addJob!!.await()
         }
 
     private suspend fun checkBetBeanType(betId: Long) {
         val selection = betDao.getSelections(betId)
         if (selection.isEmpty()) {
             betDao.removeCurrentBet()
+        }
+    }
+
+    fun cancelAdd() {
+        addJob?.let {
+            if (!it.isCompleted) {
+                it.cancel()
+                addJob = scope.async {
+                    AddSelectionStatus.Failure.AddAfterCancel
+                }
+            }
         }
     }
 }
