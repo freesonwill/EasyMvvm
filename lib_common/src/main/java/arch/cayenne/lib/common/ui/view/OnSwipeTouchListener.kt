@@ -8,9 +8,9 @@ open class OnSwipeTouchListener : View.OnTouchListener {
     private var startX: Float = 0f
     private var startY: Float = 0f
     private var startTime: Long = 0L
-    private val SWIPE_THRESHOLD = 200 // X轴滑动距离阈值
-    private val SWIPE_MAX_TIME = 1500 // 时间间隔
-    private val MAX_ANGLE_DEGREES = 30 // 最大允许角度
+    private val SWIPE_THRESHOLD = 140 // X轴滑动距离阈值
+    private val SWIPE_MAX_TIME = 1600 // 时间间隔
+    private val MAX_ANGLE_DEGREES = 45 // 最大允许角度
 
     override fun onTouch(v: View, event: MotionEvent): Boolean {
         when (event.action) {
@@ -49,6 +49,11 @@ open class OnSwipeTouchListener : View.OnTouchListener {
             }
         }
         return false
+    }
+
+    //获取弧度转角度滑动距离
+    fun calculateAngle(diffX: Float, diffY: Float) : Double {
+        return (kotlin.math.atan2(diffY, diffX) * (SWIPE_THRESHOLD / Math.PI))
     }
 
     open fun onSwipeRight() {}
