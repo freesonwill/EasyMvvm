@@ -153,9 +153,15 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
         val offY = sheet.translationY
         val startY = sheet.height.toFloat()
         if (offY != startY) {
-            sheet.translationY = sheet.height.toFloat()
+            sheet.translationY = startY
         }
-        val animation = ObjectAnimator.ofFloat(sheet, "translationY", sheet.height.toFloat(), 0f)
+        val animation = ValueAnimator.ofFloat(startY, 0f)
+        animation.addUpdateListener { animation ->
+            val progress = animation.animatedValue as Float
+            val h = sheet.height.toFloat() // 每幀都讀最新高度
+            val offset = startY - h
+            sheet.translationY = progress + offset
+        }
         val animatorSet = AnimatorSet().apply {
             duration = sheetAnim.duration
             interpolator = sheetAnim.interpolator

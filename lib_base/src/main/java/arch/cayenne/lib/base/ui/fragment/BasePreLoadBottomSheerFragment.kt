@@ -65,6 +65,7 @@ abstract class BasePreLoadBottomSheetFragment<VM : BaseViewModel, VB : ViewBindi
         unhideableDialog = dialog
         return dialog.apply {
             window?.setType(WindowManager.LayoutParams.TYPE_APPLICATION_SUB_PANEL)
+            window?.setWindowAnimations(0)
         }
     }
 
@@ -91,8 +92,7 @@ abstract class BasePreLoadBottomSheetFragment<VM : BaseViewModel, VB : ViewBindi
             behavior.skipCollapsed = isVerticalGestureEnable  // ← 允許收合
             behavior.isHideable = isVerticalGestureEnable      // ← 允許向下滑關閉
             behavior.isFitToContents = true
-            behavior.state = BottomSheetBehavior.STATE_COLLAPSED
-            behavior.saveFlags = BottomSheetBehavior.SAVE_HIDEABLE
+            behavior.state = BottomSheetBehavior.STATE_EXPANDED
         }
     }
 
