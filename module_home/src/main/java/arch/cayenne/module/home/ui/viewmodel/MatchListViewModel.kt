@@ -116,9 +116,6 @@ class MatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
                 "Collect observeMatchChange result：${list.map { it.match.matchId }}".logi(this@MatchListViewModel::class.java.simpleName)
                 withContext(Dispatchers.Main) {
                     //第一次http拿到的資料量過少，會影響到拉取更新資料需要等待，所以跟api補上拿取更多一點的資料
-//                    if (apiStateListener.value == null && list.size < DEFAULT_MATCH_SIZE) {
-//                        loadNextPage()
-//                    }
                     if (page == 1 && list.isEmpty()) {
                         setState(HomeState.Match.DataEmpty)
                     } else if (list.size % DEFAULT_MATCH_SIZE != 0) {
@@ -175,6 +172,7 @@ class MatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
                             setState(DataState.NetworkUnavailable)
                         }
                     } else if (it is ApiResponseState.Succeeded<*>) {
+
                         val size = it.dataAs<List<Common.Match>>()?.size ?: 0
                         val isEmpty = size == 0
                         if (page == 1 && isEmpty) {

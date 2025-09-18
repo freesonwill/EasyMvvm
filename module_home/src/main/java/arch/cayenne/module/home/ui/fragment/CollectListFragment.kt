@@ -226,6 +226,7 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
                     }
                     HomeState.Match.Refreshing -> {
                         clDynamics.visibility = View.GONE
+                        mViewModel.changePageEnd(false)
                         matchAdapter.setLastItemType(MatchItemAdapter.LAST_ITEM_LOAD_MORE)
                     }
                     HomeState.Match.LoadingNext -> {
@@ -234,6 +235,7 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
                     DataState.LoadSuccess, HomeState.Match.LoadSuccess -> {
                         if (refreshLayout.isRefreshing) refreshLayout.finishRefresh()
                         clDynamics.visibility = View.GONE
+                        mViewModel.changePageEnd(false)
                         matchAdapter.setLastItemType(MatchItemAdapter.LAST_ITEM_LOAD_MORE)
                     }
                 }
