@@ -93,13 +93,19 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
 
     override fun initView(savedInstanceState: Bundle?) {
         initSportLayout()
-        if (mViewModel.currentPlayTypeId == PlayType.CHAMPION.id) {
-            initChampionTournamentLayout()
-        } else {
-            initTournamentLayout()
-        }
-        if (mViewModel.currentPlayTypeId == PlayType.EARLY.id) {
-            mBinding.layoutContainer.llDateFilterContainer.visibility = View.VISIBLE
+
+        when(mViewModel.currentPlayTypeId) {
+            PlayType.TODAY.id -> {
+                initTournamentLayout()
+            }
+            PlayType.EARLY.id -> {
+                mBinding.layoutContainer.llDateFilterContainer.visibility = View.VISIBLE
+                initTournamentLayout()
+                initDateFilterLayout()
+            }
+            PlayType.CHAMPION.id -> {
+                initChampionTournamentLayout()
+            }
         }
     }
 
@@ -195,29 +201,10 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
                 )
             }
         }
-        mViewModel.recently7DayMatchScheduleCount.observeEvent(viewLifecycleOwner, this) { list->
-            customPopup?.updateRange(list)
-        }
-        mViewModel.selectedDate.observeEvent(viewLifecycleOwner, this) { select ->
-            if (select == HomeViewModel.DEFAULT_DATE) return@observeEvent
-            setSelectedDateTab(getFuture31Days().find { it.third == select })
-        }
 
         mViewModel.tournamentSlideOutEnd.observeEvent(viewLifecycleOwner, this) {
             mBinding.ivTournamentMore.visibility = View.VISIBLE
             mBinding.llTournamentsDropdown.visibility = View.GONE
-        }
-
-        mViewModel.calendarStates.observe(viewLifecycleOwner) {
-            when (it) {
-                HomeCalendarFragment.States.CALENDAR_CLOSE_NOTHING -> {
-                    if (customPopup != null &&
-                        customPopup?.getAnimState() != HomeCalendarFragment.AnimState.COLLAPSING) {
-                        customPopup?.callDismiss()
-                    }
-                }
-                else -> Unit
-            }
         }
 
         homeViewModel.languageManager.languageFlow.collect{
@@ -228,6 +215,16 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
         homeViewModel.notifySubHomeRefresh.observeEvent(viewLifecycleOwner, this) {
             mViewModel.getCurrentSportStatistical()
             mViewModel.getCurrentTournament()
+        }
+
+        if(mViewModel.currentPlayTypeId == PlayType.EARLY.id) {
+            mViewModel.recently7DayMatchScheduleCount.observeEvent(viewLifecycleOwner, this) { list->
+                customPopup?.updateRange(list)
+            }
+            mViewModel.selectedDate.observeEvent(viewLifecycleOwner, this) { select ->
+                if (select == HomeViewModel.DEFAULT_DATE) return@observeEvent
+                setSelectedDateTab(getFuture31Days().find { it.third == select })
+            }
         }
     }
 
@@ -295,8 +292,6 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
     //init 三級導航欄位與日期，只有今日和早盤有
     @SuppressLint("DefaultLocale")
     private fun initTournamentLayout() {
-        // 取得未來 31 天 (MMDD, 星期, timeStamp)
-        val dateTabs = getFutureSevenDays()
         with(mBinding.layoutContainer) {
             //聯賽
             vpGameList.isSaveEnabled = false
@@ -315,6 +310,28 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
                     }
                 }
             }, false)
+
+            // 初始化 TabLayout end more跟手動畫
+            tlLeagueList.setupEndTabMoreAnimation(
+                mBinding.ivTournamentMore,
+                mBinding.llHomeTournamentMore
+            )
+        }
+
+        mBinding.ivTournamentMore.apply {addScaleOnTouchAnimation()}.clickNoRepeat {
+            mViewModel.setCalendarState(HomeCalendarFragment.States.CALENDAR_CLOSE_NOTHING)
+            toggleTournamentMoreSection(true, TournamentListType.MORE)
+        }
+        mBinding.llHomeTournamentMore.clickNoRepeat {
+            mViewModel.setCalendarState(HomeCalendarFragment.States.CALENDAR_CLOSE_NOTHING)
+            toggleTournamentMoreSection(true, TournamentListType.MORE)
+        }
+    }
+
+    private fun initDateFilterLayout() {
+        with(mBinding.layoutContainer) {
+            // 取得未來 31 天 (MMDD, 星期, timeStamp)
+            val dateTabs = getFutureSevenDays()
 
             // 日期 Tab 設定, 固定 "全部"
             updateDateTabs(tlDateList, dateTabs)
@@ -339,35 +356,18 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
 
                 //呼叫日曆popup元件
                 val targetTab = tlDateList.getTabAt(tlDateList.selectedTabPosition)
-                val tabSelectedDate = if (targetTab != null) {
-                    targetTab.run {
+                val tabSelectedDate =
+                    targetTab?.run {
                         getFuture31Days().find { it.first == tag }?.third?.getFormatDate()
                             ?.split("/")?.toYYYYMMDD()
                             ?: "0"
-                    }
-                } else {
-                    "0"
-                }
+                    } ?: "0"
+
                 launch {
                     delay(20)
                     showHomeCalendar(tabSelectedDate)
                 }
             }
-
-            // 初始化 TabLayout end more 跟手動畫
-            tlLeagueList.setupEndTabMoreAnimation(
-                mBinding.ivTournamentMore,
-                mBinding.llHomeTournamentMore
-            )
-        }
-
-        mBinding.ivTournamentMore.apply {addScaleOnTouchAnimation()}.clickNoRepeat {
-            mViewModel.setCalendarState(HomeCalendarFragment.States.CALENDAR_CLOSE_NOTHING)
-            toggleTournamentMoreSection(true, TournamentListType.MORE)
-        }
-        mBinding.llHomeTournamentMore.clickNoRepeat {
-            mViewModel.setCalendarState(HomeCalendarFragment.States.CALENDAR_CLOSE_NOTHING)
-            toggleTournamentMoreSection(true, TournamentListType.MORE)
         }
     }
 
