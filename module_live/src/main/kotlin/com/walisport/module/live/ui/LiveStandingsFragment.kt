@@ -90,6 +90,7 @@ class LiveStandingsFragment : BaseFragment<LiveStandingsViewModel, FragmentLiveS
             mainViewModel.mainMatch.observe(viewLifecycleOwner) {
                 it?.let {
                     val leagueID = it.basicInfo.tournamentId
+                    mBinding.tvStandingsName.text = it.basicInfo.tournamentName
                     mViewModel.getCompetitionData(leagueID)
                 }
             }
