@@ -50,6 +50,7 @@ class DimController private constructor() {
         val v = DimView(context).apply {
             setBackgroundColor(Color.BLACK)
             alpha = 0f
+            isVisible = false
         }
         val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
 
