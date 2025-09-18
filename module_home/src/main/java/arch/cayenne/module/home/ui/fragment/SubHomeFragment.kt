@@ -12,20 +12,17 @@ import android.widget.LinearLayout
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import androidx.viewpager2.widget.ViewPager2.SCROLL_STATE_IDLE
-import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
-import arch.cayenne.lib.common.utils.ext.NavResultExt.observeResultOnce
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.TabLayoutExt
 import arch.cayenne.lib.common.utils.ext.TabLayoutExt.addOnTabSelectedListener2
@@ -242,9 +239,19 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
 
     fun onFragmentSelected() {
         mViewModel.notifyCurrentMoreState()
-        
         mViewModel.getCurrentSportStatistical()
         mViewModel.getCurrentTournament()
+        if (mViewModel.resetPageSelectedTimestamp()) {
+            if (mViewModel.currentPlayTypeId == PlayType.CHAMPION.id) {
+                val fragment = childFragmentManager.findFragmentByTag(PlayType.CHAMPION.name)
+                (fragment as? TournamentListFragment)?.reloadAllData()
+            } else {
+                val itemId = leaguePagerAdapter?.getItemId(mBinding.layoutContainer.vpGameList.currentItem)?: return
+                val fragment = childFragmentManager.findFragmentByTag("f$itemId") ?: return
+                (fragment as? MatchListPagerFragment)?.reloadAllData()
+            }
+
+        }
     }
 
     // 設置更多按鈕的顯示狀態
