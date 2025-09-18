@@ -24,6 +24,7 @@ import arch.cayenne.lib.base.data.model.PagerBean
 import arch.cayenne.lib.base.ui.adapter.PagerAdapter
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
+import arch.cayenne.lib.common.utils.CustomTabIndicatorUtils
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.TabLayoutExt
 import arch.cayenne.lib.common.utils.ext.TabLayoutExt.addOnTabSelectedListener2
@@ -198,12 +199,14 @@ class HomeBetSlipFragment : BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsl
                 override fun onTabSelected(tab: TabLayout.Tab,isTabClick:Boolean) {
                     mViewModel.setShowType(HomeSlipShowTypeEnum.NONE)
                         // 动画更新指示器位置
-                        mBinding.customIndicator.animateIndicatorToPosition(tab.position)
+                       // mBinding.customIndicator.animateIndicatorToPosition(tab.position)
                         //mBinding.viewPager.doSmartAnim(targetPosition = tab.position)
-                        val vp = mBinding.viewPager
+                      //  val vp = mBinding.viewPager
                         if(isTabClick) {
+                            CustomTabIndicatorUtils.animateIndicatorToPosition(mBinding.customIndicator,tab.position)
 //                            vp.setCurrentItem(tab.position, false)
 //                            vp.startZoomInAnim()
+                            val vp = mBinding.viewPager
                             vp.startFadeAnim {
                                 vp.setCurrentItem(tab.position, false)
                                 it.invoke()
@@ -404,5 +407,10 @@ class HomeBetSlipFragment : BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsl
     override fun onResume() {
         super.onResume()
         DatePickerFragment.create(this)
+    }
+
+    override fun onDestroyView() {
+        CustomTabIndicatorUtils.clear()
+        super.onDestroyView()
     }
 }

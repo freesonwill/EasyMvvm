@@ -22,6 +22,7 @@ import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
+import arch.cayenne.lib.common.utils.CustomTabIndicatorUtils
 import arch.cayenne.lib.common.utils.ext.DimensionExt.px2sp
 import arch.cayenne.lib.common.utils.ext.setDrawerInterpolator
 import arch.cayenne.lib.common.utils.ext.NavResultExt.observeResult
@@ -157,7 +158,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
             override fun onTabSelected(tab: TabLayout.Tab,isTabClick: Boolean) {
                 tab.let {
                     if (isTabClick) {
-                        mBinding.customIndicator.animateIndicatorToPosition(tab.position)
+                        CustomTabIndicatorUtils.animateIndicatorToPosition(mBinding.customIndicator,tab.position)
                         val vp = mBinding.vpPage
                             vp.startFadeAnim {
                                 vp.setCurrentItem(tab.position, false)
@@ -285,7 +286,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
     private fun updateMatchId(matchId: Long) {
         mBinding.vpPage.setCurrentItem(1,false)
         mBinding.tabLayout.getTabAt(1)?.select()
-        mBinding.customIndicator.animateIndicatorToPosition(1,false)
+        CustomTabIndicatorUtils.animateIndicatorToPosition(mBinding.customIndicator,1)
         mViewModel.matchId.value?.let {
             deleteDataAndSubscriptions(matchId)
             mViewModel.setMatchId(matchId)
@@ -397,6 +398,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         mViewModel.matchId.value?.let {
             deleteDataAndSubscriptions(it)
         }
+        CustomTabIndicatorUtils.clear()
         super.onDestroyView()
     }
 
