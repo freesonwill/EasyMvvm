@@ -4,7 +4,6 @@ import android.animation.Animator
 import android.annotation.SuppressLint
 import android.app.ActivityManager
 import android.content.Context
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -99,7 +98,7 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
                 initTournamentLayout()
             }
             PlayType.EARLY.id -> {
-                mBinding.layoutContainer.llDateFilterContainer.visibility = View.VISIBLE
+                mBinding.layoutContainer.groupDateFilter.visibility = View.VISIBLE
                 initTournamentLayout()
                 initDateFilterLayout()
             }
@@ -135,30 +134,21 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
     override fun initListener() {
         with(mBinding) {
             setTopMaskListener()
-            llFavoriteEntry.setOnClickListener {
-                navigate(NewHomeFragmentDirections.actionNewHomeFragmentToCollectListFragment())
+
+            frameFavoriteClickArea.apply {
+                clickNoRepeatSingle { navigate(NewHomeFragmentDirections.actionNewHomeFragmentToCollectListFragment()) }
+                addScaleOnTouchAnimation()
             }
-            llFavoriteEntry.addScaleOnTouchAnimation()
-            llSearchEntry.setOnClickListener {
-                navigate(arch.cayenne.lib.res.R.string.nav_module_search_fragment.deeplink())
+
+            frameSearchClickArea.apply {
+                clickNoRepeatSingle { navigate(arch.cayenne.lib.res.R.string.nav_module_search_fragment.deeplink()) }
+                addScaleOnTouchAnimation()
             }
-            llSearchEntry.addScaleOnTouchAnimation()
-            llBetEntry.clickNoRepeatSingle {
-                //navigate(Uri.parse("walisport://module_home/homeFragment"))
-                navigate(Uri.parse("walisport://module_topup/topUpFragment"))
+
+            frameBetClickArea.apply {
+                clickNoRepeatSingle { navigate(NewHomeFragmentDirections.actionNewHomeFragmentToHomeBetSlipFragment()) }
+                addScaleOnTouchAnimation()
             }
-            llFavoriteEntry.clickNoRepeatSingle {
-                navigate(NewHomeFragmentDirections.actionNewHomeFragmentToCollectListFragment())
-            }
-            llFavoriteEntry.addScaleOnTouchAnimation()
-            llSearchEntry.clickNoRepeatSingle {
-                navigate(arch.cayenne.lib.res.R.string.nav_module_search_fragment.deeplink())
-            }
-            llSearchEntry.addScaleOnTouchAnimation()
-            llBetEntry.clickNoRepeatSingle {
-                navigate(NewHomeFragmentDirections.actionNewHomeFragmentToHomeBetSlipFragment())
-            }
-            llBetEntry.addScaleOnTouchAnimation()
         }
     }
 
@@ -510,6 +500,8 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
                 }
                 setOnBeforeDismissAnimListener {
                     llOtherDate.isSelected = false
+                    tvDate.isSelected = false
+                    tvWeekDay.isSelected = false
                     // 重置日期tab選擇狀態
                     tlDateList.getTabAt(tlDateList.selectedTabPosition)?.let {
                         if(!it.view.isSelected) {
@@ -520,10 +512,14 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
                 }
                 setOnBeforeExpandAnimListener {
                     llOtherDate.isSelected = true
+                    tvDate.isSelected = true
+                    tvWeekDay.isSelected = true
                 }
                 setOnAfterExpandAnimListener {
                     if (!llOtherDate.isSelected) {
                         llOtherDate.isSelected = true
+                        tvDate.isSelected = true
+                        tvWeekDay.isSelected = true
                     }
                     enableHorizontalScroll(false)
                 }
@@ -668,7 +664,7 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
         with (mBinding) {
             clSubMain.setOnChildClickedInterceptedListener { view ->
                 when (view) {
-                    clSecondNavbar -> {
+                    viewSecondNavbar -> {
                         mViewModel.setCalendarState(HomeCalendarFragment.States.CALENDAR_CLOSE_NOTHING)
                     }
                     else-> Unit
@@ -677,7 +673,7 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
             with(layoutContainer) {
                 viewContainerRoot.setOnChildClickedInterceptedListener { view ->
                     when(view) {
-                        tlContainer, llDateFilterContainer,llOtherDate -> {
+                        tlContainer, llDateFilterContainer, llOtherDate -> {
                             lifecycleScope.launch {
                                 mViewModel.setCalendarState(HomeCalendarFragment.States.CALENDAR_CLOSE_NOTHING)
                             }
