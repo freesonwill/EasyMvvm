@@ -25,6 +25,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import org.koin.core.qualifier.named
 import retrofit2.Response
 import retrofit2.http.GET
@@ -34,29 +35,17 @@ import retrofit2.http.GET
  * @description:
  */
 class WsPopup(context: Context) : BottomPopupView(context), KoinComponent {
-
     private val TAG = "WsPopup"
-
-//    private val client: HttpClient by inject(named("preLoadHome"))
-
-    val httpClient: HttpClient = getKoin().get(named("preLoadHome"))
-    private val socketManager: WebSocketManager = getKoin().get()
-
-
+    private val httpClient: HttpClient by inject(named("preLoadHome"))
+    private val socketManager: WebSocketManager by inject()
     private var wsHomeDataCount: Long = 0
     private var wsHomeDataCost: Long = 0
-
     private var httpCount: Long = 0
-
     private var httpCost: Long = 0
-
     private var wsConnectCount: Long = 0
-
     private var wsConnectCost: Long = 0
     private var connectJob: Job? = null
-
     private var wsLoginCount: Long = 0
-
     private var wsLoginCost: Long = 0
 
     override fun getImplLayoutId(): Int {
@@ -154,9 +143,7 @@ class WsPopup(context: Context) : BottomPopupView(context), KoinComponent {
                     wsHomeDataCount++
                     wsHomeDataCost += (end - start)
 
-                    wsToday.text =
-                        "websocket今日数据 耗时：${end-start} ms"
-
+                    wsToday.text = "websocket今日数据 耗时：${end-start} ms"
 
                     if (res.error == null && res.data != null) {
                     } else {
@@ -171,22 +158,11 @@ class WsPopup(context: Context) : BottomPopupView(context), KoinComponent {
                     val start = System.currentTimeMillis()
                     "start request".logd(TAG)
                     httpClient.safeRequest(
-                        request = {
-                            api.preLoad(
-                            )
-                        },
-                        onSuccess = {
+                        request = { api.preLoad() },
+                        onResult = { success,failure->
                             val end = System.currentTimeMillis()
-                            wsHttp.text =
-                                "http首开接口 耗时：${end - start} ms"
-                            "response------>${it}".logd(TAG)
-                        },
-                        onFailure = { code, msg, throwable ->
-                            val end = System.currentTimeMillis()
-                            wsHttp.text =
-                                "http首开接口 耗时：${end - start} ms"
-                            "response------>$code,$msg,$throwable".loge(TAG)
-
+                            wsHttp.text = "http首开接口 耗时：${end - start} ms"
+                            "response------>success:$success,failure:$failure".logd(TAG)
                         }
                     )
                 }
@@ -203,18 +179,10 @@ class WsPopup(context: Context) : BottomPopupView(context), KoinComponent {
                             api.gameTest(
                             )
                         },
-                        onSuccess = {
+                        onResult = { success,failure ->
                             val end = System.currentTimeMillis()
-                            gameTest.text =
-                                "gameTest接口 耗时：${end - start} ms"
-                            "response------>${it}".logd(TAG)
-                        },
-                        onFailure = { code, msg, throwable ->
-                            val end = System.currentTimeMillis()
-                            gameTest.text =
-                                "gameTest接口 耗时：${end - start} ms"
-                            "response------>$code,$msg,$throwable".loge(TAG)
-
+                            gameTest.text = "gameTest接口 耗时：${end - start} ms"
+                            "response------>success:$success,failure:$failure".logd(TAG)
                         }
                     )
                 }
