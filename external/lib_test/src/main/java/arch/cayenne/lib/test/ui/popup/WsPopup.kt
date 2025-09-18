@@ -115,7 +115,7 @@ class WsPopup(context: Context) : BottomPopupView(context), KoinComponent {
                                 val end = System.currentTimeMillis()
                                 wsLoginCount++
                                 wsLoginCost += (end - start)
-                                newWebSocketManager.isLoggingIn = false
+                                newWebSocketManager.isLogin = true
                                 if (res.error == null && res.data != null) {
                                     wsLogin.text =
                                         "websocket登錄: 耗时：${end-start} ms"

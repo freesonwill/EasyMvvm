@@ -96,11 +96,14 @@ class MatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
                 "Collect observeMatchChange start playType = $_playType, sportId = ${_sportId} tournament = $_tournamentId selectedDate = $selectedDate".logi(this@MatchListViewModel::class.java.simpleName)
                 val currentDateRefs = refs.filter { it.date == selectedDate }
                 if (currentDateRefs.isEmpty()) {
+                    "Collect observeMatchChange TournamentMatchRef is NULL!  getMatchListData again!".logi(this@MatchListViewModel::class.java.simpleName)
                     if (apiStateListener.value == null) {
                         launch(Dispatchers.Main) { setState(HomeState.Match.Loading) }
+                        getMatchListData(LoadMatchType.FIRST_LOAD)
+                    } else {
+                        getMatchListData(LoadMatchType.RELOAD)
                     }
-                    "Collect observeMatchChange TournamentMatchRef is NULL!  getMatchListData again!".logi(this@MatchListViewModel::class.java.simpleName)
-                    getMatchListData(LoadMatchType.FIRST_LOAD)
+
                     return@collect
                 }
 
@@ -113,9 +116,9 @@ class MatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
                 "Collect observeMatchChange result：${list.map { it.match.matchId }}".logi(this@MatchListViewModel::class.java.simpleName)
                 withContext(Dispatchers.Main) {
                     //第一次http拿到的資料量過少，會影響到拉取更新資料需要等待，所以跟api補上拿取更多一點的資料
-                    if (apiStateListener.value == null && list.size < DEFAULT_MATCH_SIZE) {
-                        loadNextPage()
-                    }
+//                    if (apiStateListener.value == null && list.size < DEFAULT_MATCH_SIZE) {
+//                        loadNextPage()
+//                    }
                     if (page == 1 && list.isEmpty()) {
                         setState(HomeState.Match.DataEmpty)
                     } else if (list.size % DEFAULT_MATCH_SIZE != 0) {
@@ -147,7 +150,7 @@ class MatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
                     _selectedDate.value + BaseMatchRepository.ONE_DAY_TIME_STAMP
                 )
             }
-            "取得比賽資料  PlayType = $_playType sportId = $_sportId tournamentId = $_tournamentId page = $page startTime = $startTime endTime = $endTime".logi(
+            "取得比賽資料 Type = ${loadMatchType} PlayType = $_playType sportId = $_sportId tournamentId = $_tournamentId page = $page startTime = $startTime endTime = $endTime".logi(
                 TAG
             )
             callApi(
@@ -160,6 +163,7 @@ class MatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
                         date = _selectedDate.value,
                         startTime = startTime,
                         endTime = endTime,
+                        isForce = loadMatchType == LoadMatchType.RELOAD || loadMatchType == LoadMatchType.RETRY,
                     )
                 },
                 {
@@ -169,7 +173,6 @@ class MatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
                             matchListChange.value = matchListChange.value
                         } else {
                             setState(DataState.NetworkUnavailable)
-                            matchListChange.value = arrayListOf()
                         }
                     } else if (it is ApiResponseState.Succeeded<*>) {
                         val size = it.dataAs<List<Common.Match>>()?.size ?: 0

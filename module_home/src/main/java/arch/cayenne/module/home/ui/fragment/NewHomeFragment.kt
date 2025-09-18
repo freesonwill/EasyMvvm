@@ -126,7 +126,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 })
             }
 
-            vpSub.offscreenPageLimit = 1
+            vpSub.offscreenPageLimit = 2
             vpSub.setupHorizontalScrollDegree()
         }
     }

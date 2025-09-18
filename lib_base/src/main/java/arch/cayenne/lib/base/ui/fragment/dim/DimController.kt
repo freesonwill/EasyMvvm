@@ -55,6 +55,7 @@ class DimController private constructor() {
             alpha = 0f
             z = 100f
             translationY = -(getNavigationBarHeight(context) + 1).toFloat()
+            isVisible = false
         }
 
         val params = ViewGroup.LayoutParams(

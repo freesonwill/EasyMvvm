@@ -2,9 +2,9 @@ package arch.cayenne.module.home.ui.fragment
 
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
-import androidx.core.view.doOnLayout
 import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -39,7 +39,6 @@ import arch.cayenne.module.home.ui.viewmodel.MatchListViewModel
 import arch.cayenne.module.home.ui.viewmodel.SubHomeViewModel
 import arch.cayenne.module.home.utils.setFavoriteIcon
 import com.walisport.module.message.ui.view.DeleteAnimator
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import java.lang.ref.WeakReference
@@ -66,7 +65,7 @@ class MatchListPagerFragment :
             refreshLayout.setEnableLoadMore(false)
             refreshLayout.setEnableScrollContentWhenLoaded(true)
             refreshLayout.setOnRefreshListener {
-                mViewModel.reload()
+                reloadAllData()
                 userRequestedScrollToTop = true
             }
 
@@ -86,25 +85,42 @@ class MatchListPagerFragment :
 
                 override fun onOddsCellClick(cell: WeakReference<View>, selection: SelectionBeanLite, x: Float, y: Float) {
                     lifecycleScope.launch {
-                        if (mViewModel.getCurrentSelectionCount() == 0) {
-                            BetSheetFragment.show(requireActivity()) {
-                                cell.get()?.isSelected = true
-                            }
-                        } else {
-                            cell.get()?.isSelected = true
-                        }
-
+                        val v = cell.get()
                         val status = mViewModel.setSelection(selection.selectionId)
+                        when (status) {
+                            is AddSelectionStatus.Success.Single -> {
+                                BetSheetFragment.show(requireActivity(), object : BetSheetFragment.ShowListener {
+                                    override fun onShow() {
+                                        v?.isSelected = true
+                                    }
 
-                        if (status !is AddSelectionStatus.Success) {
-                            cell.get()?.isSelected = false
+                                    override fun onCancel() {
+                                        v?.isSelected = false
+                                    }
+
+                                    override fun onHide() {
+                                        v?.isSelected = false
+                                    }
+                                })
+                            }
+
+                            is AddSelectionStatus.Success.Combo, is AddSelectionStatus.Success.Update -> {
+                                v?.isSelected = true
+                            }
+
+                            is AddSelectionStatus.Others.Remove -> {
+                                v?.isSelected = false
+                            }
+
+                            is AddSelectionStatus.Failure -> {
+                                v?.isSelected = false
+                                status.msg?.let {
+                                    showToast(it)
+                                }
+                            }
                         }
 
-                        if (status is AddSelectionStatus.Failure) {
-                            status.msg?.let {
-                                showToast(it)
-                            }
-                        } else if (status is AddSelectionStatus.Success.Combo || status is AddSelectionStatus.Success.Update) {
+                        if (status is AddSelectionStatus.Success.Combo || status is AddSelectionStatus.Success.Update) {
                             fabViewModel.setClickAnimation(x, y)
                         }
                     }
@@ -260,7 +276,7 @@ class MatchListPagerFragment :
                                 arch.cayenne.lib.common.R.string.error_net.getString()
                             )
                         }
-
+                        showToast(arch.cayenne.lib.common.R.string.toast_server_disconnected.getString())
                         homeViewModel.changeState(DataState.NetworkUnavailable)
                     }
                     DataState.NoMoreData -> {     //這個DataEmpty表示api抓不到任何資料了，有可能是頁面到底，或是從第一頁就抓不到資料
@@ -288,6 +304,7 @@ class MatchListPagerFragment :
                     DataState.LoadSuccess, HomeState.Match.LoadSuccess -> {
                         if (refreshLayout.isRefreshing) refreshLayout.finishRefresh()
                         homeViewModel.changeState(HomeState.Match.LoadSuccess)
+                        matchAdapter.setLastItemType(MatchItemAdapter.LAST_ITEM_LOAD_MORE)
                     }
                 }
             }
@@ -331,6 +348,11 @@ class MatchListPagerFragment :
         if (!mViewModel.matchListChange.hasObservers()) {
             mViewModel.matchListChange.observe(viewLifecycleOwner, matchListObserver)
         }
+    }
+
+    fun reloadAllData() {
+        mBinding.rvHomeGameList.scrollToPosition(0)
+        mViewModel.reload()
     }
 
     override fun onDestroy() {

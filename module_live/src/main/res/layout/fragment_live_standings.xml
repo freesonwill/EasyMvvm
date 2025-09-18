@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <arch.cayenne.lib.common.ui.view.DynamicStateLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_layout"
     android:layout_width="match_parent"
@@ -9,5 +10,30 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_standings"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/dp_23"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_34"
+        android:background="@color/app_bg"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
+            android:id="@+id/tv_standings_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginTop="@dimen/dp_5"
+            android:textColor="@color/color_929298"
+            android:textSize="@dimen/sp_15"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
 </arch.cayenne.lib.common.ui.view.DynamicStateLayout>

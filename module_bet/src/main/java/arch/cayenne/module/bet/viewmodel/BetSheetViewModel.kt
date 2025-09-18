@@ -4,11 +4,16 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
+import arch.cayenne.lib.database.entity.BetTypeEnum
+import arch.cayenne.module.bet.repo.BetRepository
 import arch.cayenne.module.bet.repo.BetSheetRepository
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 
-class BetSheetViewModel(private val repo: BetSheetRepository) : BaseViewModel() {
+class BetSheetViewModel(
+    private val repo: BetSheetRepository,
+    private val betRepo: BetRepository
+) : BaseViewModel() {
 
     private val _betSheetSizeListener = MutableLiveData<Int>()
     val betSheetSizeListener: LiveData<Int> get() = _betSheetSizeListener
@@ -39,4 +44,10 @@ class BetSheetViewModel(private val repo: BetSheetRepository) : BaseViewModel() 
     fun removeSingleBet() {
         repo.removeSingleBet()
     }
+
+    fun cancel() {
+        betRepo.cancelAdd()
+    }
+
+    suspend fun getBetType(): BetTypeEnum? = repo.getBetType()
 }

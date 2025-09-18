@@ -115,7 +115,7 @@ abstract class BasePreLoadBottomSheetFragment<VM : BaseViewModel, VB : ViewBindi
         unhideableBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {
                 if (newState == BottomSheetBehavior.STATE_COLLAPSED || newState == BottomSheetBehavior.STATE_HIDDEN) {
-                    if (this@BasePreLoadBottomSheetFragment.isResumed) {
+                    if (this@BasePreLoadBottomSheetFragment.isResumed || !isDismissing) {
                         isDismissing = true
                         customHide()
                     }
