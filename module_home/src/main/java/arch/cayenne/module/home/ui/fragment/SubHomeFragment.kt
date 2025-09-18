@@ -9,7 +9,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
@@ -230,15 +229,9 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
             mViewModel.getCurrentSportStatistical()
             mViewModel.getCurrentTournament()
         }
-
-        // 觀察目前 playType 的更多按鈕狀態
-        mViewModel.currentMoreState.observe(viewLifecycleOwner) { isLlMoreVisible ->
-            setMoreButtonVisibility(isLlMoreVisible)
-        }
     }
 
     fun onFragmentSelected() {
-        mViewModel.notifyCurrentMoreState()
         mViewModel.getCurrentSportStatistical()
         mViewModel.getCurrentTournament()
         if (mViewModel.resetPageSelectedTimestamp()) {
@@ -256,7 +249,6 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
 
     // 設置更多按鈕的顯示狀態
     fun onFragmentUnSelected() {
-        mViewModel.setMoreButtonStateForCurrent(mBinding.llHomeTournamentMore.isVisible)
         mViewModel.requestCollapseTournamentDropdown()
         mViewModel.setCalendarState(HomeCalendarFragment.States.CALENDAR_CLOSE_NOTHING)
     }
@@ -362,14 +354,11 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
                 }
             }
 
-            // 初始化 TabLayout end more跟手動畫
+            // 初始化 TabLayout end more 跟手動畫
             tlLeagueList.setupEndTabMoreAnimation(
                 mBinding.ivTournamentMore,
                 mBinding.llHomeTournamentMore
-            ) { isLlMoreVisible ->
-                // 更新 ViewModel 狀態
-                mViewModel.setMoreButtonStateForCurrent(isLlMoreVisible)
-            }
+            )
         }
 
         mBinding.ivTournamentMore.apply {addScaleOnTouchAnimation()}.clickNoRepeat {

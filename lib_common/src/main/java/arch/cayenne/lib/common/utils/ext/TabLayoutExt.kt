@@ -4,10 +4,11 @@ import android.annotation.SuppressLint
 import android.os.SystemClock
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnticipateInterpolator
+import android.view.animation.OvershootInterpolator
 import android.widget.LinearLayout
 import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.lifecycle.lifecycleScope
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.google.android.material.tabs.TabLayout.Tab
@@ -56,7 +57,6 @@ object TabLayoutExt {
     fun TabLayout.setupEndTabMoreAnimation(
         ivMore: View,
         llMore: View,
-        onStateChanged: ((isLlMoreVisible: Boolean) -> Unit)? = null
     ) {
         var isExpanded = false
         var isAnimating = false
@@ -66,8 +66,6 @@ object TabLayoutExt {
         var isInitialized = false
         var startupLock = 0L
         var userDragActiveUntil = 0L
-
-        fun isUserDragging(): Boolean = SystemClock.uptimeMillis() < userDragActiveUntil
 
         // 設置初始狀態
         fun setInitialState() {
@@ -112,7 +110,7 @@ object TabLayoutExt {
                 .scaleY(1.2f)
                 .alpha(0f)
                 .setDuration(200)
-                .setInterpolator(android.view.animation.AnticipateInterpolator(1.0f))
+                .setInterpolator(AnticipateInterpolator(1.0f))
                 .withEndAction {
                     ivMore.visibility = View.GONE
                 }
@@ -127,11 +125,10 @@ object TabLayoutExt {
                 .scaleY(1f)
                 .alpha(1f)
                 .setDuration(250)
-                .setInterpolator(android.view.animation.OvershootInterpolator(1.0f))
+                .setInterpolator(OvershootInterpolator(1.0f))
                 .withEndAction {
                     isInTransition = false
                     isAnimating = false
-                    onStateChanged?.invoke(true)
                 }
                 .start()
         }
@@ -147,7 +144,7 @@ object TabLayoutExt {
                 .scaleY(0.8f)
                 .alpha(0f)
                 .setDuration(200)
-                .setInterpolator(android.view.animation.AnticipateInterpolator(1.0f))
+                .setInterpolator(AnticipateInterpolator(1.0f))
                 .withEndAction {
                     llMore.visibility = View.GONE
                 }
@@ -162,11 +159,10 @@ object TabLayoutExt {
                 .scaleY(1f)
                 .alpha(1f)
                 .setDuration(250)
-                .setInterpolator(android.view.animation.OvershootInterpolator(1.0f))
+                .setInterpolator(OvershootInterpolator(1.0f))
                 .withEndAction {
                     isInTransition = false
                     isAnimating = false
-                    onStateChanged?.invoke(false)
                 }
                 .start()
         }
@@ -217,9 +213,12 @@ object TabLayoutExt {
             // 檢查最後一個 tab 是否完全可見
             val isLastTabFullyVisible = isLastTabFullyVisible()
 
-            // 展開：最後一個 tab 完全可見且為使用者拖動時觸發
+            // 檢查是否在末端才會觸發展開動畫
+            val isAtEnd = (scrollX + visibleWidth) >= contentWidth
+
+            // 展開：需要同時在末端且最後一個 tab 完全可見
             val shouldExpand =
-                isLastTabFullyVisible && !isExpanded && !isInTransition && isUserDragging()
+                isAtEnd && isLastTabFullyVisible && !isExpanded && !isInTransition
 
             // 收起：最後一個 tab 不再完全可見時觸發
             val shouldCollapse = !isLastTabFullyVisible && isExpanded && !isInTransition
@@ -252,12 +251,12 @@ object TabLayoutExt {
                         val visibleWidth = width
                         val scrolledX = scrollX
                         val endEpsilon = 4
-                        val isAtTrueEndAfterLayout =
-                            scrolledX + visibleWidth >= contentWidth - endEpsilon
+                        val isAtEndAfterLayout =
+                            (scrolledX + visibleWidth) >= (contentWidth - endEpsilon)
                         val isLastTabFullyVisibleAfterLayout = isLastTabFullyVisible()
 
-                        // 如果新增 tab 後確實會讓列表滾動到末端且最後一個 tab 完全可見，則強制顯示 llMore
-                        if ((isAtTrueEndAfterLayout || isLastTabFullyVisibleAfterLayout) && !isExpanded) {
+                        // 確定在末端且最後一個 tab 完全可見時才展開
+                        if (isAtEndAfterLayout && isLastTabFullyVisibleAfterLayout && !isExpanded) {
                             animateToLlMore()
                         }
                     }
