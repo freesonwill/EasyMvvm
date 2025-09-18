@@ -181,6 +181,8 @@ class LivePlayerView @JvmOverloads constructor(
             }
 
             init(mPlayerMode)
+            //是否开启日志， 协助调查播放器问题
+//            setEnableLog(true)
             setSurfaceType(SurfaceType.SURFACE_VIEW)
         }
 
