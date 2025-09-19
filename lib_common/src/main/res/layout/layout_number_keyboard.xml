@@ -11,8 +11,6 @@
         style="@style/NumberKeyboardButton"
         android:layout_marginEnd="2dp"
         android:layout_marginBottom="2dp"
-        android:backgroundTint="@color/keyboard_2"
-        android:foreground="@drawable/bg_click_mask_6dp_white_blue"
         android:text="1"
         app:skinnableFontWeight="500" />
 
@@ -22,8 +20,6 @@
         android:layout_marginStart="2dp"
         android:layout_marginEnd="2dp"
         android:layout_marginBottom="2dp"
-        android:backgroundTint="@color/keyboard_2"
-        android:foreground="@drawable/bg_click_mask_6dp_white_blue"
         android:text="2"
         app:skinnableFontWeight="500" />
 
@@ -32,8 +28,6 @@
         style="@style/NumberKeyboardButton"
         android:layout_marginStart="2dp"
         android:layout_marginBottom="2dp"
-        android:backgroundTint="@color/keyboard_2"
-        android:foreground="@drawable/bg_click_mask_6dp_white_blue"
         android:text="3"
         app:skinnableFontWeight="500" />
 
@@ -43,8 +37,6 @@
         android:layout_marginTop="2dp"
         android:layout_marginEnd="2dp"
         android:layout_marginBottom="2dp"
-        android:backgroundTint="@color/keyboard_2"
-        android:foreground="@drawable/bg_click_mask_6dp_white_blue"
         android:text="4"
         app:skinnableFontWeight="500" />
 
@@ -52,8 +44,6 @@
         android:id="@+id/btn_five"
         style="@style/NumberKeyboardButton"
         android:layout_margin="2dp"
-        android:backgroundTint="@color/keyboard_2"
-        android:foreground="@drawable/bg_click_mask_6dp_white_blue"
         android:text="5"
         app:skinnableFontWeight="500" />
 
@@ -63,8 +53,6 @@
         android:layout_marginStart="2dp"
         android:layout_marginTop="2dp"
         android:layout_marginBottom="2dp"
-        android:backgroundTint="@color/keyboard_2"
-        android:foreground="@drawable/bg_click_mask_6dp_white_blue"
         android:text="6"
         app:skinnableFontWeight="500" />
 
@@ -74,8 +62,6 @@
         android:layout_marginTop="2dp"
         android:layout_marginEnd="2dp"
         android:layout_marginBottom="2dp"
-        android:backgroundTint="@color/keyboard_2"
-        android:foreground="@drawable/bg_click_mask_6dp_white_blue"
         android:text="7"
         app:skinnableFontWeight="500" />
 
@@ -83,8 +69,6 @@
         android:id="@+id/btn_eight"
         style="@style/NumberKeyboardButton"
         android:layout_margin="2dp"
-        android:backgroundTint="@color/keyboard_2"
-        android:foreground="@drawable/bg_click_mask_6dp_white_blue"
         android:text="8"
         app:skinnableFontWeight="500" />
 
@@ -94,8 +78,6 @@
         android:layout_marginStart="2dp"
         android:layout_marginTop="2dp"
         android:layout_marginBottom="2dp"
-        android:backgroundTint="@color/keyboard_2"
-        android:foreground="@drawable/bg_click_mask_6dp_white_blue"
         android:text="9"
         app:skinnableFontWeight="500" />
 
@@ -104,8 +86,6 @@
         style="@style/NumberKeyboardButton"
         android:layout_marginTop="2dp"
         android:layout_marginEnd="2dp"
-        android:backgroundTint="@color/keyboard_2"
-        android:foreground="@drawable/bg_click_mask_6dp_white_blue"
         android:textSize="14sp"
         app:skinnableFontWeight="500" />
 
@@ -115,8 +95,6 @@
         android:layout_marginStart="2dp"
         android:layout_marginTop="2dp"
         android:layout_marginEnd="2dp"
-        android:backgroundTint="@color/keyboard_2"
-        android:foreground="@drawable/bg_click_mask_6dp_white_blue"
         android:text="0"
         app:skinnableFontWeight="500" />
 
@@ -125,8 +103,6 @@
         style="@style/NumberKeyboardButton"
         android:layout_marginStart="2dp"
         android:layout_marginTop="2dp"
-        android:backgroundTint="@color/keyboard_2"
-        android:foreground="@drawable/bg_click_mask_6dp_white_blue"
         android:text="."
         app:skinnableFontWeight="500" />
 

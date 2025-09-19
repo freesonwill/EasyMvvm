@@ -134,8 +134,11 @@
                 android:layout_width="61dp"
                 android:layout_height="204dp"
                 android:background="@drawable/shape_6dp"
-                android:backgroundTint="@color/keyboard_1"
                 android:orientation="vertical"
+                android:clipToPadding="false"
+                android:clipChildren="false"
+                android:outlineProvider="background"
+                android:clipToOutline="true"
                 android:nestedScrollingEnabled="false"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -167,8 +170,6 @@
                     android:id="@+id/btn_back"
                     style="@style/NumberKeyboardTextButton"
                     android:layout_marginBottom="2dp"
-                    android:backgroundTint="@color/keyboard_1"
-                    android:foreground="@drawable/bg_click_mask_6dp_white_blue"
                     android:scaleType="center"
                     android:src="@drawable/icon_keyboard_back" />
 
@@ -177,8 +178,6 @@
                     style="@style/NumberKeyboardTextButton"
                     android:layout_marginTop="2dp"
                     android:layout_marginBottom="2dp"
-                    android:backgroundTint="@color/keyboard_1"
-                    android:foreground="@drawable/bg_click_mask_6dp_white_blue"
                     android:text="@string/btn_clear"
                     android:textSize="14sp"
                     app:skinnableFontWeight="500" />
@@ -189,9 +188,7 @@
                     android:layout_marginTop="2dp"
                     android:layout_marginBottom="2dp"
                     android:alpha="0.5"
-                    android:backgroundTint="@color/keyboard_1"
                     android:enabled="false"
-                    android:foreground="@drawable/bg_click_mask_6dp_white_blue"
                     android:text="@string/keyboard_double"
                     android:textSize="14sp"
                     app:skinnableFontWeight="500" />
@@ -201,8 +198,6 @@
                     style="@style/NumberKeyboardTextButton"
                     android:layout_marginTop="2dp"
                     android:layout_marginBottom="2dp"
-                    android:backgroundTint="@color/keyboard_1"
-                    android:foreground="@drawable/bg_click_mask_6dp_white_blue"
                     android:padding="10dp"
                     android:scaleType="center"
                     android:src="@drawable/icon_keyboard" />
