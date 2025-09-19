@@ -15,6 +15,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -41,6 +42,8 @@ import com.walisport.module.live.utils.EmojiEditFilter
 import com.walisport.module.live.utils.EmojiUtils.BID_EMOJI_REGEX
 import com.walisport.module.live.utils.softkeyboard.NavigationBarHelper
 import com.walisport.module.live.utils.softkeyboard.NavigationListener
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.util.regex.Pattern
 import kotlin.reflect.KClass
 
@@ -54,6 +57,7 @@ class LiveSoftKeyboardFragment :
     private val chatViewModel: LiveChatViewModel by sharedViewModel<LiveChatViewModel, LiveChatFragment>()
     private var emojiKeyBoardHeight: Int = 0
     private var mainAnim:ObjectAnimator? = null
+    private var isSoftKeyboardShow = false
 
     //表情点击
     private val itemListener = object : RecyclerItemListener<EmojiData> {
@@ -161,17 +165,22 @@ class LiveSoftKeyboardFragment :
             }
 
             override fun onSoftKeyBoardHide() {
+                isSoftKeyboardShow = false
                if(chatViewModel.clickKeyBoardType == KeyBoardType.SOFT_KEYBOARD){
                    keyboardChangeClick(KeyBoardType.CHAT)
                }
             }
 
             override fun onSoftKeyBoardShow(keyboardHeight:Int) {
+//                "onSoftKeyBoardShow ${keyboardHeight}  ${chatViewModel.softKeyBoardHeight}".logd("aaa")
+              isSoftKeyboardShow = true
                 if(chatViewModel.softKeyBoardHeight == keyboardHeight){
                     return
                 }
                 mainAnim?.cancel()
                 val animationType = mViewModel.getKeyBoardActionType(chatViewModel.clickKeyBoardType, chatViewModel.currentKeyBoardType)
+//                "onSoftKeyBoardShow1  $animationType".logd("aaa")
+
                 when (animationType) {
                     KeyboardActionType.CHAT_TO_SOFT -> {
                         chatViewModel.softKeyBoardHeight = keyboardHeight
@@ -255,12 +264,13 @@ class LiveSoftKeyboardFragment :
             //输入拦截
             filters = arrayOf(EmojiEditFilter(mBinding.liveChatTvSize))
             //监听聚焦事件，不合格的展示软件盘一律拦截
-//            setOnFocusChangeListener { v, hasFocus ->
-            //如果当前点击事件 softkeyboardlisterner 和 当前状态currentKeyboardListener 一致可以过滤掉聚焦事件
-//                if (chatViewModel.softKeyboardStatus) { //要打开软件盘并且软件盘在收缩中
-//                    openSoftKeyBoard()
-//                }
-//            }
+            setOnFocusChangeListener { v, hasFocus ->
+//            如果当前点击事件 softkeyboardlisterner 和 当前状态currentKeyboardListener 一致可以过滤掉聚焦事件
+//                "setOnFocusChangeListener ${chatViewModel.softKeyboardStatus}  isSoftKeyboardShow $isSoftKeyboardShow".logd("aaa")
+                if (chatViewModel.softKeyboardStatus && !isSoftKeyboardShow) { //要打开软件盘并且软件盘在收缩中
+                    openSoftKeyBoard()
+                }
+            }
             //监听点击事件
             setOnTouchListener { v, event ->
                 if (event.action == MotionEvent.ACTION_UP) {
@@ -327,6 +337,7 @@ class LiveSoftKeyboardFragment :
 
     private fun showKeyboardAnimation() {
         val animationType = mViewModel.getKeyBoardActionType(chatViewModel.clickKeyBoardType, chatViewModel.currentKeyBoardType)
+//        "showKeyboardAnimation $animationType ${chatViewModel.softKeyBoardHeight}".logd("aaa")
         when (animationType) {
             KeyboardActionType.CHAT_TO_CHAT -> changeKeyboardUi(KeyBoardType.CHAT)
             //展示软件盘
@@ -574,9 +585,12 @@ class LiveSoftKeyboardFragment :
         EditTextUtils.hideKeyboard(activity, mBinding.liveChatEtInput)
     }
 
-    private fun etRequestFocus(){
-        mBinding.liveChatEtInput.requestFocus()
-        mBinding.liveChatEtInput.setSelection(mBinding.liveChatEtInput.length())
+    private fun etRequestFocus() {
+        lifecycleScope.launch {
+            delay(200)
+            mBinding.liveChatEtInput.requestFocus()
+            mBinding.liveChatEtInput.setSelection(mBinding.liveChatEtInput.length())
+        }
     }
 
     companion object {
