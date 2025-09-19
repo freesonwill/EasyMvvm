@@ -69,7 +69,7 @@ class SettingViewModel : BaseViewModel() {
     //设置皮肤背景，只换肤不写入记录，写入记录得调用setSkinRecord
     fun setSkinType(type: String) {
         viewModelScope.launch {
-            val logicSkin = getLogicSkinType(type)
+            val logicSkin = SkinType.getLogicSkinType(type)
             skinManager.loadSkin(logicSkin)
             _skinType.value = type
         }
@@ -77,7 +77,7 @@ class SettingViewModel : BaseViewModel() {
 
     fun resetSkinType(type: String) {
         viewModelScope.launch {
-            val logicSkin = getLogicSkinType(type)
+            val logicSkin = SkinType.getLogicSkinType(type)
             skinManager.loadSkin(logicSkin)
         }
     }
@@ -136,15 +136,6 @@ class SettingViewModel : BaseViewModel() {
 
     fun getAppAll(): Boolean {
         return repository.getAppAll()
-    }
-
-    //UI界面上有6种主题，但是逻辑上暂时就白蓝和经典两种
-    private fun getLogicSkinType(skinType: String): String {
-        return when (skinType) {
-            SkinType.SKIN_WHITE_BLUE.value -> SkinType.SKIN_WHITE_BLUE.value
-            SkinType.SKIN_WHITE_GREEN.value -> SkinType.SKIN_WHITE_BLUE.value
-            else -> SkinType.SKIN_CLASSIC.value
-        }
     }
 
     fun getLanguage() = languageManager.getLanguage()
