@@ -137,28 +137,34 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
                 addItemDecoration(decoration)
             }
             (rvCollectList.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
-            rvCollectList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                    super.onScrollStateChanged(recyclerView, newState)
-                    // 滑動停止時觸發
-                    if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                        subscribeVisibleMatch()
-                    }
-                }
-                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                    rvCollectList.scrollToBottomWithLoadMore(minScrollCount = 8, {
-                        if (mViewModel.apiStateListener.value != HomeState.Match.LoadSuccess) return@scrollToBottomWithLoadMore
-                        mViewModel.loadNextPage()
-                    }, {
-                        if (mViewModel.apiStateListener.value == HomeState.Match.LoadNextFailure) {
-                            mViewModel.loadNextPage()
-                        }
-                    })
-                }
-            })
+            rvCollectList.addOnScrollListener(scrollListener)
         }
         mBinding.rvCollectList.touchBackPressed()
         mBinding.root.touchBackPressed()
+    }
+    private val scrollListener = object : RecyclerView.OnScrollListener() {
+        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+            super.onScrollStateChanged(recyclerView, newState)
+            // 滑動停止時觸發
+            if (newState == RecyclerView.SCROLL_STATE_IDLE && view != null && isAdded) {
+                subscribeVisibleMatch()
+            }
+        }
+        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+            mBinding.rvCollectList.scrollToBottomWithLoadMore(minScrollCount = 8, {
+                if (mViewModel.apiStateListener.value != HomeState.Match.LoadSuccess) return@scrollToBottomWithLoadMore
+                mViewModel.loadNextPage()
+            }, {
+                if (mViewModel.apiStateListener.value == HomeState.Match.LoadNextFailure) {
+                    mViewModel.loadNextPage()
+                }
+            })
+        }
+    }
+
+    override fun onDestroyView() {
+        mBinding.rvCollectList.removeOnScrollListener(scrollListener)
+        super.onDestroyView()
     }
 
     override fun onFragmentAnimEnd(isEnter: Boolean) {
