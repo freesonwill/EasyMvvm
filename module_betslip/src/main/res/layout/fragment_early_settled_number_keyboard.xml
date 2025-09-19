@@ -238,7 +238,6 @@
             android:layout_height="0dp"
             android:layout_marginStart="4dp"
             android:background="@drawable/selector_send_button"
-            android:foreground="@drawable/bg_click_mask_8dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/btn_cancel"

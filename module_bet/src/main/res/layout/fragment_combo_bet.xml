@@ -154,6 +154,7 @@
         android:layout_marginStart="10dp"
         android:background="@drawable/shape_6dp"
         android:backgroundTint="@color/keyboard_2"
+        android:foreground="@drawable/bg_odds_change_mask"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toTopOf="@id/cl_bottom_button">
 
@@ -207,7 +208,6 @@
             android:layout_height="0dp"
             android:layout_marginStart="4dp"
             android:background="@drawable/selector_send_button"
-            android:foreground="@drawable/bg_click_mask_8dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/btn_delete"
