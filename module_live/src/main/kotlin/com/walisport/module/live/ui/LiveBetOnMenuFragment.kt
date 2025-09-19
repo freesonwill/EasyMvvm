@@ -6,9 +6,11 @@ import android.view.View
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.common.data.constants.SkinType
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.clickNoRepeatSingle
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
+import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import com.walisport.module.live.databinding.FragmentLiveBetOnMenuBinding
 import com.walisport.module.live.databinding.LiveBetMenuFlexboxLayoutBinding
 import com.walisport.module.live.databinding.LiveBetMenuFlexboxTextViewBinding
@@ -25,10 +27,23 @@ class LiveBetOnMenuFragment :
     companion object {
         const val TAG = "LiveBetOnMenuFragment"
     }
+    private val fixedSkin = SkinType.getLogicSkinType(SkinType.SKIN_BLACK_RED.value)
+
+    override fun onStart() {
+        mBinding.root.fitsSystemWindows = false
+        StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND()
+        StatusBarConfig.statusBarDarkFont = false
+        setStatusBar(StatusBarConfig,mBinding.root)
+        SkinnableResourceManager.setFixedSkin(fixedSkin)
+        super.onStart()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        SkinnableResourceManager.setFixedSkin(null)
+    }
 
     override fun initView(savedInstanceState: Bundle?) {
-        StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND()
-        setStatusBar(StatusBarConfig, mBinding.root)
         mViewModel.getMarketType()
         mViewModel.marketType.observe(viewLifecycleOwner) { it ->
             if (it == null) return@observe

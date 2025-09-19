@@ -32,6 +32,7 @@ import arch.cayenne.lib.common.utils.ext.DimensionExt.px2sp
 import arch.cayenne.lib.common.utils.ext.setDrawerInterpolator
 import arch.cayenne.lib.common.utils.ext.NavResultExt.observeResult
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
+import arch.cayenne.lib.common.utils.ext.ResourceExt.getColor
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
 import arch.cayenne.lib.common.utils.ext.TabLayoutExt
@@ -89,21 +90,13 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         )
     }
 
-
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        return super.onCreateView(inflater, container, savedInstanceState).apply {
-            StatusBarConfig.statusBarType = StatusBarMode.DEFAULT
-            StatusBarConfig.statusBarColor = immersionBarColorExt(fixedSkin)
-            StatusBarConfig.statusBarDarkFont = immersionBarSkinTypeExt(fixedSkin)
-            setStatusBar(StatusBarConfig,mBinding.root)
-        }
+    override fun onStart() {
+        mBinding.root.fitsSystemWindows = false
+        StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND()
+        StatusBarConfig.statusBarDarkFont = false
+        setStatusBar(StatusBarConfig,mBinding.root)
+        super.onStart()
     }
-
     override fun onAttach(context: Context) {
         super.onAttach(context)
         SkinnableResourceManager.setFixedSkin(fixedSkin)
@@ -112,9 +105,9 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
     override fun onDetach() {
         super.onDetach()
         SkinnableResourceManager.setFixedSkin(null)
-        StatusBarConfig.statusBarType = StatusBarMode.DEFAULT
-        StatusBarConfig.statusBarColor = immersionBarColorExt(mViewModel.getSkinType())
+        StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND()
         StatusBarConfig.statusBarDarkFont = immersionBarSkinTypeExt(mViewModel.getSkinType())
+        setStatusBar(StatusBarConfig,mBinding.root)
     }
 
     //init DrawerLayout Content
