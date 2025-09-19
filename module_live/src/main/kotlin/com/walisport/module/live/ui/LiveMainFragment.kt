@@ -316,7 +316,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
     private fun updateMatchId(matchId: Long) {
         mBinding.vpPage.setCurrentItem(1,false)
         mBinding.tabLayout.getTabAt(1)?.select()
-        CustomTabIndicatorUtils.animateIndicatorToPosition(mBinding.customIndicator,1)
+        CustomTabIndicatorUtils.animateIndicatorToPosition(mBinding.customIndicator,1,false)
         mViewModel.matchId.value?.let {
             deleteDataAndSubscriptions(matchId)
             mViewModel.setMatchId(matchId)
