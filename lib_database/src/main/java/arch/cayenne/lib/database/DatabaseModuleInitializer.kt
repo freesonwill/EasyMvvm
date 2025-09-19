@@ -27,6 +27,8 @@ class DatabaseModuleInitializer: DefaultInitializer<String> {
         factory { get<GameDatabase>().msgDao() }
         factory { get<GameDatabase>().betSlipReserveDao() }
         factory { get<GameDatabase>().betSlipOrderDao() }
+        factory { get<GameDatabase>().collectListDao() }
+
     }
 
     private val moduleList: List<Module> = listOf(module {
