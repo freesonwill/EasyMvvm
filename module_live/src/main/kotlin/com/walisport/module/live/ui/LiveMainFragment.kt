@@ -380,7 +380,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
             }.attach()
             tabLayout.clearOnTabSelectedListeners()
             tabLayout.post{
-                mBinding.customIndicator.animateIndicatorToPosition(1, false)
+                CustomTabIndicatorUtils.animateIndicatorToPosition(mBinding.customIndicator,1,false)
                 mBinding.vpPage.setCurrentItem(1,false)
             }
             tabLayout.removeAllTips()
