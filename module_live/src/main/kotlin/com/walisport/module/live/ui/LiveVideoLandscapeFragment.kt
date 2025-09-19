@@ -624,6 +624,7 @@ class LiveVideoLandscapeFragment :
         StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND()
         setStatusBar(StatusBarConfig, mBinding.root)
         val metrics = resources.displayMetrics
+        //density和scaledDensity被篡改，尝试恢复
         if (metrics.density != DensityInfo.density && DensityInfo.density > 0) {
             metrics.density = DensityInfo.density
         }
