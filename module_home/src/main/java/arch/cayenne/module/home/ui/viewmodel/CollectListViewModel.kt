@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.base.data.remote.ApiResponseState.Start.dataAs
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.common.data.repo.BalanceRepository
 import arch.cayenne.lib.database.entity.InfoBean
 import arch.cayenne.lib.database.entity.MatchWithMarkets
@@ -46,8 +45,10 @@ class CollectListViewModel : BaseMatchViewModel<CollectListRepository>() {
     }
 
     override fun getMatchListData(loadMatchType: LoadMatchType) {
+        if(loadMatchType == LoadMatchType.RETRY){ //由于两次加载造成了进入的时候暂无订单两次跳转
+            return
+        }
         viewModelScope.launch {
-            "取得收藏賽事 $page".logi()
             setState(HomeState.Match.Loading)
             callApi({
                 repository.getCollectData(page)
@@ -63,10 +64,12 @@ class CollectListViewModel : BaseMatchViewModel<CollectListRepository>() {
                 } else if (it is ApiResponseState.Succeeded<*>) {
                     val size = it.dataAs<List<Common.Match>>()?.size ?: 0
                     if (page == 1 && size == 0) {
-                        setState(HomeState.Match.DataEmpty)
                         matchListChange.value = arrayListOf()
+
+                        setState(HomeState.Match.DataEmpty)
                     } else if (size < BaseMatchRepository.DEFAULT_MATCH_SIZE) {
                         setState(DataState.NoMoreData)
+
                     } else {
                         setState(HomeState.Match.LoadSuccess)
                     }
@@ -76,9 +79,11 @@ class CollectListViewModel : BaseMatchViewModel<CollectListRepository>() {
     }
 
     fun startObserveMatch() {
+        repository.clear()
         viewModelScope.launch(Dispatchers.IO) {
             repository.observeMatchChange().collect { ref ->
                 if (ref.isEmpty()) {
+                    repository.deleteCollectList()
                     getMatchListData(LoadMatchType.FIRST_LOAD)
                     return@collect
                 }
@@ -92,6 +97,26 @@ class CollectListViewModel : BaseMatchViewModel<CollectListRepository>() {
                     setState(HomeState.Match.LoadSuccess)
                     matchListChange.value = list
                 }
+                repository.insertCollectList(currentRefs)
+            }
+        }
+
+    }
+
+    /**
+     * 收藏实现静默加载，初始化时从缓存中获取收藏列表
+     * 带api返回后重新更新收藏列表
+     * */
+    fun getCacheMatch() {
+        viewModelScope.launch (Dispatchers.IO ){
+           val dbRef = repository.getCollectList()
+           val currentRef = dbRef.sortedBy { it.order }
+            page = 1
+            //拿到ref後藉由ref拿到這個時間段的match id，再去資料庫把這些賽史資料串起來
+            val list = repository.queryFullMatches(currentRef.map { it.matchId })
+            withContext(Dispatchers.Main) {
+                setState(HomeState.Match.LoadSuccess)
+                matchListChange.value = list
             }
         }
     }
