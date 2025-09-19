@@ -31,6 +31,7 @@ import androidx.core.graphics.drawable.toDrawable
 import arch.cayenne.lib.common.data.constants.QuickAmountEnum
 import arch.cayenne.lib.common.data.constants.QuickAmountKeyboardEnum
 import arch.cayenne.lib.common.ui.adapter.QuickAmountAdapter
+import arch.cayenne.lib.common.utils.ext.setOnClickOrLongPressListener
 
 class ComboBetMoneyKeyboardDialogFragment private constructor():
     BasePositionDialogFragment<ComboBetMoneyKeyboardDialogViewModel, FragmentComboBetMoneyKeyboardDialogBinding>() {
@@ -189,13 +190,11 @@ class ComboBetMoneyKeyboardDialogFragment private constructor():
         mBinding.btnConfirm.setOnClickListener {
             sendMoney()
         }
-        mBinding.btnBack.setOnClickListener {
+        mBinding.btnBack.setOnClickOrLongPressListener (onClick = {
             mViewModel.backNumber()
-        }
-        mBinding.btnBack.setOnLongClickListener { view ->
-            mViewModel.clearNumber()
-            true
-        }
+        }, onLongPressRepeat = {
+            mViewModel.backNumber()
+        })
         mBinding.btnClear.setOnClickListener {
             mViewModel.clearNumber()
         }
