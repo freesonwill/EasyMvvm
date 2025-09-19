@@ -29,28 +29,23 @@ class SkinnableViewFlowHelper {
         if (skinFlowJob?.isActive == true) {
             return
         }
-        skinFlowJob = scope?.launch(Dispatchers.IO) {
+        skinFlowJob = scope?.launch {
             skinManager.skinFlow.collect {
                 if (it == lastSkin) {
                     return@collect
                 }
-                launch(Dispatchers.Main) {
-                    updateSkin.invoke(it)
-                    lastSkin = it
-                }
-
+                updateSkin.invoke(it)
+                lastSkin = it
             }
         }
     }
 
-    fun startLanguageFlow(updateLanguage: (local: Locale) -> Unit) {
+    fun startLanguageFlow(scope: CoroutineScope?,updateLanguage: (local: Locale) -> Unit) {
         languageFlowJob?.cancel()
-        languageFlowJob = CoroutineScope(Dispatchers.IO).launch {
+        languageFlowJob = scope?.launch {
             languageManager.languageFlow.collect {
                 it?.let {
-                    launch(Dispatchers.Main) {
-                        updateLanguage(it)
-                    }
+                    updateLanguage(it)
                 }
             }
         }
