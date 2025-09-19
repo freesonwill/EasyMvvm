@@ -190,6 +190,15 @@ class LiveSoftKeyboardFragment :
                             chatViewModel.saveUpdateSoftKeyBoardHeight()
                         })
                     }
+
+                    KeyboardActionType.SOFT_TO_SOFT -> {
+                        chatViewModel.softKeyBoardHeight = keyboardHeight
+                        panelAnimateTo(-chatViewModel.softKeyBoardHeight, onStart = {
+                            changeKeyboardUi(KeyBoardType.SOFT_KEYBOARD)
+                        }, onEnd = {
+                            chatViewModel.saveUpdateSoftKeyBoardHeight()
+                        })
+                    }
                     else -> {}
                 }
             }
