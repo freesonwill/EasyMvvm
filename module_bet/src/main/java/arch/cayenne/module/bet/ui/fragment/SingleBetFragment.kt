@@ -24,6 +24,7 @@ import arch.cayenne.lib.common.utils.ext.SportDisplayOddsExt.getDisplayOdds
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toOdds
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
+import arch.cayenne.lib.common.utils.ext.setOnClickOrLongPressListener
 import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.database.entity.BetSelectionBean
 import arch.cayenne.lib.database.entity.BetTypeEnum
@@ -109,13 +110,12 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
                 mViewModel.removeBet()
             }
         }
-        mBinding.btnBack.setOnClickListener {
+        mBinding.btnBack.setOnClickOrLongPressListener (onClick = {
             mViewModel.backNumber()
-        }
-        mBinding.btnBack.setOnLongClickListener { view ->
-            mViewModel.clearNumber()
-            true
-        }
+        }, onLongPressRepeat = {
+            mViewModel.backNumber()
+        })
+
         mBinding.btnClear.setOnClickListener {
             mViewModel.clearNumber()
         }
