@@ -2,9 +2,12 @@ package arch.cayenne.lib.base.ui.fragment.dim
 
 import android.animation.ObjectAnimator
 import android.content.Context
+import android.content.res.Configuration
+import android.content.res.Resources
 import android.graphics.Color
 import android.graphics.PixelFormat
 import android.graphics.Rect
+import android.os.Build
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
@@ -46,16 +49,55 @@ class DimController private constructor() {
         if (dimView != null) {
             return
         }
-        val context = host.getHostFragment().requireContext()
+        val context = host.getHostFragment().requireActivity()
         val v = DimView(context).apply {
             setBackgroundColor(Color.BLACK)
             alpha = 0f
+            z = 100f
+            translationY = -(getNavigationBarHeight(context) + 1).toFloat()
+            isVisible = false
         }
-        val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
 
-        val params = getBasicLayoutParams()
-        windowManager.addView(v, params)
+        val params = ViewGroup.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.MATCH_PARENT
+        )
+        context.addContentView(v, params)
         dimView = v
+    }
+
+    private fun getNavigationBarHeight(context: Context): Int {
+        val key = if (context.resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
+            "navigation_bar_height"
+        } else {
+            "navigation_bar_height_landscape"
+        }
+        return getInternalDimensionSize(context, key)
+    }
+
+    private fun getInternalDimensionSize(context: Context, key: String): Int {
+        val result = 0
+        try {
+            val resourceId = Resources.getSystem().getIdentifier(key, "dimen", "android")
+            if (resourceId > 0) {
+                val sizeOne = context.resources.getDimensionPixelSize(resourceId)
+                val sizeTwo = Resources.getSystem().getDimensionPixelSize(resourceId)
+
+                if (sizeTwo >= sizeOne && !(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q &&
+                            key != "status_bar_height")
+                ) {
+                    return sizeTwo
+                } else {
+                    val densityOne = context.resources.displayMetrics.density
+                    val densityTwo = Resources.getSystem().displayMetrics.density
+                    val f = sizeOne * densityTwo / densityOne
+                    return (if ((f >= 0)) (f + 0.5f) else (f - 0.5f)).toInt()
+                }
+            }
+        } catch (ignored: Resources.NotFoundException) {
+            return 0
+        }
+        return result
     }
 
     private fun register(host: DimInterface) {
@@ -98,6 +140,7 @@ class DimController private constructor() {
     fun prepareShowDim() {
         val v = dimView ?: return
         v.isVisible = true
+        v.bringToFront()
     }
 
     fun showDim() {

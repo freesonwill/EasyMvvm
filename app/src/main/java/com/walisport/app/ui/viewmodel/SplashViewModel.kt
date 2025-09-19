@@ -26,21 +26,10 @@ class SplashViewModel : BaseActivityViewModel() {
     fun loadMyAppSkin() {
         viewModelScope.launch {
             val skinType = repository.getSkinType()
-            val logicType = getLogicSkinType(skinType)
+            val logicType = SkinType.getLogicSkinType(skinType)
             skinManager.loadSkin(logicType)
             val langType = repository.getLanguageType()
             languageManager.changeLanguage(Locale(langType))
         }
     }
-
-    //UI界面上有6种主题，但是逻辑上暂时就白蓝和经典两种
-    private fun getLogicSkinType(skinType: String): String {
-        return when (skinType) {
-            SkinType.SKIN_WHITE_BLUE.value -> SkinType.SKIN_WHITE_BLUE.value
-            SkinType.SKIN_WHITE_GREEN.value -> SkinType.SKIN_WHITE_BLUE.value
-            else -> SkinType.SKIN_CLASSIC.value
-        }
-    }
-
-
 }

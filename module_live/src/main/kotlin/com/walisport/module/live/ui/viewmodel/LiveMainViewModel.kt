@@ -9,6 +9,7 @@ import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
+import arch.cayenne.lib.common.data.constants.SkinType
 import arch.cayenne.lib.database.entity.InfoBean
 import arch.cayenne.lib.database.entity.LiveMatchBean
 import arch.cayenne.lib.database.entity.SelectionsEdit
@@ -273,4 +274,11 @@ class LiveMainViewModel(
         }
     }
 
+    fun getSkinType(): String {
+        return repo.getSkinType()
+    }
+
+    suspend fun setSkinType(type: String) {
+        repo.setSkinType(type)
+    }
 }

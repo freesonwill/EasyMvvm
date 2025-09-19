@@ -136,7 +136,7 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
                 }
             }
         }
-        mBinding.tvOddsChange.setOnClickListener { v ->
+        mBinding.clOddsChange.setOnClickListener { v ->
             showOddsChangeDialog()
         }
     }
@@ -180,6 +180,7 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
         }
         mViewModel.onCanBetListener.observe(viewLifecycleOwner) {
             mBinding.clBet.isEnabled = it
+            mBinding.tvBetHint.alpha = if (it) 1.0f else 0.7f
         }
         mViewModel.onForceUpdateListener.observe(viewLifecycleOwner) {
             if (it && !isFullScreen) {

@@ -6,18 +6,18 @@ import android.os.Bundle
 import android.view.ContextThemeWrapper
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.FrameLayout
-import androidx.core.animation.doOnStart
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.lifecycleScope
 import arch.cayenne.lib.base.ui.fragment.BasePreLoadBottomSheetFragment
 import arch.cayenne.lib.common.ui.view.BlockSlideConstrainLayout
+import arch.cayenne.lib.database.entity.BetTypeEnum
 import arch.cayenne.module.bet.R
 import arch.cayenne.module.bet.data.Config.KEY_RESULT
 import arch.cayenne.module.bet.data.Config.VALUE_DISMISS
 import arch.cayenne.module.bet.data.Config.VALUE_TO_RESULT
 import arch.cayenne.module.bet.databinding.FragmentBetSheetBinding
 import arch.cayenne.module.bet.viewmodel.BetSheetViewModel
-import com.google.android.material.bottomsheet.BottomSheetBehavior
+import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
 
 class BetSheetFragment private constructor() :
@@ -49,20 +49,14 @@ class BetSheetFragment private constructor() :
             }
         }
 
-        fun show(activity: FragmentActivity, doSomething: () -> Unit) {
+        fun show(activity: FragmentActivity, listener: ShowListener) {
             val manager = activity.supportFragmentManager
             val f = manager.findFragmentByTag(TAG)
             if (f == null) {
                 BetSheetFragment().show(manager, TAG)
-            } else if (f is BasePreLoadBottomSheetFragment<*, *>) {
-                val anim = ObjectAnimator.ofFloat(null, "alpha", 0f, 0f).apply {
-                    doOnStart {
-                        f.view?.post {
-                            doSomething.invoke()
-                        }
-                    }
-                }
-                f.customShow(anim)
+            } else if (f is BetSheetFragment) {
+                f.setShowListener(listener)
+                f.customShow()
             }
         }
     }
@@ -71,6 +65,9 @@ class BetSheetFragment private constructor() :
         get() = FragmentBetSheetBinding::class
     override val vmClass: KClass<BetSheetViewModel>
         get() = BetSheetViewModel::class
+
+    private var doStart: (() -> Unit)? = null
+    private var listener: ShowListener? = null
 
     private val singleFragment by lazy {
         SingleBetFragment()
@@ -113,26 +110,7 @@ class BetSheetFragment private constructor() :
                     it.doCustomHideEnd()
                 }
             }
-        }
-    }
-
-    override fun onStart() {
-        super.onStart()
-        setFitToContents()
-    }
-
-    private fun setFitToContents() {
-        val bottomSheet =
-            dialog?.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet) as? FrameLayout
-        bottomSheet?.let { sheet ->
-            val behavior = BottomSheetBehavior.from(sheet)
-
-            behavior.isDraggable = true
-            behavior.skipCollapsed = true  // ← 允許收合
-            behavior.isHideable = true      // ← 允許向下滑關閉
-            behavior.isFitToContents = true
-            behavior.state = BottomSheetBehavior.STATE_COLLAPSED
-            behavior.saveFlags = BottomSheetBehavior.SAVE_HIDEABLE
+            listener = null
         }
     }
 
@@ -145,6 +123,7 @@ class BetSheetFragment private constructor() :
             if (result == VALUE_DISMISS) {
                 customHide()
             } else if (result == VALUE_TO_RESULT) {
+                hideSelection()
                 val sheetAnimator = getHideAnimator() ?: return@setFragmentResultListener
                 BetResultFragment.show(requireActivity(), sheetAnimator)
             }
@@ -172,17 +151,7 @@ class BetSheetFragment private constructor() :
         super.onDismiss(dialog)
     }
 
-    override fun customShow() {
-        mViewModel.register()
-        super.customShow()
-        childFragmentManager.fragments.forEach {
-            if (it is BetSheetListener) {
-                it.doCustomShow()
-            }
-        }
-    }
-
-    override fun customShow(other: ObjectAnimator) {
+    override fun customShow(other: ObjectAnimator?) {
         mViewModel.register()
         super.customShow(other)
         childFragmentManager.fragments.forEach {
@@ -192,10 +161,62 @@ class BetSheetFragment private constructor() :
         }
     }
 
+    fun setDoStart(doStart: (() -> Unit)?) {
+        this.doStart = doStart
+    }
+
+    fun setShowListener(listener: ShowListener) {
+        this.listener = listener
+    }
+
+    override fun playEnterAnimations(
+        doStart: (() -> Unit)?,
+        doCancel: (() -> Unit)?,
+        doEnd: (() -> Unit)?
+    ) {
+        super.playEnterAnimations({
+            doStart?.invoke()
+            listener?.onShow()
+        }, {
+            mViewModel.cancel()
+            listener?.onCancel()
+            doCancel?.invoke()
+        }, doEnd)
+    }
+
+    override fun playExitAnimations(doStart: (() -> Unit)?, doEnd: (() -> Unit)?) {
+        hideSelection()
+        super.playExitAnimations(doStart, doEnd)
+    }
+
     override fun customHide() {
+        hideSelection()
         mViewModel.unregister()
         mViewModel.removeSingleBet()
         super.customHide()
+    }
+
+    override fun whenSlideToCollapse() {
+        hideSelection()
+        super.whenSlideToCollapse()
+    }
+
+    private fun hideSelection() {
+        listener?.let {
+            lifecycleScope.launch {
+                val type = mViewModel.getBetType()
+                if (type != BetTypeEnum.COMBO) {
+                    it.onHide()
+                    listener = null
+                }
+            }
+        }
+    }
+
+    interface ShowListener {
+        fun onShow()
+        fun onCancel()
+        fun onHide()
     }
 }
 

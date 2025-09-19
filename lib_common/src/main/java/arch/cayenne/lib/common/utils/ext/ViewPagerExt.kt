@@ -8,6 +8,7 @@ import androidx.viewpager2.widget.ViewPager2
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.R
 import arch.cayenne.lib.common.ui.view.CustomTabIndicator
+import arch.cayenne.lib.common.utils.CustomTabIndicatorUtils
 import arch.cayenne.lib.skin.widget.SkinnableTabLayout
 import com.google.android.material.tabs.TabLayout
 import java.lang.Math.toDegrees
@@ -26,28 +27,25 @@ fun TabLayout.removeAllTips() {
     }
 }
 
- fun ViewPager2.setupViewPagerScroll(tabLayout: SkinnableTabLayout,customIndicator: CustomTabIndicator,tabIndicatorWidth : Float = 0.45f,skipAnyAnim: ((Boolean) -> Unit)? = null,
-                                     enableAnimation:(value:Boolean?)->Boolean) {
+/**
+ * tabIndicatorWidth : 线条比例
+ */
+fun ViewPager2.setupViewPagerScroll(
+    tabLayout: SkinnableTabLayout,
+    customIndicator: CustomTabIndicator,
+    tabIndicatorWidth: Float = 0.45f
+) {
     tabLayout.post {
         // 计算单个 Tab 的宽度
         val tabWidth = tabLayout.width.toFloat() / tabLayout.tabCount
-        customIndicator.setTabWidth(tabWidth,tabIndicatorWidth)
+        customIndicator.setTabWidth(tabWidth, tabIndicatorWidth)
     }
     var lastSwitchedPage: Int = 0 // 记录上一次切换的页面，防止重复切换
-
-    this.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+    registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
         override fun onPageScrollStateChanged(state: Int) {
             when (state) {
                 ViewPager2.SCROLL_STATE_DRAGGING -> {
-                    // 开始滑动时，记录初始页面位置并重置偏移量
-                    skipAnyAnim?.invoke(false)
-                    enableAnimation.invoke(true)
                     lastSwitchedPage = currentItem
-                }
-
-                ViewPager2.SCROLL_STATE_IDLE -> {
-                    skipAnyAnim?.invoke(true)
-                    // 滑动结束，基于初始页面和偏移量决定是否切换
                 }
             }
         }
@@ -57,7 +55,6 @@ fun TabLayout.removeAllTips() {
             positionOffset: Float,
             positionOffsetPixels: Int
         ) {
-            if(!enableAnimation(null))return
             val totalItems = adapter?.itemCount ?: 0
             val currentPage = currentItem
             val adjustedOffset = if (position == currentPage) {
@@ -72,25 +69,29 @@ fun TabLayout.removeAllTips() {
             // 左滑：adjustedOffset > 0.5，切换到下一页
             if (adjustedOffset > 0.5f && currentPage < totalItems - 1 && lastSwitchedPage != currentPage + 1) {
                 lastSwitchedPage = currentPage + 1
-                customIndicator.animateIndicatorToPosition(lastSwitchedPage)
+                CustomTabIndicatorUtils.animateIndicatorToPosition(customIndicator,lastSwitchedPage)
+               // customIndicator.animateIndicatorToPosition(lastSwitchedPage)
                 tabLayout.getTabAt(lastSwitchedPage)?.select()
             }
             // 右滑：adjustedOffset < -0.5，切换到上一页
             else if (adjustedOffset < -0.5f && currentPage > 0 && lastSwitchedPage != currentPage - 1) {
                 lastSwitchedPage = currentPage - 1
-                customIndicator.animateIndicatorToPosition(lastSwitchedPage)
+                CustomTabIndicatorUtils.animateIndicatorToPosition(customIndicator,lastSwitchedPage)
+               // customIndicator.animateIndicatorToPosition(lastSwitchedPage)
                 tabLayout.getTabAt(lastSwitchedPage)?.select()
             }
             // 滑动未超过 50%，恢复到当前页面
             else if (abs(adjustedOffset) <= 0.5f && lastSwitchedPage != currentPage) {
                 lastSwitchedPage = currentPage
-                customIndicator.animateIndicatorToPosition(lastSwitchedPage)
+                CustomTabIndicatorUtils.animateIndicatorToPosition(customIndicator,lastSwitchedPage)
+               // customIndicator.animateIndicatorToPosition(lastSwitchedPage)
                 tabLayout.getTabAt(lastSwitchedPage)?.select()
             }
         }
     })
     // 启用手动滑动
     isUserInputEnabled = true
+    setupHorizontalScrollDegree()
 }
 
 
@@ -105,6 +106,7 @@ fun ViewPager2.setupViewPagerScroll(positionCall: ((Int) -> Unit)? = null) {
                 }
             }
         }
+
         override fun onPageScrolled(
             position: Int,
             positionOffset: Float,
@@ -141,7 +143,6 @@ fun ViewPager2.setupViewPagerScroll(positionCall: ((Int) -> Unit)? = null) {
     // 启用手动滑动
     isUserInputEnabled = true
 }
-
 
 
 /**
@@ -162,19 +163,19 @@ fun ViewPager2.setClipChilds(b: Boolean = true) {
  * 配置横向滚动角度，滚动角度小于d为横向，否则为竖向
  * @param d
  */
-fun ViewPager2.setupHorizontalScrollDegree(d:Int = 25){
+fun ViewPager2.setupHorizontalScrollDegree(d: Int = 25) {
     (getChildAt(0) as RecyclerView).apply {
         val lis = getTag(R.id.tag_on_item_touch_listener) as OnItemTouchListener?
-        if(lis != null) removeOnItemTouchListener(lis)
+        if (lis != null) removeOnItemTouchListener(lis)
         addOnItemTouchListener(object : OnItemTouchListener {
-            private var mLastTouchX:Float = 0f
-            private var mLastTouchY:Float = 0f
+            private var mLastTouchX: Float = 0f
+            private var mLastTouchY: Float = 0f
             private var hasJudged = false
             private var mTouchSlop = 0
             private val TAG = "ViewPager2"
 
             override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
-                when(e.action){
+                when (e.action) {
                     MotionEvent.ACTION_DOWN -> {
                         mLastTouchX = e.x
                         mLastTouchY = e.y
@@ -182,14 +183,15 @@ fun ViewPager2.setupHorizontalScrollDegree(d:Int = 25){
                         //"angle--------ACTION_DOWN->$mLastTouchX,$mLastTouchY".logd(TAG)
                         mTouchSlop = 5 //ViewConfiguration.get(context!!).scaledTouchSlop
                     }
+
                     MotionEvent.ACTION_MOVE -> {
-                        if(hasJudged) return false
+                        if (hasJudged) return false
                         val dx = e.x - mLastTouchX
                         val dy = e.y - mLastTouchY
-                        if(abs(dx) > mTouchSlop || abs(dy) > mTouchSlop) {
+                        if (abs(dx) > mTouchSlop || abs(dy) > mTouchSlop) {
                             hasJudged = true
                             val angle = toDegrees(atan2(abs(dy.toDouble()), abs(dx.toDouble())))
-                            if(angle < d) {
+                            if (angle < d) {
                                 requestDisallowInterceptTouchEvent(false) //拦截，横向滑动
                             } else {
                                 requestDisallowInterceptTouchEvent(true) //不拦截，竖向滑动
@@ -197,7 +199,8 @@ fun ViewPager2.setupHorizontalScrollDegree(d:Int = 25){
                             //"angle--------ACTION_MOVE->$angle,mLastTouchX:$mLastTouchX,mLastTouchY:$mLastTouchY,mTouchSlop:$mTouchSlop".logd(TAG)
                         }
                     }
-                    MotionEvent.ACTION_UP ->{ }
+
+                    MotionEvent.ACTION_UP -> {}
                 }
                 return false
             }
@@ -209,6 +212,6 @@ fun ViewPager2.setupHorizontalScrollDegree(d:Int = 25){
             override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {
                 //"onRequestDisallowInterceptTouchEvent----$disallowIntercept".logd(TAG)
             }
-        }.apply { setTag(R.id.tag_on_item_touch_listener,this) })
+        }.apply { setTag(R.id.tag_on_item_touch_listener, this) })
     }
 }

@@ -41,9 +41,10 @@ class MatchListRepository(
         page: Int,
         date: Long,
         startTime: Long,
-        endTime: Long
+        endTime: Long,
+        isForce: Boolean = false,  //是否刪除之前的資料
     ) : ApiResponseState {
-        val last = matchDao.queryLastMatch(playType, tournamentId, date)
+        val last = if(isForce) null else matchDao.queryLastMatch(playType, tournamentId, date)
         val resp = socketManager.sendAndWaitProtoMessageResponse<Client.ListMatchResp>(
             scope = scope,
             dispatcher = Dispatchers.IO,
@@ -83,6 +84,10 @@ class MatchListRepository(
                 selections = matchFullData.selections,
                 marketCrossRef = matchFullData.matchMarketCrossRefs,
                 marketSelectCrossRefs = matchFullData.marketSelectCrossRefs,
+                playType = playType,
+                tournamentId = tournamentId,
+                date = date,
+                isForce = isForce
             )
             "New match data from api insert success : $refIds".logi(this::class.java.simpleName)
             return ApiResponseState.Succeeded(resp.data!!.matchList)

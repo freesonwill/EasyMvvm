@@ -68,8 +68,11 @@
             android:layout_height="183dp"
             android:layout_marginTop="12dp"
             android:background="@drawable/shape_6dp"
-            android:backgroundTint="@color/keyboard_1"
             android:orientation="vertical"
+            android:clipToPadding="false"
+            android:clipChildren="false"
+            android:outlineProvider="background"
+            android:clipToOutline="true"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -100,8 +103,6 @@
                 android:id="@+id/btn_back"
                 style="@style/NumberKeyboardTextButton"
                 android:layout_marginBottom="2dp"
-                android:backgroundTint="@color/keyboard_1"
-                android:foreground="@drawable/bg_click_mask_6dp_white_blue"
                 android:scaleType="center"
                 android:src="@drawable/icon_keyboard_back" />
 
@@ -110,8 +111,6 @@
                 style="@style/NumberKeyboardTextButton"
                 android:layout_marginTop="2dp"
                 android:layout_marginBottom="2dp"
-                android:backgroundTint="@color/keyboard_1"
-                android:foreground="@drawable/bg_click_mask_6dp_white_blue"
                 android:text="@string/btn_clear"
                 android:textSize="12sp"
                 app:skinnableFontWeight="500" />
@@ -121,8 +120,6 @@
                 style="@style/NumberKeyboardTextButton"
                 android:layout_marginTop="2dp"
                 android:layout_marginBottom="2dp"
-                android:backgroundTint="@color/keyboard_1"
-                android:foreground="@drawable/bg_click_mask_6dp_white_blue"
                 android:text="@string/btn_double"
                 android:textSize="12sp"
                 app:skinnableFontWeight="500" />
@@ -135,8 +132,6 @@
                 android:layout_rowWeight="1"
                 android:layout_columnWeight="1"
                 android:layout_marginTop="2dp"
-                android:backgroundTint="@color/brand_color"
-                android:foreground="@drawable/bg_click_mask_6dp_white_blue"
                 android:text="@string/btn_confirm"
                 android:textSize="12sp"
                 app:skinnableFontWeight="500" />

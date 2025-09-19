@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/tvAnimParamClick"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    android:layout_width="40dp"
+    android:layout_height="40dp"
     android:layout_marginStart="@dimen/dp_5"
     android:layout_marginBottom="@dimen/dp_100"
     android:background="@drawable/shape_ball_bg"

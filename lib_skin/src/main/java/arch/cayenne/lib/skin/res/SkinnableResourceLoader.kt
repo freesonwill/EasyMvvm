@@ -5,8 +5,9 @@ import android.content.res.ColorStateList
 import android.graphics.drawable.Drawable
 import androidx.annotation.AnyRes
 import androidx.annotation.ColorRes
+import arch.cayenne.lib.skin.widget.biz.IFixedSkin
 
-interface SkinnableResourceLoader {
+interface SkinnableResourceLoader:IFixedSkin {
 
     fun getColor(context: Context, @ColorRes resId: Int): Int
 

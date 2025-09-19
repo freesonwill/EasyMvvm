@@ -140,7 +140,6 @@
                     android:layout_width="62dp"
                     android:layout_height="0dp"
                     android:background="@drawable/selector_button"
-                    android:foreground="@drawable/bg_click_mask_8dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
@@ -179,9 +178,7 @@
                     android:id="@+id/cl_cancel_reserve"
                     android:layout_width="wrap_content"
                     android:layout_height="0dp"
-                    android:background="@drawable/shape_8dp"
-                    android:backgroundTint="@color/input_box_2"
-                    android:foreground="@drawable/bg_click_mask"
+                    android:background="@drawable/selector_cancel_reserve_button"
                     android:visibility="gone"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -229,6 +226,7 @@
                 android:layout_marginTop="12dp"
                 android:background="@drawable/shape_6dp"
                 android:backgroundTint="@color/keyboard_2"
+                android:foreground="@drawable/bg_odds_change_mask"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/cl_money">
 
@@ -282,9 +280,12 @@
                     android:layout_width="61dp"
                     android:layout_height="204dp"
                     android:background="@drawable/shape_6dp"
-                    android:backgroundTint="@color/keyboard_1"
                     android:orientation="vertical"
                     android:nestedScrollingEnabled="false"
+                    android:clipToPadding="false"
+                    android:clipChildren="false"
+                    android:outlineProvider="background"
+                    android:clipToOutline="true"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -315,8 +316,6 @@
                         android:id="@+id/btn_back"
                         style="@style/NumberKeyboardTextButton"
                         android:layout_marginBottom="2dp"
-                        android:backgroundTint="@color/keyboard_1"
-                        android:foreground="@drawable/bg_click_mask_6dp_white_blue"
                         android:scaleType="center"
                         android:src="@drawable/icon_keyboard_back" />
 
@@ -325,8 +324,6 @@
                         style="@style/NumberKeyboardTextButton"
                         android:layout_marginTop="2dp"
                         android:layout_marginBottom="2dp"
-                        android:backgroundTint="@color/keyboard_1"
-                        android:foreground="@drawable/bg_click_mask_6dp_white_blue"
                         android:text="@string/btn_clear"
                         android:textSize="12sp"
                         app:skinnableFontWeight="500" />
@@ -336,8 +333,6 @@
                         style="@style/NumberKeyboardTextButton"
                         android:layout_marginTop="2dp"
                         android:layout_marginBottom="2dp"
-                        android:backgroundTint="@color/keyboard_1"
-                        android:foreground="@drawable/bg_click_mask_6dp_white_blue"
                         android:text="@string/btn_double"
                         android:textSize="12sp"
                         app:skinnableFontWeight="500" />
@@ -346,8 +341,6 @@
                         android:id="@+id/btn_collapse"
                         style="@style/NumberKeyboardTextButton"
                         android:layout_marginTop="2dp"
-                        android:backgroundTint="@color/keyboard_1"
-                        android:foreground="@drawable/bg_click_mask_6dp_white_blue"
                         android:padding="10dp"
                         android:scaleType="center"
                         android:src="@drawable/icon_keyboard" />
@@ -380,7 +373,6 @@
                 android:layout_width="90dp"
                 android:layout_height="48dp"
                 android:background="@drawable/selector_button"
-                android:foreground="@drawable/bg_click_mask_8dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
@@ -420,7 +412,6 @@
                 android:layout_height="0dp"
                 android:layout_marginStart="4dp"
                 android:background="@drawable/selector_send_button"
-                android:foreground="@drawable/bg_click_mask_8dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/btn_collusion"

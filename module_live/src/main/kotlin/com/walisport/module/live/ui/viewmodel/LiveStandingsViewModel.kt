@@ -20,8 +20,6 @@ class LiveStandingsViewModel : BaseViewModel() {
 
     fun getCompetitionData(compId: Int) {
         viewModelScope.launch {
-            //Tab切换动画和列表更新动画几乎同时发生引起卡顿感，加延迟确保tab切换动画执行完后再执行更新动画
-            delay(200)
             val result = repository.getCompetitionReq(compId)
             _competitionTables.value = result
         }

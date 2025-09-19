@@ -10,8 +10,6 @@ import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
-import arch.cayenne.lib.base.utils.LogUtils
-import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout.States
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
@@ -33,6 +31,7 @@ class LiveStandingsFragment : BaseFragment<LiveStandingsViewModel, FragmentLiveS
     override val vbClass: KClass<FragmentLiveStandingsBinding> = FragmentLiveStandingsBinding::class
     override val vmClass: KClass<LiveStandingsViewModel> = LiveStandingsViewModel::class
     private var standsAdapter = StandingsAdapter()
+    private var tournamentName = ""
 
     class StandingsItemDecoration(
         private val spacing: Int = 12.dp2px,         // 常规间距大小（像素）
@@ -71,7 +70,7 @@ class LiveStandingsFragment : BaseFragment<LiveStandingsViewModel, FragmentLiveS
             mainViewModel.apiStateListener.observe(viewLifecycleOwner) { state ->
                 when (state) {
                     DataState.NetworkUnavailable -> {
-                        mBinding.mainLayout.setState(
+                            mBinding.mainLayout.setState(
                             States.NETWORK_ANOMALY(),
                             arch.cayenne.lib.common.R.string.error_net.getString()
                         )
@@ -85,6 +84,7 @@ class LiveStandingsFragment : BaseFragment<LiveStandingsViewModel, FragmentLiveS
                         R.string.lineup_empty.getString()
                     )
                 } else {
+                    mBinding.tvStandingsName.text = tournamentName
                     mBinding.mainLayout.setVisibilityGone()
                     standsAdapter.submitList(it)
                 }
@@ -92,6 +92,7 @@ class LiveStandingsFragment : BaseFragment<LiveStandingsViewModel, FragmentLiveS
             mainViewModel.mainMatch.observe(viewLifecycleOwner) {
                 it?.let {
                     val leagueID = it.basicInfo.tournamentId
+                    tournamentName = it.basicInfo.tournamentName
                     mViewModel.getCompetitionData(leagueID)
                 }
             }

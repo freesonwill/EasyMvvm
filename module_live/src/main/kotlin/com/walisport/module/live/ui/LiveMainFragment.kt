@@ -1,20 +1,22 @@
 package com.walisport.module.live.ui
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.RecyclerView
-import androidx.viewpager2.widget.ViewPager2
 import arch.cayenne.lib.base.data.constants.DataState
+import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.PagerBean
+import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.adapter.PagerAdapter
 import arch.cayenne.lib.base.ui.animation.AnimationController
 import arch.cayenne.lib.base.ui.animation.AnimationController.AnimType
@@ -22,6 +24,10 @@ import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
+import arch.cayenne.lib.common.utils.CustomTabIndicatorUtils
+import arch.cayenne.lib.common.data.constants.SkinType
+import arch.cayenne.lib.common.utils.ImmersionBarUtils.immersionBarColorExt
+import arch.cayenne.lib.common.utils.ImmersionBarUtils.immersionBarSkinTypeExt
 import arch.cayenne.lib.common.utils.ext.DimensionExt.px2sp
 import arch.cayenne.lib.common.utils.ext.setDrawerInterpolator
 import arch.cayenne.lib.common.utils.ext.NavResultExt.observeResult
@@ -48,11 +54,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.filter
 import kotlin.reflect.KClass
 import arch.cayenne.lib.common.utils.ext.animateIndicatorToPosition
-import arch.cayenne.lib.common.utils.ext.setupHorizontalScrollDegree
+import arch.cayenne.lib.common.utils.ext.setupViewPagerScroll
 import arch.cayenne.lib.common.utils.ext.startFadeAnim
-import arch.cayenne.lib.common.utils.ext.startZoomInAnim
-import arch.cayenne.lib.common.utils.helper.doSmartAnim
-import kotlin.math.abs
 
 /**
  * 直播详情页
@@ -67,11 +70,10 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
     override val vmClass: KClass<LiveMainViewModel> = LiveMainViewModel::class
     private lateinit var args: LiveMainFragmentArgs
     private var drawerContentFragment: LiveBetOnMenuFragment? = null
-    private var skipAnyAnim = true
-    private var enableAnimation = false
     private val titleBarBinding: TitleBarLiveBinding by lazy {
         TitleBarLiveBinding.inflate(LayoutInflater.from(context), mBinding.titleBar, false)
     }
+    private val fixedSkin = SkinType.getLogicSkinType(SkinType.SKIN_BLACK_RED.value)
 
     override fun initView(savedInstanceState: Bundle?) {
         args = LiveMainFragmentArgs.fromBundle(requireArguments())
@@ -85,6 +87,34 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
             DrawerLayout.LOCK_MODE_LOCKED_CLOSED,
             GravityCompat.END
         )
+    }
+
+
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        return super.onCreateView(inflater, container, savedInstanceState).apply {
+            StatusBarConfig.statusBarType = StatusBarMode.DEFAULT
+            StatusBarConfig.statusBarColor = immersionBarColorExt(fixedSkin)
+            StatusBarConfig.statusBarDarkFont = immersionBarSkinTypeExt(fixedSkin)
+            setStatusBar(StatusBarConfig,mBinding.root)
+        }
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        SkinnableResourceManager.setFixedSkin(fixedSkin)
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        SkinnableResourceManager.setFixedSkin(null)
+        StatusBarConfig.statusBarType = StatusBarMode.DEFAULT
+        StatusBarConfig.statusBarColor = immersionBarColorExt(mViewModel.getSkinType())
+        StatusBarConfig.statusBarDarkFont = immersionBarSkinTypeExt(mViewModel.getSkinType())
     }
 
     //init DrawerLayout Content
@@ -157,17 +187,12 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         mBinding.tabLayout.addOnTabSelectedListener2(object : TabLayoutExt.OnTabSelectedListener2 {
             override fun onTabSelected(tab: TabLayout.Tab,isTabClick: Boolean) {
                 tab.let {
-                    if (skipAnyAnim) {
-                        enableAnimation = false
-                        mBinding.customIndicator.animateIndicatorToPosition(tab.position)
+                    if (isTabClick) {
+                        CustomTabIndicatorUtils.animateIndicatorToPosition(mBinding.customIndicator,tab.position)
                         val vp = mBinding.vpPage
-                        if(isTabClick) {
-                            vp.startFadeAnim {
-                                vp.setCurrentItem(tab.position, false)
-                                it.invoke()
-                            }
-                        } else {
-                            vp.doSmartAnim(tab.position)
+                        vp.startFadeAnim {
+                            vp.setCurrentItem(tab.position, false)
+                            it.invoke()
                         }
                     }
                 }
@@ -200,71 +225,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                 // Handle reselect if needed
             }
         })
-        setupViewPagerScroll()
-    }
-
-    fun setupViewPagerScroll() {
-        mBinding.tabLayout.post {
-            // 计算单个 Tab 的宽度
-            val tabWidth = mBinding.tabLayout.width.toFloat() / mBinding.tabLayout.tabCount
-            mBinding.customIndicator.setTabWidth(tabWidth, 0.45f)
-        }
-        var lastSwitchedPage: Int = 0 // 记录上一次切换的页面，防止重复切换
-        mBinding.vpPage.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-            override fun onPageScrollStateChanged(state: Int) {
-                when (state) {
-                    ViewPager2.SCROLL_STATE_DRAGGING -> {
-                        skipAnyAnim = false
-                        enableAnimation = true
-                        lastSwitchedPage = mBinding.vpPage.currentItem
-                    }
-
-                    ViewPager2.SCROLL_STATE_IDLE -> {
-                        skipAnyAnim = true
-                    }
-                }
-            }
-
-            override fun onPageScrolled(
-                position: Int,
-                positionOffset: Float,
-                positionOffsetPixels: Int
-            ) {
-                if (!enableAnimation) return
-                val totalItems = mBinding.vpPage.adapter?.itemCount ?: 0
-                val currentPage = mBinding.vpPage.currentItem
-                val adjustedOffset = if (position == currentPage) {
-                    // 左滑
-                    positionOffset
-                } else if (position == currentPage - 1) {
-                    // 右滑
-                    -(1.0f - positionOffset)
-                } else {
-                    0.0f // 默认情况
-                }
-                // 左滑：adjustedOffset > 0.5，切换到下一页
-                if (adjustedOffset > 0.5f && currentPage < totalItems - 1 && lastSwitchedPage != currentPage + 1) {
-                    lastSwitchedPage = currentPage + 1
-                    mBinding.customIndicator.animateIndicatorToPosition(lastSwitchedPage)
-                    mBinding.tabLayout.getTabAt(lastSwitchedPage)?.select()
-                }
-                // 右滑：adjustedOffset < -0.5，切换到上一页
-                else if (adjustedOffset < -0.5f && currentPage > 0 && lastSwitchedPage != currentPage - 1) {
-                    lastSwitchedPage = currentPage - 1
-                    mBinding.customIndicator.animateIndicatorToPosition(lastSwitchedPage)
-                    mBinding.tabLayout.getTabAt(lastSwitchedPage)?.select()
-                }
-                // 滑动未超过 50%，恢复到当前页面
-                else if (abs(adjustedOffset) <= 0.5f && lastSwitchedPage != currentPage) {
-                    lastSwitchedPage = currentPage
-                    mBinding.customIndicator.animateIndicatorToPosition(lastSwitchedPage)
-                    mBinding.tabLayout.getTabAt(lastSwitchedPage)?.select()
-                }
-            }
-        })
-        // 启用手动滑动
-        mBinding.vpPage.isUserInputEnabled = true
-        mBinding.vpPage.setupHorizontalScrollDegree()
+        mBinding.vpPage.setupViewPagerScroll(mBinding.tabLayout,mBinding.customIndicator,0.45f)
     }
 
     override fun createObserverAtState(): Lifecycle.State {
@@ -353,15 +314,13 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
 
     //比赛ID发生变化,取消订阅,数据请空
     private fun updateMatchId(matchId: Long) {
-        skipAnyAnim = false
         mBinding.vpPage.setCurrentItem(1,false)
         mBinding.tabLayout.getTabAt(1)?.select()
-        mBinding.customIndicator.animateIndicatorToPosition(1,false)
+        CustomTabIndicatorUtils.animateIndicatorToPosition(mBinding.customIndicator,1)
         mViewModel.matchId.value?.let {
             deleteDataAndSubscriptions(matchId)
             mViewModel.setMatchId(matchId)
         }
-        skipAnyAnim = true
     }
 
     private fun deleteDataAndSubscriptions(matchId: Long) {
@@ -401,7 +360,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                 vpPage.offscreenPageLimit = list.size
             }
 
-            TabLayoutMediator(tabLayout, vpPage) { tab, position ->
+            TabLayoutMediator(tabLayout, vpPage,false) { tab, position ->
                 tab.text = list[position].title
                 tab.setCustomView(R.layout.custom_tab)
                 tab.customView?.findViewById<SkinnableTextView>(R.id.tabText)?.apply {
@@ -469,6 +428,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         mViewModel.matchId.value?.let {
             deleteDataAndSubscriptions(it)
         }
+        CustomTabIndicatorUtils.clear()
         super.onDestroyView()
     }
 

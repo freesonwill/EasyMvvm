@@ -11,6 +11,20 @@ enum class SkinType(val value: String) {
 
     companion object {
         val DEFAULT = SKIN_BLACK_GREEN.value
-        fun of(v: String): SkinType? = SkinType.values().find { it.value == v }
+        fun of(v: String): SkinType? = entries.find { it.value == v }
+
+        /**
+         *  UI界面上有6种主题，但是逻辑上暂时就白蓝和经典两种
+         *  黑色映射成经典，白色映射成白蓝
+         * @param skinType
+         * @return
+         */
+        fun getLogicSkinType(skinType: String): String {
+            return when (skinType) {
+                SKIN_WHITE_BLUE.value -> SKIN_WHITE_BLUE.value
+                SKIN_WHITE_GREEN.value -> SKIN_WHITE_BLUE.value
+                else -> SKIN_CLASSIC.value
+            }
+        }
     }
 }

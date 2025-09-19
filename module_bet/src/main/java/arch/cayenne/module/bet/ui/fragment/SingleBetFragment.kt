@@ -24,6 +24,7 @@ import arch.cayenne.lib.common.utils.ext.SportDisplayOddsExt.getDisplayOdds
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toOdds
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
+import arch.cayenne.lib.common.utils.ext.setOnClickOrLongPressListener
 import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.database.entity.BetSelectionBean
 import arch.cayenne.lib.database.entity.BetTypeEnum
@@ -109,13 +110,12 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
                 mViewModel.removeBet()
             }
         }
-        mBinding.btnBack.setOnClickListener {
+        mBinding.btnBack.setOnClickOrLongPressListener (onClick = {
             mViewModel.backNumber()
-        }
-        mBinding.btnBack.setOnLongClickListener { view ->
-            mViewModel.clearNumber()
-            true
-        }
+        }, onLongPressRepeat = {
+            mViewModel.backNumber()
+        })
+
         mBinding.btnClear.setOnClickListener {
             mViewModel.clearNumber()
         }
@@ -153,7 +153,7 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
         mBinding.btnDelete.setOnClickListener {
             mViewModel.removeBet()
         }
-        mBinding.tvOddsChange.setOnClickListener { v ->
+        mBinding.clOddsChange.setOnClickListener {
             showOddsChangeDialog()
         }
     }
@@ -206,6 +206,7 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
         }
         mViewModel.onCanBetListener.observe(viewLifecycleOwner) {
             mBinding.clBet.isEnabled = it
+            mBinding.tvBetHint.alpha = if (it) 1.0f else 0.7f
         }
         mViewModel.networkConnectedEvent.observeEvent(viewLifecycleOwner, this) {
             if (it is DataState.NetworkUnavailable) {
@@ -238,6 +239,7 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
     private fun setBetData(data: BetSelectionBean) {
         ViewHelper.bindBetSheet(1, data, mBinding.layoutBet)
         mBinding.btnCollusion.isEnabled = data.isParlay
+        mBinding.tvCollusionHint.alpha = if (data.isParlay) 1.0f else 0.7f
         mBinding.clBet.isEnabled = data.isActive
         mBinding.layoutBet.ivDelete.isVisible = false
     }

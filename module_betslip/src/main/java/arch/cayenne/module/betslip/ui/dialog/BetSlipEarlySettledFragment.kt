@@ -18,6 +18,7 @@ import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoneyForScale
 import arch.cayenne.lib.common.utils.ext.TabLayoutExt
 import arch.cayenne.lib.common.utils.ext.TabLayoutExt.addOnTabSelectedListener2
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+import arch.cayenne.lib.common.utils.ext.setOnClickOrLongPressListener
 import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.skin.widget.SkinnableTabLayout
 import arch.cayenne.module.betslip.R
@@ -186,11 +187,11 @@ class BetSlipEarlySettledFragment :
 
     override fun initListener() {
         mBinding.apply {
-            btnBack.setOnClickListener { mViewModel.backNumber() }
-            btnBack.setOnLongClickListener { view ->
-                mViewModel.clearNumber()
-                true
-            }
+            btnBack.setOnClickOrLongPressListener (onClick = {
+                mViewModel.backNumber()
+            }, onLongPressRepeat = {
+                mViewModel.backNumber()
+            })
             btnClear.setOnClickListener { mViewModel.clearNumber() }
             btnDouble.setOnClickListener { mViewModel.doubleNumber() }
             btnCollapse.setOnClickListener {

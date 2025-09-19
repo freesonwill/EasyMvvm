@@ -91,24 +91,42 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
 
                 override fun onOddsCellClick(cell: WeakReference<View>, selection: SelectionBeanLite, x: Float, y: Float) {
                     lifecycleScope.launch {
-                        if (mViewModel.getCurrentSelectionCount() == 0) {
-                            BetSheetFragment.show(requireActivity()) {
-                                cell.get()?.isSelected = true
-                            }
-                        } else {
-                            cell.get()?.isSelected = true
-                        }
+                        val v = cell.get()
                         val status = mViewModel.setSelection(selection.selectionId)
+                        when (status) {
+                            is AddSelectionStatus.Success.Single -> {
+                                BetSheetFragment.show(requireActivity(), object : BetSheetFragment.ShowListener {
+                                    override fun onShow() {
+                                        v?.isSelected = true
+                                    }
 
-                        if (status !is AddSelectionStatus.Success) {
-                            cell.get()?.isSelected = false
+                                    override fun onCancel() {
+                                        v?.isSelected = false
+                                    }
+
+                                    override fun onHide() {
+                                        v?.isSelected = false
+                                    }
+                                })
+                            }
+
+                            is AddSelectionStatus.Success.Combo, is AddSelectionStatus.Success.Update -> {
+                                v?.isSelected = true
+                            }
+
+                            is AddSelectionStatus.Others.Remove -> {
+                                v?.isSelected = false
+                            }
+
+                            is AddSelectionStatus.Failure -> {
+                                v?.isSelected = false
+                                status.msg?.let {
+                                    showToast(it)
+                                }
+                            }
                         }
 
-                        if (status is AddSelectionStatus.Failure) {
-                            status.msg?.let {
-                                showToast(it)
-                            }
-                        } else if (status is AddSelectionStatus.Success.Combo || status is AddSelectionStatus.Success.Update) {
+                        if (status is AddSelectionStatus.Success.Combo || status is AddSelectionStatus.Success.Update) {
                             fabViewModel.setClickAnimation(x, y)
                         }
                     }
@@ -122,28 +140,34 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
                 addItemDecoration(decoration)
             }
             (rvCollectList.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
-            rvCollectList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                    super.onScrollStateChanged(recyclerView, newState)
-                    // 滑動停止時觸發
-                    if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                        subscribeVisibleMatch()
-                    }
-                }
-                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                    rvCollectList.scrollToBottomWithLoadMore(minScrollCount = 8, {
-                        if (mViewModel.apiStateListener.value != HomeState.Match.LoadSuccess) return@scrollToBottomWithLoadMore
-                        mViewModel.loadNextPage()
-                    }, {
-                        if (mViewModel.apiStateListener.value == HomeState.Match.LoadNextFailure) {
-                            mViewModel.loadNextPage()
-                        }
-                    })
-                }
-            })
+            rvCollectList.addOnScrollListener(scrollListener)
         }
         mBinding.rvCollectList.touchBackPressed()
         mBinding.root.touchBackPressed()
+    }
+    private val scrollListener = object : RecyclerView.OnScrollListener() {
+        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+            super.onScrollStateChanged(recyclerView, newState)
+            // 滑動停止時觸發
+            if (newState == RecyclerView.SCROLL_STATE_IDLE && view != null && isAdded) {
+                subscribeVisibleMatch()
+            }
+        }
+        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+            mBinding.rvCollectList.scrollToBottomWithLoadMore(minScrollCount = 8, {
+                if (mViewModel.apiStateListener.value != HomeState.Match.LoadSuccess) return@scrollToBottomWithLoadMore
+                mViewModel.loadNextPage()
+            }, {
+                if (mViewModel.apiStateListener.value == HomeState.Match.LoadNextFailure) {
+                    mViewModel.loadNextPage()
+                }
+            })
+        }
+    }
+
+    override fun onDestroyView() {
+        mBinding.rvCollectList.removeOnScrollListener(scrollListener)
+        super.onDestroyView()
     }
 
     override fun initData() {
@@ -194,6 +218,7 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
                                 arch.cayenne.lib.common.R.string.error_net.getString()
                             )
                         }
+                        showToast(arch.cayenne.lib.common.R.string.toast_server_disconnected.getString())
                     }
                     DataState.NoMoreData -> {     //這個DataEmpty表示api抓不到任何資料了，有可能是頁面到底，或是從第一頁就抓不到資料
                         clDynamics.visibility = View.GONE
@@ -214,14 +239,17 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
                     }
                     HomeState.Match.Refreshing -> {
                         clDynamics.visibility = View.GONE
+                        mViewModel.changePageEnd(false)
                         matchAdapter.setLastItemType(MatchItemAdapter.LAST_ITEM_LOAD_MORE)
                     }
                     HomeState.Match.LoadingNext -> {
                         clDynamics.visibility = View.GONE
                     }
-                    DataState.LoadSuccess -> {
+                    DataState.LoadSuccess, HomeState.Match.LoadSuccess -> {
                         if (refreshLayout.isRefreshing) refreshLayout.finishRefresh()
                         clDynamics.visibility = View.GONE
+                        mViewModel.changePageEnd(false)
+                        matchAdapter.setLastItemType(MatchItemAdapter.LAST_ITEM_LOAD_MORE)
                     }
                 }
             }

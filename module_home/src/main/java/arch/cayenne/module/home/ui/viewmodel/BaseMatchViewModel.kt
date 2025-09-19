@@ -58,13 +58,19 @@ abstract class BaseMatchViewModel<REPO: BaseMatchRepository> : BaseViewModel() {
             repository.observeLoginChange()
                 .filter { it }
                 .collect {
-                    if (apiStateListener.value == null || apiStateListener.value == DataState.NetworkUnavailable) {
-                        getMatchListData(LoadMatchType.RETRY)
-                    } else {
-                        launch(Dispatchers.Main) {
-                            subscribeMatch(getCurrentSubscribeMatchSet())
-                        }
+                    getMatchListData(LoadMatchType.RETRY)
+                    launch(Dispatchers.Main) {
+                        subscribeMatch(getCurrentSubscribeMatchSet())
                     }
+//                    if (apiStateListener.value == null) {
+//                        getMatchListData(LoadMatchType.FIRST_LOAD)
+//                    } else if (apiStateListener.value == DataState.NetworkUnavailable) {
+//                        getMatchListData(LoadMatchType.RETRY)
+//                    } else {
+//                        launch(Dispatchers.Main) {
+//                            subscribeMatch(getCurrentSubscribeMatchSet())
+//                        }
+//                    }
 
                 }
         }
@@ -185,13 +191,9 @@ abstract class BaseMatchViewModel<REPO: BaseMatchRepository> : BaseViewModel() {
     fun reload() {
         changePageEnd(false)
         page = 1
-        val preState = apiStateListener.value
         setState(HomeState.Match.Refreshing)
         viewModelScope.launch(Dispatchers.IO) {
-            clearCurrentMatch()
-            if (preState == HomeState.Match.DataEmpty || preState == DataState.NetworkUnavailable) {
-                getMatchListData(LoadMatchType.RELOAD)
-            }
+            getMatchListData(LoadMatchType.RELOAD)
         }
     }
 

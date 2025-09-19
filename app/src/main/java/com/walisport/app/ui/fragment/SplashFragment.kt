@@ -16,8 +16,7 @@ import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import com.blankj.utilcode.util.GsonUtils
 import com.walisport.app.BuildConfig
 import com.walisport.app.R
-import com.walisport.app.databinding.ActivitySplash2Binding
-import com.walisport.app.databinding.ActivitySplashBinding
+import com.walisport.app.databinding.FragmentSplashBinding
 import com.walisport.app.ui.viewmodel.SplashViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -29,7 +28,7 @@ import kotlin.reflect.KClass
  * @date: 2025/9/15 15:41
  * @description:
  */
-class SplashFragment : BaseFragment<SplashViewModel, ActivitySplash2Binding>() {
+class SplashFragment : BaseFragment<SplashViewModel, FragmentSplashBinding>() {
     data class UserConfig(val name: String, val uid: Int, val token: String)
 
     private val users by lazy {
@@ -54,7 +53,7 @@ class SplashFragment : BaseFragment<SplashViewModel, ActivitySplash2Binding>() {
     private var uid = 0
     private var token: String = ""
 
-    override val vbClass: KClass<ActivitySplash2Binding> = ActivitySplash2Binding::class
+    override val vbClass: KClass<FragmentSplashBinding> = FragmentSplashBinding::class
     override val vmClass: KClass<SplashViewModel> = SplashViewModel::class
 
     override fun onStart() {
@@ -79,7 +78,7 @@ class SplashFragment : BaseFragment<SplashViewModel, ActivitySplash2Binding>() {
         val splashScreen = requireActivity().installSplashScreen()
         //splashScreen.setKeepOnScreenCondition { keep }
         lifecycleScope.launch {
-            delay(500)
+            delay(300)
             keep = false
             jumpToMainActivity()
         }

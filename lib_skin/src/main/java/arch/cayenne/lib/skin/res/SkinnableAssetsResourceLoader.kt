@@ -87,6 +87,14 @@ class SkinnableAssetsResourceLoader(context: Context, private val _skinName: Str
 
     }
 
+    override fun setFixedSkin(skin: String?) {
+        TODO("Not yet implemented")
+    }
+
+    override fun getFixedSkin(): String? {
+        TODO("Not yet implemented")
+    }
+
     private fun getSkinResources(context: Context, skinPkgPath: String): Resources? {
         try {
             val packageInfo =

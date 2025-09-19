@@ -10,6 +10,7 @@ import arch.cayenne.lib.database.entity.InfoBean
 import arch.cayenne.lib.database.entity.MatchWithMarkets
 import arch.cayenne.module.home.data.constants.HomeState
 import arch.cayenne.module.home.data.repo.BaseMatchRepository
+import arch.cayenne.module.home.data.repo.BaseMatchRepository.Companion.DEFAULT_MATCH_SIZE
 import arch.cayenne.module.home.data.repo.CollectListRepository
 import galaxy.common.proto.Common
 import kotlinx.coroutines.Dispatchers
@@ -51,7 +52,10 @@ class CollectListViewModel : BaseMatchViewModel<CollectListRepository>() {
         viewModelScope.launch {
             setState(HomeState.Match.Loading)
             callApi({
-                repository.getCollectData(page)
+                repository.getCollectData(
+                    page = page,
+                    isForce = loadMatchType == LoadMatchType.RELOAD || loadMatchType == LoadMatchType.RETRY
+                )
             }, {
                 if (it is ApiResponseState.Failed) {
                     if (loadMatchType == LoadMatchType.NEXT_PAGE) {
@@ -94,7 +98,13 @@ class CollectListViewModel : BaseMatchViewModel<CollectListRepository>() {
                     currentRefs.map { it.matchId }
                 )
                 withContext(Dispatchers.Main) {
-                    setState(HomeState.Match.LoadSuccess)
+                    if (page == 1 && list.isEmpty()) {
+                        setState(HomeState.Match.DataEmpty)
+                    } else if (list.size % DEFAULT_MATCH_SIZE != 0) {
+                        setState(DataState.NoMoreData)
+                    } else {
+                        setState(HomeState.Match.LoadSuccess)
+                    }
                     matchListChange.value = list
                 }
                 repository.insertCollectList(currentRefs)
