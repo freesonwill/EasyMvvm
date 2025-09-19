@@ -206,6 +206,7 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
         }
         mViewModel.onCanBetListener.observe(viewLifecycleOwner) {
             mBinding.clBet.isEnabled = it
+            mBinding.tvBetHint.alpha = if (it) 1.0f else 0.7f
         }
         mViewModel.networkConnectedEvent.observeEvent(viewLifecycleOwner, this) {
             if (it is DataState.NetworkUnavailable) {
@@ -238,6 +239,7 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
     private fun setBetData(data: BetSelectionBean) {
         ViewHelper.bindBetSheet(1, data, mBinding.layoutBet)
         mBinding.btnCollusion.isEnabled = data.isParlay
+        mBinding.tvCollusionHint.alpha = if (data.isParlay) 1.0f else 0.7f
         mBinding.clBet.isEnabled = data.isActive
         mBinding.layoutBet.ivDelete.isVisible = false
     }
