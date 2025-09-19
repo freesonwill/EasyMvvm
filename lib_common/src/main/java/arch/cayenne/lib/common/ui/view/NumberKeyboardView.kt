@@ -22,7 +22,7 @@ class NumberKeyboardView : LinearLayout {
         val layoutInflater = LayoutInflater.from(context)
         mBinding = LayoutNumberKeyboardBinding.inflate(layoutInflater, this, true)
         mBinding.apply {
-            setNumberTouch(btnOne) { mListener?.onNumberClick(0) }
+            setNumberTouch(btnZero) { mListener?.onNumberClick(0) }
             setNumberTouch(btnOne) { mListener?.onNumberClick(1) }
             setNumberTouch(btnTwo) { mListener?.onNumberClick(2) }
             setNumberTouch(btnThree) { mListener?.onNumberClick(3) }

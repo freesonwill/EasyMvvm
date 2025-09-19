@@ -316,7 +316,7 @@
                         style="@style/NumberKeyboardTextButton"
                         android:layout_marginBottom="2dp"
                         android:backgroundTint="@color/keyboard_1"
-                        android:foreground="@drawable/bg_click_mask_6dp_white_blue"
+                        android:foreground="@drawable/bg_click_mask_6dp"
                         android:scaleType="center"
                         android:src="@drawable/icon_keyboard_back" />
 
@@ -326,7 +326,7 @@
                         android:layout_marginTop="2dp"
                         android:layout_marginBottom="2dp"
                         android:backgroundTint="@color/keyboard_1"
-                        android:foreground="@drawable/bg_click_mask_6dp_white_blue"
+                        android:foreground="@drawable/bg_click_mask_6dp"
                         android:text="@string/btn_clear"
                         android:textSize="12sp"
                         app:skinnableFontWeight="500" />
@@ -337,7 +337,7 @@
                         android:layout_marginTop="2dp"
                         android:layout_marginBottom="2dp"
                         android:backgroundTint="@color/keyboard_1"
-                        android:foreground="@drawable/bg_click_mask_6dp_white_blue"
+                        android:foreground="@drawable/bg_click_mask_6dp"
                         android:text="@string/btn_double"
                         android:textSize="12sp"
                         app:skinnableFontWeight="500" />
@@ -347,7 +347,7 @@
                         style="@style/NumberKeyboardTextButton"
                         android:layout_marginTop="2dp"
                         android:backgroundTint="@color/keyboard_1"
-                        android:foreground="@drawable/bg_click_mask_6dp_white_blue"
+                        android:foreground="@drawable/bg_click_mask_6dp"
                         android:padding="10dp"
                         android:scaleType="center"
                         android:src="@drawable/icon_keyboard" />
