@@ -20,6 +20,7 @@ import arch.cayenne.lib.common.ui.viewmodel.ReserveDialogViewModel
 import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.SportDisplayOddsExt.getDisplayOdds
+import arch.cayenne.lib.common.utils.ext.setOnClickOrLongPressListener
 
 class ReserveDialogFragment private constructor() : BasePositionDialogFragment<ReserveDialogViewModel, FragmentReserveDialogBinding>() {
 
@@ -168,13 +169,11 @@ class ReserveDialogFragment private constructor() : BasePositionDialogFragment<R
     }
 
     override fun initListener() {
-        mBinding.btnBack.setOnClickListener {
+        mBinding.btnBack.setOnClickOrLongPressListener (onClick = {
             mViewModel.backNumber()
-        }
-        mBinding.btnBack.setOnLongClickListener { view ->
-            mViewModel.clearNumber()
-            true
-        }
+        }, onLongPressRepeat = {
+            mViewModel.backNumber()
+        })
         mBinding.btnClear.setOnClickListener {
             mViewModel.clearNumber()
         }
