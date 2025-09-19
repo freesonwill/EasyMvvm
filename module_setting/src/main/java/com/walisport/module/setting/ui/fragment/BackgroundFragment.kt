@@ -40,10 +40,15 @@ class BackgroundFragment : BaseFragment<SettingViewModel, FragmentBackgroundBind
         mBinding.titleBar.loadDynamicsTitleBar(binding.root, null)
         binding.apply {
             barRoot.layoutParams.width = resources.displayMetrics.widthPixels - 20.dp2px
+            //点击返回，使用变动前的皮肤
             tvBack.clickNoRepeat {
+                if (skinOld != skinType) {
+                    mViewModel.resetSkinType(skinOld)
+                }
+                mViewModel.setSkinRecord(skinOld)
                 findNavController().navigateUp()
             }
-            //点击返回，使用变动前的皮肤，点击确认，使用变动后的皮肤
+            //点击确认，使用变动后的皮肤
             tvTitleRight.clickNoRepeat {
                 defaultImmColor = immColor
                 mViewModel.setSkinRecord(skinType)
@@ -96,13 +101,6 @@ class BackgroundFragment : BaseFragment<SettingViewModel, FragmentBackgroundBind
             SkinType.SKIN_BLACK_GREEN.value -> mBinding.radioBlackGreen.isSelected = true
             SkinType.SKIN_WHITE_GREEN.value -> mBinding.radioWhiteGreen.isSelected = true
         }
-    }
-
-    override fun onDestroyView() {
-        if (skinOld != skinType) {
-            mViewModel.resetSkinType(skinOld)
-        }
-        super.onDestroyView()
     }
 
     override fun onDestroy() {
