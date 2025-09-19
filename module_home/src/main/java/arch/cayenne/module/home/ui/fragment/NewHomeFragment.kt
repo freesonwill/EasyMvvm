@@ -17,6 +17,7 @@ import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
+import arch.cayenne.lib.common.utils.DensityInfo
 import arch.cayenne.lib.common.utils.ext.NavResultExt.observeResult
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
@@ -284,6 +285,18 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             return true
         }
         return super.onBackPressed()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val metrics = resources.displayMetrics
+        //density和scaledDensity被篡改，尝试恢复
+        if (metrics.density != DensityInfo.density && DensityInfo.density > 0) {
+            metrics.density = DensityInfo.density
+        }
+        if (metrics.scaledDensity != DensityInfo.scaledDensity && DensityInfo.scaledDensity > 0) {
+            metrics.scaledDensity = DensityInfo.scaledDensity
+        }
     }
 
 }
