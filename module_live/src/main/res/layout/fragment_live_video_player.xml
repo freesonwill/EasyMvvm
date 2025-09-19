@@ -95,6 +95,7 @@
             android:id="@+id/bottom_area"
             android:layout_width="match_parent"
             android:layout_height="@dimen/video_operate_area_height"
+            android:background="@drawable/bg_video_player_bottom"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent">
 
