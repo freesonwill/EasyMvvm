@@ -8,17 +8,26 @@
         android:id="@+id/tv_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingVertical="11dp"
-        android:background="@android:color/transparent"
+        android:background="@drawable/selector_quick_amount_pressed"
         android:gravity="center"
+        android:paddingTop="11dp"
+        android:paddingBottom="10dp"
         android:textColor="@color/keyboard_number"
         android:textSize="14sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/line"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_goneMarginBottom="1dp"
         app:skinnableFontWeight="500" />
 
-    <View
+    <arch.cayenne.lib.skin.widget.SkinnableView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/keyboard_1"
+        app:layout_constraintBottom_toBottomOf="@id/line"
+        app:layout_constraintTop_toTopOf="@id/line" />
+
+    <arch.cayenne.lib.skin.widget.SkinnableView
         android:id="@+id/line"
         android:layout_width="match_parent"
         android:layout_height="1dp"

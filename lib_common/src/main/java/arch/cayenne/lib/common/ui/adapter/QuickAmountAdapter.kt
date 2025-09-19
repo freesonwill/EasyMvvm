@@ -27,15 +27,9 @@ class QuickAmountAdapter(
     ) {
         holder.initView()
         val item = getItem(position)
-        val context = binding.root.context
         binding.tvTitle.text = item.value.toString()
         binding.root.setOnClickListener {
             onItemClick(item.getAmount())
-        }
-        binding.root.foreground = when (position) {
-            0 -> SkinnableResourceManager.getDrawable(context, R.drawable.bg_click_mask_top_6dp)
-            itemCount - 1 -> SkinnableResourceManager.getDrawable(context, R.drawable.bg_click_mask_bottom_6dp)
-            else -> SkinnableResourceManager.getDrawable(context, R.drawable.bg_click_mask)
         }
         binding.line.isVisible = position < itemCount - 1
     }
