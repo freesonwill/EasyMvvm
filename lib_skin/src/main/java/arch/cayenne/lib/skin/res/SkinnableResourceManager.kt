@@ -2,21 +2,20 @@ package arch.cayenne.lib.skin.res
 
 import android.content.Context
 import android.content.res.ColorStateList
-import android.content.res.Configuration
 import android.graphics.drawable.Drawable
 import androidx.annotation.AnyRes
 import androidx.annotation.ArrayRes
 import androidx.annotation.ColorRes
 import androidx.annotation.StringRes
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.skin.LanguageManager
+import arch.cayenne.lib.skin.widget.biz.IFixedSkin
 import org.koin.java.KoinJavaComponent.inject
 import java.util.Locale
 
 /**
  * 获取对应资源文件
  * */
-object SkinnableResourceManager {
+object SkinnableResourceManager:IFixedSkin {
     private var resourceLoader: SkinnableResourceLoader = SkinnableBuildInResourceLoader("")
     private val languageManager:LanguageManager by inject(LanguageManager::class.java)
 
@@ -34,6 +33,7 @@ object SkinnableResourceManager {
     fun restoreSecondaryName() {
         resourceLoader.setSecondarySkin("")
     }
+
 
     internal fun getTextResourceText(
         context: Context,
@@ -106,4 +106,12 @@ object SkinnableResourceManager {
     }
 
     fun getSkinName() = resourceLoader.getSkinName()
+
+    override fun setFixedSkin(skin: String?) {
+        resourceLoader.setFixedSkin(skin)
+    }
+
+    override fun getFixedSkin(): String? {
+       return resourceLoader.getFixedSkin()
+    }
 }

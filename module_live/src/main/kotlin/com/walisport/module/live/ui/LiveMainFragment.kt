@@ -1,20 +1,22 @@
 package com.walisport.module.live.ui
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.RecyclerView
-import androidx.viewpager2.widget.ViewPager2
 import arch.cayenne.lib.base.data.constants.DataState
+import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.PagerBean
+import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.adapter.PagerAdapter
 import arch.cayenne.lib.base.ui.animation.AnimationController
 import arch.cayenne.lib.base.ui.animation.AnimationController.AnimType
@@ -23,6 +25,9 @@ import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.utils.CustomTabIndicatorUtils
+import arch.cayenne.lib.common.data.constants.SkinType
+import arch.cayenne.lib.common.utils.ImmersionBarUtils.immersionBarColorExt
+import arch.cayenne.lib.common.utils.ImmersionBarUtils.immersionBarSkinTypeExt
 import arch.cayenne.lib.common.utils.ext.DimensionExt.px2sp
 import arch.cayenne.lib.common.utils.ext.setDrawerInterpolator
 import arch.cayenne.lib.common.utils.ext.NavResultExt.observeResult
@@ -49,12 +54,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.filter
 import kotlin.reflect.KClass
 import arch.cayenne.lib.common.utils.ext.animateIndicatorToPosition
-import arch.cayenne.lib.common.utils.ext.setupHorizontalScrollDegree
 import arch.cayenne.lib.common.utils.ext.setupViewPagerScroll
 import arch.cayenne.lib.common.utils.ext.startFadeAnim
-import arch.cayenne.lib.common.utils.ext.startZoomInAnim
-import arch.cayenne.lib.common.utils.helper.doSmartAnim
-import kotlin.math.abs
 
 /**
  * 直播详情页
@@ -72,6 +73,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
     private val titleBarBinding: TitleBarLiveBinding by lazy {
         TitleBarLiveBinding.inflate(LayoutInflater.from(context), mBinding.titleBar, false)
     }
+    private val fixedSkin = SkinType.getLogicSkinType(SkinType.SKIN_BLACK_RED.value)
 
     override fun initView(savedInstanceState: Bundle?) {
         args = LiveMainFragmentArgs.fromBundle(requireArguments())
@@ -85,6 +87,34 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
             DrawerLayout.LOCK_MODE_LOCKED_CLOSED,
             GravityCompat.END
         )
+    }
+
+
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        return super.onCreateView(inflater, container, savedInstanceState).apply {
+            StatusBarConfig.statusBarType = StatusBarMode.DEFAULT
+            StatusBarConfig.statusBarColor = immersionBarColorExt(fixedSkin)
+            StatusBarConfig.statusBarDarkFont = immersionBarSkinTypeExt(fixedSkin)
+            setStatusBar(StatusBarConfig,mBinding.root)
+        }
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        SkinnableResourceManager.setFixedSkin(fixedSkin)
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        SkinnableResourceManager.setFixedSkin(null)
+        StatusBarConfig.statusBarType = StatusBarMode.DEFAULT
+        StatusBarConfig.statusBarColor = immersionBarColorExt(mViewModel.getSkinType())
+        StatusBarConfig.statusBarDarkFont = immersionBarSkinTypeExt(mViewModel.getSkinType())
     }
 
     //init DrawerLayout Content
@@ -160,10 +190,10 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                     if (isTabClick) {
                         CustomTabIndicatorUtils.animateIndicatorToPosition(mBinding.customIndicator,tab.position)
                         val vp = mBinding.vpPage
-                            vp.startFadeAnim {
-                                vp.setCurrentItem(tab.position, false)
-                                it.invoke()
-                            }
+                        vp.startFadeAnim {
+                            vp.setCurrentItem(tab.position, false)
+                            it.invoke()
+                        }
                     }
                 }
                 tab.view.findViewById<SkinnableTextView>(R.id.tabText)?.let { textView ->
