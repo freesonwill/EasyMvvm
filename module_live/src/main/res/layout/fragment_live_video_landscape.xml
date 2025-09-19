@@ -80,7 +80,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/top_area"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/video_landscape_operate_area_height"
+        android:layout_height="@dimen/video_landscape_operate_area_height_top"
+        android:background="@drawable/bg_video_player_top"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -146,8 +147,9 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/bottom_area"
+        android:background="@drawable/bg_video_player_bottom"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/video_landscape_operate_area_height"
+        android:layout_height="@dimen/video_landscape_operate_area_height_bottom"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 

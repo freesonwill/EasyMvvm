@@ -37,7 +37,6 @@ import arch.cayenne.lib.qyplayer.transformFromPlayerConfig
 import arch.cayenne.lib.qyplayer.transformToPlayerConfig
 import arch.cayenne.lib.qyplayer.ui.widget.LivePlayerView
 import arch.cayenne.lib.qyplayer.ui.widget.QYRenderView
-import arch.cayenne.lib.skin.res.SkinnableResourceManager.getDrawable
 import com.bumptech.glide.Glide
 import com.walisport.module.live.R
 import com.walisport.module.live.data.constants.VideoAnimatorConstants.Companion.BUTTONS_ANIMATION_DURATION
@@ -382,7 +381,10 @@ class LiveVideoLandscapeFragment :
      */
     private fun showButtonsAnimated() {
         val operateAreaHeight =
-            resources.getDimensionPixelSize(R.dimen.video_landscape_operate_area_height).toFloat()
+            resources.getDimensionPixelSize(R.dimen.video_landscape_operate_area_height_top).toFloat()
+
+        val operateAreaHeightBottom =
+            resources.getDimensionPixelSize(R.dimen.video_landscape_operate_area_height_bottom).toFloat()
 
         mBinding.root.startSafeAnimateSet({
             playTogether(
@@ -396,7 +398,7 @@ class LiveVideoLandscapeFragment :
                 ),
                 mBinding.bottomArea.startSafeObjectAnimator(
                     "translationY",
-                    *floatArrayOf(operateAreaHeight, 0f)
+                    *floatArrayOf(operateAreaHeightBottom, 0f)
                 ),
                 mBinding.bottomArea.startSafeObjectAnimator(
                     "alpha",
@@ -426,7 +428,10 @@ class LiveVideoLandscapeFragment :
      */
     private fun hideButtonsAnimated() {
         val operateAreaHeight =
-            resources.getDimensionPixelSize(R.dimen.video_landscape_operate_area_height).toFloat()
+            resources.getDimensionPixelSize(R.dimen.video_landscape_operate_area_height_top).toFloat()
+
+        val operateAreaHeightBottom =
+            resources.getDimensionPixelSize(R.dimen.video_landscape_operate_area_height_bottom).toFloat()
 
         mBinding.root.startSafeAnimateSet({
             playTogether(
@@ -437,7 +442,7 @@ class LiveVideoLandscapeFragment :
                 mBinding.topArea.startSafeObjectAnimator("alpha", 1f, 0.5f),
                 mBinding.bottomArea.startSafeObjectAnimator(
                     "translationY",
-                    *floatArrayOf(0f, operateAreaHeight)
+                    *floatArrayOf(0f, operateAreaHeightBottom)
                 ),
                 mBinding.bottomArea.startSafeObjectAnimator("alpha", 1f, 0.5f),
             )
