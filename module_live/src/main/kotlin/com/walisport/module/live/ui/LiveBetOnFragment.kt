@@ -72,7 +72,9 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
                 ) {
                     launch {
                         val v = cell.get()
-                        val status = mViewModel.setSelection(marketI, selectionId)
+                        val status = mainViewModel.matchId.value?.let {
+                            mViewModel.setSelection(it, selectionId)
+                        }
                         when (status) {
                             is AddSelectionStatus.Success.Single -> {
                                 BetSheetFragment.show(requireActivity(), object : BetSheetFragment.ShowListener {
@@ -104,6 +106,7 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
                                     showToast(it)
                                 }
                             }
+                            else -> {}
                         }
 
                         if (status is AddSelectionStatus.Success.Combo || status is AddSelectionStatus.Success.Update) {
