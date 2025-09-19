@@ -136,7 +136,7 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
                 }
             }
         }
-        mBinding.tvOddsChange.setOnClickListener { v ->
+        mBinding.clOddsChange.setOnClickListener { v ->
             showOddsChangeDialog()
         }
     }

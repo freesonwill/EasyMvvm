@@ -153,7 +153,7 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
         mBinding.btnDelete.setOnClickListener {
             mViewModel.removeBet()
         }
-        mBinding.tvOddsChange.setOnClickListener { v ->
+        mBinding.clOddsChange.setOnClickListener {
             showOddsChangeDialog()
         }
     }

@@ -154,6 +154,7 @@
         android:layout_marginStart="10dp"
         android:background="@drawable/shape_6dp"
         android:backgroundTint="@color/keyboard_2"
+        android:foreground="@drawable/bg_odds_change_mask"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toTopOf="@id/cl_bottom_button">
 
