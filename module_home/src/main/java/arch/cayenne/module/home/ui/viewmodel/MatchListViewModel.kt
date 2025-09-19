@@ -39,6 +39,9 @@ class MatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
 
     private var observeJob : Job? = null
 
+    var requestScrollToTop: Boolean = false  //是否需要回到頂部，通常用於網路重新連接後，資料整體重新拉取後使用
+        private set
+
     fun setSportId(id: Int) {
         _sportId = id
     }
@@ -82,6 +85,10 @@ class MatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
 
     fun changeState(state: DataState) {
         setState(state)
+    }
+
+    fun resetRequestScrollToTop() {
+        requestScrollToTop = false
     }
 
     fun startObserveMatch() {
@@ -132,6 +139,7 @@ class MatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
     //取得分頁的比賽列表
     override fun getMatchListData(loadMatchType: LoadMatchType) {
         viewModelScope.launch {
+            requestScrollToTop = loadMatchType == LoadMatchType.RELOAD || loadMatchType == LoadMatchType.RETRY // 是否是強制更新，會刪除原本的資料ref關聯表，並且更新列表後會滾到頂端
             setState(HomeState.Match.Loading)
             val (startTime, endTime) = if (_selectedDate.value == 0L) { //ALL
                 if (_playType == PlayType.EARLY.id) {
@@ -147,9 +155,7 @@ class MatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
                     _selectedDate.value + BaseMatchRepository.ONE_DAY_TIME_STAMP
                 )
             }
-            "取得比賽資料 Type = ${loadMatchType} PlayType = $_playType sportId = $_sportId tournamentId = $_tournamentId page = $page startTime = $startTime endTime = $endTime".logi(
-                TAG
-            )
+            "取得比賽資料 Type = ${loadMatchType} PlayType = $_playType sportId = $_sportId tournamentId = $_tournamentId page = $page startTime = $startTime endTime = $endTime".logi(TAG)
             callApi(
                 {
                     repository.getAllMatch(
@@ -160,7 +166,7 @@ class MatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
                         date = _selectedDate.value,
                         startTime = startTime,
                         endTime = endTime,
-                        isForce = loadMatchType == LoadMatchType.RELOAD || loadMatchType == LoadMatchType.RETRY,
+                        isForce = requestScrollToTop,
                     )
                 },
                 {
