@@ -102,7 +102,6 @@ class BackgroundFragment : BaseFragment<SettingViewModel, FragmentBackgroundBind
         if (skinOld != skinType) {
             mViewModel.resetSkinType(skinOld)
         }
-        mViewModel.setSkinRecord(skinOld)
         super.onDestroyView()
     }
 
