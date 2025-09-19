@@ -87,8 +87,6 @@
                 android:layout_width="62dp"
                 android:layout_height="48dp"
                 android:layout_marginBottom="2dp"
-                android:backgroundTint="@color/keyboard_1"
-                android:foreground="@drawable/bg_click_mask_6dp"
                 android:scaleType="center"
                 android:src="@drawable/icon_keyboard_back" />
 
@@ -99,8 +97,6 @@
                 android:layout_height="48dp"
                 android:layout_marginTop="2dp"
                 android:layout_marginBottom="2dp"
-                android:backgroundTint="@color/keyboard_1"
-                android:foreground="@drawable/bg_click_mask_6dp"
                 android:text="@string/btn_clear"
                 android:textSize="12sp"
                 app:skinnableFontWeight="500" />
@@ -113,8 +109,6 @@
                 android:layout_columnWeight="2"
                 android:layout_marginTop="2dp"
                 android:layout_marginBottom="2dp"
-                android:backgroundTint="@color/brand_color"
-                android:foreground="@drawable/bg_click_mask_6dp"
                 android:text="@string/btn_confirm"
                 android:textSize="12sp"
                 app:skinnableFontWeight="500" />
