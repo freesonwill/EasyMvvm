@@ -7,12 +7,12 @@ import android.graphics.drawable.Drawable
 import androidx.annotation.AnyRes
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.res.ResourcesCompat
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.skin.util.ResUtils
 import arch.cayenne.lib.skin.widget.helper.SkinnableHelper
 
-class SkinnableBuildInResourceLoader(val _skinName: String) : SkinnableResourceLoader {
+class SkinnableBuildInResourceLoader(private val _skinName: String) : SkinnableResourceLoader {
     private var _secondarySkinName: String = ""
+    private var _fixedSkinName: String? = null
     private var currentName = _skinName
 
     override fun getColor(context: Context, resId: Int): Int {
@@ -50,13 +50,18 @@ class SkinnableBuildInResourceLoader(val _skinName: String) : SkinnableResourceL
                 return resId
             }
             var targetResId = 0
-            if (_secondarySkinName.isNotEmpty()) {
-                currentName = _secondarySkinName
-                targetResId = getResId(context, _secondarySkinName, resId)
-            }
-            if (targetResId == 0 && _skinName.isNotEmpty()) {
-                currentName = _skinName
-                targetResId = getResId(context, _skinName, resId)
+            if(_fixedSkinName.isNullOrEmpty()) {
+                if (_secondarySkinName.isNotEmpty()) {
+                    currentName = _secondarySkinName
+                    targetResId = getResId(context, _secondarySkinName, resId)
+                }
+                if (targetResId == 0 && _skinName.isNotEmpty()) {
+                    currentName = _skinName
+                    targetResId = getResId(context, _skinName, resId)
+                }
+            }else {
+                currentName = _fixedSkinName ?: ""
+                targetResId = getResId(context, currentName, resId)
             }
 
             if (targetResId == 0) {
@@ -91,5 +96,13 @@ class SkinnableBuildInResourceLoader(val _skinName: String) : SkinnableResourceL
 
     override fun setSecondarySkin(skinName: String) {
         this._secondarySkinName = skinName
+    }
+
+    override fun setFixedSkin(skin: String?) {
+        this._fixedSkinName = skin
+    }
+
+    override fun getFixedSkin(): String? {
+        return this._fixedSkinName
     }
 }

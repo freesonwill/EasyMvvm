@@ -25,6 +25,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.animation.addListener
 import androidx.core.view.children
 import androidx.core.view.doOnPreDraw
+import androidx.lifecycle.findViewTreeLifecycleOwner
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
@@ -36,6 +38,10 @@ import arch.cayenne.lib.common.ui.view.OnSwipeTouchListener
 import com.google.android.material.shape.CornerFamily
 import com.google.android.material.shape.MaterialShapeDrawable
 import com.google.android.material.shape.ShapeAppearanceModel
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 import java.lang.reflect.Field
 
 private var lastClickTime: Long = 0L
@@ -586,4 +592,64 @@ fun View.startFadeAnim(doSwitchPage: (onComplete: () -> Unit) -> Unit) {
             }
         }
         .start()
+}
+@SuppressLint("ClickableViewAccessibility")
+fun View.setOnClickOrLongPressListener(
+    // --- 可選參數，用於自訂速率 ---
+    longPressDelay: Long = 500L,   // 長按判定時間
+    repeatDelay: Long = 75L,     // 長按重複速率
+    // --- 兩個核心的回呼 ---
+    onClick: () -> Unit,
+    onLongPressRepeat: () -> Unit
+) {
+    // 使用 setOnTouchListener 來監聽完整的觸摸事件
+    setOnTouchListener { _, event ->
+        when (event.action) {
+            MotionEvent.ACTION_DOWN -> {
+                // 1. 獲取 LifecycleOwner 以安全地啟動協程
+                val lifecycleOwner = findViewTreeLifecycleOwner()
+                    ?: return@setOnTouchListener true // 如果找不到，則不執行任何操作
+
+                // 用於追蹤長按是否已觸發的旗標
+                var isLongPressTriggered = false
+
+                // 2. 啟動一個新的協程來處理長按邏輯
+                val job = lifecycleOwner.lifecycleScope.launch {
+                    // 等待長按判定時間
+                    delay(longPressDelay)
+
+                    // 如果協程到這裡還活著 (沒有在 UP 事件中被取消)
+                    // 就表示長按已成立
+                    isLongPressTriggered = true
+
+                    // 進入連續觸發的迴圈
+                    while (isActive) {
+                        onLongPressRepeat()
+                        delay(repeatDelay)
+                    }
+                }
+
+                // 將 job 和旗標存入 tag，以便在 UP 事件中可以存取
+                setTag(R.id.long_press_job_tag, job)
+                setTag(R.id.is_long_press_triggered_tag, isLongPressTriggered)
+            }
+
+            MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                // 3. 手指抬起時，立即取消長按的協程
+                (getTag(R.id.long_press_job_tag) as? Job)?.cancel()
+
+                // 4. 檢查長按旗標，以判斷這是否是一次單次點擊
+                val isLongPressTriggered = getTag(R.id.is_long_press_triggered_tag) as? Boolean ?: false
+                if (!isLongPressTriggered) {
+                    // 如果長按從未被觸發，這就是一次有效的「單次點擊」
+                    onClick()
+                }
+
+                // 清理 tag
+                setTag(R.id.long_press_job_tag, null)
+                setTag(R.id.is_long_press_triggered_tag, null)
+            }
+        }
+        true
+    }
 }

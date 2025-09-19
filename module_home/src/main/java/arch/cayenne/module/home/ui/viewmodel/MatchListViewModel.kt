@@ -103,14 +103,7 @@ class MatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
                 "Collect observeMatchChange start playType = $_playType, sportId = ${_sportId} tournament = $_tournamentId selectedDate = $selectedDate".logi(this@MatchListViewModel::class.java.simpleName)
                 val currentDateRefs = refs.filter { it.date == selectedDate }
                 if (currentDateRefs.isEmpty()) {
-                    "Collect observeMatchChange TournamentMatchRef is NULL!  getMatchListData again!".logi(this@MatchListViewModel::class.java.simpleName)
-                    if (apiStateListener.value == null) {
-                        launch(Dispatchers.Main) { setState(HomeState.Match.Loading) }
-                        getMatchListData(LoadMatchType.FIRST_LOAD)
-                    } else {
-                        getMatchListData(LoadMatchType.RELOAD)
-                    }
-
+                    "Collect observeMatchChange TournamentMatchRef is NULL!!".logi(this@MatchListViewModel::class.java.simpleName)
                     return@collect
                 }
 

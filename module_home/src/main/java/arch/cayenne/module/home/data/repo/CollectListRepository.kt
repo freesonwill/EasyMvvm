@@ -4,8 +4,10 @@ import androidx.room.Transaction
 import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.database.dao.BetDao
+import arch.cayenne.lib.database.dao.CollectListDao
 import arch.cayenne.lib.database.dao.InfoDao
 import arch.cayenne.lib.database.dao.MatchDao
+import arch.cayenne.lib.database.entity.CollectListBean
 import arch.cayenne.lib.database.entity.MatchWithMarkets
 import arch.cayenne.lib.websocket.WebSocketManager
 import arch.cayenne.lib.websocket.data.ApiCode
@@ -24,6 +26,7 @@ class CollectListRepository(
     private val betDao: BetDao,
     private val matchDao: MatchDao,
     private val infoDao: InfoDao,
+    private val collectListDao: CollectListDao,
     private val userDataManager: UserDataManager,
 ) : BaseMatchRepository(scope, socketManager, betDao, matchDao, infoDao, userDataManager) {
 
@@ -45,7 +48,7 @@ class CollectListRepository(
                 this.size = DEFAULT_MATCH_SIZE
             }.build()
         }
-        if (resp.error == null && resp.data != null) {
+        if (resp.error == null && resp.data != null) { //curosr506605 1758204000000 0
             val matchFullData = resp.data!!.matchList.toRoomData()
             matchDao.insertMatch(
                 matches = matchFullData.match,
@@ -83,4 +86,45 @@ class CollectListRepository(
         super.deleteMissingMatch(matchIds)
         matchIds.forEach { collectMatchChange.value = collectMatchChange.value - it }
     }
+
+    /**
+     * 插入收藏的matchId
+     * */
+   fun insertCollectList(list:List<CollectMatchRef>) {
+        if(list.isEmpty()){return}
+        val collectList: List<CollectListBean> = list.map {
+            CollectListBean(
+                it.matchId,
+                it.startTime,
+                it.page,
+                it.order
+            )
+        }.toList()
+        collectListDao.deleteAll()
+       collectListDao.insertCollects(collectList)
+    }
+
+    fun deleteCollectList(){
+        collectListDao.deleteAll()
+    }
+
+    /**
+     * 获取保存的收藏matchId
+     * */
+    fun getCollectList(): List<CollectMatchRef> {
+
+        val list: List<CollectListBean> = collectListDao.getAllCollectList()
+
+        return list.map { CollectMatchRef(it.matchId, it.startTime, it.page, it.order) }.toList()
+    }
+
+    /**
+     * 进入收藏页需要清空数据
+     * 多次重复进入收藏后CollectMatchange数据没有清空，导致 getCollectData方法中last数据不为空，
+     * 错误的选择了更多加载而不是初始化获取数据
+     * */
+    fun clear(){
+       collectMatchChange.value =  mapOf()
+    }
+
 }

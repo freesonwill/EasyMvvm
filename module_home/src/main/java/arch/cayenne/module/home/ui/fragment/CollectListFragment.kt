@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
 import androidx.core.view.doOnPreDraw
+import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -14,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
@@ -41,6 +43,7 @@ import arch.cayenne.module.home.ui.adapter.OnMatchItemClickListener
 import arch.cayenne.module.home.ui.view.decoration.MatchCardItemDecoration
 import arch.cayenne.module.home.ui.viewmodel.CollectListViewModel
 import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import java.lang.ref.WeakReference
@@ -137,28 +140,39 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
                 addItemDecoration(decoration)
             }
             (rvCollectList.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
-            rvCollectList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                    super.onScrollStateChanged(recyclerView, newState)
-                    // 滑動停止時觸發
-                    if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                        subscribeVisibleMatch()
-                    }
-                }
-                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                    rvCollectList.scrollToBottomWithLoadMore(minScrollCount = 8, {
-                        if (mViewModel.apiStateListener.value != HomeState.Match.LoadSuccess) return@scrollToBottomWithLoadMore
-                        mViewModel.loadNextPage()
-                    }, {
-                        if (mViewModel.apiStateListener.value == HomeState.Match.LoadNextFailure) {
-                            mViewModel.loadNextPage()
-                        }
-                    })
-                }
-            })
+            rvCollectList.addOnScrollListener(scrollListener)
         }
         mBinding.rvCollectList.touchBackPressed()
         mBinding.root.touchBackPressed()
+    }
+    private val scrollListener = object : RecyclerView.OnScrollListener() {
+        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+            super.onScrollStateChanged(recyclerView, newState)
+            // 滑動停止時觸發
+            if (newState == RecyclerView.SCROLL_STATE_IDLE && view != null && isAdded) {
+                subscribeVisibleMatch()
+            }
+        }
+        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+            mBinding.rvCollectList.scrollToBottomWithLoadMore(minScrollCount = 8, {
+                if (mViewModel.apiStateListener.value != HomeState.Match.LoadSuccess) return@scrollToBottomWithLoadMore
+                mViewModel.loadNextPage()
+            }, {
+                if (mViewModel.apiStateListener.value == HomeState.Match.LoadNextFailure) {
+                    mViewModel.loadNextPage()
+                }
+            })
+        }
+    }
+
+    override fun onDestroyView() {
+        mBinding.rvCollectList.removeOnScrollListener(scrollListener)
+        super.onDestroyView()
+    }
+
+    override fun initData() {
+        super.initData()
+        mViewModel.getCacheMatch()
     }
 
     override fun onFragmentAnimEnd(isEnter: Boolean) {
@@ -182,7 +196,6 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
         }
         mViewModel.matchListChange.observe(viewLifecycleOwner) { matchList ->
             val preEmpty = matchAdapter.currentList.isEmpty()
-
             matchAdapter.submitList(matchList)
             if (preEmpty && matchList.isNotEmpty()) {
                 mBinding.rvCollectList.doOnPreDraw {
