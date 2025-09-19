@@ -29,6 +29,7 @@ class BackgroundFragment : BaseFragment<SettingViewModel, FragmentBackgroundBind
     private var skinOld: String = ""
     private var defaultImmColor: Int = 0
     private var immColor: Int = 0
+    private var clickConfig = false
 
     override fun initView(savedInstanceState: Bundle?) {
         defaultImmColor = getStatusBarColor()
@@ -40,18 +41,11 @@ class BackgroundFragment : BaseFragment<SettingViewModel, FragmentBackgroundBind
         mBinding.titleBar.loadDynamicsTitleBar(binding.root, null)
         binding.apply {
             barRoot.layoutParams.width = resources.displayMetrics.widthPixels - 20.dp2px
-            //点击返回，使用变动前的皮肤
             tvBack.clickNoRepeat {
-                if (skinOld != skinType) {
-                    mViewModel.resetSkinType(skinOld)
-                }
-                mViewModel.setSkinRecord(skinOld)
                 findNavController().navigateUp()
             }
-            //点击确认，使用变动后的皮肤
             tvTitleRight.clickNoRepeat {
-                defaultImmColor = immColor
-                mViewModel.setSkinRecord(skinType)
+                clickConfig = true
                 findNavController().navigateUp()
             }
         }
@@ -102,6 +96,20 @@ class BackgroundFragment : BaseFragment<SettingViewModel, FragmentBackgroundBind
             SkinType.SKIN_WHITE_GREEN.value -> mBinding.radioWhiteGreen.isSelected = true
         }
     }
+
+    //点击取消或者系统返回键，使用变动前的皮肤，点击确认，使用变动后的皮肤
+    override fun onDestroyView() {
+        if (skinOld != skinType) {
+            if (clickConfig) {
+                defaultImmColor = immColor
+                mViewModel.setSkinRecord(skinType)
+            } else {
+                mViewModel.resetSkinType(skinOld)
+            }
+        }
+        super.onDestroyView()
+    }
+
 
     override fun onDestroy() {
         super.onDestroy()
