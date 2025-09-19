@@ -623,16 +623,15 @@ class LiveVideoLandscapeFragment :
         super.onDestroy()
         StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND()
         setStatusBar(StatusBarConfig, mBinding.root)
-
         val metrics = resources.displayMetrics
-
-        //density和scaledDensity被篡改，尝试恢复
         if (metrics.density != DensityInfo.density && DensityInfo.density > 0) {
             metrics.density = DensityInfo.density
         }
         if (metrics.scaledDensity != DensityInfo.scaledDensity && DensityInfo.scaledDensity > 0) {
             metrics.scaledDensity = DensityInfo.scaledDensity
         }
+        //退出后恢复竖屏
+        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
     }
 
 
