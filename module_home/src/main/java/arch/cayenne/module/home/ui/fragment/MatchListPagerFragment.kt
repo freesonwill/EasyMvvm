@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
@@ -198,6 +199,11 @@ class MatchListPagerFragment :
 
     val matchListObserver = Observer<List<MatchWithMarkets>> { matchList ->
         "MatchListChange livedata Observed~ ${matchList.map { it.match.matchId }}".logi(this::class.java.simpleName)
+        matchAdapter.submitList(matchList) {
+            // 發送頁面載入完成通知
+            launch { mViewModel.setSubmitListCompleted() }
+        }
+
         val action = {
             matchAdapter.submitList(matchList) {
                 if (mViewModel.requestScrollToTop) {
@@ -338,6 +344,8 @@ class MatchListPagerFragment :
     fun reloadAllData() {
         mViewModel.reload()
     }
+
+    fun getSubmitListCompletedFlow() = mViewModel.submitListCompletedFlow
 
     override fun onResume() {
         super.onResume()

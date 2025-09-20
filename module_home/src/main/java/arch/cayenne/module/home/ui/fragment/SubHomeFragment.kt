@@ -48,6 +48,7 @@ import arch.cayenne.module.home.ui.viewmodel.SubHomeViewModel
 import arch.cayenne.module.home.utils.DateUtils
 import com.bumptech.glide.Glide
 import com.google.android.material.tabs.TabLayout
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.Locale
@@ -63,6 +64,10 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
 
     private var leaguePagerAdapter : LeaguePagerAdapter? = null
     private var gameListPageCallback: ViewPager2.OnPageChangeCallback? = null
+
+    private var allTabCompleteObserveJob: Job? = null
+    private var drawTournamentTabJob: Job? = null
+    private var drawSportListJob: Job? = null
 
     private var isExpanded = false
 
@@ -164,8 +169,13 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
             (childFragmentManager.findFragmentByTag(PlayType.CHAMPION.name) as? TournamentListFragment)?.changeSportId(it)
         }
 
-        mViewModel.sportsStatistical.observeEvent(viewLifecycleOwner, this) {
-            sportsListAdapter.submitList(it)
+        with(mViewModel) {
+            sportsStatistical.observeEvent(viewLifecycleOwner, this@SubHomeFragment) {
+                tempSportData = it
+                if(currentPlayTypeId != PlayType.TODAY.id || isAllTabLoaded) {
+                    drawSportList()
+                }
+            }
         }
 
         mViewModel.tournaments.observeEvent(viewLifecycleOwner, this) { list ->
@@ -279,6 +289,42 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
         }
     }
 
+    // 全部Tab的比賽列表載入完成後的處理
+    private fun handleAllTabLoaded() {
+        allTabCompleteObserveJob = null
+        drawTournamentTab()
+        drawSportList()
+    }
+
+    // 畫聯賽列表
+    private fun drawTournamentTab() {
+        drawTournamentTabJob?.cancel()
+        drawTournamentTabJob = launch {
+            val tabLayout = mBinding.layoutContainer.tlLeagueList
+            for (i in 0 until tabLayout.tabCount) {
+                val tab = tabLayout.getTabAt(i)
+                val data = tab?.tag as? TournamentDataModel
+
+                if (tab != null && data != null && tab.customView == null) {
+                    tab.customView = createTournamentTabView(data)
+                    tab.view.setPadding(0, 0, 10f.dp2px, 0)
+                }
+            }
+        }
+    }
+
+    // 畫球種列表
+    private fun drawSportList() {
+        mViewModel.tempSportData?.let {
+            drawSportListJob?.cancel()
+            drawSportListJob = launch {
+                sportsListAdapter.submitList(it) {
+                    mViewModel.tempSportData = null
+                }
+            }
+        }
+    }
+
     //init 三級導航欄位與日期，只有今日和早盤有
     @SuppressLint("DefaultLocale")
     private fun initTournamentLayout() {
@@ -297,8 +343,16 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
                     val firstFragmentItemId  = leaguePagerAdapter?.getItemId(0)?: return
                     if (f.tag == "f$firstFragmentItemId") {
                         startObservePageMatchListChange(0)
+                        allTabCompleteObserveJob?.cancel()
+                        allTabCompleteObserveJob = launch {
+                            (f as? MatchListPagerFragment)?.getSubmitListCompletedFlow()?.collect {
+                                mViewModel.isAllTabLoaded = true
+                                handleAllTabLoaded()
+                            }
+                        }
                     }
                 }
+
             }, false)
 
             // 初始化 TabLayout end more跟手動畫
@@ -629,8 +683,7 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
                 viewPager = vpGameList
             ) { tab, position ->
                 tournaments.getOrNull(position)?.let {
-                    tab.customView = createTournamentTabView(it)
-                    tab.view.setPadding(0, 0, 10f.dp2px, 0)
+                    tab.tag = it
                 }
             }.also { layoutMediator ->
                 layoutMediator.attach(
@@ -640,6 +693,11 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
                         startObservePageMatchListChange(position)
                     }
                 )
+
+                if(mViewModel.currentPlayTypeId != PlayType.TODAY.id || mViewModel.isAllTabLoaded) {
+                    drawTournamentTab()
+                }
+
                 if (tournaments.isNotEmpty()) {
                     val selectedPosition = tournaments.indexOfFirst { it.isSelected }
                     tlLeagueList.setScrollPosition(selectedPosition, 0f, true)
