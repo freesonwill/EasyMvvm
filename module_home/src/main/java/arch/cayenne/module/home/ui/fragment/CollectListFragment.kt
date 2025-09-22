@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
 import androidx.core.view.doOnPreDraw
+import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -14,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
@@ -41,6 +43,7 @@ import arch.cayenne.module.home.ui.adapter.OnMatchItemClickListener
 import arch.cayenne.module.home.ui.view.decoration.MatchCardItemDecoration
 import arch.cayenne.module.home.ui.viewmodel.CollectListViewModel
 import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import java.lang.ref.WeakReference
@@ -167,6 +170,11 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
         super.onDestroyView()
     }
 
+    override fun initData() {
+        super.initData()
+        mViewModel.getCacheMatch()
+    }
+
     override fun onFragmentAnimEnd(isEnter: Boolean) {
         if (isEnter) mViewModel.startObserveMatch()
     }
@@ -188,7 +196,6 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
         }
         mViewModel.matchListChange.observe(viewLifecycleOwner) { matchList ->
             val preEmpty = matchAdapter.currentList.isEmpty()
-
             matchAdapter.submitList(matchList)
             if (preEmpty && matchList.isNotEmpty()) {
                 mBinding.rvCollectList.doOnPreDraw {

@@ -105,7 +105,6 @@ class LiveSoftKeyboardViewModel : BaseViewModel() {
                 )
             )
         }
-        "listSize ${list.size}".logd("aaa")
         return list
     }
 

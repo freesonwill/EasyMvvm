@@ -41,7 +41,7 @@ class HomeModuleInitializer: DefaultInitializer<Unit> {
         factory { HomeRepository(get(), get(), get(), get(), get()) }
         factory { ChampionRepository(get(), get(), get<GameDatabase>().matchDao(), get<GameDatabase>().betDao(), get<GameDatabase>().infoDao(), get()) }
         factory { TournamentListRepository(get(), get(), get<GameDatabase>().tournamentDao(), get<GameDatabase>().infoDao()) }
-        factory { CollectListRepository(get(), get(), get<GameDatabase>().betDao(), get<GameDatabase>().matchDao(), get<GameDatabase>().infoDao(), get()) }
+        factory { CollectListRepository(get(), get(), get<GameDatabase>().betDao(), get<GameDatabase>().matchDao(), get<GameDatabase>().infoDao(),get<GameDatabase>().collectListDao(), get()) }
         factory { MatchListRepository(get(), get(), get<GameDatabase>().betDao(), get<GameDatabase>().matchDao(), get<GameDatabase>().infoDao(), get()) }
         factory { DrawerContentRepository(get(), get(), get()) }
     }

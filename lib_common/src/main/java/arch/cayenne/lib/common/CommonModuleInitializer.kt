@@ -41,11 +41,18 @@ class CommonModuleInitializer : DefaultInitializer<String> {
     private fun clearUserDataManager(){
         val manager = getKoin().get<UserDataManager>()
         if(manager.getValue(UserDataKey.KEY_BUILD_TIME,"") != BuildConfig.BUILD_TIME){
-            UserDataKey.entries.forEach { manager.removeValueForKey(it) }
+            arrayOf(
+                UserDataKey.KEY_UID,
+                UserDataKey.KEY_TOKEN,
+                UserDataKey.KEY_ANIM_ROUTE,
+                UserDataKey.KEY_ANIM_ZOOM,
+                UserDataKey.KEY_ANIM_POPUP,
+                UserDataKey.KEY_ANIM_DRAWER,
+                UserDataKey.KEY_ANIM_SCROLLBAR,
+            ).forEach { manager.removeValueForKey(it) }
             manager.setKeyValue(UserDataKey.KEY_BUILD_TIME, BuildConfig.BUILD_TIME)
         }
     }
-
     private val moduleList: List<Module> = listOf(module {
         factory { (scope: CoroutineScope) -> CommonRepository(scope, get(), get(), get(), get()) }
         single { UserDataManager() }

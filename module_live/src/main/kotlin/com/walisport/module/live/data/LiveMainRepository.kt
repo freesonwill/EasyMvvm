@@ -3,9 +3,13 @@ package com.walisport.module.live.data
 import android.annotation.SuppressLint
 import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.base.data.repository.BaseRepository
+import arch.cayenne.lib.common.data.constants.SkinType
+import arch.cayenne.lib.common.data.constants.UserDataKey
+import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.database.GameDatabase
 import arch.cayenne.lib.database.entity.InfoBean
 import arch.cayenne.lib.database.entity.SelectionsEdit
+import arch.cayenne.lib.skin.SkinnableManager
 import com.walisport.module.live.LiveRemoteManager
 import galaxy.client.proto.Client.MatchBasicUpdate
 import galaxy.client.proto.Sloth
@@ -20,9 +24,11 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class LiveMainRepository(
-    private val remoteManager: LiveRemoteManager, private val database: GameDatabase
+    private val remoteManager: LiveRemoteManager,
+    private val database: GameDatabase,
+    private val userManager: UserDataManager,
+    private val skinManager: SkinnableManager
 ) : BaseRepository() {
-
     override val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
     fun observeInfo(): Flow<InfoBean?> = database.infoDao().observeInfo().flowOn(Dispatchers.IO)
     fun observeMatchBean(matchId: Long) = database.liveMatchDao().observeMatchById(matchId).flowOn(Dispatchers.IO)
@@ -142,6 +148,18 @@ class LiveMainRepository(
 
     fun reconnect() {
         remoteManager.connectToServer()
+    }
+
+    fun getSkinType():String {
+        return userManager.getValue(UserDataKey.KEY_SKIN, SkinType.DEFAULT).let {
+            SkinType.getLogicSkinType(it)
+        }
+    }
+
+    suspend fun setSkinType(type:String){
+        val type2 = SkinType.getLogicSkinType(type)
+        userManager.setKeyValue(UserDataKey.KEY_SKIN,type2)
+        skinManager.loadSkin(type2)
     }
 }
 
