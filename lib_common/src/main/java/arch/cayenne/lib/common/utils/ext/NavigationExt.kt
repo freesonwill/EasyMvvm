@@ -160,7 +160,7 @@ object NavigationExt {
         popEnterAnim:IAnimationOption? = AnimationController[AnimType.routePopEnter],
         popExitAnim:IAnimationOption? = AnimationController[AnimType.routePopExit],
     ) {
-        if(isNavigationDebounced("$this,uri:$deepLink")) return
+        if(isNavigationDebounced("$this,uri:$deepLink", enterAnim?.duration)) return
         val args = setupDefaultAnim(Bundle(),enterAnim,exitAnim,popEnterAnim,popExitAnim)
         // 将 Bundle 转 queryString
         val uriWithArgs = deepLink.buildUpon().apply {
@@ -181,7 +181,7 @@ object NavigationExt {
         popEnterAnim:IAnimationOption? = AnimationController[AnimType.routePopEnter],
         popExitAnim:IAnimationOption? = AnimationController[AnimType.routePopExit],
     ) {
-        if(isNavigationDebounced("$this")) return
+        if(isNavigationDebounced("$this", enterAnim?.duration)) return
         val navController = findNavController()
         val args = setupDefaultAnim(directions.arguments,enterAnim,exitAnim,popEnterAnim,popExitAnim)
         //directions中的arguments还是getter方法，不是Field，对其修改无效。折中调用actionId + bundle
@@ -200,7 +200,7 @@ object NavigationExt {
         popEnterAnim:IAnimationOption? = AnimationController[AnimType.routePopEnter],
         popExitAnim:IAnimationOption? = AnimationController[AnimType.routePopExit],
     ) {
-        if(isNavigationDebounced("$this")) return
+        if(isNavigationDebounced("$this", enterAnim?.duration)) return
         setupDefaultAnim(args,enterAnim,exitAnim,popEnterAnim,popExitAnim)
         findNavController().navigate(resId, args, navOptions, navigatorExtras)
     }

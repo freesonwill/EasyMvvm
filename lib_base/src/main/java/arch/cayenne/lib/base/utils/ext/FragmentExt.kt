@@ -1,5 +1,6 @@
 package arch.cayenne.lib.base.utils.ext
 
+import android.os.Build
 import android.util.Log
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
@@ -48,16 +49,19 @@ object FragmentExt {
      * 执行防抖的导航操作
      */
     private var lastNavigateTime = 0L
-    fun isNavigationDebounced(reason: String): Boolean {
-        val isDebounced = System.currentTimeMillis() - lastNavigateTime < 500L
-        if(!isDebounced) {
-            lastNavigateTime = System.currentTimeMillis()
-        } else {
+    private var lastNavDurationTime: Long? = null
+    fun isNavigationDebounced(reason: String, duration: Long? = null): Boolean {
+        val durationTime = duration ?: 500L
+        val isDebounced = System.currentTimeMillis() - lastNavigateTime < durationTime
+        if(isDebounced) {
             val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.getDefault())
             "navigation blocked by debounce,lastNavigateTime:${sdf.format(lastNavigateTime)},reason:$reason".logw(
                 TAG
             )
+        } else {
+            lastNavigateTime = System.currentTimeMillis()
         }
+        lastNavDurationTime = durationTime
         return isDebounced
     }
 
@@ -65,7 +69,8 @@ object FragmentExt {
      * 導航操作防返回抖動
      */
     private fun isBackPressedDebounced(): Boolean {
-        return System.currentTimeMillis() - lastNavigateTime < 500L
+        if (Build.VERSION.SDK_INT <= 29) return true
+        return System.currentTimeMillis() - lastNavigateTime < (lastNavDurationTime ?: 500L)
     }
 
 }
