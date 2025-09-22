@@ -57,6 +57,7 @@ import kotlin.reflect.KClass
 import arch.cayenne.lib.common.utils.ext.animateIndicatorToPosition
 import arch.cayenne.lib.common.utils.ext.setupViewPagerScroll
 import arch.cayenne.lib.common.utils.ext.startFadeAnim
+import arch.cayenne.module.bet.ui.fragment.BetSheetFragment
 
 /**
  * 直播详情页
@@ -95,6 +96,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND()
         StatusBarConfig.statusBarDarkFont = false
         setStatusBar(StatusBarConfig,mBinding.root)
+        BetSheetFragment.find(requireActivity())?.forceUpdateSkin()
         super.onStart()
     }
     override fun onAttach(context: Context) {
@@ -108,6 +110,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND()
         StatusBarConfig.statusBarDarkFont = immersionBarSkinTypeExt(mViewModel.getSkinType())
         setStatusBar(StatusBarConfig,mBinding.root)
+        BetSheetFragment.find(requireActivity())?.forceUpdateSkin()
     }
 
     //init DrawerLayout Content
