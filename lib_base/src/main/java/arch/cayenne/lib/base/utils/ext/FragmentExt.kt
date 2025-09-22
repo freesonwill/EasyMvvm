@@ -1,9 +1,9 @@
 package arch.cayenne.lib.base.utils.ext
 
 import android.os.Build
-import android.util.Log
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logw
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -32,9 +32,10 @@ object FragmentExt {
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner,
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    if (isBackPressedDebounced().apply {
-                        Log.d("abcd", "handleOnBackPressed $this ${this@handleBackPressed.javaClass.simpleName}")
-                        }) return
+                    if (isBackPressedDebounced()){
+                        "handleOnBackPressed $this".logd(TAG)
+                        return
+                    }
                     val intercepted = onIntercept()
                     if (intercepted) return
                     isEnabled = false  // 放行自己，并触发系统默认行为
@@ -55,9 +56,7 @@ object FragmentExt {
         val isDebounced = System.currentTimeMillis() - lastNavigateTime < durationTime
         if(isDebounced) {
             val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.getDefault())
-            "navigation blocked by debounce,lastNavigateTime:${sdf.format(lastNavigateTime)},reason:$reason".logw(
-                TAG
-            )
+            "navigation blocked by debounce,lastNavigateTime:${sdf.format(lastNavigateTime)},reason:$reason".logw(TAG)
         } else {
             lastNavigateTime = System.currentTimeMillis()
         }
