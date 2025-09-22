@@ -29,10 +29,11 @@ object FragmentExt {
      * @param onIntercept 拦截回退事件的逻辑，返回true表示拦截，false表示放行
      */
     fun Fragment.handleBackPressed(onIntercept: () -> Boolean) {
-        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner,
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    if (isBackPressedDebounced()){
+                    if (isBackPressedDebounced()) {
                         "handleOnBackPressed $this".logd(TAG)
                         return
                     }
@@ -54,9 +55,11 @@ object FragmentExt {
     fun isNavigationDebounced(reason: String, duration: Long? = null): Boolean {
         val durationTime = duration ?: 500L
         val isDebounced = System.currentTimeMillis() - lastNavigateTime < durationTime
-        if(isDebounced) {
+        if (isDebounced) {
             val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.getDefault())
-            "navigation blocked by debounce,lastNavigateTime:${sdf.format(lastNavigateTime)},reason:$reason".logw(TAG)
+            "navigation blocked by debounce,lastNavigateTime:${sdf.format(lastNavigateTime)},reason:$reason".logw(
+                TAG
+            )
         } else {
             lastNavigateTime = System.currentTimeMillis()
         }
@@ -68,8 +71,11 @@ object FragmentExt {
      * 導航操作防返回抖動
      */
     private fun isBackPressedDebounced(): Boolean {
-        if (Build.VERSION.SDK_INT <= 29) return true
-        return System.currentTimeMillis() - lastNavigateTime < (lastNavDurationTime ?: 500L)
+        return if (Build.VERSION.SDK_INT > 29) {
+            false
+        } else {
+            System.currentTimeMillis() - lastNavigateTime < (lastNavDurationTime ?: 500L)
+        }
     }
 
 }
