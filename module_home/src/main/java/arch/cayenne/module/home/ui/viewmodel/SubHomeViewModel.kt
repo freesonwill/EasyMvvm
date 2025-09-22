@@ -78,6 +78,11 @@ class SubHomeViewModel: BaseViewModel() {
 
     private var _pageSelectedTimestamp: Long = 0L
 
+    // 用於記錄全部的比賽列表是否載入完成
+    var isAllTabLoaded: Boolean = false
+    // 暫存 SportDataModel 列表，用於實現延後繪製球種列表
+    var tempSportData: List<SportDataModel>? = null
+
     override fun initViewModel() {
         super.initViewModel()
         viewModelScope.launch {

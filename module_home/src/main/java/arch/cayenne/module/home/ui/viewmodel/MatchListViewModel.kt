@@ -16,7 +16,9 @@ import arch.cayenne.module.home.utils.DateUtils
 import galaxy.common.proto.Common
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
@@ -36,6 +38,10 @@ class MatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
     // 用來判斷是否需要執行淡入淡出動畫
     private var _lastTournamentId: Int = -1
     private var _lastSelectedDate: Long = -1L
+
+    // 判斷比賽列表是不是已經載入完成了，用於通知SubHomeFragment，僅全部tab使用
+    private val _submitListCompletedFlow = MutableSharedFlow<Unit>(replay = 0, extraBufferCapacity = 1)
+    val submitListCompletedFlow: SharedFlow<Unit> = _submitListCompletedFlow
 
     private var observeJob : Job? = null
 
@@ -65,6 +71,10 @@ class MatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
     fun setPosition(position: Int) {
         _position = position
     }
+
+    fun setSubmitListCompleted() {
+        _submitListCompletedFlow.tryEmit(Unit)
+	}
 
     fun setLastState(tournamentId: Int, selectedDate: Long) {
         _lastTournamentId = tournamentId
