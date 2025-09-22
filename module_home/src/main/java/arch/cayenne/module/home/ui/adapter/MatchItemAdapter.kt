@@ -46,18 +46,26 @@ class MatchItemAdapter(private val onMatchItemClickListener: OnMatchItemClickLis
         }
     }
 
-    override fun submitList(list: List<MatchListItem?>?) {
-        val isEmpty = (list?.size ?: 0) == 0
+    override fun submitList(list: List<MatchListItem>?) {
+        super.submitList(list.addLastItem())
+    }
+
+    override fun submitList(list: List<MatchListItem>?, commitCallback: Runnable?) {
+        super.submitList(list.addLastItem(), commitCallback)
+    }
+
+    fun List<MatchListItem>?.addLastItem(): List<MatchListItem>? {
+        val isEmpty = (this?.size ?: 0) == 0
         val l = if (isEmpty || lastItemType == LAST_ITEM_NONE) {
-            list?.toMutableList()
+            this?.toMutableList()
         } else if (lastItemType == LAST_ITEM_NO_MORE){
-            list?.toMutableList()?.apply { add(MatchNoMoreData) }
+            this?.toMutableList()?.apply { add(MatchNoMoreData) }
         } else if (lastItemType == LAST_ITEM_LOAD_MORE) {
-            list?.toMutableList()?.apply { add(MatchLoadMoreData) }
+            this?.toMutableList()?.apply { add(MatchLoadMoreData) }
         } else {
-            list?.toMutableList()
+            this?.toMutableList()
         }
-        super.submitList(l)
+        return l
     }
 
     override fun convertPlus(
