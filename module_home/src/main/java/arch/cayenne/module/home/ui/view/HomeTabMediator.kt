@@ -47,12 +47,17 @@ class HomeTabMediator(
 
     // 速度閾值配置
     companion object {
+        // 滑動速度閾值
         private const val FAST_SCROLL_THRESHOLD = 3f      // 快速滑動閾值
         private const val VERY_FAST_SCROLL_THRESHOLD = 5.5f // 快速反覆滑動閾值
         private const val FAST_ANIMATION_RATIO = 0.8f       // 快速滑動時動畫時長比例
         private const val MIN_ANIMATION_DURATION = 150L     // 最小動畫時長
         private const val VERY_FAST_ANIMATION_DURATION = 100L // 快速反覆滑動動畫時長
-        private const val NORMAL_ANIMATION_DURATION = 250L  // 標準動畫時長（點擊tab、正常滑動、drag預選
+
+        // 專門針對點擊tab和滑動viewpager的動畫時長配置
+        private const val TAB_CLICK_ANIMATION_DURATION = 400L  // 點擊tab時的indicator動畫時長
+        private const val SWIPE_ANIMATION_DURATION = 450L      // 滑動viewpager時的indicator動畫時長
+        private const val DRAG_ANIMATION_DURATION = 250L       // drag預選時的動畫時長
     }
 
     fun attach(afterTabSelected: ((position: Int) -> Unit)? = null) {
@@ -77,6 +82,9 @@ class HomeTabMediator(
         populateTabsFromPagerAdapter()
         tabLayout.setScrollPosition(viewPager.currentItem, 0f, true)
 
+        // 設置TabLayout內建動畫參數，專門控制滑動viewpager時的indicator動畫速度
+        setTabLayoutSwipeAnimationPrefs(tabLayout)
+
         if (tabLayout is CustomTabLayout) {
             tabLayout.onTabClick = { position ->
                 isTabClick = true
@@ -86,6 +94,43 @@ class HomeTabMediator(
 
     }
 
+    /**
+     * 設置TabLayout的內建動畫參數，專門控制滑動viewpager時的indicator動畫速度
+     * @param tabLayout TabLayout實例
+     */
+    private fun setTabLayoutSwipeAnimationPrefs(tabLayout: TabLayout) {
+        try {
+            // 設置TabLayout內建動畫時長，讓滑動viewpager時的indicator動畫更慢
+            val durationMethod = TabLayout::class.java.getMethod(
+                "setTabIndicatorAnimationDuration",
+                Int::class.java
+            )
+            durationMethod.isAccessible = true
+            durationMethod.invoke(tabLayout, SWIPE_ANIMATION_DURATION.toInt()) // 使用450ms讓滑動更慢
+
+            // 設置動畫模式
+            val modeMethod = TabLayout::class.java.getMethod(
+                "setTabIndicatorAnimationMode",
+                Int::class.java
+            )
+            modeMethod.isAccessible = true
+            modeMethod.invoke(tabLayout, 0) // 0 = 線性模式
+        } catch (_: Exception) {
+            try {
+                // 備用方案：直接設置字段
+                val durationField =
+                    TabLayout::class.java.getDeclaredField("tabIndicatorAnimationDuration")
+                durationField.isAccessible = true
+                durationField.setInt(tabLayout, SWIPE_ANIMATION_DURATION.toInt())
+
+                val modeField = TabLayout::class.java.getDeclaredField("tabIndicatorAnimationMode")
+                modeField.isAccessible = true
+                modeField.setInt(tabLayout, 0) // 0 = 線性模式
+            } catch (_: Exception) {
+                // 兩種方案都失敗時靜默處理
+            }
+        }
+    }
 
     fun detach() {
         tabLayout.removeOnTabSelectedListener(onTabSelectedListener)
@@ -355,7 +400,7 @@ class HomeTabMediator(
         val end = if (forward) 1f else 0f
 
         indicatorAnimator = ValueAnimator.ofFloat(start, end).apply {
-            this.duration = NORMAL_ANIMATION_DURATION
+            this.duration = TAB_CLICK_ANIMATION_DURATION
             this.interpolator = LinearInterpolator()
             addUpdateListener { anim ->
                 val progress = anim.animatedValue as Float
@@ -409,12 +454,12 @@ class HomeTabMediator(
             }
             scrollVelocity > FAST_SCROLL_THRESHOLD -> {
                 // 快速滑動時使用較短動畫時間，避免卡頓
-                (NORMAL_ANIMATION_DURATION * FAST_ANIMATION_RATIO).toLong()
+                (DRAG_ANIMATION_DURATION * FAST_ANIMATION_RATIO).toLong()
                     .coerceAtLeast(MIN_ANIMATION_DURATION)
             }
             else -> {
-                // 正常滑動使用標準動畫時間（與點擊tab和drag預選一致）
-                NORMAL_ANIMATION_DURATION
+                // 正常drag使用專門的動畫時間
+                DRAG_ANIMATION_DURATION
             }
         }
         val forward = to > from
