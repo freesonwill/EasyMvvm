@@ -55,9 +55,6 @@ class MatchListPagerFragment :
     private val gameLayoutManager by lazy { LinearLayoutManager(context) }
     private val fabViewModel: FloatingButtonControlViewModel by activityViewModel()
 
-    // 用於淡入淡出動畫時監聽api是否已經回傳
-    private var animationObserver: Observer<DataState>? = null
-
     override fun initView(savedInstanceState: Bundle?) {
         mBinding.apply {
             refreshLayout.setEnableLoadMore(false)
@@ -204,45 +201,21 @@ class MatchListPagerFragment :
             launch { mViewModel.setSubmitListCompleted() }
         }
 
-        val action = {
-            matchAdapter.submitList(matchList) {
-                if (mViewModel.requestScrollToTop) {
-                    mBinding.rvHomeGameList.scrollToPosition(0)
-                    mViewModel.resetRequestScrollToTop()
-                }
-            }
-            mBinding.rvHomeGameList.doOnPreDraw {
-                if (mBinding.rvHomeGameList.scrollState == RecyclerView.SCROLL_STATE_IDLE) {
-                    subscribeVisibleMatch()
-                }
-            }
-
-            // 把 clDynamics 的顯示控制移到這裡，避免淡入淡出動畫時閃爍
-            mBinding.clDynamics.visibility =
-                if(matchList.isEmpty()) View.VISIBLE else View.GONE
-        }
-
-        // 執行淡入淡出動畫
-        with(mViewModel) {
-            if(getLastTournamentId() != getTournamentId() || getLastSelectedDate() != getSelectedDate()) {
-                setLastState(getTournamentId(), getSelectedDate())
-                mBinding.clMatchRoot.startFadeAnim { onComplete ->
-                    lifecycleScope.launch {
-                        action.invoke()
-
-                        animationObserver = Observer { dataState ->
-                            if(dataState !in listOf(null, DataState.None, DataState.Loading)) {
-                                animationObserver?.let { apiStateListener.removeObserver(it) }
-                                onComplete.invoke()
-                            }
-                        }
-                        animationObserver?.let { apiStateListener.observe(viewLifecycleOwner, it) }
-                    }
-                }
-            } else {
-                action.invoke()
+        matchAdapter.submitList(matchList) {
+            if (mViewModel.requestScrollToTop) {
+                mBinding.rvHomeGameList.scrollToPosition(0)
+                mViewModel.resetRequestScrollToTop()
             }
         }
+        mBinding.rvHomeGameList.doOnPreDraw {
+            if (mBinding.rvHomeGameList.scrollState == RecyclerView.SCROLL_STATE_IDLE) {
+                subscribeVisibleMatch()
+            }
+        }
+
+        // 把 clDynamics 的顯示控制移到這裡，避免淡入淡出動畫時閃爍
+        mBinding.clDynamics.visibility =
+            if (matchList.isEmpty()) View.VISIBLE else View.GONE
     }
 
     override suspend fun createObserver() {
