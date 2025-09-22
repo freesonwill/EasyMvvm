@@ -17,10 +17,8 @@ import androidx.navigation.fragment.findNavController
 import arch.cayenne.lib.base.ui.animation.AnimationController
 import arch.cayenne.lib.base.ui.animation.AnimationController.AnimType
 import arch.cayenne.lib.base.ui.animation.IAnimationOption
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logw
+import arch.cayenne.lib.base.utils.ext.FragmentExt.isNavigationDebounced
 import arch.cayenne.lib.common.R
-import java.text.SimpleDateFormat
-import java.util.Locale
 
 /**
  * @author: zhangsan
@@ -151,20 +149,6 @@ object NavigationExt {
     }
 
 
-    /**
-     * 执行防抖的导航操作
-     */
-    private var lastNavigateTime = 0L
-    private fun isNavigationDebounced(reason: String): Boolean {
-        val isDebounced = System.currentTimeMillis() - lastNavigateTime < 500L
-        if(!isDebounced) {
-            lastNavigateTime = System.currentTimeMillis()
-        } else {
-            val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.getDefault())
-            "navigation blocked by debounce,lastNavigateTime:${sdf.format(lastNavigateTime)},reason:$reason".logw(TAG)
-        }
-        return isDebounced
-    }
 
     /** Fragment的默认跳转 **/
     fun Fragment.navigate(

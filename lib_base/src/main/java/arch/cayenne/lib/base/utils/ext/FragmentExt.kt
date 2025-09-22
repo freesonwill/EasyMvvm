@@ -1,7 +1,11 @@
 package arch.cayenne.lib.base.utils.ext
 
+import android.util.Log
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logw
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 /**
  * @author: zhangsan
@@ -27,6 +31,9 @@ object FragmentExt {
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner,
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
+                    if (isBackPressedDebounced().apply {
+                        Log.d("abcd", "handleOnBackPressed $this ${this@handleBackPressed.javaClass.simpleName}")
+                        }) return
                     val intercepted = onIntercept()
                     if (intercepted) return
                     isEnabled = false  // 放行自己，并触发系统默认行为
@@ -35,6 +42,30 @@ object FragmentExt {
                 }
             }
         )
+    }
+
+    /**
+     * 执行防抖的导航操作
+     */
+    private var lastNavigateTime = 0L
+    fun isNavigationDebounced(reason: String): Boolean {
+        val isDebounced = System.currentTimeMillis() - lastNavigateTime < 500L
+        if(!isDebounced) {
+            lastNavigateTime = System.currentTimeMillis()
+        } else {
+            val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.getDefault())
+            "navigation blocked by debounce,lastNavigateTime:${sdf.format(lastNavigateTime)},reason:$reason".logw(
+                TAG
+            )
+        }
+        return isDebounced
+    }
+
+    /**
+     * 導航操作防返回抖動
+     */
+    private fun isBackPressedDebounced(): Boolean {
+        return System.currentTimeMillis() - lastNavigateTime < 500L
     }
 
 }
