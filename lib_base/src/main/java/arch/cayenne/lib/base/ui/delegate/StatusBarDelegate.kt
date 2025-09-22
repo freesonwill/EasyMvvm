@@ -101,7 +101,11 @@ class StatusBarDelegate : IStatusBar {
                         .hideBar(BarHide.FLAG_SHOW_BAR) //状态栏显示
                         .fullScreen(false) //退出全屏模式
                         .transparentStatusBar() // 设置状态栏透明
-                        .transparentNavigationBar() // 设置导航栏透明
+                    if (statusBarMode.autoPaddingNavigationBarColor){
+                        immersionBar .navigationBarColor(config.navigationBarColorColor) // 设置虚拟导航栏颜色
+                    }else{
+                        immersionBar.transparentNavigationBar() // 设置导航栏透明
+                    }
                     immersionBar.init()
                 } else {
                     window.decorView.systemUiVisibility = if (config.statusBarDarkFont) {
@@ -116,7 +120,7 @@ class StatusBarDelegate : IStatusBar {
                     if(noPaddingViewIds.isEmpty()) {
                         setViewPadding(view,
                             viewPaddingTop + statusBarHeight,
-                            navigationBarHeight
+                           if (statusBarMode.autoPaddingNavigationBarColor) 0 else navigationBarHeight
                         )
                     }else {
                         (view as ViewGroup).children.forEach { v ->

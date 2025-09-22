@@ -40,11 +40,18 @@ class LiveLeagueFragment : BaseFragment<LeagueViewModel, FragmentLeagueBinding>(
     private var leagueID: Int = 0
     private var leagueName: String = ""
     private var leagueLogo: String = ""
+    private var leagueColor = "#377c46"
 
     override fun onStart() {
         super.onStart()
-        StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND()
+        StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND(autoPaddingNavigationBarColor = true)
+        StatusBarConfig.navigationBarColorColor = arch.cayenne.lib.common.R.color.black
         setStatusBar(StatusBarConfig, mBinding.root)
+    }
+
+    override fun onDestroyView() {
+        StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND(autoPaddingNavigationBarColor = false)
+        super.onDestroyView()
     }
 
     override fun initView(savedInstanceState: Bundle?) {
@@ -98,7 +105,7 @@ class LiveLeagueFragment : BaseFragment<LeagueViewModel, FragmentLeagueBinding>(
                 item?.let {
                     val itemColor = item.itemColor
                     if (itemColor.isEmpty()) {
-                        val color = Color.parseColor("#377c46")
+                        val color = Color.parseColor(leagueColor)
                         binding.layoutWeekDay.setBackgroundColor(color)
                     } else {
                         val color = Color.parseColor(itemColor)
@@ -131,7 +138,7 @@ class LiveLeagueFragment : BaseFragment<LeagueViewModel, FragmentLeagueBinding>(
                 .filter { it && mViewModel.apiStateListener.value == DataState.NetworkUnavailable }
                 .collect {
                     if (it) {
-                        setGradientBackground("#377c46")
+                        setGradientBackground(leagueColor)
                         mViewModel.getMatchLeagueList(leagueID)
                     }
                 }
@@ -149,7 +156,6 @@ class LiveLeagueFragment : BaseFragment<LeagueViewModel, FragmentLeagueBinding>(
                 mBinding.refreshLayout.setEnableLoadMore(false)
                 mBinding.recyclerLeague.visibility = View.GONE //网络异常时需隐藏列表
                 mBinding.leagueRoot.background = arch.cayenne.lib.common.R.color.black.getDrawable()
-                mBinding.leagueBar.background = null
                 mBinding.leagueBody.background = null
                 mBinding.leagueMain.setState(
                     States.NETWORK_ANOMALY(),
@@ -188,14 +194,17 @@ class LiveLeagueFragment : BaseFragment<LeagueViewModel, FragmentLeagueBinding>(
         if (color.isEmpty()) {
             return
         }
-        val startColor = Color.parseColor(color)
-        val endColor = Color.parseColor("#000000")
-        val gradientDrawable = GradientDrawable(
-            GradientDrawable.Orientation.TOP_BOTTOM, intArrayOf(startColor, endColor)
-        )
-        gradientDrawable.shape = GradientDrawable.RECTANGLE
-        mBinding.leagueRoot.background = gradientDrawable
-        mBinding.leagueBar.setBackgroundColor(startColor)
-        mBinding.leagueBody.background = gradientDrawable
+        //颜色没有变化不需要设置
+        if (leagueColor!=color){
+            leagueColor = color
+            val startColor = Color.parseColor(color)
+            val endColor = Color.parseColor("#000000")
+            val gradientDrawable = GradientDrawable(
+                GradientDrawable.Orientation.TOP_BOTTOM, intArrayOf(startColor, endColor)
+            )
+            gradientDrawable.shape = GradientDrawable.RECTANGLE
+            mBinding.leagueRoot.setBackgroundColor(startColor)
+            mBinding.leagueBody.background = gradientDrawable
+        }
     }
 }

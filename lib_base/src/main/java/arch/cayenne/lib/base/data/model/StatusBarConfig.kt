@@ -14,6 +14,8 @@ object  StatusBarConfig  {
     var statusBarDarkFont : Boolean = false
     //状态栏颜色
     var statusBarColor: Int = android.R.color.black
+    //虚拟按钮颜色
+    var navigationBarColorColor: Int = android.R.color.black
     //状态栏模式
     var statusBarType: StatusBarMode = StatusBarMode.DRAW_BEHIND()
 }

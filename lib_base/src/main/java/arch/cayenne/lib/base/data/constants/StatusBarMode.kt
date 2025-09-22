@@ -15,6 +15,7 @@ sealed class StatusBarMode {
     // 布局顶到状态栏，布局内容自动padding到状态栏下面，图片沉浸式可用这个
     data class DRAW_BEHIND(
         val autoPadding:Boolean = true, //是否自动padding到状态栏下
+        val autoPaddingNavigationBarColor:Boolean = false, //是否设置虚拟键盘颜色
         @IdRes val noPaddingViewIds: List<Int> = emptyList() //不处理 padding 的 View ID
     ): StatusBarMode()
 }
