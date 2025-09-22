@@ -8,21 +8,12 @@ import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.appcompat.widget.AppCompatButton
-import androidx.lifecycle.findViewTreeLifecycleOwner
-import androidx.lifecycle.lifecycleScope
-import arch.cayenne.lib.skin.SkinnableManager
-import arch.cayenne.lib.skin.widget.biz.ISkinnableBiz
 import arch.cayenne.lib.skin.widget.biz.ISkinnableTextBiz
 import arch.cayenne.lib.skin.widget.biz.SkinnableBizTextImpl
-import arch.cayenne.lib.skin.widget.helper.SkinnableBackGroundHelper
-import arch.cayenne.lib.skin.widget.helper.SkinnableTextHelper
-import arch.cayenne.lib.skin.widget.helper.SkinnableViewFlowHelper
-import kotlinx.coroutines.launch
-import org.koin.java.KoinJavaComponent.inject
 
 
 @SuppressLint("CustomViewStyleable")
-class SkinnableButton : AppCompatButton {
+class SkinnableButton : AppCompatButton, ISkinnable {
     private lateinit var biz: ISkinnableTextBiz
 
     constructor(context: Context) : super(context) {
@@ -112,6 +103,10 @@ class SkinnableButton : AppCompatButton {
     override fun onDetachedFromWindow() {
         biz.onDetachedFromWindow()
         super.onDetachedFromWindow()
+    }
+
+    override fun forceUpdateSkin() {
+        biz.forceUpdateSkin()
     }
 
 

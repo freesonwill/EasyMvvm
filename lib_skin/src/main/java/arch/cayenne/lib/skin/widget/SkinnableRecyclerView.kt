@@ -4,19 +4,11 @@ import android.content.Context
 import android.util.AttributeSet
 import androidx.annotation.AnyRes
 import androidx.annotation.ColorRes
-import androidx.annotation.DrawableRes
-import androidx.lifecycle.findViewTreeLifecycleOwner
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
-import arch.cayenne.lib.skin.SkinnableManager
 import arch.cayenne.lib.skin.widget.biz.ISkinnableBiz
 import arch.cayenne.lib.skin.widget.biz.SkinnableBizBackgroundImpl
-import arch.cayenne.lib.skin.widget.helper.SkinnableBackGroundHelper
-import arch.cayenne.lib.skin.widget.helper.SkinnableViewFlowHelper
-import kotlinx.coroutines.launch
-import org.koin.java.KoinJavaComponent.inject
 
-open class SkinnableRecyclerView : RecyclerView {
+open class SkinnableRecyclerView : RecyclerView, ISkinnable {
     private lateinit var biz:ISkinnableBiz
 
     constructor(context: Context) : super(context){
@@ -58,5 +50,9 @@ open class SkinnableRecyclerView : RecyclerView {
     override fun onDetachedFromWindow() {
         biz.onDetachedFromWindow()
         super.onDetachedFromWindow()
+    }
+
+    override fun forceUpdateSkin() {
+        biz.forceUpdateSkin()
     }
 }
