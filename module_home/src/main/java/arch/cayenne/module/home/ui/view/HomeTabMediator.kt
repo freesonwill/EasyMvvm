@@ -82,9 +82,6 @@ class HomeTabMediator(
         populateTabsFromPagerAdapter()
         tabLayout.setScrollPosition(viewPager.currentItem, 0f, true)
 
-        // 設置TabLayout內建動畫參數，專門控制滑動viewpager時的indicator動畫速度
-        setTabLayoutSwipeAnimationPrefs(tabLayout)
-
         if (tabLayout is CustomTabLayout) {
             tabLayout.onTabClick = { position ->
                 isTabClick = true
@@ -94,43 +91,6 @@ class HomeTabMediator(
 
     }
 
-    /**
-     * 設置TabLayout的內建動畫參數，專門控制滑動viewpager時的indicator動畫速度
-     * @param tabLayout TabLayout實例
-     */
-    private fun setTabLayoutSwipeAnimationPrefs(tabLayout: TabLayout) {
-        try {
-            // 設置TabLayout內建動畫時長，讓滑動viewpager時的indicator動畫更慢
-            val durationMethod = TabLayout::class.java.getMethod(
-                "setTabIndicatorAnimationDuration",
-                Int::class.java
-            )
-            durationMethod.isAccessible = true
-            durationMethod.invoke(tabLayout, SWIPE_ANIMATION_DURATION.toInt()) // 使用450ms讓滑動更慢
-
-            // 設置動畫模式
-            val modeMethod = TabLayout::class.java.getMethod(
-                "setTabIndicatorAnimationMode",
-                Int::class.java
-            )
-            modeMethod.isAccessible = true
-            modeMethod.invoke(tabLayout, 0) // 0 = 線性模式
-        } catch (_: Exception) {
-            try {
-                // 備用方案：直接設置字段
-                val durationField =
-                    TabLayout::class.java.getDeclaredField("tabIndicatorAnimationDuration")
-                durationField.isAccessible = true
-                durationField.setInt(tabLayout, SWIPE_ANIMATION_DURATION.toInt())
-
-                val modeField = TabLayout::class.java.getDeclaredField("tabIndicatorAnimationMode")
-                modeField.isAccessible = true
-                modeField.setInt(tabLayout, 0) // 0 = 線性模式
-            } catch (_: Exception) {
-                // 兩種方案都失敗時靜默處理
-            }
-        }
-    }
 
     fun detach() {
         tabLayout.removeOnTabSelectedListener(onTabSelectedListener)
