@@ -207,5 +207,5 @@ abstract class BaseMatchViewModel<REPO: BaseMatchRepository> : BaseViewModel() {
 }
 
 enum class LoadMatchType {
-    NEXT_PAGE, RELOAD, RETRY, FIRST_LOAD,
+    NEXT_PAGE, RELOAD, RETRY, FIRST_LOAD, DATE_CHANGE
 }

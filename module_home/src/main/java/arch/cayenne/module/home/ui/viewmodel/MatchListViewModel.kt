@@ -6,6 +6,7 @@ import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.base.data.remote.ApiResponseState.Start.dataAs
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.database.entity.MatchWithMarkets
+import arch.cayenne.lib.database.entity.TournamentMatchRef
 import arch.cayenne.module.home.data.constants.HomeState
 import arch.cayenne.module.home.data.constants.PlayType
 import arch.cayenne.module.home.data.constants.SportType
@@ -17,8 +18,8 @@ import galaxy.common.proto.Common
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.core.component.inject
@@ -31,7 +32,7 @@ class MatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
     private var _playType = PlayType.TODAY.id
     private var _tournamentId: Int = HomeViewModel.TOURNAMENT_ALL_ID
     private var _position = -1
-    private var _selectedDate = MutableStateFlow<Long>(0)
+    private var _selectedDate = MutableStateFlow<Long>(0L)
     override val repository: MatchListRepository by inject()
     // 用來判斷是否需要執行淡入淡出動畫
     private var _lastTournamentId: Int = -1
@@ -54,9 +55,7 @@ class MatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
 
     fun setSelectedDate(id: Long = 0) {
         page = 1
-//        _state.value = Event(MatchListState.REFRESHING)
         _selectedDate.value = id
-//        getCurrentMatch()
     }
 
     fun setPosition(position: Int) {
@@ -86,39 +85,58 @@ class MatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
 
     fun startObserveMatch() {
         if (observeJob != null) return
-        observeJob = viewModelScope.launch(Dispatchers.IO) {
-            combine(
-                _selectedDate,
-                repository.observeMatchChange(_playType, _tournamentId).distinctUntilChanged()
-            ) { selectedDate, refs ->
-                selectedDate to refs
-            }.collect { (selectedDate, refs) ->
-                "Collect observeMatchChange start playType = $_playType, sportId = ${_sportId} tournament = $_tournamentId selectedDate = $selectedDate".logi(this@MatchListViewModel::class.java.simpleName)
-                val currentDateRefs = refs.filter { it.date == selectedDate }
-                if (currentDateRefs.isEmpty()) {
-                    "Collect observeMatchChange TournamentMatchRef is NULL!!".logi(this@MatchListViewModel::class.java.simpleName)
-                    return@collect
-                }
-
-                //一次拿到當前頁面全部資料，會超過一頁，所以需要重新看一下page
-                page = currentDateRefs.maxOfOrNull { it.page } ?: 0
-                //拿到ref後藉由ref拿到這個時間段的match id，再去資料庫把這些賽史資料串起來
-                val list = repository.queryFullMatches(
-                    currentDateRefs.map { it.matchId }
-                )
-                "Collect observeMatchChange result：${list.map { it.match.matchId }}".logi(this@MatchListViewModel::class.java.simpleName)
-                withContext(Dispatchers.Main) {
-                    //第一次http拿到的資料量過少，會影響到拉取更新資料需要等待，所以跟api補上拿取更多一點的資料
-                    if (page == 1 && list.isEmpty()) {
-                        setState(HomeState.Match.DataEmpty)
-                    } else if (list.size % DEFAULT_MATCH_SIZE != 0) {
-                        setState(DataState.NoMoreData)
-                    } else {
-                        setState(HomeState.Match.LoadSuccess)
-                    }
-                    matchListChange.value = list
+        observeJob = viewModelScope.launch {
+            //當日期變化
+            launch(Dispatchers.IO) {
+                _selectedDate
+                    .drop(1)  //一開始進入的不用聽，可以藉由loginChange去取得最開始的資料
+                    .collect { selectedDate ->
+                        "Collect selectedDateChange playType = $_playType  tournament = $_tournamentId selectedDate = $selectedDate ".logi()
+                        val currentDateRefs = repository.queryMatchChange(_playType, _tournamentId).filter { it.date == selectedDate }
+                        if (currentDateRefs.isEmpty()) {
+                            getMatchListData(LoadMatchType.DATE_CHANGE)
+                            return@collect
+                        }
+                        processObserveMatchList(currentDateRefs)
                 }
             }
+            //當內部資料有變化
+            launch(Dispatchers.IO) {
+                repository.observeMatchChange(_playType, _tournamentId)
+                    .distinctUntilChanged()
+                    .collect { refs ->
+                        val selectedDate = _selectedDate.value
+                        "Collect observeMatchChange start playType = $_playType, sportId = ${_sportId} tournament = $_tournamentId selectedDate = $selectedDate".logi(this@MatchListViewModel::class.java.simpleName)
+                        val currentDateRefs = refs.filter { it.date == selectedDate }
+                        if (currentDateRefs.isEmpty()) {
+                            "Collect observeMatchChange TournamentMatchRef is NULL!!".logi(this@MatchListViewModel::class.java.simpleName)
+                            return@collect
+                        }
+                        processObserveMatchList(currentDateRefs)
+                    }
+            }
+
+        }
+    }
+
+    private suspend fun processObserveMatchList(currentDateRefs: List<TournamentMatchRef>) {
+        //一次拿到當前頁面全部資料，會超過一頁，所以需要重新看一下page
+        page = currentDateRefs.maxOfOrNull { it.page } ?: 0
+        //拿到ref後藉由ref拿到這個時間段的match id，再去資料庫把這些賽史資料串起來
+        val list = repository.queryFullMatches(
+            currentDateRefs.map { it.matchId }
+        )
+        "Collect observeMatchChange result：${list.map { it.match.matchId }}".logi(this@MatchListViewModel::class.java.simpleName)
+        withContext(Dispatchers.Main) {
+            //第一次http拿到的資料量過少，會影響到拉取更新資料需要等待，所以跟api補上拿取更多一點的資料
+            if (page == 1 && list.isEmpty()) {
+                setState(HomeState.Match.DataEmpty)
+            } else if (list.size % DEFAULT_MATCH_SIZE != 0) {
+                setState(DataState.NoMoreData)
+            } else {
+                setState(HomeState.Match.LoadSuccess)
+            }
+            matchListChange.value = list
         }
     }
 
