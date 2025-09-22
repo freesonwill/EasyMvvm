@@ -33,27 +33,7 @@ class MatchItemViewHolder(
     private val oddsColumnAdapter: OddsColumnAdapter  by lazy { OddsColumnAdapter(onMatchItemClickListener) }
 
     init {
-        //右半盤口
-        val defaultTitleList = listOf(
-            R.string.match_title_win,
-            R.string.match_title_handicap,
-            R.string.match_title_over_under
-        )
         with(mBinding) {
-            defaultTitleList.forEach { title ->
-                val titleView = SkinnableTextView(root.context).apply {
-                    text = getString(title)
-                    setTextColorRes(R.color.home_secondary_text)
-                    textSize = 13f
-                    setPadding(0, 0, 2.dp2px, 0)
-                    maxLines = 1
-                    ellipsize = TextUtils.TruncateAt.END
-                    gravity = Gravity.CENTER
-                    layoutParams = LinearLayout.LayoutParams(0, WRAP_CONTENT, 1f)
-                }
-                layoutOddsTitle.addView(titleView)
-            }
-
             rvOddsGrid.itemAnimator = null
             rvOddsGrid.apply {
                 setRecycledViewPool(viewPool)

@@ -72,13 +72,6 @@ class LivePlayerView @JvmOverloads constructor(
         playerStateListener = listener
     }
 
-    override fun onDetachedFromWindow() {
-        super.onDetachedFromWindow()
-        //移除window的时候需要将监听置空，否则因为LivePlayerView存在PlayerCache引发泄漏
-        onSingleTapListener = null
-        playerStateListener = null
-    }
-
     fun setDataSource(url: String) {
         mPlayingPath = url
         mRenderView.setDataSource(url)
@@ -127,11 +120,15 @@ class LivePlayerView @JvmOverloads constructor(
     }
 
     /**
-     * Activity 销毁，释放资源
+     * Fragment 销毁，释放资源
      */
     fun onDestroy() {
         "onDestroy".logd(TAG)
         mRenderView.release()
+        //避免listener引用导致LivePlayerView存在PlayerCache引发泄漏
+        onSingleTapListener = null
+        playerStateListener = null
+
     }
 
     /**

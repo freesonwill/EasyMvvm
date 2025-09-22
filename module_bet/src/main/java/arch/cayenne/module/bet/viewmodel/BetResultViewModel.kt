@@ -80,7 +80,9 @@ class BetResultViewModel(private val repo: BetResultRepository) : BaseViewModel(
                 }
             }
             launch {
-                _currencyListener.value = repo.getCurrency()
+                repo.observeCurrency().collect {
+                    _currencyListener.value = it
+                }
             }
         }
     }

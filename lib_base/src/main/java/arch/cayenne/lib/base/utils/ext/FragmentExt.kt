@@ -1,7 +1,12 @@
 package arch.cayenne.lib.base.utils.ext
 
+import android.os.Build
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logw
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 /**
  * @author: zhangsan
@@ -24,9 +29,14 @@ object FragmentExt {
      * @param onIntercept 拦截回退事件的逻辑，返回true表示拦截，false表示放行
      */
     fun Fragment.handleBackPressed(onIntercept: () -> Boolean) {
-        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner,
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
+                    if (isBackPressedDebounced()) {
+                        "handleOnBackPressed $this".logd(TAG)
+                        return
+                    }
                     val intercepted = onIntercept()
                     if (intercepted) return
                     isEnabled = false  // 放行自己，并触发系统默认行为
@@ -35,6 +45,37 @@ object FragmentExt {
                 }
             }
         )
+    }
+
+    /**
+     * 执行防抖的导航操作
+     */
+    private var lastNavigateTime = 0L
+    private var lastNavDurationTime: Long? = null
+    fun isNavigationDebounced(reason: String, duration: Long? = null): Boolean {
+        val durationTime = duration ?: 500L
+        val isDebounced = System.currentTimeMillis() - lastNavigateTime < durationTime
+        if (isDebounced) {
+            val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.getDefault())
+            "navigation blocked by debounce,lastNavigateTime:${sdf.format(lastNavigateTime)},reason:$reason".logw(
+                TAG
+            )
+        } else {
+            lastNavigateTime = System.currentTimeMillis()
+        }
+        lastNavDurationTime = durationTime
+        return isDebounced
+    }
+
+    /**
+     * 導航操作防返回抖動
+     */
+    private fun isBackPressedDebounced(): Boolean {
+        return if (Build.VERSION.SDK_INT > 29) {
+            false
+        } else {
+            System.currentTimeMillis() - lastNavigateTime < (lastNavDurationTime ?: 500L)
+        }
     }
 
 }

@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
@@ -56,8 +57,6 @@ class MatchListPagerFragment :
 
     // 用於淡入淡出動畫時監聽api是否已經回傳
     private var animationObserver: Observer<DataState>? = null
-    private var dataObserver: RecyclerView.AdapterDataObserver? = null
-    private var userRequestedScrollToTop = false
 
     override fun initView(savedInstanceState: Bundle?) {
         mBinding.apply {
@@ -65,7 +64,6 @@ class MatchListPagerFragment :
             refreshLayout.setEnableScrollContentWhenLoaded(true)
             refreshLayout.setOnRefreshListener {
                 reloadAllData()
-                userRequestedScrollToTop = true
             }
 
             matchAdapter = MatchItemAdapter(object : OnMatchItemClickListener {
@@ -125,17 +123,6 @@ class MatchListPagerFragment :
                     }
                 }
             })
-            dataObserver = object : RecyclerView.AdapterDataObserver() {
-                override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
-                    if (positionStart == 0 && userRequestedScrollToTop) {
-                        mBinding.rvHomeGameList.post {
-                            mBinding.rvHomeGameList.scrollToPosition(0)
-                        }
-                        userRequestedScrollToTop = false // 重置標誌位
-                    }
-                }
-            }
-            matchAdapter.registerAdapterDataObserver(dataObserver!!)
             //賽事卡片之間的間閣
             val decoration = MatchCardItemDecoration(12.dp2px)
             mBinding.rvHomeGameList.apply {
@@ -211,19 +198,22 @@ class MatchListPagerFragment :
     }
 
     val matchListObserver = Observer<List<MatchWithMarkets>> { matchList ->
-        val preEmpty = matchAdapter.currentList.isEmpty()
         "MatchListChange livedata Observed~ ${matchList.map { it.match.matchId }}".logi(this::class.java.simpleName)
+        matchAdapter.submitList(matchList) {
+            // 發送頁面載入完成通知
+            launch { mViewModel.setSubmitListCompleted() }
+        }
 
         val action = {
-            matchAdapter.submitList(matchList)
+            matchAdapter.submitList(matchList) {
+                if (mViewModel.requestScrollToTop) {
+                    mBinding.rvHomeGameList.scrollToPosition(0)
+                    mViewModel.resetRequestScrollToTop()
+                }
+            }
             mBinding.rvHomeGameList.doOnPreDraw {
                 if (mBinding.rvHomeGameList.scrollState == RecyclerView.SCROLL_STATE_IDLE) {
                     subscribeVisibleMatch()
-                }
-                if (matchList.isNotEmpty()) {
-                    if (preEmpty) {
-                        setMatchListPosition()
-                    }
                 }
             }
 
@@ -351,14 +341,10 @@ class MatchListPagerFragment :
     }
 
     fun reloadAllData() {
-        mBinding.rvHomeGameList.scrollToPosition(0)
         mViewModel.reload()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        dataObserver?.apply { matchAdapter.unregisterAdapterDataObserver(this) }
-    }
+    fun getSubmitListCompletedFlow() = mViewModel.submitListCompletedFlow
 
     override fun onResume() {
         super.onResume()

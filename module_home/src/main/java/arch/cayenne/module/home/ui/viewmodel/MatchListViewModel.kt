@@ -17,7 +17,9 @@ import arch.cayenne.module.home.utils.DateUtils
 import galaxy.common.proto.Common
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.launch
@@ -38,7 +40,14 @@ class MatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
     private var _lastTournamentId: Int = -1
     private var _lastSelectedDate: Long = -1L
 
+    // 判斷比賽列表是不是已經載入完成了，用於通知SubHomeFragment，僅全部tab使用
+    private val _submitListCompletedFlow = MutableSharedFlow<Unit>(replay = 0, extraBufferCapacity = 1)
+    val submitListCompletedFlow: SharedFlow<Unit> = _submitListCompletedFlow
+
     private var observeJob : Job? = null
+
+    var requestScrollToTop: Boolean = false  //是否需要回到頂部，通常用於網路重新連接後，資料整體重新拉取後使用
+        private set
 
     fun setSportId(id: Int) {
         _sportId = id
@@ -62,6 +71,10 @@ class MatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
         _position = position
     }
 
+    fun setSubmitListCompleted() {
+        _submitListCompletedFlow.tryEmit(Unit)
+	}
+
     fun setLastState(tournamentId: Int, selectedDate: Long) {
         _lastTournamentId = tournamentId
         _lastSelectedDate = selectedDate
@@ -81,6 +94,10 @@ class MatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
 
     fun changeState(state: DataState) {
         setState(state)
+    }
+
+    fun resetRequestScrollToTop() {
+        requestScrollToTop = false
     }
 
     fun startObserveMatch() {
@@ -143,6 +160,7 @@ class MatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
     //取得分頁的比賽列表
     override fun getMatchListData(loadMatchType: LoadMatchType) {
         viewModelScope.launch {
+            requestScrollToTop = loadMatchType == LoadMatchType.RELOAD || loadMatchType == LoadMatchType.RETRY // 是否是強制更新，會刪除原本的資料ref關聯表，並且更新列表後會滾到頂端
             setState(HomeState.Match.Loading)
             val (startTime, endTime) = if (_selectedDate.value == 0L) { //ALL
                 if (_playType == PlayType.EARLY.id) {
@@ -158,9 +176,7 @@ class MatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
                     _selectedDate.value + BaseMatchRepository.ONE_DAY_TIME_STAMP
                 )
             }
-            "取得比賽資料 Type = ${loadMatchType} PlayType = $_playType sportId = $_sportId tournamentId = $_tournamentId page = $page startTime = $startTime endTime = $endTime".logi(
-                TAG
-            )
+            "取得比賽資料 Type = ${loadMatchType} PlayType = $_playType sportId = $_sportId tournamentId = $_tournamentId page = $page startTime = $startTime endTime = $endTime".logi(TAG)
             callApi(
                 {
                     repository.getAllMatch(
@@ -171,7 +187,7 @@ class MatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
                         date = _selectedDate.value,
                         startTime = startTime,
                         endTime = endTime,
-                        isForce = loadMatchType == LoadMatchType.RELOAD || loadMatchType == LoadMatchType.RETRY,
+                        isForce = requestScrollToTop,
                     )
                 },
                 {
