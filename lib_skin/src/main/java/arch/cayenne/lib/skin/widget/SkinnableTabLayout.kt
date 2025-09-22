@@ -35,7 +35,7 @@ class SkinnableTabLayout : TabLayout {
             tabLayoutHelper.updateSkin()
         }
 
-        flowHelper.startLanguageFlow {
+        flowHelper.startLanguageFlow(findViewTreeLifecycleOwner()?.lifecycleScope) {
             tabLayoutHelper.updateLanguage(it)
         }
     }

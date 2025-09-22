@@ -37,7 +37,7 @@ class SkinnableBizTextImpl(private val view: TextView) : ISkinnableTextBiz {
             backgroundHelper.updateSkin()
             mTextHelper.updateSkin()
         }
-        flowHelper.startLanguageFlow {
+        flowHelper.startLanguageFlow(view.findViewTreeLifecycleOwner()?.lifecycleScope) {
             mTextHelper.updateLanguage(it)
         }
     }
