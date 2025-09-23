@@ -98,8 +98,6 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             }
             val tabResList = mutableListOf<Int>()
 
-            tlHome.setTabResArray(tabResList.toIntArray())
-
             PlayType.entries.forEachIndexed { index, playType ->
                 tabResList.add(playType.titleRes)
                 mViewModel.playTypeClickRecord[playType.id] = System.currentTimeMillis()
@@ -110,6 +108,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                     setSelected = index == 0,
                 )
             }
+            tlHome.setTabResArray(tabResList.toIntArray())
             vpSub.adapter = SubHomePagerAdapter(
                 fragmentManager = childFragmentManager,
                 lifecycle = viewLifecycleOwner.lifecycle,
