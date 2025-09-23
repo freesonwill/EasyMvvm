@@ -440,10 +440,8 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
 
     private fun updateBetSheetSkin() {
         val type = mViewModel.getSkinType()
-        SkinType.of(type)?.let { skinType ->
-            if (skinType == SkinType.SKIN_WHITE_BLUE || skinType == SkinType.SKIN_WHITE_GREEN) {
-                BetSheetFragment.find(requireActivity())?.forceUpdateSkin()
-            }
+        if (type != fixedSkin) {
+            BetSheetFragment.find(requireActivity())?.forceUpdateSkin()
         }
     }
 }
