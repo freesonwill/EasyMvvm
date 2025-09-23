@@ -35,9 +35,6 @@ class MatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
     private var _position = -1
     private var _selectedDate = MutableStateFlow<Long>(0)
     override val repository: MatchListRepository by inject()
-    // 用來判斷是否需要執行淡入淡出動畫
-    private var _lastTournamentId: Int = -1
-    private var _lastSelectedDate: Long = -1L
 
     // 判斷比賽列表是不是已經載入完成了，用於通知SubHomeFragment，僅全部tab使用
     private val _submitListCompletedFlow = MutableSharedFlow<Unit>(replay = 0, extraBufferCapacity = 1)
@@ -76,22 +73,11 @@ class MatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
         _submitListCompletedFlow.tryEmit(Unit)
 	}
 
-    fun setLastState(tournamentId: Int, selectedDate: Long) {
-        _lastTournamentId = tournamentId
-        _lastSelectedDate = selectedDate
-    }
-
     fun getPlayTypeId(): Int = _playType
 
     fun getTournamentId() = _tournamentId
 
     fun getSportId() = _sportId
-
-    fun getSelectedDate() = _selectedDate.value
-
-    fun getLastTournamentId() = _lastTournamentId
-
-    fun getLastSelectedDate() = _lastSelectedDate
 
     fun changeState(state: DataState) {
         setState(state)
