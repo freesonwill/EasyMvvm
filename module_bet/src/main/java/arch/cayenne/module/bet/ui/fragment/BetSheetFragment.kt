@@ -10,16 +10,10 @@ import android.view.ViewGroup
 import androidx.core.view.forEach
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
-import arch.cayenne.lib.base.data.constants.StatusBarMode
-import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BasePreLoadBottomSheetFragment
-import arch.cayenne.lib.common.data.constants.SkinType
 import arch.cayenne.lib.common.ui.view.BlockSlideConstrainLayout
-import arch.cayenne.lib.common.utils.ImmersionBarUtils.immersionBarSkinTypeExt
 import arch.cayenne.lib.database.entity.BetTypeEnum
-import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.lib.skin.widget.ISkinnable
-import arch.cayenne.lib.skin.widget.SkinnableTextView
 import arch.cayenne.module.bet.R
 import arch.cayenne.module.bet.data.Config.KEY_RESULT
 import arch.cayenne.module.bet.data.Config.VALUE_DISMISS

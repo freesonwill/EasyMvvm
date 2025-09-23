@@ -2,8 +2,12 @@ package arch.cayenne.lib.skin.widget
 
 import android.content.Context
 import android.util.AttributeSet
+import android.util.Log
+import android.view.View
+import android.view.ViewGroup
 import androidx.annotation.AnyRes
 import androidx.annotation.ColorRes
+import androidx.core.view.forEach
 import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.skin.widget.biz.ISkinnableBiz
 import arch.cayenne.lib.skin.widget.biz.SkinnableBizBackgroundImpl
@@ -53,8 +57,10 @@ open class SkinnableRecyclerView : RecyclerView, ISkinnable {
     }
 
     override fun forceUpdateSkin() {
-        // 必須清除緩存，否則不會更新到緩存裡的view
         recycledViewPool.clear()
         biz.forceUpdateSkin()
+        val mAdapter = adapter ?: return
+        adapter = null
+        adapter = mAdapter
     }
 }
