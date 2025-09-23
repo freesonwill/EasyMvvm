@@ -269,26 +269,20 @@ class CustomFilterSideBarView @JvmOverloads constructor(
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent): Boolean {
-        val touchLeftBoundary = width - normalViewWidth * 2f
-        val touchRightBoundary = width.toFloat()
-        val touchX = event.x
-
-        val isInTouchArea = touchX in touchLeftBoundary..touchRightBoundary
-
-        if (!isInTouchArea) {
-            if (isTouching) {
-                handleTouchEnd(event)
-            }
-            return false
-        }
-
         val y = event.y - firstItemBaselineY
-        val index = (y / itemHeight).toInt()
-        val letterIndex = min(max(0, index), totalCount - 1)
+        val letterIndex = min(max(0, (y / itemHeight).toInt()), totalCount - 1)
         val letter = indexTitles.getOrNull(letterIndex) ?: ""
 
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {
+                val touchX = event.x
+                val touchLeftBoundary = width - normalViewWidth * 2f
+
+                // 如果一開始就不在區域內，則不處理
+                if (touchX < touchLeftBoundary) {
+                    return false
+                }
+
                 isTouching = true
                 currentIndex = letterIndex
                 touchY = y
@@ -297,6 +291,9 @@ class CustomFilterSideBarView @JvmOverloads constructor(
                 invalidate()
             }
             MotionEvent.ACTION_MOVE -> {
+                if (!isTouching) {
+                    return false
+                }
                 if (currentIndex != letterIndex) {
                     currentIndex = letterIndex
                     onIndexSelectedListener?.onIndexSelected(currentIndex, letter, true)
@@ -305,10 +302,13 @@ class CustomFilterSideBarView @JvmOverloads constructor(
                 invalidate()
             }
             MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
-                handleTouchEnd(event)
+                if (isTouching) {
+                    handleTouchEnd(event)
+                }
             }
         }
-        return true
+
+        return isTouching || super.onTouchEvent(event)
     }
 
     private fun handleTouchEnd(event: MotionEvent) {
