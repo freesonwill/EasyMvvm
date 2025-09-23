@@ -33,6 +33,7 @@
 
 
     <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
+        android:id="@+id/skinTab"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/live_main_tab_bg"
@@ -64,6 +65,7 @@
     </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/ClBotton"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -80,6 +82,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 </arch.cayenne.lib.common.ui.view.InterceptedLinearLayout>
 
 <com.google.android.material.navigation.NavigationView
