@@ -517,10 +517,14 @@ fun CustomTabIndicator.animateIndicatorToPosition(position: Int,smoothScroll:Boo
 }
 
 //侧滑退出当前fragment
-fun View.touchBackPressed(boo: Boolean = true){
+fun View.touchBackPressed(boo: Boolean = true,onBackCall: (() -> Unit)? = null){
     setOnTouchListener(object : OnSwipeTouchListener() {
         override fun onSwipeRight() {
-            if (boo) { requireActivity().onBackPressedDispatcher.onBackPressed() }
+            if (onBackCall!=null){
+                if (boo) { onBackCall.invoke()}
+            }else{
+                if (boo) { requireActivity().onBackPressedDispatcher.onBackPressed() }
+            }
         }
     })
 }
