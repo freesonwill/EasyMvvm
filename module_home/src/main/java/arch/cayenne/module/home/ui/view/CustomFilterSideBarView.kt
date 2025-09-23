@@ -34,7 +34,7 @@ class CustomFilterSideBarView @JvmOverloads constructor(
     var indexTitles: List<String> = ('A'..'Z').map { it.toString() }
         set(value) {
             field = value
-            requestLayout()
+            invalidate()
         }
 
     // 文字顏色
@@ -49,7 +49,21 @@ class CustomFilterSideBarView @JvmOverloads constructor(
     var textSize: Float = 11f.sp2px
         set(value) {
             field = value
-            requestLayout()
+            invalidate()
+        }
+
+    // 文字最大縮放比例 (對應 H5 的 maxFontScale)
+    var maxFontScale: Float = 2.0f // 預設為 2.0f，與 H5 預設一致
+        set(value) {
+            field = value
+            invalidate()
+        }
+
+    // 文字最小縮放比例 (對應 H5 的 minFontScale)
+    var minFontScale: Float = 1.0f // 預設為 1.0f，與 H5 預設一致
+        set(value) {
+            field = value
+            invalidate()
         }
 
     // 圓弧的寬度
@@ -147,17 +161,16 @@ class CustomFilterSideBarView @JvmOverloads constructor(
                 val baseLineY = firstItemBaselineY + i * itemHeight
                 val letter = indexTitles[i]
                 val isSelected = i == selectedIndex
-                val textColor = this@CustomFilterSideBarView.textColor
-
-                val drawSize = normalViewWidth
-                val rect = RectF(
-                    maxX - drawSize / 2,
-                    baseLineY - drawSize / 2,
-                    maxX + drawSize / 2,
-                    baseLineY + drawSize / 2
-                )
+                val currentTextColor = this@CustomFilterSideBarView.textColor
 
                 if (letter == "*") {
+                    val drawSize = normalViewWidth
+                    val rect = RectF(
+                        maxX - drawSize / 2,
+                        baseLineY - itemHeight / 2,
+                        maxX + drawSize / 2,
+                        baseLineY + drawSize - itemHeight / 2
+                    )
                     canvas.drawBitmap(
                         hotIconBitmap,
                         null, rect,
@@ -171,7 +184,7 @@ class CustomFilterSideBarView @JvmOverloads constructor(
                         baseLineY - (textPaint.fontMetrics.ascent + textPaint.fontMetrics.descent) / 2,
                         textPaint.apply {
                             textSize = this@CustomFilterSideBarView.textSize
-                            color = textColor
+                            color = currentTextColor
                             alpha = if (isSelected) 255 else (unselectAlpha * 255).toInt()
                         }
                     )
@@ -182,7 +195,6 @@ class CustomFilterSideBarView @JvmOverloads constructor(
 
         // 動態狀態，有觸摸在進行
         val currentTouchY = touchY
-
         val halfSizeY = ellipseHeight / 2f
         val topY = currentTouchY - halfSizeY
         val bottomY = currentTouchY + halfSizeY
@@ -192,25 +204,29 @@ class CustomFilterSideBarView @JvmOverloads constructor(
             val letter = indexTitles[i]
             val isSelected = i == currentIndex
 
-            val scale: Float
+            // 用於存儲最終的縮放倍數
+            val finalScale: Float
             val centerX: Float
-            val alpha: Float
+            var finalAlpha: Float
 
             val itemBottomY = baseLineY + itemHeight
             val isInRange = baseLineY <= bottomY && itemBottomY > topY
 
             if (isSelected) {
                 // 如果是固定的選中項目，使用固定的位移和縮放
-                scale = 1f
+                // 選中項使用 maxFontScale
+                finalScale = maxFontScale
                 centerX = maxX - ellipseWidth
-                alpha = 1f
+                finalAlpha = 1f
             } else if (!isInRange) {
                 // 不在範圍內且未被選中的項目，保持靜態
-                scale = 0f
+                // 不在範圍內使用 minFontScale
+                finalScale = minFontScale
                 centerX = maxX
-                alpha = unselectAlpha
+                finalAlpha = unselectAlpha
             } else {
                 // 在範圍內但未被選中的項目，進行動態計算
+                // 使用 baseLineY 作為參考點可能更準確
                 val itemCenterY = baseLineY + itemHeight / 2
 
                 // H5 程式碼中的 distanceY
@@ -223,24 +239,21 @@ class CustomFilterSideBarView @JvmOverloads constructor(
                 val distancePercent = max(abs(distanceY / halfSizeY) - 0.1f, 0f)
 
                 // 縮放比例
-                val maxFontScale = 1f
-                val minFontScale = 0f
-                scale = max(maxFontScale - maxFontScale * distancePercent, minFontScale)
+                finalScale = max(maxFontScale - maxFontScale * distancePercent, minFontScale)
 
                 // 位移
                 centerX = maxX - m
 
                 // 透明度
-                // 原 H5 寫法為 max(distancePercent, 0.05f)
-                // 但因比照 iOS，最低透明度為 unselectAlpha (0.3f)
-                // 因此改寫為如下
-                alpha = min(distancePercent, unselectAlpha)
+                finalAlpha = max(distancePercent, 0.05f)
+                // 確保透明度不超過1
+                if (finalAlpha > 1f) finalAlpha = 1f
             }
 
             // 繪製內容
             if (letter == "*") {
-                val drawSize = normalViewWidth * (1 + scale)
-                val rect = RectF(
+                val drawSize = normalViewWidth * finalScale
+                val iconRect = RectF(
                     centerX - drawSize / 2,
                     baseLineY - drawSize / 2,
                     centerX + drawSize / 2,
@@ -248,9 +261,9 @@ class CustomFilterSideBarView @JvmOverloads constructor(
                 )
                 canvas.drawBitmap(
                     hotIconBitmap,
-                    null, rect,
+                    null, iconRect,
                     Paint().apply {
-                        this.alpha = (alpha * 255).toInt()
+                        this.alpha = (finalAlpha * 255).toInt()
                     }
                 )
             } else {
@@ -258,9 +271,9 @@ class CustomFilterSideBarView @JvmOverloads constructor(
                     letter, centerX,
                     baseLineY - (textPaint.fontMetrics.ascent + textPaint.fontMetrics.descent) / 2,
                     textPaint.apply {
-                        textSize = this@CustomFilterSideBarView.textSize * (1 + scale)
+                        textSize = this@CustomFilterSideBarView.textSize * finalScale
                         color = this@CustomFilterSideBarView.textColor
-                        this.alpha = (alpha * 255).toInt()
+                        this.alpha = (finalAlpha * 255).toInt()
                     }
                 )
             }
