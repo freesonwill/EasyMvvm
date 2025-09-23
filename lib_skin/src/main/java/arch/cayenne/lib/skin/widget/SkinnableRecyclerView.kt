@@ -53,6 +53,8 @@ open class SkinnableRecyclerView : RecyclerView, ISkinnable {
     }
 
     override fun forceUpdateSkin() {
+        // 必須清除緩存，否則不會更新到緩存裡的view
+        recycledViewPool.clear()
         biz.forceUpdateSkin()
     }
 }
