@@ -94,17 +94,17 @@ class SkinnableBizTextImpl(private val view: TextView) : ISkinnableTextBiz {
     }
 
 
-    override fun updateBackground(resId: Int) {
+    override fun setBackgroundResource(resId: Int) {
         val nResId = flowHelper.checkOriginId(view.context,resId)
         backgroundHelper.updateBackground(nResId)
     }
 
-    override fun updateBackgroundTintId(resId: Int) {
+    override fun setTintColorRes(resId: Int) {
         val nResId = flowHelper.checkOriginId(view.context,resId)
         backgroundHelper.updateBackgroundTintId(nResId)
     }
 
-    override fun updateForegroundId(resId: Int) {
+    override fun setForegroundRes(resId: Int) {
         val nResId = flowHelper.checkOriginId(view.context,resId)
         backgroundHelper.updateForegroundId(nResId)
     }

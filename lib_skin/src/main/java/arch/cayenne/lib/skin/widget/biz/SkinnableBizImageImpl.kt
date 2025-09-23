@@ -39,17 +39,17 @@ class SkinnableBizImageImpl(private val view: ImageView) : ISkinnableImageBiz {
         flowHelper.destroyFlow()
     }
 
-    override fun updateBackground(resId: Int) {
+    override fun setBackgroundResource(resId: Int) {
         val nResId = flowHelper.checkOriginId(view.context,resId)
         backgroundHelper.updateBackground(nResId)
     }
 
-    override fun updateBackgroundTintId(resId: Int) {
+    override fun setTintColorRes(resId: Int) {
         val nResId = flowHelper.checkOriginId(view.context,resId)
         backgroundHelper.updateBackgroundTintId(nResId)
     }
 
-    override fun updateForegroundId(resId: Int) {
+    override fun setForegroundRes(resId: Int) {
         val nResId = flowHelper.checkOriginId(view.context,resId)
         backgroundHelper.updateForegroundId(nResId)
     }

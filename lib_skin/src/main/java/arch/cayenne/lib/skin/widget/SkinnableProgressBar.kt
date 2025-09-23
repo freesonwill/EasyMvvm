@@ -6,7 +6,7 @@ import android.widget.ProgressBar
 import arch.cayenne.lib.skin.widget.biz.ISkinnableBiz
 import arch.cayenne.lib.skin.widget.biz.SkinnableBizBackgroundImpl
 
-class SkinnableProgressBar : ProgressBar, ISkinnable {
+class SkinnableProgressBar : ProgressBar, ISkinnableBiz {
 
     private lateinit var biz: ISkinnableBiz
 
@@ -28,7 +28,7 @@ class SkinnableProgressBar : ProgressBar, ISkinnable {
         biz.onAttachedToWindow()
     }
 
-    private fun initView(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) {
+    override fun initView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) {
         biz = SkinnableBizBackgroundImpl(this)
         biz.initView(context, attrs, defStyleAttr)
     }
@@ -36,6 +36,14 @@ class SkinnableProgressBar : ProgressBar, ISkinnable {
     override fun onDetachedFromWindow() {
         biz.onDetachedFromWindow()
         super.onDetachedFromWindow()
+    }
+
+    override fun setTintColorRes(resId: Int) {
+        biz.setTintColorRes(resId)
+    }
+
+    override fun setForegroundRes(resId: Int) {
+        biz.setForegroundRes(resId)
     }
 
     override fun forceUpdateSkin() {

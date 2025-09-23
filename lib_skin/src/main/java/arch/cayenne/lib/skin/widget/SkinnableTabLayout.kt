@@ -5,12 +5,13 @@ import android.util.AttributeSet
 import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import arch.cayenne.lib.skin.data.SkinMsgType
+import arch.cayenne.lib.skin.widget.biz.ISkinnableBiz
 import com.google.android.material.tabs.TabLayout
 import arch.cayenne.lib.skin.widget.helper.SkinnableBackGroundHelper
 import arch.cayenne.lib.skin.widget.helper.SkinnableTabLayoutHelper
 import arch.cayenne.lib.skin.widget.helper.SkinnableViewFlowHelper
 
-class SkinnableTabLayout : TabLayout, ISkinnable {
+class SkinnableTabLayout : TabLayout, ISkinnableBiz {
     private val backgroundTintHelper = SkinnableBackGroundHelper(this)
     private val tabLayoutHelper = SkinnableTabLayoutHelper(this)
     private val TAG = SkinnableTabLayout::class.java.simpleName
@@ -41,7 +42,7 @@ class SkinnableTabLayout : TabLayout, ISkinnable {
         }
     }
 
-    private fun initView(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) {
+    override fun initView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) {
         backgroundTintHelper.loadFromAttributes(attrs, defStyleAttr)
         tabLayoutHelper.loadFromAttributes(attrs, defStyleAttr)
     }
@@ -99,6 +100,15 @@ class SkinnableTabLayout : TabLayout, ISkinnable {
         flowHelper.destroyFlow()
         super.onDetachedFromWindow()
     }
+
+    override fun setTintColorRes(resId: Int) {
+        TODO("Not yet implemented")
+    }
+
+    override fun setForegroundRes(resId: Int) {
+        TODO("Not yet implemented")
+    }
+
     //设置Tab时添加tabResArray，语言切换时更新tab
     fun setTabResArray(tabResArray: IntArray){
         tabLayoutHelper.updateTabResArray(tabResArray)

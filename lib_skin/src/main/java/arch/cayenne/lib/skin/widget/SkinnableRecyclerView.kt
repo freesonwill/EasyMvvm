@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.skin.widget.biz.ISkinnableBiz
 import arch.cayenne.lib.skin.widget.biz.SkinnableBizBackgroundImpl
 
-open class SkinnableRecyclerView : RecyclerView, ISkinnable {
+open class SkinnableRecyclerView : RecyclerView, ISkinnableBiz {
     private lateinit var biz:ISkinnableBiz
 
     constructor(context: Context) : super(context){
@@ -33,22 +33,22 @@ open class SkinnableRecyclerView : RecyclerView, ISkinnable {
         biz.onAttachedToWindow()
     }
 
-    private fun initView(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) {
+    override fun initView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) {
         biz = SkinnableBizBackgroundImpl(this)
         biz.initView(context, attrs, defStyleAttr)
     }
 
     override fun setBackgroundResource(resId: Int) {
         super.setBackgroundResource(resId)
-        biz.updateBackground(resId)
+        biz.setBackgroundResource(resId)
     }
 
-    fun setTintColorRes(@ColorRes resId: Int){
-        biz.updateBackgroundTintId(resId)
+    override fun setTintColorRes(@ColorRes resId: Int){
+        biz.setTintColorRes(resId)
     }
 
-    fun setForegroundRes(@AnyRes resId: Int){
-        biz.updateForegroundId(resId)
+    override fun setForegroundRes(@AnyRes resId: Int){
+        biz.setForegroundRes(resId)
     }
 
     override fun onDetachedFromWindow() {

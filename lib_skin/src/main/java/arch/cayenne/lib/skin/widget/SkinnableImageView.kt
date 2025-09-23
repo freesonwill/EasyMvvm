@@ -12,11 +12,12 @@ import android.util.AttributeSet
 import androidx.annotation.AnyRes
 import androidx.annotation.ColorRes
 import androidx.appcompat.widget.AppCompatImageView
+import arch.cayenne.lib.skin.widget.biz.ISkinnableBiz
 import arch.cayenne.lib.skin.widget.biz.ISkinnableImageBiz
 import arch.cayenne.lib.skin.widget.biz.SkinnableBizImageImpl
 
 
-class SkinnableImageView : AppCompatImageView, ISkinnable{
+class SkinnableImageView : AppCompatImageView, ISkinnableBiz{
     private var mPaint: Paint? = null
     private var mRectF: RectF? = null
     private var mBitmapShader: BitmapShader? = null
@@ -40,7 +41,7 @@ class SkinnableImageView : AppCompatImageView, ISkinnable{
 
     }
 
-    private fun initView(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) {
+    override fun initView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) {
         biz = SkinnableBizImageImpl(this)
         biz.initView(context, attrs, defStyleAttr)
         mPaint = Paint(Paint.ANTI_ALIAS_FLAG)
@@ -54,15 +55,15 @@ class SkinnableImageView : AppCompatImageView, ISkinnable{
 
     override fun setBackgroundResource(resId: Int) {
         super.setBackgroundResource(resId)
-        biz.updateBackground(resId)
+        biz.setBackgroundResource(resId)
     }
 
-    fun setTintColorRes(@ColorRes resId: Int){
-        biz.updateBackgroundTintId(resId)
+    override fun setTintColorRes(@ColorRes resId: Int){
+        biz.setTintColorRes(resId)
     }
 
-    fun setForegroundRes(@AnyRes resId: Int){
-        biz.updateForegroundId(resId)
+    override fun setForegroundRes(@AnyRes resId: Int){
+        biz.setForegroundRes(resId)
     }
 
     @SuppressLint("DrawAllocation")
