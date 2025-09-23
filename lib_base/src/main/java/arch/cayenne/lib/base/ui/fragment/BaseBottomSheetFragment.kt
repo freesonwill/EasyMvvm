@@ -8,7 +8,6 @@ import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
-import android.graphics.Rect
 import android.os.Bundle
 import android.util.AttributeSet
 import android.view.LayoutInflater
@@ -649,13 +648,13 @@ open class ScrollBottomSheetBehavior<V : View>(context: Context, attrs: Attribut
             MotionEvent.ACTION_MOVE -> {
                 val dy = event.rawY - lastY
                 if (dy < 0) { // 往上滑
-                    val rect = Rect()
-                    val isVisible = child.getGlobalVisibleRect(rect)
 
-                    // 條件：完全不可見 或 只剩一小部分
-                    val isOutOfScreen = !isVisible || rect.height() < child.height
-
-                    if (isOutOfScreen) {
+                    val heightPixels = child.context.resources.displayMetrics.heightPixels
+                    val height = child.height
+                    val top = heightPixels - height
+                    val isOutView = event.rawY < top
+                    
+                    if (isOutView) {
                         return true // 只在「滑出畫面」時攔截
                     }
                 }
