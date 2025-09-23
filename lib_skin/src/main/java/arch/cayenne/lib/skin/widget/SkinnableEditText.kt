@@ -18,7 +18,7 @@ import arch.cayenne.lib.skin.widget.helper.SkinnableViewFlowHelper
 import kotlinx.coroutines.launch
 import org.koin.java.KoinJavaComponent.inject
 
-open class SkinnableEditText : AppCompatEditText {
+open class SkinnableEditText : AppCompatEditText, ISkinnable {
     private lateinit var biz:ISkinnableTextBiz
 
     constructor(context: Context) : super(context) {
@@ -108,6 +108,10 @@ open class SkinnableEditText : AppCompatEditText {
     override fun onDetachedFromWindow() {
         biz.onDetachedFromWindow()
         super.onDetachedFromWindow()
+    }
+
+    override fun forceUpdateSkin() {
+        biz.forceUpdateSkin()
     }
 
 }

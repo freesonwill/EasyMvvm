@@ -8,7 +8,6 @@ import android.os.Bundle
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.Lifecycle
@@ -26,13 +25,11 @@ import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.utils.CustomTabIndicatorUtils
 import arch.cayenne.lib.common.data.constants.SkinType
-import arch.cayenne.lib.common.utils.ImmersionBarUtils.immersionBarColorExt
 import arch.cayenne.lib.common.utils.ImmersionBarUtils.immersionBarSkinTypeExt
 import arch.cayenne.lib.common.utils.ext.DimensionExt.px2sp
 import arch.cayenne.lib.common.utils.ext.setDrawerInterpolator
 import arch.cayenne.lib.common.utils.ext.NavResultExt.observeResult
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
-import arch.cayenne.lib.common.utils.ext.ResourceExt.getColor
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
 import arch.cayenne.lib.common.utils.ext.TabLayoutExt
@@ -54,9 +51,9 @@ import com.walisport.module.live.ui.viewmodel.LiveMainViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.filter
 import kotlin.reflect.KClass
-import arch.cayenne.lib.common.utils.ext.animateIndicatorToPosition
 import arch.cayenne.lib.common.utils.ext.setupViewPagerScroll
 import arch.cayenne.lib.common.utils.ext.startFadeAnim
+import arch.cayenne.module.bet.ui.fragment.BetSheetFragment
 
 /**
  * 直播详情页
@@ -95,6 +92,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND()
         StatusBarConfig.statusBarDarkFont = false
         setStatusBar(StatusBarConfig,mBinding.root)
+        updateBetSheetSkin()
         super.onStart()
     }
     override fun onAttach(context: Context) {
@@ -108,6 +106,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND()
         StatusBarConfig.statusBarDarkFont = immersionBarSkinTypeExt(mViewModel.getSkinType())
         setStatusBar(StatusBarConfig,mBinding.root)
+        updateBetSheetSkin()
     }
 
     //init DrawerLayout Content
@@ -437,5 +436,12 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
             return true
         }
         return super.onBackPressed()
+    }
+
+    private fun updateBetSheetSkin() {
+        val type = mViewModel.getSkinType()
+        if (type != fixedSkin) {
+            BetSheetFragment.find(requireActivity())?.forceUpdateSkin()
+        }
     }
 }

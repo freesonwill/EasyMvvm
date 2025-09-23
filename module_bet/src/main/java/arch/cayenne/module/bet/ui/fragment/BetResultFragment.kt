@@ -2,10 +2,9 @@ package arch.cayenne.module.bet.ui.fragment
 
 import android.animation.ObjectAnimator
 import android.os.Bundle
-import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.forEach
 import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
@@ -23,13 +22,13 @@ import arch.cayenne.lib.common.utils.ext.SportStringExt.toOdds
 import arch.cayenne.lib.database.entity.BetDetailBean
 import arch.cayenne.lib.database.entity.BetResultStatusEnum
 import arch.cayenne.lib.database.entity.BetTypeEnum
+import arch.cayenne.lib.skin.widget.ISkinnable
 import arch.cayenne.module.bet.R
 import arch.cayenne.module.bet.databinding.FragmentBetResultBinding
 import arch.cayenne.module.bet.ui.adapter.BetSelectionAdapter
 import arch.cayenne.module.bet.ui.adapter.ResultMultiBetAdapter
 import arch.cayenne.module.bet.util.BetSheetDecoration
 import arch.cayenne.module.bet.viewmodel.BetResultViewModel
-import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
 
@@ -59,6 +58,12 @@ class BetResultFragment : BasePreLoadBottomSheetFragment<BetResultViewModel, Fra
                     f.customShow(withOtherSheetHide)
                 }
             }
+        }
+
+        fun find(activity: FragmentActivity): BetResultFragment? {
+            val manager = activity.supportFragmentManager
+            val f = manager.findFragmentByTag(TAG)
+            return f as? BetResultFragment
         }
     }
     override val vbClass: KClass<FragmentBetResultBinding> = FragmentBetResultBinding::class
@@ -264,5 +269,21 @@ class BetResultFragment : BasePreLoadBottomSheetFragment<BetResultViewModel, Fra
         mViewModel.onBetModeListener.removeObservers(viewLifecycleOwner)
         mViewModel.onBetSheetListener.removeObservers(viewLifecycleOwner)
         mViewModel.onDetailListener.removeObservers(viewLifecycleOwner)
+    }
+
+    fun forceUpdateSkin() {
+        fun updateView(root: ViewGroup) {
+            if (root is ISkinnable) {
+                root.forceUpdateSkin()
+            }
+            root.forEach {
+                if (it is ViewGroup) {
+                    updateView(it)
+                } else if (it is ISkinnable) {
+                    it.forceUpdateSkin()
+                }
+            }
+        }
+        updateView(mBinding.root)
     }
 }

@@ -9,7 +9,7 @@ import androidx.annotation.DrawableRes
 import arch.cayenne.lib.skin.widget.biz.ISkinnableBiz
 import arch.cayenne.lib.skin.widget.biz.SkinnableBizBackgroundImpl
 
-open class SkinnableFrameLayout : FrameLayout {
+open class SkinnableFrameLayout : FrameLayout, ISkinnable {
     private lateinit var biz:ISkinnableBiz
 
     constructor(context: Context) : super(context) {
@@ -50,5 +50,9 @@ open class SkinnableFrameLayout : FrameLayout {
     override fun onDetachedFromWindow() {
         biz.onDetachedFromWindow()
         super.onDetachedFromWindow()
+    }
+
+    override fun forceUpdateSkin() {
+        biz.forceUpdateSkin()
     }
 }
