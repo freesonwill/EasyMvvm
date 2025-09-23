@@ -272,6 +272,9 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 else -> Unit
             }
         }
+        mViewModel.notifySubHomeRefresh.observeEvent(viewLifecycleOwner, this) {
+            mBinding.vpSub.setCurrentItem(0, false)
+        }
     }
     //設置是否允許水平滑動ViewPager，預設是可以滑動
     private fun setIsUserInputEnabled(isUserInputEnabled: Boolean) {

@@ -308,6 +308,10 @@ class MatchListPagerFragment :
                 return@observeEvent
             refreshListByDate(date)
         }
+
+        homeViewModel.notifySubHomeRefresh.observeEvent(viewLifecycleOwner, this) {
+            mViewModel.reload()
+        }
     }
 
     private fun refreshListByDate(date: Long) {

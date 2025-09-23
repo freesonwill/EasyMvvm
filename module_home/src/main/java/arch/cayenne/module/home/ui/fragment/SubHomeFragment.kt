@@ -207,13 +207,8 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
             mBinding.llTournamentsDropdown.visibility = View.GONE
         }
 
-        homeViewModel.languageManager.languageFlow.collect{
-            //sportAdapter需要监听切换语言更新
-            sportsListAdapter.notifyDataSetChanged()
-        }
-
         homeViewModel.notifySubHomeRefresh.observeEvent(viewLifecycleOwner, this) {
-            mViewModel.getCurrentSportStatistical()
+            sportsListAdapter.notifyDataSetChanged()
             mViewModel.getCurrentTournament()
         }
 
@@ -657,6 +652,7 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
     }
 
     private fun setTournamentAndViewPagerLayout(tournaments: List<TournamentDataModel>) {
+
         with(mBinding.layoutContainer) {
             if (leaguePagerAdapter == null) {
                 leaguePagerAdapter = LeaguePagerAdapter(

@@ -101,7 +101,7 @@ class HomeViewModel : BaseViewModel() {
     private suspend fun resetAll() {
         repository.clearAllCache()
         withContext(Dispatchers.Main) {
-            setCurrentPlayType(PlayType.TODAY.id)
+//            setCurrentPlayType(PlayType.TODAY.id)
             _notifySubHomeRefresh.value = Event(Unit)
         }
     }
