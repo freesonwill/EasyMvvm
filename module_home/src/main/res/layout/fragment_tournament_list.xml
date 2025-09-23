@@ -32,7 +32,7 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:text="選聯賽" />
 
-    <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
+    <arch.cayenne.lib.skin.widget.SkinnableView
         android:id="@+id/ll_search_bar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_36"
@@ -41,29 +41,36 @@
         android:gravity="center_vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_tournament_section_title">
+        app:layout_constraintTop_toBottomOf="@+id/tv_tournament_section_title" />
 
-        <arch.cayenne.lib.skin.widget.SkinnableImageView
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:src="@drawable/search_icon" />
+    <arch.cayenne.lib.skin.widget.SkinnableImageView
+        android:id="@+id/iv_search_icon"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:src="@drawable/search_icon"
+        app:layout_constraintBottom_toBottomOf="@id/ll_search_bar"
+        app:layout_constraintEnd_toStartOf="@id/ce_search"
+        app:layout_constraintStart_toStartOf="@id/ll_search_bar"
+        app:layout_constraintTop_toTopOf="@id/ll_search_bar" />
 
-        <arch.cayenne.lib.common.ui.view.ClearableEditText
-            android:id="@+id/ce_search"
-            style="@style/CustomToolbarEditStyle"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:background="@null"
-            android:drawablePadding="@dimen/dp_10"
-            android:imeOptions="actionSearch"
-            android:singleLine="true"
-            android:textColor="@color/tournament_list_search_text"
-            android:textColorHint="@color/tournament_list_search_hint"
-            tools:ignore="MissingConstraints" />
-    </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
-
+    <arch.cayenne.lib.common.ui.view.ClearableEditText
+        android:id="@+id/ce_search"
+        style="@style/CustomToolbarEditStyle"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:background="@null"
+        android:drawablePadding="@dimen/dp_10"
+        android:imeOptions="actionSearch"
+        android:singleLine="true"
+        android:textColor="@color/tournament_list_search_text"
+        android:textColorHint="@color/tournament_list_search_hint"
+        app:layout_constraintBottom_toBottomOf="@id/ll_search_bar"
+        app:layout_constraintEnd_toEndOf="@id/ll_search_bar"
+        app:layout_constraintStart_toEndOf="@id/iv_search_icon"
+        app:layout_constraintTop_toTopOf="@id/ll_search_bar"
+        tools:ignore="MissingConstraints" />
 
     <arch.cayenne.lib.skin.widget.SkinnableImageView
         android:id="@+id/iv_home_league_collapse"

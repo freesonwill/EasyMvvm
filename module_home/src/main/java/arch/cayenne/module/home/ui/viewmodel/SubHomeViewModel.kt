@@ -78,6 +78,11 @@ class SubHomeViewModel: BaseViewModel() {
 
     private var _pageSelectedTimestamp: Long = 0L
 
+    // 用於記錄全部的比賽列表是否載入完成
+    var isAllTabLoaded: Boolean = false
+    // 暫存 SportDataModel 列表，用於實現延後繪製球種列表
+    var tempSportData: List<SportDataModel>? = null
+
     override fun initViewModel() {
         super.initViewModel()
         viewModelScope.launch {
@@ -372,7 +377,7 @@ class SubHomeViewModel: BaseViewModel() {
 
         val refreshInternal = currentPlayTypeId.getPlayTypeById().refreshInterval
         val res = _pageSelectedTimestamp != 0L && System.currentTimeMillis() - _pageSelectedTimestamp > refreshInternal
-        "KC__ currentPlayTypeId = ${currentPlayTypeId}  res = $res  pageSelectedTimestamp = ${_pageSelectedTimestamp}".logi()
+        "currentPlayTypeId = ${currentPlayTypeId}  res = $res  pageSelectedTimestamp = ${_pageSelectedTimestamp}".logi()
         _pageSelectedTimestamp = System.currentTimeMillis()
         return res
     }
