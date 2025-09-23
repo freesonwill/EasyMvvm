@@ -8,6 +8,7 @@ import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.data.constants.UserDataKey
 import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
+import arch.cayenne.lib.database.entity.LiveMatchBean
 import arch.cayenne.lib.websocket.chat.data.ChatLoginResponseData
 import arch.cayenne.lib.websocket.chat.data.ChatMsg
 import arch.cayenne.lib.websocket.chat.data.ChatRequestCodeEnum
@@ -38,6 +39,7 @@ class LiveChatViewModel(
     private val _historyLiveData = MutableLiveData<Boolean>()
     private val _newMsgFLow = MutableStateFlow<MsgNotify?>(null)
     private val _checkBetAmountLiveData = MutableLiveData<CheckBetResultEnum>()
+
 
     //    private val _softKeyBoardListener = MutableStateFlow(KeyBoardType.CHAT)
     private val _updateKeyboardUiStatus = MutableLiveData(KeyBoardType.CHAT)
@@ -83,7 +85,6 @@ class LiveChatViewModel(
 
     val toastLiveData: MutableLiveData<String> = MutableLiveData()
 
-
     //软件盘高度
     var softKeyBoardHeight: Int = 0
 
@@ -100,6 +101,11 @@ class LiveChatViewModel(
     var currentKeyBoardType: KeyBoardType = KeyBoardType.CHAT
 
 
+
+    fun setKeyBoardHeight(){
+        softKeyBoardHeight = userDataManager.getValue(UserDataKey.KEY_SOFT_KEYBOARD_HEIGHT,0)
+    }
+
     fun setArguments(matchId: Long?) {
         //直播间重新从联赛进入时，刷新matchId 重新进入聊天室
         if(this.matchId != null && this.matchId != matchId){
@@ -108,7 +114,6 @@ class LiveChatViewModel(
         }else{
             this.matchId = matchId
         }
-        softKeyBoardHeight = userDataManager.getValue(UserDataKey.KEY_SOFT_KEYBOARD_HEIGHT,0)
 //        softKeyBoardDuration = userDataManager.getValue(UserDataKey.KEY_SOFT_KEYBOARD_DURATION,0)
     }
 

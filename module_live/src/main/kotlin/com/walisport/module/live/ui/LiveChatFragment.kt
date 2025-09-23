@@ -47,8 +47,8 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
         mBinding.liveChatRecycler.itemAnimator = null
     }
 
-    override fun onPause() {
-        super.onPause()
+    override fun onFragmentAnimEnd(isEnter: Boolean) {
+        super.onFragmentAnimEnd(isEnter)
         showChat(6)
     }
 
@@ -56,6 +56,11 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
         super.onResume()
         //软件盘时获取的高度有误，onResume时获取固定值
 //        mBinding.liveChatKeyboard.translationY = -62.dp2px.toFloat()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        showChat(7)//移动到其他页面后关闭软件盘表情键盘
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -97,9 +102,14 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
     }
 
     private fun initFragment() {
-        val fragment = LiveSoftKeyboardFragment()
-        childFragmentManager.beginTransaction()
-            .replace(mBinding.liveChatKeyboard.id, fragment, LiveSoftKeyboardFragment.TAG).commit()
+        mViewModel.setKeyBoardHeight()
+        mBinding.liveChatKeyboard.post {
+            mViewModel.keyBoardHeight = mBinding.liveChatKeyboard.height
+            val fragment = LiveSoftKeyboardFragment()
+            childFragmentManager.beginTransaction()
+                .replace(mBinding.liveChatKeyboard.id, fragment, LiveSoftKeyboardFragment.TAG)
+                .commit()
+        }
     }
 
     override suspend fun createObserver() {
@@ -205,7 +215,7 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
      * 进入直播间不成功时修改
      * */
     fun updateChatUi(matchBean:LiveMatchBean? = null) {
-        if(matchBean?.liveInfo?.charRoom == true){
+        if(true || matchBean?.liveInfo?.charRoom == true){
             updateChatList()
             return
         }
@@ -232,13 +242,13 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
         mBinding.apply {
             if (mViewModel.msgLists.isEmpty()) {
                 liveChatRecycler.isVisible = false
-                liveChatKeyboard.isVisible = true
                 dynamicState.setState(DynamicStateLayout.States.DATA_EMPTY,R.string.live_chat_first_chat.getString())
             } else {
                 liveChatRecycler.isVisible = true
-                liveChatKeyboard.isVisible = true
                 dynamicState.isVisible = false
             }
+
+
         }
     }
 
