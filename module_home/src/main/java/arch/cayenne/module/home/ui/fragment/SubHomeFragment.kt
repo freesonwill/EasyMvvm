@@ -226,16 +226,16 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
     fun onFragmentSelected() {
         mViewModel.getCurrentSportStatistical()
         mViewModel.getCurrentTournament()
-        if (mViewModel.resetPageSelectedTimestamp()) {
-            if (mViewModel.currentPlayTypeId == PlayType.CHAMPION.id) {
-                val fragment = childFragmentManager.findFragmentByTag(PlayType.CHAMPION.name)
-                (fragment as? TournamentListFragment)?.reloadAllData()
-            } else {
-                val itemId = leaguePagerAdapter?.getItemId(mBinding.layoutContainer.vpGameList.currentItem)?: return
-                val fragment = childFragmentManager.findFragmentByTag("f$itemId") ?: return
-                (fragment as? MatchListPagerFragment)?.reloadAllData()
-            }
+    }
 
+    fun reloadCurrentMatchListPagerFragment() {
+        if (mViewModel.currentPlayTypeId == PlayType.CHAMPION.id) {
+            val fragment = childFragmentManager.findFragmentByTag(PlayType.CHAMPION.name)
+            (fragment as? TournamentListFragment)?.reloadAllData()
+        } else {
+            val itemId = leaguePagerAdapter?.getItemId(mBinding.layoutContainer.vpGameList.currentItem)?: return
+            val fragment = childFragmentManager.findFragmentByTag("f$itemId") ?: return
+            (fragment as? MatchListPagerFragment)?.reloadAllData()
         }
     }
 

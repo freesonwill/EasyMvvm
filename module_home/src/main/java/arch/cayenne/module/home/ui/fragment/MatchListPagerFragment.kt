@@ -310,7 +310,7 @@ class MatchListPagerFragment :
         }
 
         homeViewModel.notifySubHomeRefresh.observeEvent(viewLifecycleOwner, this) {
-            mViewModel.reload()
+            reloadAllData()
         }
     }
 

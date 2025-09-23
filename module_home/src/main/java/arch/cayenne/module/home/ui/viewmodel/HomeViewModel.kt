@@ -7,6 +7,7 @@ import androidx.room.Transaction
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.common.data.constants.SportEnum
 import arch.cayenne.lib.common.data.repo.BalanceRepository
 import arch.cayenne.lib.common.ui.viewmodel.Event
@@ -14,6 +15,7 @@ import arch.cayenne.lib.database.entity.InfoBean
 import arch.cayenne.lib.skin.LanguageManager
 import arch.cayenne.module.home.data.constants.HomeState
 import arch.cayenne.module.home.data.constants.PlayType
+import arch.cayenne.module.home.data.constants.getPlayTypeById
 import arch.cayenne.module.home.data.repo.HomeRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -60,6 +62,8 @@ class HomeViewModel : BaseViewModel() {
 
     private val _notifySubHomeRefresh = MutableLiveData<Event<Unit>>()
     val notifySubHomeRefresh: LiveData<Event<Unit>> = _notifySubHomeRefresh
+
+    val playTypeClickRecord = hashMapOf<Int, Long>()  //HashMap<PlayTypeId, RecordTime>
 
 
     init {
@@ -128,6 +132,18 @@ class HomeViewModel : BaseViewModel() {
                 }
             }
         }
+    }
+
+    /**
+     * @return 是否超過時間，需要重新整理賽事資料
+     * */
+    fun resetPageSelectedTimestamp(playTypeId: Int): Boolean {
+        val refreshInternal = playTypeId.getPlayTypeById().refreshInterval
+        val pageSelectedTimestamp = playTypeClickRecord[playTypeId] ?: 0L
+        val isNeedRefresh = pageSelectedTimestamp != 0L && System.currentTimeMillis() - pageSelectedTimestamp > refreshInternal
+        "currentPlayTypeId = ${playTypeId}  isNeedRefresh = $isNeedRefresh  pageSelectedTimestamp = ${pageSelectedTimestamp}".logi()
+        playTypeClickRecord[playTypeId] = System.currentTimeMillis()
+        return isNeedRefresh
     }
 
     private fun stopTimer() {
