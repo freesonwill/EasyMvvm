@@ -98,10 +98,9 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             }
             val tabResList = mutableListOf<Int>()
 
-            tlHome.setTabResArray(tabResList.toIntArray())
-
             PlayType.entries.forEachIndexed { index, playType ->
                 tabResList.add(playType.titleRes)
+                mViewModel.playTypeClickRecord[playType.id] = System.currentTimeMillis()
                 tlHome.addTab(
                     tab = tlHome.newTab().apply {
                         setText(playType.titleRes)
@@ -109,6 +108,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                     setSelected = index == 0,
                 )
             }
+            tlHome.setTabResArray(tabResList.toIntArray())
             vpSub.adapter = SubHomePagerAdapter(
                 fragmentManager = childFragmentManager,
                 lifecycle = viewLifecycleOwner.lifecycle,
@@ -133,7 +133,14 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 tlHome.addOnTabSelectedListener2(object : TabLayoutExt.OnTabSelectedListener2 {
                     override fun onTabSelected(tab: TabLayout.Tab, isTabClick:Boolean) {
                         mViewModel.setCurrentPlayType(PlayType.entries[tab.position].id)
-                        (childFragmentManager.findFragmentByTag("f${tab.position}") as? SubHomeFragment)?.onFragmentSelected()
+                        vpSub.adapter?.getItemId(tab.position)?.also { itemId ->
+                            (childFragmentManager.findFragmentByTag("f$itemId") as? SubHomeFragment)?.also { fragment ->
+                                fragment.onFragmentSelected()
+                                if (mViewModel.resetPageSelectedTimestamp(PlayType.entries[tab.position].id)) {
+                                    fragment.reloadCurrentMatchListPagerFragment()
+                                }
+                            }
+                        }
                         // 设置选中Tab为粗体
                         (tab.view.getChildAt(1) as? TextView)?.typeface = Typeface.DEFAULT_BOLD
 
@@ -148,7 +155,11 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                     }
 
                     override fun onTabUnselected(tab: TabLayout.Tab, isTabClick:Boolean) {
-                        (childFragmentManager.findFragmentByTag("f${tab.position}") as? SubHomeFragment)?.onFragmentUnSelected()
+                        vpSub.adapter?.getItemId(tab.position)?.also { itemId ->
+                            (childFragmentManager.findFragmentByTag("f$itemId") as? SubHomeFragment)?.also { fragment ->
+                                fragment.onFragmentUnSelected()
+                            }
+                        }
                         // 设置默认
                         (tab.view.getChildAt(1) as? TextView)?.typeface = Typeface.DEFAULT
                     }
@@ -271,6 +282,15 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 }
                 else -> Unit
             }
+        }
+        mViewModel.notifySubHomeRefresh.observeEvent(viewLifecycleOwner, this) {
+//            mBinding.vpSub.adapter?.getItemId(0)?.also { itemId ->
+//                (childFragmentManager.findFragmentByTag("f$itemId") as? SubHomeFragment)?.also { fragment ->
+//                    fragment.reloadCurrentMatchListPagerFragment()
+//                }
+//            }
+            mViewModel.resetPageSelectedTimestamp(PlayType.entries[0].id)
+            mBinding.vpSub.setCurrentItem(0, false)
         }
     }
     //設置是否允許水平滑動ViewPager，預設是可以滑動

@@ -18,7 +18,6 @@ import arch.cayenne.lib.database.entity.TournamentDataModel
 import arch.cayenne.lib.skin.SkinnableManager
 import arch.cayenne.module.home.data.constants.HomeState
 import arch.cayenne.module.home.data.constants.PlayType
-import arch.cayenne.module.home.data.constants.getPlayTypeById
 import arch.cayenne.module.home.data.constants.playTypeToShowType
 import arch.cayenne.module.home.data.repo.HomeRepository
 import arch.cayenne.module.home.ui.view.HomeCalendarFragment
@@ -75,8 +74,6 @@ class SubHomeViewModel: BaseViewModel() {
     private val skinManager: SkinnableManager by inject { parametersOf(viewModelScope) }
     private val _selectedSkinType = MutableLiveData<Event<String>>()
     val selectedSkinType: LiveData<Event<String>> = _selectedSkinType
-
-    private var _pageSelectedTimestamp: Long = 0L
 
     // 用於記錄全部的比賽列表是否載入完成
     var isAllTabLoaded: Boolean = false
@@ -204,8 +201,6 @@ class SubHomeViewModel: BaseViewModel() {
                     }
                 }
         }
-
-        _pageSelectedTimestamp = System.currentTimeMillis()
     }
 
     fun getCurrentSportStatistical() {
@@ -366,19 +361,5 @@ class SubHomeViewModel: BaseViewModel() {
 
     fun setCalendarState(state: HomeCalendarFragment.States) {
         _calendarStates.value = state
-    }
-
-    fun getPageSelectedTimestamp() = _pageSelectedTimestamp
-
-    /**
-     * @return 是否超過時間，需要重新整理賽事資料
-     * */
-    fun resetPageSelectedTimestamp(): Boolean {
-
-        val refreshInternal = currentPlayTypeId.getPlayTypeById().refreshInterval
-        val res = _pageSelectedTimestamp != 0L && System.currentTimeMillis() - _pageSelectedTimestamp > refreshInternal
-        "currentPlayTypeId = ${currentPlayTypeId}  res = $res  pageSelectedTimestamp = ${_pageSelectedTimestamp}".logi()
-        _pageSelectedTimestamp = System.currentTimeMillis()
-        return res
     }
 }
