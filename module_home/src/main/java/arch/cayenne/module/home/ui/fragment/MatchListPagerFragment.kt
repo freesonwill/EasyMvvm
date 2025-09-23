@@ -284,7 +284,6 @@ class MatchListPagerFragment :
     }
 
     private fun refreshListByDate(date: Long) {
-        mViewModel.changeState(HomeState.Match.Loading)
         if (date.toInt() == 0) {
             //切換後選回全部
             mViewModel.setSelectedDate(0)

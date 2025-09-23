@@ -377,7 +377,7 @@ class SubHomeViewModel: BaseViewModel() {
 
         val refreshInternal = currentPlayTypeId.getPlayTypeById().refreshInterval
         val res = _pageSelectedTimestamp != 0L && System.currentTimeMillis() - _pageSelectedTimestamp > refreshInternal
-        "KC__ currentPlayTypeId = ${currentPlayTypeId}  res = $res  pageSelectedTimestamp = ${_pageSelectedTimestamp}".logi()
+        "currentPlayTypeId = ${currentPlayTypeId}  res = $res  pageSelectedTimestamp = ${_pageSelectedTimestamp}".logi()
         _pageSelectedTimestamp = System.currentTimeMillis()
         return res
     }
