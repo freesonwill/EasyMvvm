@@ -107,6 +107,7 @@ message PlaceBetInfo {
     string order_id = 1;
     int32 serial_value = 2;     // 串关选项个数, 如：投注4场比赛的3串1，此字段为3，如果是全串关（4串11*11)，此字段为0
     int32 order_status = 3;     // 订单状态 1确认中，2拒单，3取消订单，4接单成功，5已结算
+    string odds = 4;        //赔率
 }
 
 //选项
@@ -208,8 +209,8 @@ message MsgCount {
 message EarlySettlePrice {
     string bet_id = 1; //订单ID
     string price = 2;  // 提前结算1元的报价，如返回0.92，就是提前结算1元可获得0.92元，无价格或者为0表示不能进行提前结算
-    int32 settle_total = 3; //单笔订单最大有效提前结算次数
     string settle_min = 4; //订单提前结算单次最小结算本金
+    bool early_support = 3; //是否支持提前结算
     int32 settle_status = 5; //投注确认中，2拒单，3取消订单，4接单成功，5已结算,101 预约提前结算中,102 提前结算进行中
 }
 
