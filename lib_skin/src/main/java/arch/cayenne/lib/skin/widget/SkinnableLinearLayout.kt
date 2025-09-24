@@ -8,7 +8,7 @@ import androidx.annotation.ColorRes
 import arch.cayenne.lib.skin.widget.biz.ISkinnableBiz
 import arch.cayenne.lib.skin.widget.biz.SkinnableBizBackgroundImpl
 
-open class SkinnableLinearLayout : LinearLayout {
+open class SkinnableLinearLayout : LinearLayout, ISkinnable {
     private lateinit var biz: ISkinnableBiz
 
     constructor(context: Context) : super(context) {
@@ -49,5 +49,9 @@ open class SkinnableLinearLayout : LinearLayout {
     override fun onDetachedFromWindow() {
         biz.onDetachedFromWindow()
         super.onDetachedFromWindow()
+    }
+
+    override fun forceUpdateSkin() {
+        biz.forceUpdateSkin()
     }
 }

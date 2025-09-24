@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
@@ -20,7 +21,6 @@ import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.scrollToBottomWithLoadMore
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
-import arch.cayenne.lib.common.utils.ext.startFadeAnim
 import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.database.entity.MatchWithMarkets
 import arch.cayenne.lib.database.entity.SelectionBeanLite
@@ -54,18 +54,12 @@ class MatchListPagerFragment :
     private val gameLayoutManager by lazy { LinearLayoutManager(context) }
     private val fabViewModel: FloatingButtonControlViewModel by activityViewModel()
 
-    // 用於淡入淡出動畫時監聽api是否已經回傳
-    private var animationObserver: Observer<DataState>? = null
-    private var dataObserver: RecyclerView.AdapterDataObserver? = null
-    private var userRequestedScrollToTop = false
-
     override fun initView(savedInstanceState: Bundle?) {
         mBinding.apply {
             refreshLayout.setEnableLoadMore(false)
             refreshLayout.setEnableScrollContentWhenLoaded(true)
             refreshLayout.setOnRefreshListener {
                 reloadAllData()
-                userRequestedScrollToTop = true
             }
 
             matchAdapter = MatchItemAdapter(object : OnMatchItemClickListener {
@@ -125,17 +119,6 @@ class MatchListPagerFragment :
                     }
                 }
             })
-            dataObserver = object : RecyclerView.AdapterDataObserver() {
-                override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
-                    if (positionStart == 0 && userRequestedScrollToTop) {
-                        mBinding.rvHomeGameList.post {
-                            mBinding.rvHomeGameList.scrollToPosition(0)
-                        }
-                        userRequestedScrollToTop = false // 重置標誌位
-                    }
-                }
-            }
-            matchAdapter.registerAdapterDataObserver(dataObserver!!)
             //賽事卡片之間的間閣
             val decoration = MatchCardItemDecoration(12.dp2px)
             mBinding.rvHomeGameList.apply {
@@ -211,48 +194,24 @@ class MatchListPagerFragment :
     }
 
     val matchListObserver = Observer<List<MatchWithMarkets>> { matchList ->
-        val preEmpty = matchAdapter.currentList.isEmpty()
         "MatchListChange livedata Observed~ ${matchList.map { it.match.matchId }}".logi(this::class.java.simpleName)
-
-        val action = {
-            matchAdapter.submitList(matchList)
-            mBinding.rvHomeGameList.doOnPreDraw {
-                if (mBinding.rvHomeGameList.scrollState == RecyclerView.SCROLL_STATE_IDLE) {
-                    subscribeVisibleMatch()
-                }
-                if (matchList.isNotEmpty()) {
-                    if (preEmpty) {
-                        setMatchListPosition()
-                    }
-                }
+        matchAdapter.submitList(matchList) {
+            if (mViewModel.requestScrollToTop) {
+                mBinding.rvHomeGameList.scrollToPosition(0)
+                mViewModel.resetRequestScrollToTop()
             }
-
-            // 把 clDynamics 的顯示控制移到這裡，避免淡入淡出動畫時閃爍
-            mBinding.clDynamics.visibility =
-                if(matchList.isEmpty()) View.VISIBLE else View.GONE
+            // 發送頁面載入完成通知
+            launch { mViewModel.setSubmitListCompleted() }
         }
-
-        // 執行淡入淡出動畫
-        with(mViewModel) {
-            if(getLastTournamentId() != getTournamentId() || getLastSelectedDate() != getSelectedDate()) {
-                setLastState(getTournamentId(), getSelectedDate())
-                mBinding.clMatchRoot.startFadeAnim { onComplete ->
-                    lifecycleScope.launch {
-                        action.invoke()
-
-                        animationObserver = Observer { dataState ->
-                            if(dataState !in listOf(null, DataState.None, DataState.Loading)) {
-                                animationObserver?.let { apiStateListener.removeObserver(it) }
-                                onComplete.invoke()
-                            }
-                        }
-                        animationObserver?.let { apiStateListener.observe(viewLifecycleOwner, it) }
-                    }
-                }
-            } else {
-                action.invoke()
+        mBinding.rvHomeGameList.doOnPreDraw {
+            if (mBinding.rvHomeGameList.scrollState == RecyclerView.SCROLL_STATE_IDLE) {
+                subscribeVisibleMatch()
             }
         }
+
+        // 把 clDynamics 的顯示控制移到這裡，避免淡入淡出動畫時閃爍
+        mBinding.clDynamics.visibility =
+            if (matchList.isEmpty()) View.VISIBLE else View.GONE
     }
 
     override suspend fun createObserver() {
@@ -318,10 +277,13 @@ class MatchListPagerFragment :
                 return@observeEvent
             refreshListByDate(date)
         }
+
+        homeViewModel.notifySubHomeRefresh.observeEvent(viewLifecycleOwner, this) {
+            reloadAllData()
+        }
     }
 
     private fun refreshListByDate(date: Long) {
-        mViewModel.changeState(HomeState.Match.Loading)
         if (date.toInt() == 0) {
             //切換後選回全部
             mViewModel.setSelectedDate(0)
@@ -352,14 +314,10 @@ class MatchListPagerFragment :
     }
 
     fun reloadAllData() {
-        mBinding.rvHomeGameList.scrollToPosition(0)
         mViewModel.reload()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        dataObserver?.apply { matchAdapter.unregisterAdapterDataObserver(this) }
-    }
+    fun getSubmitListCompletedFlow() = mViewModel.submitListCompletedFlow
 
     override fun onResume() {
         super.onResume()

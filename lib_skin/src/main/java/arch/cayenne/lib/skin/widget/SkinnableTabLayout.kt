@@ -4,12 +4,13 @@ import android.content.Context
 import android.util.AttributeSet
 import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.lifecycle.lifecycleScope
+import arch.cayenne.lib.skin.data.SkinMsgType
 import com.google.android.material.tabs.TabLayout
 import arch.cayenne.lib.skin.widget.helper.SkinnableBackGroundHelper
 import arch.cayenne.lib.skin.widget.helper.SkinnableTabLayoutHelper
 import arch.cayenne.lib.skin.widget.helper.SkinnableViewFlowHelper
 
-class SkinnableTabLayout : TabLayout {
+class SkinnableTabLayout : TabLayout, ISkinnable {
     private val backgroundTintHelper = SkinnableBackGroundHelper(this)
     private val tabLayoutHelper = SkinnableTabLayoutHelper(this)
     private val TAG = SkinnableTabLayout::class.java.simpleName
@@ -35,7 +36,7 @@ class SkinnableTabLayout : TabLayout {
             tabLayoutHelper.updateSkin()
         }
 
-        flowHelper.startLanguageFlow {
+        flowHelper.startLanguageFlow(findViewTreeLifecycleOwner()?.lifecycleScope) {
             tabLayoutHelper.updateLanguage(it)
         }
     }
@@ -101,6 +102,11 @@ class SkinnableTabLayout : TabLayout {
     //设置Tab时添加tabResArray，语言切换时更新tab
     fun setTabResArray(tabResArray: IntArray){
         tabLayoutHelper.updateTabResArray(tabResArray)
+    }
+
+    override fun forceUpdateSkin() {
+        backgroundTintHelper.updateSkin(SkinMsgType.SELF)
+        tabLayoutHelper.updateSkin(SkinMsgType.SELF)
     }
 
 }

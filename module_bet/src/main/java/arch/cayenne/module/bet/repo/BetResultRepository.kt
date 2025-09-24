@@ -29,7 +29,10 @@ class BetResultRepository(
     private val selectionFlow =
         MutableSharedFlow<List<BetSelectionBean>>(replay = 1, extraBufferCapacity = 1)
     private val detailFlow =
-        MutableSharedFlow<List<BetDetailBean>>(replay = 1, extraBufferCapacity = 1)
+            MutableSharedFlow<List<BetDetailBean>>(replay = 1, extraBufferCapacity = 1)
+
+    private val currencyFlow =
+        MutableSharedFlow<String>(replay = 1, extraBufferCapacity = 1)
 
     init {
         scope.launch {
@@ -54,12 +57,20 @@ class BetResultRepository(
                     }
                 }
             }
+            launch {
+                infoDao.observeCurrency().distinctUntilChanged().collect { currency ->
+                    currency?.let {
+                        currencyFlow.emit(it)
+                    }
+                }
+            }
         }
     }
 
     fun observeBetType(): Flow<BetTypeEnum> = betTypeFlow
     fun observeSelections(): Flow<List<BetSelectionBean>> = selectionFlow
     fun observeDetail(): Flow<List<BetDetailBean>> = detailFlow
+    fun observeCurrency(): Flow<String> = currencyFlow
 
     private fun sortDetail(data: List<BetDetailBean>): List<BetDetailBean> {
         val n = data.size
@@ -89,10 +100,6 @@ class BetResultRepository(
                 }
             }
         }
-    }
-
-    suspend fun getCurrency(): String = withContext(scope.coroutineContext) {
-        infoDao.getCurrency()
     }
 
     suspend fun continueBet(): BetTypeEnum? = withContext(scope.coroutineContext) {

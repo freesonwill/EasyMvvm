@@ -1,6 +1,7 @@
 package arch.cayenne.module.home.data.repo
 
 import androidx.room.Transaction
+import androidx.room.withTransaction
 import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.base.data.repository.BaseRepository
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
@@ -120,20 +121,19 @@ class HomeRepository(
     ): ApiResponseState.Succeeded<*> {
         val tournamentList = mutableListOf<TournamentBean>()
         val oldRef = tournamentDao.getSportTournamentCrossRef(playType, sportId)
+        val oldRefMap = oldRef?.associateBy { it.tournamentId } ?: emptyMap()
         val refs = mutableListOf<SportTournamentCrossRef>().apply {
             add(
-                oldRef?.firstOrNull { it.tournamentId == 0 } ?: run {
-                    SportTournamentCrossRef(
-                        tournamentId = 0,
-                        playType = playType,
-                        sportId = sportId,
-                        hot = false,
-                        weight = Int.MAX_VALUE,
-                        index = 0,
-                        coordinateY = 0,
-                        matchId = null,
-                    )
-                }
+                oldRefMap[0]?.copy() ?: SportTournamentCrossRef(
+                    tournamentId = 0,
+                    playType = playType,
+                    sportId = sportId,
+                    hot = false,
+                    weight = Int.MAX_VALUE,
+                    index = 0,
+                    coordinateY = oldRefMap[0]?.coordinateY ?: 0,
+                    matchId = oldRefMap[0]?.matchId,
+                )
             )
         }
         data.tournamentList.forEachIndexed { index, tournament ->
@@ -145,29 +145,30 @@ class HomeRepository(
                     icon = tournament.icon,
                 )
             )
+
             refs.add(
-                oldRef?.firstOrNull { it.tournamentId == tournament.id }?.copy(
-                hot = tournament.hot,
-                weight = tournament.weight,
-                index = index+1,
-                ) ?: run {
-                    SportTournamentCrossRef(
-                        tournamentId = tournament.id,
-                        playType = playType,
-                        sportId = sportId,
-                        hot = tournament.hot,
-                        weight = tournament.weight,
-                        index = index+1,
-                        coordinateY = 0,
-                        matchId = null,
-                    )
-                }
+                oldRefMap[tournament.id]?.copy(
+                    hot = tournament.hot,
+                    weight = tournament.weight,
+                    index = index + 1
+                ) ?: SportTournamentCrossRef(
+                    tournamentId = tournament.id,
+                    playType = playType,
+                    sportId = sportId,
+                    hot = tournament.hot,
+                    weight = tournament.weight,
+                    index = index + 1,
+                    coordinateY = 0,
+                    matchId = null,
+                )
             )
         }
         "联赛资料 開始insert ".logi(this::class.java.simpleName)
-        tournamentDao.insert(tournamentList)
-        tournamentDao.insertSportTournamentCrossRefs(refs)
-        tournamentDao.deleteMissing(sportId, playType, refs.map { it.tournamentId })
+        database.withTransaction {
+            tournamentDao.insert(tournamentList)
+            tournamentDao.insertSportTournamentCrossRefs(refs)
+            tournamentDao.deleteMissing(sportId, playType, refs.map { it.tournamentId })
+        }
         return ApiResponseState.Succeeded(tournamentList)
     }
 

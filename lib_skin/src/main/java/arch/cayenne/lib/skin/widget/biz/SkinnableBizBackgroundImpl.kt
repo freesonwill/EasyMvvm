@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import android.view.View
 import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.lifecycle.lifecycleScope
+import arch.cayenne.lib.skin.data.SkinMsgType
 import arch.cayenne.lib.skin.widget.helper.SkinnableBackGroundHelper
 import arch.cayenne.lib.skin.widget.helper.SkinnableViewFlowHelper
 
@@ -45,5 +46,9 @@ class SkinnableBizBackgroundImpl(private val view:View): ISkinnableBiz {
     override fun updateForegroundId(resId: Int) {
         val nResId = flowHelper.checkOriginId(view.context,resId)
         backgroundHelper.updateForegroundId(nResId)
+    }
+
+    override fun forceUpdateSkin() {
+        backgroundHelper.updateSkin(SkinMsgType.SELF)
     }
 }

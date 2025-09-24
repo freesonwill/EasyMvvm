@@ -10,6 +10,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
+import arch.cayenne.lib.common.utils.ext.touchBackPressed
 import arch.cayenne.lib.qyplayer.R
 import arch.cayenne.lib.qyplayer.gesture.GestureDialogManager
 import arch.cayenne.lib.qyplayer.gesture.GestureListener
@@ -72,13 +73,6 @@ class LivePlayerView @JvmOverloads constructor(
         playerStateListener = listener
     }
 
-    override fun onDetachedFromWindow() {
-        super.onDetachedFromWindow()
-        //移除window的时候需要将监听置空，否则因为LivePlayerView存在PlayerCache引发泄漏
-        onSingleTapListener = null
-        playerStateListener = null
-    }
-
     fun setDataSource(url: String) {
         mPlayingPath = url
         mRenderView.setDataSource(url)
@@ -127,11 +121,15 @@ class LivePlayerView @JvmOverloads constructor(
     }
 
     /**
-     * Activity 销毁，释放资源
+     * Fragment 销毁，释放资源
      */
     fun onDestroy() {
         "onDestroy".logd(TAG)
         mRenderView.release()
+        //避免listener引用导致LivePlayerView存在PlayerCache引发泄漏
+        onSingleTapListener = null
+        playerStateListener = null
+
     }
 
     /**
@@ -191,7 +189,7 @@ class LivePlayerView @JvmOverloads constructor(
 
     private fun initGestureView() {
         mGestureView = findViewById(R.id.gesture_view)
-
+        mGestureView.touchBackPressed()
         mGestureView.apply {
             setOnGestureListener(object : GestureListener {
                 override fun onHorizontalDistance(downX: Float, nowX: Float) {

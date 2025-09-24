@@ -18,7 +18,6 @@ import arch.cayenne.lib.database.entity.TournamentDataModel
 import arch.cayenne.lib.skin.SkinnableManager
 import arch.cayenne.module.home.data.constants.HomeState
 import arch.cayenne.module.home.data.constants.PlayType
-import arch.cayenne.module.home.data.constants.getPlayTypeById
 import arch.cayenne.module.home.data.constants.playTypeToShowType
 import arch.cayenne.module.home.data.repo.HomeRepository
 import arch.cayenne.module.home.ui.view.HomeCalendarFragment
@@ -76,14 +75,10 @@ class SubHomeViewModel: BaseViewModel() {
     private val _selectedSkinType = MutableLiveData<Event<String>>()
     val selectedSkinType: LiveData<Event<String>> = _selectedSkinType
 
-    // 以 playType 記錄更多按鈕狀態：true 表示 llMore 顯示，false 表示 ivMore 顯示
-    private val moreStateByPlayType: MutableMap<Int, Boolean> = mutableMapOf()
-
-    // 當前 playType 的狀態（供 UI 觀察）
-    private val _currentMoreState = MutableLiveData(false)
-    val currentMoreState: LiveData<Boolean> = _currentMoreState
-
-    private var _pageSelectedTimestamp: Long = 0L
+    // 用於記錄全部的比賽列表是否載入完成
+    var isAllTabLoaded: Boolean = false
+    // 暫存 SportDataModel 列表，用於實現延後繪製球種列表
+    var tempSportData: List<SportDataModel>? = null
 
     override fun initViewModel() {
         super.initViewModel()
@@ -206,8 +201,6 @@ class SubHomeViewModel: BaseViewModel() {
                     }
                 }
         }
-
-        _pageSelectedTimestamp = System.currentTimeMillis()
     }
 
     fun getCurrentSportStatistical() {
@@ -364,40 +357,9 @@ class SubHomeViewModel: BaseViewModel() {
 
     fun setPlayTypeId(id: Int) {
         currentPlayTypeId = id
-        _currentMoreState.value = moreStateByPlayType[currentPlayTypeId] ?: false
     }
 
     fun setCalendarState(state: HomeCalendarFragment.States) {
         _calendarStates.value = state
-    }
-
-    /**
-     * 設置目前 playType 的更多按鈕顯示狀態
-     * @param isLlMoreVisible true 表示 llMore 顯示；false 表示 ivMore 顯示
-     */
-    fun setMoreButtonStateForCurrent(isLlMoreVisible: Boolean) {
-        moreStateByPlayType[currentPlayTypeId] = isLlMoreVisible
-        _currentMoreState.value = isLlMoreVisible
-    }
-
-    /**
-     * 通知當前 playType 的狀態給觀察者
-     */
-    fun notifyCurrentMoreState() {
-        _currentMoreState.value = moreStateByPlayType[currentPlayTypeId] ?: false
-    }
-
-    fun getPageSelectedTimestamp() = _pageSelectedTimestamp
-
-    /**
-     * @return 是否超過時間，需要重新整理賽事資料
-     * */
-    fun resetPageSelectedTimestamp(): Boolean {
-
-        val refreshInternal = currentPlayTypeId.getPlayTypeById().refreshInterval
-        val res = _pageSelectedTimestamp != 0L && System.currentTimeMillis() - _pageSelectedTimestamp > refreshInternal
-        "KC__ currentPlayTypeId = ${currentPlayTypeId}  res = $res  pageSelectedTimestamp = ${_pageSelectedTimestamp}".logi()
-        _pageSelectedTimestamp = System.currentTimeMillis()
-        return res
     }
 }

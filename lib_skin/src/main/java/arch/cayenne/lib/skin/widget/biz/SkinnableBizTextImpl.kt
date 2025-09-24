@@ -7,6 +7,7 @@ import android.widget.TextView
 import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
+import arch.cayenne.lib.skin.data.SkinMsgType
 import arch.cayenne.lib.skin.widget.helper.SkinnableBackGroundHelper
 import arch.cayenne.lib.skin.widget.helper.SkinnableTextHelper
 import arch.cayenne.lib.skin.widget.helper.SkinnableViewFlowHelper
@@ -37,7 +38,7 @@ class SkinnableBizTextImpl(private val view: TextView) : ISkinnableTextBiz {
             backgroundHelper.updateSkin()
             mTextHelper.updateSkin()
         }
-        flowHelper.startLanguageFlow {
+        flowHelper.startLanguageFlow(view.findViewTreeLifecycleOwner()?.lifecycleScope) {
             mTextHelper.updateLanguage(it)
         }
     }
@@ -106,6 +107,11 @@ class SkinnableBizTextImpl(private val view: TextView) : ISkinnableTextBiz {
     override fun updateForegroundId(resId: Int) {
         val nResId = flowHelper.checkOriginId(view.context,resId)
         backgroundHelper.updateForegroundId(nResId)
+    }
+
+    override fun forceUpdateSkin() {
+        backgroundHelper.updateSkin(SkinMsgType.SELF)
+        mTextHelper.updateSkin(SkinMsgType.SELF)
     }
 
 }

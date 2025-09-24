@@ -647,8 +647,17 @@ open class ScrollBottomSheetBehavior<V : View>(context: Context, attrs: Attribut
             MotionEvent.ACTION_DOWN -> lastY = event.rawY
             MotionEvent.ACTION_MOVE -> {
                 val dy = event.rawY - lastY
-                // 如果是往上滑動則攔截
-                if (dy < 0) return true
+                if (dy < 0) { // 往上滑
+
+                    val heightPixels = child.context.resources.displayMetrics.heightPixels
+                    val height = child.height
+                    val top = heightPixels - height
+                    val isOutView = event.rawY < top
+                    
+                    if (isOutView) {
+                        return true // 只在「滑出畫面」時攔截
+                    }
+                }
             }
         }
         return super.onInterceptTouchEvent(parent, child, event)

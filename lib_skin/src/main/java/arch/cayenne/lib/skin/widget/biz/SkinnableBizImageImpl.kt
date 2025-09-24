@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import android.widget.ImageView
 import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.lifecycle.lifecycleScope
+import arch.cayenne.lib.skin.data.SkinMsgType
 import arch.cayenne.lib.skin.widget.helper.SkinnableBackGroundHelper
 import arch.cayenne.lib.skin.widget.helper.SkinnableImageHelper
 import arch.cayenne.lib.skin.widget.helper.SkinnableViewFlowHelper
@@ -60,6 +61,11 @@ class SkinnableBizImageImpl(private val view: ImageView) : ISkinnableImageBiz {
 
     override fun getRadius(): Float {
         return imageHelper.getRadius()
+    }
+
+    override fun forceUpdateSkin() {
+        backgroundHelper.updateSkin(SkinMsgType.SELF)
+        imageHelper.updateSkin(SkinMsgType.SELF)
     }
 
 }

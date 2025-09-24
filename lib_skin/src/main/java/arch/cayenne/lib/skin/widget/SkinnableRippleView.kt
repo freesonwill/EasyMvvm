@@ -21,11 +21,12 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import arch.cayenne.lib.skin.R
+import arch.cayenne.lib.skin.data.SkinMsgType
 import arch.cayenne.lib.skin.widget.helper.SkinnableBackGroundHelper
 import arch.cayenne.lib.skin.widget.helper.SkinnableRippleHelper
 import arch.cayenne.lib.skin.widget.helper.SkinnableViewFlowHelper
 
-class SkinnableRippleView : ConstraintLayout {
+class SkinnableRippleView : ConstraintLayout, ISkinnable {
 
     private lateinit var backGroundHelper: SkinnableBackGroundHelper
     private lateinit var rippleColorHelper: SkinnableRippleHelper
@@ -413,5 +414,10 @@ class SkinnableRippleView : ConstraintLayout {
         paint.setXfermode(PorterDuffXfermode(PorterDuff.Mode.SRC_IN))
         canvas.drawBitmap(originBitmap!!, rect, rect, paint)
         return output
+    }
+
+    override fun forceUpdateSkin() {
+        backGroundHelper.updateSkin(SkinMsgType.SELF)
+        rippleColorHelper.updateSkin(SkinMsgType.SELF)
     }
 }
