@@ -202,11 +202,10 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
             updateChatList()
         }
         val adapter = mBinding.liveChatRecycler.adapter?.let { it as LiveChatAdapter }
-        val allList = arrayListOf<ChatMsg>()
-        allList.addAll(mViewModel.msgLists)
-        adapter?.submitList(allList) {
+        adapter?.submitList(mViewModel.msgLists) {
             adapter.currentList.size.let {
                 val position = it - 1
+                "refreshChatList ${position}".logd("aaa")
                 if (position > 0) {
                     mBinding.liveChatRecycler.scrollToPosition(position)
                 }
