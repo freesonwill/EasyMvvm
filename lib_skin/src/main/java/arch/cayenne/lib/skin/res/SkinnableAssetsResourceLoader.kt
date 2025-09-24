@@ -83,7 +83,7 @@ class SkinnableAssetsResourceLoader(context: Context, private val _skinName: Str
         return 0
     }
 
-    override fun setSecondarySkin(skinName: String) {
+    override fun setSecondarySkin(skinName: String?) {
 
     }
 

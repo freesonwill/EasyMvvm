@@ -82,7 +82,7 @@ class SkinnableBuildInResourceLoader(private val _skinName: String) : SkinnableR
         return originId
     }
 
-    override fun setSecondarySkin(skinName: String) {
+    override fun setSecondarySkin(skinName: String?) {
         this._secondarySkinName = skinName
     }
 
