@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.MotionEvent
+import android.view.View
 import android.view.ViewTreeObserver
 import android.view.inputmethod.EditorInfo
 import android.widget.ImageView
@@ -93,7 +94,6 @@ class LiveSoftKeyboardFragment :
         initTab()
         initSoftRecycler()
         initInputListener()
-        addMainViewListen()
     }
 
     override suspend fun createObserver() {
@@ -125,6 +125,7 @@ class LiveSoftKeyboardFragment :
             }
             return@setOnTouchListener true
         }
+        mBinding.inputContent.setOnTouchListener { v, event -> return@setOnTouchListener true  }
     }
 
 
@@ -152,7 +153,6 @@ class LiveSoftKeyboardFragment :
             //监听聚焦事件，不合格的展示软件盘一律拦截
             setOnFocusChangeListener { v, hasFocus ->
 //            如果当前点击事件 softkeyboardlisterner 和 当前状态currentKeyboardListener 一致可以过滤掉聚焦事件
-//                "setOnFocusChangeListener ${chatViewModel.softKeyboardStatus}  isSoftKeyboardShow $isSoftKeyboardShow".logd("aaa")
                 if (chatViewModel.softKeyboardStatus && !isSoftKeyboardShow) { //要打开软件盘并且软件盘在收缩中
                     openSoftKeyBoard()
                 }
@@ -160,10 +160,8 @@ class LiveSoftKeyboardFragment :
             //监听点击事件
             setOnTouchListener { v, event ->
                 if (event.action == MotionEvent.ACTION_UP) {
-                    if (chatViewModel.clickKeyBoardType != KeyBoardType.SOFT_KEYBOARD) {
-                        if(!isSoftKeyboardShow){
+                    if (chatViewModel.clickKeyBoardType != KeyBoardType.SOFT_KEYBOARD && !isSoftKeyboardShow) {
                             keyboardChangeClick(KeyBoardType.SOFT_KEYBOARD)
-                        }
                     }
                     return@setOnTouchListener true
                 }
@@ -187,7 +185,7 @@ class LiveSoftKeyboardFragment :
     }
 
 
-    private fun addMainViewListen(){
+     fun addMainViewListen(){
         mBinding.main.viewTreeObserver
             .addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
                 override fun onGlobalLayout() {
@@ -222,17 +220,19 @@ class LiveSoftKeyboardFragment :
                 override fun onSoftKeyBoardHide() {
                     isSoftKeyboardShow = false
                     if (chatViewModel.clickKeyBoardType == KeyBoardType.SOFT_KEYBOARD) {
-                        keyboardChangeClick(KeyBoardType.CHAT)
+                        keyboardChangeClick(KeyBoardType.CHAT,11)
                     }
                 }
 
                 override fun onSoftKeyBoardShow(keyboardHeight: Int) {
+                    if(chatViewModel.isFirstOpen){
+                        chatViewModel.setSoftFirstOpen(false)
+                    }
                    whenSoftKeyBoardOpen(keyboardHeight)
                 }
 
                 override fun secondSoftKeyBoardShow() {
 
-                    chatViewModel.setSoftFirstOpen(false)
                 }
             })
         navigationBarHelper?.setDbKeyBoardHeight(chatViewModel.softKeyBoardHeight)
@@ -289,9 +289,8 @@ class LiveSoftKeyboardFragment :
         mainAnim?.addListener(onStart = { onStart.invoke() }, onEnd = {
             onEnd.invoke()
         })
-//        "panelAnimateTo isFirstOpen ${chatViewModel.isFirstOpen}".logd("aaa")
         if(chatViewModel.isFirstOpen){
-            mainAnim?.startDelay = 170L
+            mainAnim?.startDelay = 200L
         }
         mainAnim?.start()
 
@@ -308,11 +307,11 @@ class LiveSoftKeyboardFragment :
     }
 
     private fun keyboardChangeClick(keyBoardType: KeyBoardType, flag: Int = 0) {
-//        val flag1 = !chatViewModel.checkSoftKeyboardVisible()
-//        if (keyBoardType != KeyBoardType.CHAT && flag1) {
-//            chatViewModel.checkSoftKeyBoardBetAmount(keyBoardType, flag)
-//            return
-//        }
+        val flag1 = !chatViewModel.checkSoftKeyboardVisible()
+        if (keyBoardType != KeyBoardType.CHAT && flag1) {
+            chatViewModel.checkSoftKeyBoardBetAmount(keyBoardType, flag)
+            return
+        }
         chatViewModel.addSoftKeyBoardEvent(keyBoardType, flag)
         showKeyboardAnimation()
     }
@@ -552,7 +551,7 @@ class LiveSoftKeyboardFragment :
     private fun updateEmojiView(isVisible: Boolean) {
         mBinding.apply {
             liveChatIvKeyboard.isVisible = isVisible
-//            emojiContent.isInvisible = !isVisible
+            emojiContent.isInvisible = !isVisible
         }
     }
 

@@ -8,6 +8,7 @@ import androidx.room.TypeConverters
 import arch.cayenne.lib.database.dao.BetDao
 import arch.cayenne.lib.database.dao.BetSlipOrderDao
 import arch.cayenne.lib.database.dao.BetSlipReserveDao
+import arch.cayenne.lib.database.dao.ChatConfigDao
 import arch.cayenne.lib.database.dao.CollectListDao
 import arch.cayenne.lib.database.dao.HomeSelectedDao
 import arch.cayenne.lib.database.dao.InfoDao
@@ -24,6 +25,7 @@ import arch.cayenne.lib.database.entity.BetDetailBean
 import arch.cayenne.lib.database.entity.BetSelectionBean
 import arch.cayenne.lib.database.entity.BetSlipOrderBean
 import arch.cayenne.lib.database.entity.BetSlipReserveBean
+import arch.cayenne.lib.database.entity.ChatConfigBean
 import arch.cayenne.lib.database.entity.CollectListBean
 import arch.cayenne.lib.database.entity.HomeSelectedBean
 import arch.cayenne.lib.database.entity.InfoBean
@@ -74,6 +76,7 @@ import arch.cayenne.lib.database.entity.TournamentMatchRef
         BetSlipReserveBean::class,
         SelectionsEdit::class,
         CollectListBean::class,
+        ChatConfigBean::class
     ],
     version = 1,
     exportSchema = false
@@ -115,4 +118,5 @@ abstract class GameDatabase: RoomDatabase() {
     abstract fun betSlipReserveDao(): BetSlipReserveDao
     abstract fun homeSelectedDao(): HomeSelectedDao
     abstract fun collectListDao():CollectListDao
+    abstract fun chatConfigDao():ChatConfigDao
 }

@@ -8,6 +8,8 @@ import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.data.constants.UserDataKey
 import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
+import arch.cayenne.lib.database.dao.ChatConfigDao
+import arch.cayenne.lib.database.entity.ChatConfigBean
 import arch.cayenne.lib.websocket.chat.data.ChatLoginResponseData
 import arch.cayenne.lib.websocket.chat.data.ChatMsg
 import arch.cayenne.lib.websocket.chat.data.ChatRequestCodeEnum
@@ -19,10 +21,12 @@ import com.walisport.module.live.data.constants.CheckBetResultEnum
 import com.walisport.module.live.data.constants.KeyBoardType
 import com.walisport.module.live.data.repository.LiveChatRepository
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import org.koin.core.component.inject
 
 class LiveChatViewModel(
     private val chatRepo: LiveChatRepository,
@@ -37,10 +41,10 @@ class LiveChatViewModel(
     private val _historyLiveData = MutableLiveData<Boolean>()
     private val _newMsgFLow = MutableStateFlow<MsgNotify?>(null)
     private val _checkBetAmountLiveData = MutableLiveData<CheckBetResultEnum>()
-
-
-    //    private val _softKeyBoardListener = MutableStateFlow(KeyBoardType.CHAT)
     private val _updateKeyboardUiStatus = MutableLiveData(KeyBoardType.CHAT)
+
+    //聊天设置
+    private val chatConfigDao:ChatConfigDao by inject()
 
     //整个表情键盘页面的整体高度
     var keyBoardHeight: Int = 0
@@ -105,8 +109,13 @@ class LiveChatViewModel(
 
     fun setKeyBoardHeight(){
         softKeyBoardHeight = userDataManager.getValue(UserDataKey.KEY_SOFT_KEYBOARD_HEIGHT,0)
-        isFirstOpen = userDataManager.getValue(UserDataKey.KEY_SOFT_KEYBOARD_OPEN,true)
-//      "isFirstOpen $isFirstOpen".logd("aaa")
+        checkFirstOpen()
+    }
+
+    private fun checkFirstOpen(){
+        viewModelScope.launch(Dispatchers.IO) {
+            isFirstOpen = (chatConfigDao.getFirst() ?: ChatConfigBean(0, true).also { chatConfigDao.insertChatConfig(it) }).isFirstOpen
+        }
     }
 
     fun setArguments(matchId: Long?) {
@@ -117,7 +126,6 @@ class LiveChatViewModel(
         }else{
             this.matchId = matchId
         }
-//        softKeyBoardDuration = userDataManager.getValue(UserDataKey.KEY_SOFT_KEYBOARD_DURATION,0)
     }
 
     /**
@@ -347,9 +355,11 @@ class LiveChatViewModel(
     }
 
     fun setSoftFirstOpen(value:Boolean){
-//        "setFirstOpen ${value}".logd("aaa")
-        isFirstOpen = value
-        userDataManager.setKeyValue(UserDataKey.KEY_SOFT_KEYBOARD_OPEN,isFirstOpen)
+        viewModelScope.launch(Dispatchers.IO) {
+            delay(200) //防止动画还没有延迟，isFistOpen就false
+            isFirstOpen = value
+            chatConfigDao.updateConfigBean(ChatConfigBean(0,value))
+        }
     }
 
 
