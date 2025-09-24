@@ -4,7 +4,9 @@ import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import android.view.ViewGroup
 import android.widget.TextView
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import arch.cayenne.lib.base.data.constants.DataState
@@ -18,6 +20,7 @@ import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
 import arch.cayenne.lib.common.utils.DensityInfo
+import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavResultExt.observeResult
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
@@ -29,25 +32,24 @@ import arch.cayenne.lib.common.utils.ext.removeAllTips
 import arch.cayenne.lib.common.utils.ext.setDrawerInterpolator
 import arch.cayenne.lib.common.utils.ext.setupHorizontalScrollDegree
 import arch.cayenne.lib.common.utils.ext.startFadeAnim
-import arch.cayenne.lib.common.utils.helper.doSmartAnim
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.module.home.R
 import arch.cayenne.module.home.data.constants.HomeState
 import arch.cayenne.module.home.data.constants.PlayType
 import arch.cayenne.module.home.databinding.FragmentNewHomeBinding
 import arch.cayenne.module.home.ui.adapter.SubHomePagerAdapter
+import arch.cayenne.module.home.ui.view.HomeTabMediator
 import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
 import com.google.android.material.tabs.TabLayout
-import com.google.android.material.tabs.TabLayoutMediator
 import kotlin.reflect.KClass
 
 class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
     override val vbClass: KClass<FragmentNewHomeBinding> = FragmentNewHomeBinding::class
     override val vmClass: KClass<HomeViewModel> = HomeViewModel::class
     private var drawerContentFragment: DrawerContentFragment? = null
+    private var homeMediator: HomeTabMediator? = null
 
     //    private val tournamentListFragment  = TournamentListFragment.newInstance()
-    private var isExpanded = false
 
     override fun initView(savedInstanceState: Bundle?) {
         initPlayTypeLayout()
@@ -92,88 +94,146 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
     //init 一級導航欄位
     private fun initPlayTypeLayout() {
         with(mBinding) {
-            ivHomeSidebar.clickNoRepeat {
-                initDrawerContent()
-                drawerLayout.openDrawer(GravityCompat.START)
-            }
-            val tabResList = mutableListOf<Int>()
+            setupSidebar()
+            setupViewPager()
+            setupTabLayout()
+            setupTabMediator()
+        }
+    }
 
-            PlayType.entries.forEachIndexed { index, playType ->
-                tabResList.add(playType.titleRes)
-                mViewModel.playTypeClickRecord[playType.id] = System.currentTimeMillis()
-                tlHome.addTab(
-                    tab = tlHome.newTab().apply {
-                        setText(playType.titleRes)
-                    },
-                    setSelected = index == 0,
-                )
-            }
-            tlHome.setTabResArray(tabResList.toIntArray())
-            vpSub.adapter = SubHomePagerAdapter(
+    private fun setupSidebar() {
+        mBinding.ivHomeSidebar.clickNoRepeat {
+            initDrawerContent()
+            mBinding.drawerLayout.openDrawer(GravityCompat.START)
+        }
+    }
+
+    private fun setupViewPager() {
+        mBinding.vpSub.apply {
+            adapter = SubHomePagerAdapter(
                 fragmentManager = childFragmentManager,
                 lifecycle = viewLifecycleOwner.lifecycle,
                 playTypes = listOf(PlayType.TODAY, PlayType.EARLY, PlayType.CHAMPION)
             )
+            offscreenPageLimit = 2
+            setupHorizontalScrollDegree()
+        }
+    }
 
-            /*CustomTabLayoutMediator(
-                tabLayout = tlHome,
-                viewPager = vpSub,
-            ) { tab, position ->
+    private fun setupTabLayout() {
+        with(mBinding.tlHome) {
+            // 僅提供資源給 TabLayout，實際 tabs 由 Mediator 建立
+            val tabResList = PlayType.entries.map { it.titleRes }
+            setTabResArray(tabResList.toIntArray())
+            post {
+                setupTabsStyle()
+                updateTabTextStyle(selectedTabPosition.coerceAtLeast(0))
+            }
+        }
+    }
+
+    private fun setupTabMediator() {
+        homeMediator = HomeTabMediator(
+            tabLayout = mBinding.tlHome,
+            viewPager = mBinding.vpSub,
+            tabConfiguration = { tab, position ->
                 tab.setText(PlayType.entries[position].titleRes)
-            }.also { it.attach () }*/
+            },
+            onPreselectChanged = { pos ->
+                updateTabTextStyle(pos)
+            }
+        )
+        homeMediator?.attach()
+        // Mediator 建立完後，新增自定義監聽
+        mBinding.tlHome.addOnTabSelectedListener2(object : TabLayoutExt.OnTabSelectedListener2 {
+            override fun onTabSelected(tab: TabLayout.Tab, isTabClick: Boolean) {
+                val position = tab.position
+                val playType = PlayType.entries[position]
+                mViewModel.setCurrentPlayType(playType.id)
+                (childFragmentManager.findFragmentByTag("f$position") as? SubHomeFragment)?.onFragmentSelected()
 
-            TabLayoutMediator(tlHome, vpSub) { tab, position ->
-                tab.setText(PlayType.entries[position].titleRes)
-            }.apply {
-                attach()
+                // 樣式：設為粗體，並更新顏色
+                (tab.view.getChildAt(1) as? TextView)?.typeface = Typeface.DEFAULT_BOLD
+                updateTabTextStyle(position)
 
-                // 取消TabLayoutMediator預設的選中監聽，改用自定義的，動畫效果才不會被覆蓋
-                // 或是可以直接不用 TabLayoutMediator
-                tlHome.clearOnTabSelectedListeners()
-                tlHome.addOnTabSelectedListener2(object : TabLayoutExt.OnTabSelectedListener2 {
-                    override fun onTabSelected(tab: TabLayout.Tab, isTabClick:Boolean) {
-                        mViewModel.setCurrentPlayType(PlayType.entries[tab.position].id)
-                        vpSub.adapter?.getItemId(tab.position)?.also { itemId ->
-                            (childFragmentManager.findFragmentByTag("f$itemId") as? SubHomeFragment)?.also { fragment ->
-                                fragment.onFragmentSelected()
-                                if (mViewModel.resetPageSelectedTimestamp(PlayType.entries[tab.position].id)) {
-                                    fragment.reloadCurrentMatchListPagerFragment()
-                                }
-                            }
-                        }
-                        // 设置选中Tab为粗体
-                        (tab.view.getChildAt(1) as? TextView)?.typeface = Typeface.DEFAULT_BOLD
-
-                        if(isTabClick) {
-                            vpSub.startFadeAnim { onComplete ->
-                                vpSub.setCurrentItem(tab.position, false)
-                                onComplete.invoke()
-                            }
-                        } else {
-                            vpSub.doSmartAnim(tab.position)
-                        }
+                // 動畫：僅處理點擊情境，滑動交由 Mediator
+                if (isTabClick) {
+                    mBinding.vpSub.startFadeAnim { onComplete ->
+                        mBinding.vpSub.setCurrentItem(position, false)
+                        onComplete.invoke()
                     }
-
-                    override fun onTabUnselected(tab: TabLayout.Tab, isTabClick:Boolean) {
-                        vpSub.adapter?.getItemId(tab.position)?.also { itemId ->
-                            (childFragmentManager.findFragmentByTag("f$itemId") as? SubHomeFragment)?.also { fragment ->
-                                fragment.onFragmentUnSelected()
-                            }
-                        }
-                        // 设置默认
-                        (tab.view.getChildAt(1) as? TextView)?.typeface = Typeface.DEFAULT
-                    }
-                    override fun onTabReselected(tab: TabLayout.Tab, isTabClick:Boolean) = Unit
-                })
+                }
             }
 
-            vpSub.offscreenPageLimit = 2
-            vpSub.setupHorizontalScrollDegree()
+            override fun onTabUnselected(tab: TabLayout.Tab, isTabClick: Boolean) {
+                val position = tab.position
+                (childFragmentManager.findFragmentByTag("f$position") as? SubHomeFragment)?.onFragmentUnSelected()
+                // 設為預設字重並更新顏色
+                (tab.view.getChildAt(1) as? TextView)?.typeface = Typeface.DEFAULT
+                updateTabStyle(position, -1)
+            }
+
+            override fun onTabReselected(tab: TabLayout.Tab, isTabClick: Boolean) = Unit
+        })
+    }
+
+    private fun setupTabsStyle() {
+        with(mBinding.tlHome) {
+            val tabStrip = (getChildAt(0) as? ViewGroup) ?: return
+            val tabWidthPx = 56.dp2px
+            for (i in 0 until tabStrip.childCount) {
+                val tabView = tabStrip.getChildAt(i)
+                val lp = tabView.layoutParams as ViewGroup.MarginLayoutParams
+                lp.width = tabWidthPx
+                tabView.layoutParams = lp
+
+                val tv = (getTabAt(i)?.view?.getChildAt(1) as? TextView)
+                tv?.apply {
+                    textSize = 17f
+                    maxLines = 1
+                    isSingleLine = true
+                    ellipsize = android.text.TextUtils.TruncateAt.END
+                }
+            }
+            tabStrip.requestLayout()
+
+            setSelectedTabIndicator(
+                ResourcesCompat.getDrawable(resources, R.drawable.shape_home_tab_indicator, null)
+            )
+            setSelectedTabIndicatorColor(android.graphics.Color.TRANSPARENT)
+        }
+    }
+
+    // 更新所有 Tab 文字樣式（用於預選中和初始化）
+    private fun updateTabTextStyle(selectedPosition: Int) {
+        with(mBinding) {
+            for (i in 0 until tlHome.tabCount) {
+                updateTabStyle(i, selectedPosition)
+            }
+        }
+    }
+
+    // 統一的 Tab 樣式更新方法
+    private fun updateTabStyle(tabPosition: Int, selectedPosition: Int) {
+        val tv = mBinding.tlHome.getTabAt(tabPosition)?.view?.getChildAt(1) as? TextView ?: return
+
+        val isSelected = selectedPosition >= 0 && tabPosition == selectedPosition
+        tv.apply {
+            setTypeface(null, if (isSelected) Typeface.BOLD else Typeface.NORMAL)
+            setTextColor(
+                SkinnableResourceManager.getColor(
+                    requireContext(),
+                    if (isSelected) R.color.sport_item_text_select else R.color.home_secondary_text
+                )
+            )
         }
     }
 
     private fun setReceiveHorizontalScrollResult() {
-        childFragmentManager.setFragmentResultListener(getString(R.string.new_home_vp_sub_key), this) { requestKey, bundle ->
+        childFragmentManager.setFragmentResultListener(
+            getString(R.string.new_home_vp_sub_key),
+            this
+        ) { _, bundle ->
             val isEnabled = bundle.getBoolean(getString(R.string.key_enable_horizontal_scroll))
             setIsUserInputEnabled(isEnabled)
         }
@@ -317,6 +377,12 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
         if (metrics.scaledDensity != DensityInfo.scaledDensity && DensityInfo.scaledDensity > 0) {
             metrics.scaledDensity = DensityInfo.scaledDensity
         }
+    }
+
+    override fun onDestroyView() {
+        homeMediator?.detach()
+        homeMediator = null
+        super.onDestroyView()
     }
 
 }
