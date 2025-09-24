@@ -21,7 +21,6 @@ import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.scrollToBottomWithLoadMore
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
-import arch.cayenne.lib.common.utils.ext.startFadeAnim
 import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.database.entity.MatchWithMarkets
 import arch.cayenne.lib.database.entity.SelectionBeanLite
@@ -197,15 +196,12 @@ class MatchListPagerFragment :
     val matchListObserver = Observer<List<MatchWithMarkets>> { matchList ->
         "MatchListChange livedata Observed~ ${matchList.map { it.match.matchId }}".logi(this::class.java.simpleName)
         matchAdapter.submitList(matchList) {
-            // 發送頁面載入完成通知
-            launch { mViewModel.setSubmitListCompleted() }
-        }
-
-        matchAdapter.submitList(matchList) {
             if (mViewModel.requestScrollToTop) {
                 mBinding.rvHomeGameList.scrollToPosition(0)
                 mViewModel.resetRequestScrollToTop()
             }
+            // 發送頁面載入完成通知
+            launch { mViewModel.setSubmitListCompleted() }
         }
         mBinding.rvHomeGameList.doOnPreDraw {
             if (mBinding.rvHomeGameList.scrollState == RecyclerView.SCROLL_STATE_IDLE) {
@@ -280,6 +276,10 @@ class MatchListPagerFragment :
                 || subHomeViewModel.currentSportId != mViewModel.getSportId())
                 return@observeEvent
             refreshListByDate(date)
+        }
+
+        homeViewModel.notifySubHomeRefresh.observeEvent(viewLifecycleOwner, this) {
+            reloadAllData()
         }
     }
 

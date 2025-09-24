@@ -23,10 +23,6 @@ class KeyBoardInsetsCallBack(dispatchMode: Int, private val keyboardListener: Ke
 
     }
 
-     fun setNavigationBarStatus(navigationVisible:Boolean,navigationHeight:Int){
-        hasNavigationBar = navigationVisible
-        navigationBarHeight = navigationHeight
-    }
 
     override fun onStart(
         animation: WindowInsetsAnimationCompat,
@@ -46,15 +42,7 @@ class KeyBoardInsetsCallBack(dispatchMode: Int, private val keyboardListener: Ke
         insets: WindowInsetsCompat,
         runningAnimations: List<WindowInsetsAnimationCompat>
     ): WindowInsetsCompat {
-//        val typesInset = insets.getInsets(KEYBOARD_TYPE)
-//        // Then we get the persistent inset types which are applied as padding during layout
-//        val otherInset = insets.getInsets(SYSTEM_BAR_TYPE)
-//
-//        // Now that we subtract the two insets, to calculate the difference. We also coerce
-//        // the insets to be >= 0, to make sure we don't use negative insets.
-//        val subtract = Insets.subtract(typesInset, otherInset)
-//        val diff = Insets.max(subtract, Insets.NONE)
-//        keyboardListener.onAnimDoing(diff.left - diff.right, diff.top - diff.bottom)
+
         return insets
     }
 

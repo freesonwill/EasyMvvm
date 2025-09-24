@@ -9,7 +9,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import arch.cayenne.lib.skin.widget.biz.ISkinnableBiz
 import arch.cayenne.lib.skin.widget.biz.SkinnableBizBackgroundImpl
 
-open class SkinnableConstraintLayout : ConstraintLayout {
+open class SkinnableConstraintLayout : ConstraintLayout, ISkinnable {
     private lateinit var biz:ISkinnableBiz
 
     constructor(context: Context) : super(context) {
@@ -50,5 +50,9 @@ open class SkinnableConstraintLayout : ConstraintLayout {
     override fun onDetachedFromWindow() {
         biz.onDetachedFromWindow()
         super.onDetachedFromWindow()
+    }
+
+    override fun forceUpdateSkin() {
+        biz.forceUpdateSkin()
     }
 }

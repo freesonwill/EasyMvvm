@@ -12,19 +12,11 @@ import android.util.AttributeSet
 import androidx.annotation.AnyRes
 import androidx.annotation.ColorRes
 import androidx.appcompat.widget.AppCompatImageView
-import androidx.lifecycle.findViewTreeLifecycleOwner
-import androidx.lifecycle.lifecycleScope
-import arch.cayenne.lib.skin.SkinnableManager
 import arch.cayenne.lib.skin.widget.biz.ISkinnableImageBiz
 import arch.cayenne.lib.skin.widget.biz.SkinnableBizImageImpl
-import arch.cayenne.lib.skin.widget.helper.SkinnableBackGroundHelper
-import arch.cayenne.lib.skin.widget.helper.SkinnableImageHelper
-import arch.cayenne.lib.skin.widget.helper.SkinnableViewFlowHelper
-import kotlinx.coroutines.launch
-import org.koin.java.KoinJavaComponent.inject
 
 
-class SkinnableImageView : AppCompatImageView{
+class SkinnableImageView : AppCompatImageView, ISkinnable{
     private var mPaint: Paint? = null
     private var mRectF: RectF? = null
     private var mBitmapShader: BitmapShader? = null
@@ -98,6 +90,10 @@ class SkinnableImageView : AppCompatImageView{
     override fun onDetachedFromWindow() {
         biz.onDetachedFromWindow()
         super.onDetachedFromWindow()
+    }
+
+    override fun forceUpdateSkin() {
+        biz.forceUpdateSkin()
     }
 
 }
