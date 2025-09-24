@@ -15,4 +15,5 @@
     <color name="tx_success">#00D271</color>
     <color name="pay_method">#929298</color>
     <color name="pay_money">#FFFFFF</color>
+    <color name="pay_line">#2C2E3B</color>
 </resources>
