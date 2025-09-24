@@ -24,8 +24,7 @@ class TopUpMainRepository(
         dataList.add(RechargeRecordBean("1", 1, 1, 1758706619000L, "999.00"))
         dataList.add(RechargeRecordBean("2", 2, 2, 1758706619000L, "999.00"))
         dataList.add(RechargeRecordBean("3", 2, 3, 1758706619000L, "999.00"))
-        dataList.add(RechargeRecordBean("4", 2, 2, 1758706619000L, "999.00"))
-        dataList.add(RechargeRecordBean("5", 2, 1, 1758706619000L, "999.00"))
+        dataList.add(RechargeRecordBean("4", 2, 1, 1758706619000L, "999.00"))
         return@withContext ApiResponseState.Succeeded(dataList)
     }
 }

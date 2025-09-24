@@ -65,7 +65,7 @@ class WithdrawAdapter(private val listener: OnWithdrawItemClickListener? = null)
 
     private fun getStatusTextColor(status: Int): Int {
         return when (status) {
-            1 -> R.color.pay_success.getColor()
+            1 -> R.color.tx_success.getColor()
             2 -> R.color.pay_failure.getColor()
             else -> R.color.pay_un_confirm.getColor()
         }
