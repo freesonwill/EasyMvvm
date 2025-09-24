@@ -7,6 +7,7 @@
     <string name="recommend">推荐</string>
     <string name="select_method">选择支付方式</string>
     <string name="select_tx_method">选择提现方式</string>
+    <string name="tx_method">提现方式</string>
     <string name="current_balance">当前余额: ￥1,100.00</string>
     <string name="recharge_record">充值记录</string>
     <string name="withdrawal_record">提现记录</string>
@@ -18,6 +19,14 @@
     <string name="pay_bank">银行卡充值</string>
     <string name="pay_rmb">数字人民币</string>
     <string name="pay_yun">云闪付充值</string>
+
+    <string name="tx_union">银行卡提现</string>
+    <string name="tx_usdt">USDT提现</string>
+
+    <string name="tx_suc">提现成功</string>
+    <string name="tx_fad">提现失败</string>
+    <string name="tx_shen">提现审核中</string>
+
     <string name="fragment_topup_detail_title">充值详情</string>
     <string name="recharge_list_empty">暂无充值记录</string>
     <string name="recharge_info_empty">暂无充值信息</string>
@@ -30,5 +39,19 @@
     <string name="payment_status">交易状态</string>
     <string name="transaction_create_time">创建时间</string>
 
+    <string name="btn_cancel">取消</string>
+    <string name="btn_confirm">确定</string>
+    <string name="btn_reset">重置</string>
 
+    <string name="date_picker_year">%d年</string>
+    <string name="date_picker_month">%d月</string>
+    <string name="date_picker_day">%d日</string>
+    <string name="date_picker_date_before">%s及以前</string>
+    <string name="recharge_picker_title">选择充值类型</string>
+    <string name="date_picker_title">选择开始日期</string>
+    <string name="date_picker_all">全部</string>
+    <string name="date_picker_today">今天</string>
+    <string name="date_picker_yesterday">昨天</string>
+    <string name="date_picker_in_7_day">7天内</string>
+    <string name="date_picker_custom">自定义</string>
 </resources>

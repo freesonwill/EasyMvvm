@@ -65,7 +65,6 @@ class TopUpRecordsViewModel(private val repository: TopUpRecordsRepository) : Ba
 
     fun getListData() {
         viewModelScope.launch {
-            "获取充值记录 $page".logd(TAG)
             callApi({
                 repository.getListData(page)
             }, {

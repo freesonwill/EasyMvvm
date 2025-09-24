@@ -3,4 +3,7 @@
     <color name="wallet_balance_white_blue">#000000</color>
     <color name="wallet_menu_line_white_blue">#f3f3f4</color>
     <color name="wallet_menu_title_white_blue">#222222</color>
+    <color name="pay_method_white_blue">#666666</color>
+    <color name="pay_money_white_blue">#222222</color>
+    <color name="pay_line_white_blue">#F3F3F4</color>
 </resources>
