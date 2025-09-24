@@ -134,5 +134,6 @@ class BetSlipUnsettledFragment :
 
     override fun onResume() {
         super.onResume()
+        BetSlipEarlySettledFragment.create(this)
     }
 }

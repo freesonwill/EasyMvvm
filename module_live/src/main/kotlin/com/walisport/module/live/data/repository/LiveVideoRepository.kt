@@ -4,6 +4,7 @@ import arch.cayenne.lib.base.data.repository.BaseRepository
 import arch.cayenne.lib.database.GameDatabase
 import arch.cayenne.lib.database.entity.LiveMatchBean
 import arch.cayenne.lib.database.entity.LiveVideoBean
+import arch.cayenne.lib.database.entity.StreamInfoBean
 import arch.cayenne.lib.database.entity.VideoSourceBean
 import com.walisport.module.live.LiveRemoteManager
 import com.walisport.module.live.utils.NumberToChineseUtil
@@ -58,12 +59,18 @@ class LiveVideoRepository(
                 VideoSourceBean(
                     id = index,
                     name = matchLiveStream.name,
-                    urlSource = matchLiveStream.urlSource,
-                    streamType = matchLiveStream.streamType,
-                    rtmpUrl = matchLiveStream.rtmpUrl,
-                    m3U8Url = matchLiveStream.m3U8Url,
-                    flvUrl = matchLiveStream.flvUrl,
-                    language = matchLiveStream.language,
+
+                    liveStreams = matchLiveStream.liveStreamsList.map {
+                        StreamInfoBean(
+                            it.name,
+                            it.urlSource,
+                            it.streamType,
+                            it.rtmpUrl,
+                            it.m3U8Url,
+                            it.flvUrl,
+                            it.language
+                        )
+                    },
 
                     thumb = "",
                     //0522. 由于提供的视频源无标题和副标题名称，选择视频源这里，除了「动画直播」有标题和副标题，视频流统一根据服务端提供的视频流，标题统一命名视频源一，视频源二等，副标题统一命名纯享版
