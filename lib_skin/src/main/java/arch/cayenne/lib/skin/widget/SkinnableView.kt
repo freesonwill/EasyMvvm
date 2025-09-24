@@ -5,10 +5,11 @@ import android.util.AttributeSet
 import android.view.View
 import androidx.annotation.AnyRes
 import androidx.annotation.ColorRes
+import arch.cayenne.lib.skin.data.SkinMsgType
 import arch.cayenne.lib.skin.widget.biz.ISkinnableBiz
 import arch.cayenne.lib.skin.widget.biz.SkinnableBizBackgroundImpl
 
-open class SkinnableView : View, ISkinnable {
+open class SkinnableView : View, ISkinnableBiz {
 
     private lateinit var biz: ISkinnableBiz
 
@@ -30,22 +31,22 @@ open class SkinnableView : View, ISkinnable {
         biz.onAttachedToWindow()
     }
 
-    private fun initView(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) {
+    override fun initView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) {
         biz = SkinnableBizBackgroundImpl(this)
         biz.initView(context, attrs, defStyleAttr)
     }
 
     override fun setBackgroundResource(resId: Int) {
         super.setBackgroundResource(resId)
-        biz.updateBackground(resId)
+        biz.setBackgroundResource(resId)
     }
 
-    fun setTintColorRes(@ColorRes resId: Int) {
-        biz.updateBackgroundTintId(resId)
+    override fun setTintColorRes(@ColorRes resId: Int) {
+        biz.setTintColorRes(resId)
     }
 
-    fun setForegroundRes(@AnyRes resId: Int) {
-        biz.updateForegroundId(resId)
+    override fun setForegroundRes(@AnyRes resId: Int) {
+        biz.setForegroundRes(resId)
     }
 
     override fun onDetachedFromWindow() {
@@ -53,8 +54,8 @@ open class SkinnableView : View, ISkinnable {
         super.onDetachedFromWindow()
     }
 
-    override fun forceUpdateSkin() {
-        biz.forceUpdateSkin()
+    override fun updateSkin(msgType: SkinMsgType) {
+        biz.updateSkin(msgType)
     }
 
 }

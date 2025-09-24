@@ -36,15 +36,15 @@ open class SkinnableDrawerLayout @JvmOverloads constructor(
 
     override fun setBackgroundResource(resId: Int) {
         super.setBackgroundResource(resId)
-        biz.updateBackground(resId)
+        biz.setBackgroundResource(resId)
     }
 
     fun setTintColorRes(@ColorRes resId: Int){
-        biz.updateBackgroundTintId(resId)
+        biz.setTintColorRes(resId)
     }
 
     fun setForegroundRes(@AnyRes resId: Int){
-        biz.updateForegroundId(resId)
+        biz.setForegroundRes(resId)
     }
 
     override fun onDetachedFromWindow() {
