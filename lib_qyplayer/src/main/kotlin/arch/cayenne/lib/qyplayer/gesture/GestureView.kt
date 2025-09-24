@@ -3,6 +3,7 @@ package arch.cayenne.lib.qyplayer.gesture
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
+import arch.cayenne.lib.common.utils.ext.requireActivity
 
 /**
  * 手势滑动的view。用于UI中处理手势的滑动事件，从而去实现手势改变亮度，音量，seek等操作。
@@ -44,6 +45,9 @@ class GestureView @JvmOverloads constructor(
                     mOutGestureListener?.onRightVerticalDistance(downY, nowY)
                 }
 
+                override fun onBack() {
+                    requireActivity().onBackPressedDispatcher.onBackPressed()
+                }
                 override fun onGestureEnd() {
                     // 其他手势如果锁住了就不回调
                     if (mIsFullScreenLocked) {
@@ -141,4 +145,8 @@ interface GestureListener {
      * 长按事件
      */
     fun onLongPress()
+    /**
+     *
+     */
+    fun onBack()
 }

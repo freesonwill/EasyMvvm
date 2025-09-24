@@ -20,7 +20,7 @@ open class OnSwipeTouchListener : View.OnTouchListener {
                     startY = event.y
                     startTime = event.eventTime
                 }
-                return true
+                return false
             }
 
             MotionEvent.ACTION_UP -> {
