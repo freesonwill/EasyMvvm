@@ -6,11 +6,14 @@ import android.os.Bundle
 import android.view.ContextThemeWrapper
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
+import androidx.core.view.forEach
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
 import arch.cayenne.lib.base.ui.fragment.BasePreLoadBottomSheetFragment
 import arch.cayenne.lib.common.ui.view.BlockSlideConstrainLayout
 import arch.cayenne.lib.database.entity.BetTypeEnum
+import arch.cayenne.lib.skin.widget.ISkinnable
 import arch.cayenne.module.bet.R
 import arch.cayenne.module.bet.data.Config.KEY_RESULT
 import arch.cayenne.module.bet.data.Config.VALUE_DISMISS
@@ -58,6 +61,12 @@ class BetSheetFragment private constructor() :
                 f.setShowListener(listener)
                 f.customShow()
             }
+        }
+
+        fun find(activity: FragmentActivity): BetSheetFragment? {
+            val manager = activity.supportFragmentManager
+            val f = manager.findFragmentByTag(TAG)
+            return f as? BetSheetFragment
         }
     }
 
@@ -211,6 +220,23 @@ class BetSheetFragment private constructor() :
                 }
             }
         }
+    }
+
+    fun forceUpdateSkin() {
+        fun updateView(root: ViewGroup) {
+            if (root is ISkinnable) {
+                root.forceUpdateSkin()
+            }
+            root.forEach {
+                if (it is ViewGroup) {
+                    updateView(it)
+                } else if (it is ISkinnable) {
+                    it.forceUpdateSkin()
+                }
+            }
+        }
+        updateView(mBinding.root)
+        BetResultFragment.find(requireActivity())?.forceUpdateSkin()
     }
 
     interface ShowListener {

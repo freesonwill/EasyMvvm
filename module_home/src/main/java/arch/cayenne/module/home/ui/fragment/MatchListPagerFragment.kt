@@ -21,7 +21,6 @@ import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.scrollToBottomWithLoadMore
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
-import arch.cayenne.lib.common.utils.ext.startFadeAnim
 import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.database.entity.MatchWithMarkets
 import arch.cayenne.lib.database.entity.SelectionBeanLite
@@ -54,9 +53,6 @@ class MatchListPagerFragment :
     private lateinit var matchAdapter: MatchItemAdapter
     private val gameLayoutManager by lazy { LinearLayoutManager(context) }
     private val fabViewModel: FloatingButtonControlViewModel by activityViewModel()
-
-    // 用於淡入淡出動畫時監聽api是否已經回傳
-    private var animationObserver: Observer<DataState>? = null
 
     override fun initView(savedInstanceState: Bundle?) {
         mBinding.apply {
@@ -200,49 +196,22 @@ class MatchListPagerFragment :
     val matchListObserver = Observer<List<MatchWithMarkets>> { matchList ->
         "MatchListChange livedata Observed~ ${matchList.map { it.match.matchId }}".logi(this::class.java.simpleName)
         matchAdapter.submitList(matchList) {
+            if (mViewModel.requestScrollToTop) {
+                mBinding.rvHomeGameList.scrollToPosition(0)
+                mViewModel.resetRequestScrollToTop()
+            }
             // 發送頁面載入完成通知
             launch { mViewModel.setSubmitListCompleted() }
         }
-
-        val action = {
-            matchAdapter.submitList(matchList) {
-                if (mViewModel.requestScrollToTop) {
-                    mBinding.rvHomeGameList.scrollToPosition(0)
-                    mViewModel.resetRequestScrollToTop()
-                }
-            }
-            mBinding.rvHomeGameList.doOnPreDraw {
-                if (mBinding.rvHomeGameList.scrollState == RecyclerView.SCROLL_STATE_IDLE) {
-                    subscribeVisibleMatch()
-                }
-            }
-
-            // 把 clDynamics 的顯示控制移到這裡，避免淡入淡出動畫時閃爍
-            mBinding.clDynamics.visibility =
-                if(matchList.isEmpty()) View.VISIBLE else View.GONE
-        }
-
-        // 執行淡入淡出動畫
-        with(mViewModel) {
-            if(getLastTournamentId() != getTournamentId() || getLastSelectedDate() != getSelectedDate()) {
-                setLastState(getTournamentId(), getSelectedDate())
-                mBinding.clMatchRoot.startFadeAnim { onComplete ->
-                    lifecycleScope.launch {
-                        action.invoke()
-
-                        animationObserver = Observer { dataState ->
-                            if(dataState !in listOf(null, DataState.None, DataState.Loading)) {
-                                animationObserver?.let { apiStateListener.removeObserver(it) }
-                                onComplete.invoke()
-                            }
-                        }
-                        animationObserver?.let { apiStateListener.observe(viewLifecycleOwner, it) }
-                    }
-                }
-            } else {
-                action.invoke()
+        mBinding.rvHomeGameList.doOnPreDraw {
+            if (mBinding.rvHomeGameList.scrollState == RecyclerView.SCROLL_STATE_IDLE) {
+                subscribeVisibleMatch()
             }
         }
+
+        // 把 clDynamics 的顯示控制移到這裡，避免淡入淡出動畫時閃爍
+        mBinding.clDynamics.visibility =
+            if (matchList.isEmpty()) View.VISIBLE else View.GONE
     }
 
     override suspend fun createObserver() {
@@ -308,10 +277,13 @@ class MatchListPagerFragment :
                 return@observeEvent
             refreshListByDate(date)
         }
+
+        homeViewModel.notifySubHomeRefresh.observeEvent(viewLifecycleOwner, this) {
+            reloadAllData()
+        }
     }
 
     private fun refreshListByDate(date: Long) {
-        mViewModel.changeState(HomeState.Match.Loading)
         if (date.toInt() == 0) {
             //切換後選回全部
             mViewModel.setSelectedDate(0)

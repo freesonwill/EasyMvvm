@@ -17,7 +17,7 @@ import arch.cayenne.lib.skin.widget.helper.SkinnableViewFlowHelper
 import java.util.Locale
 
 
-class SkinnableTextView : AppCompatTextView {
+class SkinnableTextView : AppCompatTextView, ISkinnable {
     private lateinit var biz:ISkinnableTextBiz
 
     constructor(context: Context) : super(context) {
@@ -109,5 +109,9 @@ class SkinnableTextView : AppCompatTextView {
     override fun onDetachedFromWindow() {
         biz.onDetachedFromWindow()
         super.onDetachedFromWindow()
+    }
+
+    override fun forceUpdateSkin() {
+        biz.forceUpdateSkin()
     }
 }

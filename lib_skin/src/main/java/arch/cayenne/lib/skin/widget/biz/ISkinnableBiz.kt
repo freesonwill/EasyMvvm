@@ -5,12 +5,13 @@ import android.util.AttributeSet
 import androidx.annotation.AnyRes
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
+import arch.cayenne.lib.skin.widget.ISkinnable
 
 /**
  * @date: 2025/7/30 15:55
  * @description:换肤业务接口
  */
-interface ISkinnableBiz {
+interface ISkinnableBiz: ISkinnable {
     fun initView(context: Context, attrs: AttributeSet?, defStyleAttr: Int)
     fun onAttachedToWindow()
     fun onDetachedFromWindow()

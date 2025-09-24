@@ -103,4 +103,6 @@ class MatchListRepository(
         //觀察後端的500-1002（获取比赛列表）回傳
         return matchDao.observeMatchChange(playType, tournamentId)
     }
+
+    suspend fun queryMatchChange(playType: Int, tournamentId: Int): List<TournamentMatchRef> = matchDao.queryMatchChange(playType, tournamentId)
 }

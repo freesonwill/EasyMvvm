@@ -193,6 +193,7 @@ abstract class BaseMatchViewModel<REPO: BaseMatchRepository> : BaseViewModel() {
         page = 1
         setState(HomeState.Match.Refreshing)
         viewModelScope.launch(Dispatchers.IO) {
+            subscribeMatchSet.clear()
             getMatchListData(LoadMatchType.RELOAD)
         }
     }
@@ -207,5 +208,5 @@ abstract class BaseMatchViewModel<REPO: BaseMatchRepository> : BaseViewModel() {
 }
 
 enum class LoadMatchType {
-    NEXT_PAGE, RELOAD, RETRY, FIRST_LOAD,
+    NEXT_PAGE, RELOAD, RETRY, FIRST_LOAD, DATE_CHANGE
 }

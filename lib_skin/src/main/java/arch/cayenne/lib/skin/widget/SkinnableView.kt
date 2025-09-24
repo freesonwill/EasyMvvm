@@ -5,17 +5,10 @@ import android.util.AttributeSet
 import android.view.View
 import androidx.annotation.AnyRes
 import androidx.annotation.ColorRes
-import androidx.lifecycle.findViewTreeLifecycleOwner
-import androidx.lifecycle.lifecycleScope
-import arch.cayenne.lib.skin.SkinnableManager
 import arch.cayenne.lib.skin.widget.biz.ISkinnableBiz
 import arch.cayenne.lib.skin.widget.biz.SkinnableBizBackgroundImpl
-import arch.cayenne.lib.skin.widget.helper.SkinnableBackGroundHelper
-import arch.cayenne.lib.skin.widget.helper.SkinnableViewFlowHelper
-import kotlinx.coroutines.launch
-import org.koin.java.KoinJavaComponent.inject
 
-open class SkinnableView : View {
+open class SkinnableView : View, ISkinnable {
 
     private lateinit var biz: ISkinnableBiz
 
@@ -58,6 +51,10 @@ open class SkinnableView : View {
     override fun onDetachedFromWindow() {
         biz.onDetachedFromWindow()
         super.onDetachedFromWindow()
+    }
+
+    override fun forceUpdateSkin() {
+        biz.forceUpdateSkin()
     }
 
 }

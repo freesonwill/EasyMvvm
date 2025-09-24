@@ -56,6 +56,11 @@ abstract class MatchDao : BaseDao<MatchBean>() {
             "WHERE playType = :playType AND tournamentId = :tournamentId  ORDER BY `order`")
     abstract fun observeMatchChange(playType: Int, tournamentId: Int): Flow<List<TournamentMatchRef>>
 
+    @Query("SELECT *" +
+            "FROM TournamentMatchRef " +
+            "WHERE playType = :playType AND tournamentId = :tournamentId  ORDER BY `order`")
+    abstract suspend fun queryMatchChange(playType: Int, tournamentId: Int): List<TournamentMatchRef>
+
     @RewriteQueriesToDropUnusedColumns
     @Transaction
     @Query("SELECT * " +

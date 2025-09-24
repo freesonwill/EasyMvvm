@@ -50,6 +50,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
     private var homeMediator: HomeTabMediator? = null
 
     //    private val tournamentListFragment  = TournamentListFragment.newInstance()
+    private var isExpanded = false
 
     override fun initView(savedInstanceState: Bundle?) {
         initPlayTypeLayout()
@@ -344,6 +345,15 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 }
                 else -> Unit
             }
+        }
+        mViewModel.notifySubHomeRefresh.observeEvent(viewLifecycleOwner, this) {
+//            mBinding.vpSub.adapter?.getItemId(0)?.also { itemId ->
+//                (childFragmentManager.findFragmentByTag("f$itemId") as? SubHomeFragment)?.also { fragment ->
+//                    fragment.reloadCurrentMatchListPagerFragment()
+//                }
+//            }
+            mViewModel.resetPageSelectedTimestamp(PlayType.entries[0].id)
+            mBinding.vpSub.setCurrentItem(0, false)
         }
     }
     //設置是否允許水平滑動ViewPager，預設是可以滑動
