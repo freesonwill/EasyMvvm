@@ -315,7 +315,6 @@ class LiveChatViewModel(
      * 消失后会显示
      * */
     fun addSoftKeyBoardEvent(keyBoardType: KeyBoardType, flag: Int = 0) {
-        "addSoftKeyBoardEvent $keyBoardType  flag $flag".logd("aaa")
         if (keyBoardType == clickKeyBoardType) {
             return
         }
