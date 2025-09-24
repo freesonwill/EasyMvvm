@@ -9,7 +9,7 @@ data class WithdrawFilterBean(
     var isSelected: Boolean = false
 ) {
     companion object {
-        private const val ALL_TYPE_ID = -1
+        const val ALL_TYPE_ID = -1
         fun getAllTypeBean(): WithdrawFilterBean {
             return WithdrawFilterBean(
                 txId = ALL_TYPE_ID,

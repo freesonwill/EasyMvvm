@@ -2,6 +2,7 @@ package com.walisport.module.topup.ui.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.common.ui.viewmodel.Event
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
@@ -12,6 +13,7 @@ import com.walisport.module.topup.data.DateFilterEnum
 import com.walisport.module.topup.data.TopUpMainRepository
 import com.walisport.module.topup.data.WithdrawFilterBean
 import com.walisport.module.topup.data.WithdrawShowTypeEnum
+import kotlinx.coroutines.launch
 
 class WithdrawRecordsViewModel(private val repo: TopUpMainRepository) : BaseViewModel() {
 
@@ -49,6 +51,16 @@ class WithdrawRecordsViewModel(private val repo: TopUpMainRepository) : BaseView
             title = dateFilter.title,
             date = dateFilter
         )
+    }
+
+    fun setWithdrawFilter(ids: List<Int>) {
+        if (ids.size == 1 && ids.first() == WithdrawFilterBean.ALL_TYPE_ID) {
+            _onWithdrawFilter.value = listOf(WithdrawFilterBean.getAllTypeBean())
+        } else {
+            viewModelScope.launch {
+                _onWithdrawFilter.value = listOf(WithdrawFilterBean.getAllTypeBean())//repo.getSportByIds(ids)
+            }
+        }
     }
 
     fun setDateFilter(millisecond: Long) {

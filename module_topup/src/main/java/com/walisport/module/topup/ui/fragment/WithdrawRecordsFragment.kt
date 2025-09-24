@@ -38,9 +38,16 @@ class WithdrawRecordsFragment : BaseFragment<WithdrawRecordsViewModel, FragmentW
                 findNavController().navigateUp()
             })
         }
+        RechargePickerFragment.create(childFragmentManager, mBinding.fragmentSportFilter.id)
     }
 
     override fun initListener() {
+        mBinding.clDateFilter.setOnClickListener {
+            mViewModel.setShowType(WithdrawShowTypeEnum.DATE)
+        }
+        mBinding.clSportFilter.setOnClickListener {
+            mViewModel.setShowType(WithdrawShowTypeEnum.WITHDRAW)
+        }
     }
 
     override suspend fun createObserver() {
@@ -58,7 +65,7 @@ class WithdrawRecordsFragment : BaseFragment<WithdrawRecordsViewModel, FragmentW
         mViewModel.onShowTypeListener.observeEvent(viewLifecycleOwner, this) {
             when (it) {
                 WithdrawShowTypeEnum.DATE -> showDateFilter()
-                WithdrawShowTypeEnum.WITHDRAW -> showSportFilter()
+                WithdrawShowTypeEnum.WITHDRAW -> showWithdrawFilter()
                 WithdrawShowTypeEnum.NONE -> {
                     hideSportFilter()
                 }
@@ -107,8 +114,26 @@ class WithdrawRecordsFragment : BaseFragment<WithdrawRecordsViewModel, FragmentW
         }
     }
 
-    private fun showSportFilter() {
-
+    private fun showWithdrawFilter() {
+        mViewModel.onWithdrawFilter.value?.let {
+            setFilterText(mBinding.tvSportFilter, mBinding.ivSportFilter, true)
+            childFragmentManager.setFragmentResultListener(
+                Config.KEY_RESULT,
+                viewLifecycleOwner
+            ) { _, bundle ->
+                mViewModel.setShowType(WithdrawShowTypeEnum.NONE)
+                if (bundle.containsKey(Config.VALUE_SELECTED_SPORT_ID)) {
+                    bundle.getIntArray(Config.VALUE_SELECTED_SPORT_ID)?.toList()?.let { ids ->
+                        mViewModel.setWithdrawFilter(ids)
+                        //betSlipFilterViewModel.setIds(-1, ids)
+                    }
+                }
+                setFilterText(mBinding.tvSportFilter, mBinding.ivSportFilter, false)
+            }
+            RechargePickerFragment.create(childFragmentManager, mBinding.fragmentSportFilter.id).show(it.map { bean ->
+                bean.txId
+            })
+        }
     }
 
     private fun hideSportFilter() {
@@ -120,7 +145,6 @@ class WithdrawRecordsFragment : BaseFragment<WithdrawRecordsViewModel, FragmentW
         tv.isSelected = isSelected
         childFragmentManager.clearFragmentResult(Config.KEY_RESULT)
         val animatorSet = AnimatorSet()
-
         val startColor = tv.currentTextColor
         val endColor = if (isSelected) {
             SkinnableResourceManager.getColor(requireContext(), arch.cayenne.lib.common.R.color.green_for_white_bg)
@@ -135,11 +159,8 @@ class WithdrawRecordsFragment : BaseFragment<WithdrawRecordsViewModel, FragmentW
             endColor
         )
         val currentRotation = iv.rotation
-        // 假設 0 度是朝下，180 度是朝上
         val targetRotation = if (isSelected) 180f else 0f
-
         val rotationAnimator = ObjectAnimator.ofFloat(iv, "rotation", currentRotation, targetRotation)
-
         val arrowStartColor = if (isSelected) {
             SkinnableResourceManager.getColor(requireContext(), arch.cayenne.lib.common.R.color.secondary_text)
         } else {
@@ -150,8 +171,6 @@ class WithdrawRecordsFragment : BaseFragment<WithdrawRecordsViewModel, FragmentW
         } else {
             SkinnableResourceManager.getColor(requireContext(), arch.cayenne.lib.common.R.color.secondary_text)
         }
-
-        // --- c. ImageView 箭頭顏色漸變動畫 ---
         val arrowColorAnimator = ValueAnimator.ofObject(
             ArgbEvaluator(),
             arrowStartColor,
@@ -160,10 +179,9 @@ class WithdrawRecordsFragment : BaseFragment<WithdrawRecordsViewModel, FragmentW
         arrowColorAnimator.addUpdateListener { animator ->
             val animatedColor = animator.animatedValue as Int
             iv.drawable?.let { drawable ->
-                // 確保 drawable 是可變的，這樣 tint 不會影響其他地方使用此 drawable 的 View
                 val wrappedDrawable = DrawableCompat.wrap(drawable).mutate()
                 DrawableCompat.setTint(wrappedDrawable, animatedColor)
-                iv.setImageDrawable(wrappedDrawable) // 更新 ImageView
+                iv.setImageDrawable(wrappedDrawable)
             }
         }
         animatorSet.playTogether(textColorAnimator, rotationAnimator, arrowColorAnimator)
