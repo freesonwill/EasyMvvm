@@ -5,6 +5,7 @@ import android.content.Context
 import android.media.AudioManager
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.findViewTreeLifecycleOwner
@@ -31,6 +32,7 @@ class LivePlayerView @JvmOverloads constructor(
 ) : ConstraintLayout(context, attrs, defStyleAttr) {
     private lateinit var mRenderView: QYRenderView
     private lateinit var mGestureView: GestureView
+    private lateinit var mTouchBackView: View
 
     private var mOnPlayStateBtnClickListener: (() -> Unit)? = null
     private var mOnUpdateStatisticsListener: ((category: String, json: String) -> Unit)? = null
@@ -189,7 +191,8 @@ class LivePlayerView @JvmOverloads constructor(
 
     private fun initGestureView() {
         mGestureView = findViewById(R.id.gesture_view)
-        mGestureView.touchBackPressed()
+        mTouchBackView =  findViewById(R.id.touch_back_view)
+        mTouchBackView.touchBackPressed()
         mGestureView.apply {
             setOnGestureListener(object : GestureListener {
                 override fun onHorizontalDistance(downX: Float, nowX: Float) {
