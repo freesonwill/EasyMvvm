@@ -4,9 +4,7 @@ import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
-import android.view.ViewGroup
 import android.widget.TextView
-import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import arch.cayenne.lib.base.data.constants.DataState
@@ -20,7 +18,6 @@ import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
 import arch.cayenne.lib.common.utils.DensityInfo
-import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavResultExt.observeResult
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
@@ -32,15 +29,16 @@ import arch.cayenne.lib.common.utils.ext.removeAllTips
 import arch.cayenne.lib.common.utils.ext.setDrawerInterpolator
 import arch.cayenne.lib.common.utils.ext.setupHorizontalScrollDegree
 import arch.cayenne.lib.common.utils.ext.startFadeAnim
+import arch.cayenne.lib.common.utils.helper.doSmartAnim
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.module.home.R
 import arch.cayenne.module.home.data.constants.HomeState
 import arch.cayenne.module.home.data.constants.PlayType
 import arch.cayenne.module.home.databinding.FragmentNewHomeBinding
 import arch.cayenne.module.home.ui.adapter.SubHomePagerAdapter
-import arch.cayenne.module.home.ui.view.HomeTabMediator
 import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
 import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
 import kotlin.reflect.KClass
 
 class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
