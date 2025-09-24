@@ -224,7 +224,7 @@ class LiveVideoPlayerFragment :
                     } else {
                         mBinding.ivChooseSource.visibility = View.VISIBLE
                         mBinding.ivToFullscreen.visibility = View.VISIBLE
-                        val playUrl = it.source.firstOrNull { ele -> ele.isPlaying }?.playUrl()
+                        val playUrl = it.source.firstOrNull { ele -> ele.isPlaying }?.liveStreams!![0].playUrl()
                         playUrl?.takeIf { url -> url.isNotEmpty() }?.let { url ->
 //                        "url:${url}".logd("LiveVideoFragment")
 
