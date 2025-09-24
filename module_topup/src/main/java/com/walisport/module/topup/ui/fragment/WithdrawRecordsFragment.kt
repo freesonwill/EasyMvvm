@@ -66,9 +66,7 @@ class WithdrawRecordsFragment : BaseFragment<WithdrawRecordsViewModel, FragmentW
             when (it) {
                 WithdrawShowTypeEnum.DATE -> showDateFilter()
                 WithdrawShowTypeEnum.WITHDRAW -> showWithdrawFilter()
-                WithdrawShowTypeEnum.NONE -> {
-                    hideSportFilter()
-                }
+                WithdrawShowTypeEnum.NONE -> hideSportFilter()
             }
             mBinding.clSportFilter.visibility = if (it == WithdrawShowTypeEnum.WITHDRAW || it == WithdrawShowTypeEnum.NONE) View.VISIBLE else View.INVISIBLE
             mBinding.clDateFilter.visibility = if (it == WithdrawShowTypeEnum.DATE || it == WithdrawShowTypeEnum.NONE) View.VISIBLE else View.INVISIBLE
