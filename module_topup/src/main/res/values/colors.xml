@@ -12,4 +12,5 @@
     <color name="pay_success">#24EE8A</color>
     <color name="pay_failure">#FE3666</color>
     <color name="pay_un_confirm">#418EFF</color>
+    <color name="pay_method">#666666</color>
 </resources>

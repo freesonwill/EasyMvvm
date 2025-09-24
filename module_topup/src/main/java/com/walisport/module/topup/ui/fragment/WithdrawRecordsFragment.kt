@@ -11,6 +11,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
+import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
@@ -19,7 +21,9 @@ import com.walisport.module.topup.R
 import com.walisport.module.topup.data.Config
 import com.walisport.module.topup.data.DateFilterEnum
 import com.walisport.module.topup.data.WithdrawShowTypeEnum
+import com.walisport.module.topup.data.constants.LoadingState
 import com.walisport.module.topup.databinding.FragmentWithdrawRecordsBinding
+import com.walisport.module.topup.ui.adapter.WithdrawAdapter
 import com.walisport.module.topup.ui.viewmodel.WithdrawRecordsViewModel
 import kotlin.reflect.KClass
 
@@ -31,12 +35,26 @@ class WithdrawRecordsFragment : BaseFragment<WithdrawRecordsViewModel, FragmentW
 
     override val vbClass: KClass<FragmentWithdrawRecordsBinding> = FragmentWithdrawRecordsBinding::class
     override val vmClass: KClass<WithdrawRecordsViewModel> = WithdrawRecordsViewModel::class
+    private var withdrawAdapter = WithdrawAdapter()
 
     override fun initView(savedInstanceState: Bundle?) {
         with(mBinding) {
             titleBar.loadGeneralTitleBar(R.string.withdrawal_record.getString(), {
                 findNavController().navigateUp()
             })
+            refreshLayout.setEnableLoadMore(true)
+            refreshLayout.setEnableScrollContentWhenLoaded(true)
+            refreshLayout.setOnRefreshListener {
+                mViewModel.reload()
+            }
+            refreshLayout.setOnLoadMoreListener {
+                mViewModel.loadNextPage()
+            }
+        }
+        mBinding.withdrawList.apply {
+            itemAnimator = null
+            layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+            adapter = withdrawAdapter
         }
         RechargePickerFragment.create(childFragmentManager, mBinding.fragmentSportFilter.id)
     }
@@ -48,6 +66,11 @@ class WithdrawRecordsFragment : BaseFragment<WithdrawRecordsViewModel, FragmentW
         mBinding.clSportFilter.setOnClickListener {
             mViewModel.setShowType(WithdrawShowTypeEnum.WITHDRAW)
         }
+    }
+
+    override fun initData() {
+        super.initData()
+        mViewModel.reload()
     }
 
     override suspend fun createObserver() {
@@ -70,6 +93,45 @@ class WithdrawRecordsFragment : BaseFragment<WithdrawRecordsViewModel, FragmentW
             }
             mBinding.clSportFilter.visibility = if (it == WithdrawShowTypeEnum.WITHDRAW || it == WithdrawShowTypeEnum.NONE) View.VISIBLE else View.INVISIBLE
             mBinding.clDateFilter.visibility = if (it == WithdrawShowTypeEnum.DATE || it == WithdrawShowTypeEnum.NONE) View.VISIBLE else View.INVISIBLE
+        }
+        mViewModel.recordListChange.observe(viewLifecycleOwner) { list ->
+            withdrawAdapter.submitList(list)
+        }
+        mViewModel.apiStateListener.observe(viewLifecycleOwner) { state ->
+            with(mBinding) {
+                when (state) {
+                    DataState.NetworkUnavailable -> {
+                        refreshLayout.finishRefresh()
+                        refreshLayout.finishLoadMore()
+                        refreshLayout.setEnableLoadMore(false)
+                    }
+
+                    DataState.NoMoreData -> {
+                        refreshLayout.finishLoadMore()
+                        refreshLayout.setEnableLoadMore(false)
+                    }
+
+                    LoadingState.DataEmpty -> {
+                        refreshLayout.finishRefresh()
+                    }
+
+                    LoadingState.Loading -> {
+                        refreshLayout.setEnableLoadMore(true)
+                    }
+
+                    LoadingState.Refreshing -> {
+                        refreshLayout.setEnableLoadMore(true)
+                    }
+
+                    LoadingState.LoadingNext -> {
+                    }
+
+                    DataState.LoadSuccess -> {
+                        if (refreshLayout.isRefreshing) refreshLayout.finishRefresh()
+                        refreshLayout.finishLoadMore()
+                    }
+                }
+            }
         }
     }
 
