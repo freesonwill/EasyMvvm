@@ -47,8 +47,8 @@ class TopupRecordItemAdapter(private val itemClickListener: OnItemClickListener?
         showNoMoreData = hasNoMore
         notifyDataSetChanged()
     }
+}
 
-    interface OnItemClickListener {
-        fun onEntryClick(item: RechargeRecordBean)
-    }
+interface OnItemClickListener {
+    fun onEntryClick(item: RechargeRecordBean)
 }

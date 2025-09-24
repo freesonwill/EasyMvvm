@@ -9,10 +9,13 @@ class RechargeRecordItemViewHolder(
     private val mBinding: ItemRechargeRecordBinding,
 ) : BaseViewHolder(mBinding) {
 
+
     @SuppressLint("SetTextI18n")
     fun init(data: RechargeRecordBean) {
         with(mBinding) {
             tvAmount.text = data.amount
         }
     }
+
+
 }

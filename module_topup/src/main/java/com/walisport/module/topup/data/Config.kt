@@ -1,9 +1,0 @@
-package com.walisport.module.topup.data
-
-internal object Config {
-
-    const val KEY_RESULT = "key_result"
-    const val VALUE_SELECTED_DATE = "value_selected_date"
-    const val VALUE_SELECTED_MILLISECOND = "value_selected_millisecond"
-    const val VALUE_SELECTED_SPORT_ID = "value_selected_sport_id"
-}

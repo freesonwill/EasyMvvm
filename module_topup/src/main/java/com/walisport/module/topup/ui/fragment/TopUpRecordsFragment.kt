@@ -17,6 +17,7 @@ import com.walisport.module.topup.R
 import com.walisport.module.topup.data.constants.LoadingState
 import com.walisport.module.topup.data.entity.RechargeRecordBean
 import com.walisport.module.topup.databinding.FragmentTopupRecordsBinding
+import com.walisport.module.topup.ui.adapter.OnItemClickListener
 import com.walisport.module.topup.ui.adapter.TopupRecordItemAdapter
 import com.walisport.module.topup.ui.viewmodel.TopUpRecordsViewModel
 import kotlin.reflect.KClass
@@ -52,14 +53,18 @@ class TopUpRecordsFragment : BaseFragment<TopUpRecordsViewModel, FragmentTopupRe
             refreshLayout.setOnLoadMoreListener {
                 mViewModel.loadNextPage()
             }
-            listAdapter = TopupRecordItemAdapter(object : TopupRecordItemAdapter.OnItemClickListener {
+
+
+            listAdapter = TopupRecordItemAdapter(object : OnItemClickListener {
                 override fun onEntryClick(item: RechargeRecordBean) {
                     navigate(
                         R.id.action_topUpRecordsFragment_to_topUpDetailFragment,
                         Bundle().apply {
-                            putString("transactionId", item.iid)
+                            putString("transactionId", item.transactionId)
                         })
                 }
+
+
             })
 
             rvCollectList.apply {
