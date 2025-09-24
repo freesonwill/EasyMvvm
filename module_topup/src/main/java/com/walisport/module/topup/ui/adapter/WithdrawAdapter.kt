@@ -10,6 +10,7 @@ import arch.cayenne.lib.common.utils.DateUtils
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getColor
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getDrawable
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
+import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import com.walisport.module.topup.R
 import com.walisport.module.topup.data.entity.RechargeRecordBean
 import com.walisport.module.topup.databinding.ItemWithdrawRecordBinding
@@ -28,14 +29,14 @@ class WithdrawAdapter(private val listener: OnWithdrawItemClickListener? = null)
         val item = getItem(position)
         when (position) {
             0 -> {
-                binding.itemRoot.background = R.drawable.bg_item_list_top.getDrawable()
+                binding.itemRoot.background = SkinnableResourceManager.getDrawable(binding.root.context, R.drawable.bg_item_list_top)
             }
             itemCount - 1 -> {
                 binding.viewLine.visibility = View.INVISIBLE
-                binding.itemRoot.background = R.drawable.bg_item_list_bottom.getDrawable()
+                binding.itemRoot.background = SkinnableResourceManager.getDrawable(binding.root.context, R.drawable.bg_item_list_bottom)
             }
             else -> {
-                binding.itemRoot.background = R.drawable.bg_item_list_rect.getDrawable()
+                binding.itemRoot.background = SkinnableResourceManager.getDrawable(binding.root.context, R.drawable.bg_item_list_rect)
             }
         }
         binding.tvStatus.text = getStatus(item.status)
