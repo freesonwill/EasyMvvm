@@ -186,7 +186,6 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 val lp = tabView.layoutParams as ViewGroup.MarginLayoutParams
                 lp.width = tabWidthPx
                 tabView.layoutParams = lp
-                tabView.setPadding(0, 0, 0, 0)
 
                 val tv = (getTabAt(i)?.view?.getChildAt(1) as? TextView)
                 tv?.apply {
@@ -202,7 +201,6 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 ResourcesCompat.getDrawable(resources, R.drawable.shape_home_tab_indicator, null)
             )
             setSelectedTabIndicatorColor(android.graphics.Color.TRANSPARENT)
-            translationY = (-2).dp2px.toFloat()
         }
     }
 
