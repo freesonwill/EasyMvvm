@@ -17,7 +17,6 @@ import arch.cayenne.lib.websocket.data.SocketConnectState
 import com.walisport.module.live.R
 import com.walisport.module.live.data.constants.CheckBetResultEnum
 import com.walisport.module.live.data.constants.KeyBoardType
-import com.walisport.module.live.data.constants.KeyboardActionType
 import com.walisport.module.live.data.repository.LiveChatRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -38,6 +37,7 @@ class LiveChatViewModel(
     private val _historyLiveData = MutableLiveData<Boolean>()
     private val _newMsgFLow = MutableStateFlow<MsgNotify?>(null)
     private val _checkBetAmountLiveData = MutableLiveData<CheckBetResultEnum>()
+
 
     //    private val _softKeyBoardListener = MutableStateFlow(KeyBoardType.CHAT)
     private val _updateKeyboardUiStatus = MutableLiveData(KeyBoardType.CHAT)
@@ -83,7 +83,6 @@ class LiveChatViewModel(
 
     val toastLiveData: MutableLiveData<String> = MutableLiveData()
 
-
     //软件盘高度
     var softKeyBoardHeight: Int = 0
 
@@ -99,6 +98,16 @@ class LiveChatViewModel(
     //当前键盘状态
     var currentKeyBoardType: KeyBoardType = KeyBoardType.CHAT
 
+    //判断是否开启app后第一次弹出软件盘
+    var isFirstOpen:Boolean = true
+
+
+
+    fun setKeyBoardHeight(){
+        softKeyBoardHeight = userDataManager.getValue(UserDataKey.KEY_SOFT_KEYBOARD_HEIGHT,0)
+        isFirstOpen = userDataManager.getValue(UserDataKey.KEY_SOFT_KEYBOARD_OPEN,true)
+//      "isFirstOpen $isFirstOpen".logd("aaa")
+    }
 
     fun setArguments(matchId: Long?) {
         //直播间重新从联赛进入时，刷新matchId 重新进入聊天室
@@ -108,7 +117,6 @@ class LiveChatViewModel(
         }else{
             this.matchId = matchId
         }
-        softKeyBoardHeight = userDataManager.getValue(UserDataKey.KEY_SOFT_KEYBOARD_HEIGHT,0)
 //        softKeyBoardDuration = userDataManager.getValue(UserDataKey.KEY_SOFT_KEYBOARD_DURATION,0)
     }
 
@@ -336,6 +344,12 @@ class LiveChatViewModel(
     fun updateKeyBoardUi(keyBoardType: KeyBoardType, flag: Int) {
         addSoftKeyBoardEvent(keyBoardType, flag)
         _updateKeyboardUiStatus.value = keyBoardType
+    }
+
+    fun setSoftFirstOpen(value:Boolean){
+//        "setFirstOpen ${value}".logd("aaa")
+        isFirstOpen = value
+        userDataManager.setKeyValue(UserDataKey.KEY_SOFT_KEYBOARD_OPEN,isFirstOpen)
     }
 
 
