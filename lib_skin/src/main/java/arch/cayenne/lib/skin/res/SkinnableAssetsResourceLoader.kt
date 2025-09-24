@@ -84,11 +84,11 @@ class SkinnableAssetsResourceLoader(context: Context, private val _skinName: Str
     }
 
     override fun setSecondarySkin(skinName: String?) {
-
+        TODO("Not yet implemented")
     }
 
     override fun getSecondarySkin(): String? {
-        return null
+        TODO("Not yet implemented")
     }
 
     override fun setFixedSkin(skin: String?) {
