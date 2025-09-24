@@ -425,8 +425,8 @@ class SkinnableRippleView : ConstraintLayout, ISkinnableBiz {
         return output
     }
 
-    override fun forceUpdateSkin() {
-        backGroundHelper.updateSkin(SkinMsgType.SELF)
-        rippleColorHelper.updateSkin(SkinMsgType.SELF)
+    override fun updateSkin(msgType: SkinMsgType) {
+        backGroundHelper.updateSkin(msgType)
+        rippleColorHelper.updateSkin(msgType)
     }
 }

@@ -13,6 +13,7 @@ import androidx.lifecycle.lifecycleScope
 import arch.cayenne.lib.base.ui.fragment.BasePreLoadBottomSheetFragment
 import arch.cayenne.lib.common.ui.view.BlockSlideConstrainLayout
 import arch.cayenne.lib.database.entity.BetTypeEnum
+import arch.cayenne.lib.skin.data.SkinMsgType
 import arch.cayenne.lib.skin.widget.biz.ISkinnableBiz
 import arch.cayenne.module.bet.R
 import arch.cayenne.module.bet.data.Config.KEY_RESULT
@@ -225,13 +226,13 @@ class BetSheetFragment private constructor() :
     fun forceUpdateSkin() {
         fun updateView(root: ViewGroup) {
             if (root is ISkinnableBiz) {
-                root.updateSkin()
+                root.updateSkin(SkinMsgType.SELF)
             }
             root.forEach {
                 if (it is ViewGroup) {
                     updateView(it)
                 } else if (it is ISkinnableBiz) {
-                    it.updateSkin()
+                    it.updateSkin(SkinMsgType.SELF)
                 }
             }
         }

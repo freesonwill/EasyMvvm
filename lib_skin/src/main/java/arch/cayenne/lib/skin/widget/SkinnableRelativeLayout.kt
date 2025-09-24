@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import android.widget.RelativeLayout
 import androidx.annotation.AnyRes
 import androidx.annotation.ColorRes
+import arch.cayenne.lib.skin.data.SkinMsgType
 import arch.cayenne.lib.skin.widget.biz.ISkinnableBiz
 import arch.cayenne.lib.skin.widget.biz.SkinnableBizBackgroundImpl
 
@@ -51,8 +52,8 @@ class SkinnableRelativeLayout:RelativeLayout, ISkinnableBiz {
         super.onDetachedFromWindow()
     }
 
-    override fun forceUpdateSkin() {
-        biz.forceUpdateSkin()
+    override fun updateSkin(msgType: SkinMsgType) {
+        biz.updateSkin(msgType)
     }
 
 }

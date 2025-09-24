@@ -22,6 +22,7 @@ import arch.cayenne.lib.common.utils.ext.SportStringExt.toOdds
 import arch.cayenne.lib.database.entity.BetDetailBean
 import arch.cayenne.lib.database.entity.BetResultStatusEnum
 import arch.cayenne.lib.database.entity.BetTypeEnum
+import arch.cayenne.lib.skin.data.SkinMsgType
 import arch.cayenne.lib.skin.widget.biz.ISkinnableBiz
 import arch.cayenne.module.bet.R
 import arch.cayenne.module.bet.databinding.FragmentBetResultBinding
@@ -274,13 +275,13 @@ class BetResultFragment : BasePreLoadBottomSheetFragment<BetResultViewModel, Fra
     fun forceUpdateSkin() {
         fun updateView(root: ViewGroup) {
             if (root is ISkinnableBiz) {
-                root.forceUpdateSkin()
+                root.updateSkin(SkinMsgType.SELF)
             }
             root.forEach {
                 if (it is ViewGroup) {
                     updateView(it)
                 } else if (it is ISkinnableBiz) {
-                    it.forceUpdateSkin()
+                    it.updateSkin(SkinMsgType.SELF)
                 }
             }
         }

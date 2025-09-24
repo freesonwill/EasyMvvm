@@ -78,7 +78,7 @@ class SkinnableNumberPicker : NumberPicker, ISkinnableBiz {
         TODO("Not yet implemented")
     }
 
-    override fun forceUpdateSkin() {
-        numberPickerHelper.updateSkin(SkinMsgType.SELF)
+    override fun updateSkin(msgType: SkinMsgType) {
+        numberPickerHelper.updateSkin(msgType)
     }
 }

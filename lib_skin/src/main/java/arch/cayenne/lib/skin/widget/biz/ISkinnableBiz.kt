@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import androidx.annotation.AnyRes
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
+import arch.cayenne.lib.skin.data.SkinMsgType
 
 /**
  * @date: 2025/7/30 15:55
@@ -17,5 +18,5 @@ interface ISkinnableBiz {
     fun setBackgroundResource(@DrawableRes resId: Int)
     fun setTintColorRes(@ColorRes resId: Int)
     fun setForegroundRes(@AnyRes resId: Int)
-    fun forceUpdateSkin()
+    fun updateSkin(msgType: SkinMsgType = SkinMsgType.FLOW)
 }

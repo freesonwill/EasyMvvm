@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import android.view.View
 import androidx.annotation.AnyRes
 import androidx.annotation.ColorRes
+import arch.cayenne.lib.skin.data.SkinMsgType
 import arch.cayenne.lib.skin.widget.biz.ISkinnableBiz
 import arch.cayenne.lib.skin.widget.biz.SkinnableBizBackgroundImpl
 
@@ -30,7 +31,7 @@ open class SkinnableView : View, ISkinnableBiz {
         biz.onAttachedToWindow()
     }
 
-    final override fun initView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) {
+    override fun initView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) {
         biz = SkinnableBizBackgroundImpl(this)
         biz.initView(context, attrs, defStyleAttr)
     }
@@ -53,8 +54,8 @@ open class SkinnableView : View, ISkinnableBiz {
         super.onDetachedFromWindow()
     }
 
-    override fun forceUpdateSkin() {
-        biz.forceUpdateSkin()
+    override fun updateSkin(msgType: SkinMsgType) {
+        biz.updateSkin(msgType)
     }
 
 }

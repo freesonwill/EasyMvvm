@@ -2,20 +2,24 @@ package arch.cayenne.lib.skin.widget
 
 import android.content.Context
 import android.util.AttributeSet
+import androidx.core.view.doOnDetach
 import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import arch.cayenne.lib.skin.data.SkinMsgType
 import arch.cayenne.lib.skin.widget.biz.ISkinnableBiz
 import com.google.android.material.tabs.TabLayout
 import arch.cayenne.lib.skin.widget.helper.SkinnableBackGroundHelper
+import arch.cayenne.lib.skin.widget.helper.SkinnableLanguageFlowHelper
 import arch.cayenne.lib.skin.widget.helper.SkinnableTabLayoutHelper
 import arch.cayenne.lib.skin.widget.helper.SkinnableViewFlowHelper
+import kotlinx.coroutines.MainScope
 
 class SkinnableTabLayout : TabLayout, ISkinnableBiz {
     private val backgroundTintHelper = SkinnableBackGroundHelper(this)
     private val tabLayoutHelper = SkinnableTabLayoutHelper(this)
     private val TAG = SkinnableTabLayout::class.java.simpleName
     private val flowHelper = SkinnableViewFlowHelper()
+    private val languageFlowHelper = SkinnableLanguageFlowHelper()
 
     constructor(context: Context) : super(context) {
         initView(context)
@@ -37,10 +41,18 @@ class SkinnableTabLayout : TabLayout, ISkinnableBiz {
             tabLayoutHelper.updateSkin()
         }
 
-        flowHelper.startLanguageFlow(findViewTreeLifecycleOwner()?.lifecycleScope) {
+        languageFlowHelper.startLanguageFlow(findViewTreeLifecycleOwner()?.lifecycleScope) {
             tabLayoutHelper.updateLanguage(it)
         }
     }
+
+
+    override fun onDetachedFromWindow() {
+        flowHelper.destroyFlow()
+        languageFlowHelper.destroyFlow()
+        super.onDetachedFromWindow()
+    }
+
 
     override fun initView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) {
         backgroundTintHelper.loadFromAttributes(attrs, defStyleAttr)
@@ -96,11 +108,6 @@ class SkinnableTabLayout : TabLayout, ISkinnableBiz {
         tabLayoutHelper.updateTabBackground(tab)
     }
 
-    override fun onDetachedFromWindow() {
-        flowHelper.destroyFlow()
-        super.onDetachedFromWindow()
-    }
-
     override fun setTintColorRes(resId: Int) {
         TODO("Not yet implemented")
     }
@@ -114,9 +121,9 @@ class SkinnableTabLayout : TabLayout, ISkinnableBiz {
         tabLayoutHelper.updateTabResArray(tabResArray)
     }
 
-    override fun forceUpdateSkin() {
-        backgroundTintHelper.updateSkin(SkinMsgType.SELF)
-        tabLayoutHelper.updateSkin(SkinMsgType.SELF)
+    override fun updateSkin(msgType: SkinMsgType) {
+        backgroundTintHelper.updateSkin(msgType)
+        tabLayoutHelper.updateSkin(msgType)
     }
 
 }

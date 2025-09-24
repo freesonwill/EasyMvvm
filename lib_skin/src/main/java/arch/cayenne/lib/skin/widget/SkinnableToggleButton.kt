@@ -7,6 +7,7 @@ import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.appcompat.widget.AppCompatToggleButton
+import arch.cayenne.lib.skin.data.SkinMsgType
 import arch.cayenne.lib.skin.widget.biz.ISkinnableBiz
 import arch.cayenne.lib.skin.widget.biz.ISkinnableTextBiz
 import arch.cayenne.lib.skin.widget.biz.SkinnableBizTextImpl
@@ -92,7 +93,7 @@ class SkinnableToggleButton : AppCompatToggleButton, ISkinnableBiz {
         super.onDetachedFromWindow()
     }
 
-    override fun forceUpdateSkin() {
-        biz.forceUpdateSkin()
+    override fun updateSkin(msgType: SkinMsgType) {
+        biz.updateSkin(msgType)
     }
 }

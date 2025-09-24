@@ -3,6 +3,7 @@ package arch.cayenne.lib.skin.widget
 import android.content.Context
 import android.util.AttributeSet
 import android.widget.ProgressBar
+import arch.cayenne.lib.skin.data.SkinMsgType
 import arch.cayenne.lib.skin.widget.biz.ISkinnableBiz
 import arch.cayenne.lib.skin.widget.biz.SkinnableBizBackgroundImpl
 
@@ -46,7 +47,7 @@ class SkinnableProgressBar : ProgressBar, ISkinnableBiz {
         biz.setForegroundRes(resId)
     }
 
-    override fun forceUpdateSkin() {
-        biz.forceUpdateSkin()
+    override fun updateSkin(msgType: SkinMsgType) {
+        biz.updateSkin(msgType)
     }
 }

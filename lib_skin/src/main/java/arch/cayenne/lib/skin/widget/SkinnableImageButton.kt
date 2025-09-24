@@ -12,6 +12,7 @@ import android.util.AttributeSet
 import androidx.annotation.AnyRes
 import androidx.annotation.ColorRes
 import androidx.appcompat.widget.AppCompatImageButton
+import arch.cayenne.lib.skin.data.SkinMsgType
 import arch.cayenne.lib.skin.widget.biz.ISkinnableBiz
 import arch.cayenne.lib.skin.widget.biz.ISkinnableImageBiz
 import arch.cayenne.lib.skin.widget.biz.SkinnableBizImageImpl
@@ -95,8 +96,8 @@ class SkinnableImageButton : AppCompatImageButton, ISkinnableBiz {
         super.onDetachedFromWindow()
     }
 
-    override fun forceUpdateSkin() {
-        biz.forceUpdateSkin()
+    override fun updateSkin(msgType: SkinMsgType) {
+        biz.updateSkin(msgType)
     }
 
 }
