@@ -31,6 +31,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_6"
         android:textColor="@color/pay_method"
+        android:gravity="center"
         android:textSize="@dimen/sp_11"
         android:paddingVertical="@dimen/dp_2"
         android:paddingHorizontal="@dimen/dp_7"

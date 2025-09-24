@@ -1,6 +1,5 @@
 package com.walisport.module.topup.ui.adapter
 
-import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
