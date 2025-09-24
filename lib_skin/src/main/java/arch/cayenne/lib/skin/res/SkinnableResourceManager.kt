@@ -31,7 +31,7 @@ object SkinnableResourceManager:IFixedSkin {
     }
 
     fun restoreSecondaryName() {
-        resourceLoader.setSecondarySkin("")
+        resourceLoader.setSecondarySkin(null)
     }
 
 
