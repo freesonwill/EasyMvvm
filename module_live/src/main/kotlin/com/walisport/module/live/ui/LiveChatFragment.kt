@@ -102,15 +102,16 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
 
     private fun initFragment() {
         mViewModel.setKeyBoardHeight()
+        val fragment = LiveSoftKeyboardFragment()
+        childFragmentManager.beginTransaction()
+            .replace(mBinding.liveChatKeyboard.id, fragment, LiveSoftKeyboardFragment.TAG)
+            .commit()
         mBinding.liveChatKeyboard.post {
             mViewModel.keyBoardHeight = mBinding.liveChatKeyboard.height
             if(mViewModel.keyBoardHeight == 0){
                 mViewModel.keyBoardHeight = mBinding.main.height
             }
-            val fragment = LiveSoftKeyboardFragment()
-            childFragmentManager.beginTransaction()
-                .replace(mBinding.liveChatKeyboard.id, fragment, LiveSoftKeyboardFragment.TAG)
-                .commit()
+            fragment.addMainViewListen()
         }
     }
 
@@ -134,8 +135,8 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
         }
 
         mViewModel.sendMsgLiveData.observe(viewLifecycleOwner) {
-            mViewModel.sendMsgToServer(it)
             mViewModel.addLocalMsg(it)
+            mViewModel.sendMsgToServer(it)
             refreshChatList()
         }
 
@@ -217,7 +218,7 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
      * 进入直播间不成功时修改
      * */
     fun updateChatUi(matchBean:LiveMatchBean? = null) {
-        if(matchBean?.liveInfo?.charRoom == true){
+        if( matchBean?.liveInfo?.charRoom == true){
             updateChatList()
             return
         }

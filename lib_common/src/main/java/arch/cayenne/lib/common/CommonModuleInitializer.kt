@@ -49,7 +49,6 @@ class CommonModuleInitializer : DefaultInitializer<String> {
                 UserDataKey.KEY_ANIM_POPUP,
                 UserDataKey.KEY_ANIM_DRAWER,
                 UserDataKey.KEY_ANIM_SCROLLBAR,
-                UserDataKey.KEY_SOFT_KEYBOARD_OPEN,
             ).forEach { manager.removeValueForKey(it) }
             manager.setKeyValue(UserDataKey.KEY_BUILD_TIME, BuildConfig.BUILD_TIME)
         }
