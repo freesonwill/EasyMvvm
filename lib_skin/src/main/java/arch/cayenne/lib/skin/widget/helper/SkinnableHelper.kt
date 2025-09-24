@@ -1,17 +1,16 @@
 package arch.cayenne.lib.skin.widget.helper
 
-import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import arch.cayenne.lib.skin.data.SkinMsgType
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
-import java.util.Locale
 
 
 abstract class SkinnableHelper (protected open val mView:View) {
     val resourcesManager = SkinnableResourceManager
     protected var mSrcId: Int = INVALID_ID
     protected var lastSkin:String = ""
+        private set
 
     /**
      * 加载资源布局

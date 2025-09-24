@@ -7,7 +7,7 @@ import androidx.annotation.AnyRes
 import androidx.annotation.ColorRes
 import arch.cayenne.lib.skin.widget.biz.IFixedSkin
 
-interface SkinnableResourceLoader:IFixedSkin {
+interface SkinnableResourceLoader: IFixedSkin {
 
     fun getColor(context: Context, @ColorRes resId: Int): Int
 
@@ -22,6 +22,7 @@ interface SkinnableResourceLoader:IFixedSkin {
     fun getOriginResourceId(context: Context, resName: String, @AnyRes resId: Int):Int
 
     //给BuildInLoader设置 其他Loader没有效果
-    fun setSecondarySkin(skinName: String)
+    fun setSecondarySkin(skinName: String?)
+    fun getSecondarySkin():String?
 
 }

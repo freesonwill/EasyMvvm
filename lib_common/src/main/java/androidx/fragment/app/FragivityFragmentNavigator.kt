@@ -39,7 +39,6 @@ class FragivityFragmentNavigator(
     private val fragmentDelayedHideMap = mutableMapOf<String, Boolean>()
     private var mIsPendingAddToBackStackOperation = false
     private var mIsPendingPopBackStackOperation = false
-    private val savedIds = mutableSetOf<String>()
 
     init {
         // Need to cooperate with ReportFragmentManager
@@ -47,17 +46,13 @@ class FragivityFragmentNavigator(
             fragmentManager.addOnBackStackChangedListener {
                 if (mIsPendingAddToBackStackOperation) { //增加加入回退栈
                     mIsPendingAddToBackStackOperation = !isBackStackEqual()
-                    val size = fragmentManager.fragments.size
+                    /*val size = fragmentManager.fragments.size
                     if (size > 1) {
                         // 切到后台时的生命周期
                         val fragment = fragmentManager.fragments[size - 2]
                         // fragment onPause -> onStop
-                        setMaxLifecycle(fragment, Lifecycle.State.STARTED) //onPause
-                        fragment.requireView().post {
-                            fragment.performStop() //onStop
-                            fragment.mState = Fragment.STARTED //避免触发两次onStart
-                        }
-                    }
+                        moveFragmentToStop(fragment)
+                    }*/
                 } else if (mIsPendingPopBackStackOperation) { //正在回退
                     mIsPendingPopBackStackOperation = !isBackStackEqual()
                     // 回到前台时的生命周期
@@ -196,7 +191,14 @@ class FragivityFragmentNavigator(
         }
 
         ft.setReorderingAllowed(true)
-        ft.commit()
+
+        //execute commit action
+        if(mIsPendingAddToBackStackOperation && prevFragment != null) {
+            //让前一个fragment执行了onPause,onStop之后才去拉起新的fragment
+            moveFragmentToStop(prevFragment){ ft.commit() }
+        } else {
+            ft.commit()
+        }
 
         if (isPushTo) {
             // pushTo情况下清空返回栈
@@ -215,6 +217,17 @@ class FragivityFragmentNavigator(
         }
 
         return null
+    }
+
+    //让fragment执行onPause，onStop
+    private fun moveFragmentToStop(f: Fragment, onEnd:(()->Unit)? = null){
+        // fragment onPause -> onStop
+        setMaxLifecycle(f, Lifecycle.State.STARTED) //onPause
+        f.requireView().post {
+            f.performStop() //onStop
+            f.mState = Fragment.STARTED //避免触发两次onStart
+            onEnd?.invoke()
+        }
     }
 
     private fun setupAnimation(args: Bundle?,
@@ -293,10 +306,6 @@ class FragivityFragmentNavigator(
         "enterAnim2:$enterAnim2,\nexitAnim2:$exitAnim2,\npopEnterAnim2:$popEnterAnim2,\npopExitAnim2:$popExitAnim2".logd(TAG)
         //"navOptions-->$navOptions,backNavOptionStack:$backNavOptionStack".logd(TAG)
         return intArrayOf(enterAnim,exitAnim,popEnterAnim,popExitAnim) to arrayOf(enterAnim2,exitAnim2,popEnterAnim2,popExitAnim2)
-    }
-
-    private fun parseAnimation(json:String){
-
     }
 
     private fun generateBackStackName(backStackIndex: Int, destinationId: Int): String {
