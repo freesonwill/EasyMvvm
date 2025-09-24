@@ -114,4 +114,8 @@ object SkinnableResourceManager:IFixedSkin {
     override fun getFixedSkin(): String? {
        return resourceLoader.getFixedSkin()
     }
+
+    fun getSecondarySkin(): String? {
+        return resourceLoader.getSecondarySkin()
+    }
 }

@@ -2,18 +2,19 @@ package arch.cayenne.lib.skin.res
 
 import android.content.Context
 import android.content.res.ColorStateList
-import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import androidx.annotation.AnyRes
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.res.ResourcesCompat
 import arch.cayenne.lib.skin.util.ResUtils
 import arch.cayenne.lib.skin.widget.helper.SkinnableHelper
+import androidx.core.graphics.drawable.toDrawable
 
 class SkinnableBuildInResourceLoader(private val _skinName: String) : SkinnableResourceLoader {
-    private var _secondarySkinName: String = ""
+    private var _secondarySkinName: String? = null
     private var _fixedSkinName: String? = null
-    private var currentName = _skinName
+    private val currentName: String
+        get() = _fixedSkinName ?: (_secondarySkinName ?: _skinName)
 
     override fun getColor(context: Context, resId: Int): Int {
         val targetId = getTargetResourceId(context, resId)
@@ -36,7 +37,7 @@ class SkinnableBuildInResourceLoader(private val _skinName: String) : SkinnableR
         if (targetId != SkinnableHelper.INVALID_ID) {
             val type = context.resources.getResourceTypeName(resId)
             if (type == "color") {
-                return ColorDrawable(context.getColor(targetId))
+                return context.getColor(targetId).toDrawable()
             }
 
             return ResourcesCompat.getDrawable(context.resources, targetId, context.theme)
@@ -46,23 +47,10 @@ class SkinnableBuildInResourceLoader(private val _skinName: String) : SkinnableR
 
     override fun getTargetResourceId(context: Context, resId: Int): Int {
         return try {
-            if (_skinName.isEmpty() && _secondarySkinName.isEmpty()) {
+            if (_skinName.isEmpty() && _secondarySkinName.isNullOrEmpty()) {
                 return resId
             }
-            var targetResId = 0
-            if(_fixedSkinName.isNullOrEmpty()) {
-                if (_secondarySkinName.isNotEmpty()) {
-                    currentName = _secondarySkinName
-                    targetResId = getResId(context, _secondarySkinName, resId)
-                }
-                if (targetResId == 0 && _skinName.isNotEmpty()) {
-                    currentName = _skinName
-                    targetResId = getResId(context, _skinName, resId)
-                }
-            }else {
-                currentName = _fixedSkinName ?: ""
-                targetResId = getResId(context, currentName, resId)
-            }
+            val targetResId = getResId(context, currentName, resId)
 
             if (targetResId == 0) {
                 return resId
@@ -104,5 +92,9 @@ class SkinnableBuildInResourceLoader(private val _skinName: String) : SkinnableR
 
     override fun getFixedSkin(): String? {
         return this._fixedSkinName
+    }
+
+    override fun getSecondarySkin(): String? {
+        return this._secondarySkinName
     }
 }

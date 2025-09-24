@@ -23,5 +23,6 @@ interface SkinnableResourceLoader:IFixedSkin {
 
     //给BuildInLoader设置 其他Loader没有效果
     fun setSecondarySkin(skinName: String)
+    fun getSecondarySkin():String?
 
 }
