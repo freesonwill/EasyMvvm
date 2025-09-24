@@ -16,7 +16,7 @@ import arch.cayenne.lib.skin.widget.helper.SkinnableViewFlowHelper
  */
 open class SkinnableBizBackgroundImpl(private val view:View): ISkinnableBiz {
     private lateinit var backgroundHelper: SkinnableBackGroundHelper private set
-    protected lateinit var flowHelper:SkinnableViewFlowHelper private set
+    private lateinit var flowHelper:SkinnableViewFlowHelper private set
 
     @CallSuper
     override fun initView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) {
@@ -59,5 +59,7 @@ open class SkinnableBizBackgroundImpl(private val view:View): ISkinnableBiz {
     override fun updateSkin(msgType: SkinMsgType) {
         backgroundHelper.updateSkin(msgType)
     }
+
+    fun checkOriginId(context: Context, resId: Int) = flowHelper.checkOriginId(context,resId)
 
 }

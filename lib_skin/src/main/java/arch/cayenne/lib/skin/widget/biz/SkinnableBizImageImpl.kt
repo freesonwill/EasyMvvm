@@ -23,7 +23,7 @@ class SkinnableBizImageImpl(private val view: ImageView) : SkinnableBizBackgroun
     }
 
     override fun setImageResource(resId: Int) {
-        val nResId = flowHelper.checkOriginId(view.context,resId)
+        val nResId = checkOriginId(view.context,resId)
         imageHelper.setSrcId(nResId)
     }
 
