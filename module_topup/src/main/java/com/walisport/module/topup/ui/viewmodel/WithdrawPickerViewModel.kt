@@ -7,7 +7,7 @@ import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import com.walisport.module.topup.data.WithdrawFilterBean
 import kotlinx.coroutines.launch
 
-class SportPickerViewModel: BaseViewModel() {
+class WithdrawPickerViewModel: BaseViewModel() {
 
     private val _onSportListener = MutableLiveData<List<WithdrawFilterBean>>()
     val onSportListener: LiveData<List<WithdrawFilterBean>> get() = _onSportListener

@@ -108,7 +108,7 @@ class WithdrawRecordsFragment : BaseFragment<WithdrawRecordsViewModel, FragmentW
                 } else {
                     null
                 }
-            //DatePickerFragment.find(this, it.date, time).customShow()
+            DatePickerFragment.find(this, it.date, time).customShow()
         }
     }
 

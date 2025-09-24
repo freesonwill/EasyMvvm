@@ -25,7 +25,7 @@ import arch.cayenne.lib.common.utils.ViewUtils
 import com.walisport.module.topup.data.Config
 import com.walisport.module.topup.databinding.FragmentSportPickerBinding
 import com.walisport.module.topup.ui.adapter.SportPickerAdapter
-import com.walisport.module.topup.ui.viewmodel.SportPickerViewModel
+import com.walisport.module.topup.ui.viewmodel.WithdrawPickerViewModel
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -36,7 +36,7 @@ import kotlin.reflect.KClass
  */
 
 class RechargePickerFragment private constructor() :
-    BaseFragment<SportPickerViewModel, FragmentSportPickerBinding>(), SimilarDialogInterface,
+    BaseFragment<WithdrawPickerViewModel, FragmentSportPickerBinding>(), SimilarDialogInterface,
     DimInterface {
 
     companion object {
@@ -55,7 +55,7 @@ class RechargePickerFragment private constructor() :
     }
 
     override val vbClass: KClass<FragmentSportPickerBinding> = FragmentSportPickerBinding::class
-    override val vmClass: KClass<SportPickerViewModel> = SportPickerViewModel::class
+    override val vmClass: KClass<WithdrawPickerViewModel> = WithdrawPickerViewModel::class
 
     private val sportAdapter: SportPickerAdapter by lazy {
         SportPickerAdapter(object : SportPickerAdapter.SportPickerListener {
