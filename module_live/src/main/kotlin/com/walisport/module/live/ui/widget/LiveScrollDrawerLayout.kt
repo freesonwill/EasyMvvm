@@ -1,21 +1,17 @@
-package arch.cayenne.module.home.ui.view
+package com.walisport.module.live.ui.widget
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
-import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
-import androidx.core.view.GestureDetectorCompat
 import androidx.core.view.GravityCompat
-import androidx.drawerlayout.widget.DrawerLayout
-import androidx.fragment.app.Fragment
+import arch.cayenne.lib.skin.widget.SkinnableDrawerLayout
 
 class LiveScrollDrawerLayout @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
-) : DrawerLayout(context, attrs, defStyleAttr) {
+) : SkinnableDrawerLayout(context, attrs, defStyleAttr) {
 
     private var isAnimationRunning = true
     private var drawerListener: DrawerListener? = null

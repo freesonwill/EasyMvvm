@@ -10,7 +10,9 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.fragment.findNavController
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.data.constants.StatusBarMode
@@ -87,26 +89,34 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         )
     }
 
-    override fun onStart() {
-        mBinding.root.fitsSystemWindows = false
-        StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND()
-        StatusBarConfig.statusBarDarkFont = false
-        setStatusBar(StatusBarConfig,mBinding.root)
-        updateBetSheetSkin()
-        super.onStart()
-    }
     override fun onAttach(context: Context) {
         super.onAttach(context)
         SkinnableResourceManager.setFixedSkin(fixedSkin)
-    }
+        lifecycle.addObserver(object :DefaultLifecycleObserver {
 
-    override fun onDetach() {
-        super.onDetach()
-        SkinnableResourceManager.setFixedSkin(null)
-        StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND()
-        StatusBarConfig.statusBarDarkFont = immersionBarSkinTypeExt(mViewModel.getSkinType())
-        setStatusBar(StatusBarConfig,mBinding.root)
-        updateBetSheetSkin()
+            override fun onPause(owner: LifecycleOwner) {
+                super.onPause(owner)
+                SkinnableResourceManager.setFixedSkin(null)
+                StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND()
+                StatusBarConfig.statusBarDarkFont = immersionBarSkinTypeExt(mViewModel.getSkinType())
+                setStatusBar(StatusBarConfig,mBinding.root)
+            }
+
+            override fun onStart(owner: LifecycleOwner) {
+                super.onStart(owner)
+                SkinnableResourceManager.setFixedSkin(fixedSkin)
+                StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND()
+                StatusBarConfig.statusBarDarkFont = false
+                setStatusBar(StatusBarConfig,mBinding.root)
+                updateBetSheetSkin() //refresh skin to fixed skin
+            }
+
+            override fun onDestroy(owner: LifecycleOwner) {
+                super.onDestroy(owner)
+                lifecycle.removeObserver(this)
+                updateBetSheetSkin() //restore skin to system skin
+            }
+        })
     }
 
     //init DrawerLayout Content
