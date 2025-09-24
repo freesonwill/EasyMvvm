@@ -8,7 +8,6 @@ import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.data.constants.UserDataKey
 import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
-import arch.cayenne.lib.database.entity.LiveMatchBean
 import arch.cayenne.lib.websocket.chat.data.ChatLoginResponseData
 import arch.cayenne.lib.websocket.chat.data.ChatMsg
 import arch.cayenne.lib.websocket.chat.data.ChatRequestCodeEnum
@@ -18,7 +17,6 @@ import arch.cayenne.lib.websocket.data.SocketConnectState
 import com.walisport.module.live.R
 import com.walisport.module.live.data.constants.CheckBetResultEnum
 import com.walisport.module.live.data.constants.KeyBoardType
-import com.walisport.module.live.data.constants.KeyboardActionType
 import com.walisport.module.live.data.repository.LiveChatRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -100,10 +98,15 @@ class LiveChatViewModel(
     //当前键盘状态
     var currentKeyBoardType: KeyBoardType = KeyBoardType.CHAT
 
+    //判断是否开启app后第一次弹出软件盘
+    var isFirstOpen:Boolean = true
+
 
 
     fun setKeyBoardHeight(){
         softKeyBoardHeight = userDataManager.getValue(UserDataKey.KEY_SOFT_KEYBOARD_HEIGHT,0)
+        isFirstOpen = userDataManager.getValue(UserDataKey.KEY_SOFT_KEYBOARD_OPEN,true)
+//      "isFirstOpen $isFirstOpen".logd("aaa")
     }
 
     fun setArguments(matchId: Long?) {
@@ -341,6 +344,12 @@ class LiveChatViewModel(
     fun updateKeyBoardUi(keyBoardType: KeyBoardType, flag: Int) {
         addSoftKeyBoardEvent(keyBoardType, flag)
         _updateKeyboardUiStatus.value = keyBoardType
+    }
+
+    fun setSoftFirstOpen(value:Boolean){
+//        "setFirstOpen ${value}".logd("aaa")
+        isFirstOpen = value
+        userDataManager.setKeyValue(UserDataKey.KEY_SOFT_KEYBOARD_OPEN,isFirstOpen)
     }
 
 

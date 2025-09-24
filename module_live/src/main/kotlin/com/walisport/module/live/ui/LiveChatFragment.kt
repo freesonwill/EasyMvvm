@@ -36,7 +36,6 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
     override fun initView(savedInstanceState: Bundle?) {
         initFragment()
         initTab()
-        updateChatUi()
     }
 
     private fun initTab() {
@@ -105,6 +104,9 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
         mViewModel.setKeyBoardHeight()
         mBinding.liveChatKeyboard.post {
             mViewModel.keyBoardHeight = mBinding.liveChatKeyboard.height
+            if(mViewModel.keyBoardHeight == 0){
+                mViewModel.keyBoardHeight = mBinding.main.height
+            }
             val fragment = LiveSoftKeyboardFragment()
             childFragmentManager.beginTransaction()
                 .replace(mBinding.liveChatKeyboard.id, fragment, LiveSoftKeyboardFragment.TAG)
@@ -215,7 +217,7 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
      * 进入直播间不成功时修改
      * */
     fun updateChatUi(matchBean:LiveMatchBean? = null) {
-        if(true || matchBean?.liveInfo?.charRoom == true){
+        if(matchBean?.liveInfo?.charRoom == true){
             updateChatList()
             return
         }

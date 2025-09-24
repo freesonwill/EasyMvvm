@@ -10,15 +10,11 @@ import android.view.MotionEvent
 import android.view.ViewTreeObserver
 import android.view.inputmethod.EditorInfo
 import android.widget.ImageView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.animation.addListener
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowCompat
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
@@ -45,8 +41,6 @@ import com.walisport.module.live.ui.viewmodel.LiveSoftKeyboardViewModel
 import com.walisport.module.live.utils.EditTextUtils
 import com.walisport.module.live.utils.EmojiEditFilter
 import com.walisport.module.live.utils.EmojiUtils.BID_EMOJI_REGEX
-import com.walisport.module.live.utils.softkeyboard.KeyBoardInsetsCallBack
-import com.walisport.module.live.utils.softkeyboard.KeyBoardListener
 import com.walisport.module.live.utils.softkeyboard.NavigationBarHelper
 import com.walisport.module.live.utils.softkeyboard.NavigationListener
 import kotlinx.coroutines.delay
@@ -105,7 +99,6 @@ class LiveSoftKeyboardFragment :
     override suspend fun createObserver() {
         launch (Lifecycle.State.RESUMED){
             chatViewModel.updateKeyboardUiStatus.observe(viewLifecycleOwner) {
-                "updateKeyboardUiStatus $it".logd("aaa")
                 keyboardChangeClick(it, 1)
             }
         }
@@ -185,7 +178,6 @@ class LiveSoftKeyboardFragment :
      * */
     private fun sendText() {
         val text: String = mBinding.liveChatEtInput.text?.toString() ?: ""
-        "text.isEmpty ${text.isEmpty()}".logd("aaa")
         if (text.isEmpty()) {
             return
         }
@@ -208,7 +200,10 @@ class LiveSoftKeyboardFragment :
 
     private fun calculationLayoutSize() {
         mBinding.apply {
-            "calculationLayoutSize  chatKeyBoardHeight:${chatViewModel.keyBoardHeight} ".logd("aaa")
+//            "calculationLayoutSize  chatKeyBoardHeight:${chatViewModel.keyBoardHeight} ".logd("aaa")
+            if(chatViewModel.keyBoardHeight == 0){
+                chatViewModel.keyBoardHeight = mBinding.main.height
+            }
             emojiKeyBoardHeight = chatViewModel.keyBoardHeight - 62.dp2px - 21.dp2px
             emojiContent.layoutParams.height = emojiKeyBoardHeight
             screenContent.layoutParams.height = chatViewModel.keyBoardHeight
@@ -222,7 +217,6 @@ class LiveSoftKeyboardFragment :
             lifecycle,
             object : NavigationListener {
                 override fun setNavigationStatus(hasNavigation: Boolean, navigationHeight: Int) {
-
                 }
 
                 override fun onSoftKeyBoardHide() {
@@ -233,62 +227,74 @@ class LiveSoftKeyboardFragment :
                 }
 
                 override fun onSoftKeyBoardShow(keyboardHeight: Int) {
-//                "onSoftKeyBoardShow ${keyboardHeight}  ${chatViewModel.softKeyBoardHeight}".logd("aaa")
-                    isSoftKeyboardShow = true
-                    if (chatViewModel.softKeyBoardHeight == keyboardHeight) {
-                        return
-                    }
-                    mainAnim?.cancel()
-                    val animationType = mViewModel.getKeyBoardActionType(
-                        chatViewModel.clickKeyBoardType,
-                        chatViewModel.currentKeyBoardType
-                    )
-//                "onSoftKeyBoardShow1  $animationType".logd("aaa")
+                   whenSoftKeyBoardOpen(keyboardHeight)
+                }
 
-                    when (animationType) {
-                        KeyboardActionType.CHAT_TO_SOFT -> {
-                            chatViewModel.softKeyBoardHeight = keyboardHeight
-                            panelAnimateTo(-chatViewModel.softKeyBoardHeight, onStart = {
-                                changeKeyboardUi(KeyBoardType.SOFT_KEYBOARD)
-                            }, onEnd = {
-                                chatViewModel.saveUpdateSoftKeyBoardHeight()
-                            })
-                        }
+                override fun secondSoftKeyBoardShow() {
 
-                        KeyboardActionType.EMOJI_TO_SOFT -> {
-                            chatViewModel.softKeyBoardHeight = keyboardHeight
-                            panelAnimateTo(-chatViewModel.softKeyBoardHeight, onStart = {
-                                changeKeyboardUi(KeyBoardType.SOFT_KEYBOARD)
-                            }, onEnd = {
-                                chatViewModel.saveUpdateSoftKeyBoardHeight()
-                            })
-                        }
-
-                        KeyboardActionType.SOFT_TO_SOFT -> {
-                            chatViewModel.softKeyBoardHeight = keyboardHeight
-                            panelAnimateTo(-chatViewModel.softKeyBoardHeight, onStart = {
-                                changeKeyboardUi(KeyBoardType.SOFT_KEYBOARD)
-                            }, onEnd = {
-                                chatViewModel.saveUpdateSoftKeyBoardHeight()
-                            })
-                        }
-
-                        else -> {}
-                    }
+                    chatViewModel.setSoftFirstOpen(false)
                 }
             })
         navigationBarHelper?.setDbKeyBoardHeight(chatViewModel.softKeyBoardHeight)
 
     }
 
+    private fun whenSoftKeyBoardOpen(keyboardHeight: Int){
+        isSoftKeyboardShow = true
+        if (chatViewModel.softKeyBoardHeight == keyboardHeight) {
+            return
+        }
+        mainAnim?.cancel()
+        val animationType = mViewModel.getKeyBoardActionType(
+            chatViewModel.clickKeyBoardType,
+            chatViewModel.currentKeyBoardType
+        )
+
+        when (animationType) {
+            KeyboardActionType.CHAT_TO_SOFT -> {
+                chatViewModel.softKeyBoardHeight = keyboardHeight
+                panelAnimateTo(-chatViewModel.softKeyBoardHeight, onStart = {
+                    changeKeyboardUi(KeyBoardType.SOFT_KEYBOARD)
+                }, onEnd = {
+                    chatViewModel.saveUpdateSoftKeyBoardHeight()
+                })
+            }
+
+            KeyboardActionType.EMOJI_TO_SOFT -> {
+                chatViewModel.softKeyBoardHeight = keyboardHeight
+                panelAnimateTo(-chatViewModel.softKeyBoardHeight, onStart = {
+                    changeKeyboardUi(KeyBoardType.SOFT_KEYBOARD)
+                }, onEnd = {
+                    chatViewModel.saveUpdateSoftKeyBoardHeight()
+                })
+            }
+
+            KeyboardActionType.SOFT_TO_SOFT -> {
+                chatViewModel.softKeyBoardHeight = keyboardHeight
+                panelAnimateTo(-chatViewModel.softKeyBoardHeight, onStart = {
+                    changeKeyboardUi(KeyBoardType.SOFT_KEYBOARD)
+                }, onEnd = {
+                    chatViewModel.saveUpdateSoftKeyBoardHeight()
+                })
+            }
+
+            else -> {}
+        }
+    }
+
     private fun panelAnimateTo(offset: Int, onStart: () -> Unit = {}, onEnd: () -> Unit = {}) {
         mainAnim = ObjectAnimator.ofFloat(mBinding.main, "translationY", offset.toFloat())
         mainAnim?.interpolator = FastOutSlowInInterpolator()
-        mainAnim?.duration = 170
+        mainAnim?.duration = 170L
         mainAnim?.addListener(onStart = { onStart.invoke() }, onEnd = {
             onEnd.invoke()
         })
+//        "panelAnimateTo isFirstOpen ${chatViewModel.isFirstOpen}".logd("aaa")
+        if(chatViewModel.isFirstOpen){
+            mainAnim?.startDelay = 170L
+        }
         mainAnim?.start()
+
     }
 
     private fun softKeyboardChange(value: Boolean, flag: Int) {
@@ -312,7 +318,6 @@ class LiveSoftKeyboardFragment :
     }
 
     private fun changeKeyboardUi(keyBoardType: KeyBoardType) {
-        "changeKeyboardUi keyBoardType $keyBoardType".logd("aaa")
         when (keyBoardType) {
             KeyBoardType.SOFT_KEYBOARD -> showSoftKeyBoard()
             KeyBoardType.EMOJI -> showEmoji()
@@ -331,12 +336,12 @@ class LiveSoftKeyboardFragment :
             KeyboardActionType.CHAT_TO_CHAT -> changeKeyboardUi(KeyBoardType.CHAT)
             //展示软件盘
             KeyboardActionType.CHAT_TO_SOFT -> {
-                if (chatViewModel.softKeyBoardHeight == 0) {
+                if (chatViewModel.softKeyBoardHeight == 0) {//如果没有记录软件盘高度或者app打开后第一次弹出软件盘不急着开启动画先弹出软件盘
                     softKeyboardChange(true, 1)
                     return
                 }
+                softKeyboardChange(true, 1)
                 panelAnimateTo(-chatViewModel.softKeyBoardHeight, onStart = {
-                    softKeyboardChange(true, 1)
                     changeKeyboardUi(KeyBoardType.SOFT_KEYBOARD)
                 })
             }

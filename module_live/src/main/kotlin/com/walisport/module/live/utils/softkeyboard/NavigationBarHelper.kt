@@ -89,6 +89,7 @@ class NavigationBarHelper(
                     navigationListener?.onSoftKeyBoardShow(keyBoardHeight)
                 }
             }
+            navigationListener?.secondSoftKeyBoardShow()
         }
 
         if (height > 150 && !isKeyBoardVisible) { //软件盘打开
