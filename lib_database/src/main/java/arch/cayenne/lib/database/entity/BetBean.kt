@@ -24,7 +24,7 @@ data class BetDetailBean(
     var sumOdds: Int, // 串關後賠率加總
     var odds: Int,
     val count: Int = 1, // 場次組合數量
-    var inputMoney: Long,
+    var inputMoney: String,
     var status: BetResultStatusEnum? = null
 )
 

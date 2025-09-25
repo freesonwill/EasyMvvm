@@ -9,6 +9,8 @@ import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.data.repo.BalanceRepository
 import arch.cayenne.lib.common.ui.viewmodel.Event
+import arch.cayenne.lib.common.utils.ext.SportStringExt.isGreaterThanZero
+import arch.cayenne.lib.common.utils.ext.SportStringExt.sumOf
 import arch.cayenne.lib.database.entity.BetSelectionBean
 import arch.cayenne.lib.database.entity.InfoBean
 import arch.cayenne.module.bet.data.ComboMultiBetBean
@@ -32,25 +34,6 @@ class ComboBetViewModel(
 
     val balance: Long
         get() = _onBalanceListener.value?.balance ?: 0L
-
-    private val _onCanBetListener = MediatorLiveData(false).apply {
-        val updateCanBet = {
-            val betList = _onBetListListener.value
-            val comboData = _onComboMultiBetBeanListener.value
-
-            value = if (betList != null && comboData != null) {
-                betList.size > 1 &&
-                        betList.all { it.isActive && it.isParlay } &&
-                        comboData.any { it.inputMoney > 0L }
-            } else {
-                false
-            }
-        }
-
-        addSource(_onBetListListener) { updateCanBet() }
-        addSource(_onComboMultiBetBeanListener) { updateCanBet() }
-    }
-    val onCanBetListener: LiveData<Boolean> get() = _onCanBetListener
 
     private val _onForceUpdateListener = MediatorLiveData(false).apply {
         var updateBox = Pair(false, false)
@@ -106,14 +89,6 @@ class ComboBetViewModel(
     private val _onMultiLayoutExpendListener = MutableLiveData<Boolean>(false)
     val onMultiLayoutExpendListener: LiveData<Boolean> get() = _onMultiLayoutExpendListener
 
-    val remainingBalance: Long
-        get() = onBalanceListener.value?.let { infoBean ->
-            onComboMultiBetBeanListener.value?.sumOf { it.amount }?.let { betAmount ->
-                infoBean.balance - betAmount
-            } ?: infoBean.balance
-        } ?: 0
-
-
     val moneySymbol: String
         get() = CurrencySymbols.getSymbol(_onBalanceListener.value?.currency ?: "")
 
@@ -140,10 +115,7 @@ class ComboBetViewModel(
                     } else {
                         val updatedList = beans.mapIndexed { index, newItem ->
                             val oldItem = lastList.getOrNull(index)
-                            val updatedInputMoney = oldItem?.inputMoney?.let { oldInput ->
-                                if (oldInput > newItem.maxAmount) newItem.maxAmount else oldInput
-                            } ?: newItem.inputMoney
-
+                            val updatedInputMoney = oldItem?.inputMoney?: newItem.inputMoney
                             newItem.copy(inputMoney = updatedInputMoney)
                         }
 
@@ -172,7 +144,7 @@ class ComboBetViewModel(
         repo.removeAll()
     }
 
-    fun updateMultiBetMoney(serialValue: Int, money: Long) {
+    fun updateMultiBetMoney(serialValue: Int, money: String) {
         _onComboMultiBetBeanListener.value?.let {
             val updatedList = it.map { rate ->
                 if (rate.serialValue == serialValue) {
@@ -186,8 +158,8 @@ class ComboBetViewModel(
         }
     }
 
-    fun getSumBetAmount(): Long {
-        return _onComboMultiBetBeanListener.value?.sumOf { it.inputMoney } ?: 0L
+    fun getSumBetAmount(): String {
+        return _onComboMultiBetBeanListener.value?.map { it.inputMoney }?.sumOf() ?: "0"
     }
 
     fun sendBet(): Boolean {
@@ -195,7 +167,7 @@ class ComboBetViewModel(
             return false
         }
         val oddsChangeEnum = _oddsChangeListener.value ?: return false
-        return _onComboMultiBetBeanListener.value?.filter { it.inputMoney != 0L }?.let {
+        return _onComboMultiBetBeanListener.value?.filter { it.inputMoney.isGreaterThanZero() }?.let {
             if (it.isNotEmpty()) {
                 repo.sendBet(it, oddsChangeEnum)
                 true
@@ -224,8 +196,8 @@ class ComboBetViewModel(
     fun clearBetMoney() {
         val data = _onComboMultiBetBeanListener.value ?: return
         _onComboMultiBetBeanListener.value = data.map {
-            if (it.inputMoney > 0) {
-                it.copy(inputMoney = 0L)
+            if (it.inputMoney.isGreaterThanZero()) {
+                it.copy(inputMoney = "")
             } else {
                 it
             }

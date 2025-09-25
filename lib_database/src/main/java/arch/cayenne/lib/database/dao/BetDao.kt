@@ -192,7 +192,7 @@ abstract class BetDao : BaseDao<BetBean>() {
     @Query(
         "UPDATE BetDetailBean SET inputMoney = :money WHERE betId = :betId AND serialValue = :serialValue"
     )
-    abstract suspend fun updateDetailMoney(betId: Long, serialValue: Int, money: Long)
+    abstract suspend fun updateDetailMoney(betId: Long, serialValue: Int, money: String)
 
     @Query(
         "UPDATE BetDetailBean SET status = :status WHERE betId = :betId AND serialValue = :serialValue"

@@ -21,6 +21,10 @@ import arch.cayenne.lib.common.ui.viewmodel.observeEvent
 import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
+import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
+import arch.cayenne.lib.common.utils.ext.SportStringExt.isGreaterThanValue
+import arch.cayenne.lib.common.utils.ext.SportStringExt.isGreaterThanZero
+import arch.cayenne.lib.common.utils.ext.SportStringExt.sumOf
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.database.entity.BetSelectionBean
@@ -63,21 +67,19 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
                         ) { resultKey, bundle ->
                             childFragmentManager.clearFragmentResultListener(KEY_RESULT)
                             if (resultKey == KEY_RESULT) {
-                                val money = bundle.getLong(VALUE_MONEY_INPUT, 0L)
+                                val money = bundle.getString(VALUE_MONEY_INPUT, "")
                                 mViewModel.updateMultiBetMoney(serialValue, money)
                             }
                         }
-                        val currentMoney = if (it.inputMoney == 0L) null else it.inputMoney
+                        val currentMoney = it.inputMoney
                         val minAmount = it.minAmount
                         val maxAmount = it.maxAmount
-                        val remainingMoney = mViewModel.remainingBalance / it.count
                         ComboBetMoneyKeyboardDialogFragment.newInstance(
                             locationX,
                             locationY,
                             currentMoney,
                             minAmount,
-                            maxAmount,
-                            remainingMoney
+                            maxAmount
                         ).show(childFragmentManager)
                     }
             }
@@ -123,7 +125,7 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
             mViewModel.toggleMultiLayoutExpend()
         }
         mBinding.clBet.setOnClickListener {
-            if (mViewModel.getSumBetAmount() > mViewModel.balance) {
+            if (mViewModel.getSumBetAmount().isGreaterThanValue(mViewModel.balance.getMoney())) {
                 showToast(getString(arch.cayenne.lib.common.R.string.toast_over_remaining))
             } else if (!mViewModel.checkOddsPass()) {
                 mViewModel.oddsChangeListener.value?.toastRes?.let {
@@ -177,10 +179,6 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
         mViewModel.onBalanceListener.observe(viewLifecycleOwner) {
             val money = "${mViewModel.moneySymbol} ${(it?.balance?:0L).getFormalMoney()}"
             mBinding.tvBalance.text = money
-        }
-        mViewModel.onCanBetListener.observe(viewLifecycleOwner) {
-            mBinding.clBet.isEnabled = it
-            mBinding.tvBetHint.alpha = if (it) 1.0f else 0.7f
         }
         mViewModel.onForceUpdateListener.observe(viewLifecycleOwner) {
             if (it && !isFullScreen) {
@@ -361,14 +359,14 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
     }
 
     private fun setSumBetMoney(data: List<ComboMultiBetBean>) {
-        val sumMoney = data.sumOf { it.amount }
-        val money = "${mViewModel.moneySymbol}${sumMoney.getFormalMoney()}"
+        val sumMoney = data.map { it.amount }.sumOf()
+        val money = "${mViewModel.moneySymbol}$sumMoney"
         mBinding.tvSumBetMoney.text = money
 
-        val winMoney = data.sumOf { it.maxWinMoney }
-        mBinding.tvBetMoneyHint.isVisible = winMoney != 0L
-        mBinding.tvBetMoney.isVisible = winMoney != 0L
-        val sumWinMoney = "${mViewModel.moneySymbol}${winMoney.getFormalMoney()}"
+        val winMoney = data.map { it.maxWinMoney }.sumOf()
+        mBinding.tvBetMoneyHint.isVisible = winMoney.isNotEmpty()
+        mBinding.tvBetMoney.isVisible = winMoney.isNotEmpty()
+        val sumWinMoney = "${mViewModel.moneySymbol}$winMoney"
         mBinding.tvBetMoney.text = sumWinMoney
     }
 

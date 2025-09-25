@@ -41,6 +41,10 @@ open class NumberCalculatorNoLimitViewModel : BaseViewModel() {
         _onEditNumber.value = number.toString()
     }
 
+    fun setNumber(number: String) {
+        _onEditNumber.value = number
+    }
+
     fun clearNumber() {
         _onEditNumber.value = ""
     }

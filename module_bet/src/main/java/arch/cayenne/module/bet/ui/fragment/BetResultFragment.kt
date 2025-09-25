@@ -17,6 +17,8 @@ import arch.cayenne.lib.common.utils.ext.SportDisplayOddsExt.getDisplayOdds
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
+import arch.cayenne.lib.common.utils.ext.SportStringExt.multiplication
+import arch.cayenne.lib.common.utils.ext.SportStringExt.sumOf
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toOdds
 import arch.cayenne.lib.database.entity.BetDetailBean
@@ -196,14 +198,13 @@ class BetResultFragment : BasePreLoadBottomSheetFragment<BetResultViewModel, Fra
 
     private fun setAmount(data: List<BetDetailBean>) {
         val symbols = mViewModel.moneySymbol
-        val total = "$symbols${data.sumOf { it.inputMoney * it.count }.getFormalMoney()}"
+        val total = "$symbols${data.map { it.inputMoney.multiplication(it.count) }.sumOf()}"
         mBinding.tvAmountMoney.text = total
         val win =
             "$symbols${
-                data.sumOf {
-                    it.inputMoney.getMoney((if (data.size == 1) it.sumOdds.getDisplayOdds() else (it.odds * it.count).getOdds()).toOdds())
-                        .toMoney()
-                }.getFormalMoney()
+                data.map {
+                    it.inputMoney.multiplication((if (data.size == 1) it.sumOdds.getDisplayOdds() else (it.odds * it.count).getDisplayOdds()))
+                }.sumOf()
             }"
         mBinding.tvMaxWinMoney.text = win
     }

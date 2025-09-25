@@ -145,7 +145,7 @@ class SingleBetRepository(
                     betId = it.betId,
                     sumOdds = odds,
                     odds = odds,
-                    inputMoney = 0L
+                    inputMoney = ""
                 )
             )
             return@withContext betDao.updateBetType(it.betId, BetTypeEnum.RESERVE) == 1
@@ -153,7 +153,7 @@ class SingleBetRepository(
         false
     }
 
-    fun setMoney(money: Long) {
+    fun setMoney(money: String) {
         scope.launch {
             betDao.getCurrentBet()?.let {
                 val detail = betDao.getDetail(it.betId).firstOrNull()
@@ -176,7 +176,7 @@ class SingleBetRepository(
         }
     }
 
-    fun sendBet(money: Long, oddsChange: OddsChangeEnum) {
+    fun sendBet(money: String, oddsChange: OddsChangeEnum) {
         scope.launch {
             betDao.getCurrentBet()?.let {
                 if (it.betType == BetTypeEnum.SINGLE) {
@@ -241,7 +241,7 @@ class SingleBetRepository(
         false
     }
 
-    fun sendReserve(money: Long) {
+    fun sendReserve(money: String) {
         scope.launch {
             betDao.getCurrentBet()?.let { bet ->
                 if (bet.betType == BetTypeEnum.RESERVE) {

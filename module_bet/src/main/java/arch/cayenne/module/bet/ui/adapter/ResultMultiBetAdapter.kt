@@ -25,7 +25,7 @@ class ResultMultiBetAdapter(private val listener: OnResultMultiBetListener) :
         val odds ="$combo @${item.odds.getDisplayOdds()}"
 
         binding.tvCombo.text = odds
-        val money = "${listener.getMoneySymbol()}${item.inputMoney.getFormalMoney()}"
+        val money = "${listener.getMoneySymbol()}${item.inputMoney}"
         val multi = "${item.count} x $money"
         binding.tvBetMoney.text = multi
     }
