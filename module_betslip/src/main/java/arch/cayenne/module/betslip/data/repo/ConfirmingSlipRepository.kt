@@ -25,7 +25,7 @@ class ConfirmingSlipRepository(
                         launch {
                             res.data!!.orderStatusList.forEach { status ->
                                 betSlipOrderDao.getOrderBeanById(status.orderId)?.let { bean ->
-                                    bean.earlySupport = status.status == 4
+                                    bean.earlySettlePrice.earlySupport = status.status == 4
                                     bean.betSlipType = if (status.status == 4) BetSlipEnum.UnSettled.value else BetSlipEnum.Invalid.value
                                     betSlipOrderDao.update(bean)
                                 }

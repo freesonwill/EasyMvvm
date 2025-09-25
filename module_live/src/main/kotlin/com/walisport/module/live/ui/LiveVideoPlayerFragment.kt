@@ -163,6 +163,10 @@ class LiveVideoPlayerFragment :
             mViewModel.setPlayerState(it)
         }
 
+        videoView.setOnBackListener {
+            requireActivity().onBackPressedDispatcher.onBackPressed()
+        }
+
         if (videoView.parent != null) {
             (videoView.parent as ViewGroup).removeView(videoView)
         }
@@ -224,9 +228,9 @@ class LiveVideoPlayerFragment :
                     } else {
                         mBinding.ivChooseSource.visibility = View.VISIBLE
                         mBinding.ivToFullscreen.visibility = View.VISIBLE
-                        val playUrl = it.source.firstOrNull { ele -> ele.isPlaying }?.playUrl()
+                        val playUrl = it.source.firstOrNull { ele -> ele.isPlaying }?.liveStreams!![0].playUrl()
                         playUrl?.takeIf { url -> url.isNotEmpty() }?.let { url ->
-//                        "url:${url}".logd("LiveVideoFragment")
+                        "videoUrl:${url}".logd("LiveVideoPlayerFragment")
 
                             //收到视频源信息时，需要判断当前比赛的状态，仅当比赛为正在进行中才播放视频
                             val matchBean = mViewModel.matchBeanLiveData.value

@@ -7,17 +7,14 @@ import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.appcompat.widget.AppCompatTextView
-import androidx.lifecycle.findViewTreeLifecycleOwner
-import androidx.lifecycle.lifecycleScope
+import arch.cayenne.lib.skin.data.SkinMsgType
+import arch.cayenne.lib.skin.widget.biz.ISkinnableBiz
 import arch.cayenne.lib.skin.widget.biz.ISkinnableTextBiz
 import arch.cayenne.lib.skin.widget.biz.SkinnableBizTextImpl
-import arch.cayenne.lib.skin.widget.helper.SkinnableBackGroundHelper
-import arch.cayenne.lib.skin.widget.helper.SkinnableTextHelper
-import arch.cayenne.lib.skin.widget.helper.SkinnableViewFlowHelper
 import java.util.Locale
 
 
-class SkinnableTextView : AppCompatTextView {
+class SkinnableTextView : AppCompatTextView, ISkinnableBiz {
     private lateinit var biz:ISkinnableTextBiz
 
     constructor(context: Context) : super(context) {
@@ -39,7 +36,7 @@ class SkinnableTextView : AppCompatTextView {
 
     }
 
-    private fun initView(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) {
+    override fun initView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) {
         biz = SkinnableBizTextImpl(this)
         biz.initView(context, attrs, defStyleAttr)
     }
@@ -95,19 +92,23 @@ class SkinnableTextView : AppCompatTextView {
 
     override fun setBackgroundResource(resId: Int) {
         super.setBackgroundResource(resId)
-        biz.updateBackground(resId)
+        biz.setBackgroundResource(resId)
     }
 
-    fun setTintColorRes(@ColorRes resId: Int){
-        biz.updateBackgroundTintId(resId)
+    override fun setTintColorRes(@ColorRes resId: Int){
+        biz.setTintColorRes(resId)
     }
 
-    fun setForegroundRes(@AnyRes resId: Int){
-        biz.updateForegroundId(resId)
+    override fun setForegroundRes(@AnyRes resId: Int){
+        biz.setForegroundRes(resId)
     }
 
     override fun onDetachedFromWindow() {
         biz.onDetachedFromWindow()
         super.onDetachedFromWindow()
+    }
+
+    override fun updateSkin(msgType: SkinMsgType) {
+        biz.updateSkin(msgType)
     }
 }

@@ -193,6 +193,7 @@ abstract class BaseMatchViewModel<REPO: BaseMatchRepository> : BaseViewModel() {
         page = 1
         setState(HomeState.Match.Refreshing)
         viewModelScope.launch(Dispatchers.IO) {
+            subscribeMatchSet.clear()
             getMatchListData(LoadMatchType.RELOAD)
         }
     }

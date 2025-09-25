@@ -2,12 +2,11 @@ package arch.cayenne.lib.skin.widget.biz
 
 import android.content.Context
 import android.util.AttributeSet
-import android.view.View
 import android.widget.TextView
 import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.lifecycle.lifecycleScope
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
-import arch.cayenne.lib.skin.widget.helper.SkinnableBackGroundHelper
+import arch.cayenne.lib.skin.data.SkinMsgType
+import arch.cayenne.lib.skin.widget.helper.SkinnableLanguageFlowHelper
 import arch.cayenne.lib.skin.widget.helper.SkinnableTextHelper
 import arch.cayenne.lib.skin.widget.helper.SkinnableViewFlowHelper
 import java.util.Locale
@@ -17,33 +16,27 @@ import java.util.Locale
  * @date: 5/9/25 17:23
  * @description:
  */
-class SkinnableBizTextImpl(private val view: TextView) : ISkinnableTextBiz {
-
-    lateinit var backgroundHelper: SkinnableBackGroundHelper private set
-    lateinit var mTextHelper: SkinnableTextHelper private set
-    lateinit var flowHelper: SkinnableViewFlowHelper private set
+class SkinnableBizTextImpl(private val view: TextView) : SkinnableBizBackgroundImpl(view),ISkinnableTextBiz {
+    private lateinit var mTextHelper: SkinnableTextHelper
+    private lateinit var languageHelper:SkinnableLanguageFlowHelper
 
     override fun initView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) {
-        flowHelper = SkinnableViewFlowHelper()
-        backgroundHelper = SkinnableBackGroundHelper(view)
+        super.initView(context, attrs, defStyleAttr)
         mTextHelper = SkinnableTextHelper(view)
-        backgroundHelper.loadFromAttributes(attrs, defStyleAttr)
         mTextHelper.loadFromAttributes(attrs, defStyleAttr)
-
+        languageHelper = SkinnableLanguageFlowHelper()
     }
 
     override fun onAttachedToWindow() {
-        flowHelper.startSkinFlow(view.findViewTreeLifecycleOwner()?.lifecycleScope) {
-            backgroundHelper.updateSkin()
-            mTextHelper.updateSkin()
-        }
-        flowHelper.startLanguageFlow(view.findViewTreeLifecycleOwner()?.lifecycleScope) {
-            mTextHelper.updateLanguage(it)
+        super.onAttachedToWindow()
+        languageHelper.startLanguageFlow(view.findViewTreeLifecycleOwner()?.lifecycleScope) {
+            updateLanguage(it)
         }
     }
 
     override fun onDetachedFromWindow() {
-        flowHelper.destroyFlow()
+        super.onDetachedFromWindow()
+        languageHelper.destroyFlow()
     }
 
     override fun setTextAppearance(resId: Int) {
@@ -92,20 +85,8 @@ class SkinnableBizTextImpl(private val view: TextView) : ISkinnableTextBiz {
         mTextHelper.onSetCompoundDrawablesWithIntrinsicBounds(left, top, right, bottom)
     }
 
-
-    override fun updateBackground(resId: Int) {
-        val nResId = flowHelper.checkOriginId(view.context,resId)
-        backgroundHelper.updateBackground(nResId)
+    override fun updateSkin(msgType: SkinMsgType) {
+        super.updateSkin(msgType)
+        mTextHelper.updateSkin(msgType)
     }
-
-    override fun updateBackgroundTintId(resId: Int) {
-        val nResId = flowHelper.checkOriginId(view.context,resId)
-        backgroundHelper.updateBackgroundTintId(nResId)
-    }
-
-    override fun updateForegroundId(resId: Int) {
-        val nResId = flowHelper.checkOriginId(view.context,resId)
-        backgroundHelper.updateForegroundId(nResId)
-    }
-
 }

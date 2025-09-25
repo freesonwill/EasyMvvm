@@ -8,10 +8,11 @@ import android.os.Bundle
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.fragment.findNavController
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.data.constants.StatusBarMode
@@ -52,9 +53,9 @@ import com.walisport.module.live.ui.viewmodel.LiveMainViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.filter
 import kotlin.reflect.KClass
-import arch.cayenne.lib.common.utils.ext.animateIndicatorToPosition
 import arch.cayenne.lib.common.utils.ext.setupViewPagerScroll
 import arch.cayenne.lib.common.utils.ext.startFadeAnim
+import arch.cayenne.module.bet.ui.fragment.BetSheetFragment
 
 /**
  * 直播详情页
@@ -88,24 +89,34 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         )
     }
 
-    override fun onStart() {
-        mBinding.root.fitsSystemWindows = false
-        StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND()
-        StatusBarConfig.statusBarDarkFont = false
-        setStatusBar(StatusBarConfig,mBinding.root)
-        super.onStart()
-    }
     override fun onAttach(context: Context) {
         super.onAttach(context)
         SkinnableResourceManager.setFixedSkin(fixedSkin)
-    }
+        lifecycle.addObserver(object :DefaultLifecycleObserver {
 
-    override fun onDetach() {
-        super.onDetach()
-        SkinnableResourceManager.setFixedSkin(null)
-        StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND()
-        StatusBarConfig.statusBarDarkFont = immersionBarSkinTypeExt(mViewModel.getSkinType())
-        setStatusBar(StatusBarConfig,mBinding.root)
+            override fun onPause(owner: LifecycleOwner) {
+                super.onPause(owner)
+                SkinnableResourceManager.setFixedSkin(null)
+                StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND()
+                StatusBarConfig.statusBarDarkFont = immersionBarSkinTypeExt(mViewModel.getSkinType())
+                setStatusBar(StatusBarConfig,mBinding.root)
+            }
+
+            override fun onStart(owner: LifecycleOwner) {
+                super.onStart(owner)
+                SkinnableResourceManager.setFixedSkin(fixedSkin)
+                StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND()
+                StatusBarConfig.statusBarDarkFont = false
+                setStatusBar(StatusBarConfig,mBinding.root)
+                updateBetSheetSkin() //refresh skin to fixed skin
+            }
+
+            override fun onDestroy(owner: LifecycleOwner) {
+                super.onDestroy(owner)
+                lifecycle.removeObserver(this)
+                updateBetSheetSkin() //restore skin to system skin
+            }
+        })
     }
 
     //init DrawerLayout Content
@@ -435,5 +446,12 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
             return true
         }
         return super.onBackPressed()
+    }
+
+    private fun updateBetSheetSkin() {
+        val type = mViewModel.getSkinType()
+        if (type != fixedSkin) {
+            BetSheetFragment.find(requireActivity())?.forceUpdateSkin()
+        }
     }
 }

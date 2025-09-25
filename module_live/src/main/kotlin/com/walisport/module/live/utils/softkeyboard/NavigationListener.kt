@@ -9,5 +9,6 @@ interface NavigationListener {
     fun setNavigationStatus(hasNavigation:Boolean,navigationHeight:Int)
     fun onSoftKeyBoardHide()
     fun onSoftKeyBoardShow(keyboardHeight:Int)
+    fun secondSoftKeyBoardShow()
 
 }

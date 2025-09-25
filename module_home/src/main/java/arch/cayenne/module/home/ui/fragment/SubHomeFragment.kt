@@ -220,13 +220,8 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
             }
         }
 
-        homeViewModel.languageManager.languageFlow.collect{
-            //sportAdapter需要监听切换语言更新
-            sportsListAdapter.notifyDataSetChanged()
-        }
-
         homeViewModel.notifySubHomeRefresh.observeEvent(viewLifecycleOwner, this) {
-            mViewModel.getCurrentSportStatistical()
+            sportsListAdapter.notifyDataSetChanged()
             mViewModel.getCurrentTournament()
         }
     }
@@ -234,16 +229,16 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
     fun onFragmentSelected() {
         mViewModel.getCurrentSportStatistical()
         mViewModel.getCurrentTournament()
-        if (mViewModel.resetPageSelectedTimestamp()) {
-            if (mViewModel.currentPlayTypeId == PlayType.CHAMPION.id) {
-                val fragment = childFragmentManager.findFragmentByTag(PlayType.CHAMPION.name)
-                (fragment as? TournamentListFragment)?.reloadAllData()
-            } else {
-                val itemId = leaguePagerAdapter?.getItemId(mBinding.layoutContainer.vpGameList.currentItem)?: return
-                val fragment = childFragmentManager.findFragmentByTag("f$itemId") ?: return
-                (fragment as? MatchListPagerFragment)?.reloadAllData()
-            }
+    }
 
+    fun reloadCurrentMatchListPagerFragment() {
+        if (mViewModel.currentPlayTypeId == PlayType.CHAMPION.id) {
+            val fragment = childFragmentManager.findFragmentByTag(PlayType.CHAMPION.name)
+            (fragment as? TournamentListFragment)?.reloadAllData()
+        } else {
+            val itemId = leaguePagerAdapter?.getItemId(mBinding.layoutContainer.vpGameList.currentItem)?: return
+            val fragment = childFragmentManager.findFragmentByTag("f$itemId") ?: return
+            (fragment as? MatchListPagerFragment)?.reloadAllData()
         }
     }
 
@@ -668,6 +663,7 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
     }
 
     private fun setTournamentAndViewPagerLayout(tournaments: List<TournamentDataModel>) {
+
         with(mBinding.layoutContainer) {
             if (leaguePagerAdapter == null) {
                 leaguePagerAdapter = LeaguePagerAdapter(

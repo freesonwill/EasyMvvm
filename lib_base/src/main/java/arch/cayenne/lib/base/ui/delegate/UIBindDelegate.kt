@@ -42,8 +42,8 @@ class UIBindDelegate<UIOwner, VM, VB>(
     private val TAG = uiOwner::class.java.simpleName
     private var _binding: VB? = null
     private var _viewModel: VM? = null
-    val binding: VB get() = _binding ?: error("binding is null")
-    val viewModel: VM get() = _viewModel ?: error("viewModel is null")
+    val binding: VB get() = _binding ?: error("binding is null,uiOwner:${uiOwner}")
+    val viewModel: VM get() = _viewModel ?: error("viewModel is null,uiOwner:${uiOwner}")
     //是否第一次初始化
     private var firstInit: Boolean = false
     private var destroyRunnable:Runnable? = null

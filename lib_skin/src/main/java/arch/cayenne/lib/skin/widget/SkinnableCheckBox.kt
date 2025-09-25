@@ -1,26 +1,19 @@
 package arch.cayenne.lib.skin.widget
 
 import android.content.Context
-import android.content.res.ColorStateList
 import android.util.AttributeSet
 import androidx.annotation.AnyRes
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.appcompat.widget.AppCompatCheckBox
-import androidx.lifecycle.findViewTreeLifecycleOwner
-import androidx.lifecycle.lifecycleScope
-import arch.cayenne.lib.skin.SkinnableManager
+import arch.cayenne.lib.skin.data.SkinMsgType
+import arch.cayenne.lib.skin.widget.biz.ISkinnableBiz
 import arch.cayenne.lib.skin.widget.biz.ISkinnableTextBiz
 import arch.cayenne.lib.skin.widget.biz.SkinnableBizTextImpl
-import arch.cayenne.lib.skin.widget.helper.SkinnableBackGroundHelper
-import arch.cayenne.lib.skin.widget.helper.SkinnableTextHelper
-import arch.cayenne.lib.skin.widget.helper.SkinnableViewFlowHelper
-import kotlinx.coroutines.launch
-import org.koin.java.KoinJavaComponent.inject
 
-class SkinnableCheckBox : AppCompatCheckBox {
-      private lateinit var biz:ISkinnableTextBiz
+class SkinnableCheckBox : AppCompatCheckBox, ISkinnableBiz {
+    private lateinit var biz: ISkinnableTextBiz
 
     constructor(context: Context) : super(context) {
         initView(context)
@@ -40,35 +33,39 @@ class SkinnableCheckBox : AppCompatCheckBox {
         biz.onAttachedToWindow()
     }
 
-    private fun initView(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) {
+    override fun initView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) {
         biz = SkinnableBizTextImpl(this)
-        biz.initView(context,attrs,defStyleAttr)
+        biz.initView(context, attrs, defStyleAttr)
     }
 
-    fun setTextRes(@StringRes stringRes:Int,vararg formatArgs:Any = emptyArray()){
-        biz.setTextRes(stringRes,*formatArgs)
+    fun setTextRes(@StringRes stringRes: Int, vararg formatArgs: Any = emptyArray()) {
+        biz.setTextRes(stringRes, *formatArgs)
     }
 
-    fun setHintRes(@StringRes stringRes: Int,vararg formatArgs:Any = emptyArray()){
-        biz.setHintRes(stringRes,*formatArgs)
+    fun setHintRes(@StringRes stringRes: Int, vararg formatArgs: Any = emptyArray()) {
+        biz.setHintRes(stringRes, *formatArgs)
     }
 
     override fun setBackgroundResource(@DrawableRes resId: Int) {
         super.setBackgroundResource(resId)
-        biz.updateBackground(resId)
+        biz.setBackgroundResource(resId)
     }
 
-    fun setTintColorRes(@ColorRes resId: Int){
-        biz.updateBackgroundTintId(resId)
+    override fun setTintColorRes(@ColorRes resId: Int) {
+        biz.setTintColorRes(resId)
     }
 
-    fun setForegroundRes(@AnyRes resId: Int){
-        biz.updateForegroundId(resId)
+    override fun setForegroundRes(@AnyRes resId: Int) {
+        biz.setForegroundRes(resId)
     }
 
     override fun onDetachedFromWindow() {
         biz.onDetachedFromWindow()
         super.onDetachedFromWindow()
+    }
+
+    override fun updateSkin(msgType: SkinMsgType) {
+        biz.updateSkin(msgType)
     }
 
 }

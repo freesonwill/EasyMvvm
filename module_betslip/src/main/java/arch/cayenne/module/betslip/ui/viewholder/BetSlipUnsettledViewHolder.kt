@@ -61,7 +61,7 @@ class BetSlipUnsettledViewHolder(binding: ViewBinding, betSlipType: BetSlipEnum)
             val settlePrice = BetSlipUtils.earlySettlePrice(
                 order.betAmount, order.earlyBetAmount, order.earlySettlePrice.price
             )
-            val isCanSettle = settlePrice.toMoney() > 1000 && order.earlySupport
+            val isCanSettle = settlePrice.toMoney() > 1000 && order.earlySettlePrice.earlySupport
             it.betUnsettledBtSettle.isEnabled = isCanSettle
             it.betUnsettledBtSettle.isVisible = isCanSettle
             it.betUnsettledBtSettle.tag = adapterPosition

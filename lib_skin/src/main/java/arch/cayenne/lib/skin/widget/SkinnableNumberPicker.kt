@@ -10,12 +10,12 @@ import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import arch.cayenne.lib.skin.SkinnableManager
 import arch.cayenne.lib.skin.data.SkinMsgType
+import arch.cayenne.lib.skin.widget.biz.ISkinnableBiz
 import arch.cayenne.lib.skin.widget.helper.SkinnableNumberPickerHelper
 import arch.cayenne.lib.skin.widget.helper.SkinnableViewFlowHelper
-import kotlinx.coroutines.launch
 import org.koin.java.KoinJavaComponent.inject
 
-class SkinnableNumberPicker : NumberPicker {
+class SkinnableNumberPicker : NumberPicker, ISkinnableBiz {
 
     private val numberPickerHelper = SkinnableNumberPickerHelper(this)
     private val skinManager: SkinnableManager by inject(SkinnableManager::class.java)
@@ -34,7 +34,7 @@ class SkinnableNumberPicker : NumberPicker {
         initView(context, attrs, defStyleAttr)
     }
 
-    private fun initView(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) {
+    override fun initView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) {
         numberPickerHelper.loadFromAttributes(attrs, defStyleAttr)
         hidePickerDivider(this)
     }
@@ -68,5 +68,17 @@ class SkinnableNumberPicker : NumberPicker {
     override fun onDetachedFromWindow() {
         flowHelper.destroyFlow()
         super.onDetachedFromWindow()
+    }
+
+    override fun setTintColorRes(resId: Int) {
+        TODO("Not yet implemented")
+    }
+
+    override fun setForegroundRes(resId: Int) {
+        TODO("Not yet implemented")
+    }
+
+    override fun updateSkin(msgType: SkinMsgType) {
+        numberPickerHelper.updateSkin(msgType)
     }
 }

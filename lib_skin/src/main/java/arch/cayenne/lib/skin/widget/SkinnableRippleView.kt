@@ -21,11 +21,13 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import arch.cayenne.lib.skin.R
+import arch.cayenne.lib.skin.data.SkinMsgType
+import arch.cayenne.lib.skin.widget.biz.ISkinnableBiz
 import arch.cayenne.lib.skin.widget.helper.SkinnableBackGroundHelper
 import arch.cayenne.lib.skin.widget.helper.SkinnableRippleHelper
 import arch.cayenne.lib.skin.widget.helper.SkinnableViewFlowHelper
 
-class SkinnableRippleView : ConstraintLayout {
+class SkinnableRippleView : ConstraintLayout, ISkinnableBiz {
 
     private lateinit var backGroundHelper: SkinnableBackGroundHelper
     private lateinit var rippleColorHelper: SkinnableRippleHelper
@@ -176,7 +178,15 @@ class SkinnableRippleView : ConstraintLayout {
         super.onDetachedFromWindow()
     }
 
-    private fun initView(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) {
+    override fun setTintColorRes(resId: Int) {
+        TODO("Not yet implemented")
+    }
+
+    override fun setForegroundRes(resId: Int) {
+        TODO("Not yet implemented")
+    }
+
+    override fun initView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) {
         backGroundHelper = SkinnableBackGroundHelper(this)
         rippleColorHelper = SkinnableRippleHelper(this)
         backGroundHelper.loadFromAttributes(attrs, defStyleAttr)
@@ -413,5 +423,10 @@ class SkinnableRippleView : ConstraintLayout {
         paint.setXfermode(PorterDuffXfermode(PorterDuff.Mode.SRC_IN))
         canvas.drawBitmap(originBitmap!!, rect, rect, paint)
         return output
+    }
+
+    override fun updateSkin(msgType: SkinMsgType) {
+        backGroundHelper.updateSkin(msgType)
+        rippleColorHelper.updateSkin(msgType)
     }
 }

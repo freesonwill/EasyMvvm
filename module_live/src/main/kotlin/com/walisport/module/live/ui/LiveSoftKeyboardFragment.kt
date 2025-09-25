@@ -7,19 +7,21 @@ import android.os.Bundle
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.MotionEvent
+import android.view.View
 import android.view.ViewTreeObserver
 import android.view.inputmethod.EditorInfo
 import android.widget.ImageView
 import androidx.core.animation.addListener
-import androidx.core.view.ViewCompat
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
@@ -56,14 +58,16 @@ class LiveSoftKeyboardFragment :
         get() = LiveSoftKeyboardViewModel::class
     private val chatViewModel: LiveChatViewModel by sharedViewModel<LiveChatViewModel, LiveChatFragment>()
     private var emojiKeyBoardHeight: Int = 0
-    private var mainAnim:ObjectAnimator? = null
+    private var mainAnim: ObjectAnimator? = null
     private var isSoftKeyboardShow = false
+    private var navigationBarHelper:NavigationBarHelper? = null
 
     //表情点击
     private val itemListener = object : RecyclerItemListener<EmojiData> {
         override fun onItemClick(item: EmojiData?, position: Int) {
             val emojiPattern: Pattern = Pattern.compile(BID_EMOJI_REGEX)
             if (item?.key?.let { emojiPattern.matcher(it).find() } == true) {
+                keyboardChangeClick(KeyBoardType.CHAT,5)
                 chatViewModel.sendMsgToChat(item.key)
                 return
             }
@@ -72,14 +76,10 @@ class LiveSoftKeyboardFragment :
         }
     }
 
-    override fun onPause() {
-        super.onPause()
-        mBinding.keyboardEmojiRecycler.smoothScrollToPosition(0)
-    }
-
     override fun onStop() {
         super.onStop()
-        ViewCompat.setWindowInsetsAnimationCallback(requireActivity().window.decorView, null)
+//        ViewCompat.setWindowInsetsAnimationCallback(requireActivity().window.decorView, null)
+        navigationBarHelper = null
         hideSoftKeyBoard(4)
     }
 
@@ -94,134 +94,14 @@ class LiveSoftKeyboardFragment :
         initTab()
         initSoftRecycler()
         initInputListener()
-        mBinding.main.viewTreeObserver
-            .addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
-                override fun onGlobalLayout() {
-                    mBinding.main.viewTreeObserver.removeOnGlobalLayoutListener(this)
-                    calculationLayoutSize()
-                    keyboardListener()
-                }
-            })
     }
 
-    private fun calculationLayoutSize() {
-        mBinding.apply {
-            chatViewModel.keyBoardHeight = mBinding.main.height
-            emojiKeyBoardHeight = chatViewModel.keyBoardHeight - 62.dp2px - 21.dp2px
-            emojiContent.layoutParams.height = emojiKeyBoardHeight
-            screenContent.layoutParams.height = chatViewModel.keyBoardHeight
-            main.layoutParams.height = chatViewModel.keyBoardHeight + emojiKeyBoardHeight
+    override suspend fun createObserver() {
+        launch (Lifecycle.State.RESUMED){
+            chatViewModel.updateKeyboardUiStatus.observe(viewLifecycleOwner) {
+                keyboardChangeClick(it, 1)
+            }
         }
-    }
-
-    private fun keyboardListener() {
-//        val keyBoardInsetsCallBack = KeyBoardInsetsCallBack(object : KeyBoardListener {
-//                override fun onAnimStart(keyboardHeight: Int,animDuration:Long) {
-//                    val animationType = mViewModel.getKeyBoardActionType(chatViewModel.clickKeyBoardType, chatViewModel.currentKeyBoardType)
-//                    when(animationType){
-//                        KeyboardActionType.SOFT_TO_SOFT ->{
-//                            if(isSoftKeyBoardBack){//软件盘返回键  在onAnimStart的时候检查容易造成弹出软件盘和点击返回键收缩软件盘判断冲突，需要对弹出软件盘做单独的标识
-//                                keyboardChangeClick(KeyBoardType.CHAT)
-//                            }
-//                        }
-//                        KeyboardActionType.CHAT_TO_SOFT ->{
-//                            chatViewModel.softKeyBoardHeight = keyboardHeight
-//                            chatViewModel.softKeyBoardDuration = animDuration
-//                            panelAnimateTo(-chatViewModel.softKeyBoardHeight, onStart = {
-//                                changeKeyboardUi(KeyBoardType.SOFT_KEYBOARD)
-//                            }, onEnd = {
-//                                isSoftKeyBoardBack = true
-//                                chatViewModel.saveUpdateSoftKeyBoardHeight()
-//                            })
-//                        }
-//                        KeyboardActionType.EMOJI_TO_SOFT ->{
-//                            chatViewModel.softKeyBoardHeight = keyboardHeight
-//                            chatViewModel.softKeyBoardDuration = animDuration
-//                            panelAnimateTo(-chatViewModel.softKeyBoardHeight, onStart = {
-//                                changeKeyboardUi(KeyBoardType.SOFT_KEYBOARD)
-//                            }, onEnd = {
-//                                isSoftKeyBoardBack = true
-//                                chatViewModel.saveUpdateSoftKeyBoardHeight()
-//                            })
-//                        }
-//                        else -> {
-//
-//                        }
-//                    }
-//                }
-//
-//                override fun onAnimDoing(offsetX: Int, offsetY: Int) {
-//                }
-//
-//                override fun onAnimEnd() {
-//                }
-//            })
-//        WindowCompat.setDecorFitsSystemWindows(requireActivity().window, false)
-//        ViewCompat.setWindowInsetsAnimationCallback(requireActivity().window.decorView, keyBoardInsetsCallBack)
-
-        NavigationBarHelper(requireActivity().window.decorView,lifecycle,object:NavigationListener{
-            override fun setNavigationStatus(hasNavigation: Boolean, navigationHeight: Int) {
-
-            }
-
-            override fun onSoftKeyBoardHide() {
-                isSoftKeyboardShow = false
-               if(chatViewModel.clickKeyBoardType == KeyBoardType.SOFT_KEYBOARD){
-                   keyboardChangeClick(KeyBoardType.CHAT)
-               }
-            }
-
-            override fun onSoftKeyBoardShow(keyboardHeight:Int) {
-//                "onSoftKeyBoardShow ${keyboardHeight}  ${chatViewModel.softKeyBoardHeight}".logd("aaa")
-              isSoftKeyboardShow = true
-                if(chatViewModel.softKeyBoardHeight == keyboardHeight){
-                    return
-                }
-                mainAnim?.cancel()
-                val animationType = mViewModel.getKeyBoardActionType(chatViewModel.clickKeyBoardType, chatViewModel.currentKeyBoardType)
-//                "onSoftKeyBoardShow1  $animationType".logd("aaa")
-
-                when (animationType) {
-                    KeyboardActionType.CHAT_TO_SOFT -> {
-                        chatViewModel.softKeyBoardHeight = keyboardHeight
-                        panelAnimateTo(-chatViewModel.softKeyBoardHeight, onStart = {
-                            changeKeyboardUi(KeyBoardType.SOFT_KEYBOARD)
-                        }, onEnd = {
-                            chatViewModel.saveUpdateSoftKeyBoardHeight()
-                        })
-                    }
-
-                    KeyboardActionType.EMOJI_TO_SOFT -> {
-                        chatViewModel.softKeyBoardHeight = keyboardHeight
-                        panelAnimateTo(-chatViewModel.softKeyBoardHeight, onStart = {
-                            changeKeyboardUi(KeyBoardType.SOFT_KEYBOARD)
-                        }, onEnd = {
-                            chatViewModel.saveUpdateSoftKeyBoardHeight()
-                        })
-                    }
-
-                    KeyboardActionType.SOFT_TO_SOFT -> {
-                        chatViewModel.softKeyBoardHeight = keyboardHeight
-                        panelAnimateTo(-chatViewModel.softKeyBoardHeight, onStart = {
-                            changeKeyboardUi(KeyBoardType.SOFT_KEYBOARD)
-                        }, onEnd = {
-                            chatViewModel.saveUpdateSoftKeyBoardHeight()
-                        })
-                    }
-                    else -> {}
-                }
-            }
-        })
-    }
-
-    private fun panelAnimateTo(offset: Int, onStart: () -> Unit = {}, onEnd: () -> Unit = {}) {
-        mainAnim = ObjectAnimator.ofFloat(mBinding.main, "translationY", offset.toFloat())
-        mainAnim?.interpolator = FastOutSlowInInterpolator()
-        mainAnim?.duration = 170
-        mainAnim?.addListener(onStart = { onStart.invoke() }, onEnd = {
-            onEnd.invoke()
-        })
-        mainAnim?.start()
     }
 
 
@@ -233,12 +113,19 @@ class LiveSoftKeyboardFragment :
             }
             return@setOnTouchListener true
         }
-        mBinding.liveChatTvSend.setOnClickListener {
-            sendText()
+        mBinding.liveChatTvSend.setOnTouchListener { v, event ->
+            if (event.action == MotionEvent.ACTION_DOWN) {
+                sendText()
+            }
+            return@setOnTouchListener true
         }
-        mBinding.liveChatIvKeyboard.setOnClickListener {
-            keyboardChangeClick(KeyBoardType.SOFT_KEYBOARD)
+        mBinding.liveChatIvKeyboard.setOnTouchListener { v, event ->
+            if (event.action == MotionEvent.ACTION_DOWN) {
+                keyboardChangeClick(KeyBoardType.SOFT_KEYBOARD)
+            }
+            return@setOnTouchListener true
         }
+        mBinding.inputContent.setOnTouchListener { v, event -> return@setOnTouchListener true  }
     }
 
 
@@ -266,7 +153,6 @@ class LiveSoftKeyboardFragment :
             //监听聚焦事件，不合格的展示软件盘一律拦截
             setOnFocusChangeListener { v, hasFocus ->
 //            如果当前点击事件 softkeyboardlisterner 和 当前状态currentKeyboardListener 一致可以过滤掉聚焦事件
-//                "setOnFocusChangeListener ${chatViewModel.softKeyboardStatus}  isSoftKeyboardShow $isSoftKeyboardShow".logd("aaa")
                 if (chatViewModel.softKeyboardStatus && !isSoftKeyboardShow) { //要打开软件盘并且软件盘在收缩中
                     openSoftKeyBoard()
                 }
@@ -274,9 +160,8 @@ class LiveSoftKeyboardFragment :
             //监听点击事件
             setOnTouchListener { v, event ->
                 if (event.action == MotionEvent.ACTION_UP) {
-                    if (chatViewModel.clickKeyBoardType != KeyBoardType.SOFT_KEYBOARD) {
-//                        isSoftKeyBoardBack = false
-                        keyboardChangeClick(KeyBoardType.SOFT_KEYBOARD)
+                    if (chatViewModel.clickKeyBoardType != KeyBoardType.SOFT_KEYBOARD && !isSoftKeyboardShow) {
+                            keyboardChangeClick(KeyBoardType.SOFT_KEYBOARD)
                     }
                     return@setOnTouchListener true
                 }
@@ -291,7 +176,6 @@ class LiveSoftKeyboardFragment :
      * */
     private fun sendText() {
         val text: String = mBinding.liveChatEtInput.text?.toString() ?: ""
-        "text.isEmpty ${text.isEmpty()}"
         if (text.isEmpty()) {
             return
         }
@@ -300,10 +184,116 @@ class LiveSoftKeyboardFragment :
         chatViewModel.sendMsgToChat(text)
     }
 
-    override suspend fun createObserver() {
-        chatViewModel.updateKeyboardUiStatus.observe(viewLifecycleOwner) {
-            keyboardChangeClick(it, 1)
+
+     fun addMainViewListen(){
+        mBinding.main.viewTreeObserver
+            .addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    mBinding.main.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                    calculationLayoutSize()
+                    keyboardListener()
+                }
+            })
+    }
+
+    private fun calculationLayoutSize() {
+        mBinding.apply {
+//            "calculationLayoutSize  chatKeyBoardHeight:${chatViewModel.keyBoardHeight} ".logd("aaa")
+            if(chatViewModel.keyBoardHeight == 0){
+                chatViewModel.keyBoardHeight = mBinding.main.height
+            }
+            emojiKeyBoardHeight = chatViewModel.keyBoardHeight - 62.dp2px - 21.dp2px
+            emojiContent.layoutParams.height = emojiKeyBoardHeight
+            screenContent.layoutParams.height = chatViewModel.keyBoardHeight
+            main.layoutParams.height = chatViewModel.keyBoardHeight + emojiKeyBoardHeight
         }
+    }
+
+    private fun keyboardListener() {
+        navigationBarHelper = NavigationBarHelper(
+            requireActivity().window.decorView,
+            lifecycle,
+            object : NavigationListener {
+                override fun setNavigationStatus(hasNavigation: Boolean, navigationHeight: Int) {
+                }
+
+                override fun onSoftKeyBoardHide() {
+                    isSoftKeyboardShow = false
+                    if (chatViewModel.clickKeyBoardType == KeyBoardType.SOFT_KEYBOARD) {
+                        keyboardChangeClick(KeyBoardType.CHAT,11)
+                    }
+                }
+
+                override fun onSoftKeyBoardShow(keyboardHeight: Int) {
+                    if(chatViewModel.isFirstOpen){
+                        chatViewModel.setSoftFirstOpen(false)
+                    }
+                   whenSoftKeyBoardOpen(keyboardHeight)
+                }
+
+                override fun secondSoftKeyBoardShow() {
+
+                }
+            })
+        navigationBarHelper?.setDbKeyBoardHeight(chatViewModel.softKeyBoardHeight)
+
+    }
+
+    private fun whenSoftKeyBoardOpen(keyboardHeight: Int){
+        isSoftKeyboardShow = true
+        if (chatViewModel.softKeyBoardHeight == keyboardHeight) {
+            return
+        }
+        mainAnim?.cancel()
+        val animationType = mViewModel.getKeyBoardActionType(
+            chatViewModel.clickKeyBoardType,
+            chatViewModel.currentKeyBoardType
+        )
+
+        when (animationType) {
+            KeyboardActionType.CHAT_TO_SOFT -> {
+                chatViewModel.softKeyBoardHeight = keyboardHeight
+                panelAnimateTo(-chatViewModel.softKeyBoardHeight, onStart = {
+                    changeKeyboardUi(KeyBoardType.SOFT_KEYBOARD)
+                }, onEnd = {
+                    chatViewModel.saveUpdateSoftKeyBoardHeight()
+                })
+            }
+
+            KeyboardActionType.EMOJI_TO_SOFT -> {
+                chatViewModel.softKeyBoardHeight = keyboardHeight
+                panelAnimateTo(-chatViewModel.softKeyBoardHeight, onStart = {
+                    changeKeyboardUi(KeyBoardType.SOFT_KEYBOARD)
+                }, onEnd = {
+                    chatViewModel.saveUpdateSoftKeyBoardHeight()
+                })
+            }
+
+            KeyboardActionType.SOFT_TO_SOFT -> {
+                chatViewModel.softKeyBoardHeight = keyboardHeight
+                panelAnimateTo(-chatViewModel.softKeyBoardHeight, onStart = {
+                    changeKeyboardUi(KeyBoardType.SOFT_KEYBOARD)
+                }, onEnd = {
+                    chatViewModel.saveUpdateSoftKeyBoardHeight()
+                })
+            }
+
+            else -> {}
+        }
+    }
+
+    private fun panelAnimateTo(offset: Int, onStart: () -> Unit = {}, onEnd: () -> Unit = {}) {
+        mainAnim = ObjectAnimator.ofFloat(mBinding.main, "translationY", offset.toFloat())
+        mainAnim?.interpolator = FastOutSlowInInterpolator()
+        mainAnim?.duration = 170L
+        mainAnim?.addListener(onStart = { onStart.invoke() }, onEnd = {
+            onEnd.invoke()
+        })
+        if(chatViewModel.isFirstOpen){
+            mainAnim?.startDelay = 200L
+        }
+        mainAnim?.start()
+
     }
 
     private fun softKeyboardChange(value: Boolean, flag: Int) {
@@ -319,7 +309,7 @@ class LiveSoftKeyboardFragment :
     private fun keyboardChangeClick(keyBoardType: KeyBoardType, flag: Int = 0) {
         val flag1 = !chatViewModel.checkSoftKeyboardVisible()
         if (keyBoardType != KeyBoardType.CHAT && flag1) {
-            chatViewModel.checkSoftKeyBoardBetAmount(keyBoardType,flag)
+            chatViewModel.checkSoftKeyBoardBetAmount(keyBoardType, flag)
             return
         }
         chatViewModel.addSoftKeyBoardEvent(keyBoardType, flag)
@@ -336,18 +326,21 @@ class LiveSoftKeyboardFragment :
     }
 
     private fun showKeyboardAnimation() {
-        val animationType = mViewModel.getKeyBoardActionType(chatViewModel.clickKeyBoardType, chatViewModel.currentKeyBoardType)
+        val animationType = mViewModel.getKeyBoardActionType(
+            chatViewModel.clickKeyBoardType,
+            chatViewModel.currentKeyBoardType
+        )
 //        "showKeyboardAnimation $animationType ${chatViewModel.softKeyBoardHeight}".logd("aaa")
         when (animationType) {
             KeyboardActionType.CHAT_TO_CHAT -> changeKeyboardUi(KeyBoardType.CHAT)
             //展示软件盘
             KeyboardActionType.CHAT_TO_SOFT -> {
-                if(chatViewModel.softKeyBoardHeight == 0){
+                if (chatViewModel.softKeyBoardHeight == 0) {//如果没有记录软件盘高度或者app打开后第一次弹出软件盘不急着开启动画先弹出软件盘
                     softKeyboardChange(true, 1)
-                 return
+                    return
                 }
+                softKeyboardChange(true, 1)
                 panelAnimateTo(-chatViewModel.softKeyBoardHeight, onStart = {
-                    softKeyboardChange(true, 1)
                     changeKeyboardUi(KeyBoardType.SOFT_KEYBOARD)
                 })
             }
@@ -374,7 +367,7 @@ class LiveSoftKeyboardFragment :
             }
             //表情键盘切换到软件盘
             KeyboardActionType.EMOJI_TO_SOFT -> {
-                if(chatViewModel.softKeyBoardHeight == 0){
+                if (chatViewModel.softKeyBoardHeight == 0) {
                     softKeyboardChange(true, 4)
                     return
                 }
@@ -413,7 +406,7 @@ class LiveSoftKeyboardFragment :
         mBinding.keyboardTb.removeAllTips()
 
         mBinding.keyboardTb.addOnTabSelectedListener2(object : TabLayoutExt.OnTabSelectedListener2 {
-            override fun onTabSelected(tab:TabLayout.Tab, isTabClick: Boolean) {
+            override fun onTabSelected(tab: TabLayout.Tab, isTabClick: Boolean) {
                 tab.let {
                     val position = it.position
                     val iv = tab.view.findViewById<ImageView>(R.id.iv)
@@ -422,15 +415,15 @@ class LiveSoftKeyboardFragment :
 
                     when (position) {
                         0 -> {
-                            if(mBinding.keyboardTvAll.isInvisible){
+                            if (mBinding.keyboardTvAll.isInvisible) {
                                 tabChaneAnim(true, onStart = {
                                     mBinding.keyboardTvAll.isInvisible = false
                                 })
                             }
                         }
 
-                        else ->{
-                            if(!mBinding.keyboardTvAll.isInvisible){
+                        else -> {
+                            if (!mBinding.keyboardTvAll.isInvisible) {
                                 tabChaneAnim(false, onEnd = {
                                     mBinding.keyboardTvAll.isInvisible = true
                                 })
@@ -440,7 +433,7 @@ class LiveSoftKeyboardFragment :
                 }
             }
 
-            override fun onTabUnselected(tab:TabLayout.Tab, isTabClick: Boolean) {
+            override fun onTabUnselected(tab: TabLayout.Tab, isTabClick: Boolean) {
                 tab.let {
                     val position = it.position
                     val iv = tab.view.findViewById<ImageView>(R.id.iv)
@@ -448,22 +441,34 @@ class LiveSoftKeyboardFragment :
                 }
             }
 
-            override fun onTabReselected(tab:TabLayout.Tab, isTabClick: Boolean) {
+            override fun onTabReselected(tab: TabLayout.Tab, isTabClick: Boolean) {
             }
         })
     }
 
-    private fun tabChaneAnim(tvShow:Boolean,onStart: (() -> Unit)? = null,onEnd: (() -> Unit)? = null){
-        val tvAnimAlpha = ObjectAnimator.ofFloat(mBinding.keyboardTvAll,"alpha", if(tvShow) 1f else 0f)
-        val tvAnimTransY = ObjectAnimator.ofFloat(mBinding.keyboardTvAll,"translationY",if(tvShow) 0f else -18.dp2px.toFloat() )
-        val emojiAnim = ObjectAnimator.ofFloat(mBinding.keyboardEmojiRecycler,"translationY",if(tvShow) 0f else -18.dp2px.toFloat())
+    private fun tabChaneAnim(
+        tvShow: Boolean,
+        onStart: (() -> Unit)? = null,
+        onEnd: (() -> Unit)? = null
+    ) {
+        val tvAnimAlpha =
+            ObjectAnimator.ofFloat(mBinding.keyboardTvAll, "alpha", if (tvShow) 1f else 0f)
+        val tvAnimTransY = ObjectAnimator.ofFloat(
+            mBinding.keyboardTvAll,
+            "translationY",
+            if (tvShow) 0f else -18.dp2px.toFloat()
+        )
+        val emojiAnim = ObjectAnimator.ofFloat(
+            mBinding.keyboardEmojiRecycler,
+            "translationY",
+            if (tvShow) 0f else -18.dp2px.toFloat()
+        )
         val animSet = AnimatorSet()
         animSet.duration = 250L
-        animSet.playTogether(tvAnimTransY,tvAnimAlpha,emojiAnim)
-        animSet.addListener(onStart = {onStart?.invoke()},onEnd = {onEnd?.invoke()})
+        animSet.playTogether(tvAnimTransY, tvAnimAlpha, emojiAnim)
+        animSet.addListener(onStart = { onStart?.invoke() }, onEnd = { onEnd?.invoke() })
         animSet.start()
     }
-
 
 
     private fun initSoftRecycler() {
@@ -554,7 +559,10 @@ class LiveSoftKeyboardFragment :
      * 键盘显示时调整ui
      * */
     private fun updateWhenKeyBoardVisible(type: KeyBoardType) {
-        //聊天界面和软件盘、表情键盘的hint展示不同
+        if (context == null) {
+            return
+        }
+//        //聊天界面和软件盘、表情键盘的hint展示不同
         mBinding.liveChatEtInput.hint = SkinnableResourceManager.getString(
             requireContext(),
             if (type == KeyBoardType.CHAT) R.string.live_chat_talk else R.string.live_chat_speak,
@@ -566,8 +574,18 @@ class LiveSoftKeyboardFragment :
         )
         val mainColor =
             if (type == KeyBoardType.CHAT) arch.cayenne.lib.common.R.color.main_background else arch.cayenne.lib.common.R.color.card_background
-        mBinding.inputContent.setBackgroundResource(SkinnableResourceManager.getTargetResourceId(requireContext(), mainColor))
-        mBinding.emojiContent.setBackgroundResource(SkinnableResourceManager.getTargetResourceId(requireContext(), mainColor))
+        mBinding.inputContent.setBackgroundResource(
+            SkinnableResourceManager.getTargetResourceId(
+                requireContext(),
+                mainColor
+            )
+        )
+        mBinding.emojiContent.setBackgroundResource(
+            SkinnableResourceManager.getTargetResourceId(
+                requireContext(),
+                mainColor
+            )
+        )
     }
 
     /**
