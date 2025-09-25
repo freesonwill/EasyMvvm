@@ -9,6 +9,7 @@ import androidx.viewpager2.widget.ViewPager2
 import arch.cayenne.lib.common.utils.ext.startFadeAnim
 import arch.cayenne.lib.common.utils.helper.ViewPagerAnimHelper.Companion.getAnimHelper
 import arch.cayenne.lib.common.utils.helper.doSmartAnim
+import arch.cayenne.module.home.utils.scrollToPositionWithoutAnim
 import com.google.android.material.tabs.TabLayout
 import java.lang.ref.WeakReference
 import kotlin.math.max
@@ -48,18 +49,7 @@ class CustomTabLayoutMediator(
                     smoothScrollToTab(position)
                 }
             } else {
-                TabLayout::class.java
-                    .getDeclaredMethod(
-                        "setScrollPosition",
-                        Int::class.java,
-                        Float::class.java,
-                        Boolean::class.java,
-                        Boolean::class.java
-                    ).apply {
-                        isAccessible = true
-                        invoke(tabLayout, position, 0f, true, false)
-                    }
-
+                tabLayout.scrollToPositionWithoutAnim(position)
                 // 清空之前的切換紀錄
                 viewPager.getAnimHelper().resetHistory()
             }
