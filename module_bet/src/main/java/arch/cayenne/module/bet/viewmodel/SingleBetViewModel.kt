@@ -8,6 +8,7 @@ import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.data.repo.BalanceRepository
 import arch.cayenne.lib.common.ui.viewmodel.Event
+import arch.cayenne.lib.common.ui.viewmodel.NumberCalculatorNoLimitViewModel
 import arch.cayenne.lib.common.ui.viewmodel.NumberCalculatorViewModel
 import arch.cayenne.lib.common.utils.ext.SportDisplayOddsExt.getDisplayOdds
 import arch.cayenne.lib.common.utils.ext.SportDisplayOddsExt.reserveDisplayOdds
@@ -58,33 +59,6 @@ class SingleBetViewModel(
     private val _onReserveOddsListener = MutableLiveData<Int?>()
     val onReserveOddsListener: LiveData<Int?> get() = _onReserveOddsListener
 
-    private val _onCanBetListener = MediatorLiveData(false).apply {
-        val checkEligibility = {
-            val betSheet = _onBetSheetListener.value
-            val editNumber = onEditNumber.value
-            val odds = _onReserveOddsListener.value?.reserveDisplayOdds()
-
-            value = if (betSheet == null || editNumber == null) {
-                false
-            } else {
-                val money = editValue.toMoney()
-                val isMoneyValid = minMoney != 0L && money >= minMoney
-                val isBetSheetActive = betSheet.isActive
-
-                if (odds == null) {
-                    isBetSheetActive && isMoneyValid
-                } else {
-                    isBetSheetActive && isMoneyValid && odds >= betSheet.odds
-                }
-            }
-        }
-
-        addSource(_onBetSheetListener) { checkEligibility() }
-        addSource(onEditNumber) { checkEligibility() }
-        addSource(_onReserveOddsListener) { checkEligibility() }
-    }
-    val onCanBetListener: LiveData<Boolean> get() = _onCanBetListener
-
     val moneySymbol: String
         get() = CurrencySymbols.getSymbol(_onBalanceListener.value?.currency ?: "")
 
@@ -134,8 +108,8 @@ class SingleBetViewModel(
     private val _oddsChangeListener = MutableLiveData<OddsChangeEnum>()
     val oddsChangeListener: LiveData<OddsChangeEnum> get() = _oddsChangeListener
 
+
     init {
-        setNumberLimit(0L, 0L)
         viewModelScope.launch {
             launch {
                 betRepo.observeSelectionBean().distinctUntilChanged().collect {
@@ -151,9 +125,6 @@ class SingleBetViewModel(
             launch {
                 balanceRepo.observeInfo().collect {
                     _onBalanceListener.value = it
-//                    if (it != null) {
-//                        setRemainingNumber(it.balance)
-//                    }
                 }
             }
             launch {
@@ -167,7 +138,6 @@ class SingleBetViewModel(
                 }
             }
         }
-        setRemainingNumber(Long.MAX_VALUE)
     }
 
     fun sendBet(): Boolean {

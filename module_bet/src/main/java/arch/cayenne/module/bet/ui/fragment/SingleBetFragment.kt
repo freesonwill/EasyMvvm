@@ -178,11 +178,6 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
             mBinding.etMoney.hint =
                 getString(R.string.et_money_hint).format(it.first.getMoney(), it.second.getMoney())
         }
-        mViewModel.onOverNumberListener.observe(viewLifecycleOwner) {
-            it.msg?.let { msg ->
-                showToast(msg)
-            }
-        }
         mViewModel.onBalanceListener.observe(viewLifecycleOwner) {
             if (it != null) {
                 val money = "${mViewModel.moneySymbol} ${it.balance.getFormalMoney()}"
@@ -203,10 +198,6 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
         }
         mViewModel.betTypeListener.observe(viewLifecycleOwner) { type ->
             setBetTypeLayout(type)
-        }
-        mViewModel.onCanBetListener.observe(viewLifecycleOwner) {
-            mBinding.clBet.isEnabled = it
-            mBinding.tvBetHint.alpha = if (it) 1.0f else 0.7f
         }
         mViewModel.networkConnectedEvent.observeEvent(viewLifecycleOwner, this) {
             if (it is DataState.NetworkUnavailable) {

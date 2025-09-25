@@ -5,6 +5,7 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import arch.cayenne.lib.common.data.constants.OddsDisplayEnum
 import arch.cayenne.lib.common.data.repo.ReserveDialogRepository
+import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toOdds
 
 class ReserveDialogViewModel(repo: ReserveDialogRepository) : NumberCalculatorViewModel() {
@@ -42,8 +43,9 @@ class ReserveDialogViewModel(repo: ReserveDialogRepository) : NumberCalculatorVi
 
     fun init(odds: Int) {
         setRemainingNumber(ODDS_LIMIT)
+        setMaxNumber(ODDS_LIMIT)
         setNumberLimit(minOdds.toLong(), ODDS_LIMIT)
-        setEditNumber(odds.toLong())
+        setEditNumber(odds.getOdds())
     }
 
     fun addMixRate() {
@@ -56,9 +58,9 @@ class ReserveDialogViewModel(repo: ReserveDialogRepository) : NumberCalculatorVi
                 } else {
                     it
                 }
-                (it.toOdds() + minOdds)
+                (rate.toOdds() + minOdds)
             }
         } ?: minOdds
-        setEditNumber(odds.toLong())
+        setEditNumber(odds.getOdds())
     }
 }
