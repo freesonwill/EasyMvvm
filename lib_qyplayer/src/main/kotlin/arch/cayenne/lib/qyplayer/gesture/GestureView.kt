@@ -146,7 +146,7 @@ interface GestureListener {
      */
     fun onLongPress()
     /**
-     *
+     * 侧滑返回
      */
     fun onBack()
 }
