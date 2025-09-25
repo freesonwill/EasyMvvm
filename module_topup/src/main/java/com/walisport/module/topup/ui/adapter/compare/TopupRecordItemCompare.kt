@@ -8,7 +8,7 @@ class TopupRecordItemCompare : DiffUtil.ItemCallback<RechargeRecordBean>() {
         oldItem: RechargeRecordBean,
         newItem: RechargeRecordBean
     ): Boolean {
-        return oldItem.transactionId == newItem.transactionId
+        return oldItem.iid == newItem.iid
     }
 
     override fun areContentsTheSame(
