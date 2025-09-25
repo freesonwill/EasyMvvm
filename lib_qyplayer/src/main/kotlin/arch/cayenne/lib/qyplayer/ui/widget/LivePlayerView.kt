@@ -5,11 +5,13 @@ import android.content.Context
 import android.media.AudioManager
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
+import arch.cayenne.lib.common.utils.ext.requireActivity
 import arch.cayenne.lib.common.utils.ext.touchBackPressed
 import arch.cayenne.lib.qyplayer.R
 import arch.cayenne.lib.qyplayer.gesture.GestureDialogManager
@@ -41,6 +43,11 @@ class LivePlayerView @JvmOverloads constructor(
     private var onSingleTapListener: (() -> Unit)? = null
 
     /**
+     * 返回事件处理
+     */
+    private var onBackListener: (() -> Unit)? = null
+
+    /**
      * 播放状态通知
      */
     private var playerStateListener: ((PlayerState) -> Unit)? = null
@@ -67,6 +74,10 @@ class LivePlayerView @JvmOverloads constructor(
 
     fun setOnSingleTapListener(listener: (() -> Unit)) {
         onSingleTapListener = listener
+    }
+
+    fun setOnBackListener(listener: (() -> Unit)) {
+        onBackListener = listener
     }
 
     fun setPlayerStateListener(listener: (PlayerState) -> Unit) {
@@ -129,6 +140,7 @@ class LivePlayerView @JvmOverloads constructor(
         //避免listener引用导致LivePlayerView存在PlayerCache引发泄漏
         onSingleTapListener = null
         playerStateListener = null
+        onBackListener  = null
 
     }
 
@@ -189,9 +201,11 @@ class LivePlayerView @JvmOverloads constructor(
 
     private fun initGestureView() {
         mGestureView = findViewById(R.id.gesture_view)
-        mGestureView.touchBackPressed()
         mGestureView.apply {
             setOnGestureListener(object : GestureListener {
+                override fun onBack() {
+                    onBackListener?.invoke()
+                }
                 override fun onHorizontalDistance(downX: Float, nowX: Float) {
                     if (!isGestureEnable()) {
                         return

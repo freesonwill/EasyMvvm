@@ -7,6 +7,7 @@ import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getColor
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getDimension
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
+import arch.cayenne.lib.common.utils.ext.touchBackPressed
 import com.bumptech.glide.Glide
 import com.walisport.module.live.databinding.FragmentLiveMatchStatusBinding
 import com.walisport.module.live.ui.viewmodel.LiveMainViewModel
@@ -34,6 +35,7 @@ class LiveMatchStatusFragment : BaseFragment<LiveMatchStatusViewModel, FragmentL
     }
 
     override suspend fun createObserver() {
+        mBinding.root.touchBackPressed()
         //监听比赛id变化
         mainViewModel.matchId.observe(viewLifecycleOwner){
             mViewModel.setMatchId(it)
