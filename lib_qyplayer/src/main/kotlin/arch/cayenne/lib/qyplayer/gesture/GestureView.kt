@@ -46,7 +46,7 @@ class GestureView @JvmOverloads constructor(
                 }
 
                 override fun onBack() {
-                    requireActivity().onBackPressedDispatcher.onBackPressed()
+                   mOutGestureListener?.onBack()
                 }
                 override fun onGestureEnd() {
                     // 其他手势如果锁住了就不回调
