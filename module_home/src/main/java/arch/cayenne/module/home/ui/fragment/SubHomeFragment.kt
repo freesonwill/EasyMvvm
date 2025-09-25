@@ -229,6 +229,7 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
     fun onFragmentSelected() {
         mViewModel.getCurrentSportStatistical()
         mViewModel.getCurrentTournament()
+        tournamentTabLayoutMediator?.scrollTabToCurrentPositionImmediately()
     }
 
     fun reloadCurrentMatchListPagerFragment() {

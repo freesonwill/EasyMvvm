@@ -30,6 +30,10 @@ class CustomTabLayoutMediator(
     private var onTabSelectedListener: TabLayout.OnTabSelectedListener? = null
     private var pagerAdapterObserver: RecyclerView.AdapterDataObserver? = null
 
+    fun scrollTabToCurrentPositionImmediately() {
+        doOnClick(tabLayout.selectedTabPosition, true, true)
+    }
+
     /**
      * 執行 TabLayout 滾動到指定位置
      * 使用自定義平滑滾動
