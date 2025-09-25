@@ -30,6 +30,7 @@ import androidx.core.graphics.drawable.toDrawable
 import arch.cayenne.lib.common.data.constants.QuickAmountEnum
 import arch.cayenne.lib.common.data.constants.QuickAmountKeyboardEnum
 import arch.cayenne.lib.common.ui.adapter.QuickAmountAdapter
+import arch.cayenne.lib.common.utils.ext.SportStringExt.isGreaterThanValue
 import arch.cayenne.lib.common.utils.ext.setOnClickOrLongPressListener
 
 class ComboBetMoneyKeyboardDialogFragment private constructor():
@@ -241,9 +242,17 @@ class ComboBetMoneyKeyboardDialogFragment private constructor():
     }
 
     private fun sendMoney() {
+        val minNumber = mViewModel.minMoney.getMoney()
+        val maxNumber = mViewModel.maxMoney.getMoney()
         val curAmount = mViewModel.editValue
-        resultBundle.putString(VALUE_MONEY_INPUT, curAmount)
-        doExitAnim()
+        if (minNumber.isGreaterThanValue(curAmount)) {
+            showToast(getString(R.string.hint_less_min_amount))
+        } else if (curAmount.isGreaterThanValue(maxNumber)) {
+            showToast(getString(arch.cayenne.lib.common.R.string.toast_over_max))
+        } else {
+            resultBundle.putString(VALUE_MONEY_INPUT, curAmount)
+            doExitAnim()
+        }
     }
 
     private fun doExitAnim() {
