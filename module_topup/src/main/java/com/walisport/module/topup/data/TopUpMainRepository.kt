@@ -17,10 +17,10 @@ class TopUpMainRepository(
     suspend fun getListData(page: Int): ApiResponseState = withContext(scope.coroutineContext) {
         delay(1000)
         val dataList = mutableListOf<RechargeRecordBean>()
-        dataList.add(RechargeRecordBean("1", 1, 1, 1758706619000L, "999.00"))
-        dataList.add(RechargeRecordBean("2", 2, 2, 1758706619000L, "999.00"))
-        dataList.add(RechargeRecordBean("3", 2, 3, 1758706619000L, "999.00"))
-        dataList.add(RechargeRecordBean("4", 2, 1, 1758706619000L, "999.00"))
+        dataList.add(RechargeRecordBean("wL20220611", 1, 1, 1758706619000L, "","010 2930 2039 1220","9,100.00"))
+        dataList.add(RechargeRecordBean("wL20220612", 2, 2, 1758706619000L, "流水不足","010 2930 2039 1220","9,100.00"))
+        dataList.add(RechargeRecordBean("wL20220613", 2, 3, 1758706619000L, "","010 2930 2039 1220","9,100.00"))
+        dataList.add(RechargeRecordBean("wL20220614", 3, 1, 1758706619000L, "","010 2930 2039 1220","9,100.00"))
         return@withContext ApiResponseState.Succeeded(dataList)
     }
 }

@@ -5,11 +5,14 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import com.walisport.module.topup.R
 import com.walisport.module.topup.data.constants.LoadingState
+import com.walisport.module.topup.data.entity.RechargeRecordBean
 import com.walisport.module.topup.databinding.FragmentWithdrawRecordsBinding
 import com.walisport.module.topup.ui.adapter.WithdrawAdapter
+import com.walisport.module.topup.ui.adapter.WithdrawAdapter.OnWithdrawItemClickListener
 import com.walisport.module.topup.ui.viewmodel.WithdrawRecordsViewModel
 import kotlin.reflect.KClass
 
@@ -17,9 +20,11 @@ import kotlin.reflect.KClass
  * 充值记录列表页
  */
 
-class WithdrawRecordsFragment : BaseFragment<WithdrawRecordsViewModel, FragmentWithdrawRecordsBinding>() {
+class WithdrawRecordsFragment :
+    BaseFragment<WithdrawRecordsViewModel, FragmentWithdrawRecordsBinding>() {
 
-    override val vbClass: KClass<FragmentWithdrawRecordsBinding> = FragmentWithdrawRecordsBinding::class
+    override val vbClass: KClass<FragmentWithdrawRecordsBinding> =
+        FragmentWithdrawRecordsBinding::class
     override val vmClass: KClass<WithdrawRecordsViewModel> = WithdrawRecordsViewModel::class
     private val mAdapter by lazy { WithdrawAdapter() }
 
@@ -42,6 +47,21 @@ class WithdrawRecordsFragment : BaseFragment<WithdrawRecordsViewModel, FragmentW
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             adapter = mAdapter
         }
+        mAdapter.setOnItemClick(object : OnWithdrawItemClickListener {
+            override fun onClick(item: RechargeRecordBean) {
+                navigate(WithdrawRecordsFragmentDirections.actionWithdrawRecordsFragmentToWithdrawDetailFragment()
+                    .apply {
+                        arguments.putString("amount", item.amount)
+                        arguments.putString("iid", item.iid)
+                        arguments.putInt("type", item.type)
+                        arguments.putString("account", item.account)
+                        arguments.putInt("status", item.status)
+                        arguments.putLong("time", item.time)
+                        arguments.putString("reason", item.reason)
+                    }
+                )
+            }
+        })
     }
 
     override fun initData() {
