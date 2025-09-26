@@ -266,10 +266,10 @@ class BetResultFragment : BasePreLoadBottomSheetFragment<BetResultViewModel, Fra
     }
 
     private fun clearAllObserve() {
-        mViewModel.onBetType.removeObservers(viewLifecycleOwner)
-        mViewModel.onBetModeListener.removeObservers(viewLifecycleOwner)
-        mViewModel.onBetSheetListener.removeObservers(viewLifecycleOwner)
-        mViewModel.onDetailListener.removeObservers(viewLifecycleOwner)
+//        mViewModel.onBetType.removeObservers(viewLifecycleOwner)
+//        mViewModel.onBetModeListener.removeObservers(viewLifecycleOwner)
+//        mViewModel.onBetSheetListener.removeObservers(viewLifecycleOwner)
+//        mViewModel.onDetailListener.removeObservers(viewLifecycleOwner)
     }
 
     fun forceUpdateSkin() {
