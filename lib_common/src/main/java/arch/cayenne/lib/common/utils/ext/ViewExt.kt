@@ -638,10 +638,7 @@ fun View.setOnClickOrLongPressListener(
                 // 將 job 和旗標存入 tag，以便在 UP 事件中可以存取
                 setTag(R.id.long_press_job_tag, job)
                 setTag(R.id.is_long_press_triggered_tag, isLongPressTriggered)
-
-                if (this is SkinnableImageButton) {
-                    isPressed = true
-                }
+                isPressed = true
             }
 
             MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
@@ -658,10 +655,7 @@ fun View.setOnClickOrLongPressListener(
                 // 清理 tag
                 setTag(R.id.long_press_job_tag, null)
                 setTag(R.id.is_long_press_triggered_tag, null)
-
-                if (this is SkinnableImageButton) {
-                    isPressed = false
-                }
+                isPressed = false
             }
         }
         true

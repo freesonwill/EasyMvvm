@@ -16,10 +16,12 @@ import com.walisport.module.topup.data.entity.RechargeRecordBean
 import com.walisport.module.topup.databinding.ItemWithdrawRecordBinding
 import com.walisport.module.topup.ui.adapter.compare.TopupRecordItemCompare
 
-class WithdrawAdapter(private val listener: OnWithdrawItemClickListener? = null) :
+class WithdrawAdapter :
     BaseAdapter<RechargeRecordBean, BaseViewHolder, ItemWithdrawRecordBinding>(
         TopupRecordItemCompare()
     ) {
+
+    private var listener: OnWithdrawItemClickListener? = null
 
     companion object {
         const val TYPE_SUC = 1     //提现成功
@@ -65,6 +67,9 @@ class WithdrawAdapter(private val listener: OnWithdrawItemClickListener? = null)
         binding.ivIcon.background = getPayIcon(item.type)
         binding.tvTime.text = DateUtils.getDisplayStr(item.time, "yyyy/MM/dd HH:mm")
         binding.tvAmount.text = item.amount
+        binding.itemRoot.setOnClickListener {
+            listener?.onClick(item)
+        }
     }
 
     private fun getStatus(status: Int): String {
@@ -103,10 +108,9 @@ class WithdrawAdapter(private val listener: OnWithdrawItemClickListener? = null)
         return when (type) {
             TYPE_BANK -> R.drawable.icon_pay_union.getDrawable()
             TYPE_USDT -> R.drawable.icon_pay_usdt.getDrawable()
-            else -> R.drawable.icon_pay_union.getDrawable()
+            else -> R.drawable.icon_pay_ee.getDrawable()
         }
     }
-
 
     override fun createViewBinding(
         inflater: LayoutInflater,
@@ -123,7 +127,11 @@ class WithdrawAdapter(private val listener: OnWithdrawItemClickListener? = null)
         return BaseViewHolder(binding)
     }
 
+    fun setOnItemClick(listener: OnWithdrawItemClickListener){
+        this.listener = listener
+    }
+
     interface OnWithdrawItemClickListener {
-        fun onEntryClick(item: RechargeRecordBean)
+        fun onClick(item: RechargeRecordBean)
     }
 }

@@ -20,7 +20,7 @@ class ResultMultiBetAdapter(private val listener: OnResultMultiBetListener) :
         binding: ItemResultMultiBetBinding,
         position: Int
     ) {
-        val item = getItem(holder.adapterPosition)
+        val item = getItem(holder.absoluteAdapterPosition)
         val combo = holder.getString(R.string.title_combo_bet_odds).format(item.comboK, item.comboV)
         val odds ="$combo @${item.odds.getDisplayOdds()}"
 

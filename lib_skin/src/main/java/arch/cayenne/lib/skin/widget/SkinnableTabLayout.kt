@@ -2,7 +2,7 @@ package arch.cayenne.lib.skin.widget
 
 import android.content.Context
 import android.util.AttributeSet
-import androidx.core.view.doOnDetach
+import androidx.annotation.CallSuper
 import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import arch.cayenne.lib.skin.data.SkinMsgType
@@ -12,9 +12,8 @@ import arch.cayenne.lib.skin.widget.helper.SkinnableBackGroundHelper
 import arch.cayenne.lib.skin.widget.helper.SkinnableLanguageFlowHelper
 import arch.cayenne.lib.skin.widget.helper.SkinnableTabLayoutHelper
 import arch.cayenne.lib.skin.widget.helper.SkinnableViewFlowHelper
-import kotlinx.coroutines.MainScope
 
-class SkinnableTabLayout : TabLayout, ISkinnableBiz {
+open class SkinnableTabLayout : TabLayout, ISkinnableBiz {
     private val backgroundTintHelper = SkinnableBackGroundHelper(this)
     private val tabLayoutHelper = SkinnableTabLayoutHelper(this)
     private val TAG = SkinnableTabLayout::class.java.simpleName
@@ -34,6 +33,7 @@ class SkinnableTabLayout : TabLayout, ISkinnableBiz {
         initView(context, attrs, defStyleAttr)
     }
 
+    @CallSuper
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
         flowHelper.startSkinFlow(findViewTreeLifecycleOwner()?.lifecycleScope) {
@@ -46,7 +46,7 @@ class SkinnableTabLayout : TabLayout, ISkinnableBiz {
         }
     }
 
-
+    @CallSuper
     override fun onDetachedFromWindow() {
         flowHelper.destroyFlow()
         languageFlowHelper.destroyFlow()
@@ -54,7 +54,8 @@ class SkinnableTabLayout : TabLayout, ISkinnableBiz {
     }
 
 
-    override fun initView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) {
+    @CallSuper
+    final override fun initView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) {
         backgroundTintHelper.loadFromAttributes(attrs, defStyleAttr)
         tabLayoutHelper.loadFromAttributes(attrs, defStyleAttr)
     }
