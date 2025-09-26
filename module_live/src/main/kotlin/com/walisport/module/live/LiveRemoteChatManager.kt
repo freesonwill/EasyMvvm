@@ -45,7 +45,10 @@ class LiveRemoteChatManager(
      * 连接聊天服务器
      * */
     suspend fun startSocket(scope: CoroutineScope): ConnectState? {
-        return socketManager.connect(scope, "wss://ws.qxe68.com:7001/api/game/chat/ws")?.first()
+
+//        return socketManager.connect(scope, "wss://ws.qxe68.com:7001/api/game/chat/ws")?.first()
+        return socketManager.connect(scope, "wss://betwavepro.ja700.com/api/game/chat/ws")?.first()
+
     }
 
     /**
