@@ -14,7 +14,7 @@ open class NumberCalculatorNoLimitViewModel : BaseViewModel() {
 
     val editValue: String get() = _onEditNumber.value.orEmpty()
 
-    fun addNumber(number: Int) {
+    open fun addNumber(number: Int) {
         val current = onEditNumber.value.orEmpty()
 
         val newValue = if (current.contains('.')) {
@@ -24,7 +24,7 @@ open class NumberCalculatorNoLimitViewModel : BaseViewModel() {
         } else {
             current + number
         }
-        _onEditNumber.value = newValue
+        setEditNumber(newValue)
     }
 
     fun setDot() {
@@ -38,11 +38,11 @@ open class NumberCalculatorNoLimitViewModel : BaseViewModel() {
     }
 
     fun setNumber(number: Long) {
-        _onEditNumber.value = number.toString()
+        setEditNumber(number.toString())
     }
 
     fun setNumber(number: String) {
-        _onEditNumber.value = number
+        setEditNumber(number)
     }
 
     fun clearNumber() {
