@@ -9,8 +9,6 @@ import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.data.repo.BalanceRepository
 import arch.cayenne.lib.common.ui.viewmodel.Event
-import arch.cayenne.lib.common.utils.ext.SportStringExt.isGreaterThanZero
-import arch.cayenne.lib.common.utils.ext.SportStringExt.sumOf
 import arch.cayenne.lib.database.entity.BetSelectionBean
 import arch.cayenne.lib.database.entity.InfoBean
 import arch.cayenne.module.bet.data.ComboMultiBetBean

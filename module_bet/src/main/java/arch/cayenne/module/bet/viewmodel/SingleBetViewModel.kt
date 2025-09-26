@@ -11,7 +11,6 @@ import arch.cayenne.lib.common.ui.viewmodel.Event
 import arch.cayenne.lib.common.ui.viewmodel.NumberCalculatorViewModel
 import arch.cayenne.lib.common.utils.ext.SportDisplayOddsExt.getDisplayOdds
 import arch.cayenne.lib.common.utils.ext.SportDisplayOddsExt.reserveDisplayOdds
-import arch.cayenne.lib.common.utils.ext.SportStringExt.multiplication
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
 import arch.cayenne.lib.database.entity.BetSelectionBean
 import arch.cayenne.lib.database.entity.BetTypeEnum
@@ -22,6 +21,7 @@ import arch.cayenne.module.bet.repo.SingleBetRepository
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
+import java.math.BigDecimal
 
 class SingleBetViewModel(
     private val betRepo: SingleBetRepository,
@@ -65,10 +65,26 @@ class SingleBetViewModel(
         fun getOdds(): String {
             return odds.getDisplayOdds()
         }
+
+        fun setMoney() {
+            val money = editValue
+            val cMoney = if (money.isEmpty()) {
+                ""
+            } else if (money.last() == '.') {
+                money.substring(0, money.length - 1)
+            } else {
+                money
+            }
+            value = if (cMoney.isEmpty()) {
+                ""
+            } else {
+                BigDecimal(editValue).multiply(BigDecimal(getOdds())).toString()
+            }
+        }
         addSource(_onBetSheetListener) { data ->
             if (_onReserveOddsListener.value == null) {
                 odds = data.odds
-                value = editValue.multiplication(getOdds())
+                setMoney()
             }
         }
         addSource(_onReserveOddsListener) { reserveOdds ->
@@ -79,22 +95,10 @@ class SingleBetViewModel(
             } else {
                 odds = reserveOdds
             }
-            value = editValue.multiplication(getOdds())
+            setMoney()
         }
         addSource(onEditNumber) {
-//            betRepo.setMoney(it)
-            val money = if (it.isEmpty()) {
-                "0"
-            } else if (it.last() == '.') {
-                it.substring(0, it.length - 1)
-            } else {
-                it
-            }
-            value = if (money.isEmpty()) {
-                ""
-            } else {
-                money.multiplication(getOdds())
-            }
+            setMoney()
         }
     }
     val onBetWinMoney: LiveData<String> get() = _onBetWinMoney
