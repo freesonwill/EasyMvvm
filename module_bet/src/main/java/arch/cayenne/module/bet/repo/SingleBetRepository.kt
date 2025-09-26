@@ -140,6 +140,8 @@ class SingleBetRepository(
 
     suspend fun saveToReserve(odds: Int) = withContext(scope.coroutineContext) {
         betDao.getCurrentBet()?.let {
+            val selection = betDao.getSelections(it.betId).first()
+            betDao.updateOdds(it.betId, selection.selectionId, odds)
             betDao.insertDetail(
                 BetDetailBean(
                     betId = it.betId,
