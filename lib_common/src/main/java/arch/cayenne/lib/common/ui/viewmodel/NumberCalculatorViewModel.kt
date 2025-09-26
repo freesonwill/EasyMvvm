@@ -2,26 +2,14 @@ package arch.cayenne.lib.common.ui.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.common.data.constants.NumberOverEnum
+import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoneyForScale
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoneyForScale
 
-open class NumberCalculatorViewModel : BaseViewModel() {
-
-    private var _decimalNumber: Int = 2
-    val decimalNumber: Int get() = _decimalNumber
-
-    private val _onEditNumber = MutableLiveData("")
-    val onEditNumber: LiveData<String> get() =  _onEditNumber
-
-    val editValue: String get() = _onEditNumber.value.orEmpty()
+open class NumberCalculatorViewModel : NumberCalculatorNoLimitViewModel() {
 
     private val _onNumberLimit = MutableLiveData<Pair<Long, Long>>(Pair(0, 0))
-    /***
-     * @param first min number
-     * @param second max number
-     */
     val onNumberLimit: LiveData<Pair<Long, Long>> get() =  _onNumberLimit
 
     private val _onOverNumberListener = MutableLiveData(NumberOverEnum.DEFAULT)
@@ -29,89 +17,41 @@ open class NumberCalculatorViewModel : BaseViewModel() {
 
     val minMoney: Long get() = onNumberLimit.value?.first ?: 0
     val maxMoney: Long get() = onNumberLimit.value?.second ?: Long.MAX_VALUE
-    private var remainingNumber: Long = Long.MAX_VALUE
-
-    fun addNumber(number: Int) {
-        val current = onEditNumber.value.orEmpty()
-
-        val newValue = if (current.contains('.')) {
-            val decimalPart = current.substringAfter('.', "")
-            if (decimalPart.length >= decimalNumber) return  // 最多兩位小數，直接返回不修改
-            current + number
-        } else {
-            current + number
-        }
-        setEditNumber(newValue.toMoneyForScale(decimalNumber))
-    }
-
-    fun setDot() {
-        _onEditNumber.value = _onEditNumber.value?.let {
-            if (!it.contains(".")) {
-                "$it."
-            } else {
-                it
-            }
-        } ?: "0."
-    }
+    private var remainingNumber: Long? = null
+    private var maxNumber: Long? = null
 
     fun setMaxMoney() {
-        setEditNumber(maxMoney)
+        setEditNumber(maxMoney.getMoney())
     }
 
-    fun setNumber(number: Long) {
-        setEditNumber(number)
-    }
-
-    fun clearNumber() {
-        _onEditNumber.value = ""
-    }
-
-    fun doubleNumber() {
-        onEditNumber.value?.let {
-            if (it.isEmpty()) {
-                ""
-            } else {
-                val money = if (it.last() == '.') {
-                    it.substring(0, it.length - 1)
-                } else {
-                    it
-                }
-                setEditNumber(money.toMoneyForScale(decimalNumber) * 2)
-            }
-        } ?: ""
-    }
-
-    fun backNumber() {
-        _onEditNumber.value = _onEditNumber.value?.let {
-            if (it.length > 1) {
-                it.substring(0, it.length - 1)
-            } else {
-                ""
-            }
+    override fun setEditNumber(value: String) {
+        if (remainingNumber == null && maxNumber == null) {
+            super.setEditNumber(value)
+            return
         }
-    }
-
-    protected fun setEditNumber(value: Long) {
-        _onEditNumber.value = if (value > maxMoney) {
-            if (maxMoney > remainingNumber) {
+        val rn = remainingNumber ?: return
+        val mn = maxNumber ?: return
+        val mV = value.toMoneyForScale(decimalNumber)
+        _onEditNumber.value = if (mV > mn) {
+            if (maxMoney > rn) {
                 setOverNumberListener(NumberOverEnum.OVER_REMAINING)
-                remainingNumber.getMoneyForScale(decimalNumber)
+                rn.getMoneyForScale(decimalNumber)
             } else {
                 setOverNumberListener(getMaxToast())
-                maxMoney.getMoneyForScale(decimalNumber)
+                mn.getMoneyForScale(decimalNumber)
             }
-        } else if (value > remainingNumber) {
-            if (remainingNumber < maxMoney) {
+        } else if (mV > rn) {
+            if (rn < mn) {
                 setOverNumberListener(NumberOverEnum.OVER_REMAINING)
-                remainingNumber.getMoneyForScale(decimalNumber)
+                rn.getMoneyForScale(decimalNumber)
             } else {
                 setOverNumberListener(getMaxToast())
-                maxMoney.getMoneyForScale(decimalNumber)
+                mn.getMoneyForScale(decimalNumber)
             }
-        } else if (value == 0L) {
+        } else if (mV == 0L) {
             getZero()
         } else {
-            value.getMoneyForScale(decimalNumber)
+            mV.getMoneyForScale(decimalNumber)
         }
         _onOverNumberListener.value = NumberOverEnum.DEFAULT
     }
@@ -153,8 +93,8 @@ open class NumberCalculatorViewModel : BaseViewModel() {
         }
     }
 
-    fun setDecimalNumber(decimal: Int) {
-        _decimalNumber = decimal
+    fun setMaxNumber(number: Long) {
+        maxNumber = number
     }
 
     open fun getMaxToast():NumberOverEnum?{

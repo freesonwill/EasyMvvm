@@ -67,17 +67,15 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
                                 mViewModel.updateMultiBetMoney(serialValue, money)
                             }
                         }
-                        val currentMoney = if (it.inputMoney == 0L) null else it.inputMoney
+                        val currentMoney = it.inputMoney
                         val minAmount = it.minAmount
                         val maxAmount = it.maxAmount
-                        val remainingMoney = mViewModel.remainingBalance / it.count
                         ComboBetMoneyKeyboardDialogFragment.newInstance(
                             locationX,
                             locationY,
                             currentMoney,
                             minAmount,
-                            maxAmount,
-                            remainingMoney
+                            maxAmount
                         ).show(childFragmentManager)
                     }
             }
@@ -177,10 +175,6 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
         mViewModel.onBalanceListener.observe(viewLifecycleOwner) {
             val money = "${mViewModel.moneySymbol} ${(it?.balance?:0L).getFormalMoney()}"
             mBinding.tvBalance.text = money
-        }
-        mViewModel.onCanBetListener.observe(viewLifecycleOwner) {
-            mBinding.clBet.isEnabled = it
-            mBinding.tvBetHint.alpha = if (it) 1.0f else 0.7f
         }
         mViewModel.onForceUpdateListener.observe(viewLifecycleOwner) {
             if (it && !isFullScreen) {
