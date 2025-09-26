@@ -21,6 +21,7 @@ import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
 import arch.cayenne.lib.common.utils.ext.SportDisplayOddsExt.getDisplayOdds
+import arch.cayenne.lib.common.utils.ext.SportStringExt.isGreaterThanValue
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toOdds
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
@@ -285,11 +286,15 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
     }
 
     private fun sendBet() {
-        val minAmount = mViewModel.minMoney
-        val curAmount = mViewModel.editValue.toMoney()
-        if (curAmount < minAmount) {
+        val minNumber = mViewModel.minMoney.getMoney()
+        val maxNumber = mViewModel.maxMoney.getMoney()
+        val balane = mViewModel.balance.getMoney()
+        val curAmount = mViewModel.editValue
+        if (minNumber.isGreaterThanValue(curAmount)) {
             showToast(getString(R.string.hint_less_min_amount))
-        } else if (curAmount > mViewModel.balance) {
+        } else if (curAmount.isGreaterThanValue(maxNumber)) {
+            showToast(getString(arch.cayenne.lib.common.R.string.toast_over_max))
+        } else if (curAmount.isGreaterThanValue(balane)) {
             showToast(getString(arch.cayenne.lib.common.R.string.toast_over_remaining))
         } else if (!mViewModel.checkOddsPass()) {
             mViewModel.oddsChangeListener.value?.toastRes?.let {
