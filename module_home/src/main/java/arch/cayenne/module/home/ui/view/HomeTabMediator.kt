@@ -23,7 +23,7 @@ import kotlin.math.abs
  * - 防抖機制避免動畫衝突
  */
 class HomeTabMediator(
-    private val tabLayout: TabLayout,
+    private val tabLayout: CustomTabLayout,
     private val viewPager: ViewPager2,
     private val tabConfiguration: (tab: TabLayout.Tab, position: Int) -> Unit,
     private val onPreselectChanged: ((position: Int) -> Unit)? = null
@@ -82,13 +82,10 @@ class HomeTabMediator(
         populateTabsFromPagerAdapter()
         tabLayout.setScrollPosition(viewPager.currentItem, 0f, true)
 
-        if (tabLayout is CustomTabLayout) {
-            tabLayout.onTabClick = { position ->
-                isTabClick = true
-                doOnClick(position, noViewPagerAnim = false)
-            }
+        tabLayout.onTabClick = { position ->
+            isTabClick = true
+            doOnClick(position, noViewPagerAnim = false)
         }
-
     }
 
 
