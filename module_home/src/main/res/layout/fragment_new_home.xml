@@ -45,7 +45,7 @@
 
 
             <!-- 主導航 (包含 "今日"、"早盤"、"冠軍") -->
-            <arch.cayenne.lib.skin.widget.SkinnableTabLayout
+            <arch.cayenne.module.home.ui.view.CustomTabLayout
                 android:id="@+id/tl_home"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
