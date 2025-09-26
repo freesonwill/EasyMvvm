@@ -60,7 +60,7 @@ open class NumberCalculatorNoLimitViewModel : BaseViewModel() {
             2,
             RoundingMode.DOWN
         )
-        setEditNumber(finalResult.toString())
+        setEditNumber(finalResult.stripTrailingZeros().toPlainString())
     }
 
     fun backNumber() {

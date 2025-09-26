@@ -87,7 +87,7 @@ class SingleBetViewModel(
                 )
                 val mc = MathContext(16, RoundingMode.DOWN)
                 val scaled = finalResult.round(mc)
-                scaled.toString()
+                scaled.stripTrailingZeros().toPlainString()
             }
         }
         addSource(_onBetSheetListener) { data ->
