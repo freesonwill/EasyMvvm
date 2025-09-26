@@ -286,15 +286,20 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
     }
 
     private fun sendBet() {
-        val minNumber = mViewModel.minMoney.getMoney()
-        val maxNumber = mViewModel.maxMoney.getMoney()
-        val balane = mViewModel.balance.getMoney()
         val curAmount = mViewModel.editValue
-        if (minNumber.isGreaterThanValue(curAmount)) {
+        if (curAmount.isGreaterThanValue(Long.MAX_VALUE.toString())) {
+            showToast(getString(arch.cayenne.lib.common.R.string.toast_input_error))
+            return
+        }
+        val amount = curAmount.toMoney()
+        val minNumber = mViewModel.minMoney
+        val maxNumber = mViewModel.maxMoney
+        val balance = mViewModel.balance
+        if (minNumber > amount) {
             showToast(getString(R.string.hint_less_min_amount))
-        } else if (curAmount.isGreaterThanValue(maxNumber)) {
+        } else if (amount > maxNumber) {
             showToast(getString(arch.cayenne.lib.common.R.string.toast_over_max))
-        } else if (curAmount.isGreaterThanValue(balane)) {
+        } else if (amount > balance) {
             showToast(getString(arch.cayenne.lib.common.R.string.toast_over_remaining))
         } else if (!mViewModel.checkOddsPass()) {
             mViewModel.oddsChangeListener.value?.toastRes?.let {

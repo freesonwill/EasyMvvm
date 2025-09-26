@@ -144,7 +144,7 @@ class ComboBetViewModel(
         repo.removeAll()
     }
 
-    fun updateMultiBetMoney(serialValue: Int, money: String) {
+    fun updateMultiBetMoney(serialValue: Int, money: Long) {
         _onComboMultiBetBeanListener.value?.let {
             val updatedList = it.map { rate ->
                 if (rate.serialValue == serialValue) {
@@ -158,8 +158,8 @@ class ComboBetViewModel(
         }
     }
 
-    fun getSumBetAmount(): String {
-        return _onComboMultiBetBeanListener.value?.map { it.inputMoney }?.sumOf() ?: "0"
+    fun getSumBetAmount(): Long {
+        return _onComboMultiBetBeanListener.value?.sumOf { it.inputMoney } ?: 0L
     }
 
     fun sendBet(): Boolean {
@@ -167,7 +167,7 @@ class ComboBetViewModel(
             return false
         }
         val oddsChangeEnum = _oddsChangeListener.value ?: return false
-        return _onComboMultiBetBeanListener.value?.filter { it.inputMoney.isGreaterThanZero() }?.let {
+        return _onComboMultiBetBeanListener.value?.filter { it.inputMoney != 0L }?.let {
             if (it.isNotEmpty()) {
                 repo.sendBet(it, oddsChangeEnum)
                 true
@@ -196,8 +196,8 @@ class ComboBetViewModel(
     fun clearBetMoney() {
         val data = _onComboMultiBetBeanListener.value ?: return
         _onComboMultiBetBeanListener.value = data.map {
-            if (it.inputMoney.isGreaterThanZero()) {
-                it.copy(inputMoney = "")
+            if (it.inputMoney > 0) {
+                it.copy(inputMoney = 0L)
             } else {
                 it
             }

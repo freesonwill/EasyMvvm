@@ -31,6 +31,7 @@ import arch.cayenne.lib.common.data.constants.QuickAmountEnum
 import arch.cayenne.lib.common.data.constants.QuickAmountKeyboardEnum
 import arch.cayenne.lib.common.ui.adapter.QuickAmountAdapter
 import arch.cayenne.lib.common.utils.ext.SportStringExt.isGreaterThanValue
+import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
 import arch.cayenne.lib.common.utils.ext.setOnClickOrLongPressListener
 
 class ComboBetMoneyKeyboardDialogFragment private constructor():
@@ -43,7 +44,7 @@ class ComboBetMoneyKeyboardDialogFragment private constructor():
         private const val MIN_NUMBER = "minNumber"
         private const val MAX_NUMBER = "maxNumber"
 
-        fun newInstance(positionX: Int?, positionY: Int?, currentMoney: String, minNumber: Long, maxNumber: Long): ComboBetMoneyKeyboardDialogFragment {
+        fun newInstance(positionX: Int?, positionY: Int?, currentMoney: Long, minNumber: Long, maxNumber: Long): ComboBetMoneyKeyboardDialogFragment {
             val b = Bundle()
             positionX?.let {
                 b.putInt(POSITION_X, it)
@@ -52,7 +53,7 @@ class ComboBetMoneyKeyboardDialogFragment private constructor():
                 b.putInt(POSITION_Y, it)
             }
             currentMoney.let {
-                b.putString(CURRENT_MONEY_NUMBER, it)
+                b.putLong(CURRENT_MONEY_NUMBER, it)
             }
             b.putLong(MIN_NUMBER, minNumber)
             b.putLong(MAX_NUMBER, maxNumber)
@@ -228,8 +229,10 @@ class ComboBetMoneyKeyboardDialogFragment private constructor():
             mViewModel.setNumberLimit(minNumber, maxNumber)
         }
 
-        val currentMoney = requireArguments().getString(CURRENT_MONEY_NUMBER, "")
-        mViewModel.setNumber(currentMoney)
+        val currentMoney = requireArguments().getLong(CURRENT_MONEY_NUMBER, 0L)
+        if (currentMoney != 0L) {
+            mViewModel.setNumber(currentMoney)
+        }
     }
 
     private fun setTrianglePosition(targetPositionX: Int) {
@@ -242,15 +245,20 @@ class ComboBetMoneyKeyboardDialogFragment private constructor():
     }
 
     private fun sendMoney() {
-        val minNumber = mViewModel.minMoney.getMoney()
-        val maxNumber = mViewModel.maxMoney.getMoney()
         val curAmount = mViewModel.editValue
-        if (minNumber.isGreaterThanValue(curAmount)) {
+        if (curAmount.isGreaterThanValue(Long.MAX_VALUE.toString())) {
+            showToast(getString(arch.cayenne.lib.common.R.string.toast_input_error))
+            return
+        }
+        val minNumber = mViewModel.minMoney
+        val maxNumber = mViewModel.maxMoney
+        val amount = curAmount.toMoney()
+        if (minNumber > amount) {
             showToast(getString(R.string.hint_less_min_amount))
-        } else if (curAmount.isGreaterThanValue(maxNumber)) {
+        } else if (amount > maxNumber) {
             showToast(getString(arch.cayenne.lib.common.R.string.toast_over_max))
         } else {
-            resultBundle.putString(VALUE_MONEY_INPUT, curAmount)
+            resultBundle.putLong(VALUE_MONEY_INPUT, amount)
             doExitAnim()
         }
     }
@@ -277,7 +285,7 @@ class ComboBetMoneyKeyboardDialogFragment private constructor():
     override fun onDismiss(dialog: DialogInterface) {
         setFragmentResult(KEY_RESULT, resultBundle.apply {
             if (!this.containsKey(VALUE_MONEY_INPUT)) {
-                putString(VALUE_MONEY_INPUT, requireArguments().getString(CURRENT_MONEY_NUMBER, ""))
+                putLong(VALUE_MONEY_INPUT, requireArguments().getLong(CURRENT_MONEY_NUMBER, 0L))
             }
         })
         super.onDismiss(dialog)

@@ -1,7 +1,7 @@
 package arch.cayenne.module.bet.data
 
-import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
-import arch.cayenne.lib.common.utils.ext.SportStringExt.multiplication
+import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
+import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
 
 /***
  * 有三場比賽欲串關，則有3串1、3串2、3串3，共三個串關方式
@@ -20,25 +20,15 @@ data class ComboMultiBetBean(
     var sumOdds: Int, // 串關後賠率加總
     var odds: Int,
     val count: Int = 1, // 場次組合數量
-    var inputMoney: String = "",
+    var inputMoney: Long = 0,
     val minAmount: Long,
     val maxAmount: Long
 ) {
-    val amount: String
-        get() {
-            val value = inputMoney.multiplication(count)
-            return value.ifEmpty {
-                "0"
-            }
-        }
+    val amount: Long
+        get() = inputMoney * count
 
-    val maxWinMoney: String
-        get() {
-            val value = inputMoney.multiplication(odds.getOdds().multiplication(count))
-            return value.ifEmpty {
-                "0"
-            }
-        }
+    val maxWinMoney: Long
+        get() = inputMoney.getMoney(odds * count).toMoney()
 }
 
 data class ComboMultiBetOddsBean(

@@ -165,7 +165,7 @@ class ComboBetRepository(
                             sumOdds = multiBet.sumOdds,
                             odds = multiBet.odds,
                             count = multiBet.count,
-                            inputMoney = ""
+                            inputMoney = 0L
                         ).apply {
                             betDao.insertDetail(this)
                         }
@@ -508,7 +508,7 @@ class ComboBetRepository(
         selectionFlow.emit(selections)
     }
 
-    fun setMoney(serialValue: Int, money: String) {
+    fun setMoney(serialValue: Int, money: Long) {
         scope.launch {
             betDao.getCurrentBet()?.let { bet ->
                 betDao.updateDetailMoney(bet.betId, serialValue, money)

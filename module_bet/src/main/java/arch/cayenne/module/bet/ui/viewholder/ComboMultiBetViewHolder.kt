@@ -8,7 +8,6 @@ import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
-import arch.cayenne.lib.common.utils.ext.SportStringExt.isGreaterThanZero
 import arch.cayenne.module.bet.R
 import arch.cayenne.module.bet.data.ComboMultiBetBean
 import arch.cayenne.module.bet.databinding.ItemComboMultiBetBinding
@@ -49,17 +48,17 @@ class ComboMultiBetViewHolder(private val mBinding: ItemComboMultiBetBinding, pr
 
     fun updateMoney(item: ComboMultiBetBean) {
         val moneySymbol = onComboMultiBetClickListener.getMoneySymbol()
-        if (item.inputMoney.isGreaterThanZero()) {
-            val money = "$moneySymbol ${item.inputMoney}"
+        if (item.inputMoney > 0) {
+            val money = "$moneySymbol ${item.inputMoney.getMoney()}"
             mBinding.etMoney.setText(money)
         } else {
             mBinding.etMoney.setText("")
         }
         val moneyHint = "$moneySymbol ${getString(R.string.et_money_hint).format(item.minAmount.getMoney(), item.maxAmount.getMoney())}"
         mBinding.etMoney.hint = moneyHint
-        val amountMoney = "$moneySymbol${item.amount}"
+        val amountMoney = "$moneySymbol${item.amount.getFormalMoney()}"
         mBinding.tvMoney.text = amountMoney
-        val maxMoney = "$moneySymbol${item.maxWinMoney}"
+        val maxMoney = "$moneySymbol${item.maxWinMoney.getFormalMoney()}"
         mBinding.tvMaxMoney.text = maxMoney
     }
 

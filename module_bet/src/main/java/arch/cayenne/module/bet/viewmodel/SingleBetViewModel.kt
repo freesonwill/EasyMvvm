@@ -12,6 +12,7 @@ import arch.cayenne.lib.common.ui.viewmodel.NumberCalculatorViewModel
 import arch.cayenne.lib.common.utils.ext.SportDisplayOddsExt.getDisplayOdds
 import arch.cayenne.lib.common.utils.ext.SportDisplayOddsExt.reserveDisplayOdds
 import arch.cayenne.lib.common.utils.ext.SportStringExt.multiplication
+import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
 import arch.cayenne.lib.database.entity.BetSelectionBean
 import arch.cayenne.lib.database.entity.BetTypeEnum
 import arch.cayenne.lib.database.entity.InfoBean
@@ -81,7 +82,7 @@ class SingleBetViewModel(
             value = editValue.multiplication(getOdds())
         }
         addSource(onEditNumber) {
-            betRepo.setMoney(it)
+//            betRepo.setMoney(it)
             val money = if (it.isEmpty()) {
                 "0"
             } else if (it.last() == '.') {
@@ -152,14 +153,14 @@ class SingleBetViewModel(
                     betRepo.saveToSingle()
                 }.await()
                 if (isSuccess) {
-                    betRepo.sendBet(money, oddsChange)
+                    betRepo.sendBet(money.toMoney(), oddsChange)
                 }
             } else {
                 val isSuccess = async {
                     betRepo.saveToReserve(reserveOdds)
                 }.await()
                 if (isSuccess) {
-                    betRepo.sendReserve(money)
+                    betRepo.sendReserve(money.toMoney())
                 }
             }
         }

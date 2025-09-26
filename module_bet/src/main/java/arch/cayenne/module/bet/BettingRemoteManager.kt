@@ -68,7 +68,7 @@ class BettingRemoteManager(
         }
     }
 
-    suspend fun singleBet(bean: BetSelectionBean, money: String, oddsChange: OddsChangeEnum): SingleBetDataModel? {
+    suspend fun singleBet(bean: BetSelectionBean, money: Long, oddsChange: OddsChangeEnum): SingleBetDataModel? {
         val res = socketManager.sendAndWaitProtoMessageResponse<Client.SingleBetResp>(
             scope = scope,
             dispatcher = Dispatchers.IO,
@@ -78,7 +78,7 @@ class BettingRemoteManager(
                 this.matchId = bean.matchId
                 this.selectionId = bean.selectionId
                 this.odds = bean.odds.getOdds()
-                this.betAmount = money
+                this.betAmount = money.getMoney()
                 this.oddsChange = oddsChange.value
             }.build()
         }
@@ -107,7 +107,7 @@ class BettingRemoteManager(
     suspend fun reserveBet(
         bean: BetSelectionBean,
         reserveOdds: Int,
-        money: String
+        money: Long
     ): ReserveBetDataModel? {
         val res = socketManager.sendAndWaitProtoMessageResponse<Client.ReserveBetResp>(
             scope = scope,
@@ -120,7 +120,7 @@ class BettingRemoteManager(
                     this.selectionId = bean.selectionId
                     this.odds = reserveOdds.getOdds()
                 })
-                this.betAmount = money
+                this.betAmount = money.getMoney()
             }.build()
         }
         return if (res.error == null && res.data != null) {
@@ -165,7 +165,7 @@ class BettingRemoteManager(
                     multi.map {
                         Common.BetCombo.newBuilder().apply {
                             this.serialValue = it.serialValue
-                            this.betAmount = it.inputMoney
+                            this.betAmount = it.inputMoney.getMoney()
                             this.oddsChange = oddsChange.value
                         }.build()
                     }
