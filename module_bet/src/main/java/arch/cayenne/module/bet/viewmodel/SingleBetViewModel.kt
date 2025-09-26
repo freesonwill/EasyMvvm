@@ -80,14 +80,26 @@ class SingleBetViewModel(
             value = if (cMoney.isEmpty()) {
                 ""
             } else {
+
+                fun shouldUseScientificNotation(number: BigDecimal): Boolean {
+                    val plainString = number.toPlainString()
+                    // 計算有效數字位數（不包括小數點和負號）
+                    val digitsOnly = plainString.replace(".", "")
+                    return digitsOnly.length > 16
+                }
                 val v = BigDecimal(editValue).multiply(BigDecimal(getOdds()))
                 val finalResult = v.setScale(
                     2,
                     RoundingMode.DOWN
                 ).stripTrailingZeros()
-                val mc = MathContext(16, RoundingMode.DOWN)
-                val scaled = finalResult.round(mc)
-                scaled.toString()
+
+                val result = if (shouldUseScientificNotation(finalResult)) {
+                    val mc = MathContext(16, RoundingMode.DOWN)
+                    finalResult.round(mc).toString()
+                } else {
+                    finalResult.toPlainString()
+                }
+                result
             }
         }
         addSource(_onBetSheetListener) { data ->
