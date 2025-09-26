@@ -19,6 +19,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.View.OnAttachStateChangeListener
 import android.view.animation.DecelerateInterpolator
+import android.widget.Button
 import android.widget.ImageView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -35,6 +36,7 @@ import arch.cayenne.lib.base.ui.animation.AnimationController.AnimType
 import arch.cayenne.lib.common.R
 import arch.cayenne.lib.common.ui.view.CustomTabIndicator
 import arch.cayenne.lib.common.ui.view.OnSwipeTouchListener
+import arch.cayenne.lib.skin.widget.SkinnableImageButton
 import com.google.android.material.shape.CornerFamily
 import com.google.android.material.shape.MaterialShapeDrawable
 import com.google.android.material.shape.ShapeAppearanceModel
@@ -636,6 +638,10 @@ fun View.setOnClickOrLongPressListener(
                 // 將 job 和旗標存入 tag，以便在 UP 事件中可以存取
                 setTag(R.id.long_press_job_tag, job)
                 setTag(R.id.is_long_press_triggered_tag, isLongPressTriggered)
+
+                if (this is SkinnableImageButton) {
+                    isPressed = true
+                }
             }
 
             MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
@@ -652,6 +658,10 @@ fun View.setOnClickOrLongPressListener(
                 // 清理 tag
                 setTag(R.id.long_press_job_tag, null)
                 setTag(R.id.is_long_press_triggered_tag, null)
+
+                if (this is SkinnableImageButton) {
+                    isPressed = false
+                }
             }
         }
         true

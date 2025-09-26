@@ -11,7 +11,12 @@ import kotlin.math.abs
 
 @SuppressLint("ClickableViewAccessibility")
 class GestureControl(context: Context, private val gestureView: View) {
-
+    private var startX: Float = 0f
+    private var startY: Float = 0f
+    private var startTime: Long = 0L
+    private val SWIPE_THRESHOLD = 140 // X轴滑动距离阈值
+    private val SWIPE_MAX_TIME = 1600 // 时间间隔
+    private val MAX_ANGLE_DEGREES = 45 // 最大允许角度
     //是否水平
     private var isInHorizontalGesture = false
 
@@ -29,6 +34,9 @@ class GestureControl(context: Context, private val gestureView: View) {
 
         override fun onDown(e: MotionEvent): Boolean {
             mXDown = e.x
+            startX = e.x
+            startY = e.y
+            startTime = e.eventTime
             return true
         }
 
@@ -97,6 +105,23 @@ class GestureControl(context: Context, private val gestureView: View) {
                     isInLeftGesture = false
                     isInRightGesture = false
                     isInHorizontalGesture = false
+
+                    val endX = event.x
+                    val endY = event.y
+                    val endTime = event.eventTime
+                    val diffX =abs(endX - startX)
+                    val diffY = abs(endY - startY)
+                    val timeDiff = endTime - startTime
+
+                    // 计算滑动角度（弧度转角度）
+                    val angle = Math.toDegrees(kotlin.math.atan2(diffY.toDouble(), diffX.toDouble())).toFloat()
+                    // LogUtils.e("OnSwipeTouchListener: diffX=$diffX, diffY=$diffY, angle=$angle, timeDiff=$timeDiff")
+
+                    startTime = 0L
+                    // 判断：X轴滑动距离足够，时间符合，角度小于阈值
+                    if (startX < endX && diffX > SWIPE_THRESHOLD && timeDiff <= SWIPE_MAX_TIME && angle < MAX_ANGLE_DEGREES) {
+                        mGestureListener?.onBack()
+                    }
                     mGestureListener?.onGestureEnd()
                 }
 

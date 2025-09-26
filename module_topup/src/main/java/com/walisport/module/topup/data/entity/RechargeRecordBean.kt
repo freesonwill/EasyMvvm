@@ -6,6 +6,9 @@ package com.walisport.module.topup.data.entity
  * @description:
  */
 data class RechargeRecordBean(
-    val transactionId: String, //充值记录id
+    val iid: String, //充值记录id
+    val type: Int,//提现类型
+    val status: Int,//提现状态
+    val time: Long,//提现时间
     val amount: String, //充值金额或数量
 )

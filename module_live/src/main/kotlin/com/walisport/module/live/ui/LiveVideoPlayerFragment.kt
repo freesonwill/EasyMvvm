@@ -163,6 +163,10 @@ class LiveVideoPlayerFragment :
             mViewModel.setPlayerState(it)
         }
 
+        videoView.setOnBackListener {
+            requireActivity().onBackPressedDispatcher.onBackPressed()
+        }
+
         if (videoView.parent != null) {
             (videoView.parent as ViewGroup).removeView(videoView)
         }
