@@ -22,6 +22,8 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import java.math.BigDecimal
+import java.math.MathContext
+import java.math.RoundingMode
 
 class SingleBetViewModel(
     private val betRepo: SingleBetRepository,
@@ -78,7 +80,14 @@ class SingleBetViewModel(
             value = if (cMoney.isEmpty()) {
                 ""
             } else {
-                BigDecimal(editValue).multiply(BigDecimal(getOdds())).toString()
+                val v = BigDecimal(editValue).multiply(BigDecimal(getOdds()))
+                val finalResult = v.setScale(
+                    2,
+                    RoundingMode.DOWN
+                )
+                val mc = MathContext(16, RoundingMode.DOWN)
+                val scaled = finalResult.round(mc)
+                scaled.toString()
             }
         }
         addSource(_onBetSheetListener) { data ->
