@@ -246,17 +246,14 @@ class ComboBetMoneyKeyboardDialogFragment private constructor():
 
     private fun sendMoney() {
         val curAmount = mViewModel.editValue
-        if (curAmount.isGreaterThanValue(Long.MAX_VALUE.toString())) {
-            showToast(getString(arch.cayenne.lib.common.R.string.toast_input_error))
+        if (curAmount.isGreaterThanValue(mViewModel.maxMoney.getMoney())) {
+            showToast(getString(arch.cayenne.lib.common.R.string.toast_over_max))
             return
         }
         val minNumber = mViewModel.minMoney
-        val maxNumber = mViewModel.maxMoney
         val amount = curAmount.toMoney()
         if (minNumber > amount) {
             showToast(getString(R.string.hint_less_min_amount))
-        } else if (amount > maxNumber) {
-            showToast(getString(arch.cayenne.lib.common.R.string.toast_over_max))
         } else {
             resultBundle.putLong(VALUE_MONEY_INPUT, amount)
             doExitAnim()
