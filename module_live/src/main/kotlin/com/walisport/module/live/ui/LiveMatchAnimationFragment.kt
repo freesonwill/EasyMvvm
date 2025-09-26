@@ -13,6 +13,7 @@ import android.webkit.WebChromeClient
 import android.webkit.WebView
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
+import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.DensityInfo
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getColor
@@ -86,15 +87,11 @@ class LiveMatchAnimationFragment :
 //            scheduleHideButtons()
             mediaViewModel.chooseSourceView()
         }
-
-        //单击事件处理
-        mBinding.ctMatchAnimation.setOnClickListener() {
-
-        }
-        mBinding.root.touchBackPressed(){
+        mBinding.animationView.touchBackPressed(){
             mainViewModel.observeMainMatch.value?.basicInfo.apply {
+                LogUtils.e("touchBackPressed --------this?.status")
                 // WebView场景， 除开未开赛和中场休息状态， 其余场景都要返回
-                if (this?.status !=MatchStatus.NOT_STARTED.code&&this?.status !=MatchStatus.PAUSED.code){
+                if (this?.status !in listOf(MatchStatus.NOT_STARTED.code, MatchStatus.PAUSED.code)) {
                     requireActivity().onBackPressedDispatcher.onBackPressed()
                 }
             }
