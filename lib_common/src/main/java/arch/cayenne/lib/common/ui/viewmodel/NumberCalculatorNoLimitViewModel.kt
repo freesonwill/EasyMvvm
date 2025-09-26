@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import java.math.BigDecimal
-import java.math.MathContext
 import java.math.RoundingMode
 
 open class NumberCalculatorNoLimitViewModel : BaseViewModel() {
@@ -61,9 +60,7 @@ open class NumberCalculatorNoLimitViewModel : BaseViewModel() {
             2,
             RoundingMode.DOWN
         )
-        val mc = MathContext(16, RoundingMode.DOWN)
-        val scaled = finalResult.round(mc)
-        setEditNumber(scaled.stripTrailingZeros().toPlainString())
+        setEditNumber(finalResult.stripTrailingZeros().toPlainString())
     }
 
     fun backNumber() {
