@@ -231,7 +231,7 @@ class ComboBetMoneyKeyboardDialogFragment private constructor():
 
         val currentMoney = requireArguments().getLong(CURRENT_MONEY_NUMBER, 0L)
         if (currentMoney != 0L) {
-            mViewModel.setNumber(currentMoney)
+            mViewModel.setNumber(currentMoney.getMoney())
         }
     }
 
