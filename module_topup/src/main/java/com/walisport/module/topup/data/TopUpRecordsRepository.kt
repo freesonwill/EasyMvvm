@@ -27,13 +27,11 @@ class TopUpRecordsRepository(
         delay(1000)
         //取最后一条的id做分页标记
         val last = recordListChange.value.maxByOrNull { it.iid }?.iid
-
         val dataList = mutableListOf<RechargeRecordBean>()
         //每页10条测试数据
         for (i in 0 until DEFAULT_LIST_SIZE) {
-            dataList.add(RechargeRecordBean("1", 1, 1, 1758706619000L, "999.00"))
+            dataList.add(RechargeRecordBean("1", 1, 1, 1758706619000L, "","010 2930 2039 120","999.00"))
         }
-
         recordListChange.value += dataList
         return@withContext ApiResponseState.Succeeded(dataList)
 
