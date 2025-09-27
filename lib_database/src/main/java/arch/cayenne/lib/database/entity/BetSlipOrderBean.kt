@@ -24,7 +24,6 @@ data class BetSlipOrderBean (
     val comboCount: Int,
     val odds: Int,                          // 賠率
     val status: Int,                           // 訂單狀態：1投注確認中，2拒單，3取消訂單，4接單成功，5已結算
-    var earlySupport: Boolean,                 // 是否支持提前結算
     val earlyBetAmount: Long,                // 提前結算總本金
     val earlyReturnAmount: Long,             // 提前結算派彩金額
     val earlySettleTimes: Int,                 // 已經提前結算的次數
@@ -53,7 +52,7 @@ data class OrderSelectionBean(
 
 data class EarlySettlePriceBean(
     val price: String,          // 提前結算 1 元的報價（如 0.92）
-    val settleTotal: Int,       // 最大有效提前結算次數
+    var earlySupport: Boolean,       // 最大有效提前結算次數
     val settleMin: String,      // 單次最小結算本金
     val settleStatus: Int       // //投注确认中，2拒单，3取消订单，4接单成功，5已结算,101 预约提前结算中,102 提前结算进行中, 1000- 本地端點擊提前結算按鈕用
 )

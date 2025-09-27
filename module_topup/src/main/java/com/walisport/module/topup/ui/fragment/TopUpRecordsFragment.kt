@@ -53,29 +53,21 @@ class TopUpRecordsFragment : BaseFragment<TopUpRecordsViewModel, FragmentTopupRe
             refreshLayout.setOnLoadMoreListener {
                 mViewModel.loadNextPage()
             }
-
-
             listAdapter = TopupRecordItemAdapter(object : OnItemClickListener {
                 override fun onEntryClick(item: RechargeRecordBean) {
                     navigate(
                         R.id.action_topUpRecordsFragment_to_topUpDetailFragment,
                         Bundle().apply {
-                            putString("transactionId", item.transactionId)
+                            putString("transactionId", item.iid)
                         })
                 }
-
-
             })
-
             rvCollectList.apply {
                 this.layoutManager = gameLayoutManager
                 this.adapter = listAdapter
             }
-
             (rvCollectList.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
-
         }
-
         mBinding.rvCollectList.touchBackPressed()
         mBinding.root.touchBackPressed()
     }
@@ -102,14 +94,14 @@ class TopUpRecordsFragment : BaseFragment<TopUpRecordsViewModel, FragmentTopupRe
                         )
                     }
 
-                    DataState.NoMoreData -> {     //這個DataEmpty表示api抓不到任何資料了，有可能是頁面到底，或是從第一頁就抓不到資料
+                    DataState.NoMoreData -> {
                         mViewModel.changePageEnd(true)
                         refreshLayout.finishLoadMore()
                         refreshLayout.setEnableLoadMore(false)
                         listAdapter.showNoMoreData(true)
                     }
 
-                    LoadingState.DataEmpty -> {  //這個DataEmpty表示確定真的從第一頁就抓不到資料，表示當前的選擇沒有任何賽事
+                    LoadingState.DataEmpty -> {
                         refreshLayout.finishRefresh()
                         clDynamics.visibility = View.VISIBLE
                         clDynamics.setState(

@@ -2,19 +2,23 @@ package arch.cayenne.lib.skin.widget
 
 import android.content.Context
 import android.util.AttributeSet
+import androidx.annotation.CallSuper
 import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import arch.cayenne.lib.skin.data.SkinMsgType
+import arch.cayenne.lib.skin.widget.biz.ISkinnableBiz
 import com.google.android.material.tabs.TabLayout
 import arch.cayenne.lib.skin.widget.helper.SkinnableBackGroundHelper
+import arch.cayenne.lib.skin.widget.helper.SkinnableLanguageFlowHelper
 import arch.cayenne.lib.skin.widget.helper.SkinnableTabLayoutHelper
 import arch.cayenne.lib.skin.widget.helper.SkinnableViewFlowHelper
 
-class SkinnableTabLayout : TabLayout, ISkinnable {
+open class SkinnableTabLayout : TabLayout, ISkinnableBiz {
     private val backgroundTintHelper = SkinnableBackGroundHelper(this)
     private val tabLayoutHelper = SkinnableTabLayoutHelper(this)
     private val TAG = SkinnableTabLayout::class.java.simpleName
     private val flowHelper = SkinnableViewFlowHelper()
+    private val languageFlowHelper = SkinnableLanguageFlowHelper()
 
     constructor(context: Context) : super(context) {
         initView(context)
@@ -29,6 +33,7 @@ class SkinnableTabLayout : TabLayout, ISkinnable {
         initView(context, attrs, defStyleAttr)
     }
 
+    @CallSuper
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
         flowHelper.startSkinFlow(findViewTreeLifecycleOwner()?.lifecycleScope) {
@@ -36,12 +41,21 @@ class SkinnableTabLayout : TabLayout, ISkinnable {
             tabLayoutHelper.updateSkin()
         }
 
-        flowHelper.startLanguageFlow(findViewTreeLifecycleOwner()?.lifecycleScope) {
+        languageFlowHelper.startLanguageFlow(findViewTreeLifecycleOwner()?.lifecycleScope) {
             tabLayoutHelper.updateLanguage(it)
         }
     }
 
-    private fun initView(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) {
+    @CallSuper
+    override fun onDetachedFromWindow() {
+        flowHelper.destroyFlow()
+        languageFlowHelper.destroyFlow()
+        super.onDetachedFromWindow()
+    }
+
+
+    @CallSuper
+    final override fun initView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) {
         backgroundTintHelper.loadFromAttributes(attrs, defStyleAttr)
         tabLayoutHelper.loadFromAttributes(attrs, defStyleAttr)
     }
@@ -95,18 +109,22 @@ class SkinnableTabLayout : TabLayout, ISkinnable {
         tabLayoutHelper.updateTabBackground(tab)
     }
 
-    override fun onDetachedFromWindow() {
-        flowHelper.destroyFlow()
-        super.onDetachedFromWindow()
+    override fun setTintColorRes(resId: Int) {
+        TODO("Not yet implemented")
     }
+
+    override fun setForegroundRes(resId: Int) {
+        TODO("Not yet implemented")
+    }
+
     //设置Tab时添加tabResArray，语言切换时更新tab
     fun setTabResArray(tabResArray: IntArray){
         tabLayoutHelper.updateTabResArray(tabResArray)
     }
 
-    override fun forceUpdateSkin() {
-        backgroundTintHelper.updateSkin(SkinMsgType.SELF)
-        tabLayoutHelper.updateSkin(SkinMsgType.SELF)
+    override fun updateSkin(msgType: SkinMsgType) {
+        backgroundTintHelper.updateSkin(msgType)
+        tabLayoutHelper.updateSkin(msgType)
     }
 
 }

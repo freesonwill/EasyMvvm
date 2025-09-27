@@ -27,7 +27,6 @@ object CommonExtension {
             comboCount = comboCount,
             odds = odds.toOdds(),
             status = status,
-            earlySupport = earlySupport,
             earlyBetAmount = earlyBetAmount.toMoney(),
             earlyReturnAmount = earlyReturnAmount.toMoney(),
             earlySettleTimes = earlyCount,
@@ -58,7 +57,7 @@ object CommonExtension {
     private fun Common.EarlySettlePrice.toEarlySettlePriceBean(): EarlySettlePriceBean {
         return EarlySettlePriceBean(
             price = price,
-            settleTotal = settleTotal,
+            earlySupport = earlySupport,
             settleMin = settleMin,
             settleStatus = settleStatus
         )

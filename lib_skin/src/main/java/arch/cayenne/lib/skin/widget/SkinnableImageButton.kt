@@ -12,11 +12,13 @@ import android.util.AttributeSet
 import androidx.annotation.AnyRes
 import androidx.annotation.ColorRes
 import androidx.appcompat.widget.AppCompatImageButton
+import arch.cayenne.lib.skin.data.SkinMsgType
+import arch.cayenne.lib.skin.widget.biz.ISkinnableBiz
 import arch.cayenne.lib.skin.widget.biz.ISkinnableImageBiz
 import arch.cayenne.lib.skin.widget.biz.SkinnableBizImageImpl
 
 
-class SkinnableImageButton : AppCompatImageButton, ISkinnable {
+class SkinnableImageButton : AppCompatImageButton, ISkinnableBiz {
     private var mPaint: Paint? = null
     private var mRectF: RectF? = null
     private var mBitmapShader: BitmapShader? = null
@@ -40,7 +42,7 @@ class SkinnableImageButton : AppCompatImageButton, ISkinnable {
        biz.onAttachedToWindow()
     }
 
-    private fun initView(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) {
+    override fun initView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) {
         biz = SkinnableBizImageImpl(this)
         biz.initView(context, attrs, defStyleAttr)
 
@@ -51,15 +53,15 @@ class SkinnableImageButton : AppCompatImageButton, ISkinnable {
 
     override fun setBackgroundResource(resId: Int) {
         super.setBackgroundResource(resId)
-        biz.updateBackground(resId)
+        biz.setBackgroundResource(resId)
     }
 
-    fun setTintColorRes(@ColorRes resId: Int){
-        biz.updateBackgroundTintId(resId)
+    override fun setTintColorRes(@ColorRes resId: Int){
+        biz.setTintColorRes(resId)
     }
 
-    fun setForegroundRes(@AnyRes resId: Int){
-        biz.updateForegroundId(resId)
+    override fun setForegroundRes(@AnyRes resId: Int){
+        biz.setForegroundRes(resId)
     }
 
     override fun setImageResource(resId: Int) {
@@ -94,8 +96,8 @@ class SkinnableImageButton : AppCompatImageButton, ISkinnable {
         super.onDetachedFromWindow()
     }
 
-    override fun forceUpdateSkin() {
-        biz.forceUpdateSkin()
+    override fun updateSkin(msgType: SkinMsgType) {
+        biz.updateSkin(msgType)
     }
 
 }

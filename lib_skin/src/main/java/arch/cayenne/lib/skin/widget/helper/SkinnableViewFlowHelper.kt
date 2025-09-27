@@ -14,11 +14,9 @@ import org.koin.java.KoinJavaComponent.inject
 import java.util.Locale
 
 class SkinnableViewFlowHelper {
-    private var skinFlowJob: Job? = null
-    private var languageFlowJob: Job? = null
-    private val skinManager: SkinnableManager by inject(SkinnableManager::class.java)
-    private val languageManager: LanguageManager by inject(LanguageManager::class.java)
     private val TAG = this@SkinnableViewFlowHelper::class.java.simpleName
+    private var skinFlowJob: Job? = null
+    private val skinManager: SkinnableManager by inject(SkinnableManager::class.java)
     private var lastSkin: String = ""
 
     /**
@@ -40,22 +38,10 @@ class SkinnableViewFlowHelper {
         }
     }
 
-    fun startLanguageFlow(scope: CoroutineScope?,updateLanguage: (local: Locale) -> Unit) {
-        languageFlowJob?.cancel()
-        languageFlowJob = scope?.launch {
-            languageManager.languageFlow.collect {
-                it?.let {
-                    updateLanguage(it)
-                }
-            }
-        }
-    }
 
     fun destroyFlow() {
 //        skinFlowJob?.cancel()
 //        skinFlowJob = null
-        languageFlowJob?.cancel()
-        languageFlowJob = null
     }
 
     /**

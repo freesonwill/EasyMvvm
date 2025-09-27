@@ -5,17 +5,18 @@ import android.util.AttributeSet
 import androidx.annotation.AnyRes
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
-import arch.cayenne.lib.skin.widget.ISkinnable
+import arch.cayenne.lib.skin.data.SkinMsgType
 
 /**
  * @date: 2025/7/30 15:55
  * @description:换肤业务接口
  */
-interface ISkinnableBiz: ISkinnable {
-    fun initView(context: Context, attrs: AttributeSet?, defStyleAttr: Int)
+interface ISkinnableBiz {
+    fun initView(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
     fun onAttachedToWindow()
     fun onDetachedFromWindow()
-    fun updateBackground(@DrawableRes resId: Int)
-    fun updateBackgroundTintId(@ColorRes resId: Int)
-    fun updateForegroundId(@AnyRes resId: Int)
+    fun setBackgroundResource(@DrawableRes resId: Int)
+    fun setTintColorRes(@ColorRes resId: Int)
+    fun setForegroundRes(@AnyRes resId: Int)
+    fun updateSkin(msgType: SkinMsgType = SkinMsgType.FLOW)
 }

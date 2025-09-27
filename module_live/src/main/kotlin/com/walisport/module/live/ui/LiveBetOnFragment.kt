@@ -49,6 +49,7 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
     private lateinit var liveBetOnAdapter: LiveBetOnAdapter
     private var isTabClicked: Boolean = false
     private lateinit var viewPager2: ViewPager2
+    private var isFadeAnim :Boolean = false //是否执行列表切换动画
     private var startX = 0f
     private var startY = 0f
     override fun initView(savedInstanceState: Bundle?) {
@@ -170,6 +171,7 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
         mBinding.tabLayout.addOnTabSelectedListener2(object : TabLayoutExt.OnTabSelectedListener2 {
             override fun onTabSelected(tab: TabLayout.Tab, isTabClick: Boolean) {
                 isTabClicked = true
+                isFadeAnim = true
                 mViewModel.getMarketList(
                     (if (tab.position == 0) "" else mViewModel.marketType.value?.get(
                         tab.position - 1
@@ -282,17 +284,22 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
                 val selectionsEdit = mainViewModel.getSelectionsEditAll()
                 // LogUtils.dTag("盘口推","---------------${selectionEdit}")
                 mBinding.clDynamics.setVisibilityGone()
-                mBinding.rvBetList.startFadeAnim {
-                    liveBetOnAdapter.setData(
-                        baseInfo?.homeTeam.toString(),
-                        baseInfo?.homeTeamIcon.toString(),
-                        baseInfo?.awayTeam.toString(),
-                        baseInfo?.awayTeamIcon.toString(),
-                        selectionsEdit
-                    )
+                liveBetOnAdapter.setData(
+                    baseInfo?.homeTeam.toString(),
+                    baseInfo?.homeTeamIcon.toString(),
+                    baseInfo?.awayTeam.toString(),
+                    baseInfo?.awayTeamIcon.toString(),
+                    selectionsEdit
+                )
+                if (isFadeAnim){
+                    mBinding.rvBetList.startFadeAnim {
+                        liveBetOnAdapter.submitList(data)
+                        it.invoke()
+                    }
+                }else{
                     liveBetOnAdapter.submitList(data)
-                    it.invoke()
                 }
+                isFadeAnim = false
             }
         }
 

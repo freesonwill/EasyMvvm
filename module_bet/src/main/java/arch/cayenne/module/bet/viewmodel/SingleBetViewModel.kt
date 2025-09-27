@@ -11,9 +11,7 @@ import arch.cayenne.lib.common.ui.viewmodel.Event
 import arch.cayenne.lib.common.ui.viewmodel.NumberCalculatorViewModel
 import arch.cayenne.lib.common.utils.ext.SportDisplayOddsExt.getDisplayOdds
 import arch.cayenne.lib.common.utils.ext.SportDisplayOddsExt.reserveDisplayOdds
-import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
-import arch.cayenne.lib.common.utils.ext.SportStringExt.toOdds
 import arch.cayenne.lib.database.entity.BetSelectionBean
 import arch.cayenne.lib.database.entity.BetTypeEnum
 import arch.cayenne.lib.database.entity.InfoBean
@@ -23,6 +21,9 @@ import arch.cayenne.module.bet.repo.SingleBetRepository
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
+import java.math.BigDecimal
+import java.math.MathContext
+import java.math.RoundingMode
 
 class SingleBetViewModel(
     private val betRepo: SingleBetRepository,
@@ -58,45 +59,53 @@ class SingleBetViewModel(
     private val _onReserveOddsListener = MutableLiveData<Int?>()
     val onReserveOddsListener: LiveData<Int?> get() = _onReserveOddsListener
 
-    private val _onCanBetListener = MediatorLiveData(false).apply {
-        val checkEligibility = {
-            val betSheet = _onBetSheetListener.value
-            val editNumber = onEditNumber.value
-            val odds = _onReserveOddsListener.value?.reserveDisplayOdds()
-
-            value = if (betSheet == null || editNumber == null) {
-                false
-            } else {
-                val money = editValue.toMoney()
-                val isMoneyValid = minMoney != 0L && money >= minMoney
-                val isBetSheetActive = betSheet.isActive
-
-                if (odds == null) {
-                    isBetSheetActive && isMoneyValid
-                } else {
-                    isBetSheetActive && isMoneyValid && odds >= betSheet.odds
-                }
-            }
-        }
-
-        addSource(_onBetSheetListener) { checkEligibility() }
-        addSource(onEditNumber) { checkEligibility() }
-        addSource(_onReserveOddsListener) { checkEligibility() }
-    }
-    val onCanBetListener: LiveData<Boolean> get() = _onCanBetListener
-
     val moneySymbol: String
         get() = CurrencySymbols.getSymbol(_onBalanceListener.value?.currency ?: "")
 
     private val _onBetWinMoney = MediatorLiveData<String>().apply {
         var odds = 100
-        fun getOdds(): Int {
-            return odds.getDisplayOdds().toOdds()
+        fun getOdds(): String {
+            return odds.getDisplayOdds()
+        }
+
+        fun setMoney() {
+            val money = editValue
+            val cMoney = if (money.isEmpty()) {
+                ""
+            } else if (money.last() == '.') {
+                money.substring(0, money.length - 1)
+            } else {
+                money
+            }
+            value = if (cMoney.isEmpty()) {
+                ""
+            } else {
+
+                fun shouldUseScientificNotation(number: BigDecimal): Boolean {
+                    val plainString = number.toPlainString()
+                    // 計算有效數字位數（不包括小數點和負號）
+                    val digitsOnly = plainString.replace(".", "")
+                    return digitsOnly.length > 16
+                }
+                val v = BigDecimal(editValue).multiply(BigDecimal(getOdds()))
+                val finalResult = v.setScale(
+                    2,
+                    RoundingMode.DOWN
+                ).stripTrailingZeros()
+
+                val result = if (shouldUseScientificNotation(finalResult)) {
+                    val mc = MathContext(16, RoundingMode.DOWN)
+                    finalResult.round(mc).toString()
+                } else {
+                    finalResult.toPlainString()
+                }
+                result
+            }
         }
         addSource(_onBetSheetListener) { data ->
             if (_onReserveOddsListener.value == null) {
                 odds = data.odds
-                value = editValue.toMoney().getMoney(getOdds())
+                setMoney()
             }
         }
         addSource(_onReserveOddsListener) { reserveOdds ->
@@ -107,22 +116,10 @@ class SingleBetViewModel(
             } else {
                 odds = reserveOdds
             }
-            value = editValue.toMoney().getMoney(getOdds())
+            setMoney()
         }
         addSource(onEditNumber) {
-            betRepo.setMoney(it.toMoney())
-            val money = if (it.isEmpty()) {
-                "0"
-            } else if (it.last() == '.') {
-                it.substring(0, it.length - 1)
-            } else {
-                it
-            }
-            value = if (money.isEmpty()) {
-                "0.00"
-            } else {
-                money.toMoney().getMoney(getOdds())
-            }
+            setMoney()
         }
     }
     val onBetWinMoney: LiveData<String> get() = _onBetWinMoney
@@ -134,8 +131,8 @@ class SingleBetViewModel(
     private val _oddsChangeListener = MutableLiveData<OddsChangeEnum>()
     val oddsChangeListener: LiveData<OddsChangeEnum> get() = _oddsChangeListener
 
+
     init {
-        setNumberLimit(0L, 0L)
         viewModelScope.launch {
             launch {
                 betRepo.observeSelectionBean().distinctUntilChanged().collect {
@@ -144,16 +141,13 @@ class SingleBetViewModel(
             }
             launch {
                 betRepo.observeComboBean().collect {
-                    setComboMultiBet(it)
+                    _onComboMultiBetBeanListener.value = it
                     setNumberLimit(it.minAmount, it.maxAmount)
                 }
             }
             launch {
                 balanceRepo.observeInfo().collect {
                     _onBalanceListener.value = it
-//                    if (it != null) {
-//                        setRemainingNumber(it.balance)
-//                    }
                 }
             }
             launch {
@@ -167,32 +161,32 @@ class SingleBetViewModel(
                 }
             }
         }
-        setRemainingNumber(Long.MAX_VALUE)
     }
 
     fun sendBet(): Boolean {
         if (!checkNetwork()) {
             return false
         }
-        val money = onEditNumber.value?.toMoney() ?: return false
+        val money = onEditNumber.value ?: return false
         val oddsChange = _oddsChangeListener.value ?: return false
         val currentOdds = _onBetSheetListener.value?.odds ?: 0
         val reserveOdds = _onReserveOddsListener.value?.reserveDisplayOdds()
 
+        val amount = money.toMoney()
         viewModelScope.launch {
             if (reserveOdds == null || reserveOdds == currentOdds) {
                 val isSuccess = async {
                     betRepo.saveToSingle()
                 }.await()
                 if (isSuccess) {
-                    betRepo.sendBet(money, oddsChange)
+                    betRepo.sendBet(amount, oddsChange)
                 }
             } else {
                 val isSuccess = async {
-                    betRepo.saveToReserve(reserveOdds)
+                    betRepo.saveToReserve(reserveOdds, amount)
                 }.await()
                 if (isSuccess) {
-                    betRepo.sendReserve(money)
+                    betRepo.sendReserve(amount)
                 }
             }
         }
@@ -217,18 +211,6 @@ class SingleBetViewModel(
 
     fun saveToReserve(odds: Int) {
         _onReserveOddsListener.value = odds
-    }
-
-    private fun setComboMultiBet(data: ComboMultiBetBean) {
-        val lastData = _onComboMultiBetBeanListener.value
-        if (lastData != null) {
-            data.inputMoney = if (lastData.inputMoney > data.maxAmount) {
-                data.maxAmount
-            } else {
-                lastData.inputMoney
-            }
-        }
-        _onComboMultiBetBeanListener.value = data
     }
 
     private fun setBetSheet(bet: BetSelectionBean) {
