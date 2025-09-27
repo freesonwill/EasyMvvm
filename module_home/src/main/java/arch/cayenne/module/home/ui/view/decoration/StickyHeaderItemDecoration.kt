@@ -9,7 +9,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.skin.SkinnableManager
-import arch.cayenne.lib.skin.widget.ISkinnable
+import arch.cayenne.lib.skin.data.SkinMsgType
+import arch.cayenne.lib.skin.widget.biz.ISkinnableBiz
 import kotlinx.coroutines.launch
 import org.koin.java.KoinJavaComponent.inject
 
@@ -77,18 +78,18 @@ class StickyHeaderItemDecoration(
     }
 
     private fun forceUpdateSkin(root: View) {
-        if (root is ISkinnable) {
-            root.forceUpdateSkin()
+        if (root is ISkinnableBiz) {
+            root.updateSkin(SkinMsgType.SELF)
         }
         if (root is ViewGroup) {
             for (i in 0 until root.childCount) {
                 val child = root.getChildAt(i)
                 if (child is ViewGroup) {
                     forceUpdateSkin(child)
-                } else if (child is ISkinnable) {
-                    child.forceUpdateSkin()
+                } else if (child is ISkinnableBiz) {
+                    child.updateSkin(SkinMsgType.SELF)
                 } else {
-                    // 非 ISkinnable 的普通 View 略過
+                    // 非 ISkinnableBiz 的普通 View 略過
                 }
             }
         }
