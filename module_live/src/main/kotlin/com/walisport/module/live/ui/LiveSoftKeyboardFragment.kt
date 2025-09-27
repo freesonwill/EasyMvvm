@@ -22,7 +22,6 @@ import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.TabLayoutExt
@@ -39,6 +38,7 @@ import com.walisport.module.live.databinding.FragmentLiveSoftkeyboardLayoutBindi
 import com.walisport.module.live.ui.adapter.SoftAdapter
 import com.walisport.module.live.ui.viewmodel.LiveChatViewModel
 import com.walisport.module.live.ui.viewmodel.LiveSoftKeyboardViewModel
+import com.walisport.module.live.ui.widget.OnePageSnapHelper
 import com.walisport.module.live.utils.EditTextUtils
 import com.walisport.module.live.utils.EmojiEditFilter
 import com.walisport.module.live.utils.EmojiUtils.BID_EMOJI_REGEX
@@ -472,7 +472,7 @@ class LiveSoftKeyboardFragment :
 
 
     private fun initSoftRecycler() {
-        val snapHelper = PagerSnapHelper()
+        val snapHelper = OnePageSnapHelper()
         mBinding.keyboardEmojiRecycler.apply {
             layoutManager =
                 LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)

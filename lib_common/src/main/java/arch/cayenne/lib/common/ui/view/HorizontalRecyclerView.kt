@@ -42,11 +42,12 @@ class HorizontalRecyclerView :
                     val canScrollLeft = canScrollHorizontally(-1)
                     val canScrollRight = canScrollHorizontally(1)
                     // 如果RecyclerView不能向某个方向滑动，则允许父ViewPager2拦截
-                    if ((ev.x > startX && !canScrollLeft) ||
-                        (ev.x < startX && !canScrollRight)
-                    ) {
-                        parent.requestDisallowInterceptTouchEvent(false)
-                    }
+//                    if ((ev.x > startX && !canScrollLeft) ||
+//                        (ev.x < startX && !canScrollRight)
+//                    ) {
+//                        parent.requestDisallowInterceptTouchEvent(false)
+//                    }
+                    parent.requestDisallowInterceptTouchEvent(true)
                 }
             }
 
