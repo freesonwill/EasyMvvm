@@ -4,8 +4,14 @@ import android.content.Context
 import android.graphics.Canvas
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.findViewTreeLifecycleOwner
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.lib.skin.SkinnableManager
+import arch.cayenne.lib.skin.widget.ISkinnable
+import kotlinx.coroutines.launch
+import org.koin.java.KoinJavaComponent.inject
 
 class StickyHeaderItemDecoration(
     private val isHeader: (position: Int) -> Boolean,
@@ -13,7 +19,20 @@ class StickyHeaderItemDecoration(
     private val bindHeaderView: (headerView: View, position: Int) -> Unit
 ) : RecyclerView.ItemDecoration() {
 
+    private val skinManager: SkinnableManager by inject(SkinnableManager::class.java)
+    private var skinObserverStarted = false
+
     override fun onDrawOver(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
+        // 應用換膚監聽：由 ItemDecoration 自身訂閱，收到事件時重繪自己
+        if (!skinObserverStarted) {
+            parent.findViewTreeLifecycleOwner()?.lifecycleScope?.launch {
+                skinManager.skinFlow.collect {
+                    parent.invalidateItemDecorations()
+                }
+            }
+            skinObserverStarted = true
+        }
+
         val topChild = parent.getChildAt(0) ?: return
         val topChildPosition = parent.getChildAdapterPosition(topChild)
         if (topChildPosition == RecyclerView.NO_POSITION) return
@@ -24,6 +43,9 @@ class StickyHeaderItemDecoration(
         val context = parent.context
         val headerView = createHeaderView(context, parent)
         bindHeaderView(headerView, headerPos)
+
+        // 由於 headerView 不在 View 樹上，手動觸發整棵視圖樹的換膚
+        forceUpdateSkin(headerView)
 
         val widthSpec = View.MeasureSpec.makeMeasureSpec(parent.width, View.MeasureSpec.EXACTLY)
         val heightSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
@@ -52,5 +74,23 @@ class StickyHeaderItemDecoration(
             }
         }
         return null
+    }
+
+    private fun forceUpdateSkin(root: View) {
+        if (root is ISkinnable) {
+            root.forceUpdateSkin()
+        }
+        if (root is ViewGroup) {
+            for (i in 0 until root.childCount) {
+                val child = root.getChildAt(i)
+                if (child is ViewGroup) {
+                    forceUpdateSkin(child)
+                } else if (child is ISkinnable) {
+                    child.forceUpdateSkin()
+                } else {
+                    // 非 ISkinnable 的普通 View 略過
+                }
+            }
+        }
     }
 }
