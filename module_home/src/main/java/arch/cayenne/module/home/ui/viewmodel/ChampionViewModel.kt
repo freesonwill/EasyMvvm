@@ -103,7 +103,7 @@ class ChampionViewModel : BaseViewModel() {
         return if (bean == null) {
             AddSelectionStatus.Failure.Fail
         } else {
-            betRepository.setSelection(bean)
+            betRepository.setSelection(bean!!)
         }
     }
 
