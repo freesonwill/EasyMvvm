@@ -113,13 +113,13 @@
                 app:layout_constraintStart_toStartOf="parent" />
 
             <arch.cayenne.lib.skin.widget.SkinnableTextView
-                android:id="@+id/video_clarity"
+                android:id="@+id/tv_video_resolution"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/dp_16"
                 android:layout_marginBottom="@dimen/dp_12"
                 android:text="1080P"
-                android:textColor="@color/video_clarity_selected_text_color"
+                android:textColor="@color/video_resolution_selected_text_color"
                 android:textSize="@dimen/sp_16"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/iv_animation_entry"

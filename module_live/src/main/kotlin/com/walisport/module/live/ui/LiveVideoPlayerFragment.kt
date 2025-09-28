@@ -28,11 +28,13 @@ import arch.cayenne.lib.qyplayer.GlobalConfig
 import arch.cayenne.lib.qyplayer.transformFromPlayerConfig
 import arch.cayenne.lib.qyplayer.transformToPlayerConfig
 import arch.cayenne.lib.qyplayer.ui.widget.LivePlayerView
+import arch.cayenne.module.betslip.ui.helper.BetTipsHelper
 import com.walisport.module.live.R
 import com.walisport.module.live.data.constants.MatchStatus
 import com.walisport.module.live.data.constants.VideoAnimatorConstants.Companion.BUTTONS_ANIMATION_DURATION
 import com.walisport.module.live.data.constants.VideoAnimatorConstants.Companion.HIDE_BUTTONS_TIMER
 import com.walisport.module.live.databinding.FragmentLiveVideoPlayerBinding
+import com.walisport.module.live.ui.popup.VideoResolutionHelper
 import com.walisport.module.live.ui.video.PlayerViewCache
 import com.walisport.module.live.ui.viewmodel.LiveMainViewModel
 import com.walisport.module.live.ui.viewmodel.LiveMatchMediaViewModel
@@ -205,6 +207,10 @@ class LiveVideoPlayerFragment :
             ivSoundToggle.clickNoRepeat {
                 scheduleHideButtons()
                 mViewModel.changeMuteStatus()
+            }
+
+            tvVideoResolution.clickNoRepeat {
+                showVideoResolutionPopUp()
             }
 
             ivAnimationEntry.addScaleOnTouchAnimation()
@@ -484,6 +490,13 @@ class LiveVideoPlayerFragment :
 //            mBinding.ivChooseSource.visibility = View.INVISIBLE
 //            mBinding.ivToFullscreen.visibility = View.INVISIBLE
         }
+    }
+
+    private fun showVideoResolutionPopUp() {
+        scheduledHideButtonsJob?.cancel()
+
+        val helper = VideoResolutionHelper()
+        helper.showPopUp(mBinding.tvVideoResolution)
     }
 
     private inner class VolumeObserver(handler: Handler) : ContentObserver(handler) {
