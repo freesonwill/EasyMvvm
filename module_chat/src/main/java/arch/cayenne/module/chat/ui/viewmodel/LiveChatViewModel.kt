@@ -10,14 +10,18 @@ import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.database.dao.ChatConfigDao
 import arch.cayenne.lib.database.entity.ChatConfigBean
+import arch.cayenne.lib.database.entity.LiveMatchBean
 import arch.cayenne.lib.websocket.chat.data.ChatMsg
 import arch.cayenne.lib.websocket.chat.data.MsgNotify
+import arch.cayenne.lib.websocket.data.ConnectState
+import arch.cayenne.lib.websocket.data.SocketConnectState
 import arch.cayenne.module.chat.R
 import arch.cayenne.module.chat.data.constants.CheckBetResultEnum
 import arch.cayenne.module.chat.data.constants.KeyBoardType
 import arch.cayenne.module.chat.manager.ChatServerController
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
@@ -29,6 +33,7 @@ class LiveChatViewModel(private val userDataManager: UserDataManager) : BaseView
     private val _updateKeyboardUiStatus = MutableLiveData(KeyBoardType.CHAT)
     private val _sendMsgLiveData = MutableLiveData<String>()
     private val chatServer: ChatServerController by inject { parametersOf(viewModelScope) }
+
 
     //聊天设置
     private val chatConfigDao: ChatConfigDao by inject()
@@ -68,7 +73,6 @@ class LiveChatViewModel(private val userDataManager: UserDataManager) : BaseView
     //判断是否开启app后第一次弹出软件盘
     var isFirstOpen: Boolean = true
 
-    val serverFlow = chatServer.serverFLow
     val chatHistoryFlow = chatServer.historyFlow
     val sendMsgToServerFlow = chatServer.sendMsgResultFlow
     val newMsgFlow = chatServer.newMsgFlow
@@ -98,6 +102,10 @@ class LiveChatViewModel(private val userDataManager: UserDataManager) : BaseView
         chatServer.disconnectChatServer()
     }
 
+    suspend fun serverFlow():StateFlow<SocketConnectState>{
+        return chatServer.serverConnectFlow()
+    }
+
     /**
      * 聊天登陆
      * */
@@ -119,9 +127,6 @@ class LiveChatViewModel(private val userDataManager: UserDataManager) : BaseView
      *发送消息
      * */
     fun sendMsgToServer(content: String, refUid: String? = null, refPlatform: Int? = null) {
-        if (matchId == null) {
-            return
-        }
         matchId?.let {
             chatServer.sendMsgToServer(it, content, refUid, refPlatform)
         }

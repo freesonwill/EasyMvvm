@@ -284,7 +284,6 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
             mViewModel.getMainMatch(it)
             mViewModel.observeMatchBean(it)
             mViewModel.registerMatchInfoNotify(it)
-            getChatFragment()?.observeMatchId(it)
         }
         mViewModel.currentBalanceChange.observe(viewLifecycleOwner) {
             titleBarBinding.tvMoney.text =
@@ -303,7 +302,6 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                     Glide.with(this).load(logo).into(titleBarBinding.ivLandscapeLeagueIcon)
                 }
                 titleBarBinding.tvCompetitionName.text = it.basicInfo.matchName
-                getChatFragment()?.observeLiveMatch(it)
             }
         }
         launch(Lifecycle.State.RESUMED) {
@@ -349,7 +347,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
             val list = listOf(
                 PagerBean(arch.cayenne.lib.res.R.string.bet_title.getString()) { BetSlipFragment() },
                 PagerBean(R.string.live_bet_on.getString()) { LiveBetOnFragment() },
-                PagerBean(R.string.live_chat.getString()) { LiveChatFragment() },
+                PagerBean(R.string.live_chat.getString()) { createChatFragment() },
                 PagerBean(R.string.live_outs.getString()) { LiveOutsFragment() },
                 PagerBean(R.string.live_lineup.getString()) { LiveLineupFragment() },
                 PagerBean(R.string.live_standings.getString()) { LiveStandingsFragment() }
@@ -456,5 +454,11 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         val tag = "f${adapter.getItemId(index)}"
         val fragment = childFragmentManager.findFragmentByTag(tag)?.let { it as LiveChatFragment }
        return fragment
+    }
+
+    private fun createChatFragment():LiveChatFragment{
+        val fragment = LiveChatFragment()
+        fragment.setMatchLiveData(mViewModel.matchId,mViewModel.mainMatch)
+        return fragment
     }
 }

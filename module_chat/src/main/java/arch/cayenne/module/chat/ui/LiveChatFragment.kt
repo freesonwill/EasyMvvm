@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.MotionEvent
 import androidx.activity.addCallback
 import androidx.core.view.isVisible
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -29,6 +30,8 @@ import kotlin.reflect.KClass
 class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding>() {
     override val vbClass: KClass<FragmentLiveChatBinding> = FragmentLiveChatBinding::class
     override val vmClass: KClass<LiveChatViewModel> = LiveChatViewModel::class
+    var mainMatch:LiveData<LiveMatchBean>? = null
+    var matchIdLiveData:LiveData<Long>? = null
 
     override fun initView(savedInstanceState: Bundle?) {
         initFragment()
@@ -114,6 +117,13 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
 
     override suspend fun createObserver() {
 
+        matchIdLiveData?.observe(viewLifecycleOwner){
+            observeMatchId(it)
+        }
+        mainMatch?.observe(viewLifecycleOwner){
+            observeLiveMatch(it)
+        }
+
         mViewModel.sendMsgLiveData.observe(viewLifecycleOwner) {
             mViewModel.addLocalMsg(it)
             mViewModel.sendMsgToServer(it)
@@ -126,7 +136,7 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
 
         viewLifecycleOwner.lifecycleScope.launch {
             launch {
-                mViewModel.serverFlow.collect{
+                mViewModel.serverFlow().collect{
                     if (it == SocketConnectState.Connecting && mViewModel.loginFlow.value == null) {
                         mViewModel.chatLogin()
                     }
@@ -186,7 +196,6 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
         adapter?.submitList(mViewModel.msgLists) {
             adapter.currentList.size.let {
                 val position = it - 1
-                "refreshChatList ${position}".logd("aaa")
                 if (position > 0) {
                     mBinding.liveChatRecycler.scrollToPosition(position)
                 }
@@ -206,7 +215,6 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
 //        //比赛状态 0-已结束 1-推迟 2-中断 3-取消 4-未开赛 5-进行中 6-延迟 7-废弃 8-暂停
         val code = matchBean?.basicInfo?.status
         val status = MatchStatus.entries.find { status -> status.code == code }
-        "updateChatUi $status".logd("aaa")
         mBinding.also {
             when (status) {
                 MatchStatus.FINISHED, MatchStatus.CANCELED, MatchStatus.ABANDONED -> {
@@ -244,12 +252,16 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
         super.onStop()
     }
 
+    fun setMatchLiveData(matchId:LiveData<Long>,mainMatch:LiveData<LiveMatchBean>){
+        matchIdLiveData = matchId
+        this.mainMatch = mainMatch
+    }
+
     fun observeMatchId(matchId: Long) {
             mViewModel.setArguments(matchId)
     }
 
     fun observeLiveMatch(match: LiveMatchBean) {
-        "observeLiveMatch ${match.liveInfo.charRoom}".logd("aaa")
         updateChatUi(match)
         //比赛开始后开启聊天服务
         if (match.liveInfo.charRoom) {

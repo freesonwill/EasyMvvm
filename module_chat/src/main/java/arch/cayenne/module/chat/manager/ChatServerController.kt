@@ -1,5 +1,6 @@
 package arch.cayenne.module.chat.manager
 
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.websocket.chat.data.ChatEnterRoomResponse
 import arch.cayenne.lib.websocket.chat.data.ChatLeaveRoomResponse
 import arch.cayenne.lib.websocket.chat.data.ChatLoginResponseData
@@ -59,12 +60,10 @@ class ChatServerController(
     //查询历史消息返回结果
     val historyFlow: StateFlow<GetChatHistoryResponse?> = _historyFlow
 
-    var serverFLow: StateFlow<SocketConnectState> = MutableStateFlow(SocketConnectState.None)
     var newMsgNotify: Flow<MsgNotify?> = MutableStateFlow(null)
     var matchId: Long? = null
 
     override fun connectChatServer() {
-        connectServerFlow()
         scope.launch(Dispatchers.IO) {
             val state = manager.startChatServer(scope)
         }
@@ -76,16 +75,11 @@ class ChatServerController(
         }
     }
 
-    fun connectServerFlow() {
-        scope.launch {
-            serverFLow = manager.serverConnectFlow()
-        }
+    suspend fun serverConnectFlow() :StateFlow<SocketConnectState> {
+       return manager.serverConnectFlow()
     }
 
     fun chatLogin(matchId: Long) {
-        if (serverFLow.value != SocketConnectState.Connecting) {
-            return
-        }
         scope.launch(Dispatchers.IO) {
             val value = manager.chatLogin()
             _loginFlow.emit(value)
