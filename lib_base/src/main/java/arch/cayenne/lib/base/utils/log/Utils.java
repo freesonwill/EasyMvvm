@@ -5,6 +5,7 @@ import android.util.Log;
 
 public final class Utils {
     private static Application sApp;
+    private static Boolean isInEditMode = null;
 
     public static Application getApp() {
         if (sApp != null) return sApp;
@@ -29,5 +30,19 @@ public final class Utils {
         UtilsBridge.unInit(sApp);
         sApp = app;
         UtilsBridge.init(sApp);
+    }
+
+    /**
+     *  是否编辑模式(预览）
+     */
+    public static boolean isInEditMode(){
+        if(isInEditMode != null) return isInEditMode;
+        try {
+            Class.forName("androidx.constraintlayout.widget.ConstraintLayout");
+            isInEditMode = System.getProperty("idea.active") != null;
+        } catch (Exception e) {
+            isInEditMode = false;
+        }
+        return isInEditMode;
     }
 }
