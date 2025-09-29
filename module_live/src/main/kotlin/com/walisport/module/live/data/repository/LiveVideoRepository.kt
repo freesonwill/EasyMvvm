@@ -12,6 +12,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
+import java.util.Locale
 
 /**
  * 直播视频的repository,  存储视频源信息
@@ -63,11 +64,12 @@ class LiveVideoRepository(
                         StreamInfoBean(
                             it.name,
                             it.urlSource,
-                            it.streamType,
+                            formatStreamType(it.streamType),
                             it.rtmpUrl,
                             it.m3U8Url,
                             it.flvUrl,
-                            it.language
+                            it.language,
+                            selected = formatStreamType(it.streamType) == "1080P"
                         )
                     },
 
@@ -92,7 +94,7 @@ class LiveVideoRepository(
         val bean = liveVideoDao.queryLiveVideoBean(matchId)
         val playing = bean?.source?.firstOrNull { ele -> ele.isPlaying }
 
-        val list = playing?.liveStreams?.map { VideoResolutionBean(it.name, it.selected) }
+        val list = playing?.liveStreams?.map { VideoResolutionBean(it.streamType, it.selected) }
 
         return list
 
@@ -103,12 +105,22 @@ class LiveVideoRepository(
             val bean = liveVideoDao.queryLiveVideoBean(matchId)
             val playing = bean?.source?.firstOrNull { ele -> ele.isPlaying }
             playing?.liveStreams?.forEach {
-                it.selected = it.name == resolution
+                it.selected = it.streamType == resolution
             }
 
             if (bean?.source != null) {
                 liveVideoDao.updatePlayingId(bean.source, matchId)
             }
+        }
+    }
+
+    private fun formatStreamType(streamType:String):String{
+        return if (streamType.uppercase(Locale.getDefault()) == "HD") {
+            "1080P"
+        } else if (streamType.uppercase(Locale.getDefault()) == "SD") {
+            "720P"
+        } else {
+            "540P"
         }
     }
 }

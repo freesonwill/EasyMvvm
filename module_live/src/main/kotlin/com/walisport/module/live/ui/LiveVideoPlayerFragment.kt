@@ -28,12 +28,10 @@ import arch.cayenne.lib.qyplayer.GlobalConfig
 import arch.cayenne.lib.qyplayer.transformFromPlayerConfig
 import arch.cayenne.lib.qyplayer.transformToPlayerConfig
 import arch.cayenne.lib.qyplayer.ui.widget.LivePlayerView
-import arch.cayenne.module.betslip.ui.helper.BetTipsHelper
 import com.walisport.module.live.R
 import com.walisport.module.live.data.constants.MatchStatus
 import com.walisport.module.live.data.constants.VideoAnimatorConstants.Companion.BUTTONS_ANIMATION_DURATION
 import com.walisport.module.live.data.constants.VideoAnimatorConstants.Companion.HIDE_BUTTONS_TIMER
-import com.walisport.module.live.data.model.VideoResolutionBean
 import com.walisport.module.live.databinding.FragmentLiveVideoPlayerBinding
 import com.walisport.module.live.ui.popup.VideoResolutionHelper
 import com.walisport.module.live.ui.video.PlayerViewCache
@@ -232,29 +230,33 @@ class LiveVideoPlayerFragment :
             liveVideoBean.observe(viewLifecycleOwner) {
                 it?.let {
 
-                        mBinding.ivChooseSource.visibility = View.VISIBLE
-                        mBinding.ivToFullscreen.visibility = View.VISIBLE
-                    val playUrl =
+                    mBinding.ivChooseSource.visibility = View.VISIBLE
+                    mBinding.ivToFullscreen.visibility = View.VISIBLE
+                    val streamInfoBean =
                         it.source.firstOrNull { ele -> ele.isPlaying }?.liveStreams?.firstOrNull { ele -> ele.selected }
+
+                    mBinding.tvVideoResolution.text = streamInfoBean?.streamType
+                    val playUrl =
+                        streamInfoBean
                             ?.playUrl()
-                        playUrl?.takeIf { url -> url.isNotEmpty() }?.let { url ->
+                    playUrl?.takeIf { url -> url.isNotEmpty() }?.let { url ->
                         "videoUrl:${url}".logd("LiveVideoPlayerFragment")
 
-                            //收到视频源信息时，需要判断当前比赛的状态，仅当比赛为正在进行中才播放视频
-                            val matchBean = mViewModel.matchBeanLiveData.value
-                            matchBean?.let {
-                                val matchStatus =
-                                    MatchStatus.entries.find { status -> status.code == it.basicInfo.status }
-                                if (matchStatus == MatchStatus.IN_PROGRESS) {
+                        //收到视频源信息时，需要判断当前比赛的状态，仅当比赛为正在进行中才播放视频
+                        val matchBean = mViewModel.matchBeanLiveData.value
+                        matchBean?.let {
+                            val matchStatus =
+                                MatchStatus.entries.find { status -> status.code == it.basicInfo.status }
+                            if (matchStatus == MatchStatus.IN_PROGRESS) {
 //                                    "url:${url}, dataSource:${videoView.getDataSource()}".logd("videoCache")
-                                    if (url != videoView.getDataSource()) {
-                                        videoView.setDataSource(url)
-                                        videoView.prepare()
-                                    }
+                                if (url != videoView.getDataSource()) {
+                                    videoView.setDataSource(url)
+                                    videoView.prepare()
                                 }
                             }
-
                         }
+
+                    }
 
                 }
             }

@@ -303,14 +303,32 @@ class LiveVideoLandscapeFragment :
             mViewModel.changeMuteStatus()
         }
 
+        mBinding.tvVideoResolution.clickNoRepeat {
+            hideButtons()
+            reduce(
+                targetWidth = mBinding.root.measuredWidth - mBinding.fragmentChooseSource.measuredWidth - VIDEO_MARGIN_HORIZONTAL.dp2px * 2,
+                targetHeight = 275.dp2px,
+                targetHorizontalMargin = VIDEO_MARGIN_HORIZONTAL.dp2px
+            ) {
+                videoViewFullScreen = false
+            }
+
+            setVideoResolutionView()
+            showVideoResolutionView()
+        }
+
     }
 
     override suspend fun createObserver() {
         with(mViewModel) {
             liveVideoBean.observe(viewLifecycleOwner) {
                 it?.let {
-                    val playUrl =
+                    val streamInfoBean =
                         it.source.firstOrNull { ele -> ele.isPlaying }?.liveStreams?.firstOrNull { ele -> ele.selected }
+
+                    mBinding.tvVideoResolution.text = streamInfoBean?.streamType
+                    val playUrl =
+                        streamInfoBean
                             ?.playUrl()
 
                     playUrl?.takeIf { url -> url.isNotEmpty() }?.let { url ->
@@ -737,6 +755,56 @@ class LiveVideoLandscapeFragment :
         }
     }
 
+
+    /**
+     * 创建选择清晰度页面
+     */
+    private fun setVideoResolutionView() {
+        childFragmentManager.findFragmentByTag(LiveVideoResolutionFragment.TAG)
+                as? LiveVideoResolutionFragment ?: LiveVideoResolutionFragment().also {
+            it.arguments = Bundle().apply {
+                putLong("matchId", mViewModel.matchId())
+            }
+            childFragmentManager.beginTransaction()
+                .replace(mBinding.fragmentVideoResolution.id, it, LiveVideoResolutionFragment.TAG)
+                .commitNow()
+        }
+
+    }
+
+    /**
+     *清晰度页入场动画
+     */
+    private fun showVideoResolutionView() {
+        val currentTranslationX = 0f
+        val targetTranslationX = -mBinding.fragmentVideoResolution.measuredWidth.toFloat()
+
+        ValueAnimator.ofFloat(currentTranslationX, targetTranslationX).apply {
+            addUpdateListener {
+                mBinding.fragmentVideoResolution.translationX = it.animatedValue as Float
+            }
+            setDuration(ZOOM_ANIMATION_DURATION)
+            start()
+        }
+    }
+
+    /**
+     * 视频源页面退场动画
+     */
+    private fun hideVideoResolutionView(onEndAction: () -> Unit) {
+        val currentTranslationX = mBinding.fragmentVideoResolution.translationX
+        val targetTranslationX = 0f
+        ValueAnimator.ofFloat(currentTranslationX, targetTranslationX).apply {
+            addUpdateListener {
+                mBinding.fragmentVideoResolution.translationX = it.animatedValue as Float
+
+            }
+            doOnEnd { onEndAction() }
+            setDuration(ZOOM_ANIMATION_DURATION)
+            start()
+        }
+    }
+
     /**
      * 创建赛况统计页
      */
@@ -787,7 +855,7 @@ class LiveVideoLandscapeFragment :
     }
 
     /**
-     * 移除分享页，视频源页，赛况页
+     * 移除分享页，视频源页，赛况页, 清晰度页面
      */
     private fun hideFragment() {
         if (mBinding.fragmentShare.translationX.toInt() != 0) {
@@ -802,6 +870,11 @@ class LiveVideoLandscapeFragment :
 
         if (mBinding.fragmentStatistics.translationX.toInt() != 0) {
             hideStatisticsView {
+            }
+        }
+
+        if (mBinding.fragmentVideoResolution.translationX.toInt() != 0) {
+            hideVideoResolutionView {
             }
         }
 
