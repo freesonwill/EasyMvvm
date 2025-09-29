@@ -44,6 +44,7 @@ import com.xxx.qyplayer.DecryptMode
 import com.xxx.qyplayer.PlayerMode
 import com.xxx.qyplayer.PlayerState
 import com.xxx.qyplayer.transformToInt
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -497,15 +498,18 @@ class LiveVideoPlayerFragment :
 
         val helper = VideoResolutionHelper()
 
-        val beanList = listOf(
-            VideoResolutionBean("1080P", true),
-            VideoResolutionBean("720P", false),
-            VideoResolutionBean("540P", false)
-        )
+        lifecycleScope.launch(Dispatchers.IO) {
+            val beanList = mViewModel.getVideoResolutionList()
 
-        helper.showPopUp(mBinding.tvVideoResolution, beanList) {
-            mViewModel.changeResolution(it)
+            if (beanList != null) {
+                lifecycleScope.launch {
+                    helper.showPopUp(mBinding.tvVideoResolution, beanList) {
+                        mViewModel.changeResolution(it)
+                    }
+                }
+            }
         }
+
     }
 
     private inner class VolumeObserver(handler: Handler) : ContentObserver(handler) {
