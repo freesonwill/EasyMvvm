@@ -80,6 +80,8 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         mBinding.titleBar.loadDynamicsTitleBar(titleBarBinding.root)
         mViewModel.setMatchId(args.matchId)
         mViewModel.setSportId(args.sportId)
+        mViewModel.setShowVideo(args.showVideo)
+        mViewModel.setShowAnim(args.showAnim)
         setVideoView()
         loadFragment()
         mViewModel.observeMatchInfoNotify()
@@ -337,6 +339,9 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                     mViewModel.matchId.value?.let { value ->
                         putLong("matchId", value)
                     }
+
+                    putBoolean("showVideo", mViewModel.showVideo.value ?: false)
+                    putBoolean("showAnim", mViewModel.showAnim.value ?: false)
                 }
                 childFragmentManager.beginTransaction()
                     .replace(mBinding.fragmentVideo.id, it, LiveMatchMediaFragment.TAG)

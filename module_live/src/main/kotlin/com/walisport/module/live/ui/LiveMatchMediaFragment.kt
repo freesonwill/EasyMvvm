@@ -27,6 +27,16 @@ class LiveMatchMediaFragment :
 
     override fun initView(savedInstanceState: Bundle?) {
         mBinding.model = mViewModel
+
+        val showVideo = arguments?.getBoolean("showVideo")
+        val showAnim = arguments?.getBoolean("showAnim")
+
+        if (showVideo == true) {
+            showVideoView()
+        } else if (showAnim == true) {
+            showAnimationView()
+        }
+
     }
 
 
