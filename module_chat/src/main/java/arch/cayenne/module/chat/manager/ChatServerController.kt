@@ -1,24 +1,19 @@
 package arch.cayenne.module.chat.manager
 
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.websocket.chat.data.ChatEnterRoomResponse
 import arch.cayenne.lib.websocket.chat.data.ChatLeaveRoomResponse
 import arch.cayenne.lib.websocket.chat.data.ChatLoginResponseData
 import arch.cayenne.lib.websocket.chat.data.ChatMsg
 import arch.cayenne.lib.websocket.chat.data.ChatSendMsgResponse
-import arch.cayenne.lib.websocket.chat.data.CheckBetAmountResponse
 import arch.cayenne.lib.websocket.chat.data.GetChatHistoryResponse
 import arch.cayenne.lib.websocket.chat.data.MsgNotify
-import arch.cayenne.lib.websocket.data.ConnectState
 import arch.cayenne.lib.websocket.data.SocketConnectState
 import arch.cayenne.module.chat.data.constants.CheckBetResultEnum
-import arch.cayenne.module.chat.manager.interf.ChatServerFactory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 /**
@@ -29,12 +24,11 @@ import kotlinx.coroutines.launch
 class ChatServerController(
     private val scope: CoroutineScope,
     private val manager: ChatManagerImpl
-) : ChatServerFactory {
+) {
 
     private val _loginFlow = MutableStateFlow<ChatLoginResponseData?>(null)
     private val _sendMsgResultFlow = MutableStateFlow<ChatSendMsgResponse?>(null)
     private val _historyFlow = MutableStateFlow<GetChatHistoryResponse?>(null)
-    private val _newMsgFLow = MutableStateFlow<MsgNotify?>(null)
     private val _checkBetAmountFlow = MutableStateFlow<CheckBetResultEnum?>(null)
     private val _enterRoomFlow = MutableStateFlow<ChatEnterRoomResponse?>(null)
     private val _leaveRoomFlow = MutableStateFlow<ChatLeaveRoomResponse?>(null)
@@ -42,8 +36,6 @@ class ChatServerController(
     //检查是否可以发送消息
     var checkBetAmountLiveData: StateFlow<CheckBetResultEnum?> = _checkBetAmountFlow
 
-    //监听新消息
-    val newMsgFlow: Flow<MsgNotify?> = _newMsgFLow
 
     //登陆返回数据
     val loginFlow: StateFlow<ChatLoginResponseData?> = _loginFlow
@@ -63,20 +55,20 @@ class ChatServerController(
     var newMsgNotify: Flow<MsgNotify?> = MutableStateFlow(null)
     var matchId: Long? = null
 
-    override fun connectChatServer() {
+    fun connectChatServer() {
         scope.launch(Dispatchers.IO) {
             val state = manager.startChatServer(scope)
         }
     }
 
-    override fun disconnectChatServer() {
+    fun disconnectChatServer() {
         scope.launch {
             manager.disConnectChatServer(scope)
         }
     }
 
-    suspend fun serverConnectFlow() :StateFlow<SocketConnectState> {
-       return manager.serverConnectFlow()
+    suspend fun serverConnectFlow(): StateFlow<SocketConnectState> {
+        return manager.serverConnectFlow()
     }
 
     fun chatLogin(matchId: Long) {
@@ -93,7 +85,6 @@ class ChatServerController(
             val value = manager.enterRoom(matchId)
             _enterRoomFlow.emit(value)
             checkBetAmount()
-            registerMsgFlowToServer()
             getChatHistory(matchId, 1, 100)
         }
 
@@ -127,10 +118,8 @@ class ChatServerController(
         }
     }
 
-    fun registerMsgFlowToServer() {
-        scope.launch {
-            newMsgNotify = manager.registerMsgFlowToServer()
-        }
+    suspend fun registerMsgFlowToServer(): Flow<MsgNotify> {
+        return manager.registerMsgFlowToServer()
     }
 
     fun getChatHistory(

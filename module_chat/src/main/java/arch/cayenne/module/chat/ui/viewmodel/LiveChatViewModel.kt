@@ -21,6 +21,7 @@ import arch.cayenne.module.chat.data.constants.KeyBoardType
 import arch.cayenne.module.chat.manager.ChatServerController
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import org.koin.core.component.inject
@@ -75,7 +76,6 @@ class LiveChatViewModel(private val userDataManager: UserDataManager) : BaseView
 
     val chatHistoryFlow = chatServer.historyFlow
     val sendMsgToServerFlow = chatServer.sendMsgResultFlow
-    val newMsgFlow = chatServer.newMsgFlow
     val loginFlow = chatServer.loginFlow
 
     fun setArguments(matchId: Long?) {
@@ -104,6 +104,10 @@ class LiveChatViewModel(private val userDataManager: UserDataManager) : BaseView
 
     suspend fun serverFlow():StateFlow<SocketConnectState>{
         return chatServer.serverConnectFlow()
+    }
+
+    suspend fun registerNewMsgFlow(): Flow<MsgNotify> {
+        return chatServer.registerMsgFlowToServer()
     }
 
     /**
