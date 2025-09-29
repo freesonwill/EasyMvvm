@@ -23,14 +23,12 @@ import arch.cayenne.lib.common.utils.ext.startSafeObjectAnimator
 import arch.cayenne.lib.common.utils.ext.touchBackPressed
 import com.github.lzyzsd.jsbridge.BridgeWebViewClient
 import com.github.lzyzsd.jsbridge.DefaultHandler
-import com.walisport.module.live.R
-import com.walisport.module.live.data.constants.MatchStatus
+import arch.cayenne.lib.common.data.constants.MatchStatus
 import com.walisport.module.live.databinding.FragmentLiveMatchAnimationBinding
 import com.walisport.module.live.ui.viewmodel.LiveMainViewModel
 import com.walisport.module.live.ui.viewmodel.LiveMatchAnimationViewModel
 import com.walisport.module.live.ui.viewmodel.LiveMatchMediaViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import kotlin.reflect.KClass
 
