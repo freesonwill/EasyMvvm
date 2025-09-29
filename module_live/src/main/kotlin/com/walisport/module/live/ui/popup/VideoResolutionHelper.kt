@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.PopupWindow
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getColor
+import arch.cayenne.lib.database.entity.VideoSourceBean
 import com.walisport.module.live.R
 import com.walisport.module.live.data.model.VideoResolutionBean
 import com.walisport.module.live.databinding.PopupVideoResolutionLayoutBinding
@@ -22,7 +23,7 @@ class VideoResolutionHelper {
         private const val SHOW_TIME = 3_000L
     }
 
-    fun showPopUp(attachView: View) {
+    fun showPopUp(attachView: View, beanList: List<VideoResolutionBean>, itemClick: (String) -> Unit) {
         // 关闭上一个pop
         dismissPopup()
         mBinding =
@@ -38,6 +39,8 @@ class VideoResolutionHelper {
                     }
 
                     adapter = VideoResolutionAdapter {
+                        dismissPopup()
+                        itemClick.invoke(it)
                     }
 
                     rvVideoResolution.adapter = adapter
@@ -50,13 +53,7 @@ class VideoResolutionHelper {
                         )
                     )
 
-                    adapter.submitList(
-                        listOf(
-                            VideoResolutionBean("1080P", true),
-                            VideoResolutionBean("720P", false),
-                            VideoResolutionBean("540P", false)
-                        )
-                    )
+                    adapter.submitList(beanList)
 
                     // 先進行測量
                     this.root.measure(

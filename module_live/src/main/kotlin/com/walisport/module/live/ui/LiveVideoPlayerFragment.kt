@@ -33,6 +33,7 @@ import com.walisport.module.live.R
 import com.walisport.module.live.data.constants.MatchStatus
 import com.walisport.module.live.data.constants.VideoAnimatorConstants.Companion.BUTTONS_ANIMATION_DURATION
 import com.walisport.module.live.data.constants.VideoAnimatorConstants.Companion.HIDE_BUTTONS_TIMER
+import com.walisport.module.live.data.model.VideoResolutionBean
 import com.walisport.module.live.databinding.FragmentLiveVideoPlayerBinding
 import com.walisport.module.live.ui.popup.VideoResolutionHelper
 import com.walisport.module.live.ui.video.PlayerViewCache
@@ -229,12 +230,12 @@ class LiveVideoPlayerFragment :
         with(mViewModel) {
             liveVideoBean.observe(viewLifecycleOwner) {
                 it?.let {
-                    if (it.source.isEmpty()) {
-                        onDataSourceEmpty()
-                    } else {
+
                         mBinding.ivChooseSource.visibility = View.VISIBLE
                         mBinding.ivToFullscreen.visibility = View.VISIBLE
-                        val playUrl = it.source.firstOrNull { ele -> ele.isPlaying }?.liveStreams!![0].playUrl()
+                    val playUrl =
+                        it.source.firstOrNull { ele -> ele.isPlaying }?.liveStreams?.firstOrNull { ele -> ele.selected }
+                            ?.playUrl()
                         playUrl?.takeIf { url -> url.isNotEmpty() }?.let { url ->
                         "videoUrl:${url}".logd("LiveVideoPlayerFragment")
 
@@ -246,7 +247,6 @@ class LiveVideoPlayerFragment :
                                 if (matchStatus == MatchStatus.IN_PROGRESS) {
 //                                    "url:${url}, dataSource:${videoView.getDataSource()}".logd("videoCache")
                                     if (url != videoView.getDataSource()) {
-//                                        "setDataSource".logd("videoCache")
                                         videoView.setDataSource(url)
                                         videoView.prepare()
                                     }
@@ -254,7 +254,7 @@ class LiveVideoPlayerFragment :
                             }
 
                         }
-                    }
+
                 }
             }
 
@@ -496,7 +496,16 @@ class LiveVideoPlayerFragment :
         scheduledHideButtonsJob?.cancel()
 
         val helper = VideoResolutionHelper()
-        helper.showPopUp(mBinding.tvVideoResolution)
+
+        val beanList = listOf(
+            VideoResolutionBean("1080P", true),
+            VideoResolutionBean("720P", false),
+            VideoResolutionBean("540P", false)
+        )
+
+        helper.showPopUp(mBinding.tvVideoResolution, beanList) {
+            mViewModel.changeResolution(it)
+        }
     }
 
     private inner class VolumeObserver(handler: Handler) : ContentObserver(handler) {

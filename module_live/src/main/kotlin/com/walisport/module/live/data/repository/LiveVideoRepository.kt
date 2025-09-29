@@ -85,4 +85,14 @@ class LiveVideoRepository(
         }
 
     }
+
+    fun changeResolution(resolution: String) {
+        scope.launch {
+            val bean = liveVideoDao.queryLiveVideoBean(matchId)
+            val playing = bean?.source?.firstOrNull { ele -> ele.isPlaying }
+            playing?.liveStreams?.forEach {
+                it.selected = it.name == resolution
+            }
+        }
+    }
 }

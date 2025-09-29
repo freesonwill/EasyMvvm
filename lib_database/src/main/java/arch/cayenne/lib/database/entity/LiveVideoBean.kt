@@ -28,6 +28,7 @@ data class StreamInfoBean(
     val m3U8Url: String = "",
     val flvUrl: String = "",
     val language: String = "",
+    var selected: Boolean = false
 ) {
     fun playUrl(): String {
         return flvUrl.takeIf { it.isNotEmpty() }

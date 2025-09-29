@@ -163,4 +163,8 @@ class LiveVideoPlayerViewModel(
     fun setPlayerState(it: PlayerState) {
         _playerState.value = it
     }
+
+    fun changeResolution(resolution: String) {
+        repo.changeResolution(resolution)
+    }
 }
