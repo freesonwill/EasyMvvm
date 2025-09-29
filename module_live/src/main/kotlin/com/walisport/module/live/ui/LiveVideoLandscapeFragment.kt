@@ -309,8 +309,10 @@ class LiveVideoLandscapeFragment :
         with(mViewModel) {
             liveVideoBean.observe(viewLifecycleOwner) {
                 it?.let {
+                    val playUrl =
+                        it.source.firstOrNull { ele -> ele.isPlaying }?.liveStreams?.firstOrNull { ele -> ele.selected }
+                            ?.playUrl()
 
-                    val playUrl = it.source.firstOrNull { ele -> ele.isPlaying }?.liveStreams!![0].playUrl()
                     playUrl?.takeIf { url -> url.isNotEmpty() }?.let { url ->
                         if (url != videoView.getDataSource()) {
                             videoView.setDataSource(url)

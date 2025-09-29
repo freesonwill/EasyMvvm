@@ -4,9 +4,11 @@ import android.graphics.drawable.ColorDrawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.ScaleAnimation
 import android.widget.PopupWindow
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getColor
+import arch.cayenne.lib.common.utils.ext.startSafeAnimateSet
 import arch.cayenne.lib.database.entity.VideoSourceBean
 import com.walisport.module.live.R
 import com.walisport.module.live.data.model.VideoResolutionBean
@@ -23,7 +25,11 @@ class VideoResolutionHelper {
         private const val SHOW_TIME = 3_000L
     }
 
-    fun showPopUp(attachView: View, beanList: List<VideoResolutionBean>, itemClick: (String) -> Unit) {
+    fun showPopUp(
+        attachView: View,
+        beanList: List<VideoResolutionBean>,
+        itemClick: (String) -> Unit
+    ) {
         // 关闭上一个pop
         dismissPopup()
         mBinding =
@@ -61,17 +67,29 @@ class VideoResolutionHelper {
                         View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
                     )
 
-
                     // 計算 PopupWindow 的顯示位置
                     val offX =
                         -(this.rvVideoResolution.layoutParams.width / 2 - attachView.width / 2)
                     val offY =
                         -(this.rvVideoResolution.layoutParams.height + this.ivArrow.layoutParams.height + attachView.height)
 
-                    // 顯示 PopupWindow
-                    popupWindow?.showAsDropDown(attachView, offX, offY)
 
-//            this.root.postDelayed({ dismissTips() }, SHOW_TIME)
+                    root.scaleX = 0f
+                    root.scaleY = 0f
+                    root.alpha = 0f
+
+                    // 开始动画
+                    root.animate()
+                        .scaleX(1f)
+                        .scaleY(1f)
+                        .alpha(1f)
+                        .setDuration(200)
+                        .setInterpolator(android.view.animation.DecelerateInterpolator())
+
+                        .start()
+
+                    //显示popupWindow
+                    popupWindow?.showAsDropDown(attachView, offX, offY)
                 }
     }
 
@@ -79,5 +97,20 @@ class VideoResolutionHelper {
         popupWindow?.dismiss()
         popupWindow = null
         mBinding = null
+    }
+
+    private fun dismissPopUpAnimated(){
+        mBinding?.root!!.animate()
+            .scaleX(0f)
+            .scaleY(0f)
+            .alpha(0f)
+            .setDuration(200)
+            .setInterpolator(android.view.animation.DecelerateInterpolator())
+            .withStartAction {
+            }
+            .withEndAction {
+                dismissPopup()
+            }
+            .start()
     }
 } 
