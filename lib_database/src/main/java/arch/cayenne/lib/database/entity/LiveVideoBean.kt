@@ -17,7 +17,9 @@ data class VideoSourceBean(
     val title: String = "",
     val subTitle: String = "",
     var isPlaying: Boolean = false,
-    val liveStreams: List<StreamInfoBean>
+    val liveStreams: List<StreamInfoBean>,
+    val anchorName: String,
+    val coverUrl: String,
 )
 
 data class StreamInfoBean(
