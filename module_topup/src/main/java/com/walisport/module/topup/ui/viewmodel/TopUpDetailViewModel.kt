@@ -29,7 +29,6 @@ class TopUpDetailViewModel(private val repo: TopUpDetailRepository) : BaseViewMo
     }
 
     fun queryData() {
-
         viewModelScope.launch {
             "获取充值详情： ${this@TopUpDetailViewModel.transactionId}".logd(TAG)
             callApi({

@@ -44,9 +44,7 @@ class TopUpDetailFragment : BaseFragment<TopUpDetailViewModel, FragmentTopupDeta
         val iid = arguments?.getString("iid") ?: ""
         val type = arguments?.getInt("type") ?: 1
         val amount = arguments?.getString("amount") ?: "0.00"
-        val account = arguments?.getString("account") ?: "0.00"
         val status = arguments?.getInt("status") ?: 1
-        val reason = arguments?.getString("reason") ?: ""
         val time = arguments?.getLong("time") ?: 0L
         with(mBinding) {
             titleBar.loadGeneralTitleBar(R.string.recharge_detail.getString(), {
@@ -125,13 +123,6 @@ class TopUpDetailFragment : BaseFragment<TopUpDetailViewModel, FragmentTopupDeta
             TYPE_FAD -> R.color.pay_failure.getColor()
             else -> R.color.pay_un_confirm.getColor()
         }
-    }
-
-    private fun maskAccountNumber(accountNumber: String?, maskLength: Int): String? {
-        if (accountNumber == null || accountNumber.length <= maskLength) {
-            return accountNumber
-        }
-        return "**** **** **** " + accountNumber.substring(maskLength)
     }
 
     override suspend fun createObserver() {}

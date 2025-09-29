@@ -14,7 +14,6 @@ import com.walisport.module.topup.data.entity.DateFilterBean
 import com.walisport.module.topup.data.entity.DateFilterEnum
 import com.walisport.module.topup.data.entity.RechargeFilterBean
 import com.walisport.module.topup.data.entity.RechargeRecordBean
-import com.walisport.module.topup.data.entity.WithdrawFilterBean
 import kotlinx.coroutines.launch
 import okhttp3.internal.toImmutableList
 import plugin.koin.KoinViewModel
@@ -25,8 +24,8 @@ class TopUpRecordsViewModel(private val repository: TopUpRecordsRepository) : Ba
     private var page = 1
     private var isPageEnd = false
 
-    private val _recordListChange: UnPeekLiveData<List<RechargeRecordBean>> = UnPeekLiveData()
-    val recordListChange: UnPeekLiveData<List<RechargeRecordBean>> = _recordListChange
+    private val _recordListChange: UnPeekLiveData<List<RechargeRecordBean>?> = UnPeekLiveData()
+    val recordListChange: UnPeekLiveData<List<RechargeRecordBean>?> = _recordListChange
 
     private val _onDateFilter = MutableLiveData<DateFilterBean>()
     val onDateFilter: LiveData<DateFilterBean> get() = _onDateFilter
@@ -85,10 +84,10 @@ class TopUpRecordsViewModel(private val repository: TopUpRecordsRepository) : Ba
                         setState(LoadingState.DataEmpty)
                     } else if (size < TopUpRecordsRepository.DEFAULT_LIST_SIZE) {
                         setState(DataState.NoMoreData)
-                        recordListChange.value = mergeList(recordListChange.value, list)
+                        recordListChange.value = list
                     } else {
                         setState(LoadingState.LoadSuccess)
-                        recordListChange.value = mergeList(recordListChange.value, list)
+                        recordListChange.value = list
                     }
 
                 }
@@ -112,8 +111,5 @@ class TopUpRecordsViewModel(private val repository: TopUpRecordsRepository) : Ba
         list.addAll(listB)
 
         return list.toImmutableList()
-
     }
-
-
 }
