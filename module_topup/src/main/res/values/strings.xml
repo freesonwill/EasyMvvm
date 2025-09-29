@@ -20,19 +20,35 @@
     <string name="pay_rmb">数字人民币</string>
     <string name="pay_yun">云闪付充值</string>
 
+    <string name="cz_address">充值地址</string>
     <string name="tx_address">提现地址</string>
     <string name="id_order">订单号</string>
     <string name="sk_account">收款账号</string>
 
+    <string name="cz_bank">银行卡充值</string>
+    <string name="cz_ali">支付宝充值</string>
+    <string name="cz_wechat">微信充值</string>
+    <string name="cz_yun">云闪付充值</string>
+    <string name="cz_ee">EE钱包充值</string>
+    <string name="cz_rmb">数字人民币充值</string>
+
+    <string name="cz_method">充值方式</string>
     <string name="tx_method">提现方式</string>
     <string name="tx_union">银行卡提现</string>
     <string name="tx_usdt">USDT提现</string>
     <string name="tx_trc">TRC-20</string>
     <string name="tx_ee">EE钱包</string>
+    <string name="cz_suc">支付成功</string>
+    <string name="cz_fad">支付失败</string>
+    <string name="cz_shen">支付审核中</string>
     <string name="tx_suc">提现成功</string>
     <string name="tx_fad">提现失败</string>
     <string name="tx_shen">提现审核中</string>
 
+    <string name="tx_rmb">数字人民币</string>
+    <string name="tx_wechat">微信</string>
+    <string name="tx_yun">云闪付</string>
+    <string name="tx_ali">支付宝</string>
     <string name="tx_sk_bank">银行卡</string>
     <string name="tx_sb_reason">失败原因</string>
 
