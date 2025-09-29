@@ -301,6 +301,8 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                     Glide.with(this).load(logo).into(titleBarBinding.ivLandscapeLeagueIcon)
                 }
                 titleBarBinding.tvCompetitionName.text = it.basicInfo.matchName
+
+                mBinding.liveMainMl.setCompetitionName(it.basicInfo.matchName)
                 //比赛开始后开启聊天服务
                 if (it.liveInfo.charRoom) {
                     mViewModel.startChatServer()
