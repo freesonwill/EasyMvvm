@@ -1,15 +1,20 @@
 package com.walisport.module.topup.ui.viewmodel
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.data.model.UnPeekLiveData
 import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.base.data.remote.ApiResponseState.Start.dataAs
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import com.walisport.module.topup.data.TopUpRecordsRepository
 import com.walisport.module.topup.data.constants.LoadingState
+import com.walisport.module.topup.data.entity.DateFilterBean
+import com.walisport.module.topup.data.entity.DateFilterEnum
+import com.walisport.module.topup.data.entity.RechargeFilterBean
 import com.walisport.module.topup.data.entity.RechargeRecordBean
+import com.walisport.module.topup.data.entity.WithdrawFilterBean
 import kotlinx.coroutines.launch
 import okhttp3.internal.toImmutableList
 import plugin.koin.KoinViewModel
@@ -21,18 +26,20 @@ class TopUpRecordsViewModel(private val repository: TopUpRecordsRepository) : Ba
     private var isPageEnd = false
 
     private val _recordListChange: UnPeekLiveData<List<RechargeRecordBean>> = UnPeekLiveData()
-
     val recordListChange: UnPeekLiveData<List<RechargeRecordBean>> = _recordListChange
 
+    private val _onDateFilter = MutableLiveData<DateFilterBean>()
+    val onDateFilter: LiveData<DateFilterBean> get() = _onDateFilter
 
-    override fun initViewModel() {
-        super.initViewModel()
+    private val _onRechargeFilter = MutableLiveData<List<RechargeFilterBean>>()
+    val onRechargeFilter: LiveData<List<RechargeFilterBean>> get() = _onRechargeFilter
 
-        viewModelScope.launch {
-            repository.recordListChange.collect {
-                _recordListChange.value = it
-            }
-        }
+    init {
+        _onDateFilter.value = DateFilterBean(
+            title = DateFilterEnum.ALL.title,
+            date = DateFilterEnum.ALL
+        )
+        _onRechargeFilter.value = listOf(RechargeFilterBean.getAllTypeBean())
     }
 
     fun reload() {
@@ -65,7 +72,6 @@ class TopUpRecordsViewModel(private val repository: TopUpRecordsRepository) : Ba
 
     fun getListData() {
         viewModelScope.launch {
-            "获取充值记录 $page".logd(TAG)
             callApi({
                 repository.getListData(page)
             }, {
@@ -88,8 +94,6 @@ class TopUpRecordsViewModel(private val repository: TopUpRecordsRepository) : Ba
                 }
             })
         }
-
-
     }
 
     private fun mergeList(
