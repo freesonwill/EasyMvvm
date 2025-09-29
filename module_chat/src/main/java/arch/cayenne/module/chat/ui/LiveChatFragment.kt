@@ -154,11 +154,9 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
                 }
             }
             launch {
-                mViewModel.newMsgFlow.collect {
-                    it?.let { msg ->
-                        mViewModel.addNewMsgs(msg)
-                        refreshChatList()
-                    }
+                mViewModel.registerNewMsgFlow().collect {
+                    mViewModel.addNewMsgs(it)
+                    refreshChatList()
                 }
             }
 
