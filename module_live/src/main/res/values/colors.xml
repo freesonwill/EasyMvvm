@@ -52,4 +52,5 @@
     <color name="standing_team">#ffffff</color>
     <color name="video_resolution_selected_text_color">#24EE8A</color>
     <color name="video_resolution_unselected_text_color">#FFFFFF</color>
+    <color name="video_resolution_divider_line">#373C46</color>
 </resources>

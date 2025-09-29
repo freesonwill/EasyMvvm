@@ -1,15 +1,16 @@
 package com.walisport.module.live.ui.popup
 
+import android.graphics.drawable.ColorDrawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupWindow
-import arch.cayenne.lib.common.utils.ThreadUtils
+import androidx.recyclerview.widget.LinearLayoutManager
+import arch.cayenne.lib.common.utils.ext.ResourceExt.getColor
+import com.walisport.module.live.R
 import com.walisport.module.live.data.model.VideoResolutionBean
 import com.walisport.module.live.databinding.PopupVideoResolutionLayoutBinding
 import com.walisport.module.live.ui.adapter.VideoResolutionAdapter
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 class VideoResolutionHelper {
     private var popupWindow: PopupWindow? = null
@@ -40,20 +41,22 @@ class VideoResolutionHelper {
                     }
 
                     rvVideoResolution.adapter = adapter
-
-                    ThreadUtils.mainScope.launch {
-                        delay(1000)
-                        adapter.submitList(
-                            listOf(
-                                VideoResolutionBean("1080p", true),
-                                VideoResolutionBean("720p", false),
-                                VideoResolutionBean("540p", false)
-                            )
+                    rvVideoResolution.layoutManager = LinearLayoutManager(rvVideoResolution.context)
+                    rvVideoResolution.addItemDecoration(
+                        VideoResolutionDividerDecoration(
+                            rvVideoResolution.context,
+                            VideoResolutionDividerDecoration.VERTICAL,
+                            ColorDrawable(R.color.video_resolution_divider_line.getColor())
                         )
+                    )
 
-                        adapter.notifyDataSetChanged()
-                    }
-
+                    adapter.submitList(
+                        listOf(
+                            VideoResolutionBean("1080P", true),
+                            VideoResolutionBean("720P", false),
+                            VideoResolutionBean("540P", false)
+                        )
+                    )
 
                     // 先進行測量
                     this.root.measure(
