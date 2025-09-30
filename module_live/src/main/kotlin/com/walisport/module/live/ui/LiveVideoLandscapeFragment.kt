@@ -320,6 +320,7 @@ class LiveVideoLandscapeFragment :
             mViewModel.changeMuteStatus()
         }
 
+        mBinding.tvVideoResolution.addScaleOnTouchAnimation()
         mBinding.tvVideoResolution.clickNoRepeat {
             hideButtons()
             reduce(

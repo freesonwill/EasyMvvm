@@ -231,6 +231,7 @@ class LiveVideoPlayerFragment :
                 mViewModel.changeMuteStatus()
             }
 
+            tvVideoResolution.addScaleOnTouchAnimation()
             tvVideoResolution.clickNoRepeat {
                 showVideoResolutionPopUp()
             }
