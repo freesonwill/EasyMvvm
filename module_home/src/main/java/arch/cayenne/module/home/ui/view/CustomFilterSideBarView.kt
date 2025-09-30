@@ -41,7 +41,7 @@ class CustomFilterSideBarView @JvmOverloads constructor(
     var textColorResId: Int = R.color.custom_filter_side_bar_text
         set(value) {
             field = value
-            textColor = value.getColor()
+            textColor = value.getColor(context)
             invalidate()
         }
 
@@ -91,7 +91,7 @@ class CustomFilterSideBarView @JvmOverloads constructor(
     var hotIconResId: Int = R.drawable.ic_hot_league_index
         set(value) {
             field = value
-            hotIconBitmap = value.getDrawable().toBitmap()
+            hotIconBitmap = value.getDrawable(context).toBitmap()
             invalidate()
         }
 
@@ -126,8 +126,8 @@ class CustomFilterSideBarView @JvmOverloads constructor(
     private val backgroundPaint = Paint(Paint.ANTI_ALIAS_FLAG)
 
     init {
-        hotIconBitmap = hotIconResId.getDrawable().toBitmap()
-        textColor = textColorResId.getColor()
+        hotIconBitmap = hotIconResId.getDrawable(context).toBitmap()
+        textColor = textColorResId.getColor(context)
     }
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {

@@ -46,6 +46,7 @@ import arch.cayenne.module.home.ui.view.HomeCalendarFragment
 import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
 import arch.cayenne.module.home.ui.viewmodel.SubHomeViewModel
 import arch.cayenne.module.home.utils.DateUtils
+import arch.cayenne.module.home.utils.scrollToPositionWithoutAnim
 import com.bumptech.glide.Glide
 import com.google.android.material.tabs.TabLayout
 import kotlinx.coroutines.Job
@@ -229,6 +230,8 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
     fun onFragmentSelected() {
         mViewModel.getCurrentSportStatistical()
         mViewModel.getCurrentTournament()
+        tournamentTabLayoutMediator?.scrollTabToCurrentPositionImmediately()
+        mBinding.layoutContainer.tlDateList.scrollToPositionWithoutAnim(mBinding.layoutContainer.tlDateList.selectedTabPosition)
     }
 
     fun reloadCurrentMatchListPagerFragment() {
@@ -698,6 +701,7 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
                         getSelectedRecently31Scheduled(position)
                         tournaments.getOrNull(position)?.id?.let { id -> mViewModel.setCurrentTournamentId(id)}
                         startObservePageMatchListChange(position)
+                        mBinding.layoutContainer.tlDateList.scrollToPositionWithoutAnim(mBinding.layoutContainer.tlDateList.selectedTabPosition)
                     }
                 )
 
