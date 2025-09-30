@@ -31,12 +31,10 @@ class LiveVideoResolutionVerticalAdapter(compare: DiffUtil.ItemCallback<VideoRes
 
             if (item.selected) {
                 viewBinding.tvTitle.setTextColor(R.color.video_resolution_vertical_selected_text_color.getColor())
-                viewBinding.tvTitle.background =
-                    R.drawable.bg_video_resolution_item_vertical_selected.getDrawable()
+                viewBinding.tvTitle.setBackgroundResource(R.drawable.bg_video_resolution_item_vertical_selected)
             } else {
                 viewBinding.tvTitle.setTextColor(R.color.video_resolution_vertical_unselected_text_color.getColor())
-                viewBinding.tvTitle.background =
-                    R.drawable.bg_video_resolution_item_vertical_unselected_white_blue.getDrawable()
+                viewBinding.tvTitle.setBackgroundResource(R.drawable.bg_video_resolution_item_vertical_unselected)
             }
 
 
