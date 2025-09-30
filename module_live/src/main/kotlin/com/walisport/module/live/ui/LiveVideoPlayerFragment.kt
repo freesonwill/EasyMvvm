@@ -234,33 +234,36 @@ class LiveVideoPlayerFragment :
         with(mViewModel) {
             liveVideoBean.observe(viewLifecycleOwner) {
                 it?.let {
+                    if (it.source.isEmpty()) {
+                        onDataSourceEmpty()
+                    } else {
+                        mBinding.ivChooseSource.visibility = View.VISIBLE
+                        mBinding.ivToFullscreen.visibility = View.VISIBLE
+                        val streamInfoBean =
+                            it.source.firstOrNull { ele -> ele.isPlaying }?.liveStreams?.firstOrNull { ele -> ele.selected }
 
-                    mBinding.ivChooseSource.visibility = View.VISIBLE
-                    mBinding.ivToFullscreen.visibility = View.VISIBLE
-                    val streamInfoBean =
-                        it.source.firstOrNull { ele -> ele.isPlaying }?.liveStreams?.firstOrNull { ele -> ele.selected }
+                        mBinding.tvVideoResolution.text = streamInfoBean?.streamType
+                        val playUrl =
+                            streamInfoBean
+                                ?.playUrl()
+                        playUrl?.takeIf { url -> url.isNotEmpty() }?.let { url ->
+                            "videoUrl:${url}".logd("LiveVideoPlayerFragment")
 
-                    mBinding.tvVideoResolution.text = streamInfoBean?.streamType
-                    val playUrl =
-                        streamInfoBean
-                            ?.playUrl()
-                    playUrl?.takeIf { url -> url.isNotEmpty() }?.let { url ->
-                        "videoUrl:${url}".logd("LiveVideoPlayerFragment")
-
-                        //收到视频源信息时，需要判断当前比赛的状态，仅当比赛为正在进行中才播放视频
-                        val matchBean = mViewModel.matchBeanLiveData.value
-                        matchBean?.let {
-                            val matchStatus =
-                                MatchStatus.entries.find { status -> status.code == it.basicInfo.status }
-                            if (matchStatus == MatchStatus.IN_PROGRESS) {
+                            //收到视频源信息时，需要判断当前比赛的状态，仅当比赛为正在进行中才播放视频
+                            val matchBean = mViewModel.matchBeanLiveData.value
+                            matchBean?.let {
+                                val matchStatus =
+                                    MatchStatus.entries.find { status -> status.code == it.basicInfo.status }
+                                if (matchStatus == MatchStatus.IN_PROGRESS) {
 //                                    "url:${url}, dataSource:${videoView.getDataSource()}".logd("videoCache")
-                                if (url != videoView.getDataSource()) {
-                                    videoView.setDataSource(url)
-                                    videoView.prepare()
+                                    if (url != videoView.getDataSource()) {
+                                        videoView.setDataSource(url)
+                                        videoView.prepare()
+                                    }
                                 }
                             }
-                        }
 
+                        }
                     }
 
                 }
