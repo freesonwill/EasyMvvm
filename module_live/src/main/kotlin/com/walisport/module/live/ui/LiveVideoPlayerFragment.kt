@@ -80,6 +80,11 @@ class LiveVideoPlayerFragment :
      */
     private var loadingAnim: ObjectAnimator? = null
 
+    /**
+     * 已经进入播放态
+     */
+    private var hasPlayed: Boolean = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -428,6 +433,19 @@ class LiveVideoPlayerFragment :
 
         when (state) {
             PlayerState.PLAYING -> {
+                if (!hasPlayed) {
+                    hasPlayed = true
+                    mBinding.root.startSafeAnimateSet(
+                        {
+                            playTogether(
+                                mBinding.bottomArea.startSafeObjectAnimator("alpha", 0f, 1f)
+                            )
+                        },
+                        duration = 200,
+                        interpolator = LinearInterpolator(),
+                        start = true
+                    )
+                }
                 loadingAnim?.cancel()
                 mBinding.ctLoading.visibility = GONE
                 mBinding.ctError.visibility = GONE
@@ -438,6 +456,10 @@ class LiveVideoPlayerFragment :
             }
 
             PlayerState.CONNECTING -> {
+                if (!hasPlayed) {
+                    return
+                }
+
                 // 创建旋转动画
                 loadingAnim = mBinding.ivVideoLoading.startSafeObjectAnimator(
                     "rotation",  // 属性名称
