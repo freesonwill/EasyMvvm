@@ -24,9 +24,10 @@ import arch.cayenne.lib.base.ui.animation.AnimationController.AnimType
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
+import arch.cayenne.lib.base.utils.ext.ViewExt.applyInsetsForFitsSystemWindows
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
-import arch.cayenne.lib.common.utils.CustomTabIndicatorUtils
 import arch.cayenne.lib.common.data.constants.SkinType
+import arch.cayenne.lib.common.utils.CustomTabIndicatorUtils
 import arch.cayenne.lib.common.utils.ImmersionBarUtils.immersionBarSkinTypeExt
 import arch.cayenne.lib.common.utils.ext.DimensionExt.px2sp
 import arch.cayenne.lib.common.utils.ext.setDrawerInterpolator
@@ -56,6 +57,7 @@ import kotlin.reflect.KClass
 import arch.cayenne.lib.common.utils.ext.setupViewPagerScroll
 import arch.cayenne.lib.common.utils.ext.startFadeAnim
 import arch.cayenne.module.bet.ui.fragment.BetSheetFragment
+import arch.cayenne.module.chat.ui.LiveChatFragment
 
 /**
  * 直播详情页
@@ -73,7 +75,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
     private val titleBarBinding: TitleBarLiveBinding by lazy {
         TitleBarLiveBinding.inflate(LayoutInflater.from(context), mBinding.titleBar, false)
     }
-    private val fixedSkin = SkinType.getLogicSkinType(SkinType.SKIN_BLACK_RED.value)
+    private val fixedSkin:String? = null //SkinType.getLogicSkinType(SkinType.SKIN_BLACK_RED.value)
 
     override fun initView(savedInstanceState: Bundle?) {
         args = LiveMainFragmentArgs.fromBundle(requireArguments())
@@ -89,34 +91,40 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
             DrawerLayout.LOCK_MODE_LOCKED_CLOSED,
             GravityCompat.END
         )
+        mBinding.root.applyInsetsForFitsSystemWindows()
     }
+
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
         SkinnableResourceManager.setFixedSkin(fixedSkin)
         lifecycle.addObserver(object :DefaultLifecycleObserver {
-
             override fun onPause(owner: LifecycleOwner) {
                 super.onPause(owner)
-                SkinnableResourceManager.setFixedSkin(null)
-                StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND()
-                StatusBarConfig.statusBarDarkFont = immersionBarSkinTypeExt(mViewModel.getSkinType())
-                setStatusBar(StatusBarConfig,mBinding.root)
+                if(fixedSkin != null){
+                    SkinnableResourceManager.setFixedSkin(null)
+                    StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND()
+                    StatusBarConfig.statusBarDarkFont = immersionBarSkinTypeExt(mViewModel.getSkinType())
+                    setStatusBar(StatusBarConfig,mBinding.root)
+                }
             }
 
             override fun onStart(owner: LifecycleOwner) {
                 super.onStart(owner)
-                SkinnableResourceManager.setFixedSkin(fixedSkin)
-                StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND()
-                StatusBarConfig.statusBarDarkFont = false
-                setStatusBar(StatusBarConfig,mBinding.root)
-                updateBetSheetSkin() //refresh skin to fixed skin
+                mBinding.root.fitsSystemWindows = fixedSkin == null
+                if(fixedSkin != null){
+                    SkinnableResourceManager.setFixedSkin(fixedSkin)
+                    StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND()
+                    StatusBarConfig.statusBarDarkFont = false
+                    setStatusBar(StatusBarConfig,mBinding.root)
+                    updateBetSheetSkin() //refresh skin to fixed skin
+                }
             }
 
             override fun onDestroy(owner: LifecycleOwner) {
                 super.onDestroy(owner)
                 lifecycle.removeObserver(this)
-                updateBetSheetSkin() //restore skin to system skin
+                if(fixedSkin != null) updateBetSheetSkin() //restore skin to system skin
             }
         })
     }
@@ -303,10 +311,6 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                     Glide.with(this).load(logo).into(titleBarBinding.ivLandscapeLeagueIcon)
                 }
                 titleBarBinding.tvCompetitionName.text = it.basicInfo.matchName
-                //比赛开始后开启聊天服务
-                if (it.liveInfo.charRoom) {
-                    mViewModel.startChatServer()
-                }
             }
         }
         launch(Lifecycle.State.RESUMED) {
@@ -355,7 +359,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
             val list = listOf(
                 PagerBean(arch.cayenne.lib.res.R.string.bet_title.getString()) { BetSlipFragment() },
                 PagerBean(R.string.live_bet_on.getString()) { LiveBetOnFragment() },
-                PagerBean(R.string.live_chat.getString()) { LiveChatFragment() },
+                PagerBean(R.string.live_chat.getString()) { createChatFragment() },
                 PagerBean(R.string.live_outs.getString()) { LiveOutsFragment() },
                 PagerBean(R.string.live_lineup.getString()) { LiveLineupFragment() },
                 PagerBean(R.string.live_standings.getString()) { LiveStandingsFragment() }
@@ -401,11 +405,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
     }
 
     private fun isSoftKeyBoardVisible(): Boolean {
-        val adapter = mBinding.vpPage.adapter?.let { it as PagerAdapter }
-        val index = adapter!!.pages.indexOfFirst { it.title == R.string.live_chat.getString() }
-        val tag = "f${adapter.getItemId(index)}"
-        val fragment = childFragmentManager.findFragmentByTag(tag)?.let { it as LiveChatFragment }
-        val flag = fragment?.isSoftKeyboardVisible() ?: false
+        val flag = getChatFragment()?.isSoftKeyboardVisible() ?: false
         return flag
     }
 
@@ -427,8 +427,8 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
     }
 
     override fun onStop() {
+        getChatFragment()?.closeChatWebsocket()
         super.onStop()
-        mViewModel.disConnectChatServer()
     }
 
     override fun onDestroyView() {
@@ -455,8 +455,22 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
 
     private fun updateBetSheetSkin() {
         val type = mViewModel.getSkinType()
-        if (type != fixedSkin) {
+        if (fixedSkin != null && type != fixedSkin) {
             BetSheetFragment.find(requireActivity())?.forceUpdateSkin()
         }
+    }
+
+    private fun getChatFragment():LiveChatFragment?{
+        val adapter = mBinding.vpPage.adapter?.let { it as PagerAdapter }
+        val index = adapter!!.pages.indexOfFirst { it.title == R.string.live_chat.getString() }
+        val tag = "f${adapter.getItemId(index)}"
+        val fragment = childFragmentManager.findFragmentByTag(tag)?.let { it as LiveChatFragment }
+       return fragment
+    }
+
+    private fun createChatFragment():LiveChatFragment{
+        val fragment = LiveChatFragment()
+        fragment.setMatchLiveData(mViewModel.matchId,mViewModel.mainMatch)
+        return fragment
     }
 }

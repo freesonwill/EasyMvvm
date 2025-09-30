@@ -337,12 +337,16 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
             vpGameList.adapter = null
             vpGameList.isUserInputEnabled = false
             vpGameList.offscreenPageLimit = 10
-            //如果往右往左滑動，等待滑動完成後，再去開始startObserveMatch
 
             //如果直接點擊聯賽到ViewPager還沒生成的MatchListPageFragment聯賽的話，這個MatchListPageFragment會生成並且attach上去，所以在這裡需要做attach完成後的startObserveMatch
             childFragmentManager.registerFragmentLifecycleCallbacks(object : FragmentManager.FragmentLifecycleCallbacks() {
                 override fun onFragmentViewCreated(fm: FragmentManager, f: Fragment, v: View, savedInstanceState: Bundle?) {
                     super.onFragmentViewCreated(fm, f, v, savedInstanceState)
+                    val currentItemId = leaguePagerAdapter?.getItemId(vpGameList.currentItem)?: return
+                    if (f.tag == "f$currentItemId") {
+                        startObservePageMatchListChange(vpGameList.currentItem)
+                    }
+
                     val firstFragmentItemId  = leaguePagerAdapter?.getItemId(0)?: return
                     if (f.tag == "f$firstFragmentItemId") {
                         startObservePageMatchListChange(0)

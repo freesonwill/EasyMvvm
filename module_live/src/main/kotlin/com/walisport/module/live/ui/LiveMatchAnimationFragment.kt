@@ -1,13 +1,11 @@
 package com.walisport.module.live.ui
 
-import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.os.Message
 import android.view.View
-import android.view.animation.LinearInterpolator
 import android.webkit.ValueCallback
 import android.webkit.WebChromeClient
 import android.webkit.WebView
@@ -16,16 +14,14 @@ import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
+import arch.cayenne.lib.common.data.constants.MatchStatus
 import arch.cayenne.lib.common.utils.DensityInfo
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getColor
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
-import arch.cayenne.lib.common.utils.ext.startSafeObjectAnimator
 import arch.cayenne.lib.common.utils.ext.touchBackPressed
 import com.github.lzyzsd.jsbridge.BridgeWebViewClient
 import com.github.lzyzsd.jsbridge.DefaultHandler
-import com.walisport.module.live.R
-import com.walisport.module.live.data.constants.MatchStatus
 import com.walisport.module.live.databinding.FragmentLiveMatchAnimationBinding
 import com.walisport.module.live.ui.viewmodel.LiveMainViewModel
 import com.walisport.module.live.ui.viewmodel.LiveMatchAnimationViewModel

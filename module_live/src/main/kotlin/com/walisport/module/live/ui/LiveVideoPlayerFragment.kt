@@ -29,7 +29,7 @@ import arch.cayenne.lib.qyplayer.transformFromPlayerConfig
 import arch.cayenne.lib.qyplayer.transformToPlayerConfig
 import arch.cayenne.lib.qyplayer.ui.widget.LivePlayerView
 import com.walisport.module.live.R
-import com.walisport.module.live.data.constants.MatchStatus
+import arch.cayenne.lib.common.data.constants.MatchStatus
 import com.walisport.module.live.data.constants.VideoAnimatorConstants.Companion.BUTTONS_ANIMATION_DURATION
 import com.walisport.module.live.data.constants.VideoAnimatorConstants.Companion.HIDE_BUTTONS_TIMER
 import com.walisport.module.live.databinding.FragmentLiveVideoPlayerBinding

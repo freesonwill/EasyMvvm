@@ -346,6 +346,7 @@ class SubHomeViewModel: BaseViewModel() {
             val currentList = tournaments.value?.peekContent() ?: return
             setCurrentTournamentId(tournament.id)
             if (!currentList.any { it.id == tournament.id }) {
+                viewModelScope.launch { selectedDate(0L) }
                 tournaments.value = Event(currentList.map { it.apply { isSelected = false } }  + tournament.apply { isSelected = true })
             } else {
                 tournaments.value = Event(currentList.map { it.apply { isSelected = tournament.id == id } })

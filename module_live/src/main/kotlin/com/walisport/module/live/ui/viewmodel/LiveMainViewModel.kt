@@ -9,7 +9,6 @@ import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
-import arch.cayenne.lib.common.data.constants.SkinType
 import arch.cayenne.lib.database.entity.InfoBean
 import arch.cayenne.lib.database.entity.LiveMatchBean
 import arch.cayenne.lib.database.entity.SelectionsEdit
@@ -22,7 +21,6 @@ import com.walisport.module.live.data.model.MatchHalfTeamStats
 import com.walisport.module.live.data.model.MatchLiveData
 import com.walisport.module.live.data.model.MatchTrendData
 import com.walisport.module.live.data.model.Stat
-import com.walisport.module.live.data.repository.LiveChatRepository
 import galaxy.client.proto.Sloth
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
@@ -37,7 +35,6 @@ import plugin.koin.KoinViewModel
 @KoinViewModel
 class LiveMainViewModel(
     private val repo: LiveMainRepository,
-    private val chatRepo: LiveChatRepository
 ) : BaseViewModel() {
 
     //比赛ID
@@ -259,35 +256,7 @@ class LiveMainViewModel(
         repo.reconnect()
     }
 
-    /**
-     * 开启聊天服务
-     * */
-    fun startChatServer() {
-        viewModelScope.launch {
-            val state = chatRepo.getConnectStateFlow().value
-            "startChatServer $state".logd(TAG)
-            if (state != SocketConnectState.None && state != SocketConnectState.Closed) {
-                return@launch
-            }
-            chatRepo.startSocket(viewModelScope)
-        }
-    }
 
-    /**
-     * 关闭聊天服务
-     * */
-    fun disConnectChatServer() {
-        viewModelScope.launch {
-            try {
-                val value = chatRepo.disconnect(viewModelScope)
-                "chat disconnect viewModel $value".logd(TAG)
-            } catch (e: CancellationException) {
-                "chat disconnect viewModel canceled".logi(TAG)
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
-    }
 
     fun getSkinType(): String {
         return repo.getSkinType()

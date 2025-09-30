@@ -3,10 +3,8 @@ package com.walisport.module.live.ui
 import android.os.Bundle
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
-import arch.cayenne.lib.common.utils.ViewUtils.getStatusBarHeight
-import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
-import com.walisport.module.live.data.constants.MatchStatus
+import arch.cayenne.lib.common.data.constants.MatchStatus
 import com.walisport.module.live.databinding.FragmentLiveMatchMediaBinding
 import com.walisport.module.live.ui.viewmodel.LiveMainViewModel
 import com.walisport.module.live.ui.viewmodel.LiveMatchMediaViewModel

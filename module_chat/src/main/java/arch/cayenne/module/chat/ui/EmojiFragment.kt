@@ -1,0 +1,66 @@
+package arch.cayenne.module.chat.ui
+
+import android.os.Bundle
+import androidx.core.view.isVisible
+import androidx.recyclerview.widget.GridLayoutManager
+import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
+import arch.cayenne.module.chat.data.model.EmojiData
+import arch.cayenne.module.chat.databinding.FragmentSoftkeyboardEmojiBinding
+import arch.cayenne.module.chat.ui.adapter.LiveEmojiAdapter
+import arch.cayenne.module.chat.ui.viewmodel.EmojiViewModel
+import kotlin.reflect.KClass
+
+
+class EmojiFragment(type: Int) : BaseFragment<EmojiViewModel, FragmentSoftkeyboardEmojiBinding>() {
+    override val vbClass: KClass<FragmentSoftkeyboardEmojiBinding>
+        get() = FragmentSoftkeyboardEmojiBinding::class
+    override val vmClass: KClass<EmojiViewModel>
+        get() = EmojiViewModel::class
+    private var emojiType: Int = type
+    private var itemListener: RecyclerItemListener<EmojiData>? = null
+
+    override fun initView(savedInstanceState: Bundle?) {
+        initEmoji()
+    }
+
+    override fun initListener() {
+        mBinding.emojiDel.setOnClickListener {
+            itemListener?.onItemClick(EmojiData(-1, "del"), -1)
+        }
+    }
+
+    override suspend fun createObserver() {
+    }
+
+    fun setEmojiItemClick(listener: RecyclerItemListener<EmojiData>) {
+        itemListener = listener
+    }
+
+    private fun initEmoji() {
+        when (emojiType) {
+            0 -> {
+                mBinding.keyboardTvAll.isVisible = true
+                mBinding.emojiDel.isVisible = true
+                val layoutManager = GridLayoutManager(context, 8)
+                mBinding.keyboardEmoji.layoutManager = layoutManager
+                val adapter = LiveEmojiAdapter()
+                adapter.setItemListener(itemListener)
+                adapter.submitList(mViewModel.getNormalEmojis())
+                mBinding.keyboardEmoji.adapter = adapter
+            }
+
+            1 -> {
+                val layoutManager = GridLayoutManager(context, 4)
+                mBinding.keyboardEmoji.layoutManager = layoutManager
+                val adapter =LiveEmojiAdapter()
+                adapter.setItemListener(itemListener)
+                adapter.submitList(mViewModel.getBidEmojis())
+                mBinding.keyboardEmoji.adapter = adapter
+                mBinding.emojiDel.isVisible = false
+
+            }
+        }
+    }
+
+}
