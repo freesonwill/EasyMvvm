@@ -670,14 +670,16 @@ public final class LogUtils {
             if (mDefaultDir != null) {
                 return;
             }
-            Application appGame = Utils.getApp();
-            if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())
-                    && appGame.getExternalCacheDir() != null)
-            {
-                mDefaultDir = appGame.getExternalCacheDir() + FILE_SEP + "log" + FILE_SEP;
-            }
-            else {
-                mDefaultDir = appGame.getCacheDir() + FILE_SEP + "log" + FILE_SEP;
+            if(Utils.isInEditMode()){
+                Application appGame = Utils.getApp();
+                if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())
+                        && appGame.getExternalCacheDir() != null)
+                {
+                    mDefaultDir = appGame.getExternalCacheDir() + FILE_SEP + "log" + FILE_SEP;
+                }
+                else {
+                    mDefaultDir = appGame.getCacheDir() + FILE_SEP + "log" + FILE_SEP;
+                }
             }
         }
 
