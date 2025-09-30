@@ -56,6 +56,7 @@ import kotlin.reflect.KClass
 import arch.cayenne.lib.common.utils.ext.setupViewPagerScroll
 import arch.cayenne.lib.common.utils.ext.startFadeAnim
 import arch.cayenne.module.bet.ui.fragment.BetSheetFragment
+import arch.cayenne.module.chat.ui.LiveChatFragment
 
 /**
  * 直播详情页
@@ -301,10 +302,6 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                     Glide.with(this).load(logo).into(titleBarBinding.ivLandscapeLeagueIcon)
                 }
                 titleBarBinding.tvCompetitionName.text = it.basicInfo.matchName
-                //比赛开始后开启聊天服务
-                if (it.liveInfo.charRoom) {
-                    mViewModel.startChatServer()
-                }
             }
         }
         launch(Lifecycle.State.RESUMED) {
@@ -350,7 +347,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
             val list = listOf(
                 PagerBean(arch.cayenne.lib.res.R.string.bet_title.getString()) { BetSlipFragment() },
                 PagerBean(R.string.live_bet_on.getString()) { LiveBetOnFragment() },
-                PagerBean(R.string.live_chat.getString()) { LiveChatFragment() },
+                PagerBean(R.string.live_chat.getString()) { createChatFragment() },
                 PagerBean(R.string.live_outs.getString()) { LiveOutsFragment() },
                 PagerBean(R.string.live_lineup.getString()) { LiveLineupFragment() },
                 PagerBean(R.string.live_standings.getString()) { LiveStandingsFragment() }
@@ -396,11 +393,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
     }
 
     private fun isSoftKeyBoardVisible(): Boolean {
-        val adapter = mBinding.vpPage.adapter?.let { it as PagerAdapter }
-        val index = adapter!!.pages.indexOfFirst { it.title == R.string.live_chat.getString() }
-        val tag = "f${adapter.getItemId(index)}"
-        val fragment = childFragmentManager.findFragmentByTag(tag)?.let { it as LiveChatFragment }
-        val flag = fragment?.isSoftKeyboardVisible() ?: false
+        val flag = getChatFragment()?.isSoftKeyboardVisible() ?: false
         return flag
     }
 
@@ -422,8 +415,8 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
     }
 
     override fun onStop() {
+        getChatFragment()?.closeChatWebsocket()
         super.onStop()
-        mViewModel.disConnectChatServer()
     }
 
     override fun onDestroyView() {
@@ -453,5 +446,19 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         if (type != fixedSkin) {
             BetSheetFragment.find(requireActivity())?.forceUpdateSkin()
         }
+    }
+
+    private fun getChatFragment():LiveChatFragment?{
+        val adapter = mBinding.vpPage.adapter?.let { it as PagerAdapter }
+        val index = adapter!!.pages.indexOfFirst { it.title == R.string.live_chat.getString() }
+        val tag = "f${adapter.getItemId(index)}"
+        val fragment = childFragmentManager.findFragmentByTag(tag)?.let { it as LiveChatFragment }
+       return fragment
+    }
+
+    private fun createChatFragment():LiveChatFragment{
+        val fragment = LiveChatFragment()
+        fragment.setMatchLiveData(mViewModel.matchId,mViewModel.mainMatch)
+        return fragment
     }
 }

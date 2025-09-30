@@ -1,0 +1,80 @@
+package arch.cayenne.module.chat.ui.adapter
+
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import androidx.core.view.isInvisible
+import androidx.core.view.isVisible
+import androidx.recyclerview.widget.GridLayoutManager
+import arch.cayenne.lib.base.ui.adapter.BaseAdapter
+import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
+import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
+import arch.cayenne.module.chat.data.compare.SoftDataCompare
+import arch.cayenne.module.chat.data.constants.EmojiTypeEnum
+import arch.cayenne.module.chat.databinding.ItemSoftAdapterBinding
+import arch.cayenne.module.chat.utils.EmojiDeleteAnimHelper
+
+/**
+ * @author: wenxi
+ * @date: 4/6/25 10:02
+ * @description: 键盘adapter，用于显示键盘中的普通表情，赛事表情，方便recylerView横向滑动
+ */
+class SoftAdapter :
+    BaseAdapter<arch.cayenne.module.chat.data.model.SoftData, SoftAdapter.SoftViewHolder, ItemSoftAdapterBinding>(compare = SoftDataCompare()) {
+    private var itemListener: RecyclerItemListener<arch.cayenne.module.chat.data.model.EmojiData>? = null
+    var delListener:(() ->Unit)? = null
+    var animHelper: EmojiDeleteAnimHelper? = null
+
+    fun setItemListener(itemListener: RecyclerItemListener<arch.cayenne.module.chat.data.model.EmojiData>) {
+        this.itemListener = itemListener
+    }
+
+    inner class SoftViewHolder(val nBinding: ItemSoftAdapterBinding) : BaseViewHolder(nBinding) {
+
+        fun iniAdapter() {
+            val adapter = LiveEmojiAdapter()
+            adapter.setItemListener(itemListener)
+            val manager = GridLayoutManager(nBinding.softRecycler.context,8)
+            nBinding.softRecycler.layoutManager = manager
+            nBinding.softRecycler.adapter = adapter
+            animHelper = EmojiDeleteAnimHelper(nBinding.softRecycler)
+        }
+        fun initListener(){
+            nBinding.emojiDel.setOnClickListener {
+                delListener?.invoke()
+            }
+        }
+    }
+
+    override fun convertPlus(
+        holder: SoftViewHolder,
+        binding: ItemSoftAdapterBinding,
+        position: Int
+    ) {
+        animHelper?.updateUi(position == 0)
+        val data = getItem(position)
+        binding.softRecycler.apply {
+            isInvisible = false
+            val nManager = layoutManager?.let { it as GridLayoutManager }
+            nManager?.spanCount = if (data.emojiType == EmojiTypeEnum.NORMAL) 8 else 4
+            val nAdapter = adapter?.let { it as LiveEmojiAdapter }
+            nAdapter?.submitList(data.emojis)
+            adapter = nAdapter
+        }
+        binding.emojiDel.isVisible = position == 0
+    }
+
+    override fun createViewBinding(
+        inflater: LayoutInflater,
+        parent: ViewGroup,
+        viewType: Int
+    ): ItemSoftAdapterBinding {
+        return ItemSoftAdapterBinding.inflate(inflater, parent, false)
+    }
+
+    override fun createViewHolder(binding: ItemSoftAdapterBinding, viewType: Int): SoftViewHolder {
+        val holder = SoftViewHolder(binding)
+        holder.iniAdapter()
+        holder.initListener()
+        return holder
+    }
+}
