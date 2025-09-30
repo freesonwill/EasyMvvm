@@ -24,9 +24,10 @@ import arch.cayenne.lib.base.ui.animation.AnimationController.AnimType
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
+import arch.cayenne.lib.base.utils.ext.ViewExt.applyInsetsForFitsSystemWindows
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
-import arch.cayenne.lib.common.utils.CustomTabIndicatorUtils
 import arch.cayenne.lib.common.data.constants.SkinType
+import arch.cayenne.lib.common.utils.CustomTabIndicatorUtils
 import arch.cayenne.lib.common.utils.ImmersionBarUtils.immersionBarSkinTypeExt
 import arch.cayenne.lib.common.utils.ext.DimensionExt.px2sp
 import arch.cayenne.lib.common.utils.ext.setDrawerInterpolator
@@ -73,7 +74,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
     private val titleBarBinding: TitleBarLiveBinding by lazy {
         TitleBarLiveBinding.inflate(LayoutInflater.from(context), mBinding.titleBar, false)
     }
-    private val fixedSkin = SkinType.getLogicSkinType(SkinType.SKIN_BLACK_RED.value)
+    private val fixedSkin:String? = null //SkinType.getLogicSkinType(SkinType.SKIN_BLACK_RED.value)
 
     override fun initView(savedInstanceState: Bundle?) {
         args = LiveMainFragmentArgs.fromBundle(requireArguments())
@@ -87,34 +88,40 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
             DrawerLayout.LOCK_MODE_LOCKED_CLOSED,
             GravityCompat.END
         )
+        mBinding.root.applyInsetsForFitsSystemWindows()
     }
+
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
         SkinnableResourceManager.setFixedSkin(fixedSkin)
         lifecycle.addObserver(object :DefaultLifecycleObserver {
-
             override fun onPause(owner: LifecycleOwner) {
                 super.onPause(owner)
-                SkinnableResourceManager.setFixedSkin(null)
-                StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND()
-                StatusBarConfig.statusBarDarkFont = immersionBarSkinTypeExt(mViewModel.getSkinType())
-                setStatusBar(StatusBarConfig,mBinding.root)
+                if(fixedSkin != null){
+                    SkinnableResourceManager.setFixedSkin(null)
+                    StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND()
+                    StatusBarConfig.statusBarDarkFont = immersionBarSkinTypeExt(mViewModel.getSkinType())
+                    setStatusBar(StatusBarConfig,mBinding.root)
+                }
             }
 
             override fun onStart(owner: LifecycleOwner) {
                 super.onStart(owner)
-                SkinnableResourceManager.setFixedSkin(fixedSkin)
-                StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND()
-                StatusBarConfig.statusBarDarkFont = false
-                setStatusBar(StatusBarConfig,mBinding.root)
-                updateBetSheetSkin() //refresh skin to fixed skin
+                mBinding.root.fitsSystemWindows = fixedSkin == null
+                if(fixedSkin != null){
+                    SkinnableResourceManager.setFixedSkin(fixedSkin)
+                    StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND()
+                    StatusBarConfig.statusBarDarkFont = false
+                    setStatusBar(StatusBarConfig,mBinding.root)
+                    updateBetSheetSkin() //refresh skin to fixed skin
+                }
             }
 
             override fun onDestroy(owner: LifecycleOwner) {
                 super.onDestroy(owner)
                 lifecycle.removeObserver(this)
-                updateBetSheetSkin() //restore skin to system skin
+                if(fixedSkin != null) updateBetSheetSkin() //restore skin to system skin
             }
         })
     }
@@ -450,7 +457,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
 
     private fun updateBetSheetSkin() {
         val type = mViewModel.getSkinType()
-        if (type != fixedSkin) {
+        if (fixedSkin != null && type != fixedSkin) {
             BetSheetFragment.find(requireActivity())?.forceUpdateSkin()
         }
     }

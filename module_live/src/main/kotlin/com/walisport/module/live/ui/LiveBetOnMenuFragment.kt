@@ -6,6 +6,7 @@ import android.view.View
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.utils.ext.ViewExt.applyInsetsForFitsSystemWindows
 import arch.cayenne.lib.common.data.constants.SkinType
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.clickNoRepeatSingle
@@ -18,6 +19,9 @@ import com.walisport.module.live.ui.viewmodel.LiveBetOnMenuViewModel
 import com.walisport.module.live.ui.viewmodel.LiveBetOnViewModel
 import kotlin.reflect.KClass
 
+/**
+ * 投注侧边栏
+ */
 class LiveBetOnMenuFragment :
     BaseFragment<LiveBetOnMenuViewModel, FragmentLiveBetOnMenuBinding>() {
     override val vbClass: KClass<FragmentLiveBetOnMenuBinding> = FragmentLiveBetOnMenuBinding::class
@@ -27,14 +31,16 @@ class LiveBetOnMenuFragment :
     companion object {
         const val TAG = "LiveBetOnMenuFragment"
     }
-    private val fixedSkin = SkinType.getLogicSkinType(SkinType.SKIN_BLACK_RED.value)
+    private val fixedSkin:String? = null //SkinType.getLogicSkinType(SkinType.SKIN_BLACK_RED.value)
 
     override fun onStart() {
-        mBinding.root.fitsSystemWindows = false
-        StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND()
-        StatusBarConfig.statusBarDarkFont = false
-        setStatusBar(StatusBarConfig,mBinding.root)
-        SkinnableResourceManager.setFixedSkin(fixedSkin)
+        if(fixedSkin != null) {
+            mBinding.root.fitsSystemWindows = false
+            StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND()
+            StatusBarConfig.statusBarDarkFont = false
+            setStatusBar(StatusBarConfig,mBinding.root)
+            SkinnableResourceManager.setFixedSkin(fixedSkin)
+        }
         super.onStart()
     }
 
@@ -81,6 +87,7 @@ class LiveBetOnMenuFragment :
                 currentIndex++
             }
         }
+        mBinding.root.applyInsetsForFitsSystemWindows()
     }
 
     override fun initListener() {
