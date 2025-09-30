@@ -12,6 +12,7 @@ import android.os.Handler
 import android.os.Looper
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.DecelerateInterpolator
 import android.view.animation.LinearInterpolator
 import android.widget.LinearLayout
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -211,6 +212,22 @@ class LiveVideoLandscapeFragment :
             mViewModel.setPlayerState(it)
         }
 
+        videoView.setOnFirstFrameReceivedListener {
+            lifecycleScope.launch {
+                mBinding.root.startSafeAnimateSet(
+                    {
+                        playTogether(
+                            mBinding.videoViewContainer.startSafeObjectAnimator("alpha", 0f, 1f)
+                        )
+                    },
+                    duration = 200,
+                    interpolator = DecelerateInterpolator(),
+                    start = true
+                )
+            }
+
+        }
+
         // 创建 LayoutParams，设置宽度和高度为 match_parent
         val layoutParams = LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.MATCH_PARENT, // 宽度
@@ -333,6 +350,18 @@ class LiveVideoLandscapeFragment :
 
                     playUrl?.takeIf { url -> url.isNotEmpty() }?.let { url ->
                         if (url != videoView.getDataSource()) {
+
+                            mBinding.root.startSafeAnimateSet(
+                                {
+                                    playTogether(
+                                        mBinding.videoViewContainer.startSafeObjectAnimator("alpha", 1f, 0f)
+                                    )
+                                },
+                                duration = 200,
+                                interpolator = DecelerateInterpolator(),
+                                start = true
+                            )
+
                             videoView.setDataSource(url)
                             videoView.prepare()
                         }
@@ -505,21 +534,21 @@ class LiveVideoLandscapeFragment :
                 ValueAnimator.ofFloat(currentScaleX, targetScaleX).apply {
                     addUpdateListener {
                         renderView.scaleX = it.animatedValue as Float
-                        mBinding.ctLoading.scaleX = it.animatedValue as Float
+                        mBinding.videoBg.scaleX = it.animatedValue as Float
                         mBinding.ctError.scaleX = it.animatedValue as Float
                     }
                 },
                 ValueAnimator.ofFloat(currentScaleY, targetScaleY).apply {
                     addUpdateListener {
                         renderView.scaleY = it.animatedValue as Float
-                        mBinding.ctLoading.scaleY = it.animatedValue as Float
+                        mBinding.videoBg.scaleY = it.animatedValue as Float
                         mBinding.ctError.scaleY = it.animatedValue as Float
                     }
                 },
                 ValueAnimator.ofFloat(currentTranslationX, targetTranslationX).apply {
                     addUpdateListener {
                         renderView.translationX = it.animatedValue as Float
-                        mBinding.ctLoading.translationX = it.animatedValue as Float
+                        mBinding.videoBg.translationX = it.animatedValue as Float
                         mBinding.ctError.translationX = it.animatedValue as Float
                     }
                 },
@@ -570,21 +599,21 @@ class LiveVideoLandscapeFragment :
                 ValueAnimator.ofFloat(currentScaleX, targetScaleX).apply {
                     addUpdateListener {
                         renderView.scaleX = it.animatedValue as Float
-                        mBinding.ctLoading.scaleX = it.animatedValue as Float
+                        mBinding.videoBg.scaleX = it.animatedValue as Float
                         mBinding.ctError.scaleX = it.animatedValue as Float
                     }
                 },
                 ValueAnimator.ofFloat(currentScaleY, targetScaleY).apply {
                     addUpdateListener {
                         renderView.scaleY = it.animatedValue as Float
-                        mBinding.ctLoading.scaleY = it.animatedValue as Float
+                        mBinding.videoBg.scaleY = it.animatedValue as Float
                         mBinding.ctError.scaleY = it.animatedValue as Float
                     }
                 },
                 ValueAnimator.ofFloat(currentTranslationX, targetTranslationX).apply {
                     addUpdateListener {
                         renderView.translationX = it.animatedValue as Float
-                        mBinding.ctLoading.translationX = it.animatedValue as Float
+                        mBinding.videoBg.translationX = it.animatedValue as Float
                         mBinding.ctError.translationX = it.animatedValue as Float
 
                     }
@@ -885,7 +914,7 @@ class LiveVideoLandscapeFragment :
         when (state) {
             PlayerState.PLAYING -> {
                 loadingAnim?.cancel()
-                mBinding.ctLoading.visibility = GONE
+//                mBinding.ctLoading.visibility = GONE
                 mBinding.ctError.visibility = GONE
             }
 
@@ -895,39 +924,39 @@ class LiveVideoLandscapeFragment :
 
             PlayerState.CONNECTING -> {
                 // 创建旋转动画
-                loadingAnim = mBinding.ivVideoLoading.startSafeObjectAnimator(
-                    "rotation",  // 属性名称
-                    0f, 360f // 从 0 度旋转到 360 度
-                ).run {
-                    // 设置动画属性
-                    setDuration(1500) // 持续时间 1.5 秒
-                    repeatCount = ObjectAnimator.INFINITE // 无限循环
-                    interpolator = LinearInterpolator() // 匀速旋转
+//                loadingAnim = mBinding.ivVideoLoading.startSafeObjectAnimator(
+//                    "rotation",  // 属性名称
+//                    0f, 360f // 从 0 度旋转到 360 度
+//                ).run {
+//                    // 设置动画属性
+//                    setDuration(1500) // 持续时间 1.5 秒
+//                    repeatCount = ObjectAnimator.INFINITE // 无限循环
+//                    interpolator = LinearInterpolator() // 匀速旋转
+//
+//                    // 启动动画
+//                    start()
+//                    this
+//                }
 
-                    // 启动动画
-                    start()
-                    this
-                }
-
-                mBinding.ctLoading.visibility = VISIBLE
+//                mBinding.ctLoading.visibility = VISIBLE
                 mBinding.ctError.visibility = GONE
 
             }
 
             PlayerState.ERROR -> {
-                mBinding.ctLoading.visibility = GONE
+//                mBinding.ctLoading.visibility = GONE
                 mBinding.ctError.visibility = VISIBLE
             }
 
             PlayerState.STOPPED -> {
                 loadingAnim?.cancel()
-                mBinding.ctLoading.visibility = GONE
+//                mBinding.ctLoading.visibility = GONE
                 mBinding.ctError.visibility = GONE
             }
 
             else -> {
                 loadingAnim?.cancel()
-                mBinding.ctLoading.visibility = GONE
+//                mBinding.ctLoading.visibility = GONE
                 mBinding.ctError.visibility = GONE
             }
         }
