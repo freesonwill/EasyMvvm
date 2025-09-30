@@ -34,7 +34,7 @@ class ChatServerController(
     private val _leaveRoomFlow = MutableStateFlow<ChatLeaveRoomResponse?>(null)
 
     //检查是否可以发送消息
-    var checkBetAmountLiveData: StateFlow<CheckBetResultEnum?> = _checkBetAmountFlow
+    var checkBetAmountFlow: StateFlow<CheckBetResultEnum?> = _checkBetAmountFlow
 
 
     //登陆返回数据

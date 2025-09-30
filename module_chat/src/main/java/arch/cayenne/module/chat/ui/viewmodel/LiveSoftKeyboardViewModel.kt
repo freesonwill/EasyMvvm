@@ -7,11 +7,11 @@ import arch.cayenne.lib.skin.LanguageManager
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
 import arch.cayenne.lib.common.R
+import arch.cayenne.lib.common.data.manager.UserDataManager
+import arch.cayenne.lib.database.dao.ChatConfigDao
 import arch.cayenne.module.chat.data.constants.BidEmojiEnum
 import arch.cayenne.module.chat.data.constants.EmojiEnum
 import arch.cayenne.module.chat.data.constants.EmojiTypeEnum
-import arch.cayenne.module.chat.data.constants.KeyBoardType
-import arch.cayenne.module.chat.data.constants.KeyboardActionType
 import arch.cayenne.module.chat.data.model.EmojiData
 import arch.cayenne.module.chat.data.model.KeyBoardTabData
 import arch.cayenne.module.chat.data.model.SoftData
@@ -19,7 +19,9 @@ import arch.cayenne.module.chat.data.model.SoftData
 class LiveSoftKeyboardViewModel : BaseViewModel() {
 
     val languageManager: LanguageManager by inject { parametersOf(viewModelScope) }
-
+    val userDataManager: UserDataManager by inject()
+    //聊天设置
+     val chatConfigDao: ChatConfigDao by inject()
     fun tabMenus() =
         arrayListOf(
            KeyBoardTabData(
@@ -121,38 +123,5 @@ class LiveSoftKeyboardViewModel : BaseViewModel() {
     }
 
 
-    /**
-     * 判断动画类型
-     * */
-    fun getKeyBoardActionType(
-        listenerValue: KeyBoardType,
-        currentValue: KeyBoardType
-    ): KeyboardActionType {
 
-        return when (currentValue) {
-            KeyBoardType.CHAT -> {
-                return when (listenerValue) {
-                    KeyBoardType.EMOJI -> KeyboardActionType.CHAT_TO_EMOJI
-                    KeyBoardType.SOFT_KEYBOARD -> KeyboardActionType.CHAT_TO_SOFT
-                    KeyBoardType.CHAT -> KeyboardActionType.CHAT_TO_CHAT
-                }
-            }
-
-            KeyBoardType.SOFT_KEYBOARD -> {
-                return when (listenerValue) {
-                    KeyBoardType.CHAT -> KeyboardActionType.SOFT_TO_CHAT
-                    KeyBoardType.EMOJI -> KeyboardActionType.SOFT_TO_EMOJI
-                    KeyBoardType.SOFT_KEYBOARD -> KeyboardActionType.SOFT_TO_SOFT
-                }
-            }
-
-            KeyBoardType.EMOJI -> {
-                return when (listenerValue) {
-                    KeyBoardType.CHAT -> KeyboardActionType.EMOJI_TO_CHAT
-                    KeyBoardType.SOFT_KEYBOARD -> KeyboardActionType.EMOJI_TO_SOFT
-                    KeyBoardType.EMOJI -> KeyboardActionType.NONE
-                }
-            }
-        }
-    }
 }

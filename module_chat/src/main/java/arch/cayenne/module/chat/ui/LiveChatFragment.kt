@@ -14,8 +14,6 @@ import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.data.constants.MatchStatus
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
-import arch.cayenne.lib.common.utils.ext.sharedViewModel
-import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.database.entity.LiveMatchBean
 import arch.cayenne.lib.websocket.data.SocketConnectState
 import arch.cayenne.module.chat.R
@@ -101,7 +99,6 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
     }
 
     private fun initFragment() {
-        mViewModel.setKeyBoardHeight()
         val fragment = LiveSoftKeyboardFragment()
         childFragmentManager.beginTransaction()
             .replace(mBinding.liveChatKeyboard.id, fragment, LiveSoftKeyboardFragment.TAG)
@@ -128,10 +125,6 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
             mViewModel.addLocalMsg(it)
             mViewModel.sendMsgToServer(it)
             refreshChatList()
-        }
-
-        mViewModel.toastLiveData.observe(viewLifecycleOwner) {
-            showToast(it)
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
