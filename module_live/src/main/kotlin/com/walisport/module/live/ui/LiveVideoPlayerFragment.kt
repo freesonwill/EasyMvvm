@@ -176,7 +176,7 @@ class LiveVideoPlayerFragment :
                     mBinding.root.startSafeAnimateSet(
                         {
                             playTogether(
-                                mBinding.videoViewContainer.startSafeObjectAnimator("alpha", 0f, 1f)
+                                mBinding.videoViewContainer.startSafeObjectAnimator("alpha", mBinding.videoViewContainer.alpha, 1f)
                             )
                         },
                         duration = 200,
@@ -525,16 +525,22 @@ class LiveVideoPlayerFragment :
                     helper.showPopUp(mBinding.tvVideoResolution, beanList) {
                         mViewModel.changeResolution(it)
 
-                        mBinding.root.startSafeAnimateSet(
-                            {
-                                playTogether(
-                                    mBinding.videoViewContainer.startSafeObjectAnimator("alpha", 1f, 0f)
-                                )
-                            },
-                            duration = 200,
-                            interpolator = DecelerateInterpolator(),
-                            start = true
-                        )
+                        if (mBinding.videoViewContainer.alpha != 0f) {
+                            mBinding.root.startSafeAnimateSet(
+                                {
+                                    playTogether(
+                                        mBinding.videoViewContainer.startSafeObjectAnimator(
+                                            "alpha",
+                                            mBinding.videoViewContainer.alpha,
+                                            0f
+                                        )
+                                    )
+                                },
+                                duration = 200,
+                                interpolator = DecelerateInterpolator(),
+                                start = true
+                            )
+                        }
                     }
                 }
             }
