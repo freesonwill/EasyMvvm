@@ -8,9 +8,12 @@ import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.utils.log.Utils
 import arch.cayenne.lib.common.data.constants.LanguageType
 import arch.cayenne.lib.common.data.constants.OddsDisplayEnum
+import arch.cayenne.lib.common.utils.copyToClipboard
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
+import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.touchBackPressed
+import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import com.walisport.module.setting.BuildConfig
 import com.walisport.module.setting.R
@@ -40,6 +43,8 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
             mBinding.tvVersion.text =
                 "ver.${pi.versionName}_${arch.cayenne.lib.common.BuildConfig.BUILD_TIME}"
         }
+        mBinding.tvSetMobile.text = ""
+        mBinding.tvSetUser.text = mViewModel.getUserID()
         mBinding.root.touchBackPressed()
     }
 
@@ -55,6 +60,20 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
         }
         mBinding.settingLanguage.clickNoRepeat {
             navigate(R.id.action_settingFragment_to_languageFragment)
+        }
+        mBinding.settingBindMobile.clickNoRepeat {
+
+        }
+        mBinding.settingUser.clickNoRepeat {
+
+        }
+        mBinding.ivCopy.clickNoRepeat {
+            copyToClipboard(mBinding.tvSetUser.text as String?) {
+                showToast(R.string.tip_copy_suc.getString())
+            }
+        }
+        mBinding.settingAbout.clickNoRepeat {
+            navigate(R.id.action_settingFragment_to_aboutFragment)
         }
     }
 

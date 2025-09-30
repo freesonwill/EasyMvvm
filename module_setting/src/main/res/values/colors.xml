@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="fragment_bg">#1E1E1E</color>
+    <color name="title_bg">#272727</color>
     <color name="title_skin">#929298</color>
     <color name="title_confirm">#71E993</color>
     <color name="title_cancel">#FFFFFF</color>
@@ -8,11 +10,16 @@
     <color name="skin_title_press">#FFFFFF</color>
     <color name="effect_ripple">#161823</color>
 
-    <color name="notice_type">#929298</color>
+    <color name="notice_type">#999999</color>
     <color name="notice_title">#FFFFFF</color>
     <color name="notice_line">#1d1f29</color>
 
     <color name="notice_close">#69da8a</color>
 
     <color name="ripper">#F3F3F4</color>
+
+    <color name="dialog_line">#272727</color>
+    <color name="set_title">#999999</color>
+    <color name="set_text">#FFFFFF</color>
+    <color name="set_line">#1AFFFFFF</color>
 </resources>

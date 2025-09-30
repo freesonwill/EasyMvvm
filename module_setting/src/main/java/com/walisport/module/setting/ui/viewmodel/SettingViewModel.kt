@@ -53,6 +53,10 @@ class SettingViewModel : BaseViewModel() {
         }
     }
 
+    fun getUserID():String {
+        return repository.getUserID()
+    }
+
     //获取皮肤背景
     fun getSkinType(): String {
         return repository.getSkinType()
