@@ -4,12 +4,10 @@ import android.graphics.drawable.ColorDrawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.ScaleAnimation
 import android.widget.PopupWindow
 import androidx.recyclerview.widget.LinearLayoutManager
+import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getColor
-import arch.cayenne.lib.common.utils.ext.startSafeAnimateSet
-import arch.cayenne.lib.database.entity.VideoSourceBean
 import com.walisport.module.live.R
 import com.walisport.module.live.data.model.VideoResolutionBean
 import com.walisport.module.live.databinding.PopupVideoResolutionLayoutBinding
@@ -20,10 +18,6 @@ class VideoResolutionHelper {
     private var mBinding: PopupVideoResolutionLayoutBinding? = null
 
     private lateinit var adapter: VideoResolutionAdapter
-
-    companion object {
-        private const val SHOW_TIME = 3_000L
-    }
 
     fun showPopUp(
         attachView: View,
@@ -45,7 +39,7 @@ class VideoResolutionHelper {
                     }
 
                     adapter = VideoResolutionAdapter {
-                        dismissPopup()
+                        dismissPopUpAnimated()
                         itemClick.invoke(it)
                     }
 
@@ -73,6 +67,8 @@ class VideoResolutionHelper {
                     val offY =
                         -(this.rvVideoResolution.layoutParams.height + this.ivArrow.layoutParams.height + attachView.height)
 
+                    root.pivotX = 40.dp2px.toFloat()
+                    root.pivotY = 119.dp2px.toFloat()
 
                     root.scaleX = 0f
                     root.scaleY = 0f
