@@ -9,7 +9,7 @@
         android:id="@+id/tv_title"
         android:layout_width="@dimen/dp_166"
         android:layout_height="match_parent"
-        android:background="@drawable/bg_video_resolution_item_vertical_unselected"
+        android:background="@drawable/bg_video_resolution_item_vertical_unselected_white_blue"
         android:ellipsize="end"
         android:gravity="center"
         android:maxLines="1"

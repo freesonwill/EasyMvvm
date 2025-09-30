@@ -18,4 +18,6 @@
     <color name="title_money_text_white_green">#FF7700</color>
     <color name="live_land_bg_white_green">#EEEEEE</color>
     <color name="video_resolution_unselected_text_color_white_green">#666666</color>
+    <color name="video_resolution_vertical_unselected_text_color_white_green">#666666</color>
+
 </resources>

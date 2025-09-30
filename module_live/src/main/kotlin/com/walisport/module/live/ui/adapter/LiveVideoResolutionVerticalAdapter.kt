@@ -36,7 +36,7 @@ class LiveVideoResolutionVerticalAdapter(compare: DiffUtil.ItemCallback<VideoRes
             } else {
                 viewBinding.tvTitle.setTextColor(R.color.video_resolution_vertical_unselected_text_color.getColor())
                 viewBinding.tvTitle.background =
-                    R.drawable.bg_video_resolution_item_vertical_unselected.getDrawable()
+                    R.drawable.bg_video_resolution_item_vertical_unselected_white_blue.getDrawable()
             }
 
 
