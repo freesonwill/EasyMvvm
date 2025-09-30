@@ -176,14 +176,6 @@ class SoftKeyboardManager(
 
     }
 
-    private fun softKeyboardChange(value: Boolean, flag: Int) {
-        softKeyboardStatus = value
-        if (value) {  //显示软件盘状态 it == true  当前软件盘没有收缩状态
-            openSoftKeyBoard()
-        } else if (!value) { // 隐藏软件盘状态  it== false 当前软件盘弹出状态
-            hideSoftKeyBoard(2)
-        }
-    }
 
 
     fun showKeyboardAnimation() {
@@ -252,25 +244,6 @@ class SoftKeyboardManager(
         }
     }
 
-    /**
-     *打开软件盘
-     * */
-    fun openSoftKeyBoard() {
-        EditTextUtils.showKeyboard(etInput.context, etInput)
-        etRequestFocus()
-    }
-
-    /**
-     * 禁用软件盘
-     * */
-    private fun hideSoftKeyBoard(flag: Int) {
-        EditTextUtils.hideKeyboard(etInput.context, etInput)
-    }
-
-    fun etRequestFocus() {
-        etInput.requestFocus()
-        etInput.setSelection(etInput.length())
-    }
 
     /**
      * 判断动画类型
@@ -305,6 +278,73 @@ class SoftKeyboardManager(
                 }
             }
         }
+    }
+
+    /**
+     *首次检查聊天权限投注额度和余额失败后
+     * 每次点击软件盘都查询投注额 根据结果判断是否显示软件盘
+     * */
+    fun checkSoftKeyBoardBetAmount(
+        checkBetAmountValue: CheckBetResultEnum?,
+        keyBoardType: KeyBoardType,
+        flag: Int = 0
+    ) {
+        scope.launch {
+            when (checkBetAmountValue) {
+                CheckBetResultEnum.BET_AMOUNT_INVALID -> {
+                    toastLiveData.value = R.string.insufficient_bet_amount.getString()
+                    clickKeyBoardType = KeyBoardType.CHAT
+                }
+
+                CheckBetResultEnum.BALANCE_INVALID -> {
+                    toastLiveData.value = R.string.insufficient_balance.getString()
+                    clickKeyBoardType = KeyBoardType.CHAT
+                }
+
+                CheckBetResultEnum.SUCCESS -> {
+                    addSoftKeyBoardEvent(keyBoardType, flag)
+                }
+
+                null -> {
+                    toastLiveData.value = R.string.insufficient_bet_amount.getString()
+                    clickKeyBoardType = KeyBoardType.CHAT
+                }
+
+            }
+
+        }
+    }
+
+
+
+
+    private fun softKeyboardChange(value: Boolean, flag: Int) {
+        softKeyboardStatus = value
+        if (value) {  //显示软件盘状态 it == true  当前软件盘没有收缩状态
+            openSoftKeyBoard()
+        } else if (!value) { // 隐藏软件盘状态  it== false 当前软件盘弹出状态
+            hideSoftKeyBoard(2)
+        }
+    }
+
+    /**
+     *打开软件盘
+     * */
+    fun openSoftKeyBoard() {
+        EditTextUtils.showKeyboard(etInput.context, etInput)
+        etRequestFocus()
+    }
+
+    /**
+     * 禁用软件盘
+     * */
+    private fun hideSoftKeyBoard(flag: Int) {
+        EditTextUtils.hideKeyboard(etInput.context, etInput)
+    }
+
+    fun etRequestFocus() {
+        etInput.requestFocus()
+        etInput.setSelection(etInput.length())
     }
 
     /**
@@ -359,41 +399,5 @@ class SoftKeyboardManager(
         currentKeyBoardType = clickKeyBoardType
         keyBoardListener.updateChatKeyboardType(currentKeyBoardType)
     }
-
-    /**
-     *首次检查聊天权限投注额度和余额失败后
-     * 每次点击软件盘都查询投注额 根据结果判断是否显示软件盘
-     * */
-    fun checkSoftKeyBoardBetAmount(
-        checkBetAmountValue: CheckBetResultEnum?,
-        keyBoardType: KeyBoardType,
-        flag: Int = 0
-    ) {
-        scope.launch {
-            when (checkBetAmountValue) {
-                CheckBetResultEnum.BET_AMOUNT_INVALID -> {
-                    toastLiveData.value = R.string.insufficient_bet_amount.getString()
-                    clickKeyBoardType = KeyBoardType.CHAT
-                }
-
-                CheckBetResultEnum.BALANCE_INVALID -> {
-                    toastLiveData.value = R.string.insufficient_balance.getString()
-                    clickKeyBoardType = KeyBoardType.CHAT
-                }
-
-                CheckBetResultEnum.SUCCESS -> {
-                    addSoftKeyBoardEvent(keyBoardType, flag)
-                }
-
-                null -> {
-                    toastLiveData.value = R.string.insufficient_bet_amount.getString()
-                    clickKeyBoardType = KeyBoardType.CHAT
-                }
-
-            }
-
-        }
-    }
-
 
 }
