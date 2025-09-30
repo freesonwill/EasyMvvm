@@ -19,5 +19,7 @@
     <color name="live_land_bg_white_green">#EEEEEE</color>
     <color name="video_resolution_unselected_text_color_white_green">#666666</color>
     <color name="video_resolution_vertical_unselected_text_color_white_green">#666666</color>
+    <color name="video_resolution_divider_line_white_green">#E8E8EA</color>
+
 
 </resources>

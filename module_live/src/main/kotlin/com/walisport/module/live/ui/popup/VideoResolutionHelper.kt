@@ -8,6 +8,7 @@ import android.widget.PopupWindow
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getColor
+import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import com.walisport.module.live.R
 import com.walisport.module.live.data.model.VideoResolutionBean
 import com.walisport.module.live.databinding.PopupVideoResolutionLayoutBinding
@@ -49,7 +50,13 @@ class VideoResolutionHelper {
                         VideoResolutionDividerDecoration(
                             rvVideoResolution.context,
                             VideoResolutionDividerDecoration.VERTICAL,
-                            ColorDrawable(R.color.video_resolution_divider_line.getColor())
+
+                            ColorDrawable(
+                                SkinnableResourceManager.getColor(
+                                    rvVideoResolution.context,
+                                    R.color.video_resolution_divider_line
+                                )
+                            )
                         )
                     )
 
