@@ -19,4 +19,6 @@
     <color name="live_land_bg_white_blue">#EEEEEE</color>
     <color name="standing_title_white_blue">#666666</color>
     <color name="standing_team_white_blue">#222222</color>
+    <color name="video_resolution_unselected_text_color_white_blue">#666666</color>
+
 </resources>
