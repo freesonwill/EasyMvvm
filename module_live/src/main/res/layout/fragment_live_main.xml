@@ -24,7 +24,7 @@
             android:id="@+id/titleBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
-        <com.walisport.module.live.ui.widget.MainLayout
+        <com.walisport.module.live.ui.widget.LiveMainLayout
             android:id="@+id/liveMainMl"
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -139,7 +139,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
             </androidx.constraintlayout.widget.ConstraintLayout>
-        </com.walisport.module.live.ui.widget.MainLayout>
+        </com.walisport.module.live.ui.widget.LiveMainLayout>
 
 
     </arch.cayenne.lib.common.ui.view.InterceptedLinearLayout>

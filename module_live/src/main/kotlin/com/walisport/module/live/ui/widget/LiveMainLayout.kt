@@ -20,7 +20,7 @@ import androidx.fragment.app.FragmentContainerView
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import kotlin.math.abs
 
-class MainLayout @JvmOverloads constructor(
+class LiveMainLayout @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : ConstraintLayout(context, attrs, defStyleAttr) {
 
