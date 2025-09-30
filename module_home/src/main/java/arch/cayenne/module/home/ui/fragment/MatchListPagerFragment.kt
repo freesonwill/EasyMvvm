@@ -80,7 +80,7 @@ class MatchListPagerFragment :
                 override fun onOddsCellClick(cell: WeakReference<View>, selection: SelectionBeanLite, x: Float, y: Float) {
                     lifecycleScope.launch {
                         val v = cell.get()
-                        val status = mViewModel.setSelection(selection.selectionId)
+                        val status = mViewModel.setSelection(selection)
                         when (status) {
                             is AddSelectionStatus.Success.Single -> {
                                 BetSheetFragment.show(requireActivity(), object : BetSheetFragment.ShowListener {

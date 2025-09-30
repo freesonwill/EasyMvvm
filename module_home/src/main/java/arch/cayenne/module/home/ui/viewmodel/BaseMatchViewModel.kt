@@ -8,7 +8,9 @@ import arch.cayenne.lib.base.data.remote.ApiResponseState.Start.dataAs
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.database.entity.MatchWithMarkets
+import arch.cayenne.lib.database.entity.SelectionBeanLite
 import arch.cayenne.module.bet.data.AddSelectionStatus
+import arch.cayenne.module.bet.data.BetInsertBean
 import arch.cayenne.module.bet.repo.BetRepository
 import arch.cayenne.module.home.data.constants.HomeState
 import arch.cayenne.module.home.data.repo.BaseMatchRepository
@@ -156,11 +158,25 @@ abstract class BaseMatchViewModel<REPO: BaseMatchRepository> : BaseViewModel() {
     /**
      * selection點擊行為，投注或取消投注
      * */
-    suspend fun setSelection(selectionId: Long) : AddSelectionStatus {
+
+    suspend fun setSelection(selection: SelectionBeanLite) : AddSelectionStatus {
         if (!betRepository.isConnected) {
             return AddSelectionStatus.Failure.NetworkDisconnected
         }
-        val bean = repository.getSelectionInsertBean(selectionId)
+        var bean: BetInsertBean? = null
+        matchListChange.value?.asSequence()
+            ?.forEach { matchWithMarkets ->
+                matchWithMarkets.markets.forEach { marketWithSelections ->
+                    val selectionLiteBean = marketWithSelections.selections.find { it.selectionId == selection.selectionId }
+                    if (selectionLiteBean  != null) {
+                        bean = repository.matchSelectionInsertBean(
+                            match = matchWithMarkets.match,
+                            market = marketWithSelections.market,
+                            selectionBean = selectionLiteBean
+                        )
+                    }
+                }
+            }
         return if (bean == null) {
             AddSelectionStatus.Failure.Fail
         } else {
