@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.data.model.UnPeekLiveData
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.database.entity.LiveMatchBean
+import arch.cayenne.lib.database.entity.LiveVideoBean
 import com.walisport.module.live.data.repository.LiveVideoRepository
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -40,9 +41,14 @@ class LiveMatchMediaViewModel(
     private val _animationLiveUrl = UnPeekLiveData<String?>()
     val animationLiveUrl: UnPeekLiveData<String?> = _animationLiveUrl
 
+    private val _liveVideoBean = MutableLiveData<LiveVideoBean>()
+    val liveVideoBean: LiveData<LiveVideoBean> get() = _liveVideoBean
+
     private var job: Job? = null
 
     private var animationUrlJob: Job? = null
+
+    private var liveBeanJob: Job? = null
 
     fun matchId() = repo.matchId
 
@@ -69,6 +75,15 @@ class LiveMatchMediaViewModel(
             }
         }
 
+        liveBeanJob?.cancel()
+        liveBeanJob = viewModelScope.launch {
+            repo.observeLiveVideoBean(repo.matchId).collect {
+                if (it != null) {
+                    _liveVideoBean.value = it
+                }
+            }
+        }
+
     }
 
     fun switchToAnimation() {
@@ -85,6 +100,10 @@ class LiveMatchMediaViewModel(
 
     fun switchToMatchStatus() {
         _switchToMatchStatus.value = true
+    }
+
+    fun queryLiveStream() {
+        repo.queryLiveStream()
     }
 
 

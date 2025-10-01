@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/dp_52"
+    android:orientation="vertical">
+
+
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
+        android:id="@+id/tv_title"
+        android:layout_width="@dimen/dp_166"
+        android:layout_height="match_parent"
+        android:background="@drawable/bg_video_resolution_item_vertical_unselected_white_blue"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:maxLines="1"
+        android:textColor="@color/video_source_item_title_color"
+        android:textSize="@dimen/sp_16" />
+
+
+</androidx.appcompat.widget.LinearLayoutCompat>

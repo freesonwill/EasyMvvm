@@ -49,4 +49,10 @@
     <color name="live_land_bg">#0E0F1A</color>
     <color name="standing_title">#929298</color>
     <color name="standing_team">#ffffff</color>
+    <color name="video_resolution_selected_text_color">#24EE8A</color>
+    <color name="video_resolution_unselected_text_color">#FFFFFF</color>
+    <color name="video_resolution_divider_line">#373C46</color>
+
+    <color name="video_resolution_vertical_selected_text_color">#24EE8A</color>
+    <color name="video_resolution_vertical_unselected_text_color">#929298</color>
 </resources>
