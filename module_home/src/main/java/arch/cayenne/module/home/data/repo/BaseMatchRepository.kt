@@ -10,6 +10,8 @@ import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.database.dao.BetDao
 import arch.cayenne.lib.database.dao.InfoDao
 import arch.cayenne.lib.database.dao.MatchDao
+import arch.cayenne.lib.database.entity.MarketBeanLite
+import arch.cayenne.lib.database.entity.MatchBean
 import arch.cayenne.lib.database.entity.MatchBeanLite
 import arch.cayenne.lib.database.entity.MatchLiveInfoBean
 import arch.cayenne.lib.database.entity.MatchWithMarkets
@@ -27,7 +29,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.transform
-import kotlinx.coroutines.withContext
 
 abstract class BaseMatchRepository(
     override val scope: CoroutineScope,
@@ -206,44 +207,25 @@ abstract class BaseMatchRepository(
         return matchIds.mapNotNull { id -> result.find { it.match.matchId == id } }
     }
 
-    suspend fun getSelectionInsertBean(selectionId: Long): BetInsertBean? = withContext(scope.coroutineContext) {
-        val matchId = matchDao.getMatchIdBySelectionId(selectionId) ?: return@withContext null
-        getSelectionInsertBean(matchId, selectionId)
-    }
-
-    suspend fun getSelectionInsertBean(matchId: Long, selectionId: Long): BetInsertBean? = withContext(scope.coroutineContext) {
-        val match = matchDao.getOneMatchById(matchId, true)  //給注單的賠率一律為歐洲盤
-        val selectionBean = match.markets
-            .flatMap { it.selections }
-            .find { selectionBeanLite -> selectionBeanLite.selectionId == selectionId } ?: return@withContext null
-        matchSelectionInsertBean(match, selectionBean)
-    }
-
-    private fun matchSelectionInsertBean(
-        match: MatchWithMarkets,
+    fun matchSelectionInsertBean(
+        match: MatchBean,
+        market: MarketBeanLite,
         selectionBean: SelectionBeanLite
-    ): BetInsertBean? {
-        match.markets.find { market ->
-            market.selections.find { it.selectionId == selectionBean.selectionId } != null
-        }?.let { market ->
-            return BetInsertBean(
-                sportId = match.match.basicInfo.sportId,
-                matchId = match.match.matchId,
-                marketId = market.market.marketId,
-                marketName = market.market.marketName,
-                selectionId = selectionBean.selectionId,
-                name = selectionBean.name,
-                odds = selectionBean.odds,
-                leagueName = match.match.basicInfo.tournamentName,
-                matchName = match.match.basicInfo.matchName,
-                isActive = selectionBean.active,
-                isPlaying = match.match.basicInfo.status == 5,
-                isParlay = selectionBean.parlay,
-                provider = match.match.basicInfo.provider
-            )
-        }
-        return null
-    }
+    ): BetInsertBean? = BetInsertBean(
+        sportId = match.basicInfo.sportId,
+        matchId = selectionBean.matchId,
+        marketId = selectionBean.marketId,
+        marketName = market.marketName,
+        selectionId = selectionBean.selectionId,
+        name = selectionBean.name,
+        odds = selectionBean.odds,
+        leagueName = match.basicInfo.tournamentName,
+        matchName = match.basicInfo.matchName,
+        isActive = selectionBean.active,
+        isPlaying = match.basicInfo.status == 5,
+        isParlay = selectionBean.parlay,
+        provider = match.basicInfo.provider
+    )
 
     suspend fun observeLoginChange() = infoDao.observeIsLogin()
 }

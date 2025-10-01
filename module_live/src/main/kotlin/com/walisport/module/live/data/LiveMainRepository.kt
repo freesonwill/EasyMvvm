@@ -151,15 +151,12 @@ class LiveMainRepository(
     }
 
     fun getSkinType():String {
-        return userManager.getValue(UserDataKey.KEY_SKIN, SkinType.DEFAULT).let {
-            SkinType.getLogicSkinType(it)
-        }
+        return userManager.getValue(UserDataKey.KEY_SKIN, SkinType.DEFAULT)
     }
 
     suspend fun setSkinType(type:String){
-        val type2 = SkinType.getLogicSkinType(type)
-        userManager.setKeyValue(UserDataKey.KEY_SKIN,type2)
-        skinManager.loadSkin(type2)
+        userManager.setKeyValue(UserDataKey.KEY_SKIN,type)
+        skinManager.loadSkin(type)
     }
 }
 
