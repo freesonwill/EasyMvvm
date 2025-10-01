@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.navigation.fragment.findNavController
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.utils.log.Utils
+import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.touchBackPressed
 import com.walisport.module.setting.R
 import com.walisport.module.setting.databinding.FragmentAboutBinding
@@ -29,7 +30,9 @@ class AboutFragment : BaseFragment<SettingViewModel, FragmentAboutBinding>() {
     }
 
     override fun initListener() {
+        mBinding.layVersion.clickNoRepeat {
 
+        }
     }
 
     override suspend fun createObserver() {
