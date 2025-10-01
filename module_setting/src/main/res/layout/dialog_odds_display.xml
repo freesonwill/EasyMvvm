@@ -51,7 +51,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_54"
                 android:text="@string/menu_europe"
-                android:textColor="@color/notice_title"
+                android:textColor="@color/set_text"
                 android:textSize="@dimen/sp_16"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -111,7 +111,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_54"
                 android:text="@string/menu_hk"
-                android:textColor="@color/notice_title"
+                android:textColor="@color/set_text"
                 android:textSize="@dimen/sp_16"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -146,7 +146,7 @@
         <arch.cayenne.lib.skin.widget.SkinnableView
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_8"
-            android:background="@color/notice_line" />
+            android:background="@color/dialog_line" />
 
         <arch.cayenne.lib.skin.widget.SkinnableTextView
             android:id="@+id/tv_close"
@@ -154,7 +154,7 @@
             android:layout_height="@dimen/dp_46"
             android:gravity="center"
             android:text="@string/shut_down"
-            android:textColor="@color/notice_close"
+            android:textColor="@color/set_text"
             android:textSize="@dimen/sp_16"
             android:textStyle="bold" />
     </LinearLayout>
