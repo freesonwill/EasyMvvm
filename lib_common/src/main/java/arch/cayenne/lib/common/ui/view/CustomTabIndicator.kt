@@ -12,7 +12,7 @@ class CustomTabIndicator(context: Context, attrs: AttributeSet) : SkinnableView(
     private val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         style = Paint.Style.FILL
         color = ContextCompat.getColor(context,
-           R.color.tab_indicator_color
+           R.color.tab_indicator_color_line
         ) // 指示器颜色
     }
 

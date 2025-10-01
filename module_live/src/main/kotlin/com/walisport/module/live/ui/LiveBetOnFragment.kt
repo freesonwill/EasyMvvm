@@ -1,6 +1,7 @@
 package com.walisport.module.live.ui
 
 import android.annotation.SuppressLint
+import android.graphics.Typeface
 import android.os.Bundle
 import android.view.MotionEvent
 import android.view.View
@@ -21,6 +22,7 @@ import arch.cayenne.lib.common.utils.ext.removeAllTips
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.ext.startFadeAnim
 import arch.cayenne.lib.common.utils.helper.showToast
+import arch.cayenne.lib.skin.widget.SkinnableTextView
 import arch.cayenne.module.bet.data.AddSelectionStatus
 import arch.cayenne.module.bet.ui.fragment.BetSheetFragment
 import arch.cayenne.module.bet.viewmodel.FloatingButtonControlViewModel
@@ -178,8 +180,7 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
                     )?.code).toString()
                 )
             }
-
-            override fun onTabUnselected(tab:TabLayout.Tab, isTabClick: Boolean) {}
+            override fun onTabUnselected(tab: TabLayout.Tab,isTabClick: Boolean) {}
             override fun onTabReselected(tab:TabLayout.Tab, isTabClick: Boolean) {}
         })
 

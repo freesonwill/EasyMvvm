@@ -8,6 +8,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
+import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.core.view.isVisible
 import arch.cayenne.lib.common.utils.ext.clickNoRepeatSingle
 import arch.cayenne.lib.skin.widget.SkinnableLinearLayout
@@ -178,7 +179,7 @@ class LiveBetListLayout @JvmOverloads constructor(
         isSelected: Boolean,
         callback: (WeakReference<View>, Long, Float, Float) -> Unit
     ): View = LiveBetContentItemLayoutOneBinding.inflate(LayoutInflater.from(context), binding.root, false).run {
-        setupView(this, name, odds, marketId, active, oddStatus, isSelected, callback, sclOne, sclOneLock)
+        setupView(this, name, odds, marketId, active, oddStatus, isSelected, callback, sclOne, sclOneLock,oddsLL)
         root
     }
 
@@ -191,7 +192,7 @@ class LiveBetListLayout @JvmOverloads constructor(
         isSelected: Boolean,
         callback: (WeakReference<View>, Long, Float, Float) -> Unit
     ): View = LiveBetContentItemLayoutTowBinding.inflate(LayoutInflater.from(context), binding.root, false).run {
-        setupView(this, name, odds, marketId, active, oddStatus, isSelected, callback, sclTow, sclTowLock)
+        setupView(this, name, odds, marketId, active, oddStatus, isSelected, callback, sclTow, sclTowLock,oddsLL)
         root
     }
 
@@ -204,7 +205,7 @@ class LiveBetListLayout @JvmOverloads constructor(
         isSelected: Boolean,
         callback: (WeakReference<View>, Long, Float, Float) -> Unit
     ): View = LiveBetContentItemLayoutThreeBinding.inflate(LayoutInflater.from(context), binding.root, false).run {
-        setupView(this, name, odds, marketId, active, oddStatus, isSelected, callback, sclThree, sclThreeLock)
+        setupView(this, name, odds, marketId, active, oddStatus, isSelected, callback, sclThree, sclThreeLock,oddsLL)
         root
     }
 
@@ -219,7 +220,8 @@ class LiveBetListLayout @JvmOverloads constructor(
         isSelected: Boolean,
         callback: (WeakReference<View>, Long, Float, Float) -> Unit,
         selectableView: View,
-        lockView: View
+        lockView: View,
+        oddsLL: LinearLayoutCompat
     ) {
         with(binding) {
             val oddsInt :Int = odds.toOdds()
@@ -335,6 +337,7 @@ class LiveBetListLayout @JvmOverloads constructor(
             }
             selectableView.isClickable = active
             lockView.isVisible = !active
+            oddsLL.visibility=if (active) VISIBLE else INVISIBLE
         }
     }
 

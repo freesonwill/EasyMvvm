@@ -11,6 +11,7 @@
     <color name="color_222222">#FF222222</color>
     <color name="color_929292">#FF929292</color>
     <color name="color_929298">#FF929298</color>
+    <color name="color_999999">#999999</color>
     <color name="color_666666">#FF666666</color>
     <color name="color_5fce7b">#FF5FCE7B</color>
     <color name="color_0E0F1A">#FF0E0F1A</color>
@@ -36,7 +37,7 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="blue">#0000FF</color>
-    <color name="app_bg">#0e0f19</color>
+    <color name="app_bg">#111111</color>
     <color name="search_btn">#24EE8A</color>
     <color name="search_btn_highlight">#24EE8A</color>
     <color name="search_btn_normal">#BBBBBB</color>
@@ -120,7 +121,7 @@
     <color name="race_line">#54555E</color>
     <color name="list_separator">#1D1F2A</color>
     <color name="dividing_line">#14FFFFFF</color>
-    <color name="tab_indicator_color">#24EE8A</color>
+    <color name="tab_indicator_color_line">#00E0E5</color>
     <color name="color_2c3c3e">#2c3c3e</color>
     <color name="color_15b264">#15b264</color>
     <color name="black_65">#A6000000</color>
