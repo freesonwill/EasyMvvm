@@ -84,7 +84,7 @@
                 android:background="@null"
                 android:inputType="numberDecimal"
                 android:textColor="@color/main_text"
-                android:textColorHint="@color/search_hint_white_green"
+                android:textColorHint="@color/search_hint"
                 android:textCursorDrawable="@drawable/edit_cursor"
                 android:textSize="16sp"
                 app:layout_constraintBottom_toBottomOf="parent"

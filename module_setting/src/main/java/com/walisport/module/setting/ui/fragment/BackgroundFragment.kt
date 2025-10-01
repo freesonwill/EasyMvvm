@@ -61,12 +61,12 @@ class BackgroundFragment : BaseFragment<SettingViewModel, FragmentBackgroundBind
 
     override fun initListener() {
         mBinding.layBlackGreen.clickNoRepeat {
-            skinType = SkinType.SKIN_BLACK_GREEN.value
+            skinType = SkinType.SKIN_BLACK_BLUE.value
             mViewModel.setSkinType(skinType)
             setImmColor(skinType)
         }
         mBinding.layWhiteGreen.clickNoRepeat {
-            skinType = SkinType.SKIN_WHITE_GREEN.value
+            skinType = SkinType.SKIN_WHITE_BLUE.value
             mViewModel.setSkinType(skinType)
             setImmColor(skinType)
         }
@@ -92,8 +92,8 @@ class BackgroundFragment : BaseFragment<SettingViewModel, FragmentBackgroundBind
         mBinding.radioBlackGreen.isSelected = false
         mBinding.radioWhiteGreen.isSelected = false
         when (type) {
-            SkinType.SKIN_BLACK_GREEN.value -> mBinding.radioBlackGreen.isSelected = true
-            SkinType.SKIN_WHITE_GREEN.value -> mBinding.radioWhiteGreen.isSelected = true
+            SkinType.SKIN_BLACK_BLUE.value -> mBinding.radioBlackGreen.isSelected = true
+            SkinType.SKIN_WHITE_BLUE.value -> mBinding.radioWhiteGreen.isSelected = true
         }
     }
 
