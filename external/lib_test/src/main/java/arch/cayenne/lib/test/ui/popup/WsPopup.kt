@@ -1,9 +1,10 @@
 package arch.cayenne.lib.test.ui.popup
 
 import android.content.Context
+import android.view.View
+import android.widget.ImageView
 import androidx.lifecycle.lifecycleScope
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
 import arch.cayenne.lib.common.data.repo.CommonRepository.Companion.MATCH_APP
 import arch.cayenne.lib.common.data.repo.CommonRepository.Companion.MATCH_GOAL
 import arch.cayenne.lib.common.data.repo.CommonRepository.Companion.MATCH_KICK
@@ -16,13 +17,13 @@ import arch.cayenne.lib.websocket.WebSocketManager
 import arch.cayenne.lib.websocket.data.ApiCode
 import arch.cayenne.lib.websocket.extension.sendAndWaitProtoMessageResponse
 import arch.cayenne.lib.websocket.data.ConnectState
+import com.bumptech.glide.Glide
 import com.lxj.xpopup.core.BottomPopupView
 import galaxy.client.proto.Client
 import galaxy.common.proto.Common
 import galaxy.common.proto.Common.Setting
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -58,6 +59,7 @@ class WsPopup(context: Context) : BottomPopupView(context), KoinComponent {
         super.onCreate()
         vb = DemoWsPopupBinding.bind(popupImplView)
         vb?.apply {
+            testAvif(avifTest)
             wsConnect.clickNoRepeat {
 //                connectJob?.cancel()
 //                newWebSocketManager.disconnect()
@@ -188,6 +190,12 @@ class WsPopup(context: Context) : BottomPopupView(context), KoinComponent {
                 }
             }
         }
+    }
+    private fun testAvif(v:ImageView){
+        val url = "https://s185.convertio.me/p/XJYxcJVk2kwI7B4Fp3vYkA/bc326e488d406055e666397fc6b0c503/dragon_tiger1.avif"
+        Glide.with(context)
+            .load(url)
+            .into(v)
     }
 
     private fun getSystemSetting(): Setting {
