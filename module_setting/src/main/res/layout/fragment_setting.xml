@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/fragment_bg"
+    android:background="@color/title_bg"
     android:focusable="true"
     android:focusableInTouchMode="true"
     app:interceptedDirection="RIGHT">
@@ -15,10 +15,10 @@
         android:layout_height="wrap_content"
         tools:ignore="MissingConstraints" />
 
-    <LinearLayout
+    <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_12"
+        android:background="@color/fragment_bg"
         android:orientation="vertical"
         app:layout_constraintTop_toBottomOf="@+id/title_bar">
 
@@ -26,6 +26,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_12"
             android:text="@string/account"
             android:textColor="@color/set_title"
             android:textSize="@dimen/sp_14" />
@@ -35,7 +36,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_52"
             android:layout_marginTop="@dimen/dp_10"
-            android:background="@drawable/ripple_effect">
+            android:background="@drawable/ripple_set_effect">
 
             <arch.cayenne.lib.skin.widget.SkinnableImageView
                 android:layout_width="@dimen/dp_20"
@@ -86,7 +87,7 @@
             android:id="@+id/setting_user"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_52"
-            android:background="@drawable/ripple_effect">
+            android:background="@drawable/ripple_set_effect">
 
             <arch.cayenne.lib.skin.widget.SkinnableImageView
                 android:layout_width="@dimen/dp_20"
@@ -150,7 +151,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_52"
             android:layout_marginTop="@dimen/dp_10"
-            android:background="@drawable/ripple_effect">
+            android:background="@drawable/ripple_set_effect">
 
             <arch.cayenne.lib.skin.widget.SkinnableImageView
                 android:layout_width="@dimen/dp_20"
@@ -168,7 +169,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginStart="@dimen/dp_50"
                 android:text="@string/menu_odds_display"
-                android:textColor="@color/notice_title"
+                android:textColor="@color/set_text"
                 android:textSize="@dimen/sp_15"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -203,7 +204,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_16"
-            android:layout_marginTop="@dimen/dp_15"
+            android:layout_marginTop="@dimen/dp_14"
             android:text="@string/common"
             android:textColor="@color/notice_type"
             android:textSize="@dimen/sp_14" />
@@ -213,7 +214,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_52"
             android:layout_marginTop="@dimen/dp_10"
-            android:background="@drawable/ripple_effect">
+            android:background="@drawable/ripple_set_effect">
 
             <arch.cayenne.lib.skin.widget.SkinnableImageView
                 android:layout_width="@dimen/dp_20"
@@ -231,7 +232,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginStart="@dimen/dp_50"
                 android:text="@string/menu_notice_set"
-                android:textColor="@color/notice_title"
+                android:textColor="@color/set_text"
                 android:textSize="@dimen/sp_15"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -262,7 +263,7 @@
             android:id="@+id/setting_bg"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_52"
-            android:background="@drawable/ripple_effect">
+            android:background="@drawable/ripple_set_effect">
 
             <arch.cayenne.lib.skin.widget.SkinnableImageView
                 android:layout_width="@dimen/dp_20"
@@ -280,7 +281,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginStart="@dimen/dp_50"
                 android:text="@string/menu_background_set"
-                android:textColor="@color/notice_title"
+                android:textColor="@color/set_text"
                 android:textSize="@dimen/sp_15"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -311,7 +312,7 @@
             android:id="@+id/setting_language"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_52"
-            android:background="@drawable/ripple_effect">
+            android:background="@drawable/ripple_set_effect">
 
             <arch.cayenne.lib.skin.widget.SkinnableImageView
                 android:layout_width="@dimen/dp_20"
@@ -327,7 +328,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_50"
                 android:text="@string/menu_language_set"
-                android:textColor="@color/notice_title"
+                android:textColor="@color/set_text"
                 android:textSize="@dimen/sp_15"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -360,7 +361,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_16"
-            android:layout_marginTop="@dimen/dp_15"
+            android:layout_marginTop="@dimen/dp_14"
             android:text="@string/about"
             android:textColor="@color/notice_type"
             android:textSize="@dimen/sp_14" />
@@ -370,7 +371,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_52"
             android:layout_marginTop="@dimen/dp_10"
-            android:background="@drawable/ripple_effect">
+            android:background="@drawable/ripple_set_effect">
 
             <arch.cayenne.lib.skin.widget.SkinnableImageView
                 android:layout_width="@dimen/dp_20"
@@ -388,7 +389,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginStart="@dimen/dp_50"
                 android:text="@string/about_us"
-                android:textColor="@color/notice_title"
+                android:textColor="@color/set_text"
                 android:textSize="@dimen/sp_15"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -411,7 +412,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_52"
             android:layout_marginTop="@dimen/dp_21"
-            android:background="@drawable/ripple_effect"
+            android:background="@drawable/ripple_set_effect"
             android:gravity="center"
             android:text="@string/change_user"
             android:textColor="@color/set_text" />
@@ -421,21 +422,10 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_52"
             android:layout_marginTop="@dimen/dp_8"
-            android:background="@drawable/ripple_effect"
+            android:layout_marginBottom="@dimen/dp_80"
+            android:background="@drawable/ripple_set_effect"
             android:gravity="center"
             android:text="@string/logout_user"
             android:textColor="@color/set_title" />
-    </LinearLayout>
-
-    <arch.cayenne.lib.skin.widget.SkinnableTextView
-        android:id="@+id/tv_version"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dp_20"
-        android:textColor="@color/notice_type"
-        android:textSize="@dimen/sp_15"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+    </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
 </arch.cayenne.lib.common.ui.view.InterceptedConstraintLayout>
