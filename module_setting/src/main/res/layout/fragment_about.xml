@@ -13,10 +13,7 @@
     <arch.cayenne.lib.common.ui.view.TitleBarView
         android:id="@+id/title_bar"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_50"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        android:layout_height="wrap_content"
         tools:ignore="MissingConstraints" />
 
     <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
