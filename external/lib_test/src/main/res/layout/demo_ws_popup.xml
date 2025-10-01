@@ -42,8 +42,4 @@
         style="@style/ws_popup_btn"
         android:text="gameTest接口" />
 
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/avifTest"
-        style="@style/ws_popup_btn" />
-
 </androidx.appcompat.widget.LinearLayoutCompat>
