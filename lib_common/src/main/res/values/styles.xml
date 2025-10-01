@@ -52,7 +52,7 @@
         <item name="android:background">@drawable/selector_number_button_pressed</item>
         <item name="android:textSize">18sp</item>
         <item name="android:textStyle">bold</item>
-        <item name="android:textColor">@color/keyboard_number</item>
+        <item name="android:textColor">@color/color_FFFFFF</item>
         <item name="android:gravity">center</item>
     </style>
 
@@ -64,7 +64,7 @@
         <item name="android:background">@drawable/selector_number_text_button_pressed</item>
         <item name="android:textSize">14sp</item>
         <item name="android:textStyle">bold</item>
-        <item name="android:textColor">@color/keyboard_number</item>
+        <item name="android:textColor">@color/color_FFFFFF</item>
         <item name="android:gravity">center</item>
     </style>
 

@@ -3,7 +3,7 @@
     android:shape="rectangle">
 
     <!-- 背景顏色：白色 -->
-    <solid android:color="@color/color_272727" />
+    <solid android:color="@color/color_1E1E1E" />
 
     <!-- 邊框設定：1dp 灰色線 -->
     <stroke
@@ -11,5 +11,6 @@
         android:color="@color/color_0FFFFFFF" /> <!-- 你可以改成你要的邊框色 -->
 
     <!-- 圓角 -->
-    <corners android:radius="12dp" />
+    <corners android:topLeftRadius="12dp"
+        android:topRightRadius="12dp" />
 </shape>

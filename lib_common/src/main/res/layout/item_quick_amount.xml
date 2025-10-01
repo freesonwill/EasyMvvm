@@ -12,7 +12,7 @@
         android:gravity="center"
         android:paddingTop="11dp"
         android:paddingBottom="10dp"
-        android:textColor="@color/keyboard_number"
+        android:textColor="@color/color_D3D3D6"
         android:textSize="14sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@id/line"
@@ -32,7 +32,7 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginHorizontal="4dp"
-        android:background="@color/dividing_line"
+        android:background="@color/color_0FFFFFFF"
         app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
