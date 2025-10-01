@@ -2,17 +2,19 @@ package com.walisport.module.live.ui.popup
 
 import android.graphics.drawable.ColorDrawable
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
+import android.view.View.OnTouchListener
 import android.view.ViewGroup
 import android.widget.PopupWindow
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
-import arch.cayenne.lib.common.utils.ext.ResourceExt.getColor
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import com.walisport.module.live.R
 import com.walisport.module.live.data.model.VideoResolutionBean
 import com.walisport.module.live.databinding.PopupVideoResolutionLayoutBinding
 import com.walisport.module.live.ui.adapter.VideoResolutionAdapter
+
 
 class VideoResolutionHelper {
     private var popupWindow: PopupWindow? = null
@@ -38,6 +40,19 @@ class VideoResolutionHelper {
                     ).apply {
                         isOutsideTouchable = true
                     }
+
+
+                    // 设置触摸拦截器
+                    popupWindow?.setTouchInterceptor(OnTouchListener { v, event ->
+                        // 判断触摸点是否在 PopupWindow 外部
+                        if (event.action == MotionEvent.ACTION_OUTSIDE) {
+                            // 点击了 PopupWindow 外部
+                            dismissPopUpAnimated()
+                            // 手动关闭 PopupWindow
+                            return@OnTouchListener true // 消费事件
+                        }
+                        false // 不消费事件，继续传递
+                    })
 
                     adapter = VideoResolutionAdapter {
                         dismissPopUpAnimated()
