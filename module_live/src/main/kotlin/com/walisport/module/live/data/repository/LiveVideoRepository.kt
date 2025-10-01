@@ -75,7 +75,8 @@ class LiveVideoRepository(
 
                     thumb = "",
                     //0522. 由于提供的视频源无标题和副标题名称，选择视频源这里，除了「动画直播」有标题和副标题，视频流统一根据服务端提供的视频流，标题统一命名视频源一，视频源二等，副标题统一命名纯享版
-                    title = matchLiveStream.title,
+                    title = "视频源${NumberToChineseUtil.toChinese((index + 1).toLong())}",
+//                    title = matchLiveStream.title,
                     subTitle = "纯享版",
                     isPlaying = false,
                     coverUrl = matchLiveStream.coverUrl,
