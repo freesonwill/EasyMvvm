@@ -6,7 +6,7 @@
     <string name="nav_module_setting_fragment" translatable="false">walisport://module_setting/settingFragment</string>
     <string name="nav_module_handicap_fragment" translatable="false">walisport://module_handicap/HandicapFragment?homeId={homeId}</string>
     <string name="nav_module_feedback_fragment" translatable="false">walisport://module_feedback/feedbackFragment</string>
-    <string name="nav_module_live_fragment" translatable="false">walisport://module_live/liveFragment?matchId={matchId}&amp;sportId={sportId}</string>
+    <string name="nav_module_live_fragment" translatable="false">walisport://module_live/liveFragment?matchId={matchId}&amp;sportId={sportId}&amp;showVideo={showVideo}&amp;showAnim={showAnim}</string>
     <string name="nav_module_league_fragment" translatable="false">walisport://module_live/leagueFragment</string>
     <string name="nav_module_personal_info_fragment" translatable="false">walisport://module_account/personalInfoFragment</string>
     <string name="nav_module_login_fragment" translatable="false">walisport://module_login/loginFragment?userId={userId}</string>

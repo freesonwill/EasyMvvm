@@ -52,6 +52,8 @@ class LivePlayerView @JvmOverloads constructor(
      */
     private var playerStateListener: ((PlayerState) -> Unit)? = null
 
+    private var onFirstFrameReceivedListener: (() -> Unit)? = null
+
     private lateinit var mGestureDialogManager: GestureDialogManager
     private val mAudioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
     private var mCurrentPosition: Long = 0
@@ -188,6 +190,10 @@ class LivePlayerView @JvmOverloads constructor(
                         processNetworkSpeed(json)
                     }
                 }
+            }
+
+            setOnFirstFrameReceivedListener { data, size, pts, type, width, height ->
+                onFirstFrameReceivedListener?.invoke()
             }
 
             init(mPlayerMode)
@@ -425,6 +431,10 @@ class LivePlayerView @JvmOverloads constructor(
 
             }
         }
+    }
+
+    fun setOnFirstFrameReceivedListener(listener: () -> Unit) {
+        onFirstFrameReceivedListener = listener
     }
 
 

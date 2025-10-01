@@ -18,6 +18,9 @@ message StreamInfo {
 message MatchLiveStream {
   string name = 1;          // 线路名称 预留字段，可能不存在
   repeated StreamInfo live_streams = 2;  // 视频流列表
+  string anchorName = 3;    // 主播名称，仅官方直播流才有
+  string title = 4;         // 直播标题，仅官方直播流才有
+  string coverUrl = 5;      // 直播封面，仅官方直播流才有
 }
 
 // ================================================== 视频流列表结束 ==================================================

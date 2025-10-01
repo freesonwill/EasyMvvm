@@ -73,12 +73,15 @@
     <dimen name="dp_84">84dp</dimen>
     <dimen name="dp_86">86dp</dimen>
     <dimen name="dp_87">87dp</dimen>
+    <dimen name="dp_90">90dp</dimen>
     <dimen name="dp_91">91dp</dimen>
     <dimen name="dp_92">92dp</dimen>
+    <dimen name="dp_93">93dp</dimen>
     <dimen name="dp_94">94dp</dimen>
     <dimen name="dp_96">96dp</dimen>
     <dimen name="dp_100">100dp</dimen>
     <dimen name="dp_101">101dp</dimen>
+    <dimen name="dp_102">102dp</dimen>
     <dimen name="dp_103">103dp</dimen>
     <dimen name="dp_104">104dp</dimen>
     <dimen name="dp_105">105dp</dimen>
