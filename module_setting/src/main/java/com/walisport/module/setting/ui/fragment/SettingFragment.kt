@@ -28,7 +28,6 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
     override val vbClass: KClass<FragmentSettingBinding> = FragmentSettingBinding::class
     override val vmClass: KClass<SettingViewModel> = SettingViewModel::class
 
-    @SuppressLint("SetTextI18n")
     override fun initView(savedInstanceState: Bundle?) {
         mBinding.titleBar.loadGeneralTitleBar(R.string.setting, {
             findNavController().navigateUp()

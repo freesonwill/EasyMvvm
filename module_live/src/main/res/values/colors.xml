@@ -4,12 +4,15 @@
     <color name="video_landscape_competition_name_color">#E6E6E6</color>
 
 
-    <color name="live_text_selected_true">#000000</color>
-    <color name="live_text_selected_false">#929298</color>
-    <color name="live_text_bg_selected_true">#24EE8A</color>
-    <color name="live_text_bg_selected_false">#161823</color>
+    <color name="live_text_selected_true">#00E0E5</color>
+    <color name="live_odds_text_selected_true">#ffffff</color>
+    <color name="live_text_selected_false">#999999</color>
+    <color name="live_text_bg_selected_true">#003A42</color>
+    <color name="live_text_bg_selected_false">#0FFFFFFF</color>
     <color name="card_out_area">#AC8E6A</color>
 
+    <color name="color_272727">#272727</color>
+    <color name="color_00A7C0">#00A7C0</color>
     <color name="color_24ee8a">#cc24ee8a</color>
     <color name="color_bbbbbb">#bbbbbb</color>
     <color name="color_ffffff">#ffffff</color>
@@ -26,10 +29,10 @@
     <color name="color_line_282a34">#282a34</color>
     <color name="menu_lin">#232530</color>
     <color name="substitution_text_color">#ffffff</color>
-    <color name="live_main_tab_bg">#0e0f19</color>
+    <color name="live_main_tab_bg">#111111</color>
     <color name="tab_selected_text_color">#ffffff</color>
     <color name="tab_indicator_color">#00D271</color>
-    <color name="video_tab_text_color">#929298</color>
+    <color name="video_tab_text_color">#999999</color>
     <color name="text_color">#ffffff</color>
     <color name="live_video_mask">#ff121321</color>
     <color name="standing_text">#ffffff</color>

@@ -64,10 +64,10 @@ class LiveMatchMediaFragment :
                                 //比赛正在进行中
                                 mViewModel.queryLiveStream()
                             }
+
                             else -> {
-                                //其他情况
-                                if (animationLiveUrl.value?.isNotBlank() == true && !isAnimationViewShowing()) {
-                                    switchToAnimation()
+                                if (it.liveInfo.animationLiveUrl.isNotBlank() ) {
+                                    showAnimationView()
                                 } else {
                                     showStatusView()
                                 }

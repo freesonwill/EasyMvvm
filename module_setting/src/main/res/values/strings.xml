@@ -2,6 +2,8 @@
     <string name="setting">设置</string>
     <string name="pan">体育盘口</string>
     <string name="account">账号</string>
+    <string name="name_av">AVAVA</string>
+    <string name="tip_new">已是最新版本</string>
     <string name="set_bind_mobile">绑定手机号</string>
     <string name="set_user_id">用户ID</string>
     <string name="common">通用</string>
