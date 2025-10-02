@@ -510,6 +510,8 @@ class LiveVideoPlayerFragment :
             if (beanList != null) {
                 lifecycleScope.launch {
                     helper.showPopUp(mBinding.tvVideoResolution, beanList) {
+                        scheduleHideButtons()
+
                         mViewModel.changeResolution(it)
 
                         if (mBinding.videoViewContainer.alpha != 0f) {
