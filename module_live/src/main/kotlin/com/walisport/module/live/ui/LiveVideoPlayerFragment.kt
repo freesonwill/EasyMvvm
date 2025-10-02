@@ -81,10 +81,6 @@ class LiveVideoPlayerFragment :
 //     */
 //    private var loadingAnim: ObjectAnimator? = null
 
-    /**
-     * 已经进入播放态
-     */
-    private var hasPlayed: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -265,23 +261,13 @@ class LiveVideoPlayerFragment :
                             streamInfoBean
                                 ?.playUrl()
                         playUrl?.takeIf { url -> url.isNotEmpty() }?.let { url ->
-                            "videoUrl:${url}".logd("LiveVideoPlayerFragment")
-
-                            //收到视频源信息时，需要判断当前比赛的状态，仅当比赛为正在进行中才播放视频
-                            val matchBean = mViewModel.matchBeanLiveData.value
-                            matchBean?.let {
-                                val matchStatus =
-                                    MatchStatus.entries.find { status -> status.code == it.basicInfo.status }
-                                if (matchStatus == MatchStatus.IN_PROGRESS) {
-//                                    "url:${url}, dataSource:${videoView.getDataSource()}".logd("videoCache")
-                                    if (url != videoView.getDataSource()) {
-                                        videoView.setDataSource(url)
-                                        videoView.prepare()
-                                    }
-                                }
+//                            "url:${url}, dataSource:${videoView.getDataSource()}".logd("videoCache")
+                            if (url != videoView.getDataSource()) {
+                                videoView.setDataSource(url)
+                                videoView.prepare()
                             }
-
                         }
+
                     }
 
                 }
