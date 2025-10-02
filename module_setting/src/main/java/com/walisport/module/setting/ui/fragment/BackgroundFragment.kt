@@ -9,10 +9,13 @@ import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.utils.ImmersionBarUtils.immersionBarColorExt
 import arch.cayenne.lib.common.utils.ImmersionBarUtils.immersionBarSkinTypeExt
+import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.touchBackPressed
 import com.walisport.module.setting.R
 import com.walisport.module.setting.databinding.FragmentBackgroundBinding
+import com.walisport.module.setting.databinding.TitleBarBackgroundBinding
 import com.walisport.module.setting.ui.viewmodel.SettingViewModel
 import kotlin.reflect.KClass
 
@@ -32,20 +35,15 @@ class BackgroundFragment : BaseFragment<SettingViewModel, FragmentBackgroundBind
         defaultImmColor = getStatusBarColor()
         skinType = mViewModel.getSkinType()
         changeSkinType(skinType)
-        /*val binding = TitleBarBackgroundBinding.inflate(LayoutInflater.from(context), mBinding.root, false)
-        mBinding.titleBar.loadDynamicsTitleBar(binding.root, null)
-        binding.apply {
+        val bind = TitleBarBackgroundBinding.inflate(LayoutInflater.from(context), mBinding.root, false)
+        mBinding.titleBar.loadDynamicsTitleBar(bind.root, null)
+        bind.apply {
             barRoot.layoutParams.width = resources.displayMetrics.widthPixels - 20.dp2px
-            tvBack.clickNoRepeat {
+            tvTitleName.text = R.string.menu_background_set.getString()
+            ivBack.clickNoRepeat {
                 findNavController().navigateUp()
             }
-            tvTitleRight.clickNoRepeat {
-                findNavController().navigateUp()
-            }
-        }*/
-        mBinding.titleBar.loadGeneralTitleBar(R.string.menu_background_set, {
-            findNavController().navigateUp()
-        })
+        }
         mBinding.root.touchBackPressed()
     }
 

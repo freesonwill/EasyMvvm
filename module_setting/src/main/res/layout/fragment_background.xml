@@ -64,7 +64,7 @@
                         android:id="@+id/radio_black_blue"
                         android:layout_width="@dimen/dp_18"
                         android:layout_height="@dimen/dp_18"
-                        android:background="@drawable/skin_radio" />
+                        android:background="@drawable/skin_radio_theme" />
 
                     <arch.cayenne.lib.skin.widget.SkinnableTextView
                         android:id="@+id/tv_black_blue"
@@ -106,7 +106,7 @@
                         android:id="@+id/radio_white_blue"
                         android:layout_width="@dimen/dp_16"
                         android:layout_height="@dimen/dp_16"
-                        android:background="@drawable/skin_radio_white_green" />
+                        android:background="@drawable/skin_radio_theme" />
 
                     <arch.cayenne.lib.skin.widget.SkinnableTextView
                         android:id="@+id/tv_white_blue"
