@@ -791,7 +791,6 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
         parentFragmentManager.setFragmentResult(key, result)
     }
     private fun initChampionTournamentLayout() {
-        mBinding.aplHomeBanner.visibility = View.GONE
         val tournamentListFragment = TournamentListFragment.newInstance(
             playTypeId = PlayType.CHAMPION.id,
             sportId = mViewModel.currentSportId,
