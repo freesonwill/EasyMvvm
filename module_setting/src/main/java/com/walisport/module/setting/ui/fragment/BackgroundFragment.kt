@@ -1,7 +1,6 @@
 package com.walisport.module.setting.ui.fragment
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import androidx.navigation.fragment.findNavController
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.common.data.constants.SkinType
@@ -9,13 +8,10 @@ import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.utils.ImmersionBarUtils.immersionBarColorExt
 import arch.cayenne.lib.common.utils.ImmersionBarUtils.immersionBarSkinTypeExt
-import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
-import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.touchBackPressed
 import com.walisport.module.setting.R
 import com.walisport.module.setting.databinding.FragmentBackgroundBinding
-import com.walisport.module.setting.databinding.TitleBarBackgroundBinding
 import com.walisport.module.setting.ui.viewmodel.SettingViewModel
 import kotlin.reflect.KClass
 
@@ -35,14 +31,8 @@ class BackgroundFragment : BaseFragment<SettingViewModel, FragmentBackgroundBind
         defaultImmColor = getStatusBarColor()
         skinType = mViewModel.getSkinType()
         changeSkinType(skinType)
-        val bind = TitleBarBackgroundBinding.inflate(LayoutInflater.from(context), mBinding.root, false)
-        mBinding.titleBar.loadDynamicsTitleBar(bind.root, null)
-        bind.apply {
-            barRoot.layoutParams.width = resources.displayMetrics.widthPixels - 20.dp2px
-            tvTitleName.text = R.string.menu_background_set.getString()
-            ivBack.clickNoRepeat {
-                findNavController().navigateUp()
-            }
+        mBinding.titleBar.loadBackgroundTitleBar(R.string.menu_background_set) {
+            findNavController().navigateUp()
         }
         mBinding.root.touchBackPressed()
     }
@@ -50,7 +40,7 @@ class BackgroundFragment : BaseFragment<SettingViewModel, FragmentBackgroundBind
     override fun onStart() {
         StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND()
         mBinding.root.fitsSystemWindows = false
-        setStatusBar(StatusBarConfig, mBinding.llConttnet)
+        setStatusBar(StatusBarConfig, mBinding.llContent)
         super.onStart()
     }
 
@@ -72,7 +62,7 @@ class BackgroundFragment : BaseFragment<SettingViewModel, FragmentBackgroundBind
         StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND()
         mBinding.root.fitsSystemWindows = false
         StatusBarConfig.statusBarDarkFont = immersionBarSkinTypeExt(skinType)
-        setStatusBar(StatusBarConfig, mBinding.llConttnet)
+        setStatusBar(StatusBarConfig, mBinding.llContent)
     }
 
     override suspend fun createObserver() {

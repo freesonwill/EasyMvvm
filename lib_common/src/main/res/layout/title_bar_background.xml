@@ -2,7 +2,6 @@
 <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/bar_root"
     style="@style/CustomToolbarStyle">
 
     <arch.cayenne.lib.skin.widget.SkinnableImageView
@@ -12,7 +11,7 @@
         tools:ignore="MissingConstraints" />
 
     <arch.cayenne.lib.skin.widget.SkinnableTextView
-        android:id="@+id/tv_title_name"
+        android:id="@+id/tv_title"
         style="@style/CustomToolbarTvStyle"
         android:textColor="@color/title_bar"
         tools:ignore="MissingConstraints" />
