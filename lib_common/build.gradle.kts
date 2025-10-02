@@ -65,7 +65,6 @@ dependencies {
     androidTestImplementation(libs.androidx.runner)
     androidTestImplementation(libs.androidx.espresso.core)
     api(libs.glide)
-    implementation(libs.qcloud.avif)
     implementation(libs.glide.avif)
     api(libs.calendarview)
     kapt(libs.glidecompiler)
