@@ -24,8 +24,9 @@ class AboutFragment : BaseFragment<SettingViewModel, FragmentAboutBinding>() {
         mBinding.titleBar.loadGeneralTitleBar(R.string.about_us, {
             findNavController().navigateUp()
         })
-        mBinding.tvAboutVer.text = getVersion()
-        mBinding.tvVersion.text = getVersion()
+        val ver = getVersion()
+        mBinding.tvAboutVer.text = ver
+        mBinding.tvVersion.text = ver
         mBinding.root.touchBackPressed()
     }
 

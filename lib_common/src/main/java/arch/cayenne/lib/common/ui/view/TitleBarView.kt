@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import androidx.annotation.StringRes
 import androidx.appcompat.widget.Toolbar
+import arch.cayenne.lib.common.databinding.TitleBarBackgroundBinding
 import arch.cayenne.lib.common.databinding.TitleBarDefaultBinding
 import arch.cayenne.lib.common.databinding.TitleBarDynamicsBinding
 import arch.cayenne.lib.common.databinding.TitleBarSearchBinding
@@ -72,6 +73,22 @@ class TitleBarView @JvmOverloads constructor(
                 tvTitleRight.clickNoRepeat {
                     onRight()
                 }
+            }
+        }
+    }
+
+    /**
+     * 背景设置的标题栏
+     */
+    fun loadBackgroundTitleBar(
+        @StringRes stringRes: Int,
+        onBack: () -> Unit = defaultOnBack
+    ) {
+        val binding = TitleBarBackgroundBinding.inflate(LayoutInflater.from(context), this, true)
+        binding.apply {
+            tvTitle.setTextRes(stringRes)
+            ivBack.clickNoRepeat {
+                onBack()
             }
         }
     }

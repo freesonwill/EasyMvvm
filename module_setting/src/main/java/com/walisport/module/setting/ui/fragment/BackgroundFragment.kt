@@ -1,7 +1,6 @@
 package com.walisport.module.setting.ui.fragment
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import androidx.navigation.fragment.findNavController
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.common.data.constants.SkinType
@@ -9,11 +8,10 @@ import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.utils.ImmersionBarUtils.immersionBarColorExt
 import arch.cayenne.lib.common.utils.ImmersionBarUtils.immersionBarSkinTypeExt
-import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.touchBackPressed
+import com.walisport.module.setting.R
 import com.walisport.module.setting.databinding.FragmentBackgroundBinding
-import com.walisport.module.setting.databinding.TitleBarBackgroundBinding
 import com.walisport.module.setting.ui.viewmodel.SettingViewModel
 import kotlin.reflect.KClass
 
@@ -26,28 +24,15 @@ class BackgroundFragment : BaseFragment<SettingViewModel, FragmentBackgroundBind
     override val vbClass: KClass<FragmentBackgroundBinding> = FragmentBackgroundBinding::class
     override val vmClass: KClass<SettingViewModel> = SettingViewModel::class
     private var skinType: String = ""
-    private var skinOld: String = ""
     private var defaultImmColor: Int = 0
     private var immColor: Int = 0
-    private var clickConfig = false
 
     override fun initView(savedInstanceState: Bundle?) {
         defaultImmColor = getStatusBarColor()
         skinType = mViewModel.getSkinType()
-        skinOld = skinType
         changeSkinType(skinType)
-        val binding =
-            TitleBarBackgroundBinding.inflate(LayoutInflater.from(context), mBinding.root, false)
-        mBinding.titleBar.loadDynamicsTitleBar(binding.root, null)
-        binding.apply {
-            barRoot.layoutParams.width = resources.displayMetrics.widthPixels - 20.dp2px
-            tvBack.clickNoRepeat {
-                findNavController().navigateUp()
-            }
-            tvTitleRight.clickNoRepeat {
-                clickConfig = true
-                findNavController().navigateUp()
-            }
+        mBinding.titleBar.loadBackgroundTitleBar(R.string.menu_background_set) {
+            findNavController().navigateUp()
         }
         mBinding.root.touchBackPressed()
     }
@@ -55,17 +40,17 @@ class BackgroundFragment : BaseFragment<SettingViewModel, FragmentBackgroundBind
     override fun onStart() {
         StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND()
         mBinding.root.fitsSystemWindows = false
-        setStatusBar(StatusBarConfig, mBinding.llConttnet)
+        setStatusBar(StatusBarConfig, mBinding.llContent)
         super.onStart()
     }
 
     override fun initListener() {
-        mBinding.layBlackGreen.clickNoRepeat {
+        mBinding.layBlackBlue.clickNoRepeat {
             skinType = SkinType.SKIN_BLACK_BLUE.value
             mViewModel.setSkinType(skinType)
             setImmColor(skinType)
         }
-        mBinding.layWhiteGreen.clickNoRepeat {
+        mBinding.layWhiteBlue.clickNoRepeat {
             skinType = SkinType.SKIN_WHITE_BLUE.value
             mViewModel.setSkinType(skinType)
             setImmColor(skinType)
@@ -77,7 +62,7 @@ class BackgroundFragment : BaseFragment<SettingViewModel, FragmentBackgroundBind
         StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND()
         mBinding.root.fitsSystemWindows = false
         StatusBarConfig.statusBarDarkFont = immersionBarSkinTypeExt(skinType)
-        setStatusBar(StatusBarConfig, mBinding.llConttnet)
+        setStatusBar(StatusBarConfig, mBinding.llContent)
     }
 
     override suspend fun createObserver() {
@@ -89,27 +74,13 @@ class BackgroundFragment : BaseFragment<SettingViewModel, FragmentBackgroundBind
     private fun changeSkinType(type: String) {
         if ("" == type)
             return
-        mBinding.radioBlackGreen.isSelected = false
-        mBinding.radioWhiteGreen.isSelected = false
+        mBinding.radioBlackBlue.isSelected = false
+        mBinding.radioWhiteBlue.isSelected = false
         when (type) {
-            SkinType.SKIN_BLACK_BLUE.value -> mBinding.radioBlackGreen.isSelected = true
-            SkinType.SKIN_WHITE_BLUE.value -> mBinding.radioWhiteGreen.isSelected = true
+            SkinType.SKIN_BLACK_BLUE.value -> mBinding.radioBlackBlue.isSelected = true
+            SkinType.SKIN_WHITE_BLUE.value -> mBinding.radioWhiteBlue.isSelected = true
         }
     }
-
-    //点击取消或者系统返回键，使用变动前的皮肤，点击确认，使用变动后的皮肤
-    override fun onDestroyView() {
-        if (skinOld != skinType) {
-            if (clickConfig) {
-                defaultImmColor = immColor
-                mViewModel.setSkinRecord(skinType)
-            } else {
-                mViewModel.resetSkinType(skinOld)
-            }
-        }
-        super.onDestroyView()
-    }
-
 
     override fun onDestroy() {
         super.onDestroy()
