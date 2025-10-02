@@ -17,10 +17,7 @@
     <string name="menu_close">Close</string>
     <string name="theme_class">Class</string>
     <string name="theme_black_blue">Black Blue</string>
-    <string name="theme_black_green">Black Green</string>
-    <string name="theme_black_red">Black Red</string>
     <string name="theme_white_blue">White Blue</string>
-    <string name="theme_white_green">White Green</string>
     <string name="cancel">Cancel</string>
     <string name="confirm">Confirm</string>
     <string name="method_odds_display">Odds Display Method</string>
