@@ -41,7 +41,7 @@ class InterceptedViewImpl(private val view: ViewGroup) : IInterceptedView {
     }
 
     fun init(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) {
-        "InterceptedViewImpl----------init-------".logd(TAG)
+        "InterceptedViewImpl----------init-------view:$view".logd(TAG)
         context.theme.obtainStyledAttributes(
             attrs,
             R.styleable.InterceptedView,
@@ -70,15 +70,19 @@ class InterceptedViewImpl(private val view: ViewGroup) : IInterceptedView {
                 val canScrollViewId = ta.getResourceId(R.styleable.InterceptedView_canScrollView, View.NO_ID)
                 this.interceptFlags = interceptedDirection
                 this.touchSlop = touchSlop
-                "InterceptedViewImpl----------canScrollView-------touchSlop:$touchSlop".logd(TAG)
-                view.post { //canScrollView需要延迟一帧获取
-                    var canScrollView = if (canScrollViewId == View.NO_ID) view else view.findViewById<View>(canScrollViewId)
-                    if (canScrollView is ViewPager2) {
-                        val recyclerView = canScrollView.getChildAt(0) as RecyclerView
-                        canScrollView = recyclerView
+                "InterceptedViewImpl----------canScrollViewId:$canScrollViewId-------touchSlop:$touchSlop,view:$view".logd(TAG)
+                if(canScrollViewId == View.NO_ID) {
+                    this.canScrollView = view
+                }else {
+                    view.post { //canScrollView需要延迟一帧获取
+                        var canScrollView = view.findViewById<View>(canScrollViewId)
+                        if (canScrollView is ViewPager2) {
+                            val recyclerView = canScrollView.getChildAt(0) as RecyclerView
+                            canScrollView = recyclerView
+                        }
+                        this.canScrollView = canScrollView
+                        "InterceptedViewImpl----------canScrollView:$canScrollView,view:$view".logd(TAG)
                     }
-                    this.canScrollView = canScrollView
-                    "InterceptedViewImpl----------canScrollView-------".logd(TAG)
                 }
             } finally {
                 ta.recycle()
@@ -98,7 +102,8 @@ class InterceptedViewImpl(private val view: ViewGroup) : IInterceptedView {
     }
 
     fun onInterceptTouchEvent(e: MotionEvent): Boolean {
-        "aaaa----canScrollView2:${canScrollView2},canScrollViewId:$canScrollViewId".logd(TAG)
+        if(!::canScrollView.isInitialized) return false
+        "aaaa----canScrollView2:${canScrollView2},canScrollViewId:$canScrollViewId,view:$view".logd(TAG)
         when (e.action) {
             MotionEvent.ACTION_DOWN -> {
                 lastX = e.rawX
