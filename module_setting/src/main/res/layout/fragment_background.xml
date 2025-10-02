@@ -64,7 +64,7 @@
                         android:id="@+id/radio_black_green"
                         android:layout_width="@dimen/dp_16"
                         android:layout_height="@dimen/dp_16"
-                        android:background="@drawable/skin_radio_black_green" />
+                        android:background="@drawable/skin_radio" />
 
                     <arch.cayenne.lib.skin.widget.SkinnableTextView
                         android:id="@+id/tv_black_green"

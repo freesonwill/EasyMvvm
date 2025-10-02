@@ -44,6 +44,13 @@ class LiveMainViewModel(
     private val _sportId = MutableLiveData<Int>(0)
     val sportId: LiveData<Int> = _sportId
 
+    private val _showVideo = MutableLiveData<Boolean>(false)
+    val showVideo: LiveData<Boolean> = _showVideo
+
+    private val _showAnim = MutableLiveData<Boolean>(false)
+    val showAnim: LiveData<Boolean> = _showAnim
+
+
     //联赛ID
     private val _leagueID = MutableLiveData<Int>(0)
     val leagueID: LiveData<Int> = _leagueID
@@ -106,6 +113,14 @@ class LiveMainViewModel(
 
     fun setSportId(sportId: Int) {
         _sportId.value = sportId
+    }
+
+    fun setShowVideo(showVideo: Boolean) {
+        _showVideo.value = showVideo
+    }
+
+    fun setShowAnim(showAnim: Boolean) {
+        _showAnim.value = showAnim
     }
 
     fun setLeagueID(leagueID: Int) {

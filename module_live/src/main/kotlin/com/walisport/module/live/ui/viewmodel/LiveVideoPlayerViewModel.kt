@@ -11,12 +11,12 @@ import arch.cayenne.lib.database.entity.LiveVideoBean
 import com.walisport.module.live.data.LandscapeVideoFragmentLifeCycle
 import com.walisport.module.live.data.LiveMainRepository
 import com.walisport.module.live.data.MuteManager
+import com.walisport.module.live.data.model.VideoResolutionBean
 import com.walisport.module.live.data.repository.LiveVideoRepository
 import com.xxx.qyplayer.PlayerState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
 
@@ -162,5 +162,13 @@ class LiveVideoPlayerViewModel(
 
     fun setPlayerState(it: PlayerState) {
         _playerState.value = it
+    }
+
+    suspend fun getVideoResolutionList(): List<VideoResolutionBean>? {
+        return repo.queryVideoResolutionList()
+    }
+
+    fun changeResolution(resolution: String) {
+        repo.changeResolution(resolution)
     }
 }

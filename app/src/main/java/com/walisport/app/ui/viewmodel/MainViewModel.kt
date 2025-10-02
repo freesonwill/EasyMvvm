@@ -32,9 +32,7 @@ class MainViewModel : BaseActivityViewModel() {
 
     }
 
-    //UI界面上有6种主题，但是逻辑上暂时就白蓝和经典两种
     fun getSkinType(): String {
-        val skinType = repository.getSkinType()
-        return SkinType.getLogicSkinType(skinType)
+        return repository.getSkinType()
     }
 }

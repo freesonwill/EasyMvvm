@@ -74,13 +74,15 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
     private val titleBarBinding: TitleBarLiveBinding by lazy {
         TitleBarLiveBinding.inflate(LayoutInflater.from(context), mBinding.titleBar, false)
     }
-    private val fixedSkin:String? = null //SkinType.getLogicSkinType(SkinType.SKIN_BLACK_RED.value)
+    private var fixedSkin:String? =null//SkinType.getLogicSkinType(SkinType.SKIN_BLACK_RED.value)
 
     override fun initView(savedInstanceState: Bundle?) {
         args = LiveMainFragmentArgs.fromBundle(requireArguments())
         mBinding.titleBar.loadDynamicsTitleBar(titleBarBinding.root)
         mViewModel.setMatchId(args.matchId)
         mViewModel.setSportId(args.sportId)
+        mViewModel.setShowVideo(args.showVideo)
+        mViewModel.setShowAnim(args.showAnim)
         setVideoView()
         loadFragment()
         mViewModel.observeMatchInfoNotify()
@@ -108,12 +110,13 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
 
             override fun onStart(owner: LifecycleOwner) {
                 super.onStart(owner)
+                fixedSkin = mViewModel.getSkinType()
                 mBinding.root.fitsSystemWindows = fixedSkin == null
                 if(fixedSkin != null){
                     SkinnableResourceManager.setFixedSkin(fixedSkin)
                     StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND()
                     StatusBarConfig.statusBarDarkFont = false
-                    setStatusBar(StatusBarConfig,mBinding.root)
+                    setStatusBar(StatusBarConfig,mBinding.liveMain)
                     updateBetSheetSkin() //refresh skin to fixed skin
                 }
             }
@@ -234,7 +237,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                 // Handle reselect if needed
             }
         })
-        mBinding.vpPage.setupViewPagerScroll(mBinding.tabLayout,mBinding.customIndicator,0.45f)
+        mBinding.vpPage.setupViewPagerScroll(mBinding.tabLayout,mBinding.customIndicator,0.24f)
     }
 
     override fun createObserverAtState(): Lifecycle.State {
@@ -293,7 +296,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         }
         mViewModel.currentBalanceChange.observe(viewLifecycleOwner) {
             titleBarBinding.tvMoney.text =
-                "${CurrencySymbols.getSymbol(it?.currency ?: "")}${(it?.balance ?: 0L).getFormalMoney()}"
+                (it?.balance ?: 0L).getFormalMoney()
         }
         mViewModel.mainMatch.observe(viewLifecycleOwner) {
             it?.let {
@@ -301,12 +304,6 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                 mViewModel.setLeagueName(it.basicInfo.tournamentName) //联赛名称
                 val logo = it.basicInfo.tournamentIcon                //联赛LOGO
                 mViewModel.setLeagueLogo(logo)
-                if (TextUtils.isEmpty(logo)) {
-                    titleBarBinding.ivLandscapeLeagueIcon.visibility = View.GONE
-                } else {
-                    titleBarBinding.ivLandscapeLeagueIcon.visibility = View.VISIBLE
-                    Glide.with(this).load(logo).into(titleBarBinding.ivLandscapeLeagueIcon)
-                }
                 titleBarBinding.tvCompetitionName.text = it.basicInfo.matchName
             }
         }
@@ -340,6 +337,9 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                     mViewModel.matchId.value?.let { value ->
                         putLong("matchId", value)
                     }
+
+                    putBoolean("showVideo", mViewModel.showVideo.value ?: false)
+                    putBoolean("showAnim", mViewModel.showAnim.value ?: false)
                 }
                 childFragmentManager.beginTransaction()
                     .replace(mBinding.fragmentVideo.id, it, LiveMatchMediaFragment.TAG)

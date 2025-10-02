@@ -64,7 +64,8 @@ class MatchListPagerFragment :
 
             matchAdapter = MatchItemAdapter(object : OnMatchItemClickListener {
                 override fun onLiveEntryClick(item: MatchWithMarkets) {
-                    navigate(Uri.parse("walisport://module_live/liveFragment?matchId=${item.match.matchId}&sportId=${item.match.basicInfo.sportId}"))
+                    val liveInfo = item.match.liveInfo
+                    navigate(Uri.parse("walisport://module_live/liveFragment?matchId=${item.match.matchId}&sportId=${item.match.basicInfo.sportId}&showVideo=${liveInfo.liveVideo}&showAnim=${liveInfo.liveAnimation.isNotBlank()}"))
                 }
 
                 override fun onFavoriteClick(view: ImageView, item: MatchWithMarkets) {

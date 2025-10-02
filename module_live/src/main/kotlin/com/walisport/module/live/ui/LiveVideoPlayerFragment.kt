@@ -11,6 +11,7 @@ import android.os.Looper
 import android.provider.Settings
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.DecelerateInterpolator
 import android.view.animation.LinearInterpolator
 import android.widget.LinearLayout
 import androidx.constraintlayout.widget.ConstraintLayout.GONE
@@ -33,6 +34,7 @@ import arch.cayenne.lib.common.data.constants.MatchStatus
 import com.walisport.module.live.data.constants.VideoAnimatorConstants.Companion.BUTTONS_ANIMATION_DURATION
 import com.walisport.module.live.data.constants.VideoAnimatorConstants.Companion.HIDE_BUTTONS_TIMER
 import com.walisport.module.live.databinding.FragmentLiveVideoPlayerBinding
+import com.walisport.module.live.ui.popup.VideoResolutionHelper
 import com.walisport.module.live.ui.video.PlayerViewCache
 import com.walisport.module.live.ui.viewmodel.LiveMainViewModel
 import com.walisport.module.live.ui.viewmodel.LiveMatchMediaViewModel
@@ -41,6 +43,7 @@ import com.xxx.qyplayer.DecryptMode
 import com.xxx.qyplayer.PlayerMode
 import com.xxx.qyplayer.PlayerState
 import com.xxx.qyplayer.transformToInt
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -73,10 +76,11 @@ class LiveVideoPlayerFragment :
      */
     private var scheduledHideButtonsJob: Job? = null
 
-    /**
-     * 视频加载时的动画
-     */
-    private var loadingAnim: ObjectAnimator? = null
+//    /**
+//     * 视频加载时的动画
+//     */
+//    private var loadingAnim: ObjectAnimator? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -163,6 +167,22 @@ class LiveVideoPlayerFragment :
             mViewModel.setPlayerState(it)
         }
 
+        videoView.setOnFirstFrameReceivedListener {
+                lifecycleScope.launch {
+                    mBinding.root.startSafeAnimateSet(
+                        {
+                            playTogether(
+                                mBinding.videoViewContainer.startSafeObjectAnimator("alpha", mBinding.videoViewContainer.alpha, 1f)
+                            )
+                        },
+                        duration = 200,
+                        interpolator = DecelerateInterpolator(),
+                        start = true
+                    )
+                }
+
+        }
+
         videoView.setOnBackListener {
             requireActivity().onBackPressedDispatcher.onBackPressed()
         }
@@ -207,6 +227,11 @@ class LiveVideoPlayerFragment :
                 mViewModel.changeMuteStatus()
             }
 
+            tvVideoResolution.addScaleOnTouchAnimation()
+            tvVideoResolution.clickNoRepeat {
+                showVideoResolutionPopUp()
+            }
+
             ivAnimationEntry.addScaleOnTouchAnimation()
             ivAnimationEntry.clickNoRepeat { mediaViewModel.switchToAnimation() }
         }
@@ -228,27 +253,23 @@ class LiveVideoPlayerFragment :
                     } else {
                         mBinding.ivChooseSource.visibility = View.VISIBLE
                         mBinding.ivToFullscreen.visibility = View.VISIBLE
-                        val playUrl = it.source.firstOrNull { ele -> ele.isPlaying }?.liveStreams!![0].playUrl()
+                        val streamInfoBean =
+                            it.source.firstOrNull { ele -> ele.isPlaying }?.liveStreams?.firstOrNull { ele -> ele.selected }
+
+                        mBinding.tvVideoResolution.text = streamInfoBean?.streamType
+                        val playUrl =
+                            streamInfoBean
+                                ?.playUrl()
                         playUrl?.takeIf { url -> url.isNotEmpty() }?.let { url ->
-                        "videoUrl:${url}".logd("LiveVideoPlayerFragment")
-
-                            //收到视频源信息时，需要判断当前比赛的状态，仅当比赛为正在进行中才播放视频
-                            val matchBean = mViewModel.matchBeanLiveData.value
-                            matchBean?.let {
-                                val matchStatus =
-                                    MatchStatus.entries.find { status -> status.code == it.basicInfo.status }
-                                if (matchStatus == MatchStatus.IN_PROGRESS) {
-//                                    "url:${url}, dataSource:${videoView.getDataSource()}".logd("videoCache")
-                                    if (url != videoView.getDataSource()) {
-//                                        "setDataSource".logd("videoCache")
-                                        videoView.setDataSource(url)
-                                        videoView.prepare()
-                                    }
-                                }
+//                            "url:${url}, dataSource:${videoView.getDataSource()}".logd("videoCache")
+                            if (url != videoView.getDataSource()) {
+                                videoView.setDataSource(url)
+                                videoView.prepare()
                             }
-
                         }
+
                     }
+
                 }
             }
 
@@ -298,11 +319,7 @@ class LiveVideoPlayerFragment :
 
             animationLiveUrl.observe(viewLifecycleOwner) {
 
-                if (it.isNullOrBlank()) {
-                    mBinding.ivAnimationEntry.visibility = View.INVISIBLE
-                } else {
-                    mBinding.ivAnimationEntry.visibility = View.VISIBLE
-                }
+                mBinding.ivAnimationEntry.isEnabled = !it.isNullOrBlank()
 
             }
 
@@ -419,8 +436,8 @@ class LiveVideoPlayerFragment :
 
         when (state) {
             PlayerState.PLAYING -> {
-                loadingAnim?.cancel()
-                mBinding.ctLoading.visibility = GONE
+//                loadingAnim?.cancel()
+//                mBinding.ctLoading.visibility = GONE
                 mBinding.ctError.visibility = GONE
             }
 
@@ -430,40 +447,36 @@ class LiveVideoPlayerFragment :
 
             PlayerState.CONNECTING -> {
                 // 创建旋转动画
-                loadingAnim = mBinding.ivVideoLoading.startSafeObjectAnimator(
-                    "rotation",  // 属性名称
-                    0f, 360f // 从 0 度旋转到 360 度
-                ).run {
-                    // 设置动画属性
-                    setDuration(1500) // 持续时间 1.5 秒
-                    repeatCount = ObjectAnimator.INFINITE // 无限循环
-                    interpolator = LinearInterpolator() // 匀速旋转
+//                loadingAnim = mBinding.ivVideoLoading.startSafeObjectAnimator(
+//                    "rotation",  // 属性名称
+//                    0f, 360f // 从 0 度旋转到 360 度
+//                ).run {
+//                    // 设置动画属性
+//                    setDuration(1500) // 持续时间 1.5 秒
+//                    repeatCount = ObjectAnimator.INFINITE // 无限循环
+//                    interpolator = LinearInterpolator() // 匀速旋转
+//
+//                    // 启动动画
+//                    start()
+//                    this
+//                }
 
-                    // 启动动画
-                    start()
-                    this
-                }
-
-                mBinding.ctLoading.visibility = VISIBLE
                 mBinding.ctError.visibility = GONE
 
             }
 
             PlayerState.ERROR -> {
-                mBinding.ctLoading.visibility = GONE
                 mBinding.ctError.visibility = VISIBLE
                 mBinding.tvErrorTips.text = getString(R.string.live_video_error)
             }
 
             PlayerState.STOPPED -> {
-                loadingAnim?.cancel()
-                mBinding.ctLoading.visibility = GONE
+//                loadingAnim?.cancel()
                 mBinding.ctError.visibility = GONE
             }
 
             else -> {
-                loadingAnim?.cancel()
-                mBinding.ctLoading.visibility = GONE
+//                loadingAnim?.cancel()
                 mBinding.ctError.visibility = GONE
             }
         }
@@ -484,6 +497,42 @@ class LiveVideoPlayerFragment :
 //            mBinding.ivChooseSource.visibility = View.INVISIBLE
 //            mBinding.ivToFullscreen.visibility = View.INVISIBLE
         }
+    }
+
+    private fun showVideoResolutionPopUp() {
+        scheduledHideButtonsJob?.cancel()
+
+        val helper = VideoResolutionHelper()
+
+        lifecycleScope.launch(Dispatchers.IO) {
+            val beanList = mViewModel.getVideoResolutionList()
+
+            if (beanList != null) {
+                lifecycleScope.launch {
+                    helper.showPopUp(mBinding.tvVideoResolution, beanList) {
+                        mViewModel.changeResolution(it)
+
+                        if (mBinding.videoViewContainer.alpha != 0f) {
+                            mBinding.root.startSafeAnimateSet(
+                                {
+                                    playTogether(
+                                        mBinding.videoViewContainer.startSafeObjectAnimator(
+                                            "alpha",
+                                            mBinding.videoViewContainer.alpha,
+                                            0f
+                                        )
+                                    )
+                                },
+                                duration = 200,
+                                interpolator = DecelerateInterpolator(),
+                                start = true
+                            )
+                        }
+                    }
+                }
+            }
+        }
+
     }
 
     private inner class VolumeObserver(handler: Handler) : ContentObserver(handler) {
