@@ -1,14 +1,12 @@
-package arch.cayenne.module.chat.ui
+package arch.cayenne.module.chat.ui.fragment
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.view.MotionEvent
 import androidx.activity.addCallback
+import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.data.constants.MatchStatus
@@ -19,29 +17,46 @@ import arch.cayenne.lib.websocket.data.SocketConnectState
 import arch.cayenne.module.chat.R
 import arch.cayenne.module.chat.data.constants.KeyBoardType
 import arch.cayenne.module.chat.databinding.FragmentLiveChatBinding
-import arch.cayenne.module.chat.ui.adapter.LiveChatAdapter
-import arch.cayenne.module.chat.ui.viewmodel.LiveChatViewModel
+import arch.cayenne.module.chat.ui.viewmodel.ChatHomeViewModel
 import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
 
 //聊天
-class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding>() {
+class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding>() {
     override val vbClass: KClass<FragmentLiveChatBinding> = FragmentLiveChatBinding::class
-    override val vmClass: KClass<LiveChatViewModel> = LiveChatViewModel::class
+    override val vmClass: KClass<ChatHomeViewModel> = ChatHomeViewModel::class
     var mainMatch:LiveData<LiveMatchBean>? = null
     var matchIdLiveData:LiveData<Long>? = null
 
     override fun initView(savedInstanceState: Bundle?) {
-        initFragment()
-        initTab()
+        initChatPageFragment()
+        initSoftKeyBoardFragment()
     }
 
-    private fun initTab() {
-        val layoutManger = LinearLayoutManager(context)
-        val adapter = LiveChatAdapter()
-        mBinding.liveChatRecycler.layoutManager = layoutManger
-        mBinding.liveChatRecycler.adapter = adapter
-        mBinding.liveChatRecycler.itemAnimator = null
+    override suspend fun createObserver() {
+        matchIdLiveData?.observe(viewLifecycleOwner){
+            observeMatchId(it)
+        }
+        mainMatch?.observe(viewLifecycleOwner){
+            observeLiveMatch(it)
+        }
+        mViewModel.chatHistoryIsEmpty.observe(viewLifecycleOwner){
+            updateChatUi(mainMatch?.value)
+        }
+        lifecycleScope.launch {
+            launch {
+                mViewModel.serverFlow().collect{
+                    if (it == SocketConnectState.Connecting && mViewModel.loginFlow.value == null) {
+                        mViewModel.chatLogin()
+                    }
+                }
+            }
+            launch {
+                mViewModel.sendMsgToServerFlow.collect {
+
+                }
+            }
+        }
     }
 
     override fun onFragmentAnimEnd(isEnter: Boolean) {
@@ -63,27 +78,13 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
     @SuppressLint("ClickableViewAccessibility")
     override fun initListener() {
 
-        mBinding.main.setOnTouchListener { v, event ->
-            if (event.action == MotionEvent.ACTION_DOWN && mViewModel.currentKeyBoardType != KeyBoardType.CHAT) {
-                showChat(9)
-                return@setOnTouchListener true
-            }
-            return@setOnTouchListener false
-        }
-        mBinding.liveChatRecycler.addOnItemTouchListener(object : RecyclerView.OnItemTouchListener {
-            override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
-                if (e.action == MotionEvent.ACTION_UP && mViewModel.currentKeyBoardType != KeyBoardType.CHAT) {
-                    showChat(7)
-                }
-                return false
-            }
-
-            override fun onTouchEvent(rv: RecyclerView, e: MotionEvent) {
-            }
-
-            override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {
-            }
-        })
+//        mBinding.main.setOnTouchListener { v, event ->
+//            if (event.action == MotionEvent.ACTION_DOWN && mViewModel.currentKeyBoardType != KeyBoardType.CHAT) {
+//                showChat(9)
+//                return@setOnTouchListener true
+//            }
+//            return@setOnTouchListener false
+//        }
 
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
             if (mViewModel.currentKeyBoardType != KeyBoardType.CHAT) {
@@ -98,63 +99,27 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
         }
     }
 
-    private fun initFragment() {
-        val fragment = LiveSoftKeyboardFragment()
+    private fun initSoftKeyBoardFragment() {
+        val fragment = SoftKeyboardFragment()
         childFragmentManager.beginTransaction()
-            .replace(mBinding.liveChatKeyboard.id, fragment, LiveSoftKeyboardFragment.TAG)
+            .replace(mBinding.liveChatKeyboard.id, fragment, SoftKeyboardFragment.TAG)
             .commit()
         mBinding.liveChatKeyboard.post {
             mViewModel.keyBoardHeight = mBinding.liveChatKeyboard.height
             if (mViewModel.keyBoardHeight == 0) {
                 mViewModel.keyBoardHeight = mBinding.main.height
             }
-            fragment.addMainViewListen()
         }
     }
 
-    override suspend fun createObserver() {
-
-        matchIdLiveData?.observe(viewLifecycleOwner){
-            observeMatchId(it)
-        }
-        mainMatch?.observe(viewLifecycleOwner){
-            observeLiveMatch(it)
-        }
-
-        mViewModel.sendMsgLiveData.observe(viewLifecycleOwner) {
-            mViewModel.addLocalMsg(it)
-            mViewModel.sendMsgToServer(it)
-            refreshChatList()
-        }
-
-        viewLifecycleOwner.lifecycleScope.launch {
-            launch {
-                mViewModel.serverFlow().collect{
-                    if (it == SocketConnectState.Connecting && mViewModel.loginFlow.value == null) {
-                        mViewModel.chatLogin()
-                    }
-                }
-            }
-            launch {
-                mViewModel.chatHistoryFlow.collect {
-                    mViewModel.getChatHistory(it?.msgs)
-                    refreshChatList()
-                }
-            }
-            launch {
-                mViewModel.sendMsgToServerFlow.collect {
-
-                }
-            }
-            launch {
-                mViewModel.registerNewMsgFlow().collect {
-                    mViewModel.addNewMsgs(it)
-                    refreshChatList()
-                }
-            }
-
-        }
+    private fun initChatPageFragment(){
+        val fragment = ChatPageFragment()
+        childFragmentManager.beginTransaction()
+            .replace(mBinding.liveChatHistory.id,fragment,ChatPageFragment.TAG)
+            .commit()
     }
+
+
 
     /**
      * 显示聊天界面时隐藏键盘界面
@@ -174,25 +139,7 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
         return flag
     }
 
-    /**
-     * 接收到新数据做更新
-     * */
-    private fun refreshChatList() {
-        if (!mBinding.liveChatRecycler.isVisible && mViewModel.msgLists.isNotEmpty()) {
-            updateChatList()
-        } else if (mBinding.liveChatRecycler.isVisible && mViewModel.msgLists.isEmpty()) {
-            updateChatList()
-        }
-        val adapter = mBinding.liveChatRecycler.adapter?.let { it as LiveChatAdapter }
-        adapter?.submitList(mViewModel.msgLists) {
-            adapter.currentList.size.let {
-                val position = it - 1
-                if (position > 0) {
-                    mBinding.liveChatRecycler.scrollToPosition(position)
-                }
-            }
-        }
-    }
+
 
     /**
      * 进入直播间不成功时修改
@@ -202,7 +149,6 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
             updateChatList()
             return
         }
-
 //        //比赛状态 0-已结束 1-推迟 2-中断 3-取消 4-未开赛 5-进行中 6-延迟 7-废弃 8-暂停
         val code = matchBean?.basicInfo?.status
         val status = MatchStatus.entries.find { status -> status.code == code }
@@ -223,18 +169,13 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
 
     private fun updateChatList() {
         mBinding.apply {
-            if (mViewModel.msgLists.isEmpty()) {
-                liveChatRecycler.isVisible = false
-                dynamicState.setState(
-                    DynamicStateLayout.States.DATA_EMPTY,
-                    R.string.live_chat_first_chat.getString()
-                )
+            if (mViewModel.chatHistoryIsEmpty.value == true) {
+                liveChatHistory.isInvisible = true
+                dynamicState.setState(DynamicStateLayout.States.DATA_EMPTY, R.string.live_chat_first_chat.getString())
             } else {
-                liveChatRecycler.isVisible = true
+                liveChatHistory.isInvisible = false
                 dynamicState.isVisible = false
             }
-
-
         }
     }
 
@@ -248,11 +189,12 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
         this.mainMatch = mainMatch
     }
 
-    fun observeMatchId(matchId: Long) {
+    private fun observeMatchId(matchId: Long) {
             mViewModel.setArguments(matchId)
     }
 
-    fun observeLiveMatch(match: LiveMatchBean) {
+   private fun observeLiveMatch(match: LiveMatchBean) {
+       match.liveInfo.charRoom = true
         updateChatUi(match)
         //比赛开始后开启聊天服务
         if (match.liveInfo.charRoom) {

@@ -85,7 +85,7 @@ data class LiveMatchLiveInfoBean(
     val period: String,//阶段
     val score: String,//比分
     val liveVideo: Boolean,//该比赛是否有视频或者直播
-    val charRoom: Boolean,//是否开启了聊天室
+    var charRoom: Boolean,//是否开启了聊天室
     val viewerCount: Int,//观看数量
     val clockModified: Long,//走表修改时间
     val animationLiveUrl: String,

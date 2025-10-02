@@ -1,4 +1,4 @@
-package arch.cayenne.module.chat.ui
+package arch.cayenne.module.chat.ui.fragment
 
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
@@ -35,7 +35,7 @@ import arch.cayenne.module.chat.databinding.FragmentLiveSoftkeyboardLayoutBindin
 import arch.cayenne.module.chat.manager.SoftKeyboardManager
 import arch.cayenne.module.chat.manager.interf.SoftKeyBoardMangerListener
 import arch.cayenne.module.chat.ui.adapter.SoftAdapter
-import arch.cayenne.module.chat.ui.viewmodel.LiveChatViewModel
+import arch.cayenne.module.chat.ui.viewmodel.ChatHomeViewModel
 import arch.cayenne.module.chat.ui.viewmodel.LiveSoftKeyboardViewModel
 import arch.cayenne.module.chat.ui.widget.OnePageSnapHelper
 import arch.cayenne.module.chat.utils.EmojiEditFilter
@@ -45,13 +45,13 @@ import java.util.regex.Pattern
 import kotlin.reflect.KClass
 
 
-class LiveSoftKeyboardFragment :
+class SoftKeyboardFragment :
     BaseFragment<LiveSoftKeyboardViewModel, FragmentLiveSoftkeyboardLayoutBinding>(),SoftKeyBoardMangerListener {
     override val vbClass: KClass<FragmentLiveSoftkeyboardLayoutBinding>
         get() = FragmentLiveSoftkeyboardLayoutBinding::class
     override val vmClass: KClass<LiveSoftKeyboardViewModel>
         get() = LiveSoftKeyboardViewModel::class
-    private val chatViewModel: LiveChatViewModel by sharedViewModel<LiveChatViewModel, LiveChatFragment>()
+    private val chatViewModel: ChatHomeViewModel by sharedViewModel<ChatHomeViewModel, ChatHomeFragment>()
     private lateinit var softKeyBoardManager:SoftKeyboardManager
     //表情点击
     private val itemListener = object : RecyclerItemListener<EmojiData> {
@@ -65,6 +65,11 @@ class LiveSoftKeyboardFragment :
             mBinding.liveChatEtInput.text?.append(item?.key)
             softKeyBoardManager.etRequestFocus()
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        addMainViewListen()
     }
 
     override fun onStop() {
@@ -165,7 +170,6 @@ class LiveSoftKeyboardFragment :
             //监听点击事件
             setOnTouchListener { v, event ->
                 if (event.action == MotionEvent.ACTION_UP) {
-//                    "onTouch clickKeyBoardType ${softKeyBoardManager.clickKeyBoardType}   ${softKeyBoardManager.isSoftKeyboardShow}".logd("aaa")
                     if (softKeyBoardManager.clickKeyBoardType != KeyBoardType.SOFT_KEYBOARD && !softKeyBoardManager.isSoftKeyboardShow) {
                             keyboardChangeClick(KeyBoardType.SOFT_KEYBOARD)
                     }
@@ -190,20 +194,21 @@ class LiveSoftKeyboardFragment :
         chatViewModel.sendMsgToChat(text)
     }
 
-
-     fun addMainViewListen(){
+   private  fun addMainViewListen(){
         mBinding.main.viewTreeObserver
             .addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
                 override fun onGlobalLayout() {
-                    mBinding.main.viewTreeObserver.removeOnGlobalLayoutListener(this)
-                    calculationLayoutSize()
-                    softKeyBoardManager.initView(requireActivity().window.decorView,mBinding.main,mBinding.liveChatEtInput)
+                    if(mBinding.main.height != 0){
+                        mBinding.main.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                        calculationLayoutSize()
+                        softKeyBoardManager.initView(requireActivity().window.decorView,mBinding.main,mBinding.liveChatEtInput)
+                    }
                 }
             })
     }
+
     private fun calculationLayoutSize() {
         mBinding.apply {
-//            "calculationLayoutSize  chatKeyBoardHeight:${chatViewModel.keyBoardHeight} ".logd("aaa")
             if(chatViewModel.keyBoardHeight == 0){
                 chatViewModel.keyBoardHeight = mBinding.main.height
             }
@@ -311,7 +316,6 @@ class LiveSoftKeyboardFragment :
         animSet.addListener(onStart = { onStart?.invoke() }, onEnd = { onEnd?.invoke() })
         animSet.start()
     }
-
 
     private fun initSoftRecycler() {
         val snapHelper = OnePageSnapHelper()

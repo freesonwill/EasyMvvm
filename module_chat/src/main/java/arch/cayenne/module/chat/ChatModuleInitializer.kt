@@ -8,8 +8,8 @@ import org.koin.core.module.Module
 import org.koin.core.module.dsl.factoryOf
 import org.koin.dsl.module
 import arch.cayenne.module.chat.data.repository.LiveChatRepository
-import arch.cayenne.module.chat.ui.viewmodel.EmojiViewModel
-import arch.cayenne.module.chat.ui.viewmodel.LiveChatViewModel
+import arch.cayenne.module.chat.ui.viewmodel.ChatPageViewModel
+import arch.cayenne.module.chat.ui.viewmodel.ChatHomeViewModel
 import arch.cayenne.module.chat.ui.viewmodel.LiveSoftKeyboardViewModel
 import arch.cayenne.module.chat.manager.ChatManagerImpl
 import arch.cayenne.module.chat.manager.ChatServerController
@@ -30,9 +30,9 @@ class ChatModuleInitializer : DefaultInitializer<String> {
     }
 
     private val viewModules = module {
-        viewModelOf(::LiveChatViewModel)
+        viewModelOf(::ChatHomeViewModel)
         viewModelOf(::LiveSoftKeyboardViewModel)
-        viewModelOf(::EmojiViewModel)
+        viewModelOf(::ChatPageViewModel)
     }
 
     private val repoModules = module {
