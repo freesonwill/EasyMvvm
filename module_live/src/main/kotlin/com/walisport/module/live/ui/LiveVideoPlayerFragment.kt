@@ -261,10 +261,7 @@ class LiveVideoPlayerFragment :
                             streamInfoBean
                                 ?.playUrl()
                         playUrl?.takeIf { url -> url.isNotEmpty() }?.let { url ->
-                            "videoUrl:${url}".logd("videoCache")
-
-                            //收到视频源信息时，需要判断当前比赛的状态，仅当比赛为正在进行中才播放视频
-                            "url:${url}, dataSource:${videoView.getDataSource()}".logd("videoCache")
+//                            "url:${url}, dataSource:${videoView.getDataSource()}".logd("videoCache")
                             if (url != videoView.getDataSource()) {
                                 videoView.setDataSource(url)
                                 videoView.prepare()
