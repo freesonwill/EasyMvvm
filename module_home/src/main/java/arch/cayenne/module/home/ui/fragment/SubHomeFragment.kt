@@ -35,6 +35,7 @@ import arch.cayenne.lib.common.utils.ext.startFadeAnim
 import arch.cayenne.lib.common.utils.helper.BounceEdgeEffectHelper
 import arch.cayenne.lib.database.entity.TournamentDataModel
 import arch.cayenne.module.home.R
+import arch.cayenne.module.home.data.constants.HomeState
 import arch.cayenne.module.home.data.constants.PlayType
 import arch.cayenne.module.home.databinding.FragmentSubHomeBinding
 import arch.cayenne.module.home.databinding.ItemDateTabBinding
@@ -167,7 +168,7 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
         with(mViewModel) {
             sportsStatistical.observeEvent(viewLifecycleOwner, this@SubHomeFragment) {
                 tempSportData = it
-                if(currentPlayTypeId != PlayType.TODAY.id || isAllTabLoaded) {
+                if (mViewModel.isAllowTabLoad) {
                     drawSportList()
                 }
             }
@@ -224,6 +225,13 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
         homeViewModel.notifySubHomeRefresh.observeEvent(viewLifecycleOwner, this) {
             sportsListAdapter.notifyDataSetChanged()
             mViewModel.getCurrentTournament()
+        }
+
+        homeViewModel.apiStateListener.observe(viewLifecycleOwner) {
+            if (it is HomeState.FirstMatchListComplete && !mViewModel.isAllowTabLoad) {
+                mViewModel.isAllowTabLoad = true
+                handleAllTabLoaded()
+            }
         }
     }
 
@@ -350,13 +358,6 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
                     val firstFragmentItemId  = leaguePagerAdapter?.getItemId(0)?: return
                     if (f.tag == "f$firstFragmentItemId") {
                         startObservePageMatchListChange(0)
-                        allTabCompleteObserveJob?.cancel()
-                        allTabCompleteObserveJob = launch {
-                            (f as? MatchListPagerFragment)?.getSubmitListCompletedFlow()?.collect {
-                                mViewModel.isAllTabLoaded = true
-                                handleAllTabLoaded()
-                            }
-                        }
                     }
                 }
 
@@ -709,7 +710,7 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
                     }
                 )
 
-                if(mViewModel.currentPlayTypeId != PlayType.TODAY.id || mViewModel.isAllTabLoaded) {
+                if(mViewModel.isAllowTabLoad) {
                     drawTournamentTab()
                 }
 
