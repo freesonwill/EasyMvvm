@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="@android:color/transparent">
+    android:background="@color/red_team">
 
     <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
         android:id="@+id/cl_calculator"
@@ -124,7 +124,7 @@
         android:id="@+id/bottom_triangle"
         android:layout_width="32dp"
         android:layout_height="13dp"
-        android:layout_marginEnd="14dp"
+        android:layout_marginEnd="13dp"
         android:visibility="gone"
         android:background="@drawable/bg_triangle_down"
         app:layout_constraintBottom_toBottomOf="parent"
