@@ -5,12 +5,16 @@ import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.startup.Initializer
 import arch.cayenne.lib.base.data.DefaultInitializer
 import arch.cayenne.lib.base.ui._interface.SimpleActivityLifecycleCallbacks
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.CommonModuleInitializer
 import arch.cayenne.lib.common.data.constants.UserDataKey
 import arch.cayenne.lib.common.data.manager.UserDataManager
@@ -43,16 +47,17 @@ class TestModuleInitializer : DefaultInitializer<Unit> {
                 super.onActivityCreated(activity, savedInstanceState)
                 if(activity.localClassName.contains("MainActivity") && activity is AppCompatActivity) {
                     app.unregisterActivityLifecycleCallbacks(this)
-                    activity.lifecycle.addObserver(object : DefaultLifecycleObserver {
-                        override fun onCreate(owner: LifecycleOwner) {
-                            super.onCreate(owner)
-                            activity.lifecycle.removeObserver(this)
-                            createAnimFloat(activity)
-                            createWSFloat(activity)
+                    activity.supportFragmentManager.registerFragmentLifecycleCallbacks(object : FragmentManager.FragmentLifecycleCallbacks() {
+                        override fun onFragmentViewCreated(fm: FragmentManager, f: Fragment, v: View, savedInstanceState: Bundle?) {
+                            super.onFragmentViewCreated(fm, f, v, savedInstanceState)
+                            if(f::class.java.simpleName.startsWith("NewHomeFragment")){
+                                fm.unregisterFragmentLifecycleCallbacks(this)
+                                createAnimFloat(f.requireActivity())
+                                createWSFloat(f.requireActivity())
+                            }
+                            "registerFragmentLifecycleCallbacks onFragmentViewCreated:${f}".logd(TAG)
                         }
-                    })
-
-
+                    },true)
                 }
             }
         })
@@ -62,21 +67,20 @@ class TestModuleInitializer : DefaultInitializer<Unit> {
         factory(named("test")) { WebSocketManager(get(), get()) }
     }
 
-
-
     private fun createAnimFloat(activity: Activity){
+        val context: Context = activity
         FxScopeHelper.builder()
             .setLayout(R.layout.demo_popup_float)
             .setGravity(FxGravity.LEFT_OR_BOTTOM)
             .setDisplayMode(FxDisplayMode.Normal)
-            .setBottomBorderMargin(100.dp2px.toFloat())
+            .setBottomBorderMargin(200.dp2px.toFloat())
             .setOnClickListener {
-                XPopup.Builder(activity)
+                XPopup.Builder(context)
                     .moveUpToKeyboard(true)
                     .autoOpenSoftInput(true)
                     .maxHeight((ScreenUtils.getScreenHeight()*0.5f).toInt())
                     .isViewMode(false)
-                    .asCustom(DemoPopup(activity)).show()
+                    .asCustom(DemoPopup(context)).show()
             }
             .build()
             .toControl(activity)
@@ -84,18 +88,19 @@ class TestModuleInitializer : DefaultInitializer<Unit> {
     }
 
     private fun createWSFloat(activity: Activity){
+        val context: Context = activity
         FxScopeHelper.builder()
             .setLayout(R.layout.demo_ws_float)
             .setGravity(FxGravity.LEFT_OR_BOTTOM)
             .setDisplayMode(FxDisplayMode.Normal)
-            .setBottomBorderMargin(30.dp2px.toFloat())
+            .setBottomBorderMargin(130.dp2px.toFloat())
             .setOnClickListener {
-                XPopup.Builder(activity)
+                XPopup.Builder(context)
                     .moveUpToKeyboard(false)
                     .autoOpenSoftInput(false)
                     .maxHeight((ScreenUtils.getScreenHeight()).toInt())
                     .isViewMode(false)
-                    .asCustom(WsPopup(activity)).show()
+                    .asCustom(WsPopup(context)).show()
             }
             .build()
             .toControl(activity)
