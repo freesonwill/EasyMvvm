@@ -68,44 +68,6 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>() {
         setStatusBar(StatusBarConfig,mBinding.root)
     }
     override fun initListener() {
-        mBinding.bottomNavigationBar.setOnItemClickListener { container,view,position ->
-            container.setSelected(position)
-            //"bottomNavigation1----$position".logd(TAG)
-            when(position){
-                0->{
-                    val w = container.getWeight(1)
-                    if(w == 1f){
-                        container.setWeight(1,80f/75f)
-                        container.setBarStyle(1,Style.IconBadge(R.mipmap.ic_fifa.getDrawable(),"世界杯", (-18f).dp2px))
-                    }else {
-                        container.setBarStyle(1,Style.IconTextBadge(R.drawable.ic_chat.getDrawable(),R.string.title_sport.getString(),"9"))
-                        container.setWeight(1,1f)
-                    }
-                }
-                1-> {
-                    val w = container.getWeight(2)
-                    if(w == 1f){
-                        container.setWeight(2,121f/75f)
-                        container.setBarStyle(2,Style.Icon(R.mipmap.ic_sport_banner.getDrawable()))
-                    }else {
-                        container.setBarStyle(2,Style.IconTextBadge(R.drawable.ic_chat.getDrawable(),R.string.title_sport.getString(),"9"))
-                        container.setWeight(2,1f)
-                    }
-                }
-                2 -> {
-                    if(container.getBarStyle(3) == Style.Icon::class.java){
-                        container.setBarStyle(3,Style.IconText(R.drawable.ic_chat.getDrawable(),R.string.title_sport.getString()))
-                    }else {
-                        container.setBarStyle(3,Style.Icon(R.mipmap.ic_home2.getDrawable()))
-                    }
-                }
-                3->{
-
-                }
-            }
-        }
-
-
         /**
          * navigation:
          * fragment --> fragment(Internal)
