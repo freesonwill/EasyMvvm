@@ -413,24 +413,24 @@ class SoftKeyboardFragment :
             if (type == KeyBoardType.CHAT) R.string.live_chat_talk else R.string.live_chat_speak,
             mViewModel.languageManager.getLanguage()
         )
-        mBinding.liveChatLlInput.backgroundTintList = SkinnableResourceManager.getColorStateList(
-            requireContext(),
-            if (type == KeyBoardType.CHAT) arch.cayenne.lib.common.R.color.input_box_2 else arch.cayenne.lib.res.R.color.card_ooo_background
-        )
-        val mainColor =
-            if (type == KeyBoardType.CHAT) arch.cayenne.lib.common.R.color.main_background else arch.cayenne.lib.common.R.color.card_background
-        mBinding.inputContent.setBackgroundResource(
-            SkinnableResourceManager.getTargetResourceId(
-                requireContext(),
-                mainColor
-            )
-        )
-        mBinding.emojiContent.setBackgroundResource(
-            SkinnableResourceManager.getTargetResourceId(
-                requireContext(),
-                mainColor
-            )
-        )
+//        mBinding.liveChatLlInput.backgroundTintList = SkinnableResourceManager.getColorStateList(
+//            requireContext(),
+//            if (type == KeyBoardType.CHAT) arch.cayenne.lib.common.R.color.input_box_2 else arch.cayenne.lib.res.R.color.card_ooo_background
+//        )
+//        val mainColor =
+//            if (type == KeyBoardType.CHAT) arch.cayenne.lib.common.R.color.main_background else arch.cayenne.lib.common.R.color.card_background
+//        mBinding.inputContent.setBackgroundResource(
+//            SkinnableResourceManager.getTargetResourceId(
+//                requireContext(),
+//                mainColor
+//            )
+//        )
+//        mBinding.emojiContent.setBackgroundResource(
+//            SkinnableResourceManager.getTargetResourceId(
+//                requireContext(),
+//                mainColor
+//            )
+//        )
     }
 
 

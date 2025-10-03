@@ -31,6 +31,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingVertical="@dimen/dp_10"
+                android:background="@color/color_272727"
                 app:layout_constraintBottom_toBottomOf="parent">
 
                 <androidx.appcompat.widget.AppCompatImageView
@@ -50,6 +51,7 @@
                     android:layout_width="0dp"
                     android:layout_height="40dp"
                     android:layout_marginStart="@dimen/dp_8"
+                    android:layout_marginEnd="@dimen/dp_10"
                     android:background="@drawable/shape_20"
                     android:backgroundTint="@color/color_0FFFFFFF"
                     android:orientation="horizontal"
@@ -106,12 +108,13 @@
                     android:id="@+id/live_chat_tv_send"
                     android:layout_width="@dimen/dp_60"
                     android:layout_height="40dp"
-                    android:layout_marginStart="@dimen/dp_4"
-                    android:layout_marginEnd="@dimen/dp_8"
+                    android:layout_marginStart="@dimen/dp_1"
+                    android:layout_marginEnd="@dimen/dp_10"
                     android:background="@drawable/bg_keyboard_send"
                     android:gravity="center"
                     android:stateListAnimator="@animator/layout_alpha_animator"
                     android:text="@string/send"
+                    android:visibility="gone"
                     android:textColor="@color/text_on_theme_color"
                     app:layout_constraintBottom_toBottomOf="@id/live_chat_ll_input"
                     app:layout_constraintLeft_toRightOf="@id/live_chat_ll_input"
