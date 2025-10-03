@@ -3,21 +3,21 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/root"
-    app:interceptedDirection = "RIGHT"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/app_bg"
-    android:fitsSystemWindows="false">
+    android:fitsSystemWindows="false"
+    app:interceptedDirection="RIGHT">
 
-    <ImageView
+    <arch.cayenne.lib.skin.widget.SkinnableImageView
         android:id="@+id/bgLightSet"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_335"
         android:alpha="0.3"
         android:background="@drawable/bg_light_set" />
 
-    <LinearLayout
-        android:id="@+id/llConttnet"
+    <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
+        android:id="@+id/llContent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_50"
@@ -29,23 +29,24 @@
             android:layout_height="wrap_content"
             tools:ignore="MissingConstraints" />
 
-        <LinearLayout
+        <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_21"
+            android:layout_marginHorizontal="@dimen/dp_4"
+            android:layout_marginTop="@dimen/dp_82"
             android:orientation="horizontal">
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/lay_black_green"
+                android:id="@+id/lay_black_blue"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1">
 
                 <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/iv_black_green"
-                    android:layout_width="@dimen/dp_106"
-                    android:layout_height="@dimen/dp_156"
-                    android:background="@drawable/bg_theme_green"
+                    android:id="@+id/iv_black_blue"
+                    android:layout_width="@dimen/dp_168"
+                    android:layout_height="@dimen/dp_322"
+                    android:background="@drawable/bg_theme_black_blue"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -53,41 +54,42 @@
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_10"
+                    android:layout_marginTop="@dimen/dp_17"
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/iv_black_green">
+                    app:layout_constraintTop_toBottomOf="@+id/iv_black_blue">
 
                     <arch.cayenne.lib.skin.widget.SkinnableImageView
-                        android:id="@+id/radio_black_green"
-                        android:layout_width="@dimen/dp_16"
-                        android:layout_height="@dimen/dp_16"
-                        android:background="@drawable/skin_radio" />
+                        android:id="@+id/radio_black_blue"
+                        android:layout_width="@dimen/dp_18"
+                        android:layout_height="@dimen/dp_18"
+                        android:layout_marginStart="@dimen/dp_1"
+                        android:background="@drawable/skin_radio_theme" />
 
                     <arch.cayenne.lib.skin.widget.SkinnableTextView
-                        android:id="@+id/tv_black_green"
+                        android:id="@+id/tv_black_blue"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/dp_5"
-                        android:text="@string/theme_black_green"
+                        android:layout_marginStart="@dimen/dp_7"
+                        android:text="@string/theme_black_blue"
                         android:textColor="@color/title_skin"
                         android:textSize="@dimen/sp_15" />
                 </LinearLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/lay_white_green"
+                android:id="@+id/lay_white_blue"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1">
 
                 <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/iv_white_green"
-                    android:layout_width="@dimen/dp_106"
-                    android:layout_height="@dimen/dp_156"
-                    android:background="@drawable/bg_theme_white_green"
+                    android:id="@+id/iv_white_blue"
+                    android:layout_width="@dimen/dp_168"
+                    android:layout_height="@dimen/dp_322"
+                    android:background="@drawable/bg_theme_white_blue"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -95,34 +97,30 @@
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_10"
+                    android:layout_marginTop="@dimen/dp_17"
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/iv_white_green">
+                    app:layout_constraintTop_toBottomOf="@+id/iv_white_blue">
 
                     <arch.cayenne.lib.skin.widget.SkinnableImageView
-                        android:id="@+id/radio_white_green"
+                        android:id="@+id/radio_white_blue"
                         android:layout_width="@dimen/dp_16"
                         android:layout_height="@dimen/dp_16"
-                        android:background="@drawable/skin_radio_white_green" />
+                        android:layout_marginStart="@dimen/dp_1"
+                        android:background="@drawable/skin_radio_theme" />
 
                     <arch.cayenne.lib.skin.widget.SkinnableTextView
-                        android:id="@+id/tv_white_green"
+                        android:id="@+id/tv_white_blue"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/dp_5"
-                        android:text="@string/theme_white_green"
+                        android:layout_marginStart="@dimen/dp_7"
+                        android:text="@string/theme_white_blue"
                         android:textColor="@color/title_skin"
                         android:textSize="@dimen/sp_15" />
                 </LinearLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"/>
-        </LinearLayout>
-    </LinearLayout>
+        </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
+    </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
 </arch.cayenne.lib.common.ui.view.InterceptedConstraintLayout>
