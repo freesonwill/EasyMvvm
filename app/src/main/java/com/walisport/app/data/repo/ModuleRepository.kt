@@ -20,14 +20,17 @@ import arch.cayenne.lib.websocket.WebSocketManager
 import arch.cayenne.module.home.data.constants.PlayType
 import arch.cayenne.module.home.data.constants.playTypeToShowType
 import arch.cayenne.module.home.data.repo.HomeRepository
+import com.blankj.utilcode.util.GsonUtils
 import com.walisport.app.BuildConfig
 import com.walisport.app.IPreLoadHomeApi
 import com.walisport.app.data.PreloadDataModel
 import com.walisport.app.data.toRoomData
+import com.walisport.app.ui.fragment.SplashFragment.UserConfig
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import kotlin.random.Random
 
 class ModuleRepository(
     override val scope: CoroutineScope,
@@ -35,18 +38,58 @@ class ModuleRepository(
     private val httpClient: HttpClient,
     private val socketManager: WebSocketManager,
     private val preloadResultChange: MutableStateFlow<PreloadEnum>,
-    private val userDataManager: UserDataManager,
+    private val manager: UserDataManager,
 ): BaseRepository() {
     private val TAG = this.javaClass.simpleName
     val matchDao = database.matchDao()
     val sportDao = database.sportDao()
     val tournamentDao = database.tournamentDao()
 
+    private val users by lazy {
+        GsonUtils.fromJson(
+            BuildConfig.users,
+            Array<UserConfig>::class.java
+        )
+    }
+    private val pair: Pair<Int, String> = if (BuildConfig.BUILD_TYPE == "debug") {
+        Pair(BuildConfig.uid, BuildConfig.token)
+    } else if (BuildConfig.BUILD_TYPE != "release") {
+        users.filter { it.name.startsWith("qatest") }
+            .map { it.uid to it.token }
+            .let { it[Random.nextInt(it.size)] }
+        //Pair(55468822, "NTU0Njg4MjJfMTc1MTM1NTAxMDI3MDppUjNheWVyczZ4S3dyVEFX") //固定uid,token时放开
+    } else {
+        Pair(0, "")
+    }
+
+    fun initUidToken() {
+        "manager.BUILD_TIME:${
+            manager.getValue(
+                UserDataKey.KEY_BUILD_TIME,
+                ""
+            )
+        },BuildConfig.BUILD_TIME:${arch.cayenne.lib.common.BuildConfig.BUILD_TIME}".logd(TAG)
+        val uid = manager.getValue(UserDataKey.KEY_UID, -1).let {
+            if (it == -1) pair.first else it
+        }
+        val token = manager.getValue(UserDataKey.KEY_TOKEN, "").let {
+            it.ifEmpty { pair.second }
+        }
+        val name = users.find { it.uid == uid }?.name
+        "name:${name}, uid:$uid, token:$token".logd(TAG)
+        saveUserData(uid, token)
+    }
+
+    private fun saveUserData(uid: Int, token: String) {
+        manager.setKeyValue(UserDataKey.KEY_UID, uid)
+        manager.setKeyValue(UserDataKey.KEY_TOKEN, token)
+    }
+
     fun preLoadHome() {
         val api = httpClient.create(IPreLoadHomeApi::class.java)
-        val uid = BuildConfig.uid
-        val token = BuildConfig.token
-        val lang = userDataManager.getValue(UserDataKey.KEY_LANGUAGE, LanguageType.LANGUAGE_SIMPLE.value)
+        val uid = manager.getValue(UserDataKey.KEY_UID, -1)
+        val token = manager.getValue(UserDataKey.KEY_TOKEN, "")
+        val lang = manager.getValue(UserDataKey.KEY_LANGUAGE, LanguageType.LANGUAGE_SIMPLE.value)
         scope.launch(Dispatchers.IO) {
             httpClient.safeRequest(
                 request = {

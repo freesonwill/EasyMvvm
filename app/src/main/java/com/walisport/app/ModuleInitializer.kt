@@ -89,6 +89,7 @@ class ModuleInitializer : DefaultInitializer<String> {
         loadKoinModules(moduleList)
         (context as Application).registerActivityLifecycleCallbacks(activityLifecycleCallback)
         val moduleRepository = GlobalContext.get().get<ModuleRepository>()
+        moduleRepository.initUidToken()
         moduleRepository.preLoadHome()
         moduleRepository.startSocket()
         return TAG
