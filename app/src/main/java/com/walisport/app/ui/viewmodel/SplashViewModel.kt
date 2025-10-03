@@ -18,10 +18,6 @@ class SplashViewModel : BaseActivityViewModel() {
 
     override val shouldBeAutoLogin: Boolean = false
 
-    fun saveUserData(uid: Int, token: String) {
-        repository.saveUserData(uid, token)
-    }
-
     //加载皮肤和语言方案
     fun loadMyAppSkin() {
         viewModelScope.launch {
