@@ -116,7 +116,7 @@ class SoftKeyboardFragment :
 
     @SuppressLint("SetTextI18n", "ClickableViewAccessibility")
     override fun initListener() {
-        mBinding.liveChatIvEmoji.setOnTouchListener { v, event ->
+        mBinding.ivEmoji.setOnTouchListener { v, event ->
             if (event.action == MotionEvent.ACTION_DOWN) {
                 keyboardChangeClick(KeyBoardType.EMOJI)
             }
@@ -128,7 +128,7 @@ class SoftKeyboardFragment :
             }
             return@setOnTouchListener true
         }
-        mBinding.liveChatIvKeyboard.setOnTouchListener { v, event ->
+        mBinding.ivKeyboard.setOnTouchListener { v, event ->
             if (event.action == MotionEvent.ACTION_DOWN) {
                 keyboardChangeClick(KeyBoardType.SOFT_KEYBOARD)
             }
@@ -158,7 +158,7 @@ class SoftKeyboardFragment :
                 return@setOnEditorActionListener false
             }
             //输入拦截
-            filters = arrayOf(EmojiEditFilter(mBinding.liveChatTvSize))
+            filters = arrayOf(EmojiEditFilter())
             //监听聚焦事件，不合格的展示软件盘一律拦截
             setOnFocusChangeListener { v, hasFocus ->
 //            如果当前点击事件 softkeyboardlisterner 和 当前状态currentKeyboardListener 一致可以过滤掉聚焦事件
@@ -358,10 +358,10 @@ class SoftKeyboardFragment :
      * */
     fun showChat() {
         mBinding.apply {
-            liveChatIvEmoji.isVisible = true
-            liveChatIvKeyboard.isVisible = false
+            ivEmoji.isVisible = true
+            ivKeyboard.isVisible = false
         }
-        mBinding.liveChatTvSize.isVisible = false
+//        mBinding.liveChatTvSize.isVisible = false
         updateEmojiView(false)
         updateWhenKeyBoardVisible(KeyBoardType.CHAT)
 //        hideSoftKeyBoard(3)
@@ -372,9 +372,8 @@ class SoftKeyboardFragment :
      * */
     private fun showSoftKeyBoard() {
         mBinding.apply {
-            liveChatIvEmoji.isVisible = true
-            liveChatTvSize.isVisible = true
-            liveChatIvKeyboard.isVisible = false
+            ivEmoji.isVisible = true
+            ivKeyboard.isVisible = false
         }
         updateEmojiView(false)
         updateWhenKeyBoardVisible(KeyBoardType.SOFT_KEYBOARD)
@@ -386,8 +385,8 @@ class SoftKeyboardFragment :
      * */
     private fun showEmoji() {
         mBinding.apply {
-            liveChatIvEmoji.isVisible = false
-            liveChatTvSize.isVisible = true
+            ivEmoji.isVisible = false
+//            liveChatTvSize.isVisible = true
         }
         updateEmojiView(true)
         updateWhenKeyBoardVisible(KeyBoardType.EMOJI)
@@ -396,7 +395,7 @@ class SoftKeyboardFragment :
 
     private fun updateEmojiView(isVisible: Boolean) {
         mBinding.apply {
-            liveChatIvKeyboard.isVisible = isVisible
+            ivKeyboard.isVisible = isVisible
             emojiContent.isInvisible = !isVisible
         }
     }
