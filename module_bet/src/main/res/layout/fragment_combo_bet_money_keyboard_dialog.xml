@@ -113,7 +113,7 @@
                 android:layout_marginTop="2dp"
                 android:layout_marginBottom="2dp"
                 android:text="@string/btn_clear"
-                android:textSize="12sp"
+                android:textSize="13sp"
                 app:skinnableFontWeight="500" />
 
             <arch.cayenne.lib.skin.widget.SkinnableTextView
@@ -122,7 +122,7 @@
                 android:layout_marginTop="2dp"
                 android:layout_marginBottom="2dp"
                 android:text="@string/btn_double"
-                android:textSize="12sp"
+                android:textSize="13sp"
                 app:skinnableFontWeight="500" />
 
             <androidx.appcompat.widget.AppCompatButton
@@ -134,7 +134,7 @@
                 android:layout_columnWeight="1"
                 android:layout_marginTop="2dp"
                 android:text="@string/btn_confirm"
-                android:textSize="12sp"
+                android:textSize="13sp"
                 app:skinnableFontWeight="500" />
 
         </GridLayout>
