@@ -239,6 +239,7 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
         mainViewModel.mainMatch.observe(viewLifecycleOwner) {
             liveBetOnAdapter.submitList(emptyList())
             tabList.clear()
+            isFadeAnim = false
             tabPosition = mutableListOf(0, 0)
             mBinding.tabLayout.removeAllTabs()
             // bool bet_stop = 18;         // false: 未停止投注, true: 已停止投注
@@ -276,6 +277,7 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
                 mBinding.LLCBetOn.visibility = View.VISIBLE
                 mBinding.clDynamics.setVisibilityGone()
             }
+            isFadeAnim = false
         }
 
         //根据盘口分类code获取盘口列表
