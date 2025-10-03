@@ -7,6 +7,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewConfiguration
 import android.view.ViewGroup
+import androidx.core.view.doOnAttach
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
@@ -74,7 +75,7 @@ class InterceptedViewImpl(private val view: ViewGroup) : IInterceptedView {
                 if(canScrollViewId == View.NO_ID) {
                     this.canScrollView = view
                 }else {
-                    view.post { //canScrollView需要延迟一帧获取
+                    view.doOnAttach {
                         var canScrollView = view.findViewById<View>(canScrollViewId)
                         if (canScrollView is ViewPager2) {
                             val recyclerView = canScrollView.getChildAt(0) as RecyclerView
@@ -102,7 +103,6 @@ class InterceptedViewImpl(private val view: ViewGroup) : IInterceptedView {
     }
 
     fun onInterceptTouchEvent(e: MotionEvent): Boolean {
-        if(!::canScrollView.isInitialized) return false
         "aaaa----canScrollView2:${canScrollView2},canScrollViewId:$canScrollViewId,view:$view".logd(TAG)
         when (e.action) {
             MotionEvent.ACTION_DOWN -> {
