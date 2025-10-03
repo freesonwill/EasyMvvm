@@ -56,6 +56,7 @@ import kotlin.reflect.KClass
 import arch.cayenne.lib.common.utils.ext.setupViewPagerScroll
 import arch.cayenne.lib.common.utils.ext.startFadeAnim
 import arch.cayenne.module.bet.ui.fragment.BetSheetFragment
+import com.walisport.module.live.ui.widget.LiveMainGestureListener
 
 /**
  * 直播详情页
@@ -228,6 +229,13 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
             }
         })
         mBinding.vpPage.setupViewPagerScroll(mBinding.tabLayout,mBinding.customIndicator,0.45f)
+
+        //子类是否可滑动
+        mBinding.liveMainMl.setOnGestureListener(object : LiveMainGestureListener{
+            override fun onRvVerticalScroll(boolean: Boolean) {
+                mBinding.ClBotton.setIsTopScroll(boolean)
+            }
+        })
     }
 
     override fun createObserverAtState(): Lifecycle.State {
@@ -236,6 +244,11 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
 
     @SuppressLint("SetTextI18n")
     override suspend fun createObserver() {
+        //父类是否可往上滑动
+        mViewModel.sonVerticalScrollIsTop.observe(viewLifecycleOwner){
+            mBinding.ClBotton.setIsDowScroll(it)//拦截事件
+            mBinding.liveMainMl.setIsDowScroll(it)//可往下滑动个
+        }
         launch {
             AnimationController.getFlow(AnimType.drawerEnter).collect {
                 if(it == null) return@collect

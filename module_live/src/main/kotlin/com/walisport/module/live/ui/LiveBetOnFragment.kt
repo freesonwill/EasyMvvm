@@ -57,6 +57,7 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
     }
 
 
+    @SuppressLint("ClickableViewAccessibility")
     private fun initAdapter() {
         mBinding.rvBetList.apply {
             itemAnimator = null
@@ -118,6 +119,15 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
             })
             adapter = liveBetOnAdapter
         }
+        // 监听 RecyclerView 是否滑动到第一条
+        listenRecyclerViewAtTop(mBinding.rvBetList) { isAtTop ->
+            if (isAtTop) {
+                mainViewModel.setSonVerticalScrollIsTop(true)
+            }else{
+                mainViewModel.setSonVerticalScrollIsTop(false)
+            }
+        }
+
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -352,5 +362,30 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
         mBinding.tabLayout.getTabAt(0)?.select()
         mBinding.tabLayout.reflexMargin(8.dp2px, 8.dp2px, 4.dp2px)
         mBinding.tabLayout.removeAllTips()
+    }
+
+    fun listenRecyclerViewAtTop(recyclerView: RecyclerView, onTopChanged: (Boolean) -> Unit) {
+        // 添加滚动监听器
+        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                // 获取 LayoutManager
+                val layoutManager = recyclerView.layoutManager as? LinearLayoutManager
+                // 检查是否滑动到第一条
+                val isAtTop = layoutManager?.findFirstCompletelyVisibleItemPosition() == 0
+                // 回调通知状态变化
+                onTopChanged(isAtTop)
+            }
+
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                // 可选：仅在滚动停止时检查状态
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    val layoutManager = recyclerView.layoutManager as? LinearLayoutManager
+                    val isAtTop = layoutManager?.findFirstCompletelyVisibleItemPosition() == 0
+                    onTopChanged(isAtTop)
+                }
+            }
+        })
     }
 }

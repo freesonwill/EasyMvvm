@@ -119,7 +119,7 @@
                     android:background="@color/live_main_tab_bg" />
             </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <com.walisport.module.live.ui.widget.NonInterceptingConstraintLayout
                 android:id="@+id/ClBotton"
                 app:layout_constraintTop_toBottomOf="@id/skinTab"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -138,7 +138,7 @@
                     android:paddingEnd="0dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
+            </com.walisport.module.live.ui.widget.NonInterceptingConstraintLayout>
         </com.walisport.module.live.ui.widget.LiveMainLayout>
 
 

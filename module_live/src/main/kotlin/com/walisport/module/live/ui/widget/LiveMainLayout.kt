@@ -19,13 +19,17 @@ import androidx.core.view.GestureDetectorCompat
 import androidx.fragment.app.FragmentContainerView
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import kotlin.math.abs
-
+/*
+上滑
+滑到minVideoHeight 临界点后触发子类滑动 否则父类接收,不下发子类
+下滑
+子类 RecyclerView滑动到顶部,第一条,下发给父类,子类不接收
+ */
 class LiveMainLayout @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : ConstraintLayout(context, attrs, defStyleAttr) {
 
     private lateinit var fragmentVideo: FragmentContainerView
-    private lateinit var skinTab: View
     private lateinit var clBottom: ConstraintLayout
     private lateinit var llVideo: ConstraintLayout
 
@@ -33,12 +37,10 @@ class LiveMainLayout @JvmOverloads constructor(
     private lateinit var restoreState: ImageView
     private lateinit var liveVideoTop: ImageView
 
-
     private lateinit var tvVideoVs: TextView
 
-
+    private var mLiveMainGesture: LiveMainGestureListener? = null
     private var gestureDetector: GestureDetectorCompat? = null
-
     private var scaleXtoY = 1.0f // 宽高比例
     private val density = resources.displayMetrics.density
     private var initialVideoHeight: Float = 211f * density
@@ -47,15 +49,15 @@ class LiveMainLayout @JvmOverloads constructor(
     private var initialVideoWidth: Float = 511f * density
     private var minVideoWidth: Float = 110f * density
     private var maxVideoWidth: Float = 511f * density
-    private var isVerticalScroll = false
+    private var isVerticalScroll = true
     private var initialX = 0f
     private var initialY = 0f
     private var isCollapsed = false // 标记是否处于折叠状态
+    private var isDowScroll = true // 标记是否往下滑动
     override fun onFinishInflate() {
         super.onFinishInflate()
         // 初始化视图
         fragmentVideo = findViewById(R.id.fragment_video)
-        skinTab = findViewById(R.id.skinTab)
         clBottom = findViewById(R.id.ClBotton)
         llVideo = findViewById(R.id.llVideo)
         llText = findViewById(R.id.llText)
@@ -79,9 +81,8 @@ class LiveMainLayout @JvmOverloads constructor(
             // 设置初始缩放中心（只设置宽度中心）
             fragmentVideo.pivotX = fragmentVideo.width.toFloat() / 2
             fragmentVideo.pivotY = 0f // 高度顶部
-            LogUtils.e("MainLayout------>onFinishInflate")
+           // LogUtils.e("MainLayout------>onFinishInflate")
         }
-
         // 设置手势检测
         setupGestureDetector()
     }
@@ -89,6 +90,12 @@ class LiveMainLayout @JvmOverloads constructor(
      fun setCompetitionName(name: String){
          tvVideoVs.setText(name)
      }
+
+    fun setIsDowScroll(isDowScroll: Boolean){
+        isVerticalScroll = !isDowScroll
+        this.isDowScroll = isDowScroll
+    }
+
     private fun setupGestureDetector() {
         gestureDetector = GestureDetectorCompat(context, object : GestureDetector.SimpleOnGestureListener() {
             override fun onScroll(
@@ -106,6 +113,7 @@ class LiveMainLayout @JvmOverloads constructor(
         })
     }
 
+    private var isMove : Boolean = false
     override fun onInterceptTouchEvent(ev: MotionEvent?): Boolean {
         ev ?: return super.onInterceptTouchEvent(ev)
         when (ev.action) {
@@ -115,11 +123,36 @@ class LiveMainLayout @JvmOverloads constructor(
                 isVerticalScroll = false
             }
             MotionEvent.ACTION_MOVE -> {
+                isMove = true
                 val dx = abs(ev.x - initialX)
                 val dy = abs(ev.y - initialY)
-                if (dy > dx && dy > 50) { // 阈值50像素，优先垂直滑动
-                    isVerticalScroll = true
-                    return true // 拦截事件，处理垂直滑动
+                val deltaY = ev.y - initialY // 不取绝对值，以便判断方向
+                if (dy > dx && dy > 5) { // 阈值10像素，优先垂直滑动
+                        var currentHeight = llVideo.layoutParams.height.toFloat()
+                   // LogUtils.e("MainLayout---onInterceptTouchEvent------deltaY${deltaY}")
+                    if (deltaY > 0f) {// Y 增大，表示向下滑动,不处理往下滑动
+                        isVerticalScroll = isDowScroll
+                        if (isDowScroll){
+                            isVerticalScroll = true
+                        }
+                        return isDowScroll
+                    }else{// Y 减小，表示向上滑动
+                        if (!isCollapsed){//如果折叠不处理上拉
+                        LogUtils.e("MainLayout---onInterceptTouchEvent------currentHeight--${currentHeight}---minVideoHeight${minVideoHeight}")
+                        if (currentHeight<=minVideoHeight){//上滑滑到小于最小值,可传给子类
+                            isVerticalScroll = false //不处理缩小
+                            LogUtils.e("MainLayout---onInterceptTouchEvent------滑到小于最小值--${currentHeight}")
+                            mLiveMainGesture?.onRvVerticalScroll(false)//通知子类,可往上滑动
+                            return false //false 不拦截
+                        }
+                        mLiveMainGesture?.onRvVerticalScroll(true)//不可上滑
+                        isVerticalScroll = true //不处理缩小
+                        }else{
+                            mLiveMainGesture?.onRvVerticalScroll(false)//通知子类,可往上滑动
+                            return false
+                        }
+                        return true
+                    }
                 }
             }
         }
@@ -134,9 +167,10 @@ class LiveMainLayout @JvmOverloads constructor(
         if (isCollapsed){//折叠状态后滑动
             llVideo.visibility = VISIBLE
             fragmentVideo.visibility = VISIBLE
+            isCollapsed = false
         }
         LogUtils.e("MainLayout------>adjustLayout")
-        val clampedDeltaY = deltaY.coerceIn(-20f, 20f) // 限制 deltaY 在合理范围内避免滑动跳动问题  设置跟手速度需要比数值调大
+        val clampedDeltaY = deltaY.coerceIn(-25f, 25f) // 限制 deltaY 在合理范围内避免滑动跳动问题  设置跟手速度需要比数值调大
         // 获取当前高度
         val currentHeight = llVideo.layoutParams.height.toFloat()
         // 计算目标高度，限制在 minVideoHeight 和 maxVideoHeight 之间
@@ -268,11 +302,11 @@ class LiveMainLayout @JvmOverloads constructor(
      */
     fun collapseToZero(duration: Long = 300) {
         if (llVideo.layoutParams.height == 0 && fragmentVideo.scaleX == 0f) {
-            LogUtils.e("MainLayout----collapseToZero: already collapsed")
+           // LogUtils.e("MainLayout----collapseToZero: already collapsed")
             return // 已经折叠，直接返回
         }
 
-        LogUtils.e("MainLayout----collapseToZero: start, currentHeight=${llVideo.layoutParams.height}, currentScale=${fragmentVideo.scaleX}")
+       // LogUtils.e("MainLayout----collapseToZero: start, currentHeight=${llVideo.layoutParams.height}, currentScale=${fragmentVideo.scaleX}")
         // 获取当前高度和缩放比例
         val currentHeight = llVideo.layoutParams.height.toFloat()
         val targetHeight = 0f // 目标高度 0
@@ -300,7 +334,7 @@ class LiveMainLayout @JvmOverloads constructor(
                 override fun onAnimationEnd(animation: android.animation.Animator) {
                     llVideo.visibility = View.GONE // 动画结束时隐藏
                     isCollapsed = true // 标记折叠状态
-                    LogUtils.e("MainLayout----collapseToZero: animation ended, height=0, visibility=GONE")
+                   // LogUtils.e("MainLayout----collapseToZero: animation ended, height=0, visibility=GONE")
                 }
             })
             start()
@@ -328,4 +362,14 @@ class LiveMainLayout @JvmOverloads constructor(
         initialVideoWidth = targetHeight * scaleXtoY
     }
 
+    fun setOnGestureListener(gestureListener: LiveMainGestureListener) {
+        mLiveMainGesture = gestureListener
+    }
+}
+
+interface LiveMainGestureListener {
+    /**
+     * 子类是否接收滑动
+     */
+    fun onRvVerticalScroll(boolean: Boolean)
 }
