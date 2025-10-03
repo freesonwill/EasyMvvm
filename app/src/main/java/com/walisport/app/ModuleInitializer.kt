@@ -37,6 +37,7 @@ import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import retrofit2.Response
 import retrofit2.http.GET
+import retrofit2.http.Header
 
 /**
  * @author: zhangsan
@@ -110,7 +111,7 @@ class ModuleInitializer : DefaultInitializer<String> {
     private val repoModules = module {
         factory { CoroutineScope(Dispatchers.IO) }
         single { MutableStateFlow(PreloadEnum.INIT) }
-        factory { ModuleRepository(get(), get(), get(named("preLoadHome")), get(), get()) }
+        factory { ModuleRepository(get(), get(), get(named("3n1")), get(), get(), get()) }
         factory { (scope: CoroutineScope) -> MainRepository(scope, get(), get(), get(), get(), get()) }
         factory { (scope: CoroutineScope) -> SplashRepository(scope, get(), get()) }
     }
@@ -118,8 +119,13 @@ class ModuleInitializer : DefaultInitializer<String> {
 }
 
 interface IPreLoadHomeApi : IApi {
+
     @GET("sport_server/game/firstLoad")
-    suspend fun preLoad(): Response<PreloadDataModel>
+    suspend fun preLoad(
+        @Header("Authorization") token: String?,
+        @Header("X-User-Id") uid: Int?,
+        @Header("X-Language") language: String?,
+    ): Response<PreloadDataModel>
 }
 
 

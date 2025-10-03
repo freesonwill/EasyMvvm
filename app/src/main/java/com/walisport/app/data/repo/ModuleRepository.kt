@@ -8,6 +8,8 @@ import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.common.data.constants.LanguageType
 import arch.cayenne.lib.common.data.constants.PreloadEnum
 import arch.cayenne.lib.common.data.constants.SportEnum
+import arch.cayenne.lib.common.data.constants.UserDataKey
+import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.database.GameDatabase
 import arch.cayenne.lib.database.entity.SportBean
 import arch.cayenne.lib.database.entity.SportTournamentCrossRef
@@ -18,6 +20,7 @@ import arch.cayenne.lib.websocket.WebSocketManager
 import arch.cayenne.module.home.data.constants.PlayType
 import arch.cayenne.module.home.data.constants.playTypeToShowType
 import arch.cayenne.module.home.data.repo.HomeRepository
+import com.walisport.app.BuildConfig
 import com.walisport.app.IPreLoadHomeApi
 import com.walisport.app.data.PreloadDataModel
 import com.walisport.app.data.toRoomData
@@ -31,7 +34,8 @@ class ModuleRepository(
     private val database: GameDatabase,
     private val httpClient: HttpClient,
     private val socketManager: WebSocketManager,
-    private val preloadResultChange: MutableStateFlow<PreloadEnum>
+    private val preloadResultChange: MutableStateFlow<PreloadEnum>,
+    private val userDataManager: UserDataManager,
 ): BaseRepository() {
     private val TAG = this.javaClass.simpleName
     val matchDao = database.matchDao()
@@ -40,10 +44,16 @@ class ModuleRepository(
 
     fun preLoadHome() {
         val api = httpClient.create(IPreLoadHomeApi::class.java)
+        val uid = BuildConfig.uid
+        val token = BuildConfig.token
+        val lang = userDataManager.getValue(UserDataKey.KEY_LANGUAGE, LanguageType.LANGUAGE_SIMPLE.value)
         scope.launch(Dispatchers.IO) {
             httpClient.safeRequest(
                 request = {
                     api.preLoad(
+                        token = token,
+                        uid = uid,
+                        language = lang,
                     )
                 },
                 onSuccess = {
