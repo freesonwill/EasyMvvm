@@ -1,6 +1,5 @@
 package com.walisport.module.setting.ui.fragment
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.navigation.fragment.findNavController
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
