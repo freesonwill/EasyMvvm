@@ -29,7 +29,7 @@
             android:layout_marginTop="@dimen/dp_12"
             android:text="@string/menu_notice_sys"
             android:textColor="@color/set_title"
-            android:textSize="@dimen/sp_15" />
+            android:textSize="@dimen/sp_14" />
 
         <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
             android:id="@+id/notice_goal"
@@ -141,7 +141,7 @@
             android:layout_marginTop="@dimen/dp_22"
             android:text="@string/menu_notice_app"
             android:textColor="@color/set_title"
-            android:textSize="@dimen/sp_15" />
+            android:textSize="@dimen/sp_14" />
 
         <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
             android:id="@+id/notice_app_goal"
