@@ -9,7 +9,7 @@
         android:scaleX="1.1404"
         android:scaleY="1.1404"
 
-        android:rotation="180"         android:pivotX="15"          android:pivotY="6.5"           >
+        android:rotation="180"         android:pivotX="15"          android:pivotY="6"           >
 
         <path
             android:pathData="M16.86,1.7C15.29,0.1 12.71,0.1 11.14,1.7C8.7,4.17 5.39,7.52 4.1,8.73C3.04,9.73 1.53,10.24 0.28,10.5H27.75C26.49,10.24 24.96,9.73 23.9,8.73C22.62,7.53 19.31,4.18 16.86,1.7Z"
