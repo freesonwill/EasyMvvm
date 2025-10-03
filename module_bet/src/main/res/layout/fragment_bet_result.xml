@@ -134,7 +134,7 @@
         android:enabled="false"
         android:gravity="center"
         android:text="@string/btn_result_continue_bet"
-        android:textColor="@color/selector_continue_bet_tv"
+        android:textColor="@color/selector_button_tv"
         android:textSize="15sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
