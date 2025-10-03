@@ -103,7 +103,8 @@
         style="@style/NumberKeyboardButton"
         android:layout_marginStart="2dp"
         android:layout_marginTop="2dp"
-        android:text="."
+        android:textSize="34sp"
+        android:text="‧"
         app:skinnableFontWeight="500" />
 
 </GridLayout>

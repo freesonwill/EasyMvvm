@@ -74,7 +74,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="10dp"
-            android:layout_marginBottom="12dp"
+            android:layout_marginBottom="13dp"
             app:layout_constraintBottom_toTopOf="@id/cl_bottom_button"
             app:layout_constraintTop_toBottomOf="@id/layout_bet">
 
@@ -225,6 +225,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
+                android:visibility="gone"
                 android:background="@drawable/shape_6dp"
                 android:backgroundTint="@color/keyboard_2"
                 android:foreground="@drawable/bg_odds_change_mask"
@@ -326,7 +327,7 @@
                         android:layout_marginTop="2dp"
                         android:layout_marginBottom="2dp"
                         android:text="@string/btn_clear"
-                        android:textSize="12sp"
+                        android:textSize="14sp"
                         app:skinnableFontWeight="500" />
 
                     <arch.cayenne.lib.skin.widget.SkinnableTextView
@@ -335,7 +336,7 @@
                         android:layout_marginTop="2dp"
                         android:layout_marginBottom="2dp"
                         android:text="@string/btn_double"
-                        android:textSize="12sp"
+                        android:textSize="14sp"
                         app:skinnableFontWeight="500" />
 
                     <arch.cayenne.lib.skin.widget.SkinnableImageButton
@@ -356,7 +357,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="10dp"
-            android:layout_marginBottom="12dp"
+            android:layout_marginBottom="10dp"
             app:layout_constraintBottom_toBottomOf="parent">
 
             <arch.cayenne.lib.skin.widget.SkinnableImageView

@@ -166,6 +166,7 @@ class ReserveDialogFragment private constructor() : BasePositionDialogFragment<R
             }
 
         })
+        mBinding.numberKeyboard.setOtherTextSize(16f)
     }
 
     override fun initListener() {
