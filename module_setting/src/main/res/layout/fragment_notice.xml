@@ -25,7 +25,7 @@
         <arch.cayenne.lib.skin.widget.SkinnableTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_12"
+            android:layout_marginStart="@dimen/dp_15"
             android:layout_marginTop="@dimen/dp_12"
             android:text="@string/menu_notice_sys"
             android:textColor="@color/set_title"
@@ -137,8 +137,8 @@
         <arch.cayenne.lib.skin.widget.SkinnableTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_12"
-            android:layout_marginTop="@dimen/dp_22"
+            android:layout_marginStart="@dimen/dp_15"
+            android:layout_marginTop="@dimen/dp_25"
             android:text="@string/menu_notice_app"
             android:textColor="@color/set_title"
             android:textSize="@dimen/sp_14" />
@@ -147,7 +147,7 @@
             android:id="@+id/notice_app_goal"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_52"
-            android:layout_marginTop="@dimen/dp_9"
+            android:layout_marginTop="@dimen/dp_10"
             android:background="@drawable/ripple_set_effect">
 
             <androidx.appcompat.widget.AppCompatImageView
