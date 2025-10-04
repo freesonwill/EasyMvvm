@@ -112,6 +112,7 @@
         android:layout_marginEnd="@dimen/dp_7"
         android:layout_marginBottom="4dp"
         android:gravity="end"
+        app:showCircle="false"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/rv_tournament_list" />
 
