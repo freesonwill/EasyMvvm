@@ -7,6 +7,9 @@ import android.os.Bundle
 import android.view.Gravity
 import android.view.ViewGroup
 import androidx.core.app.ActivityOptionsCompat
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.ActivityNavigatorExtras
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
@@ -395,15 +398,25 @@ class HomeTestFragment : BaseFragment<arch.cayenne.lib.test.ui.viewmodel.HomeVie
     override fun initData() {
         super.initData()
         thread {
-            runBlocking {
-                // 模拟数据加载
-                for (i in 1..100) {
-                    withContext(Dispatchers.Main){
-                        mViewModel.number.value = mViewModel.number.value!! + 1
+            runCatching {
+                runBlocking {
+                    // 模拟数据加载
+                    for (i in 1..100) {
+                        if (Thread.currentThread().isInterrupted) break
+                        withContext(Dispatchers.Main){
+                            mViewModel.number.value = mViewModel.number.value!! + 1
+                        }
+                        delay(500)
                     }
-                    delay(500)
                 }
             }
+        }.apply {
+            lifecycle.addObserver(object :DefaultLifecycleObserver{
+                override fun onDestroy(owner: LifecycleOwner) {
+                    super.onDestroy(owner)
+                    interrupt()
+                }
+            })
         }
     }
 
