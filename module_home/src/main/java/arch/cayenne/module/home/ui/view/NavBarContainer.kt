@@ -48,7 +48,7 @@ class NavBarContainer @JvmOverloads constructor(
         this.selectedIndex = index
     }
 
-    fun setOnItemClickListener(listener: ((parent: NavBarContainer, view: View, position: Int) -> Unit)? = null) {
+    fun setOnItemSelectedListener(listener: ((parent: NavBarContainer, view: View, position: Int) -> Unit)? = null) {
         forEachIndexed { index, view ->
             view.setOnClickListener {
                 listener?.invoke(this, view, index)

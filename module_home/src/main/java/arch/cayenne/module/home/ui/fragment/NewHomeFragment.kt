@@ -304,7 +304,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
 
             })
 
-            bottomNavigationBar.setOnItemClickListener { container,view,position ->
+            bottomNavigationBar.setOnItemSelectedListener { container, view, position ->
                 container.setSelected(position)
                 //"bottomNavigation1----$position".logd(TAG)
                 when(position){
