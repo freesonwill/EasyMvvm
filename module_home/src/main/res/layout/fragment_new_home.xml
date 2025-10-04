@@ -127,6 +127,7 @@
             android:orientation="horizontal"
             android:visibility="visible"
             app:selected_index="0"
+            android:background="@color/title_bg"
             app:layout_constraintBottom_toBottomOf="parent">
 
             <arch.cayenne.module.home.ui.view.NavBarView
