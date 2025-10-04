@@ -17,7 +17,7 @@
             android:id="@+id/group_home_main"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:constraint_referenced_ids="cl_first_navbar,cl_second_navbar,layout_container" />
+            app:constraint_referenced_ids="cl_first_navbar,layout_container" />
 
         <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
             android:id="@+id/cl_first_navbar"
@@ -119,6 +119,61 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/cl_first_navbar"
             app:layout_constraintBottom_toBottomOf="parent" />
+
+        <arch.cayenne.module.home.ui.view.NavBarContainer
+            android:id="@+id/bottom_navigation_bar"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_62"
+            android:orientation="horizontal"
+            android:visibility="gone"
+            app:selected_index="0"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <arch.cayenne.module.home.ui.view.NavBarView
+                android:id="@+id/nav_home"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                app:icon="@drawable/ic_home"
+                app:text="@string/title_home" />
+
+            <arch.cayenne.module.home.ui.view.NavBarView
+                android:id="@+id/nav_sport"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                app:badge="10"
+                app:icon="@drawable/ic_sport"
+                app:text="@string/title_sport" />
+
+            <arch.cayenne.module.home.ui.view.NavBarView
+                android:id="@+id/nav_betSlip"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                app:badge="10"
+                app:icon="@drawable/ic_betslip"
+                app:text="@string/title_betslip" />
+
+            <arch.cayenne.module.home.ui.view.NavBarView
+                android:id="@+id/nav_chat"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                app:badge="10"
+                app:icon="@drawable/ic_chat"
+                app:text="@string/title_chat" />
+
+            <arch.cayenne.module.home.ui.view.NavBarView
+                android:id="@+id/nav_me"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                app:badge="9"
+                app:icon="@drawable/ic_me"
+                app:text="@string/title_me" />
+
+        </arch.cayenne.module.home.ui.view.NavBarContainer>
     </arch.cayenne.module.home.ui.view.ClickSearchConstraintLayout>
     <!-- 左侧滑出的導航菜單 -->
     <com.google.android.material.navigation.NavigationView

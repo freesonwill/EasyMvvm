@@ -1,4 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <!-- 流布局-->
+    <declare-styleable name="NavBarViewStyle">
+        <attr name="style" format="enum">
+            <enum name="icon" value="0" />
+            <enum name="iconText" value="1" />
+            <enum name="IconTextBadge" value="1" />
+        </attr>
+
+        <attr name="icon" format="reference" />
+        <attr name="text" format="string|reference" />
+        <attr name="badge" format="string|reference" />
+        <attr name="badge_color" format="color|reference" />
+        <attr name="badge_radius" format="dimension|reference" />
+
+    </declare-styleable>
+
+    <declare-styleable name="NavBarContainerStyle">
+        <attr name="selected_index" format="integer" />
+    </declare-styleable>
 </resources>

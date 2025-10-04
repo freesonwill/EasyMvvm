@@ -22,6 +22,8 @@ import arch.cayenne.lib.common.utils.DensityInfo
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavResultExt.observeResult
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
+import arch.cayenne.lib.common.utils.ext.ResourceExt.getDrawable
+import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
 import arch.cayenne.lib.common.utils.ext.TabLayoutExt
 import arch.cayenne.lib.common.utils.ext.TabLayoutExt.addOnTabSelectedListener2
@@ -38,6 +40,7 @@ import arch.cayenne.module.home.data.constants.PlayType
 import arch.cayenne.module.home.databinding.FragmentNewHomeBinding
 import arch.cayenne.module.home.ui.adapter.SubHomePagerAdapter
 import arch.cayenne.module.home.ui.view.HomeTabMediator
+import arch.cayenne.module.home.ui.view.Style
 import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
 import com.google.android.material.tabs.TabLayout
 import kotlin.reflect.KClass
@@ -291,7 +294,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             }
 
 
-            mBinding.drawerLayout.addDrawerListener(object : DrawerLayout.DrawerListener {
+            drawerLayout.addDrawerListener(object : DrawerLayout.DrawerListener {
                 override fun onDrawerSlide(drawerView: View, slideOffset: Float) {}
                 override fun onDrawerOpened(drawerView: View) {
                     initDrawerContent()
@@ -300,6 +303,47 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 override fun onDrawerStateChanged(newState: Int) {}
 
             })
+
+            bottomNavigationBar.setOnItemClickListener { container,view,position ->
+                container.setSelected(position)
+                //"bottomNavigation1----$position".logd(TAG)
+                when(position){
+                    0->{
+                        val w = container.getWeight(1)
+                        if(w == 1f){
+                            container.setWeight(1,80f/75f)
+                            container.setBarStyle(1,
+                                Style.IconBadge(R.mipmap.ic_fifa.getDrawable(),"世界杯", (-18f).dp2px))
+                        }else {
+                            container.setBarStyle(1,
+                                Style.IconTextBadge(R.drawable.ic_chat.getDrawable(),R.string.title_sport.getString(),"9"))
+                            container.setWeight(1,1f)
+                        }
+                    }
+                    1-> {
+                        val w = container.getWeight(2)
+                        if(w == 1f){
+                            container.setWeight(2,121f/75f)
+                            container.setBarStyle(2, Style.Icon(R.mipmap.ic_sport_banner.getDrawable()))
+                        }else {
+                            container.setBarStyle(2,
+                                Style.IconTextBadge(R.drawable.ic_chat.getDrawable(),R.string.title_sport.getString(),"9"))
+                            container.setWeight(2,1f)
+                        }
+                    }
+                    2 -> {
+                        if(container.getBarStyle(3) == Style.Icon::class.java){
+                            container.setBarStyle(3,
+                                Style.IconText(R.drawable.ic_chat.getDrawable(),R.string.title_sport.getString()))
+                        }else {
+                            container.setBarStyle(3, Style.Icon(R.mipmap.ic_home2.getDrawable()))
+                        }
+                    }
+                    3->{
+
+                    }
+                }
+            }
         }
     }
 

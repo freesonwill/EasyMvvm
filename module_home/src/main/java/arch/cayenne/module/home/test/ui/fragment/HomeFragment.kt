@@ -17,7 +17,10 @@ import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
 import arch.cayenne.lib.common.databinding.PopupCalendarViewBinding
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
+import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
+import arch.cayenne.lib.common.utils.ext.ResourceExt.getDrawable
+import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.extractDate
 import arch.cayenne.lib.common.utils.ext.toChineseMonth
@@ -27,6 +30,7 @@ import arch.cayenne.lib.http._interface.IApi
 import arch.cayenne.module.home.R
 import arch.cayenne.module.home.databinding.FragmentHomeBinding
 import arch.cayenne.module.home.test.viewmodel.HomeViewModel
+import arch.cayenne.module.home.ui.view.Style
 import com.haibin.calendarview.Calendar
 import com.haibin.calendarview.CalendarView.OnCalendarSelectListener
 import kotlinx.coroutines.Dispatchers

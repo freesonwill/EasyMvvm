@@ -41,4 +41,6 @@
     <color name="custom_filter_side_bar_text">#24EE8A</color>
     <color name="tournament_list_search_hint">#929298</color>
     <color name="tournament_list_search_text">#ffffff</color>
+    <color name="navbar_text_color_normal">#C0C0C0</color>
+    <color name="navbar_text_color_selected">#00E0E5</color>
 </resources>
