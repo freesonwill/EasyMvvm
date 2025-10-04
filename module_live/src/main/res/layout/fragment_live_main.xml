@@ -29,6 +29,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
+            android:orientation="vertical"
             >
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -60,7 +61,6 @@
                         android:layout_width="@dimen/dp_140"
                         android:layout_weight="1"
                         android:layout_height="wrap_content"
-                        android:text="世界杯联赛  XXX vs XXX"
                         android:ellipsize="end"
                         android:maxLines="1"
                         android:textColor="@color/video_tab_text_color"
@@ -119,11 +119,13 @@
                     android:background="@color/live_main_tab_bg" />
             </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
 
-            <com.walisport.module.live.ui.widget.NonInterceptingConstraintLayout
+            <androidx.core.widget.NestedScrollView
                 android:id="@+id/ClBotton"
                 app:layout_constraintTop_toBottomOf="@id/skinTab"
                 app:layout_constraintBottom_toBottomOf="parent"
                 android:layout_width="match_parent"
+                android:layout_weight="1"
+
                 android:layout_height="0dp">
 
                 <androidx.viewpager2.widget.ViewPager2
@@ -138,7 +140,7 @@
                     android:paddingEnd="0dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
-            </com.walisport.module.live.ui.widget.NonInterceptingConstraintLayout>
+            </androidx.core.widget.NestedScrollView>
         </com.walisport.module.live.ui.widget.LiveMainLayout>
 
 

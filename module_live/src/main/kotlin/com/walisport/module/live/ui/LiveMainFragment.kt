@@ -233,7 +233,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         //子类是否可滑动
         mBinding.liveMainMl.setOnGestureListener(object : LiveMainGestureListener{
             override fun onRvVerticalScroll(boolean: Boolean) {
-                mBinding.ClBotton.setIsTopScroll(boolean)
+                mViewModel.setSonVerticalIsScrollIs(boolean)
             }
         })
     }
@@ -246,7 +246,6 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
     override suspend fun createObserver() {
         //父类是否可往上滑动
         mViewModel.sonVerticalScrollIsTop.observe(viewLifecycleOwner){
-            mBinding.ClBotton.setIsDowScroll(it)//拦截事件
             mBinding.liveMainMl.setIsDowScroll(it)//可往下滑动个
         }
         launch {

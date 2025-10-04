@@ -119,6 +119,7 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
             })
             adapter = liveBetOnAdapter
         }
+
         // 监听 RecyclerView 是否滑动到第一条
         listenRecyclerViewAtTop(mBinding.rvBetList) { isAtTop ->
             if (isAtTop) {
@@ -212,6 +213,9 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
             }
         }
 
+        mainViewModel.sonVerticalIsScroll.observe(viewLifecycleOwner){
+            mBinding.rvBetList.parent.requestDisallowInterceptTouchEvent(!it)
+        }
         liveBetOnAdapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
             override fun onChanged() {
 

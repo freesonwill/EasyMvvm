@@ -27,10 +27,9 @@ import kotlin.math.abs
  */
 class LiveMainLayout @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
-) : ConstraintLayout(context, attrs, defStyleAttr) {
+) : LinearLayoutCompat(context, attrs, defStyleAttr) {
 
     private lateinit var fragmentVideo: FragmentContainerView
-    private lateinit var clBottom: ConstraintLayout
     private lateinit var llVideo: ConstraintLayout
 
     private lateinit var llText: LinearLayoutCompat
@@ -58,7 +57,6 @@ class LiveMainLayout @JvmOverloads constructor(
         super.onFinishInflate()
         // 初始化视图
         fragmentVideo = findViewById(R.id.fragment_video)
-        clBottom = findViewById(R.id.ClBotton)
         llVideo = findViewById(R.id.llVideo)
         llText = findViewById(R.id.llText)
         tvVideoVs = findViewById(R.id.tv_video_vs)
@@ -142,13 +140,13 @@ class LiveMainLayout @JvmOverloads constructor(
                         if (currentHeight<=minVideoHeight){//上滑滑到小于最小值,可传给子类
                             isVerticalScroll = false //不处理缩小
                             LogUtils.e("MainLayout---onInterceptTouchEvent------滑到小于最小值--${currentHeight}")
-                            mLiveMainGesture?.onRvVerticalScroll(false)//通知子类,可往上滑动
+                            mLiveMainGesture?.onRvVerticalScroll(true)//通知子类,可往上滑动
                             return false //false 不拦截
                         }
-                        mLiveMainGesture?.onRvVerticalScroll(true)//不可上滑
+                        mLiveMainGesture?.onRvVerticalScroll(false)//不可上滑
                         isVerticalScroll = true //不处理缩小
                         }else{
-                            mLiveMainGesture?.onRvVerticalScroll(false)//通知子类,可往上滑动
+                            mLiveMainGesture?.onRvVerticalScroll(true)//通知子类,可往上滑动
                             return false
                         }
                         return true
@@ -196,9 +194,14 @@ class LiveMainLayout @JvmOverloads constructor(
         // 当高度达到最小值时触发隐藏动画
         if (newHeight <= minVideoHeight && llText.visibility==GONE) {
             llText.visibility = VISIBLE
+            mLiveMainGesture?.onRvVerticalScroll(true)//通知子类,可往上滑动
         } else if (newHeight > minVideoHeight && llText.visibility==VISIBLE) {
             llText.visibility = GONE
         }
+        //到最大值,通知rv内U滑动
+//        if (newHeight >= maxVideoHeight){
+//            mLiveMainGesture?.onRvVerticalScroll(false)//通知子类,可往上滑动
+//        }
 //        if (newHeight <= minVideoHeight) {
 //            fragmentVideo.alpha = 0f
 //            showWithFade(llText,300)
