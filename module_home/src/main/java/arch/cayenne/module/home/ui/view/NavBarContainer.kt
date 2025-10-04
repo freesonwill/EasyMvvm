@@ -15,7 +15,7 @@ import arch.cayenne.module.home.R
 class NavBarContainer @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : SkinnableLinearLayout(context, attrs, defStyleAttr) {
-    private var selectedIndex: Int = -1
+    var selectedIndex: Int = -1;private set
 
     init {
         context.theme.obtainStyledAttributes(
