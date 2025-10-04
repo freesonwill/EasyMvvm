@@ -3,12 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <application>
-        <activity
-            android:name="arch.cayenne.module.home.ui.activity.HomeActivity"
-            android:exported="true"
-            android:screenOrientation="portrait"
-            >
-        </activity>
 
         <provider
             android:name="androidx.startup.InitializationProvider"

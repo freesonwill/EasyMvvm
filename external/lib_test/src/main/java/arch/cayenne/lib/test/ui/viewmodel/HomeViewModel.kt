@@ -1,4 +1,4 @@
-package arch.cayenne.module.home.test.viewmodel
+package arch.cayenne.lib.test.ui.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel

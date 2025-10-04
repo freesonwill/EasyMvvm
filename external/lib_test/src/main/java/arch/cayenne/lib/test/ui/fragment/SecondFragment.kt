@@ -1,4 +1,4 @@
-package arch.cayenne.module.home.test
+package arch.cayenne.lib.test.ui.fragment
 
 import android.os.Bundle
 import arch.cayenne.lib.base.data.constants.StatusBarMode
@@ -9,7 +9,7 @@ import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ext.NavResultExt.observeResult
 import arch.cayenne.lib.common.utils.ext.NavResultExt.observeResultOnce
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
-import arch.cayenne.module.home.databinding.FragmentTestSecondBinding
+import arch.cayenne.lib.test.databinding.FragmentTestSecondBinding
 import kotlin.reflect.KClass
 
 

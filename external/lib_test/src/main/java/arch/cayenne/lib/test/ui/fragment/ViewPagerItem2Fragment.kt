@@ -1,4 +1,4 @@
-package arch.cayenne.module.home.test
+package arch.cayenne.lib.test.ui.fragment
 
 import android.os.Bundle
 import androidx.navigation.fragment.navArgs
@@ -6,7 +6,7 @@ import arch.cayenne.lib.base.ui.viewmodel.EmptyViewModel
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
-import arch.cayenne.module.home.databinding.FragmentTestViewPagerItem2Binding
+import arch.cayenne.lib.test.databinding.FragmentTestViewPagerItem2Binding
 import kotlin.reflect.KClass
 
 /**

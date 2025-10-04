@@ -1,4 +1,4 @@
-package arch.cayenne.module.home.test
+package arch.cayenne.lib.test.ui.adapter
 
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
@@ -10,7 +10,7 @@ import androidx.viewpager2.adapter.FragmentViewHolder
 class PagerAdapter(
     fragmentManager: FragmentManager,
     lifecycle: Lifecycle,
-    private val pages: List<PagerBean>
+    private val pages: List<arch.cayenne.lib.test.data.bean.PagerBean>
 ) : FragmentStateAdapter(fragmentManager, lifecycle) {
 
     override fun getItemCount(): Int = pages.size

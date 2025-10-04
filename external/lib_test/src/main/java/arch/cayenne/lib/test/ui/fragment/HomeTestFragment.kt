@@ -1,4 +1,4 @@
-package arch.cayenne.module.home.test.ui.fragment
+package arch.cayenne.lib.test.ui.fragment
 
 import android.app.ProgressDialog
 import android.content.Intent
@@ -17,24 +17,21 @@ import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
 import arch.cayenne.lib.common.databinding.PopupCalendarViewBinding
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
-import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
-import arch.cayenne.lib.common.utils.ext.ResourceExt.getDrawable
-import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.extractDate
 import arch.cayenne.lib.common.utils.ext.toChineseMonth
 import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.http.HttpClient
 import arch.cayenne.lib.http._interface.IApi
-import arch.cayenne.module.home.R
-import arch.cayenne.module.home.databinding.FragmentHomeBinding
-import arch.cayenne.module.home.test.viewmodel.HomeViewModel
-import arch.cayenne.module.home.ui.view.Style
+import arch.cayenne.lib.test.R
+import arch.cayenne.lib.test.databinding.FragmentHomeTestBinding
 import com.haibin.calendarview.Calendar
 import com.haibin.calendarview.CalendarView.OnCalendarSelectListener
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.ensureActive
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.getKoin
@@ -54,9 +51,9 @@ import kotlin.concurrent.thread
 import kotlin.reflect.KClass
 import arch.cayenne.lib.common.R as Rc
 
-class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>() {
-    override val vbClass: KClass<FragmentHomeBinding> = FragmentHomeBinding::class
-    override val vmClass: KClass<HomeViewModel> = HomeViewModel::class
+class HomeTestFragment : BaseFragment<arch.cayenne.lib.test.ui.viewmodel.HomeViewModel, FragmentHomeTestBinding>() {
+    override val vbClass: KClass<FragmentHomeTestBinding> = FragmentHomeTestBinding::class
+    override val vmClass: KClass<arch.cayenne.lib.test.ui.viewmodel.HomeViewModel> = arch.cayenne.lib.test.ui.viewmodel.HomeViewModel::class
 
     override fun initView(savedInstanceState: Bundle?) {
 
@@ -76,14 +73,14 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>() {
          * fragment -> activity
          */
         mBinding.tv1.setOnClickListener {
-
-            navigate(HomeFragmentDirections.actionHomeFragmentToSecondFragment("Tom"))
-            //navigate(HomeFragmentDirections.actionHomeFragmentToLoginActivity(null))
+            HomeTestFragmentDirections
+            navigate(HomeTestFragmentDirections.actionHomeFragmentToSecondFragment("Tom"))
+            //navigate(HomeTestFragmentDirections.actionHomeFragmentToLoginActivity(null))
         }
         //mBinding.tv2.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.LoginActivity,bundleOf("userId" to "David")))
         mBinding.tv2.setOnClickListener {
-            //navigate(HomeFragmentDirections.actionHomeFragmentToLoginActivity())
-            navigate(HomeFragmentDirections.actionHomeFragmentToLoginActivity("actionHomeFragmentToLoginActivity"))
+            //navigate(HomeTestFragmentDirections.actionHomeFragmentToLoginActivity())
+            navigate(HomeTestFragmentDirections.actionHomeFragmentToLoginActivity("actionHomeFragmentToLoginActivity"))
 
             //navigate(R.id.LoginActivity, bundleOf("userId" to "David"))
             //navigate(R.id.loginSecondFragment)
@@ -99,7 +96,7 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>() {
             //navigate(Uri.parse("walisport://login_activity?userId=lucy"))
         }
         mBinding.tv4.setOnClickListener {
-            //navigate(HomeFragmentDirections.actionHomeFragmentToSecondFragment("toFragmentInner"))
+            //navigate(HomeTestFragmentDirections.actionHomeFragmentToSecondFragment("toFragmentInner"))
             //navigate(Uri.parse("walisport://module_login/loginSecondFragment"))
             var selectedDate = "20250423"
             val popup = BasePopup.Builder(requireContext(), PopupCalendarViewBinding::inflate)
@@ -158,7 +155,7 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>() {
         }
 
         mBinding.tv6.setOnClickListener {
-            navigate(HomeFragmentDirections.actionHomeFragmentToNewHomeFragment())
+            //navigate(HomeTestFragmentDirections.actionHomeFragmentToNewHomeFragment())
         }
 
         mBinding.tv7.clickNoRepeat {
@@ -409,4 +406,5 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>() {
             }
         }
     }
+
 }
