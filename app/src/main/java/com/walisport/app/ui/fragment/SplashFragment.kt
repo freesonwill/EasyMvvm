@@ -69,7 +69,7 @@ class SplashFragment : BaseFragment<SplashViewModel, FragmentSplashBinding>() {
     }
 
     private fun jumpToMainActivity() {
-        navigate("walisport://module_home/multipleNavHostTestFragment".deeplink(),
+        navigate("walisport://module_home/NewHomeFragment".deeplink(),
             NavOptions.Builder()
                 .setPopUpTo(R.id.splashFragment, inclusive = true) // 清空栈顶到导航图的起点
                 .setLaunchSingleTop(true)                     // 避免重复实例化相同目的地
