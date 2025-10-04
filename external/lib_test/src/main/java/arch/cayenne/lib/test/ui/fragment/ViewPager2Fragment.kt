@@ -1,10 +1,12 @@
-package arch.cayenne.module.home.test
+package arch.cayenne.lib.test.ui.fragment
 
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
-import arch.cayenne.module.home.R
+import arch.cayenne.lib.test.R
+import arch.cayenne.lib.test.ui.adapter.PagerAdapter
+import arch.cayenne.lib.test.data.bean.PagerBean
 
 /**
  * @author: zhangsan

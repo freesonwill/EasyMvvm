@@ -3,16 +3,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg_match_item_card"
+    android:background="@drawable/bg_button_disable"
     android:fitsSystemWindows="false"
     android:paddingTop="120dp"
-    tools:context=".test.SecondFragment">
+    tools:context="arch.cayenne.lib.test.ui.fragment.SecondFragment">
 
     <TextView
         android:id="@+id/tv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/second_fragment" />
+        android:text="@string/app_name" />
 
 
 </RelativeLayout>

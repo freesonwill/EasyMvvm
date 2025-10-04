@@ -1,10 +1,13 @@
-package arch.cayenne.module.home.test
+package arch.cayenne.lib.test.ui.fragment
 
 import android.os.Bundle
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import arch.cayenne.lib.base.ui.viewmodel.EmptyViewModel
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
-import arch.cayenne.module.home.databinding.FragmentTestViewPagerBinding
+import arch.cayenne.lib.test.ui.adapter.PagerAdapter
+import arch.cayenne.lib.test.data.bean.PagerBean
+import arch.cayenne.lib.test.databinding.FragmentTestViewPagerBinding
 import kotlin.reflect.KClass
 
 class ViewPagerFragment : BaseFragment<EmptyViewModel, FragmentTestViewPagerBinding>() {
@@ -27,14 +30,26 @@ class ViewPagerFragment : BaseFragment<EmptyViewModel, FragmentTestViewPagerBind
                 }
             }
             viewPagerNew.adapter = PagerAdapter(childFragmentManager, lifecycle, gameList)
+
+            //navHost2.findNavController().setGraph(R.navigation.nav_graph_host2)
         }
+
     }
 
     override fun initListener() {
-        mBinding.tv1.setOnClickListener {
-            val navController = findNavController()
-            navController.navigate(ViewPagerFragmentDirections.actionViewPagerItem2FragmentToHomeFragment())
+        mBinding.apply {
+            tv1.setOnClickListener {
+                val navController = findNavController()
+                navController.navigate(ViewPagerFragmentDirections.actionViewPagerItem2FragmentToHomeFragment())
+            }
+
         }
+    }
+
+    override fun onBackPressed(): Boolean {
+        if(mBinding.navHost2.findNavController().navigateUp()) return true
+        if(mBinding.navHost3.findNavController().navigateUp()) return true
+        return super.onBackPressed()
     }
 
     override suspend fun createObserver() {

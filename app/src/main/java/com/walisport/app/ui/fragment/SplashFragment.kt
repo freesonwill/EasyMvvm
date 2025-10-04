@@ -76,7 +76,6 @@ class SplashFragment : BaseFragment<SplashViewModel, FragmentSplashBinding>() {
                 .build(),
             enterAnim = null,
             exitAnim = null
-
         )
     }
 }

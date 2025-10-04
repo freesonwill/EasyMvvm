@@ -61,10 +61,13 @@ class TestModuleInitializer : DefaultInitializer<Unit> {
                 }
             }
         })
-        loadKoinModules(listOf(socketModules))
+        loadKoinModules(listOf(socketModules,viewModules))
     }
     private val socketModules = module {
         factory(named("test")) { WebSocketManager(get(), get()) }
+    }
+    private val viewModules = module {
+        includes(defaultModule)
     }
 
     private fun createAnimFloat(activity: Activity){

@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/textViewScreen"
-        android:name="arch.cayenne.module.home.test.ViewPagerItem2Fragment"
+        android:name="arch.cayenne.lib.test.ui.fragment.ViewPagerItem2Fragment"
         android:label="TextView Screen"
         tools:layout="@layout/fragment_test_view_pager_item2"
         >
@@ -28,9 +28,9 @@
 
     <fragment
         android:id="@+id/homeFragment3"
-        android:name="arch.cayenne.module.home.test.ui.fragment.HomeFragment"
+        android:name="arch.cayenne.lib.test.ui.fragment.HomeTestFragment"
         android:label="fragment_home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home_test" />
 
 
 </navigation>

@@ -1,4 +1,4 @@
-package arch.cayenne.module.home.test
+package arch.cayenne.lib.test.data.bean
 
 import androidx.fragment.app.Fragment
 

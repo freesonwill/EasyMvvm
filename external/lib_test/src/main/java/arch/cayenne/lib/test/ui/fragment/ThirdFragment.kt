@@ -1,4 +1,4 @@
-package arch.cayenne.module.home.test
+package arch.cayenne.lib.test.ui.fragment
 
 import android.os.Bundle
 import android.view.View
@@ -8,8 +8,9 @@ import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getColor
-import arch.cayenne.module.home.databinding.FragmentTestThirdBinding
-import arch.cayenne.module.home.test.viewmodel.ThirdViewModel
+import arch.cayenne.lib.test.R
+import arch.cayenne.lib.test.databinding.FragmentTestThirdBinding
+import arch.cayenne.lib.test.ui.viewmodel.ThirdViewModel
 import kotlin.reflect.KClass
 
 
@@ -47,18 +48,18 @@ class ThirdFragment : BaseFragment<ThirdViewModel, FragmentTestThirdBinding>() {
     }
     private fun testViewModelBareData(){
         mViewModel.textString = "ThirdFragment"
-        mViewModel.textColor = arch.cayenne.module.bet.R.color.red.getColor()
+        mViewModel.textColor = arch.cayenne.lib.common.R.color.red_team.getColor()
         refreshUI()
     }
 
     private fun testViewModelFlow(){
-        mViewModel.textColorFlow.tryEmit(arch.cayenne.module.bet.R.color.red.getColor())
+        mViewModel.textColorFlow.tryEmit(arch.cayenne.lib.common.R.color.red_team.getColor())
         mViewModel.textStringFlow.tryEmit("ThirdFragment")
     }
 
     private fun testViewModelLiveData(){
         mViewModel.textStringLiveData.value = "ThirdFragment"
-        mViewModel.textColorLiveData.value = arch.cayenne.module.bet.R.color.red.getColor()
+        mViewModel.textColorLiveData.value = arch.cayenne.lib.common.R.color.red_team.getColor()
     }
 
     private fun refreshUI(){

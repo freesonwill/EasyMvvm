@@ -1,11 +1,11 @@
-package arch.cayenne.module.home.test
+package arch.cayenne.lib.test.ui.fragment
 
 import android.os.Bundle
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.viewmodel.EmptyViewModel
 import arch.cayenne.lib.common.utils.ext.NavResultExt.sendResult
-import arch.cayenne.module.home.R
-import arch.cayenne.module.home.databinding.FragmentTestFourthBinding
+import arch.cayenne.lib.test.R
+import arch.cayenne.lib.test.databinding.FragmentTestFourthBinding
 import kotlin.reflect.KClass
 
 class FourthFragment : BaseFragment<EmptyViewModel, FragmentTestFourthBinding>() {
@@ -18,7 +18,7 @@ class FourthFragment : BaseFragment<EmptyViewModel, FragmentTestFourthBinding>()
 
     override fun initListener() {
         mBinding.root.setOnClickListener {
-            sendResult("hello","FourthFragment:${System.currentTimeMillis()}",R.id.secondFragment)
+            sendResult("hello","FourthFragment:${System.currentTimeMillis()}", R.id.secondFragment)
             //navigate(FourthFragmentDirections.actionFourthFragmentToHomeFragment())
         }
     }
