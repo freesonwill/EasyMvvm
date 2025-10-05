@@ -13,7 +13,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/ct_video_play"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="@dimen/dp_211"
         android:background="@color/white">
 
         <androidx.appcompat.widget.AppCompatImageView
