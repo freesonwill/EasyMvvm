@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<arch.cayenne.lib.common.ui.view.InterceptedLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/title_bg"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical"
+    app:interceptedDirection="RIGHT">
+
+    <arch.cayenne.lib.common.ui.view.TitleBarView
+        android:id="@+id/title_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:ignore="MissingConstraints" />
+
+    <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/fragment_bg"
+        app:layout_constraintTop_toBottomOf="@+id/title_bar">
+
+    </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
+
+
+
+</arch.cayenne.lib.common.ui.view.InterceptedLinearLayout>

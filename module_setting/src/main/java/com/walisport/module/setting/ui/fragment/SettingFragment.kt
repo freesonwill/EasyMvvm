@@ -28,9 +28,10 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
     override val vmClass: KClass<SettingViewModel> = SettingViewModel::class
 
     override fun initView(savedInstanceState: Bundle?) {
-        mBinding.titleBar.loadGeneralTitleBar(R.string.setting, {
-            findNavController().navigateUp()
-        })
+        mBinding.titleBar.loadGeneralTitleBar(
+            R.string.setting,
+            { findNavController().navigateUp() }
+        )
         mBinding.tvSetMobile.text = ""
         mBinding.tvSetUser.text = mViewModel.getUserID()
         mBinding.root.touchBackPressed()
@@ -62,6 +63,12 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
         }
         mBinding.settingAbout.clickNoRepeat {
             navigate(R.id.action_settingFragment_to_aboutFragment)
+        }
+        mBinding.btnChangeUser.clickNoRepeat {
+            navigate(R.id.action_settingFragment_to_switchFragment)
+        }
+        mBinding.btnLogout.clickNoRepeat {
+
         }
     }
 

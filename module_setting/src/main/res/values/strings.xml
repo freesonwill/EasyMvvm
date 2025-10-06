@@ -8,6 +8,7 @@
     <string name="set_user_id">用户ID</string>
     <string name="common">通用</string>
     <string name="about">关于</string>
+    <string name="edit">编辑</string>
     <string name="change_user">切换账号</string>
     <string name="logout_user">退出登录</string>
     <string name="about_us">关于我们</string>
