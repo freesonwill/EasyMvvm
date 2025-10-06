@@ -34,6 +34,10 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
     override fun initView(savedInstanceState: Bundle?) {
         initChatPageFragment()
         initSoftKeyBoardFragment()
+        arguments?.let { //TODO  首页过来的 之后需要处理聊天室要matchId的问题
+            val value = it.getBoolean("chat",false)
+            setMainChatStatus()
+        }
     }
 
     override suspend fun createObserver() {
@@ -197,7 +201,7 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
     /**
      * 首页调用
      * */
-    fun setMainChatStatus(){
+    private fun setMainChatStatus(){
        lifecycleScope.launchWhenResumed {
            observeMatchId(-1)
            observeLiveMatch(null)
