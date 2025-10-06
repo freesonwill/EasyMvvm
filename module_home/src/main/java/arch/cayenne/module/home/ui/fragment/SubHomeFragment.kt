@@ -138,7 +138,9 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
             setTopMaskListener()
 
             frameFavoriteClickArea.apply {
-                clickNoRepeatSingle { navigate(NewHomeFragmentDirections.actionNewHomeFragmentToCollectListFragment()) }
+                clickNoRepeatSingle {
+                    navigate(Uri.parse("walisport://module_home/collectListFragment"))
+                }
                 addScaleOnTouchAnimation()
             }
 
