@@ -1,24 +1,18 @@
-package arch.cayenne.module.home.ui.fragment
+package com.walisport.app.ui
 
 import android.os.Bundle
 import android.util.SparseArray
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.replace
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.viewmodel.EmptyViewModel
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
-import arch.cayenne.lib.base.utils.ext.ViewExt.applyInsetsForFitsSystemWindows
 import arch.cayenne.lib.common.ui.fragment.EmptyFragment
-import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
-import arch.cayenne.lib.common.utils.ext.ResourceExt.getDrawable
-import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
-import arch.cayenne.module.home.R
-import arch.cayenne.module.home.databinding.FragmentMainBinding
-import arch.cayenne.module.home.ui.view.Style
+import arch.cayenne.module.home.ui.fragment.NewHomeFragment
+import com.walisport.app.R
+import com.walisport.app.databinding.FragmentMainBinding
 import kotlin.reflect.KClass
 
 
@@ -129,7 +123,7 @@ class MainFragment : BaseFragment<EmptyViewModel, FragmentMainBinding>() {
         var f = fragments[position]
         if (f == null) {
             f = when (position) {
-                0 -> NewHomeFragment()
+                1 -> NewHomeFragment()
                 else -> EmptyFragment()
             }
             fragments[position] = f
