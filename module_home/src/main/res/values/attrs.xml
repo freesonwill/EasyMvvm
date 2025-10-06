@@ -20,4 +20,14 @@
     <declare-styleable name="NavBarContainerStyle">
         <attr name="selected_index" format="integer" />
     </declare-styleable>
+
+    <declare-styleable name="CustomFilterSideBarView">
+        <attr name="showCircle" format="boolean" />
+        <attr name="circleRadius" format="dimension|reference" />
+        <attr name="hotIcon" format="reference" />
+        <attr name="textColor" format="color|reference" />
+        <attr name="selectedBgTextColor" format="color|reference" />
+    </declare-styleable>
+
+
 </resources>
