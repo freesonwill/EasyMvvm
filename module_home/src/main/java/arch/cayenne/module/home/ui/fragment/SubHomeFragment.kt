@@ -191,16 +191,7 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
         }
 
         mViewModel.navigationToChampion.observeEvent(viewLifecycleOwner, this) { data ->
-            val navController = findNavController()
-            if (navController.currentDestination?.id == R.id.newHomeFragment) {
-                navigate(
-                    NewHomeFragmentDirections.actionNewHomeFragmentToChampionFragment(
-                        matchId = data.championMatchId,
-                        name = data.name,
-                        icon = data.icon
-                    )
-                )
-            }
+            navigate(Uri.parse("walisport://module_home/championFragment?matchId=${data.championMatchId}&name=${data.name}&icon=${data.icon}"))
         }
         mViewModel.recently7DayMatchScheduleCount.observeEvent(viewLifecycleOwner, this) { list->
             customPopup?.updateRange(list)
