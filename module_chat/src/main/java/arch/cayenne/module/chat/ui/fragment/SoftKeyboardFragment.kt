@@ -3,12 +3,14 @@ package arch.cayenne.module.chat.ui.fragment
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
+import android.hardware.input.InputManager
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.ViewTreeObserver
 import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import androidx.core.animation.addListener
 import androidx.core.view.isInvisible
@@ -19,7 +21,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.TabLayoutExt
@@ -36,8 +37,9 @@ import arch.cayenne.module.chat.manager.SoftKeyboardManager
 import arch.cayenne.module.chat.manager.interf.SoftKeyBoardMangerListener
 import arch.cayenne.module.chat.ui.adapter.SoftAdapter
 import arch.cayenne.module.chat.ui.viewmodel.ChatHomeViewModel
-import arch.cayenne.module.chat.ui.viewmodel.LiveSoftKeyboardViewModel
+import arch.cayenne.module.chat.ui.viewmodel.SoftKeyboardViewModel
 import arch.cayenne.module.chat.ui.widget.OnePageSnapHelper
+import arch.cayenne.module.chat.utils.EditTextUtils
 import arch.cayenne.module.chat.utils.EmojiEditFilter
 import arch.cayenne.module.chat.utils.EmojiUtils.BID_EMOJI_REGEX
 import com.google.android.material.tabs.TabLayout
@@ -46,11 +48,11 @@ import kotlin.reflect.KClass
 
 
 class SoftKeyboardFragment :
-    BaseFragment<LiveSoftKeyboardViewModel, FragmentLiveSoftkeyboardLayoutBinding>(),SoftKeyBoardMangerListener {
+    BaseFragment<SoftKeyboardViewModel, FragmentLiveSoftkeyboardLayoutBinding>(),SoftKeyBoardMangerListener {
     override val vbClass: KClass<FragmentLiveSoftkeyboardLayoutBinding>
         get() = FragmentLiveSoftkeyboardLayoutBinding::class
-    override val vmClass: KClass<LiveSoftKeyboardViewModel>
-        get() = LiveSoftKeyboardViewModel::class
+    override val vmClass: KClass<SoftKeyboardViewModel>
+        get() = SoftKeyboardViewModel::class
     private val chatViewModel: ChatHomeViewModel by sharedViewModel<ChatHomeViewModel, ChatHomeFragment>()
     private lateinit var softKeyBoardManager:SoftKeyboardManager
     //表情点击
@@ -169,13 +171,14 @@ class SoftKeyboardFragment :
             }
             //监听点击事件
             setOnTouchListener { v, event ->
-                if (event.action == MotionEvent.ACTION_UP) {
-                    if (softKeyBoardManager.clickKeyBoardType != KeyBoardType.SOFT_KEYBOARD && !softKeyBoardManager.isSoftKeyboardShow) {
-                            keyboardChangeClick(KeyBoardType.SOFT_KEYBOARD)
-                    }
-                    return@setOnTouchListener true
-                }
-                return@setOnTouchListener true
+//                if (event.action == MotionEvent.ACTION_UP) {
+//                    if (softKeyBoardManager.clickKeyBoardType != KeyBoardType.SOFT_KEYBOARD && !softKeyBoardManager.isSoftKeyboardShow) {
+//                            keyboardChangeClick(KeyBoardType.SOFT_KEYBOARD)
+//                    }
+////                    return@setOnTouchListener true
+//                }
+                keyboardChangeClick(KeyBoardType.SOFT_KEYBOARD)
+                return@setOnTouchListener false
             }
         }
     }
@@ -358,8 +361,8 @@ class SoftKeyboardFragment :
      * */
     fun showChat() {
         mBinding.apply {
-            ivEmoji.isVisible = true
-            ivKeyboard.isVisible = false
+//            ivEmoji.isVisible = true
+//            ivKeyboard.isVisible = false
         }
 //        mBinding.liveChatTvSize.isVisible = false
         updateEmojiView(false)
@@ -372,8 +375,8 @@ class SoftKeyboardFragment :
      * */
     private fun showSoftKeyBoard() {
         mBinding.apply {
-            ivEmoji.isVisible = true
-            ivKeyboard.isVisible = false
+//            ivEmoji.isVisible = true
+//            ivKeyboard.isVisible = false
         }
         updateEmojiView(false)
         updateWhenKeyBoardVisible(KeyBoardType.SOFT_KEYBOARD)
@@ -385,7 +388,7 @@ class SoftKeyboardFragment :
      * */
     private fun showEmoji() {
         mBinding.apply {
-            ivEmoji.isVisible = false
+//            ivEmoji.isVisible = false
 //            liveChatTvSize.isVisible = true
         }
         updateEmojiView(true)
@@ -395,7 +398,7 @@ class SoftKeyboardFragment :
 
     private fun updateEmojiView(isVisible: Boolean) {
         mBinding.apply {
-            ivKeyboard.isVisible = isVisible
+//            ivKeyboard.isVisible = isVisible
             emojiContent.isInvisible = !isVisible
         }
     }
@@ -408,11 +411,11 @@ class SoftKeyboardFragment :
             return
         }
 //        //聊天界面和软件盘、表情键盘的hint展示不同
-        mBinding.liveChatEtInput.hint = SkinnableResourceManager.getString(
-            requireContext(),
-            if (type == KeyBoardType.CHAT) R.string.live_chat_talk else R.string.live_chat_speak,
-            mViewModel.languageManager.getLanguage()
-        )
+//        mBinding.liveChatEtInput.hint = SkinnableResourceManager.getString(
+//            requireContext(),
+//            if (type == KeyBoardType.CHAT) R.string.live_chat_talk else R.string.live_chat_speak,
+//            mViewModel.languageManager.getLanguage()
+//        )
 //        mBinding.liveChatLlInput.backgroundTintList = SkinnableResourceManager.getColorStateList(
 //            requireContext(),
 //            if (type == KeyBoardType.CHAT) arch.cayenne.lib.common.R.color.input_box_2 else arch.cayenne.lib.res.R.color.card_ooo_background

@@ -6,7 +6,7 @@
 
         <variable
             name="viewModel"
-            type="arch.cayenne.module.chat.ui.viewmodel.LiveSoftKeyboardViewModel" />
+            type="arch.cayenne.module.chat.ui.viewmodel.SoftKeyboardViewModel" />
     </data>
 
     <androidx.appcompat.widget.LinearLayoutCompat
@@ -59,7 +59,7 @@
                     app:layout_constraintRight_toLeftOf="@id/live_chat_tv_send"
                     app:layout_constraintTop_toTopOf="parent">
 
-                    <arch.cayenne.module.chat.ui.widget.EmojiEditTextView
+                    <EditText
                         android:id="@+id/live_chat_et_input"
                         android:layout_width="0dp"
                         android:layout_height="40dp"

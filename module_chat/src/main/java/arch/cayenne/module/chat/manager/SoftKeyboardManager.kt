@@ -331,7 +331,10 @@ class SoftKeyboardManager(
      *打开软件盘
      * */
     fun openSoftKeyBoard() {
-        etRequestFocus()
+        if(isSoftKeyboardShow){
+            return
+        }
+//        etRequestFocus()
         EditTextUtils.showKeyboard(etInput.context, etInput)
     }
 
