@@ -2,6 +2,7 @@ package com.walisport.app.ui
 
 import android.os.Bundle
 import android.util.SparseArray
+import androidx.core.os.bundleOf
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
@@ -129,9 +130,17 @@ class MainFragment : BaseFragment<EmptyViewModel, FragmentMainBinding>() {
             f = when (position) {
                 0 -> HallFragment()
                 1 -> NewHomeFragment()
-                2 -> HomeBetSlipFragment()
+                2 -> HomeBetSlipFragment().apply{
+                    val bundle = Bundle().apply {
+                        putBoolean("statusBar",true)
+                    }
+                    arguments = bundle
+                }
                 3 -> ChatHomeFragment().apply {
-                    setMainChatStatus()
+                    val bundle = Bundle().apply {
+                        putBoolean("chat",true)
+                    }
+                    arguments = bundle
                 }
                 4 -> MeFragment()
                 else -> EmptyFragment()
