@@ -51,12 +51,12 @@ class SplashFragment : BaseFragment<SplashViewModel, FragmentSplashBinding>() {
 
     override fun initView(savedInstanceState: Bundle?) {
         mViewModel.loadMyAppSkin()
-        val splashScreen = requireActivity().installSplashScreen()
+        requireActivity().installSplashScreen()
         //splashScreen.setKeepOnScreenCondition { keep }
         lifecycleScope.launch {
             delay(300)
             keep = false
-            jumpToMainActivity()
+            jumpToMainFragment()
         }
     }
 
@@ -68,7 +68,7 @@ class SplashFragment : BaseFragment<SplashViewModel, FragmentSplashBinding>() {
 
     }
 
-    private fun jumpToMainActivity() {
+    private fun jumpToMainFragment() {
         navigate("walisport://module_home/MainFragment".deeplink(),
             NavOptions.Builder()
                 .setPopUpTo(R.id.splashFragment, inclusive = true) // 清空栈顶到导航图的起点

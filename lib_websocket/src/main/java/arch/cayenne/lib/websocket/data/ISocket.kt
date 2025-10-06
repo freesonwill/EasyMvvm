@@ -4,6 +4,8 @@ import kotlinx.coroutines.flow.SharedFlow
 
 interface ISocket<REQ, RES, State> {
 
+    val socketConnectState:SocketConnectState
+
     fun connect(host: String): SharedFlow<State>
 
     fun disConnect():Boolean

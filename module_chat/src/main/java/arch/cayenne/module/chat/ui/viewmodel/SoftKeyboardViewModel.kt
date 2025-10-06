@@ -16,7 +16,7 @@ import arch.cayenne.module.chat.data.model.EmojiData
 import arch.cayenne.module.chat.data.model.KeyBoardTabData
 import arch.cayenne.module.chat.data.model.SoftData
 
-class LiveSoftKeyboardViewModel : BaseViewModel() {
+class SoftKeyboardViewModel : BaseViewModel() {
 
     val languageManager: LanguageManager by inject { parametersOf(viewModelScope) }
     val userDataManager: UserDataManager by inject()

@@ -2,13 +2,13 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="arch.cayenne.module.chat.ui.LiveChatFragment">
+    tools:context="arch.cayenne.module.chat.ui.fragment.ChatHomeFragment">
 
     <data>
 
         <variable
             name="viewModel"
-            type="arch.cayenne.module.chat.ui.viewmodel.LiveChatViewModel" />
+            type="arch.cayenne.module.chat.ui.viewmodel.ChatHomeViewModel" />
     </data>
 
     <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
@@ -28,10 +28,14 @@
         <arch.cayenne.lib.common.ui.view.DynamicStateLayout
             android:id="@+id/dynamic_state"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="0dp"
+            android:layout_marginTop="@dimen/dp_12"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginBottom="@dimen/dp_62" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/live_chat_recycler"
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/live_chat_history"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginTop="@dimen/dp_12"

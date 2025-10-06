@@ -1,19 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph_home"
-    app:startDestination="@id/mainFragment">
-
-    <fragment
-        android:id="@+id/mainFragment"
-        android:name="arch.cayenne.module.home.ui.fragment.MainFragment"
-        android:label="fragment_main"
-        tools:layout="@layout/fragment_main" >
-
-        <deepLink app:uri="walisport://module_home/MainFragment" />
-
-    </fragment>
+    app:startDestination="@id/newHomeFragment">
 
     <fragment
         android:id="@+id/newHomeFragment"
@@ -26,12 +15,11 @@
             app:popUpToInclusive="false"/>
 
         <deepLink app:uri="walisport://module_home/NewHomeFragment" />
-        <action
-            android:id="@+id/action_newHomeFragment_to_homeBetSlipFragment"
-            app:destination="@id/homeBetSlipFragment" />
+
         <action
             android:id="@+id/action_newHomeFragment_to_collectListFragment"
             app:destination="@id/collectListFragment" />
+
     </fragment>
 
 
@@ -52,10 +40,14 @@
     <fragment
         android:id="@+id/homeBetSlipFragment"
         android:name="arch.cayenne.module.betslip.ui.fragment.HomeBetSlipFragment"
-        android:label="HomeBetSlipFragment" />
+        android:label="HomeBetSlipFragment" >
+        <deepLink app:uri="@string/nav_module_betslip_fragment" />
+    </fragment>
     <fragment
         android:id="@+id/collectListFragment"
         android:name="arch.cayenne.module.home.ui.fragment.CollectListFragment"
-        android:label="CollectListFragment" />
+        android:label="CollectListFragment" >
+        <deepLink app:uri="@string/nav_module_collectlist_fragment" />
+    </fragment>
 
 </navigation>

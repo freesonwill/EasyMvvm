@@ -80,6 +80,8 @@ dependencies {
     implementation(project(":module_message"))
     implementation(project(":module_topup"))
     implementation(project(":module_account"))
+    implementation(project(":module_me"))
+    implementation(project(":module_chat"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.androidx.appcompat)
