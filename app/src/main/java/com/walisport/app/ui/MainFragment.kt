@@ -5,11 +5,17 @@ import android.util.SparseArray
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.viewmodel.EmptyViewModel
 import arch.cayenne.lib.common.ui.fragment.EmptyFragment
+import arch.cayenne.lib.database.entity.LiveMatchBasicInfoBean
+import arch.cayenne.lib.database.entity.LiveMatchBean
+import arch.cayenne.module.betslip.ui.fragment.HomeBetSlipFragment
+import arch.cayenne.module.chat.ui.fragment.ChatHomeFragment
 import arch.cayenne.module.home.ui.fragment.NewHomeFragment
 import com.walisport.app.R
 import com.walisport.app.databinding.FragmentMainBinding
@@ -124,6 +130,10 @@ class MainFragment : BaseFragment<EmptyViewModel, FragmentMainBinding>() {
         if (f == null) {
             f = when (position) {
                 1 -> NewHomeFragment()
+                2 -> HomeBetSlipFragment()
+                3 -> ChatHomeFragment().apply {
+                    setMainChatStatus()
+                }
                 else -> EmptyFragment()
             }
             fragments[position] = f

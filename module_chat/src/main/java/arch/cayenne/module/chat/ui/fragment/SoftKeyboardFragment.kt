@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.TabLayoutExt
@@ -106,6 +107,9 @@ class SoftKeyboardFragment :
 
 
     override fun keyboardChangeClick(keyBoardType: KeyBoardType, flag: Int) {
+        if(chatViewModel.matchStatus){
+            return
+        }
         val flag1 = !chatViewModel.checkSoftKeyboardVisible()
         if (keyBoardType != KeyBoardType.CHAT && flag1) {
             softKeyBoardManager.checkSoftKeyBoardBetAmount(chatViewModel.checkBetAmountFlow.value,keyBoardType, flag)
@@ -178,7 +182,7 @@ class SoftKeyboardFragment :
 ////                    return@setOnTouchListener true
 //                }
                 keyboardChangeClick(KeyBoardType.SOFT_KEYBOARD)
-                return@setOnTouchListener false
+                return@setOnTouchListener true
             }
         }
     }
