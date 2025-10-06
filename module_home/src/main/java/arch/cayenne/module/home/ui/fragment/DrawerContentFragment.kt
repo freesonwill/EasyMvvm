@@ -102,11 +102,7 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
             llDrawerFeedback.clickNoRepeat {
                 navigatePage(arch.cayenne.lib.res.R.string.nav_module_feedback_fragment.deeplink())
             }
-            llBetSlip.clickNoRepeat {
-                onFunctionClick?.invoke()
-                navigate(NewHomeFragmentDirections.actionNewHomeFragmentToHomeBetSlipFragment())
-            }
-            llBetSlip.addScaleOnTouchAnimation()
+
             btnLogin.clickNoRepeat {
                 navigatePage(arch.cayenne.lib.res.R.string.nav_module_login_fragment.deeplink("userId" to "abcd"))
             }
