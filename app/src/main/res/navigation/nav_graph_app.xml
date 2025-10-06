@@ -32,5 +32,6 @@
     <include app:graph="@navigation/nav_graph_topup" />
     <include app:graph="@navigation/nav_graph_account" />
     <include app:graph="@navigation/nav_graph_test" />
+    <include app:graph="@navigation/nav_graph_me" />
 
 </navigation>

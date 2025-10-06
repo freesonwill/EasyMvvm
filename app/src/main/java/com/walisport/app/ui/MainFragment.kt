@@ -13,6 +13,7 @@ import arch.cayenne.lib.common.ui.fragment.EmptyFragment
 import arch.cayenne.module.home.ui.fragment.NewHomeFragment
 import com.walisport.app.R
 import com.walisport.app.databinding.FragmentMainBinding
+import com.walisport.module.me.ui.fragment.MeFragment
 import kotlin.reflect.KClass
 
 
@@ -124,6 +125,7 @@ class MainFragment : BaseFragment<EmptyViewModel, FragmentMainBinding>() {
         if (f == null) {
             f = when (position) {
                 1 -> NewHomeFragment()
+                4 -> MeFragment()
                 else -> EmptyFragment()
             }
             fragments[position] = f
