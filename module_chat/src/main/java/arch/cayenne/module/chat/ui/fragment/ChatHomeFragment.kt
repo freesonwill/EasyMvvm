@@ -194,7 +194,6 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
     }
 
    private fun observeLiveMatch(match: LiveMatchBean) {
-       match.liveInfo.charRoom = true
         updateChatUi(match)
         //比赛开始后开启聊天服务
         if (match.liveInfo.charRoom) {
