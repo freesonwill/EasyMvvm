@@ -68,7 +68,8 @@ class SoftKeyboardManager(
     val toastLiveData: MutableLiveData<String> = MutableLiveData()
     private lateinit var rootView: View
     private lateinit var mainView: View
-    private lateinit var etInput: EditText
+    private  var etInput: EditText? = null
+
 
     init {
         lifecycle.addObserver(this)
@@ -331,23 +332,26 @@ class SoftKeyboardManager(
      *打开软件盘
      * */
     fun openSoftKeyBoard() {
-        if(isSoftKeyboardShow){
-            return
+        etInput?.let {
+            EditTextUtils.showKeyboard(it.context, it)
+            etRequestFocus()
         }
-//        etRequestFocus()
-        EditTextUtils.showKeyboard(etInput.context, etInput)
     }
 
     /**
      * 禁用软件盘
      * */
     private fun hideSoftKeyBoard(flag: Int) {
-        EditTextUtils.hideKeyboard(etInput.context, etInput)
+        etInput?.let {
+            EditTextUtils.hideKeyboard(it.context, it)
+        }
     }
 
     fun etRequestFocus() {
-        etInput.requestFocus()
-        etInput.setSelection(etInput.length())
+     etInput?.let {
+         it.requestFocus()
+         it.setSelection(it.length())
+     }
     }
 
     /**
