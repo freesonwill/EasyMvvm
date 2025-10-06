@@ -10,4 +10,5 @@
     <string name="nav_module_league_fragment" translatable="false">walisport://module_live/leagueFragment</string>
     <string name="nav_module_personal_info_fragment" translatable="false">walisport://module_account/personalInfoFragment</string>
     <string name="nav_module_login_fragment" translatable="false">walisport://module_login/loginFragment?userId={userId}</string>
+    <string name="nav_module_betslip_fragment" translatable="false">walisport://module_betslip/betSlipFragment</string>
 </resources>

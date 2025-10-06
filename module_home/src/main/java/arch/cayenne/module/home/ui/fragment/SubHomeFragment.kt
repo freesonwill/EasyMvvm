@@ -4,6 +4,7 @@ import android.animation.Animator
 import android.annotation.SuppressLint
 import android.app.ActivityManager
 import android.content.Context
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -147,7 +148,9 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
             }
 
             frameBetClickArea.apply {
-                clickNoRepeatSingle { navigate(NewHomeFragmentDirections.actionNewHomeFragmentToHomeBetSlipFragment()) }
+                clickNoRepeatSingle {
+                    navigate(Uri.parse("walisport://module_betslip/betSlipFragment"))
+                }
                 addScaleOnTouchAnimation()
             }
         }
