@@ -17,6 +17,7 @@ import android.widget.LinearLayout
 import androidx.constraintlayout.widget.ConstraintLayout.GONE
 import androidx.constraintlayout.widget.ConstraintLayout.VISIBLE
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
@@ -31,9 +32,13 @@ import arch.cayenne.lib.qyplayer.transformToPlayerConfig
 import arch.cayenne.lib.qyplayer.ui.widget.LivePlayerView
 import com.walisport.module.live.R
 import arch.cayenne.lib.common.data.constants.MatchStatus
+import com.walisport.module.live.compare.VideoSourceBeanCompare
 import com.walisport.module.live.data.constants.VideoAnimatorConstants.Companion.BUTTONS_ANIMATION_DURATION
 import com.walisport.module.live.data.constants.VideoAnimatorConstants.Companion.HIDE_BUTTONS_TIMER
 import com.walisport.module.live.databinding.FragmentLiveVideoPlayerBinding
+import com.walisport.module.live.ui.LiveSourceFragment.HorizontalItemDecoration
+import com.walisport.module.live.ui.adapter.LiveVideoSourceHorizontalAdapter
+import com.walisport.module.live.ui.adapter.LiveVideoSourceSimpleAdapter
 import com.walisport.module.live.ui.popup.VideoResolutionHelper
 import com.walisport.module.live.ui.video.PlayerViewCache
 import com.walisport.module.live.ui.viewmodel.LiveMainViewModel
@@ -115,8 +120,31 @@ class LiveVideoPlayerFragment :
     override fun initView(savedInstanceState: Bundle?) {
         mBinding.model = mViewModel
 
+        //init video source recyclerview
+        with(mBinding) {
+
+            rvSource.apply {
+                itemAnimator = null
+                layoutManager =
+                    LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+                adapter = LiveVideoSourceSimpleAdapter(VideoSourceBeanCompare()).apply {
+                    post {
+                        addItemDecoration(HorizontalItemDecoration())
+                        submitList(mViewModel.liveVideoBean.value?.source)
+                    }
+
+                    setOnClickListener {
+                        mediaViewModel.switchToVideo()
+//                        mViewModel.setPlayingVideoId(it)
+                    }
+                }
+            }
+        }
+
         initVideoView()
         scheduleHideButtons()
+
+
     }
 
     private fun initVideoView() {
