@@ -26,6 +26,8 @@ class NavBarView @JvmOverloads constructor(
     private var barStyle:Style? = null
     private val binding:ItemNavbarTempleBinding = ItemNavbarTempleBinding.inflate(LayoutInflater.from(context), this)
     private var badgeMarginStartDefault by Delegates.notNull<Int>()
+    private val badgeVisible = 0
+    private val badgeGone = 1
 
     init {
         context.theme.obtainStyledAttributes(
@@ -41,20 +43,24 @@ class NavBarView @JvmOverloads constructor(
                 ta.getString(R.styleable.NavBarViewStyle_text)?.apply {
                     binding.text.apply { isVisible = true }.text = this
                 }
-                ta.getString(R.styleable.NavBarViewStyle_badge)?.apply {
-                    binding.badge.apply {
-                        isVisible = true
-                        val badgeColor = ta.getColor(R.styleable.NavBarViewStyle_badge_color, arch.cayenne.module.bet.R.color.red.getColor(context))
-                        val badgeRadius = ta.getDimension(R.styleable.NavBarViewStyle_badge_radius, 8f.dp2px.toFloat())
-                        val circleDrawable = GradientDrawable().apply {
-                            shape = GradientDrawable.RECTANGLE
-                            cornerRadius = badgeRadius
-                            setColor(badgeColor)
-                        }
-                        setBackgroundDrawable(circleDrawable)
-                    }.text = this
+                val badgeShow =  ta.getInt(R.styleable.NavBarViewStyle_badge_visibility,badgeGone) == badgeVisible
+                binding.badge.isVisible = badgeShow
+                if(badgeShow){
+                    ta.getString(R.styleable.NavBarViewStyle_badge)?.apply {
+                        binding.badge.apply {
+                            val badgeColor = ta.getColor(R.styleable.NavBarViewStyle_badge_color, arch.cayenne.module.bet.R.color.red.getColor(context))
+                            val badgeRadius = ta.getDimension(R.styleable.NavBarViewStyle_badge_radius, 8f.dp2px.toFloat())
+                            val circleDrawable = GradientDrawable().apply {
+                                shape = GradientDrawable.RECTANGLE
+                                cornerRadius = badgeRadius
+                                setColor(badgeColor)
+                            }
+                            setBackgroundDrawable(circleDrawable)
+                        }.text = this
 
+                    }
                 }
+
 
 
             } finally {
