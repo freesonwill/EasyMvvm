@@ -1,10 +1,10 @@
 package com.walisport.module.hall.ui.fragment
 
 import android.os.Bundle
-import androidx.navigation.fragment.findNavController
+import arch.cayenne.lib.base.data.constants.StatusBarMode
+import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.utils.ext.touchBackPressed
-import com.walisport.module.hall.R
 import com.walisport.module.hall.databinding.FragmentHallBinding
 import com.walisport.module.hall.ui.viewmodel.HallViewModel
 import kotlin.reflect.KClass
@@ -19,9 +19,7 @@ class HallFragment : BaseFragment<HallViewModel, FragmentHallBinding>() {
     override val vmClass: KClass<HallViewModel> = HallViewModel::class
 
     override fun initView(savedInstanceState: Bundle?) {
-        mBinding.titleBar.loadGeneralTitleBar(R.string.hall, {
-            findNavController().navigateUp()
-        })
+
         mBinding.root.touchBackPressed()
     }
 
@@ -32,5 +30,14 @@ class HallFragment : BaseFragment<HallViewModel, FragmentHallBinding>() {
     override suspend fun createObserver() {
 
     }
+
+    override fun onStart() {
+        super.onStart()
+        mBinding.root.fitsSystemWindows = false
+        StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND()
+        setStatusBar(StatusBarConfig, mBinding.root)
+    }
+
+
 
 }
