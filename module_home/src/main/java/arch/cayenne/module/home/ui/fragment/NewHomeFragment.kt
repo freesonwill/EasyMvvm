@@ -22,6 +22,8 @@ import arch.cayenne.lib.common.utils.DensityInfo
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavResultExt.observeResult
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
+import arch.cayenne.lib.common.utils.ext.ResourceExt.getDrawable
+import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
 import arch.cayenne.lib.common.utils.ext.TabLayoutExt
 import arch.cayenne.lib.common.utils.ext.TabLayoutExt.addOnTabSelectedListener2
@@ -38,6 +40,7 @@ import arch.cayenne.module.home.data.constants.PlayType
 import arch.cayenne.module.home.databinding.FragmentNewHomeBinding
 import arch.cayenne.module.home.ui.adapter.SubHomePagerAdapter
 import arch.cayenne.module.home.ui.view.HomeTabMediator
+import arch.cayenne.module.home.ui.view.Style
 import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
 import com.google.android.material.tabs.TabLayout
 import kotlin.reflect.KClass
@@ -291,7 +294,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             }
 
 
-            mBinding.drawerLayout.addDrawerListener(object : DrawerLayout.DrawerListener {
+            drawerLayout.addDrawerListener(object : DrawerLayout.DrawerListener {
                 override fun onDrawerSlide(drawerView: View, slideOffset: Float) {}
                 override fun onDrawerOpened(drawerView: View) {
                     initDrawerContent()

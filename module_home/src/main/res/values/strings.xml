@@ -67,4 +67,12 @@
     <string name="no_more_data">没有更多了</string>
     <string name="key_enable_horizontal_scroll">enableHorizontalScroll</string>
     <string name="new_home_vp_sub_key">newHomeVpSubKey</string>
+
+    <string name="title_home">首页</string>
+    <string name="title_sport">体育</string>
+    <string name="title_betslip">注单</string>
+    <string name="title_chat">聊天</string>
+    <string name="title_me">我</string>
+
+
 </resources>

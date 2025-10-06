@@ -119,6 +119,7 @@
     <color name="race_line">#54555E</color>
     <color name="list_separator">#1D1F2A</color>
     <color name="dividing_line">#14FFFFFF</color>
+    <color name="tab_indicator_color">#00D271</color>
     <color name="tab_indicator_color_line">#00E0E5</color>
     <color name="tab_indicator_color">#00D271</color>
     <color name="color_2c3c3e">#2c3c3e</color>
