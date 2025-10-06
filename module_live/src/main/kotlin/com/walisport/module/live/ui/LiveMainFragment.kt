@@ -26,7 +26,6 @@ import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.base.utils.ext.ViewExt.applyInsetsForFitsSystemWindows
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
-import arch.cayenne.lib.common.data.constants.SkinType
 import arch.cayenne.lib.common.utils.CustomTabIndicatorUtils
 import arch.cayenne.lib.common.utils.ImmersionBarUtils.immersionBarSkinTypeExt
 import arch.cayenne.lib.common.utils.ext.DimensionExt.px2sp
@@ -57,7 +56,7 @@ import kotlin.reflect.KClass
 import arch.cayenne.lib.common.utils.ext.setupViewPagerScroll
 import arch.cayenne.lib.common.utils.ext.startFadeAnim
 import arch.cayenne.module.bet.ui.fragment.BetSheetFragment
-import arch.cayenne.module.chat.ui.LiveChatFragment
+import arch.cayenne.module.chat.ui.fragment.ChatHomeFragment
 
 /**
  * 直播详情页
@@ -455,16 +454,16 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         }
     }
 
-    private fun getChatFragment():LiveChatFragment?{
+    private fun getChatFragment(): ChatHomeFragment?{
         val adapter = mBinding.vpPage.adapter?.let { it as PagerAdapter }
         val index = adapter!!.pages.indexOfFirst { it.title == R.string.live_chat.getString() }
         val tag = "f${adapter.getItemId(index)}"
-        val fragment = childFragmentManager.findFragmentByTag(tag)?.let { it as LiveChatFragment }
+        val fragment = childFragmentManager.findFragmentByTag(tag)?.let { it as ChatHomeFragment }
        return fragment
     }
 
-    private fun createChatFragment():LiveChatFragment{
-        val fragment = LiveChatFragment()
+    private fun createChatFragment(): ChatHomeFragment {
+        val fragment = ChatHomeFragment()
         fragment.setMatchLiveData(mViewModel.matchId,mViewModel.mainMatch)
         return fragment
     }
