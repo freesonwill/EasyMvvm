@@ -57,6 +57,8 @@
     <fragment
         android:id="@+id/collectListFragment"
         android:name="arch.cayenne.module.home.ui.fragment.CollectListFragment"
-        android:label="CollectListFragment" />
+        android:label="CollectListFragment" >
+        <deepLink app:uri="@string/nav_module_collectlist_fragment" />
+    </fragment>
 
 </navigation>
