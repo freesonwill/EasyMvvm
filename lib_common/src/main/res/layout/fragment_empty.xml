@@ -1,6 +1,20 @@
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<arch.cayenne.lib.skin.widget.SkinnableConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/main_background"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="@dimen/dp_60"
+        android:textColor="@color/main_text"
+        android:textSize="@dimen/sp_17"
+        app:skinnableFontWeight="500"
+        android:text="体育"
+        android:id="@+id/title"
+        />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
