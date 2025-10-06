@@ -305,36 +305,7 @@
                 android:layout_marginTop="@dimen/dp_4"/>
         </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/ll_bet_slip"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_11"
-            android:layout_marginBottom="@dimen/dp_12"
-            android:gravity="center"
-            android:orientation="vertical"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/li_title">
 
-            <arch.cayenne.lib.skin.widget.SkinnableImageView
-                android:id="@+id/iv_bet_slip"
-                android:layout_width="@dimen/dp_38"
-                android:layout_height="@dimen/dp_38"
-                android:scaleType="fitXY"
-                android:src="@drawable/ic_drawer_bet_slip" />
-
-            <arch.cayenne.lib.skin.widget.SkinnableTextView
-                android:id="@+id/tv_bet_slip"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:text="@string/bet_title"
-                android:textColor="@color/drawer_common_function_text"
-                android:textSize="@dimen/sp_13"
-                android:layout_marginTop="@dimen/dp_4"/>
-        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/ll_drawer_tutorial"

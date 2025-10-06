@@ -7,6 +7,7 @@ import arch.cayenne.lib.websocket.data.ApiCode
 import arch.cayenne.lib.websocket.data.ConnectState
 import arch.cayenne.lib.websocket.data.IRequest
 import arch.cayenne.lib.websocket.data.IResponse
+import arch.cayenne.lib.websocket.data.ISocketManager
 import arch.cayenne.lib.websocket.data.SocketConnectState
 import arch.cayenne.lib.websocket.data.ThreadSafeAutoIncrementID
 import kotlinx.coroutines.CoroutineScope
@@ -24,7 +25,7 @@ import java.util.concurrent.Executors
 
 class ChatWebSocketManager(
     private val socket: ChatSocketClientService
-) {
+): ISocketManager {
     private val TAG = this::class.java.simpleName
     private val workingScope by lazy { CoroutineScope(Dispatchers.IO) }
     private var heartbeatJob: Job? = null
@@ -158,8 +159,9 @@ class ChatWebSocketManager(
         heartbeatDispatcher?.close()
     }
 
-    fun getSocketFlow(): Flow<IResponse> = socket.responseObserve()
-    fun getConnectStateFlow(): Flow<ConnectState> = socket.stateChangeObserve()
+    override fun getSocketFlow(): Flow<IResponse> = socket.responseObserve()
+    override fun getConnectStateFlow(): Flow<ConnectState> = socket.stateChangeObserve()
+    override val socketConnectState: SocketConnectState get() = socket.socketConnectState
     fun getSocketConnectStateFlow(): StateFlow<SocketConnectState> = socket.socketConnectStateFlow()
     fun getMessageFlow():Flow<IResponse> = socket.messageFlow()
 }
