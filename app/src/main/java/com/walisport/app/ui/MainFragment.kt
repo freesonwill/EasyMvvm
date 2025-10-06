@@ -19,6 +19,7 @@ import arch.cayenne.module.chat.ui.fragment.ChatHomeFragment
 import arch.cayenne.module.home.ui.fragment.NewHomeFragment
 import com.walisport.app.R
 import com.walisport.app.databinding.FragmentMainBinding
+import com.walisport.module.me.ui.fragment.MeFragment
 import kotlin.reflect.KClass
 
 
@@ -134,6 +135,7 @@ class MainFragment : BaseFragment<EmptyViewModel, FragmentMainBinding>() {
                 3 -> ChatHomeFragment().apply {
                     setMainChatStatus()
                 }
+                4 -> MeFragment()
                 else -> EmptyFragment()
             }
             fragments[position] = f
