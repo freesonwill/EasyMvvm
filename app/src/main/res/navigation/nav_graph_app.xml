@@ -33,5 +33,6 @@
     <include app:graph="@navigation/nav_graph_account" />
     <include app:graph="@navigation/nav_graph_test" />
     <include app:graph="@navigation/nav_graph_me" />
+    <include app:graph="@navigation/nav_graph_hall" />
 
 </navigation>
