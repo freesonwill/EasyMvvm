@@ -36,6 +36,8 @@
         <argument
             android:name="icon"
             app:argType="string" />
+
+        <deepLink app:uri="@string/nav_module_champion_fragment" />
     </fragment>
     <fragment
         android:id="@+id/homeBetSlipFragment"

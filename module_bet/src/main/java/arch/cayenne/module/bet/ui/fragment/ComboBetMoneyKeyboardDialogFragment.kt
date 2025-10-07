@@ -118,7 +118,7 @@ class ComboBetMoneyKeyboardDialogFragment private constructor():
             layoutParams.gravity = Gravity.TOP or Gravity.END
             val triangleHeight = mBinding.triangle.measuredHeight // 預設高度
             layoutParams.x = 10.dp2px
-            layoutParams.y = positionY - dialogHeight - statusBarHeight - triangleHeight
+            layoutParams.y = positionY - dialogHeight - statusBarHeight - 3.dp2px
             w.attributes = layoutParams
 
             mBinding.root.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
@@ -183,6 +183,7 @@ class ComboBetMoneyKeyboardDialogFragment private constructor():
             }
 
         })
+        mBinding.numberKeyboard.setOtherTextSize(13f)
     }
 
     override fun initListener() {
