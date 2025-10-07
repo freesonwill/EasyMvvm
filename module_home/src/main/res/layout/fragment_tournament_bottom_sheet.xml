@@ -7,29 +7,17 @@
     android:layout_height="match_parent"
     android:background="@drawable/bg_bottom_sheet_round_top">
 
-    <View
-        android:id="@+id/view_tournament_mask"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:alpha="0"
-        android:background="@color/drawer_scrim_color"
-        android:clickable="true"
-        android:focusable="true"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/tv_tournament_section_title"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_52"
-        android:layout_marginStart="@dimen/dp_17"
         android:paddingTop="@dimen/dp_16"
         android:text="@string/tournament_section_title"
-        android:textColor="@color/home_main_text"
+        android:textColor="@color/color_FFFFFF"
         android:textSize="15sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         tools:text="選聯賽" />
 
     <arch.cayenne.lib.skin.widget.SkinnableView
@@ -76,11 +64,11 @@
         android:id="@+id/iv_home_league_collapse"
         android:layout_width="63dp"
         android:layout_height="@dimen/dp_52"
-        android:paddingStart="25dp"
-        android:paddingEnd="0dp"
-        android:paddingTop="@dimen/dp_16"
-        android:paddingBottom="@dimen/dp_14"
-        android:src="@drawable/ic_league_tabs_collapse"
+        android:paddingStart="23dp"
+        android:paddingTop="@dimen/dp_12"
+        android:paddingEnd="12dp"
+        android:paddingBottom="@dimen/dp_12"
+        android:src="@drawable/ic_close"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -96,25 +84,59 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="@dimen/dp_4"
+        android:paddingBottom="@dimen/dp_20"
         android:overScrollMode="never"
         android:scrollbars="none"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintVertical_bias="0"
+        app:layout_constraintBottom_toTopOf="@+id/tv_reset"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ll_search_bar" />
 
     <arch.cayenne.module.home.ui.view.CustomFilterSideBarView
         android:id="@+id/ll_index_container"
-        android:layout_width="160dp"
-        android:layout_height="wrap_content"
+        android:layout_width="120dp"
+        android:layout_height="0dp"
         android:layout_marginStart="0dp"
-        android:layout_marginTop="@dimen/dp_52"
-        android:layout_marginEnd="@dimen/dp_7"
-        android:layout_marginBottom="4dp"
+        android:layout_marginTop="@dimen/dp_14"
+        android:layout_marginEnd="@dimen/dp_10"
+        android:layout_marginBottom="@dimen/dp_20"
         android:gravity="end"
-        app:showCircle="false"
+        app:layout_constraintBottom_toTopOf="@+id/tv_reset"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/rv_tournament_list" />
+
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
+        android:id="@+id/tv_reset"
+        android:layout_width="@dimen/dp_162"
+        android:layout_height="@dimen/dp_48"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_19"
+        android:layout_marginBottom="35dp"
+        android:background="@drawable/selector_round_button_bg"
+        android:gravity="center"
+        android:text="@string/home_calendar_reset"
+        android:textColor="@color/selector_round_button_text"
+        android:textSize="@dimen/sp_14"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/tv_confirm"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
+        android:id="@+id/tv_confirm"
+        android:layout_width="@dimen/dp_162"
+        android:layout_height="@dimen/dp_48"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginBottom="35dp"
+        android:background="@drawable/selector_round_button_bg"
+        android:gravity="center"
+        android:text="@string/btn_confirm"
+        android:textColor="@color/selector_round_button_text"
+        android:textSize="@dimen/sp_14"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/tv_reset" />
 
     <arch.cayenne.lib.common.ui.view.DynamicStateLayout
         android:id="@+id/cl_dynamics"
