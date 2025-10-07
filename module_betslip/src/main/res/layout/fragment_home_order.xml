@@ -6,54 +6,87 @@
     android:background="@color/color_1E1E1E">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/cl_title"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_46"
-        app:layout_constraintTop_toTopOf="parent">
-
-
-        <arch.cayenne.lib.skin.widget.SkinnableTextView
-            android:id="@+id/tv_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginVertical="11dp"
-            android:text="注单"
-            android:textColor="@color/navigation_bar"
-            android:textSize="17sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:skinnableFontWeight="500" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_top_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl_ham"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <arch.cayenne.lib.skin.widget.SkinnableImageView
+                android:id="@+id/iv_ham"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="12dp"
+                android:layout_marginVertical="13dp"
+                android:src="@drawable/icon_ham"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <View
+                android:id="@+id/dot_ham"
+                android:layout_width="8dp"
+                android:layout_height="8dp"
+                android:layout_marginStart="17dp"
+                android:layout_marginTop="1dp"
+                android:background="@drawable/shape_8dp"
+                android:backgroundTint="@color/color_FE3666"
+                android:visibility="gone"
+                app:layout_constraintStart_toStartOf="@id/iv_ham"
+                app:layout_constraintTop_toTopOf="@id/iv_ham" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tab_layout"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="26dp"
             android:background="@android:color/transparent"
+            android:clipToPadding="false"
+            android:paddingBottom="0dp"
+            app:tabPaddingBottom="4dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:tabIndicatorHeight="0dp"
-            app:tabMinWidth="0dp"
+            app:tabGravity="center"
+            app:tabIndicator="@drawable/bg_order_indicator"
+            app:tabIndicatorAnimationDuration="250"
+            app:tabIndicatorAnimationMode="linear"
+            app:tabIndicatorColor="@color/color_00E0E5"
+            app:tabIndicatorFullWidth="false"
+            app:tabIndicatorGravity="bottom"
+            app:tabIndicatorHeight="2dp"
             app:tabMode="fixed"
+            app:tabPaddingEnd="12dp"
+            app:tabPaddingStart="12dp"
             app:tabRippleColor="@null"
             app:tabSelectedTextColor="@color/color_FFFFFF"
             app:tabTextAppearance="@style/OrderTabTextStyle"
             app:tabTextColor="@color/color_C0C0C0" />
 
+        <ImageView
+            android:id="@+id/iv_customer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="12dp"
+            android:paddingVertical="13dp"
+            android:src="@drawable/icon_customer"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/view_pager"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"

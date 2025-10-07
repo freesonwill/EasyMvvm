@@ -79,4 +79,7 @@
     <string name="live_bet_in_early_settle">提前结算中</string>
     <string name="hint_less_amount_early_settle">小于最小投注额，无法部分提前结算</string>
     <string name="title_combo_bet_odds">%d串%d</string>
+
+    <string name="title_order_game">游戏</string>
+    <string name="title_order_sport">体育</string>
 </resources>
