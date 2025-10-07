@@ -20,6 +20,7 @@ import arch.cayenne.lib.common.utils.ext.ResourceExt.getColor
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.ext.touchBackPressed
+import arch.cayenne.lib.database.entity.LiveMatchBean
 import com.github.lzyzsd.jsbridge.BridgeWebViewClient
 import com.github.lzyzsd.jsbridge.DefaultHandler
 import com.walisport.module.live.databinding.FragmentLiveMatchAnimationBinding
@@ -30,6 +31,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlin.math.log
 import kotlin.reflect.KClass
 
 
@@ -80,16 +82,7 @@ class LiveMatchAnimationFragment :
 //            scheduleHideButtons()
             mediaViewModel.chooseSourceView()
         }
-        mBinding.animationView.touchBackPressed(){
-            mainViewModel.observeMainMatch.value?.basicInfo.apply {
-                LogUtils.e("touchBackPressed --------this?.status")
-                // WebView场景， 除开未开赛和中场休息状态， 其余场景都要返回
-                if (this?.status !in listOf(MatchStatus.NOT_STARTED.code, MatchStatus.PAUSED.code)) {
-                    requireActivity().onBackPressedDispatcher.onBackPressed()
-                }
-            }
-        }
-
+        mBinding.backView.touchBackPressed()
 //        mBinding.animationView.setOnTouchListener { v, event -> //单击事件
 //            if (buttonsDisplaying) {
 //                buttonsDisplaying = false
@@ -112,7 +105,13 @@ class LiveMatchAnimationFragment :
             mViewModel.setMatchId(it)
             mViewModel.createObserver()
         }
-
+        mainViewModel.status.observe(viewLifecycleOwner){
+            if (it !in listOf(MatchStatus.NOT_STARTED.code, MatchStatus.PAUSED.code)) {
+                mBinding.backView.visibility = View.VISIBLE
+            }else{
+                mBinding.backView.visibility = View.GONE
+            }
+        }
         with(mViewModel) {
             //比赛动画url监听
             animationLiveUrl.observe(viewLifecycleOwner) { url ->

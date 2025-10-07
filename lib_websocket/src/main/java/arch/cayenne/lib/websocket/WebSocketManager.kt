@@ -10,8 +10,10 @@ import arch.cayenne.lib.websocket.data.ConnectState
 import arch.cayenne.lib.websocket.data.IRequest
 import arch.cayenne.lib.websocket.data.IResponse
 import arch.cayenne.lib.websocket.data.ISocket
+import arch.cayenne.lib.websocket.data.ISocketManager
 import arch.cayenne.lib.websocket.data.InvalidLoginError
 import arch.cayenne.lib.websocket.data.SocketRequestData
+import arch.cayenne.lib.websocket.data.SocketConnectState
 import arch.cayenne.lib.websocket.data.ThreadSafeAutoIncrementID
 import arch.cayenne.lib.websocket.extension.asRemoteRequest
 import galaxy.client.proto.Client
@@ -28,7 +30,7 @@ import java.util.concurrent.Executors
 class WebSocketManager(
     private val socket : ISocket<IRequest, IResponse, ConnectState>,
     private val connectionManager: ConnectivityManager
-) {
+): ISocketManager {
     private val TAG = this::class.java.simpleName
     private val workingScope by lazy { CoroutineScope(Dispatchers.IO) }
 
@@ -176,7 +178,8 @@ class WebSocketManager(
         heartbeatDispatcher?.close()
     }
 
-    fun getSocketFlow(): Flow<IResponse> = socket.responseObserve()
-    fun getConnectStateFlow(): Flow<ConnectState> = socket.stateChangeObserve()
+    override fun getSocketFlow(): Flow<IResponse> = socket.responseObserve()
+    override fun getConnectStateFlow(): Flow<ConnectState> = socket.stateChangeObserve()
 
+    override val socketConnectState: SocketConnectState get() = socket.socketConnectState
 }

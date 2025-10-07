@@ -7,22 +7,12 @@
     app:touchSlop="DEFAULT"
     android:focusableInTouchMode="true"
     android:focusable="true"
-    android:backgroundTint="@color/bottom_sheet_main_background"
-    android:background="@drawable/bg_base_bottom_sheet_dialog">
+    android:background="@drawable/bg_bet_dialog">
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/main"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent" />
-
-    <ImageView
-        android:id="@+id/top"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintDimensionRatio="375:153"
-        app:layout_constraintTop_toTopOf="parent"
-        android:scaleType="fitXY"
-        android:src="@mipmap/bg_bet_sheet_top"/>
 
 </arch.cayenne.lib.common.ui.view.BlockSlideConstrainLayout >

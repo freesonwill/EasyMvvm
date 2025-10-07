@@ -231,8 +231,11 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
     private fun setBetData(data: BetSelectionBean) {
         ViewHelper.bindBetSheet(1, data, mBinding.layoutBet)
         mBinding.btnCollusion.isEnabled = data.isParlay
-        mBinding.tvCollusionHint.alpha = if (data.isParlay) 1.0f else 0.7f
+        mBinding.tvCollusionHint.alpha = if (data.isParlay) 1.0f else 0.3f
+        mBinding.ivCollusionHint.alpha = if (data.isParlay) 1.0f else 0.3f
         mBinding.clBet.isEnabled = data.isActive
+        mBinding.tvBetHint.alpha = if (data.isActive) 1.0f else 0.3f
+        mBinding.tvBetMoney.alpha = if (data.isActive) 0.7f else 0.1f
         mBinding.layoutBet.ivDelete.isVisible = false
     }
 
