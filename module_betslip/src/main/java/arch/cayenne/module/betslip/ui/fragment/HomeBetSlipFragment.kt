@@ -18,9 +18,12 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.graphics.drawable.DrawableCompat
+import androidx.core.view.isInvisible
 import androidx.fragment.app.FragmentManager
 import androidx.navigation.fragment.findNavController
+import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.PagerBean
+import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.adapter.PagerAdapter
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
@@ -78,6 +81,11 @@ class HomeBetSlipFragment : BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsl
 
         })
         SportPickerFragment.create(childFragmentManager, mBinding.fragmentSportFilter.id)
+        //首页注单不需要ivBack
+        arguments?.let {
+            val value = it.getBoolean("statusBar",false)
+            mBinding.ivBack.isInvisible = value
+        }
     }
 
     override fun initData() {
@@ -407,6 +415,18 @@ class HomeBetSlipFragment : BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsl
     override fun onResume() {
         super.onResume()
         DatePickerFragment.create(this)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        arguments?.let {//首页的注单需要自己加载statusBar
+             val value = it.getBoolean("statusBar",false)
+            if(value){
+                mBinding.root.fitsSystemWindows = false
+                StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND()
+                setStatusBar(StatusBarConfig,mBinding.root)
+            }
+        }
     }
 
     override fun onDestroyView() {

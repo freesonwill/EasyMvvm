@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    >
+
+    <TextView
+        android:id="@+id/tv1"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:background="@color/teal_700"
+        android:gravity="center"
+        android:text="@string/hello_blank_fragment"
+        android:textSize="30sp" />
+
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/nav_host2"
+        android:name="androidx.navigation.fragment.HideShowNavHostFragment"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_200"
+        app:defaultNavHost="false"
+        app:navGraph="@navigation/nav_graph_host2"
+        android:background="@color/green_for_white_bg"
+        />
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/nav_host3"
+        android:name="androidx.navigation.fragment.HideShowNavHostFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:navGraph="@navigation/nav_graph_host2"
+        app:defaultNavHost="false" />
+
+</LinearLayout>

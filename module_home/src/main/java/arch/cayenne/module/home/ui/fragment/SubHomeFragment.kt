@@ -4,6 +4,7 @@ import android.animation.Animator
 import android.annotation.SuppressLint
 import android.app.ActivityManager
 import android.content.Context
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -35,6 +36,7 @@ import arch.cayenne.lib.common.utils.ext.startFadeAnim
 import arch.cayenne.lib.common.utils.helper.BounceEdgeEffectHelper
 import arch.cayenne.lib.database.entity.TournamentDataModel
 import arch.cayenne.module.home.R
+import arch.cayenne.module.home.data.constants.HomeState
 import arch.cayenne.module.home.data.constants.PlayType
 import arch.cayenne.module.home.databinding.FragmentSubHomeBinding
 import arch.cayenne.module.home.databinding.ItemDateTabBinding
@@ -136,7 +138,9 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
             setTopMaskListener()
 
             frameFavoriteClickArea.apply {
-                clickNoRepeatSingle { navigate(NewHomeFragmentDirections.actionNewHomeFragmentToCollectListFragment()) }
+                clickNoRepeatSingle {
+                    navigate(Uri.parse("walisport://module_home/collectListFragment"))
+                }
                 addScaleOnTouchAnimation()
             }
 
@@ -146,7 +150,9 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
             }
 
             frameBetClickArea.apply {
-                clickNoRepeatSingle { navigate(NewHomeFragmentDirections.actionNewHomeFragmentToHomeBetSlipFragment()) }
+                clickNoRepeatSingle {
+                    navigate(Uri.parse("walisport://module_betslip/betSlipFragment"))
+                }
                 addScaleOnTouchAnimation()
             }
         }
@@ -167,7 +173,7 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
         with(mViewModel) {
             sportsStatistical.observeEvent(viewLifecycleOwner, this@SubHomeFragment) {
                 tempSportData = it
-                if(currentPlayTypeId != PlayType.TODAY.id || isAllTabLoaded) {
+                if (mViewModel.isAllowTabLoad) {
                     drawSportList()
                 }
             }
@@ -185,16 +191,7 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
         }
 
         mViewModel.navigationToChampion.observeEvent(viewLifecycleOwner, this) { data ->
-            val navController = findNavController()
-            if (navController.currentDestination?.id == R.id.newHomeFragment) {
-                navigate(
-                    NewHomeFragmentDirections.actionNewHomeFragmentToChampionFragment(
-                        matchId = data.championMatchId,
-                        name = data.name,
-                        icon = data.icon
-                    )
-                )
-            }
+            navigate(Uri.parse("walisport://module_home/championFragment?matchId=${data.championMatchId}&name=${data.name}&icon=${data.icon}"))
         }
         mViewModel.recently7DayMatchScheduleCount.observeEvent(viewLifecycleOwner, this) { list->
             customPopup?.updateRange(list)
@@ -224,6 +221,13 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
         homeViewModel.notifySubHomeRefresh.observeEvent(viewLifecycleOwner, this) {
             sportsListAdapter.notifyDataSetChanged()
             mViewModel.getCurrentTournament()
+        }
+
+        homeViewModel.apiStateListener.observe(viewLifecycleOwner) {
+            if (it is HomeState.FirstMatchListComplete && !mViewModel.isAllowTabLoad) {
+                mViewModel.isAllowTabLoad = true
+                handleAllTabLoaded()
+            }
         }
     }
 
@@ -350,13 +354,6 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
                     val firstFragmentItemId  = leaguePagerAdapter?.getItemId(0)?: return
                     if (f.tag == "f$firstFragmentItemId") {
                         startObservePageMatchListChange(0)
-                        allTabCompleteObserveJob?.cancel()
-                        allTabCompleteObserveJob = launch {
-                            (f as? MatchListPagerFragment)?.getSubmitListCompletedFlow()?.collect {
-                                mViewModel.isAllTabLoaded = true
-                                handleAllTabLoaded()
-                            }
-                        }
                     }
                 }
 
@@ -709,7 +706,7 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
                     }
                 )
 
-                if(mViewModel.currentPlayTypeId != PlayType.TODAY.id || mViewModel.isAllTabLoaded) {
+                if(mViewModel.isAllowTabLoad) {
                     drawTournamentTab()
                 }
 
@@ -791,6 +788,7 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
         parentFragmentManager.setFragmentResult(key, result)
     }
     private fun initChampionTournamentLayout() {
+        mBinding.aplHomeBanner.visibility = View.GONE
         val tournamentListFragment = TournamentListFragment.newInstance(
             playTypeId = PlayType.CHAMPION.id,
             sportId = mViewModel.currentSportId,

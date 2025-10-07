@@ -23,11 +23,6 @@ class SplashRepository(
         countDown = 2_000
     }
 
-    fun saveUserData(uid: Int, token: String) {
-        userDataManager.setKeyValue(UserDataKey.KEY_UID, uid)
-        userDataManager.setKeyValue(UserDataKey.KEY_TOKEN, token)
-    }
-
     //获取皮肤背景
     fun getSkinType(): String {
         return userDataManager.getValue(UserDataKey.KEY_SKIN, SkinType.DEFAULT)

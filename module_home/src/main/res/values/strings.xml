@@ -15,6 +15,9 @@
     <string name="home_calendar_reset">重置</string>
     <string name="home_tournament_more">更多</string>
 
+    <!-- AppBarLayout behavior -->
+    <string name="appbar_scrolling_view_behavior">com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior</string>
+
     <!--Sport name-->
     <string name="title_init">預設</string>
     <string name="title_soccer">足球</string>
@@ -64,4 +67,12 @@
     <string name="no_more_data">没有更多了</string>
     <string name="key_enable_horizontal_scroll">enableHorizontalScroll</string>
     <string name="new_home_vp_sub_key">newHomeVpSubKey</string>
+
+    <string name="title_home">首页</string>
+    <string name="title_sport">体育</string>
+    <string name="title_betslip">注单</string>
+    <string name="title_chat">聊天</string>
+    <string name="title_me">我</string>
+
+
 </resources>

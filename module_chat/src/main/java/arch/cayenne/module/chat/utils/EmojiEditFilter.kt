@@ -10,7 +10,7 @@ import android.widget.TextView
  * @date: 13/6/25 18:22
  * @description: 单独计算表情特殊字符，并限制最大输入长度
  */
-class EmojiEditFilter(val tvSize:TextView) : InputFilter {
+class EmojiEditFilter() : InputFilter {
 
     private val normalEmojiPattern = Regex(EmojiUtils.NORMAL_EMOJI_REGEX)
     private val bidEmojiPattern = Regex(EmojiUtils.BID_EMOJI_REGEX)
@@ -40,7 +40,7 @@ class EmojiEditFilter(val tvSize:TextView) : InputFilter {
         val newEffectiveLength = calculateEffectiveLength(newText)
         // 如果新长度未超过限制，允许输入
         if (newEffectiveLength <= maxLength) {
-            tvSize.text = "$newEffectiveLength/$maxLength"
+//            tvSize.text = "$newEffectiveLength/$maxLength"
             return source // 返回null表示接受原始输入
         }
 
@@ -55,7 +55,7 @@ class EmojiEditFilter(val tvSize:TextView) : InputFilter {
             // 如果输入的是普通文本
             !source.toString().contains(normalEmojiPattern) && !source.toString()
                 .contains(bidEmojiPattern) -> {
-                tvSize.text = "${remaining+originalEffectiveLength}/$maxLength"
+//                tvSize.text = "${remaining+originalEffectiveLength}/$maxLength"
                 source.subSequence(start, start + remaining)
             }
 

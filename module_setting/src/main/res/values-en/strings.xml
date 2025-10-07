@@ -1,7 +1,17 @@
 <resources>
     <string name="setting">Setting</string>
     <string name="pan">Pan</string>
+    <string name="account">Account</string>
+    <string name="name_av">AVAVA</string>
+    <string name="tip_new">Last Version</string>
+    <string name="set_bind_mobile">Bind Mobile Number</string>
+    <string name="set_user_id">User ID</string>
     <string name="common">Common</string>
+    <string name="about">About</string>
+    <string name="change_user">Switch Account</string>
+    <string name="logout_user">Logout</string>
+    <string name="about_us">About Us</string>
+    <string name="tip_copy_suc">Copy Succeed</string>
     <string name="menu_europe">Europe</string>
     <string name="menu_hk">HongKong</string>
     <string name="menu_odds_display">Odds Display</string>
@@ -17,10 +27,7 @@
     <string name="menu_close">Close</string>
     <string name="theme_class">Class</string>
     <string name="theme_black_blue">Black Blue</string>
-    <string name="theme_black_green">Black Green</string>
-    <string name="theme_black_red">Black Red</string>
     <string name="theme_white_blue">White Blue</string>
-    <string name="theme_white_green">White Green</string>
     <string name="cancel">Cancel</string>
     <string name="confirm">Confirm</string>
     <string name="method_odds_display">Odds Display Method</string>

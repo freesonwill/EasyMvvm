@@ -74,6 +74,8 @@ class ChatSocketClientService(
     }
     private var webSocket: WebSocket? = null
     private var host: String = ""
+    override val socketConnectState: SocketConnectState
+        get() = currentState
 
     override fun connect(host: String): SharedFlow<ConnectState> {
         "connect $currentState".logd(this@ChatSocketClientService.javaClass.simpleName)

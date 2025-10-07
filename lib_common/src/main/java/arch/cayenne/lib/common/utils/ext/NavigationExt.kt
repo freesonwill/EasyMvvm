@@ -173,6 +173,25 @@ object NavigationExt {
         findNavController().navigate(uriWithArgs,navOptions, navigatorExtras)
     }
 
+    fun Fragment.navigateWithAnimRes(
+        deepLink: Uri,
+        enterAnim:Int = R.anim.slide_in_right,
+        exitAnim:Int = R.anim.slide_out_left,
+        popEnterAnim:Int = R.anim.slide_in_left,
+        popExitAnim:Int = R.anim.slide_out_right,
+        navigatorExtras: Navigator.Extras? = null,
+    ) {
+        if(isNavigationDebounced("$this,uri:$deepLink")) return
+        val navOptions = NavOptions.Builder()
+            .setEnterAnim(enterAnim)
+            .setExitAnim(exitAnim)
+            .setPopEnterAnim(popEnterAnim)
+            .setPopExitAnim(popExitAnim)
+            .build()
+        //"deepLink--->$deepLink,uriWithArgs:$uriWithArgs".logd(TAG)
+        findNavController().navigate(deepLink,navOptions, navigatorExtras)
+    }
+
     fun Fragment.navigate(
         directions: NavDirections,
         navOptions: NavOptions? = defaultNavOptions,

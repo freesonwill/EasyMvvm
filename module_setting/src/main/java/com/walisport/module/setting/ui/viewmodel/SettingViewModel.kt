@@ -65,23 +65,12 @@ class SettingViewModel : BaseViewModel() {
         return repository.getLanguageType()
     }
 
-    //设置皮肤背景，只换肤不写入记录，写入记录得调用setSkinRecord
     fun setSkinType(type: String) {
         viewModelScope.launch {
             skinManager.loadSkin(type)
             _skinType.value = type
+            repository.setSkinType(type)
         }
-    }
-
-    fun resetSkinType(type: String) {
-        viewModelScope.launch {
-            skinManager.loadSkin(type)
-        }
-    }
-
-    //点击确认按钮后才会写入数据，否则只是换肤显示
-    fun setSkinRecord(type: String) {
-        repository.setSkinType(type)
     }
 
     //设置系统通知-进球
