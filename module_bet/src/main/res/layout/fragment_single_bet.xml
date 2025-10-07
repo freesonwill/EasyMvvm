@@ -38,7 +38,7 @@
                 android:id="@+id/tv_balance"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/bg_balance"
+                android:background="@drawable/bg_shape_balance"
                 android:fontFamily="@font/sf_pro_display_bold"
                 android:gravity="center"
                 android:paddingHorizontal="8dp"
