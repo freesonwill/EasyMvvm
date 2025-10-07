@@ -183,6 +183,7 @@ class ComboBetMoneyKeyboardDialogFragment private constructor():
             }
 
         })
+        mBinding.numberKeyboard.setOtherTextSize(13f)
     }
 
     override fun initListener() {
