@@ -30,6 +30,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@+id/iv_currency_icon"/>
     <arch.cayenne.lib.skin.widget.SkinnableImageView
+        android:id="@+id/iv_arrow"
         android:layout_width="@dimen/dp_10"
         android:layout_height="@dimen/dp_7"
         android:background="@drawable/ic_arrow_down"
@@ -37,4 +38,15 @@
         app:layout_constraintLeft_toRightOf="@+id/tv_wallet_balance"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent" />
+    <arch.cayenne.lib.skin.widget.SkinnableImageView
+        android:layout_width="@dimen/dp_24"
+        android:layout_height="@dimen/dp_24"
+        android:background="@drawable/ic_recharge"
+        android:layout_marginStart="@dimen/dp_12"
+        android:layout_marginEnd="@dimen/dp_6"
+        app:layout_constraintLeft_toRightOf="@+id/iv_arrow"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"/>
+
 </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
