@@ -98,12 +98,23 @@
         android:text="0"
         app:skinnableFontWeight="500" />
 
-    <arch.cayenne.lib.skin.widget.SkinnableTextView
+    <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
         android:id="@+id/btn_dot"
         style="@style/NumberKeyboardButton"
         android:layout_marginStart="2dp"
         android:layout_marginTop="2dp"
-        android:text="."
-        app:skinnableFontWeight="500" />
+        app:skinnableFontWeight="500">
+
+        <View
+            android:layout_width="4dp"
+            android:layout_height="4dp"
+            android:background="@drawable/bg_number_dot"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+    </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
 
 </GridLayout>
