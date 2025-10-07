@@ -9,6 +9,10 @@
     <string name="common">通用</string>
     <string name="about">关于</string>
     <string name="edit">编辑</string>
+    <string name="tip_delete_user">移除账号?</string>
+    <string name="tip_delete">是否移除此账户</string>
+    <string name="tip_cancel">取消</string>
+    <string name="tip_confirm">确定移除</string>
     <string name="change_user">切换账号</string>
     <string name="logout_user">退出登录</string>
     <string name="about_us">关于我们</string>
