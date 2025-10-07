@@ -2,15 +2,18 @@ package com.walisport.module.setting.ui.fragment
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.view.LayoutInflater
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.ui.dialog.CommonDialog
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
+import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.touchBackPressed
 import arch.cayenne.lib.common.utils.helper.showToast
 import com.walisport.module.setting.R
 import com.walisport.module.setting.databinding.FragmentSwitchBinding
+import com.walisport.module.setting.databinding.TitleSwitchUserBinding
 import com.walisport.module.setting.ui.adapter.UserAdapter
 import com.walisport.module.setting.ui.viewmodel.UserViewModel
 import kotlin.reflect.KClass
@@ -23,15 +26,29 @@ class SwitchUserFragment : BaseFragment<UserViewModel, FragmentSwitchBinding>() 
 
     override val vbClass: KClass<FragmentSwitchBinding> = FragmentSwitchBinding::class
     override val vmClass: KClass<UserViewModel> = UserViewModel::class
+    private var isEditStatus: Boolean = false
     private val userAdapter by lazy { UserAdapter() }
 
     override fun initView(savedInstanceState: Bundle?) {
-        mBinding.titleBar.loadGeneralTitleBar(
-            R.string.change_user,
-            { findNavController().navigateUp() },
-            { setEditStatus(true) },
-            R.string.edit.getString()
-        )
+        val bind =
+            TitleSwitchUserBinding.inflate(LayoutInflater.from(context), mBinding.root, false)
+        mBinding.titleBar.loadDynamicsTitleBar(bind.root, null)
+        bind.apply {
+            tvTitleName.text = R.string.change_user.getString()
+            tvTitleRight.text = R.string.edit.getString()
+            ivBack.clickNoRepeat {
+                findNavController().navigateUp()
+            }
+            tvTitleRight.clickNoRepeat {
+                isEditStatus = !isEditStatus
+                if (isEditStatus) {
+                    tvTitleRight.text = R.string.edit_finish.getString()
+                } else {
+                    tvTitleRight.text = R.string.edit.getString()
+                }
+                setEditable()
+            }
+        }
         mBinding.recyclerUser.apply {
             itemAnimator = null
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
@@ -78,6 +95,7 @@ class SwitchUserFragment : BaseFragment<UserViewModel, FragmentSwitchBinding>() 
             getString(R.string.tip_delete) + str,
             getString(R.string.tip_confirm),
             getString(R.string.tip_cancel),
+            blueTheme = false
         ).also {
             it.setOnOkClickListener {
                 mViewModel.deleteUser(id)
@@ -86,8 +104,8 @@ class SwitchUserFragment : BaseFragment<UserViewModel, FragmentSwitchBinding>() 
         }
     }
 
-    private fun setEditStatus(status: Boolean) {
-        userAdapter.setEditStatus(status)
+    private fun setEditable() {
+        userAdapter.setEditStatus(isEditStatus)
     }
 
     private fun selectUser(id: Int) {

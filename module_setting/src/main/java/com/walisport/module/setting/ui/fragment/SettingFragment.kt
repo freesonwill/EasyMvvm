@@ -5,6 +5,7 @@ import androidx.navigation.fragment.findNavController
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.data.constants.LanguageType
 import arch.cayenne.lib.common.data.constants.OddsDisplayEnum
+import arch.cayenne.lib.common.ui.dialog.CommonDialog
 import arch.cayenne.lib.common.utils.copyToClipboard
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
@@ -68,7 +69,7 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
             navigate(R.id.action_settingFragment_to_switchFragment)
         }
         mBinding.btnLogout.clickNoRepeat {
-
+            showConfirmDialog()
         }
     }
 
@@ -163,6 +164,21 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
                 R.string.menu_language_simple,
                 mViewModel.getLanguage()
             )
+        }
+    }
+
+    private fun showConfirmDialog() {
+        CommonDialog.newInstance(
+            "",
+            getString(R.string.tip_logout),
+            getString(R.string.tip_confirm_logout),
+            getString(R.string.tip_cancel),
+            blueTheme = false
+        ).also {
+            it.setOnOkClickListener {
+                showToast("退出登录")
+            }
+            it.show(childFragmentManager)
         }
     }
 }

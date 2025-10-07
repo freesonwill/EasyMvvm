@@ -26,6 +26,6 @@
             android:id="@+id/recycler_user"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="@dimen/dp_12"/>
+            android:layout_marginTop="@dimen/dp_15"/>
     </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
 </arch.cayenne.lib.common.ui.view.InterceptedLinearLayout>
