@@ -10,6 +10,7 @@ import androidx.viewpager2.widget.ViewPager2
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
+import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout.States
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
@@ -37,7 +38,7 @@ import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import java.lang.ref.WeakReference
 import kotlin.math.abs
 import kotlin.reflect.KClass
-
+import arch.cayenne.lib.common.utils.ext.listenAtTop
 //投注
 class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBinding>() {
     override val vbClass: KClass<FragmentLiveBetOnBinding> = FragmentLiveBetOnBinding::class
@@ -121,7 +122,7 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
         }
 
         // 监听 RecyclerView 是否滑动到第一条
-        listenRecyclerViewAtTop(mBinding.rvBetList) { isAtTop ->
+        mBinding.rvBetList.listenAtTop { isAtTop ->
             if (isAtTop) {
                 mainViewModel.setSonVerticalScrollIsTop(true)
             }else{
@@ -131,6 +132,12 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
 
     }
 
+    override fun onResume() {
+        if (mBinding.LLCBetOn.visibility ==View.GONE){
+            mainViewModel.setSonVerticalScrollIsTop(true)
+        }
+        super.onResume()
+    }
     @SuppressLint("ClickableViewAccessibility")
     override fun initListener() {
         // 获取 ViewPager2
@@ -203,6 +210,7 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
         mainViewModel.apiStateListener.observe(viewLifecycleOwner) { state ->
             when (state) {
                 DataState.NetworkUnavailable->{
+                    mainViewModel.setSonVerticalScrollIsTop(true)
                     mBinding.LLCBetOn.visibility = View.GONE
                     mBinding.ivMenu.visibility = View.GONE
                     mBinding.clDynamics.setState(
@@ -213,9 +221,6 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
             }
         }
 
-        mainViewModel.sonVerticalIsScroll.observe(viewLifecycleOwner){
-            mBinding.rvBetList.parent.requestDisallowInterceptTouchEvent(!it)
-        }
         liveBetOnAdapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
             override fun onChanged() {
 
@@ -243,6 +248,7 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
         mainViewModel.observeMainMatch.observe(viewLifecycleOwner) {
             if (it != null) {
                 if (it.basicInfo.betStop) {
+                    mainViewModel.setSonVerticalScrollIsTop(true)
                     mBinding.LLCBetOn.visibility = View.GONE
                     mBinding.ivMenu.visibility = View.GONE
                     mBinding.clDynamics.setState(States.CLOSE, R.string.bet_stop.getString())
@@ -257,6 +263,7 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
             // bool bet_stop = 18;         // false: 未停止投注, true: 已停止投注
             if (it != null) {
                 if (it.basicInfo.betStop) {
+                    mainViewModel.setSonVerticalScrollIsTop(true)
                     mBinding.ivMenu.visibility = View.GONE
                     mBinding.LLCBetOn.visibility = View.GONE
                     mBinding.clDynamics.setState(States.CLOSE, R.string.bet_stop.getString())
@@ -268,6 +275,7 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
         }
         mViewModel.marketType.observe(viewLifecycleOwner) { list ->
             if (list!!.isEmpty()) {
+                mainViewModel.setSonVerticalScrollIsTop(true)
                 mBinding.ivMenu.visibility = View.GONE
                 mBinding.LLCBetOn.visibility = View.GONE
                 mBinding.clDynamics.setState(States.DATA_EMPTY, R.string.lineup_empty.getString())
@@ -306,6 +314,7 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
                     selectionsEdit
                 )
                 if (isFadeAnim){
+                    mainViewModel.setSonVerticalScrollIsTop(true)
                     mBinding.rvBetList.startFadeAnim {
                         liveBetOnAdapter.submitList(data)
                         it.invoke()
@@ -353,7 +362,6 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
         return position
     }
 
-
     // 动态添加Tab的方法
     private fun addNewTab() {
         mBinding.tabLayout.removeAllTabs()
@@ -368,28 +376,4 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
         mBinding.tabLayout.removeAllTips()
     }
 
-    fun listenRecyclerViewAtTop(recyclerView: RecyclerView, onTopChanged: (Boolean) -> Unit) {
-        // 添加滚动监听器
-        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                // 获取 LayoutManager
-                val layoutManager = recyclerView.layoutManager as? LinearLayoutManager
-                // 检查是否滑动到第一条
-                val isAtTop = layoutManager?.findFirstCompletelyVisibleItemPosition() == 0
-                // 回调通知状态变化
-                onTopChanged(isAtTop)
-            }
-
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                super.onScrollStateChanged(recyclerView, newState)
-                // 可选：仅在滚动停止时检查状态
-                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    val layoutManager = recyclerView.layoutManager as? LinearLayoutManager
-                    val isAtTop = layoutManager?.findFirstCompletelyVisibleItemPosition() == 0
-                    onTopChanged(isAtTop)
-                }
-            }
-        })
-    }
 }

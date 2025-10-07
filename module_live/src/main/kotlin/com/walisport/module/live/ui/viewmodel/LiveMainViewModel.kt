@@ -71,12 +71,8 @@ class LiveMainViewModel(
     val liveBetOnMenu: LiveData<BetOnMenuStatus> = _liveBetOnMenu
 
     //子类判断是否滑动到顶部
-    private val _sonVerticalScrollIsTop = MutableLiveData<Boolean>()
-    val sonVerticalScrollIsTop: LiveData<Boolean> = _sonVerticalScrollIsTop
-
-    //子类是否支持滚动
-    private val _sonVerticalIsScroll = MutableLiveData<Boolean>()
-    val sonVerticalIsScroll: LiveData<Boolean> = _sonVerticalIsScroll
+    private val _sonVerticalScrollIsTop = MutableLiveData<Boolean?>()
+    val sonVerticalScrollIsTop: LiveData<Boolean?> = _sonVerticalScrollIsTop
 
 
     //监听数据变化
@@ -108,16 +104,10 @@ class LiveMainViewModel(
         }
     }
 
-    //子类接听滑动设置变化(父类滑动到临界点,小于 80 触发子类RV或者SC 下滑事件)
+    //子类接听滑动设置变化(父类滑动到临界点,小于 80 触发子类RV或者SC 下滑事件),列表数据为空默认为true
     fun setSonVerticalScrollIsTop(boo:Boolean){
         _sonVerticalScrollIsTop.value = boo
     }
-
-
-    fun setSonVerticalIsScrollIs(boo:Boolean){
-        _sonVerticalIsScroll.value = boo
-    }
-
 
 
     fun setLiveBetOnMen(status: BetOnMenuStatus) {

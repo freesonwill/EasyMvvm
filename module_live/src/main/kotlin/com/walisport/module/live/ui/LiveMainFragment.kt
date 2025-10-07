@@ -57,6 +57,7 @@ import arch.cayenne.lib.common.utils.ext.setupViewPagerScroll
 import arch.cayenne.lib.common.utils.ext.startFadeAnim
 import arch.cayenne.module.bet.ui.fragment.BetSheetFragment
 import com.walisport.module.live.ui.widget.LiveMainGestureListener
+import com.walisport.module.live.ui.widget.LiveMainLayoutInterceptTouch.LiveMainSlideDirection
 
 /**
  * 直播详情页
@@ -88,6 +89,28 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
             DrawerLayout.LOCK_MODE_LOCKED_CLOSED,
             GravityCompat.END
         )
+
+        // 上层 View 触摸事件
+        mBinding.LayoutInterceptTouch.setOnTouchListener { _, event ->
+            // 将触摸事件传递给下层 View
+            mBinding.liveMain.dispatchTouchEvent(event)
+                       false // 返回 false 不消耗事件，允许事件继续传递
+        }
+
+        mBinding.LayoutInterceptTouch.setLiveMainGestureListener(object : LiveMainGestureListener{
+            override fun onAdjustLayoutScroll(deltaY: Float,direction:LiveMainSlideDirection) {
+                //往下滑动,子类的rv,sc是否滑到了第一条或者顶部
+                if (direction==LiveMainSlideDirection.DOWN){
+                    var bool : Boolean? = mViewModel.sonVerticalScrollIsTop.value
+                    bool?.let {
+                        if(it) mBinding.liveMain2.adjustLayout(deltaY,direction)
+                    }
+                }else{
+                   mBinding.liveMain2.adjustLayout(deltaY,direction)
+                }
+            }
+        })
+
     }
 
     override fun onAttach(context: Context) {
@@ -229,13 +252,6 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
             }
         })
         mBinding.vpPage.setupViewPagerScroll(mBinding.tabLayout,mBinding.customIndicator,0.45f)
-
-        //子类是否可滑动
-        mBinding.liveMainMl.setOnGestureListener(object : LiveMainGestureListener{
-            override fun onRvVerticalScroll(boolean: Boolean) {
-                mViewModel.setSonVerticalIsScrollIs(boolean)
-            }
-        })
     }
 
     override fun createObserverAtState(): Lifecycle.State {
@@ -246,7 +262,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
     override suspend fun createObserver() {
         //父类是否可往上滑动
         mViewModel.sonVerticalScrollIsTop.observe(viewLifecycleOwner){
-            mBinding.liveMainMl.setIsDowScroll(it)//可往下滑动个
+
         }
         launch {
             AnimationController.getFlow(AnimType.drawerEnter).collect {
@@ -313,8 +329,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                     Glide.with(this).load(logo).into(titleBarBinding.ivLandscapeLeagueIcon)
                 }
                 titleBarBinding.tvCompetitionName.text = it.basicInfo.matchName
-
-                mBinding.liveMainMl.setCompetitionName(it.basicInfo.matchName)
+                mBinding.tvVideoVs.text =  it.basicInfo.matchName
                 //比赛开始后开启聊天服务
                 if (it.liveInfo.charRoom) {
                     mViewModel.startChatServer()
