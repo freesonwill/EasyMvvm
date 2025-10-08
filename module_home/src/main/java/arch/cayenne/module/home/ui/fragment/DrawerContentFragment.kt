@@ -8,7 +8,6 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.SimpleItemAnimator
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
@@ -56,7 +55,7 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
             View.GONE
         }
 
-        initRvCommonFunc()
+        initRvCommonFeatures()
 
         //更改导航栏样式调整底部偏移
         ViewCompat.setOnApplyWindowInsetsListener(requireActivity().window.decorView) { v, insets ->
@@ -72,13 +71,12 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
         }
     }
 
-    private fun initRvCommonFunc() {
-        val layoutManager = GridLayoutManager(requireContext(), 3) // 每行3个
-        mBinding.rvCommonFunc.layoutManager = layoutManager
-        mBinding.rvCommonFunc.adapter = commonFeaturesAdapter
-        (mBinding.rvCommonFunc.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations =
-            false
-        mBinding.rvCommonFunc.itemAnimator = null
+    private fun initRvCommonFeatures() {
+        mBinding.rvCommonFeatures.apply {
+            layoutManager = GridLayoutManager(requireContext(), 3) // 每行3个
+            adapter = commonFeaturesAdapter
+            mBinding.rvCommonFeatures.itemAnimator = null
+        }
 
         var id = 0
         commonFeaturesAdapter.submitList(
@@ -252,4 +250,5 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
             }
         }
     }
+
 }

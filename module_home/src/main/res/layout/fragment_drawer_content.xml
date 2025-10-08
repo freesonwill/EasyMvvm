@@ -267,7 +267,7 @@
             android:textStyle="bold" />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_common_func"
+            android:id="@+id/rv_common_features"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
