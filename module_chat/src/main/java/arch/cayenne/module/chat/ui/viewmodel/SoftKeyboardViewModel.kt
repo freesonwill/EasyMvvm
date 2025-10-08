@@ -20,6 +20,7 @@ class SoftKeyboardViewModel : BaseViewModel() {
 
     val languageManager: LanguageManager by inject { parametersOf(viewModelScope) }
     val userDataManager: UserDataManager by inject()
+    var keyBoardHeight: Int = 0
     //聊天设置
      val chatConfigDao: ChatConfigDao by inject()
     fun tabMenus() =

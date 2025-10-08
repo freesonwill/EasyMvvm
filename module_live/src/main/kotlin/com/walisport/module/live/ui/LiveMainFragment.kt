@@ -192,7 +192,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                 }
             }
 
-            tvMoney.clickNoRepeat {
+            includedLayout.addMoney.clickNoRepeat {
                 navigate(Uri.parse("walisport://module_topup/topUpFragment"))
             }
         }
@@ -295,7 +295,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
             mViewModel.registerMatchInfoNotify(it)
         }
         mViewModel.currentBalanceChange.observe(viewLifecycleOwner) {
-            titleBarBinding.tvMoney.text =
+            titleBarBinding.includedLayout.tvMoney.text =
                 (it?.balance ?: 0L).getFormalMoney()
         }
         mViewModel.mainMatch.observe(viewLifecycleOwner) {

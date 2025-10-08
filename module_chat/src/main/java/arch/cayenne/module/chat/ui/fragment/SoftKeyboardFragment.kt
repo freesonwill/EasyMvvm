@@ -70,23 +70,6 @@ class SoftKeyboardFragment :
         }
     }
 
-    override fun onStart() {
-        super.onStart()
-        addMainViewListen()
-    }
-
-    override fun onStop() {
-        super.onStop()
-//        ViewCompat.setWindowInsetsAnimationCallback(requireActivity().window.decorView, null)
-    }
-
-    override fun onDestroy() {
-        mBinding.keyboardEmojiRecycler.adapter?.let {
-            (it as SoftAdapter).animHelper?.cleanup()
-        }
-        super.onDestroy()
-    }
-
     override fun initView(savedInstanceState: Bundle?) {
         softKeyBoardManager = SoftKeyboardManager(lifecycleScope, lifecycle, mViewModel.userDataManager, mViewModel.chatConfigDao, this)
         initTab()
@@ -102,6 +85,10 @@ class SoftKeyboardFragment :
         }
         softKeyBoardManager.toastLiveData.observe(viewLifecycleOwner) {
             showToast(it)
+        }
+        chatViewModel.chatHeightLiveData.observe(viewLifecycleOwner){
+            mViewModel.keyBoardHeight = it
+            addMainViewListen()
         }
     }
 
@@ -216,13 +203,10 @@ class SoftKeyboardFragment :
 
     private fun calculationLayoutSize() {
         mBinding.apply {
-            if(chatViewModel.keyBoardHeight == 0){
-                chatViewModel.keyBoardHeight = mBinding.main.height
-            }
-            softKeyBoardManager.emojiKeyBoardHeight = chatViewModel.keyBoardHeight - 62.dp2px - 21.dp2px
+            softKeyBoardManager.emojiKeyBoardHeight = mViewModel.keyBoardHeight - 60.dp2px - 21.dp2px
             emojiContent.layoutParams.height = softKeyBoardManager.emojiKeyBoardHeight
-            screenContent.layoutParams.height = chatViewModel.keyBoardHeight
-            main.layoutParams.height = chatViewModel.keyBoardHeight + softKeyBoardManager.emojiKeyBoardHeight
+            screenContent.layoutParams.height = mViewModel.keyBoardHeight
+            main.layoutParams.height = mViewModel.keyBoardHeight + softKeyBoardManager.emojiKeyBoardHeight
         }
     }
 
@@ -440,7 +424,17 @@ class SoftKeyboardFragment :
 //        )
     }
 
+    override fun onStop() {
+        super.onStop()
+//        ViewCompat.setWindowInsetsAnimationCallback(requireActivity().window.decorView, null)
+    }
 
+    override fun onDestroy() {
+        mBinding.keyboardEmojiRecycler.adapter?.let {
+            (it as SoftAdapter).animHelper?.cleanup()
+        }
+        super.onDestroy()
+    }
     companion object {
         const val TAG: String = "LiveSoftKeyboardFragment"
     }

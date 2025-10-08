@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<arch.cayenne.lib.skin.widget.SkinnableConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
+    android:fitsSystemWindows="false"
+    android:background="@color/title_bg"
     android:layout_height="match_parent">
 
     <androidx.fragment.app.FragmentContainerView
@@ -68,4 +70,4 @@
             app:text="@string/title_me" />
 
     </arch.cayenne.module.home.ui.view.NavBarContainer>
-</androidx.constraintlayout.widget.ConstraintLayout>
+</arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>

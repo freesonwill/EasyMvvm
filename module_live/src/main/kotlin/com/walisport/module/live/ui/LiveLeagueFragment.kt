@@ -44,12 +44,12 @@ class LiveLeagueFragment : BaseFragment<LeagueViewModel, FragmentLeagueBinding>(
 
     override fun onStart() {
         super.onStart()
-        StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND(autoPaddingNavigationBarColor = arch.cayenne.lib.common.R.color.black)
+        StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND(autoPaddingNavigationBarColor = arch.cayenne.lib.common.R.color.black,autoIsNavigation = true)
         setStatusBar(StatusBarConfig, mBinding.root)
     }
 
     override fun onDestroyView() {
-        StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND(autoPaddingNavigationBarColor = null)
+        StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND(autoPaddingNavigationBarColor = null,autoIsNavigation = false)
         super.onDestroyView()
     }
 

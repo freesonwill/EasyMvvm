@@ -11,4 +11,7 @@
     <string name="insufficient_fali">检查有效投注失败</string>
     <string name="send">发送</string>
     <string name="all_emoji">全部表情</string>
+    <string name="chat_room">聊天室</string>
+    <string name="living_events">赛事直播</string>
+    <string name="chat_customer">客服</string>
 </resources>

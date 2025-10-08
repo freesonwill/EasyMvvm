@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
+        android:id="@+id/layout_item"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_64"
+        android:layout_marginTop="@dimen/dp_12"
+        android:layout_marginHorizontal="@dimen/dp_16"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <arch.cayenne.lib.skin.widget.SkinnableImageView
+            android:layout_width="@dimen/dp_32"
+            android:layout_height="@dimen/dp_32"
+            android:layout_marginStart="@dimen/dp_12"
+            android:background="@drawable/bg_bank_card_logo"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <arch.cayenne.lib.skin.widget.SkinnableImageView
+            android:id="@+id/iv_bank_logo"
+            android:layout_width="@dimen/dp_24"
+            android:layout_height="@dimen/dp_24"
+            android:layout_marginStart="@dimen/dp_16"
+            android:background="@drawable/ic_china_bank"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
+            android:id="@+id/tv_bank_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_56"
+            android:textColor="@color/bank_text"
+            android:textSize="@dimen/sp_15"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
+            android:id="@+id/tv_bank_num"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/dp_36"
+            android:textColor="@color/bank_text"
+            android:textSize="@dimen/sp_15"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <arch.cayenne.lib.skin.widget.SkinnableImageView
+            android:id="@+id/radio_select"
+            android:layout_width="@dimen/dp_20"
+            android:layout_height="@dimen/dp_20"
+            android:layout_marginEnd="@dimen/dp_8"
+            android:background="@drawable/ic_bank_card_sel"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <arch.cayenne.lib.skin.widget.SkinnableImageView
+            android:id="@+id/radio_del"
+            android:layout_width="@dimen/dp_20"
+            android:layout_height="@dimen/dp_20"
+            android:layout_marginEnd="@dimen/dp_8"
+            android:background="@drawable/ic_bank_card_del"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

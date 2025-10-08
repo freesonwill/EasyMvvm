@@ -40,6 +40,14 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+        mBinding.liveChatKeyboard.post {
+            val height = mBinding.liveChatKeyboard.height
+            mViewModel.setChatHeight(height)
+        }
+    }
+
     override suspend fun createObserver() {
         matchIdLiveData?.observe(viewLifecycleOwner){
             observeMatchId(it)
@@ -111,12 +119,6 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
         childFragmentManager.beginTransaction()
             .replace(mBinding.liveChatKeyboard.id, fragment, SoftKeyboardFragment.TAG)
             .commit()
-        mBinding.liveChatKeyboard.post {
-            mViewModel.keyBoardHeight = mBinding.liveChatKeyboard.height
-            if (mViewModel.keyBoardHeight == 0) {
-                mViewModel.keyBoardHeight = mBinding.main.height
-            }
-        }
     }
 
     private fun initChatPageFragment(){
