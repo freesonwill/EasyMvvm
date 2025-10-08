@@ -2,7 +2,6 @@
 <resources>
     <color name="card_ooo_background">#232530</color>
     <color name="title_money_bg">#232530</color>
-    <color name="title_money_text">#FFCA57</color>
     <color name="money_color">#FFCA57</color>
     <color name="win_color">#00E0E5</color>
     <color name="lose_color">#FE3666</color>
