@@ -74,5 +74,14 @@
     <string name="title_chat">聊天</string>
     <string name="title_me">我</string>
 
+    <string name="drawer_fund_details">资金明细</string>
+    <string name="drawer_bet_record">投注记录</string>
+    <string name="drawer_cash_back">实时返水</string>
+    <string name="drawer_recently_played">最近玩过</string>
+    <string name="drawer_game_collections">游戏收藏</string>
+    <string name="drawer_match_collections">比赛收藏</string>
+    <string name="drawer_gift">礼物</string>
+    <string name="drawer_settings">设置</string>
+
 
 </resources>
