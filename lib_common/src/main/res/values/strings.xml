@@ -27,4 +27,7 @@
     <string name="disabled_to_combo_for_provider">暂不支持该赛事组合，请尝试其他赛事选择</string>
     <string name="disabled_to_combo_for_over_limit">最多选择10个投注项</string>
     <string name="copy_to_clip">复制成功</string>
+    <string name="currency_setting_title">钱包设置</string>
+    <string name="currency_setting_1">仅显示有余额的加密货币</string>
+    <string name="currency_setting_2">以法币金额显示加密货币</string>
 </resources>
