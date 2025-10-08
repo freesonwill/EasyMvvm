@@ -120,7 +120,7 @@ class StatusBarDelegate : IStatusBar {
                     if(noPaddingViewIds.isEmpty()) {
                         setViewPadding(view,
                             viewPaddingTop + statusBarHeight,
-                           if (statusBarMode.autoPaddingNavigationBarColor!=null) 0 else navigationBarHeight
+                           if (statusBarMode.autoIsNavigation) 0 else navigationBarHeight
                         )
                     }else {
                         (view as ViewGroup).children.forEach { v ->
