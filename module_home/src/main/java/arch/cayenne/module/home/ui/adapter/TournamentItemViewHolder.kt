@@ -4,6 +4,7 @@ import android.content.Context
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.style.ForegroundColorSpan
+import android.view.View
 import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
@@ -16,7 +17,11 @@ import com.bumptech.glide.Glide
 class TournamentItemViewHolder(
     private val mBinding: ItemTournamentSectionBinding
 ) : BaseViewHolder(mBinding) {
-    fun bind(item: TournamentListItem.TournamentItem, onClick: (BaseTournamentData) -> Unit) {
+    fun bind(
+        item: TournamentListItem.TournamentItem,
+        isSelected: Boolean = false,
+        onClick: (BaseTournamentData) -> Unit
+    ) {
         with(mBinding) {
             Glide.with(root)
                 .load(item.tournament.icon.ifEmpty { R.drawable.ic_default_tournament })
@@ -33,6 +38,38 @@ class TournamentItemViewHolder(
                 )
             }
             tvSectionName.text = spannable
+
+            // 根據選中狀態更新UI
+            if (isSelected) {
+                ivSelected.visibility = View.VISIBLE
+                root.setBackgroundColor(
+                    ContextCompat.getColor(
+                        root.context,
+                        arch.cayenne.lib.common.R.color.color_003A42
+                    )
+                )
+                tvSectionName.setTextColor(
+                    ContextCompat.getColor(
+                        root.context,
+                        arch.cayenne.lib.common.R.color.color_00E0E5
+                    )
+                )
+            } else {
+                ivSelected.visibility = View.GONE
+                root.setBackgroundColor(
+                    ContextCompat.getColor(
+                        root.context,
+                        arch.cayenne.lib.common.R.color.color_1E1E1E
+                    )
+                )
+                tvSectionName.setTextColor(
+                    ContextCompat.getColor(
+                        root.context,
+                        arch.cayenne.lib.common.R.color.color_FFFFFF
+                    )
+                )
+            }
+            
             root.setOnClickListener {
                 onClick(item.tournament)
             }
