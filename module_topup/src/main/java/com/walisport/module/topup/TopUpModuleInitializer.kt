@@ -12,6 +12,7 @@ import com.walisport.module.topup.ui.viewmodel.WalletViewModel
 import com.walisport.module.topup.ui.viewmodel.WithdrawDetailViewModel
 import com.walisport.module.topup.ui.viewmodel.WithdrawRecordsViewModel
 import com.walisport.module.topup.ui.viewmodel.WithdrawViewModel
+import com.walisport.module.topup.ui.viewmodel.BankCardViewModel
 import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.core.context.loadKoinModules
 import org.koin.core.module.Module
@@ -32,6 +33,7 @@ class TopUpModuleInitializer : DefaultInitializer<String> {
         viewModelOf(::TopUpViewModel)
         viewModelOf(::TopUpDetailViewModel)
         viewModelOf(::TopUpRecordsViewModel)
+        viewModelOf(::BankCardViewModel)
         viewModelOf(::WithdrawViewModel)
         viewModelOf(::WithdrawDetailViewModel)
         viewModelOf(::WithdrawRecordsViewModel)

@@ -43,7 +43,8 @@ class WalletFragment : BaseFragment<WalletViewModel, FragmentWalletBinding>() {
     override fun initListener() {
         mBinding.root.touchBackPressed()
         mBinding.btnWalletRecharge.setOnClickListener {
-            navigate(R.id.action_walletFragment_to_topUpFragment)
+            //navigate(R.id.action_walletFragment_to_topUpFragment)
+            navigate(R.id.action_walletFragment_to_bankCardFragment)
         }
         mBinding.btnWalletWithdraw.setOnClickListener {
             navigate(R.id.action_walletFragment_to_withdrawFragment)
