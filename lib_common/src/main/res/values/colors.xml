@@ -172,6 +172,8 @@
     <color name="color_FFD400">#FFD400</color> <!--金-->
     <color name="color_DE3E3E3E">#DE3E3E3E</color> <!--玻璃模糊弹窗背景-->
     <color name="color_EBEBEC">#EBEBEC</color> <!--体育直播聊天背景-->
+    <color name="color_E03C64">#E03C64</color> <!--体育直播聊天背景-->
+
 
     <color name="color_D3D3D6">#D3D3D6</color> <!--quick amount-->
     <color name="color_3300A7C0">#3300A7C0</color> <!--深蓝20透明-->

@@ -11,8 +11,7 @@ import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.viewmodel.EmptyViewModel
 import arch.cayenne.lib.common.ui.fragment.EmptyFragment
-import arch.cayenne.module.betslip.ui.fragment.HomeBetSlipFragment
-import arch.cayenne.module.chat.ui.fragment.ChatHomeFragment
+import arch.cayenne.module.chat.ui.fragment.MainChatFragment
 import arch.cayenne.module.home.ui.fragment.NewHomeFragment
 import arch.cayenne.module.order.ui.fragment.HomeOrderFragment
 import com.walisport.app.R
@@ -132,12 +131,7 @@ class MainFragment : BaseFragment<EmptyViewModel, FragmentMainBinding>() {
                 0 -> HallFragment()
                 1 -> NewHomeFragment()
                 2 -> HomeOrderFragment()
-                3 -> ChatHomeFragment().apply {
-                    val bundle = Bundle().apply {
-                        putBoolean("chat",true)
-                    }
-                    arguments = bundle
-                }
+                3 -> MainChatFragment()
                 4 -> MeFragment()
                 else -> EmptyFragment()
             }

@@ -24,10 +24,9 @@ class ChatHomeViewModel() : BaseViewModel() {
     private val _sendMsgLiveData = MutableLiveData<String>()
     private val _chatHistoryIsEmpty = MutableLiveData<Boolean>()
     private val chatServer: ChatServerController by inject { parametersOf(viewModelScope) }
+    private val _chatHeightLiveData = MutableLiveData<Int>()
 
     var currentKeyBoardType:KeyBoardType = KeyBoardType.CHAT
-    //整个表情键盘页面的整体高度
-    var keyBoardHeight: Int = 0
     //键盘发送过来的消息
     val sendMsgLiveData: LiveData<String> = _sendMsgLiveData
     //更新键盘盘状态
@@ -40,6 +39,8 @@ class ChatHomeViewModel() : BaseViewModel() {
     val sendMsgToServerFlow = chatServer.sendMsgResultFlow
     val loginFlow = chatServer.loginFlow
     val checkBetAmountFlow = chatServer.checkBetAmountFlow
+    //整个表情键盘页面的整体高度
+    val chatHeightLiveData:LiveData<Int> = _chatHeightLiveData
 
     var matchStatus:Boolean = false
 
@@ -142,6 +143,10 @@ class ChatHomeViewModel() : BaseViewModel() {
 
     fun refreshChatUi(value:Boolean){
         _chatHistoryIsEmpty.value = value
+    }
+
+    fun setChatHeight(height:Int){
+        _chatHeightLiveData.value = height
     }
 
 
