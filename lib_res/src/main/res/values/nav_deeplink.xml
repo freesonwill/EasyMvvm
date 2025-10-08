@@ -13,6 +13,7 @@
     <string name="nav_module_betslip_fragment" translatable="false">walisport://module_betslip/betSlipFragment</string>
     <string name="nav_module_collectlist_fragment" translatable="false">walisport://module_home/collectListFragment</string>
     <string name="nav_module_champion_fragment" translatable="false">walisport://module_home/championFragment?matchId={matchId}&amp;name={name}&amp;icon={icon}</string>
+    <string name="nav_module_fund_detail_fragment" translatable="false">walisport://module_topup/fundDetailsFragment</string>
 
 
 

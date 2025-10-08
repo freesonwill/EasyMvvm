@@ -9,12 +9,15 @@ import android.webkit.WebChromeClient
 import android.webkit.WebView
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
+import arch.cayenne.lib.common.data.constants.UserDataKey
+import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getColor
 import com.github.lzyzsd.jsbridge.BridgeWebViewClient
 import com.github.lzyzsd.jsbridge.DefaultHandler
 import com.walisport.module.topup.databinding.FragmentFundDetailsBinding
 import com.walisport.module.topup.ui.viewmodel.FundDetailsViewModel
 import kotlinx.coroutines.withContext
+import org.koin.java.KoinJavaComponent.inject
 import kotlin.reflect.KClass
 
 /**
@@ -27,8 +30,18 @@ class FundDetailsFragment : BaseFragment<FundDetailsViewModel, FragmentFundDetai
     override val vbClass: KClass<FragmentFundDetailsBinding> = FragmentFundDetailsBinding::class
     override val vmClass: KClass<FundDetailsViewModel> = FundDetailsViewModel::class
 
+    private val manager: UserDataManager by inject(UserDataManager::class.java)
+
+
     override fun initView(savedInstanceState: Bundle?) {
-        launch { initWebView() }
+        launch {
+            initWebView()
+            val uid = manager.getValue(UserDataKey.KEY_UID, -1)
+            val token = manager.getValue(UserDataKey.KEY_TOKEN, "")
+
+            mBinding.webView.loadUrl("https://www.google.com/")
+
+        }
     }
 
     private suspend fun initWebView() {
