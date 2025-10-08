@@ -21,6 +21,8 @@ class HallFragment : BaseFragment<HallViewModel, FragmentHallBinding>() {
     override fun initView(savedInstanceState: Bundle?) {
 
         mBinding.root.touchBackPressed()
+
+        mBinding.balanceView.init(childFragmentManager)
     }
 
     override fun initListener() {

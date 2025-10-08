@@ -10,6 +10,7 @@
     app:interceptedDirection="RIGHT">
 
     <arch.cayenne.lib.common.ui.view.BalanceView
+        android:id="@+id/balance_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
