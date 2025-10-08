@@ -57,4 +57,7 @@
 
     <color name="video_resolution_vertical_selected_text_color">#24EE8A</color>
     <color name="video_resolution_vertical_unselected_text_color">#929298</color>
+
+    <color name="video_source_simple_item_title_color">#FFFFFF</color>
+    <color name="video_source_simple_item_subtitle_color">#999999</color>
 </resources>

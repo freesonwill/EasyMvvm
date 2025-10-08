@@ -26,6 +26,10 @@ import arch.cayenne.module.betslip.ui.viewmodel.OrderSlipViewModel
 import arch.cayenne.module.betslip.ui.viewmodel.ReserveSlipViewModel
 import arch.cayenne.module.betslip.ui.viewmodel.SportPickerViewModel
 import arch.cayenne.module.betslip.ui.viewmodel.UnsettledViewModel
+import arch.cayenne.module.order.ui.viewmodel.HomeOrderViewModel
+import arch.cayenne.module.order.ui.viewmodel.OrderGameViewModel
+import arch.cayenne.module.order.ui.viewmodel.OrderSportPageViewModel
+import arch.cayenne.module.order.ui.viewmodel.OrderSportViewModel
 
 import org.koin.dsl.module
 
@@ -59,6 +63,12 @@ class BetSlipModuleInitializer: DefaultInitializer<String> {
         viewModelOf(::BetSlipOtherSettingViewModel)
         viewModelOf(::ConfirmingSlipViewModel)
         viewModelOf(::DateNumberViewModel)
+
+        // ORDER
+        viewModelOf(::HomeOrderViewModel)
+        viewModelOf(::OrderGameViewModel)
+        viewModelOf(::OrderSportViewModel)
+        viewModelOf(::OrderSportPageViewModel)
     }
 
     private val repoModules = module {

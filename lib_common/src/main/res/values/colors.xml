@@ -180,4 +180,8 @@
     <color name="color_02C3E0">#02C3E0</color> <!--深蓝（blue-400）按钮（按下态）-->
     <color name="color_8000A7C0">#8000A7C0</color> <!--深蓝透明50（blue-400）按钮（不可点击）-->
     <color name="color_4D272727">#4D272727</color> <!--黑透明30（black-200）按钮（按下态）-->
+    <color name="color_33009B9E">#33009B9E</color> <!--焦点蓝-亮light 20%-->
+    <color name="color_2C323E">#2C323E</color>
+    <color name="color_3D404D">#3D404D</color>  <!--背景色/Tag BG-->
+    <color name="color_CBD8EB">#CBD8EB</color>  <!--文本色/Tag text-->
 </resources>

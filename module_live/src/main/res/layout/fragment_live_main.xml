@@ -40,7 +40,8 @@
             android:id="@+id/fragment_video"
             android:fitsSystemWindows="false"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_211" />
+            android:layout_height="wrap_content"
+            android:minHeight="@dimen/dp_211"/>
 
 
         <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
