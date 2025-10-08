@@ -3,21 +3,21 @@
     <!--鎖盤狀態-->
     <item android:state_enabled="false">
         <shape android:shape="rectangle">
-            <corners android:radius="8dp" />
+            <corners android:radius="9dp" />
             <solid android:color="@color/home_card_odds_background" />
         </shape>
     </item>
     <item android:state_selected="true">
         <shape android:shape="rectangle">
-            <corners android:radius="8dp" />
-            <solid android:color="@color/brand_color" />
+            <corners android:radius="9dp" />
+            <solid android:color="@color/bg_champion_odds_cell_selected" />
         </shape>
     </item>
     <!-- 未選中狀態 -->
     <item>
         <shape android:shape="rectangle">
-            <corners android:radius="8dp" />
-            <solid android:color="@color/home_card_odds_background" />
+            <corners android:radius="9dp" />
+            <solid android:color="@color/bg_champion_odds_cell" />
         </shape>
     </item>
 </selector>

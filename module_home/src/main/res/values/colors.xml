@@ -18,8 +18,8 @@
     <color name="sport_item_text_unselect">#929298</color>
     <color name="bg_league_item_selected">#24EE8A</color>
     <color name="bg_league_item_unselect">#929298</color>
-    <color name="league_tab_tint_select">#000000</color>
-    <color name="league_tab_tint_unselect">@color/secondary_text</color>
+    <color name="league_tab_tint_select">@color/color_FFFFFF</color>
+    <color name="league_tab_tint_unselect">@color/color_999999</color>
     <color name="balance_background_icon">#0DFFFFFF</color>
     <color name="drawer_bg">#0E0F1A</color>
     <color name="drawer_scrim_color">#BF000000</color>
@@ -41,6 +41,8 @@
     <color name="custom_filter_side_bar_text">#24EE8A</color>
     <color name="tournament_list_search_hint">#929298</color>
     <color name="tournament_list_search_text">#ffffff</color>
+    <color name="bg_champion_odds_cell_selected">@color/color_00A7C0</color>
+    <color name="bg_champion_odds_cell">@color/color_0FFFFFFF</color>
     <color name="navbar_text_color_normal">#C0C0C0</color>
     <color name="navbar_text_color_selected">#00E0E5</color>
 </resources>
