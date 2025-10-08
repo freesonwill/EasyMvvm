@@ -17,7 +17,7 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_source"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_66" />
+            android:layout_height="@dimen/dp_58" />
 
 
         <androidx.constraintlayout.widget.ConstraintLayout
