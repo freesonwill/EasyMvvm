@@ -24,7 +24,9 @@ class HomeOrderFragment: BaseFragment<HomeOrderViewModel, FragmentHomeOrderBindi
         TabLayoutMediator(mBinding.tabLayout, mBinding.viewPager,false) { tab, position ->
             tab.text = page[position].page.title
         }.attach()
-        mBinding.tabLayout.removeAllTips()
+        mBinding.tabLayout.post {
+            mBinding.tabLayout.removeAllTips()
+        }
         mBinding.viewPager.setupHorizontalScrollDegree()
     }
 

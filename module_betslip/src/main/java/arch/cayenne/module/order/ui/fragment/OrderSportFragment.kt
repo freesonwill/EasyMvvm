@@ -1,9 +1,23 @@
 package arch.cayenne.module.order.ui.fragment
 
+import android.graphics.Typeface
 import android.os.Bundle
+import android.util.TypedValue
+import android.view.Gravity
+import android.widget.LinearLayout
+import android.widget.TextView
+import arch.cayenne.lib.base.ui.adapter.PagerAdapter
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.lib.common.utils.ext.TabLayoutExt
+import arch.cayenne.lib.common.utils.ext.TabLayoutExt.addOnTabSelectedListener2
+import arch.cayenne.lib.common.utils.ext.setupHorizontalScrollDegree
+import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.module.betslip.databinding.FragmentOrderSportBinding
+import arch.cayenne.module.order.data.constants.OrderSportPageEnum
 import arch.cayenne.module.order.ui.viewmodel.OrderSportViewModel
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
 import kotlin.reflect.KClass
 
 class OrderSportFragment : BaseFragment<OrderSportViewModel, FragmentOrderSportBinding>() {
@@ -12,6 +26,84 @@ class OrderSportFragment : BaseFragment<OrderSportViewModel, FragmentOrderSportB
     override val vmClass: KClass<OrderSportViewModel> = OrderSportViewModel::class
 
     override fun initView(savedInstanceState: Bundle?) {
+        val page = OrderSportPageEnum.entries.toTypedArray()
+        mBinding.viewPager.adapter =
+            PagerAdapter(childFragmentManager, lifecycle, page.map { it.page })
+        TabLayoutMediator(mBinding.tabLayout, mBinding.viewPager, false) { tab, position ->
+            val textView = TextView(requireContext()).apply {
+                layoutParams = LinearLayout.LayoutParams(
+                    64.dp2px,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                )
+                maxLines = 1
+                isSingleLine = true
+                ellipsize = null
+                text = page[position].page.title
+                gravity = Gravity.CENTER
+                setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f)
+                if (position == 0) {
+                    setTypeface(null, Typeface.BOLD)
+                    setTextColor(
+                        SkinnableResourceManager.getColor(
+                            requireContext(),
+                            arch.cayenne.lib.common.R.color.color_00E0E5
+                        )
+                    )
+                } else {
+                    setTypeface(null, Typeface.NORMAL)
+                    setTextColor(
+                        SkinnableResourceManager.getColorStateList(
+                            requireContext(),
+                            arch.cayenne.lib.common.R.color.color_C0C0C0
+                        )
+                    )
+                }
+                setPadding(0, 0, 0, 0)
+                typeface = Typeface.DEFAULT
+            }
+            tab.customView = textView
+        }.attach()
+
+        mBinding.tabLayout.post {
+            val mTabStrip = mBinding.tabLayout.getChildAt(0) as LinearLayout
+            for (i in 0 until mTabStrip.childCount) {
+                val tabView = mTabStrip.getChildAt(i)
+                val params = tabView.layoutParams as LinearLayout.LayoutParams
+                params.marginStart = if (i == 0) 0 else 11.dp2px
+                tabView.layoutParams = params
+            }
+
+            mBinding.tabLayout.addOnTabSelectedListener2(object :
+                TabLayoutExt.OnTabSelectedListener2 {
+                override fun onTabSelected(tab: TabLayout.Tab, isTabClick: Boolean) {
+                    (tab.customView as? TextView)?.apply {
+                        setTypeface(null, Typeface.BOLD)
+                        setTextColor(
+                            SkinnableResourceManager.getColor(
+                                requireContext(),
+                                arch.cayenne.lib.common.R.color.color_00E0E5
+                            )
+                        )
+                    }
+                }
+
+                override fun onTabUnselected(tab: TabLayout.Tab, isTabClick: Boolean) {
+                    (tab.customView as? TextView)?.apply {
+                        setTypeface(null, Typeface.NORMAL)
+                        setTextColor(
+                            SkinnableResourceManager.getColorStateList(
+                                requireContext(),
+                                arch.cayenne.lib.common.R.color.color_C0C0C0
+                            )
+                        )
+                    }
+                }
+
+                override fun onTabReselected(tab: TabLayout.Tab, isTabClick: Boolean) {
+                }
+            })
+        }
+        mBinding.viewPager.setupHorizontalScrollDegree()
     }
 
     override fun initListener() {
