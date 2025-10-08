@@ -13,6 +13,7 @@ import arch.cayenne.lib.base.ui.viewmodel.EmptyViewModel
 import arch.cayenne.lib.common.ui.fragment.EmptyFragment
 import arch.cayenne.module.betslip.ui.fragment.HomeBetSlipFragment
 import arch.cayenne.module.chat.ui.fragment.ChatHomeFragment
+import arch.cayenne.module.chat.ui.fragment.MainChatFragment
 import arch.cayenne.module.home.ui.fragment.NewHomeFragment
 import com.walisport.app.R
 import com.walisport.app.databinding.FragmentMainBinding
@@ -136,12 +137,7 @@ class MainFragment : BaseFragment<EmptyViewModel, FragmentMainBinding>() {
                     }
                     arguments = bundle
                 }
-                3 -> ChatHomeFragment().apply {
-                    val bundle = Bundle().apply {
-                        putBoolean("chat",true)
-                    }
-                    arguments = bundle
-                }
+                3 -> MainChatFragment()
                 4 -> MeFragment()
                 else -> EmptyFragment()
             }

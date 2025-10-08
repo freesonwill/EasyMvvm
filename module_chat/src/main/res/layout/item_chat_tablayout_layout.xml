@@ -9,8 +9,8 @@
         android:layout_width="@dimen/dp_42"
         android:layout_height="@dimen/dp_42"
         android:padding="@dimen/dp_8"
-        android:src="@drawable/icon_main_chat_room"
         android:background="@drawable/shape_8dp"
+        android:layout_gravity="center_horizontal"
         android:backgroundTint="@color/color_E03C64"
         />
        <arch.cayenne.lib.skin.widget.SkinnableTextView
