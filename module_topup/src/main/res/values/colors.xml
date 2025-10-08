@@ -15,4 +15,9 @@
     <color name="pay_method">#929298</color>
     <color name="pay_line">#2C2E3B</color>
     <color name="pay_money">#FFFFFF</color>
+
+    <color name="bank_title">#999999</color>
+    <color name="bank_line">#272727</color>
+    <color name="bank_text">#FFFFFF</color>
+    <color name="fragment_bg">#1E1E1E</color>
 </resources>

@@ -32,6 +32,11 @@
         <action
             android:id="@+id/action_walletFragment_to_withdrawRecordFragment"
             app:destination="@id/withdrawRecordsFragment" />
+
+        <!--跳转银行卡页面-->
+        <action
+            android:id="@+id/action_walletFragment_to_bankCardFragment"
+            app:destination="@id/bankCardFragment" />
     </fragment>
 
     <fragment
@@ -53,6 +58,11 @@
         android:id="@+id/withdrawDetailFragment"
         android:name="com.walisport.module.topup.ui.fragment.WithdrawDetailFragment"
         android:label="WithdrawDetailFragment" />
+
+    <fragment
+        android:id="@+id/bankCardFragment"
+        android:name="com.walisport.module.topup.ui.fragment.BankCardFragment"
+        android:label="BankCardFragment"/>
 
     <fragment
         android:id="@+id/topUpRecordsFragment"
