@@ -124,8 +124,6 @@ class LiveVideoPlayerFragment :
         initVideoSourceBanner()
         initVideoView()
         scheduleHideButtons()
-
-
     }
 
     private fun initVideoSourceBanner() {
@@ -233,11 +231,6 @@ class LiveVideoPlayerFragment :
     override fun initListener() {
 
         with(mBinding) {
-            ivChooseSource.addScaleOnTouchAnimation()
-            ivChooseSource.setOnClickListener {
-                scheduleHideButtons()
-                mediaViewModel.chooseSourceView()
-            }
 
             ivToFullscreen.addScaleOnTouchAnimation()
             ivToFullscreen.clickNoRepeat {
@@ -258,8 +251,7 @@ class LiveVideoPlayerFragment :
                 showVideoResolutionPopUp()
             }
 
-            ivAnimationEntry.addScaleOnTouchAnimation()
-            ivAnimationEntry.clickNoRepeat { mediaViewModel.switchToAnimation() }
+
         }
 
     }
@@ -292,7 +284,6 @@ class LiveVideoPlayerFragment :
                             }
                             scheduleHideVideoSourceBanner()
                         }
-                        mBinding.ivChooseSource.visibility = View.VISIBLE
                         mBinding.ivToFullscreen.visibility = View.VISIBLE
                         val streamInfoBean =
                             it.source.firstOrNull { ele -> ele.isPlaying }?.liveStreams?.firstOrNull { ele -> ele.selected }
@@ -359,8 +350,6 @@ class LiveVideoPlayerFragment :
             }
 
             animationLiveUrl.observe(viewLifecycleOwner) {
-
-                mBinding.ivAnimationEntry.isEnabled = !it.isNullOrBlank()
 
             }
 
