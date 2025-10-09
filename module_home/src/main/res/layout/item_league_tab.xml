@@ -8,15 +8,15 @@
     android:gravity="center"
     android:orientation="horizontal"
     android:paddingStart="@dimen/dp_10"
-    android:paddingTop="@dimen/dp_7"
-    android:paddingEnd="@dimen/dp_11"
-    android:paddingBottom="@dimen/dp_5">
+    android:paddingTop="@dimen/dp_6"
+    android:paddingEnd="@dimen/dp_10"
+    android:paddingBottom="@dimen/dp_6">
 
     <ImageView
         android:id="@+id/iv_league_icon"
-        android:layout_width="16dp"
-        android:layout_height="16dp"
-        android:layout_marginEnd="4dp" />
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        android:layout_marginEnd="3dp" />
 
     <TextView
         android:id="@+id/tv_league_name"
