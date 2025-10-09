@@ -24,7 +24,7 @@ import arch.cayenne.module.account.data.constants.KeyConfig
 import arch.cayenne.module.home.R
 import arch.cayenne.module.home.data.model.CommonFeaturesBean
 import arch.cayenne.module.home.databinding.FragmentDrawerContentBinding
-import arch.cayenne.module.home.ui.adapter.CommonFeaturesAdapter
+import arch.cayenne.module.home.ui.adapter.DrawerFeaturesAdapter
 import arch.cayenne.module.home.ui.viewmodel.DrawerContentViewModel
 import arch.cayenne.module.home.utils.DateUtils
 import com.walisport.module.message.data.NotificationBean
@@ -42,8 +42,8 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
         const val TAG = "DrawerContentFragment"
     }
 
-    private val commonFeaturesAdapter by lazy {
-        CommonFeaturesAdapter()
+    private val drawerFeaturesAdapter by lazy {
+        DrawerFeaturesAdapter()
     }
 
     override fun initView(savedInstanceState: Bundle?) {
@@ -83,12 +83,12 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
                     return false
                 }
             }// 每行3个
-            adapter = commonFeaturesAdapter
+            adapter = drawerFeaturesAdapter
             mBinding.rvCommonFeatures.itemAnimator = null
         }
 
         var id = 0
-        commonFeaturesAdapter.submitList(
+        drawerFeaturesAdapter.submitList(
             listOf(
                 CommonFeaturesBean(id++, R.drawable.ic_drawer_fund_details,
                     R.string.drawer_fund_details
