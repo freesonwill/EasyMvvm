@@ -90,4 +90,5 @@
     <string name="title_order_sport_live">直播中</string>
     <string name="title_bet">投注</string>
     <string name="title_odds">赔率</string>
+    <string name="title_share_to">分享至</string>
 </resources>
