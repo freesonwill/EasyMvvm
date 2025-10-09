@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.touchBackPressed
@@ -56,7 +57,7 @@ class BankCardFragment : BaseFragment<BankCardViewModel, FragmentBankCardBinding
 
     override fun initListener() {
         mBinding.layAddBank.clickNoRepeat {
-
+            navigate(R.id.action_bankCardFragment_to_addBankCardFragment)
         }
         cardAdapter.setOnItemClickListener(object : BankCardAdapter.OnItemClickListener {
             override fun onItemClick(id: Int) {

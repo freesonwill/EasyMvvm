@@ -20,4 +20,6 @@
     <color name="bank_line">#272727</color>
     <color name="bank_text">#FFFFFF</color>
     <color name="fragment_bg">#1E1E1E</color>
+    <color name="add_bank_tip">#EB860D</color>
+    <color name="view_line">#1AFFFFFF</color>
 </resources>
