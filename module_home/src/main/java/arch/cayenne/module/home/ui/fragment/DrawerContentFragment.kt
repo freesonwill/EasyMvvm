@@ -7,6 +7,7 @@ import android.view.ViewGroup.MarginLayoutParams
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.recyclerview.widget.GridLayoutManager
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
@@ -15,12 +16,15 @@ import arch.cayenne.lib.common.ui.viewmodel.observeEvent
 import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
-import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
+import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.module.account.data.constants.KeyConfig
 import arch.cayenne.module.home.R
+import arch.cayenne.module.home.data.model.CommonFeaturesBean
 import arch.cayenne.module.home.databinding.FragmentDrawerContentBinding
+import arch.cayenne.module.home.ui.adapter.CommonFeaturesAdapter
 import arch.cayenne.module.home.ui.viewmodel.DrawerContentViewModel
 import arch.cayenne.module.home.utils.DateUtils
 import com.walisport.module.message.data.NotificationBean
@@ -38,6 +42,10 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
         const val TAG = "DrawerContentFragment"
     }
 
+    private val commonFeaturesAdapter by lazy {
+        CommonFeaturesAdapter()
+    }
+
     override fun initView(savedInstanceState: Bundle?) {
         StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND()
         setStatusBar(StatusBarConfig, mBinding.root)
@@ -46,6 +54,8 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
         } else {
             View.GONE
         }
+
+        initRvCommonFeatures()
 
         //更改导航栏样式调整底部偏移
         ViewCompat.setOnApplyWindowInsetsListener(requireActivity().window.decorView) { v, insets ->
@@ -59,6 +69,73 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
             ViewCompat.setOnApplyWindowInsetsListener(requireActivity().window.decorView, null)
             insets
         }
+    }
+
+    private fun initRvCommonFeatures() {
+        mBinding.rvCommonFeatures.apply {
+            //某些机型上， RecyclerView存在过滚动效果。 禁用scroll, 禁用过滚动效果
+            layoutManager = object : GridLayoutManager(requireContext(), 3) {
+                override fun canScrollHorizontally(): Boolean {
+                    return false
+                }
+
+                override fun canScrollVertically(): Boolean {
+                    return false
+                }
+            }// 每行3个
+            adapter = commonFeaturesAdapter
+            mBinding.rvCommonFeatures.itemAnimator = null
+        }
+
+        var id = 0
+        commonFeaturesAdapter.submitList(
+            listOf(
+                CommonFeaturesBean(id++, R.drawable.ic_drawer_fund_details,
+                    R.string.drawer_fund_details
+                ) {
+                    navigatePage(arch.cayenne.lib.res.R.string.nav_module_fund_detail_fragment.deeplink())
+                },
+                CommonFeaturesBean(id++, R.drawable.ic_drawer_bet_record,
+                    R.string.drawer_bet_record
+                ) {
+                    showToast(R.string.drawer_bet_record.getString())
+                },
+                CommonFeaturesBean(id++, R.drawable.ic_drawer_realtime_cashback,
+                    R.string.drawer_cash_back
+                ) {
+                    showToast(R.string.drawer_cash_back.getString())
+                },
+
+                CommonFeaturesBean(id++, R.drawable.ic_drawer_recently_played,
+                    R.string.drawer_recently_played
+                ) {
+                    showToast(R.string.drawer_recently_played.getString())
+                },
+                CommonFeaturesBean(id++, R.drawable.ic_drawer_game_collection,
+                    R.string.drawer_game_collections
+                ) {
+                    showToast(R.string.drawer_game_collections.getString())
+                },
+                CommonFeaturesBean(id++, R.drawable.ic_drawer_match_collection,
+                    R.string.drawer_match_collections
+                ) {
+                    showToast(R.string.drawer_match_collections.getString())
+                },
+
+                CommonFeaturesBean(id++, R.drawable.ic_drawer_gift,
+                    R.string.drawer_gift
+                ) {
+                    showToast(R.string.drawer_gift.getString())
+                },
+                CommonFeaturesBean(id++, R.drawable.ic_drawer_settings,
+                    R.string.drawer_settings
+                ) {
+                    navigatePage(arch.cayenne.lib.res.R.string.nav_module_setting_fragment.deeplink())
+                },
+            )
+        )
+
+
     }
 
     override fun initListener() {
@@ -88,14 +165,6 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
             itemNotification2.clickNoRepeat {
                 navigatePage(arch.cayenne.lib.res.R.string.nav_module_message_fragment.deeplink())
             }
-            llRecharge.clickNoRepeat {
-                navigatePage(arch.cayenne.lib.res.R.string.nav_module_topup_fragment.deeplink())
-            }
-            llRecharge.addScaleOnTouchAnimation()
-            llDrawerTutorial.clickNoRepeat {
-                navigatePage(Uri.parse("walisport://module_handicap/HandicapFragment?homeId=${R.id.newHomeFragment}"))
-            }
-            llDrawerTutorial.addScaleOnTouchAnimation()
             llDrawerSetting.clickNoRepeat {
                 navigatePage(arch.cayenne.lib.res.R.string.nav_module_setting_fragment.deeplink())
             }
@@ -190,4 +259,5 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
             }
         }
     }
+
 }

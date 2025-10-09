@@ -9,10 +9,10 @@
     tools:ignore="MissingDefaultResource">
 
     <arch.cayenne.lib.skin.widget.SkinnableView
-        android:id="@+id/v_more_mask"
-        android:layout_width="35dp"
+        android:id="@+id/v_btn_mask"
+        android:layout_width="130dp"
         android:layout_height="@dimen/dp_52"
-        android:background="@color/bg_card"
+        android:background="@color/color_1E1E1E"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -20,7 +20,7 @@
         android:id="@+id/tl_container"
         android:layout_width="0dp"
         android:layout_height="@dimen/dp_52"
-        app:layout_constraintEnd_toStartOf="@+id/v_more_mask"
+        app:layout_constraintEnd_toStartOf="@+id/v_btn_mask"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -28,7 +28,7 @@
             android:id="@+id/tl_league_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/bg_card"
+            android:background="@color/color_1E1E1E"
             android:clipChildren="false"
             android:clipToPadding="false"
             android:overScrollMode="never"

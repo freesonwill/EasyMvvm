@@ -13,7 +13,7 @@
     <string name="tab_text_other_day">其他日期</string>
     <string name="home_calendar_ok">确认</string>
     <string name="home_calendar_reset">重置</string>
-    <string name="home_tournament_more">更多</string>
+    <string name="home_tournament_list">联赛</string>
 
     <!-- AppBarLayout behavior -->
     <string name="appbar_scrolling_view_behavior">com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior</string>
@@ -73,6 +73,15 @@
     <string name="title_betslip">注单</string>
     <string name="title_chat">聊天</string>
     <string name="title_me">我</string>
+
+    <string name="drawer_fund_details">资金明细</string>
+    <string name="drawer_bet_record">投注记录</string>
+    <string name="drawer_cash_back">实时返水</string>
+    <string name="drawer_recently_played">最近玩过</string>
+    <string name="drawer_game_collections">游戏收藏</string>
+    <string name="drawer_match_collections">赛事收藏</string>
+    <string name="drawer_gift">活动</string>
+    <string name="drawer_settings">设置</string>
 
 
 </resources>
