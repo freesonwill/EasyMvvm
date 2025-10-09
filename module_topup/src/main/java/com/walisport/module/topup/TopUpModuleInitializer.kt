@@ -5,6 +5,7 @@ import arch.cayenne.lib.base.data.DefaultInitializer
 import com.walisport.module.topup.data.TopUpDetailRepository
 import com.walisport.module.topup.data.TopUpMainRepository
 import com.walisport.module.topup.data.TopUpRecordsRepository
+import com.walisport.module.topup.ui.viewmodel.FundDetailsViewModel
 import com.walisport.module.topup.ui.viewmodel.TopUpDetailViewModel
 import com.walisport.module.topup.ui.viewmodel.TopUpRecordsViewModel
 import com.walisport.module.topup.ui.viewmodel.TopUpViewModel
@@ -37,6 +38,7 @@ class TopUpModuleInitializer : DefaultInitializer<String> {
         viewModelOf(::WithdrawViewModel)
         viewModelOf(::WithdrawDetailViewModel)
         viewModelOf(::WithdrawRecordsViewModel)
+        viewModelOf(::FundDetailsViewModel)
     }
 
     private val repoModules = module {

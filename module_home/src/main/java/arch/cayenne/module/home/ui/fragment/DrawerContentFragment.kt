@@ -73,7 +73,16 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
 
     private fun initRvCommonFeatures() {
         mBinding.rvCommonFeatures.apply {
-            layoutManager = GridLayoutManager(requireContext(), 3) // 每行3个
+            //某些机型上， RecyclerView存在过滚动效果。 禁用scroll, 禁用过滚动效果
+            layoutManager = object : GridLayoutManager(requireContext(), 3) {
+                override fun canScrollHorizontally(): Boolean {
+                    return false
+                }
+
+                override fun canScrollVertically(): Boolean {
+                    return false
+                }
+            }// 每行3个
             adapter = commonFeaturesAdapter
             mBinding.rvCommonFeatures.itemAnimator = null
         }
@@ -84,7 +93,7 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
                 CommonFeaturesBean(id++, R.drawable.ic_drawer_fund_details,
                     R.string.drawer_fund_details
                 ) {
-                    showToast(R.string.drawer_fund_details.getString())
+                    navigatePage(arch.cayenne.lib.res.R.string.nav_module_fund_detail_fragment.deeplink())
                 },
                 CommonFeaturesBean(id++, R.drawable.ic_drawer_bet_record,
                     R.string.drawer_bet_record
