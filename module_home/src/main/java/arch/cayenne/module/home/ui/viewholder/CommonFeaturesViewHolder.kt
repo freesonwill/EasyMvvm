@@ -3,9 +3,9 @@ package arch.cayenne.module.home.ui.viewholder
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.module.home.data.model.CommonFeaturesBean
-import arch.cayenne.module.home.databinding.ItemCommonFeaturesBinding
+import arch.cayenne.module.home.databinding.ItemDrawerFeaturesBinding
 
-class CommonFeaturesViewHolder(private val mBinding: ItemCommonFeaturesBinding) :
+class CommonFeaturesViewHolder(private val mBinding: ItemDrawerFeaturesBinding) :
     BaseViewHolder(mBinding) {
 
     fun init(bean: CommonFeaturesBean) {
