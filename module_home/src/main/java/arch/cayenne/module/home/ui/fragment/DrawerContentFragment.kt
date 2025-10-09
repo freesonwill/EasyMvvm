@@ -158,7 +158,7 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
                 CommonFeaturesBean(id++, R.drawable.ic_drawer_help,
                     R.string.drawer_help
                 ) {
-                    navigatePage(arch.cayenne.lib.res.R.string.nav_module_fund_detail_fragment.deeplink())
+                    navigatePage(Uri.parse("walisport://module_handicap/HandicapFragment?homeId=${R.id.newHomeFragment}"))
                 },
                 CommonFeaturesBean(id++, R.drawable.ic_drawer_feedback,
                     R.string.drawer_feedback
