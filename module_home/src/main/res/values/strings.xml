@@ -46,6 +46,7 @@
     <string name="match_title_over_under">大小</string>
     <string name="drawer_recharge">钱包</string>
     <string name="drawer_common_function">常用功能</string>
+    <string name="drawer_service_function">服务</string>
     <string name="drawer_tutorial">教程</string>
     <string name="drawer_setting">设置</string>
     <string name="drawer_help">帮助</string>
@@ -82,6 +83,10 @@
     <string name="drawer_match_collections">赛事收藏</string>
     <string name="drawer_gift">活动</string>
     <string name="drawer_settings">设置</string>
+    <string name="drawer_customer_service">官方客服</string>
+
+
+
 
 
 </resources>
