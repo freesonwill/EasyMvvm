@@ -87,7 +87,7 @@
             <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_60"
-                android:layout_marginTop="@dimen/dp_14">
+                android:layout_marginTop="@dimen/dp_13">
 
                 <arch.cayenne.lib.skin.widget.SkinnableTextView
                     android:layout_width="match_parent"
