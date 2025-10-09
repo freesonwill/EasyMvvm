@@ -62,7 +62,18 @@
     <fragment
         android:id="@+id/bankCardFragment"
         android:name="com.walisport.module.topup.ui.fragment.BankCardFragment"
-        android:label="BankCardFragment"/>
+        android:label="BankCardFragment">
+
+        <!--跳转添加银行卡页面-->
+        <action
+            android:id="@+id/action_bankCardFragment_to_addBankCardFragment"
+            app:destination="@id/addBankCardFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/addBankCardFragment"
+        android:name="com.walisport.module.topup.ui.fragment.AddBankCardFragment"
+        android:label="AddBankCardFragment"/>
 
     <fragment
         android:id="@+id/topUpRecordsFragment"

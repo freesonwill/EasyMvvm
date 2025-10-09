@@ -43,6 +43,7 @@ class DelCardDialogFragment :
         }
         mBinding.tvDelete.clickNoRepeat {
             clicklistener?.onClickDelete(id, name, number)
+            super.dismiss()
         }
     }
 
