@@ -79,7 +79,6 @@ class ChatTabItemView : LinearLayoutCompat {
         if(isSelect == select){
             return
         }
-        "tabSelect $select".logd("aaa")
         this.isSelect = select
         when (tabType) {
             NORMAL -> updateNormalStatus(isSelect)
@@ -150,12 +149,14 @@ class ChatTabItemView : LinearLayoutCompat {
             val lp = tabRectCircle.layoutParams as ConstraintLayout.LayoutParams
             lp.width = 8.dp2px
             lp.height = 8.dp2px
+            lp.marginEnd = 0
             tabRectCircle.layoutParams = lp
             val tvLp = tabTv.layoutParams as LinearLayout.LayoutParams
             tvLp.topMargin = 2.dp2px
             tabTv.layoutParams = tvLp
             val tbBgLp = tabRectBg.layoutParams as ConstraintLayout.LayoutParams
             tbBgLp.topMargin = 4.dp2px
+
             tabRectBg.layoutParams = tbBgLp
 
         }
@@ -172,6 +173,7 @@ class ChatTabItemView : LinearLayoutCompat {
             val lp = tabRectCircle.layoutParams as ConstraintLayout.LayoutParams
             lp.width = 16.dp2px
             lp.height = 16.dp2px
+            lp.marginEnd = -(8.dp2px)
             tabRectCircle.layoutParams = lp
             val tvLp = tabTv.layoutParams as LinearLayout.LayoutParams
             tvLp.topMargin = 2.dp2px

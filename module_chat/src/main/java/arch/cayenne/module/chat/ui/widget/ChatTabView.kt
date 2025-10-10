@@ -194,7 +194,6 @@ class ChatTabView : LinearLayout {
     }
 
     private fun setTabLp(left: Array<Int>,top:Array<Int>) {
-        "setTabLp ${left.toList()}".logd("aaa")
         binding.apply {
             val chatLp = tabChatRoom.layoutParams as LinearLayout.LayoutParams
             val livingLp = tabChatLiving.layoutParams as LinearLayout.LayoutParams
