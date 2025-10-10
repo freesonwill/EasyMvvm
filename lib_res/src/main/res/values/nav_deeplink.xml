@@ -16,6 +16,7 @@
     <string name="nav_module_fund_detail_fragment" translatable="false">walisport://module_topup/fundDetailsFragment</string>
     <string name="nav_module_realtime_cashback_fragment" translatable="false">walisport://module_topup/realTimeCashBackFragment</string>
     <string name="nav_module_partner_fragment" translatable="false">walisport://module_topup/seniorPartnerFragment</string>
+    <string name="nav_module_invite_friends_fragment" translatable="false">walisport://module_topup/inviteFriendsFragment</string>
 
 
 
