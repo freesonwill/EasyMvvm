@@ -133,4 +133,21 @@ class RealTimeCashBackFragment : BaseFragment<RealTimeCashBackViewModel, Fragmen
 
     override suspend fun createObserver() {
     }
+
+    override fun onResume() {
+        mBinding.webView.onResume()
+        mBinding.webView.resumeTimers()
+        super.onResume()
+    }
+
+    override fun onPause() {
+        mBinding.webView.onPause()
+        mBinding.webView.pauseTimers()
+        super.onPause()
+    }
+
+    override fun onDestroy() {
+        mBinding.webView.destroy()
+        super.onDestroy()
+    }
 }
