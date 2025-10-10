@@ -102,7 +102,7 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
                 CommonFeaturesBean(id++, R.drawable.ic_drawer_realtime_cashback,
                     R.string.drawer_cash_back
                 ) {
-                    showToast(R.string.drawer_cash_back.getString())
+                    navigatePage(arch.cayenne.lib.res.R.string.nav_module_realtime_cashback_fragment.deeplink())
                 },
 
                 CommonFeaturesBean(id++, R.drawable.ic_drawer_recently_played,
