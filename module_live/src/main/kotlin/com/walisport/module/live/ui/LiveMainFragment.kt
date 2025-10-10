@@ -100,14 +100,15 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         mBinding.LayoutInterceptTouch.setLiveMainGestureListener(object : LiveMainGestureListener{
             override fun onAdjustLayoutScroll(deltaY: Float,direction:LiveMainSlideDirection) {
                 //往下滑动,子类的rv,sc是否滑到了第一条或者顶部
-                if (direction==LiveMainSlideDirection.DOWN){
-                    var bool : Boolean? = mViewModel.sonVerticalScrollIsTop.value
-                    bool?.let {
-                        if(it) mBinding.liveMain2.adjustLayout(deltaY,direction)
-                    }
-                }else{
-                   mBinding.liveMain2.adjustLayout(deltaY,direction)
-                }
+//                if (direction==LiveMainSlideDirection.DOWN){
+//                    var bool : Boolean? = mViewModel.sonVerticalScrollIsTop.value
+//                    bool?.let {
+//                        if(it) mBinding.liveMain2.adjustLayout(deltaY,direction)
+//                    }
+//                }else{
+//                   mBinding.liveMain2.adjustLayout(deltaY,direction)
+//                }
+                mBinding.liveMain2.adjustLayout(deltaY,direction)
             }
         })
 

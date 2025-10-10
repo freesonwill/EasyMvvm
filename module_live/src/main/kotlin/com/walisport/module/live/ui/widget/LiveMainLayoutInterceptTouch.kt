@@ -76,13 +76,13 @@ class LiveMainLayoutInterceptTouch @JvmOverloads constructor(
                     if (deltaY > 0) {
                         LogUtils.e("MainLayout----------Sliding DOWN, pixelsY=$absDeltaY")
                         mLiveMainGesture?.onAdjustLayoutScroll(
-                            absDeltaY * 2,
+                            absDeltaY * 1.5f,
                             LiveMainSlideDirection.DOWN
                         )
                     } else if (deltaY < 0) {
                         LogUtils.e("MainLayout----------Sliding UP, pixelsY=$absDeltaY")
                         mLiveMainGesture?.onAdjustLayoutScroll(
-                            -absDeltaY * 2,
+                            -absDeltaY * 1.5f,
                             LiveMainSlideDirection.UP
                         )
                     }
