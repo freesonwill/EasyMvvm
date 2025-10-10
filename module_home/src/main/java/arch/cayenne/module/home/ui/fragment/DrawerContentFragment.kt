@@ -11,11 +11,13 @@ import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
+import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
 import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
+import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
@@ -226,6 +228,15 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
             }
             notificationBean.observeEvent(viewLifecycleOwner, this@DrawerContentFragment) { list ->
                 setNotificationItem(list)
+            }
+
+            currentBalanceChange.observe(viewLifecycleOwner) {
+                mBinding.tvBalance.text =
+                    getString(
+                        R.string.balance_format,
+                        CurrencySymbols.getSymbol(it?.currency?:""),
+                        (it?.balance?:0L).getFormalMoney()
+                    )
             }
         }
     }

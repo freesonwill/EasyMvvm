@@ -28,31 +28,31 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_12"
-            android:textColor="@color/drawer_notification_title"
-            android:textSize="@dimen/sp_16"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/iv_arrow_right"
+            android:gravity="top"
+            android:textColor="@color/color_FFFFFF"
+            android:textSize="@dimen/sp_14"
             app:layout_constraintStart_toEndOf="@id/iv_icon_nickname"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="@id/iv_icon_nickname"
+            app:skinnableFontWeight="500" />
 
         <arch.cayenne.lib.skin.widget.SkinnableImageView
-            android:id="@+id/iv_nickname_arrow_right"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_8"
-            android:src="@drawable/ic_drawer_arrow_right"
-            android:stateListAnimator="@animator/layout_alpha_animator"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@id/tv_title_nickname"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:id="@+id/iv_level"
+            android:layout_width="@dimen/dp_34"
+            android:layout_height="@dimen/dp_14"
+            android:layout_marginStart="@dimen/dp_6"
+            android:scaleType="centerCrop"
+            android:src="@drawable/level_90"
+            app:layout_constraintStart_toEndOf="@+id/tv_title_nickname"
+            app:layout_constraintTop_toTopOf="@id/tv_title_nickname"
+            app:layout_constraintBottom_toBottomOf="@id/tv_title_nickname"/>
+
 
         <arch.cayenne.lib.skin.widget.SkinnableTextView
             android:id="@+id/tv_amount_header"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_12"
-            android:text="@string/bet_title"
+            android:text="@string/drawer_balance"
             android:textColor="@color/color_999999"
             android:textSize="@dimen/sp_13"
             app:layout_constraintBottom_toBottomOf="parent"

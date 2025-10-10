@@ -31,6 +31,10 @@
     <string name="drawer_common_function">Common Features</string>
     <string name="drawer_service_function">Service</string>
 
+    <string name="drawer_balance">Balance</string>
+    <string name="drawer_nickname_title">Change picture, name</string>
+
+
 
 
 
