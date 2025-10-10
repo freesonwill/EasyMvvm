@@ -49,13 +49,26 @@ class LiveLineupFragment : BaseFragment<LiveLineupViewModel, FragmentLiveLineupB
 
     override fun initView(savedInstanceState: Bundle?) {}
 
-    override fun initListener() {}
+    override fun initListener() {
+        // 设置滚动监听
+        mBinding.scrollView.setOnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
+            // 判断是否滑动到顶部
+            if (scrollY == 0) {
+                mainViewModel.setSonVerticalScrollIsTop(true)
+            } else {
+                if (mBinding.llContent.visibility != View.INVISIBLE) {
+                    mainViewModel.setSonVerticalScrollIsTop(false)
+                }
+            }
+        }
+    }
 
     override suspend fun createObserver() {
         launch(Lifecycle.State.RESUMED) {
             mainViewModel.apiStateListener.observe(viewLifecycleOwner) { state ->
                 when (state) {
                     DataState.NetworkUnavailable -> {
+                        mainViewModel.setSonVerticalScrollIsTop(true)
                         mBinding.llContent.visibility = View.INVISIBLE
                         mBinding.main.setState(
                             States.NETWORK_ANOMALY(),
@@ -68,6 +81,7 @@ class LiveLineupFragment : BaseFragment<LiveLineupViewModel, FragmentLiveLineupB
                 it?.let {
                     mBinding.main.setVisibilityGone()
                     if (it.away.isEmpty()) {
+                        mainViewModel.setSonVerticalScrollIsTop(true)
                         mBinding.llContent.visibility = View.INVISIBLE
                         mBinding.main.setState(
                             States.DATA_EMPTY,
@@ -78,6 +92,7 @@ class LiveLineupFragment : BaseFragment<LiveLineupViewModel, FragmentLiveLineupB
                         upData(it)
                     }
                 } ?: run {
+                    mainViewModel.setSonVerticalScrollIsTop(true)
                     mBinding.llContent.visibility = View.INVISIBLE
                     mBinding.main.setState(
                         States.DATA_EMPTY,
@@ -101,6 +116,7 @@ class LiveLineupFragment : BaseFragment<LiveLineupViewModel, FragmentLiveLineupB
     //  repeated Player away = 7;        // 客队阵型球员列表
     @SuppressLint("MissingInflatedId", "CutPasteId")
     private fun upData(data: MatchLineupDetail) {
+        mainViewModel.setSonVerticalScrollIsTop(true)
         initPlayer(data)
         Glide.with(this).load(data.homeLogo).into(mBinding.ivNationalFlagTop)
         Glide.with(this).load(data.awayLogo).into(mBinding.ivNationalFlagBottom)
@@ -321,5 +337,11 @@ class LiveLineupFragment : BaseFragment<LiveLineupViewModel, FragmentLiveLineupB
         return if (name.isEmpty()) getString(R.string.lineup_user_name_empty).toString() else name
     }
 
+    override fun onResume() {
+        if (mBinding.llContent.visibility ==View.INVISIBLE){
+            mainViewModel.setSonVerticalScrollIsTop(true)
+        }
+        super.onResume()
+    }
     data class LineupPlayerInfo(val id: Int, val logUrl: String, val shirtNumber: Int)
 }
