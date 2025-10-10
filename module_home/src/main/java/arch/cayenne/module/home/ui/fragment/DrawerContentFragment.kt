@@ -52,6 +52,10 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
         DrawerFeaturesAdapter()
     }
 
+    private val earningFeaturesAdapter by lazy {
+        DrawerFeaturesAdapter()
+    }
+
     override fun initView(savedInstanceState: Bundle?) {
         StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND()
         StatusBarConfig.statusBarDarkFont = false
@@ -59,6 +63,7 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
 
         initRvCommonFeatures()
         initRvServiceFeatures()
+        initRvEarningFeatures()
 
         //更改导航栏样式调整底部偏移
         ViewCompat.setOnApplyWindowInsetsListener(requireActivity().window.decorView) { v, insets ->
@@ -179,6 +184,47 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
 
 
     }
+
+
+    /**
+     * 初始化赚钱功能区域
+     */
+    private fun initRvEarningFeatures() {
+        mBinding.rvEarningFeatures.apply {
+            //某些机型上， RecyclerView存在过滚动效果。 禁用scroll, 禁用过滚动效果
+            layoutManager = object : GridLayoutManager(requireContext(), 3) {
+                override fun canScrollHorizontally(): Boolean {
+                    return false
+                }
+
+                override fun canScrollVertically(): Boolean {
+                    return false
+                }
+            }// 每行3个
+            adapter = earningFeaturesAdapter
+            itemAnimator = null
+        }
+
+        var id = 0
+        earningFeaturesAdapter.submitList(
+            listOf(
+                CommonFeaturesBean(id++, R.drawable.ic_drawer_invite,
+                    R.string.drawer_invite
+                ) {
+                    navigatePage(Uri.parse("walisport://module_handicap/HandicapFragment?homeId=${R.id.newHomeFragment}"))
+                },
+                CommonFeaturesBean(id++, R.drawable.ic_drawer_partner,
+                    R.string.drawer_partner
+                ) {
+                    navigatePage(arch.cayenne.lib.res.R.string.nav_module_feedback_fragment.deeplink())
+                },
+
+            )
+        )
+
+
+    }
+
 
     override fun initListener() {
         with(mBinding) {
