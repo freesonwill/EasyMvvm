@@ -113,4 +113,22 @@
 
         <deepLink app:uri="walisport://module_topup/realTimeCashBackFragment" />
     </fragment>
+
+    <fragment
+        android:id="@+id/seniorPartnerFragment"
+        android:name="com.walisport.module.topup.ui.fragment.SeniorPartnerFragment"
+        android:label="fragment_senior_partner"
+        tools:layout="@layout/fragment_senior_partner">
+
+        <deepLink app:uri="walisport://module_topup/seniorPartnerFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/inviteFriendsFragment"
+        android:name="com.walisport.module.topup.ui.fragment.InviteFriendsFragment"
+        android:label="fragment_invite_friends"
+        tools:layout="@layout/fragment_invite_friends">
+
+        <deepLink app:uri="walisport://module_topup/inviteFriendsFragment" />
+    </fragment>
 </navigation>

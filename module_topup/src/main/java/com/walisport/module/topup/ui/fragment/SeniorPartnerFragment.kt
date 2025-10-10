@@ -16,20 +16,22 @@ import com.github.lzyzsd.jsbridge.BridgeWebViewClient
 import com.github.lzyzsd.jsbridge.DefaultHandler
 import com.walisport.module.topup.databinding.FragmentFundDetailsBinding
 import com.walisport.module.topup.databinding.FragmentRealtimeCashbackBinding
+import com.walisport.module.topup.databinding.FragmentSeniorPartnerBinding
 import com.walisport.module.topup.ui.viewmodel.FundDetailsViewModel
 import com.walisport.module.topup.ui.viewmodel.RealTimeCashBackViewModel
+import com.walisport.module.topup.ui.viewmodel.SeniorPartnerViewModel
 import kotlinx.coroutines.withContext
 import org.koin.java.KoinJavaComponent.inject
 import kotlin.reflect.KClass
 
 /**
- * 实时返水页面， 内容由Web提供
+ * 高级合伙人页面， 内容由Web提供
 
  */
-class RealTimeCashBackFragment : BaseFragment<RealTimeCashBackViewModel, FragmentRealtimeCashbackBinding>() {
+class SeniorPartnerFragment : BaseFragment<SeniorPartnerViewModel, FragmentSeniorPartnerBinding>() {
 
-    override val vbClass: KClass<FragmentRealtimeCashbackBinding> = FragmentRealtimeCashbackBinding::class
-    override val vmClass: KClass<RealTimeCashBackViewModel> = RealTimeCashBackViewModel::class
+    override val vbClass: KClass<FragmentSeniorPartnerBinding> = FragmentSeniorPartnerBinding::class
+    override val vmClass: KClass<SeniorPartnerViewModel> = SeniorPartnerViewModel::class
 
     private val manager: UserDataManager by inject(UserDataManager::class.java)
 

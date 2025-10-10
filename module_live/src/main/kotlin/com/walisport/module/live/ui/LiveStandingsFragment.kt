@@ -13,6 +13,7 @@ import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout.States
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
+import arch.cayenne.lib.common.utils.ext.listenAtTop
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import com.walisport.module.live.R
 import com.walisport.module.live.databinding.FragmentLiveStandingsBinding
@@ -63,6 +64,21 @@ class LiveStandingsFragment : BaseFragment<LiveStandingsViewModel, FragmentLiveS
     }
 
     override fun initListener() {
+        // 监听 RecyclerView 是否滑动到第一条
+        mBinding.recyclerStandings.listenAtTop { isAtTop ->
+            if (isAtTop) {
+                mainViewModel.setSonVerticalScrollIsTop(true)
+            }else{
+                mainViewModel.setSonVerticalScrollIsTop(false)
+            }
+        }
+    }
+
+    override fun onResume() {
+        if (standsAdapter.itemCount==0){
+            mainViewModel.setSonVerticalScrollIsTop(true)
+        }
+        super.onResume()
     }
 
     override suspend fun createObserver() {
@@ -70,6 +86,7 @@ class LiveStandingsFragment : BaseFragment<LiveStandingsViewModel, FragmentLiveS
             mainViewModel.apiStateListener.observe(viewLifecycleOwner) { state ->
                 when (state) {
                     DataState.NetworkUnavailable -> {
+                        mainViewModel.setSonVerticalScrollIsTop(true)
                             mBinding.mainLayout.setState(
                             States.NETWORK_ANOMALY(),
                             arch.cayenne.lib.common.R.string.error_net.getString()
@@ -79,11 +96,13 @@ class LiveStandingsFragment : BaseFragment<LiveStandingsViewModel, FragmentLiveS
             }
             mViewModel.competitionTables.observe(viewLifecycleOwner) {
                 if (it.isEmpty() && standsAdapter.itemCount == 0) {
+                    mainViewModel.setSonVerticalScrollIsTop(true)
                     mBinding.mainLayout.setState(
                         States.DATA_EMPTY,
                         R.string.lineup_empty.getString()
                     )
                 } else {
+                    mainViewModel.setSonVerticalScrollIsTop(true)
                     mBinding.tvStandingsName.text = tournamentName
                     mBinding.mainLayout.setVisibilityGone()
                     standsAdapter.submitList(it)

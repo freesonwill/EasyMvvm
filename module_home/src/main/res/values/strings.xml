@@ -47,6 +47,7 @@
     <string name="drawer_recharge">钱包</string>
     <string name="drawer_common_function">常用功能</string>
     <string name="drawer_service_function">服务</string>
+    <string name="drawer_earning_function">赚钱</string>
     <string name="drawer_tutorial">教程</string>
     <string name="drawer_setting">设置</string>
     <string name="drawer_help">帮助</string>
@@ -87,6 +88,10 @@
     <string name="drawer_balance">总余额</string>
     <string name="drawer_withdraw">提现</string>
     <string name="drawer_topup">充值</string>
+    <string name="drawer_invite">邀请好友</string>
+    <string name="drawer_partner">高级合伙人</string>
+
+
 
 
 

@@ -47,12 +47,30 @@ class LiveOutsFragment : BaseFragment<LiveOutsViewModel, FragmentLiveOutsBinding
                 }
             }
         })
+        // 设置滚动监听
+        mBinding.scrollView.setOnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
+            // 判断是否滑动到顶部
+            if (scrollY == 0) {
+                mainViewModel.setSonVerticalScrollIsTop(true)
+            } else {
+                if (mBinding.llContent.visibility != View.INVISIBLE) {
+                    mainViewModel.setSonVerticalScrollIsTop(false)
+                }
+            }
+        }
     }
 
+    override fun onResume() {
+        if (mBinding.llContent.visibility ==View.INVISIBLE){
+            mainViewModel.setSonVerticalScrollIsTop(true)
+        }
+        super.onResume()
+    }
     override suspend fun createObserver() {
             mainViewModel.apiStateListener.observe(viewLifecycleOwner) { state ->
                 when (state) {
                     DataState.NetworkUnavailable -> {
+                        mainViewModel.setSonVerticalScrollIsTop(true)
                         mBinding.mainLayout.setState(
                             States.NETWORK_ANOMALY(),
                             arch.cayenne.lib.common.R.string.error_net.getString()
@@ -79,6 +97,7 @@ class LiveOutsFragment : BaseFragment<LiveOutsViewModel, FragmentLiveOutsBinding
                     it?.let {
                         mBinding.mainLayout.setVisibilityGone()
                         if (it.matchTrendData.data.isEmpty()) {
+                            mainViewModel.setSonVerticalScrollIsTop(true)
                             mBinding.llContent.visibility = View.INVISIBLE
                             mBinding.mainLayout.setState(
                                 States.DATA_EMPTY,
@@ -86,6 +105,7 @@ class LiveOutsFragment : BaseFragment<LiveOutsViewModel, FragmentLiveOutsBinding
                             )
                         } else {
                             mBinding.llContent.visibility = View.VISIBLE
+                            mainViewModel.setSonVerticalScrollIsTop(true)
                             parseTrendData(it.matchTrendData)          //比赛趋势信息
                             parseStatsData(it.stats)                   //统计进球红黄牌等信息
                             parseHalfTeamData(it.team)                 //统计进度条相关信息

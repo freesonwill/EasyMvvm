@@ -30,11 +30,15 @@
 
     <string name="drawer_common_function">Common Features</string>
     <string name="drawer_service_function">Service</string>
+    <string name="drawer_earning_function">Earn Money</string>
+
 
     <string name="drawer_balance">Balance</string>
     <string name="drawer_nickname_title">Change picture, name</string>
     <string name="drawer_withdraw">Withdraw</string>
     <string name="drawer_topup">TopUp</string>
+    <string name="drawer_invite">Invite friends</string>
+    <string name="drawer_partner">Senior partner</string>
 
 
 
