@@ -123,7 +123,7 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
                 CommonFeaturesBean(id++, R.drawable.ic_drawer_match_collection,
                     R.string.drawer_match_collections
                 ) {
-                    showToast(R.string.drawer_match_collections.getString())
+                    navigatePage(arch.cayenne.lib.res.R.string.nav_module_collectlist_fragment.deeplink())
                 },
 
                 CommonFeaturesBean(id++, R.drawable.ic_drawer_gift,
