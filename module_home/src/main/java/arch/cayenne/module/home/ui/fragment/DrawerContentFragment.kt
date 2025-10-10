@@ -11,11 +11,14 @@ import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
+import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
 import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
+import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
+import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
@@ -51,7 +54,8 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
 
     override fun initView(savedInstanceState: Bundle?) {
         StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND()
-        setStatusBar(StatusBarConfig, mBinding.root)
+        StatusBarConfig.statusBarDarkFont = false
+        setStatusBar(StatusBarConfig,mBinding.root)
 
         initRvCommonFeatures()
         initRvServiceFeatures()
@@ -158,7 +162,7 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
                 CommonFeaturesBean(id++, R.drawable.ic_drawer_help,
                     R.string.drawer_help
                 ) {
-                    navigatePage(arch.cayenne.lib.res.R.string.nav_module_fund_detail_fragment.deeplink())
+                    navigatePage(Uri.parse("walisport://module_handicap/HandicapFragment?homeId=${R.id.newHomeFragment}"))
                 },
                 CommonFeaturesBean(id++, R.drawable.ic_drawer_feedback,
                     R.string.drawer_feedback
@@ -204,6 +208,16 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
                 navigatePage(arch.cayenne.lib.res.R.string.nav_module_message_fragment.deeplink())
             }
 
+            mBinding.llDrawerRecharge.addScaleOnTouchAnimation()
+            mBinding.llDrawerRecharge.clickNoRepeat {
+                navigatePage(arch.cayenne.lib.res.R.string.nav_module_topup_fragment.deeplink())
+            }
+
+            mBinding.llDrawerWithdraw.addScaleOnTouchAnimation()
+            mBinding.llDrawerWithdraw.clickNoRepeat {
+                navigatePage(arch.cayenne.lib.res.R.string.nav_module_topup_fragment.deeplink())
+            }
+
         }
     }
 
@@ -226,6 +240,15 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
             }
             notificationBean.observeEvent(viewLifecycleOwner, this@DrawerContentFragment) { list ->
                 setNotificationItem(list)
+            }
+
+            currentBalanceChange.observe(viewLifecycleOwner) {
+                mBinding.tvBalance.text =
+                    getString(
+                        R.string.balance_format,
+                        CurrencySymbols.getSymbol(it?.currency?:""),
+                        (it?.balance?:0L).getFormalMoney()
+                    )
             }
         }
     }
