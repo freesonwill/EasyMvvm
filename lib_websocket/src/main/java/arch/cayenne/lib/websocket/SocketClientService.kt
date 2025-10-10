@@ -62,6 +62,8 @@ class SocketClientService(
     private var webSocket: WebSocket? = null
     private var host: String = ""
     private val lock = Any()
+    override val socketConnectState: SocketConnectState
+        get() = currentState
 
     /************* Method **************/
     override fun connect(host: String): SharedFlow<ConnectState> {

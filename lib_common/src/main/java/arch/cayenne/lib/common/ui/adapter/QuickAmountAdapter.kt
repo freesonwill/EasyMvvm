@@ -15,7 +15,7 @@ import arch.cayenne.lib.skin.res.SkinnableResourceManager
 
 class QuickAmountAdapter(
     private val type: QuickAmountKeyboardEnum = QuickAmountKeyboardEnum.SINGLE,
-    private val onItemClick: (Long) -> Unit
+    private val onItemClick: (String) -> Unit
 ): BaseAdapter<QuickAmountEnum, DefaultQuickAmountViewHolder, ItemQuickAmountBinding>(
     QuickAmountCompare()
 ) {
@@ -29,7 +29,7 @@ class QuickAmountAdapter(
         val item = getItem(position)
         binding.tvTitle.text = item.value.toString()
         binding.root.setOnClickListener {
-            onItemClick(item.getAmount())
+            onItemClick(item.value.toString())
         }
         binding.line.isVisible = position < itemCount - 1
     }

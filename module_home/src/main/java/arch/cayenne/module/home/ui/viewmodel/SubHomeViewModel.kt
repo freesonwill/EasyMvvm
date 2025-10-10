@@ -76,7 +76,7 @@ class SubHomeViewModel: BaseViewModel() {
     val selectedSkinType: LiveData<Event<String>> = _selectedSkinType
 
     // 用於記錄全部的比賽列表是否載入完成
-    var isAllTabLoaded: Boolean = false
+    var isAllowTabLoad: Boolean = false
     // 暫存 SportDataModel 列表，用於實現延後繪製球種列表
     var tempSportData: List<SportDataModel>? = null
 
@@ -346,6 +346,7 @@ class SubHomeViewModel: BaseViewModel() {
             val currentList = tournaments.value?.peekContent() ?: return
             setCurrentTournamentId(tournament.id)
             if (!currentList.any { it.id == tournament.id }) {
+                viewModelScope.launch { selectedDate(0L) }
                 tournaments.value = Event(currentList.map { it.apply { isSelected = false } }  + tournament.apply { isSelected = true })
             } else {
                 tournaments.value = Event(currentList.map { it.apply { isSelected = tournament.id == id } })
@@ -357,6 +358,7 @@ class SubHomeViewModel: BaseViewModel() {
 
     fun setPlayTypeId(id: Int) {
         currentPlayTypeId = id
+        isAllowTabLoad = currentPlayTypeId != PlayType.TODAY.id
     }
 
     fun setCalendarState(state: HomeCalendarFragment.States) {

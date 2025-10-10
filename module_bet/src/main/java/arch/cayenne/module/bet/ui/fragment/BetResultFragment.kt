@@ -89,10 +89,10 @@ class BetResultFragment : BasePreLoadBottomSheetFragment<BetResultViewModel, Fra
         mBinding.rvBet.adapter = betSelectionAdapter
         mBinding.rvComboOdds.adapter = detailAdapter
 
-        val decoration = BetSheetDecoration(6.dp2px, 12.dp2px)
+        val decoration = BetSheetDecoration(6.dp2px)
         mBinding.rvBet.addItemDecoration(decoration)
 
-        val screenHeight = resources.displayMetrics.heightPixels
+        val screenHeight = getScreenHeight() ?: return
         val maxFragmentHeight = (screenHeight * 0.75).toInt()
         mBinding.root.maxHeight = maxFragmentHeight
     }
@@ -230,17 +230,11 @@ class BetResultFragment : BasePreLoadBottomSheetFragment<BetResultViewModel, Fra
         if (this.isFull == full) return
         val screenHeight = getScreenHeight() ?: return
         val maxFragmentHeight = (screenHeight * 0.75).toInt()
-        if (full) {
-            mBinding.root.minHeight = maxFragmentHeight
-            val layoutParams = mBinding.rvBet.layoutParams as ConstraintLayout.LayoutParams
-            layoutParams.height = 0
-            mBinding.rvBet.layoutParams = layoutParams
-        } else {
-            mBinding.root.minHeight = 0
-            val layoutParams = mBinding.rvBet.layoutParams
-            layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
-            mBinding.rvBet.layoutParams = layoutParams
-        }
+
+        mBinding.root.minHeight = if (full) maxFragmentHeight else 0
+        val layoutParams = mBinding.nsv.layoutParams
+        layoutParams.height = if (full) 0 else ViewGroup.LayoutParams.WRAP_CONTENT
+        mBinding.nsv.layoutParams = layoutParams
         this.isFull = full
     }
 

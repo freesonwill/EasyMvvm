@@ -4,8 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:interceptedDirection = "RIGHT"
-    android:background="@color/title_bg">
+    android:background="@color/title_bg"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    app:interceptedDirection="RIGHT">
 
     <arch.cayenne.lib.common.ui.view.TitleBarView
         android:id="@+id/title_bar"
@@ -13,10 +15,10 @@
         android:layout_height="wrap_content"
         tools:ignore="MissingConstraints" />
 
-    <LinearLayout
+    <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_10"
+        android:background="@color/fragment_bg"
         android:orientation="vertical"
         app:layout_constraintTop_toBottomOf="@+id/title_bar">
 
@@ -24,18 +26,16 @@
             android:id="@+id/language_simple"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_52"
-            android:layout_marginStart="@dimen/dp_12"
-            android:layout_marginTop="@dimen/dp_10"
-            android:layout_marginEnd="@dimen/dp_12"
-            android:background="@drawable/bg_set_item_top">
+            android:layout_marginTop="@dimen/dp_13"
+            android:background="@drawable/bg_set_item">
 
             <arch.cayenne.lib.skin.widget.SkinnableTextView
                 android:id="@+id/tv_simple"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_10"
+                android:layout_marginStart="@dimen/dp_20"
                 android:text="@string/menu_language_simple"
-                android:textColor="@color/notice_title"
+                android:textColor="@color/set_text"
                 android:textSize="@dimen/sp_15"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -45,7 +45,7 @@
                 android:id="@+id/radio_simple"
                 android:layout_width="@dimen/dp_16"
                 android:layout_height="@dimen/dp_16"
-                android:layout_marginEnd="@dimen/dp_12"
+                android:layout_marginEnd="@dimen/dp_16"
                 android:background="@drawable/selector_radio_button"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -54,9 +54,9 @@
             <arch.cayenne.lib.skin.widget.SkinnableView
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_1"
-                android:layout_marginStart="@dimen/dp_10"
-                android:layout_marginEnd="@dimen/dp_10"
-                android:background="@color/notice_line"
+                android:layout_marginStart="@dimen/dp_20"
+                android:layout_marginEnd="@dimen/dp_16"
+                android:background="@color/set_line"
                 app:layout_constraintBottom_toBottomOf="parent" />
         </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
 
@@ -64,17 +64,15 @@
             android:id="@+id/language_english"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_52"
-            android:layout_marginStart="@dimen/dp_12"
-            android:layout_marginEnd="@dimen/dp_12"
-            android:background="@drawable/bg_set_item_rect">
+            android:background="@drawable/bg_set_item">
 
             <arch.cayenne.lib.skin.widget.SkinnableTextView
                 android:id="@+id/tv_english"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_10"
+                android:layout_marginStart="@dimen/dp_20"
                 android:text="@string/menu_language_english"
-                android:textColor="@color/notice_title"
+                android:textColor="@color/set_title"
                 android:textSize="@dimen/sp_15"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -84,7 +82,7 @@
                 android:id="@+id/radio_english"
                 android:layout_width="@dimen/dp_16"
                 android:layout_height="@dimen/dp_16"
-                android:layout_marginEnd="@dimen/dp_12"
+                android:layout_marginEnd="@dimen/dp_16"
                 android:background="@drawable/selector_radio_button"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -93,9 +91,9 @@
             <arch.cayenne.lib.skin.widget.SkinnableView
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_1"
-                android:layout_marginStart="@dimen/dp_10"
-                android:layout_marginEnd="@dimen/dp_10"
-                android:background="@color/notice_line"
+                android:layout_marginStart="@dimen/dp_20"
+                android:layout_marginEnd="@dimen/dp_16"
+                android:background="@color/set_line"
                 app:layout_constraintBottom_toBottomOf="parent" />
         </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
 
@@ -103,17 +101,15 @@
             android:id="@+id/language_indonesian"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_52"
-            android:layout_marginStart="@dimen/dp_12"
-            android:layout_marginEnd="@dimen/dp_12"
-            android:background="@drawable/bg_set_item_rect">
+            android:background="@drawable/bg_set_item">
 
             <arch.cayenne.lib.skin.widget.SkinnableTextView
                 android:id="@+id/tv_indonesia"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_10"
+                android:layout_marginStart="@dimen/dp_20"
                 android:text="@string/menu_language_indonesia"
-                android:textColor="@color/notice_title"
+                android:textColor="@color/set_title"
                 android:textSize="@dimen/sp_15"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -123,7 +119,7 @@
                 android:id="@+id/radio_indonesian"
                 android:layout_width="@dimen/dp_16"
                 android:layout_height="@dimen/dp_16"
-                android:layout_marginEnd="@dimen/dp_12"
+                android:layout_marginEnd="@dimen/dp_16"
                 android:background="@drawable/selector_radio_button"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -132,9 +128,9 @@
             <arch.cayenne.lib.skin.widget.SkinnableView
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_1"
-                android:layout_marginStart="@dimen/dp_10"
-                android:layout_marginEnd="@dimen/dp_10"
-                android:background="@color/notice_line"
+                android:layout_marginStart="@dimen/dp_20"
+                android:layout_marginEnd="@dimen/dp_16"
+                android:background="@color/set_line"
                 app:layout_constraintBottom_toBottomOf="parent" />
         </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
 
@@ -142,17 +138,15 @@
             android:id="@+id/language_portuguese"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_52"
-            android:layout_marginStart="@dimen/dp_12"
-            android:layout_marginEnd="@dimen/dp_12"
-            android:background="@drawable/bg_set_item_bottom">
+            android:background="@drawable/bg_set_item">
 
             <arch.cayenne.lib.skin.widget.SkinnableTextView
                 android:id="@+id/tv_portugal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_10"
+                android:layout_marginStart="@dimen/dp_20"
                 android:text="@string/menu_language_portugal"
-                android:textColor="@color/notice_title"
+                android:textColor="@color/set_title"
                 android:textSize="@dimen/sp_15"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -162,19 +156,15 @@
                 android:id="@+id/radio_portuguese"
                 android:layout_width="@dimen/dp_16"
                 android:layout_height="@dimen/dp_16"
-                android:layout_marginEnd="@dimen/dp_12"
+                android:layout_marginEnd="@dimen/dp_16"
                 android:background="@drawable/selector_radio_button"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
-
-            <arch.cayenne.lib.skin.widget.SkinnableView
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_1"
-                android:layout_marginStart="@dimen/dp_10"
-                android:layout_marginEnd="@dimen/dp_10"
-                android:background="@color/notice_line"
-                app:layout_constraintBottom_toBottomOf="parent" />
         </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
-    </LinearLayout>
+
+        <arch.cayenne.lib.skin.widget.SkinnableView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
 </arch.cayenne.lib.common.ui.view.InterceptedConstraintLayout>

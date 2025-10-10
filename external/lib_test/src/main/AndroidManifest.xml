@@ -4,6 +4,12 @@
 
     <application>
 
+        <activity
+            android:name=".ui.activity.HomeActivity"
+            android:exported="true"
+            android:screenOrientation="portrait"
+            >
+        </activity>
         <provider
             android:name="androidx.startup.InitializationProvider"
             android:authorities="${applicationId}.androidx-startup"

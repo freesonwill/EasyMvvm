@@ -21,6 +21,7 @@ import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
 import arch.cayenne.lib.common.utils.ext.SportDisplayOddsExt.getDisplayOdds
+import arch.cayenne.lib.common.utils.ext.SportStringExt.isGreaterThanValue
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toOdds
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
@@ -178,11 +179,6 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
             mBinding.etMoney.hint =
                 getString(R.string.et_money_hint).format(it.first.getMoney(), it.second.getMoney())
         }
-        mViewModel.onOverNumberListener.observe(viewLifecycleOwner) {
-            it.msg?.let { msg ->
-                showToast(msg)
-            }
-        }
         mViewModel.onBalanceListener.observe(viewLifecycleOwner) {
             if (it != null) {
                 val money = "${mViewModel.moneySymbol} ${it.balance.getFormalMoney()}"
@@ -203,10 +199,6 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
         }
         mViewModel.betTypeListener.observe(viewLifecycleOwner) { type ->
             setBetTypeLayout(type)
-        }
-        mViewModel.onCanBetListener.observe(viewLifecycleOwner) {
-            mBinding.clBet.isEnabled = it
-            mBinding.tvBetHint.alpha = if (it) 1.0f else 0.7f
         }
         mViewModel.networkConnectedEvent.observeEvent(viewLifecycleOwner, this) {
             if (it is DataState.NetworkUnavailable) {
@@ -239,8 +231,11 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
     private fun setBetData(data: BetSelectionBean) {
         ViewHelper.bindBetSheet(1, data, mBinding.layoutBet)
         mBinding.btnCollusion.isEnabled = data.isParlay
-        mBinding.tvCollusionHint.alpha = if (data.isParlay) 1.0f else 0.7f
+        mBinding.tvCollusionHint.alpha = if (data.isParlay) 1.0f else 0.3f
+        mBinding.ivCollusionHint.alpha = if (data.isParlay) 1.0f else 0.3f
         mBinding.clBet.isEnabled = data.isActive
+        mBinding.tvBetHint.alpha = if (data.isActive) 1.0f else 0.3f
+        mBinding.tvBetMoney.alpha = if (data.isActive) 0.7f else 0.1f
         mBinding.layoutBet.ivDelete.isVisible = false
     }
 
@@ -294,11 +289,17 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
     }
 
     private fun sendBet() {
-        val minAmount = mViewModel.minMoney
-        val curAmount = mViewModel.editValue.toMoney()
-        if (curAmount < minAmount) {
+        val curAmount = mViewModel.editValue
+        if (curAmount.isGreaterThanValue(mViewModel.maxMoney.getMoney())) {
+            showToast(getString(arch.cayenne.lib.common.R.string.toast_over_max))
+            return
+        }
+        val amount = curAmount.toMoney()
+        val minNumber = mViewModel.minMoney
+        val balance = mViewModel.balance
+        if (minNumber > amount) {
             showToast(getString(R.string.hint_less_min_amount))
-        } else if (curAmount > mViewModel.balance) {
+        } else if (amount > balance) {
             showToast(getString(arch.cayenne.lib.common.R.string.toast_over_remaining))
         } else if (!mViewModel.checkOddsPass()) {
             mViewModel.oddsChangeListener.value?.toastRes?.let {

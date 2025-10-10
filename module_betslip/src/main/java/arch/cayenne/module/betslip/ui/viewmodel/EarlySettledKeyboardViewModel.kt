@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.data.constants.NumberOverEnum
 import arch.cayenne.lib.common.ui.viewmodel.NumberCalculatorViewModel
+import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
 import arch.cayenne.lib.common.utils.ext.SportIntExt.percent
 
 class EarlySettledKeyboardViewModel : NumberCalculatorViewModel() {
@@ -24,7 +25,8 @@ class EarlySettledKeyboardViewModel : NumberCalculatorViewModel() {
     fun setAmountMoney(betAmount: Long, minAmount: Long) {
         setNumberLimit(minAmount, betAmount)
         setRemainingNumber(betAmount)
-        setNumber(betAmount)
+        setMaxNumber(betAmount)
+        setNumber(betAmount.getMoney())
     }
 
     /**
@@ -32,7 +34,7 @@ class EarlySettledKeyboardViewModel : NumberCalculatorViewModel() {
      * */
     fun setPercentNumber(percent: Int) {
         val value = maxMoney.percent(percent)
-        setNumber(value)
+        setNumber(value.getMoney())
     }
 
     override fun getMaxToast(): NumberOverEnum? {

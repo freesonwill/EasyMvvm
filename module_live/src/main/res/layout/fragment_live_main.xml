@@ -4,15 +4,24 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/drawerLayout"
-    android:background="@color/title_bg_classic"
     android:fitsSystemWindows="false"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/app_bg"
     >
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="92dp"
+        tools:ignore="MissingConstraints">
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="92dp"
+            android:background="@drawable/live_main_topnoscroll_bg"
+            tools:ignore="MissingConstraints" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 
@@ -22,14 +31,14 @@
         app:canScrollView="@id/vp_page"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/app_bg"
-        android:fitsSystemWindows="true"
         android:orientation="vertical">
 
 
 
         <arch.cayenne.lib.common.ui.view.TitleBarView
             android:id="@+id/titleBar"
+            android:layout_marginTop="@dimen/dp_5"
+            android:layout_marginStart="3dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
@@ -91,30 +100,30 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-            <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
-                android:id="@+id/skinTab"
-                app:layout_constraintTop_toBottomOf="@id/llVideo"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/live_main_tab_bg"
-                android:layout_marginStart="6dp"
-                android:orientation="vertical">
+        <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
+            android:id="@+id/skinTab"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/live_main_tab_bg"
+            android:layout_marginTop="3dp"
+            android:layout_marginStart="6dp"
+            android:orientation="vertical">
 
-                <arch.cayenne.lib.skin.widget.SkinnableTabLayout
-                    android:id="@+id/tabLayout"
-                    android:layout_width="wrap_content"
-                    android:layout_height="@dimen/dp_36"
-                    android:layout_marginTop="@dimen/dp_2"
-                    android:layout_marginEnd="10dp"
-                    android:background="@color/live_main_tab_bg"
-                    app:tabIndicatorHeight="0dp"
-                    app:tabMaxWidth="60dp"
-                    app:tabMinWidth="60dp"
-                    app:tabMode="fixed"
-                    app:tabPaddingEnd="0dp"
-                    app:tabPaddingStart="0dp"
-                    app:tabRippleColor="@null"
-                    tools:ignore="SpeakableTextPresentCheck" />
+            <arch.cayenne.lib.skin.widget.SkinnableTabLayout
+                android:id="@+id/tabLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/dp_30"
+                android:layout_marginTop="@dimen/dp_2"
+                android:layout_marginEnd="10dp"
+                android:background="@color/live_main_tab_bg"
+                app:tabIndicatorHeight="0dp"
+                app:tabMaxWidth="60dp"
+                app:tabMinWidth="60dp"
+                app:tabMode="fixed"
+                app:tabPaddingEnd="0dp"
+                app:tabPaddingStart="0dp"
+                app:tabRippleColor="@null"
+                tools:ignore="SpeakableTextPresentCheck" />
 
                 <arch.cayenne.lib.common.ui.view.CustomTabIndicator
                     android:id="@+id/customIndicator"

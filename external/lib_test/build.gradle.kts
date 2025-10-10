@@ -37,6 +37,7 @@ android {
 dependencies {
     implementation(project(":lib_base"))
     implementation(project(":lib_common"))
+    implementation(project(":lib_res"))
 
     implementation(libs.floatingx)
     implementation(libs.xpopup)

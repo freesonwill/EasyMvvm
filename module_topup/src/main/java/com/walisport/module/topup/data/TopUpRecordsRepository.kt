@@ -25,23 +25,12 @@ class TopUpRecordsRepository(
 
     suspend fun getListData(page: Int): ApiResponseState = withContext(scope.coroutineContext) {
         delay(1000)
-        //取最后一条的id做分页标记
-        val last = recordListChange.value.maxByOrNull { it.transactionId }?.transactionId
-
         val dataList = mutableListOf<RechargeRecordBean>()
-        //每页10条测试数据
-        for (i in 0 until DEFAULT_LIST_SIZE) {
-            dataList.add(
-                RechargeRecordBean(
-                    ((page - 1) * 10 + i).toString(),
-                    "¥${Random.nextLong(0, 10000).getMoneyForScale()}"
-                )
-            )
-        }
-
-        recordListChange.value += dataList
+        dataList.add(RechargeRecordBean("wL20220611", 1, 1, 1758706619000L, "","010 2930 2039 1220","9,100.00"))
+        dataList.add(RechargeRecordBean("wL20220612", 2, 2, 1758706619000L, "流水不足","010 2930 2039 1220","9,100.00"))
+        dataList.add(RechargeRecordBean("wL20220613", 3, 3, 1758706619000L, "","010 2930 2039 1220","9,100.00"))
+        dataList.add(RechargeRecordBean("wL20220614", 4, 1, 1758706619000L, "","010 2930 2039 1220","9,100.00"))
         return@withContext ApiResponseState.Succeeded(dataList)
-
     }
 
     companion object {

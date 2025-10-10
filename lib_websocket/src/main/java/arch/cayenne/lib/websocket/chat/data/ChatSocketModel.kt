@@ -1,5 +1,6 @@
 package arch.cayenne.lib.websocket.chat.data
 
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.websocket.data.IResponse
 import arch.cayenne.lib.websocket.data.ISocketData
 import arch.cayenne.lib.websocket.data.SocketResponseError

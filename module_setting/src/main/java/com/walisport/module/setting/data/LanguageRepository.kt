@@ -2,6 +2,7 @@ package com.walisport.module.setting.data
 
 import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.base.data.repository.BaseRepository
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.data.constants.LanguageType
 import arch.cayenne.lib.common.data.constants.UserDataKey
 import arch.cayenne.lib.common.data.manager.UserDataManager
@@ -14,7 +15,6 @@ import galaxy.client.proto.Client
 import galaxy.common.proto.Common
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.Locale
 
@@ -34,11 +34,9 @@ class LanguageRepository(
         return LanguageType.findLanguage(lang)
     }
 
-    private fun setLanguageType(type: LanguageType) {
-        scope.launch {
-            manager.setKeyValue(UserDataKey.KEY_LANGUAGE, type.value)
-            languageManager.changeLanguage(Locale(type.value))
-        }
+    private suspend fun setLanguageType(type: LanguageType) {
+        manager.setKeyValue(UserDataKey.KEY_LANGUAGE, type.value)
+        languageManager.changeLanguage(Locale(type.value))
     }
 
 

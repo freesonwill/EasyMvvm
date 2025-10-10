@@ -9,20 +9,27 @@ import android.graphics.Paint
 import android.graphics.RectF
 import android.util.AttributeSet
 import android.view.MotionEvent
-import android.view.View
 import androidx.core.graphics.drawable.toBitmap
+import arch.cayenne.lib.common.R.color
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.DimensionExt.sp2px
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getColor
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getDrawable
+import arch.cayenne.lib.skin.widget.SkinnableView
 import arch.cayenne.module.home.R
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 
+/**
+ * 自定义字母检索栏
+ */
 class CustomFilterSideBarView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
-) : View(context, attrs, defStyleAttr) {
+) : SkinnableView(context, attrs, defStyleAttr) {
+    companion object {
+        const val HOT_LETTER = "*"
+    }
 
     interface OnIndexSelectedListener {
         fun onIndexSelected(index: Int, letter: String, isTouching: Boolean)
@@ -38,10 +45,10 @@ class CustomFilterSideBarView @JvmOverloads constructor(
         }
 
     // 文字顏色
-    var textColorResId: Int = R.color.custom_filter_side_bar_text
+    var textColorResId: Int = color.color_00A7C0
         set(value) {
             field = value
-            textColor = value.getColor()
+            textColor = value.getColor(context)
             invalidate()
         }
 
@@ -91,7 +98,7 @@ class CustomFilterSideBarView @JvmOverloads constructor(
     var hotIconResId: Int = R.drawable.ic_hot_league_index
         set(value) {
             field = value
-            hotIconBitmap = value.getDrawable().toBitmap()
+            hotIconBitmap = value.getDrawable(context).toBitmap()
             invalidate()
         }
 
@@ -124,10 +131,28 @@ class CustomFilterSideBarView @JvmOverloads constructor(
 
     // 背景 Paint
     private val backgroundPaint = Paint(Paint.ANTI_ALIAS_FLAG)
+    private var mSelectedBgTextColor = Color.parseColor("#8002B9D4")
+    private val mSelectedBgPaint: Paint by lazy {
+        Paint().apply {
+            isAntiAlias = true
+            color = mSelectedBgTextColor
+        }
+    }
+    private var showCircle:Boolean = false
+    private var mCircleSize = 26f // 显示度量
 
     init {
-        hotIconBitmap = hotIconResId.getDrawable().toBitmap()
-        textColor = textColorResId.getColor()
+        context.obtainStyledAttributes(attrs,R.styleable.CustomFilterSideBarView,defStyleAttr,0).let {ta->
+            try {
+                this.showCircle = ta.getBoolean(R.styleable.CustomFilterSideBarView_showCircle,false)
+                this.mCircleSize = ta.getDimension(R.styleable.CustomFilterSideBarView_circleRadius, 26f)
+                this.hotIconBitmap = (ta.getDrawable(R.styleable.CustomFilterSideBarView_hotIcon)?:(hotIconResId.getDrawable(context))).toBitmap()
+                this.textColor = ta.getColor(R.styleable.CustomFilterSideBarView_textColor,textColorResId.getColor())
+                this.mSelectedBgTextColor = ta.getColor(R.styleable.CustomFilterSideBarView_textColor,mSelectedBgTextColor)
+            }finally {
+                ta.recycle()
+            }
+        }
     }
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
@@ -153,17 +178,17 @@ class CustomFilterSideBarView @JvmOverloads constructor(
             backgroundPaint.apply { color = Color.TRANSPARENT }
         )
 
-        val maxX = width - normalViewWidth * 0.5f
+        val maxX = width - normalViewWidth * 0.5f - paddingEnd + paddingStart
 
         // 靜態狀態，沒有觸摸或動畫正在進行
         if (!isTouching) {
             for (i in 0 until totalCount) {
-                val baseLineY = firstItemBaselineY + i * itemHeight
+                val baseLineY = firstItemBaselineY + i * itemHeight + paddingTop
                 val letter = indexTitles[i]
                 val isSelected = i == selectedIndex
                 val currentTextColor = this@CustomFilterSideBarView.textColor
 
-                if (letter == "*") {
+                if (letter == HOT_LETTER) {
                     val drawSize = normalViewWidth
                     val rect = RectF(
                         maxX - drawSize / 2,
@@ -171,6 +196,9 @@ class CustomFilterSideBarView @JvmOverloads constructor(
                         maxX + drawSize / 2,
                         baseLineY + drawSize - itemHeight / 2
                     )
+                    if(isSelected && showCircle) {
+                        canvas.drawCircle(rect.centerX(),rect.centerY(),mCircleSize,mSelectedBgPaint)
+                    }
                     canvas.drawBitmap(
                         hotIconBitmap,
                         null, rect,
@@ -179,9 +207,13 @@ class CustomFilterSideBarView @JvmOverloads constructor(
                         }
                     )
                 } else {
+                    val fm = textPaint.fontMetrics
+                    if(isSelected && showCircle) {
+                        canvas.drawCircle(maxX, baseLineY, mCircleSize, mSelectedBgPaint)
+                    }
                     canvas.drawText(
                         letter, maxX,
-                        baseLineY - (textPaint.fontMetrics.ascent + textPaint.fontMetrics.descent) / 2,
+                        baseLineY - (fm.ascent + fm.descent) / 2,
                         textPaint.apply {
                             textSize = this@CustomFilterSideBarView.textSize
                             color = currentTextColor
@@ -200,7 +232,7 @@ class CustomFilterSideBarView @JvmOverloads constructor(
         val bottomY = currentTouchY + halfSizeY
 
         for (i in 0 until totalCount) {
-            val baseLineY = firstItemBaselineY + i * itemHeight
+            val baseLineY = firstItemBaselineY + i * itemHeight + paddingTop
             val letter = indexTitles[i]
             val isSelected = i == currentIndex
 
@@ -251,7 +283,7 @@ class CustomFilterSideBarView @JvmOverloads constructor(
             }
 
             // 繪製內容
-            if (letter == "*") {
+            if (letter == HOT_LETTER) {
                 val drawSize = normalViewWidth * finalScale
                 val iconRect = RectF(
                     centerX - drawSize / 2,
@@ -259,6 +291,7 @@ class CustomFilterSideBarView @JvmOverloads constructor(
                     centerX + drawSize / 2,
                     baseLineY + drawSize / 2
                 )
+                if(isSelected && showCircle) canvas.drawCircle(iconRect.centerX(),iconRect.centerY(),mCircleSize * finalScale,mSelectedBgPaint)
                 canvas.drawBitmap(
                     hotIconBitmap,
                     null, iconRect,
@@ -267,9 +300,9 @@ class CustomFilterSideBarView @JvmOverloads constructor(
                     }
                 )
             } else {
-                canvas.drawText(
-                    letter, centerX,
-                    baseLineY - (textPaint.fontMetrics.ascent + textPaint.fontMetrics.descent) / 2,
+                val fm = textPaint.fontMetrics
+                if(isSelected && showCircle) canvas.drawCircle(centerX,baseLineY,mCircleSize * finalScale,mSelectedBgPaint)
+                canvas.drawText(letter, centerX, baseLineY - (fm.ascent + fm.descent) / 2,
                     textPaint.apply {
                         textSize = this@CustomFilterSideBarView.textSize * finalScale
                         color = this@CustomFilterSideBarView.textColor
@@ -280,7 +313,6 @@ class CustomFilterSideBarView @JvmOverloads constructor(
         }
     }
 
-    @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent): Boolean {
         val y = event.y - firstItemBaselineY
         val letterIndex = min(max(0, (y / itemHeight).toInt()), totalCount - 1)
@@ -345,8 +377,9 @@ class CustomFilterSideBarView @JvmOverloads constructor(
 
     // 設置選中索引
     private fun setSelectedIndex(index: Int) {
-        val minCheck = max(index, 0)
-        selectedIndex = min(minCheck, totalCount - 1)
+        val index2 = max(min(index,totalCount - 1), 0)
+        if(selectedIndex == index2) return //不刷新
+        selectedIndex = index2
         invalidate()
     }
 
@@ -357,6 +390,7 @@ class CustomFilterSideBarView @JvmOverloads constructor(
     fun setSelectedTitle(title: String) {
         val index = indexTitles.indexOf(title)
         if (index != -1) {
+            //"setSelectedIndex----index:$index,selectedIndex:$selectedIndex,title:$title".logd()
             setSelectedIndex(index)
         }
     }

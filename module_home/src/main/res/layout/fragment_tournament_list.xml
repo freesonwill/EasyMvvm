@@ -5,7 +5,7 @@
     android:id="@+id/ll_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/champions_list">
+    android:background="@drawable/bg_bottom_sheet_round_top">
 
     <View
         android:id="@+id/view_tournament_mask"
@@ -89,7 +89,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="invisible"
-        app:constraint_referenced_ids="ll_search_bar,tv_tournament_section_title" />
+        app:constraint_referenced_ids="ll_search_bar,tv_tournament_section_title, iv_search_icon, ce_search" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_tournament_list"
@@ -112,6 +112,7 @@
         android:layout_marginEnd="@dimen/dp_7"
         android:layout_marginBottom="4dp"
         android:gravity="end"
+        app:showCircle="false"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/rv_tournament_list" />
 

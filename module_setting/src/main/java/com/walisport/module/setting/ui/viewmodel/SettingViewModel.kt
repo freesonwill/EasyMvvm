@@ -5,7 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.common.data.constants.LanguageType
-import arch.cayenne.lib.common.data.constants.SkinType
 import arch.cayenne.lib.skin.LanguageManager
 import arch.cayenne.lib.skin.SkinnableManager
 import arch.cayenne.lib.common.data.constants.OddsDisplayEnum
@@ -53,38 +52,25 @@ class SettingViewModel : BaseViewModel() {
         }
     }
 
+    fun getUserID():String {
+        return repository.getUserID()
+    }
+
     //获取皮肤背景
     fun getSkinType(): String {
         return repository.getSkinType()
-    }
-
-    fun getOddsType(): OddsDisplayEnum {
-        return repository.getOddsType()
     }
 
     fun getLanguageType(): LanguageType {
         return repository.getLanguageType()
     }
 
-    //设置皮肤背景，只换肤不写入记录，写入记录得调用setSkinRecord
     fun setSkinType(type: String) {
         viewModelScope.launch {
-            val logicSkin = SkinType.getLogicSkinType(type)
-            skinManager.loadSkin(logicSkin)
+            skinManager.loadSkin(type)
             _skinType.value = type
+            repository.setSkinType(type)
         }
-    }
-
-    fun resetSkinType(type: String) {
-        viewModelScope.launch {
-            val logicSkin = SkinType.getLogicSkinType(type)
-            skinManager.loadSkin(logicSkin)
-        }
-    }
-
-    //点击确认按钮后才会写入数据，否则只是换肤显示
-    fun setSkinRecord(type: String) {
-        repository.setSkinType(type)
     }
 
     //设置系统通知-进球

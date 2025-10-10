@@ -5,7 +5,7 @@
     <color name="purple_700">#FF3700B3</color>
     <color name="teal_200">#FF03DAC5</color>
     <color name="teal_700">#FF018786</color>
-
+    <color name="title_money_text">#ffffff</color>
     <color name="color_f3f3f4">#FFF3F3F4</color>
     <color name="color_f3f3f5">#FFF3F3F5</color>
     <color name="color_222222">#FF222222</color>
@@ -22,7 +22,6 @@
     <color name="color_0f101b">#FF0F101B</color>
     <color name="color_71e993">#FF71e993</color>
     <color name="color_0f1016">#FF0f1016</color>
-    <color name="color_E6E6E6">#FFE6E6E6</color>
     <color name="color_EA4A69">#FFEA4A69</color>
     <color name="color_52AF6B">#FF52AF6B</color>
     <color name="color_23252F">#FF23252F</color>
@@ -36,7 +35,7 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="blue">#0000FF</color>
-    <color name="app_bg">#0e0f19</color>
+    <color name="app_bg">#111111</color>
     <color name="search_btn">#24EE8A</color>
     <color name="search_btn_highlight">#24EE8A</color>
     <color name="search_btn_normal">#BBBBBB</color>
@@ -120,7 +119,8 @@
     <color name="race_line">#54555E</color>
     <color name="list_separator">#1D1F2A</color>
     <color name="dividing_line">#14FFFFFF</color>
-    <color name="tab_indicator_color">#24EE8A</color>
+    <color name="tab_indicator_color">#00D271</color>
+    <color name="tab_indicator_color_line">#00E0E5</color>
     <color name="color_2c3c3e">#2c3c3e</color>
     <color name="color_15b264">#15b264</color>
     <color name="black_65">#A6000000</color>
@@ -130,4 +130,59 @@
     <color name="progress_text">#929298</color>
     <color name="color_mask">#40000000</color>
     <color name="loading_text">#929298</color>
+
+
+    <!--3in1 新增色碼 -->
+    <color name="color_1E1E1E">#1E1E1E</color> <!--黑（black），黑3（black-300） -->
+    <color name="color_00A7C0">#00A7C0</color> <!--深蓝（blue-400）-->
+    <color name="color_272727">#272727</color> <!--黑（black-200）-->
+    <color name="color_C0C0C0">#C0C0C0</color> <!--亮灰（grey）-->
+    <color name="color_999999">#999999</color> <!--暗灰（grey-800）-->
+    <color name="color_FE3666">#FE3666</color> <!--红（red）-->
+    <color name="color_0FFFFFFF">#0FFFFFFF</color> <!--白透明6（white）-->
+    <color name="color_00E0E5">#00E0E5</color> <!--主色（primary）-->
+    <color name="color_00E301">#00E301</color> <!--绿（green）-->
+    <color name="color_003A42">#003A42</color> <!--暗蓝（blue-800）-->
+    <color name="color_E6E6E6">#E6E6E6</color> <!--暗白（white-800）-->
+    <color name="color_632433">#632433</color> <!--暗红（red-800）-->
+    <color name="color_1FFFFFFF">#1FFFFFFF</color> <!--白透明12（white）-->
+    <color name="color_8FBEE9">#8FBEE9</color> <!--天蓝（blue-200）-->
+    <color name="color_00B9D4">#00B9D4</color> <!--蓝（blue）-->
+    <color name="color_014901">#014901</color> <!--暗绿（green-800）-->
+    <color name="color_1C1C1C">#1C1C1C</color> <!--黑4（balck-400）-->
+    <color name="color_7AFFFFFF">#7AFFFFFF</color> <!--白透明48（white）-->
+    <color name="color_33FFFFFF">#33FFFFFF</color> <!--白透明20（white）-->
+    <color name="color_F1F1F1">#F1F1F1</color> <!--主白light-->
+    <color name="color_00DEE3">#00DEE3</color> <!--焦点蓝-暗light-->
+    <color name="color_5C5C5C">#5C5C5C</color> <!--字亮灰-light-->
+    <color name="color_7F7F7F">#7F7F7F</color> <!--字暗灰-light-->
+    <color name="color_0F000000">#0F000000</color> <!--灰-透明(Light)-->
+    <color name="color_009B9E">#009B9E</color> <!--焦点蓝-亮light-->
+    <color name="color_0AFFFFFF">#0AFFFFFF</color> <!--灰透明-4-->
+    <color name="color_0B5498">#0B5498</color> <!--超链接蓝light-->
+    <color name="color_E3E3E3">#E3E3E3</color> <!--背景灰light-->
+    <color name="color_1F000000">#1F000000</color> <!--灰透明2light-->
+    <color name="color_D9EEEEEE">#D9EEEEEE</color> <!--玻璃模糊弹窗背景light-->
+    <color name="color_D3F7FF">#D3F7FF</color> <!--焦点蓝-底light-->
+    <color name="color_D6FBFF">#D6FBFF</color> <!--银-->
+    <color name="color_000000">#000000</color> <!--纯黑-light-->
+    <color name="color_FFFFFF">#FFFFFF</color> <!--2白light-->
+    <color name="color_FFE7E3">#FFE7E3</color> <!--框架图背景-->
+    <color name="color_FFC7A1">#FFC7A1</color> <!--铜色-->
+    <color name="color_FFD400">#FFD400</color> <!--金-->
+    <color name="color_DE3E3E3E">#DE3E3E3E</color> <!--玻璃模糊弹窗背景-->
+    <color name="color_EBEBEC">#EBEBEC</color> <!--体育直播聊天背景-->
+    <color name="color_E03C64">#E03C64</color> <!--体育直播聊天背景-->
+
+
+    <color name="color_D3D3D6">#D3D3D6</color> <!--quick amount-->
+    <color name="color_3300A7C0">#3300A7C0</color> <!--深蓝20透明-->
+    <color name="color_02C3E0">#02C3E0</color> <!--深蓝（blue-400）按钮（按下态）-->
+    <color name="color_8000A7C0">#8000A7C0</color> <!--深蓝透明50（blue-400）按钮（不可点击）-->
+    <color name="color_4D272727">#4D272727</color> <!--黑透明30（black-200）按钮（按下态）-->
+    <color name="color_33009B9E">#33009B9E</color> <!--焦点蓝-亮light 20%-->
+    <color name="color_2C323E">#2C323E</color>
+    <color name="color_3D404D">#3D404D</color>  <!--背景色/Tag BG-->
+    <color name="color_CBD8EB">#CBD8EB</color>  <!--文本色/Tag text-->
+    <color name="color_05FFFFFF">#05FFFFFF</color> <!--分隔線 白透明 2-->
 </resources>

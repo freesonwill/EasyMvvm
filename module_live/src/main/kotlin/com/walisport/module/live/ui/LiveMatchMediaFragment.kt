@@ -3,10 +3,8 @@ package com.walisport.module.live.ui
 import android.os.Bundle
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
-import arch.cayenne.lib.common.utils.ViewUtils.getStatusBarHeight
-import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.lib.common.data.constants.MatchStatus
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
-import com.walisport.module.live.data.constants.MatchStatus
 import com.walisport.module.live.databinding.FragmentLiveMatchMediaBinding
 import com.walisport.module.live.ui.viewmodel.LiveMainViewModel
 import com.walisport.module.live.ui.viewmodel.LiveMatchMediaViewModel
@@ -27,6 +25,16 @@ class LiveMatchMediaFragment :
 
     override fun initView(savedInstanceState: Bundle?) {
         mBinding.model = mViewModel
+
+        val showVideo = arguments?.getBoolean("showVideo")
+        val showAnim = arguments?.getBoolean("showAnim")
+
+        if (showVideo == true) {
+            showVideoView()
+        } else if (showAnim == true) {
+            showAnimationView()
+        }
+
     }
 
 
@@ -49,20 +57,17 @@ class LiveMatchMediaFragment :
                 it?.let { matchBean ->
                     val matchStatus =
                         MatchStatus.entries.find { status -> status.code == matchBean.basicInfo.status }
-
+                    mainViewModel.setStatus(matchBean.basicInfo.status)
                     matchStatus?.let { _ ->
                         when (matchStatus) {
                             MatchStatus.IN_PROGRESS -> {
                                 //比赛正在进行中
-                                if (!isAnimationViewShowing()) {
-                                    showVideoView()
-                                }
+                                mViewModel.queryLiveStream()
                             }
 
                             else -> {
-                                //其他情况
-                                if (animationLiveUrl.value?.isNotBlank() == true && !isAnimationViewShowing()) {
-                                    switchToAnimation()
+                                if (it.liveInfo.animationLiveUrl.isNotBlank() ) {
+                                    showAnimationView()
                                 } else {
                                     showStatusView()
                                 }
@@ -73,6 +78,21 @@ class LiveMatchMediaFragment :
 
                 }
 
+            }
+
+            liveVideoBean.observe(viewLifecycleOwner) {
+                it?.let {
+                    if (it.source.isEmpty()) {
+                        if (animationLiveUrl.value?.isNotBlank() == true) {
+                            switchToAnimation()
+                        } else {
+                            switchToMatchStatus()
+                        }
+                    } else {
+                        showVideoView()
+                    }
+
+                }
             }
 
             animationLiveUrl.observe(viewLifecycleOwner) {

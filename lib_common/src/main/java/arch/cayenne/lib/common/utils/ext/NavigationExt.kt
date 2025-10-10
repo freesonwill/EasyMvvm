@@ -81,17 +81,6 @@ object NavigationExt {
         }
     }
 
-    /** Activity的默认跳转 **/
-    fun Activity.navigate(
-        deepLink: Uri,
-        navOptions: NavOptions? = defaultNavOptions,
-        navigatorExtras: Navigator.Extras? = null,
-        @IdRes viewId: Int = R.id.nav_host
-    ) {
-        if(isNavigationDebounced("$this,deepLink:$deepLink")) return
-        findNavController(viewId).navigate(deepLink, navOptions, navigatorExtras)
-    }
-
     fun Activity.navigate(
         directions: NavDirections,
         navOptions: NavOptions? = defaultNavOptions,
@@ -100,6 +89,28 @@ object NavigationExt {
         if(isNavigationDebounced("$this,directions:$directions")) return
         val navController = findNavController(viewId)
         navController.navigate(directions, mergedNavOption(navController,directions, navOptions))
+    }
+
+    fun Activity.navigate(
+        deepLink: Uri,
+        navOptions: NavOptions? = defaultNavOptions,
+        navigatorExtras: Navigator.Extras? = null,
+        @IdRes viewId: Int = R.id.nav_host,
+        enterAnim:IAnimationOption? = AnimationController[AnimType.routeEnter],
+        exitAnim:IAnimationOption? = AnimationController[AnimType.routeExit],
+        popEnterAnim:IAnimationOption? = AnimationController[AnimType.routePopEnter],
+        popExitAnim:IAnimationOption? = AnimationController[AnimType.routePopExit],
+    ) {
+        if(isNavigationDebounced("$this,uri:$deepLink", enterAnim?.duration)) return
+        val args = setupDefaultAnim(Bundle(),enterAnim,exitAnim,popEnterAnim,popExitAnim)
+        // 将 Bundle 转 queryString
+        val uriWithArgs = deepLink.buildUpon().apply {
+            for (key in args.keySet()) {
+                val value = args.get(key)?.toString() ?: continue
+                appendQueryParameter(key, value)
+            }
+        }.build()
+        findNavController(viewId).navigate(uriWithArgs,navOptions, navigatorExtras)
     }
 
     private fun setupDefaultAnim(args: Bundle,
@@ -171,6 +182,25 @@ object NavigationExt {
         }.build()
         //"deepLink--->$deepLink,uriWithArgs:$uriWithArgs".logd(TAG)
         findNavController().navigate(uriWithArgs,navOptions, navigatorExtras)
+    }
+
+    fun Fragment.navigateWithAnimRes(
+        deepLink: Uri,
+        enterAnim:Int = R.anim.slide_in_right,
+        exitAnim:Int = R.anim.slide_out_left,
+        popEnterAnim:Int = R.anim.slide_in_left,
+        popExitAnim:Int = R.anim.slide_out_right,
+        navigatorExtras: Navigator.Extras? = null,
+    ) {
+        if(isNavigationDebounced("$this,uri:$deepLink")) return
+        val navOptions = NavOptions.Builder()
+            .setEnterAnim(enterAnim)
+            .setExitAnim(exitAnim)
+            .setPopEnterAnim(popEnterAnim)
+            .setPopExitAnim(popExitAnim)
+            .build()
+        //"deepLink--->$deepLink,uriWithArgs:$uriWithArgs".logd(TAG)
+        findNavController().navigate(deepLink,navOptions, navigatorExtras)
     }
 
     fun Fragment.navigate(

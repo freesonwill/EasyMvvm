@@ -10,18 +10,19 @@
         android:id="@+id/main"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/shape_12dp"
-        android:backgroundTint="@color/keyboard_3"
+        android:layout_marginBottom="11.5dp"
+        android:background="@drawable/bg_reserve_dialog"
         android:padding="12dp"
+        app:layout_constraintBottom_toBottomOf="@id/triangle"
         app:layout_constraintTop_toTopOf="parent"
-        tools:layout_editor_absoluteX="0dp">
+        app:layout_goneMarginBottom="0dp">
 
         <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
             android:id="@+id/cl_money"
             android:layout_width="match_parent"
             android:layout_height="36dp"
             android:background="@drawable/shape_8dp"
-            android:backgroundTint="@color/input_box_2"
+            android:backgroundTint="@color/color_272727"
             android:focusable="true"
             android:focusableInTouchMode="true"
             app:layout_constraintTop_toTopOf="parent">
@@ -48,14 +49,14 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="8dp"
                 android:background="@null"
-                android:textColor="@color/main_text"
-                android:textColorHint="@color/secondary_text"
-                android:textSize="16sp"
                 android:cursorVisible="true"
                 android:focusable="true"
                 android:focusableInTouchMode="true"
                 android:inputType="numberDecimal"
+                android:textColor="@color/color_FFFFFF"
+                android:textColorHint="@color/color_5C5C5C"
                 android:textCursorDrawable="@drawable/shape_edittext_cursor"
+                android:textSize="16sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/tv_money"
@@ -68,11 +69,11 @@
             android:layout_height="183dp"
             android:layout_marginTop="12dp"
             android:background="@drawable/shape_6dp"
-            android:orientation="vertical"
-            android:clipToPadding="false"
             android:clipChildren="false"
-            android:outlineProvider="background"
             android:clipToOutline="true"
+            android:clipToPadding="false"
+            android:orientation="vertical"
+            android:outlineProvider="background"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -112,7 +113,7 @@
                 android:layout_marginTop="2dp"
                 android:layout_marginBottom="2dp"
                 android:text="@string/btn_clear"
-                android:textSize="12sp"
+                android:textSize="13sp"
                 app:skinnableFontWeight="500" />
 
             <arch.cayenne.lib.skin.widget.SkinnableTextView
@@ -121,19 +122,20 @@
                 android:layout_marginTop="2dp"
                 android:layout_marginBottom="2dp"
                 android:text="@string/btn_double"
-                android:textSize="12sp"
+                android:textSize="13sp"
                 app:skinnableFontWeight="500" />
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_confirm"
                 style="@style/ButtonStyle"
+                android:background="@drawable/selector_button_6dp"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_rowWeight="1"
                 android:layout_columnWeight="1"
                 android:layout_marginTop="2dp"
                 android:text="@string/btn_confirm"
-                android:textSize="12sp"
+                android:textSize="13sp"
                 app:skinnableFontWeight="500" />
 
         </GridLayout>
@@ -143,10 +145,10 @@
     <arch.cayenne.lib.skin.widget.SkinnableView
         android:id="@+id/triangle"
         android:layout_width="32dp"
-        android:layout_height="10dp"
+        android:layout_height="13dp"
         android:layout_marginEnd="70dp"
         android:background="@drawable/bg_triangle_down"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/main" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

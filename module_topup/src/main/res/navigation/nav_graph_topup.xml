@@ -32,6 +32,11 @@
         <action
             android:id="@+id/action_walletFragment_to_withdrawRecordFragment"
             app:destination="@id/withdrawRecordsFragment" />
+
+        <!--跳转银行卡页面-->
+        <action
+            android:id="@+id/action_walletFragment_to_bankCardFragment"
+            app:destination="@id/bankCardFragment" />
     </fragment>
 
     <fragment
@@ -50,6 +55,27 @@
         android:label="TopUpDetailFragment" />
 
     <fragment
+        android:id="@+id/withdrawDetailFragment"
+        android:name="com.walisport.module.topup.ui.fragment.WithdrawDetailFragment"
+        android:label="WithdrawDetailFragment" />
+
+    <fragment
+        android:id="@+id/bankCardFragment"
+        android:name="com.walisport.module.topup.ui.fragment.BankCardFragment"
+        android:label="BankCardFragment">
+
+        <!--跳转添加银行卡页面-->
+        <action
+            android:id="@+id/action_bankCardFragment_to_addBankCardFragment"
+            app:destination="@id/addBankCardFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/addBankCardFragment"
+        android:name="com.walisport.module.topup.ui.fragment.AddBankCardFragment"
+        android:label="AddBankCardFragment"/>
+
+    <fragment
         android:id="@+id/topUpRecordsFragment"
         android:name="com.walisport.module.topup.ui.fragment.TopUpRecordsFragment"
         android:label="TopUpRecordsFragment">
@@ -62,5 +88,29 @@
     <fragment
         android:id="@+id/withdrawRecordsFragment"
         android:name="com.walisport.module.topup.ui.fragment.WithdrawRecordsFragment"
-        android:label="TopUpRecordsFragment" />
+        android:label="TopUpRecordsFragment">
+
+        <action
+            android:id="@+id/action_withdrawRecordsFragment_to_withdrawDetailFragment"
+            app:destination="@id/withdrawDetailFragment" />
+    </fragment>
+
+
+    <fragment
+        android:id="@+id/fundDetailsFragment"
+        android:name="com.walisport.module.topup.ui.fragment.FundDetailsFragment"
+        android:label="fragment_topup_fund_details"
+        tools:layout="@layout/fragment_fund_details">
+
+        <deepLink app:uri="walisport://module_topup/fundDetailsFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/realTimeCashbackFragment"
+        android:name="com.walisport.module.topup.ui.fragment.RealTimeCashBackFragment"
+        android:label="fragment_realtime_cashback"
+        tools:layout="@layout/fragment_realtime_cashback">
+
+        <deepLink app:uri="walisport://module_topup/realTimeCashBackFragment" />
+    </fragment>
 </navigation>

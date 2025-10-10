@@ -1,7 +1,25 @@
 <resources>
     <string name="setting">设置</string>
-    <string name="pan">盘口</string>
+    <string name="pan">体育盘口</string>
+    <string name="account">账号</string>
+    <string name="name_av">AVAVA</string>
+    <string name="tip_new">已是最新版本</string>
+    <string name="set_bind_mobile">绑定手机号</string>
+    <string name="set_user_id">用户ID</string>
     <string name="common">通用</string>
+    <string name="about">关于</string>
+    <string name="edit">编辑</string>
+    <string name="edit_finish">完成</string>
+    <string name="tip_delete_user">移除账号?</string>
+    <string name="tip_delete">是否移除此账户</string>
+    <string name="tip_logout">是否退出登录？</string>
+    <string name="tip_cancel">取消</string>
+    <string name="tip_confirm_logout">确定</string>
+    <string name="tip_confirm">确定移除</string>
+    <string name="change_user">切换账号</string>
+    <string name="logout_user">退出登录</string>
+    <string name="about_us">关于我们</string>
+    <string name="tip_copy_suc">复制成功</string>
     <string name="menu_europe">欧洲盘</string>
     <string name="menu_hk">香港盘</string>
     <string name="menu_odds_display">赔率显示</string>
@@ -21,10 +39,7 @@
     <string name="menu_close">关闭</string>
     <string name="theme_class">经典</string>
     <string name="theme_black_blue">黑蓝</string>
-    <string name="theme_black_green">黑绿</string>
-    <string name="theme_black_red">黑红</string>
     <string name="theme_white_blue">白蓝</string>
-    <string name="theme_white_green">白绿</string>
     <string name="cancel">取消</string>
     <string name="confirm">确定</string>
     <string name="method_odds_display">赔率显示方式</string>

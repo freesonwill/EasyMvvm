@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingTop="@dimen/dp_0"
+    android:paddingBottom="@dimen/dp_0"
+    tools:layout_height="@dimen/dp_62"
+    tools:layout_width="@dimen/dp_75"
+    tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
+
+
+    <arch.cayenne.lib.skin.widget.SkinnableImageView
+        android:id="@+id/icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_0"
+        android:scaleType="fitCenter"
+        app:layout_constraintBottom_toTopOf="@+id/text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed"
+        tools:src="@drawable/ic_chat"
+        tools:visibility="visible" />
+
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
+        android:id="@+id/text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/selector_navbar_text_color"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/icon"
+        app:layout_constraintVertical_chainStyle="packed"
+        tools:text="首页"
+        tools:visibility="visible" />
+
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
+        android:id="@+id/badge"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_16"
+        android:paddingStart="@dimen/dp_2"
+        android:paddingEnd="@dimen/dp_2"
+        android:layout_marginStart="-6dp"
+        android:layout_marginTop="-5dp"
+        android:minWidth="@dimen/dp_16"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:textSize="@dimen/sp_11"
+        app:layout_constraintStart_toEndOf="@+id/icon"
+        app:layout_constraintTop_toTopOf="@+id/icon"
+        tools:background="@drawable/shape_red_9dp"
+        tools:text="9"
+        tools:visibility="visible" />
+
+</merge>

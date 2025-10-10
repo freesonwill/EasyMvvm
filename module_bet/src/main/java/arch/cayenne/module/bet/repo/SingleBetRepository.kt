@@ -138,14 +138,16 @@ class SingleBetRepository(
         true
     }
 
-    suspend fun saveToReserve(odds: Int) = withContext(scope.coroutineContext) {
+    suspend fun saveToReserve(odds: Int, money: Long) = withContext(scope.coroutineContext) {
         betDao.getCurrentBet()?.let {
+            val selection = betDao.getSelections(it.betId).first()
+            betDao.updateOdds(it.betId, selection.selectionId, odds)
             betDao.insertDetail(
                 BetDetailBean(
                     betId = it.betId,
                     sumOdds = odds,
                     odds = odds,
-                    inputMoney = 0L
+                    inputMoney = money
                 )
             )
             return@withContext betDao.updateBetType(it.betId, BetTypeEnum.RESERVE) == 1
@@ -153,25 +155,21 @@ class SingleBetRepository(
         false
     }
 
-    fun setMoney(money: Long) {
-        scope.launch {
-            betDao.getCurrentBet()?.let {
-                val detail = betDao.getDetail(it.betId).firstOrNull()
-                if (detail != null) {
-                    betDao.updateDetailMoney(it.betId, detail.serialValue, money)
-                } else {
-                    val selection = betDao.getSelections(it.betId)
-                    if (selection.isNotEmpty()) {
-                        val data = selection.first()
-                        val newDetail = BetDetailBean(
-                            betId = it.betId,
-                            sumOdds = data.odds,
-                            odds = data.odds,
-                            inputMoney = money
-                        )
-                        betDao.insertDetail(newDetail)
-                    }
-                }
+    private suspend fun setMoney(betId: Long, money: Long) {
+        val detail = betDao.getDetail(betId).firstOrNull()
+        if (detail != null) {
+            betDao.updateDetailMoney(betId, detail.serialValue, money)
+        } else {
+            val selection = betDao.getSelections(betId)
+            if (selection.isNotEmpty()) {
+                val data = selection.first()
+                val newDetail = BetDetailBean(
+                    betId = betId,
+                    sumOdds = data.odds,
+                    odds = data.odds,
+                    inputMoney = money
+                )
+                betDao.insertDetail(newDetail)
             }
         }
     }
@@ -250,8 +248,21 @@ class SingleBetRepository(
 
                     val selection = betDao.getSelections(betId).first()
                     unregister(selection)
-                    val detail = betDao.getDetail(betId).first()
-
+                    val detail = betDao.getDetail(betId).firstOrNull() ?: run {
+                        BetDetailBean(
+                            betId = betId,
+                            sumOdds = selection.odds,
+                            odds = selection.odds,
+                            inputMoney = money
+                        ).apply {
+                            betDao.insertDetail(this)
+                        }
+                    }
+                    betDao.updateDetailStatus(
+                        detail.betId,
+                        detail.serialValue,
+                        BetResultStatusEnum.CONFIRMING
+                    )
                     val resp = remoteManager.reserveBet(selection, detail.sumOdds, money)
                     val status =
                         if (resp?.isSuccessful == true) BetResultStatusEnum.SUCCESS_BET else BetResultStatusEnum.REJECT

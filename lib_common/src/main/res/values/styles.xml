@@ -9,8 +9,8 @@
     </style>
 
     <style name="CustomToolbarImgStyle">
-        <item name="android:layout_height">34dp</item>
-        <item name="android:layout_width">34dp</item>
+        <item name="android:layout_height">36dp</item>
+        <item name="android:layout_width">36dp</item>
         <item name="android:stateListAnimator">@animator/layout_alpha_animator</item>
         <item name="srcCompat">@drawable/universal_icon_back</item>
         <item name="layout_constraintLeft_toLeftOf">parent</item>
@@ -30,7 +30,7 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:textStyle">bold</item>
-        <item name="android:textSize">17sp</item>
+        <item name="android:textSize">16sp</item>
         <item name="layout_constraintLeft_toLeftOf">parent</item>
         <item name="layout_constraintRight_toRightOf">parent</item>
         <item name="layout_constraintTop_toTopOf">parent</item>
@@ -52,7 +52,7 @@
         <item name="android:background">@drawable/selector_number_button_pressed</item>
         <item name="android:textSize">18sp</item>
         <item name="android:textStyle">bold</item>
-        <item name="android:textColor">@color/keyboard_number</item>
+        <item name="android:textColor">@color/color_FFFFFF</item>
         <item name="android:gravity">center</item>
     </style>
 
@@ -64,13 +64,13 @@
         <item name="android:background">@drawable/selector_number_text_button_pressed</item>
         <item name="android:textSize">14sp</item>
         <item name="android:textStyle">bold</item>
-        <item name="android:textColor">@color/keyboard_number</item>
+        <item name="android:textColor">@color/color_FFFFFF</item>
         <item name="android:gravity">center</item>
     </style>
 
     <style name="ButtonStyle">
         <item name="android:background">@drawable/selector_button</item>
-        <item name="android:textColor">@color/text_on_theme_color</item>
+        <item name="android:textColor">@color/color_FFFFFF</item>
         <item name="android:textSize">15sp</item>
         <item name="android:textStyle">bold</item>
         <item name="android:gravity">center</item>

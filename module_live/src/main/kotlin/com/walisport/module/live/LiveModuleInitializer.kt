@@ -8,22 +8,18 @@ import com.walisport.module.live.data.LiveMainRepository
 import com.walisport.module.live.data.MuteManager
 import com.walisport.module.live.data.repository.LiveBetOnMenuRepository
 import com.walisport.module.live.data.repository.LiveBetOnRepository
-import com.walisport.module.live.data.repository.LiveChatRepository
 import com.walisport.module.live.data.repository.LiveLeagueRepository
 import com.walisport.module.live.data.repository.LiveMatchAnimationRepository
 import com.walisport.module.live.data.repository.LiveStandingRepository
 import com.walisport.module.live.data.repository.LiveVideoRepository
-import com.walisport.module.live.ui.viewmodel.EmojiViewModel
 import com.walisport.module.live.ui.viewmodel.LeagueViewModel
 import com.walisport.module.live.ui.viewmodel.LiveBetOnMenuViewModel
 import com.walisport.module.live.ui.viewmodel.LiveBetOnViewModel
-import com.walisport.module.live.ui.viewmodel.LiveChatViewModel
 import com.walisport.module.live.ui.viewmodel.LiveLineupViewModel
 import com.walisport.module.live.ui.viewmodel.LiveMatchAnimationViewModel
 import com.walisport.module.live.ui.viewmodel.LiveMatchMediaViewModel
 import com.walisport.module.live.ui.viewmodel.LiveMatchStatusViewModel
 import com.walisport.module.live.ui.viewmodel.LiveOutsViewModel
-import com.walisport.module.live.ui.viewmodel.LiveSoftKeyboardViewModel
 import com.walisport.module.live.ui.viewmodel.LiveStandingsViewModel
 import com.walisport.module.live.ui.viewmodel.LiveVideoPlayerViewModel
 import com.walisport.module.live.ui.viewmodel.LiveVideoSourceViewModel
@@ -49,14 +45,11 @@ class LiveModuleInitializer : DefaultInitializer<String> {
         viewModelOf(::LiveVideoPlayerViewModel)
         viewModelOf(::LiveMatchStatusViewModel)
         viewModelOf(::LiveMatchAnimationViewModel)
-        viewModelOf(::LiveChatViewModel)
         viewModelOf(::LeagueViewModel)
         viewModelOf(::LiveOutsViewModel)
         viewModelOf(::LiveBetOnViewModel)
         viewModelOf(::LiveLineupViewModel)
         viewModelOf(::LiveStandingsViewModel)
-        viewModelOf(::LiveSoftKeyboardViewModel)
-        viewModelOf(::EmojiViewModel)
         viewModelOf(::LiveBetOnMenuViewModel)
         viewModelOf(::LiveVideoSourceViewModel)
     }
@@ -70,12 +63,10 @@ class LiveModuleInitializer : DefaultInitializer<String> {
         factoryOf(::LiveBetOnRepository)
         factoryOf(::LiveBetOnMenuRepository)
         factoryOf(::LiveLeagueRepository)
-        factoryOf(::LiveChatRepository)
     }
 
     private val managerModule = module {
         factoryOf(::LiveRemoteManager)
-        factoryOf(::LiveRemoteChatManager)
         singleOf(::MuteManager)
         singleOf(::LandscapeVideoFragmentLifeCycle)
     }

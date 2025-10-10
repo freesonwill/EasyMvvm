@@ -1,4 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <!-- 流布局-->
+    <declare-styleable name="NavBarViewStyle">
+        <attr name="style" format="enum">
+            <enum name="icon" value="0" />
+            <enum name="iconText" value="1" />
+            <enum name="IconTextBadge" value="1" />
+        </attr>
+
+        <attr name="icon" format="reference" />
+        <attr name="text" format="string|reference" />
+        <attr name="badge" format="string|reference" />
+        <attr name="badge_color" format="color|reference" />
+        <attr name="badge_radius" format="dimension|reference" />
+        <attr name="badge_visibility">
+            <enum name="visible" value="0"/>
+            <enum name="gone" value="1"/>
+        </attr>
+
+    </declare-styleable>
+
+    <declare-styleable name="NavBarContainerStyle">
+        <attr name="selected_index" format="integer" />
+    </declare-styleable>
+
+    <declare-styleable name="CustomFilterSideBarView">
+        <attr name="showCircle" format="boolean" />
+        <attr name="circleRadius" format="dimension|reference" />
+        <attr name="hotIcon" format="reference" />
+        <attr name="textColor" format="color|reference" />
+        <attr name="selectedBgTextColor" format="color|reference" />
+    </declare-styleable>
+
+
 </resources>

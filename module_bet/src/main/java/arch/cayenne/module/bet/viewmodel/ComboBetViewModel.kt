@@ -33,25 +33,6 @@ class ComboBetViewModel(
     val balance: Long
         get() = _onBalanceListener.value?.balance ?: 0L
 
-    private val _onCanBetListener = MediatorLiveData(false).apply {
-        val updateCanBet = {
-            val betList = _onBetListListener.value
-            val comboData = _onComboMultiBetBeanListener.value
-
-            value = if (betList != null && comboData != null) {
-                betList.size > 1 &&
-                        betList.all { it.isActive && it.isParlay } &&
-                        comboData.any { it.inputMoney > 0L }
-            } else {
-                false
-            }
-        }
-
-        addSource(_onBetListListener) { updateCanBet() }
-        addSource(_onComboMultiBetBeanListener) { updateCanBet() }
-    }
-    val onCanBetListener: LiveData<Boolean> get() = _onCanBetListener
-
     private val _onForceUpdateListener = MediatorLiveData(false).apply {
         var updateBox = Pair(false, false)
         var hasInit = false
@@ -106,14 +87,6 @@ class ComboBetViewModel(
     private val _onMultiLayoutExpendListener = MutableLiveData<Boolean>(false)
     val onMultiLayoutExpendListener: LiveData<Boolean> get() = _onMultiLayoutExpendListener
 
-    val remainingBalance: Long
-        get() = onBalanceListener.value?.let { infoBean ->
-            onComboMultiBetBeanListener.value?.sumOf { it.amount }?.let { betAmount ->
-                infoBean.balance - betAmount
-            } ?: infoBean.balance
-        } ?: 0
-
-
     val moneySymbol: String
         get() = CurrencySymbols.getSymbol(_onBalanceListener.value?.currency ?: "")
 
@@ -140,10 +113,7 @@ class ComboBetViewModel(
                     } else {
                         val updatedList = beans.mapIndexed { index, newItem ->
                             val oldItem = lastList.getOrNull(index)
-                            val updatedInputMoney = oldItem?.inputMoney?.let { oldInput ->
-                                if (oldInput > newItem.maxAmount) newItem.maxAmount else oldInput
-                            } ?: newItem.inputMoney
-
+                            val updatedInputMoney = oldItem?.inputMoney?: newItem.inputMoney
                             newItem.copy(inputMoney = updatedInputMoney)
                         }
 

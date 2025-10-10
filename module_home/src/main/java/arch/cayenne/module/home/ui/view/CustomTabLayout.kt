@@ -7,22 +7,15 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewConfiguration
 import android.view.ViewGroup
-import androidx.lifecycle.findViewTreeLifecycleOwner
-import androidx.lifecycle.lifecycleScope
 import arch.cayenne.lib.skin.widget.SkinnableTabLayout
-import arch.cayenne.lib.skin.widget.helper.SkinnableBackGroundHelper
 import arch.cayenne.lib.skin.widget.helper.SkinnableTabLayoutHelper
-import arch.cayenne.lib.skin.widget.helper.SkinnableViewFlowHelper
-import com.google.android.material.tabs.TabLayout
 import kotlin.math.hypot
 
-class CustomTabLayout : TabLayout {
+class CustomTabLayout : SkinnableTabLayout {
     private val TAG = SkinnableTabLayout::class.java.simpleName
 
     /** For SkinnableTabLayout Start */
-    private val backgroundTintHelper = SkinnableBackGroundHelper(this)
     private val tabLayoutHelper = SkinnableTabLayoutHelper(this)
-    private val flowHelper = SkinnableViewFlowHelper()
 
     /** For SkinnableTabLayout End */
 
@@ -50,14 +43,6 @@ class CustomTabLayout : TabLayout {
         initView(context, attrs, defStyleAttr)
     }
 
-    override fun onAttachedToWindow() {
-        super.onAttachedToWindow()
-        flowHelper.startSkinFlow(findViewTreeLifecycleOwner()?.lifecycleScope) {
-            backgroundTintHelper.updateSkin()
-            tabLayoutHelper.updateSkin()
-        }
-    }
-
     override fun addTab(tab: Tab, position: Int, setSelected: Boolean) {
         super.addTab(tab, position, setSelected)
         disableTabClick(tab)
@@ -80,16 +65,6 @@ class CustomTabLayout : TabLayout {
         super.addTab(tab)
         disableTabClick(tab)
         tabLayoutHelper.updateTabBackground(tab)
-    }
-
-    override fun onDetachedFromWindow() {
-        flowHelper.destroyFlow()
-        super.onDetachedFromWindow()
-    }
-
-    private fun initView(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) {
-        backgroundTintHelper.loadFromAttributes(attrs, defStyleAttr)
-        tabLayoutHelper.loadFromAttributes(attrs, defStyleAttr)
     }
 
     // 攔截點擊事件，並將事件重送至自訂 onTabClick ，避免觸發 TabLayout 原本內建的滑動方法

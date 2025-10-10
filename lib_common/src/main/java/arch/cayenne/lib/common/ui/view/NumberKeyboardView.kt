@@ -58,6 +58,10 @@ class NumberKeyboardView : LinearLayout {
         mBinding.btnOther.text = listener.getOtherText()
     }
 
+    fun setOtherTextSize(sizeSp: Float) {
+        mBinding.btnOther.textSize = sizeSp
+    }
+
     interface OnCalculatorClickListener {
         fun onNumberClick(number: Int)
         fun onDotClick()

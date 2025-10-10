@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
-import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
@@ -64,7 +63,8 @@ class MatchListPagerFragment :
 
             matchAdapter = MatchItemAdapter(object : OnMatchItemClickListener {
                 override fun onLiveEntryClick(item: MatchWithMarkets) {
-                    navigate(Uri.parse("walisport://module_live/liveFragment?matchId=${item.match.matchId}&sportId=${item.match.basicInfo.sportId}"))
+                    val liveInfo = item.match.liveInfo
+                    navigate(Uri.parse("walisport://module_live/liveFragment?matchId=${item.match.matchId}&sportId=${item.match.basicInfo.sportId}&showVideo=${liveInfo.liveVideo}&showAnim=${liveInfo.liveAnimation.isNotBlank()}"))
                 }
 
                 override fun onFavoriteClick(view: ImageView, item: MatchWithMarkets) {
@@ -79,7 +79,7 @@ class MatchListPagerFragment :
                 override fun onOddsCellClick(cell: WeakReference<View>, selection: SelectionBeanLite, x: Float, y: Float) {
                     lifecycleScope.launch {
                         val v = cell.get()
-                        val status = mViewModel.setSelection(selection.selectionId)
+                        val status = mViewModel.setSelection(selection)
                         when (status) {
                             is AddSelectionStatus.Success.Single -> {
                                 BetSheetFragment.show(requireActivity(), object : BetSheetFragment.ShowListener {
@@ -195,13 +195,21 @@ class MatchListPagerFragment :
 
     val matchListObserver = Observer<List<MatchWithMarkets>> { matchList ->
         "MatchListChange livedata Observed~ ${matchList.map { it.match.matchId }}".logi(this::class.java.simpleName)
+        val preEmpty = matchAdapter.currentList.isEmpty()
         matchAdapter.submitList(matchList) {
             if (mViewModel.requestScrollToTop) {
                 mBinding.rvHomeGameList.scrollToPosition(0)
                 mViewModel.resetRequestScrollToTop()
             }
             // 發送頁面載入完成通知
-            launch { mViewModel.setSubmitListCompleted() }
+            if (preEmpty) {
+                homeViewModel.changeState(
+                    HomeState.FirstMatchListComplete(
+                        mViewModel.getPlayTypeId(),
+                        mViewModel.getTournamentId()
+                    )
+                )
+            }
         }
         mBinding.rvHomeGameList.doOnPreDraw {
             if (mBinding.rvHomeGameList.scrollState == RecyclerView.SCROLL_STATE_IDLE) {
@@ -235,7 +243,7 @@ class MatchListPagerFragment :
                             )
                         }
                         showToast(arch.cayenne.lib.common.R.string.toast_server_disconnected.getString())
-                        homeViewModel.changeState(DataState.NetworkUnavailable)
+                        homeViewModel.changeState(HomeState.FirstMatchListComplete(mViewModel.getPlayTypeId(), mViewModel.getTournamentId()))
                     }
                     DataState.NoMoreData -> {     //這個DataEmpty表示api抓不到任何資料了，有可能是頁面到底，或是從第一頁就抓不到資料
                         refreshLayout.finishRefresh()
@@ -249,7 +257,7 @@ class MatchListPagerFragment :
                             DynamicStateLayout.States.DATA_EMPTY,
                             R.string.lineup_empty.getString()
                         )
-                        homeViewModel.changeState(HomeState.Match.LoadSuccess)
+                        homeViewModel.changeState(HomeState.FirstMatchListComplete(mViewModel.getPlayTypeId(), mViewModel.getTournamentId()))
                     }
                     HomeState.Match.Loading -> {
                         homeViewModel.changeState(HomeState.Match.Loading)
@@ -262,7 +270,6 @@ class MatchListPagerFragment :
                     }
                     DataState.LoadSuccess, HomeState.Match.LoadSuccess -> {
                         if (refreshLayout.isRefreshing) refreshLayout.finishRefresh()
-                        homeViewModel.changeState(HomeState.Match.LoadSuccess)
                         mViewModel.changePageEnd(false)
                         matchAdapter.setLastItemType(MatchItemAdapter.LAST_ITEM_LOAD_MORE)
                     }
@@ -316,8 +323,6 @@ class MatchListPagerFragment :
     fun reloadAllData() {
         mViewModel.reload()
     }
-
-    fun getSubmitListCompletedFlow() = mViewModel.submitListCompletedFlow
 
     override fun onResume() {
         super.onResume()

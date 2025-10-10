@@ -9,6 +9,7 @@ import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.data.constants.LanguageType
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.touchBackPressed
+import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.lib.skin.widget.SkinnableTextView
 import com.walisport.module.setting.R
 import com.walisport.module.setting.databinding.FragmentLanguageBinding
@@ -54,6 +55,35 @@ class LanguageFragment : BaseFragment<LanguageViewModel, FragmentLanguageBinding
         mBinding.radioPortuguese.isSelected = type == LanguageType.LANGUAGE_PT
     }
 
+    private fun changeLanguageColor(type: LanguageType) {
+        val unSelected = getSelectedColor(false)
+        val isSelected = getSelectedColor(true)
+        mBinding.tvSimple.setTextColor(unSelected)
+        mBinding.tvEnglish.setTextColor(unSelected)
+        mBinding.tvIndonesia.setTextColor(unSelected)
+        mBinding.tvPortugal.setTextColor(unSelected)
+        when (type) {
+            LanguageType.LANGUAGE_SIMPLE -> mBinding.tvSimple.setTextColor(isSelected)
+            LanguageType.LANGUAGE_ENGLISH -> mBinding.tvEnglish.setTextColor(isSelected)
+            LanguageType.LANGUAGE_ID -> mBinding.tvIndonesia.setTextColor(isSelected)
+            else -> mBinding.tvPortugal.setTextColor(isSelected)
+        }
+    }
+
+    private fun getSelectedColor(isSelected: Boolean): Int {
+        return if (isSelected) {
+            SkinnableResourceManager.getColor(
+                mBinding.root.context,
+                R.color.set_text
+            )
+        } else {
+            SkinnableResourceManager.getColor(
+                mBinding.root.context,
+                R.color.set_title
+            )
+        }
+    }
+
     private fun updateLanguage(locale: Locale, v: View) {
         if (v is ViewGroup) {
             v.forEach {
@@ -67,6 +97,7 @@ class LanguageFragment : BaseFragment<LanguageViewModel, FragmentLanguageBinding
     override suspend fun createObserver() {
         mViewModel.languageType.observe(viewLifecycleOwner) {
             changeLanguageType(it)
+            changeLanguageColor(it)
             updateLanguage(Locale(it.value), mBinding.root)
         }
     }

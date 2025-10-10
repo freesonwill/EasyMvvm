@@ -1,6 +1,5 @@
 package arch.cayenne.module.home.ui.viewmodel
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
@@ -8,7 +7,9 @@ import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.common.data.repo.BalanceRepository
 import arch.cayenne.lib.database.entity.InfoBean
 import arch.cayenne.lib.database.entity.MatchWithMarkets
+import arch.cayenne.lib.database.entity.SelectionBeanLite
 import arch.cayenne.module.bet.data.AddSelectionStatus
+import arch.cayenne.module.bet.data.BetInsertBean
 import arch.cayenne.module.bet.repo.BetRepository
 import arch.cayenne.module.home.data.repo.ChampionRepository
 import kotlinx.coroutines.Dispatchers
@@ -95,15 +96,27 @@ class ChampionViewModel : BaseViewModel() {
         }
     }
 
-    suspend fun setSelection(selectionId: Long) : AddSelectionStatus {
+    suspend fun setSelection(selection: SelectionBeanLite) : AddSelectionStatus {
         if (!betRepository.isConnected) {
             return AddSelectionStatus.Failure.NetworkDisconnected
         }
-        val bean = championRepository.getSelectionInsertBean(matchId, selectionId)
+        var bean: BetInsertBean? = null
+        matchWithMarketsChange.value?.also { matchWithMarkets ->
+            matchWithMarkets.markets.forEach { marketWithSelections ->
+                    val selectionLiteBean = marketWithSelections.selections.find { it.selectionId == selection.selectionId }
+                    if (selectionLiteBean  != null) {
+                        bean = championRepository.matchSelectionInsertBean(
+                            match = matchWithMarkets.match,
+                            market = marketWithSelections.market,
+                            selectionBean = selectionLiteBean
+                        )
+                    }
+                }
+        }
         return if (bean == null) {
             AddSelectionStatus.Failure.Fail
         } else {
-            betRepository.setSelection(bean)
+            betRepository.setSelection(bean!!)
         }
     }
 

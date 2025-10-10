@@ -2,36 +2,37 @@
 <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+    android:layout_width="50dp"
     android:layout_height="50dp"
     android:background="@drawable/selector_date_tab_bg">
 
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/tv_date"
         android:layout_width="wrap_content"
-        android:layout_height="18dp"
-        android:gravity="center_horizontal"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
         android:textColor="@color/selector_date_text"
         android:textSize="13sp"
-        app:skinnableFontWeight="500"
-        app:layout_constraintBottom_toTopOf="@+id/tv_week_day"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_week_day"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="packed"
+        app:skinnableFontWeight="500"
         tools:text="11.21" />
 
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/tv_week_day"
         android:layout_width="wrap_content"
-        android:layout_height="18dp"
-        android:gravity="center_horizontal"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:layout_marginBottom="7dp"
         android:textColor="@color/selector_date_text"
         android:textSize="13sp"
-        app:skinnableFontWeight="500"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_date"
+        app:skinnableFontWeight="500"
         tools:text="星期一" />
 </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>

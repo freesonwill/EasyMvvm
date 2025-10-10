@@ -28,6 +28,12 @@ class SettingRepository(
         return manager.getValue(UserDataKey.KEY_SKIN, SkinType.DEFAULT)
     }
 
+    //获取用户ID
+    fun getUserID(): String {
+        val uid = manager.getValue(UserDataKey.KEY_UID, -1)
+        return uid.toString()
+    }
+
     //设置系统通知-进球
     fun setSystemGoal(bet: Boolean, fav: Boolean, all: Boolean) {
         manager.setKeyValue(UserDataKey.KEY_SYSTEM_BET, bet)

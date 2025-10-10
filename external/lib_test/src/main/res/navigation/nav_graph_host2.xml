@@ -1,0 +1,45 @@
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    app:startDestination="@id/secondFragment">
+
+    <fragment
+        android:id="@+id/secondFragment"
+        android:name="arch.cayenne.lib.test.ui.fragment.SecondFragment"
+        android:label="fragment_second"
+        tools:layout="@layout/fragment_test_second">
+        <argument
+            android:name="userId"
+            android:defaultValue="@null"
+            app:argType="string"
+            app:nullable="true" />
+        <action
+            android:id="@+id/action_secondFragment_to_thirdFragment"
+            app:destination="@id/thirdFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/thirdFragment"
+        android:name="arch.cayenne.lib.test.ui.fragment.ThirdFragment"
+        android:label="fragment_third"
+        tools:layout="@layout/fragment_test_third">
+
+        <action
+            android:id="@+id/action_thirdFragment_to_fourthFragment"
+            app:destination="@id/fourthFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/fourthFragment"
+        android:name="arch.cayenne.lib.test.ui.fragment.FourthFragment"
+        android:label="fragment_test_fourth"
+        tools:layout="@layout/fragment_test_fourth">
+
+        <action
+            android:id="@+id/action_fourthFragment_to_homeFragment"
+            app:destination="@id/homeTestFragment"
+            app:popUpTo="@id/homeTestFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+
+
+</navigation>

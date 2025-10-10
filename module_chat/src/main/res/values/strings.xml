@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="live_chat_empty">直播间聊天暂未开启</string>
+    <string name="live_chat_end">直播间聊天已结束</string>
+    <string name="live_chat_first_chat">快来抢首评吧</string>
+    <string name="live_chat_talk">输入消息</string>
+    <string name="live_chat_speak">说点什么...</string>
+    <string name="live_chat_send">发送</string>
+    <string name="insufficient_bet_amount">有效投注≥¥100后才可以聊天哦</string>
+    <string name="insufficient_balance">余额≥¥100才可以聊天哦</string>
+    <string name="insufficient_fali">检查有效投注失败</string>
+    <string name="send">发送</string>
+    <string name="all_emoji">全部表情</string>
+    <string name="chat_room">聊天室</string>
+    <string name="living_events">赛事直播</string>
+    <string name="chat_customer">客服</string>
+</resources>

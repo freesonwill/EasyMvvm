@@ -12,4 +12,14 @@
     <color name="pay_success">#24EE8A</color>
     <color name="pay_failure">#FE3666</color>
     <color name="pay_un_confirm">#418EFF</color>
+    <color name="pay_method">#929298</color>
+    <color name="pay_line">#2C2E3B</color>
+    <color name="pay_money">#FFFFFF</color>
+
+    <color name="bank_title">#999999</color>
+    <color name="bank_line">#272727</color>
+    <color name="bank_text">#FFFFFF</color>
+    <color name="fragment_bg">#1E1E1E</color>
+    <color name="add_bank_tip">#EB860D</color>
+    <color name="view_line">#1AFFFFFF</color>
 </resources>

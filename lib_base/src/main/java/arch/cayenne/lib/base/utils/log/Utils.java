@@ -30,4 +30,11 @@ public final class Utils {
         sApp = app;
         UtilsBridge.init(sApp);
     }
+
+    /**
+     *  是否编辑模式(预览）
+     */
+    public static boolean isInEditMode(){
+        return System.getProperty("idea.active") != null;
+    }
 }

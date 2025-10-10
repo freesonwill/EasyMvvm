@@ -12,6 +12,7 @@ import android.os.Handler
 import android.os.Looper
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.DecelerateInterpolator
 import android.view.animation.LinearInterpolator
 import android.widget.LinearLayout
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -211,6 +212,22 @@ class LiveVideoLandscapeFragment :
             mViewModel.setPlayerState(it)
         }
 
+        videoView.setOnFirstFrameReceivedListener {
+            lifecycleScope.launch {
+                mBinding.root.startSafeAnimateSet(
+                    {
+                        playTogether(
+                            mBinding.videoViewContainer.startSafeObjectAnimator("alpha", mBinding.videoViewContainer.alpha, 1f)
+                        )
+                    },
+                    duration = 200,
+                    interpolator = DecelerateInterpolator(),
+                    start = true
+                )
+            }
+
+        }
+
         // 创建 LayoutParams，设置宽度和高度为 match_parent
         val layoutParams = LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.MATCH_PARENT, // 宽度
@@ -303,16 +320,49 @@ class LiveVideoLandscapeFragment :
             mViewModel.changeMuteStatus()
         }
 
+        mBinding.tvVideoResolution.addScaleOnTouchAnimation()
+        mBinding.tvVideoResolution.clickNoRepeat {
+            hideButtons()
+            reduce(
+                targetWidth = mBinding.root.measuredWidth - mBinding.fragmentChooseSource.measuredWidth - VIDEO_MARGIN_HORIZONTAL.dp2px * 2,
+                targetHeight = 275.dp2px,
+                targetHorizontalMargin = VIDEO_MARGIN_HORIZONTAL.dp2px
+            ) {
+                videoViewFullScreen = false
+            }
+
+            setVideoResolutionView()
+            showVideoResolutionView()
+        }
+
     }
 
     override suspend fun createObserver() {
         with(mViewModel) {
             liveVideoBean.observe(viewLifecycleOwner) {
                 it?.let {
+                    val streamInfoBean =
+                        it.source.firstOrNull { ele -> ele.isPlaying }?.liveStreams?.firstOrNull { ele -> ele.selected }
 
-                    val playUrl = it.source.firstOrNull { ele -> ele.isPlaying }?.liveStreams!![0].playUrl()
+                    mBinding.tvVideoResolution.text = streamInfoBean?.streamType
+                    val playUrl =
+                        streamInfoBean
+                            ?.playUrl()
+
                     playUrl?.takeIf { url -> url.isNotEmpty() }?.let { url ->
                         if (url != videoView.getDataSource()) {
+
+                            mBinding.root.startSafeAnimateSet(
+                                {
+                                    playTogether(
+                                        mBinding.videoViewContainer.startSafeObjectAnimator("alpha", mBinding.videoViewContainer.alpha, 0f)
+                                    )
+                                },
+                                duration = 200,
+                                interpolator = DecelerateInterpolator(),
+                                start = true
+                            )
+
                             videoView.setDataSource(url)
                             videoView.prepare()
                         }
@@ -485,21 +535,21 @@ class LiveVideoLandscapeFragment :
                 ValueAnimator.ofFloat(currentScaleX, targetScaleX).apply {
                     addUpdateListener {
                         renderView.scaleX = it.animatedValue as Float
-                        mBinding.ctLoading.scaleX = it.animatedValue as Float
+                        mBinding.videoBg.scaleX = it.animatedValue as Float
                         mBinding.ctError.scaleX = it.animatedValue as Float
                     }
                 },
                 ValueAnimator.ofFloat(currentScaleY, targetScaleY).apply {
                     addUpdateListener {
                         renderView.scaleY = it.animatedValue as Float
-                        mBinding.ctLoading.scaleY = it.animatedValue as Float
+                        mBinding.videoBg.scaleY = it.animatedValue as Float
                         mBinding.ctError.scaleY = it.animatedValue as Float
                     }
                 },
                 ValueAnimator.ofFloat(currentTranslationX, targetTranslationX).apply {
                     addUpdateListener {
                         renderView.translationX = it.animatedValue as Float
-                        mBinding.ctLoading.translationX = it.animatedValue as Float
+                        mBinding.videoBg.translationX = it.animatedValue as Float
                         mBinding.ctError.translationX = it.animatedValue as Float
                     }
                 },
@@ -550,21 +600,21 @@ class LiveVideoLandscapeFragment :
                 ValueAnimator.ofFloat(currentScaleX, targetScaleX).apply {
                     addUpdateListener {
                         renderView.scaleX = it.animatedValue as Float
-                        mBinding.ctLoading.scaleX = it.animatedValue as Float
+                        mBinding.videoBg.scaleX = it.animatedValue as Float
                         mBinding.ctError.scaleX = it.animatedValue as Float
                     }
                 },
                 ValueAnimator.ofFloat(currentScaleY, targetScaleY).apply {
                     addUpdateListener {
                         renderView.scaleY = it.animatedValue as Float
-                        mBinding.ctLoading.scaleY = it.animatedValue as Float
+                        mBinding.videoBg.scaleY = it.animatedValue as Float
                         mBinding.ctError.scaleY = it.animatedValue as Float
                     }
                 },
                 ValueAnimator.ofFloat(currentTranslationX, targetTranslationX).apply {
                     addUpdateListener {
                         renderView.translationX = it.animatedValue as Float
-                        mBinding.ctLoading.translationX = it.animatedValue as Float
+                        mBinding.videoBg.translationX = it.animatedValue as Float
                         mBinding.ctError.translationX = it.animatedValue as Float
 
                     }
@@ -735,6 +785,56 @@ class LiveVideoLandscapeFragment :
         }
     }
 
+
+    /**
+     * 创建选择清晰度页面
+     */
+    private fun setVideoResolutionView() {
+        childFragmentManager.findFragmentByTag(LiveVideoResolutionFragment.TAG)
+                as? LiveVideoResolutionFragment ?: LiveVideoResolutionFragment().also {
+            it.arguments = Bundle().apply {
+                putLong("matchId", mViewModel.matchId())
+            }
+            childFragmentManager.beginTransaction()
+                .replace(mBinding.fragmentVideoResolution.id, it, LiveVideoResolutionFragment.TAG)
+                .commitNow()
+        }
+
+    }
+
+    /**
+     *清晰度页入场动画
+     */
+    private fun showVideoResolutionView() {
+        val currentTranslationX = 0f
+        val targetTranslationX = -mBinding.fragmentVideoResolution.measuredWidth.toFloat()
+
+        ValueAnimator.ofFloat(currentTranslationX, targetTranslationX).apply {
+            addUpdateListener {
+                mBinding.fragmentVideoResolution.translationX = it.animatedValue as Float
+            }
+            setDuration(ZOOM_ANIMATION_DURATION)
+            start()
+        }
+    }
+
+    /**
+     * 视频源页面退场动画
+     */
+    private fun hideVideoResolutionView(onEndAction: () -> Unit) {
+        val currentTranslationX = mBinding.fragmentVideoResolution.translationX
+        val targetTranslationX = 0f
+        ValueAnimator.ofFloat(currentTranslationX, targetTranslationX).apply {
+            addUpdateListener {
+                mBinding.fragmentVideoResolution.translationX = it.animatedValue as Float
+
+            }
+            doOnEnd { onEndAction() }
+            setDuration(ZOOM_ANIMATION_DURATION)
+            start()
+        }
+    }
+
     /**
      * 创建赛况统计页
      */
@@ -785,7 +885,7 @@ class LiveVideoLandscapeFragment :
     }
 
     /**
-     * 移除分享页，视频源页，赛况页
+     * 移除分享页，视频源页，赛况页, 清晰度页面
      */
     private fun hideFragment() {
         if (mBinding.fragmentShare.translationX.toInt() != 0) {
@@ -803,6 +903,11 @@ class LiveVideoLandscapeFragment :
             }
         }
 
+        if (mBinding.fragmentVideoResolution.translationX.toInt() != 0) {
+            hideVideoResolutionView {
+            }
+        }
+
     }
 
     private fun onPlayerStateReceived(state: PlayerState) {
@@ -810,7 +915,7 @@ class LiveVideoLandscapeFragment :
         when (state) {
             PlayerState.PLAYING -> {
                 loadingAnim?.cancel()
-                mBinding.ctLoading.visibility = GONE
+//                mBinding.ctLoading.visibility = GONE
                 mBinding.ctError.visibility = GONE
             }
 
@@ -820,39 +925,39 @@ class LiveVideoLandscapeFragment :
 
             PlayerState.CONNECTING -> {
                 // 创建旋转动画
-                loadingAnim = mBinding.ivVideoLoading.startSafeObjectAnimator(
-                    "rotation",  // 属性名称
-                    0f, 360f // 从 0 度旋转到 360 度
-                ).run {
-                    // 设置动画属性
-                    setDuration(1500) // 持续时间 1.5 秒
-                    repeatCount = ObjectAnimator.INFINITE // 无限循环
-                    interpolator = LinearInterpolator() // 匀速旋转
+//                loadingAnim = mBinding.ivVideoLoading.startSafeObjectAnimator(
+//                    "rotation",  // 属性名称
+//                    0f, 360f // 从 0 度旋转到 360 度
+//                ).run {
+//                    // 设置动画属性
+//                    setDuration(1500) // 持续时间 1.5 秒
+//                    repeatCount = ObjectAnimator.INFINITE // 无限循环
+//                    interpolator = LinearInterpolator() // 匀速旋转
+//
+//                    // 启动动画
+//                    start()
+//                    this
+//                }
 
-                    // 启动动画
-                    start()
-                    this
-                }
-
-                mBinding.ctLoading.visibility = VISIBLE
+//                mBinding.ctLoading.visibility = VISIBLE
                 mBinding.ctError.visibility = GONE
 
             }
 
             PlayerState.ERROR -> {
-                mBinding.ctLoading.visibility = GONE
+//                mBinding.ctLoading.visibility = GONE
                 mBinding.ctError.visibility = VISIBLE
             }
 
             PlayerState.STOPPED -> {
                 loadingAnim?.cancel()
-                mBinding.ctLoading.visibility = GONE
+//                mBinding.ctLoading.visibility = GONE
                 mBinding.ctError.visibility = GONE
             }
 
             else -> {
                 loadingAnim?.cancel()
-                mBinding.ctLoading.visibility = GONE
+//                mBinding.ctLoading.visibility = GONE
                 mBinding.ctError.visibility = GONE
             }
         }

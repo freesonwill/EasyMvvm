@@ -1,18 +1,18 @@
 package com.walisport.module.setting.ui.fragment
 
-import android.annotation.SuppressLint
 import android.os.Bundle
-import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
-import arch.cayenne.lib.base.utils.log.Utils
 import arch.cayenne.lib.common.data.constants.LanguageType
 import arch.cayenne.lib.common.data.constants.OddsDisplayEnum
+import arch.cayenne.lib.common.ui.dialog.CommonDialog
+import arch.cayenne.lib.common.utils.copyToClipboard
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
+import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.touchBackPressed
+import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
-import com.walisport.module.setting.BuildConfig
 import com.walisport.module.setting.R
 import com.walisport.module.setting.databinding.FragmentSettingBinding
 import com.walisport.module.setting.ui.dialog.OddsDisplayDialogFragment
@@ -28,18 +28,13 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
     override val vbClass: KClass<FragmentSettingBinding> = FragmentSettingBinding::class
     override val vmClass: KClass<SettingViewModel> = SettingViewModel::class
 
-    @SuppressLint("SetTextI18n")
     override fun initView(savedInstanceState: Bundle?) {
-        mBinding.titleBar.loadGeneralTitleBar(R.string.setting, {
-            findNavController().navigateUp()
-        })
-        if (BuildConfig.BUILD_TYPE == "debug" || BuildConfig.BUILD_TYPE == "qatest") {
-            mBinding.tvVersion.isVisible = true
-            val appGame = Utils.getApp()
-            val pi = appGame.packageManager.getPackageInfo(appGame.packageName, 0)
-            mBinding.tvVersion.text =
-                "ver.${pi.versionName}_${arch.cayenne.lib.common.BuildConfig.BUILD_TIME}"
-        }
+        mBinding.titleBar.loadGeneralTitleBar(
+            R.string.setting,
+            { findNavController().navigateUp() }
+        )
+        mBinding.tvSetMobile.text = ""
+        mBinding.tvSetUser.text = mViewModel.getUserID()
         mBinding.root.touchBackPressed()
     }
 
@@ -55,6 +50,26 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
         }
         mBinding.settingLanguage.clickNoRepeat {
             navigate(R.id.action_settingFragment_to_languageFragment)
+        }
+        mBinding.settingBindMobile.clickNoRepeat {
+
+        }
+        mBinding.settingUser.clickNoRepeat {
+
+        }
+        mBinding.ivCopy.clickNoRepeat {
+            copyToClipboard(mBinding.tvSetUser.text as String?) {
+                showToast(R.string.tip_copy_suc.getString())
+            }
+        }
+        mBinding.settingAbout.clickNoRepeat {
+            navigate(R.id.action_settingFragment_to_aboutFragment)
+        }
+        mBinding.btnChangeUser.clickNoRepeat {
+            navigate(R.id.action_settingFragment_to_switchFragment)
+        }
+        mBinding.btnLogout.clickNoRepeat {
+            showConfirmDialog()
         }
     }
 
@@ -149,6 +164,21 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
                 R.string.menu_language_simple,
                 mViewModel.getLanguage()
             )
+        }
+    }
+
+    private fun showConfirmDialog() {
+        CommonDialog.newInstance(
+            "",
+            getString(R.string.tip_logout),
+            getString(R.string.tip_confirm_logout),
+            getString(R.string.tip_cancel),
+            blueTheme = false
+        ).also {
+            it.setOnOkClickListener {
+                showToast("退出登录")
+            }
+            it.show(childFragmentManager)
         }
     }
 }

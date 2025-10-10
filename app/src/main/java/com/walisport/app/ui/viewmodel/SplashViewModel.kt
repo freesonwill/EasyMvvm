@@ -1,7 +1,6 @@
 package com.walisport.app.ui.viewmodel
 
 import androidx.lifecycle.viewModelScope
-import arch.cayenne.lib.common.data.constants.SkinType
 import arch.cayenne.lib.common.ui.viewmodel.BaseActivityViewModel
 import arch.cayenne.lib.skin.LanguageManager
 import arch.cayenne.lib.skin.SkinnableManager
@@ -12,22 +11,18 @@ import org.koin.core.parameter.parametersOf
 import java.util.Locale
 
 class SplashViewModel : BaseActivityViewModel() {
+
     private val repository: SplashRepository by inject { parametersOf(viewModelScope) }
     private val skinManager: SkinnableManager by inject { parametersOf(viewModelScope) }
     private val languageManager:LanguageManager by inject { parametersOf(viewModelScope) }
 
     override val shouldBeAutoLogin: Boolean = false
 
-    fun saveUserData(uid: Int, token: String) {
-        repository.saveUserData(uid, token)
-    }
-
     //加载皮肤和语言方案
     fun loadMyAppSkin() {
         viewModelScope.launch {
             val skinType = repository.getSkinType()
-            val logicType = SkinType.getLogicSkinType(skinType)
-            skinManager.loadSkin(logicType)
+            skinManager.loadSkin(skinType)
             val langType = repository.getLanguageType()
             languageManager.changeLanguage(Locale(langType))
         }

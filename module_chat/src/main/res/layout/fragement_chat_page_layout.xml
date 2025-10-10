@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+        <variable
+            name="chatPageViewModel"
+            type="arch.cayenne.module.chat.ui.viewmodel.ChatPageViewModel" />
+    </data>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/live_chat_recycler"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        />
+
+</layout>

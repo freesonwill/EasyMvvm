@@ -104,7 +104,7 @@ class ReserveDialogFragment private constructor() : BasePositionDialogFragment<R
             (triangle.layoutParams as ConstraintLayout.LayoutParams).marginEnd = usableWidth - positionX - triangleWidth / 2 - 10.dp2px
 
             layoutParams.x = 10.dp2px
-            layoutParams.y = if (isFull) positionY - popHeight + triangleHeight else positionY - triangleHeight + viewHeight
+            layoutParams.y = if (isFull) positionY - popHeight + triangleHeight - 2.dp2px else positionY - triangleHeight + viewHeight + 2.dp2px
 
             w.attributes = layoutParams
 
@@ -166,6 +166,7 @@ class ReserveDialogFragment private constructor() : BasePositionDialogFragment<R
             }
 
         })
+        mBinding.numberKeyboard.setOtherTextSize(16f)
     }
 
     override fun initListener() {
