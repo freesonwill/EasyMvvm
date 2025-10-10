@@ -177,7 +177,7 @@ class MainChatFragment : BaseFragment<MainChatViewModel, FragmentMainChatLayoutB
 
     override fun onStart() {
         mBinding.root.fitsSystemWindows = false
-        StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND(autoPaddingNavigationBarColor = arch.cayenne.lib.common.R.color.color_0FFFFFFF)
+        StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND(autoIsNavigation = true)
         setStatusBar(StatusBarConfig, mBinding.topBg)
         super.onStart()
     }

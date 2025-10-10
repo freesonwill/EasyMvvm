@@ -13,7 +13,7 @@
     <string name="tab_text_other_day">其他日期</string>
     <string name="home_calendar_ok">确认</string>
     <string name="home_calendar_reset">重置</string>
-    <string name="home_tournament_more">更多</string>
+    <string name="home_tournament_list">联赛</string>
 
     <!-- AppBarLayout behavior -->
     <string name="appbar_scrolling_view_behavior">com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior</string>
@@ -46,6 +46,7 @@
     <string name="match_title_over_under">大小</string>
     <string name="drawer_recharge">钱包</string>
     <string name="drawer_common_function">常用功能</string>
+    <string name="drawer_service_function">服务</string>
     <string name="drawer_tutorial">教程</string>
     <string name="drawer_setting">设置</string>
     <string name="drawer_help">帮助</string>
@@ -55,7 +56,7 @@
     <string name="drawer_notification_time_1">05:35</string>
     <string name="drawer_notification_time_2">周一</string>
     <string name="drawer_notification_message">通知消息</string>
-    <string name="drawer_nickname_title">设置头像和昵称</string>
+    <string name="drawer_nickname_title">设置头像昵称</string>
     <string name="match_item_roll_title">滚球</string>
 
     <string name="lineup_empty">暂无数据,请换个试一试</string>
@@ -73,6 +74,23 @@
     <string name="title_betslip">注单</string>
     <string name="title_chat">聊天</string>
     <string name="title_me">我</string>
+
+    <string name="drawer_fund_details">资金明细</string>
+    <string name="drawer_bet_record">投注记录</string>
+    <string name="drawer_cash_back">实时返水</string>
+    <string name="drawer_recently_played">最近玩过</string>
+    <string name="drawer_game_collections">游戏收藏</string>
+    <string name="drawer_match_collections">赛事收藏</string>
+    <string name="drawer_gift">活动</string>
+    <string name="drawer_settings">设置</string>
+    <string name="drawer_customer_service">官方客服</string>
+    <string name="drawer_balance">总余额</string>
+    <string name="drawer_withdraw">提现</string>
+    <string name="drawer_topup">充值</string>
+
+
+
+
 
 
 </resources>

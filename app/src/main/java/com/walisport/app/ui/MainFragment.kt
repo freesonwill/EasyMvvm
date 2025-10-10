@@ -119,9 +119,6 @@ class MainFragment : BaseFragment<EmptyViewModel, FragmentMainBinding>() {
             view.setPadding(systemBars.left, 0, systemBars.right, systemBars.bottom)
             insets
         }
-        mBinding.root.fitsSystemWindows = false
-        StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND()
-        setStatusBar(StatusBarConfig,mBinding.root)
     }
 
     private fun getFragment(position: Int): Fragment {

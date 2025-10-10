@@ -5,7 +5,7 @@
     <color name="purple_700">#FF3700B3</color>
     <color name="teal_200">#FF03DAC5</color>
     <color name="teal_700">#FF018786</color>
-
+    <color name="title_money_text">#ffffff</color>
     <color name="color_f3f3f4">#FFF3F3F4</color>
     <color name="color_f3f3f5">#FFF3F3F5</color>
     <color name="color_222222">#FF222222</color>
@@ -184,6 +184,7 @@
     <color name="color_2C323E">#2C323E</color>
     <color name="color_3D404D">#3D404D</color>  <!--背景色/Tag BG-->
     <color name="color_CBD8EB">#CBD8EB</color>  <!--文本色/Tag text-->
+    <color name="color_05FFFFFF">#05FFFFFF</color> <!--分隔線 白透明 2-->
 
     <color name="color_E3603A">#E3603A</color>  <!--聊天tab文本色/Tag text-->
 

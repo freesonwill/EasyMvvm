@@ -14,6 +14,9 @@ import arch.cayenne.module.home.ui.compare.TournamentSectionCompare
 class TournamentSectionAdapter(
     private val onTournamentClick: (BaseTournamentData) -> Unit
 ) : BaseAdapter<TournamentListItem, BaseViewHolder, ViewBinding>(TournamentSectionCompare()) {
+
+    // 儲存選中的聯賽ID
+    private val selectedTournamentIds = mutableSetOf<Int>()
     override fun getItemViewType(position: Int): Int {
         return when (getItem(position)) {
             is TournamentListItem.Header -> TYPE_HEADER
@@ -48,11 +51,47 @@ class TournamentSectionAdapter(
             }
 
             is TournamentListItem.TournamentItem -> {
-                (holder as TournamentItemViewHolder).bind(item, onTournamentClick)
+                val isSelected = selectedTournamentIds.contains(item.tournament.id)
+                (holder as TournamentItemViewHolder).bind(
+                    item = item,
+                    isSelected = isSelected,
+                    onClick = { tournament ->
+                        toggleSelection(tournament.id)
+                        notifyItemChanged(position)
+                        onTournamentClick(tournament)
+                    }
+                )
             }
-
         }
     }
+
+    // 切換選中狀態
+    private fun toggleSelection(tournamentId: Int) {
+        if (selectedTournamentIds.contains(tournamentId)) {
+            selectedTournamentIds.remove(tournamentId)
+        } else {
+            selectedTournamentIds.add(tournamentId)
+        }
+    }
+
+    // 清除所有選中狀態
+    fun clearAllSelections() {
+        selectedTournamentIds.clear()
+        notifyDataSetChanged()
+    }
+
+    // 獲取選中的聯賽ID列表
+    fun getSelectedTournamentIds(): List<Int> {
+        return selectedTournamentIds.toList()
+    }
+
+    // 獲取選中的聯賽數據列表
+    fun getSelectedTournaments(): List<BaseTournamentData> {
+        return currentList.filterIsInstance<TournamentListItem.TournamentItem>()
+            .filter { selectedTournamentIds.contains(it.tournament.id) }
+            .map { it.tournament }
+    }
+    
     companion object {
         private const val TYPE_HEADER = 0
         private const val TYPE_ITEM = 1

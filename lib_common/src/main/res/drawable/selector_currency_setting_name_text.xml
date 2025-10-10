@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- 狀態：點擊時 (Pressed state) -->
+    <!-- 文字顏色為 #00E0E5 -->
+    <item android:state_pressed="true"
+        android:color="@color/color_00E0E5" />
+
+    <!-- 狀態：預設時 (Default state) -->
+    <!-- 文字顏色為 #FFFFFF -->
+    <item android:color="@color/color_FFFFFF" />
+
+</selector>
