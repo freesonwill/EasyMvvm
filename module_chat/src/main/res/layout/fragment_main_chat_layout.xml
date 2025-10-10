@@ -2,33 +2,38 @@
 <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    >
+    android:layout_height="match_parent">
 
     <LinearLayout
         android:id="@+id/top_bg"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_145"
         android:background="@color/color_272727"
-        app:layout_constraintTop_toTopOf="parent"
         android:orientation="vertical"
-        >
-    </LinearLayout>
-    <arch.cayenne.lib.skin.widget.SkinnableTabLayout
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <arch.cayenne.module.chat.ui.widget.ChatTabView
         android:id="@+id/tabLayout"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_71"
-        app:tabIndicatorHeight="0dp"
-        app:tabMaxWidth="@dimen/dp_50"
-        android:background="@color/color_272727"
+        android:layout_height="@dimen/dp_87"
+        android:layout_marginTop="58dp"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="69dp"
-        app:tabMinWidth="@dimen/dp_42"
-        app:tabMode="scrollable"
-        app:tabPaddingEnd="0dp"
-        app:tabPaddingStart="0dp"
-        app:tabRippleColor="@null" />
 
+        />
+    <!--    <arch.cayenne.lib.skin.widget.SkinnableTabLayout-->
+    <!--        android:id="@+id/tabLayout"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="@dimen/dp_71"-->
+    <!--        app:tabIndicatorHeight="0dp"-->
+    <!--        app:tabMaxWidth="@dimen/dp_50"-->
+    <!--        android:background="@color/color_272727"-->
+    <!--        app:layout_constraintTop_toTopOf="parent"-->
+    <!--        android:layout_marginTop="69dp"-->
+    <!--        app:tabMinWidth="@dimen/dp_42"-->
+    <!--        app:tabMode="scrollable"-->
+    <!--        app:tabPaddingEnd="0dp"-->
+    <!--        app:tabPaddingStart="0dp"-->
+    <!--        app:tabRippleColor="@null" />-->
 
 
     <androidx.viewpager2.widget.ViewPager2

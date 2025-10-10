@@ -1,26 +1,112 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     >
+
     <arch.cayenne.lib.skin.widget.SkinnableImageView
         android:id="@+id/tab_icon"
         android:layout_width="@dimen/dp_42"
         android:layout_height="@dimen/dp_42"
-        android:padding="@dimen/dp_8"
-        android:background="@drawable/shape_8dp"
         android:layout_gravity="center_horizontal"
-        android:backgroundTint="@color/color_E03C64"
-        />
-       <arch.cayenne.lib.skin.widget.SkinnableTextView
-           android:id="@+id/tab_tv"
-           android:layout_width="wrap_content"
-           android:layout_height="wrap_content"
-           android:text="聊天室"
-           android:textSize="@dimen/sp_12"
-           android:layout_gravity="center_horizontal"
-           android:textColor="@color/color_FFFFFF"
-           android:layout_marginTop="@dimen/dp_8"
-           />
+        android:background="@drawable/shape_8dp"
+        android:src="@drawable/icon_main_chat_room_inactive"
+        android:backgroundTint="@color/color_0FFFFFFF"
+        android:padding="@dimen/dp_8"
+   />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_rect"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        >
+
+        <View
+            android:id="@+id/tab_rect_bg"
+            android:layout_width="@dimen/dp_119"
+            android:layout_height="42dp"
+            android:background="@drawable/shape_8dp"
+            android:backgroundTint="@color/color_0FFFFFFF"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="@dimen/dp_8"
+            />
+
+        <View
+            android:id="@+id/tab_rect_circle"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:background="@drawable/shape_ring"
+            android:backgroundTint="@color/color_fe3666"
+            app:layout_constraintRight_toRightOf="@id/tab_rect_bg"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginEnd="-8dp"
+            />
+
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
+            android:id="@+id/tab_rect_circle_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/sp_12"
+            android:textColor="@color/color_FFFFFF"
+            android:fontFamily="sans-serif"
+            android:textFontWeight="510"
+            android:text="9"
+            app:layout_constraintLeft_toLeftOf="@id/tab_rect_circle"
+            app:layout_constraintRight_toRightOf="@id/tab_rect_circle"
+            app:layout_constraintTop_toTopOf="@id/tab_rect_circle"
+            app:layout_constraintBottom_toBottomOf="@id/tab_rect_circle"
+            />
+
+        <arch.cayenne.lib.skin.widget.SkinnableImageView
+            android:id="@+id/tab_rect_icon"
+            android:layout_width="@dimen/dp_24"
+            android:layout_height="@dimen/dp_24"
+            android:layout_marginVertical="@dimen/dp_9"
+            android:layout_marginStart="@dimen/dp_6"
+            android:src="@drawable/icon_main_chat_tab_customer"
+            app:layout_constraintBottom_toBottomOf="@id/tab_rect_bg"
+            app:layout_constraintLeft_toLeftOf="@id/tab_rect_bg"
+            app:layout_constraintTop_toTopOf="@id/tab_rect_bg" />
+
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
+            android:id="@+id/tab_rect_content_tv"
+            android:layout_width="77dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="@dimen/dp_6"
+            android:layout_marginTop="@dimen/dp_6"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:fontFamily="sans-serif"
+            android:textFontWeight="400"
+            android:text="您好，我是您的福利客服，您asds"
+            android:textColor="@color/color_C0C0C0"
+            android:textSize="@dimen/sp_11"
+            app:layout_constraintLeft_toRightOf="@id/tab_rect_icon"
+            app:layout_constraintTop_toTopOf="@id/tab_rect_bg"
+            />
+        <ImageView
+            android:layout_width="12dp"
+            android:layout_height="6dp"
+            android:src="@drawable/icon_arrow_down_0fff"
+            app:layout_constraintTop_toBottomOf="@id/tab_rect_bg"
+            app:layout_constraintLeft_toLeftOf="@id/tab_rect_bg"
+            app:layout_constraintRight_toRightOf="@id/tab_rect_bg"
+            />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
+        android:id="@+id/tab_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/dp_8"
+        android:textColor="@color/color_FFFFFF"
+        android:text="聊天室"
+        android:textSize="@dimen/sp_12" />
 </LinearLayout>

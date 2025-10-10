@@ -185,4 +185,7 @@
     <color name="color_3D404D">#3D404D</color>  <!--背景色/Tag BG-->
     <color name="color_CBD8EB">#CBD8EB</color>  <!--文本色/Tag text-->
     <color name="color_05FFFFFF">#05FFFFFF</color> <!--分隔線 白透明 2-->
+
+    <color name="color_E3603A">#E3603A</color>  <!--聊天tab文本色/Tag text-->
+
 </resources>
