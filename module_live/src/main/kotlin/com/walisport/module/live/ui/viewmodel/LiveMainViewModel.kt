@@ -113,9 +113,14 @@ class LiveMainViewModel(
 
     //子类接听滑动设置变化(父类滑动到临界点,小于 80 触发子类RV或者SC 下滑事件),列表数据为空默认为true
     fun setSonVerticalScrollIsTop(boo:Boolean){
-        _sonVerticalScrollIsTop.value = boo
+        if (boo!=sonVerticalScrollIsTop.value){
+            _sonVerticalScrollIsTop.value = boo
+        }
     }
 
+    fun getSonVerticalScrollIsTop():Boolean?{
+        return sonVerticalScrollIsTop.value
+    }
 
     fun setLiveBetOnMen(status: BetOnMenuStatus) {
         _liveBetOnMenu.value = status

@@ -22,6 +22,7 @@ class LiveMainLayoutInterceptTouch @JvmOverloads constructor(
     private var isDirectionDetermined = false // 是否已确定滑动方向
     private var determined = true // 是否是第一次滑动
     private var startTime = 0L // 记录滑动时间
+    private val scrollSpeed = 1.0f //滑动速度
     override fun onFinishInflate() {
         super.onFinishInflate()
     }
@@ -76,13 +77,13 @@ class LiveMainLayoutInterceptTouch @JvmOverloads constructor(
                     if (deltaY > 0) {
                         LogUtils.e("MainLayout----------Sliding DOWN, pixelsY=$absDeltaY")
                         mLiveMainGesture?.onAdjustLayoutScroll(
-                            absDeltaY * 1.5f,
+                            absDeltaY * scrollSpeed,
                             LiveMainSlideDirection.DOWN
                         )
                     } else if (deltaY < 0) {
                         LogUtils.e("MainLayout----------Sliding UP, pixelsY=$absDeltaY")
                         mLiveMainGesture?.onAdjustLayoutScroll(
-                            -absDeltaY * 1.5f,
+                            -absDeltaY * scrollSpeed,
                             LiveMainSlideDirection.UP
                         )
                     }
