@@ -18,7 +18,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_40"
         android:layout_marginTop="@dimen/dp_64"
-        android:text="资金明细"
+        android:text="实时返水"
         android:textColor="@color/red_team"
         android:textSize="@dimen/sp_20"
         app:layout_constraintStart_toStartOf="parent"

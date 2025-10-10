@@ -104,4 +104,13 @@
 
         <deepLink app:uri="walisport://module_topup/fundDetailsFragment" />
     </fragment>
+
+    <fragment
+        android:id="@+id/realTimeCashbackFragment"
+        android:name="com.walisport.module.topup.ui.fragment.RealTimeCashBackFragment"
+        android:label="fragment_realtime_cashback"
+        tools:layout="@layout/fragment_realtime_cashback">
+
+        <deepLink app:uri="walisport://module_topup/realTimeCashBackFragment" />
+    </fragment>
 </navigation>
