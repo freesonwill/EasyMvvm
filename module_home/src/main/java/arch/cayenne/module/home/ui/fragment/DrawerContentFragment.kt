@@ -18,6 +18,7 @@ import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
+import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
@@ -205,6 +206,16 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
             }
             itemNotification2.clickNoRepeat {
                 navigatePage(arch.cayenne.lib.res.R.string.nav_module_message_fragment.deeplink())
+            }
+
+            mBinding.llDrawerRecharge.addScaleOnTouchAnimation()
+            mBinding.llDrawerRecharge.clickNoRepeat {
+                navigatePage(arch.cayenne.lib.res.R.string.nav_module_topup_fragment.deeplink())
+            }
+
+            mBinding.llDrawerWithdraw.addScaleOnTouchAnimation()
+            mBinding.llDrawerWithdraw.clickNoRepeat {
+                navigatePage(arch.cayenne.lib.res.R.string.nav_module_topup_fragment.deeplink())
             }
 
         }

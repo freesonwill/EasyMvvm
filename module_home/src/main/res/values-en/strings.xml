@@ -33,6 +33,8 @@
 
     <string name="drawer_balance">Balance</string>
     <string name="drawer_nickname_title">Change picture, name</string>
+    <string name="drawer_withdraw">Withdraw</string>
+    <string name="drawer_topup">TopUp</string>
 
 
 
