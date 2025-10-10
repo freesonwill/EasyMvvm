@@ -389,5 +389,33 @@
             android:layout_height="wrap_content" />
     </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
 
+    <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
+        android:id="@+id/cl_drawer_earning_features"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_12"
+        android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginEnd="@dimen/dp_12"
+        android:background="@drawable/bg_drawer_features"
+        android:orientation="vertical"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/cl_drawer_service_features">
+
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_12"
+            android:layout_marginTop="@dimen/dp_12"
+            android:text="@string/drawer_earning_function"
+            android:textColor="@color/drawer_notification_title"
+            android:textSize="@dimen/sp_15"
+            android:textStyle="bold" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_earning_features"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
+
 
 </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
