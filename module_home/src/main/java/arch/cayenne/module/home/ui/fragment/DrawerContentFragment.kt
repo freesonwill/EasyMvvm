@@ -53,7 +53,8 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
 
     override fun initView(savedInstanceState: Bundle?) {
         StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND()
-        setStatusBar(StatusBarConfig, mBinding.root)
+        StatusBarConfig.statusBarDarkFont = false
+        setStatusBar(StatusBarConfig,mBinding.root)
 
         initRvCommonFeatures()
         initRvServiceFeatures()

@@ -10,7 +10,7 @@
         android:id="@+id/cl_drawer_nickname"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_60"
-        android:layout_marginTop="@dimen/dp_40"
+        android:layout_marginTop="@dimen/dp_16"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
