@@ -216,7 +216,7 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
                 CommonFeaturesBean(id++, R.drawable.ic_drawer_partner,
                     R.string.drawer_partner
                 ) {
-                    navigatePage(arch.cayenne.lib.res.R.string.nav_module_feedback_fragment.deeplink())
+                    navigatePage(arch.cayenne.lib.res.R.string.nav_module_partner_fragment.deeplink())
                 },
 
             )
