@@ -17,6 +17,7 @@
     <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/llcLeagueNameLogo"
         android:layout_width="0dp"
+        android:layout_marginStart="4dp"
         android:layout_weight="1"
         android:gravity="center_vertical"
         android:layout_height="match_parent">

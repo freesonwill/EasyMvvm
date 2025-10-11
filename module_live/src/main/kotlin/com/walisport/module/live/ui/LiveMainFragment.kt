@@ -9,6 +9,7 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewGroup.LayoutParams
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.DefaultLifecycleObserver
@@ -30,6 +31,7 @@ import arch.cayenne.lib.base.utils.ext.ViewExt.applyInsetsForFitsSystemWindows
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.utils.CustomTabIndicatorUtils
 import arch.cayenne.lib.common.utils.ImmersionBarUtils.immersionBarSkinTypeExt
+import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.common.utils.ext.DimensionExt.px2sp
 import arch.cayenne.lib.common.utils.ext.setDrawerInterpolator
 import arch.cayenne.lib.common.utils.ext.NavResultExt.observeResult
@@ -61,6 +63,7 @@ import arch.cayenne.module.bet.ui.fragment.BetSheetFragment
 import com.walisport.module.live.ui.widget.LiveMainGestureListener
 import com.walisport.module.live.ui.widget.LiveMainLayoutInterceptTouch.LiveMainSlideDirection
 import arch.cayenne.module.chat.ui.fragment.ChatHomeFragment
+import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 /**
  * 直播详情页
  */
@@ -95,6 +98,16 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
             DrawerLayout.LOCK_MODE_LOCKED_CLOSED,
             GravityCompat.END
         )
+
+        mBinding.liveMainTopBar.post{
+            //动态设置沉浸式状态栏背景高度 状态栏高度+bar控件高度
+            var barHeight = ViewUtils.getStatusBarHeight(requireContext())
+            var toBarHeight = mBinding.titleBar.height
+            var videoHeight = 76.dp2px
+            val paramsLin = mBinding.liveMainTopBar.layoutParams as LayoutParams
+            paramsLin.height = barHeight+toBarHeight+videoHeight
+            mBinding.liveMainTopBar.layoutParams = paramsLin
+        }
         mBinding.root.applyInsetsForFitsSystemWindows()
         // 上层 View 触摸事件
         mBinding.LayoutInterceptTouch.setOnTouchListener { _, event ->
