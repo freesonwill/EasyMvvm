@@ -89,7 +89,7 @@ class LiveMainLayoutScale @JvmOverloads constructor(
     fun isDirectionToScroll(): Boolean {
         val currentHeight = llVideo.layoutParams.height.toFloat()
         // 如果当前高度在 80-211 范围内，返回 true，表示可以滑动
-        return currentHeight in minVideoHeight..maxVideoHeight
+        return currentHeight in (minVideoHeight+1)..maxVideoHeight
     }
 
 

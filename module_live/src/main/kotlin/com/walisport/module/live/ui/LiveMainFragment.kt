@@ -120,7 +120,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
             override fun onAdjustLayoutScroll(deltaY: Float,direction:LiveMainSlideDirection) {
                 //往下滑动,子类的rv,sc是否滑到了第一条或者顶部
                 if (direction==LiveMainSlideDirection.DOWN){
-                    // 如果当前高度在 80-211 范围内，返回 true，表示可以滑动
+                    // 如果当前高度在 50-211 范围内，返回 true，表示可以滑动
                     if (mBinding.liveMainScale.isDirectionToScroll()){
                         mBinding.liveMainScale.adjustLayout(deltaY,direction)
                     }else{
