@@ -1,28 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/me_nav_graph"
-    app:startDestination="@id/firstFragment">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/misc_nav_graph">
 
     <fragment
-        android:id="@+id/firstFragment"
-        android:name="com.walisport.module.misc.ui.fragment.FirstFragment"
-        android:label="fragment_first"
-        tools:layout="@layout/fragment_first">
+        android:id="@+id/seniorPartnerFragment"
+        android:name="com.walisport.module.misc.ui.fragment.SeniorPartnerFragment"
+        android:label="fragment_senior_partner"
+        tools:layout="@layout/fragment_senior_partner">
 
-        <action
-            android:id="@+id/action_firstFragment_to_secondFragment"
-            app:destination="@id/secondFragment" />
+        <deepLink app:uri="walisport://module_misc/seniorPartnerFragment" />
     </fragment>
 
     <fragment
-        android:id="@+id/secondFragment"
-        android:name="com.walisport.module.misc.ui.fragment.SecondFragment"
-        android:label="fragment_second"
-        tools:layout="@layout/fragment_second">
+        android:id="@+id/inviteFriendsFragment"
+        android:name="com.walisport.module.misc.ui.fragment.InviteFriendsFragment"
+        android:label="fragment_invite_friends"
+        tools:layout="@layout/fragment_invite_friends">
 
+        <deepLink app:uri="walisport://module_misc/inviteFriendsFragment" />
     </fragment>
-
 
 </navigation>
