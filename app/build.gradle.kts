@@ -81,6 +81,7 @@ dependencies {
     implementation(project(":module_topup"))
     implementation(project(":module_account"))
     implementation(project(":module_me"))
+    implementation(project(":module_misc"))
     implementation(project(":module_chat"))
     implementation(project(":module_hall"))
     implementation(libs.androidx.core.ktx)
