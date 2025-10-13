@@ -22,4 +22,13 @@
         <deepLink app:uri="walisport://module_misc/inviteFriendsFragment" />
     </fragment>
 
+    <fragment
+        android:id="@+id/vipFragment"
+        android:name="com.walisport.module.misc.ui.fragment.VIPFragment"
+        android:label="fragment_vip"
+        tools:layout="@layout/fragment_vip">
+
+        <deepLink app:uri="walisport://module_misc/vipFragment" />
+    </fragment>
+
 </navigation>
