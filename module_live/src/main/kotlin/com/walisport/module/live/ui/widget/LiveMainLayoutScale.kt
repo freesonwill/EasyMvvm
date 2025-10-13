@@ -38,8 +38,8 @@ class LiveMainLayoutScale @JvmOverloads constructor(
     private var scaleXtoY = 1.0f // 宽高比例
     private val density = resources.displayMetrics.density
     private var initialVideoHeight: Float = 211f * density
-    private var initMinVideoHeight: Float = 80f * density
-    private var minVideoHeight: Float = 80f * density
+    private var initMinVideoHeight: Float = 50f * density
+    private var minVideoHeight: Float = 50f * density
     private var maxVideoHeight: Float = 211f * density
     private var initialVideoWidth: Float = 511f * density
     private var minVideoWidth: Float = 110f * density
@@ -89,7 +89,7 @@ class LiveMainLayoutScale @JvmOverloads constructor(
     fun isDirectionToScroll(): Boolean {
         val currentHeight = llVideo.layoutParams.height.toFloat()
         // 如果当前高度在 80-211 范围内，返回 true，表示可以滑动
-        return currentHeight in minVideoHeight..maxVideoHeight
+        return currentHeight in (minVideoHeight+1)..maxVideoHeight
     }
 
 
@@ -130,8 +130,10 @@ class LiveMainLayoutScale @JvmOverloads constructor(
         // 当高度达到最小值时触发隐藏动画
         if (newHeight <= minVideoHeight && llText.visibility == GONE) {
                 llText.visibility = VISIBLE
+            llVideo.setBackgroundResource(R.color.menu_lin_tr)
         } else if (newHeight > minVideoHeight && llText.visibility == VISIBLE) {
             llText.visibility = GONE
+            llVideo.setBackgroundResource(arch.cayenne.lib.common.R.color.tran_0)
         }
         // 不设置 pivotY，保持默认（顶部，pivotY = 0）
 
@@ -213,7 +215,7 @@ class LiveMainLayoutScale @JvmOverloads constructor(
             }
             start()
         }
-
+        llVideo.alpha = 1f
         // 更新初始值
         initialVideoHeight = targetHeight
         initialVideoWidth = targetHeight * scaleXtoY
@@ -277,6 +279,7 @@ class LiveMainLayoutScale @JvmOverloads constructor(
                 override fun onAnimationEnd(animation: android.animation.Animator) {
                     fragmentVideo.visibility = View.GONE // 动画结束时隐藏
                     llText.visibility = GONE
+                    llVideo.alpha = 1f
                     LogUtils.e("MainLayout----collapseToZero: scale=0, visibility=GONE")
                 }
             })
