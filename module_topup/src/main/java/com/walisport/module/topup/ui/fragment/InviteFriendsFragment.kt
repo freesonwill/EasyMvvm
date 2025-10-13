@@ -7,6 +7,8 @@ import android.os.Message
 import android.webkit.ValueCallback
 import android.webkit.WebChromeClient
 import android.webkit.WebView
+import arch.cayenne.lib.base.data.constants.StatusBarMode
+import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.common.data.constants.UserDataKey
@@ -136,6 +138,13 @@ class InviteFriendsFragment : BaseFragment<InviteFriendsViewModel, FragmentInvit
     }
 
     override suspend fun createObserver() {
+    }
+
+    override fun onStart() {
+        StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND(autoPadding = false)
+        StatusBarConfig.statusBarDarkFont = false
+        setStatusBar(StatusBarConfig,mBinding.root)
+        super.onStart()
     }
 
     override fun onResume() {
