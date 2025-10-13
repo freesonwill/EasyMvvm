@@ -45,7 +45,7 @@ class CustomFilterSideBarView @JvmOverloads constructor(
         }
 
     // 文字顏色
-    var textColorResId: Int = color.color_00A7C0
+    var textColorResId: Int = color.color_00E0E5
         set(value) {
             field = value
             textColor = value.getColor(context)

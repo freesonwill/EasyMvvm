@@ -187,5 +187,5 @@
     <color name="color_05FFFFFF">#05FFFFFF</color> <!--分隔線 白透明 2-->
 
     <color name="color_E3603A">#E3603A</color>  <!--聊天tab文本色/Tag text-->
-
+    <color name="color_00E0E54D">#4D00E0E5</color><!--主色（primary）30透明-->
 </resources>

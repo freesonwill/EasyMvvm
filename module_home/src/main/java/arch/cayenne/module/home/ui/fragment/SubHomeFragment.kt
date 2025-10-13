@@ -23,7 +23,6 @@ import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.TabLayoutExt
 import arch.cayenne.lib.common.utils.ext.TabLayoutExt.addOnTabSelectedListener2
-import arch.cayenne.lib.common.utils.ext.TabLayoutExt.reflexMargin
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.clickNoRepeatSingle
@@ -310,7 +309,10 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
 
                 if (tab != null && data != null && tab.customView == null) {
                     tab.customView = createTournamentTabView(data)
-                    tab.view.setPadding(0, 0, 10f.dp2px, 0)
+                    tab.view.setPadding(0, 0, 6f.dp2px, 0)
+                    if (data.id == HomeViewModel.TOURNAMENT_ALL_ID) {
+                        tab.view.minimumWidth = 0
+                    }
                 }
             }
         }
@@ -673,9 +675,6 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
             }
             leaguePagerAdapter!!.setData(mViewModel.currentPlayTypeId, tournaments)
 
-            // 使用 reflexMargin 擴展方法設置更小的 tab 間距
-            tlLeagueList.reflexMargin(2.dp2px, 2.dp2px, 1.dp2px)
-
             //因為一開始有觸發resetHome(),觸發resetLiveData()，所以observe livedata tournaments可能會是空的
             //導致tabLayout沒有資料時又多設定一次OnTabSelectedListener，因此要先清除之前的listener
             mBinding.layoutContainer.tlLeagueList.clearOnTabSelectedListeners()
@@ -760,6 +759,8 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
 
             if (tournament.id == HomeViewModel.TOURNAMENT_ALL_ID) {
                 ivLeagueIcon.visibility = View.GONE
+                // 設置「全部」tab 的寬度
+                root.layoutParams = LinearLayout.LayoutParams(51.dp2px, 32.dp2px)
             } else {
                 Glide.with(this@SubHomeFragment)
                     .load(tournament.icon.ifEmpty { R.drawable.ic_default_tournament })
