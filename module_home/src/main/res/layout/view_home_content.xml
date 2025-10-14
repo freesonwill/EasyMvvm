@@ -5,7 +5,7 @@
     android:id="@+id/view_container_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingTop="@dimen/dp_1"
+    android:background="@color/color_1E1E1E"
     tools:ignore="MissingDefaultResource">
 
 
@@ -117,7 +117,7 @@
     <arch.cayenne.lib.skin.widget.SkinnableView
         android:id="@+id/v_btn_mask"
         android:layout_width="130dp"
-        android:layout_height="@dimen/dp_52"
+        android:layout_height="@dimen/dp_38"
         android:background="@color/color_1E1E1E"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/ll_date_filter_container" />
@@ -125,7 +125,7 @@
     <arch.cayenne.module.home.ui.view.BounceTabLayoutContainer
         android:id="@+id/tl_container"
         android:layout_width="0dp"
-        android:layout_height="@dimen/dp_52"
+        android:layout_height="@dimen/dp_38"
         app:layout_constraintEnd_toStartOf="@+id/v_btn_mask"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/ll_date_filter_container">
@@ -139,8 +139,8 @@
             android:clipToPadding="false"
             android:overScrollMode="never"
             android:paddingStart="@dimen/dp_10"
-            android:paddingTop="@dimen/dp_10"
-            android:paddingBottom="@dimen/dp_8"
+            android:paddingTop="@dimen/dp_4"
+            android:paddingBottom="2dp"
             android:paddingEnd="35dp"
             app:tabGravity="start"
             app:tabIndicator="@null"
