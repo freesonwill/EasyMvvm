@@ -52,7 +52,7 @@ class TopUpFragment : BaseFragment<TopUpViewModel, FragmentTopupBinding>() {
             tab.text = page[position].page.title
         }.attach()
         mBinding.tabLayout.post {
-            mBinding.tabLayout.getTabAt(1)?.view?.setPadding(20.dp2px, 0, 20.dp2px, 2.dp2px)
+            mBinding.tabLayout.getTabAt(1)?.view?.setPadding(21.dp2px, 0, 21.dp2px, 3.dp2px)
         }
         mBinding.viewPager.setupHorizontalScrollDegree()
         mBinding.root.touchBackPressed()
