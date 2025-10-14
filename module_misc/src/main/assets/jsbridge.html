@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Android JSBridge 示例</title>
+    <style>
+        body {
+            background-color: #FFFFFF;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
+        input {
+            background-color: #F7D358;
+            width: 80%;
+            padding: 10px;
+            color: #000;
+            border: none;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        button {
+            background-color: #F7D358;
+            color: #000;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            margin: 5px;
+            font-size: 16px;
+        }
+        div#content {
+            padding: 20px;
+            background-color: #F7D358;
+            color: #000;
+            margin: 20px 0;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+<h3>Android JSBridge 示例</h3>
+<div id="content">
+    <p>这是一个简单的 HTML 示例，通过 JS 调用 Android 原生功能。</p>
+    <p>输入消息：</p>
+    <input type="text" id="messageInput" placeholder="输入要显示的消息" value="Hello from JS!">
+</div>
+
+<button onclick="showAndroidToast()">显示 Toast</button>
+<br>
+<button onclick="getUidToken()">获取账号信息</button>
+<div id="result" style="font-size:16px, font-color:red">
+</div>
+<br>
+<button onclick="back()">返回</button>
+
+<script type="text/javascript">
+    // JS 函数：调用 Android 接口（通过 "Android" 对象）
+    function showAndroidToast() {
+        var message = document.getElementById('messageInput').value;
+        if (window.wls) {
+            wls.showToast(message);  // 调用 Android 的 showToast 方法
+        } else {
+            alert('JSBridge 未加载！请确保 WebView 已启用 JS 接口。');
+        }
+    }
+
+
+    function getUidToken(){
+         if (window.wls) {
+         return new Promise((resolve, reject) => {
+            wls.getUidToken("Test Input", "resolve", "reject");
+            // 将 resolve 和 reject 函数绑定到 window 对象
+            window.resolve = resolve;
+            window.reject = reject;
+        }).then(data => {
+            document.getElementById("result").innerText = data;
+            alert(data);
+        }).catch(error => {
+            document.getElementById("result").innerText = "错误: " + error;
+        });
+        } else {
+            alert('JSBridge 未加载！');
+        }
+    }
+
+    function back() {
+        if (window.wls) {
+            wls.back();  // 调用 Android 的 moveToNextScreen 方法
+        } else {
+            alert('JSBridge 未加载！');
+        }
+    }
+
+    // 可选：监听页面加载完成，确保 Android 对象可用
+    window.addEventListener('load', function() {
+        console.log('页面加载完成，Android JSBridge 可用。');
+    });
+</script>
+</body>
+</html>

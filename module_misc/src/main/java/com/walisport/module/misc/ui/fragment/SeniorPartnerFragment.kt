@@ -38,7 +38,7 @@ class SeniorPartnerFragment : BaseFragment<SeniorPartnerViewModel, FragmentSenio
             val uid = manager.getValue(UserDataKey.KEY_UID, -1)
             val token = manager.getValue(UserDataKey.KEY_TOKEN, "")
 
-            mBinding.webView.loadUrl("https://www.google.com/")
+            mBinding.webView.loadUrl("file:///android_asset/jsbridge.html");
 
         }
     }
