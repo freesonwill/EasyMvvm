@@ -261,7 +261,7 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
 
             mBinding.llDrawerWithdraw.addScaleOnTouchAnimation()
             mBinding.llDrawerWithdraw.clickNoRepeat {
-                navigatePage(arch.cayenne.lib.res.R.string.nav_module_topup_fragment.deeplink())
+                navigatePage(arch.cayenne.lib.res.R.string.nav_module_withdraw_fragment.deeplink())
             }
 
         }

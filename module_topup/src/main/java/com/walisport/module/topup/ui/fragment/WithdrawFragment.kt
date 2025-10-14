@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.navigation.fragment.findNavController
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
+import arch.cayenne.lib.common.utils.ext.touchBackPressed
 import com.walisport.module.topup.R
 import com.walisport.module.topup.databinding.FragmentWithdrawBinding
 import com.walisport.module.topup.ui.viewmodel.WithdrawViewModel
@@ -24,6 +25,7 @@ class WithdrawFragment : BaseFragment<WithdrawViewModel, FragmentWithdrawBinding
                 findNavController().navigateUp()
             })
         }
+        mBinding.root.touchBackPressed()
     }
 
     override fun initListener() {
