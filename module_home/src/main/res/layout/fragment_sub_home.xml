@@ -227,6 +227,7 @@
             android:background="@drawable/shape_tournament_more_bg"
             android:gravity="center"
             android:orientation="horizontal"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@+id/v_league_more_mask"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/v_league_more_mask">
@@ -236,8 +237,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_marginStart="@dimen/dp_3"
-                android:layout_marginEnd="@dimen/dp_3"
+                android:visibility="gone"
+                android:layout_marginStart="@dimen/dp_5"
+                android:layout_marginEnd="@dimen/dp_1"
                 android:text="@string/tournament_section_title_hot"
                 android:textColor="@color/color_C0C0C0"
                 android:textSize="@dimen/sp_14" />
@@ -246,11 +248,11 @@
                 android:layout_width="8dp"
                 android:layout_height="8dp"
                 android:layout_gravity="center_vertical"
+                android:visibility="gone"
                 android:layout_marginTop="@dimen/dp_2"
                 android:layout_marginBottom="@dimen/dp_1"
                 android:src="@drawable/ic_tournament_expand" />
         </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
-
         <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
             android:id="@+id/ll_btn_tournament"
             android:layout_width="@dimen/dp_64"

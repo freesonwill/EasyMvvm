@@ -11,13 +11,13 @@
     <item android:state_selected="true">
         <shape android:shape="rectangle">
             <corners android:radius="4dp" />
-            <solid android:color="@color/color_00E0E5" />
+            <solid android:color="@color/color_00A7C0" />
         </shape>
     </item>
     <item>
         <shape android:shape="rectangle">
             <corners android:radius="4dp" />
-            <solid android:color="@color/home_card_odds_background" />
+            <solid android:color="@color/color_0FFFFFFF" />
         </shape>
     </item>
 </selector>

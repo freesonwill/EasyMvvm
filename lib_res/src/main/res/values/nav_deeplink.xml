@@ -18,7 +18,4 @@
     <string name="nav_module_partner_fragment" translatable="false">walisport://module_misc/seniorPartnerFragment</string>
     <string name="nav_module_invite_friends_fragment" translatable="false">walisport://module_misc/inviteFriendsFragment</string>
     <string name="nav_module_vip_fragment" translatable="false">walisport://module_misc/vipFragment</string>
-
-
-
 </resources>

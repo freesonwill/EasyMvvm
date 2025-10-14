@@ -97,7 +97,7 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
                 CommonFeaturesBean(id++, R.drawable.ic_drawer_fund_details,
                     R.string.drawer_fund_details
                 ) {
-                    navigatePage(arch.cayenne.lib.res.R.string.nav_module_fund_detail_fragment.deeplink())
+                    showToast(R.string.drawer_fund_details.getString())
                 },
                 CommonFeaturesBean(id++, R.drawable.ic_drawer_bet_record,
                     R.string.drawer_bet_record
