@@ -75,7 +75,7 @@ class LiveStandingsFragment : BaseFragment<LiveStandingsViewModel, FragmentLiveS
         savedInstanceState?.let {
             mBinding.webView.restoreState(it)
         }
-        mBinding.webView.loadUrl("https://www.baidu.com/")
+        mBinding.webView.loadUrl("https://www.google.com/search?sca_esv=e7eb012a39ff2160&sxsrf=AE3TifPGlaw_fs3PvheMpA_B4qp_pa5qug:1760427392047&udm=2&fbs=AIIjpHxU7SXXniUZfeShr2fp4giZ1Y6MJ25_tmWITc7uy4KIeoJTKjrFjVxydQWqI2NcOhZVmrJB8DQUK5IzxA2fZbQFrCfZ7DsBw9Vv9Qkv56j2AEpMzvv0UU1F_EzLZo2QIfu8UhfRMB3yW5Jk6wNmICGo8m3mWFLKZwMn6814YnxapMJO6KUvDboWp26Mi9uK_5GU9xIvvOIEdOTDhGEoksYO1o0liA&q=%E5%9B%BE%E7%89%87&sa=X&ved=2ahUKEwjRkOyKl6OQAxWSqFYBHQy6HkkQtKgLegQIFRAB&biw=1920&bih=958&dpr=2")
         // 使用 ViewTreeObserver 监听滚动
         val observer = mBinding.webView.viewTreeObserver
         observer.addOnScrollChangedListener {
