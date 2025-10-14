@@ -6,7 +6,7 @@
     android:background="@color/title_bg"
     android:orientation="vertical">
 
-    <com.github.lzyzsd.jsbridge.BridgeWebView
+    <arch.cayenne.lib.common.web.WLSWebView
         android:id="@+id/webView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

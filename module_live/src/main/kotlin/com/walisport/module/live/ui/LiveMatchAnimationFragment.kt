@@ -12,7 +12,6 @@ import android.webkit.WebView
 import androidx.lifecycle.lifecycleScope
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
-import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.data.constants.MatchStatus
 import arch.cayenne.lib.common.utils.DensityInfo
@@ -20,18 +19,13 @@ import arch.cayenne.lib.common.utils.ext.ResourceExt.getColor
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.ext.touchBackPressed
-import arch.cayenne.lib.database.entity.LiveMatchBean
-import com.github.lzyzsd.jsbridge.BridgeWebViewClient
-import com.github.lzyzsd.jsbridge.DefaultHandler
+import arch.cayenne.lib.common.web.WLSWebViewClient
 import com.walisport.module.live.databinding.FragmentLiveMatchAnimationBinding
 import com.walisport.module.live.ui.viewmodel.LiveMainViewModel
 import com.walisport.module.live.ui.viewmodel.LiveMatchAnimationViewModel
 import com.walisport.module.live.ui.viewmodel.LiveMatchMediaViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import kotlin.math.log
 import kotlin.reflect.KClass
 
 
@@ -143,41 +137,10 @@ class LiveMatchAnimationFragment :
     }
 
     private suspend fun initWebView() {
-        val webSettings = mBinding.animationView.settings
-
-        with(webSettings) {
-            domStorageEnabled = true
-            displayZoomControls = true
-            databaseEnabled = true
-            cacheMode = android.webkit.WebSettings.LOAD_DEFAULT
-            blockNetworkImage = false
-            setGeolocationEnabled(true)
-            setGeolocationDatabasePath(
-                withContext(Dispatchers.IO){
-                    requireActivity().applicationContext.getDir(
-                        "database",
-                        android.content.Context.MODE_PRIVATE
-                    ).path
-                }
-            )
-            useWideViewPort = true
-            loadWithOverviewMode = true
-            defaultTextEncodingName = "UTF-8"
-            allowContentAccess = true
-            allowFileAccess = true
-            allowFileAccessFromFileURLs = true
-            allowUniversalAccessFromFileURLs = true
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-                mixedContentMode = android.webkit.WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
-            }
-
-        }
-
         with(mBinding.animationView) {
-            setDefaultHandler(DefaultHandler())
 
             setWebViewClient(object :
-                BridgeWebViewClient(this) {
+                WLSWebViewClient(this) {
 
                 override fun onFormResubmission(
                     view: WebView?,
