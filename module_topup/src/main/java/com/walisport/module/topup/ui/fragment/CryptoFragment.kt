@@ -64,7 +64,7 @@ class CryptoFragment : BaseFragment<CryptoViewModel, FragmentCryptoBinding>() {
                     val data = tab?.tag as? CoinBean
                     if (tab != null && data != null && tab.customView == null) {
                         tab.customView = createTabView(data, i)
-                        tab.view.setPadding(8.dp2px, 0, 0, 0)
+                        tab.view.setPadding(6.dp2px, 0, 0, 0)
                     }
                 }
             }

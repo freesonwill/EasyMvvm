@@ -8,7 +8,7 @@
     <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_56"
-        android:background="@color/fragment_bg"
+        android:layout_marginTop="@dimen/dp_2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -22,7 +22,7 @@
             android:clipToPadding="false"
             android:overScrollMode="never"
             android:background="@android:color/transparent"
-            android:layout_marginStart="@dimen/dp_6"
+            android:layout_marginStart="@dimen/dp_8"
             app:tabGravity="start"
             app:tabIndicator="@null"
             app:tabIndicatorColor="@null"
@@ -117,7 +117,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_42"
             android:layout_marginHorizontal="@dimen/dp_16"
-            android:layout_marginTop="@dimen/dp_10"
+            android:layout_marginTop="@dimen/dp_8"
             android:background="@drawable/bg_recharge_type"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -162,7 +162,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_16"
-            android:layout_marginTop="@dimen/dp_17"
+            android:layout_marginTop="@dimen/dp_19"
             android:text="@string/cz_network"
             android:textColor="@color/bank_title"
             android:textSize="@dimen/sp_14"
@@ -173,7 +173,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_42"
             android:layout_marginHorizontal="@dimen/dp_16"
-            android:layout_marginTop="@dimen/dp_10"
+            android:layout_marginTop="@dimen/dp_9"
             android:background="@drawable/bg_recharge_type"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -208,7 +208,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_16"
-            android:layout_marginTop="@dimen/dp_18"
+            android:layout_marginTop="@dimen/dp_20"
             android:text="@string/cz_address"
             android:textColor="@color/bank_title"
             android:textSize="@dimen/sp_14"
@@ -218,7 +218,7 @@
         <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_8">
+            android:layout_marginTop="@dimen/dp_9">
 
             <arch.cayenne.lib.skin.widget.SkinnableView
                 android:layout_width="@dimen/dp_128"
@@ -302,7 +302,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_53"
             android:layout_marginHorizontal="@dimen/dp_16"
-            android:layout_marginTop="@dimen/dp_18"
+            android:layout_marginTop="@dimen/dp_19"
             android:background="@drawable/bg_shape_tip"
             android:orientation="vertical"
             app:layout_constraintEnd_toEndOf="parent">
@@ -310,7 +310,7 @@
             <arch.cayenne.lib.skin.widget.SkinnableTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_12"
+                android:layout_marginStart="@dimen/dp_14"
                 android:layout_marginTop="@dimen/dp_6"
                 android:maxLines="2"
                 android:text="仅限USDT(TRC20)转入此地址\n存款在2个网络确认后立刻到账"
@@ -322,7 +322,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_1"
             android:layout_marginHorizontal="@dimen/dp_16"
-            android:layout_marginTop="@dimen/dp_22"
+            android:layout_marginTop="@dimen/dp_19"
             android:background="@color/view_line" />
 
         <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
@@ -384,7 +384,7 @@
                 <arch.cayenne.lib.skin.widget.SkinnableTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/dp_6"
+                    android:layout_marginStart="@dimen/dp_8"
                     android:text="@string/cus_service"
                     android:textColor="@color/recharge_lesson"
                     android:textSize="@dimen/sp_14"

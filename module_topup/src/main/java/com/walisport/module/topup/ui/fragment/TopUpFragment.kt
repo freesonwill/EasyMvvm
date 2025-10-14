@@ -1,6 +1,5 @@
 package com.walisport.module.topup.ui.fragment
 
-import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.navigation.fragment.findNavController
@@ -11,7 +10,6 @@ import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
-import arch.cayenne.lib.common.utils.ext.removeAllTips
 import arch.cayenne.lib.common.utils.ext.setupHorizontalScrollDegree
 import arch.cayenne.lib.common.utils.ext.touchBackPressed
 import com.google.android.material.tabs.TabLayoutMediator
@@ -52,7 +50,7 @@ class TopUpFragment : BaseFragment<TopUpViewModel, FragmentTopupBinding>() {
             tab.text = page[position].page.title
         }.attach()
         mBinding.tabLayout.post {
-            mBinding.tabLayout.getTabAt(1)?.view?.setPadding(21.dp2px, 0, 21.dp2px, 3.dp2px)
+            mBinding.tabLayout.getTabAt(1)?.view?.setPadding(21.dp2px, 0, 21.dp2px, 4.dp2px)
         }
         mBinding.viewPager.setupHorizontalScrollDegree()
         mBinding.root.touchBackPressed()
