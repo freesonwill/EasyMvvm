@@ -84,18 +84,11 @@
     <string name="drawer_match_collections">赛事收藏</string>
     <string name="drawer_gift">活动</string>
     <string name="drawer_settings">设置</string>
+    <string name="first_day_title">明天</string>
     <string name="drawer_customer_service">官方客服</string>
     <string name="drawer_balance">总余额</string>
     <string name="drawer_withdraw">提现</string>
     <string name="drawer_topup">充值</string>
     <string name="drawer_invite">邀请好友</string>
     <string name="drawer_partner">高级合伙人</string>
-
-
-
-
-
-
-
-
 </resources>

@@ -8,6 +8,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.marginTop
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
@@ -103,6 +105,15 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
         }
         if (mViewModel.currentPlayTypeId == PlayType.EARLY.id) {
             mBinding.layoutContainer.groupDateFilter.visibility = View.VISIBLE
+            with (mBinding) {
+                layoutContainer.llDateFilterContainer.post {
+                    with (vLeagueMoreMask) {
+                        layoutParams = (layoutParams as ConstraintLayout.LayoutParams).apply {
+                            topMargin =  layoutContainer.llDateFilterContainer.height
+                        }
+                    }
+                }
+            }
         }
     }
 // TODO 之後排序功能使用
@@ -363,12 +374,12 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
             updateDateTabs(tlDateList, dateTabs)
             addDateTabListener()
 
-            tvTabAll.apply {
-                clickNoRepeat {
-                    playFadeAnimTriggerByDateTab { resetDateTabs() }
-                }
-                isSelected = true
-            }
+//            tvTabAll.apply {
+//                clickNoRepeat {
+//                    playFadeAnimTriggerByDateTab { resetDateTabs() }
+//                }
+//                isSelected = true
+//            }
 
             // 其他日期 Tab 設定
             llOtherDate.setOnClickListener {
@@ -489,10 +500,11 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
     }
 
     private fun resetDateTabs() {
-        mBinding.layoutContainer.tvTabAll.isSelected = true
+//        mBinding.layoutContainer.tvTabAll.isSelected = true
         clearDateTabSelection()
         lifecycleScope.launch {
-            mViewModel.selectedDate(0L)
+//            mViewModel.selectedDate(0L)
+            mViewModel.selectedDate(getFuture31Days().first().third)
         }
 
     }
@@ -622,19 +634,18 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
             for (i in 0 until tabStrip.childCount) {
                 tabStrip.getChildAt(i).apply {
                     val params = layoutParams as LinearLayout.LayoutParams
-                    params.width = 56.dp2px
-                    params.height = 50.dp2px
-                    params.marginStart = 4.dp2px
+                    params.width = 52.dp2px
+                    params.height = 37.dp2px
+                    params.marginStart = if (i==0) 14.dp2px else 7.dp2px
                     layoutParams = params
                     setBackgroundResource(R.drawable.selector_date_tab_bg)
                     if (clearSelected) isSelected = false
                 }
             }
         }
-
     }
     private fun getFutureSevenDays() = getFuture31Days().take(7)
-    private fun getFuture31Days() = DateUtils.getFutureDays(31, Locale.getDefault())
+    private fun getFuture31Days() = DateUtils.getFutureDays(31, Locale.getDefault(),resources.getString(R.string.first_day_title),"M-dd","E")
 
     private fun updateDateTabs(
         tlDateList: TabLayout,

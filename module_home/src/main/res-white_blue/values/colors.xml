@@ -43,4 +43,6 @@
     <color name="custom_filter_side_bar_text_white_blue">#00D271</color>
 
     <color name="tournament_list_search_text_white_blue">#000000</color>
+    <color name="match_card_title_text_white_blue">@color/color_999999</color>
+    <color name="match_card_score_white_blue">#7F999999</color>
 </resources>

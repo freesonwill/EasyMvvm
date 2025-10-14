@@ -173,8 +173,6 @@
     <color name="color_DE3E3E3E">#DE3E3E3E</color> <!--玻璃模糊弹窗背景-->
     <color name="color_EBEBEC">#EBEBEC</color> <!--体育直播聊天背景-->
     <color name="color_E03C64">#E03C64</color> <!--体育直播聊天背景-->
-
-
     <color name="color_D3D3D6">#D3D3D6</color> <!--quick amount-->
     <color name="color_3300A7C0">#3300A7C0</color> <!--深蓝20透明-->
     <color name="color_02C3E0">#02C3E0</color> <!--深蓝（blue-400）按钮（按下态）-->
@@ -184,6 +182,8 @@
     <color name="color_2C323E">#2C323E</color>
     <color name="color_3D404D">#3D404D</color>  <!--背景色/Tag BG-->
     <color name="color_CBD8EB">#CBD8EB</color>  <!--文本色/Tag text-->
+    <color name="color_153E44">#153E44</color> <!--日期tab背景色-->
+    <color name="color_292929">#292929</color> <!--日期tab选中背景色-->
     <color name="color_05FFFFFF">#05FFFFFF</color> <!--分隔線 白透明 2-->
 
     <color name="color_E3603A">#E3603A</color>  <!--聊天tab文本色/Tag text-->
