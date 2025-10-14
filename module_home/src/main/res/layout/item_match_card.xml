@@ -155,9 +155,9 @@
 
     <arch.cayenne.lib.skin.widget.SkinnableImageView
         android:id="@+id/iv_home_icon"
-        android:layout_width="26dp"
-        android:layout_height="26dp"
-        android:layout_marginStart="@dimen/dp_16"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="@dimen/dp_14"
         app:layout_constraintBottom_toBottomOf="@id/space_team_home"
         app:layout_constraintStart_toStartOf="@id/space_team_home"
         app:layout_constraintTop_toTopOf="@id/space_team_home"
@@ -203,9 +203,9 @@
 
     <arch.cayenne.lib.skin.widget.SkinnableImageView
         android:id="@+id/iv_away_icon"
-        android:layout_width="26dp"
-        android:layout_height="26dp"
-        android:layout_marginStart="@dimen/dp_16"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="@dimen/dp_14"
         app:layout_constraintBottom_toBottomOf="@id/space_team_away"
         app:layout_constraintStart_toStartOf="@id/space_team_away"
         app:layout_constraintTop_toTopOf="@id/space_team_away"
