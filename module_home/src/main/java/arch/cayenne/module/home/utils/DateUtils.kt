@@ -9,7 +9,7 @@ import java.util.Locale
 import java.util.concurrent.TimeUnit
 
 object DateUtils {
-    fun getFutureDays(days: Int, locale: Locale): List<Triple<String, String, Long>> {
+    fun getFutureDays(days: Int, locale: Locale,firstDayTitle: String = "",dateFormatStr: String = "M.dd",weekdayFormatStr: String = "EEEE"): List<Triple<String, String, Long>> {
         val dateList = mutableListOf<Triple<String, String, Long>>()
         val calendar = Calendar.getInstance()
         calendar.add(Calendar.DAY_OF_YEAR, 1)
@@ -18,15 +18,16 @@ object DateUtils {
         calendar.set(Calendar.SECOND, 0)
         calendar.set(Calendar.MILLISECOND, 0)
 
-        val dateFormat = SimpleDateFormat("M.dd", Locale.getDefault())
-        val weekdayFormat = SimpleDateFormat("EEEE", locale)
-
+        val dateFormat = SimpleDateFormat(dateFormatStr, Locale.getDefault())
+        val weekdayFormat = SimpleDateFormat(weekdayFormatStr, locale)
+        var index = 0
         repeat(days) {
             val dateStr = dateFormat.format(calendar.time) // MMdd
-            val weekdayStr = weekdayFormat.format(calendar.time) // 星期幾
+            val weekdayStr = if (index == 0 && firstDayTitle.isNotEmpty()) firstDayTitle  else weekdayFormat.format(calendar.time).replace("週","周") // 星期幾
             val timestamp = calendar.timeInMillis
             dateList.add(Triple(dateStr, weekdayStr, timestamp))
             calendar.add(Calendar.DAY_OF_YEAR, 1)
+            index += 1
         }
 
         return dateList

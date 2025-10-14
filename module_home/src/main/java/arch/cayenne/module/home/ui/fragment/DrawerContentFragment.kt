@@ -3,24 +3,30 @@ package arch.cayenne.module.home.ui.fragment
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
-import android.view.ViewGroup.MarginLayoutParams
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.recyclerview.widget.GridLayoutManager
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
+import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
 import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
+import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
+import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.module.account.data.constants.KeyConfig
 import arch.cayenne.module.home.R
+import arch.cayenne.module.home.data.model.CommonFeaturesBean
 import arch.cayenne.module.home.databinding.FragmentDrawerContentBinding
+import arch.cayenne.module.home.ui.adapter.DrawerFeaturesAdapter
 import arch.cayenne.module.home.ui.viewmodel.DrawerContentViewModel
 import arch.cayenne.module.home.utils.DateUtils
 import com.walisport.module.message.data.NotificationBean
@@ -38,28 +44,187 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
         const val TAG = "DrawerContentFragment"
     }
 
+    private val drawerFeaturesAdapter by lazy {
+        DrawerFeaturesAdapter()
+    }
+
+    private val serviceFeaturesAdapter by lazy {
+        DrawerFeaturesAdapter()
+    }
+
+    private val earningFeaturesAdapter by lazy {
+        DrawerFeaturesAdapter()
+    }
+
     override fun initView(savedInstanceState: Bundle?) {
         StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND()
-        setStatusBar(StatusBarConfig, mBinding.root)
-        mBinding.btnLogin.visibility = if (showBtnLogin) {
-            View.VISIBLE
-        } else {
-            View.GONE
-        }
+        StatusBarConfig.statusBarDarkFont = false
+        setStatusBar(StatusBarConfig,mBinding.root)
+
+        initRvCommonFeatures()
+        initRvServiceFeatures()
+        initRvEarningFeatures()
 
         //更改导航栏样式调整底部偏移
         ViewCompat.setOnApplyWindowInsetsListener(requireActivity().window.decorView) { v, insets ->
             val navInsets = insets.getInsets(WindowInsetsCompat.Type.navigationBars())
             val navBarHeight = ViewUtils.getNavigationBarHeight(requireContext())
             //"导航栏 bottom = ${navInsets.bottom},navBarHeight:$navBarHeight".logd(TAG)
-            mBinding.clDrawerBottom.layoutParams.let { lp ->
-                lp as MarginLayoutParams
-                lp.bottomMargin = if (navInsets.bottom == 0) navBarHeight else 0
-            }
             ViewCompat.setOnApplyWindowInsetsListener(requireActivity().window.decorView, null)
             insets
         }
     }
+
+    private fun initRvCommonFeatures() {
+        mBinding.rvCommonFeatures.apply {
+            //某些机型上， RecyclerView存在过滚动效果。 禁用scroll, 禁用过滚动效果
+            layoutManager = object : GridLayoutManager(requireContext(), 3) {
+                override fun canScrollHorizontally(): Boolean {
+                    return false
+                }
+
+                override fun canScrollVertically(): Boolean {
+                    return false
+                }
+            }// 每行3个
+            adapter = drawerFeaturesAdapter
+            itemAnimator = null
+        }
+
+        var id = 0
+        drawerFeaturesAdapter.submitList(
+            listOf(
+                CommonFeaturesBean(id++, R.drawable.ic_drawer_fund_details,
+                    R.string.drawer_fund_details
+                ) {
+                    showToast(R.string.drawer_fund_details.getString())
+                },
+                CommonFeaturesBean(id++, R.drawable.ic_drawer_bet_record,
+                    R.string.drawer_bet_record
+                ) {
+                    showToast(R.string.drawer_bet_record.getString())
+                },
+                CommonFeaturesBean(id++, R.drawable.ic_drawer_realtime_cashback,
+                    R.string.drawer_cash_back
+                ) {
+                    navigatePage(arch.cayenne.lib.res.R.string.nav_module_realtime_cashback_fragment.deeplink())
+                },
+
+                CommonFeaturesBean(id++, R.drawable.ic_drawer_recently_played,
+                    R.string.drawer_recently_played
+                ) {
+                    showToast(R.string.drawer_recently_played.getString())
+                },
+                CommonFeaturesBean(id++, R.drawable.ic_drawer_game_collection,
+                    R.string.drawer_game_collections
+                ) {
+                    showToast(R.string.drawer_game_collections.getString())
+                },
+                CommonFeaturesBean(id++, R.drawable.ic_drawer_match_collection,
+                    R.string.drawer_match_collections
+                ) {
+                    navigatePage(arch.cayenne.lib.res.R.string.nav_module_collectlist_fragment.deeplink())
+                },
+
+                CommonFeaturesBean(id++, R.drawable.ic_drawer_gift,
+                    R.string.drawer_gift
+                ) {
+                    showToast(R.string.drawer_gift.getString())
+                },
+                CommonFeaturesBean(id++, R.drawable.ic_drawer_settings,
+                    R.string.drawer_settings
+                ) {
+                    navigatePage(arch.cayenne.lib.res.R.string.nav_module_setting_fragment.deeplink())
+                },
+            )
+        )
+
+
+    }
+
+    /**
+     * 初始化服务功能区域
+     */
+    private fun initRvServiceFeatures() {
+        mBinding.rvServiceFeatures.apply {
+            //某些机型上， RecyclerView存在过滚动效果。 禁用scroll, 禁用过滚动效果
+            layoutManager = object : GridLayoutManager(requireContext(), 3) {
+                override fun canScrollHorizontally(): Boolean {
+                    return false
+                }
+
+                override fun canScrollVertically(): Boolean {
+                    return false
+                }
+            }// 每行3个
+            adapter = serviceFeaturesAdapter
+            itemAnimator = null
+        }
+
+        var id = 0
+        serviceFeaturesAdapter.submitList(
+            listOf(
+                CommonFeaturesBean(id++, R.drawable.ic_drawer_help,
+                    R.string.drawer_help
+                ) {
+                    navigatePage(Uri.parse("walisport://module_handicap/HandicapFragment?homeId=${R.id.newHomeFragment}"))
+                },
+                CommonFeaturesBean(id++, R.drawable.ic_drawer_feedback,
+                    R.string.drawer_feedback
+                ) {
+                    navigatePage(arch.cayenne.lib.res.R.string.nav_module_feedback_fragment.deeplink())
+                },
+                CommonFeaturesBean(id++, R.drawable.ic_drawer_customer_service,
+                    R.string.drawer_customer_service
+                ) {
+                    showToast(R.string.drawer_customer_service.getString())
+                },
+            )
+        )
+
+
+    }
+
+
+    /**
+     * 初始化赚钱功能区域
+     */
+    private fun initRvEarningFeatures() {
+        mBinding.rvEarningFeatures.apply {
+            //某些机型上， RecyclerView存在过滚动效果。 禁用scroll, 禁用过滚动效果
+            layoutManager = object : GridLayoutManager(requireContext(), 3) {
+                override fun canScrollHorizontally(): Boolean {
+                    return false
+                }
+
+                override fun canScrollVertically(): Boolean {
+                    return false
+                }
+            }// 每行3个
+            adapter = earningFeaturesAdapter
+            itemAnimator = null
+        }
+
+        var id = 0
+        earningFeaturesAdapter.submitList(
+            listOf(
+                CommonFeaturesBean(id++, R.drawable.ic_drawer_invite,
+                    R.string.drawer_invite
+                ) {
+                    navigatePage(arch.cayenne.lib.res.R.string.nav_module_invite_friends_fragment.deeplink())
+                },
+                CommonFeaturesBean(id++, R.drawable.ic_drawer_partner,
+                    R.string.drawer_partner
+                ) {
+                    navigatePage(arch.cayenne.lib.res.R.string.nav_module_partner_fragment.deeplink())
+                },
+
+            )
+        )
+
+
+    }
+
 
     override fun initListener() {
         with(mBinding) {
@@ -88,24 +253,17 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
             itemNotification2.clickNoRepeat {
                 navigatePage(arch.cayenne.lib.res.R.string.nav_module_message_fragment.deeplink())
             }
-            llRecharge.clickNoRepeat {
+
+            mBinding.llDrawerRecharge.addScaleOnTouchAnimation()
+            mBinding.llDrawerRecharge.clickNoRepeat {
                 navigatePage(arch.cayenne.lib.res.R.string.nav_module_topup_fragment.deeplink())
             }
-            llRecharge.addScaleOnTouchAnimation()
-            llDrawerTutorial.clickNoRepeat {
-                navigatePage(Uri.parse("walisport://module_handicap/HandicapFragment?homeId=${R.id.newHomeFragment}"))
-            }
-            llDrawerTutorial.addScaleOnTouchAnimation()
-            llDrawerSetting.clickNoRepeat {
-                navigatePage(arch.cayenne.lib.res.R.string.nav_module_setting_fragment.deeplink())
-            }
-            llDrawerFeedback.clickNoRepeat {
-                navigatePage(arch.cayenne.lib.res.R.string.nav_module_feedback_fragment.deeplink())
+
+            mBinding.llDrawerWithdraw.addScaleOnTouchAnimation()
+            mBinding.llDrawerWithdraw.clickNoRepeat {
+                navigatePage(arch.cayenne.lib.res.R.string.nav_module_topup_fragment.deeplink())
             }
 
-            btnLogin.clickNoRepeat {
-                navigatePage(arch.cayenne.lib.res.R.string.nav_module_login_fragment.deeplink("userId" to "abcd"))
-            }
         }
     }
 
@@ -128,6 +286,15 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
             }
             notificationBean.observeEvent(viewLifecycleOwner, this@DrawerContentFragment) { list ->
                 setNotificationItem(list)
+            }
+
+            currentBalanceChange.observe(viewLifecycleOwner) {
+                mBinding.tvBalance.text =
+                    getString(
+                        R.string.balance_format,
+                        CurrencySymbols.getSymbol(it?.currency?:""),
+                        (it?.balance?:0L).getFormalMoney()
+                    )
             }
         }
     }
@@ -190,4 +357,5 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
             }
         }
     }
+
 }

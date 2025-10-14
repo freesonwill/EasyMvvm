@@ -7,7 +7,9 @@ import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
+import android.view.ViewGroup.LayoutParams
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.DefaultLifecycleObserver
@@ -23,11 +25,13 @@ import arch.cayenne.lib.base.ui.animation.AnimationController
 import arch.cayenne.lib.base.ui.animation.AnimationController.AnimType
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
+import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.base.utils.ext.ViewExt.applyInsetsForFitsSystemWindows
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.utils.CustomTabIndicatorUtils
 import arch.cayenne.lib.common.utils.ImmersionBarUtils.immersionBarSkinTypeExt
+import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.common.utils.ext.DimensionExt.px2sp
 import arch.cayenne.lib.common.utils.ext.setDrawerInterpolator
 import arch.cayenne.lib.common.utils.ext.NavResultExt.observeResult
@@ -56,8 +60,10 @@ import kotlin.reflect.KClass
 import arch.cayenne.lib.common.utils.ext.setupViewPagerScroll
 import arch.cayenne.lib.common.utils.ext.startFadeAnim
 import arch.cayenne.module.bet.ui.fragment.BetSheetFragment
+import com.walisport.module.live.ui.widget.LiveMainGestureListener
+import com.walisport.module.live.ui.widget.LiveMainLayoutInterceptTouch.LiveMainSlideDirection
 import arch.cayenne.module.chat.ui.fragment.ChatHomeFragment
-
+import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 /**
  * 直播详情页
  */
@@ -71,11 +77,13 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
     override val vmClass: KClass<LiveMainViewModel> = LiveMainViewModel::class
     private lateinit var args: LiveMainFragmentArgs
     private var drawerContentFragment: LiveBetOnMenuFragment? = null
+    private var scrollIsTop : Boolean? = false
     private val titleBarBinding: TitleBarLiveBinding by lazy {
         TitleBarLiveBinding.inflate(LayoutInflater.from(context), mBinding.titleBar, false)
     }
     private var fixedSkin:String? =null//SkinType.getLogicSkinType(SkinType.SKIN_BLACK_RED.value)
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun initView(savedInstanceState: Bundle?) {
         args = LiveMainFragmentArgs.fromBundle(requireArguments())
         mBinding.titleBar.loadDynamicsTitleBar(titleBarBinding.root)
@@ -90,7 +98,60 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
             DrawerLayout.LOCK_MODE_LOCKED_CLOSED,
             GravityCompat.END
         )
+
+        mBinding.liveMainTopBar.post{
+            //动态设置沉浸式状态栏背景高度 状态栏高度+bar控件高度
+            var barHeight = ViewUtils.getStatusBarHeight(requireContext())
+            var toBarHeight = mBinding.titleBar.height
+            var videoHeight = 76.dp2px
+            val paramsLin = mBinding.liveMainTopBar.layoutParams as LayoutParams
+            paramsLin.height = barHeight+toBarHeight+videoHeight
+            mBinding.liveMainTopBar.layoutParams = paramsLin
+        }
         mBinding.root.applyInsetsForFitsSystemWindows()
+        // 上层 View 触摸事件
+        mBinding.LayoutInterceptTouch.setOnTouchListener { _, event ->
+            // 将触摸事件传递给下层 View
+            mBinding.liveMain.dispatchTouchEvent(event)
+                       false // 返回 false 不消耗事件，允许事件继续传递
+        }
+
+        mBinding.LayoutInterceptTouch.setLiveMainGestureListener(object : LiveMainGestureListener{
+            override fun onAdjustLayoutScroll(deltaY: Float,direction:LiveMainSlideDirection) {
+                //往下滑动,子类的rv,sc是否滑到了第一条或者顶部
+                if (direction==LiveMainSlideDirection.DOWN){
+                    // 如果当前高度在 50-211 范围内，返回 true，表示可以滑动
+                    if (mBinding.liveMainScale.isDirectionToScroll()){
+                        mBinding.liveMainScale.adjustLayout(deltaY,direction)
+                    }else{
+                        var bool : Boolean? = mViewModel.sonVerticalScrollIsTop.value
+                        bool?.let {
+                            if(it) mBinding.liveMainScale.adjustLayout(deltaY,direction)
+                        }
+                    }
+                }else{
+                   mBinding.liveMainScale.adjustLayout(deltaY,direction)
+                }
+            }
+        })
+
+        mBinding.viewTab.setOnTouchListener { _, event ->
+            when (event.action) {
+                MotionEvent.ACTION_DOWN->{
+                    scrollIsTop = mViewModel.getSonVerticalScrollIsTop()
+                    //滑动tab 解锁滑动
+                    mViewModel.setSonVerticalScrollIsTop(true)
+                    true
+                }
+                MotionEvent.ACTION_UP -> {
+                    //还原原本状态
+                    scrollIsTop?.let { mViewModel.setSonVerticalScrollIsTop(it) }
+                    true
+                }
+                else -> false
+            }
+            mBinding.skinTab.dispatchTouchEvent(event)
+        }
     }
 
 
@@ -192,7 +253,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                 }
             }
 
-            tvMoney.clickNoRepeat {
+            includedLayout.addMoney.clickNoRepeat {
                 navigate(Uri.parse("walisport://module_topup/topUpFragment"))
             }
         }
@@ -246,6 +307,10 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
 
     @SuppressLint("SetTextI18n")
     override suspend fun createObserver() {
+        //父类是否可往上滑动
+        mViewModel.sonVerticalScrollIsTop.observe(viewLifecycleOwner){
+
+        }
         launch {
             AnimationController.getFlow(AnimType.drawerEnter).collect {
                 if(it == null) return@collect
@@ -295,7 +360,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
             mViewModel.registerMatchInfoNotify(it)
         }
         mViewModel.currentBalanceChange.observe(viewLifecycleOwner) {
-            titleBarBinding.tvMoney.text =
+            titleBarBinding.includedLayout.tvMoney.text =
                 (it?.balance ?: 0L).getFormalMoney()
         }
         mViewModel.mainMatch.observe(viewLifecycleOwner) {
@@ -305,6 +370,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                 val logo = it.basicInfo.tournamentIcon                //联赛LOGO
                 mViewModel.setLeagueLogo(logo)
                 titleBarBinding.tvCompetitionName.text = it.basicInfo.matchName
+                mBinding.tvVideoVs.text =  it.basicInfo.matchName
             }
         }
         launch(Lifecycle.State.RESUMED) {

@@ -50,6 +50,9 @@ class LiveMainViewModel(
     private val _showAnim = MutableLiveData<Boolean>(false)
     val showAnim: LiveData<Boolean> = _showAnim
 
+    private val _status = MutableLiveData<Int>()
+    val status: LiveData<Int> = _status
+
 
     //联赛ID
     private val _leagueID = MutableLiveData<Int>(0)
@@ -73,6 +76,11 @@ class LiveMainViewModel(
 
     private val _liveBetOnMenu = MutableLiveData<BetOnMenuStatus>()
     val liveBetOnMenu: LiveData<BetOnMenuStatus> = _liveBetOnMenu
+
+    //子类判断是否滑动到顶部
+    private val _sonVerticalScrollIsTop = MutableLiveData<Boolean?>()
+    val sonVerticalScrollIsTop: LiveData<Boolean?> = _sonVerticalScrollIsTop
+
 
     //监听数据变化
     private val _observeMainMatch = MutableLiveData<LiveMatchBean>()
@@ -103,6 +111,17 @@ class LiveMainViewModel(
         }
     }
 
+    //子类接听滑动设置变化(父类滑动到临界点,小于 80 触发子类RV或者SC 下滑事件),列表数据为空默认为true
+    fun setSonVerticalScrollIsTop(boo:Boolean){
+        if (boo!=sonVerticalScrollIsTop.value){
+            _sonVerticalScrollIsTop.value = boo
+        }
+    }
+
+    fun getSonVerticalScrollIsTop():Boolean?{
+        return sonVerticalScrollIsTop.value
+    }
+
     fun setLiveBetOnMen(status: BetOnMenuStatus) {
         _liveBetOnMenu.value = status
     }
@@ -113,6 +132,10 @@ class LiveMainViewModel(
 
     fun setSportId(sportId: Int) {
         _sportId.value = sportId
+    }
+
+    fun setStatus(status: Int) {
+        _status.value = status
     }
 
     fun setShowVideo(showVideo: Boolean) {

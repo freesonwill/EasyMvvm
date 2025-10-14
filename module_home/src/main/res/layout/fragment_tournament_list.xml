@@ -5,7 +5,7 @@
     android:id="@+id/ll_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/champions_list">
+    android:background="@drawable/bg_bottom_sheet_round_top">
 
     <View
         android:id="@+id/view_tournament_mask"

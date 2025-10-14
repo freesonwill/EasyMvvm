@@ -10,6 +10,7 @@ import android.graphics.RectF
 import android.util.AttributeSet
 import android.view.MotionEvent
 import androidx.core.graphics.drawable.toBitmap
+import arch.cayenne.lib.common.R.color
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.DimensionExt.sp2px
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getColor
@@ -44,7 +45,7 @@ class CustomFilterSideBarView @JvmOverloads constructor(
         }
 
     // 文字顏色
-    var textColorResId: Int = R.color.custom_filter_side_bar_text
+    var textColorResId: Int = color.color_00E0E5
         set(value) {
             field = value
             textColor = value.getColor(context)

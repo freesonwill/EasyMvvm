@@ -57,7 +57,7 @@ class LiveMatchMediaFragment :
                 it?.let { matchBean ->
                     val matchStatus =
                         MatchStatus.entries.find { status -> status.code == matchBean.basicInfo.status }
-
+                    mainViewModel.setStatus(matchBean.basicInfo.status)
                     matchStatus?.let { _ ->
                         when (matchStatus) {
                             MatchStatus.IN_PROGRESS -> {

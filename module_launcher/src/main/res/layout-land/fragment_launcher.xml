@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<arch.cayenne.lib.skin.widget.SkinnableConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_1E1E1E">
+
+    <arch.cayenne.lib.skin.widget.SkinnableView
+        android:id="@+id/view_control_bar"
+        android:layout_width="@dimen/dp_56"
+        android:layout_height="match_parent"
+        android:background="@color/color_000000"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <arch.cayenne.lib.skin.widget.SkinnableImageView
+        android:id="@+id/iv_back"
+        android:layout_width="@dimen/dp_24"
+        android:layout_height="@dimen/dp_24"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_13"
+        app:layout_constraintStart_toEndOf="@id/view_control_bar"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_launcher_arrow_left" />
+
+    <arch.cayenne.lib.skin.widget.SkinnableImageView
+        android:id="@+id/iv_toggle"
+        android:layout_width="@dimen/dp_20"
+        android:layout_height="@dimen/dp_20"
+        android:layout_marginStart="@dimen/dp_20"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/view_control_bar"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_launcher_rounded_arrow_right" />
+
+    <arch.cayenne.lib.skin.widget.SkinnableImageView
+        android:id="@+id/iv_double_circle"
+        android:layout_width="@dimen/dp_24"
+        android:layout_height="@dimen/dp_24"
+        android:layout_marginTop="@dimen/dp_13"
+        android:layout_marginEnd="@dimen/dp_17"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_launcher_double_circle" />
+
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
+        android:id="@+id/tv_hint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/shape_launcher_hint_bg"
+        android:text="游戏中货币显示 $美元"
+        android:textColor="@color/color_FFFFFF"
+        app:layout_constraintBottom_toTopOf="@id/iv_loading"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintVertical_chainStyle="packed"
+        tools:visibility="gone" />
+
+    <arch.cayenne.lib.skin.widget.SkinnableImageView
+        android:id="@+id/iv_game_logo"
+        android:layout_width="@dimen/dp_105"
+        android:layout_height="@dimen/dp_105"
+        android:layout_marginBottom="@dimen/dp_4"
+        app:layout_constraintBottom_toTopOf="@id/tv_game_name"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@mipmap/ic_launcher_game_icon_fish"
+        tools:visibility="gone" />
+
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
+        android:id="@+id/tv_game_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dp_20"
+        android:text="捕鱼"
+        android:textColor="@color/color_FFFFFF"
+        android:textSize="@dimen/sp_17"
+        app:layout_constraintBottom_toTopOf="@id/iv_loading"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:visibility="gone" />
+
+    <arch.cayenne.lib.skin.widget.SkinnableImageView
+        android:id="@+id/iv_loading"
+        android:layout_width="35dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@id/tv_loading"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed"
+        app:srcCompat="@drawable/ic_launcher_loading"
+        tools:layout_marginTop="167.5dp" />
+
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
+        android:id="@+id/tv_loading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_9"
+        android:text="79%"
+        android:textColor="@color/color_979797"
+        android:textSize="@dimen/sp_13"
+        app:layout_constraintEnd_toEndOf="@id/iv_loading"
+        app:layout_constraintStart_toStartOf="@id/iv_loading"
+        app:layout_constraintTop_toBottomOf="@id/iv_loading" />
+
+    <arch.cayenne.lib.skin.widget.SkinnableImageView
+        android:id="@+id/iv_exit"
+        android:layout_width="@dimen/dp_24"
+        android:layout_height="@dimen/dp_24"
+        android:layout_marginTop="@dimen/dp_13"
+        android:layout_marginEnd="@dimen/dp_12"
+        app:layout_constraintEnd_toEndOf="@id/view_control_bar"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_launcher_exit" />
+
+    <arch.cayenne.lib.skin.widget.SkinnableImageView
+        android:id="@+id/iv_switch"
+        android:layout_width="@dimen/dp_24"
+        android:layout_height="@dimen/dp_24"
+        android:layout_marginEnd="@dimen/dp_12"
+        android:layout_marginBottom="@dimen/dp_22"
+        app:layout_constraintBottom_toTopOf="@id/iv_fullscreen"
+        app:layout_constraintEnd_toEndOf="@id/view_control_bar"
+        app:srcCompat="@drawable/ic_launcher_switch" />
+
+    <arch.cayenne.lib.skin.widget.SkinnableImageView
+        android:id="@+id/iv_fullscreen"
+        android:layout_width="@dimen/dp_24"
+        android:layout_height="@dimen/dp_24"
+        android:layout_marginEnd="@dimen/dp_12"
+        android:layout_marginBottom="@dimen/dp_13"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/view_control_bar"
+        app:srcCompat="@drawable/ic_launcher_fullscreen" />
+
+    <arch.cayenne.lib.common.ui.view.BalanceView
+        android:id="@+id/view_balance"
+        android:layout_width="@dimen/dp_38"
+        android:layout_height="@dimen/dp_129"
+        android:layout_marginEnd="@dimen/dp_5"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/view_control_bar"
+        app:layout_constraintTop_toTopOf="parent"  />
+
+
+</arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>

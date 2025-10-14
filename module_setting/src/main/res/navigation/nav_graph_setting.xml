@@ -20,6 +20,10 @@
             app:destination="@id/aboutFragment" />
 
         <action
+            android:id="@+id/action_settingFragment_to_switchFragment"
+            app:destination="@id/switchFragment" />
+
+        <action
             android:id="@+id/action_settingFragment_to_backgroundFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
@@ -53,4 +57,9 @@
         android:id="@+id/aboutFragment"
         android:name="com.walisport.module.setting.ui.fragment.AboutFragment"
         android:label="AboutFragment" />
+
+    <fragment
+        android:id="@+id/switchFragment"
+        android:name="com.walisport.module.setting.ui.fragment.SwitchUserFragment"
+        android:label="SwitchUserFragment" />
 </navigation>

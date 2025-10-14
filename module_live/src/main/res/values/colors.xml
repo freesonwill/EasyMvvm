@@ -27,7 +27,8 @@
     <color name="tran_05_white">#05ffffff</color>
     <color name="color_3D404D">#3D404D</color>
     <color name="color_line_282a34">#282a34</color>
-    <color name="menu_lin">#232530</color>
+    <color name="menu_lin">#ffffffff</color>
+    <color name="menu_lin_tr">#0FFFFFFF</color>
     <color name="substitution_text_color">#ffffff</color>
     <color name="live_main_tab_bg">#111111</color>
     <color name="tab_selected_text_color">#ffffff</color>
@@ -57,4 +58,7 @@
 
     <color name="video_resolution_vertical_selected_text_color">#24EE8A</color>
     <color name="video_resolution_vertical_unselected_text_color">#929298</color>
+
+    <color name="video_source_simple_item_title_color">#FFFFFF</color>
+    <color name="video_source_simple_item_subtitle_color">#999999</color>
 </resources>

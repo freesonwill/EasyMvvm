@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <arch.cayenne.module.chat.ui.widget.ChatTabItemView
+        android:id="@+id/tab_chat_room"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_48"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <arch.cayenne.module.chat.ui.widget.ChatTabItemView
+        android:id="@+id/tab_chat_living"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_74"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <arch.cayenne.module.chat.ui.widget.ChatTabItemView
+        android:id="@+id/tab_chat_customer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_74"
+        app:layout_constraintTop_toTopOf="parent" />
+</androidx.appcompat.widget.LinearLayoutCompat>

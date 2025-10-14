@@ -3,13 +3,24 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/me_nav_graph"
-    app:startDestination="@id/meFragment">
+    app:startDestination="@id/firstFragment">
 
     <fragment
-        android:id="@+id/meFragment"
-        android:name="com.walisport.module.me.ui.fragment.MeFragment"
-        android:label="fragment_me"
-        tools:layout="@layout/fragment_me">
+        android:id="@+id/firstFragment"
+        android:name="com.walisport.module.me.ui.fragment.FirstFragment"
+        android:label="fragment_first"
+        tools:layout="@layout/fragment_first">
+
+        <action
+            android:id="@+id/action_firstFragment_to_secondFragment"
+            app:destination="@id/secondFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/secondFragment"
+        android:name="com.walisport.module.me.ui.fragment.SecondFragment"
+        android:label="fragment_second"
+        tools:layout="@layout/fragment_second">
 
     </fragment>
 

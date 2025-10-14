@@ -5,6 +5,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewGroup.LayoutParams
 import android.widget.TextView
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.GravityCompat
@@ -15,10 +16,12 @@ import arch.cayenne.lib.base.ui.animation.AnimationController
 import arch.cayenne.lib.base.ui.animation.AnimationController.AnimType
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
+import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
 import arch.cayenne.lib.common.utils.DensityInfo
+import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavResultExt.observeResult
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
@@ -57,12 +60,22 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
         initPlayTypeLayout()
         setReceiveHorizontalScrollResult()
         setDrawerLayoutListener()
+
     }
 
     override fun onStart() {
+        mBinding.homeTopBar.post{
+            //动态设置沉浸式状态栏背景高度 状态栏高度+bar控件高度
+            var barHeight = ViewUtils.getStatusBarHeight(requireContext())
+            var toBarHeight = mBinding.homeTopBar.height
+
+            val paramsLin = mBinding.homeBarIcon.layoutParams as LayoutParams
+            paramsLin.height = barHeight+toBarHeight
+            mBinding.homeBarIcon.layoutParams = paramsLin
+        }
         mBinding.root.fitsSystemWindows = false
-        StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND()
-        setStatusBar(StatusBarConfig,mBinding.clMain)
+        StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND(autoIsNavigation = true)
+        setStatusBar(StatusBarConfig,mBinding.llMain)
         super.onStart()
     }
     private fun setDrawerLayoutListener() {
@@ -286,8 +299,8 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
 
     override fun initListener() {
         with(mBinding) {
-            llWalletEntry.apply {
-                addScaleOnTouchAnimation(ivWalletAdd)
+            includedLayout.llWalletEntry.apply {
+                addScaleOnTouchAnimation(includedLayout.addMoney)
             }.setOnClickListener {
                 //navigate(Uri.parse("walisport://module_home/homeFragment"))
                 navigate(Uri.parse("walisport://module_topup/topUpFragment"))
@@ -319,7 +332,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
         }
 
         mViewModel.currentBalanceChange.observe(viewLifecycleOwner) {
-            mBinding.tvWalletBalance.text =
+            mBinding.includedLayout.tvMoney.text =
                 getString(
                     R.string.balance_format,
                     CurrencySymbols.getSymbol(it?.currency?:""),

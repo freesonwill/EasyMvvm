@@ -4,12 +4,16 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
+import arch.cayenne.lib.common.data.repo.BalanceRepository
 import arch.cayenne.lib.common.ui.viewmodel.Event
+import arch.cayenne.lib.database.entity.InfoBean
 import arch.cayenne.lib.skin.SkinnableManager
 import arch.cayenne.module.home.data.repo.DrawerContentRepository
 import com.walisport.module.message.data.MessageMainRepository
 import com.walisport.module.message.data.NotificationBean
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
 import plugin.koin.KoinViewModel
@@ -25,6 +29,8 @@ class DrawerContentViewModel: BaseViewModel() {
     private val cursorType: Int = 0
     private val _notificationBean = MutableLiveData<Event<List<NotificationBean>>>()
     val notificationBean: LiveData<Event<List<NotificationBean>>> = _notificationBean
+    private val balanceRepository: BalanceRepository by inject()
+    val currentBalanceChange by lazy { MutableLiveData<InfoBean?>() }
 
     override fun initViewModel() {
         super.initViewModel()
@@ -47,6 +53,14 @@ class DrawerContentViewModel: BaseViewModel() {
                     )
                 }
                 _notificationBean.value = Event(temp)
+            }
+        }
+
+        viewModelScope.launch(Dispatchers.IO) {
+            balanceRepository.observeInfo().collect {
+                withContext(Dispatchers.Main) {
+                    currentBalanceChange.value = it
+                }
             }
         }
     }

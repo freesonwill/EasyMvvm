@@ -1,0 +1,49 @@
+package arch.cayenne.lib.common.ui.view
+
+import android.content.Context
+import android.content.res.Configuration
+import android.util.AttributeSet
+import android.view.LayoutInflater
+import android.widget.FrameLayout
+import androidx.fragment.app.FragmentManager
+import arch.cayenne.lib.common.databinding.ViewBalanceBinding
+import arch.cayenne.lib.common.ui.fragment.CurrencyDialogFragment
+import arch.cayenne.lib.common.utils.ViewUtils
+import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+
+class BalanceView : FrameLayout {
+    private val mBinding: ViewBalanceBinding
+    constructor(context: Context) : super(context)
+    constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
+    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
+
+    }
+
+    init {
+        mBinding = ViewBalanceBinding.inflate(LayoutInflater.from(context), this, true)
+    }
+
+    fun init(
+        childFragmentManager: FragmentManager
+    ) {
+        mBinding.root.clickNoRepeat {
+            val location = IntArray(2)
+            mBinding.root.getLocationInWindow(location)
+
+            if(isPortrait()) {
+                val h = ViewUtils.getStatusBarHeight(mBinding.root.context)
+                val positionY = location.last() - h + mBinding.root.measuredHeight + 7.dp2px
+                CurrencyDialogFragment.newInstance(isPortrait(), positionY).show(childFragmentManager)
+            } else {
+                val positionX = location.first() + mBinding.root.measuredWidth + 15.dp2px
+                CurrencyDialogFragment.newInstance(isPortrait(), positionX).show(childFragmentManager)
+            }
+        }
+    }
+
+
+    private fun isPortrait(): Boolean {
+        return context.resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT
+    }
+}
