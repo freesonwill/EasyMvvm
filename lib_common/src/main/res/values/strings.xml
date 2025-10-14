@@ -30,4 +30,11 @@
     <string name="currency_setting_title">钱包设置</string>
     <string name="currency_setting_1">仅显示有余额的加密货币</string>
     <string name="currency_setting_2">以法币金额显示加密货币</string>
+
+    <string name="title_share_to">分享至</string>
+    <string name="title_share_copy_order">复制注单</string>
+    <string name="title_share_copy_link">复制链接</string>
+    <string name="title_share_questions">对注单有疑惑</string>
+    <string name="toast_share_copy_order">注单复制成功，快粘贴到聊天室分享吧！</string>
+    <string name="toast_share_copy_link">注单链接复制成功，快去分享给朋友吧！</string>
 </resources>

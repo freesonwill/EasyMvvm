@@ -16,6 +16,7 @@ import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.module.home.R
 import kotlin.math.abs
+import arch.cayenne.lib.common.R as CommonR
 
 /**
  * 聯賽字母索引，支持跟手滑動動畫
@@ -214,9 +215,9 @@ class TournamentIndexView @JvmOverloads constructor(
 
                 is TextView -> {
                     val colorResId = if (isSelected) {
-                        arch.cayenne.lib.common.R.color.brand_color
+                        CommonR.color.color_00E0E5
                     } else {
-                        R.color.brand_color_index_unselect
+                        CommonR.color.color_00E0E54D
                     }
                     view.setTextColor(SkinnableResourceManager.getColor(context, colorResId))
                 }

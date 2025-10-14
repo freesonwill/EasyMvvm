@@ -41,33 +41,33 @@ class MainChatFragment : BaseFragment<MainChatViewModel, FragmentMainChatLayoutB
 
     override fun initView(savedInstanceState: Bundle?) {
         initViewPager2()
-        initTabLayout()
+//        initTabLayout()
     }
 
     override fun initListener() {
-        mBinding.tabLayout.addOnTabSelectedListener2(object : TabLayoutExt.OnTabSelectedListener2 {
-            override fun onTabSelected(tab: TabLayout.Tab, isTabClick: Boolean) {
-
-                if (isTabClick) {
-                    mBinding.viewpager2.startFadeAnim {
-                        mBinding.viewpager2.setCurrentItem(tab.position, false)
-                        it.invoke()
-                    }
-                }
-                val tabIcon = tab.view.findViewById<SkinnableImageView>(R.id.tab_icon)
-                val tabTv = tab.view.findViewById<SkinnableTextView>(R.id.tab_tv)
-                updateTabBack(tab.position, true, tabIcon, tabTv)
-            }
-
-            override fun onTabUnselected(tab: TabLayout.Tab, isTabClick: Boolean) {
-                val tabIcon = tab.view.findViewById<SkinnableImageView>(R.id.tab_icon)
-                val tabTv = tab.view.findViewById<SkinnableTextView>(R.id.tab_tv)
-                updateTabBack(tab.position, false, tabIcon, tabTv)
-            }
-
-            override fun onTabReselected(tab: TabLayout.Tab, isTabClick: Boolean) {
-            }
-        })
+//        mBinding.tabLayout.addOnTabSelectedListener2(object : TabLayoutExt.OnTabSelectedListener2 {
+//            override fun onTabSelected(tab: TabLayout.Tab, isTabClick: Boolean) {
+//
+//                if (isTabClick) {
+//                    mBinding.viewpager2.startFadeAnim {
+//                        mBinding.viewpager2.setCurrentItem(tab.position, false)
+//                        it.invoke()
+//                    }
+//                }
+//                val tabIcon = tab.view.findViewById<SkinnableImageView>(R.id.tab_icon)
+//                val tabTv = tab.view.findViewById<SkinnableTextView>(R.id.tab_tv)
+//                updateTabBack(tab.position, true, tabIcon, tabTv)
+//            }
+//
+//            override fun onTabUnselected(tab: TabLayout.Tab, isTabClick: Boolean) {
+//                val tabIcon = tab.view.findViewById<SkinnableImageView>(R.id.tab_icon)
+//                val tabTv = tab.view.findViewById<SkinnableTextView>(R.id.tab_tv)
+//                updateTabBack(tab.position, false, tabIcon, tabTv)
+//            }
+//
+//            override fun onTabReselected(tab: TabLayout.Tab, isTabClick: Boolean) {
+//            }
+//        })
         mBinding.viewpager2.setCurrentItem(0, false)
 
     }
@@ -95,24 +95,24 @@ class MainChatFragment : BaseFragment<MainChatViewModel, FragmentMainChatLayoutB
         mBinding.viewpager2.adapter = adapter
     }
 
-    private fun initTabLayout() {
-        mBinding.apply {
-            TabLayoutMediator(tabLayout, viewpager2) { tab, position ->
-                val itemBinding = ItemChatTablayoutLayoutBinding.inflate(
-                    LayoutInflater.from(context),
-                    null,
-                    false
-                )
-                val tabIcon = itemBinding.tabIcon
-                val tabTv = itemBinding.tabTv
-                updateTabBack(position, position == 0, tabIcon, tabTv, isInit = true)
-                tab.setCustomView(itemBinding.root)
-            }.attach()
-            tabLayout.clearOnTabSelectedListeners()
-            tabLayout.removeAllTips()
-            reflexPadding(tabLayout)
-        }
-    }
+//    private fun initTabLayout() {
+//        mBinding.apply {
+//            TabLayoutMediator(tabLayout, viewpager2) { tab, position ->
+//                val itemBinding = ItemChatTablayoutLayoutBinding.inflate(
+//                    LayoutInflater.from(context),
+//                    null,
+//                    false
+//                )
+//                val tabIcon = itemBinding.tabIcon
+//                val tabTv = itemBinding.tabTv
+//                updateTabBack(position, position == 0, tabIcon, tabTv, isInit = true)
+//                tab.setCustomView(itemBinding.root)
+//            }.attach()
+//            tabLayout.clearOnTabSelectedListeners()
+//            tabLayout.removeAllTips()
+//            reflexPadding(tabLayout)
+//        }
+//    }
 
     private fun updateTabBack(
         position: Int,

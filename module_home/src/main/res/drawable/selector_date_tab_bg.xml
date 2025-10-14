@@ -4,12 +4,13 @@
     <item android:state_selected="true">
         <shape android:shape="rectangle">
             <corners android:radius="6dp" />
-            <solid android:color="@color/brand_color" />
+            <solid android:color="@android:color/transparent" />
         </shape>
     </item>
     <!-- 未選中狀態 -->
     <item>
         <shape android:shape="rectangle">
+            <corners android:radius="6dp" />
             <solid android:color="@android:color/transparent" />
         </shape>
     </item>

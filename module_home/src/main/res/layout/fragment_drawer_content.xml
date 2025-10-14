@@ -9,44 +9,133 @@
     <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
         android:id="@+id/cl_drawer_nickname"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_58"
-        android:layout_marginTop="@dimen/dp_73"
+        android:layout_height="@dimen/dp_60"
+        android:layout_marginTop="@dimen/dp_16"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <arch.cayenne.lib.skin.widget.SkinnableImageView
             android:id="@+id/iv_icon_nickname"
-            android:layout_width="@dimen/dp_58"
-            android:layout_height="@dimen/dp_58"
-            android:layout_marginStart="@dimen/dp_12"
+            android:layout_width="@dimen/dp_44"
+            android:layout_height="@dimen/dp_44"
+            android:layout_marginStart="@dimen/dp_16"
             android:src="@drawable/ic_drawer_nickname"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintStart_toStartOf="parent" />
 
         <arch.cayenne.lib.skin.widget.SkinnableTextView
             android:id="@+id/tv_title_nickname"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_12"
-            android:textColor="@color/drawer_notification_title"
-            android:textSize="@dimen/sp_16"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/iv_arrow_right"
+            android:gravity="top"
+            android:textColor="@color/color_FFFFFF"
+            android:textSize="@dimen/sp_14"
             app:layout_constraintStart_toEndOf="@id/iv_icon_nickname"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="@id/iv_icon_nickname"
+            app:skinnableFontWeight="500" />
 
         <arch.cayenne.lib.skin.widget.SkinnableImageView
-            android:id="@+id/iv_nickname_arrow_right"
+            android:id="@+id/iv_level"
+            android:layout_width="@dimen/dp_34"
+            android:layout_height="@dimen/dp_14"
+            android:layout_marginStart="@dimen/dp_6"
+            android:scaleType="centerCrop"
+            android:src="@drawable/level_90"
+            app:layout_constraintBottom_toBottomOf="@id/tv_title_nickname"
+            app:layout_constraintStart_toEndOf="@+id/tv_title_nickname"
+            app:layout_constraintTop_toTopOf="@id/tv_title_nickname" />
+
+
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
+            android:id="@+id/tv_amount_header"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_8"
-            android:src="@drawable/ic_drawer_arrow_right"
-            android:stateListAnimator="@animator/layout_alpha_animator"
+            android:layout_marginStart="@dimen/dp_12"
+            android:text="@string/drawer_balance"
+            android:textColor="@color/color_999999"
+            android:textSize="@dimen/sp_13"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@id/tv_title_nickname"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintStart_toEndOf="@id/iv_icon_nickname"
+            app:skinnableFontWeight="400" />
+
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
+            android:id="@+id/tv_balance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_6"
+            android:textColor="@color/color_FFFFFF"
+            android:textSize="@dimen/sp_13"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/tv_amount_header"
+            app:skinnableFontWeight="400" />
+    </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
+
+    <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
+        android:id="@+id/cl_drawer_common_function"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_12"
+        android:layout_marginTop="@dimen/dp_12"
+        android:layout_marginEnd="@dimen/dp_12"
+        android:layout_marginBottom="@dimen/dp_4"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/cl_drawer_nickname">
+
+        <LinearLayout
+            android:id="@+id/ll_drawer_recharge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_26"
+            android:gravity="center"
+            android:orientation="vertical"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <arch.cayenne.lib.skin.widget.SkinnableImageView
+                android:id="@+id/iv_recharge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:scaleType="fitXY"
+                android:src="@drawable/ic_drawer_recharge" />
+
+            <arch.cayenne.lib.skin.widget.SkinnableTextView
+                android:id="@+id/tv_recharge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:text="@string/drawer_topup"
+                android:textColor="@color/drawer_common_function_text"
+                android:textSize="@dimen/sp_13" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/ll_drawer_withdraw"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <arch.cayenne.lib.skin.widget.SkinnableImageView
+                android:id="@+id/iv_drawer_withdraw"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:scaleType="fitXY"
+                android:src="@drawable/ic_drawer_withdraw" />
+
+            <arch.cayenne.lib.skin.widget.SkinnableTextView
+                android:id="@+id/tv_drawer_withdraw"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:text="@string/drawer_withdraw"
+                android:textColor="@color/drawer_common_function_text"
+                android:textSize="@dimen/sp_13" />
+        </LinearLayout>
     </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
 
     <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
@@ -54,10 +143,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_12"
-        android:layout_marginTop="@dimen/dp_20"
+        android:layout_marginTop="@dimen/dp_16"
         android:layout_marginEnd="@dimen/dp_12"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/cl_drawer_nickname">
+        app:layout_constraintTop_toBottomOf="@id/cl_drawer_common_function">
 
         <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
             android:id="@+id/cl_notification_header"
@@ -92,11 +181,11 @@
                 android:id="@+id/tv_title"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_12"
                 android:text="@string/drawer_notification_message"
                 android:textColor="@color/drawer_notification_title"
                 android:textSize="@dimen/sp_15"
                 android:textStyle="bold"
-                android:layout_marginStart="@dimen/dp_12"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/iv_arrow_right"
                 app:layout_constraintStart_toStartOf="parent"
@@ -106,8 +195,8 @@
                 android:id="@+id/iv_arrow_right"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_drawer_arrow_right"
                 android:layout_marginEnd="@dimen/dp_10"
+                android:src="@drawable/ic_drawer_arrow_right"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -156,12 +245,12 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_5"
+                android:layout_marginTop="@dimen/dp_3"
                 android:layout_marginEnd="@dimen/dp_8"
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:textColor="@color/drawer_notification_message"
                 android:textSize="@dimen/sp_14"
-                android:layout_marginTop="@dimen/dp_3"
                 app:layout_constraintEnd_toStartOf="@+id/tv_time_1"
                 app:layout_constraintStart_toEndOf="@+id/cl_icon_1"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -170,10 +259,10 @@
                 android:id="@+id/tv_time_1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_5"
+                android:layout_marginEnd="@dimen/dp_12"
                 android:textColor="@color/drawer_notification_message"
                 android:textSize="@dimen/sp_12"
-                android:layout_marginEnd="@dimen/dp_12"
-                android:layout_marginTop="@dimen/dp_5"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
         </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
@@ -220,12 +309,12 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
+                android:layout_marginTop="@dimen/dp_2"
                 android:layout_marginEnd="8dp"
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:textColor="@color/drawer_notification_message"
                 android:textSize="@dimen/sp_14"
-                android:layout_marginTop="@dimen/dp_2"
                 app:layout_constraintEnd_toStartOf="@+id/tv_time_2"
                 app:layout_constraintStart_toEndOf="@+id/cl_icon_2"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -234,190 +323,99 @@
                 android:id="@+id/tv_time_2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_5"
+                android:layout_marginEnd="@dimen/dp_12"
                 android:textColor="@color/drawer_notification_message"
                 android:textSize="@dimen/sp_12"
-                android:layout_marginEnd="@dimen/dp_12"
-                android:layout_marginTop="@dimen/dp_5"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
         </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
 
     </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
 
-    <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
-        android:id="@+id/cl_drawer_common_function"
+    <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
+        android:id="@+id/cl_drawer_common_features"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_12"
-        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_10"
         android:layout_marginEnd="@dimen/dp_12"
-        android:background="@drawable/ic_drawer_card_bg"
+        android:background="@drawable/bg_drawer_features"
+        android:orientation="vertical"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/cl_drawer_notification">
 
-        <LinearLayout
-            android:id="@+id/li_title"
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_12"
+            android:layout_marginTop="@dimen/dp_12"
+            android:text="@string/drawer_common_function"
+            android:textColor="@color/drawer_notification_title"
+            android:textSize="@dimen/sp_15"
+            android:textStyle="bold" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_common_features"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            android:layout_height="wrap_content" />
+    </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
 
-            <arch.cayenne.lib.skin.widget.SkinnableTextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_12"
-                android:layout_marginTop="@dimen/dp_12"
-                android:text="@string/drawer_common_function"
-                android:textColor="@color/drawer_notification_title"
-                android:textSize="@dimen/sp_15"
-                android:textStyle="bold" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/ll_recharge"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_26"
-            android:layout_marginTop="@dimen/dp_11"
-            android:layout_marginBottom="@dimen/dp_12"
-            android:gravity="center"
-            android:orientation="vertical"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/li_title">
-
-            <arch.cayenne.lib.skin.widget.SkinnableImageView
-                android:id="@+id/iv_recharge"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:scaleType="fitXY"
-                android:src="@drawable/ic_drawer_recharge" />
-
-            <arch.cayenne.lib.skin.widget.SkinnableTextView
-                android:id="@+id/tv_recharge"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:text="@string/drawer_recharge"
-                android:textColor="@color/drawer_common_function_text"
-                android:textSize="@dimen/sp_13"
-                android:layout_marginTop="@dimen/dp_4"/>
-        </LinearLayout>
-
-
-
-        <LinearLayout
-            android:id="@+id/ll_drawer_tutorial"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_11"
-            android:layout_marginEnd="@dimen/dp_26"
-            android:layout_marginBottom="@dimen/dp_12"
-            android:gravity="center"
-            android:orientation="vertical"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/li_title">
-
-            <arch.cayenne.lib.skin.widget.SkinnableImageView
-                android:id="@+id/iv_drawer_tutorial"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:scaleType="fitXY"
-                android:src="@drawable/ic_drawer_tutorial" />
-
-            <arch.cayenne.lib.skin.widget.SkinnableTextView
-                android:id="@+id/tv_drawer_tutorial"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:text="@string/drawer_tutorial"
-                android:textColor="@color/drawer_common_function_text"
-                android:textSize="@dimen/sp_13"
-                android:layout_marginTop="@dimen/dp_4"/>
-        </LinearLayout>
-    </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
-
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btn_login"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_margin="@dimen/dp_16"
-        android:background="@drawable/selector_send_button"
-        android:gravity="center"
-        android:text="登录"
-        android:textColor="@android:color/black"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/cl_drawer_common_function" />
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/cl_drawer_bottom"
+    <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
+        android:id="@+id/cl_drawer_service_features"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        android:layout_marginStart="@dimen/dp_12"
+        android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginEnd="@dimen/dp_12"
+        android:background="@drawable/bg_drawer_features"
+        android:orientation="vertical"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/cl_drawer_common_features">
 
-        <LinearLayout
-            android:id="@+id/ll_drawer_setting"
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="44dp"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:stateListAnimator="@animator/layout_alpha_animator"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
+            android:layout_marginStart="@dimen/dp_12"
+            android:layout_marginTop="@dimen/dp_12"
+            android:text="@string/drawer_service_function"
+            android:textColor="@color/drawer_notification_title"
+            android:textSize="@dimen/sp_15"
+            android:textStyle="bold" />
 
-            <arch.cayenne.lib.skin.widget.SkinnableImageView
-                android:id="@+id/iv_drawer_setting"
-                android:layout_width="@dimen/dp_28"
-                android:layout_height="@dimen/dp_28"
-                android:scaleType="fitXY"
-                android:src="@drawable/ic_drawer_setting" />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_service_features"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
 
-            <arch.cayenne.lib.skin.widget.SkinnableTextView
-                android:id="@+id/tv_drawer_setting"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:text="@string/drawer_setting"
-                android:textColor="@color/drawer_bottom_function_text"
-                android:textSize="12sp" />
-        </LinearLayout>
+    <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
+        android:id="@+id/cl_drawer_earning_features"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_12"
+        android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginEnd="@dimen/dp_12"
+        android:background="@drawable/bg_drawer_features"
+        android:orientation="vertical"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/cl_drawer_service_features">
 
-        <LinearLayout
-            android:id="@+id/ll_drawer_feedback"
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_66"
-            android:layout_marginTop="@dimen/dp_11"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:stateListAnimator="@animator/layout_alpha_animator"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@id/ll_drawer_setting"
-            app:layout_constraintTop_toTopOf="parent">
+            android:layout_marginStart="@dimen/dp_12"
+            android:layout_marginTop="@dimen/dp_12"
+            android:text="@string/drawer_earning_function"
+            android:textColor="@color/drawer_notification_title"
+            android:textSize="@dimen/sp_15"
+            android:textStyle="bold" />
 
-            <arch.cayenne.lib.skin.widget.SkinnableImageView
-                android:id="@+id/iv_drawer_feedback"
-                android:layout_width="@dimen/dp_28"
-                android:layout_height="@dimen/dp_28"
-                android:scaleType="fitXY"
-                android:src="@drawable/ic_drawer_feedback" />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_earning_features"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
 
-            <arch.cayenne.lib.skin.widget.SkinnableTextView
-                android:id="@+id/tv_drawer_feedback"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:text="@string/drawer_feedback"
-                android:textColor="@color/drawer_bottom_function_text"
-                android:textSize="12sp" />
-        </LinearLayout>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
 </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>

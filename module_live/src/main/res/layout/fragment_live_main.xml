@@ -4,18 +4,23 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/drawerLayout"
+    android:fitsSystemWindows="false"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/app_bg"
     >
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="92dp">
+        android:layout_height="match_parent">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/liveMainTopBar"
+        android:layout_width="match_parent"
+        android:layout_height="92dp"
+        tools:ignore="MissingConstraints">
         <ImageView
             android:layout_width="match_parent"
-            android:layout_height="92dp"
-            android:background="@drawable/live_main_topnoscroll_bg"
+            android:layout_height="match_parent"
+            android:background="@drawable/live_main_top_bg"
             tools:ignore="MissingConstraints" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -29,72 +34,143 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
+
+
         <arch.cayenne.lib.common.ui.view.TitleBarView
             android:id="@+id/titleBar"
-            android:layout_marginTop="@dimen/dp_5"
+            android:layout_marginTop="@dimen/dp_7"
             android:layout_marginStart="3dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-        <androidx.fragment.app.FragmentContainerView
-            android:id="@+id/fragment_video"
-            android:fitsSystemWindows="false"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:minHeight="@dimen/dp_211"/>
-
-
-        <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/live_main_tab_bg"
+        <com.walisport.module.live.ui.widget.LiveMainLayoutScale
             android:layout_marginTop="3dp"
-            android:layout_marginStart="6dp"
-            android:orientation="vertical">
-
-            <arch.cayenne.lib.skin.widget.SkinnableTabLayout
-                android:id="@+id/tabLayout"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/dp_30"
-                android:layout_marginTop="@dimen/dp_2"
-                android:layout_marginEnd="10dp"
-                android:background="@color/live_main_tab_bg"
-                app:tabIndicatorHeight="0dp"
-                app:tabMaxWidth="60dp"
-                app:tabMinWidth="60dp"
-                app:tabMode="fixed"
-                app:tabPaddingEnd="0dp"
-                app:tabPaddingStart="0dp"
-                app:tabRippleColor="@null"
-                tools:ignore="SpeakableTextPresentCheck" />
-
-            <arch.cayenne.lib.common.ui.view.CustomTabIndicator
-                android:id="@+id/customIndicator"
-                android:layout_width="match_parent"
-                android:layout_height="3dp"
-                android:layout_marginEnd="13dp"
-                android:background="@color/live_main_tab_bg" />
-        </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
-
-        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/liveMainScale"
             android:layout_width="match_parent"
+            android:orientation="vertical"
             android:layout_height="match_parent">
-
-            <androidx.viewpager2.widget.ViewPager2
-                android:id="@+id/vp_page"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/llVideo"
+                android:background="@color/tran_0"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:clipChildren="false"
-                android:clipToPadding="false"
-                android:overScrollMode="ifContentScrolls"
-                android:paddingStart="0dp"
-                android:paddingEnd="0dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </arch.cayenne.lib.common.ui.view.InterceptedLinearLayout>
+                android:layout_height="@dimen/dp_211">
 
+                <androidx.fragment.app.FragmentContainerView
+                    android:id="@+id/fragment_video"
+                    android:fitsSystemWindows="false"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_211"
+                    tools:ignore="MissingConstraints" />
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:id="@+id/llText"
+                    android:visibility="gone"
+                    android:paddingEnd="@dimen/dp_13"
+                    android:layout_width="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:paddingStart="@dimen/dp_100"
+                    android:orientation="horizontal"
+                    android:layout_height="match_parent"
+                    tools:ignore="MissingConstraints,RtlSymmetry">
+                    <TextView
+                        android:id="@+id/tv_video_vs"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:text="333333333333"
+                        android:textColor="@color/video_tab_text_color"
+                        android:textSize="13sp"
+                        />
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/restoreToInitialState"
+                        android:layout_marginStart="26dp"
+                        android:layout_width="16dp"
+                        android:layout_height="match_parent"
+                        app:srcCompat="@drawable/live_open_video"
+                        />
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/liveVideoTop"
+                        android:layout_marginStart="22dp"
+                        android:layout_width="15dp"
+                        android:layout_marginEnd="@dimen/dp_10"
+                        android:layout_height="match_parent"
+                       app:srcCompat="@drawable/live_video_top"
+                        />
+                </androidx.appcompat.widget.LinearLayoutCompat>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="42dp">
+                <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
+                    android:id="@+id/skinTab"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/live_main_tab_bg"
+                    android:layout_marginTop="3dp"
+                    android:layout_marginStart="6dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:orientation="vertical"
+                    tools:ignore="MissingConstraints">
+
+                    <arch.cayenne.lib.skin.widget.SkinnableTabLayout
+                        android:id="@+id/tabLayout"
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/dp_36"
+                        android:layout_marginTop="@dimen/dp_2"
+                        android:layout_marginEnd="10dp"
+                        android:background="@color/live_main_tab_bg"
+                        app:tabIndicatorHeight="0dp"
+                        app:tabMaxWidth="60dp"
+                        app:tabMinWidth="60dp"
+                        android:focusable="false"
+                        app:tabMode="fixed"
+                        app:tabPaddingEnd="0dp"
+                        app:tabPaddingStart="0dp"
+                        app:tabRippleColor="@null"
+                        tools:ignore="SpeakableTextPresentCheck" />
+
+                    <arch.cayenne.lib.common.ui.view.CustomTabIndicator
+                        android:id="@+id/customIndicator"
+                        android:layout_width="match_parent"
+                        android:layout_height="3dp"
+                        android:layout_marginEnd="13dp"
+                        android:background="@color/live_main_tab_bg" />
+                </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
+
+                <View
+                    android:id="@+id/viewTab"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.viewpager2.widget.ViewPager2
+                    android:id="@+id/vp_page"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:clipChildren="false"
+                    android:clipToPadding="false"
+                    android:overScrollMode="ifContentScrolls"
+                    android:paddingStart="0dp"
+                    android:paddingEnd="0dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+        </com.walisport.module.live.ui.widget.LiveMainLayoutScale>
+
+    </arch.cayenne.lib.common.ui.view.InterceptedLinearLayout>
+        <com.walisport.module.live.ui.widget.LiveMainLayoutInterceptTouch
+            android:id="@+id/LayoutInterceptTouch"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/navigation_view"
         android:layout_width="312dp"

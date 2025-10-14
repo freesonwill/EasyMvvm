@@ -8,6 +8,8 @@ import android.view.Window
 import android.view.animation.DecelerateInterpolator
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import arch.cayenne.lib.base.data.constants.StatusBarMode
+import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BasePositionDialogFragment
 import arch.cayenne.lib.common.R
 import arch.cayenne.lib.common.data.constants.BaseCurrencyData
@@ -22,11 +24,13 @@ import kotlin.reflect.KClass
 
 class CurrencyDialogFragment private constructor() : BasePositionDialogFragment<CurrencyDialogViewModel, FragmentCurrencyDialogBinding>() {
     companion object {
-        private const val LOCATION_Y = "locationY"
+        private const val LOCATION_OFFSET = "locationOffset"
+        private const val IS_PORTRAIT = "isPortrait"
 
-        fun newInstance(positionY: Int): CurrencyDialogFragment {
+        fun newInstance(isPortrait: Boolean, offset: Int): CurrencyDialogFragment {
             val b = Bundle()
-            b.putInt(LOCATION_Y, positionY)
+            b.putInt(LOCATION_OFFSET, offset)
+            b.putBoolean(IS_PORTRAIT, isPortrait)
             return CurrencyDialogFragment().apply {
                 arguments = b
             }
@@ -44,12 +48,18 @@ class CurrencyDialogFragment private constructor() : BasePositionDialogFragment<
     )
 
     override fun setDialogPosition(w: Window) {
-        val positionY = requireArguments().getInt(LOCATION_Y, -1)
-        if (positionY == -1) return
+        val isPortrait = requireArguments().getBoolean(IS_PORTRAIT)
+        val offset = requireArguments().getInt(LOCATION_OFFSET, -1)
+        if (offset == -1) return
 
         val layoutParams = w.attributes
-        layoutParams.gravity = Gravity.TOP or Gravity.CENTER_HORIZONTAL
-        layoutParams.y = positionY
+        if(isPortrait) {
+            layoutParams.gravity = Gravity.TOP or Gravity.CENTER_HORIZONTAL
+            layoutParams.y = offset
+        } else {
+            layoutParams.gravity = Gravity.START or Gravity.CENTER_HORIZONTAL
+            layoutParams.x = offset
+        }
         w.attributes = layoutParams
         mBinding.root.visibility = View.VISIBLE
         removeDim()
@@ -116,5 +126,11 @@ class CurrencyDialogFragment private constructor() : BasePositionDialogFragment<
 
     override fun initListener() {
 
+    }
+
+    override fun onStart() {
+        super.onStart()
+        StatusBarConfig.statusBarType = if(requireArguments().getBoolean(IS_PORTRAIT)) StatusBarMode.DRAW_BEHIND() else StatusBarMode.FULLSCREEN
+        setStatusBar(StatusBarConfig, mBinding.root)
     }
 }

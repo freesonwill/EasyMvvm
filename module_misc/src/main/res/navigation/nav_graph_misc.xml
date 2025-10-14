@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/misc_nav_graph">
+
+    <fragment
+        android:id="@+id/seniorPartnerFragment"
+        android:name="com.walisport.module.misc.ui.fragment.SeniorPartnerFragment"
+        android:label="fragment_senior_partner"
+        tools:layout="@layout/fragment_senior_partner">
+
+        <deepLink app:uri="walisport://module_misc/seniorPartnerFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/inviteFriendsFragment"
+        android:name="com.walisport.module.misc.ui.fragment.InviteFriendsFragment"
+        android:label="fragment_invite_friends"
+        tools:layout="@layout/fragment_invite_friends">
+
+        <deepLink app:uri="walisport://module_misc/inviteFriendsFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/vipFragment"
+        android:name="com.walisport.module.misc.ui.fragment.VIPFragment"
+        android:label="fragment_vip"
+        tools:layout="@layout/fragment_vip">
+
+        <deepLink app:uri="walisport://module_misc/vipFragment" />
+    </fragment>
+
+</navigation>

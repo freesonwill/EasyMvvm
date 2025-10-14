@@ -86,4 +86,8 @@
     <string name="title_order_sport_settled">已结算</string>
     <string name="title_order_sport_reserve">预约</string>
     <string name="title_order_sport_filter">筛选</string>
+
+    <string name="title_order_sport_live">直播中</string>
+    <string name="title_bet">投注</string>
+    <string name="title_odds">赔率</string>
 </resources>

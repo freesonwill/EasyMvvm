@@ -77,6 +77,11 @@ class LiveMainViewModel(
     private val _liveBetOnMenu = MutableLiveData<BetOnMenuStatus>()
     val liveBetOnMenu: LiveData<BetOnMenuStatus> = _liveBetOnMenu
 
+    //子类判断是否滑动到顶部
+    private val _sonVerticalScrollIsTop = MutableLiveData<Boolean?>()
+    val sonVerticalScrollIsTop: LiveData<Boolean?> = _sonVerticalScrollIsTop
+
+
     //监听数据变化
     private val _observeMainMatch = MutableLiveData<LiveMatchBean>()
     val observeMainMatch: LiveData<LiveMatchBean> = _observeMainMatch
@@ -104,6 +109,17 @@ class LiveMainViewModel(
                 _statisticData.postValue(temp)
             }
         }
+    }
+
+    //子类接听滑动设置变化(父类滑动到临界点,小于 80 触发子类RV或者SC 下滑事件),列表数据为空默认为true
+    fun setSonVerticalScrollIsTop(boo:Boolean){
+        if (boo!=sonVerticalScrollIsTop.value){
+            _sonVerticalScrollIsTop.value = boo
+        }
+    }
+
+    fun getSonVerticalScrollIsTop():Boolean?{
+        return sonVerticalScrollIsTop.value
     }
 
     fun setLiveBetOnMen(status: BetOnMenuStatus) {
