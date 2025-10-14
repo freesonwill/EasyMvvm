@@ -15,6 +15,7 @@
     <string name="nav_module_champion_fragment" translatable="false">walisport://module_home/championFragment?matchId={matchId}&amp;name={name}&amp;icon={icon}</string>
     <string name="nav_module_fund_detail_fragment" translatable="false">walisport://module_topup/fundDetailsFragment</string>
     <string name="nav_module_realtime_cashback_fragment" translatable="false">walisport://module_topup/realTimeCashBackFragment</string>
-    <string name="nav_module_partner_fragment" translatable="false">walisport://module_topup/seniorPartnerFragment</string>
-    <string name="nav_module_invite_friends_fragment" translatable="false">walisport://module_topup/inviteFriendsFragment</string>
+    <string name="nav_module_partner_fragment" translatable="false">walisport://module_misc/seniorPartnerFragment</string>
+    <string name="nav_module_invite_friends_fragment" translatable="false">walisport://module_misc/inviteFriendsFragment</string>
+    <string name="nav_module_vip_fragment" translatable="false">walisport://module_misc/vipFragment</string>
 </resources>
