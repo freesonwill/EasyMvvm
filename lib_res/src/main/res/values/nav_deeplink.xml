@@ -2,6 +2,7 @@
 <resources translatable="false">
     <string name="nav_module_search_fragment" translatable="false">walisport://module_search/searchFragment</string>
     <string name="nav_module_topup_fragment" translatable="false">walisport://module_topup/topUpFragment</string>
+    <string name="nav_module_withdraw_fragment" translatable="false">walisport://module_topup/withdrawFragment</string>
     <string name="nav_module_message_fragment" translatable="false">walisport://module_message/messageFragment</string>
     <string name="nav_module_setting_fragment" translatable="false">walisport://module_setting/settingFragment</string>
     <string name="nav_module_handicap_fragment" translatable="false">walisport://module_handicap/HandicapFragment?homeId={homeId}</string>

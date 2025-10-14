@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<arch.cayenne.lib.skin.widget.SkinnableLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:orientation="horizontal"
+    android:paddingStart="@dimen/dp_11"
+    android:paddingTop="@dimen/dp_7"
+    android:paddingEnd="@dimen/dp_11"
+    android:paddingBottom="@dimen/dp_7"
+    android:background="@drawable/selector_coin_tab">
+
+    <ImageView
+        android:id="@+id/iv_logo_coin"
+        android:layout_width="@dimen/dp_16"
+        android:layout_height="@dimen/dp_16"
+        android:layout_marginEnd="4dp"
+        android:background="@drawable/icon_pay_usdt"/>
+
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
+        android:id="@+id/tv_name_coin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:textColor="@color/selector_tab_text"
+        android:textSize="14sp" />
+</arch.cayenne.lib.skin.widget.SkinnableLinearLayout>

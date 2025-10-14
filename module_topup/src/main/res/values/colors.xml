@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="tab_text">#C0C0C0</color>
+    <color name="tab_select_text">#FFFFFF</color>
     <color name="wallet_menu_line">#1d1f29</color>
     <color name="wallet_menu_title">#FFFFFF</color>
     <color name="wallet_title">#929298</color>
@@ -16,9 +18,11 @@
     <color name="pay_line">#2C2E3B</color>
     <color name="pay_money">#FFFFFF</color>
 
+    <color name="coin_select_text">#00E0E5</color>
     <color name="bank_title">#999999</color>
     <color name="bank_line">#272727</color>
     <color name="bank_text">#FFFFFF</color>
+    <color name="recharge_lesson">#8FBEE9</color>
     <color name="fragment_bg">#1E1E1E</color>
     <color name="add_bank_tip">#EB860D</color>
     <color name="view_line">#1AFFFFFF</color>

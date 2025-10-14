@@ -3,8 +3,16 @@
     <string name="fragment_title">钱包</string>
     <string name="balance">余额</string>
     <string name="recharge">充值</string>
+    <string name="coin_type">币种</string>
     <string name="withdrawal">提现</string>
     <string name="recommend">推荐</string>
+    <string name="crypto_coin">加密货币</string>
+    <string name="fiat_coin">法币</string>
+    <string name="str_more">更多</string>
+    <string name="copy_address">复制地址</string>
+    <string name="tip_copy_suc">复制成功</string>
+    <string name="recharge_lesson">充值教程</string>
+    <string name="cus_service">联系客服</string>
     <string name="add_bank">添加银行卡</string>
     <string name="select_method">选择支付方式</string>
     <string name="select_tx_method">选择提现方式</string>
@@ -30,6 +38,7 @@
     <string name="bank_del_tip">确定删除银行卡？</string>
     <string name="add_bank_tip">*持卡人信息确认后无法修改，请使用本人信息</string>
     <string name="cz_address">充值地址</string>
+    <string name="cz_network">网络</string>
     <string name="bank_hint">输入持卡人姓名</string>
     <string name="bank_num_hint">输入银行卡号</string>
     <string name="bank_shu_hint">储蓄卡所属银行</string>
