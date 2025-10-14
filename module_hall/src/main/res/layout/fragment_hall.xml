@@ -30,7 +30,7 @@
         android:id="@+id/iv_left_logo"
         android:layout_width="@dimen/dp_64"
         android:layout_height="@dimen/dp_50"
-        android:layout_marginTop="@dimen/dp_13"
+        android:layout_marginTop="@dimen/dp_15"
         android:src="@drawable/ic_top_bar_left_logo"
         android:layout_marginStart="@dimen/dp_10"
         app:layout_constraintTop_toTopOf="@+id/iv_right_logo"
@@ -55,9 +55,9 @@
     <arch.cayenne.lib.skin.widget.SkinnableImageView
         android:id="@+id/iv_home_sidebar"
         android:layout_width="@dimen/dp_16"
-        android:layout_height="@dimen/dp_20"
-        android:layout_marginStart="@dimen/dp_15"
-        android:background="@drawable/ic_sidebar"
+        android:layout_height="@dimen/dp_16"
+        android:layout_marginStart="@dimen/dp_18"
+        app:srcCompat="@drawable/ic_sidebar"
         app:layout_constraintTop_toTopOf="@+id/ll_search_bar"
         app:layout_constraintBottom_toBottomOf="@+id/ll_search_bar"
         app:layout_constraintLeft_toLeftOf="parent"/>
@@ -69,23 +69,23 @@
         android:gravity="center_vertical"
         android:layout_marginTop="@dimen/dp_8"
         android:layout_marginStart="@dimen/dp_19"
-        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_14"
         app:layout_constraintStart_toEndOf="@+id/iv_home_sidebar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/iv_right_logo">
 
         <arch.cayenne.lib.skin.widget.SkinnableImageView
-            android:layout_width="20dp"
-            android:layout_height="20dp"
+            android:layout_width="@dimen/dp_16"
+            android:layout_height="@dimen/dp_16"
             android:layout_marginStart="8dp"
-            android:layout_marginEnd="7dp"
-            android:src="@drawable/search_icon" />
+            app:srcCompat="@drawable/search_icon" />
 
         <arch.cayenne.lib.common.ui.view.ClearableEditText
             android:id="@+id/ce_search"
             style="@style/CustomToolbarEditStyle"
             android:layout_width="0dp"
             android:layout_weight="1"
+            android:layout_marginStart="@dimen/dp_8"
             android:background="@null"
             android:drawablePadding="@dimen/dp_10"
             android:imeOptions="actionSearch"
@@ -114,10 +114,16 @@
     <arch.cayenne.lib.skin.widget.SkinnableTabLayout
         android:id="@+id/tl_game"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_64"
+        android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_12"
         android:background="@android:color/transparent"
-        app:tabGravity="fill"
+        android:paddingStart="-2dp"
+        app:tabContentStart="0dp"
+        app:tabPaddingStart="0dp"
+        app:tabPaddingTop="0dp"
+        app:tabPaddingBottom="0dp"
+        app:tabPaddingEnd="@dimen/dp_0"
+        app:tabMaxWidth="69dp"
         app:tabIndicatorAnimationMode="elastic"
         app:tabIndicatorColor="@android:color/transparent"
         app:tabIndicatorFullWidth="false"

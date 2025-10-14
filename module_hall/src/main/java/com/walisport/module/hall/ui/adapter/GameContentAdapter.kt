@@ -2,9 +2,11 @@ package com.walisport.module.hall.ui.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.DiffUtil
 import arch.cayenne.lib.base.ui.adapter.BaseAdapter
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
+import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import com.walisport.module.hall.data.GameContentData
 import com.walisport.module.hall.databinding.ItemGameContentBinding
 
@@ -37,6 +39,11 @@ class GameContentAdapter : BaseAdapter<GameContentData, GameContentViewHolder, I
 class GameContentViewHolder(val item: ItemGameContentBinding): BaseViewHolder(item) {
     fun bind(data: GameContentData) {
         item.ivGameCover.setImageResource(data.cover)
+        //TODO 判斷
+        item.llCount.apply {
+            val params = this.layoutParams as ConstraintLayout.LayoutParams
+            params.topMargin = 6.dp2px
+        }
     }
 }
 

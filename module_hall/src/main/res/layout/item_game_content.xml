@@ -8,8 +8,7 @@
         android:id="@+id/iv_game_cover"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:scaleType="centerCrop"
-        app:layout_constraintDimensionRatio="111:145"
+        app:layout_constraintDimensionRatio="111:146"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -44,11 +43,11 @@
             android:text="@string/back_percent" />
     </LinearLayout>
     <LinearLayout
+        android:id="@+id/ll_count"
         android:layout_width="match_parent"
         android:layout_height="17dp"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:layout_marginStart="@dimen/dp_3"
         android:layout_marginTop="@dimen/dp_5"
         app:layout_constraintTop_toBottomOf="@+id/ll_back"
         app:layout_constraintLeft_toLeftOf="parent">

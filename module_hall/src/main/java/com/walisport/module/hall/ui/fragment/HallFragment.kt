@@ -9,6 +9,7 @@ import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.adapter.PagerAdapter
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.utils.ViewUtils
+import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.touchBackPressed
 import com.google.android.material.tabs.TabLayoutMediator
@@ -80,18 +81,18 @@ class HallFragment : BaseFragment<HallViewModel, FragmentHallBinding>() {
 
             var barHeight = ViewUtils.getStatusBarHeight(requireContext())
             val params = guideline.layoutParams as ConstraintLayout.LayoutParams
-            params.guideBegin = barHeight
+            params.guideBegin = 43.dp2px
             guideline.layoutParams = params
 
             vpGame.adapter = PagerAdapter(childFragmentManager, lifecycle, mockTabList)
 
             TabLayoutMediator(tlGame, vpGame) { tab, position ->
-                tab.customView = createGameTabView(mockTabList[position])
+                tab.customView = createGameTabView(position, mockTabList[position])
             }.attach()
         }
     }
 
-    private fun createGameTabView(item: HallGamePage) : View {
+    private fun createGameTabView(position: Int, item: HallGamePage) : View {
         val tabBinding = ItemHallGameTabBinding.inflate(LayoutInflater.from(requireContext()), null, false)
         tabBinding.tvTitle.text = item.title
         if (item is HallGameTabDefault) {
@@ -99,6 +100,7 @@ class HallFragment : BaseFragment<HallViewModel, FragmentHallBinding>() {
         } else {
             //TODO 從api來
         }
+
         return tabBinding.root
     }
 
