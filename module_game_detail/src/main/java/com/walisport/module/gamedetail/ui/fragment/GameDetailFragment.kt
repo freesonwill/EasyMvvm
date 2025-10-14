@@ -1,6 +1,8 @@
 package com.walisport.module.gamedetail.ui.fragment
 
 import android.os.Bundle
+import arch.cayenne.lib.base.data.constants.StatusBarMode
+import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import com.walisport.module.gamedetail.databinding.FragmentGameDetailBinding
 import com.walisport.module.gamedetail.ui.viewmodel.GameDetailViewModel
@@ -11,14 +13,20 @@ class GameDetailFragment: BaseFragment<GameDetailViewModel, FragmentGameDetailBi
     override val vmClass: KClass<GameDetailViewModel> = GameDetailViewModel::class
 
     override fun initView(savedInstanceState: Bundle?) {
-        TODO("Not yet implemented")
+        with(mBinding) {
+            viewBalance.init(childFragmentManager)
+        }
     }
 
     override fun initListener() {
-        TODO("Not yet implemented")
     }
 
     override suspend fun createObserver() {
-        TODO("Not yet implemented")
+    }
+
+    override fun onStart() {
+        super.onStart()
+        StatusBarConfig.statusBarType = StatusBarMode.FULLSCREEN
+        setStatusBar(StatusBarConfig, mBinding.root)
     }
 }
