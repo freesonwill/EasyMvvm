@@ -14,13 +14,9 @@ import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.common.data.constants.UserDataKey
 import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getColor
-import com.github.lzyzsd.jsbridge.BridgeWebViewClient
-import com.github.lzyzsd.jsbridge.DefaultHandler
-import com.walisport.module.topup.databinding.FragmentFundDetailsBinding
+import arch.cayenne.lib.common.web.WLSWebViewClient
 import com.walisport.module.topup.databinding.FragmentRealtimeCashbackBinding
-import com.walisport.module.topup.ui.viewmodel.FundDetailsViewModel
 import com.walisport.module.topup.ui.viewmodel.RealTimeCashBackViewModel
-import kotlinx.coroutines.withContext
 import org.koin.java.KoinJavaComponent.inject
 import kotlin.reflect.KClass
 
@@ -47,42 +43,11 @@ class RealTimeCashBackFragment : BaseFragment<RealTimeCashBackViewModel, Fragmen
         }
     }
 
-    private suspend fun initWebView() {
-        val webSettings = mBinding.webView.settings
-
-        with(webSettings) {
-            domStorageEnabled = true
-            displayZoomControls = true
-            databaseEnabled = true
-            cacheMode = android.webkit.WebSettings.LOAD_DEFAULT
-            blockNetworkImage = false
-            setGeolocationEnabled(true)
-            setGeolocationDatabasePath(
-                withContext(kotlinx.coroutines.Dispatchers.IO) {
-                    requireActivity().applicationContext.getDir(
-                        "database",
-                        android.content.Context.MODE_PRIVATE
-                    ).path
-                }
-            )
-            useWideViewPort = true
-            loadWithOverviewMode = true
-            defaultTextEncodingName = "UTF-8"
-            allowContentAccess = true
-            allowFileAccess = true
-            allowFileAccessFromFileURLs = true
-            allowUniversalAccessFromFileURLs = true
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-                mixedContentMode = android.webkit.WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
-            }
-
-        }
-
+    private fun initWebView() {
         with(mBinding.webView) {
-            setDefaultHandler(DefaultHandler())
 
             setWebViewClient(object :
-                BridgeWebViewClient(this) {
+                WLSWebViewClient(this) {
 
                 override fun onFormResubmission(
                     view: WebView?,

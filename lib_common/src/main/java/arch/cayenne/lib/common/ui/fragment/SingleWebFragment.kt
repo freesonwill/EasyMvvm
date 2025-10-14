@@ -1,25 +1,21 @@
 package arch.cayenne.lib.common.ui.fragment
 
-import android.content.Context
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.os.Message
 import android.view.View
 import android.webkit.ValueCallback
 import android.webkit.WebChromeClient
-import android.webkit.WebSettings
 import android.webkit.WebView
 import androidx.activity.OnBackPressedCallback
 import androidx.navigation.fragment.navArgs
-import arch.cayenne.lib.base.ui.viewmodel.EmptyViewModel
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
+import arch.cayenne.lib.base.ui.viewmodel.EmptyViewModel
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.databinding.FragmentSingleWebBinding
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigateUp
-import com.github.lzyzsd.jsbridge.BridgeWebViewClient
-import com.github.lzyzsd.jsbridge.DefaultHandler
+import arch.cayenne.lib.common.web.WLSWebViewClient
 import kotlinx.coroutines.delay
 import kotlin.reflect.KClass
 
@@ -82,32 +78,7 @@ class SingleWebFragment : BaseFragment<EmptyViewModel, FragmentSingleWebBinding>
      * 设置配置webView
      */
     private fun settingConfig() {
-        val webSettings = mBinding.jsBridgeView.settings
 
-        with(webSettings) {
-            domStorageEnabled = true
-            displayZoomControls = true
-            databaseEnabled = true
-            cacheMode = WebSettings.LOAD_DEFAULT
-            blockNetworkImage = false
-            setGeolocationEnabled(true)
-            setGeolocationDatabasePath(
-                requireActivity().applicationContext.getDir("database", Context.MODE_PRIVATE).path
-            )
-            useWideViewPort = true
-            loadWithOverviewMode = true
-            defaultTextEncodingName = "UTF-8"
-            allowContentAccess = true
-            allowFileAccess = true
-            allowFileAccessFromFileURLs = true
-            allowUniversalAccessFromFileURLs = true
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
-            }
-
-        }
-
-        mBinding.jsBridgeView.setDefaultHandler(DefaultHandler())
     }
 
     /**
@@ -116,7 +87,7 @@ class SingleWebFragment : BaseFragment<EmptyViewModel, FragmentSingleWebBinding>
     private fun setClient() {
         with(mBinding) {
             jsBridgeView.setWebViewClient(object :
-                BridgeWebViewClient(jsBridgeView) {
+                WLSWebViewClient(jsBridgeView) {
 
                 override fun onFormResubmission(
                     view: WebView?,
