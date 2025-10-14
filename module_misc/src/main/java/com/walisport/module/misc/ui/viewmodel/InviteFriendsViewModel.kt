@@ -1,7 +1,6 @@
-package com.walisport.module.topup.ui.viewmodel
+package com.walisport.module.misc.ui.viewmodel
 
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
-import com.walisport.module.topup.data.TopUpMainRepository
 
 class InviteFriendsViewModel() : BaseViewModel() {
 

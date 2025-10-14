@@ -152,6 +152,11 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
                 }
                 addScaleOnTouchAnimation()
             }
+
+            vip.apply {
+                clickNoRepeatSingle { navigate(arch.cayenne.lib.res.R.string.nav_module_vip_fragment.deeplink()) }
+                addScaleOnTouchAnimation()
+            }
         }
     }
 
