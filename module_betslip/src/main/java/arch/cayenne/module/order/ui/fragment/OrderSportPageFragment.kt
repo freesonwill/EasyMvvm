@@ -15,7 +15,6 @@ class OrderSportPageFragment : BaseFragment<OrderSportPageViewModel, FragmentOrd
     override fun initView(savedInstanceState: Bundle?) {
         val pageIndex = arguments?.getInt("pageIndex") ?: 0
         val page = OrderSportPageEnum.entries[pageIndex]
-        mBinding.tvTitle.text = page.page.title
     }
 
     override fun initListener() {

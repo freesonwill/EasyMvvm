@@ -13,9 +13,9 @@ import arch.cayenne.lib.common.data.repo.ReserveDialogRepository
 import arch.cayenne.lib.common.ui.viewmodel.ConnectFailedViewModel
 import arch.cayenne.lib.common.ui.viewmodel.CurrencyDialogViewModel
 import arch.cayenne.lib.common.ui.viewmodel.ReserveDialogViewModel
+import arch.cayenne.lib.common.ui.viewmodel.ShareViewModel
 import com.tencent.mmkv.MMKV
 import kotlinx.coroutines.CoroutineScope
-import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.core.context.loadKoinModules
 import org.koin.core.module.Module
@@ -55,9 +55,10 @@ class CommonModuleInitializer : DefaultInitializer<String> {
     private val moduleList: List<Module> = listOf(module {
         factory { (scope: CoroutineScope) -> CommonRepository(scope, get(), get(), get(), get()) }
         single { UserDataManager() }
-        viewModel { ConnectFailedViewModel() }
+        viewModelOf(::ConnectFailedViewModel)
         viewModelOf(::CurrencyDialogViewModel)
-        factoryOf(::ReserveDialogViewModel)
+        viewModelOf(::ReserveDialogViewModel)
+        viewModelOf(::ShareViewModel)
 
         factoryOf(::CommonRepository)
         factoryOf(::BalanceRepository)

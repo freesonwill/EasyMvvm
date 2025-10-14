@@ -42,7 +42,6 @@ class OrderSportFragment : BaseFragment<OrderSportViewModel, FragmentOrderSportB
                 gravity = Gravity.CENTER
                 setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f)
                 if (position == 0) {
-                    setTypeface(null, Typeface.BOLD)
                     setTextColor(
                         SkinnableResourceManager.getColor(
                             requireContext(),
@@ -50,7 +49,6 @@ class OrderSportFragment : BaseFragment<OrderSportViewModel, FragmentOrderSportB
                         )
                     )
                 } else {
-                    setTypeface(null, Typeface.NORMAL)
                     setTextColor(
                         SkinnableResourceManager.getColorStateList(
                             requireContext(),
@@ -77,7 +75,6 @@ class OrderSportFragment : BaseFragment<OrderSportViewModel, FragmentOrderSportB
                 TabLayoutExt.OnTabSelectedListener2 {
                 override fun onTabSelected(tab: TabLayout.Tab, isTabClick: Boolean) {
                     (tab.customView as? TextView)?.apply {
-                        setTypeface(null, Typeface.BOLD)
                         setTextColor(
                             SkinnableResourceManager.getColor(
                                 requireContext(),
@@ -89,7 +86,6 @@ class OrderSportFragment : BaseFragment<OrderSportViewModel, FragmentOrderSportB
 
                 override fun onTabUnselected(tab: TabLayout.Tab, isTabClick: Boolean) {
                     (tab.customView as? TextView)?.apply {
-                        setTypeface(null, Typeface.NORMAL)
                         setTextColor(
                             SkinnableResourceManager.getColorStateList(
                                 requireContext(),
