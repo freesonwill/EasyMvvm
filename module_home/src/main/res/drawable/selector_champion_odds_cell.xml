@@ -4,7 +4,7 @@
     <item android:state_enabled="false">
         <shape android:shape="rectangle">
             <corners android:radius="9dp" />
-            <solid android:color="@color/home_card_odds_background" />
+            <solid android:color="@color/color_0FFFFFFF" />
         </shape>
     </item>
     <item android:state_selected="true">
