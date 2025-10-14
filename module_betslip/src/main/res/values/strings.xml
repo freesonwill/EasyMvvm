@@ -90,11 +90,4 @@
     <string name="title_order_sport_live">直播中</string>
     <string name="title_bet">投注</string>
     <string name="title_odds">赔率</string>
-
-    <string name="title_share_to">分享至</string>
-    <string name="title_share_copy_order">复制注单</string>
-    <string name="title_share_copy_link">复制链接</string>
-    <string name="title_share_questions">对注单有疑惑</string>
-    <string name="toast_share_copy_order">注单复制成功，快粘贴到聊天室分享吧！</string>
-    <string name="toast_share_copy_link">注单链接复制成功，快去分享给朋友吧！</string>
 </resources>

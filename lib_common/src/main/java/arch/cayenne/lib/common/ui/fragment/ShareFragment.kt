@@ -1,11 +1,11 @@
-package arch.cayenne.module.order.ui.fragment
+package arch.cayenne.lib.common.ui.fragment
 
 import android.os.Bundle
 import arch.cayenne.lib.base.ui.fragment.BaseBottomSheetFragment
-import arch.cayenne.module.betslip.databinding.FragmentShareBinding
-import arch.cayenne.module.order.ui.adapter.ShareAdapter
-import arch.cayenne.module.order.ui.adapter.ShareLinkAdapter
-import arch.cayenne.module.order.ui.viewmodel.ShareViewModel
+import arch.cayenne.lib.common.databinding.FragmentShareBinding
+import arch.cayenne.lib.common.ui.adapter.ShareAdapter
+import arch.cayenne.lib.common.ui.adapter.ShareLinkAdapter
+import arch.cayenne.lib.common.ui.viewmodel.ShareViewModel
 import kotlin.reflect.KClass
 
 class ShareFragment private constructor(): BaseBottomSheetFragment<ShareViewModel, FragmentShareBinding>() {

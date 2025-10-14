@@ -1,12 +1,12 @@
-package arch.cayenne.module.order.ui.adapter
+package arch.cayenne.lib.common.ui.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import arch.cayenne.lib.base.ui.adapter.BaseAdapter
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
-import arch.cayenne.module.betslip.databinding.ItemShareAppBinding
-import arch.cayenne.module.order.data.model.ShareBean
-import arch.cayenne.module.order.ui.compare.ShareBeanCompare
+import arch.cayenne.lib.common.data.constants.ShareBean
+import arch.cayenne.lib.common.databinding.ItemShareAppBinding
+import arch.cayenne.lib.common.ui.compare.ShareBeanCompare
 
 class ShareAdapter : BaseAdapter<ShareBean, BaseViewHolder, ItemShareAppBinding>(
     ShareBeanCompare()

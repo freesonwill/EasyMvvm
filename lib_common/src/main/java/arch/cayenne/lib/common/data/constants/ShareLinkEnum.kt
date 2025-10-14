@@ -1,8 +1,7 @@
-package arch.cayenne.module.betslip.data.model
+package arch.cayenne.lib.common.data.constants
 
+import arch.cayenne.lib.common.R
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
-import arch.cayenne.module.betslip.R
-import arch.cayenne.module.order.data.model.ShareBean
 
 enum class ShareLinkEnum : ShareBean {
     COPY_ORDER {

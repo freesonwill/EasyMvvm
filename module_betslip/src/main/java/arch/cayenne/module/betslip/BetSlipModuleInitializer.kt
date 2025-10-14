@@ -30,7 +30,6 @@ import arch.cayenne.module.order.ui.viewmodel.HomeOrderViewModel
 import arch.cayenne.module.order.ui.viewmodel.OrderGameViewModel
 import arch.cayenne.module.order.ui.viewmodel.OrderSportPageViewModel
 import arch.cayenne.module.order.ui.viewmodel.OrderSportViewModel
-import arch.cayenne.module.order.ui.viewmodel.ShareViewModel
 
 import org.koin.dsl.module
 
@@ -70,7 +69,6 @@ class BetSlipModuleInitializer: DefaultInitializer<String> {
         viewModelOf(::OrderGameViewModel)
         viewModelOf(::OrderSportViewModel)
         viewModelOf(::OrderSportPageViewModel)
-        viewModelOf(::ShareViewModel)
     }
 
     private val repoModules = module {

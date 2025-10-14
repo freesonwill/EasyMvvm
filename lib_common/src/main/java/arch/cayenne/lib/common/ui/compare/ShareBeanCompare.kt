@@ -1,7 +1,7 @@
-package arch.cayenne.module.order.ui.compare
+package arch.cayenne.lib.common.ui.compare
 
 import androidx.recyclerview.widget.DiffUtil
-import arch.cayenne.module.order.data.model.ShareBean
+import arch.cayenne.lib.common.data.constants.ShareBean
 
 class ShareBeanCompare : DiffUtil.ItemCallback<ShareBean>() {
     override fun areItemsTheSame(
