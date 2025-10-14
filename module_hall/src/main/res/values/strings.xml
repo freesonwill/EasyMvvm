@@ -1,4 +1,9 @@
 <resources>
     <string name="hall">游戏大厅</string>
-
+    <string name="tab_recent">最近</string>
+    <string name="tab_all">全部</string>
+    <string name="tab_table">棋牌</string>
+    <string name="tab_slot">老虎机</string>
+    <string name="back_percent">返奖率</string>
+    <string name="online_count">在玩</string>
 </resources>

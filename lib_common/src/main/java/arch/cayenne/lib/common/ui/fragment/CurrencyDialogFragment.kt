@@ -1,7 +1,6 @@
 package arch.cayenne.lib.common.ui.fragment
 
 import android.animation.ObjectAnimator
-import android.graphics.Rect
 import android.os.Bundle
 import android.view.Gravity
 import android.view.View
@@ -9,7 +8,6 @@ import android.view.Window
 import android.view.animation.DecelerateInterpolator
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BasePositionDialogFragment
@@ -18,6 +16,7 @@ import arch.cayenne.lib.common.data.constants.BaseCurrencyData
 import arch.cayenne.lib.common.databinding.FragmentCurrencyDialogBinding
 import arch.cayenne.lib.common.ui.adapter.CurrencyAdapter
 import arch.cayenne.lib.common.ui.adapter.CurrencySettingAdapter
+import arch.cayenne.lib.common.ui.adapter.GridSpacingItemDecoration
 import arch.cayenne.lib.common.ui.viewmodel.CurrencyDialogViewModel
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
@@ -133,53 +132,5 @@ class CurrencyDialogFragment private constructor() : BasePositionDialogFragment<
         super.onStart()
         StatusBarConfig.statusBarType = if(requireArguments().getBoolean(IS_PORTRAIT)) StatusBarMode.DRAW_BEHIND() else StatusBarMode.FULLSCREEN
         setStatusBar(StatusBarConfig, mBinding.root)
-    }
-
-    class GridSpacingItemDecoration(
-        private val spanCount: Int,
-        private val horizontalSpacing: Int,
-        private val verticalSpacing: Int,
-        private val includeEdge: Boolean = false
-    ) : RecyclerView.ItemDecoration() {
-
-        override fun getItemOffsets(
-            outRect: Rect,
-            view: View,
-            parent: RecyclerView,
-            state: RecyclerView.State
-        ) {
-            val position = parent.getChildAdapterPosition(view) // item position
-            if (position == RecyclerView.NO_POSITION) {
-                return
-            }
-
-            val layoutManager = parent.layoutManager as? GridLayoutManager
-                ?: throw IllegalStateException("This ItemDecoration can only be used with a GridLayoutManager.")
-
-            // 確保列數匹配
-            if (layoutManager.spanCount != spanCount) {
-                throw IllegalStateException("The spanCount of the GridLayoutManager must match the one set in the ItemDecoration.")
-            }
-
-            val column = position % spanCount // item column
-
-            if (includeEdge) {
-                // 這種算法會在最左和最右邊都留出空間
-                outRect.left = horizontalSpacing - column * horizontalSpacing / spanCount
-                outRect.right = (column + 1) * horizontalSpacing / spanCount
-                if (position < spanCount) { // top edge
-                    outRect.top = verticalSpacing
-                }
-                outRect.bottom = verticalSpacing // item bottom
-            } else {
-                // 這種算法確保最左和最右邊沒有空隙
-                outRect.left = column * horizontalSpacing / spanCount
-                outRect.right = horizontalSpacing - (column + 1) * horizontalSpacing / spanCount
-
-                if (position >= spanCount) {
-                    outRect.top = verticalSpacing // non-top edge
-                }
-            }
-        }
     }
 }
