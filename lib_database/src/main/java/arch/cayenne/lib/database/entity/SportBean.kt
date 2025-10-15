@@ -17,6 +17,7 @@ enum class ShowType {
     HOME_TODAY,
     HOME_EARLY,
     HOME_CHAMPION,
+    HOME_FAVORITE
 }
 
 data class SportLiteBean(

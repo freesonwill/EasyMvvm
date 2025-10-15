@@ -9,7 +9,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.view.marginTop
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
@@ -144,25 +143,6 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
     override fun initListener() {
         with(mBinding) {
             setTopMaskListener()
-
-            frameFavoriteClickArea.apply {
-                clickNoRepeatSingle {
-                    navigate(Uri.parse("walisport://module_home/collectListFragment"))
-                }
-                addScaleOnTouchAnimation()
-            }
-
-            frameSearchClickArea.apply {
-                clickNoRepeatSingle { navigate(arch.cayenne.lib.res.R.string.nav_module_search_fragment.deeplink()) }
-                addScaleOnTouchAnimation()
-            }
-
-            frameBetClickArea.apply {
-                clickNoRepeatSingle {
-                    navigate(Uri.parse("walisport://module_betslip/betSlipFragment"))
-                }
-                addScaleOnTouchAnimation()
-            }
 
             vip.apply {
                 clickNoRepeatSingle { navigate(arch.cayenne.lib.res.R.string.nav_module_vip_fragment.deeplink()) }

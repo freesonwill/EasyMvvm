@@ -95,10 +95,9 @@
             <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
                 android:id="@+id/cl_first_navbar"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_52"
+                android:layout_height="@dimen/dp_47"
                 android:orientation="horizontal"
                 android:paddingStart="10dp"
-                android:paddingEnd="@dimen/dp_8"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
@@ -128,7 +127,7 @@
                     android:paddingTop="@dimen/dp_12"
                     android:paddingBottom="@dimen/dp_10"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/ll_wallet_entry"
+                    app:layout_constraintEnd_toStartOf="@+id/iv_search_entry"
                     app:layout_constraintHorizontal_bias="0"
                     app:layout_constraintStart_toEndOf="@+id/iv_home_sidebar"
                     app:layout_constraintTop_toTopOf="parent"
@@ -148,6 +147,19 @@
                     app:tabSelectedTextColor="@color/sport_item_text_select"
                     app:tabTextAppearance="@style/HomeTabLayoutTextAppearance"
                     app:tabTextColor="@color/home_secondary_text" />
+
+                <arch.cayenne.lib.skin.widget.SkinnableImageView
+                    android:id="@+id/iv_search_entry"
+                    android:layout_width="36dp"
+                    android:layout_height="34dp"
+                    android:paddingVertical="@dimen/dp_5"
+                    android:paddingEnd="@dimen/dp_12"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_search_entry"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
             </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
             <androidx.viewpager2.widget.ViewPager2
                 android:id="@+id/vp_sub"
