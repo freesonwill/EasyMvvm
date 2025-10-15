@@ -27,7 +27,7 @@
             android:layout_marginTop="@dimen/dp_4"
             android:background="@android:color/transparent"
             android:clipToPadding="false"
-            android:layout_marginStart="@dimen/dp_10"
+            android:layout_marginStart="@dimen/dp_9"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
