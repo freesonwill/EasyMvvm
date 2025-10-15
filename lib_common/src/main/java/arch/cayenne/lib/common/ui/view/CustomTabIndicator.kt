@@ -5,9 +5,9 @@ import android.graphics.Canvas
 import android.graphics.Paint
 import android.util.AttributeSet
 import androidx.core.content.ContextCompat
-import arch.cayenne.lib.skin.widget.SkinnableView
-import kotlin.apply
 import arch.cayenne.lib.common.R
+import arch.cayenne.lib.skin.widget.SkinnableView
+
 class CustomTabIndicator(context: Context, attrs: AttributeSet) : SkinnableView(context, attrs) {
     private val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         style = Paint.Style.FILL
@@ -22,6 +22,7 @@ class CustomTabIndicator(context: Context, attrs: AttributeSet) : SkinnableView(
     private var currentPosition = 0
     private var positionOffset = 0f
     private var tabWidth = 0f
+    private var animDurationMs = 200L
     fun getCurrentPosition(): Int {
         return currentPosition
     }
@@ -54,6 +55,10 @@ class CustomTabIndicator(context: Context, attrs: AttributeSet) : SkinnableView(
         tabWidth = width
         indicatorWidth = width * tabIndicatorWidth // 指示器宽度为 Tab 宽度的 45%
         invalidate()
+    }
+
+    fun setAnimDuration(durationMs: Long) {
+        animDurationMs = durationMs
     }
 
     private fun dpToPx(dp: Float): Float {

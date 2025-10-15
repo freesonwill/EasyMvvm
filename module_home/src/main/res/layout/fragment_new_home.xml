@@ -107,8 +107,9 @@
                     android:layout_width="@dimen/dp_36"
                     android:layout_height="@dimen/dp_36"
                     android:layout_gravity="center_vertical"
-                    android:paddingTop="11dp"
-                    android:paddingBottom="11dp"
+                    android:paddingTop="6dp"
+                    android:paddingBottom="6dp"
+                    android:scaleType="fitCenter"
                     android:src="@drawable/ic_home_sidebar"
                     android:stateListAnimator="@animator/layout_alpha_animator"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -119,7 +120,7 @@
                 <!-- 主導航 (包含 "今日"、"早盤"、"冠軍") -->
                 <arch.cayenne.module.home.ui.view.CustomTabLayout
                     android:id="@+id/tl_home"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:background="@android:color/transparent"
                     android:clipChildren="false"
@@ -132,12 +133,10 @@
                     app:layout_constraintStart_toEndOf="@+id/iv_home_sidebar"
                     app:layout_constraintTop_toTopOf="parent"
                     app:tabGravity="start"
-                    app:tabIndicator="@drawable/shape_home_tab_indicator"
-                    app:tabIndicatorAnimationDuration="250"
+                    app:tabIndicatorHeight="0dp"
                     app:tabIndicatorAnimationMode="linear"
                     app:tabIndicatorFullWidth="false"
                     app:tabIndicatorGravity="bottom"
-                    app:tabIndicatorHeight="2dp"
                     app:tabMinWidth="56dp"
                     app:tabMode="scrollable"
                     app:tabRippleColor="@null"
@@ -146,7 +145,15 @@
                     app:tabPaddingBottom="@dimen/dp_4"
                     app:tabSelectedTextColor="@color/sport_item_text_select"
                     app:tabTextAppearance="@style/HomeTabLayoutTextAppearance"
-                    app:tabTextColor="@color/home_secondary_text" />
+                    app:tabTextColor="@color/color_C0C0C0" />
+
+                <arch.cayenne.lib.common.ui.view.CustomTabIndicator
+                    android:id="@+id/homeIndicator"
+                    android:layout_width="0dp"
+                    android:layout_height="2dp"
+                    app:layout_constraintEnd_toEndOf="@id/tl_home"
+                    app:layout_constraintStart_toStartOf="@id/tl_home"
+                    app:layout_constraintTop_toBottomOf="@id/tl_home" />
 
                 <arch.cayenne.lib.skin.widget.SkinnableImageView
                     android:id="@+id/iv_search_entry"

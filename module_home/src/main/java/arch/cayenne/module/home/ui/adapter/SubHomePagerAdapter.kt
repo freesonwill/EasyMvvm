@@ -6,11 +6,13 @@ import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import arch.cayenne.module.home.data.constants.PlayType
 import arch.cayenne.module.home.ui.fragment.CollectListFragment
+import arch.cayenne.module.home.ui.fragment.PromoPlaceholderFragment
 import arch.cayenne.module.home.ui.fragment.SubHomeFragment
 
 class SubHomePagerAdapter(
     fragmentManager: FragmentManager,
     lifecycle: Lifecycle,
+    private val promoCount: Int,
     val playTypes: List<PlayType>,
 ) : FragmentStateAdapter(fragmentManager, lifecycle) {
 
@@ -18,14 +20,13 @@ class SubHomePagerAdapter(
         return position.toLong()
     }
 
-    override fun getItemCount(): Int = playTypes.size
+    override fun getItemCount(): Int = promoCount + playTypes.size
 
     override fun createFragment(position: Int): Fragment {
-        val playType = playTypes[position]
-        return if (playType == PlayType.FAVORITE) {
-            CollectListFragment()
-        } else {
-            SubHomeFragment.newInstance(playType.id)
-        }
+        if (position < promoCount) return PromoPlaceholderFragment()
+        val playType = playTypes[position - promoCount]
+        return if (playType == PlayType.FAVORITE) CollectListFragment() else SubHomeFragment.newInstance(
+            playType.id
+        )
     }
 }

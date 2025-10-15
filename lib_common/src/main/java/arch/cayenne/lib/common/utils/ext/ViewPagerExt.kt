@@ -5,10 +5,9 @@ import androidx.appcompat.widget.TooltipCompat
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.OnItemTouchListener
 import androidx.viewpager2.widget.ViewPager2
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.R
 import arch.cayenne.lib.common.ui.view.CustomTabIndicator
-import arch.cayenne.lib.common.utils.CustomTabIndicatorUtils
+import arch.cayenne.lib.common.utils.HomeTabIndicatorUtils
 import arch.cayenne.lib.skin.widget.SkinnableTabLayout
 import com.google.android.material.tabs.TabLayout
 import java.lang.Math.toDegrees
@@ -69,21 +68,21 @@ fun ViewPager2.setupViewPagerScroll(
             // 左滑：adjustedOffset > 0.5，切换到下一页
             if (adjustedOffset > 0.5f && currentPage < totalItems - 1 && lastSwitchedPage != currentPage + 1) {
                 lastSwitchedPage = currentPage + 1
-                CustomTabIndicatorUtils.animateIndicatorToPosition(customIndicator,lastSwitchedPage)
+                HomeTabIndicatorUtils.animateIndicatorToPosition(customIndicator, lastSwitchedPage)
                // customIndicator.animateIndicatorToPosition(lastSwitchedPage)
                 tabLayout.getTabAt(lastSwitchedPage)?.select()
             }
             // 右滑：adjustedOffset < -0.5，切换到上一页
             else if (adjustedOffset < -0.5f && currentPage > 0 && lastSwitchedPage != currentPage - 1) {
                 lastSwitchedPage = currentPage - 1
-                CustomTabIndicatorUtils.animateIndicatorToPosition(customIndicator,lastSwitchedPage)
+                HomeTabIndicatorUtils.animateIndicatorToPosition(customIndicator, lastSwitchedPage)
                // customIndicator.animateIndicatorToPosition(lastSwitchedPage)
                 tabLayout.getTabAt(lastSwitchedPage)?.select()
             }
             // 滑动未超过 50%，恢复到当前页面
             else if (abs(adjustedOffset) <= 0.5f && lastSwitchedPage != currentPage) {
                 lastSwitchedPage = currentPage
-                CustomTabIndicatorUtils.animateIndicatorToPosition(customIndicator,lastSwitchedPage)
+                HomeTabIndicatorUtils.animateIndicatorToPosition(customIndicator, lastSwitchedPage)
                // customIndicator.animateIndicatorToPosition(lastSwitchedPage)
                 tabLayout.getTabAt(lastSwitchedPage)?.select()
             }
