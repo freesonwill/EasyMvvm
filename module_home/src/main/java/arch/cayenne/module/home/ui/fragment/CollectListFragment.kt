@@ -3,29 +3,22 @@ package arch.cayenne.module.home.ui.fragment
 import android.annotation.SuppressLint
 import android.net.Uri
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
 import androidx.core.view.doOnPreDraw
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
-import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
-import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
-import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
-import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.scrollToBottomWithLoadMore
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
-import arch.cayenne.lib.common.utils.ext.touchBackPressed
 import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.database.entity.MatchWithMarkets
 import arch.cayenne.lib.database.entity.SelectionBeanLite
@@ -35,7 +28,6 @@ import arch.cayenne.module.bet.viewmodel.FloatingButtonControlViewModel
 import arch.cayenne.module.home.R
 import arch.cayenne.module.home.data.constants.HomeState
 import arch.cayenne.module.home.databinding.FragmentCollectListBinding
-import arch.cayenne.module.home.databinding.TitleBarFavoriteBinding
 import arch.cayenne.module.home.ui.adapter.MatchItemAdapter
 import arch.cayenne.module.home.ui.adapter.OnMatchItemClickListener
 import arch.cayenne.module.home.ui.view.decoration.MatchCardItemDecoration
@@ -54,9 +46,6 @@ import kotlin.reflect.KClass
 class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectListBinding>() {
     override val vbClass: KClass<FragmentCollectListBinding> = FragmentCollectListBinding::class
     override val vmClass: KClass<CollectListViewModel> = CollectListViewModel::class
-    private val titleBarBinding: TitleBarFavoriteBinding by lazy {
-        TitleBarFavoriteBinding.inflate(LayoutInflater.from(context), mBinding.titleBar, false)
-    }
     private lateinit var matchAdapter: MatchItemAdapter
     private val gameLayoutManager by lazy { LinearLayoutManager(context) }
     private val homeViewModel: HomeViewModel by sharedViewModel<HomeViewModel, NewHomeFragment>()
@@ -64,8 +53,18 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
 
     override fun initView(savedInstanceState: Bundle?) {
         with (mBinding) {
-            titleBar.loadDynamicsTitleBar(titleBarBinding.root) {
-                findNavController().navigateUp()
+            // 隱藏 titleBar（作為 ViewPager 頁面使用）
+            titleBar.visibility = View.GONE
+
+            refreshLayout.post {
+                (refreshLayout.layoutParams as? androidx.constraintlayout.widget.ConstraintLayout.LayoutParams)?.apply {
+                    topToBottom =
+                        androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.UNSET
+                    topToTop =
+                        androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.PARENT_ID
+                    topMargin = 0
+                    refreshLayout.layoutParams = this
+                }
             }
 
             refreshLayout.setEnableLoadMore(false)
@@ -139,8 +138,6 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
             (rvCollectList.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
             rvCollectList.addOnScrollListener(scrollListener)
         }
-        mBinding.rvCollectList.touchBackPressed()
-        mBinding.root.touchBackPressed()
     }
     private val scrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
@@ -170,24 +167,17 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
     override fun initData() {
         super.initData()
         mViewModel.getCacheMatch()
+        mViewModel.startObserveMatch()
     }
 
     override fun onFragmentAnimEnd(isEnter: Boolean) {
-        if (isEnter) mViewModel.startObserveMatch()
     }
 
     override fun initListener() {
-        titleBarBinding.llWalletEntry.clickNoRepeat {
-            navigate(Uri.parse("walisport://module_topup/topUpFragment"))
-        }
-        titleBarBinding.llWalletEntry.addScaleOnTouchAnimation(titleBarBinding.ivWalletAdd)
     }
 
     @SuppressLint("SetTextI18n")
     override suspend fun createObserver() {
-        mViewModel.currentBalanceChange.observe(viewLifecycleOwner) {
-            titleBarBinding.tvMoney.text = "${CurrencySymbols.getSymbol(it?.currency?:"")} ${(it?.balance?:0L).getFormalMoney()}"
-        }
         homeViewModel.timer.observeEvent(viewLifecycleOwner, this) {
             mViewModel.updateMatchLiveData()
         }

@@ -4,7 +4,7 @@
     android:id="@+id/cl_match_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/main_background">
+    android:background="@color/color_1E1E1E">
 
     <arch.cayenne.lib.common.ui.view.PullRefreshLayout
         android:id="@+id/refreshLayout"

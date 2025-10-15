@@ -3,6 +3,7 @@
     <string name="title_today">today</string>
     <string name="title_early">early</string>
     <string name="title_champion">champion</string>
+    <string name="favorite_title">favorite</string>
     <string name="title_soccer">soccer</string>
     <string name="title_volleyball">volley</string>
     <string name="title_basketball">basket</string>
@@ -40,6 +41,7 @@
     <string name="drawer_invite">Invite friends</string>
     <string name="drawer_partner">Senior partner</string>
 
+    <string name="collect_list_empty">No favorites yet</string>
 
 
 

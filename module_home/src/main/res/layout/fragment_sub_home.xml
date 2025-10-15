@@ -22,16 +22,18 @@
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
             <arch.cayenne.lib.skin.widget.SkinnableImageView
-                android:layout_width="wrap_content"
-                android:layout_height="110dp"
+                android:layout_width="172dp"
+                android:layout_height="111dp"
+                android:scaleType="fitXY"
                 android:layout_marginEnd="@dimen/dp_11"
-                android:src="@drawable/ad1" />
+                android:src="@drawable/banner_ad1" />
 
             <arch.cayenne.lib.skin.widget.SkinnableImageView
                 android:id="@+id/vip"
-                android:layout_width="wrap_content"
-                android:layout_height="110dp"
-                android:src="@drawable/vip" />
+                android:layout_width="172dp"
+                android:layout_height="111dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/banner_vip" />
 
         </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
 
@@ -44,8 +46,8 @@
             <arch.cayenne.lib.skin.widget.SkinnableView
                 android:id="@+id/view_second_navbar"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_66"
-                android:background="@color/bg_card"
+                android:layout_height="@dimen/dp_71"
+                android:background="@color/color_1E1E1E"
                 android:clipChildren="true"
                 android:nestedScrollingEnabled="false"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -56,33 +58,15 @@
                 android:id="@+id/rv_sports_list"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:background="@drawable/bg_sport_list_rounded"
+                android:background="@color/color_1E1E1E"
                 android:clipToPadding="false"
-                android:paddingStart="6dp"
+                android:paddingStart="4dp"
                 android:paddingEnd="0dp"
                 android:scrollbars="none"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintBottom_toBottomOf="@id/view_second_navbar"
-                app:layout_constraintEnd_toStartOf="@id/v_mask"
+                app:layout_constraintEnd_toStartOf="@id/cl_second_guide"
                 app:layout_constraintStart_toStartOf="@id/view_second_navbar"
-                app:layout_constraintTop_toTopOf="@id/view_second_navbar" />
-
-            <arch.cayenne.lib.skin.widget.SkinnableView
-                android:id="@+id/v_mask"
-                android:layout_width="@dimen/dp_6"
-                android:layout_height="0dp"
-                android:background="@color/bg_card"
-                app:layout_constraintBottom_toBottomOf="@id/view_second_navbar"
-                app:layout_constraintEnd_toEndOf="@id/cl_second_guide"
-                app:layout_constraintTop_toTopOf="@id/view_second_navbar" />
-
-            <arch.cayenne.lib.skin.widget.SkinnableImageView
-                android:layout_width="14dp"
-                android:layout_height="0dp"
-                android:layout_marginEnd="@dimen/dp_4"
-                android:src="@drawable/gradient_sport_list"
-                app:layout_constraintBottom_toBottomOf="@id/view_second_navbar"
-                app:layout_constraintEnd_toEndOf="@+id/v_mask"
                 app:layout_constraintTop_toTopOf="@id/view_second_navbar" />
 
             <androidx.constraintlayout.widget.Guideline
@@ -90,103 +74,40 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                app:layout_constraintGuide_end="144dp" />
+                app:layout_constraintGuide_end="70dp" />
 
-            <!-- 收藏 -->
-            <FrameLayout
-                android:id="@+id/frame_favorite_click_area"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_marginStart="4.5dp"
+            <!--賽程-->
+            <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
+                android:id="@+id/frame_schedule_click_area"
+                android:layout_width="34dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/dp_10"
+                android:layout_marginBottom="@dimen/dp_2"
+                android:gravity="center"
+                android:orientation="vertical"
                 app:layout_constraintBottom_toBottomOf="@id/view_second_navbar"
-                app:layout_constraintEnd_toStartOf="@id/frame_search_click_area"
-                app:layout_constraintStart_toStartOf="@id/cl_second_guide"
-                app:layout_constraintTop_toTopOf="@id/view_second_navbar"
-                app:layout_constraintVertical_chainStyle="packed">
-
-                <arch.cayenne.lib.skin.widget.SkinnableImageView
-                    android:id="@+id/iv_favorite_icon"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_gravity="center_horizontal|top"
-                    android:layout_marginTop="@dimen/dp_8"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/ic_home_favorite" />
-
-                <arch.cayenne.lib.skin.widget.SkinnableTextView
-                    android:id="@+id/tv_favorite_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal|bottom"
-                    android:layout_marginBottom="@dimen/dp_5"
-                    android:text="@string/favorite_title"
-                    android:textColor="@color/secondary_title"
-                    android:textSize="12sp" />
-
-            </FrameLayout>
-
-            <!-- 搜索 -->
-            <FrameLayout
-                android:id="@+id/frame_search_click_area"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                app:layout_constraintBottom_toBottomOf="@id/view_second_navbar"
-                app:layout_constraintEnd_toStartOf="@id/frame_bet_click_area"
-                app:layout_constraintStart_toEndOf="@id/frame_favorite_click_area"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@id/view_second_navbar">
 
                 <arch.cayenne.lib.skin.widget.SkinnableImageView
-                    android:id="@+id/iv_search_icon"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
+                    android:id="@+id/iv_schedule_icon"
+                    android:layout_width="34dp"
+                    android:layout_height="34dp"
                     android:layout_gravity="center_horizontal|top"
-                    android:layout_marginTop="@dimen/dp_8"
+                    android:layout_marginBottom="@dimen/dp_4"
                     android:scaleType="fitCenter"
-                    android:src="@drawable/ic_home_search" />
+                    android:src="@drawable/ic_home_schedule" />
 
                 <arch.cayenne.lib.skin.widget.SkinnableTextView
-                    android:id="@+id/tv_search_title"
+                    android:id="@+id/tv_schedule_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal|bottom"
-                    android:layout_marginBottom="@dimen/dp_5"
-                    android:text="@string/search_title"
-                    android:textColor="@color/secondary_title"
+                    android:text="@string/schedule_title"
+                    android:textColor="@color/color_999999"
                     android:textSize="12sp" />
 
-            </FrameLayout>
-
-            <!-- 注單 -->
-            <FrameLayout
-                android:id="@+id/frame_bet_click_area"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_marginEnd="4.5dp"
-                app:layout_constraintBottom_toBottomOf="@id/view_second_navbar"
-                app:layout_constraintEnd_toEndOf="@id/view_second_navbar"
-                app:layout_constraintStart_toEndOf="@id/frame_search_click_area"
-                app:layout_constraintTop_toTopOf="@id/view_second_navbar">
-
-                <arch.cayenne.lib.skin.widget.SkinnableImageView
-                    android:id="@+id/iv_bet_icon"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_gravity="center_horizontal|top"
-                    android:layout_marginTop="@dimen/dp_8"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/ic_home_bet" />
-
-                <arch.cayenne.lib.skin.widget.SkinnableTextView
-                    android:id="@+id/tv_bet_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal|bottom"
-                    android:layout_marginBottom="@dimen/dp_5"
-                    android:text="@string/bet_title"
-                    android:textColor="@color/secondary_title"
-                    android:textSize="12sp" />
-
-            </FrameLayout>
+            </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
         </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -209,11 +130,10 @@
         <arch.cayenne.lib.skin.widget.SkinnableView
             android:id="@+id/v_league_more_mask"
             android:layout_width="@dimen/dp_18"
-            android:layout_height="@dimen/dp_52"
+            android:layout_height="@dimen/dp_38"
             android:layout_marginEnd="@dimen/dp_130"
-            android:paddingTop="@dimen/dp_10"
-            android:paddingBottom="@dimen/dp_14"
             android:background="@drawable/gradient_btn_mask"
+            android:paddingBottom="@dimen/dp_14"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -221,13 +141,12 @@
             android:id="@+id/ll_tournament_sort"
             android:layout_width="51dp"
             android:layout_height="@dimen/dp_32"
-            android:layout_marginTop="@dimen/dp_6"
+            android:layout_marginTop="@dimen/dp_4"
             android:layout_marginEnd="@dimen/dp_7"
             android:layout_marginBottom="@dimen/dp_3"
             android:background="@drawable/shape_tournament_more_bg"
             android:gravity="center"
             android:orientation="horizontal"
-            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@+id/v_league_more_mask"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/v_league_more_mask">
@@ -237,7 +156,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:visibility="gone"
                 android:layout_marginStart="@dimen/dp_5"
                 android:layout_marginEnd="@dimen/dp_1"
                 android:text="@string/tournament_section_title_hot"
@@ -248,11 +166,11 @@
                 android:layout_width="8dp"
                 android:layout_height="8dp"
                 android:layout_gravity="center_vertical"
-                android:visibility="gone"
                 android:layout_marginTop="@dimen/dp_2"
                 android:layout_marginBottom="@dimen/dp_1"
                 android:src="@drawable/ic_tournament_expand" />
         </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
+
         <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
             android:id="@+id/ll_btn_tournament"
             android:layout_width="@dimen/dp_64"
