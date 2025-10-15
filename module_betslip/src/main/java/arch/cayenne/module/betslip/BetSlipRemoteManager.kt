@@ -115,7 +115,6 @@ class BetSlipRemoteManager(
         ) {
             EarlySettleReq.newBuilder().apply {
                 this.betId = betId
-                this.amount = amount
                 this.expectPrice = expectPrice
                 this.acceptPriceReduce = acceptPriceReduce
             }.build()
