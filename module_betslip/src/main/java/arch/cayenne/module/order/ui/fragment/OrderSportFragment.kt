@@ -103,6 +103,9 @@ class OrderSportFragment : BaseFragment<OrderSportViewModel, FragmentOrderSportB
     }
 
     override fun initListener() {
+        mBinding.clFilter.setOnClickListener {
+            OrderSportFilterDialogFragment.newInstance().show(childFragmentManager)
+        }
     }
 
     override suspend fun createObserver() {

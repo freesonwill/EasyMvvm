@@ -20,18 +20,20 @@ class SportPickerAdapter(private val listener: SportPickerListener) : BaseAdapte
         binding.groupArrow.isVisible = bean.isSelected
         binding.tvTitle.text = bean.sportName
         val titleColor = if (bean.isSelected) {
-            Color.parseColor("#00D271")
+            ContextCompat.getColor(
+                holder.itemView.context,
+                arch.cayenne.lib.common.R.color.color_00E0E5
+            )
         } else {
             ContextCompat.getColor(
                 holder.itemView.context,
-                arch.cayenne.lib.common.R.color.secondary_text
+                arch.cayenne.lib.common.R.color.color_FFFFFF
             )
         }
         binding.tvTitle.setTextColor(titleColor)
         binding.root.setOnClickListener {
             listener.onSportSelected(bean.sportId)
         }
-        binding.tvTitle.setFontWeight(if (bean.isSelected) 500 else 400)
     }
 
     override fun createViewBinding(
