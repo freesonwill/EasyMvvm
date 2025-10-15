@@ -53,7 +53,7 @@ class MatchListRepository(
             Client.ListMatchReq.newBuilder().apply {
                 this.sportId = sportId
                 this.playType = playType
-                this.tournamentId = tournamentId
+                this.addTournamentId(tournamentId)
                 this.size = DEFAULT_MATCH_SIZE
                 this.startTime = startTime
                 this.endTime = endTime
