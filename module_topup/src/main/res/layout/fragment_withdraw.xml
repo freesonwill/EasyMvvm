@@ -32,40 +32,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <LinearLayout
-            android:id="@+id/lay_first"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_48"
-            android:layout_marginHorizontal="@dimen/dp_12"
-            android:layout_marginTop="@dimen/dp_8"
-            android:orientation="horizontal"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_tip_method">
-
-            <com.walisport.module.topup.ui.widget.PayMethodButton
-                android:id="@+id/btn_pay_ali"
-                android:layout_width="@dimen/dp_103"
-                android:layout_height="@dimen/dp_48"
-                android:layout_weight="1"
-                app:recommend="true"
-                app:type="EE" />
-
-            <com.walisport.module.topup.ui.widget.PayMethodButton
-                android:id="@+id/btn_pay_wechat"
-                android:layout_width="@dimen/dp_103"
-                android:layout_height="@dimen/dp_48"
-                android:layout_weight="1"
-                app:recommend="true"
-                app:type="BANK" />
-
-            <com.walisport.module.topup.ui.widget.PayMethodButton
-                android:id="@+id/btn_pay_ee"
-                android:layout_width="@dimen/dp_103"
-                android:layout_height="@dimen/dp_48"
-                android:layout_weight="1"
-                app:recommend="false"
-                app:type="EE" />
-        </LinearLayout>
     </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
 
 </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>

@@ -9,7 +9,7 @@
     <color name="wallet_balance">#FFFFFF</color>
     <color name="btn_withdraw">#24EE8A</color>
     <color name="btn_recharge">#000000</color>
-    <color name="text_recommend">#FE3666</color>
+    <color name="text_recommend">#FFFFFF</color>
     <color name="text_main">#FFFFFF</color>
     <color name="pay_success">#24EE8A</color>
     <color name="pay_failure">#FE3666</color>

@@ -6,6 +6,8 @@
     <string name="coin_type">币种</string>
     <string name="withdrawal">提现</string>
     <string name="recommend">推荐</string>
+    <string name="song_tip">送5%</string>
+    <string name="recharge_lk">立刻充值</string>
     <string name="crypto_coin">加密货币</string>
     <string name="fiat_coin">法币</string>
     <string name="str_more">更多</string>
@@ -14,6 +16,7 @@
     <string name="recharge_lesson">充值教程</string>
     <string name="cus_service">联系客服</string>
     <string name="add_bank">添加银行卡</string>
+    <string name="pay_custom">自定义</string>
     <string name="select_method">选择支付方式</string>
     <string name="select_tx_method">选择提现方式</string>
     <string name="current_balance">当前余额: ￥1,100.00</string>
@@ -49,6 +52,7 @@
     <string name="add_bank_confirm">确认添加</string>
     <string name="cz_bank">银行卡充值</string>
     <string name="cz_ali">支付宝充值</string>
+    <string name="cz_money">充值金额</string>
     <string name="cz_wechat">微信充值</string>
     <string name="cz_yun">云闪付充值</string>
     <string name="cz_ee">EE钱包充值</string>
