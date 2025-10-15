@@ -26,6 +26,20 @@ class OrderSportFragment : BaseFragment<OrderSportViewModel, FragmentOrderSportB
     override val vmClass: KClass<OrderSportViewModel> = OrderSportViewModel::class
 
     override fun initView(savedInstanceState: Bundle?) {
+        initTabLayout()
+        mBinding.viewPager.setupHorizontalScrollDegree()
+    }
+
+    override fun initListener() {
+        mBinding.clFilter.setOnClickListener {
+            showSportFilter()
+        }
+    }
+
+    override suspend fun createObserver() {
+    }
+
+    private fun initTabLayout() {
         val page = OrderSportPageEnum.entries.toTypedArray()
         mBinding.viewPager.adapter =
             PagerAdapter(childFragmentManager, lifecycle, page.map { it.page })
@@ -99,12 +113,9 @@ class OrderSportFragment : BaseFragment<OrderSportViewModel, FragmentOrderSportB
                 }
             })
         }
-        mBinding.viewPager.setupHorizontalScrollDegree()
     }
 
-    override fun initListener() {
-    }
-
-    override suspend fun createObserver() {
+    private fun showSportFilter() {
+        OrderSportFilterDialogFragment.newInstance().show(childFragmentManager)
     }
 }

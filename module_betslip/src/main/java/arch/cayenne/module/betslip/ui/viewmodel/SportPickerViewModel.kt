@@ -44,6 +44,11 @@ class SportPickerViewModel(private val repo: SportPickerRepository): BaseViewMod
     fun setSelectedById(id: Int) {
         val current = _onSportListener.value ?: return
         val defaultId = SportFilterBean.ALL_TYPE_ID
+        val lastSelectedId = current.filter { it.isSelected }
+        if (lastSelectedId.size == 1 && lastSelectedId[0].sportId == id && id != defaultId) {
+            return
+        }
+
         _onSportListener.value = if (id == defaultId) {
             current.map { sport ->
                 if (sport.sportId == defaultId)  {
@@ -56,7 +61,7 @@ class SportPickerViewModel(private val repo: SportPickerRepository): BaseViewMod
             current.map { sport ->
                 when (sport.sportId) {
                     defaultId -> sport.copy(isSelected = false)
-                    id -> sport.copy(isSelected = true)
+                    id -> sport.copy(isSelected = !sport.isSelected)
                     else -> sport
                 }
             }
