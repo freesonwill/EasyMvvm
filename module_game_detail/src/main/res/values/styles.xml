@@ -4,20 +4,57 @@
     <style name="CircleButtonStyle">
         <item name="android:layout_width">@dimen/dp_32</item>
         <item name="android:layout_height">@dimen/dp_32</item>
+        <item name="android:background">@drawable/selector_circle_button_bg</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
     </style>
 
     <style name="RoundedButtonStyle">
-        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">@dimen/dp_26</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+        <item name="android:paddingStart">@dimen/dp_6</item>
+        <item name="android:paddingEnd">@dimen/dp_6</item>
+        <item name="android:background">@drawable/selector_rounded_button</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/color_FFFFFF</item>
+        <item name="android:textSize">@dimen/sp_14</item>
+        <item name="android:drawablePadding">@dimen/dp_4</item>
     </style>
 
     <style name="RoundedTagStyle">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">@dimen/dp_16</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+        <item name="android:paddingStart">@dimen/dp_7</item>
+        <item name="android:paddingEnd">@dimen/dp_7</item>
+        <item name="android:background">@drawable/selector_rounded_button</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/color_C0C0C0</item>
+        <item name="android:textSize">@dimen/sp_11</item>
     </style>
 
-    <style name="PillButtonStyle">
-        <item name="android:layout_width">wrap_content</item>
+    <style name="OutlinePillButtonStyle">
+        <item name="android:layout_width">88dp</item>
         <item name="android:layout_height">@dimen/dp_48</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+        <item name="android:background">@drawable/selector_outline_pill_button</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/color_C0C0C0</item>
+        <item name="android:textSize">@dimen/sp_14</item>
+    </style>
+
+    <style name="SolidPillButtonStyle">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">@dimen/dp_48</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+        <item name="android:background">@drawable/selector_solid_pill_button</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/color_FFFFFF</item>
+        <item name="android:textSize">@dimen/sp_14</item>
     </style>
 </resources>

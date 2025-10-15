@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="swipe_for_more_game">Deslize para cima para mais jogos</string>
+    <string name="start_game">Jogar</string>
+    <string name="start_trial">Demonstração</string>
+    <string name="rtp">RTP</string>
+    <string name="max_reward">RTP Máximo</string>
+    <string name="is_playing">Jogando</string>
+    <string name="biggest_winner">Vencedor Principal</string>
+    <string name="luckiest_winner">O Vencedor de Mais Sorte</string>
+    <string name="currency_display">Exibição de Moeda</string>
+</resources>
