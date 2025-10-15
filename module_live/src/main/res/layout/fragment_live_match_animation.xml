@@ -16,7 +16,7 @@
         android:background="@color/live_video_mask">
 
 
-        <com.github.lzyzsd.jsbridge.BridgeWebView
+        <arch.cayenne.lib.common.web.WLSWebView
             android:id="@+id/animationView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

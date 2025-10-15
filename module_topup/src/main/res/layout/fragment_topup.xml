@@ -1,158 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-<arch.cayenne.lib.skin.widget.SkinnableLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<arch.cayenne.lib.common.ui.view.InterceptedLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/title_bg"
-    android:orientation="vertical">
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical"
+    app:interceptedDirection="RIGHT">
 
     <arch.cayenne.lib.common.ui.view.TitleBarView
         android:id="@+id/title_bar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        tools:ignore="MissingConstraints" />
 
     <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
-        android:id="@+id/lay_current_balance"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_52"
-        android:layout_marginStart="@dimen/dp_12"
-        android:layout_marginTop="@dimen/dp_20"
-        android:layout_marginEnd="@dimen/dp_12"
-        android:background="@drawable/bg_shape_item_round">
+        android:layout_height="@dimen/dp_46">
 
-        <arch.cayenne.lib.skin.widget.SkinnableRippleView
-            android:id="@+id/setting_notice"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:rv_bgType="top"
-            app:rv_color="@color/wallet_ripper"
-            app:rv_rippleCorner="@dimen/dp_12"
-            app:rv_rippleDuration="100"
-            app:rv_type="simpleRipple" />
-
-        <arch.cayenne.lib.skin.widget.SkinnableImageView
-            android:layout_width="@dimen/dp_20"
-            android:layout_height="@dimen/dp_20"
-            android:layout_centerVertical="true"
-            android:layout_marginStart="@dimen/dp_10"
-            android:background="@drawable/icon_current_balance"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <arch.cayenne.lib.skin.widget.SkinnableTextView
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tab_layout"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginStart="@dimen/dp_40"
-            android:text="@string/current_balance"
-            android:textColor="@color/wallet_menu_title"
-            android:textSize="@dimen/sp_15"
+            android:layout_height="@dimen/dp_26"
+            android:background="@android:color/transparent"
+            android:clipToPadding="false"
+            android:layout_marginStart="@dimen/dp_9"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <arch.cayenne.lib.skin.widget.SkinnableImageView
-            android:id="@+id/iv_refresh_balance"
-            android:layout_width="@dimen/dp_20"
-            android:layout_height="@dimen/dp_20"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:layout_marginEnd="@dimen/dp_10"
-            android:background="@drawable/icon_refresh_charge"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:tabGravity="center"
+            app:tabIndicator="@drawable/shape_home_tab_indicator"
+            app:tabIndicatorAnimationDuration="250"
+            app:tabIndicatorAnimationMode="linear"
+            app:tabIndicatorColor="@color/color_00E0E5"
+            app:tabIndicatorFullWidth="true"
+            app:tabIndicatorGravity="bottom"
+            app:tabIndicatorHeight="2dp"
+            app:tabMode="fixed"
+            app:tabPaddingBottom="@dimen/dp_6"
+            app:tabRippleColor="@null"
+            app:tabSelectedTextColor="@color/tab_select_text"
+            app:tabTextAppearance="@style/TabLayoutTextAppearance"
+            app:tabTextColor="@color/tab_text" />
     </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
 
     <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
-        android:id="@+id/lay_recharge_method"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_162"
-        android:layout_marginStart="@dimen/dp_12"
-        android:layout_marginTop="@dimen/dp_20"
-        android:layout_marginEnd="@dimen/dp_12"
-        android:background="@drawable/bg_shape_item_round">
+        android:layout_height="match_parent">
 
-        <arch.cayenne.lib.skin.widget.SkinnableTextView
-            android:id="@+id/tv_tip_method"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_12"
-            android:layout_marginTop="@dimen/dp_12"
-            android:text="@string/select_method"
-            android:textColor="@color/wallet_title"
-            android:textSize="@dimen/sp_15"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <LinearLayout
-            android:id="@+id/lay_first"
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/view_pager"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_48"
-            android:layout_marginHorizontal="@dimen/dp_12"
-            android:layout_marginTop="@dimen/dp_8"
-            android:orientation="horizontal"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_tip_method">
-
-            <com.walisport.module.topup.ui.widget.PayMethodButton
-                android:id="@+id/btn_pay_ali"
-                android:layout_width="@dimen/dp_103"
-                android:layout_height="@dimen/dp_48"
-                android:layout_weight="1"
-                app:recommend="true"
-                app:type="AliPay" />
-
-            <com.walisport.module.topup.ui.widget.PayMethodButton
-                android:id="@+id/btn_pay_wechat"
-                android:layout_width="@dimen/dp_103"
-                android:layout_height="@dimen/dp_48"
-                android:layout_weight="1"
-                app:recommend="true"
-                app:type="WeChatPay" />
-
-            <com.walisport.module.topup.ui.widget.PayMethodButton
-                android:id="@+id/btn_pay_ee"
-                android:layout_width="@dimen/dp_103"
-                android:layout_height="@dimen/dp_48"
-                android:layout_weight="1"
-                app:recommend="false"
-                app:type="EE" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_48"
-            android:layout_marginHorizontal="@dimen/dp_12"
-            android:layout_marginTop="@dimen/dp_8"
-            android:orientation="horizontal"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/lay_first">
-
-            <com.walisport.module.topup.ui.widget.PayMethodButton
-                android:id="@+id/btn_pay_bank"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                app:recommend="false"
-                app:type="BANK" />
-
-            <com.walisport.module.topup.ui.widget.PayMethodButton
-                android:id="@+id/btn_pay_rmb"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                app:recommend="false"
-                app:type="RMB" />
-
-            <com.walisport.module.topup.ui.widget.PayMethodButton
-                android:id="@+id/btn_pay_yun"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                app:recommend="false"
-                app:type="YUN" />
-        </LinearLayout>
+            android:layout_height="match_parent" />
     </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
-</arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
+</arch.cayenne.lib.common.ui.view.InterceptedLinearLayout>

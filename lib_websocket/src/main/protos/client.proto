@@ -78,7 +78,7 @@ message ListTournamentResp {
 message ListMatchReq {
     int32 sport_id = 1;     //required 球类id
     int32 play_type = 2;    //required 玩法类型, 0-全部 1-滚球 2-今日 3-早盘 4-冠军
-    int32 tournament_id = 3;//联赛id
+    repeated int32 tournament_id = 3;//联赛id
     int64 start_time = 4;   //开始时间,13 位时间戳
     int64 end_time = 5;     //结束时间,13 位时间戳
     int64 cursor_match_id = 6;         // 比赛id游标
@@ -208,7 +208,6 @@ message MultipleBetResp {
 // 500-1011: 发起提前结算
 message EarlySettleReq {
     string bet_id = 1;          //required 注单id
-    string amount = 2;           //required 提前结算本金
     string expect_price = 3;    //required 期望提前结算单位价格
     bool accept_price_reduce = 4;   //required false:不接受价格变低 true:接受价格变低下注
 }
@@ -496,7 +495,7 @@ message GetSystemMsgDetailReq {
 
 }
 message GetSystemMsgDetailResp {
-     galaxy.common.proto.MsgRecord msgRecord = 1; // 消息记录
+    galaxy.common.proto.MsgRecord msgRecord = 1; // 消息记录
 }
 // 600-1005: 比赛盘口推送
 message MatchMarketNotify {
@@ -571,7 +570,7 @@ message AppNoticeNotify {
 
 //600-1012:  提前结算推送
 message EarlySettleNotify {
-     galaxy.common.proto.Order order = 1; // 下注记录
+    galaxy.common.proto.Order order = 1; // 下注记录
 }
 
 //600-1013: 消息通知

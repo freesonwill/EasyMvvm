@@ -28,7 +28,7 @@
         app:layout_constraintTop_toBottomOf="@+id/title_bar"
         />
 
-    <com.github.lzyzsd.jsbridge.BridgeWebView
+    <arch.cayenne.lib.common.web.WLSWebView
         android:id="@+id/jsBridgeView"
         android:layout_width="0dp"
         android:layout_height="0dp"

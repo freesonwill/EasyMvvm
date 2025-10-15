@@ -29,8 +29,8 @@
 
         <arch.cayenne.lib.skin.widget.SkinnableImageView
             android:id="@+id/iv_lock"
-            android:layout_width="17dp"
-            android:layout_height="17dp"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
             android:src="@drawable/ic_market_lock"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
