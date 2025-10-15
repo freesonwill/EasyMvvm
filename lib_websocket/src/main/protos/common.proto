@@ -149,7 +149,6 @@ message Order {
     bool early_support = 11;            //是否支持提前结算
     string early_bet_amount = 12;        //提前结算总本金
     string early_return_amount = 13;    //提前结算派彩金额
-    int32 early_count = 14;      //已经提前结算的次数
     int32 result_status = 15;           //订单结果, 0-未结算 1-赢 2-和局 3-输 4-赢半 5-输半 6-退款 7-提前结算
     EarlySettlePrice early_settle_price = 16; //提前结算报价
 }
@@ -209,7 +208,6 @@ message MsgCount {
 message EarlySettlePrice {
     string bet_id = 1; //订单ID
     string price = 2;  // 提前结算1元的报价，如返回0.92，就是提前结算1元可获得0.92元，无价格或者为0表示不能进行提前结算
-    string settle_min = 4; //订单提前结算单次最小结算本金
     bool early_support = 3; //是否支持提前结算
     int32 settle_status = 5; //投注确认中，2拒单，3取消订单，4接单成功，5已结算,101 预约提前结算中,102 提前结算进行中
 }

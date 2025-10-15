@@ -29,7 +29,6 @@ object CommonExtension {
             status = status,
             earlyBetAmount = earlyBetAmount.toMoney(),
             earlyReturnAmount = earlyReturnAmount.toMoney(),
-            earlySettleTimes = earlyCount,
             resultStatus = resultStatus,
             earlySettlePrice = earlySettlePrice.toEarlySettlePriceBean(),
             betSlipType = betSlipType,
@@ -58,7 +57,6 @@ object CommonExtension {
         return EarlySettlePriceBean(
             price = price,
             earlySupport = earlySupport,
-            settleMin = settleMin,
             settleStatus = settleStatus
         )
     }
