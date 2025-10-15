@@ -130,7 +130,7 @@ class WsPopup(context: Context) : BottomPopupView(context), KoinComponent {
                         Client.ListMatchReq.newBuilder().apply {
                             this.sportId = 1
                             this.playType = 2
-                            this.tournamentId = 0
+                            this.addTournamentId(0)
                             this.size = 10
                             this.startTime = startTime
                             this.endTime = endTime
