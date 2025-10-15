@@ -10,6 +10,7 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.util.AttributeSet
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -152,15 +153,14 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
         val sheetAnim = enterAnimation()
         val offY = sheet.translationY
         val startY = sheet.height.toFloat()
+
         if (offY != startY) {
             sheet.translationY = startY
         }
         val animation = ValueAnimator.ofFloat(startY, 0f)
         animation.addUpdateListener { animation ->
             val progress = animation.animatedValue as Float
-            val h = sheet.height.toFloat() // 每幀都讀最新高度
-            val offset = startY - h
-            sheet.translationY = progress + offset
+            sheet.translationY = progress
         }
         val animatorSet = AnimatorSet().apply {
             duration = sheetAnim.duration
