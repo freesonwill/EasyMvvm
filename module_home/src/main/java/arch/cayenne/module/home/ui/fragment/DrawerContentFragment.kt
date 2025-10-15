@@ -339,7 +339,7 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
         val defaultResId = mViewModel.getDefaultResId()
         with(mBinding) {
             if (defaultResId == -1) {
-                ivIconNickname.setImageResource(R.drawable.ic_drawer_nickname)
+                ivIconNickname.setImageResource(arch.cayenne.lib.common.R.drawable.ic_avatar_default)
             } else {
                 ivIconNickname.setImageDrawable(
                     ResourcesCompat.getDrawable(
