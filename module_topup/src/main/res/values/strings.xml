@@ -10,10 +10,12 @@
     <string name="recharge_lk">立刻充值</string>
     <string name="crypto_coin">加密货币</string>
     <string name="fiat_coin">法币</string>
+    <string name="next_step">下一步</string>
     <string name="str_more">更多</string>
     <string name="copy_address">复制地址</string>
     <string name="tip_copy_suc">复制成功</string>
     <string name="recharge_lesson">充值教程</string>
+    <string name="withdraw_lesson">提现教程</string>
     <string name="cus_service">联系客服</string>
     <string name="add_bank">添加银行卡</string>
     <string name="pay_custom">自定义</string>
@@ -46,6 +48,14 @@
     <string name="bank_num_hint">输入银行卡号</string>
     <string name="bank_shu_hint">储蓄卡所属银行</string>
     <string name="tx_address">提现地址</string>
+    <string name="low_ti">最低提款</string>
+    <string name="trade_fei">交易费用</string>
+    <string name="tx_number">数量</string>
+    <string name="per_25">25%</string>
+    <string name="per_50">50%</string>
+    <string name="per_75">75%</string>
+    <string name="per_all">全部</string>
+    <string name="tx_tron">Tron地址</string>
     <string name="id_order">订单号</string>
     <string name="sk_account">收款账号</string>
     <string name="add_bank_card">添加银行卡</string>

@@ -12,7 +12,7 @@ import kotlin.reflect.KClass
  * 充值-法币页面
  */
 
-class FiatFragment : BaseFragment<FiatViewModel, FragmentFiatBinding>() {
+class TopUpFiatFragment : BaseFragment<FiatViewModel, FragmentFiatBinding>() {
 
     override val vbClass: KClass<FragmentFiatBinding> = FragmentFiatBinding::class
     override val vmClass: KClass<FiatViewModel> = FiatViewModel::class
