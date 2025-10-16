@@ -47,6 +47,7 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
             VIPLevel.Silver to R.color.shader_end_silver,
             VIPLevel.Gold to R.color.shader_end_gold,
             VIPLevel.Platinum to R.color.shader_end_platinum,
+            VIPLevel.Diamond to R.color.shader_end_diamond,
             VIPLevel.BlackDiamond to R.color.shader_end_black_diamond
         )
 
@@ -55,6 +56,7 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
         VIPLevel.Silver to R.drawable.bg_silver,
         VIPLevel.Gold to R.drawable.bg_gold,
         VIPLevel.Platinum to R.drawable.bg_platinum,
+        VIPLevel.Diamond to R.drawable.bg_diamond,
         VIPLevel.BlackDiamond to R.drawable.bg_black_diamond
     )
 
@@ -64,6 +66,7 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
             VIPLevel.Silver to R.drawable.bg_shape_silver,
             VIPLevel.Gold to R.drawable.bg_shape_gold,
             VIPLevel.Platinum to R.drawable.bg_shape_platinum,
+            VIPLevel.Diamond to R.drawable.bg_shape_diamond,
             VIPLevel.BlackDiamond to R.drawable.bg_shape_black_diamond
         )
 
@@ -73,6 +76,7 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
             VIPLevel.Silver to R.drawable.ic_percent_silver,
             VIPLevel.Gold to R.drawable.ic_percent_gold,
             VIPLevel.Platinum to R.drawable.ic_percent_platinum,
+            VIPLevel.Diamond to R.drawable.ic_percent_diamond,
             VIPLevel.BlackDiamond to R.drawable.ic_percent_black_diamond
         )
 
@@ -81,6 +85,7 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
         VIPLevel.Silver to R.drawable.ic_level_silver,
         VIPLevel.Gold to R.drawable.ic_level_gold,
         VIPLevel.Platinum to R.drawable.ic_level_platinum,
+        VIPLevel.Diamond to R.drawable.ic_level_diamond,
         VIPLevel.BlackDiamond to R.drawable.ic_level_black_diamond
     )
 
@@ -90,6 +95,7 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
             VIPLevel.Silver to R.drawable.ic_level_name_silver,
             VIPLevel.Gold to R.drawable.ic_level_name_gold,
             VIPLevel.Platinum to R.drawable.ic_level_name_platinum,
+            VIPLevel.Diamond to R.drawable.ic_level_name_diamond,
             VIPLevel.BlackDiamond to R.drawable.ic_level_name_black_diamond
         )
 
