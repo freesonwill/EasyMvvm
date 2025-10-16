@@ -40,7 +40,7 @@ class WithdrawFragment : BaseFragment<WithdrawViewModel, FragmentWithdrawBinding
                     findNavController().navigateUp()
                 }
                 tvTitleRight.clickNoRepeat {
-                    navigate(R.id.action_walletFragment_to_fundDetailsFragment)
+                    navigate(R.id.action_withdrawFragment_to_fundDetailsFragment)
                 }
             }
         }
