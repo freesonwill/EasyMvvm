@@ -8,4 +8,10 @@
     <string name="biggest_winner">Biggest Winner</string>
     <string name="luckiest_winner">Luckiest Winner</string>
     <string name="currency_display">Currency Display</string>
+    <string name="bet">Bet</string>
+    <string name="multiplier">Multiplier</string>
+    <string name="winnings">Winnings</string>
+    <string name="share_bet">Share Bet Slip</string>
+    <string name="watch_replay">Watch Replay</string>
+    <string name="yesterday">Yesterday</string>
 </resources>

@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cl_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/color_000000">
 
     <androidx.viewpager2.widget.ViewPager2
@@ -37,13 +38,13 @@
 
             <arch.cayenne.lib.skin.widget.SkinnableTextView
                 android:id="@+id/tv_biggest_winner"
-                style="@style/RoundedButtonStyle"
+                style="@style/Rounded6ButtonStyle"
                 android:drawableStart="@drawable/ic_biggest_winner"
                 android:text="@string/biggest_winner" />
 
             <arch.cayenne.lib.skin.widget.SkinnableTextView
                 android:id="@+id/tv_luckiest_winner"
-                style="@style/RoundedButtonStyle"
+                style="@style/Rounded6ButtonStyle"
                 android:layout_marginStart="@dimen/dp_9"
                 android:drawableStart="@drawable/ic_luckiest_winner"
                 android:text="@string/luckiest_winner"
@@ -53,7 +54,7 @@
 
             <arch.cayenne.lib.skin.widget.SkinnableView
                 android:id="@+id/view_currency_bg"
-                style="@style/RoundedButtonStyle"
+                style="@style/Rounded6ButtonStyle"
                 android:layout_marginStart="@dimen/dp_8"
                 app:layout_constraintBottom_toBottomOf="@id/tv_biggest_winner"
                 app:layout_constraintEnd_toEndOf="@id/tv_currency_display"

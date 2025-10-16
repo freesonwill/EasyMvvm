@@ -7,9 +7,13 @@ import androidx.recyclerview.widget.PagerSnapHelper
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+import arch.cayenne.lib.common.utils.ext.locationOnScreen
 import com.bumptech.glide.Glide
 import com.walisport.module.gamedetail.R
 import com.walisport.module.gamedetail.data.model.GameDetailBean
+import com.walisport.module.gamedetail.data.model.PlayerRankingBean
 import com.walisport.module.gamedetail.databinding.FragmentGameDetailBinding
 import com.walisport.module.gamedetail.ui.viewmodel.GameDetailViewModel
 import java.util.Locale
@@ -59,6 +63,17 @@ class GameDetailFragment: BaseFragment<GameDetailViewModel, FragmentGameDetailBi
     }
 
     override fun initListener() {
+        with(mBinding) {
+            tvBiggestWinner.clickNoRepeat {
+                it.toggleRankingFragment()
+            }
+            tvLuckiestWinner.clickNoRepeat {
+                it.toggleRankingFragment()
+            }
+            viewCurrencyBg.clickNoRepeat {
+                closeExistingRankingFragment()
+            }
+        }
     }
 
     override suspend fun createObserver() {
@@ -68,5 +83,55 @@ class GameDetailFragment: BaseFragment<GameDetailViewModel, FragmentGameDetailBi
         super.onStart()
         StatusBarConfig.statusBarType = StatusBarMode.FULLSCREEN
         setStatusBar(StatusBarConfig, mBinding.root)
+    }
+
+    private fun closeExistingRankingFragment(afterClose: ((type: PlayerRankingFragment.RankingType?) -> Unit)? = null) {
+        (childFragmentManager.findFragmentByTag(PlayerRankingFragment.TAG) as? PlayerRankingFragment).let {
+            if(it?.isAdded == true) {
+                it.close()
+                childFragmentManager.executePendingTransactions()
+            }
+            afterClose?.invoke(it?.getType())
+        }
+    }
+
+    private fun View.createRankingFragment() {
+        with(mBinding) {
+            PlayerRankingFragment.Builder().apply {
+                val screenHeight = resources.displayMetrics.heightPixels
+                val viewY = locationOnScreen[1]
+                setMarginBottom(screenHeight - viewY + 6.dp2px)
+                setTouchThroughViews(listOf(tvBiggestWinner, tvLuckiestWinner, viewCurrencyBg))
+                setRankingType(
+                    if (this@createRankingFragment == tvBiggestWinner) PlayerRankingFragment.RankingType.BIGGEST
+                    else PlayerRankingFragment.RankingType.LUCKIEST
+                )
+                // todo 介接資料
+                setRankingDatas(
+                    listOf(
+                        PlayerRankingBean(1, "美美桑内", 1, 10000, 240000, 999999, 1760427629980),
+                        PlayerRankingBean(2, "小林同學", 2, 5000, 120000, 888888, 1760427629980),
+                        PlayerRankingBean(3, "大谷翔平", 3, 3000, 80000, 777777, 1760427629980),
+                        PlayerRankingBean(4, "王柏融", 4, 2000, 60000, 666666, 1760427629980),
+                        PlayerRankingBean(5, "陽岱鋼", 5, 1000, 40000, 555555, 1760427629980),
+                        PlayerRankingBean(6, "鈴木一朗", 6, 800, 30000, 444444, 1760427629980),
+                        PlayerRankingBean(7, "松井秀喜", 7, 600, 20000, 333333, 1760427629980),
+                        PlayerRankingBean(8, "清原和博", 8, 400, 10000, 222222, 1760427629980),
+                        PlayerRankingBean(9, "佐佐木主浩", 9, 200, 5000, 111111, 1760427629980),
+                        PlayerRankingBean(10, "田中將大", 10, 100, 3000, 101010, 1760427629980)
+                    )
+                )
+            }.build().show(childFragmentManager, clRoot.id)
+        }
+    }
+
+    private fun View.toggleRankingFragment() {
+        val buttonType =
+            if (this@toggleRankingFragment == mBinding.tvBiggestWinner) PlayerRankingFragment.RankingType.BIGGEST
+            else PlayerRankingFragment.RankingType.LUCKIEST
+
+        closeExistingRankingFragment {
+            if(it != buttonType) createRankingFragment()
+        }
     }
 }

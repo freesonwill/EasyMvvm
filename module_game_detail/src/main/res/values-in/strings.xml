@@ -9,4 +9,10 @@
     <string name="biggest_winner">Pemenang Terbesar</string>
     <string name="luckiest_winner">Pemenang Paling Beruntung</string>
     <string name="currency_display">Tampilan Mata Uang</string>
+    <string name="bet">Taruhan</string>
+    <string name="multiplier">Pengali</string>
+    <string name="winnings">Kemenangan</string>
+    <string name="share_bet">Bagikan Slip Taruhan</string>
+    <string name="watch_replay">Tonton Ulang</string>
+    <string name="yesterday">Kemarin</string>
 </resources>

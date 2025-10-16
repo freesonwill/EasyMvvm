@@ -9,4 +9,10 @@
     <string name="biggest_winner">Vencedor Principal</string>
     <string name="luckiest_winner">O Vencedor de Mais Sorte</string>
     <string name="currency_display">Exibição de Moeda</string>
+    <string name="bet">Aposta</string>
+    <string name="multiplier">Multiplicador</string>
+    <string name="winnings">Ganhos</string>
+    <string name="share_bet">Compartilhar Aposta</string>
+    <string name="watch_replay">Assistir Replay</string>
+    <string name="yesterday">Ontem às</string>
 </resources>
