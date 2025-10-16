@@ -19,10 +19,10 @@ import kotlinx.coroutines.Job
 import kotlin.reflect.KClass
 
 /**
- * 充值-加密货币页面
+ * 提现-加密货币页面
  */
 
-class CryptoFragment : BaseFragment<CryptoViewModel, FragmentCryptoBinding>() {
+class WithdrawCryptoFragment : BaseFragment<CryptoViewModel, FragmentCryptoBinding>() {
 
     override val vbClass: KClass<FragmentCryptoBinding> = FragmentCryptoBinding::class
     override val vmClass: KClass<CryptoViewModel> = CryptoViewModel::class
