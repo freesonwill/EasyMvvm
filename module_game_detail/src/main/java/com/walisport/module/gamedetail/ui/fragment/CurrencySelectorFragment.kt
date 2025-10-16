@@ -9,26 +9,28 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
-import com.walisport.module.gamedetail.data.model.PlayerRankingBean
-import com.walisport.module.gamedetail.databinding.FragmentPlayerRankingBinding
-import com.walisport.module.gamedetail.ui.adapter.PlayerRankingAdapter
-import com.walisport.module.gamedetail.ui.viewmodel.PlayerRankingViewModel
+import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
+import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+import com.walisport.module.gamedetail.R
+import com.walisport.module.gamedetail.data.model.CurrencyInfoBean
+import com.walisport.module.gamedetail.databinding.FragmentCurrencySelectorBinding
+import com.walisport.module.gamedetail.ui.adapter.CurrencySelectorAdapter
+import com.walisport.module.gamedetail.ui.viewmodel.CurrencySelectorViewModel
 import kotlin.reflect.KClass
 
-class PlayerRankingFragment: BaseFragment<PlayerRankingViewModel, FragmentPlayerRankingBinding>() {
-    override val vbClass: KClass<FragmentPlayerRankingBinding> = FragmentPlayerRankingBinding::class
-    override val vmClass: KClass<PlayerRankingViewModel> = PlayerRankingViewModel::class
+class CurrencySelectorFragment: BaseFragment<CurrencySelectorViewModel, FragmentCurrencySelectorBinding>() {
+    override val vbClass: KClass<FragmentCurrencySelectorBinding> = FragmentCurrencySelectorBinding::class
+    override val vmClass: KClass<CurrencySelectorViewModel> = CurrencySelectorViewModel::class
 
-    enum class RankingType(val type: Int) { BIGGEST(1), LUCKIEST(2) }
-
-    private val rankingAdapter by lazy {
-        PlayerRankingAdapter()
+    private val currencyAdapter by lazy {
+        CurrencySelectorAdapter()
     }
 
     private var marginBottom: Int = 0
     private var touchThroughViews: List<View> = emptyList()
-    private var rankingDatas: List<PlayerRankingBean> = emptyList()
-    private var type: RankingType = RankingType.BIGGEST
+    private var currencyDatas: List<CurrencyInfoBean> = emptyList()
+    private var selectedCurrencyId: Int = -1
+    private var onCurrencySelectedListener: ((currencyId: Int) -> Unit)? = null
     private var onDismissListener: (() -> Unit)? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -42,11 +44,17 @@ class PlayerRankingFragment: BaseFragment<PlayerRankingViewModel, FragmentPlayer
 
     override fun initView(savedInstanceState: Bundle?) {
         mBinding.recyclerView.apply {
-            adapter = rankingAdapter
-            layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-            rankingDatas.takeIf { it.isNotEmpty() }?.let {
-                rankingAdapter.submitList(it)
+            adapter = currencyAdapter.apply {
+                setSelected(selectedCurrencyId)
+                setOnCurrencySelectListener(onCurrencySelectedListener)
             }
+            layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+            currencyAdapter.submitList(
+                mutableListOf<CurrencyInfoBean?>().apply {
+                    add(CurrencyInfoBean(-1, true, 1.0, null, R.string.current_currency.getString()))
+                    addAll(currencyDatas)
+                }
+            )
         }
     }
 
@@ -101,11 +109,11 @@ class PlayerRankingFragment: BaseFragment<PlayerRankingViewModel, FragmentPlayer
     }
 
     fun show(manager: FragmentManager, containerId: Int) {
-        val lastFragment = manager.findFragmentByTag(Companion.TAG)
+        val lastFragment = manager.findFragmentByTag(CurrencySelectorFragment.TAG)
         if (lastFragment == null || !lastFragment.isAdded) {
             manager.beginTransaction()
                 .setReorderingAllowed(true)
-                .add(containerId, this, Companion.TAG)
+                .add(containerId, this, CurrencySelectorFragment.TAG)
                 .commit()
         }
     }
@@ -114,16 +122,12 @@ class PlayerRankingFragment: BaseFragment<PlayerRankingViewModel, FragmentPlayer
         dismiss()
     }
 
-    fun getType(): RankingType {
-        return type
-    }
-
     class Builder {
         private var marginBottom: Int = 0
         private var touchThroughViews: List<View> = emptyList()
-        private var rankingDatas: List<PlayerRankingBean> = emptyList()
-        private var fragTag: String = ""
-        private var type: RankingType = RankingType.BIGGEST
+        private var currencyDatas: List<CurrencyInfoBean> = emptyList()
+        private var selectedCurrencyId: Int = -1
+        private var onCurrencySelectedListener: ((currencyId: Int) -> Unit)? = null
         private var onDismissListener: (() -> Unit)? = null
 
         fun setMarginBottom(value: Int) {
@@ -134,30 +138,34 @@ class PlayerRankingFragment: BaseFragment<PlayerRankingViewModel, FragmentPlayer
             touchThroughViews = views
         }
 
-        fun setRankingDatas(datas: List<PlayerRankingBean>) {
-            rankingDatas = datas
+        fun setCurrencyDatas(value: List<CurrencyInfoBean>) {
+            currencyDatas = value
         }
 
-        fun setRankingType(rankingType: RankingType) {
-            type = rankingType
+        fun setSelectedCurrencyId(value: Int) {
+            selectedCurrencyId = value
+        }
+
+        fun setOnCurrencySelectedListener(listener: (currencyId: Int) -> Unit) {
+            onCurrencySelectedListener = listener
         }
 
         fun setOnDismissListener(listener: (() -> Unit)?) {
             onDismissListener = listener
         }
 
-        fun build(): PlayerRankingFragment {
-            return PlayerRankingFragment().apply {
+        fun build(): CurrencySelectorFragment {
+            return CurrencySelectorFragment().apply {
                 this.marginBottom = this@Builder.marginBottom
                 this.touchThroughViews = this@Builder.touchThroughViews
-                this.rankingDatas = this@Builder.rankingDatas
-                this.type = this@Builder.type
+                this.currencyDatas = this@Builder.currencyDatas
+                this.selectedCurrencyId = this@Builder.selectedCurrencyId
                 this.onDismissListener = this@Builder.onDismissListener
             }
         }
     }
 
     companion object {
-        const val TAG = "PlayerRankingFragment"
+        const val TAG = "CurrencySelectorFragment"
     }
 }

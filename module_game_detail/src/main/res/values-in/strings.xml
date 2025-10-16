@@ -15,4 +15,6 @@
     <string name="share_bet">Bagikan Slip Taruhan</string>
     <string name="watch_replay">Tonton Ulang</string>
     <string name="yesterday">Kemarin</string>
+    <string name="select_currency">Tampilan Mata Uang saat Memilih Game</string>
+    <string name="current_currency">Mata Uang Kripto Saat Ini</string>
 </resources>

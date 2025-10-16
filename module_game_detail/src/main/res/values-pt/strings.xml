@@ -15,4 +15,6 @@
     <string name="share_bet">Compartilhar Aposta</string>
     <string name="watch_replay">Assistir Replay</string>
     <string name="yesterday">Ontem às</string>
+    <string name="select_currency">Exibição de Moeda ao Selecionar o Jogo</string>
+    <string name="current_currency">Criptomoeda Atual</string>
 </resources>

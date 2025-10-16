@@ -14,4 +14,6 @@
     <string name="share_bet">Share Bet Slip</string>
     <string name="watch_replay">Watch Replay</string>
     <string name="yesterday">Yesterday</string>
+    <string name="select_currency">Currency Display for Game Selection</string>
+    <string name="current_currency">Current Cryptocurrency</string>
 </resources>

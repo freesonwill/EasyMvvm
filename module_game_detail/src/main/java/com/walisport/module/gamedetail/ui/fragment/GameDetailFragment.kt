@@ -12,6 +12,7 @@ import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.locationOnScreen
 import com.bumptech.glide.Glide
 import com.walisport.module.gamedetail.R
+import com.walisport.module.gamedetail.data.model.CurrencyInfoBean
 import com.walisport.module.gamedetail.data.model.GameDetailBean
 import com.walisport.module.gamedetail.data.model.PlayerRankingBean
 import com.walisport.module.gamedetail.databinding.FragmentGameDetailBinding
@@ -72,6 +73,7 @@ class GameDetailFragment: BaseFragment<GameDetailViewModel, FragmentGameDetailBi
             }
             viewCurrencyBg.clickNoRepeat {
                 closeExistingRankingFragment()
+                it.toggleCurrencyFragment()
             }
         }
     }
@@ -85,13 +87,15 @@ class GameDetailFragment: BaseFragment<GameDetailViewModel, FragmentGameDetailBi
         setStatusBar(StatusBarConfig, mBinding.root)
     }
 
-    private fun closeExistingRankingFragment(afterClose: ((type: PlayerRankingFragment.RankingType?) -> Unit)? = null) {
+    private fun closeExistingRankingFragment(afterClose: ((isSuccess: Boolean, type: PlayerRankingFragment.RankingType?) -> Unit)? = null) {
+        var isSuccess = false
         (childFragmentManager.findFragmentByTag(PlayerRankingFragment.TAG) as? PlayerRankingFragment).let {
             if(it?.isAdded == true) {
                 it.close()
                 childFragmentManager.executePendingTransactions()
+                isSuccess = true
             }
-            afterClose?.invoke(it?.getType())
+            afterClose?.invoke(isSuccess, it?.getType())
         }
     }
 
@@ -106,6 +110,7 @@ class GameDetailFragment: BaseFragment<GameDetailViewModel, FragmentGameDetailBi
                     if (this@createRankingFragment == tvBiggestWinner) PlayerRankingFragment.RankingType.BIGGEST
                     else PlayerRankingFragment.RankingType.LUCKIEST
                 )
+                setOnDismissListener { unSelectButtons() }
                 // todo 介接資料
                 setRankingDatas(
                     listOf(
@@ -123,6 +128,7 @@ class GameDetailFragment: BaseFragment<GameDetailViewModel, FragmentGameDetailBi
                 )
             }.build().show(childFragmentManager, clRoot.id)
         }
+        this.isSelected = true
     }
 
     private fun View.toggleRankingFragment() {
@@ -130,8 +136,57 @@ class GameDetailFragment: BaseFragment<GameDetailViewModel, FragmentGameDetailBi
             if (this@toggleRankingFragment == mBinding.tvBiggestWinner) PlayerRankingFragment.RankingType.BIGGEST
             else PlayerRankingFragment.RankingType.LUCKIEST
 
-        closeExistingRankingFragment {
-            if(it != buttonType) createRankingFragment()
+        closeExistingRankingFragment { isSuccess, type ->
+            if(!isSuccess) {
+                closeExistingCurrencyFragment {
+                    createRankingFragment()
+                }
+            } else {
+                if (type != buttonType) createRankingFragment()
+            }
+        }
+    }
+
+    private fun closeExistingCurrencyFragment(afterClose: (() -> Unit)? = null) {
+        (childFragmentManager.findFragmentByTag(CurrencySelectorFragment.TAG) as? CurrencySelectorFragment).let {
+            if(it?.isAdded == true) {
+                it.close()
+                childFragmentManager.executePendingTransactions()
+            }
+            afterClose?.invoke()
+        }
+    }
+
+    private fun View.createCurrencyFragment() {
+        with(mBinding) {
+            CurrencySelectorFragment.Builder().apply {
+                setMarginBottom(265.dp2px)
+                setTouchThroughViews(listOf(tvBiggestWinner, tvLuckiestWinner, viewCurrencyBg))
+                // todo 介接資料
+                setCurrencyDatas(
+                    listOf(
+                        CurrencyInfoBean(1, true, 1.1, null, "USDT"),
+                        CurrencyInfoBean(2, true, 1.2, null, "BTC")
+                    )
+                )
+                setSelectedCurrencyId(1)
+                setOnDismissListener { unSelectButtons() }
+            }.build().show(childFragmentManager, mBinding.clRoot.id)
+        }
+        this.isSelected = true
+    }
+
+    private fun View.toggleCurrencyFragment() {
+        closeExistingCurrencyFragment {
+            createCurrencyFragment()
+        }
+    }
+
+    private fun unSelectButtons() {
+        with(mBinding) {
+            listOf(tvBiggestWinner, tvLuckiestWinner, viewCurrencyBg).forEach {
+                it.isSelected = false
+            }
         }
     }
 }
