@@ -44,12 +44,14 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
     private val shaderEndColorMap: Map<VIPLevel, Int> =
         mapOf(
             VIPLevel.Copper to R.color.shader_end_copper,
+            VIPLevel.Silver to R.color.shader_end_silver,
             VIPLevel.Platinum to R.color.shader_end_platinum,
             VIPLevel.BlackDiamond to R.color.shader_end_black_diamond
         )
 
     private val foregroundResMap = mapOf(
         VIPLevel.Copper to R.drawable.bg_copper,
+        VIPLevel.Silver to R.drawable.bg_silver,
         VIPLevel.Platinum to R.drawable.bg_platinum,
         VIPLevel.BlackDiamond to R.drawable.bg_black_diamond
     )
@@ -57,6 +59,7 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
     private val backgroundResMap =
         mapOf(
             VIPLevel.Copper to R.drawable.bg_shape_copper,
+            VIPLevel.Silver to R.drawable.bg_shape_silver,
             VIPLevel.Platinum to R.drawable.bg_shape_platinum,
             VIPLevel.BlackDiamond to R.drawable.bg_shape_black_diamond
         )
@@ -64,12 +67,14 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
     private val percentResMap =
         mapOf(
             VIPLevel.Copper to R.drawable.ic_percent_copper,
+            VIPLevel.Silver to R.drawable.ic_percent_silver,
             VIPLevel.Platinum to R.drawable.ic_percent_platinum,
             VIPLevel.BlackDiamond to R.drawable.ic_percent_black_diamond
         )
 
     private val iconResMap = mapOf(
         VIPLevel.Copper to R.drawable.ic_level_copper,
+        VIPLevel.Silver to R.drawable.ic_level_silver,
         VIPLevel.Platinum to R.drawable.ic_level_platinum,
         VIPLevel.BlackDiamond to R.drawable.ic_level_black_diamond
     )
@@ -77,6 +82,8 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
     private val levelResMap =
         mapOf(
             VIPLevel.Copper to R.drawable.ic_level_name_copper,
+            VIPLevel.Silver to R.drawable.ic_level_name_silver,
+
             VIPLevel.Platinum to R.drawable.ic_level_name_platinum,
             VIPLevel.BlackDiamond to R.drawable.ic_level_name_black_diamond
         )
