@@ -45,6 +45,7 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
         mapOf(
             VIPLevel.Copper to R.color.shader_end_copper,
             VIPLevel.Silver to R.color.shader_end_silver,
+            VIPLevel.Gold to R.color.shader_end_gold,
             VIPLevel.Platinum to R.color.shader_end_platinum,
             VIPLevel.BlackDiamond to R.color.shader_end_black_diamond
         )
@@ -52,6 +53,7 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
     private val foregroundResMap = mapOf(
         VIPLevel.Copper to R.drawable.bg_copper,
         VIPLevel.Silver to R.drawable.bg_silver,
+        VIPLevel.Gold to R.drawable.bg_gold,
         VIPLevel.Platinum to R.drawable.bg_platinum,
         VIPLevel.BlackDiamond to R.drawable.bg_black_diamond
     )
@@ -60,6 +62,7 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
         mapOf(
             VIPLevel.Copper to R.drawable.bg_shape_copper,
             VIPLevel.Silver to R.drawable.bg_shape_silver,
+            VIPLevel.Gold to R.drawable.bg_shape_gold,
             VIPLevel.Platinum to R.drawable.bg_shape_platinum,
             VIPLevel.BlackDiamond to R.drawable.bg_shape_black_diamond
         )
@@ -68,6 +71,7 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
         mapOf(
             VIPLevel.Copper to R.drawable.ic_percent_copper,
             VIPLevel.Silver to R.drawable.ic_percent_silver,
+            VIPLevel.Gold to R.drawable.ic_percent_gold,
             VIPLevel.Platinum to R.drawable.ic_percent_platinum,
             VIPLevel.BlackDiamond to R.drawable.ic_percent_black_diamond
         )
@@ -75,6 +79,7 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
     private val iconResMap = mapOf(
         VIPLevel.Copper to R.drawable.ic_level_copper,
         VIPLevel.Silver to R.drawable.ic_level_silver,
+        VIPLevel.Gold to R.drawable.ic_level_gold,
         VIPLevel.Platinum to R.drawable.ic_level_platinum,
         VIPLevel.BlackDiamond to R.drawable.ic_level_black_diamond
     )
@@ -83,7 +88,7 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
         mapOf(
             VIPLevel.Copper to R.drawable.ic_level_name_copper,
             VIPLevel.Silver to R.drawable.ic_level_name_silver,
-
+            VIPLevel.Gold to R.drawable.ic_level_name_gold,
             VIPLevel.Platinum to R.drawable.ic_level_name_platinum,
             VIPLevel.BlackDiamond to R.drawable.ic_level_name_black_diamond
         )

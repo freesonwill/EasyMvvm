@@ -4,6 +4,7 @@
     <color name="shader_start">#FFFFFF</color>
     <color name="shader_end_copper">#90EBE9</color>
     <color name="shader_end_silver">#90AEEB</color>
+    <color name="shader_end_gold">#EBD690</color>
     <color name="shader_end_platinum">#90AEEB</color>
     <color name="shader_end_black_diamond">#FFD8B6</color>
 </resources>
