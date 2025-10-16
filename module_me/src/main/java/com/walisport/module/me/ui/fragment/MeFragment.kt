@@ -3,6 +3,7 @@ package com.walisport.module.me.ui.fragment
 import android.graphics.LinearGradient
 import android.graphics.Shader
 import android.os.Bundle
+import androidx.recyclerview.widget.GridLayoutManager
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
@@ -11,12 +12,16 @@ import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getColor
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getDrawable
+import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.touchBackPressed
+import arch.cayenne.lib.common.utils.helper.showToast
 import com.walisport.module.me.R
 import com.walisport.module.me.data.constants.VIPLevel
+import com.walisport.module.me.data.model.FeaturesBean
 import com.walisport.module.me.databinding.FragmentMeBinding
+import com.walisport.module.me.ui.adapter.FeaturesAdapter
 import com.walisport.module.me.ui.viewmodel.MeViewModel
 import kotlin.reflect.KClass
 
@@ -52,6 +57,11 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
     private val levelResMap =
         mapOf(VIPLevel.BlackDiamond to R.drawable.ic_level_name_black_diamond)
 
+
+    private val featuresAdapter by lazy {
+        FeaturesAdapter()
+    }
+
     override fun initView(savedInstanceState: Bundle?) {
 
         with(mBinding) {
@@ -61,8 +71,84 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
             val day = 137
             tvJoinTime.text = "已加入${day}天"
 
-
         }
+
+        initRvFeatures()
+    }
+
+    private fun initRvFeatures() {
+        mBinding.rvFeatures.apply {
+            //某些机型上， RecyclerView存在过滚动效果。 禁用scroll, 禁用过滚动效果
+            layoutManager = object : GridLayoutManager(requireContext(), 4) {
+                override fun canScrollHorizontally(): Boolean {
+                    return false
+                }
+
+                override fun canScrollVertically(): Boolean {
+                    return false
+                }
+            }// 每行4个
+            adapter = featuresAdapter
+            itemAnimator = null
+        }
+
+        var id = 0
+        featuresAdapter.submitList(
+            listOf(
+                FeaturesBean(
+                    id++, arch.cayenne.lib.common.R.drawable.ic_drawer_fund_details,
+                    arch.cayenne.lib.common.R.string.drawer_fund_details
+                ) {
+                    showToast(arch.cayenne.lib.common.R.string.drawer_fund_details.getString())
+                },
+                FeaturesBean(
+                    id++, arch.cayenne.lib.common.R.drawable.ic_drawer_bet_record,
+                    arch.cayenne.lib.common.R.string.drawer_bet_record
+                ) {
+                    showToast(arch.cayenne.lib.common.R.string.drawer_bet_record.getString())
+                },
+                FeaturesBean(
+                    id++, arch.cayenne.lib.common.R.drawable.ic_drawer_realtime_cashback,
+                    arch.cayenne.lib.common.R.string.drawer_cash_back
+                ) {
+                    navigate(arch.cayenne.lib.res.R.string.nav_module_realtime_cashback_fragment.deeplink())
+                },
+
+                FeaturesBean(
+                    id++, arch.cayenne.lib.common.R.drawable.ic_drawer_gift,
+                    arch.cayenne.lib.common.R.string.drawer_gift
+                ) {
+                    showToast(arch.cayenne.lib.common.R.string.drawer_gift.getString())
+                },
+
+
+                FeaturesBean(
+                    id++, arch.cayenne.lib.common.R.drawable.ic_drawer_invite,
+                    arch.cayenne.lib.common.R.string.drawer_invite
+                ) {
+                    navigate(arch.cayenne.lib.res.R.string.nav_module_invite_friends_fragment.deeplink())
+                },
+                FeaturesBean(
+                    id++, arch.cayenne.lib.common.R.drawable.ic_drawer_partner,
+                    arch.cayenne.lib.common.R.string.drawer_partner
+                ) {
+                    navigate(arch.cayenne.lib.res.R.string.nav_module_partner_fragment.deeplink())
+                },
+
+                FeaturesBean(
+                    id++, arch.cayenne.lib.common.R.drawable.ic_drawer_help,
+                    arch.cayenne.lib.common.R.string.drawer_help
+                ) {
+                    showToast(arch.cayenne.lib.common.R.string.drawer_help.getString())
+                },
+                FeaturesBean(
+                    id++, arch.cayenne.lib.common.R.drawable.ic_drawer_feedback,
+                    arch.cayenne.lib.common.R.string.drawer_feedback
+                ) {
+                    navigate(arch.cayenne.lib.res.R.string.nav_module_feedback_fragment.deeplink())
+                },
+            )
+        )
     }
 
     override fun initListener() {

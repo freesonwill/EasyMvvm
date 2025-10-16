@@ -298,6 +298,15 @@
 
         </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_features"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_12"
+            android:layout_marginTop="@dimen/dp_12"
+            android:layout_marginEnd="@dimen/dp_12"
+            android:background="@drawable/bg_rv_features" />
+
 
     </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
 </arch.cayenne.lib.common.ui.view.InterceptedConstraintLayout>
