@@ -36,17 +36,20 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
     override val vbClass: KClass<FragmentMeBinding> = FragmentMeBinding::class
     override val vmClass: KClass<MeViewModel> = MeViewModel::class
 
-    private val shaderEndColor: Map<VIPLevel, Int> =
+    private val shaderEndColorMap: Map<VIPLevel, Int> =
         mapOf(VIPLevel.BlackDiamond to R.color.shader_end_black_diamond)
 
-    private val foregroundDrawable = mapOf(VIPLevel.BlackDiamond to R.drawable.bg_black_diamond)
+    private val foregroundResMap = mapOf(VIPLevel.BlackDiamond to R.drawable.bg_black_diamond)
 
-    private val backgroundDrawable =
+    private val backgroundResMap =
         mapOf(VIPLevel.BlackDiamond to R.drawable.bg_shape_black_diamond)
 
-    private val iconDrawable = mapOf(VIPLevel.BlackDiamond to R.drawable.ic_level_black_diamond)
+    private val percentResMap =
+        mapOf(VIPLevel.BlackDiamond to R.drawable.ic_percent_black_diamond)
 
-    private val levelDrawable =
+    private val iconResMap = mapOf(VIPLevel.BlackDiamond to R.drawable.ic_level_black_diamond)
+
+    private val levelResMap =
         mapOf(VIPLevel.BlackDiamond to R.drawable.ic_level_name_black_diamond)
 
     override fun initView(savedInstanceState: Bundle?) {
@@ -79,6 +82,16 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
             ivVipEntry.addScaleOnTouchAnimation()
             ivVipEntry.clickNoRepeat {
                 navigate(arch.cayenne.lib.res.R.string.nav_module_vip_fragment.deeplink())
+            }
+
+            btWithdraw.addScaleOnTouchAnimation()
+            btWithdraw.clickNoRepeat {
+                navigate(arch.cayenne.lib.res.R.string.nav_module_withdraw_fragment.deeplink())
+            }
+
+            btRecharge.addScaleOnTouchAnimation()
+            btRecharge.clickNoRepeat {
+                navigate(arch.cayenne.lib.res.R.string.nav_module_topup_fragment.deeplink())
             }
         }
 
@@ -117,12 +130,12 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
                     }
 
                     mBinding.ctVipInfo.background =
-                        backgroundDrawable.getValue(vipLevel).getDrawable()
+                        backgroundResMap.getValue(vipLevel).getDrawable()
                     mBinding.ctLevelInfo.background =
-                        foregroundDrawable.getValue(vipLevel).getDrawable()
+                        foregroundResMap.getValue(vipLevel).getDrawable()
 
-                    mBinding.ivLevel.setImageResource(iconDrawable.getValue(vipLevel))
-                    mBinding.ivLevelName.setImageResource(levelDrawable.getValue(vipLevel))
+                    mBinding.ivLevel.setImageResource(iconResMap.getValue(vipLevel))
+                    mBinding.ivLevelName.setImageResource(levelResMap.getValue(vipLevel))
 
                     val bottom = 30.dp2px.toFloat()
                     // 创建线性渐变
@@ -131,7 +144,7 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
                         0f, bottom,  // 渐变终点 (x2, y2)
                         intArrayOf(
                             R.color.shader_start.getColor(),
-                            shaderEndColor.getValue(vipLevel).getColor()
+                            shaderEndColorMap.getValue(vipLevel).getColor()
                         ),  // 渐变颜色数组
                         null,  // 渐变位置（null 表示均匀分布）
                         Shader.TileMode.CLAMP // 填充模式
@@ -141,6 +154,11 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
                     mBinding.tvLevel.paint.shader = linearGradient
                     mBinding.tvLevel.text = "VIP ${it}"
 
+                    mBinding.tvPercent.text = "57.91%"
+                    mBinding.ivPercent.setImageResource(percentResMap.getValue(vipLevel))
+                    mBinding.tvLevelUpInfo.text = "升级还需¥59w投注额"
+
+                    mBinding.tvBalance.text = "¥19901.00"
                 }
 
 

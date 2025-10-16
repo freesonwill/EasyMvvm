@@ -1,3 +1,8 @@
 <resources>
     <string name="me">Me</string>
+    <string name="recharge">Recharge</string>
+    <string name="withdraw">Withdraw</string>
+    <string name="total_balance">Total Amount</string>
+
+
 </resources>
