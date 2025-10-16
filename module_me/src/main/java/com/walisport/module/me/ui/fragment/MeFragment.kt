@@ -43,34 +43,40 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
 
     private val shaderEndColorMap: Map<VIPLevel, Int> =
         mapOf(
+            VIPLevel.Copper to R.color.shader_end_copper,
             VIPLevel.Platinum to R.color.shader_end_platinum,
             VIPLevel.BlackDiamond to R.color.shader_end_black_diamond
         )
 
     private val foregroundResMap = mapOf(
+        VIPLevel.Copper to R.drawable.bg_copper,
         VIPLevel.Platinum to R.drawable.bg_platinum,
         VIPLevel.BlackDiamond to R.drawable.bg_black_diamond
     )
 
     private val backgroundResMap =
         mapOf(
+            VIPLevel.Copper to R.drawable.bg_shape_copper,
             VIPLevel.Platinum to R.drawable.bg_shape_platinum,
             VIPLevel.BlackDiamond to R.drawable.bg_shape_black_diamond
         )
 
     private val percentResMap =
         mapOf(
+            VIPLevel.Copper to R.drawable.ic_percent_copper,
             VIPLevel.Platinum to R.drawable.ic_percent_platinum,
             VIPLevel.BlackDiamond to R.drawable.ic_percent_black_diamond
         )
 
     private val iconResMap = mapOf(
+        VIPLevel.Copper to R.drawable.ic_level_copper,
         VIPLevel.Platinum to R.drawable.ic_level_platinum,
         VIPLevel.BlackDiamond to R.drawable.ic_level_black_diamond
     )
 
     private val levelResMap =
         mapOf(
+            VIPLevel.Copper to R.drawable.ic_level_name_copper,
             VIPLevel.Platinum to R.drawable.ic_level_name_platinum,
             VIPLevel.BlackDiamond to R.drawable.ic_level_name_black_diamond
         )
