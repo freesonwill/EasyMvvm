@@ -1,13 +1,13 @@
 package arch.cayenne.module.home.ui.fragment
 
 import android.graphics.Typeface
-import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams
 import android.widget.TextView
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import arch.cayenne.lib.base.data.constants.StatusBarMode
@@ -54,18 +54,8 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
     private var drawerContentFragment: DrawerContentFragment? = null
     private var homeMediator: HomeTabMediator? = null
     private var promoTabs: List<PromoTab> = emptyList()
-
-    // 移除原生指示器 drawable 控制，統一使用自訂指示器
+    private var indicatorDrawable: android.graphics.drawable.Drawable? = null
     private var customIndicator: CustomTabIndicator? = null
-    private var indicatorDrawable: Drawable? = null
-    private var lastPromoHidden: Boolean = false
-
-    private fun updateIndicatorVisibility(isPromo: Boolean) {
-        if (lastPromoHidden == isPromo) return
-        lastPromoHidden = isPromo
-        indicatorDrawable?.alpha = if (isPromo) 0 else 255
-        indicatorDrawable?.invalidateSelf()
-    }
 
     //    private val tournamentListFragment  = TournamentListFragment.newInstance()
 
@@ -153,9 +143,8 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             )
             offscreenPageLimit = 3
             setupHorizontalScrollDegree()
-            // 預設選中：若有 promo，指到第一個非 promo 的 tab；否則 index 0
-            val defaultIndex = if (promoCount > 0) promoCount else 0
-            setCurrentItem(defaultIndex, false)
+            // 預設選中第一個可見tab（若有promo則為index 0 的promo頁）
+            setCurrentItem(0, false)
         }
     }
 
@@ -167,16 +156,15 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             post {
                 setupTabsStyle()
                 updateTabTextStyle(selectedTabPosition.coerceAtLeast(0))
-                // 綁定自定義指示器（速度交由 HomeTabIndicatorUtils + AnimationController 控制）
+                // 綁定自定義指示器，使用全域動畫速度
                 customIndicator = mBinding.homeIndicator
+                val duration = AnimationController[AnimType.scrollbar]?.duration ?: 200L
+                customIndicator?.setAnimDuration(duration)
                 mBinding.vpSub.setupViewPagerScroll(
                     this,
                     customIndicator!!,
                     tabIndicatorWidth = 0.45f
                 )
-                // 依據目前 ViewPager 當前頁是否為前置 promo 設定初始顯示狀態
-                val isPromoSelected = mBinding.vpSub.currentItem in 0 until promoTabs.size
-                mBinding.homeIndicator.alpha = if (isPromoSelected) 0f else 1f
             }
         }
     }
@@ -201,14 +189,16 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
         homeMediator?.attach { pos ->
             // 由 Mediator 回調的最終選中頁，用於控制指示器顯示/隱藏
             val isPromo = pos < promoTabs.size
-            updateIndicatorVisibility(isPromo)
+            indicatorDrawable?.alpha = if (isPromo) 0 else 255
+            mBinding.tlHome.invalidate()
         }
         // 預設選中第一個tab
         mBinding.tlHome.post {
             mBinding.tlHome.getTabAt(0)?.select()
             // 如果第一個是 promo，啟動即隱藏指示器
             if (promoTabs.isNotEmpty()) {
-                updateIndicatorVisibility(true)
+                indicatorDrawable?.alpha = 0
+                mBinding.tlHome.invalidate()
             }
         }
         // Mediator 建立完後，新增自定義監聽
@@ -217,7 +207,8 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 val position = tab.position
                 if (position < promoTabs.size) {
                     // promo：隱藏指示器、無文字選中樣式；頁面切換交由 Mediator 處理
-                    updateIndicatorVisibility(true)
+                    indicatorDrawable?.alpha = 0
+                    mBinding.tlHome.invalidate()
                 } else {
                     val playIndex = position - promoTabs.size
                     val playType = PlayType.entries[playIndex]
@@ -232,7 +223,8 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                     updateTabTextStyle(position)
 
                     // 指示器顯示
-                    updateIndicatorVisibility(false)
+                    indicatorDrawable?.alpha = 255
+                    mBinding.tlHome.invalidate()
 
                     // 頁面切換動畫全部交由 Mediator
                 }
@@ -286,8 +278,9 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             }
             tabStrip.requestLayout()
 
-            // 原生指示器關閉，改用自訂指示器
-            setSelectedTabIndicator(null)
+            indicatorDrawable =
+                ResourcesCompat.getDrawable(resources, R.drawable.shape_home_tab_indicator, null)
+            setSelectedTabIndicator(indicatorDrawable)
             setSelectedTabIndicatorColor(android.graphics.Color.TRANSPARENT)
         }
     }

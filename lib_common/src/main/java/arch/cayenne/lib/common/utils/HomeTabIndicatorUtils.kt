@@ -46,15 +46,19 @@ object HomeTabIndicatorUtils {
         val targetPosition = lastRequest.position
         val smoothScroll = lastRequest.smoothScroll
         // 配置动画，从 currentPosition 到 targetPosition
-        val controllerDuration = AnimationController[AnimType.scrollbar]?.duration ?: 200L
-        val duration: Long = if (smoothScroll) controllerDuration else 0L
+        val duration: Long =
+            if (smoothScroll) AnimationController[AnimType.scrollbar]?.duration ?: 200L else 0
         val interpolator: TimeInterpolator =
             AnimationController[AnimType.scrollbar]?.interpolator?.toInterpolator()
                 ?: LinearInterpolator()
         currentAnimator =
             ValueAnimator.ofFloat(currentPosition.toFloat(), targetPosition.toFloat()).apply {
-                // 嚴格使用全域時長（保底最小 80ms），避免被極短請求壓扁
-                this.duration = if (smoothScroll) kotlin.math.max(80L, duration) else 0L
+                //是否在设定的时间内
+                if (lastRequest.duration < duration) {
+                    this.duration = lastRequest.duration
+                } else {
+                    this.duration = duration
+                }
                 this.interpolator = interpolator
                 addUpdateListener { animation ->
                     val progress = animation.animatedValue as Float
