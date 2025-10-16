@@ -8,4 +8,5 @@
     <color name="shader_end_platinum">#90AEEB</color>
     <color name="shader_end_diamond">#8C91E0</color>
     <color name="shader_end_black_diamond">#FFD8B6</color>
+    <color name="shader_end_star_diamond">#FECAA0</color>
 </resources>

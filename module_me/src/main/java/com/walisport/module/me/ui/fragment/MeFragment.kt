@@ -48,7 +48,9 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
             VIPLevel.Gold to R.color.shader_end_gold,
             VIPLevel.Platinum to R.color.shader_end_platinum,
             VIPLevel.Diamond to R.color.shader_end_diamond,
-            VIPLevel.BlackDiamond to R.color.shader_end_black_diamond
+            VIPLevel.BlackDiamond to R.color.shader_end_black_diamond,
+            VIPLevel.StarDiamond to R.color.shader_end_star_diamond
+
         )
 
     private val foregroundResMap = mapOf(
@@ -57,7 +59,8 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
         VIPLevel.Gold to R.drawable.bg_gold,
         VIPLevel.Platinum to R.drawable.bg_platinum,
         VIPLevel.Diamond to R.drawable.bg_diamond,
-        VIPLevel.BlackDiamond to R.drawable.bg_black_diamond
+        VIPLevel.BlackDiamond to R.drawable.bg_black_diamond,
+        VIPLevel.StarDiamond to R.drawable.bg_star_diamond
     )
 
     private val backgroundResMap =
@@ -67,7 +70,8 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
             VIPLevel.Gold to R.drawable.bg_shape_gold,
             VIPLevel.Platinum to R.drawable.bg_shape_platinum,
             VIPLevel.Diamond to R.drawable.bg_shape_diamond,
-            VIPLevel.BlackDiamond to R.drawable.bg_shape_black_diamond
+            VIPLevel.BlackDiamond to R.drawable.bg_shape_black_diamond,
+            VIPLevel.StarDiamond to R.drawable.bg_shape_black_diamond
         )
 
     private val percentResMap =
@@ -77,7 +81,9 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
             VIPLevel.Gold to R.drawable.ic_percent_gold,
             VIPLevel.Platinum to R.drawable.ic_percent_platinum,
             VIPLevel.Diamond to R.drawable.ic_percent_diamond,
-            VIPLevel.BlackDiamond to R.drawable.ic_percent_black_diamond
+            VIPLevel.BlackDiamond to R.drawable.ic_percent_black_diamond,
+            VIPLevel.StarDiamond to R.drawable.ic_percent_star_diamond
+
         )
 
     private val iconResMap = mapOf(
@@ -86,7 +92,9 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
         VIPLevel.Gold to R.drawable.ic_level_gold,
         VIPLevel.Platinum to R.drawable.ic_level_platinum,
         VIPLevel.Diamond to R.drawable.ic_level_diamond,
-        VIPLevel.BlackDiamond to R.drawable.ic_level_black_diamond
+        VIPLevel.BlackDiamond to R.drawable.ic_level_black_diamond,
+        VIPLevel.StarDiamond to R.drawable.ic_level_star_diamond
+
     )
 
     private val levelResMap =
@@ -96,7 +104,9 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
             VIPLevel.Gold to R.drawable.ic_level_name_gold,
             VIPLevel.Platinum to R.drawable.ic_level_name_platinum,
             VIPLevel.Diamond to R.drawable.ic_level_name_diamond,
-            VIPLevel.BlackDiamond to R.drawable.ic_level_name_black_diamond
+            VIPLevel.BlackDiamond to R.drawable.ic_level_name_black_diamond,
+            VIPLevel.StarDiamond to R.drawable.ic_level_name_star_diamond
+
         )
 
 
