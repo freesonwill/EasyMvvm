@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="account_tr_45">#74000000</color>
+    <color name="account_line">#0FFFFFFF</color>
+    <color name="account_edit_name">#0e0f19</color>
+    <color name="account_edit_name_hint">#33FFFFFF</color>
+</resources>
