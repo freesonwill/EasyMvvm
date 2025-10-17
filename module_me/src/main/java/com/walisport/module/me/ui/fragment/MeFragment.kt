@@ -8,7 +8,6 @@ import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
-import arch.cayenne.lib.common.utils.ext.touchBackPressed
 import com.walisport.module.me.databinding.FragmentMeBinding
 import com.walisport.module.me.ui.viewmodel.MeViewModel
 import kotlin.reflect.KClass
