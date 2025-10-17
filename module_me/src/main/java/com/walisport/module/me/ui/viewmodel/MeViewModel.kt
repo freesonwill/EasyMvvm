@@ -16,7 +16,7 @@ class MeViewModel : BaseViewModel() {
 
     private val repository: MeRepository by inject { parametersOf(viewModelScope) }
 
-    private val _vipLevelLiveData = MutableLiveData<Long>(5)
+    private val _vipLevelLiveData = MutableLiveData<Long>(25)
     val vipLevelLiveData: LiveData<Long> = _vipLevelLiveData
 
     override fun initViewModel() {
@@ -26,7 +26,7 @@ class MeViewModel : BaseViewModel() {
     fun createObserver() {
         viewModelScope.launch {
             delay(1000)
-            _vipLevelLiveData.value = 5
+            _vipLevelLiveData.value = 25
         }
     }
 }
