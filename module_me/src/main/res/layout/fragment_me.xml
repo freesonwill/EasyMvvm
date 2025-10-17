@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <arch.cayenne.lib.common.ui.view.InterceptedConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -132,6 +133,64 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
+        <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="@dimen/dp_10"
+            android:layout_marginTop="@dimen/dp_10"
+            android:layout_marginEnd="@dimen/dp_10"
+            android:background="@drawable/bg_bottom_area"
+            android:orientation="vertical">
+
+
+            <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
+                android:id="@+id/skinTab"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_42"
+                android:layout_marginStart="6dp"
+                android:layout_marginTop="3dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:orientation="vertical"
+                tools:ignore="MissingConstraints">
+
+                <arch.cayenne.lib.skin.widget.SkinnableTabLayout
+                    android:id="@+id/tabLayout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/dp_36"
+                    android:layout_marginTop="@dimen/dp_2"
+                    android:layout_marginEnd="10dp"
+                    android:background="@color/main_tab_bg"
+                    android:focusable="false"
+                    app:tabIndicatorHeight="0dp"
+                    app:tabMaxWidth="60dp"
+                    app:tabMinWidth="60dp"
+                    app:tabMode="fixed"
+                    app:tabPaddingEnd="0dp"
+                    app:tabPaddingStart="0dp"
+                    app:tabRippleColor="@null"
+                    tools:ignore="SpeakableTextPresentCheck" />
+
+                <arch.cayenne.lib.common.ui.view.CustomTabIndicator
+                    android:id="@+id/customIndicator"
+                    android:layout_width="match_parent"
+                    android:layout_height="3dp"
+                    android:layout_marginEnd="13dp" />
+            </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
+
+
+            <androidx.viewpager2.widget.ViewPager2
+                android:id="@+id/vp_page"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_40"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:overScrollMode="ifContentScrolls"
+                android:paddingStart="0dp"
+                android:paddingEnd="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
 
 
     </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>

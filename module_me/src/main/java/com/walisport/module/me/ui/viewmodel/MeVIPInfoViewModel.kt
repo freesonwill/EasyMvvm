@@ -12,7 +12,7 @@ import org.koin.core.parameter.parametersOf
 import plugin.koin.KoinViewModel
 
 @KoinViewModel
-class VIPInfoViewModel : BaseViewModel() {
+class MeVIPInfoViewModel : BaseViewModel() {
 
     private val repository: MeRepository by inject { parametersOf(viewModelScope) }
 

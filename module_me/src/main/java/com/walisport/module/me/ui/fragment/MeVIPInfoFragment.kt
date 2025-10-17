@@ -3,8 +3,6 @@ package com.walisport.module.me.ui.fragment
 import android.graphics.LinearGradient
 import android.graphics.Shader
 import android.os.Bundle
-import arch.cayenne.lib.base.data.constants.StatusBarMode
-import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
@@ -13,13 +11,10 @@ import arch.cayenne.lib.common.utils.ext.ResourceExt.getColor
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getDrawable
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
-import arch.cayenne.lib.common.utils.ext.touchBackPressed
 import com.walisport.module.me.R
 import com.walisport.module.me.data.constants.VIPLevel
-import com.walisport.module.me.databinding.FragmentMeBinding
-import com.walisport.module.me.databinding.FragmentVipInfoBinding
-import com.walisport.module.me.ui.viewmodel.MeViewModel
-import com.walisport.module.me.ui.viewmodel.VIPInfoViewModel
+import com.walisport.module.me.databinding.FragmentMeVipInfoBinding
+import com.walisport.module.me.ui.viewmodel.MeVIPInfoViewModel
 import kotlin.reflect.KClass
 
 
@@ -33,10 +28,10 @@ import kotlin.reflect.KClass
  * 后台设定xx-xx位白银，xx-xx位黄金
  */
 
-class VIPInfoFragment : BaseFragment<VIPInfoViewModel, FragmentVipInfoBinding>() {
+class MeVIPInfoFragment : BaseFragment<MeVIPInfoViewModel, FragmentMeVipInfoBinding>() {
 
-    override val vbClass: KClass<FragmentVipInfoBinding> = FragmentVipInfoBinding::class
-    override val vmClass: KClass<VIPInfoViewModel> = VIPInfoViewModel::class
+    override val vbClass: KClass<FragmentMeVipInfoBinding> = FragmentMeVipInfoBinding::class
+    override val vmClass: KClass<MeVIPInfoViewModel> = MeVIPInfoViewModel::class
 
     private val shaderEndColorMap: Map<VIPLevel, Int> =
         mapOf(
