@@ -17,7 +17,6 @@ class RecentlyFragment : BaseFragment<MeVIPInfoViewModel, FragmentRecentlyBindin
     override val vbClass: KClass<FragmentRecentlyBinding> = FragmentRecentlyBinding::class
     override val vmClass: KClass<MeVIPInfoViewModel> = MeVIPInfoViewModel::class
     override fun initView(savedInstanceState: Bundle?) {
-        "".logd("")
     }
 
     override fun initListener() {

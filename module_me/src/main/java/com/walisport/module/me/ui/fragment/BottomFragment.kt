@@ -10,9 +10,14 @@ import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.CustomTabIndicatorUtils
 import arch.cayenne.lib.common.utils.ext.DimensionExt.px2sp
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
+import arch.cayenne.lib.common.utils.ext.TabLayoutExt
+import arch.cayenne.lib.common.utils.ext.TabLayoutExt.addOnTabSelectedListener2
 import arch.cayenne.lib.common.utils.ext.removeAllTips
+import arch.cayenne.lib.common.utils.ext.setupViewPagerScroll
+import arch.cayenne.lib.common.utils.ext.startFadeAnim
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.lib.skin.widget.SkinnableTextView
+import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.walisport.module.me.R
 import com.walisport.module.me.databinding.FragmentBottomBinding
@@ -87,6 +92,48 @@ class BottomFragment : BaseFragment<BottomViewModel, FragmentBottomBinding>() {
     }
 
     override fun initListener() {
+        mBinding.tabLayout.addOnTabSelectedListener2(object : TabLayoutExt.OnTabSelectedListener2 {
+            override fun onTabSelected(tab: TabLayout.Tab, isTabClick: Boolean) {
+                tab.let {
+                    if (isTabClick) {
+                        CustomTabIndicatorUtils.animateIndicatorToPosition(mBinding.customIndicator,tab.position)
+                        val vp = mBinding.vpPage
+                        vp.startFadeAnim {
+                            vp.setCurrentItem(tab.position, false)
+                            it.invoke()
+                        }
+                    }
+                }
+                tab.view.findViewById<SkinnableTextView>(R.id.tabText)?.let { textView ->
+                    textView.setTextColor(
+                        SkinnableResourceManager.getColor(
+                            textView.context,
+                            R.color.tab_selected_text_color
+                        )
+                    )
+                    textView.textSize = 15f.px2sp
+                    textView.typeface = Typeface.DEFAULT_BOLD
+                }
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab, isTabClick: Boolean) {
+                tab.view.findViewById<SkinnableTextView>(R.id.tabText)?.let { textView ->
+                    textView.setTextColor(
+                        SkinnableResourceManager.getColor(
+                            textView.context,
+                            R.color.video_tab_text_color
+                        )
+                    )
+                    textView.textSize = 15f.px2sp
+                    textView.typeface = Typeface.DEFAULT
+                }
+            }
+
+            override fun onTabReselected(tab: TabLayout.Tab, isTabClick: Boolean) {
+                // Handle reselect if needed
+            }
+        })
+        mBinding.vpPage.setupViewPagerScroll(mBinding.tabLayout,mBinding.customIndicator,0.24f)
     }
 
     override suspend fun createObserver() {

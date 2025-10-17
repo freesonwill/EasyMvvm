@@ -51,7 +51,7 @@
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/vp_page"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_40"
+        android:layout_height="match_parent"
         android:clipChildren="false"
         android:clipToPadding="false"
         android:overScrollMode="ifContentScrolls"
