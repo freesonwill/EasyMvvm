@@ -121,9 +121,11 @@
 
         </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
 
-        <include
-            android:id="@+id/includedLayout"
-            layout="@layout/layout_vip_info" />
+
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/fragment_vip_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/fragment_features"

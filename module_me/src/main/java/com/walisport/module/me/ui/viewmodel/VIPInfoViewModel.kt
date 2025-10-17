@@ -12,15 +12,21 @@ import org.koin.core.parameter.parametersOf
 import plugin.koin.KoinViewModel
 
 @KoinViewModel
-class MeViewModel : BaseViewModel() {
+class VIPInfoViewModel : BaseViewModel() {
 
     private val repository: MeRepository by inject { parametersOf(viewModelScope) }
+
+    private val _vipLevelLiveData = MutableLiveData<Long>(75)
+    val vipLevelLiveData: LiveData<Long> = _vipLevelLiveData
 
     override fun initViewModel() {
         super.initViewModel()
     }
 
     fun createObserver() {
-
+        viewModelScope.launch {
+            delay(1000)
+            _vipLevelLiveData.value = 75
+        }
     }
 }
