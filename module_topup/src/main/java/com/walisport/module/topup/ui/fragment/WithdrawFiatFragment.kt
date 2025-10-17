@@ -1,0 +1,74 @@
+package com.walisport.module.topup.ui.fragment
+
+import android.os.Bundle
+import androidx.core.view.isVisible
+import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+import com.walisport.module.topup.databinding.FragmentWithdrawFiatBinding
+import com.walisport.module.topup.ui.adapter.PayMoneyAdapter
+import com.walisport.module.topup.ui.adapter.WithdrawTypeAdapter
+import com.walisport.module.topup.ui.viewmodel.WithdrawFiatViewModel
+import kotlin.reflect.KClass
+
+/**
+ * 提现-法币页面
+ */
+
+class WithdrawFiatFragment : BaseFragment<WithdrawFiatViewModel, FragmentWithdrawFiatBinding>() {
+
+    override val vbClass: KClass<FragmentWithdrawFiatBinding> = FragmentWithdrawFiatBinding::class
+    override val vmClass: KClass<WithdrawFiatViewModel> = WithdrawFiatViewModel::class
+
+    private val withdrawTypeAdapter: WithdrawTypeAdapter by lazy {
+        WithdrawTypeAdapter(object : WithdrawTypeAdapter.PaTypeListener {
+            override fun onSelectPayType(id: Int) {
+                selectRechargeType(id)
+                mViewModel.selectRechargeType(id)
+            }
+        })
+    }
+
+    private val withdrawMoneyAdapter: PayMoneyAdapter by lazy {
+        PayMoneyAdapter(object : PayMoneyAdapter.PayMoneyListener {
+            override fun onSelectPayMoney(id: Int) {
+                mViewModel.selectPayMoney(id)
+            }
+        })
+    }
+
+    override fun initView(savedInstanceState: Bundle?) {
+        mBinding.rvWithdrawType.adapter = withdrawTypeAdapter
+        mBinding.rvWithdrawMoney.adapter = withdrawMoneyAdapter
+    }
+
+    override fun initData() {
+        super.initData()
+        mViewModel.getPayTypeList()
+    }
+
+    override fun initListener() {
+        mBinding.layWithdrawNormal.isSelected = true
+        mBinding.layWithdrawNormal.clickNoRepeat {
+            mBinding.layWithdrawNormal.isSelected = true
+            mBinding.layWithdrawYue.isSelected = false
+        }
+        mBinding.layWithdrawYue.clickNoRepeat {
+            mBinding.layWithdrawNormal.isSelected = false
+            mBinding.layWithdrawYue.isSelected = true
+        }
+    }
+
+    override suspend fun createObserver() {
+        mViewModel.onRechargeMethodListener.observe(viewLifecycleOwner) {
+            withdrawTypeAdapter.submitList(it)
+        }
+        mViewModel.onPayMoneyListener.observe(viewLifecycleOwner) {
+            withdrawMoneyAdapter.submitList(it)
+        }
+    }
+
+    private fun selectRechargeType(id: Int) {
+        mBinding.layEe.isVisible = id == 0
+        mBinding.layBank.isVisible = id == 1
+    }
+}

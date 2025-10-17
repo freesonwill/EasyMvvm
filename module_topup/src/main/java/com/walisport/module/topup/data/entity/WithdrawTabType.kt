@@ -4,9 +4,9 @@ import arch.cayenne.lib.base.data.model.PagerBean
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import com.walisport.module.topup.R
 import com.walisport.module.topup.ui.fragment.WithdrawCryptoFragment
-import com.walisport.module.topup.ui.fragment.TopUpFiatFragment
+import com.walisport.module.topup.ui.fragment.WithdrawFiatFragment
 
 enum class WithdrawTabType(val page: PagerBean) {
     CRYPTO(PagerBean(R.string.crypto_coin.getString()) { WithdrawCryptoFragment() }),
-    FIAT(PagerBean(R.string.fiat_coin.getString()) { TopUpFiatFragment() })
+    FIAT(PagerBean(R.string.fiat_coin.getString()) { WithdrawFiatFragment() })
 }
