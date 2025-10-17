@@ -1,28 +1,15 @@
 package com.walisport.module.me.ui.fragment
 
-import android.graphics.Typeface
 import android.os.Bundle
 import arch.cayenne.lib.base.data.constants.StatusBarMode
-import arch.cayenne.lib.base.data.model.PagerBean
 import arch.cayenne.lib.base.data.model.StatusBarConfig
-import arch.cayenne.lib.base.ui.adapter.PagerAdapter
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
-import arch.cayenne.lib.base.ui.fragment.launch
-import arch.cayenne.lib.common.utils.CustomTabIndicatorUtils
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
-import arch.cayenne.lib.common.utils.ext.DimensionExt.px2sp
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
-import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
-import arch.cayenne.lib.common.utils.ext.removeAllTips
-import arch.cayenne.lib.skin.res.SkinnableResourceManager
-import arch.cayenne.lib.skin.widget.SkinnableTextView
-import com.google.android.material.tabs.TabLayoutMediator
-import com.walisport.module.me.R
 import com.walisport.module.me.databinding.FragmentMeBinding
 import com.walisport.module.me.ui.viewmodel.MeViewModel
-import kotlinx.coroutines.delay
 import kotlin.reflect.KClass
 
 
@@ -51,7 +38,7 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
 
         initVIPInfo()
         initFeatures()
-        loadFragment()
+        initBottom()
     }
 
     private fun initVIPInfo() {
@@ -70,55 +57,16 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
             }
     }
 
-    private fun loadFragment() {
-        val tabSelectPosition = 0
-        with(mBinding) {
-            val list = listOf(
-                PagerBean(arch.cayenne.lib.common.R.string.drawer_recently_played.getString()) { RecentlyFragment() },
-                PagerBean(
-                    arch.cayenne.lib.common.R.string.drawer_game_collections.getString()
-                ) { GameCollectionsFragment() },
-                PagerBean(
-                    arch.cayenne.lib.common.R.string.drawer_match_collections.getString()
-                ) { MatchCollectionsFragment() },
-            )
 
-            vpPage.adapter = PagerAdapter(childFragmentManager, lifecycle, list)
-            launch {
-                delay(500)
-                vpPage.offscreenPageLimit = list.size
+    private fun initBottom() {
+        childFragmentManager.findFragmentByTag(BottomFragment.TAG) as? BottomFragment
+            ?: BottomFragment().also {
+                childFragmentManager.beginTransaction()
+                    .replace(mBinding.fragmentBottom.id, it, BottomFragment.TAG).commitNow()
             }
-
-            TabLayoutMediator(tabLayout, vpPage, false) { tab, position ->
-                tab.text = list[position].title
-                tab.setCustomView(R.layout.layout_custom_tab)
-                tab.customView?.findViewById<SkinnableTextView>(R.id.tabText)?.apply {
-                    text = list[position].title
-                    setTextColor(
-                        SkinnableResourceManager.getColor(
-                            context,
-                            if (position == tabSelectPosition) R.color.tab_selected_text_color else R.color.video_tab_text_color
-                        )
-                    )
-                    textSize = 15f.px2sp
-                    typeface =
-                        if (position == tabSelectPosition) Typeface.DEFAULT_BOLD else Typeface.DEFAULT
-
-                }
-                tab.view.setOnClickListener { /* Handle click */ }
-            }.attach()
-            tabLayout.clearOnTabSelectedListeners()
-            tabLayout.post {
-                CustomTabIndicatorUtils.animateIndicatorToPosition(
-                    mBinding.customIndicator,
-                    1,
-                    false
-                )
-                mBinding.vpPage.setCurrentItem(0, false)
-            }
-            tabLayout.removeAllTips()
-        }
     }
+
+
 
     override fun initListener() {
         with(mBinding) {
