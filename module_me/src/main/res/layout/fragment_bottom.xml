@@ -32,7 +32,6 @@
             android:background="@color/main_tab_bg"
             android:focusable="false"
             app:tabIndicatorHeight="0dp"
-            app:tabMaxWidth="60dp"
             app:tabMinWidth="60dp"
             app:tabMode="fixed"
             app:tabPaddingEnd="0dp"

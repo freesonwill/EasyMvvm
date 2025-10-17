@@ -2,11 +2,11 @@ package com.walisport.module.me.ui.fragment
 
 import android.graphics.Typeface
 import android.os.Bundle
+import android.view.View
 import arch.cayenne.lib.base.data.model.PagerBean
 import arch.cayenne.lib.base.ui.adapter.PagerAdapter
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.CustomTabIndicatorUtils
 import arch.cayenne.lib.common.utils.ext.DimensionExt.px2sp
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
@@ -21,9 +21,7 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.walisport.module.me.R
 import com.walisport.module.me.databinding.FragmentBottomBinding
-import com.walisport.module.me.databinding.FragmentRecentlyBinding
 import com.walisport.module.me.ui.viewmodel.BottomViewModel
-import com.walisport.module.me.ui.viewmodel.MeVIPInfoViewModel
 import kotlinx.coroutines.delay
 import kotlin.reflect.KClass
 
@@ -77,12 +75,21 @@ class BottomFragment : BaseFragment<BottomViewModel, FragmentBottomBinding>() {
 
                 }
                 tab.view.setOnClickListener { /* Handle click */ }
+
+                tab.customView?.findViewById<SkinnableTextView>(R.id.count)?.apply {
+                    visibility = View.VISIBLE
+                    text = if (position == 0) {
+                        "999+"
+                    } else {
+                        "1"
+                    }
+                }
             }.attach()
             tabLayout.clearOnTabSelectedListeners()
             tabLayout.post {
                 CustomTabIndicatorUtils.animateIndicatorToPosition(
                     mBinding.customIndicator,
-                    1,
+                    0,
                     false
                 )
                 mBinding.vpPage.setCurrentItem(0, false)
@@ -96,7 +103,10 @@ class BottomFragment : BaseFragment<BottomViewModel, FragmentBottomBinding>() {
             override fun onTabSelected(tab: TabLayout.Tab, isTabClick: Boolean) {
                 tab.let {
                     if (isTabClick) {
-                        CustomTabIndicatorUtils.animateIndicatorToPosition(mBinding.customIndicator,tab.position)
+                        CustomTabIndicatorUtils.animateIndicatorToPosition(
+                            mBinding.customIndicator,
+                            tab.position
+                        )
                         val vp = mBinding.vpPage
                         vp.startFadeAnim {
                             vp.setCurrentItem(tab.position, false)
@@ -133,7 +143,7 @@ class BottomFragment : BaseFragment<BottomViewModel, FragmentBottomBinding>() {
                 // Handle reselect if needed
             }
         })
-        mBinding.vpPage.setupViewPagerScroll(mBinding.tabLayout,mBinding.customIndicator,0.24f)
+        mBinding.vpPage.setupViewPagerScroll(mBinding.tabLayout, mBinding.customIndicator, 0.24f)
     }
 
     override suspend fun createObserver() {
