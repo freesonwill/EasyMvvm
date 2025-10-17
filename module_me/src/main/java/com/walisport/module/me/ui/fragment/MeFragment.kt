@@ -32,12 +32,9 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
 
     override fun initView(savedInstanceState: Bundle?) {
         with(mBinding) {
-            root.touchBackPressed()
-
             tvNickname.text = "中文sdf323"
             val day = 137
             tvJoinTime.text = "已加入${day}天"
-
         }
 
         initVIPInfo()
