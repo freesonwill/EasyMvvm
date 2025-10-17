@@ -217,18 +217,19 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
                 navigate(arch.cayenne.lib.res.R.string.nav_module_setting_fragment.deeplink())
             }
 
-            ivVipEntry.addScaleOnTouchAnimation()
-            ivVipEntry.clickNoRepeat {
+
+            includedLayout.ivVipEntry.addScaleOnTouchAnimation()
+            includedLayout.ivVipEntry.clickNoRepeat {
                 navigate(arch.cayenne.lib.res.R.string.nav_module_vip_fragment.deeplink())
             }
 
-            btWithdraw.addScaleOnTouchAnimation()
-            btWithdraw.clickNoRepeat {
+            includedLayout.btWithdraw.addScaleOnTouchAnimation()
+            includedLayout.btWithdraw.clickNoRepeat {
                 navigate(arch.cayenne.lib.res.R.string.nav_module_withdraw_fragment.deeplink())
             }
 
-            btRecharge.addScaleOnTouchAnimation()
-            btRecharge.clickNoRepeat {
+            includedLayout.btRecharge.addScaleOnTouchAnimation()
+            includedLayout.btRecharge.clickNoRepeat {
                 navigate(arch.cayenne.lib.res.R.string.nav_module_topup_fragment.deeplink())
             }
         }
@@ -267,13 +268,13 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
                         VIPLevel.Universe
                     }
 
-                    mBinding.ctVipInfo.background =
+                    mBinding.includedLayout.ctVipInfo.background =
                         backgroundResMap.getValue(vipLevel).getDrawable()
-                    mBinding.ctLevelInfo.background =
+                    mBinding.includedLayout.ctLevelInfo.background =
                         foregroundResMap.getValue(vipLevel).getDrawable()
 
-                    mBinding.ivLevel.setImageResource(iconResMap.getValue(vipLevel))
-                    mBinding.ivLevelName.setImageResource(levelResMap.getValue(vipLevel))
+                    mBinding.includedLayout.ivLevel.setImageResource(iconResMap.getValue(vipLevel))
+                    mBinding.includedLayout.ivLevelName.setImageResource(levelResMap.getValue(vipLevel))
 
                     val bottom = 30.dp2px.toFloat()
                     // 创建线性渐变
@@ -289,14 +290,14 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
                     )
 
 
-                    mBinding.tvLevel.paint.shader = linearGradient
-                    mBinding.tvLevel.text = "VIP ${it}"
+                    mBinding.includedLayout.tvLevel.paint.shader = linearGradient
+                    mBinding.includedLayout.tvLevel.text = "VIP ${it}"
 
-                    mBinding.tvPercent.text = "57.91%"
-                    mBinding.ivPercent.setImageResource(percentResMap.getValue(vipLevel))
-                    mBinding.tvLevelUpInfo.text = "升级还需¥59w投注额"
+                    mBinding.includedLayout.tvPercent.text = "57.91%"
+                    mBinding.includedLayout.ivPercent.setImageResource(percentResMap.getValue(vipLevel))
+                    mBinding.includedLayout.tvLevelUpInfo.text = "升级还需¥59w投注额"
 
-                    mBinding.tvBalance.text = "¥19901.00"
+                    mBinding.includedLayout.tvBalance.text = "¥19901.00"
                 }
 
 
