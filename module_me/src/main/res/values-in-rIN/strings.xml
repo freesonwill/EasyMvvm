@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="me">saya</string>
+    <string name="recharge">isi ulang</string>
+    <string name="withdraw">penarikan</string>
+    <string name="total_balance">jumlah total</string>
+
+
 </resources>

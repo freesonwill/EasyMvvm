@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="me">eu</string>
+    <string name="recharge">recarga</string>
+    <string name="withdraw">saque</string>
+    <string name="total_balance">montante total</string>
+
+
 </resources>
