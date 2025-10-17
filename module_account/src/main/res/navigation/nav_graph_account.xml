@@ -9,5 +9,38 @@
         android:name="arch.cayenne.module.account.ui.fragment.PersonalInfoFragment"
         android:label="PersonalInfoFragment">
         <deepLink app:uri="@string/nav_module_personal_info_fragment" />
+        <action
+            android:id="@+id/action_personalInfoFragment_to_accountEditNameFragment"
+            app:destination="@id/accountEditNameFragment" />
+        <action
+            android:id="@+id/action_personalInfoFragment_to_avatarFragment"
+            app:destination="@id/avatarFragment" />
     </fragment>
+
+    <fragment
+        android:id="@+id/accountEditNameFragment"
+        android:name="arch.cayenne.module.account.ui.fragment.AccountEditeNameFragment"
+        android:label="accountEditNameFragment">
+        <deepLink app:uri="@string/nav_module_account_edit_name_fragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/avatarFragment"
+        android:name="arch.cayenne.module.account.ui.fragment.AvatarFragment"
+        android:label="avatarFragment">
+        <deepLink app:uri="@string/nav_module_account_avatarFragment" />
+        <action
+            android:id="@+id/action_avatarFragment_to_SystemAvatarFragment"
+            app:destination="@id/SystemAvatarFragment"
+            app:popUpTo="@id/avatarFragment"
+            app:popUpToInclusive="true"
+            />
+    </fragment>
+
+    <fragment
+        android:id="@+id/SystemAvatarFragment"
+        android:name="arch.cayenne.module.account.ui.fragment.SystemAvatarFragment"
+        android:label="systemAvatarFragment">
+        <deepLink app:uri="@string/nav_module_system_avatar_fragment" />
+    </fragment>
+
 </navigation>
