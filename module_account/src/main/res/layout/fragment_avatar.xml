@@ -15,7 +15,7 @@
     <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
         android:layout_width="match_parent"
         app:layout_constraintTop_toBottomOf="@+id/titleBar"
-        android:paddingTop="@dimen/dp_50"
+        android:paddingTop="@dimen/dp_67"
         android:background="@color/app_bg"
         android:layout_weight="1"
         android:layout_height="0dp">
@@ -44,23 +44,25 @@
             android:orientation="horizontal"
             android:layout_marginStart="@dimen/dp_16"
             android:layout_marginEnd="@dimen/dp_16"
-            android:layout_marginBottom="@dimen/dp_60"
+            android:layout_marginBottom="78dp"
             android:layout_height="wrap_content">
 
 
             <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/photo"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:orientation="vertical"
-                android:gravity="center"
+                android:gravity="center_horizontal"
                 android:background="@drawable/avatar_rounded_background"
                 android:layout_height="@dimen/dp_73">
                 <ImageView
                     android:background="@drawable/avatar_image"
                     android:layout_width="24dp"
+                    android:layout_marginTop="12dp"
                     android:layout_height="24dp"/>
                 <TextView
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="8dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="15sp"
@@ -70,6 +72,7 @@
             </androidx.appcompat.widget.LinearLayoutCompat>
 
             <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/camera"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_marginStart="@dimen/dp_8"
@@ -78,11 +81,12 @@
                 android:background="@drawable/avatar_rounded_background"
                 android:layout_height="@dimen/dp_73">
                 <ImageView
+                    android:layout_marginTop="4dp"
                     android:background="@drawable/avatar_camera"
                     android:layout_width="24dp"
                     android:layout_height="24dp"/>
                 <TextView
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="9dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="15sp"
@@ -101,11 +105,12 @@
                 android:background="@drawable/avatar_rounded_background"
                 android:layout_height="@dimen/dp_73">
                 <ImageView
+                    android:layout_marginTop="2dp"
                     android:background="@drawable/avatar_system"
                     android:layout_width="24dp"
                     android:layout_height="24dp"/>
                 <TextView
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="9dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="15sp"

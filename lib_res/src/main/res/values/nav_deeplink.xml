@@ -11,6 +11,7 @@
     <string name="nav_module_league_fragment" translatable="false">walisport://module_live/leagueFragment</string>
     <string name="nav_module_personal_info_fragment" translatable="false">walisport://module_account/personalInfoFragment</string>
     <string name="nav_module_account_edit_name_fragment" translatable="false">walisport://module_account/accountEditNameFragment</string>
+    <string name="nav_module_avatar_preview_fragment" translatable="false">walisport://module_account/AvatarPreViewFragment</string>
     <string name="nav_module_system_avatar_fragment" translatable="false">walisport://module_account/systemAvatarFragment</string>
     <string name="nav_module_account_avatarFragment" translatable="false">walisport://module_account/AvatarFragment</string>
     <string name="nav_module_login_fragment" translatable="false">walisport://module_login/loginFragment?userId={userId}</string>

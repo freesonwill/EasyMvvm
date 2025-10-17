@@ -16,6 +16,7 @@ import arch.cayenne.module.account.ui.adapter.PersonalInfoAdapter
 import kotlin.reflect.KClass
 import arch.cayenne.module.account.R
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.module.account.databinding.TitleBarSystemAvatarBinding
 class SystemAvatarFragment : BaseFragment<SystemAvatarViewModel, FragmentSystemAvatarBinding>() {
     override val vbClass: KClass<FragmentSystemAvatarBinding> = FragmentSystemAvatarBinding::class
@@ -30,17 +31,21 @@ class SystemAvatarFragment : BaseFragment<SystemAvatarViewModel, FragmentSystemA
         mBinding.titleBar.loadDynamicsTitleBar(titleBarBinding.root){
             findNavController().navigateUp()
         }
+
+        mBinding.tvSave.clickNoRepeat{
+            findNavController().navigateUp()
+        }
         var params: ViewGroup.LayoutParams = mBinding.ivUserAvatar.layoutParams
         params.height = params.width
         mBinding.ivUserAvatar.layoutParams = params
-        val layoutManager = object : GridLayoutManager(context, 4) {
+        val layoutManager = object : GridLayoutManager(context, 5) {
             override fun canScrollVertically() = false
         }
         with(mBinding) {
             rvPersonalHeadGrid.layoutManager = layoutManager
-            val spanCount = 4
-            val spacingTop = 16.dp2px
-            val spacingBottom = 24.dp2px
+            val spanCount = 5
+            val spacingTop = 0.dp2px
+            val spacingBottom = 15.dp2px
             rvPersonalHeadGrid.addItemDecoration(object : RecyclerView.ItemDecoration() {
                 override fun getItemOffsets(
                     outRect: Rect,

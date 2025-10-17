@@ -30,17 +30,25 @@
         <deepLink app:uri="@string/nav_module_account_avatarFragment" />
         <action
             android:id="@+id/action_avatarFragment_to_SystemAvatarFragment"
-            app:destination="@id/SystemAvatarFragment"
-            app:popUpTo="@id/avatarFragment"
-            app:popUpToInclusive="true"
+            app:destination="@id/systemAvatarFragment"
             />
+        <action
+            android:id="@+id/action_avatarFragment_to_avatarPreViewFragment"
+            app:destination="@id/avatarPreViewFragment" />
     </fragment>
 
     <fragment
-        android:id="@+id/SystemAvatarFragment"
+        android:id="@+id/systemAvatarFragment"
         android:name="arch.cayenne.module.account.ui.fragment.SystemAvatarFragment"
         android:label="systemAvatarFragment">
         <deepLink app:uri="@string/nav_module_system_avatar_fragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/avatarPreViewFragment"
+        android:name="arch.cayenne.module.account.ui.fragment.AvatarPreviewFragment"
+        android:label="avatarPreViewFragment">
+        <deepLink app:uri="@string/nav_module_avatar_preview_fragment" />
     </fragment>
 
 </navigation>

@@ -15,7 +15,7 @@
     <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
         android:layout_width="match_parent"
         app:layout_constraintTop_toBottomOf="@+id/titleBar"
-        android:paddingTop="@dimen/dp_50"
+        android:paddingTop="@dimen/dp_67"
         android:background="@color/app_bg"
         android:layout_weight="1"
         android:layout_height="0dp">
@@ -47,19 +47,14 @@
             android:gravity="center"
             android:layout_height="wrap_content">
 
-            <arch.cayenne.lib.skin.widget.SkinnableRecyclerView
-                android:id="@+id/rv_personal_head_grid"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:clipChildren="false"
-                android:clipToPadding="false"
-                android:nestedScrollingEnabled="false"
-                app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/title_bar"
-                app:spanCount="5" />
-
+          <TextView
+              android:layout_marginBottom="@dimen/dp_43"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:textColor="@color/color_999999"
+              android:text="拖拽图片调整展示区域"
+              android:textSize="15sp"
+              />
             <TextView
                 android:id="@+id/tvSave"
                 android:layout_width="169dp"

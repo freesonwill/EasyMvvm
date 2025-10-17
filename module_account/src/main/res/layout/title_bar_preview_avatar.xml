@@ -9,21 +9,21 @@
 
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/tv_title"
-        android:text="@string/personal_info_system_avatar_title"
+        android:text="@string/user_avatar"
         style="@style/CustomToolbarTvStyle"
         android:textColor="@color/white"
         tools:ignore="MissingConstraints" />
 
 
     <ImageView
-        android:id="@+id/ivRotate"
+        android:id="@+id/ivMore"
         android:layout_width="24dp"
         android:layout_height="24dp"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:gravity="center"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:background="@drawable/avatar_rotate"
+        android:background="@drawable/avatar_more_outlined"
         />
 
 

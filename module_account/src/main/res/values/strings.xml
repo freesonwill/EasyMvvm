@@ -1,8 +1,10 @@
 <resources>
     <string name="personal_info_title" translatable="false">编辑资料</string>
     <string name="personal_info_save" translatable="false">保存</string>
+    <string name="personal_avatar_save" translatable="false">更换头像</string>
     <string name="personal_info_hint" translatable="false">填写昵称（6字以内）</string>
     <string name="info_name" translatable="false">昵称</string>
+    <string name="title_preview" translatable="false">头像预览</string>
     <string name="info_user_id" translatable="false">用户ID</string>
     <string name="head_multi_update" translatable="false">（头像可多次修改）</string>
     <string name="select_head" translatable="false">选择头像</string>
