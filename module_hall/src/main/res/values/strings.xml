@@ -6,4 +6,5 @@
     <string name="tab_slot">老虎机</string>
     <string name="back_percent">返奖率</string>
     <string name="online_count">在玩</string>
+    <string name="daily_game">每日比赛</string>
 </resources>

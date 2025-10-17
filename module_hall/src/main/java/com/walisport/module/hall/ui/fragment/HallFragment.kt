@@ -39,7 +39,7 @@ class HallFragment : BaseFragment<HallViewModel, FragmentHallBinding>() {
         HallGameTabDefault(
             res = R.drawable.ic_tab_hall_all,
             _title = R.string.tab_all.getString(),
-            _page = { GameContentFragment.newInstance() }
+            _page = { GameAllFragment.newInstance() }
         ),
         HallGameTabDefault(
             res = R.drawable.ic_tab_hall_table,
