@@ -8,7 +8,6 @@ import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
-import arch.cayenne.lib.common.utils.ext.touchBackPressed
 import com.walisport.module.me.databinding.FragmentMeBinding
 import com.walisport.module.me.ui.viewmodel.MeViewModel
 import kotlin.reflect.KClass
@@ -32,24 +31,21 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
 
     override fun initView(savedInstanceState: Bundle?) {
         with(mBinding) {
-            root.touchBackPressed()
-
             tvNickname.text = "中文sdf323"
             val day = 137
             tvJoinTime.text = "已加入${day}天"
-
         }
 
         initVIPInfo()
         initFeatures()
-
+        initBottom()
     }
 
-    private fun initVIPInfo(){
-        childFragmentManager.findFragmentByTag(VIPInfoFragment.TAG) as? VIPInfoFragment
-            ?: VIPInfoFragment().also {
+    private fun initVIPInfo() {
+        childFragmentManager.findFragmentByTag(MeVIPInfoFragment.TAG) as? MeVIPInfoFragment
+            ?: MeVIPInfoFragment().also {
                 childFragmentManager.beginTransaction()
-                    .replace(mBinding.fragmentVipInfo.id, it, VIPInfoFragment.TAG).commitNow()
+                    .replace(mBinding.fragmentVipInfo.id, it, MeVIPInfoFragment.TAG).commitNow()
             }
     }
 
@@ -60,6 +56,17 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
                     .replace(mBinding.fragmentFeatures.id, it, MeFeaturesFragment.TAG).commitNow()
             }
     }
+
+
+    private fun initBottom() {
+        childFragmentManager.findFragmentByTag(BottomFragment.TAG) as? BottomFragment
+            ?: BottomFragment().also {
+                childFragmentManager.beginTransaction()
+                    .replace(mBinding.fragmentBottom.id, it, BottomFragment.TAG).commitNow()
+            }
+    }
+
+
 
     override fun initListener() {
         with(mBinding) {
@@ -84,7 +91,7 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
     }
 
     override fun onStart() {
-        StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND()
+        StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND(autoIsNavigation = true)
         mBinding.root.fitsSystemWindows = false
         setStatusBar(StatusBarConfig, mBinding.llContent)
         super.onStart()

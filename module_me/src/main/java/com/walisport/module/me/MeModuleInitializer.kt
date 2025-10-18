@@ -3,8 +3,9 @@ package com.walisport.module.me
 import android.content.Context
 import arch.cayenne.lib.base.data.DefaultInitializer
 import com.walisport.module.me.data.MeRepository
+import com.walisport.module.me.ui.viewmodel.BottomViewModel
 import com.walisport.module.me.ui.viewmodel.FeaturesViewModel
-import com.walisport.module.me.ui.viewmodel.VIPInfoViewModel
+import com.walisport.module.me.ui.viewmodel.MeVIPInfoViewModel
 import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.core.context.loadKoinModules
 import org.koin.core.module.Module
@@ -23,7 +24,8 @@ class MeModuleInitializer : DefaultInitializer<String> {
     private val viewModules = module {
         includes(defaultModule)
         viewModelOf(::FeaturesViewModel)
-        viewModelOf(::VIPInfoViewModel)
+        viewModelOf(::MeVIPInfoViewModel)
+        viewModelOf(::BottomViewModel)
     }
     private val repoModules = module {
         factoryOf(::MeRepository)

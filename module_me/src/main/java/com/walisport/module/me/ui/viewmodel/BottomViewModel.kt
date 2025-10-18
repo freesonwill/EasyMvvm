@@ -12,12 +12,18 @@ import org.koin.core.parameter.parametersOf
 import plugin.koin.KoinViewModel
 
 @KoinViewModel
-class VIPInfoViewModel : BaseViewModel() {
+class BottomViewModel : BaseViewModel() {
 
     private val repository: MeRepository by inject { parametersOf(viewModelScope) }
 
-    private val _vipLevelLiveData = MutableLiveData<Long>(75)
-    val vipLevelLiveData: LiveData<Long> = _vipLevelLiveData
+    private val _recentlyCount = MutableLiveData<Long>(0)
+    val recentlyCount: LiveData<Long> = _recentlyCount
+
+    private val _gameCount = MutableLiveData<Long>(0)
+    val gameCount: LiveData<Long> = _gameCount
+
+    private val _matchCount = MutableLiveData<Long>(0)
+    val matchCount: LiveData<Long> = _matchCount
 
     override fun initViewModel() {
         super.initViewModel()
@@ -25,8 +31,10 @@ class VIPInfoViewModel : BaseViewModel() {
 
     fun createObserver() {
         viewModelScope.launch {
-            delay(1000)
-            _vipLevelLiveData.value = 75
+            delay(1500)
+            _recentlyCount.value = 1000
+            _gameCount.value = 1
+            _matchCount.value = 1
         }
     }
 }
