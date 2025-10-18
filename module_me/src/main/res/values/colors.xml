@@ -9,7 +9,6 @@
     <color name="shader_end_diamond">#8C91E0</color>
     <color name="shader_end_black_diamond">#FFD8B6</color>
     <color name="shader_end_star_diamond">#FECAA0</color>
-    <color name="main_tab_bg">#111111</color>
     <color name="tab_selected_text_color">#ffffff</color>
     <color name="video_tab_text_color">#999999</color>
 

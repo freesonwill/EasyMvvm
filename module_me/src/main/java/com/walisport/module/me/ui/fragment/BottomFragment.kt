@@ -69,10 +69,6 @@ class BottomFragment : BaseFragment<BottomViewModel, FragmentBottomBinding>() {
                             if (position == tabSelectPosition) R.color.tab_selected_text_color else R.color.video_tab_text_color
                         )
                     )
-                    textSize = 15f.px2sp
-                    typeface =
-                        if (position == tabSelectPosition) Typeface.DEFAULT_BOLD else Typeface.DEFAULT
-
                 }
                 tab.view.setOnClickListener { /* Handle click */ }
 
@@ -121,8 +117,6 @@ class BottomFragment : BaseFragment<BottomViewModel, FragmentBottomBinding>() {
                             R.color.tab_selected_text_color
                         )
                     )
-                    textView.textSize = 15f.px2sp
-                    textView.typeface = Typeface.DEFAULT_BOLD
                 }
             }
 
@@ -134,8 +128,6 @@ class BottomFragment : BaseFragment<BottomViewModel, FragmentBottomBinding>() {
                             R.color.video_tab_text_color
                         )
                     )
-                    textView.textSize = 15f.px2sp
-                    textView.typeface = Typeface.DEFAULT
                 }
             }
 
