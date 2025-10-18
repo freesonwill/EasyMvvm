@@ -1,5 +1,6 @@
 package arch.cayenne.module.account.ui.fragment
 
+import android.net.Uri
 import androidx.fragment.app.viewModels
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -23,6 +24,8 @@ class AvatarPreviewFragment : BaseFragment<AvatarPreviewViewModel, FragmentAvata
     }
 
     override fun initView(savedInstanceState: Bundle?) {
+        val uri = arguments?.getString("uri")
+        mBinding.ivUserAvatar.setImageURI(Uri.parse(uri))
         mBinding.titleBar.loadDynamicsTitleBar(titleBarBinding.root){
             findNavController().navigateUp()
         }
