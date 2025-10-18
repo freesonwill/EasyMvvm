@@ -91,7 +91,7 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
     }
 
     override fun onStart() {
-        StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND()
+        StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND(autoIsNavigation = true)
         mBinding.root.fitsSystemWindows = false
         setStatusBar(StatusBarConfig, mBinding.llContent)
         super.onStart()

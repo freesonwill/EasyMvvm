@@ -1,6 +1,5 @@
 package com.walisport.module.me.ui.fragment
 
-import android.graphics.Typeface
 import android.os.Bundle
 import android.view.View
 import arch.cayenne.lib.base.data.model.PagerBean
@@ -8,7 +7,6 @@ import arch.cayenne.lib.base.ui.adapter.PagerAdapter
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.common.utils.CustomTabIndicatorUtils
-import arch.cayenne.lib.common.utils.ext.DimensionExt.px2sp
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.TabLayoutExt
 import arch.cayenne.lib.common.utils.ext.TabLayoutExt.addOnTabSelectedListener2
@@ -139,6 +137,44 @@ class BottomFragment : BaseFragment<BottomViewModel, FragmentBottomBinding>() {
     }
 
     override suspend fun createObserver() {
+        with(mViewModel) {
+            recentlyCount.observe(viewLifecycleOwner) { count ->
+                mBinding.tabLayout.getTabAt(0)?.let {
+                    changeTabCount(it, count)
+                }
+            }
+            gameCount.observe(viewLifecycleOwner) { count ->
+                mBinding.tabLayout.getTabAt(1)?.let {
+                    changeTabCount(it, count)
+                }
+            }
+
+            matchCount.observe(viewLifecycleOwner) { count ->
+                mBinding.tabLayout.getTabAt(2)?.let {
+                    changeTabCount(it, count)
+                }
+            }
+
+        }
+        mViewModel.createObserver()
+
+    }
+
+    private fun changeTabCount(tab: TabLayout.Tab, count: Long) {
+        tab.customView?.findViewById<SkinnableTextView>(R.id.count)?.apply {
+            visibility = View.VISIBLE
+            if (count > 0) {
+                visibility = View.VISIBLE
+                text = if (count > 999) {
+                    "999+"
+                } else {
+                    "$count"
+                }
+            } else {
+                visibility = View.GONE
+            }
+
+        }
     }
 
     companion object {

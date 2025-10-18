@@ -2,7 +2,7 @@
 <arch.cayenne.lib.skin.widget.SkinnableLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginStart="@dimen/dp_10"
     android:layout_marginTop="@dimen/dp_10"
@@ -14,7 +14,7 @@
 
     <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
         android:id="@+id/skinTab"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="@dimen/dp_28"
         android:layout_marginStart="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_16"
