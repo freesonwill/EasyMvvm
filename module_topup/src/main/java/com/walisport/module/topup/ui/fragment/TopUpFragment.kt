@@ -1,6 +1,5 @@
 package com.walisport.module.topup.ui.fragment
 
-import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.navigation.fragment.findNavController
@@ -11,12 +10,11 @@ import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
-import arch.cayenne.lib.common.utils.ext.removeAllTips
 import arch.cayenne.lib.common.utils.ext.setupHorizontalScrollDegree
 import arch.cayenne.lib.common.utils.ext.touchBackPressed
 import com.google.android.material.tabs.TabLayoutMediator
 import com.walisport.module.topup.R
-import com.walisport.module.topup.data.entity.TabType
+import com.walisport.module.topup.data.entity.TopUpTabType
 import com.walisport.module.topup.databinding.FragmentTopupBinding
 import com.walisport.module.topup.ui.viewmodel.TopUpViewModel
 import kotlin.reflect.KClass
@@ -41,18 +39,18 @@ class TopUpFragment : BaseFragment<TopUpViewModel, FragmentTopupBinding>() {
                     findNavController().navigateUp()
                 }
                 tvTitleRight.clickNoRepeat {
-                    navigate(R.id.action_walletFragment_to_topUpRecordFragment)
+                    navigate(R.id.action_topUpFragment_to_fundDetailsFragment)
                 }
             }
         }
-        val page = TabType.entries.toTypedArray()
+        val page = TopUpTabType.entries.toTypedArray()
         mBinding.viewPager.adapter =
             PagerAdapter(childFragmentManager, lifecycle, page.map { it.page })
         TabLayoutMediator(mBinding.tabLayout, mBinding.viewPager, false) { tab, position ->
             tab.text = page[position].page.title
         }.attach()
         mBinding.tabLayout.post {
-            mBinding.tabLayout.getTabAt(1)?.view?.setPadding(21.dp2px, 0, 21.dp2px, 3.dp2px)
+            mBinding.tabLayout.getTabAt(1)?.view?.setPadding(21.dp2px, 0, 21.dp2px, 4.dp2px)
         }
         mBinding.viewPager.setupHorizontalScrollDegree()
         mBinding.root.touchBackPressed()

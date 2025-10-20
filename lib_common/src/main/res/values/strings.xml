@@ -37,4 +37,18 @@
     <string name="title_share_questions">对注单有疑惑</string>
     <string name="toast_share_copy_order">注单复制成功，快粘贴到聊天室分享吧！</string>
     <string name="toast_share_copy_link">注单链接复制成功，快去分享给朋友吧！</string>
+
+    <string name="drawer_fund_details">资金明细</string>
+    <string name="drawer_bet_record">投注记录</string>
+    <string name="drawer_cash_back">实时返水</string>
+    <string name="drawer_recently_played">最近玩过</string>
+    <string name="drawer_game_collections">游戏收藏</string>
+    <string name="drawer_match_collections">赛事收藏</string>
+    <string name="drawer_gift">活动</string>
+    <string name="drawer_settings">设置</string>
+    <string name="drawer_help">帮助</string>
+    <string name="drawer_feedback">反馈与建议</string>
+    <string name="drawer_customer_service">官方客服</string>
+    <string name="drawer_invite">邀请好友</string>
+    <string name="drawer_partner">高级合伙人</string>
 </resources>

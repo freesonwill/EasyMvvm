@@ -18,12 +18,13 @@
 
     <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_46">
+        android:layout_height="@dimen/dp_44">
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tab_layout"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/dp_26"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_4"
             android:background="@android:color/transparent"
             android:clipToPadding="false"
             android:layout_marginStart="@dimen/dp_9"

@@ -16,4 +16,18 @@
     <string name="toast_over_max">Bet limit exceeded</string>
     <string name="loading_view_text">Loading</string>
     <string name="data_empty">No data available, please try something else</string>
+
+    <string name="drawer_fund_details">Fund Details</string>
+    <string name="drawer_bet_record">Bet Records</string>
+    <string name="drawer_cash_back">Cash Back</string>
+    <string name="drawer_recently_played">Recently</string>
+    <string name="drawer_game_collections">Game Fav</string>
+    <string name="drawer_match_collections">Match Fav</string>
+    <string name="drawer_gift">Game Event</string>
+    <string name="drawer_settings">Settings</string>
+    <string name="drawer_help">Help</string>
+    <string name="drawer_feedback">Feedback</string>
+    <string name="drawer_customer_service">CS</string>
+    <string name="drawer_invite">Invite friends</string>
+    <string name="drawer_partner">Senior partner</string>
 </resources>
