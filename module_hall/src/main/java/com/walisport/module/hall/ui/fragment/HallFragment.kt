@@ -39,7 +39,7 @@ class HallFragment : BaseFragment<HallViewModel, FragmentHallBinding>() {
         HallGameTabDefault(
             res = R.drawable.ic_tab_hall_all,
             _title = R.string.tab_all.getString(),
-            _page = { GameContentFragment.newInstance() }
+            _page = { GameAllFragment.newInstance() }
         ),
         HallGameTabDefault(
             res = R.drawable.ic_tab_hall_table,
@@ -89,6 +89,7 @@ class HallFragment : BaseFragment<HallViewModel, FragmentHallBinding>() {
             TabLayoutMediator(tlGame, vpGame) { tab, position ->
                 tab.customView = createGameTabView(position, mockTabList[position])
             }.attach()
+            vpGame.setCurrentItem(1, false)
         }
     }
 
