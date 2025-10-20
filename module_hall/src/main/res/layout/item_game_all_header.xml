@@ -22,6 +22,20 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="@+id/gl_mid" />
+    <arch.cayenne.lib.common.ui.view.GameRoundProgressBar
+        android:id="@+id/pro_banner"
+        android:layout_width="30dp"
+        android:layout_height="4.5dp"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:indeterminate="false"
+        android:progressDrawable="@null"
+        app:backgroundColor="@color/color_1FFFFFFF"
+        app:progressColor="@color/color_D9D9D9"
+        app:triggerTime="3000"
+        android:layout_marginTop="@dimen/dp_7"
+        android:layout_marginEnd="@dimen/dp_8"
+        app:layout_constraintTop_toTopOf="@+id/vp_banner"
+        app:layout_constraintRight_toRightOf="@+id/vp_banner" />
     <!--  右上方邀請好友  -->
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iv_invite_friend"
