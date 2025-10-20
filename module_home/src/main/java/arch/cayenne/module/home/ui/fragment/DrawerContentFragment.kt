@@ -371,4 +371,11 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
         }
     }
 
+    override fun onStart() {
+        StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND(autoIsNavigation = true)
+        mBinding.root.fitsSystemWindows = false
+        setStatusBar(StatusBarConfig, mBinding.root)
+        super.onStart()
+    }
+
 }
