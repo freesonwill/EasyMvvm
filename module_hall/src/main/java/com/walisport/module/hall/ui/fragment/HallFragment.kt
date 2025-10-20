@@ -89,6 +89,7 @@ class HallFragment : BaseFragment<HallViewModel, FragmentHallBinding>() {
             TabLayoutMediator(tlGame, vpGame) { tab, position ->
                 tab.customView = createGameTabView(position, mockTabList[position])
             }.attach()
+            vpGame.setCurrentItem(1, false)
         }
     }
 
