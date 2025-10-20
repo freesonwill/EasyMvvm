@@ -42,6 +42,10 @@ class WithdrawCryptoFragment : BaseFragment<CryptoViewModel, FragmentWithdrawCry
         mBinding.layCustomer.clickNoRepeat {
             showToast(R.string.cus_service.getString())
         }
+        mBinding.btnSmall.clickNoRepeat { }
+        mBinding.btnMiddle.clickNoRepeat { }
+        mBinding.btnBig.clickNoRepeat { }
+        mBinding.btnAll.clickNoRepeat { }
     }
 
     override suspend fun createObserver() {

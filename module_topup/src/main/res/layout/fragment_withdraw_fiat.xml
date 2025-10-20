@@ -243,16 +243,18 @@
                     app:layout_constraintEnd_toEndOf="parent">
 
                     <arch.cayenne.lib.skin.widget.SkinnableTextView
+                        android:id="@+id/btn_small"
                         android:layout_width="@dimen/dp_70"
                         android:layout_height="@dimen/dp_32"
                         android:layout_weight="1"
                         android:background="@drawable/bg_withdraw_percent"
                         android:gravity="center"
                         android:text="@string/per_min"
-                        android:textColor="@color/tab_text"
+                        android:textColor="@color/selector_text_percent"
                         android:textSize="@dimen/sp_14" />
 
                     <arch.cayenne.lib.skin.widget.SkinnableTextView
+                        android:id="@+id/btn_middle"
                         android:layout_width="@dimen/dp_70"
                         android:layout_height="@dimen/dp_32"
                         android:layout_marginStart="@dimen/dp_6"
@@ -260,10 +262,11 @@
                         android:background="@drawable/bg_withdraw_percent"
                         android:gravity="center"
                         android:text="@string/per_25"
-                        android:textColor="@color/tab_text"
+                        android:textColor="@color/selector_text_percent"
                         android:textSize="@dimen/sp_14" />
 
                     <arch.cayenne.lib.skin.widget.SkinnableTextView
+                        android:id="@+id/btn_big"
                         android:layout_width="@dimen/dp_70"
                         android:layout_height="@dimen/dp_32"
                         android:layout_marginStart="@dimen/dp_6"
@@ -271,10 +274,11 @@
                         android:background="@drawable/bg_withdraw_percent"
                         android:gravity="center"
                         android:text="@string/per_50"
-                        android:textColor="@color/tab_text"
+                        android:textColor="@color/selector_text_percent"
                         android:textSize="@dimen/sp_14" />
 
                     <arch.cayenne.lib.skin.widget.SkinnableTextView
+                        android:id="@+id/btn_all"
                         android:layout_width="@dimen/dp_70"
                         android:layout_height="@dimen/dp_32"
                         android:layout_marginStart="@dimen/dp_6"
@@ -282,7 +286,7 @@
                         android:background="@drawable/bg_withdraw_percent"
                         android:gravity="center"
                         android:text="@string/per_max"
-                        android:textColor="@color/tab_text"
+                        android:textColor="@color/selector_text_percent"
                         android:textSize="@dimen/sp_14" />
                 </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
 

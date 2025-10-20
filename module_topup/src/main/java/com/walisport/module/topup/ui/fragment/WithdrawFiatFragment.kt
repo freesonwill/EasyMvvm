@@ -66,6 +66,10 @@ class WithdrawFiatFragment : BaseFragment<WithdrawFiatViewModel, FragmentWithdra
             args.putBoolean("isTopUp", false)
             navigate(R.id.action_withdrawFragment_to_lessonFragment, args)
         }
+        mBinding.btnSmall.clickNoRepeat { }
+        mBinding.btnMiddle.clickNoRepeat { }
+        mBinding.btnBig.clickNoRepeat { }
+        mBinding.btnAll.clickNoRepeat { }
     }
 
     override suspend fun createObserver() {
