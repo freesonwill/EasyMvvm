@@ -1,10 +1,15 @@
 package arch.cayenne.module.order.ui.fragment
 
 import android.os.Bundle
+import androidx.core.os.bundleOf
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.adapter.PagerAdapter
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.common.data.constants.DrawerAction.ACTION_OPEN
+import arch.cayenne.lib.common.data.constants.DrawerAction.KEY_ACTION
+import arch.cayenne.lib.common.data.constants.DrawerAction.REQUEST_KEY_DRAWER
+import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.removeAllTips
 import arch.cayenne.lib.common.utils.ext.setupHorizontalScrollDegree
 import arch.cayenne.module.betslip.databinding.FragmentHomeOrderBinding
@@ -29,9 +34,15 @@ class HomeOrderFragment: BaseFragment<HomeOrderViewModel, FragmentHomeOrderBindi
         }
         mBinding.viewPager.setupHorizontalScrollDegree()
     }
-
     override fun initListener() {
-
+        with (mBinding) {
+            ivHam.clickNoRepeat {
+                requireActivity().supportFragmentManager.setFragmentResult(
+                    REQUEST_KEY_DRAWER,
+                    bundleOf(KEY_ACTION to ACTION_OPEN)
+                )
+            }
+        }
     }
 
     override suspend fun createObserver() {

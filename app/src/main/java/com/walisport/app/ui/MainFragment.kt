@@ -2,16 +2,29 @@ package com.walisport.app.ui
 
 import android.os.Bundle
 import android.util.SparseArray
-import androidx.core.os.bundleOf
+import android.view.View
+import androidx.core.view.GravityCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
-import arch.cayenne.lib.base.data.constants.StatusBarMode
-import arch.cayenne.lib.base.data.model.StatusBarConfig
+import arch.cayenne.lib.base.ui.animation.AnimationController
+import arch.cayenne.lib.base.ui.animation.AnimationController.AnimType
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.base.ui.viewmodel.EmptyViewModel
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.ui.fragment.EmptyFragment
+import arch.cayenne.lib.common.utils.ext.NavResultExt.observeResult
+import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.module.chat.ui.fragment.MainChatFragment
+import arch.cayenne.lib.common.data.constants.DrawerAction.ACTION_CLOSE
+import arch.cayenne.lib.common.data.constants.DrawerAction.ACTION_INIT
+import arch.cayenne.lib.common.data.constants.DrawerAction.ACTION_OPEN
+import arch.cayenne.lib.common.data.constants.DrawerAction.KEY_ACTION
+import arch.cayenne.lib.common.data.constants.DrawerAction.REQUEST_KEY_DRAWER
+import arch.cayenne.lib.common.utils.ext.setDrawerInterpolator
+import arch.cayenne.module.home.ui.fragment.DrawerContentFragment
 import arch.cayenne.module.home.ui.fragment.NewHomeFragment
 import arch.cayenne.module.order.ui.fragment.HomeOrderFragment
 import com.walisport.app.R
@@ -29,17 +42,88 @@ class MainFragment : BaseFragment<EmptyViewModel, FragmentMainBinding>() {
     private val selectedIndex get() = mBinding.bottomNavigation.selectedIndex
     private val fragments = SparseArray<Fragment>()
     private val titleRes = arrayOf("体育","注单","聊天","我")
+    private var drawerContentFragment: DrawerContentFragment? = null
 
     override fun initView(savedInstanceState: Bundle?) {
         setCurrentFragment(selectedIndex)
+        initDrawerContent()
+        setDrawerLayoutListener()
     }
 
+    private fun initDrawerContent() {
+        //TODO 優化initDrawerContent及setCurrentFragment在replace及add問題
+        drawerContentFragment = DrawerContentFragment()
+        drawerContentFragment.also {
+            it?.setOnFunctionClickListener {
+//                    mBinding.drawerLayout.closeDrawer(GravityCompat.START)
+            }
+        }
+        //蒙層顏色依照版型作變化
+        mBinding.drawerLayout.setScrimColor(
+            SkinnableResourceManager.getColor(
+                requireContext(),
+                arch.cayenne.module.home.R.color.drawer_scrim_color
+            )
+        )
+        // 使用 view.post 將 commitNow 操作延遲到下一個訊息迴圈
+        mBinding.root.post {
+            childFragmentManager.beginTransaction()
+                .replace(
+                    mBinding.fragmentDrawerContent.id,
+                    drawerContentFragment!!,
+                    DrawerContentFragment.TAG
+                )
+                .commitNow()
+        }
+        //如果由模拟投注页面跳转到首页需要关闭左侧菜单栏
+        observeResult<String>("Drawer") {
+            mBinding.drawerLayout.closeDrawer(GravityCompat.START,false)
+        }
+    }
+    private fun setDrawerLayoutListener() {
+        with (mBinding) {
+            drawerLayout.setLayerType(View.LAYER_TYPE_NONE,null)
+            drawerLayout.addDrawerListener(object : DrawerLayout.DrawerListener {
+                override fun onDrawerSlide(drawerView: View, slideOffset: Float) {
+                    // 動畫滑動中...
+                    "onDrawerSlide slideOffset: $slideOffset".logd()
+                    if (slideOffset in 0.1f .. 0.99f && drawerLayout.layerType != View.LAYER_TYPE_NONE) {
+                        // 抽屜打開一半之前，使用軟體層
+                        drawerLayout.setLayerType(View.LAYER_TYPE_NONE, null)
+                    }
+                }
+
+                override fun onDrawerOpened(drawerView: View) {
+                    // 抽屜打開後
+                    drawerLayout.setLayerType(View.LAYER_TYPE_HARDWARE, null)
+                }
+
+                override fun onDrawerClosed(drawerView: View) {
+                    // 抽屜關閉後
+                    drawerLayout.setLayerType(View.LAYER_TYPE_NONE, null)
+                }
+
+                override fun onDrawerStateChanged(newState: Int) {
+                }
+            })
+        }
+    }
     override fun initListener() {
         mBinding.apply {
+            setDrawerLayoutListener()
+            // 設定監聽器，使用 parentFragmentManager
+            requireActivity().supportFragmentManager.setFragmentResultListener(REQUEST_KEY_DRAWER, this@MainFragment) { requestKey, bundle ->
+                when (bundle.getString(KEY_ACTION)) {
+                    ACTION_OPEN -> drawerLayout.openDrawer(GravityCompat.START)
+                    ACTION_CLOSE -> drawerLayout.closeDrawer(GravityCompat.START)
+                    ACTION_INIT -> initDrawerContent()
+                }
+            }
             bottomNavigation.setOnItemSelectedListener { container, view, position ->
                 container.setSelected(position)
                 //"bottomNavigation1----$position".logd(TAG)
                 setCurrentFragment(position)
+                initDrawerContent()
 //                when (position) {
 //                    0 -> {
 //                        val w = container.getWeight(1)
@@ -108,7 +192,12 @@ class MainFragment : BaseFragment<EmptyViewModel, FragmentMainBinding>() {
     }
 
     override suspend fun createObserver() {
-
+        launch {
+            AnimationController.getFlow(AnimType.drawerEnter).collect {
+                if(it == null) return@collect
+                mBinding.drawerLayout.setDrawerInterpolator(it.duration, it.interpolator.toInterpolator())
+            }
+        }
     }
 
     override fun onStart() {
@@ -116,9 +205,19 @@ class MainFragment : BaseFragment<EmptyViewModel, FragmentMainBinding>() {
         ViewCompat.setOnApplyWindowInsetsListener(mBinding.root) { view, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             // 给布局设置 padding，不避开状态栏，避开导航栏
+//            view.setPadding(systemBars.left, 0, systemBars.right, systemBars.bottom)
             view.setPadding(systemBars.left, 0, systemBars.right, systemBars.bottom)
             insets
         }
+
+    }
+    override fun onBackPressed(): Boolean {
+        //如果抽屉打开，截获此次返回事件，关闭抽屉
+        if(mBinding.drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            mBinding.drawerLayout.closeDrawer(GravityCompat.START)
+            return true
+        }
+        return super.onBackPressed()
     }
 
     private fun getFragment(position: Int): Fragment {
@@ -151,7 +250,7 @@ class MainFragment : BaseFragment<EmptyViewModel, FragmentMainBinding>() {
             } else {
                 show(fragment)
             }
-        }.commit()
+        }.commitNow()
         /*//java.lang.IllegalStateException: Fragment no longer exists for key f#0: unique id ba2286df-4545-4383-b414-da475c5d5aac
         childFragmentManager.beginTransaction()
             .replace(R.id.fragment_container, fragment)

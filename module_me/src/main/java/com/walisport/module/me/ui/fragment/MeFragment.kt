@@ -1,9 +1,13 @@
 package com.walisport.module.me.ui.fragment
 
 import android.os.Bundle
+import androidx.core.os.bundleOf
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.common.data.constants.DrawerAction.ACTION_OPEN
+import arch.cayenne.lib.common.data.constants.DrawerAction.KEY_ACTION
+import arch.cayenne.lib.common.data.constants.DrawerAction.REQUEST_KEY_DRAWER
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
@@ -72,7 +76,12 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
         with(mBinding) {
 
             ivDrawer.addScaleOnTouchAnimation()
-            ivDrawer.clickNoRepeat { }
+            ivDrawer.clickNoRepeat {
+                requireActivity().supportFragmentManager.setFragmentResult(
+                    REQUEST_KEY_DRAWER,
+                    bundleOf(KEY_ACTION to ACTION_OPEN)
+                )
+            }
 
             ivCustomer.addScaleOnTouchAnimation()
             ivCustomer.clickNoRepeat { }

@@ -4,13 +4,18 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.os.bundleOf
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.adapter.PagerAdapter
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.common.data.constants.DrawerAction.ACTION_OPEN
+import arch.cayenne.lib.common.data.constants.DrawerAction.KEY_ACTION
+import arch.cayenne.lib.common.data.constants.DrawerAction.REQUEST_KEY_DRAWER
 import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
+import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.touchBackPressed
 import com.google.android.material.tabs.TabLayoutMediator
 import com.walisport.module.hall.R
@@ -106,7 +111,14 @@ class HallFragment : BaseFragment<HallViewModel, FragmentHallBinding>() {
     }
 
     override fun initListener() {
-
+        with (mBinding) {
+            ivHomeSidebar.clickNoRepeat {
+                requireActivity().supportFragmentManager.setFragmentResult(
+                    REQUEST_KEY_DRAWER,
+                    bundleOf(KEY_ACTION to ACTION_OPEN)
+                )
+            }
+        }
     }
 
     override suspend fun createObserver() {
