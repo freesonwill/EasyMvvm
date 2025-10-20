@@ -67,28 +67,29 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
     }
 
     override fun onStart() {
-        mBinding.homeTopBar.post{
+        mBinding.homeTopBar.post {
             //动态设置沉浸式状态栏背景高度 状态栏高度+bar控件高度
             var barHeight = ViewUtils.getStatusBarHeight(requireContext())
             var toBarHeight = mBinding.homeTopBar.height
 
             val paramsLin = mBinding.homeBarIcon.layoutParams as LayoutParams
-            paramsLin.height = barHeight+toBarHeight
+            paramsLin.height = barHeight + toBarHeight
             mBinding.homeBarIcon.layoutParams = paramsLin
         }
         mBinding.root.fitsSystemWindows = false
         StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND(autoIsNavigation = true)
-        setStatusBar(StatusBarConfig,mBinding.llMain)
+        setStatusBar(StatusBarConfig, mBinding.llMain)
         super.onStart()
     }
+
     private fun setDrawerLayoutListener() {
-        with (mBinding) {
-            drawerLayout.setLayerType(View.LAYER_TYPE_NONE,null)
+        with(mBinding) {
+            drawerLayout.setLayerType(View.LAYER_TYPE_NONE, null)
             drawerLayout.addDrawerListener(object : DrawerLayout.DrawerListener {
                 override fun onDrawerSlide(drawerView: View, slideOffset: Float) {
                     // 動畫滑動中...
                     "onDrawerSlide slideOffset: $slideOffset".logd()
-                    if (slideOffset in 0.1f .. 0.99f && drawerLayout.layerType != View.LAYER_TYPE_NONE) {
+                    if (slideOffset in 0.1f..0.99f && drawerLayout.layerType != View.LAYER_TYPE_NONE) {
                         // 抽屜打開一半之前，使用軟體層
                         drawerLayout.setLayerType(View.LAYER_TYPE_NONE, null)
                     }
@@ -109,6 +110,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             })
         }
     }
+
     //init 一級導航欄位
     private fun initPlayTypeLayout() {
         with(mBinding) {
@@ -156,10 +158,8 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             post {
                 setupTabsStyle()
                 updateTabTextStyle(selectedTabPosition.coerceAtLeast(0))
-                // 綁定自定義指示器，使用全域動畫速度
+                // 綁定自定義指示器
                 customIndicator = mBinding.homeIndicator
-                val duration = AnimationController[AnimType.scrollbar]?.duration ?: 200L
-                customIndicator?.setAnimDuration(duration)
                 mBinding.vpSub.setupViewPagerScroll(
                     this,
                     customIndicator!!,
@@ -184,21 +184,32 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             onPreselectChanged = { pos ->
                 updateTabTextStyle(pos)
             },
-            
-        )
+
+            )
         homeMediator?.attach { pos ->
-            // 由 Mediator 回調的最終選中頁，用於控制指示器顯示/隱藏
+            // 由 Mediator 回調的最終選中頁：切換指示器與遮罩
             val isPromo = pos < promoTabs.size
             indicatorDrawable?.alpha = if (isPromo) 0 else 255
-            mBinding.tlHome.invalidate()
+
+            if (isPromo) {
+                // 停在 promo：立即顯示遮罩
+                mBinding.homeIndicatorMask.visibility = View.VISIBLE
+            } else {
+                // 從 promo 切到一般 tab：確保遮罩先 VISIBLE，延遲後才 GONE
+                if (mBinding.homeIndicatorMask.visibility == View.VISIBLE) {
+                    mBinding.homeIndicatorMask.postDelayed({
+                        mBinding.homeIndicatorMask.visibility = View.GONE
+                    }, AnimationController[AnimType.scrollbar]?.duration ?: 200L)
+                }
+                // 如果遮罩已經是 GONE（一般 tab 之間切換），則不做任何事
+            }
         }
         // 預設選中第一個tab
         mBinding.tlHome.post {
             mBinding.tlHome.getTabAt(0)?.select()
-            // 如果第一個是 promo，啟動即隱藏指示器
+            // 如果第一個是 promo，啟動即顯示遮罩
             if (promoTabs.isNotEmpty()) {
-                indicatorDrawable?.alpha = 0
-                mBinding.tlHome.invalidate()
+                mBinding.homeIndicatorMask.visibility = View.VISIBLE
             }
         }
         // Mediator 建立完後，新增自定義監聽
@@ -206,9 +217,8 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             override fun onTabSelected(tab: TabLayout.Tab, isTabClick: Boolean) {
                 val position = tab.position
                 if (position < promoTabs.size) {
-                    // promo：隱藏指示器、無文字選中樣式；頁面切換交由 Mediator 處理
-                    indicatorDrawable?.alpha = 0
-                    mBinding.tlHome.invalidate()
+                    // promo：顯示遮罩
+                    mBinding.homeIndicatorMask.visibility = View.VISIBLE
                 } else {
                     val playIndex = position - promoTabs.size
                     val playType = PlayType.entries[playIndex]
@@ -221,12 +231,6 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                     // 樣式：設為粗體，並更新顏色
                     (tab.view.getChildAt(1) as? TextView)?.typeface = Typeface.DEFAULT_BOLD
                     updateTabTextStyle(position)
-
-                    // 指示器顯示
-                    indicatorDrawable?.alpha = 255
-                    mBinding.tlHome.invalidate()
-
-                    // 頁面切換動畫全部交由 Mediator
                 }
             }
 
@@ -322,7 +326,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
 
     //init DrawerLayout Content
     private fun initDrawerContent() {
-         //避免重複創建
+        //避免重複創建
         if (drawerContentFragment != null) {
             return
         }
@@ -352,10 +356,9 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
         }
         //如果由模拟投注页面跳转到首页需要关闭左侧菜单栏
         observeResult<String>("Drawer") {
-            mBinding.drawerLayout.closeDrawer(GravityCompat.START,false)
+            mBinding.drawerLayout.closeDrawer(GravityCompat.START, false)
         }
     }
-
 
 
     override fun initData() {
@@ -382,6 +385,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 override fun onDrawerOpened(drawerView: View) {
                     initDrawerContent()
                 }
+
                 override fun onDrawerClosed(drawerView: View) {}
                 override fun onDrawerStateChanged(newState: Int) {}
 
@@ -393,8 +397,11 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
     override suspend fun createObserver() {
         launch {
             AnimationController.getFlow(AnimType.drawerEnter).collect {
-                if(it == null) return@collect
-                mBinding.drawerLayout.setDrawerInterpolator(it.duration, it.interpolator.toInterpolator())
+                if (it == null) return@collect
+                mBinding.drawerLayout.setDrawerInterpolator(
+                    it.duration,
+                    it.interpolator.toInterpolator()
+                )
             }
         }
         mViewModel.notifyToChampion.observeEvent(viewLifecycleOwner, this) {
@@ -405,8 +412,8 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             mBinding.includedLayout.tvMoney.text =
                 getString(
                     R.string.balance_format,
-                    CurrencySymbols.getSymbol(it?.currency?:""),
-                    (it?.balance?:0L).getFormalMoney()
+                    CurrencySymbols.getSymbol(it?.currency ?: ""),
+                    (it?.balance ?: 0L).getFormalMoney()
                 )
         }
 
@@ -420,13 +427,15 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
 
 
         mViewModel.apiStateListener.observe(viewLifecycleOwner) {
-            when(it) {
+            when (it) {
                 is HomeState.Tournament.LoadSuccess, HomeState.Tournament.LoadFailure, HomeState.Sport.LoadFailure -> {
 
                 }
+
                 is HomeState.FirstMatchListComplete -> {
                     initDrawerContent()
                 }
+
                 else -> Unit
             }
         }
@@ -440,6 +449,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             mBinding.vpSub.setCurrentItem(0, false)
         }
     }
+
     //設置是否允許水平滑動ViewPager，預設是可以滑動
     private fun setIsUserInputEnabled(isUserInputEnabled: Boolean) {
         mBinding.vpSub.isUserInputEnabled = isUserInputEnabled
@@ -447,7 +457,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
 
     override fun onBackPressed(): Boolean {
         //如果抽屉打开，截获此次返回事件，关闭抽屉
-        if(mBinding.drawerLayout.isDrawerOpen(GravityCompat.START)) {
+        if (mBinding.drawerLayout.isDrawerOpen(GravityCompat.START)) {
             mBinding.drawerLayout.closeDrawer(GravityCompat.START)
             return true
         }
