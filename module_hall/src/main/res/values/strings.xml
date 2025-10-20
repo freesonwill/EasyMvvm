@@ -7,4 +7,6 @@
     <string name="back_percent">返奖率</string>
     <string name="online_count">在玩</string>
     <string name="daily_game">每日比赛</string>
+    <string name="hot_game">热门游戏</string>
+    <string name="all">全部</string>
 </resources>

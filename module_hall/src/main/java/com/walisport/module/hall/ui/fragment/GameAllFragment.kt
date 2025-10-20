@@ -7,6 +7,7 @@ import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.viewmodel.EmptyViewModel
 import com.walisport.module.hall.databinding.FragmentGameAllBinding
 import com.walisport.module.hall.ui.adapter.GameAllHeaderAdapter
+import com.walisport.module.hall.ui.adapter.GameAllListAdapter
 import kotlin.reflect.KClass
 
 class GameAllFragment: BaseFragment<EmptyViewModel, FragmentGameAllBinding>() {
@@ -15,6 +16,8 @@ class GameAllFragment: BaseFragment<EmptyViewModel, FragmentGameAllBinding>() {
     }
 
     private val headerAdapter by lazy { GameAllHeaderAdapter() }
+    private val listAdapter by lazy { GameAllListAdapter() }
+
 
     override val vbClass: KClass<FragmentGameAllBinding> = FragmentGameAllBinding::class
     override val vmClass: KClass<EmptyViewModel> = EmptyViewModel::class
@@ -22,7 +25,8 @@ class GameAllFragment: BaseFragment<EmptyViewModel, FragmentGameAllBinding>() {
     override fun initView(savedInstanceState: Bundle?) {
         with(mBinding) {
             val concatAdapter = ConcatAdapter(
-                headerAdapter
+                headerAdapter,
+                listAdapter
             )
             rvContent.layoutManager = LinearLayoutManager(requireContext())
             rvContent.adapter = concatAdapter
