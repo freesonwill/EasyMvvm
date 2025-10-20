@@ -523,7 +523,7 @@
                 android:orientation="horizontal">
 
                 <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
-                    android:id="@+id/lay_lesson"
+                    android:id="@+id/bet_detail_lesson"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
@@ -593,6 +593,7 @@
                 android:orientation="horizontal">
 
                 <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
+                    android:id="@+id/lay_withdraw_lesson"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"

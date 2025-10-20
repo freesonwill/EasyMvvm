@@ -9,6 +9,7 @@ import com.walisport.module.topup.ui.viewmodel.RealTimeCashBackViewModel
 import com.walisport.module.topup.ui.viewmodel.TopUpViewModel
 import com.walisport.module.topup.ui.viewmodel.CryptoViewModel
 import com.walisport.module.topup.ui.viewmodel.FiatViewModel
+import com.walisport.module.topup.ui.viewmodel.BetDetailViewModel
 import com.walisport.module.topup.ui.viewmodel.WithdrawFiatViewModel
 import com.walisport.module.topup.ui.viewmodel.WithdrawViewModel
 import org.koin.androidx.viewmodel.dsl.viewModelOf
@@ -32,6 +33,7 @@ class TopUpModuleInitializer : DefaultInitializer<String> {
         viewModelOf(::WithdrawViewModel)
         viewModelOf(::CryptoViewModel)
         viewModelOf(::FiatViewModel)
+        viewModelOf(::BetDetailViewModel)
         viewModelOf(::WithdrawFiatViewModel)
         viewModelOf(::FundDetailsViewModel)
         viewModelOf(::RealTimeCashBackViewModel)

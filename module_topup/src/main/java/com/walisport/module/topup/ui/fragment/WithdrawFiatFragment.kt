@@ -3,7 +3,9 @@ package com.walisport.module.topup.ui.fragment
 import android.os.Bundle
 import androidx.core.view.isVisible
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+import com.walisport.module.topup.R
 import com.walisport.module.topup.databinding.FragmentWithdrawFiatBinding
 import com.walisport.module.topup.ui.adapter.PayMoneyAdapter
 import com.walisport.module.topup.ui.adapter.WithdrawTypeAdapter
@@ -55,6 +57,14 @@ class WithdrawFiatFragment : BaseFragment<WithdrawFiatViewModel, FragmentWithdra
         mBinding.layWithdrawYue.clickNoRepeat {
             mBinding.layWithdrawNormal.isSelected = false
             mBinding.layWithdrawYue.isSelected = true
+        }
+        mBinding.betDetailLesson.clickNoRepeat {
+            navigate(R.id.action_withdrawFragment_to_betDetailFragment)
+        }
+        mBinding.layWithdrawLesson.clickNoRepeat {
+            val args = Bundle()
+            args.putBoolean("isTopUp", false)
+            navigate(R.id.action_withdrawFragment_to_lessonFragment, args)
         }
     }
 
