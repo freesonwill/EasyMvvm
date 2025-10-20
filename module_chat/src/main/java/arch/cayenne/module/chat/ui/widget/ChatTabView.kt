@@ -8,6 +8,10 @@ import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.module.chat.R
 import arch.cayenne.module.chat.databinding.TabChatTopLayoutBinding
+import arch.cayenne.module.chat.ui.widget.ChatTabItemView.Companion.NORMAL
+import arch.cayenne.module.chat.ui.widget.ChatTabItemView.Companion.LIVING
+import arch.cayenne.module.chat.ui.widget.ChatTabItemView.Companion.CUSTOMER
+
 
 /**
  * @author: wenxi
@@ -17,10 +21,16 @@ import arch.cayenne.module.chat.databinding.TabChatTopLayoutBinding
 class ChatTabView : LinearLayout {
     val binding = TabChatTopLayoutBinding.inflate(LayoutInflater.from(context), this, true)
 
-    private var select: Int = ChatTabItemView.NORMAL
+    private var select: Int = NORMAL
     private var chatClicks: Int = 0
     private var livingClicks: Int = 0
     private var customerClicks: Int = 0
+
+    private val ACTION_NORMAL_TO_LIVING = 100
+    private val ACTION_NORMAL_TO_CUSTOMER = 101
+    private val ACTION_LIVING_TO_NORMAL = 102
+    private val ACTION_CUSTOMER_TO_NORMAL = 103
+
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attr: AttributeSet?) : super(context, attr)
@@ -35,10 +45,11 @@ class ChatTabView : LinearLayout {
         initChatTab()
         initLivingTab()
         initCustomerTab()
+        setTabMargin()
         binding.apply {
-            tabChatRoom.initTab()
-            tabChatLiving.initTab()
-            tabChatCustomer.initTab()
+            tabChatRoom.initTab(NORMAL)
+            tabChatLiving.initTab(LIVING)
+            tabChatCustomer.initTab(CUSTOMER)
         }
     }
 
@@ -47,36 +58,16 @@ class ChatTabView : LinearLayout {
     fun initListener() {
         binding.apply {
             tabChatRoom.setOnClickListener {
-                if (chatClicks % 2 == 0) {
-                    setTabToLiving(livingStr)
-                    setTabToCustomer(customerStr, 9)
-                } else {
-                    setLivingTabToNormal()
-                    setCustomerTabToNormal()
-                }
-                setTabMargin()
-                chatClicks++
-                tabSelect(ChatTabItemView.NORMAL)
+                tabSelect(NORMAL)
+                clickTabAction(NORMAL)
             }
             tabChatLiving.setOnClickListener {
-                if (livingClicks % 2 == 0) {
-                    setTabToLiving(livingStr)
-                } else {
-                    setLivingTabToNormal()
-                }
-                setTabMargin()
-                livingClicks++
-                tabSelect(ChatTabItemView.LVING)
+                tabSelect(LIVING)
+                clickTabAction(LIVING)
             }
             tabChatCustomer.setOnClickListener {
-                if (customerClicks % 2 == 0) {
-                    setTabToCustomer(customerStr, 8)
-                } else {
-                    setCustomerTabToNormal()
-                }
-                setTabMargin()
-                customerClicks++
-                tabSelect(ChatTabItemView.CUSTOMER)
+                tabSelect(CUSTOMER)
+                clickTabAction(CUSTOMER)
             }
         }
     }
@@ -87,9 +78,9 @@ class ChatTabView : LinearLayout {
     private fun tabSelect(type: Int) {
         select = type
         binding.apply {
-            tabChatRoom.tabSelect(select == ChatTabItemView.NORMAL)
-            tabChatLiving.tabSelect(select == ChatTabItemView.LVING)
-            tabChatCustomer.tabSelect(select == ChatTabItemView.CUSTOMER)
+            tabChatRoom.tabSelect(select == NORMAL)
+            tabChatLiving.tabSelect(select == LIVING)
+            tabChatCustomer.tabSelect(select == CUSTOMER)
         }
     }
 
@@ -129,21 +120,118 @@ class ChatTabView : LinearLayout {
         }
     }
 
-    fun setTabToLiving(content: String) {
-        binding.tabChatLiving.updateType(ChatTabItemView.LVING, content)
+
+    /**
+     *
+     * @param type 点击按钮
+     * */
+    private fun clickTabAction(type: Int) {
+
+        val actionType = actionType(type)
+        if (actionType == -1) {
+            return
+        }
+        binding.apply {
+            val livingType = tabChatLiving.tabType
+            val customerType = tabChatCustomer.tabType
+            when (actionType) {
+                ACTION_NORMAL_TO_LIVING -> {
+                    if (customerType == CUSTOMER) {
+                        setCustomerTabToNormal(animEnd = {
+                            setTabToLiving(livingStr, animStart = { setTabMargin() })
+                        })
+                    } else {
+                        setTabToLiving(livingStr, animStart = { setTabMargin() })
+                    }
+                }
+
+                ACTION_NORMAL_TO_CUSTOMER -> {
+                    if (livingType == LIVING) {
+                        setLivingTabToNormal(animEnd = {
+                            setTabToCustomer(
+                                content = customerStr,
+                                9,
+                                animStart = { setTabMargin() })
+                        })
+                    } else {
+                        setTabToCustomer(content = customerStr, 9, animStart = { setTabMargin() })
+                    }
+                }
+
+                ACTION_LIVING_TO_NORMAL -> {
+                    if (livingType == LIVING) {
+                        setLivingTabToNormal(animEnd = { setTabMargin() })
+                    }
+                }
+
+                ACTION_CUSTOMER_TO_NORMAL -> {
+                    if (customerType == CUSTOMER) {
+                        setCustomerTabToNormal(animEnd = { setTabMargin() })
+                    }
+                }
+            }
+        }
     }
 
-    fun setTabToCustomer(content: String, msgSize: Int) {
-        binding.tabChatCustomer.updateType(ChatTabItemView.CUSTOMER, content, msgSize)
+
+    private fun setTabToLiving(
+        content: String,
+        animStart: (() -> Unit)? = null,
+        animEnd: (() -> Unit)? = null
+    ) {
+        binding.tabChatLiving.updateType(
+            LIVING,
+            content,
+            onAnimStart = animStart,
+            onAnimEnd = animEnd
+        )
     }
 
-    fun setLivingTabToNormal() {
-        binding.tabChatLiving.updateType(ChatTabItemView.NORMAL)
+    private fun setTabToCustomer(
+        content: String,
+        msgSize: Int,
+        animStart: (() -> Unit)? = null,
+        animEnd: (() -> Unit)? = null
+    ) {
+        binding.tabChatCustomer.updateType(
+            CUSTOMER,
+            content,
+            msgSize,
+            onAnimStart = animStart,
+            onAnimEnd = animEnd
+        )
     }
 
-    fun setCustomerTabToNormal() {
-        binding.tabChatCustomer.updateType(ChatTabItemView.NORMAL)
+    private fun setLivingTabToNormal(
+        animStart: (() -> Unit)? = null,
+        animEnd: (() -> Unit)? = null
+    ) {
+        binding.tabChatLiving.updateType(NORMAL, onAnimStart = animStart, onAnimEnd = animEnd)
     }
+
+    private fun setCustomerTabToNormal(
+        animStart: (() -> Unit)? = null,
+        animEnd: (() -> Unit)? = null
+    ) {
+        binding.tabChatCustomer.updateType(NORMAL, onAnimStart = animStart, onAnimEnd = animEnd)
+    }
+
+    private fun actionType(type: Int): Int {
+        val livingType = binding.tabChatLiving.tabType
+        val customerType = binding.tabChatCustomer.tabType
+        return when {
+            type == NORMAL && livingType == LIVING -> ACTION_LIVING_TO_NORMAL
+            type == NORMAL && customerType == CUSTOMER -> ACTION_CUSTOMER_TO_NORMAL
+
+            type == LIVING && livingType == LIVING -> ACTION_LIVING_TO_NORMAL
+            type == LIVING && livingType == NORMAL -> ACTION_NORMAL_TO_LIVING
+
+            type == CUSTOMER && customerType == CUSTOMER -> ACTION_CUSTOMER_TO_NORMAL
+            type == CUSTOMER && customerType == NORMAL -> ACTION_NORMAL_TO_CUSTOMER
+            else -> -1
+        }
+    }
+
 
 //    距离前一个Tab距离
 //         normal        only-lving气泡 only-cutomer气泡  lving-and-customer 气泡
@@ -157,35 +245,27 @@ class ChatTabView : LinearLayout {
 //赛事直播    164              129           125                 90
 //客服       286               286          220                 220
 
-// 10 6 2
+    // 10 6 2
     private fun setTabMargin() {
         binding.apply {
             val livingType = tabChatLiving.tabType
             val customerType = tabChatCustomer.tabType
-
             when {
-                livingType == ChatTabItemView.NORMAL && customerType == ChatTabItemView.NORMAL -> {
+                livingType == NORMAL && customerType == NORMAL -> {
                     val leftMargin = arrayOf(48, 74, 74)
-                    val topMargin = arrayOf(10,10,10)
-                    setTabLp(leftMargin,topMargin)
+                    val topMargin = arrayOf(10, 10, 10)
+                    setTabLp(leftMargin)
                 }
 
-                livingType == ChatTabItemView.LVING && customerType == ChatTabItemView.CUSTOMER -> {
-                    val leftMargin = arrayOf(36, 12, 11)
-                    val topMargin = arrayOf(10,6,2)
-                    setTabLp(leftMargin,topMargin)
-                }
-
-                livingType == ChatTabItemView.LVING && customerType == ChatTabItemView.NORMAL -> {
+                livingType == LIVING && customerType == NORMAL -> {
                     val leftMargin = arrayOf(48, 39, 38)
-                    val topMargin = arrayOf(10,6,10)
-                    setTabLp(leftMargin,topMargin)
+                    setTabLp(leftMargin)
                 }
 
-                livingType == ChatTabItemView.NORMAL && customerType == ChatTabItemView.CUSTOMER -> {
+                livingType == NORMAL && customerType == CUSTOMER -> {
                     val leftMargin = arrayOf(36, 47, 47)
-                    val topMargin = arrayOf(10,10,2)
-                    setTabLp(leftMargin,topMargin)
+                    val topMargin = arrayOf(10, 10, 2)
+                    setTabLp(leftMargin)
                 }
 
                 else -> {}
@@ -193,7 +273,7 @@ class ChatTabView : LinearLayout {
         }
     }
 
-    private fun setTabLp(left: Array<Int>,top:Array<Int>) {
+    private fun setTabLp(left: Array<Int>) {
         binding.apply {
             val chatLp = tabChatRoom.layoutParams as LinearLayout.LayoutParams
             val livingLp = tabChatLiving.layoutParams as LinearLayout.LayoutParams
@@ -201,15 +281,12 @@ class ChatTabView : LinearLayout {
 
             chatLp.apply {
                 marginStart = left[0].dp2px
-                topMargin = top[0].dp2px
             }
             livingLp.apply {
                 marginStart = left[1].dp2px
-                topMargin = top[1].dp2px
             }
             customerLp.apply {
                 marginStart = left[2].dp2px
-                topMargin = top[2].dp2px
             }
 
             tabChatRoom.layoutParams = chatLp
@@ -217,6 +294,5 @@ class ChatTabView : LinearLayout {
             tabChatCustomer.layoutParams = customerLp
         }
     }
-
 
 }
