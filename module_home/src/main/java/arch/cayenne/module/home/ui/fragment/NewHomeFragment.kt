@@ -18,6 +18,7 @@ import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
+import arch.cayenne.lib.common.ui.view.CustomTabIndicator
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
 import arch.cayenne.lib.common.utils.DensityInfo
 import arch.cayenne.lib.common.utils.ViewUtils
@@ -34,7 +35,7 @@ import arch.cayenne.lib.common.utils.ext.clickNoRepeatSingle
 import arch.cayenne.lib.common.utils.ext.removeAllTips
 import arch.cayenne.lib.common.utils.ext.setDrawerInterpolator
 import arch.cayenne.lib.common.utils.ext.setupHorizontalScrollDegree
-import arch.cayenne.lib.common.utils.ext.startFadeAnim
+import arch.cayenne.lib.common.utils.ext.setupViewPagerScroll
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.module.home.R
 import arch.cayenne.module.home.data.constants.HomeState
@@ -42,6 +43,7 @@ import arch.cayenne.module.home.data.constants.PlayType
 import arch.cayenne.module.home.databinding.FragmentNewHomeBinding
 import arch.cayenne.module.home.ui.adapter.SubHomePagerAdapter
 import arch.cayenne.module.home.ui.view.HomeTabMediator
+import arch.cayenne.module.home.ui.view.PromoTab
 import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
 import com.google.android.material.tabs.TabLayout
 import kotlin.reflect.KClass
@@ -51,6 +53,9 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
     override val vmClass: KClass<HomeViewModel> = HomeViewModel::class
     private var drawerContentFragment: DrawerContentFragment? = null
     private var homeMediator: HomeTabMediator? = null
+    private var promoTabs: List<PromoTab> = emptyList()
+    private var indicatorDrawable: android.graphics.drawable.Drawable? = null
+    private var customIndicator: CustomTabIndicator? = null
 
     //    private val tournamentListFragment  = TournamentListFragment.newInstance()
 
@@ -62,28 +67,29 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
     }
 
     override fun onStart() {
-        mBinding.homeTopBar.post{
+        mBinding.homeTopBar.post {
             //动态设置沉浸式状态栏背景高度 状态栏高度+bar控件高度
             var barHeight = ViewUtils.getStatusBarHeight(requireContext())
             var toBarHeight = mBinding.homeTopBar.height
 
             val paramsLin = mBinding.homeBarIcon.layoutParams as LayoutParams
-            paramsLin.height = barHeight+toBarHeight
+            paramsLin.height = barHeight + toBarHeight
             mBinding.homeBarIcon.layoutParams = paramsLin
         }
         mBinding.root.fitsSystemWindows = false
         StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND(autoIsNavigation = true)
-        setStatusBar(StatusBarConfig,mBinding.llMain)
+        setStatusBar(StatusBarConfig, mBinding.llMain)
         super.onStart()
     }
+
     private fun setDrawerLayoutListener() {
-        with (mBinding) {
-            drawerLayout.setLayerType(View.LAYER_TYPE_NONE,null)
+        with(mBinding) {
+            drawerLayout.setLayerType(View.LAYER_TYPE_NONE, null)
             drawerLayout.addDrawerListener(object : DrawerLayout.DrawerListener {
                 override fun onDrawerSlide(drawerView: View, slideOffset: Float) {
                     // 動畫滑動中...
                     "onDrawerSlide slideOffset: $slideOffset".logd()
-                    if (slideOffset in 0.1f .. 0.99f && drawerLayout.layerType != View.LAYER_TYPE_NONE) {
+                    if (slideOffset in 0.1f..0.99f && drawerLayout.layerType != View.LAYER_TYPE_NONE) {
                         // 抽屜打開一半之前，使用軟體層
                         drawerLayout.setLayerType(View.LAYER_TYPE_NONE, null)
                     }
@@ -104,6 +110,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             })
         }
     }
+
     //init 一級導航欄位
     private fun initPlayTypeLayout() {
         with(mBinding) {
@@ -123,9 +130,12 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
 
     private fun setupViewPager() {
         mBinding.vpSub.apply {
+            promoTabs = buildPromoTabs()
+            val promoCount = promoTabs.size
             adapter = SubHomePagerAdapter(
                 fragmentManager = childFragmentManager,
                 lifecycle = viewLifecycleOwner.lifecycle,
+                promoCount = promoCount,
                 playTypes = listOf(
                     PlayType.TODAY,
                     PlayType.EARLY,
@@ -135,6 +145,8 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             )
             offscreenPageLimit = 3
             setupHorizontalScrollDegree()
+            // 預設選中第一個可見tab（若有promo則為index 0 的promo頁）
+            setCurrentItem(0, false)
         }
     }
 
@@ -146,6 +158,13 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             post {
                 setupTabsStyle()
                 updateTabTextStyle(selectedTabPosition.coerceAtLeast(0))
+                // 綁定自定義指示器
+                customIndicator = mBinding.homeIndicator
+                mBinding.vpSub.setupViewPagerScroll(
+                    this,
+                    customIndicator!!,
+                    tabIndicatorWidth = 0.45f
+                )
             }
         }
     }
@@ -155,51 +174,91 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             tabLayout = mBinding.tlHome,
             viewPager = mBinding.vpSub,
             tabConfiguration = { tab, position ->
-                tab.setText(PlayType.entries[position].titleRes)
+                if (position < promoTabs.size) {
+                    tab.customView = promoTabs[position].createView(requireContext())
+                    tab.tag = "PROMO"
+                } else {
+                    tab.setText(PlayType.entries[position - promoTabs.size].titleRes)
+                }
             },
             onPreselectChanged = { pos ->
                 updateTabTextStyle(pos)
+            },
+
+            )
+        homeMediator?.attach { pos ->
+            // 由 Mediator 回調的最終選中頁：切換指示器與遮罩
+            val isPromo = pos < promoTabs.size
+            indicatorDrawable?.alpha = if (isPromo) 0 else 255
+
+            if (isPromo) {
+                // 停在 promo：立即顯示遮罩
+                mBinding.homeIndicatorMask.visibility = View.VISIBLE
+            } else {
+                // 從 promo 切到一般 tab：確保遮罩先 VISIBLE，延遲後才 GONE
+                if (mBinding.homeIndicatorMask.visibility == View.VISIBLE) {
+                    mBinding.homeIndicatorMask.postDelayed({
+                        mBinding.homeIndicatorMask.visibility = View.GONE
+                    }, AnimationController[AnimType.scrollbar]?.duration ?: 200L)
+                }
+                // 如果遮罩已經是 GONE（一般 tab 之間切換），則不做任何事
             }
-        )
-        homeMediator?.attach()
+        }
+        // 預設選中第一個tab
+        mBinding.tlHome.post {
+            mBinding.tlHome.getTabAt(0)?.select()
+            // 如果第一個是 promo，啟動即顯示遮罩
+            if (promoTabs.isNotEmpty()) {
+                mBinding.homeIndicatorMask.visibility = View.VISIBLE
+            }
+        }
         // Mediator 建立完後，新增自定義監聽
         mBinding.tlHome.addOnTabSelectedListener2(object : TabLayoutExt.OnTabSelectedListener2 {
             override fun onTabSelected(tab: TabLayout.Tab, isTabClick: Boolean) {
                 val position = tab.position
-                val playType = PlayType.entries[position]
-                mViewModel.setCurrentPlayType(playType.id)
+                if (position < promoTabs.size) {
+                    // promo：顯示遮罩
+                    mBinding.homeIndicatorMask.visibility = View.VISIBLE
+                } else {
+                    val playIndex = position - promoTabs.size
+                    val playType = PlayType.entries[playIndex]
+                    mViewModel.setCurrentPlayType(playType.id)
 
-                if (playType != PlayType.FAVORITE) {
-                    (childFragmentManager.findFragmentByTag("f$position") as? SubHomeFragment)?.onFragmentSelected()
-                }
-
-                // 樣式：設為粗體，並更新顏色
-                (tab.view.getChildAt(1) as? TextView)?.typeface = Typeface.DEFAULT_BOLD
-                updateTabTextStyle(position)
-
-                // 動畫：僅處理點擊情境，滑動交由 Mediator
-                if (isTabClick) {
-                    mBinding.vpSub.startFadeAnim { onComplete ->
-                        mBinding.vpSub.setCurrentItem(position, false)
-                        onComplete.invoke()
+                    if (playType != PlayType.FAVORITE) {
+                        (childFragmentManager.findFragmentByTag("f$position") as? SubHomeFragment)?.onFragmentSelected()
                     }
+
+                    // 樣式：設為粗體，並更新顏色
+                    (tab.view.getChildAt(1) as? TextView)?.typeface = Typeface.DEFAULT_BOLD
+                    updateTabTextStyle(position)
                 }
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab, isTabClick: Boolean) {
                 val position = tab.position
-                val playType = PlayType.entries[position]
-
-                if (playType != PlayType.FAVORITE) {
-                    (childFragmentManager.findFragmentByTag("f$position") as? SubHomeFragment)?.onFragmentUnSelected()
+                if (position >= promoTabs.size) {
+                    val playIndex = position - promoTabs.size
+                    val playType = PlayType.entries[playIndex]
+                    if (playType != PlayType.FAVORITE) {
+                        (childFragmentManager.findFragmentByTag("f$position") as? SubHomeFragment)?.onFragmentUnSelected()
+                    }
+                    // 設為預設字重並更新顏色
+                    (tab.view.getChildAt(1) as? TextView)?.typeface = Typeface.DEFAULT
+                    updateTabStyle(position, -1)
                 }
-                // 設為預設字重並更新顏色
-                (tab.view.getChildAt(1) as? TextView)?.typeface = Typeface.DEFAULT
-                updateTabStyle(position, -1)
             }
 
             override fun onTabReselected(tab: TabLayout.Tab, isTabClick: Boolean) = Unit
         })
+    }
+
+    private fun buildPromoTabs(): List<PromoTab> {
+        // 先以本地資源占位兩個圖片 tab
+        val resId = R.drawable.ic_supertab_sample
+        return listOf(
+            PromoTab(imageResId = resId) {},
+            PromoTab(imageResId = resId) {}
+        )
     }
 
     private fun setupTabsStyle() {
@@ -209,7 +268,8 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             for (i in 0 until tabStrip.childCount) {
                 val tabView = tabStrip.getChildAt(i)
                 val lp = tabView.layoutParams as ViewGroup.MarginLayoutParams
-                lp.width = tabWidthPx
+                val isPromo = (getTabAt(i)?.tag == "PROMO")
+                lp.width = if (isPromo) 104.dp2px else tabWidthPx
                 tabView.layoutParams = lp
 
                 val tv = (getTabAt(i)?.view?.getChildAt(1) as? TextView)
@@ -222,9 +282,9 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             }
             tabStrip.requestLayout()
 
-            setSelectedTabIndicator(
+            indicatorDrawable =
                 ResourcesCompat.getDrawable(resources, R.drawable.shape_home_tab_indicator, null)
-            )
+            setSelectedTabIndicator(indicatorDrawable)
             setSelectedTabIndicatorColor(android.graphics.Color.TRANSPARENT)
         }
     }
@@ -266,7 +326,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
 
     //init DrawerLayout Content
     private fun initDrawerContent() {
-         //避免重複創建
+        //避免重複創建
         if (drawerContentFragment != null) {
             return
         }
@@ -296,10 +356,9 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
         }
         //如果由模拟投注页面跳转到首页需要关闭左侧菜单栏
         observeResult<String>("Drawer") {
-            mBinding.drawerLayout.closeDrawer(GravityCompat.START,false)
+            mBinding.drawerLayout.closeDrawer(GravityCompat.START, false)
         }
     }
-
 
 
     override fun initData() {
@@ -326,6 +385,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 override fun onDrawerOpened(drawerView: View) {
                     initDrawerContent()
                 }
+
                 override fun onDrawerClosed(drawerView: View) {}
                 override fun onDrawerStateChanged(newState: Int) {}
 
@@ -337,8 +397,11 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
     override suspend fun createObserver() {
         launch {
             AnimationController.getFlow(AnimType.drawerEnter).collect {
-                if(it == null) return@collect
-                mBinding.drawerLayout.setDrawerInterpolator(it.duration, it.interpolator.toInterpolator())
+                if (it == null) return@collect
+                mBinding.drawerLayout.setDrawerInterpolator(
+                    it.duration,
+                    it.interpolator.toInterpolator()
+                )
             }
         }
         mViewModel.notifyToChampion.observeEvent(viewLifecycleOwner, this) {
@@ -349,26 +412,30 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             mBinding.includedLayout.tvMoney.text =
                 getString(
                     R.string.balance_format,
-                    CurrencySymbols.getSymbol(it?.currency?:""),
-                    (it?.balance?:0L).getFormalMoney()
+                    CurrencySymbols.getSymbol(it?.currency ?: ""),
+                    (it?.balance ?: 0L).getFormalMoney()
                 )
         }
 
 
         mViewModel.playTypeIndexChange.observeEvent(viewLifecycleOwner, this) {
-            mBinding.tlHome.getTabAt(it)?.select()
+            // PlayType 索引需補上 promo 偏移，避免選到 promo 位置
+            val indexWithPromo = promoTabs.size + it
+            mBinding.tlHome.getTabAt(indexWithPromo)?.select()
             mBinding.tlHome.removeAllTips()
         }
 
 
         mViewModel.apiStateListener.observe(viewLifecycleOwner) {
-            when(it) {
+            when (it) {
                 is HomeState.Tournament.LoadSuccess, HomeState.Tournament.LoadFailure, HomeState.Sport.LoadFailure -> {
 
                 }
+
                 is HomeState.FirstMatchListComplete -> {
                     initDrawerContent()
                 }
+
                 else -> Unit
             }
         }
@@ -382,6 +449,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             mBinding.vpSub.setCurrentItem(0, false)
         }
     }
+
     //設置是否允許水平滑動ViewPager，預設是可以滑動
     private fun setIsUserInputEnabled(isUserInputEnabled: Boolean) {
         mBinding.vpSub.isUserInputEnabled = isUserInputEnabled
@@ -389,7 +457,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
 
     override fun onBackPressed(): Boolean {
         //如果抽屉打开，截获此次返回事件，关闭抽屉
-        if(mBinding.drawerLayout.isDrawerOpen(GravityCompat.START)) {
+        if (mBinding.drawerLayout.isDrawerOpen(GravityCompat.START)) {
             mBinding.drawerLayout.closeDrawer(GravityCompat.START)
             return true
         }
