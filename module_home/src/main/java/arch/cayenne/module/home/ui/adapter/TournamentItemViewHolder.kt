@@ -11,6 +11,7 @@ import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
 import arch.cayenne.lib.database.entity.BaseTournamentData
 import arch.cayenne.module.home.R
 import arch.cayenne.module.home.data.TournamentListItem
+import arch.cayenne.module.home.data.constants.TournamentListType
 import arch.cayenne.module.home.databinding.ItemTournamentSectionBinding
 import com.bumptech.glide.Glide
 
@@ -19,6 +20,7 @@ class TournamentItemViewHolder(
 ) : BaseViewHolder(mBinding) {
     fun bind(
         item: TournamentListItem.TournamentItem,
+        tournamentListType: TournamentListType,
         isSelected: Boolean = false,
         onClick: (BaseTournamentData) -> Unit
     ) {
@@ -38,38 +40,39 @@ class TournamentItemViewHolder(
                 )
             }
             tvSectionName.text = spannable
-
-            // 根據選中狀態更新UI
-            if (isSelected) {
-                ivSelected.visibility = View.VISIBLE
-                root.setBackgroundColor(
-                    ContextCompat.getColor(
-                        root.context,
-                        arch.cayenne.lib.common.R.color.color_003A42
+            // 根據 TournamentListType 調整顯示內容
+            if (tournamentListType == TournamentListType.MORE) {
+                if (isSelected) {
+                    ivSelected.visibility = View.VISIBLE
+                    root.setBackgroundColor(
+                        ContextCompat.getColor(
+                            root.context,
+                            arch.cayenne.lib.common.R.color.color_003A42
+                        )
                     )
-                )
-                tvSectionName.setTextColor(
-                    ContextCompat.getColor(
-                        root.context,
-                        arch.cayenne.lib.common.R.color.color_00E0E5
+                    tvSectionName.setTextColor(
+                        ContextCompat.getColor(
+                            root.context,
+                            arch.cayenne.lib.common.R.color.color_00E0E5
+                        )
                     )
-                )
-            } else {
-                ivSelected.visibility = View.GONE
-                root.setBackgroundColor(
-                    ContextCompat.getColor(
-                        root.context,
-                        arch.cayenne.lib.common.R.color.color_1E1E1E
+                } else {
+                    ivSelected.visibility = View.GONE
+                    root.setBackgroundColor(
+                        ContextCompat.getColor(
+                            root.context,
+                            arch.cayenne.lib.common.R.color.color_1E1E1E
+                        )
                     )
-                )
-                tvSectionName.setTextColor(
-                    ContextCompat.getColor(
-                        root.context,
-                        arch.cayenne.lib.common.R.color.color_FFFFFF
+                    tvSectionName.setTextColor(
+                        ContextCompat.getColor(
+                            root.context,
+                            arch.cayenne.lib.common.R.color.color_FFFFFF
+                        )
                     )
-                )
+                }
             }
-            
+
             root.setOnClickListener {
                 onClick(item.tournament)
             }

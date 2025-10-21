@@ -35,6 +35,7 @@ import arch.cayenne.lib.database.entity.TournamentDataModel
 import arch.cayenne.module.home.R
 import arch.cayenne.module.home.data.constants.HomeState
 import arch.cayenne.module.home.data.constants.PlayType
+import arch.cayenne.module.home.data.constants.TournamentListType
 import arch.cayenne.module.home.databinding.FragmentSubHomeBinding
 import arch.cayenne.module.home.databinding.ItemDateTabBinding
 import arch.cayenne.module.home.databinding.ItemLeagueTabBinding
@@ -329,6 +330,8 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
     //init 三級導航欄位與日期，只有今日和早盤有
     @SuppressLint("DefaultLocale")
     private fun initTournamentLayout() {
+        setChampionModeVisibility(false)
+        
         // 取得未來 31 天 (MMDD, 星期, timeStamp)
         val dateTabs = getFutureSevenDays()
         with(mBinding.layoutContainer) {
@@ -776,8 +779,25 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
         // 使用 parentFragmentManager 發送結果
         parentFragmentManager.setFragmentResult(key, result)
     }
+
+    /**
+     * 設置冠軍頁面專屬元件的可見性
+     * @param isChampionMode true: 冠軍模式（隱藏今日/早盤元件），false: 今日/早盤模式（顯示元件）
+     */
+    private fun setChampionModeVisibility(isChampionMode: Boolean) {
+        val visibility = if (isChampionMode) View.GONE else View.VISIBLE
+        with(mBinding) {
+            llBanner.visibility = visibility
+            layoutContainer.root.visibility = visibility
+            llBtnTournament.visibility = visibility
+            llTournamentSort.visibility = visibility
+            vLeagueMoreMask.visibility = visibility
+        }
+    }
+
     private fun initChampionTournamentLayout() {
-        mBinding.aplHomeBanner.visibility = View.GONE
+        setChampionModeVisibility(true)
+        
         val tournamentListFragment = TournamentListFragment.newInstance(
             playTypeId = PlayType.CHAMPION.id,
             sportId = mViewModel.currentSportId,
@@ -786,7 +806,6 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
         childFragmentManager.beginTransaction()
             .replace(R.id.fl_champion_container, tournamentListFragment, PlayType.CHAMPION.name)
             .commit()
-
     }
 
     override fun onBackPressed(): Boolean {
