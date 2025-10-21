@@ -1,5 +1,6 @@
 package arch.cayenne.module.order.ui.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import arch.cayenne.lib.base.data.remote.ApiResponseState
@@ -17,6 +18,7 @@ class OrderSportPageViewModel(private val repo: OrderSlipRepository) : BaseViewM
         callApi({
             repo.getOrder(type.value, null, null, null, 10)
         }, { resp ->
+            Log.d("abcd", "setType: $resp")
             if (resp is ApiResponseState.Succeeded<*>) {
                 _orderDataListener.postValue(resp.data as List<BetSlipOrderBean>)
             }

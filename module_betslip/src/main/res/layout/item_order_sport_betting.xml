@@ -282,6 +282,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@id/tv_early_settle"
             app:layout_constraintEnd_toStartOf="@id/tv_early_settle_money"
             app:layout_constraintStart_toEndOf="@id/tv_early_settle"

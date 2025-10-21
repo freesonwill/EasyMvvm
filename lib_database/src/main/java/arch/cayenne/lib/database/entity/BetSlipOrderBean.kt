@@ -55,3 +55,8 @@ data class EarlySettlePriceBean(
     val settleStatus: Int       // //投注确认中，2拒单，3取消订单，4接单成功，5已结算,101 预约提前结算中,102 提前结算进行中, 1000- 本地端點擊提前結算按鈕用
 )
 
+data class BetSlipOrderHeaderBean(
+    val time: Long,
+    val betAmount: Long,
+    val validBetAmount: Long
+): BetSlipData
