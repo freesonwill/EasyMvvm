@@ -9,13 +9,23 @@ import com.walisport.module.hall.data.GameAllBannerData
 import com.walisport.module.hall.databinding.ItemGameAllBannerBinding
 
 class GameAllBannerAdapter : BaseAdapter<GameAllBannerData, GameAllBannerViewHolder, ItemGameAllBannerBinding>(GameAllBannerCompare()) {
+    var originItemCount = 0
     override fun convertPlus(
         holder: GameAllBannerViewHolder,
         binding: ItemGameAllBannerBinding,
         position: Int
     ) {
-        holder.bind(getItem(position))
+        if (originItemCount == 0) return
+        val realPosition = position % originItemCount
+        holder.bind(getItem(realPosition))
     }
+
+    override fun submitList(list: List<GameAllBannerData?>?) {
+        super.submitList(list)
+        originItemCount = list?.size ?: 0
+    }
+
+    override fun getItemCount(): Int = Int.MAX_VALUE
 
     override fun createViewBinding(
         inflater: LayoutInflater,

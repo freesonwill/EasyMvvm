@@ -2,6 +2,7 @@ package arch.cayenne.lib.common.ui.view
 
 import android.content.Context
 import android.graphics.Color
+import android.os.SystemClock
 import android.util.AttributeSet
 import androidx.core.content.withStyledAttributes
 import arch.cayenne.lib.common.R
@@ -50,13 +51,17 @@ class GameRoundProgressBar @JvmOverloads constructor(
         if (job != null) {
             job!!.cancel()
         }
+        val startTime = SystemClock.elapsedRealtime()
         job = CoroutineScope(Dispatchers.IO).launch {
             while (true) {
-                progress = (progress + 10) % triggerTime
-                withContext(Dispatchers.Main) {
-                    if (progress == 0) onTriggerListener?.invoke()
+                val elapsed = (SystemClock.elapsedRealtime() - startTime) % max
+                if (progress > elapsed) {  //mean (SystemClock.elapsedRealtime() - startTime) > max
+                    withContext(Dispatchers.Main) {
+                        onTriggerListener?.invoke()
+                    }
                 }
-                (progressDrawable as RoundProgressDrawable).progress = progress / triggerTime.toFloat()
+                progress = elapsed.toInt()
+                (progressDrawable as RoundProgressDrawable).progress = progress / max.toFloat()
                 delay(10)
             }
         }

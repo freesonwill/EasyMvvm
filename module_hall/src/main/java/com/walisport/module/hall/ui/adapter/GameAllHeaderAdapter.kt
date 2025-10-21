@@ -51,7 +51,7 @@ class GameAllHeaderViewHolder(val binding: ItemGameAllHeaderBinding): RecyclerVi
                 v.parent.requestDisallowInterceptTouchEvent(true)
                 false
             }
-            
+
             vpBanner.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
                 override fun onPageSelected(position: Int) {
                     super.onPageSelected(position)
