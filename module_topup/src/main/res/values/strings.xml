@@ -20,7 +20,12 @@
     <string name="withdraw_lesson">提现教程</string>
     <string name="cus_service">联系客服</string>
     <string name="add_bank">添加银行卡</string>
+    <string name="bet_detail">投注额详情</string>
     <string name="pay_custom">自定义</string>
+    <string name="bet_pay_bank">充值-银行卡支付</string>
+    <string name="bet_pay_alipay">充值-支付宝充值</string>
+    <string name="bet_pay_wechat">充值-微信充值</string>
+    <string name="tip_bet_detail">你还需投注 %s 即可提现所有余额</string>
     <string name="select_method">选择支付方式</string>
     <string name="select_tx_method">选择提现方式</string>
     <string name="current_balance">当前余额: ￥1,100.00</string>
@@ -50,6 +55,7 @@
     <string name="bank_num_hint">输入银行卡号</string>
     <string name="bank_shu_hint">储蓄卡所属银行</string>
     <string name="tx_address">提现地址</string>
+    <string name="tip_bet_rate">投注额倍数：</string>
     <string name="low_ti">最低提款</string>
     <string name="trade_fei">交易费用</string>
     <string name="tx_number">数量</string>

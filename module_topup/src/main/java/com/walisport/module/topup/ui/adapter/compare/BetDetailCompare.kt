@@ -1,20 +1,20 @@
 package com.walisport.module.topup.ui.adapter.compare
 
 import androidx.recyclerview.widget.DiffUtil
-import com.walisport.module.topup.data.entity.BankCardBean
+import com.walisport.module.topup.data.entity.BetDetailBean
 
-class BankCardCompare : DiffUtil.ItemCallback<BankCardBean>() {
+class BetDetailCompare : DiffUtil.ItemCallback<BetDetailBean>() {
 
     override fun areItemsTheSame(
-        oldItem: BankCardBean,
-        newItem: BankCardBean
+        oldItem: BetDetailBean,
+        newItem: BetDetailBean
     ): Boolean {
         return oldItem.id == newItem.id
     }
 
     override fun areContentsTheSame(
-        oldItem: BankCardBean,
-        newItem: BankCardBean
+        oldItem: BetDetailBean,
+        newItem: BetDetailBean
     ): Boolean {
         return oldItem == newItem
     }

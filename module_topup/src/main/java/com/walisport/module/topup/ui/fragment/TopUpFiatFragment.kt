@@ -2,6 +2,9 @@ package com.walisport.module.topup.ui.fragment
 
 import android.os.Bundle
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
+import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+import com.walisport.module.topup.R
 import com.walisport.module.topup.databinding.FragmentFiatBinding
 import com.walisport.module.topup.ui.adapter.PayMethodAdapter
 import com.walisport.module.topup.ui.adapter.PayMoneyAdapter
@@ -44,6 +47,11 @@ class TopUpFiatFragment : BaseFragment<FiatViewModel, FragmentFiatBinding>() {
     }
 
     override fun initListener() {
+        mBinding.layLesson.clickNoRepeat {
+            val args = Bundle()
+            args.putBoolean("isTopUp", true)
+            navigate(R.id.action_topUpFragment_to_lessonFragment, args)
+        }
     }
 
     override suspend fun createObserver() {
