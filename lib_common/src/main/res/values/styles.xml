@@ -111,4 +111,12 @@
         <attr name="canScrollView" format="reference" />
     </declare-styleable>
 
+    <declare-styleable name="GameRoundProgressBar">
+        <!-- 背景顏色 -->
+        <attr name="backgroundColor" format="color" />
+        <!-- 進度條顏色 -->
+        <attr name="progressColor" format="color" />
+        <!-- 觸發時間（例如進度動畫時間），單位毫秒 -->
+        <attr name="triggerTime" format="integer" />
+    </declare-styleable>
 </resources>

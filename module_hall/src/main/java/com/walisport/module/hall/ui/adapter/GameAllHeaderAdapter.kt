@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager2.widget.ViewPager2
 import com.walisport.module.hall.R
 import com.walisport.module.hall.data.GameAllBannerData
 import com.walisport.module.hall.databinding.ItemGameAllHeaderBinding
@@ -49,6 +50,16 @@ class GameAllHeaderViewHolder(val binding: ItemGameAllHeaderBinding): RecyclerVi
             vpBanner.getChildAt(0).setOnTouchListener { v, event ->
                 v.parent.requestDisallowInterceptTouchEvent(true)
                 false
+            }
+
+            vpBanner.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+                override fun onPageSelected(position: Int) {
+                    super.onPageSelected(position)
+                    proBanner.resetTriggerJob()
+                }
+            })
+            proBanner.setTriggerListener {
+                vpBanner.currentItem = (vpBanner.currentItem + 1) % bannerAdapter.itemCount
             }
         }
     }
