@@ -49,20 +49,31 @@ class TournamentListFragment :
     private lateinit var adapter: TournamentSectionAdapter
     private var pendingJumpIndex: Int? = null // 用來判斷是否為點擊字母列表來跳選列表分類，null代表非自動跳轉狀態
     private var stickyHeaderDecoration: StickyHeaderItemDecoration? = null
-    override fun initData() {
-        arguments?.apply {
-            val type = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                getSerializable(ARG_TOURNAMENT_TYPE, TournamentListType::class.java)
+
+    // 統一從 arguments 讀取參數
+    private val tournamentType: TournamentListType by lazy {
+        arguments?.let {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                it.getSerializable(ARG_TOURNAMENT_TYPE, TournamentListType::class.java)
             } else {
-                getSerializable(ARG_TOURNAMENT_TYPE) as? TournamentListType
+                it.getSerializable(ARG_TOURNAMENT_TYPE) as? TournamentListType
             }
-            mViewModel.setSportId(getInt(ARG_SPORT_ID))
-            mViewModel.setPlayTypeId(getInt(ARG_PLAY_TYPE_ID))
-            type?.apply {
-                mViewModel.setType(this)
-                mViewModel.getTournaments()
-            }
-        }
+        } ?: TournamentListType.MORE
+    }
+
+    private val sportId: Int by lazy {
+        arguments?.getInt(ARG_SPORT_ID) ?: -1
+    }
+
+    private val playTypeId: Int by lazy {
+        arguments?.getInt(ARG_PLAY_TYPE_ID) ?: 2
+    }
+    
+    override fun initData() {
+        mViewModel.setSportId(sportId)
+        mViewModel.setPlayTypeId(playTypeId)
+        mViewModel.setType(tournamentType)
+        mViewModel.getTournaments()
     }
 
     fun reloadAllData() {
@@ -79,7 +90,9 @@ class TournamentListFragment :
         with(mBinding) {
             ceSearch.hint = getString(R.string.tournament_section_title)
             ceSearch.imeOptions = EditorInfo.IME_ACTION_SEARCH
+
             adapter = TournamentSectionAdapter(
+                tournamentListType = tournamentType,
                 onTournamentClick = { tournament ->
                     subHomeViewModel.onTournamentListSelected(tournament)
                 }
