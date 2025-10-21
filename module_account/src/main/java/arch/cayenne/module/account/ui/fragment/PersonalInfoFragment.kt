@@ -1,25 +1,18 @@
 package arch.cayenne.module.account.ui.fragment
 
-import android.graphics.Rect
+import android.net.Uri
 import android.os.Bundle
-import android.text.TextWatcher
-import android.view.View
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.SimpleItemAnimator
+import arch.cayenne.lib.base.ui.animation.AnimationController
+import arch.cayenne.lib.base.ui.animation.AnimationController.AnimType
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
-import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
-import arch.cayenne.lib.common.utils.ext.NavigationExt.popBackStack
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.touchBackPressed
 import arch.cayenne.module.account.R
-import arch.cayenne.module.account.data.constants.KeyConfig
 import arch.cayenne.module.account.databinding.FragmentPersonalInfoBinding
-import arch.cayenne.module.account.ui.adapter.PersonalInfoAdapter
 import arch.cayenne.module.account.ui.viewmodel.PersonalInfoViewModel
 import kotlin.reflect.KClass
-
+import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 /**
  * @author: ricky.chang
  * @date: 2025/6/13 下午4:19
@@ -28,107 +21,27 @@ import kotlin.reflect.KClass
 class  PersonalInfoFragment : BaseFragment<PersonalInfoViewModel, FragmentPersonalInfoBinding>() {
     override val vbClass: KClass<FragmentPersonalInfoBinding> = FragmentPersonalInfoBinding::class
     override val vmClass: KClass<PersonalInfoViewModel> = PersonalInfoViewModel::class
-    private var personalInfoAdapter = PersonalInfoAdapter()
-    private val nickNameMaxLength = 6
     override fun initView(savedInstanceState: Bundle?) {
-        val layoutManager = object : GridLayoutManager(context, 4) {
-            override fun canScrollVertically() = false
-        }
         with(mBinding) {
             mBinding.titleBar.loadGeneralTitleBar(R.string.personal_info_title, {
                 findNavController().navigateUp()
             })
-            rvPersonalHeadGrid.layoutManager = layoutManager
-            val spanCount = 4
-            val spacingTop = 16.dp2px
-            val spacingBottom = 24.dp2px
-            rvPersonalHeadGrid.addItemDecoration(object : RecyclerView.ItemDecoration() {
-                override fun getItemOffsets(
-                    outRect: Rect,
-                    view: View,
-                    parent: RecyclerView,
-                    state: RecyclerView.State
-                ) {
-                    val position = parent.getChildAdapterPosition(view)
-                    if (position == RecyclerView.NO_POSITION) return
-                    outRect.left = spacingTop
-                    val row = position / spanCount
-                    outRect.top = if (row == 0) { spacingTop } else { 0 }
-                    outRect.bottom = if (row == 0) {spacingBottom} else { spacingTop }
-                }
-            })
-            rvPersonalHeadGrid.adapter = personalInfoAdapter
-            (rvPersonalHeadGrid?.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
-            personalInfoAdapter.submitList(mViewModel.getPersonalInfoData())
-            personalInfoAdapter.setSelectedPosition(mViewModel.getDefaultPosition())
-            personalInfoAdapter.setOnItemClickListener { _ ->
-                if (ceNickName.text?.isNotEmpty() == true && (ceNickName.text?.length ?: 0) <= nickNameMaxLength) {
-                    btnSave.isEnabled = true
-                }
-            }
-            val defaultNickName = mViewModel.getDefaultNickName()
-            if (defaultNickName.isEmpty()) {
-                ceNickName.isEnabled = true
-                btnSave.isEnabled = false
-            } else {
-                ceNickName.isEnabled = false
-                ceNickName.setText(defaultNickName)
-                btnSave.isEnabled = mViewModel.getDefaultPosition() != -1
-            }
+            mBinding.root.touchBackPressed()
         }
-        mBinding.root.touchBackPressed()
     }
 
     override fun initListener() {
-        with (mBinding) {
-            btnSave.clickNoRepeat {
-                with (mBinding) {
-                    if ((ceNickName.text?.length ?: 0) > nickNameMaxLength) {
-                        return@clickNoRepeat
-                    }
-                    if (ceNickName.text.isNullOrEmpty()) {
-                        return@clickNoRepeat
-                    } else {
-
-                        mViewModel.saveData(
-                            ceNickName.text.toString(),
-                            personalInfoAdapter.getSelectedResId(),
-                            personalInfoAdapter.getSelectedPosition()
-                        )
-                        val resultBundle = Bundle().apply {
-                            putBoolean(KeyConfig.VALUE_SAVE_NICKNAME, true)
-                        }
-
-                        // 設定結果，requestKey 必須與監聽器的 key 相同
-                        requireActivity().supportFragmentManager.setFragmentResult(KeyConfig.VALUE_NICKNAME_RESULT, resultBundle)
-                        // 關閉自己，返回上一頁
-                        popBackStack()
-                    }
-                }
-            }
-            ceNickName.addTextChangedListener(object : TextWatcher {
-                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                    // No action needed
-                }
-
-                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    // No action needed
-                    if (s.isNullOrEmpty()) {
-                        tvNickNameLength.text = ""
-                        btnSave.isEnabled = false
-                    } else {
-                        tvNickNameLength.text = resources.getString(R.string.nick_name_char_num, s.length)
-                        btnSave.isEnabled = personalInfoAdapter.getSelectedPosition() != -1
-                    }
-                }
-
-                override fun afterTextChanged(s: android.text.Editable?) {
-                    // No action needed
-                }
-            })
+        mBinding.tvName.clickNoRepeat{
+            navigate(PersonalInfoFragmentDirections.actionPersonalInfoFragmentToAccountEditNameFragment())
         }
+
+        mBinding.ivAvatar.clickNoRepeat{
+            navigate(PersonalInfoFragmentDirections.actionPersonalInfoFragmentToAvatarFragment())
+        }
+
     }
 
     override suspend fun createObserver() {
+
     }
 }

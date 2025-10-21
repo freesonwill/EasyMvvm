@@ -51,8 +51,7 @@
     <string name="drawer_earning_function">赚钱</string>
     <string name="drawer_tutorial">教程</string>
     <string name="drawer_setting">设置</string>
-    <string name="drawer_help">帮助</string>
-    <string name="drawer_feedback">反馈与建议</string>
+
     <string name="drawer_notification_line_2">钱包服务: 15元现金红包已...</string>
     <string name="drawer_notification_line_1">钱包服务: 15元现金红包已...</string>
     <string name="drawer_notification_time_1">05:35</string>
@@ -77,19 +76,9 @@
     <string name="title_chat">聊天</string>
     <string name="title_me">我</string>
 
-    <string name="drawer_fund_details">资金明细</string>
-    <string name="drawer_bet_record">投注记录</string>
-    <string name="drawer_cash_back">实时返水</string>
-    <string name="drawer_recently_played">最近玩过</string>
-    <string name="drawer_game_collections">游戏收藏</string>
-    <string name="drawer_match_collections">赛事收藏</string>
-    <string name="drawer_gift">活动</string>
-    <string name="drawer_settings">设置</string>
-    <string name="first_day_title">明天</string>
-    <string name="drawer_customer_service">官方客服</string>
     <string name="drawer_balance">总余额</string>
     <string name="drawer_withdraw">提现</string>
     <string name="drawer_topup">充值</string>
-    <string name="drawer_invite">邀请好友</string>
-    <string name="drawer_partner">高级合伙人</string>
+    <string name="first_day_title">明天</string>
+
 </resources>

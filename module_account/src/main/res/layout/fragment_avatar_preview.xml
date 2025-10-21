@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:background="@color/title_bg"
+    android:orientation="vertical"
+    android:layout_height="match_parent">
+
+    <arch.cayenne.lib.common.ui.view.TitleBarView
+        android:id="@+id/title_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:ignore="MissingConstraints" />
+    <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
+        android:layout_width="match_parent"
+        app:layout_constraintTop_toBottomOf="@+id/titleBar"
+        android:paddingTop="@dimen/dp_67"
+        android:background="@color/app_bg"
+        android:layout_weight="1"
+        android:layout_height="0dp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/ClUserAvatar"
+            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginEnd="8dp"
+
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/ivUserAvatar"
+                android:layout_width="match_parent"
+                android:background="@drawable/avatar_rounded_background_svg"
+                android:layout_height="match_parent"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:orientation="vertical"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:layout_marginBottom="@dimen/dp_40"
+            android:gravity="center"
+            android:layout_height="wrap_content">
+
+          <TextView
+              android:layout_marginBottom="@dimen/dp_43"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:textColor="@color/color_999999"
+              android:text="拖拽图片调整展示区域"
+              android:textSize="15sp"
+              />
+            <TextView
+                android:id="@+id/tvSave"
+                android:layout_width="169dp"
+                android:layout_height="52dp"
+                android:layout_marginTop="@dimen/dp_30"
+                android:text="@string/personal_avatar_save"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:gravity="center"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:textColor="@color/white"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:background="@drawable/shape_account_bar_right"
+                />
+
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+    </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
+
+
+</androidx.appcompat.widget.LinearLayoutCompat>

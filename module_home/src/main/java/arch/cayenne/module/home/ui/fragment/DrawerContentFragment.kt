@@ -59,7 +59,7 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
     override fun initView(savedInstanceState: Bundle?) {
         StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND()
         StatusBarConfig.statusBarDarkFont = false
-        setStatusBar(StatusBarConfig,mBinding.root)
+        setStatusBar(StatusBarConfig, mBinding.root)
 
         initRvCommonFeatures()
         initRvServiceFeatures()
@@ -94,45 +94,53 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
         var id = 0
         drawerFeaturesAdapter.submitList(
             listOf(
-                CommonFeaturesBean(id++, R.drawable.ic_drawer_fund_details,
-                    R.string.drawer_fund_details
+                CommonFeaturesBean(
+                    id++, arch.cayenne.lib.common.R.drawable.ic_drawer_fund_details,
+                    arch.cayenne.lib.common.R.string.drawer_fund_details
                 ) {
-                    showToast(R.string.drawer_fund_details.getString())
+                    showToast(arch.cayenne.lib.common.R.string.drawer_fund_details.getString())
                 },
-                CommonFeaturesBean(id++, R.drawable.ic_drawer_bet_record,
-                    R.string.drawer_bet_record
+                CommonFeaturesBean(
+                    id++, arch.cayenne.lib.common.R.drawable.ic_drawer_bet_record,
+                    arch.cayenne.lib.common.R.string.drawer_bet_record
                 ) {
-                    showToast(R.string.drawer_bet_record.getString())
+                    showToast(arch.cayenne.lib.common.R.string.drawer_bet_record.getString())
                 },
-                CommonFeaturesBean(id++, R.drawable.ic_drawer_realtime_cashback,
-                    R.string.drawer_cash_back
+                CommonFeaturesBean(
+                    id++, arch.cayenne.lib.common.R.drawable.ic_drawer_realtime_cashback,
+                    arch.cayenne.lib.common.R.string.drawer_cash_back
                 ) {
                     navigatePage(arch.cayenne.lib.res.R.string.nav_module_realtime_cashback_fragment.deeplink())
                 },
 
-                CommonFeaturesBean(id++, R.drawable.ic_drawer_recently_played,
-                    R.string.drawer_recently_played
+                CommonFeaturesBean(
+                    id++, arch.cayenne.lib.common.R.drawable.ic_drawer_recently_played,
+                    arch.cayenne.lib.common.R.string.drawer_recently_played
                 ) {
-                    showToast(R.string.drawer_recently_played.getString())
+                    showToast(arch.cayenne.lib.common.R.string.drawer_recently_played.getString())
                 },
-                CommonFeaturesBean(id++, R.drawable.ic_drawer_game_collection,
-                    R.string.drawer_game_collections
+                CommonFeaturesBean(
+                    id++, arch.cayenne.lib.common.R.drawable.ic_drawer_game_collection,
+                    arch.cayenne.lib.common.R.string.drawer_game_collections
                 ) {
-                    showToast(R.string.drawer_game_collections.getString())
+                    showToast(arch.cayenne.lib.common.R.string.drawer_game_collections.getString())
                 },
-                CommonFeaturesBean(id++, R.drawable.ic_drawer_match_collection,
-                    R.string.drawer_match_collections
+                CommonFeaturesBean(
+                    id++, arch.cayenne.lib.common.R.drawable.ic_drawer_match_collection,
+                    arch.cayenne.lib.common.R.string.drawer_match_collections
                 ) {
                     navigatePage(arch.cayenne.lib.res.R.string.nav_module_collectlist_fragment.deeplink())
                 },
 
-                CommonFeaturesBean(id++, R.drawable.ic_drawer_gift,
-                    R.string.drawer_gift
+                CommonFeaturesBean(
+                    id++, arch.cayenne.lib.common.R.drawable.ic_drawer_gift,
+                    arch.cayenne.lib.common.R.string.drawer_gift
                 ) {
-                    showToast(R.string.drawer_gift.getString())
+                    showToast(arch.cayenne.lib.common.R.string.drawer_gift.getString())
                 },
-                CommonFeaturesBean(id++, R.drawable.ic_drawer_settings,
-                    R.string.drawer_settings
+                CommonFeaturesBean(
+                    id++, arch.cayenne.lib.common.R.drawable.ic_drawer_settings,
+                    arch.cayenne.lib.common.R.string.drawer_settings
                 ) {
                     navigatePage(arch.cayenne.lib.res.R.string.nav_module_setting_fragment.deeplink())
                 },
@@ -164,20 +172,23 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
         var id = 0
         serviceFeaturesAdapter.submitList(
             listOf(
-                CommonFeaturesBean(id++, R.drawable.ic_drawer_help,
-                    R.string.drawer_help
+                CommonFeaturesBean(
+                    id++, arch.cayenne.lib.common.R.drawable.ic_drawer_help,
+                    arch.cayenne.lib.common.R.string.drawer_help
                 ) {
                     navigatePage(Uri.parse("walisport://module_handicap/HandicapFragment?homeId=${R.id.newHomeFragment}"))
                 },
-                CommonFeaturesBean(id++, R.drawable.ic_drawer_feedback,
-                    R.string.drawer_feedback
+                CommonFeaturesBean(
+                    id++, arch.cayenne.lib.common.R.drawable.ic_drawer_feedback,
+                    arch.cayenne.lib.common.R.string.drawer_feedback
                 ) {
                     navigatePage(arch.cayenne.lib.res.R.string.nav_module_feedback_fragment.deeplink())
                 },
-                CommonFeaturesBean(id++, R.drawable.ic_drawer_customer_service,
-                    R.string.drawer_customer_service
+                CommonFeaturesBean(
+                    id++, arch.cayenne.lib.common.R.drawable.ic_drawer_customer_service,
+                    arch.cayenne.lib.common.R.string.drawer_customer_service
                 ) {
-                    showToast(R.string.drawer_customer_service.getString())
+                    showToast(arch.cayenne.lib.common.R.string.drawer_customer_service.getString())
                 },
             )
         )
@@ -208,18 +219,20 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
         var id = 0
         earningFeaturesAdapter.submitList(
             listOf(
-                CommonFeaturesBean(id++, R.drawable.ic_drawer_invite,
-                    R.string.drawer_invite
+                CommonFeaturesBean(
+                    id++, arch.cayenne.lib.common.R.drawable.ic_drawer_invite,
+                    arch.cayenne.lib.common.R.string.drawer_invite
                 ) {
                     navigatePage(arch.cayenne.lib.res.R.string.nav_module_invite_friends_fragment.deeplink())
                 },
-                CommonFeaturesBean(id++, R.drawable.ic_drawer_partner,
-                    R.string.drawer_partner
+                CommonFeaturesBean(
+                    id++, arch.cayenne.lib.common.R.drawable.ic_drawer_partner,
+                    arch.cayenne.lib.common.R.string.drawer_partner
                 ) {
                     navigatePage(arch.cayenne.lib.res.R.string.nav_module_partner_fragment.deeplink())
                 },
 
-            )
+                )
         )
 
 
@@ -292,8 +305,8 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
                 mBinding.tvBalance.text =
                     getString(
                         R.string.balance_format,
-                        CurrencySymbols.getSymbol(it?.currency?:""),
-                        (it?.balance?:0L).getFormalMoney()
+                        CurrencySymbols.getSymbol(it?.currency ?: ""),
+                        (it?.balance ?: 0L).getFormalMoney()
                     )
             }
         }
@@ -339,7 +352,7 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
         val defaultResId = mViewModel.getDefaultResId()
         with(mBinding) {
             if (defaultResId == -1) {
-                ivIconNickname.setImageResource(R.drawable.ic_drawer_nickname)
+                ivIconNickname.setImageResource(arch.cayenne.lib.common.R.drawable.ic_avatar_default)
             } else {
                 ivIconNickname.setImageDrawable(
                     ResourcesCompat.getDrawable(
@@ -356,6 +369,13 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
                 tvTitleNickname.text = getString(R.string.drawer_nickname_title)
             }
         }
+    }
+
+    override fun onStart() {
+        StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND(autoIsNavigation = true)
+        mBinding.root.fitsSystemWindows = false
+        setStatusBar(StatusBarConfig, mBinding.root)
+        super.onStart()
     }
 
 }

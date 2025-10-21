@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- 拍照保存路径 -->
+    <external-files-path name="camera_photos" path="Pictures" />
+    <!-- 相册访问路径 -->
+    <external-path name="external_files" path="." />
+</paths>

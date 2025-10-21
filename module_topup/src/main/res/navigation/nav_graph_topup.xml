@@ -21,11 +21,6 @@
             android:id="@+id/action_walletFragment_to_withdrawFragment"
             app:destination="@id/withdrawFragment" />
 
-        <!--跳转提现记录页面-->
-        <action
-            android:id="@+id/action_walletFragment_to_withdrawRecordFragment"
-            app:destination="@id/withdrawRecordsFragment" />
-
         <!--跳转银行卡页面-->
         <action
             android:id="@+id/action_walletFragment_to_bankCardFragment"
@@ -39,10 +34,10 @@
 
         <deepLink app:uri="walisport://module_topup/topUpFragment" />
 
-        <!--跳转充值记录页面-->
+        <!--跳转充值资金页面-->
         <action
-            android:id="@+id/action_walletFragment_to_topUpRecordFragment"
-            app:destination="@id/topUpRecordsFragment" />
+            android:id="@+id/action_topUpFragment_to_fundDetailsFragment"
+            app:destination="@id/fundDetailsFragment" />
     </fragment>
 
     <fragment
@@ -51,17 +46,12 @@
         android:label="WithdrawFragment" >
 
         <deepLink app:uri="walisport://module_topup/withdrawFragment" />
+
+        <!--跳转提现资金页面-->
+        <action
+            android:id="@+id/action_withdrawFragment_to_fundDetailsFragment"
+            app:destination="@id/fundDetailsFragment" />
     </fragment>
-
-    <fragment
-        android:id="@+id/topUpDetailFragment"
-        android:name="com.walisport.module.topup.ui.fragment.TopUpDetailFragment"
-        android:label="TopUpDetailFragment" />
-
-    <fragment
-        android:id="@+id/withdrawDetailFragment"
-        android:name="com.walisport.module.topup.ui.fragment.WithdrawDetailFragment"
-        android:label="WithdrawDetailFragment" />
 
     <fragment
         android:id="@+id/bankCardFragment"
@@ -78,27 +68,6 @@
         android:id="@+id/addBankCardFragment"
         android:name="com.walisport.module.topup.ui.fragment.AddBankCardFragment"
         android:label="AddBankCardFragment" />
-
-    <fragment
-        android:id="@+id/topUpRecordsFragment"
-        android:name="com.walisport.module.topup.ui.fragment.TopUpRecordsFragment"
-        android:label="TopUpRecordsFragment">
-
-        <action
-            android:id="@+id/action_topUpRecordsFragment_to_topUpDetailFragment"
-            app:destination="@id/topUpDetailFragment" />
-    </fragment>
-
-    <fragment
-        android:id="@+id/withdrawRecordsFragment"
-        android:name="com.walisport.module.topup.ui.fragment.WithdrawRecordsFragment"
-        android:label="TopUpRecordsFragment">
-
-        <action
-            android:id="@+id/action_withdrawRecordsFragment_to_withdrawDetailFragment"
-            app:destination="@id/withdrawDetailFragment" />
-    </fragment>
-
 
     <fragment
         android:id="@+id/fundDetailsFragment"

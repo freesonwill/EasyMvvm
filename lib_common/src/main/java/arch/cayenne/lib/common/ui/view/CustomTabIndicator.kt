@@ -5,9 +5,9 @@ import android.graphics.Canvas
 import android.graphics.Paint
 import android.util.AttributeSet
 import androidx.core.content.ContextCompat
-import arch.cayenne.lib.skin.widget.SkinnableView
-import kotlin.apply
 import arch.cayenne.lib.common.R
+import arch.cayenne.lib.skin.widget.SkinnableView
+
 class CustomTabIndicator(context: Context, attrs: AttributeSet) : SkinnableView(context, attrs) {
     private val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         style = Paint.Style.FILL
