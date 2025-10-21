@@ -1,8 +1,11 @@
 package com.walisport.app.ui
 
+import android.content.Context
 import android.os.Bundle
 import android.util.SparseArray
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.core.view.GravityCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -200,17 +203,23 @@ class MainFragment : BaseFragment<EmptyViewModel, FragmentMainBinding>() {
         }
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+    }
     override fun onStart() {
         super.onStart()
         ViewCompat.setOnApplyWindowInsetsListener(mBinding.root) { view, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            //設定底部欄位margin
+            val lp = mBinding.bottomNavigation.layoutParams as ViewGroup.MarginLayoutParams
+            lp.bottomMargin = systemBars.bottom
+            mBinding.bottomNavigation.layoutParams = lp
             // 给布局设置 padding，不避开状态栏，避开导航栏
-//            view.setPadding(systemBars.left, 0, systemBars.right, systemBars.bottom)
             view.setPadding(systemBars.left, 0, systemBars.right, systemBars.bottom)
             insets
         }
-
     }
+
     override fun onBackPressed(): Boolean {
         //如果抽屉打开，截获此次返回事件，关闭抽屉
         if(mBinding.drawerLayout.isDrawerOpen(GravityCompat.START)) {
