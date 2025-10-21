@@ -7,31 +7,6 @@
     android:layout_height="match_parent"
     android:background="@drawable/bg_bottom_sheet_round_top">
 
-    <View
-        android:id="@+id/view_tournament_mask"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:alpha="0"
-        android:background="@color/drawer_scrim_color"
-        android:clickable="true"
-        android:focusable="true"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <arch.cayenne.lib.skin.widget.SkinnableTextView
-        android:id="@+id/tv_tournament_section_title"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_52"
-        android:layout_marginStart="@dimen/dp_17"
-        android:paddingTop="@dimen/dp_16"
-        android:text="@string/tournament_section_title"
-        android:textColor="@color/home_main_text"
-        android:textSize="15sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="選聯賽" />
-
     <arch.cayenne.lib.skin.widget.SkinnableView
         android:id="@+id/ll_search_bar"
         android:layout_width="match_parent"
@@ -71,18 +46,6 @@
         app:layout_constraintStart_toEndOf="@id/iv_search_icon"
         app:layout_constraintTop_toTopOf="@id/ll_search_bar"
         tools:ignore="MissingConstraints" />
-
-    <arch.cayenne.lib.skin.widget.SkinnableImageView
-        android:id="@+id/iv_home_league_collapse"
-        android:layout_width="63dp"
-        android:layout_height="@dimen/dp_52"
-        android:paddingStart="25dp"
-        android:paddingEnd="0dp"
-        android:paddingTop="@dimen/dp_16"
-        android:paddingBottom="@dimen/dp_14"
-        android:src="@drawable/ic_league_tabs_collapse"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.constraintlayout.widget.Group
         android:id="@+id/group_top"

@@ -215,6 +215,12 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <!--        <androidx.constraintlayout.widget.Group-->
+        <!--            android:id="@+id/group_champion"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            app:constraint_referenced_ids="ll_banner, layout_container, ll_btn_tournament, ll_tournament_sort, v_league_more_mask"/>-->
+
         <FrameLayout
             android:id="@+id/fl_champion_container"
             android:layout_width="0dp"

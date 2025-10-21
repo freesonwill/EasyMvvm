@@ -15,7 +15,6 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
@@ -24,12 +23,12 @@ import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
-import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.enableRecyclerViewBounce
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.module.home.R
 import arch.cayenne.module.home.data.TournamentListItem
 import arch.cayenne.module.home.data.constants.HomeState
+import arch.cayenne.module.home.data.constants.TournamentListType
 import arch.cayenne.module.home.databinding.FragmentTournamentListBinding
 import arch.cayenne.module.home.databinding.ItemTournamentHeaderBinding
 import arch.cayenne.module.home.ui.adapter.TournamentSectionAdapter
@@ -61,7 +60,6 @@ class TournamentListFragment :
             mViewModel.setPlayTypeId(getInt(ARG_PLAY_TYPE_ID))
             type?.apply {
                 mViewModel.setType(this)
-                mBinding.ivHomeLeagueCollapse.isVisible = this == TournamentListType.MORE
                 mViewModel.getTournaments()
             }
         }
@@ -84,9 +82,6 @@ class TournamentListFragment :
             adapter = TournamentSectionAdapter(
                 onTournamentClick = { tournament ->
                     subHomeViewModel.onTournamentListSelected(tournament)
-                    if (mViewModel.getType() == TournamentListType.MORE) {
-                        subHomeViewModel.requestCollapseTournamentDropdown()
-                    }
                 }
             )
             rvTournamentList.layoutManager = LinearLayoutManager(context)
@@ -165,10 +160,6 @@ class TournamentListFragment :
                 })
             }
 
-            ivHomeLeagueCollapse.apply{addScaleOnTouchAnimation()}.setOnClickListener {
-                subHomeViewModel.requestCollapseTournamentDropdown()
-            }
-
             rvTournamentList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     // 檢查是否有待處理的跳轉
@@ -220,7 +211,6 @@ class TournamentListFragment :
                     is DataState.LoadSuccess -> {
                         clDynamics.visibility = View.GONE
                         groupTop.visibility = View.VISIBLE
-                        ivHomeLeagueCollapse.isVisible = mViewModel.getType() == TournamentListType.MORE
                         llIndexContainer.visibility = View.VISIBLE
                     }
                     HomeState.TournamentListState.InitList -> {
@@ -391,11 +381,6 @@ class TournamentListFragment :
         }
         stickyHeaderDecoration = null
         pendingJumpIndex = null
-
-        // 通知聯賽收回上滑動畫已結束
-        if (mViewModel.getType() == TournamentListType.MORE) {
-            subHomeViewModel.notifyTournamentSlideOutEnd()
-        }
     }
 
     private fun updateActiveHeaderIndex(recyclerView: RecyclerView) {
@@ -427,8 +412,4 @@ class TournamentListFragment :
             }
         }
     }
-}
-
-enum class TournamentListType {
-    MORE, CHAMPION, NONE
 }
