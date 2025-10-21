@@ -1,6 +1,7 @@
 package com.walisport.module.me.ui.fragment
 
 import android.os.Bundle
+import android.view.View
 import androidx.core.os.bundleOf
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
@@ -71,7 +72,6 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
     }
 
 
-
     override fun initListener() {
         with(mBinding) {
 
@@ -96,6 +96,12 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
     }
 
     override suspend fun createObserver() {
+        with(mViewModel) {
+            //未读消息u监听
+            unreadMsg.observe(viewLifecycleOwner) { flag ->
+                mBinding.ivUnreadDot.visibility = if (flag) View.VISIBLE else View.GONE
+            }
+        }
         mViewModel.createObserver()
     }
 
