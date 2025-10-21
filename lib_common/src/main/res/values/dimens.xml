@@ -1,5 +1,5 @@
 <resources>
-    <dimen name="title_bar_padding_end">7dp</dimen>
+    <dimen name="title_bar_padding_end">4dp</dimen>
     <dimen name="title_bar_padding_start">8dp</dimen>
     <dimen name="dp_0">0dp</dimen>
     <dimen name="dp_1">1dp</dimen>
