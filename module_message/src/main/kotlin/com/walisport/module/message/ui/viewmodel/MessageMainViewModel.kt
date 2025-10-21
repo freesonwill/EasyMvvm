@@ -7,6 +7,7 @@ import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.base.data.remote.ApiResponseState.Start.dataAs
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
+import arch.cayenne.lib.database.dao.MessageDao
 import com.walisport.module.message.data.MessageMainRepository
 import com.walisport.module.message.data.NotificationBean
 import kotlinx.coroutines.launch
@@ -38,8 +39,7 @@ class MessageMainViewModel(private val repo: MessageMainRepository) : BaseViewMo
     val payUnreadMsg: LiveData<Int> = _payUnreadMsg
 
     companion object {
-        const val STATUS_READ = 2
-        const val STATUS_DEL = 3
+
 
         const val MSG_SYS = 1
         const val MSG_ACT = 2
@@ -99,12 +99,12 @@ class MessageMainViewModel(private val repo: MessageMainRepository) : BaseViewMo
 
     //删除指定消息
     fun deleteMessage(id: Long) {
-        repo.updateMessageStatus(id, STATUS_DEL)
+        repo.updateMessageStatus(id, MessageDao.STATUS_DEL)
     }
 
     //将消息设为已读
     fun setMessageRead(id: Long) {
-        repo.updateMessageStatus(id, STATUS_READ)
+        repo.updateMessageStatus(id, MessageDao.STATUS_READ)
     }
 
     //获取系统消息列表
