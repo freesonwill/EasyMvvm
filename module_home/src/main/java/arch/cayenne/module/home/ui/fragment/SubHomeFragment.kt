@@ -46,6 +46,7 @@ import arch.cayenne.module.home.databinding.FragmentSubHomeBinding
 import arch.cayenne.module.home.databinding.ItemDateTabBinding
 import arch.cayenne.module.home.databinding.ItemLeagueTabBinding
 import arch.cayenne.module.home.ui.adapter.LeaguePagerAdapter
+import arch.cayenne.module.home.ui.adapter.SportBannerAdapter
 import arch.cayenne.module.home.ui.adapter.SportsListAdapter
 import arch.cayenne.module.home.ui.view.CustomTabLayoutMediator
 import arch.cayenne.module.home.ui.view.HomeCalendarFragment
@@ -107,6 +108,7 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
     override fun initView(savedInstanceState: Bundle?) {
         initSportLayout()
         initVIPInfo()
+        initSportBanner()
         if (mViewModel.currentPlayTypeId == PlayType.CHAMPION.id) {
             initChampionTournamentLayout()
         } else {
@@ -315,6 +317,40 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
             percent = "57.91%",
             levelUpInfo = "升级还需¥59w"
         )
+    }
+
+    // init Sport Banner 輪播區塊
+    @SuppressLint("ClickableViewAccessibility")
+    private fun initSportBanner() {
+        val mockBannerList = arrayListOf(
+            arch.cayenne.module.home.data.SportBannerData(R.drawable.banner_ad1),
+            arch.cayenne.module.home.data.SportBannerData(R.drawable.banner_ad1),
+            arch.cayenne.module.home.data.SportBannerData(R.drawable.banner_ad1),
+            arch.cayenne.module.home.data.SportBannerData(R.drawable.banner_ad1),
+            arch.cayenne.module.home.data.SportBannerData(R.drawable.banner_ad1),
+        )
+        val bannerAdapter = SportBannerAdapter()
+
+        with(mBinding.includeSportBanner) {
+            vpSportBanner.adapter = bannerAdapter
+            bannerAdapter.submitList(mockBannerList)
+            vpSportBanner.isUserInputEnabled = true
+            vpSportBanner.getChildAt(0).setOnTouchListener { v, event ->
+                v.parent.requestDisallowInterceptTouchEvent(true)
+                false
+            }
+
+            vpSportBanner.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+                override fun onPageSelected(position: Int) {
+                    super.onPageSelected(position)
+                    pbSportBanner.resetTriggerJob()
+                }
+            })
+            pbSportBanner.setTriggerListener {
+                vpSportBanner.currentItem =
+                    (vpSportBanner.currentItem + 1) % bannerAdapter.itemCount
+            }
+        }
     }
 
     // 更新 VIP 信息顯示

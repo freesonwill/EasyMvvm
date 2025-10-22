@@ -22,12 +22,9 @@
             android:orientation="horizontal"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
-            <arch.cayenne.lib.skin.widget.SkinnableImageView
-                android:layout_width="172dp"
-                android:layout_height="111dp"
-                android:layout_marginEnd="@dimen/dp_11"
-                android:scaleType="fitXY"
-                android:src="@drawable/banner_ad1" />
+            <include
+                android:id="@+id/include_sport_banner"
+                layout="@layout/include_sport_banner" />
 
             <!-- VIP 信息區塊 -->
             <androidx.constraintlayout.widget.ConstraintLayout
