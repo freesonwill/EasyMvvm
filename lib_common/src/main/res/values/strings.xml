@@ -21,6 +21,7 @@
     <string name="title_result_toast">投注结果通知</string>
     <string name="btn_clear">清空</string>
     <string name="btn_confirm">确定</string>
+    <string name="btn_cancel">取消</string>
     <string name="title_rate">达到此赔率时自动投注</string>
     <string name="toast_server_disconnected">服务器已断开连接</string>
     <string name="disabled_to_combo">当前赛事不支持串关</string>

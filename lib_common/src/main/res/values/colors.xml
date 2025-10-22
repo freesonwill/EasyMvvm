@@ -52,6 +52,10 @@
     <color name="title_bar">#e6e6e6</color>
 
     <!-- Dialog -->
+    <color name="dialog_bottom_confirm">#FE3666</color>
+    <color name="dialog_bottom_line">#272727</color>
+    <color name="dialog_bottom_cancel">#FFFFFF</color>
+    <color name="dialog_bottom_title">#999999</color>
     <color name="dialog_title">#00D271</color>
     <color name="secondary_title">#929298</color>
     <color name="secondary_text">#929298</color>

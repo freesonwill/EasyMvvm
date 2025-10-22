@@ -9,10 +9,12 @@
     <string name="notification_confirm">确认删除</string>
     <string name="notification_cancel">取消</string>
     <string name="notification_detail">查看详情</string>
-    <string name="notification_delete">消息删除后将无法恢复，确定删除消息吗？</string>
+    <string name="notification_delete">确认删除通知消息吗？</string>
 
+    <string name="pay_type">支付方式</string>
+    <string name="pay_time">支付时间</string>
     <string name="detail">详情</string>
-
+    <string name="yesterday">昨天</string>
     <string name="notice_sys">系统通知</string>
     <string name="notice_act">活动通知</string>
     <string name="notice_mat">赛事通知</string>

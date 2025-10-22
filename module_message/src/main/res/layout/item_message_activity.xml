@@ -8,7 +8,16 @@
         android:id="@+id/lay_msg_item"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_200"
-        android:background="@drawable/bg_match_card">
+        android:background="@drawable/shape_message_bg">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/bg_msg_item"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
             android:id="@+id/lay_title"

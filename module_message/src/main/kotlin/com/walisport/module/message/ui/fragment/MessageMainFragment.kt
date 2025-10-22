@@ -148,6 +148,9 @@ class MessageMainFragment : BaseFragment<MessageMainViewModel, FragmentMessageMa
             }
             selectMessageType(type, true)
             selectMessageType(historyType, false)
+            if (type != MSG_ALL) {
+                mViewModel.setAllMessageRead(type)
+            }
             historyTypePosition = type
         }
     }
