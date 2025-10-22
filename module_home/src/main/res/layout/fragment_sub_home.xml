@@ -28,12 +28,83 @@
                 android:layout_marginEnd="@dimen/dp_11"
                 android:src="@drawable/banner_ad1" />
 
-            <arch.cayenne.lib.skin.widget.SkinnableImageView
-                android:id="@+id/vip"
+            <!-- VIP 信息區塊 -->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cl_vip_info"
                 android:layout_width="172dp"
                 android:layout_height="111dp"
-                android:scaleType="fitXY"
-                android:src="@drawable/banner_vip" />
+                android:layout_marginEnd="@dimen/dp_11"
+                android:background="@drawable/bg_banner_vip">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_level"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_12"
+                    android:layout_marginTop="@dimen/dp_10"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/sp_20"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <arch.cayenne.lib.skin.widget.SkinnableTextView
+                    android:id="@+id/tv_percent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_12"
+                    android:layout_marginBottom="@dimen/dp_28"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/sp_12"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:skinnableFontWeight="700" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/iv_percent"
+                    android:layout_width="@dimen/dp_70"
+                    android:layout_height="@dimen/dp_3"
+                    android:layout_marginStart="@dimen/dp_3"
+                    app:layout_constraintBottom_toBottomOf="@id/tv_percent"
+                    app:layout_constraintStart_toEndOf="@id/tv_percent"
+                    app:layout_constraintTop_toTopOf="@id/tv_percent" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_level_up_info"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_12"
+                    android:layout_marginEnd="@dimen/dp_8"
+                    android:layout_marginBottom="@dimen/dp_10"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textColor="@color/color_7AFFFFFF"
+                    android:textSize="@dimen/sp_12"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/iv_level_name"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+                <arch.cayenne.lib.skin.widget.SkinnableImageView
+                    android:id="@+id/iv_level"
+                    android:layout_width="@dimen/dp_45"
+                    android:layout_height="@dimen/dp_48"
+                    android:layout_marginTop="@dimen/dp_6"
+                    android:layout_marginEnd="@dimen/dp_10"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <arch.cayenne.lib.skin.widget.SkinnableImageView
+                    android:id="@+id/iv_level_name"
+                    android:layout_width="@dimen/dp_22"
+                    android:layout_height="@dimen/dp_11"
+                    android:layout_marginEnd="@dimen/dp_23"
+                    android:layout_marginBottom="@dimen/dp_14"
+                    android:scaleType="centerCrop"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
         </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
 
