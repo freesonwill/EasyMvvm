@@ -16,4 +16,5 @@
     <string name="yesterday">昨天</string>
     <string name="select_currency">选择游戏时的货币显示</string>
     <string name="current_currency">当前加密货币</string>
+    <string name="rating_count">條評分</string>
 </resources>

@@ -17,4 +17,5 @@
     <string name="yesterday">Ontem às</string>
     <string name="select_currency">Exibição de Moeda ao Selecionar o Jogo</string>
     <string name="current_currency">Criptomoeda Atual</string>
+    <string name="rating_count">avaliações</string>
 </resources>

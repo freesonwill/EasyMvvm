@@ -16,4 +16,5 @@
     <string name="yesterday">Yesterday</string>
     <string name="select_currency">Currency Display for Game Selection</string>
     <string name="current_currency">Current Cryptocurrency</string>
+    <string name="rating_count">reviews</string>
 </resources>

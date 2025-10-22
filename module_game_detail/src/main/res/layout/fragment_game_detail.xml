@@ -81,9 +81,10 @@
 
             <arch.cayenne.lib.skin.widget.SkinnableTextView
                 android:id="@+id/tv_currency_symbol"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_6"
+                android:layout_width="@dimen/dp_22"
+                android:layout_height="@dimen/dp_22"
+                android:layout_marginStart="@dimen/dp_3"
+                android:gravity="center"
                 android:textColor="@color/color_FFFFFF"
                 android:textSize="@dimen/sp_16"
                 app:layout_constraintBottom_toBottomOf="@id/view_currency_bg"
@@ -95,7 +96,6 @@
                 android:id="@+id/tv_currency_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_4"
                 android:textColor="@color/color_FFFFFF"
                 android:textSize="@dimen/sp_14"
                 app:layout_constraintBottom_toBottomOf="@id/view_currency_bg"
@@ -153,6 +153,7 @@
                 android:id="@+id/tv_game_type"
                 style="@style/RoundedTagStyle"
                 android:layout_marginStart="@dimen/dp_7"
+                android:layout_marginBottom="@dimen/dp_1"
                 app:layout_constraintBottom_toBottomOf="@id/tv_game_name"
                 app:layout_constraintStart_toEndOf="@id/tv_game_name"
                 app:layout_constraintTop_toTopOf="@id/tv_game_name"
@@ -162,6 +163,7 @@
                 android:id="@+id/tv_game_vendor"
                 style="@style/RoundedTagStyle"
                 android:layout_marginStart="@dimen/dp_6"
+                android:layout_marginBottom="@dimen/dp_1"
                 app:layout_constraintBottom_toBottomOf="@id/tv_game_name"
                 app:layout_constraintStart_toEndOf="@id/tv_game_type"
                 app:layout_constraintTop_toTopOf="@id/tv_game_name"
@@ -175,8 +177,7 @@
         android:id="@+id/tv_rtp_value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_6"
-        android:layout_marginTop="@dimen/dp_17"
+        android:layout_marginTop="@dimen/dp_15"
         android:textColor="@color/color_FFFFFF"
         android:textSize="@dimen/sp_12"
         app:layout_constraintStart_toStartOf="@id/scroll_game_info"
@@ -252,6 +253,14 @@
         app:layout_constraintStart_toEndOf="@id/tv_online_value"
         app:layout_constraintTop_toTopOf="@id/view_online_dot" />
 
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guide_line_score"
+        android:layout_width="@dimen/dp_1"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintGuide_end="@dimen/dp_45" />
+
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/tv_score"
         android:layout_width="wrap_content"
@@ -261,8 +270,8 @@
         android:textColor="@color/color_00E0E5"
         android:textSize="@dimen/sp_20"
         app:layout_constraintBottom_toTopOf="@id/tv_score_count_value"
-        app:layout_constraintEnd_toEndOf="@id/tv_score_count_title"
-        app:layout_constraintStart_toStartOf="@id/tv_score_count_value"
+        app:layout_constraintEnd_toEndOf="@id/guide_line_score"
+        app:layout_constraintStart_toStartOf="@id/guide_line_score"
         tools:text="4.9" />
 
     <arch.cayenne.lib.skin.widget.SkinnableTextView
@@ -274,6 +283,7 @@
         app:layout_constraintBottom_toBottomOf="@id/tv_score_count_title"
         app:layout_constraintEnd_toStartOf="@id/tv_score_count_title"
         app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="@id/guide_line_score"
         app:layout_constraintTop_toTopOf="@id/tv_score_count_title"
         tools:text="6234" />
 
@@ -283,11 +293,12 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/dp_14"
         android:layout_marginBottom="@dimen/dp_1"
-        android:text="@string/is_playing"
+        android:text="@string/rating_count"
         android:textColor="@color/color_999999"
         android:textSize="@dimen/sp_11"
         app:layout_constraintBottom_toBottomOf="@id/iv_game_cover"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="@id/guide_line_score"
+        app:layout_constraintStart_toEndOf="@id/tv_score_count_value" />
 
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/iv_start_trial"

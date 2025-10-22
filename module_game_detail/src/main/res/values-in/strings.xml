@@ -17,4 +17,5 @@
     <string name="yesterday">Kemarin</string>
     <string name="select_currency">Tampilan Mata Uang saat Memilih Game</string>
     <string name="current_currency">Mata Uang Kripto Saat Ini</string>
+    <string name="rating_count">ulasan</string>
 </resources>

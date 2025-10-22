@@ -53,7 +53,7 @@ class PlayerRankingAdapter: BaseAdapter<PlayerRankingBean, BaseViewHolder, ViewB
             ivWinningSymbol.visibility = View.GONE
             tvBetValue.apply {
                 val str = String.format(Locale.getDefault(), "%.2f", mData.bet.toDouble())
-                val reachLimit = str.length >= 12
+                val reachLimit = str.length > 12
                 text = if (reachLimit) "${str.take(12)}…" else str
                 if (reachLimit) {
                     clickNoRepeat { showFullNumberPopup(str) }
@@ -61,7 +61,7 @@ class PlayerRankingAdapter: BaseAdapter<PlayerRankingBean, BaseViewHolder, ViewB
             }
             tvMultiplierValue.apply {
                 val str = "${mData.multiple}x"
-                val reachLimit = str.length >= 8
+                val reachLimit = str.length > 8
                 text = if (reachLimit) "${str.take(8)}…" else str
                 if (reachLimit) {
                     clickNoRepeat { showFullNumberPopup(str) }
@@ -69,7 +69,7 @@ class PlayerRankingAdapter: BaseAdapter<PlayerRankingBean, BaseViewHolder, ViewB
             }
             tvWinningsValue.apply {
                 val str = String.format(Locale.getDefault(), "%.2f", mData.bonus.toDouble())
-                val reachLimit = str.length >= 12
+                val reachLimit = str.length > 12
                 text = if (reachLimit) "${str.take(12)}…" else str
                 if (reachLimit) {
                     clickNoRepeat { showFullNumberPopup(str) }

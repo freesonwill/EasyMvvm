@@ -165,7 +165,7 @@ class GameDetailFragment: BaseFragment<GameDetailViewModel, FragmentGameDetailBi
                 setRankingDatas(
                     listOf(
                         PlayerRankingBean(1, "美美桑内", 1, 100000000000000, 240000, 999999999999999, 1760427629980),
-                        PlayerRankingBean(2, "小林同學", 2, 5000, 120000, 888888, 1760427629980),
+                        PlayerRankingBean(2, "小林同學", 2, 5000, 120000, 1000000009, 1760427629980),
                         PlayerRankingBean(3, "大谷翔平", 3, 3000, 80000, 777777, 1760427629980),
                         PlayerRankingBean(4, "王柏融", 4, 2000, 60000, 666666, 1760427629980),
                         PlayerRankingBean(5, "陽岱鋼", 5, 1000, 40000, 555555, 1760427629980),
