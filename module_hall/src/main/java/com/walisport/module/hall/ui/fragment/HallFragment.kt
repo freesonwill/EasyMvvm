@@ -21,6 +21,7 @@ import arch.cayenne.lib.common.ui.viewmodel.UnReadMessageViewModel
 import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
+import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.touchBackPressed
 import com.google.android.material.tabs.TabLayoutMediator
@@ -122,6 +123,7 @@ class HallFragment : BaseFragment<HallViewModel, FragmentHallBinding>() {
 
     override fun initListener() {
         with (mBinding) {
+            ivHomeSidebar.addScaleOnTouchAnimation()
             ivHomeSidebar.clickNoRepeat {
                 requireActivity().supportFragmentManager.setFragmentResult(
                     REQUEST_KEY_DRAWER,
