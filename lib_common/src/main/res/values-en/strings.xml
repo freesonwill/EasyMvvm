@@ -30,4 +30,7 @@
     <string name="drawer_customer_service">CS</string>
     <string name="drawer_invite">Invite friends</string>
     <string name="drawer_partner">Senior partner</string>
+
+    <!-- VIP Related -->
+    <string name="vip_level_format">VIP %d</string>
 </resources>
