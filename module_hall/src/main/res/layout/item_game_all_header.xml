@@ -200,4 +200,10 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+    <arch.cayenne.lib.common.ui.view.CustomGameTabGroupLayout
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_32"
+        app:layout_constraintTop_toBottomOf="@+id/vp_banner"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
