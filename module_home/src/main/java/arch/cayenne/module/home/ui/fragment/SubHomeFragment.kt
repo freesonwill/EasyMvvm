@@ -250,7 +250,7 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
             updateVIPInfo(
                 vipLevel = level.toInt(),
                 percent = "57.91%",
-                levelUpInfo = "升级还需¥59w投注额"
+                levelUpInfo = "升级还需¥59w"
             )
         }
     }
