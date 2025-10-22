@@ -46,6 +46,11 @@ abstract class MessageDao : BaseDao<MessageBean>() {
     @Query("UPDATE MessageBean set status = :status where id = :id")
     abstract fun updateMessageStatus(status: Int, id: Long)
 
+    //更新某类消息状态为已读
+    @Transaction
+    @Query("UPDATE MessageBean set status = :status where type = :type")
+    abstract fun updateAllMessageRead(status: Int, type: Int)
+
     //监听某一状态的消息
     @Transaction
     @Query("SELECT * FROM MessageBean where status = :status")

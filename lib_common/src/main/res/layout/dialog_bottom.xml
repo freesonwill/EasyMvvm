@@ -3,61 +3,50 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/bg_shape_del_dialog"
+    android:background="@drawable/shape_bottom_dialog"
     app:layout_constraintBottom_toBottomOf="parent">
 
-    <LinearLayout
+    <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
         <arch.cayenne.lib.skin.widget.SkinnableTextView
+            android:id="@+id/tv_dialog_title"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/dp_56"
             android:gravity="center"
-            android:text="@string/bank_del_tip"
-            android:textColor="@color/bank_title"
-            android:textSize="@dimen/sp_14"
-            android:layout_marginTop="@dimen/dp_25"/>
-
-        <arch.cayenne.lib.skin.widget.SkinnableTextView
-            android:id="@+id/tv_bank_info"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:textColor="@color/bank_title"
-            android:textSize="@dimen/sp_14"
-            android:layout_marginTop="@dimen/dp_19"
-            android:layout_marginBottom="@dimen/dp_26"/>
+            android:textColor="@color/dialog_bottom_title"
+            android:textSize="@dimen/sp_14" />
 
         <arch.cayenne.lib.skin.widget.SkinnableView
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_1"
-            android:background="@color/bank_line" />
+            android:background="@color/dialog_bottom_line" />
 
         <arch.cayenne.lib.skin.widget.SkinnableTextView
-            android:id="@+id/tv_delete"
+            android:id="@+id/tv_confirm"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_56"
             android:gravity="center"
-            android:text="@string/bank_del"
-            android:textColor="@color/pay_failure"
-            android:textSize="@dimen/sp_15"
+            android:text="@string/btn_confirm"
+            android:textColor="@color/dialog_bottom_confirm"
+            android:textSize="@dimen/sp_16"
             android:textStyle="bold" />
 
         <arch.cayenne.lib.skin.widget.SkinnableView
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_8"
-            android:background="@color/bank_line" />
+            android:background="@color/dialog_bottom_line" />
 
         <arch.cayenne.lib.skin.widget.SkinnableTextView
-            android:id="@+id/tv_close"
+            android:id="@+id/tv_cancel"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_46"
+            android:layout_height="@dimen/dp_56"
             android:gravity="center"
-            android:text="@string/bank_cancel"
-            android:textColor="@color/bank_text"
+            android:text="@string/btn_cancel"
+            android:textColor="@color/dialog_bottom_cancel"
             android:textSize="@dimen/sp_16"
             android:textStyle="bold" />
-    </LinearLayout>
+    </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
 </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
