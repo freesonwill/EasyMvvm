@@ -1,0 +1,20 @@
+<resources>
+    <string name="swipe_for_more_game">上滑推荐更多游戏</string>
+    <string name="start_game">开始游戏</string>
+    <string name="start_trial">试玩</string>
+    <string name="rtp">RTP</string>
+    <string name="max_reward">最大返奖</string>
+    <string name="is_playing">在玩</string>
+    <string name="biggest_winner">最大赢家</string>
+    <string name="luckiest_winner">最幸运赢家</string>
+    <string name="currency_display">货币显示</string>
+    <string name="bet">投注</string>
+    <string name="multiplier">倍数</string>
+    <string name="winnings">奖金</string>
+    <string name="share_bet">分享注单</string>
+    <string name="watch_replay">观看回放</string>
+    <string name="yesterday">昨天</string>
+    <string name="select_currency">选择游戏时的货币显示</string>
+    <string name="current_currency">当前加密货币</string>
+    <string name="rating_count">條評分</string>
+</resources>

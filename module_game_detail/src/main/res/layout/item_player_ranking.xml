@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="utf-8"?>
+<arch.cayenne.lib.skin.widget.SkinnableConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="@dimen/dp_16">
+
+    <arch.cayenne.lib.skin.widget.SkinnableImageView
+        android:id="@+id/iv_ranking_icon"
+        android:layout_width="@dimen/dp_20"
+        android:layout_height="@dimen/dp_20"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:src="@drawable/ic_ranking_1"
+        tools:visibility="visible" />
+
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
+        android:id="@+id/tv_ranking"
+        android:layout_width="@dimen/dp_20"
+        android:layout_height="@dimen/dp_20"
+        android:gravity="center"
+        android:textColor="@color/color_FFFFFF"
+        android:textSize="@dimen/sp_14"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="4"
+        tools:visibility="gone" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier_ranking_end"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="end"
+        app:constraint_referenced_ids="iv_ranking_icon, tv_ranking" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier_ranking_top"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="top"
+        app:constraint_referenced_ids="iv_ranking_icon, tv_ranking" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier_ranking_bottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="iv_ranking_icon, tv_ranking" />
+
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
+        android:id="@+id/tv_player_name"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_20"
+        android:layout_marginStart="@dimen/dp_6"
+        android:textColor="@color/color_8FBEE9"
+        android:textSize="@dimen/sp_14"
+        app:layout_constraintBottom_toBottomOf="@id/barrier_ranking_bottom"
+        app:layout_constraintStart_toEndOf="@id/barrier_ranking_end"
+        app:layout_constraintTop_toTopOf="@id/barrier_ranking_top"
+        tools:text="南京红姐" />
+
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
+        android:id="@+id/tv_timestamp"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_20"
+        android:textColor="@color/color_C0C0C0"
+        android:textSize="@dimen/sp_14"
+        app:layout_constraintBottom_toBottomOf="@id/barrier_ranking_bottom"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/barrier_ranking_top"
+        tools:text="07-15 23:31:17" />
+
+    <arch.cayenne.lib.skin.widget.SkinnableImageView
+        android:id="@+id/iv_bet_symbol"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        app:layout_constraintBottom_toBottomOf="@id/tv_bet_value"
+        app:layout_constraintEnd_toStartOf="@id/tv_bet_symbol"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="@id/tv_bet_title"
+        app:layout_constraintTop_toTopOf="@id/tv_bet_value"
+        tools:src="@drawable/ic_btc" />
+
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
+        android:id="@+id/tv_bet_symbol"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/color_FFFFFF"
+        android:textSize="@dimen/sp_14"
+        app:layout_constraintBottom_toBottomOf="@id/tv_bet_value"
+        app:layout_constraintEnd_toStartOf="@id/tv_bet_value"
+        app:layout_constraintStart_toEndOf="@id/iv_bet_symbol"
+        app:layout_constraintTop_toTopOf="@id/tv_bet_value"
+        tools:text="¥"
+        tools:visibility="gone" />
+
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
+        android:id="@+id/tv_bet_value"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_20"
+        android:layout_marginTop="@dimen/dp_18"
+        android:textColor="@color/color_FFFFFF"
+        android:textSize="@dimen/sp_14"
+        app:layout_constraintEnd_toEndOf="@id/tv_bet_title"
+        app:layout_constraintStart_toEndOf="@id/tv_bet_symbol"
+        app:layout_constraintTop_toBottomOf="@id/barrier_ranking_bottom"
+        app:layout_goneMarginStart="@dimen/dp_2"
+        tools:text="1000.99" />
+
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
+        android:id="@+id/tv_multiplier_value"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_20"
+        android:layout_marginTop="@dimen/dp_18"
+        android:textColor="@color/color_FFFFFF"
+        android:textSize="@dimen/sp_14"
+        app:layout_constraintEnd_toEndOf="@id/tv_multiplier_title"
+        app:layout_constraintStart_toStartOf="@id/tv_multiplier_title"
+        app:layout_constraintTop_toBottomOf="@id/barrier_ranking_bottom"
+        tools:text="240000x" />
+
+    <arch.cayenne.lib.skin.widget.SkinnableImageView
+        android:id="@+id/iv_winning_symbol"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        app:layout_constraintBottom_toBottomOf="@id/tv_winnings_value"
+        app:layout_constraintEnd_toStartOf="@id/tv_winning_symbol"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="@id/tv_winnings_title"
+        app:layout_constraintTop_toTopOf="@id/tv_winnings_value"
+        tools:src="@drawable/ic_btc" />
+
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
+        android:id="@+id/tv_winning_symbol"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/color_FFFFFF"
+        android:textSize="@dimen/sp_14"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/tv_winnings_value"
+        app:layout_constraintEnd_toStartOf="@id/tv_winnings_value"
+        app:layout_constraintStart_toEndOf="@id/iv_winning_symbol"
+        app:layout_constraintTop_toTopOf="@id/tv_winnings_value"
+        tools:text="¥" />
+
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
+        android:id="@+id/tv_winnings_value"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_20"
+        android:layout_marginTop="@dimen/dp_18"
+        android:textColor="@color/color_FFFFFF"
+        android:textSize="@dimen/sp_14"
+        app:layout_constraintEnd_toEndOf="@id/tv_winnings_title"
+        app:layout_constraintStart_toEndOf="@id/tv_winning_symbol"
+        app:layout_constraintTop_toBottomOf="@id/barrier_ranking_bottom"
+        app:layout_goneMarginStart="@dimen/dp_2"
+        tools:text="2000.99" />
+
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
+        android:id="@+id/tv_bet_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_38"
+        android:layout_marginTop="@dimen/dp_6"
+        android:text="@string/bet"
+        android:textColor="@color/color_999999"
+        android:textSize="@dimen/sp_14"
+        app:layout_constraintEnd_toStartOf="@id/tv_multiplier_title"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_bet_value" />
+
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
+        android:id="@+id/tv_multiplier_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_82"
+        android:layout_marginTop="@dimen/dp_6"
+        android:text="@string/multiplier"
+        android:textColor="@color/color_999999"
+        android:textSize="@dimen/sp_14"
+        app:layout_constraintEnd_toStartOf="@id/tv_winnings_title"
+        app:layout_constraintStart_toEndOf="@id/tv_bet_title"
+        app:layout_constraintTop_toBottomOf="@id/tv_multiplier_value" />
+
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
+        android:id="@+id/tv_winnings_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="83dp"
+        android:layout_marginTop="@dimen/dp_6"
+        android:layout_marginEnd="@dimen/dp_50"
+        android:text="@string/winnings"
+        android:textColor="@color/color_999999"
+        android:textSize="@dimen/sp_14"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/tv_multiplier_title"
+        app:layout_constraintTop_toBottomOf="@id/tv_winnings_value" />
+
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
+        android:id="@+id/tv_share"
+        style="@style/Rounded5ButtonStyle"
+        android:layout_marginTop="@dimen/dp_18"
+        android:drawableStart="@drawable/selector_ic_share_small"
+        android:text="@string/share_bet"
+        app:layout_constraintEnd_toStartOf="@id/tv_replay"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_bet_title"
+        tools:visibility="visible" />
+
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
+        android:id="@+id/tv_replay"
+        style="@style/Rounded5ButtonStyle"
+        android:layout_marginStart="@dimen/dp_10"
+        android:layout_marginTop="@dimen/dp_18"
+        android:drawableStart="@drawable/selector_ic_replay"
+        android:text="@string/watch_replay"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toEndOf="@id/tv_share"
+        app:layout_constraintTop_toBottomOf="@id/tv_bet_title"
+        app:layout_goneMarginStart="@dimen/dp_0" />
+
+    <Space
+        android:id="@+id/space_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_16"
+        app:layout_constraintTop_toBottomOf="@id/tv_share" />
+
+    <arch.cayenne.lib.skin.widget.SkinnableView
+        android:id="@+id/view_divider"
+        android:layout_width="0dp"
+        android:layout_height="0.5dp"
+        android:layout_marginStart="@dimen/dp_12"
+        android:layout_marginEnd="@dimen/dp_12"
+        android:background="@color/color_0FFFFFFF"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/space_bottom" />
+
+</arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>

@@ -85,6 +85,7 @@ dependencies {
     implementation(project(":module_chat"))
     implementation(project(":module_hall"))
     implementation(project(":module_launcher"))
+    implementation(project(":module_game_detail"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.androidx.appcompat)
