@@ -3,12 +3,14 @@ package com.walisport.module.me.ui.fragment
 import android.os.Bundle
 import android.view.View
 import androidx.core.os.bundleOf
+import androidx.fragment.app.viewModels
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.data.constants.DrawerAction.ACTION_OPEN
 import arch.cayenne.lib.common.data.constants.DrawerAction.KEY_ACTION
 import arch.cayenne.lib.common.data.constants.DrawerAction.REQUEST_KEY_DRAWER
+import arch.cayenne.lib.common.ui.viewmodel.UnReadMessageViewModel
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
@@ -32,6 +34,9 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
 
     override val vbClass: KClass<FragmentMeBinding> = FragmentMeBinding::class
     override val vmClass: KClass<MeViewModel> = MeViewModel::class
+
+    private val unreadMessageViewModel: UnReadMessageViewModel by viewModels()
+
 
 
     override fun initView(savedInstanceState: Bundle?) {
@@ -96,13 +101,14 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
     }
 
     override suspend fun createObserver() {
-        with(mViewModel) {
-            //未读消息u监听
+        with(unreadMessageViewModel) {
+            //未读消息监听
             unreadMsg.observe(viewLifecycleOwner) { flag ->
-                mBinding.ivUnreadDot.visibility = if (flag) View.VISIBLE else View.GONE
+                mBinding.ivUnreadDot.visibility = if (flag) android.view.View.VISIBLE else android.view.View.GONE
             }
         }
-        mViewModel.createObserver()
+
+        unreadMessageViewModel.createObserver()
     }
 
     override fun onStart() {
