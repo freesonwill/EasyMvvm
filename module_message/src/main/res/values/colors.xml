@@ -5,4 +5,5 @@
     <color name="msg_title">#FFFFFF</color>
     <color name="msg_back">#161823</color>
     <color name="msg_border">#282A34</color>
+    <color name="msg_bg">#1E1E1E</color>
 </resources>
