@@ -80,6 +80,7 @@ class ChatTabView : LinearLayout {
                 if (selectTab == CHAT_CUSTOMER) {
                     return@setOnClickListener
                 }
+                chatTabSelectListener?.selectTab(2)
                 tabSelect(CHAT_CUSTOMER)
                 clickTabAction(CUSTOMER)
             }
@@ -87,14 +88,24 @@ class ChatTabView : LinearLayout {
     }
 
     fun selectTab(position: Int) {
+        if(position == selectTab){
+            return
+        }
         val tab = when (position) {
             0 -> CHAT_ROOM
             1 -> CHAT_LIVING
             2 -> CHAT_CUSTOMER
             else -> -1
         }
+        val action = when(position){
+            0 -> NORMAL
+            1 -> CHAT_LIVING
+            2 -> CHAT_CUSTOMER
+            else -> -1
+        }
         if (tab != -1) {
             tabSelect(tab)
+            clickTabAction(action)
         }
     }
 
