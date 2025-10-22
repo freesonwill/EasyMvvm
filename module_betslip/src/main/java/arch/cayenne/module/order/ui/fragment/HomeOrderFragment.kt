@@ -2,6 +2,7 @@ package arch.cayenne.module.order.ui.fragment
 
 import android.os.Bundle
 import androidx.core.os.bundleOf
+import androidx.fragment.app.viewModels
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.adapter.PagerAdapter
@@ -9,6 +10,8 @@ import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.data.constants.DrawerAction.ACTION_OPEN
 import arch.cayenne.lib.common.data.constants.DrawerAction.KEY_ACTION
 import arch.cayenne.lib.common.data.constants.DrawerAction.REQUEST_KEY_DRAWER
+import arch.cayenne.lib.common.ui.viewmodel.UnReadMessageViewModel
+import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.removeAllTips
 import arch.cayenne.lib.common.utils.ext.setupHorizontalScrollDegree
@@ -23,6 +26,9 @@ class HomeOrderFragment: BaseFragment<HomeOrderViewModel, FragmentHomeOrderBindi
     override val vbClass: KClass<FragmentHomeOrderBinding> = FragmentHomeOrderBinding::class
     override val vmClass: KClass<HomeOrderViewModel> = HomeOrderViewModel::class
 
+    private val unreadMessageViewModel: UnReadMessageViewModel by viewModels()
+
+
     override fun initView(savedInstanceState: Bundle?) {
         val page = OrderPageEnum.entries.toTypedArray()
         mBinding.viewPager.adapter = PagerAdapter(childFragmentManager, lifecycle, page.map { it.page })
@@ -36,6 +42,7 @@ class HomeOrderFragment: BaseFragment<HomeOrderViewModel, FragmentHomeOrderBindi
     }
     override fun initListener() {
         with (mBinding) {
+            ivHam.addScaleOnTouchAnimation()
             ivHam.clickNoRepeat {
                 requireActivity().supportFragmentManager.setFragmentResult(
                     REQUEST_KEY_DRAWER,
@@ -46,6 +53,14 @@ class HomeOrderFragment: BaseFragment<HomeOrderViewModel, FragmentHomeOrderBindi
     }
 
     override suspend fun createObserver() {
+        with(unreadMessageViewModel) {
+            //未读消息监听
+            unreadMsg.observe(viewLifecycleOwner) { flag ->
+                mBinding.dotHam.visibility = if (flag) android.view.View.VISIBLE else android.view.View.GONE
+            }
+        }
+
+        unreadMessageViewModel.createObserver()
     }
 
     override fun onStart() {
