@@ -5,13 +5,19 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.os.bundleOf
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.adapter.PagerAdapter
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.data.constants.DrawerAction.ACTION_OPEN
 import arch.cayenne.lib.common.data.constants.DrawerAction.KEY_ACTION
 import arch.cayenne.lib.common.data.constants.DrawerAction.REQUEST_KEY_DRAWER
+import arch.cayenne.lib.common.data.repo.UnReadMessageRepository
+import arch.cayenne.lib.common.ui.viewmodel.UnReadMessageViewModel
 import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
@@ -24,6 +30,8 @@ import com.walisport.module.hall.data.HallGameTabDefault
 import com.walisport.module.hall.databinding.FragmentHallBinding
 import com.walisport.module.hall.databinding.ItemHallGameTabBinding
 import com.walisport.module.hall.ui.viewmodel.HallViewModel
+import org.koin.core.component.inject
+import org.koin.core.parameter.parametersOf
 import kotlin.reflect.KClass
 
 /**
@@ -34,6 +42,8 @@ class HallFragment : BaseFragment<HallViewModel, FragmentHallBinding>() {
 
     override val vbClass: KClass<FragmentHallBinding> = FragmentHallBinding::class
     override val vmClass: KClass<HallViewModel> = HallViewModel::class
+
+    private val unreadMessageViewModel: UnReadMessageViewModel by viewModels()
 
     private val mockTabList = arrayListOf(
         HallGameTabDefault(
@@ -122,6 +132,16 @@ class HallFragment : BaseFragment<HallViewModel, FragmentHallBinding>() {
     }
 
     override suspend fun createObserver() {
+
+
+        with(unreadMessageViewModel) {
+            //未读消息监听
+            unreadMsg.observe(viewLifecycleOwner) { flag ->
+                mBinding.ivUnreadDot.visibility = if (flag) View.VISIBLE else View.GONE
+            }
+        }
+
+        unreadMessageViewModel.createObserver()
 
     }
 
