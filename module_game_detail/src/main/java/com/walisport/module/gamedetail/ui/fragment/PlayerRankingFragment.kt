@@ -122,7 +122,6 @@ class PlayerRankingFragment: BaseFragment<PlayerRankingViewModel, FragmentPlayer
         private var marginBottom: Int = 0
         private var touchThroughViews: List<View> = emptyList()
         private var rankingDatas: List<PlayerRankingBean> = emptyList()
-        private var fragTag: String = ""
         private var type: RankingType = RankingType.BIGGEST
         private var onDismissListener: (() -> Unit)? = null
 
