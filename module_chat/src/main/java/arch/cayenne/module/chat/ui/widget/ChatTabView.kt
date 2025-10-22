@@ -4,7 +4,6 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.LinearLayout
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.module.chat.R
 import arch.cayenne.module.chat.databinding.TabChatTopLayoutBinding
@@ -21,16 +20,16 @@ import arch.cayenne.module.chat.ui.widget.ChatTabItemView.Companion.CUSTOMER
 class ChatTabView : LinearLayout {
     val binding = TabChatTopLayoutBinding.inflate(LayoutInflater.from(context), this, true)
 
-    private var select: Int = NORMAL
-    private var chatClicks: Int = 0
-    private var livingClicks: Int = 0
-    private var customerClicks: Int = 0
+    private val CHAT_ROOM = 0
+    private val CHAT_LIVING = 1
+    private val CHAT_CUSTOMER = 2
 
     private val ACTION_NORMAL_TO_LIVING = 100
     private val ACTION_NORMAL_TO_CUSTOMER = 101
     private val ACTION_LIVING_TO_NORMAL = 102
     private val ACTION_CUSTOMER_TO_NORMAL = 103
-
+    private var chatTabSelectListener: ChatTabSelect? = null
+    private var selectTab: Int = NORMAL
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attr: AttributeSet?) : super(context, attr)
@@ -53,22 +52,49 @@ class ChatTabView : LinearLayout {
         }
     }
 
+    fun addTabSelectListener(listener: ChatTabSelect?) {
+        this.chatTabSelectListener = listener
+    }
+
     val livingStr: String = "世界杯首场法国VS巴西开赛了要不要来"
     val customerStr: String = "您好，我是您的福利客服，您要不要充钱"
     fun initListener() {
         binding.apply {
             tabChatRoom.setOnClickListener {
-                tabSelect(NORMAL)
+                if (selectTab == CHAT_ROOM) {
+                    return@setOnClickListener
+                }
+                chatTabSelectListener?.selectTab(0)
+                tabSelect(CHAT_ROOM)
                 clickTabAction(NORMAL)
             }
             tabChatLiving.setOnClickListener {
-                tabSelect(LIVING)
+                if (selectTab == CHAT_LIVING) {
+                    return@setOnClickListener
+                }
+                chatTabSelectListener?.selectTab(1)
+                tabSelect(CHAT_LIVING)
                 clickTabAction(LIVING)
             }
             tabChatCustomer.setOnClickListener {
-                tabSelect(CUSTOMER)
+                if (selectTab == CHAT_CUSTOMER) {
+                    return@setOnClickListener
+                }
+                tabSelect(CHAT_CUSTOMER)
                 clickTabAction(CUSTOMER)
             }
+        }
+    }
+
+    fun selectTab(position: Int) {
+        val tab = when (position) {
+            0 -> CHAT_ROOM
+            1 -> CHAT_LIVING
+            2 -> CHAT_CUSTOMER
+            else -> -1
+        }
+        if (tab != -1) {
+            tabSelect(tab)
         }
     }
 
@@ -76,11 +102,11 @@ class ChatTabView : LinearLayout {
      * 判断当前选择是聊天室 直播间  客服
      * */
     private fun tabSelect(type: Int) {
-        select = type
+        selectTab = type
         binding.apply {
-            tabChatRoom.tabSelect(select == NORMAL)
-            tabChatLiving.tabSelect(select == LIVING)
-            tabChatCustomer.tabSelect(select == CUSTOMER)
+            tabChatRoom.tabSelect(selectTab == CHAT_ROOM)
+            tabChatLiving.tabSelect(selectTab == CHAT_LIVING)
+            tabChatCustomer.tabSelect(selectTab == CHAT_CUSTOMER)
         }
     }
 
@@ -216,6 +242,10 @@ class ChatTabView : LinearLayout {
         binding.tabChatCustomer.updateType(NORMAL, onAnimStart = animStart, onAnimEnd = animEnd)
     }
 
+    /**
+     * 根据点击按钮和当前tab状态判断
+     * tab动作 normal -> living normal -> customer living -> normal customer -> normal
+     * */
     private fun actionType(type: Int): Int {
         val livingType = binding.tabChatLiving.tabType
         val customerType = binding.tabChatCustomer.tabType
@@ -293,6 +323,11 @@ class ChatTabView : LinearLayout {
             tabChatLiving.layoutParams = livingLp
             tabChatCustomer.layoutParams = customerLp
         }
+    }
+
+    interface ChatTabSelect {
+        fun selectTab(position: Int)
+
     }
 
 }
