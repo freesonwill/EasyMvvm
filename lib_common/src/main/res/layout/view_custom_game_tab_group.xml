@@ -4,6 +4,36 @@
     android:layout_width="match_parent"
     android:layout_height="@dimen/dp_32"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+    <arch.cayenne.lib.common.ui.view.BounceTabLayoutContainer
+        android:id="@+id/tl_container"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/ll_btn_expand"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+        <!-- 先暫時用TableLayout -->
+        <arch.cayenne.lib.skin.widget.SkinnableTabLayout
+            android:id="@+id/tl_vendor_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:overScrollMode="never"
+            android:paddingStart="@dimen/dp_10"
+            android:paddingEnd="35dp"
+            android:background="@android:color/transparent"
+            app:tabPaddingBottom="@dimen/dp_0"
+            app:tabPaddingTop="@dimen/dp_0"
+            app:tabGravity="start"
+            app:tabIndicator="@null"
+            app:tabIndicatorColor="@null"
+            app:tabIndicatorHeight="0dp"
+            app:tabMode="scrollable"
+            app:tabRippleColor="@null"
+            app:tabSelectedTextColor="@color/color_00E0E5"
+            app:tabTextColor="@color/color_C0C0C0" />
+    </arch.cayenne.lib.common.ui.view.BounceTabLayoutContainer>
     <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
         android:id="@+id/ll_btn_sort"
         android:layout_width="51dp"
@@ -41,7 +71,7 @@
 
     <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
         android:id="@+id/ll_btn_expand"
-        android:layout_width="@dimen/dp_64"
+        android:layout_width="@dimen/dp_72"
         android:layout_height="@dimen/dp_32"
         android:layout_marginEnd="@dimen/dp_7"
         android:background="@drawable/shape_custom_game_tab_button_bg"
