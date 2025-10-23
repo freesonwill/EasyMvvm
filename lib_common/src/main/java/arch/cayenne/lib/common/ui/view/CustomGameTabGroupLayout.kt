@@ -6,10 +6,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.LinearLayout
+import androidx.appcompat.widget.LinearLayoutCompat
+import androidx.core.content.withStyledAttributes
 import arch.cayenne.lib.common.R
 import arch.cayenne.lib.common.databinding.ItemCustomGameTabBinding
 import arch.cayenne.lib.common.databinding.ViewCustomGameTabGroupBinding
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import com.bumptech.glide.Glide
 
 class CustomGameTabGroupLayout : FrameLayout {
@@ -26,8 +29,21 @@ class CustomGameTabGroupLayout : FrameLayout {
         initView(context, attrs)
     }
 
+    var defaultIcon = R.drawable.ic_wali_demo
+    var tabIconSize = 18.dp2px
+
     private fun initView(context: Context, attrs: AttributeSet? = null) {
         binding = ViewCustomGameTabGroupBinding.inflate(LayoutInflater.from(context), this, true)
+        context.withStyledAttributes(attrs, R.styleable.CustomGameTabGroupLayout) {
+            defaultIcon = getResourceId(R.styleable.CustomGameTabGroupLayout_defaultTabIcon, R.drawable.ic_wali_demo)
+            tabIconSize = getDimensionPixelSize(R.styleable.CustomGameTabGroupLayout_tabIconSize, 18.dp2px)
+        }
+    }
+
+    fun setOnShowAllCategoryClick(listener: () -> Unit) {
+        binding.llBtnExpand.clickNoRepeat {
+            listener.invoke()
+        }
     }
 
     fun submitTabList(list : List<SimpleTabDataModel>) {
@@ -69,6 +85,7 @@ class CustomGameTabGroupLayout : FrameLayout {
                     .placeholder(R.drawable.ic_wali_demo)
                     .error(R.drawable.ic_wali_demo)
                     .into(ivIcon)
+                ivIcon.layoutParams = LinearLayoutCompat.LayoutParams(tabIconSize, tabIconSize)
             }
             root.setBackgroundResource(R.drawable.selector_custom_game_tab_bg)
         }
