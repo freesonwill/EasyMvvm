@@ -137,6 +137,12 @@ class GameDetailFragment: BaseFragment<GameDetailViewModel, FragmentGameDetailBi
         super.onStart()
         StatusBarConfig.statusBarType = StatusBarMode.FULLSCREEN
         setStatusBar(StatusBarConfig, mBinding.root)
+        mBinding.proBanner.resetTriggerJob()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        mBinding.proBanner.job?.cancel()
     }
 
     private fun closeExistingRankingFragment(afterClose: ((isSuccess: Boolean, type: PlayerRankingFragment.RankingType?) -> Unit)? = null) {
