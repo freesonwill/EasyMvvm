@@ -1,4 +1,4 @@
-package arch.cayenne.module.home.ui.view
+package arch.cayenne.lib.common.ui.view
 
 import android.annotation.SuppressLint
 import android.content.Context

@@ -6,6 +6,7 @@ import androidx.core.view.ViewCompat
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
+import arch.cayenne.lib.common.ui.view.BounceTabLayoutContainer
 import arch.cayenne.lib.common.utils.ext.startFadeAnim
 import arch.cayenne.lib.common.utils.helper.ViewPagerAnimHelper.Companion.getAnimHelper
 import arch.cayenne.lib.common.utils.helper.doSmartAnim
