@@ -28,7 +28,7 @@ class GameContentFragment : BaseFragment<EmptyViewModel, FragmentGameContentBind
             l.add(
                 GameContentData(
                     cover = R.drawable.image_cover_demo,
-                    hotOrCold = if (i % 2 == 0) HotColdType.HOT else HotColdType.COLD,
+                    hotOrCold = HotColdType.NONE,
                     percent = 20.0f,
                     onlineCount = Random.nextInt(100,32767)
                 )

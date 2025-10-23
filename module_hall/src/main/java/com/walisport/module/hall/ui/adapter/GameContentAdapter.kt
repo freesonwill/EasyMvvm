@@ -10,7 +10,9 @@ import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.requireActivity
 import com.walisport.module.gamedetail.ui.fragment.GameDetailFragment
+import com.walisport.module.hall.R
 import com.walisport.module.hall.data.GameContentData
+import com.walisport.module.hall.data.HotColdType
 import com.walisport.module.hall.databinding.ItemGameContentBinding
 
 class GameContentAdapter : BaseAdapter<GameContentData, GameContentViewHolder, ItemGameContentBinding>(GameContentDiff()) {
@@ -43,10 +45,25 @@ class GameContentViewHolder(val item: ItemGameContentBinding): BaseViewHolder(it
     fun bind(data: GameContentData) {
         item.ivGameCover.setImageResource(data.cover)
         //TODO 判斷
-        item.llCount.apply {
-            val params = this.layoutParams as ConstraintLayout.LayoutParams
-            params.topMargin = 6.dp2px
+        if (data.hotOrCold != HotColdType.NONE) {
+            item.llBack.visibility = ViewGroup.VISIBLE
+            if (data.hotOrCold == HotColdType.HOT) {
+                item.ivHot.setImageResource(R.drawable.ic_game_hot)
+            } else {
+                item.ivHot.setImageResource(R.drawable.ic_game_cold)
+            }
+            item.tvBack.text = "${data.percent}%"
+            item.llCount.apply {
+                val params = this.layoutParams as ConstraintLayout.LayoutParams
+                params.topMargin = 5.dp2px
+            }
+        } else {
+            item.llCount.apply {
+                val params = this.layoutParams as ConstraintLayout.LayoutParams
+                params.topMargin = 6.dp2px
+            }
         }
+
 
         // TODO 暫時串接遊戲詳情
         item.root.clickNoRepeat {
