@@ -294,7 +294,6 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
         with(mViewModel) {
             launch {
                 selectedSkinType.observe(viewLifecycleOwner) {
-                    "监听到皮肤变化=====".loge("测试")
                     refreshDefaultNickName()
                 }
             }
