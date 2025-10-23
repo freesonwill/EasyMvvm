@@ -8,7 +8,7 @@
         android:id="@+id/custom_tab_group"
         android:layout_width="0dp"
         android:layout_height="@dimen/dp_32"
-        android:layout_marginTop="@dimen/dp_15"
+        android:layout_marginTop="@dimen/dp_14"
         app:defaultTabIcon="@drawable/ic_wali_demo"
         app:tabIconSize="@dimen/dp_25"
         app:layout_constraintTop_toTopOf="parent"
