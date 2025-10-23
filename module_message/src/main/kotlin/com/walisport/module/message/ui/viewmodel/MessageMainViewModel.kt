@@ -107,6 +107,11 @@ class MessageMainViewModel(private val repo: MessageMainRepository) : BaseViewMo
         repo.updateMessageStatus(id, MessageDao.STATUS_READ)
     }
 
+    //将某一类消息全部设为已读
+    fun setAllMessageRead(type: Int) {
+        repo.updateAllMessageRead(MessageDao.STATUS_READ, type)
+    }
+
     //获取系统消息列表
     fun getMessageList(type: Int) {
         cursorId = 0L
