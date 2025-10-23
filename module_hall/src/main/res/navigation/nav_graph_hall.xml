@@ -10,7 +10,18 @@
         android:name="com.walisport.module.hall.ui.fragment.HallFragment"
         android:label="fragment_hall"
         tools:layout="@layout/fragment_hall">
+<!--        <action-->
+<!--            android:id="@+id/action_hallFragment_to_hallCategoryFragment"-->
+<!--            app:destination="@id/hallCategoryFragment"-->
+<!--            app:popUpToInclusive="false"/>-->
+    </fragment>
 
+    <fragment
+        android:id="@+id/hallCategoryFragment"
+        android:name="com.walisport.module.hall.ui.fragment.HallCategoryFragment"
+        android:label="fragment_hall_category"
+        tools:layout="@layout/fragment_hall_category">
+        <deepLink app:uri="walisport://module_hall/hallCategoryFragment" />
     </fragment>
 
 

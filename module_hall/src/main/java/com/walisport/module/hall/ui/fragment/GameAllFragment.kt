@@ -5,6 +5,8 @@ import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.viewmodel.EmptyViewModel
+import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
+import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import com.walisport.module.hall.databinding.FragmentGameAllBinding
 import com.walisport.module.hall.ui.adapter.GameAllHeaderAdapter
 import com.walisport.module.hall.ui.adapter.GameAllListAdapter
@@ -16,7 +18,13 @@ class GameAllFragment: BaseFragment<EmptyViewModel, FragmentGameAllBinding>() {
     }
 
     private val headerAdapter by lazy { GameAllHeaderAdapter() }
-    private val listAdapter by lazy { GameAllListAdapter() }
+    private val listAdapter by lazy {
+        GameAllListAdapter {
+//            (parentFragment as BaseFragment<*,*>).navigate(HallFragmentDirections.actionHallFragmentToHallCategoryFragment())
+            (parentFragment as BaseFragment<*,*>).navigate(arch.cayenne.lib.res.R.string.nav_module_hall_category.deeplink())
+//            navigate(arch.cayenne.lib.res.R.string.nav_module_setting_fragment.deeplink())
+        }
+    }
 
 
     override val vbClass: KClass<FragmentGameAllBinding> = FragmentGameAllBinding::class
