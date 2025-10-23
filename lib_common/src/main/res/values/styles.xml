@@ -119,4 +119,10 @@
         <!-- 觸發時間（例如進度動畫時間），單位毫秒 -->
         <attr name="triggerTime" format="integer" />
     </declare-styleable>
+
+    <declare-styleable name="CustomGameTabGroupLayout">
+        <attr name="defaultTabIcon" format="reference" />
+        <attr name="tabIconSize" format="dimension" />
+    </declare-styleable>
+
 </resources>

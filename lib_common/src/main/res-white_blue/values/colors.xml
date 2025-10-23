@@ -68,4 +68,9 @@
 
     <color name="color_mask_white_blue">#80F4F4F4</color>
     <color name="loading_text_white_blue">#222222</color>
+
+    <color name="custom_game_tab_tint_select">@color/color_00E0E5</color>
+    <color name="custom_game_tab_tint_unselect">@color/color_C0C0C0</color>
+    <color name="bg_custom_game_item_selected">@color/color_003A42</color>
+    <color name="bg_custom_game_item_unselect">@color/color_0FFFFFFF</color>
 </resources>

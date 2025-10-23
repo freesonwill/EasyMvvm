@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.viewmodel.EmptyViewModel
 import arch.cayenne.lib.common.ui.adapter.GridSpacingItemDecoration
+import arch.cayenne.lib.common.ui.view.SimpleTabDataModel
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import com.walisport.module.hall.R
 import com.walisport.module.hall.data.GameContentData
@@ -36,6 +37,20 @@ class GameContentFragment : BaseFragment<EmptyViewModel, FragmentGameContentBind
         l
     }
 
+    private val mockVendorList by lazy {
+        val l = ArrayList<SimpleTabDataModel>()
+        for (i in 0..5) {
+            l.add(
+                SimpleTabDataModel(
+                    id = i,
+                    simpleName = getString(R.string.wali),
+                    icon = "",
+                )
+            )
+        }
+        l
+    }
+
     override fun initView(savedInstanceState: Bundle?) {
         with(mBinding) {
             rvGame.layoutManager = GridLayoutManager(requireContext(),  3)
@@ -49,7 +64,7 @@ class GameContentFragment : BaseFragment<EmptyViewModel, FragmentGameContentBind
             rvGame.adapter = GameContentAdapter().apply {
                 submitList(mockList)
             }
-
+            customTabGroup.submitTabList(mockVendorList)
         }
     }
 
