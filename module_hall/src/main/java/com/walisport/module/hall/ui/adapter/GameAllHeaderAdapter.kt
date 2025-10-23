@@ -30,6 +30,13 @@ class GameAllHeaderAdapter: RecyclerView.Adapter<GameAllHeaderViewHolder>() {
 
     override fun getItemCount(): Int = 1
 
+    fun restProBannerJob(recyclerView: RecyclerView) {
+        (recyclerView.findViewHolderForAdapterPosition(0) as? GameAllHeaderViewHolder)?.restProBannerJob()
+    }
+
+    fun stopProBannerJob(recyclerView: RecyclerView) {
+        (recyclerView.findViewHolderForAdapterPosition(0) as? GameAllHeaderViewHolder)?.stopProBannerJob()
+    }
 }
 
 class GameAllHeaderViewHolder(val binding: ItemGameAllHeaderBinding): RecyclerView.ViewHolder(binding.root) {
@@ -62,5 +69,13 @@ class GameAllHeaderViewHolder(val binding: ItemGameAllHeaderBinding): RecyclerVi
                 vpBanner.currentItem = (vpBanner.currentItem + 1) % bannerAdapter.itemCount
             }
         }
+    }
+
+    fun restProBannerJob() {
+        binding.proBanner.resetTriggerJob()
+    }
+
+    fun stopProBannerJob() {
+        binding.proBanner.job?.cancel()
     }
 }

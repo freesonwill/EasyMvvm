@@ -40,4 +40,14 @@ class GameAllFragment: BaseFragment<EmptyViewModel, FragmentGameAllBinding>() {
     override suspend fun createObserver() {
 
     }
+
+    override fun onStart() {
+        super.onStart()
+        headerAdapter.restProBannerJob(mBinding.rvContent)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        headerAdapter.stopProBannerJob(mBinding.rvContent)
+    }
 }
