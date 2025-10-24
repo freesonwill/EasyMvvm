@@ -42,6 +42,9 @@ class WithdrawCryptoFragment : BaseFragment<CryptoViewModel, FragmentWithdrawCry
         mBinding.layCustomer.clickNoRepeat {
             showToast(R.string.cus_service.getString())
         }
+        mBinding.ivAddress.clickNoRepeat {
+            navigate(R.id.action_withdrawFragment_to_addressFragment)
+        }
         mBinding.btnSmall.clickNoRepeat { }
         mBinding.btnMiddle.clickNoRepeat { }
         mBinding.btnBig.clickNoRepeat { }

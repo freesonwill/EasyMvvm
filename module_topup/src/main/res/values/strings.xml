@@ -20,6 +20,7 @@
     <string name="withdraw_lesson">提现教程</string>
     <string name="cus_service">联系客服</string>
     <string name="add_bank">添加银行卡</string>
+    <string name="address_note">地址本</string>
     <string name="bet_detail">投注额详情</string>
     <string name="pay_custom">自定义</string>
     <string name="bet_pay_bank">充值-银行卡支付</string>
