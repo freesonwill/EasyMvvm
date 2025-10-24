@@ -5,7 +5,9 @@ import android.view.LayoutInflater
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.common.ui.fragment.CommonBottomDialog
 import arch.cayenne.lib.common.utils.copyToClipboard
+import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.touchBackPressed
@@ -73,7 +75,7 @@ class AddressNoteFragment : BaseFragment<AddressViewModel, FragmentAddressBindin
 
     private fun showCopyEditDialog(bean: AddressBean) {
         CopyEditDialog.newInstance(bean).also {
-            it.setOnItemClickListener(object : CopyEditDialog.OnClickListener {
+            it.setOnItemClickListener(object : CopyEditDialog.OnItemClickListener {
                 override fun onCopy() {
                     copyToClipboard(bean.address) {
                         showToast(R.string.tip_copy_suc.getString())
@@ -81,7 +83,13 @@ class AddressNoteFragment : BaseFragment<AddressViewModel, FragmentAddressBindin
                 }
 
                 override fun onEdit() {
-
+                    it.dismiss()
+                    val args = Bundle()
+                    args.putString("address", bean.address)
+                    args.putString("remark", bean.remark)
+                    args.putString("coinType", bean.coinType)
+                    args.putString("addressType", bean.addressType)
+                    navigate(R.id.action_addressFragment_to_addressEditFragment, args)
                 }
             })
             it.show(childFragmentManager)

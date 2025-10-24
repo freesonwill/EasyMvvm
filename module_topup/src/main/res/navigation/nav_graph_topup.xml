@@ -38,9 +38,20 @@
         android:label="LessonFragment" />
 
     <fragment
+        android:id="@+id/addressEditFragment"
+        android:name="com.walisport.module.topup.ui.fragment.AddressEditFragment"
+        android:label="AddressEditFragment" />
+
+    <fragment
         android:id="@+id/addressFragment"
         android:name="com.walisport.module.topup.ui.fragment.AddressNoteFragment"
-        android:label="addressFragment" />
+        android:label="AddressFragment">
+
+        <!--跳转编辑地址页面-->
+        <action
+            android:id="@+id/action_addressFragment_to_addressEditFragment"
+            app:destination="@id/addressEditFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/withdrawFragment"
