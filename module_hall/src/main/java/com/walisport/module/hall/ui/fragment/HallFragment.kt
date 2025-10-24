@@ -5,18 +5,14 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.os.bundleOf
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.adapter.PagerAdapter
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.data.constants.DrawerAction.ACTION_OPEN
 import arch.cayenne.lib.common.data.constants.DrawerAction.KEY_ACTION
 import arch.cayenne.lib.common.data.constants.DrawerAction.REQUEST_KEY_DRAWER
-import arch.cayenne.lib.common.data.repo.UnReadMessageRepository
 import arch.cayenne.lib.common.ui.viewmodel.UnReadMessageViewModel
 import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
@@ -31,8 +27,6 @@ import com.walisport.module.hall.data.HallGameTabDefault
 import com.walisport.module.hall.databinding.FragmentHallBinding
 import com.walisport.module.hall.databinding.ItemHallGameTabBinding
 import com.walisport.module.hall.ui.viewmodel.HallViewModel
-import org.koin.core.component.inject
-import org.koin.core.parameter.parametersOf
 import kotlin.reflect.KClass
 
 /**
@@ -104,6 +98,8 @@ class HallFragment : BaseFragment<HallViewModel, FragmentHallBinding>() {
 
             TabLayoutMediator(tlGame, vpGame) { tab, position ->
                 tab.customView = createGameTabView(position, mockTabList[position])
+                val paddingStart = 5.dp2px
+                tab.view.setPadding(0, 0, paddingStart, 0)
             }.attach()
             vpGame.setCurrentItem(1, false)
         }
