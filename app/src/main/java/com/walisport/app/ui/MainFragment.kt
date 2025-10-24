@@ -1,9 +1,7 @@
 package com.walisport.app.ui
 
-import android.content.Context
 import android.os.Bundle
 import android.util.SparseArray
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.GravityCompat
@@ -17,16 +15,16 @@ import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.base.ui.viewmodel.EmptyViewModel
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
-import arch.cayenne.lib.common.ui.fragment.EmptyFragment
-import arch.cayenne.lib.common.utils.ext.NavResultExt.observeResult
-import arch.cayenne.lib.skin.res.SkinnableResourceManager
-import arch.cayenne.module.chat.ui.fragment.MainChatFragment
 import arch.cayenne.lib.common.data.constants.DrawerAction.ACTION_CLOSE
 import arch.cayenne.lib.common.data.constants.DrawerAction.ACTION_INIT
 import arch.cayenne.lib.common.data.constants.DrawerAction.ACTION_OPEN
 import arch.cayenne.lib.common.data.constants.DrawerAction.KEY_ACTION
 import arch.cayenne.lib.common.data.constants.DrawerAction.REQUEST_KEY_DRAWER
+import arch.cayenne.lib.common.ui.fragment.EmptyFragment
+import arch.cayenne.lib.common.utils.ext.NavResultExt.observeResult
 import arch.cayenne.lib.common.utils.ext.setDrawerInterpolator
+import arch.cayenne.lib.skin.res.SkinnableResourceManager
+import arch.cayenne.module.chat.ui.fragment.MainChatFragment
 import arch.cayenne.module.home.ui.fragment.DrawerContentFragment
 import arch.cayenne.module.home.ui.fragment.NewHomeFragment
 import arch.cayenne.module.order.ui.fragment.HomeOrderFragment

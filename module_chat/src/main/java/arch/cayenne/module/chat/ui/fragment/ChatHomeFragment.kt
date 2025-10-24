@@ -13,6 +13,7 @@ import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.data.constants.MatchStatus
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
+import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.database.entity.LiveMatchBasicInfoBean
@@ -115,7 +116,7 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
         }
 
         mBinding.tvMsg.clickNoRepeat{
-            navigate(ChatHomeFragmentDirections.actionChatHomeFragmentToCharUserInfoFragment())
+            navigate("walisport://module_chat/charUserInfoFragment".deeplink())
         }
     }
 
