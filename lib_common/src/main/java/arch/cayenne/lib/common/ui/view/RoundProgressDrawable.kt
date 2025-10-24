@@ -23,7 +23,7 @@ class RoundProgressDrawable(
         get() = progressInternal
         set(value) {
             progressInternal = value.coerceIn(0f, 1f)
-            invalidateSelf()
+//            invalidateSelf()
         }
 
     override fun draw(canvas: Canvas) {
