@@ -42,7 +42,7 @@
         <arch.cayenne.lib.skin.widget.SkinnableTextView
             android:id="@+id/tv_cancel"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_56"
+            android:layout_height="@dimen/dp_48"
             android:gravity="center"
             android:text="@string/btn_cancel"
             android:textColor="@color/dialog_bottom_cancel"

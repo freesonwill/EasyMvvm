@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="utf-8"?>
+<arch.cayenne.lib.common.ui.view.InterceptedLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/title_bg"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical"
+    app:interceptedDirection="RIGHT">
+
+    <arch.cayenne.lib.common.ui.view.TitleBarView
+        android:id="@+id/title_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:ignore="MissingConstraints" />
+
+    <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/fragment_bg"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/title_bar">
+
+        <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
+            android:id="@+id/lay_content"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_412"
+            android:layout_marginHorizontal="@dimen/dp_12"
+            android:layout_marginTop="@dimen/dp_16"
+            android:background="@drawable/bg_bank_card_info"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <arch.cayenne.lib.skin.widget.SkinnableTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_10"
+                android:text="@string/coin_type"
+                android:textColor="@color/bank_title"
+                android:textSize="@dimen/sp_14"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_54"
+                android:layout_marginHorizontal="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_8"
+                android:background="@drawable/bg_recharge_type"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/iv_coin"
+                    android:layout_width="@dimen/dp_16"
+                    android:layout_height="@dimen/dp_16"
+                    android:layout_marginStart="@dimen/dp_16"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/icon_pay_usdt" />
+
+                <arch.cayenne.lib.skin.widget.SkinnableTextView
+                    android:id="@+id/tv_coin"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_9"
+                    android:textColor="@color/bank_text"
+                    android:textSize="@dimen/sp_14"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/iv_coin"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/iv_arrow"
+                    android:layout_width="@dimen/dp_12"
+                    android:layout_height="@dimen/dp_8"
+                    android:layout_marginEnd="@dimen/dp_12"
+                    android:stateListAnimator="@animator/layout_alpha_animator"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/icon_arrow_down" />
+            </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
+
+            <arch.cayenne.lib.skin.widget.SkinnableTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_19"
+                android:text="@string/cz_network"
+                android:textColor="@color/bank_title"
+                android:textSize="@dimen/sp_14"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_54"
+                android:layout_marginHorizontal="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_9"
+                android:background="@drawable/bg_recharge_type"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <arch.cayenne.lib.skin.widget.SkinnableTextView
+                    android:id="@+id/tv_network_type"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_16"
+                    android:textColor="@color/bank_text"
+                    android:textSize="@dimen/sp_14"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/iv_arrow_net"
+                    android:layout_width="@dimen/dp_12"
+                    android:layout_height="@dimen/dp_8"
+                    android:layout_marginEnd="@dimen/dp_12"
+                    android:stateListAnimator="@animator/layout_alpha_animator"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/icon_arrow_down" />
+            </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
+
+            <arch.cayenne.lib.skin.widget.SkinnableTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_18"
+                android:text="@string/tv_address"
+                android:textColor="@color/bank_title"
+                android:textSize="@dimen/sp_14"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_54"
+                android:layout_marginHorizontal="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_8"
+                android:background="@drawable/bg_recharge_type"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <arch.cayenne.lib.skin.widget.SkinnableEditText
+                    android:id="@+id/edt_address"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_16"
+                    android:layout_marginEnd="@dimen/dp_20"
+                    android:textColor="@color/bank_text"
+                    android:textColorHint="@color/bank_title"
+                    android:textSize="@dimen/sp_14"
+                    android:background="@null"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
+
+            <arch.cayenne.lib.skin.widget.SkinnableTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_18"
+                android:text="@string/remark"
+                android:textColor="@color/bank_title"
+                android:textSize="@dimen/sp_14"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_54"
+                android:layout_marginHorizontal="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_9"
+                android:background="@drawable/bg_recharge_type"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <arch.cayenne.lib.skin.widget.SkinnableEditText
+                    android:id="@+id/edt_remark"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_14"
+                    android:layout_marginEnd="@dimen/dp_20"
+                    android:textColor="@color/bank_text"
+                    android:textColorHint="@color/bank_title"
+                    android:textSize="@dimen/sp_14"
+                    android:background="@null"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
+        </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
+
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
+            android:id="@+id/btn_del"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_51"
+            android:layout_marginHorizontal="@dimen/dp_12"
+            android:layout_marginTop="@dimen/dp_20"
+            android:gravity="center"
+            android:text="@string/delete"
+            android:textColor="@color/address_del"
+            android:textSize="@dimen/sp_14"
+            android:background="@drawable/bg_recharge_type"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/lay_content" />
+    </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
+</arch.cayenne.lib.common.ui.view.InterceptedLinearLayout>

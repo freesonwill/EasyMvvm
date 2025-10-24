@@ -13,25 +13,23 @@ class CopyEditDialog : BaseBottomSheetFragment<EmptyViewModel, DialogCopyEditBin
 
     override val vbClass: KClass<DialogCopyEditBinding> get() = DialogCopyEditBinding::class
     override val vmClass: KClass<EmptyViewModel> get() = EmptyViewModel::class
-    private var clicklistener: OnClickListener? = null
+    private var clicklistener: OnItemClickListener? = null
 
     override fun initView(savedInstanceState: Bundle?) {
-        with(mBinding) {
-            tvCopy.clickNoRepeat {
-                clicklistener?.onCopy()
-                dismiss()
-            }
-            tvEdit.clickNoRepeat {
-                clicklistener?.onEdit()
-                dismiss()
-            }
-            tvCancel.clickNoRepeat {
-                dismiss()
-            }
-        }
     }
 
     override fun initListener() {
+        mBinding.tvCopy.clickNoRepeat {
+            clicklistener?.onCopy()
+            super.dismiss()
+        }
+        mBinding.tvEdit.clickNoRepeat {
+            clicklistener?.onEdit()
+            super.dismiss()
+        }
+        mBinding.tvCancel.clickNoRepeat {
+            super.dismiss()
+        }
     }
 
     override fun onStart() {
@@ -41,11 +39,11 @@ class CopyEditDialog : BaseBottomSheetFragment<EmptyViewModel, DialogCopyEditBin
         }
     }
 
-    fun setOnItemClickListener(listener: OnClickListener) {
+    fun setOnItemClickListener(listener: OnItemClickListener) {
         this.clicklistener = listener
     }
 
-    interface OnClickListener {
+    interface OnItemClickListener {
         fun onCopy()
         fun onEdit()
     }
