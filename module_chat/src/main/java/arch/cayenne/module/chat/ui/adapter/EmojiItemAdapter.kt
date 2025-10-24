@@ -7,16 +7,16 @@ import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.base.ui.adapter.BaseAdapter
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
 import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
-import arch.cayenne.module.chat.data.compare.LiveEmojiCompare
+import arch.cayenne.module.chat.data.compare.EmojiCompare
 import arch.cayenne.module.chat.data.constants.EmojiTypeEnum
 import arch.cayenne.module.chat.data.model.EmojiData
 import arch.cayenne.module.chat.databinding.ItemBidEmojiLayoutBinding
 import arch.cayenne.module.chat.databinding.ItemEmojiLayoutBinding
 
 
-class LiveEmojiAdapter() :
-    BaseAdapter<EmojiData, LiveEmojiAdapter.LiveEmojiViewHolder, ViewBinding>(
-        LiveEmojiCompare()
+class EmojiItemAdapter() :
+    BaseAdapter<EmojiData, EmojiItemAdapter.LiveEmojiViewHolder, ViewBinding>(
+        EmojiCompare()
     ) {
     private var itemListener: RecyclerItemListener<EmojiData>? = null
 
