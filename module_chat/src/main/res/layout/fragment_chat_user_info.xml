@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/red_team"
+   >
+
+    <arch.cayenne.module.chat.ui.widget.ChatUserInfoLayoutScale
+        android:id="@+id/topScale"
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_height="match_parent"
+        tools:ignore="MissingConstraints">
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_359"
+            android:id="@+id/viewTop"
+            android:background="@color/tran_0"
+            />
+        <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
+            android:id="@+id/content"
+            android:orientation="vertical"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:background="@drawable/shape_chat_info_bg"
+            android:layout_height="0dp">
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:layout_width="match_parent"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:layout_height="wrap_content">
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:layout_width="@dimen/dp_38"
+                        android:layout_height="@dimen/dp_38"
+                        android:background="@color/color_1E1E1E"
+                        />
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="23443"
+                        />
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:layout_width="@dimen/dp_38"
+                        android:layout_height="@dimen/dp_38"
+                        android:background="@color/color_1E1E1E"
+                        />
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+        </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
+    </arch.cayenne.module.chat.ui.widget.ChatUserInfoLayoutScale>
+
+    <com.walisport.module.live.ui.widget.ChatUserInfoLayoutInterceptTouch
+        android:id="@+id/LayoutInterceptTouch"
+        android:layout_width="match_parent"
+        android:background="@color/tran_0"
+        android:layout_height="match_parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

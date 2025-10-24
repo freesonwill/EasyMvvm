@@ -14,6 +14,7 @@ import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.data.constants.MatchStatus
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
+import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.database.entity.LiveMatchBasicInfoBean
 import arch.cayenne.lib.database.entity.LiveMatchBean
 import arch.cayenne.lib.websocket.data.SocketConnectState
@@ -23,7 +24,7 @@ import arch.cayenne.module.chat.databinding.FragmentLiveChatBinding
 import arch.cayenne.module.chat.ui.viewmodel.ChatHomeViewModel
 import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
-
+import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 //聊天
 class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding>() {
     override val vbClass: KClass<FragmentLiveChatBinding> = FragmentLiveChatBinding::class
@@ -111,6 +112,10 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
                 isEnabled = false
                 requireActivity().onBackPressedDispatcher.onBackPressed()
             }
+        }
+
+        mBinding.tvMsg.clickNoRepeat{
+            navigate(ChatHomeFragmentDirections.actionChatHomeFragmentToCharUserInfoFragment())
         }
     }
 

@@ -51,6 +51,13 @@
             app:layout_constraintBottom_toBottomOf="parent"
             />
 
+        <TextView
+            android:id="@+id/tvMsg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="聊天用户"
+            android:textColor="@color/white"
+            />
     </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
 
 
