@@ -593,8 +593,7 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
 //        mBinding.layoutContainer.tvTabAll.isSelected = true
         clearDateTabSelection()
         lifecycleScope.launch {
-//            mViewModel.selectedDate(0L)
-            mViewModel.selectedDate(getFuture31Days().first().third)
+            mViewModel.selectedDate(0L)
         }
 
     }
