@@ -23,8 +23,9 @@
         app:layout_constraintTop_toBottomOf="@id/tv_title"
         android:layout_marginTop="@dimen/dp_2"
         app:layout_constraintLeft_toLeftOf="parent"
-        android:nestedScrollingEnabled="false"
         />
 
-
+<!--    android:nestedScrollingEnabled="false"-->
+<!--    android:focusable="false"-->
+<!--    android:focusableInTouchMode="false"-->
 </androidx.constraintlayout.widget.ConstraintLayout>

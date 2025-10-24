@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup.LayoutParams
 import android.widget.LinearLayout
+import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.data.model.PagerBean
 import arch.cayenne.lib.base.ui.adapter.PagerAdapter
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
@@ -21,6 +22,8 @@ import arch.cayenne.module.chat.data.constants.EmojiTypeEnum
 import arch.cayenne.module.chat.data.model.EmojiData
 import arch.cayenne.module.chat.databinding.FragmentEmojiHomeLayoutBinding
 import arch.cayenne.module.chat.databinding.ItemTabEmojiLayoutBinding
+import arch.cayenne.module.chat.ui.adapter.EmojiHotItemAdapter
+import arch.cayenne.module.chat.ui.adapter.EmojiItemAdapter
 import arch.cayenne.module.chat.ui.viewmodel.EmojiHomeViewModel
 import arch.cayenne.module.chat.utils.EmojiUtils.BID_EMOJI_REGEX
 import com.google.android.material.tabs.TabLayout
@@ -41,6 +44,7 @@ class EmojiHomeFragment : BaseFragment<EmojiHomeViewModel, FragmentEmojiHomeLayo
 
     override fun initView(savedInstanceState: Bundle?) {
         initTab()
+        initHotRecycler()
     }
 
 
@@ -119,6 +123,16 @@ class EmojiHomeFragment : BaseFragment<EmojiHomeViewModel, FragmentEmojiHomeLayo
                 e.printStackTrace()
             }
         }
+    }
+
+    fun initHotRecycler(){
+        mBinding.hotRecyclerview.also {
+            it.layoutManager = LinearLayoutManager(it.context,LinearLayoutManager.HORIZONTAL,false)
+            val adapter = EmojiHotItemAdapter()
+            adapter.submitList(mViewModel.getHotRecycler())
+            it.adapter = adapter
+        }
+
     }
 
     //表情点击

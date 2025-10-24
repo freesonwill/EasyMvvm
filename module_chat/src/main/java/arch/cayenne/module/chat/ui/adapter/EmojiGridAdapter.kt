@@ -3,6 +3,7 @@ package arch.cayenne.module.chat.ui.adapter
 import android.content.ClipData.Item
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.view.ViewGroup.LayoutParams
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import arch.cayenne.lib.base.ui.adapter.BaseAdapter
@@ -33,13 +34,14 @@ class EmojiGridAdapter :
     inner class EmojiGridViewHolder(binding: ItemEmojiGridLayoutBinding) : BaseViewHolder(binding) {
         fun initAdapter() {
             val nBinding = binding as ItemEmojiGridLayoutBinding
-//            val manager = object :GridLayoutManager(nBinding.root.context,8){
-//                override fun canScrollVertically(): Boolean {
-//                    return true
-//                }
-//            }
+            val manager = object :GridLayoutManager(nBinding.root.context,8){
+                override fun canScrollVertically(): Boolean {
+                    return true
+                }
+            }
             val adapter = EmojiItemAdapter()
             nBinding.gridRecycler.also {
+                it.layoutManager = manager
                 it.adapter = adapter
             }
         }
@@ -55,20 +57,20 @@ class EmojiGridAdapter :
         binding.tvTitle.text = if (position == 0) "最近使用" else "全部表情"
         val lp = binding.tvTitle.layoutParams as ConstraintLayout.LayoutParams
         lp.leftMargin = if (position == 0) 12.dp2px else 14.dp2px
+
         binding.tvTitle.layoutParams = lp
         binding.gridRecycler.also {
-            if (it.layoutManager == null) {
-                val manager =
-                    GridLayoutManager(it.context, if (emojiType == EmojiTypeEnum.NORMAL) 8 else 4)
-                it.layoutManager = manager
-            } else {
-                val manager = it.layoutManager as GridLayoutManager
-                manager.spanCount = if (emojiType == EmojiTypeEnum.NORMAL) 8 else 4
-            }
-
+            val manager = it.layoutManager as GridLayoutManager
+            manager.spanCount = if (emojiType == EmojiTypeEnum.NORMAL) 8 else 4
             val adapter = it.adapter?.let { it as EmojiItemAdapter }
             adapter?.submitList(list)
         }
+
+//        val contentLp = ConstraintLayout.LayoutParams(
+//            LayoutParams.MATCH_PARENT,
+//            if (position == 0) LayoutParams.WRAP_CONTENT else LayoutParams.MATCH_PARENT
+//        )
+//        binding.root.layoutParams = contentLp
 
     }
 

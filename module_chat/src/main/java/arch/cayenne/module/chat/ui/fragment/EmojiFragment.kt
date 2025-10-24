@@ -31,12 +31,12 @@ class EmojiFragment : BaseFragment<EmojiViewModel, FragmentEmojiLayoutBinding>()
     private fun initRecycler() {
         val manager = object :LinearLayoutManager(requireContext()){
             override fun canScrollVertically(): Boolean {
-                return false
+                return true
             }
         }
         mBinding.recycler.apply {
             layoutManager = manager
-            isNestedScrollingEnabled = false
+//            isNestedScrollingEnabled = false
             val nAdapter = EmojiGridAdapter()
             nAdapter.updateEmojiType(emoJiType)
             nAdapter.submitList(if (emoJiType == EmojiTypeEnum.NORMAL) mViewModel.getNormalList() else mViewModel.getBidList())

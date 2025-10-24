@@ -4,13 +4,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    >
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:nestedScrollingEnabled="false"
         />
-
+<!--    android:focusable="false"-->
+<!--    android:focusableInTouchMode="false"-->
+<!--    android:nestedScrollingEnabled="false"-->
 </androidx.constraintlayout.widget.ConstraintLayout>
