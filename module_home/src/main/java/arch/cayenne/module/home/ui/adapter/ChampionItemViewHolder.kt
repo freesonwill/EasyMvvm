@@ -42,7 +42,7 @@ class ChampionItemViewHolder(
                         if (position == RecyclerView.NO_POSITION) return
 
                         val column = position % spanCount
-                        outRect.left = if(column == 0) { spacingOutSide } else { spacing / 2 }
+                        outRect.left = if(column == 0) { spacingOutSide } else { (spacing / 2) + 1 }
                         outRect.right = if(column == 0) { spacing / 2 } else { spacingOutSide }
                         if (position >= spanCount) {
                             outRect.top = spacing

@@ -11,8 +11,8 @@ import arch.cayenne.lib.database.entity.BaseTournamentData
 import arch.cayenne.lib.database.entity.ChampionTournamentDataModel
 import arch.cayenne.module.home.data.TournamentListItem
 import arch.cayenne.module.home.data.constants.HomeState
+import arch.cayenne.module.home.data.constants.TournamentListType
 import arch.cayenne.module.home.data.repo.TournamentListRepository
-import arch.cayenne.module.home.ui.fragment.TournamentListType
 import com.github.promeg.pinyinhelper.Pinyin
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.filter

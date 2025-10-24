@@ -161,7 +161,8 @@ class CustomFilterSideBarView @JvmOverloads constructor(
 
         textPaint.apply {
             textSize = this@CustomFilterSideBarView.textSize
-            itemHeight = fontMetrics.bottom - fontMetrics.top
+            // 原始高度 + 額外間距 2dp
+            itemHeight = fontMetrics.bottom - fontMetrics.top + 1.dp2px
         }
     }
 

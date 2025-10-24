@@ -3,6 +3,8 @@ package arch.cayenne.module.home.ui.fragment
 import android.annotation.SuppressLint
 import android.app.ActivityManager
 import android.content.Context
+import android.graphics.LinearGradient
+import android.graphics.Shader
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -22,8 +24,11 @@ import arch.cayenne.lib.common.ui.viewmodel.observeEvent
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
+import arch.cayenne.lib.common.utils.ext.ResourceExt.getColor
+import arch.cayenne.lib.common.utils.ext.ResourceExt.getDrawable
 import arch.cayenne.lib.common.utils.ext.TabLayoutExt
 import arch.cayenne.lib.common.utils.ext.TabLayoutExt.addOnTabSelectedListener2
+import arch.cayenne.lib.common.utils.ext.VIPDataExt
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.clickNoRepeatSingle
@@ -31,14 +36,17 @@ import arch.cayenne.lib.common.utils.ext.getFormatDate
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.ext.startFadeAnim
 import arch.cayenne.lib.common.utils.helper.BounceEdgeEffectHelper
+import arch.cayenne.lib.common.utils.helper.VIPResourceHelper
 import arch.cayenne.lib.database.entity.TournamentDataModel
 import arch.cayenne.module.home.R
 import arch.cayenne.module.home.data.constants.HomeState
 import arch.cayenne.module.home.data.constants.PlayType
+import arch.cayenne.module.home.data.constants.TournamentListType
 import arch.cayenne.module.home.databinding.FragmentSubHomeBinding
 import arch.cayenne.module.home.databinding.ItemDateTabBinding
 import arch.cayenne.module.home.databinding.ItemLeagueTabBinding
 import arch.cayenne.module.home.ui.adapter.LeaguePagerAdapter
+import arch.cayenne.module.home.ui.adapter.SportBannerAdapter
 import arch.cayenne.module.home.ui.adapter.SportsListAdapter
 import arch.cayenne.module.home.ui.view.CustomTabLayoutMediator
 import arch.cayenne.module.home.ui.view.HomeCalendarFragment
@@ -87,6 +95,8 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
         }
     }
 
+    // VIP 等級資源設置於 lib_common，統一使用 VIPResourceHelper 管理
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         arguments?.apply {
             mViewModel.setPlayTypeId(this.getInt(ARG_PLAY_TYPE_ID))
@@ -97,6 +107,8 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
 
     override fun initView(savedInstanceState: Bundle?) {
         initSportLayout()
+        initVIPInfo()
+        initSportBanner()
         if (mViewModel.currentPlayTypeId == PlayType.CHAMPION.id) {
             initChampionTournamentLayout()
         } else {
@@ -144,7 +156,7 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
         with(mBinding) {
             setTopMaskListener()
 
-            vip.apply {
+            clVipInfo.apply {
                 clickNoRepeatSingle { navigate(arch.cayenne.lib.res.R.string.nav_module_vip_fragment.deeplink()) }
                 addScaleOnTouchAnimation()
             }
@@ -234,6 +246,15 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
                 handleAllTabLoaded()
             }
         }
+
+        // 監聽 VIP 等級變化
+        mViewModel.vipLevel.observe(viewLifecycleOwner) { level ->
+            updateVIPInfo(
+                vipLevel = level.toInt(),
+                percent = "57.91%",
+                levelUpInfo = "升级还需¥59w"
+            )
+        }
     }
 
     fun onFragmentSelected() {
@@ -287,6 +308,88 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
         }
     }
 
+    // init VIP 信息區塊
+    private fun initVIPInfo() {
+        // VIP 數據設置初始值，避免初始化時沒有數據
+        val currentLevel = VIPDataExt.getVIPLevel(75L)
+        updateVIPInfo(
+            vipLevel = currentLevel.toInt(),
+            percent = "57.91%",
+            levelUpInfo = "升级还需¥59w"
+        )
+    }
+
+    // init Sport Banner 輪播區塊
+    @SuppressLint("ClickableViewAccessibility")
+    private fun initSportBanner() {
+        val mockBannerList = arrayListOf(
+            arch.cayenne.module.home.data.SportBannerData(R.drawable.banner_ad1),
+            arch.cayenne.module.home.data.SportBannerData(R.drawable.banner_ad1),
+            arch.cayenne.module.home.data.SportBannerData(R.drawable.banner_ad1),
+            arch.cayenne.module.home.data.SportBannerData(R.drawable.banner_ad1),
+            arch.cayenne.module.home.data.SportBannerData(R.drawable.banner_ad1),
+        )
+        val bannerAdapter = SportBannerAdapter()
+
+        with(mBinding.includeSportBanner) {
+            vpSportBanner.adapter = bannerAdapter
+            bannerAdapter.submitList(mockBannerList)
+            vpSportBanner.isUserInputEnabled = true
+            vpSportBanner.getChildAt(0).setOnTouchListener { v, event ->
+                v.parent.requestDisallowInterceptTouchEvent(true)
+                false
+            }
+
+            vpSportBanner.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+                override fun onPageSelected(position: Int) {
+                    super.onPageSelected(position)
+                    pbSportBanner.resetTriggerJob()
+                }
+            })
+            pbSportBanner.setTriggerListener {
+                vpSportBanner.currentItem =
+                    (vpSportBanner.currentItem + 1) % bannerAdapter.itemCount
+            }
+        }
+    }
+
+    // 更新 VIP 信息顯示
+    private fun updateVIPInfo(vipLevel: Int, percent: String, levelUpInfo: String) {
+        // 使用 VIPResourceHelper 轉換等級
+        val level = VIPResourceHelper.getVIPLevelFromInt(vipLevel)
+
+        with(mBinding) {
+            // 設置背景 - 使用 VIPResourceHelper
+            clVipInfo.background = VIPResourceHelper.getForegroundResource(level).getDrawable()
+
+            // 設置圖標 - 使用 VIPResourceHelper
+            ivLevel.setImageResource(VIPResourceHelper.getIconResource(level))
+            ivLevelName.setImageResource(VIPResourceHelper.getLevelNameResource(level))
+
+            // 設置文字漸變效果 - 使用 VIPResourceHelper
+            val bottom = 20.dp2px.toFloat()
+            val linearGradient = LinearGradient(
+                0f, 0f,
+                0f, bottom,
+                intArrayOf(
+                    VIPResourceHelper.getShaderStartColor().getColor(requireContext()),
+                    VIPResourceHelper.getShaderEndColor(level).getColor(requireContext())
+                ),
+                null,
+                Shader.TileMode.CLAMP
+            )
+            tvLevel.paint.shader = linearGradient
+            tvLevel.text = getString(arch.cayenne.lib.common.R.string.vip_level_format, vipLevel)
+
+            // 設置百分比 - 使用 VIPResourceHelper
+            tvPercent.text = percent
+            ivPercent.setImageResource(VIPResourceHelper.getPercentResource(level))
+
+            // 設置升級信息
+            tvLevelUpInfo.text = levelUpInfo
+        }
+    }
+
     // 全部Tab的比賽列表載入完成後的處理
     private fun handleAllTabLoaded() {
         allTabCompleteObserveJob = null
@@ -329,6 +432,8 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
     //init 三級導航欄位與日期，只有今日和早盤有
     @SuppressLint("DefaultLocale")
     private fun initTournamentLayout() {
+        setChampionModeVisibility(false)
+        
         // 取得未來 31 天 (MMDD, 星期, timeStamp)
         val dateTabs = getFutureSevenDays()
         with(mBinding.layoutContainer) {
@@ -488,8 +593,7 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
 //        mBinding.layoutContainer.tvTabAll.isSelected = true
         clearDateTabSelection()
         lifecycleScope.launch {
-//            mViewModel.selectedDate(0L)
-            mViewModel.selectedDate(getFuture31Days().first().third)
+            mViewModel.selectedDate(0L)
         }
 
     }
@@ -776,8 +880,25 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
         // 使用 parentFragmentManager 發送結果
         parentFragmentManager.setFragmentResult(key, result)
     }
+
+    /**
+     * 設置冠軍頁面專屬元件的可見性
+     * @param isChampionMode true: 冠軍模式（隱藏今日/早盤元件），false: 今日/早盤模式（顯示元件）
+     */
+    private fun setChampionModeVisibility(isChampionMode: Boolean) {
+        val visibility = if (isChampionMode) View.GONE else View.VISIBLE
+        with(mBinding) {
+            llBanner.visibility = visibility
+            layoutContainer.root.visibility = visibility
+            llBtnTournament.visibility = visibility
+            llTournamentSort.visibility = visibility
+            vLeagueMoreMask.visibility = visibility
+        }
+    }
+
     private fun initChampionTournamentLayout() {
-        mBinding.aplHomeBanner.visibility = View.GONE
+        setChampionModeVisibility(true)
+        
         val tournamentListFragment = TournamentListFragment.newInstance(
             playTypeId = PlayType.CHAMPION.id,
             sportId = mViewModel.currentSportId,
@@ -786,7 +907,6 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
         childFragmentManager.beginTransaction()
             .replace(R.id.fl_champion_container, tournamentListFragment, PlayType.CHAMPION.name)
             .commit()
-
     }
 
     override fun onBackPressed(): Boolean {

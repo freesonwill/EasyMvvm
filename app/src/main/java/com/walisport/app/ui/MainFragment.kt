@@ -1,17 +1,25 @@
 package com.walisport.app.ui
 
 import android.os.Bundle
-import android.util.SparseArray
-import androidx.core.os.bundleOf
+import android.view.View
+import android.view.ViewGroup
+import androidx.core.view.GravityCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.fragment.app.Fragment
-import arch.cayenne.lib.base.data.constants.StatusBarMode
-import arch.cayenne.lib.base.data.model.StatusBarConfig
+import androidx.drawerlayout.widget.DrawerLayout
+import arch.cayenne.lib.base.ui.animation.AnimationController
+import arch.cayenne.lib.base.ui.animation.AnimationController.AnimType
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.base.ui.viewmodel.EmptyViewModel
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.ui.fragment.EmptyFragment
 import arch.cayenne.module.chat.ui.fragment.MainChatFragment
+import arch.cayenne.lib.common.data.constants.DrawerAction.ACTION_CLOSE
+import arch.cayenne.lib.common.data.constants.DrawerAction.ACTION_OPEN
+import arch.cayenne.lib.common.data.constants.DrawerAction.KEY_ACTION
+import arch.cayenne.lib.common.data.constants.DrawerAction.REQUEST_KEY_DRAWER
+import arch.cayenne.lib.common.utils.ext.setDrawerInterpolator
 import arch.cayenne.module.home.ui.fragment.NewHomeFragment
 import arch.cayenne.module.order.ui.fragment.HomeOrderFragment
 import com.walisport.app.R
@@ -27,15 +35,61 @@ class MainFragment : BaseFragment<EmptyViewModel, FragmentMainBinding>() {
     override val vmClass: KClass<EmptyViewModel>
         get() = EmptyViewModel::class
     private val selectedIndex get() = mBinding.bottomNavigation.selectedIndex
-    private val fragments = SparseArray<Fragment>()
     private val titleRes = arrayOf("体育","注单","聊天","我")
+    // 1. 使用 lazy 延遲初始化並持有所有 Fragment 實例
+    private val fragments by lazy {
+        listOf(
+            HallFragment(),
+            NewHomeFragment(),
+            HomeOrderFragment(),
+            MainChatFragment(),
+            MeFragment()
+        )
+    }
 
     override fun initView(savedInstanceState: Bundle?) {
         setCurrentFragment(selectedIndex)
+        setDrawerLayoutListener()
     }
 
+    private fun setDrawerLayoutListener() {
+        with (mBinding) {
+            drawerLayout.setLayerType(View.LAYER_TYPE_NONE,null)
+            drawerLayout.addDrawerListener(object : DrawerLayout.DrawerListener {
+                override fun onDrawerSlide(drawerView: View, slideOffset: Float) {
+                    // 動畫滑動中...
+                    "onDrawerSlide slideOffset: $slideOffset".logd()
+                    if (slideOffset in 0.1f .. 0.99f && drawerLayout.layerType != View.LAYER_TYPE_NONE) {
+                        // 抽屜打開一半之前，使用軟體層
+                        drawerLayout.setLayerType(View.LAYER_TYPE_NONE, null)
+                    }
+                }
+
+                override fun onDrawerOpened(drawerView: View) {
+                    // 抽屜打開後
+                    drawerLayout.setLayerType(View.LAYER_TYPE_HARDWARE, null)
+                }
+
+                override fun onDrawerClosed(drawerView: View) {
+                    // 抽屜關閉後
+                    drawerLayout.setLayerType(View.LAYER_TYPE_NONE, null)
+                }
+
+                override fun onDrawerStateChanged(newState: Int) {
+                }
+            })
+        }
+    }
     override fun initListener() {
         mBinding.apply {
+            setDrawerLayoutListener()
+            // 設定監聽器，使用 parentFragmentManager
+            requireActivity().supportFragmentManager.setFragmentResultListener(REQUEST_KEY_DRAWER, this@MainFragment) { requestKey, bundle ->
+                when (bundle.getString(KEY_ACTION)) {
+                    ACTION_OPEN -> drawerLayout.openDrawer(GravityCompat.START)
+                    ACTION_CLOSE -> drawerLayout.closeDrawer(GravityCompat.START)
+                }
+            }
             bottomNavigation.setOnItemSelectedListener { container, view, position ->
                 container.setSelected(position)
                 //"bottomNavigation1----$position".logd(TAG)
@@ -108,50 +162,61 @@ class MainFragment : BaseFragment<EmptyViewModel, FragmentMainBinding>() {
     }
 
     override suspend fun createObserver() {
-
+        launch {
+            AnimationController.getFlow(AnimType.drawerEnter).collect {
+                if(it == null) return@collect
+                mBinding.drawerLayout.setDrawerInterpolator(it.duration, it.interpolator.toInterpolator())
+            }
+        }
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+    }
     override fun onStart() {
         super.onStart()
         ViewCompat.setOnApplyWindowInsetsListener(mBinding.root) { view, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            //設定底部欄位margin
+            val lp = mBinding.bottomNavigation.layoutParams as ViewGroup.MarginLayoutParams
+            lp.bottomMargin = systemBars.bottom
+            mBinding.bottomNavigation.layoutParams = lp
             // 给布局设置 padding，不避开状态栏，避开导航栏
             view.setPadding(systemBars.left, 0, systemBars.right, systemBars.bottom)
             insets
         }
     }
 
-    private fun getFragment(position: Int): Fragment {
-        var f = fragments[position]
-        if (f == null) {
-            f = when (position) {
-                0 -> HallFragment()
-                1 -> NewHomeFragment()
-                2 -> HomeOrderFragment()
-                3 -> MainChatFragment()
-                4 -> MeFragment()
-                else -> EmptyFragment()
-            }
-            fragments[position] = f
+    override fun onBackPressed(): Boolean {
+        //如果抽屉打开，截获此次返回事件，关闭抽屉
+        if(mBinding.drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            mBinding.drawerLayout.closeDrawer(GravityCompat.START)
+            return true
         }
-        if(position != 0 && f is EmptyFragment){
-            f.setTitle(titleRes[position-1])
-        }
-        return f
+        return super.onBackPressed()
     }
 
     private fun setCurrentFragment(index: Int) {
-        val fragment = getFragment(index)
-        childFragmentManager.beginTransaction().apply {
-            childFragmentManager.fragments.find { it.isVisible }?.let {
-                hide(it)
-            }
-            if (!fragment.isAdded) {
-                add(R.id.fragment_container, fragment)
+        if (index !in fragments.indices) return // 防呆
+
+        val transaction = childFragmentManager.beginTransaction()
+        fragments.forEachIndexed { position, fragment ->
+            if (position == index) {
+                if (fragment.isAdded) {
+                    transaction.show(fragment)
+                } else {
+                    transaction.add(R.id.fragment_container, fragment)
+                }
             } else {
-                show(fragment)
+                if (fragment.isAdded) {
+                    transaction.hide(fragment)
+                }
             }
-        }.commit()
+            if(position != 0 && fragment is EmptyFragment){
+                fragment.setTitle(titleRes[position-1])
+            }
+        }
+        transaction.commit()
         /*//java.lang.IllegalStateException: Fragment no longer exists for key f#0: unique id ba2286df-4545-4383-b414-da475c5d5aac
         childFragmentManager.beginTransaction()
             .replace(R.id.fragment_container, fragment)

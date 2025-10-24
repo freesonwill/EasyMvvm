@@ -4,13 +4,21 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.os.bundleOf
+import androidx.fragment.app.viewModels
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.adapter.PagerAdapter
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.common.data.constants.DrawerAction.ACTION_OPEN
+import arch.cayenne.lib.common.data.constants.DrawerAction.KEY_ACTION
+import arch.cayenne.lib.common.data.constants.DrawerAction.REQUEST_KEY_DRAWER
+import arch.cayenne.lib.common.ui.viewmodel.UnReadMessageViewModel
 import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
+import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
+import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.touchBackPressed
 import com.google.android.material.tabs.TabLayoutMediator
 import com.walisport.module.hall.R
@@ -30,6 +38,8 @@ class HallFragment : BaseFragment<HallViewModel, FragmentHallBinding>() {
     override val vbClass: KClass<FragmentHallBinding> = FragmentHallBinding::class
     override val vmClass: KClass<HallViewModel> = HallViewModel::class
 
+    private val unreadMessageViewModel: UnReadMessageViewModel by viewModels()
+
     private val mockTabList = arrayListOf(
         HallGameTabDefault(
             res = R.drawable.ic_tab_hall_recent,
@@ -39,7 +49,7 @@ class HallFragment : BaseFragment<HallViewModel, FragmentHallBinding>() {
         HallGameTabDefault(
             res = R.drawable.ic_tab_hall_all,
             _title = R.string.tab_all.getString(),
-            _page = { GameContentFragment.newInstance() }
+            _page = { GameAllFragment.newInstance() }
         ),
         HallGameTabDefault(
             res = R.drawable.ic_tab_hall_table,
@@ -88,7 +98,10 @@ class HallFragment : BaseFragment<HallViewModel, FragmentHallBinding>() {
 
             TabLayoutMediator(tlGame, vpGame) { tab, position ->
                 tab.customView = createGameTabView(position, mockTabList[position])
+                val paddingStart = 5.dp2px
+                tab.view.setPadding(0, 0, paddingStart, 0)
             }.attach()
+            vpGame.setCurrentItem(1, false)
         }
     }
 
@@ -105,10 +118,28 @@ class HallFragment : BaseFragment<HallViewModel, FragmentHallBinding>() {
     }
 
     override fun initListener() {
-
+        with (mBinding) {
+            ivHomeSidebar.addScaleOnTouchAnimation()
+            ivHomeSidebar.clickNoRepeat {
+                requireActivity().supportFragmentManager.setFragmentResult(
+                    REQUEST_KEY_DRAWER,
+                    bundleOf(KEY_ACTION to ACTION_OPEN)
+                )
+            }
+        }
     }
 
     override suspend fun createObserver() {
+
+
+        with(unreadMessageViewModel) {
+            //未读消息监听
+            unreadMsg.observe(viewLifecycleOwner) { flag ->
+                mBinding.ivUnreadDot.visibility = if (flag) View.VISIBLE else View.GONE
+            }
+        }
+
+        unreadMessageViewModel.createObserver()
 
     }
 

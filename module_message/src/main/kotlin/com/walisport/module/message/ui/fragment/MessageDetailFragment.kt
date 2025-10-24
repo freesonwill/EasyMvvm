@@ -49,7 +49,7 @@ class MessageDetailFragment : BaseFragment<MessageMainViewModel, FragmentMessage
                 Glide.with(this@MessageDetailFragment).load(url).into(ivDetailImage)
             }
             when (type) {
-                MSG_SYS -> ivDetailIcon.background = R.drawable.icon_message_wh.getDrawable()
+                MSG_SYS -> ivDetailIcon.background = R.drawable.icon_message_sys.getDrawable()
                 MSG_ACT -> ivDetailIcon.background = R.drawable.icon_message_hd.getDrawable()
                 MSG_MAT -> ivDetailIcon.background = R.drawable.icon_message_rm.getDrawable()
                 MSG_PAY -> ivDetailIcon.background = R.drawable.icon_message_cz.getDrawable()

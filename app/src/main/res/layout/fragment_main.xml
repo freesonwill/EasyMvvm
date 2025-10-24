@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<arch.cayenne.lib.skin.widget.SkinnableConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<arch.cayenne.module.home.ui.view.ScrollDrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:fitsSystemWindows="false"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawerLayout"
     android:background="@color/title_bg"
+    android:fitsSystemWindows="false"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
-
+<arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
+    android:id="@+id/cl_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"
@@ -23,6 +28,8 @@
         android:orientation="horizontal"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:selected_index="0">
 
         <arch.cayenne.module.home.ui.view.NavBarView
@@ -71,3 +78,17 @@
 
     </arch.cayenne.module.home.ui.view.NavBarContainer>
 </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
+    <!-- 左侧滑出的導航菜單 -->
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/navigation_view"
+        android:layout_width="300dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        app:drawerLayoutCornerSize="0dp">
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/fragment_drawer_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:name="arch.cayenne.module.home.ui.fragment.DrawerContentFragment"/>
+    </com.google.android.material.navigation.NavigationView>
+</arch.cayenne.module.home.ui.view.ScrollDrawerLayout>

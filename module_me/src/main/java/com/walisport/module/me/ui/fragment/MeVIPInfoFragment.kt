@@ -11,8 +11,7 @@ import arch.cayenne.lib.common.utils.ext.ResourceExt.getColor
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getDrawable
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
-import com.walisport.module.me.R
-import com.walisport.module.me.data.constants.VIPLevel
+import arch.cayenne.lib.common.utils.helper.VIPResourceHelper
 import com.walisport.module.me.databinding.FragmentMeVipInfoBinding
 import com.walisport.module.me.ui.viewmodel.MeVIPInfoViewModel
 import kotlin.reflect.KClass
@@ -33,73 +32,7 @@ class MeVIPInfoFragment : BaseFragment<MeVIPInfoViewModel, FragmentMeVipInfoBind
     override val vbClass: KClass<FragmentMeVipInfoBinding> = FragmentMeVipInfoBinding::class
     override val vmClass: KClass<MeVIPInfoViewModel> = MeVIPInfoViewModel::class
 
-    private val shaderEndColorMap: Map<VIPLevel, Int> =
-        mapOf(
-            VIPLevel.Copper to R.color.shader_end_copper,
-            VIPLevel.Silver to R.color.shader_end_silver,
-            VIPLevel.Gold to R.color.shader_end_gold,
-            VIPLevel.Platinum to R.color.shader_end_platinum,
-            VIPLevel.Diamond to R.color.shader_end_diamond,
-            VIPLevel.BlackDiamond to R.color.shader_end_black_diamond,
-            VIPLevel.StarDiamond to R.color.shader_end_star_diamond
-
-        )
-
-    private val foregroundResMap = mapOf(
-        VIPLevel.Copper to R.drawable.bg_copper,
-        VIPLevel.Silver to R.drawable.bg_silver,
-        VIPLevel.Gold to R.drawable.bg_gold,
-        VIPLevel.Platinum to R.drawable.bg_platinum,
-        VIPLevel.Diamond to R.drawable.bg_diamond,
-        VIPLevel.BlackDiamond to R.drawable.bg_black_diamond,
-        VIPLevel.StarDiamond to R.drawable.bg_star_diamond
-    )
-
-    private val backgroundResMap =
-        mapOf(
-            VIPLevel.Copper to R.drawable.bg_shape_copper,
-            VIPLevel.Silver to R.drawable.bg_shape_silver,
-            VIPLevel.Gold to R.drawable.bg_shape_gold,
-            VIPLevel.Platinum to R.drawable.bg_shape_platinum,
-            VIPLevel.Diamond to R.drawable.bg_shape_diamond,
-            VIPLevel.BlackDiamond to R.drawable.bg_shape_black_diamond,
-            VIPLevel.StarDiamond to R.drawable.bg_shape_black_diamond
-        )
-
-    private val percentResMap =
-        mapOf(
-            VIPLevel.Copper to R.drawable.ic_percent_copper,
-            VIPLevel.Silver to R.drawable.ic_percent_silver,
-            VIPLevel.Gold to R.drawable.ic_percent_gold,
-            VIPLevel.Platinum to R.drawable.ic_percent_platinum,
-            VIPLevel.Diamond to R.drawable.ic_percent_diamond,
-            VIPLevel.BlackDiamond to R.drawable.ic_percent_black_diamond,
-            VIPLevel.StarDiamond to R.drawable.ic_percent_star_diamond
-
-        )
-
-    private val iconResMap = mapOf(
-        VIPLevel.Copper to R.drawable.ic_level_copper,
-        VIPLevel.Silver to R.drawable.ic_level_silver,
-        VIPLevel.Gold to R.drawable.ic_level_gold,
-        VIPLevel.Platinum to R.drawable.ic_level_platinum,
-        VIPLevel.Diamond to R.drawable.ic_level_diamond,
-        VIPLevel.BlackDiamond to R.drawable.ic_level_black_diamond,
-        VIPLevel.StarDiamond to R.drawable.ic_level_star_diamond
-
-    )
-
-    private val levelResMap =
-        mapOf(
-            VIPLevel.Copper to R.drawable.ic_level_name_copper,
-            VIPLevel.Silver to R.drawable.ic_level_name_silver,
-            VIPLevel.Gold to R.drawable.ic_level_name_gold,
-            VIPLevel.Platinum to R.drawable.ic_level_name_platinum,
-            VIPLevel.Diamond to R.drawable.ic_level_name_diamond,
-            VIPLevel.BlackDiamond to R.drawable.ic_level_name_black_diamond,
-            VIPLevel.StarDiamond to R.drawable.ic_level_name_star_diamond
-
-        )
+    // VIP 等級資源放置於 lib_common，統一使用 VIPResourceHelper 管理
 
 
     override fun initView(savedInstanceState: Bundle?) {
@@ -136,53 +69,31 @@ class MeVIPInfoFragment : BaseFragment<MeVIPInfoViewModel, FragmentMeVipInfoBind
             vipLevelLiveData.observe(viewLifecycleOwner) {
 
                 vipLevelLiveData.value?.let {
-                    //这里是测试代码， 具体的等级转换关系由后台配置
-                    val vipLevel = if (it < 10) {
-                        VIPLevel.Copper
-                    } else if (it in 10..19) {
-                        VIPLevel.Silver
-                    } else if (it in 20..29) {
-                        VIPLevel.Gold
-                    } else if (it in 30..39) {
-                        VIPLevel.Platinum
-                    } else if (it in 40..49) {
-                        VIPLevel.Diamond
-                    } else if (it in 50..59) {
-                        VIPLevel.GreenDiamond
-                    } else if (it in 60..69) {
-                        VIPLevel.RedDiamond
-                    } else if (it in 70..79) {
-                        VIPLevel.BlackDiamond
-                    } else if (it in 80..89) {
-                        VIPLevel.StarDiamond
-                    } else if (it in 90..99) {
-                        VIPLevel.MeteoriteDiamond
-                    } else if (it in 100..109) {
-                        VIPLevel.Stars
-                    } else {
-                        VIPLevel.Universe
-                    }
+                    // 使用 VIPResourceHelper 轉換等級
+                    val vipLevel = VIPResourceHelper.getVIPLevelFromInt(it)
 
+                    // 設置背景 - 使用 VIPResourceHelper
                     mBinding.ctVipInfo.background =
-                        backgroundResMap.getValue(vipLevel).getDrawable()
+                        VIPResourceHelper.getBackgroundResource(vipLevel).getDrawable()
                     mBinding.ctLevelInfo.background =
-                        foregroundResMap.getValue(vipLevel).getDrawable()
+                        VIPResourceHelper.getForegroundResource(vipLevel).getDrawable()
 
-                    mBinding.ivLevel.setImageResource(iconResMap.getValue(vipLevel))
+                    // 設置圖標 - 使用 VIPResourceHelper
+                    mBinding.ivLevel.setImageResource(VIPResourceHelper.getIconResource(vipLevel))
                     mBinding.ivLevelName.setImageResource(
-                        levelResMap.getValue(
+                        VIPResourceHelper.getLevelNameResource(
                             vipLevel
                         )
                     )
 
                     val bottom = 30.dp2px.toFloat()
-                    // 创建线性渐变
+                    // 创建线性渐变 - 使用 VIPResourceHelper
                     val linearGradient = LinearGradient(
                         0f, 0f,  // 渐变起点 (x1, y1)
                         0f, bottom,  // 渐变终点 (x2, y2)
                         intArrayOf(
-                            R.color.shader_start.getColor(),
-                            shaderEndColorMap.getValue(vipLevel).getColor()
+                            VIPResourceHelper.getShaderStartColor().getColor(),
+                            VIPResourceHelper.getShaderEndColor(vipLevel).getColor()
                         ),  // 渐变颜色数组
                         null,  // 渐变位置（null 表示均匀分布）
                         Shader.TileMode.CLAMP // 填充模式
@@ -190,11 +101,13 @@ class MeVIPInfoFragment : BaseFragment<MeVIPInfoViewModel, FragmentMeVipInfoBind
 
 
                     mBinding.tvLevel.paint.shader = linearGradient
-                    mBinding.tvLevel.text = "VIP ${it}"
+                    mBinding.tvLevel.text =
+                        getString(arch.cayenne.lib.common.R.string.vip_level_format, it.toInt())
 
+                    // 設置百分比 - 使用 VIPResourceHelper
                     mBinding.tvPercent.text = "57.91%"
                     mBinding.ivPercent.setImageResource(
-                        percentResMap.getValue(
+                        VIPResourceHelper.getPercentResource(
                             vipLevel
                         )
                     )

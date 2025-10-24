@@ -17,6 +17,5 @@ class BankCardCompare : DiffUtil.ItemCallback<BankCardBean>() {
         newItem: BankCardBean
     ): Boolean {
         return oldItem == newItem
-
     }
 }

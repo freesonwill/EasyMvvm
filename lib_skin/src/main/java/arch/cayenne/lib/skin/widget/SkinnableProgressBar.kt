@@ -7,7 +7,7 @@ import arch.cayenne.lib.skin.data.SkinMsgType
 import arch.cayenne.lib.skin.widget.biz.ISkinnableBiz
 import arch.cayenne.lib.skin.widget.biz.SkinnableBizBackgroundImpl
 
-class SkinnableProgressBar : ProgressBar, ISkinnableBiz {
+open class SkinnableProgressBar : ProgressBar, ISkinnableBiz {
 
     private lateinit var biz: ISkinnableBiz
 
