@@ -56,7 +56,7 @@ class EmojiGridAdapter :
         "child ${position} ${list.size} ${itemCount} ".logd("aaa")
         binding.tvTitle.text = if (position == 0) "最近使用" else "全部表情"
         val lp = binding.tvTitle.layoutParams as ConstraintLayout.LayoutParams
-        lp.leftMargin = if (position == 0) 12.dp2px else 14.dp2px
+        lp.leftMargin = if (position == 0) 0 else 2.dp2px
 
         binding.tvTitle.layoutParams = lp
         binding.gridRecycler.also {

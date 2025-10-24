@@ -9,6 +9,8 @@
         android:id="@+id/iv"
         android:layout_width="30dp"
         android:layout_height="30dp"
+        android:scaleType="fitXY"
+        android:padding="2dp"
         android:layout_marginEnd="@dimen/dp_16"
         />
 
