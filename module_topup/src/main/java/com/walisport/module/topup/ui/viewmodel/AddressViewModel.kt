@@ -11,9 +11,31 @@ class AddressViewModel : BaseViewModel() {
     val addressData: LiveData<List<AddressBean>> = _addressData
 
     fun getAddressList() {
-        val tmp1 = AddressBean(0, "USDT", "Tron (TRC20)", "TGPs2ZF7nr1cjtdsMQTHmfpgXqqDnAYE6i", "（这里是备注）")
-        val tmp2 = AddressBean(1, "BTC", "Tron (TRC20)", "TGPs2ZF7nr1cjtdsMQTHmfpgXqqDnAYE6i", "（这里是备注）")
-        val tmp3 = AddressBean(2, "ETH", "Tron (TRC20)", "TGPs2ZF7nr1cjtdsMQTHmfpgXqqDnAYE6i", "（这里是备注）")
+        val tmp1 = AddressBean(
+            0,
+            "USDT",
+            "Tron (TRC20)",
+            "TGPs2ZF7nr1cjtdsMQTHmfpgXqqDnAYE6i",
+            "（这里是备注）"
+        )
+        val tmp2 = AddressBean(
+            1,
+            "BTC",
+            "Tron (TRC20)",
+            "TGPs2ZF7nr1cjtdsMQTHmfpgXqqDnAYE6i",
+            "（这里是备注）"
+        )
+        val tmp3 = AddressBean(
+            2,
+            "ETH",
+            "Tron (TRC20)",
+            "TGPs2ZF7nr1cjtdsMQTHmfpgXqqDnAYE6i",
+            "（这里是备注）"
+        )
         _addressData.value = listOf(tmp1, tmp2, tmp3)
+    }
+
+    fun deleteAddress(address: String) {
+
     }
 }
