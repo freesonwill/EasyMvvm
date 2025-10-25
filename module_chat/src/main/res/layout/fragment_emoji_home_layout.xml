@@ -11,7 +11,7 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/hot_recyclerview"
-        android:layout_width="214dp"
+        android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_30"
         android:layout_marginStart="@dimen/dp_6"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -21,7 +21,7 @@
         android:id="@+id/iv_at"
         android:layout_width="@dimen/dp_28"
         android:layout_height="@dimen/dp_28"
-        android:layout_marginStart="@dimen/dp_25"
+        android:layout_marginStart="@dimen/dp_19"
         android:src="@drawable/icon_input_at"
         app:layout_constraintBottom_toBottomOf="@id/hot_recyclerview"
         app:layout_constraintLeft_toRightOf="@id/hot_recyclerview"
