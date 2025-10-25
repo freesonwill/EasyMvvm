@@ -21,8 +21,9 @@
         android:id="@+id/iv_at"
         android:layout_width="@dimen/dp_28"
         android:layout_height="@dimen/dp_28"
-        android:layout_marginStart="@dimen/dp_19"
+        android:layout_marginStart="@dimen/dp_15"
         android:src="@drawable/icon_input_at"
+        android:padding="2dp"
         app:layout_constraintBottom_toBottomOf="@id/hot_recyclerview"
         app:layout_constraintLeft_toRightOf="@id/hot_recyclerview"
         app:layout_constraintTop_toTopOf="@id/hot_recyclerview" />
@@ -32,6 +33,7 @@
         android:layout_width="@dimen/dp_28"
         android:layout_height="@dimen/dp_28"
         android:layout_marginStart="@dimen/dp_14"
+        android:padding="2dp"
         android:src="@drawable/icon_input_bet"
         app:layout_constraintLeft_toRightOf="@id/iv_at"
         app:layout_constraintTop_toTopOf="@id/iv_at" />
@@ -41,6 +43,7 @@
         android:layout_width="@dimen/dp_28"
         android:layout_height="@dimen/dp_28"
         android:layout_marginStart="@dimen/dp_14"
+        android:padding="2dp"
         android:src="@drawable/icon_input_emoji"
         app:layout_constraintLeft_toRightOf="@id/iv_bet"
         app:layout_constraintTop_toTopOf="@id/iv_bet" />
@@ -50,6 +53,7 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginTop="@dimen/dp_12"
+
         android:background="@color/color_0FFFFFFF"
         app:layout_constraintTop_toBottomOf="@id/hot_recyclerview" />
 
@@ -100,7 +104,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginStart="@dimen/dp_6"
-            android:layout_marginEnd="@dimen/dp_5"
+            android:layout_marginEnd="@dimen/dp_1"
             android:layout_marginBottom="@dimen/dp_12"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@id/ll_tab" />
