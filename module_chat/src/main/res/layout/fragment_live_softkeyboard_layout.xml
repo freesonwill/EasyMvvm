@@ -30,7 +30,7 @@
                 android:id="@+id/input_content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingVertical="@dimen/dp_10"
+                android:paddingVertical="@dimen/dp_12"
                 android:background="@color/color_272727"
                 app:layout_constraintBottom_toBottomOf="parent">
 
@@ -44,15 +44,17 @@
                     android:src="@drawable/icon_input_language"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:visibility="gone"
+                    />
 
                 <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
                     android:id="@+id/live_chat_ll_input"
                     android:layout_width="0dp"
                     android:layout_height="40dp"
                     android:layout_marginStart="@dimen/dp_8"
-                    android:layout_marginEnd="@dimen/dp_10"
                     app:layout_goneMarginLeft="@dimen/dp_12"
+                    app:layout_goneMarginRight="@dimen/dp_10"
                     android:background="@drawable/shape_20"
                     android:backgroundTint="@color/color_0FFFFFFF"
                     android:orientation="horizontal"
@@ -83,6 +85,7 @@
                         android:src="@drawable/icon_input_at"
                         android:layout_marginEnd="@dimen/dp_12"
                         android:layout_gravity="center_vertical"
+                        android:visibility="gone"
                         />
                     <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/iv_bet"
@@ -91,6 +94,7 @@
                         android:src="@drawable/icon_input_bet"
                         android:layout_marginEnd="@dimen/dp_12"
                         android:layout_gravity="center_vertical"
+                        android:visibility="gone"
                         />
 
                     <androidx.appcompat.widget.AppCompatImageView
@@ -100,6 +104,7 @@
                         android:src="@drawable/icon_input_emoji"
                         android:layout_gravity="center_vertical"
                         android:layout_marginEnd="@dimen/dp_20"
+                        android:visibility="gone"
                         />
 
                 </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
@@ -114,7 +119,6 @@
                     android:gravity="center"
                     android:stateListAnimator="@animator/layout_alpha_animator"
                     android:text="@string/send"
-                    android:visibility="gone"
                     android:textColor="@color/color_FFFFFF"
                     app:layout_constraintBottom_toBottomOf="@id/live_chat_ll_input"
                     app:layout_constraintLeft_toRightOf="@id/live_chat_ll_input"
@@ -129,7 +133,7 @@
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/emoji_content"
             android:layout_width="match_parent"
-            android:layout_height="287dp"
+            android:layout_height="284dp"
             android:orientation="vertical"
             app:layout_constraintTop_toBottomOf="@id/input_content"/>
 

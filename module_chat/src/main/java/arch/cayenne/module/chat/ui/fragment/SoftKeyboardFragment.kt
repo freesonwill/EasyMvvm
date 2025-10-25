@@ -175,8 +175,8 @@ class SoftKeyboardFragment :
 
     private fun calculationLayoutSize() {
         mBinding.apply {
-            softKeyBoardManager.emojiKeyBoardHeight =
-                mViewModel.keyBoardHeight - 60.dp2px - 21.dp2px
+            softKeyBoardManager.emojiKeyBoardHeight = 284.dp2px
+
             emojiContent.layoutParams.height = softKeyBoardManager.emojiKeyBoardHeight
             screenContent.layoutParams.height = mViewModel.keyBoardHeight
             main.layoutParams.height =
@@ -199,21 +199,21 @@ class SoftKeyboardFragment :
      * 展示聊天界面
      * */
     fun showChat() {
-        updateEmojiView(false)
+        updateKeyboardView(false)
     }
 
     /**
      * 展示软件盘
      * */
     private fun showSoftKeyBoard() {
-        updateEmojiView(false)
+        updateKeyboardView(true)
     }
 
     /**
      * 展示表情界面
      * */
     private fun showEmoji() {
-        updateEmojiView(true)
+        updateKeyboardView(true)
         softKeyBoardManager.etRequestFocus()
     }
 
@@ -228,9 +228,14 @@ class SoftKeyboardFragment :
 
     }
 
-    private fun updateEmojiView(isVisible: Boolean) {
+    private fun updateKeyboardView(isVisible: Boolean) {
         mBinding.apply {
             emojiContent.isInvisible = !isVisible
+            ivLanguage.isVisible = !isVisible
+            ivAt.isVisible = !isVisible
+            ivBet.isVisible = !isVisible
+            ivEmoji.isVisible = !isVisible
+            liveChatTvSend.isVisible = isVisible
         }
     }
     /**

@@ -2,6 +2,7 @@ package arch.cayenne.module.chat.ui.fragment
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.view.MotionEvent
 import androidx.activity.addCallback
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
@@ -93,13 +94,13 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
     @SuppressLint("ClickableViewAccessibility")
     override fun initListener() {
 
-//        mBinding.main.setOnTouchListener { v, event ->
-//            if (event.action == MotionEvent.ACTION_DOWN && mViewModel.currentKeyBoardType != KeyBoardType.CHAT) {
-//                showChat(9)
-//                return@setOnTouchListener true
-//            }
-//            return@setOnTouchListener false
-//        }
+        mBinding.main.setOnTouchListener { v, event ->
+            if (event.action == MotionEvent.ACTION_DOWN && mViewModel.currentKeyBoardType != KeyBoardType.CHAT) {
+                showChat(9)
+                return@setOnTouchListener true
+            }
+            return@setOnTouchListener false
+        }
 
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
             if (mViewModel.currentKeyBoardType != KeyBoardType.CHAT) {
