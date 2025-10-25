@@ -3,19 +3,16 @@
     android:id="@+id/container"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:background="@drawable/shape_8dp"
-    >
+    android:orientation="horizontal">
 
     <arch.cayenne.lib.skin.widget.SkinnableImageView
         android:id="@+id/iv"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:scaleType="fitXY"
-        android:layout_marginTop="@dimen/dp_12"
         android:layout_marginLeft="@dimen/dp_6"
         android:layout_marginRight="@dimen/dp_10"
-       />
+        />
 
 </LinearLayout>
 

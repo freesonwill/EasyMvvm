@@ -9,12 +9,8 @@ import org.koin.core.parameter.parametersOf
 import arch.cayenne.lib.common.R
 import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.database.dao.ChatConfigDao
-import arch.cayenne.module.chat.data.constants.BidEmojiEnum
-import arch.cayenne.module.chat.data.constants.EmojiEnum
-import arch.cayenne.module.chat.data.constants.EmojiTypeEnum
-import arch.cayenne.module.chat.data.model.EmojiData
+
 import arch.cayenne.module.chat.data.model.KeyBoardTabData
-import arch.cayenne.module.chat.data.model.SoftData
 
 class SoftKeyboardViewModel : BaseViewModel() {
 
@@ -94,34 +90,6 @@ class SoftKeyboardViewModel : BaseViewModel() {
         )
 
 
-    private fun getNormalEmojis(): List<EmojiData> {
-        val list = EmojiEnum.getEmojiMap().map {
-           EmojiData(it.value, it.key)
-        }.toMutableList()
-        return list
-    }
-
-    private fun getBidEmojis() = BidEmojiEnum.getEmojiMap().map {
-       EmojiData(it.value, it.key)
-    }.toList()
-
-    fun softData(): List<arch.cayenne.module.chat.data.model.SoftData> {
-        val list: MutableList<arch.cayenne.module.chat.data.model.SoftData> = mutableListOf()
-        for (i in 0..<tabMenus().size) {
-            if (i == 0) list.add(
-               SoftData(
-                    EmojiTypeEnum.NORMAL,
-                    getNormalEmojis()
-                )
-            ) else list.add(
-               SoftData(
-                    EmojiTypeEnum.BID,
-                    getBidEmojis()
-                )
-            )
-        }
-        return list
-    }
 
 
 

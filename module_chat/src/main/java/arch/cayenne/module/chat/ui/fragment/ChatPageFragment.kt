@@ -1,14 +1,12 @@
 package arch.cayenne.module.chat.ui.fragment
 
 import android.os.Bundle
-import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.module.chat.databinding.FragementChatPageLayoutBinding
-import arch.cayenne.module.chat.ui.adapter.LiveChatAdapter
+import arch.cayenne.module.chat.ui.adapter.ChatAdapter
 import arch.cayenne.module.chat.ui.viewmodel.ChatHomeViewModel
 import arch.cayenne.module.chat.ui.viewmodel.ChatPageViewModel
 import kotlinx.coroutines.launch
@@ -32,7 +30,7 @@ class ChatPageFragment:BaseFragment<ChatPageViewModel,FragementChatPageLayoutBin
 
     private fun initRecycler(){
         val layoutManger = LinearLayoutManager(context)
-        val adapter = LiveChatAdapter()
+        val adapter = ChatAdapter()
         mBinding.liveChatRecycler.layoutManager = layoutManger
         mBinding.liveChatRecycler.adapter = adapter
         mBinding.liveChatRecycler.itemAnimator = null
@@ -58,7 +56,7 @@ class ChatPageFragment:BaseFragment<ChatPageViewModel,FragementChatPageLayoutBin
      * */
     private fun refreshChatList() {
         homeViewModel.refreshChatUi(mViewModel.msgLists.isEmpty())
-        val adapter = mBinding.liveChatRecycler.adapter?.let { it as LiveChatAdapter }
+        val adapter = mBinding.liveChatRecycler.adapter?.let { it as ChatAdapter }
         adapter?.submitList(mViewModel.msgLists) {
             adapter.currentList.size.let {
                 val position = it - 1
