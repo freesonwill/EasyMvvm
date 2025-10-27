@@ -16,7 +16,8 @@
         <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
             android:id="@+id/ll_banner"
             android:layout_width="match_parent"
-            android:layout_height="131dp"
+            android:layout_height="134dp"
+            android:paddingTop="@dimen/dp_3"
             android:background="@color/color_1E1E1E"
             android:gravity="center"
             android:orientation="horizontal"
