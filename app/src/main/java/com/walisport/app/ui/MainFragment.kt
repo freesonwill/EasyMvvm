@@ -1,31 +1,27 @@
 package com.walisport.app.ui
 
 import android.os.Bundle
-import android.util.SparseArray
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.GravityCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.fragment.app.Fragment
 import arch.cayenne.lib.base.ui.animation.AnimationController
 import arch.cayenne.lib.base.ui.animation.AnimationController.AnimType
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.base.ui.viewmodel.EmptyViewModel
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
+import arch.cayenne.lib.common.ui.fragment.EmptyFragment
+import arch.cayenne.module.chat.ui.fragment.MainChatFragment
 import arch.cayenne.lib.common.data.constants.DrawerAction.ACTION_CLOSE
-import arch.cayenne.lib.common.data.constants.DrawerAction.ACTION_INIT
 import arch.cayenne.lib.common.data.constants.DrawerAction.ACTION_OPEN
 import arch.cayenne.lib.common.data.constants.DrawerAction.KEY_ACTION
 import arch.cayenne.lib.common.data.constants.DrawerAction.REQUEST_KEY_DRAWER
 import arch.cayenne.lib.common.ui.fragment.EmptyFragment
 import arch.cayenne.lib.common.utils.ext.NavResultExt.observeResult
 import arch.cayenne.lib.common.utils.ext.setDrawerInterpolator
-import arch.cayenne.lib.skin.res.SkinnableResourceManager
-import arch.cayenne.module.chat.ui.fragment.MainChatFragment
-import arch.cayenne.module.home.ui.fragment.DrawerContentFragment
 import arch.cayenne.module.home.ui.fragment.NewHomeFragment
 import arch.cayenne.module.order.ui.fragment.HomeOrderFragment
 import com.walisport.app.R
@@ -41,46 +37,23 @@ class MainFragment : BaseFragment<EmptyViewModel, FragmentMainBinding>() {
     override val vmClass: KClass<EmptyViewModel>
         get() = EmptyViewModel::class
     private val selectedIndex get() = mBinding.bottomNavigation.selectedIndex
-    private val fragments = SparseArray<Fragment>()
     private val titleRes = arrayOf("体育","注单","聊天","我")
-    private var drawerContentFragment: DrawerContentFragment? = null
+    // 1. 使用 lazy 延遲初始化並持有所有 Fragment 實例
+    private val fragments by lazy {
+        listOf(
+            HallFragment(),
+            NewHomeFragment(),
+            HomeOrderFragment(),
+            MainChatFragment(),
+            MeFragment()
+        )
+    }
 
     override fun initView(savedInstanceState: Bundle?) {
         setCurrentFragment(selectedIndex)
-        initDrawerContent()
         setDrawerLayoutListener()
     }
 
-    private fun initDrawerContent() {
-        //TODO 優化initDrawerContent及setCurrentFragment在replace及add問題
-        drawerContentFragment = DrawerContentFragment()
-        drawerContentFragment.also {
-            it?.setOnFunctionClickListener {
-//                    mBinding.drawerLayout.closeDrawer(GravityCompat.START)
-            }
-        }
-        //蒙層顏色依照版型作變化
-        mBinding.drawerLayout.setScrimColor(
-            SkinnableResourceManager.getColor(
-                requireContext(),
-                arch.cayenne.module.home.R.color.drawer_scrim_color
-            )
-        )
-        // 使用 view.post 將 commitNow 操作延遲到下一個訊息迴圈
-        mBinding.root.post {
-            childFragmentManager.beginTransaction()
-                .replace(
-                    mBinding.fragmentDrawerContent.id,
-                    drawerContentFragment!!,
-                    DrawerContentFragment.TAG
-                )
-                .commitNow()
-        }
-        //如果由模拟投注页面跳转到首页需要关闭左侧菜单栏
-        observeResult<String>("Drawer") {
-            mBinding.drawerLayout.closeDrawer(GravityCompat.START,false)
-        }
-    }
     private fun setDrawerLayoutListener() {
         with (mBinding) {
             drawerLayout.setLayerType(View.LAYER_TYPE_NONE,null)
@@ -117,14 +90,12 @@ class MainFragment : BaseFragment<EmptyViewModel, FragmentMainBinding>() {
                 when (bundle.getString(KEY_ACTION)) {
                     ACTION_OPEN -> drawerLayout.openDrawer(GravityCompat.START)
                     ACTION_CLOSE -> drawerLayout.closeDrawer(GravityCompat.START)
-                    ACTION_INIT -> initDrawerContent()
                 }
             }
             bottomNavigation.setOnItemSelectedListener { container, view, position ->
                 container.setSelected(position)
                 //"bottomNavigation1----$position".logd(TAG)
                 setCurrentFragment(position)
-                initDrawerContent()
 //                when (position) {
 //                    0 -> {
 //                        val w = container.getWeight(1)
@@ -227,37 +198,27 @@ class MainFragment : BaseFragment<EmptyViewModel, FragmentMainBinding>() {
         return super.onBackPressed()
     }
 
-    private fun getFragment(position: Int): Fragment {
-        var f = fragments[position]
-        if (f == null) {
-            f = when (position) {
-                0 -> HallFragment()
-                1 -> NewHomeFragment()
-                2 -> HomeOrderFragment()
-                3 -> MainChatFragment()
-                4 -> MeFragment()
-                else -> EmptyFragment()
-            }
-            fragments[position] = f
-        }
-        if(position != 0 && f is EmptyFragment){
-            f.setTitle(titleRes[position-1])
-        }
-        return f
-    }
-
     private fun setCurrentFragment(index: Int) {
-        val fragment = getFragment(index)
-        childFragmentManager.beginTransaction().apply {
-            childFragmentManager.fragments.find { it.isVisible }?.let {
-                hide(it)
-            }
-            if (!fragment.isAdded) {
-                add(R.id.fragment_container, fragment)
+        if (index !in fragments.indices) return // 防呆
+
+        val transaction = childFragmentManager.beginTransaction()
+        fragments.forEachIndexed { position, fragment ->
+            if (position == index) {
+                if (fragment.isAdded) {
+                    transaction.show(fragment)
+                } else {
+                    transaction.add(R.id.fragment_container, fragment)
+                }
             } else {
-                show(fragment)
+                if (fragment.isAdded) {
+                    transaction.hide(fragment)
+                }
             }
-        }.commitNow()
+            if(position != 0 && fragment is EmptyFragment){
+                fragment.setTitle(titleRes[position-1])
+            }
+        }
+        transaction.commit()
         /*//java.lang.IllegalStateException: Fragment no longer exists for key f#0: unique id ba2286df-4545-4383-b414-da475c5d5aac
         childFragmentManager.beginTransaction()
             .replace(R.id.fragment_container, fragment)

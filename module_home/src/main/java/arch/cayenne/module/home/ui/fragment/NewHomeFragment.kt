@@ -54,8 +54,6 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
     override val vmClass: KClass<HomeViewModel> = HomeViewModel::class
 
     private val unreadMessageViewModel: UnReadMessageViewModel by viewModels()
-
-    private var drawerContentFragment: DrawerContentFragment? = null
     private var homeMediator: HomeTabMediator? = null
     private var promoTabs: List<PromoTab> = emptyList()
     private var indicatorDrawable: android.graphics.drawable.Drawable? = null

@@ -7,6 +7,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import com.walisport.module.hall.R
 import com.walisport.module.hall.data.GameContentData
 import com.walisport.module.hall.data.HotColdType
@@ -16,7 +17,9 @@ import kotlin.random.Random
 /**
  * 全部類型的遊戲頭部Adapter，包含左方的廣告位、右方的邀請朋友和每日比賽
  * */
-class GameAllListAdapter: RecyclerView.Adapter<GameAllListViewHolder>() {
+class GameAllListAdapter(
+    val onItemClickListener: (() -> Unit)? = null
+): RecyclerView.Adapter<GameAllListViewHolder>() {
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
@@ -29,7 +32,7 @@ class GameAllListAdapter: RecyclerView.Adapter<GameAllListViewHolder>() {
         holder: GameAllListViewHolder,
         position: Int
     ) {
-        holder.init()
+        holder.init(onItemClickListener)
     }
 
     override fun getItemCount(): Int = 5
@@ -53,7 +56,7 @@ class GameAllListViewHolder(val binding: ItemGameAllListBinding): RecyclerView.V
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    fun init() {
+    fun init(onItemClickListener: (() -> Unit)? = null) {
         with(binding) {
             rvInnerList.layoutManager =
                 LinearLayoutManager(rvInnerList.context, LinearLayoutManager.HORIZONTAL, false)
@@ -68,6 +71,9 @@ class GameAllListViewHolder(val binding: ItemGameAllListBinding): RecyclerView.V
             divider.setDrawable(drawable!!)
             rvInnerList.addItemDecoration(divider)
 
+            root.clickNoRepeat {
+                onItemClickListener?.invoke()
+            }
         }
     }
 }

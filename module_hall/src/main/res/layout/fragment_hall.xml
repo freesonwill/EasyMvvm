@@ -127,7 +127,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_12"
         android:background="@android:color/transparent"
-        android:paddingStart="-2dp"
         app:tabContentStart="0dp"
         app:tabPaddingStart="0dp"
         app:tabPaddingTop="0dp"

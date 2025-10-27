@@ -353,6 +353,15 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
         }
     }
 
+    override fun onHiddenChanged(hidden: Boolean) {
+        if (hidden) {
+            mBinding.includeSportBanner.pbSportBanner.stopTriggerJob()
+        } else {
+            mBinding.includeSportBanner.pbSportBanner.resetTriggerJob()
+        }
+        super.onHiddenChanged(hidden)
+    }
+
     // 更新 VIP 信息顯示
     private fun updateVIPInfo(vipLevel: Int, percent: String, levelUpInfo: String) {
         // 使用 VIPResourceHelper 轉換等級
@@ -593,8 +602,7 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
 //        mBinding.layoutContainer.tvTabAll.isSelected = true
         clearDateTabSelection()
         lifecycleScope.launch {
-//            mViewModel.selectedDate(0L)
-            mViewModel.selectedDate(getFuture31Days().first().third)
+            mViewModel.selectedDate(0L)
         }
 
     }

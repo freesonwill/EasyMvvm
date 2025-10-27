@@ -7,16 +7,17 @@ import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.base.ui.adapter.BaseAdapter
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
 import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
-import arch.cayenne.module.chat.data.compare.LiveEmojiCompare
+import arch.cayenne.module.chat.data.compare.EmojiCompare
 import arch.cayenne.module.chat.data.constants.EmojiTypeEnum
 import arch.cayenne.module.chat.data.model.EmojiData
 import arch.cayenne.module.chat.databinding.ItemBidEmojiLayoutBinding
+import arch.cayenne.module.chat.databinding.ItemEmojiHotLayoutBinding
 import arch.cayenne.module.chat.databinding.ItemEmojiLayoutBinding
 
 
-class LiveEmojiAdapter() :
-    BaseAdapter<EmojiData, LiveEmojiAdapter.LiveEmojiViewHolder, ViewBinding>(
-        LiveEmojiCompare()
+class EmojiHotItemAdapter() :
+    BaseAdapter<EmojiData, EmojiHotItemAdapter.LiveEmojiViewHolder, ItemEmojiHotLayoutBinding>(
+        EmojiCompare()
     ) {
     private var itemListener: RecyclerItemListener<EmojiData>? = null
 
@@ -24,16 +25,12 @@ class LiveEmojiAdapter() :
         this.itemListener = listener
     }
 
-    inner class LiveEmojiViewHolder(binding: ViewBinding) : BaseViewHolder(binding) {
+    inner class LiveEmojiViewHolder(binding: ItemEmojiHotLayoutBinding) : BaseViewHolder(binding) {
         fun setListener(listener: OnClickListener) {
             when (binding) {
-                is ItemEmojiLayoutBinding -> {
-                    val nBinding = binding as ItemEmojiLayoutBinding
-                    nBinding.iv.setOnClickListener(listener)
-                }
 
-                is ItemBidEmojiLayoutBinding -> {
-                    val nBinding = binding as ItemBidEmojiLayoutBinding
+                is ItemEmojiHotLayoutBinding -> {
+                    val nBinding = binding as ItemEmojiHotLayoutBinding
                     nBinding.iv.setOnClickListener(listener)
                 }
 
@@ -43,18 +40,11 @@ class LiveEmojiAdapter() :
 
         fun updateIv(resId: Int, position: Int) {
             when (binding) {
-                is ItemEmojiLayoutBinding -> {
-                    val nBinding = binding as ItemEmojiLayoutBinding
+                is ItemEmojiHotLayoutBinding -> {
+                    val nBinding = binding as ItemEmojiHotLayoutBinding
                     nBinding.iv.tag = position
                     nBinding.iv.setImageResource(resId)
                 }
-
-                is ItemBidEmojiLayoutBinding -> {
-                    val nBinding = binding as ItemBidEmojiLayoutBinding
-                    nBinding.iv.tag = position
-                    nBinding.iv.setImageResource(resId)
-                }
-
                 else -> {}
             }
 
@@ -62,8 +52,7 @@ class LiveEmojiAdapter() :
 
     }
 
-    override fun convertPlus(holder: LiveEmojiViewHolder, binding: ViewBinding, position: Int) {
-
+    override fun convertPlus(holder: LiveEmojiViewHolder, binding: ItemEmojiHotLayoutBinding, position: Int) {
         val item = getItem(position)
         holder.updateIv(item.resId, position)
     }
@@ -71,15 +60,12 @@ class LiveEmojiAdapter() :
 
     override fun createViewBinding(
         inflater: LayoutInflater, parent: ViewGroup, viewType: Int
-    ): ViewBinding {
-        val binding = if (viewType == EmojiTypeEnum.NORMAL.value)
-            ItemEmojiLayoutBinding.inflate(inflater, parent, false)
-        else
-            ItemBidEmojiLayoutBinding.inflate(inflater, parent, false)
+    ): ItemEmojiHotLayoutBinding {
+        val binding = ItemEmojiHotLayoutBinding.inflate(inflater, parent, false)
         return binding
     }
 
-    override fun createViewHolder(binding: ViewBinding, viewType: Int): LiveEmojiViewHolder {
+    override fun createViewHolder(binding: ItemEmojiHotLayoutBinding, viewType: Int): LiveEmojiViewHolder {
         val holder = LiveEmojiViewHolder(binding)
         holder.setListener {
             val position = it.tag as Int
@@ -88,8 +74,6 @@ class LiveEmojiAdapter() :
         return holder
     }
 
-    override fun getItemViewType(position: Int): Int {
-        return if (getItem(position).key.contains("bid")) EmojiTypeEnum.BID.value else EmojiTypeEnum.NORMAL.value
-    }
+
 
 }

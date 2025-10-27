@@ -1,4 +1,3 @@
-import com.google.gson.Gson
 import java.util.Properties
 
 plugins {
@@ -44,6 +43,7 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
+        isCoreLibraryDesugaringEnabled = true // Enable core library desugaring
     }
     kotlinOptions {
         jvmTarget = "1.8"
@@ -92,6 +92,7 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
+    coreLibraryDesugaring(libs.desugar.jdk.libs)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

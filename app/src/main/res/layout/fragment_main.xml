@@ -89,6 +89,7 @@
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/fragment_drawer_content"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:name="arch.cayenne.module.home.ui.fragment.DrawerContentFragment"/>
     </com.google.android.material.navigation.NavigationView>
 </arch.cayenne.module.home.ui.view.ScrollDrawerLayout>

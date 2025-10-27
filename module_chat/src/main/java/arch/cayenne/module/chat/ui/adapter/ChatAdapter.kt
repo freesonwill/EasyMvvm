@@ -10,11 +10,11 @@ import arch.cayenne.lib.base.ui.adapter.BaseAdapter
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.lib.websocket.chat.data.ChatMsg
-import arch.cayenne.module.chat.data.compare.LiveChatCompare
+import arch.cayenne.module.chat.data.compare.ChatCompare
 import arch.cayenne.module.chat.databinding.ItemLiveChatBinding
 
-class LiveChatAdapter :
-    BaseAdapter<ChatMsg, LiveChatAdapter.LiveChatViewHolder, ViewBinding>(LiveChatCompare()) {
+class ChatAdapter :
+    BaseAdapter<ChatMsg, ChatAdapter.LiveChatViewHolder, ViewBinding>(ChatCompare()) {
 
     class LiveChatViewHolder(binding: ViewBinding) : BaseViewHolder(binding) {
         val nBinding = binding as ItemLiveChatBinding
