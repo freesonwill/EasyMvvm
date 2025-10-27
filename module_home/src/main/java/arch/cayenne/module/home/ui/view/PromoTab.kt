@@ -15,8 +15,10 @@ data class PromoTab(
 ) {
     fun createView(context: Context): View {
         return SkinnableImageView(context).apply {
-            layoutParams = ViewGroup.LayoutParams(104.dp2px, ViewGroup.LayoutParams.MATCH_PARENT)
-            scaleType = ImageView.ScaleType.FIT_CENTER
+            val params = ViewGroup.LayoutParams(104.dp2px, 26.dp2px)
+            layoutParams = params
+            scaleType = ImageView.ScaleType.FIT_XY
+            adjustViewBounds = false
             background = SkinnableResourceManager.getDrawable(context, android.R.color.transparent)
 
             imageResId?.let { resId ->
