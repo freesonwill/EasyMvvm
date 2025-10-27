@@ -76,6 +76,6 @@ class GameAllHeaderViewHolder(val binding: ItemGameAllHeaderBinding): RecyclerVi
     }
 
     fun stopProBannerJob() {
-        binding.proBanner.job?.cancel()
+        binding.proBanner.stopTriggerJob()
     }
 }

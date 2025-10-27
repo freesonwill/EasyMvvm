@@ -353,6 +353,15 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
         }
     }
 
+    override fun onHiddenChanged(hidden: Boolean) {
+        if (hidden) {
+            mBinding.includeSportBanner.pbSportBanner.stopTriggerJob()
+        } else {
+            mBinding.includeSportBanner.pbSportBanner.resetTriggerJob()
+        }
+        super.onHiddenChanged(hidden)
+    }
+
     // 更新 VIP 信息顯示
     private fun updateVIPInfo(vipLevel: Int, percent: String, levelUpInfo: String) {
         // 使用 VIPResourceHelper 轉換等級

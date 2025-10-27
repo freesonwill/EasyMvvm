@@ -142,7 +142,7 @@ class GameDetailFragment: BaseFragment<GameDetailViewModel, FragmentGameDetailBi
 
     override fun onStop() {
         super.onStop()
-        mBinding.proBanner.job?.cancel()
+        mBinding.proBanner.stopTriggerJob()
     }
 
     private fun closeExistingRankingFragment(afterClose: ((isSuccess: Boolean, type: PlayerRankingFragment.RankingType?) -> Unit)? = null) {
