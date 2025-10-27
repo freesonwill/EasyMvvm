@@ -20,22 +20,23 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:layout_marginStart="10dp"
+        android:layout_marginStart="@dimen/dp_6"
         android:layout_marginBottom="1dp"
         android:fontFamily="@font/sf_pro_display_bold"
         android:gravity="center_vertical"
-        android:text="99999.00"
         android:textColor="@color/title_money_text"
-        android:textSize="@dimen/sp_13" />
+        android:textSize="@dimen/sp_14" />
 
     <androidx.appcompat.widget.AppCompatImageView
-        android:layout_width="@dimen/dp_32"
-        android:layout_height="@dimen/dp_32"
-        app:srcCompat="@drawable/live_money_title_dow" />
+        android:layout_width="@dimen/dp_10"
+        android:layout_height="@dimen/dp_7"
+        android:layout_marginStart="@dimen/dp_8"
+        app:srcCompat="@drawable/live_money_title_down" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/addMoney"
         android:layout_width="@dimen/dp_24"
         android:layout_height="@dimen/dp_24"
+        android:layout_marginStart="@dimen/dp_11"
         app:srcCompat="@drawable/live_money_title_add" />
 </androidx.appcompat.widget.LinearLayoutCompat>

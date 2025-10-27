@@ -3,10 +3,10 @@ package com.walisport.module.live.ui
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Typeface
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MotionEvent
+import android.view.View
 import android.view.ViewGroup.LayoutParams
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
@@ -83,6 +83,8 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
     override fun initView(savedInstanceState: Bundle?) {
         args = LiveMainFragmentArgs.fromBundle(requireArguments())
         mBinding.titleBar.loadDynamicsTitleBar(titleBarBinding.root)
+        //直播间顶部金额区域不显示充值按钮
+        titleBarBinding.includedLayout.addMoney.visibility = View.GONE
         mViewModel.setMatchId(args.matchId)
         mViewModel.setSportId(args.sportId)
         mViewModel.setShowVideo(args.showVideo)
@@ -252,9 +254,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                 }
             }
 
-            includedLayout.addMoney.clickNoRepeat {
-                navigate(Uri.parse("walisport://module_topup/topUpFragment"))
-            }
+            includedLayout.addMoney.visibility = View.GONE
         }
         mBinding.tabLayout.addOnTabSelectedListener2(object : TabLayoutExt.OnTabSelectedListener2 {
             override fun onTabSelected(tab: TabLayout.Tab, isTabClick: Boolean) {

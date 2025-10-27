@@ -112,6 +112,7 @@ class LiveMatchAnimationFragment :
                 url?.also {
                     "url:$url".logd(TAG)
                     if (url != mBinding.animationView.url) {
+                        mBinding.ivVideoLoading.visibility = View.VISIBLE
                         mBinding.animationView.loadUrl(it)
                     }
                 }
