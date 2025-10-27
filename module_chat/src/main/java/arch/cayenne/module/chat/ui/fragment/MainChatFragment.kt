@@ -7,6 +7,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import androidx.viewpager2.widget.ViewPager2
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.PagerBean
 import arch.cayenne.lib.base.data.model.StatusBarConfig
@@ -24,6 +25,7 @@ import arch.cayenne.module.chat.R
 import arch.cayenne.module.chat.databinding.FragmentMainChatLayoutBinding
 import arch.cayenne.module.chat.databinding.ItemChatTablayoutLayoutBinding
 import arch.cayenne.module.chat.ui.viewmodel.MainChatViewModel
+import arch.cayenne.module.chat.ui.widget.ChatTabView
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlin.reflect.KClass
@@ -68,7 +70,23 @@ class MainChatFragment : BaseFragment<MainChatViewModel, FragmentMainChatLayoutB
 //            override fun onTabReselected(tab: TabLayout.Tab, isTabClick: Boolean) {
 //            }
 //        })
+
+        mBinding.tabLayout.addTabSelectListener(object : ChatTabView.ChatTabSelect {
+            override fun selectTab(position: Int) {
+                mBinding.viewpager2.startFadeAnim {
+                    mBinding.viewpager2.setCurrentItem(position, false)
+                    it.invoke()
+                }
+            }
+        })
+        mBinding.viewpager2.registerOnPageChangeCallback(object :ViewPager2.OnPageChangeCallback(){
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+                mBinding.tabLayout.selectTab(position)
+            }
+        })
         mBinding.viewpager2.setCurrentItem(0, false)
+
 
     }
 
@@ -121,10 +139,12 @@ class MainChatFragment : BaseFragment<MainChatViewModel, FragmentMainChatLayoutB
         tabTv: SkinnableTextView,
         isInit: Boolean = false,
     ) {
-        val textColorId = if (isSelected) arch.cayenne.lib.common.R.color.color_FFFFFF else arch.cayenne.lib.common.R.color.color_999999
+        val textColorId =
+            if (isSelected) arch.cayenne.lib.common.R.color.color_FFFFFF else arch.cayenne.lib.common.R.color.color_999999
         tabTv.setTextColor(ContextCompat.getColor(requireContext(), textColorId))
 
-        val iconBackId = if (isSelected) arch.cayenne.lib.common.R.color.color_E03C64 else arch.cayenne.lib.common.R.color.color_0FFFFFFF
+        val iconBackId =
+            if (isSelected) arch.cayenne.lib.common.R.color.color_E03C64 else arch.cayenne.lib.common.R.color.color_0FFFFFFF
         tabIcon.backgroundTintList = ContextCompat.getColorStateList(requireContext(), iconBackId)
 
         when (position) {
