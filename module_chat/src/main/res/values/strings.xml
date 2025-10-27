@@ -14,4 +14,8 @@
     <string name="chat_room">聊天室</string>
     <string name="living_events">赛事直播</string>
     <string name="chat_customer">客服</string>
+    <string-array name="emoji_tab">
+        <item>Emoji</item>
+        <item>Pepe</item>
+    </string-array>
 </resources>

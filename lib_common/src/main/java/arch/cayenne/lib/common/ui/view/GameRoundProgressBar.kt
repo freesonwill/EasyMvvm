@@ -18,7 +18,7 @@ class GameRoundProgressBar @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null
 ) : SkinnableProgressBar(context, attrs) {
     var triggerTime = 2000
-    var job: Job? = null
+    private var job: Job? = null
     private var onTriggerListener: (() -> Unit)? = null
 
     override fun initView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) {
@@ -55,14 +55,15 @@ class GameRoundProgressBar @JvmOverloads constructor(
         job = CoroutineScope(Dispatchers.IO).launch {
             while (true) {
                 val elapsed = (SystemClock.elapsedRealtime() - startTime) % max
-                if (progress > elapsed) {  //mean (SystemClock.elapsedRealtime() - startTime) > max
-                    withContext(Dispatchers.Main) {
+                withContext(Dispatchers.Main) {
+                    if (progress > elapsed) {  //mean (SystemClock.elapsedRealtime() - startTime) > max
                         onTriggerListener?.invoke()
                     }
+                    progress = elapsed.toInt()
+                    (progressDrawable as RoundProgressDrawable).progress =
+                        progress / max.toFloat()
                 }
-                progress = elapsed.toInt()
-                (progressDrawable as RoundProgressDrawable).progress = progress / max.toFloat()
-                delay(10)
+                delay(25)
             }
         }
     }
@@ -73,5 +74,9 @@ class GameRoundProgressBar @JvmOverloads constructor(
 
     fun resetTriggerJob() {
         startTimeTrigger()
+    }
+
+    fun stopTriggerJob() {
+        job?.cancel()
     }
 }
