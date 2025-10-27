@@ -44,7 +44,6 @@ class EmojiHomeFragment : BaseFragment<EmojiHomeViewModel, FragmentEmojiHomeLayo
 
     override fun initView(savedInstanceState: Bundle?) {
         initTab()
-        initHotRecycler()
     }
 
 
@@ -123,16 +122,6 @@ class EmojiHomeFragment : BaseFragment<EmojiHomeViewModel, FragmentEmojiHomeLayo
                 e.printStackTrace()
             }
         }
-    }
-
-    fun initHotRecycler(){
-        mBinding.hotRecyclerview.also {
-            it.layoutManager = LinearLayoutManager(it.context,LinearLayoutManager.HORIZONTAL,false)
-            val adapter = EmojiHotItemAdapter()
-            adapter.submitList(mViewModel.getHotRecycler())
-            it.adapter = adapter
-        }
-
     }
 
     //表情点击

@@ -6,16 +6,12 @@ import android.view.MotionEvent
 import androidx.activity.addCallback
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.lifecycleScope
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
-import arch.cayenne.lib.base.ui.fragment.launch
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.data.constants.MatchStatus
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
-import arch.cayenne.lib.database.entity.LiveMatchBasicInfoBean
 import arch.cayenne.lib.database.entity.LiveMatchBean
 import arch.cayenne.lib.websocket.data.SocketConnectState
 import arch.cayenne.module.chat.R
@@ -216,7 +212,7 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
     }
 
    private fun observeLiveMatch(match: LiveMatchBean?) {
-       mViewModel.matchStatus = match == null
+       mViewModel.isMainSoft = match == null
         updateChatUi(match)
         //比赛开始后开启聊天服务
         if (match?.liveInfo?.charRoom == true || match == null) {

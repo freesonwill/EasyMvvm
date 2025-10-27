@@ -9,6 +9,8 @@ import org.koin.core.parameter.parametersOf
 import arch.cayenne.lib.common.R
 import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.database.dao.ChatConfigDao
+import arch.cayenne.module.chat.data.constants.EmojiEnum
+import arch.cayenne.module.chat.data.model.EmojiData
 
 import arch.cayenne.module.chat.data.model.KeyBoardTabData
 
@@ -89,6 +91,18 @@ class SoftKeyboardViewModel : BaseViewModel() {
             ),
         )
 
+
+    fun getHotRecycler(): List<EmojiData> {
+        return arrayOf(
+            EmojiEnum.Gin,
+            EmojiEnum.Smile,
+            EmojiEnum.Boring,
+            EmojiEnum.Scrowl,
+            EmojiEnum.Dizzy
+        ).map {
+            EmojiData(it.resId, it.key)
+        }.toList()
+    }
 
 
 

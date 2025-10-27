@@ -9,6 +9,7 @@ import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
@@ -20,6 +21,7 @@ import arch.cayenne.module.chat.data.constants.KeyBoardType
 import arch.cayenne.module.chat.databinding.FragmentLiveSoftkeyboardLayoutBinding
 import arch.cayenne.module.chat.manager.SoftKeyboardManager
 import arch.cayenne.module.chat.manager.interf.SoftKeyBoardMangerListener
+import arch.cayenne.module.chat.ui.adapter.EmojiHotItemAdapter
 import arch.cayenne.module.chat.ui.viewmodel.ChatHomeViewModel
 import arch.cayenne.module.chat.ui.viewmodel.SoftKeyboardViewModel
 import arch.cayenne.module.chat.utils.EmojiEditFilter
@@ -39,22 +41,28 @@ class SoftKeyboardFragment :
 
 
     override fun initView(savedInstanceState: Bundle?) {
-        softKeyBoardManager = SoftKeyboardManager(
-            lifecycleScope,
-            lifecycle,
-            mViewModel.userDataManager,
-            mViewModel.chatConfigDao,
-            this
-        )
+        softKeyBoardManager = SoftKeyboardManager(lifecycleScope, lifecycle, mViewModel.userDataManager, mViewModel.chatConfigDao, this)
+
         initEmojiFragment()
         initInputListener()
+        initHotRecycler()
     }
+
 
     private fun initEmojiFragment(){
         val fragment = EmojiHomeFragment()
         childFragmentManager.beginTransaction().replace(R.id.emoji_content,fragment,EmojiHomeFragment.TAG).commit()
     }
 
+    fun initHotRecycler(){
+        mBinding.hotRecyclerview.also {
+            it.layoutManager = LinearLayoutManager(it.context, LinearLayoutManager.HORIZONTAL,false)
+            val adapter = EmojiHotItemAdapter()
+            adapter.submitList(mViewModel.getHotRecycler())
+            it.adapter = adapter
+        }
+
+    }
 
     override suspend fun createObserver() {
         launch(Lifecycle.State.RESUMED) {
@@ -67,25 +75,17 @@ class SoftKeyboardFragment :
         }
         chatViewModel.chatHeightLiveData.observe(viewLifecycleOwner) {
             mViewModel.keyBoardHeight = it
-            softKeyBoardManager.initView(
-                requireActivity().window.decorView,
-                mBinding.main,
-                mBinding.liveChatEtInput
-            )
+            softKeyBoardManager.initView(requireActivity().window.decorView, mBinding.main, mBinding.liveChatEtInput, chatViewModel.isMainSoft)
             addMainViewListen()
         }
     }
 
 
     override fun keyboardChangeClick(keyBoardType: KeyBoardType, flag: Int) {
-        if (!chatViewModel.matchStatus) {
+        if (!chatViewModel.isMainSoft) {
             val flag1 = !chatViewModel.checkSoftKeyboardVisible()
             if (keyBoardType != KeyBoardType.CHAT && flag1) {
-                softKeyBoardManager.checkSoftKeyBoardBetAmount(
-                    chatViewModel.checkBetAmountFlow.value,
-                    keyBoardType,
-                    flag
-                )
+                softKeyBoardManager.checkSoftKeyBoardBetAmount(chatViewModel.checkBetAmountFlow.value, keyBoardType, flag)
                 return
             }
         }
@@ -98,17 +98,25 @@ class SoftKeyboardFragment :
     @SuppressLint("SetTextI18n", "ClickableViewAccessibility")
     override fun initListener() {
         mBinding.ivEmoji.setOnTouchListener { v, event ->
-            if (event.action == MotionEvent.ACTION_DOWN) {
+            if (event.action == MotionEvent.ACTION_UP) {
                 keyboardChangeClick(KeyBoardType.EMOJI)
             }
             return@setOnTouchListener true
         }
         mBinding.liveChatTvSend.setOnTouchListener { v, event ->
-            if (event.action == MotionEvent.ACTION_DOWN) {
-                sendText()
+            if (event.action == MotionEvent.ACTION_UP) {
+//                sendText()
             }
             return@setOnTouchListener true
         }
+
+        mBinding.ivBottomEmoji.setOnTouchListener { v, event ->
+            if (event.action == MotionEvent.ACTION_UP) {
+                keyboardChangeClick(KeyBoardType.EMOJI)
+            }
+            return@setOnTouchListener true
+        }
+
 
         mBinding.inputContent.setOnTouchListener { v, event -> return@setOnTouchListener true }
     }
@@ -175,8 +183,7 @@ class SoftKeyboardFragment :
 
     private fun calculationLayoutSize() {
         mBinding.apply {
-            softKeyBoardManager.emojiKeyBoardHeight = 284.dp2px
-
+            softKeyBoardManager.emojiKeyBoardHeight = 242.dp2px
             emojiContent.layoutParams.height = softKeyBoardManager.emojiKeyBoardHeight
             screenContent.layoutParams.height = mViewModel.keyBoardHeight
             main.layoutParams.height =

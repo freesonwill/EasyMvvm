@@ -29,8 +29,7 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/input_content"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingVertical="@dimen/dp_12"
+                android:layout_height="@dimen/dp_106"
                 android:background="@color/color_272727"
                 app:layout_constraintBottom_toBottomOf="parent">
 
@@ -42,9 +41,9 @@
                     android:background="@drawable/shape_ring_0f_fff"
                     android:padding="@dimen/dp_8"
                     android:src="@drawable/icon_input_language"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintBottom_toBottomOf="@id/live_chat_ll_input"
                     app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/live_chat_ll_input"
                     android:visibility="gone"
                     />
 
@@ -60,7 +59,9 @@
                     android:orientation="horizontal"
                     app:layout_constraintLeft_toRightOf="@id/iv_language"
                     app:layout_constraintRight_toLeftOf="@id/live_chat_tv_send"
-                    app:layout_constraintTop_toTopOf="parent">
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:layout_marginTop="@dimen/dp_12"
+                    >
 
                     <EditText
                         android:id="@+id/live_chat_et_input"
@@ -106,7 +107,6 @@
                         android:layout_marginEnd="@dimen/dp_20"
                         android:visibility="gone"
                         />
-
                 </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
 
                 <arch.cayenne.lib.skin.widget.SkinnableTextView
@@ -124,6 +124,49 @@
                     app:layout_constraintLeft_toRightOf="@id/live_chat_ll_input"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toTopOf="@id/live_chat_ll_input" />
+
+
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/hot_recyclerview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/dp_30"
+                    android:layout_marginStart="@dimen/dp_6"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/live_chat_ll_input"
+                    android:layout_marginTop="@dimen/dp_12"
+                    />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/iv_bottom_at"
+                    android:layout_width="@dimen/dp_28"
+                    android:layout_height="@dimen/dp_28"
+                    android:layout_marginStart="@dimen/dp_15"
+                    android:src="@drawable/icon_input_at"
+                    android:padding="2dp"
+                    app:layout_constraintBottom_toBottomOf="@id/hot_recyclerview"
+                    app:layout_constraintLeft_toRightOf="@id/hot_recyclerview"
+                    app:layout_constraintTop_toTopOf="@id/hot_recyclerview" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/iv_bottom_bet"
+                    android:layout_width="@dimen/dp_28"
+                    android:layout_height="@dimen/dp_28"
+                    android:layout_marginStart="@dimen/dp_14"
+                    android:padding="2dp"
+                    android:src="@drawable/icon_input_bet"
+                    app:layout_constraintLeft_toRightOf="@id/iv_bottom_at"
+                    app:layout_constraintTop_toTopOf="@id/iv_bottom_at" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/iv_bottom_emoji"
+                    android:layout_width="@dimen/dp_28"
+                    android:layout_height="@dimen/dp_28"
+                    android:layout_marginStart="@dimen/dp_14"
+                    android:padding="2dp"
+                    android:src="@drawable/icon_input_emoji"
+                    app:layout_constraintLeft_toRightOf="@id/iv_bottom_bet"
+                    app:layout_constraintTop_toTopOf="@id/iv_bottom_bet" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

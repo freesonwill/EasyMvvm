@@ -1,4 +1,4 @@
-package arch.cayenne.module.chat.utils.softkeyboard
+package arch.cayenne.module.chat.manager
 
 import android.view.View
 import androidx.core.view.ViewCompat
@@ -6,16 +6,17 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 
 /**
  * @author: wenxi
  * @date: 29/8/25 23:26
  * @description:
  */
-class NavigationBarHelper(
+class SoftAnimHelper(
     private val rootView: View,
     private val lifecycle: Lifecycle,
-    private var navigationListener: NavigationListener?
+    private var navigationListener: SoftAnimListener?
 ) : DefaultLifecycleObserver {
     private var navigationBarHeight: Int = 0
     private var isNavigationBarVisible: Boolean = false
@@ -25,7 +26,7 @@ class NavigationBarHelper(
     //重启后进入时，首次检测的软件盘高度不对，弹出后又会更新正确软件盘高度
     private var secondCheck: Boolean = false
     private var lastKeyBoardHeight: Int = 0
-    private val TAG = NavigationListener::class.java.simpleName
+    private val TAG = SoftAnimListener::class.java.simpleName
 
 
     init {
@@ -79,13 +80,14 @@ class NavigationBarHelper(
 
         if (secondCheck && height > 150) { //保存高度和计算高度不一致时第二次检查
             secondCheck = false
-            val keyBoardHeight =
-                if (isNavigationBarVisible) height - navigationBarHeight else height
+            val keyBoardHeight = if (isNavigationBarVisible) height - navigationBarHeight else height
 //            "second keyBoardHeight:$keyBoardHeight lastHeight:$lastKeyBoardHeight dbHeight:$dbKeyboardHeight".logd(TAG)
             if (keyBoardHeight != lastKeyBoardHeight) { // 第二次计算高度和第一次计算高度不一致，以第二次为准
                 if (dbKeyboardHeight != keyBoardHeight) { //保存的高度和第二次高度不一致更新保存的高度
                     dbKeyboardHeight = keyBoardHeight
                     navigationListener?.onSoftKeyBoardShow(keyBoardHeight)
+                    "checkKeyBoard second  ${keyBoardHeight}".logd("aaa")
+
                 }
             }
             navigationListener?.secondSoftKeyBoardShow()
@@ -93,9 +95,9 @@ class NavigationBarHelper(
 
         if (height > 150 && !isKeyBoardVisible) { //软件盘打开
             isKeyBoardVisible = true
-            val keyBoardHeight =
-                if (isNavigationBarVisible) height - navigationBarHeight else height
+            val keyBoardHeight = if (isNavigationBarVisible) height - navigationBarHeight else height
 //            "frist keyBoardHeight:$keyBoardHeight dbHeight:$dbKeyboardHeight".logd(TAG)
+            "checkKeyBoard  ${keyBoardHeight}".logd("aaa")
             if (keyBoardHeight == dbKeyboardHeight) { //计算的软件盘高度和保存的软件盘高度一致
                 navigationListener?.onSoftKeyBoardShow(keyBoardHeight)
             } else { //计算的软件盘高度和保存的软件盘高度不一致
