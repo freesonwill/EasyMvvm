@@ -5,10 +5,8 @@ import android.content.Context
 import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
-import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.MotionEvent
-import android.view.View
 import android.view.ViewGroup.LayoutParams
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
@@ -25,15 +23,13 @@ import arch.cayenne.lib.base.ui.animation.AnimationController
 import arch.cayenne.lib.base.ui.animation.AnimationController.AnimType
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
-import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.base.utils.ext.ViewExt.applyInsetsForFitsSystemWindows
-import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.utils.CustomTabIndicatorUtils
 import arch.cayenne.lib.common.utils.ImmersionBarUtils.immersionBarSkinTypeExt
 import arch.cayenne.lib.common.utils.ViewUtils
+import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.DimensionExt.px2sp
-import arch.cayenne.lib.common.utils.ext.setDrawerInterpolator
 import arch.cayenne.lib.common.utils.ext.NavResultExt.observeResult
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
@@ -42,11 +38,15 @@ import arch.cayenne.lib.common.utils.ext.TabLayoutExt
 import arch.cayenne.lib.common.utils.ext.TabLayoutExt.addOnTabSelectedListener2
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.removeAllTips
+import arch.cayenne.lib.common.utils.ext.setDrawerInterpolator
+import arch.cayenne.lib.common.utils.ext.setupViewPagerScroll
+import arch.cayenne.lib.common.utils.ext.startFadeAnim
 import arch.cayenne.lib.common.utils.ext.touchBackPressed
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.lib.skin.widget.SkinnableTextView
+import arch.cayenne.module.bet.ui.fragment.BetSheetFragment
 import arch.cayenne.module.betslip.ui.fragment.BetSlipFragment
-import com.bumptech.glide.Glide
+import arch.cayenne.module.chat.ui.fragment.ChatHomeFragment
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.walisport.module.live.R
@@ -54,16 +54,12 @@ import com.walisport.module.live.data.BetOnMenuStatus
 import com.walisport.module.live.databinding.FragmentLiveMainBinding
 import com.walisport.module.live.databinding.TitleBarLiveBinding
 import com.walisport.module.live.ui.viewmodel.LiveMainViewModel
+import com.walisport.module.live.ui.widget.LiveMainGestureListener
+import com.walisport.module.live.ui.widget.LiveMainLayoutInterceptTouch.LiveMainSlideDirection
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.filter
 import kotlin.reflect.KClass
-import arch.cayenne.lib.common.utils.ext.setupViewPagerScroll
-import arch.cayenne.lib.common.utils.ext.startFadeAnim
-import arch.cayenne.module.bet.ui.fragment.BetSheetFragment
-import com.walisport.module.live.ui.widget.LiveMainGestureListener
-import com.walisport.module.live.ui.widget.LiveMainLayoutInterceptTouch.LiveMainSlideDirection
-import arch.cayenne.module.chat.ui.fragment.ChatHomeFragment
-import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+
 /**
  * 直播详情页
  */
@@ -77,11 +73,11 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
     override val vmClass: KClass<LiveMainViewModel> = LiveMainViewModel::class
     private lateinit var args: LiveMainFragmentArgs
     private var drawerContentFragment: LiveBetOnMenuFragment? = null
-    private var scrollIsTop : Boolean? = false
+    private var scrollIsTop: Boolean? = false
     private val titleBarBinding: TitleBarLiveBinding by lazy {
         TitleBarLiveBinding.inflate(LayoutInflater.from(context), mBinding.titleBar, false)
     }
-    private var fixedSkin:String? =null//SkinType.getLogicSkinType(SkinType.SKIN_BLACK_RED.value)
+    private var fixedSkin: String? = null//SkinType.getLogicSkinType(SkinType.SKIN_BLACK_RED.value)
 
     @SuppressLint("ClickableViewAccessibility")
     override fun initView(savedInstanceState: Bundle?) {
@@ -99,13 +95,13 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
             GravityCompat.END
         )
 
-        mBinding.liveMainTopBar.post{
+        mBinding.liveMainTopBar.post {
             //动态设置沉浸式状态栏背景高度 状态栏高度+bar控件高度
             var barHeight = ViewUtils.getStatusBarHeight(requireContext())
             var toBarHeight = mBinding.titleBar.height
             var videoHeight = 76.dp2px
             val paramsLin = mBinding.liveMainTopBar.layoutParams as LayoutParams
-            paramsLin.height = barHeight+toBarHeight+videoHeight
+            paramsLin.height = barHeight + toBarHeight + videoHeight
             mBinding.liveMainTopBar.layoutParams = paramsLin
         }
         mBinding.root.applyInsetsForFitsSystemWindows()
@@ -113,41 +109,43 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         mBinding.LayoutInterceptTouch.setOnTouchListener { _, event ->
             // 将触摸事件传递给下层 View
             mBinding.liveMain.dispatchTouchEvent(event)
-                       false // 返回 false 不消耗事件，允许事件继续传递
+            false // 返回 false 不消耗事件，允许事件继续传递
         }
 
-        mBinding.LayoutInterceptTouch.setLiveMainGestureListener(object : LiveMainGestureListener{
-            override fun onAdjustLayoutScroll(deltaY: Float,direction:LiveMainSlideDirection) {
+        mBinding.LayoutInterceptTouch.setLiveMainGestureListener(object : LiveMainGestureListener {
+            override fun onAdjustLayoutScroll(deltaY: Float, direction: LiveMainSlideDirection) {
                 //往下滑动,子类的rv,sc是否滑到了第一条或者顶部
-                if (direction==LiveMainSlideDirection.DOWN){
+                if (direction == LiveMainSlideDirection.DOWN) {
                     // 如果当前高度在 50-211 范围内，返回 true，表示可以滑动
-                    if (mBinding.liveMainScale.isDirectionToScroll()){
-                        mBinding.liveMainScale.adjustLayout(deltaY,direction)
-                    }else{
-                        var bool : Boolean? = mViewModel.sonVerticalScrollIsTop.value
+                    if (mBinding.liveMainScale.isDirectionToScroll()) {
+                        mBinding.liveMainScale.adjustLayout(deltaY, direction)
+                    } else {
+                        var bool: Boolean? = mViewModel.sonVerticalScrollIsTop.value
                         bool?.let {
-                            if(it) mBinding.liveMainScale.adjustLayout(deltaY,direction)
+                            if (it) mBinding.liveMainScale.adjustLayout(deltaY, direction)
                         }
                     }
-                }else{
-                   mBinding.liveMainScale.adjustLayout(deltaY,direction)
+                } else {
+                    mBinding.liveMainScale.adjustLayout(deltaY, direction)
                 }
             }
         })
 
         mBinding.viewTab.setOnTouchListener { _, event ->
             when (event.action) {
-                MotionEvent.ACTION_DOWN->{
+                MotionEvent.ACTION_DOWN -> {
                     scrollIsTop = mViewModel.getSonVerticalScrollIsTop()
                     //滑动tab 解锁滑动
                     mViewModel.setSonVerticalScrollIsTop(true)
                     true
                 }
+
                 MotionEvent.ACTION_UP -> {
                     //还原原本状态
                     scrollIsTop?.let { mViewModel.setSonVerticalScrollIsTop(it) }
                     true
                 }
+
                 else -> false
             }
             mBinding.skinTab.dispatchTouchEvent(event)
@@ -158,14 +156,15 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
     override fun onAttach(context: Context) {
         super.onAttach(context)
         SkinnableResourceManager.setFixedSkin(fixedSkin)
-        lifecycle.addObserver(object :DefaultLifecycleObserver {
+        lifecycle.addObserver(object : DefaultLifecycleObserver {
             override fun onPause(owner: LifecycleOwner) {
                 super.onPause(owner)
-                if(fixedSkin != null){
+                if (fixedSkin != null) {
                     SkinnableResourceManager.setFixedSkin(null)
                     StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND()
-                    StatusBarConfig.statusBarDarkFont = immersionBarSkinTypeExt(mViewModel.getSkinType())
-                    setStatusBar(StatusBarConfig,mBinding.root)
+                    StatusBarConfig.statusBarDarkFont =
+                        immersionBarSkinTypeExt(mViewModel.getSkinType())
+                    setStatusBar(StatusBarConfig, mBinding.root)
                 }
             }
 
@@ -173,11 +172,11 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                 super.onStart(owner)
                 fixedSkin = mViewModel.getSkinType()
                 mBinding.root.fitsSystemWindows = fixedSkin == null
-                if(fixedSkin != null){
+                if (fixedSkin != null) {
                     SkinnableResourceManager.setFixedSkin(fixedSkin)
                     StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND()
                     StatusBarConfig.statusBarDarkFont = false
-                    setStatusBar(StatusBarConfig,mBinding.liveMain)
+                    setStatusBar(StatusBarConfig, mBinding.liveMain)
                     updateBetSheetSkin() //refresh skin to fixed skin
                 }
             }
@@ -185,7 +184,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
             override fun onDestroy(owner: LifecycleOwner) {
                 super.onDestroy(owner)
                 lifecycle.removeObserver(this)
-                if(fixedSkin != null) updateBetSheetSkin() //restore skin to system skin
+                if (fixedSkin != null) updateBetSheetSkin() //restore skin to system skin
             }
         })
     }
@@ -258,10 +257,13 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
             }
         }
         mBinding.tabLayout.addOnTabSelectedListener2(object : TabLayoutExt.OnTabSelectedListener2 {
-            override fun onTabSelected(tab: TabLayout.Tab,isTabClick: Boolean) {
+            override fun onTabSelected(tab: TabLayout.Tab, isTabClick: Boolean) {
                 tab.let {
                     if (isTabClick) {
-                        CustomTabIndicatorUtils.animateIndicatorToPosition(mBinding.customIndicator,tab.position)
+                        CustomTabIndicatorUtils.animateIndicatorToPosition(
+                            mBinding.customIndicator,
+                            tab.position
+                        )
                         val vp = mBinding.vpPage
                         vp.startFadeAnim {
                             vp.setCurrentItem(tab.position, false)
@@ -281,7 +283,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                 }
             }
 
-            override fun onTabUnselected(tab: TabLayout.Tab,isTabClick: Boolean) {
+            override fun onTabUnselected(tab: TabLayout.Tab, isTabClick: Boolean) {
                 tab.view.findViewById<SkinnableTextView>(R.id.tabText)?.let { textView ->
                     textView.setTextColor(
                         SkinnableResourceManager.getColor(
@@ -294,11 +296,11 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                 }
             }
 
-            override fun onTabReselected(tab: TabLayout.Tab,isTabClick: Boolean) {
+            override fun onTabReselected(tab: TabLayout.Tab, isTabClick: Boolean) {
                 // Handle reselect if needed
             }
         })
-        mBinding.vpPage.setupViewPagerScroll(mBinding.tabLayout,mBinding.customIndicator,0.24f)
+        mBinding.vpPage.setupViewPagerScroll(mBinding.tabLayout, mBinding.customIndicator, 0.24f)
     }
 
     override fun createObserverAtState(): Lifecycle.State {
@@ -308,18 +310,23 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
     @SuppressLint("SetTextI18n")
     override suspend fun createObserver() {
         //父类是否可往上滑动
-        mViewModel.sonVerticalScrollIsTop.observe(viewLifecycleOwner){
+        mViewModel.sonVerticalScrollIsTop.observe(viewLifecycleOwner) {
 
         }
         launch {
             AnimationController.getFlow(AnimType.drawerEnter).collect {
-                if(it == null) return@collect
-                mBinding.drawerLayout.setDrawerInterpolator(it.duration, it.interpolator.toInterpolator())
+                if (it == null) return@collect
+                mBinding.drawerLayout.setDrawerInterpolator(
+                    it.duration,
+                    it.interpolator.toInterpolator()
+                )
             }
         }
         observeResult<Bundle>(CHANGE_MATCH) {
             val newArgs: LiveMainFragmentArgs = LiveMainFragmentArgs.fromBundle(it)
-            "observeResult-->newArgs--->$newArgs,args:${args},extras:${it},${this.args.equal(newArgs)}".logd(TAG)
+            "observeResult-->newArgs--->$newArgs,args:${args},extras:${it},${this.args.equal(newArgs)}".logd(
+                TAG
+            )
             if (this.args.equal(newArgs)) return@observeResult
             this.args = newArgs
             updateMatchId(newArgs.matchId)
@@ -370,7 +377,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                 val logo = it.basicInfo.tournamentIcon                //联赛LOGO
                 mViewModel.setLeagueLogo(logo)
                 titleBarBinding.tvCompetitionName.text = it.basicInfo.matchName
-                mBinding.tvVideoVs.text =  it.basicInfo.matchName
+                mBinding.tvVideoVs.text = it.basicInfo.matchName
             }
         }
         launch(Lifecycle.State.RESUMED) {
@@ -382,9 +389,9 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
 
     //比赛ID发生变化,取消订阅,数据请空
     private fun updateMatchId(matchId: Long) {
-        mBinding.vpPage.setCurrentItem(1,false)
+        mBinding.vpPage.setCurrentItem(1, false)
         mBinding.tabLayout.getTabAt(1)?.select()
-        CustomTabIndicatorUtils.animateIndicatorToPosition(mBinding.customIndicator,1,false)
+        CustomTabIndicatorUtils.animateIndicatorToPosition(mBinding.customIndicator, 1, false)
         mViewModel.matchId.value?.let {
             deleteDataAndSubscriptions(matchId)
             mViewModel.setMatchId(matchId)
@@ -431,7 +438,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                 vpPage.offscreenPageLimit = list.size
             }
 
-            TabLayoutMediator(tabLayout, vpPage,false) { tab, position ->
+            TabLayoutMediator(tabLayout, vpPage, false) { tab, position ->
                 tab.text = list[position].title
                 tab.setCustomView(R.layout.custom_tab)
                 tab.customView?.findViewById<SkinnableTextView>(R.id.tabText)?.apply {
@@ -450,13 +457,18 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                 tab.view.setOnClickListener { /* Handle click */ }
             }.attach()
             tabLayout.clearOnTabSelectedListeners()
-            tabLayout.post{
-                CustomTabIndicatorUtils.animateIndicatorToPosition(mBinding.customIndicator,1,false)
-                mBinding.vpPage.setCurrentItem(1,false)
+            tabLayout.post {
+                CustomTabIndicatorUtils.animateIndicatorToPosition(
+                    mBinding.customIndicator,
+                    1,
+                    false
+                )
+                mBinding.vpPage.setCurrentItem(1, false)
             }
             tabLayout.removeAllTips()
         }
     }
+
     private fun refreshBetSlip() {
         val adapter = mBinding.vpPage.adapter?.let { it as PagerAdapter }
         val tag = "f${adapter?.getItemId(0)}"
@@ -520,17 +532,17 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         }
     }
 
-    private fun getChatFragment(): ChatHomeFragment?{
+    private fun getChatFragment(): ChatHomeFragment? {
         val adapter = mBinding.vpPage.adapter?.let { it as PagerAdapter }
         val index = adapter!!.pages.indexOfFirst { it.title == R.string.live_chat.getString() }
         val tag = "f${adapter.getItemId(index)}"
         val fragment = childFragmentManager.findFragmentByTag(tag)?.let { it as ChatHomeFragment }
-       return fragment
+        return fragment
     }
 
     private fun createChatFragment(): ChatHomeFragment {
         val fragment = ChatHomeFragment()
-        fragment.setMatchLiveData(mViewModel.matchId,mViewModel.mainMatch)
+        fragment.setMatchLiveData(mViewModel.matchId, mViewModel.mainMatch)
         return fragment
     }
 }
