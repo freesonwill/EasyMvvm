@@ -10,6 +10,7 @@ import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import com.walisport.module.hall.databinding.FragmentGameAllBinding
 import com.walisport.module.hall.ui.adapter.GameAllHeaderAdapter
 import com.walisport.module.hall.ui.adapter.GameAllListAdapter
+import com.walisport.module.hall.ui.adapter.GameAllRankingAdapter
 import com.walisport.module.hall.ui.helper.BackToTopHelper
 import kotlin.reflect.KClass
 
@@ -26,6 +27,8 @@ class GameAllFragment: BaseFragment<EmptyViewModel, FragmentGameAllBinding>() {
 //            navigate(arch.cayenne.lib.res.R.string.nav_module_setting_fragment.deeplink())
         }
     }
+    private val rankingAdapter by lazy { GameAllRankingAdapter(childFragmentManager, lifecycle) }
+
 
 
     override val vbClass: KClass<FragmentGameAllBinding> = FragmentGameAllBinding::class
@@ -35,7 +38,8 @@ class GameAllFragment: BaseFragment<EmptyViewModel, FragmentGameAllBinding>() {
         with(mBinding) {
             val concatAdapter = ConcatAdapter(
                 headerAdapter,
-                listAdapter
+                listAdapter,
+                rankingAdapter
             )
             rvContent.layoutManager = LinearLayoutManager(requireContext())
             rvContent.adapter = concatAdapter
