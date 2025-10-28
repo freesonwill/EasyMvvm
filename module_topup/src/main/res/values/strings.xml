@@ -14,7 +14,11 @@
     <string name="next_step">下一步</string>
     <string name="str_more">更多</string>
     <string name="tv_address">地址</string>
+    <string name="search">搜索</string>
     <string name="remark">备注</string>
+    <string name="manager">管理</string>
+    <string name="sel_address">选择地址</string>
+    <string name="add_to_note">添加到地址本</string>
     <string name="copy_address">复制地址</string>
     <string name="tip_copy_suc">复制成功</string>
     <string name="tz_detail">投注额详情</string>
@@ -52,6 +56,7 @@
     <string name="bank_del">确定删除</string>
     <string name="edit_addr">编辑地址</string>
     <string name="save_addr">保存</string>
+    <string name="mark_hint">选填</string>
     <string name="delete">删除</string>
     <string name="bank_del_tip">确定删除银行卡？</string>
     <string name="add_bank_tip">*持卡人信息确认后无法修改，请使用本人信息</string>

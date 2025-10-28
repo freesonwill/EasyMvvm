@@ -5,17 +5,33 @@
     android:id="@+id/cl_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/color_000000">
+    android:background="@color/app_bg">
 
-    <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/view_pager"
+    <com.walisport.module.gamedetail.ui.view.CarouselScrollView
+        android:id="@+id/carousel_scroll_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginBottom="61dp"
-        android:clipChildren="false"
-        android:clipToPadding="false"
-        app:layout_constraintBottom_toBottomOf="@id/view_bg_bottom"
+        android:layout_marginBottom="146dp"
+        android:background="@color/color_1E1E1E"
+        android:scrollbars="none"
+        app:carousel_itemCornerRadius="20dp"
+        app:carousel_itemHeight="412dp"
+        app:carousel_itemSpacing="11dp"
+        app:carousel_itemWidth="232dp"
+        app:carousel_verticalAlignTo="@id/carousel_align_anchor"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        android:id="@+id/carousel_align_anchor"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/dp_14"
+        android:layout_marginBottom="@dimen/dp_13"
+        app:layout_constraintBottom_toTopOf="@id/pro_banner"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/view_balance" />
 
     <arch.cayenne.lib.skin.widget.SkinnableView
         android:id="@+id/view_bg_bottom"

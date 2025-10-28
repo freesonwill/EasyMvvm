@@ -120,9 +120,6 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
         mBinding.btnClear.setOnClickListener {
             mViewModel.clearNumber()
         }
-        mBinding.btnDouble.setOnClickListener {
-            mViewModel.doubleNumber()
-        }
         mBinding.btnCollusion.setOnClickListener {
             lifecycleScope.launch {
                 mViewModel.saveToCombo()

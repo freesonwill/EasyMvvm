@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
-import arch.cayenne.lib.common.ui.fragment.CommonBottomDialog
 import arch.cayenne.lib.common.utils.copyToClipboard
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
@@ -24,6 +23,7 @@ import kotlin.reflect.KClass
 /**
  * 地址本页面
  */
+
 class AddressNoteFragment : BaseFragment<AddressViewModel, FragmentAddressBinding>() {
 
     override val vbClass: KClass<FragmentAddressBinding> = FragmentAddressBinding::class
@@ -40,7 +40,7 @@ class AddressNoteFragment : BaseFragment<AddressViewModel, FragmentAddressBindin
                     findNavController().navigateUp()
                 }
                 ivRight.clickNoRepeat {
-
+                    showAddAddressBottomFragment()
                 }
             }
         }
@@ -71,6 +71,12 @@ class AddressNoteFragment : BaseFragment<AddressViewModel, FragmentAddressBindin
                 addressAdapter.submitList(it)
             }
         }
+    }
+
+    private fun showAddAddressBottomFragment() {
+        val tag = "add_address_bottom_fragment"
+        if (childFragmentManager.findFragmentByTag(tag) != null) return
+        AddAddressBottomFragment.newInstance().show(childFragmentManager, tag)
     }
 
     private fun showCopyEditDialog(bean: AddressBean) {

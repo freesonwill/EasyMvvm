@@ -157,14 +157,17 @@
                 app:layout_constraintTop_toTopOf="parent">
 
                 <arch.cayenne.lib.skin.widget.SkinnableEditText
-                    android:layout_width="wrap_content"
+                    android:id="@+id/edt_address"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/dp_14"
+                    android:layout_marginEnd="@dimen/dp_30"
                     android:hint="@string/tx_tron"
                     android:textColor="@color/bank_text"
                     android:textColorHint="@color/bank_title"
                     android:textSize="@dimen/sp_14"
                     android:textStyle="bold"
+                    android:background="@null"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />

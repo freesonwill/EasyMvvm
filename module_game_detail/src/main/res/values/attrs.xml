@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="CarouselScrollView">
+        <attr name="carousel_itemWidth" format="dimension" />
+        <attr name="carousel_itemHeight" format="dimension" />
+        <attr name="carousel_itemSpacing" format="dimension" />
+        <attr name="carousel_itemCornerRadius" format="dimension" />
+        <attr name="carousel_verticalAlignTo" format="reference" />
+    </declare-styleable>
+</resources>
