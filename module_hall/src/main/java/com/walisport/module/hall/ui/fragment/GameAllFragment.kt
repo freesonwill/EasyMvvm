@@ -10,6 +10,7 @@ import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import com.walisport.module.hall.databinding.FragmentGameAllBinding
 import com.walisport.module.hall.ui.adapter.GameAllHeaderAdapter
 import com.walisport.module.hall.ui.adapter.GameAllListAdapter
+import com.walisport.module.hall.ui.helper.BackToTopHelper
 import kotlin.reflect.KClass
 
 class GameAllFragment: BaseFragment<EmptyViewModel, FragmentGameAllBinding>() {
@@ -38,6 +39,7 @@ class GameAllFragment: BaseFragment<EmptyViewModel, FragmentGameAllBinding>() {
             )
             rvContent.layoutManager = LinearLayoutManager(requireContext())
             rvContent.adapter = concatAdapter
+            BackToTopHelper(rvContent, ivBackToTop)
         }
     }
 
