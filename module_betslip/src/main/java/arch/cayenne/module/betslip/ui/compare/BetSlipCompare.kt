@@ -10,7 +10,7 @@ class BetSlipCompare : DiffUtil.ItemCallback<BetSlipData>() {
     override fun areItemsTheSame(oldItem: BetSlipData, newItem: BetSlipData): Boolean {
         return when {
             oldItem is BetSlipOrderHeaderBean && newItem is BetSlipOrderHeaderBean ->
-                oldItem.time == newItem.time
+                oldItem.dateTime == newItem.dateTime
 
             oldItem is BetSlipOrderBean && newItem is BetSlipOrderBean ->
                 oldItem.betId == newItem.betId

@@ -6,12 +6,11 @@ import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
 import arch.cayenne.lib.database.entity.BetSlipOrderHeaderBean
 import arch.cayenne.module.betslip.R
 import arch.cayenne.module.betslip.databinding.ItemOrderSportBettingHeaderBinding
-import arch.cayenne.module.order.utils.TimeUtils
 
 class OrderBettingHeaderViewHolder(private val mBinding: ItemOrderSportBettingHeaderBinding): BaseViewHolder(mBinding) {
 
     fun init(item: BetSlipOrderHeaderBean) {
-        mBinding.tvDate.text = TimeUtils.formatTimeMillis(item.time)
+        mBinding.tvDate.text = item.dateTime
         val betAmount = itemView.context.getString(R.string.title_order_sport_header_betting_amount).format("${CurrencySymbols.getSymbol(item.currency)}${item.betAmount.getFormalMoney()}")
         mBinding.tvBetting.text = betAmount
 
