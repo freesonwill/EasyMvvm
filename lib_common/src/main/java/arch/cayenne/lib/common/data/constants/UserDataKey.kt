@@ -35,4 +35,7 @@ enum class UserDataKey(val key: String) {
 
     KEY_BUILD_TIME("KEY_BUILD_TIME"),
     KEY_ODDS_CHANGE("KEY_ODDS_CHANGE"),
+
+    // VIP 相關數據
+    KEY_VIP_LEVEL("VIP_Level"),
 }

@@ -2,14 +2,17 @@ package com.walisport.module.me.data
 
 import arch.cayenne.lib.base.data.repository.BaseRepository
 import arch.cayenne.lib.common.data.manager.UserDataManager
+import arch.cayenne.lib.database.GameDatabase
 import arch.cayenne.lib.websocket.WebSocketManager
 import kotlinx.coroutines.CoroutineScope
 
 class MeRepository(
     override val scope: CoroutineScope,
     private val socketManager: WebSocketManager,
-    private val manager: UserDataManager
-) : BaseRepository() {
+    private val manager: UserDataManager,
+    private val database: GameDatabase,
+    ) : BaseRepository() {
+
 
 
 }

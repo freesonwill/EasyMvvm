@@ -1,5 +1,5 @@
 <resources>
-    <dimen name="title_bar_padding_end">7dp</dimen>
+    <dimen name="title_bar_padding_end">4dp</dimen>
     <dimen name="title_bar_padding_start">8dp</dimen>
     <dimen name="dp_0">0dp</dimen>
     <dimen name="dp_1">1dp</dimen>
@@ -51,6 +51,7 @@
     <dimen name="dp_47">47dp</dimen>
     <dimen name="dp_48">48dp</dimen>
     <dimen name="dp_50">50dp</dimen>
+    <dimen name="dp_51">51dp</dimen>
     <dimen name="dp_52">52dp</dimen>
     <dimen name="dp_53">53dp</dimen>
     <dimen name="dp_54">54dp</dimen>
@@ -59,6 +60,7 @@
     <dimen name="dp_57">57dp</dimen>
     <dimen name="dp_58">58dp</dimen>
     <dimen name="dp_60">60dp</dimen>
+    <dimen name="dp_61">61dp</dimen>
     <dimen name="dp_62">62dp</dimen>
     <dimen name="dp_63">63dp</dimen>
     <dimen name="dp_64">64dp</dimen>
@@ -73,6 +75,7 @@
     <dimen name="dp_74">74dp</dimen>
     <dimen name="dp_75">75dp</dimen>
     <dimen name="dp_76">76dp</dimen>
+    <dimen name="dp_78">78dp</dimen>
     <dimen name="dp_80">80dp</dimen>
     <dimen name="dp_82">82dp</dimen>
     <dimen name="dp_84">84dp</dimen>
@@ -84,6 +87,7 @@
     <dimen name="dp_93">93dp</dimen>
     <dimen name="dp_94">94dp</dimen>
     <dimen name="dp_96">96dp</dimen>
+    <dimen name="dp_97">97dp</dimen>
     <dimen name="dp_98">98dp</dimen>
     <dimen name="dp_99">99dp</dimen>
     <dimen name="dp_100">100dp</dimen>
@@ -130,6 +134,7 @@
     <dimen name="dp_212">212dp</dimen>
     <dimen name="dp_218">218dp</dimen>
     <dimen name="dp_220">220dp</dimen>
+    <dimen name="dp_229">229dp</dimen>
     <dimen name="dp_248">248dp</dimen>
     <dimen name="dp_251">251dp</dimen>
     <dimen name="dp_253">253dp</dimen>
@@ -141,6 +146,7 @@
     <dimen name="dp_359">359dp</dimen>
     <dimen name="dp_372">372dp</dimen>
     <dimen name="dp_375">375dp</dimen>
+    <dimen name="dp_412">412dp</dimen>
     <dimen name="dp_418">418dp</dimen>
     <dimen name="dp_472">472dp</dimen>
 

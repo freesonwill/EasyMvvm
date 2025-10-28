@@ -54,13 +54,23 @@
     <!--  搜尋列  -->
     <arch.cayenne.lib.skin.widget.SkinnableImageView
         android:id="@+id/iv_home_sidebar"
-        android:layout_width="@dimen/dp_16"
-        android:layout_height="@dimen/dp_16"
-        android:layout_marginStart="@dimen/dp_18"
-        app:srcCompat="@drawable/ic_sidebar"
+        android:layout_width="@dimen/dp_24"
+        android:layout_height="@dimen/dp_24"
+        android:layout_marginStart="@dimen/dp_14"
+        app:srcCompat="@drawable/ic_drawer_entry"
         app:layout_constraintTop_toTopOf="@+id/ll_search_bar"
         app:layout_constraintBottom_toBottomOf="@+id/ll_search_bar"
         app:layout_constraintLeft_toLeftOf="parent"/>
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_unread_dot"
+        android:layout_width="@dimen/dp_8"
+        android:layout_height="@dimen/dp_8"
+        android:src="@drawable/ic_shape_unread_msg_dot"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="@id/iv_home_sidebar"
+        app:layout_constraintTop_toTopOf="@id/iv_home_sidebar" />
+
     <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
         android:id="@+id/ll_search_bar"
         style="@style/CustomToolbarLine"
@@ -117,7 +127,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_12"
         android:background="@android:color/transparent"
-        android:paddingStart="-2dp"
         app:tabContentStart="0dp"
         app:tabPaddingStart="0dp"
         app:tabPaddingTop="0dp"

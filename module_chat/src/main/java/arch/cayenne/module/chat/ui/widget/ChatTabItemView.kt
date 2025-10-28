@@ -199,7 +199,7 @@ class ChatTabItemView : LinearLayoutCompat {
         binding.apply {
             tabAnim(false, onStart = {
                 modifyTvMargin(0)
-                tabRectItemUi(false)
+//                tabRectItemUi(false)
                 onAnimStart?.invoke()
             }, onEnd = {
                 updateItemUi(NORMAL)
@@ -303,7 +303,9 @@ class ChatTabItemView : LinearLayoutCompat {
                 addListener(onEnd = {
                 })
             }
-
+        val alphaSet = AnimatorSet().apply {
+            playTogether(tabIconAnim,tabRectAnim)
+        }
 
         val setAnim = AnimatorSet().apply {
             addListener(onStart = {
@@ -311,8 +313,8 @@ class ChatTabItemView : LinearLayoutCompat {
             }, onEnd = {
                 onEnd.invoke()
             })
-            if (isExpanded) playSequentially(scaleAnim, tabIconAnim, tabRectAnim)
-            else playSequentially(tabRectAnim, tabIconAnim, scaleAnim)
+            if (isExpanded) playSequentially(scaleAnim, alphaSet) //playSequentially(scaleAnim, tabIconAnim, tabRectAnim)
+            else playSequentially(alphaSet, scaleAnim)  //playSequentially(tabRectAnim, tabIconAnim, scaleAnim)
 
             start()
         }

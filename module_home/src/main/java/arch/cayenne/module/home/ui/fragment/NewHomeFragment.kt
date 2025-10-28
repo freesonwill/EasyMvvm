@@ -9,6 +9,7 @@ import android.view.ViewGroup.LayoutParams
 import android.widget.TextView
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.os.bundleOf
+import androidx.fragment.app.viewModels
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.animation.AnimationController
@@ -20,6 +21,7 @@ import arch.cayenne.lib.common.data.constants.DrawerAction.ACTION_OPEN
 import arch.cayenne.lib.common.data.constants.DrawerAction.KEY_ACTION
 import arch.cayenne.lib.common.data.constants.DrawerAction.REQUEST_KEY_DRAWER
 import arch.cayenne.lib.common.ui.view.CustomTabIndicator
+import arch.cayenne.lib.common.ui.viewmodel.UnReadMessageViewModel
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
 import arch.cayenne.lib.common.utils.DensityInfo
 import arch.cayenne.lib.common.utils.ViewUtils
@@ -50,7 +52,8 @@ import kotlin.reflect.KClass
 class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
     override val vbClass: KClass<FragmentNewHomeBinding> = FragmentNewHomeBinding::class
     override val vmClass: KClass<HomeViewModel> = HomeViewModel::class
-    private var drawerContentFragment: DrawerContentFragment? = null
+
+    private val unreadMessageViewModel: UnReadMessageViewModel by viewModels()
     private var homeMediator: HomeTabMediator? = null
     private var promoTabs: List<PromoTab> = emptyList()
     private var indicatorDrawable: android.graphics.drawable.Drawable? = null
@@ -364,6 +367,17 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             mViewModel.resetPageSelectedTimestamp(PlayType.entries[0].id)
             mBinding.vpSub.setCurrentItem(0, false)
         }
+
+
+        with(unreadMessageViewModel) {
+            //未读消息监听
+            unreadMsg.observe(viewLifecycleOwner) { flag ->
+                mBinding.ivUnreadDot.visibility = if (flag) View.VISIBLE else View.GONE
+            }
+        }
+
+        unreadMessageViewModel.createObserver()
+
     }
 
     //設置是否允許水平滑動ViewPager，預設是可以滑動

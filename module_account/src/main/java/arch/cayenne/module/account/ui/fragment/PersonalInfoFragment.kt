@@ -36,7 +36,7 @@ class  PersonalInfoFragment : BaseFragment<PersonalInfoViewModel, FragmentPerson
         }
 
         mBinding.ivAvatar.clickNoRepeat{
-            navigate(PersonalInfoFragmentDirections.actionPersonalInfoFragmentToAvatarFragment())
+            navigate(PersonalInfoFragmentDirections.actionPersonalInfoFragmentToAvatarFragment(""))
         }
 
     }

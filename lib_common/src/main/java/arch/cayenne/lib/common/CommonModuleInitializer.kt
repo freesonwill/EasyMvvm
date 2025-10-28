@@ -10,10 +10,12 @@ import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.common.data.repo.BalanceRepository
 import arch.cayenne.lib.common.data.repo.CommonRepository
 import arch.cayenne.lib.common.data.repo.ReserveDialogRepository
+import arch.cayenne.lib.common.data.repo.UnReadMessageRepository
 import arch.cayenne.lib.common.ui.viewmodel.ConnectFailedViewModel
 import arch.cayenne.lib.common.ui.viewmodel.CurrencyDialogViewModel
 import arch.cayenne.lib.common.ui.viewmodel.ReserveDialogViewModel
 import arch.cayenne.lib.common.ui.viewmodel.ShareViewModel
+import arch.cayenne.lib.common.ui.viewmodel.UnReadMessageViewModel
 import com.tencent.mmkv.MMKV
 import kotlinx.coroutines.CoroutineScope
 import org.koin.androidx.viewmodel.dsl.viewModelOf
@@ -59,10 +61,12 @@ class CommonModuleInitializer : DefaultInitializer<String> {
         viewModelOf(::CurrencyDialogViewModel)
         viewModelOf(::ReserveDialogViewModel)
         viewModelOf(::ShareViewModel)
+        viewModelOf(::UnReadMessageViewModel)
 
         factoryOf(::CommonRepository)
         factoryOf(::BalanceRepository)
         factoryOf(::ReserveDialogRepository)
+        factoryOf(::UnReadMessageRepository)
     })
 
     /**

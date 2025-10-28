@@ -14,8 +14,8 @@
         <item name="android:paddingStart">@dimen/title_bar_padding_start</item>
     </style>
     <style name="CustomToolbarImgStyle">
-        <item name="android:layout_height">34dp</item>
-        <item name="android:layout_width">32dp</item>
+        <item name="android:layout_height">@dimen/dp_24</item>
+        <item name="android:layout_width">@dimen/dp_24</item>
         <item name="android:stateListAnimator">@animator/layout_alpha_animator</item>
         <item name="srcCompat">@drawable/universal_icon_back</item>
         <item name="layout_constraintLeft_toLeftOf">parent</item>
@@ -109,6 +109,20 @@
             <flag name="RIGHT" value="0x08" />
         </attr>
         <attr name="canScrollView" format="reference" />
+    </declare-styleable>
+
+    <declare-styleable name="GameRoundProgressBar">
+        <!-- 背景顏色 -->
+        <attr name="backgroundColor" format="color" />
+        <!-- 進度條顏色 -->
+        <attr name="progressColor" format="color" />
+        <!-- 觸發時間（例如進度動畫時間），單位毫秒 -->
+        <attr name="triggerTime" format="integer" />
+    </declare-styleable>
+
+    <declare-styleable name="CustomGameTabGroupLayout">
+        <attr name="defaultTabIcon" format="reference" />
+        <attr name="tabIconSize" format="dimension" />
     </declare-styleable>
 
 </resources>

@@ -52,6 +52,10 @@
     <color name="title_bar">#e6e6e6</color>
 
     <!-- Dialog -->
+    <color name="dialog_bottom_confirm">#FE3666</color>
+    <color name="dialog_bottom_line">#272727</color>
+    <color name="dialog_bottom_cancel">#FFFFFF</color>
+    <color name="dialog_bottom_title">#999999</color>
     <color name="dialog_title">#00D271</color>
     <color name="secondary_title">#929298</color>
     <color name="secondary_text">#929298</color>
@@ -191,9 +195,21 @@
     <color name="color_00E0E54D">#4D00E0E5</color><!--主色（primary）30透明-->
 
     <color name="color_979797">#FF979797</color>
+    <color name="color_343434">#343434</color>
 
     <color name="color_F6E6C9">#F6E6C9</color>
     <color name="color_965F25">#965F25</color>
     <color name="color_513D301A">#513D301A</color>
     <color name="color_464136">#464136</color>
+    <color name="color_D9D9D9">#D9D9D9</color>
+
+    <!-- VIP 等級顏色 -->
+    <color name="shader_start">#FFFFFF</color>
+    <color name="shader_end_copper">#90EBE9</color>
+    <color name="shader_end_silver">#90AEEB</color>
+    <color name="shader_end_gold">#EBD690</color>
+    <color name="shader_end_platinum">#90AEEB</color>
+    <color name="shader_end_diamond">#8C91E0</color>
+    <color name="shader_end_black_diamond">#FFD8B6</color>
+    <color name="shader_end_star_diamond">#FECAA0</color>
 </resources>

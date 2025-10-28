@@ -35,17 +35,15 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <View
-                android:id="@+id/dot_ham"
-                android:layout_width="8dp"
-                android:layout_height="8dp"
-                android:layout_marginStart="17dp"
-                android:layout_marginTop="1dp"
-                android:background="@drawable/shape_8dp"
-                android:backgroundTint="@color/color_FE3666"
-                android:visibility="gone"
-                app:layout_constraintStart_toStartOf="@id/iv_drawer"
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/iv_unread_dot"
+                android:layout_width="@dimen/dp_8"
+                android:layout_height="@dimen/dp_8"
+                android:src="@drawable/ic_shape_unread_msg_dot"
+                android:visibility="visible"
+                app:layout_constraintEnd_toEndOf="@id/iv_drawer"
                 app:layout_constraintTop_toTopOf="@id/iv_drawer" />
+
 
             <arch.cayenne.lib.skin.widget.SkinnableImageView
                 android:id="@+id/iv_customer"

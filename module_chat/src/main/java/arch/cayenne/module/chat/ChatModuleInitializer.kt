@@ -14,7 +14,8 @@ import arch.cayenne.module.chat.ui.viewmodel.SoftKeyboardViewModel
 import arch.cayenne.module.chat.ui.viewmodel.MainChatViewModel
 import arch.cayenne.module.chat.ui.viewmodel.LivingEventsViewModel
 import arch.cayenne.module.chat.ui.viewmodel.CustomerViewModel
-
+import arch.cayenne.module.chat.ui.viewmodel.EmojiHomeViewModel
+import arch.cayenne.module.chat.ui.viewmodel.EmojiViewModel
 import arch.cayenne.module.chat.manager.ChatManagerImpl
 import arch.cayenne.module.chat.manager.ChatServerController
 import kotlinx.coroutines.CoroutineScope
@@ -40,6 +41,8 @@ class ChatModuleInitializer : DefaultInitializer<String> {
         viewModelOf(::MainChatViewModel)
         viewModelOf(::LivingEventsViewModel)
         viewModelOf(::CustomerViewModel)
+        viewModelOf(::EmojiHomeViewModel)
+        viewModelOf(::EmojiViewModel)
 
     }
 

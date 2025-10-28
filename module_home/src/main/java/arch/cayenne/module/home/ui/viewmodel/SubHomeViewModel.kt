@@ -11,6 +11,7 @@ import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.common.data.constants.SportEnum
 import arch.cayenne.lib.common.ui.viewmodel.Event
+import arch.cayenne.lib.common.utils.ext.VIPDataExt
 import arch.cayenne.lib.database.entity.BaseTournamentData
 import arch.cayenne.lib.database.entity.ChampionTournamentDataModel
 import arch.cayenne.lib.database.entity.SportDataModel
@@ -75,6 +76,10 @@ class SubHomeViewModel: BaseViewModel() {
     private val _selectedSkinType = MutableLiveData<Event<String>>()
     val selectedSkinType: LiveData<Event<String>> = _selectedSkinType
 
+    // VIP 等級數據
+    private val _vipLevel = MutableLiveData<Long>()
+    val vipLevel: LiveData<Long> = _vipLevel
+
     // 用於記錄全部的比賽列表是否載入完成
     var isAllowTabLoad: Boolean = false
     // 暫存 SportDataModel 列表，用於實現延後繪製球種列表
@@ -87,6 +92,16 @@ class SubHomeViewModel: BaseViewModel() {
                 _selectedSkinType.value = Event(it)
             }
         }
+
+        // 監聽 VIP 等級變化
+        viewModelScope.launch(Dispatchers.IO) {
+            VIPDataExt.observeVIPLevel().collect { level ->
+                withContext(Dispatchers.Main) {
+                    _vipLevel.value = level
+                }
+            }
+        }
+
         viewModelScope.launch(Dispatchers.IO) {
             repository.observeSportsMatchCount()
                 .map {

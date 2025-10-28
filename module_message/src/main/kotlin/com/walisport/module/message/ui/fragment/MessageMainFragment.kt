@@ -3,23 +3,19 @@ package com.walisport.module.message.ui.fragment
 import android.graphics.Typeface
 import android.os.Bundle
 import android.view.View
-import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
 import arch.cayenne.lib.base.data.model.PagerBean
 import arch.cayenne.lib.base.ui.adapter.PagerAdapter
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
-import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.setupViewPagerScroll
 import arch.cayenne.lib.common.utils.ext.startFadeAnim
-import arch.cayenne.lib.common.utils.ext.startZoomInAnim
 import arch.cayenne.lib.common.utils.ext.touchBackPressed
 import arch.cayenne.lib.skin.widget.SkinnableTextView
 import com.walisport.module.message.R
 import com.walisport.module.message.databinding.FragmentMessageMainBinding
 import com.walisport.module.message.ui.viewmodel.MessageMainViewModel
-import kotlinx.coroutines.delay
 import kotlin.reflect.KClass
 
 /**
@@ -42,9 +38,9 @@ class MessageMainFragment : BaseFragment<MessageMainViewModel, FragmentMessageMa
 
     override fun initView(savedInstanceState: Bundle?) {
         with(mBinding) {
-            titleBar.loadGeneralTitleBar(R.string.notification_message, {
+            titleBar.loadBackgroundTitleBar(R.string.notification_message) {
                 findNavController().navigateUp()
-            })
+            }
             val list = listOf(
                 PagerBean("") { MessageListFragment.newInstance(MSG_ALL) },
                 PagerBean("") { MessageListFragment.newInstance(MSG_SYS) },
@@ -152,6 +148,9 @@ class MessageMainFragment : BaseFragment<MessageMainViewModel, FragmentMessageMa
             }
             selectMessageType(type, true)
             selectMessageType(historyType, false)
+            if (type != MSG_ALL) {
+                mViewModel.setAllMessageRead(type)
+            }
             historyTypePosition = type
         }
     }

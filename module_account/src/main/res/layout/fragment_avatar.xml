@@ -1,129 +1,120 @@
 <?xml version="1.0" encoding="utf-8"?>
 <arch.cayenne.lib.skin.widget.SkinnableLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    android:background="@color/title_bg">
+    android:background="@color/title_bg"
+    android:orientation="vertical">
 
     <arch.cayenne.lib.common.ui.view.TitleBarView
         android:id="@+id/titleBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        app:layout_constraintTop_toBottomOf="@+id/titleBar"
-        android:paddingTop="@dimen/dp_67"
-        android:background="@color/app_bg"
+        android:layout_height="0dp"
         android:layout_weight="1"
-        android:layout_height="0dp">
+        android:background="@color/tran_0">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/ClUserAvatar"
-            android:layout_marginStart="@dimen/dp_8"
-            android:layout_marginEnd="8dp"
-
-
+        <arch.cayenne.module.account.view.CircularPhotoView
+            android:id="@+id/ivUserAvatar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent"
+            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginTop="@dimen/dp_67"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="@dimen/dp_67"
+            android:scaleType="centerCrop"
+            tools:ignore="MissingConstraints" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/ivUserAvatar"
-                android:layout_width="match_parent"
 
-                android:background="@drawable/avatar_rounded_background_svg"
-                android:layout_height="match_parent"/>
-        </androidx.constraintlayout.widget.ConstraintLayout>
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginBottom="78dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent">
 
 
         <androidx.appcompat.widget.LinearLayoutCompat
-            android:layout_width="match_parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:orientation="horizontal"
-            android:layout_marginStart="@dimen/dp_16"
-            android:layout_marginEnd="@dimen/dp_16"
-            android:layout_marginBottom="78dp"
-            android:layout_height="wrap_content">
+            android:id="@+id/photo"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/dp_73"
+            android:layout_weight="1"
+            android:background="@drawable/avatar_rounded_background"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
 
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/avatar_image" />
 
-            <androidx.appcompat.widget.LinearLayoutCompat
-                android:id="@+id/photo"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:orientation="vertical"
-                android:gravity="center_horizontal"
-                android:background="@drawable/avatar_rounded_background"
-                android:layout_height="@dimen/dp_73">
-                <ImageView
-                    android:background="@drawable/avatar_image"
-                    android:layout_width="24dp"
-                    android:layout_marginTop="12dp"
-                    android:layout_height="24dp"/>
-                <TextView
-                    android:layout_marginTop="8dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="15sp"
-                    android:text="相册选择"
-                    android:textColor="@color/white"
-                    />
-            </androidx.appcompat.widget.LinearLayoutCompat>
-
-            <androidx.appcompat.widget.LinearLayoutCompat
-                android:id="@+id/camera"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_marginStart="@dimen/dp_8"
-                android:orientation="vertical"
-                android:gravity="center"
-                android:background="@drawable/avatar_rounded_background"
-                android:layout_height="@dimen/dp_73">
-                <ImageView
-                    android:layout_marginTop="4dp"
-                    android:background="@drawable/avatar_camera"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"/>
-                <TextView
-                    android:layout_marginTop="9dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="15sp"
-                    android:text="拍一张"
-                    android:textColor="@color/white"
-                    />
-            </androidx.appcompat.widget.LinearLayoutCompat>
-
-            <androidx.appcompat.widget.LinearLayoutCompat
-                android:id="@+id/systemAvatar"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:orientation="vertical"
-                android:gravity="center"
-                android:layout_marginStart="@dimen/dp_8"
-                android:background="@drawable/avatar_rounded_background"
-                android:layout_height="@dimen/dp_73">
-                <ImageView
-                    android:layout_marginTop="2dp"
-                    android:background="@drawable/avatar_system"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"/>
-                <TextView
-                    android:layout_marginTop="9dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="15sp"
-                    android:text="系统头像"
-                    android:textColor="@color/white"
-                    />
-            </androidx.appcompat.widget.LinearLayoutCompat>
-
-
-
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="相册选择"
+                android:textColor="@color/white"
+                android:textSize="15sp" />
         </androidx.appcompat.widget.LinearLayoutCompat>
-    </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
 
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/camera"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/dp_73"
+            android:layout_marginStart="@dimen/dp_8"
+            android:layout_weight="1"
+            android:background="@drawable/avatar_rounded_background"
+            android:gravity="center"
+            android:orientation="vertical">
 
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginTop="4dp"
+                android:background="@drawable/avatar_camera" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="9dp"
+                android:text="拍一张"
+                android:textColor="@color/white"
+                android:textSize="15sp" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/systemAvatar"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/dp_73"
+            android:layout_marginStart="@dimen/dp_8"
+            android:layout_weight="1"
+            android:background="@drawable/avatar_rounded_background"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginTop="2dp"
+                android:background="@drawable/avatar_system" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="9dp"
+                android:text="系统头像"
+                android:textColor="@color/white"
+                android:textSize="15sp" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
 </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>

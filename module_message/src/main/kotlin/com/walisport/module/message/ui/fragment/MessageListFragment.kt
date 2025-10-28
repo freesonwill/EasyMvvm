@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.common.ui.dialog.CommonDialog
+import arch.cayenne.lib.common.ui.fragment.CommonBottomDialog
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout.States
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
@@ -131,15 +132,15 @@ class MessageListFragment : BaseFragment<MessageMainViewModel, FragmentMessageLi
     }
 
     private fun showConfirmDialog(id: Long) {
-        CommonDialog.newInstance(
-            "",
+        CommonBottomDialog.newInstance(
             getString(R.string.notification_delete),
-            getString(R.string.notification_confirm),
-            getString(R.string.notification_cancel),
+            id
         ).also {
-            it.setOnOkClickListener {
-                mViewModel.deleteMessage(id)
-            }
+            it.setOnItemClickListener(object : CommonBottomDialog.OnClickListener {
+                override fun onClick(id: Long) {
+                    mViewModel.deleteMessage(id)
+                }
+            })
             it.show(childFragmentManager)
         }
     }
