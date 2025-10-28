@@ -114,6 +114,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
+            android:id="@+id/lay_coin"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_42"
             android:layout_marginHorizontal="@dimen/dp_16"
