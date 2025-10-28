@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
 import arch.cayenne.lib.base.ui.adapter.PagerAdapter
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
+import arch.cayenne.lib.common.utils.ext.setupViewPagerScroll
 import com.google.android.material.tabs.TabLayoutMediator
 import com.walisport.module.hall.R
 import com.walisport.module.hall.data.HallGameTabDefault
@@ -71,6 +72,7 @@ class GameAllRankingViewHolder(
             TabLayoutMediator(tlRanking, vpRanking) { tab, position ->
                 tab.text = mockTabList[position].title
             }.attach()
+            vpRanking.setupViewPagerScroll(tlRanking, homeIndicator, 1f)
         }
     }
 }

@@ -11,12 +11,29 @@
         android:layout_marginStart="@dimen/dp_12"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent" />
+    <arch.cayenne.lib.skin.widget.SkinnableImageView
+        android:background="@drawable/shape_game_all_rank_tablayout_bg"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintEnd_toEndOf="@id/tl_ranking"
+        app:layout_constraintStart_toStartOf="@id/tl_ranking"
+        app:layout_constraintTop_toTopOf="@id/tl_ranking"
+        app:layout_constraintBottom_toBottomOf="@+id/tl_ranking" />
+    <com.walisport.module.hall.ui.view.CustomRankingTabIndicator
+        android:id="@+id/homeIndicator"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintEnd_toEndOf="@id/tl_ranking"
+        app:layout_constraintStart_toStartOf="@id/tl_ranking"
+        app:layout_constraintTop_toTopOf="@id/tl_ranking"
+        app:layout_constraintBottom_toBottomOf="@+id/tl_ranking"/>
     <arch.cayenne.lib.common.ui.view.CustomTabLayout
         android:id="@+id/tl_ranking"
         android:layout_width="0dp"
         android:layout_height="@dimen/dp_42"
         android:layout_marginStart="@dimen/dp_12"
         android:layout_marginEnd="@dimen/dp_12"
+        android:background="@android:color/transparent"
         app:tabContentStart="0dp"
         app:tabPaddingStart="0dp"
         app:tabPaddingTop="0dp"
@@ -27,16 +44,19 @@
         app:tabIndicatorFullWidth="false"
         app:tabIndicatorHeight="0dp"
         app:tabRippleColor="@null"
+        app:tabTextColor="@color/color_C0C0C0"
+        app:tabSelectedTextColor="@color/color_FFFFFF"
         app:layout_constraintTop_toBottomOf="@+id/tv_title"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
+
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/vp_ranking"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_12"
         android:layout_marginEnd="@dimen/dp_12"
-        app:layout_constraintTop_toBottomOf="@+id/tl_ranking"
+        app:layout_constraintTop_toBottomOf="@+id/homeIndicator"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
 

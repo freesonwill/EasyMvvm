@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.OnItemTouchListener
 import androidx.viewpager2.widget.ViewPager2
 import arch.cayenne.lib.common.R
-import arch.cayenne.lib.common.ui.view.CustomTabIndicator
+import arch.cayenne.lib.common.ui.view._interface.BaseCustomTabIndicator
 import arch.cayenne.lib.common.utils.CustomTabIndicatorUtils
 import arch.cayenne.lib.skin.widget.SkinnableTabLayout
 import com.google.android.material.tabs.TabLayout
@@ -31,7 +31,7 @@ fun TabLayout.removeAllTips() {
  */
 fun ViewPager2.setupViewPagerScroll(
     tabLayout: SkinnableTabLayout,
-    customIndicator: CustomTabIndicator,
+    customIndicator: BaseCustomTabIndicator,
     tabIndicatorWidth: Float = 0.45f
 ) {
     tabLayout.post {
