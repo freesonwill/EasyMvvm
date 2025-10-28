@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager2.widget.ViewPager2
 import com.walisport.module.hall.R
 import com.walisport.module.hall.data.GameAllBannerData
 import com.walisport.module.hall.databinding.ItemGameAllHeaderBinding
@@ -29,6 +30,13 @@ class GameAllHeaderAdapter: RecyclerView.Adapter<GameAllHeaderViewHolder>() {
 
     override fun getItemCount(): Int = 1
 
+    fun restProBannerJob(recyclerView: RecyclerView) {
+        (recyclerView.findViewHolderForAdapterPosition(0) as? GameAllHeaderViewHolder)?.restProBannerJob()
+    }
+
+    fun stopProBannerJob(recyclerView: RecyclerView) {
+        (recyclerView.findViewHolderForAdapterPosition(0) as? GameAllHeaderViewHolder)?.stopProBannerJob()
+    }
 }
 
 class GameAllHeaderViewHolder(val binding: ItemGameAllHeaderBinding): RecyclerView.ViewHolder(binding.root) {
@@ -50,6 +58,24 @@ class GameAllHeaderViewHolder(val binding: ItemGameAllHeaderBinding): RecyclerVi
                 v.parent.requestDisallowInterceptTouchEvent(true)
                 false
             }
+
+            vpBanner.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+                override fun onPageSelected(position: Int) {
+                    super.onPageSelected(position)
+                    proBanner.resetTriggerJob()
+                }
+            })
+            proBanner.setTriggerListener {
+                vpBanner.currentItem = (vpBanner.currentItem + 1) % bannerAdapter.itemCount
+            }
         }
+    }
+
+    fun restProBannerJob() {
+        binding.proBanner.resetTriggerJob()
+    }
+
+    fun stopProBannerJob() {
+        binding.proBanner.stopTriggerJob()
     }
 }

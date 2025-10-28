@@ -45,4 +45,20 @@ abstract class MessageDao : BaseDao<MessageBean>() {
     @Transaction
     @Query("UPDATE MessageBean set status = :status where id = :id")
     abstract fun updateMessageStatus(status: Int, id: Long)
+
+    //更新某类消息状态为已读
+    @Transaction
+    @Query("UPDATE MessageBean set status = :status where type = :type")
+    abstract fun updateAllMessageRead(status: Int, type: Int)
+
+    //监听某一状态的消息
+    @Transaction
+    @Query("SELECT * FROM MessageBean where status = :status")
+    abstract fun observeMessageBeanByStatus(status: Int): Flow<List<MessageBean>>
+
+    companion object {
+        const val STATUS_UNREAD = 1
+        const val STATUS_READ = 2
+        const val STATUS_DEL = 3
+    }
 }

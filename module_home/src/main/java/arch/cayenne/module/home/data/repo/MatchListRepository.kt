@@ -53,7 +53,11 @@ class MatchListRepository(
             Client.ListMatchReq.newBuilder().apply {
                 this.sportId = sportId
                 this.playType = playType
-                this.addTournamentId(tournamentId)
+                //临时解决早盘和今日中，“全部”tab没有比赛数据的问题
+                //联赛id改成了列表， 查“全部”数据时传空列表
+                if (tournamentId != 0) {
+                    this.addTournamentId(tournamentId)
+                }
                 this.size = DEFAULT_MATCH_SIZE
                 this.startTime = startTime
                 this.endTime = endTime

@@ -11,6 +11,7 @@ import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
 import arch.cayenne.lib.common.utils.ViewUtils
@@ -294,13 +295,11 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
             launch {
                 selectedSkinType.observe(viewLifecycleOwner) {
                     refreshDefaultNickName()
-                    mViewModel.getMessageList()
                 }
             }
             notificationBean.observeEvent(viewLifecycleOwner, this@DrawerContentFragment) { list ->
                 setNotificationItem(list)
             }
-
             currentBalanceChange.observe(viewLifecycleOwner) {
                 mBinding.tvBalance.text =
                     getString(

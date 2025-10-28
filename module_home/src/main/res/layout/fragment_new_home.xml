@@ -4,91 +4,92 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:background="@color/color_272727"
         android:layout_width="match_parent"
         android:layout_height="110dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        android:background="@color/color_272727"
         app:layout_constraintEnd_toEndOf="parent"
-        >
-
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/homeBarIcon"
-            app:layout_constraintRight_toRightOf="parent"
             android:layout_width="124dp"
             android:layout_height="110dp"
             android:background="@drawable/home_bar_left_bg"
+            app:layout_constraintRight_toRightOf="parent"
             tools:ignore="MissingConstraints" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/ll_main"
         android:layout_width="match_parent"
-        android:orientation="vertical"
-        android:layout_height="match_parent">
-
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/homeTopBar"
-            android:layout_marginStart="@dimen/dp_13"
             android:layout_width="match_parent"
-            android:layout_height="73dp">
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/clAvava"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingTop="@dimen/dp_9"
-            tools:ignore="MissingConstraints">
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/ivAvava"
-                app:srcCompat="@drawable/home_avava"
-                android:layout_width="64dp"
-                android:layout_height="50dp"
-                app:layout_constraintTop_toTopOf="parent"
+            android:layout_height="63dp"
+            android:layout_marginStart="@dimen/dp_10">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/clAvava"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dp_3"
+                android:paddingTop="@dimen/dp_9"
                 app:layout_constraintBottom_toBottomOf="parent"
-                tools:ignore="MissingConstraints" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="MissingConstraints">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/ivAvava"
+                    android:layout_width="64dp"
+                    android:layout_height="50dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/home_avava"
+                    tools:ignore="MissingConstraints" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/newHomeAddMoney"
-                android:paddingTop="@dimen/dp_11"
-                app:layout_constraintLeft_toRightOf="@+id/clAvava"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_9"
+                android:layout_marginBottom="@dimen/dp_1"
+                android:paddingTop="@dimen/dp_7"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toRightOf="@+id/clAvava"
+                app:layout_constraintTop_toTopOf="parent"
                 tools:ignore="MissingConstraints">
-                <include layout="@layout/layout_money_bar"
-                    android:id="@+id/includedLayout"
-                    />
 
+                <include
+                    android:id="@+id/includedLayout"
+                    layout="@layout/layout_money_bar" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            
-            
-            
-           <androidx.appcompat.widget.AppCompatImageView
-               app:layout_constraintRight_toRightOf="parent"
-               app:layout_constraintBottom_toBottomOf="parent"
-               android:layout_width="@dimen/dp_103"
-               android:layout_marginEnd="@dimen/dp_2"
-               android:layout_marginBottom="@dimen/dp_2"
-               android:layout_height="@dimen/dp_68"
-               app:srcCompat="@drawable/home_bar_left_icon"
-               tools:ignore="MissingConstraints" />
-            
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="@dimen/dp_103"
+                android:layout_height="@dimen/dp_68"
+                android:layout_marginStart="@dimen/dp_1"
+                android:layout_marginEnd="@dimen/dp_2"
+                android:paddingStart="1dp"
+                android:paddingTop="@dimen/dp_2"
+                android:scaleType="fitXY"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:srcCompat="@drawable/home_bar_left_icon"
+                tools:ignore="MissingConstraints" />
         </androidx.constraintlayout.widget.ConstraintLayout>
+
         <arch.cayenne.module.home.ui.view.ClickSearchConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/color_272727">
+
             <androidx.constraintlayout.widget.Group
                 android:id="@+id/group_home_main"
                 android:layout_width="wrap_content"
@@ -98,9 +99,9 @@
             <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
                 android:id="@+id/cl_first_navbar"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_47"
+                android:layout_height="45dp"
                 android:orientation="horizontal"
-                android:paddingStart="10dp"
+                android:paddingStart="@dimen/dp_6"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
@@ -110,8 +111,9 @@
                     android:layout_width="@dimen/dp_36"
                     android:layout_height="@dimen/dp_36"
                     android:layout_gravity="center_vertical"
-                    android:paddingTop="6dp"
-                    android:paddingBottom="6dp"
+                    android:layout_marginTop="@dimen/dp_2"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="7dp"
                     android:scaleType="fitCenter"
                     android:src="@drawable/ic_home_sidebar"
                     android:stateListAnimator="@animator/layout_alpha_animator"
@@ -119,33 +121,45 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/iv_unread_dot"
+                    android:layout_width="@dimen/dp_8"
+                    android:layout_height="@dimen/dp_8"
+                    android:layout_marginTop="@dimen/dp_6"
+                    android:layout_marginEnd="@dimen/dp_6"
+                    android:src="@drawable/ic_shape_unread_msg_dot"
+                    android:visibility="gone"
+                    app:layout_constraintEnd_toEndOf="@id/iv_home_sidebar"
+                    app:layout_constraintTop_toTopOf="@id/iv_home_sidebar" />
 
                 <!-- 主導航 (包含 "今日"、"早盤"、"冠軍") -->
                 <arch.cayenne.module.home.ui.view.CustomTabLayout
                     android:id="@+id/tl_home"
                     android:layout_width="0dp"
-                    android:layout_height="match_parent"
+                    android:layout_height="30dp"
+                    android:layout_marginTop="@dimen/dp_4"
                     android:background="@android:color/transparent"
                     android:clipChildren="false"
                     android:clipToPadding="false"
-                    android:paddingTop="@dimen/dp_12"
-                    android:paddingBottom="@dimen/dp_10"
+                    android:paddingStart="@dimen/dp_1"
+                    android:paddingBottom="@dimen/dp_1"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/iv_search_entry"
                     app:layout_constraintHorizontal_bias="0"
                     app:layout_constraintStart_toEndOf="@+id/iv_home_sidebar"
                     app:layout_constraintTop_toTopOf="parent"
                     app:tabGravity="start"
-                    app:tabIndicatorHeight="0dp"
+                    app:tabIndicator="@drawable/tab_indicator_home"
                     app:tabIndicatorAnimationMode="linear"
                     app:tabIndicatorFullWidth="false"
                     app:tabIndicatorGravity="bottom"
+                    app:tabIndicatorHeight="2dp"
                     app:tabMinWidth="56dp"
                     app:tabMode="scrollable"
-                    app:tabRippleColor="@null"
+                    app:tabPaddingBottom="@dimen/dp_6"
                     app:tabPaddingEnd="0dp"
                     app:tabPaddingStart="0dp"
-                    app:tabPaddingBottom="@dimen/dp_4"
+                    app:tabRippleColor="@null"
                     app:tabSelectedTextColor="@color/sport_item_text_select"
                     app:tabTextAppearance="@style/HomeTabLayoutTextAppearance"
                     app:tabTextColor="@color/color_C0C0C0" />
@@ -153,7 +167,8 @@
                 <arch.cayenne.lib.common.ui.view.CustomTabIndicator
                     android:id="@+id/homeIndicator"
                     android:layout_width="0dp"
-                    android:layout_height="2dp"
+                    android:layout_height="0dp"
+                    android:visibility="gone"
                     app:layout_constraintEnd_toEndOf="@id/tl_home"
                     app:layout_constraintStart_toStartOf="@id/tl_home"
                     app:layout_constraintTop_toBottomOf="@id/tl_home" />
@@ -173,7 +188,10 @@
                     android:id="@+id/iv_search_entry"
                     android:layout_width="49dp"
                     android:layout_height="34dp"
-                    android:paddingVertical="@dimen/dp_5"
+                    android:layout_marginBottom="@dimen/dp_1"
+                    android:paddingStart="@dimen/dp_1"
+                    android:paddingTop="@dimen/dp_5"
+                    android:paddingBottom="@dimen/dp_4"
                     android:scaleType="fitCenter"
                     android:src="@drawable/ic_search_entry"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -181,18 +199,16 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
             </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
+
             <androidx.viewpager2.widget.ViewPager2
                 android:id="@+id/vp_sub"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginTop="@dimen/dp_2"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/cl_first_navbar"
-                app:layout_constraintBottom_toBottomOf="parent" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/cl_first_navbar" />
         </arch.cayenne.module.home.ui.view.ClickSearchConstraintLayout>
-
-
     </androidx.appcompat.widget.LinearLayoutCompat>
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>

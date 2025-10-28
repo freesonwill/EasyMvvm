@@ -30,6 +30,7 @@ import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.module.home.R
 import arch.cayenne.module.home.data.TournamentListItem
 import arch.cayenne.module.home.data.constants.HomeState
+import arch.cayenne.module.home.data.constants.TournamentListType
 import arch.cayenne.module.home.databinding.FragmentTournamentBottomSheetBinding
 import arch.cayenne.module.home.databinding.ItemTournamentHeaderBinding
 import arch.cayenne.module.home.ui.adapter.TournamentSectionAdapter
@@ -54,21 +55,31 @@ class TournamentListBottomSheetFragment :
     private var pendingJumpIndex: Int? = null
     private var stickyHeaderDecoration: StickyHeaderItemDecoration? = null
 
-    override fun initData() {
-        arguments?.apply {
-            val type = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                getSerializable(ARG_TOURNAMENT_TYPE, TournamentListType::class.java)
+    // 統一從 arguments 讀取參數
+    private val tournamentType: TournamentListType by lazy {
+        arguments?.let {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                it.getSerializable(ARG_TOURNAMENT_TYPE, TournamentListType::class.java)
             } else {
-                getSerializable(ARG_TOURNAMENT_TYPE) as? TournamentListType
+                it.getSerializable(ARG_TOURNAMENT_TYPE) as? TournamentListType
             }
-            mViewModel.setSportId(getInt(ARG_SPORT_ID))
-            mViewModel.setPlayTypeId(getInt(ARG_PLAY_TYPE_ID))
-            type?.apply {
-                mViewModel.setType(this)
-                mBinding.ivHomeLeagueCollapse.isVisible = this == TournamentListType.MORE
-                mViewModel.getTournaments()
-            }
-        }
+        } ?: TournamentListType.MORE
+    }
+
+    private val sportId: Int by lazy {
+        arguments?.getInt(ARG_SPORT_ID) ?: -1
+    }
+
+    private val playTypeId: Int by lazy {
+        arguments?.getInt(ARG_PLAY_TYPE_ID) ?: 2
+    }
+
+    override fun initData() {
+        mViewModel.setSportId(sportId)
+        mViewModel.setPlayTypeId(playTypeId)
+        mViewModel.setType(tournamentType)
+        mBinding.ivHomeLeagueCollapse.isVisible = tournamentType == TournamentListType.MORE
+        mViewModel.getTournaments()
     }
 
     override fun initView(savedInstanceState: Bundle?) {
@@ -82,7 +93,9 @@ class TournamentListBottomSheetFragment :
             isVerticalGestureEnable = false
             ceSearch.hint = getString(R.string.tournament_section_title)
             ceSearch.imeOptions = EditorInfo.IME_ACTION_SEARCH
+
             adapter = TournamentSectionAdapter(
+                tournamentListType = tournamentType,
                 onTournamentClick = { tournament ->
                     //新版改為多選方式
                     subHomeViewModel.onTournamentListSelected(tournament)

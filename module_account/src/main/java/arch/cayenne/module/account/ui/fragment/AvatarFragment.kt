@@ -30,10 +30,14 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import arch.cayenne.lib.common.utils.FileUtils
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import arch.cayenne.lib.common.utils.ext.NavResultExt.observeResult
+import com.davemorrissey.labs.subscaleview.ImageSource
+import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView.SCALE_TYPE_CENTER_CROP
 
 class AvatarFragment : BaseFragment<AvatarViewModel, FragmentAvatarBinding>() {
 
@@ -42,10 +46,12 @@ class AvatarFragment : BaseFragment<AvatarViewModel, FragmentAvatarBinding>() {
     private var currentPhotoPath: String? = null
     private lateinit var takePictureLauncher: ActivityResultLauncher<Intent>
     private lateinit var galleryLauncher: ActivityResultLauncher<String>
-
+    companion object {
+        const val CHANGE_FILE_PATH = "CHANGE_FILE_PATH"
+    }
     private val camera = 1001 //相机
     private val storage = 1002 //相册
-
+    private var filePath: String? = null
     // 权限数组
     private val PERMISSIONS_REQUEST_CAMERA = arrayOf(
         Manifest.permission.CAMERA,
@@ -87,10 +93,24 @@ class AvatarFragment : BaseFragment<AvatarViewModel, FragmentAvatarBinding>() {
         mBinding.camera.clickNoRepeat {
             permissions(PERMISSIONS_REQUEST_CAMERA, camera)
         }
+    }
 
+    fun showAvatar(){
+      val  bitmap = FileUtils.loadLocalBitmap(requireContext())
+            mBinding.ivUserAvatar.maxScale = 1f
+            mBinding.ivUserAvatar.minScale = 1f
+            mBinding.ivUserAvatar.setMinimumScaleType(SCALE_TYPE_CENTER_CROP)
+        bitmap?.let { mBinding.ivUserAvatar.setImage(ImageSource.cachedBitmap(it)) }
     }
 
     override suspend fun createObserver() {
+        observeResult<Bundle>(CHANGE_FILE_PATH) {
+            val newArgs: AvatarFragmentArgs = AvatarFragmentArgs.fromBundle(it)
+            this.filePath = newArgs.filePath
+            filePath?.let {
+                showAvatar()
+            }
+        }
         // 初始化拍照结果回调
         takePictureLauncher =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -189,11 +209,9 @@ class AvatarFragment : BaseFragment<AvatarViewModel, FragmentAvatarBinding>() {
     // 创建临时图片文件
     @Throws(Exception::class)
     private fun createImageFile(): File {
-        val timeStamp: String =
-            SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
         val storageDir: File? = requireContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
         return File.createTempFile(
-            "JPEG_${timeStamp}_",
+            "JPEG_AVATAR_",
             ".jpg",
             storageDir
         ).apply {

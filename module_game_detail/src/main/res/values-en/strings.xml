@@ -1,0 +1,20 @@
+<resources>
+    <string name="swipe_for_more_game">Swipe up for more games</string>
+    <string name="start_game">Start Game</string>
+    <string name="start_trial">Trial</string>
+    <string name="rtp">RTP</string>
+    <string name="max_reward">Max RTP</string>
+    <string name="is_playing">Playing</string>
+    <string name="biggest_winner">Biggest Winner</string>
+    <string name="luckiest_winner">Luckiest Winner</string>
+    <string name="currency_display">Currency Display</string>
+    <string name="bet">Bet</string>
+    <string name="multiplier">Multiplier</string>
+    <string name="winnings">Winnings</string>
+    <string name="share_bet">Share Bet Slip</string>
+    <string name="watch_replay">Watch Replay</string>
+    <string name="yesterday">Yesterday</string>
+    <string name="select_currency">Currency Display for Game Selection</string>
+    <string name="current_currency">Current Cryptocurrency</string>
+    <string name="rating_count">reviews</string>
+</resources>

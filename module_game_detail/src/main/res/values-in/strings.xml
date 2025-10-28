@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="swipe_for_more_game">Geser ke atas untuk game lainnya</string>
+    <string name="start_game">Mulai Main</string>
+    <string name="start_trial">Coba Main</string>
+    <string name="rtp">RTP</string>
+    <string name="max_reward">RTP Maksimum</string>
+    <string name="is_playing">Orang Bermain</string>
+    <string name="biggest_winner">Pemenang Terbesar</string>
+    <string name="luckiest_winner">Pemenang Paling Beruntung</string>
+    <string name="currency_display">Tampilan Mata Uang</string>
+    <string name="bet">Taruhan</string>
+    <string name="multiplier">Pengali</string>
+    <string name="winnings">Kemenangan</string>
+    <string name="share_bet">Bagikan Slip Taruhan</string>
+    <string name="watch_replay">Tonton Ulang</string>
+    <string name="yesterday">Kemarin</string>
+    <string name="select_currency">Tampilan Mata Uang saat Memilih Game</string>
+    <string name="current_currency">Mata Uang Kripto Saat Ini</string>
+    <string name="rating_count">ulasan</string>
+</resources>

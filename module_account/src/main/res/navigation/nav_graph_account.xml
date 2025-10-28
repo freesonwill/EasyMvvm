@@ -28,6 +28,9 @@
         android:name="arch.cayenne.module.account.ui.fragment.AvatarFragment"
         android:label="avatarFragment">
         <deepLink app:uri="@string/nav_module_account_avatarFragment" />
+        <argument
+            android:name="filePath"
+            app:argType="string" />
         <action
             android:id="@+id/action_avatarFragment_to_SystemAvatarFragment"
             app:destination="@id/systemAvatarFragment"

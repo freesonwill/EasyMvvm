@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<arch.cayenne.lib.skin.widget.SkinnableConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
+        android:id="@+id/tv_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/shape_rounded_white_bg"
+        android:padding="@dimen/dp_8"
+        android:textColor="@color/color_1E1E1E"
+        android:textSize="@dimen/sp_14"
+        tools:text="100000009.00" />
+
+    <arch.cayenne.lib.skin.widget.SkinnableImageView
+        android:id="@+id/iv_arrow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="-2dp"
+        app:layout_constraintEnd_toEndOf="@id/tv_value"
+        app:layout_constraintStart_toStartOf="@id/tv_value"
+        app:layout_constraintTop_toBottomOf="@id/tv_value"
+        app:srcCompat="@drawable/ic_ranking_popup_arrow" />
+
+</arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>

@@ -7,11 +7,13 @@ import arch.cayenne.lib.base.ui.adapter.BaseAdapter
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
 import arch.cayenne.lib.database.entity.BaseTournamentData
 import arch.cayenne.module.home.data.TournamentListItem
+import arch.cayenne.module.home.data.constants.TournamentListType
 import arch.cayenne.module.home.databinding.ItemTournamentHeaderBinding
 import arch.cayenne.module.home.databinding.ItemTournamentSectionBinding
 import arch.cayenne.module.home.ui.compare.TournamentSectionCompare
 
 class TournamentSectionAdapter(
+    private val tournamentListType: TournamentListType,
     private val onTournamentClick: (BaseTournamentData) -> Unit
 ) : BaseAdapter<TournamentListItem, BaseViewHolder, ViewBinding>(TournamentSectionCompare()) {
 
@@ -54,6 +56,7 @@ class TournamentSectionAdapter(
                 val isSelected = selectedTournamentIds.contains(item.tournament.id)
                 (holder as TournamentItemViewHolder).bind(
                     item = item,
+                    tournamentListType = tournamentListType,
                     isSelected = isSelected,
                     onClick = { tournament ->
                         toggleSelection(tournament.id)

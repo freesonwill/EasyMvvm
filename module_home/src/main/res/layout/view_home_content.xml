@@ -122,7 +122,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/ll_date_filter_container" />
 
-    <arch.cayenne.module.home.ui.view.BounceTabLayoutContainer
+    <arch.cayenne.lib.common.ui.view.BounceTabLayoutContainer
         android:id="@+id/tl_container"
         android:layout_width="0dp"
         android:layout_height="@dimen/dp_38"
@@ -150,7 +150,7 @@
             app:tabRippleColor="@null"
             app:tabSelectedTextColor="@color/league_tab_tint_select"
             app:tabTextColor="@color/league_tab_tint_unselect" />
-    </arch.cayenne.module.home.ui.view.BounceTabLayoutContainer>
+    </arch.cayenne.lib.common.ui.view.BounceTabLayoutContainer>
 
 
     <androidx.viewpager2.widget.ViewPager2

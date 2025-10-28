@@ -2,30 +2,7 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/nav_graph_topup"
-    app:startDestination="@id/walletFragment">
-
-    <fragment
-        android:id="@+id/walletFragment"
-        android:name="com.walisport.module.topup.ui.fragment.WalletFragment"
-        android:label="fragment_topup_main"
-        tools:layout="@layout/fragment_wallet">
-
-        <!--跳转充值页面-->
-        <action
-            android:id="@+id/action_walletFragment_to_topUpFragment"
-            app:destination="@id/topUpFragment" />
-
-        <!--跳转提现页面-->
-        <action
-            android:id="@+id/action_walletFragment_to_withdrawFragment"
-            app:destination="@id/withdrawFragment" />
-
-        <!--跳转银行卡页面-->
-        <action
-            android:id="@+id/action_walletFragment_to_bankCardFragment"
-            app:destination="@id/bankCardFragment" />
-    </fragment>
+    android:id="@+id/nav_graph_topup">
 
     <fragment
         android:id="@+id/topUpFragment"
@@ -38,6 +15,42 @@
         <action
             android:id="@+id/action_topUpFragment_to_fundDetailsFragment"
             app:destination="@id/fundDetailsFragment" />
+
+        <!--跳转充值提现教程页面-->
+        <action
+            android:id="@+id/action_topUpFragment_to_lessonFragment"
+            app:destination="@id/lessonFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/withdrawFiatFragment"
+        android:name="com.walisport.module.topup.ui.fragment.WithdrawFiatFragment"
+        android:label="WithdrawFiatFragment" />
+
+    <fragment
+        android:id="@+id/betDetailFragment"
+        android:name="com.walisport.module.topup.ui.fragment.BetDetailFragment"
+        android:label="BetDetailFragment" />
+
+    <fragment
+        android:id="@+id/lessonFragment"
+        android:name="com.walisport.module.topup.ui.fragment.LessonFragment"
+        android:label="LessonFragment" />
+
+    <fragment
+        android:id="@+id/addressEditFragment"
+        android:name="com.walisport.module.topup.ui.fragment.AddressEditFragment"
+        android:label="AddressEditFragment" />
+
+    <fragment
+        android:id="@+id/addressFragment"
+        android:name="com.walisport.module.topup.ui.fragment.AddressNoteFragment"
+        android:label="AddressFragment">
+
+        <!--跳转编辑地址页面-->
+        <action
+            android:id="@+id/action_addressFragment_to_addressEditFragment"
+            app:destination="@id/addressEditFragment" />
     </fragment>
 
     <fragment
@@ -51,6 +64,21 @@
         <action
             android:id="@+id/action_withdrawFragment_to_fundDetailsFragment"
             app:destination="@id/fundDetailsFragment" />
+
+        <!--跳转地址本页面-->
+        <action
+            android:id="@+id/action_withdrawFragment_to_addressFragment"
+            app:destination="@id/addressFragment" />
+
+        <!--跳转投注额详情页面-->
+        <action
+            android:id="@+id/action_withdrawFragment_to_betDetailFragment"
+            app:destination="@id/betDetailFragment" />
+
+        <!--跳转充值提现教程页面-->
+        <action
+            android:id="@+id/action_withdrawFragment_to_lessonFragment"
+            app:destination="@id/lessonFragment" />
     </fragment>
 
     <fragment
@@ -86,5 +114,4 @@
 
         <deepLink app:uri="walisport://module_topup/realTimeCashBackFragment" />
     </fragment>
-
 </navigation>

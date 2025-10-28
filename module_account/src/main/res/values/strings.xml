@@ -2,6 +2,7 @@
     <string name="personal_info_title" translatable="false">编辑资料</string>
     <string name="personal_info_save" translatable="false">保存</string>
     <string name="personal_avatar_save" translatable="false">更换头像</string>
+    <string name="personal_avatar_edit_content" translatable="false">拖拽图片调整展示区域</string>
     <string name="personal_info_hint" translatable="false">填写昵称（6字以内）</string>
     <string name="info_name" translatable="false">昵称</string>
     <string name="title_preview" translatable="false">头像预览</string>
