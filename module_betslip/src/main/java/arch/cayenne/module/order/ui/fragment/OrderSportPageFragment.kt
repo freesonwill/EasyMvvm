@@ -2,10 +2,12 @@ package arch.cayenne.module.order.ui.fragment
 
 import android.os.Bundle
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.module.betslip.databinding.FragmentOrderSportPageBinding
 import arch.cayenne.module.order.data.constants.OrderSportPageEnum
 import arch.cayenne.module.order.ui.adapter.OrderBettingAdapter
 import arch.cayenne.module.order.ui.viewmodel.OrderSportPageViewModel
+import arch.cayenne.module.order.utils.OrderItemDecoration
 import kotlin.reflect.KClass
 
 class OrderSportPageFragment :
@@ -24,6 +26,9 @@ class OrderSportPageFragment :
     override fun initView(savedInstanceState: Bundle?) {
         val adapter = OrderBettingAdapter(type)
         mBinding.rvContent.adapter = adapter
+
+        val decoration = OrderItemDecoration(10.dp2px)
+        mBinding.rvContent.addItemDecoration(decoration)
     }
 
     override fun initData() {

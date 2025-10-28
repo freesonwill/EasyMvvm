@@ -57,6 +57,7 @@ data class EarlySettlePriceBean(
 
 data class BetSlipOrderHeaderBean(
     val time: Long,
+    val currency: String,
     val betAmount: Long,
     val validBetAmount: Long
 ): BetSlipData

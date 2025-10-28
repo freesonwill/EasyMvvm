@@ -82,7 +82,7 @@
         android:layout_marginHorizontal="14dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintTop_toBottomOf="@id/cl_title"
-        tools:itemCount="2"
+        tools:itemCount="1"
         tools:listitem="@layout/item_order_sport_betting_selection" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -90,6 +90,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/rv_content">
@@ -225,7 +226,7 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <arch.cayenne.lib.skin.widget.SkinnableTextView
-                android:id="@+id/tv_win_money"
+                android:id="@+id/tv_win_money_value"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/color_FFFFFF"
@@ -238,6 +239,7 @@
 
 
             <arch.cayenne.lib.skin.widget.SkinnableTextView
+                android:id="@+id/tv_win_money"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
@@ -247,7 +249,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tv_win_money" />
+                app:layout_constraintTop_toBottomOf="@id/tv_win_money_value" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 

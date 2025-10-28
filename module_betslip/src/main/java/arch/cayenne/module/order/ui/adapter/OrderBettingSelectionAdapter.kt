@@ -20,6 +20,7 @@ class OrderBettingSelectionAdapter(private val type: OrderSportPageEnum): BaseAd
     ) {
         val item = getItem(position) as OrderSelectionBean
         holder.init(item)
+        holder.hideLastLine(position == currentList.size -1)
     }
 
     override fun createViewBinding(

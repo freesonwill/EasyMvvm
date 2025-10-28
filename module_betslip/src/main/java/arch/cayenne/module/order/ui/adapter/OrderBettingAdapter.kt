@@ -32,6 +32,7 @@ class OrderBettingAdapter(private val type: OrderSportPageEnum): BaseAdapter<Bet
         if (viewType == HEADER) {
             val headerHolder = holder as OrderBettingHeaderViewHolder
             val item = getItem(position) as BetSlipOrderHeaderBean
+            headerHolder.init(item)
         } else {
             val bodyHolder = holder as OrderBettingViewHolder
             val item = getItem(position) as BetSlipOrderBean
