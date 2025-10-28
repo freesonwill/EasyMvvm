@@ -35,10 +35,13 @@
 
         <arch.cayenne.lib.skin.widget.SkinnableTextView
             android:id="@+id/tv_address"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_61"
             android:layout_marginTop="@dimen/dp_37"
+            android:layout_marginEnd="@dimen/dp_20"
+            android:ellipsize="end"
+            android:maxLines="1"
             android:textColor="@color/address_text"
             android:textSize="@dimen/sp_13"
             app:layout_constraintStart_toStartOf="parent"

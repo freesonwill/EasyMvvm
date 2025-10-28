@@ -14,7 +14,10 @@
     <string name="next_step">下一步</string>
     <string name="str_more">更多</string>
     <string name="tv_address">地址</string>
+    <string name="search">搜索</string>
     <string name="remark">备注</string>
+    <string name="manager">管理</string>
+    <string name="sel_address">选择地址</string>
     <string name="add_to_note">添加到地址本</string>
     <string name="copy_address">复制地址</string>
     <string name="tip_copy_suc">复制成功</string>
