@@ -38,4 +38,7 @@ enum class UserDataKey(val key: String) {
 
     // VIP 相關數據
     KEY_VIP_LEVEL("VIP_Level"),
+
+    //软件盘配置相关
+    KEY_SOFT_CONFIG("soft_config")
 }

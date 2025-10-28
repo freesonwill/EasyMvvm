@@ -61,7 +61,6 @@ class SoftKeyboardFragment :
             adapter.submitList(mViewModel.getHotRecycler())
             it.adapter = adapter
         }
-
     }
 
     override suspend fun createObserver() {
@@ -333,7 +332,15 @@ class SoftKeyboardFragment :
 //        animSet.start()
 //    }
 
+    override fun onStart() {
+        super.onStart()
+        mViewModel.setSoftConfig(false)
+    }
 
+    override fun onStop() {
+        super.onStop()
+        mViewModel.setSoftConfig(true)
+    }
 
     override fun onDestroy() {
 //        mBinding.keyboardEmojiRecycler.adapter?.let {

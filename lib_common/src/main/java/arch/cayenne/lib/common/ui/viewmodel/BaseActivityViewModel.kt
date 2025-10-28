@@ -39,6 +39,9 @@ abstract class BaseActivityViewModel : BaseViewModel() {
     private val _aberrantNotify = MutableLiveData<Int>()
     val aberrantNotify : LiveData<Int> = _aberrantNotify
 
+    private val _softConfigListener = MutableLiveData<Boolean>()
+    val softConfigListener:LiveData<Boolean> = _softConfigListener
+
 
     override fun initViewModel() {
         super.initViewModel()
@@ -86,6 +89,11 @@ abstract class BaseActivityViewModel : BaseViewModel() {
                             _aberrantNotify.value = notify.data!!.code
                         }
                     }
+                }
+            }
+            launch {
+                commonRepository.getSoftConfigFlow().collect{
+                    _softConfigListener.postValue(it)
                 }
             }
         }

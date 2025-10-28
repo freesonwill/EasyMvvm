@@ -61,7 +61,7 @@ abstract class BaseActivity<VM : BaseViewModel,VB : ViewBinding> : AppCompatActi
     open val keepViewOnNavigation:Boolean = false
     //#endregion VB,VM
     // edittext软键盘弹出后，点击外部虚拟键盘消失 true启用，false不启用 子类可覆盖 默认启用
-    open val enableHideKeyboardOnTouchOutside = true
+    open var enableHideKeyboardOnTouchOutside = true
     //设置颜色，默认根据主题颜色设定
     private val statusBar: IStatusBar by lazy { StatusBarDelegate(this)  }
 
