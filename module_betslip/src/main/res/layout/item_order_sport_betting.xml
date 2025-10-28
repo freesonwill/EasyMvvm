@@ -67,6 +67,7 @@
             android:id="@+id/iv_share"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
             android:padding="12dp"
             android:src="@drawable/icon_order_share"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -121,7 +122,7 @@
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
         android:layout_marginHorizontal="14dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="18dp"
         android:background="@color/color_0FFFFFFF"
         app:layout_constraintTop_toBottomOf="@id/cl_collapse"
         app:layout_goneMarginTop="18dp" />
@@ -170,7 +171,7 @@
             <arch.cayenne.lib.skin.widget.SkinnableTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
+                android:layout_marginTop="9dp"
                 android:text="@string/title_bet"
                 android:textColor="@color/color_999999"
                 android:textSize="14sp"
@@ -205,7 +206,7 @@
             <arch.cayenne.lib.skin.widget.SkinnableTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
+                android:layout_marginTop="9dp"
                 android:text="@string/title_odds"
                 android:textColor="@color/color_999999"
                 android:textSize="14sp"
@@ -242,7 +243,7 @@
                 android:id="@+id/tv_win_money"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
+                android:layout_marginTop="9dp"
                 android:text="@string/live_bet_except_max_win"
                 android:textColor="@color/color_999999"
                 android:textSize="14sp"

@@ -19,7 +19,7 @@ class OrderBettingSelectionAdapter(private val type: OrderSportPageEnum): BaseAd
         position: Int
     ) {
         val item = getItem(position) as OrderSelectionBean
-        holder.init(item)
+        holder.init(item, itemCount == 1)
         holder.hideLastLine(position == currentList.size -1)
     }
 

@@ -14,6 +14,15 @@
         app:layout_constraintTop_toTopOf="parent"
         app:skinnableFontWeight="500" />
 
+    <arch.cayenne.lib.skin.widget.SkinnableImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="3dp"
+        android:src="@drawable/icon_order_date_arrow_down"
+        app:layout_constraintBottom_toBottomOf="@id/tv_date"
+        app:layout_constraintStart_toEndOf="@id/tv_date"
+        app:layout_constraintTop_toTopOf="@id/tv_date" />
+
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/tv_betting"
         android:layout_width="wrap_content"
