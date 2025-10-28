@@ -148,7 +148,7 @@ class LiveMatchMediaFragment :
                     )
                 }
                 childFragmentManager.beginTransaction()
-                    .replace(mBinding.fragmentVideo.id, it, LiveVideoPlayerFragment.TAG).commitNow()
+                    .replace(mBinding.fragmentMedia.id, it, LiveVideoPlayerFragment.TAG).commitNow()
             }
     }
 
@@ -163,7 +163,7 @@ class LiveMatchMediaFragment :
                     )
                 }
                 childFragmentManager.beginTransaction()
-                    .replace(mBinding.fragmentVideo.id, it, LiveMatchStatusFragment.TAG).commitNow()
+                    .replace(mBinding.fragmentMedia.id, it, LiveMatchStatusFragment.TAG).commitNow()
             }
     }
 
@@ -178,7 +178,7 @@ class LiveMatchMediaFragment :
                     )
                 }
                 childFragmentManager.beginTransaction()
-                    .replace(mBinding.fragmentVideo.id, it, LiveMatchAnimationFragment.TAG)
+                    .replace(mBinding.fragmentMedia.id, it, LiveMatchAnimationFragment.TAG)
                     .commitNow()
             }
     }
