@@ -21,7 +21,20 @@ class WithdrawCryptoFragment : BaseFragment<CryptoViewModel, FragmentWithdrawCry
         FragmentWithdrawCryptoBinding::class
     override val vmClass: KClass<CryptoViewModel> = CryptoViewModel::class
 
-    override fun initView(savedInstanceState: Bundle?) {}
+    companion object {
+        const val RESULT = "RESULT"
+    }
+
+    override fun initView(savedInstanceState: Bundle?) {
+        childFragmentManager.setFragmentResultListener(RESULT, viewLifecycleOwner) { _, bundle ->
+            val address = bundle.getString("address")
+            val type = bundle.getString("type")
+            val network = bundle.getString("network")
+            mBinding.edtAddress.setText(address)
+            mBinding.tvCoin.text = type
+            mBinding.tvNetworkType.text = network
+        }
+    }
 
     override fun initData() {
         super.initData()
@@ -43,7 +56,7 @@ class WithdrawCryptoFragment : BaseFragment<CryptoViewModel, FragmentWithdrawCry
             showToast(R.string.cus_service.getString())
         }
         mBinding.ivAddress.clickNoRepeat {
-            navigate(R.id.action_withdrawFragment_to_addressFragment)
+            showSelectAddress()
         }
         mBinding.btnSmall.clickNoRepeat { }
         mBinding.btnMiddle.clickNoRepeat { }
@@ -51,7 +64,12 @@ class WithdrawCryptoFragment : BaseFragment<CryptoViewModel, FragmentWithdrawCry
         mBinding.btnAll.clickNoRepeat { }
     }
 
-    override suspend fun createObserver() {
+    private fun showSelectAddress() {
+        val tag = "sel_address_bottom_fragment"
+        if (childFragmentManager.findFragmentByTag(tag) != null) return
+        SelAddressBottomFragment.newInstance().show(childFragmentManager, tag)
+    }
 
+    override suspend fun createObserver() {
     }
 }
