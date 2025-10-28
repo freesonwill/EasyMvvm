@@ -53,4 +53,13 @@
         layout="@layout/layout_money_bar" />
 
 
+    <arch.cayenne.lib.skin.widget.SkinnableImageView
+        android:id="@+id/iv_share"
+        android:layout_width="@dimen/dp_24"
+        android:layout_height="@dimen/dp_24"
+        android:layout_marginStart="@dimen/dp_12"
+        android:layout_marginEnd="@dimen/dp_6"
+        app:srcCompat="@drawable/ic_live_share" />
+
+
 </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
