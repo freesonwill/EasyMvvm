@@ -11,7 +11,6 @@ import arch.cayenne.lib.common.utils.ext.touchBackPressed
 import com.walisport.module.topup.R
 import com.walisport.module.topup.databinding.FragmentAddressEditBinding
 import com.walisport.module.topup.databinding.TitleAddressEditBinding
-import com.walisport.module.topup.databinding.TitleAddressNoteBinding
 import com.walisport.module.topup.ui.viewmodel.AddressViewModel
 import kotlin.reflect.KClass
 

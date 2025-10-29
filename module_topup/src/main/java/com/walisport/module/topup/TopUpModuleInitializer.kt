@@ -10,6 +10,7 @@ import com.walisport.module.topup.ui.viewmodel.TopUpViewModel
 import com.walisport.module.topup.ui.viewmodel.CryptoViewModel
 import com.walisport.module.topup.ui.viewmodel.CoinDialogViewModel
 import com.walisport.module.topup.ui.viewmodel.FiatViewModel
+import com.walisport.module.topup.ui.viewmodel.OrderDetailViewModel
 import com.walisport.module.topup.ui.viewmodel.AddressViewModel
 import com.walisport.module.topup.ui.viewmodel.SelectAddressViewModel
 import com.walisport.module.topup.ui.viewmodel.AddAddressViewModel
@@ -37,6 +38,7 @@ class TopUpModuleInitializer : DefaultInitializer<String> {
         viewModelOf(::WithdrawViewModel)
         viewModelOf(::AddAddressViewModel)
         viewModelOf(::CoinDialogViewModel)
+        viewModelOf(::OrderDetailViewModel)
         viewModelOf(::SelectAddressViewModel)
         viewModelOf(::CryptoViewModel)
         viewModelOf(::FiatViewModel)
