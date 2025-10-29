@@ -14,11 +14,6 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_source"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_58" />
-
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/ct_video_play"

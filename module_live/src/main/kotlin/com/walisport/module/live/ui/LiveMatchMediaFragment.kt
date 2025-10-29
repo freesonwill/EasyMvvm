@@ -1,14 +1,26 @@
 package com.walisport.module.live.ui
 
+import android.animation.ValueAnimator
 import android.os.Bundle
+import android.view.animation.LinearInterpolator
+import androidx.constraintlayout.widget.ConstraintLayout.VISIBLE
+import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.data.constants.MatchStatus
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
+import arch.cayenne.lib.common.utils.ext.startSafeAnimateSet
+import com.walisport.module.live.compare.VideoSourceBeanCompare
+import com.walisport.module.live.data.constants.VideoAnimatorConstants.Companion.BUTTONS_ANIMATION_DURATION
+import com.walisport.module.live.data.constants.VideoAnimatorConstants.Companion.HIDE_BUTTONS_TIMER
 import com.walisport.module.live.databinding.FragmentLiveMatchMediaBinding
+import com.walisport.module.live.ui.LiveSourceFragment.HorizontalItemDecoration
+import com.walisport.module.live.ui.adapter.LiveVideoSourceSimpleAdapter
 import com.walisport.module.live.ui.viewmodel.LiveMainViewModel
 import com.walisport.module.live.ui.viewmodel.LiveMatchMediaViewModel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
 
 
@@ -23,6 +35,9 @@ class LiveMatchMediaFragment :
 
     private val mainViewModel: LiveMainViewModel by sharedViewModel<LiveMainViewModel, LiveMainFragment>()
 
+
+    private var hasShownVideoSourceBar: Boolean = false
+
     override fun initView(savedInstanceState: Bundle?) {
         mBinding.model = mViewModel
 
@@ -35,7 +50,23 @@ class LiveMatchMediaFragment :
             showAnimationView()
         }
 
+        initVideoSourceBanner()
+
     }
+
+    private fun initVideoSourceBanner() {
+        //init video source recyclerview
+        with(mBinding) {
+            rvSource.apply {
+                itemAnimator = null
+                layoutManager =
+                    LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+                addItemDecoration(HorizontalItemDecoration())
+                adapter = LiveVideoSourceSimpleAdapter(VideoSourceBeanCompare())
+            }
+        }
+    }
+
 
 
     override fun initListener() {
@@ -89,6 +120,21 @@ class LiveMatchMediaFragment :
                             switchToMatchStatus()
                         }
                     } else {
+
+                        //首次收到视频源数据时，需要展示视频源banner
+                        if (!hasShownVideoSourceBar) {
+                            mBinding.rvSource.visibility = VISIBLE
+                            hasShownVideoSourceBar = true
+
+                            (mBinding.rvSource.adapter as LiveVideoSourceSimpleAdapter).apply {
+                                submitList(mViewModel.liveVideoBean.value?.source)
+
+                                setOnClickListener {
+//                        mViewModel.setPlayingVideoId(it)
+                                }
+                            }
+                            scheduleHideVideoSourceBanner()
+                        }
                         showVideoView()
                     }
 
@@ -209,6 +255,32 @@ class LiveMatchMediaFragment :
             show(this@LiveMatchMediaFragment.childFragmentManager)
 
         }
+    }
+
+    private fun scheduleHideVideoSourceBanner() {
+        lifecycleScope.launch {
+            delay(HIDE_BUTTONS_TIMER)
+            val height = mBinding.rvSource.height
+            mBinding.root.startSafeAnimateSet(
+                {
+                    playTogether(
+                        ValueAnimator.ofInt(height, 0).apply {
+                            addUpdateListener {
+                                val lp = mBinding.rvSource.layoutParams
+                                lp.height = it.animatedValue as Int
+
+                                mBinding.rvSource.layoutParams = lp
+                            }
+                        },
+                    )
+
+                },
+                duration = BUTTONS_ANIMATION_DURATION,
+                interpolator = LinearInterpolator(),
+                start = true
+            )
+        }
+
     }
 
 
