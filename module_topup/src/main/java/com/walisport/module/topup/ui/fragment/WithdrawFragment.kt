@@ -14,7 +14,6 @@ import arch.cayenne.lib.common.utils.ext.setupHorizontalScrollDegree
 import arch.cayenne.lib.common.utils.ext.touchBackPressed
 import com.google.android.material.tabs.TabLayoutMediator
 import com.walisport.module.topup.R
-import com.walisport.module.topup.data.entity.TopUpTabType
 import com.walisport.module.topup.data.entity.WithdrawTabType
 import com.walisport.module.topup.databinding.FragmentWithdrawBinding
 import com.walisport.module.topup.ui.viewmodel.WithdrawViewModel
@@ -40,7 +39,11 @@ class WithdrawFragment : BaseFragment<WithdrawViewModel, FragmentWithdrawBinding
                     findNavController().navigateUp()
                 }
                 tvTitleRight.clickNoRepeat {
-                    navigate(R.id.action_withdrawFragment_to_fundDetailsFragment)
+                    navigate(
+                        WithdrawFragmentDirections.actionWithdrawFragmentToFundDetailsFragment()
+                            .apply {
+                                arguments.putString("type", "tx_record")
+                            })
                 }
             }
         }

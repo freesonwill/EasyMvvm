@@ -332,6 +332,7 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
+                    android:id="@+id/lay_add_bank"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dp_42"
                     android:layout_marginHorizontal="@dimen/dp_16"
@@ -355,7 +356,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/dp_7"
-                        android:text="添加提现银行卡"
+                        android:text="@string/add_tx_card"
                         android:textColor="@color/bank_title"
                         android:textSize="@dimen/sp_14"
                         android:textStyle="bold"
