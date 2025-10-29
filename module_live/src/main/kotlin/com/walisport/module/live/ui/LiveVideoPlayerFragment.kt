@@ -1,7 +1,6 @@
 package com.walisport.module.live.ui
 
 import android.animation.Animator
-import android.animation.ValueAnimator
 import android.content.Context
 import android.database.ContentObserver
 import android.media.AudioManager
@@ -17,7 +16,6 @@ import android.widget.LinearLayout
 import androidx.constraintlayout.widget.ConstraintLayout.GONE
 import androidx.constraintlayout.widget.ConstraintLayout.VISIBLE
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.data.constants.MatchStatus
@@ -32,12 +30,9 @@ import arch.cayenne.lib.qyplayer.transformFromPlayerConfig
 import arch.cayenne.lib.qyplayer.transformToPlayerConfig
 import arch.cayenne.lib.qyplayer.ui.widget.LivePlayerView
 import com.walisport.module.live.R
-import com.walisport.module.live.compare.VideoSourceBeanCompare
 import com.walisport.module.live.data.constants.VideoAnimatorConstants.Companion.BUTTONS_ANIMATION_DURATION
 import com.walisport.module.live.data.constants.VideoAnimatorConstants.Companion.HIDE_BUTTONS_TIMER
 import com.walisport.module.live.databinding.FragmentLiveVideoPlayerBinding
-import com.walisport.module.live.ui.LiveSourceFragment.HorizontalItemDecoration
-import com.walisport.module.live.ui.adapter.LiveVideoSourceSimpleAdapter
 import com.walisport.module.live.ui.popup.VideoResolutionHelper
 import com.walisport.module.live.ui.video.PlayerViewCache
 import com.walisport.module.live.ui.viewmodel.LiveMainViewModel
