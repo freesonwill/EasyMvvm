@@ -7,49 +7,46 @@ import android.os.Message
 import android.webkit.ValueCallback
 import android.webkit.WebChromeClient
 import android.webkit.WebView
-import arch.cayenne.lib.base.data.constants.StatusBarMode
-import arch.cayenne.lib.base.data.model.StatusBarConfig
+import androidx.navigation.fragment.findNavController
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.common.data.constants.UserDataKey
 import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getColor
+import arch.cayenne.lib.common.utils.ext.touchBackPressed
 import arch.cayenne.lib.common.web.WLSWebViewClient
+import com.walisport.module.topup.R
 import com.walisport.module.topup.databinding.FragmentFundDetailsBinding
 import com.walisport.module.topup.ui.viewmodel.FundDetailsViewModel
 import org.koin.java.KoinJavaComponent.inject
 import kotlin.reflect.KClass
 
 /**
- * 资金明细页面， 内容由Web提供
+ * 资金明细、充值教程、提现教程页面
  * @date: 2025/10/8 16:01
  * @description:
  */
+
 class FundDetailsFragment : BaseFragment<FundDetailsViewModel, FragmentFundDetailsBinding>() {
 
     override val vbClass: KClass<FragmentFundDetailsBinding> = FragmentFundDetailsBinding::class
     override val vmClass: KClass<FundDetailsViewModel> = FundDetailsViewModel::class
-
     private val manager: UserDataManager by inject(UserDataManager::class.java)
-
 
     override fun initView(savedInstanceState: Bundle?) {
         launch {
+            initTitleBar()
             initWebView()
             val uid = manager.getValue(UserDataKey.KEY_UID, -1)
             val token = manager.getValue(UserDataKey.KEY_TOKEN, "")
-
             mBinding.webView.loadUrl("https://www.google.com/")
-
         }
     }
 
     private fun initWebView() {
         with(mBinding.webView) {
-
-            setWebViewClient(object :
+            webViewClient = object :
                 WLSWebViewClient(this) {
-
                 override fun onFormResubmission(
                     view: WebView?,
                     dontResend: Message?,
@@ -74,10 +71,9 @@ class FundDetailsFragment : BaseFragment<FundDetailsViewModel, FragmentFundDetai
                     super.onPageFinished(view, url)
 
                 }
-            })
-
+            }
             requestFocus()
-            setWebChromeClient(object : WebChromeClient() {
+            webChromeClient = object : WebChromeClient() {
                 override fun onShowFileChooser(
                     webView: WebView,
                     filePathCallback: ValueCallback<Array<Uri>>,
@@ -88,10 +84,8 @@ class FundDetailsFragment : BaseFragment<FundDetailsViewModel, FragmentFundDetai
 
                 override fun onProgressChanged(view: WebView, newProgress: Int) {
                     super.onProgressChanged(view, newProgress)
-                    //                showProgress(newProgress)
                 }
-            })
-
+            }
             setBackgroundColor(arch.cayenne.lib.common.R.color.black.getColor())
         }
     }
@@ -102,11 +96,23 @@ class FundDetailsFragment : BaseFragment<FundDetailsViewModel, FragmentFundDetai
     override suspend fun createObserver() {
     }
 
-    override fun onStart() {
-        StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND(autoPadding = false)
-        StatusBarConfig.statusBarDarkFont = false
-        setStatusBar(StatusBarConfig, mBinding.root)
-        super.onStart()
+    private fun initTitleBar() {
+        val type = arguments?.getString("type") ?: ""
+        val title = getTitleStr(type)
+        mBinding.titleBar.loadGeneralTitleBar(title, {
+            findNavController().navigateUp()
+        })
+        mBinding.root.touchBackPressed()
+    }
+
+    private fun getTitleStr(type: String): Int {
+        return when (type) {
+            "recharge" -> R.string.recharge_lesson
+            "withdraw" -> R.string.withdraw_lesson
+            "cz_record" -> R.string.recharge_record
+            "tx_record" -> R.string.withdrawal_record
+            else -> R.string.money_detail
+        }
     }
 
     override fun onResume() {

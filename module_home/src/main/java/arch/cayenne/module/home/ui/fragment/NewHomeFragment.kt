@@ -237,12 +237,21 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
     private fun setupTabsStyle() {
         with(mBinding.tlHome) {
             val tabStrip = (getChildAt(0) as? ViewGroup) ?: return
+            tabStrip.clipChildren = false
+            tabStrip.clipToPadding = false
+            
             val tabWidthPx = 56.dp2px
             for (i in 0 until tabStrip.childCount) {
                 val tabView = tabStrip.getChildAt(i)
                 val lp = tabView.layoutParams as ViewGroup.MarginLayoutParams
                 val isPromo = (getTabAt(i)?.tag == "PROMO")
-                lp.width = if (isPromo) 104.dp2px else tabWidthPx
+                if (isPromo) {
+                    lp.width = 104.dp2px
+                    lp.height = 26.dp2px
+                } else {
+                    lp.width = tabWidthPx
+                    lp.bottomMargin = 3.dp2px
+                }
                 tabView.layoutParams = lp
 
                 val tv = (getTabAt(i)?.view?.getChildAt(1) as? TextView)

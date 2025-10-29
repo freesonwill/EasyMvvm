@@ -36,12 +36,14 @@ import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
 import arch.cayenne.lib.common.utils.ext.TabLayoutExt
 import arch.cayenne.lib.common.utils.ext.TabLayoutExt.addOnTabSelectedListener2
+import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.removeAllTips
 import arch.cayenne.lib.common.utils.ext.setDrawerInterpolator
 import arch.cayenne.lib.common.utils.ext.setupViewPagerScroll
 import arch.cayenne.lib.common.utils.ext.startFadeAnim
 import arch.cayenne.lib.common.utils.ext.touchBackPressed
+import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.lib.skin.widget.SkinnableTextView
 import arch.cayenne.module.bet.ui.fragment.BetSheetFragment
@@ -217,6 +219,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
     override fun initListener() {
         mBinding.liveMain.touchBackPressed()
         with(titleBarBinding) {
+            ivBack.addScaleOnTouchAnimation()
             ivBack.clickNoRepeat {
                 //软件盘开启后直接关闭软件盘，不返回
                 if (isSoftKeyBoardVisible()) {
@@ -255,6 +258,11 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
             }
 
             includedLayout.addMoney.visibility = View.GONE
+
+            ivShare.addScaleOnTouchAnimation()
+            ivShare.clickNoRepeat {
+                showToast("直播页分享")
+            }
         }
         mBinding.tabLayout.addOnTabSelectedListener2(object : TabLayoutExt.OnTabSelectedListener2 {
             override fun onTabSelected(tab: TabLayout.Tab, isTabClick: Boolean) {
@@ -415,7 +423,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                     putBoolean("showAnim", mViewModel.showAnim.value ?: false)
                 }
                 childFragmentManager.beginTransaction()
-                    .replace(mBinding.fragmentVideo.id, it, LiveMatchMediaFragment.TAG)
+                    .replace(mBinding.fragmentMedia.id, it, LiveMatchMediaFragment.TAG)
                     .commitNow()
             }
     }

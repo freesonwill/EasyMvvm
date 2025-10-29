@@ -1,7 +1,6 @@
 package com.walisport.module.live.ui
 
 import android.animation.Animator
-import android.animation.ValueAnimator
 import android.content.Context
 import android.database.ContentObserver
 import android.media.AudioManager
@@ -17,7 +16,6 @@ import android.widget.LinearLayout
 import androidx.constraintlayout.widget.ConstraintLayout.GONE
 import androidx.constraintlayout.widget.ConstraintLayout.VISIBLE
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.data.constants.MatchStatus
@@ -32,12 +30,9 @@ import arch.cayenne.lib.qyplayer.transformFromPlayerConfig
 import arch.cayenne.lib.qyplayer.transformToPlayerConfig
 import arch.cayenne.lib.qyplayer.ui.widget.LivePlayerView
 import com.walisport.module.live.R
-import com.walisport.module.live.compare.VideoSourceBeanCompare
 import com.walisport.module.live.data.constants.VideoAnimatorConstants.Companion.BUTTONS_ANIMATION_DURATION
 import com.walisport.module.live.data.constants.VideoAnimatorConstants.Companion.HIDE_BUTTONS_TIMER
 import com.walisport.module.live.databinding.FragmentLiveVideoPlayerBinding
-import com.walisport.module.live.ui.LiveSourceFragment.HorizontalItemDecoration
-import com.walisport.module.live.ui.adapter.LiveVideoSourceSimpleAdapter
 import com.walisport.module.live.ui.popup.VideoResolutionHelper
 import com.walisport.module.live.ui.video.PlayerViewCache
 import com.walisport.module.live.ui.viewmodel.LiveMainViewModel
@@ -80,7 +75,6 @@ class LiveVideoPlayerFragment :
      */
     private var scheduledHideButtonsJob: Job? = null
 
-    private var hasShownVideoSourceBar: Boolean = false
 
 //    /**
 //     * 视频加载时的动画
@@ -121,23 +115,10 @@ class LiveVideoPlayerFragment :
     override fun initView(savedInstanceState: Bundle?) {
         mBinding.model = mViewModel
 
-        initVideoSourceBanner()
         initVideoView()
         scheduleHideButtons()
     }
 
-    private fun initVideoSourceBanner() {
-        //init video source recyclerview
-        with(mBinding) {
-            rvSource.apply {
-                itemAnimator = null
-                layoutManager =
-                    LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-                addItemDecoration(HorizontalItemDecoration())
-                adapter = LiveVideoSourceSimpleAdapter(VideoSourceBeanCompare())
-            }
-        }
-    }
 
     private fun initVideoView() {
         acquireVideoView()
@@ -269,21 +250,7 @@ class LiveVideoPlayerFragment :
                     if (it.source.isEmpty()) {
                         onDataSourceEmpty()
                     } else {
-                        //首次收到视频源数据时，需要展示视频源banner
-                        if (!hasShownVideoSourceBar) {
-                            mBinding.rvSource.visibility = VISIBLE
-                            hasShownVideoSourceBar = true
 
-                            (mBinding.rvSource.adapter as LiveVideoSourceSimpleAdapter).apply {
-                                submitList(mViewModel.liveVideoBean.value?.source)
-
-                                setOnClickListener {
-                                    mediaViewModel.switchToVideo()
-//                        mViewModel.setPlayingVideoId(it)
-                                }
-                            }
-                            scheduleHideVideoSourceBanner()
-                        }
                         mBinding.ivToFullscreen.visibility = View.VISIBLE
                         val streamInfoBean =
                             it.source.firstOrNull { ele -> ele.isPlaying }?.liveStreams?.firstOrNull { ele -> ele.selected }
@@ -461,31 +428,7 @@ class LiveVideoPlayerFragment :
 
     }
 
-    private fun scheduleHideVideoSourceBanner() {
-        lifecycleScope.launch {
-            delay(HIDE_BUTTONS_TIMER)
-            val height = mBinding.rvSource.height
-            mBinding.root.startSafeAnimateSet(
-                {
-                    playTogether(
-                        ValueAnimator.ofInt(height, 0).apply {
-                            addUpdateListener {
-                                val lp = mBinding.rvSource.layoutParams
-                                lp.height = it.animatedValue as Int
 
-                                mBinding.rvSource.layoutParams = lp
-                            }
-                        },
-                    )
-
-                },
-                duration = BUTTONS_ANIMATION_DURATION,
-                interpolator = LinearInterpolator(),
-                start = true
-            )
-        }
-
-    }
 
 
     private fun onPlayerStateReceived(state: PlayerState) {

@@ -16,10 +16,15 @@
             android:id="@+id/action_topUpFragment_to_fundDetailsFragment"
             app:destination="@id/fundDetailsFragment" />
 
-        <!--跳转充值提现教程页面-->
+        <!--跳转添加提现银行卡页面-->
         <action
-            android:id="@+id/action_topUpFragment_to_lessonFragment"
-            app:destination="@id/lessonFragment" />
+            android:id="@+id/action_topUpFragment_to_addBankCardFragment"
+            app:destination="@id/addBankCardFragment" />
+
+        <!--跳转订单详情页面-->
+        <action
+            android:id="@+id/action_topUpFragment_to_orderDetailFragment"
+            app:destination="@id/orderDetailFragment" />
     </fragment>
 
     <fragment
@@ -31,11 +36,6 @@
         android:id="@+id/betDetailFragment"
         android:name="com.walisport.module.topup.ui.fragment.BetDetailFragment"
         android:label="BetDetailFragment" />
-
-    <fragment
-        android:id="@+id/lessonFragment"
-        android:name="com.walisport.module.topup.ui.fragment.LessonFragment"
-        android:label="LessonFragment" />
 
     <fragment
         android:id="@+id/addressEditFragment"
@@ -75,10 +75,10 @@
             android:id="@+id/action_withdrawFragment_to_betDetailFragment"
             app:destination="@id/betDetailFragment" />
 
-        <!--跳转充值提现教程页面-->
+        <!--跳转添加提现银行卡页面-->
         <action
-            android:id="@+id/action_withdrawFragment_to_lessonFragment"
-            app:destination="@id/lessonFragment" />
+            android:id="@+id/action_withdrawFragment_to_addBankCardFragment"
+            app:destination="@id/addBankCardFragment" />
     </fragment>
 
     <fragment
@@ -96,6 +96,11 @@
         android:id="@+id/addBankCardFragment"
         android:name="com.walisport.module.topup.ui.fragment.AddBankCardFragment"
         android:label="AddBankCardFragment" />
+
+    <fragment
+        android:id="@+id/orderDetailFragment"
+        android:name="com.walisport.module.topup.ui.fragment.OrderDetailFragment"
+        android:label="OrderDetailFragment" />
 
     <fragment
         android:id="@+id/fundDetailsFragment"

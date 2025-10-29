@@ -114,6 +114,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
+            android:id="@+id/lay_coin"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_42"
             android:layout_marginHorizontal="@dimen/dp_16"
@@ -208,7 +209,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_16"
-            android:layout_marginTop="@dimen/dp_20"
+            android:layout_marginTop="@dimen/dp_17"
             android:text="@string/cz_address"
             android:textColor="@color/bank_title"
             android:textSize="@dimen/sp_14"
@@ -302,7 +303,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_53"
             android:layout_marginHorizontal="@dimen/dp_16"
-            android:layout_marginTop="@dimen/dp_19"
+            android:layout_marginTop="@dimen/dp_22"
             android:background="@drawable/bg_shape_tip"
             android:orientation="vertical"
             app:layout_constraintEnd_toEndOf="parent">

@@ -12,6 +12,7 @@ import com.walisport.module.hall.data.GameContentData
 import com.walisport.module.hall.data.HotColdType
 import com.walisport.module.hall.databinding.FragmentGameContentBinding
 import com.walisport.module.hall.ui.adapter.GameContentAdapter
+import com.walisport.module.hall.ui.helper.BackToTopHelper
 import kotlin.random.Random
 import kotlin.reflect.KClass
 
@@ -24,7 +25,7 @@ class GameContentFragment : BaseFragment<EmptyViewModel, FragmentGameContentBind
 
     private val mockList by lazy {
         val l = ArrayList<GameContentData>()
-        for (i in 0..11) {
+        for (i in 0..21) {
             l.add(
                 GameContentData(
                     cover = R.drawable.image_cover_demo,
@@ -65,6 +66,7 @@ class GameContentFragment : BaseFragment<EmptyViewModel, FragmentGameContentBind
                 submitList(mockList)
             }
             customTabGroup.submitTabList(mockVendorList)
+            BackToTopHelper(rvGame, ivBackToTop)
         }
     }
 

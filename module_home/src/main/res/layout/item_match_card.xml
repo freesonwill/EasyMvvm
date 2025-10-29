@@ -13,7 +13,7 @@
         android:id="@+id/iv_tournament_icon"
         android:layout_width="21dp"
         android:layout_height="21dp"
-        android:layout_marginStart="@dimen/dp_12"
+        android:layout_marginStart="@dimen/dp_10"
         android:layout_marginTop="@dimen/dp_6"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -39,7 +39,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_begin="42dp" />
+        app:layout_constraintGuide_begin="40dp" />
 
     <!-- 垂直分隔 guideline -->
     <androidx.constraintlayout.widget.Guideline
@@ -157,6 +157,7 @@
         android:id="@+id/iv_home_icon"
         android:layout_width="30dp"
         android:layout_height="30dp"
+        android:gravity="center_vertical"
         android:layout_marginStart="@dimen/dp_14"
         app:layout_constraintBottom_toBottomOf="@id/space_team_home"
         app:layout_constraintStart_toStartOf="@id/space_team_home"
@@ -171,6 +172,7 @@
         android:layout_marginBottom="@dimen/dp_2"
         android:textColor="@color/home_main_text"
         android:textSize="14sp"
+        app:skinnableFontWeight="500"
         app:layout_constrainedWidth="true"
         app:layout_constraintBottom_toBottomOf="@id/space_team_home"
         app:layout_constraintEnd_toStartOf="@id/tv_home_score"
@@ -182,7 +184,7 @@
         android:id="@+id/tv_home_score"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/dp_12"
+        android:layout_marginEnd="@dimen/dp_11"
         android:gravity="center_vertical"
         android:textColor="@color/match_card_score"
         android:textSize="15sp"
@@ -205,7 +207,9 @@
         android:id="@+id/iv_away_icon"
         android:layout_width="30dp"
         android:layout_height="30dp"
+        android:gravity="center_vertical"
         android:layout_marginStart="@dimen/dp_14"
+        app:skinnableFontWeight="500"
         app:layout_constraintBottom_toBottomOf="@id/space_team_away"
         app:layout_constraintStart_toStartOf="@id/space_team_away"
         app:layout_constraintTop_toTopOf="@id/space_team_away"
@@ -218,6 +222,7 @@
         android:layout_marginStart="4dp"
         android:textColor="@color/home_main_text"
         android:textSize="14sp"
+        app:skinnableFontWeight="500"
         app:layout_constrainedWidth="true"
         app:layout_constraintBottom_toBottomOf="@id/space_team_away"
         app:layout_constraintEnd_toStartOf="@id/tv_away_score"
@@ -229,7 +234,7 @@
         android:id="@+id/tv_away_score"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/dp_12"
+        android:layout_marginEnd="@dimen/dp_11"
         android:gravity="center_vertical"
         android:textColor="@color/match_card_score"
         android:textSize="15sp"
@@ -270,22 +275,21 @@
     <!-- 觀看人數/直播 -->
     <arch.cayenne.lib.skin.widget.SkinnableImageView
         android:id="@+id/iv_live_animation"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:layout_gravity="center_vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_16"
         android:layout_marginEnd="@dimen/dp_16"
-        android:layout_marginBottom="@dimen/dp_10"
         android:stateListAnimator="@animator/layout_alpha_animator"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:scaleType="fitCenter"
+        app:layout_constraintBottom_toBottomOf="@id/rv_odds_grid"
         app:layout_constraintEnd_toStartOf="@id/iv_live_video"
         app:layout_constraintStart_toStartOf="parent"
         tools:src="@drawable/ic_live_animation_disabled" />
 
     <arch.cayenne.lib.skin.widget.SkinnableImageView
         android:id="@+id/iv_live_video"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:stateListAnimator="@animator/layout_alpha_animator"
         app:layout_constraintBottom_toBottomOf="@id/iv_live_animation"
         app:layout_constraintEnd_toStartOf="@id/tv_watch_count"
@@ -297,10 +301,12 @@
         android:id="@+id/tv_watch_count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
+        app:skinnableFontWeight="400"
         android:layout_marginStart="@dimen/dp_10"
+        android:layout_marginEnd="@dimen/dp_3"
         android:textColor="@color/home_main_text"
         android:textSize="12sp"
+        android:gravity="center_vertical"
         app:layout_constraintBottom_toBottomOf="@id/iv_live_animation"
         app:layout_constraintEnd_toStartOf="@id/iv_arrow"
         app:layout_constraintStart_toEndOf="@id/iv_live_video"
@@ -309,11 +315,13 @@
 
     <arch.cayenne.lib.skin.widget.SkinnableImageView
         android:id="@+id/iv_arrow"
-        android:layout_width="9dp"
-        android:layout_height="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/dp_10"
         android:layout_gravity="center_vertical"
         android:src="@drawable/ic_arrow"
         android:stateListAnimator="@animator/layout_alpha_animator"
+        android:scaleType="fitCenter"
         app:layout_constraintBottom_toBottomOf="@id/iv_live_animation"
         app:layout_constraintStart_toEndOf="@id/tv_watch_count"
         app:layout_constraintTop_toTopOf="@id/iv_live_animation" />

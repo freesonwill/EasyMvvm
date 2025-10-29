@@ -43,10 +43,16 @@ class TopUpCryptoFragment : BaseFragment<CryptoViewModel, FragmentCryptoBinding>
                 showToast(R.string.tip_copy_suc.getString())
             }
         }
+        mBinding.layCoin.clickNoRepeat {
+            val location = IntArray(2)
+            mBinding.layCoin.getLocationOnScreen(location)
+            val offset = location[1] + 25.dp2px
+            CoinDialogFragment.newInstance(offset).show(childFragmentManager)
+        }
         mBinding.layLesson.clickNoRepeat {
-            val args = Bundle()
-            args.putBoolean("isTopUp", true)
-            navigate(R.id.action_topUpFragment_to_lessonFragment, args)
+            navigate(TopUpFragmentDirections.actionTopUpFragmentToFundDetailsFragment().apply {
+                arguments.putString("type", "recharge")
+            })
         }
         mBinding.layCustomer.clickNoRepeat {
             showToast(R.string.cus_service.getString())

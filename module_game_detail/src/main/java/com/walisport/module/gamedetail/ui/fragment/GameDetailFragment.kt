@@ -2,13 +2,13 @@ package com.walisport.module.gamedetail.ui.fragment
 
 import android.os.Bundle
 import android.view.View
-import androidx.recyclerview.widget.RecyclerView
-import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
+import androidx.core.view.doOnLayout
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+import arch.cayenne.lib.common.utils.ext.locationOnScreen
 import com.bumptech.glide.Glide
 import com.walisport.module.gamedetail.R
 import com.walisport.module.gamedetail.data.model.CurrencyInfoBean
@@ -17,7 +17,7 @@ import com.walisport.module.gamedetail.data.model.GamePreviewBean
 import com.walisport.module.gamedetail.data.model.PlayerRankingBean
 import com.walisport.module.gamedetail.data.model.PreviewType
 import com.walisport.module.gamedetail.databinding.FragmentGameDetailBinding
-import com.walisport.module.gamedetail.ui.adapter.GamePreviewPagerAdapter
+import com.walisport.module.gamedetail.ui.adapter.GamePreviewAdapter
 import com.walisport.module.gamedetail.ui.viewmodel.GameDetailViewModel
 import java.util.Locale
 import kotlin.reflect.KClass
@@ -25,6 +25,10 @@ import kotlin.reflect.KClass
 class GameDetailFragment: BaseFragment<GameDetailViewModel, FragmentGameDetailBinding>() {
     override val vbClass: KClass<FragmentGameDetailBinding> = FragmentGameDetailBinding::class
     override val vmClass: KClass<GameDetailViewModel> = GameDetailViewModel::class
+
+    private val previewAdapter by lazy {
+        GamePreviewAdapter()
+    }
 
     override fun initView(savedInstanceState: Bundle?) {
         with(mBinding) {
@@ -49,7 +53,7 @@ class GameDetailFragment: BaseFragment<GameDetailViewModel, FragmentGameDetailBi
             )
 
             val previewMock = listOf(
-                GamePreviewBean(PreviewType.VIDEO, "https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/1080/Big_Buck_Bunny_1080_10s_1MB.mp4"),
+//                GamePreviewBean(PreviewType.VIDEO, "https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/1080/Big_Buck_Bunny_1080_10s_1MB.mp4"),
                 GamePreviewBean(PreviewType.IMAGE, "https://xxx.com/xxx.jpg"),
                 GamePreviewBean(PreviewType.IMAGE, "https://xxx.com/xxx.jpg"),
                 GamePreviewBean(PreviewType.IMAGE, "https://xxx.com/xxx.jpg"),
@@ -82,27 +86,18 @@ class GameDetailFragment: BaseFragment<GameDetailViewModel, FragmentGameDetailBi
             ivFavorite.isSelected = mockData.collect
             ivStartTrial.visibility = if (mockData.tryIt) View.VISIBLE else View.GONE
             groupMoreGame.visibility = if (mockData.hasMore) View.VISIBLE else View.GONE
-            viewPager.apply {
-                offscreenPageLimit = previewMock.size
-                adapter =
-                    GamePreviewPagerAdapter(childFragmentManager, viewLifecycleOwner.lifecycle).apply {
-                        setData(previewMock)
-                    }
-                clipToPadding = false
-                clipChildren = false
-                (getChildAt(0) as RecyclerView).apply {
-                    clipToPadding = false
-                    clipChildren = false
+
+            carouselScrollView.apply {
+                adapter = previewAdapter.apply {
+                    setData(previewMock)
                 }
-                registerOnPageChangeCallback(object : OnPageChangeCallback() {
-                    override fun onPageSelected(position: Int) {
-                        super.onPageSelected(position)
-                        proBanner.resetTriggerJob()
-                    }
-                })
-            }
-            proBanner.setTriggerListener {
-                viewPager.currentItem = (viewPager.currentItem + 1) % previewMock.size
+
+                doOnLayout {
+                    gotoPage(
+                        pageIndex = 0,
+                        magnifyImmediately = true
+                    )
+                }
             }
         }
     }
@@ -137,12 +132,6 @@ class GameDetailFragment: BaseFragment<GameDetailViewModel, FragmentGameDetailBi
         super.onStart()
         StatusBarConfig.statusBarType = StatusBarMode.FULLSCREEN
         setStatusBar(StatusBarConfig, mBinding.root)
-        mBinding.proBanner.resetTriggerJob()
-    }
-
-    override fun onStop() {
-        super.onStop()
-        mBinding.proBanner.stopTriggerJob()
     }
 
     private fun closeExistingRankingFragment(afterClose: ((isSuccess: Boolean, type: PlayerRankingFragment.RankingType?) -> Unit)? = null) {
@@ -160,7 +149,9 @@ class GameDetailFragment: BaseFragment<GameDetailViewModel, FragmentGameDetailBi
     private fun View.createRankingFragment() {
         with(mBinding) {
             PlayerRankingFragment.Builder().apply {
-                setMarginBottom(265.dp2px)
+                val screenHeight = resources.displayMetrics.heightPixels
+                val viewY = locationOnScreen[1]
+                setMarginBottom(screenHeight - viewY + 6.dp2px)
                 setTouchThroughViews(listOf(tvBiggestWinner, tvLuckiestWinner, viewCurrencyBg))
                 setRankingType(
                     if (this@createRankingFragment == tvBiggestWinner) PlayerRankingFragment.RankingType.BIGGEST
@@ -203,20 +194,24 @@ class GameDetailFragment: BaseFragment<GameDetailViewModel, FragmentGameDetailBi
         }
     }
 
-    private fun closeExistingCurrencyFragment(afterClose: (() -> Unit)? = null) {
+    private fun closeExistingCurrencyFragment(afterClose: ((isSuccess: Boolean) -> Unit)? = null) {
+        var isSuccess = false
         (childFragmentManager.findFragmentByTag(CurrencySelectorFragment.TAG) as? CurrencySelectorFragment).let {
             if(it?.isAdded == true) {
                 it.close()
                 childFragmentManager.executePendingTransactions()
+                isSuccess = true
             }
-            afterClose?.invoke()
+            afterClose?.invoke(isSuccess)
         }
     }
 
     private fun View.createCurrencyFragment() {
         with(mBinding) {
             CurrencySelectorFragment.Builder().apply {
-                setMarginBottom(265.dp2px)
+                val screenHeight = resources.displayMetrics.heightPixels
+                val viewY = locationOnScreen[1]
+                setMarginBottom(screenHeight - viewY + 6.dp2px)
                 setTouchThroughViews(listOf(tvBiggestWinner, tvLuckiestWinner, viewCurrencyBg))
                 // todo 介接資料
                 setCurrencyDatas(
@@ -233,8 +228,8 @@ class GameDetailFragment: BaseFragment<GameDetailViewModel, FragmentGameDetailBi
     }
 
     private fun View.toggleCurrencyFragment() {
-        closeExistingCurrencyFragment {
-            createCurrencyFragment()
+        closeExistingCurrencyFragment { isSuccess ->
+            if(!isSuccess) createCurrencyFragment()
         }
     }
 

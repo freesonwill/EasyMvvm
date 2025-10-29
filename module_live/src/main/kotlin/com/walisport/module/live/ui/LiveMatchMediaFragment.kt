@@ -1,14 +1,29 @@
 package com.walisport.module.live.ui
 
+import android.animation.ValueAnimator
 import android.os.Bundle
+import android.view.animation.LinearInterpolator
+import androidx.constraintlayout.widget.ConstraintLayout.VISIBLE
+import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
+import arch.cayenne.lib.base.ui.animation.AnimationController
+import arch.cayenne.lib.base.ui.animation.AnimationController.AnimType
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.data.constants.MatchStatus
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
+import arch.cayenne.lib.common.utils.ext.startSafeAnimateSet
+import com.walisport.module.live.compare.MediaSourceBeanCompare
+import com.walisport.module.live.data.constants.VideoAnimatorConstants.Companion.HIDE_BUTTONS_TIMER
+import com.walisport.module.live.data.model.MediaSource
+import com.walisport.module.live.data.model.MediaSourceType
 import com.walisport.module.live.databinding.FragmentLiveMatchMediaBinding
+import com.walisport.module.live.ui.LiveSourceFragment.HorizontalItemDecoration
+import com.walisport.module.live.ui.adapter.LiveMediaSourceSimpleAdapter
 import com.walisport.module.live.ui.viewmodel.LiveMainViewModel
 import com.walisport.module.live.ui.viewmodel.LiveMatchMediaViewModel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
 
 
@@ -23,18 +38,36 @@ class LiveMatchMediaFragment :
 
     private val mainViewModel: LiveMainViewModel by sharedViewModel<LiveMainViewModel, LiveMainFragment>()
 
+    //是否自动显示过视频源bar
+    private var hasAutoShownMediaSourceBar: Boolean = false
+
     override fun initView(savedInstanceState: Bundle?) {
         mBinding.model = mViewModel
 
         val showVideo = arguments?.getBoolean("showVideo")
         val showAnim = arguments?.getBoolean("showAnim")
 
+        initMediaSourceBanner()
+
         if (showVideo == true) {
             showVideoView()
         } else if (showAnim == true) {
-            showAnimationView()
+            showAnimationView(true)
         }
 
+    }
+
+    private fun initMediaSourceBanner() {
+        //init video source recyclerview
+        with(mBinding) {
+            rvSource.apply {
+                itemAnimator = null
+                layoutManager =
+                    LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+                addItemDecoration(HorizontalItemDecoration())
+                adapter = LiveMediaSourceSimpleAdapter(MediaSourceBeanCompare())
+            }
+        }
     }
 
 
@@ -46,6 +79,7 @@ class LiveMatchMediaFragment :
         delay(320)
         //监听比赛id变化
         mainViewModel.matchId.observe(viewLifecycleOwner) {
+            hasAutoShownMediaSourceBar = false  //切换比赛时， 需要重置hasAutoShownVideoSourceBar
             mViewModel.setMatchId(it)
             mViewModel.createObserver()
         }
@@ -66,8 +100,8 @@ class LiveMatchMediaFragment :
                             }
 
                             else -> {
-                                if (it.liveInfo.animationLiveUrl.isNotBlank() ) {
-                                    showAnimationView()
+                                if (it.liveInfo.animationLiveUrl.isNotBlank()) {
+                                    showAnimationView(true)
                                 } else {
                                     showStatusView()
                                 }
@@ -89,6 +123,37 @@ class LiveMatchMediaFragment :
                             switchToMatchStatus()
                         }
                     } else {
+                        //首次收到视频源数据时，需要展示媒体源banner
+                        if (!hasAutoShownMediaSourceBar) {
+                            mBinding.rvSource.visibility = VISIBLE
+                            hasAutoShownMediaSourceBar = true
+
+                            (mBinding.rvSource.adapter as LiveMediaSourceSimpleAdapter).apply {
+
+                                val list: MutableList<MediaSource> = mutableListOf()
+                                list.add(
+                                    MediaSource(
+                                        MediaSourceType.ANIMATION,
+                                        mViewModel.animationLiveUrl.value, null, false
+                                    )
+                                )
+                                mViewModel.liveVideoBean.value?.source?.map { bean ->
+                                    MediaSource(
+                                        MediaSourceType.VIDEO,
+                                        null,
+                                        bean, bean.isPlaying
+                                    )
+                                }
+                                    ?.let { it1 -> list.addAll(it1) }
+
+                                submitList(list)
+
+                                setOnClickListener { mediaSourceItem ->
+                                    onMediaSourceItemClicked(mediaSourceItem)
+                                }
+                            }
+                            scheduleHideVideoSourceBanner()
+                        }
                         showVideoView()
                     }
 
@@ -113,7 +178,7 @@ class LiveMatchMediaFragment :
             }
 
             animationSwitch.observe(viewLifecycleOwner) {
-                showAnimationView()
+                showAnimationView(false)
             }
 
             chooseSource.observe(viewLifecycleOwner) {
@@ -167,8 +232,29 @@ class LiveMatchMediaFragment :
             }
     }
 
-    private fun showAnimationView() {
+    private fun showAnimationView(showMediaSourceBanner: Boolean) {
         "showAnimationView".logd(TAG)
+
+        if (!hasAutoShownMediaSourceBar && showMediaSourceBanner) {
+            mBinding.rvSource.visibility = VISIBLE
+            hasAutoShownMediaSourceBar = true
+
+            (mBinding.rvSource.adapter as LiveMediaSourceSimpleAdapter).apply {
+                val list: MutableList<MediaSource> = mutableListOf()
+                list.add(
+                    MediaSource(
+                        MediaSourceType.ANIMATION,
+                        mViewModel.animationLiveUrl.value, null, true
+                    )
+                )
+                submitList(list)
+
+                setOnClickListener { mediaSourceItem ->
+                    onMediaSourceItemClicked(mediaSourceItem)
+                }
+            }
+            scheduleHideVideoSourceBanner()
+        }
         childFragmentManager.findFragmentByTag(LiveMatchAnimationFragment.TAG) as? LiveMatchAnimationFragment
             ?: LiveMatchAnimationFragment().also {
                 it.arguments = Bundle().apply {
@@ -207,6 +293,50 @@ class LiveMatchMediaFragment :
                 )
             }
             show(this@LiveMatchMediaFragment.childFragmentManager)
+
+        }
+    }
+
+    private fun scheduleHideVideoSourceBanner() {
+        lifecycleScope.launch {
+            delay(HIDE_BUTTONS_TIMER)
+            val height = mBinding.rvSource.height
+            mBinding.root.startSafeAnimateSet(
+                {
+                    playTogether(
+                        ValueAnimator.ofInt(height, 0).apply {
+                            addUpdateListener {
+                                val lp = mBinding.rvSource.layoutParams
+                                lp.height = it.animatedValue as Int
+
+                                mBinding.rvSource.layoutParams = lp
+                            }
+                        },
+                    )
+
+                },
+                duration = AnimationController[AnimType.popupExit]!!.duration,
+                interpolator = AnimationController[AnimType.popupExit]?.interpolator?.toInterpolator() ?: LinearInterpolator(),
+                start = true
+            )
+        }
+
+    }
+
+    private fun onMediaSourceItemClicked(item: MediaSource) {
+        if (item.mediaSourceType == MediaSourceType.ANIMATION) {
+            item.isPlaying = true
+            (mBinding.rvSource.adapter as LiveMediaSourceSimpleAdapter).currentList.forEach {
+                if (it.mediaSourceType == MediaSourceType.VIDEO) {
+                    it.isPlaying = false
+                }
+            }
+        } else if (item.mediaSourceType == MediaSourceType.VIDEO) {
+            item.isPlaying = true
+            mViewModel.setPlayingVideoId(item.videoSourceBean!!.id)
+            (mBinding.rvSource.adapter as LiveMediaSourceSimpleAdapter).currentList.filter {
+                it.mediaSourceType == MediaSourceType.VIDEO
+            }.forEach { it.isPlaying = false }
 
         }
     }

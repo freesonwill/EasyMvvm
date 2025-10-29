@@ -5,17 +5,34 @@
     android:id="@+id/cl_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/color_000000">
+    android:background="@color/app_bg">
 
-    <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/view_pager"
+    <com.walisport.module.gamedetail.ui.view.CarouselScrollView
+        android:id="@+id/carousel_scroll_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginBottom="61dp"
-        android:clipChildren="false"
-        android:clipToPadding="false"
-        app:layout_constraintBottom_toBottomOf="@id/view_bg_bottom"
+        android:layout_marginBottom="146dp"
+        android:background="@color/color_1E1E1E"
+        android:scrollbars="none"
+        app:carousel_indicator="@id/carousel_indicator"
+        app:carousel_itemCornerRadius="20dp"
+        app:carousel_itemHeight="412dp"
+        app:carousel_itemSpacing="11dp"
+        app:carousel_itemWidth="232dp"
+        app:carousel_verticalAlignTo="@id/carousel_align_anchor"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        android:id="@+id/carousel_align_anchor"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/dp_14"
+        android:layout_marginBottom="@dimen/dp_13"
+        app:layout_constraintBottom_toTopOf="@id/carousel_indicator"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/view_balance" />
 
     <arch.cayenne.lib.skin.widget.SkinnableView
         android:id="@+id/view_bg_bottom"
@@ -25,20 +42,20 @@
         android:background="@drawable/shape_game_detail_item_bg_bottom"
         app:layout_constraintBottom_toTopOf="@id/view_bg_top" />
 
-    <arch.cayenne.lib.common.ui.view.GameRoundProgressBar
-        android:id="@+id/pro_banner"
+    <com.walisport.module.gamedetail.ui.view.CarouselIndicator
+        android:id="@+id/carousel_indicator"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="45dp"
         android:layout_height="3dp"
         android:layout_marginBottom="@dimen/dp_14"
         android:indeterminate="false"
         android:progressDrawable="@null"
-        app:backgroundColor="@color/color_1FFFFFFF"
+        app:indicator_backgroundColor="@color/color_1FFFFFFF"
         app:layout_constraintBottom_toTopOf="@id/horizontal_scroll"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:progressColor="@android:color/white"
-        app:triggerTime="2000" />
+        app:indicator_progressColor="@android:color/white"
+        app:indicator_progressWidth="7dp" />
 
     <HorizontalScrollView
         android:id="@+id/horizontal_scroll"

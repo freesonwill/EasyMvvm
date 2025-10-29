@@ -99,7 +99,7 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
                     id++, arch.cayenne.lib.common.R.drawable.ic_drawer_fund_details,
                     arch.cayenne.lib.common.R.string.drawer_fund_details
                 ) {
-                    showToast(arch.cayenne.lib.common.R.string.drawer_fund_details.getString())
+                    navigatePage(arch.cayenne.lib.res.R.string.nav_module_fund_detail_fragment.deeplink())
                 },
                 CommonFeaturesBean(
                     id++, arch.cayenne.lib.common.R.drawable.ic_drawer_bet_record,
@@ -312,34 +312,37 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
     }
 
     private fun setNotificationItem(list: List<NotificationBean>) {
-        if (list.isEmpty()) {
-            mBinding.itemNotification1.visibility = View.GONE
-            mBinding.itemNotification2.visibility = View.GONE
-            mBinding.viewRipperTop.visibility = View.GONE
-            mBinding.viewRipper.visibility = View.VISIBLE
-            return
-        }
-        mBinding.viewRipperTop.visibility = View.VISIBLE
-        mBinding.viewRipper.visibility = View.GONE
-        if (list.size == 1) {
-            val item = list[0]
-            mBinding.itemNotification2.visibility = View.VISIBLE
-            mBinding.itemNotification1.visibility = View.GONE
-            mBinding.tvMessage2.text = item.title
-            mBinding.tvTime2.text = DateUtils.getMessageTime(item.createTime)
-            //status = 1未读 2已读 3删除
-            mBinding.ivRedPoint2.visibility = if (item.state == 2) View.INVISIBLE else View.VISIBLE
-        } else {
-            val item1 = list[0]
-            val item2 = list[1]
-            mBinding.itemNotification2.visibility = View.VISIBLE
-            mBinding.itemNotification1.visibility = View.VISIBLE
-            mBinding.tvMessage1.text = item1.title
-            mBinding.tvTime1.text = DateUtils.getMessageTime(item1.createTime)
-            mBinding.ivRedPoint1.visibility = if (item1.state == 2) View.INVISIBLE else View.VISIBLE
-            mBinding.tvMessage2.text = item2.title
-            mBinding.tvTime2.text = DateUtils.getMessageTime(item2.createTime)
-            mBinding.ivRedPoint2.visibility = if (item2.state == 2) View.INVISIBLE else View.VISIBLE
+        with(mBinding) {
+            if (list.isEmpty()) {
+                itemNotification1.visibility = View.GONE
+                itemNotification2.visibility = View.GONE
+                viewRipperTop.visibility = View.GONE
+                viewRipper.visibility = View.VISIBLE
+                newMessageTitle.visibility = View.INVISIBLE
+                notificationBadge.visibility = View.INVISIBLE
+                return
+            }
+            viewRipperTop.visibility = View.VISIBLE
+            viewRipper.visibility = View.GONE
+            newMessageTitle.visibility = View.VISIBLE
+            notificationBadge.visibility = View.VISIBLE
+            notificationBadge.setNotificationCount(list.size)
+            if (list.size == 1) {
+                val item = list[0]
+                itemNotification2.visibility = View.VISIBLE
+                itemNotification1.visibility = View.GONE
+                tvMessage2.text = item.title
+                tvTime2.text = DateUtils.getMessageTime(item.createTime)
+            } else {
+                val item1 = list[0]
+                val item2 = list[1]
+                itemNotification2.visibility = View.VISIBLE
+                itemNotification1.visibility = View.VISIBLE
+                tvMessage1.text = item1.title
+                tvTime1.text = DateUtils.getMessageTime(item1.createTime)
+                tvMessage2.text = item2.title
+                tvTime2.text = DateUtils.getMessageTime(item2.createTime)
+            }
         }
     }
 

@@ -20,7 +20,7 @@ class AddBankCardFragment : BaseFragment<BankCardViewModel, FragmentAddBankCardB
     override val vmClass: KClass<BankCardViewModel> = BankCardViewModel::class
 
     override fun initView(savedInstanceState: Bundle?) {
-        mBinding.titleBar.loadGeneralTitleBar(R.string.add_bank, {
+        mBinding.titleBar.loadGeneralTitleBar(R.string.add_tx_card, {
             findNavController().navigateUp()
         })
         mBinding.root.touchBackPressed()

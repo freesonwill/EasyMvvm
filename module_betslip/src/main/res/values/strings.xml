@@ -94,4 +94,11 @@
     <string name="title_sport_filter">选择筛选项</string>
     <string name="title_sport_filter_type">体育类型</string>
     <string name="btn_sport_filter_confirm">查看最新结果</string>
+
+    <string name="title_single_bet">单关</string>
+    <string name="title_order_sport_header_betting_amount">投注 %s</string>
+    <string name="title_order_sport_header_valid_betting_amount">有效投注 %s</string>
+
+    <string name="title_order_sport_expand">展开%d个盘口</string>
+    <string name="title_order_sport_collapse">收起</string>
 </resources>

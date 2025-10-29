@@ -13,61 +13,67 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent">
 
-        <arch.cayenne.lib.skin.widget.SkinnableTextView
-            android:id="@+id/tv_status"
+        <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
-            android:layout_marginTop="9dp"
-            android:layout_marginBottom="10dp"
-            android:background="@drawable/bg_bet_confirming"
-            android:paddingHorizontal="5dp"
-            android:textColor="@color/color_2C323E"
-            android:textSize="13sp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="18dp"
+            android:layout_marginStart="14dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:skinnableFontWeight="500" />
+            app:layout_constraintTop_toTopOf="parent">
 
-        <arch.cayenne.lib.skin.widget.SkinnableTextView
-            android:id="@+id/tv_time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:textColor="@color/color_C0C0C0"
-            android:textSize="14sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@id/tv_status"
-            app:layout_constraintTop_toTopOf="parent" />
+            <ImageView
+                android:id="@+id/iv_money"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone" />
 
-        <arch.cayenne.lib.skin.widget.SkinnableTextView
-            android:id="@+id/tv_combo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="13dp"
-            android:textColor="@color/color_C0C0C0"
-            android:textSize="14sp"
-            app:layout_constraintBottom_toBottomOf="@id/tv_time"
-            app:layout_constraintStart_toEndOf="@id/tv_time"
-            app:layout_constraintTop_toTopOf="@id/tv_time" />
+            <arch.cayenne.lib.skin.widget.SkinnableTextView
+                android:id="@+id/tv_money"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="1dp"
+                android:textColor="@color/color_00E0E5"
+                android:textSize="15sp"
+                app:layout_goneMarginStart="0dp"
+                app:skinnableFontWeight="590" />
+
+            <arch.cayenne.lib.skin.widget.SkinnableTextView
+                android:id="@+id/tv_combo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="13dp"
+                android:textColor="@color/color_00E0E5"
+                android:textSize="15sp"
+                app:skinnableFontWeight="600" />
+
+            <arch.cayenne.lib.skin.widget.SkinnableTextView
+                android:id="@+id/tv_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:background="@drawable/bg_bet_confirming"
+                android:paddingHorizontal="5dp"
+                android:textColor="@color/color_2C323E"
+                android:textSize="13sp"
+                android:visibility="gone"
+                app:skinnableFontWeight="500" />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
 
         <arch.cayenne.lib.skin.widget.SkinnableImageView
             android:id="@+id/iv_share"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingHorizontal="12dp"
-            android:paddingTop="10dp"
-            android:paddingBottom="12dp"
-            android:src="@drawable/icon_share"
+            android:layout_marginTop="5dp"
+            android:padding="12dp"
+            android:src="@drawable/icon_order_share"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-
-        <arch.cayenne.lib.skin.widget.SkinnableView
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:background="@color/color_0FFFFFFF"
-            app:layout_constraintBottom_toBottomOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -75,29 +81,60 @@
         android:id="@+id/rv_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="12dp"
-        android:layout_marginEnd="12dp"
+        android:layout_marginHorizontal="14dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintTop_toBottomOf="@id/cl_title"
-        tools:itemCount="2"
+        tools:itemCount="1"
         tools:listitem="@layout/item_order_sport_betting_selection" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_collapse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rv_content">
+
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
+            android:id="@+id/tv_collapse"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/color_C0C0C0"
+            android:textSize="12sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:skinnableFontWeight="500" />
+
+        <arch.cayenne.lib.skin.widget.SkinnableImageView
+            android:id="@+id/iv_collapse"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:src="@drawable/icon_order_data_collapse"
+            app:layout_constraintTop_toTopOf="@id/tv_collapse"
+            app:layout_constraintBottom_toBottomOf="@id/tv_collapse"
+            app:layout_constraintStart_toEndOf="@id/tv_collapse"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <arch.cayenne.lib.skin.widget.SkinnableView
         android:id="@+id/line"
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
-        android:layout_marginHorizontal="12dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginHorizontal="14dp"
+        android:layout_marginTop="16dp"
         android:background="@color/color_0FFFFFFF"
-        app:layout_constraintTop_toBottomOf="@id/rv_content" />
+        app:layout_constraintTop_toBottomOf="@id/cl_collapse"
+        app:layout_goneMarginTop="18dp" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_money"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="20dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toTopOf="@id/btn_early_settle"
         app:layout_constraintTop_toBottomOf="@id/line">
 
@@ -136,7 +173,7 @@
             <arch.cayenne.lib.skin.widget.SkinnableTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
+                android:layout_marginTop="9dp"
                 android:text="@string/title_bet"
                 android:textColor="@color/color_999999"
                 android:textSize="14sp"
@@ -171,7 +208,7 @@
             <arch.cayenne.lib.skin.widget.SkinnableTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
+                android:layout_marginTop="9dp"
                 android:text="@string/title_odds"
                 android:textColor="@color/color_999999"
                 android:textSize="14sp"
@@ -192,7 +229,7 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <arch.cayenne.lib.skin.widget.SkinnableTextView
-                android:id="@+id/tv_win_money"
+                android:id="@+id/tv_win_money_value"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/color_FFFFFF"
@@ -205,16 +242,17 @@
 
 
             <arch.cayenne.lib.skin.widget.SkinnableTextView
+                android:id="@+id/tv_win_money"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
+                android:layout_marginTop="9dp"
                 android:text="@string/live_bet_except_max_win"
                 android:textColor="@color/color_999999"
                 android:textSize="14sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tv_win_money" />
+                app:layout_constraintTop_toBottomOf="@id/tv_win_money_value" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 
@@ -224,8 +262,7 @@
         android:id="@+id/btn_early_settle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="12dp"
-        android:layout_marginBottom="20dp"
+        android:layout_margin="14dp"
         android:background="@drawable/shape_9dp"
         android:backgroundTint="@color/color_003A42"
         app:layout_constraintBottom_toBottomOf="parent">
@@ -250,6 +287,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@id/tv_early_settle"
             app:layout_constraintEnd_toStartOf="@id/tv_early_settle_money"
             app:layout_constraintStart_toEndOf="@id/tv_early_settle"
