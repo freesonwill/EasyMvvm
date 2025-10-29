@@ -60,4 +60,5 @@
 
     <!-- VIP 相關文字 -->
     <string name="vip_level_format">VIP %d</string>
+    <string name="notification_text">notification</string>
 </resources>
