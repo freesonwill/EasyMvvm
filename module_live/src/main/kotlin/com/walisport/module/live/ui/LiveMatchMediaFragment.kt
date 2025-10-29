@@ -6,13 +6,14 @@ import android.view.animation.LinearInterpolator
 import androidx.constraintlayout.widget.ConstraintLayout.VISIBLE
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import arch.cayenne.lib.base.ui.animation.AnimationController
+import arch.cayenne.lib.base.ui.animation.AnimationController.AnimType
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.data.constants.MatchStatus
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.ext.startSafeAnimateSet
 import com.walisport.module.live.compare.MediaSourceBeanCompare
-import com.walisport.module.live.data.constants.VideoAnimatorConstants.Companion.BUTTONS_ANIMATION_DURATION
 import com.walisport.module.live.data.constants.VideoAnimatorConstants.Companion.HIDE_BUTTONS_TIMER
 import com.walisport.module.live.data.model.MediaSource
 import com.walisport.module.live.data.model.MediaSourceType
@@ -314,8 +315,8 @@ class LiveMatchMediaFragment :
                     )
 
                 },
-                duration = BUTTONS_ANIMATION_DURATION,
-                interpolator = LinearInterpolator(),
+                duration = AnimationController[AnimType.popupExit]!!.duration,
+                interpolator = AnimationController[AnimType.popupExit]?.interpolator?.toInterpolator() ?: LinearInterpolator(),
                 start = true
             )
         }
