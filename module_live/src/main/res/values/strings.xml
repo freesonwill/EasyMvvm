@@ -144,4 +144,8 @@
     <string name="event_cqcgl">传球成功率</string>
     <string name="event_pj">扑救</string>
     <string name="lineup_user_name_empty">暂无数据</string>
+
+    <string name="media_source_animation_title">动画直播</string>
+    <string name="media_source_animation_subtitle">极速 省流</string>
+
 </resources>

@@ -106,5 +106,9 @@ class LiveMatchMediaViewModel(
         repo.queryLiveStream()
     }
 
+    fun setPlayingVideoId(id: Int) {
+        repo.setPlayingVideoId(id)
+    }
+
 
 }
