@@ -2,6 +2,7 @@ package com.walisport.module.topup.ui.fragment
 
 import android.os.Bundle
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
@@ -43,14 +44,20 @@ class WithdrawCryptoFragment : BaseFragment<CryptoViewModel, FragmentWithdrawCry
 
     override fun initListener() {
         mBinding.layTopUpLesson.clickNoRepeat {
-            val args = Bundle()
-            args.putBoolean("isTopUp", true)
-            navigate(R.id.action_withdrawFragment_to_lessonFragment, args)
+            navigate(WithdrawFragmentDirections.actionWithdrawFragmentToFundDetailsFragment().apply {
+                arguments.putString("type", "recharge")
+            })
+        }
+        mBinding.layCoin.clickNoRepeat {
+            val location = IntArray(2)
+            mBinding.layCoin.getLocationOnScreen(location)
+            val offset = location[1] + 25.dp2px
+            CoinDialogFragment.newInstance(offset).show(childFragmentManager)
         }
         mBinding.layWithdrawLesson.clickNoRepeat {
-            val args = Bundle()
-            args.putBoolean("isTopUp", false)
-            navigate(R.id.action_withdrawFragment_to_lessonFragment, args)
+            navigate(WithdrawFragmentDirections.actionWithdrawFragmentToFundDetailsFragment().apply {
+                arguments.putString("type", "withdraw")
+            })
         }
         mBinding.layCustomer.clickNoRepeat {
             showToast(R.string.cus_service.getString())
