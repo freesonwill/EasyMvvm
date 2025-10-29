@@ -22,7 +22,7 @@
         android:id="@+id/tv_section_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_6"
+        android:layout_marginStart="@dimen/dp_5"
         android:ellipsize="end"
         android:maxWidth="300dp"
         android:singleLine="true"
