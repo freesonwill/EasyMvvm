@@ -423,7 +423,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                     putBoolean("showAnim", mViewModel.showAnim.value ?: false)
                 }
                 childFragmentManager.beginTransaction()
-                    .replace(mBinding.fragmentVideo.id, it, LiveMatchMediaFragment.TAG)
+                    .replace(mBinding.fragmentMedia.id, it, LiveMatchMediaFragment.TAG)
                     .commitNow()
             }
     }

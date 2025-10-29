@@ -80,7 +80,6 @@ class LiveVideoPlayerFragment :
      */
     private var scheduledHideButtonsJob: Job? = null
 
-    private var hasShownVideoSourceBar: Boolean = false
 
 //    /**
 //     * 视频加载时的动画
@@ -121,23 +120,10 @@ class LiveVideoPlayerFragment :
     override fun initView(savedInstanceState: Bundle?) {
         mBinding.model = mViewModel
 
-        initVideoSourceBanner()
         initVideoView()
         scheduleHideButtons()
     }
 
-    private fun initVideoSourceBanner() {
-        //init video source recyclerview
-        with(mBinding) {
-            rvSource.apply {
-                itemAnimator = null
-                layoutManager =
-                    LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-                addItemDecoration(HorizontalItemDecoration())
-                adapter = LiveVideoSourceSimpleAdapter(VideoSourceBeanCompare())
-            }
-        }
-    }
 
     private fun initVideoView() {
         acquireVideoView()
@@ -269,21 +255,7 @@ class LiveVideoPlayerFragment :
                     if (it.source.isEmpty()) {
                         onDataSourceEmpty()
                     } else {
-                        //首次收到视频源数据时，需要展示视频源banner
-                        if (!hasShownVideoSourceBar) {
-                            mBinding.rvSource.visibility = VISIBLE
-                            hasShownVideoSourceBar = true
 
-                            (mBinding.rvSource.adapter as LiveVideoSourceSimpleAdapter).apply {
-                                submitList(mViewModel.liveVideoBean.value?.source)
-
-                                setOnClickListener {
-                                    mediaViewModel.switchToVideo()
-//                        mViewModel.setPlayingVideoId(it)
-                                }
-                            }
-                            scheduleHideVideoSourceBanner()
-                        }
                         mBinding.ivToFullscreen.visibility = View.VISIBLE
                         val streamInfoBean =
                             it.source.firstOrNull { ele -> ele.isPlaying }?.liveStreams?.firstOrNull { ele -> ele.selected }
@@ -461,31 +433,7 @@ class LiveVideoPlayerFragment :
 
     }
 
-    private fun scheduleHideVideoSourceBanner() {
-        lifecycleScope.launch {
-            delay(HIDE_BUTTONS_TIMER)
-            val height = mBinding.rvSource.height
-            mBinding.root.startSafeAnimateSet(
-                {
-                    playTogether(
-                        ValueAnimator.ofInt(height, 0).apply {
-                            addUpdateListener {
-                                val lp = mBinding.rvSource.layoutParams
-                                lp.height = it.animatedValue as Int
 
-                                mBinding.rvSource.layoutParams = lp
-                            }
-                        },
-                    )
-
-                },
-                duration = BUTTONS_ANIMATION_DURATION,
-                interpolator = LinearInterpolator(),
-                start = true
-            )
-        }
-
-    }
 
 
     private fun onPlayerStateReceived(state: PlayerState) {

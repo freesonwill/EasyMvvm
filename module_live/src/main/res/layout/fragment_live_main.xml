@@ -52,13 +52,13 @@
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/llVideo"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_211"
+                    android:layout_height="wrap_content"
                     android:background="@color/tran_0">
 
                     <androidx.fragment.app.FragmentContainerView
-                        android:id="@+id/fragment_video"
+                        android:id="@+id/fragment_media"
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/dp_211"
+                        android:layout_height="wrap_content"
                         android:fitsSystemWindows="false"
                         tools:ignore="MissingConstraints" />
 

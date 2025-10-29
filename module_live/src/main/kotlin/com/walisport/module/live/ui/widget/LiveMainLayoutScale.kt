@@ -25,7 +25,7 @@ class LiveMainLayoutScale @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : LinearLayoutCompat(context, attrs, defStyleAttr) {
 
-    private lateinit var fragmentVideo: FragmentContainerView
+    private lateinit var fragmentMedia: FragmentContainerView
     private lateinit var llVideo: ConstraintLayout
 
     private lateinit var llText: LinearLayoutCompat
@@ -51,7 +51,7 @@ class LiveMainLayoutScale @JvmOverloads constructor(
     override fun onFinishInflate() {
         super.onFinishInflate()
         // 初始化视图
-        fragmentVideo = findViewById(R.id.fragment_video)
+        fragmentMedia = findViewById(R.id.fragment_media)
         llVideo = findViewById(R.id.llVideo)
         llText = findViewById(R.id.llText)
         tvVideoVs = findViewById(R.id.tv_video_vs)
@@ -64,7 +64,7 @@ class LiveMainLayoutScale @JvmOverloads constructor(
             collapseToZero(200)
         }
         // 设置初始高度和宽度
-        llVideo.layoutParams.height = initialVideoHeight.toInt()
+      //  llVideo.layoutParams.height = initialVideoHeight.toInt()
         llVideo.post {
             maxVideoWidth = llVideo.width.toFloat()
             initialVideoWidth = maxVideoWidth
@@ -72,8 +72,8 @@ class LiveMainLayoutScale @JvmOverloads constructor(
             minVideoWidth = scaleXtoY * minVideoHeight // 最小宽度
             llVideo.layoutParams.width = maxVideoWidth.toInt()
             // 设置初始缩放中心（只设置宽度中心）
-            fragmentVideo.pivotX = fragmentVideo.width.toFloat() / 2
-            fragmentVideo.pivotY = 0f // 高度顶部
+            fragmentMedia.pivotX = fragmentMedia.width.toFloat() / 2
+            fragmentMedia.pivotY = 0f // 高度顶部
             // LogUtils.e("MainLayout------>onFinishInflate")
         }
     }
@@ -97,8 +97,8 @@ class LiveMainLayoutScale @JvmOverloads constructor(
 
         if (isCollapsed) {//折叠状态后滑动
             llVideo.visibility = VISIBLE
-            fragmentVideo.visibility = VISIBLE
-            fragmentVideo.width.toFloat() / 2 // 宽度中心
+            fragmentMedia.visibility = VISIBLE
+            fragmentMedia.width.toFloat() / 2 // 宽度中心
         }
 
         LogUtils.e("MainLayout------>adjustLayout")
@@ -121,10 +121,10 @@ class LiveMainLayoutScale @JvmOverloads constructor(
 
         // 设置缩放中心：只设置宽度中心（X轴）
         // 当高度达到 minVideoHeight 时，pivotX 设置为 0，否则为宽度中心
-            fragmentVideo.pivotX = if (newHeight <= minVideoHeight) {
+            fragmentMedia.pivotX = if (newHeight <= minVideoHeight) {
                 0f
             } else {
-                fragmentVideo.width.toFloat() / 2 // 宽度中心
+                fragmentMedia.width.toFloat() / 2 // 宽度中心
             }
 
         // 当高度达到最小值时触发隐藏动画
@@ -138,9 +138,9 @@ class LiveMainLayoutScale @JvmOverloads constructor(
         // 不设置 pivotY，保持默认（顶部，pivotY = 0）
 
         // 应用等比缩放
-        fragmentVideo.post {
-            fragmentVideo.scaleX = targetScale
-            fragmentVideo.scaleY = targetScale
+        fragmentMedia.post {
+            fragmentMedia.scaleX = targetScale
+            fragmentMedia.scaleY = targetScale
         }
 
         // 更新初始值
@@ -186,12 +186,12 @@ class LiveMainLayoutScale @JvmOverloads constructor(
         // 获取当前高度和缩放比例
         val currentHeight = llVideo.layoutParams.height.toFloat()
         val targetHeight = maxVideoHeight // 目标高度（211dp）
-        val currentScale = fragmentVideo.scaleX
+        val currentScale = fragmentMedia.scaleX
         val targetScale = 1.0f // 初始缩放比例（对应 maxVideoHeight）
         llText.visibility = GONE
         // 设置缩放中心
-        fragmentVideo.pivotY = 0f // 高度顶部
-        fragmentVideo.pivotX = fragmentVideo.width.toFloat() / 2 // 宽度中心（初始状态非最小高度）
+        fragmentMedia.pivotY = 0f // 高度顶部
+        fragmentMedia.pivotX = fragmentMedia.width.toFloat() / 2 // 宽度中心（初始状态非最小高度）
 
         // 动画还原 llVideo 高度
         ValueAnimator.ofFloat(currentHeight, targetHeight).apply {
@@ -210,8 +210,8 @@ class LiveMainLayoutScale @JvmOverloads constructor(
             this.duration = duration
             addUpdateListener { animator ->
                 val scale = animator.animatedValue as Float
-                fragmentVideo.scaleX = scale
-                fragmentVideo.scaleY = scale
+                fragmentMedia.scaleX = scale
+                fragmentMedia.scaleY = scale
             }
             start()
         }
@@ -226,7 +226,7 @@ class LiveMainLayoutScale @JvmOverloads constructor(
      * @param duration 动画时长（毫秒）
      */
     fun collapseToZero(duration: Long = 300) {
-        if (llVideo.layoutParams.height == 0 && fragmentVideo.scaleX == 0f) {
+        if (llVideo.layoutParams.height == 0 && fragmentMedia.scaleX == 0f) {
             // LogUtils.e("MainLayout----collapseToZero: already collapsed")
             return // 已经折叠，直接返回
         }
@@ -235,12 +235,12 @@ class LiveMainLayoutScale @JvmOverloads constructor(
         // 获取当前高度和缩放比例
         val currentHeight = llVideo.layoutParams.height.toFloat()
         val targetHeight = 0f // 目标高度 0
-        val currentScale = fragmentVideo.scaleX
+        val currentScale = fragmentMedia.scaleX
         val targetScale = 0f // 目标缩放比例 0
 
         // 设置缩放中心
-        fragmentVideo.pivotY = 0f // 高度顶部
-        fragmentVideo.pivotX = 0f // 宽度左边缘（与最小高度一致）
+        fragmentMedia.pivotY = 0f // 高度顶部
+        fragmentMedia.pivotX = 0f // 宽度左边缘（与最小高度一致）
 
         // 动画将 llVideo 高度设置为 0
         ValueAnimator.ofFloat(currentHeight, targetHeight).apply {
@@ -260,7 +260,7 @@ class LiveMainLayoutScale @JvmOverloads constructor(
                     llVideo.visibility = View.GONE // 动画结束时隐藏
                     isCollapsed = true // 标记折叠状态
                     minVideoHeight = 0f
-                    fragmentVideo.width.toFloat() / 2 // 宽度中心
+                    fragmentMedia.width.toFloat() / 2 // 宽度中心
                     // LogUtils.e("MainLayout----collapseToZero: animation ended, height=0, visibility=GONE")
                 }
             })
@@ -272,12 +272,12 @@ class LiveMainLayoutScale @JvmOverloads constructor(
             this.duration = duration
             addUpdateListener { animator ->
                 val scale = animator.animatedValue as Float
-                fragmentVideo.scaleX = scale
-                fragmentVideo.scaleY = scale
+                fragmentMedia.scaleX = scale
+                fragmentMedia.scaleY = scale
             }
             addListener(object : android.animation.AnimatorListenerAdapter() {
                 override fun onAnimationEnd(animation: android.animation.Animator) {
-                    fragmentVideo.visibility = View.GONE // 动画结束时隐藏
+                    fragmentMedia.visibility = View.GONE // 动画结束时隐藏
                     llText.visibility = GONE
                     llVideo.alpha = 1f
                     LogUtils.e("MainLayout----collapseToZero: scale=0, visibility=GONE")
