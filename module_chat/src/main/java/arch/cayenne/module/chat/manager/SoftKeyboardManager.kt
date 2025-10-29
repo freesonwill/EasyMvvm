@@ -113,7 +113,7 @@ class SoftKeyboardManager(
                 }
 
                 override fun onSoftKeyBoardHide() {
-                    "onSoftKeyBoardHide  $clickKeyBoardType".logd("aaa")
+//                    "onSoftKeyBoardHide  $clickKeyBoardType".logd("aaa")
                     isSoftKeyboardShow = false
                     if (clickKeyBoardType == KeyBoardType.SOFT_KEYBOARD) {
                         keyBoardListener.keyboardChangeClick(KeyBoardType.CHAT, 8)
@@ -268,7 +268,7 @@ class SoftKeyboardManager(
             clickKeyBoardType,
             currentKeyBoardType
         )
-        "showKeyboardAnimation $animationType $softKeyBoardHeight}".logd("aaa")
+//        "showKeyboardAnimation $animationType $softKeyBoardHeight}".logd("aaa")
         when (animationType) {
             KeyboardActionType.CHAT_TO_CHAT -> keyBoardListener.changeKeyboardUi(
                 KeyBoardType.CHAT
@@ -348,7 +348,7 @@ class SoftKeyboardManager(
      * 禁用软件盘
      * */
     private fun hideSoftKeyBoard(flag: Int) {
-        "hideSoftKeyBoard $flag".logd("aaa")
+//        "hideSoftKeyBoard $flag".logd("aaa")
         etInput?.let {
             EditTextUtils.hideKeyboard(it.context, it)
         }

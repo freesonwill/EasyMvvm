@@ -86,7 +86,7 @@ class SoftAnimHelper(
                 if (dbKeyboardHeight != keyBoardHeight) { //保存的高度和第二次高度不一致更新保存的高度
                     dbKeyboardHeight = keyBoardHeight
                     navigationListener?.onSoftKeyBoardShow(keyBoardHeight)
-                    "checkKeyBoard second  ${keyBoardHeight}".logd("aaa")
+//                    "checkKeyBoard second  ${keyBoardHeight}".logd("aaa")
 
                 }
             }
@@ -97,7 +97,7 @@ class SoftAnimHelper(
             isKeyBoardVisible = true
             val keyBoardHeight = if (isNavigationBarVisible) height - navigationBarHeight else height
 //            "frist keyBoardHeight:$keyBoardHeight dbHeight:$dbKeyboardHeight".logd(TAG)
-            "checkKeyBoard  ${keyBoardHeight}".logd("aaa")
+//            "checkKeyBoard  ${keyBoardHeight}".logd("aaa")
             if (keyBoardHeight == dbKeyboardHeight) { //计算的软件盘高度和保存的软件盘高度一致
                 navigationListener?.onSoftKeyBoardShow(keyBoardHeight)
             } else { //计算的软件盘高度和保存的软件盘高度不一致
