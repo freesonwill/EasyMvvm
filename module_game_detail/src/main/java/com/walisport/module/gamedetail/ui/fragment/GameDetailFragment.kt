@@ -18,7 +18,6 @@ import com.walisport.module.gamedetail.data.model.PlayerRankingBean
 import com.walisport.module.gamedetail.data.model.PreviewType
 import com.walisport.module.gamedetail.databinding.FragmentGameDetailBinding
 import com.walisport.module.gamedetail.ui.adapter.GamePreviewAdapter
-import com.walisport.module.gamedetail.ui.view.CarouselScrollView
 import com.walisport.module.gamedetail.ui.viewmodel.GameDetailViewModel
 import java.util.Locale
 import kotlin.reflect.KClass
@@ -93,30 +92,12 @@ class GameDetailFragment: BaseFragment<GameDetailViewModel, FragmentGameDetailBi
                     setData(previewMock)
                 }
 
-                setOnStateChangeListener { newState, source ->
-                    when(newState) {
-                        CarouselScrollView.State.MAGNIFIED -> proBanner.resetTriggerJob()
-                        CarouselScrollView.State.CAROUSEL -> {
-                            if(source == CarouselScrollView.TriggerSource.USER_ACTION) {
-                                proBanner.stopTriggerJob()
-                            }
-                        }
-                    }
-                }
-
                 doOnLayout {
                     gotoPage(
                         pageIndex = 0,
                         magnifyImmediately = true
                     )
                 }
-            }
-
-            proBanner.setTriggerListener {
-                carouselScrollView.gotoPage(
-                    pageIndex = (carouselScrollView.getCurrentIndex() + 1) % previewMock.size,
-                    magnifyImmediately = false
-                )
             }
         }
     }
@@ -151,12 +132,6 @@ class GameDetailFragment: BaseFragment<GameDetailViewModel, FragmentGameDetailBi
         super.onStart()
         StatusBarConfig.statusBarType = StatusBarMode.FULLSCREEN
         setStatusBar(StatusBarConfig, mBinding.root)
-        mBinding.proBanner.resetTriggerJob()
-    }
-
-    override fun onStop() {
-        super.onStop()
-        mBinding.proBanner.stopTriggerJob()
     }
 
     private fun closeExistingRankingFragment(afterClose: ((isSuccess: Boolean, type: PlayerRankingFragment.RankingType?) -> Unit)? = null) {
