@@ -9,6 +9,8 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.LinearLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
@@ -43,9 +45,11 @@ import arch.cayenne.module.home.R
 import arch.cayenne.module.home.data.constants.HomeState
 import arch.cayenne.module.home.data.constants.PlayType
 import arch.cayenne.module.home.data.constants.TournamentListType
+import arch.cayenne.module.home.data.constants.TournamentSortType
 import arch.cayenne.module.home.databinding.FragmentSubHomeBinding
 import arch.cayenne.module.home.databinding.ItemDateTabBinding
 import arch.cayenne.module.home.databinding.ItemLeagueTabBinding
+import arch.cayenne.module.home.databinding.LayoutTournamentSortingMenuBinding
 import arch.cayenne.module.home.ui.adapter.LeaguePagerAdapter
 import arch.cayenne.module.home.ui.adapter.SportBannerAdapter
 import arch.cayenne.module.home.ui.adapter.SportsListAdapter
@@ -79,6 +83,10 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
     private var drawSportListJob: Job? = null
 
     private var isExpanded = false
+    private var sortingMenuBinding: LayoutTournamentSortingMenuBinding? = null
+
+    // 當前排序類型，預設為按熱門聯賽排序
+    private var currentSortType = TournamentSortType.BY_HOT
 
     private val defaultAnimDuration = 300L
 
@@ -131,30 +139,6 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
             }
         }
     }
-// TODO 之後排序功能使用
-
-//    private fun setMaskViewAlpha(visible: Boolean) {
-//        mBinding.vTournamentListMask.let {
-//            it.post {
-//                it.animate()
-//                    .alpha(if (visible) 1f else 0f)
-//                    .setDuration(defaultAnimDuration)
-//                    .setListener(object : Animator.AnimatorListener {
-//                        override fun onAnimationStart(p0: Animator) {
-//                            if (visible) it.visibility = View.VISIBLE
-//                        }
-//
-//                        override fun onAnimationEnd(p0: Animator) {
-//                            if (!visible) it.visibility = View.GONE
-//                        }
-//
-//                        override fun onAnimationCancel(p0: Animator) = Unit
-//                        override fun onAnimationRepeat(p0: Animator) = Unit
-//                    })
-//                    .start()
-//            }
-//        }
-//    }
 
     override fun initListener() {
         with(mBinding) {
@@ -207,7 +191,7 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
 
         mViewModel.collapseTournamentDropdown.observeEvent(viewLifecycleOwner, this) { shouldCollapse ->
             if (shouldCollapse && isExpanded) {
-                toggleTournamentSorting(false, TournamentListType.MORE)
+                toggleTournamentSorting(false)
                 mViewModel.consumeCollapseTournamentDropdown() // 重置事件，避免重複觸發
             }
         }
@@ -296,6 +280,10 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
     fun onFragmentUnSelected() {
         mViewModel.requestCollapseTournamentDropdown()
         mViewModel.setCalendarState(HomeCalendarFragment.States.CALENDAR_CLOSE_NOTHING)
+        // 收起排序選單
+        if (isExpanded) {
+            toggleTournamentSorting(false)
+        }
     }
 
     //init 二級導航欄位
@@ -535,8 +523,7 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
         }
         mBinding.llTournamentSort.clickNoRepeat {
             mViewModel.setCalendarState(HomeCalendarFragment.States.CALENDAR_CLOSE_NOTHING)
-            // toggleTournamentMoreSection(true, TournamentListType.MORE)
-            //TODO 之後改排序功能
+            toggleTournamentSorting(!isExpanded)
         }
     }
 
@@ -624,52 +611,174 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
 
     }
 
-    /***
+    /**
+     * 排序選單的展開收起切換
      * @param expanded : Boolean 展開、收起
-     * @param type : TournamentListType 是屬於今日和早盤的展開型聯賽列表或是屬於冠軍型的聯賽列表，
-     * 或是none，表示切換到其他一級導航前先把目前的聯賽列表馬上收起來，例如 今日 -> 冠軍 or 冠軍 -> 今日，這種情況下一律沒有動畫
-     * TODO 未來改為排序功能使用
-     * */
-    private fun toggleTournamentSorting(
-        expanded: Boolean,
-        type: TournamentListType
-    ) {
-        val tag = "tournament_dropdown"
-        val fm = childFragmentManager
-        val container = mBinding.llTournamentSort
+     */
+    private fun toggleTournamentSorting(expanded: Boolean) {
+        val container = mBinding.llTournamentsDropdown
         isExpanded = expanded
+
         if (expanded) {
-            if (fm.findFragmentByTag(tag) != null) return
-            container.visibility = View.VISIBLE
-
-            // 展開時顯示遮罩層
-//            setMaskViewAlpha(true)
-
-            val tournamentListFragment = TournamentListFragment.newInstance(mViewModel.currentPlayTypeId, mViewModel.currentSportId, type)
-
-            fm.beginTransaction().apply {
-                if (type == TournamentListType.MORE) {
-                    setCustomAnimations(
-                        R.anim.slide_in_from_top,
-                        R.anim.slide_out_to_top
-                    )
-                }
-                replace(R.id.ll_tournaments_dropdown, tournamentListFragment, tag)
-                commitAllowingStateLoss()
+            // 展開排序選單
+            if (sortingMenuBinding == null) {
+                sortingMenuBinding = LayoutTournamentSortingMenuBinding.inflate(
+                    LayoutInflater.from(requireContext()),
+                    container,
+                    false
+                )
+                setupSortingMenuViews()
             }
 
-        } else {
-            val fragment = fm.findFragmentByTag(tag) ?: return
-
-            // 收回時隱藏遮罩層
-//            setMaskViewAlpha(false)
-            
-            fm.beginTransaction().apply {
-                if (type == TournamentListType.MORE) {
-                    setCustomAnimations(0, R.anim.slide_out_to_top)
+            // 先立即顯示遮罩層遮擋底下內容，避免閃爍
+            mBinding.vTournamentListMask.apply {
+                visibility = View.VISIBLE
+                alpha = 1f
+                // 設置點擊事件
+                clickNoRepeat {
+                    toggleTournamentSorting(false)
                 }
-                remove(fragment)
-                commitNow()
+            }
+            
+            container.removeAllViews()
+            container.addView(sortingMenuBinding?.root)
+            container.visibility = View.VISIBLE
+
+            // 立即開始動畫
+            val slideInAnim =
+                AnimationUtils.loadAnimation(requireContext(), R.anim.slide_in_from_top)
+            sortingMenuBinding?.root?.startAnimation(slideInAnim)
+
+            // 切換圖標為收起狀態
+            mBinding.ivTournamentSortIcon.setImageResource(R.drawable.ic_tournament_collapse)
+
+            // tv_tournament_more 變色為選中狀態
+            mBinding.tvTournamentMore.setTextColor(
+                SkinnableResourceManager.getColor(
+                    requireContext(),
+                    arch.cayenne.lib.common.R.color.color_00E0E5
+                )
+            )
+
+        } else {
+            // 收起排序選單 - 使用動畫
+            val slideOutAnim = AnimationUtils.loadAnimation(
+                requireContext(),
+                R.anim.slide_out_to_top
+            )
+            slideOutAnim.setAnimationListener(object : Animation.AnimationListener {
+                override fun onAnimationStart(animation: Animation?) {}
+
+                override fun onAnimationEnd(animation: Animation?) {
+                    container.visibility = View.GONE
+                }
+
+                override fun onAnimationRepeat(animation: Animation?) {}
+            })
+            sortingMenuBinding?.root?.startAnimation(slideOutAnim)
+
+            // 收回時隱藏遮罩層（帶動畫效果）
+            mBinding.vTournamentListMask.animate()
+                .alpha(0f)
+                .setDuration(defaultAnimDuration)
+                .setListener(object : android.animation.Animator.AnimatorListener {
+                    override fun onAnimationStart(p0: android.animation.Animator) {}
+
+                    override fun onAnimationEnd(p0: android.animation.Animator) {
+                        mBinding.vTournamentListMask.visibility = View.GONE
+                    }
+
+                    override fun onAnimationCancel(p0: android.animation.Animator) {}
+                    override fun onAnimationRepeat(p0: android.animation.Animator) {}
+                })
+                .start()
+
+            // 切換圖標為展開狀態
+            mBinding.ivTournamentSortIcon.setImageResource(R.drawable.ic_tournament_expand)
+
+            // tv_tournament_more 恢復為未選中狀態
+            mBinding.tvTournamentMore.setTextColor(
+                SkinnableResourceManager.getColor(
+                    requireContext(),
+                    arch.cayenne.lib.common.R.color.color_C0C0C0
+                )
+            )
+        }
+    }
+
+    /**
+     * 設置排序選單視圖的點擊事件和初始狀態
+     */
+    private fun setupSortingMenuViews() {
+        sortingMenuBinding?.let { binding ->
+            // 設置初始選中狀態
+            updateSortingMenuSelection()
+
+            // 點擊按熱門排序
+            binding.tvSortByHot.clickNoRepeat {
+                if (currentSortType != TournamentSortType.BY_HOT) {
+                    currentSortType = TournamentSortType.BY_HOT
+                    updateSortingMenuSelection()
+                    applySorting()
+                }
+                toggleTournamentSorting(false)
+            }
+
+            // 點擊按時間排序
+            binding.tvSortByTime.clickNoRepeat {
+                if (currentSortType != TournamentSortType.BY_TIME) {
+                    currentSortType = TournamentSortType.BY_TIME
+                    updateSortingMenuSelection()
+                    applySorting()
+                }
+                toggleTournamentSorting(false)
+            }
+        }
+    }
+
+    /**
+     * 更新排序選單的選中狀態
+     */
+    private fun updateSortingMenuSelection() {
+        sortingMenuBinding?.let { binding ->
+            val selectedColor = SkinnableResourceManager.getColor(
+                requireContext(),
+                arch.cayenne.lib.common.R.color.color_00E0E5
+            )
+            val unselectedColor = SkinnableResourceManager.getColor(
+                requireContext(),
+                arch.cayenne.lib.common.R.color.color_999999
+            )
+
+            when (currentSortType) {
+                TournamentSortType.BY_HOT -> {
+                    binding.tvSortByHot.setTextColor(selectedColor)
+                    binding.tvSortByTime.setTextColor(unselectedColor)
+                }
+
+                TournamentSortType.BY_TIME -> {
+                    binding.tvSortByHot.setTextColor(unselectedColor)
+                    binding.tvSortByTime.setTextColor(selectedColor)
+                }
+            }
+        }
+    }
+
+    /**
+     * 應用排序邏輯
+     */
+    private fun applySorting() {
+        // TODO: 在這裡實現實際的排序邏輯
+        // 根據 currentSortType 來決定如何排序賽事列表
+        when (currentSortType) {
+            TournamentSortType.BY_HOT -> {
+                // 按熱門聯賽排序的邏輯
+                // 可以調用 ViewModel 的方法來更新數據
+            }
+
+            TournamentSortType.BY_TIME -> {
+                // 按比賽時間排序的邏輯
+                // 可以調用 ViewModel 的方法來更新數據
             }
         }
     }
@@ -991,11 +1100,17 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
     }
 
     override fun onBackPressed(): Boolean {
+        // 如果排序選單展開，先收起排序選單
         if(isExpanded && mViewModel.currentPlayTypeId != PlayType.CHAMPION.id){
-            toggleTournamentSorting(false, TournamentListType.MORE)
+            toggleTournamentSorting(false)
             return true
         }
         return super.onBackPressed()
+    }
+
+    override fun onDestroyView() {
+        sortingMenuBinding = null
+        super.onDestroyView()
     }
 
     companion object {
