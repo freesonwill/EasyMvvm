@@ -7,6 +7,7 @@ import android.graphics.Outline
 import android.os.Handler
 import android.os.Looper
 import android.util.AttributeSet
+import android.util.Log
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
@@ -67,6 +68,7 @@ class CarouselScrollView(context: Context, attrs: AttributeSet?) :
                 field?.detachFromCarousel()
             }
             field = value
+            indicatorView?.setPageCount(value?.getItemCount() ?: 0)
             if(value != null) {
                 // 註冊新 adapter 的觀察者並附加
                 value.registerAdapterDataObserver(adapterDataObserver)
@@ -88,6 +90,8 @@ class CarouselScrollView(context: Context, attrs: AttributeSet?) :
     var itemCornerRadius = 0f
     private var screenCenter = 0
     private var verticalAlignToId: Int = -1 // 用於儲存外部 Guideline 的資源 ID
+    private var indicatorId: Int = -1
+    private var indicatorView: CarouselIndicator? = null
 
     // 滾動與動畫
     private val scroller: OverScroller = OverScroller(context)
@@ -137,6 +141,10 @@ class CarouselScrollView(context: Context, attrs: AttributeSet?) :
                 verticalAlignToId = typedArray.getResourceId(
                     R.styleable.CarouselScrollView_carousel_verticalAlignTo,
                     -1 // 如果 XML 中未設置，則為 -1
+                )
+                indicatorId = typedArray.getResourceId(
+                    R.styleable.CarouselScrollView_carousel_indicator,
+                    -1
                 )
             } finally {
                 // 回收 typedArray，這一步非常重要，防止記憶體洩漏
@@ -332,6 +340,17 @@ class CarouselScrollView(context: Context, attrs: AttributeSet?) :
         return true
     }
 
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        if (indicatorId != -1 && parent is ViewGroup) {
+            try {
+                indicatorView = (parent as ViewGroup).findViewById(indicatorId)
+            } catch (e: ClassCastException) {
+                Log.e("CarouselScrollView", "The view referenced by carousel_indicator is not a CarouselIndicator.")
+            }
+        }
+    }
+
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
         // 移除所有待處理的消息和回調，防止內存洩漏
@@ -424,6 +443,7 @@ class CarouselScrollView(context: Context, attrs: AttributeSet?) :
         // 如果目標索引發生變化，更新內部狀態並通知監聽器。
         if (currentIndex != newIndex) {
             currentIndex = newIndex
+            indicatorView?.setCurrentPage(currentIndex)
             onPageChangeListener?.invoke(currentIndex)
         }
 
