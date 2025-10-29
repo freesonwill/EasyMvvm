@@ -22,7 +22,8 @@
             android:orientation="vertical">
 
             <View
-                android:layout_width="1dp"
+                android:id="@+id/screen_top"
+                android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1" />
 
@@ -41,30 +42,27 @@
                     android:background="@drawable/shape_ring_0f_fff"
                     android:padding="@dimen/dp_8"
                     android:src="@drawable/icon_input_language"
-                    app:layout_constraintBottom_toBottomOf="@id/live_chat_ll_input"
+                    app:layout_constraintBottom_toBottomOf="@id/chat_ll_input"
                     app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toTopOf="@id/live_chat_ll_input"
-                    android:visibility="gone"
-                    />
+                    app:layout_constraintTop_toTopOf="@id/chat_ll_input" />
 
-                <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
-                    android:id="@+id/live_chat_ll_input"
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:id="@+id/chat_ll_input"
                     android:layout_width="0dp"
                     android:layout_height="40dp"
                     android:layout_marginStart="@dimen/dp_8"
-                    app:layout_goneMarginLeft="@dimen/dp_12"
-                    app:layout_goneMarginRight="@dimen/dp_10"
+                    android:layout_marginTop="@dimen/dp_12"
                     android:background="@drawable/shape_20"
                     android:backgroundTint="@color/color_0FFFFFFF"
                     android:orientation="horizontal"
                     app:layout_constraintLeft_toRightOf="@id/iv_language"
-                    app:layout_constraintRight_toLeftOf="@id/live_chat_tv_send"
                     app:layout_constraintTop_toTopOf="parent"
-                    android:layout_marginTop="@dimen/dp_12"
+                    app:layout_goneMarginLeft="@dimen/dp_12"
+                    app:layout_goneMarginRight="@dimen/dp_10"
+                    app:layout_constraintRight_toLeftOf="@id/chat_tv_send"
                     >
-
                     <EditText
-                        android:id="@+id/live_chat_et_input"
+                        android:id="@+id/chat_et_input"
                         android:layout_width="0dp"
                         android:layout_height="40dp"
                         android:layout_weight="1"
@@ -77,54 +75,65 @@
                         android:paddingStart="@dimen/dp_16"
                         android:textColor="@color/main_text"
                         android:textColorHint="@color/secondary_text"
-                        android:textSize="@dimen/sp_15" />
+                        android:textSize="@dimen/sp_15"
+                        app:layout_constraintLeft_toLeftOf="@id/chat_ll_input"
+                        app:layout_constraintTop_toTopOf="@id/chat_ll_input"
+                        />
+                </androidx.appcompat.widget.LinearLayoutCompat>
 
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/iv_at"
-                        android:layout_width="@dimen/dp_24"
-                        android:layout_height="@dimen/dp_24"
-                        android:src="@drawable/icon_input_at"
-                        android:layout_marginEnd="@dimen/dp_12"
-                        android:layout_gravity="center_vertical"
-                        android:visibility="gone"
-                        />
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/iv_bet"
-                        android:layout_width="@dimen/dp_24"
-                        android:layout_height="@dimen/dp_24"
-                        android:src="@drawable/icon_input_bet"
-                        android:layout_marginEnd="@dimen/dp_12"
-                        android:layout_gravity="center_vertical"
-                        android:visibility="gone"
-                        />
 
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/iv_emoji"
-                        android:layout_width="@dimen/dp_24"
-                        android:layout_height="@dimen/dp_24"
-                        android:src="@drawable/icon_input_emoji"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginEnd="@dimen/dp_20"
-                        android:visibility="gone"
-                        />
-                </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/iv_at"
+                    android:layout_width="@dimen/dp_24"
+                    android:layout_height="@dimen/dp_24"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginEnd="@dimen/dp_12"
+                    android:src="@drawable/icon_input_at"
+                    app:layout_constraintRight_toLeftOf="@id/iv_bet"
+                    app:layout_constraintTop_toTopOf="@id/iv_emoji"
+                   />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/iv_bet"
+                    android:layout_width="@dimen/dp_24"
+                    android:layout_height="@dimen/dp_24"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginEnd="@dimen/dp_12"
+                    android:src="@drawable/icon_input_bet"
+                    app:layout_constraintRight_toLeftOf="@id/iv_emoji"
+                    app:layout_constraintTop_toTopOf="@id/iv_emoji"
+                  />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/iv_emoji"
+                    android:layout_width="@dimen/dp_24"
+                    android:layout_height="@dimen/dp_24"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginEnd="@dimen/dp_20"
+                    android:src="@drawable/icon_input_emoji"
+                    app:layout_constraintTop_toTopOf="@id/chat_ll_input"
+                    app:layout_constraintBottom_toBottomOf="@id/chat_ll_input"
+                    app:layout_constraintRight_toRightOf="@id/chat_ll_input"
+                    />
 
                 <arch.cayenne.lib.skin.widget.SkinnableTextView
-                    android:id="@+id/live_chat_tv_send"
+                    android:id="@+id/chat_tv_send"
                     android:layout_width="@dimen/dp_60"
                     android:layout_height="38dp"
                     android:layout_marginStart="@dimen/dp_11"
-                    android:layout_marginEnd="@dimen/dp_10"
                     android:background="@drawable/bg_keyboard_send"
                     android:gravity="center"
                     android:stateListAnimator="@animator/layout_alpha_animator"
                     android:text="@string/send"
                     android:textColor="@color/color_FFFFFF"
-                    app:layout_constraintBottom_toBottomOf="@id/live_chat_ll_input"
-                    app:layout_constraintLeft_toRightOf="@id/live_chat_ll_input"
+                    app:layout_constraintBottom_toBottomOf="@id/chat_ll_input"
+                    app:layout_constraintLeft_toRightOf="@id/chat_ll_input"
                     app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toTopOf="@id/live_chat_ll_input" />
-
+                    app:layout_constraintTop_toTopOf="@id/chat_ll_input"
+                    android:layout_marginEnd="@dimen/dp_10"
+                    android:visibility="gone"
+                    />
 
 
                 <androidx.recyclerview.widget.RecyclerView
@@ -132,18 +141,17 @@
                     android:layout_width="wrap_content"
                     android:layout_height="@dimen/dp_30"
                     android:layout_marginStart="@dimen/dp_6"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/live_chat_ll_input"
                     android:layout_marginTop="@dimen/dp_12"
-                    />
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/chat_ll_input" />
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/iv_bottom_at"
                     android:layout_width="@dimen/dp_28"
                     android:layout_height="@dimen/dp_28"
                     android:layout_marginStart="@dimen/dp_15"
-                    android:src="@drawable/icon_input_at"
                     android:padding="2dp"
+                    android:src="@drawable/icon_input_at"
                     app:layout_constraintBottom_toBottomOf="@id/hot_recyclerview"
                     app:layout_constraintLeft_toRightOf="@id/hot_recyclerview"
                     app:layout_constraintTop_toTopOf="@id/hot_recyclerview" />
@@ -178,59 +186,59 @@
             android:layout_width="match_parent"
             android:layout_height="284dp"
             android:orientation="vertical"
-            app:layout_constraintTop_toBottomOf="@id/input_content"/>
+            app:layout_constraintTop_toBottomOf="@id/input_content" />
 
-<!--            <arch.cayenne.lib.skin.widget.SkinnableTabLayout-->
-<!--                android:id="@+id/keyboard_tb"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="@dimen/dp_30"-->
-<!--                android:layout_marginStart="@dimen/dp_12"-->
-<!--                android:background="@color/card_background"-->
-<!--                app:layout_constraintTop_toTopOf="parent"-->
-<!--                app:tabBackground="@null"-->
-<!--                app:tabIndicatorFullWidth="false"-->
-<!--                app:tabIndicatorHeight="0dp"-->
-<!--                app:tabMaxWidth="@dimen/dp_42"-->
-<!--                app:tabMode="scrollable"-->
-<!--                app:tabPaddingEnd="0dp"-->
-<!--                app:tabPaddingStart="0dp"-->
-<!--                app:tabRippleColor="@null" />-->
+        <!--            <arch.cayenne.lib.skin.widget.SkinnableTabLayout-->
+        <!--                android:id="@+id/keyboard_tb"-->
+        <!--                android:layout_width="match_parent"-->
+        <!--                android:layout_height="@dimen/dp_30"-->
+        <!--                android:layout_marginStart="@dimen/dp_12"-->
+        <!--                android:background="@color/card_background"-->
+        <!--                app:layout_constraintTop_toTopOf="parent"-->
+        <!--                app:tabBackground="@null"-->
+        <!--                app:tabIndicatorFullWidth="false"-->
+        <!--                app:tabIndicatorHeight="0dp"-->
+        <!--                app:tabMaxWidth="@dimen/dp_42"-->
+        <!--                app:tabMode="scrollable"-->
+        <!--                app:tabPaddingEnd="0dp"-->
+        <!--                app:tabPaddingStart="0dp"-->
+        <!--                app:tabRippleColor="@null" />-->
 
-<!--            <arch.cayenne.lib.skin.widget.SkinnableView-->
-<!--                android:id="@+id/line"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="1dp"-->
-<!--                android:layout_marginTop="@dimen/dp_10"-->
-<!--                android:background="@color/input_box_2"-->
-<!--                app:layout_constraintTop_toBottomOf="@id/keyboard_tb" />-->
+        <!--            <arch.cayenne.lib.skin.widget.SkinnableView-->
+        <!--                android:id="@+id/line"-->
+        <!--                android:layout_width="match_parent"-->
+        <!--                android:layout_height="1dp"-->
+        <!--                android:layout_marginTop="@dimen/dp_10"-->
+        <!--                android:background="@color/input_box_2"-->
+        <!--                app:layout_constraintTop_toBottomOf="@id/keyboard_tb" />-->
 
-<!--            <arch.cayenne.lib.skin.widget.SkinnableTextView-->
-<!--                android:id="@+id/keyboard_tv_all"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="18dp"-->
-<!--                android:layout_marginStart="@dimen/dp_12"-->
-<!--                android:layout_marginTop="@dimen/dp_16"-->
-<!--                android:text="@string/all_emoji"-->
-<!--                android:textColor="@color/color_909092"-->
-<!--                android:textSize="@dimen/sp_12"-->
-<!--                app:layout_constraintLeft_toLeftOf="parent"-->
-<!--                app:layout_constraintTop_toBottomOf="@id/line" />-->
+        <!--            <arch.cayenne.lib.skin.widget.SkinnableTextView-->
+        <!--                android:id="@+id/keyboard_tv_all"-->
+        <!--                android:layout_width="wrap_content"-->
+        <!--                android:layout_height="18dp"-->
+        <!--                android:layout_marginStart="@dimen/dp_12"-->
+        <!--                android:layout_marginTop="@dimen/dp_16"-->
+        <!--                android:text="@string/all_emoji"-->
+        <!--                android:textColor="@color/color_909092"-->
+        <!--                android:textSize="@dimen/sp_12"-->
+        <!--                app:layout_constraintLeft_toLeftOf="parent"-->
+        <!--                app:layout_constraintTop_toBottomOf="@id/line" />-->
 
-<!--            <arch.cayenne.lib.common.ui.view.HorizontalRecyclerView-->
-<!--                android:id="@+id/keyboard_emoji_recycler"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="0dp"-->
-<!--                android:layout_marginTop="@dimen/dp_12"-->
-<!--                android:layout_weight="1"-->
-<!--                app:layout_constraintBottom_toTopOf="@id/bottom"-->
-<!--                app:layout_constraintTop_toBottomOf="@id/keyboard_tv_all" />-->
+        <!--            <arch.cayenne.lib.common.ui.view.HorizontalRecyclerView-->
+        <!--                android:id="@+id/keyboard_emoji_recycler"-->
+        <!--                android:layout_width="match_parent"-->
+        <!--                android:layout_height="0dp"-->
+        <!--                android:layout_marginTop="@dimen/dp_12"-->
+        <!--                android:layout_weight="1"-->
+        <!--                app:layout_constraintBottom_toTopOf="@id/bottom"-->
+        <!--                app:layout_constraintTop_toBottomOf="@id/keyboard_tv_all" />-->
 
-<!--            <View-->
-<!--                android:id="@+id/bottom"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="@dimen/dp_34"-->
-<!--                app:layout_constraintBottom_toBottomOf="parent" />-->
-<!--        </LinearLayout>-->
+        <!--            <View-->
+        <!--                android:id="@+id/bottom"-->
+        <!--                android:layout_width="match_parent"-->
+        <!--                android:layout_height="@dimen/dp_34"-->
+        <!--                app:layout_constraintBottom_toBottomOf="parent" />-->
+        <!--        </LinearLayout>-->
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 

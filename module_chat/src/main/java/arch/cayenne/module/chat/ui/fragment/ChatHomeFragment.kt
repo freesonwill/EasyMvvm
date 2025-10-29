@@ -73,7 +73,7 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
 
     override fun onFragmentAnimEnd(isEnter: Boolean) {
         super.onFragmentAnimEnd(isEnter)
-        showChat(6)
+        showChat(4)
     }
 
     override fun onResume() {
@@ -84,19 +84,11 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
 
     override fun onPause() {
         super.onPause()
-        showChat(7)//移动到其他页面后关闭软件盘表情键盘
+        showChat(2)//移动到其他页面后关闭软件盘表情键盘
     }
 
     @SuppressLint("ClickableViewAccessibility")
     override fun initListener() {
-
-        mBinding.main.setOnTouchListener { v, event ->
-            if (event.action == MotionEvent.ACTION_DOWN && mViewModel.currentKeyBoardType != KeyBoardType.CHAT) {
-                showChat(9)
-                return@setOnTouchListener true
-            }
-            return@setOnTouchListener false
-        }
 
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
             if (mViewModel.currentKeyBoardType != KeyBoardType.CHAT) {
@@ -125,8 +117,6 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
             .commit()
     }
 
-
-
     /**
      * 显示聊天界面时隐藏键盘界面
      * */
@@ -144,7 +134,6 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
         }
         return flag
     }
-
 
 
     /**

@@ -1,6 +1,7 @@
 package arch.cayenne.module.chat.manager.interf
 
 import arch.cayenne.module.chat.data.constants.KeyBoardType
+import arch.cayenne.module.chat.data.constants.KeyboardActionType
 
 /**
  * @author: wenxi
@@ -13,5 +14,7 @@ interface  SoftKeyBoardMangerListener {
     fun changeKeyboardUi(keyBoardType:KeyBoardType)
 
     fun updateChatKeyboardType(keyBoardType: KeyBoardType)
+
+    fun startAnim(actionType: KeyboardActionType,offset: Int, onStart: () -> Unit = {}, onEnd: () -> Unit = {})
 
 }

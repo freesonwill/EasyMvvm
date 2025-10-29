@@ -92,6 +92,10 @@ class SoftKeyboardViewModel : BaseViewModel() {
             ),
         )
 
+    fun setSoftConfig(value:Boolean){
+        userDataManager.setKeyValue(UserDataKey.KEY_SOFT_CONFIG,value)
+    }
+
 
     fun getHotRecycler(): List<EmojiData> {
         return arrayOf(
@@ -104,12 +108,6 @@ class SoftKeyboardViewModel : BaseViewModel() {
             EmojiData(it.resId, it.key)
         }.toList()
     }
-
-
-    fun setSoftConfig(value:Boolean){
-        userDataManager.setKeyValue(UserDataKey.KEY_SOFT_CONFIG,value)
-    }
-
 
 
 }

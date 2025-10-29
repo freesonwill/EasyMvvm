@@ -13,4 +13,6 @@ import arch.cayenne.module.chat.data.model.EmojiData
  */
 class EmojiHomeViewModel : BaseViewModel() {
 
+
+
 }
