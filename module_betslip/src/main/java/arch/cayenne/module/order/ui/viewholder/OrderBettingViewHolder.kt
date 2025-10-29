@@ -43,7 +43,7 @@ class OrderBettingViewHolder(private val mBinding: ItemOrderSportBettingBinding)
         
         val selectionAdapter = OrderBettingSelectionAdapter(type)
         mBinding.rvContent.adapter = selectionAdapter
-        mBinding.rvContent.addItemDecoration(OrderItemSelectionDecoration(18.dp2px))
+//        mBinding.rvContent.addItemDecoration(OrderItemSelectionDecoration(18.dp2px))
 
         val initialList = if (item.selectionsList.size > 1) {
             listOf(item.selectionsList.first())

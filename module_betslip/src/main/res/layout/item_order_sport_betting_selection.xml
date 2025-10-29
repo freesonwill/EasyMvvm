@@ -4,13 +4,24 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
+    <arch.cayenne.lib.skin.widget.SkinnableView
+        android:id="@+id/top_line"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_marginTop="18dp"
+        android:background="@color/color_0FFFFFFF"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_goneMarginTop="0dp" />
+
     <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
         android:id="@+id/cl_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="18dp"
+        app:layout_goneMarginTop="0dp"
         android:background="@drawable/shape_9dp"
         android:backgroundTint="@color/color_0FFFFFFF"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@id/top_line">
 
         <ImageView
             android:id="@+id/iv_game_result"
@@ -170,10 +181,11 @@
         app:constraint_referenced_ids="tv_live, iv_live" />
 
     <arch.cayenne.lib.skin.widget.SkinnableView
-        android:id="@+id/line"
+        android:id="@+id/bottom_line"
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
         android:layout_marginVertical="18dp"
+        android:visibility="gone"
         android:background="@color/color_0FFFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/iv_ball"
