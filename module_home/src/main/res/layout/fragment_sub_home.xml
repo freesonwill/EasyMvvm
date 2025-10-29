@@ -266,6 +266,7 @@
                 android:textSize="@dimen/sp_14" />
 
             <arch.cayenne.lib.skin.widget.SkinnableImageView
+                android:id="@+id/iv_btn_tournament_icon"
                 android:layout_width="16dp"
                 android:layout_height="15dp"
                 android:layout_gravity="center_vertical"

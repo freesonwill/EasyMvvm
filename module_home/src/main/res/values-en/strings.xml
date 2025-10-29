@@ -31,6 +31,8 @@
 
 
     <string name="collect_list_empty">No favorites yet</string>
+    <string name="tournament_confirm">Confirm</string>
+    <string name="tournament_view_latest_results">View Latest Results</string>
 
 
 

@@ -38,6 +38,7 @@ import arch.cayenne.lib.common.utils.ext.startFadeAnim
 import arch.cayenne.lib.common.utils.helper.BounceEdgeEffectHelper
 import arch.cayenne.lib.common.utils.helper.VIPResourceHelper
 import arch.cayenne.lib.database.entity.TournamentDataModel
+import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.module.home.R
 import arch.cayenne.module.home.data.constants.HomeState
 import arch.cayenne.module.home.data.constants.PlayType
@@ -114,6 +115,9 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
         } else {
             initTournamentLayout()
         }
+        // 初始化聯賽按鈕狀態
+        updateTournamentButtonStyle(mViewModel.hasTournamentSelections())
+        
         if (mViewModel.currentPlayTypeId == PlayType.EARLY.id) {
             mBinding.layoutContainer.groupDateFilter.visibility = View.VISIBLE
             with (mBinding) {
@@ -221,6 +225,19 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
 
         mViewModel.tournamentSlideOutEnd.observeEvent(viewLifecycleOwner, this) {
             mBinding.llTournamentsDropdown.visibility = View.GONE
+        }
+
+        // 觀察聯賽按鈕選中狀態變化
+        mViewModel.tournamentButtonHasSelection.observeEvent(
+            viewLifecycleOwner,
+            this
+        ) { hasSelection ->
+            updateTournamentButtonStyle(hasSelection)
+        }
+
+        // 觀察是否需要清除 tlLeagueList 的選中狀態
+        mViewModel.shouldClearLeagueListSelection.observeEvent(viewLifecycleOwner, this) {
+            clearLeagueListSelection()
         }
 
         mViewModel.calendarStates.observe(viewLifecycleOwner) {
@@ -800,7 +817,13 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
                 layoutMediator.attach(
                     afterTabSelected = { position ->
                         getSelectedRecently31Scheduled(position)
-                        tournaments.getOrNull(position)?.id?.let { id -> mViewModel.setCurrentTournamentId(id)}
+                        tournaments.getOrNull(position)?.let { tournament ->
+                            mViewModel.setCurrentTournamentId(tournament.id)
+                            // 需求3：標記外部tab已切換，下次打開彈窗時需要清空篩選
+                            mViewModel.markTournamentTabSwitched()
+                            // 需求3：清除按鈕選中狀態和已保存的選中聯賽
+                            mViewModel.clearSavedTournamentSelections()
+                        }
                         startObservePageMatchListChange(position)
                         mBinding.layoutContainer.tlDateList.scrollToPositionWithoutAnim(mBinding.layoutContainer.tlDateList.selectedTabPosition)
                     }
@@ -888,6 +911,55 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
         }
         // 使用 parentFragmentManager 發送結果
         parentFragmentManager.setFragmentResult(key, result)
+    }
+
+    /**
+     * 清除 tlLeagueList 的選中狀態（需求2）
+     */
+    private fun clearLeagueListSelection() {
+        with(mBinding.layoutContainer) {
+            // 清除所有 tab 的選中狀態
+            val tabLayout = tlLeagueList
+            for (i in 0 until tabLayout.tabCount) {
+                tabLayout.getTabAt(i)?.let { tab ->
+                    tab.customView?.isSelected = false
+                }
+            }
+            // 不設置任何 tab 為選中
+            tabLayout.selectTab(null)
+        }
+    }
+
+    /**
+     * 更新聯賽按鈕樣式
+     * @param hasSelection true: 有選中的聯賽，false: 沒有選中的聯賽
+     */
+    private fun updateTournamentButtonStyle(hasSelection: Boolean) {
+        with(mBinding) {
+            if (hasSelection) {
+                // 有選中狀態：高亮顯示
+                llBtnTournament.setBackgroundResource(R.drawable.selector_league_tab_bg)
+                llBtnTournament.isSelected = true
+                tvBtnTournament.setTextColor(
+                    SkinnableResourceManager.getColor(
+                        requireContext(),
+                        R.color.league_tab_tint_select
+                    )
+                )
+                ivBtnTournamentIcon.setImageResource(R.drawable.ic_tournament_list_selected)
+            } else {
+                // 無選中狀態：默認樣式
+                llBtnTournament.setBackgroundResource(R.drawable.shape_tournament_more_bg)
+                llBtnTournament.isSelected = false
+                tvBtnTournament.setTextColor(
+                    SkinnableResourceManager.getColor(
+                        requireContext(),
+                        arch.cayenne.lib.common.R.color.color_C0C0C0
+                    )
+                )
+                ivBtnTournamentIcon.setImageResource(R.drawable.ic_tournament_list)
+            }
+        }
     }
 
     /**

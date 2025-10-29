@@ -356,7 +356,25 @@ class SubHomeViewModel: BaseViewModel() {
         _tournamentSlideOutEnd.value = Event(Unit)
     }
 
+    // 標記外部tab是否有切換（用於判斷是否需要清空彈窗的篩選結果）
+    private var hasTournamentTabSwitched = false
+
+    // 保存彈窗中的選中狀態（跨彈窗生命週期）
+    private val savedTournamentSelections = mutableSetOf<Int>()
+
+    // 通知聯賽按鈕選中狀態變化
+    private val _tournamentButtonHasSelection = MutableLiveData<Event<Boolean>>()
+    val tournamentButtonHasSelection: LiveData<Event<Boolean>> = _tournamentButtonHasSelection
+
+    // 標記外部tab已切換（僅設置標記，不修改數據）
+    fun markTournamentTabSwitched() {
+        hasTournamentTabSwitched = true
+    }
+    
     fun onTournamentListSelected(tournament: BaseTournamentData) {
+        // 標記外部tab已切換，下次打開彈窗時需要清空篩選
+        hasTournamentTabSwitched = true
+        
         if (tournament is TournamentDataModel) {
             val currentList = tournaments.value?.peekContent() ?: return
             setCurrentTournamentId(tournament.id)
@@ -369,6 +387,53 @@ class SubHomeViewModel: BaseViewModel() {
         } else if (tournament is ChampionTournamentDataModel) {
             _navigateToChampion.value = Event(tournament)
         }
+    }
+
+    // 檢查是否切換了外部tab
+    fun checkAndResetTournamentTabSwitched(): Boolean {
+        val switched = hasTournamentTabSwitched
+        hasTournamentTabSwitched = false
+        return switched
+    }
+
+    // 重置外部tab切換標記（當用戶確認篩選後調用）
+    fun resetTournamentTabSwitched() {
+        hasTournamentTabSwitched = false
+    }
+
+    // 獲取已保存的選中狀態
+    fun getSavedTournamentSelections(): List<Int> {
+        return savedTournamentSelections.toList()
+    }
+
+    // 保存選中狀態（在確認時調用）
+    fun saveTournamentSelections(selections: List<Int>) {
+        savedTournamentSelections.clear()
+        savedTournamentSelections.addAll(selections)
+        // 通知按鈕狀態更新
+        _tournamentButtonHasSelection.value = Event(selections.isNotEmpty())
+        // TODO: 未來同時保存到後端
+    }
+
+    // 清空保存的選中狀態
+    fun clearSavedTournamentSelections() {
+        savedTournamentSelections.clear()
+        // 通知按鈕狀態更新
+        _tournamentButtonHasSelection.value = Event(false)
+    }
+
+    // 檢查當前是否有選中狀態
+    fun hasTournamentSelections(): Boolean {
+        return savedTournamentSelections.isNotEmpty()
+    }
+
+    // 通知需要清除 tlLeagueList 的選中狀態
+    private val _shouldClearLeagueListSelection = MutableLiveData<Event<Unit>>()
+    val shouldClearLeagueListSelection: LiveData<Event<Unit>> = _shouldClearLeagueListSelection
+
+    // 觸發清除 tlLeagueList 選中狀態（在彈窗確認時調用）
+    fun requestClearLeagueListSelection() {
+        _shouldClearLeagueListSelection.value = Event(Unit)
     }
 
     fun setPlayTypeId(id: Int) {

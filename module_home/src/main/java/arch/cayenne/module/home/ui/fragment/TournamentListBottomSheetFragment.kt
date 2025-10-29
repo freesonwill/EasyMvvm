@@ -98,10 +98,58 @@ class TournamentListBottomSheetFragment :
                 tournamentListType = tournamentType,
                 onTournamentClick = { tournament ->
                     //新版改為多選方式
-                    subHomeViewModel.onTournamentListSelected(tournament)
-                    showToast("Select: ${tournament.simpleName}")
+                    if (tournamentType == TournamentListType.MORE) {
+                        // MORE模式下只記錄選中，不立即執行操作
+                        showToast("Select: ${tournament.simpleName}")
+                    } else {
+                        subHomeViewModel.onTournamentListSelected(tournament)
+                    }
+                },
+                onSelectionChanged = {
+                    // 選中狀態變更時更新按鈕狀態
+                    if (tournamentType == TournamentListType.MORE) {
+                        updateConfirmButtonState()
+                    }
                 }
             )
+
+            // 需求4 & 新需求：初始化選中狀態邏輯
+            if (tournamentType == TournamentListType.MORE) {
+                // 檢查外部tab是否有切換
+                val hasSwitchedTab = subHomeViewModel.checkAndResetTournamentTabSwitched()
+
+                if (hasSwitchedTab) {
+                    // 情況1：如果外部tab有切換，完全清空選中狀態
+                    subHomeViewModel.clearSavedTournamentSelections()
+                    adapter.clearAllSelections()
+                } else {
+                    // 情況2：沒有切換外部tab，從 ViewModel 中讀取已保存的選中狀態
+                    val savedSelections = subHomeViewModel.getSavedTournamentSelections()
+
+                    if (savedSelections.isNotEmpty()) {
+                        // 有保存的狀態，恢復之前的選中
+                        adapter.setSelectedTournamentIds(savedSelections)
+                    } else {
+                        // 沒有保存的狀態，嘗試從後端加載
+                        // TODO: 從後端加載已保存的選中狀態（後端還沒實作）
+                        // mViewModel.loadSavedSelectionsFromBackend { selections ->
+                        //     if (selections.isNotEmpty()) {
+                        //         adapter.setSelectedTournamentIds(selections)
+                        //         subHomeViewModel.saveTournamentSelections(selections)
+                        //         adapter.saveCurrentAsInitialState()
+                        //         updateConfirmButtonState()
+                        //     }
+                        // }
+                        // 
+                        // 如果後端也沒有，保持空狀態
+                    }
+                }
+
+                // 保存當前狀態作為初始狀態（用於重置按鈕）
+                adapter.saveCurrentAsInitialState()
+                // 設置初始按鈕狀態
+                updateConfirmButtonState()
+            }
             rvTournamentList.layoutManager = LinearLayoutManager(context)
             rvTournamentList.adapter = adapter
             rvTournamentList.itemAnimator = null
@@ -206,18 +254,65 @@ class TournamentListBottomSheetFragment :
                 dismiss()
             }
 
-            // 重置按鈕：清除所有選中狀態
+            // 重置按鈕：恢復為彈窗打開時的選中狀態
             tvReset.setOnClickListener {
-                showToast("Reset")
-                adapter.clearAllSelections()
+                if (tournamentType == TournamentListType.MORE) {
+                    adapter.resetToInitialState()
+                    // 重置後更新按鈕狀態
+                    updateConfirmButtonState()
+                    showToast("Reset to initial state")
+                } else {
+                    adapter.clearAllSelections()
+                    showToast("Reset")
+                }
             }
 
-            // 確認按鈕：將選中的聯賽傳給viewmodel
+            // 確認按鈕：根據按鈕狀態執行不同操作
             tvConfirm.setOnClickListener {
-                showToast("Confirm")
-                val selectedTournaments = adapter.getSelectedTournaments()
-                // TODO: 將selectedTournaments傳給viewmodel做相應處理
-                dismiss()
+                if (tournamentType == TournamentListType.MORE) {
+                    val isChanged = adapter.isSelectionChanged()
+                    val isInitialValid = adapter.isInitialSelectionStillValid()
+
+                    if (isChanged || !isInitialValid) {
+                        // 按鈕為"查看最新結果"狀態：執行網絡請求
+                        showToast("Loading latest results")
+                        val selectedTournamentIds = adapter.getSelectedTournamentIds()
+                        val selectedTournaments = adapter.getSelectedTournaments()
+
+                        // 保存選中狀態到 ViewModel（跨彈窗生命週期）
+                        subHomeViewModel.saveTournamentSelections(selectedTournamentIds)
+
+                        // TODO: 將selectedTournaments傳給viewmodel做相應處理並執行網絡請求
+                        // TODO: 保留接口給後端實作記錄selected（與 saveTournamentSelections 同時進行）
+
+                        // 若聯賽有選中，則清除 tlLeagueList 的選中狀態
+                        if (selectedTournamentIds.isNotEmpty()) {
+                            subHomeViewModel.requestClearLeagueListSelection()
+                        }
+                        
+                        // 重置外部tab切換標記（因為用戶已確認篩選）
+                        subHomeViewModel.resetTournamentTabSwitched()
+                        dismiss()
+                    } else {
+                        // 按鈕為"確定"狀態：關閉彈窗，保持結果不變
+                        showToast("Confirm without changes")
+                        // 即使沒有改變，也要保存當前狀態（可能是第一次打開）
+                        val selectedTournamentIds = adapter.getSelectedTournamentIds()
+                        subHomeViewModel.saveTournamentSelections(selectedTournamentIds)
+
+                        // 若聯賽有選中，則清除 tlLeagueList 的選中狀態
+                        if (selectedTournamentIds.isNotEmpty()) {
+                            subHomeViewModel.requestClearLeagueListSelection()
+                        }
+                        
+                        dismiss()
+                    }
+                } else {
+                    showToast("Confirm")
+                    val selectedTournaments = adapter.getSelectedTournaments()
+                    // TODO: 將selectedTournaments傳給viewmodel做相應處理
+                    dismiss()
+                }
             }
 
             rvTournamentList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -313,6 +408,10 @@ class TournamentListBottomSheetFragment :
         }
         mViewModel.tournamentsChange.observe(viewLifecycleOwner) {
             adapter.submitList(it)
+            // 數據更新後，檢查按鈕狀態
+            if (tournamentType == TournamentListType.MORE) {
+                updateConfirmButtonState()
+            }
         }
 
         mViewModel.activeHeaderIndex.observe(viewLifecycleOwner) { _ ->
@@ -430,6 +529,27 @@ class TournamentListBottomSheetFragment :
             }
         }.apply {
             this.targetPosition = targetPosition
+        }
+    }
+
+    /**
+     * 更新確認按鈕的狀態和文本
+     * - 如果選中結果與打開時相同且原選中聯賽都還存在：顯示"確定"
+     * - 如果選中結果不同或原選中聯賽消失：顯示"查看最新結果"
+     */
+    private fun updateConfirmButtonState() {
+        if (tournamentType != TournamentListType.MORE) {
+            return
+        }
+
+        val isChanged = adapter.isSelectionChanged()
+        val isInitialValid = adapter.isInitialSelectionStillValid()
+
+        // 如果選中狀態改變 或 原選中的聯賽消失，顯示"查看最新結果"
+        if (isChanged || !isInitialValid) {
+            mBinding.tvConfirm.text = getString(R.string.tournament_view_latest_results)
+        } else {
+            mBinding.tvConfirm.text = getString(R.string.tournament_confirm)
         }
     }
 
