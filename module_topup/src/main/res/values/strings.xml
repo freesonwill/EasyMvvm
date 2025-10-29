@@ -38,6 +38,8 @@
     <string name="select_tx_method">选择提现方式</string>
     <string name="current_balance">当前余额: ￥1,100.00</string>
     <string name="recharge_record">充值记录</string>
+    <string name="order_detail">查看订单</string>
+    <string name="order_cancel">取消订单</string>
     <string name="add_tx_card">添加提现银行卡</string>
     <string name="withdrawal_record">提现记录</string>
     <string name="withdrawal_detail">提现详情</string>
@@ -60,6 +62,11 @@
     <string name="save_addr">保存</string>
     <string name="mark_hint">选填</string>
     <string name="delete">删除</string>
+    <string name="submit_order">提交订单</string>
+    <string name="order_iid">订单编号</string>
+    <string name="wait_pay">待您付款</string>
+    <string name="pay_money">充值金额</string>
+    <string name="order_finish">订单完成</string>
     <string name="bank_del_tip">确定删除银行卡？</string>
     <string name="add_bank_tip">*持卡人信息确认后无法修改，请使用本人信息</string>
     <string name="cz_address">充值地址</string>
@@ -91,6 +98,9 @@
     <string name="tx_time">提现时间</string>
     <string name="tx_yue">预约提现</string>
     <string name="tx_normal">普通提现</string>
+    <string name="tip_order_status_suc">订单充值成功</string>
+    <string name="tip_recharge_ing">充值订单进行中</string>
+    <string name="tip_add_bank">使用此支付方式前，请先添加提现银行卡</string>
     <string name="tx_yue_tip">0-24小时到账 加送0.1%-0.6%</string>
     <string name="tx_normal_tip">0-2小时到账 无加送</string>
     <string name="cz_wechat">微信充值</string>

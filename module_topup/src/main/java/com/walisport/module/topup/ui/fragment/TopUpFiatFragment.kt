@@ -1,6 +1,7 @@
 package com.walisport.module.topup.ui.fragment
 
 import android.os.Bundle
+import androidx.core.view.isVisible
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
@@ -25,6 +26,7 @@ class TopUpFiatFragment : BaseFragment<FiatViewModel, FragmentFiatBinding>() {
     private val payTypeAdapter: PayMethodAdapter by lazy {
         PayMethodAdapter(object : PayMethodAdapter.PaTypeListener {
             override fun onSelectPayType(id: Int) {
+                selectRechargeType(id)
                 mViewModel.selectPayType(id)
             }
         })
@@ -57,6 +59,12 @@ class TopUpFiatFragment : BaseFragment<FiatViewModel, FragmentFiatBinding>() {
         mBinding.layCustomer.clickNoRepeat {
             showToast(R.string.cus_service.getString())
         }
+        mBinding.layAddCard.clickNoRepeat {
+            navigate(R.id.action_topUpFragment_to_addBankCardFragment)
+        }
+        mBinding.layOrderDetail.clickNoRepeat {
+            navigate(R.id.action_topUpFragment_to_orderDetailFragment)
+        }
     }
 
     override suspend fun createObserver() {
@@ -65,6 +73,28 @@ class TopUpFiatFragment : BaseFragment<FiatViewModel, FragmentFiatBinding>() {
         }
         mViewModel.onPayMoneyListener.observe(viewLifecycleOwner) {
             payMoneyAdapter.submitList(it)
+        }
+    }
+
+    private fun selectRechargeType(id: Int) {
+        when (id) {
+            1 -> {
+                mBinding.layPayMoney.isVisible = false
+                mBinding.layAddBank.isVisible = false
+                mBinding.layOrderDetail.isVisible = true
+            }
+
+            3 -> {
+                mBinding.layPayMoney.isVisible = false
+                mBinding.layAddBank.isVisible = true
+                mBinding.layOrderDetail.isVisible = false
+            }
+
+            else -> {
+                mBinding.layPayMoney.isVisible = true
+                mBinding.layAddBank.isVisible = false
+                mBinding.layOrderDetail.isVisible = false
+            }
         }
     }
 }
