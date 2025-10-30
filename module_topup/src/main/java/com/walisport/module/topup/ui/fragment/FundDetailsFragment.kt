@@ -7,12 +7,14 @@ import android.os.Message
 import android.webkit.ValueCallback
 import android.webkit.WebChromeClient
 import android.webkit.WebView
-import androidx.navigation.fragment.findNavController
+import arch.cayenne.lib.base.data.constants.StatusBarMode
+import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.common.data.constants.UserDataKey
 import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getColor
+import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.touchBackPressed
 import arch.cayenne.lib.common.web.WLSWebViewClient
 import com.walisport.module.topup.R
@@ -99,20 +101,25 @@ class FundDetailsFragment : BaseFragment<FundDetailsViewModel, FragmentFundDetai
     private fun initTitleBar() {
         val type = arguments?.getString("type") ?: ""
         val title = getTitleStr(type)
-        mBinding.titleBar.loadGeneralTitleBar(title, {
-            findNavController().navigateUp()
-        })
+        mBinding.tvTitle.text = title
         mBinding.root.touchBackPressed()
     }
 
-    private fun getTitleStr(type: String): Int {
+    private fun getTitleStr(type: String): String {
         return when (type) {
-            "recharge" -> R.string.recharge_lesson
-            "withdraw" -> R.string.withdraw_lesson
-            "cz_record" -> R.string.recharge_record
-            "tx_record" -> R.string.withdrawal_record
-            else -> R.string.money_detail
+            "recharge" -> R.string.recharge_lesson.getString()
+            "withdraw" -> R.string.withdraw_lesson.getString()
+            "cz_record" -> R.string.recharge_record.getString()
+            "tx_record" -> R.string.withdrawal_record.getString()
+            else -> R.string.money_detail.getString()
         }
+    }
+
+    override fun onStart() {
+        StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND(autoPadding = false)
+        StatusBarConfig.statusBarDarkFont = false
+        setStatusBar(StatusBarConfig,mBinding.root)
+        super.onStart()
     }
 
     override fun onResume() {
