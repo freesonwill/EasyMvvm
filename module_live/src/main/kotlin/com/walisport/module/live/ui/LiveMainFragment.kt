@@ -41,6 +41,7 @@ import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.removeAllTips
 import arch.cayenne.lib.common.utils.ext.setDrawerInterpolator
 import arch.cayenne.lib.common.utils.ext.setupViewPagerScroll
+import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.ext.startFadeAnim
 import arch.cayenne.lib.common.utils.ext.touchBackPressed
 import arch.cayenne.lib.common.utils.helper.showToast
@@ -56,6 +57,7 @@ import com.walisport.module.live.data.BetOnMenuStatus
 import com.walisport.module.live.databinding.FragmentLiveMainBinding
 import com.walisport.module.live.databinding.TitleBarLiveBinding
 import com.walisport.module.live.ui.viewmodel.LiveMainViewModel
+import com.walisport.module.live.ui.viewmodel.LiveMatchMediaViewModel
 import com.walisport.module.live.ui.widget.LiveMainGestureListener
 import com.walisport.module.live.ui.widget.LiveMainLayoutInterceptTouch.LiveMainSlideDirection
 import kotlinx.coroutines.delay
@@ -268,8 +270,8 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
 
         mBinding.llSwitchNarrator.addScaleOnTouchAnimation()
         mBinding.llSwitchNarrator.clickNoRepeat {
-            val mediaFragment: LiveMatchMediaFragment?= childFragmentManager.findFragmentByTag(LiveMatchMediaFragment.TAG) as? LiveMatchMediaFragment
-            mediaFragment?.onSwitchNarrator()
+            val mediaViewModel: LiveMatchMediaViewModel by sharedViewModel<LiveMatchMediaViewModel, LiveMatchMediaFragment>()
+            mediaViewModel.chooseSourceView()
         }
 
         mBinding.tabLayout.addOnTabSelectedListener2(object : TabLayoutExt.OnTabSelectedListener2 {
