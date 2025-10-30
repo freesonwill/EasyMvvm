@@ -173,4 +173,8 @@ class OrderBettingViewHolder(private val mBinding: ItemOrderSportBettingBinding)
             .setDuration(COLLAPSE_ANIMATION_DURATION)
             .start()
     }
+
+    fun getEarlySettleButton(): View {
+        return mBinding.ivShare
+    }
 }

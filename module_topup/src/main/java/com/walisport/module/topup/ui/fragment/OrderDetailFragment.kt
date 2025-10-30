@@ -4,8 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.navigation.fragment.findNavController
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+import arch.cayenne.lib.common.utils.ext.touchBackPressed
+import arch.cayenne.lib.common.utils.helper.showToast
 import com.walisport.module.topup.R
 import com.walisport.module.topup.databinding.FragmentOrderDetailBinding
 import com.walisport.module.topup.databinding.TitleOrderDetailBinding
@@ -32,10 +35,18 @@ class OrderDetailFragment : BaseFragment<OrderDetailViewModel, FragmentOrderDeta
                 }
             }
         }
+        mBinding.root.touchBackPressed()
     }
 
     override fun initListener() {
-
+        mBinding.layCustomer.clickNoRepeat {
+            showToast(R.string.cus_service.getString())
+        }
+        mBinding.layLesson.clickNoRepeat {
+            navigate(OrderDetailFragmentDirections.actionOrderDetailFragmentToFundDetailsFragment().apply {
+                arguments.putString("type", "recharge")
+            })
+        }
     }
 
     override suspend fun createObserver() {

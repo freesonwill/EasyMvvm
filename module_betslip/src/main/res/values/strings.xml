@@ -101,4 +101,6 @@
 
     <string name="title_order_sport_expand">展开%d个盘口</string>
     <string name="title_order_sport_collapse">收起</string>
+    <string name="title_order_sport_early_settle">确定提前结算吗?</string>
+    <string name="title_order_sport_early_settle_confirm">确定结算</string>
 </resources>
