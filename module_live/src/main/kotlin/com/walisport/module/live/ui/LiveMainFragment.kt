@@ -91,7 +91,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         mViewModel.setSportId(args.sportId)
         mViewModel.setShowVideo(args.showVideo)
         mViewModel.setShowAnim(args.showAnim)
-        setVideoView()
+        setMediaView()
         loadFragment()
         mViewModel.observeMatchInfoNotify()
         mBinding.drawerLayout.setDrawerLockMode(
@@ -153,6 +153,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                 else -> false
             }
             mBinding.skinTab.dispatchTouchEvent(event)
+            mBinding.llSwitchNarrator.dispatchTouchEvent(event)
         }
     }
 
@@ -264,6 +265,13 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                 showToast("直播页分享")
             }
         }
+
+        mBinding.llSwitchNarrator.addScaleOnTouchAnimation()
+        mBinding.llSwitchNarrator.clickNoRepeat {
+            val mediaFragment: LiveMatchMediaFragment?= childFragmentManager.findFragmentByTag(LiveMatchMediaFragment.TAG) as? LiveMatchMediaFragment
+            mediaFragment?.onSwitchNarrator()
+        }
+
         mBinding.tabLayout.addOnTabSelectedListener2(object : TabLayoutExt.OnTabSelectedListener2 {
             override fun onTabSelected(tab: TabLayout.Tab, isTabClick: Boolean) {
                 tab.let {
@@ -411,7 +419,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         mViewModel.clearAllMatch()
     }
 
-    private fun setVideoView() {
+    private fun setMediaView() {
         childFragmentManager.findFragmentByTag(LiveMatchMediaFragment.TAG) as? LiveMatchMediaFragment
             ?: LiveMatchMediaFragment().also {
                 it.arguments = Bundle().apply {

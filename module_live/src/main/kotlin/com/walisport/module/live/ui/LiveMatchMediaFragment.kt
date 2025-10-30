@@ -11,8 +11,12 @@ import arch.cayenne.lib.base.ui.animation.AnimationController.AnimType
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.data.constants.MatchStatus
+import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.ext.startSafeAnimateSet
+import arch.cayenne.lib.common.utils.helper.showToast
+import com.walisport.module.live.R
 import com.walisport.module.live.compare.MediaSourceBeanCompare
 import com.walisport.module.live.data.constants.VideoAnimatorConstants.Companion.HIDE_BUTTONS_TIMER
 import com.walisport.module.live.data.model.MediaSource
@@ -22,6 +26,7 @@ import com.walisport.module.live.ui.LiveSourceFragment.HorizontalItemDecoration
 import com.walisport.module.live.ui.adapter.LiveMediaSourceSimpleAdapter
 import com.walisport.module.live.ui.viewmodel.LiveMainViewModel
 import com.walisport.module.live.ui.viewmodel.LiveMatchMediaViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
@@ -40,6 +45,10 @@ class LiveMatchMediaFragment :
 
     //是否自动显示过视频源bar
     private var hasAutoShownMediaSourceBar: Boolean = false
+
+    private var mediaSourceBarShowing: Boolean = false
+
+    private var dismissBarJob: Job? = null
 
     override fun initView(savedInstanceState: Bundle?) {
         mBinding.model = mViewModel
@@ -298,8 +307,10 @@ class LiveMatchMediaFragment :
     }
 
     private fun scheduleHideVideoSourceBanner() {
-        lifecycleScope.launch {
+        dismissBarJob?.cancel()
+        dismissBarJob = lifecycleScope.launch {
             delay(HIDE_BUTTONS_TIMER)
+            mediaSourceBarShowing = false
             val height = mBinding.rvSource.height
             mBinding.root.startSafeAnimateSet(
                 {
@@ -316,7 +327,8 @@ class LiveMatchMediaFragment :
 
                 },
                 duration = AnimationController[AnimType.popupExit]!!.duration,
-                interpolator = AnimationController[AnimType.popupExit]?.interpolator?.toInterpolator() ?: LinearInterpolator(),
+                interpolator = AnimationController[AnimType.popupExit]?.interpolator?.toInterpolator()
+                    ?: LinearInterpolator(),
                 start = true
             )
         }
@@ -338,6 +350,40 @@ class LiveMatchMediaFragment :
                 it.mediaSourceType == MediaSourceType.VIDEO
             }.forEach { it.isPlaying = false }
 
+        }
+    }
+
+    //换解说
+    fun onSwitchNarrator() {
+        if (mViewModel.animationLiveUrl.value.isNullOrEmpty() && mViewModel.liveVideoBean.value?.source.isNullOrEmpty()) {
+            showToast(R.string.media_source_empty.getString())
+        } else {
+            if (!mediaSourceBarShowing) {
+                mediaSourceBarShowing = true
+
+                val height = mBinding.rvSource.height
+                mBinding.root.startSafeAnimateSet(
+                    {
+                        playTogether(
+                            ValueAnimator.ofInt(height, 58.dp2px).apply {
+                                addUpdateListener {
+                                    val lp = mBinding.rvSource.layoutParams
+                                    lp.height = it.animatedValue as Int
+
+                                    mBinding.rvSource.layoutParams = lp
+                                }
+                            },
+                        )
+
+                    },
+                    duration = AnimationController[AnimType.popupExit]!!.duration,
+                    interpolator = AnimationController[AnimType.popupExit]?.interpolator?.toInterpolator()
+                        ?: LinearInterpolator(),
+                    start = true
+                )
+            }
+            //重新设置定时器
+            scheduleHideVideoSourceBanner()
         }
     }
 
