@@ -82,5 +82,9 @@
 
     <string name="media_source_animation_title">Animation</string>
     <string name="media_source_animation_subtitle">Fast,Saving</string>
+    <string name="choose_media_source">switch narrator</string>
+    <string name="media_source_empty">No data available</string>
+
+
 
 </resources>
