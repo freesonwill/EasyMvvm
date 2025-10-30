@@ -87,8 +87,7 @@ class EmojiDeleteAnimHelper(private val recyclerView: RecyclerView) {
         val secondTop = layoutManager.findViewByPosition(secondLastRowStart)?.let {
             it.top+4.dp2px//减去向上的4dp
         }?:0
-
-        "lastTOp $lastTop secondTOp $secondTop".logd("aaa")
+//        "lastTOp $lastTop secondTOp $secondTop".logd("aaa")
 
         val lastBottom = lastTop+30.dp2px //emoji实际高度30dp
         val secondBottom = secondTop+30.dp2px
