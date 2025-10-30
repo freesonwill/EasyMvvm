@@ -19,7 +19,6 @@ import arch.cayenne.lib.common.data.constants.DrawerAction.ACTION_CLOSE
 import arch.cayenne.lib.common.data.constants.DrawerAction.ACTION_OPEN
 import arch.cayenne.lib.common.data.constants.DrawerAction.KEY_ACTION
 import arch.cayenne.lib.common.data.constants.DrawerAction.REQUEST_KEY_DRAWER
-import arch.cayenne.lib.common.ui.fragment.EmptyFragment
 import arch.cayenne.lib.common.utils.ext.NavResultExt.observeResult
 import arch.cayenne.lib.common.utils.ext.setDrawerInterpolator
 import arch.cayenne.module.home.ui.fragment.NewHomeFragment

@@ -22,7 +22,7 @@ class ChatUserInfoLayoutInterceptTouch @JvmOverloads constructor(
     private var isDirectionDetermined = false // 是否已确定滑动方向
     private var determined = true // 是否是第一次滑动
     private var startTime = 0L // 记录滑动时间
-    private val scrollSpeed = 1.0f //滑动速度
+    private val scrollSpeed = 3.0f //滑动速度
     override fun onFinishInflate() {
         super.onFinishInflate()
     }

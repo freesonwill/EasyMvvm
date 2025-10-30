@@ -11,17 +11,6 @@
         android:label="fragment_live_chat"
         tools:layout="@layout/fragment_live_chat">
 
-        <action
-            android:id="@+id/action_chatHomeFragment_to_charUserInfoFragment"
-            app:destination="@id/charUserInfoFragment" />
-    </fragment>
-
-    <fragment
-        android:id="@+id/charUserInfoFragment"
-        android:name="arch.cayenne.module.chat.ui.fragment.ChatUserInfoFragment"
-        android:label="fragment_chat_user_info"
-        tools:layout="@layout/fragment_chat_user_info">
-        <deepLink app:uri="walisport://module_chat/charUserInfoFragment" />
     </fragment>
 
 </navigation>

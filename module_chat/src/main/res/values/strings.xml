@@ -14,6 +14,14 @@
     <string name="chat_room">聊天室</string>
     <string name="living_events">赛事直播</string>
     <string name="chat_customer">客服</string>
+    <string name="chat_love_play">最爱玩</string>
+    <string name="chat_max_win">最大赢奖</string>
+    <string name="chat_max_number">最高倍数</string>
+    <string name="chat_bet_number">投注次数</string>
+    <string name="chat_report">举报</string>
+    <string name="chat_auto">\@TA</string>
+    <string name="chat_bet_money">投注额</string>
+    <string name="deeplink_single_char_user_info_fragment" translatable="false">walisport://module_chat/charUserInfoFragment</string>
     <string-array name="emoji_tab">
         <item>Emoji</item>
         <item>Pepe</item>

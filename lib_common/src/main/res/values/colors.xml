@@ -93,6 +93,7 @@
     <color name="input_box">#2C2E3B</color>
     <color name="court_bg">#161823</color>
     <color name="court_line">#313441</color>
+    <color name="line">#0F313441</color>
     <color name="select_bg">#373C46</color>
     <color name="select_text">#C0C0C0</color>
     <color name="main_background">#0E0F1A</color>
