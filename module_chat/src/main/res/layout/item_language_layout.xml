@@ -4,7 +4,7 @@
     android:id="@+id/main"
     android:layout_width="123dp"
     android:layout_height="@dimen/dp_42"
-    android:layout_marginLeft="@dimen/dp_6"
+    android:layout_marginStart="@dimen/dp_6"
     android:layout_marginTop="@dimen/dp_6"
     android:background="@drawable/selector_0ffffff_003a42"
     android:gravity="center"
