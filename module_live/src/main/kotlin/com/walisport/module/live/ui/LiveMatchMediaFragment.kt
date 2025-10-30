@@ -22,7 +22,7 @@ import com.walisport.module.live.data.constants.VideoAnimatorConstants.Companion
 import com.walisport.module.live.data.model.MediaSource
 import com.walisport.module.live.data.model.MediaSourceType
 import com.walisport.module.live.databinding.FragmentLiveMatchMediaBinding
-import com.walisport.module.live.ui.LiveSourceFragment.HorizontalItemDecoration
+import com.walisport.module.live.ui.LiveMediaSourceFragment.HorizontalItemDecoration
 import com.walisport.module.live.ui.adapter.LiveMediaSourceSimpleAdapter
 import com.walisport.module.live.ui.viewmodel.LiveMainViewModel
 import com.walisport.module.live.ui.viewmodel.LiveMatchMediaViewModel
@@ -191,7 +191,7 @@ class LiveMatchMediaFragment :
             }
 
             chooseSource.observe(viewLifecycleOwner) {
-                showChooseSourceView()
+                showChooseMediaSourceView()
             }
 
             switchToVideo.observe(viewLifecycleOwner) {
@@ -285,7 +285,7 @@ class LiveMatchMediaFragment :
         return flag
     }
 
-    private fun showChooseSourceView() {
+    private fun showChooseMediaSourceView() {
         val location = IntArray(2)
         mBinding.root.getLocationOnScreen(location)
         val y =
@@ -293,11 +293,11 @@ class LiveMatchMediaFragment :
 
         val height = requireActivity().resources.displayMetrics.heightPixels - y
 
-        LiveSourceFragment().apply {
+        LiveMediaSourceFragment().apply {
             arguments = Bundle().apply {
                 putLong("matchId", mViewModel.matchId())
                 putInt(
-                    LiveSourceFragment.HEIGHT,
+                    LiveMediaSourceFragment.HEIGHT,
                     height
                 )
             }

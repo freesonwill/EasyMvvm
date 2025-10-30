@@ -25,15 +25,16 @@ import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.ext.startSafeAnimateSet
 import com.walisport.module.live.R
+import com.walisport.module.live.compare.MediaSourceBeanCompare
 import com.walisport.module.live.compare.VideoSourceBeanCompare
 import com.walisport.module.live.databinding.FragmentLiveSourcePortraitBinding
-import com.walisport.module.live.ui.adapter.LiveVideoSourceHorizontalAdapter
+import com.walisport.module.live.ui.adapter.LiveMediaSourceHorizontalAdapter
 import com.walisport.module.live.ui.viewmodel.LiveMatchMediaViewModel
 import com.walisport.module.live.ui.viewmodel.LiveVideoSourceViewModel
 import kotlin.reflect.KClass
 
 
-class LiveSourceFragment :
+class LiveMediaSourceFragment :
     BaseDialogFragment<LiveVideoSourceViewModel, FragmentLiveSourcePortraitBinding>() {
 
     override val vbClass: KClass<FragmentLiveSourcePortraitBinding> =
@@ -60,10 +61,10 @@ class LiveSourceFragment :
                 itemAnimator = null
                 layoutManager =
                     LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-                adapter = LiveVideoSourceHorizontalAdapter(VideoSourceBeanCompare()).apply {
+                adapter = LiveMediaSourceHorizontalAdapter(MediaSourceBeanCompare()).apply {
                     post {
                         addItemDecoration(HorizontalItemDecoration())
-                        submitList(mViewModel.liveVideoBean.value?.source)
+//                        submitList(mViewModel.liveVideoBean.value?.source)
                     }
 
                     setOnClickListener {
@@ -113,10 +114,10 @@ class LiveSourceFragment :
 
             liveVideoBean.observe(viewLifecycleOwner) {
                 mBinding.rvSource.apply {
-                    (adapter as LiveVideoSourceHorizontalAdapter).apply {
+                    (adapter as LiveMediaSourceHorizontalAdapter).apply {
                         val list = mViewModel.liveVideoBean.value
                         val size = list?.source?.size ?: 0
-                        submitList(list?.source)
+//                        submitList(list?.source)
 
                         notifyItemRangeChanged(0, size)
                     }
@@ -155,7 +156,7 @@ class LiveSourceFragment :
         dialog.setOnKeyListener(object : DialogInterface.OnKeyListener {
             override fun onKey(dialog: DialogInterface?, keyCode: Int, event: KeyEvent?): Boolean {
                 if (event?.keyCode == KeyEvent.KEYCODE_BACK && event.action == KeyEvent.ACTION_UP) {
-                    this@LiveSourceFragment.dismiss()
+                    this@LiveMediaSourceFragment.dismiss()
                     return true
                 } else {
                     return false
