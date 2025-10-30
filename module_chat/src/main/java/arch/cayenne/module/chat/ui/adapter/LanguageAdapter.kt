@@ -7,6 +7,7 @@ import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.base.ui.adapter.BaseAdapter
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
+import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
 import arch.cayenne.module.chat.databinding.ItemLanguageLayoutBinding
 
 /**
@@ -26,6 +27,11 @@ class LanguageAdapter() :
         }
     }) {
     private var selectPosition: Int = -1
+    private var itemClick:RecyclerItemListener<String>? = null
+
+    fun setRecyclerItemClick(itemListener: RecyclerItemListener<String>){
+        this.itemClick = itemListener
+    }
 
 
     inner class LanguageViewHolder(private val nBinding: ItemLanguageLayoutBinding) :
@@ -46,6 +52,7 @@ class LanguageAdapter() :
                 if(selectPosition != -1){
                     notifyItemChanged(selectPosition)
                 }
+                itemClick?.onItemClick(getItem(position),position)
             }
         }
 

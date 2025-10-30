@@ -303,7 +303,7 @@ class SoftKeyboardFragment :
         onStart: () -> Unit,
         onEnd: () -> Unit
     ) {
-        "panelAnimateTo  offset $offset ".logd("aaa")
+//        "panelAnimateTo  offset $offset ".logd("aaa")
         softKeyBoardManager.apply {
             mainAnim = AnimatorSet()
             val mainTransYAnim =

@@ -5,7 +5,7 @@ import android.view.Gravity
 import android.view.Window
 import androidx.recyclerview.widget.GridLayoutManager
 import arch.cayenne.lib.base.ui.fragment.BasePositionDialogFragment
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
+import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.module.chat.R
 import arch.cayenne.module.chat.databinding.FragmentLanguageDialogLayoutBinding
@@ -40,7 +40,6 @@ class ChatLanguageDialogFragment :
     override fun setDialogPosition(w: Window) {
         val positionX = requireArguments().getInt(LOCATION_X, -1)
         val positionY = requireArguments().getInt(LOCATION_Y, -1)
-  "positionx $positionX postionY $positionY".logd("aaa")
         if (positionX != -1 && positionY != -1) {
             val layoutParams = w.attributes
             layoutParams.gravity = Gravity.BOTTOM or Gravity.START
@@ -64,6 +63,11 @@ class ChatLanguageDialogFragment :
             recycler.layoutManager = GridLayoutManager(requireActivity(),2)
             val nAdapter = LanguageAdapter()
             nAdapter.submitList(resources.getStringArray(R.array.languages).toList())
+            nAdapter.setRecyclerItemClick(object :RecyclerItemListener<String>{
+                override fun onItemClick(item: String?, position: Int) {
+                    dismiss()
+                }
+            })
             recycler.adapter = nAdapter
         }
 
