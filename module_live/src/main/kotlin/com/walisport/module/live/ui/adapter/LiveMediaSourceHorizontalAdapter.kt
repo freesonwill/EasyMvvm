@@ -50,16 +50,16 @@ class LiveMediaSourceHorizontalAdapter(compare: DiffUtil.ItemCallback<MediaSourc
                     .into(viewBinding.ivThumb)
 
                 viewBinding.root.setOnClickListener {
-//                    listener(item.videoSourceBean?.id)
+                    listener(item)
                 }
             }
 
         }
     }
 
-    private lateinit var listener: (Int) -> Unit
+    private lateinit var listener: (MediaSource) -> Unit
 
-    fun setOnClickListener(listener: (Int) -> Unit) {
+    fun setOnClickListener(listener: (MediaSource) -> Unit) {
         this.listener = listener
     }
 

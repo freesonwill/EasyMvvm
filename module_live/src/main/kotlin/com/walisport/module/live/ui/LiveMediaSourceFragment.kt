@@ -27,8 +27,11 @@ import arch.cayenne.lib.common.utils.ext.startSafeAnimateSet
 import com.walisport.module.live.R
 import com.walisport.module.live.compare.MediaSourceBeanCompare
 import com.walisport.module.live.compare.VideoSourceBeanCompare
+import com.walisport.module.live.data.model.MediaSource
+import com.walisport.module.live.data.model.MediaSourceType
 import com.walisport.module.live.databinding.FragmentLiveSourcePortraitBinding
 import com.walisport.module.live.ui.adapter.LiveMediaSourceHorizontalAdapter
+import com.walisport.module.live.ui.adapter.LiveMediaSourceSimpleAdapter
 import com.walisport.module.live.ui.viewmodel.LiveMatchMediaViewModel
 import com.walisport.module.live.ui.viewmodel.LiveVideoSourceViewModel
 import kotlin.reflect.KClass
@@ -64,12 +67,31 @@ class LiveMediaSourceFragment :
                 adapter = LiveMediaSourceHorizontalAdapter(MediaSourceBeanCompare()).apply {
                     post {
                         addItemDecoration(HorizontalItemDecoration())
-//                        submitList(mViewModel.liveVideoBean.value?.source)
+
+                        val list: MutableList<MediaSource> = mutableListOf()
+
+                        if (!mViewModel.animationLiveUrl.value.isNullOrEmpty()) {
+                            list.add(
+                                MediaSource(
+                                    MediaSourceType.ANIMATION,
+                                    mViewModel.animationLiveUrl.value, null, true
+                                )
+                            )
+                        }
+
+                        mViewModel.liveVideoBean.value?.source?.map { bean ->
+                            MediaSource(
+                                MediaSourceType.VIDEO,
+                                null,
+                                bean, bean.isPlaying
+                            )
+                        }
+                            ?.let { it1 -> list.addAll(it1) }
+                        submitList(list)
                     }
 
-                    setOnClickListener {
-                        mediaViewModel.switchToVideo()
-                        mViewModel.setPlayingVideoId(it)
+                    setOnClickListener { mediaSourceItem ->
+                        onMediaSourceItemClicked(mediaSourceItem)
                     }
                 }
             }
@@ -115,11 +137,27 @@ class LiveMediaSourceFragment :
             liveVideoBean.observe(viewLifecycleOwner) {
                 mBinding.rvSource.apply {
                     (adapter as LiveMediaSourceHorizontalAdapter).apply {
-                        val list = mViewModel.liveVideoBean.value
-                        val size = list?.source?.size ?: 0
-//                        submitList(list?.source)
+                        val list: MutableList<MediaSource> = mutableListOf()
 
-                        notifyItemRangeChanged(0, size)
+                        if (!mViewModel.animationLiveUrl.value.isNullOrEmpty()) {
+                            list.add(
+                                MediaSource(
+                                    MediaSourceType.ANIMATION,
+                                    mViewModel.animationLiveUrl.value, null, true
+                                )
+                            )
+                        }
+
+                        mViewModel.liveVideoBean.value?.source?.map { bean ->
+                            MediaSource(
+                                MediaSourceType.VIDEO,
+                                null,
+                                bean, bean.isPlaying
+                            )
+                        }
+                            ?.let { it1 -> list.addAll(it1) }
+
+                        notifyItemRangeChanged(0, list.size)
                     }
                 }
             }
@@ -212,6 +250,24 @@ class LiveMediaSourceFragment :
             )
         }, duration = ANIMATION_DURATION, start = true)
 
+    }
+
+    private fun onMediaSourceItemClicked(item: MediaSource) {
+        if (item.mediaSourceType == MediaSourceType.ANIMATION) {
+            item.isPlaying = true
+            (mBinding.rvSource.adapter as LiveMediaSourceSimpleAdapter).currentList.forEach {
+                if (it.mediaSourceType == MediaSourceType.VIDEO) {
+                    it.isPlaying = false
+                }
+            }
+        } else if (item.mediaSourceType == MediaSourceType.VIDEO) {
+            item.isPlaying = true
+            mViewModel.setPlayingVideoId(item.videoSourceBean!!.id)
+            (mBinding.rvSource.adapter as LiveMediaSourceSimpleAdapter).currentList.filter {
+                it.mediaSourceType == MediaSourceType.VIDEO
+            }.forEach { it.isPlaying = false }
+
+        }
     }
 
     override fun dismiss() {

@@ -4,6 +4,8 @@ import android.animation.ValueAnimator
 import android.os.Bundle
 import android.view.animation.LinearInterpolator
 import androidx.constraintlayout.widget.ConstraintLayout.VISIBLE
+import androidx.core.animation.doOnEnd
+import androidx.core.animation.doOnStart
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.ui.animation.AnimationController
@@ -306,12 +308,18 @@ class LiveMatchMediaFragment :
         }
     }
 
+    private var animating: Boolean = false
+
     private fun scheduleHideVideoSourceBanner() {
         dismissBarJob?.cancel()
         dismissBarJob = lifecycleScope.launch {
             delay(HIDE_BUTTONS_TIMER)
             mediaSourceBarShowing = false
             val height = mBinding.rvSource.height
+
+            if (animating) {
+                return@launch
+            }
             mBinding.root.startSafeAnimateSet(
                 {
                     playTogether(
@@ -322,6 +330,13 @@ class LiveMatchMediaFragment :
 
                                 mBinding.rvSource.layoutParams = lp
                             }
+                            addListener(doOnStart {
+                                animating = true
+                            }
+                            )
+                            addListener(doOnEnd {
+                                animating = false
+                            })
                         },
                     )
 
