@@ -144,8 +144,10 @@ class SoftKeyboardFragment :
                 }
                 return@setOnTouchListener true
             }
+            ivLanguage.setOnClickListener {
+                showLanguageDialog()
+            }
         }
-
 //        mBinding.ivBottomEmoji.setOnTouchListener { v, event ->
 //            if (event.action == MotionEvent.ACTION_UP) {
 //                keyboardChangeClick(KeyBoardType.EMOJI)
@@ -189,6 +191,13 @@ class SoftKeyboardFragment :
                 return@setOnTouchListener true
             }
         }
+    }
+
+    private fun showLanguageDialog() {
+        ChatLanguageDialogFragment.newInstance(
+            mBinding.ivLanguage.x.toInt(),
+            mBinding.ivLanguage.y.toInt()
+        ).show(childFragmentManager)
     }
 
     /**
@@ -315,9 +324,9 @@ class SoftKeyboardFragment :
                 mainAnim?.playSequentially(hotViewAnim(offset), emojiSet)
 //            mainAnim?.duration = 170L
             mainAnim?.addListener(onStart = {
-               inputIconShouldUpdate(animationType, call = {
-                   updateInputIcon(true)
-               })
+                inputIconShouldUpdate(animationType, call = {
+                    updateInputIcon(true)
+                })
                 onStart.invoke()
             }, onEnd = {
                 inputIconShouldUpdate(animationType, call = {
@@ -333,16 +342,20 @@ class SoftKeyboardFragment :
     }
 
     //防止软件盘和表情键盘切换的时候跳动
-    private fun inputIconShouldUpdate(animationType: KeyboardActionType,call:() -> Unit,elCall:(() -> Unit)? = null){
+    private fun inputIconShouldUpdate(
+        animationType: KeyboardActionType,
+        call: () -> Unit,
+        elCall: (() -> Unit)? = null
+    ) {
         if (animationType in arrayOf(
                 KeyboardActionType.CHAT_TO_SOFT,
                 KeyboardActionType.CHAT_TO_EMOJI,
                 KeyboardActionType.EMOJI_TO_CHAT,
                 KeyboardActionType.SOFT_TO_CHAT
             )
-        ){
+        ) {
             call.invoke()
-        }else{
+        } else {
             elCall?.invoke()
         }
     }
