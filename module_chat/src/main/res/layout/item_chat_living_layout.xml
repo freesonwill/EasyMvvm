@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="111dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/color_272727"
+    >
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_video"
+        android:layout_width="176dp"
+        android:layout_height="99dp"
+        android:src="@drawable/test_living_video"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:textAlignment="center"
+        android:layout_marginLeft="@dimen/dp_10"
+        tools:ignore="RtlHardcoded" />
+    
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
+        android:id="@+id/match_name"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        android:text="NBA总决赛 G1"
+        app:layout_constraintLeft_toRightOf="@id/iv_video"
+        android:layout_marginStart="@dimen/dp_10"
+        app:skinnableFontWeight="500"
+        android:textColor="@color/color_FFFFFF"
+        android:textSize="@dimen/sp_13"
+        app:layout_constraintTop_toTopOf="@id/iv_video"
+        tools:ignore="HardcodedText" />
+
+      <arch.cayenne.lib.skin.widget.SkinnableImageView
+          android:id="@+id/iv_country1_flag"
+          android:layout_width="@dimen/dp_16"
+          android:layout_height="@dimen/dp_13"
+          android:src="@drawable/test_baxi"
+          app:layout_constraintLeft_toLeftOf="@id/match_name"
+          app:layout_constraintTop_toTopOf="@id/country1_name"
+          app:layout_constraintBottom_toBottomOf="@id/country1_name"
+          />
+
+      <arch.cayenne.lib.skin.widget.SkinnableTextView
+          android:id="@+id/country1_name"
+          android:layout_width="wrap_content"
+          android:layout_height="@dimen/dp_20"
+          android:text="日本"
+          app:layout_constraintLeft_toRightOf="@id/iv_country1_flag"
+          android:layout_marginStart="5.75dp"
+          app:skinnableFontWeight="500"
+          android:textColor="@color/color_FFFFFF"
+          android:textSize="@dimen/sp_14"
+          app:layout_constraintTop_toBottomOf="@id/match_name"
+          android:layout_marginTop="@dimen/dp_6"
+          android:textAlignment="center"
+          tools:ignore="HardcodedText" />
+
+    <arch.cayenne.lib.skin.widget.SkinnableImageView
+        android:id="@+id/iv_country2_flag"
+        android:layout_width="@dimen/dp_16"
+        android:layout_height="@dimen/dp_13"
+        android:src="@drawable/test_baxi"
+        app:layout_constraintLeft_toLeftOf="@id/match_name"
+        app:layout_constraintTop_toTopOf="@id/country2_name"
+        app:layout_constraintBottom_toBottomOf="@id/country2_name"
+        />
+
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
+        android:id="@+id/country2_name"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_20"
+        android:text="巴西"
+        app:layout_constraintLeft_toLeftOf="@id/country1_name"
+        app:skinnableFontWeight="500"
+        android:textColor="@color/color_FFFFFF"
+        android:textSize="@dimen/sp_14"
+        app:layout_constraintTop_toBottomOf="@id/country1_name"
+        android:layout_marginTop="@dimen/dp_8"
+        android:textAlignment="center"
+        tools:ignore="HardcodedText" />
+
+    <View
+        android:id="@+id/circle"
+        android:layout_width="6.5dp"
+        android:layout_height="6.5dp"
+        android:background="@drawable/shape_ring"
+        android:backgroundTint="@color/color_00E301"
+        app:layout_constraintLeft_toLeftOf="@id/match_name"
+        app:layout_constraintTop_toTopOf="@id/people_numbers"
+        app:layout_constraintBottom_toBottomOf="@id/people_numbers"
+        />
+
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
+        android:id="@+id/people_numbers"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_20"
+        android:text="3222"
+        app:skinnableFontWeight="600"
+        android:textColor="@color/color_FFFFFF"
+        android:textSize="@dimen/sp_12"
+        app:layout_constraintTop_toBottomOf="@id/country2_name"
+        android:layout_marginTop="@dimen/dp_8"
+        app:layout_constraintLeft_toRightOf="@id/circle"
+        android:layout_marginLeft="6.5dp"
+        android:textAlignment="center"
+        tools:ignore="HardcodedText" />
+
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
+        android:id="@+id/online_status"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_20"
+        android:text="在聊"
+        app:skinnableFontWeight="600"
+        android:textColor="@color/color_999999"
+        android:textSize="@dimen/sp_12"
+        app:layout_constraintTop_toTopOf="@id/people_numbers"
+        app:layout_constraintBottom_toBottomOf="@id/people_numbers"
+        app:layout_constraintLeft_toRightOf="@id/people_numbers"
+        android:layout_marginStart="@dimen/dp_3"
+        android:textAlignment="center"
+        tools:ignore="HardcodedText" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
