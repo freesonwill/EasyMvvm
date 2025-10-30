@@ -12,6 +12,7 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.walisport.module.hall.R
 import com.walisport.module.hall.data.HallGameTabDefault
 import com.walisport.module.hall.databinding.ItemGameAllRankingBinding
+import com.walisport.module.hall.ui.fragment.GameAllRankingListFragment
 
 class GameAllRankingAdapter(
     val childFragmentManager : androidx.fragment.app.FragmentManager,
@@ -65,10 +66,10 @@ class GameAllRankingViewHolder(
         with(item) {
             vpRanking.adapter = PagerAdapter(childFragmentManager, lifecycle, mockTabList)
             vpRanking.isUserInputEnabled = true
-            vpRanking.getChildAt(0).setOnTouchListener { v, event ->
-                v.parent.requestDisallowInterceptTouchEvent(true)
-                false
-            }
+//            vpRanking.getChildAt(0).setOnTouchListener { v, event ->
+//                v.parent.requestDisallowInterceptTouchEvent(true)
+//                false
+//            }
             TabLayoutMediator(tlRanking, vpRanking) { tab, position ->
                 tab.text = mockTabList[position].title
             }.attach()
