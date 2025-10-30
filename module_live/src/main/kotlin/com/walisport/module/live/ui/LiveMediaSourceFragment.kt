@@ -255,7 +255,7 @@ class LiveMediaSourceFragment :
     private fun onMediaSourceItemClicked(item: MediaSource) {
         if (item.mediaSourceType == MediaSourceType.ANIMATION) {
             item.isPlaying = true
-            (mBinding.rvSource.adapter as LiveMediaSourceSimpleAdapter).currentList.forEach {
+            (mBinding.rvSource.adapter as LiveMediaSourceHorizontalAdapter).currentList.forEach {
                 if (it.mediaSourceType == MediaSourceType.VIDEO) {
                     it.isPlaying = false
                 }
@@ -263,7 +263,7 @@ class LiveMediaSourceFragment :
         } else if (item.mediaSourceType == MediaSourceType.VIDEO) {
             item.isPlaying = true
             mViewModel.setPlayingVideoId(item.videoSourceBean!!.id)
-            (mBinding.rvSource.adapter as LiveMediaSourceSimpleAdapter).currentList.filter {
+            (mBinding.rvSource.adapter as LiveMediaSourceHorizontalAdapter).currentList.filter {
                 it.mediaSourceType == MediaSourceType.VIDEO
             }.forEach { it.isPlaying = false }
 
