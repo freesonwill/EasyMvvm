@@ -6,16 +6,12 @@ import android.view.MotionEvent
 import androidx.activity.addCallback
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.lifecycleScope
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
-import arch.cayenne.lib.base.ui.fragment.launch
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.data.constants.MatchStatus
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
-import arch.cayenne.lib.database.entity.LiveMatchBasicInfoBean
 import arch.cayenne.lib.database.entity.LiveMatchBean
 import arch.cayenne.lib.websocket.data.SocketConnectState
 import arch.cayenne.module.chat.R
@@ -77,7 +73,7 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
 
     override fun onFragmentAnimEnd(isEnter: Boolean) {
         super.onFragmentAnimEnd(isEnter)
-        showChat(6)
+        showChat(4)
     }
 
     override fun onResume() {
@@ -88,19 +84,11 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
 
     override fun onPause() {
         super.onPause()
-        showChat(7)//移动到其他页面后关闭软件盘表情键盘
+        showChat(2)//移动到其他页面后关闭软件盘表情键盘
     }
 
     @SuppressLint("ClickableViewAccessibility")
     override fun initListener() {
-
-        mBinding.main.setOnTouchListener { v, event ->
-            if (event.action == MotionEvent.ACTION_DOWN && mViewModel.currentKeyBoardType != KeyBoardType.CHAT) {
-                showChat(9)
-                return@setOnTouchListener true
-            }
-            return@setOnTouchListener false
-        }
 
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
             if (mViewModel.currentKeyBoardType != KeyBoardType.CHAT) {
@@ -129,8 +117,6 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
             .commit()
     }
 
-
-
     /**
      * 显示聊天界面时隐藏键盘界面
      * */
@@ -148,7 +134,6 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
         }
         return flag
     }
-
 
 
     /**
@@ -216,7 +201,7 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
     }
 
    private fun observeLiveMatch(match: LiveMatchBean?) {
-       mViewModel.matchStatus = match == null
+       mViewModel.isMainSoft = match == null
         updateChatUi(match)
         //比赛开始后开启聊天服务
         if (match?.liveInfo?.charRoom == true || match == null) {

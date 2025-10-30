@@ -1,6 +1,5 @@
 package com.walisport.app.ui
 
-import android.os.Build
 import android.os.Bundle
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.fragment.app.DialogFragment
@@ -114,6 +113,10 @@ class MainActivity : BaseNavActivity<MainViewModel>() {
                 }
             }
         }
+       mViewModel.softConfigListener.observe(this){
+           enableHideKeyboardOnTouchOutside = it
+       }
+
     }
 
     override fun configStatusBar(): StatusBarConfig {
@@ -180,5 +183,6 @@ class MainActivity : BaseNavActivity<MainViewModel>() {
             }, 500L)
         }
     }
+
 
 }

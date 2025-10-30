@@ -14,6 +14,7 @@ import arch.cayenne.module.chat.data.compare.EmojiChildCompare
 import arch.cayenne.module.chat.data.constants.EmojiTypeEnum
 import arch.cayenne.module.chat.data.model.EmojiData
 import arch.cayenne.module.chat.databinding.ItemEmojiGridLayoutBinding
+import arch.cayenne.module.chat.utils.EmojiDeleteAnimHelper
 
 /**
  * @author: wenxi
@@ -26,6 +27,8 @@ class EmojiGridAdapter :
     ) {
 
     private var emojiType: EmojiTypeEnum = EmojiTypeEnum.NORMAL
+
+    private var emojiAnim:EmojiDeleteAnimHelper? = null
 
     fun updateEmojiType(type: EmojiTypeEnum) {
         this.emojiType = type
@@ -63,6 +66,9 @@ class EmojiGridAdapter :
             manager.spanCount = if (emojiType == EmojiTypeEnum.NORMAL) 8 else 4
             val adapter = it.adapter?.let { it as EmojiItemAdapter }
             adapter?.submitList(list)
+//          if(emojiAnim == null && emojiType == EmojiTypeEnum.NORMAL){
+//              emojiAnim = EmojiDeleteAnimHelper(binding.gridRecycler)
+//          }
         }
 
 //        val contentLp = ConstraintLayout.LayoutParams(

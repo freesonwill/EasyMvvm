@@ -42,7 +42,7 @@ class ChatHomeViewModel() : BaseViewModel() {
     //整个表情键盘页面的整体高度
     val chatHeightLiveData:LiveData<Int> = _chatHeightLiveData
 
-    var matchStatus:Boolean = false
+    var isMainSoft:Boolean = false
 
     fun setArguments(matchId: Long?) {
         //直播间重新从联赛进入时，刷新matchId 重新进入聊天室

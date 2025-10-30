@@ -6,6 +6,7 @@
     android:background="@color/main_background">
 
     <arch.cayenne.lib.skin.widget.SkinnableTextView
+        android:id="@+id/tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
