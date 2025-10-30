@@ -2,16 +2,34 @@ package arch.cayenne.module.order.ui.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
+import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
+import arch.cayenne.lib.common.ui.viewmodel.Event
 import arch.cayenne.lib.database.entity.BetSlipData
 import arch.cayenne.lib.database.entity.BetSlipOrderBean
 import arch.cayenne.lib.database.entity.BetSlipOrderHeaderBean
 import arch.cayenne.module.betslip.data.repo.OrderSlipRepository
+import arch.cayenne.module.betslip.data.repo.UnsettleRepository
 import arch.cayenne.module.order.data.constants.OrderSportPageEnum
 import arch.cayenne.module.order.utils.TimeUtils
+import galaxy.common.proto.Common
+import kotlinx.coroutines.launch
 
-class OrderSportPageViewModel(private val repo: OrderSlipRepository) : BaseViewModel() {
+class OrderSportPageViewModel(private val repo: UnsettleRepository) : BaseViewModel() {
+
+    private val _networkConnectedEvent = MutableLiveData<Event<DataState>>()
+    val networkConnectedEvent: LiveData<Event<DataState>> get() = _networkConnectedEvent
+
+    private val _earlySettledResultLiveData: MutableLiveData<Event<Boolean>> = MutableLiveData()
+    val earlySettledResultLiveData: LiveData<Event<Boolean>> = _earlySettledResultLiveData
+
+    private val _isSupportEarlySettleLiveData = MutableLiveData<Common.EarlySettlePrice>()
+    val isSupportEarlySettleLiveData: LiveData<Common.EarlySettlePrice> = _isSupportEarlySettleLiveData
+
+    var selectOrder: BetSlipOrderBean? = null
+        private set
 
     private val _orderDataListener = MutableLiveData<List<BetSlipData>>()
     val orderDataListener: LiveData<List<BetSlipData>> = _orderDataListener
@@ -68,5 +86,38 @@ class OrderSportPageViewModel(private val repo: OrderSlipRepository) : BaseViewM
         return orders.groupBy { order ->
             TimeUtils.formatTimeMillis(order.betTime)
         }
+    }
+
+    /**
+     * 提前结算
+     * */
+    fun earlyPartSettled(betId: String, money: String, expectPrice: String) {
+        viewModelScope.launch {
+            val result = repo.earlySettle(-1, betId, money, expectPrice, false)
+            _earlySettledResultLiveData.value = Event(result?.success ?: false)
+        }
+    }
+
+    /**
+     * 检查是否支持提前结算
+     * */
+    fun isSupportEarlySettled(order: BetSlipOrderBean) {
+        if (checkNetwork()) {
+            selectOrder = order
+            viewModelScope.launch {
+                val result = repo.earlySettledPrice(order.betId)
+                if (!result.isNullOrEmpty()) {
+                    _isSupportEarlySettleLiveData.value = result.first()
+                }
+            }
+        }
+    }
+
+    private fun checkNetwork(): Boolean {
+        if (!repo.isConnected) {
+            _networkConnectedEvent.value = Event(DataState.NetworkUnavailable)
+            return false
+        }
+        return true
     }
 }
