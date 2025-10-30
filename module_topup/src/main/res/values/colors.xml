@@ -18,6 +18,8 @@
     <color name="pay_line">#2C2E3B</color>
     <color name="pay_money">#FFFFFF</color>
 
+    <color name="item_line">#0FFFFFFF</color>
+    <color name="bank_csharp">#595959</color>
     <color name="coin_select_text">#00E0E5</color>
     <color name="bank_title">#999999</color>
     <color name="bank_line">#272727</color>
