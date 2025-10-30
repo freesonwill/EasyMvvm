@@ -132,7 +132,7 @@
                 <arch.cayenne.lib.skin.widget.SkinnableTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/dp_26"
+                    android:layout_marginStart="@dimen/dp_25"
                     android:text="¥400"
                     android:textColor="@color/bank_title"
                     android:textSize="@dimen/sp_14" />
@@ -157,7 +157,7 @@
                 <arch.cayenne.lib.skin.widget.SkinnableTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/dp_26"
+                    android:layout_marginStart="@dimen/dp_25"
                     android:text="微信"
                     android:textColor="@color/bank_title"
                     android:textSize="@dimen/sp_14" />
@@ -182,7 +182,7 @@
                 <arch.cayenne.lib.skin.widget.SkinnableTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/dp_26"
+                    android:layout_marginStart="@dimen/dp_25"
                     android:text="2023-11-01 23:59:59"
                     android:textColor="@color/bank_title"
                     android:textSize="@dimen/sp_14" />
@@ -207,7 +207,7 @@
                 <arch.cayenne.lib.skin.widget.SkinnableTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/dp_26"
+                    android:layout_marginStart="@dimen/dp_25"
                     android:text="KJSZJ202311140722382929"
                     android:textColor="@color/bank_title"
                     android:textSize="@dimen/sp_14" />
