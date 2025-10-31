@@ -1,6 +1,5 @@
 package com.walisport.module.topup.ui.fragment
 
-import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -22,7 +21,6 @@ import com.walisport.module.topup.ui.viewmodel.CryptoViewModel
 import kotlinx.coroutines.Job
 import kotlin.reflect.KClass
 
-
 /**
  * 充值-加密货币页面
  */
@@ -32,12 +30,12 @@ class TopUpCryptoFragment : BaseFragment<CryptoViewModel, FragmentCryptoBinding>
     override val vbClass: KClass<FragmentCryptoBinding> = FragmentCryptoBinding::class
     override val vmClass: KClass<CryptoViewModel> = CryptoViewModel::class
     private var drawTournamentTabJob: Job? = null
-    private val size: Int = 122.dp2px
+    private var drawQRCodeJob: Job? = null
 
     override fun initView(savedInstanceState: Bundle?) {
         val content = "TGPs2ZF7nr1cjtdsMQTHmfpgXqqDnAYE6i"
         mBinding.tvCryptoAddress.text = content
-        QRCodeUtils.generateQRCode(content, size, size, mBinding.ivQrcode)
+        createQRCode(content)
     }
 
     override fun initData() {
@@ -88,6 +86,14 @@ class TopUpCryptoFragment : BaseFragment<CryptoViewModel, FragmentCryptoBinding>
                     }
                 }
             }
+        }
+    }
+
+    private fun createQRCode(content: String) {
+        val size: Int = 122.dp2px
+        drawQRCodeJob?.cancel()
+        drawQRCodeJob = launch {
+            QRCodeUtils.generateQRCode(content, size, size, mBinding.ivQrcode)
         }
     }
 
