@@ -14,18 +14,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
+
     <arch.cayenne.lib.skin.widget.SkinnableTextView
+        android:id="@+id/notification_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/notification_text"
         android:textColor="@color/white"
         android:textSize="@dimen/sp_12"
-        app:skinnableFontWeight="500"
-        android:gravity="center"
-        tool:text="2"
-        app:layout_constraintTop_toTopOf="@id/circle_background"
+        android:layout_marginBottom="@dimen/dp_2"
         app:layout_constraintBottom_toBottomOf="@id/circle_background"
-        app:layout_constraintStart_toStartOf="@id/circle_background"
         app:layout_constraintEnd_toEndOf="@id/circle_background"
-        />
+        app:layout_constraintStart_toStartOf="@id/circle_background"
+        app:layout_constraintTop_toTopOf="@id/circle_background"
+        app:skinnableFontWeight="500"
+        tool:text="3" />
 </androidx.constraintlayout.widget.ConstraintLayout>
