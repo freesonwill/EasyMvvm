@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.ui.animation.AnimationController
 import arch.cayenne.lib.base.ui.animation.AnimationController.AnimType
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
-import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.data.constants.MatchStatus
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
@@ -73,7 +72,7 @@ class LiveMatchMediaFragment :
     }
 
     private fun initMediaSourceBanner() {
-        //init video source recyclerview
+        //init media source recyclerview
         with(mBinding) {
             rvSource.apply {
                 itemAnimator = null
@@ -99,7 +98,7 @@ class LiveMatchMediaFragment :
             mViewModel.createObserver()
         }
 
-        mainViewModel.scorll.observe(viewLifecycleOwner){
+        mainViewModel.scorll.observe(viewLifecycleOwner) {
             scheduleHideVideoSourceBanner(0)
         }
         with(mViewModel) {
@@ -220,7 +219,7 @@ class LiveMatchMediaFragment :
     }
 
     private fun showVideoView() {
-        mainViewModel.setVideoInitHeight(mBinding.rvSource.height+mBinding.fragmentMedia.height)
+        mainViewModel.setVideoInitHeight(mBinding.rvSource.height + mBinding.fragmentMedia.height)
         "showVideoView".logd(TAG)
         childFragmentManager.findFragmentByTag(LiveVideoPlayerFragment.TAG) as? LiveVideoPlayerFragment
             ?: LiveVideoPlayerFragment().also {
@@ -258,7 +257,7 @@ class LiveMatchMediaFragment :
         if (!hasAutoShownMediaSourceBar && showMediaSourceBanner) {
             mBinding.rvSource.visibility = VISIBLE
             hasAutoShownMediaSourceBar = true
-            mainViewModel.setVideoInitHeight(mBinding.rvSource.height+mBinding.fragmentMedia.height)
+            mainViewModel.setVideoInitHeight(mBinding.rvSource.height + mBinding.fragmentMedia.height)
             (mBinding.rvSource.adapter as LiveMediaSourceSimpleAdapter).apply {
                 val list: MutableList<MediaSource> = mutableListOf()
                 list.add(
@@ -297,6 +296,11 @@ class LiveMatchMediaFragment :
     }
 
     private fun showChooseMediaSourceView() {
+        if (mViewModel.animationLiveUrl.value.isNullOrEmpty() && mViewModel.liveVideoBean.value?.source.isNullOrEmpty()) {
+            showToast(R.string.media_source_empty.getString())
+            return
+        }
+
         val location = IntArray(2)
         mBinding.root.getLocationOnScreen(location)
         val y =
@@ -319,7 +323,7 @@ class LiveMatchMediaFragment :
 
 
     private fun scheduleHideVideoSourceBanner(duration: Long = HIDE_BUTTONS_TIMER) {
-        if (mBinding.rvSource.visibility== View.GONE)return
+        if (mBinding.rvSource.visibility == View.GONE) return
         dismissBarJob?.cancel()
         dismissBarJob = lifecycleScope.launch {
             delay(duration)
@@ -337,16 +341,23 @@ class LiveMatchMediaFragment :
                                 val lp = mBinding.rvSource.layoutParams
                                 lp.height = it.animatedValue as Int
                                 mBinding.rvSource.layoutParams = lp
-                                mainViewModel.setVideoInitHeight(it.animatedValue as Int+mBinding.fragmentMedia.height,true)
+                                mainViewModel.setVideoInitHeight(
+                                    it.animatedValue as Int + mBinding.fragmentMedia.height,
+                                    true
+                                )
                             }
                             addListener(doOnStart {
                                 animating = true
                             }
                             )
                             addListener(doOnEnd {
+
                                 mBinding.rvSource.visibility = View.GONE
                                 animating = false
-                                mainViewModel.setVideoInitHeight(mBinding.fragmentMedia.height,false)
+                                mainViewModel.setVideoInitHeight(
+                                    mBinding.fragmentMedia.height,
+                                    false
+                                )
                             })
                         },
                     )
@@ -377,6 +388,7 @@ class LiveMatchMediaFragment :
 
         }
     }
+
 
     //换解说
     fun onSwitchNarrator() {
