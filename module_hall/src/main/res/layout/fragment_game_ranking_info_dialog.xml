@@ -7,7 +7,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iv_bg_top"
-        android:layout_width="@dimen/dp_220"
+        android:layout_width="228dp"
         android:layout_height="@dimen/dp_68"
         app:srcCompat="@drawable/shape_game_ranking_info_top_bg"
         app:layout_constraintTop_toTopOf="parent"

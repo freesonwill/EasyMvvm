@@ -35,7 +35,7 @@
         android:layout_height="wrap_content"
         android:textSize="@dimen/sp_14"
         android:gravity="center"
-        android:layout_marginEnd="@dimen/dp_10"
+        android:layout_marginEnd="@dimen/dp_9"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"

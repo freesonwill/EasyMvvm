@@ -31,7 +31,7 @@
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_title_line"
             android:layout_width="0.5dp"
-            android:layout_height="0dp"
+            android:layout_height="11dp"
             android:background="@color/color_D0B5A1"
             android:layout_marginStart="@dimen/dp_6"
             app:layout_constraintTop_toTopOf="@+id/tv_today_title"
@@ -43,7 +43,7 @@
             android:layout_height="17dp"
             android:textSize="@dimen/sp_12"
             android:textColor="@color/color_FFFFFF"
-            android:text="23:59:59"
+            android:text="23 : 59 : 59"
             android:gravity="center"
             android:layout_marginStart="@dimen/dp_6"
             android:layout_marginTop="@dimen/dp_3"
