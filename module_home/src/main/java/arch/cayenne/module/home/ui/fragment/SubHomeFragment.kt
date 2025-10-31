@@ -768,7 +768,7 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
      * 應用排序邏輯
      */
     private fun applySorting() {
-        // TODO: 在這裡實現實際的排序邏輯
+        // TODO: 實現實際的排序邏輯
         // 根據 currentSortType 來決定如何排序賽事列表
         when (currentSortType) {
             TournamentSortType.BY_HOT -> {

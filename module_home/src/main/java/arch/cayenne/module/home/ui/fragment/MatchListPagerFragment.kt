@@ -20,6 +20,7 @@ import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.scrollToBottomWithLoadMore
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
+import arch.cayenne.lib.common.utils.helper.BackToTopHelper
 import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.database.entity.MatchWithMarkets
 import arch.cayenne.lib.database.entity.SelectionBeanLite
@@ -148,6 +149,9 @@ class MatchListPagerFragment :
                     })
                 }
             })
+
+            // 初始化回到頂部按鈕
+            BackToTopHelper(rvHomeGameList, ivBackToTop)
         }
     }
 
