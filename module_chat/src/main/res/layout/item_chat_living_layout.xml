@@ -2,15 +2,16 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="111dp"
+    android:layout_height="@dimen/dp_123"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/color_272727"
+    android:paddingTop="@dimen/dp_12"
     >
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iv_video"
         android:layout_width="176dp"
         android:layout_height="99dp"
-        android:src="@drawable/test_living_video"
+        android:src="@drawable/test_living_baseket_video"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         android:textAlignment="center"
@@ -31,21 +32,21 @@
         tools:ignore="HardcodedText" />
 
       <arch.cayenne.lib.skin.widget.SkinnableImageView
-          android:id="@+id/iv_country1_flag"
+          android:id="@+id/iv_team1_flag"
           android:layout_width="@dimen/dp_16"
           android:layout_height="@dimen/dp_13"
           android:src="@drawable/test_baxi"
           app:layout_constraintLeft_toLeftOf="@id/match_name"
-          app:layout_constraintTop_toTopOf="@id/country1_name"
-          app:layout_constraintBottom_toBottomOf="@id/country1_name"
+          app:layout_constraintTop_toTopOf="@id/team1_name"
+          app:layout_constraintBottom_toBottomOf="@id/team1_name"
           />
 
       <arch.cayenne.lib.skin.widget.SkinnableTextView
-          android:id="@+id/country1_name"
+          android:id="@+id/team1_name"
           android:layout_width="wrap_content"
           android:layout_height="@dimen/dp_20"
           android:text="日本"
-          app:layout_constraintLeft_toRightOf="@id/iv_country1_flag"
+          app:layout_constraintLeft_toRightOf="@id/iv_team1_flag"
           android:layout_marginStart="5.75dp"
           app:skinnableFontWeight="500"
           android:textColor="@color/color_FFFFFF"
@@ -56,25 +57,25 @@
           tools:ignore="HardcodedText" />
 
     <arch.cayenne.lib.skin.widget.SkinnableImageView
-        android:id="@+id/iv_country2_flag"
+        android:id="@+id/iv_team2_flag"
         android:layout_width="@dimen/dp_16"
         android:layout_height="@dimen/dp_13"
         android:src="@drawable/test_baxi"
         app:layout_constraintLeft_toLeftOf="@id/match_name"
-        app:layout_constraintTop_toTopOf="@id/country2_name"
-        app:layout_constraintBottom_toBottomOf="@id/country2_name"
+        app:layout_constraintTop_toTopOf="@id/team2_name"
+        app:layout_constraintBottom_toBottomOf="@id/team2_name"
         />
 
     <arch.cayenne.lib.skin.widget.SkinnableTextView
-        android:id="@+id/country2_name"
+        android:id="@+id/team2_name"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_20"
         android:text="巴西"
-        app:layout_constraintLeft_toLeftOf="@id/country1_name"
+        app:layout_constraintLeft_toLeftOf="@id/team1_name"
         app:skinnableFontWeight="500"
         android:textColor="@color/color_FFFFFF"
         android:textSize="@dimen/sp_14"
-        app:layout_constraintTop_toBottomOf="@id/country1_name"
+        app:layout_constraintTop_toBottomOf="@id/team1_name"
         android:layout_marginTop="@dimen/dp_8"
         android:textAlignment="center"
         tools:ignore="HardcodedText" />
@@ -97,8 +98,10 @@
         android:text="3222"
         app:skinnableFontWeight="600"
         android:textColor="@color/color_FFFFFF"
+        android:paddingTop="@dimen/dp_2"
+
         android:textSize="@dimen/sp_12"
-        app:layout_constraintTop_toBottomOf="@id/country2_name"
+        app:layout_constraintTop_toBottomOf="@id/team2_name"
         android:layout_marginTop="@dimen/dp_8"
         app:layout_constraintLeft_toRightOf="@id/circle"
         android:layout_marginLeft="6.5dp"
@@ -120,4 +123,44 @@
         android:textAlignment="center"
         tools:ignore="HardcodedText" />
 
+    <arch.cayenne.lib.skin.widget.SkinnableImageView
+        android:layout_width="@dimen/dp_20"
+        android:layout_height="@dimen/dp_20"
+        android:src="@drawable/test_basket_japan_flag"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginEnd="@dimen/dp_8"
+        app:layout_constraintTop_toTopOf="@id/match_name"
+        />
+
+      <arch.cayenne.lib.skin.widget.SkinnableTextView
+          android:id="@+id/team1_score"
+          android:layout_width="27dp"
+          android:layout_height="@dimen/dp_18"
+          android:textSize="@dimen/sp_15"
+          app:skinnableFontWeight="510"
+          android:textColor="@color/color_00E0E5"
+          android:text="103"
+          app:layout_constraintRight_toRightOf="parent"
+          app:layout_constraintTop_toTopOf="@id/team1_name"
+          android:layout_marginEnd="@dimen/dp_12"
+          tools:ignore="HardcodedText" />
+
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
+        android:id="@+id/team2_score"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_18"
+        android:textSize="@dimen/sp_15"
+        app:skinnableFontWeight="510"
+        android:textColor="@color/color_00E0E5"
+        android:text="1"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/team2_name"
+        android:layout_marginRight="@dimen/dp_12"
+        tools:ignore="HardcodedText" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/color_0FFFFFFF"
+        app:layout_constraintBottom_toBottomOf="parent"
+        />
 </androidx.constraintlayout.widget.ConstraintLayout>

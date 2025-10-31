@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/dp_123"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/color_272727"
+    android:paddingTop="@dimen/dp_12"
+    >
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_video"
+        android:layout_width="176dp"
+        android:layout_height="99dp"
+        android:src="@drawable/test_living_f1_video"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:textAlignment="center"
+        android:layout_marginLeft="@dimen/dp_10"
+        tools:ignore="RtlHardcoded" />
+    
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
+        android:id="@+id/station_name"
+        android:layout_width="wrap_content"
+        android:layout_height="18dp"
+        android:text="F1意大利站"
+        app:layout_constraintLeft_toRightOf="@id/iv_video"
+        android:layout_marginStart="@dimen/dp_10"
+        app:skinnableFontWeight="500"
+        android:textColor="@color/color_FFFFFF"
+        android:textSize="@dimen/sp_13"
+        app:layout_constraintTop_toTopOf="@id/iv_video"
+        tools:ignore="HardcodedText" />
+
+
+
+      <arch.cayenne.lib.skin.widget.SkinnableTextView
+          android:id="@+id/match_name"
+          android:layout_width="wrap_content"
+          android:layout_height="@dimen/dp_18"
+          android:text="F1 意大利大奖赛正赛"
+          app:layout_constraintLeft_toLeftOf="@id/station_name"
+          app:skinnableFontWeight="500"
+          android:textColor="@color/color_999999"
+          android:textSize="@dimen/sp_13"
+          app:layout_constraintTop_toBottomOf="@id/station_name"
+          android:layout_marginTop="@dimen/dp_8"
+          android:textAlignment="center"
+          tools:ignore="HardcodedText" />
+
+
+
+
+
+    <View
+        android:id="@+id/circle"
+        android:layout_width="6.5dp"
+        android:layout_height="6.5dp"
+        android:background="@drawable/shape_ring"
+        android:backgroundTint="@color/color_00E301"
+        app:layout_constraintLeft_toLeftOf="@id/station_name"
+        app:layout_constraintTop_toTopOf="@id/people_numbers"
+        app:layout_constraintBottom_toBottomOf="@id/people_numbers"
+        android:layout_marginTop="@dimen/dp_2"
+        />
+
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
+        android:id="@+id/people_numbers"
+        android:layout_width="25dp"
+        android:layout_height="@dimen/dp_17"
+        android:text="1万+"
+        app:skinnableFontWeight="600"
+        android:textColor="@color/color_FFFFFF"
+        android:textSize="@dimen/sp_12"
+        app:layout_constraintTop_toBottomOf="@id/match_name"
+        android:layout_marginTop="@dimen/dp_38"
+        app:layout_constraintLeft_toRightOf="@id/circle"
+        android:layout_marginLeft="3dp"
+        android:textAlignment="center"
+        tools:ignore="HardcodedText" />
+
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
+        android:id="@+id/online_status"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_17"
+        android:text="在聊"
+        app:skinnableFontWeight="600"
+        android:textColor="@color/color_999999"
+        android:textSize="@dimen/sp_12"
+        app:layout_constraintTop_toTopOf="@id/people_numbers"
+        app:layout_constraintBottom_toBottomOf="@id/people_numbers"
+        app:layout_constraintLeft_toRightOf="@id/people_numbers"
+        android:layout_marginStart="@dimen/dp_5"
+        android:textAlignment="center"
+        tools:ignore="HardcodedText" />
+
+
+    <arch.cayenne.lib.skin.widget.SkinnableImageView
+        android:layout_width="@dimen/dp_30"
+        android:layout_height="@dimen/dp_7"
+        android:layout_marginRight="12dp"
+        android:src="@drawable/test_f1_flag"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/station_name"
+        app:layout_constraintBottom_toBottomOf="@id/station_name"
+        />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/color_0FFFFFFF"
+        app:layout_constraintBottom_toBottomOf="parent"
+        />
+</androidx.constraintlayout.widget.ConstraintLayout>
