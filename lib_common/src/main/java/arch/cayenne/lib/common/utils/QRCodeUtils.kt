@@ -1,8 +1,6 @@
 package arch.cayenne.lib.common.utils
 
 import android.graphics.Bitmap
-import android.text.TextUtils
-import android.widget.ImageView
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.EncodeHintType
 import com.google.zxing.WriterException
@@ -13,8 +11,7 @@ import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel
 object QRCodeUtils {
 
     //生成创建二维码
-    fun generateQRCode(content: String, width: Int, height: Int, image: ImageView) {
-        if (TextUtils.isEmpty(content)) return
+    fun generateQRCode(content: String, width: Int, height: Int): Bitmap? {
         val writer = QRCodeWriter()
         try {
             val hints: MutableMap<EncodeHintType, Any?> = HashMap()
@@ -30,9 +27,10 @@ object QRCodeUtils {
             }
             val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
             bitmap.setPixels(pixels, 0, width, 0, 0, width, height)
-            image.setImageBitmap(bitmap)
+            return bitmap
         } catch (e: WriterException) {
             e.printStackTrace()
+            return null
         }
     }
 }

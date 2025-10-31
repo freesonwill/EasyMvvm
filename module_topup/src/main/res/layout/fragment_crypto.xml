@@ -254,7 +254,7 @@
                     android:maxLines="2"
                     android:paddingStart="@dimen/dp_11"
                     android:paddingEnd="@dimen/dp_14"
-                    android:text=""
+                    android:text="TGPs2ZF7nr1cjtdsMQTHmfpgXqqDnAYE6i"
                     android:textColor="@color/bank_text"
                     android:textSize="@dimen/sp_14"
                     app:layout_constraintBottom_toBottomOf="parent"
