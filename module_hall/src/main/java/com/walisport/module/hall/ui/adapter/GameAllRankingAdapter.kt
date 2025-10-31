@@ -6,15 +6,20 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
 import arch.cayenne.lib.base.ui.adapter.PagerAdapter
+import arch.cayenne.lib.common.utils.ViewUtils
+import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
+import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.setupViewPagerScroll
 import com.google.android.material.tabs.TabLayoutMediator
 import com.walisport.module.hall.R
 import com.walisport.module.hall.data.HallGameTabDefault
 import com.walisport.module.hall.databinding.ItemGameAllRankingBinding
 import com.walisport.module.hall.ui.fragment.GameAllRankingListFragment
+import com.walisport.module.hall.ui.fragment.GameRankingInfoDialogFragment
 
 class GameAllRankingAdapter(
+    val parentFragmentManager : androidx.fragment.app.FragmentManager,
     val childFragmentManager : androidx.fragment.app.FragmentManager,
     val lifecycle: androidx.lifecycle.Lifecycle,
 ) : RecyclerView.Adapter<GameAllRankingViewHolder>() {
@@ -23,7 +28,7 @@ class GameAllRankingAdapter(
         viewType: Int
     ): GameAllRankingViewHolder {
         val binding = ItemGameAllRankingBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return GameAllRankingViewHolder(childFragmentManager, lifecycle, binding)
+        return GameAllRankingViewHolder(parentFragmentManager, childFragmentManager, lifecycle, binding)
     }
 
     override fun onBindViewHolder(
@@ -40,6 +45,7 @@ class GameAllRankingAdapter(
 }
 
 class GameAllRankingViewHolder(
+    val parentFragmentManager : androidx.fragment.app.FragmentManager,
     val childFragmentManager : androidx.fragment.app.FragmentManager,
     val lifecycle: androidx.lifecycle.Lifecycle,
     val item: ItemGameAllRankingBinding
@@ -66,14 +72,22 @@ class GameAllRankingViewHolder(
         with(item) {
             vpRanking.adapter = PagerAdapter(childFragmentManager, lifecycle, mockTabList)
             vpRanking.isUserInputEnabled = true
-//            vpRanking.getChildAt(0).setOnTouchListener { v, event ->
-//                v.parent.requestDisallowInterceptTouchEvent(true)
-//                false
-//            }
             TabLayoutMediator(tlRanking, vpRanking) { tab, position ->
                 tab.text = mockTabList[position].title
             }.attach()
             vpRanking.setupViewPagerScroll(tlRanking, homeIndicator, 1f)
+
+            ivRankingInfo.clickNoRepeat {
+                val location = IntArray(2)
+                ivRankingInfo.getLocationInWindow(location)
+                val h = ViewUtils.getStatusBarHeight(item.root.context)
+                val positionX = location.first() + ivRankingInfo.width / 2
+                val positionY = location.last() - h - 1.dp2px
+                GameRankingInfoDialogFragment.newInstance(
+                    positionX,
+                    positionY,
+                ).show(parentFragmentManager)
+            }
         }
     }
 }

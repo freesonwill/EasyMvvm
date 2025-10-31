@@ -27,7 +27,13 @@ class GameAllFragment: BaseFragment<EmptyViewModel, FragmentGameAllBinding>() {
 //            navigate(arch.cayenne.lib.res.R.string.nav_module_setting_fragment.deeplink())
         }
     }
-    private val rankingAdapter by lazy { GameAllRankingAdapter(childFragmentManager, lifecycle) }
+    private val rankingAdapter by lazy {
+        GameAllRankingAdapter(
+            parentFragmentManager,
+            childFragmentManager,
+            lifecycle
+        )
+    }
 
 
 

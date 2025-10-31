@@ -7,11 +7,26 @@
         android:id="@+id/tv_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textSize="@dimen/sp_14"
+        android:textColor="@color/color_FFFFFF"
+        android:text="@string/tab_ranking_newest"
         android:layout_marginTop="@dimen/dp_20"
         android:layout_marginStart="@dimen/dp_12"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent" />
     <arch.cayenne.lib.skin.widget.SkinnableImageView
+        android:id="@+id/iv_ranking_info"
+        android:layout_width="@dimen/dp_14"
+        android:layout_height="@dimen/dp_14"
+        android:layout_marginStart="@dimen/dp_7"
+        app:srcCompat="@drawable/ic_ranking_info"
+        app:layout_constraintTop_toTopOf="@+id/tv_title"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_title"
+        app:layout_constraintLeft_toRightOf="@+id/tv_title" />
+
+    <!-- TabLayout組件 -->
+    <arch.cayenne.lib.skin.widget.SkinnableImageView
+        android:id="@+id/iv_tab_layout_bg"
         android:background="@drawable/shape_game_all_rank_tablayout_bg"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -33,6 +48,7 @@
         android:layout_height="@dimen/dp_42"
         android:layout_marginStart="@dimen/dp_12"
         android:layout_marginEnd="@dimen/dp_12"
+        android:layout_marginTop="@dimen/dp_12"
         android:background="@android:color/transparent"
         app:tabContentStart="0dp"
         app:tabPaddingStart="0dp"
@@ -50,6 +66,8 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
 
+
+    <!-- ViewPager -->
     <arch.cayenne.lib.common.ui.view.InnerViewPager2Container
         android:id="@+id/inner_viewpager"
         android:layout_width="match_parent"
