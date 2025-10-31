@@ -58,7 +58,7 @@
                     <androidx.fragment.app.FragmentContainerView
                         android:id="@+id/fragment_media"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:fitsSystemWindows="false"
                         tools:ignore="MissingConstraints" />
 
@@ -81,7 +81,6 @@
                             android:layout_weight="1"
                             android:ellipsize="end"
                             android:maxLines="1"
-                            android:text="333333333333"
                             android:textColor="@color/video_tab_text_color"
                             android:textSize="13sp" />
 
