@@ -18,5 +18,6 @@
     <string name="tab_ranking_list_multiple">倍数</string>
     <string name="tab_ranking_list_result">输赢</string>
     <string name="tab_ranking_info_hint">为防止过快刷屏，“最近投注”与“大额输赢”只显示部分注单</string>
+    <string name="daily_betting_game">每日投注比赛</string>
 
 </resources>
