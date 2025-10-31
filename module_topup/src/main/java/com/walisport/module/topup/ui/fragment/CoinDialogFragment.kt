@@ -14,6 +14,9 @@ import com.walisport.module.topup.databinding.FragmentCoinDialogBinding
 import com.walisport.module.topup.ui.viewmodel.CoinDialogViewModel
 import kotlin.reflect.KClass
 
+/**
+ * 币种选择下拉弹窗
+ */
 class CoinDialogFragment :
     BasePositionDialogFragment<CoinDialogViewModel, FragmentCoinDialogBinding>() {
 
