@@ -64,7 +64,6 @@ transformations = "4.3.0"
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "coreSplashscreen" }
-
 core = { module = "com.google.zxing:core", version.ref = "coreVersion" }
 desugar_jdk_libs = { module = "com.android.tools:desugar_jdk_libs", version.ref = "desugar_jdk_libs" }
 floatingx = { module = "io.github.petterpx:floatingx", version.ref = "floatingx" }
@@ -129,7 +128,6 @@ androidx-fragment-ktx = { group = "androidx.fragment", name = "fragment-ktx", ve
 pullrefresh-kernel = { group = "io.github.scwang90",name = "refresh-layout-kernel", version.ref = "pullrefresh" }
 tinyPinyin = { group = "com.github.promeg",name = "tinypinyin", version.ref = "tinyPinyin" }
 subsampling = { group = "com.davemorrissey.labs", name = "subsampling-scale-image-view-androidx",version.ref = "subsampling" }
-
 transformations = { group = "jp.wasabeef", name = "glide-transformations",version.ref = "transformations" }
 tinyPinyin-android = { group = "com.github.promeg",name = "tinypinyin-lexicons-android-cncity", version.ref = "tinyPinyin" }
 # 其他库依赖
@@ -137,7 +135,6 @@ calendarview = { module = "com.github.angcyo:CalendarView", version.ref = "calen
 brv = { module = "com.github.liangjingkanji:BRV", version.ref = "brv" }
 utilcodex = { module = "com.blankj:utilcodex", version.ref = "utilcodex" }
 xpopup = { module = "com.github.li-xiaojun:XPopup", version.ref = "xpopup" }
-
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
