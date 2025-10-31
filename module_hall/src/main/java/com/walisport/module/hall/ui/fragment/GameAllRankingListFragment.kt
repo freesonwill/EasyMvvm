@@ -2,7 +2,6 @@ package com.walisport.module.hall.ui.fragment
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.viewmodel.EmptyViewModel
@@ -47,9 +46,6 @@ class GameAllRankingListFragment : BaseFragment<EmptyViewModel, FragmentGameAllR
             rvCurrentRank.adapter = GameAllRankingListAdapter().apply {
                 submitList(mockList)
             }
-            rvCurrentRank.isNestedScrollingEnabled = false
-            rvCurrentRank.overScrollMode = View.OVER_SCROLL_NEVER
-
 
         }
     }

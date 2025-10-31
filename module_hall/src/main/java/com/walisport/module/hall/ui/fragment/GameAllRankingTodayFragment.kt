@@ -2,11 +2,12 @@ package com.walisport.module.hall.ui.fragment
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.viewmodel.EmptyViewModel
-import com.walisport.module.hall.R
-import com.walisport.module.hall.data.GameAllRankingListData
+import com.walisport.module.hall.data.GameAllRankingTodayData
 import com.walisport.module.hall.databinding.FragmentGameAllRankingTodayBinding
+import com.walisport.module.hall.ui.adapter.GameAllRankingListTodayAdapter
 import kotlin.reflect.KClass
 
 class GameAllRankingTodayFragment : BaseFragment<EmptyViewModel, FragmentGameAllRankingTodayBinding>() {
@@ -18,16 +19,15 @@ class GameAllRankingTodayFragment : BaseFragment<EmptyViewModel, FragmentGameAll
     override val vmClass: KClass<EmptyViewModel> = EmptyViewModel::class
 
     val mockList by lazy {
-        val l = arrayListOf<GameAllRankingListData>()
-        for (i in 0..9) {
+        val l = arrayListOf<GameAllRankingTodayData>()
+        for (i in 0..30) {
             l.add(
-                GameAllRankingListData(
-                    gameIcon = R.drawable.ic_little_tiger,
-                    gameName = getString(R.string.tiger),
-                    multiple = i * 20f,
-                    countryIcon = arch.cayenne.lib.common.R.drawable.ic_usdt,
+                GameAllRankingTodayData(
+                    rank = i+1,
+                    playerName = "核弹少年团",
                     symbol = "¥",
-                    result = 23456f
+                    betting = 23001212.22,
+                    bonus = 25000.0
                 )
             )
         }
@@ -37,7 +37,12 @@ class GameAllRankingTodayFragment : BaseFragment<EmptyViewModel, FragmentGameAll
     @SuppressLint("ClickableViewAccessibility")
     override fun initView(savedInstanceState: Bundle?) {
         with(mBinding) {
-
+            with(mBinding) {
+                rvTodayRank.layoutManager = LinearLayoutManager(requireContext())
+                rvTodayRank.adapter = GameAllRankingListTodayAdapter().apply {
+                    submitList(mockList)
+                }
+            }
         }
     }
 
