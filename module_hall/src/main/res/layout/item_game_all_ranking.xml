@@ -42,7 +42,7 @@
         app:layout_constraintStart_toStartOf="@id/tl_ranking"
         app:layout_constraintTop_toTopOf="@id/tl_ranking"
         app:layout_constraintBottom_toBottomOf="@+id/tl_ranking"/>
-    <arch.cayenne.lib.common.ui.view.CustomTabLayout
+    <arch.cayenne.lib.skin.widget.SkinnableTabLayout
         android:id="@+id/tl_ranking"
         android:layout_width="0dp"
         android:layout_height="@dimen/dp_42"
