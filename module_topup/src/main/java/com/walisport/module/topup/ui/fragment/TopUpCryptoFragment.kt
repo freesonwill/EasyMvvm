@@ -1,10 +1,13 @@
 package com.walisport.module.topup.ui.fragment
 
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import androidx.lifecycle.lifecycleScope
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
+import arch.cayenne.lib.common.utils.QRCodeUtils
 import arch.cayenne.lib.common.utils.copyToClipboard
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
@@ -15,10 +18,12 @@ import arch.cayenne.lib.common.utils.helper.showToast
 import com.walisport.module.topup.R
 import com.walisport.module.topup.data.entity.CoinBean
 import com.walisport.module.topup.databinding.FragmentCryptoBinding
-import com.walisport.module.topup.databinding.ItemCoinBinding
 import com.walisport.module.topup.databinding.TabCoinBinding
 import com.walisport.module.topup.ui.viewmodel.CryptoViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlin.reflect.KClass
 
 /**
@@ -32,6 +37,7 @@ class TopUpCryptoFragment : BaseFragment<CryptoViewModel, FragmentCryptoBinding>
     private var drawTournamentTabJob: Job? = null
 
     override fun initView(savedInstanceState: Bundle?) {
+        generateQRCode()
     }
 
     override fun initData() {
@@ -41,7 +47,7 @@ class TopUpCryptoFragment : BaseFragment<CryptoViewModel, FragmentCryptoBinding>
 
     override fun initListener() {
         mBinding.layCopy.clickNoRepeat {
-            copyToClipboard(mBinding.tvAddress.text as String?) {
+            copyToClipboard(mBinding.tvCryptoAddress.text as String?) {
                 showToast(R.string.tip_copy_suc.getString())
             }
         }
@@ -109,6 +115,17 @@ class TopUpCryptoFragment : BaseFragment<CryptoViewModel, FragmentCryptoBinding>
         for (i in 0 until tabLayout.tabCount) {
             val tab = tabLayout.getTabAt(i)
             tab?.view?.isSelected = i == position
+        }
+    }
+
+    private fun generateQRCode() {
+        lifecycleScope.launch(Dispatchers.IO) {
+            val size: Int = 122.dp2px
+            val content = "TGPs2ZF7nr1cjtdsMQTHmfpgXqqDnAYE6i"
+            val bitmap = QRCodeUtils.generateQRCode(content, size, size)
+            withContext(Dispatchers.Main) {
+                mBinding.ivQrcode.setImageBitmap(bitmap)
+            }
         }
     }
 
