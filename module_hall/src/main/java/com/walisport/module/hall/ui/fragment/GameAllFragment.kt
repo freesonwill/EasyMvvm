@@ -7,10 +7,10 @@ import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.viewmodel.EmptyViewModel
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
+import arch.cayenne.lib.common.utils.helper.BackToTopHelper
 import com.walisport.module.hall.databinding.FragmentGameAllBinding
 import com.walisport.module.hall.ui.adapter.GameAllHeaderAdapter
 import com.walisport.module.hall.ui.adapter.GameAllListAdapter
-import com.walisport.module.hall.ui.helper.BackToTopHelper
 import kotlin.reflect.KClass
 
 class GameAllFragment: BaseFragment<EmptyViewModel, FragmentGameAllBinding>() {

@@ -23,6 +23,7 @@ import arch.cayenne.lib.base.ui.animation.AnimationController
 import arch.cayenne.lib.base.ui.animation.AnimationController.AnimType
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
+import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.base.utils.ext.ViewExt.applyInsetsForFitsSystemWindows
 import arch.cayenne.lib.common.utils.CustomTabIndicatorUtils
@@ -120,6 +121,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
 
         mBinding.LayoutInterceptTouch.setLiveMainGestureListener(object : LiveMainGestureListener {
             override fun onAdjustLayoutScroll(deltaY: Float, direction: LiveMainSlideDirection) {
+
                 //往下滑动,子类的rv,sc是否滑到了第一条或者顶部
                 if (direction == LiveMainSlideDirection.DOWN) {
                     // 如果当前高度在 50-211 范围内，返回 true，表示可以滑动
@@ -132,7 +134,14 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                         }
                     }
                 } else {
-                    mBinding.liveMainScale.adjustLayout(deltaY, direction)
+                    var animating: Boolean? = mViewModel.videoTypeAnimating.value
+                  //  LogUtils.e("animating------->${animating}")
+                    animating?.let {
+                        if (!it){
+                            mViewModel.setScorll()
+                            mBinding.liveMainScale.adjustLayout(deltaY, direction)
+                        }
+                    }
                 }
             }
         })
@@ -148,6 +157,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
 
                 MotionEvent.ACTION_UP -> {
                     //还原原本状态
+                    mViewModel.setScorll()
                     scrollIsTop?.let { mViewModel.setSonVerticalScrollIsTop(it) }
                     true
                 }
@@ -402,6 +412,10 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
             mViewModel.matchIdSportIdObserver.collect {
                 refreshBetSlip()
             }
+        }
+
+        mViewModel.videoInitHeight.observe(viewLifecycleOwner){
+            mBinding.liveMainScale.initHeight(it)
         }
     }
 

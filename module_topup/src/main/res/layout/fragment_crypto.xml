@@ -17,12 +17,12 @@
             android:id="@+id/tl_coin_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginStart="@dimen/dp_8"
             android:layout_marginEnd="@dimen/dp_104"
+            android:background="@android:color/transparent"
             android:clipChildren="false"
             android:clipToPadding="false"
             android:overScrollMode="never"
-            android:background="@android:color/transparent"
-            android:layout_marginStart="@dimen/dp_8"
             app:tabGravity="start"
             app:tabIndicator="@null"
             app:tabIndicatorColor="@null"
@@ -37,9 +37,9 @@
             android:layout_width="@dimen/dp_104"
             android:layout_height="match_parent"
             android:background="@color/fragment_bg"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent">
+            app:layout_constraintTop_toTopOf="parent">
 
             <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
                 android:id="@+id/lay_more_coin"
@@ -71,7 +71,7 @@
                     android:textColor="@color/color_C0C0C0"
                     android:textSize="@dimen/sp_14"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"/>
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <arch.cayenne.lib.skin.widget.SkinnableImageView
                     android:layout_width="@dimen/dp_16"
@@ -84,8 +84,8 @@
         <arch.cayenne.lib.skin.widget.SkinnableImageView
             android:layout_width="@dimen/dp_18"
             android:layout_height="match_parent"
-            android:src="@drawable/gradient_coin_list"
             android:layout_marginEnd="@dimen/dp_104"
+            android:src="@drawable/gradient_coin_list"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -222,6 +222,7 @@
             android:layout_marginTop="@dimen/dp_9">
 
             <arch.cayenne.lib.skin.widget.SkinnableView
+                android:id="@+id/iv_code_bg"
                 android:layout_width="@dimen/dp_128"
                 android:layout_height="@dimen/dp_128"
                 android:layout_marginStart="@dimen/dp_16"
@@ -230,11 +231,12 @@
 
             <arch.cayenne.lib.skin.widget.SkinnableImageView
                 android:id="@+id/iv_qrcode"
-                android:layout_width="@dimen/dp_128"
-                android:layout_height="@dimen/dp_128"
-                android:layout_marginStart="@dimen/dp_16"
-                android:background="@drawable/icon_qrcode"
-                app:layout_constraintStart_toStartOf="parent" />
+                android:layout_width="@dimen/dp_122"
+                android:layout_height="@dimen/dp_122"
+                app:layout_constraintBottom_toBottomOf="@+id/iv_code_bg"
+                app:layout_constraintEnd_toEndOf="@+id/iv_code_bg"
+                app:layout_constraintStart_toStartOf="@+id/iv_code_bg"
+                app:layout_constraintTop_toTopOf="@+id/iv_code_bg" />
 
             <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
                 android:id="@+id/lay_address"
@@ -245,11 +247,11 @@
                 app:layout_constraintEnd_toEndOf="parent">
 
                 <arch.cayenne.lib.skin.widget.SkinnableTextView
-                    android:id="@+id/tv_address"
+                    android:id="@+id/tv_crypto_address"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:maxLines="2"
                     android:lineSpacingMultiplier="1.2"
+                    android:maxLines="2"
                     android:paddingStart="@dimen/dp_11"
                     android:paddingEnd="@dimen/dp_14"
                     android:text="TGPs2ZF7nr1cjtdsMQTHmfpgXqqDnAYE6i"

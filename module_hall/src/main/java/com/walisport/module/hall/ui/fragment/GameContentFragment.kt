@@ -7,12 +7,12 @@ import arch.cayenne.lib.base.ui.viewmodel.EmptyViewModel
 import arch.cayenne.lib.common.ui.adapter.GridSpacingItemDecoration
 import arch.cayenne.lib.common.ui.view.SimpleTabDataModel
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.lib.common.utils.helper.BackToTopHelper
 import com.walisport.module.hall.R
 import com.walisport.module.hall.data.GameContentData
 import com.walisport.module.hall.data.HotColdType
 import com.walisport.module.hall.databinding.FragmentGameContentBinding
 import com.walisport.module.hall.ui.adapter.GameContentAdapter
-import com.walisport.module.hall.ui.helper.BackToTopHelper
 import kotlin.random.Random
 import kotlin.reflect.KClass
 
