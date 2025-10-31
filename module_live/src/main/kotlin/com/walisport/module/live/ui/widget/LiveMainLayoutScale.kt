@@ -1,5 +1,7 @@
 package com.walisport.module.live.ui.widget
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
 import android.animation.ValueAnimator
 import com.walisport.module.live.R
 
@@ -16,6 +18,8 @@ import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.FragmentContainerView
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+import arch.cayenne.lib.common.utils.ext.startFadeAnim
+import arch.cayenne.lib.common.utils.ext.startFadeAnimVideo
 import com.walisport.module.live.ui.widget.LiveMainLayoutInterceptTouch.LiveMainSlideDirection
 
 /*
@@ -46,6 +50,8 @@ class LiveMainLayoutScale @JvmOverloads constructor(
     private var maxVideoWidth: Float = 511f * density
     private var isVerticalScroll = true
 
+    private var animationUp: Boolean = false
+    private var animationDow: Boolean = false
     private var isCollapsed = false // 标记是否处于折叠状态
     private var isDowScroll = true // 标记是否往下滑动
     override fun onFinishInflate() {
@@ -64,7 +70,7 @@ class LiveMainLayoutScale @JvmOverloads constructor(
             collapseToZero(200)
         }
         // 设置初始高度和宽度
-      //  llVideo.layoutParams.height = initialVideoHeight.toInt()
+        llVideo.layoutParams.height = initialVideoHeight.toInt()
         llVideo.post {
             maxVideoWidth = llVideo.width.toFloat()
             initialVideoWidth = maxVideoWidth
@@ -75,6 +81,28 @@ class LiveMainLayoutScale @JvmOverloads constructor(
             fragmentMedia.pivotX = fragmentMedia.width.toFloat() / 2
             fragmentMedia.pivotY = 0f // 高度顶部
             // LogUtils.e("MainLayout------>onFinishInflate")
+        }
+    }
+
+    fun initHeight(height:Int){
+        llVideo.post {
+            if (height>minVideoHeight){
+            initialVideoHeight = height.toFloat()
+            maxVideoHeight = height.toFloat()
+            maxVideoWidth = llVideo.width.toFloat()
+            initialVideoWidth = maxVideoWidth
+            scaleXtoY = maxVideoWidth / initialVideoHeight // 计算宽高比例
+            minVideoWidth = scaleXtoY * minVideoHeight // 最小宽度
+            llVideo.layoutParams.width = maxVideoWidth.toInt()
+            val paramsLin = llVideo.layoutParams as LayoutParams
+            paramsLin.height = initialVideoHeight.toInt()
+            llVideo.layoutParams = paramsLin
+            fragmentMedia.layoutParams.height = initialVideoHeight.toInt()
+            // 设置初始缩放中心（只设置宽度中心）
+            fragmentMedia.pivotX = fragmentMedia.width.toFloat() / 2
+            fragmentMedia.pivotY = 0f // 高度顶部
+            // LogUtils.e("MainLayout------>onFinishInflate")
+            }
         }
     }
 
@@ -121,19 +149,33 @@ class LiveMainLayoutScale @JvmOverloads constructor(
 
         // 设置缩放中心：只设置宽度中心（X轴）
         // 当高度达到 minVideoHeight 时，pivotX 设置为 0，否则为宽度中心
-            fragmentMedia.pivotX = if (newHeight <= minVideoHeight) {
-                0f
-            } else {
-                fragmentMedia.width.toFloat() / 2 // 宽度中心
-            }
+
+
 
         // 当高度达到最小值时触发隐藏动画
         if (newHeight <= minVideoHeight && llText.visibility == GONE) {
-                llText.visibility = VISIBLE
-            llVideo.setBackgroundResource(R.color.menu_lin_tr)
+            if (!animationUp){
+                animationUp = true
+                animationDow = false
+                fragmentMedia.startFadeAnimVideo {
+                    llVideo.setBackgroundResource(R.color.menu_lin_tr)
+                    fragmentMedia.pivotX = 0f
+                    llText.visibility = VISIBLE
+                    it.invoke()
+                }
+            }
         } else if (newHeight > minVideoHeight && llText.visibility == VISIBLE) {
             llText.visibility = GONE
             llVideo.setBackgroundResource(arch.cayenne.lib.common.R.color.tran_0)
+            if (!animationDow){
+                animationDow = true
+                animationUp = false
+                fragmentMedia.startFadeAnimVideo {
+                    fragmentMedia.pivotX = fragmentMedia.width.toFloat() / 2 // 宽度中心
+                    it.invoke()
+                }
+            }
+
         }
         // 不设置 pivotY，保持默认（顶部，pivotY = 0）
 
@@ -260,7 +302,7 @@ class LiveMainLayoutScale @JvmOverloads constructor(
                     llVideo.visibility = View.GONE // 动画结束时隐藏
                     isCollapsed = true // 标记折叠状态
                     minVideoHeight = 0f
-                    fragmentMedia.width.toFloat() / 2 // 宽度中心
+                    fragmentMedia.pivotX = fragmentMedia.width.toFloat() / 2 // 宽度中心
                     // LogUtils.e("MainLayout----collapseToZero: animation ended, height=0, visibility=GONE")
                 }
             })
@@ -290,6 +332,40 @@ class LiveMainLayoutScale @JvmOverloads constructor(
         initialVideoHeight = targetHeight
         initialVideoWidth = targetHeight * scaleXtoY
     }
+
+
+    // 渐变显示动画
+    fun View.fadeIn(duration: Long = 300, onAnimationEnd: (() -> Unit)? = null) {
+        if ( alpha == 1f) return // 已经可见且完全不透明，直接返回
+        // 确保 View 初始状态
+        alpha = 0f
+        animate()
+            .alpha(1f)
+            .setDuration(duration)
+            .setListener(object : AnimatorListenerAdapter() {
+                override fun onAnimationEnd(animation: Animator) {
+                    onAnimationEnd?.invoke() // 执行动画结束回调
+                }
+            })
+            .start()
+    }
+
+    // 渐变隐藏动画
+    fun View.fadeOut(duration: Long = 300, onAnimationEnd: (() -> Unit)? = null) {
+        if ( alpha == 0f) return // 已经不可见或完全透明，直接返回
+
+        animate()
+            .alpha(0f)
+            .setDuration(duration)
+            .setListener(object : AnimatorListenerAdapter() {
+                override fun onAnimationEnd(animation: Animator) {
+                    alpha = 1f // 重置 alpha 为下次动画做准备
+                    onAnimationEnd?.invoke() // 执行动画结束回调
+                }
+            })
+            .start()
+    }
+
 
     fun setOnGestureListener(gestureListener: LiveMainGestureListener) {
         mLiveMainGesture = gestureListener
