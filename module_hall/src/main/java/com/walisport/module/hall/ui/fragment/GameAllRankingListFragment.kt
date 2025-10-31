@@ -18,8 +18,6 @@ class GameAllRankingListFragment : BaseFragment<EmptyViewModel, FragmentGameAllR
 
     override val vbClass: KClass<FragmentGameAllRankingListBinding> = FragmentGameAllRankingListBinding::class
     override val vmClass: KClass<EmptyViewModel> = EmptyViewModel::class
-    // 在 Fragment 的頂部定義一個變數來持有對父 ViewPager 的弱引用
-//    private var parentViewPagerRef: WeakReference<ViewPager2>? = null
 
     val mockList by lazy {
         val l = arrayListOf<GameAllRankingListData>()
@@ -40,7 +38,6 @@ class GameAllRankingListFragment : BaseFragment<EmptyViewModel, FragmentGameAllR
 
     @SuppressLint("ClickableViewAccessibility")
     override fun initView(savedInstanceState: Bundle?) {
-//        findParentViewPager(mBinding.root)
         with(mBinding) {
             rvCurrentRank.layoutManager = LinearLayoutManager(requireContext())
             rvCurrentRank.adapter = GameAllRankingListAdapter().apply {
@@ -49,16 +46,6 @@ class GameAllRankingListFragment : BaseFragment<EmptyViewModel, FragmentGameAllR
 
         }
     }
-
-//    private fun findParentViewPager(view: View) {
-//        var parent = view.parent
-//        while (parent != null && parent !is ViewPager2) {
-//            parent = parent.parent
-//        }
-//        if (parent is ViewPager2) {
-//            parentViewPagerRef = WeakReference(parent)
-//        }
-//    }
 
     override fun initListener() {
     }

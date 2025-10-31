@@ -5,43 +5,78 @@ import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
+import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.base.ui.adapter.BaseAdapter
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
 import com.walisport.module.hall.R
-import com.walisport.module.hall.data.GameAllRankingTodayData
+import com.walisport.module.hall.data.GameAllRankingToday
+import com.walisport.module.hall.databinding.ItemAllRankingDashBinding
 import com.walisport.module.hall.databinding.ItemAllRankingTodayBinding
 import java.text.DecimalFormat
 
-class GameAllRankingListTodayAdapter : BaseAdapter<GameAllRankingTodayData, GameAllRankingTodayViewHolder, ItemAllRankingTodayBinding>(GameAllRankingTodayCompare()) {
+class GameAllRankingListTodayAdapter : BaseAdapter<GameAllRankingToday, BaseViewHolder, ViewBinding>(GameAllRankingTodayCompare()) {
     override fun convertPlus(
-        holder: GameAllRankingTodayViewHolder,
-        binding: ItemAllRankingTodayBinding,
+        holder: BaseViewHolder,
+        binding: ViewBinding,
         position: Int
     ) {
-        holder.bind(getItem(position), position)
+        val item = getItem(position)
+        when(item) {
+            is GameAllRankingToday.GameAllRankingTodayData -> {
+                (holder as? GameAllRankingTodayViewHolder)?.bind(item, position)
+            }
+            else -> Unit
+        }
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        when(getItem(position)) {
+            is GameAllRankingToday.GameAllRankingTodayData -> {
+                return GameAllRankingListTodayEnum.DATA.ordinal
+            }
+            is GameAllRankingToday.GameAllRankingDashData -> {
+                return GameAllRankingListTodayEnum.DASH.ordinal
+            }
+
+        }
     }
 
     override fun createViewBinding(
         inflater: LayoutInflater,
         parent: ViewGroup,
         viewType: Int
-    ): ItemAllRankingTodayBinding {
-        return ItemAllRankingTodayBinding.inflate(inflater, parent, false)
+    ): ViewBinding {
+        when(viewType) {
+            GameAllRankingListTodayEnum.DATA.ordinal -> {
+                return ItemAllRankingTodayBinding.inflate(inflater, parent, false)
+            }
+            else -> {
+                return ItemAllRankingDashBinding.inflate(inflater, parent, false)
+            }
+        }
+
     }
 
     override fun createViewHolder(
-        binding: ItemAllRankingTodayBinding,
+        binding: ViewBinding,
         viewType: Int
-    ): GameAllRankingTodayViewHolder {
-        return GameAllRankingTodayViewHolder(binding)
+    ): BaseViewHolder {
+        when(viewType) {
+            GameAllRankingListTodayEnum.DATA.ordinal -> {
+                return GameAllRankingTodayViewHolder(binding as ItemAllRankingTodayBinding)
+            }
+            else -> {
+                return GameAllRankingDashViewHolder(binding as ItemAllRankingDashBinding)
+            }
+        }
     }
 }
 
 class GameAllRankingTodayViewHolder(val item: ItemAllRankingTodayBinding) : BaseViewHolder(item) {
     @SuppressLint("ClickableViewAccessibility", "SetTextI18n")
-    fun bind(data: GameAllRankingTodayData, position: Int) {
+    fun bind(data: GameAllRankingToday.GameAllRankingTodayData, position: Int) {
         with(item) {
-            if (position % 2 != 0) {
+            if (data.rank % 2 == 0) {
                 item.clRoot.setBackgroundColor(Color.TRANSPARENT)
             } else {
                 item.clRoot.setBackgroundResource(R.drawable.shape_game_all_rank_list_bg)
@@ -67,35 +102,26 @@ class GameAllRankingTodayViewHolder(val item: ItemAllRankingTodayBinding) : Base
             val plainFormat = DecimalFormat("#.########")
             tvBetting.text = "${data.symbol}${plainFormat.format(data.betting)}"
             tvBonus.text = "${data.symbol}${plainFormat.format(data.bonus)}"
-//            ivGame.setImageResource(data.gameIcon)
-//            tvGameName.text = data.gameName
-//            tvMultiple.text = "${data.multiple}x"
-//            if (data.multiple >= 100f) {
-//                setTextViewGradient(tvMultiple)
-//            } else {
-//                tvMultiple.paint.shader = null // 關鍵：清除複用帶來的舊 Shader
-//                tvMultiple.setTextColor(arch.cayenne.lib.common.R.color.color_C0C0C0.getColor())
-//            }
-//            ivCurrency.setBackgroundResource(arch.cayenne.lib.common.R.drawable.ic_usdt)
-//            tvResult.text = "${data.symbol}${data.result}"
-//            if (data.result > 0) {
-//                tvResult.setTextColor(arch.cayenne.lib.common.R.color.color_00E301.getColor())
-//            } else {
-//                tvMultiple.setTextColor(arch.cayenne.lib.common.R.color.color_C0C0C0.getColor())
-//            }
         }
     }
 }
 
-class GameAllRankingTodayCompare : DiffUtil.ItemCallback<GameAllRankingTodayData>() {
+class GameAllRankingDashViewHolder(val item : ItemAllRankingDashBinding) : BaseViewHolder(item) {
+
+}
+
+class GameAllRankingTodayCompare : DiffUtil.ItemCallback<GameAllRankingToday>() {
     override fun areItemsTheSame(
-        oldItem: GameAllRankingTodayData,
-        newItem: GameAllRankingTodayData
+        oldItem: GameAllRankingToday,
+        newItem: GameAllRankingToday
     ): Boolean = oldItem == newItem
 
     override fun areContentsTheSame(
-        oldItem: GameAllRankingTodayData,
-        newItem: GameAllRankingTodayData
+        oldItem: GameAllRankingToday,
+        newItem: GameAllRankingToday
     ): Boolean  = oldItem == newItem
+}
 
+enum class GameAllRankingListTodayEnum {
+    DATA, DASH
 }

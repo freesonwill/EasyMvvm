@@ -5,7 +5,7 @@ import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.viewmodel.EmptyViewModel
-import com.walisport.module.hall.data.GameAllRankingTodayData
+import com.walisport.module.hall.data.GameAllRankingToday
 import com.walisport.module.hall.databinding.FragmentGameAllRankingTodayBinding
 import com.walisport.module.hall.ui.adapter.GameAllRankingListTodayAdapter
 import kotlin.reflect.KClass
@@ -18,11 +18,11 @@ class GameAllRankingTodayFragment : BaseFragment<EmptyViewModel, FragmentGameAll
     override val vbClass: KClass<FragmentGameAllRankingTodayBinding> = FragmentGameAllRankingTodayBinding::class
     override val vmClass: KClass<EmptyViewModel> = EmptyViewModel::class
 
-    val mockList by lazy {
-        val l = arrayListOf<GameAllRankingTodayData>()
-        for (i in 0..30) {
+    val mockList: List<GameAllRankingToday> by lazy {
+        val l = arrayListOf<GameAllRankingToday>()
+        for (i in 0..11) {
             l.add(
-                GameAllRankingTodayData(
+                GameAllRankingToday.GameAllRankingTodayData(
                     rank = i+1,
                     playerName = "核弹少年团",
                     symbol = "¥",
@@ -31,6 +31,7 @@ class GameAllRankingTodayFragment : BaseFragment<EmptyViewModel, FragmentGameAll
                 )
             )
         }
+        l.add(l.size - 2, GameAllRankingToday.GameAllRankingDashData)
         l
     }
 
