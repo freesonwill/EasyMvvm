@@ -3,10 +3,14 @@ package arch.cayenne.module.order.ui.fragment
 import android.os.Bundle
 import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.adapter.PagerAdapter
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.common.data.constants.DrawerAction.ACTION_OPEN
 import arch.cayenne.lib.common.data.constants.DrawerAction.KEY_ACTION
 import arch.cayenne.lib.common.data.constants.DrawerAction.REQUEST_KEY_DRAWER
@@ -15,10 +19,13 @@ import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.removeAllTips
 import arch.cayenne.lib.common.utils.ext.setupHorizontalScrollDegree
+import arch.cayenne.module.betslip.R
 import arch.cayenne.module.betslip.databinding.FragmentHomeOrderBinding
 import arch.cayenne.module.order.data.constants.OrderPageEnum
+import arch.cayenne.module.order.ui.viewmodel.BetMode
 import arch.cayenne.module.order.ui.viewmodel.HomeOrderViewModel
 import com.google.android.material.tabs.TabLayoutMediator
+import kotlinx.coroutines.flow.filterNotNull
 import kotlin.reflect.KClass
 
 /**
@@ -30,19 +37,31 @@ class HomeOrderFragment: BaseFragment<HomeOrderViewModel, FragmentHomeOrderBindi
     override val vmClass: KClass<HomeOrderViewModel> = HomeOrderViewModel::class
 
     private val unreadMessageViewModel: UnReadMessageViewModel by viewModels()
-
+    private var tabLayoutMediator:TabLayoutMediator? = null
 
     override fun initView(savedInstanceState: Bundle?) {
-        val page = OrderPageEnum.entries.toTypedArray()
-        mBinding.viewPager.adapter = PagerAdapter(childFragmentManager, lifecycle, page.map { it.page })
-        TabLayoutMediator(mBinding.tabLayout, mBinding.viewPager,false) { tab, position ->
-            tab.text = page[position].page.title
-        }.attach()
         mBinding.tabLayout.post {
             mBinding.tabLayout.removeAllTips()
         }
         mBinding.viewPager.setupHorizontalScrollDegree()
     }
+
+
+    fun setMode(m: BetMode){
+        //"lifecycle.currentState----${lifecycle.currentState},isAtLeast:${lifecycle.currentState.isAtLeast(Lifecycle.State.CREATED)}".logd(TAG)
+        if(!lifecycle.currentState.isAtLeast(Lifecycle.State.CREATED)) {
+            lifecycle.addObserver(object :DefaultLifecycleObserver{
+                override fun onStart(owner: LifecycleOwner) {
+                    super.onStart(owner)
+                    lifecycle.removeObserver(this)
+                    setMode(m)
+                }
+            })
+        } else {
+            mViewModel.betModelFlow.value = m
+        }
+    }
+
     override fun initListener() {
         with (mBinding) {
             ivHam.addScaleOnTouchAnimation()
@@ -64,6 +83,32 @@ class HomeOrderFragment: BaseFragment<HomeOrderViewModel, FragmentHomeOrderBindi
         }
 
         unreadMessageViewModel.createObserver()
+        launch {
+            mViewModel.betModelFlow.filterNotNull().collect {
+                val page = when(it){
+                    BetMode.BET_RECORD -> {
+                        OrderPageEnum.entries.toTypedArray()
+                    }
+                    else -> {
+                        arrayOf(OrderPageEnum.SPORT)
+                    }
+                }
+                mBinding.viewPager.adapter = PagerAdapter(childFragmentManager, lifecycle, page.map { it.page })
+
+                tabLayoutMediator?.detach()
+                TabLayoutMediator(mBinding.tabLayout, mBinding.viewPager,false) { tab, position ->
+                    tab.text = page[position].page.title
+                }.apply {
+                    tabLayoutMediator = this
+                }.attach()
+
+                if(page.size > 1) {
+                    mBinding.tabLayout.setSelectedTabIndicator(R.drawable.bg_order_indicator)
+                } else {
+                    mBinding.tabLayout.setSelectedTabIndicator(null)
+                }
+            }
+        }
     }
 
     override fun onStart() {

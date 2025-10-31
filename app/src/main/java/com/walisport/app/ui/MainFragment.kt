@@ -1,7 +1,6 @@
 package com.walisport.app.ui
 
 import android.os.Bundle
-import android.util.SparseArray
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.DrawableRes
@@ -16,7 +15,6 @@ import arch.cayenne.lib.base.ui.animation.AnimationController.AnimType
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
-import arch.cayenne.lib.common.ui.fragment.EmptyFragment
 import arch.cayenne.module.chat.ui.fragment.MainChatFragment
 import arch.cayenne.lib.common.data.constants.DrawerAction.ACTION_CLOSE
 import arch.cayenne.lib.common.data.constants.DrawerAction.ACTION_OPEN
@@ -26,11 +24,13 @@ import arch.cayenne.lib.common.utils.ext.setDrawerInterpolator
 import arch.cayenne.module.home.ui.fragment.NewHomeFragment
 import arch.cayenne.module.home.ui.view.Style
 import arch.cayenne.module.order.ui.fragment.HomeOrderFragment
+import arch.cayenne.module.order.ui.viewmodel.BetMode
 import com.walisport.app.R
 import com.walisport.app.databinding.FragmentMainBinding
 import com.walisport.app.ui.viewmodel.MainViewModel
 import com.walisport.module.hall.ui.fragment.HallFragment
 import com.walisport.module.me.ui.fragment.MeFragment
+import kotlinx.coroutines.flow.filterNotNull
 import kotlin.reflect.KClass
 
 
@@ -41,7 +41,7 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>() {
         get() = MainViewModel::class
     // 1. 使用 lazy 延遲初始化並持有所有 Fragment 實例
     private val fragments by lazy {
-        Array(BottomNavType.entries.size) { SparseArray<Fragment>()}
+        arrayOfNulls<Fragment>(BottomNavType.entries.size)
     }
 
     private enum class BottomNavType(@DrawableRes val icon:Int,@StringRes val title:Int) {
@@ -52,18 +52,15 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>() {
         ME(arch.cayenne.module.home.R.drawable.ic_me, arch.cayenne.module.home.R.string.title_me),
     }
 
-    private enum class BetMode {
-        BET_SLIP, BET_RECORD,
-    }
 
-    private fun getFragment(position: Int,mode:Int = 0): Fragment {
-        return fragments[position].get(mode) ?: when (position) {
+    private fun getFragment(position: Int): Fragment {
+        return fragments[position] ?: when (position) {
             0 -> HallFragment()
             1 -> NewHomeFragment()
-            2 -> when(mode) { BetMode.BET_SLIP.ordinal -> HomeOrderFragment() else -> EmptyFragment() }
+            2 -> HomeOrderFragment()
             3 -> MainChatFragment()
             else -> MeFragment()
-        }.also { fragments[position][mode] = it}
+        }.also { fragments[position] = it}
     }
 
     override fun initView(savedInstanceState: Bundle?) {
@@ -129,14 +126,14 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>() {
             }
         }
         launch {
-            mViewModel.betSlotFlow.collect {
+            mViewModel.betSlotFlow.filterNotNull().collect {
                 mBinding.navBetSlip.setBarStyle(Style.IconText(it.icon,it.title))
             }
         }
         launch {
             mViewModel.selectedIndexFlow.collect {
-                if(it == BottomNavType.HOME.ordinal) mViewModel.betSlotFlow.value = MainViewModel.BetSlot.BetRecordFragment
-                else if(it == BottomNavType.SPORT.ordinal) mViewModel.betSlotFlow.value = MainViewModel.BetSlot.HomeOrderFragment
+                if(it == BottomNavType.HOME.ordinal) mViewModel.betSlotFlow.value = MainViewModel.BetSlot.BET_RECORD
+                else if(it == BottomNavType.SPORT.ordinal) mViewModel.betSlotFlow.value = MainViewModel.BetSlot.BET_SLIP
             }
         }
     }
@@ -170,12 +167,14 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>() {
 
     private fun setCurrentFragment(index: Int) {
         if (index !in fragments.indices) return // 防呆
-        val mode = if(index != BottomNavType.BET_SLOT.ordinal) 0 else mViewModel.betSlotFlow.value.mode
-        val fragment = getFragment(index, mode)
+        val fragment = getFragment(index)
+        if(fragment is HomeOrderFragment) {
+            fragment.setMode(mViewModel.betSlotFlow.value.toBetMode())
+        }
         childFragmentManager.beginTransaction().apply {
             for(i in BottomNavType.entries.indices) {
                 childFragmentManager.findFragmentByTag("$TAG$i")?.let {
-                    "hide fragment ---> $it".logd(TAG)
+                    //"hide fragment ---> $it".logd(TAG)
                     hide(it)
                 }
             }
