@@ -9,6 +9,7 @@ import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
 import arch.cayenne.lib.database.entity.BaseTournamentData
+import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.module.home.R
 import arch.cayenne.module.home.data.TournamentListItem
 import arch.cayenne.module.home.data.constants.TournamentListType
@@ -45,13 +46,13 @@ class TournamentItemViewHolder(
                 if (isSelected) {
                     ivSelected.visibility = View.VISIBLE
                     root.setBackgroundColor(
-                        ContextCompat.getColor(
+                        SkinnableResourceManager.getColor(
                             root.context,
                             arch.cayenne.lib.common.R.color.color_003A42
                         )
                     )
                     tvSectionName.setTextColor(
-                        ContextCompat.getColor(
+                        SkinnableResourceManager.getColor(
                             root.context,
                             arch.cayenne.lib.common.R.color.color_00E0E5
                         )
@@ -59,13 +60,13 @@ class TournamentItemViewHolder(
                 } else {
                     ivSelected.visibility = View.GONE
                     root.setBackgroundColor(
-                        ContextCompat.getColor(
+                        SkinnableResourceManager.getColor(
                             root.context,
                             arch.cayenne.lib.common.R.color.color_1E1E1E
                         )
                     )
                     tvSectionName.setTextColor(
-                        ContextCompat.getColor(
+                        SkinnableResourceManager.getColor(
                             root.context,
                             arch.cayenne.lib.common.R.color.color_FFFFFF
                         )

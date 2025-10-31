@@ -36,9 +36,11 @@ class CommonRepository(
 ) : BaseRepository() {
 
     private val betResultFlow = MutableSharedFlow<List<BetResultLiteBean>>()
+    private val softConfigFlow = userDataManager.observe<Boolean>(UserDataKey.KEY_SOFT_CONFIG)
 
     fun getConnectStateFlow() = socketManager.getConnectStateFlow()
     fun getBetResultFlow(): Flow<List<BetResultLiteBean>> = betResultFlow
+    fun getSoftConfigFlow():Flow<Boolean> = softConfigFlow
 
     suspend fun checkIsLogin(): Boolean {
         return infoDao.isLogin()?: false

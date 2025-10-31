@@ -23,6 +23,7 @@ import arch.cayenne.lib.base.ui.animation.AnimationController
 import arch.cayenne.lib.base.ui.animation.AnimationController.AnimType
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
+import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.base.utils.ext.ViewExt.applyInsetsForFitsSystemWindows
 import arch.cayenne.lib.common.utils.CustomTabIndicatorUtils
@@ -41,6 +42,7 @@ import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.removeAllTips
 import arch.cayenne.lib.common.utils.ext.setDrawerInterpolator
 import arch.cayenne.lib.common.utils.ext.setupViewPagerScroll
+import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.ext.startFadeAnim
 import arch.cayenne.lib.common.utils.ext.touchBackPressed
 import arch.cayenne.lib.common.utils.helper.showToast
@@ -56,6 +58,7 @@ import com.walisport.module.live.data.BetOnMenuStatus
 import com.walisport.module.live.databinding.FragmentLiveMainBinding
 import com.walisport.module.live.databinding.TitleBarLiveBinding
 import com.walisport.module.live.ui.viewmodel.LiveMainViewModel
+import com.walisport.module.live.ui.viewmodel.LiveMatchMediaViewModel
 import com.walisport.module.live.ui.widget.LiveMainGestureListener
 import com.walisport.module.live.ui.widget.LiveMainLayoutInterceptTouch.LiveMainSlideDirection
 import kotlinx.coroutines.delay
@@ -91,7 +94,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         mViewModel.setSportId(args.sportId)
         mViewModel.setShowVideo(args.showVideo)
         mViewModel.setShowAnim(args.showAnim)
-        setVideoView()
+        setMediaView()
         loadFragment()
         mViewModel.observeMatchInfoNotify()
         mBinding.drawerLayout.setDrawerLockMode(
@@ -118,6 +121,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
 
         mBinding.LayoutInterceptTouch.setLiveMainGestureListener(object : LiveMainGestureListener {
             override fun onAdjustLayoutScroll(deltaY: Float, direction: LiveMainSlideDirection) {
+
                 //往下滑动,子类的rv,sc是否滑到了第一条或者顶部
                 if (direction == LiveMainSlideDirection.DOWN) {
                     // 如果当前高度在 50-211 范围内，返回 true，表示可以滑动
@@ -130,7 +134,14 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                         }
                     }
                 } else {
-                    mBinding.liveMainScale.adjustLayout(deltaY, direction)
+                    var animating: Boolean? = mViewModel.videoTypeAnimating.value
+                  //  LogUtils.e("animating------->${animating}")
+                    animating?.let {
+                        if (!it){
+                            mViewModel.setScorll()
+                            mBinding.liveMainScale.adjustLayout(deltaY, direction)
+                        }
+                    }
                 }
             }
         })
@@ -146,6 +157,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
 
                 MotionEvent.ACTION_UP -> {
                     //还原原本状态
+                    mViewModel.setScorll()
                     scrollIsTop?.let { mViewModel.setSonVerticalScrollIsTop(it) }
                     true
                 }
@@ -153,6 +165,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                 else -> false
             }
             mBinding.skinTab.dispatchTouchEvent(event)
+            mBinding.llSwitchNarrator.dispatchTouchEvent(event)
         }
     }
 
@@ -264,6 +277,13 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                 showToast("直播页分享")
             }
         }
+
+        mBinding.llSwitchNarrator.addScaleOnTouchAnimation()
+        mBinding.llSwitchNarrator.clickNoRepeat {
+            val mediaViewModel: LiveMatchMediaViewModel by sharedViewModel<LiveMatchMediaViewModel, LiveMatchMediaFragment>()
+            mediaViewModel.chooseSourceView()
+        }
+
         mBinding.tabLayout.addOnTabSelectedListener2(object : TabLayoutExt.OnTabSelectedListener2 {
             override fun onTabSelected(tab: TabLayout.Tab, isTabClick: Boolean) {
                 tab.let {
@@ -393,6 +413,10 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                 refreshBetSlip()
             }
         }
+
+        mViewModel.videoInitHeight.observe(viewLifecycleOwner){
+            mBinding.liveMainScale.initHeight(it)
+        }
     }
 
     //比赛ID发生变化,取消订阅,数据请空
@@ -411,7 +435,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         mViewModel.clearAllMatch()
     }
 
-    private fun setVideoView() {
+    private fun setMediaView() {
         childFragmentManager.findFragmentByTag(LiveMatchMediaFragment.TAG) as? LiveMatchMediaFragment
             ?: LiveMatchMediaFragment().also {
                 it.arguments = Bundle().apply {
@@ -423,7 +447,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                     putBoolean("showAnim", mViewModel.showAnim.value ?: false)
                 }
                 childFragmentManager.beginTransaction()
-                    .replace(mBinding.fragmentVideo.id, it, LiveMatchMediaFragment.TAG)
+                    .replace(mBinding.fragmentMedia.id, it, LiveMatchMediaFragment.TAG)
                     .commitNow()
             }
     }

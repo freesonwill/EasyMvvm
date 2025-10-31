@@ -3,6 +3,7 @@ package arch.cayenne.module.chat.utils
 import android.view.VelocityTracker
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import kotlin.math.abs
 import kotlin.math.max
@@ -21,7 +22,7 @@ class EmojiDeleteAnimHelper(private val recyclerView: RecyclerView) {
     private val minVelocityForFastScroll = 2000f
     private var deleteButtonBottom:Int = 0
     private var deleteButtonTop:Int = 0
-    private val deleteButtonHeight:Int = 46.dp2px
+    private val deleteButtonHeight:Int = 32.dp2px
     private var isHide = false
 
     init {
@@ -53,7 +54,8 @@ class EmojiDeleteAnimHelper(private val recyclerView: RecyclerView) {
         })
         recyclerView.post {
             deleteButtonBottom = recyclerView.bottom
-            deleteButtonTop = deleteButtonBottom - 46.dp2px-30.dp2px
+            deleteButtonTop = deleteButtonBottom - deleteButtonHeight
+//            "deleteButton $deleteButtonBottom  top ${deleteButtonTop}".logd("aaa")
             updateTargetItemsVisibility()
         }
 
@@ -85,6 +87,7 @@ class EmojiDeleteAnimHelper(private val recyclerView: RecyclerView) {
         val secondTop = layoutManager.findViewByPosition(secondLastRowStart)?.let {
             it.top+4.dp2px//减去向上的4dp
         }?:0
+//        "lastTOp $lastTop secondTOp $secondTop".logd("aaa")
 
         val lastBottom = lastTop+30.dp2px //emoji实际高度30dp
         val secondBottom = secondTop+30.dp2px

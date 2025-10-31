@@ -36,14 +36,14 @@ class LiveMainLayoutInterceptTouch @JvmOverloads constructor(
 
     override fun onInterceptTouchEvent(ev: MotionEvent?): Boolean {
         ev ?: return super.onInterceptTouchEvent(ev)
-        LogUtils.e("MainLayout----------onInterceptTouchEvent")
+       // LogUtils.e("MainLayout----------onInterceptTouchEvent")
         // 如果需要拦截触摸事件以确保手势处理，可以根据条件返回 true
         return false
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
-        LogUtils.e("MainLayout----------onTouchEvent--${event.y}")
-        LogUtils.e("MainLayout----------onTouchEvent: action=${event.action}")
+       // LogUtils.e("MainLayout----------onTouchEvent--${event.y}")
+      //  LogUtils.e("MainLayout----------onTouchEvent: action=${event.action}")
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {
                 lastY = event.y // 记录触摸起点
@@ -75,13 +75,13 @@ class LiveMainLayoutInterceptTouch @JvmOverloads constructor(
                 if (!isDirectionDetermined) {
                     // 垂直滑动
                     if (deltaY > 0) {
-                        LogUtils.e("MainLayout----------Sliding DOWN, pixelsY=$absDeltaY")
+                   //     LogUtils.e("MainLayout----------Sliding DOWN, pixelsY=$absDeltaY")
                         mLiveMainGesture?.onAdjustLayoutScroll(
                             absDeltaY * scrollSpeed,
                             LiveMainSlideDirection.DOWN
                         )
                     } else if (deltaY < 0) {
-                        LogUtils.e("MainLayout----------Sliding UP, pixelsY=$absDeltaY")
+                   //     LogUtils.e("MainLayout----------Sliding UP, pixelsY=$absDeltaY")
                         mLiveMainGesture?.onAdjustLayoutScroll(
                             -absDeltaY * scrollSpeed,
                             LiveMainSlideDirection.UP
@@ -94,7 +94,7 @@ class LiveMainLayoutInterceptTouch @JvmOverloads constructor(
 
 
             MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
-                LogUtils.e("MainLayout----------Touch ended")
+              //  LogUtils.e("MainLayout----------Touch ended")
                 isDirectionDetermined = false // 重置滑动方向
                 determined = true
             }

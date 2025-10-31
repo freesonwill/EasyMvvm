@@ -79,4 +79,12 @@
     <string name="live_video_error">Loading failed</string>
     <string name="no_live_stream">No live stream for current match</string>
     <string name="lineup_user_name_empty">No data available</string>
+
+    <string name="media_source_animation_title">Animation</string>
+    <string name="media_source_animation_subtitle">Fast,Saving</string>
+    <string name="choose_media_source">switch narrator</string>
+    <string name="media_source_empty">No data available</string>
+
+
+
 </resources>

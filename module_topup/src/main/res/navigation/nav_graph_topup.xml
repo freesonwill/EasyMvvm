@@ -16,10 +16,15 @@
             android:id="@+id/action_topUpFragment_to_fundDetailsFragment"
             app:destination="@id/fundDetailsFragment" />
 
-        <!--跳转充值提现教程页面-->
+        <!--跳转添加提现银行卡页面-->
         <action
-            android:id="@+id/action_topUpFragment_to_lessonFragment"
-            app:destination="@id/lessonFragment" />
+            android:id="@+id/action_topUpFragment_to_addBankCardFragment"
+            app:destination="@id/addBankCardFragment" />
+
+        <!--跳转订单详情页面-->
+        <action
+            android:id="@+id/action_topUpFragment_to_orderDetailFragment"
+            app:destination="@id/orderDetailFragment" />
     </fragment>
 
     <fragment
@@ -31,11 +36,6 @@
         android:id="@+id/betDetailFragment"
         android:name="com.walisport.module.topup.ui.fragment.BetDetailFragment"
         android:label="BetDetailFragment" />
-
-    <fragment
-        android:id="@+id/lessonFragment"
-        android:name="com.walisport.module.topup.ui.fragment.LessonFragment"
-        android:label="LessonFragment" />
 
     <fragment
         android:id="@+id/addressEditFragment"
@@ -75,10 +75,10 @@
             android:id="@+id/action_withdrawFragment_to_betDetailFragment"
             app:destination="@id/betDetailFragment" />
 
-        <!--跳转充值提现教程页面-->
+        <!--跳转添加提现银行卡页面-->
         <action
-            android:id="@+id/action_withdrawFragment_to_lessonFragment"
-            app:destination="@id/lessonFragment" />
+            android:id="@+id/action_withdrawFragment_to_addBankCardFragment"
+            app:destination="@id/addBankCardFragment" />
     </fragment>
 
     <fragment
@@ -93,9 +93,31 @@
     </fragment>
 
     <fragment
+        android:id="@+id/selectBankFragment"
+        android:name="com.walisport.module.topup.ui.fragment.SelectBankFragment"
+        android:label="SelectBankFragment" />
+
+    <fragment
         android:id="@+id/addBankCardFragment"
         android:name="com.walisport.module.topup.ui.fragment.AddBankCardFragment"
-        android:label="AddBankCardFragment" />
+        android:label="AddBankCardFragment">
+
+        <!--跳转选择所属银行页面-->
+        <action
+            android:id="@+id/action_addBankCardFragment_to_selectBankFragment"
+            app:destination="@id/selectBankFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/orderDetailFragment"
+        android:name="com.walisport.module.topup.ui.fragment.OrderDetailFragment"
+        android:label="OrderDetailFragment">
+
+        <!--跳转提现资金页面-->
+        <action
+            android:id="@+id/action_orderDetailFragment_to_fundDetailsFragment"
+            app:destination="@id/fundDetailsFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/fundDetailsFragment"

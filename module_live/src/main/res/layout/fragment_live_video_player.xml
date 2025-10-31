@@ -14,11 +14,6 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_source"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_58" />
-
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/ct_video_play"
@@ -83,32 +78,32 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/bottom_area"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/video_operate_area_height"
-                android:background="@drawable/bg_video_player_bottom"
+                android:layout_height="@dimen/dp_63"
+                android:background="@drawable/bg_video_player_bottom_area"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent">
 
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/iv_sound_toggle"
-                    android:layout_width="@dimen/dp_52"
-                    android:layout_height="@dimen/dp_44"
-                    android:paddingStart="@dimen/dp_12"
-                    android:paddingTop="@dimen/dp_8"
-                    android:paddingEnd="@dimen/dp_12"
-                    android:paddingBottom="@dimen/dp_8"
-                    android:src="@drawable/shape_immuted"
+                    android:layout_width="@dimen/dp_28"
+                    android:layout_height="@dimen/dp_28"
+                    android:layout_marginStart="@dimen/dp_16"
+                    android:layout_marginBottom="@dimen/dp_8"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/ic_immuted"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/tv_video_resolution" />
+                    app:layout_constraintStart_toStartOf="parent" />
 
                 <arch.cayenne.lib.skin.widget.SkinnableTextView
                     android:id="@+id/tv_video_resolution"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/dp_16"
+                    android:layout_marginEnd="@dimen/dp_20"
                     android:layout_marginBottom="@dimen/dp_12"
-                    android:textColor="@color/video_resolution_selected_text_color"
-                    android:textSize="@dimen/sp_16"
+                    android:fontFamily="@font/sf_pro"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/sp_15"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/iv_to_fullscreen"
                     app:skinnableFontWeight="600" />
@@ -118,7 +113,7 @@
                     android:id="@+id/iv_to_fullscreen"
                     android:layout_width="@dimen/dp_28"
                     android:layout_height="@dimen/dp_28"
-                    android:layout_marginEnd="@dimen/dp_8"
+                    android:layout_marginEnd="@dimen/dp_16"
                     android:layout_marginBottom="@dimen/dp_8"
                     android:src="@drawable/video_fragment_to_fullscreen"
                     app:layout_constraintBottom_toBottomOf="parent"
