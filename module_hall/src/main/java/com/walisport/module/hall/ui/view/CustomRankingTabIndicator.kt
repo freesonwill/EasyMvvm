@@ -1,4 +1,4 @@
-package arch.cayenne.lib.common.ui.view
+package com.walisport.module.hall.ui.view
 
 import android.content.Context
 import android.graphics.Canvas
@@ -8,17 +8,17 @@ import androidx.core.content.ContextCompat
 import arch.cayenne.lib.common.R
 import arch.cayenne.lib.common.ui.view._interface.BaseCustomTabIndicator
 
-class CustomTabIndicator(context: Context, attrs: AttributeSet) : BaseCustomTabIndicator(context, attrs) {
+class CustomRankingTabIndicator(context: Context, attrs: AttributeSet) : BaseCustomTabIndicator(context, attrs) {
     private val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         style = Paint.Style.FILL
         color = ContextCompat.getColor(context,
-           R.color.tab_indicator_color_line
+           R.color.color_0FFFFFFF
         ) // 指示器颜色
     }
 
     private var indicatorWidth = 0f
-    private var indicatorHeight = dpToPx(2f) // 指示器高度
-    private var cornerRadius = dpToPx(2f) // 圆角半径
+    private var indicatorHeight = dpToPx(42f) // 指示器高度
+    private var cornerRadius = dpToPx(30f) // 圆角半径
     private var currentPosition = 0
     private var positionOffset = 0f
     private var tabWidth = 0f

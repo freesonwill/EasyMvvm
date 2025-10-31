@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cl_root"
+    android:layout_width="match_parent"
+    android:clickable="false"
+    android:focusable="false"
+    android:layout_height="@dimen/dp_48"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/shape_game_all_rank_list_bg">
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_game"
+        android:layout_width="@dimen/dp_18"
+        android:layout_height="@dimen/dp_18"
+        android:layout_marginStart="@dimen/dp_12"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent" />
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
+        android:id="@+id/tv_game_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/sp_14"
+        android:textColor="@color/color_C0C0C0"
+        android:gravity="left|center_vertical"
+        android:layout_marginStart="@dimen/dp_9"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@+id/iv_game"
+        app:layout_constraintRight_toLeftOf="@+id/tv_multiple"
+        tools:ignore="RtlHardcoded" />
+    <TextView
+        android:id="@+id/tv_multiple"
+        android:layout_width="79dp"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/sp_14"
+        android:gravity="center"
+        android:layout_marginEnd="@dimen/dp_9"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_currency"
+        android:layout_width="@dimen/dp_20"
+        android:layout_height="@dimen/dp_20"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginEnd="@dimen/dp_14"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+    <TextView
+        android:id="@+id/tv_result"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/sp_14"
+        android:gravity="right|center_vertical"
+        android:layout_marginEnd="@dimen/dp_4"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@+id/tv_multiple"
+        app:layout_constraintRight_toLeftOf="@+id/iv_currency"
+        tools:ignore="RtlHardcoded" />
+</androidx.constraintlayout.widget.ConstraintLayout>
