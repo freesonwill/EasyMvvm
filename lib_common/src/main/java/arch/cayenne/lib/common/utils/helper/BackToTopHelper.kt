@@ -1,4 +1,4 @@
-package com.walisport.module.hall.ui.helper
+package arch.cayenne.lib.common.utils.helper
 
 import android.view.View
 import androidx.appcompat.widget.AppCompatImageView
@@ -6,11 +6,26 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 
+/**
+ * 回到頂部按鈕輔助類
+ *
+ * 用於在 RecyclerView 滾動時自動顯示/隱藏回到頂部按鈕，
+ * 並提供平滑滾動回到頂部的功能。
+ *
+ * @param targetRecyclerView 目標 RecyclerView
+ * @param button 回到頂部按鈕
+ *
+ * 使用範例：
+ * ```kotlin
+ * BackToTopHelper(recyclerView, backToTopButton)
+ * ```
+ */
 class BackToTopHelper(
     val targetRecyclerView: RecyclerView,
     val button: AppCompatImageView
 ) {
     private var totalDy = 0
+
     init {
         // 為目標 RecyclerView 新增一個滾動監聽器
         targetRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -23,6 +38,7 @@ class BackToTopHelper(
                     button.alpha = 0.3f
                 }
             }
+
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
 
@@ -45,9 +61,11 @@ class BackToTopHelper(
                 }
             }
         })
+
         button.clickNoRepeat {
             targetRecyclerView.smoothScrollToPosition(0)
             button.visibility = View.GONE
         }
     }
 }
+
