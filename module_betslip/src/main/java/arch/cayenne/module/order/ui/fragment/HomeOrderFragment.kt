@@ -21,6 +21,9 @@ import arch.cayenne.module.order.ui.viewmodel.HomeOrderViewModel
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlin.reflect.KClass
 
+/**
+ * 投注记录&注单
+ */
 class HomeOrderFragment: BaseFragment<HomeOrderViewModel, FragmentHomeOrderBinding>() {
 
     override val vbClass: KClass<FragmentHomeOrderBinding> = FragmentHomeOrderBinding::class
