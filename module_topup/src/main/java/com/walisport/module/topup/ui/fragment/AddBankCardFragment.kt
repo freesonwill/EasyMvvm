@@ -3,6 +3,7 @@ package com.walisport.module.topup.ui.fragment
 import android.os.Bundle
 import androidx.navigation.fragment.findNavController
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.touchBackPressed
 import com.walisport.module.topup.R
@@ -29,6 +30,9 @@ class AddBankCardFragment : BaseFragment<BankCardViewModel, FragmentAddBankCardB
     override fun initListener() {
         mBinding.layAddBank.clickNoRepeat {
 
+        }
+        mBinding.laySelectBank.clickNoRepeat {
+            navigate(R.id.action_addBankCardFragment_to_selectBankFragment)
         }
     }
 

@@ -274,7 +274,7 @@ class LiveVideoPlayerFragment :
 
             mutedData().observe(viewLifecycleOwner) {
                 mBinding.ivSoundToggle.setImageResource(
-                    if (it) R.drawable.shape_muted else R.drawable.shape_immuted
+                    if (it) R.drawable.ic_muted else R.drawable.ic_immuted
                 )
 
                 videoView.setMute(it)

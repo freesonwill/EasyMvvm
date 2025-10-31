@@ -17,6 +17,7 @@
     <string name="search">搜索</string>
     <string name="remark">备注</string>
     <string name="manager">管理</string>
+    <string name="sel_coin">选择币种</string>
     <string name="sel_address">选择地址</string>
     <string name="add_to_note">添加到地址本</string>
     <string name="copy_address">复制地址</string>
@@ -29,6 +30,7 @@
     <string name="add_bank">添加银行卡</string>
     <string name="address_note">地址本</string>
     <string name="bet_detail">投注额详情</string>
+    <string name="select_bank">选择所属银行</string>
     <string name="pay_custom">自定义</string>
     <string name="bet_pay_bank">充值-银行卡支付</string>
     <string name="bet_pay_alipay">充值-支付宝充值</string>
@@ -44,6 +46,7 @@
     <string name="withdrawal_record">提现记录</string>
     <string name="withdrawal_detail">提现详情</string>
     <string name="recharge_detail">充值详情</string>
+    <string name="tip_input_bank">请输入银行名称</string>
     <string name="bank_card">我的银行卡</string>
     <string name="pay_ali">支付宝充值</string>
     <string name="pay_wechat">微信充值</string>

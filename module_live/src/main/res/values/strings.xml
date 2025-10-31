@@ -147,5 +147,7 @@
 
     <string name="media_source_animation_title">动画直播</string>
     <string name="media_source_animation_subtitle">极速 省流</string>
+    <string name="choose_media_source">换解说</string>
+    <string name="media_source_empty">暂无数据</string>
 
 </resources>
