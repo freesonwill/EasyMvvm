@@ -8,6 +8,7 @@ import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.common.utils.copyToClipboard
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
+import arch.cayenne.lib.common.utils.ext.ResourceExt.getDrawable
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.helper.showToast
@@ -15,6 +16,7 @@ import com.walisport.module.topup.R
 import com.walisport.module.topup.data.entity.CoinBean
 import com.walisport.module.topup.databinding.FragmentCryptoBinding
 import com.walisport.module.topup.databinding.ItemCoinBinding
+import com.walisport.module.topup.databinding.TabCoinBinding
 import com.walisport.module.topup.ui.viewmodel.CryptoViewModel
 import kotlinx.coroutines.Job
 import kotlin.reflect.KClass
@@ -57,6 +59,9 @@ class TopUpCryptoFragment : BaseFragment<CryptoViewModel, FragmentCryptoBinding>
         mBinding.layCustomer.clickNoRepeat {
             showToast(R.string.cus_service.getString())
         }
+        mBinding.btnMoreCoin.clickNoRepeat {
+            showSelectCoinDialog()
+        }
     }
 
     override suspend fun createObserver() {
@@ -84,12 +89,13 @@ class TopUpCryptoFragment : BaseFragment<CryptoViewModel, FragmentCryptoBinding>
         bean: CoinBean,
         position: Int
     ): View {
-        val tabBinding = ItemCoinBinding.inflate(
+        val tabBinding = TabCoinBinding.inflate(
             LayoutInflater.from(requireContext()),
             null,
             false
         )
         tabBinding.apply {
+            ivLogoCoin.background = bean.coinLogo.getDrawable()
             tvNameCoin.text = bean.coinName
             root.setOnClickListener {
                 selectTab(position)
@@ -104,5 +110,11 @@ class TopUpCryptoFragment : BaseFragment<CryptoViewModel, FragmentCryptoBinding>
             val tab = tabLayout.getTabAt(i)
             tab?.view?.isSelected = i == position
         }
+    }
+
+    private fun showSelectCoinDialog() {
+        val tag = "sel_coin_bottom_fragment"
+        if (childFragmentManager.findFragmentByTag(tag) != null) return
+        SelCoinBottomFragment.newInstance().show(childFragmentManager, tag)
     }
 }
