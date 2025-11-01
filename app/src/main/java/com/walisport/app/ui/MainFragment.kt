@@ -27,18 +27,19 @@ import arch.cayenne.module.order.ui.fragment.HomeOrderFragment
 import arch.cayenne.module.order.ui.viewmodel.BetMode
 import com.walisport.app.R
 import com.walisport.app.databinding.FragmentMainBinding
-import com.walisport.app.ui.viewmodel.MainViewModel
+import com.walisport.app.ui.viewmodel.BetSlot
+import com.walisport.app.ui.viewmodel.MainFragmentViewModel
 import com.walisport.module.hall.ui.fragment.HallFragment
 import com.walisport.module.me.ui.fragment.MeFragment
 import kotlinx.coroutines.flow.filterNotNull
 import kotlin.reflect.KClass
 
 
-class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>() {
+class MainFragment : BaseFragment<MainFragmentViewModel, FragmentMainBinding>() {
     override val vbClass: KClass<FragmentMainBinding>
         get() = FragmentMainBinding::class
-    override val vmClass: KClass<MainViewModel>
-        get() = MainViewModel::class
+    override val vmClass: KClass<MainFragmentViewModel>
+        get() = MainFragmentViewModel::class
     // 1. 使用 lazy 延遲初始化並持有所有 Fragment 實例
     private val fragments by lazy {
         arrayOfNulls<Fragment>(BottomNavType.entries.size)
@@ -132,8 +133,8 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>() {
         }
         launch {
             mViewModel.selectedIndexFlow.collect {
-                if(it == BottomNavType.HOME.ordinal) mViewModel.betSlotFlow.value = MainViewModel.BetSlot.BET_RECORD
-                else if(it == BottomNavType.SPORT.ordinal) mViewModel.betSlotFlow.value = MainViewModel.BetSlot.BET_SLIP
+                if(it == BottomNavType.HOME.ordinal) mViewModel.betSlotFlow.value = BetSlot.BET_RECORD
+                else if(it == BottomNavType.SPORT.ordinal) mViewModel.betSlotFlow.value = BetSlot.BET_SLIP
             }
         }
     }

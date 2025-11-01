@@ -16,6 +16,7 @@ import arch.cayenne.lib.database.entity.InfoBean
 import arch.cayenne.lib.database.entity.SingleBetResultBean
 import arch.cayenne.lib.websocket.WebSocketManager
 import arch.cayenne.lib.websocket.data.ApiCode
+import arch.cayenne.lib.websocket.data.InvalidLoginError
 import arch.cayenne.lib.websocket.extension.observeProtoMessage
 import arch.cayenne.lib.websocket.extension.sendAndWaitProtoMessageResponse
 import galaxy.client.proto.Client
@@ -51,9 +52,9 @@ class CommonRepository(
         val token = userDataManager.getValue(UserDataKey.KEY_TOKEN, "")
         //沒有Token
         if (uid == -1 || token == "") {
-            return ApiResponseState.Succeeded(false)
+            return ApiResponseState.Failed(InvalidLoginError("uid:$uid or token:${token} not correct",-1))
         }
-        "send login".logi(this::class.java.simpleName)
+        "send login, uid:$uid,token:$token".logi(this::class.java.simpleName)
         val loginResp = socketManager.sendAndWaitProtoMessageResponse<Client.LoginResp>(
             scope = scope,
             dispatcher = Dispatchers.IO,
