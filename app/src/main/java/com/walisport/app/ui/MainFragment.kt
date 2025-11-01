@@ -3,18 +3,17 @@ package com.walisport.app.ui
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.DrawableRes
-import androidx.annotation.StringRes
 import androidx.core.view.GravityCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.fragment.app.Fragment
 import arch.cayenne.lib.base.ui.animation.AnimationController
 import arch.cayenne.lib.base.ui.animation.AnimationController.AnimType
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
+import arch.cayenne.lib.base.ui.viewmodel.EmptyViewModel
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
+import arch.cayenne.lib.common.ui.fragment.EmptyFragment
 import arch.cayenne.module.chat.ui.fragment.MainChatFragment
 import arch.cayenne.lib.common.data.constants.DrawerAction.ACTION_CLOSE
 import arch.cayenne.lib.common.data.constants.DrawerAction.ACTION_OPEN
@@ -22,52 +21,34 @@ import arch.cayenne.lib.common.data.constants.DrawerAction.KEY_ACTION
 import arch.cayenne.lib.common.data.constants.DrawerAction.REQUEST_KEY_DRAWER
 import arch.cayenne.lib.common.utils.ext.setDrawerInterpolator
 import arch.cayenne.module.home.ui.fragment.NewHomeFragment
-import arch.cayenne.module.home.ui.view.Style
 import arch.cayenne.module.order.ui.fragment.HomeOrderFragment
-import arch.cayenne.module.order.ui.viewmodel.BetMode
 import com.walisport.app.R
 import com.walisport.app.databinding.FragmentMainBinding
-import com.walisport.app.ui.viewmodel.MainViewModel
 import com.walisport.module.hall.ui.fragment.HallFragment
 import com.walisport.module.me.ui.fragment.MeFragment
-import kotlinx.coroutines.flow.filterNotNull
 import kotlin.reflect.KClass
 
 
-class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>() {
+class MainFragment : BaseFragment<EmptyViewModel, FragmentMainBinding>() {
     override val vbClass: KClass<FragmentMainBinding>
         get() = FragmentMainBinding::class
-    override val vmClass: KClass<MainViewModel>
-        get() = MainViewModel::class
+    override val vmClass: KClass<EmptyViewModel>
+        get() = EmptyViewModel::class
+    private val selectedIndex get() = mBinding.bottomNavigation.selectedIndex
+    private val titleRes = arrayOf("体育","注单","聊天","我")
     // 1. 使用 lazy 延遲初始化並持有所有 Fragment 實例
     private val fragments by lazy {
-        arrayOfNulls<Fragment>(BottomNavType.entries.size)
-    }
-
-    private enum class BottomNavType(@DrawableRes val icon:Int,@StringRes val title:Int) {
-        HOME(arch.cayenne.module.home.R.drawable.ic_home, arch.cayenne.module.home.R.string.title_home),
-        SPORT(arch.cayenne.module.home.R.drawable.ic_sport, arch.cayenne.module.home.R.string.title_sport),
-        BET_SLOT(arch.cayenne.module.home.R.drawable.ic_betslip, arch.cayenne.module.home.R.string.title_betslip),
-        CHAT(arch.cayenne.module.home.R.drawable.ic_chat, arch.cayenne.module.home.R.string.title_chat),
-        ME(arch.cayenne.module.home.R.drawable.ic_me, arch.cayenne.module.home.R.string.title_me),
-    }
-
-
-    private fun getFragment(position: Int): Fragment {
-        return fragments[position] ?: when (position) {
-            0 -> HallFragment()
-            1 -> NewHomeFragment()
-            2 -> HomeOrderFragment()
-            3 -> MainChatFragment()
-            else -> MeFragment()
-        }.also { fragments[position] = it}
+        listOf(
+            HallFragment(),
+            NewHomeFragment(),
+            HomeOrderFragment(),
+            MainChatFragment(),
+            MeFragment()
+        )
     }
 
     override fun initView(savedInstanceState: Bundle?) {
-        mViewModel.selectedIndexFlow.value.let {
-            setCurrentFragment(it)
-            mBinding.bottomNavigation.selectedIndex = it
-        }
+        setCurrentFragment(selectedIndex)
         setDrawerLayoutListener()
     }
 
@@ -110,10 +91,72 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>() {
                 }
             }
             bottomNavigation.setOnItemSelectedListener { container, view, position ->
-                container.selectedIndex = position
+                container.setSelected(position)
                 //"bottomNavigation1----$position".logd(TAG)
                 setCurrentFragment(position)
-                mViewModel.selectedIndexFlow.value = position
+//                when (position) {
+//                    0 -> {
+//                        val w = container.getWeight(1)
+//                        if (w == 1f) {
+//                            container.setWeight(1, 80f / 75f)
+//                            container.setBarStyle(
+//                                1,
+//                                Style.IconBadge(
+//                                    R.mipmap.ic_fifa.getDrawable(),
+//                                    "世界杯",
+//                                    (-18f).dp2px
+//                                )
+//                            )
+//                        } else {
+//                            container.setBarStyle(
+//                                1,
+//                                Style.IconTextBadge(
+//                                    R.drawable.ic_chat.getDrawable(),
+//                                    R.string.title_sport.getString(), "9"
+//                                )
+//                            )
+//                            container.setWeight(1, 1f)
+//                        }
+//                    }
+//
+//                    1 -> {
+//                        val w = container.getWeight(2)
+//                        if (w == 1f) {
+//                            container.setWeight(2, 121f / 75f)
+//                            container.setBarStyle(
+//                                2,
+//                                Style.Icon(R.mipmap.ic_sport_banner.getDrawable())
+//                            )
+//                        } else {
+//                            container.setBarStyle(
+//                                2,
+//                                Style.IconTextBadge(
+//                                    R.drawable.ic_chat.getDrawable(),
+//                                    R.string.title_sport.getString(), "9"
+//                                )
+//                            )
+//                            container.setWeight(2, 1f)
+//                        }
+//                    }
+//
+//                    2 -> {
+//                        if (container.getBarStyle(3) == Style.Icon::class.java) {
+//                            container.setBarStyle(
+//                                3,
+//                                Style.IconText(
+//                                    R.drawable.ic_chat.getDrawable(),
+//                                    R.string.title_sport.getString()
+//                                )
+//                            )
+//                        } else {
+//                            container.setBarStyle(3, Style.Icon(R.mipmap.ic_home2.getDrawable()))
+//                        }
+//                    }
+//
+//                    3 -> {
+//
+//                    }
+//                }
             }
         }
     }
@@ -125,23 +168,11 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>() {
                 mBinding.drawerLayout.setDrawerInterpolator(it.duration, it.interpolator.toInterpolator())
             }
         }
-        launch {
-            mViewModel.betSlotFlow.filterNotNull().collect {
-                mBinding.navBetSlip.setBarStyle(Style.IconText(it.icon,it.title))
-            }
-        }
-        launch {
-            mViewModel.selectedIndexFlow.collect {
-                if(it == BottomNavType.HOME.ordinal) mViewModel.betSlotFlow.value = MainViewModel.BetSlot.BET_RECORD
-                else if(it == BottomNavType.SPORT.ordinal) mViewModel.betSlotFlow.value = MainViewModel.BetSlot.BET_SLIP
-            }
-        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
     }
-
     override fun onStart() {
         super.onStart()
         ViewCompat.setOnApplyWindowInsetsListener(mBinding.root) { view, insets ->
@@ -167,27 +198,28 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>() {
 
     private fun setCurrentFragment(index: Int) {
         if (index !in fragments.indices) return // 防呆
-        val fragment = getFragment(index)
-        if(fragment is HomeOrderFragment) {
-            fragment.setMode(mViewModel.betSlotFlow.value.toBetMode())
-        }
-        childFragmentManager.beginTransaction().apply {
-            for(i in BottomNavType.entries.indices) {
-                childFragmentManager.findFragmentByTag("$TAG$i")?.let {
-                    //"hide fragment ---> $it".logd(TAG)
-                    hide(it)
+
+        val transaction = childFragmentManager.beginTransaction()
+        fragments.forEachIndexed { position, fragment ->
+            if (position == index) {
+                if (fragment.isAdded) {
+                    transaction.show(fragment)
+                } else {
+                    transaction.add(R.id.fragment_container, fragment)
+                }
+            } else {
+                if (fragment.isAdded) {
+                    transaction.hide(fragment)
                 }
             }
-            if (!fragment.isAdded) {
-                add(R.id.fragment_container,fragment,"$TAG$index")
-            } else {
-                show(fragment)
+            if(position != 0 && fragment is EmptyFragment){
+                fragment.setTitle(titleRes[position-1])
             }
-        }.commit()
-        //java.lang.IllegalStateException: Fragment no longer exists for key f#0: unique id ba2286df-4545-4383-b414-da475c5d5aac
-        /*childFragmentManager.beginTransaction()
-            .replace(R.id.fragment_container, fragment,"hello")
+        }
+        transaction.commit()
+        /*//java.lang.IllegalStateException: Fragment no longer exists for key f#0: unique id ba2286df-4545-4383-b414-da475c5d5aac
+        childFragmentManager.beginTransaction()
+            .replace(R.id.fragment_container, fragment)
             .commit()*/
     }
-
 }
