@@ -7,6 +7,6 @@ import arch.cayenne.module.order.ui.fragment.OrderGameFragment
 import arch.cayenne.module.order.ui.fragment.OrderSportFragment
 
 enum class OrderPageEnum(val page: PagerBean) {
-    GAME(PagerBean(R.string.title_order_game.getString()) { OrderGameFragment() }),
-    SPORT(PagerBean(R.string.title_order_sport.getString()) { OrderSportFragment() })
+    GAME(PagerBean(R.string.title_order_game.getString(), { OrderGameFragment() })),
+    SPORT(PagerBean(R.string.title_order_sport.getString(), { OrderSportFragment() }))
 }
