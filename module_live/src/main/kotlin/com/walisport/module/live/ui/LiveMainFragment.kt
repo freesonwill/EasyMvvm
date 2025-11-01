@@ -23,7 +23,6 @@ import arch.cayenne.lib.base.ui.animation.AnimationController
 import arch.cayenne.lib.base.ui.animation.AnimationController.AnimType
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
-import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.base.utils.ext.ViewExt.applyInsetsForFitsSystemWindows
 import arch.cayenne.lib.common.utils.CustomTabIndicatorUtils
@@ -42,7 +41,6 @@ import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.removeAllTips
 import arch.cayenne.lib.common.utils.ext.setDrawerInterpolator
 import arch.cayenne.lib.common.utils.ext.setupViewPagerScroll
-import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.ext.startFadeAnim
 import arch.cayenne.lib.common.utils.ext.touchBackPressed
 import arch.cayenne.lib.common.utils.helper.showToast
@@ -58,7 +56,6 @@ import com.walisport.module.live.data.BetOnMenuStatus
 import com.walisport.module.live.databinding.FragmentLiveMainBinding
 import com.walisport.module.live.databinding.TitleBarLiveBinding
 import com.walisport.module.live.ui.viewmodel.LiveMainViewModel
-import com.walisport.module.live.ui.viewmodel.LiveMatchMediaViewModel
 import com.walisport.module.live.ui.widget.LiveMainGestureListener
 import com.walisport.module.live.ui.widget.LiveMainLayoutInterceptTouch.LiveMainSlideDirection
 import kotlinx.coroutines.delay
@@ -280,8 +277,10 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
 
         mBinding.llSwitchNarrator.addScaleOnTouchAnimation()
         mBinding.llSwitchNarrator.clickNoRepeat {
-            val mediaViewModel: LiveMatchMediaViewModel by sharedViewModel<LiveMatchMediaViewModel, LiveMatchMediaFragment>()
-            mediaViewModel.chooseSourceView()
+//            val mediaViewModel: LiveMatchMediaViewModel by sharedViewModel<LiveMatchMediaViewModel, LiveMatchMediaFragment>()
+//            mediaViewModel.chooseSourceView()
+
+            showMediaSourceFragment()
         }
 
         mBinding.tabLayout.addOnTabSelectedListener2(object : TabLayoutExt.OnTabSelectedListener2 {
@@ -416,6 +415,10 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
 
         mViewModel.videoInitHeight.observe(viewLifecycleOwner){
             mBinding.liveMainScale.initHeight(it)
+        }
+
+        mViewModel.hideMediaSourceFragment.observe(viewLifecycleOwner){
+            hideMediaSourceFragment()
         }
     }
 
@@ -576,5 +579,29 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         val fragment = ChatHomeFragment()
         fragment.setMatchLiveData(mViewModel.matchId, mViewModel.mainMatch)
         return fragment
+    }
+
+    private fun showMediaSourceFragment(){
+        childFragmentManager.findFragmentByTag(NewMediaSourceFragment.TAG) as? NewMediaSourceFragment
+            ?: NewMediaSourceFragment().also {
+                it.arguments = Bundle().apply {
+                    mViewModel.matchId.value?.let { value ->
+                        putLong("matchId", value)
+                    }
+                }
+                childFragmentManager.beginTransaction()
+                    .replace(mBinding.fragmentMediaSource.id, it, NewMediaSourceFragment.TAG)
+                    .commitNow()
+            }
+
+    }
+
+    private fun hideMediaSourceFragment(){
+        val fragment = childFragmentManager.findFragmentByTag(NewMediaSourceFragment.TAG) as? NewMediaSourceFragment
+        fragment?.let {
+            childFragmentManager.beginTransaction()
+                .remove(it)
+                .commitAllowingStateLoss()
+        }
     }
 }
