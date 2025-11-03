@@ -26,6 +26,7 @@ import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.base.utils.ext.ViewExt.applyInsetsForFitsSystemWindows
+import arch.cayenne.lib.common.ui.fragment.ShareFragment
 import arch.cayenne.lib.common.utils.CustomTabIndicatorUtils
 import arch.cayenne.lib.common.utils.ImmersionBarUtils.immersionBarSkinTypeExt
 import arch.cayenne.lib.common.utils.ViewUtils
@@ -191,7 +192,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                 mBinding.root.fitsSystemWindows = fixedSkin == null
                 if (fixedSkin != null) {
                     SkinnableResourceManager.setFixedSkin(fixedSkin)
-                    StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND()
+                    StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND(autoIsNavigation = true)
                     StatusBarConfig.statusBarDarkFont = false
                     setStatusBar(StatusBarConfig, mBinding.liveMain)
                     updateBetSheetSkin() //refresh skin to fixed skin
@@ -274,7 +275,8 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
 
             ivShare.addScaleOnTouchAnimation()
             ivShare.clickNoRepeat {
-                showToast("直播页分享")
+//                showToast("直播页分享")
+                ShareFragment.show(this@LiveMainFragment)
             }
         }
 
@@ -499,6 +501,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
             }
             tabLayout.removeAllTips()
         }
+        ShareFragment.create(this)
     }
 
     private fun refreshBetSlip() {
