@@ -8,14 +8,13 @@ import com.walisport.module.live.compare.VideoSourceBeanCompare
 import com.walisport.module.live.databinding.FragmentLiveSourceLandscapeBinding
 import com.walisport.module.live.ui.adapter.LiveVideoSourceVerticalAdapter
 import com.walisport.module.live.ui.viewmodel.LiveVideoSourceViewModel
-import me.jessyan.autosize.internal.CancelAdapt
 import kotlin.reflect.KClass
 
 /**
  * 视频横屏播放时的选择数据源页
  */
 class LiveVideoSourceLandscapeFragment :
-    BaseFragment<LiveVideoSourceViewModel, FragmentLiveSourceLandscapeBinding>(), CancelAdapt {
+    BaseFragment<LiveVideoSourceViewModel, FragmentLiveSourceLandscapeBinding>() {
     override val vbClass: KClass<FragmentLiveSourceLandscapeBinding> =
         FragmentLiveSourceLandscapeBinding::class
     override val vmClass: KClass<LiveVideoSourceViewModel> = LiveVideoSourceViewModel::class

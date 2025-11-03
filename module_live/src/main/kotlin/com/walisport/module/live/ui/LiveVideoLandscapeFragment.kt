@@ -13,7 +13,6 @@ import android.os.Looper
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.DecelerateInterpolator
-import android.view.animation.LinearInterpolator
 import android.widget.LinearLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintLayout.GONE
@@ -54,14 +53,13 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import me.jessyan.autosize.AutoSizeConfig
-import me.jessyan.autosize.internal.CancelAdapt
 import kotlin.reflect.KClass
 
 /**
  * 视频横屏播放页
  */
 class LiveVideoLandscapeFragment :
-    BaseFragment<LiveVideoPlayerViewModel, FragmentLiveVideoLandscapeBinding>(), CancelAdapt {
+    BaseFragment<LiveVideoPlayerViewModel, FragmentLiveVideoLandscapeBinding>() {
 
     override val vbClass: KClass<FragmentLiveVideoLandscapeBinding> =
         FragmentLiveVideoLandscapeBinding::class
@@ -396,7 +394,7 @@ class LiveVideoLandscapeFragment :
 
             mutedData().observe(viewLifecycleOwner) {
                 mBinding.ivSoundToggle.setImageResource(
-                    if (it) R.drawable.shape_muted else R.drawable.shape_immuted
+                    if (it) R.drawable.ic_muted else R.drawable.ic_immuted
                 )
 
                 videoView.setMute(it)
@@ -639,9 +637,10 @@ class LiveVideoLandscapeFragment :
 //        "onResume".logd(TAG)
         super.onResume()
         activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-        //使用横屏时到宽高
+        //使用横屏时的宽高
         AutoSizeConfig.getInstance().setDesignWidthInDp(LANDSCAPE_WIDTH)
         AutoSizeConfig.getInstance().setDesignHeightInDp(LANDSCAPE_HEIGHT)
+        AutoSizeConfig.getInstance().isBaseOnWidth = false
         mBinding.root.fitsSystemWindows = false
         StatusBarConfig.statusBarType = StatusBarMode.FULLSCREEN
         setStatusBar(StatusBarConfig, mBinding.root)
@@ -653,6 +652,7 @@ class LiveVideoLandscapeFragment :
         super.onPause()
         activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
         //恢复竖屏，宽高也要回到竖屏时到宽高
+        AutoSizeConfig.getInstance().isBaseOnWidth = true
         AutoSizeConfig.getInstance().setDesignWidthInDp(PORTRAIT_WIDTH)
         AutoSizeConfig.getInstance().setDesignHeightInDp(PORTRAIT_HEIGHT)
         if (videoView.parent == mBinding.videoViewContainer) {

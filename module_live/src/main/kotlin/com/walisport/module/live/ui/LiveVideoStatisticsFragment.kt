@@ -16,7 +16,6 @@ import com.walisport.module.live.data.model.Stat
 import com.walisport.module.live.databinding.FragmentLiveStatisticsBinding
 import com.walisport.module.live.ui.viewmodel.LiveMainViewModel
 import com.walisport.module.live.ui.viewmodel.LiveVideoPlayerViewModel
-import me.jessyan.autosize.internal.CancelAdapt
 import kotlin.reflect.KClass
 
 /**
@@ -24,7 +23,7 @@ import kotlin.reflect.KClass
  */
 
 class LiveVideoStatisticsFragment :
-    BaseFragment<LiveVideoPlayerViewModel, FragmentLiveStatisticsBinding>(), CancelAdapt {
+    BaseFragment<LiveVideoPlayerViewModel, FragmentLiveStatisticsBinding>() {
 
     private val mainViewModel: LiveMainViewModel by sharedViewModel<LiveMainViewModel, LiveMainFragment>()
     override val vbClass: KClass<FragmentLiveStatisticsBinding> =
