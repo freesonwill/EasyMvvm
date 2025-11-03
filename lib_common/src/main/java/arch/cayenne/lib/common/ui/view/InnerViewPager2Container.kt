@@ -5,7 +5,6 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import android.widget.FrameLayout
 import androidx.viewpager2.widget.ViewPager2
-import arch.cayenne.lib.base.utils.LogUtils
 
 /**
  * 使用InnerViewPager2Container包裹ViewPager2，解决ViewPager2中包含了ViewPager2滑动冲突。
@@ -23,22 +22,14 @@ class InnerViewPager2Container @JvmOverloads constructor(
 
     override fun onFinishInflate() {
         super.onFinishInflate()
-        for (i in 0 until childCount) {
-            val child = getChildAt(i)
-            if (child is ViewPager2) {
-                viewPager2 = child
-                break
-            }
-        }
-        if (viewPager2 == null) {
-            throw IllegalStateException("no viewpager2 in InnerViewPager2Container")
-        }
+        if (viewPager2 != null) return
+        findViewPager()
     }
 
 
     override fun onInterceptTouchEvent(ev: MotionEvent?): Boolean {
         val doNetNeedIntercept =
-            (!viewPager2!!.isUserInputEnabled || viewPager2?.adapter == null || viewPager2?.adapter!!.itemCount <= 1)
+            (viewPager2?.isUserInputEnabled == false || viewPager2?.adapter == null || viewPager2?.adapter!!.itemCount <= 1)
         if (doNetNeedIntercept) {
             return super.onInterceptTouchEvent(ev)
         }
@@ -83,6 +74,26 @@ class InnerViewPager2Container @JvmOverloads constructor(
             }
         } else if (disY > disX) {
             parent.requestDisallowInterceptTouchEvent(false)
+        }
+    }
+
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        if (viewPager2 != null) return
+        findViewPager()
+
+    }
+
+    private fun findViewPager() {
+        for (i in 0 until childCount) {
+            val child = getChildAt(i)
+            if (child is ViewPager2) {
+                viewPager2 = child
+                break
+            }
+        }
+        if (viewPager2 == null) {
+            throw IllegalStateException("no viewpager2 in InnerViewPager2Container")
         }
     }
 

@@ -7,8 +7,7 @@ import android.animation.ValueAnimator
 import android.view.animation.LinearInterpolator
 import arch.cayenne.lib.base.ui.animation.AnimationController
 import arch.cayenne.lib.base.ui.animation.AnimationController.AnimType
-import arch.cayenne.lib.base.utils.LogUtils
-import arch.cayenne.lib.common.ui.view.CustomTabIndicator
+import arch.cayenne.lib.common.ui.view._interface.BaseCustomTabIndicator
 
 object CustomTabIndicatorUtils {
 
@@ -16,7 +15,7 @@ object CustomTabIndicatorUtils {
     private val animationQueue: MutableList<AnimationQueuePair> = mutableListOf()
     private var currentPosition = 0 // 记录当前指示器位置
     private var startTime  = 0L //2个数据之间的事件
-    fun animateIndicatorToPosition(customTabIndicator: CustomTabIndicator, position: Int, smoothScroll: Boolean = true) {
+    fun animateIndicatorToPosition(customTabIndicator: BaseCustomTabIndicator, position: Int, smoothScroll: Boolean = true) {
         var currentTime  =  System.currentTimeMillis()-startTime
         // 将最新的动画请求加入队列
         animationQueue.add(AnimationQueuePair(position, smoothScroll,currentTime))
@@ -32,7 +31,7 @@ object CustomTabIndicatorUtils {
     }
 
     // 处理下一个动画
-    private fun processNextAnimation(customTabIndicator: CustomTabIndicator) {
+    private fun processNextAnimation(customTabIndicator: BaseCustomTabIndicator) {
         // 如果队列为空，清理并退出
         if (animationQueue.isEmpty()) {
             currentAnimator = null

@@ -45,16 +45,16 @@ abstract class BaseActivityViewModel : BaseViewModel() {
 
     override fun initViewModel() {
         super.initViewModel()
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
             launch {
                 commonRepository.getConnectStateFlow().collect { connectState ->
                     when (connectState) {
                         is ConnectState.ConnectSuccess -> {
-                            "Connection Success".logi(BaseActivityViewModel::class.java.simpleName)
+                            "Connection Success".logi(TAG)
                             if (shouldBeAutoLogin) login()
                         }
                         is ConnectState.ConnectFailure, ConnectState.NetworkUnavailable -> {
-                            "Connection Failure -> $connectState".loge(BaseActivityViewModel::class.java.simpleName)
+                            "Connection Failure -> $connectState".loge(TAG)
                             commonRepository.setIsLogin(false)
                         }
                         else -> Unit
@@ -100,31 +100,28 @@ abstract class BaseActivityViewModel : BaseViewModel() {
     }
 
     //當連線成功時，自動地去做補登入
-    private fun login() {
-        viewModelScope.launch {
-
-            if (commonRepository.checkIsLogin()) {
-                _loginResult.value = LoginEnum.SUCCESSFUL
-                return@launch
-            }
-            callApi({
-                commonRepository.sendLogin()
-            }, {
-               if (it is ApiResponseState.Succeeded<*>) {
-                   val result = it.dataAs<Boolean>()
-                   if (result == null) {
-                       "Login is failure! api response parse failed!".loge(TAG)
-                       _loginResult.value = LoginEnum.API_FAILURE("Login is failure! api response parse failed!")
-                   } else {
-                       _loginResult.value = if (result) LoginEnum.SUCCESSFUL else LoginEnum.NOT_SUCCESSFUL
-                   }
-
-               } else if (it is ApiResponseState.Failed){
-                   "Login is failure! msg = ${it.error?.msg}".loge(TAG)
-                   _loginResult.value = LoginEnum.API_FAILURE(it.error?.msg)
-               }
-            }, false)
+    private suspend fun login() {
+        if (commonRepository.checkIsLogin()) {
+            _loginResult.value = LoginEnum.SUCCESSFUL
+            return
         }
+        callApi({
+            commonRepository.sendLogin()
+        }, {
+           if (it is ApiResponseState.Succeeded<*>) {
+               val result = it.dataAs<Boolean>()
+               if (result == null) {
+                   "Login is failure! api response parse failed!".loge(TAG)
+                   _loginResult.value = LoginEnum.API_FAILURE("Login is failure! api response parse failed!")
+               } else {
+                   _loginResult.value = if (result) LoginEnum.SUCCESSFUL else LoginEnum.NOT_SUCCESSFUL
+               }
+
+           } else if (it is ApiResponseState.Failed){
+               "Login is failure! msg = ${it.error?.msg}".loge(TAG)
+               _loginResult.value = LoginEnum.API_FAILURE(it.error?.msg)
+           }
+        }, false)
     }
 
     fun reconnectNow() {

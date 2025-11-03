@@ -24,7 +24,7 @@ import com.walisport.app.data.PreloadDataModel
 import com.walisport.app.data.repo.MainRepository
 import com.walisport.app.data.repo.ModuleRepository
 import com.walisport.app.data.repo.SplashRepository
-import com.walisport.app.ui.viewmodel.MainViewModel
+import com.walisport.app.ui.viewmodel.MainActivityViewModel
 import com.walisport.app.ui.viewmodel.SplashViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -106,7 +106,8 @@ class ModuleInitializer : DefaultInitializer<String> {
     }
 
     private val viewModules = module {
-        viewModelOf(::MainViewModel)
+        includes(defaultModule)
+        viewModelOf(::MainActivityViewModel)
         viewModelOf(::SplashViewModel)
     }
     private val repoModules = module {

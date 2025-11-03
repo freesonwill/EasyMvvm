@@ -15,7 +15,14 @@ import arch.cayenne.module.home.R
 class NavBarContainer @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : SkinnableLinearLayout(context, attrs, defStyleAttr) {
-    var selectedIndex: Int = -1;private set
+    var selectedIndex: Int = -1
+        get() = field
+        set(value) {
+            forEachIndexed { i, v ->
+                v.isSelected = i == value
+            }
+            field = value
+        }
 
     init {
         context.theme.obtainStyledAttributes(
@@ -38,14 +45,7 @@ class NavBarContainer @JvmOverloads constructor(
     }
 
     private fun onInit() {
-        setSelected(selectedIndex)
-    }
 
-    fun setSelected(index: Int) {
-        forEachIndexed { i, v ->
-            v.isSelected = i == index
-        }
-        this.selectedIndex = index
     }
 
     fun setOnItemSelectedListener(listener: ((parent: NavBarContainer, view: View, position: Int) -> Unit)? = null) {

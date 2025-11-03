@@ -12,21 +12,15 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.ui.animation.AnimationController
 import arch.cayenne.lib.base.ui.animation.AnimationController.AnimType
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
-import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.data.constants.MatchStatus
-import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
-import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.ext.startSafeAnimateSet
-import arch.cayenne.lib.common.utils.helper.showToast
-import com.walisport.module.live.R
 import com.walisport.module.live.compare.MediaSourceBeanCompare
 import com.walisport.module.live.data.constants.VideoAnimatorConstants.Companion.HIDE_BUTTONS_TIMER
 import com.walisport.module.live.data.model.MediaSource
 import com.walisport.module.live.data.model.MediaSourceType
 import com.walisport.module.live.databinding.FragmentLiveMatchMediaBinding
-import com.walisport.module.live.ui.LiveMediaSourceFragment.HorizontalItemDecoration
 import com.walisport.module.live.ui.adapter.LiveMediaSourceSimpleAdapter
 import com.walisport.module.live.ui.viewmodel.LiveMainViewModel
 import com.walisport.module.live.ui.viewmodel.LiveMatchMediaViewModel
@@ -73,13 +67,13 @@ class LiveMatchMediaFragment :
     }
 
     private fun initMediaSourceBanner() {
-        //init video source recyclerview
+        //init media source recyclerview
         with(mBinding) {
             rvSource.apply {
                 itemAnimator = null
                 layoutManager =
                     LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-                addItemDecoration(HorizontalItemDecoration())
+                addItemDecoration(NewMediaSourceFragment.HorizontalItemDecoration())
                 adapter = LiveMediaSourceSimpleAdapter(MediaSourceBeanCompare())
             }
         }
@@ -99,7 +93,7 @@ class LiveMatchMediaFragment :
             mViewModel.createObserver()
         }
 
-        mainViewModel.scorll.observe(viewLifecycleOwner){
+        mainViewModel.scorll.observe(viewLifecycleOwner) {
             scheduleHideVideoSourceBanner(0)
         }
         with(mViewModel) {
@@ -198,13 +192,6 @@ class LiveMatchMediaFragment :
                 showAnimationView(false)
             }
 
-            chooseSource.observe(viewLifecycleOwner) {
-                showChooseMediaSourceView()
-            }
-
-            switchToVideo.observe(viewLifecycleOwner) {
-                showVideoView()
-            }
 
             switchToMatchStatus.observe(viewLifecycleOwner) {
                 showStatusView()
@@ -220,7 +207,7 @@ class LiveMatchMediaFragment :
     }
 
     private fun showVideoView() {
-        mainViewModel.setVideoInitHeight(mBinding.rvSource.height+mBinding.fragmentMedia.height)
+        mainViewModel.setVideoInitHeight(mBinding.rvSource.height + mBinding.fragmentMedia.height)
         "showVideoView".logd(TAG)
         childFragmentManager.findFragmentByTag(LiveVideoPlayerFragment.TAG) as? LiveVideoPlayerFragment
             ?: LiveVideoPlayerFragment().also {
@@ -258,7 +245,7 @@ class LiveMatchMediaFragment :
         if (!hasAutoShownMediaSourceBar && showMediaSourceBanner) {
             mBinding.rvSource.visibility = VISIBLE
             hasAutoShownMediaSourceBar = true
-            mainViewModel.setVideoInitHeight(mBinding.rvSource.height+mBinding.fragmentMedia.height)
+            mainViewModel.setVideoInitHeight(mBinding.rvSource.height + mBinding.fragmentMedia.height)
             (mBinding.rvSource.adapter as LiveMediaSourceSimpleAdapter).apply {
                 val list: MutableList<MediaSource> = mutableListOf()
                 list.add(
@@ -296,30 +283,9 @@ class LiveMatchMediaFragment :
         return flag
     }
 
-    private fun showChooseMediaSourceView() {
-        val location = IntArray(2)
-        mBinding.root.getLocationOnScreen(location)
-        val y =
-            location[1] + mBinding.root.measuredHeight
-
-        val height = requireActivity().resources.displayMetrics.heightPixels - y
-
-        LiveMediaSourceFragment().apply {
-            arguments = Bundle().apply {
-                putLong("matchId", mViewModel.matchId())
-                putInt(
-                    LiveMediaSourceFragment.HEIGHT,
-                    height
-                )
-            }
-            show(this@LiveMatchMediaFragment.childFragmentManager)
-
-        }
-    }
-
 
     private fun scheduleHideVideoSourceBanner(duration: Long = HIDE_BUTTONS_TIMER) {
-        if (mBinding.rvSource.visibility== View.GONE)return
+        if (mBinding.rvSource.visibility == View.GONE) return
         dismissBarJob?.cancel()
         dismissBarJob = lifecycleScope.launch {
             delay(duration)
@@ -337,16 +303,23 @@ class LiveMatchMediaFragment :
                                 val lp = mBinding.rvSource.layoutParams
                                 lp.height = it.animatedValue as Int
                                 mBinding.rvSource.layoutParams = lp
-                                mainViewModel.setVideoInitHeight(it.animatedValue as Int+mBinding.fragmentMedia.height,true)
+                                mainViewModel.setVideoInitHeight(
+                                    it.animatedValue as Int + mBinding.fragmentMedia.height,
+                                    true
+                                )
                             }
                             addListener(doOnStart {
                                 animating = true
                             }
                             )
                             addListener(doOnEnd {
+
                                 mBinding.rvSource.visibility = View.GONE
                                 animating = false
-                                mainViewModel.setVideoInitHeight(mBinding.fragmentMedia.height,false)
+                                mainViewModel.setVideoInitHeight(
+                                    mBinding.fragmentMedia.height,
+                                    false
+                                )
                             })
                         },
                     )
@@ -375,41 +348,6 @@ class LiveMatchMediaFragment :
                 it.mediaSourceType == MediaSourceType.VIDEO
             }.forEach { it.isPlaying = false }
 
-        }
-    }
-
-    //换解说
-    fun onSwitchNarrator() {
-        if (mViewModel.animationLiveUrl.value.isNullOrEmpty() && mViewModel.liveVideoBean.value?.source.isNullOrEmpty()) {
-            showToast(R.string.media_source_empty.getString())
-        } else {
-            if (!mediaSourceBarShowing) {
-                mediaSourceBarShowing = true
-
-                val height = mBinding.rvSource.height
-                mBinding.root.startSafeAnimateSet(
-                    {
-                        playTogether(
-                            ValueAnimator.ofInt(height, 58.dp2px).apply {
-                                addUpdateListener {
-                                    val lp = mBinding.rvSource.layoutParams
-                                    lp.height = it.animatedValue as Int
-
-                                    mBinding.rvSource.layoutParams = lp
-                                }
-                            },
-                        )
-
-                    },
-                    duration = AnimationController[AnimType.popupExit]!!.duration,
-                    interpolator = AnimationController[AnimType.popupExit]?.interpolator?.toInterpolator()
-                        ?: LinearInterpolator(),
-                    start = true
-                )
-            }
-            mBinding.rvSource.visibility = VISIBLE
-            //重新设置定时器
-            scheduleHideVideoSourceBanner()
         }
     }
 

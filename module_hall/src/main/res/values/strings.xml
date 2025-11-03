@@ -10,4 +10,18 @@
     <string name="hot_game">热门游戏</string>
     <string name="all">全部</string>
     <string name="wali">瓦力游戏</string>
+    <string name="tiger">老虎机</string>
+    <string name="tab_ranking_newest">最新投注</string>
+    <string name="tab_ranking_biggest">大额输赢</string>
+    <string name="tab_ranking_today">每日投注比赛</string>
+    <string name="tab_ranking_list_game">游戏</string>
+    <string name="tab_ranking_list_multiple">倍数</string>
+    <string name="tab_ranking_list_result">输赢</string>
+    <string name="tab_ranking_info_hint">为防止过快刷屏，“最近投注”与“大额输赢”只显示部分注单</string>
+    <string name="daily_betting_game">每日投注比赛</string>
+    <string name="tab_ranking_today_rank">排名</string>
+    <string name="tab_ranking_today_player">玩家</string>
+    <string name="tab_ranking_today_betting">投注额</string>
+    <string name="tab_ranking_today_bonus">奖金</string>
+
 </resources>

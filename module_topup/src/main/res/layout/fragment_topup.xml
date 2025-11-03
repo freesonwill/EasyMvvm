@@ -8,6 +8,7 @@
     android:focusable="true"
     android:focusableInTouchMode="true"
     android:orientation="vertical"
+    app:canScrollView="@id/view_pager"
     app:interceptedDirection="RIGHT">
 
     <arch.cayenne.lib.common.ui.view.TitleBarView
@@ -24,10 +25,10 @@
             android:id="@+id/tab_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_9"
             android:layout_marginTop="@dimen/dp_4"
             android:background="@android:color/transparent"
             android:clipToPadding="false"
-            android:layout_marginStart="@dimen/dp_9"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -47,13 +48,8 @@
             app:tabTextColor="@color/tab_text" />
     </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
 
-    <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/view_pager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <androidx.viewpager2.widget.ViewPager2
-            android:id="@+id/view_pager"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
+        android:layout_height="match_parent" />
 </arch.cayenne.lib.common.ui.view.InterceptedLinearLayout>

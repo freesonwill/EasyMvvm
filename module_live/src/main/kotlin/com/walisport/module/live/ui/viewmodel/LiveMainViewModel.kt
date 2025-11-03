@@ -90,6 +90,10 @@ class LiveMainViewModel(
     private val _videoTypeAnimating = MutableLiveData<Boolean>(false)
     val videoTypeAnimating: LiveData<Boolean> = _videoTypeAnimating
 
+    //隐藏媒体源fragment
+    private val _hideMediaSourceFragment = UnPeekLiveData<Boolean>(false)
+    val hideMediaSourceFragment: UnPeekLiveData<Boolean> = _hideMediaSourceFragment
+
     fun setVideoInitHeight(height:Int,animating : Boolean = false){
         if (videoTypeAnimating.value!=animating){
             _videoTypeAnimating.value = animating

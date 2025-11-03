@@ -8,4 +8,6 @@ import kotlinx.coroutines.Dispatchers
  * @date: 2025/3/17 18:19
  * @description:
  */
-abstract class BaseRepository(override val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)) : IRepository
+abstract class BaseRepository(override val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)) : IRepository {
+    protected val TAG:String by lazy { this::class.java.simpleName }
+}
