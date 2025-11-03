@@ -6,12 +6,15 @@ import android.animation.ValueAnimator
 import android.content.Context
 import android.content.pm.ActivityInfo
 import android.database.ContentObserver
+import android.graphics.Point
 import android.media.AudioManager
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.view.Display
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.view.animation.DecelerateInterpolator
 import android.widget.LinearLayout
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -54,6 +57,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import me.jessyan.autosize.AutoSizeConfig
 import kotlin.reflect.KClass
+
 
 /**
  * 视频横屏播放页
@@ -114,8 +118,15 @@ class LiveVideoLandscapeFragment :
 
     //调整按钮的margin值， 保证其位于视频播放区域内
     private fun initMargins() {
-        var screenWidth = resources.displayMetrics.widthPixels
-        var screenHeight = resources.displayMetrics.heightPixels
+        val realSize = Point()
+        val wm = requireContext().getSystemService(Context.WINDOW_SERVICE) as WindowManager
+
+        val display: Display = wm.defaultDisplay
+        display.getRealSize(realSize)
+        "realSize.x:${realSize.x}, realSize.y:${realSize.y}".logd("initMargins")
+
+        var screenWidth = realSize.x
+        var screenHeight = realSize.y
 
 
         //调整成横屏的宽高
@@ -125,8 +136,7 @@ class LiveVideoLandscapeFragment :
             screenHeight = a
         }
 
-        screenWidth += ViewUtils.getStatusBarHeight(requireContext())
-        
+        "initMargin.screenWidth:$screenWidth".logd("initMargins")
 
         val videoAreaWidth = screenHeight / 1080L * 1920L
         val leftSpacing = (screenWidth - videoAreaWidth) / 2
@@ -215,7 +225,11 @@ class LiveVideoLandscapeFragment :
                 mBinding.root.startSafeAnimateSet(
                     {
                         playTogether(
-                            mBinding.videoViewContainer.startSafeObjectAnimator("alpha", mBinding.videoViewContainer.alpha, 1f)
+                            mBinding.videoViewContainer.startSafeObjectAnimator(
+                                "alpha",
+                                mBinding.videoViewContainer.alpha,
+                                1f
+                            )
                         )
                     },
                     duration = 200,
@@ -353,7 +367,11 @@ class LiveVideoLandscapeFragment :
                             mBinding.root.startSafeAnimateSet(
                                 {
                                     playTogether(
-                                        mBinding.videoViewContainer.startSafeObjectAnimator("alpha", mBinding.videoViewContainer.alpha, 0f)
+                                        mBinding.videoViewContainer.startSafeObjectAnimator(
+                                            "alpha",
+                                            mBinding.videoViewContainer.alpha,
+                                            0f
+                                        )
                                     )
                                 },
                                 duration = 200,
@@ -429,10 +447,12 @@ class LiveVideoLandscapeFragment :
      */
     private fun showButtonsAnimated() {
         val operateAreaHeight =
-            resources.getDimensionPixelSize(R.dimen.video_landscape_operate_area_height_top).toFloat()
+            resources.getDimensionPixelSize(R.dimen.video_landscape_operate_area_height_top)
+                .toFloat()
 
         val operateAreaHeightBottom =
-            resources.getDimensionPixelSize(R.dimen.video_landscape_operate_area_height_bottom).toFloat()
+            resources.getDimensionPixelSize(R.dimen.video_landscape_operate_area_height_bottom)
+                .toFloat()
 
         mBinding.root.startSafeAnimateSet({
             playTogether(
@@ -476,10 +496,12 @@ class LiveVideoLandscapeFragment :
      */
     private fun hideButtonsAnimated() {
         val operateAreaHeight =
-            resources.getDimensionPixelSize(R.dimen.video_landscape_operate_area_height_top).toFloat()
+            resources.getDimensionPixelSize(R.dimen.video_landscape_operate_area_height_top)
+                .toFloat()
 
         val operateAreaHeightBottom =
-            resources.getDimensionPixelSize(R.dimen.video_landscape_operate_area_height_bottom).toFloat()
+            resources.getDimensionPixelSize(R.dimen.video_landscape_operate_area_height_bottom)
+                .toFloat()
 
         mBinding.root.startSafeAnimateSet({
             playTogether(
