@@ -17,6 +17,7 @@ import arch.cayenne.lib.common.data.constants.DrawerAction.ACTION_OPEN
 import arch.cayenne.lib.common.data.constants.DrawerAction.KEY_ACTION
 import arch.cayenne.lib.common.data.constants.DrawerAction.REQUEST_KEY_DRAWER
 import arch.cayenne.lib.common.ui.viewmodel.UnReadMessageViewModel
+import arch.cayenne.lib.common.utils.biz.CommonBiz
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.removeAllTips
@@ -70,6 +71,9 @@ class HomeOrderFragment: BaseFragment<HomeOrderViewModel, FragmentHomeOrderBindi
                     REQUEST_KEY_DRAWER,
                     bundleOf(KEY_ACTION to ACTION_OPEN)
                 )
+            }
+            ivCustomer.clickNoRepeat {
+                CommonBiz.jump2CustomerService(this@HomeOrderFragment)
             }
         }
     }

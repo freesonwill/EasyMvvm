@@ -22,6 +22,7 @@ import arch.cayenne.lib.common.data.constants.DrawerAction.ACTION_CLOSE
 import arch.cayenne.lib.common.data.constants.DrawerAction.ACTION_OPEN
 import arch.cayenne.lib.common.data.constants.DrawerAction.KEY_ACTION
 import arch.cayenne.lib.common.data.constants.DrawerAction.REQUEST_KEY_DRAWER
+import arch.cayenne.lib.common.data.constants.FragmentResultEnum
 import arch.cayenne.lib.common.utils.ext.setDrawerInterpolator
 import arch.cayenne.module.home.ui.fragment.NewHomeFragment
 import arch.cayenne.module.home.ui.view.Style
@@ -46,7 +47,7 @@ class MainFragment : BaseFragment<MainFragmentViewModel, FragmentMainBinding>() 
         arrayOfNulls<Fragment>(BottomNavType.entries.size)
     }
 
-    private enum class BottomNavType(@DrawableRes val icon:Int,@StringRes val title:Int) {
+    enum class BottomNavType(@DrawableRes val icon:Int,@StringRes val title:Int) {
         HOME(arch.cayenne.module.home.R.drawable.ic_home, arch.cayenne.module.home.R.string.title_home),
         SPORT(arch.cayenne.module.home.R.drawable.ic_sport, arch.cayenne.module.home.R.string.title_sport),
         BET_SLOT(arch.cayenne.module.home.R.drawable.ic_betslip, arch.cayenne.module.home.R.string.title_betslip),
@@ -102,6 +103,7 @@ class MainFragment : BaseFragment<MainFragmentViewModel, FragmentMainBinding>() 
         }
     }
     override fun initListener() {
+
         mBinding.apply {
             setDrawerLayoutListener()
             // 設定監聽器，使用 parentFragmentManager
@@ -122,12 +124,17 @@ class MainFragment : BaseFragment<MainFragmentViewModel, FragmentMainBinding>() 
             }
         }
 
-        parentFragmentManager.setFragmentResultListener(MainChatFragment.CUSTOMER_SERVICE,viewLifecycleOwner){ key,bundle->
-            setCurrentFragment(BottomNavType.ME.ordinal)
+        childFragmentManager.setFragmentResultListener(FragmentResultEnum.KEY_PAGE.k,viewLifecycleOwner){ key, bundle->
+            bundle.getInt(key,-1).let {
+                if(it == - 1) return@let
+                mBinding.bottomNavigation.selectedIndex = it
+                setCurrentFragment(it,bundle.apply { remove(FragmentResultEnum.KEY_PAGE.k) })
+            }
         }
     }
 
     override suspend fun createObserver() {
+
         launch {
             AnimationController.getFlow(AnimType.drawerEnter).collect {
                 if(it == null) return@collect
