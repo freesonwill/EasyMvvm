@@ -49,6 +49,9 @@ import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
 import com.google.android.material.tabs.TabLayout
 import kotlin.reflect.KClass
 
+/**
+ * 体育页
+ */
 class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
     override val vbClass: KClass<FragmentNewHomeBinding> = FragmentNewHomeBinding::class
     override val vmClass: KClass<HomeViewModel> = HomeViewModel::class

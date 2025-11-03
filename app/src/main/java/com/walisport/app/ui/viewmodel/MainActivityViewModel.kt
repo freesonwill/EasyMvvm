@@ -1,7 +1,6 @@
 package com.walisport.app.ui.viewmodel
 
 import androidx.lifecycle.viewModelScope
-import arch.cayenne.lib.common.data.constants.SkinType
 import arch.cayenne.lib.common.ui.viewmodel.BaseActivityViewModel
 import com.walisport.app.data.repo.MainRepository
 import kotlinx.coroutines.flow.filter
@@ -14,8 +13,7 @@ import org.koin.core.parameter.parametersOf
  * @date: 2025/3/14 16:56
  * @description:
  */
-class MainViewModel : BaseActivityViewModel() {
-
+class MainActivityViewModel : BaseActivityViewModel() {
     private val repository: MainRepository by inject { parametersOf(viewModelScope) }
     override val shouldBeAutoLogin: Boolean = true
 
@@ -35,4 +33,5 @@ class MainViewModel : BaseActivityViewModel() {
     fun getSkinType(): String {
         return repository.getSkinType()
     }
+
 }
