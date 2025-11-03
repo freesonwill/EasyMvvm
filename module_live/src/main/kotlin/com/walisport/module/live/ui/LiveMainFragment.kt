@@ -176,7 +176,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                 super.onPause(owner)
                 if (fixedSkin != null) {
                     SkinnableResourceManager.setFixedSkin(null)
-                    StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND()
+                    StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND(autoIsNavigation = true)
                     StatusBarConfig.statusBarDarkFont =
                         immersionBarSkinTypeExt(mViewModel.getSkinType())
                     setStatusBar(StatusBarConfig, mBinding.root)

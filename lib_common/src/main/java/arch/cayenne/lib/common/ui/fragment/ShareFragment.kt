@@ -12,6 +12,7 @@ import arch.cayenne.lib.common.databinding.FragmentShareBinding
 import arch.cayenne.lib.common.ui.adapter.ShareAdapter
 import arch.cayenne.lib.common.ui.adapter.ShareLinkAdapter
 import arch.cayenne.lib.common.ui.viewmodel.ShareViewModel
+import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import kotlin.reflect.KClass
 
 class ShareFragment private constructor(): BasePreLoadBottomSheetFragment<ShareViewModel, FragmentShareBinding>() {
@@ -46,11 +47,26 @@ class ShareFragment private constructor(): BasePreLoadBottomSheetFragment<ShareV
         ShareLinkAdapter()
     }
 
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+
+        return super.onCreateDialog(savedInstanceState)
+    }
+
     override fun initView(savedInstanceState: Bundle?) {
         shareAdapter.submitList(mViewModel.shareApps())
         mBinding.rvShareApps.adapter = shareAdapter
-        mBinding.rvShareApps.layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.HORIZONTAL,false)
+        mBinding.rvShareApps.layoutManager =
+            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
 //        mBinding.rvShareLink.adapter = shareLinkAdapter
+//       val height =  ImmersionBar.getNavigationBarHeight(mBinding.root.context)
+
+    }
+
+
+
+    private fun getNavigationBarHeight(): Int {
+        val insets = requireActivity().window.decorView.rootWindowInsets
+        return insets.stableInsetBottom
     }
 
     override fun initListener() {
@@ -69,5 +85,7 @@ class ShareFragment private constructor(): BasePreLoadBottomSheetFragment<ShareV
     override fun onStart() {
         StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND(autoIsNavigation = true)
         super.onStart()
+        val height = getNavigationBarHeight()
+        mBinding.root.minHeight = 326.dp2px + height
     }
 }
