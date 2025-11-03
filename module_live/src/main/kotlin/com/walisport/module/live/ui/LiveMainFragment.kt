@@ -44,7 +44,6 @@ import arch.cayenne.lib.common.utils.ext.setDrawerInterpolator
 import arch.cayenne.lib.common.utils.ext.setupViewPagerScroll
 import arch.cayenne.lib.common.utils.ext.startFadeAnim
 import arch.cayenne.lib.common.utils.ext.touchBackPressed
-import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.lib.skin.widget.SkinnableTextView
 import arch.cayenne.module.bet.ui.fragment.BetSheetFragment
@@ -176,7 +175,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                 super.onPause(owner)
                 if (fixedSkin != null) {
                     SkinnableResourceManager.setFixedSkin(null)
-                    StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND(autoIsNavigation = true)
+                    StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND()
                     StatusBarConfig.statusBarDarkFont =
                         immersionBarSkinTypeExt(mViewModel.getSkinType())
                     setStatusBar(StatusBarConfig, mBinding.root)
@@ -189,7 +188,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                 mBinding.root.fitsSystemWindows = fixedSkin == null
                 if (fixedSkin != null) {
                     SkinnableResourceManager.setFixedSkin(fixedSkin)
-                    StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND(autoIsNavigation = true)
+                    StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND()
                     StatusBarConfig.statusBarDarkFont = false
                     setStatusBar(StatusBarConfig, mBinding.liveMain)
                     updateBetSheetSkin() //refresh skin to fixed skin

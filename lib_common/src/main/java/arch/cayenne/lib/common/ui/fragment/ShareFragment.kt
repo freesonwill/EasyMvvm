@@ -1,12 +1,11 @@
 package arch.cayenne.lib.common.ui.fragment
 
+import android.app.Dialog
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
-import arch.cayenne.lib.base.ui.fragment.BaseBottomSheetFragment
-import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.BasePreLoadBottomSheetFragment
 import arch.cayenne.lib.common.databinding.FragmentShareBinding
 import arch.cayenne.lib.common.ui.adapter.ShareAdapter
@@ -48,7 +47,6 @@ class ShareFragment private constructor(): BasePreLoadBottomSheetFragment<ShareV
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-
         return super.onCreateDialog(savedInstanceState)
     }
 
@@ -83,9 +81,8 @@ class ShareFragment private constructor(): BasePreLoadBottomSheetFragment<ShareV
     }
 
     override fun onStart() {
-        StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND(autoIsNavigation = true)
         super.onStart()
         val height = getNavigationBarHeight()
-        mBinding.root.minHeight = 326.dp2px + height
+        mBinding.root.minHeight = 326.dp2px
     }
 }
