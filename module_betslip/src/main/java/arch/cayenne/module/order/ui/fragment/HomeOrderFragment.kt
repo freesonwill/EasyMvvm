@@ -6,11 +6,13 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.lifecycleScope
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.adapter.PagerAdapter
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.data.constants.DrawerAction.ACTION_OPEN
 import arch.cayenne.lib.common.data.constants.DrawerAction.KEY_ACTION
 import arch.cayenne.lib.common.data.constants.DrawerAction.REQUEST_KEY_DRAWER
@@ -39,6 +41,10 @@ class HomeOrderFragment: BaseFragment<HomeOrderViewModel, FragmentHomeOrderBindi
     private val unreadMessageViewModel: UnReadMessageViewModel by viewModels()
     private var tabLayoutMediator:TabLayoutMediator? = null
 
+    companion object {
+        const val BET_MODE = "BET_MODE"
+    }
+
     override fun initView(savedInstanceState: Bundle?) {
         mBinding.tabLayout.post {
             mBinding.tabLayout.removeAllTips()
@@ -47,16 +53,10 @@ class HomeOrderFragment: BaseFragment<HomeOrderViewModel, FragmentHomeOrderBindi
     }
 
 
-    fun setMode(m: BetMode){
+    private fun setMode(m: BetMode){
         //"lifecycle.currentState----${lifecycle.currentState},isAtLeast:${lifecycle.currentState.isAtLeast(Lifecycle.State.CREATED)}".logd(TAG)
         if(!lifecycle.currentState.isAtLeast(Lifecycle.State.CREATED)) {
-            lifecycle.addObserver(object :DefaultLifecycleObserver{
-                override fun onStart(owner: LifecycleOwner) {
-                    super.onStart(owner)
-                    lifecycle.removeObserver(this)
-                    setMode(m)
-                }
-            })
+            launch(Lifecycle.State.STARTED,lifecycleScope){ setMode(m) }
         } else {
             mViewModel.betModelFlow.value = m
         }
@@ -116,5 +116,13 @@ class HomeOrderFragment: BaseFragment<HomeOrderViewModel, FragmentHomeOrderBindi
         mBinding.root.fitsSystemWindows = false
         StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND()
         setStatusBar(StatusBarConfig, mBinding.root)
+    }
+
+    override fun onHiddenChanged(hidden: Boolean) {
+        super.onHiddenChanged(hidden)
+        //"onHiddenChanged--arguments---$arguments--hidden:$hidden".logd(TAG)
+        arguments?.getInt(BET_MODE)?.let {
+            setMode(BetMode.entries.toTypedArray()[it])
+        }
     }
 }
