@@ -604,7 +604,7 @@ fun View.startFadeAnimVideo(doSwitchPage: (onComplete: () -> Unit) -> Unit) {
     animate().cancel()
     animate()
         .alpha(0.0f)
-        .setDuration(125)
+        .setDuration(100)
         .withEndAction {
             doSwitchPage.invoke {
                 // 等待畫面已經完成繪製後，再執行淡入動畫
@@ -612,7 +612,7 @@ fun View.startFadeAnimVideo(doSwitchPage: (onComplete: () -> Unit) -> Unit) {
                     alpha = 0.0f
                     animate()
                         .alpha(1f)
-                        .setDuration(125)
+                        .setDuration(245)
                         .start()
                 }
             }
