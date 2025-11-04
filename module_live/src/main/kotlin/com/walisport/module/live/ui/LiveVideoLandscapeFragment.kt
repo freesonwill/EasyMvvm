@@ -12,6 +12,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.Display
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
@@ -28,7 +29,6 @@ import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.DensityInfo
-import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getDimensionPixelSize
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
@@ -55,7 +55,6 @@ import com.xxx.qyplayer.transformToInt
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import me.jessyan.autosize.AutoSizeConfig
 import kotlin.reflect.KClass
 
 
@@ -87,6 +86,23 @@ class LiveVideoLandscapeFragment :
 
     private lateinit var audioManager: AudioManager
     private var volumeObserver: VolumeObserver? = null
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        val metrics = resources.displayMetrics
+        //density和scaledDensity被篡改，尝试恢复
+        if (metrics.density != DensityInfo.density && DensityInfo.density > 0) {
+            metrics.density = DensityInfo.density
+        }
+        if (metrics.scaledDensity != DensityInfo.scaledDensity && DensityInfo.scaledDensity > 0) {
+            metrics.scaledDensity = DensityInfo.scaledDensity
+        }
+
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -123,7 +139,6 @@ class LiveVideoLandscapeFragment :
 
         val display: Display = wm.defaultDisplay
         display.getRealSize(realSize)
-        "realSize.x:${realSize.x}, realSize.y:${realSize.y}".logd("initMargins")
 
         var screenWidth = realSize.x
         var screenHeight = realSize.y
@@ -135,8 +150,6 @@ class LiveVideoLandscapeFragment :
             screenWidth = screenHeight
             screenHeight = a
         }
-
-        "initMargin.screenWidth:$screenWidth".logd("initMargins")
 
         val videoAreaWidth = screenHeight / 1080L * 1920L
         val leftSpacing = (screenWidth - videoAreaWidth) / 2
@@ -660,9 +673,9 @@ class LiveVideoLandscapeFragment :
         super.onResume()
         activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
         //使用横屏时的宽高
-        AutoSizeConfig.getInstance().setDesignWidthInDp(LANDSCAPE_WIDTH)
-        AutoSizeConfig.getInstance().setDesignHeightInDp(LANDSCAPE_HEIGHT)
-        AutoSizeConfig.getInstance().isBaseOnWidth = false
+//        AutoSizeConfig.getInstance().setDesignWidthInDp(LANDSCAPE_WIDTH)
+//        AutoSizeConfig.getInstance().setDesignHeightInDp(LANDSCAPE_HEIGHT)
+//        AutoSizeConfig.getInstance().isBaseOnWidth = false
         mBinding.root.fitsSystemWindows = false
         StatusBarConfig.statusBarType = StatusBarMode.FULLSCREEN
         setStatusBar(StatusBarConfig, mBinding.root)
@@ -674,9 +687,9 @@ class LiveVideoLandscapeFragment :
         super.onPause()
         activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
         //恢复竖屏，宽高也要回到竖屏时到宽高
-        AutoSizeConfig.getInstance().isBaseOnWidth = true
-        AutoSizeConfig.getInstance().setDesignWidthInDp(PORTRAIT_WIDTH)
-        AutoSizeConfig.getInstance().setDesignHeightInDp(PORTRAIT_HEIGHT)
+//        AutoSizeConfig.getInstance().isBaseOnWidth = true
+//        AutoSizeConfig.getInstance().setDesignWidthInDp(PORTRAIT_WIDTH)
+//        AutoSizeConfig.getInstance().setDesignHeightInDp(PORTRAIT_HEIGHT)
         if (videoView.parent == mBinding.videoViewContainer) {
             videoView.onPause()
         }
@@ -1006,13 +1019,6 @@ class LiveVideoLandscapeFragment :
     }
 
     companion object {
-
-        const val LANDSCAPE_WIDTH = 812
-        const val LANDSCAPE_HEIGHT = 375
-
-        const val PORTRAIT_WIDTH = 375
-        const val PORTRAIT_HEIGHT = 812
-
         const val VIDEO_MARGIN_HORIZONTAL = 32
     }
 
