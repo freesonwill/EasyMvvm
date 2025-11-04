@@ -12,14 +12,20 @@ import arch.cayenne.lib.base.utils.LogUtils
 
 import android.content.Context
 import android.util.AttributeSet
+import android.view.animation.LinearInterpolator
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.animation.doOnEnd
+import androidx.core.animation.doOnStart
 import androidx.fragment.app.FragmentContainerView
+import arch.cayenne.lib.base.ui.animation.AnimationController
+import arch.cayenne.lib.base.ui.animation.AnimationController.AnimType
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.startFadeAnim
 import arch.cayenne.lib.common.utils.ext.startFadeAnimVideo
+import arch.cayenne.lib.common.utils.ext.startSafeAnimateSet
 import com.walisport.module.live.ui.widget.LiveMainLayoutInterceptTouch.LiveMainSlideDirection
 
 /*
@@ -49,7 +55,7 @@ class LiveMainLayoutScale @JvmOverloads constructor(
     private var minVideoWidth: Float = 110f * density
     private var maxVideoWidth: Float = 511f * density
     private var isVerticalScroll = true
-
+    private var quickAnimating : Boolean = false //快速滑动动画是否在执行
     private var animationUp: Boolean = false
     private var animationDow: Boolean = false
     private var isCollapsed = false // 标记是否处于折叠状态
@@ -122,14 +128,17 @@ class LiveMainLayoutScale @JvmOverloads constructor(
 
 
     fun adjustLayout(deltaY: Float, direction: LiveMainSlideDirection) {
-
+        if (quickAnimating)return
         if (isCollapsed) {//折叠状态后滑动
             llVideo.visibility = VISIBLE
             fragmentMedia.visibility = VISIBLE
             fragmentMedia.width.toFloat() / 2 // 宽度中心
         }
 
-        LogUtils.e("MainLayout------>adjustLayout")
+        if (direction==LiveMainSlideDirection.DOWN&&fragmentMedia.pivotX!=(fragmentMedia.width.toFloat() / 2)){
+            fragmentMedia.pivotX = fragmentMedia.width.toFloat() / 2 // 宽度中心
+        }
+       // LogUtils.e("MainLayout------>adjustLayout")
         // 获取当前高度
         val currentHeight = llVideo.layoutParams.height.toFloat()
         // 计算目标高度，限制在 minVideoHeight 和 maxVideoHeight 之间  如果是折叠状态,minVideoHeight没有大小限制
@@ -147,16 +156,11 @@ class LiveMainLayoutScale @JvmOverloads constructor(
         // 计算缩放比例（基于高度变化）
         val targetScale = newHeight / maxVideoHeight
 
-        // 设置缩放中心：只设置宽度中心（X轴）
-        // 当高度达到 minVideoHeight 时，pivotX 设置为 0，否则为宽度中心
-
-
-
         // 当高度达到最小值时触发隐藏动画
         if (newHeight <= minVideoHeight && llText.visibility == GONE) {
+            animationDow = false
             if (!animationUp){
                 animationUp = true
-                animationDow = false
                 fragmentMedia.startFadeAnimVideo {
                     llVideo.setBackgroundResource(R.color.menu_lin_tr)
                     fragmentMedia.pivotX = 0f
@@ -167,17 +171,15 @@ class LiveMainLayoutScale @JvmOverloads constructor(
         } else if (newHeight > minVideoHeight && llText.visibility == VISIBLE) {
             llText.visibility = GONE
             llVideo.setBackgroundResource(arch.cayenne.lib.common.R.color.tran_0)
+            animationUp = false
             if (!animationDow){
                 animationDow = true
-                animationUp = false
+                fragmentMedia.pivotX = fragmentMedia.width.toFloat() / 2 // 宽度中心
                 fragmentMedia.startFadeAnimVideo {
-                    fragmentMedia.pivotX = fragmentMedia.width.toFloat() / 2 // 宽度中心
                     it.invoke()
                 }
             }
-
         }
-        // 不设置 pivotY，保持默认（顶部，pivotY = 0）
 
         // 应用等比缩放
         fragmentMedia.post {
@@ -190,6 +192,93 @@ class LiveMainLayoutScale @JvmOverloads constructor(
         initialVideoWidth = newWidth
         isCollapsed = false
     }
+
+    fun quickAdjustLayoutUp(deltaY: Float) {
+        val currentHeight = llVideo.height
+        if (currentHeight <= minVideoHeight) return
+        llVideo.startSafeAnimateSet(
+            {
+                quickAnimating = true
+                animationUp = false
+                playTogether(
+                    ValueAnimator.ofInt(currentHeight, minVideoHeight.toInt()).apply {
+                        addUpdateListener {
+                            val lp = llVideo.layoutParams
+                            lp.height = it.animatedValue as Int
+                            llVideo.layoutParams = lp
+                            // 计算缩放比例（基于高度变化）
+                            val targetScale = it.animatedValue as Int / maxVideoHeight
+                            fragmentMedia.pivotX = fragmentMedia.width.toFloat() / 2 // 宽度中心
+                            fragmentMedia.post {
+                                fragmentMedia.scaleX = targetScale
+                                fragmentMedia.scaleY = targetScale
+                            }
+                        }
+                        addListener(doOnStart {
+                        }
+                        )
+                        addListener(doOnEnd {
+                            quickAnimating = false
+                            fragmentMedia.startFadeAnimVideo {
+                                llVideo.setBackgroundResource(R.color.menu_lin_tr)
+                                fragmentMedia.pivotX = 0f
+                                llText.visibility = VISIBLE
+                                it.invoke()
+                            }
+                            initialVideoWidth = minVideoHeight * scaleXtoY
+                            initialVideoHeight = minVideoHeight
+
+                        })
+                    },
+                )
+            },
+            duration = AnimationController[AnimType.popupExit]!!.duration,
+            interpolator = AnimationController[AnimType.popupExit]?.interpolator?.toInterpolator()
+                ?: LinearInterpolator(),
+            start = true
+        )
+    }
+
+    fun quickAdjustLayoutDow() {
+        val currentHeight = llVideo.layoutParams.height
+        if (currentHeight >= maxVideoHeight) return
+        llVideo.startSafeAnimateSet(
+            {
+                quickAnimating = true
+                animationUp = false
+                playTogether(
+                    ValueAnimator.ofInt(currentHeight, maxVideoHeight.toInt()).apply {
+                        addUpdateListener {
+                            llVideo.setBackgroundResource(arch.cayenne.lib.common.R.color.tran_0)
+                            val lp = llVideo.layoutParams
+                            lp.height = it.animatedValue as Int
+                            llVideo.layoutParams = lp
+                            // 计算缩放比例（基于高度变化）
+                            val targetScale = it.animatedValue as Int / maxVideoHeight
+                            fragmentMedia.pivotX = fragmentMedia.width.toFloat() / 2 // 宽度中心
+                            fragmentMedia.post {
+                                fragmentMedia.scaleX = targetScale
+                                fragmentMedia.scaleY = targetScale
+                            }
+                        }
+                        addListener(doOnStart {
+                            llText.visibility = GONE
+                        }
+                        )
+                        addListener(doOnEnd {
+                            quickAnimating = false
+                            llText.visibility = GONE
+                        })
+                    },
+                )
+            },
+            duration = AnimationController[AnimType.popupExit]!!.duration,
+            interpolator = AnimationController[AnimType.popupExit]?.interpolator?.toInterpolator()
+                ?: LinearInterpolator(),
+            start = true
+        )
+    }
+
 
     /**
      * 渐变显示 fragmentVideo
