@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="242dp"
+    android:layout_height="241dp"
     android:background="@color/color_272727"
     >
     <View
@@ -62,7 +62,6 @@
             android:layout_height="0dp"
             android:layout_marginStart="@dimen/dp_6"
             android:layout_marginEnd="@dimen/dp_1"
-            android:layout_marginBottom="@dimen/dp_12"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@id/ll_tab" />
 
@@ -71,12 +70,12 @@
             android:layout_width="@dimen/dp_62"
             android:layout_height="32dp"
             android:layout_marginEnd="@dimen/dp_6"
-            android:layout_marginBottom="@dimen/dp_12"
             android:background="@drawable/shape_20"
             android:backgroundTint="@color/color_3D404D"
             android:gravity="center"
             android:stateListAnimator="@animator/layout_alpha_animator"
             android:textColor="@color/color_FFFFFF"
+            android:layout_marginBottom="@dimen/dp_12"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintRight_toLeftOf="@id/tv_send">
 
@@ -91,13 +90,12 @@
             android:layout_width="@dimen/dp_62"
             android:layout_height="32dp"
             android:layout_marginEnd="@dimen/dp_12"
-            android:layout_marginBottom="@dimen/dp_12"
             android:background="@drawable/bg_keyboard_send"
             android:gravity="center"
             android:stateListAnimator="@animator/layout_alpha_animator"
             android:text="@string/send"
             android:textColor="@color/color_FFFFFF"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/tv_del"
             app:layout_constraintRight_toRightOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

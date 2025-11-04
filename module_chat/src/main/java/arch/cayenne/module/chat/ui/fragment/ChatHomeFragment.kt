@@ -8,9 +8,12 @@ import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.lifecycleScope
+import arch.cayenne.lib.base.data.constants.StatusBarMode
+import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.data.constants.MatchStatus
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
+import arch.cayenne.lib.common.utils.ImmersionBarUtils.immersionBarSkinTypeExt
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.database.entity.LiveMatchBean
 import arch.cayenne.lib.websocket.data.SocketConnectState
@@ -38,7 +41,10 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
     }
 
     override fun onStart() {
+        StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND()
+        setStatusBar(StatusBarConfig, mBinding.root)
         super.onStart()
+
         mBinding.liveChatKeyboard.post {
             val height = mBinding.liveChatKeyboard.height
             mViewModel.setChatHeight(height)
