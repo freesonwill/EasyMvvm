@@ -37,6 +37,9 @@ import arch.cayenne.module.bet.viewmodel.SingleBetViewModel
 import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
 
+/**
+ * 单关投注
+ */
 class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBinding>(),
     BetSheetListener {
 

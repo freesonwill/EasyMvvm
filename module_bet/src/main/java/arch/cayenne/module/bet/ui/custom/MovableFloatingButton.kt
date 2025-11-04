@@ -22,11 +22,10 @@ class MovableFloatingButton : LinearLayout, View.OnTouchListener {
     private var downRawY = 0f
     private var dX = 0f
     private var dY = 0f
-    private val binding: LayoutMovableFloatingButtonBinding
+    val binding: LayoutMovableFloatingButtonBinding
     private var performClick: (() -> Unit)? = null
     private var mAnimator: AnimatorSet? = null
     private var currentCount = 1
-
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(

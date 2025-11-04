@@ -13,6 +13,7 @@ import androidx.core.animation.doOnEnd
 import androidx.fragment.app.FragmentManager
 import arch.cayenne.lib.base.ui._interface.SimilarDialogInterface
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.module.bet.databinding.FragmentFloatingButtonBinding
 import arch.cayenne.module.bet.viewmodel.FloatingButtonViewModel
 import java.util.concurrent.ConcurrentHashMap
@@ -45,6 +46,10 @@ class FloatingButtonFragment private constructor(): BaseFragment<FloatingButtonV
                     BetSheetFragment.show(requireActivity())
                 }
             }
+        }
+
+        mBinding.fab.binding.tvExit.clickNoRepeat {
+            mViewModel.exitComboBet()
         }
     }
 

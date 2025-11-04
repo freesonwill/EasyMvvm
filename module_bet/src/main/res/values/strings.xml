@@ -47,4 +47,5 @@
 
     <string name="toast_odds_change_better">赔率已降低，请重新投注</string>
     <string name="toast_odds_change_none">赔率已变更，请重新投注</string>
+    <string name="exit_combo_bet">退出串关</string>
 </resources>

@@ -36,6 +36,9 @@ import arch.cayenne.module.bet.util.BetSheetDecoration
 import arch.cayenne.module.bet.viewmodel.ComboBetViewModel
 import kotlin.reflect.KClass
 
+/**
+ * 串关投注
+ */
 class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding>(),
     BetSheetListener {
 
