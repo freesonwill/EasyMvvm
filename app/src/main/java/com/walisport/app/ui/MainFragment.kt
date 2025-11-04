@@ -10,6 +10,8 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
 import arch.cayenne.lib.base.ui.animation.AnimationController
 import arch.cayenne.lib.base.ui.animation.AnimationController.AnimType
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
@@ -20,11 +22,11 @@ import arch.cayenne.lib.common.data.constants.DrawerAction.ACTION_CLOSE
 import arch.cayenne.lib.common.data.constants.DrawerAction.ACTION_OPEN
 import arch.cayenne.lib.common.data.constants.DrawerAction.KEY_ACTION
 import arch.cayenne.lib.common.data.constants.DrawerAction.REQUEST_KEY_DRAWER
+import arch.cayenne.lib.common.data.constants.FragmentResultEnum
 import arch.cayenne.lib.common.utils.ext.setDrawerInterpolator
 import arch.cayenne.module.home.ui.fragment.NewHomeFragment
 import arch.cayenne.module.home.ui.view.Style
 import arch.cayenne.module.order.ui.fragment.HomeOrderFragment
-import arch.cayenne.module.order.ui.viewmodel.BetMode
 import com.walisport.app.R
 import com.walisport.app.databinding.FragmentMainBinding
 import com.walisport.app.ui.viewmodel.BetSlot
@@ -45,7 +47,7 @@ class MainFragment : BaseFragment<MainFragmentViewModel, FragmentMainBinding>() 
         arrayOfNulls<Fragment>(BottomNavType.entries.size)
     }
 
-    private enum class BottomNavType(@DrawableRes val icon:Int,@StringRes val title:Int) {
+    enum class BottomNavType(@DrawableRes val icon:Int,@StringRes val title:Int) {
         HOME(arch.cayenne.module.home.R.drawable.ic_home, arch.cayenne.module.home.R.string.title_home),
         SPORT(arch.cayenne.module.home.R.drawable.ic_sport, arch.cayenne.module.home.R.string.title_sport),
         BET_SLOT(arch.cayenne.module.home.R.drawable.ic_betslip, arch.cayenne.module.home.R.string.title_betslip),
@@ -101,6 +103,7 @@ class MainFragment : BaseFragment<MainFragmentViewModel, FragmentMainBinding>() 
         }
     }
     override fun initListener() {
+
         mBinding.apply {
             setDrawerLayoutListener()
             // 設定監聽器，使用 parentFragmentManager
@@ -113,13 +116,25 @@ class MainFragment : BaseFragment<MainFragmentViewModel, FragmentMainBinding>() 
             bottomNavigation.setOnItemSelectedListener { container, view, position ->
                 container.selectedIndex = position
                 //"bottomNavigation1----$position".logd(TAG)
-                setCurrentFragment(position)
+                val arguments:Bundle? = if(position != BottomNavType.BET_SLOT.ordinal) null else Bundle().apply {
+                    putInt(HomeOrderFragment.BET_MODE,mViewModel.betSlotFlow.value.ordinal)
+                }
+                setCurrentFragment(position,arguments)
                 mViewModel.selectedIndexFlow.value = position
+            }
+        }
+
+        childFragmentManager.setFragmentResultListener(FragmentResultEnum.KEY_PAGE.k,viewLifecycleOwner){ key, bundle->
+            bundle.getInt(key,-1).let {
+                if(it == - 1) return@let
+                mBinding.bottomNavigation.selectedIndex = it
+                setCurrentFragment(it,bundle.apply { remove(FragmentResultEnum.KEY_PAGE.k) })
             }
         }
     }
 
     override suspend fun createObserver() {
+
         launch {
             AnimationController.getFlow(AnimType.drawerEnter).collect {
                 if(it == null) return@collect
@@ -166,12 +181,10 @@ class MainFragment : BaseFragment<MainFragmentViewModel, FragmentMainBinding>() 
         return super.onBackPressed()
     }
 
-    private fun setCurrentFragment(index: Int) {
+    private fun setCurrentFragment(index: Int, arguments: Bundle? = null) {
         if (index !in fragments.indices) return // 防呆
         val fragment = getFragment(index)
-        if(fragment is HomeOrderFragment) {
-            fragment.setMode(mViewModel.betSlotFlow.value.toBetMode())
-        }
+        fragment.arguments = arguments
         childFragmentManager.beginTransaction().apply {
             for(i in BottomNavType.entries.indices) {
                 childFragmentManager.findFragmentByTag("$TAG$i")?.let {
@@ -181,6 +194,9 @@ class MainFragment : BaseFragment<MainFragmentViewModel, FragmentMainBinding>() 
             }
             if (!fragment.isAdded) {
                 add(R.id.fragment_container,fragment,"$TAG$index")
+                fragment.launch(Lifecycle.State.RESUMED, fragment.lifecycleScope){
+                    fragment.onHiddenChanged(false)
+                }
             } else {
                 show(fragment)
             }

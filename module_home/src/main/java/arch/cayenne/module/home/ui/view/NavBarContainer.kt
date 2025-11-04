@@ -18,6 +18,7 @@ class NavBarContainer @JvmOverloads constructor(
     var selectedIndex: Int = -1
         get() = field
         set(value) {
+            //check(value in 0 until childCount){ "Invalid index:$value,childCount:$childCount"}
             forEachIndexed { i, v ->
                 v.isSelected = i == value
             }

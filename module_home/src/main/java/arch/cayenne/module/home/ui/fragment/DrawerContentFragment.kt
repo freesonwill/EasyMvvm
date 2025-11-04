@@ -13,6 +13,7 @@ import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
+import arch.cayenne.lib.common.utils.biz.CommonBiz
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
@@ -222,7 +223,10 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
                     id++, arch.cayenne.lib.common.R.drawable.ic_drawer_customer_service,
                     arch.cayenne.lib.common.R.string.drawer_customer_service
                 ) {
-                    showToast(arch.cayenne.lib.common.R.string.drawer_customer_service.getString())
+                    //showToast(arch.cayenne.lib.common.R.string.drawer_customer_service.getString())
+                    //navigateUp()报错
+                    requireActivity().onBackPressedDispatcher.onBackPressed()
+                    CommonBiz.jump2CustomerService(this)
                 },
             )
         )
