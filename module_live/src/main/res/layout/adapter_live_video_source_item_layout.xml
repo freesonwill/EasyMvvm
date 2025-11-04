@@ -6,21 +6,21 @@
 
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/iv_thumb"
-        android:layout_width="@dimen/dp_101"
-        android:layout_height="@dimen/dp_60"
+        android:layout_width="@dimen/dp_103"
+        android:layout_height="match_parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:shapeAppearanceOverlay="@style/VideoThumbRoundedCorner"/>
+        app:shapeAppearanceOverlay="@style/VideoThumbRoundedCorner" />
 
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/playing_bkg"
-        android:layout_width="@dimen/dp_101"
-        android:layout_height="@dimen/dp_60"
+        android:layout_width="@dimen/dp_103"
+        android:layout_height="match_parent"
         android:background="@drawable/video_source_playing_bkg"
+        android:clipChildren="true"
         android:gravity="center"
         android:visibility="gone"
-        android:clipChildren="true"
         app:layout_constraintStart_toStartOf="@id/iv_thumb"
         app:layout_constraintTop_toTopOf="@id/iv_thumb">
 
@@ -47,7 +47,8 @@
         android:textColor="@color/video_source_item_title_color"
         android:textSize="@dimen/sp_14"
         app:layout_constraintBottom_toTopOf="@+id/tv_subtitle"
-        app:layout_constraintStart_toEndOf="@id/iv_thumb" />
+        app:layout_constraintStart_toEndOf="@id/iv_thumb"
+        app:skinnableFontWeight="500" />
 
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/tv_subtitle"
@@ -61,7 +62,8 @@
         android:textColor="@color/video_source_item_subtitle_color"
         android:textSize="@dimen/sp_12"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/iv_thumb" />
+        app:layout_constraintStart_toEndOf="@+id/iv_thumb"
+        app:skinnableFontWeight="400" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

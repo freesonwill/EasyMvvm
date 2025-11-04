@@ -6,14 +6,17 @@ import android.animation.ValueAnimator
 import android.content.Context
 import android.content.pm.ActivityInfo
 import android.database.ContentObserver
+import android.graphics.Point
 import android.media.AudioManager
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.view.Display
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.view.animation.DecelerateInterpolator
-import android.view.animation.LinearInterpolator
 import android.widget.LinearLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintLayout.GONE
@@ -26,7 +29,6 @@ import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.DensityInfo
-import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getDimensionPixelSize
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
@@ -53,15 +55,14 @@ import com.xxx.qyplayer.transformToInt
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import me.jessyan.autosize.AutoSizeConfig
-import me.jessyan.autosize.internal.CancelAdapt
 import kotlin.reflect.KClass
+
 
 /**
  * 视频横屏播放页
  */
 class LiveVideoLandscapeFragment :
-    BaseFragment<LiveVideoPlayerViewModel, FragmentLiveVideoLandscapeBinding>(), CancelAdapt {
+    BaseFragment<LiveVideoPlayerViewModel, FragmentLiveVideoLandscapeBinding>() {
 
     override val vbClass: KClass<FragmentLiveVideoLandscapeBinding> =
         FragmentLiveVideoLandscapeBinding::class
@@ -85,6 +86,23 @@ class LiveVideoLandscapeFragment :
 
     private lateinit var audioManager: AudioManager
     private var volumeObserver: VolumeObserver? = null
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        val metrics = resources.displayMetrics
+        //density和scaledDensity被篡改，尝试恢复
+        if (metrics.density != DensityInfo.density && DensityInfo.density > 0) {
+            metrics.density = DensityInfo.density
+        }
+        if (metrics.scaledDensity != DensityInfo.scaledDensity && DensityInfo.scaledDensity > 0) {
+            metrics.scaledDensity = DensityInfo.scaledDensity
+        }
+
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -116,8 +134,14 @@ class LiveVideoLandscapeFragment :
 
     //调整按钮的margin值， 保证其位于视频播放区域内
     private fun initMargins() {
-        var screenWidth = resources.displayMetrics.widthPixels
-        var screenHeight = resources.displayMetrics.heightPixels
+        val realSize = Point()
+        val wm = requireContext().getSystemService(Context.WINDOW_SERVICE) as WindowManager
+
+        val display: Display = wm.defaultDisplay
+        display.getRealSize(realSize)
+
+        var screenWidth = realSize.x
+        var screenHeight = realSize.y
 
 
         //调整成横屏的宽高
@@ -126,9 +150,6 @@ class LiveVideoLandscapeFragment :
             screenWidth = screenHeight
             screenHeight = a
         }
-
-        screenWidth += ViewUtils.getStatusBarHeight(requireContext())
-        
 
         val videoAreaWidth = screenHeight / 1080L * 1920L
         val leftSpacing = (screenWidth - videoAreaWidth) / 2
@@ -217,7 +238,11 @@ class LiveVideoLandscapeFragment :
                 mBinding.root.startSafeAnimateSet(
                     {
                         playTogether(
-                            mBinding.videoViewContainer.startSafeObjectAnimator("alpha", mBinding.videoViewContainer.alpha, 1f)
+                            mBinding.videoViewContainer.startSafeObjectAnimator(
+                                "alpha",
+                                mBinding.videoViewContainer.alpha,
+                                1f
+                            )
                         )
                     },
                     duration = 200,
@@ -355,7 +380,11 @@ class LiveVideoLandscapeFragment :
                             mBinding.root.startSafeAnimateSet(
                                 {
                                     playTogether(
-                                        mBinding.videoViewContainer.startSafeObjectAnimator("alpha", mBinding.videoViewContainer.alpha, 0f)
+                                        mBinding.videoViewContainer.startSafeObjectAnimator(
+                                            "alpha",
+                                            mBinding.videoViewContainer.alpha,
+                                            0f
+                                        )
                                     )
                                 },
                                 duration = 200,
@@ -396,7 +425,7 @@ class LiveVideoLandscapeFragment :
 
             mutedData().observe(viewLifecycleOwner) {
                 mBinding.ivSoundToggle.setImageResource(
-                    if (it) R.drawable.shape_muted else R.drawable.shape_immuted
+                    if (it) R.drawable.ic_muted else R.drawable.ic_immuted
                 )
 
                 videoView.setMute(it)
@@ -431,10 +460,12 @@ class LiveVideoLandscapeFragment :
      */
     private fun showButtonsAnimated() {
         val operateAreaHeight =
-            resources.getDimensionPixelSize(R.dimen.video_landscape_operate_area_height_top).toFloat()
+            resources.getDimensionPixelSize(R.dimen.video_landscape_operate_area_height_top)
+                .toFloat()
 
         val operateAreaHeightBottom =
-            resources.getDimensionPixelSize(R.dimen.video_landscape_operate_area_height_bottom).toFloat()
+            resources.getDimensionPixelSize(R.dimen.video_landscape_operate_area_height_bottom)
+                .toFloat()
 
         mBinding.root.startSafeAnimateSet({
             playTogether(
@@ -478,10 +509,12 @@ class LiveVideoLandscapeFragment :
      */
     private fun hideButtonsAnimated() {
         val operateAreaHeight =
-            resources.getDimensionPixelSize(R.dimen.video_landscape_operate_area_height_top).toFloat()
+            resources.getDimensionPixelSize(R.dimen.video_landscape_operate_area_height_top)
+                .toFloat()
 
         val operateAreaHeightBottom =
-            resources.getDimensionPixelSize(R.dimen.video_landscape_operate_area_height_bottom).toFloat()
+            resources.getDimensionPixelSize(R.dimen.video_landscape_operate_area_height_bottom)
+                .toFloat()
 
         mBinding.root.startSafeAnimateSet({
             playTogether(
@@ -639,9 +672,10 @@ class LiveVideoLandscapeFragment :
 //        "onResume".logd(TAG)
         super.onResume()
         activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-        //使用横屏时到宽高
-        AutoSizeConfig.getInstance().setDesignWidthInDp(LANDSCAPE_WIDTH)
-        AutoSizeConfig.getInstance().setDesignHeightInDp(LANDSCAPE_HEIGHT)
+        //使用横屏时的宽高
+//        AutoSizeConfig.getInstance().setDesignWidthInDp(LANDSCAPE_WIDTH)
+//        AutoSizeConfig.getInstance().setDesignHeightInDp(LANDSCAPE_HEIGHT)
+//        AutoSizeConfig.getInstance().isBaseOnWidth = false
         mBinding.root.fitsSystemWindows = false
         StatusBarConfig.statusBarType = StatusBarMode.FULLSCREEN
         setStatusBar(StatusBarConfig, mBinding.root)
@@ -653,8 +687,9 @@ class LiveVideoLandscapeFragment :
         super.onPause()
         activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
         //恢复竖屏，宽高也要回到竖屏时到宽高
-        AutoSizeConfig.getInstance().setDesignWidthInDp(PORTRAIT_WIDTH)
-        AutoSizeConfig.getInstance().setDesignHeightInDp(PORTRAIT_HEIGHT)
+//        AutoSizeConfig.getInstance().isBaseOnWidth = true
+//        AutoSizeConfig.getInstance().setDesignWidthInDp(PORTRAIT_WIDTH)
+//        AutoSizeConfig.getInstance().setDesignHeightInDp(PORTRAIT_HEIGHT)
         if (videoView.parent == mBinding.videoViewContainer) {
             videoView.onPause()
         }
@@ -984,13 +1019,6 @@ class LiveVideoLandscapeFragment :
     }
 
     companion object {
-
-        const val LANDSCAPE_WIDTH = 812
-        const val LANDSCAPE_HEIGHT = 375
-
-        const val PORTRAIT_WIDTH = 375
-        const val PORTRAIT_HEIGHT = 812
-
         const val VIDEO_MARGIN_HORIZONTAL = 32
     }
 

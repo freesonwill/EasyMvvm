@@ -1,9 +1,14 @@
 package com.walisport.module.live.ui
 
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
+import arch.cayenne.lib.common.utils.DensityInfo
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import com.walisport.module.live.data.model.VideoResolutionBean
@@ -26,6 +31,24 @@ class LiveVideoResolutionFragment :
     override val vmClass: KClass<LiveVideoSourceViewModel> = LiveVideoSourceViewModel::class
 
     private val videoPlayerViewModel: LiveVideoPlayerViewModel by sharedViewModel<LiveVideoPlayerViewModel, LiveVideoLandscapeFragment>()
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+
+        val metrics = resources.displayMetrics
+        //density和scaledDensity被篡改，尝试恢复
+        if (metrics.density != DensityInfo.density && DensityInfo.density > 0) {
+            metrics.density = DensityInfo.density
+        }
+        if (metrics.scaledDensity != DensityInfo.scaledDensity && DensityInfo.scaledDensity > 0) {
+            metrics.scaledDensity = DensityInfo.scaledDensity
+        }
+
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
 
 
     override fun initView(savedInstanceState: Bundle?) {
