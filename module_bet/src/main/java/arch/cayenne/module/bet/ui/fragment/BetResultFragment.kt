@@ -33,10 +33,13 @@ import arch.cayenne.module.bet.viewmodel.BetResultViewModel
 import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
 
+/**
+ * 投注结果弹窗页
+ */
+
 class BetResultFragment : BasePreLoadBottomSheetFragment<BetResultViewModel, FragmentBetResultBinding>(), BetResultToastView.Block {
 
     companion object {
-
         private const val TAG = "BetResultFragment"
 
         fun create(activity: FragmentActivity) {
@@ -98,7 +101,7 @@ class BetResultFragment : BasePreLoadBottomSheetFragment<BetResultViewModel, Fra
     }
 
     override fun initListener() {
-        mBinding.btnContinueBet.setOnClickListener {
+        mBinding.tvBetAgain.setOnClickListener {
             clearAllObserve()
             lifecycleScope.launch {
                 mViewModel.continueBet()?.let {
@@ -157,7 +160,6 @@ class BetResultFragment : BasePreLoadBottomSheetFragment<BetResultViewModel, Fra
     }
 
     private fun setPending(type: BetTypeEnum) {
-        mBinding.tvHint.text = getString(R.string.title_result_hint)
         mBinding.ivTitle.setImageResource(R.mipmap.icon_bet_result_pending)
         mBinding.tvTitle.text = if (type == BetTypeEnum.RESERVE) {
             getString(R.string.title_result_pending_reserve)
@@ -169,20 +171,19 @@ class BetResultFragment : BasePreLoadBottomSheetFragment<BetResultViewModel, Fra
     }
 
     private fun setComplete(type: BetTypeEnum) {
-        mBinding.tvHint.text = getString(R.string.title_result_hint_complete)
+        mBinding.tvBetAgain.text = getString(R.string.btn_result_continue_bet)
         mBinding.ivTitle.setImageResource(R.mipmap.icon_bet_result_success)
         if (type == BetTypeEnum.RESERVE) {
             mBinding.tvTitle.text = getString(R.string.title_result_success_reserve)
         } else {
-            mBinding.tvTitle.text =
-                getString(arch.cayenne.lib.common.R.string.title_result_success_bet)
+            mBinding.tvTitle.text = getString(R.string.title_result_bet_suc)
         }
         mBinding.btnContinueBet.isEnabled = true
         mBinding.btnContinueBet.alpha = 1.0f
     }
 
     private fun setFail(type: BetTypeEnum) {
-        mBinding.tvHint.text = getString(R.string.title_result_hint_complete)
+        mBinding.tvBetAgain.text = getString(R.string.title_result_bet_again)
         mBinding.ivTitle.setImageResource(arch.cayenne.lib.common.R.mipmap.icon_bet_result_fail)
         if (type == BetTypeEnum.RESERVE) {
             mBinding.tvTitle.text = getString(R.string.title_result_fail_reserve)
@@ -215,14 +216,12 @@ class BetResultFragment : BasePreLoadBottomSheetFragment<BetResultViewModel, Fra
     private fun calculateLayoutHeight(size: Int) {
         val screenHeight = getScreenHeight() ?: return
         val maxFragmentHeight = (screenHeight * 0.75).toInt()
-
         val topHeight = mBinding.llTop.height
-        val hintHeight = mBinding.tvHint.height + (mBinding.tvHint.layoutParams as ConstraintLayout.LayoutParams).topMargin
         val comboOddsHeight = (if (size == 0) 0 else getComboOddsItemHeight() * size) + (if (size == 0) 0 else (mBinding.rvComboOdds.layoutParams as ConstraintLayout.LayoutParams).bottomMargin)
         val betMoneyHeight = mBinding.clComboBetMoney.height + (mBinding.clComboBetMoney.layoutParams as ConstraintLayout.LayoutParams).bottomMargin
         val buttonHeight = mBinding.btnContinueBet.height + (mBinding.btnContinueBet.layoutParams as ConstraintLayout.LayoutParams).bottomMargin
         val selectionHeight = getSelectionItemHeight() * size + (mBinding.rvBet.layoutParams as ConstraintLayout.LayoutParams).topMargin
-        val totalHeight = topHeight + hintHeight + comboOddsHeight + betMoneyHeight + buttonHeight + selectionHeight
+        val totalHeight = topHeight + comboOddsHeight + betMoneyHeight + buttonHeight + selectionHeight
         adjustLayoutHeight(totalHeight > maxFragmentHeight)
     }
 
@@ -239,7 +238,6 @@ class BetResultFragment : BasePreLoadBottomSheetFragment<BetResultViewModel, Fra
     }
 
     private fun getScreenHeight(): Int? {
-        // 检查 context 是否不为空
         return context?.resources?.displayMetrics?.heightPixels
     }
 
