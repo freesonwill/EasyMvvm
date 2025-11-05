@@ -6,7 +6,7 @@ import android.view.animation.LinearInterpolator
 import androidx.core.animation.addListener
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
-import androidx.core.view.postDelayed
+import arch.cayenne.lib.base.utils.ext.ViewExt.postDelayedSafely
 import arch.cayenne.lib.common.utils.ext.SportDisplayOddsExt.getDisplayOdds
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
 import arch.cayenne.lib.database.entity.BetSelectionBean
@@ -37,10 +37,11 @@ internal object ViewHelper {
             OddsStatusEnum.DOWN -> ContextCompat.getColor(binding.root.context, arch.cayenne.module.bet.R.color.red)
             else -> null
         }
+        //颜色根据oddsStatus变化
         val originColor = SkinnableResourceManager.getColor(binding.root.context, arch.cayenne.lib.common.R.color.main_text)
         if (oddsColor != null) {
             binding.tvOdds.setTextColor(oddsColor)
-            binding.tvOdds.postDelayed(2_000L) {
+            binding.tvOdds.postDelayedSafely(2_000) {
                 binding.tvOdds.setTextColor(originColor)
             }
         } else {
