@@ -3,20 +3,20 @@
     <!--鎖盤狀態-->
     <item android:state_enabled="false">
         <shape android:shape="rectangle">
-            <corners android:radius="4dp" />
+            <corners android:radius="@dimen/dp_6" />
             <solid android:color="@color/color_0FFFFFFF" />
         </shape>
     </item>
 
     <item android:state_selected="true">
         <shape android:shape="rectangle">
-            <corners android:radius="4dp" />
+            <corners android:radius="@dimen/dp_6" />
             <solid android:color="@color/color_00A7C0" />
         </shape>
     </item>
     <item>
         <shape android:shape="rectangle">
-            <corners android:radius="4dp" />
+            <corners android:radius="@dimen/dp_6" />
             <solid android:color="@color/color_0FFFFFFF" />
         </shape>
     </item>
