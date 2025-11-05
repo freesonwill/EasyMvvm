@@ -3,16 +3,35 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/ll_item_common_func"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:clipChildren="false">
 
     <arch.cayenne.lib.skin.widget.SkinnableImageView
         android:id="@+id/iv_icon"
         android:layout_width="@dimen/dp_26"
         android:layout_height="@dimen/dp_26"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        android:scaleType="fitXY"
         app:layout_constraintEnd_toEndOf="parent"
-        android:scaleType="fitXY" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
+        android:id="@+id/tv_badge"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_17"
+        android:layout_marginStart="-6dp"
+        android:layout_marginTop="-11dp"
+        android:background="@drawable/bg_drawer_badge"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:maxLines="1"
+        android:paddingStart="@dimen/dp_4"
+        android:paddingEnd="@dimen/dp_4"
+        android:textColor="@color/white"
+        android:textSize="@dimen/sp_10"
+        android:visibility="gone"
+        app:layout_constraintLeft_toRightOf="@id/iv_icon"
+        app:layout_constraintTop_toTopOf="@id/iv_icon" />
 
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/tv_title"
@@ -25,15 +44,7 @@
         android:maxLines="1"
         android:textColor="@color/drawer_common_function_text"
         android:textSize="@dimen/sp_13"
-        app:layout_constraintTop_toBottomOf="@id/iv_icon"
         app:layout_constraintStart_toStartOf="parent"
-        />
-    <arch.cayenne.lib.common.ui.view.RectangleTextView
-        android:id="@+id/rectangle_text"
-        android:layout_width="@dimen/dp_48"
-        android:layout_height="@dimen/dp_17"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:visibility="invisible"
-        />
+        app:layout_constraintTop_toBottomOf="@id/iv_icon" />
+
 </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
