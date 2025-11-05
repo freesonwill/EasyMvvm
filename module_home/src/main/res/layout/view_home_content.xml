@@ -14,50 +14,32 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        app:constraint_referenced_ids="ll_date_filter_container, tv_tab_all, tl_date_list, ll_other_date, tv_date, tv_week_day"
+        app:constraint_referenced_ids="ll_date_filter_container, tl_date_list, tv_date, tv_week_day"
         tools:visibility="visible" />
 
     <arch.cayenne.lib.skin.widget.SkinnableView
         android:id="@+id/ll_date_filter_container"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_47"
+        android:layout_marginHorizontal="@dimen/dp_10"
         android:background="@drawable/bg_date_tab"
         android:clipChildren="false"
         android:clipToPadding="false"
-        android:paddingHorizontal="@dimen/dp_10"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-         />
-
-    <!-- 固定「全部」tab -->
-    <TextView
-        android:id="@+id/tv_tab_all"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="0dp"
-        android:layout_marginEnd="0dp"
-        android:background="@drawable/selector_date_tab_bg"
-        android:gravity="center"
-        android:text="@string/tab_text_all"
-        android:textColor="@color/selector_date_text"
-        android:textSize="13sp"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@id/ll_date_filter_container"
-        app:layout_constraintStart_toStartOf="@id/ll_date_filter_container"
-        app:layout_constraintTop_toTopOf="@id/ll_date_filter_container" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <arch.cayenne.lib.skin.widget.SkinnableTabLayout
         android:id="@+id/tl_date_list"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginHorizontal="@dimen/dp_10"
         android:background="@drawable/bg_date_tab"
         android:clipToPadding="true"
         android:overScrollMode="never"
         android:paddingVertical="@dimen/dp_5"
         app:layout_constraintBottom_toBottomOf="@id/ll_date_filter_container"
-        app:layout_constraintEnd_toStartOf="@id/ll_other_date"
-        app:layout_constraintStart_toEndOf="@+id/tv_tab_all"
+        app:layout_constraintStart_toStartOf="@id/ll_date_filter_container"
         app:layout_constraintTop_toTopOf="@id/ll_date_filter_container"
         app:tabGravity="center"
         app:tabIndicator="@null"
@@ -70,49 +52,6 @@
         app:tabSelectedTextColor="@color/date_text_select"
         app:tabTextColor="@color/date_text_unselect" />
 
-    <!--其他日期view-->
-    <arch.cayenne.lib.skin.widget.SkinnableView
-        android:id="@+id/ll_other_date"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="0dp"
-        android:layout_marginEnd="0dp"
-        android:layout_marginBottom="0dp"
-        android:background="@drawable/selector_other_date_tab_bg"
-        android:gravity="center"
-        android:visibility="gone"
-        android:orientation="vertical"
-        app:layout_constraintEnd_toEndOf="@id/ll_date_filter_container"
-        app:layout_constraintTop_toBottomOf="@id/ll_date_filter_container"
-        app:layout_constraintTop_toTopOf="@id/ll_date_filter_container" />
-
-    <arch.cayenne.lib.skin.widget.SkinnableImageView
-        android:id="@+id/tv_date"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:visibility="gone"
-        android:duplicateParentState="false"
-        android:gravity="center"
-        android:src="@drawable/selector_other_date_icon"
-        app:layout_constraintEnd_toEndOf="@id/ll_other_date"
-        app:layout_constraintStart_toStartOf="@id/ll_other_date"
-        app:layout_constraintTop_toTopOf="@id/ll_other_date" />
-
-    <arch.cayenne.lib.skin.widget.SkinnableTextView
-        android:id="@+id/tv_week_day"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:visibility="gone"
-        android:layout_marginTop="@dimen/dp_1"
-        android:duplicateParentState="false"
-        android:gravity="center_horizontal"
-        android:text="@string/tab_text_other_day"
-        android:textColor="@color/selector_other_date_text"
-        android:textSize="13sp"
-        app:layout_constraintEnd_toEndOf="@id/ll_other_date"
-        app:layout_constraintStart_toStartOf="@id/ll_other_date"
-        app:layout_constraintTop_toBottomOf="@id/tv_date"
-        app:skinnableFontWeight="400" />
 
     <arch.cayenne.lib.skin.widget.SkinnableView
         android:id="@+id/v_btn_mask"
@@ -140,8 +79,8 @@
             android:overScrollMode="never"
             android:paddingStart="@dimen/dp_10"
             android:paddingTop="@dimen/dp_4"
-            android:paddingBottom="2dp"
             android:paddingEnd="35dp"
+            android:paddingBottom="2dp"
             app:tabGravity="start"
             app:tabIndicator="@null"
             app:tabIndicatorColor="@null"
@@ -162,13 +101,4 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tl_container" />
 
-    <FrameLayout
-        android:id="@+id/ll_calendar"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/ll_date_filter_container" />
 </arch.cayenne.module.home.ui.view.ClickSearchConstraintLayout>

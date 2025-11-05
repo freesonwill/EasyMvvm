@@ -34,7 +34,6 @@ import arch.cayenne.lib.common.utils.ext.VIPDataExt
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.clickNoRepeatSingle
-import arch.cayenne.lib.common.utils.ext.getFormatDate
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.ext.startFadeAnim
 import arch.cayenne.lib.common.utils.helper.BounceEdgeEffectHelper
@@ -62,7 +61,6 @@ import arch.cayenne.module.home.utils.scrollToPositionWithoutAnim
 import com.bumptech.glide.Glide
 import com.google.android.material.tabs.TabLayout
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.Locale
 import kotlin.reflect.KClass
@@ -485,35 +483,6 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>(),
 //                isSelected = true
 //            }
 
-            // 其他日期 Tab 設定
-            llOtherDate.setOnClickListener {
-                if (customPopup != null) {
-                    return@setOnClickListener
-                }
-                // 轉換日期格式為 YYYYMMDD 給 DatePicker 使用
-                fun List<String>.toYYYYMMDD(): String {
-                    val year = this[0]
-                    val month = this[1].padStart(2, '0')
-                    val day = this[2].padStart(2, '0')
-                    return "$year$month$day"
-                }
-
-                //呼叫日曆popup元件
-                val targetTab = tlDateList.getTabAt(tlDateList.selectedTabPosition)
-                val tabSelectedDate = if (targetTab != null) {
-                    targetTab.run {
-                        getFuture31Days().find { it.first == tag }?.third?.getFormatDate()
-                            ?.split("/")?.toYYYYMMDD()
-                            ?: "0"
-                    }
-                } else {
-                    "0"
-                }
-                launch {
-                    delay(20)
-                    showHomeCalendar(tabSelectedDate)
-                }
-            }
         }
 
         mBinding.llBtnTournament.apply { addScaleOnTouchAnimation() }.clickNoRepeat {
@@ -575,7 +544,6 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>(),
         mBinding.layoutContainer.tlDateList.addOnTabSelectedListener2(object :
             TabLayoutExt.OnTabSelectedListener2 {
             override fun onTabSelected(tab:TabLayout.Tab, isTabClick: Boolean) {
-                mBinding.layoutContainer.tvTabAll.isSelected = false
 
                 playFadeAnimTriggerByDateTab {
                     lifecycleScope.launch {
@@ -784,50 +752,6 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>(),
     }
 
 
-    private fun showHomeCalendar(tabSelectedDate: String) {
-        with(mBinding.layoutContainer) {
-            customPopup = HomeCalendarFragment.Builder().apply {
-                mViewModel.recently7DayMatchScheduleCount.value?.peekContent()?.let { setRange(it) }
-                setOnDateSelectedListener { selectedDate ->
-                    setSelectedDateTab(getFuture31Days().find { it.first == selectedDate })
-                }
-                setOnResetDateListener {
-                    resetDateTabs()
-                }
-                setOnBeforeDismissAnimListener {
-                    llOtherDate.isSelected = false
-                    tvDate.isSelected = false
-                    tvWeekDay.isSelected = false
-                    // 重置日期tab選擇狀態
-                    tlDateList.getTabAt(tlDateList.selectedTabPosition)?.let {
-                        if(!it.view.isSelected) {
-                            it.view.isSelected = true
-                        }
-                    } ?: run { tvTabAll.isSelected = true }
-                    enableHorizontalScroll(true)
-                }
-                setOnBeforeExpandAnimListener {
-                    llOtherDate.isSelected = true
-                    tvDate.isSelected = true
-                    tvWeekDay.isSelected = true
-                }
-                setOnAfterExpandAnimListener {
-                    if (!llOtherDate.isSelected) {
-                        llOtherDate.isSelected = true
-                        tvDate.isSelected = true
-                        tvWeekDay.isSelected = true
-                    }
-                    enableHorizontalScroll(false)
-                }
-                setOnAfterDismissAnimListener {
-                    customPopup = null
-                    llCalendar.visibility = View.GONE
-                }
-            }.build()
-            llCalendar.visibility = View.VISIBLE
-            customPopup?.show(childFragmentManager, llCalendar.id, tabSelectedDate)
-        }
-    }
     //選取日期後按確定時連動至早盤日期tab,選取對應的日期
     private fun setSelectedDateTab(dateTriple: Triple<String, String, Long>?) {
         with(mBinding.layoutContainer) {
@@ -975,7 +899,7 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>(),
             with(layoutContainer) {
                 viewContainerRoot.setOnChildClickedInterceptedListener { view ->
                     when(view) {
-                        tlContainer, llDateFilterContainer, llOtherDate -> {
+                        tlContainer, llDateFilterContainer -> {
                             lifecycleScope.launch {
                                 mViewModel.setCalendarState(HomeCalendarFragment.States.CALENDAR_CLOSE_NOTHING)
                             }
