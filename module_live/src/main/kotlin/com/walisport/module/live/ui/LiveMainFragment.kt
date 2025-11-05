@@ -43,8 +43,10 @@ import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.removeAllTips
 import arch.cayenne.lib.common.utils.ext.setDrawerInterpolator
 import arch.cayenne.lib.common.utils.ext.setupViewPagerScroll
+import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.ext.startFadeAnim
 import arch.cayenne.lib.common.utils.ext.touchBackPressed
+import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.lib.skin.widget.SkinnableTextView
 import arch.cayenne.module.bet.ui.fragment.BetSheetFragment
@@ -57,6 +59,7 @@ import com.walisport.module.live.data.BetOnMenuStatus
 import com.walisport.module.live.databinding.FragmentLiveMainBinding
 import com.walisport.module.live.databinding.TitleBarLiveBinding
 import com.walisport.module.live.ui.viewmodel.LiveMainViewModel
+import com.walisport.module.live.ui.viewmodel.LiveMatchMediaViewModel
 import com.walisport.module.live.ui.widget.LiveMainGestureListener
 import com.walisport.module.live.ui.widget.LiveMainLayoutInterceptTouch.LiveMainSlideDirection
 import kotlinx.coroutines.delay
@@ -122,7 +125,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         mBinding.LayoutInterceptTouch.setLiveMainGestureListener(object : LiveMainGestureListener {
             //跟手滑动
             override fun onAdjustLayoutScroll(deltaY: Float, direction: LiveMainSlideDirection) {
-                  LogUtils.e("animating------->${direction}")
+                LogUtils.e("animating------->${direction}")
                 mDirection = direction
                 //往下滑动,子类的rv,sc是否滑到了第一条或者顶部
                 if (direction == LiveMainSlideDirection.DOWN) {
@@ -161,11 +164,12 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                         mBinding.liveMainScale.quickAdjustLayoutUp(deltaY)
                         mDirection = direction
                     }
+
                     LiveMainSlideDirection.QUICK_DOWN -> {
                         mQuickScrollDow = true
                         var bool: Boolean? = mViewModel.sonVerticalScrollIsTop.value
                         bool?.let {
-                            if (it){
+                            if (it) {
                                 LogUtils.e("quickScrollY------>mQuickScrollDow}")
                                 mBinding.liveMainScale.quickAdjustLayoutDow()
                                 mQuickScrollDow = false
@@ -174,7 +178,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
 
                     }
 
-                    LiveMainSlideDirection.UP ->{}
+                    LiveMainSlideDirection.UP -> {}
                     LiveMainSlideDirection.DOWN -> {
                     }
                 }
@@ -316,10 +320,13 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
 
         mBinding.llSwitchNarrator.addScaleOnTouchAnimation()
         mBinding.llSwitchNarrator.clickNoRepeat {
-//            val mediaViewModel: LiveMatchMediaViewModel by sharedViewModel<LiveMatchMediaViewModel, LiveMatchMediaFragment>()
-//            mediaViewModel.chooseSourceView()
-
-            showMediaSourceFragment()
+            val mediaViewModel: LiveMatchMediaViewModel by sharedViewModel<LiveMatchMediaViewModel, LiveMatchMediaFragment>()
+            if (!mediaViewModel.animationLiveUrl.value.isNullOrEmpty() || !mediaViewModel.liveVideoBean.value?.source.isNullOrEmpty()) {
+                //有动画源或者有视频源
+                showMediaSourceFragment()
+            } else {
+                showToast(R.string.media_source_empty.getString())
+            }
         }
 
         mBinding.tabLayout.addOnTabSelectedListener2(object : TabLayoutExt.OnTabSelectedListener2 {
@@ -377,7 +384,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
     override suspend fun createObserver() {
         //父类是否可往上滑动
         mViewModel.sonVerticalScrollIsTop.observe(viewLifecycleOwner) {
-            if (mQuickScrollDow&&mDirection==LiveMainSlideDirection.QUICK_DOWN){
+            if (mQuickScrollDow && mDirection == LiveMainSlideDirection.QUICK_DOWN) {
                 mQuickScrollDow = false
                 mBinding.liveMainScale.quickAdjustLayoutDow()
             }
@@ -463,7 +470,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
             mBinding.liveMainScale.initHeight(it)
         }
 
-        mViewModel.hideMediaSourceFragment.observe(viewLifecycleOwner){
+        mViewModel.hideMediaSourceFragment.observe(viewLifecycleOwner) {
             hideMediaSourceFragment()
         }
     }
@@ -628,7 +635,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         return fragment
     }
 
-    private fun showMediaSourceFragment(){
+    private fun showMediaSourceFragment() {
         childFragmentManager.findFragmentByTag(NewMediaSourceFragment.TAG) as? NewMediaSourceFragment
             ?: NewMediaSourceFragment().also {
                 it.arguments = Bundle().apply {
@@ -643,8 +650,9 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
 
     }
 
-    private fun hideMediaSourceFragment(){
-        val fragment = childFragmentManager.findFragmentByTag(NewMediaSourceFragment.TAG) as? NewMediaSourceFragment
+    private fun hideMediaSourceFragment() {
+        val fragment =
+            childFragmentManager.findFragmentByTag(NewMediaSourceFragment.TAG) as? NewMediaSourceFragment
         fragment?.let {
             childFragmentManager.beginTransaction()
                 .remove(it)

@@ -10,8 +10,6 @@ import androidx.core.animation.doOnEnd
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
-import arch.cayenne.lib.base.ui.animation.AnimationController
-import arch.cayenne.lib.base.ui.animation.AnimationController.AnimType
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getDimensionPixelSize
@@ -169,7 +167,7 @@ class NewMediaSourceFragment :
                     },
                 )
             },
-            duration = AnimationController[AnimType.popupEnter]!!.duration,
+            duration = ANIMATION_DURATION,
             interpolator = LinearInterpolator(),
             start = true
         )
@@ -237,7 +235,7 @@ class NewMediaSourceFragment :
                     remove()
                 }
             },
-            duration = AnimationController[AnimType.popupEnter]!!.duration,
+            duration = ANIMATION_DURATION,
             interpolator = LinearInterpolator(),
             start = true
         )
@@ -249,6 +247,7 @@ class NewMediaSourceFragment :
 
 
     companion object {
+        const val ANIMATION_DURATION = 120L
         const val TAG = "LiveMediaSourceFragmentNew"
     }
 
