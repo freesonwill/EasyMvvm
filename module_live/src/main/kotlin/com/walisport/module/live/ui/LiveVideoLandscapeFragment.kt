@@ -950,7 +950,7 @@ class LiveVideoLandscapeFragment :
         when (state) {
             PlayerState.PLAYING -> {
                 loadingAnim?.cancel()
-//                mBinding.ctLoading.visibility = GONE
+                mBinding.ctLoading.visibility = GONE
                 mBinding.ctError.visibility = GONE
             }
 
@@ -974,25 +974,25 @@ class LiveVideoLandscapeFragment :
 //                    this
 //                }
 
-//                mBinding.ctLoading.visibility = VISIBLE
+                mBinding.ctLoading.visibility = VISIBLE
                 mBinding.ctError.visibility = GONE
 
             }
 
             PlayerState.ERROR -> {
-//                mBinding.ctLoading.visibility = GONE
+                mBinding.ctLoading.visibility = GONE
                 mBinding.ctError.visibility = VISIBLE
             }
 
             PlayerState.STOPPED -> {
                 loadingAnim?.cancel()
-//                mBinding.ctLoading.visibility = GONE
+                mBinding.ctLoading.visibility = GONE
                 mBinding.ctError.visibility = GONE
             }
 
             else -> {
                 loadingAnim?.cancel()
-//                mBinding.ctLoading.visibility = GONE
+                mBinding.ctLoading.visibility = GONE
                 mBinding.ctError.visibility = GONE
             }
         }
