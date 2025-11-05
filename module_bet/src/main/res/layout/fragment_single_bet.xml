@@ -381,16 +381,17 @@
             android:layout_marginBottom="10dp"
             app:layout_constraintBottom_toBottomOf="parent">
 
-            <arch.cayenne.lib.skin.widget.SkinnableImageView
+
+            <include
                 android:id="@+id/btn_delete"
                 android:layout_width="0dp"
-                android:layout_height="48dp"
-                android:foreground="@drawable/bg_click_mask_8dp"
-                android:src="@drawable/icon_delete_combo"
+                android:layout_height="@dimen/dp_48"
+                layout="@layout/item_exit_combo_btn"
                 app:layout_constraintEnd_toStartOf="@id/guideline_vertical"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                />
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline_vertical"
@@ -417,7 +418,7 @@
                     android:gravity="center"
                     android:text="@string/btn_collusion"
                     android:textColor="@color/color_00E0E5"
-                    android:textSize="15sp"
+                    android:textSize="14sp"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
