@@ -23,19 +23,30 @@
                 android:id="@+id/ct_source"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/video_source_portrait_height"
-                android:translationY="@dimen/video_source_portrait_margin_top"
-                android:background="@drawable/bg_video_source_fragment">
+                android:background="@drawable/bg_video_source_fragment"
+                android:translationY="@dimen/video_source_portrait_margin_top">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/iv_tips"
+                    android:layout_width="@dimen/dp_24"
+                    android:layout_height="@dimen/dp_24"
+                    android:layout_marginStart="@dimen/dp_16"
+                    android:layout_marginTop="@dimen/dp_7"
+                    android:src="@drawable/video_landscape_choose_source"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <arch.cayenne.lib.skin.widget.SkinnableTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/dp_16"
-                    android:layout_marginTop="@dimen/dp_10"
+                    android:layout_marginStart="@dimen/dp_4"
+                    android:layout_marginTop="@dimen/dp_9"
                     android:text="@string/choose_source"
                     android:textColor="@color/video_source_fragment_title_color"
-                    android:textSize="@dimen/sp_13"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    android:textSize="@dimen/sp_14"
+                    app:layout_constraintStart_toEndOf="@+id/iv_tips"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:skinnableFontWeight="500" />
 
 
                 <arch.cayenne.lib.skin.widget.SkinnableImageView
