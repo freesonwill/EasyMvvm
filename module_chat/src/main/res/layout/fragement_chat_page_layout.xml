@@ -7,10 +7,20 @@
             type="arch.cayenne.module.chat.ui.viewmodel.ChatPageViewModel" />
     </data>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/live_chat_recycler"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        />
+   <androidx.appcompat.widget.LinearLayoutCompat
+       android:layout_width="match_parent"
+       android:layout_height="match_parent"
+       android:orientation="vertical"
+       >
+
+       <androidx.recyclerview.widget.RecyclerView
+           android:id="@+id/live_chat_recycler"
+           android:layout_width="match_parent"
+           android:layout_height="match_parent"
+           />
+
+
+
+   </androidx.appcompat.widget.LinearLayoutCompat>
 
 </layout>
