@@ -22,6 +22,7 @@ import androidx.viewpager2.widget.ViewPager2
 import androidx.viewpager2.widget.ViewPager2.SCROLL_STATE_IDLE
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
@@ -70,7 +71,8 @@ import kotlin.reflect.KClass
 /**
  * 早盘页面
  */
-class EarlyFragment : BaseFragment<SubHomeViewModel, FragmentEarlyBinding>() {
+class EarlyFragment : BaseFragment<SubHomeViewModel, FragmentEarlyBinding>(),
+    ISubFragmentLifecycle {
     override val vbClass: KClass<FragmentEarlyBinding> = FragmentEarlyBinding::class
     override val vmClass: KClass<SubHomeViewModel> = SubHomeViewModel::class
     private val homeViewModel: HomeViewModel by sharedViewModel<HomeViewModel, NewHomeFragment>()
@@ -268,14 +270,14 @@ class EarlyFragment : BaseFragment<SubHomeViewModel, FragmentEarlyBinding>() {
         }
     }
 
-    fun onFragmentSelected() {
+    override fun onFragmentSelected() {
         mViewModel.getCurrentSportStatistical()
         mViewModel.getCurrentTournament()
         tournamentTabLayoutMediator?.scrollTabToCurrentPositionImmediately()
         mBinding.layoutContainer.tlDateList.scrollToPositionWithoutAnim(mBinding.layoutContainer.tlDateList.selectedTabPosition)
     }
 
-    fun reloadCurrentMatchListPagerFragment() {
+    override fun reloadCurrentMatchListPagerFragment() {
         if (mViewModel.currentPlayTypeId == PlayType.CHAMPION.id) {
             val fragment = childFragmentManager.findFragmentByTag(PlayType.CHAMPION.name)
             (fragment as? TournamentListFragment)?.reloadAllData()
@@ -289,7 +291,7 @@ class EarlyFragment : BaseFragment<SubHomeViewModel, FragmentEarlyBinding>() {
     }
 
     // 設置更多按鈕的顯示狀態
-    fun onFragmentUnSelected() {
+    override fun onFragmentUnSelected() {
         mViewModel.requestCollapseTournamentDropdown()
         mViewModel.setCalendarState(HomeCalendarFragment.States.CALENDAR_CLOSE_NOTHING)
         // 收起排序選單

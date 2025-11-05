@@ -67,7 +67,7 @@ import kotlinx.coroutines.launch
 import java.util.Locale
 import kotlin.reflect.KClass
 
-class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() {
+class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>(), ISubFragmentLifecycle {
     override val vbClass: KClass<FragmentSubHomeBinding> = FragmentSubHomeBinding::class
     override val vmClass: KClass<SubHomeViewModel> = SubHomeViewModel::class
     private val homeViewModel: HomeViewModel by sharedViewModel<HomeViewModel, NewHomeFragment>()
@@ -258,14 +258,14 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
         }
     }
 
-    fun onFragmentSelected() {
+    override fun onFragmentSelected() {
         mViewModel.getCurrentSportStatistical()
         mViewModel.getCurrentTournament()
         tournamentTabLayoutMediator?.scrollTabToCurrentPositionImmediately()
         mBinding.layoutContainer.tlDateList.scrollToPositionWithoutAnim(mBinding.layoutContainer.tlDateList.selectedTabPosition)
     }
 
-    fun reloadCurrentMatchListPagerFragment() {
+    override fun reloadCurrentMatchListPagerFragment() {
         if (mViewModel.currentPlayTypeId == PlayType.CHAMPION.id) {
             val fragment = childFragmentManager.findFragmentByTag(PlayType.CHAMPION.name)
             (fragment as? TournamentListFragment)?.reloadAllData()
@@ -277,7 +277,7 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
     }
 
     // 設置更多按鈕的顯示狀態
-    fun onFragmentUnSelected() {
+    override fun onFragmentUnSelected() {
         mViewModel.requestCollapseTournamentDropdown()
         mViewModel.setCalendarState(HomeCalendarFragment.States.CALENDAR_CLOSE_NOTHING)
         // 收起排序選單
