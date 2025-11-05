@@ -5,6 +5,14 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
+    <arch.cayenne.lib.skin.widget.SkinnableImageView
+        android:id="@+id/iv_bg1"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_153"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="@mipmap/bet_bg" />
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/main"
         android:layout_width="match_parent"
@@ -41,12 +49,14 @@
                 android:layout_marginEnd="8dp"
                 android:fontFamily="@font/sf_pro_display_bold"
                 android:gravity="center"
-                android:textColor="@color/color_FFFFFF"
+                android:textColor="@color/color_C0C0C0"
                 android:textSize="15sp"
                 app:skinnableFontWeight="510"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/iv_close"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="$1100.00"
+                />
 
             <arch.cayenne.lib.skin.widget.SkinnableImageView
                 android:id="@+id/iv_close"
@@ -105,7 +115,9 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintDimensionRatio="1:1"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="¥"
+                    />
 
                 <arch.cayenne.lib.skin.widget.SkinnableEditText
                     android:id="@+id/et_money"
@@ -117,14 +129,16 @@
                     android:focusable="true"
                     android:focusableInTouchMode="true"
                     android:inputType="numberDecimal"
-                    android:textColor="@color/color_FFFFFF"
+                    android:textColor="@color/color_00E0E5"
                     android:textColorHint="@color/color_999999"
                     android:textCursorDrawable="@drawable/shape_edittext_cursor"
                     android:textSize="16sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/tv_money"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="10000"
+                    />
             </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -143,7 +157,9 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.0">
+                    app:layout_constraintVertical_bias="0.0"
+                    tools:visibility="visible"
+                    >
 
                     <arch.cayenne.lib.skin.widget.SkinnableTextView
                         android:id="@+id/tv_reserve_hint"
@@ -161,12 +177,13 @@
                         app:layout_constraintTop_toTopOf="parent"
                         app:skinnableFontWeight="500" />
 
-                    <ImageView
+                    <arch.cayenne.lib.skin.widget.SkinnableImageView
                         android:id="@+id/iv_reserve_hint"
                         android:layout_width="10dp"
                         android:layout_height="10dp"
                         android:layout_marginEnd="1dp"
                         android:src="@drawable/icon_add"
+                        app:tint="@color/white"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toStartOf="@id/tv_reserve_hint"
                         app:layout_constraintHorizontal_chainStyle="packed"
@@ -184,7 +201,9 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:visibility="gone"
+                    >
 
                     <arch.cayenne.lib.skin.widget.SkinnableTextView
                         android:id="@+id/tv_cancel_reserve"
@@ -203,7 +222,8 @@
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:skinnableFontWeight="600" />
+                        app:skinnableFontWeight="600"
+                        tools:text="\@1.82"/>
 
                     <arch.cayenne.lib.skin.widget.SkinnableImageView
                         android:id="@+id/iv_cancel_reserve"
@@ -230,7 +250,8 @@
                 android:backgroundTint="@color/keyboard_2"
                 android:foreground="@drawable/bg_odds_change_mask"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/cl_money">
+                app:layout_constraintTop_toBottomOf="@id/cl_money"
+                >
 
                 <arch.cayenne.lib.skin.widget.SkinnableTextView
                     android:id="@+id/tv_odds_change"
@@ -304,7 +325,8 @@
                     app:layout_constraintBottom_toBottomOf="@id/gl_other"
                     app:layout_constraintEnd_toStartOf="@id/gl_other"
                     app:layout_constraintStart_toEndOf="@id/rv_quick_amount"
-                    app:layout_constraintTop_toTopOf="@id/gl_other" />
+                    app:layout_constraintTop_toTopOf="@id/gl_other"
+                    />
 
                 <GridLayout
                     android:id="@+id/gl_other"
@@ -394,7 +416,7 @@
                     android:layout_marginStart="0.57dp"
                     android:gravity="center"
                     android:text="@string/btn_collusion"
-                    android:textColor="@color/color_FFFFFF"
+                    android:textColor="@color/color_00E0E5"
                     android:textSize="15sp"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -452,7 +474,9 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tv_bet_hint"
-                    app:skinnableFontWeight="500" />
+                    app:skinnableFontWeight="500"
+                    tools:visibility="gone"
+                    />
             </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>

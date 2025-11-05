@@ -5,6 +5,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <arch.cayenne.lib.skin.widget.SkinnableImageView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_153"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="@mipmap/bet_bg" />
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_title_bet"
         android:layout_width="match_parent"
