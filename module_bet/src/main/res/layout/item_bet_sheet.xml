@@ -2,6 +2,7 @@
 <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_height="@dimen/dp_129"
     android:background="@drawable/bg_bet_sheet">
 
@@ -43,6 +44,7 @@
         android:background="@drawable/bg_playing"
         android:gravity="center"
         android:paddingHorizontal="8dp"
+        android:paddingVertical="2dp"
         android:text="@string/title_playing"
         android:textColor="@color/color_FFFFFF"
         android:textSize="13sp"
@@ -60,7 +62,9 @@
         android:textSize="@dimen/sp_14"
         app:layout_constraintStart_toEndOf="@id/tv_status"
         app:layout_constraintTop_toBottomOf="@id/tv_selection_name"
-        app:layout_goneMarginStart="0dp" />
+        app:layout_goneMarginStart="0dp"
+        tools:text="全场让球（0-0）"
+        />
 
     <androidx.constraintlayout.widget.Barrier
         android:id="@+id/bottom_barrier"
@@ -81,7 +85,9 @@
         android:textSize="@dimen/sp_14"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@id/tv_selection_name"
-        app:layout_constraintTop_toBottomOf="@id/bottom_barrier" />
+        app:layout_constraintTop_toBottomOf="@id/bottom_barrier"
+        tools:text="中国 vs 巴西"
+        />
 
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/tv_league_name"
@@ -96,7 +102,9 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/iv_delete"
         app:layout_constraintStart_toStartOf="@id/tv_selection_name"
-        app:layout_constraintTop_toBottomOf="@id/tv_match_name" />
+        app:layout_constraintTop_toBottomOf="@id/tv_match_name"
+        tools:text="世界杯"
+        />
 
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/tv_bet_stop"
@@ -119,6 +127,7 @@
         android:src="@drawable/icon_delete"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
+
 </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
 
 

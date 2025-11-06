@@ -108,7 +108,7 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
         mBinding.ivClose.apply { addScaleOnTouchAnimation() }.setOnClickListener {
             dismiss()
         }
-        mBinding.btnDelete.setOnClickListener {
+        mBinding.btnDelete.root.setOnClickListener {
             CommonDialog.newInstance(
                 title = "",
                 message = getString(R.string.title_dialog_remove),

@@ -4,6 +4,10 @@ import android.view.View
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
+import androidx.lifecycle.findViewTreeLifecycleOwner
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 /**
  * @date: 2025/9/30 14:29
@@ -44,4 +48,28 @@ object ViewExt {
         // 请求一次 inset 应用
         requestApplyInsets()
     }
+
+
+    /**
+     * 更安全的post方式，防止post引起的泄漏
+     * @param action
+     */
+    fun View.postSafely(action:Runnable){
+        findViewTreeLifecycleOwner()!!.lifecycleScope.launch {
+            action.run()
+        }
+    }
+
+    /**
+     * 更安全的post方式，防止post引起的泄漏
+     * @param delayMillis
+     * @param action
+     */
+    fun View.postDelayedSafely(delayMillis:Long,action:Runnable){
+        findViewTreeLifecycleOwner()!!.lifecycleScope.launch {
+            delay(delayMillis)
+            action.run()
+        }
+    }
+
 }
