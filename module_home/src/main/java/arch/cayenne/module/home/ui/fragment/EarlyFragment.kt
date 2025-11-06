@@ -52,9 +52,9 @@ import arch.cayenne.module.home.ui.adapter.SportBannerAdapter
 import arch.cayenne.module.home.ui.adapter.SportsListAdapter
 import arch.cayenne.module.home.ui.view.CustomTabLayoutMediator
 import arch.cayenne.module.home.ui.view.HomeCalendarFragment
+import arch.cayenne.module.home.ui.viewmodel.EarlyDate
 import arch.cayenne.module.home.ui.viewmodel.EarlyViewModel
 import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
-import arch.cayenne.module.home.ui.viewmodel.SubHomeViewModel
 import arch.cayenne.module.home.utils.DateUtils
 import arch.cayenne.module.home.utils.scrollToPositionWithoutAnim
 import com.bumptech.glide.Glide
@@ -442,7 +442,7 @@ class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>(),
     @SuppressLint("DefaultLocale")
     private fun initTournamentLayout() {
         // 取得未來 31 天 (MMDD, 星期, timeStamp)
-        val dateTabs = getFutureSevenDays()
+        val dateTabs = mViewModel.dateList.value
         with(mBinding.layoutContainer) {
             //聯賽
             vpGameList.isSaveEnabled = false
@@ -477,7 +477,7 @@ class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>(),
         }
 
         // 日期 Tab 設定, 固定 "全部"
-        updateDateTabs(mBinding.tlDateList, dateTabs)
+        updateDateTabs(mBinding.tlDateList, dateTabs!!)
         addDateTabListener()
 
         mBinding.layoutContainer.llBtnTournament.apply { addScaleOnTouchAnimation() }
@@ -806,7 +806,7 @@ class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>(),
 
     private fun updateDateTabs(
         tlDateList: TabLayout,
-        dateTabs: List<Triple<String, String, Long>>
+        dateTabs: List<EarlyDate>
     ) {
         tlDateList.apply {
             removeAllTabs()
