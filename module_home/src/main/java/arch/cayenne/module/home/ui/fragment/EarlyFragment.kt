@@ -124,17 +124,6 @@ class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>(),
 
         // 初始化聯賽按鈕狀態
         updateTournamentButtonStyle(mViewModel.hasTournamentSelections())
-
-//        val view = mBinding.clSubMain
-//        val set: ConstraintSet = ConstraintSet()
-//        set.clone(view)
-//        set.connect(
-//            R.id.ll_tournaments_dropdown,
-//            ConstraintSet.TOP,
-//            R.id.includedLayout.ll_tournament_sort,
-//            ConstraintSet.BOTTOM
-//        )
-//        set.applyTo(view)
     }
 
     override fun initListener() {
