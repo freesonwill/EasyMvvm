@@ -3,8 +3,11 @@ package arch.cayenne.module.bet.ui.fragment
 import android.animation.ObjectAnimator
 import android.os.Bundle
 import android.view.ViewGroup
+import android.view.animation.LinearInterpolator
+import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.animation.addListener
 import androidx.core.view.forEach
 import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentActivity
@@ -12,7 +15,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.SimpleItemAnimator
 import arch.cayenne.lib.base.ui.fragment.BasePreLoadBottomSheetFragment
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
 import arch.cayenne.lib.common.ui.view.BetResultToastView
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
@@ -125,21 +127,23 @@ class BetResultFragment :
         }
         mBinding.llExpand.clickNoRepeat {
             isExpand = !isExpand
-            if (isExpand) { //展开状态，显示展开n个盘口按钮
-                mBinding.tvOrderCount.text =
-                    getString(R.string.title_result_count).format(temp!!.size)
+            if (isExpand) { //折叠状态，显示展开n个盘口按钮
                 betSelectionAdapter.submitList(temp?.take(1)) {
                     mBinding.rvBet.post {
+                        expandImageView(mBinding.ivOrderExpand, false) {
+                            mBinding.tvOrderCount.text =
+                                getString(R.string.title_result_count).format(temp!!.size)
+                        }
                         calculateLayoutHeight(temp!!.size)
-                        mBinding.ivOrderExpand.setImageResource(R.drawable.icon_order_expand)
                     }
                 }
             } else { //展开状态，显示收起按钮
-                mBinding.tvOrderCount.text = R.string.title_result_expand.getString()
                 betSelectionAdapter.submitList(temp) {
                     mBinding.rvBet.post {
+                        expandImageView(mBinding.ivOrderExpand, true) {
+                            mBinding.tvOrderCount.text = R.string.title_result_expand.getString()
+                        }
                         calculateLayoutHeight(temp!!.size)
-                        mBinding.ivOrderExpand.setImageResource(R.drawable.icon_order_unexpand)
                     }
                 }
             }
@@ -158,7 +162,6 @@ class BetResultFragment :
                         mBinding.tvOrderCount.text =
                             getString(R.string.title_result_count).format(it.size)
                         calculateLayoutHeight(1)
-                        mBinding.ivOrderExpand.setImageResource(R.drawable.icon_order_expand)
                     }
                 }
             } else {
@@ -322,5 +325,29 @@ class BetResultFragment :
             }
         }
         updateView(mBinding.root)
+    }
+
+    private fun expandImageView(iv: ImageView, expand: Boolean, onEnd: (() -> Unit)? = null) {
+        if (expand) {
+            ObjectAnimator.ofFloat(iv, "rotation", 0f, 180f)
+                .also {
+                    it.interpolator = LinearInterpolator()
+                    it.duration = 100
+                    it.addListener(onEnd = {
+                        onEnd?.invoke()
+                    })
+                    it.start()
+                }
+        } else {
+            ObjectAnimator.ofFloat(iv, "rotation", 180f, 0f)
+                .also {
+                    it.interpolator = LinearInterpolator()
+                    it.duration = 100
+                    it.addListener(onEnd = {
+                        onEnd?.invoke()
+                    })
+                    it.start()
+                }
+        }
     }
 }
