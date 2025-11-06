@@ -187,9 +187,6 @@ class SubHomeFragment : BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>()
         mViewModel.recently7DayMatchScheduleCount.observeEvent(viewLifecycleOwner, this) { list ->
             customPopup?.updateRange(list)
         }
-        mViewModel.selectedDate.observeEvent(viewLifecycleOwner, this) { select ->
-            if (select == HomeViewModel.DEFAULT_DATE) return@observeEvent
-        }
 
         mViewModel.tournamentSlideOutEnd.observeEvent(viewLifecycleOwner, this) {
             mBinding.layoutContainer.llTournamentsDropdown.visibility = View.GONE

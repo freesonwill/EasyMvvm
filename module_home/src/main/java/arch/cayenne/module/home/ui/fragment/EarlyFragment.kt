@@ -52,6 +52,7 @@ import arch.cayenne.module.home.ui.adapter.SportBannerAdapter
 import arch.cayenne.module.home.ui.adapter.SportsListAdapter
 import arch.cayenne.module.home.ui.view.CustomTabLayoutMediator
 import arch.cayenne.module.home.ui.view.HomeCalendarFragment
+import arch.cayenne.module.home.ui.viewmodel.EarlyViewModel
 import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
 import arch.cayenne.module.home.ui.viewmodel.SubHomeViewModel
 import arch.cayenne.module.home.utils.DateUtils
@@ -66,10 +67,10 @@ import kotlin.reflect.KClass
 /**
  * 早盘页面
  */
-class EarlyFragment : BaseFragment<SubHomeViewModel, FragmentEarlyBinding>(),
+class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>(),
     ISubFragmentLifecycle {
     override val vbClass: KClass<FragmentEarlyBinding> = FragmentEarlyBinding::class
-    override val vmClass: KClass<SubHomeViewModel> = SubHomeViewModel::class
+    override val vmClass: KClass<EarlyViewModel> = EarlyViewModel::class
     private val homeViewModel: HomeViewModel by sharedViewModel<HomeViewModel, NewHomeFragment>()
 
     private var customPopup: HomeCalendarFragment? = null

@@ -36,32 +36,31 @@ import org.koin.core.parameter.parametersOf
 import plugin.koin.KoinViewModel
 
 @KoinViewModel
-class SubHomeViewModel: BaseViewModel() {
+open class SubHomeViewModel : BaseViewModel() {
 
-    private val repository: HomeRepository by inject()
+    val repository: HomeRepository by inject()
 
     var currentPlayTypeId: Int = PlayType.TODAY.id
         private set
 
     val sportsStatistical by lazy { MutableLiveData<Event<List<SportDataModel>>>() }
 
-    private val _currentSportId: MutableStateFlow<Int> = MutableStateFlow(SportEnum.Default.id)
+    val _currentSportId: MutableStateFlow<Int> = MutableStateFlow(SportEnum.Default.id)
     val currentSportId: Int
         get() = _currentSportId.value
 
-    private val _currentSportIdChange =  MutableLiveData<Event<Int>>()
+    private val _currentSportIdChange = MutableLiveData<Event<Int>>()
     val currentSportIdChange: LiveData<Event<Int>> = _currentSportIdChange
-
-    private val _selectedDate = MutableLiveData<Event<Long>>() // Pair<leagueId, date>
-    val selectedDate: MutableLiveData<Event<Long>> = _selectedDate
 
     val tournaments by lazy { MutableLiveData<Event<List<TournamentDataModel>>>() } // 今日/早盤
 
     private val _calendarStates = MutableLiveData<HomeCalendarFragment.States>()
     val calendarStates = _calendarStates
 
-    private var _recently7DayMatchScheduleCount = MutableLiveData<Event<List<Common.DailyMatchCount>>>()
-    val recently7DayMatchScheduleCount: LiveData<Event<List<Common.DailyMatchCount>>> = _recently7DayMatchScheduleCount
+    private var _recently7DayMatchScheduleCount =
+        MutableLiveData<Event<List<Common.DailyMatchCount>>>()
+    val recently7DayMatchScheduleCount: LiveData<Event<List<Common.DailyMatchCount>>> =
+        _recently7DayMatchScheduleCount
 
     //聯賽收回上滑動畫結束事件
     private val _tournamentSlideOutEnd = MutableLiveData<Event<Unit>>()
@@ -70,7 +69,7 @@ class SubHomeViewModel: BaseViewModel() {
     private val _collapseTournamentDropdown = MutableLiveData<Event<Boolean>>()
     val collapseTournamentDropdown: MutableLiveData<Event<Boolean>> = _collapseTournamentDropdown
 
-    private val _navigateToChampion = MutableLiveData<Event<ChampionTournamentDataModel>>()
+    protected val _navigateToChampion = MutableLiveData<Event<ChampionTournamentDataModel>>()
     val navigationToChampion: LiveData<Event<ChampionTournamentDataModel>> = _navigateToChampion
     private val skinManager: SkinnableManager by inject { parametersOf(viewModelScope) }
     private val _selectedSkinType = MutableLiveData<Event<String>>()
@@ -82,6 +81,7 @@ class SubHomeViewModel: BaseViewModel() {
 
     // 用於記錄全部的比賽列表是否載入完成
     var isAllowTabLoad: Boolean = false
+
     // 暫存 SportDataModel 列表，用於實現延後繪製球種列表
     var tempSportData: List<SportDataModel>? = null
 
@@ -119,13 +119,13 @@ class SubHomeViewModel: BaseViewModel() {
                         return@collect
                     }
                     val selectedSportId = repository.getCurrentSelectedSportId(currentPlayTypeId)
-                    if (selectedSportId == null || !list.any {data ->  data.id == selectedSportId }) {  //从DB找不到目前点击的sport
-                        val bean = list.find {data ->  data.matchCount > 0 } ?: list.first()
+                    if (selectedSportId == null || !list.any { data -> data.id == selectedSportId }) {  //从DB找不到目前点击的sport
+                        val bean = list.find { data -> data.matchCount > 0 } ?: list.first()
                         setCurrentSport(bean.id)
                         bean.isSelected = true
                     } else {
                         setCurrentSport(selectedSportId)
-                        list.firstOrNull {data -> data.id == selectedSportId }?.isSelected = true
+                        list.firstOrNull { data -> data.id == selectedSportId }?.isSelected = true
                     }
                     withContext(Dispatchers.Main.immediate) {
                         sportsStatistical.value = Event(list)
@@ -226,7 +226,9 @@ class SubHomeViewModel: BaseViewModel() {
             if (it is ApiResponseState.Succeeded<*>) {
                 setState(HomeState.Sport.LoadSuccess)
             } else if (it is ApiResponseState.Failed) {
-                if (tournaments.value?.peekContent() == null || tournaments.value?.peekContent()?.isEmpty() == true) {
+                if (tournaments.value?.peekContent() == null || tournaments.value?.peekContent()
+                        ?.isEmpty() == true
+                ) {
                     "Get Sport List Failure set only all into tournaments livedata".loge(this::class.java.simpleName)
                     tournaments.value = Event(
                         arrayListOf(
@@ -243,16 +245,14 @@ class SubHomeViewModel: BaseViewModel() {
     }
 
     //切換當前的二級選項(各項運動)
-    fun setCurrentSport(sportId: Int) {
+    open fun setCurrentSport(sportId: Int) {
         viewModelScope.launch(Dispatchers.IO) {
-            launch(Dispatchers.Main) {
-                _selectedDate.value = Event(HomeViewModel.DEFAULT_DATE)  //先送出一個初始值，避免MatchListPage生成時會拿到舊值先拿取資料
-            }
             _currentSportId.value = sportId
             repository.updateSelectedSportId(currentPlayTypeId, currentSportId)
             if (currentPlayTypeId != PlayType.CHAMPION.id) {
-                "On setCurrentSport -> Clear Tournaments LiveData & Update Tournaments from API".logi(this::class.java.simpleName)
-                setCurrentSelectedDate()   //目前日期跟著球類走，ex:早盤日期目前是7.11，不管點擊哪一個聯賽都是7.11資料，所以設定完當前選擇的球類後先設定日期
+                "On setCurrentSport -> Clear Tournaments LiveData & Update Tournaments from API".logi(
+                    this::class.java.simpleName
+                )
                 getCurrentTournament()
             }
         }
@@ -269,8 +269,12 @@ class SubHomeViewModel: BaseViewModel() {
                     "联赛资料 存入DB完成 ".logi(this@SubHomeViewModel::class.java.simpleName)
                     setState(HomeState.Tournament.LoadSuccess)
                 } else if (it is ApiResponseState.Failed) {
-                    if ((tournaments.value?.peekContent() == null || tournaments.value?.peekContent()?.isEmpty() == true)) {
-                        "Get Tournament List Failure set only all into tournaments livedata".loge(this::class.java.simpleName)
+                    if ((tournaments.value?.peekContent() == null || tournaments.value?.peekContent()
+                            ?.isEmpty() == true)
+                    ) {
+                        "Get Tournament List Failure set only all into tournaments livedata".loge(
+                            this::class.java.simpleName
+                        )
                         tournaments.value = Event(
                             arrayListOf(
                                 TournamentDataModel.createAllItem(
@@ -286,20 +290,6 @@ class SubHomeViewModel: BaseViewModel() {
         }
     }
 
-    private suspend fun setCurrentSelectedDate() {
-        val date = repository.getCurrentSelectedDate(currentPlayTypeId.playTypeToShowType(), currentSportId) ?: 0L
-        withContext(Dispatchers.Main) {
-            selectedDate(date)
-        }
-    }
-
-    suspend fun selectedDate(date: Long) {
-        if (_selectedDate.value?.peekContent() == date) return
-        withContext(Dispatchers.IO) {
-            repository.updateSelectedDate(currentPlayTypeId.playTypeToShowType(), currentSportId, date)
-        }
-        _selectedDate.value = Event(date)
-    }
 
     fun setCurrentTournamentId(tournamentId: Int) {
         viewModelScope.launch {
@@ -311,7 +301,11 @@ class SubHomeViewModel: BaseViewModel() {
     fun getRecently31MatchScheduleCount(tournamentId: Int = HomeViewModel.TOURNAMENT_ALL_ID) {
         setState(HomeState.Schedule.Loading)
         callApi({
-            repository.getRecently31MatchScheduleCount(currentSportId, currentPlayTypeId, tournamentId)
+            repository.getRecently31MatchScheduleCount(
+                currentSportId,
+                currentPlayTypeId,
+                tournamentId
+            )
         }, {
             if (it is ApiResponseState.Succeeded<*>) {
                 val data: List<Common.DailyMatchCount>? = it.dataAs()
@@ -357,7 +351,7 @@ class SubHomeViewModel: BaseViewModel() {
     }
 
     // 標記外部tab是否有切換（用於判斷是否需要清空彈窗的篩選結果）
-    private var hasTournamentTabSwitched = false
+    var hasTournamentTabSwitched = false
 
     // 保存彈窗中的選中狀態（跨彈窗生命週期）
     private val savedTournamentSelections = mutableSetOf<Int>()
@@ -370,19 +364,23 @@ class SubHomeViewModel: BaseViewModel() {
     fun markTournamentTabSwitched() {
         hasTournamentTabSwitched = true
     }
-    
-    fun onTournamentListSelected(tournament: BaseTournamentData) {
+
+    open fun onTournamentListSelected(tournament: BaseTournamentData) {
         // 標記外部tab已切換，下次打開彈窗時需要清空篩選
         hasTournamentTabSwitched = true
-        
+
         if (tournament is TournamentDataModel) {
             val currentList = tournaments.value?.peekContent() ?: return
             setCurrentTournamentId(tournament.id)
             if (!currentList.any { it.id == tournament.id }) {
-                viewModelScope.launch { selectedDate(0L) }
-                tournaments.value = Event(currentList.map { it.apply { isSelected = false } }  + tournament.apply { isSelected = true })
+                tournaments.value = Event(currentList.map {
+                    it.apply {
+                        isSelected = false
+                    }
+                } + tournament.apply { isSelected = true })
             } else {
-                tournaments.value = Event(currentList.map { it.apply { isSelected = tournament.id == id } })
+                tournaments.value =
+                    Event(currentList.map { it.apply { isSelected = tournament.id == id } })
             }
         } else if (tournament is ChampionTournamentDataModel) {
             _navigateToChampion.value = Event(tournament)
