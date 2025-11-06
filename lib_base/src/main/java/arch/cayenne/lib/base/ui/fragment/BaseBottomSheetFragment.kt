@@ -131,9 +131,9 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
     }
 
     private fun setStatusBar() {
-        StatusBarConfig.statusBarType = StatusBarMode.DEFAULT
-        statusBar.setStatusBar(StatusBarConfig, mBinding.root)
-        statusBar.configStatusBar().statusBarColor = R.color.black_75
+//        StatusBarConfig.statusBarType = StatusBarMode.DEFAULT
+//        statusBar.setStatusBar(StatusBarConfig, mBinding.root)
+//        statusBar.configStatusBar().statusBarColor = R.color.black_75
     }
 
 
