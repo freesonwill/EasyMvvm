@@ -3,6 +3,7 @@ package arch.cayenne.module.bet.ui.fragment
 import android.animation.ObjectAnimator
 import android.os.Bundle
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.forEach
 import androidx.core.view.isVisible
@@ -11,16 +12,20 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.SimpleItemAnimator
 import arch.cayenne.lib.base.ui.fragment.BasePreLoadBottomSheetFragment
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
 import arch.cayenne.lib.common.ui.view.BetResultToastView
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.SportDisplayOddsExt.getDisplayOdds
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toOdds
+import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.database.entity.BetDetailBean
 import arch.cayenne.lib.database.entity.BetResultStatusEnum
+import arch.cayenne.lib.database.entity.BetSelectionBean
 import arch.cayenne.lib.database.entity.BetTypeEnum
 import arch.cayenne.lib.skin.data.SkinMsgType
 import arch.cayenne.lib.skin.widget.biz.ISkinnableBiz
@@ -28,7 +33,6 @@ import arch.cayenne.module.bet.R
 import arch.cayenne.module.bet.databinding.FragmentBetResultBinding
 import arch.cayenne.module.bet.ui.adapter.BetSelectionAdapter
 import arch.cayenne.module.bet.ui.adapter.ResultMultiBetAdapter
-import arch.cayenne.module.bet.util.BetSheetDecoration
 import arch.cayenne.module.bet.viewmodel.BetResultViewModel
 import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
@@ -37,7 +41,9 @@ import kotlin.reflect.KClass
  * 投注结果弹窗页
  */
 
-class BetResultFragment : BasePreLoadBottomSheetFragment<BetResultViewModel, FragmentBetResultBinding>(), BetResultToastView.Block {
+class BetResultFragment :
+    BasePreLoadBottomSheetFragment<BetResultViewModel, FragmentBetResultBinding>(),
+    BetResultToastView.Block {
 
     companion object {
         private const val TAG = "BetResultFragment"
@@ -70,6 +76,7 @@ class BetResultFragment : BasePreLoadBottomSheetFragment<BetResultViewModel, Fra
             return f as? BetResultFragment
         }
     }
+
     override val vbClass: KClass<FragmentBetResultBinding> = FragmentBetResultBinding::class
     override val vmClass: KClass<BetResultViewModel> = BetResultViewModel::class
     private val betSelectionAdapter by lazy { BetSelectionAdapter() }
@@ -80,21 +87,17 @@ class BetResultFragment : BasePreLoadBottomSheetFragment<BetResultViewModel, Fra
             }
         })
     }
+    private var isExpand: Boolean = false //是否折叠
     private var isFull: Boolean? = null
-
+    private var temp: List<BetSelectionBean>? = null
     override fun initView(savedInstanceState: Bundle?) {
         isHorizontalGestureEnable = false
         isVerticalGestureEnable = false
         (mBinding.rvComboOdds.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
-        (mBinding.rvBet.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
+        mBinding.rvBet.itemAnimator = null
         mBinding.rvComboOdds.itemAnimator = null
-
         mBinding.rvBet.adapter = betSelectionAdapter
         mBinding.rvComboOdds.adapter = detailAdapter
-
-        val decoration = BetSheetDecoration(6.dp2px)
-        mBinding.rvBet.addItemDecoration(decoration)
-
         val screenHeight = getScreenHeight() ?: return
         val maxFragmentHeight = (screenHeight * 0.75).toInt()
         mBinding.root.maxHeight = maxFragmentHeight
@@ -120,14 +123,49 @@ class BetResultFragment : BasePreLoadBottomSheetFragment<BetResultViewModel, Fra
                 createObserver()
             }
         }
+        mBinding.llExpand.clickNoRepeat {
+            isExpand = !isExpand
+            if (isExpand) { //展开状态，显示展开n个盘口按钮
+                mBinding.tvOrderCount.text =
+                    getString(R.string.title_result_count).format(temp!!.size)
+                betSelectionAdapter.submitList(temp?.take(1)) {
+                    mBinding.rvBet.post {
+                        calculateLayoutHeight(temp!!.size)
+                        mBinding.ivOrderExpand.setImageResource(R.drawable.icon_order_expand)
+                    }
+                }
+            } else { //展开状态，显示收起按钮
+                mBinding.tvOrderCount.text = R.string.title_result_expand.getString()
+                betSelectionAdapter.submitList(temp) {
+                    mBinding.rvBet.post {
+                        calculateLayoutHeight(temp!!.size)
+                        mBinding.ivOrderExpand.setImageResource(R.drawable.icon_order_unexpand)
+                    }
+                }
+            }
+        }
     }
 
     override suspend fun createObserver() {
         mViewModel.onBetSheetListener.observe(viewLifecycleOwner) {
+            this.temp = it
             mBinding.rvComboOdds.isVisible = it.size > 1
-            betSelectionAdapter.submitList(it) {
-                mBinding.rvBet.post {
-                    if (it.size in 1..3) {
+            if (it.size > 2) {
+                betSelectionAdapter.submitList(it.take(1)) {
+                    mBinding.rvBet.post {
+                        isExpand = true
+                        mBinding.llExpand.isVisible = true
+                        mBinding.tvOrderCount.text =
+                            getString(R.string.title_result_count).format(it.size)
+                        calculateLayoutHeight(1)
+                        mBinding.ivOrderExpand.setImageResource(R.drawable.icon_order_expand)
+                    }
+                }
+            } else {
+                betSelectionAdapter.submitList(it) {
+                    mBinding.rvBet.post {
+                        isExpand = false
+                        mBinding.llExpand.isVisible = false
                         calculateLayoutHeight(it.size)
                     }
                 }
@@ -166,8 +204,7 @@ class BetResultFragment : BasePreLoadBottomSheetFragment<BetResultViewModel, Fra
         } else {
             getString(R.string.title_result_pending_bet)
         }
-        mBinding.btnContinueBet.isEnabled = false
-        mBinding.btnContinueBet.alpha = 0.5f
+        mBinding.btnCheckBet.isVisible = false
     }
 
     private fun setComplete(type: BetTypeEnum) {
@@ -178,8 +215,7 @@ class BetResultFragment : BasePreLoadBottomSheetFragment<BetResultViewModel, Fra
         } else {
             mBinding.tvTitle.text = getString(R.string.title_result_bet_suc)
         }
-        mBinding.btnContinueBet.isEnabled = true
-        mBinding.btnContinueBet.alpha = 1.0f
+        mBinding.btnCheckBet.isVisible = true
     }
 
     private fun setFail(type: BetTypeEnum) {
@@ -191,8 +227,12 @@ class BetResultFragment : BasePreLoadBottomSheetFragment<BetResultViewModel, Fra
             mBinding.tvTitle.text =
                 getString(arch.cayenne.lib.common.R.string.title_result_fail_bet)
         }
-        mBinding.btnContinueBet.isEnabled = true
-        mBinding.btnContinueBet.alpha = 1.0f
+        val param = mBinding.btnConfirm.layoutParams
+        if (param is ConstraintLayout.LayoutParams) {
+            param.leftMargin = 0
+        }
+        mBinding.btnConfirm.layoutParams = param
+        mBinding.btnCheckBet.isVisible = false
     }
 
     private fun setAmount(data: List<BetDetailBean>) {
@@ -217,11 +257,16 @@ class BetResultFragment : BasePreLoadBottomSheetFragment<BetResultViewModel, Fra
         val screenHeight = getScreenHeight() ?: return
         val maxFragmentHeight = (screenHeight * 0.75).toInt()
         val topHeight = mBinding.llTop.height
-        val comboOddsHeight = (if (size == 0) 0 else getComboOddsItemHeight() * size) + (if (size == 0) 0 else (mBinding.rvComboOdds.layoutParams as ConstraintLayout.LayoutParams).bottomMargin)
-        val betMoneyHeight = mBinding.clComboBetMoney.height + (mBinding.clComboBetMoney.layoutParams as ConstraintLayout.LayoutParams).bottomMargin
-        val buttonHeight = mBinding.btnContinueBet.height + (mBinding.btnContinueBet.layoutParams as ConstraintLayout.LayoutParams).bottomMargin
-        val selectionHeight = getSelectionItemHeight() * size + (mBinding.rvBet.layoutParams as ConstraintLayout.LayoutParams).topMargin
-        val totalHeight = topHeight + comboOddsHeight + betMoneyHeight + buttonHeight + selectionHeight
+        val comboOddsHeight =
+            (if (size == 0) 0 else getComboOddsItemHeight() * size) + (if (size == 0) 0 else (mBinding.rvComboOdds.layoutParams as LinearLayout.LayoutParams).bottomMargin)
+        val betMoneyHeight =
+            mBinding.clComboBetMoney.height + (mBinding.clComboBetMoney.layoutParams as ConstraintLayout.LayoutParams).bottomMargin
+        val buttonHeight =
+            mBinding.btnConfirm.height + (mBinding.btnConfirm.layoutParams as ConstraintLayout.LayoutParams).bottomMargin
+        val selectionHeight =
+            getSelectionItemHeight() * size + (mBinding.llOrderList.layoutParams as ConstraintLayout.LayoutParams).topMargin
+        val totalHeight =
+            topHeight + comboOddsHeight + betMoneyHeight + buttonHeight + selectionHeight
         adjustLayoutHeight(totalHeight > maxFragmentHeight)
     }
 
@@ -229,7 +274,6 @@ class BetResultFragment : BasePreLoadBottomSheetFragment<BetResultViewModel, Fra
         if (this.isFull == full) return
         val screenHeight = getScreenHeight() ?: return
         val maxFragmentHeight = (screenHeight * 0.75).toInt()
-
         mBinding.root.minHeight = if (full) maxFragmentHeight else 0
         val layoutParams = mBinding.nsv.layoutParams
         layoutParams.height = if (full) 0 else ViewGroup.LayoutParams.WRAP_CONTENT
@@ -245,7 +289,7 @@ class BetResultFragment : BasePreLoadBottomSheetFragment<BetResultViewModel, Fra
         val layoutManager = mBinding.rvComboOdds.layoutManager as? LinearLayoutManager
         val firstVisibleItemView =
             layoutManager?.findViewByPosition(layoutManager.findFirstVisibleItemPosition())
-         // 不知道為什麼高度會少bottom空白間距
+        // 不知道為什麼高度會少bottom空白間距
         return firstVisibleItemView?.height ?: 36.dp2px
     }
 

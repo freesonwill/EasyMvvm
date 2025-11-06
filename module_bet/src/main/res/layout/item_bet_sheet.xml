@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_height="@dimen/dp_129"
-    android:background="@drawable/bg_bet_sheet">
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/dp_129">
 
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/tv_selection_name"
@@ -29,9 +28,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="12dp"
+        android:fontFamily="@font/sf_pro"
         android:textColor="@color/color_00E0E5"
         android:textSize="@dimen/sp_14"
-        android:fontFamily="@font/sf_pro"
         app:layout_constraintBottom_toBottomOf="@id/tv_selection_name"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/tv_selection_name"
@@ -44,7 +43,6 @@
         android:background="@drawable/bg_playing"
         android:gravity="center"
         android:paddingHorizontal="8dp"
-        android:paddingVertical="2dp"
         android:text="@string/title_playing"
         android:textColor="@color/color_FFFFFF"
         android:textSize="13sp"
@@ -63,8 +61,7 @@
         app:layout_constraintStart_toEndOf="@id/tv_status"
         app:layout_constraintTop_toBottomOf="@id/tv_selection_name"
         app:layout_goneMarginStart="0dp"
-        tools:text="全场让球（0-0）"
-        />
+        tools:text="全场让球（0-0）" />
 
     <androidx.constraintlayout.widget.Barrier
         android:id="@+id/bottom_barrier"
@@ -86,8 +83,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@id/tv_selection_name"
         app:layout_constraintTop_toBottomOf="@id/bottom_barrier"
-        tools:text="中国 vs 巴西"
-        />
+        tools:text="中国 vs 巴西" />
 
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/tv_league_name"
@@ -103,8 +99,7 @@
         app:layout_constraintEnd_toStartOf="@id/iv_delete"
         app:layout_constraintStart_toStartOf="@id/tv_selection_name"
         app:layout_constraintTop_toBottomOf="@id/tv_match_name"
-        tools:text="世界杯"
-        />
+        tools:text="世界杯" />
 
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/tv_bet_stop"
@@ -128,6 +123,15 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
+    <arch.cayenne.lib.skin.widget.SkinnableView
+        android:id="@+id/item_line"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_1"
+        android:layout_marginHorizontal="@dimen/dp_12"
+        android:background="@color/line"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
 
 

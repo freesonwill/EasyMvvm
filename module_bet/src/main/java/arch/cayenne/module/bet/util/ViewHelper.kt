@@ -23,22 +23,30 @@ internal object ViewHelper {
             "@${bean.odds.getOdds()}"
         }
         binding.tvOdds.text = odds
-
         binding.tvSelectionName.text = bean.name
         binding.tvMarket.text = bean.marketName
         binding.tvMatchName.text = bean.matchName
         binding.tvLeagueName.text = bean.leagueName
-
         binding.tvStatus.isVisible = bean.isPlaying
         binding.tvBetStop.isVisible = !bean.isActive
-
         val oddsColor = when (bean.oddsStatus) {
-            OddsStatusEnum.UP -> ContextCompat.getColor(binding.root.context, arch.cayenne.module.bet.R.color.green)
-            OddsStatusEnum.DOWN -> ContextCompat.getColor(binding.root.context, arch.cayenne.module.bet.R.color.red)
+            OddsStatusEnum.UP -> ContextCompat.getColor(
+                binding.root.context,
+                arch.cayenne.module.bet.R.color.green
+            )
+
+            OddsStatusEnum.DOWN -> ContextCompat.getColor(
+                binding.root.context,
+                arch.cayenne.module.bet.R.color.red
+            )
+
             else -> null
         }
         //颜色根据oddsStatus变化
-        val originColor = SkinnableResourceManager.getColor(binding.root.context, arch.cayenne.lib.common.R.color.main_text)
+        val originColor = SkinnableResourceManager.getColor(
+            binding.root.context,
+            arch.cayenne.lib.common.R.color.main_text
+        )
         if (oddsColor != null) {
             binding.tvOdds.setTextColor(oddsColor)
             binding.tvOdds.postDelayedSafely(2_000) {
@@ -48,29 +56,29 @@ internal object ViewHelper {
             binding.tvOdds.setTextColor(originColor)
         }
     }
+}
 
-    fun collapseView(view: View, onEnd: (() -> Unit)? = null) {
-        val height = view.height
-        ObjectAnimator.ofFloat(view, "translationY", 0f, height.toFloat())
-            .also {
-                it.interpolator = LinearInterpolator()
-                it.duration = 100
-                it.addListener(onEnd = {
-                    onEnd?.invoke()
-                })
-                it.start()
-            }
-    }
+fun collapseView(view: View, onEnd: (() -> Unit)? = null) {
+    val height = view.height
+    ObjectAnimator.ofFloat(view, "translationY", 0f, height.toFloat())
+        .also {
+            it.interpolator = LinearInterpolator()
+            it.duration = 100
+            it.addListener(onEnd = {
+                onEnd?.invoke()
+            })
+            it.start()
+        }
+}
 
-    fun expandView(view: View, height: Float, onEnd: (() -> Unit)? = null) {
-        ObjectAnimator.ofFloat(view, "translationY", height, 0f)
-            .also {
-                it.interpolator = LinearInterpolator()
-                it.duration = 100
-                it.addListener(onEnd = {
-                    onEnd?.invoke()
-                })
-                it.start()
-            }
-    }
+fun expandView(view: View, height: Float, onEnd: (() -> Unit)? = null) {
+    ObjectAnimator.ofFloat(view, "translationY", height, 0f)
+        .also {
+            it.interpolator = LinearInterpolator()
+            it.duration = 100
+            it.addListener(onEnd = {
+                onEnd?.invoke()
+            })
+            it.start()
+        }
 }

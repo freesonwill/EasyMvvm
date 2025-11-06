@@ -71,6 +71,9 @@ class BetResultViewModel(private val repo: BetResultRepository) : BaseViewModel(
             }
             launch {
                 repo.observeSelections().collect { selections ->
+                    selections.forEach {
+                        it.isPlaying = true
+                    }
                     _onBetSheetListener.value = selections
                 }
             }
