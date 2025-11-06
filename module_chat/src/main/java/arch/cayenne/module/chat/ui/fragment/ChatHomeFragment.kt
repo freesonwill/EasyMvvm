@@ -17,6 +17,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.database.entity.LiveMatchBean
@@ -35,23 +36,23 @@ import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
 
 //聊天
-class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding>() ,
+class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding>(),
     SoftKeyBoardMangerListener {
     override val vbClass: KClass<FragmentLiveChatBinding> = FragmentLiveChatBinding::class
     override val vmClass: KClass<ChatHomeViewModel> = ChatHomeViewModel::class
-    var mainMatch:LiveData<LiveMatchBean>? = null
-    var matchIdLiveData:LiveData<Long>? = null
+    var mainMatch: LiveData<LiveMatchBean>? = null
+    var matchIdLiveData: LiveData<Long>? = null
     private lateinit var softKeyBoardManager: SoftKeyboardManager
 
     override fun initView(savedInstanceState: Bundle?) {
         initChatPageFragment()
         initSoftKeyBoardFragment()
         arguments?.let { //TODO  首页过来的 之后需要处理聊天室要matchId的问题
-            val value = it.getBoolean("chat",false)
+            val value = it.getBoolean("chat", false)
             setMainChatStatus()
         }
     }
-    
+
     override fun onStart() {
 //        StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND()
 //        setStatusBar(StatusBarConfig, mBinding.root)
@@ -69,24 +70,45 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
         mViewModel.setSoftConfig(true)
     }
 
-    private fun setMainHeight(){
-        softKeyBoardManager.initView(requireActivity().window.decorView, mBinding.chatEtInput, mViewModel.isMainSoft)
+
+    override fun onFragmentAnimEnd(isEnter: Boolean) {
+        super.onFragmentAnimEnd(isEnter)
+        keyboardChangeClick(KeyBoardType.CHAT,4)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        //软件盘时获取的高度有误，onResume时获取固定值
+//        mBinding.liveChatKeyboard.translationY = -62.dp2px.toFloat()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        keyboardChangeClick(KeyBoardType.CHAT, 3)//移动到其他页面后关闭软件盘表情键盘
+    }
+
+    private fun setMainHeight() {
+        softKeyBoardManager.initView(
+            requireActivity().window.decorView,
+            mBinding.chatEtInput,
+            mViewModel.isMainSoft
+        )
         addMainViewListen()
     }
 
     override suspend fun createObserver() {
-        matchIdLiveData?.observe(viewLifecycleOwner){
+        matchIdLiveData?.observe(viewLifecycleOwner) {
             observeMatchId(it)
         }
-        mainMatch?.observe(viewLifecycleOwner){
+        mainMatch?.observe(viewLifecycleOwner) {
             observeLiveMatch(it)
         }
-        mViewModel.chatHistoryIsEmpty.observe(viewLifecycleOwner){
+        mViewModel.chatHistoryIsEmpty.observe(viewLifecycleOwner) {
             updateChatUi(mainMatch?.value)
         }
         lifecycleScope.launch {
             launch {
-                mViewModel.serverFlow().collect{
+                mViewModel.serverFlow().collect {
                     if (it == SocketConnectState.Connecting && mViewModel.loginFlow.value == null) {
                         mViewModel.chatLogin()
                     }
@@ -98,7 +120,7 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
                 }
             }
         }
-  //input
+        //input
         launch(Lifecycle.State.RESUMED) {
             mViewModel.updateKeyboardUiStatus.observe(viewLifecycleOwner) {
                 keyboardChangeClick(it, 5)
@@ -109,28 +131,21 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
         }
     }
 
-    override fun onFragmentAnimEnd(isEnter: Boolean) {
-        super.onFragmentAnimEnd(isEnter)
-        showChat(4)
-    }
-
-    override fun onResume() {
-        super.onResume()
-        //软件盘时获取的高度有误，onResume时获取固定值
-//        mBinding.liveChatKeyboard.translationY = -62.dp2px.toFloat()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        showChat(2)//移动到其他页面后关闭软件盘表情键盘
-    }
-
     @SuppressLint("ClickableViewAccessibility")
     override fun initListener() {
 
+//        mBinding.liveChatHistory.setOnTouchListener { v, event ->
+//            if (event.action == MotionEvent.ACTION_DOWN) {
+//                if (mViewModel.currentKeyBoardType != KeyBoardType.CHAT) {
+//                    keyboardChangeClick(KeyBoardType.CHAT, 0)
+//                }
+//            }
+//            return@setOnTouchListener false
+//        }
+
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
             if (mViewModel.currentKeyBoardType != KeyBoardType.CHAT) {
-                showChat(1)
+                keyboardChangeClick(KeyBoardType.CHAT, 1)
             } else {
                 if (activity == null) {
                     return@addCallback
@@ -171,19 +186,19 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
             .replace(R.id.chat_keyboard, fragment, EmojiHomeFragment.TAG).commit()
     }
 
-    private fun initChatPageFragment(){
+    private fun initChatPageFragment() {
         val fragment = ChatPageFragment()
         childFragmentManager.beginTransaction()
-            .replace(mBinding.liveChatHistory.id,fragment,ChatPageFragment.TAG)
+            .replace(mBinding.liveChatHistory.id, fragment, ChatPageFragment.TAG)
             .commit()
     }
 
     /**
      * 显示聊天界面时隐藏键盘界面
      * */
-    private fun showChat(flag: Int) {
-        mViewModel.updateKeyBoardUi(KeyBoardType.CHAT, flag)
-    }
+//    private fun showChat(flag: Int) {
+//        mViewModel.updateKeyBoardUi(KeyBoardType.CHAT, flag)
+//    }
 
     /**
      * 判断键盘是否在显示中
@@ -191,7 +206,7 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
     fun isSoftKeyboardVisible(): Boolean {
         val flag = mViewModel.currentKeyBoardType != KeyBoardType.CHAT
         if (flag) {
-            showChat(3)
+            keyboardChangeClick(KeyBoardType.CHAT, 2)
         }
         return flag
     }
@@ -242,7 +257,7 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
     /**
      * 直播间调用
      * */
-    fun setMatchLiveData(matchId:LiveData<Long>?,mainMatch:LiveData<LiveMatchBean>?){
+    fun setMatchLiveData(matchId: LiveData<Long>?, mainMatch: LiveData<LiveMatchBean>?) {
         matchIdLiveData = matchId
         this.mainMatch = mainMatch
     }
@@ -250,19 +265,19 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
     /**
      * 首页调用
      * */
-    private fun setMainChatStatus(){
-       lifecycleScope.launchWhenResumed {
-           observeMatchId(-1)
-           observeLiveMatch(null)
-       }
+    private fun setMainChatStatus() {
+        lifecycleScope.launchWhenResumed {
+            observeMatchId(-1)
+            observeLiveMatch(null)
+        }
     }
 
     private fun observeMatchId(matchId: Long) {
-            mViewModel.setArguments(matchId)
+        mViewModel.setArguments(matchId)
     }
 
-   private fun observeLiveMatch(match: LiveMatchBean?) {
-       mViewModel.isMainSoft = match == null
+    private fun observeLiveMatch(match: LiveMatchBean?) {
+        mViewModel.isMainSoft = match == null
         updateChatUi(match)
         //比赛开始后开启聊天服务
         if (match?.liveInfo?.charRoom == true || match == null) {
@@ -273,10 +288,10 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
     fun closeChatWebsocket() {
         mViewModel.disConnectChatServer()
     }
-    
+
     @SuppressLint("ClickableViewAccessibility")
-   private fun initInputListener(){
-        
+    private fun initInputListener() {
+
         mBinding.apply {
             ivEmoji.setOnTouchListener { v, event ->
                 if (event.action == MotionEvent.ACTION_UP) {
@@ -505,6 +520,7 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
         }
 
     }
+
     //防止软件盘和表情键盘切换的时候跳动
     private fun inputIconShouldUpdate(
         animationType: KeyboardActionType,
@@ -575,7 +591,6 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
             emojiScaleYParam
         )
     }
-
 
 
 }

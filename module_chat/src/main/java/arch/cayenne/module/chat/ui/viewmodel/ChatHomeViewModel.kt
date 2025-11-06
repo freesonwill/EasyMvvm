@@ -142,20 +142,13 @@ class ChatHomeViewModel() : BaseViewModel() {
      * 软件et传递消息
      * */
     fun sendMsgToChat(msg: String) {
-        if (msg.isEmpty()) {
-            return
-        }
+
         _sendMsgLiveData.value = msg
     }
 
     fun updateKeyBoardUi(keyBoardType: KeyBoardType, flag: Int) {
         _updateKeyboardUiStatus.value = keyBoardType
     }
-
-    fun refreshChatUi(value:Boolean){
-        _chatHistoryIsEmpty.value = value
-    }
-
 
     fun setSoftConfig(value:Boolean){
         userDataManager.setKeyValue(UserDataKey.KEY_SOFT_CONFIG,value)
