@@ -784,7 +784,8 @@ class EarlyFragment : BaseFragment<SubHomeViewModel, FragmentEarlyBinding>(),
                     val params = layoutParams as LinearLayout.LayoutParams
                     params.width = 52.dp2px
                     params.height = 37.dp2px
-                    params.marginStart = if (i == 0) 14.dp2px else 7.dp2px
+                    params.marginStart = 3.dp2px
+                    params.marginEnd = 4.dp2px
                     layoutParams = params
                     setBackgroundResource(R.drawable.selector_date_tab_bg)
                     if (clearSelected) isSelected = false
@@ -909,7 +910,7 @@ class EarlyFragment : BaseFragment<SubHomeViewModel, FragmentEarlyBinding>(),
             with(layoutContainer) {
                 viewContainerRoot.setOnChildClickedInterceptedListener { view ->
                     when (view) {
-                        tlContainer, llDateFilterContainer -> {
+                        tlContainer -> {
                             lifecycleScope.launch {
                                 mViewModel.setCalendarState(HomeCalendarFragment.States.CALENDAR_CLOSE_NOTHING)
                             }

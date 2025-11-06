@@ -186,31 +186,22 @@
         android:id="@+id/cl_sub_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/color_1E1E1E"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <arch.cayenne.lib.skin.widget.SkinnableView
-            android:id="@+id/ll_date_filter_container"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_47"
-            android:layout_marginHorizontal="@dimen/dp_10"
-            android:background="@drawable/bg_date_tab"
-            android:clipChildren="false"
-            android:clipToPadding="false"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
 
         <arch.cayenne.lib.skin.widget.SkinnableTabLayout
             android:id="@+id/tl_date_list"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_47"
             android:layout_marginHorizontal="@dimen/dp_10"
+            android:layout_marginTop="@dimen/dp_4"
             android:background="@drawable/bg_date_tab"
             android:clipToPadding="true"
             android:overScrollMode="never"
             android:paddingVertical="@dimen/dp_5"
-            app:layout_constraintBottom_toBottomOf="@id/ll_date_filter_container"
-            app:layout_constraintStart_toStartOf="@id/ll_date_filter_container"
-            app:layout_constraintTop_toTopOf="@id/ll_date_filter_container"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             app:tabGravity="center"
             app:tabIndicator="@null"
             app:tabIndicatorColor="@null"
@@ -230,7 +221,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/ll_date_filter_container" />
+            app:layout_constraintTop_toBottomOf="@id/tl_date_list" />
 
 
     </arch.cayenne.module.home.ui.view.ClickSearchConstraintLayout>
