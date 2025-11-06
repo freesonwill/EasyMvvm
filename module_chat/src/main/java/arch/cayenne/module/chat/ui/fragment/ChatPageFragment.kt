@@ -1,10 +1,16 @@
 package arch.cayenne.module.chat.ui.fragment
 
+import android.annotation.SuppressLint
 import android.os.Bundle
+import android.view.MotionEvent
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
+import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
+import arch.cayenne.lib.websocket.chat.data.ChatMsg
 import arch.cayenne.module.chat.databinding.FragementChatPageLayoutBinding
 import arch.cayenne.module.chat.ui.adapter.ChatAdapter
 import arch.cayenne.module.chat.ui.viewmodel.ChatHomeViewModel
@@ -25,20 +31,33 @@ class ChatPageFragment:BaseFragment<ChatPageViewModel,FragementChatPageLayoutBin
     private val homeViewModel:ChatHomeViewModel by sharedViewModel<ChatHomeViewModel,ChatHomeFragment>()
 
     override fun initView(savedInstanceState: Bundle?) {
+        ChatPersonalDialogFragment.create(this)
         initRecycler()
+
     }
 
     private fun initRecycler(){
-        val layoutManger = LinearLayoutManager(context)
+        val layoutManger = LinearLayoutManager(context).apply {
+            orientation = LinearLayoutManager.VERTICAL
+            reverseLayout = true
+        }
         val adapter = ChatAdapter()
+
+        adapter.setOnItemListener(object :RecyclerItemListener<ChatMsg>{
+            override fun onItemClick(item: ChatMsg?, position: Int) {
+                "show item".loge("aaa")
+                ChatPersonalDialogFragment.show(this@ChatPageFragment)
+            }
+        })
+
         mBinding.liveChatRecycler.layoutManager = layoutManger
         mBinding.liveChatRecycler.adapter = adapter
         mBinding.liveChatRecycler.itemAnimator = null
 //        mBinding.liveChatRecycler.addOnItemTouchListener(object : RecyclerView.OnItemTouchListener {
 //            override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
-//                if (e.action == MotionEvent.ACTION_UP && mViewModel.currentKeyBoardType != KeyBoardType.CHAT) {
-//                    showChat(7)
-//                }
+//
+//                "onInteceptTOuchEvent".loge("aaa")
+//
 //                return false
 //            }
 //
@@ -54,16 +73,12 @@ class ChatPageFragment:BaseFragment<ChatPageViewModel,FragementChatPageLayoutBin
     /**
      * 接收到新数据做更新
      * */
+    @SuppressLint("NotifyDataSetChanged")
     private fun refreshChatList() {
         homeViewModel.refreshChatUi(mViewModel.msgLists.isEmpty())
         val adapter = mBinding.liveChatRecycler.adapter?.let { it as ChatAdapter }
-        adapter?.submitList(mViewModel.msgLists) {
-            adapter.currentList.size.let {
-                val position = it - 1
-                if (position >= 0) {
-                    mBinding.liveChatRecycler.scrollToPosition(position)
-                }
-            }
+        adapter?.submitList(mViewModel.msgLists){
+            mBinding.liveChatRecycler.scrollToPosition(0)
         }
     }
 

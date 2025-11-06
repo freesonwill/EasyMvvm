@@ -177,14 +177,12 @@
                     app:layout_constraintTop_toTopOf="@id/iv_bottom_bet" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
-
-
         </LinearLayout>
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/emoji_content"
             android:layout_width="match_parent"
-            android:layout_height="284dp"
+            android:layout_height="241dp"
             android:orientation="vertical"
             app:layout_constraintTop_toBottomOf="@id/input_content" />
 
