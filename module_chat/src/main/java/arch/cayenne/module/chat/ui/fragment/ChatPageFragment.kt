@@ -11,6 +11,7 @@ import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
 import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.websocket.chat.data.ChatMsg
+import arch.cayenne.module.chat.data.constants.KeyBoardType
 import arch.cayenne.module.chat.databinding.FragementChatPageLayoutBinding
 import arch.cayenne.module.chat.ui.adapter.ChatAdapter
 import arch.cayenne.module.chat.ui.viewmodel.ChatHomeViewModel

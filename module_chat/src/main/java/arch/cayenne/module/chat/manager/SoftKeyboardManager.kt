@@ -171,6 +171,7 @@ class SoftKeyboardManager(
     }
 
     private fun softKeyboardChange(value: Boolean, flag: Int) {
+//        "softKeyboardChange $value $flag".logd("aaa")
         softKeyboardStatus = value
         if (value) {  //显示软件盘状态 it == true  当前软件盘没有收缩状态
             openSoftKeyBoard()
@@ -273,7 +274,7 @@ class SoftKeyboardManager(
                     softKeyboardChange(true, 1)
                     return
                 }
-                softKeyboardChange(true, 1)
+                softKeyboardChange(true, 5)
                 keyBoardListener.startAnim(animationType, -checkSoftKeyBoardHeight(), onStart = {
                     keyBoardListener.changeKeyboardUi(KeyBoardType.SOFT_KEYBOARD)
                 })
@@ -306,7 +307,7 @@ class SoftKeyboardManager(
                     return
                 }
                 keyBoardListener.startAnim(animationType, -checkSoftKeyBoardHeight(), onStart = {
-                    softKeyboardChange(true, 4)
+                    softKeyboardChange(true, 6)
                     keyBoardListener.changeKeyboardUi(KeyBoardType.SOFT_KEYBOARD)
                 }, onEnd = {
 //                    isSoftKeyBoardBack = true
@@ -332,8 +333,8 @@ class SoftKeyboardManager(
      * */
     fun openSoftKeyBoard() {
         etInput?.let {
-            EditTextUtils.showKeyboard(it.context, it)
             etRequestFocus()
+            EditTextUtils.showKeyboard(it.context, it)
         }
     }
 
@@ -343,15 +344,18 @@ class SoftKeyboardManager(
     private fun hideSoftKeyBoard(flag: Int) {
 //        "hideSoftKeyBoard $flag".logd("aaa")
         etInput?.let {
+            it.clearFocus()
             EditTextUtils.hideKeyboard(it.context, it)
         }
     }
 
     fun etRequestFocus() {
-        etInput?.let {
-            it.requestFocus()
-            it.setSelection(it.length())
-        }
+       scope.launch {
+           etInput?.let {
+               it.requestFocus()
+               it.setSelection(it.length())
+           }
+       }
     }
 
     /**

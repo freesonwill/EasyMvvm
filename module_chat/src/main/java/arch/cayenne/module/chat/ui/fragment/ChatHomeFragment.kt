@@ -440,18 +440,21 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
     }
 
     override fun keyboardChangeClick(keyBoardType: KeyBoardType, flag: Int) {
-        if (!mViewModel.isMainSoft) {
-            val flag1 = !mViewModel.checkSoftKeyboardVisible()
-            if (keyBoardType != KeyBoardType.CHAT && flag1) {
-                softKeyBoardManager.checkSoftKeyBoardBetAmount(
-                    mViewModel.checkBetAmountFlow.value,
-                    keyBoardType,
-                    flag
-                )
-                return
-            }
+        if (keyBoardType == mViewModel.currentKeyBoardType) {
+            return
         }
-
+//        if (!mViewModel.isMainSoft) {
+//            val flag1 = !mViewModel.checkSoftKeyboardVisible()
+//            if (keyBoardType != KeyBoardType.CHAT && flag1) {
+//                softKeyBoardManager.checkSoftKeyBoardBetAmount(
+//                    mViewModel.checkBetAmountFlow.value,
+//                    keyBoardType,
+//                    flag
+//                )
+//                return
+//            }
+//        }
+//        "keyboardChangeClick ${keyBoardType} flag $flag".logd("aaa")
         softKeyBoardManager.addSoftKeyBoardEvent(keyBoardType, flag)
         softKeyBoardManager.showKeyboardAnimation()
     }
