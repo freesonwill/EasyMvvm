@@ -47,6 +47,8 @@
     <color name="tran_0">#00000000</color>
 
     <color name="color_80000000">#80000000</color>
+    <color name="color_99000000">#99000000</color>
+
 
     <color name="title_bg">#0e0f19</color>
     <color name="title_bar">#e6e6e6</color>
@@ -205,6 +207,7 @@
 
     <color name="color_D9BFAA">#D9BFAA</color>
     <color name="color_D0B5A1">#D0B5A1</color>
+    <color name="color_4C4C4C">#4C4C4C</color>
 
     <!-- VIP 等級顏色 -->
     <color name="shader_start">#FFFFFF</color>

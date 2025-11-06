@@ -10,7 +10,7 @@
 
     <style name="VideoThumbRoundedCorner" parent="">
         <item name="cornerFamily">rounded</item>
-        <item name="cornerSize">8dp</item> <!-- 設置圓角半徑 -->
+        <item name="cornerSize">@dimen/dp_6</item> <!-- 設置圓角半徑 -->
     </style>
 
     <style name="live_bet_item_text">

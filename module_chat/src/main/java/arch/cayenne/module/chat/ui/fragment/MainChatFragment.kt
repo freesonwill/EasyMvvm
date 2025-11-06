@@ -1,11 +1,7 @@
 package arch.cayenne.module.chat.ui.fragment
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.viewpager2.widget.ViewPager2
 import arch.cayenne.lib.base.data.constants.StatusBarMode
@@ -13,21 +9,19 @@ import arch.cayenne.lib.base.data.model.PagerBean
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.adapter.PagerAdapter
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.ui.fragment.launch
+import arch.cayenne.lib.common.data.constants.FragmentResultEnum
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
-import arch.cayenne.lib.common.utils.ext.TabLayoutExt
-import arch.cayenne.lib.common.utils.ext.TabLayoutExt.addOnTabSelectedListener2
-import arch.cayenne.lib.common.utils.ext.removeAllTips
 import arch.cayenne.lib.common.utils.ext.startFadeAnim
 import arch.cayenne.lib.skin.widget.SkinnableImageView
 import arch.cayenne.lib.skin.widget.SkinnableTextView
 import arch.cayenne.module.chat.R
 import arch.cayenne.module.chat.databinding.FragmentMainChatLayoutBinding
-import arch.cayenne.module.chat.databinding.ItemChatTablayoutLayoutBinding
 import arch.cayenne.module.chat.ui.viewmodel.MainChatViewModel
 import arch.cayenne.module.chat.ui.widget.ChatTabView
 import com.google.android.material.tabs.TabLayout
-import com.google.android.material.tabs.TabLayoutMediator
+import kotlinx.coroutines.delay
 import kotlin.reflect.KClass
 
 /**
@@ -91,6 +85,13 @@ class MainChatFragment : BaseFragment<MainChatViewModel, FragmentMainChatLayoutB
     }
 
     override suspend fun createObserver() {
+        launch {
+            mViewModel.jump2CustomerService.collect{
+                if(!it) return@collect
+                delay(1) //延迟，直接performClick，ChatTabView存在不显示的bug
+                mBinding.tabLayout.binding.tabChatCustomer.performClick()
+            }
+        }
     }
 
     private fun initViewPager2() {
@@ -202,4 +203,11 @@ class MainChatFragment : BaseFragment<MainChatViewModel, FragmentMainChatLayoutB
         super.onStart()
     }
 
+    override fun onHiddenChanged(hidden: Boolean) {
+        super.onHiddenChanged(hidden)
+        //"received , bundle:$arguments".logd(TAG)
+        arguments?.getBoolean(FragmentResultEnum.KEY_CUSTOMER_SERVICE.k)?.let {
+            mViewModel.jump2CustomerService(it)
+        }
+    }
 }

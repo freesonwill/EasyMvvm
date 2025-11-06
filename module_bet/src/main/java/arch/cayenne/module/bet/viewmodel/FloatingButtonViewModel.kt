@@ -4,12 +4,15 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
+import arch.cayenne.module.bet.repo.ComboBetRepository
 import arch.cayenne.module.bet.repo.FloatingButtonRepository
 import kotlinx.coroutines.launch
+import org.koin.core.component.inject
 import plugin.koin.KoinViewModel
 
 @KoinViewModel
 class FloatingButtonViewModel(private val repo: FloatingButtonRepository) : BaseViewModel() {
+    private val comboBetRepo:ComboBetRepository by inject()
 
     private val _onBettingCount = MutableLiveData(0)
     val onBettingCount: LiveData<Int> = _onBettingCount
@@ -23,5 +26,9 @@ class FloatingButtonViewModel(private val repo: FloatingButtonRepository) : Base
                 _onBettingCount.value = it
             }
         }
+    }
+
+    fun exitComboBet(){
+        comboBetRepo.removeAll()
     }
 }

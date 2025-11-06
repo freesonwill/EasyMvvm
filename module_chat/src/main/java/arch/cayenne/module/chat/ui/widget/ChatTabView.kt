@@ -18,11 +18,12 @@ import arch.cayenne.module.chat.ui.widget.ChatTabItemView.Companion.CUSTOMER
  * @description:
  */
 class ChatTabView : LinearLayout {
+    companion object {
+        const val CHAT_ROOM = 0
+        const val CHAT_LIVING = 1
+        const val CHAT_CUSTOMER = 2
+    }
     val binding = TabChatTopLayoutBinding.inflate(LayoutInflater.from(context), this, true)
-
-    private val CHAT_ROOM = 0
-    private val CHAT_LIVING = 1
-    private val CHAT_CUSTOMER = 2
 
     private val ACTION_NORMAL_TO_LIVING = 100
     private val ACTION_NORMAL_TO_CUSTOMER = 101

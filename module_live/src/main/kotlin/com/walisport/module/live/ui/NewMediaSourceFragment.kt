@@ -10,8 +10,6 @@ import androidx.core.animation.doOnEnd
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
-import arch.cayenne.lib.base.ui.animation.AnimationController
-import arch.cayenne.lib.base.ui.animation.AnimationController.AnimType
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getDimensionPixelSize
@@ -21,8 +19,8 @@ import arch.cayenne.lib.common.utils.ext.startSafeAnimateSet
 import com.walisport.module.live.compare.MediaSourceBeanCompare
 import com.walisport.module.live.data.model.MediaSource
 import com.walisport.module.live.data.model.MediaSourceType
-import com.walisport.module.live.databinding.FragmentLiveSourcePortraitBinding
-import com.walisport.module.live.ui.adapter.LiveMediaSourceHorizontalAdapter
+import com.walisport.module.live.databinding.FragmentLiveMediaSourceBinding
+import com.walisport.module.live.ui.adapter.LiveMediaSourceAdapter
 import com.walisport.module.live.ui.viewmodel.LiveMainViewModel
 import com.walisport.module.live.ui.viewmodel.LiveMatchMediaViewModel
 import com.walisport.module.live.ui.viewmodel.LiveVideoSourceViewModel
@@ -30,10 +28,10 @@ import kotlin.reflect.KClass
 
 
 class NewMediaSourceFragment :
-    BaseFragment<LiveVideoSourceViewModel, FragmentLiveSourcePortraitBinding>() {
+    BaseFragment<LiveVideoSourceViewModel, FragmentLiveMediaSourceBinding>() {
 
-    override val vbClass: KClass<FragmentLiveSourcePortraitBinding> =
-        FragmentLiveSourcePortraitBinding::class
+    override val vbClass: KClass<FragmentLiveMediaSourceBinding> =
+        FragmentLiveMediaSourceBinding::class
     override val vmClass: KClass<LiveVideoSourceViewModel> = LiveVideoSourceViewModel::class
 
     private val mediaViewModel: LiveMatchMediaViewModel by sharedViewModel<LiveMatchMediaViewModel, LiveMatchMediaFragment>()
@@ -53,7 +51,7 @@ class NewMediaSourceFragment :
                 itemAnimator = null
                 layoutManager =
                     LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-                adapter = LiveMediaSourceHorizontalAdapter(MediaSourceBeanCompare()).apply {
+                adapter = LiveMediaSourceAdapter(MediaSourceBeanCompare()).apply {
                     post {
                         addItemDecoration(HorizontalItemDecoration())
 
@@ -125,7 +123,7 @@ class NewMediaSourceFragment :
 
             liveVideoBean.observe(viewLifecycleOwner) {
                 mBinding.rvSource.apply {
-                    (adapter as LiveMediaSourceHorizontalAdapter).apply {
+                    (adapter as LiveMediaSourceAdapter).apply {
                         val list: MutableList<MediaSource> = mutableListOf()
 
                         if (!mViewModel.animationLiveUrl.value.isNullOrEmpty()) {
@@ -169,7 +167,7 @@ class NewMediaSourceFragment :
                     },
                 )
             },
-            duration = AnimationController[AnimType.popupEnter]!!.duration,
+            duration = ANIMATION_DURATION,
             interpolator = LinearInterpolator(),
             start = true
         )
@@ -179,7 +177,7 @@ class NewMediaSourceFragment :
     private fun onMediaSourceItemClicked(item: MediaSource) {
         if (item.mediaSourceType == MediaSourceType.ANIMATION) {
             item.isPlaying = true
-            (mBinding.rvSource.adapter as LiveMediaSourceHorizontalAdapter).currentList.forEach {
+            (mBinding.rvSource.adapter as LiveMediaSourceAdapter).currentList.forEach {
                 if (it.mediaSourceType == MediaSourceType.VIDEO) {
                     it.isPlaying = false
                 }
@@ -187,7 +185,7 @@ class NewMediaSourceFragment :
         } else if (item.mediaSourceType == MediaSourceType.VIDEO) {
             item.isPlaying = true
             mViewModel.setPlayingVideoId(item.videoSourceBean!!.id)
-            (mBinding.rvSource.adapter as LiveMediaSourceHorizontalAdapter).currentList.filter {
+            (mBinding.rvSource.adapter as LiveMediaSourceAdapter).currentList.filter {
                 it.mediaSourceType == MediaSourceType.VIDEO
             }.forEach { it.isPlaying = false }
 
@@ -237,7 +235,7 @@ class NewMediaSourceFragment :
                     remove()
                 }
             },
-            duration = AnimationController[AnimType.popupEnter]!!.duration,
+            duration = ANIMATION_DURATION,
             interpolator = LinearInterpolator(),
             start = true
         )
@@ -249,6 +247,7 @@ class NewMediaSourceFragment :
 
 
     companion object {
+        const val ANIMATION_DURATION = 120L
         const val TAG = "LiveMediaSourceFragmentNew"
     }
 

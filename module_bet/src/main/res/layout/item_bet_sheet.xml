@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
     android:background="@drawable/bg_bet_sheet">
 
     <arch.cayenne.lib.skin.widget.SkinnableTextView
@@ -21,7 +22,9 @@
         app:layout_constraintEnd_toStartOf="@id/tv_odds"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:skinnableFontWeight="500" />
+        app:skinnableFontWeight="500"
+        tools:text="中国 +0.5"
+        />
 
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/tv_odds"
@@ -34,7 +37,9 @@
         app:layout_constraintBottom_toBottomOf="@id/tv_selection_name"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/tv_selection_name"
-        app:skinnableFontWeight="600" />
+        app:skinnableFontWeight="600"
+        tools:text="\@1.82"
+        />
 
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/tv_status"
@@ -61,7 +66,9 @@
         android:textSize="14sp"
         app:layout_constraintStart_toEndOf="@id/tv_status"
         app:layout_constraintTop_toBottomOf="@id/tv_selection_name"
-        app:layout_goneMarginStart="0dp" />
+        app:layout_goneMarginStart="0dp"
+        tools:text="全场让球（0-0）"
+        />
 
     <androidx.constraintlayout.widget.Barrier
         android:id="@+id/bottom_barrier"
@@ -82,7 +89,9 @@
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@id/tv_selection_name"
-        app:layout_constraintTop_toBottomOf="@id/bottom_barrier" />
+        app:layout_constraintTop_toBottomOf="@id/bottom_barrier"
+        tools:text="中国 vs 巴西"
+        />
 
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/tv_league_name"
@@ -97,7 +106,9 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/iv_delete"
         app:layout_constraintStart_toStartOf="@id/tv_selection_name"
-        app:layout_constraintTop_toBottomOf="@id/tv_match_name" />
+        app:layout_constraintTop_toBottomOf="@id/tv_match_name"
+        tools:text="世界杯"
+        />
 
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/tv_bet_stop"

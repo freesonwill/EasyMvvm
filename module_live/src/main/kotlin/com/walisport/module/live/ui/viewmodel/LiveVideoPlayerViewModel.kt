@@ -155,7 +155,9 @@ class LiveVideoPlayerViewModel(
             mainRepo.getMatchRes(matchId)
         },{
             if (it is ApiResponseState.Succeeded<*>) {
-                _mainMatch.value = it.data!! as LiveMatchBean? // 主线程更新 LiveData
+                if (it.data != null) {
+                    _mainMatch.value = it.data!! as LiveMatchBean? // 主线程更新 LiveData
+                }
             }
         })
     }

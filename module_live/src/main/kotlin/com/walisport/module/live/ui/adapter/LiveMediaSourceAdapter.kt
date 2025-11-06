@@ -14,19 +14,19 @@ import com.bumptech.glide.request.RequestOptions
 import com.walisport.module.live.R
 import com.walisport.module.live.data.model.MediaSource
 import com.walisport.module.live.data.model.MediaSourceType
-import com.walisport.module.live.databinding.AdapterLiveVideoSourceItemHorizontalLayoutBinding
+import com.walisport.module.live.databinding.AdapterLiveMediaSourceItemBinding
 
 /**
  * 竖屏播放时的媒体源页面，RecyclerView使用的Adapter
  */
-class LiveMediaSourceHorizontalAdapter(compare: DiffUtil.ItemCallback<MediaSource>) :
-    BaseAdapter<MediaSource, LiveMediaSourceHorizontalAdapter.ViewHolder, ViewBinding>(
+class LiveMediaSourceAdapter(compare: DiffUtil.ItemCallback<MediaSource>) :
+    BaseAdapter<MediaSource, LiveMediaSourceAdapter.ViewHolder, ViewBinding>(
         compare
     ) {
 
     inner class ViewHolder(binding: ViewBinding) : BaseViewHolder(binding) {
-        private val viewBinding: AdapterLiveVideoSourceItemHorizontalLayoutBinding =
-            binding as AdapterLiveVideoSourceItemHorizontalLayoutBinding
+        private val viewBinding: AdapterLiveMediaSourceItemBinding =
+            binding as AdapterLiveMediaSourceItemBinding
 
 
         fun updateItem(position: Int) {
@@ -53,8 +53,7 @@ class LiveMediaSourceHorizontalAdapter(compare: DiffUtil.ItemCallback<MediaSourc
                 viewBinding.root.setOnClickListener {
                     listener(item)
                 }
-            }
-            else if(item.mediaSourceType==MediaSourceType.ANIMATION){
+            } else if (item.mediaSourceType == MediaSourceType.ANIMATION) {
                 viewBinding.tvTitle.text = R.string.media_source_animation_title.getString()
                 viewBinding.tvSubtitle.text = R.string.media_source_animation_subtitle.getString()
 
@@ -99,7 +98,7 @@ class LiveMediaSourceHorizontalAdapter(compare: DiffUtil.ItemCallback<MediaSourc
         viewType: Int
     ): ViewBinding {
         val binding =
-            AdapterLiveVideoSourceItemHorizontalLayoutBinding.inflate(inflater, parent, false)
+            AdapterLiveMediaSourceItemBinding.inflate(inflater, parent, false)
         return binding
     }
 

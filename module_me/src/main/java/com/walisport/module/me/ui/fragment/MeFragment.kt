@@ -1,7 +1,6 @@
 package com.walisport.module.me.ui.fragment
 
 import android.os.Bundle
-import android.view.View
 import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
 import arch.cayenne.lib.base.data.constants.StatusBarMode
@@ -11,6 +10,7 @@ import arch.cayenne.lib.common.data.constants.DrawerAction.ACTION_OPEN
 import arch.cayenne.lib.common.data.constants.DrawerAction.KEY_ACTION
 import arch.cayenne.lib.common.data.constants.DrawerAction.REQUEST_KEY_DRAWER
 import arch.cayenne.lib.common.ui.viewmodel.UnReadMessageViewModel
+import arch.cayenne.lib.common.utils.biz.CommonBiz
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
@@ -89,15 +89,15 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
             }
 
             ivCustomer.addScaleOnTouchAnimation()
-            ivCustomer.clickNoRepeat { }
+            ivCustomer.clickNoRepeat {
+                CommonBiz.jump2CustomerService(this@MeFragment)
+            }
 
             ivSetting.addScaleOnTouchAnimation()
             ivSetting.clickNoRepeat {
                 navigate(arch.cayenne.lib.res.R.string.nav_module_setting_fragment.deeplink())
             }
-
         }
-
     }
 
     override suspend fun createObserver() {

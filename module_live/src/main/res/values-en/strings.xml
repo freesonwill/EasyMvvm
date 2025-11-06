@@ -39,7 +39,7 @@
     <string name="statistics_ryq">Free kick</string>
     <string name="statistics_jq">Corner Kick</string>
     <string name="statistics_yw">OffSide</string>
-    <string name="choose_source">Choose source</string>
+    <string name="choose_source">Switch Narrator</string>
 
 
     <string name="outs_empty">Match Data is Empty</string>

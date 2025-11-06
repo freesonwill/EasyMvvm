@@ -1,52 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <arch.cayenne.lib.skin.widget.SkinnableLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/main_background"
     android:orientation="vertical">
 
-    <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_50"
+        android:text="@string/share"
+        android:textColor="@color/video_share_fragment_title_color"
+        android:textSize="17sp" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_share_apps"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_275"
-        android:layout_gravity="center_vertical"
-        android:layout_marginTop="@dimen/dp_48">
-
-        <arch.cayenne.lib.skin.widget.SkinnableTextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/share"
-            android:textColor="@color/video_share_fragment_title_color"
-            android:textSize="17sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <LinearLayout
-            android:id="@+id/operate_share"
-            android:layout_width="@dimen/dp_100"
-            android:layout_height="@dimen/dp_100"
-            android:layout_marginTop="@dimen/dp_54"
-            android:orientation="vertical"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <arch.cayenne.lib.skin.widget.SkinnableImageView
-                android:id="@+id/iv_share"
-                android:layout_width="@dimen/dp_48"
-                android:layout_height="@dimen/dp_48"
-                android:src="@drawable/shape_copy_link" />
-
-            <arch.cayenne.lib.skin.widget.SkinnableTextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_6"
-                android:text="@string/share_link"
-                android:textColor="@color/video_share_fragment_subtitle_color"
-                android:textSize="12sp" />
-
-
-        </LinearLayout>
-
-    </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_24"
+        android:orientation="horizontal" />
 </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>

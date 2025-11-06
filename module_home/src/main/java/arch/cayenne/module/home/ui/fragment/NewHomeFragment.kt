@@ -201,7 +201,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                     mViewModel.setCurrentPlayType(playType.id)
 
                     if (playType != PlayType.FAVORITE) {
-                        (childFragmentManager.findFragmentByTag("f$position") as? SubHomeFragment)?.onFragmentSelected()
+                        (childFragmentManager.findFragmentByTag("f$position") as? ISubFragmentLifecycle)?.onFragmentSelected()
                     }
 
                     // 樣式：設為粗體，並更新顏色
@@ -216,7 +216,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                     val playIndex = position - promoTabs.size
                     val playType = PlayType.entries[playIndex]
                     if (playType != PlayType.FAVORITE) {
-                        (childFragmentManager.findFragmentByTag("f$position") as? SubHomeFragment)?.onFragmentUnSelected()
+                        (childFragmentManager.findFragmentByTag("f$position") as? ISubFragmentLifecycle)?.onFragmentUnSelected()
                     }
                     // 設為預設字重並更新顏色
                     (tab.view.getChildAt(1) as? TextView)?.typeface = Typeface.DEFAULT

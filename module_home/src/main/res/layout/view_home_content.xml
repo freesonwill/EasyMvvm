@@ -9,118 +9,13 @@
     tools:ignore="MissingDefaultResource">
 
 
-    <androidx.constraintlayout.widget.Group
-        android:id="@+id/group_date_filter"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:constraint_referenced_ids="ll_date_filter_container, tv_tab_all, tl_date_list, ll_other_date, tv_date, tv_week_day"
-        tools:visibility="visible" />
-
-    <arch.cayenne.lib.skin.widget.SkinnableView
-        android:id="@+id/ll_date_filter_container"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_47"
-        android:background="@drawable/bg_date_tab"
-        android:clipChildren="false"
-        android:clipToPadding="false"
-        android:paddingHorizontal="@dimen/dp_10"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-         />
-
-    <!-- 固定「全部」tab -->
-    <TextView
-        android:id="@+id/tv_tab_all"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="0dp"
-        android:layout_marginEnd="0dp"
-        android:background="@drawable/selector_date_tab_bg"
-        android:gravity="center"
-        android:text="@string/tab_text_all"
-        android:textColor="@color/selector_date_text"
-        android:textSize="13sp"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@id/ll_date_filter_container"
-        app:layout_constraintStart_toStartOf="@id/ll_date_filter_container"
-        app:layout_constraintTop_toTopOf="@id/ll_date_filter_container" />
-
-    <arch.cayenne.lib.skin.widget.SkinnableTabLayout
-        android:id="@+id/tl_date_list"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:background="@drawable/bg_date_tab"
-        android:clipToPadding="true"
-        android:overScrollMode="never"
-        android:paddingVertical="@dimen/dp_5"
-        app:layout_constraintBottom_toBottomOf="@id/ll_date_filter_container"
-        app:layout_constraintEnd_toStartOf="@id/ll_other_date"
-        app:layout_constraintStart_toEndOf="@+id/tv_tab_all"
-        app:layout_constraintTop_toTopOf="@id/ll_date_filter_container"
-        app:tabGravity="center"
-        app:tabIndicator="@null"
-        app:tabIndicatorColor="@null"
-        app:tabIndicatorHeight="0dp"
-        app:tabMode="scrollable"
-        app:tabPaddingEnd="0dp"
-        app:tabPaddingStart="0dp"
-        app:tabRippleColor="@null"
-        app:tabSelectedTextColor="@color/date_text_select"
-        app:tabTextColor="@color/date_text_unselect" />
-
-    <!--其他日期view-->
-    <arch.cayenne.lib.skin.widget.SkinnableView
-        android:id="@+id/ll_other_date"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="0dp"
-        android:layout_marginEnd="0dp"
-        android:layout_marginBottom="0dp"
-        android:background="@drawable/selector_other_date_tab_bg"
-        android:gravity="center"
-        android:visibility="gone"
-        android:orientation="vertical"
-        app:layout_constraintEnd_toEndOf="@id/ll_date_filter_container"
-        app:layout_constraintTop_toBottomOf="@id/ll_date_filter_container"
-        app:layout_constraintTop_toTopOf="@id/ll_date_filter_container" />
-
-    <arch.cayenne.lib.skin.widget.SkinnableImageView
-        android:id="@+id/tv_date"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:visibility="gone"
-        android:duplicateParentState="false"
-        android:gravity="center"
-        android:src="@drawable/selector_other_date_icon"
-        app:layout_constraintEnd_toEndOf="@id/ll_other_date"
-        app:layout_constraintStart_toStartOf="@id/ll_other_date"
-        app:layout_constraintTop_toTopOf="@id/ll_other_date" />
-
-    <arch.cayenne.lib.skin.widget.SkinnableTextView
-        android:id="@+id/tv_week_day"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:visibility="gone"
-        android:layout_marginTop="@dimen/dp_1"
-        android:duplicateParentState="false"
-        android:gravity="center_horizontal"
-        android:text="@string/tab_text_other_day"
-        android:textColor="@color/selector_other_date_text"
-        android:textSize="13sp"
-        app:layout_constraintEnd_toEndOf="@id/ll_other_date"
-        app:layout_constraintStart_toStartOf="@id/ll_other_date"
-        app:layout_constraintTop_toBottomOf="@id/tv_date"
-        app:skinnableFontWeight="400" />
-
     <arch.cayenne.lib.skin.widget.SkinnableView
         android:id="@+id/v_btn_mask"
         android:layout_width="130dp"
         android:layout_height="@dimen/dp_38"
         android:background="@color/color_1E1E1E"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/ll_date_filter_container" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <arch.cayenne.lib.common.ui.view.BounceTabLayoutContainer
         android:id="@+id/tl_container"
@@ -128,7 +23,7 @@
         android:layout_height="@dimen/dp_38"
         app:layout_constraintEnd_toStartOf="@+id/v_btn_mask"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/ll_date_filter_container">
+        app:layout_constraintTop_toTopOf="parent">
 
         <arch.cayenne.module.home.ui.view.CustomTabLayout
             android:id="@+id/tl_league_list"
@@ -140,8 +35,8 @@
             android:overScrollMode="never"
             android:paddingStart="@dimen/dp_10"
             android:paddingTop="@dimen/dp_4"
-            android:paddingBottom="2dp"
             android:paddingEnd="35dp"
+            android:paddingBottom="2dp"
             app:tabGravity="start"
             app:tabIndicator="@null"
             app:tabIndicatorColor="@null"
@@ -151,6 +46,83 @@
             app:tabSelectedTextColor="@color/league_tab_tint_select"
             app:tabTextColor="@color/league_tab_tint_unselect" />
     </arch.cayenne.lib.common.ui.view.BounceTabLayoutContainer>
+
+    <arch.cayenne.lib.skin.widget.SkinnableView
+        android:id="@+id/v_league_more_mask"
+        android:layout_width="@dimen/dp_18"
+        android:layout_height="@dimen/dp_38"
+        android:layout_marginEnd="@dimen/dp_130"
+        android:background="@drawable/gradient_btn_mask"
+        android:paddingBottom="@dimen/dp_14"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
+        android:id="@+id/ll_tournament_sort"
+        android:layout_width="51dp"
+        android:layout_height="@dimen/dp_32"
+        android:layout_marginTop="@dimen/dp_4"
+        android:layout_marginEnd="@dimen/dp_7"
+        android:layout_marginBottom="@dimen/dp_3"
+        android:background="@drawable/shape_tournament_more_bg"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
+            android:id="@+id/tv_tournament_more"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="@dimen/dp_2"
+            android:layout_marginEnd="@dimen/dp_2"
+            android:text="@string/tournament_section_title_hot"
+            android:textColor="@color/color_C0C0C0"
+            android:textSize="@dimen/sp_14" />
+
+        <arch.cayenne.lib.skin.widget.SkinnableImageView
+            android:id="@+id/iv_tournament_sort_icon"
+            android:layout_width="8dp"
+            android:layout_height="8dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginTop="@dimen/dp_2"
+            android:layout_marginBottom="@dimen/dp_1"
+            android:src="@drawable/ic_tournament_expand" />
+    </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
+
+    <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
+        android:id="@+id/ll_btn_tournament"
+        android:layout_width="@dimen/dp_64"
+        android:layout_height="@dimen/dp_32"
+        android:layout_marginTop="@dimen/dp_4"
+        android:layout_marginEnd="@dimen/dp_7"
+        android:background="@drawable/shape_tournament_more_bg"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toStartOf="@+id/ll_tournament_sort"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
+            android:id="@+id/tv_btn_tournament"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="@dimen/dp_6"
+            android:layout_marginEnd="@dimen/dp_1"
+            android:text="@string/home_tournament_list"
+            android:textColor="@color/color_C0C0C0"
+            android:textSize="@dimen/sp_14" />
+
+        <arch.cayenne.lib.skin.widget.SkinnableImageView
+            android:id="@+id/iv_btn_tournament_icon"
+            android:layout_width="17dp"
+            android:layout_height="16dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginTop="@dimen/dp_2"
+            android:layout_marginBottom="@dimen/dp_1"
+            android:src="@drawable/ic_tournament_list" />
+    </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
 
 
     <androidx.viewpager2.widget.ViewPager2
@@ -162,13 +134,30 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tl_container" />
 
-    <FrameLayout
-        android:id="@+id/ll_calendar"
+    <!-- 蒙層視圖 -->
+    <arch.cayenne.lib.skin.widget.SkinnableView
+        android:id="@+id/v_tournament_list_mask"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:alpha="0"
+        android:background="#BF000000"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/ll_date_filter_container" />
+        app:layout_constraintTop_toBottomOf="@+id/ll_tournament_sort" />
+
+    <!-- 排序選單下拉容器 -->
+    <FrameLayout
+        android:id="@+id/ll_tournaments_dropdown"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ll_tournament_sort" />
+
+
 </arch.cayenne.module.home.ui.view.ClickSearchConstraintLayout>
