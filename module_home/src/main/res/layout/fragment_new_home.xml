@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<arch.cayenne.lib.skin.widget.SkinnableConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/title_bg">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="110dp"
-        android:background="@color/color_272727"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -88,7 +88,6 @@
         <arch.cayenne.module.home.ui.view.ClickSearchConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/color_272727"
             android:clipChildren="false"
             android:clipToPadding="false">
 
@@ -119,7 +118,6 @@
                     android:paddingTop="5dp"
                     android:paddingBottom="7dp"
                     android:scaleType="fitCenter"
-                    android:background="@color/color_272727"
                     android:src="@drawable/ic_home_sidebar"
                     android:stateListAnimator="@animator/layout_alpha_animator"
                     android:translationZ="1dp"
@@ -229,4 +227,4 @@
                 app:layout_constraintTop_toBottomOf="@+id/cl_first_navbar" />
         </arch.cayenne.module.home.ui.view.ClickSearchConstraintLayout>
     </androidx.appcompat.widget.LinearLayoutCompat>
-</androidx.constraintlayout.widget.ConstraintLayout>
+</arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
