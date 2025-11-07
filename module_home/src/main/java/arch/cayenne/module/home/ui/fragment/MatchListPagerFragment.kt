@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
@@ -29,6 +30,7 @@ import arch.cayenne.module.bet.ui.fragment.BetSheetFragment
 import arch.cayenne.module.bet.viewmodel.FloatingButtonControlViewModel
 import arch.cayenne.module.home.R
 import arch.cayenne.module.home.data.constants.HomeState
+import arch.cayenne.module.home.data.constants.PlayType
 import arch.cayenne.module.home.databinding.FragmentMatchListPagerBinding
 import arch.cayenne.module.home.ui.adapter.MatchItemAdapter
 import arch.cayenne.module.home.ui.adapter.OnMatchItemClickListener
@@ -50,8 +52,13 @@ class MatchListPagerFragment :
         FragmentMatchListPagerBinding::class
     override val vmClass: KClass<MatchListViewModel> = MatchListViewModel::class
     private val homeViewModel: HomeViewModel by sharedViewModel<HomeViewModel, NewHomeFragment>()
-    private val subHomeViewModel: SubHomeViewModel by viewModels({ requireParentFragment() })
-    private val earlyViewModel: EarlyViewModel by viewModels({ requireParentFragment() })
+    private val subHomeViewModel: SubHomeViewModel by lazy {
+        if (arguments?.getInt(ARG_PLAY_TYPE_ID) == PlayType.EARLY.id) {
+            viewModels<EarlyViewModel>({ requireParentFragment() }).value
+        } else {
+            viewModels<SubHomeViewModel>({ requireParentFragment() }).value
+        }
+    }
 
     private lateinit var matchAdapter: MatchItemAdapter
     private val gameLayoutManager by lazy { LinearLayoutManager(context) }
@@ -309,13 +316,20 @@ class MatchListPagerFragment :
             }
 
         }
-        earlyViewModel.selectedDate.observeEvent(viewLifecycleOwner, this) { date ->
-            if (date == HomeViewModel.DEFAULT_DATE
-                || subHomeViewModel.currentPlayTypeId != mViewModel.getPlayTypeId()
-                || subHomeViewModel.currentSportId != mViewModel.getSportId()
-            )
-                return@observeEvent
-            refreshListByDate(date)
+
+        //这个时候还没调用initData, 需要从arguments中获取playType
+        if (arguments?.getInt(ARG_PLAY_TYPE_ID) == PlayType.EARLY.id) {
+            //只有早盘有日期变化的情况
+            val earlyViewModel: EarlyViewModel = subHomeViewModel as EarlyViewModel
+            earlyViewModel.selectedDate.observeEvent(viewLifecycleOwner, this) { date ->
+                if (date == HomeViewModel.DEFAULT_DATE
+                    || earlyViewModel.currentPlayTypeId != mViewModel.getPlayTypeId()
+                    || earlyViewModel.currentSportId != mViewModel.getSportId()
+                ) {
+                    return@observeEvent
+                }
+                refreshListByDate(date)
+            }
         }
 
         homeViewModel.notifySubHomeRefresh.observeEvent(viewLifecycleOwner, this) {
