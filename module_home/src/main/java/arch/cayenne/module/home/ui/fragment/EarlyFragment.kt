@@ -21,6 +21,7 @@ import androidx.viewpager2.widget.ViewPager2
 import androidx.viewpager2.widget.ViewPager2.SCROLL_STATE_IDLE
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
@@ -55,13 +56,11 @@ import arch.cayenne.module.home.ui.view.HomeCalendarFragment
 import arch.cayenne.module.home.ui.viewmodel.EarlyDate
 import arch.cayenne.module.home.ui.viewmodel.EarlyViewModel
 import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
-import arch.cayenne.module.home.utils.DateUtils
 import arch.cayenne.module.home.utils.scrollToPositionWithoutAnim
 import com.bumptech.glide.Glide
 import com.google.android.material.tabs.TabLayout
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import java.util.Locale
 import kotlin.reflect.KClass
 
 /**
@@ -167,6 +166,7 @@ class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>(),
             }
         }
 
+
         mViewModel.tournaments.observeEvent(viewLifecycleOwner, this) { list ->
             setTournamentAndViewPagerLayout(list)
         }
@@ -189,7 +189,7 @@ class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>(),
         }
         mViewModel.selectedDate.observeEvent(viewLifecycleOwner, this) { select ->
             if (select == HomeViewModel.DEFAULT_DATE) return@observeEvent
-            setSelectedDateTab(getFuture31Days().find { it.third == select })
+            setSelectedDateTab(mViewModel.dateList.value?.find { it.timestamp == select })
         }
 
         mViewModel.tournamentSlideOutEnd.observeEvent(viewLifecycleOwner, this) {
@@ -242,6 +242,15 @@ class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>(),
                 percent = "57.91%",
                 levelUpInfo = "升级还需¥59w"
             )
+        }
+
+        mViewModel.dateList.observe(viewLifecycleOwner) {
+            // 日期 Tab 設定
+            updateDateTabs(mBinding.tlDateList, it!!)
+            addDateTabListener()
+            lifecycleScope.launch {
+                mViewModel.selectedDate(it.first().timestamp)
+            }
         }
     }
 
@@ -430,8 +439,6 @@ class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>(),
     //init 三級導航欄位與日期，只有今日和早盤有
     @SuppressLint("DefaultLocale")
     private fun initTournamentLayout() {
-        // 取得未來 31 天 (MMDD, 星期, timeStamp)
-        val dateTabs = mViewModel.dateList.value
         with(mBinding.layoutContainer) {
             //聯賽
             vpGameList.isSaveEnabled = false
@@ -464,10 +471,6 @@ class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>(),
             }, false)
 
         }
-
-        // 日期 Tab 設定, 固定 "全部"
-        updateDateTabs(mBinding.tlDateList, dateTabs!!)
-        addDateTabListener()
 
         mBinding.layoutContainer.llBtnTournament.apply { addScaleOnTouchAnimation() }
             .clickNoRepeat {
@@ -533,7 +536,8 @@ class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>(),
                 playFadeAnimTriggerByDateTab {
                     lifecycleScope.launch {
                         mViewModel.selectedDate(
-                            getFuture31Days().find { it.first == tab.tag }?.third ?: return@launch
+                            mViewModel.dateList.value?.find { it.dateStr == tab.tag }?.timestamp
+                                ?: return@launch
                         )
                     }
                 }
@@ -558,10 +562,6 @@ class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>(),
     private fun resetDateTabs() {
 //        mBinding.layoutContainer.tvTabAll.isSelected = true
         clearDateTabSelection()
-        lifecycleScope.launch {
-            mViewModel.selectedDate(0L)
-        }
-
     }
 
     /**
@@ -738,16 +738,16 @@ class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>(),
 
 
     //選取日期後按確定時連動至早盤日期tab,選取對應的日期
-    private fun setSelectedDateTab(dateTriple: Triple<String, String, Long>?) {
+    private fun setSelectedDateTab(earlyDate: EarlyDate?) {
         with(mBinding) {
-            if (dateTriple == null) {
+            if (earlyDate == null) {
                 resetDateTabs()
                 return
             }
             var indexOfTabs = -1
             for (i in 0 until tlDateList.tabCount) {   //尋找是否在目前的tab內已經存在，存在的話跳到該tab就好
                 val tab = tlDateList.getTabAt(i)
-                if (tab?.tag == dateTriple.first) {
+                if (tab?.tag == earlyDate.dateStr) {
                     indexOfTabs = i
                     break
                 }
@@ -757,8 +757,8 @@ class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>(),
             } else {
                 tlDateList.addTabAndScrollPrecisely(
                     createDateTab(
-                        dateTriple.first,
-                        dateTriple.second
+                        earlyDate.dateStr,
+                        earlyDate.weekdayStr
                     )
                 )
                 setupDateTabLayoutParams(tlDateList, false)
@@ -783,15 +783,6 @@ class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>(),
             }
         }
     }
-
-    private fun getFutureSevenDays() = getFuture31Days().take(7)
-    private fun getFuture31Days() = DateUtils.getFutureDays(
-        31,
-        Locale.getDefault(),
-        resources.getString(R.string.first_day_title),
-        "M-dd",
-        "E"
-    )
 
     private fun updateDateTabs(
         tlDateList: TabLayout,

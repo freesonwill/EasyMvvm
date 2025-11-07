@@ -1,8 +1,10 @@
 package arch.cayenne.module.home.ui.viewmodel
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.common.ui.viewmodel.Event
 import arch.cayenne.lib.database.entity.BaseTournamentData
@@ -94,7 +96,6 @@ class EarlyViewModel : SubHomeViewModel() {
                 "On setCurrentSport -> Clear Tournaments LiveData & Update Tournaments from API".logi(
                     this::class.java.simpleName
                 )
-                setCurrentSelectedDate()   //目前日期跟著球類走，ex:早盤日期目前是7.11，不管點擊哪一個聯賽都是7.11資料，所以設定完當前選擇的球類後先設定日期
                 getCurrentTournament()
             }
         }
