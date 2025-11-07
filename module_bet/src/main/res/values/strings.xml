@@ -35,10 +35,14 @@
     <string name="title_result_pending_reserve">预约确认中</string>
     <string name="title_result_fail_reserve">预约失败</string>
     <string name="title_result_amount">本金</string>
-    <string name="title_result_win_single_bet">可赢</string>
+    <string name="title_result_count">展开%d个盘口</string>
+    <string name="title_result_expand">收起</string>
+    <string name="title_result_win_single_bet">预计可赢</string>
     <string name="title_result_win_combo_bet">最高可赢</string>
     <string name="btn_result_continue_bet">续投</string>
-
+    <string name="btn_result_check_bet">查看注单</string>
+    <string name="title_result_bet_again">重新投注</string>
+    <string name="title_result_bet_suc">注单已提交</string>
     <string name="hint_less_min_amount">低于最低限额</string>
 
     <string name="title_odds_change_any">接受任何赔率变化</string>

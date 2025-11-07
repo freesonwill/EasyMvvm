@@ -9,9 +9,10 @@ import arch.cayenne.module.bet.databinding.ItemBetSheetBinding
 import arch.cayenne.module.bet.ui.compare.BetSelectionBeanCompare
 import arch.cayenne.module.bet.ui.viewholder.BetSelectionViewHolder
 
-class BetSelectionAdapter(private val onBetSelectionClickListener: OnBetSelectionClickListener? = null): BaseAdapter<BetSelectionBean, BetSelectionViewHolder, ItemBetSheetBinding>(
-    BetSelectionBeanCompare()
-) {
+class BetSelectionAdapter(private val onBetSelectionClickListener: OnBetSelectionClickListener? = null) :
+    BaseAdapter<BetSelectionBean, BetSelectionViewHolder, ItemBetSheetBinding>(
+        BetSelectionBeanCompare()
+    ) {
     override fun convertPlus(
         holder: BetSelectionViewHolder,
         binding: ItemBetSheetBinding,
@@ -19,6 +20,7 @@ class BetSelectionAdapter(private val onBetSelectionClickListener: OnBetSelectio
     ) {
         holder.init(itemCount, getItem(position))
         binding.ivDelete.isVisible = onBetSelectionClickListener != null
+        binding.itemLine.isVisible = position != itemCount - 1
         binding.ivDelete.setOnClickListener {
             onBetSelectionClickListener?.onDeleteClick(getItem(holder.adapterPosition))
         }
@@ -32,7 +34,10 @@ class BetSelectionAdapter(private val onBetSelectionClickListener: OnBetSelectio
         return ItemBetSheetBinding.inflate(inflater, parent, false)
     }
 
-    override fun createViewHolder(binding: ItemBetSheetBinding, viewType: Int): BetSelectionViewHolder {
+    override fun createViewHolder(
+        binding: ItemBetSheetBinding,
+        viewType: Int
+    ): BetSelectionViewHolder {
         return BetSelectionViewHolder(binding)
     }
 
