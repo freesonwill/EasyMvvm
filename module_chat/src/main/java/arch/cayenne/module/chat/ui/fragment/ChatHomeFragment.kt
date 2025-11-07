@@ -373,7 +373,7 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
     }
 
     private fun addMainViewListen() {
-        mBinding.screenContent.viewTreeObserver
+        mBinding.main.viewTreeObserver
             .addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
                 override fun onGlobalLayout() {
                     mBinding.main.viewTreeObserver.removeOnGlobalLayoutListener(this)
@@ -387,9 +387,9 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
             softKeyBoardManager.emojiKeyBoardHeight = 242.dp2px
             chatKeyboard.layoutParams.height = softKeyBoardManager.emojiKeyBoardHeight
             inputMain.layoutParams.height = mViewModel.keyBoardHeight
-            screenContent.layoutParams.height =
+            main.layoutParams.height =
                 mViewModel.keyBoardHeight + softKeyBoardManager.emojiKeyBoardHeight
-            mBinding.screenContent.requestLayout()
+            mBinding.main.requestLayout()
         }
     }
 
