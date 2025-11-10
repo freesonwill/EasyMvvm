@@ -211,7 +211,8 @@
             android:textColor="@color/color_00E0E5"
             android:textSize="15sp"
             android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/btn_confirm"/>
 
         <arch.cayenne.lib.skin.widget.SkinnableTextView
             android:id="@+id/btn_confirm"
