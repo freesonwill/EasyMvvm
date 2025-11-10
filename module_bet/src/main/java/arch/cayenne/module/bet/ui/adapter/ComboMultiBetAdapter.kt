@@ -4,17 +4,17 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import arch.cayenne.lib.base.ui.adapter.BaseAdapter
 import arch.cayenne.module.bet.data.ComboMultiBetBean
-import arch.cayenne.module.bet.databinding.ItemComboMultiBetBinding
+import arch.cayenne.module.bet.databinding.ItemComboMultiBet2Binding
 import arch.cayenne.module.bet.ui.compare.ComboRateCompare
 import arch.cayenne.module.bet.ui.viewholder.ComboMultiBetViewHolder
 
 class ComboMultiBetAdapter(
-    private val onComboMultiBetClickListener: OnComboMultiBetClickListener
-): BaseAdapter<ComboMultiBetBean, ComboMultiBetViewHolder, ItemComboMultiBetBinding>(
+    val onComboMultiBetClickListener: OnComboMultiBetClickListener
+): BaseAdapter<ComboMultiBetBean, ComboMultiBetViewHolder, ItemComboMultiBet2Binding>(
     ComboRateCompare()
 ) {
 
-    override fun convertPlus(holder: ComboMultiBetViewHolder, binding: ItemComboMultiBetBinding, position: Int) {
+    override fun convertPlus(holder: ComboMultiBetViewHolder, binding: ItemComboMultiBet2Binding, position: Int) {
         val item = getItem(holder.adapterPosition)
         holder.bind(item)
     }
@@ -23,11 +23,11 @@ class ComboMultiBetAdapter(
         inflater: LayoutInflater,
         parent: ViewGroup,
         viewType: Int
-    ): ItemComboMultiBetBinding {
-        return ItemComboMultiBetBinding.inflate(inflater, parent, false)
+    ): ItemComboMultiBet2Binding {
+        return ItemComboMultiBet2Binding.inflate(inflater, parent, false)
     }
 
-    override fun createViewHolder(binding: ItemComboMultiBetBinding, viewType: Int): ComboMultiBetViewHolder {
+    override fun createViewHolder(binding: ItemComboMultiBet2Binding, viewType: Int): ComboMultiBetViewHolder {
         return ComboMultiBetViewHolder(binding, onComboMultiBetClickListener)
     }
 
