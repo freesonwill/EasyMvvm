@@ -71,5 +71,6 @@ dependencies {
     kapt(libs.glidecompiler)
     api(libs.utilcodex)
     api(libs.gson)
+    implementation(libs.blurview)
     implementation(libs.brv)
 }
