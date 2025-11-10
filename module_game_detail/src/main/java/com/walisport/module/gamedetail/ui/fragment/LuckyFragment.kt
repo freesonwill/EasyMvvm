@@ -18,13 +18,13 @@ import arch.cayenne.lib.common.utils.FadeAnimation
 import com.walisport.module.gamedetail.data.model.PlayerRankingBean
 import com.walisport.module.gamedetail.databinding.FragmentPlayerRankingBinding
 import com.walisport.module.gamedetail.ui.adapter.PlayerRankingAdapter
+import com.walisport.module.gamedetail.ui.viewmodel.LuckyViewModel
 import com.walisport.module.gamedetail.ui.viewmodel.PlayerRankingViewModel
 import kotlin.reflect.KClass
 
-class PlayerRankingFragment : BaseFragment<PlayerRankingViewModel, FragmentPlayerRankingBinding>() {
+class LuckyFragment : BaseFragment<LuckyViewModel, FragmentPlayerRankingBinding>() {
     override val vbClass: KClass<FragmentPlayerRankingBinding> = FragmentPlayerRankingBinding::class
-    override val vmClass: KClass<PlayerRankingViewModel> = PlayerRankingViewModel::class
-
+    override val vmClass: KClass<LuckyViewModel> = LuckyViewModel::class
 
     private val rankingAdapter by lazy {
         PlayerRankingAdapter()
@@ -42,8 +42,10 @@ class PlayerRankingFragment : BaseFragment<PlayerRankingViewModel, FragmentPlaye
         // 淡入动画
         FadeAnimation.fadeIn(view)
         with(mBinding.viewBg) {
-            layoutParams = (layoutParams as ConstraintLayout.LayoutParams).apply {
-                bottomMargin = marginBottom
+            post {
+                layoutParams = (layoutParams as ConstraintLayout.LayoutParams).apply {
+                    bottomMargin = marginBottom
+                }
             }
         }
     }
@@ -102,11 +104,10 @@ class PlayerRankingFragment : BaseFragment<PlayerRankingViewModel, FragmentPlaye
     private fun dismiss() {
         if (parentFragment != null || parentFragmentManager.fragments.contains(this)) {
             onDismissListener?.invoke()
-            // 淡出动画
             FadeAnimation.fadeOut(view) {
                 parentFragmentManager.beginTransaction()
                     .setReorderingAllowed(true)
-                    .remove(this@PlayerRankingFragment)
+                    .remove(this)
                     .commitAllowingStateLoss()
             }
         }
@@ -144,13 +145,12 @@ class PlayerRankingFragment : BaseFragment<PlayerRankingViewModel, FragmentPlaye
             rankingDatas = datas
         }
 
-
         fun setOnDismissListener(listener: (() -> Unit)?) {
             onDismissListener = listener
         }
 
-        fun build(): PlayerRankingFragment {
-            return PlayerRankingFragment().apply {
+        fun build(): LuckyFragment {
+            return LuckyFragment().apply {
                 this.marginBottom = this@Builder.marginBottom
                 this.touchThroughViews = this@Builder.touchThroughViews
                 this.rankingDatas = this@Builder.rankingDatas
@@ -160,6 +160,6 @@ class PlayerRankingFragment : BaseFragment<PlayerRankingViewModel, FragmentPlaye
     }
 
     companion object {
-        const val TAG = "PlayerRankingFragment"
+        const val TAG = "LuckyFragment"
     }
 }
