@@ -110,7 +110,8 @@ class BetResultFragment :
             clearAllObserve()
             lifecycleScope.launch {
                 mViewModel.continueBet()?.let {
-                    BetSheetFragment.show(requireActivity(), getHideAnimator())
+                    CombinationFragment.show(requireActivity(), getHideAnimator())
+                    //BetSheetFragment.show(requireActivity(), getHideAnimator())
                 }
             }
         }
