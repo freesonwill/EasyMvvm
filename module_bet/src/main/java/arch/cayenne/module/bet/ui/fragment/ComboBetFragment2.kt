@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
 import arch.cayenne.lib.common.ui.dialog.CommonDialog
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
 import arch.cayenne.lib.common.utils.ViewUtils
@@ -84,7 +85,11 @@ class ComboBetFragment2 : BaseFragment<ComboBetViewModel, FragmentComboBet2Bindi
                             minAmount,
                             maxAmount
                         ).show(childFragmentManager)
-                    }
+                    } ?: let {
+                        "cannot find $serialValue in onComboMultiBetBeanListener:${mViewModel.onComboMultiBetBeanListener.value}"
+                            .also { showToast(it) }
+                            .loge(TAG)
+                }
             }
 
             override fun getMoneySymbol(): String {
@@ -193,11 +198,7 @@ class ComboBetFragment2 : BaseFragment<ComboBetViewModel, FragmentComboBet2Bindi
             }
         }
         mViewModel.remainingComboMultiBetBeansLD.observe(viewLifecycleOwner) { data ->
-            if (data.isEmpty()) {
-                return@observe
-            }
-            comboMultiBetAdapter.submitList(data) {
-            }
+            comboMultiBetAdapter.submitList(data)
         }
         mViewModel.onComboMultiBetBeanListener.observe(viewLifecycleOwner){ data->
             setSumBetMoney(data)
