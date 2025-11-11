@@ -1,12 +1,12 @@
 package com.walisport.module.topup.ui.fragment
 
-import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import androidx.lifecycle.lifecycleScope
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
+import arch.cayenne.lib.common.ui.fragment.CoinDialogFragment
 import arch.cayenne.lib.common.utils.QRCodeUtils
 import arch.cayenne.lib.common.utils.copyToClipboard
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
