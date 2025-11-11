@@ -21,7 +21,6 @@ import androidx.viewpager2.widget.ViewPager2
 import androidx.viewpager2.widget.ViewPager2.SCROLL_STATE_IDLE
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
@@ -52,7 +51,6 @@ import arch.cayenne.module.home.ui.adapter.LeaguePagerAdapter
 import arch.cayenne.module.home.ui.adapter.SportBannerAdapter
 import arch.cayenne.module.home.ui.adapter.SportsListAdapter
 import arch.cayenne.module.home.ui.view.CustomTabLayoutMediator
-import arch.cayenne.module.home.ui.view.HomeCalendarFragment
 import arch.cayenne.module.home.ui.viewmodel.EarlyDate
 import arch.cayenne.module.home.ui.viewmodel.EarlyViewModel
 import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
@@ -72,7 +70,6 @@ class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>(),
     override val vmClass: KClass<EarlyViewModel> = EarlyViewModel::class
     private val homeViewModel: HomeViewModel by sharedViewModel<HomeViewModel, NewHomeFragment>()
 
-    private var customPopup: HomeCalendarFragment? = null
     private var tournamentTabLayoutMediator: CustomTabLayoutMediator? = null
 
     private var leaguePagerAdapter: LeaguePagerAdapter? = null
@@ -151,11 +148,6 @@ class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>(),
 
     @SuppressLint("NotifyDataSetChanged")
     override suspend fun createObserver() {
-        mViewModel.selectedSkinType.observeEvent(viewLifecycleOwner, this) {
-            if (customPopup != null) {
-                customPopup!!.setSkinColor()
-            }
-        }
 
         with(mViewModel) {
             sportsStatistical.observeEvent(viewLifecycleOwner, this@EarlyFragment) {
@@ -184,9 +176,7 @@ class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>(),
         mViewModel.navigationToChampion.observeEvent(viewLifecycleOwner, this) { data ->
             navigate(Uri.parse("walisport://module_home/championFragment?matchId=${data.championMatchId}&name=${data.name}&icon=${data.icon}"))
         }
-        mViewModel.recently7DayMatchScheduleCount.observeEvent(viewLifecycleOwner, this) { list ->
-            customPopup?.updateRange(list)
-        }
+
         mViewModel.selectedDate.observeEvent(viewLifecycleOwner, this) { select ->
             if (select == HomeViewModel.DEFAULT_DATE) return@observeEvent
             setSelectedDateTab(mViewModel.dateList.value?.find { it.timestamp == select })
@@ -209,19 +199,6 @@ class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>(),
             clearLeagueListSelection()
         }
 
-        mViewModel.calendarStates.observe(viewLifecycleOwner) {
-            when (it) {
-                HomeCalendarFragment.States.CALENDAR_CLOSE_NOTHING -> {
-                    if (customPopup != null &&
-                        customPopup?.getAnimState() != HomeCalendarFragment.AnimState.COLLAPSING
-                    ) {
-                        customPopup?.callDismiss()
-                    }
-                }
-
-                else -> Unit
-            }
-        }
 
         homeViewModel.notifySubHomeRefresh.observeEvent(viewLifecycleOwner, this) {
             sportsListAdapter.notifyDataSetChanged()
@@ -272,7 +249,6 @@ class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>(),
     // 設置更多按鈕的顯示狀態
     override fun onFragmentUnSelected() {
         mViewModel.requestCollapseTournamentDropdown()
-        mViewModel.setCalendarState(HomeCalendarFragment.States.CALENDAR_CLOSE_NOTHING)
         // 收起排序選單
         if (isExpanded) {
             toggleTournamentSorting(false)
@@ -474,12 +450,10 @@ class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>(),
 
         mBinding.layoutContainer.llBtnTournament.apply { addScaleOnTouchAnimation() }
             .clickNoRepeat {
-                mViewModel.setCalendarState(HomeCalendarFragment.States.CALENDAR_CLOSE_NOTHING)
                 // toggleTournamentMoreSection(true, TournamentListType.MORE)
                 showTournamentListBottomSheet()
             }
         mBinding.layoutContainer.llTournamentSort.clickNoRepeat {
-            mViewModel.setCalendarState(HomeCalendarFragment.States.CALENDAR_CLOSE_NOTHING)
             toggleTournamentSorting(!isExpanded)
         }
     }
@@ -838,7 +812,6 @@ class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>(),
             }.also { layoutMediator ->
                 layoutMediator.attach(
                     afterTabSelected = { position ->
-                        getSelectedRecently31Scheduled(position)
                         tournaments.getOrNull(position)?.let { tournament ->
                             mViewModel.setCurrentTournamentId(tournament.id)
                             // 需求3：標記外部tab已切換，下次打開彈窗時需要清空篩選
@@ -869,12 +842,6 @@ class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>(),
         }
     }
 
-    private fun getSelectedRecently31Scheduled(selectedIndex: Int) {
-        val list = mViewModel.tournaments.value?.peekContent().orEmpty()
-        if (list.isEmpty()) return
-        mViewModel.getRecently31MatchScheduleCount(list[selectedIndex].id)
-    }
-
 
     @SuppressLint("ClickableViewAccessibility")
     private fun setTopMaskListener() {
@@ -882,7 +849,6 @@ class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>(),
             clSubMain.setOnChildClickedInterceptedListener { view ->
                 when (view) {
                     viewSecondNavbar -> {
-                        mViewModel.setCalendarState(HomeCalendarFragment.States.CALENDAR_CLOSE_NOTHING)
                     }
 
                     else -> Unit
@@ -892,9 +858,7 @@ class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>(),
                 viewContainerRoot.setOnChildClickedInterceptedListener { view ->
                     when (view) {
                         tlContainer -> {
-                            lifecycleScope.launch {
-                                mViewModel.setCalendarState(HomeCalendarFragment.States.CALENDAR_CLOSE_NOTHING)
-                            }
+
                         }
 
                         else -> Unit

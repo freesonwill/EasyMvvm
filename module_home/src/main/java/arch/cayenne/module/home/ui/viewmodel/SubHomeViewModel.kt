@@ -54,13 +54,6 @@ open class SubHomeViewModel : BaseViewModel() {
 
     val tournaments by lazy { MutableLiveData<Event<List<TournamentDataModel>>>() } // 今日/早盤
 
-    private val _calendarStates = MutableLiveData<HomeCalendarFragment.States>()
-    val calendarStates = _calendarStates
-
-    private var _recently7DayMatchScheduleCount =
-        MutableLiveData<Event<List<Common.DailyMatchCount>>>()
-    val recently7DayMatchScheduleCount: LiveData<Event<List<Common.DailyMatchCount>>> =
-        _recently7DayMatchScheduleCount
 
     //聯賽收回上滑動畫結束事件
     private val _tournamentSlideOutEnd = MutableLiveData<Event<Unit>>()
@@ -297,25 +290,6 @@ open class SubHomeViewModel : BaseViewModel() {
         }
     }
 
-    //获取近31日比赛日程count
-    fun getRecently31MatchScheduleCount(tournamentId: Int = HomeViewModel.TOURNAMENT_ALL_ID) {
-        setState(HomeState.Schedule.Loading)
-        callApi({
-            repository.getRecently31MatchScheduleCount(
-                currentSportId,
-                currentPlayTypeId,
-                tournamentId
-            )
-        }, {
-            if (it is ApiResponseState.Succeeded<*>) {
-                val data: List<Common.DailyMatchCount>? = it.dataAs()
-                if (!data.isNullOrEmpty()) {
-                    _recently7DayMatchScheduleCount.value = Event(data)
-                    setState(HomeState.Schedule.LoadSuccess)
-                }
-            }
-        }, autoUpdateState = false)
-    }
 
     fun updateCoordinate(
         playTypeId: Int,
@@ -439,7 +413,4 @@ open class SubHomeViewModel : BaseViewModel() {
         isAllowTabLoad = currentPlayTypeId != PlayType.TODAY.id
     }
 
-    fun setCalendarState(state: HomeCalendarFragment.States) {
-        _calendarStates.value = state
-    }
 }
