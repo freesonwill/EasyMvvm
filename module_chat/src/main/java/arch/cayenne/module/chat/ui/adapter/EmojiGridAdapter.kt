@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.base.ui.adapter.BaseAdapter
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
+import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
 import arch.cayenne.module.chat.data.compare.EmojiCompare
 import arch.cayenne.module.chat.data.constants.EmojiTypeEnum
 import arch.cayenne.module.chat.data.model.EmojiData
@@ -28,7 +29,11 @@ class EmojiGridAdapter :
     private val topViewType = 1
     private val normalEmojiViewType = 2
     private val bidEmojiViewType = 3
+    private var emojiListener: RecyclerItemListener<EmojiData>? = null
 
+    fun setEmojiListener(listener: RecyclerItemListener<EmojiData>) {
+        this.emojiListener = listener
+    }
 
     fun setRecentList(list: List<EmojiData>) {
         this.recentList = list
@@ -41,17 +46,6 @@ class EmojiGridAdapter :
     }
 
     inner class EmojiGridViewHolder(binding: ViewBinding) : BaseViewHolder(binding) {
-        //        fun initAdapter() {
-//            val nBinding = binding as ItemEmojiGridLayoutBinding
-//            val manager = object :GridLayoutManager(nBinding.root.context,8){
-//                override fun canScrollVertically(): Boolean {
-//                    return true
-//                }
-//            }
-//            val adapter = EmojiItemAdapter()
-//
-//        }
-
         fun initRecentAdapter() {
             val nBinding = binding
             if (nBinding is ItemChatEmojiTitleLayoutBinding) {
@@ -59,22 +53,49 @@ class EmojiGridAdapter :
                     layoutManager =
                         LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
                     val nAdapter = EmojiItemAdapter()
+                    nAdapter.setItemListener(emojiListener)
                     nAdapter.submitList(recentList)
                     adapter = nAdapter
                 }
             }
         }
 
-        fun updateImg(position: Int){
+        fun initListener() {
             val nBinding = binding
-            when(nBinding){
+            when (nBinding) {
+                is ItemEmojiLayoutBinding -> {
+                    nBinding.iv.setOnClickListener {
+                        val position = it.tag as Int
+                        emojiListener?.onItemClick(getItem(position), position)
+                    }
+                }
+
+                is ItemBidEmojiLayoutBinding -> {
+                    nBinding.iv.setOnClickListener {
+                        val position = it.tag as Int
+                        emojiListener?.onItemClick(getItem(position), position)
+                    }
+                }
+
+                else -> {
+                }
+            }
+        }
+
+        fun updateImg(position: Int) {
+            val nBinding = binding
+            when (nBinding) {
                 is ItemEmojiLayoutBinding -> {
                     nBinding.iv.setImageResource(getItem(position).resId)
+                    nBinding.iv.tag = position
                 }
+
                 is ItemBidEmojiLayoutBinding -> {
                     nBinding.iv.setImageResource(getItem(position).resId)
+                    nBinding.iv.tag = position
                 }
-                else ->{
+
+                else -> {
 
                 }
             }
@@ -121,11 +142,13 @@ class EmojiGridAdapter :
                 parent,
                 false
             )
+
             normalEmojiViewType -> ItemEmojiLayoutBinding.inflate(
                 inflater,
                 parent,
                 false
             )
+
             else -> ItemBidEmojiLayoutBinding.inflate(inflater, parent, false)
         }
     }
@@ -133,6 +156,7 @@ class EmojiGridAdapter :
     override fun createViewHolder(binding: ViewBinding, viewType: Int): EmojiGridViewHolder {
         val holder = EmojiGridViewHolder(binding)
         holder.initRecentAdapter()
+        holder.initListener()
         return holder
     }
 

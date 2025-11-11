@@ -25,16 +25,16 @@ class EmojiScrollAlphaAnimHelper(private val recyclerView: RecyclerView) {
     private var deleteButtonTop: Int = 0
     private val deleteButtonHeight: Int = 32.dp2px + 12.dp2px
 
-    //    private var isHide = false
+    private var isHide = false
     private val TAG = EmojiScrollAlphaAnimHelper::class.java.simpleName
 
     init {
         setup()
     }
 
-//    fun updateUi(value:Boolean){
-//        isHide = value
-//    }
+    fun updateUi(value: Boolean) {
+        isHide = value
+    }
 
     private fun setup() {
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -74,9 +74,9 @@ class EmojiScrollAlphaAnimHelper(private val recyclerView: RecyclerView) {
     }
 
     private fun updateTargetItemsVisibility() {
-//        if(!isHide){
-//            return
-//        }
+        if(isHide){
+            return
+        }
 
         val firstVisible = layoutManager.findFirstVisibleItemPosition()
         val lastVisible = layoutManager.findLastVisibleItemPosition()

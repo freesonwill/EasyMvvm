@@ -263,7 +263,7 @@ class SoftKeyboardManager(
 
     fun showKeyboardAnimation() {
         val animationType = getKeyBoardActionType(clickKeyBoardType, currentKeyBoardType)
-        "showKeyboardAnimation $animationType $softKeyBoardHeight}".logd("aaa")
+//        "showKeyboardAnimation $animationType $softKeyBoardHeight}".logd("aaa")
         when (animationType) {
             KeyboardActionType.CHAT_TO_CHAT -> keyBoardListener.changeKeyboardUi(
                 KeyBoardType.CHAT

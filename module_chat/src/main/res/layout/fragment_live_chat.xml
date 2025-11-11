@@ -71,7 +71,7 @@
                     app:layout_goneMarginLeft="@dimen/dp_12"
                     app:layout_goneMarginRight="@dimen/dp_10">
 
-                    <EditText
+                    <arch.cayenne.module.chat.ui.widget.EmojiEditTextView
                         android:id="@+id/chat_et_input"
                         android:layout_width="0dp"
                         android:layout_height="40dp"

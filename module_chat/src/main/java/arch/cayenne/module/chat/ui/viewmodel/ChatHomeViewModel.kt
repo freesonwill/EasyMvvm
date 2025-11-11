@@ -18,6 +18,7 @@ import arch.cayenne.module.chat.data.constants.KeyBoardType
 import arch.cayenne.module.chat.data.model.EmojiData
 import arch.cayenne.module.chat.manager.ChatServerController
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
@@ -30,6 +31,9 @@ class ChatHomeViewModel() : BaseViewModel() {
     private val _sendMsgLiveData = MutableLiveData<String>()
     private val _chatHistoryIsEmpty = MutableLiveData<Boolean>()
     private val chatServer: ChatServerController by inject { parametersOf(viewModelScope) }
+    private val _emojiLiveData:MutableLiveData<EmojiData> = MutableLiveData()
+    private val _etDelLiveDta:MutableLiveData<Boolean> = MutableLiveData()
+
 
     var currentKeyBoardType:KeyBoardType = KeyBoardType.CHAT
     //键盘发送过来的消息
@@ -44,16 +48,19 @@ class ChatHomeViewModel() : BaseViewModel() {
     val sendMsgToServerFlow = chatServer.sendMsgResultFlow
     val loginFlow = chatServer.loginFlow
     val checkBetAmountFlow = chatServer.checkBetAmountFlow
+    //emojiFragment 发送emoji到et显示
+    val emojiLiveData:LiveData<EmojiData> = _emojiLiveData
+    val etDelLiveData:LiveData<Boolean> = _etDelLiveDta
 
-
-    var isMainSoft:Boolean = false
 
     val languageManager: LanguageManager by inject { parametersOf(viewModelScope) }
     val userDataManager: UserDataManager by inject()
-
-    var keyBoardHeight: Int = 0
     //聊天设置
     val chatConfigDao: ChatConfigDao by inject()
+
+    var keyBoardHeight: Int = 0
+    var isMainSoft:Boolean = false
+
 
     fun setArguments(matchId: Long?) {
         //直播间重新从联赛进入时，刷新matchId 重新进入聊天室
@@ -165,4 +172,15 @@ class ChatHomeViewModel() : BaseViewModel() {
             EmojiData(it.resId, it.key)
         }.toList()
     }
+
+
+    fun etDelFunction(){
+        _etDelLiveDta.value = _etDelLiveDta.value?.let { !it } ?: false
+    }
+
+    fun addEmojiToChat(emojiData: EmojiData){
+        _emojiLiveData.value = emojiData
+    }
+
+
 }

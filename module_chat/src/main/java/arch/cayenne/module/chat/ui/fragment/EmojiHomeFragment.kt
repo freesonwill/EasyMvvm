@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.ViewGroup.LayoutParams
 import android.widget.LinearLayout
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.data.model.PagerBean
 import arch.cayenne.lib.base.ui.adapter.PagerAdapter
@@ -46,14 +47,20 @@ class EmojiHomeFragment : BaseFragment<EmojiHomeViewModel, FragmentEmojiHomeLayo
         get() = FragmentEmojiHomeLayoutBinding::class
     override val vmClass: KClass<EmojiHomeViewModel>
         get() = EmojiHomeViewModel::class
-    private val chatViewModel:ChatHomeViewModel by sharedViewModel<ChatHomeViewModel,ChatHomeFragment>()
+    private val chatViewModel: ChatHomeViewModel by sharedViewModel<ChatHomeViewModel, ChatHomeFragment>()
+
 
     override fun initView(savedInstanceState: Bundle?) {
         initTab()
     }
 
     override fun initListener() {
+        mBinding.tvDel.setOnClickListener {
+            chatViewModel.etDelFunction()
+        }
+        mBinding.tvSend.setOnClickListener {
 
+        }
     }
 
 
@@ -92,6 +99,9 @@ class EmojiHomeFragment : BaseFragment<EmojiHomeViewModel, FragmentEmojiHomeLayo
 
             emojiTablayout.addOnTabSelectedListener2(object : TabLayoutExt.OnTabSelectedListener2 {
                 override fun onTabSelected(tab: TabLayout.Tab, isTabClick: Boolean) {
+                    tvDel.isVisible = tab.position == 0
+                    tvSend.isVisible = tab.position == 0
+
                     if (isTabClick) {
                         CustomTabIndicatorUtils.animateIndicatorToPosition(
                             mBinding.customIndicator,
@@ -139,20 +149,6 @@ class EmojiHomeFragment : BaseFragment<EmojiHomeViewModel, FragmentEmojiHomeLayo
         }
     }
 
-    //表情点击
-    private val itemListener = object : RecyclerItemListener<EmojiData> {
-        override fun onItemClick(item: EmojiData?, position: Int) {
-            val emojiPattern: Pattern = Pattern.compile(BID_EMOJI_REGEX)
-            if (item?.key?.let { emojiPattern.matcher(it).find() } == true) {
-//                keyboardChangeClick(KeyBoardType.CHAT, 5)
-//                chatViewModel.sendMsgToChat(item.key)
-                return
-            }
-//            mBinding.liveChatEtInput.text?.append(item?.key)
-//            softKeyBoardManager.etRequestFocus()
-        }
-    }
-
     private fun initSoftRecycler() {
 //        val snapHelper = OnePageSnapHelper()
 //        mBinding.emojiRecycler.apply {
@@ -192,5 +188,6 @@ class EmojiHomeFragment : BaseFragment<EmojiHomeViewModel, FragmentEmojiHomeLayo
 
     companion object {
         val TAG = EmojiHomeFragment::class.simpleName
+        val DEL_ETINPUT = 101
     }
 }

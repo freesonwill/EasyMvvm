@@ -4,6 +4,7 @@ import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.ViewTreeObserver
 import android.view.inputmethod.EditorInfo
@@ -26,13 +27,16 @@ import arch.cayenne.lib.websocket.data.SocketConnectState
 import arch.cayenne.module.chat.R
 import arch.cayenne.module.chat.data.constants.KeyBoardType
 import arch.cayenne.module.chat.data.constants.KeyboardActionType
+import arch.cayenne.module.chat.data.model.EmojiData
 import arch.cayenne.module.chat.databinding.FragmentLiveChatBinding
 import arch.cayenne.module.chat.manager.SoftKeyboardManager
 import arch.cayenne.module.chat.manager.interf.SoftKeyBoardMangerListener
 import arch.cayenne.module.chat.ui.adapter.EmojiHotItemAdapter
 import arch.cayenne.module.chat.ui.viewmodel.ChatHomeViewModel
 import arch.cayenne.module.chat.utils.EmojiEditFilter
+import arch.cayenne.module.chat.utils.EmojiUtils.BID_EMOJI_REGEX
 import kotlinx.coroutines.launch
+import java.util.regex.Pattern
 import kotlin.reflect.KClass
 
 //聊天
@@ -73,7 +77,7 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
 
     override fun onFragmentAnimEnd(isEnter: Boolean) {
         super.onFragmentAnimEnd(isEnter)
-        keyboardChangeClick(KeyBoardType.CHAT,4)
+        keyboardChangeClick(KeyBoardType.CHAT, 4)
     }
 
     override fun onResume() {
@@ -97,15 +101,6 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
     }
 
     override suspend fun createObserver() {
-        matchIdLiveData?.observe(viewLifecycleOwner) {
-            observeMatchId(it)
-        }
-        mainMatch?.observe(viewLifecycleOwner) {
-            observeLiveMatch(it)
-        }
-        mViewModel.chatHistoryIsEmpty.observe(viewLifecycleOwner) {
-            updateChatUi(mainMatch?.value)
-        }
         lifecycleScope.launch {
             launch {
                 mViewModel.serverFlow().collect {
@@ -120,6 +115,15 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
                 }
             }
         }
+        matchIdLiveData?.observe(viewLifecycleOwner) {
+            observeMatchId(it)
+        }
+        mainMatch?.observe(viewLifecycleOwner) {
+            observeLiveMatch(it)
+        }
+        mViewModel.chatHistoryIsEmpty.observe(viewLifecycleOwner) {
+            updateChatUi(mainMatch?.value)
+        }
         //input
         launch(Lifecycle.State.RESUMED) {
             mViewModel.updateKeyboardUiStatus.observe(viewLifecycleOwner) {
@@ -128,6 +132,12 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
         }
         softKeyBoardManager.toastLiveData.observe(viewLifecycleOwner) {
             showToast(it)
+        }
+        mViewModel.emojiLiveData.observe(viewLifecycleOwner) {
+            addEmojiData(it)
+        }
+        mViewModel.etDelLiveData.observe(viewLifecycleOwner){
+            delEtInput()
         }
     }
 
@@ -476,7 +486,7 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
     }
 
     override fun startAnim(
-        animationType: KeyboardActionType,
+        actionType: KeyboardActionType,
         offset: Int,
         onStart: () -> Unit,
         onEnd: () -> Unit
@@ -491,7 +501,7 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
 
             val emojiSet = AnimatorSet().apply {
                 duration = 170L
-                inputIconShouldUpdate(animationType, call = {
+                inputIconShouldUpdate(actionType, call = {
                     playTogether(mainTransYAnim, *inputIconAnim(offset))
                 }, elCall = {
                     play(mainTransYAnim)
@@ -506,12 +516,12 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
 //            mainAnim?.duration = 170L
 
             mainAnim?.addListener(onStart = {
-                inputIconShouldUpdate(animationType, call = {
+                inputIconShouldUpdate(actionType, call = {
                     updateInputIcon(true)
                 })
                 onStart.invoke()
             }, onEnd = {
-                inputIconShouldUpdate(animationType, call = {
+                inputIconShouldUpdate(actionType, call = {
                     updateInputIcon(offset == 0)
                 })
                 onEnd.invoke()
@@ -593,6 +603,29 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
             emojiScaleXParam,
             emojiScaleYParam
         )
+    }
+
+    private fun delEtInput() {
+        "delEtInput".logd("aaa")
+        mBinding.chatEtInput.apply {
+            if (text?.length == 0) {
+                return@apply
+            }
+            dispatchKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DEL))
+            dispatchKeyEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_DEL))
+            softKeyBoardManager.etRequestFocus()
+        }
+    }
+
+    private fun addEmojiData(emojiData: EmojiData) {
+        val emojiPattern: Pattern = Pattern.compile(BID_EMOJI_REGEX)
+        if (emojiPattern.matcher(emojiData.key).find()) {
+            keyboardChangeClick(KeyBoardType.CHAT, 5)
+            mViewModel.sendMsgToChat(emojiData.key)
+            return
+        }
+        mBinding.chatEtInput.text?.append(emojiData.key)
+        softKeyBoardManager.etRequestFocus()
     }
 
 
