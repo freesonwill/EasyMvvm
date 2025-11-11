@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="title_betting_slip">投注单</string>
-    <string name="title_betting_combo">串关投注</string>
+    <string name="title_betting_combo">串关投注单</string>
     <string name="btn_reserve">预约</string>
     <string name="btn_clear">清空</string>
     <string name="btn_double">双倍</string>

@@ -215,11 +215,11 @@ class ComboBetFragment2 : BaseFragment<ComboBetViewModel, FragmentComboBet2Bindi
         mViewModel.onMultiLayoutExpendListener.observe(viewLifecycleOwner,object :Observer<Boolean> {
             override fun onChanged(value: Boolean) {
                 if (value) {
-                    mBinding.tvMultiBetExpand.rotation = 0f
+                    mBinding.tvMultiBetExpand.rotation = 180f
                     mBinding.rvMultiBet.isVisible = true
                     scroll2MoreCombBottom(mBinding.rvMultiBet,mBinding.nsBet)
                 } else {
-                    mBinding.tvMultiBetExpand.rotation = 180f
+                    mBinding.tvMultiBetExpand.rotation = 0f
                     mBinding.rvMultiBet.isVisible = false
                 }
             }
