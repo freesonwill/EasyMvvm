@@ -39,7 +39,6 @@ class LiveMatchAnimationFragment :
     override val vmClass: KClass<LiveMatchAnimationViewModel> = LiveMatchAnimationViewModel::class
 
     private val mainViewModel: LiveMainViewModel by sharedViewModel<LiveMainViewModel, LiveMainFragment>()
-    private val mediaViewModel: LiveMatchMediaViewModel by sharedViewModel<LiveMatchMediaViewModel, LiveMatchMediaFragment>()
 
 //
 //    private var buttonsDisplaying = true
@@ -71,11 +70,6 @@ class LiveMatchAnimationFragment :
 
     @SuppressLint("ClickableViewAccessibility")
     override fun initListener() {
-        mBinding.ivChooseSource.addScaleOnTouchAnimation()
-        mBinding.ivChooseSource.setOnClickListener {
-//            scheduleHideButtons()
-            mediaViewModel.chooseSourceView()
-        }
         mBinding.backView.touchBackPressed()
 //        mBinding.animationView.setOnTouchListener { v, event -> //单击事件
 //            if (buttonsDisplaying) {
@@ -118,16 +112,6 @@ class LiveMatchAnimationFragment :
                 }
             }
 
-            liveVideoBean.observe(viewLifecycleOwner) {
-                it?.let {
-                    if (it.source.isEmpty()) {
-                        mBinding.ivChooseSource.visibility = View.INVISIBLE
-                    } else {
-                        mBinding.ivChooseSource.visibility = View.VISIBLE
-
-                    }
-                }
-            }
         }
 
 

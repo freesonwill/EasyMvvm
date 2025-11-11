@@ -6,9 +6,9 @@ import android.graphics.Paint
 import android.util.AttributeSet
 import androidx.core.content.ContextCompat
 import arch.cayenne.lib.common.R
-import arch.cayenne.lib.skin.widget.SkinnableView
+import arch.cayenne.lib.common.ui.view._interface.BaseCustomTabIndicator
 
-class CustomTabIndicator(context: Context, attrs: AttributeSet) : SkinnableView(context, attrs) {
+class CustomTabIndicator(context: Context, attrs: AttributeSet) : BaseCustomTabIndicator(context, attrs) {
     private val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         style = Paint.Style.FILL
         color = ContextCompat.getColor(context,
@@ -43,14 +43,14 @@ class CustomTabIndicator(context: Context, attrs: AttributeSet) : SkinnableView(
     }
 
     // 设置指示器位置和偏移量
-    fun setIndicatorPosition(position: Int, offset: Float) {
+    override fun setIndicatorPosition(position: Int, offset: Float) {
         currentPosition = position
         positionOffset = offset
         invalidate()
     }
 
     // 设置单个 Tab 的宽度和指示器宽度
-    fun setTabWidth(width: Float,tabIndicatorWidth : Float = 0.45f) {
+    override fun setTabWidth(width: Float,tabIndicatorWidth : Float) {
         tabWidth = width
         indicatorWidth = width * tabIndicatorWidth // 指示器宽度为 Tab 宽度的 45%
         invalidate()

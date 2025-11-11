@@ -1,20 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
 <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/main_background">
+    android:background="@color/color_1E1E1E">
 
-    <arch.cayenne.lib.skin.widget.SkinnableTextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="-12dp"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/bg_top" />
+
+    <View
+        android:id="@+id/bg_top"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_63"
+        android:layout_marginTop="@dimen/dp_12"
+        android:background="@drawable/bg_living_top"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <arch.cayenne.lib.skin.widget.SkinnableImageView
+        android:id="@+id/iv_fire"
+        android:layout_width="@dimen/dp_16"
+        android:layout_height="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_12"
+        android:layout_marginTop="@dimen/dp_17"
+        android:src="@drawable/icon_living_fire"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        android:textSize="@dimen/sp_17"
-        android:textColor="@color/main_text"
-        android:text="赛事直播"
-        />
+        app:layout_constraintTop_toTopOf="@id/bg_top" />
+
+    <arch.cayenne.lib.skin.widget.SkinnableImageView
+        android:layout_width="82dp"
+        android:layout_height="@dimen/dp_18"
+        android:layout_marginStart="@dimen/dp_7"
+        android:src="@drawable/icon_iving_tv"
+        app:layout_constraintBottom_toBottomOf="@id/iv_fire"
+        app:layout_constraintLeft_toRightOf="@id/iv_fire"
+        app:layout_constraintTop_toTopOf="@id/iv_fire" />
+
+    <arch.cayenne.lib.skin.widget.SkinnableImageView
+        android:id="@+id/iv_bg_fire"
+        android:layout_width="@dimen/dp_51"
+        android:layout_height="@dimen/dp_57"
+        android:layout_marginEnd="@dimen/dp_9"
+        android:src="@drawable/icon_fire_bg"
+        app:layout_constraintBottom_toBottomOf="@id/bg_top"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <arch.cayenne.lib.skin.widget.SkinnableImageView
+        android:layout_width="@dimen/dp_35"
+        android:layout_height="@dimen/dp_39"
+        android:layout_marginTop="@dimen/dp_6"
+        android:layout_marginEnd="8.4dp"
+        android:src="@drawable/icon_fire_bg"
+        app:layout_constraintRight_toLeftOf="@id/iv_bg_fire"
+        app:layout_constraintTop_toTopOf="@id/bg_top" />
+
 
 </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>

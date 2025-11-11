@@ -1,6 +1,7 @@
 [versions]
 agp = "8.1.1"
 coreSplashscreen = "1.0.1"
+coreVersion = "3.5.3"
 desugar_jdk_libs = "2.1.5"
 floatingx = "2.3.5"
 gson = "2.10.1"
@@ -58,12 +59,12 @@ brv = "1.6.1"
 xpopup = "2.10.0"
 subsampling = "3.10.0"
 transformations = "4.3.0"
-
+blurview = "1.0.5"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "coreSplashscreen" }
-
+core = { module = "com.google.zxing:core", version.ref = "coreVersion" }
 desugar_jdk_libs = { module = "com.android.tools:desugar_jdk_libs", version.ref = "desugar_jdk_libs" }
 floatingx = { module = "io.github.petterpx:floatingx", version.ref = "floatingx" }
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
@@ -127,15 +128,14 @@ androidx-fragment-ktx = { group = "androidx.fragment", name = "fragment-ktx", ve
 pullrefresh-kernel = { group = "io.github.scwang90",name = "refresh-layout-kernel", version.ref = "pullrefresh" }
 tinyPinyin = { group = "com.github.promeg",name = "tinypinyin", version.ref = "tinyPinyin" }
 subsampling = { group = "com.davemorrissey.labs", name = "subsampling-scale-image-view-androidx",version.ref = "subsampling" }
-
 transformations = { group = "jp.wasabeef", name = "glide-transformations",version.ref = "transformations" }
+blurview = { group = "com.github.centerzx", name = "ShapeBlurView",version.ref = "blurview" }
 tinyPinyin-android = { group = "com.github.promeg",name = "tinypinyin-lexicons-android-cncity", version.ref = "tinyPinyin" }
 # 其他库依赖
 calendarview = { module = "com.github.angcyo:CalendarView", version.ref = "calendarview" }
 brv = { module = "com.github.liangjingkanji:BRV", version.ref = "brv" }
 utilcodex = { module = "com.blankj:utilcodex", version.ref = "utilcodex" }
 xpopup = { module = "com.github.li-xiaojun:XPopup", version.ref = "xpopup" }
-
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }

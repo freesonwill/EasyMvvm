@@ -36,7 +36,7 @@ class OrderBettingSelectionViewHolder(private val mBinding: ItemOrderSportBettin
                 status == 8
     }
 
-    fun hideLastLine(isLast:Boolean) {
-        mBinding.line.isVisible = !isLast
+    fun hideLine(isFirst: Boolean) {
+        mBinding.topLine.isVisible = !isFirst
     }
 }

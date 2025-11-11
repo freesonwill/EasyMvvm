@@ -6,5 +6,12 @@
         <attr name="carousel_itemSpacing" format="dimension" />
         <attr name="carousel_itemCornerRadius" format="dimension" />
         <attr name="carousel_verticalAlignTo" format="reference" />
+        <attr name="carousel_indicator" format="reference" />
+    </declare-styleable>
+
+    <declare-styleable name="CarouselIndicator">
+        <attr name="indicator_backgroundColor" format="color" />
+        <attr name="indicator_progressColor" format="color" />
+        <attr name="indicator_progressWidth" format="dimension" />
     </declare-styleable>
 </resources>

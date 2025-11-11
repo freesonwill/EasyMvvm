@@ -11,7 +11,6 @@ import arch.cayenne.lib.common.R
 import arch.cayenne.lib.common.databinding.LayoutEmptyErrorCloseBinding
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.startSafeObjectAnimator
-import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
 
 class DynamicStateLayout @JvmOverloads constructor(
@@ -43,7 +42,7 @@ class DynamicStateLayout @JvmOverloads constructor(
                 binding.root.visibility = VISIBLE
                 //图片
                 binding.ivIcon.visibility = VISIBLE
-                binding.ivIcon.setBackgroundResource(R.drawable.icon_empty)
+                binding.ivIcon.setBackgroundResource(R.drawable.bg_empty)
                 //说明文字
                 binding.tvMessage.visibility = VISIBLE
                 binding.tvMessage.text = msg
@@ -58,7 +57,7 @@ class DynamicStateLayout @JvmOverloads constructor(
                 binding.root.visibility = VISIBLE
                 //图片
                 binding.ivIcon.visibility = VISIBLE
-                binding.ivIcon.setBackgroundResource( R.drawable.icon_error_net)
+                binding.ivIcon.setBackgroundResource( R.drawable.bg_error_net)
                 //说明文字
                 binding.tvMessage.visibility = VISIBLE
                 binding.tvMessage.text = msg
@@ -78,7 +77,7 @@ class DynamicStateLayout @JvmOverloads constructor(
                 binding.root.visibility = VISIBLE
                 //图片
                 binding.ivIcon.visibility = VISIBLE
-                binding.ivIcon.setBackgroundResource( R.drawable.icon_close)
+                binding.ivIcon.setBackgroundResource( R.drawable.bg_close)
                 //说明文字
                 binding.tvMessage.visibility = VISIBLE
                 binding.tvMessage.text = msg

@@ -5,11 +5,17 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
+import arch.cayenne.lib.common.data.constants.UserDataKey
+import arch.cayenne.lib.common.data.manager.UserDataManager
+import arch.cayenne.lib.database.dao.ChatConfigDao
+import arch.cayenne.lib.skin.LanguageManager
 import arch.cayenne.lib.websocket.chat.data.ChatMsg
 import arch.cayenne.lib.websocket.chat.data.MsgNotify
 import arch.cayenne.lib.websocket.data.SocketConnectState
 import arch.cayenne.module.chat.data.constants.CheckBetResultEnum
+import arch.cayenne.module.chat.data.constants.EmojiEnum
 import arch.cayenne.module.chat.data.constants.KeyBoardType
+import arch.cayenne.module.chat.data.model.EmojiData
 import arch.cayenne.module.chat.manager.ChatServerController
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
@@ -24,7 +30,6 @@ class ChatHomeViewModel() : BaseViewModel() {
     private val _sendMsgLiveData = MutableLiveData<String>()
     private val _chatHistoryIsEmpty = MutableLiveData<Boolean>()
     private val chatServer: ChatServerController by inject { parametersOf(viewModelScope) }
-    private val _chatHeightLiveData = MutableLiveData<Int>()
 
     var currentKeyBoardType:KeyBoardType = KeyBoardType.CHAT
     //键盘发送过来的消息
@@ -39,10 +44,16 @@ class ChatHomeViewModel() : BaseViewModel() {
     val sendMsgToServerFlow = chatServer.sendMsgResultFlow
     val loginFlow = chatServer.loginFlow
     val checkBetAmountFlow = chatServer.checkBetAmountFlow
-    //整个表情键盘页面的整体高度
-    val chatHeightLiveData:LiveData<Int> = _chatHeightLiveData
 
-    var matchStatus:Boolean = false
+
+    var isMainSoft:Boolean = false
+
+    val languageManager: LanguageManager by inject { parametersOf(viewModelScope) }
+    val userDataManager: UserDataManager by inject()
+
+    var keyBoardHeight: Int = 0
+    //聊天设置
+    val chatConfigDao: ChatConfigDao by inject()
 
     fun setArguments(matchId: Long?) {
         //直播间重新从联赛进入时，刷新matchId 重新进入聊天室
@@ -145,10 +156,20 @@ class ChatHomeViewModel() : BaseViewModel() {
         _chatHistoryIsEmpty.value = value
     }
 
-    fun setChatHeight(height:Int){
-        _chatHeightLiveData.value = height
+
+    fun setSoftConfig(value:Boolean){
+        userDataManager.setKeyValue(UserDataKey.KEY_SOFT_CONFIG,value)
     }
 
-
-
+    fun getHotRecycler(): List<EmojiData> {
+        return arrayOf(
+            EmojiEnum.Gin,
+            EmojiEnum.Smile,
+            EmojiEnum.Boring,
+            EmojiEnum.Scrowl,
+            EmojiEnum.Dizzy
+        ).map {
+            EmojiData(it.resId, it.key)
+        }.toList()
+    }
 }

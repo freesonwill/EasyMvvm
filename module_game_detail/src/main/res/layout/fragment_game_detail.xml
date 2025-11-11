@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/cl_root"
+    android:fitsSystemWindows="false"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/app_bg">
@@ -14,6 +15,7 @@
         android:layout_marginBottom="146dp"
         android:background="@color/color_1E1E1E"
         android:scrollbars="none"
+        app:carousel_indicator="@id/carousel_indicator"
         app:carousel_itemCornerRadius="20dp"
         app:carousel_itemHeight="412dp"
         app:carousel_itemSpacing="11dp"
@@ -28,7 +30,7 @@
         android:layout_height="0dp"
         android:layout_marginTop="@dimen/dp_14"
         android:layout_marginBottom="@dimen/dp_13"
-        app:layout_constraintBottom_toTopOf="@id/pro_banner"
+        app:layout_constraintBottom_toTopOf="@id/carousel_indicator"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/view_balance" />
@@ -41,20 +43,20 @@
         android:background="@drawable/shape_game_detail_item_bg_bottom"
         app:layout_constraintBottom_toTopOf="@id/view_bg_top" />
 
-    <arch.cayenne.lib.common.ui.view.GameRoundProgressBar
-        android:id="@+id/pro_banner"
+    <com.walisport.module.gamedetail.ui.view.CarouselIndicator
+        android:id="@+id/carousel_indicator"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="45dp"
         android:layout_height="3dp"
         android:layout_marginBottom="@dimen/dp_14"
         android:indeterminate="false"
         android:progressDrawable="@null"
-        app:backgroundColor="@color/color_1FFFFFFF"
+        app:indicator_backgroundColor="@color/color_1FFFFFFF"
         app:layout_constraintBottom_toTopOf="@id/horizontal_scroll"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:progressColor="@android:color/white"
-        app:triggerTime="2000" />
+        app:indicator_progressColor="@android:color/white"
+        app:indicator_progressWidth="7dp" />
 
     <HorizontalScrollView
         android:id="@+id/horizontal_scroll"

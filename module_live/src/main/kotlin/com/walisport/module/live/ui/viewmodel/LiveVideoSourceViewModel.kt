@@ -3,6 +3,7 @@ package com.walisport.module.live.ui.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import arch.cayenne.lib.base.data.model.UnPeekLiveData
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.database.entity.LiveVideoBean
 import com.walisport.module.live.data.repository.LiveVideoRepository
@@ -17,6 +18,9 @@ class LiveVideoSourceViewModel(
 
     private val _liveVideoBean = MutableLiveData<LiveVideoBean>()
     val liveVideoBean: LiveData<LiveVideoBean> get() = _liveVideoBean
+
+    private val _animationLiveUrl = UnPeekLiveData<String?>()
+    val animationLiveUrl: UnPeekLiveData<String?> = _animationLiveUrl
 
     fun setPlayingVideoId(id: Int) {
         repo.setPlayingVideoId(id)
@@ -35,9 +39,15 @@ class LiveVideoSourceViewModel(
             }
 
         }
+
+        viewModelScope.launch {
+            repo.observeAnimationLiveUrl(repo.matchId).collect {
+                it?.let {
+                    _animationLiveUrl.value = it
+                }
+            }
+        }
     }
-
-
 
 
 }

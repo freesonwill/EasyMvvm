@@ -65,10 +65,12 @@ dependencies {
     androidTestImplementation(libs.androidx.runner)
     androidTestImplementation(libs.androidx.espresso.core)
     api(libs.glide)
+    implementation(libs.core)
     implementation(libs.glide.avif)
     api(libs.calendarview)
     kapt(libs.glidecompiler)
     api(libs.utilcodex)
     api(libs.gson)
+    implementation(libs.blurview)
     implementation(libs.brv)
 }

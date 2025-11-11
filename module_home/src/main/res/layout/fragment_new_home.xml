@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<arch.cayenne.lib.skin.widget.SkinnableConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/title_bg">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="110dp"
-        android:background="@color/color_272727"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -88,7 +88,8 @@
         <arch.cayenne.module.home.ui.view.ClickSearchConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/color_272727">
+            android:clipChildren="false"
+            android:clipToPadding="false">
 
             <androidx.constraintlayout.widget.Group
                 android:id="@+id/group_home_main"
@@ -101,15 +102,17 @@
                 android:layout_width="match_parent"
                 android:layout_height="45dp"
                 android:orientation="horizontal"
-                android:paddingStart="@dimen/dp_6"
+                android:clipChildren="false"
+                android:clipToPadding="false"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
                 <arch.cayenne.lib.skin.widget.SkinnableImageView
                     android:id="@+id/iv_home_sidebar"
-                    android:layout_width="@dimen/dp_36"
+                    android:layout_width="@dimen/dp_42"
                     android:layout_height="@dimen/dp_36"
+                    android:paddingStart="@dimen/dp_6"
                     android:layout_gravity="center_vertical"
                     android:layout_marginTop="@dimen/dp_2"
                     android:paddingTop="5dp"
@@ -117,6 +120,7 @@
                     android:scaleType="fitCenter"
                     android:src="@drawable/ic_home_sidebar"
                     android:stateListAnimator="@animator/layout_alpha_animator"
+                    android:translationZ="1dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -129,6 +133,7 @@
                     android:layout_marginEnd="@dimen/dp_6"
                     android:src="@drawable/ic_shape_unread_msg_dot"
                     android:visibility="gone"
+                    android:translationZ="5dp"
                     app:layout_constraintEnd_toEndOf="@id/iv_home_sidebar"
                     app:layout_constraintTop_toTopOf="@id/iv_home_sidebar" />
 
@@ -137,12 +142,11 @@
                     android:id="@+id/tl_home"
                     android:layout_width="0dp"
                     android:layout_height="30dp"
-                    android:layout_marginTop="@dimen/dp_4"
+                    android:layout_marginTop="@dimen/dp_3"
                     android:background="@android:color/transparent"
                     android:clipChildren="false"
                     android:clipToPadding="false"
-                    android:paddingStart="@dimen/dp_1"
-                    android:paddingBottom="@dimen/dp_1"
+                    android:paddingStart="@dimen/dp_5"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/iv_search_entry"
                     app:layout_constraintHorizontal_bias="0"
@@ -156,7 +160,7 @@
                     app:tabIndicatorHeight="2dp"
                     app:tabMinWidth="56dp"
                     app:tabMode="scrollable"
-                    app:tabPaddingBottom="@dimen/dp_6"
+                    app:tabPaddingBottom="0dp"
                     app:tabPaddingEnd="0dp"
                     app:tabPaddingStart="0dp"
                     app:tabRippleColor="@null"
@@ -184,16 +188,28 @@
                     app:layout_constraintStart_toStartOf="@id/tl_home"
                     app:layout_constraintTop_toBottomOf="@id/tl_home" />
 
+                <!-- 遮罩，防止 TabLayout 內容延伸到搜索圖標下方 -->
+                <!--                <View-->
+                <!--                    android:id="@+id/v_tab_right_mask"-->
+                <!--                    android:layout_width="49dp"-->
+                <!--                    android:layout_height="0dp"-->
+                <!--                    android:background="@color/color_272727"-->
+                <!--                    app:layout_constraintBottom_toBottomOf="@id/tl_home"-->
+                <!--                    app:layout_constraintEnd_toStartOf="@id/iv_search_entry"-->
+                <!--                    app:layout_constraintTop_toTopOf="@id/tl_home" />-->
+
                 <arch.cayenne.lib.skin.widget.SkinnableImageView
                     android:id="@+id/iv_search_entry"
                     android:layout_width="49dp"
                     android:layout_height="34dp"
                     android:layout_marginBottom="@dimen/dp_1"
+                    android:background="@color/color_272727"
                     android:paddingStart="@dimen/dp_1"
                     android:paddingTop="@dimen/dp_5"
                     android:paddingBottom="@dimen/dp_4"
                     android:scaleType="fitCenter"
                     android:src="@drawable/ic_search_entry"
+                    android:translationZ="1dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -211,4 +227,4 @@
                 app:layout_constraintTop_toBottomOf="@+id/cl_first_navbar" />
         </arch.cayenne.module.home.ui.view.ClickSearchConstraintLayout>
     </androidx.appcompat.widget.LinearLayoutCompat>
-</androidx.constraintlayout.widget.ConstraintLayout>
+</arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>

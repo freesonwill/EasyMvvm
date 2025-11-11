@@ -36,6 +36,9 @@ import arch.cayenne.module.bet.util.BetSheetDecoration
 import arch.cayenne.module.bet.viewmodel.ComboBetViewModel
 import kotlin.reflect.KClass
 
+/**
+ * 串关投注
+ */
 class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding>(),
     BetSheetListener {
 
@@ -105,7 +108,7 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
         mBinding.ivClose.apply { addScaleOnTouchAnimation() }.setOnClickListener {
             dismiss()
         }
-        mBinding.btnDelete.setOnClickListener {
+        mBinding.btnDelete.root.setOnClickListener {
             CommonDialog.newInstance(
                 title = "",
                 message = getString(R.string.title_dialog_remove),

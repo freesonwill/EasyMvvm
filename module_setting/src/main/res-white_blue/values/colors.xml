@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="title_bgr_white_blue">#ffffff</color>
     <color name="background_white_blue">#FFF3F3F4</color>
     <color name="title_bar_white_blue">#222222</color>
     <color name="title_skin_white_blue">#929298</color>

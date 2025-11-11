@@ -47,6 +47,7 @@ dependencies {
     implementation(libs.gson)
     coreLibraryDesugaring(libs.desugar.jdk.libs)
     testImplementation(libs.junit)
+    implementation(libs.blurview)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 }

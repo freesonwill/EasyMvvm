@@ -7,10 +7,10 @@ import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.ui.fragment.CommonBottomDialog
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+import arch.cayenne.lib.common.utils.ext.touchBackPressed
 import com.walisport.module.topup.R
 import com.walisport.module.topup.databinding.FragmentAddressEditBinding
 import com.walisport.module.topup.databinding.TitleAddressEditBinding
-import com.walisport.module.topup.databinding.TitleAddressNoteBinding
 import com.walisport.module.topup.ui.viewmodel.AddressViewModel
 import kotlin.reflect.KClass
 
@@ -49,6 +49,7 @@ class AddressEditFragment : BaseFragment<AddressViewModel, FragmentAddressEditBi
                 showDelConfirmDialog(address)
             }
         }
+        mBinding.root.touchBackPressed()
     }
 
     override fun initListener() {

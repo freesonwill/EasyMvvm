@@ -20,7 +20,7 @@ import arch.cayenne.module.order.data.constants.OrderSportPageEnum
 import arch.cayenne.module.order.ui.viewholder.OrderBettingHeaderViewHolder
 import arch.cayenne.module.order.ui.viewholder.OrderBettingViewHolder
 
-class OrderBettingAdapter(private val type: OrderSportPageEnum): BaseAdapter<BetSlipData, BaseViewHolder, ViewBinding>(
+class OrderBettingAdapter(private val type: OrderSportPageEnum, private val listener: OrderEarlySettleListener? = null): BaseAdapter<BetSlipData, BaseViewHolder, ViewBinding>(
     BetSlipCompare()
 ) {
     override fun convertPlus(
@@ -38,6 +38,12 @@ class OrderBettingAdapter(private val type: OrderSportPageEnum): BaseAdapter<Bet
             val item = getItem(position) as BetSlipOrderBean
 
             bodyHolder.init(item, type)
+
+            if (type == OrderSportPageEnum.UNSETTLED) {
+                holder.getEarlySettleButton().setOnClickListener {
+                    listener?.onEarlySettle(item)
+                }
+            }
         }
 
     }
@@ -76,5 +82,9 @@ class OrderBettingAdapter(private val type: OrderSportPageEnum): BaseAdapter<Bet
     companion object {
         const val HEADER = 0
         const val BODY = 1
+    }
+
+    interface OrderEarlySettleListener {
+        fun onEarlySettle(bean: BetSlipOrderBean)
     }
 }

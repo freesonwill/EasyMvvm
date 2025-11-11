@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.data.model.UnPeekLiveData
 import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
+import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.database.entity.InfoBean
@@ -81,6 +82,35 @@ class LiveMainViewModel(
     private val _sonVerticalScrollIsTop = MutableLiveData<Boolean?>()
     val sonVerticalScrollIsTop: LiveData<Boolean?> = _sonVerticalScrollIsTop
 
+    //视频区域宽高变化
+    private val _videoInitHeight = MutableLiveData<Int>()
+    val videoInitHeight: LiveData<Int> = _videoInitHeight
+
+    //视频流选项动画是否在执行中
+    private val _videoTypeAnimating = MutableLiveData<Boolean>(false)
+    val videoTypeAnimating: LiveData<Boolean> = _videoTypeAnimating
+
+    //隐藏媒体源fragment
+    private val _hideMediaSourceFragment = UnPeekLiveData<Boolean>(false)
+    val hideMediaSourceFragment: UnPeekLiveData<Boolean> = _hideMediaSourceFragment
+
+    fun setVideoInitHeight(height:Int,animating : Boolean = false){
+        if (videoTypeAnimating.value!=animating){
+            _videoTypeAnimating.value = animating
+        }
+        if (videoInitHeight.value!=height){
+            _videoInitHeight.value = height
+        }
+    }
+
+
+    //滚动
+    private val _scorll = MutableLiveData<Boolean>()
+    val scorll: LiveData<Boolean> = _scorll
+
+    fun setScorll(){
+        _scorll.value = true
+    }
 
     //监听数据变化
     private val _observeMainMatch = MutableLiveData<LiveMatchBean>()

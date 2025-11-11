@@ -9,8 +9,9 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.LinearLayout
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
@@ -26,25 +27,24 @@ import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getColor
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getDrawable
-import arch.cayenne.lib.common.utils.ext.TabLayoutExt
-import arch.cayenne.lib.common.utils.ext.TabLayoutExt.addOnTabSelectedListener2
 import arch.cayenne.lib.common.utils.ext.VIPDataExt
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.clickNoRepeatSingle
-import arch.cayenne.lib.common.utils.ext.getFormatDate
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.ext.startFadeAnim
 import arch.cayenne.lib.common.utils.helper.BounceEdgeEffectHelper
 import arch.cayenne.lib.common.utils.helper.VIPResourceHelper
 import arch.cayenne.lib.database.entity.TournamentDataModel
+import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.module.home.R
 import arch.cayenne.module.home.data.constants.HomeState
 import arch.cayenne.module.home.data.constants.PlayType
 import arch.cayenne.module.home.data.constants.TournamentListType
+import arch.cayenne.module.home.data.constants.TournamentSortType
 import arch.cayenne.module.home.databinding.FragmentSubHomeBinding
-import arch.cayenne.module.home.databinding.ItemDateTabBinding
 import arch.cayenne.module.home.databinding.ItemLeagueTabBinding
+import arch.cayenne.module.home.databinding.LayoutTournamentSortingMenuBinding
 import arch.cayenne.module.home.ui.adapter.LeaguePagerAdapter
 import arch.cayenne.module.home.ui.adapter.SportBannerAdapter
 import arch.cayenne.module.home.ui.adapter.SportsListAdapter
@@ -53,24 +53,22 @@ import arch.cayenne.module.home.ui.view.HomeCalendarFragment
 import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
 import arch.cayenne.module.home.ui.viewmodel.SubHomeViewModel
 import arch.cayenne.module.home.utils.DateUtils
-import arch.cayenne.module.home.utils.scrollToPositionWithoutAnim
 import com.bumptech.glide.Glide
-import com.google.android.material.tabs.TabLayout
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.Locale
 import kotlin.reflect.KClass
 
-class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() {
+class SubHomeFragment : BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>(),
+    ISubFragmentLifecycle {
     override val vbClass: KClass<FragmentSubHomeBinding> = FragmentSubHomeBinding::class
     override val vmClass: KClass<SubHomeViewModel> = SubHomeViewModel::class
     private val homeViewModel: HomeViewModel by sharedViewModel<HomeViewModel, NewHomeFragment>()
 
-    private var customPopup : HomeCalendarFragment? = null
+    private var customPopup: HomeCalendarFragment? = null
     private var tournamentTabLayoutMediator: CustomTabLayoutMediator? = null
 
-    private var leaguePagerAdapter : LeaguePagerAdapter? = null
+    private var leaguePagerAdapter: LeaguePagerAdapter? = null
     private var gameListPageCallback: ViewPager2.OnPageChangeCallback? = null
 
     private var allTabCompleteObserveJob: Job? = null
@@ -78,6 +76,10 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
     private var drawSportListJob: Job? = null
 
     private var isExpanded = false
+    private var sortingMenuBinding: LayoutTournamentSortingMenuBinding? = null
+
+    // 當前排序類型，預設為按熱門聯賽排序
+    private var currentSortType = TournamentSortType.BY_HOT
 
     private val defaultAnimDuration = 300L
 
@@ -114,43 +116,9 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
         } else {
             initTournamentLayout()
         }
-        if (mViewModel.currentPlayTypeId == PlayType.EARLY.id) {
-            mBinding.layoutContainer.groupDateFilter.visibility = View.VISIBLE
-            with (mBinding) {
-                layoutContainer.llDateFilterContainer.post {
-                    with (vLeagueMoreMask) {
-                        layoutParams = (layoutParams as ConstraintLayout.LayoutParams).apply {
-                            topMargin =  layoutContainer.llDateFilterContainer.height
-                        }
-                    }
-                }
-            }
-        }
+        // 初始化聯賽按鈕狀態
+        updateTournamentButtonStyle(mViewModel.hasTournamentSelections())
     }
-// TODO 之後排序功能使用
-
-//    private fun setMaskViewAlpha(visible: Boolean) {
-//        mBinding.vTournamentListMask.let {
-//            it.post {
-//                it.animate()
-//                    .alpha(if (visible) 1f else 0f)
-//                    .setDuration(defaultAnimDuration)
-//                    .setListener(object : Animator.AnimatorListener {
-//                        override fun onAnimationStart(p0: Animator) {
-//                            if (visible) it.visibility = View.VISIBLE
-//                        }
-//
-//                        override fun onAnimationEnd(p0: Animator) {
-//                            if (!visible) it.visibility = View.GONE
-//                        }
-//
-//                        override fun onAnimationCancel(p0: Animator) = Unit
-//                        override fun onAnimationRepeat(p0: Animator) = Unit
-//                    })
-//                    .start()
-//            }
-//        }
-//    }
 
     override fun initListener() {
         with(mBinding) {
@@ -185,7 +153,9 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
         }
         mViewModel.currentSportIdChange.observeEvent(viewLifecycleOwner, this) {
             if (mViewModel.currentPlayTypeId != PlayType.CHAMPION.id) return@observeEvent
-            (childFragmentManager.findFragmentByTag(PlayType.CHAMPION.name) as? TournamentListFragment)?.changeSportId(it)
+            (childFragmentManager.findFragmentByTag(PlayType.CHAMPION.name) as? TournamentListFragment)?.changeSportId(
+                it
+            )
         }
 
         with(mViewModel) {
@@ -201,9 +171,12 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
             setTournamentAndViewPagerLayout(list)
         }
 
-        mViewModel.collapseTournamentDropdown.observeEvent(viewLifecycleOwner, this) { shouldCollapse ->
+        mViewModel.collapseTournamentDropdown.observeEvent(
+            viewLifecycleOwner,
+            this
+        ) { shouldCollapse ->
             if (shouldCollapse && isExpanded) {
-                toggleTournamentSorting(false, TournamentListType.MORE)
+                toggleTournamentSorting(false)
                 mViewModel.consumeCollapseTournamentDropdown() // 重置事件，避免重複觸發
             }
         }
@@ -211,26 +184,40 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
         mViewModel.navigationToChampion.observeEvent(viewLifecycleOwner, this) { data ->
             navigate(Uri.parse("walisport://module_home/championFragment?matchId=${data.championMatchId}&name=${data.name}&icon=${data.icon}"))
         }
-        mViewModel.recently7DayMatchScheduleCount.observeEvent(viewLifecycleOwner, this) { list->
+        mViewModel.recently7DayMatchScheduleCount.observeEvent(viewLifecycleOwner, this) { list ->
             customPopup?.updateRange(list)
         }
         mViewModel.selectedDate.observeEvent(viewLifecycleOwner, this) { select ->
             if (select == HomeViewModel.DEFAULT_DATE) return@observeEvent
-            setSelectedDateTab(getFuture31Days().find { it.third == select })
         }
 
         mViewModel.tournamentSlideOutEnd.observeEvent(viewLifecycleOwner, this) {
-            mBinding.llTournamentsDropdown.visibility = View.GONE
+            mBinding.layoutContainer.llTournamentsDropdown.visibility = View.GONE
+        }
+
+        // 觀察聯賽按鈕選中狀態變化
+        mViewModel.tournamentButtonHasSelection.observeEvent(
+            viewLifecycleOwner,
+            this
+        ) { hasSelection ->
+            updateTournamentButtonStyle(hasSelection)
+        }
+
+        // 觀察是否需要清除 tlLeagueList 的選中狀態
+        mViewModel.shouldClearLeagueListSelection.observeEvent(viewLifecycleOwner, this) {
+            clearLeagueListSelection()
         }
 
         mViewModel.calendarStates.observe(viewLifecycleOwner) {
             when (it) {
                 HomeCalendarFragment.States.CALENDAR_CLOSE_NOTHING -> {
                     if (customPopup != null &&
-                        customPopup?.getAnimState() != HomeCalendarFragment.AnimState.COLLAPSING) {
+                        customPopup?.getAnimState() != HomeCalendarFragment.AnimState.COLLAPSING
+                    ) {
                         customPopup?.callDismiss()
                     }
                 }
+
                 else -> Unit
             }
         }
@@ -257,28 +244,33 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
         }
     }
 
-    fun onFragmentSelected() {
+    override fun onFragmentSelected() {
         mViewModel.getCurrentSportStatistical()
         mViewModel.getCurrentTournament()
         tournamentTabLayoutMediator?.scrollTabToCurrentPositionImmediately()
-        mBinding.layoutContainer.tlDateList.scrollToPositionWithoutAnim(mBinding.layoutContainer.tlDateList.selectedTabPosition)
     }
 
-    fun reloadCurrentMatchListPagerFragment() {
+    override fun reloadCurrentMatchListPagerFragment() {
         if (mViewModel.currentPlayTypeId == PlayType.CHAMPION.id) {
             val fragment = childFragmentManager.findFragmentByTag(PlayType.CHAMPION.name)
             (fragment as? TournamentListFragment)?.reloadAllData()
         } else {
-            val itemId = leaguePagerAdapter?.getItemId(mBinding.layoutContainer.vpGameList.currentItem)?: return
+            val itemId =
+                leaguePagerAdapter?.getItemId(mBinding.layoutContainer.vpGameList.currentItem)
+                    ?: return
             val fragment = childFragmentManager.findFragmentByTag("f$itemId") ?: return
             (fragment as? MatchListPagerFragment)?.reloadAllData()
         }
     }
 
     // 設置更多按鈕的顯示狀態
-    fun onFragmentUnSelected() {
+    override fun onFragmentUnSelected() {
         mViewModel.requestCollapseTournamentDropdown()
         mViewModel.setCalendarState(HomeCalendarFragment.States.CALENDAR_CLOSE_NOTHING)
+        // 收起排序選單
+        if (isExpanded) {
+            toggleTournamentSorting(false)
+        }
     }
 
     //init 二級導航欄位
@@ -442,7 +434,7 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
     @SuppressLint("DefaultLocale")
     private fun initTournamentLayout() {
         setChampionModeVisibility(false)
-        
+
         // 取得未來 31 天 (MMDD, 星期, timeStamp)
         val dateTabs = getFutureSevenDays()
         with(mBinding.layoutContainer) {
@@ -453,15 +445,22 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
             vpGameList.offscreenPageLimit = 10
 
             //如果直接點擊聯賽到ViewPager還沒生成的MatchListPageFragment聯賽的話，這個MatchListPageFragment會生成並且attach上去，所以在這裡需要做attach完成後的startObserveMatch
-            childFragmentManager.registerFragmentLifecycleCallbacks(object : FragmentManager.FragmentLifecycleCallbacks() {
-                override fun onFragmentViewCreated(fm: FragmentManager, f: Fragment, v: View, savedInstanceState: Bundle?) {
+            childFragmentManager.registerFragmentLifecycleCallbacks(object :
+                FragmentManager.FragmentLifecycleCallbacks() {
+                override fun onFragmentViewCreated(
+                    fm: FragmentManager,
+                    f: Fragment,
+                    v: View,
+                    savedInstanceState: Bundle?
+                ) {
                     super.onFragmentViewCreated(fm, f, v, savedInstanceState)
-                    val currentItemId = leaguePagerAdapter?.getItemId(vpGameList.currentItem)?: return
+                    val currentItemId =
+                        leaguePagerAdapter?.getItemId(vpGameList.currentItem) ?: return
                     if (f.tag == "f$currentItemId") {
                         startObservePageMatchListChange(vpGameList.currentItem)
                     }
 
-                    val firstFragmentItemId  = leaguePagerAdapter?.getItemId(0)?: return
+                    val firstFragmentItemId = leaguePagerAdapter?.getItemId(0) ?: return
                     if (f.tag == "f$firstFragmentItemId") {
                         startObservePageMatchListChange(0)
                     }
@@ -469,9 +468,6 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
 
             }, false)
 
-            // 日期 Tab 設定, 固定 "全部"
-            updateDateTabs(tlDateList, dateTabs)
-            addDateTabListener()
 
 //            tvTabAll.apply {
 //                clickNoRepeat {
@@ -480,46 +476,17 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
 //                isSelected = true
 //            }
 
-            // 其他日期 Tab 設定
-            llOtherDate.setOnClickListener {
-                if (customPopup != null) {
-                    return@setOnClickListener
-                }
-                // 轉換日期格式為 YYYYMMDD 給 DatePicker 使用
-                fun List<String>.toYYYYMMDD(): String {
-                    val year = this[0]
-                    val month = this[1].padStart(2, '0')
-                    val day = this[2].padStart(2, '0')
-                    return "$year$month$day"
-                }
+        }
 
-                //呼叫日曆popup元件
-                val targetTab = tlDateList.getTabAt(tlDateList.selectedTabPosition)
-                val tabSelectedDate = if (targetTab != null) {
-                    targetTab.run {
-                        getFuture31Days().find { it.first == tag }?.third?.getFormatDate()
-                            ?.split("/")?.toYYYYMMDD()
-                            ?: "0"
-                    }
-                } else {
-                    "0"
-                }
-                launch {
-                    delay(20)
-                    showHomeCalendar(tabSelectedDate)
-                }
+        mBinding.layoutContainer.llBtnTournament.apply { addScaleOnTouchAnimation() }
+            .clickNoRepeat {
+                mViewModel.setCalendarState(HomeCalendarFragment.States.CALENDAR_CLOSE_NOTHING)
+                // toggleTournamentMoreSection(true, TournamentListType.MORE)
+                showTournamentListBottomSheet()
             }
-        }
-
-        mBinding.llBtnTournament.apply { addScaleOnTouchAnimation() }.clickNoRepeat {
+        mBinding.layoutContainer.llTournamentSort.clickNoRepeat {
             mViewModel.setCalendarState(HomeCalendarFragment.States.CALENDAR_CLOSE_NOTHING)
-            // toggleTournamentMoreSection(true, TournamentListType.MORE)
-            showTournamentListBottomSheet()
-        }
-        mBinding.llTournamentSort.clickNoRepeat {
-            mViewModel.setCalendarState(HomeCalendarFragment.States.CALENDAR_CLOSE_NOTHING)
-            // toggleTournamentMoreSection(true, TournamentListType.MORE)
-            //TODO 之後改排序功能
+            toggleTournamentSorting(!isExpanded)
         }
     }
 
@@ -536,7 +503,7 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
      * */
     fun startObservePageMatchListChange(position: Int) {
         val currentPosition = position
-        val itemId = leaguePagerAdapter?.getItemId(currentPosition)?: return
+        val itemId = leaguePagerAdapter?.getItemId(currentPosition) ?: return
         val fragment = childFragmentManager.findFragmentByTag("f$itemId") ?: return
         if (fragment is MatchListPagerFragment) {
             fragment.startObserveMatchListChange()
@@ -567,209 +534,189 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
         }
     }
 
-    private fun addDateTabListener() {
-        mBinding.layoutContainer.tlDateList.addOnTabSelectedListener2(object :
-            TabLayoutExt.OnTabSelectedListener2 {
-            override fun onTabSelected(tab:TabLayout.Tab, isTabClick: Boolean) {
-                mBinding.layoutContainer.tvTabAll.isSelected = false
 
-                playFadeAnimTriggerByDateTab {
-                    lifecycleScope.launch {
-                        mViewModel.selectedDate(
-                            getFuture31Days().find { it.first == tab.tag }?.third ?: return@launch
-                        )
-                    }
+    /**
+     * 排序選單的展開收起切換
+     * @param expanded : Boolean 展開、收起
+     */
+    private fun toggleTournamentSorting(expanded: Boolean) {
+        val container = mBinding.layoutContainer.llTournamentsDropdown
+        isExpanded = expanded
+
+        if (expanded) {
+            // 展開排序選單
+            if (sortingMenuBinding == null) {
+                sortingMenuBinding = LayoutTournamentSortingMenuBinding.inflate(
+                    LayoutInflater.from(requireContext()),
+                    container,
+                    false
+                )
+                setupSortingMenuViews()
+            }
+
+            // 先立即顯示遮罩層遮擋底下內容，避免閃爍
+            mBinding.layoutContainer.vTournamentListMask.apply {
+                visibility = View.VISIBLE
+                alpha = 1f
+                // 設置點擊事件
+                clickNoRepeat {
+                    toggleTournamentSorting(false)
                 }
             }
 
-            override fun onTabUnselected(tab:TabLayout.Tab, isTabClick: Boolean) {}
-            override fun onTabReselected(tab:TabLayout.Tab, isTabClick: Boolean) {}
-        })
-    }
-
-    private fun clearDateTabSelection() {
-        val tabLayout = mBinding.layoutContainer.tlDateList
-        tabLayout.setScrollPosition(0, 0f, true)
-        val tabStrip = tabLayout.getChildAt(0) as? LinearLayout ?: return
-        for (i in 0 until tabStrip.childCount) {
-            tabStrip.getChildAt(i)?.isSelected = false
-            tabLayout.getTabAt(i)?.customView?.isSelected = false
-        }
-        tabLayout.selectTab(null)
-    }
-
-    private fun resetDateTabs() {
-//        mBinding.layoutContainer.tvTabAll.isSelected = true
-        clearDateTabSelection()
-        lifecycleScope.launch {
-            mViewModel.selectedDate(0L)
-        }
-
-    }
-
-    /***
-     * @param expanded : Boolean 展開、收起
-     * @param type : TournamentListType 是屬於今日和早盤的展開型聯賽列表或是屬於冠軍型的聯賽列表，
-     * 或是none，表示切換到其他一級導航前先把目前的聯賽列表馬上收起來，例如 今日 -> 冠軍 or 冠軍 -> 今日，這種情況下一律沒有動畫
-     * TODO 未來改為排序功能使用
-     * */
-    private fun toggleTournamentSorting(
-        expanded: Boolean,
-        type: TournamentListType
-    ) {
-        val tag = "tournament_dropdown"
-        val fm = childFragmentManager
-        val container = mBinding.llTournamentSort
-        isExpanded = expanded
-        if (expanded) {
-            if (fm.findFragmentByTag(tag) != null) return
+            container.removeAllViews()
+            container.addView(sortingMenuBinding?.root)
             container.visibility = View.VISIBLE
 
-            // 展開時顯示遮罩層
-//            setMaskViewAlpha(true)
+            // 立即開始動畫
+            val slideInAnim =
+                AnimationUtils.loadAnimation(requireContext(), R.anim.slide_in_from_top)
+            sortingMenuBinding?.root?.startAnimation(slideInAnim)
 
-            val tournamentListFragment = TournamentListFragment.newInstance(mViewModel.currentPlayTypeId, mViewModel.currentSportId, type)
+            // 切換圖標為收起狀態
+            mBinding.layoutContainer.ivTournamentSortIcon.setImageResource(R.drawable.ic_tournament_collapse)
 
-            fm.beginTransaction().apply {
-                if (type == TournamentListType.MORE) {
-                    setCustomAnimations(
-                        R.anim.slide_in_from_top,
-                        R.anim.slide_out_to_top
-                    )
-                }
-                replace(R.id.ll_tournaments_dropdown, tournamentListFragment, tag)
-                commitAllowingStateLoss()
-            }
+            // tv_tournament_more 變色為選中狀態
+            mBinding.layoutContainer.tvTournamentMore.setTextColor(
+                SkinnableResourceManager.getColor(
+                    requireContext(),
+                    arch.cayenne.lib.common.R.color.color_00E0E5
+                )
+            )
 
         } else {
-            val fragment = fm.findFragmentByTag(tag) ?: return
+            // 收起排序選單 - 使用動畫
+            val slideOutAnim = AnimationUtils.loadAnimation(
+                requireContext(),
+                R.anim.slide_out_to_top
+            )
+            slideOutAnim.setAnimationListener(object : Animation.AnimationListener {
+                override fun onAnimationStart(animation: Animation?) {}
 
-            // 收回時隱藏遮罩層
-//            setMaskViewAlpha(false)
-            
-            fm.beginTransaction().apply {
-                if (type == TournamentListType.MORE) {
-                    setCustomAnimations(0, R.anim.slide_out_to_top)
+                override fun onAnimationEnd(animation: Animation?) {
+                    container.visibility = View.GONE
                 }
-                remove(fragment)
-                commitNow()
-            }
-        }
-    }
 
+                override fun onAnimationRepeat(animation: Animation?) {}
+            })
+            sortingMenuBinding?.root?.startAnimation(slideOutAnim)
 
-    private fun showHomeCalendar(tabSelectedDate: String) {
-        with(mBinding.layoutContainer) {
-            customPopup = HomeCalendarFragment.Builder().apply {
-                mViewModel.recently7DayMatchScheduleCount.value?.peekContent()?.let { setRange(it) }
-                setOnDateSelectedListener { selectedDate ->
-                    setSelectedDateTab(getFuture31Days().find { it.first == selectedDate })
-                }
-                setOnResetDateListener {
-                    resetDateTabs()
-                }
-                setOnBeforeDismissAnimListener {
-                    llOtherDate.isSelected = false
-                    tvDate.isSelected = false
-                    tvWeekDay.isSelected = false
-                    // 重置日期tab選擇狀態
-                    tlDateList.getTabAt(tlDateList.selectedTabPosition)?.let {
-                        if(!it.view.isSelected) {
-                            it.view.isSelected = true
-                        }
-                    } ?: run { tvTabAll.isSelected = true }
-                    enableHorizontalScroll(true)
-                }
-                setOnBeforeExpandAnimListener {
-                    llOtherDate.isSelected = true
-                    tvDate.isSelected = true
-                    tvWeekDay.isSelected = true
-                }
-                setOnAfterExpandAnimListener {
-                    if (!llOtherDate.isSelected) {
-                        llOtherDate.isSelected = true
-                        tvDate.isSelected = true
-                        tvWeekDay.isSelected = true
+            // 收回時隱藏遮罩層（帶動畫效果）
+            mBinding.layoutContainer.vTournamentListMask.animate()
+                .alpha(0f)
+                .setDuration(defaultAnimDuration)
+                .setListener(object : android.animation.Animator.AnimatorListener {
+                    override fun onAnimationStart(p0: android.animation.Animator) {}
+
+                    override fun onAnimationEnd(p0: android.animation.Animator) {
+                        mBinding.layoutContainer.vTournamentListMask.visibility = View.GONE
                     }
-                    enableHorizontalScroll(false)
-                }
-                setOnAfterDismissAnimListener {
-                    customPopup = null
-                    llCalendar.visibility = View.GONE
-                }
-            }.build()
-            llCalendar.visibility = View.VISIBLE
-            customPopup?.show(childFragmentManager, llCalendar.id, tabSelectedDate)
+
+                    override fun onAnimationCancel(p0: android.animation.Animator) {}
+                    override fun onAnimationRepeat(p0: android.animation.Animator) {}
+                })
+                .start()
+
+            // 切換圖標為展開狀態
+            mBinding.layoutContainer.ivTournamentSortIcon.setImageResource(R.drawable.ic_tournament_expand)
+
+            // tv_tournament_more 恢復為未選中狀態
+            mBinding.layoutContainer.tvTournamentMore.setTextColor(
+                SkinnableResourceManager.getColor(
+                    requireContext(),
+                    arch.cayenne.lib.common.R.color.color_C0C0C0
+                )
+            )
         }
     }
-    //選取日期後按確定時連動至早盤日期tab,選取對應的日期
-    private fun setSelectedDateTab(dateTriple: Triple<String, String, Long>?) {
-        with(mBinding.layoutContainer) {
-            if (dateTriple == null) {
-                resetDateTabs()
-                return
-            }
-            var indexOfTabs = -1
-            for( i in 0 until tlDateList.tabCount) {   //尋找是否在目前的tab內已經存在，存在的話跳到該tab就好
-                val tab = tlDateList.getTabAt(i)
-                if (tab?.tag == dateTriple.first){
-                    indexOfTabs = i
-                    break
+
+    /**
+     * 設置排序選單視圖的點擊事件和初始狀態
+     */
+    private fun setupSortingMenuViews() {
+        sortingMenuBinding?.let { binding ->
+            // 設置初始選中狀態
+            updateSortingMenuSelection()
+
+            // 點擊按熱門排序
+            binding.tvSortByHot.clickNoRepeat {
+                if (currentSortType != TournamentSortType.BY_HOT) {
+                    currentSortType = TournamentSortType.BY_HOT
+                    updateSortingMenuSelection()
+                    applySorting()
                 }
+                toggleTournamentSorting(false)
             }
-            if (indexOfTabs != -1) {
-                tlDateList.getTabAt(indexOfTabs)?.select()
-            } else {
-               tlDateList.addTabAndScrollPrecisely(createDateTab(dateTriple.first, dateTriple.second))
-                setupDateTabLayoutParams(tlDateList, false)
+
+            // 點擊按時間排序
+            binding.tvSortByTime.clickNoRepeat {
+                if (currentSortType != TournamentSortType.BY_TIME) {
+                    currentSortType = TournamentSortType.BY_TIME
+                    updateSortingMenuSelection()
+                    applySorting()
+                }
+                toggleTournamentSorting(false)
             }
         }
     }
 
-    private fun setupDateTabLayoutParams(tabLayout: TabLayout, clearSelected: Boolean) {
-        tabLayout.post {
-            val tabStrip = tabLayout.getChildAt(0) as LinearLayout
-            for (i in 0 until tabStrip.childCount) {
-                tabStrip.getChildAt(i).apply {
-                    val params = layoutParams as LinearLayout.LayoutParams
-                    params.width = 52.dp2px
-                    params.height = 37.dp2px
-                    params.marginStart = if (i==0) 14.dp2px else 7.dp2px
-                    layoutParams = params
-                    setBackgroundResource(R.drawable.selector_date_tab_bg)
-                    if (clearSelected) isSelected = false
+    /**
+     * 更新排序選單的選中狀態
+     */
+    private fun updateSortingMenuSelection() {
+        sortingMenuBinding?.let { binding ->
+            val selectedColor = SkinnableResourceManager.getColor(
+                requireContext(),
+                arch.cayenne.lib.common.R.color.color_00E0E5
+            )
+            val unselectedColor = SkinnableResourceManager.getColor(
+                requireContext(),
+                arch.cayenne.lib.common.R.color.color_999999
+            )
+
+            when (currentSortType) {
+                TournamentSortType.BY_HOT -> {
+                    binding.tvSortByHot.setTextColor(selectedColor)
+                    binding.tvSortByTime.setTextColor(unselectedColor)
+                }
+
+                TournamentSortType.BY_TIME -> {
+                    binding.tvSortByHot.setTextColor(unselectedColor)
+                    binding.tvSortByTime.setTextColor(selectedColor)
                 }
             }
         }
     }
+
+    /**
+     * 應用排序邏輯
+     */
+    private fun applySorting() {
+        // TODO: 實現實際的排序邏輯
+        // 根據 currentSortType 來決定如何排序賽事列表
+        when (currentSortType) {
+            TournamentSortType.BY_HOT -> {
+                // 按熱門聯賽排序的邏輯
+                // 可以調用 ViewModel 的方法來更新數據
+            }
+
+            TournamentSortType.BY_TIME -> {
+                // 按比賽時間排序的邏輯
+                // 可以調用 ViewModel 的方法來更新數據
+            }
+        }
+    }
+
+
     private fun getFutureSevenDays() = getFuture31Days().take(7)
-    private fun getFuture31Days() = DateUtils.getFutureDays(31, Locale.getDefault(),resources.getString(R.string.first_day_title),"M-dd","E")
+    private fun getFuture31Days() = DateUtils.getFutureDays(
+        31,
+        Locale.getDefault(),
+        resources.getString(R.string.first_day_title),
+        "M-dd",
+        "E"
+    )
 
-    private fun updateDateTabs(
-        tlDateList: TabLayout,
-        dateTabs: List<Triple<String, String, Long>>
-    ) {
-        tlDateList.apply {
-            removeAllTabs()
-            dateTabs.forEach { (date, weekday, _) ->
-                val tab = createDateTab(date, weekday)
-                addTab(tab)
-            }
-            setupDateTabLayoutParams(tlDateList, true)
-        }
-    }
-
-    private fun createDateTab(date: String?, weekday: String?): TabLayout.Tab {
-        val tab = mBinding.layoutContainer.tlDateList.newTab()
-        val tabView = ItemDateTabBinding.inflate(LayoutInflater.from(context), null, false).apply {
-            tvDate.text = date
-            tvWeekDay.visibility = View.VISIBLE
-            tvWeekDay.text = weekday
-        }
-        tab.customView = tabView.root
-        tab.tag = date
-        return tab
-    }
 
     private fun setTournamentAndViewPagerLayout(tournaments: List<TournamentDataModel>) {
 
@@ -800,13 +747,18 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
                 layoutMediator.attach(
                     afterTabSelected = { position ->
                         getSelectedRecently31Scheduled(position)
-                        tournaments.getOrNull(position)?.id?.let { id -> mViewModel.setCurrentTournamentId(id)}
+                        tournaments.getOrNull(position)?.let { tournament ->
+                            mViewModel.setCurrentTournamentId(tournament.id)
+                            // 需求3：標記外部tab已切換，下次打開彈窗時需要清空篩選
+                            mViewModel.markTournamentTabSwitched()
+                            // 需求3：清除按鈕選中狀態和已保存的選中聯賽
+                            mViewModel.clearSavedTournamentSelections()
+                        }
                         startObservePageMatchListChange(position)
-                        mBinding.layoutContainer.tlDateList.scrollToPositionWithoutAnim(mBinding.layoutContainer.tlDateList.selectedTabPosition)
                     }
                 )
 
-                if(mViewModel.isAllowTabLoad) {
+                if (mViewModel.isAllowTabLoad) {
                     drawTournamentTab()
                 }
 
@@ -814,7 +766,11 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
                     val selectedPosition = tournaments.indexOfFirst { it.isSelected }
                     tlLeagueList.setScrollPosition(selectedPosition, 0f, true)
                     tlLeagueList.post { layoutMediator.selectTabWithoutAnimation(selectedPosition) }
-                    vpGameList.post { gameListPageCallback?.onPageScrollStateChanged(SCROLL_STATE_IDLE) }
+                    vpGameList.post {
+                        gameListPageCallback?.onPageScrollStateChanged(
+                            SCROLL_STATE_IDLE
+                        )
+                    }
                 }
             }
         }
@@ -831,23 +787,25 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
 
     @SuppressLint("ClickableViewAccessibility")
     private fun setTopMaskListener() {
-        with (mBinding) {
+        with(mBinding) {
             clSubMain.setOnChildClickedInterceptedListener { view ->
                 when (view) {
                     viewSecondNavbar -> {
                         mViewModel.setCalendarState(HomeCalendarFragment.States.CALENDAR_CLOSE_NOTHING)
                     }
-                    else-> Unit
+
+                    else -> Unit
                 }
             }
             with(layoutContainer) {
                 viewContainerRoot.setOnChildClickedInterceptedListener { view ->
-                    when(view) {
-                        tlContainer, llDateFilterContainer, llOtherDate -> {
+                    when (view) {
+                        tlContainer -> {
                             lifecycleScope.launch {
                                 mViewModel.setCalendarState(HomeCalendarFragment.States.CALENDAR_CLOSE_NOTHING)
                             }
                         }
+
                         else -> Unit
                     }
                 }
@@ -881,6 +839,7 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
         }
         return tabBinding.root
     }
+
     private fun enableHorizontalScroll(isEnabled: Boolean) {
         val key = getString(R.string.new_home_vp_sub_key)
         val result = Bundle().apply {
@@ -888,6 +847,55 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
         }
         // 使用 parentFragmentManager 發送結果
         parentFragmentManager.setFragmentResult(key, result)
+    }
+
+    /**
+     * 清除 tlLeagueList 的選中狀態（需求2）
+     */
+    private fun clearLeagueListSelection() {
+        with(mBinding.layoutContainer) {
+            // 清除所有 tab 的選中狀態
+            val tabLayout = tlLeagueList
+            for (i in 0 until tabLayout.tabCount) {
+                tabLayout.getTabAt(i)?.let { tab ->
+                    tab.customView?.isSelected = false
+                }
+            }
+            // 不設置任何 tab 為選中
+            tabLayout.selectTab(null)
+        }
+    }
+
+    /**
+     * 更新聯賽按鈕樣式
+     * @param hasSelection true: 有選中的聯賽，false: 沒有選中的聯賽
+     */
+    private fun updateTournamentButtonStyle(hasSelection: Boolean) {
+        with(mBinding.layoutContainer) {
+            if (hasSelection) {
+                // 有選中狀態：高亮顯示
+                llBtnTournament.setBackgroundResource(R.drawable.selector_league_tab_bg)
+                llBtnTournament.isSelected = true
+                tvBtnTournament.setTextColor(
+                    SkinnableResourceManager.getColor(
+                        requireContext(),
+                        R.color.league_tab_tint_select
+                    )
+                )
+                ivBtnTournamentIcon.setImageResource(R.drawable.ic_tournament_list_selected)
+            } else {
+                // 無選中狀態：默認樣式
+                llBtnTournament.setBackgroundResource(R.drawable.shape_tournament_more_bg)
+                llBtnTournament.isSelected = false
+                tvBtnTournament.setTextColor(
+                    SkinnableResourceManager.getColor(
+                        requireContext(),
+                        arch.cayenne.lib.common.R.color.color_C0C0C0
+                    )
+                )
+                ivBtnTournamentIcon.setImageResource(R.drawable.ic_tournament_list)
+            }
+        }
     }
 
     /**
@@ -899,15 +907,15 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
         with(mBinding) {
             llBanner.visibility = visibility
             layoutContainer.root.visibility = visibility
-            llBtnTournament.visibility = visibility
-            llTournamentSort.visibility = visibility
-            vLeagueMoreMask.visibility = visibility
+            layoutContainer.llBtnTournament.visibility = visibility
+            layoutContainer.llTournamentSort.visibility = visibility
+            layoutContainer.vLeagueMoreMask.visibility = visibility
         }
     }
 
     private fun initChampionTournamentLayout() {
         setChampionModeVisibility(true)
-        
+
         val tournamentListFragment = TournamentListFragment.newInstance(
             playTypeId = PlayType.CHAMPION.id,
             sportId = mViewModel.currentSportId,
@@ -919,11 +927,17 @@ class SubHomeFragment: BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>() 
     }
 
     override fun onBackPressed(): Boolean {
-        if(isExpanded && mViewModel.currentPlayTypeId != PlayType.CHAMPION.id){
-            toggleTournamentSorting(false, TournamentListType.MORE)
+        // 如果排序選單展開，先收起排序選單
+        if (isExpanded && mViewModel.currentPlayTypeId != PlayType.CHAMPION.id) {
+            toggleTournamentSorting(false)
             return true
         }
         return super.onBackPressed()
+    }
+
+    override fun onDestroyView() {
+        sortingMenuBinding = null
+        super.onDestroyView()
     }
 
     companion object {

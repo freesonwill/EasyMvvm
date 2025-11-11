@@ -2,8 +2,8 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_width="375dp"
+    android:layout_height="326dp"
     android:background="@drawable/bg_share">
 
     <arch.cayenne.lib.skin.widget.SkinnableTextView
@@ -21,45 +21,78 @@
 
     <arch.cayenne.lib.skin.widget.SkinnableImageView
         android:id="@+id/iv_close"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="12dp"
-        android:src="@drawable/icon_close"
+        android:layout_width="@dimen/dp_24"
+        android:layout_height="@dimen/dp_24"
+        android:src="@drawable/icon_close_in"
+        app:layout_constraintBottom_toBottomOf="@id/tv_title"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_marginEnd="@dimen/dp_14"
+        app:layout_constraintTop_toTopOf="@id/tv_title" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_share_apps"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:orientation="horizontal"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        android:layout_width="0dp"
+        android:layout_height="88dp"
+        android:layout_marginTop="31dp"
+        android:layout_marginStart="@dimen/dp_8"
+        app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_title"
-        tools:itemCount="3"
-        tools:listitem="@layout/item_share_app" />
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+
 
     <arch.cayenne.lib.skin.widget.SkinnableView
         android:id="@+id/line"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_marginTop="11dp"
+        android:layout_marginTop="16dp"
         android:background="@color/color_0FFFFFFF"
         app:layout_constraintTop_toBottomOf="@id/rv_share_apps" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_share_link"
+
+    <arch.cayenne.lib.skin.widget.SkinnableImageView
+        android:id="@+id/iv_bet"
+        android:layout_width="@dimen/dp_46"
+        android:layout_height="@dimen/dp_46"
+        android:layout_marginStart="@dimen/dp_21"
+        android:layout_marginTop="@dimen/dp_16"
+        android:background="@drawable/icon_share_bet"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/line" />
+
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="17dp"
-        android:layout_marginBottom="50dp"
-        android:orientation="horizontal"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/line"
-        tools:itemCount="3"
-        tools:listitem="@layout/item_share_app" />
+        android:layout_marginTop="@dimen/dp_8"
+        android:text="复制注单"
+        android:textColor="@color/color_C0C0C0"
+        android:textSize="@dimen/dp_12"
+        app:layout_constraintLeft_toLeftOf="@id/iv_bet"
+        app:layout_constraintRight_toRightOf="@id/iv_bet"
+        app:layout_constraintTop_toBottomOf="@id/iv_bet" />
+
+
+    <arch.cayenne.lib.skin.widget.SkinnableImageView
+        android:id="@+id/iv_link"
+        android:layout_width="@dimen/dp_46"
+        android:layout_height="@dimen/dp_46"
+        android:layout_marginStart="@dimen/dp_26"
+        android:background="@drawable/icon_share_link"
+        app:layout_constraintLeft_toRightOf="@id/iv_bet"
+        app:layout_constraintTop_toTopOf="@id/iv_bet" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_8"
+        android:text="复制链接"
+        android:textColor="@color/color_C0C0C0"
+        android:textSize="@dimen/dp_12"
+        app:layout_constraintLeft_toLeftOf="@id/iv_link"
+        app:layout_constraintRight_toRightOf="@id/iv_link"
+        app:layout_constraintTop_toBottomOf="@id/iv_bet"
+        />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

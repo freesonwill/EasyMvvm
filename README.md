@@ -163,5 +163,27 @@ WebSocket
      * @param view 传入布局view
      * @param callback 返回 不传入Unit 默认不显示ivBack 
      */
+     
+13.毛玻璃效果 net.center.blurview.ShapeBlurView 
+https://github.com/centerzx/ShapeBlurView
+build 引入 implementation(libs.blurview)
+设置描述
+属性说明示例值
+app:shapeType形状类型"circle", "rect", "path"
+app:blurRadius模糊强度（0~25）moren 10
+app:shapeColor形状填充色（支持透明度）
+blur_radius:高斯模糊半径，值越大越模糊，0<r<=25
+blur_down_sample:采样参数
+blur_overlay_color:毛玻璃覆盖颜色
+blur_corner_radius:矩形时圆角半径（4个角一样)
+blur_border_width:边框线条宽度
+blur_border_color:边框线条颜色
+blur_mode:样式，rectangle：矩形；circle：圆形；oval：椭圆
+圆角半径
+blur_corner_radius_top_left 
+blur_corner_radius_top_right
+blur_corner_radius_bottom_left
+blur_corner_radius_bottom_right
+
 
 ```

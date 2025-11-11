@@ -28,6 +28,7 @@ import arch.cayenne.module.betslip.ui.viewmodel.SportPickerViewModel
 import arch.cayenne.module.betslip.ui.viewmodel.UnsettledViewModel
 import arch.cayenne.module.order.ui.viewmodel.HomeOrderViewModel
 import arch.cayenne.module.order.ui.viewmodel.OrderGameViewModel
+import arch.cayenne.module.order.ui.viewmodel.OrderSportEarlySettleViewModel
 import arch.cayenne.module.order.ui.viewmodel.OrderSportPageViewModel
 import arch.cayenne.module.order.ui.viewmodel.OrderSportViewModel
 
@@ -69,6 +70,7 @@ class BetSlipModuleInitializer: DefaultInitializer<String> {
         viewModelOf(::OrderGameViewModel)
         viewModelOf(::OrderSportViewModel)
         viewModelOf(::OrderSportPageViewModel)
+        viewModelOf(::OrderSportEarlySettleViewModel)
     }
 
     private val repoModules = module {

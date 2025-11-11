@@ -1,9 +1,16 @@
 package arch.cayenne.lib.common.ui.fragment
 
 import android.animation.ObjectAnimator
+import android.annotation.TargetApi
+import android.graphics.Outline
+import android.graphics.Rect
+import android.graphics.drawable.Drawable
+import android.os.Build
 import android.os.Bundle
 import android.view.Gravity
 import android.view.View
+import android.view.ViewGroup
+import android.view.ViewOutlineProvider
 import android.view.Window
 import android.view.animation.DecelerateInterpolator
 import androidx.recyclerview.widget.GridLayoutManager
@@ -74,6 +81,7 @@ class CurrencyDialogFragment private constructor() : BasePositionDialogFragment<
 
     override fun initView(savedInstanceState: Bundle?) {
         with(mBinding) {
+
             rvCurrency.adapter = currencyAdapter
             rvCurrency.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
             currencyAdapter.submitList(mockList)
@@ -122,6 +130,7 @@ class CurrencyDialogFragment private constructor() : BasePositionDialogFragment<
                 }
             }
         }
+
     }
 
     override fun initListener() {

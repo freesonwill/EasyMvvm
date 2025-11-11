@@ -1,6 +1,5 @@
 package com.walisport.app.ui
 
-import android.os.Build
 import android.os.Bundle
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.fragment.app.DialogFragment
@@ -25,7 +24,7 @@ import arch.cayenne.module.bet.ui.fragment.FloatingButtonFragment
 import arch.cayenne.module.bet.viewmodel.FloatingButtonControlViewModel
 import arch.cayenne.module.betslip.ui.fragment.HomeBetSlipFragment
 import com.walisport.app.R
-import com.walisport.app.ui.viewmodel.MainViewModel
+import com.walisport.app.ui.viewmodel.MainActivityViewModel
 import com.walisport.module.message.ui.fragment.AppNotifyFragment
 import com.walisport.module.message.ui.view.AppNotifyToastView
 import kotlinx.coroutines.Dispatchers
@@ -33,10 +32,10 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import kotlin.reflect.KClass
 import kotlin.system.exitProcess
 
-class MainActivity : BaseNavActivity<MainViewModel>() {
+class MainActivity : BaseNavActivity<MainActivityViewModel>() {
 
     override fun navigationID(): Int = R.navigation.nav_graph_app
-    override val vmClass: KClass<MainViewModel> = MainViewModel::class
+    override val vmClass: KClass<MainActivityViewModel> = MainActivityViewModel::class
     private val fabControlViewModel: FloatingButtonControlViewModel by viewModel()
     private val fabFragment: FloatingButtonFragment by lazy {
         FloatingButtonFragment.newInstance()
@@ -114,6 +113,10 @@ class MainActivity : BaseNavActivity<MainViewModel>() {
                 }
             }
         }
+       mViewModel.softConfigListener.observe(this){
+           enableHideKeyboardOnTouchOutside = it
+       }
+
     }
 
     override fun configStatusBar(): StatusBarConfig {
@@ -180,5 +183,6 @@ class MainActivity : BaseNavActivity<MainViewModel>() {
             }, 500L)
         }
     }
+
 
 }

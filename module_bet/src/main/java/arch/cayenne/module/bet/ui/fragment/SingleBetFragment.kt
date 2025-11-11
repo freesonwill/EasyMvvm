@@ -37,6 +37,9 @@ import arch.cayenne.module.bet.viewmodel.SingleBetViewModel
 import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
 
+/**
+ * 单关投注
+ */
 class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBinding>(),
     BetSheetListener {
 
@@ -148,7 +151,7 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
         mBinding.clMoney.setOnClickListener {
             showKeyboard()
         }
-        mBinding.btnDelete.setOnClickListener {
+        mBinding.btnDelete.root.setOnClickListener {
             mViewModel.removeBet()
         }
         mBinding.clOddsChange.setOnClickListener {
@@ -211,13 +214,13 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
         when (type) {
             BetTypeEnum.SINGLE, BetTypeEnum.RESERVE -> {
                 mBinding.btnCollusion.visibility = View.VISIBLE
-                mBinding.btnDelete.visibility = View.INVISIBLE
+                mBinding.btnDelete.root.visibility = View.INVISIBLE
                 mBinding.ivClose.setImageDrawable(SkinnableResourceManager.getDrawable(requireContext(), R.drawable.icon_page_close))
             }
 
             BetTypeEnum.COMBO -> {
                 mBinding.btnCollusion.visibility = View.INVISIBLE
-                mBinding.btnDelete.visibility = View.VISIBLE
+                mBinding.btnDelete.root.visibility = View.VISIBLE
                 mBinding.ivClose.setImageDrawable(SkinnableResourceManager.getDrawable(requireContext(), R.drawable.icon_collapse))
             }
 

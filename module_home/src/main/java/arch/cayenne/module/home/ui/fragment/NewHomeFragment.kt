@@ -49,6 +49,9 @@ import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
 import com.google.android.material.tabs.TabLayout
 import kotlin.reflect.KClass
 
+/**
+ * 体育页
+ */
 class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
     override val vbClass: KClass<FragmentNewHomeBinding> = FragmentNewHomeBinding::class
     override val vmClass: KClass<HomeViewModel> = HomeViewModel::class
@@ -198,7 +201,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                     mViewModel.setCurrentPlayType(playType.id)
 
                     if (playType != PlayType.FAVORITE) {
-                        (childFragmentManager.findFragmentByTag("f$position") as? SubHomeFragment)?.onFragmentSelected()
+                        (childFragmentManager.findFragmentByTag("f$position") as? ISubFragmentLifecycle)?.onFragmentSelected()
                     }
 
                     // 樣式：設為粗體，並更新顏色
@@ -213,7 +216,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                     val playIndex = position - promoTabs.size
                     val playType = PlayType.entries[playIndex]
                     if (playType != PlayType.FAVORITE) {
-                        (childFragmentManager.findFragmentByTag("f$position") as? SubHomeFragment)?.onFragmentUnSelected()
+                        (childFragmentManager.findFragmentByTag("f$position") as? ISubFragmentLifecycle)?.onFragmentUnSelected()
                     }
                     // 設為預設字重並更新顏色
                     (tab.view.getChildAt(1) as? TextView)?.typeface = Typeface.DEFAULT
@@ -237,12 +240,21 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
     private fun setupTabsStyle() {
         with(mBinding.tlHome) {
             val tabStrip = (getChildAt(0) as? ViewGroup) ?: return
+            tabStrip.clipChildren = false
+            tabStrip.clipToPadding = false
+            
             val tabWidthPx = 56.dp2px
             for (i in 0 until tabStrip.childCount) {
                 val tabView = tabStrip.getChildAt(i)
                 val lp = tabView.layoutParams as ViewGroup.MarginLayoutParams
                 val isPromo = (getTabAt(i)?.tag == "PROMO")
-                lp.width = if (isPromo) 104.dp2px else tabWidthPx
+                if (isPromo) {
+                    lp.width = 104.dp2px
+                    lp.height = 26.dp2px
+                } else {
+                    lp.width = tabWidthPx
+                    lp.bottomMargin = 3.dp2px
+                }
                 tabView.layoutParams = lp
 
                 val tv = (getTabAt(i)?.view?.getChildAt(1) as? TextView)

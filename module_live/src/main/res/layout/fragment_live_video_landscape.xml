@@ -29,16 +29,16 @@
         android:id="@+id/ct_error"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/color_80000000"
+        android:background="#BF000000"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:layout_width="@dimen/dp_28"
-            android:layout_height="@dimen/dp_28"
-            android:layout_marginTop="@dimen/dp_133"
-            android:src="@drawable/live_video_error"
+            android:layout_width="@dimen/dp_84"
+            android:layout_height="@dimen/dp_84"
+            android:layout_marginTop="@dimen/dp_129"
+            android:src="@drawable/live_landscape_video_error"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -46,10 +46,41 @@
         <androidx.appcompat.widget.AppCompatTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_212"
+            android:layout_marginTop="@dimen/dp_225"
             android:text="@string/live_video_error"
-            android:textColor="@color/color_E5FFFFFF"
-            android:textSize="@dimen/sp_13"
+            android:textColor="@color/color_999999"
+            android:textSize="@dimen/sp_14"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/ct_loading"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#BF000000"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:layout_width="@dimen/dp_40"
+            android:layout_height="@dimen/dp_40"
+            android:layout_marginTop="@dimen/dp_154"
+            android:src="@drawable/live_landscape_video_loading"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_199"
+            android:text="@string/live_video_loading"
+            android:textColor="@color/color_999999"
+            android:textSize="@dimen/sp_14"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -69,20 +100,21 @@
             android:id="@+id/iv_back"
             android:layout_width="@dimen/dp_40"
             android:layout_height="@dimen/dp_40"
-            android:layout_marginTop="@dimen/dp_4"
-            android:paddingStart="@dimen/dp_14"
-            android:paddingTop="@dimen/dp_10"
-            android:paddingEnd="@dimen/dp_14"
-            android:paddingBottom="@dimen/dp_10"
+            android:layout_marginStart="@dimen/dp_36"
+            android:layout_marginTop="@dimen/dp_20"
+            android:paddingStart="@dimen/dp_8"
+            android:paddingTop="@dimen/dp_8"
+            android:paddingEnd="@dimen/dp_6"
+            android:paddingBottom="@dimen/dp_8"
             android:scaleType="fitXY"
-            android:src="@drawable/video_landscape_back"
+            android:src="@drawable/universal_icon_back"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_22"
-            android:layout_marginTop="@dimen/dp_13"
+            android:layout_marginTop="@dimen/dp_28"
             android:gravity="center_vertical"
             android:orientation="horizontal"
             app:layout_constraintLeft_toRightOf="@+id/iv_back"
@@ -114,34 +146,35 @@
             android:id="@+id/iv_share"
             android:layout_width="@dimen/dp_40"
             android:layout_height="@dimen/dp_40"
-            android:layout_marginTop="@dimen/dp_4"
-            android:paddingStart="@dimen/dp_9"
-            android:paddingTop="@dimen/dp_12"
-            android:paddingEnd="@dimen/dp_9"
-            android:paddingBottom="@dimen/dp_12"
+            android:layout_marginTop="@dimen/dp_20"
+            android:layout_marginEnd="@dimen/dp_56"
+            android:paddingStart="@dimen/dp_8"
+            android:paddingTop="@dimen/dp_8"
+            android:paddingEnd="@dimen/dp_8"
+            android:paddingBottom="@dimen/dp_8"
             android:scaleType="fitXY"
-            android:src="@drawable/video_landscape_share"
+            android:src="@drawable/ic_live_share"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/bottom_area"
-        android:background="@drawable/bg_video_player_bottom"
         android:layout_width="match_parent"
         android:layout_height="@dimen/video_landscape_operate_area_height_bottom"
+        android:background="@drawable/bg_video_player_bottom"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_sound_toggle"
-            android:layout_width="@dimen/dp_28"
-            android:layout_height="@dimen/dp_28"
-            android:layout_marginBottom="@dimen/dp_38"
-            android:src="@drawable/shape_immuted"
+            android:layout_width="@dimen/dp_38"
+            android:layout_height="@dimen/dp_38"
+            android:layout_marginBottom="@dimen/dp_21"
+            android:padding="@dimen/dp_8"
+            android:src="@drawable/ic_immuted"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
-
 
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -156,7 +189,7 @@
                 android:layout_width="@dimen/dp_22"
                 android:layout_height="@dimen/dp_22"
                 android:layout_marginEnd="@dimen/dp_6"
-                android:layout_marginBottom="@dimen/dp_38"
+                android:layout_marginBottom="@dimen/dp_30"
                 android:src="@drawable/video_landscape_choose_source"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/tv_source" />
@@ -167,7 +200,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
                 android:layout_marginEnd="@dimen/dp_30"
-                android:layout_marginBottom="@dimen/dp_39"
+                android:layout_marginBottom="@dimen/dp_31"
                 android:text="@string/video_landscape_choose_video_source"
                 android:textColor="@color/white"
                 android:textSize="14sp"
@@ -182,7 +215,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/dp_30"
-            android:layout_marginBottom="@dimen/dp_40"
+            android:layout_marginBottom="@dimen/dp_32"
             android:textColor="@color/white"
             android:textSize="@dimen/sp_14"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -194,7 +227,7 @@
             android:id="@+id/tv_statistics"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/dp_40"
+            android:layout_marginBottom="@dimen/dp_32"
             android:text="@string/live_outs"
             android:textColor="@color/white"
             android:textSize="14sp"

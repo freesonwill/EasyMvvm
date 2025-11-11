@@ -39,7 +39,9 @@ class TopUpFragment : BaseFragment<TopUpViewModel, FragmentTopupBinding>() {
                     findNavController().navigateUp()
                 }
                 tvTitleRight.clickNoRepeat {
-                    navigate(R.id.action_topUpFragment_to_fundDetailsFragment)
+                    navigate(TopUpFragmentDirections.actionTopUpFragmentToFundDetailsFragment().apply {
+                        arguments.putString("type", "cz_record")
+                    })
                 }
             }
         }

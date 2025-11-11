@@ -1,21 +1,21 @@
 package arch.cayenne.module.home.ui.fragment
 
+import android.graphics.Rect
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import androidx.core.content.res.ResourcesCompat
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
-import arch.cayenne.lib.common.utils.ViewUtils
+import arch.cayenne.lib.common.utils.biz.CommonBiz
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
+import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
@@ -37,7 +37,7 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
     override val vbClass: KClass<FragmentDrawerContentBinding> = FragmentDrawerContentBinding::class
     override val vmClass: KClass<DrawerContentViewModel> = DrawerContentViewModel::class
     private var onFunctionClick: (() -> Unit)? = null
-
+    private val spanCount = 3
     //note:login入口開關
     private val showBtnLogin = false
 
@@ -65,21 +65,12 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
         initRvCommonFeatures()
         initRvServiceFeatures()
         initRvEarningFeatures()
-
-        //更改导航栏样式调整底部偏移
-        ViewCompat.setOnApplyWindowInsetsListener(requireActivity().window.decorView) { v, insets ->
-            val navInsets = insets.getInsets(WindowInsetsCompat.Type.navigationBars())
-            val navBarHeight = ViewUtils.getNavigationBarHeight(requireContext())
-            //"导航栏 bottom = ${navInsets.bottom},navBarHeight:$navBarHeight".logd(TAG)
-            ViewCompat.setOnApplyWindowInsetsListener(requireActivity().window.decorView, null)
-            insets
-        }
     }
 
     private fun initRvCommonFeatures() {
         mBinding.rvCommonFeatures.apply {
             //某些机型上， RecyclerView存在过滚动效果。 禁用scroll, 禁用过滚动效果
-            layoutManager = object : GridLayoutManager(requireContext(), 3) {
+            layoutManager = object : GridLayoutManager(requireContext(), spanCount) {
                 override fun canScrollHorizontally(): Boolean {
                     return false
                 }
@@ -88,6 +79,35 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
                     return false
                 }
             }// 每行3个
+            addItemDecoration(object : RecyclerView.ItemDecoration() {
+                override fun getItemOffsets(
+                    outRect: Rect,
+                    view: View,
+                    parent: RecyclerView,
+                    state: RecyclerView.State
+                ) {
+                    val layoutManager = parent.layoutManager as? GridLayoutManager ?: return
+                    val position = parent.getChildAdapterPosition(view)
+                    if (position == RecyclerView.NO_POSITION) return
+
+                    val spanCount = layoutManager.spanCount
+                    val spanSizeLookup = layoutManager.spanSizeLookup
+
+                    // 獲取當前 Item 所在的「行索引」(group index)
+                    // 這是 GridLayoutManager 判斷「行」的正確方式，不受 span size 影響
+                    val spanGroupIndex = spanSizeLookup.getSpanGroupIndex(position, spanCount)
+
+                    // 1. 處理 Top Margin：只在第一行 (spanGroupIndex == 0) 加上 topMargin
+                    if (spanGroupIndex == 0) {
+                        outRect.top = 12.dp2px
+                    } else {
+                        outRect.top = 20.dp2px // 其他行不加
+                    }
+                    if (spanGroupIndex == 2) {
+                        outRect.bottom = 16.dp2px
+                    }
+                }
+            })
             adapter = drawerFeaturesAdapter
             itemAnimator = null
         }
@@ -99,7 +119,7 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
                     id++, arch.cayenne.lib.common.R.drawable.ic_drawer_fund_details,
                     arch.cayenne.lib.common.R.string.drawer_fund_details
                 ) {
-                    showToast(arch.cayenne.lib.common.R.string.drawer_fund_details.getString())
+                    navigatePage(arch.cayenne.lib.res.R.string.nav_module_fund_detail_fragment.deeplink())
                 },
                 CommonFeaturesBean(
                     id++, arch.cayenne.lib.common.R.drawable.ic_drawer_bet_record,
@@ -157,7 +177,7 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
     private fun initRvServiceFeatures() {
         mBinding.rvServiceFeatures.apply {
             //某些机型上， RecyclerView存在过滚动效果。 禁用scroll, 禁用过滚动效果
-            layoutManager = object : GridLayoutManager(requireContext(), 3) {
+            layoutManager = object : GridLayoutManager(requireContext(), spanCount) {
                 override fun canScrollHorizontally(): Boolean {
                     return false
                 }
@@ -166,6 +186,20 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
                     return false
                 }
             }// 每行3个
+            addItemDecoration(object : RecyclerView.ItemDecoration() {
+                override fun getItemOffsets(
+                    outRect: Rect,
+                    view: View,
+                    parent: RecyclerView,
+                    state: RecyclerView.State
+                ) {
+                    val position = parent.getChildAdapterPosition(view)
+                    if (position == RecyclerView.NO_POSITION) return
+                    // 1. 處理 Top Margin：只在第一行 (spanGroupIndex == 0) 加上 topMargin
+                    outRect.top = 12.dp2px
+                    outRect.bottom = 16.dp2px
+                }
+            })
             adapter = serviceFeaturesAdapter
             itemAnimator = null
         }
@@ -189,7 +223,10 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
                     id++, arch.cayenne.lib.common.R.drawable.ic_drawer_customer_service,
                     arch.cayenne.lib.common.R.string.drawer_customer_service
                 ) {
-                    showToast(arch.cayenne.lib.common.R.string.drawer_customer_service.getString())
+                    //showToast(arch.cayenne.lib.common.R.string.drawer_customer_service.getString())
+                    //navigateUp()报错
+                    requireActivity().onBackPressedDispatcher.onBackPressed()
+                    CommonBiz.jump2CustomerService(this)
                 },
             )
         )
@@ -213,6 +250,20 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
                     return false
                 }
             }// 每行3个
+            addItemDecoration(object : RecyclerView.ItemDecoration() {
+                override fun getItemOffsets(
+                    outRect: Rect,
+                    view: View,
+                    parent: RecyclerView,
+                    state: RecyclerView.State
+                ) {
+                    val position = parent.getChildAdapterPosition(view)
+                    if (position == RecyclerView.NO_POSITION) return
+                    // 1. 處理 Top Margin：只在第一行 (spanGroupIndex == 0) 加上 topMargin
+                    outRect.top = 12.dp2px
+                    outRect.bottom = 16.dp2px
+                }
+            })
             adapter = earningFeaturesAdapter
             itemAnimator = null
         }
@@ -222,7 +273,9 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
             listOf(
                 CommonFeaturesBean(
                     id++, arch.cayenne.lib.common.R.drawable.ic_drawer_invite,
-                    arch.cayenne.lib.common.R.string.drawer_invite
+                    arch.cayenne.lib.common.R.string.drawer_invite,
+                    true,
+                    getString(arch.cayenne.lib.common.R.string.crazy_earn_text)
                 ) {
                     navigatePage(arch.cayenne.lib.res.R.string.nav_module_invite_friends_fragment.deeplink())
                 },
@@ -312,34 +365,37 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
     }
 
     private fun setNotificationItem(list: List<NotificationBean>) {
-        if (list.isEmpty()) {
-            mBinding.itemNotification1.visibility = View.GONE
-            mBinding.itemNotification2.visibility = View.GONE
-            mBinding.viewRipperTop.visibility = View.GONE
-            mBinding.viewRipper.visibility = View.VISIBLE
-            return
-        }
-        mBinding.viewRipperTop.visibility = View.VISIBLE
-        mBinding.viewRipper.visibility = View.GONE
-        if (list.size == 1) {
-            val item = list[0]
-            mBinding.itemNotification2.visibility = View.VISIBLE
-            mBinding.itemNotification1.visibility = View.GONE
-            mBinding.tvMessage2.text = item.title
-            mBinding.tvTime2.text = DateUtils.getMessageTime(item.createTime)
-            //status = 1未读 2已读 3删除
-            mBinding.ivRedPoint2.visibility = if (item.state == 2) View.INVISIBLE else View.VISIBLE
-        } else {
-            val item1 = list[0]
-            val item2 = list[1]
-            mBinding.itemNotification2.visibility = View.VISIBLE
-            mBinding.itemNotification1.visibility = View.VISIBLE
-            mBinding.tvMessage1.text = item1.title
-            mBinding.tvTime1.text = DateUtils.getMessageTime(item1.createTime)
-            mBinding.ivRedPoint1.visibility = if (item1.state == 2) View.INVISIBLE else View.VISIBLE
-            mBinding.tvMessage2.text = item2.title
-            mBinding.tvTime2.text = DateUtils.getMessageTime(item2.createTime)
-            mBinding.ivRedPoint2.visibility = if (item2.state == 2) View.INVISIBLE else View.VISIBLE
+        with(mBinding) {
+            if (list.isEmpty()) {
+                itemNotification1.visibility = View.GONE
+                itemNotification2.visibility = View.GONE
+                viewRipperTop.visibility = View.GONE
+                viewRipper.visibility = View.VISIBLE
+                newMessageTitle.visibility = View.INVISIBLE
+                notificationBadge.visibility = View.INVISIBLE
+                return
+            }
+            viewRipperTop.visibility = View.VISIBLE
+            viewRipper.visibility = View.GONE
+            newMessageTitle.visibility = View.VISIBLE
+            notificationBadge.visibility = View.VISIBLE
+            notificationBadge.setNotificationCount(list.size)
+            if (list.size == 1) {
+                val item = list[0]
+                itemNotification2.visibility = View.VISIBLE
+                itemNotification1.visibility = View.GONE
+                tvMessage2.text = item.title
+                tvTime2.text = DateUtils.getMessageTime(item.createTime)
+            } else {
+                val item1 = list[0]
+                val item2 = list[1]
+                itemNotification2.visibility = View.VISIBLE
+                itemNotification1.visibility = View.VISIBLE
+                tvMessage1.text = item1.title
+                tvTime1.text = DateUtils.getMessageTime(item1.createTime)
+                tvMessage2.text = item2.title
+                tvTime2.text = DateUtils.getMessageTime(item2.createTime)
+            }
         }
     }
 
@@ -371,9 +427,6 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
     }
 
     override fun onStart() {
-        StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND(autoIsNavigation = true)
-        mBinding.root.fitsSystemWindows = false
-        setStatusBar(StatusBarConfig, mBinding.root)
         super.onStart()
     }
 

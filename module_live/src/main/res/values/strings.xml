@@ -27,9 +27,9 @@
     <string name="and">和</string>
 
     <string name="live_match_trend">进攻趋势</string>
-    <string name="share">分享给朋友</string>
+    <string name="share">分享至</string>
     <string name="share_link">复制链接</string>
-    <string name="choose_commentary">选解说</string>
+    <string name="choose_commentary">选直播</string>
     <string name="statistics">技术统计</string>
     <string name="statistics_attack">进攻</string>
     <string name="statistics_danger">危险进攻</string>
@@ -41,7 +41,7 @@
     <string name="statistics_ryq">任意球</string>
     <string name="statistics_jq">角球</string>
     <string name="statistics_yw">越位</string>
-    <string name="choose_source">选直播源</string>
+    <string name="choose_source">换解说</string>
     <string name="soft_keyboard_talk">说点什么...</string>
 
     <string name="live_starting_lineup">首发阵容</string>
@@ -144,4 +144,10 @@
     <string name="event_cqcgl">传球成功率</string>
     <string name="event_pj">扑救</string>
     <string name="lineup_user_name_empty">暂无数据</string>
+
+    <string name="media_source_animation_title">动画直播</string>
+    <string name="media_source_animation_subtitle">极速 省流</string>
+    <string name="choose_media_source">换解说</string>
+    <string name="media_source_empty">暂无数据</string>
+
 </resources>

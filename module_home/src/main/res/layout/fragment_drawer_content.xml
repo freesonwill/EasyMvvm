@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<arch.cayenne.lib.skin.widget.SkinnableConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView  xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/sclMain"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/drawer_nsv"
     android:background="@color/drawer_bg">
-
     <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
+    android:id="@+id/sclMain"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+        <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
         android:id="@+id/cl_drawer_nickname"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_60"
@@ -179,7 +182,7 @@
 
             <arch.cayenne.lib.skin.widget.SkinnableTextView
                 android:id="@+id/tv_title"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_12"
                 android:text="@string/drawer_notification_message"
@@ -187,10 +190,30 @@
                 android:textSize="@dimen/sp_15"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/iv_arrow_right"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
-
+            <arch.cayenne.lib.skin.widget.SkinnableTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/new_message_title"
+                android:text="@string/have_new_message"
+                android:textColor="@color/drawer_notification_message"
+                android:textSize="@dimen/sp_15"
+                android:visibility="invisible"
+                android:layout_marginEnd="@dimen/dp_3"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/notification_badge"
+                app:layout_constraintTop_toTopOf="parent"
+                />
+            <arch.cayenne.lib.common.ui.view.NotificationBadgeView
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:id="@+id/notification_badge"
+                android:visibility="invisible"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/iv_arrow_right"
+                app:layout_constraintTop_toTopOf="parent"
+                />
             <arch.cayenne.lib.skin.widget.SkinnableImageView
                 android:id="@+id/iv_arrow_right"
                 android:layout_width="wrap_content"
@@ -230,14 +253,6 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <ImageView
-                    android:id="@+id/iv_red_point_1"
-                    android:layout_width="10dp"
-                    android:layout_height="10dp"
-                    android:src="@drawable/ic_message_dot"
-                    android:visibility="invisible"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <arch.cayenne.lib.skin.widget.SkinnableTextView
@@ -294,14 +309,6 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <ImageView
-                    android:id="@+id/iv_red_point_2"
-                    android:layout_width="10dp"
-                    android:layout_height="10dp"
-                    android:src="@drawable/ic_message_dot"
-                    android:visibility="invisible"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <arch.cayenne.lib.skin.widget.SkinnableTextView
@@ -396,6 +403,7 @@
         android:layout_marginStart="@dimen/dp_12"
         android:layout_marginTop="@dimen/dp_10"
         android:layout_marginEnd="@dimen/dp_12"
+        android:layout_marginBottom="@dimen/dp_10"
         android:background="@drawable/bg_drawer_features"
         android:orientation="vertical"
         app:layout_constraintStart_toStartOf="parent"
@@ -416,6 +424,5 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
-
-
 </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
+</androidx.core.widget.NestedScrollView>

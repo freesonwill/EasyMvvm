@@ -16,7 +16,7 @@ class ChatPageViewModel:BaseViewModel() {
 
     fun addLocalMsg(msg: ChatMsg?){
         msg?.let {
-            msgLists.add(msgLists.size, msg)
+            msgLists.add(0, msg)
         }
     }
 
@@ -24,7 +24,7 @@ class ChatPageViewModel:BaseViewModel() {
      * 添加新数据的chatlist
      * */
     fun addNewMsgs(msg: MsgNotify): List<ChatMsg> {
-        msgLists.add(msgLists.size, msg.msg)
+        msgLists.add(0, msg.msg)
         return msgLists
     }
 

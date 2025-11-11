@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="fragment_bg">#1E1E1E</color>
-    <color name="title_bg">#272727</color>
     <color name="title_skin">#929298</color>
     <color name="title_confirm">#71E993</color>
     <color name="title_cancel">#FFFFFF</color>

@@ -23,8 +23,10 @@ import arch.cayenne.lib.base.ui.animation.AnimationController
 import arch.cayenne.lib.base.ui.animation.AnimationController.AnimType
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
+import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.base.utils.ext.ViewExt.applyInsetsForFitsSystemWindows
+import arch.cayenne.lib.common.ui.fragment.ShareFragment
 import arch.cayenne.lib.common.utils.CustomTabIndicatorUtils
 import arch.cayenne.lib.common.utils.ImmersionBarUtils.immersionBarSkinTypeExt
 import arch.cayenne.lib.common.utils.ViewUtils
@@ -41,6 +43,7 @@ import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.removeAllTips
 import arch.cayenne.lib.common.utils.ext.setDrawerInterpolator
 import arch.cayenne.lib.common.utils.ext.setupViewPagerScroll
+import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.ext.startFadeAnim
 import arch.cayenne.lib.common.utils.ext.touchBackPressed
 import arch.cayenne.lib.common.utils.helper.showToast
@@ -56,6 +59,7 @@ import com.walisport.module.live.data.BetOnMenuStatus
 import com.walisport.module.live.databinding.FragmentLiveMainBinding
 import com.walisport.module.live.databinding.TitleBarLiveBinding
 import com.walisport.module.live.ui.viewmodel.LiveMainViewModel
+import com.walisport.module.live.ui.viewmodel.LiveMatchMediaViewModel
 import com.walisport.module.live.ui.widget.LiveMainGestureListener
 import com.walisport.module.live.ui.widget.LiveMainLayoutInterceptTouch.LiveMainSlideDirection
 import kotlinx.coroutines.delay
@@ -76,6 +80,8 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
     private lateinit var args: LiveMainFragmentArgs
     private var drawerContentFragment: LiveBetOnMenuFragment? = null
     private var scrollIsTop: Boolean? = false
+    private var mQuickScrollDow: Boolean = false //用于记录下滑手势是否快速滑动(用于列表快速滚动到顶部,视频区域放大)
+    private lateinit var mDirection: LiveMainSlideDirection //记录手势方向 up dow
     private val titleBarBinding: TitleBarLiveBinding by lazy {
         TitleBarLiveBinding.inflate(LayoutInflater.from(context), mBinding.titleBar, false)
     }
@@ -91,7 +97,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         mViewModel.setSportId(args.sportId)
         mViewModel.setShowVideo(args.showVideo)
         mViewModel.setShowAnim(args.showAnim)
-        setVideoView()
+        setMediaView()
         loadFragment()
         mViewModel.observeMatchInfoNotify()
         mBinding.drawerLayout.setDrawerLockMode(
@@ -117,7 +123,10 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         }
 
         mBinding.LayoutInterceptTouch.setLiveMainGestureListener(object : LiveMainGestureListener {
+            //跟手滑动
             override fun onAdjustLayoutScroll(deltaY: Float, direction: LiveMainSlideDirection) {
+                LogUtils.e("animating------->${direction}")
+                mDirection = direction
                 //往下滑动,子类的rv,sc是否滑到了第一条或者顶部
                 if (direction == LiveMainSlideDirection.DOWN) {
                     // 如果当前高度在 50-211 范围内，返回 true，表示可以滑动
@@ -130,7 +139,48 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                         }
                     }
                 } else {
-                    mBinding.liveMainScale.adjustLayout(deltaY, direction)
+                    var animating: Boolean? = mViewModel.videoTypeAnimating.value
+                    //  LogUtils.e("animating------->${animating}")
+                    animating?.let {
+                        if (!it) {
+                            mViewModel.setScorll()
+                            mBinding.liveMainScale.adjustLayout(deltaY, direction)
+                        }
+                    }
+                }
+            }
+
+            //快速滑动
+            override fun onQuickAdjustLayoutScroll(
+                deltaY: Float,
+                direction: LiveMainSlideDirection
+            ) {
+                LogUtils.e("quickScrollY------>direction${direction}")
+                mDirection = direction
+                when (direction) {
+                    LiveMainSlideDirection.QUICK_UP -> {
+                        mQuickScrollDow = false
+                        LogUtils.e("quickScrollY------>quickAdjustLayoutUp}")
+                        mBinding.liveMainScale.quickAdjustLayoutUp(deltaY)
+                        mDirection = direction
+                    }
+
+                    LiveMainSlideDirection.QUICK_DOWN -> {
+                        mQuickScrollDow = true
+                        var bool: Boolean? = mViewModel.sonVerticalScrollIsTop.value
+                        bool?.let {
+                            if (it) {
+                                LogUtils.e("quickScrollY------>mQuickScrollDow}")
+                                mBinding.liveMainScale.quickAdjustLayoutDow()
+                                mQuickScrollDow = false
+                            }
+                        }
+
+                    }
+
+                    LiveMainSlideDirection.UP -> {}
+                    LiveMainSlideDirection.DOWN -> {
+                    }
                 }
             }
         })
@@ -146,6 +196,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
 
                 MotionEvent.ACTION_UP -> {
                     //还原原本状态
+                    mViewModel.setScorll()
                     scrollIsTop?.let { mViewModel.setSonVerticalScrollIsTop(it) }
                     true
                 }
@@ -153,6 +204,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                 else -> false
             }
             mBinding.skinTab.dispatchTouchEvent(event)
+            mBinding.llSwitchNarrator.dispatchTouchEvent(event)
         }
     }
 
@@ -261,9 +313,22 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
 
             ivShare.addScaleOnTouchAnimation()
             ivShare.clickNoRepeat {
-                showToast("直播页分享")
+//                showToast("直播页分享")
+                ShareFragment.show(this@LiveMainFragment)
             }
         }
+
+        mBinding.llSwitchNarrator.addScaleOnTouchAnimation()
+        mBinding.llSwitchNarrator.clickNoRepeat {
+            val mediaViewModel: LiveMatchMediaViewModel by sharedViewModel<LiveMatchMediaViewModel, LiveMatchMediaFragment>()
+            if (!mediaViewModel.animationLiveUrl.value.isNullOrEmpty() || !mediaViewModel.liveVideoBean.value?.source.isNullOrEmpty()) {
+                //有动画源或者有视频源
+                showMediaSourceFragment()
+            } else {
+                showToast(R.string.media_source_empty.getString())
+            }
+        }
+
         mBinding.tabLayout.addOnTabSelectedListener2(object : TabLayoutExt.OnTabSelectedListener2 {
             override fun onTabSelected(tab: TabLayout.Tab, isTabClick: Boolean) {
                 tab.let {
@@ -319,7 +384,10 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
     override suspend fun createObserver() {
         //父类是否可往上滑动
         mViewModel.sonVerticalScrollIsTop.observe(viewLifecycleOwner) {
-
+            if (mQuickScrollDow && mDirection == LiveMainSlideDirection.QUICK_DOWN) {
+                mQuickScrollDow = false
+                mBinding.liveMainScale.quickAdjustLayoutDow()
+            }
         }
         launch {
             AnimationController.getFlow(AnimType.drawerEnter).collect {
@@ -330,6 +398,10 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                 )
             }
         }
+
+
+
+
         observeResult<Bundle>(CHANGE_MATCH) {
             val newArgs: LiveMainFragmentArgs = LiveMainFragmentArgs.fromBundle(it)
             "observeResult-->newArgs--->$newArgs,args:${args},extras:${it},${this.args.equal(newArgs)}".logd(
@@ -393,6 +465,14 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                 refreshBetSlip()
             }
         }
+
+        mViewModel.videoInitHeight.observe(viewLifecycleOwner) {
+            mBinding.liveMainScale.initHeight(it)
+        }
+
+        mViewModel.hideMediaSourceFragment.observe(viewLifecycleOwner) {
+            hideMediaSourceFragment()
+        }
     }
 
     //比赛ID发生变化,取消订阅,数据请空
@@ -411,7 +491,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         mViewModel.clearAllMatch()
     }
 
-    private fun setVideoView() {
+    private fun setMediaView() {
         childFragmentManager.findFragmentByTag(LiveMatchMediaFragment.TAG) as? LiveMatchMediaFragment
             ?: LiveMatchMediaFragment().also {
                 it.arguments = Bundle().apply {
@@ -423,7 +503,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                     putBoolean("showAnim", mViewModel.showAnim.value ?: false)
                 }
                 childFragmentManager.beginTransaction()
-                    .replace(mBinding.fragmentVideo.id, it, LiveMatchMediaFragment.TAG)
+                    .replace(mBinding.fragmentMedia.id, it, LiveMatchMediaFragment.TAG)
                     .commitNow()
             }
     }
@@ -475,6 +555,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
             }
             tabLayout.removeAllTips()
         }
+        ShareFragment.create(this)
     }
 
     private fun refreshBetSlip() {
@@ -552,5 +633,30 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         val fragment = ChatHomeFragment()
         fragment.setMatchLiveData(mViewModel.matchId, mViewModel.mainMatch)
         return fragment
+    }
+
+    private fun showMediaSourceFragment() {
+        childFragmentManager.findFragmentByTag(NewMediaSourceFragment.TAG) as? NewMediaSourceFragment
+            ?: NewMediaSourceFragment().also {
+                it.arguments = Bundle().apply {
+                    mViewModel.matchId.value?.let { value ->
+                        putLong("matchId", value)
+                    }
+                }
+                childFragmentManager.beginTransaction()
+                    .replace(mBinding.fragmentMediaSource.id, it, NewMediaSourceFragment.TAG)
+                    .commitNow()
+            }
+
+    }
+
+    private fun hideMediaSourceFragment() {
+        val fragment =
+            childFragmentManager.findFragmentByTag(NewMediaSourceFragment.TAG) as? NewMediaSourceFragment
+        fragment?.let {
+            childFragmentManager.beginTransaction()
+                .remove(it)
+                .commitAllowingStateLoss()
+        }
     }
 }

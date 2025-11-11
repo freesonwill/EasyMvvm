@@ -59,10 +59,12 @@
     <string name="drawer_notification_message">通知消息</string>
     <string name="drawer_nickname_title">设置头像昵称</string>
     <string name="match_item_roll_title">滚球</string>
-
+    <string name="have_new_message">有新消息</string>
     <string name="lineup_empty">暂无数据,请换个试一试</string>
     <string name="tournament_section_title">选联赛</string>
     <string name="tournament_section_title_hot">热门</string>
+    <string name="tournament_confirm">确定</string>
+    <string name="tournament_view_latest_results">查看最新结果</string>
     <string name="balance_format">%s%s</string>
     <string name="format_month_year" translatable="false">%1$s %2$s</string>
     <string name="collect_list_empty">暂无收藏</string>

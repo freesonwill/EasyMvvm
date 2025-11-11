@@ -14,7 +14,13 @@
     <string name="btn_bet_win_money">可赢%s%s</string>
     <string name="btn_confirm">确定</string>
     <string name="btn_cancel">取消</string>
-
+    <string name="tab_odds">赔率</string>
+    <string name="tab_title_single">所有单关注单</string>
+    <string name="tab_title_two">所有2串1注单</string>
+    <string name="tab_title_three">所有3串1注单</string>
+    <string name="tab_bet">投注</string>
+    <string name="tab_win">可赢</string>
+    <string name="tab_selection">选项</string>
     <string name="title_playing">滚球</string>
     <string name="title_rate">达到此赔率时自动投注</string>
     <string name="title_dialog_remove">串关删除后将无法恢复，确定删除串关吗？</string>
@@ -35,16 +41,22 @@
     <string name="title_result_pending_reserve">预约确认中</string>
     <string name="title_result_fail_reserve">预约失败</string>
     <string name="title_result_amount">本金</string>
-    <string name="title_result_win_single_bet">可赢</string>
+    <string name="title_result_count">展开%d个盘口</string>
+    <string name="title_result_expand">收起</string>
+    <string name="title_result_win_single_bet">预计可赢</string>
     <string name="title_result_win_combo_bet">最高可赢</string>
     <string name="btn_result_continue_bet">续投</string>
-
+    <string name="btn_result_check_bet">查看注单</string>
+    <string name="title_result_bet_again">重新投注</string>
+    <string name="title_result_bet_suc">注单已提交</string>
     <string name="hint_less_min_amount">低于最低限额</string>
 
     <string name="title_odds_change_any">接受任何赔率变化</string>
     <string name="title_odds_change_better">自动接受更好的赔率</string>
     <string name="title_odds_change_none">不接受任何赔率变化</string>
-
+    <string name="toast_super_bet_info">超级组合由所有单关、2串1、3串\n1、4串1注单组成。</string>
+    <string name="toast_three_bet_info">3串1组合由所有3串1注单组成。</string>
     <string name="toast_odds_change_better">赔率已降低，请重新投注</string>
     <string name="toast_odds_change_none">赔率已变更，请重新投注</string>
+    <string name="exit_combo_bet">退出串关</string>
 </resources>

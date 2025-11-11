@@ -125,6 +125,7 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
 
         // 监听 RecyclerView 是否滑动到第一条
         mBinding.rvBetList.listenAtTop { isAtTop ->
+            LogUtils.e("quickScrollY------>isAtTop${isAtTop}")
             if (isAtTop) {
                 mainViewModel.setSonVerticalScrollIsTop(true)
             }else{

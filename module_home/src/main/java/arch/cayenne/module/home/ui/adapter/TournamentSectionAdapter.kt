@@ -14,11 +14,15 @@ import arch.cayenne.module.home.ui.compare.TournamentSectionCompare
 
 class TournamentSectionAdapter(
     private val tournamentListType: TournamentListType,
-    private val onTournamentClick: (BaseTournamentData) -> Unit
+    private val onTournamentClick: (BaseTournamentData) -> Unit,
+    private val onSelectionChanged: (() -> Unit)? = null
 ) : BaseAdapter<TournamentListItem, BaseViewHolder, ViewBinding>(TournamentSectionCompare()) {
 
     // 儲存選中的聯賽ID
     private val selectedTournamentIds = mutableSetOf<Int>()
+
+    // 儲存打開彈窗時的初始選中狀態（用於重置和比較）
+    private val initialSelectedTournamentIds = mutableSetOf<Int>()
     override fun getItemViewType(position: Int): Int {
         return when (getItem(position)) {
             is TournamentListItem.Header -> TYPE_HEADER
@@ -75,12 +79,44 @@ class TournamentSectionAdapter(
         } else {
             selectedTournamentIds.add(tournamentId)
         }
+        // 通知選中狀態變更
+        onSelectionChanged?.invoke()
     }
 
-    // 清除所有選中狀態
+    // 清除所有選中狀態（包括初始狀態）
     fun clearAllSelections() {
         selectedTournamentIds.clear()
+        initialSelectedTournamentIds.clear()
         notifyDataSetChanged()
+        onSelectionChanged?.invoke()
+    }
+
+    // 重置為打開彈窗時的初始狀態
+    fun resetToInitialState() {
+        selectedTournamentIds.clear()
+        selectedTournamentIds.addAll(initialSelectedTournamentIds)
+        notifyDataSetChanged()
+        onSelectionChanged?.invoke()
+    }
+
+    // 保存當前選中狀態為初始狀態（在彈窗打開時調用）
+    fun saveCurrentAsInitialState() {
+        initialSelectedTournamentIds.clear()
+        initialSelectedTournamentIds.addAll(selectedTournamentIds)
+    }
+
+    // 檢查當前選中狀態是否與初始狀態相同
+    fun isSelectionChanged(): Boolean {
+        return selectedTournamentIds != initialSelectedTournamentIds
+    }
+
+    // 檢查初始選中的聯賽是否還存在於當前列表中
+    fun isInitialSelectionStillValid(): Boolean {
+        val currentTournamentIds = currentList
+            .filterIsInstance<TournamentListItem.TournamentItem>()
+            .map { it.tournament.id }
+            .toSet()
+        return initialSelectedTournamentIds.all { it in currentTournamentIds }
     }
 
     // 獲取選中的聯賽ID列表
@@ -94,7 +130,15 @@ class TournamentSectionAdapter(
             .filter { selectedTournamentIds.contains(it.tournament.id) }
             .map { it.tournament }
     }
-    
+
+    // 設置選中的聯賽ID列表
+    fun setSelectedTournamentIds(ids: List<Int>) {
+        selectedTournamentIds.clear()
+        selectedTournamentIds.addAll(ids)
+        notifyDataSetChanged()
+        onSelectionChanged?.invoke()
+    }
+
     companion object {
         private const val TYPE_HEADER = 0
         private const val TYPE_ITEM = 1

@@ -40,7 +40,6 @@ class ModuleRepository(
     private val preloadResultChange: MutableStateFlow<PreloadEnum>,
     private val manager: UserDataManager,
 ): BaseRepository() {
-    private val TAG = this.javaClass.simpleName
     val matchDao = database.matchDao()
     val sportDao = database.sportDao()
     val tournamentDao = database.tournamentDao()
@@ -76,7 +75,7 @@ class ModuleRepository(
             it.ifEmpty { pair.second }
         }
         val name = users.find { it.uid == uid }?.name
-        "name:${name}, uid:$uid, token:$token".logd(TAG)
+        "initUidToken name:${name}, uid:$uid, token:$token".logd(TAG)
         saveUserData(uid, token)
     }
 

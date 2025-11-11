@@ -5,12 +5,15 @@ import android.graphics.Rect
 import android.os.Bundle
 import android.view.MotionEvent
 import android.view.View
+import android.view.animation.AccelerateInterpolator
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import arch.cayenne.lib.base.data.constants.StatusBarMode
+import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.common.utils.FadeAnimation
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
-import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import com.walisport.module.gamedetail.R
 import com.walisport.module.gamedetail.data.model.CurrencyInfoBean
 import com.walisport.module.gamedetail.databinding.FragmentCurrencySelectorBinding
@@ -35,6 +38,10 @@ class CurrencySelectorFragment: BaseFragment<CurrencySelectorViewModel, Fragment
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND()
+        setStatusBar(StatusBarConfig, mBinding.root)
+        // 淡入动画
+        FadeAnimation.fadeIn(view)
         with(mBinding.viewBg) {
             layoutParams = (layoutParams as ConstraintLayout.LayoutParams).apply {
                 bottomMargin = marginBottom
@@ -99,12 +106,14 @@ class CurrencySelectorFragment: BaseFragment<CurrencySelectorViewModel, Fragment
     }
 
     private fun dismiss() {
-        if (parentFragment != null) {
+        if (parentFragment != null || parentFragmentManager.fragments.contains(this)) {
             onDismissListener?.invoke()
-            parentFragmentManager.beginTransaction()
-                .setReorderingAllowed(true)
-                .remove(this)
-                .commitAllowingStateLoss()
+            FadeAnimation.fadeOut(view){
+                parentFragmentManager.beginTransaction()
+                    .setReorderingAllowed(true)
+                    .remove(this@CurrencySelectorFragment)
+                    .commitAllowingStateLoss()
+            }
         }
     }
 
