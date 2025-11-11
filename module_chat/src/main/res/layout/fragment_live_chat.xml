@@ -15,6 +15,7 @@
         android:id="@+id/main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:orientation="vertical"
         android:background="@color/app_bg">
 
         <arch.cayenne.lib.common.ui.view.DynamicStateLayout
@@ -186,7 +187,7 @@
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/chat_keyboard"
             android:layout_width="match_parent"
-            android:layout_height="241dp" />
+            android:layout_height="242dp" />
 
     </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
 

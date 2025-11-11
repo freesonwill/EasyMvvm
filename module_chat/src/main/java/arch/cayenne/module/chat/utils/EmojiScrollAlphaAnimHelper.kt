@@ -3,8 +3,9 @@ package arch.cayenne.module.chat.utils
 import android.view.VelocityTracker
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import java.math.BigDecimal
+import java.math.RoundingMode
 import kotlin.math.abs
 import kotlin.math.max
 
@@ -13,25 +14,27 @@ import kotlin.math.max
  * @date: 9/8/25 14:54
  * @description:
  */
-class EmojiDeleteAnimHelper(private val recyclerView: RecyclerView) {
+class EmojiScrollAlphaAnimHelper(private val recyclerView: RecyclerView) {
     private val layoutManager: GridLayoutManager by lazy {
         recyclerView.layoutManager as GridLayoutManager
     }
     private val spanCount: Int get() = layoutManager.spanCount
     private var velocityTracker: VelocityTracker? = null
     private val minVelocityForFastScroll = 2000f
-    private var deleteButtonBottom:Int = 0
-    private var deleteButtonTop:Int = 0
-    private val deleteButtonHeight:Int = 32.dp2px
-    private var isHide = false
+    private var deleteButtonBottom: Int = 0
+    private var deleteButtonTop: Int = 0
+    private val deleteButtonHeight: Int = 32.dp2px + 12.dp2px
+
+    //    private var isHide = false
+    private val TAG = EmojiScrollAlphaAnimHelper::class.java.simpleName
 
     init {
         setup()
     }
 
-    fun updateUi(value:Boolean){
-        isHide = value
-    }
+//    fun updateUi(value:Boolean){
+//        isHide = value
+//    }
 
     private fun setup() {
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -39,36 +42,41 @@ class EmojiDeleteAnimHelper(private val recyclerView: RecyclerView) {
                 when (newState) {
                     RecyclerView.SCROLL_STATE_DRAGGING -> {
                         velocityTracker = VelocityTracker.obtain()
+//                        "SCROLL_STATE_DRAGGING".logd(TAG)
                     }
+
                     RecyclerView.SCROLL_STATE_IDLE -> {
+//                        "SCROLL_STATE_IDLE".logd(TAG)
                         velocityTracker?.recycle()
                         velocityTracker = null
-                        ensureAllNonTargetItemsVisible()
                     }
                 }
             }
 
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 updateTargetItemsVisibility()
+                ensureAllNonTargetItemsVisible()
             }
         })
         recyclerView.post {
-            deleteButtonBottom = recyclerView.bottom
-            deleteButtonTop = deleteButtonBottom - deleteButtonHeight
-//            "deleteButton $deleteButtonBottom  top ${deleteButtonTop}".logd("aaa")
+            deleteButtonBottom =
+                recyclerView.bottom - deleteButtonHeight  //deleteButton top为底部  小于底部的alpha为0
+            deleteButtonTop =
+                deleteButtonBottom - deleteButtonHeight - 5.dp2px //减去item高度为顶部边界，当进入边界时对应的alpha值不断变小 大于顶部的alpha为1
+//            "deleteButton $deleteButtonBottom  top ${deleteButtonTop}".logd(TAG)
             updateTargetItemsVisibility()
         }
 
         // 添加布局完成监听确保状态正确
-        recyclerView.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
-            ensureAllNonTargetItemsVisible()
-        }
+//        recyclerView.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
+//            ensureAllNonTargetItemsVisible()
+//        }
     }
 
     private fun updateTargetItemsVisibility() {
-        if(!isHide){
-            return
-        }
+//        if(!isHide){
+//            return
+//        }
 
         val firstVisible = layoutManager.findFirstVisibleItemPosition()
         val lastVisible = layoutManager.findLastVisibleItemPosition()
@@ -81,64 +89,70 @@ class EmojiDeleteAnimHelper(private val recyclerView: RecyclerView) {
 
         //最后一行到底部的距离
         val lastTop = layoutManager.findViewByPosition(lastRowStart)?.let {
-            it.top + 4.dp2px //减去向上的4dp
-             } ?:0
+            it.top //减去向上的4dp
+        } ?: 0
 //        //倒数第二行到底部的距离
         val secondTop = layoutManager.findViewByPosition(secondLastRowStart)?.let {
-            it.top+4.dp2px//减去向上的4dp
-        }?:0
-//        "lastTOp $lastTop secondTOp $secondTop".logd("aaa")
+            it.top//减去向上的4dp
+        } ?: 0
 
-        val lastBottom = lastTop+30.dp2px //emoji实际高度30dp
-        val secondBottom = secondTop+30.dp2px
+        val bottom = deleteButtonBottom - deleteButtonHeight / 2
 
-        val lastAlpha: Float = if (deleteButtonBottom in (lastTop + 1)..<lastBottom) { //item行从底部开始滑入到deleteButton距离但没有完全滑入 滑出同理
-                val value = Math.abs(lastBottom - deleteButtonBottom) //随着外部bootom高度减少，alpha值越小
-                val alpha = "%.1f".format((value.toFloat() / 42.dp2px)).toFloat()
-                 alpha
-            } else if (deleteButtonTop in (lastTop + 1)..<lastBottom) {// item行从deleteButton区域向上滑动,但没有完全滑出 滑入同理
-                val value =Math.abs(lastTop-deleteButtonTop) //随着外部top高度减少，alpha值越小
-                val alpha = "%.1f".format((value.toFloat()/42.dp2px)).toFloat()
-              alpha
-            } else if (lastTop > deleteButtonTop || lastBottom < deleteButtonBottom) {//item行完全滑入到了deleteButton区域，被隐藏了
-                 0f
-            } else {
-                 1f
+        //竖直距离一值变大
+        val lastAlpha =
+            if (lastTop in deleteButtonTop + 1..<bottom) { // 进入到删除按钮-itemHeight区域  top -> bottom
+                val value = BigDecimal(lastTop - deleteButtonTop).divide(
+                    BigDecimal(deleteButtonHeight),
+                    1,
+                    RoundingMode.HALF_UP
+                ).subtract(BigDecimal(1)).abs().toFloat()
+                value
+            } else if (lastTop >= bottom) { // 大于bottom alpha = 0 进入到button区域
+                0f
+            } else { //
+                1f
             }
 
-        val secondAlpha: Float = if (deleteButtonBottom in (secondTop)..<secondBottom+1) { //item行从底部开始滑入到deleteButton距离但没有完全滑入 滑出同理
-            val value = Math.abs(secondBottom - deleteButtonBottom)
-            val alpha = "%.1f".format((value.toFloat() / 42.dp2px)).toFloat()
-            alpha
-        } else if (deleteButtonTop in (secondTop)..<secondBottom+1) {// item行从deleteButton区域向上滑动,但没有完全滑出 滑入同理
-            val value =Math.abs(secondTop-deleteButtonTop)
-            val alpha = "%.1f".format((value.toFloat()/42.dp2px)).toFloat()
-            alpha
-        } else if (secondTop >= deleteButtonTop && secondBottom <= deleteButtonBottom) {//item行完全滑入到了deleteButton区域，被隐藏了
-            0f
-        } else {
-            1f
-        }
-
-
-        //最后一行最后两个item的位置
+//        //最后一行最后两个item的位置
         val lastTargetList = mutableListOf<Int>().apply {
-            (spanCount - 2 until spanCount).forEach { offset ->
-                val pos = lastRowStart + offset
-                if (pos <= lastVisible) add(pos)
-            }
+            add(lastRowStart)
+            add(lastRowStart - 1)
+            add(lastRowStart - 2)
         }
+
+        //竖直距离一值变大
+        val secondAlpha =
+            if (secondTop in deleteButtonTop + 1..<bottom) { // 进入到删除按钮-itemHeight区域  top -> bottom
+                val value = BigDecimal(secondTop - deleteButtonTop).divide(
+                    BigDecimal(deleteButtonHeight),
+                    1,
+                    RoundingMode.HALF_UP
+                ).subtract(BigDecimal(1)).abs().toFloat()
+                value
+            } else if (secondTop >= bottom) { // 大于bottom alpha = 0 进入到button区域
+                0f
+            } else { //
+                1f
+            }
+
         //倒数第二行最后两个item的位置
         val secondTargetList = mutableListOf<Int>().apply {
-            (spanCount - 2 until spanCount).forEach { offset ->
-                val pos = secondLastRowStart + offset
-                if (pos <= lastVisible) add(pos)
-            }
+            add(secondLastRowStart)
+            add(secondLastRowStart - 1)
+            add(secondLastRowStart - 2)
         }
+
+//        "secondAlpha $secondAlpha deletButtonm $deleteButtonBottom deleteTop $deleteButtonTop scecondTop $secondTop   secondLastRowStart $secondLastRowStart \n ${secondTargetList.toList()} ".logd(
+//            TAG
+//        )
+//        "lastAlpha $lastAlpha deletButtonm $deleteButtonBottom deleteTop $deleteButtonTop lastTop $lastTop   lastRowStart $lastRowStart \n  ${lastTargetList.toList()}".logd(
+//            TAG
+//        )
         applyAlpha(secondTargetList, secondAlpha)
         applyAlpha(lastTargetList, lastAlpha)
 
-//        val isFastScrolling = isFastScrolling()
+
+        //        val isFastScrolling = isFastScrolling()
 
 
         // 2. 处理所有可见item
@@ -185,10 +199,15 @@ class EmojiDeleteAnimHelper(private val recyclerView: RecyclerView) {
     private fun isPositionInTargetArea(pos: Int, firstVisible: Int, lastVisible: Int): Boolean {
         val lastRowStart = lastVisible - (lastVisible % spanCount)
         val secondLastRowStart = max(firstVisible, lastRowStart - spanCount)
-
-        return pos in listOf(secondLastRowStart, lastRowStart).flatMap { rowStart ->
-            (spanCount - 2 until spanCount).map { rowStart + it }
-        } && pos <= lastVisible
+        val list = arrayListOf(
+            lastRowStart,
+            lastRowStart - 1,
+            lastRowStart - 2,
+            secondLastRowStart,
+            secondLastRowStart - 1,
+            secondLastRowStart - 2,
+        )
+        return pos in list
     }
 
     private fun isFastScrolling(): Boolean {
@@ -198,31 +217,13 @@ class EmojiDeleteAnimHelper(private val recyclerView: RecyclerView) {
         } ?: false
     }
 
-    private fun applyAlpha(list:List<Int>,alpha:Float) {
+    private fun applyAlpha(list: List<Int>, alpha: Float) {
         list.forEach {
             layoutManager.findViewByPosition(it)?.let {
                 it.alpha = alpha
             }
         }
-
-//        if (fastScroll || view.alpha == targetAlpha) {
-//            view.alpha = targetAlpha
-//        } else {
-//            view.animate().cancel() // 取消可能存在的动画
-//        }
     }
-
-//    private fun applyAlpha(view: View, targetAlpha: Float, fastScroll: Boolean) {
-//        if (fastScroll || view.alpha == targetAlpha) {
-//            view.alpha = targetAlpha
-//        } else {
-//            view.animate().cancel() // 取消可能存在的动画
-//            view.animate()
-//                .alpha(targetAlpha)
-//                .setDuration(200)
-//                .start()
-//        }
-//    }
 
     fun cleanup() {
         velocityTracker?.recycle()

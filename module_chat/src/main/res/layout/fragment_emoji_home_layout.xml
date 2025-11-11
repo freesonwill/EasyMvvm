@@ -3,17 +3,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="241dp"
-    android:background="@color/color_272727"
-    >
+    android:layout_height="242dp"
+    android:background="@color/color_272727">
+
     <View
         android:id="@+id/line"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_marginTop="@dimen/dp_12"
-        app:layout_constraintTop_toTopOf="parent"
-        />
-
+        android:background="@color/color_0FFFFFFF"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_emoji"
@@ -70,12 +68,12 @@
             android:layout_width="@dimen/dp_62"
             android:layout_height="32dp"
             android:layout_marginEnd="@dimen/dp_6"
+            android:layout_marginBottom="@dimen/dp_12"
             android:background="@drawable/shape_20"
             android:backgroundTint="@color/color_3D404D"
             android:gravity="center"
             android:stateListAnimator="@animator/layout_alpha_animator"
             android:textColor="@color/color_FFFFFF"
-            android:layout_marginBottom="@dimen/dp_12"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintRight_toLeftOf="@id/tv_send">
 

@@ -1,12 +1,14 @@
 package arch.cayenne.module.chat.ui.fragment
 
 import android.os.Bundle
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.GridLayoutManager.SpanSizeLookup
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.module.chat.data.constants.EmojiTypeEnum
 import arch.cayenne.module.chat.databinding.FragmentEmojiLayoutBinding
 import arch.cayenne.module.chat.ui.adapter.EmojiGridAdapter
 import arch.cayenne.module.chat.ui.viewmodel.EmojiViewModel
+import arch.cayenne.module.chat.utils.EmojiScrollAlphaAnimHelper
 import kotlin.reflect.KClass
 
 /**
@@ -29,20 +31,27 @@ class EmojiFragment : BaseFragment<EmojiViewModel, FragmentEmojiLayoutBinding>()
     }
 
     private fun initRecycler() {
-        val manager = object :LinearLayoutManager(requireContext()){
-            override fun canScrollVertically(): Boolean {
-                return true
+
+        val nAdapter = EmojiGridAdapter()
+        nAdapter.updateEmojiType(emoJiType)
+        nAdapter.submitList(if (emoJiType == EmojiTypeEnum.NORMAL) mViewModel.getNormalList() else mViewModel.getBidList())
+        nAdapter.setRecentList(
+            if (emoJiType == EmojiTypeEnum.NORMAL) mViewModel.getNormalList()
+                .subList(1, 9) else mViewModel.getBidList().subList(1, 5)
+        )
+        val spanCount = if (emoJiType == EmojiTypeEnum.NORMAL) 8 else 4
+        val manager = GridLayoutManager(requireContext(), spanCount)
+        manager.spanSizeLookup = object : SpanSizeLookup() {
+            override fun getSpanSize(position: Int): Int {
+                return if (position == 0) spanCount else 1
             }
         }
         mBinding.recycler.apply {
             layoutManager = manager
 //            isNestedScrollingEnabled = false
-            val nAdapter = EmojiGridAdapter()
-            nAdapter.updateEmojiType(emoJiType)
-            nAdapter.submitList(if (emoJiType == EmojiTypeEnum.NORMAL) mViewModel.getNormalList() else mViewModel.getBidList())
             adapter = nAdapter
-
         }
+     val animHelper = EmojiScrollAlphaAnimHelper(mBinding.recycler)
     }
 
 
