@@ -53,9 +53,9 @@ class MatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
         _playType = id
     }
 
-    fun setSelectedDate(id: Long = 0) {
+    fun setSelectedDate(date: Long = 0) {
         page = 1
-        _selectedDate.value = id
+        _selectedDate.value = date
     }
 
     fun setPosition(position: Int) {
@@ -82,7 +82,7 @@ class MatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
             //當日期變化
             launch(Dispatchers.IO) {
                 _selectedDate
-                    .drop(1)  //一開始進入的不用聽，可以藉由loginChange去取得最開始的資料
+                    .drop(2)  //一開始進入的不用聽，可以藉由loginChange去取得最開始的資料
                     .collect { selectedDate ->
                         "Collect selectedDateChange playType = $_playType  tournament = $_tournamentId selectedDate = $selectedDate ".logi()
                         val currentDateRefs = repository.queryMatchChange(_playType, _tournamentId).filter { it.date == selectedDate }
