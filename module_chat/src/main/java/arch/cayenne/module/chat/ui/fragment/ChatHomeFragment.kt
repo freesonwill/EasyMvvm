@@ -16,6 +16,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import arch.cayenne.lib.base.data.constants.StatusBarMode
+import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
@@ -55,6 +57,10 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
             val value = it.getBoolean("chat", false)
             setMainChatStatus()
         }
+        mBinding.main.post {
+            mViewModel.keyBoardHeight = mBinding.main.height
+            setMainHeight()
+        }
     }
 
     override fun onStart() {
@@ -62,10 +68,6 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
 //        setStatusBar(StatusBarConfig, mBinding.root)
         super.onStart()
         mViewModel.setSoftConfig(false)
-        mBinding.main.post {
-            mViewModel.keyBoardHeight = mBinding.main.height
-            setMainHeight()
-        }
     }
 
     override fun onStop() {
@@ -400,6 +402,7 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
             main.layoutParams.height =
                 mViewModel.keyBoardHeight + softKeyBoardManager.emojiKeyBoardHeight
             mBinding.main.requestLayout()
+            "calculation  chatKeyboard ${chatKeyboard.layoutParams.height}  inputMain ${ inputMain.layoutParams.height} main  ${ main.layoutParams.height}".logd("aaa")
         }
     }
 
@@ -606,7 +609,6 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
     }
 
     private fun delEtInput() {
-        "delEtInput".logd("aaa")
         mBinding.chatEtInput.apply {
             if (text?.length == 0) {
                 return@apply

@@ -35,7 +35,6 @@ class ChatPageFragment:BaseFragment<ChatPageViewModel,FragementChatPageLayoutBin
     override fun initView(savedInstanceState: Bundle?) {
         ChatPersonalDialogFragment.create(this)
         initRecycler()
-
     }
 
     private fun initRecycler(){

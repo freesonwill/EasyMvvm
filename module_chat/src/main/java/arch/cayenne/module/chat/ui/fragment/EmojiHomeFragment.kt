@@ -1,17 +1,12 @@
 package arch.cayenne.module.chat.ui.fragment
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.MotionEvent
-import android.view.ViewGroup.LayoutParams
 import android.widget.LinearLayout
 import androidx.core.view.isVisible
-import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.data.model.PagerBean
 import arch.cayenne.lib.base.ui.adapter.PagerAdapter
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
-import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
 import arch.cayenne.lib.common.utils.CustomTabIndicatorUtils
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.TabLayoutExt
@@ -23,18 +18,12 @@ import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.ext.startFadeAnim
 import arch.cayenne.module.chat.R
 import arch.cayenne.module.chat.data.constants.EmojiTypeEnum
-import arch.cayenne.module.chat.data.constants.KeyBoardType
-import arch.cayenne.module.chat.data.model.EmojiData
 import arch.cayenne.module.chat.databinding.FragmentEmojiHomeLayoutBinding
 import arch.cayenne.module.chat.databinding.ItemTabEmojiLayoutBinding
-import arch.cayenne.module.chat.ui.adapter.EmojiHotItemAdapter
-import arch.cayenne.module.chat.ui.adapter.EmojiItemAdapter
 import arch.cayenne.module.chat.ui.viewmodel.ChatHomeViewModel
 import arch.cayenne.module.chat.ui.viewmodel.EmojiHomeViewModel
-import arch.cayenne.module.chat.utils.EmojiUtils.BID_EMOJI_REGEX
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
-import java.util.regex.Pattern
 import kotlin.reflect.KClass
 
 /**
