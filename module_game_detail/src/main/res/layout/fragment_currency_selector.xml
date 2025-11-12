@@ -10,20 +10,33 @@
     <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
         android:id="@+id/view_bg"
         android:layout_width="203dp"
-        android:layout_height="wrap_content"
+        android:layout_height="321dp"
         android:layout_marginEnd="@dimen/dp_20"
-        android:background="@drawable/shape_rounded_bg"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
+
+        <net.center.blurview.ShapeBlurView
+            android:id="@+id/blurView"
+            android:layout_width="203dp"
+            android:layout_height="321dp"
+            app:blur_radius="9dp"
+            app:blur_corner_radius="@dimen/dp_9"
+            app:blur_mode="rectangle"
+            app:blur_overlay_color="@color/blur_view"
+            app:blur_border_width="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:ignore="MissingConstraints" />
 
         <arch.cayenne.lib.skin.widget.SkinnableTextView
             android:id="@+id/tv_title"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_12"
+            android:layout_height="48dp"
             android:text="@string/select_currency"
             android:textColor="@color/color_FFFFFF"
             android:textSize="@dimen/sp_14"
+            android:gravity="center"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -32,7 +45,6 @@
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_12"
             android:maxHeight="277dp"
             android:overScrollMode="never"
             app:layout_constraintBottom_toBottomOf="parent"

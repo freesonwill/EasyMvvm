@@ -66,8 +66,8 @@ class UIBindDelegate<UIOwner, VM, VB>(
                     || uiOwner is Activity
             trackLoadingTime()
             viewModel.initViewModel()
-            uiOwner.initListener()
             uiOwner.initView(savedInstanceState)
+            uiOwner.initListener()
             createObserver(uiOwner)
             uiOwner.initData()
             if(logEnabled) "onViewCreated==>$uiOwner".logd(TAG)

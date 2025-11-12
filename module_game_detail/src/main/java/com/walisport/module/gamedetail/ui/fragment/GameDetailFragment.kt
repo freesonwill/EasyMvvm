@@ -6,6 +6,7 @@ import androidx.core.view.doOnLayout
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.locationOnScreen
@@ -31,6 +32,8 @@ class GameDetailFragment: BaseFragment<GameDetailViewModel, FragmentGameDetailBi
     }
 
     override fun initView(savedInstanceState: Bundle?) {
+        StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND(autoPadding = false)
+        setStatusBar(StatusBarConfig, mBinding.root)
         with(mBinding) {
             viewBalance.init(childFragmentManager)
 
@@ -112,14 +115,19 @@ class GameDetailFragment: BaseFragment<GameDetailViewModel, FragmentGameDetailBi
             }
             ivStartTrial.clickNoRepeat {
             }
-            tvBiggestWinner.clickNoRepeat {
-                it.toggleRankingFragment()
+            tvBiggestWinner.clickNoRepeat (){
+                closeExistingLuckyFragment()
+                closeExistingCurrencyFragment()
+                it.togglePlayerRankingFragment()
             }
-            tvLuckiestWinner.clickNoRepeat {
-                it.toggleRankingFragment()
-            }
-            viewCurrencyBg.clickNoRepeat {
+            tvLuckiestWinner.clickNoRepeat() {
                 closeExistingRankingFragment()
+                closeExistingCurrencyFragment()
+                it.toggleLuckFragment()
+            }
+            viewCurrencyBg.clickNoRepeat() {
+                closeExistingRankingFragment()
+                closeExistingLuckyFragment()
                 it.toggleCurrencyFragment()
             }
         }
@@ -130,11 +138,9 @@ class GameDetailFragment: BaseFragment<GameDetailViewModel, FragmentGameDetailBi
 
     override fun onStart() {
         super.onStart()
-        StatusBarConfig.statusBarType = StatusBarMode.FULLSCREEN
-        setStatusBar(StatusBarConfig, mBinding.root)
     }
 
-    private fun closeExistingRankingFragment(afterClose: ((isSuccess: Boolean, type: PlayerRankingFragment.RankingType?) -> Unit)? = null) {
+    private fun closeExistingRankingFragment(afterClose: ((isSuccess: Boolean) -> Unit)? = null) {
         var isSuccess = false
         (childFragmentManager.findFragmentByTag(PlayerRankingFragment.TAG) as? PlayerRankingFragment).let {
             if(it?.isAdded == true) {
@@ -142,7 +148,20 @@ class GameDetailFragment: BaseFragment<GameDetailViewModel, FragmentGameDetailBi
                 childFragmentManager.executePendingTransactions()
                 isSuccess = true
             }
-            afterClose?.invoke(isSuccess, it?.getType())
+            afterClose?.invoke(isSuccess)
+        }
+    }
+
+
+    private fun closeExistingLuckyFragment(afterClose: ((isSuccess: Boolean) -> Unit)? = null) {
+        var isSuccess = false
+        (childFragmentManager.findFragmentByTag(LuckyFragment.TAG) as? LuckyFragment).let {
+            if(it?.isAdded == true) {
+                it.close()
+                childFragmentManager.executePendingTransactions()
+                isSuccess = true
+            }
+            afterClose?.invoke(isSuccess)
         }
     }
 
@@ -151,12 +170,39 @@ class GameDetailFragment: BaseFragment<GameDetailViewModel, FragmentGameDetailBi
             PlayerRankingFragment.Builder().apply {
                 val screenHeight = resources.displayMetrics.heightPixels
                 val viewY = locationOnScreen[1]
+                LogUtils.e("---->${screenHeight},${viewY}")
                 setMarginBottom(screenHeight - viewY + 6.dp2px)
                 setTouchThroughViews(listOf(tvBiggestWinner, tvLuckiestWinner, viewCurrencyBg))
-                setRankingType(
-                    if (this@createRankingFragment == tvBiggestWinner) PlayerRankingFragment.RankingType.BIGGEST
-                    else PlayerRankingFragment.RankingType.LUCKIEST
+                setOnDismissListener { unSelectButtons() }
+                // todo 介接資料
+                setRankingDatas(
+                    listOf(
+                        PlayerRankingBean(1, "美美eee桑内", 1, 123323, 240000, 33, 242),
+                        PlayerRankingBean(2, "ff", 2, 5000, 12240000, 1000000009, 234),
+                        PlayerRankingBean(3, "ffdfdsfs", 3, 3000, 8002400, 777777, 176042427629980),
+                        PlayerRankingBean(4, "王sfdfs柏融", 4, 2000, 6024000, 662426666, 176242420427629980),
+                        PlayerRankingBean(5, "sdfds", 5, 1000, 40000, 55245555, 1760427629980),
+                        PlayerRankingBean(6, "df", 6, 800, 30000, 44442444, 1760427629980),
+                        PlayerRankingBean(7, "松井秀喜", 7, 600, 2002400, 32433333, 1760427629980),
+                        PlayerRankingBean(8, "清原和博", 8, 400, 10000, 222222, 1760427629980),
+                        PlayerRankingBean(9, "佐佐木主浩", 9, 200, 5000, 111111, 1760427629980),
+                        PlayerRankingBean(10, "田中將大", 10, 100, 3000, 101010, 1760427629980)
+                    )
                 )
+            }.build().show(childFragmentManager, clRoot.id)
+        }
+        this.isSelected = true
+    }
+
+
+    private fun View.createLuckyFragment() {
+        with(mBinding) {
+            LuckyFragment.Builder().apply {
+                val screenHeight = resources.displayMetrics.heightPixels
+                val viewY = locationOnScreen[1]
+                LogUtils.e("createFragment---->${screenHeight},${viewY}")
+                setMarginBottom(screenHeight - viewY + 6.dp2px)
+                setTouchThroughViews(listOf(tvBiggestWinner, tvLuckiestWinner, viewCurrencyBg))
                 setOnDismissListener { unSelectButtons() }
                 // todo 介接資料
                 setRankingDatas(
@@ -178,21 +224,6 @@ class GameDetailFragment: BaseFragment<GameDetailViewModel, FragmentGameDetailBi
         this.isSelected = true
     }
 
-    private fun View.toggleRankingFragment() {
-        val buttonType =
-            if (this@toggleRankingFragment == mBinding.tvBiggestWinner) PlayerRankingFragment.RankingType.BIGGEST
-            else PlayerRankingFragment.RankingType.LUCKIEST
-
-        closeExistingRankingFragment { isSuccess, type ->
-            if(!isSuccess) {
-                closeExistingCurrencyFragment {
-                    createRankingFragment()
-                }
-            } else {
-                if (type != buttonType) createRankingFragment()
-            }
-        }
-    }
 
     private fun closeExistingCurrencyFragment(afterClose: ((isSuccess: Boolean) -> Unit)? = null) {
         var isSuccess = false
@@ -211,13 +242,17 @@ class GameDetailFragment: BaseFragment<GameDetailViewModel, FragmentGameDetailBi
             CurrencySelectorFragment.Builder().apply {
                 val screenHeight = resources.displayMetrics.heightPixels
                 val viewY = locationOnScreen[1]
+                LogUtils.e("createFragment---->${screenHeight},${viewY}")
                 setMarginBottom(screenHeight - viewY + 6.dp2px)
                 setTouchThroughViews(listOf(tvBiggestWinner, tvLuckiestWinner, viewCurrencyBg))
                 // todo 介接資料
                 setCurrencyDatas(
                     listOf(
                         CurrencyInfoBean(1, true, 1.1, null, "USDT"),
-                        CurrencyInfoBean(2, true, 1.2, null, "BTC")
+                        CurrencyInfoBean(2, true, 1.2, null, "BTC"),
+                        CurrencyInfoBean(3, true, 1.2, null, "RMB"),
+                        CurrencyInfoBean(4, true, 1.2, null, "欧元"),
+                        CurrencyInfoBean(5, true, 1.2, null, "日元"),
                     )
                 )
                 setSelectedCurrencyId(1)
@@ -230,6 +265,18 @@ class GameDetailFragment: BaseFragment<GameDetailViewModel, FragmentGameDetailBi
     private fun View.toggleCurrencyFragment() {
         closeExistingCurrencyFragment { isSuccess ->
             if(!isSuccess) createCurrencyFragment()
+        }
+    }
+
+    private fun View.toggleLuckFragment() {
+        closeExistingLuckyFragment{ isSuccess ->
+            if(!isSuccess) createLuckyFragment()
+        }
+    }
+
+    private fun View.togglePlayerRankingFragment() {
+        closeExistingRankingFragment { isSuccess ->
+            if(!isSuccess) createRankingFragment()
         }
     }
 

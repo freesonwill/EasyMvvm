@@ -12,6 +12,7 @@ import arch.cayenne.module.bet.viewmodel.BetResultViewModel
 import arch.cayenne.module.bet.viewmodel.BetSheetViewModel
 import arch.cayenne.module.bet.viewmodel.ComboBetMoneyKeyboardDialogViewModel
 import arch.cayenne.module.bet.viewmodel.ComboBetViewModel
+import arch.cayenne.module.bet.viewmodel.BetCombViewModel
 import arch.cayenne.module.bet.viewmodel.FloatingButtonControlViewModel
 import arch.cayenne.lib.common.ui.viewmodel.ReserveDialogViewModel
 import arch.cayenne.module.bet.repo.OddsChangeRepository
@@ -48,6 +49,7 @@ class BetModuleInitializer: DefaultInitializer<String> {
         viewModelOf(::ReserveDialogViewModel)
         viewModelOf(::ComboBetViewModel)
         viewModelOf(::BetResultViewModel)
+        viewModelOf(::BetCombViewModel)
         viewModelOf(::ComboBetMoneyKeyboardDialogViewModel)
         viewModelOf(::BetSheetViewModel)
         viewModelOf(::FloatingButtonControlViewModel)

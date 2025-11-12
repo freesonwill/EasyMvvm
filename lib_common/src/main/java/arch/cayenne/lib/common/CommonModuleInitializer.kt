@@ -14,6 +14,7 @@ import arch.cayenne.lib.common.data.repo.UnReadMessageRepository
 import arch.cayenne.lib.common.ui.viewmodel.ConnectFailedViewModel
 import arch.cayenne.lib.common.ui.viewmodel.CurrencyDialogViewModel
 import arch.cayenne.lib.common.ui.viewmodel.ReserveDialogViewModel
+import arch.cayenne.lib.common.ui.viewmodel.CoinDialogViewModel
 import arch.cayenne.lib.common.ui.viewmodel.ShareViewModel
 import arch.cayenne.lib.common.ui.viewmodel.UnReadMessageViewModel
 import com.tencent.mmkv.MMKV
@@ -62,7 +63,7 @@ class CommonModuleInitializer : DefaultInitializer<String> {
         viewModelOf(::ReserveDialogViewModel)
         viewModelOf(::ShareViewModel)
         viewModelOf(::UnReadMessageViewModel)
-
+        viewModelOf(::CoinDialogViewModel)
         factoryOf(::CommonRepository)
         factoryOf(::BalanceRepository)
         factoryOf(::ReserveDialogRepository)

@@ -1,4 +1,4 @@
-package com.walisport.module.topup.ui.viewmodel
+package arch.cayenne.lib.common.ui.viewmodel
 
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 
