@@ -4,7 +4,9 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.LinearLayout
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.module.chat.R
 import arch.cayenne.module.chat.databinding.TabChatTopLayoutBinding
 import arch.cayenne.module.chat.ui.widget.ChatTabItemView.Companion.NORMAL
@@ -23,6 +25,7 @@ class ChatTabView : LinearLayout {
         const val CHAT_LIVING = 1
         const val CHAT_CUSTOMER = 2
     }
+
     val binding = TabChatTopLayoutBinding.inflate(LayoutInflater.from(context), this, true)
 
     private val ACTION_NORMAL_TO_LIVING = 100
@@ -59,37 +62,43 @@ class ChatTabView : LinearLayout {
 
     val livingStr: String = "世界杯首场法国VS巴西开赛了要不要来"
     val customerStr: String = "您好，我是您的福利客服，您要不要充钱"
+
     fun initListener() {
         binding.apply {
-            tabChatRoom.setOnClickListener {
+            tabChatRoom.clickNoRepeat {
                 if (selectTab == CHAT_ROOM) {
-                    return@setOnClickListener
+                    return@clickNoRepeat
+                }
+                if (tabChatLiving.mainAnim?.isRunning == true || tabChatCustomer.mainAnim?.isRunning == true) {
+                    return@clickNoRepeat
                 }
                 chatTabSelectListener?.selectTab(0)
-                tabSelect(CHAT_ROOM)
-                clickTabAction(NORMAL)
             }
-            tabChatLiving.setOnClickListener {
+            tabChatLiving.clickNoRepeat {
                 if (selectTab == CHAT_LIVING) {
-                    return@setOnClickListener
+                    return@clickNoRepeat
+                }
+                if (tabChatLiving.mainAnim?.isRunning == true || tabChatCustomer.mainAnim?.isRunning == true) {
+                    return@clickNoRepeat
                 }
                 chatTabSelectListener?.selectTab(1)
-                tabSelect(CHAT_LIVING)
-                clickTabAction(LIVING)
+
             }
-            tabChatCustomer.setOnClickListener {
+            tabChatCustomer.clickNoRepeat {
                 if (selectTab == CHAT_CUSTOMER) {
-                    return@setOnClickListener
+                    return@clickNoRepeat
+                }
+                if (tabChatLiving.mainAnim?.isRunning == true || tabChatCustomer.mainAnim?.isRunning == true) {
+                    return@clickNoRepeat
                 }
                 chatTabSelectListener?.selectTab(2)
-                tabSelect(CHAT_CUSTOMER)
-                clickTabAction(CUSTOMER)
+
             }
         }
     }
 
     fun selectTab(position: Int) {
-        if(position == selectTab){
+        if (position == selectTab) {
             return
         }
         val tab = when (position) {
@@ -98,7 +107,7 @@ class ChatTabView : LinearLayout {
             2 -> CHAT_CUSTOMER
             else -> -1
         }
-        val action = when(position){
+        val action = when (position) {
             0 -> NORMAL
             1 -> CHAT_LIVING
             2 -> CHAT_CUSTOMER
