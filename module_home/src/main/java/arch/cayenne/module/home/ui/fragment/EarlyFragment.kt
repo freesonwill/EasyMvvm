@@ -52,6 +52,7 @@ import arch.cayenne.module.home.ui.adapter.SportBannerAdapter
 import arch.cayenne.module.home.ui.adapter.SportsListAdapter
 import arch.cayenne.module.home.ui.view.CustomTabLayoutMediator
 import arch.cayenne.module.home.ui.viewmodel.EarlyDate
+import arch.cayenne.module.home.ui.viewmodel.EarlyDateType
 import arch.cayenne.module.home.ui.viewmodel.EarlyViewModel
 import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
 import arch.cayenne.module.home.utils.scrollToPositionWithoutAnim
@@ -732,7 +733,8 @@ class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>(),
                 tlDateList.addTabAndScrollPrecisely(
                     createDateTab(
                         earlyDate.dateStr,
-                        earlyDate.weekdayStr
+                        earlyDate.weekdayStr,
+                        earlyDate.type
                     )
                 )
                 setupDateTabLayoutParams(tlDateList, false)
@@ -764,20 +766,33 @@ class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>(),
     ) {
         tlDateList.apply {
             removeAllTabs()
-            dateTabs.forEach { (date, weekday, _) ->
-                val tab = createDateTab(date, weekday)
+            dateTabs.forEach { (date, weekday, _, type) ->
+                val tab = createDateTab(date, weekday, type)
                 addTab(tab)
             }
             setupDateTabLayoutParams(tlDateList, true)
         }
     }
 
-    private fun createDateTab(date: String?, weekday: String?): TabLayout.Tab {
+    private fun createDateTab(date: String?, weekday: String?, type: EarlyDateType): TabLayout.Tab {
         val tab = mBinding.tlDateList.newTab()
         val tabView = ItemDateTabBinding.inflate(LayoutInflater.from(context), null, false).apply {
-            tvDate.text = date
-            tvWeekDay.visibility = View.VISIBLE
-            tvWeekDay.text = weekday
+            if (type == EarlyDateType.Date) {
+                tvDate.visibility = View.VISIBLE
+                tvDate.text = date
+                tvWeekDay.visibility = View.VISIBLE
+                tvWeekDay.text = weekday
+
+                tvOther.visibility = View.GONE
+            } else {
+                tvDate.visibility = View.GONE
+                tvWeekDay.visibility = View.GONE
+
+                tvOther.visibility = View.VISIBLE
+                tvOther.text = date
+            }
+
+
         }
         tab.customView = tabView.root
         tab.tag = date
