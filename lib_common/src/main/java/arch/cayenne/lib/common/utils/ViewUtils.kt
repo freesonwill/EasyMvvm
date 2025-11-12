@@ -10,11 +10,15 @@ import android.content.res.Resources
 import android.graphics.Rect
 import android.os.Build
 import android.view.View
+import android.view.ViewGroup
 import android.view.animation.LinearInterpolator
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.core.animation.addListener
+import android.widget.RelativeLayout
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.animation.doOnEnd
 import androidx.core.animation.doOnStart
 import androidx.core.view.drawToBitmap
@@ -79,6 +83,9 @@ object ViewUtils {
 
     // 必須使用faker view才能解決子view設置0dp會顯示錯誤問題
     fun collapseView(view: View, fakerView: ImageView) {
+        //如果fakerView是view的子，将fakerView提到view同级
+        moveViewToSameLevel(childView = fakerView, parentView = view)
+
         val snapshot = view.drawToBitmap()
         fakerView.setImageBitmap(snapshot)
 
@@ -110,6 +117,8 @@ object ViewUtils {
     }
 
     fun expandView(view: View, fakerView: ImageView) {
+        //如果fakerView是view的子，将fakerView提到view同级
+        moveViewToSameLevel(childView = fakerView, parentView = view)
 
         // 先確保原始 view 是隱藏狀態
         view.visibility = View.GONE
@@ -160,4 +169,55 @@ object ViewUtils {
                 it.start()
             }
     }
+
+    /**
+     * 将 [childView] 从当前父视图中移除，并提到与 [parentView] 同级，
+     * 并在父布局中尽量与 [parentView] 对齐。
+     */
+    fun moveViewToSameLevel(childView: View, parentView: View) {
+        // 确保 childView 当前是 targetView 的子 View
+        if (childView.parent == parentView && parentView is ViewGroup) {
+            parentView.removeView(childView)
+
+            val parent = parentView.parent as? ViewGroup ?: return
+
+            val lp: ViewGroup.LayoutParams = when (parent) {
+                is ConstraintLayout -> ConstraintLayout.LayoutParams(0, 0).apply {
+                    startToStart = parentView.id
+                    endToEnd = parentView.id
+                    topToTop = parentView.id
+                    bottomToBottom = parentView.id
+                }
+
+                is FrameLayout -> FrameLayout.LayoutParams(
+                    parentView.width,
+                    parentView.height
+                ).apply {
+                    leftMargin = parentView.left
+                    topMargin = parentView.top
+                }
+
+                is RelativeLayout -> RelativeLayout.LayoutParams(
+                    parentView.width,
+                    parentView.height
+                ).apply {
+                    addRule(RelativeLayout.ALIGN_TOP, parentView.id)
+                    addRule(RelativeLayout.ALIGN_BOTTOM, parentView.id)
+                    addRule(RelativeLayout.ALIGN_START, parentView.id)
+                    addRule(RelativeLayout.ALIGN_END, parentView.id)
+                }
+
+                else -> ViewGroup.LayoutParams(
+                    parentView.width,
+                    parentView.height
+                ).also  {
+                    childView.x = parentView.x
+                    childView.y = parentView.y
+                }
+            }
+
+            parent.addView(childView, lp)
+        }
+    }
+
 }
