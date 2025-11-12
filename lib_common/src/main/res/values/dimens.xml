@@ -162,6 +162,7 @@
     <dimen name="dp_412">412dp</dimen>
     <dimen name="dp_418">418dp</dimen>
     <dimen name="dp_472">472dp</dimen>
+    <dimen name="dp_700">700dp</dimen>
 
     <dimen name="sp_8">8sp</dimen>
     <dimen name="sp_9">9sp</dimen>

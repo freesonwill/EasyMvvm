@@ -82,5 +82,7 @@
     <string name="drawer_withdraw">提现</string>
     <string name="drawer_topup">充值</string>
     <string name="first_day_title">明天</string>
+    <string name="other_day_title">其他</string>
+
 
 </resources>

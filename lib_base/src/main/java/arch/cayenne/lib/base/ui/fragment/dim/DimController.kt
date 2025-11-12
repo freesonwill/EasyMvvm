@@ -16,10 +16,12 @@ import androidx.core.animation.doOnEnd
 import androidx.core.view.isVisible
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
 
 class DimController private constructor() {
 
     companion object {
+        private const val TAG = "DimController"
         const val TARGET_DIM = 0.75f
         private val instance: DimController by lazy {
             DimController()
@@ -104,6 +106,10 @@ class DimController private constructor() {
         val code = host.hashCode()
         if (hostMap.containsKey(code)) return
         val f = host.getHostFragment()
+        if(f.view == null) {
+            "Can't access the Fragment View's LifecycleOwner for $f when getView() is null i.e., before onCreateView() or after onDestroyView()".loge(TAG)
+            return
+        }
         val lifecycleOwner = f.viewLifecycleOwner
         hostMap[code] = host
         lifecycleOwner.lifecycle.addObserver(object : DefaultLifecycleObserver {

@@ -7,24 +7,32 @@ import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 
 
+/**
+ * Usage:
+ * sharedViewModel<VM, ParentFragment> { it.tag == "main" }
+ *
+ * Finds a shared [ViewModel] instance that belongs to a relative Fragment [F],
+ * which satisfies [fragmentFilter].
+ */
 inline fun <reified VM : ViewModel, reified F : Fragment> Fragment.sharedViewModel(
     qualifier: Qualifier? = null,
-    noinline parameters: ParametersDefinition? = null
+    noinline parameters: ParametersDefinition? = null,
+    crossinline fragmentFilter:((f:Fragment)->Boolean) = { true },
 ): Lazy<VM> = lazy(LazyThreadSafetyMode.NONE) {
-    findRelative<F>().getViewModel<VM>(
+    findRelative<F>(fragmentFilter).getViewModel<VM>(
         qualifier = qualifier,
         parameters = parameters
     )
 }
 
 ///** Finds a relative fragment of type [F] via BFS. */
-inline fun <reified F : Fragment> Fragment.findRelative(): F {
+inline fun <reified F : Fragment> Fragment.findRelative(filter: (f: Fragment) -> Boolean): F {
     val visited = mutableListOf<Fragment>()
     val queued = mutableListOf(this.rootFragment)
     while (queued.isNotEmpty()) {
         val current = queued.removeFirst()
         when {
-            current is F -> return current
+            (current is F && filter(current)) -> return current
             visited.contains(current) -> continue
         }
         visited.add(current)

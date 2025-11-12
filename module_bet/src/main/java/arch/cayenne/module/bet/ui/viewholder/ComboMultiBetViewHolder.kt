@@ -10,10 +10,10 @@ import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
 import arch.cayenne.module.bet.R
 import arch.cayenne.module.bet.data.ComboMultiBetBean
-import arch.cayenne.module.bet.databinding.ItemComboMultiBetBinding
+import arch.cayenne.module.bet.databinding.ItemComboMultiBet2Binding
 import arch.cayenne.module.bet.ui.adapter.ComboMultiBetAdapter
 
-class ComboMultiBetViewHolder(private val mBinding: ItemComboMultiBetBinding, private val onComboMultiBetClickListener: ComboMultiBetAdapter.OnComboMultiBetClickListener): BaseViewHolder(mBinding) {
+class ComboMultiBetViewHolder(private val mBinding: ItemComboMultiBet2Binding, private val onComboMultiBetClickListener: ComboMultiBetAdapter.OnComboMultiBetClickListener): BaseViewHolder(mBinding) {
 
     @SuppressLint("ClickableViewAccessibility")
     fun bind(item: ComboMultiBetBean) {
@@ -57,9 +57,9 @@ class ComboMultiBetViewHolder(private val mBinding: ItemComboMultiBetBinding, pr
         val moneyHint = "$moneySymbol ${getString(R.string.et_money_hint).format(item.minAmount.getMoney(), item.maxAmount.getMoney())}"
         mBinding.etMoney.hint = moneyHint
         val amountMoney = "$moneySymbol${item.amount.getFormalMoney()}"
-        mBinding.tvMoney.text = amountMoney
+        //mBinding.tvMoney.text = amountMoney
         val maxMoney = "$moneySymbol${item.maxWinMoney.getFormalMoney()}"
-        mBinding.tvMaxMoney.text = maxMoney
+        //mBinding.tvMaxMoney.text = maxMoney
     }
 
     private fun isTextTooLong(textView: TextView, text: String): Boolean {
