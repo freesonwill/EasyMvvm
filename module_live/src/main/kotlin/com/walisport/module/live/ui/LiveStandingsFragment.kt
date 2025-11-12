@@ -4,22 +4,21 @@ import android.annotation.SuppressLint
 import android.graphics.Rect
 import android.os.Bundle
 import android.view.View
-import android.webkit.WebView
-import android.webkit.WebViewClient
+import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
-import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout.States
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.listenAtTop
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
-import com.blankj.utilcode.util.ToastUtils
+import arch.cayenne.lib.common.web.WLSWebView
 import com.walisport.module.live.R
 import com.walisport.module.live.databinding.FragmentLiveStandingsBinding
 import com.walisport.module.live.ui.adapter.StandingsAdapter
@@ -77,18 +76,27 @@ class LiveStandingsFragment : BaseFragment<LiveStandingsViewModel, FragmentLiveS
         }
         mBinding.webView.loadUrl("https://www.google.com/search?sca_esv=e7eb012a39ff2160&sxsrf=AE3TifPGlaw_fs3PvheMpA_B4qp_pa5qug:1760427392047&udm=2&fbs=AIIjpHxU7SXXniUZfeShr2fp4giZ1Y6MJ25_tmWITc7uy4KIeoJTKjrFjVxydQWqI2NcOhZVmrJB8DQUK5IzxA2fZbQFrCfZ7DsBw9Vv9Qkv56j2AEpMzvv0UU1F_EzLZo2QIfu8UhfRMB3yW5Jk6wNmICGo8m3mWFLKZwMn6814YnxapMJO6KUvDboWp26Mi9uK_5GU9xIvvOIEdOTDhGEoksYO1o0liA&q=%E5%9B%BE%E7%89%87&sa=X&ved=2ahUKEwjRkOyKl6OQAxWSqFYBHQy6HkkQtKgLegQIFRAB&biw=1920&bih=958&dpr=2")
         // 使用 ViewTreeObserver 监听滚动
-        val observer = mBinding.webView.viewTreeObserver
-        observer.addOnScrollChangedListener {
-            if (isResumed){
-                if (mBinding.webView.scrollY == 0) {
-                   // LogUtils.e("LiveStandingsFragment-WebView 已滑动到顶部")
-                    mainViewModel.setSonVerticalScrollIsTop(true)
-                } else {
-                  //  LogUtils.e("LiveStandingsFragment-WebView 未在顶部，当前 scrollY: ${mBinding.webView.scrollY}")
-                    mainViewModel.setSonVerticalScrollIsTop(false)
+        mBinding.webView.setOnScrollChangedListener(object : WLSWebView.OnScrollChangedListener {
+            override fun onScrollChanged(scrollX: Int, scrollY: Int) {
+                if (isResumed){
+                    if (mBinding.webView.scrollY == 0) {
+                        // LogUtils.e("LiveStandingsFragment-WebView 已滑动到顶部")
+                        mainViewModel.setSonVerticalScrollIsTop(true)
+                    } else {
+                        //  LogUtils.e("LiveStandingsFragment-WebView 未在顶部，当前 scrollY: ${mBinding.webView.scrollY}")
+                        mainViewModel.setSonVerticalScrollIsTop(false)
+                    }
                 }
             }
-        }
+        }.apply {
+            lifecycle.addObserver(object :DefaultLifecycleObserver {
+                override fun onDestroy(owner: LifecycleOwner) {
+                    super.onDestroy(owner)
+                    mBinding.webView.removeScrollChangedListener()
+                }
+            })
+        })
+
     }
     @SuppressLint("SetJavaScriptEnabled")
     private suspend fun initWebView() {

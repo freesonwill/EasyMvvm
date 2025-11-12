@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="title_betting_slip">投注单</string>
-    <string name="title_betting_combo">串关投注</string>
+    <string name="title_betting_combo">串关投注单</string>
     <string name="btn_reserve">预约</string>
     <string name="btn_clear">清空</string>
     <string name="btn_double">双倍</string>
@@ -26,6 +26,7 @@
     <string name="title_dialog_remove">串关删除后将无法恢复，确定删除串关吗？</string>
 
     <string name="title_combo_bet_odds_expand">展开更多串关方式</string>
+    <string name="title_combo_bet_odds_expand2">更多组合投注</string>
     <string name="title_combo_bet_odds_collapse">关闭更多串关方式</string>
     <string name="title_combo_bet_money">共投注：</string>
     <string name="title_combo_bet_odds_amount">本金：</string>
@@ -59,4 +60,5 @@
     <string name="toast_odds_change_better">赔率已降低，请重新投注</string>
     <string name="toast_odds_change_none">赔率已变更，请重新投注</string>
     <string name="exit_combo_bet">退出串关</string>
+    <string name="toast_no_more_bet_combs">没有更多组合投注</string>
 </resources>

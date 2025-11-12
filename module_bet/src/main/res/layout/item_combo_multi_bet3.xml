@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/dp_70"
+    android:background="@drawable/bg_bet_sheet"
+    android:paddingHorizontal="@dimen/dp_12"
+    >
+
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
+        android:id="@+id/tv_multi"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="0dp"
+        android:textColor="@color/color_00E0E5"
+        android:textSize="@dimen/sp_15"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/tv_title_combo"
+        app:layout_constraintTop_toTopOf="parent"
+        app:skinnableFontWeight="510"
+        tools:text="\@6x" />
+
+    <arch.cayenne.lib.skin.widget.SkinnableEditText
+        android:id="@+id/et_money"
+        android:layout_width="147dp"
+        android:layout_height="46dp"
+        android:background="@drawable/shape_9dp"
+        android:backgroundTint="@color/color_0FFFFFFF"
+        android:cursorVisible="false"
+        android:padding="8dp"
+        android:paddingHorizontal="12dp"
+        android:textColor="@color/color_00E0E5"
+        android:textColorHint="@color/color_C0C0C0"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:hint="@string/et_money_hint"
+        tools:text="$ 1000" />
+
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
+        android:id="@+id/tv_title_combo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="0dp"
+        android:layout_marginEnd="8dp"
+        android:ellipsize="end"
+        android:textColor="@color/color_FFFFFF"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/tv_multi"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:skinnableFontWeight="500"
+        tools:text="2串1" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

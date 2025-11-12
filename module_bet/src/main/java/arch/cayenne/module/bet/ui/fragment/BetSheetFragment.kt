@@ -84,7 +84,7 @@ class BetSheetFragment private constructor() :
     }
 
     private val comboFragment by lazy {
-        ComboBetFragment()
+        ComboBetFragment2()
     }
 
     override fun onGetLayoutInflater(savedInstanceState: Bundle?): LayoutInflater {
@@ -108,9 +108,9 @@ class BetSheetFragment private constructor() :
 
     private fun initFragment() {
         childFragmentManager.beginTransaction()
-            .add(mBinding.main.id, comboFragment, ComboBetFragment::class.java.simpleName)
+            .add(mBinding.main.id, comboFragment, comboFragment::class.java.simpleName)
 //            .hide(comboFragment)
-            .add(mBinding.main.id, singleFragment, SingleBetFragment::class.java.simpleName)
+            .add(mBinding.main.id, singleFragment, singleFragment::class.java.simpleName)
             .commit()
     }
 

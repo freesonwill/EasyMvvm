@@ -6,6 +6,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
 import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.lifecycle.lifecycleScope
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -14,7 +15,7 @@ import kotlinx.coroutines.launch
  * @description:
  */
 object ViewExt {
-
+    private const val TAG = "ViewExt"
     /**
      * 监听fitsSystemWindows变化
      */
@@ -65,11 +66,11 @@ object ViewExt {
      * @param delayMillis
      * @param action
      */
-    fun View.postDelayedSafely(delayMillis:Long,action:Runnable){
-        findViewTreeLifecycleOwner()!!.lifecycleScope.launch {
+    fun View.postDelayedSafely(delayMillis:Long,action:() -> Unit){
+        findViewTreeLifecycleOwner()?.lifecycleScope?.launch {
             delay(delayMillis)
-            action.run()
-        }
+            action()
+        } ?: let { "postDelayedSafely failed: $this has no lifecycleOwner".loge(TAG) }
     }
 
 }

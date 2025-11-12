@@ -8,20 +8,22 @@
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/tv_selection_name"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/dp_21"
         android:layout_marginStart="12dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="11dp"
         android:layout_marginEnd="4dp"
         android:ellipsize="end"
         android:gravity="start"
         android:lines="1"
         android:textColor="@color/color_FFFFFF"
-        android:textSize="@dimen/sp_14"
+        android:textSize="@dimen/sp_15"
         android:textStyle="bold"
         app:layout_constraintEnd_toStartOf="@id/tv_odds"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:skinnableFontWeight="500" />
+        app:skinnableFontWeight="500"
+        tools:text="中国 +0.5"
+        />
 
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/tv_odds"
@@ -30,16 +32,18 @@
         android:layout_marginEnd="12dp"
         android:fontFamily="@font/sf_pro"
         android:textColor="@color/color_00E0E5"
-        android:textSize="@dimen/sp_14"
+        android:textSize="@dimen/sp_15"
         app:layout_constraintBottom_toBottomOf="@id/tv_selection_name"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/tv_selection_name"
-        app:skinnableFontWeight="510" />
+        app:skinnableFontWeight="590"
+        tools:text="\@1.85"
+        />
 
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/tv_status"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="20dp"
         android:background="@drawable/bg_playing"
         android:gravity="center"
         android:paddingHorizontal="8dp"
@@ -53,7 +57,7 @@
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/tv_market"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="20dp"
         android:layout_marginStart="4dp"
         android:layout_marginTop="11dp"
         android:textColor="@color/color_C0C0C0"
@@ -73,7 +77,7 @@
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/tv_match_name"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="20dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="12dp"
         android:ellipsize="end"
@@ -88,7 +92,7 @@
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/tv_league_name"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="20dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="10dp"
         android:ellipsize="end"
@@ -116,11 +120,13 @@
 
     <arch.cayenne.lib.skin.widget.SkinnableImageView
         android:id="@+id/iv_delete"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="12dp"
+        android:layout_width="40dp"
+        android:layout_height="20dp"
+        android:paddingStart="0dp"
+        android:paddingEnd="0dp"
+        android:paddingTop="0dp"
         android:src="@drawable/icon_delete"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/tv_league_name"
         app:layout_constraintEnd_toEndOf="parent" />
 
     <arch.cayenne.lib.skin.widget.SkinnableView
