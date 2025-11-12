@@ -6,6 +6,7 @@ import android.view.animation.LinearInterpolator
 import androidx.core.animation.addListener
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
+import androidx.core.view.postDelayed
 import arch.cayenne.lib.base.utils.ext.ViewExt.postDelayedSafely
 import arch.cayenne.lib.common.utils.ext.SportDisplayOddsExt.getDisplayOdds
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds

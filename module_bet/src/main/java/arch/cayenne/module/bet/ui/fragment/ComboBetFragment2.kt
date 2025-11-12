@@ -104,7 +104,7 @@ class ComboBetFragment2 : BaseFragment<ComboBetViewModel, FragmentComboBet2Bindi
 
         mBinding.rvBet.adapter = betSelectionAdapter
 
-        val decoration = BetSheetDecoration(6.dp2px, 12.dp2px)
+        val decoration = BetSheetDecoration(0.dp2px, 0.dp2px)
         mBinding.rvBet.addItemDecoration(decoration)
 
         mBinding.rvMultiBet.adapter = comboMultiBetAdapter
