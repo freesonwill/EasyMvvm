@@ -59,7 +59,7 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
         }
         mBinding.main.post {
             mViewModel.keyBoardHeight = mBinding.main.height
-            setMainHeight()
+            addMainViewListen()
         }
     }
 
@@ -93,14 +93,6 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
         keyboardChangeClick(KeyBoardType.CHAT, 3)//移动到其他页面后关闭软件盘表情键盘
     }
 
-    private fun setMainHeight() {
-        softKeyBoardManager.initView(
-            requireActivity().window.decorView,
-            mBinding.chatEtInput,
-            mViewModel.isMainSoft
-        )
-        addMainViewListen()
-    }
 
     override suspend fun createObserver() {
         lifecycleScope.launch {
@@ -385,6 +377,11 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
     }
 
     private fun addMainViewListen() {
+        softKeyBoardManager.initView(
+            requireActivity().window.decorView,
+            mBinding.chatEtInput,
+            mViewModel.isMainSoft
+        )
         mBinding.main.viewTreeObserver
             .addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
                 override fun onGlobalLayout() {
@@ -401,8 +398,9 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
             inputMain.layoutParams.height = mViewModel.keyBoardHeight
             main.layoutParams.height =
                 mViewModel.keyBoardHeight + softKeyBoardManager.emojiKeyBoardHeight
+            inputContent.translationY = 44.dp2px.toFloat()
             mBinding.main.requestLayout()
-            "calculation  chatKeyboard ${chatKeyboard.layoutParams.height}  inputMain ${ inputMain.layoutParams.height} main  ${ main.layoutParams.height}".logd("aaa")
+//            "calculation  chatKeyboard ${chatKeyboard.layoutParams.height}  inputMain ${ inputMain.layoutParams.height} main  ${ main.layoutParams.height}".logd("aaa")
         }
     }
 
@@ -511,11 +509,11 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
                 })
             }
             //TODO 测试键盘切换anim
-            mainAnim?.play(emojiSet)
-//            if (offset == 0)
-//                mainAnim?.playSequentially(emojiSet, hotViewAnim(offset))
-//            else
-//                mainAnim?.playSequentially(hotViewAnim(offset), emojiSet)
+//            mainAnim?.play(emojiSet)
+            if (offset == 0)
+                mainAnim?.playSequentially(emojiSet, hotViewAnim(offset))
+            else
+                mainAnim?.playSequentially(hotViewAnim(offset), emojiSet)
 //            mainAnim?.duration = 170L
 
             mainAnim?.addListener(onStart = {
@@ -559,7 +557,7 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
     private fun hotViewAnim(offset: Int) = ObjectAnimator.ofFloat(
         mBinding.inputContent,
         "translationY",
-        if (offset != 0) 0f else 42.dp2px.toFloat()
+        if (offset != 0) 0f else 44.dp2px.toFloat()
     ).apply {
         duration = 30
     }
