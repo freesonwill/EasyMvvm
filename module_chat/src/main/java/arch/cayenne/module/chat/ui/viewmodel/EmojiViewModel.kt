@@ -12,7 +12,7 @@ import arch.cayenne.module.chat.data.model.EmojiData
  */
 class EmojiViewModel : BaseViewModel() {
 
-    private fun getNormalEmojis(): List<EmojiData> {
+    private fun getNormalEmojis(): MutableList<EmojiData> {
         val list = EmojiEnum.getEmojiMap().map {
             EmojiData(it.value, it.key)
         }.toMutableList()
@@ -21,17 +21,21 @@ class EmojiViewModel : BaseViewModel() {
 
     private fun getBidEmojis() = BidEmojiEnum.getEmojiMap().map {
         EmojiData(it.value, it.key)
-    }.toList()
+    }.toMutableList()
 
-    fun getNormalList(): List<List<EmojiData>> {
-        val normalRecentList = getNormalEmojis().subList(0, 8).toList()
-        return arrayListOf(normalRecentList, getNormalEmojis())
+    fun getNormalList(): List<EmojiData> {
+        val list = getNormalEmojis()
+        list.add(0,EmojiData(-1, ""))
+        return list
     }
 
 
-    fun getBidList(): List<List<EmojiData>> {
-        val bidRecentList = getBidEmojis().subList(0, 4).toList()
-        return arrayListOf(bidRecentList, getBidEmojis())
+    fun getBidList(): List<EmojiData> {
+        val list = getBidEmojis()
+        list.add(0,EmojiData(-1, ""))
+        return  list
     }
+
+
 
 }

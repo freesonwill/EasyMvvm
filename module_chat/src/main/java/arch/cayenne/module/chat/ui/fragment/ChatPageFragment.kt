@@ -11,6 +11,7 @@ import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
 import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.websocket.chat.data.ChatMsg
+import arch.cayenne.module.chat.data.constants.KeyBoardType
 import arch.cayenne.module.chat.databinding.FragementChatPageLayoutBinding
 import arch.cayenne.module.chat.ui.adapter.ChatAdapter
 import arch.cayenne.module.chat.ui.viewmodel.ChatHomeViewModel
@@ -30,10 +31,10 @@ class ChatPageFragment:BaseFragment<ChatPageViewModel,FragementChatPageLayoutBin
         get() = ChatPageViewModel::class
     private val homeViewModel:ChatHomeViewModel by sharedViewModel<ChatHomeViewModel,ChatHomeFragment>()
 
+
     override fun initView(savedInstanceState: Bundle?) {
         ChatPersonalDialogFragment.create(this)
         initRecycler()
-
     }
 
     private fun initRecycler(){
@@ -53,20 +54,20 @@ class ChatPageFragment:BaseFragment<ChatPageViewModel,FragementChatPageLayoutBin
         mBinding.liveChatRecycler.layoutManager = layoutManger
         mBinding.liveChatRecycler.adapter = adapter
         mBinding.liveChatRecycler.itemAnimator = null
-//        mBinding.liveChatRecycler.addOnItemTouchListener(object : RecyclerView.OnItemTouchListener {
-//            override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
-//
-//                "onInteceptTOuchEvent".loge("aaa")
-//
-//                return false
-//            }
-//
-//            override fun onTouchEvent(rv: RecyclerView, e: MotionEvent) {
-//            }
-//
-//            override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {
-//            }
-//        })
+        mBinding.liveChatRecycler.addOnItemTouchListener(object : RecyclerView.OnItemTouchListener {
+            override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
+                if(e.action == MotionEvent.ACTION_DOWN && homeViewModel.currentKeyBoardType != KeyBoardType.CHAT){
+                    homeViewModel.updateKeyBoardUi(KeyBoardType.CHAT,21)
+                }
+                return false
+            }
+
+            override fun onTouchEvent(rv: RecyclerView, e: MotionEvent) {
+            }
+
+            override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {
+            }
+        })
 
     }
 
@@ -75,14 +76,15 @@ class ChatPageFragment:BaseFragment<ChatPageViewModel,FragementChatPageLayoutBin
      * */
     @SuppressLint("NotifyDataSetChanged")
     private fun refreshChatList() {
-        homeViewModel.refreshChatUi(mViewModel.msgLists.isEmpty())
         val adapter = mBinding.liveChatRecycler.adapter?.let { it as ChatAdapter }
-        adapter?.submitList(mViewModel.msgLists){
-            mBinding.liveChatRecycler.scrollToPosition(0)
-        }
+        val nList = mutableListOf<ChatMsg>()
+        nList.addAll(mViewModel.msgLists)
+        adapter?.submitList(nList)
     }
 
     override fun initListener() {
+
+
     }
 
     override suspend fun createObserver() {
