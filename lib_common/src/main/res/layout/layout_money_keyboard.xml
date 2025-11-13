@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<arch.cayenne.lib.skin.widget.SkinnableConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <GridLayout
+        android:id="@+id/grid_number"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:columnCount="3"
+        android:minHeight="@dimen/dp_224"
+        app:layout_constraintEnd_toStartOf="@+id/grid_other"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
+            android:id="@+id/btn_custom_one"
+            style="@style/MoneyKeyboardButton"
+            android:layout_marginEnd="@dimen/dp_4"
+            android:layout_marginBottom="@dimen/dp_8"
+            android:text="$600"
+            app:skinnableFontWeight="510" />
+
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
+            android:id="@+id/btn_custom_two"
+            style="@style/MoneyKeyboardButton"
+            android:layout_marginStart="@dimen/dp_4"
+            android:layout_marginEnd="@dimen/dp_4"
+            android:layout_marginBottom="@dimen/dp_8"
+            android:text="$800"
+            app:skinnableFontWeight="510" />
+
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
+            android:id="@+id/btn_custom_three"
+            style="@style/MoneyKeyboardButton"
+            android:layout_marginStart="@dimen/dp_4"
+            android:layout_marginEnd="@dimen/dp_4"
+            android:layout_marginBottom="@dimen/dp_8"
+            android:text="$1000"
+            app:skinnableFontWeight="510" />
+
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
+            android:id="@+id/btn_one"
+            style="@style/MoneyKeyboardButton"
+            android:layout_marginEnd="@dimen/dp_4"
+            android:layout_marginBottom="@dimen/dp_4"
+            android:text="1"
+            app:skinnableFontWeight="510" />
+
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
+            android:id="@+id/btn_two"
+            style="@style/MoneyKeyboardButton"
+            android:layout_marginStart="@dimen/dp_4"
+            android:layout_marginEnd="@dimen/dp_4"
+            android:layout_marginBottom="@dimen/dp_4"
+            android:text="2"
+            app:skinnableFontWeight="510" />
+
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
+            android:id="@+id/btn_three"
+            style="@style/MoneyKeyboardButton"
+            android:layout_marginStart="@dimen/dp_4"
+            android:layout_marginEnd="@dimen/dp_4"
+            android:layout_marginBottom="@dimen/dp_4"
+            android:text="3"
+            app:skinnableFontWeight="510" />
+
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
+            android:id="@+id/btn_four"
+            style="@style/MoneyKeyboardButton"
+            android:layout_marginTop="@dimen/dp_4"
+            android:layout_marginEnd="@dimen/dp_4"
+            android:layout_marginBottom="@dimen/dp_4"
+            android:text="4"
+            app:skinnableFontWeight="510" />
+
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
+            android:id="@+id/btn_five"
+            style="@style/MoneyKeyboardButton"
+            android:layout_margin="@dimen/dp_4"
+            android:text="5"
+            app:skinnableFontWeight="510" />
+
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
+            android:id="@+id/btn_six"
+            style="@style/MoneyKeyboardButton"
+            android:layout_marginStart="@dimen/dp_4"
+            android:layout_marginTop="@dimen/dp_4"
+            android:layout_marginEnd="@dimen/dp_4"
+            android:layout_marginBottom="@dimen/dp_4"
+            android:text="6"
+            app:skinnableFontWeight="510" />
+
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
+            android:id="@+id/btn_seven"
+            style="@style/MoneyKeyboardButton"
+            android:layout_marginTop="@dimen/dp_4"
+            android:layout_marginEnd="@dimen/dp_4"
+            android:layout_marginBottom="@dimen/dp_4"
+            android:text="7"
+            app:skinnableFontWeight="510" />
+
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
+            android:id="@+id/btn_eight"
+            style="@style/MoneyKeyboardButton"
+            android:layout_margin="@dimen/dp_4"
+            android:text="8"
+            app:skinnableFontWeight="510" />
+
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
+            android:id="@+id/btn_nine"
+            style="@style/MoneyKeyboardButton"
+            android:layout_marginStart="@dimen/dp_4"
+            android:layout_marginTop="@dimen/dp_4"
+            android:layout_marginEnd="@dimen/dp_4"
+            android:layout_marginBottom="@dimen/dp_4"
+            android:text="9"
+            app:skinnableFontWeight="510" />
+    </GridLayout>
+
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
+        android:id="@+id/btn_zero"
+        style="@style/MoneyKeyboardButton"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_48"
+        android:layout_marginTop="@dimen/dp_4"
+        android:layout_marginEnd="@dimen/dp_4"
+        android:text="0"
+        app:layout_constraintEnd_toEndOf="@+id/grid_number"
+        app:layout_constraintStart_toStartOf="@+id/grid_number"
+        app:layout_constraintTop_toBottomOf="@+id/grid_number"
+        app:skinnableFontWeight="510" />
+
+    <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
+        android:id="@+id/grid_other"
+        android:layout_width="@dimen/dp_84"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
+            android:id="@+id/btn_custom_four"
+            style="@style/MoneyKeyboardButton"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_48"
+            android:layout_gravity="top"
+            android:layout_marginStart="@dimen/dp_4"
+            android:layout_marginBottom="@dimen/dp_4"
+            android:text="$2000"
+            app:skinnableFontWeight="510" />
+
+        <arch.cayenne.lib.skin.widget.SkinnableImageButton
+            android:id="@+id/btn_clear"
+            style="@style/MoneyKeyboardButton"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_48"
+            android:layout_marginStart="@dimen/dp_4"
+            android:layout_marginTop="@dimen/dp_4"
+            android:layout_marginBottom="@dimen/dp_4"
+            android:scaleType="center"
+            android:src="@drawable/icon_keyboard_clear" />
+
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
+            android:id="@+id/btn_confirm"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_162"
+            android:layout_marginStart="@dimen/dp_4"
+            android:layout_marginTop="@dimen/dp_4"
+            android:background="@drawable/selector_money_button_pressed"
+            android:gravity="center"
+            android:text="@string/btn_confirm"
+            android:textColor="@color/color_FFFFFF"
+            android:textSize="@dimen/sp_14"
+            android:visibility="visible"
+            app:skinnableFontWeight="510" />
+    </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
+</arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
