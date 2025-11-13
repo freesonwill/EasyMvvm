@@ -144,6 +144,8 @@
     <string name="payment_status">交易状态</string>
     <string name="transaction_create_time">创建时间</string>
 
+    <string name="tip_empty_input">金额不能为空</string>
+    <string name="tip_hint_money">输入金额 $100-2000</string>
     <string name="date_picker_year">%d年</string>
     <string name="date_picker_month">%d月</string>
     <string name="date_picker_day">%d日</string>

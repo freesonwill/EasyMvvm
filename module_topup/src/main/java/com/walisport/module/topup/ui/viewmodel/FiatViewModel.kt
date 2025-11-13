@@ -14,6 +14,9 @@ class FiatViewModel : BaseViewModel() {
     private val _onPayMoneyListener = MutableLiveData<List<PayMoneyBean>>()
     val onPayMoneyListener: LiveData<List<PayMoneyBean>> get() = _onPayMoneyListener
 
+    private val _onCustomListener = MutableLiveData<Boolean>()
+    val onCustomListener: LiveData<Boolean> get() = _onCustomListener
+
     fun getPayTypeList() {
         val tmp1 = PayMethodBean(0, "支付宝", isSelect = true, isRecommend = true)
         val tmp2 = PayMethodBean(1, "微信支付", isSelect = false, isRecommend = false)
@@ -70,6 +73,9 @@ class FiatViewModel : BaseViewModel() {
                 id -> bean.copy(isSelect = true)
                 else -> bean.copy(isSelect = false)
             }
+        }
+        if (id == 11) {
+            _onCustomListener.value = true
         }
     }
 }
