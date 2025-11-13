@@ -6,6 +6,7 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.MotionEvent
+import android.view.ViewGroup.LayoutParams
 import android.view.ViewTreeObserver
 import android.view.inputmethod.EditorInfo
 import androidx.activity.addCallback
@@ -395,12 +396,19 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
         mBinding.apply {
             softKeyBoardManager.emojiKeyBoardHeight = 242.dp2px
             chatKeyboard.layoutParams.height = softKeyBoardManager.emojiKeyBoardHeight
-            inputMain.layoutParams.height = mViewModel.keyBoardHeight
-            main.layoutParams.height =
-                mViewModel.keyBoardHeight + softKeyBoardManager.emojiKeyBoardHeight
-            inputContent.translationY = 44.dp2px.toFloat()
-            mBinding.main.requestLayout()
+//            inputMain.layoutParams.height = mViewModel.keyBoardHeight
+//            main.layoutParams.height = mViewModel.keyBoardHeight + softKeyBoardManager.emojiKeyBoardHeight
+//            inputContent.translationY = 44.dp2px.toFloat()
+//            mBinding.main.requestLayout()
 //            "calculation  chatKeyboard ${chatKeyboard.layoutParams.height}  inputMain ${ inputMain.layoutParams.height} main  ${ main.layoutParams.height}".logd("aaa")
+        }
+    }
+
+    private fun emojiLayoutSize(isReset: Boolean) {
+        mBinding.apply {
+            inputMain.layoutParams.height =if(isReset) LayoutParams.MATCH_PARENT  else mViewModel.keyBoardHeight
+            main.layoutParams.height =if(isReset) LayoutParams.MATCH_PARENT else mViewModel.keyBoardHeight + softKeyBoardManager.emojiKeyBoardHeight
+            main.requestLayout()
         }
     }
 
@@ -410,6 +418,7 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
     fun showChat() {
         updateKeyboardView(false)
 //        updateKeyboardView(mBinding.chatEtInput.text.isNotEmpty())
+        emojiLayoutSize(true)
     }
 
     /**
@@ -425,6 +434,7 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
     private fun showEmoji() {
         updateKeyboardView(true)
         softKeyBoardManager.etRequestFocus()
+        emojiLayoutSize(false)
     }
 
     private fun updateKeyboardView(isVisible: Boolean) {
