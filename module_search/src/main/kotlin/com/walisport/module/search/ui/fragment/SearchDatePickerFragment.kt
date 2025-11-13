@@ -38,7 +38,7 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import kotlin.reflect.KClass
 
-class SearchDatePickerFragment private constructor(): BaseFragment<SearchDatePickerViewModel, FragmentSearchDatePickerBinding>() {
+class SearchDatePickerFragment constructor(): BaseFragment<SearchDatePickerViewModel, FragmentSearchDatePickerBinding>() {
     override val vbClass: KClass<FragmentSearchDatePickerBinding>
         get() = FragmentSearchDatePickerBinding::class
     override val vmClass: KClass<SearchDatePickerViewModel>

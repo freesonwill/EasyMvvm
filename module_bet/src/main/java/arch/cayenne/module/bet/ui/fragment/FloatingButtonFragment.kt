@@ -19,7 +19,7 @@ import arch.cayenne.module.bet.viewmodel.FloatingButtonViewModel
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.reflect.KClass
 
-class FloatingButtonFragment private constructor(): BaseFragment<FloatingButtonViewModel, FragmentFloatingButtonBinding>() {
+class FloatingButtonFragment constructor(): BaseFragment<FloatingButtonViewModel, FragmentFloatingButtonBinding>() {
     override val vbClass: KClass<FragmentFloatingButtonBinding> = FragmentFloatingButtonBinding::class
     override val vmClass: KClass<FloatingButtonViewModel> = FloatingButtonViewModel::class
 

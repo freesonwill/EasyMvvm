@@ -27,7 +27,7 @@ import com.haibin.calendarview.CalendarView
 import galaxy.common.proto.Common
 import arch.cayenne.lib.common.R as RC
 
-class HomeCalendarFragment private constructor() : Fragment() {
+class HomeCalendarFragment constructor() : Fragment() {
     enum class AnimState {
         EXPANDING, EXPAND, COLLAPSING, COLLAPSE
     }
