@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
@@ -23,6 +22,7 @@ import arch.cayenne.lib.common.utils.ext.scrollToBottomWithLoadMore
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.helper.BackToTopHelper
 import arch.cayenne.lib.common.utils.helper.showToast
+import arch.cayenne.lib.database.entity.MatchListItem
 import arch.cayenne.lib.database.entity.MatchWithMarkets
 import arch.cayenne.lib.database.entity.SelectionBeanLite
 import arch.cayenne.module.bet.data.AddSelectionStatus
@@ -31,6 +31,7 @@ import arch.cayenne.module.bet.viewmodel.FloatingButtonControlViewModel
 import arch.cayenne.module.home.R
 import arch.cayenne.module.home.data.constants.HomeState
 import arch.cayenne.module.home.data.constants.PlayType
+import arch.cayenne.module.home.data.model.MatchDateItem
 import arch.cayenne.module.home.databinding.FragmentMatchListPagerBinding
 import arch.cayenne.module.home.ui.adapter.MatchItemAdapter
 import arch.cayenne.module.home.ui.adapter.OnMatchItemClickListener
@@ -39,6 +40,7 @@ import arch.cayenne.module.home.ui.viewmodel.EarlyViewModel
 import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
 import arch.cayenne.module.home.ui.viewmodel.MatchListViewModel
 import arch.cayenne.module.home.ui.viewmodel.SubHomeViewModel
+import arch.cayenne.module.home.utils.DateUtils
 import arch.cayenne.module.home.utils.setFavoriteIcon
 import com.walisport.module.message.ui.view.DeleteAnimator
 import kotlinx.coroutines.launch
@@ -137,8 +139,15 @@ class MatchListPagerFragment :
                     }
                 }
             })
+
             //賽事卡片之間的間閣
-            val decoration = MatchCardItemDecoration(12.dp2px)
+            val decoration = MatchCardItemDecoration(
+                12.dp2px, if (arguments?.getInt(ARG_PLAY_TYPE_ID) == PlayType.EARLY.id) {
+                    12.dp2px
+                } else {
+                    6.dp2px
+                }
+            )
             mBinding.rvHomeGameList.apply {
                 this.layoutManager = gameLayoutManager
                 this.adapter = matchAdapter
@@ -217,7 +226,15 @@ class MatchListPagerFragment :
     val matchListObserver = Observer<List<MatchWithMarkets>> { matchList ->
         "MatchListChange livedata Observed~ ${matchList.map { it.match.matchId }}".logi(this::class.java.simpleName)
         val preEmpty = matchAdapter.currentList.isEmpty()
-        matchAdapter.submitList(matchList) {
+
+        //早盘的比赛列表，需要添加日期条目
+        val list = if (mViewModel.getPlayTypeId() == PlayType.EARLY.id) addDateItem(
+            matchList
+        ) else
+            matchList
+
+
+        matchAdapter.submitList(list) {
             if (mViewModel.requestScrollToTop) {
                 mBinding.rvHomeGameList.scrollToPosition(0)
                 mViewModel.resetRequestScrollToTop()
@@ -387,6 +404,33 @@ class MatchListPagerFragment :
         mViewModel.stopMatchSubscribeNotify()
     }
 
+    fun addDateItem(list:List<MatchListItem>?): List<MatchListItem>? {
+        val isEmpty = (list?.size ?: 0) == 0
+        if (isEmpty) {
+            return list
+        }
+
+        val set: HashSet<String> = java.util.HashSet()
+
+        val mutableList = mutableListOf<MatchListItem>()
+        list?.forEach {
+            if (it is MatchWithMarkets) {
+                val (date, week) = DateUtils.getDisplay(it.match.basicInfo.startTime)
+                val display = "$date $week"
+
+                if (!set.contains(display)) {
+                    mutableList.add(MatchDateItem(display))
+                    set.add(display)
+                }
+                mutableList.add(it)
+            } else {
+                mutableList.add(it)
+            }
+        }
+
+        return mutableList
+    }
+
 
     companion object {
         private const val ARG_SPORT_ID = "sport_id"
@@ -410,3 +454,6 @@ class MatchListPagerFragment :
         }
     }
 }
+
+
+
