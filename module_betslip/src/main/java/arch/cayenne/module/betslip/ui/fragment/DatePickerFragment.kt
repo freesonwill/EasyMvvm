@@ -16,7 +16,7 @@ import arch.cayenne.module.betslip.ui.adapter.DatePickerAdapter
 import arch.cayenne.module.betslip.ui.viewmodel.DatePickerViewModel
 import kotlin.reflect.KClass
 
-class DatePickerFragment private constructor() :
+class DatePickerFragment constructor() :
     BasePreLoadBottomSheetFragment<DatePickerViewModel, FragmentDatePickerBinding>() {
 
     companion object {

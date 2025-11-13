@@ -12,7 +12,7 @@ import arch.cayenne.lib.common.ui.viewmodel.ShareViewModel
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import kotlin.reflect.KClass
 
-class ShareFragment private constructor(): BasePreLoadBottomSheetFragment<ShareViewModel, FragmentShareBinding>() {
+class ShareFragment constructor(): BasePreLoadBottomSheetFragment<ShareViewModel, FragmentShareBinding>() {
 
     companion object {
         val TAG = ShareFragment::class.java.simpleName

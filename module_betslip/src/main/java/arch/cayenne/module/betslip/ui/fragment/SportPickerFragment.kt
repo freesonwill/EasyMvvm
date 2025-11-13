@@ -30,7 +30,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
 
-class SportPickerFragment private constructor() :
+class SportPickerFragment constructor() :
     BaseFragment<SportPickerViewModel, FragmentSportPickerBinding>(), SimilarDialogInterface,
     DimInterface {
 
