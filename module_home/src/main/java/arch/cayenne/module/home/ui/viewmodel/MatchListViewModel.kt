@@ -13,7 +13,6 @@ import arch.cayenne.module.home.data.constants.SportType
 import arch.cayenne.module.home.data.repo.BaseMatchRepository
 import arch.cayenne.module.home.data.repo.BaseMatchRepository.Companion.DEFAULT_MATCH_SIZE
 import arch.cayenne.module.home.data.repo.MatchListRepository
-import arch.cayenne.module.home.utils.DateUtils
 import galaxy.common.proto.Common
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -24,7 +23,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.core.component.inject
 import plugin.koin.KoinViewModel
-import java.util.Locale
 
 @KoinViewModel
 class MatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
@@ -142,20 +140,19 @@ class MatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
             requestScrollToTop =
                 loadMatchType == LoadMatchType.RELOAD || loadMatchType == LoadMatchType.RETRY // 是否是強制更新，會刪除原本的資料ref關聯表，並且更新列表後會滾到頂端
             setState(HomeState.Match.Loading)
-            val (startTime, endTime) = if (_selectedDate.value == 0L) { //ALL
-                if (_playType == PlayType.EARLY.id) {
-                    DateUtils.getFutureDays(1, Locale.getDefault())[0].third.let {
-                        Pair(it, it + BaseMatchRepository.THIRTY_DAY_TIME_STAMP)
-                    }
+            val (startTime, endTime) =
+                if (_playType == PlayType.EARLY.id) { //早盘
+                    Pair(
+                        _selectedDate.value,
+                        _selectedDate.value + BaseMatchRepository.ONE_DAY_TIME_STAMP * 31
+                    )
                 } else {
-                    Pair(0L, 0L)
+                    Pair(
+                        _selectedDate.value,
+                        _selectedDate.value + BaseMatchRepository.ONE_DAY_TIME_STAMP
+                    )
                 }
-            } else {
-                Pair(
-                    _selectedDate.value,
-                    _selectedDate.value + BaseMatchRepository.ONE_DAY_TIME_STAMP
-                )
-            }
+
             "取得比賽資料 Type = ${loadMatchType} PlayType = $_playType sportId = $_sportId tournamentId = $_tournamentId page = $page startTime = $startTime endTime = $endTime".logi(
                 TAG
             )
