@@ -34,7 +34,7 @@ import arch.cayenne.lib.common.utils.ext.SportStringExt.isGreaterThanValue
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
 import arch.cayenne.lib.common.utils.ext.setOnClickOrLongPressListener
 
-class ComboBetMoneyKeyboardDialogFragment private constructor():
+class ComboBetMoneyKeyboardDialogFragment constructor():
     BasePositionDialogFragment<ComboBetMoneyKeyboardDialogViewModel, FragmentComboBetMoneyKeyboardDialogBinding>() {
 
     companion object {

@@ -24,7 +24,7 @@ import arch.cayenne.module.bet.viewmodel.BetSheetViewModel
 import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
 
-class BetSheetFragment private constructor() :
+class BetSheetFragment constructor() :
     BasePreLoadBottomSheetFragment<BetSheetViewModel, FragmentBetSheetBinding>() {
 
     companion object {

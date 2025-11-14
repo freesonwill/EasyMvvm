@@ -196,6 +196,7 @@
             android:layout_height="@dimen/dp_47"
             android:layout_marginHorizontal="@dimen/dp_10"
             android:layout_marginTop="@dimen/dp_4"
+            android:layout_marginBottom="@dimen/dp_4"
             android:background="@drawable/bg_date_tab"
             android:clipToPadding="true"
             android:overScrollMode="never"

@@ -23,7 +23,7 @@ import arch.cayenne.module.bet.databinding.FragmentOddsChangeBinding
 import arch.cayenne.module.bet.viewmodel.OddsChangeViewModel
 import kotlin.reflect.KClass
 
-class OddsChangeDialogFragment private constructor() :
+class OddsChangeDialogFragment constructor() :
     BasePositionDialogFragment<OddsChangeViewModel, FragmentOddsChangeBinding>() {
 
     companion object {

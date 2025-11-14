@@ -8,7 +8,7 @@ import arch.cayenne.module.betslip.databinding.LayoutOrderSportEarlySettleBindin
 import arch.cayenne.module.order.ui.viewmodel.OrderSportEarlySettleViewModel
 import kotlin.reflect.KClass
 
-class OrderSportEarlySettleFragment private constructor() :
+class OrderSportEarlySettleFragment constructor() :
     BaseBottomSheetFragment<OrderSportEarlySettleViewModel, LayoutOrderSportEarlySettleBinding>() {
 
     companion object {

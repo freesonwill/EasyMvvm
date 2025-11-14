@@ -1,5 +1,6 @@
 package arch.cayenne.lib.common.utils
 
+import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -8,12 +9,12 @@ import android.content.res.Configuration
 import android.content.res.Resources
 import android.graphics.Rect
 import android.os.Build
-import android.view.MotionEvent
 import android.view.View
 import android.view.animation.LinearInterpolator
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
+import androidx.core.animation.addListener
 import androidx.core.animation.doOnEnd
 import androidx.core.animation.doOnStart
 import androidx.core.view.drawToBitmap
@@ -21,7 +22,7 @@ import androidx.core.view.drawToBitmap
 object ViewUtils {
 
     @SuppressLint("ClickableViewAccessibility")
-    fun hideKeyboard(context: Context, view: EditText, onClick:((v: View) -> Unit)? = null) {
+    fun hideKeyboard(context: Context, view: EditText, onClick: ((v: View) -> Unit)? = null) {
         view.showSoftInputOnFocus = false
         val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(view.windowToken, 0)
@@ -42,7 +43,8 @@ object ViewUtils {
     }
 
     fun getNavigationBarHeight(context: Context): Int {
-        val key = if (context.resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
+        val key =
+            if (context.resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
                 "navigation_bar_height"
             } else {
                 "navigation_bar_height_landscape"
@@ -143,5 +145,19 @@ object ViewUtils {
         }
 
         animator.start()
+    }
+
+    fun expandView(view: ImageView, expand: Boolean, onEnd: (() -> Unit)? = null) {
+        val start = if (expand) 0f else 180f
+        val end = if (expand) 180f else 0f
+        ObjectAnimator.ofFloat(view, "rotation", start, end)
+            .also {
+                it.interpolator = LinearInterpolator()
+                it.duration = 150
+                it.addListener(onEnd = {
+                    onEnd?.invoke()
+                })
+                it.start()
+            }
     }
 }

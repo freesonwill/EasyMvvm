@@ -29,7 +29,7 @@ import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import kotlin.reflect.KClass
 
-class CurrencyDialogFragment private constructor() : BasePositionDialogFragment<CurrencyDialogViewModel, FragmentCurrencyDialogBinding>() {
+class CurrencyDialogFragment constructor() : BasePositionDialogFragment<CurrencyDialogViewModel, FragmentCurrencyDialogBinding>() {
     companion object {
         private const val LOCATION_OFFSET = "locationOffset"
         private const val IS_PORTRAIT = "isPortrait"

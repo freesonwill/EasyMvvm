@@ -23,6 +23,10 @@ class TopUpFiatFragment : BaseFragment<FiatViewModel, FragmentFiatBinding>() {
     override val vbClass: KClass<FragmentFiatBinding> = FragmentFiatBinding::class
     override val vmClass: KClass<FiatViewModel> = FiatViewModel::class
 
+    private val customFragment by lazy {
+        CustomMoneyFragment()
+    }
+
     private val payTypeAdapter: PayMethodAdapter by lazy {
         PayMethodAdapter(object : PayMethodAdapter.PaTypeListener {
             override fun onSelectPayType(id: Int) {
@@ -74,6 +78,11 @@ class TopUpFiatFragment : BaseFragment<FiatViewModel, FragmentFiatBinding>() {
         mViewModel.onPayMoneyListener.observe(viewLifecycleOwner) {
             payMoneyAdapter.submitList(it)
         }
+        mViewModel.onCustomListener.observe(viewLifecycleOwner) {
+            if (it == true) {
+                showCustomMoneyDialog()
+            }
+        }
     }
 
     private fun selectRechargeType(id: Int) {
@@ -96,5 +105,11 @@ class TopUpFiatFragment : BaseFragment<FiatViewModel, FragmentFiatBinding>() {
                 mBinding.layOrderDetail.isVisible = false
             }
         }
+    }
+
+    private fun showCustomMoneyDialog() {
+        val tag = "custom_money_bottom_fragment"
+        if (childFragmentManager.findFragmentByTag(tag) != null) return
+        CustomMoneyFragment.newInstance().show(childFragmentManager, tag)
     }
 }
