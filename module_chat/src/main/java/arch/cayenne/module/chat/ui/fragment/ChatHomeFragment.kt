@@ -65,7 +65,7 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
     }
 
     override fun onStart() {
-//        StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND()
+//        StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND(autoPadding = false, autoIsNavigation = false)
 //        setStatusBar(StatusBarConfig, mBinding.root)
         super.onStart()
         mViewModel.setSoftConfig(false)
@@ -198,6 +198,29 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
             .commit()
     }
 
+    private fun addMainViewListen() {
+        softKeyBoardManager.initView(
+            requireActivity().window.decorView,
+            mBinding.chatEtInput,
+            mViewModel.isMainSoft
+        )
+        calculationLayoutSize()
+//        mBinding.main.viewTreeObserver
+//            .addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+//                override fun onGlobalLayout() {
+//                    mBinding.main.viewTreeObserver.removeOnGlobalLayoutListener(this)
+//                    calculationLayoutSize()
+//                }
+//            })
+    }
+
+    private fun calculationLayoutSize() {
+        mBinding.apply {
+            softKeyBoardManager.emojiKeyBoardHeight = 242.dp2px
+//            chatKeyboard.layoutParams.height = softKeyBoardManager.emojiKeyBoardHeight
+//            inputContent.translationY = 44.dp2px.toFloat()
+        }
+    }
     /**
      * 显示聊天界面时隐藏键盘界面
      * */
@@ -377,40 +400,14 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
         mViewModel.sendMsgToChat(text)
     }
 
-    private fun addMainViewListen() {
-        softKeyBoardManager.initView(
-            requireActivity().window.decorView,
-            mBinding.chatEtInput,
-            mViewModel.isMainSoft
-        )
-        mBinding.main.viewTreeObserver
-            .addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
-                override fun onGlobalLayout() {
-                    mBinding.main.viewTreeObserver.removeOnGlobalLayoutListener(this)
-                    calculationLayoutSize()
-                }
-            })
-    }
-
-    private fun calculationLayoutSize() {
-        mBinding.apply {
-            softKeyBoardManager.emojiKeyBoardHeight = 242.dp2px
-            chatKeyboard.layoutParams.height = softKeyBoardManager.emojiKeyBoardHeight
-//            inputMain.layoutParams.height = mViewModel.keyBoardHeight
-//            main.layoutParams.height = mViewModel.keyBoardHeight + softKeyBoardManager.emojiKeyBoardHeight
-//            inputContent.translationY = 44.dp2px.toFloat()
-//            mBinding.main.requestLayout()
-//            "calculation  chatKeyboard ${chatKeyboard.layoutParams.height}  inputMain ${ inputMain.layoutParams.height} main  ${ main.layoutParams.height}".logd("aaa")
-        }
-    }
-
     private fun emojiLayoutSize(isReset: Boolean) {
         mBinding.apply {
             inputMain.layoutParams.height =if(isReset) LayoutParams.MATCH_PARENT  else mViewModel.keyBoardHeight
-            main.layoutParams.height =if(isReset) LayoutParams.MATCH_PARENT else mViewModel.keyBoardHeight + softKeyBoardManager.emojiKeyBoardHeight
+            main.layoutParams.height =if(isReset) LayoutParams.MATCH_PARENT else mViewModel.keyBoardHeight + softKeyBoardManager.emojiKeyBoardHeight+200
             main.requestLayout()
         }
     }
+
 
     /**
      * 展示聊天界面
@@ -502,12 +499,10 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
         onStart: () -> Unit,
         onEnd: () -> Unit
     ) {
-
-//        "panelAnimateTo  offset $offset ".logd("aaa")
+        "panelAnimateTo  offset $offset ".logd("aaa")
         softKeyBoardManager.apply {
             mainAnim = AnimatorSet()
-            val mainTransYAnim =
-                ObjectAnimator.ofFloat(mBinding.main, "translationY", offset.toFloat())
+            val mainTransYAnim = ObjectAnimator.ofFloat(mBinding.main, "translationY", offset.toFloat())
             mainTransYAnim?.interpolator = FastOutSlowInInterpolator()
 
             val emojiSet = AnimatorSet().apply {
@@ -519,11 +514,11 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
                 })
             }
             //TODO 测试键盘切换anim
-//            mainAnim?.play(emojiSet)
-            if (offset == 0)
-                mainAnim?.playSequentially(emojiSet, hotViewAnim(offset))
-            else
-                mainAnim?.playSequentially(hotViewAnim(offset), emojiSet)
+            mainAnim?.play(emojiSet)
+//            if (offset == 0)
+//                mainAnim?.playSequentially(emojiSet, hotViewAnim(offset))
+//            else
+//                mainAnim?.playSequentially(hotViewAnim(offset), emojiSet)
 //            mainAnim?.duration = 170L
 
             mainAnim?.addListener(onStart = {
