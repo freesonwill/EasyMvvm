@@ -179,7 +179,13 @@
                     android:src="@drawable/icon_input_emoji"
                     app:layout_constraintLeft_toRightOf="@id/iv_bottom_bet"
                     app:layout_constraintTop_toTopOf="@id/iv_bottom_bet" />
-
+                <TextView
+                    android:id="@+id/tvMsg"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="聊天用户"
+                    android:textColor="@color/white"
+                    tools:ignore="MissingConstraints" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.appcompat.widget.LinearLayoutCompat>
@@ -190,13 +196,7 @@
             android:layout_height="242dp" />
 
 
-        <TextView
-            android:id="@+id/tvMsg"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="聊天用户"
-            android:textColor="@color/white"
-            />
+
     </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
 
 
