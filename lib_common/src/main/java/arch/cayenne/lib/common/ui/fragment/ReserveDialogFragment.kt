@@ -22,7 +22,7 @@ import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.SportDisplayOddsExt.getDisplayOdds
 import arch.cayenne.lib.common.utils.ext.setOnClickOrLongPressListener
 
-class ReserveDialogFragment private constructor() : BasePositionDialogFragment<ReserveDialogViewModel, FragmentReserveDialogBinding>() {
+class ReserveDialogFragment constructor() : BasePositionDialogFragment<ReserveDialogViewModel, FragmentReserveDialogBinding>() {
 
     companion object {
         private const val LOCATION_X = "locationX"

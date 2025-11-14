@@ -1,4 +1,4 @@
-package com.walisport.module.topup.ui.fragment
+package arch.cayenne.lib.common.ui.fragment
 
 import android.os.Bundle
 import android.view.Gravity
@@ -8,10 +8,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.ui.fragment.BasePositionDialogFragment
 import arch.cayenne.lib.common.R
 import arch.cayenne.lib.common.data.constants.BaseCurrencyData
+import arch.cayenne.lib.common.databinding.FragmentCoinDialogBinding
 import arch.cayenne.lib.common.ui.adapter.CurrencyAdapter
+import arch.cayenne.lib.common.ui.viewmodel.CoinDialogViewModel
 import com.blankj.utilcode.util.ScreenUtils
-import com.walisport.module.topup.databinding.FragmentCoinDialogBinding
-import com.walisport.module.topup.ui.viewmodel.CoinDialogViewModel
 import kotlin.reflect.KClass
 
 /**
@@ -23,6 +23,7 @@ class CoinDialogFragment :
     override val vbClass: KClass<FragmentCoinDialogBinding> = FragmentCoinDialogBinding::class
     override val vmClass: KClass<CoinDialogViewModel> = CoinDialogViewModel::class
     private val coinAdapter: CurrencyAdapter by lazy { CurrencyAdapter() }
+    private var listener: DialogDismissListener? = null
 
     private val mockList: List<BaseCurrencyData> = listOf(
         BaseCurrencyData.CurrencyContentData(R.drawable.ic_usdt, "USDT", ""),
@@ -48,6 +49,7 @@ class CoinDialogFragment :
                 LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
             coinAdapter.submitList(mockList)
         }
+        listener?.onShow()
     }
 
     override fun initListener() {
@@ -65,5 +67,24 @@ class CoinDialogFragment :
         w.attributes = layoutParams
         mBinding.root.visibility = View.VISIBLE
         removeDim()
+    }
+
+    override fun onDestroyView() {
+        listener?.onDismiss()
+        super.onDestroyView()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        listener = null
+    }
+
+    fun setDismissListener(listener: DialogDismissListener) {
+        this.listener = listener
+    }
+
+    interface DialogDismissListener {
+        fun onDismiss()
+        fun onShow()
     }
 }

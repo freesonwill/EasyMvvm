@@ -3,6 +3,7 @@ package arch.cayenne.lib.common.web
 import android.content.Context
 import android.os.Build
 import android.util.AttributeSet
+import android.view.ViewTreeObserver
 import android.webkit.WebSettings
 import arch.cayenne.lib.common.utils.ext.requireActivity
 import com.github.lzyzsd.jsbridge.BridgeWebView
@@ -14,7 +15,11 @@ import com.github.lzyzsd.jsbridge.DefaultHandler
  * @description:
  */
 class WLSWebView : BridgeWebView {
+    private var scrollListener: OnScrollChangedListener? = null
 
+    interface OnScrollChangedListener{
+        fun onScrollChanged(scrollX: Int, scrollY: Int):Unit
+    }
     constructor(context: Context) : super(context) {
         initView()
     }
@@ -28,6 +33,18 @@ class WLSWebView : BridgeWebView {
     private fun initView() {
         initWebSettings()
         initJsBridge()
+    }
+
+    override fun onScrollChanged(l: Int, t: Int, oldl: Int, oldt: Int) {
+        super.onScrollChanged(l, t, oldl, oldt)
+        scrollListener?.onScrollChanged(l, t)
+    }
+
+    fun setOnScrollChangedListener(listener: OnScrollChangedListener?) {
+        scrollListener = listener
+    }
+    fun removeScrollChangedListener() {
+        scrollListener = null
     }
 
     private fun initWebSettings() {

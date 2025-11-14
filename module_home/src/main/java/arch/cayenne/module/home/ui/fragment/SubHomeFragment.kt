@@ -65,7 +65,6 @@ class SubHomeFragment : BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>()
     override val vmClass: KClass<SubHomeViewModel> = SubHomeViewModel::class
     private val homeViewModel: HomeViewModel by sharedViewModel<HomeViewModel, NewHomeFragment>()
 
-    private var customPopup: HomeCalendarFragment? = null
     private var tournamentTabLayoutMediator: CustomTabLayoutMediator? = null
 
     private var leaguePagerAdapter: LeaguePagerAdapter? = null
@@ -146,11 +145,6 @@ class SubHomeFragment : BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>()
 
     @SuppressLint("NotifyDataSetChanged")
     override suspend fun createObserver() {
-        mViewModel.selectedSkinType.observeEvent(viewLifecycleOwner, this) {
-            if (customPopup != null) {
-                customPopup!!.setSkinColor()
-            }
-        }
         mViewModel.currentSportIdChange.observeEvent(viewLifecycleOwner, this) {
             if (mViewModel.currentPlayTypeId != PlayType.CHAMPION.id) return@observeEvent
             (childFragmentManager.findFragmentByTag(PlayType.CHAMPION.name) as? TournamentListFragment)?.changeSportId(
@@ -184,12 +178,6 @@ class SubHomeFragment : BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>()
         mViewModel.navigationToChampion.observeEvent(viewLifecycleOwner, this) { data ->
             navigate(Uri.parse("walisport://module_home/championFragment?matchId=${data.championMatchId}&name=${data.name}&icon=${data.icon}"))
         }
-        mViewModel.recently7DayMatchScheduleCount.observeEvent(viewLifecycleOwner, this) { list ->
-            customPopup?.updateRange(list)
-        }
-        mViewModel.selectedDate.observeEvent(viewLifecycleOwner, this) { select ->
-            if (select == HomeViewModel.DEFAULT_DATE) return@observeEvent
-        }
 
         mViewModel.tournamentSlideOutEnd.observeEvent(viewLifecycleOwner, this) {
             mBinding.layoutContainer.llTournamentsDropdown.visibility = View.GONE
@@ -206,20 +194,6 @@ class SubHomeFragment : BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>()
         // 觀察是否需要清除 tlLeagueList 的選中狀態
         mViewModel.shouldClearLeagueListSelection.observeEvent(viewLifecycleOwner, this) {
             clearLeagueListSelection()
-        }
-
-        mViewModel.calendarStates.observe(viewLifecycleOwner) {
-            when (it) {
-                HomeCalendarFragment.States.CALENDAR_CLOSE_NOTHING -> {
-                    if (customPopup != null &&
-                        customPopup?.getAnimState() != HomeCalendarFragment.AnimState.COLLAPSING
-                    ) {
-                        customPopup?.callDismiss()
-                    }
-                }
-
-                else -> Unit
-            }
         }
 
         homeViewModel.notifySubHomeRefresh.observeEvent(viewLifecycleOwner, this) {
@@ -266,7 +240,6 @@ class SubHomeFragment : BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>()
     // 設置更多按鈕的顯示狀態
     override fun onFragmentUnSelected() {
         mViewModel.requestCollapseTournamentDropdown()
-        mViewModel.setCalendarState(HomeCalendarFragment.States.CALENDAR_CLOSE_NOTHING)
         // 收起排序選單
         if (isExpanded) {
             toggleTournamentSorting(false)
@@ -468,32 +441,15 @@ class SubHomeFragment : BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>()
 
             }, false)
 
-
-//            tvTabAll.apply {
-//                clickNoRepeat {
-//                    playFadeAnimTriggerByDateTab { resetDateTabs() }
-//                }
-//                isSelected = true
-//            }
-
         }
 
         mBinding.layoutContainer.llBtnTournament.apply { addScaleOnTouchAnimation() }
             .clickNoRepeat {
-                mViewModel.setCalendarState(HomeCalendarFragment.States.CALENDAR_CLOSE_NOTHING)
                 // toggleTournamentMoreSection(true, TournamentListType.MORE)
                 showTournamentListBottomSheet()
             }
         mBinding.layoutContainer.llTournamentSort.clickNoRepeat {
-            mViewModel.setCalendarState(HomeCalendarFragment.States.CALENDAR_CLOSE_NOTHING)
             toggleTournamentSorting(!isExpanded)
-        }
-    }
-
-    private fun playFadeAnimTriggerByDateTab(switchProcess: () -> Unit) {
-        mBinding.layoutContainer.vpGameList.startFadeAnim { onComplete ->
-            switchProcess.invoke()
-            onComplete.invoke()
         }
     }
 
@@ -746,7 +702,6 @@ class SubHomeFragment : BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>()
             }.also { layoutMediator ->
                 layoutMediator.attach(
                     afterTabSelected = { position ->
-                        getSelectedRecently31Scheduled(position)
                         tournaments.getOrNull(position)?.let { tournament ->
                             mViewModel.setCurrentTournamentId(tournament.id)
                             // 需求3：標記外部tab已切換，下次打開彈窗時需要清空篩選
@@ -776,14 +731,6 @@ class SubHomeFragment : BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>()
         }
     }
 
-    private fun getSelectedRecently31Scheduled(selectedIndex: Int) {
-        if (mViewModel.currentPlayTypeId == PlayType.EARLY.id) {
-            val list = mViewModel.tournaments.value?.peekContent().orEmpty()
-            if (list.isEmpty()) return
-            mViewModel.getRecently31MatchScheduleCount(list[selectedIndex].id)
-        }
-    }
-
 
     @SuppressLint("ClickableViewAccessibility")
     private fun setTopMaskListener() {
@@ -791,7 +738,6 @@ class SubHomeFragment : BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>()
             clSubMain.setOnChildClickedInterceptedListener { view ->
                 when (view) {
                     viewSecondNavbar -> {
-                        mViewModel.setCalendarState(HomeCalendarFragment.States.CALENDAR_CLOSE_NOTHING)
                     }
 
                     else -> Unit
@@ -802,7 +748,6 @@ class SubHomeFragment : BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>()
                     when (view) {
                         tlContainer -> {
                             lifecycleScope.launch {
-                                mViewModel.setCalendarState(HomeCalendarFragment.States.CALENDAR_CLOSE_NOTHING)
                             }
                         }
 

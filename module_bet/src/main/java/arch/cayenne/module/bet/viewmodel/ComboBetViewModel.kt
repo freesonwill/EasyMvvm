@@ -3,9 +3,11 @@ package arch.cayenne.module.bet.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.data.repo.BalanceRepository
 import arch.cayenne.lib.common.ui.viewmodel.Event
@@ -23,6 +25,12 @@ class ComboBetViewModel(
 
     private val _onComboMultiBetBeanListener = MutableLiveData<List<ComboMultiBetBean>>()
     val onComboMultiBetBeanListener: LiveData<List<ComboMultiBetBean>> get() = _onComboMultiBetBeanListener
+    val firstComboMultiBetBeanLD: LiveData<ComboMultiBetBean>  = _onComboMultiBetBeanListener.map { list ->
+        list.first()
+    }
+    val remainingComboMultiBetBeansLD: LiveData<List<ComboMultiBetBean>>  = _onComboMultiBetBeanListener.map { list ->
+        list.drop(1)
+    }
 
     private val _onBetListListener = MutableLiveData<List<BetSelectionBean>>()
     val onBetListListener: LiveData<List<BetSelectionBean>> get() = _onBetListListener
@@ -143,6 +151,7 @@ class ComboBetViewModel(
     }
 
     fun updateMultiBetMoney(serialValue: Int, money: Long) {
+        //"updateMultiBetMoney---$serialValue,money:$money".logd(TAG)
         _onComboMultiBetBeanListener.value?.let {
             val updatedList = it.map { rate ->
                 if (rate.serialValue == serialValue) {

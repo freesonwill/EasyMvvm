@@ -34,6 +34,16 @@
     <string name="tournament_confirm">Confirm</string>
     <string name="tournament_view_latest_results">View Latest Results</string>
 
+    <string name="match_date_today">Today</string>
+    <string name="match_date_tomorrow">Tomorrow</string>
+    <string name="match_date_monday">Mon</string>
+    <string name="match_date_tuesday">Tue</string>
+    <string name="match_date_wednesday">Wed</string>
+    <string name="match_date_thursday">Thu</string>
+    <string name="match_date_friday">Fri</string>
+    <string name="match_date_saturday">Sat</string>
+    <string name="match_date_sunday">Sun</string>
+
 
 
 

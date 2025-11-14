@@ -22,6 +22,7 @@ import arch.cayenne.lib.common.utils.ext.scrollToBottomWithLoadMore
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.helper.BackToTopHelper
 import arch.cayenne.lib.common.utils.helper.showToast
+import arch.cayenne.lib.database.entity.MatchListItem
 import arch.cayenne.lib.database.entity.MatchWithMarkets
 import arch.cayenne.lib.database.entity.SelectionBeanLite
 import arch.cayenne.module.bet.data.AddSelectionStatus
@@ -29,13 +30,17 @@ import arch.cayenne.module.bet.ui.fragment.BetSheetFragment
 import arch.cayenne.module.bet.viewmodel.FloatingButtonControlViewModel
 import arch.cayenne.module.home.R
 import arch.cayenne.module.home.data.constants.HomeState
+import arch.cayenne.module.home.data.constants.PlayType
+import arch.cayenne.module.home.data.model.MatchDateItem
 import arch.cayenne.module.home.databinding.FragmentMatchListPagerBinding
 import arch.cayenne.module.home.ui.adapter.MatchItemAdapter
 import arch.cayenne.module.home.ui.adapter.OnMatchItemClickListener
 import arch.cayenne.module.home.ui.view.decoration.MatchCardItemDecoration
+import arch.cayenne.module.home.ui.viewmodel.EarlyViewModel
 import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
 import arch.cayenne.module.home.ui.viewmodel.MatchListViewModel
 import arch.cayenne.module.home.ui.viewmodel.SubHomeViewModel
+import arch.cayenne.module.home.utils.DateUtils
 import arch.cayenne.module.home.utils.setFavoriteIcon
 import com.walisport.module.message.ui.view.DeleteAnimator
 import kotlinx.coroutines.launch
@@ -49,7 +54,14 @@ class MatchListPagerFragment :
         FragmentMatchListPagerBinding::class
     override val vmClass: KClass<MatchListViewModel> = MatchListViewModel::class
     private val homeViewModel: HomeViewModel by sharedViewModel<HomeViewModel, NewHomeFragment>()
-    private val subHomeViewModel: SubHomeViewModel by viewModels({ requireParentFragment() })
+    private val subHomeViewModel: SubHomeViewModel by lazy {
+        if (arguments?.getInt(ARG_PLAY_TYPE_ID) == PlayType.EARLY.id) {
+            viewModels<EarlyViewModel>({ requireParentFragment() }).value
+        } else {
+            viewModels<SubHomeViewModel>({ requireParentFragment() }).value
+        }
+    }
+
     private lateinit var matchAdapter: MatchItemAdapter
     private val gameLayoutManager by lazy { LinearLayoutManager(context) }
     private val fabViewModel: FloatingButtonControlViewModel by activityViewModel()
@@ -77,25 +89,32 @@ class MatchListPagerFragment :
 
                 }
 
-                override fun onOddsCellClick(cell: WeakReference<View>, selection: SelectionBeanLite, x: Float, y: Float) {
+                override fun onOddsCellClick(
+                    cell: WeakReference<View>,
+                    selection: SelectionBeanLite,
+                    x: Float,
+                    y: Float
+                ) {
                     lifecycleScope.launch {
                         val v = cell.get()
                         val status = mViewModel.setSelection(selection)
                         when (status) {
                             is AddSelectionStatus.Success.Single -> {
-                                BetSheetFragment.show(requireActivity(), object : BetSheetFragment.ShowListener {
-                                    override fun onShow() {
-                                        v?.isSelected = true
-                                    }
+                                BetSheetFragment.show(
+                                    requireActivity(),
+                                    object : BetSheetFragment.ShowListener {
+                                        override fun onShow() {
+                                            v?.isSelected = true
+                                        }
 
-                                    override fun onCancel() {
-                                        v?.isSelected = false
-                                    }
+                                        override fun onCancel() {
+                                            v?.isSelected = false
+                                        }
 
-                                    override fun onHide() {
-                                        v?.isSelected = false
-                                    }
-                                })
+                                        override fun onHide() {
+                                            v?.isSelected = false
+                                        }
+                                    })
                             }
 
                             is AddSelectionStatus.Success.Combo, is AddSelectionStatus.Success.Update -> {
@@ -120,8 +139,15 @@ class MatchListPagerFragment :
                     }
                 }
             })
+
             //賽事卡片之間的間閣
-            val decoration = MatchCardItemDecoration(12.dp2px)
+            val decoration = MatchCardItemDecoration(
+                12.dp2px, if (arguments?.getInt(ARG_PLAY_TYPE_ID) == PlayType.EARLY.id) {
+                    12.dp2px
+                } else {
+                    6.dp2px
+                }
+            )
             mBinding.rvHomeGameList.apply {
                 this.layoutManager = gameLayoutManager
                 this.adapter = matchAdapter
@@ -139,7 +165,7 @@ class MatchListPagerFragment :
                 }
 
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                    rvHomeGameList.scrollToBottomWithLoadMore(minScrollCount = 8,{
+                    rvHomeGameList.scrollToBottomWithLoadMore(minScrollCount = 8, {
                         if (mViewModel.apiStateListener.value != HomeState.Match.LoadSuccess) return@scrollToBottomWithLoadMore
                         mViewModel.loadNextPage()
                     }, {
@@ -200,7 +226,15 @@ class MatchListPagerFragment :
     val matchListObserver = Observer<List<MatchWithMarkets>> { matchList ->
         "MatchListChange livedata Observed~ ${matchList.map { it.match.matchId }}".logi(this::class.java.simpleName)
         val preEmpty = matchAdapter.currentList.isEmpty()
-        matchAdapter.submitList(matchList) {
+
+        //早盘的比赛列表，需要添加日期条目
+        val list = if (mViewModel.getPlayTypeId() == PlayType.EARLY.id) addDateItem(
+            matchList
+        ) else
+            matchList
+
+
+        matchAdapter.submitList(list) {
             if (mViewModel.requestScrollToTop) {
                 mBinding.rvHomeGameList.scrollToPosition(0)
                 mViewModel.resetRequestScrollToTop()
@@ -233,13 +267,15 @@ class MatchListPagerFragment :
         }
 
         mViewModel.apiStateListener.observe(viewLifecycleOwner) {
-            "MatchListPagerFragment playType: ${mViewModel.getPlayTypeId()} tournament: ${mViewModel.getTournamentId()} state change ${it::class.java.name}".logi(this::class.java.name)
+            "MatchListPagerFragment playType: ${mViewModel.getPlayTypeId()} tournament: ${mViewModel.getTournamentId()} state change ${it::class.java.name}".logi(
+                this::class.java.name
+            )
             with(mBinding) {
-                when(it) {
+                when (it) {
                     DataState.NetworkUnavailable, HomeState.Match.LoadNextFailure -> {
                         refreshLayout.finishRefresh()
                         matchAdapter.setLastItemType(MatchItemAdapter.LAST_ITEM_NONE)
-                        if (it == DataState.NetworkUnavailable){
+                        if (it == DataState.NetworkUnavailable) {
                             mViewModel.changePageEnd(true)
                             clDynamics.setState(
                                 DynamicStateLayout.States.NETWORK_ANOMALY(),
@@ -247,13 +283,20 @@ class MatchListPagerFragment :
                             )
                         }
                         showToast(arch.cayenne.lib.common.R.string.toast_server_disconnected.getString())
-                        homeViewModel.changeState(HomeState.FirstMatchListComplete(mViewModel.getPlayTypeId(), mViewModel.getTournamentId()))
+                        homeViewModel.changeState(
+                            HomeState.FirstMatchListComplete(
+                                mViewModel.getPlayTypeId(),
+                                mViewModel.getTournamentId()
+                            )
+                        )
                     }
+
                     DataState.NoMoreData -> {     //這個DataEmpty表示api抓不到任何資料了，有可能是頁面到底，或是從第一頁就抓不到資料
                         refreshLayout.finishRefresh()
                         mViewModel.changePageEnd(true)
                         matchAdapter.setLastItemType(MatchItemAdapter.LAST_ITEM_NO_MORE)
                     }
+
                     HomeState.Match.DataEmpty -> {  //這個DataEmpty表示確定真的從第一頁就抓不到資料，表示當前的選擇沒有任何賽事
                         refreshLayout.finishRefresh()
                         matchAdapter.setLastItemType(MatchItemAdapter.LAST_ITEM_NONE)
@@ -261,17 +304,26 @@ class MatchListPagerFragment :
                             DynamicStateLayout.States.DATA_EMPTY,
                             R.string.lineup_empty.getString()
                         )
-                        homeViewModel.changeState(HomeState.FirstMatchListComplete(mViewModel.getPlayTypeId(), mViewModel.getTournamentId()))
+                        homeViewModel.changeState(
+                            HomeState.FirstMatchListComplete(
+                                mViewModel.getPlayTypeId(),
+                                mViewModel.getTournamentId()
+                            )
+                        )
                     }
+
                     HomeState.Match.Loading -> {
                         homeViewModel.changeState(HomeState.Match.Loading)
                     }
+
                     HomeState.Match.Refreshing -> {
                         mViewModel.changePageEnd(false)
                         matchAdapter.setLastItemType(MatchItemAdapter.LAST_ITEM_LOAD_MORE)
                     }
+
                     HomeState.Match.LoadingNext -> {
                     }
+
                     DataState.LoadSuccess, HomeState.Match.LoadSuccess -> {
                         if (refreshLayout.isRefreshing) refreshLayout.finishRefresh()
                         mViewModel.changePageEnd(false)
@@ -281,12 +333,20 @@ class MatchListPagerFragment :
             }
 
         }
-        subHomeViewModel.selectedDate.observeEvent(viewLifecycleOwner, this) { date ->
-            if (date  == HomeViewModel.DEFAULT_DATE
-                || subHomeViewModel.currentPlayTypeId != mViewModel.getPlayTypeId()
-                || subHomeViewModel.currentSportId != mViewModel.getSportId())
-                return@observeEvent
-            refreshListByDate(date)
+
+        //这个时候还没调用initData, 需要从arguments中获取playType
+        if (arguments?.getInt(ARG_PLAY_TYPE_ID) == PlayType.EARLY.id) {
+            //只有早盘有日期变化的情况
+            val earlyViewModel: EarlyViewModel = subHomeViewModel as EarlyViewModel
+            earlyViewModel.selectedDate.observeEvent(viewLifecycleOwner, this) { date ->
+                if (date == HomeViewModel.DEFAULT_DATE
+                    || earlyViewModel.currentPlayTypeId != mViewModel.getPlayTypeId()
+                    || earlyViewModel.currentSportId != mViewModel.getSportId()
+                ) {
+                    return@observeEvent
+                }
+                refreshListByDate(date)
+            }
         }
 
         homeViewModel.notifySubHomeRefresh.observeEvent(viewLifecycleOwner, this) {
@@ -344,13 +404,45 @@ class MatchListPagerFragment :
         mViewModel.stopMatchSubscribeNotify()
     }
 
+    fun addDateItem(list:List<MatchListItem>?): List<MatchListItem>? {
+        val isEmpty = (list?.size ?: 0) == 0
+        if (isEmpty) {
+            return list
+        }
+
+        val set: HashSet<String> = java.util.HashSet()
+
+        val mutableList = mutableListOf<MatchListItem>()
+        list?.forEach {
+            if (it is MatchWithMarkets) {
+                val (date, week) = DateUtils.getDisplay(it.match.basicInfo.startTime)
+                val display = "$date $week"
+
+                if (!set.contains(display)) {
+                    mutableList.add(MatchDateItem(display))
+                    set.add(display)
+                }
+                mutableList.add(it)
+            } else {
+                mutableList.add(it)
+            }
+        }
+
+        return mutableList
+    }
+
 
     companion object {
         private const val ARG_SPORT_ID = "sport_id"
         private const val ARG_PLAY_TYPE_ID = "play_type_id"
         private const val ARG_LEAGUE_ID = "arg_league_id"
         private const val ARG_POSITION = "arg_position"
-        fun newInstance(sportId: Int, playTypeId: Int, leagueId: Int, position: Int): MatchListPagerFragment {
+        fun newInstance(
+            sportId: Int,
+            playTypeId: Int,
+            leagueId: Int,
+            position: Int
+        ): MatchListPagerFragment {
             return MatchListPagerFragment().apply {
                 arguments = Bundle().apply {
                     putInt(ARG_SPORT_ID, sportId)
@@ -362,3 +454,6 @@ class MatchListPagerFragment :
         }
     }
 }
+
+
+

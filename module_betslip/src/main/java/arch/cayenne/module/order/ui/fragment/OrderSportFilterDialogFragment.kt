@@ -10,7 +10,7 @@ import arch.cayenne.module.betslip.ui.adapter.SportPickerAdapter
 import arch.cayenne.module.betslip.ui.viewmodel.SportPickerViewModel
 import kotlin.reflect.KClass
 
-class OrderSportFilterDialogFragment private constructor() :
+class OrderSportFilterDialogFragment constructor() :
     BaseBottomSheetFragment<SportPickerViewModel, FragmentOrderSportFilterDialogBinding>() {
 
     companion object {

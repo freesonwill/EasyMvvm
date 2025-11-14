@@ -51,28 +51,26 @@ import arch.cayenne.module.home.ui.adapter.LeaguePagerAdapter
 import arch.cayenne.module.home.ui.adapter.SportBannerAdapter
 import arch.cayenne.module.home.ui.adapter.SportsListAdapter
 import arch.cayenne.module.home.ui.view.CustomTabLayoutMediator
-import arch.cayenne.module.home.ui.view.HomeCalendarFragment
+import arch.cayenne.module.home.ui.viewmodel.EarlyDate
+import arch.cayenne.module.home.ui.viewmodel.EarlyDateType
+import arch.cayenne.module.home.ui.viewmodel.EarlyViewModel
 import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
-import arch.cayenne.module.home.ui.viewmodel.SubHomeViewModel
-import arch.cayenne.module.home.utils.DateUtils
 import arch.cayenne.module.home.utils.scrollToPositionWithoutAnim
 import com.bumptech.glide.Glide
 import com.google.android.material.tabs.TabLayout
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import java.util.Locale
 import kotlin.reflect.KClass
 
 /**
  * 早盘页面
  */
-class EarlyFragment : BaseFragment<SubHomeViewModel, FragmentEarlyBinding>(),
+class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>(),
     ISubFragmentLifecycle {
     override val vbClass: KClass<FragmentEarlyBinding> = FragmentEarlyBinding::class
-    override val vmClass: KClass<SubHomeViewModel> = SubHomeViewModel::class
+    override val vmClass: KClass<EarlyViewModel> = EarlyViewModel::class
     private val homeViewModel: HomeViewModel by sharedViewModel<HomeViewModel, NewHomeFragment>()
 
-    private var customPopup: HomeCalendarFragment? = null
     private var tournamentTabLayoutMediator: CustomTabLayoutMediator? = null
 
     private var leaguePagerAdapter: LeaguePagerAdapter? = null
@@ -123,17 +121,6 @@ class EarlyFragment : BaseFragment<SubHomeViewModel, FragmentEarlyBinding>(),
 
         // 初始化聯賽按鈕狀態
         updateTournamentButtonStyle(mViewModel.hasTournamentSelections())
-
-//        val view = mBinding.clSubMain
-//        val set: ConstraintSet = ConstraintSet()
-//        set.clone(view)
-//        set.connect(
-//            R.id.ll_tournaments_dropdown,
-//            ConstraintSet.TOP,
-//            R.id.includedLayout.ll_tournament_sort,
-//            ConstraintSet.BOTTOM
-//        )
-//        set.applyTo(view)
     }
 
     override fun initListener() {
@@ -162,11 +149,6 @@ class EarlyFragment : BaseFragment<SubHomeViewModel, FragmentEarlyBinding>(),
 
     @SuppressLint("NotifyDataSetChanged")
     override suspend fun createObserver() {
-        mViewModel.selectedSkinType.observeEvent(viewLifecycleOwner, this) {
-            if (customPopup != null) {
-                customPopup!!.setSkinColor()
-            }
-        }
 
         with(mViewModel) {
             sportsStatistical.observeEvent(viewLifecycleOwner, this@EarlyFragment) {
@@ -176,6 +158,7 @@ class EarlyFragment : BaseFragment<SubHomeViewModel, FragmentEarlyBinding>(),
                 }
             }
         }
+
 
         mViewModel.tournaments.observeEvent(viewLifecycleOwner, this) { list ->
             setTournamentAndViewPagerLayout(list)
@@ -194,12 +177,10 @@ class EarlyFragment : BaseFragment<SubHomeViewModel, FragmentEarlyBinding>(),
         mViewModel.navigationToChampion.observeEvent(viewLifecycleOwner, this) { data ->
             navigate(Uri.parse("walisport://module_home/championFragment?matchId=${data.championMatchId}&name=${data.name}&icon=${data.icon}"))
         }
-        mViewModel.recently7DayMatchScheduleCount.observeEvent(viewLifecycleOwner, this) { list ->
-            customPopup?.updateRange(list)
-        }
+
         mViewModel.selectedDate.observeEvent(viewLifecycleOwner, this) { select ->
             if (select == HomeViewModel.DEFAULT_DATE) return@observeEvent
-            setSelectedDateTab(getFuture31Days().find { it.third == select })
+            setSelectedDateTab(mViewModel.dateList.value?.find { it.timestamp == select })
         }
 
         mViewModel.tournamentSlideOutEnd.observeEvent(viewLifecycleOwner, this) {
@@ -219,19 +200,6 @@ class EarlyFragment : BaseFragment<SubHomeViewModel, FragmentEarlyBinding>(),
             clearLeagueListSelection()
         }
 
-        mViewModel.calendarStates.observe(viewLifecycleOwner) {
-            when (it) {
-                HomeCalendarFragment.States.CALENDAR_CLOSE_NOTHING -> {
-                    if (customPopup != null &&
-                        customPopup?.getAnimState() != HomeCalendarFragment.AnimState.COLLAPSING
-                    ) {
-                        customPopup?.callDismiss()
-                    }
-                }
-
-                else -> Unit
-            }
-        }
 
         homeViewModel.notifySubHomeRefresh.observeEvent(viewLifecycleOwner, this) {
             sportsListAdapter.notifyDataSetChanged()
@@ -253,6 +221,15 @@ class EarlyFragment : BaseFragment<SubHomeViewModel, FragmentEarlyBinding>(),
                 levelUpInfo = "升级还需¥59w"
             )
         }
+
+        mViewModel.dateList.observe(viewLifecycleOwner) {
+            // 日期 Tab 設定
+            updateDateTabs(mBinding.tlDateList, it!!)
+            addDateTabListener()
+            lifecycleScope.launch {
+                mViewModel.selectedDate(it.first().timestamp)
+            }
+        }
     }
 
     override fun onFragmentSelected() {
@@ -273,7 +250,6 @@ class EarlyFragment : BaseFragment<SubHomeViewModel, FragmentEarlyBinding>(),
     // 設置更多按鈕的顯示狀態
     override fun onFragmentUnSelected() {
         mViewModel.requestCollapseTournamentDropdown()
-        mViewModel.setCalendarState(HomeCalendarFragment.States.CALENDAR_CLOSE_NOTHING)
         // 收起排序選單
         if (isExpanded) {
             toggleTournamentSorting(false)
@@ -440,8 +416,6 @@ class EarlyFragment : BaseFragment<SubHomeViewModel, FragmentEarlyBinding>(),
     //init 三級導航欄位與日期，只有今日和早盤有
     @SuppressLint("DefaultLocale")
     private fun initTournamentLayout() {
-        // 取得未來 31 天 (MMDD, 星期, timeStamp)
-        val dateTabs = getFutureSevenDays()
         with(mBinding.layoutContainer) {
             //聯賽
             vpGameList.isSaveEnabled = false
@@ -475,18 +449,12 @@ class EarlyFragment : BaseFragment<SubHomeViewModel, FragmentEarlyBinding>(),
 
         }
 
-        // 日期 Tab 設定, 固定 "全部"
-        updateDateTabs(mBinding.tlDateList, dateTabs)
-        addDateTabListener()
-
         mBinding.layoutContainer.llBtnTournament.apply { addScaleOnTouchAnimation() }
             .clickNoRepeat {
-                mViewModel.setCalendarState(HomeCalendarFragment.States.CALENDAR_CLOSE_NOTHING)
                 // toggleTournamentMoreSection(true, TournamentListType.MORE)
                 showTournamentListBottomSheet()
             }
         mBinding.layoutContainer.llTournamentSort.clickNoRepeat {
-            mViewModel.setCalendarState(HomeCalendarFragment.States.CALENDAR_CLOSE_NOTHING)
             toggleTournamentSorting(!isExpanded)
         }
     }
@@ -543,7 +511,8 @@ class EarlyFragment : BaseFragment<SubHomeViewModel, FragmentEarlyBinding>(),
                 playFadeAnimTriggerByDateTab {
                     lifecycleScope.launch {
                         mViewModel.selectedDate(
-                            getFuture31Days().find { it.first == tab.tag }?.third ?: return@launch
+                            mViewModel.dateList.value?.find { it.dateStr == tab.tag }?.timestamp
+                                ?: return@launch
                         )
                     }
                 }
@@ -568,10 +537,6 @@ class EarlyFragment : BaseFragment<SubHomeViewModel, FragmentEarlyBinding>(),
     private fun resetDateTabs() {
 //        mBinding.layoutContainer.tvTabAll.isSelected = true
         clearDateTabSelection()
-        lifecycleScope.launch {
-            mViewModel.selectedDate(0L)
-        }
-
     }
 
     /**
@@ -748,16 +713,16 @@ class EarlyFragment : BaseFragment<SubHomeViewModel, FragmentEarlyBinding>(),
 
 
     //選取日期後按確定時連動至早盤日期tab,選取對應的日期
-    private fun setSelectedDateTab(dateTriple: Triple<String, String, Long>?) {
+    private fun setSelectedDateTab(earlyDate: EarlyDate?) {
         with(mBinding) {
-            if (dateTriple == null) {
+            if (earlyDate == null) {
                 resetDateTabs()
                 return
             }
             var indexOfTabs = -1
             for (i in 0 until tlDateList.tabCount) {   //尋找是否在目前的tab內已經存在，存在的話跳到該tab就好
                 val tab = tlDateList.getTabAt(i)
-                if (tab?.tag == dateTriple.first) {
+                if (tab?.tag == earlyDate.dateStr) {
                     indexOfTabs = i
                     break
                 }
@@ -767,8 +732,9 @@ class EarlyFragment : BaseFragment<SubHomeViewModel, FragmentEarlyBinding>(),
             } else {
                 tlDateList.addTabAndScrollPrecisely(
                     createDateTab(
-                        dateTriple.first,
-                        dateTriple.second
+                        earlyDate.dateStr,
+                        earlyDate.weekdayStr,
+                        earlyDate.type
                     )
                 )
                 setupDateTabLayoutParams(tlDateList, false)
@@ -794,35 +760,39 @@ class EarlyFragment : BaseFragment<SubHomeViewModel, FragmentEarlyBinding>(),
         }
     }
 
-    private fun getFutureSevenDays() = getFuture31Days().take(7)
-    private fun getFuture31Days() = DateUtils.getFutureDays(
-        31,
-        Locale.getDefault(),
-        resources.getString(R.string.first_day_title),
-        "M-dd",
-        "E"
-    )
-
     private fun updateDateTabs(
         tlDateList: TabLayout,
-        dateTabs: List<Triple<String, String, Long>>
+        dateTabs: List<EarlyDate>
     ) {
         tlDateList.apply {
             removeAllTabs()
-            dateTabs.forEach { (date, weekday, _) ->
-                val tab = createDateTab(date, weekday)
+            dateTabs.forEach { (date, weekday, _, type) ->
+                val tab = createDateTab(date, weekday, type)
                 addTab(tab)
             }
             setupDateTabLayoutParams(tlDateList, true)
         }
     }
 
-    private fun createDateTab(date: String?, weekday: String?): TabLayout.Tab {
+    private fun createDateTab(date: String?, weekday: String?, type: EarlyDateType): TabLayout.Tab {
         val tab = mBinding.tlDateList.newTab()
         val tabView = ItemDateTabBinding.inflate(LayoutInflater.from(context), null, false).apply {
-            tvDate.text = date
-            tvWeekDay.visibility = View.VISIBLE
-            tvWeekDay.text = weekday
+            if (type == EarlyDateType.Date) {
+                tvDate.visibility = View.VISIBLE
+                tvDate.text = date
+                tvWeekDay.visibility = View.VISIBLE
+                tvWeekDay.text = weekday
+
+                tvOther.visibility = View.GONE
+            } else {
+                tvDate.visibility = View.GONE
+                tvWeekDay.visibility = View.GONE
+
+                tvOther.visibility = View.VISIBLE
+                tvOther.text = date
+            }
+
+
         }
         tab.customView = tabView.root
         tab.tag = date
@@ -857,7 +827,6 @@ class EarlyFragment : BaseFragment<SubHomeViewModel, FragmentEarlyBinding>(),
             }.also { layoutMediator ->
                 layoutMediator.attach(
                     afterTabSelected = { position ->
-                        getSelectedRecently31Scheduled(position)
                         tournaments.getOrNull(position)?.let { tournament ->
                             mViewModel.setCurrentTournamentId(tournament.id)
                             // 需求3：標記外部tab已切換，下次打開彈窗時需要清空篩選
@@ -888,12 +857,6 @@ class EarlyFragment : BaseFragment<SubHomeViewModel, FragmentEarlyBinding>(),
         }
     }
 
-    private fun getSelectedRecently31Scheduled(selectedIndex: Int) {
-        val list = mViewModel.tournaments.value?.peekContent().orEmpty()
-        if (list.isEmpty()) return
-        mViewModel.getRecently31MatchScheduleCount(list[selectedIndex].id)
-    }
-
 
     @SuppressLint("ClickableViewAccessibility")
     private fun setTopMaskListener() {
@@ -901,7 +864,6 @@ class EarlyFragment : BaseFragment<SubHomeViewModel, FragmentEarlyBinding>(),
             clSubMain.setOnChildClickedInterceptedListener { view ->
                 when (view) {
                     viewSecondNavbar -> {
-                        mViewModel.setCalendarState(HomeCalendarFragment.States.CALENDAR_CLOSE_NOTHING)
                     }
 
                     else -> Unit
@@ -911,9 +873,7 @@ class EarlyFragment : BaseFragment<SubHomeViewModel, FragmentEarlyBinding>(),
                 viewContainerRoot.setOnChildClickedInterceptedListener { view ->
                     when (view) {
                         tlContainer -> {
-                            lifecycleScope.launch {
-                                mViewModel.setCalendarState(HomeCalendarFragment.States.CALENDAR_CLOSE_NOTHING)
-                            }
+
                         }
 
                         else -> Unit

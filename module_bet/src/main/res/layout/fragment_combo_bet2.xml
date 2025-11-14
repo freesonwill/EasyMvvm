@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="666dp">
+
+    <arch.cayenne.lib.skin.widget.SkinnableImageView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_153"
+        android:background="@mipmap/bet_bg"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_title_bet"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dp_12"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
+            android:id="@+id/tv_title_betting_slip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="22dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="16dp"
+            android:text="@string/title_betting_combo"
+            android:textColor="@color/main_text"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:skinnableFontWeight="500" />
+
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
+            android:id="@+id/tv_balance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_balance"
+            android:fontFamily="@font/sf_pro_display_bold"
+            android:gravity="center"
+            android:paddingHorizontal="8dp"
+            android:textColor="@color/money_color"
+            android:textSize="13sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/iv_close"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <arch.cayenne.lib.skin.widget.SkinnableImageView
+            android:id="@+id/iv_close"
+            android:layout_width="52dp"
+            android:layout_height="52dp"
+            android:padding="12dp"
+            android:src="@drawable/icon_combo_collapse"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/ns_bet"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cl_title_bet"
+        app:layout_constraintBottom_toTopOf="@+id/cl_odds_change"
+        android:layout_marginBottom="@dimen/dp_12"
+        android:overScrollMode="never"
+        >
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <arch.cayenne.lib.skin.widget.SkinnableRecyclerView
+                android:id="@+id/rv_bet"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="10dp"
+                android:paddingVertical="@dimen/dp_0"
+                android:background="@drawable/bg_bet_sheet"
+                android:nestedScrollingEnabled="false"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:itemCount="2"
+                tools:listitem="@layout/item_bet_sheet" />
+
+            <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
+                android:id="@+id/cl_multi"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="10dp"
+                android:layout_marginTop="12dp"
+                app:layout_constraintTop_toBottomOf="@id/rv_bet">
+
+                <include
+                    android:id="@+id/first_multi_item"
+                    layout="@layout/item_combo_multi_bet3"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_70"
+                    android:layout_marginBottom="@dimen/dp_12"
+                    app:layout_constraintBottom_toTopOf="@+id/cl_multi_bet" />
+
+
+                <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
+                    android:id="@+id/cl_multi_bet"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_bet_sheet"
+                    app:layout_constraintBottom_toBottomOf="parent">
+
+                    <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
+                        android:id="@+id/cl_multi_bet_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/dp_50"
+                        app:layout_constraintBottom_toTopOf="@id/rv_multi_bet">
+
+                        <arch.cayenne.lib.skin.widget.SkinnableTextView
+                            android:id="@+id/ll_multi_bet_collapse"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/dp_12"
+                            android:text="@string/title_combo_bet_odds_expand2"
+                            android:textColor="@color/color_FFFFFF"
+                            android:textSize="14sp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <arch.cayenne.lib.skin.widget.SkinnableImageView
+                            android:id="@+id/tvMultiBetExpand"
+                            android:layout_width="@dimen/dp_32"
+                            android:layout_height="@dimen/dp_32"
+                            android:layout_marginEnd="0dp"
+                            android:paddingStart="@dimen/dp_0"
+                            android:paddingEnd="@dimen/dp_16"
+                            android:scaleY="1"
+                            android:src="@drawable/ic_arrow_down_16"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                    </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
+
+                    <arch.cayenne.lib.skin.widget.SkinnableRecyclerView
+                        android:id="@+id/rv_multi_bet"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:nestedScrollingEnabled="false"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                        app:layout_constraintTop_toBottomOf="@id/cl_multi_bet_title"
+                        tools:itemCount="0"
+                        tools:listitem="@layout/item_combo_multi_bet2"
+                        />
+
+                </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
+            </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    </androidx.core.widget.NestedScrollView>
+
+    <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
+        android:id="@+id/cl_odds_change"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/shape_6dp"
+        android:backgroundTint="@color/keyboard_2"
+        android:foreground="@drawable/bg_odds_change_mask"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/cl_bottom_button"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:visibility="gone">
+
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
+            android:id="@+id/tv_odds_change"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="5dp"
+            android:layout_marginStart="12dp"
+            android:textColor="@color/keyboard_number"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="@string/title_odds_change_better" />
+
+        <arch.cayenne.lib.skin.widget.SkinnableImageView
+            android:id="@+id/iv_odds_change"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="11dp"
+            android:layout_marginStart="6dp"
+            android:layout_marginEnd="11dp"
+            android:src="@drawable/icon_odds_arrow_down"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/tv_odds_change"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_bottom_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="10dp"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <include
+            android:id="@+id/btn_delete"
+            layout="@layout/item_exit_combo_btn"
+            android:layout_width="@dimen/dp_92"
+            android:layout_height="@dimen/dp_48"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
+            android:id="@+id/cl_bet"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="4dp"
+            android:background="@drawable/selector_send_button"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/btn_delete"
+            app:layout_constraintTop_toTopOf="@id/btn_delete">
+
+            <arch.cayenne.lib.skin.widget.SkinnableTextView
+                android:id="@+id/tv_bet_hint"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/btn_bet_hint"
+                android:textColor="@color/color_FFFFFF"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toTopOf="@id/tv_bet_money"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:skinnableFontWeight="500" />
+
+            <arch.cayenne.lib.skin.widget.SkinnableTextView
+                android:id="@+id/tv_bet_money_hint"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:alpha="0.7"
+                android:text="@string/title_combo_bet_odds_max_money"
+                android:textColor="@color/color_FFFFFF"
+                android:textSize="13sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/tv_bet_money"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_bet_hint"
+                app:skinnableFontWeight="500" />
+
+            <TextView
+                android:id="@+id/tv_bet_money"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:alpha="0.7"
+                android:textColor="@color/color_FFFFFF"
+                android:textSize="13sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/tv_bet_money_hint"
+                app:layout_constraintTop_toBottomOf="@id/tv_bet_hint" />
+        </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -68,7 +68,7 @@
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toTopOf="@id/cl_multi_bet"
         app:layout_constraintTop_toBottomOf="@id/cl_title_bet"
-        tools:itemCount="4"
+        tools:itemCount="2"
         tools:listitem="@layout/item_bet_sheet" />
 
     <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
@@ -145,8 +145,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:nestedScrollingEnabled="true"
-            android:paddingHorizontal="12dp"
-            android:paddingBottom="10dp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
             tools:itemCount="1"
@@ -165,7 +163,9 @@
         android:foreground="@drawable/bg_odds_change_mask"
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/cl_bottom_button"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        tools:visibility="visible"
+        >
 
         <arch.cayenne.lib.skin.widget.SkinnableTextView
             android:id="@+id/tv_odds_change"

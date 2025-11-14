@@ -1,16 +1,12 @@
 package arch.cayenne.module.chat.ui.fragment
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.MotionEvent
-import android.view.ViewGroup.LayoutParams
 import android.widget.LinearLayout
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.core.view.isVisible
 import arch.cayenne.lib.base.data.model.PagerBean
 import arch.cayenne.lib.base.ui.adapter.PagerAdapter
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
-import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
 import arch.cayenne.lib.common.utils.CustomTabIndicatorUtils
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.TabLayoutExt
@@ -22,18 +18,12 @@ import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.ext.startFadeAnim
 import arch.cayenne.module.chat.R
 import arch.cayenne.module.chat.data.constants.EmojiTypeEnum
-import arch.cayenne.module.chat.data.constants.KeyBoardType
-import arch.cayenne.module.chat.data.model.EmojiData
 import arch.cayenne.module.chat.databinding.FragmentEmojiHomeLayoutBinding
 import arch.cayenne.module.chat.databinding.ItemTabEmojiLayoutBinding
-import arch.cayenne.module.chat.ui.adapter.EmojiHotItemAdapter
-import arch.cayenne.module.chat.ui.adapter.EmojiItemAdapter
 import arch.cayenne.module.chat.ui.viewmodel.ChatHomeViewModel
 import arch.cayenne.module.chat.ui.viewmodel.EmojiHomeViewModel
-import arch.cayenne.module.chat.utils.EmojiUtils.BID_EMOJI_REGEX
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
-import java.util.regex.Pattern
 import kotlin.reflect.KClass
 
 /**
@@ -46,14 +36,20 @@ class EmojiHomeFragment : BaseFragment<EmojiHomeViewModel, FragmentEmojiHomeLayo
         get() = FragmentEmojiHomeLayoutBinding::class
     override val vmClass: KClass<EmojiHomeViewModel>
         get() = EmojiHomeViewModel::class
-    private val chatViewModel:ChatHomeViewModel by sharedViewModel<ChatHomeViewModel,ChatHomeFragment>()
+    private val chatViewModel: ChatHomeViewModel by sharedViewModel<ChatHomeViewModel, ChatHomeFragment>()
+
 
     override fun initView(savedInstanceState: Bundle?) {
         initTab()
     }
 
     override fun initListener() {
+        mBinding.tvDel.setOnClickListener {
+            chatViewModel.etDelFunction()
+        }
+        mBinding.tvSend.setOnClickListener {
 
+        }
     }
 
 
@@ -92,6 +88,9 @@ class EmojiHomeFragment : BaseFragment<EmojiHomeViewModel, FragmentEmojiHomeLayo
 
             emojiTablayout.addOnTabSelectedListener2(object : TabLayoutExt.OnTabSelectedListener2 {
                 override fun onTabSelected(tab: TabLayout.Tab, isTabClick: Boolean) {
+                    tvDel.isVisible = tab.position == 0
+                    tvSend.isVisible = tab.position == 0
+
                     if (isTabClick) {
                         CustomTabIndicatorUtils.animateIndicatorToPosition(
                             mBinding.customIndicator,
@@ -139,20 +138,6 @@ class EmojiHomeFragment : BaseFragment<EmojiHomeViewModel, FragmentEmojiHomeLayo
         }
     }
 
-    //表情点击
-    private val itemListener = object : RecyclerItemListener<EmojiData> {
-        override fun onItemClick(item: EmojiData?, position: Int) {
-            val emojiPattern: Pattern = Pattern.compile(BID_EMOJI_REGEX)
-            if (item?.key?.let { emojiPattern.matcher(it).find() } == true) {
-//                keyboardChangeClick(KeyBoardType.CHAT, 5)
-//                chatViewModel.sendMsgToChat(item.key)
-                return
-            }
-//            mBinding.liveChatEtInput.text?.append(item?.key)
-//            softKeyBoardManager.etRequestFocus()
-        }
-    }
-
     private fun initSoftRecycler() {
 //        val snapHelper = OnePageSnapHelper()
 //        mBinding.emojiRecycler.apply {
@@ -192,5 +177,6 @@ class EmojiHomeFragment : BaseFragment<EmojiHomeViewModel, FragmentEmojiHomeLayo
 
     companion object {
         val TAG = EmojiHomeFragment::class.simpleName
+        val DEL_ETINPUT = 101
     }
 }

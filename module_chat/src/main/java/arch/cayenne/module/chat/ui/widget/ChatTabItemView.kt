@@ -261,6 +261,7 @@ class ChatTabItemView : LinearLayoutCompat {
         }
     }
 
+  var mainAnim:AnimatorSet? = null
 
     @SuppressLint("Recycle")
     private fun tabAnim(isExpanded: Boolean, onStart: () -> Unit, onEnd: () -> Unit) {
@@ -307,7 +308,7 @@ class ChatTabItemView : LinearLayoutCompat {
             playTogether(tabIconAnim,tabRectAnim)
         }
 
-        val setAnim = AnimatorSet().apply {
+        mainAnim = AnimatorSet().apply {
             addListener(onStart = {
                 onStart.invoke()
             }, onEnd = {
