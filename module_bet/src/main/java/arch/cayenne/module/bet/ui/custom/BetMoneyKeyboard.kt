@@ -6,7 +6,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.LinearInterpolator
+import android.view.animation.PathInterpolator
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
@@ -204,7 +204,7 @@ class BetMoneyKeyboard @JvmOverloads constructor(
         unBind()
     }
 
-    fun hideKeyboard(duration: Long = 200) {
+    fun hideKeyboard(duration: Long = 150) {
         if(!isAttachedToWindow) return
         collapseView(this,duration){
             if(removeWhenHide) (parent as? ViewGroup)?.removeView(this)
@@ -212,7 +212,7 @@ class BetMoneyKeyboard @JvmOverloads constructor(
         onHideKeyboard?.invoke()
     }
 
-    fun showKeyBoard(duration: Long = 200,onEnd:(()->Unit)? = null){
+    fun showKeyBoard(duration: Long = 150,onEnd:(()->Unit)? = null){
         if(!isAttachedToWindow) return
         expandView(this,duration,onEnd)
         onShowKeyboard?.invoke()
@@ -234,7 +234,7 @@ class BetMoneyKeyboard @JvmOverloads constructor(
             }
         }
         animator.duration = duration
-        animator.interpolator = LinearInterpolator()
+        animator.interpolator = PathInterpolator(0.785f, 0.135f, 0.15f, 0.86f)
 
         animator.addUpdateListener { valueAnimator ->
             val animatedValue = valueAnimator.animatedValue as Int
@@ -259,14 +259,13 @@ class BetMoneyKeyboard @JvmOverloads constructor(
             it.measure(0,0)
             it.measuredHeight
         }
-        "aaaa---expandView---endV:$endV".logd(TAG)
         val animator = ValueAnimator.ofInt(startV, endV).apply {
             view.doOnDetach {
                 cancel()
             }
         }
         animator.duration = duration
-        animator.interpolator = LinearInterpolator()
+        animator.interpolator = PathInterpolator(0.785f, 0.135f, 0.15f, 0.86f)
 
         animator.addUpdateListener { valueAnimator ->
             val animatedValue = valueAnimator.animatedValue as Int

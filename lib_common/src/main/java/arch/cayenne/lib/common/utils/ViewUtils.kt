@@ -11,6 +11,7 @@ import android.os.Build
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.LinearInterpolator
+import android.view.animation.PathInterpolator
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.FrameLayout
@@ -88,8 +89,8 @@ object ViewUtils {
         val viewHeight = view.height
 
         val animator = ValueAnimator.ofInt(viewHeight, 1)
-        animator.duration = 2000L
-        animator.interpolator = LinearInterpolator()
+        animator.duration = 150
+        animator.interpolator = PathInterpolator(0.785f, 0.135f, 0.15f, 0.86f)
 
         animator.addUpdateListener { valueAnimator ->
             val animatedValue = valueAnimator.animatedValue as Int
@@ -127,8 +128,8 @@ object ViewUtils {
         // 先設為 0 高度，逐步展開
         val viewHeight = snapshot.height
         val animator = ValueAnimator.ofInt(0, viewHeight)
-        animator.duration = 200L
-        animator.interpolator = LinearInterpolator()
+        animator.duration = 150
+        animator.interpolator = PathInterpolator(0.785f, 0.135f, 0.15f, 0.86f)
 
         animator.addUpdateListener { valueAnimator ->
             val animatedValue = valueAnimator.animatedValue as Int

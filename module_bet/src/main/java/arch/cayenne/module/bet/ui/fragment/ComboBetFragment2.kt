@@ -68,25 +68,26 @@ class ComboBetFragment2 : BaseFragment<ComboBetViewModel, FragmentComboBet2Bindi
 
     private val comboMultiBetAdapter by lazy {
         ComboMultiBetAdapter(object : ComboMultiBetAdapter.OnComboMultiBetClickListener {
-            override fun onEditMoneyClick2(serialValue: Int, editText: EditText, tvMoney: TextView, addView:(keyboard:BetMoneyKeyboard)->Unit) {
+            override fun onEditMoneyClick2(serialValue: Int, editText: EditText, tvMoney: TextView, addViewAction:(keyboard:BetMoneyKeyboard)->Unit) {
                 "aaaa---serialValue:$serialValue,keyboard.serialValue:${keyboard.serialValue}".logd(TAG)
                 if(keyboard.serialValue == serialValue) return
                 val bean = mViewModel.onComboMultiBetBeanListener.value?.find { it.serialValue == serialValue }
                 if(bean != null) {
                     (keyboard.parent as? ViewGroup)?.removeView(keyboard)
-                    keyboard.bind(serialValue,editText,tvMoney,true)
-                    addView(keyboard)
-                    keyboard.visibility = View.INVISIBLE
-                    keyboard.post {
-                        keyboard.visibility = View.VISIBLE
-                        val targetScrollY = calculateScrollY(mBinding.nsBet,keyboard)
-                        if(targetScrollY == null) {
-                            keyboard.showKeyBoard(200)
-                        }else {
-                            mBinding.nsBet.smoothScrollTo(0, targetScrollY,200)
+                    keyboard.visibility = View.GONE
+                    keyboard.bind(serialValue, editText, tvMoney, true)
+                    addViewAction(keyboard)
+                    keyboard.visibility = View.VISIBLE
+                    val duration = 150L
+                    keyboard.showKeyBoard(duration, onEnd = {
+                        val targetScrollY = calculateScrollY(mBinding.nsBet, keyboard)
+                        if(targetScrollY != null){
+                            val speed = 1f* keyboard.height / duration //保存速度一致
+                            val d = (targetScrollY/speed).toInt()
+                            //"speed---$speed--duration:$duration".logd(TAG)
+                            mBinding.nsBet.smoothScrollTo(0, targetScrollY, d)
                         }
-                    }
-
+                    })
                 } else {
                     "cannot find $serialValue in onComboMultiBetBeanListener:${mViewModel.onComboMultiBetBeanListener.value}"
                         .also { showToast(it) }
@@ -114,14 +115,13 @@ class ComboBetFragment2 : BaseFragment<ComboBetViewModel, FragmentComboBet2Bindi
                 val bottom = top + targetHeight
                 val scrollY = nestedScrollView.scrollY
                 val visibleTop = scrollY
-                val visibleBottom = scrollY + nestedScrollView.height
-                var targetScrollY = top + targetHeight - nestedScrollView.height
+                val visibleBottom = nestedScrollView.height + scrollY
                 // 目标滚动位置 = targetView.bottom - NestedScrollView 可视高度
-                "aaaa---targetHeight:$targetHeight,bottom:$bottom,visibleBottom:$visibleBottom,targetScrollY:$targetScrollY".logd(TAG)
+                val targetScrollY = bottom - nestedScrollView.height
+                //"aaaa---targetHeight:$targetHeight,bottom:$bottom,visibleBottom:$visibleBottom,targetScrollY:$targetScrollY,scrollY:$scrollY".logd(TAG)
                 if(bottom > visibleBottom){
-                    targetScrollY = targetScrollY.coerceAtLeast(0)
                     return targetScrollY
-                }else {
+                } else {
                     return null
                 }
             }
@@ -148,7 +148,7 @@ class ComboBetFragment2 : BaseFragment<ComboBetViewModel, FragmentComboBet2Bindi
         mBinding.firstMultiItem.apply {
             etMoney.setOnClickListener {
                 val item = mViewModel.firstComboMultiBetBeanLD.value ?: return@setOnClickListener
-                comboMultiBetAdapter.onComboMultiBetClickListener.onEditMoneyClick2(item.serialValue,this.etMoney,this.tvMoney, addView = { keyboard ->
+                comboMultiBetAdapter.onComboMultiBetClickListener.onEditMoneyClick2(item.serialValue,this.etMoney,this.tvMoney, addViewAction = { keyboard ->
                     val lp = ConstraintLayout.LayoutParams(0, LayoutParams.WRAP_CONTENT).apply {
                         topToBottom = edgeBottom.id
                         startToStart = ConstraintLayout.LayoutParams.PARENT_ID
