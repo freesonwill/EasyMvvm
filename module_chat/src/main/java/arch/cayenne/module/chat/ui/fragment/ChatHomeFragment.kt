@@ -6,11 +6,14 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.MotionEvent
+import android.view.View
 import android.view.ViewGroup.LayoutParams
 import android.view.ViewTreeObserver
 import android.view.inputmethod.EditorInfo
 import androidx.activity.addCallback
 import androidx.core.animation.addListener
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import androidx.lifecycle.Lifecycle
@@ -38,6 +41,7 @@ import arch.cayenne.module.chat.ui.adapter.EmojiHotItemAdapter
 import arch.cayenne.module.chat.ui.viewmodel.ChatHomeViewModel
 import arch.cayenne.module.chat.utils.EmojiEditFilter
 import arch.cayenne.module.chat.utils.EmojiUtils.BID_EMOJI_REGEX
+import com.gyf.immersionbar.ImmersionBar
 import kotlinx.coroutines.launch
 import java.util.regex.Pattern
 import kotlin.reflect.KClass
@@ -213,10 +217,21 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
 //                }
 //            })
     }
+    /**
+     * 直播间view被截取了statusBarHeight的高度
+     * */
+    private fun getStatusBarHeight(view: View):Int{
+        val windowInsetsCompat = ViewCompat.getRootWindowInsets(view)
+        val topInset = windowInsetsCompat?.getInsets(WindowInsetsCompat.Type.statusBars())?.top ?: 0
+        //topInset比statusBarHeight准确（ROG手机）
+        val ret = if(topInset == 0) ImmersionBar.getStatusBarHeight(view.context) else topInset
+        //"topInset:$topInset,ret:$ret".logd()
+        return ret
+    }
 
     private fun calculationLayoutSize() {
         mBinding.apply {
-            softKeyBoardManager.emojiKeyBoardHeight = 242.dp2px
+            softKeyBoardManager.emojiKeyBoardHeight = if(mViewModel.isMainSoft) 242.dp2px else 242.dp2px+getStatusBarHeight(mBinding.root)
 //            chatKeyboard.layoutParams.height = softKeyBoardManager.emojiKeyBoardHeight
 //            inputContent.translationY = 44.dp2px.toFloat()
         }
@@ -402,8 +417,10 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
 
     private fun emojiLayoutSize(isReset: Boolean) {
         mBinding.apply {
+            val height = main.layoutParams.height
+//            "emojiLayoutSize $height  ${main.height}  ${mViewModel.keyBoardHeight}".logd("aaa")
             inputMain.layoutParams.height =if(isReset) LayoutParams.MATCH_PARENT  else mViewModel.keyBoardHeight
-            main.layoutParams.height =if(isReset) LayoutParams.MATCH_PARENT else mViewModel.keyBoardHeight + softKeyBoardManager.emojiKeyBoardHeight+200
+            main.layoutParams.height =if(isReset) LayoutParams.MATCH_PARENT else mViewModel.keyBoardHeight + softKeyBoardManager.emojiKeyBoardHeight
             main.requestLayout()
         }
     }
@@ -423,6 +440,7 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
      * */
     private fun showSoftKeyBoard() {
         updateKeyboardView(true)
+        emojiLayoutSize(false)
     }
 
     /**
