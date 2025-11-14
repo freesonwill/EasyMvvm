@@ -16,22 +16,25 @@ import kotlin.math.abs
 class ChatUserInfoLayoutInterceptTouch @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : LinearLayoutCompat(context, attrs, defStyleAttr) {
+    private val density = resources.displayMetrics.density
     private var mLiveMainGesture: ChatInfoGestureListener? = null
     private var lastX = 0f // 记录触摸起点的 X 坐标
     private var lastY = 0f // 记录触摸起点的 Y 坐标
+    private var startY = 0f
+    private var pointY = 5f * density
+
     private var isDirectionDetermined = false // 是否已确定滑动方向
     private var determined = true // 是否是第一次滑动
     private var startTime = 0L // 记录滑动时间
-    private val scrollSpeed = 3.0f //滑动速度
+    private val scrollSpeed = 1.0f //滑动速度
+    private var currDirection: ChatInfoSlideDirection = ChatInfoSlideDirection.UP
     override fun onFinishInflate() {
         super.onFinishInflate()
     }
 
     enum class ChatInfoSlideDirection {
         UP,     // 上滑
-        DOWN,   // 下滑
-        LEFT,   // 左滑
-        RIGHT   // 右滑
+        DOWN   // 下滑
     }
 
     override fun onInterceptTouchEvent(ev: MotionEvent?): Boolean {
@@ -45,6 +48,7 @@ class ChatUserInfoLayoutInterceptTouch @JvmOverloads constructor(
             MotionEvent.ACTION_DOWN -> {
                 lastY = event.y // 记录触摸起点
                 lastX = event.x
+                startY = event.y
                 isDirectionDetermined = false // 重置滑动方向
                 determined = true
                 startTime = event.eventTime
@@ -67,30 +71,61 @@ class ChatUserInfoLayoutInterceptTouch @JvmOverloads constructor(
                         isDirectionDetermined = false
                     }
                 }
-                // LogUtils.e("MainLayout----------Sliding DOWN, pixelsY=-------------${abs((absDeltaY - lastAbsDeltaY))}")
-                //处理在滑动viewpager2的时候,不触发视频播放区域的放大缩小
+                //处理在滑动viewpager2的时候,不触发顶部区域放大缩小
                 if (!isDirectionDetermined) {
                     // 垂直滑动
                     if (deltaY > 0) {
-                        mLiveMainGesture?.onAdjustLayoutScroll(
-                            absDeltaY * scrollSpeed,
-                            ChatInfoSlideDirection.DOWN
-                        )
+                        //如果不是相同方向滑动,需要判断滑动区域临界点,避免上下滑动跳动情况
+                        if (currDirection != ChatInfoSlideDirection.DOWN) {
+                            if (absDeltaY >= pointY) {
+                                mLiveMainGesture?.onAdjustLayoutScroll(
+                                    absDeltaY * scrollSpeed,
+                                    ChatInfoSlideDirection.DOWN
+                                )
+                            }
+                        } else {
+                            mLiveMainGesture?.onAdjustLayoutScroll(
+                                absDeltaY * scrollSpeed,
+                                ChatInfoSlideDirection.DOWN
+                            )
+                        }
+                        currDirection = ChatInfoSlideDirection.DOWN
                     } else if (deltaY < 0) {
-                        mLiveMainGesture?.onAdjustLayoutScroll(
-                            -absDeltaY * scrollSpeed,
-                            ChatInfoSlideDirection.UP
-                        )
+                        if (currDirection != ChatInfoSlideDirection.UP) {
+                            if (absDeltaY >= pointY) {
+                                mLiveMainGesture?.onAdjustLayoutScroll(
+                                    -absDeltaY * scrollSpeed,
+                                    ChatInfoSlideDirection.UP
+                                )
+                            }
+                        } else {
+                            mLiveMainGesture?.onAdjustLayoutScroll(
+                                -absDeltaY * scrollSpeed,
+                                ChatInfoSlideDirection.UP
+                            )
+                        }
+                        currDirection = ChatInfoSlideDirection.UP
                     }
                 }
                 lastX = event.x
                 lastY = event.y
             }
 
-
-            MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+            MotionEvent.ACTION_UP -> {
                 isDirectionDetermined = false // 重置滑动方向
                 determined = true
+                val deltaY = event.y - startY
+                if (deltaY > 0) {
+                   // LogUtils.e("ChatUserInfoFragment--------onAdjustLayoutScrollUp-----deltaY>${deltaY},${ChatInfoSlideDirection.DOWN}")
+                    mLiveMainGesture?.onAdjustLayoutScrollUp(
+                        ChatInfoSlideDirection.DOWN
+                    )
+                } else {
+                  //  LogUtils.e("ChatUserInfoFragment--------onAdjustLayoutScrollUp-----deltaY>${deltaY},${ChatInfoSlideDirection.UP}")
+                    mLiveMainGesture?.onAdjustLayoutScrollUp(
+                        ChatInfoSlideDirection.UP
+                    )
+                }
             }
         }
         return true
@@ -102,8 +137,8 @@ class ChatUserInfoLayoutInterceptTouch @JvmOverloads constructor(
 }
 
 interface ChatInfoGestureListener {
-    /**
-     * 子类是否接收滑动
-     */
+    //正常滑动
     fun onAdjustLayoutScroll(deltaY: Float, direction: ChatInfoSlideDirection)
+    //滑动抬起事件
+    fun onAdjustLayoutScrollUp(direction: ChatInfoSlideDirection)
 }

@@ -12,11 +12,20 @@ class ChatUserInfoViewModel : BaseViewModel() {
     private val _sonVerticalScrollIsTop = MutableLiveData<Boolean?>()
     val sonVerticalScrollIsTop: LiveData<Boolean?> = _sonVerticalScrollIsTop
 
+
+    private val _scrollTop = MutableLiveData<Boolean?>()
+    val scrollTop: LiveData<Boolean?> = _scrollTop
+
     fun setSonVerticalScrollIsTop(boo:Boolean){
         if (boo!=sonVerticalScrollIsTop.value){
             _sonVerticalScrollIsTop.value = boo
         }
     }
+
+    fun setScrollTop(boo:Boolean){
+        _scrollTop.value = boo
+    }
+
 
     fun getSonVerticalScrollIsTop():Boolean?{
         return sonVerticalScrollIsTop.value

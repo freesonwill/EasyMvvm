@@ -6,269 +6,281 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/tran_0">
 
-    <arch.cayenne.module.chat.ui.widget.ChatUserInfoLayoutScale
-        android:id="@+id/topScale"
-        android:layout_width="match_parent"
-        android:orientation="vertical"
-        android:layout_height="match_parent"
-        android:background="@color/tran_0"
-        tools:ignore="MissingConstraints">
-        <View
+
+        <arch.cayenne.module.chat.ui.widget.ChatUserInfoLayoutScale
+            android:id="@+id/topScale"
             android:layout_width="match_parent"
-            android:layout_height="259dp"
-            android:id="@+id/viewTop"
+            android:layout_height="match_parent"
             android:background="@color/tran_0"
-            />
-        <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
-            android:id="@+id/content"
             android:orientation="vertical"
-            android:layout_weight="1"
-            android:layout_width="match_parent"
-            android:background="@drawable/shape_chat_info_bg"
-            android:layout_height="0dp">
-
-            <arch.cayenne.module.chat.ui.widget.ChatUserInfoAvatarLayoutScale
-                android:id="@+id/chatUserInfoAvatarLayoutScale"
-                    android:layout_width="match_parent"
-                    android:orientation="vertical"
-                    android:gravity="center"
-                    android:layout_height="wrap_content">
-
-                <FrameLayout
-                    android:layout_width="match_parent"
-                    android:layout_marginTop="@dimen/dp_25"
-                    android:layout_height="wrap_content">
-                    <androidx.appcompat.widget.LinearLayoutCompat
-                        android:id="@+id/headTitle"
-                        android:layout_width="match_parent"
-                        android:gravity="center"
-                        android:background="@color/color_1E1E1E"
-
-                        android:layout_height="wrap_content">
-
-                        <androidx.appcompat.widget.AppCompatImageView
-                            android:id="@+id/avatarImageView"
-                            android:layout_width="84dp"
-                            android:layout_height="84dp"
-                            android:background="@drawable/chat_info_avatar"
-                            />
-
-                    </androidx.appcompat.widget.LinearLayoutCompat>
-
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/topName"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="来福"
-                        android:textStyle="bold"
-                        android:textSize="16sp"
-                        android:visibility="invisible"
-                        android:alpha="0"
-                        android:layout_gravity="top|center_horizontal"
-                        android:drawablePadding="@dimen/dp_2"
-                        android:textColor="@color/white"
-                        android:layout_marginTop="@dimen/dp_13"
-                        android:layout_marginStart="@dimen/dp_30"
-                        android:drawableEnd="@drawable/chat_info_vip"
-                        />
-                </FrameLayout>
-
-                <androidx.appcompat.widget.LinearLayoutCompat
-                    android:id="@+id/LlBottom"
-                    android:layout_width="match_parent"
-                    android:orientation="vertical"
-                    android:gravity="bottom"
-                    android:clipChildren="true"
-                    android:clipToPadding="true"
-                    android:layout_height="wrap_content">
-
-                        <androidx.appcompat.widget.LinearLayoutCompat
-                            android:layout_width="match_parent"
-                            android:gravity="center"
-                            android:orientation="vertical"
-                            android:layout_height="60dp">
-
-                            <androidx.appcompat.widget.AppCompatTextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="来福"
-                                android:textStyle="bold"
-                                android:textSize="16sp"
-                                android:drawablePadding="@dimen/dp_2"
-                                android:textColor="@color/white"
-                                android:drawableEnd="@drawable/chat_info_vip"
-                                />
-
-                            <androidx.appcompat.widget.AppCompatTextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textColor="@color/color_999999"
-                                android:textSize="13sp"
-                                android:text="已加入4578天"
-                                />
-                        </androidx.appcompat.widget.LinearLayoutCompat>
-                        <androidx.appcompat.widget.LinearLayoutCompat
-                            android:layout_width="match_parent"
-                            android:orientation="horizontal"
-                            android:layout_marginTop="@dimen/dp_5"
-                            android:layout_height="50dp">
-
-                            <androidx.appcompat.widget.LinearLayoutCompat
-                                android:layout_width="0dp"
-                                android:layout_weight="1"
-                                android:gravity="center"
-                                android:orientation="vertical"
-                                android:layout_height="wrap_content">
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="220"
-                                    android:textSize="16sp"
-                                    android:textColor="@color/white"
-                                    android:textStyle="bold"
-                                    />
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="@string/chat_bet_number"
-                                    android:textSize="13sp"
-                                    android:textColor="@color/color_999999"
-                                    />
-
-                            </androidx.appcompat.widget.LinearLayoutCompat>
-                            <androidx.appcompat.widget.LinearLayoutCompat
-                                android:layout_width="0dp"
-                                android:layout_weight="1"
-                                android:gravity="center"
-                                android:orientation="vertical"
-                                android:layout_height="wrap_content">
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="¥220000.00"
-                                    android:textSize="16sp"
-                                    android:textColor="@color/white"
-                                    android:textStyle="bold"
-                                    />
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="@string/chat_bet_money"
-                                    android:textSize="13sp"
-                                    android:textColor="@color/color_999999"
-                                    />
-
-                            </androidx.appcompat.widget.LinearLayoutCompat>
-
-                        </androidx.appcompat.widget.LinearLayoutCompat>
-
-                </androidx.appcompat.widget.LinearLayoutCompat>
-
-            </arch.cayenne.module.chat.ui.widget.ChatUserInfoAvatarLayoutScale>
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="31dp">
-                <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
-                    android:id="@+id/skinTab"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/tran_0"
-                    android:layout_marginTop="3dp"
-                    android:layout_marginStart="6dp"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:orientation="vertical"
-                    tools:ignore="MissingConstraints">
-
-                    <arch.cayenne.lib.skin.widget.SkinnableTabLayout
-                        android:id="@+id/tabLayout"
-                        android:layout_width="match_parent"
-                        android:layout_height="25dp"
-                        android:layout_marginTop="@dimen/dp_2"
-                        android:layout_marginEnd="10dp"
-                        app:tabIndicatorHeight="0dp"
-                        android:focusable="false"
-                        app:tabMode="fixed"
-                        android:background="@color/tran_0"
-                        app:tabPaddingEnd="0dp"
-                        app:tabPaddingStart="0dp"
-                        app:tabRippleColor="@null"
-                        tools:ignore="SpeakableTextPresentCheck" />
-
-                    <arch.cayenne.lib.common.ui.view.CustomTabIndicator
-                        android:id="@+id/customIndicator"
-                        android:layout_width="match_parent"
-                        android:layout_height="3dp"
-                        android:layout_marginEnd="13dp"
-                        />
-                </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
-
-                <View
-                    android:id="@+id/viewTab"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"/>
-            </androidx.constraintlayout.widget.ConstraintLayout>
+            tools:ignore="MissingConstraints">
 
             <View
-                android:layout_marginTop="@dimen/dp_2"
-                android:layout_marginBottom="@dimen/dp_2"
+                android:id="@+id/viewTop"
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/line"
-                />
-            <androidx.viewpager2.widget.ViewPager2
-                android:id="@+id/vp_page"
+                android:layout_height="259dp"
+                android:background="@color/tran_0" />
+
+            <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
+                android:id="@+id/content"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
-                android:overScrollMode="ifContentScrolls"
-                />
-            <View
-                android:layout_marginTop="@dimen/dp_2"
-                android:layout_marginBottom="@dimen/dp_2"
-                android:layout_width="match_parent"
-                android:layout_height="0.5dp"
-                android:background="@color/line"
-                />
-            <androidx.appcompat.widget.LinearLayoutCompat
-                android:layout_width="match_parent"
-                android:background="@color/color_1E1E1E"
-                android:gravity="center_vertical"
-                android:layout_height="@dimen/dp_80">
+                android:background="@drawable/shape_chat_info_bg"
+                android:orientation="vertical">
 
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:layout_width="74dp"
-                    android:layout_height="48dp"
+                <arch.cayenne.module.chat.ui.widget.ChatUserInfoAvatarLayoutScale
+                    android:id="@+id/chatUserInfoAvatarLayoutScale"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:textSize="14sp"
-                    android:layout_marginStart="@dimen/dp_16"
-                    android:textColor="@color/color_C0C0C0"
-                    android:text="@string/chat_report"
-                    android:background="@drawable/shape_chat_info_report_text_bg"
-                    />
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:layout_width="0dp"
+                    android:orientation="vertical">
+
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dp_25">
+
+                        <androidx.appcompat.widget.LinearLayoutCompat
+                            android:id="@+id/headTitle"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@color/color_1E1E1E"
+
+                            android:gravity="center">
+
+                            <androidx.appcompat.widget.AppCompatImageView
+                                android:id="@+id/avatarImageView"
+                                android:layout_width="84dp"
+                                android:layout_height="84dp"
+                                android:background="@drawable/chat_info_avatar" />
+
+                        </androidx.appcompat.widget.LinearLayoutCompat>
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/topName"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="top|center_horizontal"
+                            android:layout_marginStart="@dimen/dp_30"
+                            android:layout_marginTop="@dimen/dp_13"
+                            android:alpha="0"
+                            android:drawableEnd="@drawable/chat_info_vip"
+                            android:drawablePadding="@dimen/dp_2"
+                            android:text="来福"
+                            android:textColor="@color/white"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            />
+                    </FrameLayout>
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <androidx.appcompat.widget.LinearLayoutCompat
+                            android:id="@+id/llcName"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:clipChildren="true"
+                            android:clipToPadding="true"
+                            android:gravity="bottom"
+                            android:orientation="vertical">
+
+                            <androidx.appcompat.widget.LinearLayoutCompat
+
+                                android:layout_width="match_parent"
+                                android:layout_height="60dp"
+                                android:gravity="center"
+                                android:orientation="vertical">
+
+                                <androidx.appcompat.widget.AppCompatTextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:drawableEnd="@drawable/chat_info_vip"
+                                    android:drawablePadding="@dimen/dp_2"
+                                    android:text="来福"
+                                    android:textColor="@color/white"
+                                    android:textSize="16sp"
+                                    android:textStyle="bold" />
+
+                                <androidx.appcompat.widget.AppCompatTextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="已加入4578天"
+                                    android:textColor="@color/color_999999"
+                                    android:textSize="13sp" />
+                            </androidx.appcompat.widget.LinearLayoutCompat>
+                        </androidx.appcompat.widget.LinearLayoutCompat>
+
+                        <androidx.appcompat.widget.LinearLayoutCompat
+                            android:id="@+id/LlBottom"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:clipChildren="true"
+                            android:clipToPadding="true"
+                            android:gravity="bottom"
+                            android:orientation="vertical">
+
+                            <androidx.appcompat.widget.LinearLayoutCompat
+                                android:layout_width="match_parent"
+                                android:layout_height="50dp"
+                                android:layout_marginTop="@dimen/dp_5"
+                                android:orientation="horizontal">
+
+                                <androidx.appcompat.widget.LinearLayoutCompat
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:gravity="center"
+                                    android:orientation="vertical">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="220"
+                                        android:textColor="@color/white"
+                                        android:textSize="16sp"
+                                        android:textStyle="bold" />
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="@string/chat_bet_number"
+                                        android:textColor="@color/color_999999"
+                                        android:textSize="13sp" />
+
+                                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                                <androidx.appcompat.widget.LinearLayoutCompat
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:gravity="center"
+                                    android:orientation="vertical">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="¥220000.00"
+                                        android:textColor="@color/white"
+                                        android:textSize="16sp"
+                                        android:textStyle="bold" />
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="@string/chat_bet_money"
+                                        android:textColor="@color/color_999999"
+                                        android:textSize="13sp" />
+
+                                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                            </androidx.appcompat.widget.LinearLayoutCompat>
+                        </androidx.appcompat.widget.LinearLayoutCompat>
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                </arch.cayenne.module.chat.ui.widget.ChatUserInfoAvatarLayoutScale>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="31dp">
+
+                    <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
+                        android:id="@+id/skinTab"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="6dp"
+                        android:layout_marginTop="3dp"
+                        android:background="@color/tran_0"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:orientation="vertical"
+                        tools:ignore="MissingConstraints">
+
+                        <arch.cayenne.lib.skin.widget.SkinnableTabLayout
+                            android:id="@+id/tabLayout"
+                            android:layout_width="match_parent"
+                            android:layout_height="25dp"
+                            android:layout_marginTop="@dimen/dp_2"
+                            android:layout_marginEnd="10dp"
+                            android:background="@color/tran_0"
+                            android:focusable="false"
+                            app:tabIndicatorHeight="0dp"
+                            app:tabMode="fixed"
+                            app:tabPaddingEnd="0dp"
+                            app:tabPaddingStart="0dp"
+                            app:tabRippleColor="@null"
+                            tools:ignore="SpeakableTextPresentCheck" />
+
+                        <arch.cayenne.lib.common.ui.view.CustomTabIndicator
+                            android:id="@+id/customIndicator"
+                            android:layout_width="match_parent"
+                            android:layout_height="3dp"
+                            android:layout_marginEnd="13dp" />
+                    </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
+
+                    <View
+                        android:id="@+id/viewTab"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="@dimen/dp_2"
+                    android:layout_marginBottom="@dimen/dp_2"
+                    android:background="@color/line" />
+
+                <androidx.viewpager2.widget.ViewPager2
+                    android:id="@+id/vp_page"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
                     android:layout_weight="1"
-                    android:layout_marginEnd="@dimen/dp_16"
-                    android:layout_height="48dp"
-                    android:gravity="center"
-                    android:textSize="14sp"
-                    android:layout_marginStart="@dimen/dp_16"
-                    android:textColor="@color/white"
-                    android:text="@string/chat_auto"
-                    android:background="@drawable/shape_chat_info_auto_text_bg"
-                    />
-            </androidx.appcompat.widget.LinearLayoutCompat>
-        </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
+                    android:overScrollMode="ifContentScrolls" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:layout_marginTop="@dimen/dp_2"
+                    android:layout_marginBottom="@dimen/dp_2"
+                    android:background="@color/line" />
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_80"
+                    android:background="@color/color_1E1E1E"
+                    android:gravity="center_vertical">
 
 
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:layout_width="74dp"
+                        android:layout_height="48dp"
+                        android:layout_marginStart="@dimen/dp_16"
+                        android:background="@drawable/shape_chat_info_report_text_bg"
+                        android:gravity="center"
+                        android:text="@string/chat_report"
+                        android:textColor="@color/color_C0C0C0"
+                        android:textSize="14sp" />
 
-    </arch.cayenne.module.chat.ui.widget.ChatUserInfoLayoutScale>
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:layout_width="0dp"
+                        android:layout_height="48dp"
+                        android:layout_marginStart="@dimen/dp_16"
+                        android:layout_marginEnd="@dimen/dp_16"
+                        android:layout_weight="1"
+                        android:background="@drawable/shape_chat_info_auto_text_bg"
+                        android:gravity="center"
+                        android:text="@string/chat_auto"
+                        android:textColor="@color/white"
+                        android:textSize="14sp" />
+                </androidx.appcompat.widget.LinearLayoutCompat>
+            </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
 
+
+        </arch.cayenne.module.chat.ui.widget.ChatUserInfoLayoutScale>
     <com.walisport.module.live.ui.widget.ChatUserInfoLayoutInterceptTouch
         android:id="@+id/LayoutInterceptTouch"
         android:layout_width="match_parent"

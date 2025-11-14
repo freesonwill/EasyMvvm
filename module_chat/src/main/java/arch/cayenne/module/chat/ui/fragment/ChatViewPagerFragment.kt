@@ -1,8 +1,10 @@
 package arch.cayenne.module.chat.ui.fragment
 
 import android.os.Bundle
+import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.common.utils.ext.listenAtTop
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.module.chat.ui.viewmodel.ChatViewPagerViewModel
@@ -47,11 +49,20 @@ class ChatViewPagerFragment : BaseFragment<ChatViewPagerViewModel,FragmentChatVi
 
     }
 
+
+    fun setPosition(){
+        mBinding.rvGameList.scrollToPosition(0)
+    }
     override suspend fun createObserver() {
         mViewModel.gameList.observe(viewLifecycleOwner){
             mAdapter.submitList(it)
         }
-    }
 
+        launch(Lifecycle.State.RESUMED){
+            userInfoViewModel.scrollTop.observe(viewLifecycleOwner){
+                mBinding.rvGameList.scrollToPosition(0)
+            }
+        }
+    }
 
 }

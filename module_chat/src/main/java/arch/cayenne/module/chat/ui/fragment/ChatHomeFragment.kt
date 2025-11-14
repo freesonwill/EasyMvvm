@@ -34,6 +34,8 @@ import arch.cayenne.module.chat.utils.EmojiEditFilter
 import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
+import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+
 //聊天
 class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding>() ,
     SoftKeyBoardMangerListener {
@@ -286,6 +288,7 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
                 if (event.action == MotionEvent.ACTION_UP) {
                     keyboardChangeClick(KeyBoardType.EMOJI)
                 }
+                calculationLayoutSize()
                 return@setOnTouchListener true
             }
             chatTvSend.setOnTouchListener { v, event ->
@@ -366,7 +369,6 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
             .addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
                 override fun onGlobalLayout() {
                     mBinding.main.viewTreeObserver.removeOnGlobalLayoutListener(this)
-                    calculationLayoutSize()
                 }
             })
     }
@@ -375,10 +377,9 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
         mBinding.apply {
             softKeyBoardManager.emojiKeyBoardHeight = 242.dp2px
             chatKeyboard.layoutParams.height = softKeyBoardManager.emojiKeyBoardHeight
-            inputMain.layoutParams.height = mViewModel.keyBoardHeight
+            chatKeyboard.layoutParams.height = mViewModel.keyBoardHeight
             screenContent.layoutParams.height =
-                mViewModel.keyBoardHeight + softKeyBoardManager.emojiKeyBoardHeight
-            mBinding.screenContent.requestLayout()
+            mViewModel.keyBoardHeight + softKeyBoardManager.emojiKeyBoardHeight
         }
     }
 

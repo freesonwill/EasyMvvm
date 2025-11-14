@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.graphics.Typeface
 import arch.cayenne.module.chat.databinding.FragmentChatUserInfoBinding
 import android.os.Bundle
+import android.view.MotionEvent
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import arch.cayenne.lib.base.data.model.PagerBean
@@ -29,6 +30,7 @@ import arch.cayenne.lib.common.utils.ext.setupViewPagerScroll
 import arch.cayenne.lib.common.utils.ext.startFadeAnim
 import com.google.android.material.tabs.TabLayout
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
+import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 
 //上滚-弹窗-头像-名字-列表
@@ -40,12 +42,15 @@ class ChatUserInfoFragment :
         get() = FragmentChatUserInfoBinding::class
     override val vmClass: KClass<ChatUserInfoViewModel>
         get() = ChatUserInfoViewModel::class
-
-
     override fun initView(savedInstanceState: Bundle?) {
         loadFragment()
     }
-
+    private var isChatUserInfoAvatarLayoutDow : Boolean = false //按下的是否是资料区域
+    val listFragment = listOf(
+        PagerBean(R.string.chat_love_play.getString()) { ChatViewPagerFragment() },
+        PagerBean(R.string.chat_max_win.getString()) { ChatViewPagerFragment() },
+        PagerBean(R.string.chat_max_number.getString()) { ChatViewPagerFragment() },
+    )
     @SuppressLint("ClickableViewAccessibility")
     override fun initListener() {
         // 上层 View 触摸事件
@@ -55,31 +60,87 @@ class ChatUserInfoFragment :
             false // 返回 false 不消耗事件，允许事件继续传递
         }
 
+        mBinding.viewTop.clickNoRepeat{
+            dismiss()
+        }
+        //资料卡区域
+        mBinding.chatUserInfoAvatarLayoutScale.setOnTouchListener { _, event ->
+            when (event.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    isChatUserInfoAvatarLayoutDow = true //触摸事件为资料卡区域
+                    true
+                }
+                MotionEvent.ACTION_UP -> {
+
+                    true
+                }
+
+                else -> false
+            }
+            mBinding.skinTab.dispatchTouchEvent(event)
+        }
+
+
         mBinding.LayoutInterceptTouch.seGestureListener(object : ChatInfoGestureListener {
-            override fun onAdjustLayoutScroll(deltaY: Float, direction: ChatInfoSlideDirection) {
-                LogUtils.e("ChatUserInfoFragment--------->${deltaY},${direction}")
-                //往下滑动,子类的rv是否滑到了第一条或者顶部
-                if (direction == ChatInfoSlideDirection.DOWN) {
-                    var bool: Boolean? = mViewModel.sonVerticalScrollIsTop.value
-                    bool?.let {
-                        if (it) {
-                            // 如果当前高度在 max-min  范围内，返回 true，表示可以滑动
-                            if (mBinding.chatUserInfoAvatarLayoutScale.isDirectionToScroll()) {
-                                mBinding.topScale.adjustLayout(deltaY, direction)//弹窗往下
-                            } else {
-                                mBinding.chatUserInfoAvatarLayoutScale.adjustLayout(
-                                    deltaY,
-                                    direction
-                                )//头像和名字区域往下
-                            }
+            override fun onAdjustLayoutScrollUp(direction: ChatInfoSlideDirection) {
+                //是否触发资料卡区域,执行资料卡区域动画
+                if (isChatUserInfoAvatarLayoutDow){
+                    when(direction){
+                        ChatInfoSlideDirection.UP -> {
+                        //    LogUtils.e("ChatUserInfoFragment--------onAdjustLayoutScrollUp----->${ChatInfoSlideDirection.UP},${direction}")
+                            mBinding.chatUserInfoAvatarLayoutScale.quickAdjustLayoutUp()
+                            mBinding.topScale.adjustLayout(0f, ChatInfoSlideDirection.UP,true)
+                        }
+                        ChatInfoSlideDirection.DOWN -> {
+                          //  LogUtils.e("ChatUserInfoFragment--------onAdjustLayoutScrollUp----->${ChatInfoSlideDirection.DOWN},${direction}")
+                            mBinding.chatUserInfoAvatarLayoutScale.animTingDow()
+                            mBinding.topScale.adjustLayoutViewTopAnim( ChatInfoSlideDirection.DOWN){}
+
                         }
                     }
-                } else {
-                    mBinding.topScale.adjustLayout(deltaY, direction)
-                    mBinding.chatUserInfoAvatarLayoutScale.adjustLayout(
-                        deltaY,
-                        direction
-                    )//头像和名字区域往下
+                    isChatUserInfoAvatarLayoutDow = false
+                }
+            }
+
+            override fun onAdjustLayoutScroll(deltaY: Float, direction: ChatInfoSlideDirection) {
+              //  LogUtils.e("ChatUserInfoFragment--------->${deltaY},${direction}")
+
+                if (isChatUserInfoAvatarLayoutDow){//滑动资料区域
+                    //根据手势资料卡区域放大缩小
+                    mBinding.chatUserInfoAvatarLayoutScale.adjustLayoutTop( deltaY, direction )
+                    mBinding.topScale.adjustLayout(deltaY, direction,false)
+                }else{
+                    //往下滑动,子类的rv是否滑到了第一条或者顶部
+                    if (direction == ChatInfoSlideDirection.DOWN) {
+                        var bool: Boolean? = mViewModel.sonVerticalScrollIsTop.value
+                        bool?.let {
+                            if (it) {
+                                // 如果当前高度在 max-min  范围内，返回 true，表示可以滑动
+                                if (mBinding.chatUserInfoAvatarLayoutScale.isDirectionToScroll()) {
+                                    mBinding.topScale.adjustLayout(deltaY, direction)//弹窗往下
+                                } else {
+                                    mBinding.chatUserInfoAvatarLayoutScale.adjustLayout(
+                                        deltaY,
+                                        direction
+                                    ){
+                                        //头像和名字区域往下
+                                        mBinding.topScale.adjustLayoutViewTopAnim(direction){
+                                            //列表跟手
+                                            mViewModel.setScrollTop(true)
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    } else {
+                        mBinding.topScale.adjustLayout(deltaY, direction)
+                        mBinding.chatUserInfoAvatarLayoutScale.adjustLayout(
+                            deltaY,
+                            direction
+                        ){
+
+                        }
+                    }
                 }
             }
         })
@@ -135,21 +196,13 @@ class ChatUserInfoFragment :
     private fun loadFragment() {
         val tabSelectPosition = 0
         with(mBinding) {
-            val list = listOf(
-                PagerBean(R.string.chat_love_play.getString()) { ChatViewPagerFragment() },
-                PagerBean(R.string.chat_max_win.getString()) { ChatViewPagerFragment() },
-                PagerBean(R.string.chat_max_number.getString()) { ChatViewPagerFragment() },
-            )
-
-            vpPage.adapter = PagerAdapter(childFragmentManager, lifecycle, list)
-
-            vpPage.offscreenPageLimit = list.size
-
+            vpPage.adapter = PagerAdapter(childFragmentManager, lifecycle, listFragment)
+            vpPage.offscreenPageLimit = listFragment.size
             TabLayoutMediator(tabLayout, vpPage, false) { tab, position ->
-                tab.text = list[position].title
+                tab.text = listFragment[position].title
                 tab.setCustomView(R.layout.info_custom_tab)
                 tab.customView?.findViewById<SkinnableTextView>(R.id.tabText)?.apply {
-                    text = list[position].title
+                    text = listFragment[position].title
                     setTextColor(
                         SkinnableResourceManager.getColor(
                             context,

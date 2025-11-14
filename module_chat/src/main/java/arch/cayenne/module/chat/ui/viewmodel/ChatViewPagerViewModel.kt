@@ -17,8 +17,16 @@ class ChatViewPagerViewModel : BaseViewModel() {
           GameListBean(name = "3ff2f", money = "1042000.00"),
           GameListBean(name = "3323", money = "23245.00"),
           GameListBean(name = "4444", money = "234.00"),
-          GameListBean(name = "1123", money = "33.00"),
-          GameListBean(name = "1234", money = "1023000.00"),
+          GameListBean(name = "11233", money = "33.00"),
+          GameListBean(name = "14234", money = "1023000.00"),
+          GameListBean(name = "15234", money = "1023000.00"),
+          GameListBean(name = "125534", money = "1023000.00"),
+          GameListBean(name = "12423434", money = "1023000.00"),
+          GameListBean(name = "1255234", money = "1023000.00"),
+          GameListBean(name = "12355234", money = "1023000.00"),
+          GameListBean(name = "12355234", money = "1023000.00"),
+          GameListBean(name = "12355234", money = "1023000.00"),
+          GameListBean(name = "12355234", money = "1023000.00")
       )
         _gameList.value = list
     }
