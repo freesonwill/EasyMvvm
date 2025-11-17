@@ -167,7 +167,7 @@ class ChatUserInfoFragment :
                             R.color.tab_selected_text_color
                         )
                     )
-                    textView.textSize = 15f.px2sp
+                    textView.textSize = 13f.px2sp
                     textView.typeface = Typeface.DEFAULT_BOLD
                 }
             }
@@ -180,7 +180,7 @@ class ChatUserInfoFragment :
                             arch.cayenne.lib.common.R.color.color_999999
                         )
                     )
-                    textView.textSize = 15f.px2sp
+                    textView.textSize = 13f.px2sp
                     textView.typeface = Typeface.DEFAULT
                 }
             }
@@ -189,7 +189,7 @@ class ChatUserInfoFragment :
                 // Handle reselect if needed
             }
         })
-        mBinding.vpPage.setupViewPagerScroll(mBinding.tabLayout, mBinding.customIndicator, 0.24f)
+        mBinding.vpPage.setupViewPagerScroll(mBinding.tabLayout, mBinding.customIndicator, 0.14f)
     }
 
 
@@ -220,10 +220,10 @@ class ChatUserInfoFragment :
             tabLayout.post {
                 CustomTabIndicatorUtils.animateIndicatorToPosition(
                     mBinding.customIndicator,
-                    1,
+                    tabSelectPosition,
                     false
                 )
-                mBinding.vpPage.setCurrentItem(1, false)
+                mBinding.vpPage.setCurrentItem(tabSelectPosition, false)
             }
             tabLayout.removeAllTips()
         }
