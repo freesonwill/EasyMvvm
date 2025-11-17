@@ -25,9 +25,9 @@ import org.koin.core.component.inject
 import plugin.koin.KoinViewModel
 
 @KoinViewModel
-class MatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
+class EarlyMatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
     private var _sportId = SportType.Init.id
-    private var _playType = PlayType.TODAY.id
+    private var _playType = PlayType.EARLY.id
     private var _tournamentId: Int = HomeViewModel.TOURNAMENT_ALL_ID
     private var _position = -1
     private var _selectedDate = MutableStateFlow<Long>(0L)
@@ -99,11 +99,11 @@ class MatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
                     .collect { refs ->
                         val selectedDate = _selectedDate.value
                         "Collect observeMatchChange start playType = $_playType, sportId = ${_sportId} tournament = $_tournamentId selectedDate = $selectedDate".logi(
-                            this@MatchListViewModel::class.java.simpleName
+                            this@EarlyMatchListViewModel::class.java.simpleName
                         )
                         val currentDateRefs = refs.filter { it.date == selectedDate }
                         if (currentDateRefs.isEmpty()) {
-                            "Collect observeMatchChange TournamentMatchRef is NULL!!".logi(this@MatchListViewModel::class.java.simpleName)
+                            "Collect observeMatchChange TournamentMatchRef is NULL!!".logi(this@EarlyMatchListViewModel::class.java.simpleName)
                             return@collect
                         }
                         processObserveMatchList(currentDateRefs)
@@ -120,7 +120,7 @@ class MatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
         val list = repository.queryFullMatches(
             currentDateRefs.map { it.matchId }
         )
-        "Collect observeMatchChange result：${list.map { it.match.matchId }}".logi(this@MatchListViewModel::class.java.simpleName)
+        "Collect observeMatchChange result：${list.map { it.match.matchId }}".logi(this@EarlyMatchListViewModel::class.java.simpleName)
         withContext(Dispatchers.Main) {
             //第一次http拿到的資料量過少，會影響到拉取更新資料需要等待，所以跟api補上拿取更多一點的資料
             if (page == 1 && list.isEmpty()) {
@@ -143,7 +143,7 @@ class MatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
             val (startTime, endTime) =
                 Pair(
                     _selectedDate.value,
-                    _selectedDate.value + BaseMatchRepository.ONE_DAY_TIME_STAMP
+                    _selectedDate.value + BaseMatchRepository.ONE_DAY_TIME_STAMP * 31
                 )
 
             "取得比賽資料 Type = ${loadMatchType} PlayType = $_playType sportId = $_sportId tournamentId = $_tournamentId page = $page startTime = $startTime endTime = $endTime".logi(

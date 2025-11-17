@@ -36,9 +36,9 @@ import arch.cayenne.module.home.databinding.FragmentMatchListPagerBinding
 import arch.cayenne.module.home.ui.adapter.MatchItemAdapter
 import arch.cayenne.module.home.ui.adapter.OnMatchItemClickListener
 import arch.cayenne.module.home.ui.view.decoration.MatchCardItemDecoration
+import arch.cayenne.module.home.ui.viewmodel.EarlyMatchListViewModel
 import arch.cayenne.module.home.ui.viewmodel.EarlyViewModel
 import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
-import arch.cayenne.module.home.ui.viewmodel.MatchListViewModel
 import arch.cayenne.module.home.utils.DateUtils
 import arch.cayenne.module.home.utils.setFavoriteIcon
 import com.walisport.module.message.ui.view.DeleteAnimator
@@ -51,10 +51,10 @@ import kotlin.reflect.KClass
  * 早盘用的比赛列表， 具备日期切换及向前查询功能
  */
 class EarlyMatchListPagerFragment :
-    BaseFragment<MatchListViewModel, FragmentMatchListPagerBinding>() {
+    BaseFragment<EarlyMatchListViewModel, FragmentMatchListPagerBinding>() {
     override val vbClass: KClass<FragmentMatchListPagerBinding> =
         FragmentMatchListPagerBinding::class
-    override val vmClass: KClass<MatchListViewModel> = MatchListViewModel::class
+    override val vmClass: KClass<EarlyMatchListViewModel> = EarlyMatchListViewModel::class
     private val homeViewModel: HomeViewModel by sharedViewModel<HomeViewModel, NewHomeFragment>()
     private val earlyViewModel: EarlyViewModel by viewModels({ requireParentFragment() })
 
@@ -363,7 +363,7 @@ class EarlyMatchListPagerFragment :
             mViewModel.setPlayTypeId(this.getInt(ARG_PLAY_TYPE_ID))
             mViewModel.setPosition(this.getInt(ARG_POSITION))
         }
-        "MatchListPagerFragment playType: ${mViewModel.getPlayTypeId()} sportId: ${mViewModel.getSportId()} leagueId: ${mViewModel.getTournamentId()}".logi()
+        "EarlyMatchListPagerFragment playType: ${mViewModel.getPlayTypeId()} sportId: ${mViewModel.getSportId()} leagueId: ${mViewModel.getTournamentId()}".logi()
         startObserveMatch()
     }
 
