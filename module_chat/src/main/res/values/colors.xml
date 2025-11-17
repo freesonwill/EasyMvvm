@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="color_909092">#909092</color>
+    <color name="tab_selected_text_color">#ffffff</color>
+    <color name="adapter_number_text_color">#FFD400</color>
+    <color name="adapter_game_type">#C0C0C0</color>
 </resources>

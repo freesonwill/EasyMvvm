@@ -38,6 +38,7 @@ class ChatModuleInitializer : DefaultInitializer<String> {
     }
 
     private val viewModules = module {
+        includes(defaultModule)
         viewModelOf(::ChatHomeViewModel)
         viewModelOf(::SoftKeyboardViewModel)
         viewModelOf(::ChatPageViewModel)

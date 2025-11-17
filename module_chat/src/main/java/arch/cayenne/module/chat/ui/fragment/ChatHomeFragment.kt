@@ -40,6 +40,8 @@ import arch.cayenne.module.chat.utils.EmojiUtils.BID_EMOJI_REGEX
 import kotlinx.coroutines.launch
 import java.util.regex.Pattern
 import kotlin.reflect.KClass
+import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
+import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 
 //聊天
 class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding>(),
@@ -157,6 +159,10 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
                 isEnabled = false
                 requireActivity().onBackPressedDispatcher.onBackPressed()
             }
+        }
+
+        mBinding.tvMsg.clickNoRepeat{
+            ChatUserInfoFragment().show(childFragmentManager)
         }
     }
 
@@ -295,12 +301,12 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
 
     @SuppressLint("ClickableViewAccessibility")
     private fun initInputListener() {
-
         mBinding.apply {
             ivEmoji.setOnTouchListener { v, event ->
                 if (event.action == MotionEvent.ACTION_UP) {
                     keyboardChangeClick(KeyBoardType.EMOJI)
                 }
+                calculationLayoutSize()
                 return@setOnTouchListener true
             }
             chatTvSend.setOnTouchListener { v, event ->
@@ -386,7 +392,6 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
             .addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
                 override fun onGlobalLayout() {
                     mBinding.main.viewTreeObserver.removeOnGlobalLayoutListener(this)
-                    calculationLayoutSize()
                 }
             })
     }
