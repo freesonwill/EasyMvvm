@@ -8,7 +8,6 @@ import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup.LayoutParams
-import android.view.ViewTreeObserver
 import android.view.inputmethod.EditorInfo
 import androidx.activity.addCallback
 import androidx.core.animation.addListener
@@ -62,15 +61,11 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
             val value = it.getBoolean("chat", false)
             setMainChatStatus()
         }
-        mBinding.main.post {
-            mViewModel.keyBoardHeight = mBinding.main.height
-            addMainViewListen()
-        }
     }
 
     override fun onStart() {
-//        StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND(autoPadding = false, autoIsNavigation = false)
-//        setStatusBar(StatusBarConfig, mBinding.root)
+        StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND(autoPadding = false,autoIsNavigation = true)
+        setStatusBar(StatusBarConfig, mBinding.root)
         super.onStart()
         mViewModel.setSoftConfig(false)
     }
@@ -166,6 +161,9 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
     }
 
     private fun initSoftKeyBoardFragment() {
+        initEmojiFragment()
+        initInputListener()
+        initHotRecycler()
 
         softKeyBoardManager = SoftKeyboardManager(
             lifecycleScope,
@@ -174,9 +172,11 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
             mViewModel.chatConfigDao,
             this
         )
-        initEmojiFragment()
-        initInputListener()
-        initHotRecycler()
+        mBinding.main.post {
+            mViewModel.keyBoardHeight = mBinding.main.height
+            softKeyBoardManager.originMainHeight = mViewModel.keyBoardHeight
+            addMainViewListen()
+        }
     }
 
     private fun initHotRecycler() {
@@ -231,7 +231,7 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
 
     private fun calculationLayoutSize() {
         mBinding.apply {
-            softKeyBoardManager.emojiKeyBoardHeight = if(mViewModel.isMainSoft) 242.dp2px else 242.dp2px+getStatusBarHeight(mBinding.root)
+            softKeyBoardManager.emojiKeyBoardHeight = if(mViewModel.isMainSoft) 242.dp2px else 242.dp2px
 //            chatKeyboard.layoutParams.height = softKeyBoardManager.emojiKeyBoardHeight
 //            inputContent.translationY = 44.dp2px.toFloat()
         }
@@ -517,7 +517,6 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
         onStart: () -> Unit,
         onEnd: () -> Unit
     ) {
-        "panelAnimateTo  offset $offset ".logd("aaa")
         softKeyBoardManager.apply {
             mainAnim = AnimatorSet()
             val mainTransYAnim = ObjectAnimator.ofFloat(mBinding.main, "translationY", offset.toFloat())
@@ -556,6 +555,10 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
             mainAnim?.start()
         }
 
+    }
+
+    override fun getMainHeight(): Int {
+        return mBinding.main.height
     }
 
     //防止软件盘和表情键盘切换的时候跳动

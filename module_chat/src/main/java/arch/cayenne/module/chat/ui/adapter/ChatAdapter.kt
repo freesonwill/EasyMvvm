@@ -29,12 +29,10 @@ class ChatAdapter :
         val nBinding = binding
 
         fun initListener() {
-            "initListener ".logd("aaa")
             nBinding.main.apply {
 
                 setOnClickListener {
                     val position = it.tag as Int
-                    "position main".logd("aaa")
                     itemClick?.onItemClick(getItem(position), position)
                 }
             }
