@@ -25,6 +25,9 @@ import org.koin.core.component.inject
 import plugin.koin.KoinViewModel
 
 @KoinViewModel
+/**
+ * 早盘比赛列表的ViewModel, 具备切换日期及向前查询能力
+ */
 class EarlyMatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
     private var _sportId = SportType.Init.id
     private var _playType = PlayType.EARLY.id
@@ -54,6 +57,7 @@ class EarlyMatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
     fun setSelectedDate(date: Long = 0) {
         page = 1
         _selectedDate.value = date
+        requestScrollToTop = true
     }
 
     fun setPosition(position: Int) {
