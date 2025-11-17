@@ -92,6 +92,7 @@
     <string name="title_odds">赔率</string>
     <string name="title_multiple">倍数</string>
     <string name="title_bonus">奖金</string>
+    <string name="tip_multiple">仅显示30天内的注单, 按中奖倍数从大到小排序</string>
 
     <string name="title_sport_filter">选择筛选项</string>
     <string name="title_sport_filter_type">体育类型</string>

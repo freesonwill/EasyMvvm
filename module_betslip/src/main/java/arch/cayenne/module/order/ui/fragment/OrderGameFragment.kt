@@ -23,13 +23,13 @@ class OrderGameFragment : BaseFragment<OrderGameViewModel, FragmentOrderGameBind
 
     override fun initListener() {
         mBinding.clAll.clickNoRepeat {
-            mBinding.viewPager.setCurrentItem(0,false)
+            mViewModel.setTabType(GamePageEnum.ALL)
         }
         mBinding.tvMultiple.clickNoRepeat {
-            mBinding.viewPager.setCurrentItem(1,false)
+            mViewModel.setTabType(GamePageEnum.MULTIPLE)
         }
         mBinding.tvBonus.clickNoRepeat {
-            mBinding.viewPager.setCurrentItem(2,false)
+            mViewModel.setTabType(GamePageEnum.BONUS)
         }
         mBinding.clFilter.clickNoRepeat {
             showGameFilter()
@@ -37,6 +37,37 @@ class OrderGameFragment : BaseFragment<OrderGameViewModel, FragmentOrderGameBind
     }
 
     override suspend fun createObserver() {
+        mViewModel.tabType.observe(viewLifecycleOwner) {
+            changeTabType(it)
+        }
+    }
+
+    private fun changeTabType(type: GamePageEnum) {
+        when (type) {
+            GamePageEnum.ALL -> {
+                mBinding.ivAllArrow.isSelected = true
+                mBinding.tvAll.isSelected = true
+                mBinding.tvBonus.isSelected = false
+                mBinding.tvMultiple.isSelected = false
+                mBinding.viewPager.setCurrentItem(0, false)
+            }
+
+            GamePageEnum.MULTIPLE -> {
+                mBinding.ivAllArrow.isSelected = false
+                mBinding.tvAll.isSelected = false
+                mBinding.tvBonus.isSelected = false
+                mBinding.tvMultiple.isSelected = true
+                mBinding.viewPager.setCurrentItem(1, false)
+            }
+
+            GamePageEnum.BONUS -> {
+                mBinding.ivAllArrow.isSelected = false
+                mBinding.tvAll.isSelected = false
+                mBinding.tvBonus.isSelected = true
+                mBinding.tvMultiple.isSelected = false
+                mBinding.viewPager.setCurrentItem(2, false)
+            }
+        }
     }
 
     private fun showGameFilter() {
