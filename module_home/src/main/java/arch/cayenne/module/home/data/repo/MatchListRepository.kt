@@ -43,8 +43,8 @@ class MatchListRepository(
         startTime: Long,
         endTime: Long,
         isForce: Boolean = false,  //是否刪除之前的資料
-    ) : ApiResponseState {
-        val last = if(isForce) null else matchDao.queryLastMatch(playType, tournamentId, date)
+    ): ApiResponseState {
+        val last = if (isForce) null else matchDao.queryLastMatch(playType, tournamentId, date)
         val resp = socketManager.sendAndWaitProtoMessageResponse<Client.ListMatchResp>(
             scope = scope,
             dispatcher = Dispatchers.IO,
@@ -70,7 +70,9 @@ class MatchListRepository(
 
         if (resp.error == null && resp.data != null) {
             val matchFullData = resp.data!!.matchList.toRoomData()
-            "新增比賽 tournamentId = $tournamentId matchId = ${matchFullData.match.map { it.matchId }} 進入資料庫".logi(HomeRepository::class.java.simpleName)
+            "新增比賽 tournamentId = $tournamentId matchId = ${matchFullData.match.map { it.matchId }} 進入資料庫".logi(
+                HomeRepository::class.java.simpleName
+            )
             val tournamentMatchRefs = resp.data!!.matchList.mapIndexed { index, match ->
                 TournamentMatchRef(
                     playType = playType,
@@ -103,10 +105,11 @@ class MatchListRepository(
         matchDao.deleteCurrentTournamentMatchRef(playType, tournamentId, date)
     }
 
-    fun observeMatchChange(playType: Int, tournamentId: Int) : Flow<List<TournamentMatchRef>> {
+    fun observeMatchChange(playType: Int, tournamentId: Int): Flow<List<TournamentMatchRef>> {
         //觀察後端的500-1002（获取比赛列表）回傳
         return matchDao.observeMatchChange(playType, tournamentId)
     }
 
-    suspend fun queryMatchChange(playType: Int, tournamentId: Int): List<TournamentMatchRef> = matchDao.queryMatchChange(playType, tournamentId)
+    suspend fun queryMatchChange(playType: Int, tournamentId: Int): List<TournamentMatchRef> =
+        matchDao.queryMatchChange(playType, tournamentId)
 }
