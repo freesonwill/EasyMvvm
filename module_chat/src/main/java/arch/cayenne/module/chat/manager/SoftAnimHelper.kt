@@ -66,9 +66,12 @@ class SoftAnimHelper(
     private fun checkNavigationBarState(insets: WindowInsetsCompat) {
         val navBars = insets.getInsets(WindowInsetsCompat.Type.navigationBars())
         val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-        // 导航栏可见性判断
+//         导航栏可见性判断
         isNavigationBarVisible = navBars.bottom > 0
         navigationBarHeight = navBars.bottom
+
+        navigationListener?.setNavigationStatus(isNavigationBarVisible,navigationBarHeight)
+//        "navigation  navigationBarHeight $navigationBarHeight  isNavigationBarVisible $isNavigationBarVisible  ${systemBars.top}  ${systemBars.bottom}".logd(TAG)
     }
 
     /**
@@ -87,7 +90,6 @@ class SoftAnimHelper(
                     dbKeyboardHeight = keyBoardHeight
                     navigationListener?.onSoftKeyBoardShow(keyBoardHeight)
 //                    "checkKeyBoard second  ${keyBoardHeight}".logd("aaa")
-
                 }
             }
             navigationListener?.secondSoftKeyBoardShow()
@@ -103,7 +105,7 @@ class SoftAnimHelper(
             } else { //计算的软件盘高度和保存的软件盘高度不一致
                 secondCheck = true
                 lastKeyBoardHeight = keyBoardHeight
-                navigationListener?.onSoftKeyBoardShow(if (dbKeyboardHeight <= 0) keyBoardHeight else dbKeyboardHeight)
+                navigationListener?.onSoftKeyBoardShow(keyBoardHeight)
             }
 
         } else if (height < 150 && isKeyBoardVisible) { //软件盘关闭

@@ -4,7 +4,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.widget.LinearLayout
 import androidx.core.view.isVisible
+import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.PagerBean
+import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.adapter.PagerAdapter
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.utils.CustomTabIndicatorUtils
@@ -52,6 +54,9 @@ class EmojiHomeFragment : BaseFragment<EmojiHomeViewModel, FragmentEmojiHomeLayo
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+    }
 
     override suspend fun createObserver() {
     }
