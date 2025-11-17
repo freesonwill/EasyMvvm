@@ -38,10 +38,10 @@ class ChatUserInfoLayoutScale @JvmOverloads constructor(
 
     private var mLiveMainGesture: ChatInfoGestureListener? = null
     private val density = resources.displayMetrics.density
-    private var initialViewHeight: Float = 259f * density
+    private var initialViewHeight: Float = 334f * density
     private var initMinViewHeight: Float = 140f * density
     private var minViewHeight: Float = 140f * density
-    private var maxViewHeight: Float = 259f * density
+    private var maxViewHeight: Float = 334f * density
     private var isVerticalScroll = true
     private var animation = true
     private var isDowScroll = true // 标记是否往下滑动
