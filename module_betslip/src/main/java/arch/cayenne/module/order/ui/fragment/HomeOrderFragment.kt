@@ -3,16 +3,13 @@ package arch.cayenne.module.order.ui.fragment
 import android.os.Bundle
 import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.adapter.PagerAdapter
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.data.constants.DrawerAction.ACTION_OPEN
 import arch.cayenne.lib.common.data.constants.DrawerAction.KEY_ACTION
 import arch.cayenne.lib.common.data.constants.DrawerAction.REQUEST_KEY_DRAWER
@@ -34,13 +31,12 @@ import kotlin.reflect.KClass
 /**
  * 投注记录&注单
  */
-class HomeOrderFragment: BaseFragment<HomeOrderViewModel, FragmentHomeOrderBinding>() {
+class HomeOrderFragment : BaseFragment<HomeOrderViewModel, FragmentHomeOrderBinding>() {
 
     override val vbClass: KClass<FragmentHomeOrderBinding> = FragmentHomeOrderBinding::class
     override val vmClass: KClass<HomeOrderViewModel> = HomeOrderViewModel::class
-
     private val unreadMessageViewModel: UnReadMessageViewModel by viewModels()
-    private var tabLayoutMediator:TabLayoutMediator? = null
+    private var tabLayoutMediator: TabLayoutMediator? = null
 
     companion object {
         const val BET_MODE = "BET_MODE"
@@ -54,17 +50,16 @@ class HomeOrderFragment: BaseFragment<HomeOrderViewModel, FragmentHomeOrderBindi
     }
 
 
-    private fun setMode(m: BetMode){
-        //"lifecycle.currentState----${lifecycle.currentState},isAtLeast:${lifecycle.currentState.isAtLeast(Lifecycle.State.CREATED)}".logd(TAG)
-        if(!lifecycle.currentState.isAtLeast(Lifecycle.State.CREATED)) {
-            launch(Lifecycle.State.STARTED,lifecycleScope){ setMode(m) }
+    private fun setMode(m: BetMode) {
+        if (!lifecycle.currentState.isAtLeast(Lifecycle.State.CREATED)) {
+            launch(Lifecycle.State.STARTED, lifecycleScope) { setMode(m) }
         } else {
             mViewModel.betModelFlow.value = m
         }
     }
 
     override fun initListener() {
-        with (mBinding) {
+        with(mBinding) {
             ivHam.addScaleOnTouchAnimation()
             ivHam.clickNoRepeat {
                 requireActivity().supportFragmentManager.setFragmentResult(
@@ -82,31 +77,33 @@ class HomeOrderFragment: BaseFragment<HomeOrderViewModel, FragmentHomeOrderBindi
         with(unreadMessageViewModel) {
             //未读消息监听
             unreadMsg.observe(viewLifecycleOwner) { flag ->
-                mBinding.dotHam.visibility = if (flag) android.view.View.VISIBLE else android.view.View.GONE
+                mBinding.dotHam.visibility =
+                    if (flag) android.view.View.VISIBLE else android.view.View.GONE
             }
         }
-
         unreadMessageViewModel.createObserver()
         launch {
             mViewModel.betModelFlow.filterNotNull().collect {
-                val page = when(it){
+                val page = when (it) {
                     BetMode.BET_RECORD -> {
                         OrderPageEnum.entries.toTypedArray()
                     }
+
                     else -> {
                         arrayOf(OrderPageEnum.SPORT)
                     }
                 }
-                mBinding.viewPager.adapter = PagerAdapter(childFragmentManager, lifecycle, page.map { it.page })
+                mBinding.viewPager.adapter =
+                    PagerAdapter(childFragmentManager, lifecycle, page.map { it.page })
 
                 tabLayoutMediator?.detach()
-                TabLayoutMediator(mBinding.tabLayout, mBinding.viewPager,false) { tab, position ->
+                TabLayoutMediator(mBinding.tabLayout, mBinding.viewPager, false) { tab, position ->
                     tab.text = page[position].page.title
                 }.apply {
                     tabLayoutMediator = this
                 }.attach()
 
-                if(page.size > 1) {
+                if (page.size > 1) {
                     mBinding.tabLayout.setSelectedTabIndicator(R.drawable.bg_order_indicator)
                 } else {
                     mBinding.tabLayout.setSelectedTabIndicator(null)
@@ -118,13 +115,12 @@ class HomeOrderFragment: BaseFragment<HomeOrderViewModel, FragmentHomeOrderBindi
     override fun onStart() {
         super.onStart()
         mBinding.root.fitsSystemWindows = false
-        StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND()
+        StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND(autoIsNavigation = true)
         setStatusBar(StatusBarConfig, mBinding.root)
     }
 
     override fun onHiddenChanged(hidden: Boolean) {
         super.onHiddenChanged(hidden)
-        //"onHiddenChanged--arguments---$arguments--hidden:$hidden".logd(TAG)
         arguments?.getInt(BET_MODE)?.let {
             setMode(BetMode.entries.toTypedArray()[it])
         }
