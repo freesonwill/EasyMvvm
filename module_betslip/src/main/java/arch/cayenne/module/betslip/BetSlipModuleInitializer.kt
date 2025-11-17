@@ -28,13 +28,13 @@ import arch.cayenne.module.betslip.ui.viewmodel.SportPickerViewModel
 import arch.cayenne.module.betslip.ui.viewmodel.UnsettledViewModel
 import arch.cayenne.module.order.ui.viewmodel.HomeOrderViewModel
 import arch.cayenne.module.order.ui.viewmodel.OrderGameViewModel
+import arch.cayenne.module.order.ui.viewmodel.GameAllViewModel
+import arch.cayenne.module.order.ui.viewmodel.GameBonusViewModel
+import arch.cayenne.module.order.ui.viewmodel.GameMultipleViewModel
 import arch.cayenne.module.order.ui.viewmodel.OrderSportEarlySettleViewModel
 import arch.cayenne.module.order.ui.viewmodel.OrderSportPageViewModel
 import arch.cayenne.module.order.ui.viewmodel.OrderSportViewModel
-
 import org.koin.dsl.module
-
-
 
 class BetSlipModuleInitializer: DefaultInitializer<String> {
     private val TAG = this.javaClass.simpleName
@@ -66,6 +66,9 @@ class BetSlipModuleInitializer: DefaultInitializer<String> {
         viewModelOf(::DateNumberViewModel)
 
         // ORDER
+        viewModelOf(::GameAllViewModel)
+        viewModelOf(::GameBonusViewModel)
+        viewModelOf(::GameMultipleViewModel)
         viewModelOf(::HomeOrderViewModel)
         viewModelOf(::OrderGameViewModel)
         viewModelOf(::OrderSportViewModel)
