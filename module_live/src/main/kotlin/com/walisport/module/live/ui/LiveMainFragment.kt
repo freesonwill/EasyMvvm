@@ -203,8 +203,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
 
                 else -> false
             }
-            mBinding.skinTab.dispatchTouchEvent(event)
-            mBinding.llSwitchNarrator.dispatchTouchEvent(event)
+            mBinding.llcTab.dispatchTouchEvent(event)
         }
     }
 
