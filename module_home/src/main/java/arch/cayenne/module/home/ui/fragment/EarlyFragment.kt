@@ -244,7 +244,7 @@ class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>(),
             leaguePagerAdapter?.getItemId(mBinding.layoutContainer.vpGameList.currentItem)
                 ?: return
         val fragment = childFragmentManager.findFragmentByTag("f$itemId") ?: return
-        (fragment as? MatchListPagerFragment)?.reloadAllData()
+        (fragment as? EarlyMatchListPagerFragment)?.reloadAllData()
     }
 
     // 設置更多按鈕的顯示狀態
@@ -474,7 +474,7 @@ class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>(),
         val currentPosition = position
         val itemId = leaguePagerAdapter?.getItemId(currentPosition) ?: return
         val fragment = childFragmentManager.findFragmentByTag("f$itemId") ?: return
-        if (fragment is MatchListPagerFragment) {
+        if (fragment is EarlyMatchListPagerFragment) {
             fragment.startObserveMatchListChange()
         }
         //如果記憶體過低，就不做預載左右兩頁
@@ -485,7 +485,7 @@ class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>(),
         if (currentPosition - 1 >= 0) {
             leaguePagerAdapter?.getItemId(currentPosition - 1)?.also { preItemId ->
                 childFragmentManager.findFragmentByTag("f$preItemId").also { preFragment ->
-                    if (preFragment is MatchListPagerFragment) {
+                    if (preFragment is EarlyMatchListPagerFragment) {
                         preFragment.startObserveMatchListChange()
                     }
                 }
@@ -495,7 +495,7 @@ class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>(),
         if (currentPosition + 1 < (mBinding.layoutContainer.vpGameList.adapter?.itemCount ?: 0)) {
             leaguePagerAdapter?.getItemId(currentPosition + 1)?.also { preItemId ->
                 childFragmentManager.findFragmentByTag("f$preItemId").also { preFragment ->
-                    if (preFragment is MatchListPagerFragment) {
+                    if (preFragment is EarlyMatchListPagerFragment) {
                         preFragment.startObserveMatchListChange()
                     }
                 }

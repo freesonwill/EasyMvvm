@@ -36,9 +36,9 @@ import arch.cayenne.module.home.databinding.FragmentMatchListPagerBinding
 import arch.cayenne.module.home.ui.adapter.MatchItemAdapter
 import arch.cayenne.module.home.ui.adapter.OnMatchItemClickListener
 import arch.cayenne.module.home.ui.view.decoration.MatchCardItemDecoration
+import arch.cayenne.module.home.ui.viewmodel.EarlyViewModel
 import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
 import arch.cayenne.module.home.ui.viewmodel.MatchListViewModel
-import arch.cayenne.module.home.ui.viewmodel.SubHomeViewModel
 import arch.cayenne.module.home.utils.DateUtils
 import arch.cayenne.module.home.utils.setFavoriteIcon
 import com.walisport.module.message.ui.view.DeleteAnimator
@@ -47,13 +47,16 @@ import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import java.lang.ref.WeakReference
 import kotlin.reflect.KClass
 
-class MatchListPagerFragment :
+/**
+ * 早盘用的比赛列表， 具备日期切换及向前查询功能
+ */
+class EarlyMatchListPagerFragment :
     BaseFragment<MatchListViewModel, FragmentMatchListPagerBinding>() {
     override val vbClass: KClass<FragmentMatchListPagerBinding> =
         FragmentMatchListPagerBinding::class
     override val vmClass: KClass<MatchListViewModel> = MatchListViewModel::class
     private val homeViewModel: HomeViewModel by sharedViewModel<HomeViewModel, NewHomeFragment>()
-    private val subHomeViewModel: SubHomeViewModel by viewModels({ requireParentFragment() })
+    private val earlyViewModel: EarlyViewModel by viewModels({ requireParentFragment() })
 
     private lateinit var matchAdapter: MatchItemAdapter
     private val gameLayoutManager by lazy { LinearLayoutManager(context) }
@@ -194,7 +197,7 @@ class MatchListPagerFragment :
         val firstViewTop = firstView?.top ?: 0
         val itemHeight = firstView?.height ?: 0
         val scrollY = firstPos * itemHeight - firstViewTop
-        subHomeViewModel.updateCoordinate(
+        earlyViewModel.updateCoordinate(
             playTypeId = mViewModel.getPlayTypeId(),
             sportId = mViewModel.getSportId(),
             tournamentId = mViewModel.getTournamentId(),
@@ -204,7 +207,7 @@ class MatchListPagerFragment :
 
     private fun setMatchListPosition() {
         lifecycleScope.launch {
-            val position = subHomeViewModel.getCurrentPageCoordinate(
+            val position = earlyViewModel.getCurrentPageCoordinate(
                 playTypeId = mViewModel.getPlayTypeId(),
                 sportId = mViewModel.getSportId(),
                 tournamentId = mViewModel.getTournamentId()
@@ -327,8 +330,29 @@ class MatchListPagerFragment :
 
         }
 
+        //只有早盘有日期变化的情况
+        earlyViewModel.selectedDate.observeEvent(viewLifecycleOwner, this) { date ->
+            if (date == HomeViewModel.DEFAULT_DATE
+                || earlyViewModel.currentPlayTypeId != mViewModel.getPlayTypeId()
+                || earlyViewModel.currentSportId != mViewModel.getSportId()
+            ) {
+                return@observeEvent
+            }
+            refreshListByDate(date)
+        }
+
+
         homeViewModel.notifySubHomeRefresh.observeEvent(viewLifecycleOwner, this) {
             reloadAllData()
+        }
+    }
+
+    private fun refreshListByDate(date: Long) {
+        if (date.toInt() == 0) {
+            //切換後選回全部
+            mViewModel.setSelectedDate(0)
+        } else {
+            mViewModel.setSelectedDate(date)
         }
     }
 
@@ -373,7 +397,7 @@ class MatchListPagerFragment :
         mViewModel.stopMatchSubscribeNotify()
     }
 
-    fun addDateItem(list:List<MatchListItem>?): List<MatchListItem>? {
+    fun addDateItem(list: List<MatchListItem>?): List<MatchListItem>? {
         val isEmpty = (list?.size ?: 0) == 0
         if (isEmpty) {
             return list
@@ -411,8 +435,8 @@ class MatchListPagerFragment :
             playTypeId: Int,
             leagueId: Int,
             position: Int
-        ): MatchListPagerFragment {
-            return MatchListPagerFragment().apply {
+        ): EarlyMatchListPagerFragment {
+            return EarlyMatchListPagerFragment().apply {
                 arguments = Bundle().apply {
                     putInt(ARG_SPORT_ID, sportId)
                     putInt(ARG_PLAY_TYPE_ID, playTypeId)
