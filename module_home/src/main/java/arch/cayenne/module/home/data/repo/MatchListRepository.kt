@@ -1,6 +1,7 @@
 package arch.cayenne.module.home.data.repo
 
 import arch.cayenne.lib.base.data.remote.ApiResponseState
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.database.dao.BetDao
@@ -10,7 +11,9 @@ import arch.cayenne.lib.database.entity.TournamentMatchRef
 import arch.cayenne.lib.websocket.WebSocketManager
 import arch.cayenne.lib.websocket.data.ApiCode
 import arch.cayenne.lib.websocket.extension.sendAndWaitProtoMessageResponse
+import arch.cayenne.module.home.data.constants.PlayType
 import arch.cayenne.module.home.data.model.toRoomData
+import arch.cayenne.module.home.utils.DateUtils.getMidnightTimeStamp
 import galaxy.client.proto.Client
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -24,6 +27,7 @@ class MatchListRepository(
     private val infoDao: InfoDao,
     private val userDataManager: UserDataManager,
 ) : BaseMatchRepository(scope, socketManager, betDao, matchDao, infoDao, userDataManager) {
+
     /**
      * 根據不同的條件，從api或是db(優先)取得賽事資料，如果從api來的話，拿到後會先存進資料庫內
      * @param playType : 一級導航欄
@@ -78,7 +82,15 @@ class MatchListRepository(
                     playType = playType,
                     tournamentId = tournamentId,
                     page = page,
-                    date = date,
+                    date = if (playType == PlayType.EARLY.id) {
+                        //早盘具备连续续页功能， 可能查询到和参数中date不属于同一天的比赛。
+                        //使用比赛开始时间作为条件，计算其当天起始时间，作为该场比赛所属的date
+                        val midnight = getMidnightTimeStamp(match.basicInfo.startTime)
+//                        "startTime:${match.basicInfo.startTime}, midnight:${midnight}".logd("dateIssue")
+                        midnight
+                    } else {
+                        date
+                    },
                     matchId = match.matchId,
                     order = page * 100 + index
                 )
