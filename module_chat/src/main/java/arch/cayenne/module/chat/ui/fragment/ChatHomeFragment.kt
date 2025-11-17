@@ -161,6 +161,9 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
             }
         }
 
+        mBinding.tvMsg.clickNoRepeat{
+            ChatUserInfoFragment().show(childFragmentManager)
+        }
     }
 
     private fun initSoftKeyBoardFragment() {
