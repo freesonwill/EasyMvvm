@@ -2,7 +2,6 @@ package arch.cayenne.lib.common.utils
 
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.res.Configuration
@@ -16,16 +15,16 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.FrameLayout
 import android.widget.ImageView
-import androidx.core.animation.addListener
 import android.widget.RelativeLayout
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.animation.addListener
 import androidx.core.animation.doOnEnd
 import androidx.core.animation.doOnStart
 import androidx.core.view.drawToBitmap
 
 object ViewUtils {
+    private const val TAG = "ViewUtils"
 
-    @SuppressLint("ClickableViewAccessibility")
     fun hideKeyboard(context: Context, view: EditText, onClick: ((v: View) -> Unit)? = null) {
         view.showSoftInputOnFocus = false
         val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -82,45 +81,43 @@ object ViewUtils {
     }
 
     // 必須使用faker view才能解決子view設置0dp會顯示錯誤問題
-    fun collapseView(view: View, fakerView: ImageView) {
-        //如果fakerView是view的子，将fakerView提到view同级
-        moveViewToSameLevel(childView = fakerView, parentView = view)
-
+    fun collapseView(view: View, fakerView: ImageView,onEnd: (() -> Unit)? = null) {
         val snapshot = view.drawToBitmap()
         fakerView.setImageBitmap(snapshot)
 
-        val initialHeight = view.height
+        val viewHeight = view.height
 
-        val animator = ValueAnimator.ofInt(initialHeight, 1)
-        animator.duration = 200L
+        val animator = ValueAnimator.ofInt(viewHeight, 1)
+        animator.duration = 2000L
         animator.interpolator = LinearInterpolator()
 
         animator.addUpdateListener { valueAnimator ->
             val animatedValue = valueAnimator.animatedValue as Int
-            val layoutParams = fakerView.layoutParams
-            layoutParams.height = animatedValue
-            fakerView.layoutParams = layoutParams
+            fakerView.layoutParams = fakerView.layoutParams.apply { height = animatedValue }
         }
         animator.doOnStart {
-            val layoutParams = fakerView.layoutParams
-            layoutParams.height = initialHeight
-            fakerView.layoutParams = layoutParams
+            fakerView.layoutParams = fakerView.layoutParams.apply { height = viewHeight }
             fakerView.visibility = View.VISIBLE
             view.visibility = View.GONE
         }
 
         animator.doOnEnd {
             fakerView.visibility = View.GONE
+            onEnd?.invoke()
         }
 
         animator.start()
     }
 
-    fun expandView(view: View, fakerView: ImageView) {
-        //如果fakerView是view的子，将fakerView提到view同级
-        moveViewToSameLevel(childView = fakerView, parentView = view)
-
-        // 先確保原始 view 是隱藏狀態
+    /**
+     * 展开View
+     * bug: 对于一开始Gone的View，drawToBitmap()会崩溃；即使使用measure来获取，获取的图片也偏大
+     * @param view
+     * @param fakerView
+     * @param onEnd
+     */
+    fun expandView(view: View, fakerView: ImageView,onEnd:(()->Unit)? = null) {
+        // 把實際要展出的畫面先截圖給 fakerView
         view.visibility = View.GONE
 
         // 把實際要展出的畫面先截圖給 fakerView
@@ -128,29 +125,28 @@ object ViewUtils {
         fakerView.setImageBitmap(snapshot)
 
         // 先設為 0 高度，逐步展開
-        val targetHeight = snapshot.height
-        val animator = ValueAnimator.ofInt(1, targetHeight)
+        val viewHeight = snapshot.height
+        val animator = ValueAnimator.ofInt(0, viewHeight)
         animator.duration = 200L
         animator.interpolator = LinearInterpolator()
 
         animator.addUpdateListener { valueAnimator ->
             val animatedValue = valueAnimator.animatedValue as Int
-            val layoutParams = fakerView.layoutParams
-            layoutParams.height = animatedValue
-            fakerView.layoutParams = layoutParams
+            fakerView.layoutParams = fakerView.layoutParams.apply { height = animatedValue }
         }
 
         animator.doOnStart {
-            val layoutParams = fakerView.layoutParams
-            layoutParams.height = 0
-            fakerView.layoutParams = layoutParams
+            fakerView.layoutParams = fakerView.layoutParams.apply { height = 0 }
             fakerView.visibility = View.VISIBLE
+            view.visibility = View.GONE
         }
 
-        animator.doOnEnd {
+        animator.doOnEnd  {
             // 展開完成後切回原始 view，隱藏 fakerView
-            fakerView.visibility = View.GONE
+            fakerView.layoutParams = fakerView.layoutParams.apply { height = viewHeight }
             view.visibility = View.VISIBLE
+            fakerView.visibility = View.GONE
+            onEnd?.invoke()
         }
 
         animator.start()
@@ -219,5 +215,4 @@ object ViewUtils {
             parent.addView(childView, lp)
         }
     }
-
 }

@@ -280,9 +280,7 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
     }
 
     private fun showKeyboard() {
-        if (!mBinding.clKeyboard.isVisible) {
-            mBinding.clKeyboard.showKeyBoard()
-        }
+        mBinding.clKeyboard.showKeyBoard()
     }
 
     private fun sendBet() {

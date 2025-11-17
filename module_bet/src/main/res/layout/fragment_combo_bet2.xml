@@ -90,29 +90,29 @@
                 tools:itemCount="2"
                 tools:listitem="@layout/item_bet_sheet" />
 
-            <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
+            <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
                 android:id="@+id/cl_multi"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="10dp"
                 android:layout_marginTop="12dp"
-                app:layout_constraintTop_toBottomOf="@id/rv_bet">
-
+                app:layout_constraintTop_toBottomOf="@id/rv_bet"
+                android:orientation="vertical"
+                >
                 <include
                     android:id="@+id/first_multi_item"
                     layout="@layout/item_combo_multi_bet3"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_70"
-                    android:layout_marginBottom="@dimen/dp_12"
+                    android:layout_height="wrap_content"
                     app:layout_constraintBottom_toTopOf="@+id/cl_multi_bet" />
-
 
                 <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
                     android:id="@+id/cl_multi_bet"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/bg_bet_sheet"
-                    app:layout_constraintBottom_toBottomOf="parent">
+                    android:layout_marginTop="@dimen/dp_12"
+                    >
 
                     <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
                         android:id="@+id/cl_multi_bet_title"
@@ -134,10 +134,10 @@
 
                         <arch.cayenne.lib.skin.widget.SkinnableImageView
                             android:id="@+id/tvMultiBetExpand"
-                            android:layout_width="@dimen/dp_32"
+                            android:layout_width="@dimen/dp_48"
                             android:layout_height="@dimen/dp_32"
                             android:layout_marginEnd="0dp"
-                            android:paddingStart="@dimen/dp_0"
+                            android:paddingStart="@dimen/dp_16"
                             android:paddingEnd="@dimen/dp_16"
                             android:scaleY="1"
                             android:src="@drawable/ic_arrow_down_16"
@@ -154,12 +154,12 @@
                         android:nestedScrollingEnabled="false"
                         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                         app:layout_constraintTop_toBottomOf="@id/cl_multi_bet_title"
-                        tools:itemCount="0"
+                        tools:itemCount="1"
                         tools:listitem="@layout/item_combo_multi_bet2"
                         />
 
                 </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
-            </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
+            </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

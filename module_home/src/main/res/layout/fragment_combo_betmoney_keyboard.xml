@@ -1,28 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merge
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/cl_keyboard"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout"
-    >
-
-    <!-- 对整个View进行遮罩，做弹起和伸缩动画 -->
-    <ImageView
-        android:id="@+id/iv_faker_view"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:adjustViewBounds="true"
-        android:scaleType="centerCrop"
-        android:visibility="gone"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="visible"
-        />
+    tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
 
     <arch.cayenne.lib.skin.widget.SkinnableRecyclerView
         android:id="@+id/rv_quick_amount"
@@ -30,7 +12,6 @@
         android:layout_height="204dp"
         android:background="@drawable/shape_6dp"
         android:clipChildren="false"
-        android:clipToOutline="true"
         android:clipToPadding="false"
         android:nestedScrollingEnabled="false"
         android:orientation="vertical"
@@ -42,8 +23,7 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:itemCount="5"
         tools:listitem="@layout/item_quick_amount"
-        tools:visibility="gone"
-        />
+        tools:visibility="gone" />
 
     <arch.cayenne.lib.common.ui.view.NumberKeyboardView
         android:id="@+id/number_keyboard"
@@ -67,9 +47,9 @@
         <arch.cayenne.lib.skin.widget.SkinnableImageButton
             android:id="@+id/btn_back"
             style="@style/NumberKeyboardTextButton"
-            android:layout_rowWeight="0"
             android:layout_width="61dp"
             android:layout_height="48dp"
+            android:layout_rowWeight="0"
             android:layout_marginBottom="3dp"
             android:scaleType="center"
             android:src="@drawable/icon_keyboard_back" />
@@ -77,9 +57,9 @@
         <arch.cayenne.lib.skin.widget.SkinnableTextView
             android:id="@+id/btn_clear"
             style="@style/NumberKeyboardTextButton"
-            android:layout_rowWeight="0"
             android:layout_width="match_parent"
             android:layout_height="48dp"
+            android:layout_rowWeight="0"
             android:layout_marginTop="3dp"
             android:layout_marginBottom="3dp"
             android:text="@string/btn_clear"
@@ -88,10 +68,10 @@
 
         <arch.cayenne.lib.skin.widget.SkinnableImageButton
             android:id="@+id/btn_collapse"
-            android:layout_rowWeight="0"
             style="@style/NumberKeyboardTextButton"
             android:layout_width="match_parent"
             android:layout_height="102dp"
+            android:layout_rowWeight="0"
             android:layout_columnWeight="2"
             android:layout_marginTop="3dp"
             android:padding="10dp"
@@ -99,5 +79,5 @@
             android:src="@drawable/ic_arrow_down" />
     </GridLayout>
 
-</merge>
+</androidx.constraintlayout.widget.ConstraintLayout>
 
