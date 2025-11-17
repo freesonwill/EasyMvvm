@@ -62,8 +62,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="top|center_horizontal"
-                            android:layout_marginStart="@dimen/dp_30"
-                            android:layout_marginTop="@dimen/dp_13"
+                            android:layout_marginStart="@dimen/dp_20"
+                            android:layout_marginTop="@dimen/dp_8"
                             android:alpha="0"
                             android:drawableEnd="@drawable/chat_info_vip"
                             android:drawablePadding="@dimen/dp_2"
@@ -119,7 +119,8 @@
 
                         <androidx.appcompat.widget.LinearLayoutCompat
                             android:id="@+id/LlBottom"
-                            android:layout_marginTop="@dimen/dp_7"
+                            android:paddingTop="@dimen/dp_7"
+                            android:paddingBottom="10dp"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:clipChildren="true"
@@ -191,17 +192,16 @@
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_marginTop="@dimen/dp_20"
-                    android:layout_height="31dp">
+                    android:paddingTop="10dp"
+                    android:layout_height="41dp">
 
                     <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
                         android:id="@+id/skinTab"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="6dp"
-                        android:layout_marginTop="3dp"
                         android:background="@color/tran_0"
                         android:clickable="true"
+                        android:layout_marginTop="@dimen/dp_3"
                         android:focusable="true"
                         android:orientation="vertical"
                         tools:ignore="MissingConstraints">
