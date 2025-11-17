@@ -44,7 +44,6 @@ import com.gyf.immersionbar.ImmersionBar
 import kotlinx.coroutines.launch
 import java.util.regex.Pattern
 import kotlin.reflect.KClass
-import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 
 //聊天
@@ -66,7 +65,8 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
     }
 
     override fun onStart() {
-        StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND(autoPadding = false,autoIsNavigation = true)
+        StatusBarConfig.statusBarType =
+            StatusBarMode.DRAW_BEHIND(autoPadding = false, autoIsNavigation = true)
         setStatusBar(StatusBarConfig, mBinding.root)
         super.onStart()
         mViewModel.setSoftConfig(false)
@@ -132,7 +132,7 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
         mViewModel.emojiLiveData.observe(viewLifecycleOwner) {
             addEmojiData(it)
         }
-        mViewModel.etDelLiveData.observe(viewLifecycleOwner){
+        mViewModel.etDelLiveData.observe(viewLifecycleOwner) {
             delEtInput()
         }
     }
@@ -161,7 +161,7 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
             }
         }
 
-        mBinding.tvMsg.clickNoRepeat{
+        mBinding.tvMsg.clickNoRepeat {
             ChatUserInfoFragment().show(childFragmentManager)
         }
     }
@@ -223,21 +223,23 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
 //                }
 //            })
     }
+
     /**
      * 直播间view被截取了statusBarHeight的高度
      * */
-    private fun getStatusBarHeight(view: View):Int{
+    private fun getStatusBarHeight(view: View): Int {
         val windowInsetsCompat = ViewCompat.getRootWindowInsets(view)
         val topInset = windowInsetsCompat?.getInsets(WindowInsetsCompat.Type.statusBars())?.top ?: 0
         //topInset比statusBarHeight准确（ROG手机）
-        val ret = if(topInset == 0) ImmersionBar.getStatusBarHeight(view.context) else topInset
+        val ret = if (topInset == 0) ImmersionBar.getStatusBarHeight(view.context) else topInset
         //"topInset:$topInset,ret:$ret".logd()
         return ret
     }
 
     private fun calculationLayoutSize() {
         mBinding.apply {
-            softKeyBoardManager.emojiKeyBoardHeight = if(mViewModel.isMainSoft) 242.dp2px else 242.dp2px
+            softKeyBoardManager.emojiKeyBoardHeight =
+                if (mViewModel.isMainSoft) 242.dp2px else 242.dp2px
 //            chatKeyboard.layoutParams.height = softKeyBoardManager.emojiKeyBoardHeight
 //            inputContent.translationY = 44.dp2px.toFloat()
         }
@@ -417,16 +419,34 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
             return
         }
         mBinding.chatEtInput.text?.clear()
+        "sendText ${mViewModel.currentKeyBoardType}".logd("aaa")
+        if (mViewModel.currentKeyBoardType == KeyBoardType.CHAT) {
+            resetInputUi()
+        }
         keyboardChangeClick(KeyBoardType.CHAT, 7)
         mViewModel.sendMsgToChat(text)
+    }
+
+    private fun resetInputUi() {
+        val animSet = AnimatorSet().apply {
+            duration = 170L
+            playTogether(*inputIconAnim(true))
+            addListener(onStart = {
+                updateInputIcon(true)
+                mBinding.ivLanguage.isVisible = true
+            })
+            start()
+        }
     }
 
     private fun emojiLayoutSize(isReset: Boolean) {
         mBinding.apply {
             val height = main.layoutParams.height
 //            "emojiLayoutSize $height  ${main.height}  ${mViewModel.keyBoardHeight}".logd("aaa")
-            inputMain.layoutParams.height =if(isReset) LayoutParams.MATCH_PARENT  else mViewModel.keyBoardHeight
-            main.layoutParams.height =if(isReset) LayoutParams.MATCH_PARENT else mViewModel.keyBoardHeight + softKeyBoardManager.emojiKeyBoardHeight
+            inputMain.layoutParams.height =
+                if (isReset) LayoutParams.MATCH_PARENT else mViewModel.keyBoardHeight
+            main.layoutParams.height =
+                if (isReset) LayoutParams.MATCH_PARENT else mViewModel.keyBoardHeight + softKeyBoardManager.emojiKeyBoardHeight
             main.requestLayout()
         }
     }
@@ -460,12 +480,8 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
 
     private fun updateKeyboardView(isVisible: Boolean) {
         mBinding.apply {
-//            emojiContent.isInvisible = !isVisible
-            ivLanguage.isVisible = !isVisible
-//            ivAt.isVisible = !isVisible
-//            ivBet.isVisible = !isVisible
-//            ivEmoji.isVisible = !isVisible
-//            chatTvSend.isVisible = isVisible
+            "updateKeyboardView ${chatEtInput.length()}".logd("aaa")
+            ivLanguage.isVisible = !isVisible && chatEtInput.length() == 0
         }
     }
 
@@ -525,13 +541,18 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
     ) {
         softKeyBoardManager.apply {
             mainAnim = AnimatorSet()
-            val mainTransYAnim = ObjectAnimator.ofFloat(mBinding.main, "translationY", offset.toFloat())
+            val mainTransYAnim =
+                ObjectAnimator.ofFloat(mBinding.main, "translationY", offset.toFloat())
             mainTransYAnim?.interpolator = FastOutSlowInInterpolator()
 
             val emojiSet = AnimatorSet().apply {
                 duration = 170L
                 inputIconShouldUpdate(actionType, call = {
-                    playTogether(mainTransYAnim, *inputIconAnim(offset))
+                    if (mBinding.chatEtInput.length() == 0) {
+                        playTogether(mainTransYAnim, *inputIconAnim(offset == 0))
+                    } else {
+                        play(mainTransYAnim)
+                    }
                 }, elCall = {
                     play(mainTransYAnim)
                 })
@@ -545,14 +566,19 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
 //            mainAnim?.duration = 170L
 
             mainAnim?.addListener(onStart = {
-                inputIconShouldUpdate(actionType, call = {
-                    updateInputIcon(true)
-                })
+                if (mBinding.chatEtInput.length() == 0) {
+                    inputIconShouldUpdate(actionType, call = {
+                        updateInputIcon(true)
+                    })
+                }
+
                 onStart.invoke()
             }, onEnd = {
-                inputIconShouldUpdate(actionType, call = {
-                    updateInputIcon(offset == 0)
-                })
+                if (mBinding.chatEtInput.length() == 0) {
+                    inputIconShouldUpdate(actionType, call = {
+                        updateInputIcon(offset == 0)
+                    })
+                }
                 onEnd.invoke()
             })
             if (isFirstOpen) {
@@ -594,15 +620,15 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
         duration = 30
     }
 
-    private fun inputIconAnim(offset: Int): Array<ObjectAnimator> {
+    //输入框在有内容和键盘弹出时的icon动画
+    private fun inputIconAnim(isExpand: Boolean): Array<ObjectAnimator> {
 
-        val atTransYParam = if (offset == 0) 0f else 47.dp2px.toFloat()
+        val atTransYParam = if (isExpand) 0f else 47.dp2px.toFloat()
+        val atTransXParam = if (isExpand) 0f else 5.dp2px.toFloat()
+        val betTransXParam = if (isExpand) 0f else 12.dp2px.toFloat()
+        val emojiTransXParam = if (isExpand) 0f else 18.dp2px.toFloat()
 
-        val atTransXParam = if (offset == 0) 0f else 5.dp2px.toFloat()
-        val betTransXParam = if (offset == 0) 0f else 12.dp2px.toFloat()
-        val emojiTransXParam = if (offset == 0) 0f else 18.dp2px.toFloat()
-
-        val scaleParam = if (offset == 0) floatArrayOf(1.16f, 1f) else floatArrayOf(1f, 1.16f)
+        val scaleParam = if (isExpand) floatArrayOf(1.16f, 1f) else floatArrayOf(1f, 1.16f)
 
         val atTransXAnim = ObjectAnimator.ofFloat(mBinding.ivAt, "translationX", atTransXParam)
         val atTransYAnim = ObjectAnimator.ofFloat(mBinding.ivAt, "translationY", atTransYParam)
