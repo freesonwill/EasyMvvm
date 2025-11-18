@@ -60,13 +60,13 @@ class BetSlipRemoteManager(
             apiCode = ApiCode.GET_ORDER
         ) {
             Client.GetOrderReq.newBuilder().apply {
-                this.status = type
-                this.size = size
-                startTime?.let { this.startTime = it }
-                endTime?.let { this.endTime = it }
-                cursorBetTime?.let { this.cursorBetTime = it }
-                sportIds?.let { this.addAllSportId(it) }
-                matchId?.let { this.matchId = it }
+//                this.status = type
+//                this.size = size
+//                startTime?.let { this.startTime = it }
+//                endTime?.let { this.endTime = it }
+//                cursorBetTime?.let { this.cursorBetTime = it }
+//                sportIds?.let { this.addAllSportId(it) }
+//                matchId?.let { this.matchId = it }
 
             }.build()
         }
