@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<arch.cayenne.lib.skin.widget.SkinnableLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/roots"
+    android:layout_width="match_parent"
+    android:layout_height="84dp"
+    android:layout_marginTop="@dimen/dp_13"
+  >
+
+
+
+    <TextView
+        android:id="@+id/tvNumber"
+        android:textColor="#FFD400"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        android:text="1"
+        android:gravity="center"
+        android:layout_width="48dp"
+        android:layout_height="match_parent"/>
+
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:layout_width="63dp"
+        android:layout_height="84dp"
+        android:background="@drawable/chat_user_game_list_img"
+        />
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:layout_marginStart="@dimen/dp_11"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/gameName"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:textSize="14sp"
+            android:gravity="top"
+            android:paddingTop="-2dp"
+            android:text="Doony Dough"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="@dimen/dp_5"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="@dimen/dp_7"
+                    android:paddingEnd="@dimen/dp_7"
+                    android:paddingTop="@dimen/dp_1"
+                    android:paddingBottom="@dimen/dp_1"
+                    android:text="电子Oooo"
+                    android:textSize="11sp"
+                    android:textColor="@color/adapter_game_type"
+                    android:background="@drawable/shape_chat_info_game_type_bg"
+                    />
+
+                <TextView
+                    android:layout_marginStart="@dimen/dp_7"
+                    android:paddingTop="@dimen/dp_1"
+                    android:paddingBottom="@dimen/dp_1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="@dimen/dp_7"
+                    android:paddingEnd="@dimen/dp_7"
+                    android:text="Hacksaw Gaming"
+                    android:textSize="11sp"
+                    android:textColor="@color/adapter_game_type"
+                    android:background="@drawable/shape_chat_info_game_type_bg"
+                    />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <View
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="wrap_content"
+            android:orientation="horizontal"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/chat_bet_money"
+                android:textColor="@color/color_999999"
+                android:textStyle="bold"
+                android:textSize="13sp"
+                />
+
+            <TextView
+                android:id="@+id/tvMoney"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="¥100000000.00"
+                android:layout_marginStart="@dimen/dp_6"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:textSize="13sp"
+                />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+</arch.cayenne.lib.skin.widget.SkinnableLinearLayout>

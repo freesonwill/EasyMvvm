@@ -54,6 +54,12 @@ class StatusBarDelegate : IStatusBar {
         return ret
     }
 
+    private fun getNavigationHeight(view: View): Int {
+        val windowInsetsCompat = ViewCompat.getRootWindowInsets(view)
+        val navigationBottom = windowInsetsCompat?.getInsets(WindowInsetsCompat.Type.navigationBars())?.bottom ?: 0
+        return navigationBottom
+    }
+
     override fun setStatusBar(config: StatusBarConfig, view: View) {
         val window = mActivity.window
         val originUiFlag = window.decorView.systemUiVisibility
@@ -95,7 +101,8 @@ class StatusBarDelegate : IStatusBar {
             //顶部沉浸式
             //ImmersionBar实现状态栏和底部虚拟home键透明
             is StatusBarMode.DRAW_BEHIND -> {
-                val navigationBarHeight = ImmersionBar.getNavigationBarHeight(view.context)
+//                val navigationBarHeight = ImmersionBar.getNavigationBarHeight(view.context)
+                val navigationBarHeight = getNavigationHeight(view)
                 if (!isInit || Build.VERSION.SDK_INT > 28) {
                     immersionBar
                         .hideBar(BarHide.FLAG_SHOW_BAR) //状态栏显示

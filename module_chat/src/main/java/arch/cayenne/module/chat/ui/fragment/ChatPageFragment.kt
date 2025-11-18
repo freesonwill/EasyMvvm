@@ -46,7 +46,6 @@ class ChatPageFragment:BaseFragment<ChatPageViewModel,FragementChatPageLayoutBin
 
         adapter.setOnItemListener(object :RecyclerItemListener<ChatMsg>{
             override fun onItemClick(item: ChatMsg?, position: Int) {
-                "show item".loge("aaa")
                 ChatPersonalDialogFragment.show(this@ChatPageFragment)
             }
         })

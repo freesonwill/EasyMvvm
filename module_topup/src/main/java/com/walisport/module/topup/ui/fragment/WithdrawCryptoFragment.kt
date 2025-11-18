@@ -3,6 +3,7 @@ package com.walisport.module.topup.ui.fragment
 import android.os.Bundle
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.ui.fragment.CoinDialogFragment
+import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
@@ -53,7 +54,17 @@ class WithdrawCryptoFragment : BaseFragment<CryptoViewModel, FragmentWithdrawCry
             val location = IntArray(2)
             mBinding.layCoin.getLocationOnScreen(location)
             val offset = location[1] + 25.dp2px
-            CoinDialogFragment.newInstance(offset).show(childFragmentManager)
+            CoinDialogFragment.newInstance(offset).apply {
+                setDismissListener(object : CoinDialogFragment.DialogDismissListener {
+                    override fun onDismiss() {
+                        ViewUtils.expandView(mBinding.ivArrow,false)
+                    }
+
+                    override fun onShow() {
+                        ViewUtils.expandView(mBinding.ivArrow,true)
+                    }
+                })
+            }.show(childFragmentManager)
         }
         mBinding.layWithdrawLesson.clickNoRepeat {
             navigate(WithdrawFragmentDirections.actionWithdrawFragmentToFundDetailsFragment().apply {

@@ -203,8 +203,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
 
                 else -> false
             }
-            mBinding.skinTab.dispatchTouchEvent(event)
-            mBinding.llSwitchNarrator.dispatchTouchEvent(event)
+            mBinding.llcTab.dispatchTouchEvent(event)
         }
     }
 
@@ -217,10 +216,10 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                 super.onPause(owner)
                 if (fixedSkin != null) {
                     SkinnableResourceManager.setFixedSkin(null)
-                    StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND()
+                    StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND(autoIsNavigation = false)
                     StatusBarConfig.statusBarDarkFont =
                         immersionBarSkinTypeExt(mViewModel.getSkinType())
-                    setStatusBar(StatusBarConfig, mBinding.root)
+//                    setStatusBar(StatusBarConfig, mBinding.root)
                 }
             }
 
@@ -230,7 +229,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                 mBinding.root.fitsSystemWindows = fixedSkin == null
                 if (fixedSkin != null) {
                     SkinnableResourceManager.setFixedSkin(fixedSkin)
-                    StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND()
+                    StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND(autoIsNavigation = false)
                     StatusBarConfig.statusBarDarkFont = false
                     setStatusBar(StatusBarConfig, mBinding.liveMain)
                     updateBetSheetSkin() //refresh skin to fixed skin

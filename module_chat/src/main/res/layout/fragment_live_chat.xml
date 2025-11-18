@@ -11,7 +11,7 @@
             type="arch.cayenne.module.chat.ui.viewmodel.ChatHomeViewModel" />
     </data>
 
-    <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
+    <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
         android:id="@+id/main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -179,7 +179,13 @@
                     android:src="@drawable/icon_input_emoji"
                     app:layout_constraintLeft_toRightOf="@id/iv_bottom_bet"
                     app:layout_constraintTop_toTopOf="@id/iv_bottom_bet" />
-
+                <TextView
+                    android:id="@+id/tvMsg"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="聊天用户"
+                    android:textColor="@color/white"
+                    tools:ignore="MissingConstraints" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.appcompat.widget.LinearLayoutCompat>
@@ -187,9 +193,13 @@
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/chat_keyboard"
             android:layout_width="match_parent"
-            android:layout_height="242dp" />
+            android:layout_height="242dp"
+            app:layout_constraintTop_toBottomOf="@id/input_main"
+            />
 
-    </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
+
+
+    </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
 
 
 </layout>

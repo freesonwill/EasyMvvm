@@ -25,7 +25,6 @@ import arch.cayenne.lib.common.utils.ext.SportStringExt.isGreaterThanValue
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toOdds
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
-import arch.cayenne.lib.common.utils.ext.setOnClickOrLongPressListener
 import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.database.entity.BetSelectionBean
 import arch.cayenne.lib.database.entity.BetTypeEnum
@@ -57,29 +56,8 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
         ViewUtils.hideKeyboard(requireContext(), mBinding.etMoney) {
             showKeyboard()
         }
-
-        mBinding.rvQuickAmount.adapter = quickAmountAdapter
+        mBinding.clKeyboard.setRvQuickAmountAdapter(quickAmountAdapter)
         quickAmountAdapter.submitList(QuickAmountEnum.entries)
-
-        mBinding.numberKeyboard.setOnCalculatorClickListener(object :
-            NumberKeyboardView.OnCalculatorClickListener {
-            override fun onNumberClick(number: Int) {
-                mViewModel.addNumber(number)
-            }
-
-            override fun onDotClick() {
-                mViewModel.setDot()
-            }
-
-            override fun onOtherClick() {
-                mViewModel.setMaxMoney()
-            }
-
-            override fun getOtherText(): String {
-                return getString(R.string.btn_max)
-            }
-        })
-
         setMaxHeight()
     }
 
@@ -114,15 +92,7 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
                 mViewModel.removeBet()
             }
         }
-        mBinding.btnBack.setOnClickOrLongPressListener (onClick = {
-            mViewModel.backNumber()
-        }, onLongPressRepeat = {
-            mViewModel.backNumber()
-        })
 
-        mBinding.btnClear.setOnClickListener {
-            mViewModel.clearNumber()
-        }
         mBinding.btnCollusion.setOnClickListener {
             lifecycleScope.launch {
                 mViewModel.saveToCombo()
@@ -145,9 +115,44 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
         mBinding.ivCancelReserve.setOnClickListener {
             mViewModel.removeReserve()
         }
-        mBinding.btnCollapse.setOnClickListener {
-            hideKeyboard()
+
+        mBinding.clKeyboard.apply {
+            setOnBackListener(onClick = {
+                mViewModel.backNumber()
+            }, onLongPressRepeat = {
+                mViewModel.backNumber()
+            })
+
+            setOnClearListener {
+                mViewModel.clearNumber()
+            }
+            setOnHideKeyboardListener {
+                mBinding.clMoney.isFocusableInTouchMode = false
+                mBinding.clMoney.isFocusable = false
+            }
+            setOnShowKeyboardListener {
+                mBinding.clMoney.isFocusableInTouchMode = true
+                mBinding.clMoney.isFocusable = true
+            }
+            setOnCalculatorClickListener(object :NumberKeyboardView.OnCalculatorClickListener {
+                override fun onNumberClick(number: Int) {
+                    mViewModel.addNumber(number)
+                }
+
+                override fun onDotClick() {
+                    mViewModel.setDot()
+                }
+
+                override fun onOtherClick() {
+                    mViewModel.setMaxMoney()
+                }
+
+                override fun getOtherText(): String {
+                    return getString(R.string.btn_max)
+                }
+            })
         }
+
         mBinding.clMoney.setOnClickListener {
             showKeyboard()
         }
@@ -274,18 +279,8 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
         showKeyboard()
     }
 
-    private fun hideKeyboard() {
-        ViewUtils.collapseView(mBinding.clKeyboard, mBinding.ivFakerView)
-        mBinding.clMoney.isFocusableInTouchMode = false
-        mBinding.clMoney.isFocusable = false
-    }
-
     private fun showKeyboard() {
-        if (!mBinding.clKeyboard.isVisible) {
-            ViewUtils.expandView(mBinding.clKeyboard, mBinding.ivFakerView)
-            mBinding.clMoney.isFocusableInTouchMode = true
-            mBinding.clMoney.isFocusable = true
-        }
+        mBinding.clKeyboard.showKeyBoard()
     }
 
     private fun sendBet() {
