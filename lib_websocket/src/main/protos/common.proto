@@ -101,13 +101,7 @@ message BetCombo {
     int32 serial_value = 1;     //required 串关选项个数, 如：投注4场比赛的3串1，此字段为3，如果是全串关（4串11*11)，此字段为0
     string bet_amount = 2;       //required 每个子单投注金额， 如 4选个的3串1*4，四个子单，每子单投注"10"元，总共投注40元，此字段为10
     int32 odds_change = 3;      //required 接受赔率变化类型,0:不接受赔率变动 1:接受最优赔率变动 2:接受任意赔率变动
-}
-
-message PlaceBetInfo {
-    string order_id = 1;
-    int32 serial_value = 2;     // 串关选项个数, 如：投注4场比赛的3串1，此字段为3，如果是全串关（4串11*11)，此字段为0
-    int32 order_status = 3;     // 订单状态 1确认中，2拒单，3取消订单，4接单成功，5已结算
-    string odds = 4;        //赔率
+    string order_id = 4;        //订单id, 用于幂等
 }
 
 //选项
@@ -153,6 +147,13 @@ message Order {
     EarlySettlePrice early_settle_price = 16; //提前结算报价
 }
 
+//注单每日统计
+message OrderDayCount {
+    string date = 1; //日期
+    string bet_amount = 2; // 投注
+    string valid_bet_amount = 3; // 有效投注
+}
+
 // 注单投注项
 message OrderSelection {
     int64 selection_id = 1;   //投注项id
@@ -166,6 +167,7 @@ message OrderSelection {
     int32 status = 9;        //选项状态 0-未结算 1-赢 2-平 3-输 4-赢半 5-输半 6-取消
     string end_score = 10;         //结束时比分
     bool in_play = 11; //是否滚球
+    bool active = 12;          //true - 可以投注  false - 不可投注
 }
 
 // 预约注单记录
@@ -324,5 +326,7 @@ message FeedbackLabel{
     int32 code = 1;
     string name = 2;
 }
+
+
 
 

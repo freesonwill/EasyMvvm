@@ -49,14 +49,11 @@ open class OrderSlipRepository(
         )
         return@withContext if (result.error == null && result.data != null) {
             val currency = infoDao.getCurrency()
-            val data = result.data!!.orderList.map { it.toOrderBean(type, currency, null) }
-            if (data.isEmpty()) {
-                betSlipOrderDao.deleteByType(type)
-            } else {
-                betSlipOrderDao.insert(data)
-                betSlipOrderDao.deleteMissing(type, data.map { it.betId })
-            }
-            ApiResponseState.Succeeded(data)
+            val data = result.data!!.order.toOrderBean(type, currency, null)
+
+            betSlipOrderDao.insert(data)
+            betSlipOrderDao.deleteMissing(type, listOf( data.betId))
+            ApiResponseState.Succeeded(listOf(data))
         } else {
             betSlipOrderDao.deleteByType(type)
             ApiResponseState.Failed(result.error)
@@ -83,14 +80,12 @@ open class OrderSlipRepository(
         )
         return@withContext if (result.error == null && result.data != null) {
             val currency = infoDao.getCurrency()
-            val data = result.data!!.orderList.map { it.toOrderBean(type, currency, matchId) }
-            if (data.isEmpty()) {
-                betSlipOrderDao.deleteByTypeAndMatchId(type, matchId)
-            } else {
-                betSlipOrderDao.insert(data)
-                betSlipOrderDao.deleteMissingByMatchId(type, data.map { it.betId }, matchId)
-            }
-            ApiResponseState.Succeeded(data)
+            val data = result.data!!.order.toOrderBean(type, currency, matchId)
+
+            betSlipOrderDao.insert(data)
+            betSlipOrderDao.deleteMissingByMatchId(type, listOf(data.betId), matchId)
+
+            ApiResponseState.Succeeded(listOf(data))
         } else {
             betSlipOrderDao.deleteByTypeAndMatchId(type, matchId)
             ApiResponseState.Failed(result.error)
@@ -115,9 +110,9 @@ open class OrderSlipRepository(
         )
         if (result.error == null && result.data != null) {
             val currency = infoDao.getCurrency()
-            val data = result.data!!.orderList.map { it.toOrderBean(type, currency, null) }
+            val data = result.data!!.order.toOrderBean(type, currency, null)
             betSlipOrderDao.insert(data)
-            ApiResponseState.Succeeded(data)
+            ApiResponseState.Succeeded(listOf(data))
         } else {
             betSlipOrderDao.deleteByType(type)
             ApiResponseState.Failed(result.error)
@@ -144,9 +139,9 @@ open class OrderSlipRepository(
         )
         if (result.error == null && result.data != null) {
             val currency = infoDao.getCurrency()
-            val data = result.data!!.orderList.map { it.toOrderBean(type, currency, matchId) }
+            val data = result.data!!.order.toOrderBean(type, currency, matchId)
             betSlipOrderDao.insert(data)
-            ApiResponseState.Succeeded(data)
+            ApiResponseState.Succeeded(listOf( data))
         } else {
             betSlipOrderDao.deleteByTypeAndMatchId(type, matchId)
             ApiResponseState.Failed(result.error)
