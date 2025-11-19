@@ -5,13 +5,12 @@ import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.base.data.remote.ApiResponseState.Start.dataAs
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
+import arch.cayenne.lib.database.entity.EarlyTournamentMatchRef
 import arch.cayenne.lib.database.entity.MatchWithMarkets
-import arch.cayenne.lib.database.entity.TournamentMatchRef
 import arch.cayenne.module.home.data.constants.HomeState
 import arch.cayenne.module.home.data.constants.PlayType
 import arch.cayenne.module.home.data.constants.SportType
 import arch.cayenne.module.home.data.repo.BaseMatchRepository
-import arch.cayenne.module.home.data.repo.BaseMatchRepository.Companion.DEFAULT_MATCH_SIZE
 import arch.cayenne.module.home.data.repo.MatchListRepository
 import galaxy.common.proto.Common
 import kotlinx.coroutines.Dispatchers
@@ -87,7 +86,7 @@ class EarlyMatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
                     .drop(2)  //一開始進入的不用聽，可以藉由loginChange去取得最開始的資料
                     .collect { selectedDate ->
                         "Collect selectedDateChange playType = $_playType  tournament = $_tournamentId selectedDate = $selectedDate ".logi()
-                        val currentDateRefs = repository.queryMatchChange(_playType, _tournamentId)
+                        val currentDateRefs = repository.queryEarlyMatchChange(_tournamentId)
                             .filter { it.date == selectedDate }
                         if (currentDateRefs.isEmpty()) {
                             getMatchListData(LoadMatchType.DATE_CHANGE)
@@ -98,7 +97,7 @@ class EarlyMatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
             }
             //當內部資料有變化
             launch(Dispatchers.IO) {
-                repository.observeMatchChange(_playType, _tournamentId)
+                repository.observeEarlyMatchChange(_tournamentId)
                     .distinctUntilChanged()
                     .collect { refs ->
                         val selectedDate = _selectedDate.value
@@ -117,9 +116,8 @@ class EarlyMatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
         }
     }
 
-    private suspend fun processObserveMatchList(currentDateRefs: List<TournamentMatchRef>) {
-        //一次拿到當前頁面全部資料，會超過一頁，所以需要重新看一下page
-        page = currentDateRefs.maxOfOrNull { it.page } ?: 0
+    private suspend fun processObserveMatchList(currentDateRefs: List<EarlyTournamentMatchRef>) {
+        //早盘暂时没有分页的概念
         //拿到ref後藉由ref拿到這個時間段的match id，再去資料庫把這些賽史資料串起來
         val list = repository.queryFullMatches(
             currentDateRefs.map { it.matchId }
@@ -127,13 +125,9 @@ class EarlyMatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
         "Collect observeMatchChange result：${list.map { it.match.matchId }}".logi(this@EarlyMatchListViewModel::class.java.simpleName)
         withContext(Dispatchers.Main) {
             //第一次http拿到的資料量過少，會影響到拉取更新資料需要等待，所以跟api補上拿取更多一點的資料
-            if (page == 1 && list.isEmpty()) {
-                setState(HomeState.Match.DataEmpty)
-            } else if (list.size % DEFAULT_MATCH_SIZE != 0) {
-                setState(DataState.NoMoreData)
-            } else {
-                setState(HomeState.Match.LoadSuccess)
-            }
+            //todo :早盘还没有做分页机制
+            setState(HomeState.Match.LoadSuccess)
+
             matchListChange.value = list
         }
     }

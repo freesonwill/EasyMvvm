@@ -4,8 +4,8 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import androidx.room.RewriteQueriesToDropUnusedColumns
 import androidx.room.Transaction
+import arch.cayenne.lib.database.entity.EarlyTournamentMatchRef
 import arch.cayenne.lib.database.entity.MarketBean
 import arch.cayenne.lib.database.entity.MarketBeanLite
 import arch.cayenne.lib.database.entity.MarketSelectCrossRef
@@ -25,6 +25,9 @@ abstract class MatchDao : BaseDao<MatchBean>() {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract suspend fun insertTournamentMatchRef(crossRef: List<TournamentMatchRef>): List<Long>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    abstract suspend fun insertEarlyTournamentMatchRef(crossRef: List<EarlyTournamentMatchRef>): List<Long>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     protected abstract suspend fun insertMatch(match: List<MatchBean>)
@@ -53,6 +56,16 @@ abstract class MatchDao : BaseDao<MatchBean>() {
     )
     abstract suspend fun queryLastMatch(playType: Int, tournamentId: Int, date: Long): MatchBean?
 
+
+    @Transaction
+    @Query(
+        "SELECT * " +
+                "FROM MatchBean bean " +
+                "INNER JOIN EarlyTournamentMatchRef ref ON ref.tournamentId = :tournamentId AND ref.date = :date " +
+                "WHERE ref.matchId = bean.matchId ORDER BY ref.startTime DESC limit 1"
+    )
+    abstract suspend fun queryEarlyLastMatch(tournamentId: Int, date: Long): MatchBean?
+
     @Query(
         "SELECT *" +
                 "FROM TournamentMatchRef " +
@@ -62,6 +75,16 @@ abstract class MatchDao : BaseDao<MatchBean>() {
         playType: Int,
         tournamentId: Int
     ): Flow<List<TournamentMatchRef>>
+
+
+    @Query(
+        "SELECT *" +
+                "FROM EarlyTournamentMatchRef " +
+                "WHERE   tournamentId = :tournamentId  ORDER BY date asc, startTime asc"
+    )
+    abstract fun observeEarlyMatchChange(
+        tournamentId: Int
+    ): Flow<List<EarlyTournamentMatchRef>>
 
     @Query(
         "SELECT *" +
@@ -73,20 +96,14 @@ abstract class MatchDao : BaseDao<MatchBean>() {
         tournamentId: Int
     ): List<TournamentMatchRef>
 
-    @RewriteQueriesToDropUnusedColumns
-    @Transaction
     @Query(
-        "SELECT * " +
-                "FROM MatchBean bean " +
-                "INNER JOIN TournamentMatchRef ref ON ref.playType = :playType AND ref.tournamentId = :tournamentId AND ref.page = :page AND ref.date = :date " +
-                "WHERE ref.matchId = bean.matchId ORDER BY ref.`order`"
+        "SELECT *" +
+                "FROM EarlyTournamentMatchRef " +
+                "WHERE tournamentId = :tournamentId  ORDER BY date asc, startTime asc"
     )
-    abstract suspend fun queryAllMatch(
-        playType: Int,
-        tournamentId: Int,
-        page: Int,
-        date: Long
-    ): List<MatchBean>
+    abstract suspend fun queryEarlyMatchChange(
+        tournamentId: Int
+    ): List<EarlyTournamentMatchRef>
 
     @Transaction
     @Query(
@@ -95,6 +112,14 @@ abstract class MatchDao : BaseDao<MatchBean>() {
                 "WHERE playType = :playType AND tournamentId = :tournamentId AND date = :date"
     )
     abstract fun deleteCurrentTournamentMatchRef(playType: Int, tournamentId: Int, date: Long)
+
+    @Transaction
+    @Query(
+        "delete " +
+                "FROM EarlyTournamentMatchRef " +
+                "WHERE tournamentId = :tournamentId AND date = :date"
+    )
+    abstract fun deleteCurrentEarlyTournamentMatchRef(tournamentId: Int, date: Long)
 
     @Transaction
     @Query(
@@ -107,6 +132,18 @@ abstract class MatchDao : BaseDao<MatchBean>() {
         playType: Int,
         tournamentId: Int,
         page: Int,
+        date: Long
+    ): Flow<List<MatchBean>>
+
+    @Transaction
+    @Query(
+        "SELECT * " +
+                "FROM MatchBean bean " +
+                "INNER JOIN EarlyTournamentMatchRef ref ON  ref.tournamentId = :tournamentId AND  ref.date = :date " +
+                "WHERE ref.matchId = bean.matchId"
+    )
+    abstract fun observeEarlyAllMatch(
+        tournamentId: Int,
         date: Long
     ): Flow<List<MatchBean>>
 
@@ -219,8 +256,14 @@ abstract class MatchDao : BaseDao<MatchBean>() {
     @Query("DELETE FROM TournamentMatchRef")
     abstract fun deleteTournamentMatchRef()
 
+    @Query("DELETE FROM EarlyTournamentMatchRef")
+    abstract fun deleteEarlyTournamentMatchRef()
+
     @Query("DELETE FROM TournamentMatchRef WHERE matchId IN (:matchIds) ")
     abstract fun deleteTournamentMatchRef(matchIds: List<Long>)
+
+    @Query("DELETE FROM EarlyTournamentMatchRef WHERE matchId IN (:matchIds) ")
+    abstract fun deleteEarlyTournamentMatchRef(matchIds: List<Long>)
 
     @Query("DELETE FROM MatchMarketCrossRef")
     abstract fun deleteMatchMarketCrossRef()
@@ -305,6 +348,32 @@ abstract class MatchDao : BaseDao<MatchBean>() {
     }
 
     @Transaction
+    open suspend fun insertEarlyMatch(
+        tournamentMatchRefs: List<EarlyTournamentMatchRef>,
+        matches: List<MatchBean>,
+        markets: List<MarketBean>,
+        selections: List<SelectionBean>,
+        marketCrossRef: List<MatchMarketCrossRef>,
+        marketSelectCrossRefs: List<MarketSelectCrossRef>,
+        playType: Int,
+        tournamentId: Int,
+        date: Long,
+        isForce: Boolean,
+    ): List<Long> {
+        if (isForce) {
+            deleteCurrentEarlyTournamentMatchRef(tournamentId, date)
+        }
+        return insertEarlyMatch(
+            tournamentMatchRefs = tournamentMatchRefs,
+            matches = matches,
+            markets = markets,
+            selections = selections,
+            marketCrossRef = marketCrossRef,
+            marketSelectCrossRefs = marketSelectCrossRefs
+        )
+    }
+
+    @Transaction
     open suspend fun insertMatch(
         tournamentMatchRefs: List<TournamentMatchRef>,
         matches: List<MatchBean>,
@@ -314,6 +383,20 @@ abstract class MatchDao : BaseDao<MatchBean>() {
         marketSelectCrossRefs: List<MarketSelectCrossRef>,
     ): List<Long> {
         val ids = insertTournamentMatchRef(tournamentMatchRefs)
+        insertMatch(matches, markets, selections, marketCrossRef, marketSelectCrossRefs)
+        return ids
+    }
+
+    @Transaction
+    open suspend fun insertEarlyMatch(
+        tournamentMatchRefs: List<EarlyTournamentMatchRef>,
+        matches: List<MatchBean>,
+        markets: List<MarketBean>,
+        selections: List<SelectionBean>,
+        marketCrossRef: List<MatchMarketCrossRef>,
+        marketSelectCrossRefs: List<MarketSelectCrossRef>,
+    ): List<Long> {
+        val ids = insertEarlyTournamentMatchRef(tournamentMatchRefs)
         insertMatch(matches, markets, selections, marketCrossRef, marketSelectCrossRefs)
         return ids
     }
@@ -477,6 +560,7 @@ abstract class MatchDao : BaseDao<MatchBean>() {
     @Transaction
     open fun deleteMissingMatch(ids: List<Long>) {
         deleteTournamentMatchRef(ids)
+        deleteEarlyTournamentMatchRef(ids)
         deleteMatchBean(ids)
         deleteMatchMarketCrossRef(ids)
         deleteMarketSelectCrossRef(ids)
@@ -485,6 +569,7 @@ abstract class MatchDao : BaseDao<MatchBean>() {
     @Transaction
     open fun clearAllMatch() {
         deleteTournamentMatchRef()
+        deleteEarlyTournamentMatchRef()
         deleteMatchBean()
         deleteMarketBean()
         deleteMatchMarketCrossRef()

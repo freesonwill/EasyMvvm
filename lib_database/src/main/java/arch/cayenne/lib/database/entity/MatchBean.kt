@@ -48,6 +48,19 @@ data class TournamentMatchRef(
     val order: Int,
 )
 
+
+/**
+ * 早盘联赛和比赛的关联Ref
+ * 早盘具备向前查询功能， 分页机制和排序机制必须和其他PlayType分开， 需要新建EarlyTournamentMatchRef
+ */
+@Entity(primaryKeys = ["tournamentId", "matchId", "date"])
+data class EarlyTournamentMatchRef(
+    val tournamentId: Int,
+    val matchId: Long,
+    val date: Long,
+    val startTime: Long,
+)
+
 @Entity(primaryKeys = ["matchId", "marketId"],)
 data class MatchMarketCrossRef(
     val matchId: Long,
