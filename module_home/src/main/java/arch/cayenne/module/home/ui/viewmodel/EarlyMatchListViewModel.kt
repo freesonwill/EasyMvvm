@@ -56,7 +56,6 @@ class EarlyMatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
     fun setSelectedDate(date: Long = 0) {
         page = 1
         _selectedDate.value = date
-        requestScrollToTop = true
     }
 
     fun setPosition(position: Int) {
@@ -136,7 +135,7 @@ class EarlyMatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
     override fun getMatchListData(loadMatchType: LoadMatchType) {
         viewModelScope.launch {
             requestScrollToTop =
-                loadMatchType == LoadMatchType.RELOAD || loadMatchType == LoadMatchType.RETRY // 是否是強制更新，會刪除原本的資料ref關聯表，並且更新列表後會滾到頂端
+                loadMatchType == LoadMatchType.RELOAD || loadMatchType == LoadMatchType.RETRY || loadMatchType == LoadMatchType.DATE_CHANGE // 是否是強制更新，會刪除原本的資料ref關聯表，並且更新列表後會滾到頂端
             setState(HomeState.Match.Loading)
             val (startTime, endTime) =
                 Pair(
