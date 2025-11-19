@@ -58,7 +58,7 @@ data class EarlyTournamentMatchRef(
     val tournamentId: Int,
     val matchId: Long,
     val date: Long,
-    val startTime: Long,
+    val order: Int,
 )
 
 @Entity(primaryKeys = ["matchId", "marketId"],)

@@ -77,6 +77,7 @@ class MatchListRepository(
                     this.cursorMatchId = last.matchId
                     this.cursorMatchStartTime = last.basicInfo.startTime
                 }
+                this.reverse = false //下一页
             }.build()
         }
 
@@ -93,7 +94,8 @@ class MatchListRepository(
                         tournamentId = tournamentId,
                         date = date,
                         matchId = match.matchId,
-                        startTime = match.basicInfo.startTime
+                        order = page * 100 + index
+
                     )
                 }
 

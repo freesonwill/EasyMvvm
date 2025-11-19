@@ -62,7 +62,7 @@ abstract class MatchDao : BaseDao<MatchBean>() {
         "SELECT * " +
                 "FROM MatchBean bean " +
                 "INNER JOIN EarlyTournamentMatchRef ref ON ref.tournamentId = :tournamentId AND ref.date = :date " +
-                "WHERE ref.matchId = bean.matchId ORDER BY ref.startTime DESC limit 1"
+                "WHERE ref.matchId = bean.matchId ORDER BY ref.`order` DESC limit 1"
     )
     abstract suspend fun queryEarlyLastMatch(tournamentId: Int, date: Long): MatchBean?
 
@@ -80,7 +80,7 @@ abstract class MatchDao : BaseDao<MatchBean>() {
     @Query(
         "SELECT *" +
                 "FROM EarlyTournamentMatchRef " +
-                "WHERE   tournamentId = :tournamentId  ORDER BY date asc, startTime asc"
+                "WHERE   tournamentId = :tournamentId  ORDER BY date asc, `order` asc"
     )
     abstract fun observeEarlyMatchChange(
         tournamentId: Int
@@ -99,7 +99,7 @@ abstract class MatchDao : BaseDao<MatchBean>() {
     @Query(
         "SELECT *" +
                 "FROM EarlyTournamentMatchRef " +
-                "WHERE tournamentId = :tournamentId  ORDER BY date asc, startTime asc"
+                "WHERE tournamentId = :tournamentId  ORDER BY date asc, `order` asc"
     )
     abstract suspend fun queryEarlyMatchChange(
         tournamentId: Int
