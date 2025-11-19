@@ -16,4 +16,5 @@
     <string name="toast_over_max">Limite de aposta excedido</string>
     <string name="loading_view_text">Carregando</string>
     <string name="data_empty">Sem dados, tente outro</string>
+    <string name="toast_amount_limit">Item %d %s</string>
 </resources>

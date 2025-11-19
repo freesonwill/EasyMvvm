@@ -1,5 +1,6 @@
 package arch.cayenne.module.bet.viewmodel
 
+import androidx.annotation.StringRes
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
@@ -11,8 +12,14 @@ import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.data.repo.BalanceRepository
 import arch.cayenne.lib.common.ui.viewmodel.Event
+import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
+import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
+import arch.cayenne.lib.common.utils.ext.SportStringExt.isGreaterThanValue
+import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
+import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.database.entity.BetSelectionBean
 import arch.cayenne.lib.database.entity.InfoBean
+import arch.cayenne.module.bet.R
 import arch.cayenne.module.bet.data.ComboMultiBetBean
 import arch.cayenne.module.bet.data.OddsChangeEnum
 import arch.cayenne.module.bet.repo.ComboBetRepository
@@ -151,7 +158,7 @@ class ComboBetViewModel(
     }
 
     fun updateMultiBetMoney(serialValue: Int, money: Long) {
-        //"updateMultiBetMoney---$serialValue,money:$money".logd(TAG)
+        "updateMultiBetMoney---$serialValue,money:$money".logd(TAG)
         _onComboMultiBetBeanListener.value?.let {
             val updatedList = it.map { rate ->
                 if (rate.serialValue == serialValue) {
@@ -235,5 +242,30 @@ class ComboBetViewModel(
             return false
         }
         return true
+    }
+
+    /**
+     * 检查限额
+     * @return
+     */
+    fun checkAmountLimit():Pair<Int, String>? {
+        val data = _onComboMultiBetBeanListener.value ?: return null
+        val balance = this.balance
+        for((i,d) in data.withIndex()){
+            if(i > 0 && d.inputMoney == 0L) continue  //0相当于没输入
+            val curAmount = d.inputMoney.getMoney()
+            val maxMoney = d.maxAmount
+            val minNumber = d.minAmount
+            if (curAmount.isGreaterThanValue(maxMoney.getMoney())) {
+                return i to arch.cayenne.lib.common.R.string.toast_over_max.getString()
+            }
+            val amount = curAmount.toMoney()
+            if (minNumber > amount) {
+                return i to R.string.hint_less_min_amount.getString()
+            } else if (amount > balance) {
+                return i to arch.cayenne.lib.common.R.string.toast_over_remaining.getString()
+            }
+        }
+        return null
     }
 }

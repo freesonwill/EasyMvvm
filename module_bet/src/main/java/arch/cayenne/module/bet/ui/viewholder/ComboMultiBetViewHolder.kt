@@ -7,7 +7,6 @@ import android.view.ViewTreeObserver
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
-import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
 import arch.cayenne.module.bet.R
@@ -40,7 +39,7 @@ class ComboMultiBetViewHolder(private val mBinding: ItemComboMultiBet2Binding, p
 
         mBinding.etMoney.isFocusable = false
         mBinding.etMoney.setOnClickListener {
-            onComboMultiBetClickListener.onEditMoneyClick2(item.serialValue, mBinding.etMoney,mBinding.tvMoney,addView = { keyboard->
+            onComboMultiBetClickListener.onEditMoneyClick2(item.serialValue, mBinding.etMoney,mBinding.tvMoney,addViewAction = { keyboard->
                 val lp = ConstraintLayout.LayoutParams(0, LayoutParams.WRAP_CONTENT).apply {
                     topToBottom = mBinding.tvPrincipal.id
                     startToStart = ConstraintLayout.LayoutParams.PARENT_ID
