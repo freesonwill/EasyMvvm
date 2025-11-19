@@ -88,7 +88,8 @@ class BettingRemoteManager(
                 data.success,
                 data.message,
                 data.orderId,
-                data.orderStatus,
+//                data.orderStatus,
+                0
             )
         } else {
             if (res.error is ResponseTimeOutError) {
@@ -178,7 +179,8 @@ class BettingRemoteManager(
                 ComboMultiBetInfo(
                     orderId = it.orderId,
                     serialValue = it.serialValue,
-                    orderStatus = it.orderStatus,
+//                    orderStatus = it.orderStatus,
+                    0
                 )
             }
             ComboBetDataModel(

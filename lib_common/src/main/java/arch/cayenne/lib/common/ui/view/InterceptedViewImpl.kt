@@ -103,7 +103,7 @@ class InterceptedViewImpl(private val view: ViewGroup) : IInterceptedView {
     }
 
     fun onInterceptTouchEvent(e: MotionEvent): Boolean {
-        "aaaa----canScrollView2:${canScrollView2},canScrollViewId:$canScrollViewId,view:$view".logd(TAG)
+        //"canScrollView2:${canScrollView2},canScrollViewId:$canScrollViewId,view:$view".logd(TAG)
         when (e.action) {
             MotionEvent.ACTION_DOWN -> {
                 lastX = e.rawX

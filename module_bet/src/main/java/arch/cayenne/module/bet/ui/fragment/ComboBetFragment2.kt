@@ -3,8 +3,14 @@ package arch.cayenne.module.bet.ui.fragment
 import android.animation.ObjectAnimator
 import android.graphics.Rect
 import android.os.Bundle
+import android.view.View
+import android.view.ViewGroup
+import android.view.ViewGroup.LayoutParams
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.view.animation.LinearInterpolator
+import android.widget.EditText
+import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.get
 import androidx.core.view.isVisible
 import androidx.core.widget.NestedScrollView
@@ -14,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
 import arch.cayenne.lib.common.ui.dialog.CommonDialog
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
@@ -24,17 +31,15 @@ import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
-import arch.cayenne.lib.common.utils.ext.locationOnScreen
 import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.database.entity.BetSelectionBean
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.module.bet.R
 import arch.cayenne.module.bet.data.ComboMultiBetBean
-import arch.cayenne.module.bet.data.Config.KEY_RESULT
-import arch.cayenne.module.bet.data.Config.VALUE_MONEY_INPUT
 import arch.cayenne.module.bet.databinding.FragmentComboBet2Binding
 import arch.cayenne.module.bet.ui.adapter.BetSelectionAdapter
 import arch.cayenne.module.bet.ui.adapter.ComboMultiBetAdapter
+import arch.cayenne.module.bet.ui.custom.BetMoneyKeyboard
 import arch.cayenne.module.bet.util.BetSheetDecoration
 import arch.cayenne.module.bet.viewmodel.ComboBetViewModel
 import kotlin.reflect.KClass
@@ -44,10 +49,8 @@ import kotlin.reflect.KClass
  */
 class ComboBetFragment2 : BaseFragment<ComboBetViewModel, FragmentComboBet2Binding>(),
     BetSheetListener {
-
     override val vbClass: KClass<FragmentComboBet2Binding> = FragmentComboBet2Binding::class
     override val vmClass: KClass<ComboBetViewModel> = ComboBetViewModel::class
-
     private var isFullScreen = false
 
     private val betSelectionAdapter by lazy {
@@ -58,42 +61,69 @@ class ComboBetFragment2 : BaseFragment<ComboBetViewModel, FragmentComboBet2Bindi
         })
     }
 
+    private val keyboard:BetMoneyKeyboard by lazy {
+        BetMoneyKeyboard(requireContext()).apply { id = R.id.main }
+    }
+
+
     private val comboMultiBetAdapter by lazy {
         ComboMultiBetAdapter(object : ComboMultiBetAdapter.OnComboMultiBetClickListener {
-            override fun onEditMoneyClick(serialValue: Int, locationX: Int, locationY: Int) {
-                mViewModel.onComboMultiBetBeanListener.value?.find { it.serialValue == serialValue }
-                    ?.let {
-                        //获取输入的钱，并更新
-                        childFragmentManager.setFragmentResultListener(
-                            KEY_RESULT,
-                            viewLifecycleOwner
-                        ) { resultKey, bundle ->
-                            childFragmentManager.clearFragmentResultListener(KEY_RESULT)
-                            if (resultKey == KEY_RESULT) {
-                                val money = bundle.getLong(VALUE_MONEY_INPUT, 0L)
-                                mViewModel.updateMultiBetMoney(serialValue, money)
-                            }
+            override fun onEditMoneyClick2(serialValue: Int, editText: EditText, tvMoney: TextView, addView:(keyboard:BetMoneyKeyboard)->Unit) {
+                "aaaa---serialValue:$serialValue,keyboard.serialValue:${keyboard.serialValue}".logd(TAG)
+                if(keyboard.serialValue == serialValue) return
+                val bean = mViewModel.onComboMultiBetBeanListener.value?.find { it.serialValue == serialValue }
+                if(bean != null) {
+                    (keyboard.parent as? ViewGroup)?.removeView(keyboard)
+                    keyboard.bind(serialValue,editText,tvMoney,true)
+                    addView(keyboard)
+                    keyboard.visibility = View.INVISIBLE
+                    keyboard.post {
+                        keyboard.visibility = View.VISIBLE
+                        val targetScrollY = calculateScrollY(mBinding.nsBet,keyboard)
+                        if(targetScrollY == null) {
+                            keyboard.showKeyBoard(200)
+                        }else {
+                            mBinding.nsBet.smoothScrollTo(0, targetScrollY,200)
                         }
-                        //显示弹窗
-                        val currentMoney = it.inputMoney
-                        val minAmount = it.minAmount
-                        val maxAmount = it.maxAmount
-                        ComboBetMoneyKeyboardDialogFragment.newInstance(
-                            locationX,
-                            locationY,
-                            currentMoney,
-                            minAmount,
-                            maxAmount
-                        ).show(childFragmentManager)
-                    } ?: let {
-                        "cannot find $serialValue in onComboMultiBetBeanListener:${mViewModel.onComboMultiBetBeanListener.value}"
-                            .also { showToast(it) }
-                            .loge(TAG)
+                    }
+
+                } else {
+                    "cannot find $serialValue in onComboMultiBetBeanListener:${mViewModel.onComboMultiBetBeanListener.value}"
+                        .also { showToast(it) }
+                        .loge(TAG)
                 }
             }
 
             override fun getMoneySymbol(): String {
                 return mViewModel.moneySymbol
+            }
+
+            fun calculateScrollY(nestedScrollView: NestedScrollView, targetView: View):Int? {
+                // 计算 targetView 相对于 NestedScrollView 的 top
+                var top = 0
+                var v: View? = targetView
+                while (v != null && v != nestedScrollView) {
+                    top += v.top
+                    val p = v.parent
+                    v = if (p is View) p else null
+                }
+                val targetHeight = targetView.run {
+                    measure(0,0)
+                    measuredHeight
+                }
+                val bottom = top + targetHeight
+                val scrollY = nestedScrollView.scrollY
+                val visibleTop = scrollY
+                val visibleBottom = scrollY + nestedScrollView.height
+                var targetScrollY = top + targetHeight - nestedScrollView.height
+                // 目标滚动位置 = targetView.bottom - NestedScrollView 可视高度
+                "aaaa---targetHeight:$targetHeight,bottom:$bottom,visibleBottom:$visibleBottom,targetScrollY:$targetScrollY".logd(TAG)
+                if(bottom > visibleBottom){
+                    targetScrollY = targetScrollY.coerceAtLeast(0)
+                    return targetScrollY
+                }else {
+                    return null
+                }
             }
         })
     }
@@ -117,11 +147,15 @@ class ComboBetFragment2 : BaseFragment<ComboBetViewModel, FragmentComboBet2Bindi
     override fun initListener() {
         mBinding.firstMultiItem.apply {
             etMoney.setOnClickListener {
-                val location = it.locationOnScreen
-                val x = location.first() + it.width / 2
-                val y = location.last()
                 val item = mViewModel.firstComboMultiBetBeanLD.value ?: return@setOnClickListener
-                comboMultiBetAdapter.onComboMultiBetClickListener.onEditMoneyClick(item.serialValue, x, y)
+                comboMultiBetAdapter.onComboMultiBetClickListener.onEditMoneyClick2(item.serialValue,this.etMoney,this.tvMoney, addView = { keyboard ->
+                    val lp = ConstraintLayout.LayoutParams(0, LayoutParams.WRAP_CONTENT).apply {
+                        topToBottom = edgeBottom.id
+                        startToStart = ConstraintLayout.LayoutParams.PARENT_ID
+                        endToEnd = ConstraintLayout.LayoutParams.PARENT_ID
+                    }
+                    this@apply.root.addView(keyboard, lp)
+                })
             }
         }
         mBinding.ivClose.apply { addScaleOnTouchAnimation() }.setOnClickListener {
@@ -185,16 +219,17 @@ class ComboBetFragment2 : BaseFragment<ComboBetViewModel, FragmentComboBet2Bindi
                     combo
                 }
                 tvMulti.text = let { "@${item.sumOdds.getOdds()}" }
-                etMoney.setText( let {
+                etMoney.setText(let {
                     if (item.inputMoney > 0) {
-                        val money = "$moneySymbol ${item.inputMoney.getMoney()}"
+                        val money = item.inputMoney.getMoney()
                         money
                     } else {
                        ""
                     }
                 })
-                val moneyHint = "$moneySymbol ${getString(R.string.et_money_hint).format(item.minAmount.getMoney(), item.maxAmount.getMoney())}"
+                val moneyHint = getString(R.string.et_money_hint).format(item.minAmount.getMoney(), item.maxAmount.getMoney())
                 etMoney.hint = moneyHint
+                tvMoney.text = moneySymbol
             }
         }
         mViewModel.remainingComboMultiBetBeansLD.observe(viewLifecycleOwner) { data ->

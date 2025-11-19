@@ -84,6 +84,9 @@ class SoftKeyboardManager(
     //切换动画
     var mainAnim: AnimatorSet? = null
 
+    //main的初始高度
+    var originMainHeight: Int = 0
+
 
     init {
         lifecycle.addObserver(this)
@@ -232,7 +235,7 @@ class SoftKeyboardManager(
         when (animationType) {
             KeyboardActionType.CHAT_TO_SOFT -> {
                 softKeyBoardHeight = keyboardHeight
-                keyBoardListener.startAnim(animationType, -checkSoftKeyBoardHeight(), onStart = {
+                keyBoardListener.startAnim(animationType, getAnimTransY(animationType), onStart = {
                     keyBoardListener.changeKeyboardUi(KeyBoardType.SOFT_KEYBOARD)
                 }, onEnd = {
                     saveUpdateSoftKeyBoardHeight()
@@ -241,7 +244,7 @@ class SoftKeyboardManager(
 
             KeyboardActionType.EMOJI_TO_SOFT -> {
                 softKeyBoardHeight = keyboardHeight
-                keyBoardListener.startAnim(animationType, -checkSoftKeyBoardHeight(), onStart = {
+                keyBoardListener.startAnim(animationType, getAnimTransY(animationType), onStart = {
                     keyBoardListener.changeKeyboardUi(KeyBoardType.SOFT_KEYBOARD)
                 }, onEnd = {
                     saveUpdateSoftKeyBoardHeight()
@@ -250,24 +253,30 @@ class SoftKeyboardManager(
             //chatTOsoft
             KeyboardActionType.SOFT_TO_SOFT -> {
                 softKeyBoardHeight = keyboardHeight
-                keyBoardListener.startAnim(animationType, -checkSoftKeyBoardHeight(), onStart = {
+                keyBoardListener.startAnim(animationType, getAnimTransY(animationType), onStart = {
                     keyBoardListener.changeKeyboardUi(KeyBoardType.SOFT_KEYBOARD)
                 }, onEnd = {
                     saveUpdateSoftKeyBoardHeight()
                 })
             }
-
             else -> {}
         }
+    }
+
+    var mainDiffer:Int = 0
+    fun checkMainHeight():Int {
+        val getManHeight = keyBoardListener.getMainHeight()
+        mainDiffer = getManHeight - originMainHeight
+//        "differ $mainDiffer ${originMainHeight} getManHeight  ${getManHeight}".logd("aaa")
+        mainDiffer = if(mainDiffer > 50) mainDiffer else 0
+        return mainDiffer
     }
 
     fun showKeyboardAnimation() {
         val animationType = getKeyBoardActionType(clickKeyBoardType, currentKeyBoardType)
 //        "showKeyboardAnimation $animationType $softKeyBoardHeight}".logd("aaa")
         when (animationType) {
-            KeyboardActionType.CHAT_TO_CHAT -> keyBoardListener.changeKeyboardUi(
-                KeyBoardType.CHAT
-            )
+            KeyboardActionType.CHAT_TO_CHAT -> keyBoardListener.changeKeyboardUi(KeyBoardType.CHAT)
             //展示软件盘
             KeyboardActionType.CHAT_TO_SOFT -> {
                 if (softKeyBoardHeight == 0) {//如果没有记录软件盘高度或者app打开后第一次弹出软件盘不急着开启动画先弹出软件盘
@@ -275,13 +284,13 @@ class SoftKeyboardManager(
                     return
                 }
                 softKeyboardChange(true, 5)
-                keyBoardListener.startAnim(animationType, -checkSoftKeyBoardHeight(), onStart = {
+                keyBoardListener.startAnim(animationType, getAnimTransY(animationType), onStart = {
                     keyBoardListener.changeKeyboardUi(KeyBoardType.SOFT_KEYBOARD)
                 })
             }
             //软件盘切换到聊天
             KeyboardActionType.SOFT_TO_CHAT -> {
-                keyBoardListener.startAnim(animationType, 0, onStart = {
+                keyBoardListener.startAnim(animationType, getAnimTransY(animationType), onStart = {
                     softKeyboardChange(false, 2)
                     keyBoardListener.changeKeyboardUi(KeyBoardType.CHAT)
                 })
@@ -289,14 +298,14 @@ class SoftKeyboardManager(
 //            //软件盘切换到表情键盘
             KeyboardActionType.SOFT_TO_EMOJI -> {
 //                isSoftKeyBoardBack = true
-                keyBoardListener.startAnim(animationType, -emojiKeyBoardHeight, onStart = {
+                keyBoardListener.startAnim(animationType, getAnimTransY(animationType), onStart = {
                     softKeyboardChange(false, 3)
                     keyBoardListener.changeKeyboardUi(KeyBoardType.EMOJI)
                 })
             }
             //展示表情键盘
             KeyboardActionType.CHAT_TO_EMOJI -> {
-                keyBoardListener.startAnim(animationType, -emojiKeyBoardHeight, onStart = {
+                keyBoardListener.startAnim(animationType, getAnimTransY(animationType), onStart = {
                     keyBoardListener.changeKeyboardUi(KeyBoardType.EMOJI)
                 })
             }
@@ -306,7 +315,7 @@ class SoftKeyboardManager(
                     softKeyboardChange(true, 4)
                     return
                 }
-                keyBoardListener.startAnim(animationType, -checkSoftKeyBoardHeight(), onStart = {
+                keyBoardListener.startAnim(animationType, getAnimTransY(animationType), onStart = {
                     softKeyboardChange(true, 6)
                     keyBoardListener.changeKeyboardUi(KeyBoardType.SOFT_KEYBOARD)
                 }, onEnd = {
@@ -315,7 +324,7 @@ class SoftKeyboardManager(
             }
             //表情键盘切换到聊天
             KeyboardActionType.EMOJI_TO_CHAT -> {
-                keyBoardListener.startAnim(animationType, 0, onEnd = {
+                keyBoardListener.startAnim(animationType, getAnimTransY(animationType), onEnd = {
                     keyBoardListener.changeKeyboardUi(KeyBoardType.CHAT)
                 })
             }
@@ -324,8 +333,24 @@ class SoftKeyboardManager(
         }
     }
 
-    private fun checkSoftKeyBoardHeight(): Int =
-        if (isMainSoft) softKeyBoardHeight - (62).dp2px else softKeyBoardHeight
+    private fun getAnimTransY(animationType:KeyboardActionType):Int{
+       return when (animationType) {
+            //展示软件盘
+            KeyboardActionType.CHAT_TO_SOFT -> if (isMainSoft) -(softKeyBoardHeight - (62).dp2px) else -(softKeyBoardHeight - checkMainHeight())
+            //软件盘切换到聊天
+            KeyboardActionType.SOFT_TO_CHAT -> 0
+//            //软件盘切换到表情键盘
+            KeyboardActionType.SOFT_TO_EMOJI -> if (isMainSoft) -emojiKeyBoardHeight else -(emojiKeyBoardHeight - mainDiffer)
+            //展示表情键盘
+            KeyboardActionType.CHAT_TO_EMOJI -> if (isMainSoft) -emojiKeyBoardHeight else -(emojiKeyBoardHeight - checkMainHeight())
+            //表情键盘切换到软件盘
+            KeyboardActionType.EMOJI_TO_SOFT -> if (isMainSoft) -(softKeyBoardHeight - (62).dp2px) else -(softKeyBoardHeight - mainDiffer)
+            //表情键盘切换到聊天
+            KeyboardActionType.EMOJI_TO_CHAT -> 0
+            else -> 0
+        }
+    }
+
 
 
     /**
@@ -350,12 +375,12 @@ class SoftKeyboardManager(
     }
 
     fun etRequestFocus() {
-       scope.launch {
-           etInput?.let {
-               it.requestFocus()
-               it.setSelection(it.length())
-           }
-       }
+        scope.launch {
+            etInput?.let {
+                it.requestFocus()
+                it.setSelection(it.length())
+            }
+        }
     }
 
     /**

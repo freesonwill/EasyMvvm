@@ -17,4 +17,10 @@ interface  SoftKeyBoardMangerListener {
 
     fun startAnim(actionType: KeyboardActionType,offset: Int, onStart: () -> Unit = {}, onEnd: () -> Unit = {})
 
+    /***
+     *由于直播间拉伸时main的高度不断变化
+     * 上移的距离需要根据拉伸高度而减少
+     */
+    fun getMainHeight():Int
+
 }

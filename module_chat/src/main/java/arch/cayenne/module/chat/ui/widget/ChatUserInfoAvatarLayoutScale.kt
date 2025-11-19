@@ -51,7 +51,7 @@ class ChatUserInfoAvatarLayoutScale @JvmOverloads constructor(
     private var avatarMinPosition: Float = 0f //头像移动最小(avatarMinPosition-50)
 
 
-    private var minAvatarTitleHeight: Float = 52f * density //顶部头像布局 最小
+    private var minAvatarTitleHeight: Float = 40f * density //顶部头像布局 最小
     private var mAvatarTitleHeight: Float = 62f * density //顶部头像布局 最小
     private var maxAvatarTitleHeight: Float = 84f * density //顶部头像布局 最大
 
@@ -59,7 +59,7 @@ class ChatUserInfoAvatarLayoutScale @JvmOverloads constructor(
     private var mMaxNameHeight: Float = 60f * density //顶部头像布局 最大
 
     private var minLlBottomHeight: Float = 0f * density //底部投注数量和投注额 最小
-    private var maxLlBottomHeight: Float = 50f * density //底部投注数量和投注额 最大
+    private var maxLlBottomHeight: Float = 67f * density //底部投注数量和投注额 最大
 
     private var alphaPx: Float = 0f //根据底部名称的高度进行 顶部名称的渐变
     override fun onFinishInflate() {
@@ -360,7 +360,8 @@ class ChatUserInfoAvatarLayoutScale @JvmOverloads constructor(
     fun animTingDow() {
         val currentHeight = headTitle.height
         val llcNameHeight = llcName.height
-        if (currentHeight==maxAvatarTitleHeight.toInt()&&llcNameHeight==mMaxNameHeight.toInt())return
+        val llcBottomHeight = LlBottom.height
+        if (currentHeight==maxAvatarTitleHeight.toInt()&&llcNameHeight==mMaxNameHeight.toInt()&&llcBottomHeight==maxLlBottomHeight.toInt())return
         if (currentHeight < maxAvatarTitleHeight) {
             headTitle.startSafeAnimateSet(
                 {
@@ -410,7 +411,7 @@ class ChatUserInfoAvatarLayoutScale @JvmOverloads constructor(
                 {
                     quickAnimatingName = true
                     playTogether(
-                        ValueAnimator.ofInt(currentHeight, mMaxNameHeight.toInt()).apply {
+                        ValueAnimator.ofInt(llcNameHeight, mMaxNameHeight.toInt()).apply {
                             addUpdateListener {
                                 val lp = llcName.layoutParams
                                 lp.height = it.animatedValue as Int
@@ -423,6 +424,33 @@ class ChatUserInfoAvatarLayoutScale @JvmOverloads constructor(
                             )
                             addListener(doOnEnd {
                                 topName.alpha = 0f
+                                quickAnimatingName = false
+                            })
+                        },
+                    )
+                },
+                duration = AnimationController[AnimType.popupExit]!!.duration,
+                interpolator = AnimationController[AnimType.popupExit]?.interpolator?.toInterpolator()
+                    ?: LinearInterpolator(),
+                start = true
+            )
+        }
+
+        if (llcBottomHeight < maxLlBottomHeight){
+            LlBottom.startSafeAnimateSet(
+                {
+                    quickAnimatingName = true
+                    playTogether(
+                        ValueAnimator.ofInt(llcBottomHeight, maxLlBottomHeight.toInt()).apply {
+                            addUpdateListener {
+                                val lp = LlBottom.layoutParams
+                                lp.height = it.animatedValue as Int
+                                LlBottom.layoutParams = lp
+                            }
+                            addListener(doOnStart {
+                            }
+                            )
+                            addListener(doOnEnd {
                                 quickAnimatingName = false
                             })
                         },
