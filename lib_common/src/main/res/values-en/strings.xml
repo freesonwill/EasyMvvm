@@ -33,4 +33,5 @@
 
     <!-- VIP Related -->
     <string name="vip_level_format">VIP %d</string>
+    <string name="toast_amount_limit">Item %d %s</string>
 </resources>
