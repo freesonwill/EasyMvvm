@@ -378,7 +378,7 @@ class SoftKeyboardManager(
         scope.launch {
             etInput?.let {
                 it.requestFocus()
-                it.setSelection(it.length())
+//                it.setSelection(it.length())
             }
         }
     }
