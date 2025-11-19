@@ -75,7 +75,14 @@ class ComboBetFragment2 : BaseFragment<ComboBetViewModel, FragmentComboBet2Bindi
                 if(bean != null) {
                     (keyboard.parent as? ViewGroup)?.removeView(keyboard)
                     keyboard.visibility = View.GONE
-                    keyboard.bind(serialValue, editText, tvMoney, true)
+                    val currentMoney = bean.inputMoney
+                    val minAmount = bean.minAmount
+                    val maxAmount = bean.maxAmount
+                    keyboard.bind(viewLifecycleOwner,serialValue, editText, tvMoney, true, currentMoney, minAmount, maxAmount,
+                        onMoneyChange = { serialV,money->
+                            mViewModel.updateMultiBetMoney(serialV, money)
+                        }
+                    )
                     addViewAction(keyboard)
                     keyboard.visibility = View.VISIBLE
                     val duration = 150L
@@ -181,6 +188,10 @@ class ComboBetFragment2 : BaseFragment<ComboBetViewModel, FragmentComboBet2Bindi
             mViewModel.toggleMultiLayoutExpend()
         }
         mBinding.clBet.setOnClickListener {
+            mViewModel.checkAmountLimit()?.let {
+                showToast(arch.cayenne.lib.common.R.string.toast_amount_limit.getString(it.first+1,it.second))
+                return@setOnClickListener
+            }
             if (mViewModel.getSumBetAmount() > mViewModel.balance) {
                 showToast(getString(arch.cayenne.lib.common.R.string.toast_over_remaining))
             } else if (!mViewModel.checkOddsPass()) {
@@ -296,8 +307,10 @@ class ComboBetFragment2 : BaseFragment<ComboBetViewModel, FragmentComboBet2Bindi
         val money = "${mViewModel.moneySymbol}${sumMoney.getFormalMoney()}"
 
         val winMoney = data.sumOf { it.maxWinMoney }
-        mBinding.tvBetMoneyHint.isVisible = winMoney != 0L
-        mBinding.tvBetMoney.isVisible = winMoney != 0L
+        val onlyBetOnMain = data.drop(1).all { it.inputMoney == 0L } //仅主投注的才显示预计投注
+
+        mBinding.tvBetMoneyHint.isVisible = (winMoney != 0L) && onlyBetOnMain
+        mBinding.tvBetMoney.isVisible = (winMoney != 0L) && onlyBetOnMain
         val sumWinMoney = "${mViewModel.moneySymbol}${winMoney.getFormalMoney()}"
         mBinding.tvBetMoney.text = sumWinMoney
     }

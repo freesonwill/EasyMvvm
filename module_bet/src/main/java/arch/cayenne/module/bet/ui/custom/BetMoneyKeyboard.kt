@@ -20,13 +20,12 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStore
-import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.recyclerview.widget.RecyclerView.Adapter
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.data.repo.BalanceRepository
 import arch.cayenne.lib.common.ui.view.NumberKeyboardView.OnCalculatorClickListener
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.setOnClickOrLongPressListener
 import arch.cayenne.lib.common.utils.helper.showToast
@@ -58,7 +57,6 @@ class BetMoneyKeyboard @JvmOverloads constructor(
     private var tvMoney:TextView? = null
     private var _serialValue:Int = -1
     val serialValue:Int get() = _serialValue
-    private var money:Int = 0
     private var removeWhenHide:Boolean = false
 
     // 每个 Keyboard 独立 ViewModel
@@ -120,32 +118,57 @@ class BetMoneyKeyboard @JvmOverloads constructor(
         (ivFakerView.parent as? ViewGroup)?.removeView(ivFakerView)
     }
 
-    fun bind(serialValue: Int, ed:EditText,tvMoney:TextView, removeWhenHide:Boolean){
+    fun bind(
+        viewLifecycleOwner:LifecycleOwner,
+        serialValue: Int,
+        ed:EditText,
+        tvMoney:TextView,
+        removeWhenHide:Boolean,
+        currentMoney: Long,
+        minNumber: Long,
+        maxNumber: Long,
+        onMoneyChange:(serialValue:Int,money:Long)->Unit
+    ){
         this._serialValue = serialValue
         this.etMoney = ed
         this.tvMoney = tvMoney
         this.removeWhenHide = removeWhenHide
         this.mViewModel = ViewModelProvider(viewModelStore, vmFactory)[ComboBetMoneyKeyboardDialogViewModel::class.java]
+
+        initKeyboard(currentMoney,minNumber,maxNumber)
+        initView()
+        createObserver(viewLifecycleOwner, onMoneyChange)
+        initListener()
     }
 
     private fun unBind(){
         this._serialValue = -1
         this.etMoney = null
         this.removeWhenHide = false
-        mViewModel = null
-        viewModelStore.clear()
+        this.mViewModel = null
+        this.viewModelStore.clear()
+    }
+
+    private fun initKeyboard(currentMoney: Long,minNumber: Long, maxNumber: Long) {
+        if (minNumber != -1L && maxNumber != -1L) {
+            mViewModel!!.setNumberLimit(minNumber, maxNumber)
+        }
+        if (currentMoney != 0L) {
+            mViewModel!!.setNumber(currentMoney.getMoney())
+        }
     }
 
     private fun initView(){
         binding.numberKeyboard.setOtherTextSize(13f)
     }
 
-    private fun createObserver(viewLifecycleOwner:LifecycleOwner){
+    private fun createObserver(viewLifecycleOwner:LifecycleOwner,onMoneyChange:(serialValue:Int,money:Long)->Unit){
         val mViewModel = this.mViewModel ?: return
         mViewModel.onEditNumber.observe(viewLifecycleOwner) {
             etMoney!!.setText(it)
             val length = it.length
             etMoney!!.setSelection(length)
+            onMoneyChange.invoke(serialValue,it.toMoney())
         }
         mViewModel.onNumberLimit.observe(viewLifecycleOwner) {
             etMoney!!.hint = context.getString(R.string.et_money_hint).format(it.first.getMoney(), it.second.getMoney())
@@ -192,11 +215,6 @@ class BetMoneyKeyboard @JvmOverloads constructor(
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        if(mViewModel != null){
-            initView()
-            createObserver(findViewTreeLifecycleOwner()!!)
-            initListener()
-        }
     }
 
     override fun onDetachedFromWindow() {
@@ -309,5 +327,4 @@ class BetMoneyKeyboard @JvmOverloads constructor(
     fun setOnClearListener(lis:(() -> Unit)?){
         this.onClear = lis
     }
-
 }
