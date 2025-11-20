@@ -1,5 +1,7 @@
 <resources>
-
+    <style name="liveTabLayoutTextAppearance" parent="TextAppearance.Design.Tab">
+        <item name="android:textSize">15sp</item>
+    </style>
     <style name="CustomTabText" parent="TextAppearance.AppCompat">
         <item name="android:textSize">14sp</item> <!-- 设置字体大小 -->
     </style>
