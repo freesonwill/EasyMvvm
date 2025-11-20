@@ -151,6 +151,7 @@ class EarlyMatchListPagerFragment :
                 itemAnimator = DeleteAnimator()
             }
             rvHomeGameList.itemAnimator = null
+            rvHomeGameList.overScrollMode = View.OVER_SCROLL_NEVER
             rvHomeGameList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                     super.onScrollStateChanged(recyclerView, newState)
@@ -161,14 +162,34 @@ class EarlyMatchListPagerFragment :
                 }
 
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                    rvHomeGameList.scrollToBottomWithLoadMore(minScrollCount = 8, {
-                        if (mViewModel.apiStateListener.value != HomeState.Match.LoadSuccess) return@scrollToBottomWithLoadMore
-                        mViewModel.loadNextPage()
-                    }, {
-                        if (mViewModel.apiStateListener.value == HomeState.Match.LoadNextFailure) {
-                            mViewModel.loadNextPage()
+//                    rvHomeGameList.scrollToBottomWithLoadMore(minScrollCount = 8, {
+//                        if (mViewModel.apiStateListener.value != HomeState.Match.LoadSuccess) return@scrollToBottomWithLoadMore
+//                        mViewModel.loadNextPage()
+//                    }, {
+//                        if (mViewModel.apiStateListener.value == HomeState.Match.LoadNextFailure) {
+//                            mViewModel.loadNextPage()
+//                        }
+//                    })
+
+                    val layoutManager = recyclerView.layoutManager as LinearLayoutManager
+                    val visibleItemCount = layoutManager.childCount
+                    val totalItemCount = layoutManager.itemCount
+                    val firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
+                    val loadMoreThreshold = 10   // 上拉到底部前10个时加载更多
+                    val loadPreviousThreshold = 8
+                    if (firstVisibleItemPosition != RecyclerView.NO_POSITION) {
+                        if (dy > 0) {
+                            if (mViewModel.apiStateListener.value != HomeState.Match.LoadSuccess) return
+                            if ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount - loadMoreThreshold) {
+                                mViewModel.loadNextPage()
+                            }
+                        } else if (dy < 0) {
+                            if (mViewModel.apiStateListener.value != HomeState.Match.LoadSuccess) return
+                            if (firstVisibleItemPosition <= loadPreviousThreshold) {
+                                mViewModel.loadPrevPage()
+                            }
                         }
-                    })
+                    }
                 }
             })
 

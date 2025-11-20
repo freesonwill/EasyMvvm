@@ -52,7 +52,7 @@ class MatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
     }
 
     fun setSelectedDate(date: Long = 0) {
-        page = 1
+        page = INITIAL_PAGE
         _selectedDate.value = date
     }
 
@@ -115,7 +115,7 @@ class MatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
 
     private suspend fun processObserveMatchList(currentDateRefs: List<TournamentMatchRef>) {
         //一次拿到當前頁面全部資料，會超過一頁，所以需要重新看一下page
-        page = currentDateRefs.maxOfOrNull { it.page } ?: 0
+        page = currentDateRefs.maxOfOrNull { it.page } ?: INITIAL_PAGE
         //拿到ref後藉由ref拿到這個時間段的match id，再去資料庫把這些賽史資料串起來
         val list = repository.queryFullMatches(
             currentDateRefs.map { it.matchId }
@@ -123,7 +123,7 @@ class MatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
         "Collect observeMatchChange result：${list.map { it.match.matchId }}".logi(this@MatchListViewModel::class.java.simpleName)
         withContext(Dispatchers.Main) {
             //第一次http拿到的資料量過少，會影響到拉取更新資料需要等待，所以跟api補上拿取更多一點的資料
-            if (page == 1 && list.isEmpty()) {
+            if (page == INITIAL_PAGE && list.isEmpty()) {
                 setState(HomeState.Match.DataEmpty)
             } else if (list.size % DEFAULT_MATCH_SIZE != 0) {
                 setState(DataState.NoMoreData)
@@ -160,6 +160,7 @@ class MatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
                         startTime = startTime,
                         endTime = endTime,
                         isForce = requestScrollToTop,
+                        loadMatchType = loadMatchType
                     )
                 },
                 {
@@ -174,7 +175,7 @@ class MatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
 
                         val size = it.dataAs<List<Common.Match>>()?.size ?: 0
                         val isEmpty = size == 0
-                        if (page == 1 && isEmpty) {
+                        if (page == INITIAL_PAGE && isEmpty) {
                             setState(HomeState.Match.DataEmpty)
                             matchListChange.value = arrayListOf()
                         } else if (size < BaseMatchRepository.DEFAULT_MATCH_SIZE) {   //如果返回成功，但是数据size小于10，则表明列表已经加载到底部

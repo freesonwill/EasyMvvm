@@ -1,7 +1,6 @@
 package arch.cayenne.module.home.data.repo
 
 import arch.cayenne.lib.base.data.remote.ApiResponseState
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.database.dao.BetDao
@@ -14,7 +13,8 @@ import arch.cayenne.lib.websocket.data.ApiCode
 import arch.cayenne.lib.websocket.extension.sendAndWaitProtoMessageResponse
 import arch.cayenne.module.home.data.constants.PlayType
 import arch.cayenne.module.home.data.model.toRoomData
-import arch.cayenne.module.home.utils.DateUtils.getMidnightTimeStamp
+import arch.cayenne.module.home.ui.viewmodel.BaseMatchViewModel.Companion.INITIAL_PAGE
+import arch.cayenne.module.home.ui.viewmodel.LoadMatchType
 import galaxy.client.proto.Client
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -43,18 +43,30 @@ class MatchListRepository(
         playType: Int,
         sportId: Int,
         tournamentId: Int,
+        prevPage: Int = INITIAL_PAGE -1,
         page: Int,
         date: Long,
         startTime: Long,
         endTime: Long,
         isForce: Boolean = false,  //是否刪除之前的資料
+        loadMatchType: LoadMatchType,
     ): ApiResponseState {
-        val last = if (isForce) null else {
+        val cursor = if (loadMatchType == LoadMatchType.PREV_PAGE) {
+//            "prevPage:$prevPage".logi("prevPageIssue")
+            //向前查询， 需要取首场比赛
             if (playType == PlayType.EARLY.id) {
-                matchDao.queryEarlyLastMatch(tournamentId, date)
+                matchDao.queryEarlyFirstMatch(tournamentId, date)
             } else {
-                matchDao.queryLastMatch(playType, tournamentId, date)
-
+                matchDao.queryFirstMatch(playType, tournamentId, date)
+            }
+        } else {
+            //其他查询类型， 需要取最后一场比赛
+            if (isForce) null else {
+                if (playType == PlayType.EARLY.id) {
+                    matchDao.queryEarlyLastMatch(tournamentId, date)
+                } else {
+                    matchDao.queryLastMatch(playType, tournamentId, date)
+                }
             }
         }
         val resp = socketManager.sendAndWaitProtoMessageResponse<Client.ListMatchResp>(
@@ -73,11 +85,11 @@ class MatchListRepository(
                 this.size = DEFAULT_MATCH_SIZE
                 this.startTime = startTime
                 this.endTime = endTime
-                if (last != null) {
-                    this.cursorMatchId = last.matchId
-                    this.cursorMatchStartTime = last.basicInfo.startTime
+                if (cursor != null) {
+                    this.cursorMatchId = cursor.matchId
+                    this.cursorMatchStartTime = cursor.basicInfo.startTime
                 }
-                this.reverse = false //下一页
+                this.reverse = loadMatchType == LoadMatchType.PREV_PAGE //判断是取上一页，还是下一页
             }.build()
         }
 
@@ -94,8 +106,11 @@ class MatchListRepository(
                         tournamentId = tournamentId,
                         date = date,
                         matchId = match.matchId,
-                        order = page * 100 + index
-
+                        order = if (loadMatchType == LoadMatchType.PREV_PAGE) {
+                            prevPage * 100 + index
+                        } else {
+                            page * 100 + index
+                        }
                     )
                 }
 

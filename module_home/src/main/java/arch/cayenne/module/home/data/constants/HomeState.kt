@@ -25,10 +25,13 @@ sealed class HomeState: DataState {
         data object LoadSuccess : Match()
         data object Refreshing : Match()
         data object LoadingNext : Match()
+        data object LoadingPrev : Match()
 
         data object DataEmpty : Match()
 
         data object LoadNextFailure : Match()
+        data object LoadPrevFailure : Match()
+
 
     }
 

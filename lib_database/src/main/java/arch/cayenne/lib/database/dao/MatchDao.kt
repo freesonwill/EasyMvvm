@@ -56,6 +56,15 @@ abstract class MatchDao : BaseDao<MatchBean>() {
     )
     abstract suspend fun queryLastMatch(playType: Int, tournamentId: Int, date: Long): MatchBean?
 
+    @Transaction
+    @Query(
+        "SELECT * " +
+                "FROM MatchBean bean " +
+                "INNER JOIN TournamentMatchRef ref ON ref.playType = :playType AND ref.tournamentId = :tournamentId AND ref.date = :date " +
+                "WHERE ref.matchId = bean.matchId ORDER BY ref.`order` asc limit 1"
+    )
+    abstract suspend fun queryFirstMatch(playType: Int, tournamentId: Int, date: Long): MatchBean?
+
 
     @Transaction
     @Query(
@@ -65,6 +74,18 @@ abstract class MatchDao : BaseDao<MatchBean>() {
                 "WHERE ref.matchId = bean.matchId ORDER BY ref.`order` DESC limit 1"
     )
     abstract suspend fun queryEarlyLastMatch(tournamentId: Int, date: Long): MatchBean?
+
+    /**
+     * 查询早盘首场比赛
+     */
+    @Transaction
+    @Query(
+        "SELECT * " +
+                "FROM MatchBean bean " +
+                "INNER JOIN EarlyTournamentMatchRef ref ON ref.tournamentId = :tournamentId AND ref.date = :date " +
+                "WHERE ref.matchId = bean.matchId ORDER BY ref.`order` asc limit 1"
+    )
+    abstract suspend fun queryEarlyFirstMatch(tournamentId: Int, date: Long): MatchBean?
 
     @Query(
         "SELECT *" +

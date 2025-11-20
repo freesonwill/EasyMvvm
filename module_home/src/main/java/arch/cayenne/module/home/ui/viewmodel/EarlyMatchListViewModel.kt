@@ -37,6 +37,8 @@ class EarlyMatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
 
     private var observeJob: Job? = null
 
+    private var prevPage: Int = INITIAL_PAGE
+
     var requestScrollToTop: Boolean = false  //是否需要回到頂部，通常用於網路重新連接後，資料整體重新拉取後使用
         private set
 
@@ -54,7 +56,7 @@ class EarlyMatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
     }
 
     fun setSelectedDate(date: Long = 0) {
-        page = 1
+        page = INITIAL_PAGE
         _selectedDate.value = date
     }
 
@@ -137,11 +139,18 @@ class EarlyMatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
             requestScrollToTop =
                 loadMatchType == LoadMatchType.RELOAD || loadMatchType == LoadMatchType.RETRY || loadMatchType == LoadMatchType.DATE_CHANGE // 是否是強制更新，會刪除原本的資料ref關聯表，並且更新列表後會滾到頂端
             setState(HomeState.Match.Loading)
-            val (startTime, endTime) =
+            val (startTime, endTime) = if (loadMatchType == LoadMatchType.PREV_PAGE) {
+                //向前查询
+                Pair(
+                    0L,
+                    _selectedDate.value,
+                )
+            } else {
                 Pair(
                     _selectedDate.value,
                     _selectedDate.value + BaseMatchRepository.ONE_DAY_TIME_STAMP * 31
                 )
+            }
 
             "取得比賽資料 Type = ${loadMatchType} PlayType = $_playType sportId = $_sportId tournamentId = $_tournamentId page = $page startTime = $startTime endTime = $endTime".logi(
                 TAG
@@ -152,17 +161,22 @@ class EarlyMatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
                         playType = _playType,
                         sportId = _sportId,
                         tournamentId = _tournamentId,
+                        prevPage = prevPage,
                         page = page,
                         date = _selectedDate.value,
                         startTime = startTime,
                         endTime = endTime,
                         isForce = requestScrollToTop,
+                        loadMatchType = loadMatchType,
                     )
                 },
                 {
                     if (it is ApiResponseState.Failed) {
                         if (loadMatchType == LoadMatchType.NEXT_PAGE) {
                             setState(HomeState.Match.LoadNextFailure)
+                            matchListChange.value = matchListChange.value
+                        }  else if (loadMatchType == LoadMatchType.PREV_PAGE) {
+                            setState(HomeState.Match.LoadPrevFailure)
                             matchListChange.value = matchListChange.value
                         } else {
                             setState(DataState.NetworkUnavailable)
@@ -171,7 +185,7 @@ class EarlyMatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
 
                         val size = it.dataAs<List<Common.Match>>()?.size ?: 0
                         val isEmpty = size == 0
-                        if (page == 1 && isEmpty) {
+                        if (page == INITIAL_PAGE && isEmpty) {
                             setState(HomeState.Match.DataEmpty)
                             matchListChange.value = arrayListOf()
                         } else if (size < BaseMatchRepository.DEFAULT_MATCH_SIZE) {   //如果返回成功，但是数据size小于10，则表明列表已经加载到底部
@@ -206,5 +220,15 @@ class EarlyMatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
 
     override fun clearCurrentMatch() {
         repository.clearCurrentMatch(_playType, _tournamentId, _selectedDate.value)
+    }
+
+    fun loadPrevPage() {
+        if (isPageEnd || apiStateListener.value == DataState.Loading) {
+            return
+        }
+
+        prevPage--
+        setState(HomeState.Match.LoadingPrev)
+        getMatchListData(LoadMatchType.PREV_PAGE)
     }
 }
