@@ -7,7 +7,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams
+import android.widget.TextView
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.DefaultLifecycleObserver
@@ -27,6 +30,7 @@ import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.base.utils.ext.ViewExt.applyInsetsForFitsSystemWindows
 import arch.cayenne.lib.common.ui.fragment.ShareFragment
+import arch.cayenne.lib.common.ui.view.CustomTabIndicator
 import arch.cayenne.lib.common.utils.CustomTabIndicatorUtils
 import arch.cayenne.lib.common.utils.ImmersionBarUtils.immersionBarSkinTypeExt
 import arch.cayenne.lib.common.utils.ViewUtils
@@ -52,6 +56,7 @@ import arch.cayenne.lib.skin.widget.SkinnableTextView
 import arch.cayenne.module.bet.ui.fragment.BetSheetFragment
 import arch.cayenne.module.betslip.ui.fragment.BetSlipFragment
 import arch.cayenne.module.chat.ui.fragment.ChatHomeFragment
+import arch.cayenne.module.home.ui.view.LiveMainTabMediator
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.walisport.module.live.R
@@ -82,6 +87,9 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
     private var scrollIsTop: Boolean? = false
     private var mQuickScrollDow: Boolean = false //用于记录下滑手势是否快速滑动(用于列表快速滚动到顶部,视频区域放大)
     private lateinit var mDirection: LiveMainSlideDirection //记录手势方向 up dow
+    private var homeMediator: LiveMainTabMediator? = null
+    private var indicatorDrawable: android.graphics.drawable.Drawable? = null
+    private var customIndicator: CustomTabIndicator? = null
     private val titleBarBinding: TitleBarLiveBinding by lazy {
         TitleBarLiveBinding.inflate(LayoutInflater.from(context), mBinding.titleBar, false)
     }
@@ -98,7 +106,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         mViewModel.setShowVideo(args.showVideo)
         mViewModel.setShowAnim(args.showAnim)
         setMediaView()
-        loadFragment()
+        setupTabMediator()
         mViewModel.observeMatchInfoNotify()
         mBinding.drawerLayout.setDrawerLockMode(
             DrawerLayout.LOCK_MODE_LOCKED_CLOSED,
@@ -216,7 +224,8 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                 super.onPause(owner)
                 if (fixedSkin != null) {
                     SkinnableResourceManager.setFixedSkin(null)
-                    StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND(autoIsNavigation = false)
+                    StatusBarConfig.statusBarType =
+                        StatusBarMode.DRAW_BEHIND(autoIsNavigation = false)
                     StatusBarConfig.statusBarDarkFont =
                         immersionBarSkinTypeExt(mViewModel.getSkinType())
 //                    setStatusBar(StatusBarConfig, mBinding.root)
@@ -229,7 +238,8 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                 mBinding.root.fitsSystemWindows = fixedSkin == null
                 if (fixedSkin != null) {
                     SkinnableResourceManager.setFixedSkin(fixedSkin)
-                    StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND(autoIsNavigation = false)
+                    StatusBarConfig.statusBarType =
+                        StatusBarMode.DRAW_BEHIND(autoIsNavigation = false)
                     StatusBarConfig.statusBarDarkFont = false
                     setStatusBar(StatusBarConfig, mBinding.liveMain)
                     updateBetSheetSkin() //refresh skin to fixed skin
@@ -328,51 +338,48 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
             }
         }
 
-        mBinding.tabLayout.addOnTabSelectedListener2(object : TabLayoutExt.OnTabSelectedListener2 {
-            override fun onTabSelected(tab: TabLayout.Tab, isTabClick: Boolean) {
-                tab.let {
-                    if (isTabClick) {
-                        CustomTabIndicatorUtils.animateIndicatorToPosition(
-                            mBinding.customIndicator,
-                            tab.position
-                        )
-                        val vp = mBinding.vpPage
-                        vp.startFadeAnim {
-                            vp.setCurrentItem(tab.position, false)
-                            it.invoke()
-                        }
-                    }
-                }
-                tab.view.findViewById<SkinnableTextView>(R.id.tabText)?.let { textView ->
-                    textView.setTextColor(
-                        SkinnableResourceManager.getColor(
-                            textView.context,
-                            R.color.tab_selected_text_color
-                        )
-                    )
-                    textView.textSize = 15f.px2sp
-                    textView.typeface = Typeface.DEFAULT_BOLD
-                }
-            }
 
-            override fun onTabUnselected(tab: TabLayout.Tab, isTabClick: Boolean) {
-                tab.view.findViewById<SkinnableTextView>(R.id.tabText)?.let { textView ->
-                    textView.setTextColor(
-                        SkinnableResourceManager.getColor(
-                            textView.context,
-                            R.color.video_tab_text_color
-                        )
-                    )
-                    textView.textSize = 15f.px2sp
-                    textView.typeface = Typeface.DEFAULT
-                }
-            }
-
-            override fun onTabReselected(tab: TabLayout.Tab, isTabClick: Boolean) {
-                // Handle reselect if needed
-            }
-        })
-        mBinding.vpPage.setupViewPagerScroll(mBinding.tabLayout, mBinding.customIndicator, 0.24f)
+//        mBinding.tabLayout.addOnTabSelectedListener2(object : TabLayoutExt.OnTabSelectedListener2 {
+//            override fun onTabSelected(tab: TabLayout.Tab, isTabClick: Boolean) {
+//                tab.let {
+//                    if (isTabClick) {
+//                        val vp = mBinding.vpPage
+//                        vp.startFadeAnim {
+//                            vp.setCurrentItem(tab.position, false)
+//                            it.invoke()
+//                        }
+//                    }
+//                }
+//                tab.view.findViewById<SkinnableTextView>(R.id.tabText)?.let { textView ->
+//                    textView.setTextColor(
+//                        SkinnableResourceManager.getColor(
+//                            textView.context,
+//                            R.color.tab_selected_text_color
+//                        )
+//                    )
+//                    textView.textSize = 15f.px2sp
+//                    textView.typeface = Typeface.DEFAULT_BOLD
+//                }
+//            }
+//
+//            override fun onTabUnselected(tab: TabLayout.Tab, isTabClick: Boolean) {
+//                tab.view.findViewById<SkinnableTextView>(R.id.tabText)?.let { textView ->
+//                    textView.setTextColor(
+//                        SkinnableResourceManager.getColor(
+//                            textView.context,
+//                            R.color.video_tab_text_color
+//                        )
+//                    )
+//                    textView.textSize = 15f.px2sp
+//                    textView.typeface = Typeface.DEFAULT
+//                }
+//            }
+//
+//            override fun onTabReselected(tab: TabLayout.Tab, isTabClick: Boolean) {
+//                // Handle reselect if needed
+//            }
+//        })
+        //  mBinding.vpPage.setupViewPagerScroll(mBinding.tabLayout, mBinding.customIndicator, 0.24f)
     }
 
     override fun createObserverAtState(): Lifecycle.State {
@@ -477,8 +484,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
     //比赛ID发生变化,取消订阅,数据请空
     private fun updateMatchId(matchId: Long) {
         mBinding.vpPage.setCurrentItem(1, false)
-        mBinding.tabLayout.getTabAt(1)?.select()
-        CustomTabIndicatorUtils.animateIndicatorToPosition(mBinding.customIndicator, 1, false)
+        homeMediator?.selectPositionNoAnim(mBinding.tabLayout,1)
         mViewModel.matchId.value?.let {
             deleteDataAndSubscriptions(matchId)
             mViewModel.setMatchId(matchId)
@@ -545,16 +551,131 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
             }.attach()
             tabLayout.clearOnTabSelectedListeners()
             tabLayout.post {
-                CustomTabIndicatorUtils.animateIndicatorToPosition(
-                    mBinding.customIndicator,
-                    1,
-                    false
-                )
                 mBinding.vpPage.setCurrentItem(1, false)
             }
             tabLayout.removeAllTips()
         }
         ShareFragment.create(this)
+    }
+    private fun setupTabLayout() {
+        with(mBinding.tabLayout) {
+            post {
+                setupTabsStyle()
+                updateTabTextStyle(selectedTabPosition.coerceAtLeast(0))
+                // 綁定自定義指示器
+                customIndicator = mBinding.homeIndicator
+                mBinding.vpPage.setupViewPagerScroll(
+                    this,
+                    customIndicator!!,
+                    tabIndicatorWidth = 0.45f,select = 1
+                )
+            }
+        }
+    }
+
+    private fun setupTabMediator() {
+        val list = listOf(
+            PagerBean(arch.cayenne.lib.res.R.string.bet_title.getString()) { BetSlipFragment() },
+            PagerBean(R.string.live_bet_on.getString()) { LiveBetOnFragment() },
+            PagerBean(R.string.live_chat.getString()) { createChatFragment() },
+            PagerBean(R.string.live_outs.getString()) { LiveOutsFragment() },
+            PagerBean(R.string.live_lineup.getString()) { LiveLineupFragment() },
+            PagerBean(R.string.live_standings.getString()) { LiveStandingsFragment() }
+        )
+        mBinding.vpPage.adapter = PagerAdapter(childFragmentManager, lifecycle, list)
+        launch {
+            delay(500)
+            mBinding.vpPage.offscreenPageLimit = list.size
+        }
+
+        homeMediator = LiveMainTabMediator(
+            tabLayout = mBinding.tabLayout,
+            viewPager = mBinding.vpPage,
+            tabConfiguration = { tab, position ->
+                tab.text = list[position].title
+            },
+            onPreselectChanged = { pos ->
+                updateTabTextStyle(pos)
+            },
+            )
+        setupTabLayout()
+        homeMediator?.attach { pos ->
+            indicatorDrawable?.alpha = 255
+        }
+        mBinding.tabLayout.post{
+            setupTabsStyle()
+        }
+        // 預設選中第一個tab
+        mBinding.tabLayout.post {
+            homeMediator?.selectPositionNoAnim(mBinding.tabLayout,1)
+        }
+        // Mediator 建立完後，新增自定義監聽
+        mBinding.tabLayout.addOnTabSelectedListener2(object : TabLayoutExt.OnTabSelectedListener2 {
+            override fun onTabSelected(tab: TabLayout.Tab, isTabClick: Boolean) {
+                if (isTabClick) {
+                        val vp = mBinding.vpPage
+                        vp.startFadeAnim {
+                            vp.setCurrentItem(tab.position, false)
+                            it.invoke()
+                        }
+                    }
+                // 樣式：設為粗體，並更新顏色
+                (tab.view.getChildAt(1) as? TextView)?.typeface = Typeface.DEFAULT_BOLD
+                updateTabTextStyle(tab.position)
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab, isTabClick: Boolean) {
+                val position = tab.position
+                (tab.view.getChildAt(1) as? TextView)?.typeface = Typeface.DEFAULT
+                updateTabStyle(position, -1)
+            }
+
+            override fun onTabReselected(tab: TabLayout.Tab, isTabClick: Boolean) = Unit
+        })
+        mBinding.tabLayout.removeAllTips()
+        ShareFragment.create(this)
+
+    }
+
+    private fun setupTabsStyle() {
+        with(mBinding.tabLayout) {
+            indicatorDrawable =  ResourcesCompat.getDrawable(
+                resources,
+                R.drawable.shape_live_tab_indicator,
+                null
+            )
+            setSelectedTabIndicator(
+                indicatorDrawable
+            )
+            setSelectedTabIndicatorColor(android.graphics.Color.TRANSPARENT)
+        }
+    }
+
+
+    // 更新所有 Tab 文字樣式（用於預選中和初始化）
+    private fun updateTabTextStyle(selectedPosition: Int) {
+        with(mBinding) {
+            for (i in 0 until tabLayout.tabCount) {
+                updateTabStyle(i, selectedPosition)
+            }
+        }
+    }
+
+    // 統一的 Tab 樣式更新方法
+    private fun updateTabStyle(tabPosition: Int, selectedPosition: Int) {
+        val tv =
+            mBinding.tabLayout.getTabAt(tabPosition)?.view?.getChildAt(1) as? TextView ?: return
+
+        val isSelected = selectedPosition >= 0 && tabPosition == selectedPosition
+        tv.apply {
+            setTypeface(null, if (isSelected) Typeface.BOLD else Typeface.NORMAL)
+            setTextColor(
+                SkinnableResourceManager.getColor(
+                    requireContext(),
+                    if (isSelected) R.color.live_sport_item_text_select else R.color.video_tab_text_color
+                )
+            )
+        }
     }
 
     private fun refreshBetSlip() {
