@@ -14,7 +14,7 @@
     </style>
 
     <style name="ButtonStyle">
-        <item name="android:background">@drawable/selector_button</item>
+        <item name="android:background">@drawable/selector_button_00a7c0</item>
         <item name="android:textColor">@color/color_FFFFFF</item>
         <item name="android:textSize">15sp</item>
         <item name="android:textStyle">bold</item>
