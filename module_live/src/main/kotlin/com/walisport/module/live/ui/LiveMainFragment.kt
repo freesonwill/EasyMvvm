@@ -561,7 +561,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         with(mBinding.tabLayout) {
             post {
                 setupTabsStyle()
-                updateTabTextStyle(selectedTabPosition.coerceAtLeast(0))
+                updateTabTextStyle(selectedTabPosition.coerceAtLeast(1))
                 // 綁定自定義指示器
                 customIndicator = mBinding.homeIndicator
                 mBinding.vpPage.setupViewPagerScroll(
@@ -587,7 +587,11 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
             delay(500)
             mBinding.vpPage.offscreenPageLimit = list.size
         }
-
+        // 預設選中第一個tab
+        mBinding.tabLayout.post {
+            mBinding.vpPage.setCurrentItem(1, false)
+            homeMediator?.selectPositionNoAnim(mBinding.tabLayout,1)
+        }
         homeMediator = LiveMainTabMediator(
             tabLayout = mBinding.tabLayout,
             viewPager = mBinding.vpPage,
@@ -605,10 +609,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         mBinding.tabLayout.post{
             setupTabsStyle()
         }
-        // 預設選中第一個tab
-        mBinding.tabLayout.post {
-            homeMediator?.selectPositionNoAnim(mBinding.tabLayout,1)
-        }
+
         // Mediator 建立完後，新增自定義監聽
         mBinding.tabLayout.addOnTabSelectedListener2(object : TabLayoutExt.OnTabSelectedListener2 {
             override fun onTabSelected(tab: TabLayout.Tab, isTabClick: Boolean) {
