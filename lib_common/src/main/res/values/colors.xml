@@ -142,6 +142,7 @@
 
 
     <!--3in1 新增色碼 -->
+    <color name="color_5B32FF">#5B32FF</color>
     <color name="color_1E1E1E">#1E1E1E</color> <!--黑（black），黑3（black-300） -->
     <color name="color_00A7C0">#00A7C0</color> <!--深蓝（blue-400）-->
     <color name="color_272727">#272727</color> <!--黑（black-200）-->
