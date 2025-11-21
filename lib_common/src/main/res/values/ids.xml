@@ -5,4 +5,5 @@
     <item name="long_press_job_tag" type="id" />
     <item name="is_long_press_triggered_tag" type="id" />
     <item name="iv_faker_view" type="id" />
+    <item name="shape_animator_tag" type="id" />
 </resources>

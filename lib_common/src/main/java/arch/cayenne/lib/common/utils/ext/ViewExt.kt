@@ -21,9 +21,11 @@ import android.view.View.OnAttachStateChangeListener
 import android.view.animation.DecelerateInterpolator
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.animation.addListener
+import androidx.core.animation.doOnEnd
 import androidx.core.view.children
 import androidx.core.view.doOnPreDraw
 import androidx.lifecycle.findViewTreeLifecycleOwner
@@ -45,9 +47,11 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import java.lang.reflect.Field
+import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 
 private var lastClickTime: Long = 0L
 private const val TAG = "ViewExt"
+
 /**
  * 将view转为bitmap
  */
@@ -444,7 +448,7 @@ fun View.startZoomInAnim(vararg otherViews: View) {
     val views = listOf(this, *otherViews)
 
     // Step1: 计算平均中心点（屏幕坐标）
-    val unionRect = views.fold(Rect()) { acc,view->
+    val unionRect = views.fold(Rect()) { acc, view ->
         val rect = Rect()
         view.getGlobalVisibleRect(rect)
         acc.union(rect)
@@ -476,7 +480,7 @@ fun View.startZoomInAnim(vararg otherViews: View) {
         playTogether(animators)
         addListener(onEnd = {
             views.forEachIndexed { index, view ->
-                val (pivotX,pivotY) = originalPivots[index]
+                val (pivotX, pivotY) = originalPivots[index]
                 view.pivotX = pivotX
                 view.pivotY = pivotY
             }
@@ -505,9 +509,11 @@ private fun ViewPager2.setViewPagerAnimationDuration(duration: Long) {
         e.printStackTrace()
     }
 }
-fun CustomTabIndicator.animateIndicatorToPosition(position: Int,smoothScroll:Boolean = true) {
-    val duration:Long = if(smoothScroll) AnimationController[AnimType.scrollbar]!!.duration else 0
-    val interpolator: TimeInterpolator = AnimationController[AnimType.scrollbar]!!.interpolator.toInterpolator()
+
+fun CustomTabIndicator.animateIndicatorToPosition(position: Int, smoothScroll: Boolean = true) {
+    val duration: Long = if (smoothScroll) AnimationController[AnimType.scrollbar]!!.duration else 0
+    val interpolator: TimeInterpolator =
+        AnimationController[AnimType.scrollbar]!!.interpolator.toInterpolator()
     val animator = ValueAnimator.ofFloat(this.getCurrentPosition().toFloat(), position.toFloat())
     animator.duration = duration // 动画持续时间
     animator.interpolator = interpolator
@@ -519,13 +525,17 @@ fun CustomTabIndicator.animateIndicatorToPosition(position: Int,smoothScroll:Boo
 }
 
 //侧滑退出当前fragment
-fun View.touchBackPressed(boo: Boolean = true,onBackCall: (() -> Unit)? = null){
+fun View.touchBackPressed(boo: Boolean = true, onBackCall: (() -> Unit)? = null) {
     setOnTouchListener(object : OnSwipeTouchListener() {
         override fun onSwipeRight() {
-            if (onBackCall!=null){
-                if (boo) { onBackCall.invoke()}
-            }else{
-                if (boo) { requireActivity().onBackPressedDispatcher.onBackPressed() }
+            if (onBackCall != null) {
+                if (boo) {
+                    onBackCall.invoke()
+                }
+            } else {
+                if (boo) {
+                    requireActivity().onBackPressedDispatcher.onBackPressed()
+                }
             }
         }
     })
@@ -573,7 +583,6 @@ fun View.isInArea(rawX: Float, rawY: Float): Boolean {
     getLocationOnScreen(rawXY)
     return rawX >= rawXY[0] && rawX <= (rawXY[0] + width) && rawY >= rawXY[1] && rawY <= (rawXY[1] + height)
 }
-
 
 
 /**
@@ -668,7 +677,8 @@ fun View.setOnClickOrLongPressListener(
                 (getTag(R.id.long_press_job_tag) as? Job)?.cancel()
 
                 // 4. 檢查長按旗標，以判斷這是否是一次單次點擊
-                val isLongPressTriggered = getTag(R.id.is_long_press_triggered_tag) as? Boolean ?: false
+                val isLongPressTriggered =
+                    getTag(R.id.is_long_press_triggered_tag) as? Boolean ?: false
                 if (!isLongPressTriggered) {
                     // 如果長按從未被觸發，這就是一次有效的「單次點擊」
                     onClick()
@@ -682,5 +692,65 @@ fun View.setOnClickOrLongPressListener(
         }
         true
     }
+}
+/**
+ * TextView 圆角背景渐变显示/隐藏
+ *
+ * @param backgroundColor 目标背景颜色（显示时的颜色），如 Color.parseColor("#FF6200EE")
+ * @param cornerRadiusDp  圆角大小（dp）
+ * @param isShow          true = 渐变显示背景，false = 渐变隐藏（变透明）
+ * @param duration        动画时长，默认 300ms
+ */
+fun TextView.setRoundedBackground(
+    backgroundColor: Int,
+    radiusDp: Float = 24f,
+    show: Boolean,
+    duration: Long = 200L
+) {
+    // 1. 取消上一次动画（只针对当前 TextView）
+    (getTag(R.id.shape_animator_tag) as? ValueAnimator)?.cancel()
 
+    val radiusPx = radiusDp.dp2px
+
+    // 2. 复用或创建 MaterialShapeDrawable
+    val drawable = if (background is MaterialShapeDrawable) {
+        background as MaterialShapeDrawable
+    } else {
+        MaterialShapeDrawable().also { background = it }
+    }
+
+    // 关键：每次都重新构建 ShapeAppearanceModel，保证圆角正确
+    drawable.shapeAppearanceModel = ShapeAppearanceModel.Builder()
+        .setAllCorners(CornerFamily.ROUNDED, radiusPx.toFloat())
+        .build()
+
+    // 当前颜色（可能为 null → 透明）
+    val currentColor = drawable.fillColor?.defaultColor ?: Color.TRANSPARENT
+    val targetColor = if (show) backgroundColor else Color.TRANSPARENT
+
+    // 颜色相同或无需动画 → 直接设置
+    if (currentColor == targetColor || duration <= 0) {
+        drawable.setTint(targetColor)
+        background = drawable
+        if (!show) background = null  // 彻底隐藏
+        setTag(R.id.shape_animator_tag, null)
+        return
+    }
+
+    // 3. 执行颜色渐变动画
+    ValueAnimator.ofArgb(currentColor, targetColor).apply {
+        this.duration = duration
+        addUpdateListener {
+            drawable.setTint(it.animatedValue as Int)
+            background = drawable  // 实时刷新背景
+        }
+        doOnEnd {
+            setTag(R.id.shape_animator_tag, null)
+            if (!show) background = null  // 动画结束彻底移除背景（可选）
+        }
+
+        // 保存动画引用，下次调用自动取消
+        setTag(R.id.shape_animator_tag, this)
+        start()
+    }
 }

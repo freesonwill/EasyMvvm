@@ -32,14 +32,15 @@ fun TabLayout.removeAllTips() {
 fun ViewPager2.setupViewPagerScroll(
     tabLayout: SkinnableTabLayout,
     customIndicator: BaseCustomTabIndicator,
-    tabIndicatorWidth: Float = 0.45f
+    tabIndicatorWidth: Float = 0.45f,
+    select: Int = 0
 ) {
     tabLayout.post {
         // 计算单个 Tab 的宽度
         val tabWidth = tabLayout.width.toFloat() / tabLayout.tabCount
         customIndicator.setTabWidth(tabWidth, tabIndicatorWidth)
     }
-    var lastSwitchedPage: Int = 0 // 记录上一次切换的页面，防止重复切换
+    var lastSwitchedPage: Int = select // 记录上一次切换的页面，防止重复切换
     registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
         override fun onPageScrollStateChanged(state: Int) {
             when (state) {
