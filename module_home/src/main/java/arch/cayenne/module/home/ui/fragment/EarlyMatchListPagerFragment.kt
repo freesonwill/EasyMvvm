@@ -18,7 +18,6 @@ import arch.cayenne.lib.common.ui.viewmodel.observeEvent
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
-import arch.cayenne.lib.common.utils.ext.scrollToBottomWithLoadMore
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.helper.BackToTopHelper
 import arch.cayenne.lib.common.utils.helper.showToast
@@ -346,6 +345,15 @@ class EarlyMatchListPagerFragment :
                         mViewModel.changePageEnd(false)
                         matchAdapter.setLastItemType(MatchItemAdapter.LAST_ITEM_LOAD_MORE)
                     }
+                }
+            }
+
+        }
+
+        mViewModel.prevApiStateListener.observe(viewLifecycleOwner) {
+            with(mBinding) {
+                when (it) {
+                    DataState.NetworkUnavailable, HomeState.Match.LoadNextFailure -> {}
 
                     HomeState.Match.PrevDataEmpty -> {
 
@@ -355,9 +363,15 @@ class EarlyMatchListPagerFragment :
                         mViewModel.changePrevPageEnd(true)
                     }
 
+                    HomeState.Match.Loading -> {
+                        mViewModel.changeState(HomeState.Match.Loading)
+                    }
+
+                    DataState.LoadSuccess, HomeState.Match.LoadSuccess -> {
+                        mViewModel.changePrevPageEnd(false)
+                    }
                 }
             }
-
         }
 
         //只有早盘有日期变化的情况

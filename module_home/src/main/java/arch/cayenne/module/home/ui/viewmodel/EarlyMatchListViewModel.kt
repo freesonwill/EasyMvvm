@@ -1,5 +1,7 @@
 package arch.cayenne.module.home.ui.viewmodel
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.data.remote.ApiResponseState
@@ -41,6 +43,10 @@ class EarlyMatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
 
     private var isPrevPageEnd: Boolean = false
 
+    //早盘页面可能同时向前和向后查询， 因此需要新增一个api state
+    private val _prevApiStateListener = MutableLiveData<DataState>()
+    val prevApiStateListener: LiveData<DataState> get() = _prevApiStateListener
+
     var requestScrollToTop: Boolean = false  //是否需要回到頂部，通常用於網路重新連接後，資料整體重新拉取後使用
         private set
 
@@ -59,6 +65,7 @@ class EarlyMatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
 
     fun setSelectedDate(date: Long = 0) {
         page = INITIAL_PAGE
+        prevPage = INITIAL_PAGE - 1
         _selectedDate.value = date
     }
 
@@ -92,7 +99,10 @@ class EarlyMatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
                         val currentDateRefs = repository.queryEarlyMatchChange(_tournamentId)
                             .filter { it.date == selectedDate }
                         if (currentDateRefs.isEmpty()) {
+                            //向后查询数据
                             getMatchListData(LoadMatchType.DATE_CHANGE)
+                            //向前查询一页数据
+                            getMatchListData(LoadMatchType.PREV_PAGE)
                             return@collect
                         }
                         processObserveMatchList(currentDateRefs)
@@ -144,17 +154,17 @@ class EarlyMatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
             val (startTime, endTime) = if (loadMatchType == LoadMatchType.PREV_PAGE) {
                 //向前查询
                 Pair(
-                    0L,
+                    _selectedDate.value - BaseMatchRepository.THIRTY_DAY_TIME_STAMP ,
                     _selectedDate.value,
                 )
             } else {
                 Pair(
                     _selectedDate.value,
-                    _selectedDate.value + BaseMatchRepository.ONE_DAY_TIME_STAMP * 31
+                    _selectedDate.value + BaseMatchRepository.THIRTY_DAY_TIME_STAMP
                 )
             }
 
-            "取得比賽資料 Type = ${loadMatchType} PlayType = $_playType sportId = $_sportId tournamentId = $_tournamentId page = $page startTime = $startTime endTime = $endTime".logi(
+            "取得比賽資料 Type = $loadMatchType PlayType = $_playType sportId = $_sportId tournamentId = $_tournamentId page = $page prevPage = $prevPage startTime = $startTime endTime = $endTime".logi(
                 TAG
             )
             callApi(
@@ -180,20 +190,21 @@ class EarlyMatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
                                 matchListChange.value = matchListChange.value
                             }
                             LoadMatchType.PREV_PAGE -> {
-                                setState(HomeState.Match.LoadPrevFailure)
+                                setPrevApiState(HomeState.Match.LoadPrevFailure)
                                 matchListChange.value = matchListChange.value
                             }
                             else -> {
                                 setState(DataState.NetworkUnavailable)
+                                setPrevApiState(DataState.NetworkUnavailable)
                             }
                         }
                     } else if (it is ApiResponseState.Succeeded<*>) {
                         if (loadMatchType == LoadMatchType.PREV_PAGE) {
                             val size = it.dataAs<List<Common.Match>>()?.size ?: 0
                             if (size < BaseMatchRepository.DEFAULT_MATCH_SIZE) {
-                                setState(HomeState.Match.PrevNoMoreData)
+                                setPrevApiState(HomeState.Match.PrevNoMoreData)
                             } else {
-                                setState(HomeState.Match.LoadSuccess)
+                                setPrevApiState(HomeState.Match.LoadSuccess)
                             }
                         } else {
                             val size = it.dataAs<List<Common.Match>>()?.size ?: 0
@@ -248,5 +259,9 @@ class EarlyMatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
 
     fun changePrevPageEnd(flag: Boolean) {
         isPrevPageEnd = flag
+    }
+
+    private fun setPrevApiState(state: DataState) {
+        _prevApiStateListener.value = state
     }
 }
