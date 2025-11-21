@@ -14,6 +14,7 @@ import arch.cayenne.module.home.data.constants.PlayType
 import arch.cayenne.module.home.data.constants.SportType
 import arch.cayenne.module.home.data.repo.BaseMatchRepository
 import arch.cayenne.module.home.data.repo.MatchListRepository
+import arch.cayenne.module.home.utils.DateUtils
 import galaxy.common.proto.Common
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -67,6 +68,9 @@ class EarlyMatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
         page = INITIAL_PAGE
         prevPage = INITIAL_PAGE - 1
         _selectedDate.value = date
+
+        //早盘页面向前查询时，时间不能早于明天
+        isPrevPageEnd = date == DateUtils.getTomorrowMidnight()
     }
 
     fun setPosition(position: Int) {
@@ -102,7 +106,10 @@ class EarlyMatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
                             //向后查询数据
                             getMatchListData(LoadMatchType.DATE_CHANGE)
                             //向前查询一页数据
-                            getMatchListData(LoadMatchType.PREV_PAGE)
+                            //早盘日期为明天时，不能向前查询数据
+                            if (selectedDate != DateUtils.getTomorrowMidnight()) {
+                                getMatchListData(LoadMatchType.PREV_PAGE)
+                            }
                             return@collect
                         }
                         processObserveMatchList(currentDateRefs)
@@ -154,7 +161,8 @@ class EarlyMatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
             val (startTime, endTime) = if (loadMatchType == LoadMatchType.PREV_PAGE) {
                 //向前查询
                 Pair(
-                    _selectedDate.value - BaseMatchRepository.THIRTY_DAY_TIME_STAMP ,
+                    //早盘只能查询从明天开始的比赛， 即使向前查询，起始时间也不能早于明天凌晨
+                    DateUtils.getTomorrowMidnight(),
                     _selectedDate.value,
                 )
             } else {
