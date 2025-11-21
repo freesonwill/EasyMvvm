@@ -18,6 +18,7 @@ import arch.cayenne.lib.common.ui.viewmodel.observeEvent
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
+import arch.cayenne.lib.common.utils.ext.scrollToBottomWithLoadMore
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.helper.BackToTopHelper
 import arch.cayenne.lib.common.utils.helper.showToast
@@ -31,7 +32,7 @@ import arch.cayenne.module.home.R
 import arch.cayenne.module.home.data.constants.HomeState
 import arch.cayenne.module.home.data.constants.PlayType
 import arch.cayenne.module.home.data.model.MatchDateItem
-import arch.cayenne.module.home.databinding.FragmentMatchListPagerBinding
+import arch.cayenne.module.home.databinding.FragmentEarlyMatchListPagerBinding
 import arch.cayenne.module.home.ui.adapter.MatchItemAdapter
 import arch.cayenne.module.home.ui.adapter.OnMatchItemClickListener
 import arch.cayenne.module.home.ui.view.decoration.MatchCardItemDecoration
@@ -50,9 +51,9 @@ import kotlin.reflect.KClass
  * 早盘用的比赛列表， 具备日期切换及向前查询功能
  */
 class EarlyMatchListPagerFragment :
-    BaseFragment<EarlyMatchListViewModel, FragmentMatchListPagerBinding>() {
-    override val vbClass: KClass<FragmentMatchListPagerBinding> =
-        FragmentMatchListPagerBinding::class
+    BaseFragment<EarlyMatchListViewModel, FragmentEarlyMatchListPagerBinding>() {
+    override val vbClass: KClass<FragmentEarlyMatchListPagerBinding> =
+        FragmentEarlyMatchListPagerBinding::class
     override val vmClass: KClass<EarlyMatchListViewModel> = EarlyMatchListViewModel::class
     private val homeViewModel: HomeViewModel by sharedViewModel<HomeViewModel, NewHomeFragment>()
     private val earlyViewModel: EarlyViewModel by viewModels({ requireParentFragment() })
@@ -126,6 +127,8 @@ class EarlyMatchListPagerFragment :
                                     showToast(it)
                                 }
                             }
+
+                            else -> {}
                         }
 
                         if (status is AddSelectionStatus.Success.Combo || status is AddSelectionStatus.Success.Update) {
@@ -161,34 +164,23 @@ class EarlyMatchListPagerFragment :
                 }
 
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-//                    rvHomeGameList.scrollToBottomWithLoadMore(minScrollCount = 8, {
-//                        if (mViewModel.apiStateListener.value != HomeState.Match.LoadSuccess) return@scrollToBottomWithLoadMore
-//                        mViewModel.loadNextPage()
-//                    }, {
-//                        if (mViewModel.apiStateListener.value == HomeState.Match.LoadNextFailure) {
-//                            mViewModel.loadNextPage()
-//                        }
-//                    })
-
                     val layoutManager = recyclerView.layoutManager as LinearLayoutManager
-                    val visibleItemCount = layoutManager.childCount
-                    val totalItemCount = layoutManager.itemCount
-                    val firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
-                    val loadMoreThreshold = 10   // 上拉到底部前10个时加载更多
-                    val loadPreviousThreshold = 8
-                    if (firstVisibleItemPosition != RecyclerView.NO_POSITION) {
-                        if (dy > 0) {
-                            if (mViewModel.apiStateListener.value != HomeState.Match.LoadSuccess) return
-                            if ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount - loadMoreThreshold) {
-                                mViewModel.loadNextPage()
-                            }
-                        } else if (dy < 0) {
-                            if (mViewModel.apiStateListener.value != HomeState.Match.LoadSuccess) return
-                            if (firstVisibleItemPosition <= loadPreviousThreshold) {
-                                mViewModel.loadPrevPage()
-                            }
+                    if (dy > 0) {
+                        if (mViewModel.apiStateListener.value != HomeState.Match.LoadSuccess) return
+                        val lastItemPos = layoutManager.findLastCompletelyVisibleItemPosition()
+                        val itemCount = matchAdapter.itemCount - 8
+                        if (lastItemPos > itemCount && lastItemPos > 1) {
+                            mViewModel.loadNextPage()
+                        }
+                    } else if (dy < 0) {
+                        if (mViewModel.prevApiStateListener.value != HomeState.Match.LoadSuccess) return
+                        val firstItemPos =
+                            layoutManager.findFirstCompletelyVisibleItemPosition()
+                        if (firstItemPos <= 8) {
+                            mViewModel.loadPrevPage()
                         }
                     }
+
                 }
             })
 
@@ -265,6 +257,23 @@ class EarlyMatchListPagerFragment :
                 )
             }
         }
+
+        mBinding.tvHover.postDelayed({
+            val firstVisibleItemPosition = gameLayoutManager.findFirstVisibleItemPosition()
+            firstVisibleItemPosition.let {
+                if (it < 0) return@let
+                if (matchAdapter.currentList.isEmpty()) return@let
+//                if (rvAdapter._data!!.size < dateIndex) return@let
+                val item = matchAdapter.currentList[firstVisibleItemPosition]
+                if (item is MatchDateItem) {
+                    mBinding.tvHover.text = item.dateStr
+                } else if (item is MatchWithMarkets) {
+                    val (date, week) = DateUtils.getDisplay(item.match.basicInfo.startTime)
+                    val display = "$date $week"
+                    mBinding.tvHover.text = display
+                }
+            }
+        }, 100)
         mBinding.rvHomeGameList.doOnPreDraw {
             if (mBinding.rvHomeGameList.scrollState == RecyclerView.SCROLL_STATE_IDLE) {
                 subscribeVisibleMatch()
