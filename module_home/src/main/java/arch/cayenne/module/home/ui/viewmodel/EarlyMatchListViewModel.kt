@@ -39,6 +39,8 @@ class EarlyMatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
 
     private var prevPage: Int = INITIAL_PAGE
 
+    private var isPrevPageEnd: Boolean = false
+
     var requestScrollToTop: Boolean = false  //是否需要回到頂部，通常用於網路重新連接後，資料整體重新拉取後使用
         private set
 
@@ -172,26 +174,38 @@ class EarlyMatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
                 },
                 {
                     if (it is ApiResponseState.Failed) {
-                        if (loadMatchType == LoadMatchType.NEXT_PAGE) {
-                            setState(HomeState.Match.LoadNextFailure)
-                            matchListChange.value = matchListChange.value
-                        }  else if (loadMatchType == LoadMatchType.PREV_PAGE) {
-                            setState(HomeState.Match.LoadPrevFailure)
-                            matchListChange.value = matchListChange.value
-                        } else {
-                            setState(DataState.NetworkUnavailable)
+                        when (loadMatchType) {
+                            LoadMatchType.NEXT_PAGE -> {
+                                setState(HomeState.Match.LoadNextFailure)
+                                matchListChange.value = matchListChange.value
+                            }
+                            LoadMatchType.PREV_PAGE -> {
+                                setState(HomeState.Match.LoadPrevFailure)
+                                matchListChange.value = matchListChange.value
+                            }
+                            else -> {
+                                setState(DataState.NetworkUnavailable)
+                            }
                         }
                     } else if (it is ApiResponseState.Succeeded<*>) {
-
-                        val size = it.dataAs<List<Common.Match>>()?.size ?: 0
-                        val isEmpty = size == 0
-                        if (page == INITIAL_PAGE && isEmpty) {
-                            setState(HomeState.Match.DataEmpty)
-                            matchListChange.value = arrayListOf()
-                        } else if (size < BaseMatchRepository.DEFAULT_MATCH_SIZE) {   //如果返回成功，但是数据size小于10，则表明列表已经加载到底部
-                            setState(DataState.NoMoreData)
+                        if (loadMatchType == LoadMatchType.PREV_PAGE) {
+                            val size = it.dataAs<List<Common.Match>>()?.size ?: 0
+                            if (size < BaseMatchRepository.DEFAULT_MATCH_SIZE) {
+                                setState(HomeState.Match.PrevNoMoreData)
+                            } else {
+                                setState(HomeState.Match.LoadSuccess)
+                            }
                         } else {
-                            setState(HomeState.Match.LoadSuccess)
+                            val size = it.dataAs<List<Common.Match>>()?.size ?: 0
+                            val isEmpty = size == 0
+                            if (page == INITIAL_PAGE && isEmpty) {
+                                setState(HomeState.Match.DataEmpty)
+                                matchListChange.value = arrayListOf()
+                            } else if (size < BaseMatchRepository.DEFAULT_MATCH_SIZE) {   //如果返回成功，但是数据size小于10，则表明列表已经加载到底部
+                                setState(DataState.NoMoreData)
+                            } else {
+                                setState(HomeState.Match.LoadSuccess)
+                            }
                         }
                     }
                 }, autoUpdateState = false
@@ -223,12 +237,16 @@ class EarlyMatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
     }
 
     fun loadPrevPage() {
-        if (isPageEnd || apiStateListener.value == DataState.Loading) {
+        if (isPrevPageEnd || apiStateListener.value == DataState.Loading) {
             return
         }
 
         prevPage--
         setState(HomeState.Match.LoadingPrev)
         getMatchListData(LoadMatchType.PREV_PAGE)
+    }
+
+    fun changePrevPageEnd(flag: Boolean) {
+        isPrevPageEnd = flag
     }
 }

@@ -346,6 +346,15 @@ class EarlyMatchListPagerFragment :
                         mViewModel.changePageEnd(false)
                         matchAdapter.setLastItemType(MatchItemAdapter.LAST_ITEM_LOAD_MORE)
                     }
+
+                    HomeState.Match.PrevDataEmpty -> {
+
+                    }
+
+                    HomeState.Match.PrevNoMoreData -> {
+                        mViewModel.changePrevPageEnd(true)
+                    }
+
                 }
             }
 
