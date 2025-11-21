@@ -50,7 +50,7 @@ class ComboMultiBetAdapter(
     interface OnComboMultiBetClickListener {
         @Deprecated("use onEditMoneyClick2 instead")
         fun onEditMoneyClick(serialValue: Int, locationX: Int, locationY: Int) {}
-        fun onEditMoneyClick2(serialValue: Int, editText: EditText, tvMoney: TextView, addView:(keyboard:BetMoneyKeyboard)->Unit){ }
+        fun onEditMoneyClick2(serialValue: Int, editText: EditText, tvMoney: TextView, addViewAction:(keyboard:BetMoneyKeyboard)->Unit){ }
         fun getMoneySymbol(): String
     }
 }
