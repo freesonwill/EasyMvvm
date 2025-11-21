@@ -67,7 +67,7 @@
         app:layout_constraintEnd_toEndOf="@id/edge_end"
         app:layout_constraintTop_toTopOf="@id/edge_top"
         tools:hint="@string/et_money_hint"
-        tools:text="1000" />
+        tools:text="1000000000" />
 
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/tv_title_combo"
