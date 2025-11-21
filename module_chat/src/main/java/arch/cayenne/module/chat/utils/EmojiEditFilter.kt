@@ -15,7 +15,7 @@ class EmojiEditFilter() : InputFilter {
     private val normalEmojiPattern = Regex(EmojiUtils.NORMAL_EMOJI_REGEX)
     private val bidEmojiPattern = Regex(EmojiUtils.BID_EMOJI_REGEX)
 
-    private val maxLength: Int = 20
+    private val maxLength: Int = 50
 
     @SuppressLint("SetTextI18n")
     override fun filter(

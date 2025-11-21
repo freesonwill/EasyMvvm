@@ -26,6 +26,7 @@ import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
+import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.database.entity.LiveMatchBean
@@ -367,10 +368,11 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
     private fun addEtWatcher() {
         etInputWatcher = object :TextWatcher{
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+//                "beforeTextChanged $s start $start before $before  count $count ".logd("aaa")
+                ChatATHelper.removeMentionSpan(mBinding.chatEtInput,start,count)
             }
 
             override fun afterTextChanged(s: Editable?) {
@@ -379,14 +381,36 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
                         return
                     }
                     if(it.last() == '@'){
-                        atPopupWindow.createPopupWindow(requireContext(),mBinding.inputContent)
+                        atPopupWindow.showPopupWindow(mBinding.inputContent)
                         return
                     }
-                    ChatATHelper.filterEtInputWithAt(it) }
+//                    ChatATHelper.filterEtInputWithAt(it)
+                }
 
             }
         }
         mBinding.chatEtInput.addTextChangedListener(etInputWatcher)
+        ChatATHelper.setEditTextDelCheck(mBinding.chatEtInput)
+        atPopupWindow.createPopupWindow(requireContext(),object: RecyclerItemListener<String> {
+            override fun onItemClick(item: String?, position: Int) {
+                if(item == null){
+                    return
+                }
+              mBinding.chatEtInput.apply {
+                  text?.let {
+                      val start = it.length ?: 0
+                      if(it.endsWith('@')){
+                          it.append(item)
+                          ChatATHelper.filterEtInputWithAt(this,start,item.length)
+                      }else{
+                          it.append("@$item")
+                          ChatATHelper.filterEtInputWithAt(this,start,item.length+1)
+                      }
+                  }
+              }
+
+            }
+        })
     }
 
     fun closeChatWebsocket() {
