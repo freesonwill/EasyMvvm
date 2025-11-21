@@ -1,11 +1,11 @@
 package arch.cayenne.module.bet.ui.fragment
 
-import android.animation.ObjectAnimator
 import android.os.Bundle
-import androidx.fragment.app.FragmentActivity
+import androidx.core.os.bundleOf
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
-import arch.cayenne.lib.base.ui.fragment.BasePreLoadBottomSheetFragment
+import arch.cayenne.lib.base.ui.fragment.BaseBottomSheetFragment
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.module.bet.R
@@ -13,14 +13,14 @@ import arch.cayenne.module.bet.databinding.FragmentBetCombinationBinding
 import arch.cayenne.module.bet.ui.adapter.CombThreeListAdapter
 import arch.cayenne.module.bet.ui.adapter.CombinationAdapter
 import arch.cayenne.module.bet.viewmodel.BetCombViewModel
+import com.blankj.utilcode.util.GsonUtils
 import kotlin.reflect.KClass
 
 /**
  * 组合列表弹窗页
  */
 
-class CombinationFragment :
-    BasePreLoadBottomSheetFragment<BetCombViewModel, FragmentBetCombinationBinding>() {
+class CombinationFragment : BaseBottomSheetFragment<BetCombViewModel, FragmentBetCombinationBinding>() {
 
     override val vbClass: KClass<FragmentBetCombinationBinding> =
         FragmentBetCombinationBinding::class
@@ -32,44 +32,44 @@ class CombinationFragment :
 
     companion object {
         private const val TAG = "CombinationFragment"
+        private const val PARAMETER = "PARAMETER" //超级组合
         private const val TYPE_SUPER = 0 //超级组合
         private const val TYPE_SINGLE = 1 //所有单关注单
         private const val TYPE_TWO = 2 //所有2串1注单
         private const val TYPE_THREE = 3 //所有3串1注单
 
-        fun create(activity: FragmentActivity) {
-            val manager = activity.supportFragmentManager
-            val f = manager.findFragmentByTag(TAG)
-            if (f == null) {
-                CombinationFragment().customAttach(activity, TAG)
+        fun newInstance(parameter: Parameter): CombinationFragment {
+            return CombinationFragment().apply {
+                arguments = bundleOf(PARAMETER to GsonUtils.toJson(parameter))
             }
-        }
-
-        fun show(activity: FragmentActivity, withOtherSheetHide: ObjectAnimator? = null) {
-            val manager = activity.supportFragmentManager
-            val f = manager.findFragmentByTag(TAG)
-            if (f == null) {
-                CombinationFragment().show(manager, TAG)
-            } else if (f is BasePreLoadBottomSheetFragment<*, *>) {
-                if (withOtherSheetHide == null) {
-                    f.customShow()
-                } else {
-                    f.customShow(withOtherSheetHide)
-                }
-            }
-        }
-
-        fun find(activity: FragmentActivity): CombinationFragment? {
-            val manager = activity.supportFragmentManager
-            val f = manager.findFragmentByTag(TAG)
-            return f as? CombinationFragment
         }
     }
 
+    data class Parameter(
+        val title:String,
+        val titleTips: String,
+        val items:List<ParameterItems>
+    )
+    data class ParameterItems(
+        val title:String,
+        val items:List<ParameterItems2>
+    )
+
+    data class ParameterItems2(
+        val combo:String,
+        val money:String?,
+        val winMoney:String?,
+        val odds:String
+    )
+
     override fun initView(savedInstanceState: Bundle?) {
+        val parameter = requireArguments().getString(PARAMETER).let {
+            GsonUtils.fromJson(it,Parameter::class.java)
+        }
+        "parameter-----$parameter".logd(TAG)
+
         with(mBinding) {
-            val concatAdapter =
-                ConcatAdapter(headerAdapter, listAdapter, twoHeaderAdapter, doubleAdapter)
+            val concatAdapter = ConcatAdapter(headerAdapter, listAdapter, twoHeaderAdapter, doubleAdapter)
             rvContent.layoutManager = LinearLayoutManager(requireContext())
             rvContent.adapter = concatAdapter
         }

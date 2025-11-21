@@ -1,6 +1,5 @@
 package arch.cayenne.module.bet.viewmodel
 
-import androidx.annotation.StringRes
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
@@ -12,17 +11,19 @@ import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.data.repo.BalanceRepository
 import arch.cayenne.lib.common.ui.viewmodel.Event
+import arch.cayenne.lib.common.utils.ext.CollectionExt.combinations
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
+import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
 import arch.cayenne.lib.common.utils.ext.SportStringExt.isGreaterThanValue
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
-import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.database.entity.BetSelectionBean
 import arch.cayenne.lib.database.entity.InfoBean
 import arch.cayenne.module.bet.R
 import arch.cayenne.module.bet.data.ComboMultiBetBean
 import arch.cayenne.module.bet.data.OddsChangeEnum
 import arch.cayenne.module.bet.repo.ComboBetRepository
+import arch.cayenne.module.bet.ui.fragment.CombinationFragment
 import kotlinx.coroutines.launch
 
 class ComboBetViewModel(
@@ -126,12 +127,12 @@ class ComboBetViewModel(
                     if (lastList == null) {
                         _onComboMultiBetBeanListener.value = beans
                     } else {
+                        //旧资料的钱拷贝到新资料
                         val updatedList = beans.mapIndexed { index, newItem ->
                             val oldItem = lastList.getOrNull(index)
                             val updatedInputMoney = oldItem?.inputMoney?: newItem.inputMoney
                             newItem.copy(inputMoney = updatedInputMoney)
                         }
-
                         _onComboMultiBetBeanListener.value = updatedList
                     }
                 }
@@ -158,7 +159,7 @@ class ComboBetViewModel(
     }
 
     fun updateMultiBetMoney(serialValue: Int, money: Long) {
-        "updateMultiBetMoney---$serialValue,money:$money".logd(TAG)
+        //"updateMultiBetMoney---$serialValue,money:$money".logd(TAG)
         _onComboMultiBetBeanListener.value?.let {
             val updatedList = it.map { rate ->
                 if (rate.serialValue == serialValue) {
@@ -168,7 +169,7 @@ class ComboBetViewModel(
                 }
             }
             repo.setMoney(serialValue, money)
-            setMultiBetBean(updatedList)
+            _onComboMultiBetBeanListener.value = updatedList
         }
     }
 
@@ -191,10 +192,6 @@ class ComboBetViewModel(
         } ?: run {
             false
         }
-    }
-
-    private fun setMultiBetBean(data: List<ComboMultiBetBean>) {
-        _onComboMultiBetBeanListener.value = data
     }
 
     fun toggleMultiLayoutExpend() {
@@ -267,5 +264,39 @@ class ComboBetViewModel(
             }
         }
         return null
+    }
+
+    /**
+     * 拆分串关，比如3串4拆成2串1，3串1
+     * @param combK
+     * @param combV
+     * @return
+     */
+    fun splitComboIntoSingles(combK:Int, combV:Int, money: Long): List<CombinationFragment.ParameterItems> {
+        val data = this.onBetListListener.value ?: return emptyList()
+        // 1 注 = 固定只有一个 K
+        val kList = if (combV == 1) {
+            listOf(combK)
+        } else {
+            (2..combK).toList()
+        }
+        return kList.map { k ->
+            val title = "所有${k}串1注单"
+            val moneySymbol = this.moneySymbol
+
+            val listItems = data.combinations(k).map { l ->
+                val odds = l.fold(1) { acc, c -> acc * c.odds }.let {
+                    repo.getScaleOdds(it, (k - 1) * 2)
+                }
+
+                CombinationFragment.ParameterItems2(
+                    combo = l.joinToString("·") { "${data.indexOf(it) + 1}" },
+                    money = money.takeIf { it != 0L }?.let { "$moneySymbol${it.getMoney()}" },
+                    winMoney = money.takeIf { it != 0L }?.let { "$moneySymbol${money.getMoney(odds)}" },
+                    odds = "@${odds.getOdds()}"
+                )
+            }
+            CombinationFragment.ParameterItems(title, listItems)
+        }
     }
 }

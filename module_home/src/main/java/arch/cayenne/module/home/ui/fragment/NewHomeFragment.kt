@@ -73,8 +73,8 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
     override fun onStart() {
         mBinding.homeTopBar.post {
             //动态设置沉浸式状态栏背景高度 状态栏高度+bar控件高度
-            var barHeight = ViewUtils.getStatusBarHeight(requireContext())
-            var toBarHeight = mBinding.homeTopBar.height
+            val barHeight = ViewUtils.getStatusBarHeight(requireContext())
+            val toBarHeight = mBinding.homeTopBar.height
 
             val paramsLin = mBinding.homeBarIcon.layoutParams as LayoutParams
             paramsLin.height = barHeight + toBarHeight
