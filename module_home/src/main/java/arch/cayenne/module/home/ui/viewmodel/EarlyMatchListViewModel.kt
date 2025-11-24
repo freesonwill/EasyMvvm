@@ -35,7 +35,13 @@ class EarlyMatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
     private var _playType = PlayType.EARLY.id
     private var _tournamentId: Int = HomeViewModel.TOURNAMENT_ALL_ID
     private var _position = -1
-    private var _selectedDate = MutableStateFlow<Long>(0L)
+
+    /**
+     * 表示用户手动选择的时间， 用于查询比赛列表数据
+     */
+    private var _queryDate = MutableStateFlow<Long>(0L)
+
+
     override val repository: MatchListRepository by inject()
 
     private var observeJob: Job? = null
@@ -64,14 +70,15 @@ class EarlyMatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
         _playType = id
     }
 
-    fun setSelectedDate(date: Long = 0) {
+    fun setSelectedDate(date: Long = 0, force: Boolean = false) {
         page = INITIAL_PAGE
         prevPage = INITIAL_PAGE - 1
-        _selectedDate.value = date
+        _queryDate.value = date
 
         //早盘页面向前查询时，时间不能早于明天
         isPrevPageEnd = date == DateUtils.getTomorrowMidnight()
     }
+
 
     fun setPosition(position: Int) {
         _position = position
@@ -96,7 +103,7 @@ class EarlyMatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
         observeJob = viewModelScope.launch {
             //當日期變化
             launch(Dispatchers.IO) {
-                _selectedDate
+                _queryDate
                     .drop(2)  //一開始進入的不用聽，可以藉由loginChange去取得最開始的資料
                     .collect { selectedDate ->
                         "Collect selectedDateChange playType = $_playType  tournament = $_tournamentId selectedDate = $selectedDate ".logi()
@@ -120,7 +127,7 @@ class EarlyMatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
                 repository.observeEarlyMatchChange(_tournamentId)
                     .distinctUntilChanged()
                     .collect { refs ->
-                        val selectedDate = _selectedDate.value
+                        val selectedDate = _queryDate.value
                         "Collect observeMatchChange start playType = $_playType, sportId = ${_sportId} tournament = $_tournamentId selectedDate = $selectedDate".logi(
                             this@EarlyMatchListViewModel::class.java.simpleName
                         )
@@ -163,12 +170,12 @@ class EarlyMatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
                 Pair(
                     //早盘只能查询从明天开始的比赛， 即使向前查询，起始时间也不能早于明天凌晨
                     DateUtils.getTomorrowMidnight(),
-                    _selectedDate.value,
+                    _queryDate.value,
                 )
             } else {
                 Pair(
-                    _selectedDate.value,
-                    _selectedDate.value + BaseMatchRepository.THIRTY_DAY_TIME_STAMP
+                    _queryDate.value,
+                    _queryDate.value + BaseMatchRepository.THIRTY_DAY_TIME_STAMP
                 )
             }
 
@@ -183,7 +190,7 @@ class EarlyMatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
                         tournamentId = _tournamentId,
                         prevPage = prevPage,
                         page = page,
-                        date = _selectedDate.value,
+                        date = _queryDate.value,
                         startTime = startTime,
                         endTime = endTime,
                         isForce = requestScrollToTop,
@@ -252,7 +259,7 @@ class EarlyMatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
         }
 
     override fun clearCurrentMatch() {
-        repository.clearCurrentMatch(_playType, _tournamentId, _selectedDate.value)
+        repository.clearCurrentMatch(_playType, _tournamentId, _queryDate.value)
     }
 
     fun loadPrevPage() {

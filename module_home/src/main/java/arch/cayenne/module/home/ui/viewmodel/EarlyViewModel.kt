@@ -1,10 +1,8 @@
 package arch.cayenne.module.home.ui.viewmodel
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.common.ui.viewmodel.Event
 import arch.cayenne.lib.database.entity.BaseTournamentData
@@ -30,6 +28,13 @@ class EarlyViewModel : SubHomeViewModel() {
 
     private val _selectedDate = MutableLiveData<Event<Long>>() // Pair<leagueId, date>
     val selectedDate: MutableLiveData<Event<Long>> = _selectedDate
+
+    /**
+     * 在日期栏上展示的时间
+     */
+    private val _displayDate = MutableLiveData<EarlyDate>()
+
+    val displayDate: MutableLiveData<EarlyDate> = _displayDate
 
     init {
         val futureDays = DateUtils.getFutureDays(
@@ -123,6 +128,11 @@ class EarlyViewModel : SubHomeViewModel() {
         } else if (tournament is ChampionTournamentDataModel) {
             _navigateToChampion.value = Event(tournament)
         }
+    }
+
+
+    fun setDisplayDate(date: EarlyDate) {
+        _displayDate.value = date
     }
 
 

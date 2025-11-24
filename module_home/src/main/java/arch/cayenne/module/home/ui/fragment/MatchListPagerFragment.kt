@@ -220,8 +220,8 @@ class MatchListPagerFragment :
         "MatchListChange livedata Observed~ ${matchList.map { it.match.matchId }}".logi(this::class.java.simpleName)
         val preEmpty = matchAdapter.currentList.isEmpty()
 
-        //早盘的比赛列表，需要添加日期条目
-        val list = if (mViewModel.getPlayTypeId() == PlayType.EARLY.id) addDateItem(
+        //收藏的比赛列表，需要添加日期条目
+        val list = if (mViewModel.getPlayTypeId() == PlayType.FAVORITE.id) addDateItem(
             matchList
         ) else
             matchList
@@ -373,7 +373,7 @@ class MatchListPagerFragment :
         mViewModel.stopMatchSubscribeNotify()
     }
 
-    fun addDateItem(list:List<MatchListItem>?): List<MatchListItem>? {
+    private fun addDateItem(list:List<MatchListItem>?): List<MatchListItem>? {
         val isEmpty = (list?.size ?: 0) == 0
         if (isEmpty) {
             return list
@@ -388,7 +388,7 @@ class MatchListPagerFragment :
                 val display = "$date $week"
 
                 if (!set.contains(display)) {
-                    mutableList.add(MatchDateItem(display))
+                    mutableList.add(MatchDateItem(display, it.match.basicInfo.startTime))
                     set.add(display)
                 }
                 mutableList.add(it)

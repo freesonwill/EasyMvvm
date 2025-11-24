@@ -18,7 +18,6 @@ import arch.cayenne.lib.common.ui.viewmodel.observeEvent
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
-import arch.cayenne.lib.common.utils.ext.scrollToBottomWithLoadMore
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.helper.BackToTopHelper
 import arch.cayenne.lib.common.utils.helper.showToast
@@ -32,6 +31,8 @@ import arch.cayenne.module.home.R
 import arch.cayenne.module.home.data.constants.HomeState
 import arch.cayenne.module.home.data.constants.PlayType
 import arch.cayenne.module.home.data.model.MatchDateItem
+import arch.cayenne.module.home.data.model.MatchLoadMoreData
+import arch.cayenne.module.home.data.model.MatchNoMoreData
 import arch.cayenne.module.home.databinding.FragmentEarlyMatchListPagerBinding
 import arch.cayenne.module.home.ui.adapter.MatchItemAdapter
 import arch.cayenne.module.home.ui.adapter.OnMatchItemClickListener
@@ -40,6 +41,7 @@ import arch.cayenne.module.home.ui.viewmodel.EarlyMatchListViewModel
 import arch.cayenne.module.home.ui.viewmodel.EarlyViewModel
 import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
 import arch.cayenne.module.home.utils.DateUtils
+import arch.cayenne.module.home.utils.DateUtils.isSameDay
 import arch.cayenne.module.home.utils.setFavoriteIcon
 import com.walisport.module.message.ui.view.DeleteAnimator
 import kotlinx.coroutines.launch
@@ -166,20 +168,71 @@ class EarlyMatchListPagerFragment :
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     val layoutManager = recyclerView.layoutManager as LinearLayoutManager
                     if (dy > 0) {
-                        if (mViewModel.apiStateListener.value != HomeState.Match.LoadSuccess) return
-                        val lastItemPos = layoutManager.findLastCompletelyVisibleItemPosition()
-                        val itemCount = matchAdapter.itemCount - 8
-                        if (lastItemPos > itemCount && lastItemPos > 1) {
-                            mViewModel.loadNextPage()
+                        if (mViewModel.apiStateListener.value == HomeState.Match.LoadSuccess) {
+                            val lastItemPos = layoutManager.findLastCompletelyVisibleItemPosition()
+                            val itemCount = matchAdapter.itemCount - 8
+                            if (lastItemPos > itemCount && lastItemPos > 1) {
+                                mViewModel.loadNextPage()
+                            }
                         }
                     } else if (dy < 0) {
-                        if (mViewModel.prevApiStateListener.value != HomeState.Match.LoadSuccess) return
-                        val firstItemPos =
-                            layoutManager.findFirstCompletelyVisibleItemPosition()
-                        if (firstItemPos <= 8) {
-                            mViewModel.loadPrevPage()
+                        if (mViewModel.prevApiStateListener.value == HomeState.Match.LoadSuccess) {
+                            val firstItemPos =
+                                layoutManager.findFirstCompletelyVisibleItemPosition()
+                            if (firstItemPos <= 8) {
+                                mViewModel.loadPrevPage()
+                            }
                         }
                     }
+
+                    val firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
+
+                    val itemList = matchAdapter.currentList
+                    if (itemList.isEmpty()) {
+                        return
+                    }
+                    when (val item = itemList[firstVisibleItemPosition]) {
+                        is MatchWithMarkets -> {
+                            val earlyDate =
+                                earlyViewModel.dateList.value?.first {
+                                    isSameDay(
+                                        it.timestamp,
+                                        item.match.basicInfo.startTime
+                                    )
+                                }
+                            if (earlyDate != null) {
+                                if (mBinding.rvHomeGameList.scrollState == RecyclerView.SCROLL_STATE_DRAGGING) {
+                                    earlyViewModel.setDisplayDate(earlyDate)
+                                }
+                            }
+                        }
+
+                        is MatchNoMoreData -> {
+
+                        }
+
+                        is MatchLoadMoreData -> {
+
+                        }
+
+                        is MatchDateItem -> {
+                            val earlyDate =
+                                earlyViewModel.dateList.value?.first {
+                                    isSameDay(
+                                        it.timestamp,
+                                        item.timeStamp
+                                    )
+                                }
+                            if (earlyDate != null) {
+                                if (mBinding.rvHomeGameList.scrollState == RecyclerView.SCROLL_STATE_DRAGGING) {
+                                    earlyViewModel.setDisplayDate(earlyDate)
+                                }
+                            }
+                        }
+
+                        else -> {}
+                    }
+
 
                 }
             })
@@ -394,10 +447,19 @@ class EarlyMatchListPagerFragment :
             refreshListByDate(date)
         }
 
+        earlyViewModel.displayDate.observe(viewLifecycleOwner) {
+            it?.let {
+                val (date, week) = DateUtils.getDisplay(it.timestamp)
+                val display = "$date $week"
+                mBinding.tvHover.text = display
+            }
+        }
+
 
         homeViewModel.notifySubHomeRefresh.observeEvent(viewLifecycleOwner, this) {
             reloadAllData()
         }
+
     }
 
     private fun refreshListByDate(date: Long) {
@@ -465,7 +527,7 @@ class EarlyMatchListPagerFragment :
                 val display = "$date $week"
 
                 if (!set.contains(display)) {
-                    mutableList.add(MatchDateItem(display))
+                    mutableList.add(MatchDateItem(display, it.match.basicInfo.startTime))
                     set.add(display)
                 }
                 mutableList.add(it)
