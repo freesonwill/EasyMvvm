@@ -1,11 +1,14 @@
 package arch.cayenne.module.order.ui.adapter
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.core.view.isVisible
 import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.base.ui.adapter.BaseAdapter
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
+import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.module.betslip.R
 import arch.cayenne.module.betslip.databinding.ItemOrderGameBinding
@@ -13,6 +16,8 @@ import arch.cayenne.module.betslip.databinding.ItemOrderHeaderBinding
 import arch.cayenne.module.order.data.model.OrderAllBean
 import arch.cayenne.module.order.ui.compare.OrderAllCompare
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.bumptech.glide.request.RequestOptions
 
 class AllGameAdapter : BaseAdapter<OrderAllBean, BaseViewHolder, ViewBinding>(
     OrderAllCompare()
@@ -36,10 +41,10 @@ class AllGameAdapter : BaseAdapter<OrderAllBean, BaseViewHolder, ViewBinding>(
             binding.tvGameBelong.text = "牛牛"
             binding.tvGameMultiple.text = "584 x"
             binding.tvGameBet.text = R.string.title_bet.getString() + "  " + item.bet
-            Glide.with(binding.root.context).load(item.img).into(binding.ivGameLogo)
+            loadImage(binding.root.context, item.img, binding.ivGameLogo)
             binding.viewLine.isVisible = position != itemCount - 1
         } else if (binding is ItemOrderHeaderBinding) {
-
+            binding.tvDate.text = item.gameName
         }
     }
 
@@ -67,6 +72,11 @@ class AllGameAdapter : BaseAdapter<OrderAllBean, BaseViewHolder, ViewBinding>(
 
     fun setOnItemClickListener(onItemClickListener: OnItemClickListener) {
         this.listener = onItemClickListener
+    }
+
+    private fun loadImage(context: Context, url: String, image: ImageView) {
+        val options = RequestOptions().transforms(RoundedCorners(30.dp2px))
+        Glide.with(context).load(url).apply(options).into(image)
     }
 
     fun interface OnItemClickListener {

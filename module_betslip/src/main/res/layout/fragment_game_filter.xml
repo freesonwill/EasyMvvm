@@ -4,13 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:minHeight="@dimen/dp_484"
     android:background="@drawable/bg_share">
 
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/tv_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="@dimen/dp_11"
         android:text="@string/title_sport_filter"
         android:textColor="@color/color_FFFFFF"
         android:textSize="15sp"
@@ -24,7 +25,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="@dimen/dp_12"
         android:text="@string/title_game_filter_type"
         android:textColor="@color/color_FFFFFF"
         android:textSize="14sp"
@@ -50,7 +51,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="28dp"
-        android:layout_marginBottom="51dp"
+        android:layout_marginBottom="@dimen/dp_49"
         android:background="@drawable/bg_money_circle"
         android:backgroundTint="@color/color_003A42"
         android:gravity="center"
@@ -61,7 +62,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/btn_confirm"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/rv_content"
         app:skinnableFontWeight="500" />
 
     <arch.cayenne.lib.skin.widget.SkinnableTextView

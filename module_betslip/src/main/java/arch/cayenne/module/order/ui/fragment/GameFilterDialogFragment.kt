@@ -1,8 +1,8 @@
 package arch.cayenne.module.order.ui.fragment
 
 import android.os.Bundle
-import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.ui.fragment.BaseBottomSheetFragment
+import arch.cayenne.module.betslip.R
 import arch.cayenne.module.betslip.data.constants.Config
 import arch.cayenne.module.betslip.databinding.FragmentGameFilterBinding
 import arch.cayenne.module.betslip.ui.adapter.SportPickerAdapter
@@ -13,7 +13,8 @@ import kotlin.reflect.KClass
  * 游戏选择筛选项弹窗
  */
 
-class GameFilterDialogFragment : BaseBottomSheetFragment<GameFilterViewModel, FragmentGameFilterBinding>() {
+class GameFilterDialogFragment :
+    BaseBottomSheetFragment<GameFilterViewModel, FragmentGameFilterBinding>() {
 
     override val vbClass: KClass<FragmentGameFilterBinding> = FragmentGameFilterBinding::class
     override val vmClass: KClass<GameFilterViewModel> = GameFilterViewModel::class
@@ -42,8 +43,15 @@ class GameFilterDialogFragment : BaseBottomSheetFragment<GameFilterViewModel, Fr
     override fun initView(savedInstanceState: Bundle?) {
         mBinding.rvContent.apply {
             itemAnimator = null
-            layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             adapter = gameAdapter
+        }
+    }
+
+    override fun initData() {
+        super.initData()
+        val selectedIds = arguments?.getIntArray(KEY_SELECTED_GAME_ID)?.toList()
+        if (!selectedIds.isNullOrEmpty()) {
+            mViewModel.setSelectedById(selectedIds.toIntArray())
         }
     }
 
@@ -59,7 +67,12 @@ class GameFilterDialogFragment : BaseBottomSheetFragment<GameFilterViewModel, Fr
 
     override suspend fun createObserver() {
         mViewModel.onSportListener.observe(viewLifecycleOwner) {
-            gameAdapter.submitList(it)
+            val lastDataSize = gameAdapter.currentList.size
+            gameAdapter.submitList(it) {
+                if (lastDataSize != 0) {
+                    mBinding.btnConfirm.text = getString(R.string.btn_sport_filter_confirm)
+                }
+            }
         }
     }
 

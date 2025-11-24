@@ -14,7 +14,7 @@ class GameMultipleViewModel : BaseViewModel() {
         val tmp1 = RecordsBean(
             "抢庄牛牛",
             "https://mock.ja700.com/mock/tn1/public/imgs/games/1.avif",
-            "¥2500.00",
+            "¥10.00",
             "¥5840.00",
             "WL",
             "2025/04/17 15:52:00"
@@ -24,7 +24,7 @@ class GameMultipleViewModel : BaseViewModel() {
             "https://mock.ja700.com/mock/tn1/public/imgs/games/2.avif",
             "¥2500.00",
             "¥5040.00",
-            "WL",
+            "PG",
             "2025/04/17 15:52:00"
         )
         val tmp3 = RecordsBean(

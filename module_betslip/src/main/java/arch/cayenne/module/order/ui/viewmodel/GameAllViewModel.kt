@@ -13,7 +13,7 @@ class GameAllViewModel : BaseViewModel() {
     fun getAllGameList() {
         val tmp0 = OrderAllBean(
             true,
-            "",
+            "04-13",
             "",
             "¥2500.00",
             "¥5840.00",
@@ -35,21 +35,12 @@ class GameAllViewModel : BaseViewModel() {
             "https://mock.ja700.com/mock/tn1/public/imgs/games/2.avif",
             "¥2500.00",
             "¥5040.00",
-            "WL",
-            "2025/04/17 15:52:00"
-        )
-        val tmp3 = OrderAllBean(
-            false,
-            "百家乐",
-            "https://mock.ja700.com/mock/tn1/public/imgs/games/3.avif",
-            "¥2500.00",
-            "¥6140.00",
-            "WL",
+            "PG",
             "2025/04/17 15:52:00"
         )
         val tmp4 = OrderAllBean(
             true,
-            "",
+            "03-14",
             "",
             "¥2500.00",
             "¥5840.00",
@@ -74,7 +65,6 @@ class GameAllViewModel : BaseViewModel() {
             "WL",
             "2025/04/17 15:52:00"
         )
-        _recordData.value = listOf(tmp0, tmp1, tmp2, tmp3, tmp4, tmp5, tmp6)
+        _recordData.value = listOf(tmp0, tmp1, tmp2, tmp4, tmp5, tmp6)
     }
-
 }
