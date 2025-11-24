@@ -93,9 +93,11 @@
     <string name="title_multiple">倍数</string>
     <string name="title_bonus">奖金</string>
     <string name="tip_multiple">仅显示30天内的注单, 按中奖倍数从大到小排序</string>
+    <string name="tip_bonus">仅显示30天内的注单, 按中奖金额从大到小排序</string>
 
     <string name="title_sport_filter">选择筛选项</string>
     <string name="title_sport_filter_type">体育类型</string>
+    <string name="title_game_filter_type">游戏类型</string>
     <string name="btn_sport_filter_confirm">查看最新结果</string>
 
     <string name="title_single_bet">单关</string>
@@ -106,4 +108,15 @@
     <string name="title_order_sport_collapse">收起</string>
     <string name="title_order_sport_early_settle">确定提前结算吗?</string>
     <string name="title_order_sport_early_settle_confirm">确定结算</string>
+
+
+    <string name="menu_all">全部</string>
+    <string name="menu_win">赢钱</string>
+    <string name="menu_one">赢钱(1.5x)</string>
+    <string name="menu_ten">赢钱(10x)</string>
+
+    <string name="menu_all_bet">全部注单</string>
+    <string name="menu_win_bet">赢钱注单</string>
+    <string name="menu_one_bet">赢钱倍数 ≥ 1.5x</string>
+    <string name="menu_ten_bet">赢钱倍数 ≥ 10x</string>
 </resources>

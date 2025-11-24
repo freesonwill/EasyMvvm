@@ -25,9 +25,9 @@
                 android:id="@+id/tv_all"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/date_picker_all"
-                android:textSize="14sp"
+                android:text="@string/menu_all"
                 android:textColor="@color/selector_tab_type"
+                android:textSize="14sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -48,28 +48,28 @@
             android:id="@+id/tv_multiple"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_marginStart="@dimen/dp_50"
+            android:layout_marginStart="@dimen/dp_110"
             android:gravity="center"
             android:paddingHorizontal="@dimen/dp_10"
             android:text="@string/title_multiple"
             android:textColor="@color/selector_tab_type"
             android:textSize="14sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/cl_all"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <arch.cayenne.lib.skin.widget.SkinnableTextView
             android:id="@+id/tv_bonus"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_marginEnd="@dimen/dp_50"
+            android:layout_marginEnd="@dimen/dp_110"
             android:gravity="center"
             android:paddingHorizontal="@dimen/dp_10"
             android:text="@string/title_bonus"
             android:textColor="@color/selector_tab_type"
             android:textSize="14sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/cl_filter"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
@@ -110,5 +110,26 @@
         android:layout_height="0dp"
         android:background="@color/color_1E1E1E"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cl_top_title" />
+
+    <arch.cayenne.lib.skin.widget.SkinnableView
+        android:id="@+id/ll_drop_mask"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:alpha="0"
+        android:background="#BF000000"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cl_top_title" />
+
+    <FrameLayout
+        android:id="@+id/ll_drop_down"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cl_top_title" />
 </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>

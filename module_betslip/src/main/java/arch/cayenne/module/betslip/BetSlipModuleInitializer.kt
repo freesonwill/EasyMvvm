@@ -34,9 +34,11 @@ import arch.cayenne.module.order.ui.viewmodel.GameMultipleViewModel
 import arch.cayenne.module.order.ui.viewmodel.OrderSportEarlySettleViewModel
 import arch.cayenne.module.order.ui.viewmodel.OrderSportPageViewModel
 import arch.cayenne.module.order.ui.viewmodel.OrderSportViewModel
+import arch.cayenne.module.order.ui.viewmodel.GameFilterViewModel
 import org.koin.dsl.module
 
 class BetSlipModuleInitializer: DefaultInitializer<String> {
+
     private val TAG = this.javaClass.simpleName
 
     override fun create(context: Context): String {
@@ -67,6 +69,7 @@ class BetSlipModuleInitializer: DefaultInitializer<String> {
 
         // ORDER
         viewModelOf(::GameAllViewModel)
+        viewModelOf(::GameFilterViewModel)
         viewModelOf(::GameBonusViewModel)
         viewModelOf(::GameMultipleViewModel)
         viewModelOf(::HomeOrderViewModel)
