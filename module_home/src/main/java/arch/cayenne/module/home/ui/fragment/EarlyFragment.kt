@@ -60,6 +60,8 @@ import com.bumptech.glide.Glide
 import com.google.android.material.tabs.TabLayout
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import kotlin.math.max
+import kotlin.math.min
 import kotlin.reflect.KClass
 
 /**
@@ -178,9 +180,9 @@ class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>(),
             navigate(Uri.parse("walisport://module_home/championFragment?matchId=${data.championMatchId}&name=${data.name}&icon=${data.icon}"))
         }
 
-        mViewModel.selectedDate.observeEvent(viewLifecycleOwner, this) { select ->
-            if (select == HomeViewModel.DEFAULT_DATE) return@observeEvent
-            setSelectedDateTab(mViewModel.dateList.value?.find { it.timestamp == select })
+        mViewModel.displayDate.observe(viewLifecycleOwner) { display ->
+            if (display.timestamp == HomeViewModel.DEFAULT_DATE) return@observe
+            showSelectedDateTab(mViewModel.getDisplayDateIndex(display.timestamp))
         }
 
         mViewModel.tournamentSlideOutEnd.observeEvent(viewLifecycleOwner, this) {
@@ -507,7 +509,6 @@ class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>(),
         mBinding.tlDateList.addOnTabSelectedListener2(object :
             TabLayoutExt.OnTabSelectedListener2 {
             override fun onTabSelected(tab: TabLayout.Tab, isTabClick: Boolean) {
-
                 playFadeAnimTriggerByDateTab {
                     lifecycleScope.launch {
                         mViewModel.selectedDate(
@@ -713,31 +714,43 @@ class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>(),
 
 
     //選取日期後按確定時連動至早盤日期tab,選取對應的日期
-    private fun setSelectedDateTab(earlyDate: EarlyDate?) {
+    private fun showSelectedDateTab(indexOfTabs: Int?) {
         with(mBinding) {
-            if (earlyDate == null) {
+            if (indexOfTabs == null || indexOfTabs == -1) {
                 resetDateTabs()
                 return
             }
-            var indexOfTabs = -1
-            for (i in 0 until tlDateList.tabCount) {   //尋找是否在目前的tab內已經存在，存在的話跳到該tab就好
-                val tab = tlDateList.getTabAt(i)
-                if (tab?.tag == earlyDate.dateStr) {
-                    indexOfTabs = i
-                    break
-                }
-            }
+
             if (indexOfTabs != -1) {
-                tlDateList.getTabAt(indexOfTabs)?.select()
-            } else {
-                tlDateList.addTabAndScrollPrecisely(
-                    createDateTab(
-                        earlyDate.dateStr,
-                        earlyDate.weekdayStr,
-                        earlyDate.type
-                    )
-                )
-                setupDateTabLayoutParams(tlDateList, false)
+                tlDateList.post {
+                    val tabStrip = tlDateList.getChildAt(0) as LinearLayout
+                    for (i in 0 until tabStrip.childCount) {
+                        tabStrip.getChildAt(i).apply {
+                            isSelected = i == indexOfTabs
+                        }
+                    }
+                }
+
+                //scroll smooth
+                val tab: TabLayout.Tab? = tlDateList.getTabAt(indexOfTabs)
+                if (tab?.view == null) return
+
+                val tabView: View = tab.view
+                tabView.post {
+                    val screenWidth: Int = tlDateList.width
+                    val tabWidth = tabView.width
+                    val tabLeft = tabView.left
+                    val tabCenter = tabLeft + tabWidth / 2
+                    var targetScrollX = tabCenter - screenWidth / 2
+
+                    // 限制滚动范围，防止越界
+                    val maxScrollX: Int = tlDateList.getChildAt(0).width - screenWidth
+                    targetScrollX =
+                        max(0.0, min(targetScrollX.toDouble(), maxScrollX.toDouble()))
+                            .toInt()
+                    // 使用平滑滚动
+                    tlDateList.smoothScrollTo(targetScrollX, 0)
+                }
             }
         }
     }

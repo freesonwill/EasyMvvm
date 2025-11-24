@@ -193,13 +193,8 @@ class EarlyMatchListPagerFragment :
                     }
                     when (val item = itemList[firstVisibleItemPosition]) {
                         is MatchWithMarkets -> {
-                            val earlyDate =
-                                earlyViewModel.dateList.value?.first {
-                                    isSameDay(
-                                        it.timestamp,
-                                        item.match.basicInfo.startTime
-                                    )
-                                }
+                            val earlyDate = earlyViewModel.getDisplayDate(item.match.basicInfo.startTime)
+
                             if (earlyDate != null) {
                                 if (mBinding.rvHomeGameList.scrollState == RecyclerView.SCROLL_STATE_DRAGGING) {
                                     earlyViewModel.setDisplayDate(earlyDate)
@@ -216,13 +211,8 @@ class EarlyMatchListPagerFragment :
                         }
 
                         is MatchDateItem -> {
-                            val earlyDate =
-                                earlyViewModel.dateList.value?.first {
-                                    isSameDay(
-                                        it.timestamp,
-                                        item.timeStamp
-                                    )
-                                }
+                            val earlyDate = earlyViewModel.getDisplayDate(item.timeStamp)
+
                             if (earlyDate != null) {
                                 if (mBinding.rvHomeGameList.scrollState == RecyclerView.SCROLL_STATE_DRAGGING) {
                                     earlyViewModel.setDisplayDate(earlyDate)
