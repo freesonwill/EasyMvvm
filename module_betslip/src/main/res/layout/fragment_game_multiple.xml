@@ -8,7 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_36"
         android:layout_marginTop="@dimen/dp_12"
-        android:background="@color/tip_background"
+        android:background="@drawable/bg_game_all_tip"
         android:gravity="center_vertical"
         android:paddingHorizontal="@dimen/dp_18"
         android:text="@string/tip_multiple"

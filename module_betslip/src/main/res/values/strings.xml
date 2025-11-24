@@ -90,8 +90,8 @@
     <string name="title_order_sport_live">直播中</string>
     <string name="title_bet">投注</string>
     <string name="title_odds">赔率</string>
-    <string name="title_multiple">倍数</string>
-    <string name="title_bonus">奖金</string>
+    <string name="title_multiple">最大倍数</string>
+    <string name="title_bonus">最大奖金</string>
     <string name="tip_multiple">仅显示30天内的注单, 按中奖倍数从大到小排序</string>
     <string name="tip_bonus">仅显示30天内的注单, 按中奖金额从大到小排序</string>
 
