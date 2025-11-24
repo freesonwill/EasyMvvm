@@ -153,7 +153,7 @@ class MentionSpan(private val text: String, private val click: ((str: String) ->
     }
 
     override fun onClick(widget: View) {
-        "onclick $text".logd("aaa")
+//        "onclick $text".logd("aaa")
         click.invoke(text)
     }
 }

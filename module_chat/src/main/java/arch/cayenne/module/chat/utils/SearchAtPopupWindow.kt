@@ -7,6 +7,7 @@ import android.widget.PopupWindow
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.module.chat.data.model.AtBean
 import arch.cayenne.module.chat.databinding.PopupSearchAtLayoutBinding
 import arch.cayenne.module.chat.ui.adapter.AtAdapter
 
@@ -18,19 +19,23 @@ import arch.cayenne.module.chat.ui.adapter.AtAdapter
 class SearchAtPopupWindow {
     var atPopupWindow: PopupWindow? = null
     val atAdapter = AtAdapter()
-    val list = arrayListOf("张顺", "吴用", "公孙胜", "柴让", "卢俊义")
+    val list = arrayListOf(
+        AtBean("张顺", false),
+        AtBean("吴用", false),
+        AtBean("公孙胜", false),
+        AtBean("柴让", false),
+        AtBean("卢俊义", false)
+    )
 
-
-    fun createPopupWindow(context: Context,itemListener: RecyclerItemListener<String>) {
+    fun createPopupWindow(context: Context, itemListener: RecyclerItemListener<AtBean>) {
         if (atPopupWindow == null) {
             val binding =
                 PopupSearchAtLayoutBinding.inflate(LayoutInflater.from(context), null, false)
             atPopupWindow = PopupWindow(binding.root, 375.dp2px, 215.dp2px)
             atAdapter.submitList(list)
-            atAdapter.setItemClickListener(object:RecyclerItemListener<String>{
-                override fun onItemClick(item: String?, position: Int) {
-                    itemListener.onItemClick("$item ",position)
-                    atPopupWindow?.dismiss()
+            atAdapter.setItemClickListener(object : RecyclerItemListener<AtBean> {
+                override fun onItemClick(item: AtBean?, position: Int) {
+                    itemListener.onItemClick(item, position)
                 }
             })
             binding.recycler.apply {
@@ -40,8 +45,8 @@ class SearchAtPopupWindow {
         }
     }
 
-    fun showPopupWindow(targetView:View){
-        if(atPopupWindow?.isShowing == false){
+    fun showPopupWindow(targetView: View) {
+        if (atPopupWindow?.isShowing == false) {
             atPopupWindow?.showAsDropDown(targetView)
         }
     }

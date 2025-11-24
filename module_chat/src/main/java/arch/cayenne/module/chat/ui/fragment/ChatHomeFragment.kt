@@ -6,6 +6,7 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.text.method.LinkMovementMethod
 import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.View
@@ -48,6 +49,7 @@ import kotlinx.coroutines.launch
 import java.util.regex.Pattern
 import kotlin.reflect.KClass
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+import arch.cayenne.module.chat.data.model.AtBean
 import arch.cayenne.module.chat.manager.ChatATHelper
 import arch.cayenne.module.chat.manager.SoftKeyBoardAnim
 import arch.cayenne.module.chat.utils.SearchAtPopupWindow
@@ -391,21 +393,37 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
         }
         mBinding.chatEtInput.addTextChangedListener(etInputWatcher)
         ChatATHelper.setEditTextDelCheck(mBinding.chatEtInput)
-        atPopupWindow.createPopupWindow(requireContext(),object: RecyclerItemListener<String> {
-            override fun onItemClick(item: String?, position: Int) {
+        mBinding.chatEtInput.movementMethod = LinkMovementMethod.getInstance()
+        atPopupWindow.createPopupWindow(requireContext(),object: RecyclerItemListener<AtBean> {
+            override fun onItemClick(item: AtBean?, position: Int) {
                 if(item == null){
                     return
                 }
               mBinding.chatEtInput.apply {
                   text?.let {
-                      val start = it.length ?: 0
-                      if(it.endsWith('@')){
-                          it.append(item)
-                          ChatATHelper.filterEtInputWithAt(this,start,item.length)
+                      val start = it.length
+                      val name = item.name
+                      if(item.isSelect){
+                          if(it.endsWith('@')){
+                              it.append("$name ")
+                              ChatATHelper.filterEtInputWithAt(this,start,name.length+1)//+空格
+                          }else{
+                              it.append("@$name ")
+                              ChatATHelper.filterEtInputWithAt(this,start,name.length+2)//+@ 空格
+                          }
                       }else{
-                          it.append("@$item")
-                          ChatATHelper.filterEtInputWithAt(this,start,item.length+1)
+                          var indexStart = it.indexOf("@$name ")
+                          var indexEnd = indexStart+item.name.length+2//从0开始，+1 加上空格字符串+1
+                          if(indexStart < 0){ //空格被删除的时候
+                              indexStart = it.indexOf("@$name")
+                              indexEnd = indexStart+item.name.length+1
+                          }
+                          "indexStart $indexStart end $indexEnd ${it.length}".logd("aaa")
+                          if(indexStart >= 0 &&  indexEnd <= it.length){
+                              it.replace(indexStart,indexEnd,"")
+                          }
                       }
+
                   }
               }
 
