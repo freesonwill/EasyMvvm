@@ -37,6 +37,8 @@ import arch.cayenne.module.home.databinding.FragmentEarlyMatchListPagerBinding
 import arch.cayenne.module.home.ui.adapter.MatchItemAdapter
 import arch.cayenne.module.home.ui.adapter.OnMatchItemClickListener
 import arch.cayenne.module.home.ui.view.decoration.MatchCardItemDecoration
+import arch.cayenne.module.home.ui.viewmodel.EarlyDate
+import arch.cayenne.module.home.ui.viewmodel.EarlyDateType
 import arch.cayenne.module.home.ui.viewmodel.EarlyMatchListViewModel
 import arch.cayenne.module.home.ui.viewmodel.EarlyViewModel
 import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
@@ -193,13 +195,18 @@ class EarlyMatchListPagerFragment :
                     }
                     when (val item = itemList[firstVisibleItemPosition]) {
                         is MatchWithMarkets -> {
-                            val earlyDate = earlyViewModel.getDisplayDate(item.match.basicInfo.startTime)
 
-                            if (earlyDate != null) {
-                                if (mBinding.rvHomeGameList.scrollState == RecyclerView.SCROLL_STATE_DRAGGING) {
-                                    earlyViewModel.setDisplayDate(earlyDate)
-                                }
+                            val earlyDate = EarlyDate(
+                                "",
+                                "",
+                                item.match.basicInfo.startTime,
+                                EarlyDateType.Date
+                            )
+
+                            if (mBinding.rvHomeGameList.scrollState == RecyclerView.SCROLL_STATE_DRAGGING) {
+                                earlyViewModel.setDisplayDate(earlyDate)
                             }
+
                         }
 
                         is MatchNoMoreData -> {
@@ -211,13 +218,17 @@ class EarlyMatchListPagerFragment :
                         }
 
                         is MatchDateItem -> {
-                            val earlyDate = earlyViewModel.getDisplayDate(item.timeStamp)
+                            val earlyDate = EarlyDate(
+                                "",
+                                "",
+                                item.timeStamp,
+                                EarlyDateType.Date
+                            )
 
-                            if (earlyDate != null) {
-                                if (mBinding.rvHomeGameList.scrollState == RecyclerView.SCROLL_STATE_DRAGGING) {
-                                    earlyViewModel.setDisplayDate(earlyDate)
-                                }
+                            if (mBinding.rvHomeGameList.scrollState == RecyclerView.SCROLL_STATE_DRAGGING) {
+                                earlyViewModel.setDisplayDate(earlyDate)
                             }
+
                         }
 
                         else -> {}
