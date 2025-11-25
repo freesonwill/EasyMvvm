@@ -43,7 +43,6 @@ class EmojiEditFilter(private val atInput:()->Unit) : InputFilter {
         if (source == null) {
             return ""
         }
-        "source $source".logd("aaa")
         if(source == "@"){
             atInput.invoke()
         }

@@ -14,11 +14,13 @@ import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
+import androidx.fragment.app.FragmentManager
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.module.chat.R
 import arch.cayenne.module.chat.data.model.AtBean
+import arch.cayenne.module.chat.ui.fragment.ChatUserInfoFragment
 import arch.cayenne.module.chat.utils.EmojiEditFilter
 import arch.cayenne.module.chat.utils.SearchAtPopupWindow
 import java.util.Locale
@@ -28,13 +30,14 @@ import java.util.Locale
  * @date: 18/11/25 16:11
  * @description:
  */
-class ChatATHelper(private val context:Context,private val chatEtInput:EditText,) {
+class ChatATHelper(private val context:Context,private val chatEtInput:EditText,childFragmentManager:FragmentManager,) {
     private val atPattern = "@[^\\s@]+\\s".toRegex()
     val atPopupWindow = SearchAtPopupWindow()
     var closeAtPopup: Boolean = false
     private val atClick: ((str: String) -> Unit) = {
-        "atClick $it".logd("aaa")
+//        ChatUserInfoFragment().show(childFragmentManager)
     }
+
     private val etInputWatcher = object : TextWatcher {
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
 //                "beforeTextChanged s $s  start $start count $count after $after".logd("aaa")
@@ -225,7 +228,6 @@ class MentionSpan(private val text: String, private val click: ((str: String) ->
     }
 
     override fun onClick(widget: View) {
-//        "onclick $text".logd("aaa")
         click.invoke(text)
     }
 }

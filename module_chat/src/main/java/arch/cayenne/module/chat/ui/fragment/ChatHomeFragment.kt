@@ -61,6 +61,7 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
     private var etInputWatcher: TextWatcher? = null
     private lateinit var chatAtHelper:ChatATHelper
 
+
     override fun initView(savedInstanceState: Bundle?) {
         initChatPageFragment()
         initSoftKeyBoardFragment()
@@ -338,7 +339,7 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
                 }
                 return@setOnTouchListener false
             }
-            chatAtHelper = ChatATHelper(requireContext(),chatEtInput)
+            chatAtHelper = ChatATHelper(requireContext(),chatEtInput,childFragmentManager)
             chatAtHelper.initChatEtInput(mViewModel.languageManager.getLanguage()){
                 sendText()
             }
@@ -386,11 +387,11 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
     private fun showLanguageDialog() {
         val viewLocation = IntArray(2)
         mBinding.ivLanguage.getLocationOnScreen(viewLocation)
-        mBinding.apply {
-            "viewLocation ${viewLocation.toList()} ${10.dp2px}  ${125.dp2px} x ${ivLanguage.x} y ${ivLanguage.y} ${ivLanguage.pivotX}  ${ivLanguage.pivotY} ".logd(
-                "aaa"
-            )
-        }
+//        mBinding.apply {
+//            "viewLocation ${viewLocation.toList()} ${10.dp2px}  ${125.dp2px} x ${ivLanguage.x} y ${ivLanguage.y} ${ivLanguage.pivotX}  ${ivLanguage.pivotY} ".logd(
+//                "aaa"
+//            )
+//        }
         ChatLanguageDialogFragment.newInstance(
             viewLocation[0],
             viewLocation[1]
