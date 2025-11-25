@@ -2,6 +2,7 @@ package arch.cayenne.module.bet.data
 
 import arch.cayenne.lib.database.entity.BetSelectionBean
 
+//投注資料
 data class BetInsertBean(
     val sportId: Int,
     val matchId: Long,

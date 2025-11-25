@@ -50,11 +50,11 @@ class LiveBetOnAdapter(var callback: LivBetListCallback) :
                 } else {
                     viewBinding.clBet.visibility = View.GONE
                 }
-                var status =
+                val status =
                     notifySelectionsId?.find { it.selectionId == listIt.selectionId }?.selectionId
                         ?: 0L
                 //  LogUtils.dTag("比赛推送","status----${status}---oddsStatus${listIt.oddsStatus},---isNotify${isNotify}--notifySelectionsId${notifySelectionsId}")
-                var name =
+                val name =
                     if (listIt.style == StatesArrange.BO_DIAN.code) listIt.name else listIt.shortName
                 viewBinding.lbBet.submitList(
                     StatesArrange.getStates(listIt.style),

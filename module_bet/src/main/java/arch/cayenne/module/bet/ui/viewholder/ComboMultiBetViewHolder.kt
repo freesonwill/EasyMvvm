@@ -24,10 +24,10 @@ class ComboMultiBetViewHolder(private val mBinding: ItemComboMultiBet2Binding, p
             override fun onGlobalLayout() {
                 mBinding.tvTitleCombo.viewTreeObserver.removeOnGlobalLayoutListener(this)
                 val isTooLong = isTextTooLong(mBinding.tvTitleCombo, title)
-                mBinding.tvTitleCombo.text = if (isTooLong) {
-                    "$combo\n@${item.sumOdds.getOdds()}"
-                } else {
-                    title
+                mBinding.tvTitleCombo.text = when {
+                    item.isSuperCombo -> getString(R.string.title_combo_bet_super)
+                    isTooLong ->  "$combo\n@${item.sumOdds.getOdds()}"
+                    else ->  title
                 }
                 mBinding.tvTitleCombo.maxLines = if (isTooLong) 2 else 1
             }
@@ -74,6 +74,7 @@ class ComboMultiBetViewHolder(private val mBinding: ItemComboMultiBet2Binding, p
     private fun isTextTooLong(textView: TextView, text: String): Boolean {
         val maxWidthPx = textView.measuredWidth - textView.paddingLeft - textView.paddingRight
         val paint = textView.paint
+        //创建一个“离屏文本布局器” StaticLayout，计算存在多少行
         val staticLayout = StaticLayout.Builder.obtain(text, 0, text.length, paint, maxWidthPx)
             .build()
         return staticLayout.lineCount > 1

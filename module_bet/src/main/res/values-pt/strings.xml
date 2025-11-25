@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="title_combo_bet_super">超级组合</string>
+    <string name="title_combo_bet_odds">%d-fold %d</string>
+    <string name="title_combo_bet_detail">Todas as apostas %s</string>
+    <string name="title_combo_bet_detail_tips">%s é composto por todas as apostas %s</string>
+</resources>

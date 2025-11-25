@@ -109,7 +109,7 @@ class ComboBetFragment2 : BaseFragment<ComboBetViewModel, FragmentComboBet2Bindi
             override fun onCombinationDetailClick(serialValue: Int) {
                 val data = mViewModel.onComboMultiBetBeanListener.value?.find { it.serialValue == serialValue }
                     ?: error("can not find serialValue:$serialValue in ${ mViewModel.onComboMultiBetBeanListener.value }")
-                val items = mViewModel.splitComboIntoSingles(data.comboK,data.comboV,data.inputMoney)
+                val items = mViewModel.splitComboIntoSingles(data)
                 CombinationFragment.newInstance(CombinationFragment.Parameter(
                     title = data.title(),
                     titleTips = data.titleTips(),

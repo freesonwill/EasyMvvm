@@ -122,6 +122,7 @@ class ComboBetViewModel(
             launch {
                 repo.observeComboMultiBet().collect { beans ->
                     val lastList = _onComboMultiBetBeanListener.value
+                    //"aaaa---observeComboMultiBet--nowList:$beans, lastList:$lastList,${this@ComboBetViewModel}".logd(TAG)
 
                     // 如果舊資料是 null，代表第一次載入，直接設值
                     if (lastList == null) {
@@ -272,16 +273,19 @@ class ComboBetViewModel(
      * @param combV
      * @return
      */
-    fun splitComboIntoSingles(combK:Int, combV:Int, money: Long): List<CombinationFragment.ParameterItems> {
+    fun splitComboIntoSingles(bean:ComboMultiBetBean): List<CombinationFragment.ParameterItems> {
         val data = this.onBetListListener.value ?: return emptyList()
         // 1 注 = 固定只有一个 K
-        val kList = if (combV == 1) {
-            listOf(combK)
+        val kList = if (bean.comboV == 1) {
+            listOf(bean.comboK)
         } else {
-            (2..combK).toList()
+            ((if(bean.isSuperCombo) 1 else 2)..bean.comboK).toList()
         }
         return kList.map { k ->
-            val title = "所有${k}串1注单"
+            val title = R.string.title_combo_bet_detail.getString(
+                if(k==1) arch.cayenne.lib.res.R.string.title_single_bet.getString()
+                else R.string.title_combo_bet_odds.getString(k,1)
+            )
             val moneySymbol = this.moneySymbol
 
             val listItems = data.combinations(k).map { l ->
@@ -291,8 +295,8 @@ class ComboBetViewModel(
 
                 CombinationFragment.ParameterItems2(
                     combo = l.joinToString("·") { "${data.indexOf(it) + 1}" },
-                    money = money.takeIf { it != 0L }?.let { "$moneySymbol${it.getMoney()}" },
-                    winMoney = money.takeIf { it != 0L }?.let { "$moneySymbol${money.getMoney(odds)}" },
+                    money = bean.inputMoney.takeIf { it != 0L }?.let { "$moneySymbol${it.getMoney()}" },
+                    winMoney = bean.inputMoney.takeIf { it != 0L }?.let { "$moneySymbol${bean.inputMoney.getMoney(odds)}" },
                     odds = "@${odds.getOdds()}"
                 )
             }
