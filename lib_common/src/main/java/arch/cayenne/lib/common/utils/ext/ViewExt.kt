@@ -19,11 +19,13 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.View.OnAttachStateChangeListener
 import android.view.animation.DecelerateInterpolator
+import android.view.animation.LinearInterpolator
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.animation.addListener
 import androidx.core.animation.doOnEnd
 import androidx.core.view.children
@@ -753,4 +755,25 @@ fun TextView.setRoundedBackground(
         setTag(R.id.shape_animator_tag, this)
         start()
     }
+
+}
+fun AppCompatImageView.setScaleAnim(min:Int,max:Int){
+    startSafeAnimateSet(
+        {
+            playTogether(
+                ValueAnimator.ofInt(min, max).apply {
+                    addUpdateListener {
+                        val lp = layoutParams
+                        lp.height = it.animatedValue as Int
+                        lp.width = it.animatedValue as Int
+                        layoutParams = lp
+                    }
+                },
+            )
+        },
+        duration = AnimationController[AnimType.popupExit]!!.duration,
+        interpolator = AnimationController[AnimType.popupExit]?.interpolator?.toInterpolator()
+            ?: LinearInterpolator(),
+        start = true
+    )
 }
