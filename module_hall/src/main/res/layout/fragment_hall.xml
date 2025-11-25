@@ -125,8 +125,8 @@
     <!--  下方的遊戲分類TAB  -->
     
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_marginTop="@dimen/dp_8"
         android:id="@+id/clTab"
-        android:layout_marginTop="@dimen/dp_5"
         android:layout_width="match_parent"
         app:layout_constraintTop_toBottomOf="@+id/ll_search_bar"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -137,7 +137,7 @@
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/aci_tab_bg"
             android:layout_width="@dimen/dp_108"
-            android:layout_height="@dimen/dp_55"
+            android:layout_height="@dimen/dp_50"
             app:layout_constraintBottom_toBottomOf="parent"
             android:background="@drawable/hall_tab_bg"
             tools:ignore="MissingConstraints" />
@@ -145,7 +145,7 @@
         <arch.cayenne.lib.skin.widget.SkinnableTabLayout
             android:id="@+id/tl_game"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/dp_64"
             android:layout_marginTop="@dimen/dp_12"
             android:background="@android:color/transparent"
             app:tabContentStart="0dp"
