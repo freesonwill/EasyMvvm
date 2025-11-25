@@ -129,6 +129,7 @@ class ComboBetRepository(
         remoteManager.getComboRisk(data)?.let { riskList ->
             if (riskList.isNotEmpty()) {
                 val multiBet = calculateMultiBetSums(data, riskList).map { bean ->
+                    //不复制inputMoney
                     ComboMultiBetBean(
                         serialValue = bean.serialValue,
                         comboK = bean.comboK,
@@ -137,7 +138,7 @@ class ComboBetRepository(
                         odds = bean.odds,
                         count = bean.count,
                         minAmount = bean.minAmount,
-                        maxAmount = bean.maxAmount
+                        maxAmount = bean.maxAmount,
                     )
                 }
                 saveDetail(multiBet)
@@ -278,6 +279,10 @@ class ComboBetRepository(
         }
     }
 
+    /**
+     * 取消盘口订阅通知
+     * @param selections
+     */
     private fun unregister(selections: List<BetSelectionBean>) {
         scope.launch {
             remoteManager.unregisterMatchMarketNotify(selections.map {
@@ -319,7 +324,7 @@ class ComboBetRepository(
                                     acc * l
                                 }
                             }
-                        sumOdds.getScaleOdds((combinationData.first().size - 1) * 2)
+                        getScaleOdds(sumOdds,(combinationData.first().size - 1) * 2)
                     }
                 }
                 val count = when (k) {
@@ -339,7 +344,7 @@ class ComboBetRepository(
                             odds = totalSumOdds / totalCount,
                             count = totalCount,
                             minAmount = risk.minAmount,
-                            maxAmount = risk.maxAmount
+                            maxAmount = risk.maxAmount,
                         )
                     )
                 } else {
@@ -352,7 +357,7 @@ class ComboBetRepository(
                             odds = odds / count,
                             count = count,
                             minAmount = risk.minAmount,
-                            maxAmount = risk.maxAmount
+                            maxAmount = risk.maxAmount,
                         )
                     )
                 }
@@ -388,9 +393,12 @@ class ComboBetRepository(
         }
     }
 
-    private fun Int.getScaleOdds(scale: Int): Int {
+    /**
+     * 10000/10^2 = 100
+     */
+    fun getScaleOdds(odds:Int,scale: Int): Int {
         val divisor = BigDecimal.TEN.pow(scale)
-        return this.toBigDecimal().divide(divisor, scale, RoundingMode.DOWN).toInt()
+        return odds.toBigDecimal().divide(divisor, scale, RoundingMode.DOWN).toInt()
     }
 
     private fun calculateMultiBetOddsSums(
@@ -417,7 +425,7 @@ class ComboBetRepository(
                                     acc * l
                                 }
                             }
-                        sumOdds.getScaleOdds((combinationData.first().size - 1) * 2)
+                        getScaleOdds(sumOdds,(combinationData.first().size - 1) * 2)
                     }
                 }
                 totalSumOdds += odds
@@ -438,6 +446,11 @@ class ComboBetRepository(
         return result
     }
 
+    /**
+     * C(n, k)
+     * eg:[A,B,C]取2-->[[A,B],[A,C],[B,C]]
+     * @return
+     */
     private fun <T> List<T>.combinations(k: Int): List<List<T>> {
         if (k == 0) return listOf(emptyList())
         if (this.isEmpty()) return emptyList()

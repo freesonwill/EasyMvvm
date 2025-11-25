@@ -14,7 +14,7 @@
     </style>
 
     <style name="ButtonStyle">
-        <item name="android:background">@drawable/selector_button</item>
+        <item name="android:background">@drawable/selector_button_00a7c0</item>
         <item name="android:textColor">@color/color_FFFFFF</item>
         <item name="android:textSize">15sp</item>
         <item name="android:textStyle">bold</item>
@@ -28,4 +28,37 @@
         <item name="android:inputType">numberDecimal</item>
         <item name="android:textCursorDrawable">@drawable/shape_edittext_cursor</item>
     </style>
+
+    <style name="CurrencySymbolStyle">
+        <item name="android:layout_width">@dimen/dp_19</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginStart">9dp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/color_C0C0C0</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:fontFamily">@font/sf_pro</item>
+        <item name="layout_constraintDimensionRatio">1:1</item>
+        <!-- 自定义属性 -->
+        <item name="skinnableFontWeight">500</item>
+    </style>
+
+    <style name="CurrencyAmountStyle">
+        <item name="android:layout_width">147dp</item>
+        <item name="android:layout_height">46dp</item>
+        <item name="android:layout_marginEnd">0dp</item>
+        <item name="android:background">@drawable/shape_9dp</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:backgroundTint">@color/color_0FFFFFFF</item>
+        <item name="android:cursorVisible">false</item>
+        <item name="android:fontFamily">@font/sf_pro</item>
+        <item name="android:paddingStart">@dimen/dp_27</item>
+        <item name="android:paddingEnd">@dimen/dp_9</item>
+        <item name="android:textColor">@color/color_00E0E5</item>
+        <item name="android:textColorHint">@color/color_C0C0C0</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:maxLength">10</item>
+        <!-- 自定义属性 -->
+        <item name="skinnableFontWeight">510</item>
+    </style>
+
 </resources>

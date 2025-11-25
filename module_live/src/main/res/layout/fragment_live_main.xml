@@ -110,52 +110,58 @@
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/ct_tab"
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/dp_38"
+                        android:layout_height="@dimen/dp_39"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintStart_toStartOf="parent">
 
                         <androidx.appcompat.widget.LinearLayoutCompat
+                            android:id="@+id/llcTab"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:orientation="horizontal">
 
-                            <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
+                            <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
                                 android:id="@+id/skinTab"
-                                android:layout_width="match_parent"
+                                android:layout_width="0dp"
                                 android:layout_height="wrap_content"
-                                android:layout_marginStart="6dp"
-                                android:layout_marginTop="3dp"
                                 android:layout_weight="1"
                                 android:background="@color/live_main_tab_bg"
                                 android:clickable="true"
                                 android:focusable="true"
-                                android:orientation="vertical"
                                 tools:ignore="MissingConstraints">
 
-                                <arch.cayenne.lib.skin.widget.SkinnableTabLayout
+                                <arch.cayenne.module.home.ui.view.LiveCustomTabLayout
                                     android:id="@+id/tabLayout"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="@dimen/dp_36"
-                                    android:layout_marginTop="@dimen/dp_2"
-                                    android:layout_marginEnd="10dp"
-                                    android:background="@color/live_main_tab_bg"
-                                    android:focusable="false"
-                                    app:tabIndicatorHeight="0dp"
-                                    app:tabMaxWidth="60dp"
-                                    app:tabMinWidth="60dp"
-                                    app:tabMode="fixed"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="36dp"
+                                    android:background="@android:color/transparent"
+                                    android:clipChildren="false"
+                                    android:clipToPadding="false"
+                                    android:paddingStart="@dimen/dp_5"
+                                    app:tabGravity="start"
+                                    app:tabIndicator="@drawable/tab_indicator_live"
+                                    app:tabIndicatorAnimationMode="linear"
+                                    app:tabIndicatorFullWidth="false"
+                                    app:tabIndicatorGravity="bottom"
+                                    app:tabIndicatorHeight="2dp"
+                                    app:tabMinWidth="58dp"
+                                    app:tabMode="scrollable"
+                                    app:tabPaddingBottom="0dp"
                                     app:tabPaddingEnd="0dp"
                                     app:tabPaddingStart="0dp"
                                     app:tabRippleColor="@null"
-                                    tools:ignore="SpeakableTextPresentCheck" />
-
+                                    app:tabSelectedTextColor="@color/live_sport_item_text_select"
+                                    app:tabTextAppearance="@style/liveTabLayoutTextAppearance"
+                                    app:tabTextColor="@color/color_C0C0C0" />
                                 <arch.cayenne.lib.common.ui.view.CustomTabIndicator
-                                    android:id="@+id/customIndicator"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="3dp"
-                                    android:layout_marginEnd="13dp"
-                                    android:background="@color/live_main_tab_bg" />
-                            </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
+                                    android:id="@+id/homeIndicator"
+                                    android:layout_width="0dp"
+                                    android:layout_height="0dp"
+                                    android:visibility="gone"
+                                    app:layout_constraintEnd_toEndOf="@id/tabLayout"
+                                    app:layout_constraintStart_toStartOf="@id/tabLayout"
+                                    app:layout_constraintTop_toBottomOf="@id/tabLayout" />
+                            </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
 
                             <androidx.appcompat.widget.LinearLayoutCompat
                                 android:id="@+id/ll_switch_narrator"

@@ -1,5 +1,7 @@
 package com.walisport.module.hall.ui.fragment
 
+import android.annotation.SuppressLint
+import android.graphics.Typeface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +12,8 @@ import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.adapter.PagerAdapter
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.ui.fragment.launch
+import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.common.data.constants.DrawerAction.ACTION_OPEN
 import arch.cayenne.lib.common.data.constants.DrawerAction.KEY_ACTION
 import arch.cayenne.lib.common.data.constants.DrawerAction.REQUEST_KEY_DRAWER
@@ -17,9 +21,11 @@ import arch.cayenne.lib.common.ui.viewmodel.UnReadMessageViewModel
 import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
+import arch.cayenne.lib.common.utils.ext.TabLayoutExt
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.touchBackPressed
+import arch.cayenne.lib.skin.widget.SkinnableTextView
 import com.google.android.material.tabs.TabLayoutMediator
 import com.walisport.module.hall.R
 import com.walisport.module.hall.data.HallGamePage
@@ -28,6 +34,14 @@ import com.walisport.module.hall.databinding.FragmentHallBinding
 import com.walisport.module.hall.databinding.ItemHallGameTabBinding
 import com.walisport.module.hall.ui.viewmodel.HallViewModel
 import kotlin.reflect.KClass
+import arch.cayenne.lib.common.utils.ext.setRoundedBackground
+import arch.cayenne.lib.skin.res.SkinnableResourceManager
+import com.google.android.material.tabs.TabLayout
+import arch.cayenne.lib.common.utils.ext.TabLayoutExt.addOnTabSelectedListener2
+import arch.cayenne.lib.common.utils.ext.startFadeAnim
+import arch.cayenne.lib.common.utils.ext.ResourceExt.getColor
+import arch.cayenne.lib.common.utils.ext.removeAllTips
+import kotlinx.coroutines.delay
 
 /**
  * 游戏大厅界面
@@ -42,41 +56,68 @@ class HallFragment : BaseFragment<HallViewModel, FragmentHallBinding>() {
 
     private val mockTabList = arrayListOf(
         HallGameTabDefault(
+            colorRes =  arch.cayenne.lib.common.R.color.color_00E0E5,
             res = R.drawable.ic_tab_hall_recent,
             _title = R.string.tab_recent.getString(),
             _page = { GameContentFragment.newInstance() }
         ),
         HallGameTabDefault(
+            colorRes = arch.cayenne.lib.common.R.color.color_5B32FF,
             res = R.drawable.ic_tab_hall_all,
             _title = R.string.tab_all.getString(),
             _page = { GameAllFragment.newInstance() }
         ),
         HallGameTabDefault(
+            colorRes =  arch.cayenne.lib.common.R.color.red_team,
             res = R.drawable.ic_tab_hall_table,
             _title = R.string.tab_table.getString(),
             _page = { GameContentFragment.newInstance() }
         ),
         HallGameTabDefault(
+            colorRes =   arch.cayenne.lib.common.R.color.red_team,
+            res = R.drawable.ic_tab_hall_slot,
+            _title = R.string.tab_slot.getString(),
+            _page = { GameContentFragment.newInstance() }
+        ),
+
+        HallGameTabDefault(
+            colorRes =  arch.cayenne.lib.common.R.color.red_team,
             res = R.drawable.ic_tab_hall_slot,
             _title = R.string.tab_slot.getString(),
             _page = { GameContentFragment.newInstance() }
         ),
         HallGameTabDefault(
+            colorRes =  arch.cayenne.lib.common.R.color.red_team,
+            res = R.drawable.ic_tab_hall_table,
+            _title = R.string.tab_table.getString(),
+            _page = { GameContentFragment.newInstance() }
+        ),
+        HallGameTabDefault(
+            colorRes =  arch.cayenne.lib.common.R.color.red_team,
             res = R.drawable.ic_tab_hall_slot,
             _title = R.string.tab_slot.getString(),
             _page = { GameContentFragment.newInstance() }
         ),
         HallGameTabDefault(
+            colorRes =  arch.cayenne.lib.common.R.color.red_team,
+            res = R.drawable.ic_tab_hall_table,
+            _title = R.string.tab_table.getString(),
+            _page = { GameContentFragment.newInstance() }
+        ),
+        HallGameTabDefault(
+            colorRes =  arch.cayenne.lib.common.R.color.red_team,
             res = R.drawable.ic_tab_hall_slot,
             _title = R.string.tab_slot.getString(),
             _page = { GameContentFragment.newInstance() }
         ),
         HallGameTabDefault(
-            res = R.drawable.ic_tab_hall_slot,
-            _title = R.string.tab_slot.getString(),
+            colorRes =  arch.cayenne.lib.common.R.color.red_team,
+            res = R.drawable.ic_tab_hall_table,
+            _title = R.string.tab_table.getString(),
             _page = { GameContentFragment.newInstance() }
         ),
         HallGameTabDefault(
+            colorRes = arch.cayenne.lib.common.R.color.red_team,
             res = R.drawable.ic_tab_hall_slot,
             _title = R.string.tab_slot.getString(),
             _page = { GameContentFragment.newInstance() }
@@ -95,18 +136,47 @@ class HallFragment : BaseFragment<HallViewModel, FragmentHallBinding>() {
             guideline.layoutParams = params
 
             vpGame.adapter = PagerAdapter(childFragmentManager, lifecycle, mockTabList)
-
-            TabLayoutMediator(tlGame, vpGame) { tab, position ->
+            launch {
+                delay(500)
+                vpGame.offscreenPageLimit = mockTabList.size
+            }
+            TabLayoutMediator(tlGame, vpGame,false) { tab, position ->
                 tab.customView = createGameTabView(position, mockTabList[position])
                 val paddingStart = 5.dp2px
                 tab.view.setPadding(0, 0, paddingStart, 0)
+                tab.customView?.findViewById<SkinnableTextView>(R.id.tv_title)?.apply {
+                    if (position == 1) {
+                        typeface = Typeface.DEFAULT_BOLD
+                        setTextColor(
+                            SkinnableResourceManager.getColor(
+                                context,
+                                arch.cayenne.lib.common.R.color.white
+                            )
+                        )
+                        setRoundedBackground(backgroundColor = mockTabList[position].colorRes.getColor(), show = true)
+                    } else {
+                        setTextColor(
+                            SkinnableResourceManager.getColor(
+                                context,
+                                arch.cayenne.lib.common.R.color.color_C0C0C0
+                            )
+                        )
+                        typeface = Typeface.DEFAULT
+                        setRoundedBackground(backgroundColor = arch.cayenne.lib.common.R.color.title_bg.getColor(),show = false)
+                    }
+                }
+
             }.attach()
+            tlGame.clearOnTabSelectedListeners()
+            tlGame.removeAllTips()
+            tlGame.getTabAt(1)?.select()
             vpGame.setCurrentItem(1, false)
         }
     }
 
-    private fun createGameTabView(position: Int, item: HallGamePage) : View {
-        val tabBinding = ItemHallGameTabBinding.inflate(LayoutInflater.from(requireContext()), null, false)
+    private fun createGameTabView(position: Int, item: HallGamePage): View {
+        val tabBinding =
+            ItemHallGameTabBinding.inflate(LayoutInflater.from(requireContext()), null, false)
         tabBinding.tvTitle.text = item.title
         if (item is HallGameTabDefault) {
             tabBinding.ivIcon.setBackgroundResource(item.res)
@@ -118,7 +188,7 @@ class HallFragment : BaseFragment<HallViewModel, FragmentHallBinding>() {
     }
 
     override fun initListener() {
-        with (mBinding) {
+        with(mBinding) {
             ivHomeSidebar.addScaleOnTouchAnimation()
             ivHomeSidebar.clickNoRepeat {
                 requireActivity().supportFragmentManager.setFragmentResult(
@@ -127,6 +197,48 @@ class HallFragment : BaseFragment<HallViewModel, FragmentHallBinding>() {
                 )
             }
         }
+
+        mBinding.tlGame.addOnTabSelectedListener2(object : TabLayoutExt.OnTabSelectedListener2 {
+            @SuppressLint("ResourceType")
+            override fun onTabSelected(tab: TabLayout.Tab, isTabClick: Boolean) {
+                tab.let {
+                    if (isTabClick) {
+                        val vp = mBinding.vpGame
+                        vp.startFadeAnim {
+                            vp.setCurrentItem(tab.position, false)
+                            it.invoke()
+                        }
+                    }
+                }
+                tab.view.findViewById<SkinnableTextView>(R.id.tv_title)?.let { textView ->
+                    textView.setTextColor(
+                        SkinnableResourceManager.getColor(
+                            textView.context,
+                            arch.cayenne.lib.common.R.color.white
+                        )
+                    )
+                    textView.setRoundedBackground(backgroundColor = mockTabList[tab.position].colorRes.getColor(),show = true)
+                    textView.typeface = Typeface.DEFAULT_BOLD
+                }
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab, isTabClick: Boolean) {
+                tab.view.findViewById<SkinnableTextView>(R.id.tv_title)?.let { textView ->
+                    textView.setTextColor(
+                        SkinnableResourceManager.getColor(
+                            textView.context,
+                            arch.cayenne.lib.common.R.color.color_C0C0C0
+                        )
+                    )
+                    textView.setRoundedBackground(backgroundColor = mockTabList[tab.position].colorRes.getColor(),show = false)
+                    textView.typeface = Typeface.DEFAULT
+                }
+            }
+
+            override fun onTabReselected(tab: TabLayout.Tab, isTabClick: Boolean) {
+                // Handle reselect if needed
+            }
+        })
     }
 
     override suspend fun createObserver() {
@@ -153,11 +265,11 @@ class HallFragment : BaseFragment<HallViewModel, FragmentHallBinding>() {
 //            mBinding.homeBarIcon.layoutParams = paramsLin
 //        }
         mBinding.root.fitsSystemWindows = false
-        StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND(autoPadding = false, autoIsNavigation = true)
+        StatusBarConfig.statusBarType =
+            StatusBarMode.DRAW_BEHIND(autoPadding = false, autoIsNavigation = true)
         setStatusBar(StatusBarConfig, mBinding.clMain)
         super.onStart()
     }
-
 
 
 }

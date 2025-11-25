@@ -6,21 +6,14 @@
     android:layout_height="match_parent"
     android:background="@color/title_bg">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/homeBarIcon"
+        android:layout_width="124dp"
         android:layout_height="110dp"
+        android:background="@drawable/home_bar_left_bg"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/homeBarIcon"
-            android:layout_width="124dp"
-            android:layout_height="110dp"
-            android:background="@drawable/home_bar_left_bg"
-            app:layout_constraintRight_toRightOf="parent"
-            tools:ignore="MissingConstraints" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingConstraints" />
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/ll_main"
@@ -118,6 +111,7 @@
                     android:paddingTop="5dp"
                     android:paddingBottom="7dp"
                     android:scaleType="fitCenter"
+                    android:background="@color/color_272727"
                     android:src="@drawable/ic_home_sidebar"
                     android:stateListAnimator="@animator/layout_alpha_animator"
                     android:translationZ="1dp"

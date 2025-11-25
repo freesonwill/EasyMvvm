@@ -2,10 +2,13 @@ package arch.cayenne.module.bet.ui.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.EditText
+import android.widget.TextView
 import arch.cayenne.lib.base.ui.adapter.BaseAdapter
 import arch.cayenne.module.bet.data.ComboMultiBetBean
 import arch.cayenne.module.bet.databinding.ItemComboMultiBet2Binding
 import arch.cayenne.module.bet.ui.compare.ComboRateCompare
+import arch.cayenne.module.bet.ui.custom.BetMoneyKeyboard
 import arch.cayenne.module.bet.ui.viewholder.ComboMultiBetViewHolder
 
 class ComboMultiBetAdapter(
@@ -45,7 +48,13 @@ class ComboMultiBetAdapter(
     }
 
     interface OnComboMultiBetClickListener {
-        fun onEditMoneyClick(serialValue: Int, locationX: Int, locationY: Int)
+        //投注金额点击
+        @Deprecated("use onEditMoneyClick2 instead")
+        fun onEditMoneyClick(serialValue: Int, locationX: Int, locationY: Int) {}
+        fun onEditMoneyClick2(serialValue: Int, editText: EditText, tvMoney: TextView, addViewAction:(keyboard:BetMoneyKeyboard)->Unit){ }
+        //货币符号
         fun getMoneySymbol(): String
+        //组合详情
+        fun onCombinationDetailClick(serialValue: Int) {}
     }
 }

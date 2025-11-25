@@ -1,5 +1,11 @@
 package arch.cayenne.module.bet.data.remote
 
+/**
+ * 串关结果
+ * @property isSuccessful
+ * @property message
+ * @property data
+ */
 data class ComboBetDataModel(
     val isSuccessful: Boolean,
     val message: String,

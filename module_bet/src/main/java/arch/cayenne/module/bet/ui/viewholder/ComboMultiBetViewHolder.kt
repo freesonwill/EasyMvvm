@@ -2,19 +2,20 @@ package arch.cayenne.module.bet.ui.viewholder
 
 import android.annotation.SuppressLint
 import android.text.StaticLayout
+import android.view.ViewGroup.LayoutParams
 import android.view.ViewTreeObserver
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
-import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
+import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.module.bet.R
 import arch.cayenne.module.bet.data.ComboMultiBetBean
 import arch.cayenne.module.bet.databinding.ItemComboMultiBet2Binding
 import arch.cayenne.module.bet.ui.adapter.ComboMultiBetAdapter
 
 class ComboMultiBetViewHolder(private val mBinding: ItemComboMultiBet2Binding, private val onComboMultiBetClickListener: ComboMultiBetAdapter.OnComboMultiBetClickListener): BaseViewHolder(mBinding) {
-
     @SuppressLint("ClickableViewAccessibility")
     fun bind(item: ComboMultiBetBean) {
         val combo = getString(R.string.title_combo_bet_odds).format(item.comboK, item.comboV)
@@ -38,28 +39,36 @@ class ComboMultiBetViewHolder(private val mBinding: ItemComboMultiBet2Binding, p
 
         mBinding.etMoney.isFocusable = false
         mBinding.etMoney.setOnClickListener {
-            val location = IntArray(2)
-            it.getLocationOnScreen(location)
-            val x = location.first() + it.width / 2
-            val y = location.last()
-            onComboMultiBetClickListener.onEditMoneyClick(item.serialValue, x, y)
+            onComboMultiBetClickListener.onEditMoneyClick2(item.serialValue, mBinding.etMoney,mBinding.tvMoney,addViewAction = { keyboard->
+                val lp = ConstraintLayout.LayoutParams(0, LayoutParams.WRAP_CONTENT).apply {
+                    topToBottom = mBinding.tvPrincipal.id
+                    startToStart = ConstraintLayout.LayoutParams.PARENT_ID
+                    endToEnd = ConstraintLayout.LayoutParams.PARENT_ID
+                }
+                mBinding.root.addView(keyboard,lp)
+            })
+        }
+
+        mBinding.tvTitleCombo.clickNoRepeat {
+            onComboMultiBetClickListener.onCombinationDetailClick(item.serialValue)
         }
     }
 
     fun updateMoney(item: ComboMultiBetBean) {
         val moneySymbol = onComboMultiBetClickListener.getMoneySymbol()
         if (item.inputMoney > 0) {
-            val money = "$moneySymbol ${item.inputMoney.getMoney()}"
+            val money = item.inputMoney.getMoney()
             mBinding.etMoney.setText(money)
         } else {
             mBinding.etMoney.setText("")
         }
-        val moneyHint = "$moneySymbol ${getString(R.string.et_money_hint).format(item.minAmount.getMoney(), item.maxAmount.getMoney())}"
+        val moneyHint = getString(R.string.et_money_hint).format(item.minAmount.getMoney(), item.maxAmount.getMoney())
         mBinding.etMoney.hint = moneyHint
-        val amountMoney = "$moneySymbol${item.amount.getFormalMoney()}"
-        //mBinding.tvMoney.text = amountMoney
+        mBinding.tvMoney.text = moneySymbol
+        /*val amountMoney = "$moneySymbol${item.amount.getFormalMoney()}"
+        mBinding.tvMoney.text = amountMoney
         val maxMoney = "$moneySymbol${item.maxWinMoney.getFormalMoney()}"
-        //mBinding.tvMaxMoney.text = maxMoney
+        mBinding.tvMaxMoney.text = maxMoney*/
     }
 
     private fun isTextTooLong(textView: TextView, text: String): Boolean {

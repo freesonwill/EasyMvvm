@@ -59,6 +59,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
     private val unreadMessageViewModel: UnReadMessageViewModel by viewModels()
     private var homeMediator: HomeTabMediator? = null
     private var promoTabs: List<PromoTab> = emptyList()
+    private var playTypes: List<PlayType> = emptyList()
     private var indicatorDrawable: android.graphics.drawable.Drawable? = null
     private var customIndicator: CustomTabIndicator? = null
 
@@ -72,8 +73,8 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
     override fun onStart() {
         mBinding.homeTopBar.post {
             //动态设置沉浸式状态栏背景高度 状态栏高度+bar控件高度
-            var barHeight = ViewUtils.getStatusBarHeight(requireContext())
-            var toBarHeight = mBinding.homeTopBar.height
+            val barHeight = ViewUtils.getStatusBarHeight(requireContext())
+            val toBarHeight = mBinding.homeTopBar.height
 
             val paramsLin = mBinding.homeBarIcon.layoutParams as LayoutParams
             paramsLin.height = barHeight + toBarHeight
@@ -107,17 +108,19 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
     private fun setupViewPager() {
         mBinding.vpSub.apply {
             promoTabs = buildPromoTabs()
+            playTypes = listOf(
+                PlayType.TODAY,
+                PlayType.ROLLING,
+                PlayType.EARLY,
+                PlayType.CHAMPION,
+                PlayType.FAVORITE
+            )
             val promoCount = promoTabs.size
             adapter = SubHomePagerAdapter(
                 fragmentManager = childFragmentManager,
                 lifecycle = viewLifecycleOwner.lifecycle,
                 promoCount = promoCount,
-                playTypes = listOf(
-                    PlayType.TODAY,
-                    PlayType.EARLY,
-                    PlayType.CHAMPION,
-                    PlayType.FAVORITE
-                )
+                playTypes = playTypes
             )
             offscreenPageLimit = 3
             setupHorizontalScrollDegree()
@@ -154,7 +157,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                     tab.customView = promoTabs[position].createView(requireContext())
                     tab.tag = "PROMO"
                 } else {
-                    tab.setText(PlayType.entries[position - promoTabs.size].titleRes)
+                    tab.setText(playTypes[position - promoTabs.size].titleRes)
                 }
             },
             onPreselectChanged = { pos ->

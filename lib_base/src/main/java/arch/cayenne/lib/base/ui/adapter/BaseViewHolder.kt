@@ -10,7 +10,7 @@ import androidx.viewbinding.ViewBinding
  * @author Link Hsieh
  */
 open class BaseViewHolder(val binding: ViewBinding) : RecyclerView.ViewHolder(binding.root) {
-
+    protected val TAG by lazy { this::class.java.simpleName }
     fun getString(id: Int) = itemView.resources.getString(id)
     val resources: Resources
         get() = itemView.resources
