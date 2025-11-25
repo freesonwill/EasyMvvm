@@ -94,7 +94,6 @@ class BetSheetFragment constructor() :
 
     override fun initView(savedInstanceState: Bundle?) {
         initFragment()
-        CombinationFragment.create(requireActivity())
         BetResultFragment.create(requireActivity())
         mBinding.root.setBlockSlideListener(object : BlockSlideConstrainLayout.BlockSlideListener {
             override fun getBlockingRect(): View? {

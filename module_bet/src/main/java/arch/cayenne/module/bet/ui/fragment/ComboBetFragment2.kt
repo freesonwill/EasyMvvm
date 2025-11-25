@@ -106,6 +106,17 @@ class ComboBetFragment2 : BaseFragment<ComboBetViewModel, FragmentComboBet2Bindi
                 return mViewModel.moneySymbol
             }
 
+            override fun onCombinationDetailClick(serialValue: Int) {
+                val data = mViewModel.onComboMultiBetBeanListener.value?.find { it.serialValue == serialValue }
+                    ?: error("can not find serialValue:$serialValue in ${ mViewModel.onComboMultiBetBeanListener.value }")
+                val items = mViewModel.splitComboIntoSingles(data.comboK,data.comboV,data.inputMoney)
+                CombinationFragment.newInstance(CombinationFragment.Parameter(
+                    title = data.title(),
+                    titleTips = data.titleTips(),
+                    items = items
+                )).show(childFragmentManager)
+            }
+
             fun calculateScrollY(nestedScrollView: NestedScrollView, targetView: View):Int? {
                 // 计算 targetView 相对于 NestedScrollView 的 top
                 var top = 0
@@ -216,7 +227,7 @@ class ComboBetFragment2 : BaseFragment<ComboBetViewModel, FragmentComboBet2Bindi
             if (it.size > 1) {
                 val lastSize = betSelectionAdapter.itemCount
                 betSelectionAdapter.submitList(it) {
-                    if (it.size > lastSize) {
+                    if (it.size > lastSize) { //扩充了，滚动0
                         mBinding.rvBet.scrollToPosition(0)
                     }
                 }

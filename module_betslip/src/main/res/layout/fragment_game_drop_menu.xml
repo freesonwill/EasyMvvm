@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<arch.cayenne.lib.skin.widget.SkinnableLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/dp_203"
+    android:background="@color/color_272727"
+    android:orientation="vertical"
+    android:paddingHorizontal="@dimen/dp_16">
+
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
+        android:id="@+id/tv_sort_by_all"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center_vertical"
+        android:text="@string/menu_all_bet"
+        android:textColor="@color/selector_tab_type"
+        android:textSize="@dimen/sp_14"
+        android:layout_marginTop="@dimen/dp_4"/>
+
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
+        android:id="@+id/tv_sort_by_win"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center_vertical"
+        android:text="@string/menu_win_bet"
+        android:textColor="@color/selector_tab_type"
+        android:textSize="@dimen/sp_14" />
+
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
+        android:id="@+id/tv_sort_by_one"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center_vertical"
+        android:text="@string/menu_one_bet"
+        android:textColor="@color/selector_tab_type"
+        android:textSize="@dimen/sp_14" />
+
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
+        android:id="@+id/tv_sort_by_ten"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dp_20"
+        android:layout_weight="1"
+        android:gravity="center_vertical"
+        android:text="@string/menu_ten_bet"
+        android:textColor="@color/selector_tab_type"
+        android:textSize="@dimen/sp_14" />
+</arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
+

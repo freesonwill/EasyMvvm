@@ -56,6 +56,7 @@
         <item name="android:textColor">@color/color_00E0E5</item>
         <item name="android:textColorHint">@color/color_C0C0C0</item>
         <item name="android:textSize">16sp</item>
+        <item name="android:maxLength">10</item>
         <!-- 自定义属性 -->
         <item name="skinnableFontWeight">510</item>
     </style>

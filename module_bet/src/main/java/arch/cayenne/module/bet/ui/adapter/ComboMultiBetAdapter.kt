@@ -48,9 +48,13 @@ class ComboMultiBetAdapter(
     }
 
     interface OnComboMultiBetClickListener {
+        //投注金额点击
         @Deprecated("use onEditMoneyClick2 instead")
         fun onEditMoneyClick(serialValue: Int, locationX: Int, locationY: Int) {}
         fun onEditMoneyClick2(serialValue: Int, editText: EditText, tvMoney: TextView, addViewAction:(keyboard:BetMoneyKeyboard)->Unit){ }
+        //货币符号
         fun getMoneySymbol(): String
+        //组合详情
+        fun onCombinationDetailClick(serialValue: Int) {}
     }
 }

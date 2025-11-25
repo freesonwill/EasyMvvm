@@ -22,13 +22,25 @@ data class ComboMultiBetBean(
     val count: Int = 1, // 場次組合數量
     var inputMoney: Long = 0,
     val minAmount: Long,
-    val maxAmount: Long
+    val maxAmount: Long,
 ) {
     val amount: Long
         get() = inputMoney * count
 
     val maxWinMoney: Long
         get() = inputMoney.getMoney(odds * count).toMoney()
+
+    fun title():String {
+        return "${comboK}串${comboV}"
+    }
+
+    fun titleTips():String{
+        return if(comboV == 1){
+            "${title()}由所有${comboK}串${comboV}注单组成"
+        }else {
+            "${title()}由所有${(2..comboK).joinToString("、") { "${it}串1" }}注单组成"
+        }
+    }
 }
 
 data class ComboMultiBetOddsBean(

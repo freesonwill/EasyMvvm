@@ -54,8 +54,8 @@ data class BetSelectionBean(
     var matchName: String, // 赛事名称 ex. 中國 vs 日本
     var isActive: Boolean, // 是否停止下注
     var isPlaying: Boolean, // 是否滾球
-    var isParlay: Boolean,
-    val provider: Int,
+    var isParlay: Boolean, //是否串关
+    val provider: Int, //提供商ID
     val createTime: Long = System.currentTimeMillis(),
     var oddsStatus: OddsStatusEnum? = null
 ) {
@@ -85,18 +85,18 @@ enum class BetStatusEnum {
 }
 
 enum class OddsStatusEnum {
-    UP,
-    DOWN,
-    SAME
+    UP, //赔率上升
+    DOWN, //赔率下降
+    SAME //赔率不变
 }
 
 enum class BetResultStatusEnum(val code: Int) {
     CREATE(0),
-    CONFIRMING(1),
+    CONFIRMING(1), //确认中
     REJECT(2),
     CANCEL(3),
     SUCCESS_BET(4),
-    SETTLED(5),
+    SETTLED(5), //结算
     FAIL(100);
 
     companion object {
