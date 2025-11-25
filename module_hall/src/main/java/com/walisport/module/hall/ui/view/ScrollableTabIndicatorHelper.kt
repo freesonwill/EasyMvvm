@@ -60,7 +60,7 @@ class ScrollableTabIndicatorHelper(
 
         val targetX = bgView.translationX + tabCenter - bgCenter
 
-        LogUtils.e("checkAndAnimateIfSettled-------->动画距离${targetX}")
+       // LogUtils.e("checkAndAnimateIfSettled-------->动画距离${targetX}")
         bgView.animate().apply {
             translationX((targetX-mLeft))
             setDuration(280)
@@ -75,7 +75,7 @@ class ScrollableTabIndicatorHelper(
     // 手势滑动实时跟随
     private fun syncNow() {
         val pos = tabLayout.selectedTabPosition
-        LogUtils.e("checkAndAnimateIfSettled-------->syncNow------->${pos}")
+      //  LogUtils.e("checkAndAnimateIfSettled-------->syncNow------->${pos}")
         if (pos < 0) return
         val tabView = (tabLayout.getChildAt(0) as? ViewGroup)?.getChildAt(pos) ?: return
         tabView.getLocationInWindow(loc)
