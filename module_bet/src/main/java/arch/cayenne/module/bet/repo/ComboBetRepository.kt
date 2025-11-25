@@ -1,6 +1,7 @@
 package arch.cayenne.module.bet.repo
 
 import arch.cayenne.lib.base.data.repository.BaseRepository
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.data.constants.UserDataKey
 import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.database.dao.BetDao
@@ -59,6 +60,7 @@ class ComboBetRepository(
                         if (lastSize != it.size) {
                             val emptyRisk = getEmptyRiskList(it.size)
                             if (emptyRisk.isNotEmpty()) {
+                                //"aaaa---betDao.observeCurrentSelections():$emptyRisk--it:$it".logd(TAG)
                                 comboMultiBetFlow.emit(calculateMultiBetSums(it, emptyRisk))
                             }
                             setComboMulti(it)
@@ -142,11 +144,14 @@ class ComboBetRepository(
                     )
                 }
                 saveDetail(multiBet)
+                //"aaaa---setComboMulti1--$data".logd(TAG)
                 comboMultiBetFlow.emit(multiBet)
             } else {
+                //"aaaa---setComboMulti2--$data".logd(TAG)
                 comboMultiBetFlow.emit(calculateMultiBetSums(data, getEmptyRiskList(data.size)))
             }
         } ?: run {
+            //"aaaa---setComboMulti3--$data".logd(TAG)
             comboMultiBetFlow.emit(calculateMultiBetSums(data, getEmptyRiskList(data.size)))
         }
     }
@@ -179,6 +184,7 @@ class ComboBetRepository(
     }
 
     private fun updateMultiOdds(selections: List<BetSelectionBean>, multiBet: List<ComboMultiBetBean>) {
+        //"aaaa---updateMultiOdds,selections:$selections,multiBet:$multiBet".logd(TAG)
         val emptyRisk = getEmptyRiskList(selections.size)
         val newMulti = calculateMultiBetOddsSums(selections, emptyRisk)
         multiBet.forEach { multi ->
@@ -284,17 +290,15 @@ class ComboBetRepository(
      * @param selections
      */
     private fun unregister(selections: List<BetSelectionBean>) {
-        scope.launch {
-            remoteManager.unregisterMatchMarketNotify(selections.map {
-                Client.MarketIdBase.newBuilder()
-                    .setMatchId(it.matchId)
-                    .addMarketId(it.marketId)
-                    .build()
-            })
-            selections.forEach {
-                it.oddsStatus = null
-                betDao.updateSelection(it)
-            }
+        remoteManager.unregisterMatchMarketNotify(selections.map {
+            Client.MarketIdBase.newBuilder()
+                .setMatchId(it.matchId)
+                .addMarketId(it.marketId)
+                .build()
+        })
+        selections.forEach {
+            it.oddsStatus = null
+            betDao.updateSelection(it)
         }
     }
 
@@ -310,31 +314,25 @@ class ComboBetRepository(
         val riskMap = riskList.associateBy { it.serialValue }
         var totalSumOdds = 0
         var totalCount = 0
-
+        //"aaaa---calculateMultiBetSums,data:$data,risk:$riskList".logd(TAG)
         for (k in n downTo 0) {
             riskMap[k]?.let { risk ->
-                val combinations = data.combinations(k)
                 val odds = when (k) {
                     0 -> 0
                     else -> {
                         val combinationData = oddsList.combinations(k)
-                        val sumOdds = combinationData
-                            .sumOf {
-                                it.reduce { acc, l ->
-                                    acc * l
-                                }
-                            }
+                        val sumOdds = combinationData.sumOf { it.reduce { acc, l -> acc * l } }
                         getScaleOdds(sumOdds,(combinationData.first().size - 1) * 2)
                     }
                 }
                 val count = when (k) {
                     0 -> 0
-                    else -> combinations.size
+                    else -> data.combinations(k).size
                 }
                 totalSumOdds += odds
                 totalCount += count
 
-                if (k == 0) {
+                if (k == 0) {//全串关
                     result.add(
                         ComboMultiBetBean(
                             serialValue = risk.serialValue,
@@ -362,6 +360,34 @@ class ComboBetRepository(
                     )
                 }
 
+            }
+        }
+
+        //超级组合
+        if(ComboMultiBetBean.hasSerialSuper(n)){
+            riskMap[ComboMultiBetBean.SERIAL_VALUE_SUPER]?.let { risk ->
+                val odds = let  {
+                    val combinationData = oddsList.combinations(1)
+                    val sumOdds = combinationData.sumOf { it.reduce { acc, l -> acc * l } }
+                    getScaleOdds(sumOdds,(combinationData.first().size - 1) * 2)
+                }
+                //"aaaa---hasSerialSuper,odds:$odds".logd(TAG)
+                val count = data.size
+                totalSumOdds += odds
+                totalCount += count
+
+                ComboMultiBetBean(
+                    serialValue = risk.serialValue,
+                    comboK = n,
+                    comboV = totalCount,
+                    sumOdds = totalSumOdds,
+                    odds = totalSumOdds / totalCount,
+                    count = totalCount,
+                    minAmount = risk.minAmount,
+                    maxAmount = risk.maxAmount,
+                ).also {
+                    result.add(it)
+                }
             }
         }
 
@@ -509,6 +535,7 @@ class ComboBetRepository(
                 if (selections.isNotEmpty() && !multi.isNullOrEmpty()) {
                     updateMultiOdds(selections, multi)
                 } else if (selections.isNotEmpty() && multi == null) {
+                    //"aaaa---updateOdds,selections:$selections".logd(TAG)
                     calculateMultiBetSums(selections, getEmptyRiskList(selections.size)).let {
                         comboMultiBetFlow.emit(it)
                     }

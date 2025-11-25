@@ -109,7 +109,7 @@ class ComboBetFragment2 : BaseFragment<ComboBetViewModel, FragmentComboBet2Bindi
             override fun onCombinationDetailClick(serialValue: Int) {
                 val data = mViewModel.onComboMultiBetBeanListener.value?.find { it.serialValue == serialValue }
                     ?: error("can not find serialValue:$serialValue in ${ mViewModel.onComboMultiBetBeanListener.value }")
-                val items = mViewModel.splitComboIntoSingles(data.comboK,data.comboV,data.inputMoney)
+                val items = mViewModel.splitComboIntoSingles(data)
                 CombinationFragment.newInstance(CombinationFragment.Parameter(
                     title = data.title(),
                     titleTips = data.titleTips(),
@@ -182,9 +182,9 @@ class ComboBetFragment2 : BaseFragment<ComboBetViewModel, FragmentComboBet2Bindi
         mBinding.btnDelete.root.setOnClickListener {
             CommonDialog.newInstance(
                 title = "",
-                message = getString(R.string.title_dialog_remove),
-                okText = getString(R.string.btn_confirm),
-                cancelText = getString(R.string.btn_cancel)
+                message = R.string.title_dialog_remove.getString(),
+                okText = R.string.btn_confirm.getString(),
+                cancelText = R.string.btn_cancel.getString()
             ).apply {
                 setOnOkClickListener {
                     mViewModel.removeAll()
@@ -200,11 +200,11 @@ class ComboBetFragment2 : BaseFragment<ComboBetViewModel, FragmentComboBet2Bindi
         }
         mBinding.clBet.setOnClickListener {
             mViewModel.checkAmountLimit()?.let {
-                showToast(arch.cayenne.lib.common.R.string.toast_amount_limit.getString(it.first+1,it.second))
+                showToast(it)
                 return@setOnClickListener
             }
             if (mViewModel.getSumBetAmount() > mViewModel.balance) {
-                showToast(getString(arch.cayenne.lib.common.R.string.toast_over_remaining))
+                showToast(arch.cayenne.lib.common.R.string.toast_over_remaining.getString())
             } else if (!mViewModel.checkOddsPass()) {
                 mViewModel.oddsChangeListener.value?.toastRes?.let {
                     showToast(getString(it))
@@ -237,7 +237,7 @@ class ComboBetFragment2 : BaseFragment<ComboBetViewModel, FragmentComboBet2Bindi
             with(mBinding.firstMultiItem) {
                 val moneySymbol = mViewModel.moneySymbol
                 tvTitleCombo.text = let {
-                    val combo = getString(R.string.title_combo_bet_odds).format(item.comboK, item.comboV)
+                    val combo = R.string.title_combo_bet_odds.getString().format(item.comboK, item.comboV)
                     combo
                 }
                 tvMulti.text = let { "@${item.sumOdds.getOdds()}" }
@@ -249,7 +249,7 @@ class ComboBetFragment2 : BaseFragment<ComboBetViewModel, FragmentComboBet2Bindi
                        ""
                     }
                 })
-                val moneyHint = getString(R.string.et_money_hint).format(item.minAmount.getMoney(), item.maxAmount.getMoney())
+                val moneyHint = R.string.et_money_hint.getString().format(item.minAmount.getMoney(), item.maxAmount.getMoney())
                 etMoney.hint = moneyHint
                 tvMoney.text = moneySymbol
             }
@@ -296,7 +296,7 @@ class ComboBetFragment2 : BaseFragment<ComboBetViewModel, FragmentComboBet2Bindi
         })
         mViewModel.networkConnectedEvent.observeEvent(viewLifecycleOwner, this) {
             if (it is DataState.NetworkUnavailable) {
-                showToast(getString(arch.cayenne.lib.common.R.string.toast_server_disconnected))
+                showToast(arch.cayenne.lib.common.R.string.toast_server_disconnected.getString())
             }
         }
         mViewModel.oddsChangeListener.observe(viewLifecycleOwner) {

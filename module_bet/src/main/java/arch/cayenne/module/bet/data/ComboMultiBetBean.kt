@@ -1,7 +1,9 @@
 package arch.cayenne.module.bet.data
 
+import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
+import arch.cayenne.module.bet.R
 
 /***
  * 有三場比賽欲串關，則有3串1、3串2、3串3，共三個串關方式
@@ -14,7 +16,7 @@ import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
  * @param maxAmount 最大下注金額
  */
 data class ComboMultiBetBean(
-    val serialValue: Int = 1, // 多少串一關，0為全串關
+    val serialValue: Int = 1, // 多少串一關，0為全串關，-1为超级组合
     val comboK: Int = 1, // 3串2的3
     val comboV: Int = 1, // 3串2的2
     var sumOdds: Int, // 串關後賠率加總
@@ -24,21 +26,47 @@ data class ComboMultiBetBean(
     val minAmount: Long,
     val maxAmount: Long,
 ) {
+    companion object {
+        const val SERIAL_VALUE_SUPER = -1 //超级组合
+        const val SERIAL_VALUE_ALL = 0 //全串關
+
+        //k个选项是否存在超级组合
+        fun hasSerialSuper(k:Int):Boolean{
+            return k in 3..6
+        }
+    }
+    fun hasSetMoney() = inputMoney != 0L
     val amount: Long
         get() = inputMoney * count
 
     val maxWinMoney: Long
         get() = inputMoney.getMoney(odds * count).toMoney()
 
+    val isSuperCombo get() = serialValue == SERIAL_VALUE_SUPER
+
     fun title():String {
-        return "${comboK}串${comboV}"
+        return when {
+            isSuperCombo -> R.string.title_combo_bet_super.getString()
+            else -> R.string.title_combo_bet_odds.getString(comboK,comboV)
+        }
     }
 
     fun titleTips():String{
-        return if(comboV == 1){
-            "${title()}由所有${comboK}串${comboV}注单组成"
-        }else {
-            "${title()}由所有${(2..comboK).joinToString("、") { "${it}串1" }}注单组成"
+        return when {
+            comboV == 1 -> {
+                R.string.title_combo_bet_detail_tips.getString(
+                    title(),
+                    R.string.title_combo_bet_odds.getString(comboK,comboV)
+                )
+            }
+            else ->
+                R.string.title_combo_bet_detail_tips.getString(
+                    title(),
+                    ((if(isSuperCombo) 1 else 2)..comboK).joinToString("、") { k ->
+                        if (k == 1) arch.cayenne.lib.res.R.string.title_single_bet.getString()
+                        else R.string.title_combo_bet_odds.getString(k, 1)
+                    }
+                )
         }
     }
 }

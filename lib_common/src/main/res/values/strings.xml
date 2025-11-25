@@ -13,7 +13,6 @@
     <string name="error_net">网络异常，请检查网络设置</string>
     <string name="toast_over_remaining">账户余额不足</string>
     <string name="toast_over_max">超出最高限额</string>
-    <string name="toast_amount_limit">第%d项%s</string>
     <string name="loading_view_text">加载中</string>
     <string name="data_empty">暂无数据,请换个试一试</string>
     <string name="title_combo_bet">%d串%d</string>

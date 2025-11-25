@@ -55,8 +55,8 @@ class BetMoneyKeyboard @JvmOverloads constructor(
     private lateinit var ivFakerView:ImageView
     private var etMoney:EditText? = null
     private var tvMoney:TextView? = null
-    private var _serialValue:Int = -1
-    val serialValue:Int get() = _serialValue
+    private var _serialValue:Int? = null
+    val serialValue:Int? get() = _serialValue
     private var removeWhenHide:Boolean = false
 
     // 每个 Keyboard 独立 ViewModel
@@ -142,7 +142,7 @@ class BetMoneyKeyboard @JvmOverloads constructor(
     }
 
     private fun unBind(){
-        this._serialValue = -1
+        this._serialValue = null
         this.etMoney = null
         this.removeWhenHide = false
         this.mViewModel = null
@@ -168,7 +168,7 @@ class BetMoneyKeyboard @JvmOverloads constructor(
             etMoney!!.setText(it)
             val length = it.length
             etMoney!!.setSelection(length)
-            onMoneyChange.invoke(serialValue,it.toMoney())
+            onMoneyChange.invoke(serialValue!!,it.toMoney())
         }
         mViewModel.onNumberLimit.observe(viewLifecycleOwner) {
             etMoney!!.hint = context.getString(R.string.et_money_hint).format(it.first.getMoney(), it.second.getMoney())

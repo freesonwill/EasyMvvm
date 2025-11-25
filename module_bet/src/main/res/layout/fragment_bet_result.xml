@@ -84,7 +84,9 @@
                     android:nestedScrollingEnabled="false"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     app:layout_constraintTop_toTopOf="parent"
-                    tools:listitem="@layout/item_bet_sheet" />
+                    tools:listitem="@layout/item_bet_sheet"
+                    tools:itemCount="2"
+                    />
 
                 <LinearLayout
                     android:id="@+id/ll_expand"
@@ -160,7 +162,8 @@
                         android:gravity="end"
                         android:textColor="@color/color_00E0E5"
                         android:textSize="@dimen/sp_14"
-                        app:skinnableFontWeight="510" />
+                        app:skinnableFontWeight="510"
+                        tools:text="$160"/>
                 </LinearLayout>
 
                 <LinearLayout
@@ -175,7 +178,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textColor="@color/color_C0C0C0"
-                        android:textSize="@dimen/sp_14" />
+                        android:textSize="@dimen/sp_14"
+                        tools:text="最高可赢"/>
 
                     <arch.cayenne.lib.skin.widget.SkinnableTextView
                         android:id="@+id/tv_max_win_money"
@@ -185,7 +189,8 @@
                         android:gravity="end"
                         android:textColor="@color/color_00E0E5"
                         android:textSize="@dimen/sp_14"
-                        app:skinnableFontWeight="510" />
+                        app:skinnableFontWeight="510"
+                        tools:text="$980"/>
                 </LinearLayout>
             </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
