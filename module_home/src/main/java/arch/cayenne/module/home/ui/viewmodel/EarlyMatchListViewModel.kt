@@ -112,11 +112,6 @@ class EarlyMatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
                         if (currentDateRefs.isEmpty()) {
                             //向后查询数据
                             getMatchListData(LoadMatchType.DATE_CHANGE)
-                            //向前查询一页数据
-                            //早盘日期为明天时，不能向前查询数据
-                            if (selectedDate != DateUtils.getTomorrowMidnight()) {
-                                getMatchListData(LoadMatchType.PREV_PAGE)
-                            }
                             return@collect
                         }
                         processObserveMatchList(currentDateRefs)
@@ -231,6 +226,15 @@ class EarlyMatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
                                 setState(DataState.NoMoreData)
                             } else {
                                 setState(HomeState.Match.LoadSuccess)
+                            }
+
+                            //向后查询成功，且为第一页， 则自动向前查询一页
+                            if (page == INITIAL_PAGE) {
+                                //向前查询一页数据
+                                //早盘日期为明天时，不能向前查询数据
+                                if (_queryDate.value != DateUtils.getTomorrowMidnight()) {
+                                    getMatchListData(LoadMatchType.PREV_PAGE)
+                                }
                             }
                         }
                     }
