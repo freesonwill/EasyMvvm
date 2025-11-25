@@ -33,6 +33,7 @@ import arch.cayenne.module.home.data.constants.PlayType
 import arch.cayenne.module.home.data.model.MatchDateItem
 import arch.cayenne.module.home.data.model.MatchLoadMoreData
 import arch.cayenne.module.home.data.model.MatchNoMoreData
+import arch.cayenne.module.home.data.model.MatchQueryDateNoData
 import arch.cayenne.module.home.databinding.FragmentEarlyMatchListPagerBinding
 import arch.cayenne.module.home.ui.adapter.MatchItemAdapter
 import arch.cayenne.module.home.ui.adapter.OnMatchItemClickListener
@@ -513,7 +514,7 @@ class EarlyMatchListPagerFragment :
         mViewModel.stopMatchSubscribeNotify()
     }
 
-    fun addDateItem(list: List<MatchListItem>?): List<MatchListItem>? {
+    private fun addDateItem(list: List<MatchListItem>?): List<MatchListItem>? {
         val isEmpty = (list?.size ?: 0) == 0
         if (isEmpty) {
             return list
@@ -522,18 +523,62 @@ class EarlyMatchListPagerFragment :
         val set: HashSet<String> = java.util.HashSet()
 
         val mutableList = mutableListOf<MatchListItem>()
-        list?.forEach {
-            if (it is MatchWithMarkets) {
-                val (date, week) = DateUtils.getDisplay(it.match.basicInfo.startTime)
-                val display = "$date $week"
 
-                if (!set.contains(display)) {
-                    mutableList.add(MatchDateItem(display, it.match.basicInfo.startTime))
-                    set.add(display)
+        if (list != null) {
+            for (i in list.indices) {
+                val item = list[i]
+                if (item is MatchWithMarkets) {
+
+                    val prevItem: MatchWithMarkets? = list.subList(0, i)
+                        .lastOrNull { it is MatchWithMarkets } as MatchWithMarkets?
+                    val nextItem =
+                        list.subList(i + 1, list.size).firstOrNull { it is MatchWithMarkets }
+                    if (prevItem == null) {
+                        //前面没有MatchWithMarkets
+                        if (!isSameDay(
+                                item.match.basicInfo.startTime,
+                                mViewModel.queryDate.value
+                            ) && item.match.basicInfo.startTime > mViewModel.queryDate.value
+                        ) {
+                            //第一条数据的日期就大于查询日期
+                            //指定的查询日期无数据
+                            mutableList.add(MatchQueryDateNoData(mViewModel.queryDate.value))
+                        }
+                    } else if (nextItem == null) {
+                        //最后一个MatchWithMarkets
+                        if (!isSameDay(
+                                item.match.basicInfo.startTime, mViewModel.queryDate.value
+                            ) && item.match.basicInfo.startTime < mViewModel.queryDate.value
+                        ) {
+                            //最后一条数据的日期小于查询日期
+                            //指定的查询日期无数据
+                            mutableList.add(MatchQueryDateNoData(mViewModel.queryDate.value))
+                        }
+                    } else {
+                        //prevItem!=null
+                        if (prevItem.match.basicInfo.startTime < mViewModel.queryDate.value
+                            && !isSameDay(
+                                item.match.basicInfo.startTime,
+                                mViewModel.queryDate.value
+                            ) && item.match.basicInfo.startTime >= mViewModel.queryDate.value
+                        ){
+                            mutableList.add(MatchQueryDateNoData(mViewModel.queryDate.value))
+                        }
+
+                    }
+
+
+                    val (date, week) = DateUtils.getDisplay(item.match.basicInfo.startTime)
+                    val display = "$date $week"
+
+                    if (!set.contains(display)) {
+                        mutableList.add(MatchDateItem(display, item.match.basicInfo.startTime))
+                        set.add(display)
+                    }
+                    mutableList.add(item)
+                } else {
+                    mutableList.add(item)
                 }
-                mutableList.add(it)
-            } else {
-                mutableList.add(it)
             }
         }
 

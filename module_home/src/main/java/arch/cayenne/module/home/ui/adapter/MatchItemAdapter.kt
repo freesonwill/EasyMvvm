@@ -16,12 +16,13 @@ import arch.cayenne.lib.database.entity.SelectionBeanLite
 import arch.cayenne.module.home.data.model.MatchDateItem
 import arch.cayenne.module.home.data.model.MatchLoadMoreData
 import arch.cayenne.module.home.data.model.MatchNoMoreData
+import arch.cayenne.module.home.data.model.MatchQueryDateNoData
 import arch.cayenne.module.home.databinding.ItemLoadMoreDataBinding
 import arch.cayenne.module.home.databinding.ItemMatchCardBinding
 import arch.cayenne.module.home.databinding.ItemMatchDateBinding
 import arch.cayenne.module.home.databinding.ItemNoMoreDataBinding
+import arch.cayenne.module.home.databinding.ItemQueryDateNoDataBinding
 import arch.cayenne.module.home.ui.adapter.compare.MatchItemCompare
-import arch.cayenne.module.home.utils.DateUtils
 import org.koin.java.KoinJavaComponent.getKoin
 import java.lang.ref.WeakReference
 
@@ -46,6 +47,7 @@ class MatchItemAdapter(private val onMatchItemClickListener: OnMatchItemClickLis
             is MatchNoMoreData -> TYPE_NO_MORE_DATA
             is MatchLoadMoreData -> TYPE_LOAD_MORE
             is MatchDateItem -> TYPE_DATE_ITEM
+            is MatchQueryDateNoData-> TYPE_QUERY_DATE_NO_DATA
             else -> throw IllegalArgumentException("Unknown type")
         }
     }
@@ -107,6 +109,7 @@ class MatchItemAdapter(private val onMatchItemClickListener: OnMatchItemClickLis
             TYPE_NO_MORE_DATA -> ItemNoMoreDataBinding.inflate(inflater, parent, false)
             TYPE_LOAD_MORE -> ItemLoadMoreDataBinding.inflate(inflater, parent, false)
             TYPE_DATE_ITEM -> ItemMatchDateBinding.inflate(inflater, parent, false)
+            TYPE_QUERY_DATE_NO_DATA -> ItemQueryDateNoDataBinding.inflate(inflater, parent, false)
             else -> throw IllegalArgumentException("Unknown type")
         }
     }
@@ -125,6 +128,7 @@ class MatchItemAdapter(private val onMatchItemClickListener: OnMatchItemClickLis
             TYPE_NO_MORE_DATA -> BaseViewHolder(binding)
             TYPE_LOAD_MORE -> BaseViewHolder(binding)
             TYPE_DATE_ITEM -> MatchDateViewHolder(binding as ItemMatchDateBinding)
+            TYPE_QUERY_DATE_NO_DATA-> MatchQueryDateNoDataViewHolder(binding as ItemQueryDateNoDataBinding)
             else -> throw IllegalArgumentException("Unknown type")
         }
     }
@@ -154,6 +158,7 @@ class MatchItemAdapter(private val onMatchItemClickListener: OnMatchItemClickLis
         private const val TYPE_NO_MORE_DATA = 1
         private const val TYPE_LOAD_MORE = 2
         private const val TYPE_DATE_ITEM = 3
+        private const val TYPE_QUERY_DATE_NO_DATA = 4
 
         const val LAST_ITEM_NONE = 0
         const val LAST_ITEM_LOAD_MORE = 1

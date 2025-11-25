@@ -41,6 +41,8 @@ class EarlyMatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
      */
     private var _queryDate = MutableStateFlow<Long>(0L)
 
+    val queryDate = _queryDate
+
 
     override val repository: MatchListRepository by inject()
 
