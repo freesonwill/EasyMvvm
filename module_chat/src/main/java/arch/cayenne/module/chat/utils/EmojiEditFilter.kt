@@ -1,16 +1,30 @@
 package arch.cayenne.module.chat.utils
 
 import android.annotation.SuppressLint
+import android.text.Editable
 import android.text.InputFilter
 import android.text.Spanned
+import android.text.TextWatcher
+import android.text.method.LinkMovementMethod
+import android.view.MotionEvent
+import android.view.inputmethod.EditorInfo
+import android.widget.EditText
 import android.widget.TextView
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
+import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
+import arch.cayenne.lib.skin.res.SkinnableResourceManager
+import arch.cayenne.module.chat.R
+import arch.cayenne.module.chat.data.constants.KeyBoardType
+import arch.cayenne.module.chat.data.model.AtBean
+import arch.cayenne.module.chat.manager.ChatATHelper
 
 /**
  * @author: wenxi
  * @date: 13/6/25 18:22
  * @description: 单独计算表情特殊字符，并限制最大输入长度
  */
-class EmojiEditFilter() : InputFilter {
+class EmojiEditFilter(private val atInput:()->Unit) : InputFilter {
+
 
     private val normalEmojiPattern = Regex(EmojiUtils.NORMAL_EMOJI_REGEX)
     private val bidEmojiPattern = Regex(EmojiUtils.BID_EMOJI_REGEX)
@@ -28,6 +42,10 @@ class EmojiEditFilter() : InputFilter {
     ): CharSequence {
         if (source == null) {
             return ""
+        }
+        "source $source".logd("aaa")
+        if(source == "@"){
+            atInput.invoke()
         }
         // 计算当前有效长度（普通字符+表情各算1）
         val originalText = dest.toString()

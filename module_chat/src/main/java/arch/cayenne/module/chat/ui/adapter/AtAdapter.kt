@@ -58,6 +58,13 @@ class AtAdapter() : BaseAdapter<AtBean, AtAdapter.AtViewHolder, ItemAtLayoutBind
         return ItemAtLayoutBinding.inflate(inflater,parent,false)
     }
 
+    fun clear(){
+        selectedSet.forEach {
+            notifyItemChanged(it)
+        }
+        selectedSet.clear()
+    }
+
     override fun createViewHolder(binding: ItemAtLayoutBinding, viewType: Int): AtViewHolder {
 
         return AtViewHolder(binding)

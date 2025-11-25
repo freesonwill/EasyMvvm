@@ -1,25 +1,127 @@
 package arch.cayenne.module.chat.manager
 
+import android.annotation.SuppressLint
+import android.content.Context
 import android.graphics.Color
+import android.text.Editable
 import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.TextPaint
+import android.text.TextWatcher
+import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.view.KeyEvent
 import android.view.View
+import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
+import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
+import arch.cayenne.lib.skin.res.SkinnableResourceManager
+import arch.cayenne.module.chat.R
+import arch.cayenne.module.chat.data.model.AtBean
+import arch.cayenne.module.chat.utils.EmojiEditFilter
+import arch.cayenne.module.chat.utils.SearchAtPopupWindow
+import java.util.Locale
 
 /**
  * @author: wenxi
  * @date: 18/11/25 16:11
  * @description:
  */
-object ChatATHelper {
+class ChatATHelper(private val context:Context,private val chatEtInput:EditText,) {
     private val atPattern = "@[^\\s@]+\\s".toRegex()
-
+    val atPopupWindow = SearchAtPopupWindow()
+    var closeAtPopup: Boolean = false
     private val atClick: ((str: String) -> Unit) = {
         "atClick $it".logd("aaa")
+    }
+    private val etInputWatcher = object : TextWatcher {
+        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+//                "beforeTextChanged s $s  start $start count $count after $after".logd("aaa")
+        }
+
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+//                "onTextChanged $s start $start before $before  count $count ".logd("aaa")
+            removeMentionSpan(chatEtInput, start, count)
+        }
+
+        override fun afterTextChanged(s: Editable?) {
+            if (!closeAtPopup) {
+                atPopupWindow.dismiss()
+            }
+            closeAtPopup = false
+        }
+    }
+
+
+    @SuppressLint("ClickableViewAccessibility")
+     fun initChatEtInput(locale:Locale?,senText:()->Unit) {
+        //输入拦截
+        chatEtInput.filters = arrayOf(EmojiEditFilter() {
+            closeAtPopup = true
+            atPopupWindow.showPopupWindow(chatEtInput)
+        })
+        atPopupWindow.createPopupWindow(context, object : RecyclerItemListener<AtBean> {
+            override fun onItemClick(item: AtBean?, position: Int) {
+                if (item == null) {
+                    return
+                }
+                chatEtInput.apply {
+                    closeAtPopup = true
+                    text?.let {
+                        val start = it.length
+                        val name = item.name
+                        if (item.isSelect) {
+                            if (it.endsWith('@')) {
+                                it.append("$name ")
+                                filterEtInputWithAt(this, start, name.length + 1)//+空格
+                            } else {
+                                it.append("@$name ")
+                                filterEtInputWithAt(
+                                    this,
+                                    start,
+                                    name.length + 2
+                                )//+@ 空格
+                            }
+                        } else {
+                            var indexStart = it.indexOf("@$name ")
+                            var indexEnd = indexStart + item.name.length + 2//从0开始，+1 加上空格字符串+1
+                            if (indexStart < 0) { //空格被删除的时候
+                                indexStart = it.indexOf("@$name")
+                                indexEnd = indexStart + item.name.length + 1
+                            }
+                            if (indexStart >= 0 && indexEnd <= it.length) {
+                                it.replace(indexStart, indexEnd, "")
+                            }
+                        }
+
+                    }
+                }
+
+            }
+        })
+        chatEtInput.apply {
+            //设置发送按钮
+            imeOptions = EditorInfo.IME_ACTION_SEND
+            setImeActionLabel(
+                SkinnableResourceManager.getString(
+                    context,
+                    R.string.live_chat_send,
+                    locale
+                ), EditorInfo.IME_ACTION_SEND
+            )
+            setOnEditorActionListener { v, actionId, event ->
+                if (actionId == EditorInfo.IME_ACTION_SEND) {
+                    senText.invoke()
+                    return@setOnEditorActionListener true
+                }
+                return@setOnEditorActionListener false
+            }
+
+            addTextChangedListener(etInputWatcher)
+            setEditTextDelCheck(this)
+            movementMethod = LinkMovementMethod.getInstance()
+        }
     }
 
 
@@ -73,22 +175,12 @@ object ChatATHelper {
     }
 
     fun setEditTextDelCheck(editText: EditText) {
-
         editText.setOnKeyListener { v, keyCode, event ->
             if (keyCode == KeyEvent.KEYCODE_DEL && event.action == KeyEvent.ACTION_DOWN) {
                 val cursorPositionStart = editText.selectionStart
                 val cursorPositionEnd = editText.selectionEnd
                 //被选中的字段进都需要自己删除没必要多检查
                 if (cursorPositionEnd != cursorPositionStart) {
-//                    val textBeforeCursor = editText.text.substring(0, cursorPositionEnd)
-//                    val matchesBeforeCursor = atPattern.findAll(textBeforeCursor)
-//                    if (!matchesBeforeCursor.none()) {
-//                        val lastMatches = matchesBeforeCursor.last()
-//                        "删除 cursorPosition $cursorPositionStart selectionEnd ${cursorPositionEnd} textBeforeCursor $textBeforeCursor lastMatch ${lastMatches.range.first} ${lastMatches.range.last}".logd("aaa")
-//                        //已被全选的at优先删除
-//                        if (cursorPositionStart == lastMatches.range.first && cursorPositionEnd == lastMatches.range.last + 1) {
-//                        }
-//                    }
                     return@setOnKeyListener false
                 }
 
@@ -111,26 +203,6 @@ object ChatATHelper {
                         editText.setSelection(spanStart,spanEnd)
                         return@setOnKeyListener true
                     }
-
-
-//                    val textBeforeCursor = editText.text.substring(0, cursorPositionStart)
-//                    val matchesBeforeCursor = atPattern.findAll(textBeforeCursor)
-//                    val lastMatches = matchesBeforeCursor.last()
-//                    "matchesBeforeCursor ${matchesBeforeCursor.toList()}".logd("aaa")
-//                    if (matchesBeforeCursor.none()) {
-//                        return@setOnKeyListener false
-//                    }
-//                    "cursorPosition $cursorPositionStart selectionEnd $cursorPositionEnd textBeforeCursor $textBeforeCursor lastMatches ${lastMatches?.range?.first} ${lastMatches?.range?.last}".logd(
-//                        "aaa"
-//                    )
-//                    //删除到at后进行全选
-//                    if (lastMatches.range.last + 1 == textBeforeCursor.length) {
-//                        editText.setSelection(
-//                            lastMatches.range.first,
-//                            lastMatches.range.last + 1
-//                        )
-//                        return@setOnKeyListener true
-//                    }
                 }
 
             }

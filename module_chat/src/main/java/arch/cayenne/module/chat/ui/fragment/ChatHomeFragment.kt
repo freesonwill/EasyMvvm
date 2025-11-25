@@ -1,7 +1,6 @@
 package arch.cayenne.module.chat.ui.fragment
 
 import android.animation.AnimatorSet
-import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.text.Editable
@@ -17,7 +16,6 @@ import androidx.core.animation.addListener
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
-import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.lifecycleScope
@@ -42,18 +40,15 @@ import arch.cayenne.module.chat.manager.SoftKeyboardManager
 import arch.cayenne.module.chat.manager.interf.SoftKeyBoardMangerListener
 import arch.cayenne.module.chat.ui.adapter.EmojiHotItemAdapter
 import arch.cayenne.module.chat.ui.viewmodel.ChatHomeViewModel
-import arch.cayenne.module.chat.utils.EmojiEditFilter
 import arch.cayenne.module.chat.utils.EmojiUtils.BID_EMOJI_REGEX
 import com.gyf.immersionbar.ImmersionBar
 import kotlinx.coroutines.launch
 import java.util.regex.Pattern
 import kotlin.reflect.KClass
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
-import arch.cayenne.module.chat.data.model.AtBean
 import arch.cayenne.module.chat.manager.ChatATHelper
 import arch.cayenne.module.chat.manager.SoftKeyBoardAnim
-import arch.cayenne.module.chat.utils.SearchAtPopupWindow
-import kotlinx.coroutines.delay
+import arch.cayenne.module.chat.utils.EmojiEditFilter
 
 //聊天
 class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding>(),
@@ -64,10 +59,12 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
     var matchIdLiveData: LiveData<Long>? = null
     private lateinit var softKeyBoardManager: SoftKeyboardManager
     private var etInputWatcher: TextWatcher? = null
+    private lateinit var chatAtHelper:ChatATHelper
 
     override fun initView(savedInstanceState: Bundle?) {
         initChatPageFragment()
         initSoftKeyBoardFragment()
+
         arguments?.let { //TODO  首页过来的 之后需要处理聊天室要matchId的问题
             val value = it.getBoolean("chat", false)
             setMainChatStatus()
@@ -114,7 +111,7 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
     }
 
     override fun onStop() {
-       mBinding.chatEtInput.removeTextChangedListener(etInputWatcher)
+        mBinding.chatEtInput.removeTextChangedListener(etInputWatcher)
         mViewModel.leaveRoom()
         super.onStop()
         mViewModel.setSoftConfig(true)
@@ -202,8 +199,6 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
         initEmojiFragment()
         initInputListener()
         initHotRecycler()
-        addEtWatcher()
-
         softKeyBoardManager = SoftKeyboardManager(
             lifecycleScope,
             lifecycle,
@@ -302,6 +297,7 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
 
     @SuppressLint("ClickableViewAccessibility")
     private fun initInputListener() {
+
         mBinding.apply {
             ivEmoji.setOnTouchListener { v, event ->
                 if (event.action == MotionEvent.ACTION_UP) {
@@ -328,108 +324,28 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
             ivLanguage.setOnClickListener {
                 showLanguageDialog()
             }
-            chatEtInput.apply {
-                //设置发送按钮
-                imeOptions = EditorInfo.IME_ACTION_SEND
-                setImeActionLabel(
-                    SkinnableResourceManager.getString(
-                        requireContext(),
-                        R.string.live_chat_send,
-                        mViewModel.languageManager.getLanguage()
-                    ), EditorInfo.IME_ACTION_SEND
-                )
-                setOnEditorActionListener { v, actionId, event ->
-                    if (actionId == EditorInfo.IME_ACTION_SEND) {
-                        sendText()
-                        return@setOnEditorActionListener true
-                    }
-                    return@setOnEditorActionListener false
-                }
-                //输入拦截
-                filters = arrayOf(EmojiEditFilter())
-                //监听聚焦事件，不合格的展示软件盘一律拦截
-                setOnFocusChangeListener { v, hasFocus ->
+            //监听聚焦事件，不合格的展示软件盘一律拦截
+            chatEtInput.setOnFocusChangeListener { v, hasFocus ->
 //            如果当前点击事件 softkeyboardlisterner 和 当前状态currentKeyboardListener 一致可以过滤掉聚焦事件
-                    if (softKeyBoardManager.softKeyboardStatus && !softKeyBoardManager.isSoftKeyboardShow) { //要打开软件盘并且软件盘在收缩中
-                        softKeyBoardManager.openSoftKeyBoard()
-                    }
+                if (softKeyBoardManager.softKeyboardStatus && !softKeyBoardManager.isSoftKeyboardShow) { //要打开软件盘并且软件盘在收缩中
+                    softKeyBoardManager.openSoftKeyBoard()
                 }
-                //监听点击事件
-                setOnTouchListener { v, event ->
-                    if(event.action == MotionEvent.ACTION_DOWN){
-                        keyboardChangeClick(KeyBoardType.SOFT_KEYBOARD)
-                    }
-                    return@setOnTouchListener false
+            }
+            //监听点击事件
+            chatEtInput.setOnTouchListener { v, event ->
+                if (event.action == MotionEvent.ACTION_DOWN) {
+                    keyboardChangeClick(KeyBoardType.SOFT_KEYBOARD)
                 }
+                return@setOnTouchListener false
+            }
+            chatAtHelper = ChatATHelper(requireContext(),chatEtInput)
+            chatAtHelper.initChatEtInput(mViewModel.languageManager.getLanguage()){
+                sendText()
             }
         }
     }
 
-    val atPopupWindow = SearchAtPopupWindow()
 
-    private fun addEtWatcher() {
-        etInputWatcher = object :TextWatcher{
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-//                "beforeTextChanged $s start $start before $before  count $count ".logd("aaa")
-                ChatATHelper.removeMentionSpan(mBinding.chatEtInput,start,count)
-            }
-
-            override fun afterTextChanged(s: Editable?) {
-                s?.let {
-                    if(it.isEmpty()){
-                        return
-                    }
-                    if(it.last() == '@'){
-                        atPopupWindow.showPopupWindow(mBinding.inputContent)
-                        return
-                    }
-//                    ChatATHelper.filterEtInputWithAt(it)
-                }
-
-            }
-        }
-        mBinding.chatEtInput.addTextChangedListener(etInputWatcher)
-        ChatATHelper.setEditTextDelCheck(mBinding.chatEtInput)
-        mBinding.chatEtInput.movementMethod = LinkMovementMethod.getInstance()
-        atPopupWindow.createPopupWindow(requireContext(),object: RecyclerItemListener<AtBean> {
-            override fun onItemClick(item: AtBean?, position: Int) {
-                if(item == null){
-                    return
-                }
-              mBinding.chatEtInput.apply {
-                  text?.let {
-                      val start = it.length
-                      val name = item.name
-                      if(item.isSelect){
-                          if(it.endsWith('@')){
-                              it.append("$name ")
-                              ChatATHelper.filterEtInputWithAt(this,start,name.length+1)//+空格
-                          }else{
-                              it.append("@$name ")
-                              ChatATHelper.filterEtInputWithAt(this,start,name.length+2)//+@ 空格
-                          }
-                      }else{
-                          var indexStart = it.indexOf("@$name ")
-                          var indexEnd = indexStart+item.name.length+2//从0开始，+1 加上空格字符串+1
-                          if(indexStart < 0){ //空格被删除的时候
-                              indexStart = it.indexOf("@$name")
-                              indexEnd = indexStart+item.name.length+1
-                          }
-                          "indexStart $indexStart end $indexEnd ${it.length}".logd("aaa")
-                          if(indexStart >= 0 &&  indexEnd <= it.length){
-                              it.replace(indexStart,indexEnd,"")
-                          }
-                      }
-
-                  }
-              }
-
-            }
-        })
-    }
 
     fun closeChatWebsocket() {
         mViewModel.disConnectChatServer()
@@ -471,11 +387,13 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
         val viewLocation = IntArray(2)
         mBinding.ivLanguage.getLocationOnScreen(viewLocation)
         mBinding.apply {
-            "viewLocation ${viewLocation.toList()} ${10.dp2px}  ${125.dp2px} x ${ivLanguage.x} y ${ivLanguage.y} ${ivLanguage.pivotX}  ${ivLanguage.pivotY} ".logd("aaa")
+            "viewLocation ${viewLocation.toList()} ${10.dp2px}  ${125.dp2px} x ${ivLanguage.x} y ${ivLanguage.y} ${ivLanguage.pivotX}  ${ivLanguage.pivotY} ".logd(
+                "aaa"
+            )
         }
         ChatLanguageDialogFragment.newInstance(
-           viewLocation[0],
-           viewLocation[1]
+            viewLocation[0],
+            viewLocation[1]
         ).show(childFragmentManager)
     }
 

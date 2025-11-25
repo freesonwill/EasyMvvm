@@ -51,4 +51,11 @@ class SearchAtPopupWindow {
         }
     }
 
+    fun dismiss(){
+        atAdapter.clear()
+     if(atPopupWindow != null && atPopupWindow?.isShowing == true){
+         atPopupWindow?.dismiss()
+     }
+    }
+
 }
