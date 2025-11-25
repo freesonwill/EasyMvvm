@@ -9,4 +9,4 @@ data object MatchLoadMoreData: MatchListItem
 
 data class MatchDateItem(val dateStr: String, val timeStamp: Long) : MatchListItem
 
-data class MatchQueryDateNoData(val timeStamp: Long) : MatchListItem
+data class MatchQueryDateNoData(val leagueName: String, val timeStamp: Long) : MatchListItem

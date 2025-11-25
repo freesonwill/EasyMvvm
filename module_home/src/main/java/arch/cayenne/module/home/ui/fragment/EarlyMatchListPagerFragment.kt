@@ -542,7 +542,16 @@ class EarlyMatchListPagerFragment :
                         ) {
                             //第一条数据的日期就大于查询日期
                             //指定的查询日期无数据
-                            mutableList.add(MatchQueryDateNoData(mViewModel.queryDate.value))
+                            val (date, week) = DateUtils.getDisplay(mViewModel.queryDate.value)
+                            val display = "$date $week"
+                            mutableList.add(MatchDateItem(display, mViewModel.queryDate.value))
+                            mutableList.add(
+                                MatchQueryDateNoData(
+                                    earlyViewModel.getTournamentName(
+                                        mViewModel.getTournamentId()
+                                    ), mViewModel.queryDate.value
+                                )
+                            )
                         }
                     } else if (nextItem == null) {
                         //最后一个MatchWithMarkets
@@ -552,7 +561,16 @@ class EarlyMatchListPagerFragment :
                         ) {
                             //最后一条数据的日期小于查询日期
                             //指定的查询日期无数据
-                            mutableList.add(MatchQueryDateNoData(mViewModel.queryDate.value))
+                            val (date, week) = DateUtils.getDisplay(mViewModel.queryDate.value)
+                            val display = "$date $week"
+                            mutableList.add(MatchDateItem(display, mViewModel.queryDate.value))
+                            mutableList.add(
+                                MatchQueryDateNoData(
+                                    earlyViewModel.getTournamentName(
+                                        mViewModel.getTournamentId()
+                                    ), mViewModel.queryDate.value
+                                )
+                            )
                         }
                     } else {
                         //prevItem!=null
@@ -561,8 +579,17 @@ class EarlyMatchListPagerFragment :
                                 item.match.basicInfo.startTime,
                                 mViewModel.queryDate.value
                             ) && item.match.basicInfo.startTime >= mViewModel.queryDate.value
-                        ){
-                            mutableList.add(MatchQueryDateNoData(mViewModel.queryDate.value))
+                        ) {
+                            val (date, week) = DateUtils.getDisplay(mViewModel.queryDate.value)
+                            val display = "$date $week"
+                            mutableList.add(MatchDateItem(display, mViewModel.queryDate.value))
+                            mutableList.add(
+                                MatchQueryDateNoData(
+                                    earlyViewModel.getTournamentName(
+                                        mViewModel.getTournamentId()
+                                    ), mViewModel.queryDate.value
+                                )
+                            )
                         }
 
                     }
