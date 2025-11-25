@@ -246,24 +246,27 @@ class ComboBetViewModel(
      * 检查限额
      * @return
      */
-    fun checkAmountLimit():Pair<Int, String>? {
+    fun checkAmountLimit():String? {
         val data = _onComboMultiBetBeanListener.value ?: return null
         val balance = this.balance
+        var totalInputMoney = 0L
         for((i,d) in data.withIndex()){
-            if(i > 0 && d.inputMoney == 0L) continue  //0相当于没输入
+            totalInputMoney += d.inputMoney
+            if(!d.hasSetMoney()) continue
             val curAmount = d.inputMoney.getMoney()
             val maxMoney = d.maxAmount
             val minNumber = d.minAmount
             if (curAmount.isGreaterThanValue(maxMoney.getMoney())) {
-                return i to arch.cayenne.lib.common.R.string.toast_over_max.getString()
+                return d.title() + arch.cayenne.lib.common.R.string.toast_over_max.getString()
             }
             val amount = curAmount.toMoney()
             if (minNumber > amount) {
-                return i to R.string.hint_less_min_amount.getString()
+                return d.title() + R.string.hint_less_min_amount.getString()
             } else if (amount > balance) {
-                return i to arch.cayenne.lib.common.R.string.toast_over_remaining.getString()
+                return d.title() + arch.cayenne.lib.common.R.string.toast_over_remaining.getString()
             }
         }
+        if(totalInputMoney == 0L) return R.string.hint_input_money.getString()
         return null
     }
 

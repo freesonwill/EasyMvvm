@@ -35,7 +35,7 @@ data class ComboMultiBetBean(
             return k in 3..6
         }
     }
-
+    fun hasSetMoney() = inputMoney != 0L
     val amount: Long
         get() = inputMoney * count
 

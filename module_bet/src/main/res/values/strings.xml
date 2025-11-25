@@ -54,6 +54,7 @@
     <string name="title_result_bet_again">重新投注</string>
     <string name="title_result_bet_suc">注单已提交</string>
     <string name="hint_less_min_amount">低于最低限额</string>
+    <string name="hint_input_money">请输入金额</string>
 
     <string name="title_odds_change_any">接受任何赔率变化</string>
     <string name="title_odds_change_better">自动接受更好的赔率</string>

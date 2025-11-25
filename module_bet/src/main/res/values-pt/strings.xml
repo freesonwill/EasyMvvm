@@ -4,4 +4,5 @@
     <string name="title_combo_bet_odds">%d-fold %d</string>
     <string name="title_combo_bet_detail">Todas as apostas %s</string>
     <string name="title_combo_bet_detail_tips">%s é composto por todas as apostas %s</string>
+    <string name="hint_input_money">Por favor, insira o valor</string>
 </resources>
