@@ -550,7 +550,9 @@ class EarlyMatchListPagerFragment :
                                     earlyViewModel.getTournamentName(
                                         mViewModel.getTournamentId()
                                     ), mViewModel.queryDate.value
-                                )
+                                ){
+                                    (requireParentFragment() as EarlyFragment).jumpToAllLeagueTab()
+                                }
                             )
                         }
                     } else if (nextItem == null) {
@@ -569,7 +571,9 @@ class EarlyMatchListPagerFragment :
                                     earlyViewModel.getTournamentName(
                                         mViewModel.getTournamentId()
                                     ), mViewModel.queryDate.value
-                                )
+                                ){
+                                    (requireParentFragment() as EarlyFragment).jumpToAllLeagueTab()
+                                }
                             )
                         }
                     } else {
@@ -588,7 +592,9 @@ class EarlyMatchListPagerFragment :
                                     earlyViewModel.getTournamentName(
                                         mViewModel.getTournamentId()
                                     ), mViewModel.queryDate.value
-                                )
+                                ){
+                                    (requireParentFragment() as EarlyFragment).jumpToAllLeagueTab()
+                                }
                             )
                         }
 

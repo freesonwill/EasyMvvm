@@ -83,7 +83,7 @@ class MatchItemAdapter(private val onMatchItemClickListener: OnMatchItemClickLis
         when (val item = getItem(position)) {
             is MatchWithMarkets -> {
                 val matchItemViewHolder = (holder as MatchItemViewHolder)
-                matchItemViewHolder.init(item)
+                matchItemViewHolder.bind(item)
             }
 
             is MatchNoMoreData -> Unit
@@ -93,11 +93,13 @@ class MatchItemAdapter(private val onMatchItemClickListener: OnMatchItemClickLis
             }
 
             is MatchDateItem -> {
-                (holder as MatchDateViewHolder).init(item)
+                (holder as MatchDateViewHolder).bind(item)
             }
 
             is MatchQueryDateNoData -> {
-                (holder as MatchQueryDateNoDataViewHolder).init(item)
+                (holder as MatchQueryDateNoDataViewHolder).bind(item){
+                    item.clickListener.invoke()
+                }
             }
         }
     }
