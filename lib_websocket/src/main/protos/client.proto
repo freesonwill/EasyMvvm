@@ -84,6 +84,7 @@ message ListMatchReq {
   int64 cursor_match_id = 6;         // 比赛id游标
   int64 cursor_match_start_time = 7; // 比赛开始时间游标
   int32 size = 8;         // 每页显示数量,最大50
+  bool reverse = 9; //true-上页，false-下页
 }
 
 message ListMatchResp {

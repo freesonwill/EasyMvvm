@@ -1,10 +1,8 @@
 package arch.cayenne.module.home.ui.viewmodel
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.common.ui.viewmodel.Event
 import arch.cayenne.lib.database.entity.BaseTournamentData
@@ -14,6 +12,7 @@ import arch.cayenne.module.home.R
 import arch.cayenne.module.home.data.constants.PlayType
 import arch.cayenne.module.home.data.constants.playTypeToShowType
 import arch.cayenne.module.home.utils.DateUtils
+import arch.cayenne.module.home.utils.DateUtils.isSameDay
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -28,8 +27,19 @@ class EarlyViewModel : SubHomeViewModel() {
 
     val dateList: MutableLiveData<List<EarlyDate>> = _dateList
 
+    /**
+     * 手动点击dateTab， 设置dateTab数据，切换联赛，切换运动时进行更新
+     * 用于查询比赛数据
+     */
     private val _selectedDate = MutableLiveData<Event<Long>>() // Pair<leagueId, date>
     val selectedDate: MutableLiveData<Event<Long>> = _selectedDate
+
+    /**
+     * 在日期栏上展示的时间, 注意：selectedDate和displayDate不一定相等， 日期栏的展示不能用selectedDate
+     */
+    private val _displayDate = MutableLiveData<EarlyDate>()
+
+    val displayDate: MutableLiveData<EarlyDate> = _displayDate
 
     init {
         val futureDays = DateUtils.getFutureDays(
@@ -61,16 +71,6 @@ class EarlyViewModel : SubHomeViewModel() {
         super.initViewModel()
     }
 
-    private suspend fun setCurrentSelectedDate() {
-        val date = repository.getCurrentSelectedDate(
-            currentPlayTypeId.playTypeToShowType(),
-            currentSportId
-        ) ?: 0L
-        withContext(Dispatchers.Main) {
-            selectedDate(date)
-        }
-    }
-
     suspend fun selectedDate(date: Long) {
         if (_selectedDate.value?.peekContent() == date) return
         withContext(Dispatchers.IO) {
@@ -81,6 +81,8 @@ class EarlyViewModel : SubHomeViewModel() {
             )
         }
         _selectedDate.value = Event(date)
+        //更新displayDate
+        _displayDate.value = dateList.value?.first { isSameDay(it.timestamp, date) }
     }
 
     //切換當前的二級選項(各項運動)
@@ -125,6 +127,41 @@ class EarlyViewModel : SubHomeViewModel() {
         }
     }
 
+
+    fun setDisplayDate(date: EarlyDate) {
+        _displayDate.value = date
+    }
+
+    fun getDisplayDate(timeStamp: Long): EarlyDate? {
+        var earlyDate = dateList.value?.firstOrNull { isSameDay( it.timestamp , timeStamp) }
+
+        if (earlyDate == null) {
+            dateList.value?.let {
+                if (it.isNotEmpty() && timeStamp > it.last().timestamp) {
+                    earlyDate = it.last()
+                }
+            }
+        }
+
+        return earlyDate
+    }
+
+    /*
+    *根据传入的时间戳， 转换成dateTab的index
+     */
+    fun getDisplayDateIndex(timestamp: Long): Int? {
+        var index = dateList.value?.indexOfFirst { isSameDay( it.timestamp , timestamp) }
+
+        if (index == -1) {
+            dateList.value?.let {
+                if (it.isNotEmpty() && timestamp > it.last().timestamp) {
+                    index = it.size - 1
+                }
+            }
+        }
+
+        return index
+    }
 
 }
 

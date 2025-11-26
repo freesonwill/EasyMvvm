@@ -27,6 +27,7 @@ import arch.cayenne.lib.database.entity.BetSlipOrderBean
 import arch.cayenne.lib.database.entity.BetSlipReserveBean
 import arch.cayenne.lib.database.entity.ChatConfigBean
 import arch.cayenne.lib.database.entity.CollectListBean
+import arch.cayenne.lib.database.entity.EarlyTournamentMatchRef
 import arch.cayenne.lib.database.entity.HomeSelectedBean
 import arch.cayenne.lib.database.entity.InfoBean
 import arch.cayenne.lib.database.entity.LiveMarketBean
@@ -61,6 +62,7 @@ import arch.cayenne.lib.database.entity.TournamentMatchRef
         SportTournamentCrossRef::class,
         TournamentBean::class,
         TournamentMatchRef::class,
+        EarlyTournamentMatchRef::class,
         MatchBean::class,
         MarketBean::class,
         SelectionBean::class,

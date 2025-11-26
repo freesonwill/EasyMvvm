@@ -18,7 +18,6 @@ import arch.cayenne.lib.common.ui.viewmodel.observeEvent
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
-import arch.cayenne.lib.common.utils.ext.scrollToBottomWithLoadMore
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.helper.BackToTopHelper
 import arch.cayenne.lib.common.utils.helper.showToast
@@ -32,14 +31,20 @@ import arch.cayenne.module.home.R
 import arch.cayenne.module.home.data.constants.HomeState
 import arch.cayenne.module.home.data.constants.PlayType
 import arch.cayenne.module.home.data.model.MatchDateItem
-import arch.cayenne.module.home.databinding.FragmentMatchListPagerBinding
+import arch.cayenne.module.home.data.model.MatchLoadMoreData
+import arch.cayenne.module.home.data.model.MatchNoMoreData
+import arch.cayenne.module.home.data.model.MatchQueryDateNoData
+import arch.cayenne.module.home.databinding.FragmentEarlyMatchListPagerBinding
 import arch.cayenne.module.home.ui.adapter.MatchItemAdapter
 import arch.cayenne.module.home.ui.adapter.OnMatchItemClickListener
 import arch.cayenne.module.home.ui.view.decoration.MatchCardItemDecoration
+import arch.cayenne.module.home.ui.viewmodel.EarlyDate
+import arch.cayenne.module.home.ui.viewmodel.EarlyDateType
+import arch.cayenne.module.home.ui.viewmodel.EarlyMatchListViewModel
+import arch.cayenne.module.home.ui.viewmodel.EarlyViewModel
 import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
-import arch.cayenne.module.home.ui.viewmodel.MatchListViewModel
-import arch.cayenne.module.home.ui.viewmodel.SubHomeViewModel
 import arch.cayenne.module.home.utils.DateUtils
+import arch.cayenne.module.home.utils.DateUtils.isSameDay
 import arch.cayenne.module.home.utils.setFavoriteIcon
 import com.walisport.module.message.ui.view.DeleteAnimator
 import kotlinx.coroutines.launch
@@ -47,13 +52,16 @@ import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import java.lang.ref.WeakReference
 import kotlin.reflect.KClass
 
-class MatchListPagerFragment :
-    BaseFragment<MatchListViewModel, FragmentMatchListPagerBinding>() {
-    override val vbClass: KClass<FragmentMatchListPagerBinding> =
-        FragmentMatchListPagerBinding::class
-    override val vmClass: KClass<MatchListViewModel> = MatchListViewModel::class
+/**
+ * 早盘用的比赛列表， 具备日期切换及向前查询功能
+ */
+class EarlyMatchListPagerFragment :
+    BaseFragment<EarlyMatchListViewModel, FragmentEarlyMatchListPagerBinding>() {
+    override val vbClass: KClass<FragmentEarlyMatchListPagerBinding> =
+        FragmentEarlyMatchListPagerBinding::class
+    override val vmClass: KClass<EarlyMatchListViewModel> = EarlyMatchListViewModel::class
     private val homeViewModel: HomeViewModel by sharedViewModel<HomeViewModel, NewHomeFragment>()
-    private val subHomeViewModel: SubHomeViewModel by viewModels({ requireParentFragment() })
+    private val earlyViewModel: EarlyViewModel by viewModels({ requireParentFragment() })
 
     private lateinit var matchAdapter: MatchItemAdapter
     private val gameLayoutManager by lazy { LinearLayoutManager(context) }
@@ -124,6 +132,8 @@ class MatchListPagerFragment :
                                     showToast(it)
                                 }
                             }
+
+                            else -> {}
                         }
 
                         if (status is AddSelectionStatus.Success.Combo || status is AddSelectionStatus.Success.Update) {
@@ -148,6 +158,7 @@ class MatchListPagerFragment :
                 itemAnimator = DeleteAnimator()
             }
             rvHomeGameList.itemAnimator = null
+            rvHomeGameList.overScrollMode = View.OVER_SCROLL_NEVER
             rvHomeGameList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                     super.onScrollStateChanged(recyclerView, newState)
@@ -158,14 +169,73 @@ class MatchListPagerFragment :
                 }
 
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                    rvHomeGameList.scrollToBottomWithLoadMore(minScrollCount = 8, {
-                        if (mViewModel.apiStateListener.value != HomeState.Match.LoadSuccess) return@scrollToBottomWithLoadMore
-                        mViewModel.loadNextPage()
-                    }, {
-                        if (mViewModel.apiStateListener.value == HomeState.Match.LoadNextFailure) {
-                            mViewModel.loadNextPage()
+                    val layoutManager = recyclerView.layoutManager as LinearLayoutManager
+                    if (dy > 0) {
+                        if (mViewModel.apiStateListener.value == HomeState.Match.LoadSuccess) {
+                            val lastItemPos = layoutManager.findLastCompletelyVisibleItemPosition()
+                            val itemCount = matchAdapter.itemCount - 8
+                            if (lastItemPos > itemCount && lastItemPos > 1) {
+                                mViewModel.loadNextPage()
+                            }
                         }
-                    })
+                    } else if (dy < 0) {
+                        if (mViewModel.prevApiStateListener.value == HomeState.Match.LoadSuccess) {
+                            val firstItemPos =
+                                layoutManager.findFirstCompletelyVisibleItemPosition()
+                            if (firstItemPos <= 8) {
+                                mViewModel.loadPrevPage()
+                            }
+                        }
+                    }
+
+                    val firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
+
+                    val itemList = matchAdapter.currentList
+                    if (itemList.isEmpty()) {
+                        return
+                    }
+                    when (val item = itemList[firstVisibleItemPosition]) {
+                        is MatchWithMarkets -> {
+
+                            val earlyDate = EarlyDate(
+                                "",
+                                "",
+                                item.match.basicInfo.startTime,
+                                EarlyDateType.Date
+                            )
+
+                            if (mBinding.rvHomeGameList.scrollState == RecyclerView.SCROLL_STATE_DRAGGING) {
+                                earlyViewModel.setDisplayDate(earlyDate)
+                            }
+
+                        }
+
+                        is MatchNoMoreData -> {
+
+                        }
+
+                        is MatchLoadMoreData -> {
+
+                        }
+
+                        is MatchDateItem -> {
+                            val earlyDate = EarlyDate(
+                                "",
+                                "",
+                                item.timeStamp,
+                                EarlyDateType.Date
+                            )
+
+                            if (mBinding.rvHomeGameList.scrollState == RecyclerView.SCROLL_STATE_DRAGGING) {
+                                earlyViewModel.setDisplayDate(earlyDate)
+                            }
+
+                        }
+
+                        else -> {}
+                    }
+
+
                 }
             })
 
@@ -194,7 +264,7 @@ class MatchListPagerFragment :
         val firstViewTop = firstView?.top ?: 0
         val itemHeight = firstView?.height ?: 0
         val scrollY = firstPos * itemHeight - firstViewTop
-        subHomeViewModel.updateCoordinate(
+        earlyViewModel.updateCoordinate(
             playTypeId = mViewModel.getPlayTypeId(),
             sportId = mViewModel.getSportId(),
             tournamentId = mViewModel.getTournamentId(),
@@ -204,7 +274,7 @@ class MatchListPagerFragment :
 
     private fun setMatchListPosition() {
         lifecycleScope.launch {
-            val position = subHomeViewModel.getCurrentPageCoordinate(
+            val position = earlyViewModel.getCurrentPageCoordinate(
                 playTypeId = mViewModel.getPlayTypeId(),
                 sportId = mViewModel.getSportId(),
                 tournamentId = mViewModel.getTournamentId()
@@ -220,8 +290,8 @@ class MatchListPagerFragment :
         "MatchListChange livedata Observed~ ${matchList.map { it.match.matchId }}".logi(this::class.java.simpleName)
         val preEmpty = matchAdapter.currentList.isEmpty()
 
-        //收藏的比赛列表，需要添加日期条目
-        val list = if (mViewModel.getPlayTypeId() == PlayType.FAVORITE.id) addDateItem(
+        //早盘的比赛列表，需要添加日期条目
+        val list = if (mViewModel.getPlayTypeId() == PlayType.EARLY.id) addDateItem(
             matchList
         ) else
             matchList
@@ -242,6 +312,23 @@ class MatchListPagerFragment :
                 )
             }
         }
+
+        mBinding.tvHover.postDelayed({
+            val firstVisibleItemPosition = gameLayoutManager.findFirstVisibleItemPosition()
+            firstVisibleItemPosition.let {
+                if (it < 0) return@let
+                if (matchAdapter.currentList.isEmpty()) return@let
+//                if (rvAdapter._data!!.size < dateIndex) return@let
+                val item = matchAdapter.currentList[firstVisibleItemPosition]
+                if (item is MatchDateItem) {
+                    mBinding.tvHover.text = item.dateStr
+                } else if (item is MatchWithMarkets) {
+                    val (date, week) = DateUtils.getDisplay(item.match.basicInfo.startTime)
+                    val display = "$date $week"
+                    mBinding.tvHover.text = display
+                }
+            }
+        }, 100)
         mBinding.rvHomeGameList.doOnPreDraw {
             if (mBinding.rvHomeGameList.scrollState == RecyclerView.SCROLL_STATE_IDLE) {
                 subscribeVisibleMatch()
@@ -327,8 +414,62 @@ class MatchListPagerFragment :
 
         }
 
+        mViewModel.prevApiStateListener.observe(viewLifecycleOwner) {
+            with(mBinding) {
+                when (it) {
+                    DataState.NetworkUnavailable, HomeState.Match.LoadNextFailure -> {}
+
+                    HomeState.Match.PrevDataEmpty -> {
+
+                    }
+
+                    HomeState.Match.PrevNoMoreData -> {
+                        mViewModel.changePrevPageEnd(true)
+                    }
+
+                    HomeState.Match.Loading -> {
+                        mViewModel.changeState(HomeState.Match.Loading)
+                    }
+
+                    DataState.LoadSuccess, HomeState.Match.LoadSuccess -> {
+                        mViewModel.changePrevPageEnd(false)
+                    }
+                }
+            }
+        }
+
+        //只有早盘有日期变化的情况
+        earlyViewModel.selectedDate.observeEvent(viewLifecycleOwner, this) { date ->
+            if (date == HomeViewModel.DEFAULT_DATE
+                || earlyViewModel.currentPlayTypeId != mViewModel.getPlayTypeId()
+                || earlyViewModel.currentSportId != mViewModel.getSportId()
+            ) {
+                return@observeEvent
+            }
+            refreshListByDate(date)
+        }
+
+        earlyViewModel.displayDate.observe(viewLifecycleOwner) {
+            it?.let {
+                val (date, week) = DateUtils.getDisplay(it.timestamp)
+                val display = "$date $week"
+                mBinding.tvHover.text = display
+            }
+        }
+
+
         homeViewModel.notifySubHomeRefresh.observeEvent(viewLifecycleOwner, this) {
             reloadAllData()
+        }
+
+    }
+
+    private fun refreshListByDate(date: Long) {
+        if (date.toInt() == 0) {
+            //切換後選回全部
+            mViewModel.setSelectedDate(0)
+        } else {
+            mViewModel.setSelectedDate(date)
         }
     }
 
@@ -339,7 +480,7 @@ class MatchListPagerFragment :
             mViewModel.setPlayTypeId(this.getInt(ARG_PLAY_TYPE_ID))
             mViewModel.setPosition(this.getInt(ARG_POSITION))
         }
-        "MatchListPagerFragment playType: ${mViewModel.getPlayTypeId()} sportId: ${mViewModel.getSportId()} leagueId: ${mViewModel.getTournamentId()}".logi()
+        "EarlyMatchListPagerFragment playType: ${mViewModel.getPlayTypeId()} sportId: ${mViewModel.getSportId()} leagueId: ${mViewModel.getTournamentId()}".logi()
         startObserveMatch()
     }
 
@@ -373,7 +514,7 @@ class MatchListPagerFragment :
         mViewModel.stopMatchSubscribeNotify()
     }
 
-    private fun addDateItem(list:List<MatchListItem>?): List<MatchListItem>? {
+    private fun addDateItem(list: List<MatchListItem>?): List<MatchListItem>? {
         val isEmpty = (list?.size ?: 0) == 0
         if (isEmpty) {
             return list
@@ -382,18 +523,89 @@ class MatchListPagerFragment :
         val set: HashSet<String> = java.util.HashSet()
 
         val mutableList = mutableListOf<MatchListItem>()
-        list?.forEach {
-            if (it is MatchWithMarkets) {
-                val (date, week) = DateUtils.getDisplay(it.match.basicInfo.startTime)
-                val display = "$date $week"
 
-                if (!set.contains(display)) {
-                    mutableList.add(MatchDateItem(display, it.match.basicInfo.startTime))
-                    set.add(display)
+        if (list != null) {
+            for (i in list.indices) {
+                val item = list[i]
+                if (item is MatchWithMarkets) {
+
+                    val prevItem: MatchWithMarkets? = list.subList(0, i)
+                        .lastOrNull { it is MatchWithMarkets } as MatchWithMarkets?
+                    val nextItem =
+                        list.subList(i + 1, list.size).firstOrNull { it is MatchWithMarkets }
+                    if (prevItem == null) {
+                        //前面没有MatchWithMarkets
+                        if (!isSameDay(
+                                item.match.basicInfo.startTime,
+                                mViewModel.queryDate.value
+                            ) && item.match.basicInfo.startTime > mViewModel.queryDate.value
+                        ) {
+                            //第一条数据的日期就大于查询日期
+                            //指定的查询日期无数据
+                            val (date, week) = DateUtils.getDisplay(mViewModel.queryDate.value)
+                            val display = "$date $week"
+                            mutableList.add(MatchDateItem(display, mViewModel.queryDate.value))
+                            mutableList.add(
+                                MatchQueryDateNoData(
+                                    earlyViewModel.getTournamentName(
+                                        mViewModel.getTournamentId()
+                                    ), mViewModel.queryDate.value
+                                )
+                            )
+                        }
+                    } else if (nextItem == null) {
+                        //最后一个MatchWithMarkets
+                        if (!isSameDay(
+                                item.match.basicInfo.startTime, mViewModel.queryDate.value
+                            ) && item.match.basicInfo.startTime < mViewModel.queryDate.value
+                        ) {
+                            //最后一条数据的日期小于查询日期
+                            //指定的查询日期无数据
+                            val (date, week) = DateUtils.getDisplay(mViewModel.queryDate.value)
+                            val display = "$date $week"
+                            mutableList.add(MatchDateItem(display, mViewModel.queryDate.value))
+                            mutableList.add(
+                                MatchQueryDateNoData(
+                                    earlyViewModel.getTournamentName(
+                                        mViewModel.getTournamentId()
+                                    ), mViewModel.queryDate.value
+                                )
+                            )
+                        }
+                    } else {
+                        //prevItem!=null
+                        if (prevItem.match.basicInfo.startTime < mViewModel.queryDate.value
+                            && !isSameDay(
+                                item.match.basicInfo.startTime,
+                                mViewModel.queryDate.value
+                            ) && item.match.basicInfo.startTime >= mViewModel.queryDate.value
+                        ) {
+                            val (date, week) = DateUtils.getDisplay(mViewModel.queryDate.value)
+                            val display = "$date $week"
+                            mutableList.add(MatchDateItem(display, mViewModel.queryDate.value))
+                            mutableList.add(
+                                MatchQueryDateNoData(
+                                    earlyViewModel.getTournamentName(
+                                        mViewModel.getTournamentId()
+                                    ), mViewModel.queryDate.value
+                                )
+                            )
+                        }
+
+                    }
+
+
+                    val (date, week) = DateUtils.getDisplay(item.match.basicInfo.startTime)
+                    val display = "$date $week"
+
+                    if (!set.contains(display)) {
+                        mutableList.add(MatchDateItem(display, item.match.basicInfo.startTime))
+                        set.add(display)
+                    }
+                    mutableList.add(item)
+                } else {
+                    mutableList.add(item)
                 }
-                mutableList.add(it)
-            } else {
-                mutableList.add(it)
             }
         }
 
@@ -411,8 +623,8 @@ class MatchListPagerFragment :
             playTypeId: Int,
             leagueId: Int,
             position: Int
-        ): MatchListPagerFragment {
-            return MatchListPagerFragment().apply {
+        ): EarlyMatchListPagerFragment {
+            return EarlyMatchListPagerFragment().apply {
                 arguments = Bundle().apply {
                     putInt(ARG_SPORT_ID, sportId)
                     putInt(ARG_PLAY_TYPE_ID, playTypeId)

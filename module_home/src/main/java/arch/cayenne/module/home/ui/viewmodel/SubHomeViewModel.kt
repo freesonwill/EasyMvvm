@@ -399,6 +399,13 @@ open class SubHomeViewModel : BaseViewModel() {
         return savedTournamentSelections.isNotEmpty()
     }
 
+    fun getTournamentName(tournamentId: Int): String {
+        val tournamentDataModel =
+            tournaments.value?.peekContent()?.firstOrNull { it.id == tournamentId }
+
+        return tournamentDataModel?.simpleName ?: ""
+    }
+
     // 通知需要清除 tlLeagueList 的選中狀態
     private val _shouldClearLeagueListSelection = MutableLiveData<Event<Unit>>()
     val shouldClearLeagueListSelection: LiveData<Event<Unit>> = _shouldClearLeagueListSelection
