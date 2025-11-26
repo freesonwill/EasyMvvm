@@ -22,11 +22,13 @@
         app:skinnableFontWeight="400" />
 
     <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
-        android:layout_width="@dimen/dp_178"
+        android:id="@+id/ll_content"
+        android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_32"
         android:layout_marginBottom="@dimen/dp_20"
         android:background="@drawable/bg_match_item_query_date_no_data_content"
         android:gravity="center_vertical"
+        android:maxWidth="@dimen/dp_110"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -44,8 +46,8 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_3"
             android:layout_marginEnd="@dimen/dp_5"
-            android:layout_weight="1"
             android:ellipsize="end"
+            android:maxLines="1"
             android:textColor="@color/color_C0C0C0"
             android:textSize="@dimen/sp_14"
             app:skinnableFontWeight="400" />

@@ -14,7 +14,7 @@ class MatchDateViewHolder(
 ) : BaseViewHolder(mBinding) {
 
     @SuppressLint("SetTextI18n")
-    fun init(data: MatchDateItem) {
+    fun bind(data: MatchDateItem) {
         with(mBinding) {
             tvDate.text = data.dateStr
         }

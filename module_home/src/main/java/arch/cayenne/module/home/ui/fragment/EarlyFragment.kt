@@ -982,6 +982,19 @@ class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>(),
     }
 
 
+    fun jumpToAllLeagueTab(){
+        with(mBinding.layoutContainer) {
+            // 清除所有 tab 的選中狀態
+            val tabLayout = tlLeagueList
+            for (i in 0 until tabLayout.tabCount) {
+                tabLayout.getTabAt(i)?.let { tab ->
+                    tab.customView?.isSelected = false
+                }
+            }
+            vpGameList.setCurrentItem(0, false)
+        }
+    }
+
     override fun onBackPressed(): Boolean {
         // 如果排序選單展開，先收起排序選單
         if (isExpanded) {
