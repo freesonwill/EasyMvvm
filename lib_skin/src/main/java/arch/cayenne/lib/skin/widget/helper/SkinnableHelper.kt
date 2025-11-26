@@ -7,7 +7,8 @@ import arch.cayenne.lib.skin.res.SkinnableResourceManager
 
 
 abstract class SkinnableHelper (protected open val mView:View) {
-    val resourcesManager = SkinnableResourceManager
+    protected val TAG:String by lazy { this::class.java.simpleName }
+    protected val resourcesManager = SkinnableResourceManager
     protected var mSrcId: Int = INVALID_ID
     protected var lastSkin:String = ""
         private set
