@@ -223,15 +223,5 @@ class HomeRepository(
             sportDao.insert(this)
         }
     }
-    suspend fun getCurrentSelectedDate(showType: ShowType, sportId: Int): Long? = sportDao.getSportById(sportId, showType)?.date
 
-    suspend fun updateScrollCoordinate(
-        playTypeId: Int,
-        sportId: Int,
-        tournamentId: Int,
-        coordinate: Int
-    ) {
-        tournamentDao.updateRefCoordinate(playTypeId, sportId, tournamentId, coordinate)
-    }
-    suspend fun getCurrentPageCoordinate(playTypeId: Int, sportId: Int, tournamentId: Int) : Int? = tournamentDao.getSportTournamentCrossRef(playTypeId, sportId, tournamentId)?.coordinateY
 }

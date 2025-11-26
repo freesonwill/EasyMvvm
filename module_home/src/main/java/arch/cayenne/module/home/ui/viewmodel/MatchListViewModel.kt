@@ -28,7 +28,7 @@ import plugin.koin.KoinViewModel
 class MatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
     private var _sportId = SportType.Init.id
     private var _playType = PlayType.TODAY.id
-    private var _tournamentId: Int = HomeViewModel.TOURNAMENT_ALL_ID
+    private var _tournamentIdList: List<Int> = listOf(HomeViewModel.TOURNAMENT_ALL_ID)
     private var _position = -1
     private var _selectedDate = MutableStateFlow<Long>(0L)
     override val repository: MatchListRepository by inject()
@@ -42,9 +42,9 @@ class MatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
         _sportId = id
     }
 
-    fun setTournamentId(id: Int) {
-        if (_tournamentId == id) return
-        _tournamentId = id
+    fun setTournamentIdList(idList: List<Int>) {
+        if (_tournamentIdList == idList) return
+        _tournamentIdList = idList
     }
 
     fun setPlayTypeId(id: Int) {
@@ -62,7 +62,7 @@ class MatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
 
     fun getPlayTypeId(): Int = _playType
 
-    fun getTournamentId() = _tournamentId
+    fun getTournamentId() = _tournamentIdList
 
     fun getSportId() = _sportId
 
@@ -82,8 +82,8 @@ class MatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
                 _selectedDate
                     .drop(2)  //一開始進入的不用聽，可以藉由loginChange去取得最開始的資料
                     .collect { selectedDate ->
-                        "Collect selectedDateChange playType = $_playType  tournament = $_tournamentId selectedDate = $selectedDate ".logi()
-                        val currentDateRefs = repository.queryMatchChange(_playType, _tournamentId)
+                        "Collect selectedDateChange playType = $_playType  tournament = $_tournamentIdList selectedDate = $selectedDate ".logi()
+                        val currentDateRefs = repository.queryMatchChange(_playType, _tournamentIdList)
                             .filter { it.date == selectedDate }
                         if (currentDateRefs.isEmpty()) {
                             getMatchListData(LoadMatchType.DATE_CHANGE)
@@ -94,11 +94,11 @@ class MatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
             }
             //當內部資料有變化
             launch(Dispatchers.IO) {
-                repository.observeMatchChange(_playType, _tournamentId)
+                repository.observeMatchChange(_playType, _tournamentIdList)
                     .distinctUntilChanged()
                     .collect { refs ->
                         val selectedDate = _selectedDate.value
-                        "Collect observeMatchChange start playType = $_playType, sportId = ${_sportId} tournament = $_tournamentId selectedDate = $selectedDate".logi(
+                        "Collect observeMatchChange start playType = $_playType, sportId = ${_sportId} tournament = $_tournamentIdList selectedDate = $selectedDate".logi(
                             this@MatchListViewModel::class.java.simpleName
                         )
                         val currentDateRefs = refs.filter { it.date == selectedDate }
@@ -146,7 +146,7 @@ class MatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
                     _selectedDate.value + BaseMatchRepository.ONE_DAY_TIME_STAMP
                 )
 
-            "取得比賽資料 Type = ${loadMatchType} PlayType = $_playType sportId = $_sportId tournamentId = $_tournamentId page = $page startTime = $startTime endTime = $endTime".logi(
+            "取得比賽資料 Type = ${loadMatchType} PlayType = $_playType sportId = $_sportId tournamentId = $_tournamentIdList page = $page startTime = $startTime endTime = $endTime".logi(
                 TAG
             )
             callApi(
@@ -154,7 +154,7 @@ class MatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
                     repository.getAllMatch(
                         playType = _playType,
                         sportId = _sportId,
-                        tournamentId = _tournamentId,
+                        tournamentIdList = _tournamentIdList,
                         page = page,
                         date = _selectedDate.value,
                         startTime = startTime,
@@ -209,6 +209,6 @@ class MatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
         }
 
     override fun clearCurrentMatch() {
-        repository.clearCurrentMatch(_playType, _tournamentId, _selectedDate.value)
+        repository.clearCurrentMatch(_playType, _tournamentIdList, _selectedDate.value)
     }
 }

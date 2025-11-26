@@ -153,7 +153,6 @@ class MatchListPagerFragment :
                     super.onScrollStateChanged(recyclerView, newState)
                     if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                         subscribeVisibleMatch()
-                        updateMatchListPosition()
                     }
                 }
 
@@ -188,30 +187,6 @@ class MatchListPagerFragment :
         }
     }
 
-    private fun updateMatchListPosition() {
-        val firstView = gameLayoutManager.getChildAt(0)
-        val firstPos = gameLayoutManager.findFirstVisibleItemPosition()
-        val firstViewTop = firstView?.top ?: 0
-        val itemHeight = firstView?.height ?: 0
-        val scrollY = firstPos * itemHeight - firstViewTop
-        subHomeViewModel.updateCoordinate(
-            playTypeId = mViewModel.getPlayTypeId(),
-            sportId = mViewModel.getSportId(),
-            tournamentId = mViewModel.getTournamentId(),
-            coordinate = scrollY
-        )
-    }
-
-    private fun setMatchListPosition() {
-        lifecycleScope.launch {
-            val position = subHomeViewModel.getCurrentPageCoordinate(
-                playTypeId = mViewModel.getPlayTypeId(),
-                sportId = mViewModel.getSportId(),
-                tournamentId = mViewModel.getTournamentId()
-            )
-            mBinding.rvHomeGameList.scrollBy(0, position)
-        }
-    }
 
     override fun initListener() {
     }
@@ -334,7 +309,7 @@ class MatchListPagerFragment :
 
     override fun initData() {
         arguments?.apply {
-            mViewModel.setTournamentId(this.getInt(ARG_LEAGUE_ID))
+            mViewModel.setTournamentIdList(this.getIntArray(ARG_LEAGUE_ID)?.toList() ?: listOf(0))
             mViewModel.setSportId(this.getInt(ARG_SPORT_ID))
             mViewModel.setPlayTypeId(this.getInt(ARG_PLAY_TYPE_ID))
             mViewModel.setPosition(this.getInt(ARG_POSITION))
@@ -373,7 +348,7 @@ class MatchListPagerFragment :
         mViewModel.stopMatchSubscribeNotify()
     }
 
-    private fun addDateItem(list:List<MatchListItem>?): List<MatchListItem>? {
+    private fun addDateItem(list: List<MatchListItem>?): List<MatchListItem>? {
         val isEmpty = (list?.size ?: 0) == 0
         if (isEmpty) {
             return list
@@ -416,7 +391,7 @@ class MatchListPagerFragment :
                 arguments = Bundle().apply {
                     putInt(ARG_SPORT_ID, sportId)
                     putInt(ARG_PLAY_TYPE_ID, playTypeId)
-                    putInt(ARG_LEAGUE_ID, leagueId)
+                    putIntArray(ARG_LEAGUE_ID, intArrayOf(leagueId))
                     putInt(ARG_POSITION, position)
                 }
             }

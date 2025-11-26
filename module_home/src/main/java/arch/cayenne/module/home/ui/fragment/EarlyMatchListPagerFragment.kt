@@ -164,7 +164,6 @@ class EarlyMatchListPagerFragment :
                     super.onScrollStateChanged(recyclerView, newState)
                     if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                         subscribeVisibleMatch()
-                        updateMatchListPosition()
                     }
                 }
 
@@ -258,31 +257,6 @@ class EarlyMatchListPagerFragment :
         }
     }
 
-    private fun updateMatchListPosition() {
-        val firstView = gameLayoutManager.getChildAt(0)
-        val firstPos = gameLayoutManager.findFirstVisibleItemPosition()
-        val firstViewTop = firstView?.top ?: 0
-        val itemHeight = firstView?.height ?: 0
-        val scrollY = firstPos * itemHeight - firstViewTop
-        earlyViewModel.updateCoordinate(
-            playTypeId = mViewModel.getPlayTypeId(),
-            sportId = mViewModel.getSportId(),
-            tournamentId = mViewModel.getTournamentId(),
-            coordinate = scrollY
-        )
-    }
-
-    private fun setMatchListPosition() {
-        lifecycleScope.launch {
-            val position = earlyViewModel.getCurrentPageCoordinate(
-                playTypeId = mViewModel.getPlayTypeId(),
-                sportId = mViewModel.getSportId(),
-                tournamentId = mViewModel.getTournamentId()
-            )
-            mBinding.rvHomeGameList.scrollBy(0, position)
-        }
-    }
-
     override fun initListener() {
     }
 
@@ -307,7 +281,7 @@ class EarlyMatchListPagerFragment :
                 homeViewModel.changeState(
                     HomeState.FirstMatchListComplete(
                         mViewModel.getPlayTypeId(),
-                        mViewModel.getTournamentId()
+                        mViewModel.getTournamentIdList()
                     )
                 )
             }
@@ -347,7 +321,7 @@ class EarlyMatchListPagerFragment :
         }
 
         mViewModel.apiStateListener.observe(viewLifecycleOwner) {
-            "MatchListPagerFragment playType: ${mViewModel.getPlayTypeId()} tournament: ${mViewModel.getTournamentId()} state change ${it::class.java.name}".logi(
+            "MatchListPagerFragment playType: ${mViewModel.getPlayTypeId()} tournamentIdList: ${mViewModel.getTournamentIdList()} state change ${it::class.java.name}".logi(
                 this::class.java.name
             )
             with(mBinding) {
@@ -366,7 +340,7 @@ class EarlyMatchListPagerFragment :
                         homeViewModel.changeState(
                             HomeState.FirstMatchListComplete(
                                 mViewModel.getPlayTypeId(),
-                                mViewModel.getTournamentId()
+                                mViewModel.getTournamentIdList()
                             )
                         )
                     }
@@ -387,7 +361,7 @@ class EarlyMatchListPagerFragment :
                         homeViewModel.changeState(
                             HomeState.FirstMatchListComplete(
                                 mViewModel.getPlayTypeId(),
-                                mViewModel.getTournamentId()
+                                mViewModel.getTournamentIdList()
                             )
                         )
                     }
@@ -475,12 +449,12 @@ class EarlyMatchListPagerFragment :
 
     override fun initData() {
         arguments?.apply {
-            mViewModel.setTournamentId(this.getInt(ARG_LEAGUE_ID))
+            mViewModel.setTournamentIdList(this.getIntArray(ARG_LEAGUE_ID)?.toList() ?: listOf(0))
             mViewModel.setSportId(this.getInt(ARG_SPORT_ID))
             mViewModel.setPlayTypeId(this.getInt(ARG_PLAY_TYPE_ID))
             mViewModel.setPosition(this.getInt(ARG_POSITION))
         }
-        "EarlyMatchListPagerFragment playType: ${mViewModel.getPlayTypeId()} sportId: ${mViewModel.getSportId()} leagueId: ${mViewModel.getTournamentId()}".logi()
+        "EarlyMatchListPagerFragment playType: ${mViewModel.getPlayTypeId()} sportId: ${mViewModel.getSportId()} leagueIdList: ${mViewModel.getTournamentIdList()}".logi()
         startObserveMatch()
     }
 
@@ -547,10 +521,10 @@ class EarlyMatchListPagerFragment :
                             mutableList.add(MatchDateItem(display, mViewModel.queryDate.value))
                             mutableList.add(
                                 MatchQueryDateNoData(
-                                    earlyViewModel.getTournamentName(
-                                        mViewModel.getTournamentId()
+                                    earlyViewModel.getTournamentsName(
+                                        mViewModel.getTournamentIdList()
                                     ), mViewModel.queryDate.value
-                                ){
+                                ) {
                                     (requireParentFragment() as EarlyFragment).jumpToAllLeagueTab()
                                 }
                             )
@@ -568,10 +542,10 @@ class EarlyMatchListPagerFragment :
                             mutableList.add(MatchDateItem(display, mViewModel.queryDate.value))
                             mutableList.add(
                                 MatchQueryDateNoData(
-                                    earlyViewModel.getTournamentName(
-                                        mViewModel.getTournamentId()
+                                    earlyViewModel.getTournamentsName(
+                                        mViewModel.getTournamentIdList()
                                     ), mViewModel.queryDate.value
-                                ){
+                                ) {
                                     (requireParentFragment() as EarlyFragment).jumpToAllLeagueTab()
                                 }
                             )
@@ -589,10 +563,10 @@ class EarlyMatchListPagerFragment :
                             mutableList.add(MatchDateItem(display, mViewModel.queryDate.value))
                             mutableList.add(
                                 MatchQueryDateNoData(
-                                    earlyViewModel.getTournamentName(
-                                        mViewModel.getTournamentId()
+                                    earlyViewModel.getTournamentsName(
+                                        mViewModel.getTournamentIdList()
                                     ), mViewModel.queryDate.value
-                                ){
+                                ) {
                                     (requireParentFragment() as EarlyFragment).jumpToAllLeagueTab()
                                 }
                             )
@@ -634,7 +608,7 @@ class EarlyMatchListPagerFragment :
                 arguments = Bundle().apply {
                     putInt(ARG_SPORT_ID, sportId)
                     putInt(ARG_PLAY_TYPE_ID, playTypeId)
-                    putInt(ARG_LEAGUE_ID, leagueId)
+                    putIntArray(ARG_LEAGUE_ID, intArrayOf(leagueId))
                     putInt(ARG_POSITION, position)
                 }
             }

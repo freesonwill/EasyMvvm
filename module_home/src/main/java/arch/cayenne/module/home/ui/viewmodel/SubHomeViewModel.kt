@@ -5,7 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.data.remote.ApiResponseState
-import arch.cayenne.lib.base.data.remote.ApiResponseState.Start.dataAs
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
@@ -21,8 +20,6 @@ import arch.cayenne.module.home.data.constants.HomeState
 import arch.cayenne.module.home.data.constants.PlayType
 import arch.cayenne.module.home.data.constants.playTypeToShowType
 import arch.cayenne.module.home.data.repo.HomeRepository
-import arch.cayenne.module.home.ui.view.HomeCalendarFragment
-import galaxy.common.proto.Common
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -290,28 +287,6 @@ open class SubHomeViewModel : BaseViewModel() {
         }
     }
 
-
-    fun updateCoordinate(
-        playTypeId: Int,
-        sportId: Int,
-        tournamentId: Int,
-        coordinate: Int
-    ) {
-        viewModelScope.launch(Dispatchers.IO) {
-            repository.updateScrollCoordinate(playTypeId, sportId, tournamentId, coordinate)
-        }
-    }
-
-    suspend fun getCurrentPageCoordinate(
-        playTypeId: Int,
-        sportId: Int,
-        tournamentId: Int,
-    ): Int {
-        return withContext(Dispatchers.IO) {
-            repository.getCurrentPageCoordinate(playTypeId, sportId, tournamentId) ?: 0
-        }
-    }
-
     fun requestCollapseTournamentDropdown() {
         _collapseTournamentDropdown.value = Event(true)
     }
@@ -399,11 +374,17 @@ open class SubHomeViewModel : BaseViewModel() {
         return savedTournamentSelections.isNotEmpty()
     }
 
-    fun getTournamentName(tournamentId: Int): String {
-        val tournamentDataModel =
-            tournaments.value?.peekContent()?.firstOrNull { it.id == tournamentId }
+    fun getTournamentsName(tournamentId: List<Int>): String {
 
-        return tournamentDataModel?.simpleName ?: ""
+        val stringList = mutableListOf<String>()
+        tournamentId.forEach { id ->
+            val tournamentDataModel =
+                tournaments.value?.peekContent()?.firstOrNull { it.id == id }
+
+            stringList.add(tournamentDataModel?.simpleName ?: "")
+        }
+
+        return stringList.joinToString(separator = "/")
     }
 
     // 通知需要清除 tlLeagueList 的選中狀態
