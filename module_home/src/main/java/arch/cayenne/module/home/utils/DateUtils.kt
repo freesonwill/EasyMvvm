@@ -56,6 +56,47 @@ object DateUtils {
         return dateList
     }
 
+    /**
+     * @param timestamp 当天任意时间的时间戳
+     * 获取当天零点的timestamp
+     */
+    fun getMidnightTimeStamp(timestamp: Long): Long {
+        val calendar = Calendar.getInstance()
+        calendar.timeInMillis = timestamp
+        calendar.set(Calendar.HOUR_OF_DAY, 0)
+        calendar.set(Calendar.MINUTE, 0)
+        calendar.set(Calendar.SECOND, 0)
+        calendar.set(Calendar.MILLISECOND, 0)
+
+        return calendar.timeInMillis
+    }
+
+    /**
+     * 获取明天的起始时间戳
+     */
+    fun getTomorrowMidnight(): Long {
+        val calendar = Calendar.getInstance()
+        calendar.add(Calendar.DAY_OF_YEAR, 1)
+        calendar.set(Calendar.HOUR_OF_DAY, 0)
+        calendar.set(Calendar.MINUTE, 0)
+        calendar.set(Calendar.SECOND, 0)
+        calendar.set(Calendar.MILLISECOND, 0)
+
+        return calendar.timeInMillis
+    }
+
+    fun isSameDay(timestamp1: Long, timestamp2: Long): Boolean {
+        val cal1 = Calendar.getInstance()
+        cal1.timeInMillis = timestamp1
+
+        val cal2 = Calendar.getInstance()
+        cal2.timeInMillis = timestamp2
+
+        return cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
+                cal1.get(Calendar.MONTH) == cal2.get(Calendar.MONTH) &&
+                cal1.get(Calendar.DAY_OF_MONTH) == cal2.get(Calendar.DAY_OF_MONTH)
+    }
+
     fun getMonthDay(
         strDate: String,
         sourceDateFormat: String = "yyyyMMdd",

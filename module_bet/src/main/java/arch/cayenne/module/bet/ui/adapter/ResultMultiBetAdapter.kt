@@ -4,10 +4,12 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import arch.cayenne.lib.base.ui.adapter.BaseAdapter
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
+import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
 import arch.cayenne.lib.common.utils.ext.SportDisplayOddsExt.getDisplayOdds
 import arch.cayenne.lib.database.entity.BetDetailBean
 import arch.cayenne.module.bet.R
+import arch.cayenne.module.bet.data.ComboMultiBetBean
 import arch.cayenne.module.bet.databinding.ItemResultMultiBetBinding
 import arch.cayenne.module.bet.ui.compare.BetResultDetailCompare
 
@@ -21,9 +23,14 @@ class ResultMultiBetAdapter(private val listener: OnResultMultiBetListener) :
         position: Int
     ) {
         val item = getItem(position)
-        val combo = holder.getString(R.string.title_combo_bet_odds).format(item.comboK, item.comboV)
-        val odds ="$combo @${item.odds.getDisplayOdds()}"
-        binding.tvCombo.text = odds
+        binding.tvCombo.text = when(item.serialValue){
+            ComboMultiBetBean.SERIAL_VALUE_SUPER -> R.string.title_combo_bet_super.getString()
+            else -> {
+                val combo = holder.getString(R.string.title_combo_bet_odds).format(item.comboK, item.comboV)
+                val odds = "$combo @${item.odds.getDisplayOdds()}"
+                odds
+            }
+        }
         val money = "${listener.getMoneySymbol()}${item.inputMoney.getFormalMoney()}"
         val multi = "${item.count} x $money"
         binding.tvBetMoney.text = multi

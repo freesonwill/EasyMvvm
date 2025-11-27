@@ -7,6 +7,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import arch.cayenne.lib.database.entity.TournamentDataModel
 import arch.cayenne.module.home.data.constants.PlayType
+import arch.cayenne.module.home.ui.fragment.EarlyMatchListPagerFragment
 import arch.cayenne.module.home.ui.fragment.MatchListPagerFragment
 
 class LeaguePagerAdapter(
@@ -34,6 +35,10 @@ class LeaguePagerAdapter(
         val list = tournament
         val sportId = list[position].sportId
         val leagueId = list[position].id
-        return MatchListPagerFragment.newInstance(sportId, playTypeId, leagueId, position)
+        return if (playTypeId == PlayType.EARLY.id) {
+            EarlyMatchListPagerFragment.newInstance(sportId, playTypeId, leagueId, position)
+        } else {
+            MatchListPagerFragment.newInstance(sportId, playTypeId, leagueId, position)
+        }
     }
 }

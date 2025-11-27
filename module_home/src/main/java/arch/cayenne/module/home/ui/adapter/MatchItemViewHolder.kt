@@ -71,7 +71,7 @@ class MatchItemViewHolder(
     }
 
     @SuppressLint("SetTextI18n")
-    fun init(data: MatchWithMarkets) {
+    fun bind(data: MatchWithMarkets) {
         with(mBinding) {
             val basicInfo = data.match.basicInfo
             val liveInfo = data.match.liveInfo

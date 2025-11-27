@@ -6,11 +6,15 @@ import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.database.dao.BetDao
 import arch.cayenne.lib.database.dao.InfoDao
 import arch.cayenne.lib.database.dao.MatchDao
+import arch.cayenne.lib.database.entity.EarlyTournamentMatchRef
 import arch.cayenne.lib.database.entity.TournamentMatchRef
 import arch.cayenne.lib.websocket.WebSocketManager
 import arch.cayenne.lib.websocket.data.ApiCode
 import arch.cayenne.lib.websocket.extension.sendAndWaitProtoMessageResponse
+import arch.cayenne.module.home.data.constants.PlayType
 import arch.cayenne.module.home.data.model.toRoomData
+import arch.cayenne.module.home.ui.viewmodel.BaseMatchViewModel.Companion.INITIAL_PAGE
+import arch.cayenne.module.home.ui.viewmodel.LoadMatchType
 import galaxy.client.proto.Client
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -24,6 +28,7 @@ class MatchListRepository(
     private val infoDao: InfoDao,
     private val userDataManager: UserDataManager,
 ) : BaseMatchRepository(scope, socketManager, betDao, matchDao, infoDao, userDataManager) {
+
     /**
      * 根據不同的條件，從api或是db(優先)取得賽事資料，如果從api來的話，拿到後會先存進資料庫內
      * @param playType : 一級導航欄
@@ -38,13 +43,32 @@ class MatchListRepository(
         playType: Int,
         sportId: Int,
         tournamentId: Int,
+        prevPage: Int = INITIAL_PAGE -1,
         page: Int,
         date: Long,
         startTime: Long,
         endTime: Long,
         isForce: Boolean = false,  //是否刪除之前的資料
-    ) : ApiResponseState {
-        val last = if(isForce) null else matchDao.queryLastMatch(playType, tournamentId, date)
+        loadMatchType: LoadMatchType,
+    ): ApiResponseState {
+        val cursor = if (loadMatchType == LoadMatchType.PREV_PAGE) {
+//            "prevPage:$prevPage".logi("prevPageIssue")
+            //向前查询， 需要取首场比赛
+            if (playType == PlayType.EARLY.id) {
+                matchDao.queryEarlyFirstMatch(tournamentId, date)
+            } else {
+                matchDao.queryFirstMatch(playType, tournamentId, date)
+            }
+        } else {
+            //其他查询类型， 需要取最后一场比赛
+            if (isForce) null else {
+                if (playType == PlayType.EARLY.id) {
+                    matchDao.queryEarlyLastMatch(tournamentId, date)
+                } else {
+                    matchDao.queryLastMatch(playType, tournamentId, date)
+                }
+            }
+        }
         val resp = socketManager.sendAndWaitProtoMessageResponse<Client.ListMatchResp>(
             scope = scope,
             dispatcher = Dispatchers.IO,
@@ -61,39 +85,80 @@ class MatchListRepository(
                 this.size = DEFAULT_MATCH_SIZE
                 this.startTime = startTime
                 this.endTime = endTime
-                if (last != null) {
-                    this.cursorMatchId = last.matchId
-                    this.cursorMatchStartTime = last.basicInfo.startTime
+                if (cursor != null) {
+                    this.cursorMatchId = cursor.matchId
+                    this.cursorMatchStartTime = cursor.basicInfo.startTime
                 }
+                this.reverse = loadMatchType == LoadMatchType.PREV_PAGE //判断是取上一页，还是下一页
             }.build()
         }
 
         if (resp.error == null && resp.data != null) {
             val matchFullData = resp.data!!.matchList.toRoomData()
-            "新增比賽 tournamentId = $tournamentId matchId = ${matchFullData.match.map { it.matchId }} 進入資料庫".logi(HomeRepository::class.java.simpleName)
-            val tournamentMatchRefs = resp.data!!.matchList.mapIndexed { index, match ->
-                TournamentMatchRef(
-                    playType = playType,
-                    tournamentId = tournamentId,
-                    page = page,
-                    date = date,
-                    matchId = match.matchId,
-                    order = page * 100 + index
-                )
-            }
-            val refIds = matchDao.insertMatch(
-                tournamentMatchRefs = tournamentMatchRefs,
-                matches = matchFullData.match,
-                markets = matchFullData.markets,
-                selections = matchFullData.selections,
-                marketCrossRef = matchFullData.matchMarketCrossRefs,
-                marketSelectCrossRefs = matchFullData.marketSelectCrossRefs,
-                playType = playType,
-                tournamentId = tournamentId,
-                date = date,
-                isForce = isForce
+            "新增比賽 tournamentId = $tournamentId matchId = ${matchFullData.match.map { it.matchId }} 進入資料庫".logi(
+                HomeRepository::class.java.simpleName
             )
-            "New match data from api insert success : $refIds".logi(this::class.java.simpleName)
+
+            if (playType == PlayType.EARLY.id) {
+                //早盘
+                val tournamentMatchRefs = resp.data!!.matchList.mapIndexed { index, match ->
+                    EarlyTournamentMatchRef(
+                        tournamentId = tournamentId,
+                        date = date,
+                        matchId = match.matchId,
+                        order = if (loadMatchType == LoadMatchType.PREV_PAGE) {
+                            prevPage * 100 + index
+                        } else {
+                            page * 100 + index
+                        }
+                    )
+                }
+
+                val refIds =
+                    matchDao.insertEarlyMatch(
+                        tournamentMatchRefs = tournamentMatchRefs,
+                        matches = matchFullData.match,
+                        markets = matchFullData.markets,
+                        selections = matchFullData.selections,
+                        marketCrossRef = matchFullData.matchMarketCrossRefs,
+                        marketSelectCrossRefs = matchFullData.marketSelectCrossRefs,
+                        playType = playType,
+                        tournamentId = tournamentId,
+                        date = date,
+                        isForce = isForce
+                    )
+                "New match data from api insert success : $refIds".logi(this::class.java.simpleName)
+
+            } else {
+                //其他playType
+                val tournamentMatchRefs =
+                    resp.data!!.matchList.mapIndexed { index, match ->
+                        TournamentMatchRef(
+                            playType = playType,
+                            tournamentId = tournamentId,
+                            page = page,
+                            date = date,
+                            matchId = match.matchId,
+                            order = page * 100 + index
+                        )
+                    }
+
+                val refIds =
+                    matchDao.insertMatch(
+                        tournamentMatchRefs = tournamentMatchRefs,
+                        matches = matchFullData.match,
+                        markets = matchFullData.markets,
+                        selections = matchFullData.selections,
+                        marketCrossRef = matchFullData.matchMarketCrossRefs,
+                        marketSelectCrossRefs = matchFullData.marketSelectCrossRefs,
+                        playType = playType,
+                        tournamentId = tournamentId,
+                        date = date,
+                        isForce = isForce
+                    )
+                "New match data from api insert success : $refIds".logi(this::class.java.simpleName)
+
+            }
             return ApiResponseState.Succeeded(resp.data!!.matchList)
         }
         return ApiResponseState.Failed(resp.error)
@@ -103,10 +168,22 @@ class MatchListRepository(
         matchDao.deleteCurrentTournamentMatchRef(playType, tournamentId, date)
     }
 
-    fun observeMatchChange(playType: Int, tournamentId: Int) : Flow<List<TournamentMatchRef>> {
+    fun observeMatchChange(playType: Int, tournamentId: Int): Flow<List<TournamentMatchRef>> {
         //觀察後端的500-1002（获取比赛列表）回傳
         return matchDao.observeMatchChange(playType, tournamentId)
     }
 
-    suspend fun queryMatchChange(playType: Int, tournamentId: Int): List<TournamentMatchRef> = matchDao.queryMatchChange(playType, tournamentId)
+    /**
+     * 观察早盘比赛
+     */
+    fun observeEarlyMatchChange(tournamentId: Int): Flow<List<EarlyTournamentMatchRef>> {
+        //觀察後端的500-1002（获取比赛列表）回傳
+        return matchDao.observeEarlyMatchChange(tournamentId)
+    }
+
+    suspend fun queryMatchChange(playType: Int, tournamentId: Int): List<TournamentMatchRef> =
+        matchDao.queryMatchChange(playType, tournamentId)
+
+    suspend fun queryEarlyMatchChange(tournamentId: Int): List<EarlyTournamentMatchRef> =
+        matchDao.queryEarlyMatchChange(tournamentId)
 }
