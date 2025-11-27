@@ -12,7 +12,7 @@ import kotlin.reflect.KClass
  * 投注记录-游戏-奖金列表页
  */
 
-class GameBonusFragment: BaseFragment<GameBonusViewModel, FragmentGameBonusBinding>() {
+class GameBonusFragment : BaseFragment<GameBonusViewModel, FragmentGameBonusBinding>() {
 
     override val vbClass: KClass<FragmentGameBonusBinding> = FragmentGameBonusBinding::class
     override val vmClass: KClass<GameBonusViewModel> = GameBonusViewModel::class
@@ -32,6 +32,7 @@ class GameBonusFragment: BaseFragment<GameBonusViewModel, FragmentGameBonusBindi
 
     override fun initData() {
         mViewModel.getGameList()
+        //mViewModel.getMaxBonusList()
     }
 
     override suspend fun createObserver() {

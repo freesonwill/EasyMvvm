@@ -28,6 +28,7 @@ class OrderGameFragment : BaseFragment<OrderGameViewModel, FragmentOrderGameBind
     override val vbClass: KClass<FragmentOrderGameBinding> = FragmentOrderGameBinding::class
     override val vmClass: KClass<OrderGameViewModel> = OrderGameViewModel::class
     private var menuBinding: FragmentGameDropMenuBinding? = null
+    private var sortType = OrderSortType.SORT_ALL
     private var isExpanded: Boolean = false
 
     override fun initView(savedInstanceState: Bundle?) {
@@ -61,6 +62,7 @@ class OrderGameFragment : BaseFragment<OrderGameViewModel, FragmentOrderGameBind
         }
         mViewModel.sortType.observe(viewLifecycleOwner) {
             changeSortType(it)
+            changeDropMenuState(false, tabColor = false)
         }
     }
 
@@ -111,6 +113,7 @@ class OrderGameFragment : BaseFragment<OrderGameViewModel, FragmentOrderGameBind
     }
 
     private fun changeSortType(type: OrderSortType) {
+        sortType = type
         when (type) {
             OrderSortType.SORT_WIN -> {
                 mBinding.tvAll.text = R.string.menu_win.getString()
@@ -152,7 +155,6 @@ class OrderGameFragment : BaseFragment<OrderGameViewModel, FragmentOrderGameBind
                 }
             }
         }
-        changeDropMenuState(false, tabColor = false)
     }
 
     private fun changeDropMenuState(expanded: Boolean, tabColor: Boolean = true) {
@@ -173,11 +175,13 @@ class OrderGameFragment : BaseFragment<OrderGameViewModel, FragmentOrderGameBind
                     false
                 )
                 initMenuClickListener()
+                changeSortType(sortType)
             }
             container.removeAllViews()
             container.addView(menuBinding?.root)
             container.visibility = View.VISIBLE
-            val inAnim = AnimationUtils.loadAnimation(requireContext(), R.anim.slide_in_from_top)
+            val inAnim =
+                AnimationUtils.loadAnimation(requireContext(), R.anim.slide_in_from_top)
             menuBinding?.root?.startAnimation(inAnim)
             mBinding.ivAllArrow.isSelected = true
             mBinding.tvAll.isSelected = true
@@ -192,7 +196,6 @@ class OrderGameFragment : BaseFragment<OrderGameViewModel, FragmentOrderGameBind
                     menuBinding = null
                     container.visibility = View.GONE
                 }
-
                 override fun onAnimationRepeat(animation: Animation?) {}
             })
             menuBinding?.root?.startAnimation(outAnim)
