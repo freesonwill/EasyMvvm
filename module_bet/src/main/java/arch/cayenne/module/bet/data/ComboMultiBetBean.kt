@@ -29,12 +29,8 @@ data class ComboMultiBetBean(
     companion object {
         const val SERIAL_VALUE_SUPER = -1 //超级组合
         const val SERIAL_VALUE_ALL = 0 //全串關
-
-        //k个选项是否存在超级组合
-        fun hasSerialSuper(k:Int):Boolean{
-            return k in 3..6
-        }
     }
+
     fun hasSetMoney() = inputMoney != 0L
     val amount: Long
         get() = inputMoney * count
