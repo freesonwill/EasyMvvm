@@ -2,10 +2,18 @@ package arch.cayenne.module.order.ui.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.module.order.data.model.RecordsBean
+import arch.cayenne.module.order.data.repo.GameRepository
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import org.koin.core.component.inject
 
 class GameBonusViewModel : BaseViewModel() {
+
+    private val gameRepository: GameRepository by inject()
 
     private val _recordData = MutableLiveData<List<RecordsBean>>()
     val recordData: LiveData<List<RecordsBean>> = _recordData
@@ -36,5 +44,15 @@ class GameBonusViewModel : BaseViewModel() {
             "2025/04/17 15:52:00"
         )
         _recordData.value = listOf(tmp1, tmp3, tmp2)
+    }
+
+    //获取最大奖金列表
+    fun getMaxBonusList() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val bonus = gameRepository.getMaxBonusList()
+            withContext(Dispatchers.Main) {
+                //matchWithMarketsChange.value = matchWithMarkets
+            }
+        }
     }
 }
