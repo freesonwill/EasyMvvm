@@ -3,14 +3,11 @@ package arch.cayenne.module.chat.ui.fragment
 import android.animation.AnimatorSet
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.text.Editable
 import android.text.TextWatcher
-import android.text.method.LinkMovementMethod
 import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup.LayoutParams
-import android.view.inputmethod.EditorInfo
 import androidx.activity.addCallback
 import androidx.core.animation.addListener
 import androidx.core.view.ViewCompat
@@ -24,17 +21,14 @@ import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
-import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.database.entity.LiveMatchBean
-import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.lib.websocket.data.SocketConnectState
 import arch.cayenne.module.chat.R
 import arch.cayenne.module.chat.data.constants.KeyBoardType
 import arch.cayenne.module.chat.data.constants.KeyboardActionType
-import arch.cayenne.module.chat.data.model.EmojiData
+import arch.cayenne.module.chat.data.model.EmojiModel
 import arch.cayenne.module.chat.databinding.FragmentLiveChatBinding
 import arch.cayenne.module.chat.manager.SoftKeyboardManager
 import arch.cayenne.module.chat.manager.interf.SoftKeyBoardMangerListener
@@ -48,7 +42,6 @@ import kotlin.reflect.KClass
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.module.chat.manager.ChatATHelper
 import arch.cayenne.module.chat.manager.SoftKeyBoardAnim
-import arch.cayenne.module.chat.utils.EmojiEditFilter
 
 //聊天
 class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding>(),
@@ -191,9 +184,7 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
             }
         }
 
-        mBinding.tvMsg.clickNoRepeat {
-            ChatUserInfoFragment().show(childFragmentManager)
-        }
+
     }
 
     private fun initSoftKeyBoardFragment() {
@@ -347,7 +338,6 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
     }
 
 
-
     fun closeChatWebsocket() {
         mViewModel.disConnectChatServer()
     }
@@ -402,16 +392,28 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
      * 发送消息
      * */
     private fun sendText() {
-        val text: String = mBinding.chatEtInput.text?.toString() ?: ""
-        if (text.isEmpty()) {
+//        val text: String = mBinding.chatEtInput.text?.toString() ?: ""
+//        if (text.isEmpty()) {
+//            return
+//        }
+//        mBinding.chatEtInput.text?.clear()
+//        if (mViewModel.currentKeyBoardType == KeyBoardType.CHAT) {
+//            resetInputUi()
+//        }
+//        keyboardChangeClick(KeyBoardType.CHAT, 7)
+//        mViewModel.sendMsgToChat(text)
+        if(mBinding.chatEtInput.text == null || mBinding.chatEtInput.length() == 0){
             return
         }
-        mBinding.chatEtInput.text?.clear()
+
         if (mViewModel.currentKeyBoardType == KeyBoardType.CHAT) {
             resetInputUi()
         }
         keyboardChangeClick(KeyBoardType.CHAT, 7)
-        mViewModel.sendMsgToChat(text)
+        mViewModel.createLocalMsg(mBinding.chatEtInput.text!!)?.let { mViewModel.sendMsgToChat(it) }
+        mBinding.chatEtInput.text?.clear()
+
+
     }
 
     private fun resetInputUi() {
@@ -619,11 +621,12 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
         }
     }
 
-    private fun addEmojiData(emojiData: EmojiData) {
+    private fun addEmojiData(emojiData: EmojiModel) {
         val emojiPattern: Pattern = Pattern.compile(BID_EMOJI_REGEX)
         if (emojiPattern.matcher(emojiData.key).find()) {
             keyboardChangeClick(KeyBoardType.CHAT, 5)
-            mViewModel.sendMsgToChat(emojiData.key)
+
+            mViewModel.createBidLocalMsg(emojiData.key)?.let { mViewModel.sendMsgToChat(it) }
             return
         }
         mBinding.chatEtInput.text?.append(emojiData.key)

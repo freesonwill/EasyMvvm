@@ -5,21 +5,16 @@ import android.content.Context
 import android.text.Editable
 import android.text.SpannableStringBuilder
 import android.view.LayoutInflater
-import android.view.View
 import android.widget.EditText
 import android.widget.PopupWindow
-import androidx.core.text.getSpans
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.module.chat.data.model.AtBean
+import arch.cayenne.module.chat.data.model.MentionSpan
 import arch.cayenne.module.chat.databinding.PopupSearchAtLayoutBinding
-import arch.cayenne.module.chat.manager.MentionSpan
 import arch.cayenne.module.chat.ui.adapter.AtAdapter
-import okhttp3.internal.addHeaderLenient
-import okhttp3.internal.notify
-import okhttp3.internal.notifyAll
 
 /**
  * @author: wenxi

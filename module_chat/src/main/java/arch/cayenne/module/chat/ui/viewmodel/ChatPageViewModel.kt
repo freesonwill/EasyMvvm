@@ -4,6 +4,8 @@ import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.websocket.chat.data.ChatMsg
 import arch.cayenne.lib.websocket.chat.data.MsgNotify
+import arch.cayenne.module.chat.data.constants.MsgType
+import arch.cayenne.module.chat.data.model.ChatMsgPageBean
 
 /**
  * @author: wenxi
@@ -12,9 +14,9 @@ import arch.cayenne.lib.websocket.chat.data.MsgNotify
  */
 class ChatPageViewModel:BaseViewModel() {
     //消息列表
-    val msgLists: MutableList<ChatMsg> = mutableListOf()
+    val msgLists: MutableList<ChatMsgPageBean> = mutableListOf()
 
-    fun addLocalMsg(msg: ChatMsg?){
+    fun addLocalMsg(msg: ChatMsgPageBean?){
         msg?.let {
             msgLists.add(0, msg)
         }
@@ -23,8 +25,8 @@ class ChatPageViewModel:BaseViewModel() {
     /**
      * 添加新数据的chatlist
      * */
-    fun addNewMsgs(msg: MsgNotify): List<ChatMsg> {
-        msgLists.add(0, msg.msg)
+    fun addNewMsgs(msg: MsgNotify): List<ChatMsgPageBean> {
+        msgLists.add(0, ChatMsgPageBean.toChatPageBean(msg.msg,MsgType.TEXT))
         return msgLists
     }
 
@@ -35,8 +37,9 @@ class ChatPageViewModel:BaseViewModel() {
         if (list == null) {
             return
         }
+        val nList = list.map { ChatMsgPageBean.toChatPageBean(it,MsgType.TEXT)}.toList()
         msgLists.clear()
-        msgLists.addAll(list.reversed())
+        msgLists.addAll(nList.reversed())
     }
 
 
