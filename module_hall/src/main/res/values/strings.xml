@@ -4,6 +4,12 @@
     <string name="tab_all">全部</string>
     <string name="tab_table">棋牌</string>
     <string name="tab_slot">老虎机</string>
+
+    <string name="tab_fishing">捕鱼</string>
+    <string name="tab_real">真人</string>
+    <string name="tab_original">原创</string>
+    <string name="tab_lottery">彩票</string>
+    <string name="tab_esprots">电竞</string>
     <string name="back_percent">返奖率</string>
     <string name="online_count">在玩</string>
     <string name="daily_game">每日比赛</string>
