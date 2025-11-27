@@ -377,11 +377,7 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
     private fun showLanguageDialog() {
         val viewLocation = IntArray(2)
         mBinding.ivLanguage.getLocationOnScreen(viewLocation)
-//        mBinding.apply {
-//            "viewLocation ${viewLocation.toList()} ${10.dp2px}  ${125.dp2px} x ${ivLanguage.x} y ${ivLanguage.y} ${ivLanguage.pivotX}  ${ivLanguage.pivotY} ".logd(
-//                "aaa"
-//            )
-//        }
+
         ChatLanguageDialogFragment.newInstance(
             viewLocation[0],
             viewLocation[1]
@@ -438,7 +434,6 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
     private fun emojiLayoutSize(isReset: Boolean) {
         mBinding.apply {
             val height = main.layoutParams.height
-//            "emojiLayoutSize $height  ${main.height}  ${mViewModel.keyBoardHeight}".logd("aaa")
             inputMain.layoutParams.height =
                 if (isReset) LayoutParams.MATCH_PARENT else mViewModel.keyBoardHeight
             main.layoutParams.height =
@@ -506,7 +501,6 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
 //                return
 //            }
 //        }
-//        "keyboardChangeClick ${keyBoardType} flag $flag".logd("aaa")
         softKeyBoardManager.addSoftKeyBoardEvent(keyBoardType, flag)
         softKeyBoardManager.showKeyboardAnimation()
     }

@@ -36,8 +36,6 @@ class ChatATHelper(
     var closeAtPopup: Boolean = false
 
     private val atClick: ((str: String) -> Unit) = {
-//        ChatUserInfoFragment().show(childFragmentManager)
-        "atclick".logd("aaa")
     }
 
     private val etInputWatcher = object : TextWatcher {
@@ -135,14 +133,12 @@ class ChatATHelper(
         spans.forEach {
             val spanStart = spannable.getSpanStart(it)
             val spanEnd = spannable.getSpanEnd(it)
-//            "spanStart $spanStart spanEnd ${spanEnd}".logd("aaa")
             //两个@中间，在后一个@前面插入
 
             if (position in spanStart + 1..<spanEnd) {
                 spannable.removeSpan(it)
                 if (spanStart + 1 == position) {
                     val tv = spannable.substring(spanStart + 3, spanEnd)
-//                    "spanTv 111${tv}1111 ".logd("aaa")
                     val mentionSpan = MentionSpan(tv, atClick)
                     spannable.setSpan(
                         mentionSpan,
@@ -206,7 +202,6 @@ class ChatATHelper(
                     val spanEnd = spannable.getSpanEnd(lastSpan)
                     val spanStart = spannable.getSpanStart(lastSpan)
                     val lastChar = spannable.elementAt(cursorPositionEnd - 1)
-                    "del editext ${spannable.substring(spanStart, spanEnd)}".logd("aaa")
                     if (spanEnd == cursorPositionStart) {
                         if (lastChar == ' ') {
                             return@setOnKeyListener false
@@ -229,10 +224,8 @@ class ChatATHelper(
 //        val spannable = SpannableStringBuilder(editable)
 //        var spans = spannable.getSpans(0, editable.length, MentionSpan::class.java)
 //        var canAddSpace = spans.isNotEmpty()
-//       "spanable 111${spannable}111 ${spannable.length} spanLeght ${spans.size}".logd("aaa")
 //        while (canAddSpace){
 //            for (i in spans.indices){
-//                "addText $spannable  ${spannable.length}".logd("aaa")
 //
 //                val span = spans[i]
 //                val end = spannable.getSpanEnd(span)
@@ -243,12 +236,10 @@ class ChatATHelper(
 //                    break
 //                }
 //             if(i == spans.size -1){
-//                 "can addSpace".logd("aaa")
 //                 canAddSpace = false
 //             }
 //            }
 //        }
-//        "end ${spannable}!!!".logd("aaa")
 //        return spannable
 //
 //    }

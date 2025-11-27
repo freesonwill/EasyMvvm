@@ -76,7 +76,6 @@ class SearchAtPopupWindow {
         val spannable = SpannableStringBuilder(editable)
         val spans = spannable.getSpans(0, editable.length, MentionSpan::class.java)
         return spans.map {
-            "getAtMsg ${it.tv}2323".logd("aaa")
             AtBean(name = it.tv, false) }.toList()
     }
 

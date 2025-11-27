@@ -155,8 +155,6 @@ class ChatHomeViewModel() : BaseViewModel() {
         spans.forEach {
             val start = spannable.getSpanStart(it)
             val end = spannable.getSpanEnd(it)
-            "start $start end $end".logd("aaa")
-
             atIntRanges.add(IntRange(start, end))
         }
 

@@ -53,7 +53,6 @@ class ChatPageAdapter(private val atClick:(str:String) ->Unit) :
                             val line = layout.getLineForVertical(y)
                             val off = layout.getOffsetForHorizontal(line, x.toFloat())
                             val spans = buffer.getSpans(off,off+1,ClickSpan::class.java)
-                            "atAdapter spans ${spans.size}".logd("aaa")
                             if(spans.isNotEmpty()){
                                 spans.first().onClick(widget)
                                 return true
@@ -68,9 +67,7 @@ class ChatPageAdapter(private val atClick:(str:String) ->Unit) :
                 }
 
             }
-//           nBinding.tv.setOnClickListener {
-//               "tv".logd("aaa")
-//           }
+
         }
 
         fun setText(bean: ChatMsgPageBean, position: Int) {
