@@ -67,7 +67,7 @@ class CollectListViewModel : BaseMatchViewModel<CollectListRepository>() {
                     }
                 } else if (it is ApiResponseState.Succeeded<*>) {
                     val size = it.dataAs<List<Common.Match>>()?.size ?: 0
-                    if (page == 1 && size == 0) {
+                    if (page == INITIAL_PAGE && size == 0) {
                         matchListChange.value = arrayListOf()
 
                         setState(HomeState.Match.DataEmpty)
@@ -92,13 +92,13 @@ class CollectListViewModel : BaseMatchViewModel<CollectListRepository>() {
                     return@collect
                 }
                 val currentRefs = ref.values.toList().sortedBy { it.order }
-                page = currentRefs.maxOfOrNull { it.page } ?: 1
+                page = currentRefs.maxOfOrNull { it.page } ?: INITIAL_PAGE
                 //拿到ref後藉由ref拿到這個時間段的match id，再去資料庫把這些賽史資料串起來
                 val list = repository.queryFullMatches(
                     currentRefs.map { it.matchId }
                 )
                 withContext(Dispatchers.Main) {
-                    if (page == 1 && list.isEmpty()) {
+                    if (page == INITIAL_PAGE && list.isEmpty()) {
                         setState(HomeState.Match.DataEmpty)
                     } else if (list.size % DEFAULT_MATCH_SIZE != 0) {
                         setState(DataState.NoMoreData)
@@ -121,7 +121,7 @@ class CollectListViewModel : BaseMatchViewModel<CollectListRepository>() {
         viewModelScope.launch (Dispatchers.IO ){
            val dbRef = repository.getCollectList()
            val currentRef = dbRef.sortedBy { it.order }
-            page = 1
+            page = INITIAL_PAGE
             //拿到ref後藉由ref拿到這個時間段的match id，再去資料庫把這些賽史資料串起來
             val list = repository.queryFullMatches(currentRef.map { it.matchId })
             withContext(Dispatchers.Main) {

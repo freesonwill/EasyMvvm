@@ -32,6 +32,7 @@ class GameMultipleFragment : BaseFragment<GameMultipleViewModel, FragmentGameMul
 
     override fun initData() {
         mViewModel.getGameList()
+        //mViewModel.getMaxMultipleList()
     }
 
     override suspend fun createObserver() {

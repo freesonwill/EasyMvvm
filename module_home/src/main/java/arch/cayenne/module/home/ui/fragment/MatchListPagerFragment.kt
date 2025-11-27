@@ -36,7 +36,6 @@ import arch.cayenne.module.home.databinding.FragmentMatchListPagerBinding
 import arch.cayenne.module.home.ui.adapter.MatchItemAdapter
 import arch.cayenne.module.home.ui.adapter.OnMatchItemClickListener
 import arch.cayenne.module.home.ui.view.decoration.MatchCardItemDecoration
-import arch.cayenne.module.home.ui.viewmodel.EarlyViewModel
 import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
 import arch.cayenne.module.home.ui.viewmodel.MatchListViewModel
 import arch.cayenne.module.home.ui.viewmodel.SubHomeViewModel
@@ -54,13 +53,7 @@ class MatchListPagerFragment :
         FragmentMatchListPagerBinding::class
     override val vmClass: KClass<MatchListViewModel> = MatchListViewModel::class
     private val homeViewModel: HomeViewModel by sharedViewModel<HomeViewModel, NewHomeFragment>()
-    private val subHomeViewModel: SubHomeViewModel by lazy {
-        if (arguments?.getInt(ARG_PLAY_TYPE_ID) == PlayType.EARLY.id) {
-            viewModels<EarlyViewModel>({ requireParentFragment() }).value
-        } else {
-            viewModels<SubHomeViewModel>({ requireParentFragment() }).value
-        }
-    }
+    private val subHomeViewModel: SubHomeViewModel by viewModels({ requireParentFragment() })
 
     private lateinit var matchAdapter: MatchItemAdapter
     private val gameLayoutManager by lazy { LinearLayoutManager(context) }
@@ -227,8 +220,8 @@ class MatchListPagerFragment :
         "MatchListChange livedata Observed~ ${matchList.map { it.match.matchId }}".logi(this::class.java.simpleName)
         val preEmpty = matchAdapter.currentList.isEmpty()
 
-        //早盘的比赛列表，需要添加日期条目
-        val list = if (mViewModel.getPlayTypeId() == PlayType.EARLY.id) addDateItem(
+        //收藏的比赛列表，需要添加日期条目
+        val list = if (mViewModel.getPlayTypeId() == PlayType.FAVORITE.id) addDateItem(
             matchList
         ) else
             matchList
@@ -334,32 +327,8 @@ class MatchListPagerFragment :
 
         }
 
-        //这个时候还没调用initData, 需要从arguments中获取playType
-        if (arguments?.getInt(ARG_PLAY_TYPE_ID) == PlayType.EARLY.id) {
-            //只有早盘有日期变化的情况
-            val earlyViewModel: EarlyViewModel = subHomeViewModel as EarlyViewModel
-            earlyViewModel.selectedDate.observeEvent(viewLifecycleOwner, this) { date ->
-                if (date == HomeViewModel.DEFAULT_DATE
-                    || earlyViewModel.currentPlayTypeId != mViewModel.getPlayTypeId()
-                    || earlyViewModel.currentSportId != mViewModel.getSportId()
-                ) {
-                    return@observeEvent
-                }
-                refreshListByDate(date)
-            }
-        }
-
         homeViewModel.notifySubHomeRefresh.observeEvent(viewLifecycleOwner, this) {
             reloadAllData()
-        }
-    }
-
-    private fun refreshListByDate(date: Long) {
-        if (date.toInt() == 0) {
-            //切換後選回全部
-            mViewModel.setSelectedDate(0)
-        } else {
-            mViewModel.setSelectedDate(date)
         }
     }
 
@@ -404,7 +373,7 @@ class MatchListPagerFragment :
         mViewModel.stopMatchSubscribeNotify()
     }
 
-    fun addDateItem(list:List<MatchListItem>?): List<MatchListItem>? {
+    private fun addDateItem(list:List<MatchListItem>?): List<MatchListItem>? {
         val isEmpty = (list?.size ?: 0) == 0
         if (isEmpty) {
             return list
@@ -419,7 +388,7 @@ class MatchListPagerFragment :
                 val display = "$date $week"
 
                 if (!set.contains(display)) {
-                    mutableList.add(MatchDateItem(display))
+                    mutableList.add(MatchDateItem(display, it.match.basicInfo.startTime))
                     set.add(display)
                 }
                 mutableList.add(it)

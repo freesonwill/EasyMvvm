@@ -32,7 +32,7 @@ abstract class BaseMatchViewModel<REPO: BaseMatchRepository> : BaseViewModel() {
 
     val matchListChange by lazy { MutableLiveData<List<MatchWithMarkets>>() }
 
-    protected var page = 1
+    protected var page = INITIAL_PAGE
     protected var isPageEnd = false
     private val subscribeMatchSet by lazy { HashSet<Long>() }
 
@@ -206,7 +206,7 @@ abstract class BaseMatchViewModel<REPO: BaseMatchRepository> : BaseViewModel() {
 
     fun reload() {
         changePageEnd(false)
-        page = 1
+        page = INITIAL_PAGE
         setState(HomeState.Match.Refreshing)
         viewModelScope.launch(Dispatchers.IO) {
             subscribeMatchSet.clear()
@@ -221,8 +221,12 @@ abstract class BaseMatchViewModel<REPO: BaseMatchRepository> : BaseViewModel() {
     abstract fun clearCurrentMatch()
 
     fun getCurrentSelectionCount(): Int = betRepository.count
+
+    companion object {
+        const val INITIAL_PAGE = 0
+    }
 }
 
 enum class LoadMatchType {
-    NEXT_PAGE, RELOAD, RETRY, FIRST_LOAD, DATE_CHANGE
+    NEXT_PAGE, PREV_PAGE, RELOAD, RETRY, FIRST_LOAD, DATE_CHANGE
 }

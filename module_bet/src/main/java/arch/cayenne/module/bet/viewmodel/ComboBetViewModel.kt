@@ -122,6 +122,7 @@ class ComboBetViewModel(
             launch {
                 repo.observeComboMultiBet().collect { beans ->
                     val lastList = _onComboMultiBetBeanListener.value
+                    //"aaaa---observeComboMultiBet--nowList:$beans, lastList:$lastList,${this@ComboBetViewModel}".logd(TAG)
 
                     // 如果舊資料是 null，代表第一次載入，直接設值
                     if (lastList == null) {
@@ -245,24 +246,27 @@ class ComboBetViewModel(
      * 检查限额
      * @return
      */
-    fun checkAmountLimit():Pair<Int, String>? {
+    fun checkAmountLimit():String? {
         val data = _onComboMultiBetBeanListener.value ?: return null
         val balance = this.balance
+        var totalInputMoney = 0L
         for((i,d) in data.withIndex()){
-            if(i > 0 && d.inputMoney == 0L) continue  //0相当于没输入
+            totalInputMoney += d.inputMoney
+            if(!d.hasSetMoney()) continue
             val curAmount = d.inputMoney.getMoney()
             val maxMoney = d.maxAmount
             val minNumber = d.minAmount
             if (curAmount.isGreaterThanValue(maxMoney.getMoney())) {
-                return i to arch.cayenne.lib.common.R.string.toast_over_max.getString()
+                return d.title() + arch.cayenne.lib.common.R.string.toast_over_max.getString()
             }
             val amount = curAmount.toMoney()
             if (minNumber > amount) {
-                return i to R.string.hint_less_min_amount.getString()
+                return d.title() + R.string.hint_less_min_amount.getString()
             } else if (amount > balance) {
-                return i to arch.cayenne.lib.common.R.string.toast_over_remaining.getString()
+                return d.title() + arch.cayenne.lib.common.R.string.toast_over_remaining.getString()
             }
         }
+        if(totalInputMoney == 0L) return R.string.hint_input_money.getString()
         return null
     }
 
@@ -272,27 +276,27 @@ class ComboBetViewModel(
      * @param combV
      * @return
      */
-    fun splitComboIntoSingles(combK:Int, combV:Int, money: Long): List<CombinationFragment.ParameterItems> {
+    fun splitComboIntoSingles(bean:ComboMultiBetBean): List<CombinationFragment.ParameterItems> {
         val data = this.onBetListListener.value ?: return emptyList()
         // 1 注 = 固定只有一个 K
-        val kList = if (combV == 1) {
-            listOf(combK)
+        val kList = if (bean.comboV == 1) {
+            listOf(bean.comboK)
         } else {
-            (2..combK).toList()
+            ((if(bean.isSuperCombo) 1 else 2)..bean.comboK).toList()
         }
         return kList.map { k ->
-            val title = "所有${k}串1注单"
+            val title = R.string.title_combo_bet_detail.getString(
+                if(k==1) arch.cayenne.lib.res.R.string.title_single_bet.getString()
+                else R.string.title_combo_bet_odds.getString(k,1)
+            )
             val moneySymbol = this.moneySymbol
 
             val listItems = data.combinations(k).map { l ->
-                val odds = l.fold(1) { acc, c -> acc * c.odds }.let {
-                    repo.getScaleOdds(it, (k - 1) * 2)
-                }
-
+                val odds = repo.calculateCombinationOdds(l.map { it.odds },l.size)
                 CombinationFragment.ParameterItems2(
                     combo = l.joinToString("·") { "${data.indexOf(it) + 1}" },
-                    money = money.takeIf { it != 0L }?.let { "$moneySymbol${it.getMoney()}" },
-                    winMoney = money.takeIf { it != 0L }?.let { "$moneySymbol${money.getMoney(odds)}" },
+                    money = bean.inputMoney.takeIf { it != 0L }?.let { "$moneySymbol${it.getMoney()}" },
+                    winMoney = bean.inputMoney.takeIf { it != 0L }?.let { "$moneySymbol${bean.inputMoney.getMoney(odds)}" },
                     odds = "@${odds.getOdds()}"
                 )
             }

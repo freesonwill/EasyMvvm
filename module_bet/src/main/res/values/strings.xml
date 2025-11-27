@@ -32,6 +32,9 @@
     <string name="title_combo_bet_odds_amount">本金：</string>
     <string name="title_combo_bet_odds_max_money">预计最高可赢：</string>
     <string name="title_combo_bet_odds">%d串%d</string>
+    <string name="title_combo_bet_super">超级组合</string>
+    <string name="title_combo_bet_detail">所有%s注单</string>
+    <string name="title_combo_bet_detail_tips">%s由所有%s注单组成</string>
 
     <string name="title_reserve">预约投注</string>
 
@@ -51,6 +54,7 @@
     <string name="title_result_bet_again">重新投注</string>
     <string name="title_result_bet_suc">注单已提交</string>
     <string name="hint_less_min_amount">低于最低限额</string>
+    <string name="hint_input_money">请输入金额</string>
 
     <string name="title_odds_change_any">接受任何赔率变化</string>
     <string name="title_odds_change_better">自动接受更好的赔率</string>
@@ -61,4 +65,5 @@
     <string name="toast_odds_change_none">赔率已变更，请重新投注</string>
     <string name="exit_combo_bet">退出串关</string>
     <string name="toast_no_more_bet_combs">没有更多组合投注</string>
+
 </resources>

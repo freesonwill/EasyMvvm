@@ -2,6 +2,7 @@ package arch.cayenne.lib.common.utils.ext
 
 import java.math.BigDecimal
 import java.math.RoundingMode
+import java.text.DecimalFormat
 import java.text.NumberFormat
 import java.util.Locale
 
@@ -121,7 +122,9 @@ object SportIntExt {
      * @return string: 1234 轉換為 12.34, 1000 轉換為 10.00
      */
     fun Int.getOdds(): String {
-        if (this <= 0) return "0"
+        if (this <= 0) return DecimalFormat("#.##").format(this/100f)
+        //BigDecimal(this / 100f).setScale(2, RoundingMode.HALF_UP).toFloat()
+        //(this / 100f).let { String.format("%.2f", it).toFloat() }
 
         val decimal = BigDecimal(this).divide(BigDecimal(100))
         return decimal.setScale(2, RoundingMode.DOWN).stripTrailingZeros().toPlainString()

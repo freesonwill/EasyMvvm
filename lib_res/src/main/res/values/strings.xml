@@ -9,4 +9,5 @@
         <item>预约</item>
         <item>失效</item>
     </string-array>
+    <string name="title_single_bet">单关</string>
 </resources>
