@@ -68,7 +68,7 @@ class HallFragment : BaseFragment<HallViewModel, FragmentHallBinding>() {
             colorRes =  arch.cayenne.lib.common.R.color.color_00E0E5,
             res = R.drawable.ic_tab_hall_recent,
             _title = R.string.tab_recent.getString(),
-            _page = { GameContentFragment.newInstance() }
+            _page = { GameRecentFragment.newInstance() }
         ),
         HallGameTabDefault(
             colorRes = arch.cayenne.lib.common.R.color.color_5B32FF,
@@ -91,44 +91,32 @@ class HallFragment : BaseFragment<HallViewModel, FragmentHallBinding>() {
 
         HallGameTabDefault(
             colorRes =  arch.cayenne.lib.common.R.color.red_team,
-            res = R.drawable.ic_tab_hall_slot,
-            _title = R.string.tab_slot.getString(),
+            res = R.drawable.ic_tab_hall_fishing,
+            _title = R.string.tab_fishing.getString(),
             _page = { GameContentFragment.newInstance() }
         ),
         HallGameTabDefault(
             colorRes =  arch.cayenne.lib.common.R.color.red_team,
-            res = R.drawable.ic_tab_hall_table,
-            _title = R.string.tab_table.getString(),
+            res = R.drawable.ic_tab_hall_real,
+            _title = R.string.tab_real.getString(),
             _page = { GameContentFragment.newInstance() }
         ),
         HallGameTabDefault(
             colorRes =  arch.cayenne.lib.common.R.color.red_team,
-            res = R.drawable.ic_tab_hall_slot,
-            _title = R.string.tab_slot.getString(),
+            res = R.drawable.ic_tab_hall_original,
+            _title = R.string.tab_original.getString(),
             _page = { GameContentFragment.newInstance() }
         ),
         HallGameTabDefault(
             colorRes =  arch.cayenne.lib.common.R.color.red_team,
-            res = R.drawable.ic_tab_hall_table,
-            _title = R.string.tab_table.getString(),
+            res = R.drawable.ic_tab_hall_lottery,
+            _title = R.string.tab_lottery.getString(),
             _page = { GameContentFragment.newInstance() }
         ),
         HallGameTabDefault(
             colorRes =  arch.cayenne.lib.common.R.color.red_team,
-            res = R.drawable.ic_tab_hall_slot,
-            _title = R.string.tab_slot.getString(),
-            _page = { GameContentFragment.newInstance() }
-        ),
-        HallGameTabDefault(
-            colorRes =  arch.cayenne.lib.common.R.color.red_team,
-            res = R.drawable.ic_tab_hall_table,
-            _title = R.string.tab_table.getString(),
-            _page = { GameContentFragment.newInstance() }
-        ),
-        HallGameTabDefault(
-            colorRes = arch.cayenne.lib.common.R.color.red_team,
-            res = R.drawable.ic_tab_hall_slot,
-            _title = R.string.tab_slot.getString(),
+            res = R.drawable.ic_tab_hall_esports,
+            _title = R.string.tab_esprots.getString(),
             _page = { GameContentFragment.newInstance() }
         )
     )

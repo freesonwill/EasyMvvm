@@ -37,7 +37,7 @@
         app:layout_constraintTop_toTopOf="@+id/tv_all"
         app:layout_constraintBottom_toBottomOf="@+id/tv_all" />
 
-    <arch.cayenne.lib.skin.widget.SkinnableRecyclerView
+    <com.walisport.module.hall.ui.view.ViewPager2PriorityRecyclerView
         android:id="@+id/rv_inner_list"
         android:layout_width="0dp"
         android:layout_height="161dp"
