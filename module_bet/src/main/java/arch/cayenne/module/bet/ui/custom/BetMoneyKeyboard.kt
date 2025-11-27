@@ -25,6 +25,7 @@ import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.data.repo.BalanceRepository
 import arch.cayenne.lib.common.ui.view.NumberKeyboardView.OnCalculatorClickListener
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.setOnClickOrLongPressListener
@@ -171,7 +172,7 @@ class BetMoneyKeyboard @JvmOverloads constructor(
             onMoneyChange.invoke(serialValue!!,it.toMoney())
         }
         mViewModel.onNumberLimit.observe(viewLifecycleOwner) {
-            etMoney!!.hint = context.getString(R.string.et_money_hint).format(it.first.getMoney(), it.second.getMoney())
+            etMoney!!.hint = R.string.et_money_hint.getString(it.first.getMoney(), it.second.getMoney())
         }
         mViewModel.onOverNumberListener.observe(viewLifecycleOwner) {
             it.msg?.let { msg ->
@@ -207,7 +208,7 @@ class BetMoneyKeyboard @JvmOverloads constructor(
             }
 
             override fun getOtherText(): String {
-                return context.getString(R.string.btn_max)
+                return R.string.btn_max.getString()
             }
         })
     }

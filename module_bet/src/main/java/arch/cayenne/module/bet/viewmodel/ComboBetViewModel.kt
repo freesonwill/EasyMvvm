@@ -292,10 +292,7 @@ class ComboBetViewModel(
             val moneySymbol = this.moneySymbol
 
             val listItems = data.combinations(k).map { l ->
-                val odds = l.fold(1) { acc, c -> acc * c.odds }.let {
-                    repo.getScaleOdds(it, (k - 1) * 2)
-                }
-
+                val odds = repo.calculateCombinationOdds(l.map { it.odds },l.size)
                 CombinationFragment.ParameterItems2(
                     combo = l.joinToString("·") { "${data.indexOf(it) + 1}" },
                     money = bean.inputMoney.takeIf { it != 0L }?.let { "$moneySymbol${it.getMoney()}" },

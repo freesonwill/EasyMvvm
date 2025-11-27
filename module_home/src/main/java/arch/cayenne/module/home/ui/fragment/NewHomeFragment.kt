@@ -28,6 +28,7 @@ import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
+import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
 import arch.cayenne.lib.common.utils.ext.TabLayoutExt
 import arch.cayenne.lib.common.utils.ext.TabLayoutExt.addOnTabSelectedListener2
@@ -157,7 +158,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                     tab.customView = promoTabs[position].createView(requireContext())
                     tab.tag = "PROMO"
                 } else {
-                    tab.setText(playTypes[position - promoTabs.size].titleRes)
+                    tab.setText(playTypes[position - promoTabs.size].titleRes.getString())
                 }
             },
             onPreselectChanged = { pos ->
