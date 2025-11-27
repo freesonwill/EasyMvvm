@@ -384,14 +384,14 @@ class MatchListPagerFragment :
         fun newInstance(
             sportId: Int,
             playTypeId: Int,
-            leagueId: Int,
+            leagueIdList: List<Int>,
             position: Int
         ): MatchListPagerFragment {
             return MatchListPagerFragment().apply {
                 arguments = Bundle().apply {
                     putInt(ARG_SPORT_ID, sportId)
                     putInt(ARG_PLAY_TYPE_ID, playTypeId)
-                    putIntArray(ARG_LEAGUE_ID, intArrayOf(leagueId))
+                    putIntArray(ARG_LEAGUE_ID, leagueIdList.toIntArray())
                     putInt(ARG_POSITION, position)
                 }
             }

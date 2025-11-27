@@ -35,9 +35,9 @@ import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.ext.startFadeAnim
 import arch.cayenne.lib.common.utils.helper.BounceEdgeEffectHelper
 import arch.cayenne.lib.common.utils.helper.VIPResourceHelper
-import arch.cayenne.lib.database.entity.TournamentDataModel
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.module.home.R
+import arch.cayenne.module.home.TournamentCombo
 import arch.cayenne.module.home.data.constants.HomeState
 import arch.cayenne.module.home.data.constants.PlayType
 import arch.cayenne.module.home.data.constants.TournamentListType
@@ -49,7 +49,6 @@ import arch.cayenne.module.home.ui.adapter.LeaguePagerAdapter
 import arch.cayenne.module.home.ui.adapter.SportBannerAdapter
 import arch.cayenne.module.home.ui.adapter.SportsListAdapter
 import arch.cayenne.module.home.ui.view.CustomTabLayoutMediator
-import arch.cayenne.module.home.ui.view.HomeCalendarFragment
 import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
 import arch.cayenne.module.home.ui.viewmodel.SubHomeViewModel
 import arch.cayenne.module.home.utils.DateUtils
@@ -378,12 +377,12 @@ class SubHomeFragment : BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>()
             val tabLayout = mBinding.layoutContainer.tlLeagueList
             for (i in 0 until tabLayout.tabCount) {
                 val tab = tabLayout.getTabAt(i)
-                val data = tab?.tag as? TournamentDataModel
+                val data = tab?.tag as? TournamentCombo
 
                 if (tab != null && data != null && tab.customView == null) {
                     tab.customView = createTournamentTabView(data)
                     tab.view.setPadding(0, 0, 6f.dp2px, 0)
-                    if (data.id == HomeViewModel.TOURNAMENT_ALL_ID) {
+                    if (data.tournamentList[0].id == HomeViewModel.TOURNAMENT_ALL_ID) {
                         tab.view.minimumWidth = 0
                     }
                 }
@@ -674,7 +673,7 @@ class SubHomeFragment : BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>()
     )
 
 
-    private fun setTournamentAndViewPagerLayout(tournaments: List<TournamentDataModel>) {
+    private fun setTournamentAndViewPagerLayout(tournamentCombos: List<TournamentCombo>) {
 
         with(mBinding.layoutContainer) {
             if (leaguePagerAdapter == null) {
@@ -685,7 +684,7 @@ class SubHomeFragment : BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>()
                 vpGameList.adapter = leaguePagerAdapter
                 vpGameList.offsetLeftAndRight(1)
             }
-            leaguePagerAdapter!!.setData(mViewModel.currentPlayTypeId, tournaments)
+            leaguePagerAdapter!!.setData(mViewModel.currentPlayTypeId, tournamentCombos)
 
             //因為一開始有觸發resetHome(),觸發resetLiveData()，所以observe livedata tournaments可能會是空的
             //導致tabLayout沒有資料時又多設定一次OnTabSelectedListener，因此要先清除之前的listener
@@ -696,14 +695,14 @@ class SubHomeFragment : BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>()
                 tabLayout = tlLeagueList,
                 viewPager = vpGameList
             ) { tab, position ->
-                tournaments.getOrNull(position)?.let {
+                tournamentCombos.getOrNull(position)?.let {
                     tab.tag = it
                 }
             }.also { layoutMediator ->
                 layoutMediator.attach(
                     afterTabSelected = { position ->
-                        tournaments.getOrNull(position)?.let { tournament ->
-                            mViewModel.setCurrentTournamentId(tournament.id)
+                        tournamentCombos.getOrNull(position)?.let { tournamentCombo ->
+                            mViewModel.setCurrentTournamentIdList(tournamentCombo.leagueIdList)
                             // 需求3：標記外部tab已切換，下次打開彈窗時需要清空篩選
                             mViewModel.markTournamentTabSwitched()
                             // 需求3：清除按鈕選中狀態和已保存的選中聯賽
@@ -717,8 +716,9 @@ class SubHomeFragment : BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>()
                     drawTournamentTab()
                 }
 
-                if (tournaments.isNotEmpty()) {
-                    val selectedPosition = tournaments.indexOfFirst { it.isSelected }
+                if (tournamentCombos.isNotEmpty()) {
+                    val selectedPosition =
+                        tournamentCombos.indexOfFirst { it.isSelected }
                     tlLeagueList.setScrollPosition(selectedPosition, 0f, true)
                     tlLeagueList.post { layoutMediator.selectTabWithoutAnimation(selectedPosition) }
                     vpGameList.post {
@@ -759,12 +759,13 @@ class SubHomeFragment : BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>()
     }
 
     private fun createTournamentTabView(
-        tournament: TournamentDataModel
+        tournamentCombo: TournamentCombo
     ): View {
         val tabBinding =
             ItemLeagueTabBinding.inflate(LayoutInflater.from(requireContext()), null, false)
 
         tabBinding.apply {
+            val tournament = tournamentCombo.tournamentList[0]
             tvLeagueName.text = if (tournament.id == HomeViewModel.TOURNAMENT_ALL_ID)
                 getString(R.string.league_all)
             else tournament.simpleName
