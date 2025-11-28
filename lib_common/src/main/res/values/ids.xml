@@ -2,6 +2,7 @@
 <resources>
     <item name="tag_last_click_time" type="id" />
     <item name="tag_on_item_touch_listener" type="id" />
+    <item name="tag_text_watcher_key" type="id" />
     <item name="long_press_job_tag" type="id" />
     <item name="is_long_press_triggered_tag" type="id" />
     <item name="iv_faker_view" type="id" />
