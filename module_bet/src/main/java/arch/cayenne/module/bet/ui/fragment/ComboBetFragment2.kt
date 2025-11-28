@@ -241,14 +241,6 @@ class ComboBetFragment2 : BaseFragment<ComboBetViewModel, FragmentComboBet2Bindi
                     combo
                 }
                 tvMulti.text = let { "@${item.sumOdds.getOdds()}" }
-                etMoney.setText(let {
-                    if (item.inputMoney > 0) {
-                        val money = item.inputMoney.getMoney()
-                        money
-                    } else {
-                       ""
-                    }
-                })
                 val moneyHint = R.string.et_money_hint.getString().format(item.minAmount.getMoney(), item.maxAmount.getMoney())
                 etMoney.hint = moneyHint
                 tvMoney.text = moneySymbol
