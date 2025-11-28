@@ -19,7 +19,7 @@ import arch.cayenne.module.chat.databinding.ItemAtLayoutBinding
  */
 class AtAdapter() : BaseAdapter<AtBean, AtAdapter.AtViewHolder, ItemAtLayoutBinding>(AtBeanCompare()) {
     private var itemListener:RecyclerItemListener<AtBean>? = null
-    private var selectedSet:MutableSet<Int> = mutableSetOf()
+   var selectedSet:MutableSet<Int> = mutableSetOf()
 
     fun setItemClickListener(itemListener:RecyclerItemListener<AtBean>){
         this.itemListener = itemListener

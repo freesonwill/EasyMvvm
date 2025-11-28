@@ -9,7 +9,7 @@ import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
 import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
 import arch.cayenne.module.chat.data.compare.EmojiCompare
 import arch.cayenne.module.chat.data.constants.EmojiTypeEnum
-import arch.cayenne.module.chat.data.model.EmojiData
+import arch.cayenne.module.chat.data.model.EmojiModel
 import arch.cayenne.module.chat.databinding.ItemBidEmojiLayoutBinding
 import arch.cayenne.module.chat.databinding.ItemChatEmojiTitleLayoutBinding
 import arch.cayenne.module.chat.databinding.ItemEmojiLayoutBinding
@@ -20,22 +20,22 @@ import arch.cayenne.module.chat.databinding.ItemEmojiLayoutBinding
  * @description:
  */
 class EmojiGridAdapter :
-    BaseAdapter<EmojiData, EmojiGridAdapter.EmojiGridViewHolder, ViewBinding>(
+    BaseAdapter<EmojiModel, EmojiGridAdapter.EmojiGridViewHolder, ViewBinding>(
         EmojiCompare()
     ) {
 
     private var emojiType: EmojiTypeEnum = EmojiTypeEnum.NORMAL
-    private var recentList: List<EmojiData> = arrayListOf()
+    private var recentList: List<EmojiModel> = arrayListOf()
     private val topViewType = 1
     private val normalEmojiViewType = 2
     private val bidEmojiViewType = 3
-    private var emojiListener: RecyclerItemListener<EmojiData>? = null
+    private var emojiListener: RecyclerItemListener<EmojiModel>? = null
 
-    fun setEmojiListener(listener: RecyclerItemListener<EmojiData>) {
+    fun setEmojiListener(listener: RecyclerItemListener<EmojiModel>) {
         this.emojiListener = listener
     }
 
-    fun setRecentList(list: List<EmojiData>) {
+    fun setRecentList(list: List<EmojiModel>) {
         this.recentList = list
         notifyItemChanged(0)
     }

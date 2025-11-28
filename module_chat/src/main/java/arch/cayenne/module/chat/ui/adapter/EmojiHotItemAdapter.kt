@@ -3,25 +3,21 @@ package arch.cayenne.module.chat.ui.adapter
 import android.view.LayoutInflater
 import android.view.View.OnClickListener
 import android.view.ViewGroup
-import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.base.ui.adapter.BaseAdapter
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
 import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
 import arch.cayenne.module.chat.data.compare.EmojiCompare
-import arch.cayenne.module.chat.data.constants.EmojiTypeEnum
-import arch.cayenne.module.chat.data.model.EmojiData
-import arch.cayenne.module.chat.databinding.ItemBidEmojiLayoutBinding
+import arch.cayenne.module.chat.data.model.EmojiModel
 import arch.cayenne.module.chat.databinding.ItemEmojiHotLayoutBinding
-import arch.cayenne.module.chat.databinding.ItemEmojiLayoutBinding
 
 
 class EmojiHotItemAdapter() :
-    BaseAdapter<EmojiData, EmojiHotItemAdapter.LiveEmojiViewHolder, ItemEmojiHotLayoutBinding>(
+    BaseAdapter<EmojiModel, EmojiHotItemAdapter.LiveEmojiViewHolder, ItemEmojiHotLayoutBinding>(
         EmojiCompare()
     ) {
-    private var itemListener: RecyclerItemListener<EmojiData>? = null
+    private var itemListener: RecyclerItemListener<EmojiModel>? = null
 
-    fun setItemListener(listener: RecyclerItemListener<EmojiData>?) {
+    fun setItemListener(listener: RecyclerItemListener<EmojiModel>?) {
         this.itemListener = listener
     }
 

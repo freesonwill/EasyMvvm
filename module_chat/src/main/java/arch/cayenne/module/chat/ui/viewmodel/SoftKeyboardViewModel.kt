@@ -11,7 +11,7 @@ import arch.cayenne.lib.common.data.constants.UserDataKey
 import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.database.dao.ChatConfigDao
 import arch.cayenne.module.chat.data.constants.EmojiEnum
-import arch.cayenne.module.chat.data.model.EmojiData
+import arch.cayenne.module.chat.data.model.EmojiModel
 
 import arch.cayenne.module.chat.data.model.KeyBoardTabData
 
@@ -97,7 +97,7 @@ class SoftKeyboardViewModel : BaseViewModel() {
     }
 
 
-    fun getHotRecycler(): List<EmojiData> {
+    fun getHotRecycler(): List<EmojiModel> {
         return arrayOf(
             EmojiEnum.Gin,
             EmojiEnum.Smile,
@@ -105,7 +105,7 @@ class SoftKeyboardViewModel : BaseViewModel() {
             EmojiEnum.Scrowl,
             EmojiEnum.Dizzy
         ).map {
-            EmojiData(it.resId, it.key)
+            EmojiModel(it.resId, it.key)
         }.toList()
     }
 
