@@ -79,7 +79,8 @@ data class MsgNotify(val roomId:Long,val msg:ChatMsg):IResponse
  * 消息Bean
  * */
 data class ChatMsg(val uid:String,val userName:String,val avatarId:Int,val msgId:String,val content:String,val timestamp:String,val refUid:String,val refUserName:String,
-                   val refAvatarId:Int,val onlyForSelf:Int,val platform:Int)
+                   val refAvatarId:Int,val onlyForSelf:Int,val platform:Int){
+}
 
 /**
  * 获取用户统计消息

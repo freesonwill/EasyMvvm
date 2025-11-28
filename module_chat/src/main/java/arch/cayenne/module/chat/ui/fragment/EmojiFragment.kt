@@ -7,7 +7,7 @@ import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.module.chat.data.constants.EmojiTypeEnum
-import arch.cayenne.module.chat.data.model.EmojiData
+import arch.cayenne.module.chat.data.model.EmojiModel
 import arch.cayenne.module.chat.databinding.FragmentEmojiLayoutBinding
 import arch.cayenne.module.chat.ui.adapter.EmojiGridAdapter
 import arch.cayenne.module.chat.ui.viewmodel.ChatHomeViewModel
@@ -44,8 +44,8 @@ class EmojiFragment : BaseFragment<EmojiViewModel, FragmentEmojiLayoutBinding>()
             if (emoJiType == EmojiTypeEnum.NORMAL) mViewModel.getNormalList()
                 .subList(1, 9) else mViewModel.getBidList().subList(1, 5)
         )
-        nAdapter.setEmojiListener(object :RecyclerItemListener<EmojiData>{
-            override fun onItemClick(item: EmojiData?, position: Int) {
+        nAdapter.setEmojiListener(object :RecyclerItemListener<EmojiModel>{
+            override fun onItemClick(item: EmojiModel?, position: Int) {
                 item?.let { chatViewModel.addEmojiToChat(it) }
             }
         })

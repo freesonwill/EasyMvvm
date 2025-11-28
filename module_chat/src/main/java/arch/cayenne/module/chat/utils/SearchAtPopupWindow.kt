@@ -1,13 +1,18 @@
 package arch.cayenne.module.chat.utils
 
+import android.annotation.SuppressLint
 import android.content.Context
+import android.text.Editable
+import android.text.SpannableStringBuilder
 import android.view.LayoutInflater
-import android.view.View
+import android.widget.EditText
 import android.widget.PopupWindow
 import androidx.recyclerview.widget.LinearLayoutManager
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.module.chat.data.model.AtBean
+import arch.cayenne.module.chat.data.model.MentionSpan
 import arch.cayenne.module.chat.databinding.PopupSearchAtLayoutBinding
 import arch.cayenne.module.chat.ui.adapter.AtAdapter
 
@@ -45,17 +50,40 @@ class SearchAtPopupWindow {
         }
     }
 
-    fun showPopupWindow(targetView: View) {
+    fun showPopupWindow(targetView: EditText) {
         if (atPopupWindow?.isShowing == false) {
+              notifyAdapter(targetView)
             atPopupWindow?.showAsDropDown(targetView)
         }
     }
 
-    fun dismiss(){
-        atAdapter.clear()
-     if(atPopupWindow != null && atPopupWindow?.isShowing == true){
-         atPopupWindow?.dismiss()
-     }
+    @SuppressLint("NotifyDataSetChanged")
+    private fun notifyAdapter(editext:EditText){
+        val editAtList = getAtMsg(editext.text)
+        val indexList = mutableSetOf<Int>()
+        editAtList.forEach {
+           val index  = atAdapter.currentList.indexOf(it)
+            indexList.add(index)
+        }
+        atAdapter.selectedSet = indexList
+        atAdapter.notifyDataSetChanged()
     }
+
+    private fun getAtMsg(editable: Editable): List<AtBean> {
+        if (editable.isEmpty()) {
+            return emptyList()
+        }
+        val spannable = SpannableStringBuilder(editable)
+        val spans = spannable.getSpans(0, editable.length, MentionSpan::class.java)
+        return spans.map {
+            AtBean(name = it.tv, false) }.toList()
+    }
+
+    fun dismiss() {
+        if (atPopupWindow != null && atPopupWindow?.isShowing == true) {
+            atPopupWindow?.dismiss()
+        }
+    }
+
 
 }

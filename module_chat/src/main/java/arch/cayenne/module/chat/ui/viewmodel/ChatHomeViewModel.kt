@@ -1,5 +1,7 @@
 package arch.cayenne.module.chat.ui.viewmodel
 
+import android.text.Editable
+import android.text.SpannableStringBuilder
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -9,16 +11,17 @@ import arch.cayenne.lib.common.data.constants.UserDataKey
 import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.database.dao.ChatConfigDao
 import arch.cayenne.lib.skin.LanguageManager
-import arch.cayenne.lib.websocket.chat.data.ChatMsg
 import arch.cayenne.lib.websocket.chat.data.MsgNotify
 import arch.cayenne.lib.websocket.data.SocketConnectState
 import arch.cayenne.module.chat.data.constants.CheckBetResultEnum
 import arch.cayenne.module.chat.data.constants.EmojiEnum
 import arch.cayenne.module.chat.data.constants.KeyBoardType
-import arch.cayenne.module.chat.data.model.EmojiData
+import arch.cayenne.module.chat.data.constants.MsgType
+import arch.cayenne.module.chat.data.model.ChatMsgPageBean
+import arch.cayenne.module.chat.data.model.EmojiModel
+import arch.cayenne.module.chat.data.model.MentionSpan
 import arch.cayenne.module.chat.manager.ChatServerController
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
@@ -28,38 +31,43 @@ class ChatHomeViewModel() : BaseViewModel() {
 
     //    private val _currentSoftKeyboard = MutableStateFlow(KeyBoardType.CHAT)
     private val _updateKeyboardUiStatus = MutableLiveData(KeyBoardType.CHAT)
-    private val _sendMsgLiveData = MutableLiveData<String>()
+    private val _sendMsgLiveData = MutableLiveData<ChatMsgPageBean>()
     private val _chatHistoryIsEmpty = MutableLiveData<Boolean>()
     private val chatServer: ChatServerController by inject { parametersOf(viewModelScope) }
-    private val _emojiLiveData:MutableLiveData<EmojiData> = MutableLiveData()
-    private val _etDelLiveDta:MutableLiveData<Boolean> = MutableLiveData()
+    private val _emojiLiveData: MutableLiveData<EmojiModel> = MutableLiveData()
+    private val _etDelLiveDta: MutableLiveData<Boolean> = MutableLiveData()
 
 
-    var currentKeyBoardType:KeyBoardType = KeyBoardType.CHAT
+    var currentKeyBoardType: KeyBoardType = KeyBoardType.CHAT
+
     //键盘发送过来的消息
-    val sendMsgLiveData: LiveData<String> = _sendMsgLiveData
+    val sendMsgLiveData: LiveData<ChatMsgPageBean> = _sendMsgLiveData
+
     //更新键盘盘状态
     val updateKeyboardUiStatus: LiveData<KeyBoardType> = _updateKeyboardUiStatus
+
     //判断聊天记录是不是空的
-    val chatHistoryIsEmpty:LiveData<Boolean> = _chatHistoryIsEmpty
+    val chatHistoryIsEmpty: LiveData<Boolean> = _chatHistoryIsEmpty
 
     //聊天api相关
     val chatHistoryFlow = chatServer.historyFlow
     val sendMsgToServerFlow = chatServer.sendMsgResultFlow
     val loginFlow = chatServer.loginFlow
     val checkBetAmountFlow = chatServer.checkBetAmountFlow
+
     //emojiFragment 发送emoji到et显示
-    val emojiLiveData:LiveData<EmojiData> = _emojiLiveData
-    val etDelLiveData:LiveData<Boolean> = _etDelLiveDta
+    val emojiLiveData: LiveData<EmojiModel> = _emojiLiveData
+    val etDelLiveData: LiveData<Boolean> = _etDelLiveDta
 
 
     val languageManager: LanguageManager by inject { parametersOf(viewModelScope) }
     val userDataManager: UserDataManager by inject()
+
     //聊天设置
     val chatConfigDao: ChatConfigDao by inject()
 
     var keyBoardHeight: Int = 0
-    var isMainSoft:Boolean = false
+    var isMainSoft: Boolean = false
 
     fun setArguments(matchId: Long?) {
         //直播间重新从联赛进入时，刷新matchId 重新进入聊天室
@@ -85,7 +93,7 @@ class ChatHomeViewModel() : BaseViewModel() {
         chatServer.disconnectChatServer()
     }
 
-    suspend fun serverFlow():StateFlow<SocketConnectState>{
+    suspend fun serverFlow(): StateFlow<SocketConnectState> {
         return chatServer.serverConnectFlow()
     }
 
@@ -126,6 +134,7 @@ class ChatHomeViewModel() : BaseViewModel() {
             CheckBetResultEnum.BET_AMOUNT_INVALID, CheckBetResultEnum.BALANCE_INVALID -> {
                 false
             }
+
             CheckBetResultEnum.SUCCESS -> true
             null -> false
         }
@@ -133,22 +142,44 @@ class ChatHomeViewModel() : BaseViewModel() {
 
 
     /**
-     * 添加本地数据
+     * 发送文本，@，普通表情消息
      * */
-    fun addLocalMsg(content: String):ChatMsg? {
+    fun createLocalMsg(editable: Editable): ChatMsgPageBean? {
         if (loginFlow.value == null) {
             "chat is not login ".logd(TAG)
             return null
         }
-        val msg = chatServer.addLocalMsg(content)
-       return msg
+        val spannable = SpannableStringBuilder(editable)
+        val spans = spannable.getSpans(0, editable.length, MentionSpan::class.java)
+        val atIntRanges = mutableListOf<IntRange>()
+        spans.forEach {
+            val start = spannable.getSpanStart(it)
+            val end = spannable.getSpanEnd(it)
+            atIntRanges.add(IntRange(start, end))
+        }
+
+        val chatMsg = chatServer.addLocalMsg(editable.toString()) ?: return null
+        return ChatMsgPageBean.toChatPageBean(chatMsg, MsgType.AT,atIntRanges)
     }
+
+    /**
+     * 发送赛事表情
+     * */
+
+    fun createBidLocalMsg(emojiKey:String):ChatMsgPageBean?{
+        if (loginFlow.value == null) {
+            "chat is not login ".logd(TAG)
+            return null
+        }
+        val chatMsg = chatServer.addLocalMsg(emojiKey) ?: return null
+        return ChatMsgPageBean.toChatPageBean(chatMsg,MsgType.EMOJI)
+    }
+
 
     /**
      * 软件et传递消息
      * */
-    fun sendMsgToChat(msg: String) {
-
+    fun sendMsgToChat(msg: ChatMsgPageBean) {
         _sendMsgLiveData.value = msg
     }
 
@@ -156,11 +187,11 @@ class ChatHomeViewModel() : BaseViewModel() {
         _updateKeyboardUiStatus.value = keyBoardType
     }
 
-    fun setSoftConfig(value:Boolean){
-        userDataManager.setKeyValue(UserDataKey.KEY_SOFT_CONFIG,value)
+    fun setSoftConfig(value: Boolean) {
+        userDataManager.setKeyValue(UserDataKey.KEY_SOFT_CONFIG, value)
     }
 
-    fun getHotRecycler(): List<EmojiData> {
+    fun getHotRecycler(): List<EmojiModel> {
         return arrayOf(
             EmojiEnum.Gin,
             EmojiEnum.Smile,
@@ -168,18 +199,17 @@ class ChatHomeViewModel() : BaseViewModel() {
             EmojiEnum.Scrowl,
             EmojiEnum.Dizzy
         ).map {
-            EmojiData(it.resId, it.key)
+            EmojiModel(it.resId, it.key)
         }.toList()
     }
 
 
-    fun etDelFunction(){
+    fun etDelFunction() {
         _etDelLiveDta.value = _etDelLiveDta.value?.let { !it } ?: false
     }
 
-    fun addEmojiToChat(emojiData: EmojiData){
+    fun addEmojiToChat(emojiData: EmojiModel) {
         _emojiLiveData.value = emojiData
     }
-
 
 }

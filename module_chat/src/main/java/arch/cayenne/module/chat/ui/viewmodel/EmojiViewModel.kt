@@ -3,7 +3,7 @@ package arch.cayenne.module.chat.ui.viewmodel
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.module.chat.data.constants.BidEmojiEnum
 import arch.cayenne.module.chat.data.constants.EmojiEnum
-import arch.cayenne.module.chat.data.model.EmojiData
+import arch.cayenne.module.chat.data.model.EmojiModel
 
 /**
  * @author: wenxi
@@ -12,27 +12,27 @@ import arch.cayenne.module.chat.data.model.EmojiData
  */
 class EmojiViewModel : BaseViewModel() {
 
-    private fun getNormalEmojis(): MutableList<EmojiData> {
+    private fun getNormalEmojis(): MutableList<EmojiModel> {
         val list = EmojiEnum.getEmojiMap().map {
-            EmojiData(it.value, it.key)
+            EmojiModel(it.value, it.key)
         }.toMutableList()
         return list
     }
 
     private fun getBidEmojis() = BidEmojiEnum.getEmojiMap().map {
-        EmojiData(it.value, it.key)
+        EmojiModel(it.value, it.key)
     }.toMutableList()
 
-    fun getNormalList(): List<EmojiData> {
+    fun getNormalList(): List<EmojiModel> {
         val list = getNormalEmojis()
-        list.add(0,EmojiData(-1, ""))
+        list.add(0,EmojiModel(-1, ""))
         return list
     }
 
 
-    fun getBidList(): List<EmojiData> {
+    fun getBidList(): List<EmojiModel> {
         val list = getBidEmojis()
-        list.add(0,EmojiData(-1, ""))
+        list.add(0,EmojiModel(-1, ""))
         return  list
     }
 

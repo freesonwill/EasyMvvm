@@ -23,7 +23,7 @@ class BetRepository(
 ) : BaseRepository() {
 
     companion object {
-        private const val MAX_LIMIT_SIZE = 10
+        private const val MAX_LIMIT_SIZE = 20
     }
 
     var count: Int = 0
@@ -74,7 +74,7 @@ class BetRepository(
                 }
 
                 if (existing == null && selections.size >= MAX_LIMIT_SIZE) {
-                    return@async AddSelectionStatus.Failure.MaxLimit
+                    return@async AddSelectionStatus.Failure.MaxLimit(MAX_LIMIT_SIZE)
                 }
 
 

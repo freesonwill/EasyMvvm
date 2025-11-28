@@ -108,4 +108,22 @@ object CollectionExt {
         return combos.filter { it.size == k }
     }
 
+
+    /**
+     * C(n, k)
+     * eg:[A,B,C]取2-->[[A,B],[A,C],[B,C]]
+     * @return
+     */
+    private fun <T> List<T>.combinationsRecursion(k: Int): List<List<T>> {
+        if (k == 0) return listOf(emptyList())
+        if (this.isEmpty()) return emptyList()
+
+        val head = first()
+        val tail = drop(1)
+
+        val withHead = tail.combinations(k - 1).map { listOf(head) + it }
+        val withoutHead = tail.combinations(k)
+
+        return withHead + withoutHead
+    }
 }
