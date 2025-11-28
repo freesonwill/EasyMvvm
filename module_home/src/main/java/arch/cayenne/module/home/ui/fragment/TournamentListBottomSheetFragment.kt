@@ -30,12 +30,14 @@ import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.module.home.R
 import arch.cayenne.module.home.data.TournamentListItem
 import arch.cayenne.module.home.data.constants.HomeState
+import arch.cayenne.module.home.data.constants.PlayType
 import arch.cayenne.module.home.data.constants.TournamentListType
 import arch.cayenne.module.home.databinding.FragmentTournamentBottomSheetBinding
 import arch.cayenne.module.home.databinding.ItemTournamentHeaderBinding
 import arch.cayenne.module.home.ui.adapter.TournamentSectionAdapter
 import arch.cayenne.module.home.ui.view.CustomFilterSideBarView
 import arch.cayenne.module.home.ui.view.decoration.StickyHeaderItemDecoration
+import arch.cayenne.module.home.ui.viewmodel.EarlyViewModel
 import arch.cayenne.module.home.ui.viewmodel.SubHomeViewModel
 import arch.cayenne.module.home.ui.viewmodel.TournamentListViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -50,7 +52,13 @@ class TournamentListBottomSheetFragment :
         FragmentTournamentBottomSheetBinding::class
     override val vmClass: KClass<TournamentListViewModel> = TournamentListViewModel::class
 
-    private val subHomeViewModel: SubHomeViewModel by viewModels({ requireParentFragment() })
+    private val subHomeViewModel: SubHomeViewModel by lazy {
+        if (arguments?.getInt(ARG_PLAY_TYPE_ID) == PlayType.EARLY.id) {
+            viewModels<EarlyViewModel>({ requireParentFragment() }).value
+        } else {
+            viewModels<SubHomeViewModel>({ requireParentFragment() }).value
+        }
+    }
     private lateinit var adapter: TournamentSectionAdapter
     private var pendingJumpIndex: Int? = null
     private var stickyHeaderDecoration: StickyHeaderItemDecoration? = null
