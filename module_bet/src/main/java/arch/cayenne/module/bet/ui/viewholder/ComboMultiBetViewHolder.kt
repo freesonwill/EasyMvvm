@@ -1,26 +1,24 @@
 package arch.cayenne.module.bet.ui.viewholder
 
-import android.annotation.SuppressLint
+import android.text.Editable
 import android.text.StaticLayout
-import android.view.View
-import android.view.View.OnLongClickListener
+import android.text.TextWatcher
 import android.view.ViewGroup.LayoutParams
-import android.view.ViewTreeObserver
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
-import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
+import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
-import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.module.bet.R
 import arch.cayenne.module.bet.data.ComboMultiBetBean
 import arch.cayenne.module.bet.databinding.ItemComboMultiBet2Binding
 import arch.cayenne.module.bet.ui.adapter.ComboMultiBetAdapter
+import java.util.Locale
 
 class ComboMultiBetViewHolder(private val mBinding: ItemComboMultiBet2Binding, private val onComboMultiBetClickListener: ComboMultiBetAdapter.OnComboMultiBetClickListener): BaseViewHolder(mBinding) {
-    @SuppressLint("ClickableViewAccessibility")
+
     fun bind(item: ComboMultiBetBean) {
         val combo = R.string.title_combo_bet_odds.getString(item.comboK, item.comboV)
         mBinding.tvTitleCombo.text = when {
@@ -46,6 +44,30 @@ class ComboMultiBetViewHolder(private val mBinding: ItemComboMultiBet2Binding, p
 
         mBinding.tvTitleCombo.clickNoRepeat {
             onComboMultiBetClickListener.onCombinationDetailClick(item.serialValue)
+        }
+
+        mBinding.etMoney.apply{
+            // 1. 移除旧的 watcher
+            removeTextChangedListener(getTag(arch.cayenne.lib.common.R.id.tag_text_watcher_key) as? TextWatcher)
+            // 2. 创建新的 watcher
+            val watcher = object : TextWatcher {
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+                override fun afterTextChanged(s: Editable?) {
+                    val money = text.toString().toMoney()
+                    val product = (money * item.count).getMoney()
+                    mBinding.tvPrincipal.text = String.format(Locale.ROOT,"${R.string.title_result_amount.getString()} %s%s",
+                        onComboMultiBetClickListener.getMoneySymbol(),
+                        product
+                    )
+                }
+            }
+            // 3. 把 watcher 存到 EditText 的 tag 上
+            setTag(arch.cayenne.lib.common.R.id.tag_text_watcher_key,watcher)
+            // 4. 初始化调用一次
+            watcher.afterTextChanged(text)
+            // 5. 添加监听
+            addTextChangedListener(watcher)
         }
     }
 
