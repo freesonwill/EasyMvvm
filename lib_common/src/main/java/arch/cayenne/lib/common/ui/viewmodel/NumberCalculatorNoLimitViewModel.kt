@@ -15,6 +15,7 @@ open class NumberCalculatorNoLimitViewModel : BaseViewModel() {
     val onEditNumber: LiveData<String> get() = _onEditNumber
 
     val editValue: String get() = _onEditNumber.value.orEmpty()
+    private var _maxLength:Int = Int.MAX_VALUE
 
     open fun addNumber(number: Int) {
         val current = onEditNumber.value.orEmpty()
@@ -30,13 +31,14 @@ open class NumberCalculatorNoLimitViewModel : BaseViewModel() {
     }
 
     fun setDot() {
-        _onEditNumber.value = _onEditNumber.value?.let {
+        val newValue = _onEditNumber.value?.let {
             if (!it.contains(".")) {
                 "$it."
             } else {
                 it
             }
         } ?: "0."
+        setEditNumber(newValue)
     }
 
     fun setNumber(number: Long) {
@@ -48,7 +50,7 @@ open class NumberCalculatorNoLimitViewModel : BaseViewModel() {
     }
 
     fun clearNumber() {
-        _onEditNumber.value = ""
+        setEditNumber("")
     }
 
     fun doubleNumber() {
@@ -64,20 +66,27 @@ open class NumberCalculatorNoLimitViewModel : BaseViewModel() {
     }
 
     fun backNumber() {
-        _onEditNumber.value = _onEditNumber.value?.let {
+        val newValue = _onEditNumber.value?.let {
             if (it.length > 1) {
                 it.substring(0, it.length - 1)
             } else {
                 ""
             }
-        }
+        } ?: ""
+        setEditNumber(newValue)
     }
 
     protected open fun setEditNumber(value: String) {
-        _onEditNumber.value = value
+        _onEditNumber.value = if(value.length > _maxLength) {
+            value.substring(0,_maxLength)
+        } else value
     }
 
     fun setDecimalNumber(decimal: Int) {
         _decimalNumber = decimal
+    }
+
+    fun setMaxLength(max:Int){
+        _maxLength = max
     }
 }

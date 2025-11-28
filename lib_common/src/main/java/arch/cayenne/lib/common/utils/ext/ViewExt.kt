@@ -14,6 +14,7 @@ import android.graphics.Rect
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.RippleDrawable
 import android.os.Build
+import android.text.InputFilter
 import android.util.TypedValue
 import android.view.MotionEvent
 import android.view.View
@@ -21,6 +22,7 @@ import android.view.View.OnAttachStateChangeListener
 import android.view.animation.DecelerateInterpolator
 import android.view.animation.LinearInterpolator
 import android.widget.Button
+import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.RequiresApi
@@ -776,4 +778,14 @@ fun AppCompatImageView.setScaleAnim(min:Int,max:Int){
             ?: LinearInterpolator(),
         start = true
     )
+}
+
+
+fun EditText.getMaxLength(): Int {
+    for (filter in filters) {
+        if (filter is InputFilter.LengthFilter) {
+            return filter.max
+        }
+    }
+    return Int.MAX_VALUE
 }
