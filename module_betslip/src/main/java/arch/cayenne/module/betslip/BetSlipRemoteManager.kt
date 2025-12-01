@@ -9,6 +9,7 @@ import arch.cayenne.lib.websocket.data.ConnectState
 import arch.cayenne.lib.websocket.data.SocketResponseData
 import arch.cayenne.lib.websocket.extension.observeProtoMessage
 import arch.cayenne.lib.websocket.extension.sendAndWaitProtoMessageResponse
+import arch.cayenne.module.order.utils.TimeUtils
 import com.google.gson.Gson
 import galaxy.client.proto.Client
 import galaxy.client.proto.Client.EarlySettlePriceReq
@@ -67,7 +68,7 @@ class BetSlipRemoteManager(
                 cursorBetTime?.let { this.cursorBetTime = it }
                 sportIds?.let { this.addAllSportId(it) }
                 matchId?.let { this.matchId = it }
-
+                this.offsetHours = TimeUtils.timeZoneOffsetHours()
             }.build()
         }
         "getOrderReq result ${Gson().toJson(result)}".logd(TAG)

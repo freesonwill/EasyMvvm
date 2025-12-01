@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
+import java.util.TimeZone
 
 object TimeUtils {
 
@@ -33,5 +34,16 @@ object TimeUtils {
 
         val sdf = SimpleDateFormat(finalPattern, locale)
         return sdf.format(target.time)
+    }
+
+    /**
+     * 获取时区的偏移小时，比如Beijing为UTC+8，返回8
+     * @param timeZone，eg：TimeZone.getTimeZone("Asia/Shanghai")
+     * @return
+     */
+    fun timeZoneOffsetHours(timeZone: TimeZone = TimeZone.getDefault()):Int {
+        val offsetMillis = timeZone.rawOffset // 偏移毫秒
+        val offsetHours = offsetMillis / (1000 * 60 * 60) // 转换为小时
+        return offsetHours
     }
 }
