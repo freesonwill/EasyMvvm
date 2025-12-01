@@ -108,7 +108,7 @@ class TournamentListBottomSheetFragment :
                     //新版改為多選方式
                     if (tournamentType == TournamentListType.MORE) {
                         // MORE模式下只記錄選中，不立即執行操作
-                        showToast("Select: ${tournament.simpleName}")
+                        //                        showToast("Select: ${tournament.simpleName}")
                     } else {
                         subHomeViewModel.onTournamentListSelected(tournament)
                     }
@@ -283,7 +283,6 @@ class TournamentListBottomSheetFragment :
 
                     if (isChanged || !isInitialValid) {
                         // 按鈕為"查看最新結果"狀態：執行網絡請求
-                        showToast("Loading latest results")
                         val selectedTournamentIds = adapter.getSelectedTournamentIds()
                         val selectedTournaments = adapter.getSelectedTournaments()
 
@@ -303,7 +302,6 @@ class TournamentListBottomSheetFragment :
                         dismiss()
                     } else {
                         // 按鈕為"確定"狀態：關閉彈窗，保持結果不變
-                        showToast("Confirm without changes")
                         // 即使沒有改變，也要保存當前狀態（可能是第一次打開）
                         val selectedTournamentIds = adapter.getSelectedTournamentIds()
                         subHomeViewModel.saveTournamentSelections(selectedTournamentIds)
@@ -316,7 +314,6 @@ class TournamentListBottomSheetFragment :
                         dismiss()
                     }
                 } else {
-                    showToast("Confirm")
                     val selectedTournaments = adapter.getSelectedTournaments()
                     // TODO: 將selectedTournaments傳給viewmodel做相應處理
                     dismiss()

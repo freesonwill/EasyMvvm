@@ -436,6 +436,19 @@ class EarlyMatchListPagerFragment :
             reloadAllData()
         }
 
+        //联赛列表可能发生变化
+        if (arguments?.getBoolean(ARG_MUTABLE) == true) {
+            earlyViewModel.savedTournamentSelections.observe(viewLifecycleOwner) {
+                val sorted = it.sorted()
+                if (mViewModel.getTournamentIdList() != sorted) {
+                    mViewModel.setTournamentIdList(sorted)
+                    mViewModel.startObserverMatch()
+                    reloadAllData()
+                }
+            }
+
+        }
+
     }
 
     private fun refreshListByDate(date: Long) {
@@ -458,8 +471,9 @@ class EarlyMatchListPagerFragment :
         startObserveMatch()
     }
 
-    fun startObserveMatch() {
-        mViewModel.startObserveMatch()
+    private fun startObserveMatch() {
+        mViewModel.startObserveDate()
+        mViewModel.startObserverMatch()
     }
 
     fun startObserveMatchListChange() {
@@ -598,11 +612,13 @@ class EarlyMatchListPagerFragment :
         private const val ARG_PLAY_TYPE_ID = "play_type_id"
         private const val ARG_LEAGUE_ID = "arg_league_id"
         private const val ARG_POSITION = "arg_position"
+        private const val ARG_MUTABLE = "arg_mutable"
         fun newInstance(
             sportId: Int,
             playTypeId: Int,
             leagueIdList: List<Int>,
-            position: Int
+            position: Int,
+            mutable: Boolean
         ): EarlyMatchListPagerFragment {
             return EarlyMatchListPagerFragment().apply {
                 arguments = Bundle().apply {
@@ -610,6 +626,7 @@ class EarlyMatchListPagerFragment :
                     putInt(ARG_PLAY_TYPE_ID, playTypeId)
                     putIntArray(ARG_LEAGUE_ID, leagueIdList.toIntArray())
                     putInt(ARG_POSITION, position)
+                    putBoolean(ARG_MUTABLE, mutable)
                 }
             }
         }

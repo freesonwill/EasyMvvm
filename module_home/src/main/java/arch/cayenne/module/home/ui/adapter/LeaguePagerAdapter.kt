@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.module.home.TournamentCombo
 import arch.cayenne.module.home.data.constants.PlayType
 import arch.cayenne.module.home.ui.fragment.EarlyMatchListPagerFragment
@@ -25,6 +26,10 @@ class LeaguePagerAdapter(
         notifyDataSetChanged()
     }
 
+    fun getData(): ArrayList<TournamentCombo> {
+        return tournamentCombos
+    }
+
     override fun getItemId(position: Int): Long {
 //        return tournament[position].id * 10000 + position.toLong()
         return position.toLong()
@@ -37,7 +42,13 @@ class LeaguePagerAdapter(
         val sportId = combos[position].sportId
         val leagueIdList = combos[position].leagueIdList
         return if (playTypeId == PlayType.EARLY.id) {
-            EarlyMatchListPagerFragment.newInstance(sportId, playTypeId, leagueIdList, position)
+            EarlyMatchListPagerFragment.newInstance(
+                sportId,
+                playTypeId,
+                leagueIdList,
+                position,
+                combos[position].mutable
+            )
         } else {
             MatchListPagerFragment.newInstance(sportId, playTypeId, leagueIdList, position)
         }

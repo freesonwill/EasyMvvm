@@ -196,7 +196,7 @@ open class SubHomeViewModel : BaseViewModel() {
                         launch(Dispatchers.Main) {
                             "送出联赛资料到UI".logi(this@SubHomeViewModel::class.java.simpleName)
                             tournaments.value =
-                                Event(list.map { tournament -> TournamentCombo(listOf(tournament)) })
+                                Event(list.map { tournament -> TournamentCombo(listOf(tournament), false) })
                             setState(HomeState.Tournament.LoadSuccess)
                         }
                     }
@@ -248,7 +248,7 @@ open class SubHomeViewModel : BaseViewModel() {
                                         currentPlayTypeId,
                                         currentSportId
                                     )
-                                )
+                                ), false
                             )
                         )
                     )
@@ -297,7 +297,7 @@ open class SubHomeViewModel : BaseViewModel() {
                                             currentPlayTypeId,
                                             currentSportId
                                         )
-                                    )
+                                    ), false
                                 )
                             )
                         )
@@ -331,7 +331,10 @@ open class SubHomeViewModel : BaseViewModel() {
     var hasTournamentTabSwitched = false
 
     // 保存彈窗中的選中狀態（跨彈窗生命週期）
-    private val savedTournamentSelections = mutableSetOf<Int>()
+    private val _savedTournamentSelections = MutableLiveData<List<Int>>(
+        emptyList()
+    )
+    val savedTournamentSelections: LiveData<List<Int>> = _savedTournamentSelections
 
     // 通知聯賽按鈕選中狀態變化
     private val _tournamentButtonHasSelection = MutableLiveData<Event<Boolean>>()
@@ -369,13 +372,12 @@ open class SubHomeViewModel : BaseViewModel() {
 
     // 獲取已保存的選中狀態
     fun getSavedTournamentSelections(): List<Int> {
-        return savedTournamentSelections.toList()
+        return savedTournamentSelections.value!!
     }
 
     // 保存選中狀態（在確認時調用）
     fun saveTournamentSelections(selections: List<Int>) {
-        savedTournamentSelections.clear()
-        savedTournamentSelections.addAll(selections)
+        _savedTournamentSelections.value = selections
         // 通知按鈕狀態更新
         _tournamentButtonHasSelection.value = Event(selections.isNotEmpty())
         // TODO: 未來同時保存到後端
@@ -383,14 +385,14 @@ open class SubHomeViewModel : BaseViewModel() {
 
     // 清空保存的選中狀態
     fun clearSavedTournamentSelections() {
-        savedTournamentSelections.clear()
+        _savedTournamentSelections.value = emptyList()
         // 通知按鈕狀態更新
         _tournamentButtonHasSelection.value = Event(false)
     }
 
     // 檢查當前是否有選中狀態
     fun hasTournamentSelections(): Boolean {
-        return savedTournamentSelections.isNotEmpty()
+        return _savedTournamentSelections.value!!.isNotEmpty()
     }
 
     fun getTournamentsName(tournamentId: List<Int>): String {
