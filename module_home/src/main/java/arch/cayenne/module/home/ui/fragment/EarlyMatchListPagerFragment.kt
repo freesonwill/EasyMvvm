@@ -442,7 +442,7 @@ class EarlyMatchListPagerFragment :
                 val sorted = it.sorted()
                 if (mViewModel.getTournamentIdList() != sorted) {
                     mViewModel.setTournamentIdList(sorted)
-                    mViewModel.startObserverMatch()
+                    mViewModel.startObserveMatch()
                     reloadAllData()
                 }
             }
@@ -473,7 +473,7 @@ class EarlyMatchListPagerFragment :
 
     private fun startObserveMatch() {
         mViewModel.startObserveDate()
-        mViewModel.startObserverMatch()
+        mViewModel.startObserveMatch()
     }
 
     fun startObserveMatchListChange() {

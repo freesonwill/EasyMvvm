@@ -50,7 +50,13 @@ class LeaguePagerAdapter(
                 combos[position].mutable
             )
         } else {
-            MatchListPagerFragment.newInstance(sportId, playTypeId, leagueIdList, position)
+            MatchListPagerFragment.newInstance(
+                sportId,
+                playTypeId,
+                leagueIdList,
+                position,
+                combos[position].mutable
+            )
         }
     }
 }

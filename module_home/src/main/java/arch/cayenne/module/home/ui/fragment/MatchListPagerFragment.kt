@@ -305,6 +305,19 @@ class MatchListPagerFragment :
         homeViewModel.notifySubHomeRefresh.observeEvent(viewLifecycleOwner, this) {
             reloadAllData()
         }
+
+        //联赛列表可能发生变化
+        if (arguments?.getBoolean(ARG_MUTABLE) == true) {
+            subHomeViewModel.savedTournamentSelections.observe(viewLifecycleOwner) {
+                val sorted = it.sorted()
+                if (mViewModel.getTournamentIdList() != sorted) {
+                    mViewModel.setTournamentIdList(sorted)
+                    mViewModel.startObserveMatch()
+                    reloadAllData()
+                }
+            }
+
+        }
     }
 
     override fun initData() {
@@ -319,6 +332,7 @@ class MatchListPagerFragment :
     }
 
     fun startObserveMatch() {
+        mViewModel.startObserveDate()
         mViewModel.startObserveMatch()
     }
 
@@ -381,11 +395,13 @@ class MatchListPagerFragment :
         private const val ARG_PLAY_TYPE_ID = "play_type_id"
         private const val ARG_LEAGUE_ID = "arg_league_id"
         private const val ARG_POSITION = "arg_position"
+        private const val ARG_MUTABLE = "arg_mutable"
         fun newInstance(
             sportId: Int,
             playTypeId: Int,
             leagueIdList: List<Int>,
-            position: Int
+            position: Int,
+            mutable: Boolean
         ): MatchListPagerFragment {
             return MatchListPagerFragment().apply {
                 arguments = Bundle().apply {
@@ -393,6 +409,7 @@ class MatchListPagerFragment :
                     putInt(ARG_PLAY_TYPE_ID, playTypeId)
                     putIntArray(ARG_LEAGUE_ID, leagueIdList.toIntArray())
                     putInt(ARG_POSITION, position)
+                    putBoolean(ARG_MUTABLE, mutable)
                 }
             }
         }

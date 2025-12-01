@@ -38,6 +38,8 @@ class MatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
     var requestScrollToTop: Boolean = false  //是否需要回到頂部，通常用於網路重新連接後，資料整體重新拉取後使用
         private set
 
+    var job: Job? = null
+
     fun setSportId(id: Int) {
         _sportId = id
     }
@@ -46,6 +48,9 @@ class MatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
         if (_tournamentIdList == idList) return
         _tournamentIdList = idList
     }
+
+    fun getTournamentIdList() = _tournamentIdList
+
 
     fun setPlayTypeId(id: Int) {
         _playType = id
@@ -74,7 +79,7 @@ class MatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
         requestScrollToTop = false
     }
 
-    fun startObserveMatch() {
+    fun startObserveDate() {
         if (observeJob != null) return
         observeJob = viewModelScope.launch {
             //當日期變化
@@ -92,24 +97,26 @@ class MatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
                         processObserveMatchList(currentDateRefs)
                     }
             }
-            //當內部資料有變化
-            launch(Dispatchers.IO) {
-                repository.observeMatchChange(_playType, _tournamentIdList)
-                    .distinctUntilChanged()
-                    .collect { refs ->
-                        val selectedDate = _selectedDate.value
-                        "Collect observeMatchChange start playType = $_playType, sportId = ${_sportId} tournament = $_tournamentIdList selectedDate = $selectedDate".logi(
-                            this@MatchListViewModel::class.java.simpleName
-                        )
-                        val currentDateRefs = refs.filter { it.date == selectedDate }
-                        if (currentDateRefs.isEmpty()) {
-                            "Collect observeMatchChange TournamentMatchRef is NULL!!".logi(this@MatchListViewModel::class.java.simpleName)
-                            return@collect
-                        }
-                        processObserveMatchList(currentDateRefs)
-                    }
-            }
+        }
+    }
 
+    fun startObserveMatch() {
+        job?.cancel()
+        job = viewModelScope.launch(Dispatchers.IO) {
+            repository.observeMatchChange(_playType, _tournamentIdList)
+                .distinctUntilChanged()
+                .collect { refs ->
+                    val selectedDate = _selectedDate.value
+                    "Collect observeMatchChange start playType = $_playType, sportId = ${_sportId} tournament = $_tournamentIdList selectedDate = $selectedDate".logi(
+                        this@MatchListViewModel::class.java.simpleName
+                    )
+                    val currentDateRefs = refs.filter { it.date == selectedDate }
+                    if (currentDateRefs.isEmpty()) {
+                        "Collect observeMatchChange TournamentMatchRef is NULL!!".logi(this@MatchListViewModel::class.java.simpleName)
+                        return@collect
+                    }
+                    processObserveMatchList(currentDateRefs)
+                }
         }
     }
 
@@ -130,6 +137,7 @@ class MatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
             } else {
                 setState(HomeState.Match.LoadSuccess)
             }
+
             matchListChange.value = list
         }
     }

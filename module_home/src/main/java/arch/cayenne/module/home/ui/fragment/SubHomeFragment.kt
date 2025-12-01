@@ -35,6 +35,7 @@ import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.ext.startFadeAnim
 import arch.cayenne.lib.common.utils.helper.BounceEdgeEffectHelper
 import arch.cayenne.lib.common.utils.helper.VIPResourceHelper
+import arch.cayenne.lib.database.entity.TournamentDataModel
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.module.home.R
 import arch.cayenne.module.home.TournamentCombo
@@ -188,6 +189,12 @@ class SubHomeFragment : BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>()
             this
         ) { hasSelection ->
             updateTournamentButtonStyle(hasSelection)
+            if (hasSelection) {
+                mBinding.layoutContainer.vpGameList.setCurrentItem(
+                    leaguePagerAdapter!!.itemCount - 1,
+                    false
+                )
+            }
         }
 
         // 觀察是否需要清除 tlLeagueList 的選中狀態
@@ -414,7 +421,7 @@ class SubHomeFragment : BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>()
             vpGameList.isSaveEnabled = false
             vpGameList.adapter = null
             vpGameList.isUserInputEnabled = false
-            vpGameList.offscreenPageLimit = 10
+            vpGameList.offscreenPageLimit = 12
 
             //如果直接點擊聯賽到ViewPager還沒生成的MatchListPageFragment聯賽的話，這個MatchListPageFragment會生成並且attach上去，所以在這裡需要做attach完成後的startObserveMatch
             childFragmentManager.registerFragmentLifecycleCallbacks(object :
@@ -684,7 +691,15 @@ class SubHomeFragment : BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>()
                 vpGameList.adapter = leaguePagerAdapter
                 vpGameList.offsetLeftAndRight(1)
             }
-            leaguePagerAdapter!!.setData(mViewModel.currentPlayTypeId, tournamentCombos)
+            leaguePagerAdapter!!.setData(
+                mViewModel.currentPlayTypeId, tournamentCombos + TournamentCombo(
+                    listOf(
+                        TournamentDataModel.createAllItem(
+                            mViewModel.currentPlayTypeId, mViewModel.currentSportId
+                        )
+                    ), true
+                )
+            )
 
             //因為一開始有觸發resetHome(),觸發resetLiveData()，所以observe livedata tournaments可能會是空的
             //導致tabLayout沒有資料時又多設定一次OnTabSelectedListener，因此要先清除之前的listener

@@ -130,7 +130,7 @@ class EarlyMatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
         }
     }
 
-    fun startObserverMatch() {
+    fun startObserveMatch() {
         job?.cancel()
         job = viewModelScope.launch(Dispatchers.IO) {
             repository.observeEarlyMatchChange(_tournamentIdList)

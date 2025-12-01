@@ -25,7 +25,6 @@ import arch.cayenne.lib.base.ui.fragment.BaseBottomSheetFragment
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.enableRecyclerViewBounce
-import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.module.home.R
 import arch.cayenne.module.home.data.TournamentListItem
@@ -268,10 +267,10 @@ class TournamentListBottomSheetFragment :
                     adapter.resetToInitialState()
                     // 重置後更新按鈕狀態
                     updateConfirmButtonState()
-                    showToast("Reset to initial state")
+//                    showToast("Reset to initial state")
                 } else {
                     adapter.clearAllSelections()
-                    showToast("Reset")
+//                    showToast("Reset")
                 }
             }
 
