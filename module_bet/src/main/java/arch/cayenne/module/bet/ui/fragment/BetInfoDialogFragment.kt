@@ -7,6 +7,7 @@ import android.view.Window
 import androidx.constraintlayout.widget.ConstraintLayout
 import arch.cayenne.lib.base.ui.fragment.BasePositionDialogFragment
 import arch.cayenne.lib.base.ui.viewmodel.EmptyViewModel
+import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.module.bet.databinding.FragmentBetInfoBinding
 import kotlin.reflect.KClass
 
@@ -63,7 +64,11 @@ class BetInfoDialogFragment : BasePositionDialogFragment<EmptyViewModel, Fragmen
             val layoutParams = w.attributes
             layoutParams.gravity = Gravity.TOP or Gravity.START
             layoutParams.x = locationX - offsetX
-            layoutParams.y = locationY - clRoot.measuredHeight
+            if (tip?.length!! > 16) {
+                layoutParams.y = locationY - clRoot.measuredHeight - 50.dp2px
+            } else {
+                layoutParams.y = locationY - clRoot.measuredHeight - 30.dp2px
+            }
             w.attributes = layoutParams
             mBinding.root.visibility = View.VISIBLE
         }
