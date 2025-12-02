@@ -13,6 +13,7 @@ import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
 import arch.cayenne.lib.database.entity.MatchListItem
 import arch.cayenne.lib.database.entity.MatchWithMarkets
 import arch.cayenne.lib.database.entity.SelectionBeanLite
+import arch.cayenne.module.home.data.constants.PlayType
 import arch.cayenne.module.home.data.model.MatchDateItem
 import arch.cayenne.module.home.data.model.MatchLoadMoreData
 import arch.cayenne.module.home.data.model.MatchNoMoreData
@@ -26,7 +27,10 @@ import arch.cayenne.module.home.ui.adapter.compare.MatchItemCompare
 import org.koin.java.KoinJavaComponent.getKoin
 import java.lang.ref.WeakReference
 
-class MatchItemAdapter(private val onMatchItemClickListener: OnMatchItemClickListener? = null) :
+class MatchItemAdapter(
+    private val onMatchItemClickListener: OnMatchItemClickListener? = null,
+    private val playType: Int,
+) :
     BaseAdapter<MatchListItem, BaseViewHolder, ViewBinding>(MatchItemCompare()) {
 
     private val viewPool = RecyclerView.RecycledViewPool()
@@ -127,6 +131,7 @@ class MatchItemAdapter(private val onMatchItemClickListener: OnMatchItemClickLis
             TYPE_MATCH_ITEM -> MatchItemViewHolder(
                 binding as ItemMatchCardBinding,
                 onMatchItemClickListener,
+                playType,
                 viewPool
             )
 

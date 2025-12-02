@@ -27,6 +27,7 @@ import arch.cayenne.module.bet.ui.fragment.BetSheetFragment
 import arch.cayenne.module.bet.viewmodel.FloatingButtonControlViewModel
 import arch.cayenne.module.home.R
 import arch.cayenne.module.home.data.constants.HomeState
+import arch.cayenne.module.home.data.constants.PlayType
 import arch.cayenne.module.home.databinding.FragmentCollectListBinding
 import arch.cayenne.module.home.ui.adapter.MatchItemAdapter
 import arch.cayenne.module.home.ui.adapter.OnMatchItemClickListener
@@ -50,6 +51,7 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
     private val gameLayoutManager by lazy { LinearLayoutManager(context) }
     private val homeViewModel: HomeViewModel by sharedViewModel<HomeViewModel, NewHomeFragment>()
     private val fabViewModel: FloatingButtonControlViewModel by activityViewModel()
+
 
     override fun initView(savedInstanceState: Bundle?) {
         with (mBinding) {
@@ -128,7 +130,7 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
                     }
                 }
 
-            })
+            }, PlayType.FAVORITE.id)
             val decoration = MatchCardItemDecoration(12.dp2px)
             rvCollectList.apply {
                 this.layoutManager = gameLayoutManager

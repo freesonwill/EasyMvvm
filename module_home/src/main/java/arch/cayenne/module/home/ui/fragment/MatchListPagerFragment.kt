@@ -131,7 +131,7 @@ class MatchListPagerFragment :
                         }
                     }
                 }
-            })
+            }, subHomeViewModel.currentPlayTypeId)
 
             //賽事卡片之間的間閣
             val decoration = MatchCardItemDecoration(

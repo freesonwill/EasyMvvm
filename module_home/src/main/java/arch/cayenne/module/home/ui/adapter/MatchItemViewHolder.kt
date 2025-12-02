@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.RecycledViewPool
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.lib.common.utils.ext.ResourceExt.getDrawable
 import arch.cayenne.lib.common.utils.ext.SportStringExt.limitTitleLength
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.toLocalDateTimeString
@@ -21,6 +22,8 @@ import arch.cayenne.lib.common.utils.ext.toMinuteSecondFormat
 import arch.cayenne.lib.database.entity.MatchWithMarkets
 import arch.cayenne.lib.skin.widget.SkinnableTextView
 import arch.cayenne.module.home.R
+import arch.cayenne.module.home.data.constants.PlayType
+import arch.cayenne.module.home.data.constants.SportType
 import arch.cayenne.module.home.databinding.ItemMatchCardBinding
 import arch.cayenne.module.home.utils.setFavoriteIcon
 import com.bumptech.glide.Glide
@@ -28,6 +31,7 @@ import com.bumptech.glide.Glide
 class MatchItemViewHolder(
     private val mBinding: ItemMatchCardBinding,
     private val onMatchItemClickListener: OnMatchItemClickListener?,
+    private val playType: Int,
     private val viewPool: RecycledViewPool
 ) : BaseViewHolder(mBinding) {
     private val oddsColumnAdapter: OddsColumnAdapter  by lazy { OddsColumnAdapter(onMatchItemClickListener) }
@@ -79,12 +83,21 @@ class MatchItemViewHolder(
             val selectionsGrouped = data.markets.map { it.market to it.selections }
             oddsColumnAdapter.submitList(selectionsGrouped)
 
-            //賽事資訊
-            setIconWithDefault(
-                basicInfo.tournamentIcon,
-                R.drawable.ic_default_tournament,
-                ivTournamentIcon
-            )
+            if (playType == PlayType.FAVORITE.id) {
+                //收藏界面里的联赛图标换为球类图标
+                ivTournamentIcon.setImageDrawable(
+                    SportType.fromId(
+                        data.match.basicInfo.sportId
+                    )?.iconResActive?.getDrawable()
+                )
+            } else {
+                //賽事資訊
+                setIconWithDefault(
+                    basicInfo.tournamentIcon,
+                    R.drawable.ic_default_tournament,
+                    ivTournamentIcon
+                )
+            }
             tvTournamentName.text = basicInfo.tournamentName
 
             if (basicInfo.status == 5) {  //開賽中
