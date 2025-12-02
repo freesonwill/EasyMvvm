@@ -120,7 +120,7 @@ class CommonRepository(
         }
     }
 
-    //觀察從API來的餘額變化並塞進資料庫
+    //觀察從API來的订单状态變化並塞進資料庫
     suspend fun observeBettingOrderStatus() {
         socketManager.observeProtoMessage<Client.OrderStatusNotify>(ApiCode.ORDER_STATUS_NOTIFY)
             .collect {
@@ -129,12 +129,10 @@ class CommonRepository(
                 val resultList = mutableListOf<BetResultLiteBean>()
                 scope.launch {
                     it.data!!.orderStatusList.forEach { resp ->
-                        launch {
-                            betDao.updateDetailResult(
-                                resp.orderId,
-                                BetResultStatusEnum.getStatusByCode(resp.status)
-                            )
-                        }.join()
+                        betDao.updateDetailResult(
+                            resp.orderId,
+                            BetResultStatusEnum.getStatusByCode(resp.status)
+                        )
 
                         betDao.getDetailByOrderId(resp.orderId)?.let { detail ->
                             val selection = betDao.getSelections(detail.betId)

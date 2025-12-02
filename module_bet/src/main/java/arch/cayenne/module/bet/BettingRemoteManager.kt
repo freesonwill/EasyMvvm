@@ -4,6 +4,7 @@ import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toOdds
+import arch.cayenne.lib.database.entity.BetResultStatusEnum
 import arch.cayenne.lib.database.entity.BetSelectionBean
 import arch.cayenne.lib.database.entity.MarketBeanLite
 import arch.cayenne.lib.database.entity.MarketWithSelections
@@ -68,6 +69,14 @@ class BettingRemoteManager(
         }
     }
 
+    /**
+     * 单关投注
+     *
+     * @param bean
+     * @param money
+     * @param oddsChange
+     * @return
+     */
     suspend fun singleBet(bean: BetSelectionBean, money: Long, oddsChange: OddsChangeEnum): SingleBetDataModel? {
         val res = socketManager.sendAndWaitProtoMessageResponse<Client.SingleBetResp>(
             scope = scope,
@@ -88,8 +97,7 @@ class BettingRemoteManager(
                 data.success,
                 data.message,
                 data.orderId,
-//                data.orderStatus,
-                0
+                BetResultStatusEnum.CREATE.code
             )
         } else {
             if (res.error is ResponseTimeOutError) {
@@ -105,6 +113,14 @@ class BettingRemoteManager(
         }
     }
 
+    /**
+     * 预约投注
+     *
+     * @param bean
+     * @param reserveOdds
+     * @param money
+     * @return
+     */
     suspend fun reserveBet(
         bean: BetSelectionBean,
         reserveOdds: Int,
@@ -142,6 +158,14 @@ class BettingRemoteManager(
         }
     }
 
+    /**
+     * 串关投注
+     *
+     * @param beans
+     * @param multi
+     * @param oddsChange
+     * @return
+     */
     suspend fun comboBet(
         beans: List<BetSelectionBean>,
         multi: List<ComboMultiBetBean>,
@@ -179,8 +203,7 @@ class BettingRemoteManager(
                 ComboMultiBetInfo(
                     orderId = it.orderId,
                     serialValue = it.serialValue,
-//                    orderStatus = it.orderStatus,
-                    0
+                    orderStatus = BetResultStatusEnum.CREATE.code,
                 )
             }
             ComboBetDataModel(
@@ -201,6 +224,13 @@ class BettingRemoteManager(
         }
     }
 
+    /**
+     * 获取单关限额
+     *
+     * @param matchId
+     * @param selectionId
+     * @return
+     */
     suspend fun getSingleRisk(
         matchId: Long,
         selectionId: Long
@@ -232,6 +262,12 @@ class BettingRemoteManager(
         }
     }
 
+    /**
+     * 串关限额
+     *
+     * @param beans
+     * @return
+     */
     suspend fun getComboRisk(
         beans: List<BetSelectionBean>
     ): List<ComboRiskDataModel>? {
@@ -264,6 +300,10 @@ class BettingRemoteManager(
         }
     }
 
+    /**
+     * 盘口订阅
+     * @param ids [match_id,[market_id]]]
+     */
     suspend fun registerMatchMarketNotify(ids: List<Client.MarketIdBase>) {
         val res = socketManager.sendAndWaitProtoMessageResponse<Client.SubscribeMatchMarketResp>(
             scope = scope,
@@ -283,6 +323,10 @@ class BettingRemoteManager(
         }
     }
 
+    /**
+     * 取消盘口订阅
+     * @param ids
+     */
     fun unregisterMatchMarketNotify(ids: List<Client.MarketIdBase>) {
         scope.launch {
             socketManager.sendAndWaitProtoMessageResponse<Client.CancelSubscribeMatchMarketResp>(
