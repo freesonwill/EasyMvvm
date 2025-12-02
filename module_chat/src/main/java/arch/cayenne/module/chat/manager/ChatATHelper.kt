@@ -246,7 +246,7 @@ class ChatATHelper(
                     val spanEnd = spannable.getSpanEnd(lastSpan)
                     val spanStart = spannable.getSpanStart(lastSpan)
                     val lastChar = spannable.elementAt(cursorPositionEnd - 1)
-                    if (spanEnd == cursorPositionStart) {
+                    if (cursorPositionStart in spanStart..spanEnd || spanEnd == cursorPositionStart) {
                         if (lastChar == ' ') {
                             return@setOnKeyListener false
                         }
