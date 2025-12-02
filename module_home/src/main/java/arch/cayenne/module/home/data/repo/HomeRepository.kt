@@ -203,35 +203,28 @@ class HomeRepository(
     private fun getCurrentHomeSelectedData(playType: Int): HomeSelectedBean? = homeSelectedDao.queryHomeSelectedData(playType)
 
     suspend fun updateSelectedSportId(playType: Int, sportId: Int) {
-        val bean = getCurrentHomeSelectedData(playType)?.copy(sportId = sportId) ?: HomeSelectedBean(playType, sportId, 0 )
+        val bean =
+            getCurrentHomeSelectedData(playType)?.copy(sportId = sportId) ?: HomeSelectedBean(
+                playType, sportId, listOf(0)
+            )
         homeSelectedDao.insert(bean)
     }
     suspend fun getCurrentSelectedSportId(playType: Int): Int? = getCurrentHomeSelectedData(playType)?.sportId
 
-    suspend fun updateSelectedTournamentId(playType: Int, tournamentId: Int) = withContext(Dispatchers.IO){
+    suspend fun updateSelectedTournamentIdList(playType: Int, tournamentIdList: List<Int>) = withContext(Dispatchers.IO){
         getCurrentHomeSelectedData(playType)
-            ?.takeIf { it.tournamentId != tournamentId }
-            ?.copy(tournamentId = tournamentId)
+            ?.takeIf { it.tournamentIdList != tournamentIdList }
+            ?.copy(tournamentIdList = tournamentIdList)
             ?.apply {
                 homeSelectedDao.insert(this)
             }
     }
-    suspend fun getCurrentSelectedTournamentId(playType: Int): Int? = getCurrentHomeSelectedData(playType)?.tournamentId
+    suspend fun getCurrentSelectedTournamentId(playType: Int): List<Int>? = getCurrentHomeSelectedData(playType)?.tournamentIdList
 
     suspend fun updateSelectedDate(showType: ShowType, sportId: Int, date: Long) {
         sportDao.getSportById(sportId, showType)?.copy(date = date)?.apply {
             sportDao.insert(this)
         }
     }
-    suspend fun getCurrentSelectedDate(showType: ShowType, sportId: Int): Long? = sportDao.getSportById(sportId, showType)?.date
 
-    suspend fun updateScrollCoordinate(
-        playTypeId: Int,
-        sportId: Int,
-        tournamentId: Int,
-        coordinate: Int
-    ) {
-        tournamentDao.updateRefCoordinate(playTypeId, sportId, tournamentId, coordinate)
-    }
-    suspend fun getCurrentPageCoordinate(playTypeId: Int, sportId: Int, tournamentId: Int) : Int? = tournamentDao.getSportTournamentCrossRef(playTypeId, sportId, tournamentId)?.coordinateY
 }

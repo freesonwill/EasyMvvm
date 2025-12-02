@@ -25,17 +25,18 @@ import arch.cayenne.lib.base.ui.fragment.BaseBottomSheetFragment
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.enableRecyclerViewBounce
-import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.module.home.R
 import arch.cayenne.module.home.data.TournamentListItem
 import arch.cayenne.module.home.data.constants.HomeState
+import arch.cayenne.module.home.data.constants.PlayType
 import arch.cayenne.module.home.data.constants.TournamentListType
 import arch.cayenne.module.home.databinding.FragmentTournamentBottomSheetBinding
 import arch.cayenne.module.home.databinding.ItemTournamentHeaderBinding
 import arch.cayenne.module.home.ui.adapter.TournamentSectionAdapter
 import arch.cayenne.module.home.ui.view.CustomFilterSideBarView
 import arch.cayenne.module.home.ui.view.decoration.StickyHeaderItemDecoration
+import arch.cayenne.module.home.ui.viewmodel.EarlyViewModel
 import arch.cayenne.module.home.ui.viewmodel.SubHomeViewModel
 import arch.cayenne.module.home.ui.viewmodel.TournamentListViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -50,7 +51,13 @@ class TournamentListBottomSheetFragment :
         FragmentTournamentBottomSheetBinding::class
     override val vmClass: KClass<TournamentListViewModel> = TournamentListViewModel::class
 
-    private val subHomeViewModel: SubHomeViewModel by viewModels({ requireParentFragment() })
+    private val subHomeViewModel: SubHomeViewModel by lazy {
+        if (arguments?.getInt(ARG_PLAY_TYPE_ID) == PlayType.EARLY.id) {
+            viewModels<EarlyViewModel>({ requireParentFragment() }).value
+        } else {
+            viewModels<SubHomeViewModel>({ requireParentFragment() }).value
+        }
+    }
     private lateinit var adapter: TournamentSectionAdapter
     private var pendingJumpIndex: Int? = null
     private var stickyHeaderDecoration: StickyHeaderItemDecoration? = null
@@ -100,7 +107,7 @@ class TournamentListBottomSheetFragment :
                     //新版改為多選方式
                     if (tournamentType == TournamentListType.MORE) {
                         // MORE模式下只記錄選中，不立即執行操作
-                        showToast("Select: ${tournament.simpleName}")
+                        //                        showToast("Select: ${tournament.simpleName}")
                     } else {
                         subHomeViewModel.onTournamentListSelected(tournament)
                     }
@@ -260,10 +267,10 @@ class TournamentListBottomSheetFragment :
                     adapter.resetToInitialState()
                     // 重置後更新按鈕狀態
                     updateConfirmButtonState()
-                    showToast("Reset to initial state")
+//                    showToast("Reset to initial state")
                 } else {
                     adapter.clearAllSelections()
-                    showToast("Reset")
+//                    showToast("Reset")
                 }
             }
 
@@ -275,7 +282,6 @@ class TournamentListBottomSheetFragment :
 
                     if (isChanged || !isInitialValid) {
                         // 按鈕為"查看最新結果"狀態：執行網絡請求
-                        showToast("Loading latest results")
                         val selectedTournamentIds = adapter.getSelectedTournamentIds()
                         val selectedTournaments = adapter.getSelectedTournaments()
 
@@ -295,7 +301,6 @@ class TournamentListBottomSheetFragment :
                         dismiss()
                     } else {
                         // 按鈕為"確定"狀態：關閉彈窗，保持結果不變
-                        showToast("Confirm without changes")
                         // 即使沒有改變，也要保存當前狀態（可能是第一次打開）
                         val selectedTournamentIds = adapter.getSelectedTournamentIds()
                         subHomeViewModel.saveTournamentSelections(selectedTournamentIds)
@@ -308,7 +313,6 @@ class TournamentListBottomSheetFragment :
                         dismiss()
                     }
                 } else {
-                    showToast("Confirm")
                     val selectedTournaments = adapter.getSelectedTournaments()
                     // TODO: 將selectedTournaments傳給viewmodel做相應處理
                     dismiss()
