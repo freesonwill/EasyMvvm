@@ -89,7 +89,6 @@ class SoftAnimHelper(
                 if (dbKeyboardHeight != keyBoardHeight) { //保存的高度和第二次高度不一致更新保存的高度
                     dbKeyboardHeight = keyBoardHeight
                     navigationListener?.onSoftKeyBoardShow(keyBoardHeight)
-//                    "checkKeyBoard second  ${keyBoardHeight}".logd("aaa")
                 }
             }
             navigationListener?.secondSoftKeyBoardShow()

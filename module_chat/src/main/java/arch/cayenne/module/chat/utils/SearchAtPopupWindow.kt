@@ -22,22 +22,23 @@ import arch.cayenne.module.chat.ui.adapter.AtAdapter
  * @description:
  */
 class SearchAtPopupWindow {
+    var isSearchIng: Boolean = false
     var atPopupWindow: PopupWindow? = null
     val atAdapter = AtAdapter()
     val list = arrayListOf(
-        AtBean("张顺", false),
-        AtBean("吴用", false),
-        AtBean("公孙胜", false),
-        AtBean("柴让", false),
-        AtBean("卢俊义", false)
+        AtBean(0,"张顺", false),
+        AtBean(1,"吴用", false),
+        AtBean(2,"公孙胜", false),
+        AtBean(3,"柴让", false),
+        AtBean(4,"卢俊义", false)
     )
+
 
     fun createPopupWindow(context: Context, itemListener: RecyclerItemListener<AtBean>) {
         if (atPopupWindow == null) {
             val binding =
                 PopupSearchAtLayoutBinding.inflate(LayoutInflater.from(context), null, false)
             atPopupWindow = PopupWindow(binding.root, 375.dp2px, 215.dp2px)
-            atAdapter.submitList(list)
             atAdapter.setItemClickListener(object : RecyclerItemListener<AtBean> {
                 override fun onItemClick(item: AtBean?, position: Int) {
                     itemListener.onItemClick(item, position)
@@ -52,20 +53,24 @@ class SearchAtPopupWindow {
 
     fun showPopupWindow(targetView: EditText) {
         if (atPopupWindow?.isShowing == false) {
-              notifyAdapter(targetView)
+            notifyAdapter(targetView)
             atPopupWindow?.showAsDropDown(targetView)
         }
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    private fun notifyAdapter(editext:EditText){
+    private fun notifyAdapter(editext: EditText) {
         val editAtList = getAtMsg(editext.text)
         val indexList = mutableSetOf<Int>()
-        editAtList.forEach {
-           val index  = atAdapter.currentList.indexOf(it)
-            indexList.add(index)
+        val nList:List<AtBean> = list
+        editAtList.forEach { editBean ->
+            val bean = nList.find { nBean  -> editBean.name == nBean.name}
+            bean?.let {
+                indexList.add(bean.id)
+            }
         }
         atAdapter.selectedSet = indexList
+        atAdapter.submitList(nList)
         atAdapter.notifyDataSetChanged()
     }
 
@@ -76,13 +81,34 @@ class SearchAtPopupWindow {
         val spannable = SpannableStringBuilder(editable)
         val spans = spannable.getSpans(0, editable.length, MentionSpan::class.java)
         return spans.map {
-            AtBean(name = it.tv, false) }.toList()
+            AtBean(-1,name = it.tv, false)
+        }.toList()
     }
+
+    fun isShowing() = atPopupWindow?.isShowing ?: false
 
     fun dismiss() {
         if (atPopupWindow != null && atPopupWindow?.isShowing == true) {
             atPopupWindow?.dismiss()
         }
+    }
+
+    fun addDismissListener(dismissListener: (() -> Unit)) {
+        atPopupWindow?.setOnDismissListener {
+            dismissListener.invoke()
+        }
+    }
+
+
+    fun searchAtList(str: String) {
+        val searchText = str.substring(1)
+        val searchList = atAdapter.currentList.filter { it.name.contains(searchText) }
+        if (searchList.isEmpty()) {
+            dismiss()
+        } else {
+            isSearchIng = true
+        }
+        atAdapter.submitList(searchList)
     }
 
 

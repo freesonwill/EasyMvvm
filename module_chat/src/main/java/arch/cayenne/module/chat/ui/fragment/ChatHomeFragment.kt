@@ -21,6 +21,7 @@ import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.database.entity.LiveMatchBean
@@ -39,7 +40,6 @@ import com.gyf.immersionbar.ImmersionBar
 import kotlinx.coroutines.launch
 import java.util.regex.Pattern
 import kotlin.reflect.KClass
-import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.module.chat.manager.ChatATHelper
 import arch.cayenne.module.chat.manager.SoftKeyBoardAnim
 
@@ -51,7 +51,6 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
     var mainMatch: LiveData<LiveMatchBean>? = null
     var matchIdLiveData: LiveData<Long>? = null
     private lateinit var softKeyBoardManager: SoftKeyboardManager
-    private var etInputWatcher: TextWatcher? = null
     private lateinit var chatAtHelper:ChatATHelper
 
 
@@ -105,7 +104,7 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
     }
 
     override fun onStop() {
-        mBinding.chatEtInput.removeTextChangedListener(etInputWatcher)
+        chatAtHelper.removeTextWatcher()
         mViewModel.leaveRoom()
         super.onStop()
         mViewModel.setSoftConfig(true)
@@ -183,8 +182,6 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
                 requireActivity().onBackPressedDispatcher.onBackPressed()
             }
         }
-
-
     }
 
     private fun initSoftKeyBoardFragment() {
@@ -294,6 +291,7 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
             ivEmoji.setOnTouchListener { v, event ->
                 if (event.action == MotionEvent.ACTION_UP) {
                     keyboardChangeClick(KeyBoardType.EMOJI)
+                    chatAtHelper.dismissWindow()
                 }
                 calculationLayoutSize()
                 return@setOnTouchListener true
@@ -310,6 +308,7 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
             ivBottomEmoji.setOnTouchListener { v, event ->
                 if (event.action == MotionEvent.ACTION_DOWN) {
                     mViewModel.updateKeyBoardUi(KeyBoardType.EMOJI, 6)
+                    chatAtHelper.dismissWindow()
                 }
                 return@setOnTouchListener true
             }
@@ -330,7 +329,7 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
                 }
                 return@setOnTouchListener false
             }
-            chatAtHelper = ChatATHelper(requireContext(),chatEtInput,childFragmentManager)
+            chatAtHelper = ChatATHelper(viewLifecycleOwner.lifecycleScope,requireContext(),chatEtInput,childFragmentManager)
             chatAtHelper.initChatEtInput(mViewModel.languageManager.getLanguage()){
                 sendText()
             }
@@ -408,8 +407,6 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
         keyboardChangeClick(KeyBoardType.CHAT, 7)
         mViewModel.createLocalMsg(mBinding.chatEtInput.text!!)?.let { mViewModel.sendMsgToChat(it) }
         mBinding.chatEtInput.text?.clear()
-
-
     }
 
     private fun resetInputUi() {
@@ -615,14 +612,17 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
         }
     }
 
+  /**
+   * 添加表情数据
+   * */
     private fun addEmojiData(emojiData: EmojiModel) {
         val emojiPattern: Pattern = Pattern.compile(BID_EMOJI_REGEX)
         if (emojiPattern.matcher(emojiData.key).find()) {
             keyboardChangeClick(KeyBoardType.CHAT, 5)
-
             mViewModel.createBidLocalMsg(emojiData.key)?.let { mViewModel.sendMsgToChat(it) }
             return
         }
+        chatAtHelper.dismissWindow() // 输入表情后at弹框消失
         mBinding.chatEtInput.text?.append(emojiData.key)
         softKeyBoardManager.etRequestFocus()
     }

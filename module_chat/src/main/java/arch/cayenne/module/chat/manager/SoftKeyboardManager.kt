@@ -265,7 +265,6 @@ class SoftKeyboardManager(
     fun checkMainHeight():Int {
         val getManHeight = keyBoardListener.getMainHeight()
         mainDiffer = getManHeight - originMainHeight
-//        "differ $mainDiffer ${originMainHeight} getManHeight  ${getManHeight}".logd("aaa")
         mainDiffer = if(mainDiffer > 50) mainDiffer else 0
         return mainDiffer
     }
@@ -365,7 +364,6 @@ class SoftKeyboardManager(
      * 禁用软件盘
      * */
     private fun hideSoftKeyBoard(flag: Int) {
-//        "hideSoftKeyBoard $flag".logd("aaa")
         etInput?.let {
             it.clearFocus()
             EditTextUtils.hideKeyboard(it.context, it)
