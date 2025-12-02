@@ -11,6 +11,7 @@ import android.view.KeyEvent
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.LifecycleCoroutineScope
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
@@ -19,6 +20,10 @@ import arch.cayenne.module.chat.data.model.AtBean
 import arch.cayenne.module.chat.data.model.MentionSpan
 import arch.cayenne.module.chat.utils.EmojiEditFilter
 import arch.cayenne.module.chat.utils.SearchAtPopupWindow
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import org.koin.core.scope.Scope
 import java.util.Locale
 
 /**
@@ -27,32 +32,52 @@ import java.util.Locale
  * @description:
  */
 class ChatATHelper(
+    private val scope: LifecycleCoroutineScope,
     private val context: Context,
     private val chatEtInput: EditText,
     childFragmentManager: FragmentManager,
 ) {
     private val atPattern = "@[^\\s@]+\\s".toRegex()
-    val atPopupWindow = SearchAtPopupWindow()
-    var closeAtPopup: Boolean = false
+    private val atPopupWindow = SearchAtPopupWindow()
+
+    //    private var closeAtPopup: Boolean = false
+    //用于监听edit输入
+    private var editInputListenJob: Job? = null
+
+    //记录开始输入@时光标位置
+    var startInputPosition: Int = -1
+
+    //判断输入框是否删除
+    var isEditDelete: Boolean = false
+
+    //是否at输入
+    var isAtInput: Boolean = false
 
     private val atClick: ((str: String) -> Unit) = {
     }
 
     private val etInputWatcher = object : TextWatcher {
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-//                "beforeTextChanged s $s  start $start count $count after $after".logd("aaa")
         }
 
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-//                "onTextChanged $s start $start before $before  count $count ".logd("aaa")
+            isEditDelete = before > 0
             removeMentionSpan(chatEtInput, start, count)
         }
 
         override fun afterTextChanged(s: Editable?) {
-            if (!closeAtPopup) {
+//            if (!closeAtPopup) {
+//                atPopupWindow.dismiss()
+//            }
+//            closeAtPopup = false
+
+            if (startInputPosition == -1 && !isAtInput) {
                 atPopupWindow.dismiss()
             }
-            closeAtPopup = false
+            if (!isEditDelete && startInputPosition >= 0 && !isEditDelete) {
+                listenEditInput()
+            }
+            isAtInput = false
         }
     }
 
@@ -60,48 +85,22 @@ class ChatATHelper(
     @SuppressLint("ClickableViewAccessibility")
     fun initChatEtInput(locale: Locale?, senText: () -> Unit) {
         //输入拦截
-        chatEtInput.filters = arrayOf(EmojiEditFilter() {
-            closeAtPopup = true
+        chatEtInput.filters = arrayOf(EmojiEditFilter(atInput = {
+            startInputPosition = chatEtInput.selectionStart
             atPopupWindow.showPopupWindow(chatEtInput)
-        })
+        }))
         atPopupWindow.createPopupWindow(context, object : RecyclerItemListener<AtBean> {
             override fun onItemClick(item: AtBean?, position: Int) {
                 if (item == null) {
                     return
                 }
-                chatEtInput.apply {
-                    closeAtPopup = true
-                    text?.let {
-                        val start = it.length
-                        val name = item.name
-                        if (item.isSelect) {
-                            if (it.endsWith('@')) {
-                                it.append("$name ")
-                                filterEtInputWithAt(this, start, name.length + 1)//+空格
-                            } else {
-                                it.append("@$name ")
-                                filterEtInputWithAt(
-                                    this,
-                                    start,
-                                    name.length + 2
-                                )//+@ 空格
-                            }
-                        } else {
-                            var indexStart = it.indexOf("@$name ")
-                            var indexEnd = indexStart + item.name.length + 2//从0开始，+1 加上空格字符串+1
-                            if (indexStart < 0) { //空格被删除的时候
-                                indexStart = it.indexOf("@$name")
-                                indexEnd = indexStart + item.name.length + 1
-                            }
-                            if (indexStart >= 0 && indexEnd <= it.length) {
-                                it.replace(indexStart, indexEnd, "")
-                            }
-                        }
-                    }
-                }
-
+                addAtMentionSpan(item)
+                startInputPosition = -1//选择at后继续输入，at弹框关闭
             }
         })
+        atPopupWindow.addDismissListener {
+            startInputPosition = -1
+        }
         chatEtInput.apply {
             //设置发送按钮
             imeOptions = EditorInfo.IME_ACTION_SEND
@@ -125,6 +124,51 @@ class ChatATHelper(
 //            movementMethod = LinkMovementMethod.getInstance() //moentionSpan 点击
         }
     }
+
+    fun addAtMentionSpan(item: AtBean) {
+        isAtInput = true
+        chatEtInput.apply {
+            text?.let {
+                if(atPopupWindow.isSearchIng && startInputPosition >= 0 && selectionStart > startInputPosition){
+                    it.replace(startInputPosition,selectionStart,"")
+                }
+                val start = selectionStart
+
+                if (item.isSelect) {
+                    if (selectionStart > 0 && it[selectionStart-1] == '@') {
+                        val name = "${item.name} "
+                         it.insert(selectionStart,name)
+                        filterEtInputWithAt(this, start, name.length)//+空格
+                    } else {
+                        val name = "@${item.name} "
+                        it.insert(selectionStart,name)
+                        filterEtInputWithAt(
+                            this,
+                            start,
+                            name.length
+                        )//+ @ 空格
+                    }
+                } else {
+                    var indexStart = it.indexOf("@${item.name} ")
+                    var indexEnd = indexStart + item.name.length + 2//从0开始，+1 加上空格字符串+1
+                    if (indexStart < 0) { //空格被删除的时候
+                        indexStart = it.indexOf("@${item.name}")
+                        indexEnd = indexStart + item.name.length + 1
+                    }
+                    if (indexStart >= 0 && indexEnd <= it.length) {
+                        it.replace(indexStart, indexEnd, "")
+                    }
+                }
+            }
+        }
+
+        if (atPopupWindow.isSearchIng) {
+            atPopupWindow.isSearchIng = false
+            dismissWindow()
+        }
+
+    }
+
 
     // 移除at消息背景
     fun removeMentionSpan(editText: EditText, position: Int, count: Int) {
@@ -215,11 +259,41 @@ class ChatATHelper(
         }
     }
 
-   /**
-    * 发送出去的at消息，格式按照
-    * Params: atPattern - at消息格式
-    *
-    * */
+    /**
+     * 监听EditText输入。停止输入后截取开始输入到停止输入的字符串
+     * 判断是否显示@弹框
+     * */
+    fun listenEditInput() {
+        if (editInputListenJob?.isActive == true) {
+            editInputListenJob?.cancel()
+        }
+
+        editInputListenJob = scope.launch {
+            delay(500)
+            val cursorPosition = chatEtInput.selectionStart
+            var inputStr = ""
+
+            if (startInputPosition >= 0 && cursorPosition <= chatEtInput.text.length) {
+                inputStr = chatEtInput.text.substring(startInputPosition, if(cursorPosition == chatEtInput.text.length) cursorPosition -1 else cursorPosition)
+            }
+            if (inputStr.length > 1 && inputStr.startsWith("@")) {
+                atPopupWindow.searchAtList(inputStr)
+            }
+
+        }
+    }
+
+
+    fun removeTextWatcher() {
+        chatEtInput.removeTextChangedListener(etInputWatcher)
+    }
+
+
+    /**
+     * 发送出去的at消息，格式按照
+     * Params: atPattern - at消息格式
+     *
+     * */
 //    fun atTextAddSpace(editable: Editable):SpannableStringBuilder{
 //        val spannable = SpannableStringBuilder(editable)
 //        var spans = spannable.getSpans(0, editable.length, MentionSpan::class.java)
@@ -243,5 +317,9 @@ class ChatATHelper(
 //        return spannable
 //
 //    }
+
+    fun dismissWindow() {
+        atPopupWindow.dismiss()
+    }
 
 }
