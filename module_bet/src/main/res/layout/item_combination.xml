@@ -5,7 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="@dimen/dp_47"
     android:layout_marginHorizontal="@dimen/dp_12"
-    android:background="@drawable/shape_combination"
     android:clickable="false"
     android:focusable="false">
 
@@ -19,7 +18,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <arch.cayenne.lib.skin.widget.SkinnableTextView
-            android:id="@+id/tv_game_selection"
+            android:id="@+id/tv_tab_combo"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -36,8 +35,7 @@
             android:gravity="center"
             android:paddingStart="-10dp"
             android:textColor="@color/color_C0C0C0"
-            android:textSize="@dimen/sp_14"
-            android:visibility="invisible" />
+            android:textSize="@dimen/sp_14" />
 
         <arch.cayenne.lib.skin.widget.SkinnableTextView
             android:id="@+id/tv_tab_win"
@@ -47,11 +45,10 @@
             android:gravity="center"
             android:paddingStart="@dimen/dp_13"
             android:textColor="@color/color_C0C0C0"
-            android:textSize="@dimen/sp_14"
-            android:visibility="invisible" />
+            android:textSize="@dimen/sp_14" />
 
         <arch.cayenne.lib.skin.widget.SkinnableTextView
-            android:id="@+id/tv_game_odds"
+            android:id="@+id/tv_tab_odds"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"

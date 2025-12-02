@@ -8,5 +8,5 @@ import androidx.room.PrimaryKey
 data class HomeSelectedBean(
     @PrimaryKey val playType: Int,
     val sportId: Int,
-    val tournamentId: Int,
+    val tournamentIdList: List<Int>,
 )

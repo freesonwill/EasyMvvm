@@ -9,6 +9,7 @@ import arch.cayenne.lib.database.entity.BaseTournamentData
 import arch.cayenne.lib.database.entity.ChampionTournamentDataModel
 import arch.cayenne.lib.database.entity.TournamentDataModel
 import arch.cayenne.module.home.R
+import arch.cayenne.module.home.TournamentCombo
 import arch.cayenne.module.home.data.constants.PlayType
 import arch.cayenne.module.home.data.constants.playTypeToShowType
 import arch.cayenne.module.home.utils.DateUtils
@@ -110,17 +111,9 @@ class EarlyViewModel : SubHomeViewModel() {
 
         if (tournament is TournamentDataModel) {
             val currentList = tournaments.value?.peekContent() ?: return
-            setCurrentTournamentId(tournament.id)
-            if (!currentList.any { it.id == tournament.id }) {
-                viewModelScope.launch { selectedDate(0L) }
-                tournaments.value = Event(currentList.map {
-                    it.apply {
-                        isSelected = false
-                    }
-                } + tournament.apply { isSelected = true })
-            } else {
-                tournaments.value =
-                    Event(currentList.map { it.apply { isSelected = tournament.id == id } })
+            setCurrentTournamentIdList(listOf(tournament.id))
+            currentList.forEach { tournamentCombo ->
+                tournamentCombo.isSelected = false
             }
         } else if (tournament is ChampionTournamentDataModel) {
             _navigateToChampion.value = Event(tournament)

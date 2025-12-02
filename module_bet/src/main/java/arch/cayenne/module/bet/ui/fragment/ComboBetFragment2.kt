@@ -36,6 +36,7 @@ import arch.cayenne.lib.database.entity.BetSelectionBean
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.module.bet.R
 import arch.cayenne.module.bet.data.ComboMultiBetBean
+import arch.cayenne.module.bet.data.Parameter
 import arch.cayenne.module.bet.databinding.FragmentComboBet2Binding
 import arch.cayenne.module.bet.ui.adapter.BetSelectionAdapter
 import arch.cayenne.module.bet.ui.adapter.ComboMultiBetAdapter
@@ -110,11 +111,13 @@ class ComboBetFragment2 : BaseFragment<ComboBetViewModel, FragmentComboBet2Bindi
                 val data = mViewModel.onComboMultiBetBeanListener.value?.find { it.serialValue == serialValue }
                     ?: error("can not find serialValue:$serialValue in ${ mViewModel.onComboMultiBetBeanListener.value }")
                 val items = mViewModel.splitComboIntoSingles(data)
-                CombinationFragment.newInstance(CombinationFragment.Parameter(
+                CombinationFragment.newInstance(
+                    Parameter(
                     title = data.title(),
                     titleTips = data.titleTips(),
                     items = items
-                )).show(childFragmentManager)
+                )
+                ).show(childFragmentManager)
             }
 
             fun calculateScrollY(nestedScrollView: NestedScrollView, targetView: View):Int? {
@@ -241,14 +244,6 @@ class ComboBetFragment2 : BaseFragment<ComboBetViewModel, FragmentComboBet2Bindi
                     combo
                 }
                 tvMulti.text = let { "@${item.sumOdds.getOdds()}" }
-                etMoney.setText(let {
-                    if (item.inputMoney > 0) {
-                        val money = item.inputMoney.getMoney()
-                        money
-                    } else {
-                       ""
-                    }
-                })
                 val moneyHint = R.string.et_money_hint.getString().format(item.minAmount.getMoney(), item.maxAmount.getMoney())
                 etMoney.hint = moneyHint
                 tvMoney.text = moneySymbol

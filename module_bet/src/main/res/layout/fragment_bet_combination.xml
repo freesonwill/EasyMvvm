@@ -4,11 +4,11 @@
     android:id="@+id/cl_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:minHeight="425dp"
-    android:background="@drawable/bg_bet_dialog">
+    android:background="@drawable/bg_bet_dialog"
+    android:orientation="vertical">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/combination_title"
+        android:id="@+id/cl_title"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_54">
 
@@ -17,7 +17,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_12"
-            android:text="@string/title_combo_bet_super"
             android:textColor="@color/color_FFFFFF"
             android:textSize="@dimen/sp_14"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -29,7 +28,7 @@
             android:id="@+id/iv_bet_info"
             android:layout_width="@dimen/dp_16"
             android:layout_height="@dimen/dp_16"
-            android:layout_marginStart="@dimen/dp_7"
+            android:layout_marginStart="@dimen/dp_6"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/tv_bet_title"
             app:layout_constraintTop_toTopOf="parent"
@@ -60,8 +59,8 @@
         android:id="@+id/rv_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/dp_7"
+        android:layout_marginTop="@dimen/dp_54"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/combination_title" />
+        app:layout_constraintTop_toTopOf="parent" />
 </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>

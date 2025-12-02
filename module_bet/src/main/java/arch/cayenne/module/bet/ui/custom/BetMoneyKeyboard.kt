@@ -28,6 +28,7 @@ import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+import arch.cayenne.lib.common.utils.ext.getMaxLength
 import arch.cayenne.lib.common.utils.ext.setOnClickOrLongPressListener
 import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
@@ -161,14 +162,16 @@ class BetMoneyKeyboard @JvmOverloads constructor(
 
     private fun initView(){
         binding.numberKeyboard.setOtherTextSize(13f)
+        mViewModel!!.setMaxLength(etMoney!!.getMaxLength())
     }
 
     private fun createObserver(viewLifecycleOwner:LifecycleOwner,onMoneyChange:(serialValue:Int,money:Long)->Unit){
         val mViewModel = this.mViewModel ?: return
         mViewModel.onEditNumber.observe(viewLifecycleOwner) {
-            etMoney!!.setText(it)
+            val etMoney = this.etMoney!!
+            etMoney.setText(it)
             val length = it.length
-            etMoney!!.setSelection(length)
+            etMoney.setSelection(length)
             onMoneyChange.invoke(serialValue!!,it.toMoney())
         }
         mViewModel.onNumberLimit.observe(viewLifecycleOwner) {

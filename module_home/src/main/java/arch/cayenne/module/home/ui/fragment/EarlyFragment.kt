@@ -40,6 +40,7 @@ import arch.cayenne.lib.common.utils.helper.VIPResourceHelper
 import arch.cayenne.lib.database.entity.TournamentDataModel
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.module.home.R
+import arch.cayenne.module.home.TournamentCombo
 import arch.cayenne.module.home.data.constants.HomeState
 import arch.cayenne.module.home.data.constants.TournamentListType
 import arch.cayenne.module.home.data.constants.TournamentSortType
@@ -162,8 +163,8 @@ class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>(),
         }
 
 
-        mViewModel.tournaments.observeEvent(viewLifecycleOwner, this) { list ->
-            setTournamentAndViewPagerLayout(list)
+        mViewModel.tournaments.observeEvent(viewLifecycleOwner, this) { comboList ->
+            setTournamentAndViewPagerLayout(comboList)
         }
 
         mViewModel.collapseTournamentDropdown.observeEvent(
@@ -195,7 +196,14 @@ class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>(),
             this
         ) { hasSelection ->
             updateTournamentButtonStyle(hasSelection)
+            if (hasSelection) {
+                mBinding.layoutContainer.vpGameList.setCurrentItem(
+                    leaguePagerAdapter!!.itemCount - 1,
+                    false
+                )
+            }
         }
+
 
         // 觀察是否需要清除 tlLeagueList 的選中狀態
         mViewModel.shouldClearLeagueListSelection.observeEvent(viewLifecycleOwner, this) {
@@ -390,12 +398,12 @@ class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>(),
             val tabLayout = mBinding.layoutContainer.tlLeagueList
             for (i in 0 until tabLayout.tabCount) {
                 val tab = tabLayout.getTabAt(i)
-                val data = tab?.tag as? TournamentDataModel
+                val data = tab?.tag as? TournamentCombo
 
                 if (tab != null && data != null && tab.customView == null) {
                     tab.customView = createTournamentTabView(data)
                     tab.view.setPadding(0, 0, 6f.dp2px, 0)
-                    if (data.id == HomeViewModel.TOURNAMENT_ALL_ID) {
+                    if (data.tournamentList[0].id == HomeViewModel.TOURNAMENT_ALL_ID) {
                         tab.view.minimumWidth = 0
                     }
                 }
@@ -423,7 +431,7 @@ class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>(),
             vpGameList.isSaveEnabled = false
             vpGameList.adapter = null
             vpGameList.isUserInputEnabled = false
-            vpGameList.offscreenPageLimit = 10
+            vpGameList.offscreenPageLimit = 12
 
             //如果直接點擊聯賽到ViewPager還沒生成的MatchListPageFragment聯賽的話，這個MatchListPageFragment會生成並且attach上去，所以在這裡需要做attach完成後的startObserveMatch
             childFragmentManager.registerFragmentLifecycleCallbacks(object :
@@ -812,7 +820,7 @@ class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>(),
         return tab
     }
 
-    private fun setTournamentAndViewPagerLayout(tournaments: List<TournamentDataModel>) {
+    private fun setTournamentAndViewPagerLayout(tournamentCombos: List<TournamentCombo>) {
 
         with(mBinding.layoutContainer) {
             if (leaguePagerAdapter == null) {
@@ -823,7 +831,16 @@ class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>(),
                 vpGameList.adapter = leaguePagerAdapter
                 vpGameList.offsetLeftAndRight(1)
             }
-            leaguePagerAdapter!!.setData(mViewModel.currentPlayTypeId, tournaments)
+
+            leaguePagerAdapter!!.setData(
+                mViewModel.currentPlayTypeId, tournamentCombos + TournamentCombo(
+                    listOf(
+                        TournamentDataModel.createAllItem(
+                            mViewModel.currentPlayTypeId, mViewModel.currentSportId
+                        )
+                    ), true
+                )
+            )
 
             //因為一開始有觸發resetHome(),觸發resetLiveData()，所以observe livedata tournaments可能會是空的
             //導致tabLayout沒有資料時又多設定一次OnTabSelectedListener，因此要先清除之前的listener
@@ -834,14 +851,14 @@ class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>(),
                 tabLayout = tlLeagueList,
                 viewPager = vpGameList
             ) { tab, position ->
-                tournaments.getOrNull(position)?.let {
+                tournamentCombos.getOrNull(position)?.let {
                     tab.tag = it
                 }
             }.also { layoutMediator ->
                 layoutMediator.attach(
                     afterTabSelected = { position ->
-                        tournaments.getOrNull(position)?.let { tournament ->
-                            mViewModel.setCurrentTournamentId(tournament.id)
+                        tournamentCombos.getOrNull(position)?.let { tournamentCombo ->
+                            mViewModel.setCurrentTournamentIdList(tournamentCombo.leagueIdList)
                             // 需求3：標記外部tab已切換，下次打開彈窗時需要清空篩選
                             mViewModel.markTournamentTabSwitched()
                             // 需求3：清除按鈕選中狀態和已保存的選中聯賽
@@ -856,8 +873,10 @@ class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>(),
                     drawTournamentTab()
                 }
 
-                if (tournaments.isNotEmpty()) {
-                    val selectedPosition = tournaments.indexOfFirst { it.isSelected }
+                if (tournamentCombos.isNotEmpty()) {
+                    val selectedPosition = tournamentCombos.indexOfFirst {
+                        it.isSelected
+                    }
                     tlLeagueList.setScrollPosition(selectedPosition, 0f, true)
                     tlLeagueList.post { layoutMediator.selectTabWithoutAnimation(selectedPosition) }
                     vpGameList.post {
@@ -897,12 +916,13 @@ class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>(),
     }
 
     private fun createTournamentTabView(
-        tournament: TournamentDataModel
+        tournamentCombo: TournamentCombo
     ): View {
         val tabBinding =
             ItemLeagueTabBinding.inflate(LayoutInflater.from(requireContext()), null, false)
 
         tabBinding.apply {
+            val tournament = tournamentCombo.tournamentList[0]
             tvLeagueName.text = if (tournament.id == HomeViewModel.TOURNAMENT_ALL_ID)
                 getString(R.string.league_all)
             else tournament.simpleName
@@ -982,7 +1002,7 @@ class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>(),
     }
 
 
-    fun jumpToAllLeagueTab(){
+    fun jumpToAllLeagueTab() {
         with(mBinding.layoutContainer) {
             // 清除所有 tab 的選中狀態
             val tabLayout = tlLeagueList

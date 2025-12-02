@@ -5,7 +5,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import arch.cayenne.lib.database.entity.TournamentDataModel
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
+import arch.cayenne.module.home.TournamentCombo
 import arch.cayenne.module.home.data.constants.PlayType
 import arch.cayenne.module.home.ui.fragment.EarlyMatchListPagerFragment
 import arch.cayenne.module.home.ui.fragment.MatchListPagerFragment
@@ -15,30 +16,47 @@ class LeaguePagerAdapter(
     lifecycle: Lifecycle,
 ) : FragmentStateAdapter(fragmentManager, lifecycle) {
 
-    private var tournament = arrayListOf<TournamentDataModel>()
+    private var tournamentCombos = arrayListOf<TournamentCombo>()
     private var playTypeId: Int = PlayType.TODAY.id
 
     @SuppressLint("NotifyDataSetChanged")
-    fun setData(playTypeId: Int, list: List<TournamentDataModel>) {
+    fun setData(playTypeId: Int, comboList: List<TournamentCombo>) {
         this.playTypeId = playTypeId
-        tournament = ArrayList(list)
+        tournamentCombos = ArrayList(comboList)
         notifyDataSetChanged()
     }
 
-    override fun getItemId(position: Int): Long {
-        return tournament[position].id * 10000 + position.toLong()
+    fun getData(): ArrayList<TournamentCombo> {
+        return tournamentCombos
     }
 
-    override fun getItemCount(): Int = tournament.size
+    override fun getItemId(position: Int): Long {
+//        return tournament[position].id * 10000 + position.toLong()
+        return position.toLong()
+    }
+
+    override fun getItemCount(): Int = tournamentCombos.size
 
     override fun createFragment(position: Int): Fragment {
-        val list = tournament
-        val sportId = list[position].sportId
-        val leagueId = list[position].id
+        val combos = tournamentCombos
+        val sportId = combos[position].sportId
+        val leagueIdList = combos[position].leagueIdList
         return if (playTypeId == PlayType.EARLY.id) {
-            EarlyMatchListPagerFragment.newInstance(sportId, playTypeId, leagueId, position)
+            EarlyMatchListPagerFragment.newInstance(
+                sportId,
+                playTypeId,
+                leagueIdList,
+                position,
+                combos[position].mutable
+            )
         } else {
-            MatchListPagerFragment.newInstance(sportId, playTypeId, leagueId, position)
+            MatchListPagerFragment.newInstance(
+                sportId,
+                playTypeId,
+                leagueIdList,
+                position,
+                combos[position].mutable
+            )
         }
     }
 }

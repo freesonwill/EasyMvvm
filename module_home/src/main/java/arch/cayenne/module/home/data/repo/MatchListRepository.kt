@@ -33,7 +33,7 @@ class MatchListRepository(
      * 根據不同的條件，從api或是db(優先)取得賽事資料，如果從api來的話，拿到後會先存進資料庫內
      * @param playType : 一級導航欄
      * @param sportId : 二級導航欄
-     * @param tournamentId : 聯賽id
+     * @param tournamentIdList : 聯賽id列表
      * @param page : 頁數
      * @param date : 0 -> All、其餘時間為該日期的start time
      * @param startTime : 時間區間起始，如果非早盤類型為0，早盤的"ALL"為隔日早上00:00:00
@@ -42,7 +42,7 @@ class MatchListRepository(
     suspend fun getAllMatch(
         playType: Int,
         sportId: Int,
-        tournamentId: Int,
+        tournamentIdList: List<Int>,
         prevPage: Int = INITIAL_PAGE -1,
         page: Int,
         date: Long,
@@ -55,17 +55,17 @@ class MatchListRepository(
 //            "prevPage:$prevPage".logi("prevPageIssue")
             //向前查询， 需要取首场比赛
             if (playType == PlayType.EARLY.id) {
-                matchDao.queryEarlyFirstMatch(tournamentId, date)
+                matchDao.queryEarlyFirstMatch(tournamentIdList, date)
             } else {
-                matchDao.queryFirstMatch(playType, tournamentId, date)
+                matchDao.queryFirstMatch(playType, tournamentIdList, date)
             }
         } else {
             //其他查询类型， 需要取最后一场比赛
             if (isForce) null else {
                 if (playType == PlayType.EARLY.id) {
-                    matchDao.queryEarlyLastMatch(tournamentId, date)
+                    matchDao.queryEarlyLastMatch(tournamentIdList, date)
                 } else {
-                    matchDao.queryLastMatch(playType, tournamentId, date)
+                    matchDao.queryLastMatch(playType, tournamentIdList, date)
                 }
             }
         }
@@ -79,8 +79,8 @@ class MatchListRepository(
                 this.playType = playType
                 //临时解决早盘和今日中，“全部”tab没有比赛数据的问题
                 //联赛id改成了列表， 查“全部”数据时传空列表
-                if (tournamentId != 0) {
-                    this.addTournamentId(tournamentId)
+                if (!tournamentIdList.contains(0)) {
+                    tournamentIdList.forEach { this.addTournamentId(it) }
                 }
                 this.size = DEFAULT_MATCH_SIZE
                 this.startTime = startTime
@@ -95,7 +95,7 @@ class MatchListRepository(
 
         if (resp.error == null && resp.data != null) {
             val matchFullData = resp.data!!.matchList.toRoomData()
-            "新增比賽 tournamentId = $tournamentId matchId = ${matchFullData.match.map { it.matchId }} 進入資料庫".logi(
+            "新增比賽 tournamentIdList = $tournamentIdList matchId = ${matchFullData.match.map { it.matchId }} 進入資料庫".logi(
                 HomeRepository::class.java.simpleName
             )
 
@@ -103,7 +103,7 @@ class MatchListRepository(
                 //早盘
                 val tournamentMatchRefs = resp.data!!.matchList.mapIndexed { index, match ->
                     EarlyTournamentMatchRef(
-                        tournamentId = tournamentId,
+                        tournamentIdList = tournamentIdList,
                         date = date,
                         matchId = match.matchId,
                         order = if (loadMatchType == LoadMatchType.PREV_PAGE) {
@@ -123,7 +123,7 @@ class MatchListRepository(
                         marketCrossRef = matchFullData.matchMarketCrossRefs,
                         marketSelectCrossRefs = matchFullData.marketSelectCrossRefs,
                         playType = playType,
-                        tournamentId = tournamentId,
+                        tournamentIdList = tournamentIdList,
                         date = date,
                         isForce = isForce
                     )
@@ -135,7 +135,7 @@ class MatchListRepository(
                     resp.data!!.matchList.mapIndexed { index, match ->
                         TournamentMatchRef(
                             playType = playType,
-                            tournamentId = tournamentId,
+                            tournamentIdList = tournamentIdList,
                             page = page,
                             date = date,
                             matchId = match.matchId,
@@ -152,7 +152,7 @@ class MatchListRepository(
                         marketCrossRef = matchFullData.matchMarketCrossRefs,
                         marketSelectCrossRefs = matchFullData.marketSelectCrossRefs,
                         playType = playType,
-                        tournamentId = tournamentId,
+                        tournamentIdList = tournamentIdList,
                         date = date,
                         isForce = isForce
                     )
@@ -164,26 +164,26 @@ class MatchListRepository(
         return ApiResponseState.Failed(resp.error)
     }
 
-    fun clearCurrentMatch(playType: Int, tournamentId: Int, date: Long) {
-        matchDao.deleteCurrentTournamentMatchRef(playType, tournamentId, date)
+    fun clearCurrentMatch(playType: Int, tournamentIdList: List<Int>, date: Long) {
+        matchDao.deleteCurrentTournamentMatchRef(playType, tournamentIdList, date)
     }
 
-    fun observeMatchChange(playType: Int, tournamentId: Int): Flow<List<TournamentMatchRef>> {
+    fun observeMatchChange(playType: Int, tournamentIdList: List<Int>): Flow<List<TournamentMatchRef>> {
         //觀察後端的500-1002（获取比赛列表）回傳
-        return matchDao.observeMatchChange(playType, tournamentId)
+        return matchDao.observeMatchChange(playType, tournamentIdList)
     }
 
     /**
      * 观察早盘比赛
      */
-    fun observeEarlyMatchChange(tournamentId: Int): Flow<List<EarlyTournamentMatchRef>> {
+    fun observeEarlyMatchChange(tournamentIdList: List<Int>): Flow<List<EarlyTournamentMatchRef>> {
         //觀察後端的500-1002（获取比赛列表）回傳
-        return matchDao.observeEarlyMatchChange(tournamentId)
+        return matchDao.observeEarlyMatchChange(tournamentIdList)
     }
 
-    suspend fun queryMatchChange(playType: Int, tournamentId: Int): List<TournamentMatchRef> =
-        matchDao.queryMatchChange(playType, tournamentId)
+    suspend fun queryMatchChange(playType: Int, tournamentIdList: List<Int>): List<TournamentMatchRef> =
+        matchDao.queryMatchChange(playType, tournamentIdList)
 
-    suspend fun queryEarlyMatchChange(tournamentId: Int): List<EarlyTournamentMatchRef> =
-        matchDao.queryEarlyMatchChange(tournamentId)
+    suspend fun queryEarlyMatchChange(tournamentIdList: List<Int>): List<EarlyTournamentMatchRef> =
+        matchDao.queryEarlyMatchChange(tournamentIdList)
 }

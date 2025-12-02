@@ -15,14 +15,8 @@ abstract class TournamentDao: BaseDao<TournamentBean>() {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract suspend fun insertSportTournamentCrossRefs(refs: List<SportTournamentCrossRef>)
 
-    @Query("SELECT * FROM SportTournamentCrossRef WHERE playType = :playTypeId AND sportId = :sportId ANd tournamentId = :tournamentId ")
-    abstract suspend fun getSportTournamentCrossRef(playTypeId: Int, sportId: Int, tournamentId: Int): SportTournamentCrossRef?
-
     @Query("SELECT * FROM SportTournamentCrossRef WHERE playType = :playTypeId AND sportId = :sportId ")
     abstract suspend fun getSportTournamentCrossRef(playTypeId: Int, sportId: Int): List<SportTournamentCrossRef>?
-
-    @Query("UPDATE SportTournamentCrossRef SET coordinateY = :coordinate WHERE playType = :playTypeId AND sportId = :sportId AND tournamentId = :tournamentId ")
-    abstract suspend fun updateRefCoordinate(playTypeId: Int, sportId: Int, tournamentId: Int, coordinate: Int)
 
     @Query("SELECT bean.id as id, " +
             "ref.sportId as sportId, " +

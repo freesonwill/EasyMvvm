@@ -22,6 +22,8 @@ import arch.cayenne.lib.database.entity.InfoBean
 import arch.cayenne.module.bet.R
 import arch.cayenne.module.bet.data.ComboMultiBetBean
 import arch.cayenne.module.bet.data.OddsChangeEnum
+import arch.cayenne.module.bet.data.ParameterItems
+import arch.cayenne.module.bet.data.ParameterItems2
 import arch.cayenne.module.bet.repo.ComboBetRepository
 import arch.cayenne.module.bet.ui.fragment.CombinationFragment
 import kotlinx.coroutines.launch
@@ -276,7 +278,7 @@ class ComboBetViewModel(
      * @param combV
      * @return
      */
-    fun splitComboIntoSingles(bean:ComboMultiBetBean): List<CombinationFragment.ParameterItems> {
+    fun splitComboIntoSingles(bean:ComboMultiBetBean): List<ParameterItems> {
         val data = this.onBetListListener.value ?: return emptyList()
         // 1 注 = 固定只有一个 K
         val kList = if (bean.comboV == 1) {
@@ -293,14 +295,14 @@ class ComboBetViewModel(
 
             val listItems = data.combinations(k).map { l ->
                 val odds = repo.calculateCombinationOdds(l.map { it.odds },l.size)
-                CombinationFragment.ParameterItems2(
+                ParameterItems2(
                     combo = l.joinToString("·") { "${data.indexOf(it) + 1}" },
                     money = bean.inputMoney.takeIf { it != 0L }?.let { "$moneySymbol${it.getMoney()}" },
                     winMoney = bean.inputMoney.takeIf { it != 0L }?.let { "$moneySymbol${bean.inputMoney.getMoney(odds)}" },
                     odds = "@${odds.getOdds()}"
                 )
             }
-            CombinationFragment.ParameterItems(title, listItems)
+            ParameterItems(title, listItems)
         }
     }
 }
