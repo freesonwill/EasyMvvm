@@ -10,4 +10,5 @@
         <item>失效</item>
     </string-array>
     <string name="title_single_bet">单关</string>
+    <string name="notification_confirm">确认删除</string>
 </resources>
