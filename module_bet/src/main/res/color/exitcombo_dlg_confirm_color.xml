@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <!-- 按下状态 -->
-    <item android:color="@color/color_8000E0E5" android:state_pressed="true"/>
+    <item android:color="@color/color_801A98AF" android:state_pressed="true"/>
     <!-- 默认状态 -->
-    <item android:color="@color/color_00E0E5"/>
+    <item android:color="@color/color_1A98AF"/>
 </selector>

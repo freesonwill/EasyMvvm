@@ -216,6 +216,8 @@
     <color name="color_4C4C4C">#4C4C4C</color>
     <color name="color_B8B8B8">#B8B8B8</color>
     <color name="color_80B8B8B8">#80B8B8B8</color>
+    <color name="color_1A98AF">#1A98AF</color>
+    <color name="color_801A98AF">#801A98AF</color>
 
     <!-- VIP 等級顏色 -->
     <color name="shader_start">#FFFFFF</color>
