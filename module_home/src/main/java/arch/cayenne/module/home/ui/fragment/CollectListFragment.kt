@@ -150,14 +150,24 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
             }
         }
         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-            mBinding.rvCollectList.scrollToBottomWithLoadMore(minScrollCount = 8, {
-                if (mViewModel.apiStateListener.value != HomeState.Match.LoadSuccess) return@scrollToBottomWithLoadMore
-                mViewModel.loadNextPage()
-            }, {
-                if (mViewModel.apiStateListener.value == HomeState.Match.LoadNextFailure) {
-                    mViewModel.loadNextPage()
+            val layoutManager = recyclerView.layoutManager as LinearLayoutManager
+            if (dy > 0) {
+                if (mViewModel.apiStateListener.value == HomeState.Match.LoadSuccess) {
+                    val lastItemPos = layoutManager.findLastCompletelyVisibleItemPosition()
+                    val itemCount = matchAdapter.itemCount - 8
+                    if (lastItemPos > itemCount && lastItemPos > 1) {
+                        mViewModel.loadNextPage()
+                    }
                 }
-            })
+            } else if (dy < 0) {
+                if (mViewModel.prevApiStateListener.value == HomeState.Match.LoadSuccess) {
+                    val firstItemPos =
+                        layoutManager.findFirstCompletelyVisibleItemPosition()
+                    if (firstItemPos <= 8) {
+                        mViewModel.loadPrevPage()
+                    }
+                }
+            }
         }
     }
 
@@ -239,6 +249,30 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
                         clDynamics.visibility = View.GONE
                         mViewModel.changePageEnd(false)
                         matchAdapter.setLastItemType(MatchItemAdapter.LAST_ITEM_LOAD_MORE)
+                    }
+                }
+            }
+        }
+
+        mViewModel.prevApiStateListener.observe(viewLifecycleOwner) {
+            with(mBinding) {
+                when (it) {
+                    DataState.NetworkUnavailable, HomeState.Match.LoadNextFailure -> {}
+
+                    HomeState.Match.PrevDataEmpty -> {
+
+                    }
+
+                    HomeState.Match.PrevNoMoreData -> {
+                        mViewModel.changePrevPageEnd(true)
+                    }
+
+                    HomeState.Match.Loading -> {
+                        mViewModel.changeState(HomeState.Match.Loading)
+                    }
+
+                    DataState.LoadSuccess, HomeState.Match.LoadSuccess -> {
+                        mViewModel.changePrevPageEnd(false)
                     }
                 }
             }

@@ -282,7 +282,7 @@ class EarlyMatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
     }
 
     fun loadPrevPage() {
-        if (isPrevPageEnd || apiStateListener.value == DataState.Loading) {
+        if (isPrevPageEnd || prevApiStateListener.value == DataState.Loading) {
             return
         }
 

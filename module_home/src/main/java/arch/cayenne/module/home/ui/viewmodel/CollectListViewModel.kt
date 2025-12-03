@@ -1,5 +1,6 @@
 package arch.cayenne.module.home.ui.viewmodel
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.data.constants.DataState
@@ -12,6 +13,7 @@ import arch.cayenne.module.home.data.constants.HomeState
 import arch.cayenne.module.home.data.repo.BaseMatchRepository
 import arch.cayenne.module.home.data.repo.BaseMatchRepository.Companion.DEFAULT_MATCH_SIZE
 import arch.cayenne.module.home.data.repo.CollectListRepository
+import arch.cayenne.module.home.utils.DateUtils
 import galaxy.common.proto.Common
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -29,6 +31,18 @@ class CollectListViewModel : BaseMatchViewModel<CollectListRepository>() {
     override val repository : CollectListRepository by inject()
     private val balanceRepository: BalanceRepository by inject()
     val currentBalanceChange by lazy { MutableLiveData<InfoBean?>() }
+
+    fun changeState(state: DataState) {
+        setState(state)
+    }
+
+    private var prevPage: Int = INITIAL_PAGE - 1
+
+    private var isPrevPageEnd: Boolean = false
+
+    //收藏页面可能同时向前和向后查询， 因此需要新增一个api state
+    private val _prevApiStateListener = MutableLiveData<DataState>()
+    val prevApiStateListener: LiveData<DataState> get() = _prevApiStateListener
 
     override fun initViewModel() {
         super.initViewModel()
@@ -49,11 +63,14 @@ class CollectListViewModel : BaseMatchViewModel<CollectListRepository>() {
         if(loadMatchType == LoadMatchType.RETRY){ //由于两次加载造成了进入的时候暂无订单两次跳转
             return
         }
+        val reverse = loadMatchType == LoadMatchType.PREV_PAGE
         viewModelScope.launch {
             setState(HomeState.Match.Loading)
             callApi({
                 repository.getCollectData(
                     page = page,
+                    prevPage = prevPage,
+                    reverse = reverse,
                     isForce = loadMatchType == LoadMatchType.RELOAD || loadMatchType == LoadMatchType.RETRY
                 )
             }, {
@@ -61,21 +78,42 @@ class CollectListViewModel : BaseMatchViewModel<CollectListRepository>() {
                     if (loadMatchType == LoadMatchType.NEXT_PAGE) {
                         setState(HomeState.Match.LoadNextFailure)
                         matchListChange.value = matchListChange.value
-                    } else {
+                    } else if(loadMatchType==LoadMatchType.PREV_PAGE){
+                        setPrevApiState(HomeState.Match.LoadPrevFailure)
+                        matchListChange.value = matchListChange.value
+                    }else {
                         setState(DataState.NetworkUnavailable)
+                        setPrevApiState(DataState.NetworkUnavailable)
                         matchListChange.value = arrayListOf()
                     }
                 } else if (it is ApiResponseState.Succeeded<*>) {
-                    val size = it.dataAs<List<Common.Match>>()?.size ?: 0
-                    if (page == INITIAL_PAGE && size == 0) {
-                        matchListChange.value = arrayListOf()
+                    if (loadMatchType == LoadMatchType.PREV_PAGE) {
+                        val size = it.dataAs<List<Common.Match>>()?.size ?: 0
+                        if (size < DEFAULT_MATCH_SIZE) {
+                            setPrevApiState(HomeState.Match.PrevNoMoreData)
+                        } else {
+                            setPrevApiState(HomeState.Match.LoadSuccess)
+                        }
+                    }
+                    else {
+                        val size = it.dataAs<List<Common.Match>>()?.size ?: 0
 
-                        setState(HomeState.Match.DataEmpty)
-                    } else if (size < BaseMatchRepository.DEFAULT_MATCH_SIZE) {
-                        setState(DataState.NoMoreData)
+                        if (page == INITIAL_PAGE && size == 0) {
+                            matchListChange.value = arrayListOf()
 
-                    } else {
-                        setState(HomeState.Match.LoadSuccess)
+                            setState(HomeState.Match.DataEmpty)
+                        } else if (size < BaseMatchRepository.DEFAULT_MATCH_SIZE) {
+                            setState(DataState.NoMoreData)
+
+                        } else {
+                            setState(HomeState.Match.LoadSuccess)
+                        }
+                    }
+
+                    //向后查询成功，且为第一页， 则自动向前查询一页
+                    if (page == INITIAL_PAGE) {
+                        //向前查询一页数据
+                        getMatchListData(LoadMatchType.PREV_PAGE)
                     }
                 }
             })
@@ -131,8 +169,25 @@ class CollectListViewModel : BaseMatchViewModel<CollectListRepository>() {
         }
     }
 
-
     suspend fun removeMatchCollect(item: MatchWithMarkets) = withContext(Dispatchers.IO) {
         return@withContext repository.removeMatchCollect(item)
+    }
+
+    fun loadPrevPage() {
+        if (isPrevPageEnd || apiStateListener.value == DataState.Loading) {
+            return
+        }
+
+        prevPage--
+        setState(HomeState.Match.LoadingPrev)
+        getMatchListData(LoadMatchType.PREV_PAGE)
+    }
+
+    fun changePrevPageEnd(flag: Boolean) {
+        isPrevPageEnd = flag
+    }
+
+    private fun setPrevApiState(state: DataState) {
+        _prevApiStateListener.value = state
     }
 }

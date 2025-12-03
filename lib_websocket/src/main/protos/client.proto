@@ -417,6 +417,7 @@ message ListCollectReq {
   int64 cursor_match_id = 1;         // 比赛id游标
   int64 cursor_match_start_time = 2; // 比赛开始时间游标
   int32 size = 3;         // 每页显示数量,最大50
+  bool reverse = 4; //true-上页，false-下页
 }
 
 message ListCollectResp {
@@ -664,14 +665,14 @@ message MatchLiveStreamResp {
 //700-2007: 对阵图
 message SeasonBracketReq {
   int32 season_id = 1; //赛季Id
+  int32 type = 2; // 1:常规对阵图(图) 2:非常规对阵图(列表)
 }
-message SeasonBracketResp{
+message SeasonBracketResp {
   repeated SeasonBracketGroup groups = 1;       // 对阵图分组
   repeated SeasonBracketRound rounds = 2;       // 对阵阶段
   repeated SeasonBracketBracket brackets = 3;   // 对阵图
   repeated SeasonBracketMatchUp match_ups = 4;  // 对阵
 }
-
 
 //800-1001: 反馈标签列表
 message FeedbackLabelListReq {
