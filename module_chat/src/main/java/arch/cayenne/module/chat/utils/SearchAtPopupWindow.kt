@@ -54,7 +54,7 @@ class SearchAtPopupWindow {
     fun showPopupWindow(targetView: EditText) {
         if (atPopupWindow?.isShowing == false) {
             notifyAdapter(targetView)
-            atPopupWindow?.showAsDropDown(targetView)
+            atPopupWindow?.showAsDropDown(targetView,0, (-10).dp2px)
         }
     }
 
@@ -72,6 +72,14 @@ class SearchAtPopupWindow {
         atAdapter.selectedSet = indexList
         atAdapter.submitList(nList)
         atAdapter.notifyDataSetChanged()
+    }
+
+    fun deleteAdapterSelect(name:String){
+      val index =  atAdapter.currentList.indexOfFirst {
+            it.name == name
+        }
+      atAdapter.selectedSet.remove(atAdapter.currentList[index].id)
+      atAdapter.notifyItemChanged(index)
     }
 
     private fun getAtMsg(editable: Editable): List<AtBean> {

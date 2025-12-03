@@ -1,0 +1,80 @@
+<arch.cayenne.lib.skin.widget.SkinnableConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_dialog_round"
+    android:paddingStart="26dp"
+    android:paddingTop="0dp"
+    android:paddingEnd="26dp"
+    android:paddingBottom="0dp">
+
+    <!-- 中间提示文本 -->
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
+        android:id="@+id/tvMessage"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_32"
+        android:gravity="center"
+        android:text="@string/title_dialog_remove"
+        android:textColor="@color/color_B8B8B8"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <!-- 顶部横线 -->
+    <arch.cayenne.lib.skin.widget.SkinnableView
+        android:id="@+id/divider"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_marginTop="@dimen/dp_18"
+        android:background="@color/color_1F000000"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvMessage" />
+
+    <!-- 中间竖线 -->
+    <arch.cayenne.lib.skin.widget.SkinnableView
+        android:id="@+id/middle_divider"
+        android:layout_width="1dp"
+        android:layout_height="0dp"
+        android:background="@color/color_1F000000"
+        app:layout_constraintBottom_toBottomOf="@id/tvCancel"
+        app:layout_constraintEnd_toStartOf="@id/tvConfirm"
+        app:layout_constraintStart_toEndOf="@id/tvCancel"
+        app:layout_constraintTop_toTopOf="@id/tvCancel" />
+
+    <!-- 取消按钮 -->
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
+        android:id="@+id/tvCancel"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:background="?attr/selectableItemBackground"
+        android:gravity="center"
+        android:text="@string/btn_cancel"
+        android:textColor="@color/exitcombo_dlg_cancel_color"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/middle_divider"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/divider"
+        app:layout_constraintWidth_percent="0.5" />
+
+
+    <!-- 确认按钮 -->
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
+        android:id="@+id/tvConfirm"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:gravity="center"
+        android:text="@string/notification_confirm"
+        android:textColor="@color/exitcombo_dlg_confirm_color"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/middle_divider"
+        app:layout_constraintTop_toBottomOf="@id/divider"
+        app:layout_constraintWidth_percent="0.5" />
+
+
+</arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>

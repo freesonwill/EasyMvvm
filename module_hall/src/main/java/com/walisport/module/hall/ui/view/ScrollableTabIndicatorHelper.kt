@@ -6,6 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.widget.HorizontalScrollView
+import androidx.core.view.isGone
+import androidx.core.view.isVisible
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import arch.cayenne.lib.base.utils.LogUtils
 import com.google.android.material.tabs.TabLayout
@@ -23,27 +25,27 @@ class ScrollableTabIndicatorHelper(
 
     private var position = 1
 
-     fun smartAnimateToCurrent() {
+    fun smartAnimateToCurrent() {
         val pos = tabLayout.selectedTabPosition
         if (pos < 0) return
-         if (pos<2){
-             tabLayout.postDelayed({ doAnimate()},if (isSyncNow)150 else 0)
-         }else if(pos==2&&(isSyncNow||position<pos)){
-             tabLayout.postDelayed({ doAnimate()},if (isSyncNow)150 else 0)
-         }else if (pos>tabLayout.tabCount-2){
-             tabLayout.postDelayed({ doAnimate()},if (isSyncNow)150 else 0)
-         }else if(pos==tabLayout.tabCount-2&&(isSyncNow||position>pos)){
-             tabLayout.postDelayed({ doAnimate()},if (isSyncNow)150 else 0)
-         }
-         if (pos==3){
-             isSyncNow = true
-         }
-         if (pos==tabLayout.tabCount-3){
-             isSyncNow = true
-         }
+        if (pos < 2) {
+            tabLayout.postDelayed({ doAnimate() }, if (isSyncNow) 150 else 0)
+        } else if (pos == 2 && (isSyncNow || position < pos)) {
+            tabLayout.postDelayed({ doAnimate() }, if (isSyncNow) 150 else 0)
+        } else if (pos > tabLayout.tabCount - 2) {
+            tabLayout.postDelayed({ doAnimate() }, if (isSyncNow) 150 else 0)
+        } else if (pos == tabLayout.tabCount - 2 && (isSyncNow || position > pos)) {
+            tabLayout.postDelayed({ doAnimate() }, if (isSyncNow) 150 else 0)
+        }
+        if (pos == 3) {
+            isSyncNow = true
+        }
+        if (pos == tabLayout.tabCount - 3) {
+            isSyncNow = true
+        }
 
 
-         position = pos
+        position = pos
     }
 
     private fun doAnimate() {
@@ -59,14 +61,16 @@ class ScrollableTabIndicatorHelper(
         val bgCenter = loc[0] + bgView.width / 2f
 
         val targetX = bgView.translationX + tabCenter - bgCenter
-
-       // LogUtils.e("checkAndAnimateIfSettled-------->动画距离${targetX}")
+        // LogUtils.e("checkAndAnimateIfSettled-------->动画距离${targetX}")
         bgView.animate().apply {
-            translationX((targetX-mLeft))
+            translationX((targetX - mLeft))
             setDuration(280)
             setInterpolator(FastOutSlowInInterpolator())
             withEndAction {
-                isSyncNow  = false
+                isSyncNow = false
+                if (bgView.isGone) {
+                    bgView.visibility = View.VISIBLE
+                }
             }
             start()
         }
@@ -75,20 +79,19 @@ class ScrollableTabIndicatorHelper(
     // 手势滑动实时跟随
     private fun syncNow() {
         val pos = tabLayout.selectedTabPosition
-      //  LogUtils.e("checkAndAnimateIfSettled-------->syncNow------->${pos}")
-        if (pos < 0) return
+        //  LogUtils.e("checkAndAnimateIfSettled-------->syncNow------->${pos}")
+
         val tabView = (tabLayout.getChildAt(0) as? ViewGroup)?.getChildAt(pos) ?: return
         tabView.getLocationInWindow(loc)
         val tabCenter = loc[0] + tabView.width / 2f
         bgView.getLocationInWindow(loc)
         val bgCenter = loc[0] + bgView.width / 2f
-        var targetX = bgView.translationX+(tabCenter - bgCenter-mLeft)
-        bgView.translationX =targetX
+        var targetX = bgView.translationX + (tabCenter - bgCenter - mLeft)
+        bgView.translationX = targetX
     }
 
     @SuppressLint("ClickableViewAccessibility")
     fun setup() {
-        tabLayout.post { syncNow() }
         tabLayout.viewTreeObserver.addOnScrollChangedListener {
             syncNow()
         }

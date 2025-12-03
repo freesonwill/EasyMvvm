@@ -49,7 +49,11 @@ class FloatingButtonFragment constructor(): BaseFragment<FloatingButtonViewModel
         }
 
         mBinding.fab.binding.tvExit.clickNoRepeat {
-            mViewModel.exitComboBet()
+            ExitComboDialogFragment().apply {
+                setOnOkClickListener {
+                    mViewModel.exitComboBet()
+                }
+            }.show(childFragmentManager)
         }
     }
 

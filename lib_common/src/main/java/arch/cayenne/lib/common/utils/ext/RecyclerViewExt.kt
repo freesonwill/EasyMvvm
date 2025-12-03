@@ -68,3 +68,56 @@ fun RecyclerView.listenAtTop(onTopChanged: (Boolean) -> Unit) {
         }
     })
 }
+
+fun RecyclerView.onScrolledOver(
+    thresholdDowDp: Float = 100f,     // 向下滚多远触发（隐藏）
+    thresholdTopDp: Float = 80f,      // 回到顶部多近触发（显示）
+    onDowScrolling: () -> Unit,
+    onTopScrolling: () -> Unit
+) {
+    var totalScrolledPx = 0f
+    val thresholdDownPx = thresholdDowDp * resources.displayMetrics.density
+    val thresholdTopPx = thresholdTopDp * resources.displayMetrics.density
+
+    addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        override fun onScrolled(rv: RecyclerView, dx: Int, dy: Int) {
+            // 计算当前已经滚动的距离（从顶部开始累计）
+            totalScrolledPx = rv.computeVerticalScrollOffset().toFloat()
+
+            when {
+                // 向下滚动：距离顶部超过 thresholdDowDp → 触发隐藏
+                totalScrolledPx >= thresholdDownPx -> {
+                    onDowScrolling.invoke()
+                }
+
+                // 向上滚动：回到顶部附近（小于 thresholdTopDp）→ 触发显示
+                totalScrolledPx <= thresholdTopPx -> {
+                    onTopScrolling.invoke()
+                }
+            }
+        }
+    })
+}
+
+ fun RecyclerView.checkCurrentScrollState(
+    thresholdDowDp: Float = 100f,     // 向下滚多远触发（隐藏）
+    thresholdTopDp: Float = 80f,      // 回到顶部多近触发（显示）
+    onDowScrolling: () -> Unit,
+    onTopScrolling: () -> Unit
+) {
+    var totalScrolledPx = computeVerticalScrollOffset().toFloat()
+    val thresholdDownPx = thresholdDowDp * resources.displayMetrics.density
+    val thresholdTopPx = thresholdTopDp * resources.displayMetrics.density
+    // 计算当前已经滚动的距离（从顶部开始累计）
+    when {
+        // 向下滚动：距离顶部超过 thresholdDowDp → 触发隐藏
+        totalScrolledPx >= thresholdDownPx -> {
+            onDowScrolling.invoke()
+        }
+
+        // 向上滚动：回到顶部附近（小于 thresholdTopDp）→ 触发显示
+        totalScrolledPx <= thresholdTopPx -> {
+            onTopScrolling.invoke()
+        }
+    }
+}

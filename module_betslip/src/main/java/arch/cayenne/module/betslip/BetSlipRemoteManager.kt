@@ -9,6 +9,7 @@ import arch.cayenne.lib.websocket.data.ConnectState
 import arch.cayenne.lib.websocket.data.SocketResponseData
 import arch.cayenne.lib.websocket.extension.observeProtoMessage
 import arch.cayenne.lib.websocket.extension.sendAndWaitProtoMessageResponse
+import arch.cayenne.module.order.utils.TimeUtils
 import com.google.gson.Gson
 import galaxy.client.proto.Client
 import galaxy.client.proto.Client.EarlySettlePriceReq
@@ -52,22 +53,22 @@ class BetSlipRemoteManager(
         size: Int,
         sportIds: List<Int>?,
         matchId: Long?,
-    ): SocketResponseData<Client.GetOrderResp> {
+    ): SocketResponseData<Client.GetOrderPageResp> {
         "getOrderReq params status $type startTime $startTime endTime $endTime cursorBetTime $cursorBetTime size $size sportIds $sportIds matchId $matchId".logd(TAG)
-        val result = socketManager.sendAndWaitProtoMessageResponse<Client.GetOrderResp>(
+        val result = socketManager.sendAndWaitProtoMessageResponse<Client.GetOrderPageResp>(
             scope = scope,
             dispatcher = Dispatchers.IO,
             apiCode = ApiCode.GET_ORDER
         ) {
-            Client.GetOrderReq.newBuilder().apply {
-//                this.status = type
-//                this.size = size
-//                startTime?.let { this.startTime = it }
-//                endTime?.let { this.endTime = it }
-//                cursorBetTime?.let { this.cursorBetTime = it }
-//                sportIds?.let { this.addAllSportId(it) }
-//                matchId?.let { this.matchId = it }
-
+            Client.GetOrderPageReq.newBuilder().apply {
+                this.status = type
+                this.size = size
+                startTime?.let { this.startTime = it }
+                endTime?.let { this.endTime = it }
+                cursorBetTime?.let { this.cursorBetTime = it }
+                sportIds?.let { this.addAllSportId(it) }
+                matchId?.let { this.matchId = it }
+                this.offsetHours = TimeUtils.timeZoneOffsetHours()
             }.build()
         }
         "getOrderReq result ${Gson().toJson(result)}".logd(TAG)
