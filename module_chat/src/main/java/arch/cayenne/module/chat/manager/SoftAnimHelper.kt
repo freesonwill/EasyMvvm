@@ -95,6 +95,7 @@ class SoftAnimHelper(
         }
 
         if (height > 150 && !isKeyBoardVisible) { //软件盘打开
+
             isKeyBoardVisible = true
             val keyBoardHeight = if (isNavigationBarVisible) height - navigationBarHeight else height
 //            "frist keyBoardHeight:$keyBoardHeight dbHeight:$dbKeyboardHeight".logd(TAG)
