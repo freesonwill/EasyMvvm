@@ -6,20 +6,25 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewGroup.LayoutParams
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.os.bundleOf
+import androidx.core.view.isGone
+import androidx.core.view.marginStart
 import androidx.fragment.app.viewModels
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.adapter.PagerAdapter
+import arch.cayenne.lib.base.ui.animation.CustomCurveTransformer
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.common.data.constants.DrawerAction.ACTION_OPEN
 import arch.cayenne.lib.common.data.constants.DrawerAction.KEY_ACTION
 import arch.cayenne.lib.common.data.constants.DrawerAction.REQUEST_KEY_DRAWER
+import arch.cayenne.lib.common.ui.adapter.BannerImageAdapter
 import arch.cayenne.lib.common.ui.viewmodel.UnReadMessageViewModel
 import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
@@ -126,11 +131,8 @@ class HallFragment : BaseFragment<HallViewModel, FragmentHallBinding>() {
             root.touchBackPressed()
 
             balanceView.init(childFragmentManager)
-
+            initCurveBanner()
             var barHeight = ViewUtils.getStatusBarHeight(requireContext())
-            val params = guideline.layoutParams as ConstraintLayout.LayoutParams
-            params.guideBegin = 43.dp2px
-            guideline.layoutParams = params
 
             vpGame.adapter = PagerAdapter(childFragmentManager, lifecycle, mockTabList)
             launch {
@@ -171,11 +173,9 @@ class HallFragment : BaseFragment<HallViewModel, FragmentHallBinding>() {
             }.attach()
             tlGame.clearOnTabSelectedListeners()
             tlGame.removeAllTips()
-            tlGame.getTabAt(1)?.select()
-            tlGame.post{
+          //  tlGame.getTabAt(1)?.select()
                 tabIndicatorHelper = ScrollableTabIndicatorHelper(mBinding.tlGame, mBinding.aciTabBg)
                 tabIndicatorHelper?.setup()
-            }
             vpGame.setCurrentItem(1, false)
         }
     }
@@ -213,6 +213,7 @@ class HallFragment : BaseFragment<HallViewModel, FragmentHallBinding>() {
         mBinding.tlGame.addOnTabSelectedListener2(object : TabLayoutExt.OnTabSelectedListener2 {
             @SuppressLint("ResourceType")
             override fun onTabSelected(tab: TabLayout.Tab, isTabClick: Boolean) {
+                LogUtils.e("checkAndAnimateIfSettled-------->onTabSelected------->")
                 tab.let {
                     if (isTabClick) {
                         val vp = mBinding.vpGame
@@ -222,7 +223,10 @@ class HallFragment : BaseFragment<HallViewModel, FragmentHallBinding>() {
                         }
                     }
                     launch{
-                        tabIndicatorHelper?.smartAnimateToCurrent()
+                        if (!mBinding.aciTabBg.isGone){
+                            tabIndicatorHelper?.smartAnimateToCurrent()
+                        }
+
                     }
 
                 }
@@ -272,30 +276,53 @@ class HallFragment : BaseFragment<HallViewModel, FragmentHallBinding>() {
                 mBinding.ivUnreadDot.visibility = if (flag) View.VISIBLE else View.GONE
             }
         }
-
         unreadMessageViewModel.createObserver()
 
+        mViewModel. scorll.observe(viewLifecycleOwner){
+            if (it){ //收起
+                mBinding.homeBarIcon.marginEndAnim()
+            }else{ //展开
+                mBinding.homeBarIcon.marginStartAnim()
+            }
+        }
     }
 
     override fun onStart() {
-//        mBinding.ivLogo.post {
-//            var barHeight = ViewUtils.getStatusBarHeight(requireContext())
-//            var toBarHeight = mBinding.ivLogo.height
-//
-//            val paramsLin = mBinding.homeBarIcon.layoutParams as LayoutParams
-//            paramsLin.height = barHeight+toBarHeight
-//            mBinding.homeBarIcon.layoutParams = paramsLin
-//        }
+        mBinding.homeTopBar.post {
+            //动态设置沉浸式状态栏背景高度 状态栏高度+bar控件高度
+            val barHeight = ViewUtils.getStatusBarHeight(requireContext())
+            val toBarHeight = mBinding.homeTopBar.height
+
+            val paramsLin = mBinding.homeBarIcon.layoutParams as LayoutParams
+            paramsLin.height = barHeight + toBarHeight+20.dp2px
+            mBinding.homeBarIcon.layoutParams = paramsLin
+        }
         mBinding.root.fitsSystemWindows = false
         StatusBarConfig.statusBarType =
-            StatusBarMode.DRAW_BEHIND(autoPadding = false, autoIsNavigation = true)
+            StatusBarMode.DRAW_BEHIND( autoIsNavigation = true)
         setStatusBar(StatusBarConfig, mBinding.clMain)
         super.onStart()
     }
 
 
 
-
+    private fun initCurveBanner(){
+        val images =  listOf(
+            arch.cayenne.lib.common.R.drawable.home_bar_left_icon,
+            arch.cayenne.lib.common.R.drawable.home_bar_left_icon,
+            arch.cayenne.lib.common.R.drawable.home_bar_left_icon,
+            arch.cayenne.lib.common.R.drawable.home_bar_left_icon
+        )
+        // 自定义适配器
+        val adapter = BannerImageAdapter(images)
+        mBinding.ivRightLogo.setAdapter(adapter)
+        mBinding.ivRightLogo.setLoopTime(3000)
+        // 设置滑动时长丝滑,不影响曲线,
+        mBinding.ivRightLogo.setScrollTime(500)  // 1 秒
+        mBinding.ivRightLogo.setPageTransformer(CustomCurveTransformer())
+        // 启动轮播
+        mBinding.ivRightLogo.start()
+    }
 
 
 

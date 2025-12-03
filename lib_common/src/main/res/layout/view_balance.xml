@@ -34,7 +34,7 @@
         android:id="@+id/iv_arrow"
         android:layout_width="@dimen/dp_10"
         android:layout_height="@dimen/dp_7"
-        android:background="@drawable/ic_arrow_down"
+        android:background="@drawable/live_money_title_down"
         android:layout_marginEnd="@dimen/dp_10"
         app:layout_constraintRight_toLeftOf="@id/iv_add"
         app:layout_constraintTop_toTopOf="parent"

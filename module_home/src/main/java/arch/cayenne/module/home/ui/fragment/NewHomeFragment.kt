@@ -1,25 +1,35 @@
 package arch.cayenne.module.home.ui.fragment
 
+import android.graphics.Color
+import android.graphics.Outline
+import android.graphics.Paint
+import android.graphics.Path
+import android.graphics.RectF
 import android.graphics.Typeface
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams
+import android.view.ViewOutlineProvider
 import android.widget.TextView
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.os.bundleOf
+import androidx.core.view.doOnLayout
 import androidx.fragment.app.viewModels
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.animation.AnimationController
 import arch.cayenne.lib.base.ui.animation.AnimationController.AnimType
+import arch.cayenne.lib.base.ui.animation.CustomCurveTransformer
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.data.constants.DrawerAction.ACTION_INIT
 import arch.cayenne.lib.common.data.constants.DrawerAction.ACTION_OPEN
 import arch.cayenne.lib.common.data.constants.DrawerAction.KEY_ACTION
 import arch.cayenne.lib.common.data.constants.DrawerAction.REQUEST_KEY_DRAWER
+import arch.cayenne.lib.common.ui.adapter.BannerImageAdapter
 import arch.cayenne.lib.common.ui.view.CustomTabIndicator
 import arch.cayenne.lib.common.ui.viewmodel.UnReadMessageViewModel
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
@@ -46,6 +56,9 @@ import arch.cayenne.module.home.ui.adapter.SubHomePagerAdapter
 import arch.cayenne.module.home.ui.view.HomeTabMediator
 import arch.cayenne.module.home.ui.view.PromoTab
 import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
+import com.google.android.material.shape.CornerFamily
+import com.google.android.material.shape.MaterialShapeDrawable
+import com.google.android.material.shape.ShapeAppearanceModel
 import com.google.android.material.tabs.TabLayout
 import kotlin.reflect.KClass
 
@@ -66,8 +79,11 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
     //    private val tournamentListFragment  = TournamentListFragment.newInstance()
 
     override fun initView(savedInstanceState: Bundle?) {
+        mBinding.balanceView.init(childFragmentManager)
         initPlayTypeLayout()
         setReceiveHorizontalScrollResult()
+        initCurveBanner()
+
     }
 
     override fun onStart() {
@@ -77,7 +93,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             val toBarHeight = mBinding.homeTopBar.height
 
             val paramsLin = mBinding.homeBarIcon.layoutParams as LayoutParams
-            paramsLin.height = barHeight + toBarHeight
+            paramsLin.height = barHeight + toBarHeight+20.dp2px
             mBinding.homeBarIcon.layoutParams = paramsLin
         }
         mBinding.root.fitsSystemWindows = false
@@ -96,6 +112,22 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
         }
     }
 
+    private fun initCurveBanner(){
+        val images =  listOf(
+            arch.cayenne.lib.common.R.drawable.home_bar_left_icon,
+            arch.cayenne.lib.common.R.drawable.home_bar_left_icon,
+            arch.cayenne.lib.common.R.drawable.home_bar_left_icon,
+            arch.cayenne.lib.common.R.drawable.home_bar_left_icon
+                )
+        val adapter = BannerImageAdapter(images)
+       mBinding.banner.setAdapter(adapter)
+        mBinding.banner.setLoopTime(3000)
+        // 设置滑动时长丝滑,不影响曲线,
+        mBinding. banner.setScrollTime(500)  // 1 秒
+        mBinding. banner.setPageTransformer(CustomCurveTransformer())
+        // 启动轮播
+        mBinding. banner.start()
+    }
     private fun setupSidebar() {
         mBinding.ivHomeSidebar.clickNoRepeat {
             requireActivity().supportFragmentManager.setFragmentResult(
@@ -319,13 +351,9 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
 
     override fun initListener() {
         with(mBinding) {
-            includedLayout.llWalletEntry.apply {
-                addScaleOnTouchAnimation(includedLayout.addMoney)
-            }.setOnClickListener {
-                //navigate(Uri.parse("walisport://module_home/homeFragment"))
+            balanceView.onAddClickListener = {
                 navigate(Uri.parse("walisport://module_topup/topUpFragment"))
             }
-
             ivSearchEntry.apply {
                 clickNoRepeatSingle { navigate(arch.cayenne.lib.res.R.string.nav_module_search_fragment.deeplink()) }
                 addScaleOnTouchAnimation()
@@ -340,12 +368,11 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
         }
 
         mViewModel.currentBalanceChange.observe(viewLifecycleOwner) {
-            mBinding.includedLayout.tvMoney.text =
-                getString(
-                    R.string.balance_format,
-                    CurrencySymbols.getSymbol(it?.currency ?: ""),
-                    (it?.balance ?: 0L).getFormalMoney()
-                )
+            mBinding.balanceView.setMoney( getString(
+                R.string.balance_format,
+                CurrencySymbols.getSymbol(it?.currency ?: ""),
+                (it?.balance ?: 0L).getFormalMoney()
+            ))
         }
 
 

@@ -6,14 +6,28 @@
     android:layout_height="match_parent"
     android:background="@color/title_bg">
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <arch.cayenne.lib.common.ui.view.MatrixSlantLayout
         android:id="@+id/homeBarIcon"
-        android:layout_width="124dp"
-        android:layout_height="110dp"
-        android:background="@drawable/home_bar_left_bg"
+        android:layout_width="127dp"
+        android:layout_marginTop="-20dp"
+        android:layout_height="@dimen/dp_160"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="MissingConstraints" />
+        tools:ignore="MissingConstraints" >
+        <com.youth.banner.Banner
+            android:id="@+id/banner"
+            android:layout_gravity="bottom"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="@dimen/dp_1"
+            android:background="@color/slant_view"
+            android:paddingStart="1dp"
+            android:paddingTop="@dimen/dp_2"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            tools:ignore="MissingConstraints" />
+
+    </arch.cayenne.lib.common.ui.view.MatrixSlantLayout>
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/ll_main"
@@ -47,8 +61,10 @@
                     tools:ignore="MissingConstraints" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/newHomeAddMoney"
+
+
+            <arch.cayenne.lib.common.ui.view.BalanceView
+                android:id="@+id/balance_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_9"
@@ -56,26 +72,9 @@
                 android:paddingTop="@dimen/dp_7"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toRightOf="@+id/clAvava"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:ignore="MissingConstraints">
+                app:layout_constraintTop_toTopOf="parent"/>
 
-                <include
-                    android:id="@+id/includedLayout"
-                    layout="@layout/layout_money_bar" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <androidx.appcompat.widget.AppCompatImageView
-                android:layout_width="@dimen/dp_103"
-                android:layout_height="@dimen/dp_68"
-                android:layout_marginStart="@dimen/dp_1"
-                android:layout_marginEnd="@dimen/dp_2"
-                android:paddingStart="1dp"
-                android:paddingTop="@dimen/dp_2"
-                android:scaleType="fitXY"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:srcCompat="@drawable/home_bar_left_icon"
-                tools:ignore="MissingConstraints" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <arch.cayenne.module.home.ui.view.ClickSearchConstraintLayout
