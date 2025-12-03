@@ -329,13 +329,14 @@
     <!--  收藏按鈕  -->
     <arch.cayenne.lib.skin.widget.SkinnableImageView
         android:id="@+id/iv_favorite"
-        android:layout_width="29dp"
-        android:layout_height="24dp"
+        android:layout_width="@dimen/dp_44"
+        android:layout_height="@dimen/dp_34"
+        android:paddingStart="15dp"
         android:paddingTop="@dimen/dp_10"
-        android:paddingStart="0dp"
         android:paddingEnd="@dimen/dp_15"
+        android:paddingBottom="@dimen/dp_10"
         android:src="@drawable/layer_favorite_crossfade"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
