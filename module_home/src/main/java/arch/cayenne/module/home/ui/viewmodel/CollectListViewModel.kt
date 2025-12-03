@@ -1,11 +1,14 @@
 package arch.cayenne.module.home.ui.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.base.data.remote.ApiResponseState.Start.dataAs
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.common.data.repo.BalanceRepository
 import arch.cayenne.lib.database.entity.InfoBean
 import arch.cayenne.lib.database.entity.MatchWithMarkets
@@ -108,12 +111,12 @@ class CollectListViewModel : BaseMatchViewModel<CollectListRepository>() {
                         } else {
                             setState(HomeState.Match.LoadSuccess)
                         }
-                    }
 
-                    //向后查询成功，且为第一页， 则自动向前查询一页
-                    if (page == INITIAL_PAGE) {
-                        //向前查询一页数据
-                        getMatchListData(LoadMatchType.PREV_PAGE)
+                        //向后查询成功，且为第一页， 则自动向前查询一页
+                        if (page == INITIAL_PAGE) {
+                            //向前查询一页数据
+                            getMatchListData(LoadMatchType.PREV_PAGE)
+                        }
                     }
                 }
             })
