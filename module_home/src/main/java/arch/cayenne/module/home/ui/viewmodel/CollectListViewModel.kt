@@ -1,14 +1,11 @@
 package arch.cayenne.module.home.ui.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.base.data.remote.ApiResponseState.Start.dataAs
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.common.data.repo.BalanceRepository
 import arch.cayenne.lib.database.entity.InfoBean
 import arch.cayenne.lib.database.entity.MatchWithMarkets
@@ -16,7 +13,6 @@ import arch.cayenne.module.home.data.constants.HomeState
 import arch.cayenne.module.home.data.repo.BaseMatchRepository
 import arch.cayenne.module.home.data.repo.BaseMatchRepository.Companion.DEFAULT_MATCH_SIZE
 import arch.cayenne.module.home.data.repo.CollectListRepository
-import arch.cayenne.module.home.utils.DateUtils
 import galaxy.common.proto.Common
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
