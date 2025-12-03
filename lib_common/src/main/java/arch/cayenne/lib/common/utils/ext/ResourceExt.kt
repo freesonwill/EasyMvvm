@@ -12,6 +12,7 @@ import androidx.core.content.ContextCompat
 import arch.cayenne.lib.base.utils.log.Utils
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import org.koin.java.KoinJavaComponent.getKoin
+import java.io.IOException
 
 /**
  * @author: zhangsan
@@ -85,6 +86,15 @@ object ResourceExt {
      */
     fun @receiver:DimenRes Int.getDimensionPixelOffset(ctx: Context = app): Int {
         return ctx.resources.getDimensionPixelOffset(this)
+    }
+
+    fun getAssets(fileName: String, context: Context = app): String? {
+        return try {
+            context.assets.open(fileName).bufferedReader().use { it.readText() }
+        } catch (ioException: IOException) {
+            ioException.printStackTrace()
+            null
+        }
     }
 
 }
