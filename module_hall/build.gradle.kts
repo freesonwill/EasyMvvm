@@ -44,6 +44,7 @@ dependencies {
     implementation(project(":lib_common"))
     implementation(project(":module_game_detail"))
     testImplementation(libs.junit)
+    implementation(libs.banner)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 }
