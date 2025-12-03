@@ -32,9 +32,10 @@ class CollectListRepository(
 
     private val collectMatchChange by lazy { MutableStateFlow<Map<Long, CollectMatchRef>>(hashMapOf()) }  //CollectMatchCrossRef
 
-    suspend fun getCollectData(page: Int, isForce: Boolean = false) : ApiResponseState {
+    suspend fun getCollectData(page: Int, isForce: Boolean = false): ApiResponseState {
 
-        val last = if (isForce) null else collectMatchChange.value.maxByOrNull { it.value.order }?.value
+        val last =
+            if (isForce) null else collectMatchChange.value.maxByOrNull { it.value.order }?.value
         val resp = socketManager.sendAndWaitProtoMessageResponse<Client.ListCollectResp>(
             scope = scope,
             dispatcher = Dispatchers.IO,
@@ -59,7 +60,12 @@ class CollectListRepository(
             )
 
             val map = resp.data!!.matchList.mapIndexed { index, match ->
-                match.matchId to CollectMatchRef(match.matchId, match.basicInfo.startTime, page, page * 100 + index)
+                match.matchId to CollectMatchRef(
+                    match.matchId,
+                    match.basicInfo.startTime,
+                    page,
+                    page * 100 + index
+                )
             }.toMap()
             collectMatchChange.value = collectMatchChange.value + map
             return ApiResponseState.Succeeded(resp.data!!.matchList)
@@ -80,7 +86,7 @@ class CollectListRepository(
         return resp
     }
 
-    fun observeMatchChange() : Flow<Map<Long, CollectMatchRef>> = collectMatchChange
+    fun observeMatchChange(): Flow<Map<Long, CollectMatchRef>> = collectMatchChange
 
     override fun deleteMissingMatch(matchIds: List<Long>) {
         super.deleteMissingMatch(matchIds)
@@ -90,8 +96,10 @@ class CollectListRepository(
     /**
      * 插入收藏的matchId
      * */
-   fun insertCollectList(list:List<CollectMatchRef>) {
-        if(list.isEmpty()){return}
+    fun insertCollectList(list: List<CollectMatchRef>) {
+        if (list.isEmpty()) {
+            return
+        }
         val collectList: List<CollectListBean> = list.map {
             CollectListBean(
                 it.matchId,
@@ -101,10 +109,10 @@ class CollectListRepository(
             )
         }.toList()
         collectListDao.deleteAll()
-       collectListDao.insertCollects(collectList)
+        collectListDao.insertCollects(collectList)
     }
 
-    fun deleteCollectList(){
+    fun deleteCollectList() {
         collectListDao.deleteAll()
     }
 
@@ -123,8 +131,8 @@ class CollectListRepository(
      * 多次重复进入收藏后CollectMatchange数据没有清空，导致 getCollectData方法中last数据不为空，
      * 错误的选择了更多加载而不是初始化获取数据
      * */
-    fun clear(){
-       collectMatchChange.value =  mapOf()
+    fun clear() {
+        collectMatchChange.value = mapOf()
     }
 
 }
