@@ -52,21 +52,21 @@ class BetSlipRemoteManager(
         size: Int,
         sportIds: List<Int>?,
         matchId: Long?,
-    ): SocketResponseData<Client.GetOrderResp> {
+    ): SocketResponseData<Client.GetOrderPageResp> {
         "getOrderReq params status $type startTime $startTime endTime $endTime cursorBetTime $cursorBetTime size $size sportIds $sportIds matchId $matchId".logd(TAG)
-        val result = socketManager.sendAndWaitProtoMessageResponse<Client.GetOrderResp>(
+        val result = socketManager.sendAndWaitProtoMessageResponse<Client.GetOrderPageResp>(
             scope = scope,
             dispatcher = Dispatchers.IO,
             apiCode = ApiCode.GET_ORDER
         ) {
-            Client.GetOrderReq.newBuilder().apply {
-//                this.status = type
-//                this.size = size
-//                startTime?.let { this.startTime = it }
-//                endTime?.let { this.endTime = it }
-//                cursorBetTime?.let { this.cursorBetTime = it }
-//                sportIds?.let { this.addAllSportId(it) }
-//                matchId?.let { this.matchId = it }
+            Client.GetOrderPageReq.newBuilder().apply {
+                this.status = type
+                this.size = size
+                startTime?.let { this.startTime = it }
+                endTime?.let { this.endTime = it }
+                cursorBetTime?.let { this.cursorBetTime = it }
+                sportIds?.let { this.addAllSportId(it) }
+                matchId?.let { this.matchId = it }
 
             }.build()
         }
