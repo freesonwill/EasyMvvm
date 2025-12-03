@@ -174,14 +174,14 @@ class ModuleRepository(
                 }
                 tournamentDao.insert(tournamentList)
                 tournamentDao.insertSportTournamentCrossRefs(refs)
-                val tournamentId = 0  //default沒給，只能預設為是全部聯賽
+                val tournamentIdList = listOf(0)  //default沒給，只能預設為是全部聯賽
                 val matchFullData = data.match.toRoomData()
-                "新增比賽 tournamentId = ${tournamentId} matchId = ${matchFullData.match.map { it.matchId }} 進入資料庫".logi(
+                "新增比賽 tournamentId = ${tournamentIdList} matchId = ${matchFullData.match.map { it.matchId }} 進入資料庫".logi(
                     HomeRepository::class.java.simpleName)
                 val tournamentMatchRefs = data.match.mapIndexed { index, match ->
                     TournamentMatchRef(
                         playType = playTypeId,
-                        tournamentId = tournamentId,
+                        tournamentIdList = tournamentIdList,
                         page = 0,
                         date = 0,//default沒給，只能預設為是今日
                         matchId = match.matchId,

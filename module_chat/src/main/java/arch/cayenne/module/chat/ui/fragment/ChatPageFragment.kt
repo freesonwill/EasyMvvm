@@ -7,13 +7,13 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
-import arch.cayenne.lib.websocket.chat.data.ChatMsg
 import arch.cayenne.module.chat.data.constants.KeyBoardType
+import arch.cayenne.module.chat.data.model.ChatMsgPageBean
 import arch.cayenne.module.chat.databinding.FragementChatPageLayoutBinding
-import arch.cayenne.module.chat.ui.adapter.ChatAdapter
+import arch.cayenne.module.chat.ui.adapter.ChatPageAdapter
 import arch.cayenne.module.chat.ui.viewmodel.ChatHomeViewModel
 import arch.cayenne.module.chat.ui.viewmodel.ChatPageViewModel
 import kotlinx.coroutines.launch
@@ -42,10 +42,12 @@ class ChatPageFragment:BaseFragment<ChatPageViewModel,FragementChatPageLayoutBin
             orientation = LinearLayoutManager.VERTICAL
             reverseLayout = true
         }
-        val adapter = ChatAdapter()
+        val adapter = ChatPageAdapter(){
+            ChatUserInfoFragment().show(childFragmentManager)
+        }
 
-        adapter.setOnItemListener(object :RecyclerItemListener<ChatMsg>{
-            override fun onItemClick(item: ChatMsg?, position: Int) {
+        adapter.setOnItemListener(object :RecyclerItemListener<ChatMsgPageBean>{
+            override fun onItemClick(item: ChatMsgPageBean?, position: Int) {
                 ChatPersonalDialogFragment.show(this@ChatPageFragment)
             }
         })
@@ -75,8 +77,8 @@ class ChatPageFragment:BaseFragment<ChatPageViewModel,FragementChatPageLayoutBin
      * */
     @SuppressLint("NotifyDataSetChanged")
     private fun refreshChatList() {
-        val adapter = mBinding.liveChatRecycler.adapter?.let { it as ChatAdapter }
-        val nList = mutableListOf<ChatMsg>()
+        val adapter = mBinding.liveChatRecycler.adapter?.let { it as ChatPageAdapter }
+        val nList = mutableListOf<ChatMsgPageBean>()
         nList.addAll(mViewModel.msgLists)
         adapter?.submitList(nList)
     }
@@ -88,8 +90,8 @@ class ChatPageFragment:BaseFragment<ChatPageViewModel,FragementChatPageLayoutBin
 
     override suspend fun createObserver() {
         homeViewModel.sendMsgLiveData.observe(viewLifecycleOwner) {
-            mViewModel.addLocalMsg(homeViewModel.addLocalMsg(it))
-            homeViewModel.sendMsgToServer(it)
+            mViewModel.addLocalMsg(it)
+            homeViewModel.sendMsgToServer(it.content)
             refreshChatList()
         }
         viewLifecycleOwner.lifecycleScope.launch {

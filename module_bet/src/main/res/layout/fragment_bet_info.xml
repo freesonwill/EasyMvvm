@@ -6,34 +6,28 @@
     android:layout_height="wrap_content"
     android:visibility="gone">
 
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/iv_bg_top"
-        android:layout_width="228dp"
-        android:layout_height="@dimen/dp_60"
-        app:layout_constraintLeft_toLeftOf="parent"
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_bet_info"
+        android:layout_width="216dp"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="@dimen/dp_12"
+        android:paddingVertical="@dimen/dp_13"
+        android:gravity="start"
+        android:maxLines="2"
+        android:textColor="@color/color_000000"
+        android:textSize="@dimen/sp_13"
+        android:background="@drawable/bg_shape_bet_tip"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/bg_shape_bet_tip" />
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iv_bg_bottom"
         android:layout_width="@dimen/dp_12"
         android:layout_height="@dimen/dp_10"
         android:layout_marginStart="@dimen/dp_30"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="@+id/iv_bg_top"
-        app:layout_constraintTop_toBottomOf="@+id/iv_bg_top"
+        app:layout_constraintStart_toStartOf="@+id/tv_bet_info"
+        app:layout_constraintTop_toBottomOf="@+id/tv_bet_info"
         app:srcCompat="@drawable/icon_bet_info_arrow" />
-
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/tv_bet_info"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="12dp"
-        android:textColor="@color/color_000000"
-        android:textSize="@dimen/sp_13"
-        android:maxLines="2"
-        app:layout_constraintBottom_toBottomOf="@+id/iv_bg_top"
-        app:layout_constraintLeft_toLeftOf="@+id/iv_bg_top"
-        app:layout_constraintRight_toRightOf="@+id/iv_bg_top"
-        app:layout_constraintTop_toTopOf="@+id/iv_bg_top" />
 </androidx.constraintlayout.widget.ConstraintLayout>

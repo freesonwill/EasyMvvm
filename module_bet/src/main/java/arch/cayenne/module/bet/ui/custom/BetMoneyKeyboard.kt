@@ -25,8 +25,10 @@ import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.data.repo.BalanceRepository
 import arch.cayenne.lib.common.ui.view.NumberKeyboardView.OnCalculatorClickListener
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+import arch.cayenne.lib.common.utils.ext.getMaxLength
 import arch.cayenne.lib.common.utils.ext.setOnClickOrLongPressListener
 import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
@@ -160,18 +162,20 @@ class BetMoneyKeyboard @JvmOverloads constructor(
 
     private fun initView(){
         binding.numberKeyboard.setOtherTextSize(13f)
+        mViewModel!!.setMaxLength(etMoney!!.getMaxLength())
     }
 
     private fun createObserver(viewLifecycleOwner:LifecycleOwner,onMoneyChange:(serialValue:Int,money:Long)->Unit){
         val mViewModel = this.mViewModel ?: return
         mViewModel.onEditNumber.observe(viewLifecycleOwner) {
-            etMoney!!.setText(it)
+            val etMoney = this.etMoney!!
+            etMoney.setText(it)
             val length = it.length
-            etMoney!!.setSelection(length)
+            etMoney.setSelection(length)
             onMoneyChange.invoke(serialValue!!,it.toMoney())
         }
         mViewModel.onNumberLimit.observe(viewLifecycleOwner) {
-            etMoney!!.hint = context.getString(R.string.et_money_hint).format(it.first.getMoney(), it.second.getMoney())
+            etMoney!!.hint = R.string.et_money_hint.getString(it.first.getMoney(), it.second.getMoney())
         }
         mViewModel.onOverNumberListener.observe(viewLifecycleOwner) {
             it.msg?.let { msg ->
@@ -207,7 +211,7 @@ class BetMoneyKeyboard @JvmOverloads constructor(
             }
 
             override fun getOtherText(): String {
-                return context.getString(R.string.btn_max)
+                return R.string.btn_max.getString()
             }
         })
     }

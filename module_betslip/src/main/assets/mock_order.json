@@ -1,0 +1,60 @@
+{
+  "betId": "B202501020001",
+  "betTime": 1735804800000,
+  "settleTime": 1735808400000,
+  "betAmount": 20000,
+  "returnAmount": 0,
+  "selectionsList": [
+    {
+      "selectionId": 9001001,
+      "selectionName": "曼城 - 全场独赢",
+      "odds": 186,
+      "marketName": "全场独赢",
+      "marketId": 30001,
+      "specifier": "",
+      "betScore": "0-0",
+      "matchBasic": {
+        "matchId": 987654321,
+        "matchName": "英超：曼城 vs 阿森纳",
+        "homeTeam": "曼城",
+        "homeTeamId": 101,
+        "homeTeamIcon": "https://example.com/icon/man_city.png",
+        "awayTeam": "阿森纳",
+        "awayTeamId": 102,
+        "awayTeamIcon": "https://example.com/icon/arsenal.png",
+        "startTime": 1735803000000,
+        "status": 5,
+        "tournamentId": 2001,
+        "tournamentName": "英格兰超级联赛",
+        "tournamentShortName": "英超",
+        "tournamentIcon": "https://example.com/icon/epl.png",
+        "sportId": 1,
+        "sportName": "足球",
+        "betStop": false,
+        "tournamentHot": true,
+        "tournamentWeight": 99,
+        "provider": 1
+      },
+      "status": 1,
+      "endScore": "2-1",
+      "inPlay": true
+    }
+  ],
+  "comboType": 0,
+  "comboK": 0,
+  "comboV": 0,
+  "comboCount": 1,
+  "odds": 186,
+  "status": 5,
+  "earlyBetAmount": 0,
+  "earlyReturnAmount": 0,
+  "resultStatus": 1,
+  "earlySettlePrice": {
+    "price": "0.93",
+    "earlySupport": true,
+    "settleStatus": 4
+  },
+  "betSlipType": 0,
+  "currency": "CNY",
+  "liveMatchId": 987654321
+}

@@ -1,6 +1,5 @@
 package com.walisport.module.hall.ui.adapter
 
-import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
@@ -18,7 +17,7 @@ import kotlin.random.Random
  * 全部類型的遊戲頭部Adapter，包含左方的廣告位、右方的邀請朋友和每日比賽
  * */
 class GameAllListAdapter(
-    val onItemClickListener: (() -> Unit)? = null
+    private val onItemClickListener: GameAllListViewHolder.OnItemClickListener?
 ): RecyclerView.Adapter<GameAllListViewHolder>() {
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -55,12 +54,12 @@ class GameAllListViewHolder(val binding: ItemGameAllListBinding): RecyclerView.V
         l
     }
 
-    @SuppressLint("ClickableViewAccessibility")
-    fun init(onItemClickListener: (() -> Unit)? = null) {
+    fun init(onItemClickListener: OnItemClickListener? = null) {
         with(binding) {
             rvInnerList.layoutManager =
                 LinearLayoutManager(rvInnerList.context, LinearLayoutManager.HORIZONTAL, false)
-            rvInnerList.adapter = GameAllListInnerAdapter().also {
+
+            rvInnerList.adapter = GameAllListInnerAdapter(onItemClickListener?.run {::onChildItemClick}).also {
                 it.submitList(mockList)
             }
             val divider = DividerItemDecoration(
@@ -72,8 +71,13 @@ class GameAllListViewHolder(val binding: ItemGameAllListBinding): RecyclerView.V
             rvInnerList.addItemDecoration(divider)
 
             root.clickNoRepeat {
-                onItemClickListener?.invoke()
+                onItemClickListener?.onItemClick()
             }
         }
+    }
+
+    interface OnItemClickListener {
+        fun onItemClick()
+        fun onChildItemClick()
     }
 }

@@ -113,6 +113,8 @@ class HomeTabMediator(
         } catch (_: Exception) {
         }
     }
+
+    //从PagerAdapter填充Tab
     private fun populateTabsFromPagerAdapter() {
         tabLayout.removeAllTabs()
         val pagerCount = adapter?.itemCount ?: return

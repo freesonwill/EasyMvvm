@@ -15,6 +15,8 @@ import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
+import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
+import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.database.entity.SelectionBeanLite
 import arch.cayenne.module.bet.data.AddSelectionStatus
@@ -59,14 +61,9 @@ class ChampionFragment : BaseFragment<ChampionViewModel, FragmentChampionBinding
 
     override fun initView(savedInstanceState: Bundle?) {
         mBinding.apply {
-            titleBar.loadDynamicsTitleBar(tittleBarBinding.root) {
-                findNavController().navigateUp()
-            }
+            titleBar.loadDynamicsTitleBar(tittleBarBinding.root, null)
+
             tittleBarBinding.apply {
-                Glide.with(this@ChampionFragment)
-                    .load(args.icon)
-                    .error(R.drawable.title_league_icon)
-                    .into(tittleBarBinding.ivLandscapeLeagueIcon)
                 tittleBarBinding.tvCompetitionName.text = args.name
             }
             rvChampion.itemAnimator = null
@@ -130,14 +127,21 @@ class ChampionFragment : BaseFragment<ChampionViewModel, FragmentChampionBinding
     }
 
     override fun initListener() {
-        tittleBarBinding.llWalletEntry.setOnClickListener {
+        tittleBarBinding.ivBack.addScaleOnTouchAnimation()
+        tittleBarBinding.ivBack.clickNoRepeat {
+            findNavController().navigateUp()
+        }
+        tittleBarBinding.includedLayout.llWalletEntry.apply {
+            addScaleOnTouchAnimation(tittleBarBinding.includedLayout.addMoney)
+        }.setOnClickListener {
+            //navigate(Uri.parse("walisport://module_home/homeFragment"))
             navigate(Uri.parse("walisport://module_topup/topUpFragment"))
         }
     }
 
     override suspend fun createObserver() {
         mViewModel.currentBalanceChange.observe(viewLifecycleOwner) {
-            tittleBarBinding.tvMoney.text =
+            tittleBarBinding.includedLayout.tvMoney.text =
                 getString(R.string.balance_format, CurrencySymbols.getSymbol(it?.currency?:""), (it?.balance?:0L).getFormalMoney())
         }
         mViewModel.matchWithMarketsChange.observe(viewLifecycleOwner) { matchWithMarkets ->

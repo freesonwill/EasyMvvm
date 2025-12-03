@@ -38,10 +38,10 @@ data class SelectionBean(
 * Cross Reference Entity
 * */
 
-@Entity(primaryKeys = ["playType", "tournamentId", "matchId", "date", "page"])
+@Entity(primaryKeys = ["playType", "tournamentIdList", "matchId", "date", "page"])
 data class TournamentMatchRef(
     val playType: Int,
-    val tournamentId: Int,
+    val tournamentIdList: List<Int>,
     val page: Int,
     val date: Long, //0表示ALL Tab，其餘的是該日期標籤起始時間
     val matchId: Long,
@@ -53,15 +53,15 @@ data class TournamentMatchRef(
  * 早盘联赛和比赛的关联Ref
  * 早盘具备向前查询功能， 分页机制和排序机制必须和其他PlayType分开， 需要新建EarlyTournamentMatchRef
  */
-@Entity(primaryKeys = ["tournamentId", "matchId", "date"])
+@Entity(primaryKeys = ["tournamentIdList", "matchId", "date"])
 data class EarlyTournamentMatchRef(
-    val tournamentId: Int,
+    val tournamentIdList: List<Int>,
     val matchId: Long,
     val date: Long,
     val order: Int,
 )
 
-@Entity(primaryKeys = ["matchId", "marketId"],)
+@Entity(primaryKeys = ["matchId", "marketId"])
 data class MatchMarketCrossRef(
     val matchId: Long,
     val marketId: Long,
@@ -69,7 +69,7 @@ data class MatchMarketCrossRef(
     val index: Int,
 )
 
-@Entity(primaryKeys = ["matchId", "marketId", "selectionId"],)
+@Entity(primaryKeys = ["matchId", "marketId", "selectionId"])
 data class MarketSelectCrossRef(
     val matchId: Long,
     val marketId: Long,
@@ -169,7 +169,7 @@ interface MatchListItem
 data class MatchWithMarkets(
     val match: MatchBean,
     val markets: List<MarketWithSelections>
-): MatchListItem
+) : MatchListItem
 
 //用來做notify收到時組合起來更新資料表用的
 data class MatchBeanLite(

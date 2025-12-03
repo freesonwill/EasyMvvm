@@ -116,7 +116,6 @@ class SoftKeyboardManager(
                 }
 
                 override fun onSoftKeyBoardHide() {
-//                    "onSoftKeyBoardHide  $clickKeyBoardType".logd("aaa")
                     isSoftKeyboardShow = false
                     if (clickKeyBoardType == KeyBoardType.SOFT_KEYBOARD) {
                         keyBoardListener.keyboardChangeClick(KeyBoardType.CHAT, 8)
@@ -174,7 +173,6 @@ class SoftKeyboardManager(
     }
 
     private fun softKeyboardChange(value: Boolean, flag: Int) {
-//        "softKeyboardChange $value $flag".logd("aaa")
         softKeyboardStatus = value
         if (value) {  //显示软件盘状态 it == true  当前软件盘没有收缩状态
             openSoftKeyBoard()
@@ -267,7 +265,6 @@ class SoftKeyboardManager(
     fun checkMainHeight():Int {
         val getManHeight = keyBoardListener.getMainHeight()
         mainDiffer = getManHeight - originMainHeight
-//        "differ $mainDiffer ${originMainHeight} getManHeight  ${getManHeight}".logd("aaa")
         mainDiffer = if(mainDiffer > 50) mainDiffer else 0
         return mainDiffer
     }
@@ -367,7 +364,6 @@ class SoftKeyboardManager(
      * 禁用软件盘
      * */
     private fun hideSoftKeyBoard(flag: Int) {
-//        "hideSoftKeyBoard $flag".logd("aaa")
         etInput?.let {
             it.clearFocus()
             EditTextUtils.hideKeyboard(it.context, it)

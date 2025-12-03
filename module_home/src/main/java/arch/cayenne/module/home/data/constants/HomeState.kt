@@ -5,7 +5,7 @@ import arch.cayenne.lib.base.data.constants.DataState
 sealed class HomeState: DataState {
     data object PlayTypeClick : HomeState()
 
-    data class FirstMatchListComplete(val playTypeId: Int, val tournamentId: Int) : HomeState()
+    data class FirstMatchListComplete(val playTypeId: Int, val tournamentIdList: List<Int>) : HomeState()
 
     sealed class Sport: HomeState() {
         data object Loading : Sport()

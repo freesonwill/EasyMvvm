@@ -7,8 +7,19 @@ import arch.cayenne.module.chat.data.compare.AtBeanCompare
  * @date: 24/11/25 11:26
  * @description:
  */
-data class AtBean(val name:String,val isSelect:Boolean){
-    fun builder(str:String = name,select:Boolean = isSelect):AtBean{
-     return AtBean(str,select)
+data class AtBean(val id:Int,val name:String,var isSelect:Boolean){
+    fun builder(nId:Int = id,str:String = name,select:Boolean = isSelect):AtBean{
+     return AtBean(nId,str,select)
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if(other == null ||other !is AtBean){
+            return false
+        }
+        return name == other.name
+    }
+
+    override fun hashCode(): Int {
+        return name.hashCode()
     }
 }
