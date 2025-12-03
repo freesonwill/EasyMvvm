@@ -227,7 +227,7 @@ class EarlyMatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
                         if (loadMatchType == LoadMatchType.PREV_PAGE) {
                             val size = it.dataAs<List<Common.Match>>()?.size ?: 0
                             if (size < BaseMatchRepository.DEFAULT_MATCH_SIZE) {
-                                setPrevApiState(HomeState.Match.PrevNoMoreData)
+                                setPrevApiState(DataState.NoMoreData)
                             } else {
                                 setPrevApiState(HomeState.Match.LoadSuccess)
                             }

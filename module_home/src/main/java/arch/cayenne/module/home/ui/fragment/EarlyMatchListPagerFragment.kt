@@ -393,11 +393,11 @@ class EarlyMatchListPagerFragment :
                 when (it) {
                     DataState.NetworkUnavailable, HomeState.Match.LoadNextFailure -> {}
 
-                    HomeState.Match.PrevDataEmpty -> {
+                    HomeState.Match.DataEmpty -> {
 
                     }
 
-                    HomeState.Match.PrevNoMoreData -> {
+                    DataState.NoMoreData -> {
                         mViewModel.changePrevPageEnd(true)
                     }
 

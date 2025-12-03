@@ -75,6 +75,41 @@ abstract class BaseViewModel : ViewModel(), KoinComponent {
         }
     }
 
+    protected fun callApi(api: suspend () -> ApiResponseState, handle: ((ApiResponseState) -> Unit)? = null, autoUpdateState: Boolean = true, apiStateCallback:(DataState)->Unit) {
+        if (autoUpdateState) {
+            apiStateCallback.invoke(DataState.None)
+        }
+        handle?.invoke(ApiResponseState.Start)
+        handle?.invoke(ApiResponseState.Processing(0, 100))
+        viewModelScope.launch {
+            if (autoUpdateState) {
+                apiStateCallback.invoke(DataState.Loading)
+            }
+            val response = withContext(Dispatchers.IO) { api() }
+            handle?.invoke(ApiResponseState.Processing(100, 100))
+            if (autoUpdateState) {
+                if (response is ApiResponseState.Failed) {
+                    apiStateCallback.invoke(DataState.NetworkUnavailable)
+                } else if (response is ApiResponseState.Succeeded<*>) {
+                    val isEmpty = when (val data = response.data) {
+                        null -> true
+                        is Collection<*> -> data.isEmpty()
+                        is Array<*> -> data.isEmpty()
+                        is Map<*, *> -> data.isEmpty()
+                        else -> false
+                    }
+
+                    apiStateCallback.invoke(if (isEmpty) {
+                        DataState.DataEmpty
+                    } else {
+                        DataState.LoadSuccess
+                    })
+                }
+            }
+            handle?.invoke(response)
+        }
+    }
+
     protected fun setState(state: DataState) {
         _apiStateListener.value = state
     }

@@ -25,6 +25,7 @@ import arch.cayenne.lib.database.entity.SelectionBeanLite
 import arch.cayenne.module.bet.data.AddSelectionStatus
 import arch.cayenne.module.bet.ui.fragment.BetSheetFragment
 import arch.cayenne.module.bet.viewmodel.FloatingButtonControlViewModel
+import arch.cayenne.module.betslip.data.constants.DateSelectListener
 import arch.cayenne.module.home.R
 import arch.cayenne.module.home.data.constants.HomeState
 import arch.cayenne.module.home.data.constants.PlayType
@@ -259,11 +260,11 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
                 when (it) {
                     DataState.NetworkUnavailable, HomeState.Match.LoadNextFailure -> {}
 
-                    HomeState.Match.PrevDataEmpty -> {
+                    HomeState.Match.DataEmpty -> {
 
                     }
 
-                    HomeState.Match.PrevNoMoreData -> {
+                    DataState.NoMoreData -> {
                         mViewModel.changePrevPageEnd(true)
                     }
 

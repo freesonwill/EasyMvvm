@@ -27,7 +27,7 @@ import plugin.koin.KoinViewModel
  */
 @KoinViewModel
 class CollectListViewModel : BaseMatchViewModel<CollectListRepository>() {
-    override val repository : CollectListRepository by inject()
+    override val repository: CollectListRepository by inject()
     private val balanceRepository: BalanceRepository by inject()
     val currentBalanceChange by lazy { MutableLiveData<InfoBean?>() }
 
@@ -59,17 +59,16 @@ class CollectListViewModel : BaseMatchViewModel<CollectListRepository>() {
     }
 
     override fun getMatchListData(loadMatchType: LoadMatchType) {
-        if(loadMatchType == LoadMatchType.RETRY){ //由于两次加载造成了进入的时候暂无订单两次跳转
+        if (loadMatchType == LoadMatchType.RETRY) { //由于两次加载造成了进入的时候暂无订单两次跳转
             return
         }
-        val reverse = loadMatchType == LoadMatchType.PREV_PAGE
         viewModelScope.launch {
             setState(HomeState.Match.Loading)
             callApi({
                 repository.getCollectData(
                     page = page,
                     prevPage = prevPage,
-                    reverse = reverse,
+                    reverse = false,
                     isForce = loadMatchType == LoadMatchType.RELOAD || loadMatchType == LoadMatchType.RETRY
                 )
             }, {
@@ -77,47 +76,65 @@ class CollectListViewModel : BaseMatchViewModel<CollectListRepository>() {
                     if (loadMatchType == LoadMatchType.NEXT_PAGE) {
                         setState(HomeState.Match.LoadNextFailure)
                         matchListChange.value = matchListChange.value
-                    } else if(loadMatchType==LoadMatchType.PREV_PAGE){
-                        setPrevApiState(HomeState.Match.LoadPrevFailure)
-                        matchListChange.value = matchListChange.value
-                    }else {
+                    } else {
                         setState(DataState.NetworkUnavailable)
                         setPrevApiState(DataState.NetworkUnavailable)
                         matchListChange.value = arrayListOf()
                     }
                 } else if (it is ApiResponseState.Succeeded<*>) {
-                    if (loadMatchType == LoadMatchType.PREV_PAGE) {
-                        val size = it.dataAs<List<Common.Match>>()?.size ?: 0
-                        if (size < DEFAULT_MATCH_SIZE) {
-                            setPrevApiState(HomeState.Match.PrevNoMoreData)
-                        } else {
-                            setPrevApiState(HomeState.Match.LoadSuccess)
-                        }
+
+                    val size = it.dataAs<List<Common.Match>>()?.size ?: 0
+
+                    if (page == INITIAL_PAGE && size == 0) {
+                        matchListChange.value = arrayListOf()
+
+                        setState(HomeState.Match.DataEmpty)
+                    } else if (size < BaseMatchRepository.DEFAULT_MATCH_SIZE) {
+                        setState(DataState.NoMoreData)
+
+                    } else {
+                        setState(HomeState.Match.LoadSuccess)
                     }
-                    else {
-                        val size = it.dataAs<List<Common.Match>>()?.size ?: 0
 
-                        if (page == INITIAL_PAGE && size == 0) {
-                            matchListChange.value = arrayListOf()
-
-                            setState(HomeState.Match.DataEmpty)
-                        } else if (size < BaseMatchRepository.DEFAULT_MATCH_SIZE) {
-                            setState(DataState.NoMoreData)
-
-                        } else {
-                            setState(HomeState.Match.LoadSuccess)
-                        }
-
-                        //向后查询成功，且为第一页， 则自动向前查询一页
-                        if (page == INITIAL_PAGE) {
-                            //向前查询一页数据
-                            getMatchListData(LoadMatchType.PREV_PAGE)
-                        }
+                    //向后查询成功，且为第一页， 则自动向前查询一页
+                    if (page == INITIAL_PAGE) {
+                        //向前查询一页数据
+                        loadPrevPage()
                     }
+
                 }
             })
         }
     }
+
+    private fun getPrevMatchListData() {
+        viewModelScope.launch {
+            setPrevApiState(HomeState.Match.Loading)
+            callApi({
+                repository.getCollectData(
+                    page = page,
+                    prevPage = prevPage,
+                    reverse = true,
+                    isForce = false
+                )
+            }, {
+                if (it is ApiResponseState.Failed) {
+                    setPrevApiState(HomeState.Match.LoadPrevFailure)
+                    matchListChange.value = matchListChange.value
+                } else if (it is ApiResponseState.Succeeded<*>) {
+                    val size = it.dataAs<List<Common.Match>>()?.size ?: 0
+                    if (size < DEFAULT_MATCH_SIZE) {
+                        setPrevApiState(DataState.NoMoreData)
+                    } else {
+                        setPrevApiState(HomeState.Match.LoadSuccess)
+                    }
+                }
+            }, true, {
+                setPrevApiState(it)
+            })
+        }
+    }
+
 
     fun startObserveMatch() {
         repository.clear()
@@ -155,9 +172,9 @@ class CollectListViewModel : BaseMatchViewModel<CollectListRepository>() {
      * 带api返回后重新更新收藏列表
      * */
     fun getCacheMatch() {
-        viewModelScope.launch (Dispatchers.IO ){
-           val dbRef = repository.getCollectList()
-           val currentRef = dbRef.sortedBy { it.order }
+        viewModelScope.launch(Dispatchers.IO) {
+            val dbRef = repository.getCollectList()
+            val currentRef = dbRef.sortedBy { it.order }
             page = INITIAL_PAGE
             //拿到ref後藉由ref拿到這個時間段的match id，再去資料庫把這些賽史資料串起來
             val list = repository.queryFullMatches(currentRef.map { it.matchId })
@@ -173,13 +190,13 @@ class CollectListViewModel : BaseMatchViewModel<CollectListRepository>() {
     }
 
     fun loadPrevPage() {
-        if (isPrevPageEnd || apiStateListener.value == DataState.Loading) {
+        if (isPrevPageEnd || _prevApiStateListener.value == DataState.Loading) {
             return
         }
 
         prevPage--
-        setState(HomeState.Match.LoadingPrev)
-        getMatchListData(LoadMatchType.PREV_PAGE)
+        setPrevApiState(HomeState.Match.LoadingPrev)
+        getPrevMatchListData()
     }
 
     fun changePrevPageEnd(flag: Boolean) {
