@@ -31,10 +31,6 @@ class CollectListViewModel : BaseMatchViewModel<CollectListRepository>() {
     private val balanceRepository: BalanceRepository by inject()
     val currentBalanceChange by lazy { MutableLiveData<InfoBean?>() }
 
-    fun changeState(state: DataState) {
-        setState(state)
-    }
-
     private var prevPage: Int = INITIAL_PAGE - 1
 
     private var isPrevPageEnd: Boolean = false

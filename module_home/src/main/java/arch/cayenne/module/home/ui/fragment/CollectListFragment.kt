@@ -357,7 +357,6 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
                     }
 
                     HomeState.Match.Loading -> {
-                        mViewModel.changeState(HomeState.Match.Loading)
                     }
 
                     DataState.LoadSuccess, HomeState.Match.LoadSuccess -> {
