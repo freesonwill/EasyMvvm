@@ -8,6 +8,7 @@ import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.lib.common.utils.ext.NavigationExt.navigateUp
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.locationOnScreen
 import com.bumptech.glide.Glide
@@ -108,7 +109,7 @@ class GameDetailFragment: BaseFragment<GameDetailViewModel, FragmentGameDetailBi
     override fun initListener() {
         with(mBinding) {
             ivBack.clickNoRepeat {
-                parentFragmentManager.popBackStack()
+                navigateUp()
             }
             ivFavorite.clickNoRepeat {
                 it.isSelected = !it.isSelected
