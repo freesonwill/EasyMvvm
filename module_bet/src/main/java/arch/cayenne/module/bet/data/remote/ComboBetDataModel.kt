@@ -15,5 +15,5 @@ data class ComboBetDataModel(
 data class ComboMultiBetInfo(
     val orderId: String,
     val serialValue: Int, // 多少串一關，0為全串關
-    val orderStatus: Int,
+    val orderStatus: Int, // 订单状态 0创建，1确认中，2拒单，3取消订单，4接单成功，5已结算
 )
