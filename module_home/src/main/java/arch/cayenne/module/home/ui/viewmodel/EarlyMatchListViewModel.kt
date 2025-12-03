@@ -100,10 +100,6 @@ class EarlyMatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
 
     fun getSportId() = _sportId
 
-    fun changeState(state: DataState) {
-        setState(state)
-    }
-
     fun resetRequestScrollToTop() {
         requestScrollToTop = false
     }

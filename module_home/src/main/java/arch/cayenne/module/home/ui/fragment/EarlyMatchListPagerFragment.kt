@@ -412,7 +412,6 @@ class EarlyMatchListPagerFragment :
                     }
 
                     HomeState.Match.Loading -> {
-                        mViewModel.changeState(HomeState.Match.Loading)
                     }
 
                     DataState.LoadSuccess, HomeState.Match.LoadSuccess -> {
