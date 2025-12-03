@@ -31,7 +31,6 @@ import arch.cayenne.module.home.data.constants.PlayType
 import arch.cayenne.module.home.data.model.MatchDateItem
 import arch.cayenne.module.home.data.model.MatchLoadMoreData
 import arch.cayenne.module.home.data.model.MatchNoMoreData
-import arch.cayenne.module.home.data.model.MatchQueryDateNoData
 import arch.cayenne.module.home.databinding.FragmentCollectListBinding
 import arch.cayenne.module.home.ui.adapter.MatchItemAdapter
 import arch.cayenne.module.home.ui.adapter.OnMatchItemClickListener
@@ -40,7 +39,6 @@ import arch.cayenne.module.home.ui.viewmodel.CollectDate
 import arch.cayenne.module.home.ui.viewmodel.CollectListViewModel
 import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
 import arch.cayenne.module.home.utils.DateUtils
-import arch.cayenne.module.home.utils.DateUtils.isSameDay
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import java.lang.ref.WeakReference
@@ -61,7 +59,7 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
 
 
     override fun initView(savedInstanceState: Bundle?) {
-        with (mBinding) {
+        with(mBinding) {
             // 隱藏 titleBar（作為 ViewPager 頁面使用）
             titleBar.visibility = View.GONE
 
@@ -94,25 +92,32 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
 
                 }
 
-                override fun onOddsCellClick(cell: WeakReference<View>, selection: SelectionBeanLite, x: Float, y: Float) {
+                override fun onOddsCellClick(
+                    cell: WeakReference<View>,
+                    selection: SelectionBeanLite,
+                    x: Float,
+                    y: Float
+                ) {
                     lifecycleScope.launch {
                         val v = cell.get()
                         val status = mViewModel.setSelection(selection)
                         when (status) {
                             is AddSelectionStatus.Success.Single -> {
-                                BetSheetFragment.show(requireActivity(), object : BetSheetFragment.ShowListener {
-                                    override fun onShow() {
-                                        v?.isSelected = true
-                                    }
+                                BetSheetFragment.show(
+                                    requireActivity(),
+                                    object : BetSheetFragment.ShowListener {
+                                        override fun onShow() {
+                                            v?.isSelected = true
+                                        }
 
-                                    override fun onCancel() {
-                                        v?.isSelected = false
-                                    }
+                                        override fun onCancel() {
+                                            v?.isSelected = false
+                                        }
 
-                                    override fun onHide() {
-                                        v?.isSelected = false
-                                    }
-                                })
+                                        override fun onHide() {
+                                            v?.isSelected = false
+                                        }
+                                    })
                             }
 
                             is AddSelectionStatus.Success.Combo, is AddSelectionStatus.Success.Update -> {
@@ -148,6 +153,7 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
             rvCollectList.addOnScrollListener(scrollListener)
         }
     }
+
     private val scrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
             super.onScrollStateChanged(recyclerView, newState)
@@ -156,6 +162,7 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
                 subscribeVisibleMatch()
             }
         }
+
         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
             val layoutManager = recyclerView.layoutManager as LinearLayoutManager
             if (dy > 0) {
@@ -295,11 +302,13 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
                         }
                         showToast(arch.cayenne.lib.common.R.string.toast_server_disconnected.getString())
                     }
+
                     DataState.NoMoreData -> {     //這個DataEmpty表示api抓不到任何資料了，有可能是頁面到底，或是從第一頁就抓不到資料
                         clDynamics.visibility = View.GONE
                         mViewModel.changePageEnd(true)
                         matchAdapter.setLastItemType(MatchItemAdapter.LAST_ITEM_NO_MORE)
                     }
+
                     HomeState.Match.DataEmpty -> {  //這個DataEmpty表示確定真的從第一頁就抓不到資料，表示當前的選擇沒有任何賽事
                         refreshLayout.finishRefresh()
                         matchAdapter.setLastItemType(MatchItemAdapter.LAST_ITEM_LOAD_MORE)
@@ -309,17 +318,21 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
                             R.string.collect_list_empty.getString()
                         )
                     }
+
                     HomeState.Match.Loading -> {
                         clDynamics.visibility = View.GONE
                     }
+
                     HomeState.Match.Refreshing -> {
                         clDynamics.visibility = View.GONE
                         mViewModel.changePageEnd(false)
                         matchAdapter.setLastItemType(MatchItemAdapter.LAST_ITEM_LOAD_MORE)
                     }
+
                     HomeState.Match.LoadingNext -> {
                         clDynamics.visibility = View.GONE
                     }
+
                     DataState.LoadSuccess, HomeState.Match.LoadSuccess -> {
                         if (refreshLayout.isRefreshing) refreshLayout.finishRefresh()
                         clDynamics.visibility = View.GONE
