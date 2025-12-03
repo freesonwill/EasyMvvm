@@ -10,7 +10,7 @@
         android:name="com.walisport.module.gamedetail.ui.fragment.GameDetailFragment"
         android:label="fragment_hall"
         tools:layout="@layout/fragment_game_detail">
-
+        <deepLink app:uri="@string/nav_module_gamedetail" />
     </fragment>
 
 

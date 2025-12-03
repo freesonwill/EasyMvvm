@@ -11,6 +11,7 @@ import arch.cayenne.lib.common.utils.helper.BackToTopHelper
 import com.walisport.module.hall.databinding.FragmentGameAllBinding
 import com.walisport.module.hall.ui.adapter.GameAllHeaderAdapter
 import com.walisport.module.hall.ui.adapter.GameAllListAdapter
+import com.walisport.module.hall.ui.adapter.GameAllListViewHolder
 import com.walisport.module.hall.ui.adapter.GameAllRankingAdapter
 import kotlin.reflect.KClass
 
@@ -21,11 +22,15 @@ class GameAllFragment: BaseFragment<EmptyViewModel, FragmentGameAllBinding>() {
 
     private val headerAdapter by lazy { GameAllHeaderAdapter() }
     private val listAdapter by lazy {
-        GameAllListAdapter {
-//            (parentFragment as BaseFragment<*,*>).navigate(HallFragmentDirections.actionHallFragmentToHallCategoryFragment())
-            (parentFragment as BaseFragment<*,*>).navigate(arch.cayenne.lib.res.R.string.nav_module_hall_category.deeplink())
-//            navigate(arch.cayenne.lib.res.R.string.nav_module_setting_fragment.deeplink())
-        }
+        GameAllListAdapter(object :GameAllListViewHolder.OnItemClickListener {
+            override fun onItemClick() {
+                navigate(arch.cayenne.lib.res.R.string.nav_module_hall_category.deeplink())
+            }
+
+            override fun onChildItemClick() {
+                navigate(arch.cayenne.lib.res.R.string.nav_module_gamedetail.deeplink())
+            }
+        })
     }
     private val rankingAdapter by lazy {
         GameAllRankingAdapter(
