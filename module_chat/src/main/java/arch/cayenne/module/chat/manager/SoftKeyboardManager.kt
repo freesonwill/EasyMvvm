@@ -355,7 +355,7 @@ class SoftKeyboardManager(
      * */
     fun openSoftKeyBoard() {
         etInput?.let {
-            etRequestFocus()
+//            etRequestFocus()
             EditTextUtils.showKeyboard(it.context, it)
         }
     }

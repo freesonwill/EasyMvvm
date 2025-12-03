@@ -61,7 +61,7 @@ class ChatATHelper(
         }
 
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-            isEditDelete = before > 0
+            isEditDelete = before > 0 && count == 0
             removeMentionSpan(chatEtInput, start, count)
         }
 
@@ -71,10 +71,10 @@ class ChatATHelper(
 //            }
 //            closeAtPopup = false
 
-            if (startInputPosition == -1 && !isAtInput) {
+            if (startInputPosition == -1 && !isAtInput && !isEditDelete) {
                 atPopupWindow.dismiss()
             }
-            if (!isEditDelete && startInputPosition >= 0 && !isEditDelete) {
+            if (!isEditDelete && startInputPosition >= 0 ) {
                 listenEditInput()
             }
             isAtInput = false
@@ -129,25 +129,21 @@ class ChatATHelper(
         isAtInput = true
         chatEtInput.apply {
             text?.let {
-                if(atPopupWindow.isSearchIng && startInputPosition >= 0 && selectionStart > startInputPosition){
-                    it.replace(startInputPosition,selectionStart,"")
+                if (atPopupWindow.isSearchIng && startInputPosition >= 0 && selectionStart > startInputPosition) {
+                    it.replace(startInputPosition, selectionStart, "")
                 }
-                val start = selectionStart
-
+                var nStart: Int = -1
                 if (item.isSelect) {
-                    if (selectionStart > 0 && it[selectionStart-1] == '@') {
-                        val name = "${item.name} "
-                         it.insert(selectionStart,name)
-                        filterEtInputWithAt(this, start, name.length)//+空格
+                    var atStr = ""
+                    if (selectionStart > 0 && it[selectionStart - 1] == '@') {
+                        nStart = selectionStart - 1
+                        atStr = "${item.name} "
                     } else {
-                        val name = "@${item.name} "
-                        it.insert(selectionStart,name)
-                        filterEtInputWithAt(
-                            this,
-                            start,
-                            name.length
-                        )//+ @ 空格
+                        atStr = "@${item.name} "
+                        nStart = selectionStart
                     }
+                    it.insert(selectionStart, atStr)
+                    filterEtInputWithAt(this, item.name, nStart, atStr.length)//+ @ 空格
                 } else {
                     var indexStart = it.indexOf("@${item.name} ")
                     var indexEnd = indexStart + item.name.length + 2//从0开始，+1 加上空格字符串+1
@@ -207,19 +203,17 @@ class ChatATHelper(
     }
 
     //添加at消息的背景色字体颜色
-    fun filterEtInputWithAt(editText: EditText, start: Int, length: Int) {
+    fun filterEtInputWithAt(editText: EditText, name: String, start: Int, length: Int) {
         val text = editText.text.toString()
         val allLength = start + length
         if (start < 0 || text.length < allLength) {
             return
         }
-        val range = IntRange(if (start == 0) 0 else start - 1, allLength)
-        val tv = text.substring(range.first + 1, range.last - 1)
-        val mentionSpan = MentionSpan(tv, atClick)
+        val mentionSpan = MentionSpan(name, atClick)
         editText.text.setSpan(
             mentionSpan,
-            range.first,
-            range.last,
+            start,
+            allLength,
             Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
         )
     }
@@ -232,13 +226,21 @@ class ChatATHelper(
                 val cursorPositionEnd = editText.selectionEnd
                 //被选中的字段进都需要自己删除没必要多检查
                 if (cursorPositionEnd != cursorPositionStart) {
+//                    "del1  cursorPositionStart $cursorPositionStart cursorPositionEnd $cursorPositionEnd".logd("aaa")
+                    val spannable = SpannableStringBuilder(editText.text)
+                    val spans = spannable.getSpans(cursorPositionStart, cursorPositionEnd, MentionSpan::class.java)
+
+                    if(spans.isNotEmpty()){
+                        atPopupWindow.deleteAdapterSelect(spans.last().tv)
+                    }
                     return@setOnKeyListener false
                 }
 
                 //字段没有被选中，需要检查是否以at消息结尾
                 if (cursorPositionStart > 0) {
                     val spannable = SpannableStringBuilder(editText.text)
-                    val spans = spannable.getSpans(0, cursorPositionStart, MentionSpan::class.java)
+                    val spans = spannable.getSpans(cursorPositionStart-1, cursorPositionStart, MentionSpan::class.java)
+
                     if (spans.isEmpty()) {
                         return@setOnKeyListener false
                     }
@@ -274,7 +276,10 @@ class ChatATHelper(
             var inputStr = ""
 
             if (startInputPosition >= 0 && cursorPosition <= chatEtInput.text.length) {
-                inputStr = chatEtInput.text.substring(startInputPosition, if(cursorPosition == chatEtInput.text.length) cursorPosition -1 else cursorPosition)
+                inputStr = chatEtInput.text.substring(
+                    startInputPosition,
+                    if (cursorPosition == chatEtInput.text.length) cursorPosition - 1 else cursorPosition
+                )
             }
             if (inputStr.length > 1 && inputStr.startsWith("@")) {
                 atPopupWindow.searchAtList(inputStr)

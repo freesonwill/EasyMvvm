@@ -51,7 +51,7 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
     var mainMatch: LiveData<LiveMatchBean>? = null
     var matchIdLiveData: LiveData<Long>? = null
     private lateinit var softKeyBoardManager: SoftKeyboardManager
-    private lateinit var chatAtHelper:ChatATHelper
+    private lateinit var chatAtHelper: ChatATHelper
 
 
     override fun initView(savedInstanceState: Bundle?) {
@@ -329,8 +329,13 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
                 }
                 return@setOnTouchListener false
             }
-            chatAtHelper = ChatATHelper(viewLifecycleOwner.lifecycleScope,requireContext(),chatEtInput,childFragmentManager)
-            chatAtHelper.initChatEtInput(mViewModel.languageManager.getLanguage()){
+            chatAtHelper = ChatATHelper(
+                viewLifecycleOwner.lifecycleScope,
+                requireContext(),
+                chatEtInput,
+                childFragmentManager
+            )
+            chatAtHelper.initChatEtInput(mViewModel.languageManager.getLanguage()) {
                 sendText()
             }
         }
@@ -397,7 +402,7 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
 //        }
 //        keyboardChangeClick(KeyBoardType.CHAT, 7)
 //        mViewModel.sendMsgToChat(text)
-        if(mBinding.chatEtInput.text == null || mBinding.chatEtInput.length() == 0){
+        if (mBinding.chatEtInput.text == null || mBinding.chatEtInput.length() == 0) {
             return
         }
 
@@ -443,6 +448,7 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
      * 展示聊天界面
      * */
     fun showChat() {
+        chatAtHelper.dismissWindow()
         updateKeyboardView(false)
 //        updateKeyboardView(mBinding.chatEtInput.text.isNotEmpty())
         emojiLayoutSize(true)
@@ -461,7 +467,7 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
      * */
     private fun showEmoji() {
         updateKeyboardView(true)
-        softKeyBoardManager.etRequestFocus()
+//        softKeyBoardManager.etRequestFocus()
         emojiLayoutSize(false)
     }
 
@@ -612,9 +618,9 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
         }
     }
 
-  /**
-   * 添加表情数据
-   * */
+    /**
+     * 添加表情数据
+     * */
     private fun addEmojiData(emojiData: EmojiModel) {
         val emojiPattern: Pattern = Pattern.compile(BID_EMOJI_REGEX)
         if (emojiPattern.matcher(emojiData.key).find()) {
@@ -623,7 +629,12 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
             return
         }
         chatAtHelper.dismissWindow() // 输入表情后at弹框消失
-        mBinding.chatEtInput.text?.append(emojiData.key)
+        mBinding.chatEtInput.apply {
+            if (selectionStart < 0) text?.append(emojiData.key) else text?.insert(
+                selectionStart,
+                emojiData.key
+            )
+        }
         softKeyBoardManager.etRequestFocus()
     }
 

@@ -22,4 +22,8 @@ data class AtBean(val id:Int,val name:String,var isSelect:Boolean){
     override fun hashCode(): Int {
         return name.hashCode()
     }
+
+    override fun toString(): String {
+        return "$name,"
+    }
 }
