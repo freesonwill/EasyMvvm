@@ -14,7 +14,6 @@ import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 class BannerImageAdapter(private val images: List<Int>) : BannerAdapter<Int, BannerImageAdapter.Holder>(images) {
 
     override fun onCreateHolder(parent: ViewGroup, viewType: Int): Holder {
-        // 1. 根布局必须是 match_parent！！
         val container = FrameLayout(parent.context).apply {
             layoutParams = ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
@@ -22,7 +21,6 @@ class BannerImageAdapter(private val images: List<Int>) : BannerAdapter<Int, Ban
             )
         }
 
-        // 2. 再往里面放一个你想要的 108x68 的 ImageView
         val imageView = ImageView(parent.context).apply {
             layoutParams = FrameLayout.LayoutParams(103.dp2px, 68.dp2px).apply {
                 gravity = Gravity.BOTTOM or Gravity.END
