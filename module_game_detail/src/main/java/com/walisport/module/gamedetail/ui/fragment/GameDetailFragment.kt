@@ -33,8 +33,11 @@ class GameDetailFragment: BaseFragment<GameDetailViewModel, FragmentGameDetailBi
     }
 
     override fun initView(savedInstanceState: Bundle?) {
-        StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND(autoPadding = false)
+        StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND(autoPadding = true,
+            noPaddingViewIds = listOf(R.id.carousel_scroll_view)
+        )
         setStatusBar(StatusBarConfig, mBinding.root)
+
         with(mBinding) {
             viewBalance.init(childFragmentManager)
 
