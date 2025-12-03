@@ -195,7 +195,7 @@ class CollectListViewModel : BaseMatchViewModel<CollectListRepository>() {
         }
 
         prevPage--
-        setPrevApiState(HomeState.Match.LoadingPrev)
+        setPrevApiState(DataState.Loading)
         getPrevMatchListData()
     }
 
