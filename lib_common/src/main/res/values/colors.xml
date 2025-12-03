@@ -151,6 +151,7 @@
     <color name="color_FE3666">#FE3666</color> <!--红（red）-->
     <color name="color_0FFFFFFF">#0FFFFFFF</color> <!--白透明6（white）-->
     <color name="color_00E0E5">#00E0E5</color> <!--主色（primary）-->
+    <color name="color_8000E0E5">#8000E0E5</color> <!--主色（primary）-->
     <color name="color_00E301">#00E301</color> <!--绿（green）-->
     <color name="color_003A42">#003A42</color> <!--暗蓝（blue-800）-->
     <color name="color_E6E6E6">#E6E6E6</color> <!--暗白（white-800）-->
@@ -190,11 +191,13 @@
     <color name="color_4D272727">#4D272727</color> <!--黑透明30（black-200）按钮（按下态）-->
     <color name="color_33009B9E">#33009B9E</color> <!--焦点蓝-亮light 20%-->
     <color name="color_2C323E">#2C323E</color>
+    <color name="color_232323">#232323</color>
     <color name="color_3D404D">#3D404D</color>  <!--背景色/Tag BG-->
     <color name="color_CBD8EB">#CBD8EB</color>  <!--文本色/Tag text-->
     <color name="color_153E44">#153E44</color> <!--日期tab背景色-->
     <color name="color_292929">#292929</color> <!--日期tab选中背景色-->
     <color name="color_05FFFFFF">#05FFFFFF</color> <!--分隔線 白透明 2-->
+    <color name="color_00C853">#00C853</color>
 
     <color name="color_E3603A">#E3603A</color>  <!--聊天tab文本色/Tag text-->
     <color name="color_00E0E54D">#4D00E0E5</color><!--主色（primary）30透明-->
@@ -211,6 +214,10 @@
     <color name="color_D9BFAA">#D9BFAA</color>
     <color name="color_D0B5A1">#D0B5A1</color>
     <color name="color_4C4C4C">#4C4C4C</color>
+    <color name="color_B8B8B8">#B8B8B8</color>
+    <color name="color_80B8B8B8">#80B8B8B8</color>
+    <color name="color_1A98AF">#1A98AF</color>
+    <color name="color_801A98AF">#801A98AF</color>
 
     <!-- VIP 等級顏色 -->
     <color name="shader_start">#FFFFFF</color>

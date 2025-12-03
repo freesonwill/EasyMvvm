@@ -7,7 +7,6 @@ import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.data.repo.BalanceRepository
 import arch.cayenne.lib.common.ui.viewmodel.Event
@@ -25,7 +24,6 @@ import arch.cayenne.module.bet.data.OddsChangeEnum
 import arch.cayenne.module.bet.data.ParameterItems
 import arch.cayenne.module.bet.data.ParameterItems2
 import arch.cayenne.module.bet.repo.ComboBetRepository
-import arch.cayenne.module.bet.ui.fragment.CombinationFragment
 import kotlinx.coroutines.launch
 
 class ComboBetViewModel(
@@ -157,7 +155,7 @@ class ComboBetViewModel(
         repo.removeSelection(selectionId)
     }
 
-    fun removeAll() {
+    fun exitComboBet() {
         repo.removeAll()
     }
 
