@@ -211,7 +211,7 @@ class HallFragment : BaseFragment<HallViewModel, FragmentHallBinding>() {
         }
 
         mBinding.tlGame.addOnTabSelectedListener2(object : TabLayoutExt.OnTabSelectedListener2 {
-            @SuppressLint("ResourceType")
+
             override fun onTabSelected(tab: TabLayout.Tab, isTabClick: Boolean) {
                 tab.let {
                     if (isTabClick) {
@@ -292,13 +292,5 @@ class HallFragment : BaseFragment<HallViewModel, FragmentHallBinding>() {
         setStatusBar(StatusBarConfig, mBinding.clMain)
         super.onStart()
     }
-
-
-
-
-
-
-
-
 
 }

@@ -379,14 +379,31 @@
         app:layout_constraintTop_toTopOf="@id/tv_swipe_for_more"
         app:srcCompat="@drawable/ic_swipe_for_more" />
 
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/title_top"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="@dimen/dp_10"
+        />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/title_bottom"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="@dimen/dp_50"
+        />
+
     <arch.cayenne.lib.skin.widget.SkinnableImageView
         android:id="@+id/iv_back"
         style="@style/CircleButtonStyle"
-        android:layout_marginTop="61dp"
+        android:layout_marginTop="0dp"
         app:layout_constraintEnd_toStartOf="@id/view_balance"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toTopOf="@id/title_top"
+        app:layout_constraintBottom_toBottomOf="@id/title_bottom"
         app:srcCompat="@drawable/selector_ic_arrow_left" />
 
     <arch.cayenne.lib.common.ui.view.BalanceView
@@ -394,29 +411,29 @@
         android:layout_width="176dp"
         android:layout_height="@dimen/dp_36"
         android:layout_marginStart="@dimen/dp_44"
-        app:layout_constraintBottom_toBottomOf="@id/iv_back"
+        app:layout_constraintBottom_toBottomOf="@id/title_bottom"
         app:layout_constraintEnd_toStartOf="@id/iv_favorite"
         app:layout_constraintStart_toEndOf="@id/iv_back"
-        app:layout_constraintTop_toTopOf="@id/iv_back" />
+        app:layout_constraintTop_toTopOf="@id/title_top" />
 
     <arch.cayenne.lib.skin.widget.SkinnableImageView
         android:id="@+id/iv_favorite"
         style="@style/CircleButtonStyle"
         android:layout_marginStart="@dimen/dp_15"
-        app:layout_constraintBottom_toBottomOf="@id/iv_back"
+        app:layout_constraintBottom_toBottomOf="@id/title_bottom"
         app:layout_constraintEnd_toStartOf="@id/iv_share"
         app:layout_constraintStart_toEndOf="@id/view_balance"
-        app:layout_constraintTop_toTopOf="@id/iv_back"
+        app:layout_constraintTop_toTopOf="@id/title_top"
         app:srcCompat="@drawable/selector_ic_favorite" />
 
     <arch.cayenne.lib.skin.widget.SkinnableImageView
         android:id="@+id/iv_share"
         style="@style/CircleButtonStyle"
         android:layout_marginStart="@dimen/dp_20"
-        app:layout_constraintBottom_toBottomOf="@id/iv_back"
+        app:layout_constraintBottom_toBottomOf="@id/title_bottom"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/iv_favorite"
-        app:layout_constraintTop_toTopOf="@id/iv_back"
+        app:layout_constraintTop_toTopOf="@id/title_top"
         app:srcCompat="@drawable/selector_ic_share" />
 
 </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
