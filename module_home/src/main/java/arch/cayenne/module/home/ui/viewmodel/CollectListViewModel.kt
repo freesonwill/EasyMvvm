@@ -43,6 +43,13 @@ class CollectListViewModel : BaseMatchViewModel<CollectListRepository>() {
     private val _prevApiStateListener = MutableLiveData<DataState>()
     val prevApiStateListener: LiveData<DataState> get() = _prevApiStateListener
 
+    /**
+     * 在日期栏上展示的时间
+     */
+    private val _displayDate = MutableLiveData<CollectDate>()
+
+    val displayDate: MutableLiveData<CollectDate> = _displayDate
+
     override fun initViewModel() {
         super.initViewModel()
         viewModelScope.launch(Dispatchers.IO) {
@@ -206,4 +213,15 @@ class CollectListViewModel : BaseMatchViewModel<CollectListRepository>() {
     private fun setPrevApiState(state: DataState) {
         _prevApiStateListener.value = state
     }
+
+
+    fun setDisplayDate(date: CollectDate) {
+        _displayDate.value = date
+    }
 }
+
+data class CollectDate(
+    val dateStr: String,
+    val weekdayStr: String,
+    val timestamp: Long,
+)

@@ -17,24 +17,30 @@ import arch.cayenne.lib.common.ui.viewmodel.observeEvent
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
-import arch.cayenne.lib.common.utils.ext.scrollToBottomWithLoadMore
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.helper.showToast
+import arch.cayenne.lib.database.entity.MatchListItem
 import arch.cayenne.lib.database.entity.MatchWithMarkets
 import arch.cayenne.lib.database.entity.SelectionBeanLite
 import arch.cayenne.module.bet.data.AddSelectionStatus
 import arch.cayenne.module.bet.ui.fragment.BetSheetFragment
 import arch.cayenne.module.bet.viewmodel.FloatingButtonControlViewModel
-import arch.cayenne.module.betslip.data.constants.DateSelectListener
 import arch.cayenne.module.home.R
 import arch.cayenne.module.home.data.constants.HomeState
 import arch.cayenne.module.home.data.constants.PlayType
+import arch.cayenne.module.home.data.model.MatchDateItem
+import arch.cayenne.module.home.data.model.MatchLoadMoreData
+import arch.cayenne.module.home.data.model.MatchNoMoreData
+import arch.cayenne.module.home.data.model.MatchQueryDateNoData
 import arch.cayenne.module.home.databinding.FragmentCollectListBinding
 import arch.cayenne.module.home.ui.adapter.MatchItemAdapter
 import arch.cayenne.module.home.ui.adapter.OnMatchItemClickListener
 import arch.cayenne.module.home.ui.view.decoration.MatchCardItemDecoration
+import arch.cayenne.module.home.ui.viewmodel.CollectDate
 import arch.cayenne.module.home.ui.viewmodel.CollectListViewModel
 import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
+import arch.cayenne.module.home.utils.DateUtils
+import arch.cayenne.module.home.utils.DateUtils.isSameDay
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import java.lang.ref.WeakReference
@@ -169,6 +175,55 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
                     }
                 }
             }
+
+            updateDisplayDate(layoutManager)
+        }
+    }
+
+    private fun updateDisplayDate(layoutManager: LinearLayoutManager) {
+        val firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
+
+        val itemList = matchAdapter.currentList
+        if (itemList.isEmpty()) {
+            return
+        }
+        when (val item = itemList[firstVisibleItemPosition]) {
+            is MatchWithMarkets -> {
+
+                val collectDate = CollectDate(
+                    "",
+                    "",
+                    item.match.basicInfo.startTime,
+                )
+
+                if (mBinding.rvCollectList.scrollState == RecyclerView.SCROLL_STATE_DRAGGING) {
+                    mViewModel.setDisplayDate(collectDate)
+                }
+
+            }
+
+            is MatchNoMoreData -> {
+
+            }
+
+            is MatchLoadMoreData -> {
+
+            }
+
+            is MatchDateItem -> {
+                val collectDate = CollectDate(
+                    "",
+                    "",
+                    item.timeStamp,
+                )
+
+                if (mBinding.rvCollectList.scrollState == RecyclerView.SCROLL_STATE_DRAGGING) {
+                    mViewModel.setDisplayDate(collectDate)
+                }
+
+            }
+
+            else -> {}
         }
     }
 
@@ -196,12 +251,32 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
         }
         mViewModel.matchListChange.observe(viewLifecycleOwner) { matchList ->
             val preEmpty = matchAdapter.currentList.isEmpty()
-            matchAdapter.submitList(matchList)
+            val list = addDateItem(
+                matchList
+            )
+            matchAdapter.submitList(list)
             if (preEmpty && matchList.isNotEmpty()) {
                 mBinding.rvCollectList.doOnPreDraw {
                     subscribeVisibleMatch()
                 }
             }
+
+            mBinding.tvHover.postDelayed({
+                val firstVisibleItemPosition = gameLayoutManager.findFirstVisibleItemPosition()
+                firstVisibleItemPosition.let {
+                    if (it < 0) return@let
+                    if (matchAdapter.currentList.isEmpty()) return@let
+//                if (rvAdapter._data!!.size < dateIndex) return@let
+                    val item = matchAdapter.currentList[firstVisibleItemPosition]
+                    if (item is MatchDateItem) {
+                        mBinding.tvHover.text = item.dateStr
+                    } else if (item is MatchWithMarkets) {
+                        val (date, week) = DateUtils.getDisplay(item.match.basicInfo.startTime)
+                        val display = "$date $week"
+                        mBinding.tvHover.text = display
+                    }
+                }
+            }, 100)
         }
 
         mViewModel.apiStateListener.observe(viewLifecycleOwner) { state ->
@@ -278,6 +353,14 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
                 }
             }
         }
+
+        mViewModel.displayDate.observe(viewLifecycleOwner) {
+            it?.let {
+                val (date, week) = DateUtils.getDisplay(it.timestamp)
+                val display = "$date $week"
+                mBinding.tvHover.text = display
+            }
+        }
     }
 
     private fun subscribeVisibleMatch() {
@@ -304,5 +387,37 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
         super.onResume()
         //把暫時移除的訂閱加回來
         mViewModel.subscribeMatch(mViewModel.getCurrentSubscribeMatchSet())
+    }
+
+    private fun addDateItem(list: List<MatchListItem>?): List<MatchListItem>? {
+        val isEmpty = (list?.size ?: 0) == 0
+        if (isEmpty) {
+            return list
+        }
+
+        val set: HashSet<String> = java.util.HashSet()
+
+        val mutableList = mutableListOf<MatchListItem>()
+
+        if (list != null) {
+            for (i in list.indices) {
+                val item = list[i]
+                if (item is MatchWithMarkets) {
+
+                    val (date, week) = DateUtils.getDisplay(item.match.basicInfo.startTime)
+                    val display = "$date $week"
+
+                    if (!set.contains(display)) {
+                        mutableList.add(MatchDateItem(display, item.match.basicInfo.startTime))
+                        set.add(display)
+                    }
+                    mutableList.add(item)
+                } else {
+                    mutableList.add(item)
+                }
+            }
+        }
+
+        return mutableList
     }
 }
