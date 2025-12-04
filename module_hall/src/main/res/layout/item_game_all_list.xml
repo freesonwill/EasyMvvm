@@ -4,13 +4,12 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginStart="@dimen/dp_12"
-    android:paddingTop="@dimen/dp_18">
+    android:paddingTop="@dimen/dp_12">
 
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/tv_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/hot_game"
         android:textColor="@color/color_FFFFFF"
         android:textSize="@dimen/sp_14"
         app:layout_constraintLeft_toLeftOf="parent"

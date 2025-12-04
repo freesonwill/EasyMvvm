@@ -17,4 +17,7 @@
             <enum name="oval" value="2" />
         </attr>
     </declare-styleable>
+        <declare-styleable name="RoundedImageView">
+            <attr name="roundedCornerRadius" format="dimension" />
+        </declare-styleable>
 </resources>

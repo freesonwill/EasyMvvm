@@ -13,15 +13,19 @@ import arch.cayenne.lib.common.utils.ext.touchBackPressed
 import com.walisport.module.hall.R
 import com.walisport.module.hall.data.GameContentData
 import com.walisport.module.hall.data.HotColdType
+import com.walisport.module.hall.data.UniversalLoadMoreScrollListener
 import com.walisport.module.hall.databinding.FragmentHallCategoryBinding
 import com.walisport.module.hall.ui.adapter.GameContentAdapter
+import com.walisport.module.hall.ui.viewmodel.GameCategoryViewModel
 import kotlin.random.Random
 import kotlin.reflect.KClass
 
-class HallCategoryFragment: BaseFragment<EmptyViewModel, FragmentHallCategoryBinding>() {
+class HallCategoryFragment: BaseFragment<GameCategoryViewModel, FragmentHallCategoryBinding>() {
     override val vbClass: KClass<FragmentHallCategoryBinding> = FragmentHallCategoryBinding::class
-    override val vmClass: KClass<EmptyViewModel> = EmptyViewModel::class
-
+    override val vmClass: KClass<GameCategoryViewModel> = GameCategoryViewModel::class
+    private lateinit var adapter: GameContentAdapter
+    private var list : MutableList<GameContentData> = mutableListOf()
+    private var page: Int = 0
     private val mockVendorList by lazy {
         val l = ArrayList<SimpleTabDataModel>()
         for (i in 0..5) {
@@ -36,26 +40,12 @@ class HallCategoryFragment: BaseFragment<EmptyViewModel, FragmentHallCategoryBin
         l
     }
 
-    private val mockList by lazy {
-        val l = ArrayList<GameContentData>()
-        for (i in 0..23) {
-            l.add(
-                GameContentData(
-                    cover = R.drawable.image_cover_demo,
-                    hotOrCold = if (i % 2 == 0) HotColdType.HOT else HotColdType.COLD,
-                    percent = 20.0f,
-                    onlineCount = Random.nextInt(100,32767)
-                )
-            )
-        }
-        l
-    }
 
     override fun initView(savedInstanceState: Bundle?) {
         with(mBinding) {
             titleBar.loadGeneralTitleBar("老虎機")
             customTabGroup.submitTabList(mockVendorList)
-
+            mViewModel.mockList(page)
             rvGame.layoutManager = GridLayoutManager(requireContext(),  3)
             val itemDecoration = GridSpacingItemDecoration(
                 spanCount = 3,
@@ -64,21 +54,29 @@ class HallCategoryFragment: BaseFragment<EmptyViewModel, FragmentHallCategoryBin
                 includeEdge = false // 確保邊緣沒有空隙
             )
             rvGame.addItemDecoration(itemDecoration)
-            rvGame.adapter = GameContentAdapter(onItemClick = {
+            adapter = GameContentAdapter(onItemClick = {
                 navigate(arch.cayenne.lib.res.R.string.nav_module_gamedetail.deeplink())
-            }).apply {
-                submitList(mockList)
-            }
+            })
+            rvGame.adapter = adapter
         }
 
         mBinding.root.touchBackPressed()
     }
 
     override fun initListener() {
-
+        mBinding.rvGame.addOnScrollListener(UniversalLoadMoreScrollListener(6) {
+            page++
+            mViewModel.mockList(page)
+        })
     }
 
     override suspend fun createObserver() {
+        mViewModel.gameRecentList.observe(viewLifecycleOwner) {
+            it.let {
+                list.addAll(it)
+                adapter.submitList(list)
+            }
+        }
 
     }
 }

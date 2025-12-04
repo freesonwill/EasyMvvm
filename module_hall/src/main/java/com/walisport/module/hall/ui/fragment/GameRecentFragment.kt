@@ -2,9 +2,8 @@ package com.walisport.module.hall.ui.fragment
 
 import android.os.Bundle
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
-import arch.cayenne.lib.base.ui.viewmodel.EmptyViewModel
+import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.common.ui.adapter.GridSpacingItemDecoration
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
@@ -12,39 +11,26 @@ import arch.cayenne.lib.common.utils.ext.checkCurrentScrollState
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.helper.BackToTopHelper
-import com.walisport.module.hall.R
 import com.walisport.module.hall.data.GameContentData
-import com.walisport.module.hall.data.HotColdType
 import com.walisport.module.hall.databinding.FragmentGameRecentBinding
 import com.walisport.module.hall.ui.adapter.GameContentAdapter
 import com.walisport.module.hall.ui.viewmodel.HallViewModel
-import kotlin.random.Random
 import kotlin.reflect.KClass
 import arch.cayenne.lib.common.utils.ext.onScrolledOver
+import com.walisport.module.hall.data.UniversalLoadMoreScrollListener
+import com.walisport.module.hall.ui.viewmodel.GameRecentViewModel
 
-class GameRecentFragment : BaseFragment<EmptyViewModel, FragmentGameRecentBinding>() {
+class GameRecentFragment : BaseFragment<GameRecentViewModel, FragmentGameRecentBinding>() {
     companion object {
         fun newInstance() = GameRecentFragment()
     }
 
     override val vbClass: KClass<FragmentGameRecentBinding> = FragmentGameRecentBinding::class
-    override val vmClass: KClass<EmptyViewModel> = EmptyViewModel::class
+    override val vmClass: KClass<GameRecentViewModel> = GameRecentViewModel::class
     private val hallViewModel: HallViewModel by sharedViewModel<HallViewModel, HallFragment>()
-    private val mockList by lazy {
-        val l = ArrayList<GameContentData>()
-        for (i in 0..21) {
-            l.add(
-                GameContentData(
-                    cover = R.drawable.image_cover_demo,
-                    hotOrCold = HotColdType.NONE,
-                    percent = 20.0f,
-                    onlineCount = Random.nextInt(100, 32767)
-                )
-            )
-        }
-        l
-    }
-
+    private lateinit var adapter: GameContentAdapter
+    private var list: MutableList<GameContentData> = mutableListOf()
+    private var page: Long = 0
     override fun initView(savedInstanceState: Bundle?) {
         with(mBinding) {
             rvGame.layoutManager = GridLayoutManager(requireContext(), 3)
@@ -55,13 +41,13 @@ class GameRecentFragment : BaseFragment<EmptyViewModel, FragmentGameRecentBindin
                 includeEdge = false // 確保邊緣沒有空隙
             )
             rvGame.addItemDecoration(itemDecoration)
-            rvGame.adapter = GameContentAdapter(onItemClick = {
+            adapter = GameContentAdapter(onItemClick = {
                 navigate(arch.cayenne.lib.res.R.string.nav_module_gamedetail.deeplink())
-            }).apply {
-                submitList(mockList)
-            }
+            })
+            rvGame.adapter = adapter
             BackToTopHelper(rvGame, ivBackToTop)
         }
+        mViewModel.mockList(page)
     }
 
     override fun initListener() {
@@ -73,6 +59,18 @@ class GameRecentFragment : BaseFragment<EmptyViewModel, FragmentGameRecentBindin
     }
 
     override suspend fun createObserver() {
+        mViewModel.gameRecentList.observe(viewLifecycleOwner) {
+            LogUtils.e("gameRecentList--------------->${it}")
+            it.let {
+                list.addAll(it)
+                adapter.submitList(list)
+            }
+        }
+
+        mBinding.rvGame.addOnScrollListener(UniversalLoadMoreScrollListener(6) {
+            page++
+            mViewModel.mockList(page)
+        })
 
     }
 
