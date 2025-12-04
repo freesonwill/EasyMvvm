@@ -28,6 +28,8 @@ import arch.cayenne.module.bet.data.AddSelectionStatus
 import arch.cayenne.module.bet.ui.fragment.BetSheetFragment
 import arch.cayenne.module.bet.viewmodel.FloatingButtonControlViewModel
 import arch.cayenne.module.home.R
+import arch.cayenne.module.home.data.BiDirectionalDate
+import arch.cayenne.module.home.data.BiDirectionalDateType
 import arch.cayenne.module.home.data.constants.HomeState
 import arch.cayenne.module.home.data.constants.PlayType
 import arch.cayenne.module.home.data.model.MatchDateItem
@@ -39,8 +41,6 @@ import arch.cayenne.module.home.ui.adapter.MatchItemAdapter
 import arch.cayenne.module.home.ui.adapter.OnMatchItemClickListener
 import arch.cayenne.module.home.ui.view.decoration.MatchCardItemDecoration
 import arch.cayenne.module.home.ui.viewmodel.BiDirectionalMatchListViewModel
-import arch.cayenne.module.home.ui.viewmodel.EarlyDate
-import arch.cayenne.module.home.ui.viewmodel.EarlyDateType
 import arch.cayenne.module.home.ui.viewmodel.EarlyViewModel
 import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
 import arch.cayenne.module.home.ui.viewmodel.SuperCompetitionViewModel
@@ -209,11 +209,11 @@ class BiDirectionalMatchListPagerFragment :
         when (val item = itemList[firstVisibleItemPosition]) {
             is MatchWithMarkets -> {
 
-                val earlyDate = EarlyDate(
+                val earlyDate = BiDirectionalDate(
                     "",
                     "",
                     item.match.basicInfo.startTime,
-                    EarlyDateType.Date
+                    BiDirectionalDateType.Date
                 )
 
                 if (mBinding.rvHomeGameList.scrollState == RecyclerView.SCROLL_STATE_DRAGGING) {
@@ -231,11 +231,11 @@ class BiDirectionalMatchListPagerFragment :
             }
 
             is MatchDateItem -> {
-                val earlyDate = EarlyDate(
+                val earlyDate = BiDirectionalDate(
                     "",
                     "",
                     item.timeStamp,
-                    EarlyDateType.Date
+                    BiDirectionalDateType.Date
                 )
 
                 if (mBinding.rvHomeGameList.scrollState == RecyclerView.SCROLL_STATE_DRAGGING) {
@@ -248,14 +248,14 @@ class BiDirectionalMatchListPagerFragment :
         }
     }
 
-    private fun setDisplayDate(earlyDate: EarlyDate) {
+    private fun setDisplayDate(biDirectionalDate: BiDirectionalDate) {
         if (arguments?.getInt(ARG_PLAY_TYPE_ID) == PlayType.EARLY.id) {
             //早盘比赛列表
             val earlyViewModel: EarlyViewModel by viewModels({ requireParentFragment() })
-            earlyViewModel.setDisplayDate(earlyDate)
+            earlyViewModel.setDisplayDate(biDirectionalDate)
         } else {
             val superCompetitionViewModel: SuperCompetitionViewModel by viewModels({ requireParentFragment() })
-            superCompetitionViewModel.setDisplayDate(earlyDate)
+            superCompetitionViewModel.setDisplayDate(biDirectionalDate)
         }
     }
 

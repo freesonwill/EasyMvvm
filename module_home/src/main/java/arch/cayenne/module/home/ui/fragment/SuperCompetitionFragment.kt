@@ -20,13 +20,13 @@ import arch.cayenne.lib.common.utils.ext.VIPDataExt
 import arch.cayenne.lib.common.utils.ext.startFadeAnim
 import arch.cayenne.lib.common.utils.helper.VIPResourceHelper
 import arch.cayenne.module.home.R
+import arch.cayenne.module.home.data.BiDirectionalDate
+import arch.cayenne.module.home.data.BiDirectionalDateType
 import arch.cayenne.module.home.data.constants.PlayType
 import arch.cayenne.module.home.data.constants.SportType
 import arch.cayenne.module.home.databinding.FragmentSuperCompetitionBinding
 import arch.cayenne.module.home.databinding.ItemDateTabBinding
 import arch.cayenne.module.home.ui.adapter.SportBannerAdapter
-import arch.cayenne.module.home.ui.viewmodel.EarlyDate
-import arch.cayenne.module.home.ui.viewmodel.EarlyDateType
 import arch.cayenne.module.home.ui.viewmodel.SuperCompetitionViewModel
 import arch.cayenne.module.home.utils.scrollToPositionWithoutAnim
 import com.google.android.material.tabs.TabLayout
@@ -199,10 +199,10 @@ class SuperCompetitionFragment :
         clearDateTabSelection()
     }
 
-    private fun createDateTab(date: String?, weekday: String?, type: EarlyDateType): TabLayout.Tab {
+    private fun createDateTab(date: String?, weekday: String?, type: BiDirectionalDateType): TabLayout.Tab {
         val tab = mBinding.tlDateList.newTab()
         val tabView = ItemDateTabBinding.inflate(LayoutInflater.from(context), null, false).apply {
-            if (type == EarlyDateType.Date) {
+            if (type == BiDirectionalDateType.Date) {
                 tvDate.visibility = View.VISIBLE
                 tvDate.text = date
                 tvWeekDay.visibility = View.VISIBLE
@@ -268,7 +268,7 @@ class SuperCompetitionFragment :
 
     private fun updateDateTabs(
         tlDateList: TabLayout,
-        dateTabs: List<EarlyDate>
+        dateTabs: List<BiDirectionalDate>
     ) {
         tlDateList.apply {
             removeAllTabs()

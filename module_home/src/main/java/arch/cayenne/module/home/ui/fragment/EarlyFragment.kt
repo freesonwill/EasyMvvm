@@ -41,6 +41,8 @@ import arch.cayenne.lib.database.entity.TournamentDataModel
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.module.home.R
 import arch.cayenne.module.home.TournamentCombo
+import arch.cayenne.module.home.data.BiDirectionalDate
+import arch.cayenne.module.home.data.BiDirectionalDateType
 import arch.cayenne.module.home.data.constants.HomeState
 import arch.cayenne.module.home.data.constants.TournamentListType
 import arch.cayenne.module.home.data.constants.TournamentSortType
@@ -52,8 +54,6 @@ import arch.cayenne.module.home.ui.adapter.LeaguePagerAdapter
 import arch.cayenne.module.home.ui.adapter.SportBannerAdapter
 import arch.cayenne.module.home.ui.adapter.SportsListAdapter
 import arch.cayenne.module.home.ui.view.CustomTabLayoutMediator
-import arch.cayenne.module.home.ui.viewmodel.EarlyDate
-import arch.cayenne.module.home.ui.viewmodel.EarlyDateType
 import arch.cayenne.module.home.ui.viewmodel.EarlyViewModel
 import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
 import arch.cayenne.module.home.utils.scrollToPositionWithoutAnim
@@ -783,7 +783,7 @@ class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>(),
 
     private fun updateDateTabs(
         tlDateList: TabLayout,
-        dateTabs: List<EarlyDate>
+        dateTabs: List<BiDirectionalDate>
     ) {
         tlDateList.apply {
             removeAllTabs()
@@ -795,10 +795,10 @@ class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>(),
         }
     }
 
-    private fun createDateTab(date: String?, weekday: String?, type: EarlyDateType): TabLayout.Tab {
+    private fun createDateTab(date: String?, weekday: String?, type: BiDirectionalDateType): TabLayout.Tab {
         val tab = mBinding.tlDateList.newTab()
         val tabView = ItemDateTabBinding.inflate(LayoutInflater.from(context), null, false).apply {
-            if (type == EarlyDateType.Date) {
+            if (type == BiDirectionalDateType.Date) {
                 tvDate.visibility = View.VISIBLE
                 tvDate.text = date
                 tvWeekDay.visibility = View.VISIBLE

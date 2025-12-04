@@ -6,13 +6,14 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.common.data.constants.SportEnum
 import arch.cayenne.lib.common.ui.viewmodel.Event
 import arch.cayenne.lib.common.utils.ext.VIPDataExt
 import arch.cayenne.lib.skin.SkinnableManager
 import arch.cayenne.module.home.R
 import arch.cayenne.module.home.TournamentCombo
+import arch.cayenne.module.home.data.BiDirectionalDate
+import arch.cayenne.module.home.data.BiDirectionalDateType
 import arch.cayenne.module.home.data.constants.HomeState
 import arch.cayenne.module.home.data.constants.PlayType
 import arch.cayenne.module.home.data.constants.playTypeToShowType
@@ -45,9 +46,9 @@ class SuperCompetitionViewModel : BaseViewModel() {
     private val _currentSportIdChange = MutableLiveData<Event<Int>>()
     val currentSportIdChange: LiveData<Event<Int>> = _currentSportIdChange
 
-    private val _dateList = MutableLiveData<List<EarlyDate>>()
+    private val _dateList = MutableLiveData<List<BiDirectionalDate>>()
 
-    val dateList: MutableLiveData<List<EarlyDate>> = _dateList
+    val dateList: MutableLiveData<List<BiDirectionalDate>> = _dateList
 
     /**
      * 手动点击dateTab， 设置dateTab数据，切换联赛，切换运动时进行更新
@@ -59,9 +60,9 @@ class SuperCompetitionViewModel : BaseViewModel() {
     /**
      * 在日期栏上展示的时间, 注意：selectedDate和displayDate不一定相等， 日期栏的展示不能用selectedDate
      */
-    private val _displayDate = MutableLiveData<EarlyDate>()
+    private val _displayDate = MutableLiveData<BiDirectionalDate>()
 
-    val displayDate: MutableLiveData<EarlyDate> = _displayDate
+    val displayDate: MutableLiveData<BiDirectionalDate> = _displayDate
 
     // VIP 等級數據
     private val _vipLevel = MutableLiveData<Long>()
@@ -89,13 +90,13 @@ class SuperCompetitionViewModel : BaseViewModel() {
 
         //添加其他
         _dateList.value =
-            futureDays.take(7).map { EarlyDate(it.first, it.second, it.third, EarlyDateType.Date) }
+            futureDays.take(7).map { BiDirectionalDate(it.first, it.second, it.third, BiDirectionalDateType.Date) }
                 .toMutableList().plus(
-                    EarlyDate(
+                    BiDirectionalDate(
                         KoinJavaComponent.getKoin().get<Application>()
                             .getString(R.string.other_day_title),
                         "",
-                        last.third, EarlyDateType.Other
+                        last.third, BiDirectionalDateType.Other
                     )
                 )
     }
@@ -168,11 +169,11 @@ class SuperCompetitionViewModel : BaseViewModel() {
         }
     }
 
-    fun setDisplayDate(date: EarlyDate) {
+    fun setDisplayDate(date: BiDirectionalDate) {
         _displayDate.value = date
     }
 
-    fun getDisplayDate(timeStamp: Long): EarlyDate? {
+    fun getDisplayDate(timeStamp: Long): BiDirectionalDate? {
         var earlyDate = dateList.value?.firstOrNull { isSameDay(it.timestamp, timeStamp) }
 
         if (earlyDate == null) {

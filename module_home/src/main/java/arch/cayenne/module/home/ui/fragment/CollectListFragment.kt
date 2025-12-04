@@ -26,6 +26,8 @@ import arch.cayenne.module.bet.data.AddSelectionStatus
 import arch.cayenne.module.bet.ui.fragment.BetSheetFragment
 import arch.cayenne.module.bet.viewmodel.FloatingButtonControlViewModel
 import arch.cayenne.module.home.R
+import arch.cayenne.module.home.data.BiDirectionalDate
+import arch.cayenne.module.home.data.BiDirectionalDateType
 import arch.cayenne.module.home.data.constants.HomeState
 import arch.cayenne.module.home.data.constants.PlayType
 import arch.cayenne.module.home.data.model.MatchDateItem
@@ -35,7 +37,6 @@ import arch.cayenne.module.home.databinding.FragmentCollectListBinding
 import arch.cayenne.module.home.ui.adapter.MatchItemAdapter
 import arch.cayenne.module.home.ui.adapter.OnMatchItemClickListener
 import arch.cayenne.module.home.ui.view.decoration.MatchCardItemDecoration
-import arch.cayenne.module.home.ui.viewmodel.CollectDate
 import arch.cayenne.module.home.ui.viewmodel.CollectListViewModel
 import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
 import arch.cayenne.module.home.utils.DateUtils
@@ -197,10 +198,11 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
         when (val item = itemList[firstVisibleItemPosition]) {
             is MatchWithMarkets -> {
 
-                val collectDate = CollectDate(
+                val collectDate = BiDirectionalDate(
                     "",
                     "",
                     item.match.basicInfo.startTime,
+                    BiDirectionalDateType.Date
                 )
 
                 if (mBinding.rvCollectList.scrollState == RecyclerView.SCROLL_STATE_DRAGGING) {
@@ -218,10 +220,11 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
             }
 
             is MatchDateItem -> {
-                val collectDate = CollectDate(
+                val collectDate = BiDirectionalDate(
                     "",
                     "",
                     item.timeStamp,
+                    BiDirectionalDateType.Date
                 )
 
                 if (mBinding.rvCollectList.scrollState == RecyclerView.SCROLL_STATE_DRAGGING) {

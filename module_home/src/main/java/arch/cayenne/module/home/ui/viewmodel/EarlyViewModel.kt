@@ -9,7 +9,8 @@ import arch.cayenne.lib.database.entity.BaseTournamentData
 import arch.cayenne.lib.database.entity.ChampionTournamentDataModel
 import arch.cayenne.lib.database.entity.TournamentDataModel
 import arch.cayenne.module.home.R
-import arch.cayenne.module.home.TournamentCombo
+import arch.cayenne.module.home.data.BiDirectionalDate
+import arch.cayenne.module.home.data.BiDirectionalDateType
 import arch.cayenne.module.home.data.constants.PlayType
 import arch.cayenne.module.home.data.constants.playTypeToShowType
 import arch.cayenne.module.home.utils.DateUtils
@@ -24,9 +25,9 @@ import java.util.Locale
 @KoinViewModel
 class EarlyViewModel : SubHomeViewModel() {
 
-    private val _dateList = MutableLiveData<List<EarlyDate>>()
+    private val _dateList = MutableLiveData<List<BiDirectionalDate>>()
 
-    val dateList: MutableLiveData<List<EarlyDate>> = _dateList
+    val dateList: MutableLiveData<List<BiDirectionalDate>> = _dateList
 
     /**
      * 手动点击dateTab， 设置dateTab数据，切换联赛，切换运动时进行更新
@@ -38,9 +39,9 @@ class EarlyViewModel : SubHomeViewModel() {
     /**
      * 在日期栏上展示的时间, 注意：selectedDate和displayDate不一定相等， 日期栏的展示不能用selectedDate
      */
-    private val _displayDate = MutableLiveData<EarlyDate>()
+    private val _displayDate = MutableLiveData<BiDirectionalDate>()
 
-    val displayDate: MutableLiveData<EarlyDate> = _displayDate
+    val displayDate: MutableLiveData<BiDirectionalDate> = _displayDate
 
     init {
         val futureDays = DateUtils.getFutureDays(
@@ -56,13 +57,13 @@ class EarlyViewModel : SubHomeViewModel() {
 
         //添加其他
         _dateList.value =
-            futureDays.take(7).map { EarlyDate(it.first, it.second, it.third, EarlyDateType.Date) }
+            futureDays.take(7).map { BiDirectionalDate(it.first, it.second, it.third, BiDirectionalDateType.Date) }
                 .toMutableList().plus(
-                    EarlyDate(
+                    BiDirectionalDate(
                         KoinJavaComponent.getKoin().get<Application>()
                             .getString(R.string.other_day_title),
                         "",
-                        last.third, EarlyDateType.Other
+                        last.third, BiDirectionalDateType.Other
                     )
                 )
     }
@@ -121,22 +122,22 @@ class EarlyViewModel : SubHomeViewModel() {
     }
 
 
-    fun setDisplayDate(date: EarlyDate) {
+    fun setDisplayDate(date: BiDirectionalDate) {
         _displayDate.value = date
     }
 
-    fun getDisplayDate(timeStamp: Long): EarlyDate? {
-        var earlyDate = dateList.value?.firstOrNull { isSameDay( it.timestamp , timeStamp) }
+    fun getDisplayDate(timeStamp: Long): BiDirectionalDate? {
+        var biDirectionalDate = dateList.value?.firstOrNull { isSameDay( it.timestamp , timeStamp) }
 
-        if (earlyDate == null) {
+        if (biDirectionalDate == null) {
             dateList.value?.let {
                 if (it.isNotEmpty() && timeStamp > it.last().timestamp) {
-                    earlyDate = it.last()
+                    biDirectionalDate = it.last()
                 }
             }
         }
 
-        return earlyDate
+        return biDirectionalDate
     }
 
     /*
@@ -158,13 +159,3 @@ class EarlyViewModel : SubHomeViewModel() {
 
 }
 
-data class EarlyDate(
-    val dateStr: String,
-    val weekdayStr: String,
-    val timestamp: Long,
-    val type: EarlyDateType
-)
-
-enum class EarlyDateType {
-    Date, Other
-}

@@ -9,6 +9,7 @@ import arch.cayenne.lib.base.data.remote.ApiResponseState.Start.dataAs
 import arch.cayenne.lib.common.data.repo.BalanceRepository
 import arch.cayenne.lib.database.entity.InfoBean
 import arch.cayenne.lib.database.entity.MatchWithMarkets
+import arch.cayenne.module.home.data.BiDirectionalDate
 import arch.cayenne.module.home.data.constants.HomeState
 import arch.cayenne.module.home.data.repo.BaseMatchRepository
 import arch.cayenne.module.home.data.repo.BaseMatchRepository.Companion.DEFAULT_MATCH_SIZE
@@ -42,9 +43,9 @@ class CollectListViewModel : BaseMatchViewModel<CollectListRepository>() {
     /**
      * 在日期栏上展示的时间
      */
-    private val _displayDate = MutableLiveData<CollectDate>()
+    private val _displayDate = MutableLiveData<BiDirectionalDate>()
 
-    val displayDate: MutableLiveData<CollectDate> = _displayDate
+    val displayDate: MutableLiveData<BiDirectionalDate> = _displayDate
 
     override fun initViewModel() {
         super.initViewModel()
@@ -211,13 +212,8 @@ class CollectListViewModel : BaseMatchViewModel<CollectListRepository>() {
     }
 
 
-    fun setDisplayDate(date: CollectDate) {
+    fun setDisplayDate(date: BiDirectionalDate) {
         _displayDate.value = date
     }
 }
 
-data class CollectDate(
-    val dateStr: String,
-    val weekdayStr: String,
-    val timestamp: Long,
-)
