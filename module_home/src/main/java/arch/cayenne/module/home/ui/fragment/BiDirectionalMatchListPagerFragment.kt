@@ -40,7 +40,7 @@ import arch.cayenne.module.home.ui.adapter.OnMatchItemClickListener
 import arch.cayenne.module.home.ui.view.decoration.MatchCardItemDecoration
 import arch.cayenne.module.home.ui.viewmodel.EarlyDate
 import arch.cayenne.module.home.ui.viewmodel.EarlyDateType
-import arch.cayenne.module.home.ui.viewmodel.EarlyMatchListViewModel
+import arch.cayenne.module.home.ui.viewmodel.BiDirectionalMatchListViewModel
 import arch.cayenne.module.home.ui.viewmodel.EarlyViewModel
 import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
 import arch.cayenne.module.home.utils.DateUtils
@@ -53,13 +53,13 @@ import java.lang.ref.WeakReference
 import kotlin.reflect.KClass
 
 /**
- * 早盘用的比赛列表， 具备日期切换及向前查询功能
+ * 双向比赛列表， 具备日期切换及向前查询功能
  */
-class EarlyMatchListPagerFragment :
-    BaseFragment<EarlyMatchListViewModel, FragmentEarlyMatchListPagerBinding>() {
+class BiDirectionalMatchListPagerFragment :
+    BaseFragment<BiDirectionalMatchListViewModel, FragmentEarlyMatchListPagerBinding>() {
     override val vbClass: KClass<FragmentEarlyMatchListPagerBinding> =
         FragmentEarlyMatchListPagerBinding::class
-    override val vmClass: KClass<EarlyMatchListViewModel> = EarlyMatchListViewModel::class
+    override val vmClass: KClass<BiDirectionalMatchListViewModel> = BiDirectionalMatchListViewModel::class
     private val homeViewModel: HomeViewModel by sharedViewModel<HomeViewModel, NewHomeFragment>()
     private val earlyViewModel: EarlyViewModel by viewModels({ requireParentFragment() })
 
@@ -617,6 +617,7 @@ class EarlyMatchListPagerFragment :
 
 
     companion object {
+        const val TAG = "EarlyMatchListPagerFragment"
         private const val ARG_SPORT_ID = "sport_id"
         private const val ARG_PLAY_TYPE_ID = "play_type_id"
         private const val ARG_LEAGUE_ID = "arg_league_id"
@@ -628,8 +629,8 @@ class EarlyMatchListPagerFragment :
             leagueIdList: List<Int>,
             position: Int,
             mutable: Boolean
-        ): EarlyMatchListPagerFragment {
-            return EarlyMatchListPagerFragment().apply {
+        ): BiDirectionalMatchListPagerFragment {
+            return BiDirectionalMatchListPagerFragment().apply {
                 arguments = Bundle().apply {
                     putInt(ARG_SPORT_ID, sportId)
                     putInt(ARG_PLAY_TYPE_ID, playTypeId)

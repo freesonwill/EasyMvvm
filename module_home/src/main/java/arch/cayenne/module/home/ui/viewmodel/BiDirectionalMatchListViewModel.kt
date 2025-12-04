@@ -28,9 +28,9 @@ import plugin.koin.KoinViewModel
 
 @KoinViewModel
 /**
- * 早盘比赛列表的ViewModel, 具备切换日期及向前查询能力
+ * 双向比赛列表的ViewModel, 具备切换日期及向前查询能力
  */
-class EarlyMatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
+class BiDirectionalMatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
     private var _sportId = SportType.Init.id
     private var _playType = PlayType.EARLY.id
     private var _tournamentIdList: List<Int> = listOf(HomeViewModel.TOURNAMENT_ALL_ID)
@@ -134,11 +134,11 @@ class EarlyMatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
                 .collect { refs ->
                     val selectedDate = _queryDate.value
                     "Collect observeMatchChange start playType = $_playType, sportId = ${_sportId} tournament = $_tournamentIdList selectedDate = $selectedDate".logi(
-                        this@EarlyMatchListViewModel::class.java.simpleName
+                        this@BiDirectionalMatchListViewModel::class.java.simpleName
                     )
                     val currentDateRefs = refs.filter { it.date == selectedDate }
                     if (currentDateRefs.isEmpty()) {
-                        "Collect observeMatchChange TournamentMatchRef is NULL!!".logi(this@EarlyMatchListViewModel::class.java.simpleName)
+                        "Collect observeMatchChange TournamentMatchRef is NULL!!".logi(this@BiDirectionalMatchListViewModel::class.java.simpleName)
                         return@collect
                     }
                     processObserveMatchList(currentDateRefs)
@@ -153,7 +153,7 @@ class EarlyMatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
         val list = repository.queryFullMatches(
             currentDateRefs.map { it.matchId }
         )
-        "Collect observeMatchChange result：${list.map { it.match.matchId }}".logi(this@EarlyMatchListViewModel::class.java.simpleName)
+        "Collect observeMatchChange result：${list.map { it.match.matchId }}".logi(this@BiDirectionalMatchListViewModel::class.java.simpleName)
         withContext(Dispatchers.Main) {
             //第一次http拿到的資料量過少，會影響到拉取更新資料需要等待，所以跟api補上拿取更多一點的資料
             //todo :早盘还没有做分页机制
