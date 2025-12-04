@@ -34,6 +34,10 @@ class OrderSportPageFragment :
                 override fun onEarlySettle(bean: BetSlipOrderBean) {
                     mViewModel.isSupportEarlySettled(bean)
                 }
+            }, object : OrderBettingAdapter.OrderDataSelectorListener {
+                override fun onDateClicked() {
+
+                }
             })
         } else {
             OrderBettingAdapter(type)
