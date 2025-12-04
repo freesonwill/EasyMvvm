@@ -13,38 +13,29 @@ import arch.cayenne.lib.common.utils.ext.onScrolledOver
 import arch.cayenne.lib.common.utils.ext.checkCurrentScrollState
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
+import arch.cayenne.lib.common.utils.ext.scrollToBottomWithLoadMore
 import arch.cayenne.lib.common.utils.helper.BackToTopHelper
 import com.walisport.module.hall.R
 import com.walisport.module.hall.data.GameContentData
 import com.walisport.module.hall.data.HotColdType
+import com.walisport.module.hall.data.UniversalLoadMoreScrollListener
 import com.walisport.module.hall.databinding.FragmentGameContentBinding
 import com.walisport.module.hall.ui.adapter.GameContentAdapter
+import com.walisport.module.hall.ui.viewmodel.GameRecentViewModel
 import com.walisport.module.hall.ui.viewmodel.HallViewModel
 import kotlin.random.Random
 import kotlin.reflect.KClass
 
-class GameContentFragment : BaseFragment<EmptyViewModel, FragmentGameContentBinding>() {
+class GameContentFragment : BaseFragment<GameRecentViewModel, FragmentGameContentBinding>() {
     companion object {
         fun newInstance() = GameContentFragment()
     }
     override val vbClass: KClass<FragmentGameContentBinding> = FragmentGameContentBinding::class
-    override val vmClass: KClass<EmptyViewModel> = EmptyViewModel::class
+    override val vmClass: KClass<GameRecentViewModel> = GameRecentViewModel::class
     private val hallViewModel: HallViewModel by sharedViewModel<HallViewModel, HallFragment>()
-    private val mockList by lazy {
-        val l = ArrayList<GameContentData>()
-        for (i in 0..21) {
-            l.add(
-                GameContentData(
-                    cover = R.drawable.image_cover_demo,
-                    hotOrCold = HotColdType.NONE,
-                    percent = 20.0f,
-                    onlineCount = Random.nextInt(100,32767)
-                )
-            )
-        }
-        l
-    }
-
+    private lateinit var adapter: GameContentAdapter
+    private var list : MutableList<GameContentData> = mutableListOf()
+    private var page : Long = 0
     private val mockVendorList by lazy {
         val l = ArrayList<SimpleTabDataModel>()
         for (i in 0..5) {
@@ -69,14 +60,14 @@ class GameContentFragment : BaseFragment<EmptyViewModel, FragmentGameContentBind
                 includeEdge = false // 確保邊緣沒有空隙
             )
             rvGame.addItemDecoration(itemDecoration)
-            rvGame.adapter = GameContentAdapter(onItemClick = {
+            adapter = GameContentAdapter(onItemClick = {
                 navigate(arch.cayenne.lib.res.R.string.nav_module_gamedetail.deeplink())
-            }).apply {
-                submitList(mockList)
-            }
+            })
+            rvGame.adapter = adapter
             customTabGroup.submitTabList(mockVendorList)
             BackToTopHelper(rvGame, ivBackToTop)
         }
+        mViewModel.mockList(page)
     }
 
     override fun initListener() {
@@ -85,10 +76,19 @@ class GameContentFragment : BaseFragment<EmptyViewModel, FragmentGameContentBind
         }, {
             hallViewModel.setScorll(false)
         })
+        mBinding.rvGame.addOnScrollListener(UniversalLoadMoreScrollListener(6) {
+            page++
+            mViewModel.mockList(page)
+        })
     }
 
     override suspend fun createObserver() {
-
+        mViewModel.gameRecentList.observe(viewLifecycleOwner) {
+            it.let {
+                list.addAll(it)
+                adapter.submitList(list)
+            }
+        }
     }
 
     override fun onResume() {
