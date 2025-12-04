@@ -1,13 +1,18 @@
 package com.walisport.module.hall.ui.adapter
 
+import android.graphics.drawable.BitmapDrawable
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.DiffUtil
 import arch.cayenne.lib.base.ui.adapter.BaseAdapter
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
+import arch.cayenne.lib.common.utils.ThumbHashUtils
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import com.bumptech.glide.request.RequestOptions
 import com.walisport.module.hall.R
 import com.walisport.module.hall.data.GameContentData
 import com.walisport.module.hall.data.HotColdType
@@ -41,7 +46,16 @@ class GameContentAdapter(private val onItemClick: (GameContentData) -> Unit) : B
 
 class GameContentViewHolder(private val onItemClick: (GameContentData) -> Unit,val item: ItemGameContentBinding): BaseViewHolder(item) {
     fun bind(data: GameContentData) {
-        item.ivGameCover.setImageResource(data.cover)
+        val thumbBitmap = ThumbHashUtils.getBitmapFromThumbHash(data.avatar.thumbhash)  //返回 Bitmap?
+        thumbBitmap?.let { bitmap ->
+            val placeholderDrawable = BitmapDrawable(item.root.context.resources, bitmap)
+            Glide.with(item.root)
+                .load(data.avatar.url)
+                .placeholder(placeholderDrawable)
+                .transition(DrawableTransitionOptions.withCrossFade()) // 淡入动画
+                .into(item.ivGameCover)
+        }
+        item.tvCount.text = data.online.toString()
         //TODO 判斷
         if (data.hotOrCold != HotColdType.NONE) {
             item.llBack.visibility = ViewGroup.VISIBLE
@@ -50,7 +64,7 @@ class GameContentViewHolder(private val onItemClick: (GameContentData) -> Unit,v
             } else {
                 item.ivHot.setImageResource(R.drawable.ic_game_cold)
             }
-            item.tvBack.text = "${data.percent}%"
+            item.tvBack.text = "${data.reward}%"
             item.llCount.apply {
                 val params = this.layoutParams as ConstraintLayout.LayoutParams
                 params.topMargin = 5.dp2px
@@ -74,13 +88,13 @@ class GameContentDiff : DiffUtil.ItemCallback<GameContentData>() {
     override fun areItemsTheSame(
         oldItem: GameContentData,
         newItem: GameContentData
-    ): Boolean = oldItem.cover == newItem.cover
+    ): Boolean = oldItem.id == newItem.id
 
 
     override fun areContentsTheSame(
         oldItem: GameContentData,
         newItem: GameContentData
-    ): Boolean  = oldItem.cover == newItem.cover
+    ): Boolean  = oldItem.id == newItem.id
 
 }
 

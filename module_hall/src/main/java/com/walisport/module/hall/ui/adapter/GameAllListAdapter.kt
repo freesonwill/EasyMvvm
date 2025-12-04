@@ -3,81 +3,81 @@ package com.walisport.module.hall.ui.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import com.walisport.module.hall.R
-import com.walisport.module.hall.data.GameContentData
-import com.walisport.module.hall.data.HotColdType
+import com.walisport.module.hall.data.GameAllContentData
 import com.walisport.module.hall.databinding.ItemGameAllListBinding
-import kotlin.random.Random
+import arch.cayenne.lib.base.ui.adapter.BaseAdapter
+import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
+import com.walisport.module.hall.ui.adapter.GameAllListViewHolder.OnAllItemClickListener
 
 /**
  * 全部類型的遊戲頭部Adapter，包含左方的廣告位、右方的邀請朋友和每日比賽
  * */
-class GameAllListAdapter(
-    private val onItemClickListener: GameAllListViewHolder.OnItemClickListener?
-): RecyclerView.Adapter<GameAllListViewHolder>() {
-    override fun onCreateViewHolder(
-        parent: ViewGroup,
-        viewType: Int
-    ): GameAllListViewHolder {
-        val binding = ItemGameAllListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return GameAllListViewHolder(binding)
-    }
 
-    override fun onBindViewHolder(
+class GameAllListAdapter( private val onItemClickListener: OnAllItemClickListener?) : BaseAdapter<GameAllContentData, GameAllListViewHolder, ItemGameAllListBinding>(GameAllContentDiff()) {
+    override fun convertPlus(
         holder: GameAllListViewHolder,
+        binding: ItemGameAllListBinding,
         position: Int
     ) {
-        holder.init(onItemClickListener)
+        holder.bind(getItem(position))
     }
 
-    override fun getItemCount(): Int = 5
+    override fun createViewBinding(
+        inflater: LayoutInflater,
+        parent: ViewGroup,
+        viewType: Int
+    ): ItemGameAllListBinding {
+        return ItemGameAllListBinding.inflate(inflater, parent, false)
+    }
 
+    override fun createViewHolder(
+        binding: ItemGameAllListBinding,
+        viewType: Int
+    ): GameAllListViewHolder {
+        return GameAllListViewHolder(binding,onItemClickListener)
+    }
 }
 
-class GameAllListViewHolder(val binding: ItemGameAllListBinding): RecyclerView.ViewHolder(binding.root) {
-    private val mockList by lazy {
-        val l = ArrayList<GameContentData>()
-        for (i in 0..9) {
-            l.add(
-                GameContentData(
-                    cover = R.drawable.image_cover_demo,
-                    hotOrCold = if (i % 2 == 0) HotColdType.HOT else HotColdType.COLD,
-                    percent = 20.0f,
-                    onlineCount = Random.nextInt(100,32767)
-                )
-            )
+class GameAllListViewHolder(val item: ItemGameAllListBinding,var onItemClickListener: OnAllItemClickListener? = null): BaseViewHolder(item) {
+
+    fun bind(data: GameAllContentData) {
+        item.rvInnerList.layoutManager =
+            LinearLayoutManager(item.rvInnerList.context, LinearLayoutManager.HORIZONTAL, false)
+
+        item.rvInnerList.adapter = GameAllListInnerAdapter(onItemClickListener?.run {::onChildItemClick} as (() -> Unit)?).also {
+            it.submitList(data.gameList)
         }
-        l
-    }
-
-    fun init(onItemClickListener: OnItemClickListener? = null) {
-        with(binding) {
-            rvInnerList.layoutManager =
-                LinearLayoutManager(rvInnerList.context, LinearLayoutManager.HORIZONTAL, false)
-
-            rvInnerList.adapter = GameAllListInnerAdapter(onItemClickListener?.run {::onChildItemClick}).also {
-                it.submitList(mockList)
-            }
-            val divider = DividerItemDecoration(
-                rvInnerList.context,
-                LinearLayoutManager.HORIZONTAL
-            )
-            val drawable = ContextCompat.getDrawable(rvInnerList.context, R.drawable.shape_game_all_inner_divider)
-            divider.setDrawable(drawable!!)
-            rvInnerList.addItemDecoration(divider)
-
-            root.clickNoRepeat {
-                onItemClickListener?.onItemClick()
-            }
+        item.tvTitle.text = data.name
+        item.root.clickNoRepeat {
+            onItemClickListener?.onItemClick()
         }
     }
-
-    interface OnItemClickListener {
+    interface OnAllItemClickListener {
         fun onItemClick()
         fun onChildItemClick()
     }
 }
+class GameAllContentDiff : DiffUtil.ItemCallback<GameAllContentData>() {
+    override fun areItemsTheSame(
+        oldItem: GameAllContentData,
+        newItem: GameAllContentData
+    ): Boolean = oldItem.id == newItem.id
+
+
+    override fun areContentsTheSame(
+        oldItem: GameAllContentData,
+        newItem: GameAllContentData
+    ): Boolean  = oldItem.id == newItem.id
+
+}
+
+
+
+
+
+
