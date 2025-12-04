@@ -1,6 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_share">
+
+    <arch.cayenne.lib.skin.widget.SkinnableTabLayout
+        android:id="@+id/tab_layout"
+        android:layout_width="match_parent"
+        android:layout_height="27dp"
+        android:layout_marginTop="17dp"
+        android:background="@android:color/transparent"
+        android:clipToPadding="false"
+        android:paddingBottom="0dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tabGravity="center"
+        app:tabIndicator="@drawable/bg_order_indicator"
+        app:tabIndicatorAnimationDuration="250"
+        app:tabIndicatorAnimationMode="linear"
+        app:tabIndicatorColor="@color/color_00E0E5"
+        app:tabIndicatorFullWidth="false"
+        app:tabIndicatorGravity="bottom"
+        app:tabIndicatorHeight="2dp"
+        app:tabMode="fixed"
+        app:tabPaddingBottom="5dp"
+        app:tabPaddingEnd="12dp"
+        app:tabPaddingStart="12dp"
+        app:tabRippleColor="@null"
+        app:tabSelectedTextColor="@color/color_FFFFFF"
+        app:tabTextAppearance="@style/OrderTabTextStyle"
+        app:tabTextColor="@color/color_C0C0C0" />
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/view_pager"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        app:layout_constraintTop_toBottomOf="@id/tab_layout" />
+
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
+        android:id="@+id/btn_cancel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginVertical="20dp"
+        android:background="@drawable/bg_button_cancel"
+        android:gravity="center"
+        android:paddingVertical="14dp"
+        android:text="@string/cancel"
+        android:textColor="@color/color_C0C0C0"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/btn_confirm"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/view_pager"
+        app:skinnableFontWeight="500" />
+
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
+        android:id="@+id/btn_confirm"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="19dp"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/bg_money_circle"
+        android:backgroundTint="@color/color_00A7C0"
+        android:gravity="center"
+        android:text="@string/confirm"
+        android:textColor="@color/color_FFFFFF"
+        app:layout_constraintBottom_toBottomOf="@id/btn_cancel"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/btn_cancel"
+        app:layout_constraintTop_toTopOf="@id/btn_cancel" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -36,7 +36,8 @@ class OrderSportPageFragment :
                 }
             }, object : OrderBettingAdapter.OrderDataSelectorListener {
                 override fun onDateClicked() {
-
+                    // TODO 測試
+                    OrderDateDialogFragment().show(childFragmentManager)
                 }
             })
         } else {
