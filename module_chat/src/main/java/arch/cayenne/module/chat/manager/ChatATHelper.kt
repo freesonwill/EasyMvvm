@@ -6,7 +6,6 @@ import android.text.Editable
 import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.TextWatcher
-import android.text.method.LinkMovementMethod
 import android.view.KeyEvent
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
@@ -23,7 +22,6 @@ import arch.cayenne.module.chat.utils.SearchAtPopupWindow
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import org.koin.core.scope.Scope
 import java.util.Locale
 
 /**
@@ -74,7 +72,7 @@ class ChatATHelper(
             if (startInputPosition == -1 && !isAtInput && !isEditDelete) {
                 atPopupWindow.dismiss()
             }
-            if (!isEditDelete && startInputPosition >= 0 ) {
+            if (!isEditDelete && startInputPosition >= 0) {
                 listenEditInput()
             }
             isAtInput = false
@@ -133,17 +131,20 @@ class ChatATHelper(
                     it.replace(startInputPosition, selectionStart, "")
                 }
                 var nStart: Int = -1
+                var atStrLength = -1
                 if (item.isSelect) {
                     var atStr = ""
                     if (selectionStart > 0 && it[selectionStart - 1] == '@') {
-                        nStart = selectionStart - 1
+                        nStart = selectionStart - 1 //光标在@后面
                         atStr = "${item.name} "
+                        atStrLength = atStr.length + 1 //少了个@
                     } else {
                         atStr = "@${item.name} "
                         nStart = selectionStart
+                        atStrLength = atStr.length
                     }
                     it.insert(selectionStart, atStr)
-                    filterEtInputWithAt(this, item.name, nStart, atStr.length)//+ @ 空格
+                    filterEtInputWithAt(this, item.name, nStart, atStrLength)//+ @ 空格
                 } else {
                     var indexStart = it.indexOf("@${item.name} ")
                     var indexEnd = indexStart + item.name.length + 2//从0开始，+1 加上空格字符串+1
@@ -228,18 +229,28 @@ class ChatATHelper(
                 if (cursorPositionEnd != cursorPositionStart) {
 //                    "del1  cursorPositionStart $cursorPositionStart cursorPositionEnd $cursorPositionEnd".logd("aaa")
                     val spannable = SpannableStringBuilder(editText.text)
-                    val spans = spannable.getSpans(cursorPositionStart, cursorPositionEnd, MentionSpan::class.java)
+                    val spans = spannable.getSpans(
+                        cursorPositionStart,
+                        cursorPositionEnd,
+                        MentionSpan::class.java
+                    )
 
-                    if(spans.isNotEmpty()){
-                        atPopupWindow.deleteAdapterSelect(spans.last().tv)
-                    }
+                    val list: List<String> = spans.map {
+                        editText.text.removeSpan(it)
+                        it.tv
+                    }.toList()
+                    atPopupWindow.deleteAdapterSelect(list)
                     return@setOnKeyListener false
                 }
 
                 //字段没有被选中，需要检查是否以at消息结尾
                 if (cursorPositionStart > 0) {
                     val spannable = SpannableStringBuilder(editText.text)
-                    val spans = spannable.getSpans(cursorPositionStart-1, cursorPositionStart, MentionSpan::class.java)
+                    val spans = spannable.getSpans(
+                        cursorPositionStart - 1,
+                        cursorPositionStart,
+                        MentionSpan::class.java
+                    )
 
                     if (spans.isEmpty()) {
                         return@setOnKeyListener false
@@ -247,11 +258,49 @@ class ChatATHelper(
                     val lastSpan = spans.last()
                     val spanEnd = spannable.getSpanEnd(lastSpan)
                     val spanStart = spannable.getSpanStart(lastSpan)
-                    val lastChar = spannable.elementAt(cursorPositionEnd - 1)
-                    if (cursorPositionStart in spanStart..spanEnd || spanEnd == cursorPositionStart) {
+//                    "spanStart $spanStart spanEnd $spanEnd cursorPositionStart $cursorPositionStart spannableLength ${spannable.length}".logd(
+//                        "aaa"
+//                    )
+                    if (cursorPositionStart in spanStart..spanEnd) {
+
+                        val lastChar = spannable.elementAt(spanEnd - 1)
                         if (lastChar == ' ') {
-                            return@setOnKeyListener false
+                            if (cursorPositionStart == spanEnd) { //如果光标正常的在@消息后面删除，正常对待，检查lastChar是否空字符
+                                return@setOnKeyListener false
+                            } else { //如果光标在@消息中间，检查@消息后一位是否空字符
+                                editText.text.replace(spanEnd - 1, spanEnd, "")
+                                editText.setSelection(spanEnd - 1)
+                                return@setOnKeyListener true
+                            }
                         }
+
+
+//                        var lastChar = spannable.elementAt(spanEnd-1)
+//
+//                        if (lastChar == ' ' ) { //从右往左删除，正常排查
+//                            "lastChar 111${lastChar}1111".logd("aaa")
+//                            if(cursorPositionStart == spanEnd){
+//                                return@setOnKeyListener false
+//                            }
+//                            if(cursorPositionStart < spanEnd){
+//                                editText.text.replace(spanEnd-1,spanEnd,"")
+//                                editText.setSelection(spanEnd-1)
+//                                return@setOnKeyListener  true
+//                            }
+//                        }
+//
+//                        if(spanEnd < spannable.length  ){  // @消息中间删除
+//                            lastChar =  spannable.elementAt(spanEnd)
+//                            "lastChar2  111${lastChar}1111".logd("aaa")
+//
+//                            if(lastChar == ' '){
+//                                editText.text.replace(spanEnd,spanEnd+1,"")
+//                                editText.setSelection(spanEnd)
+//                                return@setOnKeyListener true
+//                            }
+//                        }
+
+
                         editText.setSelection(spanStart, spanEnd)
                         return@setOnKeyListener true
                     }
