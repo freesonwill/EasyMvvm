@@ -26,11 +26,11 @@ class SearchAtPopupWindow {
     var atPopupWindow: PopupWindow? = null
     val atAdapter = AtAdapter()
     val list = arrayListOf(
-        AtBean(0,"张顺", false),
-        AtBean(1,"吴用", false),
-        AtBean(2,"公孙胜", false),
-        AtBean(3,"柴让", false),
-        AtBean(4,"卢俊义", false)
+        AtBean(0, "张顺", false),
+        AtBean(1, "吴用", false),
+        AtBean(2, "公孙胜", false),
+        AtBean(3, "柴让", false),
+        AtBean(4, "卢俊义", false)
     )
 
 
@@ -54,7 +54,7 @@ class SearchAtPopupWindow {
     fun showPopupWindow(targetView: EditText) {
         if (atPopupWindow?.isShowing == false) {
             notifyAdapter(targetView)
-            atPopupWindow?.showAsDropDown(targetView,0, (-10).dp2px)
+            atPopupWindow?.showAsDropDown(targetView, 0, (-10).dp2px)
         }
     }
 
@@ -62,9 +62,9 @@ class SearchAtPopupWindow {
     private fun notifyAdapter(editext: EditText) {
         val editAtList = getAtMsg(editext.text)
         val indexList = mutableSetOf<Int>()
-        val nList:List<AtBean> = list
+        val nList: List<AtBean> = list
         editAtList.forEach { editBean ->
-            val bean = nList.find { nBean  -> editBean.name == nBean.name}
+            val bean = nList.find { nBean -> editBean.name == nBean.name }
             bean?.let {
                 indexList.add(bean.id)
             }
@@ -74,12 +74,21 @@ class SearchAtPopupWindow {
         atAdapter.notifyDataSetChanged()
     }
 
-    fun deleteAdapterSelect(name:String){
-      val index =  atAdapter.currentList.indexOfFirst {
-            it.name == name
+    @SuppressLint("NotifyDataSetChanged")
+    fun deleteAdapterSelect(names: List<String>) {
+
+        if (names.isEmpty()) {
+            return
         }
-      atAdapter.selectedSet.remove(atAdapter.currentList[index].id)
-      atAdapter.notifyItemChanged(index)
+        names.forEach { name ->
+            val index = atAdapter.currentList.indexOfFirst {
+                it.name == name
+            }
+            if (index >= 0) {
+                atAdapter.selectedSet.remove(atAdapter.currentList[index].id)
+            }
+        }
+        atAdapter.notifyDataSetChanged()
     }
 
     private fun getAtMsg(editable: Editable): List<AtBean> {
@@ -89,7 +98,7 @@ class SearchAtPopupWindow {
         val spannable = SpannableStringBuilder(editable)
         val spans = spannable.getSpans(0, editable.length, MentionSpan::class.java)
         return spans.map {
-            AtBean(-1,name = it.tv, false)
+            AtBean(-1, name = it.tv, false)
         }.toList()
     }
 
