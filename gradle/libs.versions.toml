@@ -60,7 +60,7 @@ xpopup = "2.10.0"
 subsampling = "3.10.0"
 transformations = "4.3.0"
 blurview = "1.0.5"
-
+bannerview = "2.2.3"
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "coreSplashscreen" }
@@ -131,6 +131,7 @@ subsampling = { group = "com.davemorrissey.labs", name = "subsampling-scale-imag
 transformations = { group = "jp.wasabeef", name = "glide-transformations",version.ref = "transformations" }
 blurview = { group = "com.github.centerzx", name = "ShapeBlurView",version.ref = "blurview" }
 tinyPinyin-android = { group = "com.github.promeg",name = "tinypinyin-lexicons-android-cncity", version.ref = "tinyPinyin" }
+banner = { group = "io.github.youth5201314",name = "banner", version.ref = "bannerview" }
 # 其他库依赖
 calendarview = { module = "com.github.angcyo:CalendarView", version.ref = "calendarview" }
 brv = { module = "com.github.liangjingkanji:BRV", version.ref = "brv" }

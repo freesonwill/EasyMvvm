@@ -10,6 +10,7 @@ import arch.cayenne.lib.common.databinding.ViewBalanceBinding
 import arch.cayenne.lib.common.ui.fragment.CurrencyDialogFragment
 import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 
 class BalanceView : FrameLayout {
@@ -19,7 +20,7 @@ class BalanceView : FrameLayout {
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
 
     }
-
+    var onAddClickListener: (() -> Unit)? = null
     init {
         mBinding = ViewBalanceBinding.inflate(LayoutInflater.from(context), this, true)
     }
@@ -27,10 +28,9 @@ class BalanceView : FrameLayout {
     fun init(
         childFragmentManager: FragmentManager
     ) {
-        mBinding.root.clickNoRepeat {
+        mBinding.tvWalletBalance.clickNoRepeat {
             val location = IntArray(2)
             mBinding.root.getLocationInWindow(location)
-
             if(isPortrait()) {
                 val h = ViewUtils.getStatusBarHeight(mBinding.root.context)
                 val positionY = location.last() - h + mBinding.root.measuredHeight + 7.dp2px
@@ -40,10 +40,18 @@ class BalanceView : FrameLayout {
                 CurrencyDialogFragment.newInstance(isPortrait(), positionX).show(childFragmentManager)
             }
         }
+        mBinding.ivAdd.apply {
+            addScaleOnTouchAnimation(mBinding.ivAdd)
+        }.clickNoRepeat{
+            onAddClickListener?.invoke()
+        }
     }
 
 
     private fun isPortrait(): Boolean {
         return context.resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT
+    }
+    fun setMoney(money: String){
+        mBinding.tvWalletBalance.text = money
     }
 }

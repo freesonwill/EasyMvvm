@@ -17,9 +17,9 @@ import arch.cayenne.lib.common.ui.viewmodel.observeEvent
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
-import arch.cayenne.lib.common.utils.ext.scrollToBottomWithLoadMore
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.helper.showToast
+import arch.cayenne.lib.database.entity.MatchListItem
 import arch.cayenne.lib.database.entity.MatchWithMarkets
 import arch.cayenne.lib.database.entity.SelectionBeanLite
 import arch.cayenne.module.bet.data.AddSelectionStatus
@@ -27,12 +27,18 @@ import arch.cayenne.module.bet.ui.fragment.BetSheetFragment
 import arch.cayenne.module.bet.viewmodel.FloatingButtonControlViewModel
 import arch.cayenne.module.home.R
 import arch.cayenne.module.home.data.constants.HomeState
+import arch.cayenne.module.home.data.constants.PlayType
+import arch.cayenne.module.home.data.model.MatchDateItem
+import arch.cayenne.module.home.data.model.MatchLoadMoreData
+import arch.cayenne.module.home.data.model.MatchNoMoreData
 import arch.cayenne.module.home.databinding.FragmentCollectListBinding
 import arch.cayenne.module.home.ui.adapter.MatchItemAdapter
 import arch.cayenne.module.home.ui.adapter.OnMatchItemClickListener
 import arch.cayenne.module.home.ui.view.decoration.MatchCardItemDecoration
+import arch.cayenne.module.home.ui.viewmodel.CollectDate
 import arch.cayenne.module.home.ui.viewmodel.CollectListViewModel
 import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
+import arch.cayenne.module.home.utils.DateUtils
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import java.lang.ref.WeakReference
@@ -51,8 +57,9 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
     private val homeViewModel: HomeViewModel by sharedViewModel<HomeViewModel, NewHomeFragment>()
     private val fabViewModel: FloatingButtonControlViewModel by activityViewModel()
 
+
     override fun initView(savedInstanceState: Bundle?) {
-        with (mBinding) {
+        with(mBinding) {
             // 隱藏 titleBar（作為 ViewPager 頁面使用）
             titleBar.visibility = View.GONE
 
@@ -85,25 +92,32 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
 
                 }
 
-                override fun onOddsCellClick(cell: WeakReference<View>, selection: SelectionBeanLite, x: Float, y: Float) {
+                override fun onOddsCellClick(
+                    cell: WeakReference<View>,
+                    selection: SelectionBeanLite,
+                    x: Float,
+                    y: Float
+                ) {
                     lifecycleScope.launch {
                         val v = cell.get()
                         val status = mViewModel.setSelection(selection)
                         when (status) {
                             is AddSelectionStatus.Success.Single -> {
-                                BetSheetFragment.show(requireActivity(), object : BetSheetFragment.ShowListener {
-                                    override fun onShow() {
-                                        v?.isSelected = true
-                                    }
+                                BetSheetFragment.show(
+                                    requireActivity(),
+                                    object : BetSheetFragment.ShowListener {
+                                        override fun onShow() {
+                                            v?.isSelected = true
+                                        }
 
-                                    override fun onCancel() {
-                                        v?.isSelected = false
-                                    }
+                                        override fun onCancel() {
+                                            v?.isSelected = false
+                                        }
 
-                                    override fun onHide() {
-                                        v?.isSelected = false
-                                    }
-                                })
+                                        override fun onHide() {
+                                            v?.isSelected = false
+                                        }
+                                    })
                             }
 
                             is AddSelectionStatus.Success.Combo, is AddSelectionStatus.Success.Update -> {
@@ -128,7 +142,7 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
                     }
                 }
 
-            })
+            }, PlayType.FAVORITE.id)
             val decoration = MatchCardItemDecoration(12.dp2px)
             rvCollectList.apply {
                 this.layoutManager = gameLayoutManager
@@ -139,6 +153,7 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
             rvCollectList.addOnScrollListener(scrollListener)
         }
     }
+
     private val scrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
             super.onScrollStateChanged(recyclerView, newState)
@@ -147,15 +162,75 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
                 subscribeVisibleMatch()
             }
         }
+
         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-            mBinding.rvCollectList.scrollToBottomWithLoadMore(minScrollCount = 8, {
-                if (mViewModel.apiStateListener.value != HomeState.Match.LoadSuccess) return@scrollToBottomWithLoadMore
-                mViewModel.loadNextPage()
-            }, {
-                if (mViewModel.apiStateListener.value == HomeState.Match.LoadNextFailure) {
-                    mViewModel.loadNextPage()
+            val layoutManager = recyclerView.layoutManager as LinearLayoutManager
+            if (dy > 0) {
+                if (mViewModel.apiStateListener.value == HomeState.Match.LoadSuccess) {
+                    val lastItemPos = layoutManager.findLastCompletelyVisibleItemPosition()
+                    val itemCount = matchAdapter.itemCount - 8
+                    if (lastItemPos > itemCount && lastItemPos > 1) {
+                        mViewModel.loadNextPage()
+                    }
                 }
-            })
+            } else if (dy < 0) {
+                if (mViewModel.prevApiStateListener.value == HomeState.Match.LoadSuccess) {
+                    val firstItemPos =
+                        layoutManager.findFirstCompletelyVisibleItemPosition()
+                    if (firstItemPos <= 8) {
+                        mViewModel.loadPrevPage()
+                    }
+                }
+            }
+
+            updateDisplayDate(layoutManager)
+        }
+    }
+
+    private fun updateDisplayDate(layoutManager: LinearLayoutManager) {
+        val firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
+
+        val itemList = matchAdapter.currentList
+        if (itemList.isEmpty()) {
+            return
+        }
+        when (val item = itemList[firstVisibleItemPosition]) {
+            is MatchWithMarkets -> {
+
+                val collectDate = CollectDate(
+                    "",
+                    "",
+                    item.match.basicInfo.startTime,
+                )
+
+                if (mBinding.rvCollectList.scrollState == RecyclerView.SCROLL_STATE_DRAGGING) {
+                    mViewModel.setDisplayDate(collectDate)
+                }
+
+            }
+
+            is MatchNoMoreData -> {
+
+            }
+
+            is MatchLoadMoreData -> {
+
+            }
+
+            is MatchDateItem -> {
+                val collectDate = CollectDate(
+                    "",
+                    "",
+                    item.timeStamp,
+                )
+
+                if (mBinding.rvCollectList.scrollState == RecyclerView.SCROLL_STATE_DRAGGING) {
+                    mViewModel.setDisplayDate(collectDate)
+                }
+
+            }
+
+            else -> {}
         }
     }
 
@@ -183,12 +258,32 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
         }
         mViewModel.matchListChange.observe(viewLifecycleOwner) { matchList ->
             val preEmpty = matchAdapter.currentList.isEmpty()
-            matchAdapter.submitList(matchList)
+            val list = addDateItem(
+                matchList
+            )
+            matchAdapter.submitList(list)
             if (preEmpty && matchList.isNotEmpty()) {
                 mBinding.rvCollectList.doOnPreDraw {
                     subscribeVisibleMatch()
                 }
             }
+
+            mBinding.tvHover.postDelayed({
+                val firstVisibleItemPosition = gameLayoutManager.findFirstVisibleItemPosition()
+                firstVisibleItemPosition.let {
+                    if (it < 0) return@let
+                    if (matchAdapter.currentList.isEmpty()) return@let
+//                if (rvAdapter._data!!.size < dateIndex) return@let
+                    val item = matchAdapter.currentList[firstVisibleItemPosition]
+                    if (item is MatchDateItem) {
+                        mBinding.tvHover.text = item.dateStr
+                    } else if (item is MatchWithMarkets) {
+                        val (date, week) = DateUtils.getDisplay(item.match.basicInfo.startTime)
+                        val display = "$date $week"
+                        mBinding.tvHover.text = display
+                    }
+                }
+            }, 100)
         }
 
         mViewModel.apiStateListener.observe(viewLifecycleOwner) { state ->
@@ -207,11 +302,13 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
                         }
                         showToast(arch.cayenne.lib.common.R.string.toast_server_disconnected.getString())
                     }
+
                     DataState.NoMoreData -> {     //這個DataEmpty表示api抓不到任何資料了，有可能是頁面到底，或是從第一頁就抓不到資料
                         clDynamics.visibility = View.GONE
                         mViewModel.changePageEnd(true)
                         matchAdapter.setLastItemType(MatchItemAdapter.LAST_ITEM_NO_MORE)
                     }
+
                     HomeState.Match.DataEmpty -> {  //這個DataEmpty表示確定真的從第一頁就抓不到資料，表示當前的選擇沒有任何賽事
                         refreshLayout.finishRefresh()
                         matchAdapter.setLastItemType(MatchItemAdapter.LAST_ITEM_LOAD_MORE)
@@ -221,17 +318,21 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
                             R.string.collect_list_empty.getString()
                         )
                     }
+
                     HomeState.Match.Loading -> {
                         clDynamics.visibility = View.GONE
                     }
+
                     HomeState.Match.Refreshing -> {
                         clDynamics.visibility = View.GONE
                         mViewModel.changePageEnd(false)
                         matchAdapter.setLastItemType(MatchItemAdapter.LAST_ITEM_LOAD_MORE)
                     }
+
                     HomeState.Match.LoadingNext -> {
                         clDynamics.visibility = View.GONE
                     }
+
                     DataState.LoadSuccess, HomeState.Match.LoadSuccess -> {
                         if (refreshLayout.isRefreshing) refreshLayout.finishRefresh()
                         clDynamics.visibility = View.GONE
@@ -239,6 +340,37 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
                         matchAdapter.setLastItemType(MatchItemAdapter.LAST_ITEM_LOAD_MORE)
                     }
                 }
+            }
+        }
+
+        mViewModel.prevApiStateListener.observe(viewLifecycleOwner) {
+            with(mBinding) {
+                when (it) {
+                    DataState.NetworkUnavailable, HomeState.Match.LoadNextFailure -> {}
+
+                    HomeState.Match.DataEmpty -> {
+
+                    }
+
+                    DataState.NoMoreData -> {
+                        mViewModel.changePrevPageEnd(true)
+                    }
+
+                    HomeState.Match.Loading -> {
+                    }
+
+                    DataState.LoadSuccess, HomeState.Match.LoadSuccess -> {
+                        mViewModel.changePrevPageEnd(false)
+                    }
+                }
+            }
+        }
+
+        mViewModel.displayDate.observe(viewLifecycleOwner) {
+            it?.let {
+                val (date, week) = DateUtils.getDisplay(it.timestamp)
+                val display = "$date $week"
+                mBinding.tvHover.text = display
             }
         }
     }
@@ -267,5 +399,37 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
         super.onResume()
         //把暫時移除的訂閱加回來
         mViewModel.subscribeMatch(mViewModel.getCurrentSubscribeMatchSet())
+    }
+
+    private fun addDateItem(list: List<MatchListItem>?): List<MatchListItem>? {
+        val isEmpty = (list?.size ?: 0) == 0
+        if (isEmpty) {
+            return list
+        }
+
+        val set: HashSet<String> = java.util.HashSet()
+
+        val mutableList = mutableListOf<MatchListItem>()
+
+        if (list != null) {
+            for (i in list.indices) {
+                val item = list[i]
+                if (item is MatchWithMarkets) {
+
+                    val (date, week) = DateUtils.getDisplay(item.match.basicInfo.startTime)
+                    val display = "$date $week"
+
+                    if (!set.contains(display)) {
+                        mutableList.add(MatchDateItem(display, item.match.basicInfo.startTime))
+                        set.add(display)
+                    }
+                    mutableList.add(item)
+                } else {
+                    mutableList.add(item)
+                }
+            }
+        }
+
+        return mutableList
     }
 }

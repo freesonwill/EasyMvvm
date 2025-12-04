@@ -11,4 +11,5 @@
         <item>invalid</item>
     </string-array>
     <string name="title_single_bet">SingleBet</string>
+    <string name="notification_confirm">Confirm Delete</string>
 </resources>

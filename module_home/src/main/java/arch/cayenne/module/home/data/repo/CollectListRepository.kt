@@ -14,11 +14,13 @@ import arch.cayenne.lib.websocket.data.ApiCode
 import arch.cayenne.lib.websocket.extension.sendAndWaitProtoMessageResponse
 import arch.cayenne.module.home.data.model.CollectMatchRef
 import arch.cayenne.module.home.data.model.toRoomData
+import arch.cayenne.module.home.utils.DateUtils
 import galaxy.client.proto.Client
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlin.concurrent.fixedRateTimer
 
 class CollectListRepository(
     override val scope: CoroutineScope,
@@ -32,21 +34,48 @@ class CollectListRepository(
 
     private val collectMatchChange by lazy { MutableStateFlow<Map<Long, CollectMatchRef>>(hashMapOf()) }  //CollectMatchCrossRef
 
-    suspend fun getCollectData(page: Int, isForce: Boolean = false) : ApiResponseState {
-
-        val last = if (isForce) null else collectMatchChange.value.maxByOrNull { it.value.order }?.value
+    suspend fun getCollectData(
+        page: Int,
+        prevPage:Int,//向前查询时使用的页码
+        reverse: Boolean = false, //true-上页，false-下页
+        isForce: Boolean = false
+    ): ApiResponseState {
+        val last =
+            if (isForce) null else collectMatchChange.value.maxByOrNull { it.value.order }?.value
+        val first = collectMatchChange.value.minByOrNull { it.value.order }?.value
         val resp = socketManager.sendAndWaitProtoMessageResponse<Client.ListCollectResp>(
             scope = scope,
             dispatcher = Dispatchers.IO,
             apiCode = ApiCode.LISt_COLLECT,
         ) {
-            Client.ListCollectReq.newBuilder().apply {
-                if (last != null) {
-                    this.cursorMatchId = last.matchId
-                    this.cursorMatchStartTime = last.startTime
-                }
-                this.size = DEFAULT_MATCH_SIZE
-            }.build()
+            if (reverse) {
+                Client.ListCollectReq.newBuilder().apply {
+                    if (first != null) {
+                        this.cursorMatchId = first.matchId
+                        this.cursorMatchStartTime = first.startTime
+                    } else {
+                        this.cursorMatchId = 0
+                        this.cursorMatchStartTime =
+                            DateUtils.getMidnightTimeStamp(System.currentTimeMillis())
+                    }
+                    this.size = DEFAULT_MATCH_SIZE
+                    this.reverse = true
+                }.build()
+            }
+            else {
+                Client.ListCollectReq.newBuilder().apply {
+                    if (last != null) {
+                        this.cursorMatchId = last.matchId
+                        this.cursorMatchStartTime = last.startTime
+                    } else {
+                        this.cursorMatchId = 0
+                        this.cursorMatchStartTime =
+                            DateUtils.getMidnightTimeStamp(System.currentTimeMillis())
+                    }
+                    this.size = DEFAULT_MATCH_SIZE
+                    this.reverse = false
+                }.build()
+            }
         }
         if (resp.error == null && resp.data != null) { //curosr506605 1758204000000 0
             val matchFullData = resp.data!!.matchList.toRoomData()
@@ -58,10 +87,28 @@ class CollectListRepository(
                 marketSelectCrossRefs = matchFullData.marketSelectCrossRefs,
             )
 
+            val pageNo = if (reverse) {
+                prevPage
+            } else {
+                page
+            }
+
             val map = resp.data!!.matchList.mapIndexed { index, match ->
-                match.matchId to CollectMatchRef(match.matchId, match.basicInfo.startTime, page, page * 100 + index)
+                match.matchId to CollectMatchRef(
+                    match.matchId,
+                    match.basicInfo.startTime,
+                    pageNo,
+                    pageNo * 100 + index
+                )
             }.toMap()
-            collectMatchChange.value = collectMatchChange.value + map
+
+            if (reverse) {
+                //向前查询时， 新数据加在列表前边
+                collectMatchChange.value = map + collectMatchChange.value
+            } else {
+                //向后查询时，新数据加载列表后边
+                collectMatchChange.value += map
+            }
             return ApiResponseState.Succeeded(resp.data!!.matchList)
         }
         return ApiResponseState.Failed(resp.error)
@@ -80,7 +127,7 @@ class CollectListRepository(
         return resp
     }
 
-    fun observeMatchChange() : Flow<Map<Long, CollectMatchRef>> = collectMatchChange
+    fun observeMatchChange(): Flow<Map<Long, CollectMatchRef>> = collectMatchChange
 
     override fun deleteMissingMatch(matchIds: List<Long>) {
         super.deleteMissingMatch(matchIds)
@@ -90,8 +137,10 @@ class CollectListRepository(
     /**
      * 插入收藏的matchId
      * */
-   fun insertCollectList(list:List<CollectMatchRef>) {
-        if(list.isEmpty()){return}
+    fun insertCollectList(list: List<CollectMatchRef>) {
+        if (list.isEmpty()) {
+            return
+        }
         val collectList: List<CollectListBean> = list.map {
             CollectListBean(
                 it.matchId,
@@ -101,10 +150,10 @@ class CollectListRepository(
             )
         }.toList()
         collectListDao.deleteAll()
-       collectListDao.insertCollects(collectList)
+        collectListDao.insertCollects(collectList)
     }
 
-    fun deleteCollectList(){
+    fun deleteCollectList() {
         collectListDao.deleteAll()
     }
 
@@ -123,8 +172,8 @@ class CollectListRepository(
      * 多次重复进入收藏后CollectMatchange数据没有清空，导致 getCollectData方法中last数据不为空，
      * 错误的选择了更多加载而不是初始化获取数据
      * */
-    fun clear(){
-       collectMatchChange.value =  mapOf()
+    fun clear() {
+        collectMatchChange.value = mapOf()
     }
 
 }

@@ -45,6 +45,7 @@ dependencies {
     implementation(project(":module_account"))
     implementation(project(":module_message"))
     implementation(libs.tinyPinyin)
+    implementation(libs.banner)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

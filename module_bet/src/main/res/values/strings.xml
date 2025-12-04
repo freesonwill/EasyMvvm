@@ -23,7 +23,7 @@
     <string name="tab_selection">选项</string>
     <string name="title_playing">滚球</string>
     <string name="title_rate">达到此赔率时自动投注</string>
-    <string name="title_dialog_remove">串关删除后将无法恢复，确定删除串关吗？</string>
+    <string name="title_dialog_remove">串关清空后将无法恢复，确定清空串关吗？</string>
 
     <string name="title_combo_bet_odds_expand">展开更多串关方式</string>
     <string name="title_combo_bet_odds_expand2">更多组合投注</string>

@@ -2,7 +2,7 @@
 <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/cl_main"
+
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/title_bg"
@@ -10,47 +10,79 @@
     android:focusable="true"
     android:focusableInTouchMode="true"
     app:interceptedDirection="RIGHT">
-    <!--  頂端列  -->
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintGuide_begin="@dimen/dp_0"
-        android:orientation="horizontal" />
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/homeBarIcon"
-        android:layout_width="124dp"
-        android:layout_height="0dp"
-        android:background="@drawable/ic_top_bar_right_bg"
-        tools:ignore="MissingConstraints"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="@+id/iv_right_logo"
-        app:layout_constraintRight_toRightOf="parent" />
-    <arch.cayenne.lib.skin.widget.SkinnableImageView
-        android:id="@+id/iv_left_logo"
-        android:layout_width="@dimen/dp_64"
-        android:layout_height="@dimen/dp_50"
-        android:layout_marginTop="@dimen/dp_15"
-        android:src="@drawable/ic_top_bar_left_logo"
-        android:layout_marginStart="@dimen/dp_10"
-        app:layout_constraintTop_toTopOf="@+id/iv_right_logo"
-        app:layout_constraintLeft_toLeftOf="parent"/>
 
-    <arch.cayenne.lib.common.ui.view.BalanceView
-        android:id="@+id/balance_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_9"
-        app:layout_constraintTop_toTopOf="@+id/iv_left_logo"
-        app:layout_constraintBottom_toBottomOf="@+id/iv_left_logo"
-        app:layout_constraintLeft_toRightOf="@+id/iv_left_logo"/>
-    <arch.cayenne.lib.skin.widget.SkinnableImageView
-        android:id="@+id/iv_right_logo"
-        android:layout_width="@dimen/dp_103"
-        android:layout_height="@dimen/dp_68"
-        app:srcCompat="@drawable/ic_top_bar_right_logo"
-        app:layout_constraintTop_toTopOf="@+id/guideline"
-        app:layout_constraintRight_toRightOf="parent" />
+    <arch.cayenne.lib.common.ui.view.MatrixSlantLayout
+        android:id="@+id/homeBarIcon"
+        android:layout_width="127dp"
+        android:layout_marginTop="-20dp"
+        android:layout_height="@dimen/dp_160"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingConstraints" >
+        <com.youth.banner.Banner
+            android:id="@+id/iv_right_logo"
+            android:layout_gravity="bottom"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="@dimen/dp_1"
+            android:background="@color/slant_view"
+            android:paddingStart="1dp"
+            android:paddingTop="@dimen/dp_2"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            tools:ignore="MissingConstraints" />
+
+    </arch.cayenne.lib.common.ui.view.MatrixSlantLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:id="@+id/cl_main"
+        android:layout_height="match_parent">
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/homeTopBar"
+            android:layout_width="match_parent"
+            android:layout_height="63dp"
+            android:layout_marginStart="@dimen/dp_10"
+            tools:ignore="MissingConstraints">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/clAvava"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dp_3"
+                android:paddingTop="@dimen/dp_9"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="MissingConstraints">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/ivAvava"
+                    android:layout_width="64dp"
+                    android:layout_height="50dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/ic_top_bar_left_logo"
+                    tools:ignore="MissingConstraints" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+            <arch.cayenne.lib.common.ui.view.BalanceView
+                android:id="@+id/balance_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_9"
+                android:layout_marginBottom="@dimen/dp_1"
+                android:paddingTop="@dimen/dp_7"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toRightOf="@+id/clAvava"
+                app:layout_constraintTop_toTopOf="parent"/>
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
     <!--  搜尋列  -->
     <arch.cayenne.lib.skin.widget.SkinnableImageView
         android:id="@+id/iv_home_sidebar"
@@ -82,7 +114,7 @@
         android:layout_marginEnd="@dimen/dp_14"
         app:layout_constraintStart_toEndOf="@+id/iv_home_sidebar"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/iv_right_logo">
+        app:layout_constraintTop_toBottomOf="@+id/homeTopBar">
 
         <arch.cayenne.lib.skin.widget.SkinnableImageView
             android:layout_width="@dimen/dp_16"
@@ -111,6 +143,7 @@
             android:layout_marginBottom="@dimen/dp_9"
             android:background="@color/color_0FFFFFFF" />
         <arch.cayenne.lib.skin.widget.SkinnableTextView
+            android:id="@+id/search"
             android:layout_width="55dp"
             android:layout_height="match_parent"
             android:gravity="end|center_vertical"
@@ -175,4 +208,5 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
