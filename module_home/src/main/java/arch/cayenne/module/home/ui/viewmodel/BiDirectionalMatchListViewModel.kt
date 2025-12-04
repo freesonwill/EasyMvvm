@@ -32,7 +32,7 @@ import plugin.koin.KoinViewModel
  */
 class BiDirectionalMatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
     private var _sportId = SportType.Init.id
-    private var _playType = PlayType.EARLY.id
+    private var _playType = PlayType.SUPER_COMPETITION.id
     private var _tournamentIdList: List<Int> = listOf(HomeViewModel.TOURNAMENT_ALL_ID)
     private var _position = -1
 
@@ -113,7 +113,7 @@ class BiDirectionalMatchListViewModel : BaseMatchViewModel<MatchListRepository>(
                     .drop(2)  //一開始進入的不用聽，可以藉由loginChange去取得最開始的資料
                     .collect { selectedDate ->
                         "Collect selectedDateChange playType = $_playType  tournament = $_tournamentIdList selectedDate = $selectedDate ".logi()
-                        val currentDateRefs = repository.queryEarlyMatchChange(_tournamentIdList)
+                        val currentDateRefs = repository.queryEarlyMatchChange(_playType,_tournamentIdList)
                             .filter { it.date == selectedDate }
                         if (currentDateRefs.isEmpty()) {
                             //向后查询数据
@@ -129,7 +129,7 @@ class BiDirectionalMatchListViewModel : BaseMatchViewModel<MatchListRepository>(
     fun startObserveMatch() {
         job?.cancel()
         job = viewModelScope.launch(Dispatchers.IO) {
-            repository.observeEarlyMatchChange(_tournamentIdList)
+            repository.observeEarlyMatchChange(_playType, _tournamentIdList)
                 .distinctUntilChanged()
                 .collect { refs ->
                     val selectedDate = _queryDate.value

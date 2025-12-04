@@ -5,10 +5,11 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import arch.cayenne.module.home.data.constants.PlayType
+import arch.cayenne.module.home.data.constants.SportType
 import arch.cayenne.module.home.ui.fragment.CollectListFragment
 import arch.cayenne.module.home.ui.fragment.EarlyFragment
-import arch.cayenne.module.home.ui.fragment.SuperCompetitionFragment
 import arch.cayenne.module.home.ui.fragment.SubHomeFragment
+import arch.cayenne.module.home.ui.fragment.SuperCompetitionFragment
 
 class SubHomePagerAdapter(
     fragmentManager: FragmentManager,
@@ -24,7 +25,14 @@ class SubHomePagerAdapter(
     override fun getItemCount(): Int = promoCount + playTypes.size
 
     override fun createFragment(position: Int): Fragment {
-        if (position < promoCount) return SuperCompetitionFragment()
+        if (position < promoCount) return SuperCompetitionFragment.newInstance(
+            SportType.SOCCER.id,
+            if (position == 0) {
+                listOf(8)
+            } else {
+                listOf(37)
+            }
+        )
         return when (val playType = playTypes[position - promoCount]) {
             PlayType.FAVORITE -> CollectListFragment()
             PlayType.EARLY -> EarlyFragment.newInstance(playType.id)

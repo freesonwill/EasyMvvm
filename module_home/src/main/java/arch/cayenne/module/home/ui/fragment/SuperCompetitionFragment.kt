@@ -24,6 +24,7 @@ import arch.cayenne.module.home.data.constants.SportType
 import arch.cayenne.module.home.databinding.FragmentSuperCompetitionBinding
 import arch.cayenne.module.home.databinding.ItemDateTabBinding
 import arch.cayenne.module.home.ui.adapter.SportBannerAdapter
+import arch.cayenne.module.home.ui.fragment.BiDirectionalMatchListPagerFragment.Companion
 import arch.cayenne.module.home.ui.viewmodel.EarlyDate
 import arch.cayenne.module.home.ui.viewmodel.EarlyDateType
 import arch.cayenne.module.home.ui.viewmodel.SuperCompetitionViewModel
@@ -34,7 +35,9 @@ import kotlin.math.max
 import kotlin.math.min
 import kotlin.reflect.KClass
 
-class SuperCompetitionFragment : BaseFragment<SuperCompetitionViewModel, FragmentSuperCompetitionBinding>(), ISubFragmentLifecycle {
+class SuperCompetitionFragment :
+    BaseFragment<SuperCompetitionViewModel, FragmentSuperCompetitionBinding>(),
+    ISubFragmentLifecycle {
 
     override val vbClass: KClass<FragmentSuperCompetitionBinding> =
         FragmentSuperCompetitionBinding::class
@@ -66,6 +69,11 @@ class SuperCompetitionFragment : BaseFragment<SuperCompetitionViewModel, Fragmen
                 mViewModel.selectedDate(it.first().timestamp)
             }
         }
+    }
+
+    override fun initData() {
+        super.initData()
+        mViewModel.setCurrentSport(arguments?.getInt(ARG_SPORT_ID) ?: SportType.SOCCER.id)
     }
 
     // init Sport Banner 輪播區塊
@@ -285,7 +293,7 @@ class SuperCompetitionFragment : BaseFragment<SuperCompetitionViewModel, Fragmen
     }
 
     private fun playFadeAnimTriggerByDateTab(switchProcess: () -> Unit) {
-        mBinding.tlDateList.startFadeAnim { onComplete ->
+        mBinding.fragmentMatchList.startFadeAnim { onComplete ->
             switchProcess.invoke()
             onComplete.invoke()
         }
@@ -293,23 +301,29 @@ class SuperCompetitionFragment : BaseFragment<SuperCompetitionViewModel, Fragmen
 
     private fun initMatchListFragment() {
         childFragmentManager.findFragmentByTag(BiDirectionalMatchListPagerFragment.TAG) as? BiDirectionalMatchListPagerFragment
-            ?: BiDirectionalMatchListPagerFragment.newInstance(SportType.SOCCER.id, PlayType.EARLY.id, listOf(8), 0, false).also {
+            ?: BiDirectionalMatchListPagerFragment.newInstance(
+                SportType.SOCCER.id,
+                PlayType.SUPER_COMPETITION.id,
+                arguments?.getIntArray(ARG_LEAGUE_ID)?.toList() ?: listOf(0),
+                0,
+                false
+            ).also {
                 childFragmentManager.beginTransaction()
-                    .replace(mBinding.fragmentDrawerContent.id, it, BiDirectionalMatchListPagerFragment.TAG)
+                    .replace(
+                        mBinding.fragmentMatchList.id,
+                        it,
+                        BiDirectionalMatchListPagerFragment.TAG
+                    )
                     .commitNow()
             }
 
     }
 
     override fun onFragmentSelected() {
-        mViewModel.getCurrentSportStatistical()
-        mViewModel.getCurrentTournament()
         mBinding.tlDateList.scrollToPositionWithoutAnim(mBinding.tlDateList.selectedTabPosition)
     }
 
     override fun onFragmentUnSelected() {
-        mViewModel.requestCollapseTournamentDropdown()
-
     }
 
     override fun reloadCurrentMatchListPagerFragment() {
@@ -325,6 +339,20 @@ class SuperCompetitionFragment : BaseFragment<SuperCompetitionViewModel, Fragmen
             mBinding.includeSportBanner.pbSportBanner.resetTriggerJob()
         }
         super.onHiddenChanged(hidden)
+    }
+
+    companion object {
+        private const val ARG_SPORT_ID = "sport_id"
+        private const val ARG_LEAGUE_ID = "arg_league_id"
+
+        fun newInstance(sportId: Int, leagueIdList: List<Int>): SuperCompetitionFragment {
+            return SuperCompetitionFragment().apply {
+                arguments = Bundle().apply {
+                    putInt(ARG_SPORT_ID, sportId)
+                    putIntArray(ARG_LEAGUE_ID, leagueIdList.toIntArray())
+                }
+            }
+        }
     }
 }
 
