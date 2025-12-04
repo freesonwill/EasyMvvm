@@ -562,19 +562,15 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
 //            mainAnim?.duration = 170L
 
             mainAnim?.addListener(onStart = {
-                if (mBinding.chatEtInput.length() == 0) {
-                    inputIconShouldUpdate(actionType, call = {
-                        updateInputIcon(true)
-                    })
-                }
+                inputIconShouldUpdate(actionType, call = {
+                    updateInputIcon(true)
+                })
 
                 onStart.invoke()
             }, onEnd = {
-                if (mBinding.chatEtInput.length() == 0) {
-                    inputIconShouldUpdate(actionType, call = {
-                        updateInputIcon(offset == 0)
-                    })
-                }
+                inputIconShouldUpdate(actionType, call = {
+                    updateInputIcon(offset == 0)
+                })
                 onEnd.invoke()
             })
             if (isFirstOpen) {
@@ -600,7 +596,7 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
                 KeyboardActionType.EMOJI_TO_CHAT,
                 KeyboardActionType.SOFT_TO_CHAT
             )
-        ) {
+        ) { //chat 和 键盘切换时@ 注单 emoji 等按钮需要上下移动
             call.invoke()
         } else {
             elCall?.invoke()

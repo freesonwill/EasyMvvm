@@ -69,9 +69,10 @@ class ChatATHelper(
 //            }
 //            closeAtPopup = false
 
-            if (startInputPosition == -1 && !isAtInput && !isEditDelete) {
+            if (startInputPosition == -1 && !isAtInput ) {
                 atPopupWindow.dismiss()
             }
+            "isDelete $isEditDelete   startInputPosition $startInputPosition".logd("aaa")
             if (!isEditDelete && startInputPosition >= 0) {
                 listenEditInput()
             }
@@ -326,14 +327,12 @@ class ChatATHelper(
 
             if (startInputPosition >= 0 && cursorPosition <= chatEtInput.text.length) {
                 inputStr = chatEtInput.text.substring(
-                    startInputPosition,
-                    if (cursorPosition == chatEtInput.text.length) cursorPosition - 1 else cursorPosition
+                    startInputPosition, cursorPosition
                 )
             }
             if (inputStr.length > 1 && inputStr.startsWith("@")) {
                 atPopupWindow.searchAtList(inputStr)
             }
-
         }
     }
 
