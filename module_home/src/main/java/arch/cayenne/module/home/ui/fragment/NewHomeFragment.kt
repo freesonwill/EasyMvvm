@@ -359,6 +359,10 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 clickNoRepeatSingle { navigate(arch.cayenne.lib.res.R.string.nav_module_search_fragment.deeplink()) }
                 addScaleOnTouchAnimation()
             }
+
+            banner.setOnBannerListener { Int, position ->
+                navigate(arch.cayenne.lib.res.R.string.nav_module_promotion_fragment.deeplink())
+            }
         }
     }
 

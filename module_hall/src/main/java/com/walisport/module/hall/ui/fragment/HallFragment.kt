@@ -2,6 +2,7 @@ package com.walisport.module.hall.ui.fragment
 
 import android.annotation.SuppressLint
 import android.graphics.Typeface
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -27,7 +28,9 @@ import arch.cayenne.lib.common.data.constants.DrawerAction.REQUEST_KEY_DRAWER
 import arch.cayenne.lib.common.ui.adapter.BannerImageAdapter
 import arch.cayenne.lib.common.ui.viewmodel.UnReadMessageViewModel
 import arch.cayenne.lib.common.utils.ViewUtils
+import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.TabLayoutExt
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
@@ -48,6 +51,7 @@ import com.google.android.material.tabs.TabLayout
 import arch.cayenne.lib.common.utils.ext.TabLayoutExt.addOnTabSelectedListener2
 import arch.cayenne.lib.common.utils.ext.startFadeAnim
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getColor
+import arch.cayenne.lib.common.utils.ext.clickNoRepeatSingle
 import arch.cayenne.lib.common.utils.ext.removeAllTips
 import com.walisport.module.hall.ui.view.ScrollableTabIndicatorHelper
 import kotlinx.coroutines.delay
@@ -207,6 +211,19 @@ class HallFragment : BaseFragment<HallViewModel, FragmentHallBinding>() {
                     REQUEST_KEY_DRAWER,
                     bundleOf(KEY_ACTION to ACTION_OPEN)
                 )
+            }
+
+            balanceView.onAddClickListener = {
+                navigate(Uri.parse("walisport://module_topup/topUpFragment"))
+            }
+
+//            ivRightLogo.apply {
+//                clickNoRepeatSingle { navigate(arch.cayenne.lib.res.R.string.nav_module_promotion_fragment.deeplink()) }
+//                addScaleOnTouchAnimation()
+//            }
+
+            ivRightLogo.setOnBannerListener { Int, position ->
+                navigate(arch.cayenne.lib.res.R.string.nav_module_promotion_fragment.deeplink())
             }
         }
 
