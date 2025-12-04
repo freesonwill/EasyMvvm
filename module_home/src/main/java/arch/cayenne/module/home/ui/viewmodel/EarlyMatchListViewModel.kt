@@ -100,10 +100,6 @@ class EarlyMatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
 
     fun getSportId() = _sportId
 
-    fun changeState(state: DataState) {
-        setState(state)
-    }
-
     fun resetRequestScrollToTop() {
         requestScrollToTop = false
     }
@@ -173,19 +169,12 @@ class EarlyMatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
             requestScrollToTop =
                 loadMatchType == LoadMatchType.RELOAD || loadMatchType == LoadMatchType.RETRY || loadMatchType == LoadMatchType.DATE_CHANGE // 是否是強制更新，會刪除原本的資料ref關聯表，並且更新列表後會滾到頂端
             setState(HomeState.Match.Loading)
-            val (startTime, endTime) = if (loadMatchType == LoadMatchType.PREV_PAGE) {
-                //向前查询
-                Pair(
-                    //早盘只能查询从明天开始的比赛， 即使向前查询，起始时间也不能早于明天凌晨
-                    DateUtils.getTomorrowMidnight(),
-                    _queryDate.value,
-                )
-            } else {
+            val (startTime, endTime) =
                 Pair(
                     _queryDate.value,
                     _queryDate.value + BaseMatchRepository.THIRTY_DAY_TIME_STAMP
                 )
-            }
+
 
             "取得比賽資料 Type = $loadMatchType PlayType = $_playType sportId = $_sportId tournamentId = $_tournamentIdList page = $page prevPage = $prevPage startTime = $startTime endTime = $endTime".logi(
                 TAG
@@ -213,47 +202,82 @@ class EarlyMatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
                                 matchListChange.value = matchListChange.value
                             }
 
-                            LoadMatchType.PREV_PAGE -> {
-                                setPrevApiState(HomeState.Match.LoadPrevFailure)
-                                matchListChange.value = matchListChange.value
-                            }
-
                             else -> {
                                 setState(DataState.NetworkUnavailable)
                                 setPrevApiState(DataState.NetworkUnavailable)
                             }
                         }
                     } else if (it is ApiResponseState.Succeeded<*>) {
-                        if (loadMatchType == LoadMatchType.PREV_PAGE) {
-                            val size = it.dataAs<List<Common.Match>>()?.size ?: 0
-                            if (size < BaseMatchRepository.DEFAULT_MATCH_SIZE) {
-                                setPrevApiState(HomeState.Match.PrevNoMoreData)
-                            } else {
-                                setPrevApiState(HomeState.Match.LoadSuccess)
-                            }
-                        } else {
-                            val size = it.dataAs<List<Common.Match>>()?.size ?: 0
-                            val isEmpty = size == 0
-                            if (page == INITIAL_PAGE && isEmpty) {
-                                setState(HomeState.Match.DataEmpty)
-                                matchListChange.value = arrayListOf()
-                            } else if (size < BaseMatchRepository.DEFAULT_MATCH_SIZE) {   //如果返回成功，但是数据size小于10，则表明列表已经加载到底部
-                                setState(DataState.NoMoreData)
-                            } else {
-                                setState(HomeState.Match.LoadSuccess)
-                            }
 
-                            //向后查询成功，且为第一页， 则自动向前查询一页
-                            if (page == INITIAL_PAGE) {
-                                //向前查询一页数据
-                                //早盘日期为明天时，不能向前查询数据
-                                if (_queryDate.value != DateUtils.getTomorrowMidnight()) {
-                                    getMatchListData(LoadMatchType.PREV_PAGE)
-                                }
+                        val size = it.dataAs<List<Common.Match>>()?.size ?: 0
+                        val isEmpty = size == 0
+                        if (page == INITIAL_PAGE && isEmpty) {
+                            setState(HomeState.Match.DataEmpty)
+                            matchListChange.value = arrayListOf()
+                        } else if (size < BaseMatchRepository.DEFAULT_MATCH_SIZE) {   //如果返回成功，但是数据size小于10，则表明列表已经加载到底部
+                            setState(DataState.NoMoreData)
+                        } else {
+                            setState(HomeState.Match.LoadSuccess)
+                        }
+
+                        //向后查询成功，且为第一页， 则自动向前查询一页
+                        if (page == INITIAL_PAGE) {
+                            //向前查询一页数据
+                            //早盘日期为明天时，不能向前查询数据
+                            if (_queryDate.value != DateUtils.getTomorrowMidnight()) {
+                                loadPrevPage()
                             }
                         }
+
                     }
                 }, autoUpdateState = false
+            )
+        }
+    }
+
+    //向前查询，取得分頁的比賽列表
+    private fun getPrevMatchListData() {
+        viewModelScope.launch {
+            setState(HomeState.Match.Loading)
+            val (startTime, endTime) =
+                //向前查询
+                Pair(
+                    //早盘只能查询从明天开始的比赛， 即使向前查询，起始时间也不能早于明天凌晨
+                    DateUtils.getTomorrowMidnight(),
+                    _queryDate.value,
+                )
+
+            "取得比賽資料  PlayType = $_playType sportId = $_sportId tournamentId = $_tournamentIdList page = $page prevPage = $prevPage startTime = $startTime endTime = $endTime".logi(
+                TAG
+            )
+            callApi(
+                {
+                    repository.getAllMatch(
+                        playType = _playType,
+                        sportId = _sportId,
+                        tournamentIdList = _tournamentIdList,
+                        prevPage = prevPage,
+                        page = page,
+                        date = _queryDate.value,
+                        startTime = startTime,
+                        endTime = endTime,
+                        isForce = false,
+                        loadMatchType = LoadMatchType.PREV_PAGE,
+                    )
+                },
+                {
+                    if (it is ApiResponseState.Failed) {
+                        setPrevApiState(HomeState.Match.LoadPrevFailure)
+                        matchListChange.value = matchListChange.value
+                    } else if (it is ApiResponseState.Succeeded<*>) {
+                        val size = it.dataAs<List<Common.Match>>()?.size ?: 0
+                        if (size < BaseMatchRepository.DEFAULT_MATCH_SIZE) {
+                            setPrevApiState(DataState.NoMoreData)
+                        } else {
+                            setPrevApiState(HomeState.Match.LoadSuccess)
+                        }
+                    }
+                }, autoUpdateState = false, { setPrevApiState(it) }
             )
         }
     }
@@ -282,13 +306,13 @@ class EarlyMatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
     }
 
     fun loadPrevPage() {
-        if (isPrevPageEnd || apiStateListener.value == DataState.Loading) {
+        if (isPrevPageEnd || prevApiStateListener.value == DataState.Loading) {
             return
         }
 
         prevPage--
-        setState(HomeState.Match.LoadingPrev)
-        getMatchListData(LoadMatchType.PREV_PAGE)
+        setPrevApiState(DataState.Loading)
+        getPrevMatchListData()
     }
 
     fun changePrevPageEnd(flag: Boolean) {

@@ -141,7 +141,7 @@ class EarlyMatchListPagerFragment :
                         }
                     }
                 }
-            })
+            }, earlyViewModel.currentPlayTypeId)
 
             //賽事卡片之間的間閣
             val decoration = MatchCardItemDecoration(
@@ -187,52 +187,7 @@ class EarlyMatchListPagerFragment :
                         }
                     }
 
-                    val firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
-
-                    val itemList = matchAdapter.currentList
-                    if (itemList.isEmpty()) {
-                        return
-                    }
-                    when (val item = itemList[firstVisibleItemPosition]) {
-                        is MatchWithMarkets -> {
-
-                            val earlyDate = EarlyDate(
-                                "",
-                                "",
-                                item.match.basicInfo.startTime,
-                                EarlyDateType.Date
-                            )
-
-                            if (mBinding.rvHomeGameList.scrollState == RecyclerView.SCROLL_STATE_DRAGGING) {
-                                earlyViewModel.setDisplayDate(earlyDate)
-                            }
-
-                        }
-
-                        is MatchNoMoreData -> {
-
-                        }
-
-                        is MatchLoadMoreData -> {
-
-                        }
-
-                        is MatchDateItem -> {
-                            val earlyDate = EarlyDate(
-                                "",
-                                "",
-                                item.timeStamp,
-                                EarlyDateType.Date
-                            )
-
-                            if (mBinding.rvHomeGameList.scrollState == RecyclerView.SCROLL_STATE_DRAGGING) {
-                                earlyViewModel.setDisplayDate(earlyDate)
-                            }
-
-                        }
-
-                        else -> {}
-                    }
+                    updateDisplayDate(layoutManager)
 
 
                 }
@@ -240,6 +195,55 @@ class EarlyMatchListPagerFragment :
 
             // 初始化回到頂部按鈕
             BackToTopHelper(rvHomeGameList, ivBackToTop)
+        }
+    }
+
+    private fun updateDisplayDate(layoutManager: LinearLayoutManager) {
+        val firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
+
+        val itemList = matchAdapter.currentList
+        if (itemList.isEmpty()) {
+            return
+        }
+        when (val item = itemList[firstVisibleItemPosition]) {
+            is MatchWithMarkets -> {
+
+                val earlyDate = EarlyDate(
+                    "",
+                    "",
+                    item.match.basicInfo.startTime,
+                    EarlyDateType.Date
+                )
+
+                if (mBinding.rvHomeGameList.scrollState == RecyclerView.SCROLL_STATE_DRAGGING) {
+                    earlyViewModel.setDisplayDate(earlyDate)
+                }
+
+            }
+
+            is MatchNoMoreData -> {
+
+            }
+
+            is MatchLoadMoreData -> {
+
+            }
+
+            is MatchDateItem -> {
+                val earlyDate = EarlyDate(
+                    "",
+                    "",
+                    item.timeStamp,
+                    EarlyDateType.Date
+                )
+
+                if (mBinding.rvHomeGameList.scrollState == RecyclerView.SCROLL_STATE_DRAGGING) {
+                    earlyViewModel.setDisplayDate(earlyDate)
+                }
+
+            }
+
+            else -> {}
         }
     }
 
@@ -287,22 +291,28 @@ class EarlyMatchListPagerFragment :
             }
         }
 
-        mBinding.tvHover.postDelayed({
-            val firstVisibleItemPosition = gameLayoutManager.findFirstVisibleItemPosition()
-            firstVisibleItemPosition.let {
-                if (it < 0) return@let
-                if (matchAdapter.currentList.isEmpty()) return@let
+        if (list?.isNotEmpty() == true) {
+            mBinding.tvHover.visibility = View.VISIBLE
+            mBinding.tvHover.postDelayed({
+                val firstVisibleItemPosition = gameLayoutManager.findFirstVisibleItemPosition()
+                firstVisibleItemPosition.let {
+                    if (it < 0) return@let
+                    if (matchAdapter.currentList.isEmpty()) return@let
 //                if (rvAdapter._data!!.size < dateIndex) return@let
-                val item = matchAdapter.currentList[firstVisibleItemPosition]
-                if (item is MatchDateItem) {
-                    mBinding.tvHover.text = item.dateStr
-                } else if (item is MatchWithMarkets) {
-                    val (date, week) = DateUtils.getDisplay(item.match.basicInfo.startTime)
-                    val display = "$date $week"
-                    mBinding.tvHover.text = display
+                    val item = matchAdapter.currentList[firstVisibleItemPosition]
+                    if (item is MatchDateItem) {
+                        mBinding.tvHover.text = item.dateStr
+                    } else if (item is MatchWithMarkets) {
+                        val (date, week) = DateUtils.getDisplay(item.match.basicInfo.startTime)
+                        val display = "$date $week"
+                        mBinding.tvHover.text = display
+                    }
                 }
-            }
-        }, 100)
+            }, 100)
+        } else {
+            mBinding.tvHover.visibility = View.GONE
+        }
+
         mBinding.rvHomeGameList.doOnPreDraw {
             if (mBinding.rvHomeGameList.scrollState == RecyclerView.SCROLL_STATE_IDLE) {
                 subscribeVisibleMatch()
@@ -393,16 +403,15 @@ class EarlyMatchListPagerFragment :
                 when (it) {
                     DataState.NetworkUnavailable, HomeState.Match.LoadNextFailure -> {}
 
-                    HomeState.Match.PrevDataEmpty -> {
+                    HomeState.Match.DataEmpty -> {
 
                     }
 
-                    HomeState.Match.PrevNoMoreData -> {
+                    DataState.NoMoreData -> {
                         mViewModel.changePrevPageEnd(true)
                     }
 
                     HomeState.Match.Loading -> {
-                        mViewModel.changeState(HomeState.Match.Loading)
                     }
 
                     DataState.LoadSuccess, HomeState.Match.LoadSuccess -> {
