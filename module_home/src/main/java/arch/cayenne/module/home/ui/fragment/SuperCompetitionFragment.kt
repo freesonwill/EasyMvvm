@@ -10,6 +10,7 @@ import android.widget.LinearLayout
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.common.ui.viewmodel.observeEvent
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getColor
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getDrawable
@@ -24,7 +25,6 @@ import arch.cayenne.module.home.data.constants.SportType
 import arch.cayenne.module.home.databinding.FragmentSuperCompetitionBinding
 import arch.cayenne.module.home.databinding.ItemDateTabBinding
 import arch.cayenne.module.home.ui.adapter.SportBannerAdapter
-import arch.cayenne.module.home.ui.fragment.BiDirectionalMatchListPagerFragment.Companion
 import arch.cayenne.module.home.ui.viewmodel.EarlyDate
 import arch.cayenne.module.home.ui.viewmodel.EarlyDateType
 import arch.cayenne.module.home.ui.viewmodel.SuperCompetitionViewModel
@@ -69,6 +69,11 @@ class SuperCompetitionFragment :
                 mViewModel.selectedDate(it.first().timestamp)
             }
         }
+
+        mViewModel.tournaments.observeEvent(viewLifecycleOwner, this) { comboList ->
+            startObservePageMatchListChange()
+        }
+
     }
 
     override fun initData() {
@@ -157,6 +162,7 @@ class SuperCompetitionFragment :
             tvLevelUpInfo.text = levelUpInfo
         }
     }
+
 
     private fun addDateTabListener() {
         mBinding.tlDateList.addOnTabSelectedListener2(object :
@@ -317,6 +323,19 @@ class SuperCompetitionFragment :
                     .commitNow()
             }
 
+    }
+
+
+    /**
+     *
+     * */
+    private fun startObservePageMatchListChange() {
+        val fragment =
+            childFragmentManager.findFragmentByTag(BiDirectionalMatchListPagerFragment.TAG)
+                ?: return
+        if (fragment is BiDirectionalMatchListPagerFragment) {
+            fragment.startObserveMatchListChange()
+        }
     }
 
     override fun onFragmentSelected() {

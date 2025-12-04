@@ -12,6 +12,7 @@ import arch.cayenne.lib.common.ui.viewmodel.Event
 import arch.cayenne.lib.common.utils.ext.VIPDataExt
 import arch.cayenne.lib.skin.SkinnableManager
 import arch.cayenne.module.home.R
+import arch.cayenne.module.home.TournamentCombo
 import arch.cayenne.module.home.data.constants.HomeState
 import arch.cayenne.module.home.data.constants.PlayType
 import arch.cayenne.module.home.data.constants.playTypeToShowType
@@ -69,6 +70,9 @@ class SuperCompetitionViewModel : BaseViewModel() {
     private val skinManager: SkinnableManager by inject { parametersOf(viewModelScope) }
     private val _selectedSkinType = MutableLiveData<Event<String>>()
     val selectedSkinType: LiveData<Event<String>> = _selectedSkinType
+
+    val tournaments by lazy { MutableLiveData<Event<List<TournamentCombo>>>() } // 今日/早盤
+
 
 
     init {
