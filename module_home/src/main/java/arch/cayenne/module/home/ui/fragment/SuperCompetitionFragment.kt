@@ -27,6 +27,7 @@ import arch.cayenne.module.home.data.constants.SportType
 import arch.cayenne.module.home.databinding.FragmentSuperCompetitionBinding
 import arch.cayenne.module.home.databinding.ItemDateTabBinding
 import arch.cayenne.module.home.ui.adapter.SportBannerAdapter
+import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
 import arch.cayenne.module.home.ui.viewmodel.SuperCompetitionViewModel
 import arch.cayenne.module.home.utils.scrollToPositionWithoutAnim
 import com.google.android.material.tabs.TabLayout
@@ -72,6 +73,11 @@ class SuperCompetitionFragment :
 
         mViewModel.tournaments.observeEvent(viewLifecycleOwner, this) { comboList ->
             startObservePageMatchListChange()
+        }
+
+        mViewModel.displayDate.observe(viewLifecycleOwner) { display ->
+            if (display.timestamp == HomeViewModel.DEFAULT_DATE) return@observe
+            showSelectedDateTab(mViewModel.getDisplayDateIndex(display.timestamp))
         }
 
     }
