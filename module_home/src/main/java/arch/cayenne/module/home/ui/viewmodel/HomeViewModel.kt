@@ -58,18 +58,22 @@ class HomeViewModel : BaseViewModel() {
     val notifyToChampion: LiveData<Event<Unit>> = _notifyToChampion
 
     //监听语言切换，对没有设置自动切换语言的view及时更新
-    val languageManager:LanguageManager by inject()
+    val languageManager: LanguageManager by inject()
 
     private val _notifySubHomeRefresh = MutableLiveData<Event<Unit>>()
     val notifySubHomeRefresh: LiveData<Event<Unit>> = _notifySubHomeRefresh
 
     val playTypeClickRecord = hashMapOf<Int, Long>()  //HashMap<PlayTypeId, RecordTime>
 
+    //分类列表触发广告位收起动画  true 为收起 false 为展开
+    private val _scroll = MutableLiveData<Boolean>()
+    val scroll: LiveData<Boolean> = _scroll
+
 
     init {
         viewModelScope.launch {
             _currentPlayTypeId.collect {
-                when(it) {
+                when (it) {
                     PlayType.TODAY.id -> _playTypeIndexChange.value = Event(0)
                     PlayType.EARLY.id -> _playTypeIndexChange.value = Event(1)
                     PlayType.CHAMPION.id -> _playTypeIndexChange.value = Event(2)
@@ -84,7 +88,6 @@ class HomeViewModel : BaseViewModel() {
             }
         }
     }
-
 
 
     override fun initViewModel() {
@@ -140,10 +143,17 @@ class HomeViewModel : BaseViewModel() {
     fun resetPageSelectedTimestamp(playTypeId: Int): Boolean {
         val refreshInternal = playTypeId.getPlayTypeById().refreshInterval
         val pageSelectedTimestamp = playTypeClickRecord[playTypeId] ?: 0L
-        val isNeedRefresh = pageSelectedTimestamp != 0L && System.currentTimeMillis() - pageSelectedTimestamp > refreshInternal
+        val isNeedRefresh =
+            pageSelectedTimestamp != 0L && System.currentTimeMillis() - pageSelectedTimestamp > refreshInternal
         "currentPlayTypeId = ${playTypeId}  isNeedRefresh = $isNeedRefresh  pageSelectedTimestamp = ${pageSelectedTimestamp}".logi()
         playTypeClickRecord[playTypeId] = System.currentTimeMillis()
         return isNeedRefresh
+    }
+
+    fun setScroll(bool: Boolean) {
+        if (bool != scroll.value) {
+            _scroll.value = bool
+        }
     }
 
     private fun stopTimer() {

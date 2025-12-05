@@ -1,22 +1,14 @@
 package arch.cayenne.module.home.ui.fragment
 
-import android.graphics.Color
-import android.graphics.Outline
-import android.graphics.Paint
-import android.graphics.Path
-import android.graphics.RectF
 import android.graphics.Typeface
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams
-import android.view.ViewOutlineProvider
 import android.widget.TextView
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.os.bundleOf
-import androidx.core.view.doOnLayout
 import androidx.fragment.app.viewModels
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
@@ -57,9 +49,6 @@ import arch.cayenne.module.home.ui.adapter.SubHomePagerAdapter
 import arch.cayenne.module.home.ui.view.HomeTabMediator
 import arch.cayenne.module.home.ui.view.PromoTab
 import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
-import com.google.android.material.shape.CornerFamily
-import com.google.android.material.shape.MaterialShapeDrawable
-import com.google.android.material.shape.ShapeAppearanceModel
 import com.google.android.material.tabs.TabLayout
 import kotlin.reflect.KClass
 
@@ -424,6 +413,14 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
         }
 
         unreadMessageViewModel.createObserver()
+
+        mViewModel.scroll.observe(viewLifecycleOwner){
+            if (it){ //收起
+                mBinding.homeBarIcon.marginEndAnim()
+            }else{ //展开
+                mBinding.homeBarIcon.marginStartAnim()
+            }
+        }
 
     }
 
