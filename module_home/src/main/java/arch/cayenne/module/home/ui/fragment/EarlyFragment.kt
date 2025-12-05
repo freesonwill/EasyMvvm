@@ -19,8 +19,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import androidx.viewpager2.widget.ViewPager2.SCROLL_STATE_IDLE
+import arch.cayenne.lib.base.ui.animation.CustomCurveTransformer
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
+import arch.cayenne.lib.common.ui.adapter.BannerImageMatchAdapter
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
@@ -52,7 +54,6 @@ import arch.cayenne.module.home.databinding.ItemDateTabBinding
 import arch.cayenne.module.home.databinding.ItemLeagueTabBinding
 import arch.cayenne.module.home.databinding.LayoutTournamentSortingMenuBinding
 import arch.cayenne.module.home.ui.adapter.LeaguePagerAdapter
-import arch.cayenne.module.home.ui.adapter.SportBannerAdapter
 import arch.cayenne.module.home.ui.adapter.SportsListAdapter
 import arch.cayenne.module.home.ui.view.CustomTabLayoutMediator
 import arch.cayenne.module.home.ui.viewmodel.EarlyViewModel
@@ -308,34 +309,30 @@ class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>(),
     // init Sport Banner 輪播區塊
     @SuppressLint("ClickableViewAccessibility")
     private fun initSportBanner() {
-        val mockBannerList = arrayListOf(
-            arch.cayenne.module.home.data.SportBannerData(R.drawable.banner_ad1),
-            arch.cayenne.module.home.data.SportBannerData(R.drawable.banner_ad1),
-            arch.cayenne.module.home.data.SportBannerData(R.drawable.banner_ad1),
-            arch.cayenne.module.home.data.SportBannerData(R.drawable.banner_ad1),
-            arch.cayenne.module.home.data.SportBannerData(R.drawable.banner_ad1),
+        val mockBannerList = listOf(
+            R.drawable.banner_ad1,
+           R.drawable.banner_ad1,
+            R.drawable.banner_ad1,
+            R.drawable.banner_ad1,
+            R.drawable.banner_ad1,
         )
-        val bannerAdapter = SportBannerAdapter()
-
         with(mBinding.includeSportBanner) {
-            vpSportBanner.adapter = bannerAdapter
-            bannerAdapter.submitList(mockBannerList)
-            vpSportBanner.isUserInputEnabled = true
-            vpSportBanner.getChildAt(0).setOnTouchListener { v, event ->
-                v.parent.requestDisallowInterceptTouchEvent(true)
-                false
-            }
-
-            vpSportBanner.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-                override fun onPageSelected(position: Int) {
-                    super.onPageSelected(position)
-                    pbSportBanner.resetTriggerJob()
-                }
-            })
             pbSportBanner.setTriggerListener {
-                vpSportBanner.currentItem =
-                    (vpSportBanner.currentItem + 1) % bannerAdapter.itemCount
+                vpSportBanner.setLoopTime(50)
+                vpSportBanner.isAutoLoop(true)
+                vpSportBanner.start()
+                vpSportBanner.postDelayed({
+                    vpSportBanner.stop()                    // 停止自动轮播
+                    vpSportBanner.isAutoLoop(false)         // 关闭自动轮播功能 // 可选：允许下次再次触发
+                }, 50)
             }
+            val adapter = BannerImageMatchAdapter(mockBannerList)
+            vpSportBanner.setAdapter(adapter)
+            vpSportBanner.setBannerRound(9.dp2px.toFloat())
+            vpSportBanner.isAutoLoop(false)
+            // 设置滑动时长丝滑,不影响曲线,
+            vpSportBanner.setScrollTime(600)  // 0.6 秒
+            vpSportBanner.setPageTransformer(CustomCurveTransformer())
         }
     }
 
