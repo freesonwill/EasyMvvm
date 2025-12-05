@@ -3,7 +3,6 @@ package arch.cayenne.module.chat.ui.fragment
 import android.animation.AnimatorSet
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.text.TextWatcher
 import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.View
@@ -42,6 +41,7 @@ import java.util.regex.Pattern
 import kotlin.reflect.KClass
 import arch.cayenne.module.chat.manager.ChatATHelper
 import arch.cayenne.module.chat.manager.SoftKeyBoardAnim
+import arch.cayenne.module.chat.manager.SoftKeyBoardAnim.getInputAnim
 
 //聊天
 class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding>(),
@@ -332,11 +332,14 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
             chatAtHelper = ChatATHelper(
                 viewLifecycleOwner.lifecycleScope,
                 requireContext(),
-                chatEtInput,
-                childFragmentManager
+                chatEtInput
             )
             chatAtHelper.initChatEtInput(mViewModel.languageManager.getLanguage()) {
                 sendText()
+            }
+
+            chatAtHelper.etWatchListen = {
+                etContentChangeAnim()
             }
         }
     }
@@ -392,16 +395,6 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
      * 发送消息
      * */
     private fun sendText() {
-//        val text: String = mBinding.chatEtInput.text?.toString() ?: ""
-//        if (text.isEmpty()) {
-//            return
-//        }
-//        mBinding.chatEtInput.text?.clear()
-//        if (mViewModel.currentKeyBoardType == KeyBoardType.CHAT) {
-//            resetInputUi()
-//        }
-//        keyboardChangeClick(KeyBoardType.CHAT, 7)
-//        mViewModel.sendMsgToChat(text)
         if (mBinding.chatEtInput.text == null || mBinding.chatEtInput.length() == 0) {
             return
         }
@@ -422,12 +415,12 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
                     true,
                     mBinding.ivAt,
                     mBinding.ivBet,
-                    mBinding.ivEmoji
+                    mBinding.ivEmoji,
+                    mBinding.ivLanguage
                 )
             )
             addListener(onStart = {
                 updateInputIcon(true)
-                mBinding.ivLanguage.isVisible = true
             })
             start()
         }
@@ -473,7 +466,6 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
 
     private fun updateKeyboardView(isVisible: Boolean) {
         mBinding.apply {
-            ivLanguage.isVisible = !isVisible && chatEtInput.length() == 0
         }
     }
 
@@ -482,10 +474,10 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
             ivAt.isVisible = isVisible
             ivBet.isVisible = isVisible
             ivEmoji.isVisible = isVisible
+            ivLanguage.isVisible = isVisible
             ivBottomAt.isVisible = !isVisible
             ivBottomBet.isVisible = !isVisible
             ivBottomEmoji.isVisible = !isVisible
-            chatTvSend.isVisible = !isVisible
         }
     }
 
@@ -524,6 +516,53 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
         mViewModel.currentKeyBoardType = keyBoardType
     }
 
+    private fun etContentChangeAnim() {
+        mBinding.apply {
+            when {
+                chatEtInput.length() == 0 && chatTvSend.isVisible -> { //有内容到无内容
+                    SoftKeyBoardAnim.etInputContentAnim(
+                        true,
+                        mViewModel.currentKeyBoardType,
+                        chatLlInput,
+                        chatTvSend
+                    ).apply {
+                        duration = 170L
+                        addListener(onEnd = {
+                            chatTvSend.isVisible = false
+                            " = 0 chatTvSend ${chatTvSend.alpha}  ${chatTvSend.isVisible}".logd("aaa")
+                        })
+                        start()
+                    }
+                }
+
+                chatEtInput.length() > 0 && !chatTvSend.isVisible -> { //无内容到有内容
+                    SoftKeyBoardAnim.etInputContentAnim(
+                        false,
+                        mViewModel.currentKeyBoardType,
+                        chatLlInput,
+                        chatTvSend
+                    ).apply {
+                        duration = 170L
+                        addListener(onStart = {
+                            chatTvSend.isVisible = true
+                            " != 0 chatTvSend ${chatTvSend.alpha}  ${chatTvSend.isVisible}".logd("aaa")
+
+                        })
+                        start()
+                    }
+                }
+
+                else -> {
+
+                }
+            }
+        }
+
+    }
+
+    /**
+     *表情动画输入框动画
+     * */
     override fun startAnim(
         actionType: KeyboardActionType,
         offset: Int,
@@ -536,18 +575,23 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
             val emojiSet = AnimatorSet().apply {
                 duration = 170L
                 inputIconShouldUpdate(actionType, call = {
-                    if (mBinding.chatEtInput.length() == 0) {
-                        playTogether(
-                            mainTransYAnim,
-                            *SoftKeyBoardAnim.inputIconAnim(
-                                offset == 0,
-                                mBinding.ivAt,
-                                mBinding.ivBet,
-                                mBinding.ivEmoji
+                    mBinding.apply {
+                        if (chatEtInput.length() == 0) { //有内容时input按钮不能上下移动
+                            playTogether(
+                                mainTransYAnim,
+                                getInputAnim(
+                                    actionType,
+                                    offset,
+                                    ivAt,
+                                    ivBet,
+                                    ivEmoji,
+                                    ivLanguage,
+                                    chatLlInput
+                                )
                             )
-                        )
-                    } else {
-                        play(mainTransYAnim)
+                        } else {
+                            play(mainTransYAnim)
+                        }
                     }
                 }, elCall = {
                     play(mainTransYAnim)
@@ -563,13 +607,13 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
 
             mainAnim?.addListener(onStart = {
                 inputIconShouldUpdate(actionType, call = {
-                    updateInputIcon(true)
+                    updateInputIcon(true) //初始动画时要input bt可见
                 })
 
                 onStart.invoke()
             }, onEnd = {
                 inputIconShouldUpdate(actionType, call = {
-                    updateInputIcon(offset == 0)
+                    updateInputIcon(offset == 0) //根据上下移判断是否隐藏input bt
                 })
                 onEnd.invoke()
             })
