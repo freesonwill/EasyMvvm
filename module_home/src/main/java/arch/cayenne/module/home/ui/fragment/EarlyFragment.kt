@@ -41,6 +41,8 @@ import arch.cayenne.lib.database.entity.TournamentDataModel
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.module.home.R
 import arch.cayenne.module.home.TournamentCombo
+import arch.cayenne.module.home.data.BiDirectionalDate
+import arch.cayenne.module.home.data.BiDirectionalDateType
 import arch.cayenne.module.home.data.constants.HomeState
 import arch.cayenne.module.home.data.constants.TournamentListType
 import arch.cayenne.module.home.data.constants.TournamentSortType
@@ -52,8 +54,6 @@ import arch.cayenne.module.home.ui.adapter.LeaguePagerAdapter
 import arch.cayenne.module.home.ui.adapter.SportBannerAdapter
 import arch.cayenne.module.home.ui.adapter.SportsListAdapter
 import arch.cayenne.module.home.ui.view.CustomTabLayoutMediator
-import arch.cayenne.module.home.ui.viewmodel.EarlyDate
-import arch.cayenne.module.home.ui.viewmodel.EarlyDateType
 import arch.cayenne.module.home.ui.viewmodel.EarlyViewModel
 import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
 import arch.cayenne.module.home.utils.scrollToPositionWithoutAnim
@@ -254,7 +254,7 @@ class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>(),
             leaguePagerAdapter?.getItemId(mBinding.layoutContainer.vpGameList.currentItem)
                 ?: return
         val fragment = childFragmentManager.findFragmentByTag("f$itemId") ?: return
-        (fragment as? EarlyMatchListPagerFragment)?.reloadAllData()
+        (fragment as? BiDirectionalMatchListPagerFragment)?.reloadAllData()
     }
 
     // 設置更多按鈕的顯示狀態
@@ -484,7 +484,7 @@ class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>(),
         val currentPosition = position
         val itemId = leaguePagerAdapter?.getItemId(currentPosition) ?: return
         val fragment = childFragmentManager.findFragmentByTag("f$itemId") ?: return
-        if (fragment is EarlyMatchListPagerFragment) {
+        if (fragment is BiDirectionalMatchListPagerFragment) {
             fragment.startObserveMatchListChange()
         }
         //如果記憶體過低，就不做預載左右兩頁
@@ -495,7 +495,7 @@ class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>(),
         if (currentPosition - 1 >= 0) {
             leaguePagerAdapter?.getItemId(currentPosition - 1)?.also { preItemId ->
                 childFragmentManager.findFragmentByTag("f$preItemId").also { preFragment ->
-                    if (preFragment is EarlyMatchListPagerFragment) {
+                    if (preFragment is BiDirectionalMatchListPagerFragment) {
                         preFragment.startObserveMatchListChange()
                     }
                 }
@@ -505,7 +505,7 @@ class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>(),
         if (currentPosition + 1 < (mBinding.layoutContainer.vpGameList.adapter?.itemCount ?: 0)) {
             leaguePagerAdapter?.getItemId(currentPosition + 1)?.also { preItemId ->
                 childFragmentManager.findFragmentByTag("f$preItemId").also { preFragment ->
-                    if (preFragment is EarlyMatchListPagerFragment) {
+                    if (preFragment is BiDirectionalMatchListPagerFragment) {
                         preFragment.startObserveMatchListChange()
                     }
                 }
@@ -783,7 +783,7 @@ class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>(),
 
     private fun updateDateTabs(
         tlDateList: TabLayout,
-        dateTabs: List<EarlyDate>
+        dateTabs: List<BiDirectionalDate>
     ) {
         tlDateList.apply {
             removeAllTabs()
@@ -795,10 +795,10 @@ class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>(),
         }
     }
 
-    private fun createDateTab(date: String?, weekday: String?, type: EarlyDateType): TabLayout.Tab {
+    private fun createDateTab(date: String?, weekday: String?, type: BiDirectionalDateType): TabLayout.Tab {
         val tab = mBinding.tlDateList.newTab()
         val tabView = ItemDateTabBinding.inflate(LayoutInflater.from(context), null, false).apply {
-            if (type == EarlyDateType.Date) {
+            if (type == BiDirectionalDateType.Date) {
                 tvDate.visibility = View.VISIBLE
                 tvDate.text = date
                 tvWeekDay.visibility = View.VISIBLE

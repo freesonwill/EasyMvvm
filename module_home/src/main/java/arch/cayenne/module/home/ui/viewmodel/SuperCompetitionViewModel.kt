@@ -1,29 +1,50 @@
 package arch.cayenne.module.home.ui.viewmodel
 
 import android.app.Application
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
+import arch.cayenne.lib.base.data.constants.DataState
+import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
+import arch.cayenne.lib.common.data.constants.SportEnum
 import arch.cayenne.lib.common.ui.viewmodel.Event
-import arch.cayenne.lib.database.entity.BaseTournamentData
-import arch.cayenne.lib.database.entity.ChampionTournamentDataModel
-import arch.cayenne.lib.database.entity.TournamentDataModel
+import arch.cayenne.lib.common.utils.ext.VIPDataExt
+import arch.cayenne.lib.skin.SkinnableManager
 import arch.cayenne.module.home.R
+import arch.cayenne.module.home.TournamentCombo
 import arch.cayenne.module.home.data.BiDirectionalDate
 import arch.cayenne.module.home.data.BiDirectionalDateType
+import arch.cayenne.module.home.data.constants.HomeState
 import arch.cayenne.module.home.data.constants.PlayType
 import arch.cayenne.module.home.data.constants.playTypeToShowType
+import arch.cayenne.module.home.data.repo.HomeRepository
 import arch.cayenne.module.home.utils.DateUtils
 import arch.cayenne.module.home.utils.DateUtils.isSameDay
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.koin.core.component.inject
+import org.koin.core.parameter.parametersOf
 import org.koin.java.KoinJavaComponent
 import plugin.koin.KoinViewModel
 import java.util.Locale
 
 @KoinViewModel
-class EarlyViewModel : SubHomeViewModel() {
+class SuperCompetitionViewModel : BaseViewModel() {
+
+    val repository: HomeRepository by inject()
+
+    var currentPlayTypeId: Int = PlayType.EARLY.id
+        private set
+
+    val _currentSportId: MutableStateFlow<Int> = MutableStateFlow(SportEnum.Default.id)
+    val currentSportId: Int
+        get() = _currentSportId.value
+
+    private val _currentSportIdChange = MutableLiveData<Event<Int>>()
+    val currentSportIdChange: LiveData<Event<Int>> = _currentSportIdChange
 
     private val _dateList = MutableLiveData<List<BiDirectionalDate>>()
 
@@ -42,6 +63,18 @@ class EarlyViewModel : SubHomeViewModel() {
     private val _displayDate = MutableLiveData<BiDirectionalDate>()
 
     val displayDate: MutableLiveData<BiDirectionalDate> = _displayDate
+
+    // VIP 等級數據
+    private val _vipLevel = MutableLiveData<Long>()
+    val vipLevel: LiveData<Long> = _vipLevel
+
+    private val skinManager: SkinnableManager by inject { parametersOf(viewModelScope) }
+    private val _selectedSkinType = MutableLiveData<Event<String>>()
+    val selectedSkinType: LiveData<Event<String>> = _selectedSkinType
+
+    val tournaments by lazy { MutableLiveData<Event<List<TournamentCombo>>>() } // 今日/早盤
+
+
 
     init {
         val futureDays = DateUtils.getFutureDays(
@@ -71,6 +104,44 @@ class EarlyViewModel : SubHomeViewModel() {
 
     override fun initViewModel() {
         super.initViewModel()
+        viewModelScope.launch {
+            skinManager.skinFlow.collect {
+                _selectedSkinType.value = Event(it)
+            }
+        }
+
+
+        // 監聽 VIP 等級變化
+        viewModelScope.launch(Dispatchers.IO) {
+            VIPDataExt.observeVIPLevel().collect { level ->
+                withContext(Dispatchers.Main) {
+                    _vipLevel.value = level
+                }
+            }
+        }
+
+        viewModelScope.launch(Dispatchers.IO) {
+            _currentSportId.collect {
+                launch(Dispatchers.Main) {
+                    _currentSportIdChange.value = Event(it)
+                }
+            }
+        }
+
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.observeLoginChange()
+                .filter {
+                    it && (!repository.isPreloadSuccess()
+                            || apiStateListener.value == DataState.NetworkUnavailable
+                            || apiStateListener.value == HomeState.Sport.LoadFailure
+                            || apiStateListener.value == HomeState.Tournament.LoadFailure)
+                }
+                .collect {
+                    launch(Dispatchers.Main) {
+
+                    }
+                }
+        }
     }
 
     suspend fun selectedDate(date: Long) {
@@ -88,63 +159,39 @@ class EarlyViewModel : SubHomeViewModel() {
     }
 
     //切換當前的二級選項(各項運動)
-    override fun setCurrentSport(sportId: Int) {
+    fun setCurrentSport(sportId: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             launch(Dispatchers.Main) {
                 _selectedDate.value =
                     Event(HomeViewModel.DEFAULT_DATE)  //先送出一個初始值，避免MatchListPage生成時會拿到舊值先拿取資料
             }
             _currentSportId.value = sportId
-            repository.updateSelectedSportId(currentPlayTypeId, currentSportId)
-            if (currentPlayTypeId != PlayType.CHAMPION.id) {
-                "On setCurrentSport -> Clear Tournaments LiveData & Update Tournaments from API".logi(
-                    this::class.java.simpleName
-                )
-                getCurrentTournament()
-            }
         }
     }
-
-
-    override fun onTournamentListSelected(tournament: BaseTournamentData) {
-        // 標記外部tab已切換，下次打開彈窗時需要清空篩選
-        hasTournamentTabSwitched = true
-
-        if (tournament is TournamentDataModel) {
-            val currentList = tournaments.value?.peekContent() ?: return
-            setCurrentTournamentIdList(listOf(tournament.id))
-            currentList.forEach { tournamentCombo ->
-                tournamentCombo.isSelected = false
-            }
-        } else if (tournament is ChampionTournamentDataModel) {
-            _navigateToChampion.value = Event(tournament)
-        }
-    }
-
 
     fun setDisplayDate(date: BiDirectionalDate) {
         _displayDate.value = date
     }
 
     fun getDisplayDate(timeStamp: Long): BiDirectionalDate? {
-        var biDirectionalDate = dateList.value?.firstOrNull { isSameDay( it.timestamp , timeStamp) }
+        var earlyDate = dateList.value?.firstOrNull { isSameDay(it.timestamp, timeStamp) }
 
-        if (biDirectionalDate == null) {
+        if (earlyDate == null) {
             dateList.value?.let {
                 if (it.isNotEmpty() && timeStamp > it.last().timestamp) {
-                    biDirectionalDate = it.last()
+                    earlyDate = it.last()
                 }
             }
         }
 
-        return biDirectionalDate
+        return earlyDate
     }
 
     /*
     *根据传入的时间戳， 转换成dateTab的index
      */
     fun getDisplayDateIndex(timestamp: Long): Int? {
-        var index = dateList.value?.indexOfFirst { isSameDay( it.timestamp , timestamp) }
+        var index = dateList.value?.indexOfFirst { isSameDay(it.timestamp, timestamp) }
 
         if (index == -1) {
             dateList.value?.let {
@@ -157,5 +204,30 @@ class EarlyViewModel : SubHomeViewModel() {
         return index
     }
 
+    fun getTournamentsName(tournamentId: List<Int>): String {
+
+//        val stringList = mutableListOf<String>()
+//        tournamentId.forEach { id ->
+//            val tournamentCombo =
+//                tournaments.value?.peekContent()?.firstOrNull { it.containsTournament(id) }
+//
+//            stringList.add(tournamentCombo?.getTournamentName(id) ?: "")
+//        }
+//
+//        return stringList.joinToString(separator = "/")
+
+        return ""
+    }
+
 }
 
+data class Date(
+    val dateStr: String,
+    val weekdayStr: String,
+    val timestamp: Long,
+    val type: DateType
+)
+
+enum class DateType {
+    Date, Other
+}

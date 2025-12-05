@@ -103,6 +103,7 @@ class MatchListRepository(
                 //早盘
                 val tournamentMatchRefs = resp.data!!.matchList.mapIndexed { index, match ->
                     EarlyTournamentMatchRef(
+                        playType = playType,
                         tournamentIdList = tournamentIdList,
                         date = date,
                         matchId = match.matchId,
@@ -176,14 +177,17 @@ class MatchListRepository(
     /**
      * 观察早盘比赛
      */
-    fun observeEarlyMatchChange(tournamentIdList: List<Int>): Flow<List<EarlyTournamentMatchRef>> {
+    fun observeEarlyMatchChange(
+        playType: Int,
+        tournamentIdList: List<Int>
+    ): Flow<List<EarlyTournamentMatchRef>> {
         //觀察後端的500-1002（获取比赛列表）回傳
-        return matchDao.observeEarlyMatchChange(tournamentIdList)
+        return matchDao.observeEarlyMatchChange(playType, tournamentIdList)
     }
 
     suspend fun queryMatchChange(playType: Int, tournamentIdList: List<Int>): List<TournamentMatchRef> =
         matchDao.queryMatchChange(playType, tournamentIdList)
 
-    suspend fun queryEarlyMatchChange(tournamentIdList: List<Int>): List<EarlyTournamentMatchRef> =
-        matchDao.queryEarlyMatchChange(tournamentIdList)
+    suspend fun queryEarlyMatchChange(playType: Int, tournamentIdList: List<Int>): List<EarlyTournamentMatchRef> =
+        matchDao.queryEarlyMatchChange(playType, tournamentIdList)
 }

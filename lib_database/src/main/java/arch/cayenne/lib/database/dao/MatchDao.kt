@@ -54,7 +54,11 @@ abstract class MatchDao : BaseDao<MatchBean>() {
                 "INNER JOIN TournamentMatchRef ref ON ref.playType = :playType AND ref.tournamentIdList = :tournamentIdList AND ref.date = :date " +
                 "WHERE ref.matchId = bean.matchId ORDER BY ref.`order` DESC limit 1"
     )
-    abstract suspend fun queryLastMatch(playType: Int, tournamentIdList: List<Int>, date: Long): MatchBean?
+    abstract suspend fun queryLastMatch(
+        playType: Int,
+        tournamentIdList: List<Int>,
+        date: Long
+    ): MatchBean?
 
     @Transaction
     @Query(
@@ -63,7 +67,11 @@ abstract class MatchDao : BaseDao<MatchBean>() {
                 "INNER JOIN TournamentMatchRef ref ON ref.playType = :playType AND ref.tournamentIdList = :tournamentIdList AND ref.date = :date " +
                 "WHERE ref.matchId = bean.matchId ORDER BY ref.`order` asc limit 1"
     )
-    abstract suspend fun queryFirstMatch(playType: Int, tournamentIdList: List<Int>, date: Long): MatchBean?
+    abstract suspend fun queryFirstMatch(
+        playType: Int,
+        tournamentIdList: List<Int>,
+        date: Long
+    ): MatchBean?
 
 
     @Transaction
@@ -101,9 +109,10 @@ abstract class MatchDao : BaseDao<MatchBean>() {
     @Query(
         "SELECT *" +
                 "FROM EarlyTournamentMatchRef " +
-                "WHERE   tournamentIdList = :tournamentIdList  ORDER BY date asc, `order` asc"
+                "WHERE   playType = :playType AND tournamentIdList = :tournamentIdList  ORDER BY date asc, `order` asc"
     )
     abstract fun observeEarlyMatchChange(
+        playType: Int,
         tournamentIdList: List<Int>
     ): Flow<List<EarlyTournamentMatchRef>>
 
@@ -120,9 +129,10 @@ abstract class MatchDao : BaseDao<MatchBean>() {
     @Query(
         "SELECT *" +
                 "FROM EarlyTournamentMatchRef " +
-                "WHERE tournamentIdList = :tournamentIdList  ORDER BY date asc, `order` asc"
+                "WHERE playType = :playType AND tournamentIdList = :tournamentIdList  ORDER BY date asc, `order` asc"
     )
     abstract suspend fun queryEarlyMatchChange(
+        playType: Int,
         tournamentIdList: List<Int>
     ): List<EarlyTournamentMatchRef>
 
@@ -132,15 +142,23 @@ abstract class MatchDao : BaseDao<MatchBean>() {
                 "FROM TournamentMatchRef " +
                 "WHERE playType = :playType AND tournamentIdList = :tournamentIdList AND date = :date"
     )
-    abstract fun deleteCurrentTournamentMatchRef(playType: Int, tournamentIdList: List<Int>, date: Long)
+    abstract fun deleteCurrentTournamentMatchRef(
+        playType: Int,
+        tournamentIdList: List<Int>,
+        date: Long
+    )
 
     @Transaction
     @Query(
         "delete " +
                 "FROM EarlyTournamentMatchRef " +
-                "WHERE tournamentIdList = :tournamentIdList AND date = :date"
+                "WHERE playType = :playType AND tournamentIdList = :tournamentIdList AND date = :date"
     )
-    abstract fun deleteCurrentEarlyTournamentMatchRef(tournamentIdList: List<Int>, date: Long)
+    abstract fun deleteCurrentEarlyTournamentMatchRef(
+        playType: Int,
+        tournamentIdList: List<Int>,
+        date: Long
+    )
 
     @Transaction
     @Query("SELECT * FROM MatchBean WHERE matchId = :matchId")
@@ -356,7 +374,7 @@ abstract class MatchDao : BaseDao<MatchBean>() {
         isForce: Boolean,
     ): List<Long> {
         if (isForce) {
-            deleteCurrentEarlyTournamentMatchRef(tournamentIdList, date)
+            deleteCurrentEarlyTournamentMatchRef(playType, tournamentIdList, date)
         }
         return insertEarlyMatch(
             tournamentMatchRefs = tournamentMatchRefs,
