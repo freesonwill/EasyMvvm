@@ -6,7 +6,7 @@ import arch.cayenne.module.betslip.databinding.FragmentOrderDateCustomBinding
 import arch.cayenne.module.order.ui.viewmodel.OrderDateCustomViewModel
 import kotlin.reflect.KClass
 
-class OrderDateCustomFragment: BaseFragment<OrderDateCustomViewModel, FragmentOrderDateCustomBinding>() {
+class OrderDateCustomFragment: BaseFragment<OrderDateCustomViewModel, FragmentOrderDateCustomBinding>(), OrderDataPage {
 
     override val vbClass: KClass<FragmentOrderDateCustomBinding> = FragmentOrderDateCustomBinding::class
     override val vmClass: KClass<OrderDateCustomViewModel> = OrderDateCustomViewModel::class
@@ -21,5 +21,9 @@ class OrderDateCustomFragment: BaseFragment<OrderDateCustomViewModel, FragmentOr
 
     override suspend fun createObserver() {
 
+    }
+
+    override fun getResult(): LongArray {
+        return longArrayOf(0, 0)
     }
 }

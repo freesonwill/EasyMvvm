@@ -8,7 +8,6 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import arch.cayenne.lib.base.ui.adapter.PagerAdapter
 import arch.cayenne.lib.base.ui.fragment.BaseBottomSheetFragment
-import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.TabLayoutExt
 import arch.cayenne.lib.common.utils.ext.TabLayoutExt.addOnTabSelectedListener2
 import arch.cayenne.lib.common.utils.ext.setupHorizontalScrollDegree
@@ -25,6 +24,8 @@ class OrderDateDialogFragment: BaseBottomSheetFragment<OrderDateDialogViewModel,
     override val vbClass: KClass<FragmentOrderDateDialogBinding> = FragmentOrderDateDialogBinding::class
     override val vmClass: KClass<OrderDateDialogViewModel> = OrderDateDialogViewModel::class
 
+    private var resultListener: ((Long, Long) -> Unit)? = null
+
     override fun initView(savedInstanceState: Bundle?) {
         initTabLayout()
         mBinding.viewPager.isHorizontalScrollBarEnabled = false
@@ -35,11 +36,25 @@ class OrderDateDialogFragment: BaseBottomSheetFragment<OrderDateDialogViewModel,
         mBinding.btnCancel.setOnClickListener {
             dismiss()
         }
+        mBinding.btnConfirm.setOnClickListener {
+            resultListener?.let {
+                val curIndex = mBinding.viewPager.currentItem
+                val f = childFragmentManager.findFragmentByTag("f$curIndex")
+                if (f is OrderDataPage) {
+                    val result = f.getResult()
+                    it.invoke(result[0], result[1])
+                }
+            }
+            dismiss()
+        }
     }
 
     override suspend fun createObserver() {
     }
 
+    fun setListener(listener: (Long, Long) -> Unit) {
+        resultListener = listener
+    }
 
     private fun initTabLayout() {
         val page = OrderDatePageEnum.entries.toTypedArray()
@@ -105,4 +120,8 @@ class OrderDateDialogFragment: BaseBottomSheetFragment<OrderDateDialogViewModel,
             }
         })
     }
+}
+
+interface OrderDataPage {
+    fun getResult(): LongArray
 }

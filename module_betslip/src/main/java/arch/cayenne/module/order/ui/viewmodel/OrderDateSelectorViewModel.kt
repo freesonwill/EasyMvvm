@@ -19,4 +19,16 @@ class OrderDateSelectorViewModel: BaseViewModel() {
             _customTimeListener.value = timeInMillis
         }
     }
+
+    fun getTimeBetweenOneDay(): LongArray {
+        calendar.set(Calendar.HOUR_OF_DAY, 0)
+        calendar.set(Calendar.MINUTE, 0)
+        calendar.set(Calendar.SECOND, 0)
+        val startTime = calendar.timeInMillis
+        calendar.set(Calendar.HOUR_OF_DAY, 23)
+        calendar.set(Calendar.MINUTE, 59)
+        calendar.set(Calendar.SECOND, 59)
+        val endTime = calendar.timeInMillis
+        return longArrayOf(startTime, endTime)
+    }
 }

@@ -8,7 +8,7 @@ import arch.cayenne.module.order.ui.viewmodel.OrderDateSelectorViewModel
 import java.util.Calendar
 import kotlin.reflect.KClass
 
-class OrderDateSelectorFragment: BaseFragment<OrderDateSelectorViewModel, FragmentOrderDateSelectorBinding>() {
+class OrderDateSelectorFragment: BaseFragment<OrderDateSelectorViewModel, FragmentOrderDateSelectorBinding>(), OrderDataPage {
 
     override val vbClass: KClass<FragmentOrderDateSelectorBinding> = FragmentOrderDateSelectorBinding::class
     override val vmClass: KClass<OrderDateSelectorViewModel> = OrderDateSelectorViewModel::class
@@ -106,5 +106,9 @@ class OrderDateSelectorFragment: BaseFragment<OrderDateSelectorViewModel, Fragme
         mBinding.dayPicker.displayedValues = null
         calendar.set(Calendar.DAY_OF_MONTH, newDay)
         initDayPicker(calendar)
+    }
+
+    override fun getResult(): LongArray {
+        return mViewModel.getTimeBetweenOneDay()
     }
 }

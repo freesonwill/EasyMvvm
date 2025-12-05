@@ -3,7 +3,6 @@ package arch.cayenne.module.order.ui.fragment
 import android.os.Bundle
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
-import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
 import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.database.entity.BetSlipOrderBean
 import arch.cayenne.module.betslip.R
@@ -36,8 +35,11 @@ class OrderSportPageFragment :
                 }
             }, object : OrderBettingAdapter.OrderDataSelectorListener {
                 override fun onDateClicked() {
-                    // TODO 測試
-                    OrderDateDialogFragment().show(childFragmentManager)
+                    val dialog = OrderDateDialogFragment()
+                    dialog.setListener { v1, v2 ->
+                        // TODO 用時間呼叫API
+                    }
+                    dialog.show(childFragmentManager)
                 }
             })
         } else {
