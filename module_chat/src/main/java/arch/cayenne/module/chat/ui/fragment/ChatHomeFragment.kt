@@ -529,7 +529,6 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
                         duration = 170L
                         addListener(onEnd = {
                             chatTvSend.isVisible = false
-                            " = 0 chatTvSend ${chatTvSend.alpha}  ${chatTvSend.isVisible}".logd("aaa")
                         })
                         start()
                     }
@@ -545,8 +544,6 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
                         duration = 170L
                         addListener(onStart = {
                             chatTvSend.isVisible = true
-                            " != 0 chatTvSend ${chatTvSend.alpha}  ${chatTvSend.isVisible}".logd("aaa")
-
                         })
                         start()
                     }
