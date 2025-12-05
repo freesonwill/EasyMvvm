@@ -1,7 +1,7 @@
 package com.walisport.module.topup.ui.adapter.compare
 
 import androidx.recyclerview.widget.DiffUtil
-import com.walisport.module.topup.data.entity.CoinBean
+import arch.cayenne.lib.database.entity.CoinBean
 
 class CoinCompare : DiffUtil.ItemCallback<CoinBean>() {
 

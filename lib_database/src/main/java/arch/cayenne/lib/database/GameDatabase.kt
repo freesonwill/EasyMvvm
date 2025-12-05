@@ -9,6 +9,7 @@ import arch.cayenne.lib.database.dao.BetDao
 import arch.cayenne.lib.database.dao.BetSlipOrderDao
 import arch.cayenne.lib.database.dao.BetSlipReserveDao
 import arch.cayenne.lib.database.dao.ChatConfigDao
+import arch.cayenne.lib.database.dao.CoinDao
 import arch.cayenne.lib.database.dao.CollectListDao
 import arch.cayenne.lib.database.dao.HomeSelectedDao
 import arch.cayenne.lib.database.dao.InfoDao
@@ -26,6 +27,7 @@ import arch.cayenne.lib.database.entity.BetSelectionBean
 import arch.cayenne.lib.database.entity.BetSlipOrderBean
 import arch.cayenne.lib.database.entity.BetSlipReserveBean
 import arch.cayenne.lib.database.entity.ChatConfigBean
+import arch.cayenne.lib.database.entity.CoinBean
 import arch.cayenne.lib.database.entity.CollectListBean
 import arch.cayenne.lib.database.entity.EarlyTournamentMatchRef
 import arch.cayenne.lib.database.entity.HomeSelectedBean
@@ -59,6 +61,7 @@ import arch.cayenne.lib.database.entity.TournamentMatchRef
         LiveVideoBean::class,
         HomeSelectedBean::class,
         SportBean::class,
+        CoinBean::class,
         SportTournamentCrossRef::class,
         TournamentBean::class,
         TournamentMatchRef::class,
@@ -121,6 +124,7 @@ abstract class GameDatabase: RoomDatabase() {
     abstract fun liveMatchDao(): LiveMatchDao
     abstract fun msgDao(): MessageDao
     abstract fun infoDao(): InfoDao
+    abstract fun coinDao(): CoinDao
     abstract fun betSlipOrderDao(): BetSlipOrderDao
     abstract fun betSlipReserveDao(): BetSlipReserveDao
     abstract fun homeSelectedDao(): HomeSelectedDao

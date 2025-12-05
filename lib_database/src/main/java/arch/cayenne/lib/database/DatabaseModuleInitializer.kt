@@ -18,6 +18,7 @@ class DatabaseModuleInitializer: DefaultInitializer<String> {
     private val daoModule = module {
         factory { get<GameDatabase>().infoDao() }
         factory { get<GameDatabase>().betDao() }
+        factory { get<GameDatabase>().coinDao() }
         factory { get<GameDatabase>().matchDao() }
         factory { get<GameDatabase>().liveVideoDao() }
         factory { get<GameDatabase>().marketTypeDao() }

@@ -14,8 +14,7 @@
         android:id="@+id/iv_logo_coin"
         android:layout_width="@dimen/dp_16"
         android:layout_height="@dimen/dp_16"
-        android:layout_marginEnd="4dp"
-        android:background="@drawable/icon_pay_usdt"/>
+        android:layout_marginEnd="4dp"/>
 
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/tv_name_coin"

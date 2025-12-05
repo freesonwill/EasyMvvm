@@ -63,4 +63,9 @@ class TopUpFragment : BaseFragment<TopUpViewModel, FragmentTopupBinding>() {
 
     override suspend fun createObserver() {
     }
+
+    override fun initData() {
+        super.initData()
+        mViewModel.getCurrencyList()
+    }
 }

@@ -8,18 +8,19 @@ import com.walisport.module.topup.ui.viewmodel.FundDetailsViewModel
 import com.walisport.module.topup.ui.viewmodel.RealTimeCashBackViewModel
 import com.walisport.module.topup.ui.viewmodel.TopUpViewModel
 import com.walisport.module.topup.ui.viewmodel.SelectBankViewModel
-import com.walisport.module.topup.ui.viewmodel.SelectCoinViewModel
 import com.walisport.module.topup.ui.viewmodel.CryptoViewModel
 import arch.cayenne.lib.common.ui.viewmodel.CoinDialogViewModel
 import com.walisport.module.topup.ui.viewmodel.FiatViewModel
 import com.walisport.module.topup.ui.viewmodel.OrderDetailViewModel
 import com.walisport.module.topup.ui.viewmodel.AddressViewModel
 import com.walisport.module.topup.ui.viewmodel.SelectAddressViewModel
+import com.walisport.module.topup.ui.viewmodel.SelectCoinViewModel
 import com.walisport.module.topup.ui.viewmodel.AddAddressViewModel
 import com.walisport.module.topup.ui.viewmodel.BetDetailViewModel
 import com.walisport.module.topup.ui.viewmodel.WithdrawFiatViewModel
 import com.walisport.module.topup.ui.viewmodel.WithdrawViewModel
 import com.walisport.module.topup.ui.viewmodel.CustomMoneyViewModel
+import com.walisport.module.topup.ui.viewmodel.TopUpCryptoViewModel
 import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.core.context.loadKoinModules
 import org.koin.core.module.Module
@@ -41,11 +42,12 @@ class TopUpModuleInitializer : DefaultInitializer<String> {
         viewModelOf(::WithdrawViewModel)
         viewModelOf(::AddAddressViewModel)
         viewModelOf(::CoinDialogViewModel)
+        viewModelOf(::TopUpCryptoViewModel)
         viewModelOf(::SelectBankViewModel)
-        viewModelOf(::SelectCoinViewModel)
         viewModelOf(::OrderDetailViewModel)
         viewModelOf(::CustomMoneyViewModel)
         viewModelOf(::SelectAddressViewModel)
+        viewModelOf(::SelectCoinViewModel)
         viewModelOf(::CryptoViewModel)
         viewModelOf(::FiatViewModel)
         viewModelOf(::AddressViewModel)
