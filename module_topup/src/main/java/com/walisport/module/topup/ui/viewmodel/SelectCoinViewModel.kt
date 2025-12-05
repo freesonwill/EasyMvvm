@@ -8,7 +8,7 @@ import arch.cayenne.lib.database.entity.CoinBean
 import com.walisport.module.topup.data.TopUpMainRepository
 import kotlinx.coroutines.launch
 
-class TopUpCryptoViewModel(private val repo: TopUpMainRepository) : BaseViewModel() {
+class SelectCoinViewModel(private val repo: TopUpMainRepository) : BaseViewModel() {
 
     private val _coinData = MutableLiveData<List<CoinBean>>()
     val coinData: LiveData<List<CoinBean>> = _coinData
@@ -21,5 +21,15 @@ class TopUpCryptoViewModel(private val repo: TopUpMainRepository) : BaseViewMode
                 }
             }
         }
+    }
+
+    fun selectCoin(id: Int) {
+        val list = _coinData.value!!.toMutableList()
+        list.forEach { item ->
+            if (item.id == id) {
+                item.isSelect = !item.isSelect
+            }
+        }
+        _coinData.value = list
     }
 }

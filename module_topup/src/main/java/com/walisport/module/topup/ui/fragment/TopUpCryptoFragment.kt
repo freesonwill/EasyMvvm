@@ -41,11 +41,6 @@ class TopUpCryptoFragment : BaseFragment<TopUpCryptoViewModel, FragmentCryptoBin
         generateQRCode()
     }
 
-    override fun initData() {
-        super.initData()
-        mViewModel.getCurrencyList()
-    }
-
     override fun initListener() {
         mBinding.layCopy.clickNoRepeat {
             copyToClipboard(mBinding.tvCryptoAddress.text as String?) {

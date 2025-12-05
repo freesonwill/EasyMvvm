@@ -10,6 +10,7 @@ import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.walisport.module.topup.databinding.FragmentCoinSelectBinding
 import com.walisport.module.topup.ui.adapter.CoinAdapter
+import com.walisport.module.topup.ui.viewmodel.SelectCoinViewModel
 import com.walisport.module.topup.ui.viewmodel.TopUpCryptoViewModel
 import com.walisport.module.topup.ui.viewmodel.TopUpViewModel
 import kotlin.reflect.KClass
@@ -19,10 +20,10 @@ import kotlin.reflect.KClass
  */
 
 class SelCoinBottomFragment :
-    BaseBottomSheetFragment<TopUpCryptoViewModel, FragmentCoinSelectBinding>() {
+    BaseBottomSheetFragment<SelectCoinViewModel, FragmentCoinSelectBinding>() {
 
     override val vbClass: KClass<FragmentCoinSelectBinding> = FragmentCoinSelectBinding::class
-    override val vmClass: KClass<TopUpCryptoViewModel> = TopUpCryptoViewModel::class
+    override val vmClass: KClass<SelectCoinViewModel> = SelectCoinViewModel::class
     private val coinAdapter by lazy { CoinAdapter() }
 
     override fun initView(savedInstanceState: Bundle?) {

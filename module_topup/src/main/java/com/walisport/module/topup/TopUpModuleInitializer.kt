@@ -14,6 +14,7 @@ import com.walisport.module.topup.ui.viewmodel.FiatViewModel
 import com.walisport.module.topup.ui.viewmodel.OrderDetailViewModel
 import com.walisport.module.topup.ui.viewmodel.AddressViewModel
 import com.walisport.module.topup.ui.viewmodel.SelectAddressViewModel
+import com.walisport.module.topup.ui.viewmodel.SelectCoinViewModel
 import com.walisport.module.topup.ui.viewmodel.AddAddressViewModel
 import com.walisport.module.topup.ui.viewmodel.BetDetailViewModel
 import com.walisport.module.topup.ui.viewmodel.WithdrawFiatViewModel
@@ -46,6 +47,7 @@ class TopUpModuleInitializer : DefaultInitializer<String> {
         viewModelOf(::OrderDetailViewModel)
         viewModelOf(::CustomMoneyViewModel)
         viewModelOf(::SelectAddressViewModel)
+        viewModelOf(::SelectCoinViewModel)
         viewModelOf(::CryptoViewModel)
         viewModelOf(::FiatViewModel)
         viewModelOf(::AddressViewModel)
