@@ -6,7 +6,9 @@ import androidx.core.view.isVisible
 import arch.cayenne.lib.base.ui.adapter.BaseAdapter
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getDrawable
-import com.walisport.module.topup.data.entity.CoinBean
+import arch.cayenne.lib.database.entity.CoinBean
+import com.bumptech.glide.Glide
+import com.walisport.module.topup.R
 import com.walisport.module.topup.databinding.ItemCoinBinding
 import com.walisport.module.topup.ui.adapter.compare.CoinCompare
 
@@ -17,8 +19,11 @@ class CoinAdapter : BaseAdapter<CoinBean, BaseViewHolder, ItemCoinBinding>(
 
     override fun convertPlus(holder: BaseViewHolder, binding: ItemCoinBinding, position: Int) {
         val item = getItem(position)
-        binding.tvNameCoin.text = item.coinName
-        binding.ivLogoCoin.background = item.coinLogo.getDrawable()
+        binding.tvNameCoin.text = item.name
+        Glide.with(holder.itemView)
+            .load(item.icon)
+            .placeholder(R.drawable.icon_pay_usdt)
+            .into(binding.ivLogoCoin)
         binding.ivSelCoin.isVisible = item.isSelect
         binding.root.isSelected = item.isSelect
         binding.root.setOnClickListener {

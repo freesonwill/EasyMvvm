@@ -10,7 +10,8 @@ import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.walisport.module.topup.databinding.FragmentCoinSelectBinding
 import com.walisport.module.topup.ui.adapter.CoinAdapter
-import com.walisport.module.topup.ui.viewmodel.SelectCoinViewModel
+import com.walisport.module.topup.ui.viewmodel.TopUpCryptoViewModel
+import com.walisport.module.topup.ui.viewmodel.TopUpViewModel
 import kotlin.reflect.KClass
 
 /**
@@ -18,10 +19,10 @@ import kotlin.reflect.KClass
  */
 
 class SelCoinBottomFragment :
-    BaseBottomSheetFragment<SelectCoinViewModel, FragmentCoinSelectBinding>() {
+    BaseBottomSheetFragment<TopUpCryptoViewModel, FragmentCoinSelectBinding>() {
 
     override val vbClass: KClass<FragmentCoinSelectBinding> = FragmentCoinSelectBinding::class
-    override val vmClass: KClass<SelectCoinViewModel> = SelectCoinViewModel::class
+    override val vmClass: KClass<TopUpCryptoViewModel> = TopUpCryptoViewModel::class
     private val coinAdapter by lazy { CoinAdapter() }
 
     override fun initView(savedInstanceState: Bundle?) {
@@ -46,17 +47,12 @@ class SelCoinBottomFragment :
 
     @SuppressLint("NotifyDataSetChanged")
     override suspend fun createObserver() {
-        mViewModel.coinList.observe(viewLifecycleOwner) {
+        mViewModel.coinData.observe(viewLifecycleOwner) {
             if (it != null) {
                 coinAdapter.submitList(it)
                 coinAdapter.notifyDataSetChanged()
             }
         }
-    }
-
-    override fun initData() {
-        super.initData()
-        mViewModel.getCoinList()
     }
 
     override fun onStart() {
