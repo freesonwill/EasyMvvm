@@ -87,6 +87,10 @@ class BetResultFragment :
             override fun getMoneySymbol(): String {
                 return mViewModel.moneySymbol
             }
+
+            override fun onCombinationDetailClick(serialValue: Int) {
+
+            }
         })
     }
     private var isExpand: Boolean = false //是否折叠

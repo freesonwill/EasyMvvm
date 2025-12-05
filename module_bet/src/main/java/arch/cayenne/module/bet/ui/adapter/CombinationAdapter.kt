@@ -45,7 +45,7 @@ class CombinationViewHolder(private val mBinding: ItemCombinationListBinding) :
     fun init(bean: ParameterItems) {
         with(mBinding) {
             tvTitle.text = bean.title
-            val money = bean.items[0].money
+            val money = bean.items.getOrNull(0)?.money
             tvTabBet.isVisible = !TextUtils.isEmpty(money)
             tvTabWin.isVisible = !TextUtils.isEmpty(money)
             rvContent.layoutManager = LinearLayoutManager(mBinding.root.context)
