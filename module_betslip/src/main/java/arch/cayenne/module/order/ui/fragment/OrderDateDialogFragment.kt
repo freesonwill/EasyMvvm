@@ -27,6 +27,7 @@ class OrderDateDialogFragment: BaseBottomSheetFragment<OrderDateDialogViewModel,
 
     override fun initView(savedInstanceState: Bundle?) {
         initTabLayout()
+        mBinding.viewPager.isHorizontalScrollBarEnabled = false
         mBinding.viewPager.setupHorizontalScrollDegree()
     }
 
@@ -47,7 +48,7 @@ class OrderDateDialogFragment: BaseBottomSheetFragment<OrderDateDialogViewModel,
         TabLayoutMediator(mBinding.tabLayout, mBinding.viewPager, false) { tab, position ->
             val textView = TextView(requireContext()).apply {
                 layoutParams = LinearLayout.LayoutParams(
-                    64.dp2px,
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT
                 )
                 maxLines = 1
@@ -55,7 +56,7 @@ class OrderDateDialogFragment: BaseBottomSheetFragment<OrderDateDialogViewModel,
                 ellipsize = null
                 text = page[position].page.title
                 gravity = Gravity.CENTER
-                setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f)
+                setTextSize(TypedValue.COMPLEX_UNIT_SP, 15f)
                 if (position == 0) {
                     setTextColor(
                         SkinnableResourceManager.getColor(
@@ -71,7 +72,6 @@ class OrderDateDialogFragment: BaseBottomSheetFragment<OrderDateDialogViewModel,
                         )
                     )
                 }
-                setPadding(0, 0, 0, 0)
                 typeface = Typeface.DEFAULT
             }
             tab.customView = textView
