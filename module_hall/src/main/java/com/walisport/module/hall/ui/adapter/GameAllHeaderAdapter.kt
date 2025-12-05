@@ -2,13 +2,18 @@ package com.walisport.module.hall.ui.adapter
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
+import arch.cayenne.lib.base.ui.animation.CustomCurveTransformer
+import arch.cayenne.lib.base.utils.LogUtils
+import arch.cayenne.lib.common.ui.adapter.BannerImageAdapter
+import arch.cayenne.lib.common.ui.adapter.BannerImageMatchAdapter
 import com.walisport.module.hall.R
 import com.walisport.module.hall.data.GameAllBannerData
 import com.walisport.module.hall.databinding.ItemGameAllHeaderBinding
-
+import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 /**
  * 全部類型的遊戲頭部Adapter，包含左方的廣告位、右方的邀請朋友和每日比賽
  * */
@@ -29,47 +34,67 @@ class GameAllHeaderAdapter: RecyclerView.Adapter<GameAllHeaderViewHolder>() {
     }
 
     override fun getItemCount(): Int = 1
-
-    fun restProBannerJob(recyclerView: RecyclerView) {
-        (recyclerView.findViewHolderForAdapterPosition(0) as? GameAllHeaderViewHolder)?.restProBannerJob()
-    }
-
-    fun stopProBannerJob(recyclerView: RecyclerView) {
-        (recyclerView.findViewHolderForAdapterPosition(0) as? GameAllHeaderViewHolder)?.stopProBannerJob()
-    }
 }
 
 class GameAllHeaderViewHolder(val binding: ItemGameAllHeaderBinding): RecyclerView.ViewHolder(binding.root) {
-    val mockBannerList = arrayListOf(
-        GameAllBannerData(R.drawable.image_banner_demo),
-        GameAllBannerData(R.drawable.image_banner_demo),
-        GameAllBannerData(R.drawable.image_banner_demo),
-        GameAllBannerData(R.drawable.image_banner_demo),
-        GameAllBannerData(R.drawable.image_banner_demo),
-    )
-    private val bannerAdapter by lazy { GameAllBannerAdapter() }
     @SuppressLint("ClickableViewAccessibility")
     fun init() {
         with(binding) {
-            vpBanner.adapter = bannerAdapter
-            bannerAdapter.submitList(mockBannerList)
-            vpBanner.isUserInputEnabled = true
-            vpBanner.getChildAt(0).setOnTouchListener { v, event ->
-                v.parent.requestDisallowInterceptTouchEvent(true)
-                false
+            val mockBannerList = listOf(
+                R.drawable.image_banner_demo,
+                R.drawable.image_cover_demo,
+                R.drawable.image_banner_demo,
+                R.drawable.image_cover_demo,
+                R.drawable.image_banner_demo
+            )
+//            vpBanner.adapter = bannerAdapter
+//            bannerAdapter.submitList(mockBannerList)
+//            vpBanner.isUserInputEnabled = true
+            //触摸事件会影响vpBanner的滑动个,如果想做到触摸事件不影响Banner,需要添加一个蒙层,然后拦截事件,需下发给底层view
+//            vpBanner.setOnTouchListener { v, event ->
+//               when(event.action){
+//                   MotionEvent.ACTION_DOWN->{
+//                       LogUtils.e("vpBanner.setOnTouchListener-----ACTION_DOWN")
+//                       stopProBannerJob()
+//                   }
+//
+//                   MotionEvent.ACTION_UP->{
+//                       LogUtils.e("vpBanner.setOnTouchListener----ACTION_UP")
+//                       restProBannerJob()
+//                   }
+//
+//                   MotionEvent.ACTION_CANCEL->{
+//                       LogUtils.e("vpBanner.setOnTouchListener-------ACTION_CANCEL")
+//                       restProBannerJob()
+//                   }
+//
+//               }
+//                false
+//            }
+
+            proBanner.setTriggerListener {
+                vpBanner.setLoopTime(50)
+                vpBanner.isAutoLoop(true)
+                vpBanner.start()
+                vpBanner.postDelayed({
+                    vpBanner.stop()                    // 停止自动轮播
+                    vpBanner.isAutoLoop(false)         // 关闭自动轮播功能 // 可选：允许下次再次触发
+                }, 50)
             }
 
-            vpBanner.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-                override fun onPageSelected(position: Int) {
-                    super.onPageSelected(position)
-                    proBanner.resetTriggerJob()
-                }
-            })
-            proBanner.setTriggerListener {
-                vpBanner.currentItem = (vpBanner.currentItem + 1) % bannerAdapter.itemCount
-            }
+
+            // 自定义适配器
+            val adapter = BannerImageMatchAdapter(mockBannerList)
+            vpBanner.setAdapter(adapter)
+            vpBanner.setBannerRound(9.dp2px.toFloat())
+            vpBanner.isAutoLoop(false)
+            // 设置滑动时长丝滑,不影响曲线,
+            vpBanner.setScrollTime(600)  // 0.5 秒
+            vpBanner.setPageTransformer(CustomCurveTransformer())
+            // 启动轮播
         }
     }
+
 
     fun restProBannerJob() {
         binding.proBanner.resetTriggerJob()

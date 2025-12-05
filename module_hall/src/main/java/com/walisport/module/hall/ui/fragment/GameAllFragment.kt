@@ -84,12 +84,12 @@ class GameAllFragment: BaseFragment<GameAllViewModel, FragmentGameAllBinding>() 
 
     override fun onStart() {
         super.onStart()
-        headerAdapter.restProBannerJob(mBinding.rvContent)
+       // headerAdapter.restProBannerJob(mBinding.rvContent)
     }
 
     override fun onStop() {
         super.onStop()
-        headerAdapter.stopProBannerJob(mBinding.rvContent)
+       // headerAdapter.stopProBannerJob(mBinding.rvContent)
     }
 
     override fun onResume() {
