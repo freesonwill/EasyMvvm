@@ -218,7 +218,6 @@
         android:layout_height="0dp"
         android:layout_marginStart="@dimen/dp_10"
         android:background="@drawable/selector_check_bet"
-        android:enabled="false"
         android:gravity="center"
         android:text="@string/btn_result_check_bet"
         android:textColor="@color/color_00E0E5"

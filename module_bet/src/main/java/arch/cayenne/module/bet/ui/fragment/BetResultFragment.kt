@@ -15,7 +15,9 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.SimpleItemAnimator
 import arch.cayenne.lib.base.ui.fragment.BasePreLoadBottomSheetFragment
+import arch.cayenne.lib.common.data.constants.HomePageEnum
 import arch.cayenne.lib.common.ui.view.BetResultToastView
+import arch.cayenne.lib.common.utils.biz.CommonBiz
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.SportDisplayOddsExt.getDisplayOdds
@@ -118,6 +120,14 @@ class BetResultFragment :
                     BetSheetFragment.show(requireActivity(), getHideAnimator())
                 }
             }
+        }
+        mBinding.btnCheckBet.clickNoRepeat {
+            clearAllObserve()
+            dismiss()
+            mViewModel.sendDone()
+
+            //跳转到注单
+            CommonBiz.jump2HomePage(this,HomePageEnum.BETSLIP)
         }
         mBinding.btnConfirm.setOnClickListener {
             clearAllObserve()
