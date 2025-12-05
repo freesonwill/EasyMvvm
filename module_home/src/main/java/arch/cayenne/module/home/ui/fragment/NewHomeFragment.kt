@@ -110,7 +110,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             arch.cayenne.lib.common.R.drawable.home_bar_left_icon
                 )
         val adapter = BannerImageAdapter(images)
-       mBinding.banner.setAdapter(adapter)
+        mBinding.banner.setAdapter(adapter)
         mBinding.banner.setLoopTime(3000)
         // 设置滑动时长丝滑,不影响曲线,
         mBinding. banner.setScrollTime(500)  // 1 秒

@@ -113,10 +113,10 @@ class ComboBetFragment2 : BaseFragment<ComboBetViewModel, FragmentComboBet2Bindi
                 val items = mViewModel.splitComboIntoSingles(data)
                 CombinationFragment.newInstance(
                     Parameter(
-                    title = data.title(),
-                    titleTips = data.titleTips(),
-                    items = items
-                )
+                        title = data.title(),
+                        titleTips = data.titleTips(),
+                        items = items
+                    )
                 ).show(childFragmentManager)
             }
 

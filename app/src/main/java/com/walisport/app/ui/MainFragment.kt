@@ -10,6 +10,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentResultListener
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import arch.cayenne.lib.base.ui.animation.AnimationController
@@ -108,7 +109,7 @@ class MainFragment : BaseFragment<MainFragmentViewModel, FragmentMainBinding>() 
         mBinding.apply {
             setDrawerLayoutListener()
             // 設定監聽器，使用 parentFragmentManager
-            requireActivity().supportFragmentManager.setFragmentResultListener(REQUEST_KEY_DRAWER, this@MainFragment) { requestKey, bundle ->
+            requireActivity().supportFragmentManager.setFragmentResultListener(REQUEST_KEY_DRAWER, viewLifecycleOwner) { requestKey, bundle ->
                 when (bundle.getString(KEY_ACTION)) {
                     ACTION_OPEN -> drawerLayout.openDrawer(GravityCompat.START)
                     ACTION_CLOSE -> drawerLayout.closeDrawer(GravityCompat.START)
@@ -125,12 +126,17 @@ class MainFragment : BaseFragment<MainFragmentViewModel, FragmentMainBinding>() 
             }
         }
 
-        childFragmentManager.setFragmentResultListener(FragmentResultEnum.KEY_PAGE.k,viewLifecycleOwner){ key, bundle->
+        FragmentResultListener { key,bundle->
+            "received key:$key, bundle:$bundle".logd(TAG)
             bundle.getInt(key,-1).let {
                 if(it == - 1) return@let
                 mBinding.bottomNavigation.selectedIndex = it
                 setCurrentFragment(it,bundle.apply { remove(FragmentResultEnum.KEY_PAGE.k) })
             }
+        }.also {
+            childFragmentManager.setFragmentResultListener(FragmentResultEnum.KEY_PAGE.k, viewLifecycleOwner,it)
+            parentFragmentManager.setFragmentResultListener(FragmentResultEnum.KEY_PAGE.k, viewLifecycleOwner,it)
+            requireActivity().supportFragmentManager.setFragmentResultListener(FragmentResultEnum.KEY_PAGE.k,viewLifecycleOwner,it)
         }
     }
 
