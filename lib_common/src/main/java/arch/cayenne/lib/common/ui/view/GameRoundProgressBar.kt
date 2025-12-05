@@ -17,7 +17,7 @@ import kotlinx.coroutines.withContext
 class GameRoundProgressBar @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null
 ) : SkinnableProgressBar(context, attrs) {
-    var triggerTime = 2000
+    var triggerTime = 3500
     private var job: Job? = null
     private var onTriggerListener: (() -> Unit)? = null
 
@@ -34,7 +34,7 @@ class GameRoundProgressBar @JvmOverloads constructor(
             )
             triggerTime = getInteger(
                 R.styleable.GameRoundProgressBar_triggerTime,
-                2000
+                3500
             )
             progressDrawable = RoundProgressDrawable(
                 backgroundColor = bgColor,
