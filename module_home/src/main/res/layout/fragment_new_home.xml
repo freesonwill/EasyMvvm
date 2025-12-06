@@ -171,15 +171,6 @@
                     app:layout_constraintTop_toBottomOf="@id/tl_home" />
 
                 <!-- 覆蓋指示器的遮罩，與 homeIndicator 同位置與尺寸，預設隱藏 -->
-                <View
-                    android:id="@+id/homeIndicatorMask"
-                    android:layout_width="104dp"
-                    android:layout_height="2dp"
-                    android:background="@color/color_272727"
-                    android:visibility="gone"
-                    app:layout_constraintEnd_toEndOf="@id/tl_home"
-                    app:layout_constraintStart_toStartOf="@id/tl_home"
-                    app:layout_constraintTop_toBottomOf="@id/tl_home" />
 
                 <!-- 遮罩，防止 TabLayout 內容延伸到搜索圖標下方 -->
                 <!--                <View-->

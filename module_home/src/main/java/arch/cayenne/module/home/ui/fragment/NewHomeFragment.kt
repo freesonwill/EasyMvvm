@@ -190,18 +190,14 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
         homeMediator?.attach { pos ->
             // 由 Mediator 回調的最終選中頁：切換指示器與遮罩
             val isPromo = pos < promoTabs.size
-            indicatorDrawable?.alpha = if (isPromo) 0 else 255
+            indicatorDrawable?.alpha = if (isPromo)255 else 255
 
             if (isPromo) {
                 // 停在 promo：立即顯示遮罩
-                mBinding.homeIndicatorMask.visibility = View.VISIBLE
+               // mBinding.homeIndicatorMask.visibility = View.VISIBLE
             } else {
                 // 從 promo 切到一般 tab：確保遮罩先 VISIBLE，延遲後才 GONE
-                if (mBinding.homeIndicatorMask.visibility == View.VISIBLE) {
-                    mBinding.homeIndicatorMask.postDelayed({
-                        mBinding.homeIndicatorMask.visibility = View.GONE
-                    }, AnimationController[AnimType.scrollbar]?.duration ?: 200L)
-                }
+
                 // 如果遮罩已經是 GONE（一般 tab 之間切換），則不做任何事
             }
         }
@@ -209,9 +205,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
         mBinding.tlHome.post {
             mBinding.tlHome.getTabAt(0)?.select()
             // 如果第一個是 promo，啟動即顯示遮罩
-            if (promoTabs.isNotEmpty()) {
-                mBinding.homeIndicatorMask.visibility = View.VISIBLE
-            }
+
         }
         // Mediator 建立完後，新增自定義監聽
         mBinding.tlHome.addOnTabSelectedListener2(object : TabLayoutExt.OnTabSelectedListener2 {
@@ -219,7 +213,6 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 val position = tab.position
                 if (position < promoTabs.size) {
                     // promo：顯示遮罩
-                    mBinding.homeIndicatorMask.visibility = View.VISIBLE
                 } else {
                     val playIndex = position - promoTabs.size
                     val playType = PlayType.entries[playIndex]
