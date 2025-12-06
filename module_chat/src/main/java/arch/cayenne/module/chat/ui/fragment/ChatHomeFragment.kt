@@ -41,6 +41,7 @@ import java.util.regex.Pattern
 import kotlin.reflect.KClass
 import arch.cayenne.module.chat.manager.ChatATHelper
 import arch.cayenne.module.chat.manager.SoftKeyBoardAnim
+import arch.cayenne.module.chat.manager.SoftKeyBoardAnim.etInputContentAnim
 import arch.cayenne.module.chat.manager.SoftKeyBoardAnim.getInputAnim
 
 //聊天
@@ -398,35 +399,18 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
         if (mBinding.chatEtInput.text == null || mBinding.chatEtInput.length() == 0) {
             return
         }
-
-        if (mViewModel.currentKeyBoardType == KeyBoardType.CHAT) {
-            resetInputUi()
-        }
         keyboardChangeClick(KeyBoardType.CHAT, 7)
         mViewModel.createLocalMsg(mBinding.chatEtInput.text!!)?.let { mViewModel.sendMsgToChat(it) }
         mBinding.chatEtInput.text?.clear()
     }
 
-    private fun resetInputUi() {
-        val animSet = AnimatorSet().apply {
-            duration = 170L
-            playTogether(
-                *SoftKeyBoardAnim.inputIconAnim(
-                    true,
-                    mBinding.ivAt,
-                    mBinding.ivBet,
-                    mBinding.ivEmoji,
-                    mBinding.ivLanguage
-                )
-            )
-            addListener(onStart = {
-                updateInputIcon(true)
-            })
-            start()
-        }
-    }
-
+    /**
+     * 直播间因为要做滑动，所以每次弹出后要对高度重新设置下
+     * */
     private fun emojiLayoutSize(isReset: Boolean) {
+        if(mViewModel.isMainSoft){
+            return
+        }
         mBinding.apply {
             val height = main.layoutParams.height
             inputMain.layoutParams.height =
@@ -516,10 +500,11 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
         mViewModel.currentKeyBoardType = keyBoardType
     }
 
+    @SuppressLint("Recycle")
     private fun etContentChangeAnim() {
         mBinding.apply {
             when {
-                chatEtInput.length() == 0 && chatTvSend.isVisible -> { //有内容到无内容
+                chatEtInput.length() == 0 && chatTvSend.isVisible && mViewModel.currentKeyBoardType != KeyBoardType.CHAT -> { //键盘弹出的时候发送 有内容到无内容
                     SoftKeyBoardAnim.etInputContentAnim(
                         true,
                         mViewModel.currentKeyBoardType,
@@ -533,7 +518,26 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
                         start()
                     }
                 }
+                chatEtInput.length() == 0 && chatTvSend.isVisible && mViewModel.currentKeyBoardType == KeyBoardType.CHAT -> {//键盘收缩的时候发送，有内容到无内容
+//                    input输入框扩展 -> 按钮动画
+                    val btnAnim = AnimatorSet().apply {
+                        playTogether(*SoftKeyBoardAnim.inputIconAnim(true,ivAt,ivBet, ivEmoji, ivLanguage))
+                        addListener(onStart = {
+                            updateInputIcon(true)
+                        })
+                    }
+                    val inputAnim = etInputContentAnim(true,mViewModel.currentKeyBoardType,chatLlInput,chatTvSend).apply {
+                        addListener(onEnd = {
+                            chatTvSend.isVisible = false
+                        })
+                    }
+                    AnimatorSet().apply {
+                        duration = 1000
+                        playSequentially(inputAnim,btnAnim)
+                        start()
+                    }
 
+                }
                 chatEtInput.length() > 0 && !chatTvSend.isVisible -> { //无内容到有内容
                     SoftKeyBoardAnim.etInputContentAnim(
                         false,

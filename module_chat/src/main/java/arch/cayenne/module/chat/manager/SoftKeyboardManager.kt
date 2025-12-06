@@ -280,9 +280,9 @@ class SoftKeyboardManager(
                     softKeyboardChange(true, 1)
                     return
                 }
-                softKeyboardChange(true, 5)
                 keyBoardListener.startAnim(animationType, getAnimTransY(animationType), onStart = {
                     keyBoardListener.changeKeyboardUi(KeyBoardType.SOFT_KEYBOARD)
+                    softKeyboardChange(true, 5)
                 })
             }
             //软件盘切换到聊天

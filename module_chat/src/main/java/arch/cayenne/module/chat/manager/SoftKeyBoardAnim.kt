@@ -49,6 +49,9 @@ object SoftKeyBoardAnim {
 
 
     //输入框在有内容和键盘弹出时的icon动画
+    /**
+     * @param isExpand true 上移 false 下移
+     * */
     @SuppressLint("Recycle")
     fun inputIconAnim(
         isExpand: Boolean,
