@@ -21,10 +21,8 @@ import arch.cayenne.lib.database.entity.InfoBean
 import arch.cayenne.module.bet.R
 import arch.cayenne.module.bet.data.ComboMultiBetBean
 import arch.cayenne.module.bet.data.OddsChangeEnum
-import arch.cayenne.module.bet.data.Parameter
-import arch.cayenne.module.bet.data.ParameterItems
-import arch.cayenne.module.bet.data.ParameterItems2
 import arch.cayenne.module.bet.repo.ComboBetRepository
+import arch.cayenne.module.bet.ui.fragment.ComboDetailFragment
 import kotlinx.coroutines.launch
 
 class ComboBetViewModel(
@@ -272,7 +270,7 @@ class ComboBetViewModel(
     }
 
 
-    fun toCombinationDetailParameter(serialValue: Int):Parameter{
+    fun toCombinationDetailParameter(serialValue: Int): ComboDetailFragment.Parameter {
         return repo.toCombinationDetailParameter(serialValue,
             onComboMultiBetBeanListener.value,
             onBetListListener.value,

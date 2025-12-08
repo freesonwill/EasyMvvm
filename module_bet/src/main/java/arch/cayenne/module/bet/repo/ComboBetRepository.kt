@@ -19,10 +19,8 @@ import arch.cayenne.module.bet.R
 import arch.cayenne.module.bet.data.ComboMultiBetBean
 import arch.cayenne.module.bet.data.ComboMultiBetOddsBean
 import arch.cayenne.module.bet.data.OddsChangeEnum
-import arch.cayenne.module.bet.data.Parameter
-import arch.cayenne.module.bet.data.ParameterItems
-import arch.cayenne.module.bet.data.ParameterItems2
 import arch.cayenne.module.bet.data.remote.ComboRiskDataModel
+import arch.cayenne.module.bet.ui.fragment.ComboDetailFragment
 import galaxy.client.proto.Client
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -30,8 +28,6 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.math.BigDecimal
-import java.math.RoundingMode
 
 class ComboBetRepository(
     override val scope: CoroutineScope,
@@ -546,7 +542,7 @@ class ComboBetRepository(
      */
     private fun splitComboIntoSingles(bean:ComboMultiBetBean,
                                       betList:List<BetSelectionBean>?,
-                                      moneySymbol:String): List<ParameterItems> {
+                                      moneySymbol:String): List<ComboDetailFragment.ParameterItems> {
         val data = betList ?: return emptyList()
         // 1 注 = 固定只有一个 K
         val kList = if (bean.comboV == 1) {
@@ -561,14 +557,16 @@ class ComboBetRepository(
             )
             val listItems = data.combinations(k).map { l ->
                 val odds = calculateCombinationOdds(l.map { it.odds },l.size)
-                ParameterItems2(
+                ComboDetailFragment.ParameterItems2(
                     combo = l.joinToString("·") { "${data.indexOf(it) + 1}" },
-                    money = bean.inputMoney.takeIf { it != 0L }?.let { "$moneySymbol${it.getMoney()}" },
-                    winMoney = bean.inputMoney.takeIf { it != 0L }?.let { "$moneySymbol${bean.inputMoney.getMoney(odds)}" },
+                    money = bean.inputMoney.takeIf { it != 0L }
+                        ?.let { "$moneySymbol${it.getMoney()}" },
+                    winMoney = bean.inputMoney.takeIf { it != 0L }
+                        ?.let { "$moneySymbol${bean.inputMoney.getMoney(odds)}" },
                     odds = "@${odds.getOdds()}"
                 )
             }
-            ParameterItems(title, listItems)
+            ComboDetailFragment.ParameterItems(title, listItems)
         }
     }
 
@@ -584,11 +582,11 @@ class ComboBetRepository(
     fun toCombinationDetailParameter(serialValue: Int,
                                      comboMultiBetBeans:List<ComboMultiBetBean>?,
                                      betList:List<BetSelectionBean>?,
-                                     moneySymbol:String): Parameter {
+                                     moneySymbol:String): ComboDetailFragment.Parameter {
         val data = comboMultiBetBeans?.find { it.serialValue == serialValue }
             ?: error("can not find serialValue:$serialValue in $comboMultiBetBeans")
         val items = splitComboIntoSingles(data,betList,moneySymbol)
-        return Parameter(
+        return ComboDetailFragment.Parameter(
             title = data.title(),
             titleTips = data.titleTips(),
             items = items

@@ -11,9 +11,9 @@ import arch.cayenne.lib.database.entity.BetResultStatusEnum
 import arch.cayenne.lib.database.entity.BetSelectionBean
 import arch.cayenne.lib.database.entity.BetTypeEnum
 import arch.cayenne.module.bet.data.ComboMultiBetBean
-import arch.cayenne.module.bet.data.Parameter
 import arch.cayenne.module.bet.repo.BetResultRepository
 import arch.cayenne.module.bet.repo.ComboBetRepository
+import arch.cayenne.module.bet.ui.fragment.ComboDetailFragment
 import kotlinx.coroutines.launch
 
 class BetResultViewModel(private val repo: BetResultRepository, private val betRepo: ComboBetRepository) : BaseViewModel() {
@@ -100,7 +100,7 @@ class BetResultViewModel(private val repo: BetResultRepository, private val betR
         this.comboMultiBetBeans = list
     }
 
-    fun toCombinationDetailParameter(serialValue: Int):Parameter{
+    fun toCombinationDetailParameter(serialValue: Int): ComboDetailFragment.Parameter {
         return betRepo.toCombinationDetailParameter(serialValue,
             comboMultiBetBeans,
             onBetSheetListener.value,

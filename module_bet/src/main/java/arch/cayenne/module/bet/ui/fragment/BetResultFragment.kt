@@ -96,7 +96,7 @@ class BetResultFragment :
             }
 
             override fun onCombinationDetailClick(serialValue: Int) {
-                CombinationFragment.newInstance(mViewModel.toCombinationDetailParameter(serialValue)).show(childFragmentManager)
+                ComboDetailFragment.newInstance(mViewModel.toCombinationDetailParameter(serialValue)).show(childFragmentManager)
             }
         })
     }

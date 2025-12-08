@@ -110,7 +110,7 @@ class ComboBetFragment2 : BaseFragment<ComboBetViewModel, FragmentComboBet2Bindi
             }
 
             override fun onCombinationDetailClick(serialValue: Int) {
-                CombinationFragment.newInstance(
+                ComboDetailFragment.newInstance(
                     mViewModel.toCombinationDetailParameter(serialValue)
                 ).show(childFragmentManager)
             }
