@@ -92,4 +92,17 @@
         <!--放大比例-->
         <attr name="rv_zoomScale" format="float" />
     </declare-styleable>
+
+
+
+    <!-- 單一 reference 屬性，指向包含四個設定的 style -->
+    <declare-styleable name="SkinnableNumberPicker">
+        <attr name="pickerTextAppearance" format="reference"/>
+        <!-- 備援：個別屬性（仍可保留以兼容舊用法） -->
+        <attr name="centerTextSize" format="dimension"/>
+        <attr name="centerTextColor" format="color|reference"/>
+        <attr name="otherTextSize" format="dimension"/>
+        <attr name="otherTextColor" format="color|reference"/>
+    </declare-styleable>
+
 </resources>

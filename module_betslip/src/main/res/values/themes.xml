@@ -32,7 +32,9 @@
     </style>
 
     <style name="NumberPickerTextAppearance">
-        <item name="android:textSize">17sp</item>
-        <item name="android:textColor">@color/main_text</item>
+        <item name="centerTextSize">18sp</item>
+        <item name="centerTextColor">@color/color_FFFFFF</item>
+        <item name="otherTextSize">15sp</item>
+        <item name="otherTextColor">@color/color_999999</item>
     </style>
 </resources>

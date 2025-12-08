@@ -35,6 +35,9 @@ import arch.cayenne.module.order.ui.viewmodel.OrderSportEarlySettleViewModel
 import arch.cayenne.module.order.ui.viewmodel.OrderSportPageViewModel
 import arch.cayenne.module.order.ui.viewmodel.OrderSportViewModel
 import arch.cayenne.module.order.ui.viewmodel.GameFilterViewModel
+import arch.cayenne.module.order.ui.viewmodel.OrderDateCustomViewModel
+import arch.cayenne.module.order.ui.viewmodel.OrderDateDialogViewModel
+import arch.cayenne.module.order.ui.viewmodel.OrderDateSelectorViewModel
 import org.koin.dsl.module
 
 class BetSlipModuleInitializer: DefaultInitializer<String> {
@@ -77,6 +80,9 @@ class BetSlipModuleInitializer: DefaultInitializer<String> {
         viewModelOf(::OrderSportViewModel)
         viewModelOf(::OrderSportPageViewModel)
         viewModelOf(::OrderSportEarlySettleViewModel)
+        viewModelOf(::OrderDateCustomViewModel)
+        viewModelOf(::OrderDateDialogViewModel)
+        viewModelOf(::OrderDateSelectorViewModel)
     }
 
     private val repoModules = module {
