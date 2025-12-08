@@ -3,3 +3,11 @@ include:
     inputs:
       version_file: "app/build/generated/source/buildConfig/release/com/walisport/app/BuildConfig.java"
       deploy_name:  "tio"
+
+variables:
+  USER_UID: "${USER_UID}"
+  USER_TOKEN: "${USER_TOKEN}"
+
+before_script:
+  - echo "user.uid=${USER_UID}" >> local.properties
+  - echo "user.token=${USER_TOKEN}" >> local.properties
