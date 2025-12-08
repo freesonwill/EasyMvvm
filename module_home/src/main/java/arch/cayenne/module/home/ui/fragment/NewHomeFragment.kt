@@ -50,12 +50,13 @@ import arch.cayenne.module.home.ui.view.HomeTabMediator
 import arch.cayenne.module.home.ui.view.PromoTab
 import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
 import com.google.android.material.tabs.TabLayout
+import com.walisport.module.popup.slot.ui.fragment.PopupSlotFragment
 import kotlin.reflect.KClass
 
 /**
  * 体育页
  */
-class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
+class NewHomeFragment : BaseFragment<HomeViewModel , FragmentNewHomeBinding>() {
     override val vbClass: KClass<FragmentNewHomeBinding> = FragmentNewHomeBinding::class
     override val vmClass: KClass<HomeViewModel> = HomeViewModel::class
 
@@ -66,6 +67,10 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
     private var indicatorDrawable: android.graphics.drawable.Drawable? = null
     private var customIndicator: CustomTabIndicator? = null
 
+    private val popupSlotFragment: PopupSlotFragment by lazy {
+        PopupSlotFragment()
+    }
+
     //    private val tournamentListFragment  = TournamentListFragment.newInstance()
 
     override fun initView(savedInstanceState: Bundle?) {
@@ -73,7 +78,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
         initPlayTypeLayout()
         setReceiveHorizontalScrollResult()
         initCurveBanner()
-
+        initPopupSlot()
     }
 
     override fun onStart() {
@@ -260,7 +265,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             val tabStrip = (getChildAt(0) as? ViewGroup) ?: return
             tabStrip.clipChildren = false
             tabStrip.clipToPadding = false
-            
+
             val tabWidthPx = 56.dp2px
             for (i in 0 until tabStrip.childCount) {
                 val tabView = tabStrip.getChildAt(i)
@@ -438,6 +443,20 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
         homeMediator?.detach()
         homeMediator = null
         super.onDestroyView()
+    }
+
+    private fun initPopupSlot() {
+        childFragmentManager.beginTransaction()
+            .add(R.id.fragment_new_home_container_view , popupSlotFragment , PopupSlotFragment.TAG)
+            .commit()
+    }
+
+    //當前Fragment可見時，顯示PopupSlotFragment
+    override fun onHiddenChanged(hidden: Boolean) {
+        super.onHiddenChanged(hidden)
+        if (!hidden) {
+            popupSlotFragment.adjustPosition()
+        }
     }
 
 }
