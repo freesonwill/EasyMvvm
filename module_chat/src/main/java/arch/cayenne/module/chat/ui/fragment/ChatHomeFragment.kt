@@ -58,6 +58,9 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
     override fun initView(savedInstanceState: Bundle?) {
         initChatPageFragment()
         initSoftKeyBoardFragment()
+        initInputListener()
+        initHotRecycler()
+        initChatHelper()
 
         arguments?.let { //TODO  首页过来的 之后需要处理聊天室要matchId的问题
             val value = it.getBoolean("chat", false)
@@ -96,6 +99,8 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
         }
     }
 
+
+
     override fun onStart() {
         StatusBarConfig.statusBarType =
             StatusBarMode.DRAW_BEHIND(autoPadding = false, autoIsNavigation = true)
@@ -105,7 +110,6 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
     }
 
     override fun onStop() {
-        chatAtHelper.removeTextWatcher()
         mViewModel.leaveRoom()
         super.onStop()
         mViewModel.setSoftConfig(true)
@@ -119,6 +123,7 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
 
     override fun onResume() {
         super.onResume()
+        chatAtHelper.addTextWatcher()
         //软件盘时获取的高度有误，onResume时获取固定值
 //        mBinding.liveChatKeyboard.translationY = -62.dp2px.toFloat()
     }
@@ -126,7 +131,9 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
     override fun onPause() {
         super.onPause()
         keyboardChangeClick(KeyBoardType.CHAT, 3)//移动到其他页面后关闭软件盘表情键盘
+        chatAtHelper.removeTextWatcher()
     }
+
 
 
     override suspend fun createObserver() {
@@ -187,8 +194,6 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
 
     private fun initSoftKeyBoardFragment() {
         initEmojiFragment()
-        initInputListener()
-        initHotRecycler()
         softKeyBoardManager = SoftKeyboardManager(
             lifecycleScope,
             lifecycle,
@@ -287,7 +292,6 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
 
     @SuppressLint("ClickableViewAccessibility")
     private fun initInputListener() {
-
         mBinding.apply {
             ivEmoji.setOnTouchListener { v, event ->
                 if (event.action == MotionEvent.ACTION_UP) {
@@ -330,18 +334,20 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
                 }
                 return@setOnTouchListener false
             }
-            chatAtHelper = ChatATHelper(
-                viewLifecycleOwner.lifecycleScope,
-                requireContext(),
-                chatEtInput
-            )
-            chatAtHelper.initChatEtInput(mViewModel.languageManager.getLanguage()) {
-                sendText()
-            }
+        }
+    }
 
-            chatAtHelper.etWatchListen = {
-                etContentChangeAnim()
-            }
+    private fun initChatHelper(){
+        chatAtHelper = ChatATHelper(
+            viewLifecycleOwner.lifecycleScope,
+            requireContext(),
+            mBinding.chatEtInput
+        )
+        chatAtHelper.initChatEtInput(mViewModel.languageManager.getLanguage()) {
+            sendText()
+        }
+        chatAtHelper.etWatchListen = {
+            etContentChangeAnim()
         }
     }
 
@@ -505,7 +511,7 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
         mBinding.apply {
             when {
                 chatEtInput.length() == 0 && chatTvSend.isVisible && mViewModel.currentKeyBoardType != KeyBoardType.CHAT -> { //键盘弹出的时候发送 有内容到无内容
-                    SoftKeyBoardAnim.etInputContentAnim(
+                    etInputContentAnim(
                         true,
                         mViewModel.currentKeyBoardType,
                         chatLlInput,
@@ -532,14 +538,14 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
                         })
                     }
                     AnimatorSet().apply {
-                        duration = 1000
+                        duration = 170
                         playSequentially(inputAnim,btnAnim)
                         start()
                     }
 
                 }
                 chatEtInput.length() > 0 && !chatTvSend.isVisible -> { //无内容到有内容
-                    SoftKeyBoardAnim.etInputContentAnim(
+                    etInputContentAnim(
                         false,
                         mViewModel.currentKeyBoardType,
                         chatLlInput,

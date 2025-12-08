@@ -116,8 +116,6 @@ class ChatATHelper(
                 }
                 return@setOnEditorActionListener false
             }
-
-            addTextChangedListener(etInputWatcher)
             setEditTextDelCheck(this)
 //            movementMethod = LinkMovementMethod.getInstance() //moentionSpan 点击
         }
@@ -325,6 +323,9 @@ class ChatATHelper(
         }
     }
 
+    fun addTextWatcher(){
+        chatEtInput.addTextChangedListener(etInputWatcher)
+    }
 
     fun removeTextWatcher() {
         chatEtInput.removeTextChangedListener(etInputWatcher)
@@ -359,6 +360,7 @@ class ChatATHelper(
 //        return spannable
 //
 //    }
+
 
     fun dismissWindow() {
         atPopupWindow.dismiss()
