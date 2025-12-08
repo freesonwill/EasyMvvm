@@ -24,6 +24,7 @@ import arch.cayenne.lib.base.ui.delegate.StatusBarDelegate
 import arch.cayenne.lib.base.ui.delegate.UIBindDelegate
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.base.utils.ext.FragmentExt.handleBackPressed
+import arch.cayenne.lib.base.utils.ext.FragmentExt.isRootFragment
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Job
@@ -177,6 +178,8 @@ abstract class BaseFragment<VM : BaseViewModel, VB : ViewBinding> : Fragment(), 
     open fun onFragmentAnimEnd(isEnter: Boolean) {
 
     }
+
+    override fun logEnabled(): Boolean = isRootFragment
 }
 
 /**
