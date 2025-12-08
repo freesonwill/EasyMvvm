@@ -33,7 +33,6 @@ class ChatATHelper(
     private val scope: LifecycleCoroutineScope,
     private val context: Context,
     private val chatEtInput: EditText,
-    childFragmentManager: FragmentManager,
 ) {
     private val atPattern = "@[^\\s@]+\\s".toRegex()
     private val atPopupWindow = SearchAtPopupWindow()
@@ -51,8 +50,10 @@ class ChatATHelper(
     //是否at输入
     var isAtInput: Boolean = false
 
-    private val atClick: ((str: String) -> Unit) = {
-    }
+    var etWatchListen:((edit:Editable?) -> Unit)? = null
+
+
+    private val atClick: ((str: String) -> Unit) = {}
 
     private val etInputWatcher = object : TextWatcher {
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -76,6 +77,7 @@ class ChatATHelper(
                 listenEditInput()
             }
             isAtInput = false
+            etWatchListen?.invoke(s)
         }
     }
 
@@ -104,9 +106,7 @@ class ChatATHelper(
             imeOptions = EditorInfo.IME_ACTION_SEND
             setImeActionLabel(
                 SkinnableResourceManager.getString(
-                    context,
-                    R.string.live_chat_send,
-                    locale
+                    context, R.string.live_chat_send, locale
                 ), EditorInfo.IME_ACTION_SEND
             )
             setOnEditorActionListener { v, actionId, event ->
@@ -116,8 +116,6 @@ class ChatATHelper(
                 }
                 return@setOnEditorActionListener false
             }
-
-            addTextChangedListener(etInputWatcher)
             setEditTextDelCheck(this)
 //            movementMethod = LinkMovementMethod.getInstance() //moentionSpan 点击
         }
@@ -182,10 +180,7 @@ class ChatATHelper(
                     val tv = spannable.substring(spanStart + 3, spanEnd)
                     val mentionSpan = MentionSpan(tv, atClick)
                     spannable.setSpan(
-                        mentionSpan,
-                        spanStart + 2,
-                        spanEnd,
-                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                        mentionSpan, spanStart + 2, spanEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
                     )
                 }
                 editText.text = spannable
@@ -212,10 +207,7 @@ class ChatATHelper(
         }
         val mentionSpan = MentionSpan(name, atClick)
         editText.text.setSpan(
-            mentionSpan,
-            start,
-            allLength,
-            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            mentionSpan, start, allLength, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
         )
     }
 
@@ -230,9 +222,7 @@ class ChatATHelper(
 //                    "del1  cursorPositionStart $cursorPositionStart cursorPositionEnd $cursorPositionEnd".logd("aaa")
                     val spannable = SpannableStringBuilder(editText.text)
                     val spans = spannable.getSpans(
-                        cursorPositionStart,
-                        cursorPositionEnd,
-                        MentionSpan::class.java
+                        cursorPositionStart, cursorPositionEnd, MentionSpan::class.java
                     )
 
                     val list: List<String> = spans.map {
@@ -247,9 +237,7 @@ class ChatATHelper(
                 if (cursorPositionStart > 0) {
                     val spannable = SpannableStringBuilder(editText.text)
                     val spans = spannable.getSpans(
-                        cursorPositionStart - 1,
-                        cursorPositionStart,
-                        MentionSpan::class.java
+                        cursorPositionStart - 1, cursorPositionStart, MentionSpan::class.java
                     )
 
                     if (spans.isEmpty()) {
@@ -326,17 +314,18 @@ class ChatATHelper(
 
             if (startInputPosition >= 0 && cursorPosition <= chatEtInput.text.length) {
                 inputStr = chatEtInput.text.substring(
-                    startInputPosition,
-                    if (cursorPosition == chatEtInput.text.length) cursorPosition - 1 else cursorPosition
+                    startInputPosition, cursorPosition
                 )
             }
             if (inputStr.length > 1 && inputStr.startsWith("@")) {
                 atPopupWindow.searchAtList(inputStr)
             }
-
         }
     }
 
+    fun addTextWatcher(){
+        chatEtInput.addTextChangedListener(etInputWatcher)
+    }
 
     fun removeTextWatcher() {
         chatEtInput.removeTextChangedListener(etInputWatcher)
@@ -371,6 +360,7 @@ class ChatATHelper(
 //        return spannable
 //
 //    }
+
 
     fun dismissWindow() {
         atPopupWindow.dismiss()
