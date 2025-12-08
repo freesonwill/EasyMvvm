@@ -28,6 +28,8 @@ import arch.cayenne.module.bet.data.AddSelectionStatus
 import arch.cayenne.module.bet.ui.fragment.BetSheetFragment
 import arch.cayenne.module.bet.viewmodel.FloatingButtonControlViewModel
 import arch.cayenne.module.home.R
+import arch.cayenne.module.home.data.BiDirectionalDate
+import arch.cayenne.module.home.data.BiDirectionalDateType
 import arch.cayenne.module.home.data.constants.HomeState
 import arch.cayenne.module.home.data.constants.PlayType
 import arch.cayenne.module.home.data.model.MatchDateItem
@@ -38,11 +40,10 @@ import arch.cayenne.module.home.databinding.FragmentEarlyMatchListPagerBinding
 import arch.cayenne.module.home.ui.adapter.MatchItemAdapter
 import arch.cayenne.module.home.ui.adapter.OnMatchItemClickListener
 import arch.cayenne.module.home.ui.view.decoration.MatchCardItemDecoration
-import arch.cayenne.module.home.ui.viewmodel.EarlyDate
-import arch.cayenne.module.home.ui.viewmodel.EarlyDateType
-import arch.cayenne.module.home.ui.viewmodel.EarlyMatchListViewModel
+import arch.cayenne.module.home.ui.viewmodel.BiDirectionalMatchListViewModel
 import arch.cayenne.module.home.ui.viewmodel.EarlyViewModel
 import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
+import arch.cayenne.module.home.ui.viewmodel.SuperCompetitionViewModel
 import arch.cayenne.module.home.utils.DateUtils
 import arch.cayenne.module.home.utils.DateUtils.isSameDay
 import arch.cayenne.module.home.utils.setFavoriteIcon
@@ -53,15 +54,15 @@ import java.lang.ref.WeakReference
 import kotlin.reflect.KClass
 
 /**
- * 早盘用的比赛列表， 具备日期切换及向前查询功能
+ * 双向比赛列表， 具备日期切换及向前查询功能
  */
-class EarlyMatchListPagerFragment :
-    BaseFragment<EarlyMatchListViewModel, FragmentEarlyMatchListPagerBinding>() {
+class BiDirectionalMatchListPagerFragment :
+    BaseFragment<BiDirectionalMatchListViewModel, FragmentEarlyMatchListPagerBinding>() {
     override val vbClass: KClass<FragmentEarlyMatchListPagerBinding> =
         FragmentEarlyMatchListPagerBinding::class
-    override val vmClass: KClass<EarlyMatchListViewModel> = EarlyMatchListViewModel::class
+    override val vmClass: KClass<BiDirectionalMatchListViewModel> =
+        BiDirectionalMatchListViewModel::class
     private val homeViewModel: HomeViewModel by sharedViewModel<HomeViewModel, NewHomeFragment>()
-    private val earlyViewModel: EarlyViewModel by viewModels({ requireParentFragment() })
 
     private lateinit var matchAdapter: MatchItemAdapter
     private val gameLayoutManager by lazy { LinearLayoutManager(context) }
@@ -141,7 +142,7 @@ class EarlyMatchListPagerFragment :
                         }
                     }
                 }
-            }, earlyViewModel.currentPlayTypeId)
+            }, getParentFragmentPlayTypeId())
 
             //賽事卡片之間的間閣
             val decoration = MatchCardItemDecoration(
@@ -208,15 +209,15 @@ class EarlyMatchListPagerFragment :
         when (val item = itemList[firstVisibleItemPosition]) {
             is MatchWithMarkets -> {
 
-                val earlyDate = EarlyDate(
+                val earlyDate = BiDirectionalDate(
                     "",
                     "",
                     item.match.basicInfo.startTime,
-                    EarlyDateType.Date
+                    BiDirectionalDateType.Date
                 )
 
                 if (mBinding.rvHomeGameList.scrollState == RecyclerView.SCROLL_STATE_DRAGGING) {
-                    earlyViewModel.setDisplayDate(earlyDate)
+                    setDisplayDate(earlyDate)
                 }
 
             }
@@ -230,20 +231,31 @@ class EarlyMatchListPagerFragment :
             }
 
             is MatchDateItem -> {
-                val earlyDate = EarlyDate(
+                val earlyDate = BiDirectionalDate(
                     "",
                     "",
                     item.timeStamp,
-                    EarlyDateType.Date
+                    BiDirectionalDateType.Date
                 )
 
                 if (mBinding.rvHomeGameList.scrollState == RecyclerView.SCROLL_STATE_DRAGGING) {
-                    earlyViewModel.setDisplayDate(earlyDate)
+                    setDisplayDate(earlyDate)
                 }
 
             }
 
             else -> {}
+        }
+    }
+
+    private fun setDisplayDate(biDirectionalDate: BiDirectionalDate) {
+        if (arguments?.getInt(ARG_PLAY_TYPE_ID) == PlayType.EARLY.id) {
+            //早盘比赛列表
+            val earlyViewModel: EarlyViewModel by viewModels({ requireParentFragment() })
+            earlyViewModel.setDisplayDate(biDirectionalDate)
+        } else {
+            val superCompetitionViewModel: SuperCompetitionViewModel by viewModels({ requireParentFragment() })
+            superCompetitionViewModel.setDisplayDate(biDirectionalDate)
         }
     }
 
@@ -421,10 +433,29 @@ class EarlyMatchListPagerFragment :
             }
         }
 
-        //只有早盘有日期变化的情况
+        homeViewModel.notifySubHomeRefresh.observeEvent(viewLifecycleOwner, this) {
+            reloadAllData()
+        }
+
+        if (arguments?.getInt(ARG_PLAY_TYPE_ID) == PlayType.EARLY.id) {
+            //早盘比赛列表
+            observeEarly()
+        } else if (arguments?.getInt(ARG_PLAY_TYPE_ID) == PlayType.SUPER_COMPETITION.id) {
+            //超级联赛列表
+            observeSuperCompetition()
+        }
+
+    }
+
+    /**
+     * parentFragment为早盘
+     */
+    private fun observeEarly() {
+        //早盘日期变化的情况
+        val earlyViewModel: EarlyViewModel by viewModels({ requireParentFragment() })
         earlyViewModel.selectedDate.observeEvent(viewLifecycleOwner, this) { date ->
             if (date == HomeViewModel.DEFAULT_DATE
-                || earlyViewModel.currentPlayTypeId != mViewModel.getPlayTypeId()
+                || getParentFragmentPlayTypeId() != mViewModel.getPlayTypeId()
                 || earlyViewModel.currentSportId != mViewModel.getSportId()
             ) {
                 return@observeEvent
@@ -440,11 +471,6 @@ class EarlyMatchListPagerFragment :
             }
         }
 
-
-        homeViewModel.notifySubHomeRefresh.observeEvent(viewLifecycleOwner, this) {
-            reloadAllData()
-        }
-
         //联赛列表可能发生变化
         if (arguments?.getBoolean(ARG_MUTABLE) == true) {
             earlyViewModel.savedTournamentSelections.observe(viewLifecycleOwner) {
@@ -457,7 +483,53 @@ class EarlyMatchListPagerFragment :
             }
 
         }
+    }
 
+    /**
+     * parentFragment为超级大赛
+     */
+    private fun observeSuperCompetition() {
+        val superCompetitionViewModel: SuperCompetitionViewModel by viewModels({ requireParentFragment() })
+        //超级大赛日期变化的情况
+        superCompetitionViewModel.selectedDate.observeEvent(viewLifecycleOwner, this) { date ->
+            if (date == HomeViewModel.DEFAULT_DATE
+                || getParentFragmentPlayTypeId() != mViewModel.getPlayTypeId()
+                || getParentFragmentSportId() != mViewModel.getSportId()
+            ) {
+                return@observeEvent
+            }
+            refreshListByDate(date)
+        }
+
+        superCompetitionViewModel.displayDate.observe(viewLifecycleOwner) {
+            it?.let {
+                val (date, week) = DateUtils.getDisplay(it.timestamp)
+                val display = "$date $week"
+                mBinding.tvHover.text = display
+            }
+        }
+    }
+
+    private fun getParentFragmentPlayTypeId(): Int {
+        if (arguments?.getInt(ARG_PLAY_TYPE_ID) == PlayType.EARLY.id) {
+            //早盘比赛列表
+            val earlyViewModel: EarlyViewModel by viewModels({ requireParentFragment() })
+            return earlyViewModel.currentPlayTypeId
+        } else {
+            val superCompetitionViewModel: SuperCompetitionViewModel by viewModels({ requireParentFragment() })
+            return superCompetitionViewModel.currentPlayTypeId
+        }
+    }
+
+    private fun getParentFragmentSportId(): Int {
+        if (arguments?.getInt(ARG_PLAY_TYPE_ID) == PlayType.EARLY.id) {
+            //早盘比赛列表
+            val earlyViewModel: EarlyViewModel by viewModels({ requireParentFragment() })
+            return earlyViewModel.currentSportId
+        } else {
+            val superCompetitionViewModel: SuperCompetitionViewModel by viewModels({ requireParentFragment() })
+            return superCompetitionViewModel.currentSportId
+        }
     }
 
     private fun refreshListByDate(date: Long) {
@@ -544,9 +616,7 @@ class EarlyMatchListPagerFragment :
                             mutableList.add(MatchDateItem(display, mViewModel.queryDate.value))
                             mutableList.add(
                                 MatchQueryDateNoData(
-                                    earlyViewModel.getTournamentsName(
-                                        mViewModel.getTournamentIdList()
-                                    ), mViewModel.queryDate.value
+                                    getTournamentsName(), mViewModel.queryDate.value
                                 ) {
                                     (requireParentFragment() as EarlyFragment).jumpToAllLeagueTab()
                                 }
@@ -565,9 +635,7 @@ class EarlyMatchListPagerFragment :
                             mutableList.add(MatchDateItem(display, mViewModel.queryDate.value))
                             mutableList.add(
                                 MatchQueryDateNoData(
-                                    earlyViewModel.getTournamentsName(
-                                        mViewModel.getTournamentIdList()
-                                    ), mViewModel.queryDate.value
+                                    getTournamentsName(), mViewModel.queryDate.value
                                 ) {
                                     (requireParentFragment() as EarlyFragment).jumpToAllLeagueTab()
                                 }
@@ -586,9 +654,7 @@ class EarlyMatchListPagerFragment :
                             mutableList.add(MatchDateItem(display, mViewModel.queryDate.value))
                             mutableList.add(
                                 MatchQueryDateNoData(
-                                    earlyViewModel.getTournamentsName(
-                                        mViewModel.getTournamentIdList()
-                                    ), mViewModel.queryDate.value
+                                    getTournamentsName(), mViewModel.queryDate.value
                                 ) {
                                     (requireParentFragment() as EarlyFragment).jumpToAllLeagueTab()
                                 }
@@ -615,8 +681,24 @@ class EarlyMatchListPagerFragment :
         return mutableList
     }
 
+    private fun getTournamentsName(): String {
+        if (arguments?.getInt(ARG_PLAY_TYPE_ID) == PlayType.EARLY.id) {
+            //早盘比赛列表
+            val earlyViewModel: EarlyViewModel by viewModels({ requireParentFragment() })
+            return earlyViewModel.getTournamentsName(
+                mViewModel.getTournamentIdList()
+            )
+        } else {
+            val superCompetitionViewModel: SuperCompetitionViewModel by viewModels({ requireParentFragment() })
+            return superCompetitionViewModel.getTournamentsName(
+                mViewModel.getTournamentIdList()
+            )
+        }
+    }
+
 
     companion object {
+        const val TAG = "EarlyMatchListPagerFragment"
         private const val ARG_SPORT_ID = "sport_id"
         private const val ARG_PLAY_TYPE_ID = "play_type_id"
         private const val ARG_LEAGUE_ID = "arg_league_id"
@@ -628,8 +710,8 @@ class EarlyMatchListPagerFragment :
             leagueIdList: List<Int>,
             position: Int,
             mutable: Boolean
-        ): EarlyMatchListPagerFragment {
-            return EarlyMatchListPagerFragment().apply {
+        ): BiDirectionalMatchListPagerFragment {
+            return BiDirectionalMatchListPagerFragment().apply {
                 arguments = Bundle().apply {
                     putInt(ARG_SPORT_ID, sportId)
                     putInt(ARG_PLAY_TYPE_ID, playTypeId)

@@ -119,4 +119,12 @@
     <string name="menu_win_bet">赢钱注单</string>
     <string name="menu_one_bet">赢钱倍数 ≥ 1.5x</string>
     <string name="menu_ten_bet">赢钱倍数 ≥ 10x</string>
+
+    <string name="title_order_date_selector">日期选择</string>
+    <string name="title_order_date_custom">自定义</string>
+
+    <string name="title_order_betting_time">注单时间</string>
+    <string name="title_order_betting_yesterday">昨天</string>
+    <string name="title_order_betting_last_week">上周</string>
+    <string name="title_order_betting_last_month">上月</string>
 </resources>

@@ -14,6 +14,7 @@ enum class PlayType(val id: Int, @StringRes val titleRes: Int, val refreshInterv
     EARLY(3, R.string.title_early, 5 * 60 * 1000),
     CHAMPION(4, R.string.title_champion, 60 * 60 * 1000),
     FAVORITE(5, R.string.favorite_title, 60 * 1000),
+    SUPER_COMPETITION(7, R.string.super_competition_title, 5 * 60 * 1000),
     ROLLING(1, R.string.title_rolling, 5 * 60 * 1000);
 
     fun getTitle(context: Context): String {

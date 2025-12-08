@@ -196,42 +196,58 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
 
-    <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
+    <androidx.constraintlayout.widget.Guideline
         android:id="@+id/ll_bottom"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_48"
-        android:layout_marginHorizontal="@dimen/dp_10"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_end="@dimen/dp_58"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/ll_bottom2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_end="@dimen/dp_10"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <arch.cayenne.lib.skin.widget.SkinnableButton
+        android:id="@+id/btn_check_bet"
+        android:layout_width="@dimen/dp_117"
+        android:layout_height="0dp"
+        android:layout_marginStart="@dimen/dp_10"
+        android:background="@drawable/selector_check_bet"
+        android:gravity="center"
+        android:text="@string/btn_result_check_bet"
+        android:textColor="@color/color_00E0E5"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/btn_confirm"
+        app:layout_constraintTop_toTopOf="@id/ll_bottom"
+        app:layout_constraintBottom_toBottomOf="@id/ll_bottom2"
+        android:layout_marginEnd="@dimen/dp_8"
+        tools:visibility="visible"
+        />
+
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
+        android:id="@+id/btn_confirm"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="@dimen/dp_10"
+        android:background="@drawable/selector_confirm_button"
+        android:gravity="center"
+        android:text="@string/btn_confirm"
+        android:textColor="@color/color_FFFFFF"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        app:skinnableFontWeight="500"
+        app:layout_constraintStart_toEndOf="@id/btn_check_bet"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintTop_toTopOf="@id/ll_bottom"
+        app:layout_goneMarginStart="@dimen/dp_10"
+        app:layout_constraintBottom_toBottomOf="@id/ll_bottom2"/>
 
-        <arch.cayenne.lib.skin.widget.SkinnableButton
-            android:id="@+id/btn_check_bet"
-            android:layout_width="@dimen/dp_117"
-            android:layout_height="match_parent"
-            android:background="@drawable/selector_check_bet"
-            android:enabled="false"
-            android:gravity="center"
-            android:text="@string/btn_result_check_bet"
-            android:textColor="@color/color_00E0E5"
-            android:textSize="15sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/btn_confirm"/>
-
-        <arch.cayenne.lib.skin.widget.SkinnableTextView
-            android:id="@+id/btn_confirm"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_marginStart="4dp"
-            android:background="@drawable/selector_confirm_button"
-            android:gravity="center"
-            android:text="@string/btn_confirm"
-            android:textColor="@color/color_FFFFFF"
-            android:textSize="15sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/btn_check_bet"
-            app:skinnableFontWeight="500" />
-    </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
 </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>

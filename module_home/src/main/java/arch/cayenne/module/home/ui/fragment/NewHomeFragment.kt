@@ -1,22 +1,14 @@
 package arch.cayenne.module.home.ui.fragment
 
-import android.graphics.Color
-import android.graphics.Outline
-import android.graphics.Paint
-import android.graphics.Path
-import android.graphics.RectF
 import android.graphics.Typeface
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams
-import android.view.ViewOutlineProvider
 import android.widget.TextView
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.os.bundleOf
-import androidx.core.view.doOnLayout
 import androidx.fragment.app.viewModels
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
@@ -57,9 +49,6 @@ import arch.cayenne.module.home.ui.adapter.SubHomePagerAdapter
 import arch.cayenne.module.home.ui.view.HomeTabMediator
 import arch.cayenne.module.home.ui.view.PromoTab
 import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
-import com.google.android.material.shape.CornerFamily
-import com.google.android.material.shape.MaterialShapeDrawable
-import com.google.android.material.shape.ShapeAppearanceModel
 import com.google.android.material.tabs.TabLayout
 import kotlin.reflect.KClass
 
@@ -121,7 +110,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             arch.cayenne.lib.common.R.drawable.home_bar_left_icon
                 )
         val adapter = BannerImageAdapter(images)
-       mBinding.banner.setAdapter(adapter)
+        mBinding.banner.setAdapter(adapter)
         mBinding.banner.setLoopTime(3000)
         // 设置滑动时长丝滑,不影响曲线,
         mBinding. banner.setScrollTime(500)  // 1 秒
@@ -201,18 +190,14 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
         homeMediator?.attach { pos ->
             // 由 Mediator 回調的最終選中頁：切換指示器與遮罩
             val isPromo = pos < promoTabs.size
-            indicatorDrawable?.alpha = if (isPromo) 0 else 255
+            indicatorDrawable?.alpha = if (isPromo)255 else 255
 
             if (isPromo) {
                 // 停在 promo：立即顯示遮罩
-                mBinding.homeIndicatorMask.visibility = View.VISIBLE
+               // mBinding.homeIndicatorMask.visibility = View.VISIBLE
             } else {
                 // 從 promo 切到一般 tab：確保遮罩先 VISIBLE，延遲後才 GONE
-                if (mBinding.homeIndicatorMask.visibility == View.VISIBLE) {
-                    mBinding.homeIndicatorMask.postDelayed({
-                        mBinding.homeIndicatorMask.visibility = View.GONE
-                    }, AnimationController[AnimType.scrollbar]?.duration ?: 200L)
-                }
+
                 // 如果遮罩已經是 GONE（一般 tab 之間切換），則不做任何事
             }
         }
@@ -220,9 +205,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
         mBinding.tlHome.post {
             mBinding.tlHome.getTabAt(0)?.select()
             // 如果第一個是 promo，啟動即顯示遮罩
-            if (promoTabs.isNotEmpty()) {
-                mBinding.homeIndicatorMask.visibility = View.VISIBLE
-            }
+
         }
         // Mediator 建立完後，新增自定義監聽
         mBinding.tlHome.addOnTabSelectedListener2(object : TabLayoutExt.OnTabSelectedListener2 {
@@ -230,7 +213,6 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 val position = tab.position
                 if (position < promoTabs.size) {
                     // promo：顯示遮罩
-                    mBinding.homeIndicatorMask.visibility = View.VISIBLE
                 } else {
                     val playIndex = position - promoTabs.size
                     val playType = PlayType.entries[playIndex]
@@ -359,6 +341,10 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 clickNoRepeatSingle { navigate(arch.cayenne.lib.res.R.string.nav_module_search_fragment.deeplink()) }
                 addScaleOnTouchAnimation()
             }
+
+            banner.setOnBannerListener { Int, position ->
+                navigate(arch.cayenne.lib.res.R.string.nav_module_promotion_fragment.deeplink())
+            }
         }
     }
 
@@ -420,6 +406,14 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
         }
 
         unreadMessageViewModel.createObserver()
+
+        mViewModel.scroll.observe(viewLifecycleOwner){
+            if (it){ //收起
+                mBinding.homeBarIcon.marginEndAnim()
+            }else{ //展开
+                mBinding.homeBarIcon.marginStartAnim()
+            }
+        }
 
     }
 

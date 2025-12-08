@@ -7,5 +7,4 @@ package arch.cayenne.lib.common.data.constants
 enum class FragmentResultEnum(val k:String) {
     KEY_PAGE("KEY_PAGE"),
     KEY_CUSTOMER_SERVICE("KEY_CUSTOMER_SERVICE"),
-
 }

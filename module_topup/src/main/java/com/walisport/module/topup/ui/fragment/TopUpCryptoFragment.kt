@@ -12,15 +12,15 @@ import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.common.utils.copyToClipboard
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
-import arch.cayenne.lib.common.utils.ext.ResourceExt.getDrawable
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.helper.showToast
+import arch.cayenne.lib.database.entity.CoinBean
+import com.bumptech.glide.Glide
 import com.walisport.module.topup.R
-import com.walisport.module.topup.data.entity.CoinBean
 import com.walisport.module.topup.databinding.FragmentCryptoBinding
 import com.walisport.module.topup.databinding.TabCoinBinding
-import com.walisport.module.topup.ui.viewmodel.CryptoViewModel
+import com.walisport.module.topup.ui.viewmodel.TopUpCryptoViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -31,19 +31,14 @@ import kotlin.reflect.KClass
  * 充值-加密货币页面
  */
 
-class TopUpCryptoFragment : BaseFragment<CryptoViewModel, FragmentCryptoBinding>() {
+class TopUpCryptoFragment : BaseFragment<TopUpCryptoViewModel, FragmentCryptoBinding>() {
 
     override val vbClass: KClass<FragmentCryptoBinding> = FragmentCryptoBinding::class
-    override val vmClass: KClass<CryptoViewModel> = CryptoViewModel::class
+    override val vmClass: KClass<TopUpCryptoViewModel> = TopUpCryptoViewModel::class
     private var drawTournamentTabJob: Job? = null
 
     override fun initView(savedInstanceState: Bundle?) {
         generateQRCode()
-    }
-
-    override fun initData() {
-        super.initData()
-        mViewModel.getCoinList()
     }
 
     override fun initListener() {
@@ -59,11 +54,11 @@ class TopUpCryptoFragment : BaseFragment<CryptoViewModel, FragmentCryptoBinding>
             CoinDialogFragment.newInstance(offset).apply {
                 setDismissListener(object : CoinDialogFragment.DialogDismissListener {
                     override fun onDismiss() {
-                        ViewUtils.expandView(mBinding.ivArrow,false)
+                        ViewUtils.expandView(mBinding.ivArrow, false)
                     }
 
                     override fun onShow() {
-                        ViewUtils.expandView(mBinding.ivArrow,true)
+                        ViewUtils.expandView(mBinding.ivArrow, true)
                     }
                 })
             }.show(childFragmentManager)
@@ -84,6 +79,7 @@ class TopUpCryptoFragment : BaseFragment<CryptoViewModel, FragmentCryptoBinding>
     override suspend fun createObserver() {
         mViewModel.coinData.observe(viewLifecycleOwner) {
             val data = it as List<CoinBean>
+            mBinding.tlCoinList.removeAllTabs()
             List(data.size) { index ->
                 mBinding.tlCoinList.addTab(mBinding.tlCoinList.newTab().setTag(data[index]))
             }
@@ -112,8 +108,11 @@ class TopUpCryptoFragment : BaseFragment<CryptoViewModel, FragmentCryptoBinding>
             false
         )
         tabBinding.apply {
-            ivLogoCoin.background = bean.coinLogo.getDrawable()
-            tvNameCoin.text = bean.coinName
+            Glide.with(this@TopUpCryptoFragment)
+                .load(bean.icon)
+                .placeholder(R.drawable.icon_pay_usdt)
+                .into(ivLogoCoin)
+            tvNameCoin.text = bean.name
             root.setOnClickListener {
                 selectTab(position)
             }

@@ -19,8 +19,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import androidx.viewpager2.widget.ViewPager2.SCROLL_STATE_IDLE
+import arch.cayenne.lib.base.ui.animation.CustomCurveTransformer
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
+import arch.cayenne.lib.common.ui.adapter.BannerImageMatchAdapter
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
@@ -31,6 +33,7 @@ import arch.cayenne.lib.common.utils.ext.TabLayoutExt
 import arch.cayenne.lib.common.utils.ext.TabLayoutExt.addOnTabSelectedListener2
 import arch.cayenne.lib.common.utils.ext.VIPDataExt
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
+import arch.cayenne.lib.common.utils.ext.checkCurrentScrollState
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.clickNoRepeatSingle
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
@@ -41,6 +44,8 @@ import arch.cayenne.lib.database.entity.TournamentDataModel
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.module.home.R
 import arch.cayenne.module.home.TournamentCombo
+import arch.cayenne.module.home.data.BiDirectionalDate
+import arch.cayenne.module.home.data.BiDirectionalDateType
 import arch.cayenne.module.home.data.constants.HomeState
 import arch.cayenne.module.home.data.constants.TournamentListType
 import arch.cayenne.module.home.data.constants.TournamentSortType
@@ -49,11 +54,8 @@ import arch.cayenne.module.home.databinding.ItemDateTabBinding
 import arch.cayenne.module.home.databinding.ItemLeagueTabBinding
 import arch.cayenne.module.home.databinding.LayoutTournamentSortingMenuBinding
 import arch.cayenne.module.home.ui.adapter.LeaguePagerAdapter
-import arch.cayenne.module.home.ui.adapter.SportBannerAdapter
 import arch.cayenne.module.home.ui.adapter.SportsListAdapter
 import arch.cayenne.module.home.ui.view.CustomTabLayoutMediator
-import arch.cayenne.module.home.ui.viewmodel.EarlyDate
-import arch.cayenne.module.home.ui.viewmodel.EarlyDateType
 import arch.cayenne.module.home.ui.viewmodel.EarlyViewModel
 import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
 import arch.cayenne.module.home.utils.scrollToPositionWithoutAnim
@@ -254,7 +256,7 @@ class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>(),
             leaguePagerAdapter?.getItemId(mBinding.layoutContainer.vpGameList.currentItem)
                 ?: return
         val fragment = childFragmentManager.findFragmentByTag("f$itemId") ?: return
-        (fragment as? EarlyMatchListPagerFragment)?.reloadAllData()
+        (fragment as? BiDirectionalMatchListPagerFragment)?.reloadAllData()
     }
 
     // 設置更多按鈕的顯示狀態
@@ -307,34 +309,30 @@ class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>(),
     // init Sport Banner 輪播區塊
     @SuppressLint("ClickableViewAccessibility")
     private fun initSportBanner() {
-        val mockBannerList = arrayListOf(
-            arch.cayenne.module.home.data.SportBannerData(R.drawable.banner_ad1),
-            arch.cayenne.module.home.data.SportBannerData(R.drawable.banner_ad1),
-            arch.cayenne.module.home.data.SportBannerData(R.drawable.banner_ad1),
-            arch.cayenne.module.home.data.SportBannerData(R.drawable.banner_ad1),
-            arch.cayenne.module.home.data.SportBannerData(R.drawable.banner_ad1),
+        val mockBannerList = listOf(
+            R.drawable.banner_ad1,
+           R.drawable.banner_ad1,
+            R.drawable.banner_ad1,
+            R.drawable.banner_ad1,
+            R.drawable.banner_ad1,
         )
-        val bannerAdapter = SportBannerAdapter()
-
         with(mBinding.includeSportBanner) {
-            vpSportBanner.adapter = bannerAdapter
-            bannerAdapter.submitList(mockBannerList)
-            vpSportBanner.isUserInputEnabled = true
-            vpSportBanner.getChildAt(0).setOnTouchListener { v, event ->
-                v.parent.requestDisallowInterceptTouchEvent(true)
-                false
-            }
-
-            vpSportBanner.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-                override fun onPageSelected(position: Int) {
-                    super.onPageSelected(position)
-                    pbSportBanner.resetTriggerJob()
-                }
-            })
             pbSportBanner.setTriggerListener {
-                vpSportBanner.currentItem =
-                    (vpSportBanner.currentItem + 1) % bannerAdapter.itemCount
+                vpSportBanner.setLoopTime(50)
+                vpSportBanner.isAutoLoop(true)
+                vpSportBanner.start()
+                vpSportBanner.postDelayed({
+                    vpSportBanner.stop()                    // 停止自动轮播
+                    vpSportBanner.isAutoLoop(false)         // 关闭自动轮播功能 // 可选：允许下次再次触发
+                }, 50)
             }
+            val adapter = BannerImageMatchAdapter(mockBannerList)
+            vpSportBanner.setAdapter(adapter)
+            vpSportBanner.setBannerRound(9.dp2px.toFloat())
+            vpSportBanner.isAutoLoop(false)
+            // 设置滑动时长丝滑,不影响曲线,
+            vpSportBanner.setScrollTime(600)  // 0.6 秒
+            vpSportBanner.setPageTransformer(CustomCurveTransformer())
         }
     }
 
@@ -484,7 +482,7 @@ class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>(),
         val currentPosition = position
         val itemId = leaguePagerAdapter?.getItemId(currentPosition) ?: return
         val fragment = childFragmentManager.findFragmentByTag("f$itemId") ?: return
-        if (fragment is EarlyMatchListPagerFragment) {
+        if (fragment is BiDirectionalMatchListPagerFragment) {
             fragment.startObserveMatchListChange()
         }
         //如果記憶體過低，就不做預載左右兩頁
@@ -495,7 +493,7 @@ class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>(),
         if (currentPosition - 1 >= 0) {
             leaguePagerAdapter?.getItemId(currentPosition - 1)?.also { preItemId ->
                 childFragmentManager.findFragmentByTag("f$preItemId").also { preFragment ->
-                    if (preFragment is EarlyMatchListPagerFragment) {
+                    if (preFragment is BiDirectionalMatchListPagerFragment) {
                         preFragment.startObserveMatchListChange()
                     }
                 }
@@ -505,7 +503,7 @@ class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>(),
         if (currentPosition + 1 < (mBinding.layoutContainer.vpGameList.adapter?.itemCount ?: 0)) {
             leaguePagerAdapter?.getItemId(currentPosition + 1)?.also { preItemId ->
                 childFragmentManager.findFragmentByTag("f$preItemId").also { preFragment ->
-                    if (preFragment is EarlyMatchListPagerFragment) {
+                    if (preFragment is BiDirectionalMatchListPagerFragment) {
                         preFragment.startObserveMatchListChange()
                     }
                 }
@@ -783,7 +781,7 @@ class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>(),
 
     private fun updateDateTabs(
         tlDateList: TabLayout,
-        dateTabs: List<EarlyDate>
+        dateTabs: List<BiDirectionalDate>
     ) {
         tlDateList.apply {
             removeAllTabs()
@@ -795,10 +793,10 @@ class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>(),
         }
     }
 
-    private fun createDateTab(date: String?, weekday: String?, type: EarlyDateType): TabLayout.Tab {
+    private fun createDateTab(date: String?, weekday: String?, type: BiDirectionalDateType): TabLayout.Tab {
         val tab = mBinding.tlDateList.newTab()
         val tabView = ItemDateTabBinding.inflate(LayoutInflater.from(context), null, false).apply {
-            if (type == EarlyDateType.Date) {
+            if (type == BiDirectionalDateType.Date) {
                 tvDate.visibility = View.VISIBLE
                 tvDate.text = date
                 tvWeekDay.visibility = View.VISIBLE
@@ -1027,6 +1025,10 @@ class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>(),
     override fun onDestroyView() {
         sortingMenuBinding = null
         super.onDestroyView()
+    }
+
+    override fun onResume() {
+        super.onResume()
     }
 
     companion object {

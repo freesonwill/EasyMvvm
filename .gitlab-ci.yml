@@ -1,0 +1,5 @@
+include:
+  - component: gitlab.iptco.me/big/gitlab-ci/android-app@main
+    inputs:
+      version_file: "app/build/generated/source/buildConfig/release/com/walisport/app/BuildConfig.java"
+      deploy_name:  "tio"

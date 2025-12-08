@@ -14,19 +14,35 @@
         android:textSize="14sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="3串1 @12.76"/>
+        app:fontFamily="@font/sf_pro"
+        app:skinnableFontWeight="400"
+        tools:text="3串1"/>
+
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
+        android:id="@+id/tv_odds"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/color_00E0E5"
+        android:textSize="14sp"
+        android:layout_marginStart="@dimen/dp_10"
+        app:layout_constraintStart_toEndOf="@id/tv_combo"
+        app:layout_constraintTop_toTopOf="parent"
+        app:fontFamily="@font/sf_pro"
+        app:skinnableFontWeight="400"
+        tools:text="\@12.76"/>
 
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/tv_bet_money"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/color_FFFFFF"
+        android:textColor="@color/color_C0C0C0"
         android:textSize="14sp"
         android:textStyle="bold"
+        app:fontFamily="@font/sf_pro"
         app:layout_constraintBottom_toBottomOf="@id/tv_combo"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/tv_combo"
-        app:skinnableFontWeight="600"
-        tools:text="1 * ¥20"/>
+        app:skinnableFontWeight="510"
+        tools:text="1* ¥20"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

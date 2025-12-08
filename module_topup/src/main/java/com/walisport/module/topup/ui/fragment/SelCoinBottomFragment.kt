@@ -11,6 +11,8 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.walisport.module.topup.databinding.FragmentCoinSelectBinding
 import com.walisport.module.topup.ui.adapter.CoinAdapter
 import com.walisport.module.topup.ui.viewmodel.SelectCoinViewModel
+import com.walisport.module.topup.ui.viewmodel.TopUpCryptoViewModel
+import com.walisport.module.topup.ui.viewmodel.TopUpViewModel
 import kotlin.reflect.KClass
 
 /**
@@ -46,17 +48,12 @@ class SelCoinBottomFragment :
 
     @SuppressLint("NotifyDataSetChanged")
     override suspend fun createObserver() {
-        mViewModel.coinList.observe(viewLifecycleOwner) {
+        mViewModel.coinData.observe(viewLifecycleOwner) {
             if (it != null) {
                 coinAdapter.submitList(it)
                 coinAdapter.notifyDataSetChanged()
             }
         }
-    }
-
-    override fun initData() {
-        super.initData()
-        mViewModel.getCoinList()
     }
 
     override fun onStart() {

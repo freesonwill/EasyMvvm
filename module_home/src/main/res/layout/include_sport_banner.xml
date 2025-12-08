@@ -3,16 +3,21 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="172dp"
     android:layout_height="111dp"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_marginEnd="@dimen/dp_11">
 
-    <androidx.viewpager2.widget.ViewPager2
+
+
+    <com.youth.banner.Banner
         android:id="@+id/vp_sport_banner"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/tran_0"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingConstraints" />
 
     <arch.cayenne.lib.common.ui.view.GameRoundProgressBar
         android:id="@+id/pb_sport_banner"
@@ -27,6 +32,6 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:progressColor="@color/color_D9D9D9"
-        app:triggerTime="2000" />
+        app:triggerTime="3500" />
 </androidx.constraintlayout.widget.ConstraintLayout>
 
