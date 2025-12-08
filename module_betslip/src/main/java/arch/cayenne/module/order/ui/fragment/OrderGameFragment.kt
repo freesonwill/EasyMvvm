@@ -11,6 +11,7 @@ import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.setupHorizontalScrollDegree
+import arch.cayenne.lib.common.utils.ext.startFadeAnim
 import arch.cayenne.module.betslip.R
 import arch.cayenne.module.betslip.databinding.FragmentGameDropMenuBinding
 import arch.cayenne.module.betslip.databinding.FragmentOrderGameBinding
@@ -30,6 +31,7 @@ class OrderGameFragment : BaseFragment<OrderGameViewModel, FragmentOrderGameBind
     private var menuBinding: FragmentGameDropMenuBinding? = null
     private var sortType = OrderSortType.SORT_ALL
     private var isExpanded: Boolean = false
+    private var currentPage: Int = 0
 
     override fun initView(savedInstanceState: Bundle?) {
         with(mBinding) {
@@ -88,7 +90,7 @@ class OrderGameFragment : BaseFragment<OrderGameViewModel, FragmentOrderGameBind
             GamePageEnum.ALL -> {
                 mBinding.tvMultiple.isSelected = false
                 mBinding.tvBonus.isSelected = false
-                mBinding.viewPager.setCurrentItem(0, true)
+                setCurrentItem(0)
                 changeDropMenuState(!isExpanded)
             }
 
@@ -98,7 +100,7 @@ class OrderGameFragment : BaseFragment<OrderGameViewModel, FragmentOrderGameBind
                 mBinding.tvAll.isSelected = false
                 mBinding.tvBonus.isSelected = false
                 mBinding.tvMultiple.isSelected = true
-                mBinding.viewPager.setCurrentItem(1, true)
+                setCurrentItem(1)
             }
 
             GamePageEnum.BONUS -> {
@@ -107,9 +109,19 @@ class OrderGameFragment : BaseFragment<OrderGameViewModel, FragmentOrderGameBind
                 mBinding.tvAll.isSelected = false
                 mBinding.tvBonus.isSelected = true
                 mBinding.tvMultiple.isSelected = false
-                mBinding.viewPager.setCurrentItem(2, true)
+                setCurrentItem(2)
             }
         }
+    }
+
+    private fun setCurrentItem(type: Int) {
+        if (currentPage != type) {
+            mBinding.viewPager.startFadeAnim { onComplete ->
+                mBinding.viewPager.setCurrentItem(type, false)
+                onComplete.invoke()
+            }
+        }
+        currentPage = type
     }
 
     private fun changeSortType(type: OrderSortType) {
@@ -196,6 +208,7 @@ class OrderGameFragment : BaseFragment<OrderGameViewModel, FragmentOrderGameBind
                     menuBinding = null
                     container.visibility = View.GONE
                 }
+
                 override fun onAnimationRepeat(animation: Animation?) {}
             })
             menuBinding?.root?.startAnimation(outAnim)
@@ -207,6 +220,7 @@ class OrderGameFragment : BaseFragment<OrderGameViewModel, FragmentOrderGameBind
                     override fun onAnimationEnd(p0: Animator) {
                         mBinding.llDropMask.visibility = View.GONE
                     }
+
                     override fun onAnimationCancel(p0: Animator) {}
                     override fun onAnimationRepeat(p0: Animator) {}
                 })
