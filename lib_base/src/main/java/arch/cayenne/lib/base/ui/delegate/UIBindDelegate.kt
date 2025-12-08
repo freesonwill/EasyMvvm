@@ -45,7 +45,7 @@ class UIBindDelegate<UIOwner, VM, VB>(
     //是否第一次初始化
     private var firstInit: Boolean = false
     private var destroyRunnable:Runnable? = null
-    private val logEnabled = if(uiOwner is Fragment) { uiOwner.isRootFragment } else true
+    private val logEnabled = uiOwner.logEnabled()
 
     fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?):View {
         destroyRunnable?.let { binding.root.removeCallbacks(it) }

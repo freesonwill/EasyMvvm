@@ -5,35 +5,52 @@ import androidx.core.os.bundleOf
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.ui.fragment.BaseBottomSheetFragment
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
-import arch.cayenne.module.bet.data.Parameter
-import arch.cayenne.module.bet.databinding.FragmentBetCombinationBinding
-import arch.cayenne.module.bet.ui.adapter.CombinationAdapter
+import arch.cayenne.module.bet.databinding.FragmentComboDetailBinding
+import arch.cayenne.module.bet.ui.adapter.ComboDetailAdapter
 import arch.cayenne.module.bet.viewmodel.BetCombViewModel
 import com.blankj.utilcode.util.GsonUtils
 import kotlin.reflect.KClass
 
 /**
- * 组合列表弹窗页
+ * 组合明细弹窗页
  */
 
-class CombinationFragment :
-    BaseBottomSheetFragment<BetCombViewModel, FragmentBetCombinationBinding>() {
+class ComboDetailFragment :
+    BaseBottomSheetFragment<BetCombViewModel, FragmentComboDetailBinding>() {
 
-    override val vbClass: KClass<FragmentBetCombinationBinding> =
-        FragmentBetCombinationBinding::class
+    override val vbClass: KClass<FragmentComboDetailBinding> =
+        FragmentComboDetailBinding::class
     override val vmClass: KClass<BetCombViewModel> = BetCombViewModel::class
-    private val listAdapter by lazy { CombinationAdapter() }
+    private val listAdapter by lazy { ComboDetailAdapter() }
     private var tipStr = ""
     private var isExpand: Boolean = false //是否展开全屏
 
     companion object {
         private const val PARAMETER = "PARAMETER"
-        fun newInstance(parameter: Parameter): CombinationFragment {
-            return CombinationFragment().apply {
+
+        fun newInstance(parameter: Parameter): ComboDetailFragment {
+            return ComboDetailFragment().apply {
                 arguments = bundleOf(PARAMETER to GsonUtils.toJson(parameter))
             }
         }
     }
+    data class Parameter(
+        val title: String,
+        val titleTips: String,
+        val items: List<ParameterItems>
+    )
+
+    data class ParameterItems(
+        val title: String,
+        val items: List<ParameterItems2>
+    )
+
+    data class ParameterItems2(
+        val combo: String,
+        val money: String?,
+        val winMoney: String?,
+        val odds: String
+    )
 
     override fun initView(savedInstanceState: Bundle?) {
         val parameter = requireArguments().getString(PARAMETER).let {
@@ -59,8 +76,8 @@ class CombinationFragment :
 
     override fun initListener() {
         mBinding.ivBetClose.clickNoRepeat {
-            this@CombinationFragment.dismiss()
-            this@CombinationFragment.dialog?.dismiss()
+            this@ComboDetailFragment.dismiss()
+            this@ComboDetailFragment.dialog?.dismiss()
         }
         mBinding.ivBetInfo.clickNoRepeat {
             val location = IntArray(2)

@@ -135,7 +135,7 @@ class BetSheetFragment constructor() :
             } else if (result == VALUE_TO_RESULT) {
                 hideSelection()
                 val sheetAnimator = getHideAnimator() ?: return@setFragmentResultListener
-                BetResultFragment.show(requireActivity(), sheetAnimator)
+                BetResultFragment.show(requireActivity(), bundle,sheetAnimator)
             }
         }
         mViewModel.betSheetSizeListener.observe(viewLifecycleOwner) {
@@ -249,7 +249,7 @@ class BetSheetFragment constructor() :
 
 interface BetSheetListener {
     fun dismiss(key: String = KEY_RESULT, value: String = VALUE_DISMISS)
-    fun navToResult(key: String = KEY_RESULT, value: String = VALUE_TO_RESULT)
+    fun navToResult(vararg others: Pair<String, Any?>)
     fun doCustomHideEnd()
     fun doCustomShow() {
 
