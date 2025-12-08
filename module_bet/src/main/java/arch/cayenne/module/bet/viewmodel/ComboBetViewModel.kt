@@ -21,6 +21,7 @@ import arch.cayenne.lib.database.entity.InfoBean
 import arch.cayenne.module.bet.R
 import arch.cayenne.module.bet.data.ComboMultiBetBean
 import arch.cayenne.module.bet.data.OddsChangeEnum
+import arch.cayenne.module.bet.data.Parameter
 import arch.cayenne.module.bet.data.ParameterItems
 import arch.cayenne.module.bet.data.ParameterItems2
 import arch.cayenne.module.bet.repo.ComboBetRepository
@@ -270,37 +271,12 @@ class ComboBetViewModel(
         return null
     }
 
-    /**
-     * 拆分串关，比如3串4拆成2串1，3串1
-     * @param combK
-     * @param combV
-     * @return
-     */
-    fun splitComboIntoSingles(bean:ComboMultiBetBean): List<ParameterItems> {
-        val data = this.onBetListListener.value ?: return emptyList()
-        // 1 注 = 固定只有一个 K
-        val kList = if (bean.comboV == 1) {
-            listOf(bean.comboK)
-        } else {
-            ((if(bean.isSuperCombo) 1 else 2)..bean.comboK).toList()
-        }
-        return kList.map { k ->
-            val title = R.string.title_combo_bet_detail.getString(
-                if(k==1) arch.cayenne.lib.res.R.string.title_single_bet.getString()
-                else R.string.title_combo_bet_odds.getString(k,1)
-            )
-            val moneySymbol = this.moneySymbol
 
-            val listItems = data.combinations(k).map { l ->
-                val odds = repo.calculateCombinationOdds(l.map { it.odds },l.size)
-                ParameterItems2(
-                    combo = l.joinToString("·") { "${data.indexOf(it) + 1}" },
-                    money = bean.inputMoney.takeIf { it != 0L }?.let { "$moneySymbol${it.getMoney()}" },
-                    winMoney = bean.inputMoney.takeIf { it != 0L }?.let { "$moneySymbol${bean.inputMoney.getMoney(odds)}" },
-                    odds = "@${odds.getOdds()}"
-                )
-            }
-            ParameterItems(title, listItems)
-        }
+    fun toCombinationDetailParameter(serialValue: Int):Parameter{
+        return repo.toCombinationDetailParameter(serialValue,
+            onComboMultiBetBeanListener.value,
+            onBetListListener.value,
+            moneySymbol
+        )
     }
 }

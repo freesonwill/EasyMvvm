@@ -11,6 +11,7 @@ import android.view.animation.LinearInterpolator
 import android.widget.EditText
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.os.bundleOf
 import androidx.core.view.get
 import androidx.core.view.isVisible
 import androidx.core.widget.NestedScrollView
@@ -22,7 +23,6 @@ import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
-import arch.cayenne.lib.common.ui.dialog.CommonDialog
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
 import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
@@ -36,13 +36,15 @@ import arch.cayenne.lib.database.entity.BetSelectionBean
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.module.bet.R
 import arch.cayenne.module.bet.data.ComboMultiBetBean
-import arch.cayenne.module.bet.data.Parameter
+import arch.cayenne.module.bet.data.Config.KEY_RESULT
+import arch.cayenne.module.bet.data.Config.VALUE_TO_RESULT
 import arch.cayenne.module.bet.databinding.FragmentComboBet2Binding
 import arch.cayenne.module.bet.ui.adapter.BetSelectionAdapter
 import arch.cayenne.module.bet.ui.adapter.ComboMultiBetAdapter
 import arch.cayenne.module.bet.ui.custom.BetMoneyKeyboard
 import arch.cayenne.module.bet.util.BetSheetDecoration
 import arch.cayenne.module.bet.viewmodel.ComboBetViewModel
+import com.blankj.utilcode.util.GsonUtils
 import kotlin.reflect.KClass
 
 /**
@@ -108,15 +110,8 @@ class ComboBetFragment2 : BaseFragment<ComboBetViewModel, FragmentComboBet2Bindi
             }
 
             override fun onCombinationDetailClick(serialValue: Int) {
-                val data = mViewModel.onComboMultiBetBeanListener.value?.find { it.serialValue == serialValue }
-                    ?: error("can not find serialValue:$serialValue in ${ mViewModel.onComboMultiBetBeanListener.value }")
-                val items = mViewModel.splitComboIntoSingles(data)
                 CombinationFragment.newInstance(
-                    Parameter(
-                        title = data.title(),
-                        titleTips = data.titleTips(),
-                        items = items
-                    )
+                    mViewModel.toCombinationDetailParameter(serialValue)
                 ).show(childFragmentManager)
             }
 
@@ -210,7 +205,7 @@ class ComboBetFragment2 : BaseFragment<ComboBetViewModel, FragmentComboBet2Bindi
             } else {
                 val isSuccess = mViewModel.sendBet()
                 if (isSuccess) {
-                    navToResult()
+                    navToResult(BetResultFragment.KEY_ComboMultiBetBeans to GsonUtils.toJson(mViewModel.onComboMultiBetBeanListener.value))
                 }
             }
         }
@@ -322,10 +317,8 @@ class ComboBetFragment2 : BaseFragment<ComboBetViewModel, FragmentComboBet2Bindi
         })
     }
 
-    override fun navToResult(key: String, value: String) {
-        parentFragmentManager.setFragmentResult(key, Bundle().apply {
-            putString(key, value)
-        })
+    override fun navToResult(vararg others:Pair<String,Any?>) {
+        parentFragmentManager.setFragmentResult(KEY_RESULT, bundleOf(KEY_RESULT to VALUE_TO_RESULT,*others))
     }
 
     override fun doCustomHideEnd() {

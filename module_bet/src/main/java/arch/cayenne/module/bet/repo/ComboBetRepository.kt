@@ -5,6 +5,9 @@ import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.data.constants.UserDataKey
 import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.common.utils.ext.CollectionExt.combinations
+import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
+import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
+import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
 import arch.cayenne.lib.database.dao.BetDao
 import arch.cayenne.lib.database.entity.BetDetailBean
 import arch.cayenne.lib.database.entity.BetResultStatusEnum
@@ -12,9 +15,13 @@ import arch.cayenne.lib.database.entity.BetSelectionBean
 import arch.cayenne.lib.database.entity.BetStatusEnum
 import arch.cayenne.lib.database.entity.BetTypeEnum
 import arch.cayenne.module.bet.BettingRemoteManager
+import arch.cayenne.module.bet.R
 import arch.cayenne.module.bet.data.ComboMultiBetBean
 import arch.cayenne.module.bet.data.ComboMultiBetOddsBean
 import arch.cayenne.module.bet.data.OddsChangeEnum
+import arch.cayenne.module.bet.data.Parameter
+import arch.cayenne.module.bet.data.ParameterItems
+import arch.cayenne.module.bet.data.ParameterItems2
 import arch.cayenne.module.bet.data.remote.ComboRiskDataModel
 import galaxy.client.proto.Client
 import kotlinx.coroutines.CoroutineScope
@@ -529,5 +536,62 @@ class ComboBetRepository(
                 betDao.updateDetailMoney(bet.betId, serialValue, money)
             }
         }
+    }
+
+    /**
+     * 拆分串关，比如3串4拆成2串1，3串1
+     * @param combK
+     * @param combV
+     * @return
+     */
+    private fun splitComboIntoSingles(bean:ComboMultiBetBean,
+                                      betList:List<BetSelectionBean>?,
+                                      moneySymbol:String): List<ParameterItems> {
+        val data = betList ?: return emptyList()
+        // 1 注 = 固定只有一个 K
+        val kList = if (bean.comboV == 1) {
+            listOf(bean.comboK)
+        } else {
+            ((if(bean.isSuperCombo) 1 else 2)..bean.comboK).toList()
+        }
+        return kList.map { k ->
+            val title = R.string.title_combo_bet_detail.getString(
+                if(k==1) arch.cayenne.lib.res.R.string.title_single_bet.getString()
+                else R.string.title_combo_bet_odds.getString(k,1)
+            )
+            val listItems = data.combinations(k).map { l ->
+                val odds = calculateCombinationOdds(l.map { it.odds },l.size)
+                ParameterItems2(
+                    combo = l.joinToString("·") { "${data.indexOf(it) + 1}" },
+                    money = bean.inputMoney.takeIf { it != 0L }?.let { "$moneySymbol${it.getMoney()}" },
+                    winMoney = bean.inputMoney.takeIf { it != 0L }?.let { "$moneySymbol${bean.inputMoney.getMoney(odds)}" },
+                    odds = "@${odds.getOdds()}"
+                )
+            }
+            ParameterItems(title, listItems)
+        }
+    }
+
+    /**
+     * 找出serialValue对应的组合详情Parameter
+     *
+     * @param serialValue
+     * @param comboMultiBetBeans
+     * @param betList
+     * @param moneySymbol
+     * @return
+     */
+    fun toCombinationDetailParameter(serialValue: Int,
+                                     comboMultiBetBeans:List<ComboMultiBetBean>?,
+                                     betList:List<BetSelectionBean>?,
+                                     moneySymbol:String): Parameter {
+        val data = comboMultiBetBeans?.find { it.serialValue == serialValue }
+            ?: error("can not find serialValue:$serialValue in $comboMultiBetBeans")
+        val items = splitComboIntoSingles(data,betList,moneySymbol)
+        return Parameter(
+            title = data.title(),
+            titleTips = data.titleTips(),
+            items = items
+        )
     }
 }
