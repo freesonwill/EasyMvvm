@@ -24,7 +24,7 @@ class OrderDateDialogFragment: BaseBottomSheetFragment<OrderDateDialogViewModel,
     override val vbClass: KClass<FragmentOrderDateDialogBinding> = FragmentOrderDateDialogBinding::class
     override val vmClass: KClass<OrderDateDialogViewModel> = OrderDateDialogViewModel::class
 
-    private var resultListener: ((Long, Long) -> Unit)? = null
+    private var resultListener: ((Long?, Long?) -> Unit)? = null
 
     override fun initView(savedInstanceState: Bundle?) {
         initTabLayout()
@@ -75,7 +75,13 @@ class OrderDateDialogFragment: BaseBottomSheetFragment<OrderDateDialogViewModel,
                 val f = childFragmentManager.findFragmentByTag("f$curIndex")
                 if (f is OrderDataPage) {
                     val result = f.getResult()
-                    it.invoke(result[0], result[1])
+                    if (result.size == 1) {
+                        it.invoke(result.first(), null)
+                    } else if (result.size == 2) {
+                        it.invoke(result.first(), result.last())
+                    } else {
+                        it.invoke(null, null)
+                    }
                 }
             }
             dismiss()
@@ -85,7 +91,7 @@ class OrderDateDialogFragment: BaseBottomSheetFragment<OrderDateDialogViewModel,
     override suspend fun createObserver() {
     }
 
-    fun setListener(listener: (Long, Long) -> Unit) {
+    fun setListener(listener: (Long?, Long?) -> Unit) {
         resultListener = listener
     }
 
