@@ -10,6 +10,9 @@ import androidx.core.view.isVisible
 import androidx.core.view.isGone
 import androidx.fragment.app.Fragment
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.module.betslip.R
+import java.util.Calendar
+import java.util.Locale
 
 class OrderDateCustomFragment: BaseFragment<OrderDateCustomViewModel, FragmentOrderDateCustomBinding>(), OrderDataPage {
 
@@ -17,7 +20,32 @@ class OrderDateCustomFragment: BaseFragment<OrderDateCustomViewModel, FragmentOr
     override val vmClass: KClass<OrderDateCustomViewModel> = OrderDateCustomViewModel::class
 
     override fun initView(savedInstanceState: Bundle?) {
+        mBinding.layoutWheel.yearPicker.setOnValueChangedListener { _, _, newVal ->
+            val month = mBinding.layoutWheel.monthPicker.value
+            val day = mBinding.layoutWheel.dayPicker.value
+            updateDayPicker(newVal, month, day)
+            // 更新選中的日期
+            updateSelectedDate(newVal, month, day)
+        }
+        mBinding.layoutWheel.monthPicker.setOnValueChangedListener { _, _, newVal ->
+            val year = mBinding.layoutWheel.yearPicker.value
+            val day = mBinding.layoutWheel.dayPicker.value
+            updateDayPicker(year, newVal, day)
+            // 更新選中的日期
+            updateSelectedDate(year, newVal, day)
+        }
+        mBinding.layoutWheel.dayPicker.setOnValueChangedListener { _, _, newVal ->
+            val year = mBinding.layoutWheel.yearPicker.value
+            val month = mBinding.layoutWheel.monthPicker.value
 
+            val calendar = mViewModel.calendar
+            calendar.set(Calendar.YEAR, year)
+            calendar.set(Calendar.MONTH, month - 1)
+            calendar.set(Calendar.DAY_OF_MONTH, newVal)
+            
+            // 更新選中的日期
+            updateSelectedDate(year, month, newVal)
+        }
     }
 
     override fun initListener() {
@@ -34,10 +62,12 @@ class OrderDateCustomFragment: BaseFragment<OrderDateCustomViewModel, FragmentOr
             hideWheelView()
         }
         mBinding.tvStartTime.setOnClickListener {
+            mViewModel.setStartTime(mBinding.tvStartTime.text.toString())
             setSelected(it)
             showWheelView()
         }
         mBinding.tvEndTime.setOnClickListener {
+            mViewModel.setEndTime(mBinding.tvEndTime.text.toString())
             setSelected(it)
             showWheelView()
         }
@@ -113,6 +143,12 @@ class OrderDateCustomFragment: BaseFragment<OrderDateCustomViewModel, FragmentOr
         mViewModel.onEndTimeListener.observe(viewLifecycleOwner) { date ->
             mBinding.tvEndTime.text = date
         }
+        mViewModel.customTimeListener.observe(viewLifecycleOwner) { _ ->
+            val c = mViewModel.calendar
+            initYearPicker(c)
+            initMonthPicker(c)
+            initDayPicker(c)
+        }
     }
 
     override fun getResult(): LongArray {
@@ -133,6 +169,83 @@ class OrderDateCustomFragment: BaseFragment<OrderDateCustomViewModel, FragmentOr
         mBinding.tvLastMonth.isSelected = v == mBinding.tvLastMonth
         mBinding.tvStartTime.isSelected = v == mBinding.tvStartTime
         mBinding.tvEndTime.isSelected = v == mBinding.tvEndTime
+    }
+
+    private fun updateDayPicker(year: Int, month: Int, day: Int) {
+        val calendar = mViewModel.calendar
+        calendar.set(Calendar.YEAR, year)
+        calendar.set(Calendar.MONTH, month - 1)
+        calendar.set(Calendar.DAY_OF_MONTH, 1)
+        val maxDay = calendar.getActualMaximum(Calendar.DAY_OF_MONTH)
+        val newDay = if (day > maxDay) maxDay else day
+        mBinding.layoutWheel.dayPicker.displayedValues = null
+        calendar.set(Calendar.DAY_OF_MONTH, newDay)
+        initDayPicker(calendar)
+    }
+
+    private fun initDayPicker(calendar: Calendar) {
+        mBinding.layoutWheel.dayPicker.apply {
+            wrapSelectorWheel = true
+
+            val curDay = calendar.get(Calendar.DAY_OF_MONTH)
+            val minDay = 1
+            val maxDay = calendar.getActualMaximum(Calendar.DAY_OF_MONTH)
+            val day = (minDay..maxDay).map { getString(R.string.date_picker_day).format(it) }
+                .toTypedArray()
+            minValue = minDay
+            maxValue = maxDay
+            displayedValues = day
+            value = curDay
+        }
+    }
+
+    private fun initMonthPicker(calendar: Calendar) {
+        mBinding.layoutWheel.monthPicker.apply {
+            wrapSelectorWheel = true
+
+            val curMonth = calendar.get(Calendar.MONTH) + 1
+            val minMonth = 1
+            val maxMonth = 12
+            val month =
+                (minMonth..maxMonth).map { getString(R.string.date_picker_month).format(it) }
+                    .toTypedArray()
+            minValue = minMonth
+            maxValue = maxMonth
+            displayedValues = month
+            value = curMonth
+        }
+    }
+
+    private fun initYearPicker(calendar: Calendar) {
+        mBinding.layoutWheel.yearPicker.apply {
+            wrapSelectorWheel = false
+
+            val curYear = calendar.get(Calendar.YEAR)
+            val minYear = curYear - 10
+            val maxYear = Calendar.getInstance().get(Calendar.YEAR)
+            val year = (minYear..maxYear).map { it.toString() }
+                .toTypedArray()
+            minValue = curYear - 10
+            maxValue = maxYear
+            displayedValues = year
+            value = curYear
+        }
+    }
+    
+    /**
+     * 更新選中的日期（根據當前選中的是 startTime 還是 endTime）
+     */
+    private fun updateSelectedDate(year: Int, month: Int, day: Int) {
+        val dateStr = String.format(Locale.getDefault(), "%04d-%02d-%02d", year, month, day)
+        
+        when {
+            mBinding.tvStartTime.isSelected -> {
+                mViewModel.setStartTime(dateStr)
+            }
+            mBinding.tvEndTime.isSelected -> {
+                mViewModel.setEndTime(dateStr)
+            }
+        }
     }
 }
 
