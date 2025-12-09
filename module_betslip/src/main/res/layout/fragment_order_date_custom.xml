@@ -74,8 +74,8 @@
         android:text="@string/title_order_betting_custom_time"
         android:textColor="@color/color_FFFFFF"
         android:textSize="14sp"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toTopOf="@id/tv_start_time"
+        app:layout_constraintStart_toStartOf="parent"
         app:skinnableFontWeight="500" />
 
     <arch.cayenne.lib.skin.widget.SkinnableTextView
@@ -83,6 +83,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
+        android:layout_marginBottom="20dp"
         android:background="@drawable/bg_date_custom"
         android:gravity="center"
         android:paddingVertical="6dp"
@@ -91,7 +92,7 @@
         app:layout_constraintBottom_toTopOf="@id/layout_wheel"
         app:layout_constraintEnd_toStartOf="@id/iv_to_end_time"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_goneMarginBottom="31dp"
+        app:layout_goneMarginBottom="51dp"
         app:skinnableFontWeight="500" />
 
     <arch.cayenne.lib.skin.widget.SkinnableImageView
@@ -129,6 +130,5 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

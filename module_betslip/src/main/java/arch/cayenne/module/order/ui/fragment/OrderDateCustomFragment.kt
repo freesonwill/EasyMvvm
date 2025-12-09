@@ -20,6 +20,7 @@ class OrderDateCustomFragment: BaseFragment<OrderDateCustomViewModel, FragmentOr
     override val vmClass: KClass<OrderDateCustomViewModel> = OrderDateCustomViewModel::class
 
     override fun initView(savedInstanceState: Bundle?) {
+        mBinding.layoutWheel.root.setPadding(0, 0, 0, 29.dp2px)
         mBinding.layoutWheel.yearPicker.setOnValueChangedListener { _, _, newVal ->
             val month = mBinding.layoutWheel.monthPicker.value
             val day = mBinding.layoutWheel.dayPicker.value
