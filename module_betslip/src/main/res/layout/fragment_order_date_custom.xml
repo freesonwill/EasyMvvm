@@ -87,9 +87,11 @@
         android:paddingVertical="6dp"
         android:textColor="@drawable/selector_order_date_custom_text"
         android:textSize="14sp"
+        app:layout_constraintBottom_toTopOf="@id/layout_wheel"
         app:layout_constraintEnd_toStartOf="@id/iv_to_end_time"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_title_custom_time"
+        app:layout_goneMarginBottom="31dp"
         app:skinnableFontWeight="500" />
 
     <arch.cayenne.lib.skin.widget.SkinnableImageView
@@ -124,9 +126,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="4dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_start_time" />
+        app:layout_constraintStart_toStartOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
