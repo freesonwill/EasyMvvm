@@ -6,11 +6,15 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
 import arch.cayenne.lib.base.ui.adapter.PagerAdapter
+import arch.cayenne.lib.common.utils.CustomTabIndicatorUtils
 import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+import arch.cayenne.lib.common.utils.ext.setupHorizontalScrollDegree
 import arch.cayenne.lib.common.utils.ext.setupViewPagerScroll
+import arch.cayenne.lib.common.utils.ext.startFadeAnim
+import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.walisport.module.hall.R
 import com.walisport.module.hall.data.HallGameTabDefault
@@ -72,11 +76,31 @@ class GameAllRankingViewHolder(
     fun bind() {
         with(item) {
             vpRanking.adapter = PagerAdapter(childFragmentManager, lifecycle, mockTabList)
-            vpRanking.isUserInputEnabled = true
-            TabLayoutMediator(tlRanking, vpRanking) { tab, position ->
-                tab.text = mockTabList[position].title
-            }.attach()
-            vpRanking.setupViewPagerScroll(tlRanking, homeIndicator, 1f)
+            vpRanking.setupHorizontalScrollDegree(0)
+            tlRanking.removeAllTabs()
+            mockTabList.forEach { m ->
+                val tab = tlRanking.newTab()
+                tab.text = m.title
+                tlRanking.addTab(tab)
+            }
+            tlRanking.post {
+                val tabWidth = tlRanking.width.toFloat() / tlRanking.tabCount
+                homeIndicator.setTabWidth(tabWidth, 1f)
+            }
+            tlRanking.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener{
+                override fun onTabSelected(tab: TabLayout.Tab?) {
+                    vpRanking.startFadeAnim { onComplete ->
+                        vpRanking.setCurrentItem(tab?.position?:0, false)
+                        onComplete.invoke()
+                    }
+                    CustomTabIndicatorUtils.animateIndicatorToPosition(
+                        homeIndicator,
+                        tab?.position?:0
+                    )
+                }
+                override fun onTabUnselected(tab: TabLayout.Tab?) {}
+                override fun onTabReselected(tab: TabLayout.Tab?) {}
+            })
 
             ivRankingInfo.clickNoRepeat {
                 val location = IntArray(2)
