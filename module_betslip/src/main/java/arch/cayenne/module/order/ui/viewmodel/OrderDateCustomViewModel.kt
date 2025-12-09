@@ -14,8 +14,18 @@ class OrderDateCustomViewModel: BaseViewModel() {
     private val _onEndTimeListener = MutableLiveData<String>()
     val onEndTimeListener: LiveData<String> get() = _onEndTimeListener
 
+    private val _customTimeListener = MutableLiveData<Long?>()
+    val customTimeListener: LiveData<Long?> get() = _customTimeListener
+
+    var calendar: Calendar
+        private set
+
     init {
         initDefaultTime()
+        calendar = Calendar.getInstance().apply {
+            timeInMillis = System.currentTimeMillis()
+            _customTimeListener.value = timeInMillis
+        }
     }
 
     private fun initDefaultTime() {
@@ -150,5 +160,33 @@ class OrderDateCustomViewModel: BaseViewModel() {
         val endTime = endCalendar.timeInMillis
         
         return longArrayOf(startTime, endTime)
+    }
+
+    fun setStartTime(date: String) {
+        _onStartTimeListener.value = date
+        
+        // 解析日期並設置為當天 0:0:0
+        val parts = date.split("-")
+        val calendar = calendar
+        calendar.set(Calendar.YEAR, parts[0].toInt())
+        calendar.set(Calendar.MONTH, parts[1].toInt() - 1)
+        calendar.set(Calendar.DAY_OF_MONTH, parts[2].toInt())
+        calendar.setToDayStart()
+        
+        _customTimeListener.value = calendar.timeInMillis
+    }
+
+    fun setEndTime(date: String) {
+        _onEndTimeListener.value = date
+        
+        // 解析日期並設置為當天 23:59:59
+        val parts = date.split("-")
+        val calendar = calendar
+        calendar.set(Calendar.YEAR, parts[0].toInt())
+        calendar.set(Calendar.MONTH, parts[1].toInt() - 1)
+        calendar.set(Calendar.DAY_OF_MONTH, parts[2].toInt())
+        calendar.setToDayEnd()
+        
+        _customTimeListener.value = calendar.timeInMillis
     }
 }

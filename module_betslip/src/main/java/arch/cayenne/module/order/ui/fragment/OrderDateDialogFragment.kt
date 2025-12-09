@@ -4,6 +4,7 @@ import android.graphics.Typeface
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.Gravity
+import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import arch.cayenne.lib.base.ui.adapter.PagerAdapter
@@ -11,7 +12,9 @@ import arch.cayenne.lib.base.ui.fragment.BaseBottomSheetFragment
 import arch.cayenne.lib.common.utils.ext.TabLayoutExt
 import arch.cayenne.lib.common.utils.ext.TabLayoutExt.addOnTabSelectedListener2
 import arch.cayenne.lib.common.utils.ext.setupHorizontalScrollDegree
+import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
+import arch.cayenne.module.betslip.R
 import arch.cayenne.module.betslip.databinding.FragmentOrderDateDialogBinding
 import arch.cayenne.module.order.data.constants.OrderDatePageEnum
 import arch.cayenne.module.order.ui.viewmodel.OrderDateDialogViewModel
@@ -19,7 +22,7 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlin.reflect.KClass
 
-class OrderDateDialogFragment: BaseBottomSheetFragment<OrderDateDialogViewModel, FragmentOrderDateDialogBinding>() {
+class OrderDateDialogFragment: BaseBottomSheetFragment<OrderDateDialogViewModel, FragmentOrderDateDialogBinding>(), UpdateCustomViewInterface {
 
     override val vbClass: KClass<FragmentOrderDateDialogBinding> = FragmentOrderDateDialogBinding::class
     override val vmClass: KClass<OrderDateDialogViewModel> = OrderDateDialogViewModel::class
@@ -45,7 +48,7 @@ class OrderDateDialogFragment: BaseBottomSheetFragment<OrderDateDialogViewModel,
         })
     }
     
-    private fun updateViewPagerHeight() {
+    override fun updateViewPagerHeight() {
         // 獲取當前頁面的 Fragment
         val currentItem = mBinding.viewPager.currentItem
         val fragment = childFragmentManager.findFragmentByTag("f$currentItem")
@@ -53,8 +56,8 @@ class OrderDateDialogFragment: BaseBottomSheetFragment<OrderDateDialogViewModel,
         fragment?.view?.let { fragmentView ->
             // 測量當前 Fragment 的高度
             fragmentView.measure(
-                android.view.View.MeasureSpec.makeMeasureSpec(mBinding.viewPager.width, android.view.View.MeasureSpec.EXACTLY),
-                android.view.View.MeasureSpec.makeMeasureSpec(0, android.view.View.MeasureSpec.UNSPECIFIED)
+                View.MeasureSpec.makeMeasureSpec(mBinding.viewPager.width, View.MeasureSpec.EXACTLY),
+                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
             )
             val height = fragmentView.measuredHeight
             
@@ -75,16 +78,30 @@ class OrderDateDialogFragment: BaseBottomSheetFragment<OrderDateDialogViewModel,
                 val f = childFragmentManager.findFragmentByTag("f$curIndex")
                 if (f is OrderDataPage) {
                     val result = f.getResult()
-                    if (result.size == 1) {
-                        it.invoke(result.first(), null)
-                    } else if (result.size == 2) {
-                        it.invoke(result.first(), result.last())
-                    } else {
-                        it.invoke(null, null)
+                    when (result.size) {
+                        1 -> {
+                            it.invoke(result.first(), null)
+                            dismiss()
+                        }
+                        2 -> {
+                            val startTime = result.first()
+                            val endTime = result.last()
+                            if (startTime > endTime) {
+                                showToast(getString(R.string.title_order_betting_return_error))
+                            } else {
+                                it.invoke(result.first(), result.last())
+                                dismiss()
+                            }
+                        }
+                        else -> {
+                            it.invoke(null, null)
+                            dismiss()
+                        }
                     }
                 }
+            } ?: run {
+                dismiss()
             }
-            dismiss()
         }
     }
 
