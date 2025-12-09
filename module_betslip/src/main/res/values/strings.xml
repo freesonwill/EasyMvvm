@@ -127,4 +127,5 @@
     <string name="title_order_betting_yesterday">昨天</string>
     <string name="title_order_betting_last_week">上周</string>
     <string name="title_order_betting_last_month">上月</string>
+    <string name="title_order_betting_custom_time">自定义时间</string>
 </resources>
