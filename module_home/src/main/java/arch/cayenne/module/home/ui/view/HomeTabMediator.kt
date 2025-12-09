@@ -5,6 +5,7 @@ import android.view.animation.LinearInterpolator
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import arch.cayenne.lib.common.ui.view.BounceTabLayoutContainer
+import arch.cayenne.lib.common.ui.view.CustomTabLayout
 import arch.cayenne.lib.common.utils.helper.ViewPagerAnimHelper.Companion.getAnimHelper
 import arch.cayenne.lib.common.utils.helper.doSmartAnim
 import com.google.android.material.tabs.TabLayout

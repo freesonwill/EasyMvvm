@@ -21,7 +21,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_44">
 
-        <com.google.android.material.tabs.TabLayout
+        <arch.cayenne.lib.common.ui.view.CustomTabLayout
             android:id="@+id/tab_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -46,10 +46,23 @@
             app:tabSelectedTextColor="@color/tab_select_text"
             app:tabTextAppearance="@style/TabLayoutTextAppearance"
             app:tabTextColor="@color/tab_text" />
+
+        <arch.cayenne.lib.common.ui.view.CustomTabIndicator
+            android:id="@+id/homeIndicator"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintEnd_toEndOf="@id/tab_layout"
+            app:layout_constraintStart_toStartOf="@id/tab_layout"
+            app:layout_constraintTop_toBottomOf="@id/tab_layout" />
     </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
 
-    <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/view_pager"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="wrap_content">
+
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/view_pager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </arch.cayenne.lib.common.ui.view.InterceptedLinearLayout>
