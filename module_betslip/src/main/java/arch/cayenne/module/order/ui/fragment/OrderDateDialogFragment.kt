@@ -30,6 +30,39 @@ class OrderDateDialogFragment: BaseBottomSheetFragment<OrderDateDialogViewModel,
         initTabLayout()
         mBinding.viewPager.isHorizontalScrollBarEnabled = false
         mBinding.viewPager.setupHorizontalScrollDegree()
+        setupViewPagerHeightAdjustment()
+    }
+    
+    private fun setupViewPagerHeightAdjustment() {
+        mBinding.viewPager.registerOnPageChangeCallback(object : androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+                // 延遲以確保內容已經渲染
+                mBinding.viewPager.post {
+                    updateViewPagerHeight()
+                }
+            }
+        })
+    }
+    
+    private fun updateViewPagerHeight() {
+        // 獲取當前頁面的 Fragment
+        val currentItem = mBinding.viewPager.currentItem
+        val fragment = childFragmentManager.findFragmentByTag("f$currentItem")
+        
+        fragment?.view?.let { fragmentView ->
+            // 測量當前 Fragment 的高度
+            fragmentView.measure(
+                android.view.View.MeasureSpec.makeMeasureSpec(mBinding.viewPager.width, android.view.View.MeasureSpec.EXACTLY),
+                android.view.View.MeasureSpec.makeMeasureSpec(0, android.view.View.MeasureSpec.UNSPECIFIED)
+            )
+            val height = fragmentView.measuredHeight
+            
+            // 更新 ViewPager 的高度
+            val layoutParams = mBinding.viewPager.layoutParams
+            layoutParams.height = height
+            mBinding.viewPager.layoutParams = layoutParams
+        }
     }
 
     override fun initListener() {
@@ -76,7 +109,7 @@ class OrderDateDialogFragment: BaseBottomSheetFragment<OrderDateDialogViewModel,
                     setTextColor(
                         SkinnableResourceManager.getColor(
                             requireContext(),
-                            arch.cayenne.lib.common.R.color.color_00E0E5
+                            arch.cayenne.lib.common.R.color.color_FFFFFF
                         )
                     )
                 } else {
@@ -99,7 +132,7 @@ class OrderDateDialogFragment: BaseBottomSheetFragment<OrderDateDialogViewModel,
                     setTextColor(
                         SkinnableResourceManager.getColor(
                             requireContext(),
-                            arch.cayenne.lib.common.R.color.color_00E0E5
+                            arch.cayenne.lib.common.R.color.color_FFFFFF
                         )
                     )
                 }

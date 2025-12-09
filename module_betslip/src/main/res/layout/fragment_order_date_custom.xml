@@ -118,4 +118,15 @@
         app:layout_constraintTop_toTopOf="@id/tv_start_time"
         app:skinnableFontWeight="500" />
 
+    <include
+        android:id="@+id/layout_wheel"
+        layout="@layout/fragment_order_date_selector"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="4dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_start_time" />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>
