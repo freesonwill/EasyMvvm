@@ -7,6 +7,7 @@ import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.data.repo.BalanceRepository
 import arch.cayenne.lib.common.ui.viewmodel.Event
@@ -121,7 +122,7 @@ class ComboBetViewModel(
             launch {
                 repo.observeComboMultiBet().collect { beans ->
                     val lastList = _onComboMultiBetBeanListener.value
-                    //"aaaa---observeComboMultiBet--nowList:$beans, lastList:$lastList,${this@ComboBetViewModel}".logd(TAG)
+                    //"aaaa---observeComboMultiBet--nowList:$beans, \t lastList:$lastList,${this@ComboBetViewModel}".logd(TAG)
 
                     // 如果舊資料是 null，代表第一次載入，直接設值
                     if (lastList == null) {
@@ -159,7 +160,7 @@ class ComboBetViewModel(
     }
 
     fun updateMultiBetMoney(serialValue: Int, money: Long) {
-        //"updateMultiBetMoney---$serialValue,money:$money".logd(TAG)
+        //"aaaa---updateMultiBetMoney---$serialValue,money:$money".logd(TAG)
         _onComboMultiBetBeanListener.value?.let {
             val updatedList = it.map { rate ->
                 if (rate.serialValue == serialValue) {
@@ -198,12 +199,14 @@ class ComboBetViewModel(
         _onMultiLayoutExpendListener.value = _onMultiLayoutExpendListener.value?.not() ?: true
     }
 
+    //是否展开更多
     fun setExpandMultiLayout(expand: Boolean) {
         val currentValue = _onMultiLayoutExpendListener.value ?: false
         if (currentValue == expand) return // No change needed
         _onMultiLayoutExpendListener.value = expand
     }
 
+    //清除投注金额
     fun clearBetMoney() {
         val data = _onComboMultiBetBeanListener.value ?: return
         _onComboMultiBetBeanListener.value = data.map {

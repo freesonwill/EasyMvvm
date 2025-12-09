@@ -32,7 +32,7 @@ class ComboMultiBetViewHolder(private val mBinding: ItemComboMultiBet2Binding, p
 
         mBinding.etMoney.isFocusable = false
         mBinding.etMoney.setOnClickListener {
-            onComboMultiBetClickListener.onEditMoneyClick2(item.serialValue, mBinding.etMoney,mBinding.tvMoney,addViewAction = { keyboard->
+            onComboMultiBetClickListener.onEditMoneyClick2(item.serialValue, mBinding.etMoney,mBinding.tvMoney,mBinding.root,addViewAction = { keyboard->
                 val lp = ConstraintLayout.LayoutParams(0, LayoutParams.WRAP_CONTENT).apply {
                     topToBottom = mBinding.tvPrincipal.id
                     startToStart = ConstraintLayout.LayoutParams.PARENT_ID

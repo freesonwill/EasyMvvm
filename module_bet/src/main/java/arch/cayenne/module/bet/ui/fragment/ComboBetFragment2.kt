@@ -71,9 +71,9 @@ class ComboBetFragment2 : BaseFragment<ComboBetViewModel, FragmentComboBet2Bindi
 
     private val comboMultiBetAdapter by lazy {
         ComboMultiBetAdapter(object : ComboMultiBetAdapter.OnComboMultiBetClickListener {
-            override fun onEditMoneyClick2(serialValue: Int, editText: EditText, tvMoney: TextView, addViewAction:(keyboard:BetMoneyKeyboard)->Unit) {
-                "aaaa---serialValue:$serialValue,keyboard.serialValue:${keyboard.serialValue}".logd(TAG)
-                if(keyboard.serialValue == serialValue) return
+            override fun onEditMoneyClick2(serialValue: Int, editText: EditText, tvMoney: TextView, keyboardParent: ViewGroup,addViewAction:(keyboard:BetMoneyKeyboard)->Unit) {
+                "onEditMoneyClick2 serialValue:$serialValue,keyboard.serialValue:${keyboard.serialValue},keyboardParent:$keyboardParent".logd(TAG)
+                if(keyboard.parent == keyboardParent) return
                 val bean = mViewModel.onComboMultiBetBeanListener.value?.find { it.serialValue == serialValue }
                 if(bean != null) {
                     (keyboard.parent as? ViewGroup)?.removeView(keyboard)
@@ -164,13 +164,13 @@ class ComboBetFragment2 : BaseFragment<ComboBetViewModel, FragmentComboBet2Bindi
         mBinding.firstMultiItem.apply {
             etMoney.setOnClickListener {
                 val item = mViewModel.firstComboMultiBetBeanLD.value ?: return@setOnClickListener
-                comboMultiBetAdapter.onComboMultiBetClickListener.onEditMoneyClick2(item.serialValue,this.etMoney,this.tvMoney, addViewAction = { keyboard ->
+                comboMultiBetAdapter.onComboMultiBetClickListener.onEditMoneyClick2(item.serialValue,this.etMoney,this.tvMoney,root,addViewAction = { keyboard ->
                     val lp = ConstraintLayout.LayoutParams(0, LayoutParams.WRAP_CONTENT).apply {
                         topToBottom = edgeBottom.id
                         startToStart = ConstraintLayout.LayoutParams.PARENT_ID
                         endToEnd = ConstraintLayout.LayoutParams.PARENT_ID
                     }
-                    this@apply.root.addView(keyboard, lp)
+                    root.addView(keyboard, lp)
                 })
             }
         }
@@ -325,7 +325,8 @@ class ComboBetFragment2 : BaseFragment<ComboBetViewModel, FragmentComboBet2Bindi
         mViewModel.onBetListListener.value?.let {
             if (it.isNotEmpty()) {
                 mViewModel.setExpandMultiLayout(false)
-                mViewModel.clearBetMoney()
+                keyboard.hideKeyboard() //收起键盘
+                //mViewModel.clearBetMoney()
             }
         }
 
