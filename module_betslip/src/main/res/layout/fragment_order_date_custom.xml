@@ -23,11 +23,11 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
         android:layout_marginTop="17dp"
-        android:background="@drawable/selector_custom_game_tab_bg"
+        android:background="@drawable/selector_sport_filter"
         android:paddingHorizontal="18dp"
         android:paddingVertical="6dp"
         android:text="@string/date_picker_yesterday"
-        android:textColor="@color/color_FFFFFF"
+        android:textColor="@drawable/selector_order_date_tab_text"
         android:textSize="14sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/title_betting_time"
@@ -61,6 +61,63 @@
         android:textSize="14sp"
         app:layout_constraintStart_toEndOf="@id/tv_last_week"
         app:layout_constraintTop_toTopOf="@id/tv_last_week"
+        app:skinnableFontWeight="500" />
+
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
+        android:id="@+id/tv_title_custom_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="36dp"
+        android:text="@string/title_order_betting_custom_time"
+        android:textColor="@color/color_FFFFFF"
+        android:textSize="14sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_yesterday"
+        app:skinnableFontWeight="500" />
+
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
+        android:id="@+id/tv_start_time"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="18dp"
+        android:background="@drawable/bg_date_custom"
+        android:gravity="center"
+        android:hint="2025-03-12"
+        android:paddingVertical="6dp"
+        android:textColor="@color/color_FFFFFF"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toStartOf="@id/iv_to_end_time"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_title_custom_time"
+        app:skinnableFontWeight="500" />
+
+    <arch.cayenne.lib.skin.widget.SkinnableImageView
+        android:id="@+id/iv_to_end_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="10dp"
+        android:src="@drawable/icon_to_end_time"
+        app:layout_constraintBottom_toBottomOf="@id/tv_start_time"
+        app:layout_constraintEnd_toStartOf="@id/tv_end_time"
+        app:layout_constraintStart_toEndOf="@id/tv_start_time"
+        app:layout_constraintTop_toTopOf="@id/tv_start_time" />
+
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
+        android:id="@+id/tv_end_time"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="4dp"
+        android:background="@drawable/bg_date_custom"
+        android:gravity="center"
+        android:hint="2025-03-12"
+        android:paddingVertical="6dp"
+        android:textColor="@color/color_FFFFFF"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/iv_to_end_time"
+        app:layout_constraintTop_toTopOf="@id/tv_start_time"
         app:skinnableFontWeight="500" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
