@@ -3,6 +3,8 @@ include:
     inputs:
       version_file: "app/build/generated/source/buildConfig/release/com/walisport/app/BuildConfig.java"
       deploy_name:  "tio"
+      runner_type: "shell"
+      runner_tag: "ios"
 
 before_script:
   - echo "user.uid=$USER_UID" >> local.properties
