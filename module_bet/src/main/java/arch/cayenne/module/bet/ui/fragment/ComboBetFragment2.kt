@@ -78,12 +78,12 @@ class ComboBetFragment2 : BaseFragment<ComboBetViewModel, FragmentComboBet2Bindi
                 if(bean != null) {
                     (keyboard.parent as? ViewGroup)?.removeView(keyboard)
                     keyboard.visibility = View.GONE
-                    val currentMoney = bean.inputMoney
+                    val currentMoney = bean.inputMoneyStr
                     val minAmount = bean.minAmount
                     val maxAmount = bean.maxAmount
                     keyboard.bind(viewLifecycleOwner,serialValue, editText, tvMoney, true, currentMoney, minAmount, maxAmount,
-                        onMoneyChange = { serialV,money->
-                            mViewModel.updateMultiBetMoney(serialV, money)
+                        onMoneyChange = { serialV,money,moneyStr->
+                            mViewModel.updateMultiBetMoney(serialV, money,moneyStr)
                         }
                     )
                     addViewAction(keyboard)
@@ -226,7 +226,9 @@ class ComboBetFragment2 : BaseFragment<ComboBetViewModel, FragmentComboBet2Bindi
                 }
             }
         }
-        mViewModel.firstComboMultiBetBeanLD.observe(viewLifecycleOwner) { item->
+
+        mViewModel.firstComboMultiBetBeanLD.observe(viewLifecycleOwner) { item ->
+            //"aaaa---firstComboMultiBetBeanLD--item:$item".logd(TAG)
             with(mBinding.firstMultiItem) {
                 val moneySymbol = mViewModel.moneySymbol
                 tvTitleCombo.text = let {
@@ -234,6 +236,7 @@ class ComboBetFragment2 : BaseFragment<ComboBetViewModel, FragmentComboBet2Bindi
                     combo
                 }
                 tvMulti.text = let { "@${item.sumOdds.getOdds()}" }
+                etMoney.setText(item.inputMoneyStr)
                 val moneyHint = R.string.et_money_hint.getString().format(item.minAmount.getMoney(), item.maxAmount.getMoney())
                 etMoney.hint = moneyHint
                 tvMoney.text = moneySymbol
@@ -326,10 +329,21 @@ class ComboBetFragment2 : BaseFragment<ComboBetViewModel, FragmentComboBet2Bindi
             if (it.isNotEmpty()) {
                 mViewModel.setExpandMultiLayout(false)
                 keyboard.hideKeyboard() //收起键盘
-                //mViewModel.clearBetMoney()
             }
         }
 
+    }
+
+    override fun onHiddenChanged(hidden: Boolean) {
+        super.onHiddenChanged(hidden)
+        if(hidden){
+           onExitFragment()
+        }
+    }
+
+    private fun onExitFragment(){
+        //"aaaa---onExitFragment~~~~".logd(TAG)
+        mViewModel.clearBetMoney()
     }
 
     /**

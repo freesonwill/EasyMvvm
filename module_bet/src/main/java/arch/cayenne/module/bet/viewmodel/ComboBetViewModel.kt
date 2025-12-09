@@ -132,7 +132,7 @@ class ComboBetViewModel(
                         val updatedList = beans.mapIndexed { index, newItem ->
                             val oldItem = lastList.getOrNull(index)
                             val updatedInputMoney = oldItem?.inputMoney?: newItem.inputMoney
-                            newItem.copy(inputMoney = updatedInputMoney)
+                            newItem.copy(inputMoneyStr = oldItem?.inputMoneyStr?:"")
                         }
                         _onComboMultiBetBeanListener.value = updatedList
                     }
@@ -159,12 +159,12 @@ class ComboBetViewModel(
         repo.removeAll()
     }
 
-    fun updateMultiBetMoney(serialValue: Int, money: Long) {
+    fun updateMultiBetMoney(serialValue: Int, money: Long,moneyStr:String) {
         //"aaaa---updateMultiBetMoney---$serialValue,money:$money".logd(TAG)
         _onComboMultiBetBeanListener.value?.let {
             val updatedList = it.map { rate ->
                 if (rate.serialValue == serialValue) {
-                    rate.copy(inputMoney = money)
+                    rate.copy(inputMoneyStr = moneyStr)
                 } else {
                     rate
                 }
@@ -211,7 +211,7 @@ class ComboBetViewModel(
         val data = _onComboMultiBetBeanListener.value ?: return
         _onComboMultiBetBeanListener.value = data.map {
             if (it.inputMoney > 0) {
-                it.copy(inputMoney = 0L)
+                it.copy(inputMoneyStr="")
             } else {
                 it
             }

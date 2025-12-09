@@ -73,12 +73,7 @@ class ComboMultiBetViewHolder(private val mBinding: ItemComboMultiBet2Binding, p
 
     fun updateMoney(item: ComboMultiBetBean) {
         val moneySymbol = onComboMultiBetClickListener.getMoneySymbol()
-        if (item.inputMoney > 0) {
-            val money = item.inputMoney.getMoney()
-            mBinding.etMoney.setText(money)
-        } else {
-            mBinding.etMoney.setText("")
-        }
+        mBinding.etMoney.setText(item.inputMoneyStr)
         val moneyHint = R.string.et_money_hint.getString(item.minAmount.getMoney(), item.maxAmount.getMoney())
         mBinding.etMoney.hint = moneyHint
         mBinding.tvMoney.text = moneySymbol

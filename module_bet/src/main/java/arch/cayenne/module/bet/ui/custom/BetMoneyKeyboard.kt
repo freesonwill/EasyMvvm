@@ -127,10 +127,10 @@ class BetMoneyKeyboard @JvmOverloads constructor(
         ed:EditText,
         tvMoney:TextView,
         removeWhenHide:Boolean,
-        currentMoney: Long,
+        currentMoney: String,
         minNumber: Long,
         maxNumber: Long,
-        onMoneyChange:(serialValue:Int,money:Long)->Unit
+        onMoneyChange:(serialValue:Int,money:Long,moneyStr:String)->Unit
     ){
         this._serialValue = serialValue
         this.etMoney = ed
@@ -152,13 +152,11 @@ class BetMoneyKeyboard @JvmOverloads constructor(
         this.viewModelStore.clear()
     }
 
-    private fun initKeyboard(currentMoney: Long,minNumber: Long, maxNumber: Long) {
+    private fun initKeyboard(currentMoney: String,minNumber: Long, maxNumber: Long) {
         if (minNumber != -1L && maxNumber != -1L) {
             mViewModel!!.setNumberLimit(minNumber, maxNumber)
         }
-        if (currentMoney != 0L) {
-            mViewModel!!.setNumber(currentMoney.getMoney())
-        }
+        mViewModel!!.setNumber(currentMoney)
     }
 
     private fun initView(){
@@ -166,14 +164,15 @@ class BetMoneyKeyboard @JvmOverloads constructor(
         mViewModel!!.setMaxLength(etMoney!!.getMaxLength())
     }
 
-    private fun createObserver(viewLifecycleOwner:LifecycleOwner,onMoneyChange:(serialValue:Int,money:Long)->Unit){
+    private fun createObserver(viewLifecycleOwner:LifecycleOwner,onMoneyChange:(serialValue:Int,money:Long,moneyStr:String)->Unit){
         val mViewModel = this.mViewModel ?: return
         mViewModel.onEditNumber.observe(viewLifecycleOwner) {
+            //"aaaa---onEditNumber--$it".logd(TAG)
             val etMoney = this.etMoney!!
             etMoney.setText(it)
             val length = it.length
             etMoney.setSelection(length)
-            onMoneyChange.invoke(serialValue!!,it.toMoney())
+            onMoneyChange.invoke(serialValue!!,it.toMoney(),it)
         }
         mViewModel.onNumberLimit.observe(viewLifecycleOwner) {
             etMoney!!.hint = R.string.et_money_hint.getString(it.first.getMoney(), it.second.getMoney())
