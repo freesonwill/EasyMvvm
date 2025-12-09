@@ -12,7 +12,9 @@ import arch.cayenne.lib.base.ui.fragment.BaseBottomSheetFragment
 import arch.cayenne.lib.common.utils.ext.TabLayoutExt
 import arch.cayenne.lib.common.utils.ext.TabLayoutExt.addOnTabSelectedListener2
 import arch.cayenne.lib.common.utils.ext.setupHorizontalScrollDegree
+import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
+import arch.cayenne.module.betslip.R
 import arch.cayenne.module.betslip.databinding.FragmentOrderDateDialogBinding
 import arch.cayenne.module.order.data.constants.OrderDatePageEnum
 import arch.cayenne.module.order.ui.viewmodel.OrderDateDialogViewModel
@@ -79,17 +81,27 @@ class OrderDateDialogFragment: BaseBottomSheetFragment<OrderDateDialogViewModel,
                     when (result.size) {
                         1 -> {
                             it.invoke(result.first(), null)
+                            dismiss()
                         }
                         2 -> {
-                            it.invoke(result.first(), result.last())
+                            val startTime = result.first()
+                            val endTime = result.last()
+                            if (startTime > endTime) {
+                                showToast(getString(R.string.title_order_betting_return_error))
+                            } else {
+                                it.invoke(result.first(), result.last())
+                                dismiss()
+                            }
                         }
                         else -> {
                             it.invoke(null, null)
+                            dismiss()
                         }
                     }
                 }
+            } ?: run {
+                dismiss()
             }
-            dismiss()
         }
     }
 
