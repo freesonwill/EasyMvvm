@@ -45,7 +45,15 @@ class OrderDateCustomFragment: BaseFragment<OrderDateCustomViewModel, FragmentOr
     }
 
     override fun getResult(): LongArray {
-        return longArrayOf(0, 0)
+        return if (mBinding.tvYesterday.isSelected) {
+            mViewModel.getYesterdayTimeRange()
+        } else if (mBinding.tvLastWeek.isSelected) {
+            mViewModel.getLastWeekTimeRange()
+        } else if (mBinding.tvLastMonth.isSelected) {
+            mViewModel.getLastMonthTimeRange()
+        } else {
+            mViewModel.getCustomTimeRange()
+        }
     }
 
     private fun setSelected(v: View) {
