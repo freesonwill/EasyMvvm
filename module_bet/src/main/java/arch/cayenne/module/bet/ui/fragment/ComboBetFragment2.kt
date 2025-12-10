@@ -81,7 +81,7 @@ class ComboBetFragment2 : BaseFragment<ComboBetViewModel, FragmentComboBet2Bindi
                     val currentMoney = bean.inputMoneyStr
                     val minAmount = bean.minAmount
                     val maxAmount = bean.maxAmount
-                    keyboard.bind(viewLifecycleOwner,serialValue, editText, tvMoney, true, currentMoney, minAmount, maxAmount,
+                    keyboard.bind(serialValue, editText, tvMoney, true, currentMoney, minAmount, maxAmount,
                         onMoneyChange = { serialV,money,moneyStr->
                             mViewModel.updateMultiBetMoney(serialV, money,moneyStr)
                         }

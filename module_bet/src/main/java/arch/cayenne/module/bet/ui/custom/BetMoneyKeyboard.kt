@@ -13,6 +13,7 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.animation.doOnEnd
 import androidx.core.animation.doOnStart
+import androidx.core.view.doOnAttach
 import androidx.core.view.doOnDetach
 import androidx.core.view.isVisible
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
@@ -20,6 +21,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStore
+import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
@@ -122,7 +124,6 @@ class BetMoneyKeyboard @JvmOverloads constructor(
     }
 
     fun bind(
-        viewLifecycleOwner:LifecycleOwner,
         serialValue: Int,
         ed:EditText,
         tvMoney:TextView,
@@ -132,16 +133,19 @@ class BetMoneyKeyboard @JvmOverloads constructor(
         maxNumber: Long,
         onMoneyChange:(serialValue:Int,money:Long,moneyStr:String)->Unit
     ){
-        this._serialValue = serialValue
-        this.etMoney = ed
-        this.tvMoney = tvMoney
-        this.removeWhenHide = removeWhenHide
-        this.mViewModel = ViewModelProvider(viewModelStore, vmFactory)[ComboBetMoneyKeyboardDialogViewModel::class.java]
+        doOnAttach {
+            val viewLifecycleOwner = findViewTreeLifecycleOwner()!!
+            this._serialValue = serialValue
+            this.etMoney = ed
+            this.tvMoney = tvMoney
+            this.removeWhenHide = removeWhenHide
+            this.mViewModel = ViewModelProvider(viewModelStore, vmFactory)[ComboBetMoneyKeyboardDialogViewModel::class.java]
 
-        initKeyboard(currentMoney,minNumber,maxNumber)
-        initView()
-        createObserver(viewLifecycleOwner, onMoneyChange)
-        initListener()
+            initKeyboard(currentMoney,minNumber,maxNumber)
+            initView()
+            createObserver(viewLifecycleOwner, onMoneyChange)
+            initListener()
+        }
     }
 
     private fun unBind(){
