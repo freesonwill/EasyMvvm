@@ -40,7 +40,7 @@
     <color name="app_bg_tr45">#654E4A4A</color>
     <color name="search_btn">@color/color_00E0E5</color>
     <color name="search_btn_highlight">@color/color_00E0E5</color>
-    <color name="search_btn_normal">#BBBBBB</color>
+    <color name="search_btn_normal">#ffffff</color>
     <color name="search_btn_in_direct_match">#ffffff</color>
     <color name="search_hint">@color/color_999999</color>
     <color name="search_text">#BBBBBB</color>
