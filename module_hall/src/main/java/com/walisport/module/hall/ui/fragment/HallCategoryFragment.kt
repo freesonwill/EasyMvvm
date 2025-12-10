@@ -60,7 +60,7 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
 
     override fun initView(savedInstanceState: Bundle?) {
         with(mBinding) {
-            titleBar.loadDynamicsTitleBar(titleBarBinding.root)
+            titleBar.loadDynamicsTitleBar(titleBarBinding.root, null)
             titleBarBinding.tvTitleName.text = "老虎机"
             customTabGroup.submitTabList(mockVendorList)
             mViewModel.mockList(page)
@@ -68,7 +68,7 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
             val itemDecoration = GridSpacingItemDecoration(
                 spanCount = 3 ,
                 horizontalSpacing = 9.dp2px ,
-                verticalSpacing = 20.dp2px ,
+                verticalSpacing = 18.dp2px ,
                 includeEdge = false // 確保邊緣沒有空隙
             )
             rvGame.addItemDecoration(itemDecoration)
