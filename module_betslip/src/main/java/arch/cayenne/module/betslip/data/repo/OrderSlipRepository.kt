@@ -83,15 +83,43 @@ open class OrderSlipRepository(
         val currentTime = System.currentTimeMillis()
         allData.add(originalData.copy(
             betId = "1",
-            betTime = currentTime
+            betTime = currentTime,
+            resultStatus = 0
         ))
         allData.add(originalData.copy(
             betId = "11",
-            betTime = currentTime
+            betTime = currentTime,
+            resultStatus = 1,
+            returnAmount = 10000
         ))
         allData.add(originalData.copy(
-            betId = "12",
-            betTime = currentTime
+            betId = "13",
+            betTime = currentTime,
+            resultStatus = 3
+        ))
+        allData.add(originalData.copy(
+            betId = "14",
+            betTime = currentTime,
+            resultStatus = 4,
+            returnAmount = 5000
+        ))
+        allData.add(originalData.copy(
+            betId = "15",
+            betTime = currentTime,
+            resultStatus = 5,
+            returnAmount = 5000
+        ))
+        allData.add(originalData.copy(
+            betId = "16",
+            betTime = currentTime,
+            resultStatus = 6,
+            returnAmount = 10000
+        ))
+        allData.add(originalData.copy(
+            betId = "17",
+            betTime = currentTime,
+            resultStatus = 7,
+            returnAmount = 3000
         ))
         
         // 3. 昨天時間

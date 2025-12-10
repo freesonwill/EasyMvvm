@@ -103,13 +103,13 @@ class OrderBettingAdapter(private val type: OrderSportPageEnum, private val list
     }
 
     override fun getItemViewType(position: Int): Int {
-        val item = getItem(position)
-        return when {
-            item is BetSlipOrderHeaderBean -> HEADER
-            item is BetSlipOrderBean -> {
+        return when (val item = getItem(position)) {
+            is BetSlipOrderHeaderBean -> HEADER
+            is BetSlipOrderBean -> {
                 val isCollapsed = itemCollapseStates[item.betId] ?: false
                 if (isCollapsed) BODY_COLLAPSED else BODY_EXPANDED
             }
+
             else -> BODY_EXPANDED
         }
     }
