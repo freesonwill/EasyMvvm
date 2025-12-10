@@ -7,6 +7,7 @@ import arch.cayenne.lib.common.data.constants.UserDataKey
 import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.common.utils.helper.showToast
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import org.koin.java.KoinJavaComponent.inject
 
 /**
@@ -18,11 +19,7 @@ class WLSJsInterface(val webView: WLSWebView) {
 
     private val manager: UserDataManager by inject(UserDataManager::class.java)
 
-
-    @JavascriptInterface
-    fun back() {
-        this.webView.findNavController().popBackStack()
-    }
+    private val gson = Gson()
 
     @JavascriptInterface
     fun showToast(string: String) {
@@ -68,6 +65,19 @@ class WLSJsInterface(val webView: WLSWebView) {
             webView.evaluateJavascript("$resolve('success')" , null)
             // 如果有错误，可以调用 reject
             // webView.evaluateJavascript("$reject('Error message')", null)
+        }
+
+    }
+
+    @JavascriptInterface
+    fun postMessage(input: String) {
+//        "postMessage called with input: $input".loge("JsInterface")
+        val mapType = object : TypeToken<Map<String , Any>>() {}.type
+        val data: Map<String , Any> = gson.fromJson(input , mapType)
+        when (data["type"]) {
+            "back" -> {
+                this.webView.findNavController().popBackStack()
+            }
         }
 
     }
