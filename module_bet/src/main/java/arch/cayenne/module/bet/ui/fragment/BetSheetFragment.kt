@@ -179,7 +179,7 @@ class BetSheetFragment constructor() :
         this.listener = listener
     }
 
-    override fun playEnterAnimations(
+    override fun playEnterAnimations(//
         doStart: (() -> Unit)?,
         doCancel: (() -> Unit)?,
         doEnd: (() -> Unit)?
