@@ -1,5 +1,6 @@
 package arch.cayenne.module.order.ui.viewholder
 
+import androidx.core.view.isVisible
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
@@ -19,5 +20,10 @@ class OrderBettingCollapseViewHolder(private val mBinding: ItemOrderSportBetting
         } else {
             mBinding.root.context.getString(R.string.title_combo_bet_odds, item.comboK, item.comboV)
         }
+
+        val marketName = item.selectionsList.joinToString(",") { it.marketName }
+        mBinding.tvMarketName.text = marketName
+
+        mBinding.clResult.isVisible = item.resultStatus == 0
     }
 }

@@ -80,7 +80,10 @@ open class OrderSlipRepository(
         
         // 2. 當前時間
         val currentTime = System.currentTimeMillis()
-        val data2 = originalData.copy(betTime = currentTime)
+        val data2 = originalData.copy(
+            betId = "1",
+            betTime = currentTime
+        )
         
         // 3. 昨天時間
         calendar.timeInMillis = System.currentTimeMillis()
@@ -89,7 +92,10 @@ open class OrderSlipRepository(
         calendar.set(java.util.Calendar.MINUTE, 30)
         calendar.set(java.util.Calendar.SECOND, 0)
         val yesterdayTime = calendar.timeInMillis
-        val data3 = originalData.copy(betTime = yesterdayTime)
+        val data3 = originalData.copy(
+            betId = "2",
+            betTime = yesterdayTime
+        )
         
         // 4. 上個月任意時間（上個月15號）
         calendar.timeInMillis = System.currentTimeMillis()
@@ -99,13 +105,15 @@ open class OrderSlipRepository(
         calendar.set(java.util.Calendar.MINUTE, 0)
         calendar.set(java.util.Calendar.SECOND, 0)
         val lastMonthTime = calendar.timeInMillis
-        val data4 = originalData.copy(betTime = lastMonthTime)
+        val data4 = originalData.copy(
+            betId = "3",
+            betTime = lastMonthTime
+        )
         
         // 5. 上週五時間
         calendar.timeInMillis = System.currentTimeMillis()
-        val dayOfWeek = calendar.get(java.util.Calendar.DAY_OF_WEEK)
         // 計算到上週五的天數差
-        val daysToLastFriday = when (dayOfWeek) {
+        val daysToLastFriday = when (val dayOfWeek = calendar.get(java.util.Calendar.DAY_OF_WEEK)) {
             java.util.Calendar.SATURDAY -> 8  // 週六往前8天
             java.util.Calendar.SUNDAY -> 9    // 週日往前9天
             else -> dayOfWeek + 2             // 其他日子
@@ -115,7 +123,10 @@ open class OrderSlipRepository(
         calendar.set(java.util.Calendar.MINUTE, 0)
         calendar.set(java.util.Calendar.SECOND, 0)
         val lastFridayTime = calendar.timeInMillis
-        val data5 = originalData.copy(betTime = lastFridayTime)
+        val data5 = originalData.copy(
+            betId = "4",
+            betTime = lastFridayTime
+        )
         
         val allData = listOf(data1, data2, data3, data4, data5)
         
