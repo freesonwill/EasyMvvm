@@ -43,7 +43,7 @@ class HallCategoryFragment: BaseFragment<GameCategoryViewModel, FragmentHallCate
 
     override fun initView(savedInstanceState: Bundle?) {
         with(mBinding) {
-            titleBar.loadGeneralTitleBar("老虎機")
+            titleBar.loadGeneralTitleBar("老虎机")
             customTabGroup.submitTabList(mockVendorList)
             mViewModel.mockList(page)
             rvGame.layoutManager = GridLayoutManager(requireContext(),  3)
