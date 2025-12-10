@@ -50,7 +50,8 @@ class OrderBettingCollapseViewHolder(private val mBinding: ItemOrderSportBetting
     private fun setResultStatus(staus: Int) {
         mBinding.clResult.isVisible = staus != 0
         mBinding.tvResultMoney.isVisible = staus != 3
-        mBinding.tvSecondResult.isVisible = staus == 4 || staus == 5
+        mBinding.tvSecondResult.isVisible = false
+//        mBinding.tvSecondResult.isVisible = staus == 4 || staus == 5
         mBinding.tvResult.setTextSize(TypedValue.COMPLEX_UNIT_SP, if (staus == 4 || staus == 5) 11f else 12f)
         when (staus) {
             // 贏
