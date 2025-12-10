@@ -78,6 +78,20 @@ class WLSJsInterface(val webView: WLSWebView) {
             "back" -> {
                 this.webView.findNavController().popBackStack()
             }
+
+            "openPage" -> {
+                val params: Map<String , Any> = data["params"] as? Map<String , Any> ?: return
+                val page = params["pageName"] as? String ?: return
+                // 这里可以根据 page 字段来决定打开哪个页面
+                // 例如：
+                when (page) {
+                    "customer" -> {
+                        // 打开客服页面
+                        "open customer".loge("JsInterface")
+                    }
+                    // 添加更多页面处理逻辑
+                }
+            }
         }
 
     }
