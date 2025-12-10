@@ -37,7 +37,7 @@ class OrderSportPageFragment :
                 override fun onDateClicked() {
                     val dialog = OrderDateDialogFragment()
                     dialog.setListener { v1, v2 ->
-                        // TODO 用時間呼叫API
+                        mViewModel.setOrderData(type, v1, v2)
                     }
                     dialog.show(childFragmentManager)
                 }
@@ -53,7 +53,7 @@ class OrderSportPageFragment :
 
     override fun initData() {
         super.initData()
-        mViewModel.setType(type)
+        mViewModel.setOrderData(type)
     }
 
     override fun initListener() {

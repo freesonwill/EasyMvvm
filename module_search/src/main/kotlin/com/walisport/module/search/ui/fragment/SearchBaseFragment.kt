@@ -357,8 +357,8 @@ abstract class SearchBaseFragment<VM : BaseViewModel, CVB : ViewBinding>: BaseFr
         getTitleBarBackIcon().apply {
             doOnLayout {
                 setImageDrawable(
-                    if(isDirectMatch()) ContextCompat.getDrawable(requireContext(), R.drawable.ic_search_left_arrow)
-                    else getDrawable(requireContext(), R.drawable.ic_search_left_arrow)
+                    if(isDirectMatch()) ContextCompat.getDrawable(requireContext(), arch.cayenne.lib.common.R.drawable.universal_icon_back)
+                    else getDrawable(requireContext(), arch.cayenne.lib.common.R.drawable.universal_icon_back)
                 )
             }
         }
