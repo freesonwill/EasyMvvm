@@ -43,6 +43,6 @@
         <item>Tiếng Việt</item>
     </string-array>
     
-    <string name="watch_replay">观看回放</string>
-    <string name="go_to_mahjong">前往 麻将胡了</string>
+    <string name="follow_bet">跟单</string>
+    <string name="go_to_sport">前往 体育</string>
 </resources>

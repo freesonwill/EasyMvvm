@@ -1,10 +1,12 @@
 package arch.cayenne.module.chat.ui.fragment
 
+import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.app.Dialog
 import android.os.Bundle
 import android.view.WindowManager
-import android.view.animation.LinearInterpolator
+import androidx.core.animation.addListener
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import arch.cayenne.lib.base.ui.fragment.BasePreLoadBottomSheetFragment
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
@@ -28,7 +30,10 @@ class BetShareDialogFragment :
         get() = BetShareViewModel::class
     private var betType: Int = 0 // 0 Game 1 Sport
     private var dialogBetMaxHeight: Int = 0
-    private val minHeight = 425.dp2px
+    private val contentMaxHeight = 694.dp2px
+    private val sportMinHeight = 345.dp2px
+    private val gameMinHeight = 425.dp2px
+    private var heightAnim: ValueAnimator? = null
 
     companion object {
         val TAG = BetShareDialogFragment::class.java.simpleName
@@ -68,7 +73,34 @@ class BetShareDialogFragment :
             throw IllegalStateException("betType is Not 1 or 0")
         }
         this.betType = betType
+        setFragmentUi()
         loadFragment()
+    }
+
+    private fun setFragmentUi() {
+        mBinding.line.isVisible = betType == 1
+        mBinding.clBottom.isVisible = betType == 1
+        val lp = mBinding.fragmentContainer.layoutParams
+        lp.height = if (betType == 0) gameMinHeight else sportMinHeight
+        mBinding.fragmentContainer.layoutParams = lp
+    }
+
+
+    override fun initView(savedInstanceState: Bundle?) {
+        setMaxHeight()
+    }
+
+
+    override suspend fun createObserver() {
+        super.createObserver()
+
+        mViewModel.expandLiveData.observe(viewLifecycleOwner) {
+            startHeightAnim()
+        }
+        mViewModel.closeLiveData.observe(viewLifecycleOwner) {
+            dismiss()
+        }
+
     }
 
     private fun loadFragment() {
@@ -77,6 +109,24 @@ class BetShareDialogFragment :
             if (betType == 0) GameShareFragment() else SportShareFragment()
         ).commit()
     }
+
+    override fun initListener() {
+
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+    }
+
+
+    override fun onStop() {
+        super.onStop()
+        if (heightAnim?.isRunning == true) {
+            heightAnim?.cancel()
+        }
+    }
+
 
     private fun setupFullScreen(dialog: Dialog) {
         dialog.window?.apply {
@@ -92,56 +142,34 @@ class BetShareDialogFragment :
         }
     }
 
-    override fun initView(savedInstanceState: Bundle?) {
-        "BetShareFragment ${mViewModel}".logd("aaa")
-        setMaxHeight()
-    }
-
-
     private fun setMaxHeight() {
         dialogBetMaxHeight = requireContext().resources.displayMetrics.heightPixels - 118.dp2px
     }
 
-    override fun initListener() {
-        mBinding.apply {
-            ivExpand.clickNoRepeat {
-                startHeightAnim()
-            }
-            ivClose.clickNoRepeat {
-                dismiss()
-            }
-        }
-    }
 
-    var heightAnim: ValueAnimator? = null
     private fun startHeightAnim() {
-
-        "setHeightAnim ${mBinding.content.height}  minHeight ${minHeight}  dialogBetMaxHeight $dialogBetMaxHeight".logd(
-            "aaa"
-        )
         if (heightAnim?.isRunning == true) {
             heightAnim?.cancel()
         }
-        val param = if (mBinding.content.height == minHeight) arrayOf(
-            minHeight,
-            dialogBetMaxHeight
-        ) else arrayOf(dialogBetMaxHeight, minHeight)
-        heightAnim = ValueAnimator.ofInt(param[0], param[1]).apply {
-            duration = 200
-            addUpdateListener {
-                val lp = mBinding.content.layoutParams
-                lp.height = it.animatedValue as Int
-                mBinding.content.layoutParams = lp
+        mBinding.fragmentContainer.also { container ->
+            val param = mutableListOf<Int>()
+            if (container.height <= gameMinHeight) {
+                param.add(if (betType == 0) gameMinHeight else sportMinHeight)
+                param.add(contentMaxHeight)
+            } else {
+                param.add(contentMaxHeight)
+                param.add(if (betType == 0) gameMinHeight else sportMinHeight)
             }
-            start()
+            heightAnim = ValueAnimator.ofInt(param[0], param[1]).apply {
+                addUpdateListener { anim ->
+                    val lp = container.layoutParams
+                    lp.height = anim.animatedValue as Int
+                    container.layoutParams = lp
+                }
+                duration = 200
+                start()
+            }
         }
-    }
 
-    override fun onStop() {
-        super.onStop()
-        if (heightAnim?.isRunning == true) {
-            heightAnim?.cancel()
-        }
     }
-
 }
