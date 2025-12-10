@@ -65,7 +65,7 @@ class OrderBettingViewHolder(private val mBinding: ItemOrderSportBettingBinding)
         mBinding.tvResultMoney.text = if (item.resultStatus == 0) {
             "${CurrencySymbols.getSymbol(item.currency)}${BetSlipUtils.expectMaxAmount(item.betAmount, item.odds)}"
         } else {
-            "${CurrencySymbols.getSymbol(item.currency)}${item.returnAmount}"
+            "${CurrencySymbols.getSymbol(item.currency)}${item.returnAmount.getFormalMoney()}"
         }
 
         val settlePrice = BetSlipUtils.earlySettlePrice(
