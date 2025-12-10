@@ -1,5 +1,6 @@
 package arch.cayenne.module.order.ui.viewholder
 
+import android.util.TypedValue
 import androidx.core.view.isVisible
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
@@ -50,9 +51,10 @@ class OrderBettingCollapseViewHolder(private val mBinding: ItemOrderSportBetting
         mBinding.clResult.isVisible = staus != 0
         mBinding.tvResultMoney.isVisible = staus != 3
         mBinding.tvSecondResult.isVisible = staus == 4 || staus == 5
+        mBinding.tvResult.setTextSize(TypedValue.COMPLEX_UNIT_SP, if (staus == 4 || staus == 5) 11f else 12f)
         when (staus) {
             // 贏
-            1 -> {
+            1, 5 -> {
                 mBinding.tvResult.setText(R.string.win)
                 mBinding.tvResult.setPadding(3.dp2px, 2.dp2px, 3.dp2px, 3.dp2px)
                 mBinding.tvResult.setTextColorRes(arch.cayenne.lib.common.R.color.color_000000)
@@ -66,7 +68,7 @@ class OrderBettingCollapseViewHolder(private val mBinding: ItemOrderSportBetting
 
             }
             // 輸
-            3 -> {
+            3, 4 -> {
                 mBinding.tvResult.setText(R.string.lose)
                 mBinding.tvResult.setPadding(3.dp2px, 2.dp2px, 3.dp2px, 3.dp2px)
                 mBinding.tvResult.setTextColorRes(arch.cayenne.lib.common.R.color.color_2C323E)
@@ -77,27 +79,27 @@ class OrderBettingCollapseViewHolder(private val mBinding: ItemOrderSportBetting
                 mBinding.tvResultMoney.setTextColorRes(arch.cayenne.lib.common.R.color.color_FFFFFF)
             }
             // 輸一半
-            4 -> {
-                mBinding.tvResult.setText(R.string.order_lose_half)
-                mBinding.tvResult.setPadding(7.dp2px, 3.dp2px, 6.dp2px, 2.dp2px)
-                mBinding.tvResult.setTextColorRes(arch.cayenne.lib.common.R.color.color_FFFFFF)
-
-                mBinding.tvResult.background = SkinnableResourceManager.getDrawable(itemView.context, R.drawable.shape_4dp)
-                mBinding.tvResult.backgroundTintList = SkinnableResourceManager.getColorStateList(itemView.context, arch.cayenne.lib.common.R.color.color_A50111)
-
-                mBinding.tvResultMoney.setTextColorRes(arch.cayenne.lib.common.R.color.color_FFFFFF)
-            }
+//            4 -> {
+//                mBinding.tvResult.setText(R.string.order_lose_half)
+//                mBinding.tvResult.setPadding(7.dp2px, 3.dp2px, 6.dp2px, 2.dp2px)
+//                mBinding.tvResult.setTextColorRes(arch.cayenne.lib.common.R.color.color_FFFFFF)
+//
+//                mBinding.tvResult.background = SkinnableResourceManager.getDrawable(itemView.context, R.drawable.shape_4dp)
+//                mBinding.tvResult.backgroundTintList = SkinnableResourceManager.getColorStateList(itemView.context, arch.cayenne.lib.common.R.color.color_A50111)
+//
+//                mBinding.tvResultMoney.setTextColorRes(arch.cayenne.lib.common.R.color.color_FFFFFF)
+//            }
             // 贏一半
-            5 -> {
-                mBinding.tvResult.setText(R.string.order_win_half)
-                mBinding.tvResult.setPadding(7.dp2px, 3.dp2px, 6.dp2px, 2.dp2px)
-                mBinding.tvResult.setTextColorRes(arch.cayenne.lib.common.R.color.color_FFFFFF)
-
-                mBinding.tvResult.background = SkinnableResourceManager.getDrawable(itemView.context, R.drawable.shape_4dp)
-                mBinding.tvResult.backgroundTintList = SkinnableResourceManager.getColorStateList(itemView.context, arch.cayenne.lib.common.R.color.color_00B001)
-
-                mBinding.tvResultMoney.setTextColorRes(arch.cayenne.lib.common.R.color.color_FFFFFF)
-            }
+//            5 -> {
+//                mBinding.tvResult.setText(R.string.order_win_half)
+//                mBinding.tvResult.setPadding(7.dp2px, 3.dp2px, 6.dp2px, 2.dp2px)
+//                mBinding.tvResult.setTextColorRes(arch.cayenne.lib.common.R.color.color_FFFFFF)
+//
+//                mBinding.tvResult.background = SkinnableResourceManager.getDrawable(itemView.context, R.drawable.shape_4dp)
+//                mBinding.tvResult.backgroundTintList = SkinnableResourceManager.getColorStateList(itemView.context, arch.cayenne.lib.common.R.color.color_00B001)
+//
+//                mBinding.tvResultMoney.setTextColorRes(arch.cayenne.lib.common.R.color.color_FFFFFF)
+//            }
             // 退款
             6 -> {
                 mBinding.tvResult.setText(R.string.return_money)
