@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="search_main_bg">#0E0F1A</color>
-    <color name="search_title">#BBBBBB</color>
+    <color name="search_main_bg">@color/color_1E1E1E</color>
+    <color name="search_title">@color/color_C0C0C0</color>
     <color name="search_divider">#232530</color>
-    <color name="hot_word">#00D271</color>
+    <color name="hot_word">@color/color_00E0E5</color>
     <color name="tab_item_text_select">#ffffff</color>
     <color name="tab_item_text_unselect">#929298</color>
     <color name="search_history_divider">#E0E0E0</color>
-    <color name="search_history_no_data">#666666</color>
+    <color name="search_history_no_data">#999999</color>
     <color name="search_result_date">#929298</color>
-    <color name="search_result_date_selected">#24EE8A</color>
+    <color name="search_result_date_selected">@color/brand_color</color>
     <color name="search_result_more">#929298</color>
     <color name="search_result_race_header">#FFFFFF</color>
     <color name="search_result_default_gradient_start">#065030</color>
@@ -21,7 +21,7 @@
     <color name="search_calendar_red">#ff0000</color>
     <color name="search_calendar_current_month_text_color">#FFFFFF</color>
     <color name="search_calendar_other_month_text_color">#666666</color>
-    <color name="search_calendar_selected_theme_color">#24EE8A</color>
+    <color name="search_calendar_selected_theme_color">@color/color_00E0E5</color>
     <color name="search_calendar_week_text_color">#929298</color>
     <color name="search_calendar_reset_btn_text_color">#E6E6E6</color>
 </resources>

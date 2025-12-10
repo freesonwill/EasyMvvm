@@ -4,24 +4,24 @@
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/CustomToolbarStyle"
     android:paddingStart="0dp"
-    android:paddingEnd="0dp">
+    android:paddingEnd="0dp"
+    android:layout_marginTop="@dimen/dp_2">
 
     <arch.cayenne.lib.skin.widget.SkinnableImageView
         android:id="@+id/iv_back"
         style="@style/CustomToolbarImgStyle"
-        android:layout_width="48dp"
+        android:layout_width="40dp"
         android:layout_height="44dp"
-        android:paddingStart="16dp"
-        android:paddingTop="10dp"
-        android:paddingEnd="8dp"
-        android:paddingBottom="10dp"
+        android:paddingStart="12dp"
+        android:paddingTop="11dp"
+        android:paddingEnd="6dp"
+        android:paddingBottom="11dp"
         app:srcCompat="@drawable/universal_icon_back" />
 
     <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
         android:id="@+id/ll_search_bar"
         style="@style/CustomToolbarLine"
         android:background="@drawable/search_rounded_background"
-        android:backgroundTint="@color/search_bg"
         android:gravity="center_vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/tv_search_text"
@@ -29,9 +29,9 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <arch.cayenne.lib.skin.widget.SkinnableImageView
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_marginStart="8dp"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_marginStart="16dp"
             android:layout_marginEnd="8dp"
             android:src="@drawable/search_icon" />
 
@@ -54,7 +54,7 @@
         android:layout_width="wrap_content"
         android:layout_height="44dp"
         android:gravity="center"
-        android:minWidth="62dp"
+        android:minWidth="59dp"
         android:paddingStart="5dp"
         android:paddingEnd="5dp"
         android:text="@string/search_title"
