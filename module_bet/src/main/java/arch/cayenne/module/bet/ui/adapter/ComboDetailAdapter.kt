@@ -7,17 +7,17 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.ui.adapter.BaseAdapter
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
-import arch.cayenne.module.bet.data.ParameterItems
-import arch.cayenne.module.bet.databinding.ItemCombinationListBinding
-import arch.cayenne.module.bet.ui.compare.CombinationCompare
+import arch.cayenne.module.bet.ui.fragment.ComboDetailFragment.ParameterItems
+import arch.cayenne.module.bet.databinding.ItemComboDetailListBinding
+import arch.cayenne.module.bet.ui.compare.ComboDetailCompare
 
-class CombinationAdapter :
-    BaseAdapter<ParameterItems, CombinationViewHolder, ItemCombinationListBinding>(
-        CombinationCompare()
+class ComboDetailAdapter :
+    BaseAdapter<ParameterItems, ComboDetailViewHolder, ItemComboDetailListBinding>(
+        ComboDetailCompare()
     ) {
     override fun convertPlus(
-        holder: CombinationViewHolder,
-        binding: ItemCombinationListBinding,
+        holder: ComboDetailViewHolder,
+        binding: ItemComboDetailListBinding,
         position: Int
     ) {
         holder.init(getItem(position))
@@ -27,19 +27,19 @@ class CombinationAdapter :
         inflater: LayoutInflater,
         parent: ViewGroup,
         viewType: Int
-    ): ItemCombinationListBinding {
-        return ItemCombinationListBinding.inflate(inflater, parent, false)
+    ): ItemComboDetailListBinding {
+        return ItemComboDetailListBinding.inflate(inflater, parent, false)
     }
 
     override fun createViewHolder(
-        binding: ItemCombinationListBinding,
+        binding: ItemComboDetailListBinding,
         viewType: Int
-    ): CombinationViewHolder {
-        return CombinationViewHolder(binding)
+    ): ComboDetailViewHolder {
+        return ComboDetailViewHolder(binding)
     }
 }
 
-class CombinationViewHolder(private val mBinding: ItemCombinationListBinding) :
+class ComboDetailViewHolder(private val mBinding: ItemComboDetailListBinding) :
     BaseViewHolder(mBinding) {
 
     fun init(bean: ParameterItems) {

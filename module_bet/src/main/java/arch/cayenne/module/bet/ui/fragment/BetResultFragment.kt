@@ -34,10 +34,13 @@ import arch.cayenne.lib.database.entity.BetTypeEnum
 import arch.cayenne.lib.skin.data.SkinMsgType
 import arch.cayenne.lib.skin.widget.biz.ISkinnableBiz
 import arch.cayenne.module.bet.R
+import arch.cayenne.module.bet.data.ComboMultiBetBean
 import arch.cayenne.module.bet.databinding.FragmentBetResultBinding
 import arch.cayenne.module.bet.ui.adapter.BetSelectionAdapter
 import arch.cayenne.module.bet.ui.adapter.ResultMultiBetAdapter
 import arch.cayenne.module.bet.viewmodel.BetResultViewModel
+import com.blankj.utilcode.util.GsonUtils
+import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
 
@@ -51,6 +54,7 @@ class BetResultFragment :
 
     companion object {
         private const val TAG = "BetResultFragment"
+        const val KEY_ComboMultiBetBeans = "KEY_ComboMultiBetBeans"
 
         fun create(activity: FragmentActivity) {
             val manager = activity.supportFragmentManager
@@ -60,12 +64,13 @@ class BetResultFragment :
             }
         }
 
-        fun show(activity: FragmentActivity, withOtherSheetHide: ObjectAnimator? = null) {
+        fun show(activity: FragmentActivity,bundle: Bundle,withOtherSheetHide: ObjectAnimator? = null) {
             val manager = activity.supportFragmentManager
             val f = manager.findFragmentByTag(TAG)
             if (f == null) {
-                BetResultFragment().show(manager, TAG)
+                BetResultFragment().apply { arguments = bundle }.show(manager, TAG)
             } else if (f is BasePreLoadBottomSheetFragment<*, *>) {
+                f.arguments = bundle
                 if (withOtherSheetHide == null) {
                     f.customShow()
                 } else {
@@ -91,13 +96,14 @@ class BetResultFragment :
             }
 
             override fun onCombinationDetailClick(serialValue: Int) {
-
+                ComboDetailFragment.newInstance(mViewModel.toCombinationDetailParameter(serialValue)).show(childFragmentManager)
             }
         })
     }
     private var isExpand: Boolean = false //是否折叠
     private var isFull: Boolean? = null
     private var temp: List<BetSelectionBean>? = null
+
     override fun initView(savedInstanceState: Bundle?) {
         isHorizontalGestureEnable = false
         isVerticalGestureEnable = false
@@ -111,12 +117,23 @@ class BetResultFragment :
         mBinding.root.maxHeight = maxFragmentHeight
     }
 
+    override fun logEnabled() = true
+
+
+    override fun customShow(other: ObjectAnimator?) {
+        super.customShow(other)
+        //"customShow--arg:${arguments}".logd(TAG)
+        arguments?.getString(KEY_ComboMultiBetBeans)?.let {
+            val list = GsonUtils.fromJson<List<ComboMultiBetBean>>(it,object :TypeToken<List<ComboMultiBetBean>>(){}.type)
+            mViewModel.setComboMultiBetBeans(list)
+        }
+    }
+
     override fun initListener() {
         mBinding.tvBetAgain.setOnClickListener {
             clearAllObserve()
             lifecycleScope.launch {
                 mViewModel.continueBet()?.let {
-                    //CombinationFragment.show(requireActivity(), getHideAnimator())
                     BetSheetFragment.show(requireActivity(), getHideAnimator())
                 }
             }

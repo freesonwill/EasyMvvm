@@ -16,11 +16,10 @@
         android:id="@+id/iv_bg_bottom"
         android:layout_width="@dimen/dp_12"
         android:layout_height="@dimen/dp_10"
-        android:layout_marginTop="-3dp"
+        android:layout_marginTop="@dimen/dp_65"
         android:layout_marginStart="@dimen/dp_30"
         app:srcCompat="@drawable/ic_game_ranking_info_bottom"
-        app:layout_constraintTop_toBottomOf="@+id/iv_bg_top"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="@+id/iv_bg_top"/>
     <androidx.appcompat.widget.AppCompatTextView
         android:layout_width="0dp"

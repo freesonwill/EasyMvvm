@@ -41,7 +41,7 @@ open class OrderSlipRepository(
         cursorBetTime: Long?,
         size: Int
     ): ApiResponseState = withContext(scope.coroutineContext) {
-        val mockData = getTestMockData() ?: return@withContext ApiResponseState.Failed(
+        val mockData = getTestMockData(startTime, endTime) ?: return@withContext ApiResponseState.Failed(
             SimpleResponseError()
         )
         return@withContext ApiResponseState.Succeeded(mockData)
@@ -69,10 +69,92 @@ open class OrderSlipRepository(
 //        }
     }
 
-    private fun getTestMockData(): List<BetSlipOrderBean>? {
+    private fun getTestMockData(startTime: Long?, endTime: Long?): List<BetSlipOrderBean>? {
         val mockData = ResourceExt.getAssets("mock_order.json") ?: return null
-        val data = Gson().fromJson(mockData, BetSlipOrderBean::class.java)
-        return listOf(data)
+        val originalData = Gson().fromJson(mockData, BetSlipOrderBean::class.java)
+        
+        val calendar = java.util.Calendar.getInstance()
+        val allData = mutableListOf<BetSlipOrderBean>()
+        
+        // 1. 原始資料（保持不變）
+        allData.add(originalData)
+        
+        // 2. 當前時間
+        val currentTime = System.currentTimeMillis()
+        allData.add(originalData.copy(
+            betId = "1",
+            betTime = currentTime
+        ))
+        allData.add(originalData.copy(
+            betId = "11",
+            betTime = currentTime
+        ))
+        allData.add(originalData.copy(
+            betId = "12",
+            betTime = currentTime
+        ))
+        
+        // 3. 昨天時間
+        calendar.timeInMillis = System.currentTimeMillis()
+        calendar.add(java.util.Calendar.DAY_OF_MONTH, -1)
+        calendar.set(java.util.Calendar.HOUR_OF_DAY, 14)
+        calendar.set(java.util.Calendar.MINUTE, 30)
+        calendar.set(java.util.Calendar.SECOND, 0)
+        val yesterdayTime = calendar.timeInMillis
+        allData.add(originalData.copy(
+            betId = "2",
+            betTime = yesterdayTime
+        ))
+        
+        // 4. 上個月任意時間（上個月15號）
+        calendar.timeInMillis = System.currentTimeMillis()
+        calendar.add(java.util.Calendar.MONTH, -1)
+        calendar.set(java.util.Calendar.DAY_OF_MONTH, 15)
+        calendar.set(java.util.Calendar.HOUR_OF_DAY, 10)
+        calendar.set(java.util.Calendar.MINUTE, 0)
+        calendar.set(java.util.Calendar.SECOND, 0)
+        val lastMonthTime = calendar.timeInMillis
+        allData.add(originalData.copy(
+            betId = "3",
+            betTime = lastMonthTime
+        ))
+        
+        // 5. 上週五時間
+        calendar.timeInMillis = System.currentTimeMillis()
+        // 計算到上週五的天數差
+        val daysToLastFriday = when (val dayOfWeek = calendar.get(java.util.Calendar.DAY_OF_WEEK)) {
+            java.util.Calendar.SATURDAY -> 8  // 週六往前8天
+            java.util.Calendar.SUNDAY -> 9    // 週日往前9天
+            else -> dayOfWeek + 2             // 其他日子
+        }
+        calendar.add(java.util.Calendar.DAY_OF_MONTH, -daysToLastFriday)
+        calendar.set(java.util.Calendar.HOUR_OF_DAY, 18)
+        calendar.set(java.util.Calendar.MINUTE, 0)
+        calendar.set(java.util.Calendar.SECOND, 0)
+        val lastFridayTime = calendar.timeInMillis
+        allData.add(originalData.copy(
+            betId = "4",
+            betTime = lastFridayTime
+        ))
+        
+        // 若 startTime 和 endTime 都為 null，則不篩選
+        if (startTime == null && endTime == null) {
+            return allData
+        }
+        
+        // 根據 startTime 和 endTime 過濾資料
+        return allData.filter { bean ->
+            val betTime = bean.betTime
+            when {
+                // 只有 startTime，篩選 startTime 之前的時間
+                startTime != null && endTime == null -> betTime <= startTime
+                // 只有 endTime，篩選 endTime 之後的時間
+                startTime == null && endTime != null -> betTime >= endTime
+                // 兩者都有，篩選在範圍內的時間
+                startTime != null && endTime != null -> betTime >= startTime && betTime <= endTime
+                else -> true
+            }
+        }
     }
 
     suspend fun getLiveOrder(

@@ -23,6 +23,7 @@ import arch.cayenne.lib.base.ui.animation.CustomCurveTransformer
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.common.ui.adapter.BannerImageMatchAdapter
+import arch.cayenne.lib.common.ui.view.CustomTabLayoutMediator
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
@@ -50,7 +51,6 @@ import arch.cayenne.module.home.databinding.ItemLeagueTabBinding
 import arch.cayenne.module.home.databinding.LayoutTournamentSortingMenuBinding
 import arch.cayenne.module.home.ui.adapter.LeaguePagerAdapter
 import arch.cayenne.module.home.ui.adapter.SportsListAdapter
-import arch.cayenne.module.home.ui.view.CustomTabLayoutMediator
 import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
 import arch.cayenne.module.home.ui.viewmodel.SubHomeViewModel
 import arch.cayenne.module.home.utils.DateUtils

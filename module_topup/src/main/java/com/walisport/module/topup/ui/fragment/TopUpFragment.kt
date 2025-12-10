@@ -1,20 +1,24 @@
 package com.walisport.module.topup.ui.fragment
 
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
+import androidx.core.content.res.ResourcesCompat
 import androidx.navigation.fragment.findNavController
+import arch.cayenne.lib.base.data.model.PagerBean
 import arch.cayenne.lib.base.ui.adapter.PagerAdapter
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.databinding.ViewBarEditBinding
+import arch.cayenne.lib.common.ui.view.CustomTabIndicator
+import arch.cayenne.lib.common.ui.view.CustomTabLayoutMediator
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.setupHorizontalScrollDegree
+import arch.cayenne.lib.common.utils.ext.setupViewPagerScroll
 import arch.cayenne.lib.common.utils.ext.touchBackPressed
-import com.google.android.material.tabs.TabLayoutMediator
 import com.walisport.module.topup.R
-import com.walisport.module.topup.data.entity.TopUpTabType
 import com.walisport.module.topup.databinding.FragmentTopupBinding
 import com.walisport.module.topup.ui.viewmodel.TopUpViewModel
 import kotlin.reflect.KClass
@@ -27,6 +31,8 @@ class TopUpFragment : BaseFragment<TopUpViewModel, FragmentTopupBinding>() {
 
     override val vbClass: KClass<FragmentTopupBinding> = FragmentTopupBinding::class
     override val vmClass: KClass<TopUpViewModel> = TopUpViewModel::class
+    private var tabMediator: CustomTabLayoutMediator? = null
+    private var customIndicator: CustomTabIndicator? = null
 
     override fun initView(savedInstanceState: Bundle?) {
         with(mBinding) {
@@ -39,26 +45,42 @@ class TopUpFragment : BaseFragment<TopUpViewModel, FragmentTopupBinding>() {
                     findNavController().navigateUp()
                 }
                 tvTitleRight.clickNoRepeat {
-                    navigate(TopUpFragmentDirections.actionTopUpFragmentToFundDetailsFragment().apply {
-                        arguments.putString("type", "cz_record")
-                    })
+                    navigate(
+                        TopUpFragmentDirections.actionTopUpFragmentToFundDetailsFragment().apply {
+                            arguments.putString("type", "cz_record")
+                        })
                 }
             }
+            val list = listOf(
+                PagerBean(R.string.crypto_coin.getString()) { TopUpCryptoFragment() },
+                PagerBean(R.string.fiat_coin.getString()) { TopUpFiatFragment() },
+            )
+            viewPager.adapter = PagerAdapter(childFragmentManager, lifecycle, list)
+            tabMediator?.detach()
+            tabMediator = CustomTabLayoutMediator(
+                tabLayout = mBinding.tabLayout,
+                viewPager = mBinding.viewPager
+            ) { tab, pos ->
+                tab.text = list[pos].title
+            }.also { layoutMediator ->
+                layoutMediator.attach()
+            }
         }
-        val page = TopUpTabType.entries.toTypedArray()
-        mBinding.viewPager.adapter =
-            PagerAdapter(childFragmentManager, lifecycle, page.map { it.page })
-        TabLayoutMediator(mBinding.tabLayout, mBinding.viewPager, false) { tab, position ->
-            tab.text = page[position].page.title
-        }.attach()
         mBinding.tabLayout.post {
             mBinding.tabLayout.getTabAt(1)?.view?.setPadding(21.dp2px, 0, 21.dp2px, 4.dp2px)
         }
+        customIndicator = mBinding.homeIndicator
+        mBinding.viewPager.setupViewPagerScroll(
+            mBinding.tabLayout,
+            customIndicator!!,
+            tabIndicatorWidth = 0.45f,select = 1
+        )
         mBinding.viewPager.setupHorizontalScrollDegree()
         mBinding.root.touchBackPressed()
     }
 
     override fun initListener() {
+
     }
 
     override suspend fun createObserver() {
