@@ -7,5 +7,5 @@ import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
  * @date: 8/12/25 20:28
  * @description:
  */
-class SportShareViewModel:BaseViewModel() {
+class GameBetShareViewModel: BaseViewModel() {
 }

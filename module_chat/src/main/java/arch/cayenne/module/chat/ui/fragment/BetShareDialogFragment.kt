@@ -1,17 +1,14 @@
 package arch.cayenne.module.chat.ui.fragment
 
-import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.app.Dialog
 import android.os.Bundle
 import android.view.WindowManager
-import androidx.core.animation.addListener
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import arch.cayenne.lib.base.ui.fragment.BasePreLoadBottomSheetFragment
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
+import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
-import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.module.chat.R
 import arch.cayenne.module.chat.databinding.FragmentBetShareDialogLayoutBinding
 import arch.cayenne.module.chat.ui.viewmodel.BetShareViewModel
@@ -29,8 +26,7 @@ class BetShareDialogFragment :
     override val vmClass: KClass<BetShareViewModel>
         get() = BetShareViewModel::class
     private var betType: Int = 0 // 0 Game 1 Sport
-    private var dialogBetMaxHeight: Int = 0
-    private val contentMaxHeight = 694.dp2px
+    private var contentMaxHeight = 0
     private val sportMinHeight = 345.dp2px
     private val gameMinHeight = 425.dp2px
     private var heightAnim: ValueAnimator? = null
@@ -83,30 +79,28 @@ class BetShareDialogFragment :
         val lp = mBinding.fragmentContainer.layoutParams
         lp.height = if (betType == 0) gameMinHeight else sportMinHeight
         mBinding.fragmentContainer.layoutParams = lp
+        contentMaxHeight =  if(betType == 0) gameMinHeight+269.dp2px else sportMinHeight+269.dp2px
     }
 
 
     override fun initView(savedInstanceState: Bundle?) {
-        setMaxHeight()
     }
 
 
     override suspend fun createObserver() {
         super.createObserver()
-
         mViewModel.expandLiveData.observe(viewLifecycleOwner) {
             startHeightAnim()
         }
         mViewModel.closeLiveData.observe(viewLifecycleOwner) {
             dismiss()
         }
-
     }
 
     private fun loadFragment() {
         childFragmentManager.beginTransaction().replace(
             R.id.fragment_container,
-            if (betType == 0) GameShareFragment() else SportShareFragment()
+            if (betType == 0) GameBetShareFragment() else SportBetShareFragment()
         ).commit()
     }
 
@@ -116,7 +110,6 @@ class BetShareDialogFragment :
 
     override fun onStart() {
         super.onStart()
-
     }
 
 
@@ -141,11 +134,6 @@ class BetShareDialogFragment :
 
         }
     }
-
-    private fun setMaxHeight() {
-        dialogBetMaxHeight = requireContext().resources.displayMetrics.heightPixels - 118.dp2px
-    }
-
 
     private fun startHeightAnim() {
         if (heightAnim?.isRunning == true) {

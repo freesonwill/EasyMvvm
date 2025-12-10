@@ -3,17 +3,16 @@ package arch.cayenne.module.chat.ui.fragment
 import android.net.Uri
 import android.os.Bundle
 import android.os.Message
-import android.view.View
 import android.webkit.ValueCallback
 import android.webkit.WebChromeClient
 import android.webkit.WebView
 import androidx.activity.OnBackPressedCallback
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
-import arch.cayenne.lib.common.utils.ext.NavigationExt.navigateUp
 import arch.cayenne.lib.common.web.WLSWebViewClient
 import arch.cayenne.module.chat.databinding.FragmentGameShareLayoutBinding
 import arch.cayenne.module.chat.ui.viewmodel.BetShareViewModel
+import arch.cayenne.module.chat.ui.viewmodel.GameBetShareViewModel
 import kotlin.reflect.KClass
 
 /**
@@ -21,11 +20,11 @@ import kotlin.reflect.KClass
  * @date: 8/12/25 19:50
  * @description:游戏注单分享
  */
-class GameShareFragment:BaseFragment<BetShareViewModel,FragmentGameShareLayoutBinding>() {
+class GameBetShareFragment:BaseFragment<GameBetShareViewModel,FragmentGameShareLayoutBinding>() {
     override val vbClass: KClass<FragmentGameShareLayoutBinding>
         get() = FragmentGameShareLayoutBinding::class
-    override val vmClass: KClass<BetShareViewModel>
-        get() = BetShareViewModel::class
+    override val vmClass: KClass<GameBetShareViewModel>
+        get() = GameBetShareViewModel::class
 
     override fun initView(savedInstanceState: Bundle?) {
         //注册返回

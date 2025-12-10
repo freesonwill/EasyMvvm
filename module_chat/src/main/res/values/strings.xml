@@ -45,4 +45,7 @@
     
     <string name="follow_bet">跟单</string>
     <string name="go_to_sport">前往 体育</string>
+    <string name="chat_title_odds">赔率</string>
+    <string name="chat_title_bet">投注</string>
+    <string name="chat_live_bet_except_max_win">预计最高可赢</string>
 </resources>

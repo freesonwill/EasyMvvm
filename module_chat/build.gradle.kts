@@ -40,6 +40,7 @@ dependencies {
     implementation(project(":lib_database"))
     implementation(project(":lib_websocket"))
     implementation(project(":lib_common"))
+    implementation(project(":module_betslip"))
     implementation(libs.androidx.legacy.support.v4)
     implementation(libs.androidx.lifecycle.livedata.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)

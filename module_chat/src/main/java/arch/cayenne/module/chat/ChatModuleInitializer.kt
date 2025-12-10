@@ -20,8 +20,8 @@ import arch.cayenne.module.chat.ui.viewmodel.ChatLanguageDialogViewModel
 import arch.cayenne.module.chat.ui.viewmodel.ChatPersonalDialogViewModel
 import arch.cayenne.module.chat.ui.viewmodel.ChatReportViewModel
 import arch.cayenne.module.chat.ui.viewmodel.BetShareViewModel
-import arch.cayenne.module.chat.ui.viewmodel.GameShareViewModel
-import arch.cayenne.module.chat.ui.viewmodel.SportShareViewModel
+import arch.cayenne.module.chat.ui.viewmodel.GameBetShareViewModel
+import arch.cayenne.module.chat.ui.viewmodel.SportBetShareViewModel
 import arch.cayenne.module.chat.manager.ChatManagerImpl
 import arch.cayenne.module.chat.manager.ChatServerController
 import kotlinx.coroutines.CoroutineScope
@@ -54,8 +54,8 @@ class ChatModuleInitializer : DefaultInitializer<String> {
         viewModelOf(::ChatPersonalDialogViewModel)
         viewModelOf(::ChatReportViewModel)
         viewModelOf(::BetShareViewModel)
-        viewModelOf(::GameShareViewModel)
-        viewModelOf(::SportShareViewModel)
+        viewModelOf(::GameBetShareViewModel)
+        viewModelOf(::SportBetShareViewModel)
     }
 
     private val repoModules = module {

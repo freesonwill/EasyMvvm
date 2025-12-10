@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
+import arch.cayenne.module.betslip.data.repo.OrderSlipRepository
 
 /**
  * @author: wenxi
@@ -17,6 +18,7 @@ class BetShareViewModel : BaseViewModel() {
     val closeLiveData: LiveData<Boolean> = _closeLivedata
 
 
+
     fun expandDialog() {
         val value = _expandLivedata.value?.let { !it } ?: false
         _expandLivedata.value = value
@@ -26,4 +28,9 @@ class BetShareViewModel : BaseViewModel() {
         val value = _closeLivedata.value?.let { !it } ?: false
         _closeLivedata.value = value
     }
+
+    fun getTestData(){
+
+    }
 }
+
