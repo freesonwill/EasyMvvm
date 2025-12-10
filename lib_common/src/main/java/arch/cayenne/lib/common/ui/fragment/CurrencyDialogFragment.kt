@@ -49,6 +49,8 @@ class CurrencyDialogFragment constructor() : BasePositionDialogFragment<Currency
         }
     }
 
+    private var dismissListener: (() -> Unit)? = null
+
     val mockList: List<BaseCurrencyData> = listOf(
         BaseCurrencyData.CurrencyTitleData("现金"),
         BaseCurrencyData.CurrencyContentData(R.drawable.ic_usa, "美元", "$100.00"),
@@ -216,8 +218,12 @@ class CurrencyDialogFragment constructor() : BasePositionDialogFragment<Currency
                 super.dismiss()
             }
             .withStartAction {
-
+                dismissListener?.invoke()
             }
             .start()
+    }
+
+    fun setOnDismissListener(listener: () -> Unit) {
+        this.dismissListener = listener
     }
 }
