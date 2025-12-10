@@ -7,9 +7,9 @@
     android:layout_height="wrap_content"
     android:background="@drawable/shape_search_item"
     android:paddingStart="9dp"
-    android:paddingTop="4.5dp"
-    android:paddingEnd="9dp"
-    android:paddingBottom="4.5dp"
+    android:paddingTop="6dp"
+    android:paddingEnd="3dp"
+    android:paddingBottom="6dp"
     tools:ignore="MissingDefaultResource">
 
     <androidx.appcompat.widget.LinearLayoutCompat
@@ -27,14 +27,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/search_title"
-            android:textSize="15sp" />
+            android:textSize="14sp"
+            android:layout_marginEnd="@dimen/dp_6"
+            tools:text="西甲"/>
 
         <arch.cayenne.lib.skin.widget.SkinnableImageView
             android:id="@+id/ivClose"
-            android:layout_width="10dp"
-            android:layout_height="10dp"
-            android:layout_marginStart="10dp"
-            android:visibility="gone"
+            android:layout_width="15dp"
+            android:layout_height="12dp"
+            android:paddingEnd="@dimen/dp_3"
             app:srcCompat="@drawable/ic_search_history_close" />
     </androidx.appcompat.widget.LinearLayoutCompat>
 </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
