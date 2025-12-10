@@ -22,15 +22,5 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <arch.cayenne.lib.skin.widget.SkinnableTextView
-            android:id="@+id/tv_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_40"
-            android:layout_marginTop="@dimen/dp_64"
-            android:textColor="@color/red_team"
-            android:textSize="@dimen/sp_20"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
     </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
 </arch.cayenne.lib.common.ui.view.InterceptedLinearLayout>

@@ -2,6 +2,7 @@ package arch.cayenne.lib.common.web
 
 import android.webkit.JavascriptInterface
 import androidx.navigation.findNavController
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
 import arch.cayenne.lib.common.data.constants.UserDataKey
 import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.common.utils.helper.showToast
@@ -32,18 +33,43 @@ class WLSJsInterface(val webView: WLSWebView) {
 
 
     @JavascriptInterface
-    fun getUidToken(input: String, resolve: String, reject: String) {
-        val uid = manager.getValue(UserDataKey.KEY_UID, -1)
-        val token = manager.getValue(UserDataKey.KEY_TOKEN, "")
+    fun getUidToken(input: String , resolve: String , reject: String) {
+        val uid = manager.getValue(UserDataKey.KEY_UID , -1)
+        val token = manager.getValue(UserDataKey.KEY_TOKEN , "")
 
-        val obj = mapOf("uid" to uid, "token" to token)
+        val obj = mapOf("uid" to uid , "token" to token)
         val response = Gson().toJson(obj)
         webView.post {
             // 调用 resolve 回传成功数据
-            webView.evaluateJavascript("$resolve('$response')", null)
+            webView.evaluateJavascript("$resolve('$response')" , null)
             // 如果有错误，可以调用 reject
             // webView.evaluateJavascript("$reject('Error message')", null)
         }
+    }
+
+    @JavascriptInterface
+    fun back(input: String , resolve: String , reject: String) {
+        this.webView.post {
+            this.webView.findNavController().popBackStack()
+        }
+        webView.post {
+            // 调用 resolve 回传成功数据
+            webView.evaluateJavascript("$resolve('success')" , null)
+            // 如果有错误，可以调用 reject
+            // webView.evaluateJavascript("$reject('Error message')", null)
+        }
+    }
+
+    @JavascriptInterface
+    fun postMessage(input: String , resolve: String , reject: String) {
+        "postMessage called with input: $input".loge("JsInterface")
+        webView.post {
+            // 调用 resolve 回传成功数据
+            webView.evaluateJavascript("$resolve('success')" , null)
+            // 如果有错误，可以调用 reject
+            // webView.evaluateJavascript("$reject('Error message')", null)
+        }
+
     }
 
 

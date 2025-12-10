@@ -59,8 +59,8 @@
     // JS 函数：调用 Android 接口（通过 "Android" 对象）
     function showAndroidToast() {
         var message = document.getElementById('messageInput').value;
-        if (window.wls) {
-            wls.showToast(message);  // 调用 Android 的 showToast 方法
+        if (window.AndroidNative) {
+            AndroidNative.showToast(message);  // 调用 Android 的 showToast 方法
         } else {
             alert('JSBridge 未加载！请确保 WebView 已启用 JS 接口。');
         }
@@ -68,9 +68,9 @@
 
 
     function getUidToken(){
-         if (window.wls) {
+         if (window.AndroidNative) {
          return new Promise((resolve, reject) => {
-            wls.getUidToken("Test Input", "resolve", "reject");
+            AndroidNative.getUidToken("Test Input", "resolve", "reject");
             // 将 resolve 和 reject 函数绑定到 window 对象
             window.resolve = resolve;
             window.reject = reject;
@@ -86,17 +86,59 @@
     }
 
     function back() {
-        if (window.wls) {
-            wls.back();  // 调用 Android 的 moveToNextScreen 方法
-        } else {
-            alert('JSBridge 未加载！');
-        }
+        // 使用示例
+        Hybrid.callNative('back', {}).then(function(user){
+            console.log('user', user);
+        }).catch(function(err){
+        console.error('err', err);
+        });
     }
+
 
     // 可选：监听页面加载完成，确保 Android 对象可用
     window.addEventListener('load', function() {
         console.log('页面加载完成，Android JSBridge 可用。');
     });
+
+// 通用 H5 到原生的桥接代码
+    (function(global){
+  var cbId = 0;
+  var callbacks = {};
+
+  // H5 请求原生并等待回调
+  function callNative(action, params) {
+    return new Promise(function(resolve, reject){
+      var id = 'cb_' + (++cbId);
+      callbacks[id] = function(err, data){
+        delete callbacks[id];
+        if (err) reject(err); else resolve(data);
+      };
+      var payload = { action: action, params: params || {}, callbackId: id };
+
+      // iOS WKWebView
+      if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.native) {
+        window.webkit.messageHandlers.native.postMessage(payload);
+        return;
+      }
+      // Android addJavascriptInterface
+      if (window.AndroidNative && window.AndroidNative.postMessage) {
+        window.AndroidNative.postMessage(JSON.stringify(payload));
+        return;
+      }
+      // fallback: try url scheme
+      var scheme = 'myapp://bridge?action=' + encodeURIComponent(action) + '&payload=' + encodeURIComponent(JSON.stringify(payload));
+      var iframe = document.createElement('iframe'); iframe.style.display='none'; iframe.src = scheme; document.body.appendChild(iframe);
+      setTimeout(function(){ document.body.removeChild(iframe); }, 1000);
+    });
+  }
+
+  // 供原生调用：window.__nativeCallback(callbackId, err, data)
+  global.__nativeCallback = function(id, err, data) {
+    if (callbacks[id]) callbacks[id](err, data);
+  };
+
+  global.Hybrid = { callNative: callNative };
+})(window);
 </script>
 </body>
 </html>
