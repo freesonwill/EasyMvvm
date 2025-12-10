@@ -11,6 +11,7 @@ import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
+import arch.cayenne.lib.common.data.constants.BizUrl
 import arch.cayenne.lib.common.data.constants.UserDataKey
 import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getColor
@@ -37,9 +38,7 @@ class FundDetailsFragment : BaseFragment<FundDetailsViewModel, FragmentFundDetai
         launch {
             initTitleBar()
             initWebView()
-            val uid = manager.getValue(UserDataKey.KEY_UID, -1)
-            val token = manager.getValue(UserDataKey.KEY_TOKEN, "")
-            mBinding.webView.loadUrl("http://192.168.10.37:5173/record")
+            mBinding.webView.loadUrl(BizUrl.FUND_DETAIL.url)
         }
     }
 
@@ -86,7 +85,7 @@ class FundDetailsFragment : BaseFragment<FundDetailsViewModel, FragmentFundDetai
                     super.onProgressChanged(view, newProgress)
                 }
             }
-            setBackgroundColor(arch.cayenne.lib.common.R.color.black.getColor())
+            setBackgroundColor(arch.cayenne.lib.common.R.color.title_bg.getColor())
         }
     }
 
@@ -102,7 +101,7 @@ class FundDetailsFragment : BaseFragment<FundDetailsViewModel, FragmentFundDetai
     }
 
     override fun onStart() {
-        StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND(autoPadding = false)
+        StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND()
         StatusBarConfig.statusBarDarkFont = false
         setStatusBar(StatusBarConfig,mBinding.root)
         super.onStart()
