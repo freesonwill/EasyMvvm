@@ -453,8 +453,6 @@ class CustomTabLayoutMediator(
                         onComplete.invoke()
                     }
                     isTabClick = false
-                } else {
-                    viewPager.doSmartAnim(targetPosition = tab.position)
                 }
             }
             afterTabSelected?.invoke(tab.position)
