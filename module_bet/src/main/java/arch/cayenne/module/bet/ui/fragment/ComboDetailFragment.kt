@@ -1,13 +1,15 @@
 package arch.cayenne.module.bet.ui.fragment
 
+import android.animation.ValueAnimator
 import android.os.Bundle
 import android.view.View
-import android.view.ViewGroup
 import android.widget.FrameLayout
+import androidx.core.animation.addListener
 import androidx.core.os.bundleOf
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.ui.fragment.BaseBottomSheetFragment
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+import arch.cayenne.module.bet.R
 import arch.cayenne.module.bet.databinding.FragmentComboDetailBinding
 import arch.cayenne.module.bet.ui.adapter.ComboDetailAdapter
 import arch.cayenne.module.bet.viewmodel.BetCombViewModel
@@ -22,8 +24,7 @@ import kotlin.reflect.KClass
 class ComboDetailFragment :
     BaseBottomSheetFragment<BetCombViewModel, FragmentComboDetailBinding>() {
 
-    override val vbClass: KClass<FragmentComboDetailBinding> =
-        FragmentComboDetailBinding::class
+    override val vbClass: KClass<FragmentComboDetailBinding> = FragmentComboDetailBinding::class
     override val vmClass: KClass<BetCombViewModel> = BetCombViewModel::class
     private val listAdapter by lazy { ComboDetailAdapter() }
     private var tipStr = ""
@@ -32,7 +33,6 @@ class ComboDetailFragment :
 
     companion object {
         private const val PARAMETER = "PARAMETER"
-
         fun newInstance(parameter: Parameter): ComboDetailFragment {
             return ComboDetailFragment().apply {
                 arguments = bundleOf(PARAMETER to GsonUtils.toJson(parameter))
@@ -86,17 +86,20 @@ class ComboDetailFragment :
             rvContent.layoutManager = LinearLayoutManager(requireContext())
             rvContent.adapter = listAdapter
         }
+        val screenHeight = getScreenHeight() ?: return
+        val minHeight = (screenHeight * 0.52).toInt()
+        val maxHeight = (screenHeight * 0.84).toInt()
+        mBinding.clRoot.maxHeight = maxHeight
+        val param = mBinding.clRoot.layoutParams
         if (parameter.items.size > 1) {
             isCanExpand = false
-            val screenHeight = getScreenHeight() ?: return
-            val minFragmentHeight = (screenHeight * 0.84).toInt()
-            mBinding.clRoot.minHeight = minFragmentHeight
+            param.height = maxHeight
         } else {
             isCanExpand = true
-            val screenHeight = getScreenHeight() ?: return
-            val minFragmentHeight = (screenHeight * 0.52).toInt()
-            mBinding.clRoot.minHeight = minFragmentHeight
+            param.height = minHeight
         }
+        mBinding.ivBetExpand.setImageResource(arch.cayenne.lib.common.R.drawable.icon_expand)
+        mBinding.clRoot.layoutParams = param
         listAdapter.submitList(parameter.items)
     }
 
@@ -117,19 +120,36 @@ class ComboDetailFragment :
         }
     }
 
-    private fun onCollapses() {
-        if (!isCanExpand) return
-        isExpand = !isExpand
-        val screenHeight = getScreenHeight() ?: return
-        val height = (screenHeight * 0.84).toInt()
-        val layoutParams = mBinding.clRoot.layoutParams
-        layoutParams.height = if (isExpand) height else ViewGroup.LayoutParams.WRAP_CONTENT
-        mBinding.clRoot.layoutParams = layoutParams
-    }
-
     override suspend fun createObserver() {}
 
     private fun getScreenHeight(): Int? {
         return context?.resources?.displayMetrics?.heightPixels
+    }
+
+    private fun onCollapses() {
+        if (!isCanExpand) return
+        isExpand = !isExpand
+        val screenHeight = getScreenHeight() ?: return
+        val max = (screenHeight * 0.84).toInt()
+        val min = (screenHeight * 0.52).toInt()
+        val start = if (isExpand) min else max
+        val end = if (isExpand) max else min
+        val layoutParams = mBinding.clRoot.layoutParams
+        ValueAnimator.ofInt(start, end).apply {
+            duration = 150
+            addUpdateListener {
+                val value = it.animatedValue as Int
+                layoutParams.height = value
+                mBinding.clRoot.layoutParams = layoutParams
+            }
+            addListener(
+                onEnd = {
+                    if (isExpand) {
+                        mBinding.ivBetExpand.setImageResource(arch.cayenne.lib.common.R.drawable.icon_expand_none)
+                    } else {
+                        mBinding.ivBetExpand.setImageResource(arch.cayenne.lib.common.R.drawable.icon_expand)
+                    }
+                })
+        }.start()
     }
 }
