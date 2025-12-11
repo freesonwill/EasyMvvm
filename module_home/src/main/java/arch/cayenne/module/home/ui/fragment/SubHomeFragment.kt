@@ -534,7 +534,7 @@ class SubHomeFragment : BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>()
             sortingMenuBinding?.root?.startAnimation(slideInAnim)
 
             // 切換圖標為收起狀態
-            mBinding.layoutContainer.ivTournamentSortIcon.setImageResource(R.drawable.ic_tournament_collapse)
+            mBinding.layoutContainer.ivTournamentSortIcon.setImageResource(arch.cayenne.lib.common.R.drawable.ic_sort_collapse)
 
             // tv_tournament_more 變色為選中狀態
             mBinding.layoutContainer.tvTournamentMore.setTextColor(
@@ -578,7 +578,7 @@ class SubHomeFragment : BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>()
                 .start()
 
             // 切換圖標為展開狀態
-            mBinding.layoutContainer.ivTournamentSortIcon.setImageResource(R.drawable.ic_tournament_expand)
+            mBinding.layoutContainer.ivTournamentSortIcon.setImageResource(arch.cayenne.lib.common.R.drawable.ic_sort_expand)
 
             // tv_tournament_more 恢復為未選中狀態
             mBinding.layoutContainer.tvTournamentMore.setTextColor(

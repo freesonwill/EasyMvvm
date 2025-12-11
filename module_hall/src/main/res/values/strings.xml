@@ -29,5 +29,9 @@
     <string name="tab_ranking_today_player">玩家</string>
     <string name="tab_ranking_today_betting">投注额</string>
     <string name="tab_ranking_today_bonus">奖金</string>
+    <string name="sort_type_hot">热门</string>
+    <string name="sort_type_new">最新上线</string>
+    <string name="sort_type_hot_reward">近30分钟火热返奖</string>
+    <string name="sort_type_cold_reward">近30分钟冰冷返奖</string>
 
 </resources>

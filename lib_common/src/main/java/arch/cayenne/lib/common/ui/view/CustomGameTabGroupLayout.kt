@@ -46,6 +46,20 @@ class CustomGameTabGroupLayout : FrameLayout {
         }
     }
 
+    fun setOnSortBtnClick(listener: () -> Unit) {
+        binding.llBtnSort.clickNoRepeat {
+            listener.invoke()
+        }
+    }
+
+    fun setSortBtnSrc(resId: Int) {
+        binding.ivBtnSort.setImageResource(resId)
+    }
+
+    fun setSortBtnTextColor(color: Int) {
+        binding.tvBtnSort.setTextColor(color)
+    }
+
     fun submitTabList(list : List<SimpleTabDataModel>) {
         with(binding) {
             list.forEachIndexed { i, data ->
