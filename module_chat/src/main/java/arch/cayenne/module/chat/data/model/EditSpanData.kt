@@ -8,6 +8,7 @@ import android.text.style.UpdateAppearance
 import android.view.View
 import androidx.annotation.ColorInt
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
+import arch.cayenne.module.chat.data.constants.MsgType
 
 /**
  * @author: wenxi
@@ -45,15 +46,15 @@ class ColorSpan(@ColorInt val tvColor:Int):CharacterStyle(),UpdateAppearance{
     }
 }
 
-class ClickSpan(private val text: String,private val click:((str:String) -> Unit)):ClickableSpan(){
+class ClickSpan(private val type:MsgType,private val text: String, ):ClickableSpan(){
     private val tvColor = Color.parseColor("#8FBEE9")
-
+    val msgType = type
+    val tv = text
     override fun updateDrawState(ds: TextPaint) {
         ds.let {
             it.color = tvColor
         }
     }
     override fun onClick(widget: View) {
-        click.invoke(text)
     }
 }

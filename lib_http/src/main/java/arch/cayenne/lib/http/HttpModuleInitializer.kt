@@ -21,6 +21,7 @@ class HttpModuleInitializer : DefaultInitializer<String> {
         loadKoinModules(module {
             single(named("wnlApi")) {  HttpClient.Builder("http://co-api.51wnl.com",5000).build()  }
             single(named("3n1")) {  HttpClient.Builder("https://betwavepro.ja700.com/",5000).build()  }
+            single(named("mock")) {  HttpClient.Builder("https://eu.xa148.com",5000).build()  }
         })
         return TAG
     }
