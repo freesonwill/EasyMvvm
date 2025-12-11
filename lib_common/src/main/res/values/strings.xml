@@ -33,6 +33,8 @@
     <string name="currency_setting_title">钱包设置</string>
     <string name="currency_setting_1">仅显示有余额的加密货币</string>
     <string name="currency_setting_2">以法币金额显示加密货币</string>
+    <string name="fiat">现金</string>
+    <string name="crypto">加密货币</string>
 
     <string name="title_share_to">分享至</string>
     <string name="title_share_copy_order">复制注单</string>

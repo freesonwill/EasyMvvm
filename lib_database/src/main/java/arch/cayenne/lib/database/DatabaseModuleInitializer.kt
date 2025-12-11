@@ -31,7 +31,7 @@ class DatabaseModuleInitializer: DefaultInitializer<String> {
         factory { get<GameDatabase>().collectListDao() }
         factory { get<GameDatabase>().chatConfigDao() }
         factory { get<GameDatabase>().userDataDao() }
-
+        factory { get<GameDatabase>().currencyConfigDao() }
     }
 
     private val moduleList: List<Module> = listOf(module {

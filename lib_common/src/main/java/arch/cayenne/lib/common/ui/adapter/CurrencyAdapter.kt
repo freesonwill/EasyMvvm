@@ -17,7 +17,7 @@ class CurrencyAdapter: BaseAdapter<BaseCurrencyData, BaseViewHolder, ViewBinding
     override fun getItemViewType(position: Int): Int {
         if (getItem(position) is BaseCurrencyData.CurrencyTitleData) {
             return CurrencyType.TITLE.ordinal
-        } else if (getItem(position) is BaseCurrencyData.CurrencyContentData) {
+        } else if (getItem(position) is BaseCurrencyData.CurrencyContentData2) {
             return CurrencyType.CONTENT.ordinal
         } else {
             return super.getItemViewType(position)
@@ -30,7 +30,7 @@ class CurrencyAdapter: BaseAdapter<BaseCurrencyData, BaseViewHolder, ViewBinding
         position: Int
     ) {
         if (holder is CurrencyContentViewHolder) {
-            holder.bind(getItem(position) as? BaseCurrencyData.CurrencyContentData)
+            holder.bind(getItem(position) as? BaseCurrencyData.CurrencyContentData2)
         } else if (holder is CurrencyTitleViewHolder) {
             holder.bind(getItem(position) as? BaseCurrencyData.CurrencyTitleData)
         }

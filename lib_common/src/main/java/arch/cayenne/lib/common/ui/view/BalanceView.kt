@@ -12,6 +12,7 @@ import arch.cayenne.lib.common.ui.fragment.CurrencyDialogFragment
 import arch.cayenne.lib.common.ui.viewmodel.BalanceViewModel
 import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 
@@ -75,7 +76,7 @@ class BalanceView : FrameLayout {
     fun setBalanceViewModel(viewModel: BalanceViewModel, lifecycleOwner: LifecycleOwner) {
         this.viewModel = viewModel
         viewModel.onBalanceChange.observe(lifecycleOwner) {
-            setMoney(it.toString())
+            setMoney(it.getFormalMoney())
         }
     }
 }

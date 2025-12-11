@@ -4,7 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
+import arch.cayenne.lib.common.data.constants.BaseCurrencyData
 import arch.cayenne.lib.common.data.repo.BalanceRepository
+import arch.cayenne.lib.database.entity.UserCurrency
 import kotlinx.coroutines.launch
 
 class BalanceViewModel(
@@ -14,6 +16,9 @@ class BalanceViewModel(
     private val _onBalanceChange = MutableLiveData<Long>()
     val onBalanceChange: LiveData<Long> = _onBalanceChange
 
+    private val _onUserCurrencyChange = MutableLiveData<Pair<List<BaseCurrencyData.CurrencyContentData2>, List<BaseCurrencyData.CurrencyContentData2>>>()
+    val onUserCurrencyChange: LiveData<Pair<List<BaseCurrencyData.CurrencyContentData2>, List<BaseCurrencyData.CurrencyContentData2>>> = _onUserCurrencyChange
+
     init {
         viewModelScope.launch {
             balanceRepository.observeBalance().collect {
@@ -21,6 +26,12 @@ class BalanceViewModel(
             }
         }
 
+    }
+
+    fun getUserCurrency() {
+        viewModelScope.launch {
+            _onUserCurrencyChange.value = balanceRepository.getUserCurrency()
+        }
     }
 
 }
