@@ -17,7 +17,7 @@ object CommonBiz: IBiz {
      * 跳转客服
      */
     fun jump2CustomerService(fragment: Fragment) {
-        jump2HomePage(fragment,HomePageEnum.ME, FragmentResultEnum.KEY_CUSTOMER_SERVICE.k to true)
+        jump2HomePage(fragment,HomePageEnum.CHAT, FragmentResultEnum.KEY_CUSTOMER_SERVICE.k to true)
     }
 
     /**
@@ -27,7 +27,7 @@ object CommonBiz: IBiz {
      * @param other
      */
     fun jump2HomePage(fragment: Fragment, page:HomePageEnum, vararg other: Pair<String, Any?>) {
-        fragment.setFragmentResult(
+        fragment.requireActivity().supportFragmentManager.setFragmentResult(
             FragmentResultEnum.KEY_PAGE.k, bundleOf(
                 FragmentResultEnum.KEY_PAGE.k to page.v,
                 *other
