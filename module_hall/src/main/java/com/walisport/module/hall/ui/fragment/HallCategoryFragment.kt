@@ -203,15 +203,24 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
                 .start()
 
             // 切換圖標為展開狀態
-            mBinding.customTabGroup.setSortBtnSrc(arch.cayenne.lib.common.R.drawable.ic_sort_expand)
-
-            //  恢復為未選中狀態
-            mBinding.customTabGroup.setSortBtnTextColor(
-                SkinnableResourceManager.getColor(
-                    requireContext() ,
-                    arch.cayenne.lib.common.R.color.color_C0C0C0
+            if (currentSortType == GameSortType.HOT) {
+                mBinding.customTabGroup.setSortBtnSrc(arch.cayenne.lib.common.R.drawable.ic_sort_expand)
+                mBinding.customTabGroup.setSortBtnTextColor(
+                    SkinnableResourceManager.getColor(
+                        requireContext() ,
+                        arch.cayenne.lib.common.R.color.color_C0C0C0
+                    )
                 )
-            )
+            } else {
+                mBinding.customTabGroup.setSortBtnSrc(arch.cayenne.lib.common.R.drawable.ic_sort_expand_blue)
+                mBinding.customTabGroup.setSortBtnTextColor(
+                    SkinnableResourceManager.getColor(
+                        requireContext() ,
+                        arch.cayenne.lib.common.R.color.color_00E0E5
+                    )
+                )
+            }
+
         }
     }
 
@@ -228,7 +237,7 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
                 if (currentSortType != GameSortType.HOT) {
                     currentSortType = GameSortType.HOT
                     updateSortingMenuSelection()
-                    mBinding.customTabGroup.setSortBtnText(arch.cayenne.lib.common.R.string.custom_tab_hot.getString())
+                    setSortBtnText()
                     mViewModel.setSortType(currentSortType)
                     mViewModel.applySorting()
                 }
@@ -241,7 +250,7 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
                 if (currentSortType != GameSortType.NEW) {
                     currentSortType = GameSortType.NEW
                     updateSortingMenuSelection()
-                    mBinding.customTabGroup.setSortBtnText(arch.cayenne.lib.common.R.string.custom_tab_new.getString())
+                    setSortBtnText()
                     mViewModel.setSortType(currentSortType)
                     mViewModel.applySorting()
                 }
@@ -254,7 +263,7 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
                 if (currentSortType != GameSortType.HOT_REWARD) {
                     currentSortType = GameSortType.HOT_REWARD
                     updateSortingMenuSelection()
-                    mBinding.customTabGroup.setSortBtnText(arch.cayenne.lib.common.R.string.custom_tab_hot_reward.getString())
+                    setSortBtnText()
                     mViewModel.setSortType(currentSortType)
                     mViewModel.applySorting()
                 }
@@ -266,7 +275,7 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
                 if (currentSortType != GameSortType.COLD_REWARD) {
                     currentSortType = GameSortType.COLD_REWARD
                     updateSortingMenuSelection()
-                    mBinding.customTabGroup.setSortBtnText(arch.cayenne.lib.common.R.string.custom_tab_cold_reward.getString())
+                    setSortBtnText()
                     mViewModel.setSortType(currentSortType)
                     mViewModel.applySorting()
                 }
@@ -318,6 +327,27 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
                     binding.tvSortByHotReward.setTextColor(unselectedColor)
                     binding.tvSortByColdReward.setTextColor(selectedColor)
                 }
+            }
+        }
+    }
+
+    private fun setSortBtnText() {
+        when (currentSortType) {
+            GameSortType.HOT -> {
+                mBinding.customTabGroup.setSortBtnText(arch.cayenne.lib.common.R.string.custom_tab_hot.getString())
+            }
+
+            GameSortType.NEW -> {
+                mBinding.customTabGroup.setSortBtnText(arch.cayenne.lib.common.R.string.custom_tab_new.getString())
+            }
+
+            GameSortType.HOT_REWARD -> {
+                mBinding.customTabGroup.setSortBtnText(arch.cayenne.lib.common.R.string.custom_tab_hot_reward.getString())
+
+            }
+
+            GameSortType.COLD_REWARD -> {
+                mBinding.customTabGroup.setSortBtnText(arch.cayenne.lib.common.R.string.custom_tab_cold_reward.getString())
             }
         }
     }
