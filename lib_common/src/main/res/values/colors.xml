@@ -38,11 +38,11 @@
     <color name="blue">#0000FF</color>
     <color name="app_bg">#111111</color>
     <color name="app_bg_tr45">#654E4A4A</color>
-    <color name="search_btn">#24EE8A</color>
-    <color name="search_btn_highlight">#24EE8A</color>
-    <color name="search_btn_normal">#BBBBBB</color>
+    <color name="search_btn">@color/color_00E0E5</color>
+    <color name="search_btn_highlight">@color/color_00E0E5</color>
+    <color name="search_btn_normal">#ffffff</color>
     <color name="search_btn_in_direct_match">#ffffff</color>
-    <color name="search_hint">#4B4C55</color>
+    <color name="search_hint">@color/color_999999</color>
     <color name="search_text">#BBBBBB</color>
     <color name="search_text_for_search_bar">#FFFFFF</color>
     <color name="tran_0">#00000000</color>
@@ -52,7 +52,7 @@
 
 
     <color name="title_bg">#272727</color>
-    <color name="title_bar">#e6e6e6</color>
+    <color name="title_bar">#FFFFFF</color>
 
     <!-- Dialog -->
     <color name="dialog_bottom_confirm">#FE3666</color>
@@ -72,7 +72,7 @@
     <color name="main_text">#FFFFFF</color>
 
     <color name="text_on_theme_color">#000000</color>
-    <color name="brand_color">#24EE8A</color>
+    <color name="brand_color">@color/color_00E0E5</color>
     <color name="brand_color_opacity10">#1A24EE8A</color>
 
     <color name="input_word">#929298</color>
@@ -115,7 +115,7 @@
     <color name="keyboard_3">#161823</color>
     <color name="live_tab_bg">#0E0F1A</color>
     <color name="keyboard_bg">#161823</color>
-    <color name="search_bg">#232530</color>
+    <color name="search_bg">#0FFFFFFF</color>
     <color name="search_bg_in_direct_match">#33FFFFFF</color>
     <color name="card_outline">#282A34</color>
     <color name="tab_outline">#929298</color>

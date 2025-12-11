@@ -27,6 +27,7 @@
         android:layout_width="@dimen/dp_12"
         android:layout_height="@dimen/dp_10"
         android:layout_marginStart="@dimen/dp_30"
+        android:layout_marginTop="-2dp"
         app:layout_constraintStart_toStartOf="@+id/tv_bet_info"
         app:layout_constraintTop_toBottomOf="@+id/tv_bet_info"
         app:srcCompat="@drawable/icon_bet_info_arrow" />

@@ -22,7 +22,7 @@ data class ComboMultiBetBean(
     var sumOdds: Int, // 串關後賠率加總
     var odds: Int,
     val count: Int = 1, // 場次組合數量
-    var inputMoney: Long = 0,
+    var inputMoneyStr: String = "", //eg:12.
     val minAmount: Long,
     val maxAmount: Long,
 ) {
@@ -30,6 +30,9 @@ data class ComboMultiBetBean(
         const val SERIAL_VALUE_SUPER = -1 //超级组合
         const val SERIAL_VALUE_ALL = 0 //全串關
     }
+    var inputMoney: Long //eg:1200
+        get() = inputMoneyStr.toMoney()
+        set(value) { inputMoneyStr = value.getMoney() }
 
     fun hasSetMoney() = inputMoney != 0L
     val amount: Long

@@ -181,7 +181,7 @@ class SearchFragment : SearchBaseFragment<SearchViewModel, FragmentSearchBinding
                             super.getItemOffsets(outRect, view, parent, state)
                             val position = parent.getChildAdapterPosition(view)
                             if(position == RecyclerView.NO_POSITION) return
-                            outRect.left = if(position % 2 != 0) 17.dp2px else 0
+                            outRect.left = if(position % 2 != 0) 20.dp2px else 0
                         }
                     })
                 }

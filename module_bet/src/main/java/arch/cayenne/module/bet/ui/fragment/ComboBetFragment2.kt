@@ -71,19 +71,19 @@ class ComboBetFragment2 : BaseFragment<ComboBetViewModel, FragmentComboBet2Bindi
 
     private val comboMultiBetAdapter by lazy {
         ComboMultiBetAdapter(object : ComboMultiBetAdapter.OnComboMultiBetClickListener {
-            override fun onEditMoneyClick2(serialValue: Int, editText: EditText, tvMoney: TextView, addViewAction:(keyboard:BetMoneyKeyboard)->Unit) {
-                "aaaa---serialValue:$serialValue,keyboard.serialValue:${keyboard.serialValue}".logd(TAG)
-                if(keyboard.serialValue == serialValue) return
+            override fun onEditMoneyClick2(serialValue: Int, editText: EditText, tvMoney: TextView, keyboardParent: ViewGroup,addViewAction:(keyboard:BetMoneyKeyboard)->Unit) {
+                "onEditMoneyClick2 serialValue:$serialValue,keyboard.serialValue:${keyboard.serialValue},keyboardParent:$keyboardParent".logd(TAG)
+                if(keyboard.parent == keyboardParent) return
                 val bean = mViewModel.onComboMultiBetBeanListener.value?.find { it.serialValue == serialValue }
                 if(bean != null) {
                     (keyboard.parent as? ViewGroup)?.removeView(keyboard)
                     keyboard.visibility = View.GONE
-                    val currentMoney = bean.inputMoney
+                    val currentMoney = bean.inputMoneyStr
                     val minAmount = bean.minAmount
                     val maxAmount = bean.maxAmount
-                    keyboard.bind(viewLifecycleOwner,serialValue, editText, tvMoney, true, currentMoney, minAmount, maxAmount,
-                        onMoneyChange = { serialV,money->
-                            mViewModel.updateMultiBetMoney(serialV, money)
+                    keyboard.bind(serialValue, editText, tvMoney, true, currentMoney, minAmount, maxAmount,
+                        onMoneyChange = { serialV,money,moneyStr->
+                            mViewModel.updateMultiBetMoney(serialV, money,moneyStr)
                         }
                     )
                     addViewAction(keyboard)
@@ -164,13 +164,13 @@ class ComboBetFragment2 : BaseFragment<ComboBetViewModel, FragmentComboBet2Bindi
         mBinding.firstMultiItem.apply {
             etMoney.setOnClickListener {
                 val item = mViewModel.firstComboMultiBetBeanLD.value ?: return@setOnClickListener
-                comboMultiBetAdapter.onComboMultiBetClickListener.onEditMoneyClick2(item.serialValue,this.etMoney,this.tvMoney, addViewAction = { keyboard ->
+                comboMultiBetAdapter.onComboMultiBetClickListener.onEditMoneyClick2(item.serialValue,this.etMoney,this.tvMoney,root,addViewAction = { keyboard ->
                     val lp = ConstraintLayout.LayoutParams(0, LayoutParams.WRAP_CONTENT).apply {
                         topToBottom = edgeBottom.id
                         startToStart = ConstraintLayout.LayoutParams.PARENT_ID
                         endToEnd = ConstraintLayout.LayoutParams.PARENT_ID
                     }
-                    this@apply.root.addView(keyboard, lp)
+                    root.addView(keyboard, lp)
                 })
             }
         }
@@ -226,7 +226,9 @@ class ComboBetFragment2 : BaseFragment<ComboBetViewModel, FragmentComboBet2Bindi
                 }
             }
         }
-        mViewModel.firstComboMultiBetBeanLD.observe(viewLifecycleOwner) { item->
+
+        mViewModel.firstComboMultiBetBeanLD.observe(viewLifecycleOwner) { item ->
+            //"aaaa---firstComboMultiBetBeanLD--item:$item".logd(TAG)
             with(mBinding.firstMultiItem) {
                 val moneySymbol = mViewModel.moneySymbol
                 tvTitleCombo.text = let {
@@ -234,6 +236,7 @@ class ComboBetFragment2 : BaseFragment<ComboBetViewModel, FragmentComboBet2Bindi
                     combo
                 }
                 tvMulti.text = let { "@${item.sumOdds.getOdds()}" }
+                etMoney.setText(item.inputMoneyStr)
                 val moneyHint = R.string.et_money_hint.getString().format(item.minAmount.getMoney(), item.maxAmount.getMoney())
                 etMoney.hint = moneyHint
                 tvMoney.text = moneySymbol
@@ -325,10 +328,22 @@ class ComboBetFragment2 : BaseFragment<ComboBetViewModel, FragmentComboBet2Bindi
         mViewModel.onBetListListener.value?.let {
             if (it.isNotEmpty()) {
                 mViewModel.setExpandMultiLayout(false)
-                mViewModel.clearBetMoney()
+                keyboard.hideKeyboard() //收起键盘
             }
         }
 
+    }
+
+    override fun onHiddenChanged(hidden: Boolean) {
+        super.onHiddenChanged(hidden)
+        if(hidden){
+           onExitFragment()
+        }
+    }
+
+    private fun onExitFragment(){
+        //"aaaa---onExitFragment~~~~".logd(TAG)
+        mViewModel.clearBetMoney()
     }
 
     /**
