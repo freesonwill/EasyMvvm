@@ -7,6 +7,7 @@ import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.base.data.remote.ApiResponseState.Start.dataAs
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import com.walisport.module.hall.data.GameVo
 import com.walisport.module.hall.data.HallRepository
 import com.walisport.module.hall.data.HallRepository.Companion.DEFAULT_GAME_SIZE

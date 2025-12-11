@@ -126,7 +126,7 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
                         ) ,
                         online = vo.online ,
                         reward = vo.reward.toDouble() ,
-                        hasMore = true ,
+                        hasMore = vo.hasMore ,
                         hotOrCold = when (currentSortType) {
                             GameSortType.HOT_REWARD -> HotColdType.HOT
                             GameSortType.COLD_REWARD -> HotColdType.COLD
@@ -250,6 +250,7 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
                     mViewModel.setSortType(currentSortType)
                     mViewModel.applySorting()
                 }
+
                 toggleGameSorting(false)
             }
 
@@ -261,7 +262,9 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
                     mViewModel.setSortType(currentSortType)
                     mViewModel.applySorting()
                 }
+
                 toggleGameSorting(false)
+
             }
 
             binding.tvSortByHotReward.clickNoRepeat {
@@ -271,6 +274,7 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
                     mViewModel.setSortType(currentSortType)
                     mViewModel.applySorting()
                 }
+
                 toggleGameSorting(false)
             }
 
@@ -281,6 +285,7 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
                     mViewModel.setSortType(currentSortType)
                     mViewModel.applySorting()
                 }
+
                 toggleGameSorting(false)
             }
         }
