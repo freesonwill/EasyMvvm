@@ -88,7 +88,7 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
         })
 
         mBinding.customTabGroup.setOnSortBtnClick {
-            toggleTournamentSorting(!isExpanded)
+            toggleGameSorting(!isExpanded)
         }
     }
 
@@ -106,9 +106,9 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
      * 排序選單的展開收起切換
      * @param expanded : Boolean 展開、收起
      */
-    private fun toggleTournamentSorting(expanded: Boolean) {
+    private fun toggleGameSorting(expanded: Boolean) {
         isExpanded = expanded
-        val container = mBinding.llTournamentsDropdown
+        val container = mBinding.llGameDropdown
 
         if (expanded) {
             // 展開排序選單
@@ -122,12 +122,12 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
             }
 
             // 先立即顯示遮罩層遮擋底下內容，避免閃爍
-            mBinding.vTournamentListMask.apply {
+            mBinding.vGameListMask.apply {
                 visibility = View.VISIBLE
                 alpha = 1f
                 // 設置點擊事件
                 clickNoRepeat {
-                    toggleTournamentSorting(false)
+                    toggleGameSorting(false)
                 }
             }
 
@@ -169,14 +169,14 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
             sortingMenuBinding?.root?.startAnimation(slideOutAnim)
 
             // 收回時隱藏遮罩層（帶動畫效果）
-            mBinding.vTournamentListMask.animate()
+            mBinding.vGameListMask.animate()
                 .alpha(0f)
                 .setDuration(defaultAnimDuration)
                 .setListener(object : android.animation.Animator.AnimatorListener {
                     override fun onAnimationStart(p0: android.animation.Animator) {}
 
                     override fun onAnimationEnd(p0: android.animation.Animator) {
-                        mBinding.vTournamentListMask.visibility = View.GONE
+                        mBinding.vGameListMask.visibility = View.GONE
                     }
 
                     override fun onAnimationCancel(p0: android.animation.Animator) {}
@@ -212,7 +212,7 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
                     updateSortingMenuSelection()
                     applySorting()
                 }
-                toggleTournamentSorting(false)
+                toggleGameSorting(false)
             }
 
             // 點擊按最新排序
@@ -222,7 +222,7 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
                     updateSortingMenuSelection()
                     applySorting()
                 }
-                toggleTournamentSorting(false)
+                toggleGameSorting(false)
             }
 
             binding.tvSortByHotReward.clickNoRepeat {
@@ -231,7 +231,7 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
                     updateSortingMenuSelection()
                     applySorting()
                 }
-                toggleTournamentSorting(false)
+                toggleGameSorting(false)
             }
 
             binding.tvSortByColdReward.clickNoRepeat {
@@ -240,7 +240,7 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
                     updateSortingMenuSelection()
                     applySorting()
                 }
-                toggleTournamentSorting(false)
+                toggleGameSorting(false)
             }
         }
     }
