@@ -267,7 +267,6 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
                     currentSortType = GameSortType.COLD_REWARD
                     updateSortingMenuSelection()
                     mBinding.customTabGroup.setSortBtnText(arch.cayenne.lib.common.R.string.custom_tab_cold_reward.getString())
-                    mBinding.customTabGroup.setSortBtnTextColor()
                     mViewModel.setSortType(currentSortType)
                     mViewModel.applySorting()
                 }

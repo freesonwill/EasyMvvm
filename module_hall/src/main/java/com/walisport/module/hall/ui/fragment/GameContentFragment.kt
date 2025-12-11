@@ -13,6 +13,7 @@ import arch.cayenne.lib.common.ui.view.SimpleTabDataModel
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
+import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.checkCurrentScrollState
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.onScrolledOver
@@ -120,6 +121,8 @@ class GameContentFragment : BaseFragment<GameContentViewModel , FragmentGameCont
         val container = mBinding.llGameDropdown
 
         if (expanded) {
+            container.visibility = View.VISIBLE
+
             // 展開排序選單
             if (sortingMenuBinding == null) {
                 sortingMenuBinding = LayoutGameSortingMenuBinding.inflate(
@@ -127,6 +130,7 @@ class GameContentFragment : BaseFragment<GameContentViewModel , FragmentGameCont
                     container ,
                     false
                 )
+                container.addView(sortingMenuBinding?.root)
                 setupSortingMenuViews()
             }
 
@@ -139,10 +143,6 @@ class GameContentFragment : BaseFragment<GameContentViewModel , FragmentGameCont
                     toggleGameSorting(false)
                 }
             }
-
-            container.removeAllViews()
-            container.addView(sortingMenuBinding?.root)
-            container.visibility = View.VISIBLE
 
             // 立即開始動畫
             val slideInAnim =
@@ -219,6 +219,7 @@ class GameContentFragment : BaseFragment<GameContentViewModel , FragmentGameCont
                 if (currentSortType != GameSortType.HOT) {
                     currentSortType = GameSortType.HOT
                     updateSortingMenuSelection()
+                    mBinding.customTabGroup.setSortBtnText(arch.cayenne.lib.common.R.string.custom_tab_hot.getString())
                     mViewModel.setSortType(currentSortType)
                     mViewModel.applySorting()
                 }
@@ -231,6 +232,7 @@ class GameContentFragment : BaseFragment<GameContentViewModel , FragmentGameCont
                 if (currentSortType != GameSortType.NEW) {
                     currentSortType = GameSortType.NEW
                     updateSortingMenuSelection()
+                    mBinding.customTabGroup.setSortBtnText(arch.cayenne.lib.common.R.string.custom_tab_new.getString())
                     mViewModel.setSortType(currentSortType)
                     mViewModel.applySorting()
                 }
@@ -243,6 +245,7 @@ class GameContentFragment : BaseFragment<GameContentViewModel , FragmentGameCont
                 if (currentSortType != GameSortType.HOT_REWARD) {
                     currentSortType = GameSortType.HOT_REWARD
                     updateSortingMenuSelection()
+                    mBinding.customTabGroup.setSortBtnText(arch.cayenne.lib.common.R.string.custom_tab_hot_reward.getString())
                     mViewModel.setSortType(currentSortType)
                     mViewModel.applySorting()
                 }
@@ -254,6 +257,7 @@ class GameContentFragment : BaseFragment<GameContentViewModel , FragmentGameCont
                 if (currentSortType != GameSortType.COLD_REWARD) {
                     currentSortType = GameSortType.COLD_REWARD
                     updateSortingMenuSelection()
+                    mBinding.customTabGroup.setSortBtnText(arch.cayenne.lib.common.R.string.custom_tab_cold_reward.getString())
                     mViewModel.setSortType(currentSortType)
                     mViewModel.applySorting()
                 }
