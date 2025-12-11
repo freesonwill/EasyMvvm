@@ -6,10 +6,13 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.FrameLayout
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.LifecycleOwner
 import arch.cayenne.lib.common.databinding.ViewBalanceBinding
 import arch.cayenne.lib.common.ui.fragment.CurrencyDialogFragment
+import arch.cayenne.lib.common.ui.viewmodel.BalanceViewModel
 import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 
@@ -21,6 +24,7 @@ class BalanceView : FrameLayout {
 
     }
     var onAddClickListener: (() -> Unit)? = null
+    var viewModel: BalanceViewModel? = null
     init {
         mBinding = ViewBalanceBinding.inflate(LayoutInflater.from(context), this, true)
     }
@@ -67,5 +71,12 @@ class BalanceView : FrameLayout {
     }
     fun setMoney(money: String){
         mBinding.tvWalletBalance.text = money
+    }
+
+    fun setBalanceViewModel(viewModel: BalanceViewModel, lifecycleOwner: LifecycleOwner) {
+        this.viewModel = viewModel
+        viewModel.onBalanceChange.observe(lifecycleOwner) {
+            setMoney(it.getFormalMoney())
+        }
     }
 }
