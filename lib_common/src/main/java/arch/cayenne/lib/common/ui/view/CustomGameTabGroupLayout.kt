@@ -60,6 +60,10 @@ class CustomGameTabGroupLayout : FrameLayout {
         binding.tvBtnSort.setTextColor(color)
     }
 
+    fun setSortBtnText(text: String) {
+        binding.tvBtnSort.text = text
+    }
+
     fun submitTabList(list : List<SimpleTabDataModel>) {
         with(binding) {
             list.forEachIndexed { i, data ->
