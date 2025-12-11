@@ -216,6 +216,11 @@ public final class LogUtils {
     }
 
     public static void log(final int type, final String tag, final Object... contents) {
+        if(Build.FINGERPRINT == null) {
+            //test环境使用println打印
+            System.out.println(contents[0]);
+            return;
+        }
         if (!CONFIG.mLogSwitch || (!CONFIG.mLog2ConsoleSwitch && !CONFIG.mLog2FileSwitch)){
             return;
         }
@@ -670,7 +675,7 @@ public final class LogUtils {
             if (mDefaultDir != null) {
                 return;
             }
-            if(!Utils.isInEditMode()){
+            if(!Utils.isInEditMode() && Build.FINGERPRINT != null){
                 Application appGame = Utils.getApp();
                 if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())
                         && appGame.getExternalCacheDir() != null)
