@@ -321,7 +321,7 @@ abstract class SearchBaseFragment<VM : BaseViewModel, CVB : ViewBinding>: BaseFr
             SkinnableResourceManager.getColorStateList(
                 requireContext(),
                 if (isDirectMatch()) RC.color.search_bg_in_direct_match
-                else RC.color.search_bg
+                else RC.color.search_bar_bg
             )
     }
 
