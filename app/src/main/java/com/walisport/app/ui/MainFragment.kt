@@ -134,8 +134,6 @@ class MainFragment : BaseFragment<MainFragmentViewModel, FragmentMainBinding>() 
                 setCurrentFragment(it,bundle.apply { remove(FragmentResultEnum.KEY_PAGE.k) })
             }
         }.also {
-            childFragmentManager.setFragmentResultListener(FragmentResultEnum.KEY_PAGE.k, viewLifecycleOwner,it)
-            parentFragmentManager.setFragmentResultListener(FragmentResultEnum.KEY_PAGE.k, viewLifecycleOwner,it)
             requireActivity().supportFragmentManager.setFragmentResultListener(FragmentResultEnum.KEY_PAGE.k,viewLifecycleOwner,it)
         }
     }
