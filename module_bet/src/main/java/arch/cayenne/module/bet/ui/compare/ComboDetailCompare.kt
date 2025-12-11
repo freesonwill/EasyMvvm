@@ -1,9 +1,9 @@
 package arch.cayenne.module.bet.ui.compare
 
 import androidx.recyclerview.widget.DiffUtil
-import arch.cayenne.module.bet.data.ParameterItems
+import arch.cayenne.module.bet.ui.fragment.ComboDetailFragment.ParameterItems
 
-class CombinationCompare: DiffUtil.ItemCallback<ParameterItems>() {
+class ComboDetailCompare: DiffUtil.ItemCallback<ParameterItems>() {
 
     override fun areItemsTheSame(
         oldItem: ParameterItems,

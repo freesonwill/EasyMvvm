@@ -1,8 +1,12 @@
 package arch.cayenne.lib.base.utils.ext
 
 import android.os.Build
+import android.os.Bundle
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentResultListener
+import androidx.lifecycle.LifecycleOwner
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logw
 import java.text.SimpleDateFormat
@@ -76,6 +80,20 @@ object FragmentExt {
         } else {
             System.currentTimeMillis() - lastNavigateTime < (lastNavDurationTime ?: 500L)
         }
+    }
+
+
+    fun Fragment.setFragmentResultListener(requestKey:String,
+                                           lifecycleOwner: LifecycleOwner,
+                                           listener: FragmentResultListener,
+                                           fm: FragmentManager = parentFragmentManager){
+        fm.setFragmentResultListener(requestKey,lifecycleOwner, listener)
+    }
+
+    fun Fragment.setFragmentResult(requestKey:String,
+                                   bundle: Bundle,
+                                   fm: FragmentManager = parentFragmentManager){
+        fm.setFragmentResult(requestKey,bundle)
     }
 
 }

@@ -232,8 +232,22 @@ class CarouselScrollView(context: Context, attrs: AttributeSet?) :
     }
 
     override fun onInterceptTouchEvent(ev: MotionEvent): Boolean {
-        // 總是攔截觸控事件，以確保 onTouchEvent 能接收到完整的事件序列
-        return true
+        // Check if the gesture is horizontal or vertical
+        when (ev.action) {
+            MotionEvent.ACTION_DOWN -> {
+                gestureDetector.onTouchEvent(ev)
+                // Always return false on DOWN to allow both parent and child to see subsequent events
+                // until one of them claims it. However, for ScrollView, we usually want super to handle logic.
+                // But we need to stop parent ViewPager from intercepting if it's a horizontal scroll.
+                // Standard ScrollView logic in onInterceptTouchEvent handles this by checking direction.
+                return super.onInterceptTouchEvent(ev)
+            }
+            MotionEvent.ACTION_MOVE -> {
+                // standard logic in super will handle nested scrolling
+                return super.onInterceptTouchEvent(ev)
+            }
+            else -> return super.onInterceptTouchEvent(ev)
+        }
     }
 
     override fun onDown(e: MotionEvent): Boolean {
@@ -296,6 +310,8 @@ class CarouselScrollView(context: Context, attrs: AttributeSet?) :
         if (abs(distanceX) < abs(distanceY)) {
             return false
         }
+
+        parent?.requestDisallowInterceptTouchEvent(true)
 
         if (currentState == State.MAGNIFIED) {
             val isAtBoundary = (currentIndex == 0 || currentIndex == totalItemCount - 1)

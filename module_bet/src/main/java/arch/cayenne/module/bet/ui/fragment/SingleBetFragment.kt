@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.View
 import android.view.ViewTreeObserver
 import android.view.animation.LinearInterpolator
+import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -30,6 +31,8 @@ import arch.cayenne.lib.database.entity.BetSelectionBean
 import arch.cayenne.lib.database.entity.BetTypeEnum
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.module.bet.R
+import arch.cayenne.module.bet.data.Config.KEY_RESULT
+import arch.cayenne.module.bet.data.Config.VALUE_TO_RESULT
 import arch.cayenne.module.bet.databinding.FragmentSingleBetBinding
 import arch.cayenne.module.bet.util.ViewHelper
 import arch.cayenne.module.bet.viewmodel.SingleBetViewModel
@@ -258,10 +261,8 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
         })
     }
 
-    override fun navToResult(key: String, value: String) {
-        parentFragmentManager.setFragmentResult(key, Bundle().apply {
-            putString(key, value)
-        })
+    override fun navToResult(vararg others: Pair<String, Any?>) {
+        parentFragmentManager.setFragmentResult(KEY_RESULT, bundleOf(KEY_RESULT to VALUE_TO_RESULT,*others))
     }
 
     override fun doCustomShow() {

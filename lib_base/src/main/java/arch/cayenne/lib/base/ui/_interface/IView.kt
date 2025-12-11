@@ -8,7 +8,7 @@ import androidx.lifecycle.Lifecycle
  * @date: 2025/3/14 11:52
  * @description:
  */
-interface IView : OnNewIntentListener {
+interface IView : OnNewIntentListener,IDebug {
     /**
      * 初始化view
      */
@@ -38,9 +38,4 @@ interface IView : OnNewIntentListener {
      * 懒加载数据
      */
     fun lazyLoadData() {}
-
-    /**
-     * 是否追踪加载时间（DEBUG用）
-     */
-    fun enableTrackLoadTime() = false
 }

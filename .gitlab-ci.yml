@@ -1,5 +1,11 @@
 include:
   - component: gitlab.iptco.me/big/gitlab-ci/android-app@main
     inputs:
-      version_file: "app/build/generated/source/buildConfig/release/com/walisport/app/BuildConfig.java"
       deploy_name:  "tio"
+      runner_type: "shell"
+      runner_tag: "ios"
+      branch_build_type_map: "dev:debug,test:qatest,pre-production:release"
+
+before_script:
+  - echo "user.uid=$USER_UID" >> local.properties
+  - echo "user.token=$USER_TOKEN" >> local.properties
