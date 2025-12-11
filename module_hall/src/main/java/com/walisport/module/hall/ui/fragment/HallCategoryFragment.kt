@@ -71,7 +71,7 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
             titleBar.loadDynamicsTitleBar(titleBarBinding.root , null)
             titleBarBinding.tvTitleName.text = "老虎机"
             customTabGroup.submitTabList(mockVendorList)
-            mViewModel.queryGameList(page)
+            mViewModel.queryGameList(page , currentSortType)
             rvGame.layoutManager = GridLayoutManager(requireContext() , 3)
             val itemDecoration = GridSpacingItemDecoration(
                 spanCount = 3 ,
@@ -99,7 +99,7 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
 
         mBinding.rvGame.addOnScrollListener(UniversalLoadMoreScrollListener(6) {
             page++
-            mViewModel.queryGameList(page)
+            mViewModel.queryGameList(page , currentSortType)
         })
 
         mBinding.customTabGroup.setOnSortBtnClick {
@@ -122,7 +122,11 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
                         online = vo.online ,
                         reward = vo.reward.toDouble() ,
                         hasMore = true ,
-                        hotOrCold = HotColdType.COLD
+                        hotOrCold = when (currentSortType) {
+                            GameSortType.HOT_REWARD -> HotColdType.HOT
+                            GameSortType.COLD_REWARD -> HotColdType.COLD
+                            else -> HotColdType.NONE
+                        }
                     )
                 })
             }
@@ -320,10 +324,8 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
     }
 
     private fun applySorting() {
-        // 根據 currentSortType 重新排序列表並更新 RecyclerView
-        // 這裡僅為示例，實際排序邏輯需根據數據結構實現
-
-//        adapter.notifyDataSetChanged()
+        page = 0
+        mViewModel.queryGameList(page , currentSortType)
     }
 
 
