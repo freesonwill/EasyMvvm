@@ -8,13 +8,15 @@ import androidx.core.animation.addListener
 import androidx.core.os.bundleOf
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.ui.fragment.BaseBottomSheetFragment
+import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
-import arch.cayenne.module.bet.R
 import arch.cayenne.module.bet.databinding.FragmentComboDetailBinding
 import arch.cayenne.module.bet.ui.adapter.ComboDetailAdapter
 import arch.cayenne.module.bet.viewmodel.BetCombViewModel
 import com.blankj.utilcode.util.GsonUtils
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import kotlin.reflect.KClass
 
 /**
@@ -58,6 +60,40 @@ class ComboDetailFragment :
         val odds: String
     )
 
+    data class ParameterUI(
+        val title: String,
+        val titleTips: String,
+        val items:List<ParameterUIItem>
+    ){
+        companion object {
+            const val TYPE_GROUP = 1        // ParameterItems
+            const val TYPE_CHILD = 2        // ParameterItems2
+
+            //将一层数据摊平层两层数据
+            fun buildParameterUI(data: Parameter): ParameterUI {
+                val result = mutableListOf<ParameterUIItem>()
+                data.items.forEach { group ->
+                    // 第二层：组标题
+                    result.add(ParameterUIItem(type = TYPE_GROUP, group = group))
+
+                    // 第三层：组内内容
+                    group.items.forEachIndexed { index, child ->
+                        result.add(ParameterUIItem(type = TYPE_CHILD, child = child,childIndexInGroup = index))
+                    }
+                }
+                return ParameterUI(data.title,data.titleTips,result)
+            }
+        }
+    }
+
+    data class ParameterUIItem(
+        val type: Int,
+        val group: ParameterItems? = null,
+        val child: ParameterItems2? = null,
+        val childIndexInGroup: Int = -1 // 记录 child 在 group 内的原始 index
+    )
+
+
     override fun onStart() {
         super.onStart()
         setFitToContents()
@@ -77,30 +113,36 @@ class ComboDetailFragment :
     }
 
     override fun initView(savedInstanceState: Bundle?) {
-        val parameter = requireArguments().getString(PARAMETER).let {
-            GsonUtils.fromJson(it, Parameter::class.java)
+        launch {
+            val parameter = withContext(Dispatchers.IO){
+                requireArguments().getString(PARAMETER).let {
+                    GsonUtils.fromJson(it, Parameter::class.java)
+                }
+            }
+            val data = withContext(Dispatchers.IO){
+                ParameterUI.buildParameterUI(parameter)
+            }
+            with(mBinding) {
+                tvBetTitle.text = data.title
+                tipStr = data.titleTips
+                rvContent.layoutManager = LinearLayoutManager(requireContext())
+                rvContent.adapter = listAdapter
+            }
+            val screenHeight = getScreenHeight()
+            val minHeight = (screenHeight * 0.52).toInt()
+            val maxHeight = (screenHeight * 0.84).toInt()
+            mBinding.clRoot.maxHeight = maxHeight
+            mBinding.clRoot.layoutParams = mBinding.clRoot.layoutParams.apply {
+                if (parameter.items.size > 1) {
+                    isCanExpand = false
+                    height = maxHeight
+                } else {
+                    isCanExpand = true
+                    height = minHeight
+                }
+            }
+            listAdapter.submitList(data.items)
         }
-        with(mBinding) {
-            tvBetTitle.text = parameter.title
-            tipStr = parameter.titleTips
-            rvContent.layoutManager = LinearLayoutManager(requireContext())
-            rvContent.adapter = listAdapter
-        }
-        val screenHeight = getScreenHeight() ?: return
-        val minHeight = (screenHeight * 0.52).toInt()
-        val maxHeight = (screenHeight * 0.84).toInt()
-        mBinding.clRoot.maxHeight = maxHeight
-        val param = mBinding.clRoot.layoutParams
-        if (parameter.items.size > 1) {
-            isCanExpand = false
-            param.height = maxHeight
-        } else {
-            isCanExpand = true
-            param.height = minHeight
-        }
-        mBinding.ivBetExpand.setImageResource(arch.cayenne.lib.common.R.drawable.icon_expand)
-        mBinding.clRoot.layoutParams = param
-        listAdapter.submitList(parameter.items)
     }
 
     override fun initListener() {
@@ -122,8 +164,8 @@ class ComboDetailFragment :
 
     override suspend fun createObserver() {}
 
-    private fun getScreenHeight(): Int? {
-        return context?.resources?.displayMetrics?.heightPixels
+    private fun getScreenHeight(): Int {
+        return requireContext().resources.displayMetrics.heightPixels
     }
 
     private fun onCollapses() {
@@ -152,4 +194,5 @@ class ComboDetailFragment :
                 })
         }.start()
     }
+
 }
