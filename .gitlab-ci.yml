@@ -5,6 +5,7 @@ include:
       deploy_name:  "tio"
       runner_type: "shell"
       runner_tag: "ios"
+      branch_flavor_map: "dev:debug,test:qatest,pre-production:release"
 
 before_script:
   - echo "user.uid=$USER_UID" >> local.properties
