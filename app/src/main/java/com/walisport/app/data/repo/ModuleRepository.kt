@@ -58,7 +58,7 @@ class ModuleRepository(
             .let { it[Random.nextInt(it.size)] }
         //Pair(55468822, "NTU0Njg4MjJfMTc1MTM1NTAxMDI3MDppUjNheWVyczZ4S3dyVEFX") //固定uid,token时放开
     } else {
-        Pair(0, "")
+        Pair(55468810, "NTU0Njg4MTBfMTc2NDk5NTk4NDgyNTpqOVVxOEVxeWRQRFF6V2Iy")
     }
 
     fun initUidToken() {

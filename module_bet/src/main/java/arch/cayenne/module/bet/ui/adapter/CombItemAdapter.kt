@@ -6,13 +6,13 @@ import android.view.ViewGroup
 import arch.cayenne.lib.base.ui.adapter.BaseAdapter
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
 import arch.cayenne.module.bet.R
-import arch.cayenne.module.bet.data.ParameterItems2
+import arch.cayenne.module.bet.ui.fragment.ComboDetailFragment.ParameterItems2
 import arch.cayenne.module.bet.databinding.ItemCombinationBinding
-import arch.cayenne.module.bet.ui.compare.CombinationItemCompare
+import arch.cayenne.module.bet.ui.compare.ComboDetailItemCompare
 
 class CombItemAdapter :
     BaseAdapter<ParameterItems2, CombinationItemViewHolder, ItemCombinationBinding>(
-        CombinationItemCompare()
+        ComboDetailItemCompare()
     ) {
     override fun convertPlus(
         holder: CombinationItemViewHolder,

@@ -3,7 +3,7 @@ plugins {
 }
 
 dependencies {
-    implementation("com.google.devtools.ksp:symbol-processing-api:1.9.24-1.0.20")
+    implementation("com.google.devtools.ksp:symbol-processing-api:1.9.22-1.0.17")
 }
 
 val jdkVersion = JavaVersion.current().majorVersion.toInt()

@@ -6,9 +6,7 @@ import android.graphics.Paint
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.util.AttributeSet
-import android.util.Log
 import android.util.TypedValue
-import android.view.MotionEvent
 import android.widget.EditText
 import android.widget.NumberPicker
 import androidx.lifecycle.findViewTreeLifecycleOwner
@@ -124,8 +122,6 @@ class SkinnableNumberPicker : NumberPicker, ISkinnableBiz {
             for (i in 0 until count) {
                 val child = this.getChildAt(i)
                 if (child is EditText) {
-                    Log.d("abcd", "applyTextAppearance: centerSp=$centerSizeSp otherSp=$otherSizeSp")
-                    // EditText.setTextSize() 預設單位是 SP
                     child.setTextSize(TypedValue.COMPLEX_UNIT_SP, centerSizeSp)
                     child.setTextColor(centerColor)
                 }
