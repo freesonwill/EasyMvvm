@@ -6,8 +6,8 @@ import arch.cayenne.lib.common.databinding.ItemCurrencySettingBinding
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 
 class CurrencySettingViewHolder(val mBinding: ItemCurrencySettingBinding): BaseViewHolder(mBinding) {
-    fun bind(item: BaseCurrencyData.CurrencyContentData) {
-        mBinding.tvCurrencyName.text = item.currency
+    fun bind(item: BaseCurrencyData.CurrencyContentData2) {
+        mBinding.tvCurrencyName.text = item.currencyName
         mBinding.root.clickNoRepeat {
 
         }
