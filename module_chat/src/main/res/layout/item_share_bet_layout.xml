@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/shape_9dp"
-    android:backgroundTint="@color/color_272727">
+    android:backgroundTint="@color/color_272727"
+    >
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_title"
@@ -16,7 +17,7 @@
         <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="18dp"
             android:layout_marginBottom="18dp"
             android:layout_marginStart="14dp"
             android:gravity="center_vertical"
@@ -29,7 +30,8 @@
                 android:id="@+id/iv_money"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:visibility="gone" />
+                android:visibility="gone"
+               />
 
             <arch.cayenne.lib.skin.widget.SkinnableTextView
                 android:id="@+id/tv_money"
@@ -38,6 +40,7 @@
                 android:layout_marginStart="1dp"
                 android:textColor="@color/color_00E0E5"
                 android:textSize="15sp"
+                android:text="$100.00"
                 app:layout_goneMarginStart="0dp"
                 app:skinnableFontWeight="590" />
 
@@ -48,6 +51,7 @@
                 android:layout_marginStart="6dp"
                 android:textColor="@color/color_00E0E5"
                 android:textSize="15sp"
+                android:text="独赢"
                 app:skinnableFontWeight="600" />
 
             <arch.cayenne.lib.skin.widget.SkinnableTextView
@@ -74,7 +78,7 @@
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintTop_toBottomOf="@id/cl_title"
         tools:itemCount="1"
-        tools:listitem="@layout/item_order_sport_betting_selection" />
+        tools:listitem="@layout/item_share_bet_selection_layout" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_collapse"
@@ -113,16 +117,15 @@
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
         android:layout_marginHorizontal="14dp"
-        android:layout_marginTop="16dp"
         android:background="@color/color_0FFFFFFF"
         app:layout_constraintTop_toBottomOf="@id/cl_collapse"
-        app:layout_goneMarginTop="18dp" />
+      />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_money"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="12dp"
         android:layout_marginBottom="16dp"
         app:layout_constraintTop_toBottomOf="@id/line"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -150,10 +153,11 @@
                 android:id="@+id/tv_bet_money"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
                 android:textColor="@color/color_FFFFFF"
                 android:textSize="14sp"
                 android:textStyle="bold"
+                android:text="$100.00"
+                android:layout_marginRight="@dimen/dp_2"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/iv_bet_money_currency"
                 app:layout_constraintTop_toTopOf="parent"
@@ -167,6 +171,7 @@
                 android:text="@string/title_bet"
                 android:textColor="@color/color_999999"
                 android:textSize="14sp"
+                android:layout_marginStart="@dimen/dp_10"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -235,6 +240,7 @@
                 android:id="@+id/tv_win_money"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="-5dp"
                 android:layout_marginTop="9dp"
                 android:text="@string/live_bet_except_max_win"
                 android:textColor="@color/color_999999"
@@ -242,7 +248,8 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tv_win_money_value" />
+                app:layout_constraintTop_toBottomOf="@id/tv_win_money_value"
+                app:layout_constraintVertical_bias="1.0" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 

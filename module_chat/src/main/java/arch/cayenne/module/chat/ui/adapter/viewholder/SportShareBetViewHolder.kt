@@ -14,8 +14,8 @@ import arch.cayenne.lib.database.entity.BetSlipSelectionData
 import arch.cayenne.module.betslip.R
 import arch.cayenne.module.betslip.utisl.BetSlipUtils
 import arch.cayenne.module.chat.databinding.ItemShareBetLayoutBinding
+import arch.cayenne.module.chat.ui.adapter.SportBetShareSelectionAdapter
 import arch.cayenne.module.order.data.constants.OrderSportPageEnum
-import arch.cayenne.module.order.ui.adapter.OrderBettingSelectionAdapter
 
 /**
  * @author: wenxi
@@ -43,7 +43,7 @@ class SportShareBetViewHolder (private val mBinding: ItemShareBetLayoutBinding):
 
         fullSelectionsList = item.selectionsList
 
-        val selectionAdapter = OrderBettingSelectionAdapter(type)
+        val selectionAdapter = SportBetShareSelectionAdapter(type)
         mBinding.rvContent.adapter = selectionAdapter
 //        mBinding.rvContent.addItemDecoration(OrderItemSelectionDecoration(18.dp2px))
 
@@ -82,13 +82,13 @@ class SportShareBetViewHolder (private val mBinding: ItemShareBetLayoutBinding):
         }
     }
 
-    private fun setupCollapseClickListener(adapter: OrderBettingSelectionAdapter) {
+    private fun setupCollapseClickListener(adapter: SportBetShareSelectionAdapter) {
         mBinding.clCollapse.setOnClickListener {
             toggleExpansion(adapter)
         }
     }
 
-    private fun toggleExpansion(adapter: OrderBettingSelectionAdapter) {
+    private fun toggleExpansion(adapter: SportBetShareSelectionAdapter) {
         isExpanded = !isExpanded
 
         setCollapseButtonText(fullSelectionsList.size, isExpanded)
@@ -112,7 +112,7 @@ class SportShareBetViewHolder (private val mBinding: ItemShareBetLayoutBinding):
         }
     }
 
-    private fun expandRecyclerView(adapter: OrderBettingSelectionAdapter) {
+    private fun expandRecyclerView(adapter: SportBetShareSelectionAdapter) {
         // 先測量收起狀態的高度
         val collapsedHeight = mBinding.rvContent.height
 
@@ -138,7 +138,7 @@ class SportShareBetViewHolder (private val mBinding: ItemShareBetLayoutBinding):
         }
     }
 
-    private fun collapseRecyclerView(adapter: OrderBettingSelectionAdapter) {
+    private fun collapseRecyclerView(adapter: SportBetShareSelectionAdapter) {
         // 當前展開的高度
         val expandedHeight = mBinding.rvContent.height
 
