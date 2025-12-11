@@ -32,6 +32,7 @@ class AtAdapter() :
             binding.main.setOnClickListener { view ->
                 val position = currentList.indexOfFirst { atBean -> atBean.id == view.tag as Int }
                 val bean = currentList[position]
+
                 if (selectedSet.contains(bean.id)) {
                     selectedSet.remove(bean.id)
                 } else {
@@ -40,7 +41,7 @@ class AtAdapter() :
                 itemListener?.onItemClick(
                     getItem(position).builder(
                         select = selectedSet.contains(
-                            position
+                            bean.id
                         )
                     ), position
                 )

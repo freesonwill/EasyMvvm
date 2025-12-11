@@ -13,6 +13,7 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.animation.doOnEnd
 import androidx.core.animation.doOnStart
+import androidx.core.view.doOnAttach
 import androidx.core.view.doOnDetach
 import androidx.core.view.isVisible
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
@@ -20,7 +21,9 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStore
+import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.recyclerview.widget.RecyclerView.Adapter
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.data.repo.BalanceRepository
 import arch.cayenne.lib.common.ui.view.NumberKeyboardView.OnCalculatorClickListener
@@ -121,26 +124,28 @@ class BetMoneyKeyboard @JvmOverloads constructor(
     }
 
     fun bind(
-        viewLifecycleOwner:LifecycleOwner,
         serialValue: Int,
         ed:EditText,
         tvMoney:TextView,
         removeWhenHide:Boolean,
-        currentMoney: Long,
+        currentMoney: String,
         minNumber: Long,
         maxNumber: Long,
-        onMoneyChange:(serialValue:Int,money:Long)->Unit
+        onMoneyChange:(serialValue:Int,money:Long,moneyStr:String)->Unit
     ){
-        this._serialValue = serialValue
-        this.etMoney = ed
-        this.tvMoney = tvMoney
-        this.removeWhenHide = removeWhenHide
-        this.mViewModel = ViewModelProvider(viewModelStore, vmFactory)[ComboBetMoneyKeyboardDialogViewModel::class.java]
+        doOnAttach {
+            val viewLifecycleOwner = findViewTreeLifecycleOwner()!!
+            this._serialValue = serialValue
+            this.etMoney = ed
+            this.tvMoney = tvMoney
+            this.removeWhenHide = removeWhenHide
+            this.mViewModel = ViewModelProvider(viewModelStore, vmFactory)[ComboBetMoneyKeyboardDialogViewModel::class.java]
 
-        initKeyboard(currentMoney,minNumber,maxNumber)
-        initView()
-        createObserver(viewLifecycleOwner, onMoneyChange)
-        initListener()
+            initKeyboard(currentMoney,minNumber,maxNumber)
+            initView()
+            createObserver(viewLifecycleOwner, onMoneyChange)
+            initListener()
+        }
     }
 
     private fun unBind(){
@@ -151,13 +156,11 @@ class BetMoneyKeyboard @JvmOverloads constructor(
         this.viewModelStore.clear()
     }
 
-    private fun initKeyboard(currentMoney: Long,minNumber: Long, maxNumber: Long) {
+    private fun initKeyboard(currentMoney: String,minNumber: Long, maxNumber: Long) {
         if (minNumber != -1L && maxNumber != -1L) {
             mViewModel!!.setNumberLimit(minNumber, maxNumber)
         }
-        if (currentMoney != 0L) {
-            mViewModel!!.setNumber(currentMoney.getMoney())
-        }
+        mViewModel!!.setNumber(currentMoney)
     }
 
     private fun initView(){
@@ -165,14 +168,15 @@ class BetMoneyKeyboard @JvmOverloads constructor(
         mViewModel!!.setMaxLength(etMoney!!.getMaxLength())
     }
 
-    private fun createObserver(viewLifecycleOwner:LifecycleOwner,onMoneyChange:(serialValue:Int,money:Long)->Unit){
+    private fun createObserver(viewLifecycleOwner:LifecycleOwner,onMoneyChange:(serialValue:Int,money:Long,moneyStr:String)->Unit){
         val mViewModel = this.mViewModel ?: return
         mViewModel.onEditNumber.observe(viewLifecycleOwner) {
+            //"aaaa---onEditNumber--$it".logd(TAG)
             val etMoney = this.etMoney!!
             etMoney.setText(it)
             val length = it.length
             etMoney.setSelection(length)
-            onMoneyChange.invoke(serialValue!!,it.toMoney())
+            onMoneyChange.invoke(serialValue!!,it.toMoney(),it)
         }
         mViewModel.onNumberLimit.observe(viewLifecycleOwner) {
             etMoney!!.hint = R.string.et_money_hint.getString(it.first.getMoney(), it.second.getMoney())

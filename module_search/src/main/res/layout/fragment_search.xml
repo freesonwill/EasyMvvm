@@ -25,9 +25,10 @@
                 android:id="@+id/tv_history_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_6"
                 android:text="@string/history_record"
                 android:textColor="@color/search_title"
-                android:textSize="15sp" />
+                android:textSize="14sp" />
 
             <arch.cayenne.lib.skin.widget.SkinnableRelativeLayout
                 android:id="@+id/rl_history_delete"
@@ -38,9 +39,10 @@
 
                 <arch.cayenne.lib.skin.widget.SkinnableImageView
                     android:id="@+id/iv_click_show_delete"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="8dp"
+                    android:layout_width="@dimen/dp_23"
+                    android:layout_height="@dimen/dp_19"
+                    android:paddingEnd="8dp"
+                    android:paddingVertical="2dp"
                     app:srcCompat="@drawable/ic_search_history_delete" />
 
                 <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
@@ -57,16 +59,15 @@
                         android:layout_height="wrap_content"
                         android:text="@string/delete_all"
                         android:textColor="@color/search_title"
-                        android:textSize="15sp" />
+                        android:textSize="14sp" />
 
                     <View
                         android:layout_width="1dp"
-                        android:layout_height="@dimen/dp_10"
-                        android:layout_marginStart="9dp"
-                        android:layout_marginEnd="9dp"
-                        android:background="@color/search_history_divider"
+                        android:layout_height="@dimen/dp_12"
+                        android:layout_marginStart="11dp"
+                        android:layout_marginEnd="11dp"
+                        android:background="@color/search_title"
                         android:text="|"
-                        android:textSize="15sp"
                         tools:ignore="HardcodedText" />
 
                     <arch.cayenne.lib.skin.widget.SkinnableTextView
@@ -74,9 +75,10 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="8dp"
+                        android:layout_marginBottom="@dimen/dp_1"
                         android:text="@string/search_finish"
                         android:textColor="@color/search_title"
-                        android:textSize="15sp" />
+                        android:textSize="14sp" />
                 </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
             </arch.cayenne.lib.skin.widget.SkinnableRelativeLayout>
         </arch.cayenne.lib.skin.widget.SkinnableRelativeLayout>
@@ -88,7 +90,7 @@
             android:layout_marginTop="30dp"
             android:text="@string/search_no_history_record"
             android:textColor="@color/search_history_no_data"
-            android:textSize="15sp"
+            android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/rl_text_delete" />
@@ -97,9 +99,9 @@
             android:id="@+id/hf_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_10"
-            android:layout_marginTop="@dimen/dp_17"
-            android:layout_marginEnd="@dimen/dp_10"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_18"
+            android:layout_marginEnd="@dimen/dp_16"
             app:flow_equally="false"
             app:flow_fold="true"
             app:flow_foldLines="2"
@@ -118,10 +120,10 @@
 
         <arch.cayenne.lib.skin.widget.SkinnableImageView
             android:id="@+id/iv_hot_word"
-            android:layout_width="@dimen/dp_20"
-            android:layout_height="@dimen/dp_20"
-            android:layout_marginStart="@dimen/dp_10"
-            android:layout_marginTop="@dimen/dp_60"
+            android:layout_width="@dimen/dp_16"
+            android:layout_height="@dimen/dp_16"
+            android:layout_marginStart="@dimen/dp_18"
+            android:layout_marginTop="@dimen/dp_40"
             android:src="@drawable/ic_hot_word"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -129,10 +131,10 @@
         <arch.cayenne.lib.skin.widget.SkinnableTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_3"
+            android:layout_marginStart="@dimen/dp_5"
             android:text="@string/hot_search"
-            android:textColor="@color/search_title"
-            android:textSize="15sp"
+            android:textColor="@color/color_999999"
+            android:textSize="14sp"
             app:layout_constraintBottom_toBottomOf="@id/iv_hot_word"
             app:layout_constraintStart_toEndOf="@id/iv_hot_word"
             app:layout_constraintTop_toTopOf="@id/iv_hot_word" />
@@ -141,9 +143,9 @@
             android:id="@+id/rv_hot_word"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_13"
-            android:layout_marginTop="@dimen/dp_7"
-            android:layout_marginEnd="@dimen/dp_11"
+            android:layout_marginStart="@dimen/dp_18"
+            android:layout_marginTop="@dimen/dp_11"
+            android:layout_marginEnd="@dimen/dp_14"
             android:overScrollMode="never"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

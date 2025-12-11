@@ -7,6 +7,7 @@ import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.data.repo.BalanceRepository
 import arch.cayenne.lib.common.ui.viewmodel.Event
@@ -21,9 +22,8 @@ import arch.cayenne.lib.database.entity.InfoBean
 import arch.cayenne.module.bet.R
 import arch.cayenne.module.bet.data.ComboMultiBetBean
 import arch.cayenne.module.bet.data.OddsChangeEnum
-import arch.cayenne.module.bet.data.ParameterItems
-import arch.cayenne.module.bet.data.ParameterItems2
 import arch.cayenne.module.bet.repo.ComboBetRepository
+import arch.cayenne.module.bet.ui.fragment.ComboDetailFragment
 import kotlinx.coroutines.launch
 
 class ComboBetViewModel(
@@ -122,7 +122,7 @@ class ComboBetViewModel(
             launch {
                 repo.observeComboMultiBet().collect { beans ->
                     val lastList = _onComboMultiBetBeanListener.value
-                    //"aaaa---observeComboMultiBet--nowList:$beans, lastList:$lastList,${this@ComboBetViewModel}".logd(TAG)
+                    //"aaaa---observeComboMultiBet--nowList:$beans, \t lastList:$lastList,${this@ComboBetViewModel}".logd(TAG)
 
                     // 如果舊資料是 null，代表第一次載入，直接設值
                     if (lastList == null) {
@@ -132,7 +132,7 @@ class ComboBetViewModel(
                         val updatedList = beans.mapIndexed { index, newItem ->
                             val oldItem = lastList.getOrNull(index)
                             val updatedInputMoney = oldItem?.inputMoney?: newItem.inputMoney
-                            newItem.copy(inputMoney = updatedInputMoney)
+                            newItem.copy(inputMoneyStr = oldItem?.inputMoneyStr?:"")
                         }
                         _onComboMultiBetBeanListener.value = updatedList
                     }
@@ -159,12 +159,12 @@ class ComboBetViewModel(
         repo.removeAll()
     }
 
-    fun updateMultiBetMoney(serialValue: Int, money: Long) {
-        //"updateMultiBetMoney---$serialValue,money:$money".logd(TAG)
+    fun updateMultiBetMoney(serialValue: Int, money: Long,moneyStr:String) {
+        //"aaaa---updateMultiBetMoney---$serialValue,money:$money".logd(TAG)
         _onComboMultiBetBeanListener.value?.let {
             val updatedList = it.map { rate ->
                 if (rate.serialValue == serialValue) {
-                    rate.copy(inputMoney = money)
+                    rate.copy(inputMoneyStr = moneyStr)
                 } else {
                     rate
                 }
@@ -199,17 +199,19 @@ class ComboBetViewModel(
         _onMultiLayoutExpendListener.value = _onMultiLayoutExpendListener.value?.not() ?: true
     }
 
+    //是否展开更多
     fun setExpandMultiLayout(expand: Boolean) {
         val currentValue = _onMultiLayoutExpendListener.value ?: false
         if (currentValue == expand) return // No change needed
         _onMultiLayoutExpendListener.value = expand
     }
 
+    //清除投注金额
     fun clearBetMoney() {
         val data = _onComboMultiBetBeanListener.value ?: return
         _onComboMultiBetBeanListener.value = data.map {
             if (it.inputMoney > 0) {
-                it.copy(inputMoney = 0L)
+                it.copy(inputMoneyStr="")
             } else {
                 it
             }
@@ -270,37 +272,12 @@ class ComboBetViewModel(
         return null
     }
 
-    /**
-     * 拆分串关，比如3串4拆成2串1，3串1
-     * @param combK
-     * @param combV
-     * @return
-     */
-    fun splitComboIntoSingles(bean:ComboMultiBetBean): List<ParameterItems> {
-        val data = this.onBetListListener.value ?: return emptyList()
-        // 1 注 = 固定只有一个 K
-        val kList = if (bean.comboV == 1) {
-            listOf(bean.comboK)
-        } else {
-            ((if(bean.isSuperCombo) 1 else 2)..bean.comboK).toList()
-        }
-        return kList.map { k ->
-            val title = R.string.title_combo_bet_detail.getString(
-                if(k==1) arch.cayenne.lib.res.R.string.title_single_bet.getString()
-                else R.string.title_combo_bet_odds.getString(k,1)
-            )
-            val moneySymbol = this.moneySymbol
 
-            val listItems = data.combinations(k).map { l ->
-                val odds = repo.calculateCombinationOdds(l.map { it.odds },l.size)
-                ParameterItems2(
-                    combo = l.joinToString("·") { "${data.indexOf(it) + 1}" },
-                    money = bean.inputMoney.takeIf { it != 0L }?.let { "$moneySymbol${it.getMoney()}" },
-                    winMoney = bean.inputMoney.takeIf { it != 0L }?.let { "$moneySymbol${bean.inputMoney.getMoney(odds)}" },
-                    odds = "@${odds.getOdds()}"
-                )
-            }
-            ParameterItems(title, listItems)
-        }
+    fun toCombinationDetailParameter(serialValue: Int): ComboDetailFragment.Parameter {
+        return repo.toCombinationDetailParameter(serialValue,
+            onComboMultiBetBeanListener.value,
+            onBetListListener.value,
+            moneySymbol
+        )
     }
 }

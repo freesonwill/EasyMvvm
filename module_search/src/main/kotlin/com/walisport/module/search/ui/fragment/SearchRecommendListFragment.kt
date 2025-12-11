@@ -23,7 +23,6 @@ import com.walisport.module.search.ui.adapter.RecommendAdapter
 import com.walisport.module.search.ui.viewmodel.SearchRecommendListViewModel
 import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
-
 class SearchRecommendListFragment : BaseFragment<SearchRecommendListViewModel, FragmentSearchRecommendListBinding>() {
     override val vbClass: KClass<FragmentSearchRecommendListBinding>
         get() = FragmentSearchRecommendListBinding::class

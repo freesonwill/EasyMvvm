@@ -23,6 +23,7 @@ import arch.cayenne.lib.base.ui.animation.CustomCurveTransformer
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.common.ui.adapter.BannerImageMatchAdapter
+import arch.cayenne.lib.common.ui.view.CustomTabLayoutMediator
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
@@ -33,7 +34,6 @@ import arch.cayenne.lib.common.utils.ext.TabLayoutExt
 import arch.cayenne.lib.common.utils.ext.TabLayoutExt.addOnTabSelectedListener2
 import arch.cayenne.lib.common.utils.ext.VIPDataExt
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
-import arch.cayenne.lib.common.utils.ext.checkCurrentScrollState
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.clickNoRepeatSingle
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
@@ -55,7 +55,6 @@ import arch.cayenne.module.home.databinding.ItemLeagueTabBinding
 import arch.cayenne.module.home.databinding.LayoutTournamentSortingMenuBinding
 import arch.cayenne.module.home.ui.adapter.LeaguePagerAdapter
 import arch.cayenne.module.home.ui.adapter.SportsListAdapter
-import arch.cayenne.module.home.ui.view.CustomTabLayoutMediator
 import arch.cayenne.module.home.ui.viewmodel.EarlyViewModel
 import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
 import arch.cayenne.module.home.utils.scrollToPositionWithoutAnim
@@ -163,12 +162,9 @@ class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>(),
                 }
             }
         }
-
-
         mViewModel.tournaments.observeEvent(viewLifecycleOwner, this) { comboList ->
             setTournamentAndViewPagerLayout(comboList)
         }
-
         mViewModel.collapseTournamentDropdown.observeEvent(
             viewLifecycleOwner,
             this
@@ -178,7 +174,6 @@ class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>(),
                 mViewModel.consumeCollapseTournamentDropdown() // 重置事件，避免重複觸發
             }
         }
-
         mViewModel.navigationToChampion.observeEvent(viewLifecycleOwner, this) { data ->
             navigate(Uri.parse("walisport://module_home/championFragment?matchId=${data.championMatchId}&name=${data.name}&icon=${data.icon}"))
         }
@@ -585,7 +580,7 @@ class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>(),
             sortingMenuBinding?.root?.startAnimation(slideInAnim)
 
             // 切換圖標為收起狀態
-            mBinding.layoutContainer.ivTournamentSortIcon.setImageResource(R.drawable.ic_tournament_collapse)
+            mBinding.layoutContainer.ivTournamentSortIcon.setImageResource(arch.cayenne.lib.common.R.drawable.ic_sort_collapse)
 
             // tv_tournament_more 變色為選中狀態
             mBinding.layoutContainer.tvTournamentMore.setTextColor(
@@ -629,7 +624,7 @@ class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>(),
                 .start()
 
             // 切換圖標為展開狀態
-            mBinding.layoutContainer.ivTournamentSortIcon.setImageResource(R.drawable.ic_tournament_expand)
+            mBinding.layoutContainer.ivTournamentSortIcon.setImageResource(arch.cayenne.lib.common.R.drawable.ic_sort_expand)
 
             // tv_tournament_more 恢復為未選中狀態
             mBinding.layoutContainer.tvTournamentMore.setTextColor(

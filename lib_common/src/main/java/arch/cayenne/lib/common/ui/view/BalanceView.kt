@@ -29,22 +29,36 @@ class BalanceView : FrameLayout {
         childFragmentManager: FragmentManager
     ) {
         mBinding.tvWalletBalance.clickNoRepeat {
+            rotateArrow(true)
+
             val location = IntArray(2)
             mBinding.root.getLocationInWindow(location)
-            if(isPortrait()) {
+
+            val offset = if(isPortrait()) {
                 val h = ViewUtils.getStatusBarHeight(mBinding.root.context)
-                val positionY = location.last() - h + mBinding.root.measuredHeight + 7.dp2px
-                CurrencyDialogFragment.newInstance(isPortrait(), positionY).show(childFragmentManager)
+                location.last() - h + mBinding.root.measuredHeight + 7.dp2px
             } else {
-                val positionX = location.first() + mBinding.root.measuredWidth + 15.dp2px
-                CurrencyDialogFragment.newInstance(isPortrait(), positionX).show(childFragmentManager)
+                location.first() + mBinding.root.measuredWidth + 15.dp2px
             }
+            val f = CurrencyDialogFragment.newInstance(isPortrait(), offset)
+            f.setOnDismissListener {
+                rotateArrow(false)
+            }
+            f.show(childFragmentManager)
         }
+
         mBinding.ivAdd.apply {
             addScaleOnTouchAnimation(mBinding.ivAdd)
         }.clickNoRepeat{
             onAddClickListener?.invoke()
         }
+    }
+
+    private fun rotateArrow(isExpend: Boolean) {
+        mBinding.ivArrow.animate()
+            .rotation(if(isExpend) 180f else 0f)
+            .setDuration(200)
+            .start()
     }
 
 
