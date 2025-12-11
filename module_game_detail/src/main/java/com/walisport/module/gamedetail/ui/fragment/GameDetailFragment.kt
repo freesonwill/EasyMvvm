@@ -24,8 +24,11 @@ class GameDetailFragment : BaseFragment<GameDetailPageViewModel, FragmentGameDet
         with (mBinding) {
             // todo 效果待確認
 //            ivFavorite.isSelected = mockData.collect
-            mBinding.gameDetailPager.adapter = adapter
-            mBinding.gameDetailPager.orientation = ViewPager2.ORIENTATION_VERTICAL
+            gameDetailPager.adapter = adapter
+            gameDetailPager.orientation = ViewPager2.ORIENTATION_VERTICAL
+            // Set offscreen page limit to reduce memory usage during fast scrolling
+            // Only keep 1 page on each side, allowing faster recycling
+            gameDetailPager.offscreenPageLimit = 1
         }
         // Disable overscroll effect if desired, or keep it
     }
@@ -49,6 +52,12 @@ class GameDetailFragment : BaseFragment<GameDetailPageViewModel, FragmentGameDet
     }
 
     override suspend fun createObserver() {
+    }
+
+    override fun onDestroyView() {
+        // Clear ViewPager2 adapter to prevent memory leaks
+        mBinding.gameDetailPager.adapter = null
+        super.onDestroyView()
     }
 
     private class GameDetailPagerAdapter(fragment: Fragment) : FragmentStateAdapter(fragment) {

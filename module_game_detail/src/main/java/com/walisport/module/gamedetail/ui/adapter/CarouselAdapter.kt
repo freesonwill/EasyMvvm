@@ -34,6 +34,16 @@ abstract class CarouselAdapter<VH: CarouselViewHolder> {
      */
     abstract fun onBindViewHolder(holder: VH, position: Int)
 
+    /**
+     * 當 ViewHolder 被回收時呼叫此方法，用於清理資源。
+     * 子類可以重寫此方法來釋放資源（如取消圖片加載、停止視頻播放等）。
+     *
+     * @param holder 被回收的 ViewHolder。
+     */
+    open fun onViewRecycled(holder: VH) {
+        // 默認實現為空，子類可以重寫
+    }
+
     internal fun registerAdapterDataObserver(observer: () -> Unit) {
         observers.add(observer)
     }
