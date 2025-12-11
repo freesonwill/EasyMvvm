@@ -14,7 +14,24 @@ class GameCategoryViewModel : BaseViewModel() {
     private val repository: HallRepository by inject { parametersOf(viewModelScope) }
     val gameList = repository.gameListLiveData
 
-    fun queryGameList(page: Int , sortType: GameSortType) {
-        repository.queryGameList(page ,sortType )
+    private var page: Int = 0
+    private var sortType: GameSortType = GameSortType.HOT
+
+    fun setSortType(sortType: GameSortType) {
+        this.sortType = sortType
+    }
+
+    fun queryGameList() {
+        repository.queryGameList(page , sortType)
+    }
+
+     fun applySorting() {
+        page = 0
+        repository.queryGameList(page , sortType)
+    }
+
+    fun loadNextPage() {
+        page++
+        repository.queryGameList(page , sortType)
     }
 }

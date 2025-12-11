@@ -7,6 +7,7 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
+import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.ui.adapter.GridSpacingItemDecoration
 import arch.cayenne.lib.common.ui.view.SimpleTabDataModel
@@ -41,8 +42,7 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
         )
     }
     private lateinit var adapter: GameContentAdapter
-    private var list: MutableList<GameContentData> = mutableListOf()
-    private var page: Int = 0
+
     private var isExpanded = false
     private var sortingMenuBinding: LayoutGameSortingMenuBinding? = null
 
@@ -71,7 +71,7 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
             titleBar.loadDynamicsTitleBar(titleBarBinding.root , null)
             titleBarBinding.tvTitleName.text = "老虎机"
             customTabGroup.submitTabList(mockVendorList)
-            mViewModel.queryGameList(page , currentSortType)
+            rvGame.itemAnimator = null
             rvGame.layoutManager = GridLayoutManager(requireContext() , 3)
             val itemDecoration = GridSpacingItemDecoration(
                 spanCount = 3 ,
@@ -84,6 +84,9 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
                 navigate(arch.cayenne.lib.res.R.string.nav_module_gamedetail.deeplink())
             })
             rvGame.adapter = adapter
+
+            mViewModel.setSortType(currentSortType)
+            mViewModel.queryGameList()
         }
 
         mBinding.root.touchBackPressed()
@@ -98,8 +101,9 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
         }
 
         mBinding.rvGame.addOnScrollListener(UniversalLoadMoreScrollListener(6) {
-            page++
-            mViewModel.queryGameList(page , currentSortType)
+            if (mViewModel.apiStateListener.value == DataState.LoadSuccess) {
+                loadNextPage()
+            }
         })
 
         mBinding.customTabGroup.setOnSortBtnClick {
@@ -107,12 +111,13 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
         }
     }
 
+
     override suspend fun createObserver() {
         mViewModel.gameList.observe(viewLifecycleOwner) {
             it.let { list ->
-                adapter.submitList(list.map { vo ->
+                adapter.submitList(list.mapIndexed { index , vo ->
                     GameContentData(
-                        id = "${page}1".toLong() ,
+                        id = index.toLong() ,
                         name = vo.name ,
                         avatar = Avatar(
                             url = vo.avatar.url ,
@@ -242,7 +247,8 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
                 if (currentSortType != GameSortType.HOT) {
                     currentSortType = GameSortType.HOT
                     updateSortingMenuSelection()
-                    applySorting()
+                    mViewModel.setSortType(currentSortType)
+                    mViewModel.applySorting()
                 }
                 toggleGameSorting(false)
             }
@@ -252,7 +258,8 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
                 if (currentSortType != GameSortType.NEW) {
                     currentSortType = GameSortType.NEW
                     updateSortingMenuSelection()
-                    applySorting()
+                    mViewModel.setSortType(currentSortType)
+                    mViewModel.applySorting()
                 }
                 toggleGameSorting(false)
             }
@@ -261,7 +268,8 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
                 if (currentSortType != GameSortType.HOT_REWARD) {
                     currentSortType = GameSortType.HOT_REWARD
                     updateSortingMenuSelection()
-                    applySorting()
+                    mViewModel.setSortType(currentSortType)
+                    mViewModel.applySorting()
                 }
                 toggleGameSorting(false)
             }
@@ -270,7 +278,8 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
                 if (currentSortType != GameSortType.COLD_REWARD) {
                     currentSortType = GameSortType.COLD_REWARD
                     updateSortingMenuSelection()
-                    applySorting()
+                    mViewModel.setSortType(currentSortType)
+                    mViewModel.applySorting()
                 }
                 toggleGameSorting(false)
             }
@@ -323,9 +332,12 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
         }
     }
 
-    private fun applySorting() {
-        page = 0
-        mViewModel.queryGameList(page , currentSortType)
+
+    private fun loadNextPage() {
+        if (isPrevPageEnd || mViewModel.apiStateListener.value == DataState.Loading) {
+            return
+        }
+        mViewModel.queryGameList()
     }
 
 
