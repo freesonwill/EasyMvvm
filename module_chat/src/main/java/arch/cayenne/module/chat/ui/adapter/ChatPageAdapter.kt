@@ -21,22 +21,19 @@ import arch.cayenne.module.chat.data.model.ColorSpan
 import arch.cayenne.module.chat.data.model.MentionSpan
 import arch.cayenne.module.chat.databinding.ItemLiveChatBinding
 
-class ChatPageAdapter(private val atClick:(str:String) ->Unit) :
+class ChatPageAdapter(private val specialClick:(bean:ChatMsgPageBean,clickSpan:String,clickType:MsgType) ->Unit) :
     BaseAdapter<ChatMsgPageBean, ChatPageAdapter.LiveChatViewHolder, ItemLiveChatBinding>(
         ChatCompare()
     ) {
-    private var itemClick: RecyclerItemListener<ChatMsgPageBean>? = null
-
-
-    fun setOnItemListener(listener: RecyclerItemListener<ChatMsgPageBean>) {
-        this.itemClick = listener
-    }
 
     inner class LiveChatViewHolder(binding: ItemLiveChatBinding) : BaseViewHolder(binding) {
         val nBinding = binding
 
         fun initListener() {
             nBinding.tv.apply {
+//                setOnClickListener {
+//                    "normal click".logd("aaa")
+//                }
 
                 movementMethod = object :LinkMovementMethod(){
                     override fun onTouchEvent(
@@ -53,12 +50,15 @@ class ChatPageAdapter(private val atClick:(str:String) ->Unit) :
                             val line = layout.getLineForVertical(y)
                             val off = layout.getOffsetForHorizontal(line, x.toFloat())
                             val spans = buffer.getSpans(off,off+1,ClickSpan::class.java)
+                            val position = widget.tag as Int
+
                             if(spans.isNotEmpty()){
-                                spans.first().onClick(widget)
+                                spans.first().also {
+                                    specialClick.invoke(getItem(position),it.tv,it.msgType)
+                                }
                                 return true
                             }else{
-                                val position = widget.tag as Int
-                                itemClick?.onItemClick(getItem(position), position)
+                                specialClick.invoke(getItem(position),"",MsgType.TEXT)
                             }
                         }
 
@@ -91,10 +91,10 @@ class ChatPageAdapter(private val atClick:(str:String) ->Unit) :
                     )
                 ), 0, msgSpannable.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
             )
-            if (bean.msgType == MsgType.AT) {
+            if (bean.msgType in arrayOf(MsgType.AT,MsgType.BET)) {
                 bean.atRange?.forEach {
                     msgSpannable.setSpan(
-                        ClickSpan(second.substring(it.first, it.last), atClick),
+                        ClickSpan(bean.msgType,second.substring(it.first, it.last)),
                         it.first,
                         it.last,
                         Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
