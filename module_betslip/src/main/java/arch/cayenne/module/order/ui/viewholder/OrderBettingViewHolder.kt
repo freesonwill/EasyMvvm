@@ -29,7 +29,7 @@ class OrderBettingViewHolder(private val mBinding: ItemOrderSportBettingBinding)
     private var isExpanded = false
     private var fullSelectionsList: List<BetSlipSelectionData> = emptyList()
 
-    fun init(item: BetSlipOrderBean, type: OrderSportPageEnum) {
+    fun init(item: BetSlipOrderBean, type: OrderSportPageEnum, onDoubleClick: ((String) -> Unit)? = null) {
 
         val betAmount = "${CurrencySymbols.getSymbol(item.currency)}${item.betAmount.getFormalMoney()}"
         mBinding.tvMoney.text = betAmount
@@ -81,6 +81,43 @@ class OrderBettingViewHolder(private val mBinding: ItemOrderSportBettingBinding)
         if (item.selectionsList.size > 1) {
             setCollapseButtonText(fullSelectionsList.size, false)
             setupCollapseClickListener(selectionAdapter)
+        }
+        
+        // 設置雙擊監聽
+        onDoubleClick?.let { callback ->
+            var lastClickTime = 0L
+            val doubleClickThreshold = 300L // 300ms 內的兩次點擊視為雙擊
+            
+            // 為整個 item 設置雙擊監聽
+            mBinding.root.setOnClickListener {
+                val currentTime = System.currentTimeMillis()
+                if (currentTime - lastClickTime < doubleClickThreshold) {
+                    // 雙擊
+                    callback(item.betId)
+                    lastClickTime = 0L // 重置，避免三擊觸發
+                } else {
+                    // 單擊
+                    lastClickTime = currentTime
+                }
+            }
+            
+            // 為 RecyclerView 設置觸摸監聽來檢測雙擊
+            var rvLastClickTime = 0L
+            mBinding.rvContent.setOnTouchListener { _, event ->
+                if (event.action == android.view.MotionEvent.ACTION_DOWN) {
+                    val currentTime = System.currentTimeMillis()
+                    if (currentTime - rvLastClickTime < doubleClickThreshold) {
+                        // 雙擊
+                        callback(item.betId)
+                        rvLastClickTime = 0L // 重置，避免三擊觸發
+                        return@setOnTouchListener true // 消費事件
+                    } else {
+                        // 單擊
+                        rvLastClickTime = currentTime
+                    }
+                }
+                false // 不消費事件，讓 RecyclerView 正常工作
+            }
         }
     }
 

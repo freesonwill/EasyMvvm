@@ -42,10 +42,12 @@ class OrderBettingAdapter(private val type: OrderSportPageEnum, private val list
                 val bodyHolder = holder as OrderBettingViewHolder
                 val item = getItem(position) as BetSlipOrderBean
 
-                bodyHolder.init(item, type)
-                
-                // 設置雙擊監聽
-                setupDoubleClickListener(bodyHolder.itemView, item.betId, position)
+                bodyHolder.init(item, type) { betId ->
+                    // 雙擊回調
+                    val isCurrentlyCollapsed = itemCollapseStates[betId] ?: false
+                    itemCollapseStates[betId] = !isCurrentlyCollapsed
+                    notifyItemChanged(position)
+                }
 
                 if (type == OrderSportPageEnum.UNSETTLED) {
                     bodyHolder.getEarlySettleButton().setOnClickListener {
@@ -57,25 +59,13 @@ class OrderBettingAdapter(private val type: OrderSportPageEnum, private val list
                 val collapseHolder = holder as OrderBettingCollapseViewHolder
                 val item = getItem(position) as BetSlipOrderBean
 
-                collapseHolder.init(item, type)
-                
-                // 設置雙擊監聽
-                setupDoubleClickListener(collapseHolder.itemView, item.betId, position)
+                collapseHolder.init(item, type) { betId ->
+                    // 雙擊回調
+                    val isCurrentlyCollapsed = itemCollapseStates[betId] ?: false
+                    itemCollapseStates[betId] = !isCurrentlyCollapsed
+                    notifyItemChanged(position)
+                }
             }
-        }
-    }
-    
-    private fun setupDoubleClickListener(view: android.view.View, betId: String, position: Int) {
-        var lastClickTime = 0L
-        view.setOnClickListener {
-            val currentTime = System.currentTimeMillis()
-            if (currentTime - lastClickTime < 300) { // 300ms 內的點擊視為雙擊
-                // 切換狀態
-                val isCurrentlyCollapsed = itemCollapseStates[betId] ?: false
-                itemCollapseStates[betId] = !isCurrentlyCollapsed
-                notifyItemChanged(position)
-            }
-            lastClickTime = currentTime
         }
     }
 

@@ -14,7 +14,7 @@ import arch.cayenne.module.order.data.constants.OrderSportPageEnum
 
 class OrderBettingCollapseViewHolder(private val mBinding: ItemOrderSportBettingCollapseBinding): BaseViewHolder(mBinding) {
 
-    fun init(item: BetSlipOrderBean, type: OrderSportPageEnum) {
+    fun init(item: BetSlipOrderBean, type: OrderSportPageEnum, onDoubleClick: ((String) -> Unit)? = null) {
 
         val betAmount = "${CurrencySymbols.getSymbol(item.currency)}${item.betAmount.getFormalMoney()}"
         mBinding.tvBetMoney.text = betAmount
@@ -32,6 +32,24 @@ class OrderBettingCollapseViewHolder(private val mBinding: ItemOrderSportBetting
 
         setOrderStatus(item.status, item.comboType == 2)
         setResultStatus(item.resultStatus)
+        
+        // 設置雙擊監聽
+        onDoubleClick?.let { callback ->
+            var lastClickTime = 0L
+            val doubleClickThreshold = 300L // 300ms 內的兩次點擊視為雙擊
+            
+            mBinding.root.setOnClickListener {
+                val currentTime = System.currentTimeMillis()
+                if (currentTime - lastClickTime < doubleClickThreshold) {
+                    // 雙擊
+                    callback(item.betId)
+                    lastClickTime = 0L // 重置，避免三擊觸發
+                } else {
+                    // 單擊
+                    lastClickTime = currentTime
+                }
+            }
+        }
     }
 
     private fun setOrderStatus(staus: Int, isFullCombo: Boolean) {
