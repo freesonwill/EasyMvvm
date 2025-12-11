@@ -125,9 +125,6 @@ class GameBetShareFragment : BaseFragment<GameBetShareViewModel, FragmentGameSha
     }
 
     override fun onStart() {
-        StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND()
-        StatusBarConfig.statusBarDarkFont = false
-        setStatusBar(StatusBarConfig, mBinding.root)
         super.onStart()
     }
 
