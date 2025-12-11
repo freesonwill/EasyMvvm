@@ -1,6 +1,6 @@
 package arch.cayenne.module.bet
 
-import arch.cayenne.lib.common.utils.ext.CollectionExt.combinations
+import arch.cayenne.lib.common.utils.ext.CombinationExt.combinations
 import org.junit.Test
 
 import org.junit.Assert.*

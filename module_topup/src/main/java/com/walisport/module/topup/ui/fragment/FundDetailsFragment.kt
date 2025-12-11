@@ -11,13 +11,12 @@ import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
+import arch.cayenne.lib.common.data.constants.BizUrl
 import arch.cayenne.lib.common.data.constants.UserDataKey
 import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getColor
-import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.touchBackPressed
 import arch.cayenne.lib.common.web.WLSWebViewClient
-import com.walisport.module.topup.R
 import com.walisport.module.topup.databinding.FragmentFundDetailsBinding
 import com.walisport.module.topup.ui.viewmodel.FundDetailsViewModel
 import org.koin.java.KoinJavaComponent.inject
@@ -39,9 +38,7 @@ class FundDetailsFragment : BaseFragment<FundDetailsViewModel, FragmentFundDetai
         launch {
             initTitleBar()
             initWebView()
-            val uid = manager.getValue(UserDataKey.KEY_UID, -1)
-            val token = manager.getValue(UserDataKey.KEY_TOKEN, "")
-            mBinding.webView.loadUrl("https://www.google.com/")
+            mBinding.webView.loadUrl(BizUrl.FUND_DETAIL.url)
         }
     }
 
@@ -88,7 +85,8 @@ class FundDetailsFragment : BaseFragment<FundDetailsViewModel, FragmentFundDetai
                     super.onProgressChanged(view, newProgress)
                 }
             }
-            setBackgroundColor(arch.cayenne.lib.common.R.color.black.getColor())
+            setBackgroundColor(arch.cayenne.lib.common.R.color.title_bg.getColor())
+            setAttachedFragment(this@FundDetailsFragment)
         }
     }
 
@@ -100,23 +98,11 @@ class FundDetailsFragment : BaseFragment<FundDetailsViewModel, FragmentFundDetai
 
     private fun initTitleBar() {
         val type = arguments?.getString("type") ?: ""
-        val title = getTitleStr(type)
-        mBinding.tvTitle.text = title
         mBinding.root.touchBackPressed()
     }
 
-    private fun getTitleStr(type: String): String {
-        return when (type) {
-            "recharge" -> R.string.recharge_lesson.getString()
-            "withdraw" -> R.string.withdraw_lesson.getString()
-            "cz_record" -> R.string.recharge_record.getString()
-            "tx_record" -> R.string.withdrawal_record.getString()
-            else -> R.string.money_detail.getString()
-        }
-    }
-
     override fun onStart() {
-        StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND(autoPadding = false)
+        StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND()
         StatusBarConfig.statusBarDarkFont = false
         setStatusBar(StatusBarConfig,mBinding.root)
         super.onStart()

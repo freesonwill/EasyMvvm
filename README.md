@@ -1,5 +1,9 @@
 # wls-android
 
+## 打包以及安装
+
+项目采用Gitlab CI/CD 完成全流程打包，每天晚上会自动通过Schedule触发打包机制，也可以手动触发，访问 [打包页面](https://gitlab.iptco.me/tio/3n1-android/-/pipeline_schedules) 点击对应分支旁边的运行按钮即可手动触发打包，打好的包会通过`Deploy -> Release`的形式，访问 [Deploy -> Release](https://gitlab.iptco.me/tio/3n1-android/-/releases) 下载对应分支的包安装即可， 可以通过电脑下载后用 `adb install` 安装，也可以直接在手机中直接打开页面，下载并安装。
+
 ## 开发文档
 // c端产品文档【更新：2025-03-05】
 https://npt0si.axshare.com/?g=4

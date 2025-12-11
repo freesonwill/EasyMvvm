@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/color_272727"
+    >
+
+    <arch.cayenne.lib.skin.widget.SkinnableView
+        android:id="@+id/top_line"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/color_0FFFFFFF"
+        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="gone"
+        app:layout_goneMarginTop="0dp" />
+
+    <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
+        android:id="@+id/cl_content"
+        android:layout_width="match_parent"
+        android:layout_height="72dp"
+        app:layout_goneMarginTop="0dp"
+        android:layout_marginTop="@dimen/dp_18"
+        android:background="@drawable/shape_9dp"
+        android:backgroundTint="@color/color_0FFFFFFF"
+        app:layout_constraintTop_toBottomOf="@id/top_line">
+
+        <ImageView
+            android:id="@+id/iv_game_result"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="14dp"
+            android:src="@drawable/icon_order_status_dot"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
+            android:id="@+id/tv_selection_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="14dp"
+            android:layout_marginTop="10dp"
+            android:textColor="@color/color_FFFFFF"
+            android:textSize="14sp"
+            android:text="(0-0 中国 +0.5"
+            app:layout_constraintStart_toEndOf="@id/iv_game_result"
+            app:layout_constraintTop_toTopOf="parent"
+            app:skinnableFontWeight="500"
+            tools:ignore="HardcodedText" />
+
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
+            android:id="@+id/tv_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/live_bet_grounder"
+            android:textColor="@color/color_C0C0C0"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="@id/tv_selection_name"
+            app:layout_constraintTop_toBottomOf="@id/tv_selection_name" />
+
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
+            android:id="@+id/tv_market"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="8dp"
+            android:textColor="@color/color_C0C0C0"
+            android:textSize="14sp"
+            android:text="全场让球"
+            tools:ignore="HardcodedText"
+            app:layout_constraintStart_toEndOf="@id/tv_status"
+            app:layout_constraintTop_toBottomOf="@id/tv_selection_name"
+            app:layout_goneMarginStart="0dp" />
+
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
+            android:id="@+id/tv_odds"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="12dp"
+            android:textColor="@color/color_FFFFFF"
+            android:textSize="14sp"
+            tools:ignore="HardcodedText"
+            android:text="\@1.85"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:skinnableFontWeight="510" />
+
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
+            android:id="@+id/tv_reserve"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="12dp"
+            android:text="@string/live_bet_reserve_odds"
+            android:textColor="@color/color_C0C0C0"
+            android:textSize="14sp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+    </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_ball"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginTop="18dp"
+        android:src="@drawable/ic_soccer_active"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/cl_content"
+        />
+
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
+        android:id="@+id/tv_league_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="6dp"
+        android:textColor="@color/color_FFFFFF"
+        android:textSize="14sp"
+        android:text="中国 vs 巴西"
+        app:layout_constraintBottom_toBottomOf="@id/iv_ball"
+        app:layout_constraintStart_toEndOf="@id/iv_ball"
+        app:layout_constraintTop_toTopOf="@id/iv_ball"
+        android:layout_marginTop="-1dp"
+        app:skinnableFontWeight="500" />
+
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
+        android:id="@+id/tv_score"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:textColor="@color/color_00E301"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="@id/tv_league_name"
+        app:layout_constraintStart_toEndOf="@id/tv_league_name"
+        app:layout_constraintTop_toTopOf="@id/tv_league_name"
+        app:skinnableFontWeight="600" />
+
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
+        android:id="@+id/tv_game_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="18dp"
+        android:layout_marginEnd="6dp"
+        android:textColor="@color/color_999999"
+        android:text="上半场"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toStartOf="@id/tv_game_time"
+        app:layout_constraintTop_toBottomOf="@id/cl_content"
+        app:layout_goneMarginEnd="0dp"
+        tools:ignore="HardcodedText" />
+
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
+        android:id="@+id/tv_game_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="9dp"
+        android:textColor="@color/color_FFFFFF"
+        android:textSize="14sp"
+        android:text="40'"
+        tools:ignore="HardcodedText"
+        app:layout_constraintBottom_toBottomOf="@id/tv_game_status"
+        app:layout_constraintEnd_toStartOf="@id/tv_live"
+        app:layout_constraintTop_toTopOf="@id/tv_game_status" />
+
+    <TextView
+        android:id="@+id/tv_live"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="4dp"
+        android:text="@string/title_order_sport_live"
+        android:textColor="@color/color_FE3666"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="@id/tv_game_status"
+        app:layout_constraintEnd_toStartOf="@id/iv_live"
+        app:layout_constraintTop_toTopOf="@id/tv_game_status" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_live"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/icon_live"
+        app:layout_constraintBottom_toBottomOf="@id/tv_game_status"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tv_game_status" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/group_live"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="tv_live, iv_live" />
+
+    <arch.cayenne.lib.skin.widget.SkinnableView
+        android:id="@+id/bottom_line"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_marginVertical="18dp"
+        android:visibility="gone"
+        android:background="@color/color_0FFFFFFF"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/iv_ball"
+        app:layout_goneMarginBottom="0dp"
+        app:layout_goneMarginTop="0dp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_18"
+        app:layout_constraintTop_toBottomOf="@id/iv_ball"
+        />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
