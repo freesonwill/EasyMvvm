@@ -1,4 +1,8 @@
 <resources>
     <string name="hall">Game Hall</string>
+    <string name="sort_type_hot">Hot</string>
+    <string name="sort_type_new">New Arrivals</string>
+    <string name="sort_type_hot_reward">Hot Rewards in the Past 30 Minutes</string>
+    <string name="sort_type_cold_reward">Cold Rewards in the Past 30 Minutes</string>
 
 </resources>
