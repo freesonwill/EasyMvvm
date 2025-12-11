@@ -10,6 +10,8 @@ import androidx.recyclerview.widget.GridLayoutManager
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.ui.adapter.GridSpacingItemDecoration
+import arch.cayenne.lib.common.ui.view.DynamicStateLayout
+import arch.cayenne.lib.common.ui.view.DynamicStateLayout.States
 import arch.cayenne.lib.common.ui.view.SimpleTabDataModel
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
@@ -112,6 +114,35 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
 
 
     override suspend fun createObserver() {
+
+        mViewModel.apiStateListener.observe(viewLifecycleOwner) { state ->
+            when (state) {
+                DataState.LoadSuccess -> {
+
+                }
+
+                DataState.DataEmpty -> {
+                    mBinding.clDynamics.setState(
+                        States.DATA_EMPTY ,
+                        arch.cayenne.lib.common.R.string.data_empty.getString()
+                    )
+
+                }
+
+                DataState.NoMoreData -> {
+                }
+
+                DataState.NetworkUnavailable -> {
+                    mBinding.clDynamics.setState(
+                        States.NETWORK_ANOMALY() ,
+                        arch.cayenne.lib.common.R.string.error_net.getString()
+                    )
+                }
+
+                else -> {
+                }
+            }
+        }
         mViewModel.gameListLiveData.observe(viewLifecycleOwner) {
             it.let { list ->
                 adapter.submitList(list.mapIndexed { index , vo ->
