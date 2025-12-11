@@ -19,11 +19,9 @@ import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.touchBackPressed
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import com.walisport.module.hall.R
-import com.walisport.module.hall.data.Avatar
-import com.walisport.module.hall.data.GameContentData
-import com.walisport.module.hall.data.HotColdType
 import com.walisport.module.hall.data.UniversalLoadMoreScrollListener
 import com.walisport.module.hall.data.constants.GameSortType
+import com.walisport.module.hall.data.toGameContentData
 import com.walisport.module.hall.databinding.FragmentHallCategoryBinding
 import com.walisport.module.hall.databinding.LayoutGameSortingMenuBinding
 import com.walisport.module.hall.databinding.TitleBarGameCategoryBinding
@@ -116,23 +114,7 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
         mViewModel.gameListLiveData.observe(viewLifecycleOwner) {
             it.let { list ->
                 adapter.submitList(list.mapIndexed { index , vo ->
-                    GameContentData(
-                        id = index.toLong() ,
-                        name = vo.name ,
-                        avatar = Avatar(
-                            url = vo.avatar.url ,
-                            thumbhash = vo.avatar.thumbhash ,
-                            css = ""
-                        ) ,
-                        online = vo.online ,
-                        reward = vo.reward.toDouble() ,
-                        hasMore = vo.hasMore ,
-                        hotOrCold = when (currentSortType) {
-                            GameSortType.HOT_REWARD -> HotColdType.HOT
-                            GameSortType.COLD_REWARD -> HotColdType.COLD
-                            else -> HotColdType.NONE
-                        }
-                    )
+                   vo.toGameContentData(currentSortType)
                 })
             }
         }
