@@ -1,6 +1,7 @@
 package arch.cayenne.module.order.ui.viewholder
 
 import android.animation.ValueAnimator
+import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
@@ -138,14 +139,16 @@ class OrderBettingViewHolder(private val mBinding: ItemOrderSportBettingBinding)
     }
 
     private fun setResultStatus(staus: Int, isSingleBet: Boolean) {
-        mBinding.tvResultMoney.isVisible = staus != 3
-        mBinding.tvSecondResult.isVisible = false
-//        mBinding.tvSecondResult.isVisible = staus == 4 || staus == 5
         when (staus) {
             0 -> {
                 mBinding.tvResult.setText(if(isSingleBet) R.string.live_bet_except_win else R.string.live_bet_except_max_win)
-                mBinding.tvResult.setPadding(0.dp2px, 0.dp2px, 0.dp2px, 0.dp2px)
                 mBinding.tvResult.setTextColorRes(arch.cayenne.lib.common.R.color.color_999999)
+                mBinding.tvResult.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f)
+                mBinding.tvResult.setFontWeight(400)
+                val lp = mBinding.tvResult.layoutParams
+                lp.height = ViewGroup.LayoutParams.WRAP_CONTENT
+                lp.width = ViewGroup.LayoutParams.WRAP_CONTENT
+                mBinding.tvResult.layoutParams = lp
                 mBinding.tvResult.backgroundTintList = null
                 mBinding.tvResult.background = null
 
@@ -154,8 +157,13 @@ class OrderBettingViewHolder(private val mBinding: ItemOrderSportBettingBinding)
             // 贏
             1, 5 -> {
                 mBinding.tvResult.setText(R.string.win)
-                mBinding.tvResult.setPadding(3.dp2px, 2.dp2px, 3.dp2px, 3.dp2px)
                 mBinding.tvResult.setTextColorRes(arch.cayenne.lib.common.R.color.color_000000)
+                mBinding.tvResult.setTextSize(TypedValue.COMPLEX_UNIT_SP, 13f)
+                mBinding.tvResult.setFontWeight(500)
+                val lp = mBinding.tvResult.layoutParams
+                lp.height = 21.dp2px
+                lp.width = 21.dp2px
+                mBinding.tvResult.layoutParams = lp
                 mBinding.tvResult.backgroundTintList = null
                 mBinding.tvResult.background = SkinnableResourceManager.getDrawable(itemView.context, R.drawable.bg_order_status_win)
 
@@ -166,13 +174,17 @@ class OrderBettingViewHolder(private val mBinding: ItemOrderSportBettingBinding)
 
             }
             // 輸
-            3, 4 -> {
-                mBinding.tvResult.setText(R.string.lose)
-                mBinding.tvResult.setPadding(3.dp2px, 2.dp2px, 3.dp2px, 3.dp2px)
-                mBinding.tvResult.setTextColorRes(arch.cayenne.lib.common.R.color.color_2C323E)
-
+            3, 4, 6 -> {
+                mBinding.tvResult.setText(R.string.return_money)
+                mBinding.tvResult.setTextColorRes(arch.cayenne.lib.common.R.color.color_999999)
+                mBinding.tvResult.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f)
+                mBinding.tvResult.setFontWeight(400)
+                val lp = mBinding.tvResult.layoutParams
+                lp.height = ViewGroup.LayoutParams.WRAP_CONTENT
+                lp.width = ViewGroup.LayoutParams.WRAP_CONTENT
+                mBinding.tvResult.layoutParams = lp
                 mBinding.tvResult.backgroundTintList = null
-                mBinding.tvResult.background = SkinnableResourceManager.getDrawable(itemView.context, R.drawable.bg_order_status_lose)
+                mBinding.tvResult.background = null
 
                 mBinding.tvResultMoney.setTextColorRes(arch.cayenne.lib.common.R.color.color_FFFFFF)
             }
@@ -199,20 +211,24 @@ class OrderBettingViewHolder(private val mBinding: ItemOrderSportBettingBinding)
 //                mBinding.tvResultMoney.setTextColorRes(arch.cayenne.lib.common.R.color.color_FFFFFF)
 //            }
             // 退款
-            6 -> {
-                mBinding.tvResult.setText(R.string.return_money)
-                mBinding.tvResult.setPadding(0.dp2px, 0.dp2px, 0.dp2px, 0.dp2px)
-                mBinding.tvResult.setTextColorRes(arch.cayenne.lib.common.R.color.color_999999)
-                mBinding.tvResult.background = null
-                mBinding.tvResult.backgroundTintList = null
-
-                mBinding.tvResultMoney.setTextColorRes(arch.cayenne.lib.common.R.color.color_FFFFFF)
-            }
+//            6 -> {
+//                mBinding.tvResult.setText(R.string.return_money)
+//                mBinding.tvResult.setTextColorRes(arch.cayenne.lib.common.R.color.color_999999)
+//                mBinding.tvResult.background = null
+//                mBinding.tvResult.backgroundTintList = null
+//
+//                mBinding.tvResultMoney.setTextColorRes(arch.cayenne.lib.common.R.color.color_FFFFFF)
+//            }
             // 提前結算
             7 -> {
                 mBinding.tvResult.setText(R.string.live_bet_early_settle)
-                mBinding.tvResult.setPadding(2.dp2px, 2.dp2px, 2.dp2px, 3.dp2px)
                 mBinding.tvResult.setTextColorRes(arch.cayenne.lib.common.R.color.color_2C323E)
+                mBinding.tvResult.setTextSize(TypedValue.COMPLEX_UNIT_SP, 13f)
+                mBinding.tvResult.setFontWeight(500)
+                val lp = mBinding.tvResult.layoutParams
+                lp.height = 21.dp2px
+                lp.width = ViewGroup.LayoutParams.WRAP_CONTENT
+                mBinding.tvResult.layoutParams = lp
                 mBinding.tvResult.backgroundTintList = null
                 mBinding.tvResult.background = SkinnableResourceManager.getDrawable(itemView.context, R.drawable.bg_order_status_early_settle)
 

@@ -16,8 +16,7 @@
         <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="18dp"
+            android:layout_marginVertical="17dp"
             android:layout_marginStart="14dp"
             android:gravity="center_vertical"
             android:orientation="horizontal"
@@ -71,7 +70,6 @@
             android:layout_marginTop="5dp"
             android:padding="12dp"
             android:src="@drawable/icon_order_share"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -113,9 +111,9 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
             android:src="@drawable/icon_order_data_collapse"
-            app:layout_constraintTop_toTopOf="@id/tv_collapse"
             app:layout_constraintBottom_toBottomOf="@id/tv_collapse"
-            app:layout_constraintStart_toEndOf="@id/tv_collapse"/>
+            app:layout_constraintStart_toEndOf="@id/tv_collapse"
+            app:layout_constraintTop_toTopOf="@id/tv_collapse" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -133,6 +131,7 @@
         android:id="@+id/cl_money"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingHorizontal="8dp"
         android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toTopOf="@id/btn_early_settle"
@@ -173,7 +172,7 @@
             <arch.cayenne.lib.skin.widget.SkinnableTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="9dp"
+                android:layout_marginTop="7dp"
                 android:text="@string/title_bet"
                 android:textColor="@color/color_999999"
                 android:textSize="14sp"
@@ -187,11 +186,11 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/cl_bet_odds"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="@id/cl_bet_money"
             app:layout_constraintEnd_toStartOf="@id/cl_result"
             app:layout_constraintStart_toEndOf="@id/cl_bet_money"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="@id/cl_bet_money">
 
             <arch.cayenne.lib.skin.widget.SkinnableTextView
                 android:id="@+id/tv_bet_odds"
@@ -222,11 +221,11 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/cl_result"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="@id/cl_bet_money"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/cl_bet_odds"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="@id/cl_bet_money">
 
             <arch.cayenne.lib.skin.widget.SkinnableTextView
                 android:id="@+id/tv_result_money"
@@ -235,44 +234,24 @@
                 android:textColor="@color/color_FFFFFF"
                 android:textSize="14sp"
                 android:textStyle="bold"
+                app:layout_constraintBottom_toTopOf="@id/tv_result"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_chainStyle="spread_inside"
                 app:skinnableFontWeight="500" />
 
             <arch.cayenne.lib.skin.widget.SkinnableTextView
                 android:id="@+id/tv_result"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="9dp"
-                android:textColor="@color/color_999999"
+                android:gravity="center"
+                android:paddingHorizontal="4dp"
                 android:textSize="14sp"
-                app:layout_goneMarginTop="0dp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/tv_second_result"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tv_result_money" />
-
-            <arch.cayenne.lib.skin.widget.SkinnableTextView
-                android:id="@+id/tv_second_result"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingStart="7dp"
-                android:paddingTop="3dp"
-                android:paddingEnd="6dp"
-                android:paddingBottom="2dp"
-                android:textColor="@color/color_FFFFFF"
-                android:textSize="11sp"
-                android:visibility="gone"
-                android:text="@string/order_win_and_lose_half"
-                android:background="@drawable/shape_4dp"
-                android:backgroundTint="@color/color_6B6B6B"
-                app:layout_constraintBottom_toBottomOf="@id/tv_result"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/tv_result"
-                app:layout_constraintTop_toTopOf="@id/tv_result"
-                app:skinnableFontWeight="500"
-                tools:text="½ 平" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 
