@@ -37,11 +37,11 @@ class ExampleUnitTest {
             "combinationData:${combinationData.size}--${cNk},k:$k".logd()
             assert(combinationData.size == cNk)
         }*/
-        CombinationExt.cNK(33,16).let { println(it) }
-        CombinationExt.cNK(34,15).let { println(it) }
-        CombinationExt.cNK(34,16).let { println(it) }
-        CombinationExt.cNK(34,17).let { println(it) }
-        CombinationExt.cNK(34,18).let { println(it) }
+//        CombinationExt.cNK(33,16).let { println(it) }
+//        CombinationExt.cNK(34,15).let { println(it) }
+//        CombinationExt.cNK(34,16).let { println(it) }
+//        CombinationExt.cNK(34,17).let { println(it) }
+//        CombinationExt.cNK(34,18).let { println(it) }
     }
 
     /**
