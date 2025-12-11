@@ -5,6 +5,7 @@ import androidx.navigation.findNavController
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
 import arch.cayenne.lib.common.data.constants.UserDataKey
 import arch.cayenne.lib.common.data.manager.UserDataManager
+import arch.cayenne.lib.common.data.model.JSResponseData
 import arch.cayenne.lib.common.utils.helper.showToast
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -15,7 +16,7 @@ import org.koin.java.KoinJavaComponent.inject
  * @date: 2025/10/14 16:02
  * @description:
  */
-class WLSJsInterface(val webView: WLSWebView) {
+class WLSJsInterface(val webView: WLSWebView,private val jsBridgeListen:((data:JSResponseData) -> Unit)) {
 
     private val manager: UserDataManager by inject(UserDataManager::class.java)
 
@@ -72,16 +73,17 @@ class WLSJsInterface(val webView: WLSWebView) {
     @JavascriptInterface
     fun postMessage(input: String) {
 //        "postMessage called with input: $input".loge("JsInterface")
-        val mapType = object : TypeToken<Map<String , Any>>() {}.type
-        val data: Map<String , Any> = gson.fromJson(input , mapType)
-        when (data["type"]) {
+//        val mapType = object : TypeToken<Map<String , Any>>() {}.type
+//        val data: Map<String , Any> = gson.fromJson(input , mapType)
+        val data: JSResponseData = gson.fromJson(input , JSResponseData::class.java)
+        jsBridgeListen.invoke(data)
+        when (data.type) {
             "back" -> {
                 this.webView.findNavController().popBackStack()
             }
 
             "openPage" -> {
-                val params: Map<String , Any> = data["params"] as? Map<String , Any> ?: return
-                val page = params["pageName"] as? String ?: return
+                val page = data.params.pageName ?: return
                 // 这里可以根据 page 字段来决定打开哪个页面
                 // 例如：
                 when (page) {
@@ -91,6 +93,9 @@ class WLSJsInterface(val webView: WLSWebView) {
                     }
                     // 添加更多页面处理逻辑
                 }
+            }
+            else -> {
+
             }
         }
 

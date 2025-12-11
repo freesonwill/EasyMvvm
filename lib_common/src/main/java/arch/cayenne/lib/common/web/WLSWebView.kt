@@ -5,6 +5,7 @@ import android.os.Build
 import android.util.AttributeSet
 import android.view.ViewTreeObserver
 import android.webkit.WebSettings
+import arch.cayenne.lib.common.data.model.JSResponseData
 import arch.cayenne.lib.common.utils.ext.requireActivity
 import com.github.lzyzsd.jsbridge.BridgeWebView
 import com.github.lzyzsd.jsbridge.DefaultHandler
@@ -17,6 +18,7 @@ import okhttp3.internal.userAgent
  */
 class WLSWebView : BridgeWebView {
     private var scrollListener: OnScrollChangedListener? = null
+    private var jsBridgeListen:((data: JSResponseData) -> Unit)? = null
 
     interface OnScrollChangedListener{
         fun onScrollChanged(scrollX: Int, scrollY: Int):Unit
@@ -41,6 +43,11 @@ class WLSWebView : BridgeWebView {
         scrollListener?.onScrollChanged(l, t)
     }
 
+    fun addJsBridgeListen(listener:(data:JSResponseData) ->Unit){
+        this.jsBridgeListen = listener
+    }
+
+
     fun setOnScrollChangedListener(listener: OnScrollChangedListener?) {
         scrollListener = listener
     }
@@ -53,7 +60,7 @@ class WLSWebView : BridgeWebView {
 
         with(webSettings) {
             domStorageEnabled = true
-            displayZoomControls = true
+//            displayZoomControls = true
             databaseEnabled = true
             cacheMode = WebSettings.LOAD_DEFAULT
             blockNetworkImage = false
@@ -76,13 +83,14 @@ class WLSWebView : BridgeWebView {
             val customUA = "$defaultUA 3N1/Android"  // 示例
 
             settings.userAgentString = customUA
-
         }
 
         setDefaultHandler(DefaultHandler())
     }
 
     private fun initJsBridge(){
-        addJavascriptInterface(WLSJsInterface(this), "AndroidNative")
+        addJavascriptInterface(WLSJsInterface(this){
+            jsBridgeListen?.invoke(it)
+        }, "AndroidNative")
     }
 }
