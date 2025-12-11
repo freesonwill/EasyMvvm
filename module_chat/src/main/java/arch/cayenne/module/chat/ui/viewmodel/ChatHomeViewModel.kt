@@ -149,30 +149,44 @@ class ChatHomeViewModel() : BaseViewModel() {
             "chat is not login ".logd(TAG)
             return null
         }
-        val spannable = SpannableStringBuilder(editable)
-        val spans = spannable.getSpans(0, editable.length, MentionSpan::class.java)
-        val atIntRanges = mutableListOf<IntRange>()
-        spans.forEach {
-            val start = spannable.getSpanStart(it)
-            val end = spannable.getSpanEnd(it)
-            atIntRanges.add(IntRange(start, end))
+        var msgBean: ChatMsgPageBean? = null
+        val localMsg = chatServer.addLocalMsg(editable.toString()) ?: return null
+
+        if (editable.length == 4 && editable.toString() in arrayOf("注单体育", "注单游戏")) {
+            val betRanges = mutableListOf<IntRange>()
+            betRanges.add(IntRange(0,4))
+            msgBean = ChatMsgPageBean.toChatPageBean(localMsg,MsgType.BET,betRanges)
+        } else {
+            val spannable = SpannableStringBuilder(editable)
+            val spans = spannable.getSpans(0, editable.length, MentionSpan::class.java)
+            if (spans.isNotEmpty()) {
+                val atIntRanges = mutableListOf<IntRange>()
+                spans.forEach {
+                    val start = spannable.getSpanStart(it)
+                    val end = spannable.getSpanEnd(it)
+                    atIntRanges.add(IntRange(start, end))
+                }
+                msgBean = ChatMsgPageBean.toChatPageBean(localMsg, MsgType.AT, atIntRanges)
+            } else {
+                msgBean = ChatMsgPageBean.toChatPageBean(localMsg, MsgType.TEXT)
+            }
         }
 
-        val chatMsg = chatServer.addLocalMsg(editable.toString()) ?: return null
-        return ChatMsgPageBean.toChatPageBean(chatMsg, MsgType.AT,atIntRanges)
+
+        return msgBean
     }
 
     /**
      * 发送赛事表情
      * */
 
-    fun createBidLocalMsg(emojiKey:String):ChatMsgPageBean?{
+    fun createBidLocalMsg(emojiKey: String): ChatMsgPageBean? {
         if (loginFlow.value == null) {
             "chat is not login ".logd(TAG)
             return null
         }
         val chatMsg = chatServer.addLocalMsg(emojiKey) ?: return null
-        return ChatMsgPageBean.toChatPageBean(chatMsg,MsgType.EMOJI)
+        return ChatMsgPageBean.toChatPageBean(chatMsg, MsgType.EMOJI)
     }
 
 

@@ -115,7 +115,8 @@
     <color name="keyboard_3">#161823</color>
     <color name="live_tab_bg">#0E0F1A</color>
     <color name="keyboard_bg">#161823</color>
-    <color name="search_bg">#0FFFFFFF</color>
+    <color name="search_bg">#24EE8A</color>
+    <color name="search_bar_bg">#0FFFFFFF</color>
     <color name="search_bg_in_direct_match">#33FFFFFF</color>
     <color name="card_outline">#282A34</color>
     <color name="tab_outline">#929298</color>
@@ -198,9 +199,15 @@
     <color name="color_292929">#292929</color> <!--日期tab选中背景色-->
     <color name="color_05FFFFFF">#05FFFFFF</color> <!--分隔線 白透明 2-->
     <color name="color_00C853">#00C853</color>
+    <color name="color_6B6B6B">#6B6B6B</color>
+    <color name="color_A50111">#A50111</color>
+    <color name="color_00B001">#00B001</color>
+    <color name="color_66000000">#66000000</color> <!--黑色透明 40-->
 
     <color name="color_E3603A">#E3603A</color>  <!--聊天tab文本色/Tag text-->
     <color name="color_00E0E54D">#4D00E0E5</color><!--主色（primary）30透明-->
+    <color name="color_2c2c2c">#2c2c2c</color>
+    <color name="color_1EFFFFFF">#1EFFFFFF</color>
 
     <color name="color_979797">#FF979797</color>
     <color name="color_343434">#343434</color>

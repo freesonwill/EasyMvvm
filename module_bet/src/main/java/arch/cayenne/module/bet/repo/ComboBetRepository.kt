@@ -1,10 +1,10 @@
 package arch.cayenne.module.bet.repo
 
 import arch.cayenne.lib.base.data.repository.BaseRepository
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.data.constants.UserDataKey
 import arch.cayenne.lib.common.data.manager.UserDataManager
-import arch.cayenne.lib.common.utils.ext.CollectionExt.combinations
+import arch.cayenne.lib.common.utils.ext.CombinationExt
+import arch.cayenne.lib.common.utils.ext.CombinationExt.combinations
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
@@ -320,7 +320,7 @@ class ComboBetRepository(
                 val odds = calculateCombinationOdds(oddsList,k)
                 val count = when (k) {
                     0 -> 0
-                    else -> data.combinations(k).size
+                    else -> CombinationExt.cNK(data.size,k)
                 }
                 totalSumOdds += odds
                 totalCount += count
@@ -557,14 +557,13 @@ class ComboBetRepository(
             )
             val listItems = data.combinations(k).map { l ->
                 val odds = calculateCombinationOdds(l.map { it.odds },l.size)
-                ComboDetailFragment.ParameterItems2(
+                val ret = ComboDetailFragment.ParameterItems2(
                     combo = l.joinToString("·") { "${data.indexOf(it) + 1}" },
-                    money = bean.inputMoney.takeIf { it != 0L }
-                        ?.let { "$moneySymbol${it.getMoney()}" },
-                    winMoney = bean.inputMoney.takeIf { it != 0L }
-                        ?.let { "$moneySymbol${bean.inputMoney.getMoney(odds)}" },
+                    money = bean.inputMoney.takeIf { it != 0L }?.let { "$moneySymbol${it.getMoney()}" },
+                    winMoney = bean.inputMoney.takeIf { it != 0L }?.let { "$moneySymbol${bean.inputMoney.getMoney(odds)}" },
                     odds = "@${odds.getOdds()}"
                 )
+                ret
             }
             ComboDetailFragment.ParameterItems(title, listItems)
         }
@@ -586,6 +585,7 @@ class ComboBetRepository(
         val data = comboMultiBetBeans?.find { it.serialValue == serialValue }
             ?: error("can not find serialValue:$serialValue in $comboMultiBetBeans")
         val items = splitComboIntoSingles(data,betList,moneySymbol)
+        //"aaaa---toCombinationDetailParameter----$serialValue,${betList?.size}".logd(TAG)
         return ComboDetailFragment.Parameter(
             title = data.title(),
             titleTips = data.titleTips(),
