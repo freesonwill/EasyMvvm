@@ -6,7 +6,6 @@ import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
 import arch.cayenne.lib.database.dao.CurrencyConfigDao
 import arch.cayenne.lib.database.dao.InfoDao
 import arch.cayenne.lib.database.dao.UserDataDao
-import arch.cayenne.lib.database.entity.UserCurrency
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.map
 

@@ -6,7 +6,6 @@ import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.common.data.constants.BaseCurrencyData
 import arch.cayenne.lib.common.data.repo.BalanceRepository
-import arch.cayenne.lib.database.entity.UserCurrency
 import kotlinx.coroutines.launch
 
 class BalanceViewModel(
