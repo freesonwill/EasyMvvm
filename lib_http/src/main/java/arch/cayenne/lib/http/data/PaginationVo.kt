@@ -10,5 +10,5 @@ data class PaginationVo(
     val totalPages: Int ,// 总页数
     val totalItems: Int ,//总记录数
     val limit: Int ,//限制
-    val hasMore: Int//是否有更多数据
+    val hasMore: Boolean//是否有更多数据
 )

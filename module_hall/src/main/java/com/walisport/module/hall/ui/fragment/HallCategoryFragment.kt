@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.ui.adapter.GridSpacingItemDecoration
@@ -12,11 +13,14 @@ import arch.cayenne.lib.common.ui.view.SimpleTabDataModel
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
+import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.touchBackPressed
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import com.walisport.module.hall.R
+import com.walisport.module.hall.data.Avatar
 import com.walisport.module.hall.data.GameContentData
+import com.walisport.module.hall.data.HotColdType
 import com.walisport.module.hall.data.UniversalLoadMoreScrollListener
 import com.walisport.module.hall.data.constants.GameSortType
 import com.walisport.module.hall.databinding.FragmentHallCategoryBinding
@@ -30,7 +34,11 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
     override val vbClass: KClass<FragmentHallCategoryBinding> = FragmentHallCategoryBinding::class
     override val vmClass: KClass<GameCategoryViewModel> = GameCategoryViewModel::class
     private val titleBarBinding: TitleBarGameCategoryBinding by lazy {
-        TitleBarGameCategoryBinding.inflate(LayoutInflater.from(context), mBinding.titleBar, false)
+        TitleBarGameCategoryBinding.inflate(
+            LayoutInflater.from(context) ,
+            mBinding.titleBar ,
+            false
+        )
     }
     private lateinit var adapter: GameContentAdapter
     private var list: MutableList<GameContentData> = mutableListOf()
@@ -60,10 +68,10 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
 
     override fun initView(savedInstanceState: Bundle?) {
         with(mBinding) {
-            titleBar.loadDynamicsTitleBar(titleBarBinding.root, null)
+            titleBar.loadDynamicsTitleBar(titleBarBinding.root , null)
             titleBarBinding.tvTitleName.text = "老虎机"
             customTabGroup.submitTabList(mockVendorList)
-            mViewModel.mockList(page)
+            mViewModel.queryGameList(page)
             rvGame.layoutManager = GridLayoutManager(requireContext() , 3)
             val itemDecoration = GridSpacingItemDecoration(
                 spanCount = 3 ,
@@ -82,9 +90,16 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
     }
 
     override fun initListener() {
+        with(titleBarBinding) {
+            ivBack.addScaleOnTouchAnimation()
+            ivBack.clickNoRepeat {
+                findNavController().navigateUp()
+            }
+        }
+
         mBinding.rvGame.addOnScrollListener(UniversalLoadMoreScrollListener(6) {
             page++
-            mViewModel.mockList(page)
+            mViewModel.queryGameList(page)
         })
 
         mBinding.customTabGroup.setOnSortBtnClick {
@@ -93,10 +108,23 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
     }
 
     override suspend fun createObserver() {
-        mViewModel.gameRecentList.observe(viewLifecycleOwner) {
-            it.let {
-                list.addAll(it)
-                adapter.submitList(list)
+        mViewModel.gameList.observe(viewLifecycleOwner) {
+            it.let { list ->
+                adapter.submitList(list.map { vo ->
+                    GameContentData(
+                        id = "${page}1".toLong() ,
+                        name = vo.name ,
+                        avatar = Avatar(
+                            url = vo.avatar.url ,
+                            thumbhash = vo.avatar.thumbhash ,
+                            css = ""
+                        ) ,
+                        online = vo.online ,
+                        reward = vo.reward.toDouble() ,
+                        hasMore = true ,
+                        hotOrCold = HotColdType.COLD
+                    )
+                })
             }
         }
 
