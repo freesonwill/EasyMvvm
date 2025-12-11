@@ -115,7 +115,8 @@
     <color name="keyboard_3">#161823</color>
     <color name="live_tab_bg">#0E0F1A</color>
     <color name="keyboard_bg">#161823</color>
-    <color name="search_bg">#0FFFFFFF</color>
+    <color name="search_bg">#24EE8A</color>
+    <color name="search_bar_bg">#0FFFFFFF</color>
     <color name="search_bg_in_direct_match">#33FFFFFF</color>
     <color name="card_outline">#282A34</color>
     <color name="tab_outline">#929298</color>
