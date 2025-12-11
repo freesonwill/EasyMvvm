@@ -30,6 +30,7 @@ class DatabaseModuleInitializer: DefaultInitializer<String> {
         factory { get<GameDatabase>().betSlipOrderDao() }
         factory { get<GameDatabase>().collectListDao() }
         factory { get<GameDatabase>().chatConfigDao() }
+        factory { get<GameDatabase>().userDataDao() }
 
     }
 

@@ -4,20 +4,22 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
-import arch.cayenne.lib.base.data.constants.StatusBarMode
-import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.common.ui.viewmodel.BalanceViewModel
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigateUp
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
-import com.walisport.module.gamedetail.R
 import com.walisport.module.gamedetail.databinding.FragmentGameDetailBinding
 import com.walisport.module.gamedetail.ui.viewmodel.GameDetailPageViewModel
 import kotlin.reflect.KClass
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class GameDetailFragment : BaseFragment<GameDetailPageViewModel, FragmentGameDetailBinding>() {
 
     override val vbClass: KClass<FragmentGameDetailBinding> = FragmentGameDetailBinding::class
     override val vmClass: KClass<GameDetailPageViewModel> = GameDetailPageViewModel::class
+
+    private val balanceViewModel: BalanceViewModel by viewModel()
+
 
     override fun initView(savedInstanceState: Bundle?) {
         val adapter = GameDetailPagerAdapter(this)
@@ -26,6 +28,8 @@ class GameDetailFragment : BaseFragment<GameDetailPageViewModel, FragmentGameDet
 //            ivFavorite.isSelected = mockData.collect
             mBinding.gameDetailPager.adapter = adapter
             mBinding.gameDetailPager.orientation = ViewPager2.ORIENTATION_VERTICAL
+
+            mBinding.viewBalance.setBalanceViewModel(balanceViewModel, viewLifecycleOwner)
         }
         // Disable overscroll effect if desired, or keep it
     }
