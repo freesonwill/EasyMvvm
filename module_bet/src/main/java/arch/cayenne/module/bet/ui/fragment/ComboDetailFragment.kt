@@ -1,6 +1,9 @@
 package arch.cayenne.module.bet.ui.fragment
 
 import android.os.Bundle
+import android.view.View
+import android.view.ViewGroup
+import android.widget.FrameLayout
 import androidx.core.os.bundleOf
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.ui.fragment.BaseBottomSheetFragment
@@ -9,6 +12,7 @@ import arch.cayenne.module.bet.databinding.FragmentComboDetailBinding
 import arch.cayenne.module.bet.ui.adapter.ComboDetailAdapter
 import arch.cayenne.module.bet.viewmodel.BetCombViewModel
 import com.blankj.utilcode.util.GsonUtils
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlin.reflect.KClass
 
 /**
@@ -23,7 +27,8 @@ class ComboDetailFragment :
     override val vmClass: KClass<BetCombViewModel> = BetCombViewModel::class
     private val listAdapter by lazy { ComboDetailAdapter() }
     private var tipStr = ""
-    private var isExpand: Boolean = false //是否展开全屏
+    private var isExpand: Boolean = false    //是否已经展开
+    private var isCanExpand: Boolean = false //是否可以展开
 
     companion object {
         private const val PARAMETER = "PARAMETER"
@@ -34,6 +39,7 @@ class ComboDetailFragment :
             }
         }
     }
+
     data class Parameter(
         val title: String,
         val titleTips: String,
@@ -52,6 +58,24 @@ class ComboDetailFragment :
         val odds: String
     )
 
+    override fun onStart() {
+        super.onStart()
+        setFitToContents()
+    }
+
+    private fun setFitToContents() {
+        val bottomSheet =
+            dialog?.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet) as? FrameLayout
+        bottomSheet?.let { sheet ->
+            val behavior = BottomSheetBehavior.from(sheet)
+            behavior.isDraggable = isVerticalGestureEnable
+            behavior.skipCollapsed = isVerticalGestureEnable
+            behavior.isHideable = isVerticalGestureEnable
+            behavior.isFitToContents = true
+            behavior.state = BottomSheetBehavior.STATE_EXPANDED
+        }
+    }
+
     override fun initView(savedInstanceState: Bundle?) {
         val parameter = requireArguments().getString(PARAMETER).let {
             GsonUtils.fromJson(it, Parameter::class.java)
@@ -63,10 +87,12 @@ class ComboDetailFragment :
             rvContent.adapter = listAdapter
         }
         if (parameter.items.size > 1) {
+            isCanExpand = false
             val screenHeight = getScreenHeight() ?: return
-            val minFragmentHeight = (screenHeight * 0.86).toInt()
+            val minFragmentHeight = (screenHeight * 0.84).toInt()
             mBinding.clRoot.minHeight = minFragmentHeight
         } else {
+            isCanExpand = true
             val screenHeight = getScreenHeight() ?: return
             val minFragmentHeight = (screenHeight * 0.52).toInt()
             mBinding.clRoot.minHeight = minFragmentHeight
@@ -76,8 +102,7 @@ class ComboDetailFragment :
 
     override fun initListener() {
         mBinding.ivBetClose.clickNoRepeat {
-            this@ComboDetailFragment.dismiss()
-            this@ComboDetailFragment.dialog?.dismiss()
+            dismiss()
         }
         mBinding.ivBetInfo.clickNoRepeat {
             val location = IntArray(2)
@@ -88,8 +113,18 @@ class ComboDetailFragment :
                 .show(parentFragmentManager)
         }
         mBinding.ivBetExpand.clickNoRepeat {
-            //onCollapses()
+            onCollapses()
         }
+    }
+
+    private fun onCollapses() {
+        if (!isCanExpand) return
+        isExpand = !isExpand
+        val screenHeight = getScreenHeight() ?: return
+        val height = (screenHeight * 0.84).toInt()
+        val layoutParams = mBinding.clRoot.layoutParams
+        layoutParams.height = if (isExpand) height else ViewGroup.LayoutParams.WRAP_CONTENT
+        mBinding.clRoot.layoutParams = layoutParams
     }
 
     override suspend fun createObserver() {}

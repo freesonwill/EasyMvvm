@@ -23,7 +23,7 @@
         "awayTeamId": 102,
         "awayTeamIcon": "https://example.com/icon/arsenal.png",
         "startTime": 1735803000000,
-        "status": 5,
+        "status": 0,
         "tournamentId": 2001,
         "tournamentName": "英格兰超级联赛",
         "tournamentShortName": "英超",

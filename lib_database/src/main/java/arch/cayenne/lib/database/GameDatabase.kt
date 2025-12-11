@@ -11,6 +11,7 @@ import arch.cayenne.lib.database.dao.BetSlipReserveDao
 import arch.cayenne.lib.database.dao.ChatConfigDao
 import arch.cayenne.lib.database.dao.CoinDao
 import arch.cayenne.lib.database.dao.CollectListDao
+import arch.cayenne.lib.database.dao.CurrencyConfigDao
 import arch.cayenne.lib.database.dao.HomeSelectedDao
 import arch.cayenne.lib.database.dao.InfoDao
 import arch.cayenne.lib.database.dao.LiveMatchDao
@@ -21,6 +22,7 @@ import arch.cayenne.lib.database.dao.MatchDao
 import arch.cayenne.lib.database.dao.MessageDao
 import arch.cayenne.lib.database.dao.SportDao
 import arch.cayenne.lib.database.dao.TournamentDao
+import arch.cayenne.lib.database.dao.UserDataDao
 import arch.cayenne.lib.database.entity.BetBean
 import arch.cayenne.lib.database.entity.BetDetailBean
 import arch.cayenne.lib.database.entity.BetSelectionBean
@@ -29,6 +31,7 @@ import arch.cayenne.lib.database.entity.BetSlipReserveBean
 import arch.cayenne.lib.database.entity.ChatConfigBean
 import arch.cayenne.lib.database.entity.CoinBean
 import arch.cayenne.lib.database.entity.CollectListBean
+import arch.cayenne.lib.database.entity.CurrencyBean
 import arch.cayenne.lib.database.entity.EarlyTournamentMatchRef
 import arch.cayenne.lib.database.entity.HomeSelectedBean
 import arch.cayenne.lib.database.entity.InfoBean
@@ -50,6 +53,7 @@ import arch.cayenne.lib.database.entity.SportBean
 import arch.cayenne.lib.database.entity.SportTournamentCrossRef
 import arch.cayenne.lib.database.entity.TournamentBean
 import arch.cayenne.lib.database.entity.TournamentMatchRef
+import arch.cayenne.lib.database.entity.UserDataBean
 
 @Database(
     entities = [
@@ -81,7 +85,9 @@ import arch.cayenne.lib.database.entity.TournamentMatchRef
         BetSlipReserveBean::class,
         SelectionsEdit::class,
         CollectListBean::class,
-        ChatConfigBean::class
+        ChatConfigBean::class,
+        UserDataBean::class,
+        CurrencyBean::class,
     ],
     version = 1,
     exportSchema = false
@@ -90,7 +96,8 @@ import arch.cayenne.lib.database.entity.TournamentMatchRef
     VideoSourceBeanConverter::class,
     MarketTypeBeanConverter::class,
     BetSlipTypeConverter::class,
-    TournamentIdListConverter::class
+    TournamentIdListConverter::class,
+    MapConverter::class
 )
 abstract class GameDatabase: RoomDatabase() {
 
@@ -130,4 +137,8 @@ abstract class GameDatabase: RoomDatabase() {
     abstract fun homeSelectedDao(): HomeSelectedDao
     abstract fun collectListDao():CollectListDao
     abstract fun chatConfigDao():ChatConfigDao
+
+    abstract fun userDataDao(): UserDataDao
+
+    abstract fun currencyConfigDao(): CurrencyConfigDao
 }
