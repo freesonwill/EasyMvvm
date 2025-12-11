@@ -6,5 +6,5 @@ package arch.cayenne.lib.common.data.constants
  * @description:
  */
 enum class BizUrl(val url:String) {
-    FUND_DETAIL("http://192.168.10.37:5173/record"),
+    FUND_DETAIL("https://dev.ra781.com/web-3n1/record"),
 }

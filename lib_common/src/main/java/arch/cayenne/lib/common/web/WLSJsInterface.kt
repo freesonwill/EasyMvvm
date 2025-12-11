@@ -5,6 +5,7 @@ import androidx.navigation.findNavController
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
 import arch.cayenne.lib.common.data.constants.UserDataKey
 import arch.cayenne.lib.common.data.manager.UserDataManager
+import arch.cayenne.lib.common.utils.biz.CommonBiz
 import arch.cayenne.lib.common.utils.helper.showToast
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -87,7 +88,7 @@ class WLSJsInterface(val webView: WLSWebView) {
                 when (page) {
                     "customer" -> {
                         // 打开客服页面
-                        "open customer".loge("JsInterface")
+                        this.webView.jump2CustomerService()
                     }
                     // 添加更多页面处理逻辑
                 }

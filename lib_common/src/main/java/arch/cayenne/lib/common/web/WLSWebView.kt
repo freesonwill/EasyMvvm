@@ -5,6 +5,9 @@ import android.os.Build
 import android.util.AttributeSet
 import android.view.ViewTreeObserver
 import android.webkit.WebSettings
+import androidx.fragment.app.Fragment
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
+import arch.cayenne.lib.common.utils.biz.CommonBiz
 import arch.cayenne.lib.common.utils.ext.requireActivity
 import com.github.lzyzsd.jsbridge.BridgeWebView
 import com.github.lzyzsd.jsbridge.DefaultHandler
@@ -17,6 +20,7 @@ import okhttp3.internal.userAgent
  */
 class WLSWebView : BridgeWebView {
     private var scrollListener: OnScrollChangedListener? = null
+    private var attachedFragment: Fragment? = null
 
     interface OnScrollChangedListener{
         fun onScrollChanged(scrollX: Int, scrollY: Int):Unit
@@ -46,6 +50,10 @@ class WLSWebView : BridgeWebView {
     }
     fun removeScrollChangedListener() {
         scrollListener = null
+    }
+
+    fun setAttachedFragment(fragment: Fragment){
+        this.attachedFragment = fragment
     }
 
     private fun initWebSettings() {
@@ -84,5 +92,12 @@ class WLSWebView : BridgeWebView {
 
     private fun initJsBridge(){
         addJavascriptInterface(WLSJsInterface(this), "AndroidNative")
+    }
+
+    fun jump2CustomerService(){
+        attachedFragment?.let {
+//            "jump2CustomerService called".logd("WLSWebView")
+            CommonBiz.jump2CustomerService(it)
+        }
     }
 }

@@ -3,9 +3,12 @@
     <declare-styleable name="CarouselScrollView">
         <attr name="carousel_itemWidth" format="dimension" />
         <attr name="carousel_itemHeight" format="dimension" />
+        <attr name="carousel_shrinkTopOffset" format="dimension" />
+        <attr name="carousel_shrinkBottomOffset" format="dimension" />
         <attr name="carousel_itemSpacing" format="dimension" />
         <attr name="carousel_itemCornerRadius" format="dimension" />
         <attr name="carousel_verticalAlignTo" format="reference" />
+        <attr name="carousel_verticalAlignToBottom" format="reference" />
         <attr name="carousel_indicator" format="reference" />
     </declare-styleable>
 
