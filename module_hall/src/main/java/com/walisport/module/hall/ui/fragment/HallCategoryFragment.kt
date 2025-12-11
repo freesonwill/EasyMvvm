@@ -102,7 +102,7 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
 
         mBinding.rvGame.addOnScrollListener(UniversalLoadMoreScrollListener(6) {
             if (mViewModel.apiStateListener.value == DataState.LoadSuccess) {
-                loadNextPage()
+                mViewModel.loadNextPage()
             }
         })
 
@@ -113,7 +113,7 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
 
 
     override suspend fun createObserver() {
-        mViewModel.gameList.observe(viewLifecycleOwner) {
+        mViewModel.gameListLiveData.observe(viewLifecycleOwner) {
             it.let { list ->
                 adapter.submitList(list.mapIndexed { index , vo ->
                     GameContentData(
@@ -330,14 +330,6 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
                 }
             }
         }
-    }
-
-
-    private fun loadNextPage() {
-        if (isPrevPageEnd || mViewModel.apiStateListener.value == DataState.Loading) {
-            return
-        }
-        mViewModel.queryGameList()
     }
 
 
