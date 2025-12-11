@@ -51,6 +51,7 @@
         android:id="@+id/cl_result"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:minHeight="37dp"
         android:layout_marginVertical="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@id/guideline_vertical"
@@ -66,44 +67,20 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="spread_inside"
             app:skinnableFontWeight="510" />
 
         <arch.cayenne.lib.skin.widget.SkinnableTextView
             android:id="@+id/tv_result"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:layout_marginEnd="4dp"
             android:textSize="12sp"
+            android:gravity="center"
+            android:paddingHorizontal="2dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/tv_second_result"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_result_money"
-            app:layout_goneMarginEnd="0dp"
-            app:layout_goneMarginTop="0dp"
-            app:skinnableFontWeight="500"
-            tools:text="½ 赢" />
-
-        <arch.cayenne.lib.skin.widget.SkinnableTextView
-            android:id="@+id/tv_second_result"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingStart="7dp"
-            android:paddingTop="3dp"
-            android:paddingEnd="6dp"
-            android:paddingBottom="2dp"
-            android:textColor="@color/color_FFFFFF"
-            android:textSize="11sp"
-            android:visibility="gone"
-            android:text="@string/order_win_and_lose_half"
-            android:background="@drawable/shape_4dp"
-            android:backgroundTint="@color/color_6B6B6B"
-            app:layout_constraintBottom_toBottomOf="@id/tv_result"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/tv_result"
-            app:layout_constraintTop_toTopOf="@id/tv_result"
-            app:skinnableFontWeight="500"
-            tools:text="½ 平" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_result_money" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <!-- 垂直輔助線：從右邊往左 56dp -->
