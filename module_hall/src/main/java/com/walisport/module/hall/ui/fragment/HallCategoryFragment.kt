@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.ui.adapter.GridSpacingItemDecoration
@@ -12,11 +13,14 @@ import arch.cayenne.lib.common.ui.view.SimpleTabDataModel
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
+import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.touchBackPressed
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import com.walisport.module.hall.R
+import com.walisport.module.hall.data.Avatar
 import com.walisport.module.hall.data.GameContentData
+import com.walisport.module.hall.data.HotColdType
 import com.walisport.module.hall.data.UniversalLoadMoreScrollListener
 import com.walisport.module.hall.data.constants.GameSortType
 import com.walisport.module.hall.databinding.FragmentHallCategoryBinding
@@ -30,7 +34,11 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
     override val vbClass: KClass<FragmentHallCategoryBinding> = FragmentHallCategoryBinding::class
     override val vmClass: KClass<GameCategoryViewModel> = GameCategoryViewModel::class
     private val titleBarBinding: TitleBarGameCategoryBinding by lazy {
-        TitleBarGameCategoryBinding.inflate(LayoutInflater.from(context), mBinding.titleBar, false)
+        TitleBarGameCategoryBinding.inflate(
+            LayoutInflater.from(context) ,
+            mBinding.titleBar ,
+            false
+        )
     }
     private lateinit var adapter: GameContentAdapter
     private var list: MutableList<GameContentData> = mutableListOf()
@@ -60,10 +68,10 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
 
     override fun initView(savedInstanceState: Bundle?) {
         with(mBinding) {
-            titleBar.loadDynamicsTitleBar(titleBarBinding.root, null)
+            titleBar.loadDynamicsTitleBar(titleBarBinding.root , null)
             titleBarBinding.tvTitleName.text = "老虎机"
             customTabGroup.submitTabList(mockVendorList)
-            mViewModel.mockList(page)
+            mViewModel.queryGameList(page)
             rvGame.layoutManager = GridLayoutManager(requireContext() , 3)
             val itemDecoration = GridSpacingItemDecoration(
                 spanCount = 3 ,
@@ -82,21 +90,41 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
     }
 
     override fun initListener() {
+        with(titleBarBinding) {
+            ivBack.addScaleOnTouchAnimation()
+            ivBack.clickNoRepeat {
+                findNavController().navigateUp()
+            }
+        }
+
         mBinding.rvGame.addOnScrollListener(UniversalLoadMoreScrollListener(6) {
             page++
-            mViewModel.mockList(page)
+            mViewModel.queryGameList(page)
         })
 
         mBinding.customTabGroup.setOnSortBtnClick {
-            toggleTournamentSorting(!isExpanded)
+            toggleGameSorting(!isExpanded)
         }
     }
 
     override suspend fun createObserver() {
-        mViewModel.gameRecentList.observe(viewLifecycleOwner) {
-            it.let {
-                list.addAll(it)
-                adapter.submitList(list)
+        mViewModel.gameList.observe(viewLifecycleOwner) {
+            it.let { list ->
+                adapter.submitList(list.map { vo ->
+                    GameContentData(
+                        id = "${page}1".toLong() ,
+                        name = vo.name ,
+                        avatar = Avatar(
+                            url = vo.avatar.url ,
+                            thumbhash = vo.avatar.thumbhash ,
+                            css = ""
+                        ) ,
+                        online = vo.online ,
+                        reward = vo.reward.toDouble() ,
+                        hasMore = true ,
+                        hotOrCold = HotColdType.COLD
+                    )
+                })
             }
         }
 
@@ -106,9 +134,9 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
      * 排序選單的展開收起切換
      * @param expanded : Boolean 展開、收起
      */
-    private fun toggleTournamentSorting(expanded: Boolean) {
+    private fun toggleGameSorting(expanded: Boolean) {
         isExpanded = expanded
-        val container = mBinding.llTournamentsDropdown
+        val container = mBinding.llGameDropdown
 
         if (expanded) {
             // 展開排序選單
@@ -122,12 +150,12 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
             }
 
             // 先立即顯示遮罩層遮擋底下內容，避免閃爍
-            mBinding.vTournamentListMask.apply {
+            mBinding.vGameListMask.apply {
                 visibility = View.VISIBLE
                 alpha = 1f
                 // 設置點擊事件
                 clickNoRepeat {
-                    toggleTournamentSorting(false)
+                    toggleGameSorting(false)
                 }
             }
 
@@ -169,14 +197,14 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
             sortingMenuBinding?.root?.startAnimation(slideOutAnim)
 
             // 收回時隱藏遮罩層（帶動畫效果）
-            mBinding.vTournamentListMask.animate()
+            mBinding.vGameListMask.animate()
                 .alpha(0f)
                 .setDuration(defaultAnimDuration)
                 .setListener(object : android.animation.Animator.AnimatorListener {
                     override fun onAnimationStart(p0: android.animation.Animator) {}
 
                     override fun onAnimationEnd(p0: android.animation.Animator) {
-                        mBinding.vTournamentListMask.visibility = View.GONE
+                        mBinding.vGameListMask.visibility = View.GONE
                     }
 
                     override fun onAnimationCancel(p0: android.animation.Animator) {}
@@ -212,7 +240,7 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
                     updateSortingMenuSelection()
                     applySorting()
                 }
-                toggleTournamentSorting(false)
+                toggleGameSorting(false)
             }
 
             // 點擊按最新排序
@@ -222,7 +250,7 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
                     updateSortingMenuSelection()
                     applySorting()
                 }
-                toggleTournamentSorting(false)
+                toggleGameSorting(false)
             }
 
             binding.tvSortByHotReward.clickNoRepeat {
@@ -231,7 +259,7 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
                     updateSortingMenuSelection()
                     applySorting()
                 }
-                toggleTournamentSorting(false)
+                toggleGameSorting(false)
             }
 
             binding.tvSortByColdReward.clickNoRepeat {
@@ -240,7 +268,7 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
                     updateSortingMenuSelection()
                     applySorting()
                 }
-                toggleTournamentSorting(false)
+                toggleGameSorting(false)
             }
         }
     }
