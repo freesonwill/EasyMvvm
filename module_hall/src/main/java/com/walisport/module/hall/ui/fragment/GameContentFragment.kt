@@ -99,7 +99,7 @@ class GameContentFragment : BaseFragment<GameContentViewModel, FragmentGameConte
             })
             rvGame.adapter = adapter
             customTabGroup.submitTabList(mockVendorList)
-            BackToTopHelper(rvGame, ivBackToTop)
+            BackToTopHelper(rvGame, ivBackToTop, true)
         }
         mViewModel.getSuppliers(3)
     }
