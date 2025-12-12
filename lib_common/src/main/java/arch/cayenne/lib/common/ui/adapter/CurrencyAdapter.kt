@@ -12,12 +12,12 @@ import arch.cayenne.lib.common.databinding.ItemCurrencyTitleBinding
 import arch.cayenne.lib.common.ui.viewholder.CurrencyContentViewHolder
 import arch.cayenne.lib.common.ui.viewholder.CurrencyTitleViewHolder
 
-class CurrencyAdapter: BaseAdapter<BaseCurrencyData, BaseViewHolder, ViewBinding>(CurrencyCompare()) {
+class CurrencyAdapter(val listener: ((BaseCurrencyData.CurrencyContentData2) -> Unit)? = null): BaseAdapter<BaseCurrencyData, BaseViewHolder, ViewBinding>(CurrencyCompare()) {
 
     override fun getItemViewType(position: Int): Int {
         if (getItem(position) is BaseCurrencyData.CurrencyTitleData) {
             return CurrencyType.TITLE.ordinal
-        } else if (getItem(position) is BaseCurrencyData.CurrencyContentData) {
+        } else if (getItem(position) is BaseCurrencyData.CurrencyContentData2) {
             return CurrencyType.CONTENT.ordinal
         } else {
             return super.getItemViewType(position)
@@ -30,7 +30,7 @@ class CurrencyAdapter: BaseAdapter<BaseCurrencyData, BaseViewHolder, ViewBinding
         position: Int
     ) {
         if (holder is CurrencyContentViewHolder) {
-            holder.bind(getItem(position) as? BaseCurrencyData.CurrencyContentData)
+            holder.bind(getItem(position) as? BaseCurrencyData.CurrencyContentData2)
         } else if (holder is CurrencyTitleViewHolder) {
             holder.bind(getItem(position) as? BaseCurrencyData.CurrencyTitleData)
         }
@@ -53,7 +53,7 @@ class CurrencyAdapter: BaseAdapter<BaseCurrencyData, BaseViewHolder, ViewBinding
         viewType: Int
     ): BaseViewHolder {
         if(viewType == CurrencyType.CONTENT.ordinal) {
-            return CurrencyContentViewHolder(binding as ItemCurrencyContentBinding)
+            return CurrencyContentViewHolder(binding as ItemCurrencyContentBinding, listener)
         } else {
             return CurrencyTitleViewHolder(binding as ItemCurrencyTitleBinding)
         }

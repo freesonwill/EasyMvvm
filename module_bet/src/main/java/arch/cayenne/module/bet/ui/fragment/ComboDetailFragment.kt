@@ -1,18 +1,22 @@
 package arch.cayenne.module.bet.ui.fragment
 
+import android.animation.ValueAnimator
 import android.os.Bundle
 import android.view.View
-import android.view.ViewGroup
 import android.widget.FrameLayout
+import androidx.core.animation.addListener
 import androidx.core.os.bundleOf
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.ui.fragment.BaseBottomSheetFragment
+import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.module.bet.databinding.FragmentComboDetailBinding
 import arch.cayenne.module.bet.ui.adapter.ComboDetailAdapter
 import arch.cayenne.module.bet.viewmodel.BetCombViewModel
 import com.blankj.utilcode.util.GsonUtils
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import kotlin.reflect.KClass
 
 /**
@@ -22,8 +26,7 @@ import kotlin.reflect.KClass
 class ComboDetailFragment :
     BaseBottomSheetFragment<BetCombViewModel, FragmentComboDetailBinding>() {
 
-    override val vbClass: KClass<FragmentComboDetailBinding> =
-        FragmentComboDetailBinding::class
+    override val vbClass: KClass<FragmentComboDetailBinding> = FragmentComboDetailBinding::class
     override val vmClass: KClass<BetCombViewModel> = BetCombViewModel::class
     private val listAdapter by lazy { ComboDetailAdapter() }
     private var tipStr = ""
@@ -32,7 +35,6 @@ class ComboDetailFragment :
 
     companion object {
         private const val PARAMETER = "PARAMETER"
-
         fun newInstance(parameter: Parameter): ComboDetailFragment {
             return ComboDetailFragment().apply {
                 arguments = bundleOf(PARAMETER to GsonUtils.toJson(parameter))
@@ -58,6 +60,40 @@ class ComboDetailFragment :
         val odds: String
     )
 
+    data class ParameterUI(
+        val title: String,
+        val titleTips: String,
+        val items:List<ParameterUIItem>
+    ){
+        companion object {
+            const val TYPE_GROUP = 1        // ParameterItems
+            const val TYPE_CHILD = 2        // ParameterItems2
+
+            //将一层数据摊平层两层数据
+            fun buildParameterUI(data: Parameter): ParameterUI {
+                val result = mutableListOf<ParameterUIItem>()
+                data.items.forEach { group ->
+                    // 第二层：组标题
+                    result.add(ParameterUIItem(type = TYPE_GROUP, group = group))
+
+                    // 第三层：组内内容
+                    group.items.forEachIndexed { index, child ->
+                        result.add(ParameterUIItem(type = TYPE_CHILD, child = child,childIndexInGroup = index))
+                    }
+                }
+                return ParameterUI(data.title,data.titleTips,result)
+            }
+        }
+    }
+
+    data class ParameterUIItem(
+        val type: Int,
+        val group: ParameterItems? = null,
+        val child: ParameterItems2? = null,
+        val childIndexInGroup: Int = -1 // 记录 child 在 group 内的原始 index
+    )
+
+
     override fun onStart() {
         super.onStart()
         setFitToContents()
@@ -77,27 +113,36 @@ class ComboDetailFragment :
     }
 
     override fun initView(savedInstanceState: Bundle?) {
-        val parameter = requireArguments().getString(PARAMETER).let {
-            GsonUtils.fromJson(it, Parameter::class.java)
+        launch {
+            val parameter = withContext(Dispatchers.IO){
+                requireArguments().getString(PARAMETER).let {
+                    GsonUtils.fromJson(it, Parameter::class.java)
+                }
+            }
+            val data = withContext(Dispatchers.IO){
+                ParameterUI.buildParameterUI(parameter)
+            }
+            with(mBinding) {
+                tvBetTitle.text = data.title
+                tipStr = data.titleTips
+                rvContent.layoutManager = LinearLayoutManager(requireContext())
+                rvContent.adapter = listAdapter
+            }
+            val screenHeight = getScreenHeight()
+            val minHeight = (screenHeight * 0.52).toInt()
+            val maxHeight = (screenHeight * 0.84).toInt()
+            mBinding.clRoot.maxHeight = maxHeight
+            mBinding.clRoot.layoutParams = mBinding.clRoot.layoutParams.apply {
+                if (parameter.items.size > 1) {
+                    isCanExpand = false
+                    height = maxHeight
+                } else {
+                    isCanExpand = true
+                    height = minHeight
+                }
+            }
+            listAdapter.submitList(data.items)
         }
-        with(mBinding) {
-            tvBetTitle.text = parameter.title
-            tipStr = parameter.titleTips
-            rvContent.layoutManager = LinearLayoutManager(requireContext())
-            rvContent.adapter = listAdapter
-        }
-        if (parameter.items.size > 1) {
-            isCanExpand = false
-            val screenHeight = getScreenHeight() ?: return
-            val minFragmentHeight = (screenHeight * 0.84).toInt()
-            mBinding.clRoot.minHeight = minFragmentHeight
-        } else {
-            isCanExpand = true
-            val screenHeight = getScreenHeight() ?: return
-            val minFragmentHeight = (screenHeight * 0.52).toInt()
-            mBinding.clRoot.minHeight = minFragmentHeight
-        }
-        listAdapter.submitList(parameter.items)
     }
 
     override fun initListener() {
@@ -117,19 +162,37 @@ class ComboDetailFragment :
         }
     }
 
+    override suspend fun createObserver() {}
+
+    private fun getScreenHeight(): Int {
+        return requireContext().resources.displayMetrics.heightPixels
+    }
+
     private fun onCollapses() {
         if (!isCanExpand) return
         isExpand = !isExpand
         val screenHeight = getScreenHeight() ?: return
-        val height = (screenHeight * 0.84).toInt()
+        val max = (screenHeight * 0.84).toInt()
+        val min = (screenHeight * 0.52).toInt()
+        val start = if (isExpand) min else max
+        val end = if (isExpand) max else min
         val layoutParams = mBinding.clRoot.layoutParams
-        layoutParams.height = if (isExpand) height else ViewGroup.LayoutParams.WRAP_CONTENT
-        mBinding.clRoot.layoutParams = layoutParams
+        ValueAnimator.ofInt(start, end).apply {
+            duration = 150
+            addUpdateListener {
+                val value = it.animatedValue as Int
+                layoutParams.height = value
+                mBinding.clRoot.layoutParams = layoutParams
+            }
+            addListener(
+                onEnd = {
+                    if (isExpand) {
+                        mBinding.ivBetExpand.setImageResource(arch.cayenne.lib.common.R.drawable.icon_expand_none)
+                    } else {
+                        mBinding.ivBetExpand.setImageResource(arch.cayenne.lib.common.R.drawable.icon_expand)
+                    }
+                })
+        }.start()
     }
 
-    override suspend fun createObserver() {}
-
-    private fun getScreenHeight(): Int? {
-        return context?.resources?.displayMetrics?.heightPixels
-    }
 }

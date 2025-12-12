@@ -41,32 +41,24 @@ open class OrderSlipRepository(
         cursorBetTime: Long?,
         size: Int
     ): ApiResponseState = withContext(scope.coroutineContext) {
-        val mockData = getTestMockData(startTime, endTime) ?: return@withContext ApiResponseState.Failed(
-            SimpleResponseError()
+        val result = remoteManager.getOrderReq(
+            type,
+            startTime,
+            endTime,
+            cursorBetTime,
+            size,
+            null,
+            null
         )
-        return@withContext ApiResponseState.Succeeded(mockData)
-//        val result = remoteManager.getOrderReq(
-//            type,
-//            startTime,
-//            endTime,
-//            cursorBetTime,
-//            size,
-//            null,
-//            null
-//        )
-//        return@withContext if (result.error == null && result.data != null) {
-//            val currency = infoDao.getCurrency()
-//            val data = result.data!!.orderList.map {
-//                it.toOrderBean(type, currency, null)
-//            }
-//
-//            betSlipOrderDao.insert(data)
-//            betSlipOrderDao.deleteMissing(type, data.map { it.betId })
-//            ApiResponseState.Succeeded(data)
-//        } else {
-//            betSlipOrderDao.deleteByType(type)
-//            ApiResponseState.Failed(result.error)
-//        }
+        return@withContext if (result.error == null && result.data != null) {
+            val currency = infoDao.getCurrency()
+            val data = result.data!!.orderList.map {
+                it.toOrderBean(type, currency, null)
+            }
+            ApiResponseState.Succeeded(data)
+        } else {
+            ApiResponseState.Failed(result.error)
+        }
     }
 
     private fun getTestMockData(startTime: Long?, endTime: Long?): List<BetSlipOrderBean>? {

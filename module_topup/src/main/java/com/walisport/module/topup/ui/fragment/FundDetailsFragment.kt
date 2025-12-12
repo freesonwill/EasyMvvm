@@ -86,6 +86,7 @@ class FundDetailsFragment : BaseFragment<FundDetailsViewModel, FragmentFundDetai
                 }
             }
             setBackgroundColor(arch.cayenne.lib.common.R.color.title_bg.getColor())
+            setAttachedFragment(this@FundDetailsFragment)
         }
     }
 
