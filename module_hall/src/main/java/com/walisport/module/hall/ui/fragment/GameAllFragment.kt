@@ -1,5 +1,6 @@
 package com.walisport.module.hall.ui.fragment
 
+import android.net.Uri
 import android.os.Bundle
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -29,11 +30,12 @@ class GameAllFragment: BaseFragment<GameAllViewModel, FragmentGameAllBinding>() 
     private val listAdapter by lazy {
         GameAllListAdapter(object :GameAllListViewHolder.OnAllItemClickListener {
             override fun onItemClick() {
-                navigate(arch.cayenne.lib.res.R.string.nav_module_hall_category.deeplink())
+                val category = 100
+                navigate(Uri.parse("walisport://module_hall/hallCategoryFragment?category=${category}"))
             }
 
             override fun onChildItemClick() {
-                navigate(arch.cayenne.lib.res.R.string.nav_module_gamedetail.deeplink())
+                navigate(arch.cayenne.lib.res.R.string.nav_module_gamedetail.deeplink() )
             }
         })
     }

@@ -30,13 +30,14 @@ class HallRepository(
 ) : BaseRepository() {
 
 
-    suspend fun queryGameList(page: Int , sortType: GameSortType, suppliers:List<Int>): ApiResponseState {
+    suspend fun queryGameList(page: Int , sortType: GameSortType, suppliers:List<Int>, category: Int): ApiResponseState {
         val api = mockHttpClient.create(IHallApi::class.java)
         return suspendCancellableCoroutine<ApiResponseState> { cancellableContinuation ->
             scope.launch(Dispatchers.IO) {
                 mockHttpClient.safeRequest(
                     request = {
-                        api.queryGameList(page , DEFAULT_GAME_SIZE , sort = sortType.type, supplier = suppliers)
+                        api.queryGameList(page =page ,
+                            pageSize = DEFAULT_GAME_SIZE , sort = sortType.type, supplier = suppliers,  category = category)
                     } ,
                     onSuccess = { resp ->
                         if (resp.code == 0) {
@@ -72,6 +73,7 @@ class HallRepository(
 
     companion object {
         const val DEFAULT_GAME_SIZE = 10
+        const val INITIAL_PAGE = 1
     }
 }
 

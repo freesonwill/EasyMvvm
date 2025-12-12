@@ -20,7 +20,6 @@ interface IHallApi : IApi {
         @Query("pageSize") pageSize: Int ,//页大小
         @Query("supplier") supplier: List<Int> = emptyList()  ,//供应商
         @Query("sort") sort: Int = GameSortType.HOT.type ,//排序方式（0: 热门, 1: 最新上线, 2: 火热返奖, 3: 冰冷返奖）
-        @Query("platform") platform: String = "0" ,//游戏平台（0：热门，1：原创，x：其他平台）
         @Query("category") category: Int = 0,//游戏平台（100/0:全部, 101:最近, 102:热门，103:原创，1:捕鱼,2:真人/视讯,3:棋牌,4:老虎机/电子, 5:体育, 6:彩票, 7:电竞)
     ): Response<HttpApiResponse<GamePageVo>>
 }
