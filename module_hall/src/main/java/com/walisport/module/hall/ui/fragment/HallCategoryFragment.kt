@@ -23,6 +23,7 @@ import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import com.walisport.module.hall.R
 import com.walisport.module.hall.data.UniversalLoadMoreScrollListener
 import com.walisport.module.hall.data.constants.GameSortType
+import com.walisport.module.hall.data.getCategoryByType
 import com.walisport.module.hall.databinding.FragmentHallCategoryBinding
 import com.walisport.module.hall.databinding.LayoutGameSortingMenuBinding
 import com.walisport.module.hall.databinding.TitleBarGameCategoryBinding
@@ -52,6 +53,8 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
 
     private val defaultAnimDuration = 300L
 
+    private var category: Int = 100
+
     private val mockVendorList by lazy {
         val l = ArrayList<SimpleTabDataModel>()
         for (i in 0..5) {
@@ -68,9 +71,12 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
 
 
     override fun initView(savedInstanceState: Bundle?) {
+        val requireArguments = requireArguments()
+         category = requireArguments.getString("category")?.toInt()?:100
+
         with(mBinding) {
             titleBar.loadDynamicsTitleBar(titleBarBinding.root , null)
-            titleBarBinding.tvTitleName.text = "老虎机"
+            titleBarBinding.tvTitleName.text = 100.getCategoryByType().desc
             customTabGroup.submitTabList(mockVendorList)
             rvGame.itemAnimator = null
             rvGame.layoutManager = GridLayoutManager(requireContext() , 3)
@@ -85,9 +91,6 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
                 navigate(arch.cayenne.lib.res.R.string.nav_module_gamedetail.deeplink())
             })
             rvGame.adapter = adapter
-
-            mViewModel.setSortType(currentSortType)
-            mViewModel.queryGameList()
         }
 
         mBinding.root.touchBackPressed()
@@ -156,6 +159,15 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
             }
         }
 
+    }
+
+    override fun initData() {
+        super.initData()
+
+        mViewModel.setCategory(category ?: 0)
+        mViewModel.setSuppliers(emptyList())
+        mViewModel.setSortType(currentSortType)
+        mViewModel.queryGameList()
     }
 
     /**
@@ -275,7 +287,7 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
                     updateSortingMenuSelection()
                     setSortBtnText()
                     mViewModel.setSortType(currentSortType)
-                    mViewModel.applySorting()
+                    mViewModel.reload()
                 }
 
                 toggleGameSorting(false)
@@ -289,7 +301,7 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
                     updateSortingMenuSelection()
                     setSortBtnText()
                     mViewModel.setSortType(currentSortType)
-                    mViewModel.applySorting()
+                    mViewModel.reload()
                 }
 
                 toggleGameSorting(false)
@@ -304,7 +316,7 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
                     updateSortingMenuSelection()
                     setSortBtnText()
                     mViewModel.setSortType(currentSortType)
-                    mViewModel.applySorting()
+                    mViewModel.reload()
                 }
 
                 toggleGameSorting(false)
@@ -318,7 +330,7 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
                     updateSortingMenuSelection()
                     setSortBtnText()
                     mViewModel.setSortType(currentSortType)
-                    mViewModel.applySorting()
+                    mViewModel.reload()
                 }
 
                 toggleGameSorting(false)

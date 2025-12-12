@@ -11,7 +11,7 @@ import com.walisport.module.hall.data.GameContentData
 import com.walisport.module.hall.data.GamePageVo
 import com.walisport.module.hall.data.GameVo
 import com.walisport.module.hall.data.HallRepository
-import com.walisport.module.hall.data.HallRepository.Companion.DEFAULT_GAME_SIZE
+import com.walisport.module.hall.data.HallRepository.Companion.INITIAL_PAGE
 import com.walisport.module.hall.data.constants.GameSortType
 import com.walisport.module.hall.data.toGameContentData
 import kotlinx.coroutines.launch
@@ -30,9 +30,18 @@ class GameCategoryViewModel : BaseViewModel() {
     private var page: Int = INITIAL_PAGE
     private var sortType: GameSortType = GameSortType.HOT
     private var suppliers: List<Int> = emptyList()
+    private var category: Int = 0
+
+    fun setCategory(category: Int) {
+        this.category = category
+    }
 
     fun setSortType(sortType: GameSortType) {
         this.sortType = sortType
+    }
+
+    fun setSuppliers(suppliers: List<Int>) {
+        this.suppliers = suppliers
     }
 
     fun queryGameList() {
@@ -40,7 +49,7 @@ class GameCategoryViewModel : BaseViewModel() {
             setState(DataState.Loading)
             callApi(
                 {
-                    repository.queryGameList(page , sortType , suppliers)
+                    repository.queryGameList(page , sortType , suppliers, category)
                 } ,
                 {
                     if (it is ApiResponseState.Failed) {
@@ -85,7 +94,7 @@ class GameCategoryViewModel : BaseViewModel() {
         }
     }
 
-    fun applySorting() {
+    fun reload() {
         page = INITIAL_PAGE
         _gameListLiveData.value = emptyList()
         queryGameList()
@@ -99,7 +108,4 @@ class GameCategoryViewModel : BaseViewModel() {
 
     }
 
-    companion object {
-        const val INITIAL_PAGE = 1
-    }
 }

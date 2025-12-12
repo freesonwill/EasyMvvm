@@ -23,7 +23,6 @@ import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import com.walisport.module.hall.R
 import com.walisport.module.hall.data.UniversalLoadMoreScrollListener
 import com.walisport.module.hall.data.constants.GameSortType
-import com.walisport.module.hall.data.toGameContentData
 import com.walisport.module.hall.databinding.FragmentGameContentBinding
 import com.walisport.module.hall.databinding.LayoutGameSortingMenuBinding
 import com.walisport.module.hall.ui.adapter.GameContentAdapter
@@ -229,7 +228,7 @@ class GameContentFragment : BaseFragment<GameContentViewModel , FragmentGameCont
                     updateSortingMenuSelection()
                     setSortBtnText()
                     mViewModel.setSortType(currentSortType)
-                    mViewModel.applySorting()
+                    mViewModel.reload()
                 }
 
                 toggleGameSorting(false)
@@ -243,7 +242,7 @@ class GameContentFragment : BaseFragment<GameContentViewModel , FragmentGameCont
                     updateSortingMenuSelection()
                     setSortBtnText()
                     mViewModel.setSortType(currentSortType)
-                    mViewModel.applySorting()
+                    mViewModel.reload()
                 }
 
                 toggleGameSorting(false)
@@ -257,7 +256,7 @@ class GameContentFragment : BaseFragment<GameContentViewModel , FragmentGameCont
                     updateSortingMenuSelection()
                     setSortBtnText()
                     mViewModel.setSortType(currentSortType)
-                    mViewModel.applySorting()
+                    mViewModel.reload()
                 }
 
                 toggleGameSorting(false)
@@ -270,7 +269,7 @@ class GameContentFragment : BaseFragment<GameContentViewModel , FragmentGameCont
                     updateSortingMenuSelection()
                     setSortBtnText()
                     mViewModel.setSortType(currentSortType)
-                    mViewModel.applySorting()
+                    mViewModel.reload()
                 }
 
                 toggleGameSorting(false)
