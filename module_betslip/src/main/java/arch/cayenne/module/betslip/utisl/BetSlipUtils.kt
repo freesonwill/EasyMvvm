@@ -5,7 +5,7 @@ import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoneyForScale
 
-internal object BetSlipUtils {
+ object BetSlipUtils {
 
     /**
      * 计算预计最高金额

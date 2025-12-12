@@ -21,7 +21,7 @@
     <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
         android:id="@+id/ll_search_bar"
         style="@style/CustomToolbarLine"
-        android:background="@drawable/search_rounded_background"
+        android:background="@drawable/search_sport_rounded_background"
         android:gravity="center_vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/tv_search_text"

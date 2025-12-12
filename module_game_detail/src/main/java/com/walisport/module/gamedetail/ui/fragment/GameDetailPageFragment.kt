@@ -3,10 +3,12 @@ package com.walisport.module.gamedetail.ui.fragment
 import android.os.Bundle
 import android.view.View
 import androidx.core.view.doOnLayout
+import androidx.fragment.app.viewModels
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.utils.LogUtils
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.locationOnScreen
@@ -14,18 +16,15 @@ import com.bumptech.glide.Glide
 import com.walisport.module.gamedetail.R
 import com.walisport.module.gamedetail.data.model.CurrencyInfoBean
 import com.walisport.module.gamedetail.data.model.GameDetailBean
-import com.walisport.module.gamedetail.data.model.GamePreviewBean
 import com.walisport.module.gamedetail.data.model.PlayerRankingBean
-import com.walisport.module.gamedetail.data.model.PreviewType
 import com.walisport.module.gamedetail.databinding.FragmentGameDetailPageBinding
 import com.walisport.module.gamedetail.ui.adapter.GamePreviewAdapter
 import com.walisport.module.gamedetail.ui.viewmodel.GameDetailViewModel
 import com.walisport.module.gamedetail.ui.viewmodel.GameDetailPageViewModel
-import androidx.fragment.app.viewModels
 import java.util.Locale
 import kotlin.reflect.KClass
 
-class GameDetailPageFragment: BaseFragment<GameDetailViewModel, FragmentGameDetailPageBinding>() {
+class GameDetailPageFragment : BaseFragment<GameDetailViewModel, FragmentGameDetailPageBinding>() {
     override val vbClass: KClass<FragmentGameDetailPageBinding> = FragmentGameDetailPageBinding::class
     override val vmClass: KClass<GameDetailViewModel> = GameDetailViewModel::class
 
@@ -37,70 +36,18 @@ class GameDetailPageFragment: BaseFragment<GameDetailViewModel, FragmentGameDeta
     }
 
     override fun initView(savedInstanceState: Bundle?) {
-//        StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND(autoPadding = true,
-//            noPaddingViewIds = listOf(R.id.carousel_scroll_view)
-//        )
-//        setStatusBar(StatusBarConfig, mBinding.root)
-
         with(mBinding) {
-            val mockData = GameDetailBean(
-                id = 1,
-                name = "Slot Game 1",
-                type = 1,
-                supplier = "Supplier A",
-                avatar = "https://example.com/game1.png",
-                reward = 0.95,
-                maxOdds = 1000,
-                online = 1234,
-                score = 4.5,
-                comments = 150,
-                tryIt = true,
-                hasMore = true,
-                collect = false,
-                materials = true,
-                currency = emptyList()
-            )
-
-            val previewMock = listOf(
-//                GamePreviewBean(PreviewType.VIDEO, "https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/1080/Big_Buck_Bunny_1080_10s_1MB.mp4"),
-                GamePreviewBean(PreviewType.IMAGE, "https://xxx.com/xxx.jpg"),
-                GamePreviewBean(PreviewType.IMAGE, "https://xxx.com/xxx.jpg"),
-                GamePreviewBean(PreviewType.IMAGE, "https://xxx.com/xxx.jpg"),
-                GamePreviewBean(PreviewType.IMAGE, "https://xxx.com/xxx.jpg"),
-                GamePreviewBean(PreviewType.IMAGE, "https://xxx.com/xxx.jpg"),
-                GamePreviewBean(PreviewType.IMAGE, "https://xxx.com/xxx.jpg"),
-                GamePreviewBean(PreviewType.IMAGE, "https://xxx.com/xxx.jpg"),
-                GamePreviewBean(PreviewType.IMAGE, "https://xxx.com/xxx.jpg"),
-                GamePreviewBean(PreviewType.IMAGE, "https://xxx.com/xxx.jpg"),
-                GamePreviewBean(PreviewType.IMAGE, "https://xxx.com/xxx.jpg"),
-                GamePreviewBean(PreviewType.IMAGE, "https://xxx.com/xxx.jpg"),
-                GamePreviewBean(PreviewType.IMAGE, "https://xxx.com/xxx.jpg")
-            )
-
             // todo 串接資料
             tvCurrencySymbol.text = "¥"
             tvCurrencyName.text = "人民币"
 
-            Glide.with(root.context).load(mockData.avatar).placeholder(R.mipmap.img_game_cover).into(ivGameCover)
-            tvGameName.text = mockData.name
-            // todo type enum待確認
-            tvGameType.text = mockData.type.toString()
-            tvGameVendor.text = mockData.supplier
-            tvRtpValue.text = String.format(Locale.getDefault(), "%.1f%%", mockData.reward * 100)
-            tvMaxRewardValue.text = String.format(Locale.getDefault(), "%dx", mockData.maxOdds)
-            tvOnlineValue.text = mockData.online.toString()
-            tvScore.text = mockData.score.toString()
-            tvScoreCountValue.text = mockData.comments.toString()
-            // todo 效果待確認
-//            ivFavorite.isSelected = mockData.collect
-            ivStartTrial.visibility = if (mockData.tryIt) View.VISIBLE else View.GONE
-            groupMoreGame.visibility = if (mockData.hasMore) View.VISIBLE else View.GONE
-
             carouselScrollView.apply {
-                adapter = previewAdapter.apply {
-                    setData(previewMock)
-                }
-
+                StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND(
+                    autoPadding = true,
+                    noPaddingViewIds = listOf(R.id.carousel_scroll_view)
+                )
+                setStatusBar(StatusBarConfig, mBinding.root)
+                adapter = previewAdapter
                 doOnLayout {
                     // Sync with shared index
                     val targetIndex = pagerViewModel.sharedCarouselIndex.value ?: 0
@@ -124,17 +71,17 @@ class GameDetailPageFragment: BaseFragment<GameDetailViewModel, FragmentGameDeta
         with(mBinding) {
             ivStartTrial.clickNoRepeat {
             }
-            tvBiggestWinner.clickNoRepeat (){
+            tvBiggestWinner.clickNoRepeat {
                 closeExistingLuckyFragment()
                 closeExistingCurrencyFragment()
                 it.togglePlayerRankingFragment()
             }
-            tvLuckiestWinner.clickNoRepeat() {
+            tvLuckiestWinner.clickNoRepeat {
                 closeExistingRankingFragment()
                 closeExistingCurrencyFragment()
                 it.toggleLuckFragment()
             }
-            viewCurrencyBg.clickNoRepeat() {
+            viewCurrencyBg.clickNoRepeat {
                 closeExistingRankingFragment()
                 closeExistingLuckyFragment()
                 it.toggleCurrencyFragment()
@@ -148,20 +95,43 @@ class GameDetailPageFragment: BaseFragment<GameDetailViewModel, FragmentGameDeta
                 mBinding.carouselScrollView.gotoPage(index, magnifyImmediately = true)
             }
         }
+
+        pagerViewModel.gameDetailData.observe(viewLifecycleOwner) { data ->
+            updateGameDetailUi(data)
+        }
+
+        pagerViewModel.previewData.observe(viewLifecycleOwner) { list ->
+            previewAdapter.setData(list)
+        }
+    }
+
+    private fun updateGameDetailUi(data: GameDetailBean) {
+        with(mBinding) {
+            Glide.with(root.context).load(data.avatar).placeholder(R.mipmap.img_game_cover).into(ivGameCover)
+            tvGameName.text = data.name
+            // todo type enum待確認
+            tvGameType.text = data.type.toString()
+            tvGameVendor.text = data.supplier
+            tvRtpValue.text = String.format(Locale.getDefault(), "%.1f%%", data.reward * 100)
+            tvMaxRewardValue.text = String.format(Locale.getDefault(), "%dx", data.maxOdds)
+            tvOnlineValue.text = data.online.toString()
+            tvScore.text = data.score.toString()
+            tvScoreCountValue.text = data.comments.toString()
+            // todo 效果待確認
+//            ivFavorite.isSelected = data.collect
+            ivStartTrial.visibility = if (data.tryIt) View.VISIBLE else View.GONE
+            groupMoreGame.visibility = if (data.hasMore) View.VISIBLE else View.GONE
+        }
     }
 
     override fun onStart() {
         super.onStart()
-        StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND(autoPadding = true,
-            noPaddingViewIds = listOf(R.id.carousel_scroll_view)
-        )
-        setStatusBar(StatusBarConfig, mBinding.root)
     }
 
     private fun closeExistingRankingFragment(afterClose: ((isSuccess: Boolean) -> Unit)? = null) {
         var isSuccess = false
         (childFragmentManager.findFragmentByTag(PlayerRankingFragment.TAG) as? PlayerRankingFragment).let {
-            if(it?.isAdded == true) {
+            if (it?.isAdded == true) {
                 it.close()
                 childFragmentManager.executePendingTransactions()
                 isSuccess = true
@@ -174,7 +144,7 @@ class GameDetailPageFragment: BaseFragment<GameDetailViewModel, FragmentGameDeta
     private fun closeExistingLuckyFragment(afterClose: ((isSuccess: Boolean) -> Unit)? = null) {
         var isSuccess = false
         (childFragmentManager.findFragmentByTag(LuckyFragment.TAG) as? LuckyFragment).let {
-            if(it?.isAdded == true) {
+            if (it?.isAdded == true) {
                 it.close()
                 childFragmentManager.executePendingTransactions()
                 isSuccess = true
@@ -246,7 +216,7 @@ class GameDetailPageFragment: BaseFragment<GameDetailViewModel, FragmentGameDeta
     private fun closeExistingCurrencyFragment(afterClose: ((isSuccess: Boolean) -> Unit)? = null) {
         var isSuccess = false
         (childFragmentManager.findFragmentByTag(CurrencySelectorFragment.TAG) as? CurrencySelectorFragment).let {
-            if(it?.isAdded == true) {
+            if (it?.isAdded == true) {
                 it.close()
                 childFragmentManager.executePendingTransactions()
                 isSuccess = true
@@ -282,19 +252,19 @@ class GameDetailPageFragment: BaseFragment<GameDetailViewModel, FragmentGameDeta
 
     private fun View.toggleCurrencyFragment() {
         closeExistingCurrencyFragment { isSuccess ->
-            if(!isSuccess) createCurrencyFragment()
+            if (!isSuccess) createCurrencyFragment()
         }
     }
 
     private fun View.toggleLuckFragment() {
-        closeExistingLuckyFragment{ isSuccess ->
-            if(!isSuccess) createLuckyFragment()
+        closeExistingLuckyFragment { isSuccess ->
+            if (!isSuccess) createLuckyFragment()
         }
     }
 
     private fun View.togglePlayerRankingFragment() {
         closeExistingRankingFragment { isSuccess ->
-            if(!isSuccess) createRankingFragment()
+            if (!isSuccess) createRankingFragment()
         }
     }
 
@@ -306,7 +276,3 @@ class GameDetailPageFragment: BaseFragment<GameDetailViewModel, FragmentGameDeta
         }
     }
 }
-
-
-
-
