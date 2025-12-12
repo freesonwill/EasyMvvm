@@ -32,20 +32,24 @@
             app:tabIconSize="@dimen/dp_25" />
 
 
-        <arch.cayenne.lib.skin.widget.SkinnableRecyclerView
-            android:id="@+id/rv_game"
+        <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_marginStart="@dimen/dp_12"
-            android:layout_marginTop="@dimen/dp_12"
-            android:layout_marginEnd="@dimen/dp_12"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/custom_tab_group"
-            tools:itemCount="2"
-            tools:listitem="@layout/item_game_content" />
+            app:layout_constraintTop_toBottomOf="@+id/custom_tab_group">
 
+            <arch.cayenne.lib.skin.widget.SkinnableRecyclerView
+                android:id="@+id/rv_game"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="@dimen/dp_12"
+                android:layout_marginTop="@dimen/dp_12"
+                android:layout_marginEnd="@dimen/dp_12"
+                tools:itemCount="2"
+                tools:listitem="@layout/item_game_content" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
 
         <arch.cayenne.lib.common.ui.view.DynamicStateLayout
             android:id="@+id/cl_dynamics"

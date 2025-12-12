@@ -68,8 +68,6 @@ class GameContentFragment : BaseFragment<GameContentViewModel, FragmentGameConte
 
     private val defaultAnimDuration = 300L
 
-    private var list : MutableList<GameContentData> = mutableListOf()
-    private var page : Long = 0
     private val mockVendorList by lazy {
         val l = ArrayList<SimpleTabDataModel>()
         for (i in 0..5) {
@@ -136,8 +134,13 @@ class GameContentFragment : BaseFragment<GameContentViewModel, FragmentGameConte
 
     override suspend fun createObserver() {
         mViewModel.gameListLiveData.observe(viewLifecycleOwner) {
-            it.let {
-                list.addAll(it)
+            it.let { list ->
+                adapter.submitList(list)
+
+                // 自動加載下一頁數據（如果當前數據量較少）
+                if (list.size <= 10) {
+                    mViewModel.loadNextPage()
+                }
             }
         }
 
