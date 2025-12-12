@@ -8,10 +8,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
-import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.module.chat.data.constants.KeyBoardType
-import arch.cayenne.module.chat.data.constants.MsgType
+import arch.cayenne.lib.common.data.constants.MsgType
 import arch.cayenne.module.chat.data.model.ChatMsgPageBean
 import arch.cayenne.module.chat.databinding.FragementChatPageLayoutBinding
 import arch.cayenne.module.chat.ui.adapter.ChatPageAdapter
@@ -46,10 +45,12 @@ class ChatPageFragment : BaseFragment<ChatPageViewModel, FragementChatPageLayout
         }
         val adapter = ChatPageAdapter { bean, clickSpane, clickType ->
             when (clickType) {
-                MsgType.BET -> {
-                    val betType = if(clickSpane == "注单游戏") 0 else 1
-                    "clicSpane $clickSpane".logd("aaa")
-                    BetShareDialogFragment.show(this, betType)
+                MsgType.BET_GAME -> {
+//                    val betType = if(clickSpane == "注单游戏") 0 else 1
+                    BetShareDialogFragment.show(this, 0)
+                }
+                MsgType.BET_SPORT ->{
+                    BetShareDialogFragment.show(this, 1)
                 }
 
                 MsgType.AT -> {

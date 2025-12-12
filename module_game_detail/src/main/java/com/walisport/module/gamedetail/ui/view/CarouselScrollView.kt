@@ -152,8 +152,8 @@ class CarouselScrollView(context: Context, attrs: AttributeSet?) :
                     -1 // 如果 XML 中未設置，則為 -1
                 )
                 verticalAlignToBottomId = typedArray.getResourceId(
-                        R.styleable.CarouselScrollView_carousel_verticalAlignToBottom,
-                -1 // 如果 XML 中未設置，則為 -1
+                    R.styleable.CarouselScrollView_carousel_verticalAlignToBottom,
+                    -1 // 如果 XML 中未設置，則為 -1
                 )
                 shrinkTopOffset = typedArray.getDimensionPixelSize(
                     R.styleable.CarouselScrollView_carousel_shrinkTopOffset,

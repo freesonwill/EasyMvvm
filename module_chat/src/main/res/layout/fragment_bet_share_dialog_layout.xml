@@ -42,7 +42,7 @@
 
 
         <arch.cayenne.lib.skin.widget.SkinnableTextView
-            android:id="@+id/tv_go1"
+            android:id="@+id/tv_go"
             android:layout_width="285dp"
             android:layout_height="48dp"
             android:layout_marginLeft="@dimen/dp_10"

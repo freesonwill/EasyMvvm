@@ -52,7 +52,7 @@ class SportBetShareViewModel(private val repo: OrderSlipRepository):BaseViewMode
                 newData.addAll(sortedOrders)
             }
         }
-        _orderDataListener.postValue(newData)
+        _orderDataListener.postValue(arrayListOf(newData[0]))
     }
 
     private fun groupOrdersByDate(orders: List<BetSlipOrderBean>): Map<String, List<BetSlipOrderBean>> {

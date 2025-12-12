@@ -30,7 +30,7 @@ class OrderBettingViewHolder(private val mBinding: ItemOrderSportBettingBinding)
     private var isExpanded = false
     private var fullSelectionsList: List<BetSlipSelectionData> = emptyList()
 
-    fun init(item: BetSlipOrderBean, type: OrderSportPageEnum, onDoubleClick: ((String) -> Unit)? = null) {
+    fun init(item: BetSlipOrderBean, type: OrderSportPageEnum, onDoubleClick: ((String) -> Unit)? = null,onSingleClick:(()->Unit)? = null) {
 
         val betAmount = "${CurrencySymbols.getSymbol(item.currency)}${item.betAmount.getFormalMoney()}"
         mBinding.tvMoney.text = betAmount
@@ -99,6 +99,7 @@ class OrderBettingViewHolder(private val mBinding: ItemOrderSportBettingBinding)
                 } else {
                     // 單擊
                     lastClickTime = currentTime
+                    onSingleClick?.invoke()
                 }
             }
             
@@ -115,6 +116,7 @@ class OrderBettingViewHolder(private val mBinding: ItemOrderSportBettingBinding)
                     } else {
                         // 單擊
                         rvLastClickTime = currentTime
+                        onSingleClick?.invoke()
                     }
                 }
                 false // 不消費事件，讓 RecyclerView 正常工作
