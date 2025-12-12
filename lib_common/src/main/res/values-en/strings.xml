@@ -33,4 +33,8 @@
 
     <!-- VIP Related -->
     <string name="vip_level_format">VIP %d</string>
+    <string name="custom_tab_hot">Hot</string>
+    <string name="custom_tab_new">New</string>
+    <string name="custom_tab_hot_reward">Hot Reward</string>
+    <string name="custom_tab_cold_reward">Cold Reward</string>
 </resources>
