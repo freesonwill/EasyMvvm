@@ -132,6 +132,7 @@ class MainFragment : BaseFragment<MainFragmentViewModel, FragmentMainBinding>() 
                 if(it == - 1) return@let
                 mBinding.bottomNavigation.selectedIndex = it
                 setCurrentFragment(it,bundle.apply { remove(FragmentResultEnum.KEY_PAGE.k) })
+                mBinding.drawerLayout.closeDrawer(GravityCompat.START)
             }
         }.also {
             requireActivity().supportFragmentManager.setFragmentResultListener(FragmentResultEnum.KEY_PAGE.k,viewLifecycleOwner,it)

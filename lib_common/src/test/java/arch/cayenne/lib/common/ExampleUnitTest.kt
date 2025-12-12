@@ -1,7 +1,6 @@
 package arch.cayenne.lib.common
 
-import arch.cayenne.lib.common.utils.ext.CombinationExt
-import arch.cayenne.lib.common.utils.ext.CombinationExt.combinations
+import arch.cayenne.lib.common.utils.ext.CombinationExt.combination
 import org.junit.Test
 import kotlin.system.measureTimeMillis
 
@@ -68,7 +67,7 @@ class ExampleUnitTest {
     }
 
     fun calculateCombinationOdds(oddsList:List<Int>, k:Int):Int {
-        val combinationData = oddsList.combinations(k)
+        val combinationData = oddsList.combination(k)
         val sumOdds = combinationData.sumOf { list ->
             if(list.isEmpty()) 0.0
             else list.fold(1.0) { acc, odds -> acc * (odds*0.01) }// 计算乘积并且每次除以100
