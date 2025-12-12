@@ -11,12 +11,14 @@ import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.base.utils.LogUtils
 import com.walisport.module.hall.data.Avatar
 import com.walisport.module.hall.data.GameContentData
+import com.walisport.module.hall.data.GamePageVo
 import com.walisport.module.hall.data.GameVo
 import com.walisport.module.hall.data.HallRepository
 import com.walisport.module.hall.data.HallRepository.Companion.DEFAULT_GAME_SIZE
 import com.walisport.module.hall.data.HotColdType
 import com.walisport.module.hall.data.constants.GameSortType
 import com.walisport.module.hall.data.toGameContentData
+import com.walisport.module.hall.ui.viewmodel.GameCategoryViewModel.Companion
 import kotlinx.coroutines.launch
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
@@ -52,11 +54,13 @@ class GameContentViewModel : BaseViewModel() {
                         setState(DataState.NetworkUnavailable)
                     } else if (it is ApiResponseState.Succeeded<*>) {
 
-                        val size = it.dataAs<List<GameVo>>()?.size ?: 0
+                        val gamePageVo = it.dataAs<GamePageVo>()
+                        val hasMore = gamePageVo?.pagination?.hasMore ?: false
+                        val size = gamePageVo?.list?.size ?: 0
                         val isEmpty = size == 0
-                        if (page == INITIAL_PAGE && isEmpty) {
+                        if (page == GameCategoryViewModel.INITIAL_PAGE && isEmpty) {
                             setState(DataState.DataEmpty)
-                        } else if (size < DEFAULT_GAME_SIZE) {   //如果返回成功，但是数据size小于10，则表明列表已经加载到底部
+                        } else if (!hasMore) {   //如果hasMore为false，则表明列表已经加载到底部
                             setState(DataState.NoMoreData)
                             //给_gameListLiveData添加数据
                             val currentList =
@@ -67,20 +71,19 @@ class GameContentViewModel : BaseViewModel() {
                                     sortType
                                 )
                             }
-                            currentList.addAll(list?: emptyList())
+                            currentList.addAll(list ?: emptyList())
                             _gameListLiveData.value = currentList
                         } else {
                             setState(DataState.LoadSuccess)
-
                             val currentList =
                                 _gameListLiveData.value?.toMutableList() ?: mutableListOf()
-                            val list = it.dataAs<List<GameVo>>()?.map { gameVo ->
+                            val list = gamePageVo?.list?.map { gameVo ->
                                 gameVo.toGameContentData(
                                     (page * 100 + gameVo.id).toLong() ,
                                     sortType
                                 )
                             }
-                            currentList.addAll(list?: emptyList())
+                            currentList.addAll(list ?: emptyList())
                             _gameListLiveData.value = currentList
                         }
 
