@@ -1,4 +1,4 @@
-package arch.cayenne.module.chat.data.constants
+package arch.cayenne.lib.common.data.constants
 
 /**
  * @author: wenxi
@@ -6,7 +6,8 @@ package arch.cayenne.module.chat.data.constants
  * @description:
  */
 enum class MsgType {
-    BET,
+    BET_GAME,
+    BET_SPORT,
     EMOJI,
     AT,
     TEXT,

@@ -38,6 +38,8 @@ import arch.cayenne.module.order.ui.viewmodel.GameFilterViewModel
 import arch.cayenne.module.order.ui.viewmodel.OrderDateCustomViewModel
 import arch.cayenne.module.order.ui.viewmodel.OrderDateDialogViewModel
 import arch.cayenne.module.order.ui.viewmodel.OrderDateSelectorViewModel
+import arch.cayenne.module.order.ui.viewmodel.ChatChooseViewModel
+
 import org.koin.dsl.module
 
 class BetSlipModuleInitializer: DefaultInitializer<String> {
@@ -83,6 +85,7 @@ class BetSlipModuleInitializer: DefaultInitializer<String> {
         viewModelOf(::OrderDateCustomViewModel)
         viewModelOf(::OrderDateDialogViewModel)
         viewModelOf(::OrderDateSelectorViewModel)
+        viewModelOf(::ChatChooseViewModel)
     }
 
     private val repoModules = module {

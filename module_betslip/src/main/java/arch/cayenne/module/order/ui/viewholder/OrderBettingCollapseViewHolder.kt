@@ -15,7 +15,7 @@ import arch.cayenne.module.order.data.constants.OrderSportPageEnum
 
 class OrderBettingCollapseViewHolder(private val mBinding: ItemOrderSportBettingCollapseBinding): BaseViewHolder(mBinding) {
 
-    fun init(item: BetSlipOrderBean, type: OrderSportPageEnum, onDoubleClick: ((String) -> Unit)? = null) {
+    fun init(item: BetSlipOrderBean, type: OrderSportPageEnum, onDoubleClick: ((String) -> Unit)? = null,onSingleClick: (() -> Unit)? = null) {
 
         val betAmount = "${CurrencySymbols.getSymbol(item.currency)}${item.betAmount.getFormalMoney()}"
         mBinding.tvBetMoney.text = betAmount
@@ -48,6 +48,7 @@ class OrderBettingCollapseViewHolder(private val mBinding: ItemOrderSportBetting
                 } else {
                     // 單擊
                     lastClickTime = currentTime
+                    onSingleClick?.invoke()
                 }
             }
         }

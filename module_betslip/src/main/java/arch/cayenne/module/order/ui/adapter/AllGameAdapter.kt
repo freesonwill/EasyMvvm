@@ -8,12 +8,14 @@ import androidx.core.view.isVisible
 import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.base.ui.adapter.BaseAdapter
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
+import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.module.betslip.R
 import arch.cayenne.module.betslip.databinding.ItemOrderGameBinding
 import arch.cayenne.module.betslip.databinding.ItemOrderHeaderBinding
 import arch.cayenne.module.order.data.model.OrderAllBean
+import arch.cayenne.module.order.data.model.RecordsBean
 import arch.cayenne.module.order.ui.compare.OrderAllCompare
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
@@ -22,7 +24,7 @@ import com.bumptech.glide.request.RequestOptions
 class AllGameAdapter : BaseAdapter<OrderAllBean, BaseViewHolder, ViewBinding>(
     OrderAllCompare()
 ) {
-    private var listener: OnItemClickListener? = null
+    private var itemListener: RecyclerItemListener<OrderAllBean>? = null
 
     companion object {
         const val TYPE_HEADER = 0
@@ -34,6 +36,7 @@ class AllGameAdapter : BaseAdapter<OrderAllBean, BaseViewHolder, ViewBinding>(
     ) {
         val item = getItem(position)
         if (binding is ItemOrderGameBinding) {
+            binding.main.tag = position
             binding.tvGameName.text = item.gameName
             binding.tvGameSupport.text = item.supplier
             binding.tvGameTime.text = item.time
@@ -58,6 +61,13 @@ class AllGameAdapter : BaseAdapter<OrderAllBean, BaseViewHolder, ViewBinding>(
     }
 
     override fun createViewHolder(binding: ViewBinding, viewType: Int): BaseViewHolder {
+        if(binding is ItemOrderGameBinding){
+            binding.main.setOnClickListener {
+                val position = it.tag as Int
+                itemListener?.onItemClick(currentList[position],position)
+            }
+        }
+
         return BaseViewHolder(binding)
     }
 
@@ -70,8 +80,8 @@ class AllGameAdapter : BaseAdapter<OrderAllBean, BaseViewHolder, ViewBinding>(
         return item.isHeader
     }
 
-    fun setOnItemClickListener(onItemClickListener: OnItemClickListener) {
-        this.listener = onItemClickListener
+    fun setOnItemClickListener(onItemClickListener: RecyclerItemListener<OrderAllBean>) {
+        this.itemListener = onItemClickListener
     }
 
     private fun loadImage(context: Context, url: String, image: ImageView) {

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graoh_betslip">
+    <fragment
+        android:id="@+id/chatChooseBetFragment"
+        android:name="arch.cayenne.module.order.ui.fragment.ChatChooseBetFragment"
+        android:label="fragment_bet_choose"
+        tools:layout="@layout/fragment_choose_bet_layout">
+
+        <deepLink app:uri="walisport://module_betslip/chatChooseBetFragment" />
+    </fragment>
+</navigation>

@@ -25,8 +25,10 @@ class BetShareViewModel : BaseViewModel() {
     }
 
     fun closeDialog() {
+
         val value = _closeLivedata.value?.let { !it } ?: false
         _closeLivedata.value = value
+
     }
 
     fun getTestData(){
