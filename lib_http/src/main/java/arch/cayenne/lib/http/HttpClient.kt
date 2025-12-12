@@ -1,5 +1,6 @@
 package arch.cayenne.lib.http
 
+import android.util.Log
 import androidx.annotation.UiThread
 import androidx.annotation.WorkerThread
 import arch.cayenne.lib.base.data.remote.ApiFailedState
@@ -195,7 +196,20 @@ class HttpClient private constructor(private val retrofit: Retrofit) {
         }
 
         fun build(): HttpClient {
-            val okHttpBuilder = OkHttpClient.Builder().apply {
+            val okHttpBuilder = OkHttpClient.Builder().addInterceptor{
+                    chain ->
+                val request = chain.request()
+                val url = request.url.toString()        // 完整 URL（带 query 参数）
+                val method = request.method
+                Log.d("HTTPLog", "→ $method $url")
+
+                val startTime = System.nanoTime()
+                val response = chain.proceed(request)
+                val tookMs = (System.nanoTime() - startTime) / 1_000_000
+
+                Log.d("HTTPLog", "← ${response.code} $url (${tookMs}ms)")
+                response
+            }.apply {
                 connectTimeout(timeout, TimeUnit.SECONDS)
                 readTimeout(timeout, TimeUnit.SECONDS)
                 writeTimeout(timeout, TimeUnit.SECONDS)

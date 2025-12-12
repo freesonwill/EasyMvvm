@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.GridLayoutManager
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.ui.adapter.GridSpacingItemDecoration
-import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout.States
 import arch.cayenne.lib.common.ui.view.SimpleTabDataModel
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
@@ -24,7 +23,6 @@ import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import com.walisport.module.hall.R
 import com.walisport.module.hall.data.UniversalLoadMoreScrollListener
 import com.walisport.module.hall.data.constants.GameSortType
-import com.walisport.module.hall.data.toGameContentData
 import com.walisport.module.hall.databinding.FragmentHallCategoryBinding
 import com.walisport.module.hall.databinding.LayoutGameSortingMenuBinding
 import com.walisport.module.hall.databinding.TitleBarGameCategoryBinding
@@ -46,6 +44,8 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
 
     private var isExpanded = false
     private var sortingMenuBinding: LayoutGameSortingMenuBinding? = null
+    private var sortMenuClicked: Boolean = false
+
 
     // 當前排序類型，預設為按熱門聯賽排序
     private var currentSortType = GameSortType.HOT
@@ -118,10 +118,13 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
         mViewModel.apiStateListener.observe(viewLifecycleOwner) { state ->
             when (state) {
                 DataState.LoadSuccess -> {
-
+                    mBinding.rvGame.visibility = View.VISIBLE
+                    mBinding.clDynamics.visibility = View.GONE
                 }
 
                 DataState.DataEmpty -> {
+                    mBinding.rvGame.visibility = View.GONE
+                    mBinding.clDynamics.visibility = View.VISIBLE
                     mBinding.clDynamics.setState(
                         States.DATA_EMPTY ,
                         arch.cayenne.lib.common.R.string.data_empty.getString()
@@ -130,9 +133,13 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
                 }
 
                 DataState.NoMoreData -> {
+                    mBinding.rvGame.visibility = View.VISIBLE
+                    mBinding.clDynamics.visibility = View.GONE
                 }
 
                 DataState.NetworkUnavailable -> {
+                    mBinding.rvGame.visibility = View.GONE
+                    mBinding.clDynamics.visibility = View.VISIBLE
                     mBinding.clDynamics.setState(
                         States.NETWORK_ANOMALY() ,
                         arch.cayenne.lib.common.R.string.error_net.getString()
@@ -145,9 +152,7 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
         }
         mViewModel.gameListLiveData.observe(viewLifecycleOwner) {
             it.let { list ->
-                adapter.submitList(list.mapIndexed { index , vo ->
-                    vo.toGameContentData(currentSortType)
-                })
+                adapter.submitList(list)
             }
         }
 
@@ -233,8 +238,7 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
                 })
                 .start()
 
-            // 切換圖標為展開狀態
-            if (currentSortType == GameSortType.HOT) {
+            if (!sortMenuClicked) {
                 mBinding.customTabGroup.setSortBtnSrc(arch.cayenne.lib.common.R.drawable.ic_sort_expand)
                 mBinding.customTabGroup.setSortBtnTextColor(
                     SkinnableResourceManager.getColor(
@@ -265,6 +269,7 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
 
             // 點擊按熱門排序
             binding.tvSortByHot.clickNoRepeat {
+                sortMenuClicked = true
                 if (currentSortType != GameSortType.HOT) {
                     currentSortType = GameSortType.HOT
                     updateSortingMenuSelection()
@@ -278,6 +283,7 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
 
             // 點擊按最新排序
             binding.tvSortByNew.clickNoRepeat {
+                sortMenuClicked = true
                 if (currentSortType != GameSortType.NEW) {
                     currentSortType = GameSortType.NEW
                     updateSortingMenuSelection()
@@ -291,6 +297,8 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
             }
 
             binding.tvSortByHotReward.clickNoRepeat {
+                sortMenuClicked = true
+
                 if (currentSortType != GameSortType.HOT_REWARD) {
                     currentSortType = GameSortType.HOT_REWARD
                     updateSortingMenuSelection()
@@ -303,6 +311,8 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
             }
 
             binding.tvSortByColdReward.clickNoRepeat {
+                sortMenuClicked = true
+
                 if (currentSortType != GameSortType.COLD_REWARD) {
                     currentSortType = GameSortType.COLD_REWARD
                     updateSortingMenuSelection()

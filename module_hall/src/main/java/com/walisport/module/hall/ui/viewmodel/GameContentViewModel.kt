@@ -16,6 +16,7 @@ import com.walisport.module.hall.data.HallRepository
 import com.walisport.module.hall.data.HallRepository.Companion.DEFAULT_GAME_SIZE
 import com.walisport.module.hall.data.HotColdType
 import com.walisport.module.hall.data.constants.GameSortType
+import com.walisport.module.hall.data.toGameContentData
 import kotlinx.coroutines.launch
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
@@ -27,11 +28,13 @@ class GameContentViewModel : BaseViewModel() {
 
     private val repository: HallRepository by inject { parametersOf(viewModelScope) }
 
-    private val _gameListLiveData: MutableLiveData<List<GameVo>> = MutableLiveData()
-    val gameListLiveData: LiveData<List<GameVo>> = _gameListLiveData
+    private val _gameListLiveData: MutableLiveData<List<GameContentData>> = MutableLiveData()
+    val gameListLiveData: LiveData<List<GameContentData>> = _gameListLiveData
 
     private var page: Int = INITIAL_PAGE
     private var sortType: GameSortType = GameSortType.HOT
+    private var suppliers: List<Int> = emptyList()
+
 
     fun setSortType(sortType: GameSortType) {
         this.sortType = sortType
@@ -42,7 +45,7 @@ class GameContentViewModel : BaseViewModel() {
             setState(DataState.Loading)
             callApi(
                 {
-                    repository.queryGameList(page , sortType)
+                    repository.queryGameList(page , sortType , suppliers)
                 } ,
                 {
                     if (it is ApiResponseState.Failed) {
@@ -58,13 +61,26 @@ class GameContentViewModel : BaseViewModel() {
                             //给_gameListLiveData添加数据
                             val currentList =
                                 _gameListLiveData.value?.toMutableList() ?: mutableListOf()
-                            currentList.addAll(it.dataAs<List<GameVo>>() ?: emptyList())
+                            val list = it.dataAs<List<GameVo>>()?.map { gameVo ->
+                                gameVo.toGameContentData(
+                                    (page * 100 + gameVo.id).toLong() ,
+                                    sortType
+                                )
+                            }
+                            currentList.addAll(list?: emptyList())
                             _gameListLiveData.value = currentList
                         } else {
                             setState(DataState.LoadSuccess)
+
                             val currentList =
                                 _gameListLiveData.value?.toMutableList() ?: mutableListOf()
-                            currentList.addAll(it.dataAs<List<GameVo>>() ?: emptyList())
+                            val list = it.dataAs<List<GameVo>>()?.map { gameVo ->
+                                gameVo.toGameContentData(
+                                    (page * 100 + gameVo.id).toLong() ,
+                                    sortType
+                                )
+                            }
+                            currentList.addAll(list?: emptyList())
                             _gameListLiveData.value = currentList
                         }
 
@@ -75,7 +91,8 @@ class GameContentViewModel : BaseViewModel() {
     }
 
     fun applySorting() {
-        page = 0
+        page = INITIAL_PAGE
+        _gameListLiveData.value= emptyList()
         queryGameList()
     }
 
@@ -88,6 +105,6 @@ class GameContentViewModel : BaseViewModel() {
     }
 
     companion object {
-        const val INITIAL_PAGE = 0
+        const val INITIAL_PAGE = 1
     }
 }

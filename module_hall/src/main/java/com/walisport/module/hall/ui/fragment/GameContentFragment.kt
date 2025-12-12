@@ -47,6 +47,8 @@ class GameContentFragment : BaseFragment<GameContentViewModel , FragmentGameCont
     // 當前排序類型，預設為按熱門聯賽排序
     private var currentSortType = GameSortType.HOT
 
+    private var sortMenuClicked: Boolean = false
+
     private val defaultAnimDuration = 300L
 
     private val mockVendorList by lazy {
@@ -105,9 +107,7 @@ class GameContentFragment : BaseFragment<GameContentViewModel , FragmentGameCont
     override suspend fun createObserver() {
         mViewModel.gameListLiveData.observe(viewLifecycleOwner) {
             it.let { list ->
-                adapter.submitList(list.mapIndexed { index , vo ->
-                    vo.toGameContentData(currentSortType)
-                })
+                adapter.submitList(list)
             }
         }
     }
@@ -193,8 +193,7 @@ class GameContentFragment : BaseFragment<GameContentViewModel , FragmentGameCont
                 })
                 .start()
 
-            // 切換圖標為展開狀態
-            if (currentSortType == GameSortType.HOT) {
+            if (!sortMenuClicked) {
                 mBinding.customTabGroup.setSortBtnSrc(arch.cayenne.lib.common.R.drawable.ic_sort_expand)
                 mBinding.customTabGroup.setSortBtnTextColor(
                     SkinnableResourceManager.getColor(
@@ -224,6 +223,7 @@ class GameContentFragment : BaseFragment<GameContentViewModel , FragmentGameCont
 
             // 點擊按熱門排序
             binding.tvSortByHot.clickNoRepeat {
+                sortMenuClicked = true
                 if (currentSortType != GameSortType.HOT) {
                     currentSortType = GameSortType.HOT
                     updateSortingMenuSelection()
@@ -237,6 +237,7 @@ class GameContentFragment : BaseFragment<GameContentViewModel , FragmentGameCont
 
             // 點擊按最新排序
             binding.tvSortByNew.clickNoRepeat {
+                sortMenuClicked = true
                 if (currentSortType != GameSortType.NEW) {
                     currentSortType = GameSortType.NEW
                     updateSortingMenuSelection()
@@ -250,6 +251,7 @@ class GameContentFragment : BaseFragment<GameContentViewModel , FragmentGameCont
             }
 
             binding.tvSortByHotReward.clickNoRepeat {
+                sortMenuClicked = true
                 if (currentSortType != GameSortType.HOT_REWARD) {
                     currentSortType = GameSortType.HOT_REWARD
                     updateSortingMenuSelection()
@@ -262,6 +264,7 @@ class GameContentFragment : BaseFragment<GameContentViewModel , FragmentGameCont
             }
 
             binding.tvSortByColdReward.clickNoRepeat {
+                sortMenuClicked = true
                 if (currentSortType != GameSortType.COLD_REWARD) {
                     currentSortType = GameSortType.COLD_REWARD
                     updateSortingMenuSelection()
