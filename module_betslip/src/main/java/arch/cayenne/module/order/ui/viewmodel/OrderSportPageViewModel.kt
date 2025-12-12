@@ -22,8 +22,8 @@ class OrderSportPageViewModel(private val repo: UnsettleRepository) : BaseViewMo
         private const val PAGE_SIZE = 10
     }
 
-    private val _networkConnectedEvent = MutableLiveData<Event<DataState>>()
-    val networkConnectedEvent: LiveData<Event<DataState>> get() = _networkConnectedEvent
+    private val _intentEvent = MutableLiveData<Event<DataState>>()
+    val intentEvent: LiveData<Event<DataState>> get() = _intentEvent
 
     private val _earlySettledResultLiveData: MutableLiveData<Event<Boolean>> = MutableLiveData()
     val earlySettledResultLiveData: LiveData<Event<Boolean>> = _earlySettledResultLiveData
@@ -61,6 +61,14 @@ class OrderSportPageViewModel(private val repo: UnsettleRepository) : BaseViewMo
                 repo.getOrder(type.value, startTime, endTime, null, PAGE_SIZE)
             }, { resp ->
                 handleOrderResponse(resp, isLoadMore = false)
+                if (resp is ApiResponseState.Succeeded<*>) {
+                    val data = resp.data as  List<BetSlipOrderBean>
+                    _intentEvent.value = if (startTime != null && endTime != null && endTime != null && data.isEmpty()) {
+                        Event(DataState.DataEmpty)
+                    } else {
+                        Event(DataState.None)
+                    }
+                }
             })
         }
     }
@@ -206,7 +214,7 @@ class OrderSportPageViewModel(private val repo: UnsettleRepository) : BaseViewMo
 
     private fun checkNetwork(): Boolean {
         if (!repo.isConnected) {
-            _networkConnectedEvent.value = Event(DataState.NetworkUnavailable)
+            _intentEvent.value = Event(DataState.NetworkUnavailable)
             return false
         }
         return true
