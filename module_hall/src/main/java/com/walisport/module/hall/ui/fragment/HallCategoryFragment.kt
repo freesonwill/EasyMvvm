@@ -19,6 +19,7 @@ import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.touchBackPressed
+import arch.cayenne.lib.common.utils.helper.BackToTopHelper
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import com.walisport.module.hall.R
 import com.walisport.module.hall.data.UniversalLoadMoreScrollListener
@@ -91,6 +92,9 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
                 navigate(arch.cayenne.lib.res.R.string.nav_module_gamedetail.deeplink())
             })
             rvGame.adapter = adapter
+
+            BackToTopHelper(rvGame , ivBackToTop)
+
         }
 
         mBinding.root.touchBackPressed()
