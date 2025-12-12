@@ -17,6 +17,7 @@ import android.view.ViewTreeObserver
 import android.view.Window
 import android.view.WindowManager
 import android.view.animation.DecelerateInterpolator
+import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.data.constants.StatusBarMode
@@ -179,6 +180,12 @@ class CurrencyDialogFragment constructor() : BasePositionDialogFragment<Currency
                     start()
                 }
             }
+            ceSearch.addTextChangedListener(
+                afterTextChanged = { editable ->
+                    val keyword = editable.toString()
+                    balanceViewModel.search(keyword)
+                }
+            )
         }
 
     }

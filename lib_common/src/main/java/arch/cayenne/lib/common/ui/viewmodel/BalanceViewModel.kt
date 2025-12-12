@@ -15,6 +15,8 @@ class BalanceViewModel(
     private val _onBalanceChange = MutableLiveData<Long>()
     val onBalanceChange: LiveData<Long> = _onBalanceChange
 
+    var userCurrency: Pair<List<BaseCurrencyData.CurrencyContentData2>, List<BaseCurrencyData.CurrencyContentData2>>? = null
+
     private val _onUserCurrencyChange = MutableLiveData<Pair<List<BaseCurrencyData.CurrencyContentData2>, List<BaseCurrencyData.CurrencyContentData2>>>()
     val onUserCurrencyChange: LiveData<Pair<List<BaseCurrencyData.CurrencyContentData2>, List<BaseCurrencyData.CurrencyContentData2>>> = _onUserCurrencyChange
 
@@ -29,7 +31,18 @@ class BalanceViewModel(
 
     fun getUserCurrency() {
         viewModelScope.launch {
-            _onUserCurrencyChange.value = balanceRepository.getUserCurrency()
+            userCurrency = balanceRepository.getUserCurrency()
+            _onUserCurrencyChange.value = userCurrency
+        }
+    }
+
+    fun search(keyword: String) {
+        if (keyword.isEmpty()) {
+            _onUserCurrencyChange.value = userCurrency
+            return
+        }
+        viewModelScope.launch {
+            _onUserCurrencyChange.value = balanceRepository.search(keyword)
         }
     }
 
