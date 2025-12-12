@@ -26,4 +26,6 @@
     <string name="search_result_sub_title_tournament">%1$s 赛季</string>
     <string name="search_result_no_more_data">没有更多了</string>
     <string name="search_no_history_record">暂无搜索数据</string>
+    <string name="search_recommend_no_data">暂无搜索数据，请换个搜索词尝试</string>
+    <string name="search_timeout">搜索超时，请重试</string>
 </resources>
