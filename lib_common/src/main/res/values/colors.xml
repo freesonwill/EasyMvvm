@@ -235,4 +235,6 @@
     <color name="shader_end_diamond">#8C91E0</color>
     <color name="shader_end_black_diamond">#FFD8B6</color>
     <color name="shader_end_star_diamond">#FECAA0</color>
+    <color name="bg_league_item_selected">@color/color_003A42</color>
+    <color name="league_tab_tint_select">@color/color_00E0E5</color>
 </resources>

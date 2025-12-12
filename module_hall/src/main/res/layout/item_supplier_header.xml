@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<arch.cayenne.lib.skin.widget.SkinnableConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="48dp"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:gravity="center_vertical"
+    android:background="@color/color_1E1E1E"
+    android:paddingHorizontal="@dimen/dp_16"
+    android:paddingTop="@dimen/dp_12">
+
+    <ImageView
+        android:id="@+id/iv_header_hot"
+        android:layout_width="22dp"
+        android:layout_height="22dp"
+        android:layout_marginBottom="@dimen/dp_10"
+        android:src="@drawable/ic_hot_league_index"
+        app:layout_constraintBottom_toTopOf="@+id/v_divider"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
+        android:id="@+id/tv_header_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginBottom="@dimen/dp_10"
+        android:textColor="@color/color_999999"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toTopOf="@+id/v_divider"
+        app:layout_constraintStart_toEndOf="@+id/iv_header_hot"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="@string/supplier_section_title_hot" />
+
+    <arch.cayenne.lib.skin.widget.SkinnableView
+        android:id="@+id/v_divider"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_1"
+        android:background="@color/color_05FFFFFF"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+</arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>

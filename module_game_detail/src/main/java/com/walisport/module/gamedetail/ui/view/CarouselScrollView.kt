@@ -73,12 +73,9 @@ class CarouselScrollView(context: Context, attrs: AttributeSet?) :
                 // 註冊新 adapter 的觀察者並附加
                 value.registerAdapterDataObserver(adapterDataObserver)
                 value.attachToCarousel(this)
-                // 重置並重新填充視圖
-                resetAndPopulate()
-            } else {
-                // 如果設置為 null，清理所有資源，防止 memory leak
-                cleanupAllViews()
             }
+            // 重置並重新填充視圖
+            resetAndPopulate()
         }
 
     // 內部狀態
@@ -89,22 +86,16 @@ class CarouselScrollView(context: Context, attrs: AttributeSet?) :
     // 尺寸與佈局
     var itemWidth = 0
     var itemHeight = 0
-    var shrinkTopOffset = 0// shrink 狀態下的額外垂直偏移量
-    var shrinkBottomOffset = 0
     var itemSpacing = 0
     var itemCornerRadius = 0f
     private var screenCenter = 0
     private var verticalAlignToId: Int = -1 // 用於儲存外部 Guideline 的資源 ID
-    private var verticalAlignToBottomId: Int = -1
     private var indicatorId: Int = -1
     private var indicatorView: CarouselIndicator? = null
 
     // 滾動與動畫
     private val scroller: OverScroller = OverScroller(context)
     private val handler = Handler(Looper.getMainLooper())
-
-    // 追蹤所有活躍的動畫，以便在 view detach 時取消，防止 memory leak
-    private val activeAnimators = mutableListOf<ValueAnimator>()
 
     // 程式碼控制
     private var isProgrammaticScroll = false    // 標記當前的滾動是否由程式碼（如 `gotoPage`）觸發。由 `gotoPage` 和 `magnifyCenterItem` 的回調共同管理，確保其覆蓋整個非同步動畫鏈。
@@ -150,18 +141,6 @@ class CarouselScrollView(context: Context, attrs: AttributeSet?) :
                 verticalAlignToId = typedArray.getResourceId(
                     R.styleable.CarouselScrollView_carousel_verticalAlignTo,
                     -1 // 如果 XML 中未設置，則為 -1
-                )
-                verticalAlignToBottomId = typedArray.getResourceId(
-                        R.styleable.CarouselScrollView_carousel_verticalAlignToBottom,
-                -1 // 如果 XML 中未設置，則為 -1
-                )
-                shrinkTopOffset = typedArray.getDimensionPixelSize(
-                    R.styleable.CarouselScrollView_carousel_shrinkTopOffset,
-                    0 // 預設值
-                )
-                shrinkBottomOffset = typedArray.getDimensionPixelSize(
-                    R.styleable.CarouselScrollView_carousel_shrinkBottomOffset,
-                    0 // 預設值
                 )
                 indicatorId = typedArray.getResourceId(
                     R.styleable.CarouselScrollView_carousel_indicator,
@@ -253,22 +232,8 @@ class CarouselScrollView(context: Context, attrs: AttributeSet?) :
     }
 
     override fun onInterceptTouchEvent(ev: MotionEvent): Boolean {
-        // Check if the gesture is horizontal or vertical
-        when (ev.action) {
-            MotionEvent.ACTION_DOWN -> {
-                gestureDetector.onTouchEvent(ev)
-                // Always return false on DOWN to allow both parent and child to see subsequent events
-                // until one of them claims it. However, for ScrollView, we usually want super to handle logic.
-                // But we need to stop parent ViewPager from intercepting if it's a horizontal scroll.
-                // Standard ScrollView logic in onInterceptTouchEvent handles this by checking direction.
-                return super.onInterceptTouchEvent(ev)
-            }
-            MotionEvent.ACTION_MOVE -> {
-                // standard logic in super will handle nested scrolling
-                return super.onInterceptTouchEvent(ev)
-            }
-            else -> return super.onInterceptTouchEvent(ev)
-        }
+        // 總是攔截觸控事件，以確保 onTouchEvent 能接收到完整的事件序列
+        return true
     }
 
     override fun onDown(e: MotionEvent): Boolean {
@@ -332,13 +297,6 @@ class CarouselScrollView(context: Context, attrs: AttributeSet?) :
             return false
         }
 
-        // 優化 Nested Scroll：只有當我們還能往該方向滾動時，才禁止父 View (如 ViewPager2) 攔截。
-        // 如果已經滾動到邊緣且用戶試圖繼續往邊緣外滑動，允許父 View 攔截事件以切換頁面。
-        val direction = if (distanceX > 0) 1 else -1
-        if (canScrollHorizontally(direction)) {
-            parent?.requestDisallowInterceptTouchEvent(true)
-        }
-
         if (currentState == State.MAGNIFIED) {
             val isAtBoundary = (currentIndex == 0 || currentIndex == totalItemCount - 1)
             val isMovingInwardFromStart = (currentIndex == 0 && distanceX > 0)
@@ -400,56 +358,15 @@ class CarouselScrollView(context: Context, attrs: AttributeSet?) :
             try {
                 indicatorView = (parent as ViewGroup).findViewById(indicatorId)
             } catch (e: ClassCastException) {
-                Log.e("CarouselScrollView", "The view referenced by carousel_indicator is not a CarouselIndicator.${e.message}")
+                Log.e("CarouselScrollView", "The view referenced by carousel_indicator is not a CarouselIndicator.")
             }
         }
     }
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
-        // 取消所有運行中的動畫，防止 memory leak
-        cancelAllAnimations()
         // 移除所有待處理的消息和回調，防止內存洩漏
         handler.removeCallbacksAndMessages(null)
-        // 清除監聽器引用，防止 memory leak
-        onPageChangeListener = null
-        onStateChangeListener = null
-        // 清除 indicator 引用
-        indicatorView = null
-    }
-
-    /**
-     * 取消所有運行中的動畫，防止 memory leak
-     */
-    private fun cancelAllAnimations() {
-        // 取消所有 ValueAnimator
-        activeAnimators.forEach { animator ->
-            if (animator.isRunning) {
-                animator.cancel()
-            }
-        }
-        activeAnimators.clear()
-
-        // 停止 scroller
-        if (!scroller.isFinished) {
-            scroller.abortAnimation()
-        }
-    }
-
-    /**
-     * 清理所有視圖和資源，防止 memory leak
-     */
-    private fun cleanupAllViews() {
-        // 先取消所有動畫
-        cancelAllAnimations()
-
-        // 移除所有子視圖
-        container.removeAllViews()
-
-        // 重置狀態
-        currentIndex = 0
-        totalItemCount = 0
-        currentState = State.CAROUSEL
     }
 
     override fun onShowPress(e: MotionEvent) {}
@@ -488,18 +405,12 @@ class CarouselScrollView(context: Context, attrs: AttributeSet?) :
     }
 
     private fun resetAndPopulate() {
-        // 先取消所有運行中的動畫，防止 memory leak
-        cancelAllAnimations()
-
         // 移除所有舊的視圖
         container.removeAllViews()
-
         // 重置內部狀態
         currentIndex = 0
         totalItemCount = 0
-        currentState = State.CAROUSEL
         scrollTo(0, 0)
-
         // 從 adapter 重新填充
         populateFromAdapter()
     }
@@ -600,14 +511,9 @@ class CarouselScrollView(context: Context, attrs: AttributeSet?) :
                 addUpdateListener { scrollTo(it.animatedValue as Int, 0) }
                 addListener(object : android.animation.AnimatorListenerAdapter() {
                     override fun onAnimationEnd(animation: android.animation.Animator) {
-                        activeAnimators.remove(this@apply)
                         animationEndCallback.invoke()
                     }
-                    override fun onAnimationCancel(animation: android.animation.Animator) {
-                        activeAnimators.remove(this@apply)
-                    }
                 })
-                activeAnimators.add(this)
                 start()
             }
         } else {
@@ -655,78 +561,61 @@ class CarouselScrollView(context: Context, attrs: AttributeSet?) :
             return
         }
 
-        // 1. 先找出所有需要執行動畫的任務 (優化：只處理真正需要縮小的項目)
-        val viewsToAnimate = mutableListOf<View>()
-        for (i in 0 until container.childCount) {
-            val child = container.getChildAt(i)
-            // 修改判斷邏輯：如果當前尺寸不等於目標尺寸(itemWidth, shrinkHeight)，才需要動畫
-            if (child.width != itemWidth || child.height != itemHeight) {
-                viewsToAnimate.add(child)
-            }
-        }
+        // 使用原子計數器來追蹤所有並行的縮小動畫。
+        val animationCounter = java.util.concurrent.atomic.AtomicInteger()
+        var hasAnimationStarted = false
 
-        val widthDecrease = width - itemWidth
-        val animateScroll = widthDecrease > 0
-
-        // 2. 計算總任務數
-        // 注意：即使 duration = 0，animateSize 也會調用 callback，所以如果是透過 animateSize 處理的都要算
-        var pendingTasks = viewsToAnimate.size
-        // 只有當 duration > 0 時，滾動動畫才需要作為一個異步任務等待
-        if (animateScroll && duration > 0) {
-            pendingTasks++
-        }
-
-        // 3. 如果沒有異步任務，處理同步滾動後直接回調
-        if (pendingTasks == 0) {
-            // 處理滾動位置補償 (同步)
-            if (widthDecrease > 0) scrollBy(-(widthDecrease / 2), 0)
-            else if (widthDecrease < 0) scrollBy(-(widthDecrease / 2), 0)
-
-            handler.post { onEnd?.invoke() }
-            return
-        }
-
-        // 4. 使用原子計數器跟蹤任務
-        val animationCounter = java.util.concurrent.atomic.AtomicInteger(pendingTasks)
-        val taskEndCallback = {
+        // 創建一個所有子動畫共享的結束回調。
+        val childAnimationEndCallback = {
+            // 每當一個動畫結束，計數器減一。
             if (animationCounter.decrementAndGet() == 0) {
+                // 當計數器歸零，表示所有動畫都已結束，執行最終的回調。
                 handler.post { onEnd?.invoke() }
             }
         }
 
-        // 5. 執行 View 尺寸動畫
-        for (child in viewsToAnimate) {
-            animateSize(child, itemWidth, itemHeight, duration, taskEndCallback)
+        // 遍歷並啟動所有必要的縮小動畫。
+        for (i in 0 until container.childCount) {
+            val child = container.getChildAt(i)
+            // 只為那些當前不是標準尺寸的 View 執行縮小動畫
+            if (child.width != itemWidth || child.height != itemHeight) {
+                hasAnimationStarted = true
+                // 發現一個需要動畫的 View，計數器加一
+                animationCounter.incrementAndGet()
+                // 將我們統一的回調傳遞給 animateSize
+                animateSize(child, itemWidth, itemHeight, duration, childAnimationEndCallback)
+            }
         }
 
-        // 6. 執行滾動動畫
-        if (animateScroll) {
-            if (duration > 0) {
-                val startScrollX = scrollX
-                val endScrollX = scrollX - (widthDecrease / 2)
+        // 處理滾動補償動畫，並將其也納入計數
+        val widthDecrease = width - itemWidth
+        if (widthDecrease > 0) {
+            hasAnimationStarted = true
+            // 滾動動畫也算一個任務
+            animationCounter.incrementAndGet()
+            val startScrollX = scrollX
+            // 最終要滾動到的目標位置
+            val endScrollX = scrollX - (widthDecrease / 2)
 
-                ValueAnimator.ofInt(startScrollX, endScrollX).apply {
-                    this.duration = duration
-                    addUpdateListener { scrollTo(it.animatedValue as Int, 0) }
-                    addListener(object : android.animation.AnimatorListenerAdapter() {
-                        override fun onAnimationEnd(animation: android.animation.Animator) {
-                            activeAnimators.remove(this@apply)
-                            taskEndCallback.invoke()
-                        }
-                        override fun onAnimationCancel(animation: android.animation.Animator) {
-                            activeAnimators.remove(this@apply)
-                        }
-                    })
-                    activeAnimators.add(this)
-                    start()
-                }
-            } else {
-                // 如果不需要動畫但需要位移，直接執行 (理論上應在 pendingTasks=0 時處理，但這裡作為保險)
-                scrollBy(-(widthDecrease / 2), 0)
+            ValueAnimator.ofInt(startScrollX, endScrollX).apply {
+                this.duration = duration
+                addUpdateListener { scrollTo(it.animatedValue as Int, 0) }
+                addListener(object : android.animation.AnimatorListenerAdapter() {
+                    override fun onAnimationEnd(animation: android.animation.Animator) {
+                        // 滾動動畫結束時也通知計數器
+                        childAnimationEndCallback.invoke()
+                    }
+                })
+                start()
             }
         } else {
-            // 保持原邏輯：如果 widthDecrease <= 0 (雖然少見)，執行位移
-            if (widthDecrease < 0) scrollBy(-(widthDecrease / 2), 0)
+            // 如果是無動畫，直接滾動
+            scrollBy(-(widthDecrease / 2), 0)
+        }
+
+        // 如果循環結束後，沒有任何動畫被啟動，則直接執行最終回調
+        if (!hasAnimationStarted) {
+            handler.post { onEnd?.invoke() }
         }
     }
 
@@ -797,15 +686,10 @@ class CarouselScrollView(context: Context, attrs: AttributeSet?) :
 
             addListener(object : android.animation.AnimatorListenerAdapter() {
                 override fun onAnimationEnd(animation: android.animation.Animator) {
-                    activeAnimators.remove(this@apply)
                     // 當動畫真正結束時，執行回調
                     onEnd?.invoke()
                 }
-                override fun onAnimationCancel(animation: android.animation.Animator) {
-                    activeAnimators.remove(this@apply)
-                }
             })
-            activeAnimators.add(this)
             start()
         }
     }
@@ -816,10 +700,19 @@ class CarouselScrollView(context: Context, attrs: AttributeSet?) :
      */
     private fun animateVerticalAlignment(duration: Long = 200) {
         // 計算在縮小狀態下，所有小圖應有的基礎 paddingTop/topMargin
-        val anchorView = (parent as ViewGroup).findViewById<View>(verticalAlignToId)
-        val anchorViewBottom = (parent as ViewGroup).findViewById<View>(verticalAlignToBottomId)
-        val baseTopMargin = anchorView.top + shrinkTopOffset
-        itemHeight = anchorViewBottom.top - anchorView.top - shrinkBottomOffset
+        val baseTopMargin = if (verticalAlignToId != -1 && parent is ViewGroup) {
+            val anchorView = (parent as ViewGroup).findViewById<View>(verticalAlignToId)
+            if (anchorView != null) {
+                val anchorCenterY = anchorView.top + (anchorView.height / 2f)
+                val ourTop = this.top
+                val targetCenterY = anchorCenterY - ourTop
+                (targetCenterY - (itemHeight / 2f)).toInt().coerceAtLeast(0)
+            } else {
+                ((height - itemHeight) / 2).coerceAtLeast(0)
+            }
+        } else {
+            ((height - itemHeight) / 2).coerceAtLeast(0)
+        }
 
         // 遍歷所有子項目，為每個項目獨立設置動畫
         for (i in 0 until container.childCount) {
@@ -843,15 +736,6 @@ class CarouselScrollView(context: Context, attrs: AttributeSet?) :
                         lp.topMargin = animator.animatedValue as Int
                         child.layoutParams = lp // 應用新的佈局參數
                     }
-                    addListener(object : android.animation.AnimatorListenerAdapter() {
-                        override fun onAnimationEnd(animation: android.animation.Animator) {
-                            activeAnimators.remove(this@apply)
-                        }
-                        override fun onAnimationCancel(animation: android.animation.Animator) {
-                            activeAnimators.remove(this@apply)
-                        }
-                    })
-                    activeAnimators.add(this)
                     start()
                 }
             }

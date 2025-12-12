@@ -20,4 +20,13 @@
         <declare-styleable name="RoundedImageView">
             <attr name="roundedCornerRadius" format="dimension" />
         </declare-styleable>
+
+    <declare-styleable name="CustomFilterSideBarView">
+        <attr name="showCircle" format="boolean" />
+        <attr name="circleRadius" format="dimension|reference" />
+        <attr name="hotIcon" format="reference" />
+        <attr name="textColor" format="color|reference" />
+        <attr name="selectedBgTextColor" format="color|reference" />
+    </declare-styleable>
+
 </resources>
