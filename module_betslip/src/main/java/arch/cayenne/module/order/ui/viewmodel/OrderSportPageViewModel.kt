@@ -10,13 +10,13 @@ import arch.cayenne.lib.common.ui.viewmodel.Event
 import arch.cayenne.lib.database.entity.BetSlipData
 import arch.cayenne.lib.database.entity.BetSlipOrderBean
 import arch.cayenne.lib.database.entity.BetSlipOrderHeaderBean
-import arch.cayenne.module.betslip.data.repo.UnsettleRepository
+import arch.cayenne.module.order.data.repo.NewOrderRepository
 import arch.cayenne.module.order.data.constants.OrderSportPageEnum
 import arch.cayenne.module.order.utils.TimeUtils
 import galaxy.common.proto.Common
 import kotlinx.coroutines.launch
 
-class OrderSportPageViewModel(private val repo: UnsettleRepository) : BaseViewModel() {
+class OrderSportPageViewModel(private val repo: NewOrderRepository) : BaseViewModel() {
 
     companion object {
         private const val PAGE_SIZE = 10

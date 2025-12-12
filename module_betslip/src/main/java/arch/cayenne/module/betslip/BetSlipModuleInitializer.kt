@@ -15,6 +15,7 @@ import arch.cayenne.module.betslip.data.repo.OrderSlipRepository
 import arch.cayenne.module.betslip.data.repo.ReserveSlipRepository
 import arch.cayenne.module.betslip.data.repo.SportPickerRepository
 import arch.cayenne.module.betslip.data.repo.UnsettleRepository
+import arch.cayenne.module.order.data.repo.NewOrderRepository
 import arch.cayenne.module.betslip.ui.viewmodel.BetSlipFilterViewModel
 import arch.cayenne.module.betslip.ui.viewmodel.BetSlipOtherSettingViewModel
 import arch.cayenne.module.betslip.ui.viewmodel.ConfirmingSlipViewModel
@@ -93,6 +94,7 @@ class BetSlipModuleInitializer: DefaultInitializer<String> {
         factoryOf(::UnsettleRepository)
         factoryOf(::BetSlipOtherSettingRepository)
         factoryOf(::ConfirmingSlipRepository)
+        factoryOf(::NewOrderRepository)
     }
 
     private val moduleList:List<Module> = listOf(managerModule, viewModules, repoModules)
