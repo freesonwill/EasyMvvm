@@ -11,12 +11,14 @@ import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
+import arch.cayenne.lib.common.data.constants.BizUrl
 import arch.cayenne.lib.common.data.constants.UserDataKey
 import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getColor
+import arch.cayenne.lib.common.utils.ext.touchBackPressed
 import arch.cayenne.lib.common.web.WLSWebViewClient
-import com.walisport.module.topup.databinding.FragmentRealtimeCashbackBinding
-import com.walisport.module.topup.ui.viewmodel.RealTimeCashBackViewModel
+import com.walisport.module.topup.databinding.FragmentRebateBinding
+import com.walisport.module.topup.ui.viewmodel.RebateViewModel
 import org.koin.java.KoinJavaComponent.inject
 import kotlin.reflect.KClass
 
@@ -24,45 +26,39 @@ import kotlin.reflect.KClass
  * 实时返水页面， 内容由Web提供
 
  */
-class RealTimeCashBackFragment : BaseFragment<RealTimeCashBackViewModel, FragmentRealtimeCashbackBinding>() {
+class RebateFragment : BaseFragment<RebateViewModel, FragmentRebateBinding>() {
 
-    override val vbClass: KClass<FragmentRealtimeCashbackBinding> = FragmentRealtimeCashbackBinding::class
-    override val vmClass: KClass<RealTimeCashBackViewModel> = RealTimeCashBackViewModel::class
+    override val vbClass: KClass<FragmentRebateBinding> = FragmentRebateBinding::class
+    override val vmClass: KClass<RebateViewModel> = RebateViewModel::class
 
     private val manager: UserDataManager by inject(UserDataManager::class.java)
 
-
     override fun initView(savedInstanceState: Bundle?) {
         launch {
+            initTitleBar()
             initWebView()
-            val uid = manager.getValue(UserDataKey.KEY_UID, -1)
-            val token = manager.getValue(UserDataKey.KEY_TOKEN, "")
-
-            mBinding.webView.loadUrl("https://www.google.com/")
-
+            mBinding.webView.loadUrl(BizUrl.REBATE.url)
         }
     }
 
     private fun initWebView() {
         with(mBinding.webView) {
-
-            setWebViewClient(object :
+            webViewClient = object :
                 WLSWebViewClient(this) {
-
                 override fun onFormResubmission(
-                    view: WebView?,
-                    dontResend: Message?,
+                    view: WebView? ,
+                    dontResend: Message? ,
                     resend: Message
                 ) {
                     super.onFormResubmission(view, dontResend, resend)
                     resend.sendToTarget()
                 }
 
-                override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
+                override fun onPageStarted(view: WebView? , url: String? , favicon: Bitmap?) {
                     super.onPageStarted(view, url, favicon)
                 }
 
-                override fun onPageFinished(view: WebView, url: String?) {
+                override fun onPageFinished(view: WebView , url: String?) {
                     view.settings.apply {
                         blockNetworkImage = false
                         if (!loadsImagesAutomatically) {
@@ -73,25 +69,23 @@ class RealTimeCashBackFragment : BaseFragment<RealTimeCashBackViewModel, Fragmen
                     super.onPageFinished(view, url)
 
                 }
-            })
-
+            }
             requestFocus()
-            setWebChromeClient(object : WebChromeClient() {
+            webChromeClient = object : WebChromeClient() {
                 override fun onShowFileChooser(
-                    webView: WebView,
-                    filePathCallback: ValueCallback<Array<Uri>>,
+                    webView: WebView ,
+                    filePathCallback: ValueCallback<Array<Uri>> ,
                     fileChooserParams: FileChooserParams
                 ): Boolean {
                     return true
                 }
 
-                override fun onProgressChanged(view: WebView, newProgress: Int) {
+                override fun onProgressChanged(view: WebView , newProgress: Int) {
                     super.onProgressChanged(view, newProgress)
-                    //                showProgress(newProgress)
                 }
-            })
-
-            setBackgroundColor(arch.cayenne.lib.common.R.color.black.getColor())
+            }
+            setBackgroundColor(arch.cayenne.lib.common.R.color.title_bg.getColor())
+            setAttachedFragment(this@RebateFragment)
         }
     }
 
@@ -101,10 +95,15 @@ class RealTimeCashBackFragment : BaseFragment<RealTimeCashBackViewModel, Fragmen
     override suspend fun createObserver() {
     }
 
+    private fun initTitleBar() {
+        val type = arguments?.getString("type") ?: ""
+        mBinding.root.touchBackPressed()
+    }
+
     override fun onStart() {
-        StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND(autoPadding = false)
+        StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND()
         StatusBarConfig.statusBarDarkFont = false
-        setStatusBar(StatusBarConfig,mBinding.root)
+        setStatusBar(StatusBarConfig ,mBinding.root)
         super.onStart()
     }
 
