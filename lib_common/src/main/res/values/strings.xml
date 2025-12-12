@@ -35,6 +35,7 @@
     <string name="currency_setting_2">以法币金额显示加密货币</string>
     <string name="fiat">现金</string>
     <string name="crypto">加密货币</string>
+    <string name="currency_empty">没有该币种或已被您设置隐藏</string>
 
     <string name="title_share_to">分享至</string>
     <string name="title_share_copy_order">复制注单</string>
