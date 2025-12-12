@@ -40,7 +40,7 @@ class HallRepository(
                     } ,
                     onSuccess = { resp ->
                         if (resp.code == 0) {
-                            cancellableContinuation.resume(ApiResponseState.Succeeded(resp.data.list))
+                            cancellableContinuation.resume(ApiResponseState.Succeeded(resp.data))
                         } else {
                             "response------>${resp.code},${resp.message}".loge(TAG)
                             cancellableContinuation.resume(
