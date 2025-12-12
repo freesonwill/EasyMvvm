@@ -12,6 +12,7 @@ import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
+import arch.cayenne.lib.common.data.constants.HomePageEnum
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
 import arch.cayenne.lib.common.utils.biz.CommonBiz
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
@@ -125,7 +126,7 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
                     id++, arch.cayenne.lib.common.R.drawable.ic_drawer_bet_record,
                     arch.cayenne.lib.common.R.string.drawer_bet_record
                 ) {
-                    showToast(arch.cayenne.lib.common.R.string.drawer_bet_record.getString())
+                    CommonBiz.jump2HomePage(this, HomePageEnum.BETSLIP)
                 },
                 CommonFeaturesBean(
                     id++, arch.cayenne.lib.common.R.drawable.ic_drawer_realtime_cashback,
@@ -138,19 +139,19 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
                     id++, arch.cayenne.lib.common.R.drawable.ic_drawer_recently_played,
                     arch.cayenne.lib.common.R.string.drawer_recently_played
                 ) {
-                    showToast(arch.cayenne.lib.common.R.string.drawer_recently_played.getString())
+                    CommonBiz.jump2HomePage(this , HomePageEnum.ME)
                 },
                 CommonFeaturesBean(
                     id++, arch.cayenne.lib.common.R.drawable.ic_drawer_game_collection,
                     arch.cayenne.lib.common.R.string.drawer_game_collections
                 ) {
-                    showToast(arch.cayenne.lib.common.R.string.drawer_game_collections.getString())
+                    CommonBiz.jump2HomePage(this , HomePageEnum.ME)
                 },
                 CommonFeaturesBean(
                     id++, arch.cayenne.lib.common.R.drawable.ic_drawer_match_collection,
                     arch.cayenne.lib.common.R.string.drawer_match_collections
                 ) {
-                    navigatePage(arch.cayenne.lib.res.R.string.nav_module_collectlist_fragment.deeplink())
+                    CommonBiz.jump2HomePage(this , HomePageEnum.ME)
                 },
 
                 CommonFeaturesBean(
