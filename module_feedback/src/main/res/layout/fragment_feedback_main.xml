@@ -1,161 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<arch.cayenne.lib.common.ui.view.InterceptedLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/title_bg"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical"
+    app:interceptedDirection="RIGHT">
 
-    <data>
 
-        <variable
-            name="model"
-            type="com.walisport.module.feedback.ui.viewmodel.FeedbackMainViewModel" />
-    </data>
-
-    <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
+    <arch.cayenne.lib.common.web.WLSWebView
+        android:id="@+id/webView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:background="@color/title_bg">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <!-- 标题 -->
-        <arch.cayenne.lib.common.ui.view.TitleBarView
-            android:id="@+id/title_bar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <androidx.appcompat.widget.LinearLayoutCompat
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_20"
-            android:paddingStart="@dimen/dp_20"
-            android:paddingEnd="@dimen/dp_20"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <arch.cayenne.lib.skin.widget.SkinnableTextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:text="@string/feedback_type_label"
-                android:textColor="@color/feedback_main_text"
-                android:textSize="@dimen/sp_14" />
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:layout_width="@dimen/dp_8"
-                android:layout_height="@dimen/dp_10"
-                android:layout_gravity="center_vertical"
-                app:srcCompat="@drawable/asterisk" />
-
-            <arch.cayenne.lib.skin.widget.SkinnableTextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:text="@string/select_at_least_one"
-                android:textColor="@color/feedback_secondary_text"
-                android:textSize="@dimen/sp_14" />
-
-        </androidx.appcompat.widget.LinearLayoutCompat>
-
-        <!-- 反馈类型 -->
-        <com.google.android.flexbox.FlexboxLayout
-            android:id="@+id/flexboxLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:flexWrap="wrap"
-            android:layout_marginStart="@dimen/dp_20"
-            app:justifyContent="flex_start"
-            app:alignItems="flex_start"
-            tools:ignore="MissingClass"
-            android:layout_marginEnd="@dimen/dp_10"
-            />
-
-
-        <!-- 反馈描述 -->
-        <androidx.appcompat.widget.LinearLayoutCompat
-            android:layout_marginTop="33dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingStart="@dimen/dp_20"
-            android:paddingEnd="@dimen/dp_20"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <arch.cayenne.lib.skin.widget.SkinnableTextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:text="@string/feedback_description_label"
-                android:textColor="@color/feedback_main_text"
-                android:textSize="@dimen/sp_14" />
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:layout_width="@dimen/dp_8"
-                android:layout_height="@dimen/dp_10"
-                android:layout_gravity="center_vertical"
-                app:srcCompat="@drawable/asterisk" />
-
-            <arch.cayenne.lib.skin.widget.SkinnableTextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:text="@{String.format(@string/word_limit, model.maxInputLength)}"
-                android:textColor="@color/feedback_secondary_text"
-                android:textSize="@dimen/sp_14" />
-        </androidx.appcompat.widget.LinearLayoutCompat>
-
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <!-- 输入框 -->
-            <arch.cayenne.lib.skin.widget.SkinnableEditText
-                android:id="@+id/edit_feedback"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_200"
-                android:layout_marginStart="@dimen/dp_20"
-                android:layout_marginEnd="@dimen/dp_20"
-                android:layout_marginTop="@dimen/dp_10"
-                android:background="@drawable/edit_text_background"
-                android:gravity="top|start"
-                android:hint="@string/edit_text_hint"
-                android:inputType="textMultiLine"
-                android:maxLength="@{model.maxInputLength}"
-                android:paddingStart="@dimen/dp_12"
-                android:paddingTop="@dimen/dp_12"
-                android:paddingEnd="@dimen/dp_12"
-                android:paddingBottom="@dimen/dp_30"
-                android:textColor="@color/feedback_text_color"
-                android:textColorHint="@color/feedback_text_color_hint"
-                android:textSize="@dimen/sp_14"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-            <arch.cayenne.lib.skin.widget.SkinnableTextView
-                android:id="@+id/tv_edit_text_length"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/dp_12"
-                android:layout_marginBottom="@dimen/dp_12"
-                android:textColor="@color/feedback_text_color_hint"
-                android:textSize="@dimen/sp_14"
-                app:layout_constraintBottom_toBottomOf="@id/edit_feedback"
-                app:layout_constraintEnd_toEndOf="@+id/edit_feedback" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-        <!-- 提交按钮 -->
-        <arch.cayenne.lib.skin.widget.SkinnableButton
-            android:id="@+id/button_submit"
-            android:layout_width="match_parent"
-            android:layout_marginTop="@dimen/dp_16"
-            android:layout_height="@dimen/dp_48"
-            android:layout_marginStart="@dimen/dp_20"
-            android:layout_marginEnd="@dimen/dp_20"
-            android:background="@drawable/button_bkg"
-            android:text="@string/submit"
-            android:textColor="@color/btn_text_color"
-            android:textSize="@dimen/sp_15"
-            />
-
-    </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
-</layout>
+</arch.cayenne.lib.common.ui.view.InterceptedLinearLayout>
