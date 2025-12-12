@@ -6,7 +6,7 @@ import retrofit2.Response
 import retrofit2.http.GET
 
 interface IConfig : IApi {
-    @GET ("config/currency")
+    @GET ("api/config/currency")
     suspend fun currency() : Response<HttpApiResponse<List<CurrencyInfo>>>
 
 }
