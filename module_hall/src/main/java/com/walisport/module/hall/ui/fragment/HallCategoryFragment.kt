@@ -93,7 +93,7 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
             })
             rvGame.adapter = adapter
 
-            BackToTopHelper(rvGame , ivBackToTop)
+            BackToTopHelper(rvGame , ivBackToTop, true)
 
         }
 
