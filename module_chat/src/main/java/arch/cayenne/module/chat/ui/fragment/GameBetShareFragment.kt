@@ -52,13 +52,11 @@ class GameBetShareFragment : BaseFragment<GameBetShareViewModel, FragmentGameSha
 
         mBinding.webView.addJsBridgeListen {
            lifecycleScope.launch(Dispatchers.Main) {
-               "jsBridge ${it.type}".logd("aaa")
                when(it.type){
                    "back" ->{
                        shareViewModel.closeDialog()
                    }
                    "expand" ->{
-                       "打开expand".logd("aaa")
                        shareViewModel.expandDialog()
                    }
                    "openPage" ->{

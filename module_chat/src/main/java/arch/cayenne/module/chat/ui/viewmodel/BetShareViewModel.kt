@@ -20,19 +20,14 @@ class BetShareViewModel : BaseViewModel() {
 
 
     fun expandDialog() {
-        "expandDialog1".logd("aaa")
-
         val value = _expandLivedata.value?.let { !it } ?: false
         _expandLivedata.value = value
-        "expandDialog $value".logd("aaa")
-
     }
 
     fun closeDialog() {
 
         val value = _closeLivedata.value?.let { !it } ?: false
         _closeLivedata.value = value
-        "closeDialog $value".logd("aaa")
 
     }
 

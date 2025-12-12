@@ -169,7 +169,7 @@ class BetShareDialogFragment :
                     lp.height = anim.animatedValue as Int
                     container.layoutParams = lp
                 }
-                duration = 200
+                duration = 0
                 start()
             }
         }

@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.base.ui.adapter.BaseAdapter
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
+import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
 import arch.cayenne.lib.database.entity.BetSlipData
 import arch.cayenne.lib.database.entity.BetSlipOrderBean
 import arch.cayenne.lib.database.entity.BetSlipOrderHeaderBean
@@ -23,6 +24,7 @@ class OrderBettingAdapter(private val type: OrderSportPageEnum, private val list
     
     // 記錄每個 item 的展開/收起狀態
     private val itemCollapseStates = mutableMapOf<String, Boolean>()
+    private var itemListener:RecyclerItemListener<BetSlipOrderBean>? = null
     override fun convertPlus(
         holder: BaseViewHolder,
         binding: ViewBinding,
@@ -42,12 +44,14 @@ class OrderBettingAdapter(private val type: OrderSportPageEnum, private val list
                 val bodyHolder = holder as OrderBettingViewHolder
                 val item = getItem(position) as BetSlipOrderBean
 
-                bodyHolder.init(item, type) { betId ->
+                bodyHolder.init(item, type, onDoubleClick = { betId ->
                     // 雙擊回調
                     val isCurrentlyCollapsed = itemCollapseStates[betId] ?: false
                     itemCollapseStates[betId] = !isCurrentlyCollapsed
                     notifyItemChanged(position)
-                }
+                }, onSingleClick = {
+                    itemListener?.onItemClick(item,position)
+                })
 
                 if (type == OrderSportPageEnum.UNSETTLED) {
                     bodyHolder.getEarlySettleButton().setOnClickListener {
@@ -59,12 +63,14 @@ class OrderBettingAdapter(private val type: OrderSportPageEnum, private val list
                 val collapseHolder = holder as OrderBettingCollapseViewHolder
                 val item = getItem(position) as BetSlipOrderBean
 
-                collapseHolder.init(item, type) { betId ->
+                collapseHolder.init(item, type, onDoubleClick = { betId ->
                     // 雙擊回調
                     val isCurrentlyCollapsed = itemCollapseStates[betId] ?: false
                     itemCollapseStates[betId] = !isCurrentlyCollapsed
                     notifyItemChanged(position)
-                }
+                }, onSingleClick = {
+                    itemListener?.onItemClick(item,position)
+                })
             }
         }
     }
@@ -102,6 +108,10 @@ class OrderBettingAdapter(private val type: OrderSportPageEnum, private val list
 
             else -> BODY_EXPANDED
         }
+    }
+
+    fun setItemClickListener(listener: RecyclerItemListener<BetSlipOrderBean>){
+        itemListener = listener
     }
 
     companion object {
