@@ -98,8 +98,10 @@ class MeFeaturesFragment : BaseFragment<FeaturesViewModel, FragmentMeFeaturesBin
                     showToast(arch.cayenne.lib.common.R.string.drawer_help.getString())
                 },
                 FeaturesBean(
-                    id++, arch.cayenne.lib.common.R.drawable.ic_drawer_feedback,
-                    arch.cayenne.lib.common.R.string.drawer_feedback
+                    id++ , arch.cayenne.lib.common.R.drawable.ic_drawer_feedback ,
+                    arch.cayenne.lib.common.R.string.drawer_feedback ,
+                    true ,
+                    ""
                 ) {
                     navigate(arch.cayenne.lib.res.R.string.nav_module_feedback_fragment.deeplink())
                 },
