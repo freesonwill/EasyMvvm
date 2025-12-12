@@ -48,6 +48,9 @@ class BalanceView : FrameLayout {
             f.setOnDismissListener {
                 rotateArrow(false)
             }
+            f.setonItemClickListener {
+                setMoney(it.amount)
+            }
             f.show(childFragmentManager)
         }
 
@@ -76,7 +79,7 @@ class BalanceView : FrameLayout {
     fun setBalanceViewModel(viewModel: BalanceViewModel, lifecycleOwner: LifecycleOwner) {
         this.viewModel = viewModel
         viewModel.onBalanceChange.observe(lifecycleOwner) {
-            setMoney(it.getFormalMoney())
+            setMoney(it)
         }
     }
 }

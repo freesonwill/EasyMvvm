@@ -53,6 +53,8 @@ class CurrencyDialogFragment constructor() : BasePositionDialogFragment<Currency
     }
 
     private var dismissListener: (() -> Unit)? = null
+    private var onClickListener: ((BaseCurrencyData.CurrencyContentData2) -> Unit)? = null
+
     private val balanceViewModel: BalanceViewModel by viewModel()
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -125,7 +127,12 @@ class CurrencyDialogFragment constructor() : BasePositionDialogFragment<Currency
     override val vbClass: KClass<FragmentCurrencyDialogBinding> = FragmentCurrencyDialogBinding::class
     override val vmClass: KClass<CurrencyDialogViewModel> = CurrencyDialogViewModel::class
 
-    val currencyAdapter: CurrencyAdapter by lazy { CurrencyAdapter() }
+    val currencyAdapter: CurrencyAdapter by lazy {
+        CurrencyAdapter{
+            this.onClickListener?.invoke(it)
+            doExitAnim()
+        }
+    }
     val currencySettingAdapter: CurrencySettingAdapter by lazy { CurrencySettingAdapter() }
 
 
@@ -244,5 +251,9 @@ class CurrencyDialogFragment constructor() : BasePositionDialogFragment<Currency
 
     fun setOnDismissListener(listener: () -> Unit) {
         this.dismissListener = listener
+    }
+
+    fun setonItemClickListener(listener: (BaseCurrencyData.CurrencyContentData2) -> Unit) {
+        this.onClickListener = listener
     }
 }

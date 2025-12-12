@@ -41,6 +41,7 @@ class BalanceRepository(
                 if (!currency.virtual) {
                     fiat.add(
                         BaseCurrencyData.CurrencyContentData2(
+                            id = currency.id,
                             icon = "",
                             currencyName = currency.name,
                             amount = it.value.getFormalMoney(),
@@ -50,6 +51,7 @@ class BalanceRepository(
                 } else {
                     crypto.add(
                         BaseCurrencyData.CurrencyContentData2(
+                            id = currency.id,
                             icon = "",
                             currencyName = currency.name,
                             amount = it.value.getFormalMoney(),
@@ -74,6 +76,7 @@ class BalanceRepository(
                 if (!it.virtual) {
                     fiat.add(
                         BaseCurrencyData.CurrencyContentData2(
+                            id = it.id,
                             icon = "",
                             currencyName = it.name,
                             amount = user.balanceWallet[it.id]!!.getFormalMoney(),
@@ -83,6 +86,7 @@ class BalanceRepository(
                 } else {
                     crypto.add(
                         BaseCurrencyData.CurrencyContentData2(
+                            id = it.id,
                             icon = "",
                             currencyName = it.name,
                             amount = user.balanceWallet[it.id]!!.getFormalMoney(),
