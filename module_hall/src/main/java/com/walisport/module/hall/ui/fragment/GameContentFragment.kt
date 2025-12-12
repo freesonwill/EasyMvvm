@@ -21,6 +21,7 @@ import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.helper.BackToTopHelper
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import com.walisport.module.hall.R
+import com.walisport.module.hall.data.Category
 import com.walisport.module.hall.data.UniversalLoadMoreScrollListener
 import com.walisport.module.hall.data.constants.GameSortType
 import com.walisport.module.hall.databinding.FragmentGameContentBinding
@@ -32,7 +33,16 @@ import kotlin.reflect.KClass
 
 class GameContentFragment : BaseFragment<GameContentViewModel , FragmentGameContentBinding>() {
     companion object {
-        fun newInstance() = GameContentFragment()
+        private const val ARG_CATEGORY_TYPE = "arg_category_type"
+
+        fun newInstance(
+            categoryType: Int ,
+        ) = GameContentFragment().apply {
+            arguments = Bundle().apply {
+                putInt(ARG_CATEGORY_TYPE , categoryType)
+
+            }
+        }
     }
 
     override val vbClass: KClass<FragmentGameContentBinding> = FragmentGameContentBinding::class
@@ -82,8 +92,6 @@ class GameContentFragment : BaseFragment<GameContentViewModel , FragmentGameCont
             customTabGroup.submitTabList(mockVendorList)
             BackToTopHelper(rvGame , ivBackToTop)
 
-            mViewModel.setSortType(currentSortType)
-            mViewModel.queryGameList()
         }
     }
 
@@ -109,6 +117,16 @@ class GameContentFragment : BaseFragment<GameContentViewModel , FragmentGameCont
                 adapter.submitList(list)
             }
         }
+    }
+
+    override fun initData() {
+        super.initData()
+        arguments?.apply {
+            mViewModel.setCategory(this.getInt(ARG_CATEGORY_TYPE))
+        }
+        mViewModel.setSupplier(emptyList())
+        mViewModel.setSortType(currentSortType)
+        mViewModel.queryGameList()
     }
 
     /**
