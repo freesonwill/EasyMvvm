@@ -1,22 +1,24 @@
 package com.walisport.module.feedback.ui.fragment
 
+import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
-import android.view.LayoutInflater
-import android.widget.CheckBox
-import androidx.navigation.fragment.findNavController
-import arch.cayenne.lib.base.data.remote.ApiResponseState
+import android.os.Message
+import android.webkit.ValueCallback
+import android.webkit.WebChromeClient
+import android.webkit.WebView
+import arch.cayenne.lib.base.data.constants.StatusBarMode
+import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
-import arch.cayenne.lib.base.utils.LogUtils
-import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
-import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+import arch.cayenne.lib.base.ui.fragment.launch
+import arch.cayenne.lib.common.data.constants.BizUrl
+import arch.cayenne.lib.common.data.manager.UserDataManager
+import arch.cayenne.lib.common.utils.ext.ResourceExt.getColor
 import arch.cayenne.lib.common.utils.ext.touchBackPressed
-import arch.cayenne.lib.common.utils.helper.showToast
-import com.google.protobuf.ByteString
-import com.walisport.module.feedback.R
+import arch.cayenne.lib.common.web.WLSWebViewClient
 import com.walisport.module.feedback.databinding.FragmentFeedbackMainBinding
 import com.walisport.module.feedback.ui.viewmodel.FeedbackMainViewModel
+import org.koin.java.KoinJavaComponent.inject
 import kotlin.reflect.KClass
 
 /**
@@ -27,81 +29,96 @@ class FeedbackMainFragment : BaseFragment<FeedbackMainViewModel, FragmentFeedbac
     override val vbClass: KClass<FragmentFeedbackMainBinding> = FragmentFeedbackMainBinding::class
     override val vmClass: KClass<FeedbackMainViewModel> = FeedbackMainViewModel::class
 
+    private val manager: UserDataManager by inject(UserDataManager::class.java)
+
     override fun initView(savedInstanceState: Bundle?) {
-        mBinding.model = mViewModel
-        with(mBinding) {
-            titleBar.loadGeneralTitleBar(R.string.feedback_title.getString(), {
-                findNavController().navigateUp()
-            })
+        launch {
+            initTitleBar()
+            initWebView()
+            mBinding.webView.loadUrl(BizUrl.FEEDBACK.url)
         }
-        mBinding.root.touchBackPressed()
+    }
+
+    private fun initWebView() {
+        with(mBinding.webView) {
+            webViewClient = object :
+                WLSWebViewClient(this) {
+                override fun onFormResubmission(
+                    view: WebView? ,
+                    dontResend: Message? ,
+                    resend: Message
+                ) {
+                    super.onFormResubmission(view, dontResend, resend)
+                    resend.sendToTarget()
+                }
+
+                override fun onPageStarted(view: WebView? , url: String? , favicon: Bitmap?) {
+                    super.onPageStarted(view, url, favicon)
+                }
+
+                override fun onPageFinished(view: WebView , url: String?) {
+                    view.settings.apply {
+                        blockNetworkImage = false
+                        if (!loadsImagesAutomatically) {
+                            loadsImagesAutomatically = true
+                        }
+                    }
+                    visibility = android.view.View.VISIBLE
+                    super.onPageFinished(view, url)
+
+                }
+            }
+            requestFocus()
+            webChromeClient = object : WebChromeClient() {
+                override fun onShowFileChooser(
+                    webView: WebView ,
+                    filePathCallback: ValueCallback<Array<Uri>> ,
+                    fileChooserParams: FileChooserParams
+                ): Boolean {
+                    return true
+                }
+
+                override fun onProgressChanged(view: WebView , newProgress: Int) {
+                    super.onProgressChanged(view, newProgress)
+                }
+            }
+            setBackgroundColor(arch.cayenne.lib.common.R.color.title_bg.getColor())
+            setAttachedFragment(this@FeedbackMainFragment)
+        }
     }
 
     override fun initListener() {
-        mBinding.editFeedback.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-
-            override fun afterTextChanged(s: Editable?) {
-                val inputLength = s?.length ?: 0
-                mBinding.tvEditTextLength.text =
-                    if (inputLength == 0) "" else "$inputLength/${mViewModel.maxInputLength}"
-
-                mViewModel.setTextInputted(inputLength > 0)
-            }
-        })
-
-        mBinding.buttonSubmit.clickNoRepeat(2000) {
-            val codeArray: ByteString = mViewModel.feedbackLabelList.value?.let { labels ->
-                mViewModel.feedbackLabelsToByteString(labels)
-            }!!
-            mViewModel.feedbackContentAdd(
-                mBinding.tvEditTextLength.text.toString().trim(),
-                codeArray
-            )
-        }
     }
 
     override suspend fun createObserver() {
-        with(mViewModel) {
-            btnEnabled.observe(viewLifecycleOwner) {
-                mBinding.buttonSubmit.isEnabled = it
-            }
-            feedbackLabelList.observe(viewLifecycleOwner) {
-                it!!.withIndex().forEach { (index, label) ->
-                    val flexboxView = LayoutInflater.from(requireContext())
-                        .inflate(
-                            R.layout.feedback_label_flexbox_view,
-                            mBinding.flexboxLayout,
-                            false
-                        )
-                    var checkBox = flexboxView.findViewById<CheckBox>(R.id.checkbox)
-                    checkBox.text = label.name
-                    checkBox.isSelected = it[index].flags
-                    checkBox.setOnCheckedChangeListener { _, bool ->
-                        it[index].flags = bool
-                        hasTrueFlags()
-                    }
-                    mBinding.flexboxLayout.addView(flexboxView)
-                }
-            }
-            feedbackContentAdd.observe(viewLifecycleOwner) {
-                if (it){
-                    showToast(getString(R.string.feedback_meg))
-                    requireActivity().onBackPressedDispatcher.onBackPressed()
-                }
-            }
-        }
     }
 
-    fun hasTrueFlags() {
-        val bol: Boolean = mViewModel.feedbackLabelList.value?.any { it.flags } ?: false
-        mViewModel.setCheckBoxSelected(bol)
+    private fun initTitleBar() {
+        val type = arguments?.getString("type") ?: ""
+        mBinding.root.touchBackPressed()
     }
 
-    override fun initData() {
-        mViewModel.getFeedbackLabelList()
-        super.initData()
+    override fun onStart() {
+        StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND()
+        StatusBarConfig.statusBarDarkFont = false
+        setStatusBar(StatusBarConfig ,mBinding.root)
+        super.onStart()
+    }
+
+    override fun onResume() {
+        mBinding.webView.onResume()
+        mBinding.webView.resumeTimers()
+        super.onResume()
+    }
+
+    override fun onPause() {
+        mBinding.webView.onPause()
+        mBinding.webView.pauseTimers()
+        super.onPause()
+    }
+
+    override fun onDestroy() {
+        mBinding.webView.destroy()
+        super.onDestroy()
     }
 }
