@@ -57,13 +57,6 @@ class GameContentViewModel : BaseViewModel() {
     private val _buttonHasSelection = UnPeekLiveData<Boolean>()
     val buttonHasSelection: UnPeekLiveData<Boolean> = _buttonHasSelection
 
-
-    fun getCategoryList() {
-
-        gameCategoryList
-    }
-
-
     fun getSuppliers(type: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             repository.observeSupplierByGameTypeId(type)
@@ -79,6 +72,11 @@ class GameContentViewModel : BaseViewModel() {
     fun setCategory(category: Int) {
         this.category = category
     }
+
+    fun getCategory() : Int{
+       return category
+    }
+
 
     fun setSupplier(suppliers: List<Int>) {
         this.suppliers = suppliers
@@ -160,7 +158,7 @@ class GameContentViewModel : BaseViewModel() {
 
     // 保存選中狀態（在確認時調用）
     fun saveTournamentSelections(selections: List<Int>) {
-        LogUtils.e("updateTournamentButtonStyle--------->${selections}")
+        LogUtils.e("updateTournamentButtonStyle--------->${selections},${category},${this}")
         _savedTournamentSelections.value = selections
         // 通知按鈕狀態更新
         _buttonHasSelection.value = selections.isNotEmpty()

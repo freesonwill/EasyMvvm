@@ -78,7 +78,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="invisible"
-        app:constraint_referenced_ids="ll_search_bar,tv_section_title, iv_search_icon_supplier, ce_search_supplier" />
+         />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_tournament_list"
@@ -141,11 +141,9 @@
 
     <arch.cayenne.lib.common.ui.view.DynamicStateLayout
         android:id="@+id/cl_dynamics"
+        android:paddingTop="@dimen/dp_170"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ll_search_bar" />
+         />
 </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>

@@ -125,9 +125,9 @@ class HallRepository(
         gameTypeList: List<GameCategoryVo>
     ): List<GameSupplierDataModel> {
         var list: MutableList<GameSupplierDataModel> = mutableListOf()
-        gameTypeList.forEach { data ->
-            supplier.forEach {
-                data.supplierIds.forEach { ids ->
+        gameTypeList.forEach { data ->//分类列表
+            data.supplierIds.forEach { ids ->//分类列表 供应商列表ID
+            supplier.forEach {it-> //供应商列表
                     if (ids == it.id) {
                         list.add(
                             GameSupplierDataModel(
@@ -135,7 +135,7 @@ class HallRepository(
                                 id = it.id ,
                                 hot = it.hot ,
                                 icon = it.icon ,
-                                gameTypeId = ids ,
+                                gameTypeId = data.category ,
                                 name = it.name ,
                                 isSelected = 0
                             )
