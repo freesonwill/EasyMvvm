@@ -295,6 +295,7 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
                 sortMenuClicked = true
                 if (currentSortType != GameSortType.HOT) {
                     currentSortType = GameSortType.HOT
+                    mBinding.tvRewardTips.visibility = View.GONE
                     updateSortingMenuSelection()
                     setSortBtnText()
                     mViewModel.setSortType(currentSortType)
@@ -309,6 +310,7 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
                 sortMenuClicked = true
                 if (currentSortType != GameSortType.NEW) {
                     currentSortType = GameSortType.NEW
+                    mBinding.tvRewardTips.visibility = View.GONE
                     updateSortingMenuSelection()
                     setSortBtnText()
                     mViewModel.setSortType(currentSortType)
@@ -324,6 +326,8 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
 
                 if (currentSortType != GameSortType.HOT_REWARD) {
                     currentSortType = GameSortType.HOT_REWARD
+                    mBinding.tvRewardTips.visibility = View.VISIBLE
+                    mBinding.aplHomeBanner.setExpanded(true, true)
                     updateSortingMenuSelection()
                     setSortBtnText()
                     mViewModel.setSortType(currentSortType)
@@ -338,6 +342,8 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
 
                 if (currentSortType != GameSortType.COLD_REWARD) {
                     currentSortType = GameSortType.COLD_REWARD
+                    mBinding.tvRewardTips.visibility = View.VISIBLE
+                    mBinding.aplHomeBanner.setExpanded(true, true)
                     updateSortingMenuSelection()
                     setSortBtnText()
                     mViewModel.setSortType(currentSortType)
