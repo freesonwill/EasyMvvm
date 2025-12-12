@@ -5,6 +5,7 @@ import arch.cayenne.lib.http.data.HttpApiResponse
 import com.walisport.module.hall.data.constants.GameSortType
 import retrofit2.Response
 import retrofit2.http.GET
+import retrofit2.http.POST
 import retrofit2.http.Query
 
 /**
@@ -14,7 +15,7 @@ import retrofit2.http.Query
  */
 interface IHallApi : IApi {
 
-    @GET("/api/game")
+    @POST("/api/game")
     suspend fun queryGameList(
         @Query("page") page: Int ,//页码
         @Query("pageSize") pageSize: Int ,//页大小
