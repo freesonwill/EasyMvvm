@@ -6,6 +6,7 @@ import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
 import arch.cayenne.lib.database.dao.CurrencyConfigDao
 import arch.cayenne.lib.database.dao.InfoDao
 import arch.cayenne.lib.database.dao.UserDataDao
+import arch.cayenne.lib.database.entity.UserDataBean
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.map
 
@@ -30,11 +31,12 @@ class BalanceRepository(
         return infoDao.getCurrency()
     }
 
-    suspend fun getUserCurrency(): Pair<List<BaseCurrencyData.CurrencyContentData2>, List<BaseCurrencyData.CurrencyContentData2>> {
-        val user = userDataDao.getUser()
+    private suspend fun mappingCurrency(user: UserDataBean?) : Pair<List<BaseCurrencyData.CurrencyContentData2>, List<BaseCurrencyData.CurrencyContentData2>> {
         val currencyList = currencyConfigDao.getCurrencyConfigList()
         val fiat = arrayListOf<BaseCurrencyData.CurrencyContentData2>()
         val crypto = arrayListOf<BaseCurrencyData.CurrencyContentData2>()
+        if (user == null) return Pair(fiat, crypto)
+
         user.balanceWallet.forEach {
             val currency = currencyList.find { currency -> currency.id == it.key }
             if (currency != null) {
@@ -64,6 +66,16 @@ class BalanceRepository(
         return Pair(fiat, crypto)
     }
 
+    fun observeUserCurrency() = userDataDao.observeUser().map {
+        mappingCurrency(it)
+    }
+
+    suspend fun getUserCurrency(): Pair<List<BaseCurrencyData.CurrencyContentData2>, List<BaseCurrencyData.CurrencyContentData2>> {
+        val user = userDataDao.getUser()
+        return mappingCurrency(user)
+
+    }
+
     suspend fun search(keyword: String): Pair<List<BaseCurrencyData.CurrencyContentData2>, List<BaseCurrencyData.CurrencyContentData2>> {
         val pattern = keywordToSqlPattern(keyword)
         val firstChar = if (keyword.isNotEmpty()) keyword.first().toString() else ""
@@ -71,6 +83,8 @@ class BalanceRepository(
         val currencyList = currencyConfigDao.searchByKeyword(pattern, firstChar)
         val fiat = arrayListOf<BaseCurrencyData.CurrencyContentData2>()
         val crypto = arrayListOf<BaseCurrencyData.CurrencyContentData2>()
+        if (user == null) return Pair(fiat, crypto)
+
         currencyList.forEach {
             if (user.balanceWallet.contains(it.id)) {
                 if (!it.virtual) {

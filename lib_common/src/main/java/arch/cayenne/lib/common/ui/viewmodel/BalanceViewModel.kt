@@ -23,18 +23,20 @@ class BalanceViewModel(
 
     init {
         viewModelScope.launch {
-            val fait = balanceRepository.getUserCurrency().first
-            val currentLanguage = Locale.getDefault().language
-            //針對其使語言的特別處理，中日韓顯示該國貨幣，其餘顯示美金
-            //TODO icon沒處理，其他語言的處理還有缺
-            if (currentLanguage == "zh" && fait.find { it.unit == "¥" } != null) {
-                _onBalanceChange.value = fait.find { it.unit == "¥" }!!.amount
-            } else if (fait.find { it.unit == "$" } != null) {
-                _onBalanceChange.value = fait.find { it.unit == "$" }!!.amount
-            } else if (fait.isNotEmpty()){
-                _onBalanceChange.value = fait.first().amount
-            } else {
-                _onBalanceChange.value = "0.00"
+            balanceRepository.observeUserCurrency().collect {
+                val fait = it.first
+                val currentLanguage = Locale.getDefault().language
+                //針對其使語言的特別處理，中日韓顯示該國貨幣，其餘顯示美金
+                //TODO icon沒處理，其他語言的處理還有缺
+                if (currentLanguage == "zh" && fait.find { it.unit == "¥" } != null) {
+                    _onBalanceChange.value = fait.find { it.unit == "¥" }!!.amount
+                } else if (fait.find { it.unit == "$" } != null) {
+                    _onBalanceChange.value = fait.find { it.unit == "$" }!!.amount
+                } else if (fait.isNotEmpty()){
+                    _onBalanceChange.value = fait.first().amount
+                } else {
+                    _onBalanceChange.value = "0.00"
+                }
             }
         }
 
