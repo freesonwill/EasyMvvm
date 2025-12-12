@@ -75,6 +75,11 @@ class OrderSportPageFragment :
                 f.show(childFragmentManager)
             }
         }
+        mViewModel.networkConnectedEvent.observe(viewLifecycleOwner)  { event ->
+            event.getContentIfNotHandled(viewLifecycleOwner)?.let {
+
+            }
+        }
     }
 
     override suspend fun createObserver() {

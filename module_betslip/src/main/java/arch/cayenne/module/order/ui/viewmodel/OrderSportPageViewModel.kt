@@ -18,6 +18,10 @@ import kotlinx.coroutines.launch
 
 class OrderSportPageViewModel(private val repo: UnsettleRepository) : BaseViewModel() {
 
+    companion object {
+        private const val PAGE_SIZE = 10
+    }
+
     private val _networkConnectedEvent = MutableLiveData<Event<DataState>>()
     val networkConnectedEvent: LiveData<Event<DataState>> get() = _networkConnectedEvent
 
@@ -33,18 +37,104 @@ class OrderSportPageViewModel(private val repo: UnsettleRepository) : BaseViewMo
     private val _orderDataListener = MutableLiveData<List<BetSlipData>>()
     val orderDataListener: LiveData<List<BetSlipData>> = _orderDataListener
 
+    private var lastCursorBetTime: Long? = null
+    private var startTime: Long? = null
+    private var endTime: Long? = null
+    private var currentType: OrderSportPageEnum? = null
+    private var canLoadMore = true
+
+    /**
+     * 第一筆資料載入
+     * @param type 訂單類型
+     * @param startTime 開始時間
+     * @param endTime 結束時間
+     */
     fun setOrderData(type: OrderSportPageEnum, startTime: Long? = null, endTime: Long? = null) {
-        callApi({
-            repo.getOrder(type.value, startTime, endTime, null, 10)
-        }, { resp ->
-            if (resp is ApiResponseState.Succeeded<*>) {
-                val data = resp.data as List<BetSlipOrderBean>
-                setOrderData(data)
-            }
-        })
+        if (checkNetwork()) {
+            this.currentType = type
+            this.startTime = startTime
+            this.endTime = endTime
+            this.lastCursorBetTime = null // 第一筆載入不需要 cursor
+            this.canLoadMore = true
+            
+            callApi({
+                repo.getOrder(type.value, startTime, endTime, null, PAGE_SIZE)
+            }, { resp ->
+                handleOrderResponse(resp, isLoadMore = false)
+            })
+        }
     }
 
-    private fun setOrderData(data: List<BetSlipOrderBean>) {
+    /**
+     * 載入更多資料
+     */
+    fun loadMore() {
+        if (checkNetwork() && canLoadMore && currentType != null && lastCursorBetTime != null) {
+            callApi({
+                repo.getOrder(currentType!!.value, startTime, endTime, lastCursorBetTime, PAGE_SIZE)
+            }, { resp ->
+                handleOrderResponse(resp, isLoadMore = true)
+            })
+        }
+    }
+
+    /**
+     * 重新載入資料
+     */
+    fun refresh() {
+        if (checkNetwork() && currentType != null) {
+            this.lastCursorBetTime = null // 重新載入不需要 cursor
+            this.canLoadMore = true
+            
+            callApi({
+                repo.getOrder(currentType!!.value, startTime, endTime, null, PAGE_SIZE)
+            }, { resp ->
+                handleOrderResponse(resp, isLoadMore = false)
+            })
+        }
+    }
+
+    /**
+     * 檢查是否可以載入更多
+     */
+    fun canLoadMore(): Boolean = canLoadMore
+
+    /**
+     * 統一處理訂單 API 響應
+     * @param resp API 響應
+     * @param isLoadMore 是否為載入更多操作
+     */
+    private fun handleOrderResponse(resp: ApiResponseState, isLoadMore: Boolean) {
+        if (resp is ApiResponseState.Succeeded<*>) {
+            val newData = resp.data as List<BetSlipOrderBean>
+            
+            if (newData.isNotEmpty()) {
+                val finalData = if (isLoadMore) {
+                    // 載入更多：合併現有資料與新資料
+                    val currentOrders = getCurrentOrderBeans()
+                    currentOrders + newData
+                } else {
+                    // 第一次載入或重新載入：直接使用新資料
+                    newData
+                }
+                
+                processOrderData(finalData)
+                lastCursorBetTime = newData.last().betTime
+                canLoadMore = newData.size >= PAGE_SIZE // 如果返回資料 < 10，表示沒有更多資料
+            } else {
+                canLoadMore = false
+            }
+        }
+    }
+
+    /**
+     * 從當前 LiveData 中提取所有的 OrderBean 資料
+     */
+    private fun getCurrentOrderBeans(): List<BetSlipOrderBean> {
+        return _orderDataListener.value?.filterIsInstance<BetSlipOrderBean>() ?: emptyList()
+    }
+
+    private fun processOrderData(data: List<BetSlipOrderBean>) {
         // 按日期分組訂單
         val dataMap = groupOrdersByDate(data)
 
