@@ -13,6 +13,7 @@ enum class BizUrl(val url: String) {
     GAME_BET_SHARE("https://dev.ra781.com/web-3n1/orderDetail?settleId=s3&name=南京红姐&level=90") ,
     REBATE("https://dev.ra781.com/web-3n1/rebate") ,
     INVITE("https://dev.ra781.com/web-3n1/invite") ,
-    PARTNER("https://dev.ra781.com/web-3n1/partner"),
-    VIP("https://dev.ra781.com/web-3n1/vip")
+    PARTNER("https://dev.ra781.com/web-3n1/partner") ,
+    VIP("https://dev.ra781.com/web-3n1/vip") ,
+    HELP("https://www.ve657.com/help-docs/help/")
 }
