@@ -66,7 +66,7 @@ class GameCategoryViewModel : BaseViewModel() {
                             //给_gameListLiveData添加数据
                             val currentList =
                                 _gameListLiveData.value?.toMutableList() ?: mutableListOf()
-                            val list = it.dataAs<List<GameVo>>()?.map { gameVo ->
+                            val list = gamePageVo?.list?.map { gameVo ->
                                 gameVo.toGameContentData(
                                     (page * 100 + gameVo.id).toLong() ,
                                     sortType
