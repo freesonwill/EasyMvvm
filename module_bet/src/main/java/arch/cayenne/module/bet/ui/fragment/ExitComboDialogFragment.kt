@@ -7,7 +7,7 @@ import arch.cayenne.lib.base.ui.fragment.BaseDialogFragment
 import arch.cayenne.lib.base.ui.viewmodel.EmptyViewModel
 import arch.cayenne.lib.common.R
 import arch.cayenne.module.bet.databinding.DialogExitComboBinding
-import com.blankj.utilcode.util.ScreenUtils
+import me.jessyan.autosize.utils.ScreenUtils.getScreenSize
 import kotlin.reflect.KClass
 
 /**
@@ -51,7 +51,7 @@ class ExitComboDialogFragment: BaseDialogFragment<EmptyViewModel, DialogExitComb
     override fun onStart() {
         super.onStart()
         dialog?.window?.apply {
-            setLayout((ScreenUtils.getScreenWidth() * 0.9f).toInt(), ViewGroup.LayoutParams.WRAP_CONTENT)
+            setLayout((getScreenSize(requireContext())[0] * 0.9f).toInt(), ViewGroup.LayoutParams.WRAP_CONTENT)
             setGravity(Gravity.CENTER)
             setWindowAnimations(R.style.CommonDialogAnimation)
         }
