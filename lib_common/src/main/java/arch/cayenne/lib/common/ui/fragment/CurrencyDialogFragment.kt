@@ -198,6 +198,10 @@ class CurrencyDialogFragment constructor() : BasePositionDialogFragment<Currency
     override fun initListener() {
         balanceViewModel.onUserCurrencyChange.observe(viewLifecycleOwner) { (fiat, crypto) ->
             val list = arrayListOf<BaseCurrencyData>()
+            if (fiat.isEmpty() && crypto.isEmpty()) {
+                list.add(BaseCurrencyData.CurrencyTitleData(getString(R.string.currency_empty)))
+            }
+
             if (fiat.isNotEmpty()) {
                 list.add(BaseCurrencyData.CurrencyTitleData(getString(R.string.fiat)))
                 list.addAll(fiat)
