@@ -3,14 +3,14 @@
     <!-- 選中狀態 -->
     <item android:state_selected="true">
         <shape android:shape="rectangle">
-            <corners android:radius="5dp" />
+            <corners android:radius="20dp" />
             <solid android:color="@color/bg_league_item_selected" />
         </shape>
     </item>
     <!-- 未選中狀態 -->
     <item>
         <shape android:shape="rectangle">
-            <corners android:radius="5dp" />
+            <corners android:radius="20dp" />
             <solid android:color="@color/color_0FFFFFFF" />
             <!--            <stroke android:width="0.8dp" android:color="@color/bg_league_item_unselect" />-->
         </shape>
