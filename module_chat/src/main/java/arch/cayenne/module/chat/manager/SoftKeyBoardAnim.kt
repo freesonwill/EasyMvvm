@@ -6,19 +6,25 @@ import android.annotation.SuppressLint
 import android.view.View
 import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.animation.addListener
+import androidx.core.view.isVisible
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.module.chat.data.constants.KeyBoardType
 import arch.cayenne.module.chat.data.constants.KeyboardActionType
+import arch.cayenne.module.chat.databinding.FragmentLiveChatBinding
 
 /**
  * @author: wenxi
  * @date: 18/11/25 14:52
- * @description:
+ * @description: 软件盘切换 输入框切换 输入框按钮切换相关动画实现
  */
 object SoftKeyBoardAnim {
 
 
+    /**
+     * 表情键盘的上下移动动画
+     * */
     fun mainTransYAnim(offset: Int, main: ConstraintLayout): ObjectAnimator {
         val anim = ObjectAnimator.ofFloat(main, "translationY", offset.toFloat())
         anim.interpolator = FastOutSlowInInterpolator()
@@ -48,8 +54,9 @@ object SoftKeyBoardAnim {
     }
 
 
-    //输入框在有内容和键盘弹出时的icon动画
+
     /**
+     * 输入框在有内容和键盘弹出时的at bet emoji language 按钮的动画
      * @param isExpand true 上移 false 下移
      * */
     @SuppressLint("Recycle")
@@ -161,9 +168,14 @@ object SoftKeyBoardAnim {
         return animSet
     }
 
-    //                         没有弹出键盘 307(左边距：8 右边距: 10)  弹出键盘 355（左右边距:10）1.15  输入款有内容: 282(左边距：12,有边距：11) 0.91
-//        transX                  0 (58)                           -48   (10)                        -46     (12)
-    @SuppressLint("Recycle")
+/**
+ * ChatEtInput长度和移动动画
+ *      没有弹出键盘 307(左边距：8 右边距: 10)  弹出键盘 355（左右边距:10）1.15  输入款有内容: 282(左边距：12,有边距：11) 0.91
+ * transX     0 (58)                           -48   (10)                        -46     (12)
+ *
+ *
+ * **/
+      @SuppressLint("Recycle")
     fun etInputContentAnim(
         isEmpty: Boolean,
         currentType: KeyBoardType,
@@ -198,6 +210,128 @@ object SoftKeyBoardAnim {
         }
 
         return mainAnim
+    }
+
+    /**
+     * 当ChatEtInput 内容有变化的时候调用
+     * */
+    fun etAnimWhenEtContentChange(
+        binding: FragmentLiveChatBinding,
+        currentType: KeyBoardType,
+        onStart: () -> Unit
+    ) {
+        binding.apply {
+            when {
+                chatEtInput.length() == 0 && chatTvSend.isVisible && currentType != KeyBoardType.CHAT -> { //键盘弹出的时候发送 有内容到无内容
+                    etInputContentAnim(
+                        true,
+                        currentType,
+                        chatLlInput,
+                        chatTvSend
+                    ).apply {
+                        duration = 170L
+                        addListener(onEnd = {
+                            chatTvSend.isVisible = false
+                        })
+                        start()
+                    }
+                }
+
+                chatEtInput.length() == 0 && chatTvSend.isVisible && currentType == KeyBoardType.CHAT -> {//键盘收缩的时候发送，有内容到无内容
+//                    input输入框扩展 -> 按钮动画
+                    val btnAnim = AnimatorSet().apply {
+                        playTogether(
+                            *SoftKeyBoardAnim.inputIconAnim(
+                                true,
+                                ivAt,
+                                ivBet,
+                                ivEmoji,
+                                ivLanguage
+                            )
+                        )
+                        addListener(onStart = {
+                            onStart.invoke()
+                        })
+                    }
+                    val inputAnim = etInputContentAnim(
+                        true,
+                        currentType,
+                        chatLlInput,
+                        chatTvSend
+                    ).apply {
+                        addListener(onEnd = {
+                            chatTvSend.isVisible = false
+                        })
+                    }
+                    AnimatorSet().apply {
+                        duration = 170
+                        playSequentially(inputAnim, btnAnim)
+                        start()
+                    }
+
+                }
+
+                chatEtInput.length() > 0 && !chatTvSend.isVisible -> { //无内容到有内容
+                    etInputContentAnim(
+                        false,
+                        currentType,
+                        chatLlInput,
+                        chatTvSend
+                    ).apply {
+                        duration = 170L
+                        addListener(onStart = {
+                            chatTvSend.isVisible = true
+                        })
+                        start()
+                    }
+                }
+
+                else -> {
+
+                }
+            }
+        }
+
+    }
+
+    /**
+     * 当前状态为chat时，向输入框插入字符串时输入框的动画
+     * **/
+     fun addBetToEtInputAnim(
+        binding: FragmentLiveChatBinding,
+        currentType: KeyBoardType,
+        onStart: () -> Unit,
+        onEnd:() -> Unit
+    ) {
+        binding.apply {
+            val btnAnim = AnimatorSet().apply {
+                playTogether(
+                    *inputIconAnim(
+                        true,
+                        ivAt,
+                        ivBet,
+                        ivEmoji,
+                        ivLanguage
+                    )
+                )
+                addListener(onStart = {
+//                    updateInputIcon(true)
+                    onStart.invoke()
+                }, onEnd = {
+//                    updateInputIcon(false)
+                    onEnd.invoke()
+                })
+            }
+            val inputEtAnim =
+                etInputContentAnim(false, currentType, chatLlInput, chatTvSend)
+            val animSet = AnimatorSet()
+            animSet.playSequentially(btnAnim, inputEtAnim)
+            animSet.duration = 170L
+            animSet.addListener(onStart = {
+                chatTvSend.isVisible = true
+            })
+            animSet.start()
+        }
     }
 
 }

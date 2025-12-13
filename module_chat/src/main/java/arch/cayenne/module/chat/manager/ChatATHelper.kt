@@ -179,6 +179,13 @@ class ChatATHelper(
         }
     }
 
+    fun addAtInEt(){
+        chatEtInput.apply {
+            text.insert(selectionStart,"@")
+        }
+
+    }
+
     // 移除at消息背景
     fun removeMentionSpan(editText: EditText, position: Int, count: Int) {
         val spannable = SpannableStringBuilder(editText.text)

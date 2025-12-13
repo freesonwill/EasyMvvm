@@ -19,7 +19,7 @@ import kotlinx.coroutines.launch
 /**
  * @author: wenxi
  * @date: 27/9/25 14:42
- * @description:
+ * @description: chat聊天相关api监听
  */
 class ChatServerController(
     private val scope: CoroutineScope,

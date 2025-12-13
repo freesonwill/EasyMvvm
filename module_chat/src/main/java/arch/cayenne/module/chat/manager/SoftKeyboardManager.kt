@@ -33,7 +33,7 @@ import kotlin.math.abs
 /**
  * @author: wenxi
  * @date: 29/9/25 18:05
- * @description:
+ * @description: 键盘切换动画管理，获取软件盘高度，管理表情键盘高度，键盘状态等
  */
 class SoftKeyboardManager(
     private val scope: CoroutineScope,

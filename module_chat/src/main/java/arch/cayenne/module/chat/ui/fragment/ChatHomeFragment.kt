@@ -46,6 +46,7 @@ import java.util.regex.Pattern
 import kotlin.reflect.KClass
 import arch.cayenne.module.chat.manager.ChatATHelper
 import arch.cayenne.module.chat.manager.SoftKeyBoardAnim
+import arch.cayenne.module.chat.manager.SoftKeyBoardAnim.addBetToEtInputAnim
 import arch.cayenne.module.chat.manager.SoftKeyBoardAnim.etInputContentAnim
 import arch.cayenne.module.chat.manager.SoftKeyBoardAnim.getInputAnim
 import arch.cayenne.module.chat.manager.SoftKeyBoardAnim.inputIconAnim
@@ -70,8 +71,42 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
 
         arguments?.let { //TODO  首页过来的 之后需要处理聊天室要matchId的问题
             val value = it.getBoolean("chat", false)
-            setMainChatStatus()
+            if (value) {
+                setMainChatStatus()
+            }
         }
+    }
+
+    /**
+     * 热门表情
+     * */
+    private fun initHotRecycler() {
+        mBinding.hotRecyclerview.also {
+            it.layoutManager =
+                LinearLayoutManager(it.context, LinearLayoutManager.HORIZONTAL, false)
+            val adapter = EmojiHotItemAdapter()
+            adapter.submitList(mViewModel.getHotRecycler())
+            it.adapter = adapter
+        }
+    }
+
+    /**
+     * 表情键盘
+     * */
+    private fun initEmojiFragment() {
+        val fragment = EmojiHomeFragment()
+        childFragmentManager.beginTransaction()
+            .replace(R.id.chat_keyboard, fragment, EmojiHomeFragment.TAG).commit()
+    }
+
+    /**
+     * 聊天记录
+     * */
+    private fun initChatPageFragment() {
+        val fragment = ChatPageFragment()
+        childFragmentManager.beginTransaction()
+            .replace(mBinding.liveChatHistory.id, fragment, ChatPageFragment.TAG)
+            .commit()
     }
 
     /**
@@ -92,6 +127,9 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
         }
     }
 
+    /**
+     * 当首页和直播间调用时给
+     * */
     private fun observeMatchId(matchId: Long) {
         mViewModel.setArguments(matchId)
     }
@@ -154,6 +192,22 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
 
                 }
             }
+            launch {//选择注单返回监听
+                observeResult<Bundle>("choose_bet") {
+                    val type = it.getInt("key")
+                    val text =
+                        if (type == 0) "#游戏订单:D1k19[赢100x,\$9331]" else "#体育订单:D1k19[赢100x,\$9331]"
+                    chatAtHelper.addShareBetSpan(
+                        text,
+                        if (type == 0) MsgType.BET_GAME else MsgType.BET_SPORT
+                    )
+                    addBetToEtInputAnim(mBinding, mViewModel.currentKeyBoardType, onStart = {
+                        updateInputIcon(true)
+                    }, onEnd = {
+                        updateInputIcon(false)
+                    })
+                }
+            }
         }
         matchIdLiveData?.observe(viewLifecycleOwner) {
             observeMatchId(it)
@@ -194,23 +248,27 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
                 requireActivity().onBackPressedDispatcher.onBackPressed()
             }
         }
-        mBinding.ivBet.setOnClickListener {
-            toChooseBet()
-        }
-        mBinding.ivBottomBet.setOnClickListener {
-            toChooseBet()
 
+        val listener = View.OnClickListener { v ->
+            when (v?.id) {
+                R.id.iv_at,
+                R.id.iv_bottom_at -> {
+                    chatAtHelper.addAtInEt()
+
+                }
+
+                R.id.iv_bet,
+                R.id.iv_bottom_bet -> {
+                    toChooseBet()
+                }
+
+                else -> {}
+            }
         }
-        observeResult<Bundle>("choose_bet") {
-            val type = it.getInt("key")
-            val text =
-                if (type == 0) "#游戏订单:D1k19[赢100x,\$9331]" else "#体育订单:D1k19[赢100x,\$9331]"
-            chatAtHelper.addShareBetSpan(
-                text,
-                if (type == 0) MsgType.BET_GAME else MsgType.BET_SPORT
-            )
-            addBetToEtInputAnim()
-        }
+        mBinding.ivAt.setOnClickListener(listener)
+        mBinding.ivBottomAt.setOnClickListener(listener)
+        mBinding.ivBet.setOnClickListener(listener)
+        mBinding.ivBottomBet.setOnClickListener(listener)
     }
 
     private fun toChooseBet() {
@@ -231,29 +289,6 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
             softKeyBoardManager.originMainHeight = mViewModel.keyBoardHeight
             addMainViewListen()
         }
-    }
-
-    private fun initHotRecycler() {
-        mBinding.hotRecyclerview.also {
-            it.layoutManager =
-                LinearLayoutManager(it.context, LinearLayoutManager.HORIZONTAL, false)
-            val adapter = EmojiHotItemAdapter()
-            adapter.submitList(mViewModel.getHotRecycler())
-            it.adapter = adapter
-        }
-    }
-
-    private fun initEmojiFragment() {
-        val fragment = EmojiHomeFragment()
-        childFragmentManager.beginTransaction()
-            .replace(R.id.chat_keyboard, fragment, EmojiHomeFragment.TAG).commit()
-    }
-
-    private fun initChatPageFragment() {
-        val fragment = ChatPageFragment()
-        childFragmentManager.beginTransaction()
-            .replace(mBinding.liveChatHistory.id, fragment, ChatPageFragment.TAG)
-            .commit()
     }
 
     private fun addMainViewListen() {
@@ -332,7 +367,8 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
                 }
                 return@setOnTouchListener true
             }
-
+            ivAt.setOnTouchListener { v, event ->  true}
+            ivBottomAt.setOnTouchListener { v, event ->  true}
 //            ivBottomAt.setOnTouchListener { v, event -> return@setOnTouchListener true }
 //            ivBottomBet.setOnTouchListener { v, event -> return@setOnTouchListener true }
             ivBottomEmoji.setOnTouchListener { v, event ->
@@ -372,7 +408,9 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
             sendText()
         }
         chatAtHelper.etWatchListen = {
-            etContentChangeAnim()
+            SoftKeyBoardAnim.etAnimWhenEtContentChange(mBinding, mViewModel.currentKeyBoardType) {
+                updateInputIcon(true)
+            }
         }
     }
 
@@ -439,9 +477,6 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
      * 直播间因为要做滑动，所以每次弹出后要对高度重新设置下
      * */
     private fun emojiLayoutSize(isReset: Boolean) {
-        if (mViewModel.isMainSoft) {
-            return
-        }
         mBinding.apply {
             val height = main.layoutParams.height
             inputMain.layoutParams.height =
@@ -529,115 +564,6 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
      * */
     override fun updateChatKeyboardType(keyBoardType: KeyBoardType) {
         mViewModel.currentKeyBoardType = keyBoardType
-    }
-
-    @SuppressLint("Recycle")
-    private fun etContentChangeAnim() {
-        mBinding.apply {
-            when {
-                chatEtInput.length() == 0 && chatTvSend.isVisible && mViewModel.currentKeyBoardType != KeyBoardType.CHAT -> { //键盘弹出的时候发送 有内容到无内容
-                    etInputContentAnim(
-                        true,
-                        mViewModel.currentKeyBoardType,
-                        chatLlInput,
-                        chatTvSend
-                    ).apply {
-                        duration = 170L
-                        addListener(onEnd = {
-                            chatTvSend.isVisible = false
-                        })
-                        start()
-                    }
-                }
-
-                chatEtInput.length() == 0 && chatTvSend.isVisible && mViewModel.currentKeyBoardType == KeyBoardType.CHAT -> {//键盘收缩的时候发送，有内容到无内容
-//                    input输入框扩展 -> 按钮动画
-                    val btnAnim = AnimatorSet().apply {
-                        playTogether(
-                            *SoftKeyBoardAnim.inputIconAnim(
-                                true,
-                                ivAt,
-                                ivBet,
-                                ivEmoji,
-                                ivLanguage
-                            )
-                        )
-                        addListener(onStart = {
-                            updateInputIcon(true)
-                        })
-                    }
-                    val inputAnim = etInputContentAnim(
-                        true,
-                        mViewModel.currentKeyBoardType,
-                        chatLlInput,
-                        chatTvSend
-                    ).apply {
-                        addListener(onEnd = {
-                            chatTvSend.isVisible = false
-                        })
-                    }
-                    AnimatorSet().apply {
-                        duration = 170
-                        playSequentially(inputAnim, btnAnim)
-                        start()
-                    }
-
-                }
-
-                chatEtInput.length() > 0 && !chatTvSend.isVisible -> { //无内容到有内容
-                    etInputContentAnim(
-                        false,
-                        mViewModel.currentKeyBoardType,
-                        chatLlInput,
-                        chatTvSend
-                    ).apply {
-                        duration = 170L
-                        addListener(onStart = {
-                            chatTvSend.isVisible = true
-                        })
-                        start()
-                    }
-                }
-
-                else -> {
-
-                }
-            }
-        }
-
-    }
-
-    /**
-     * 游戏注单中插入
-     * **/
-    private fun addBetToEtInputAnim() {
-        mBinding.apply {
-            val btnAnim = AnimatorSet().apply {
-                playTogether(
-                    *inputIconAnim(
-                        true,
-                        ivAt,
-                        ivBet,
-                        ivEmoji,
-                        ivLanguage
-                    )
-                )
-                addListener(onStart = {
-                    updateInputIcon(true)
-                }, onEnd = {
-                    updateInputIcon(false)
-                })
-            }
-            val inputEtAnim =
-                etInputContentAnim(false, mViewModel.currentKeyBoardType, chatLlInput, chatTvSend)
-            val animSet = AnimatorSet()
-            animSet.playSequentially(btnAnim, inputEtAnim)
-            animSet.duration = 170L
-            animSet.addListener(onStart = {
-                chatTvSend.isVisible = true
-            })
-            animSet.start()
-        }
     }
 
     /**
