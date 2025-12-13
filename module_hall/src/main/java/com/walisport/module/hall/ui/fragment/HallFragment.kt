@@ -228,6 +228,8 @@ class HallFragment : BaseFragment<HallViewModel, FragmentHallBinding>() {
             ivRightLogo.setOnBannerListener { Int, position ->
                 navigate(arch.cayenne.lib.res.R.string.nav_module_promotion_fragment.deeplink())
             }
+
+
         }
 
         mBinding.tlGame.addOnTabSelectedListener2(object : TabLayoutExt.OnTabSelectedListener2 {

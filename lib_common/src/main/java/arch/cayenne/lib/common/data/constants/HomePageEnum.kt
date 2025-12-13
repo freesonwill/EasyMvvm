@@ -10,4 +10,8 @@ enum class HomePageEnum(val v:Int) {
     BETSLIP(2), //注单
     CHAT(3), //聊天
     ME(4), //我
+    ;
+    companion object {
+        fun of(v:Int):HomePageEnum = entries.find { it.v == v } ?: error("$v not in entries:${entries}")
+    }
 }

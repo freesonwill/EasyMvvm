@@ -7,7 +7,6 @@ import android.view.View
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import androidx.appcompat.widget.LinearLayoutCompat
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.withStyledAttributes
 import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.common.R
@@ -17,7 +16,6 @@ import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.TabLayoutExt
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
-import arch.cayenne.lib.common.utils.ext.requireActivity
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import com.bumptech.glide.Glide
 import com.google.android.material.tabs.TabLayout
@@ -39,6 +37,9 @@ class CustomGameTabGroupLayout : FrameLayout {
     var defaultIcon = R.drawable.ic_wali_demo
     var tabIconSize = 18.dp2px
 
+    private var tabClickListener: CustomGameTabClickListener? = null
+
+
     private fun initView(context: Context, attrs: AttributeSet? = null) {
         binding = ViewCustomGameTabGroupBinding.inflate(LayoutInflater.from(context), this, true)
         context.withStyledAttributes(attrs, R.styleable.CustomGameTabGroupLayout) {
@@ -59,6 +60,7 @@ class CustomGameTabGroupLayout : FrameLayout {
 
             override fun onTabSelected(tab: TabLayout.Tab, isTabClick: Boolean) {
                 updateTournamentButtonStyle(false)
+                tabClickListener?.onTabClicked(tab.id)
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab, isTabClick: Boolean) {
@@ -125,6 +127,7 @@ class CustomGameTabGroupLayout : FrameLayout {
         with(binding) {
             list.forEachIndexed { i, data ->
                 val tab = tlVendorList.newTab()
+                tab.id = data.id
 
                 tab.customView = createTabView(data)
                 tab.view.setPadding(0, 0, 6f.dp2px, 0)
@@ -190,6 +193,15 @@ fun select(pos:Int){
     }
 
 
+    fun setTabClickListener(listener: CustomGameTabClickListener) {
+        this.tabClickListener = listener
+    }
+
+}
+
+
+interface CustomGameTabClickListener {
+    fun onTabClicked(id: Int)
 }
 
 //TODO 先給一個簡單的

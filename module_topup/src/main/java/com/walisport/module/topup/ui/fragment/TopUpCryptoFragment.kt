@@ -6,10 +6,12 @@ import android.view.View
 import androidx.lifecycle.lifecycleScope
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
+import arch.cayenne.lib.common.data.constants.BizUrl
 import arch.cayenne.lib.common.ui.fragment.CoinDialogFragment
 import arch.cayenne.lib.common.utils.QRCodeUtils
 import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.common.utils.copyToClipboard
+import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
@@ -64,9 +66,10 @@ class TopUpCryptoFragment : BaseFragment<TopUpCryptoViewModel, FragmentCryptoBin
             }.show(childFragmentManager)
         }
         mBinding.layLesson.clickNoRepeat {
-            navigate(TopUpFragmentDirections.actionTopUpFragmentToFundDetailsFragment().apply {
-                arguments.putString("type", "recharge")
-            })
+            navigate(
+                arch.cayenne.lib.res.R.string.nav_module_web_fragment
+                    .deeplink("url" to BizUrl.TOP_LESSON.url)
+            )
         }
         mBinding.layCustomer.clickNoRepeat {
             showToast(R.string.cus_service.getString())

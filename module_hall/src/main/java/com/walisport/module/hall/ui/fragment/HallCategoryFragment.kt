@@ -18,9 +18,11 @@ import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+import arch.cayenne.lib.common.utils.ext.startFadeAnim
 import arch.cayenne.lib.common.utils.ext.touchBackPressed
 import arch.cayenne.lib.common.utils.helper.BackToTopHelper
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
+import arch.cayenne.module.home.ui.fragment.GameContentListBottomSheetFragment
 import com.walisport.module.hall.R
 import com.walisport.module.hall.data.UniversalLoadMoreScrollListener
 import com.walisport.module.hall.data.constants.GameSortType
@@ -78,7 +80,19 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
         with(mBinding) {
             titleBar.loadDynamicsTitleBar(titleBarBinding.root , null)
             titleBarBinding.tvTitleName.text = 100.getCategoryByType().desc
+
             customTabGroup.submitTabList(mockVendorList)
+
+            customTabGroup.setTabClickListener(object :
+                arch.cayenne.lib.common.ui.view.CustomGameTabClickListener {
+                override fun onTabClicked(id: Int) {
+                    mBinding.rvGame.startFadeAnim { onComplete ->
+                        mViewModel.setSuppliers(if (id == 0) emptyList() else listOf(id))
+                        mViewModel.reload()
+                        onComplete.invoke()
+                    }
+                }
+            })
             rvGame.itemAnimator = null
             rvGame.layoutManager = GridLayoutManager(requireContext() , 3)
             val itemDecoration = GridSpacingItemDecoration(
@@ -94,6 +108,8 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
             rvGame.adapter = adapter
 
             BackToTopHelper(rvGame , ivBackToTop, true)
+
+
 
         }
 
@@ -119,6 +135,10 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
         mBinding.customTabGroup.setOnSortBtnClick {
             toggleGameSorting(!isExpanded)
         }
+
+        mBinding.customTabGroup.setOnShowAllCategoryClick({} , {
+            showTournamentListBottomSheet()
+        })
     }
 
 
@@ -295,6 +315,7 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
                 sortMenuClicked = true
                 if (currentSortType != GameSortType.HOT) {
                     currentSortType = GameSortType.HOT
+                    mBinding.tvRewardTips.visibility = View.GONE
                     updateSortingMenuSelection()
                     setSortBtnText()
                     mViewModel.setSortType(currentSortType)
@@ -309,6 +330,7 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
                 sortMenuClicked = true
                 if (currentSortType != GameSortType.NEW) {
                     currentSortType = GameSortType.NEW
+                    mBinding.tvRewardTips.visibility = View.GONE
                     updateSortingMenuSelection()
                     setSortBtnText()
                     mViewModel.setSortType(currentSortType)
@@ -324,6 +346,8 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
 
                 if (currentSortType != GameSortType.HOT_REWARD) {
                     currentSortType = GameSortType.HOT_REWARD
+                    mBinding.tvRewardTips.visibility = View.VISIBLE
+                    mBinding.aplHomeBanner.setExpanded(true, true)
                     updateSortingMenuSelection()
                     setSortBtnText()
                     mViewModel.setSortType(currentSortType)
@@ -338,6 +362,8 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
 
                 if (currentSortType != GameSortType.COLD_REWARD) {
                     currentSortType = GameSortType.COLD_REWARD
+                    mBinding.tvRewardTips.visibility = View.VISIBLE
+                    mBinding.aplHomeBanner.setExpanded(true, true)
                     updateSortingMenuSelection()
                     setSortBtnText()
                     mViewModel.setSortType(currentSortType)
@@ -414,6 +440,10 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
                 mBinding.customTabGroup.setSortBtnText(arch.cayenne.lib.common.R.string.custom_tab_cold_reward.getString())
             }
         }
+    }
+
+    private fun showTournamentListBottomSheet() {
+
     }
 
 

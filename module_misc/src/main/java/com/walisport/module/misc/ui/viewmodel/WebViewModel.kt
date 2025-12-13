@@ -1,11 +1,10 @@
-package com.walisport.module.topup.ui.viewmodel
+package com.walisport.module.misc.ui.viewmodel
 
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
-import com.walisport.module.topup.data.TopUpMainRepository
 import plugin.koin.KoinViewModel
 
 @KoinViewModel
-class FundDetailsViewModel() : BaseViewModel() {
+class WebViewModel() : BaseViewModel() {
 
     override fun initViewModel() {
         super.initViewModel()
