@@ -18,6 +18,7 @@ import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+import arch.cayenne.lib.common.utils.ext.startFadeAnim
 import arch.cayenne.lib.common.utils.ext.touchBackPressed
 import arch.cayenne.lib.common.utils.helper.BackToTopHelper
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
@@ -85,8 +86,11 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
             customTabGroup.setTabClickListener(object :
                 arch.cayenne.lib.common.ui.view.CustomGameTabClickListener {
                 override fun onTabClicked(id: Int) {
-                    mViewModel.setSuppliers(if (id == 0) emptyList() else listOf(id))
-                    mViewModel.reload()
+                    mBinding.rvGame.startFadeAnim { onComplete ->
+                        mViewModel.setSuppliers(if (id == 0) emptyList() else listOf(id))
+                        mViewModel.reload()
+                        onComplete.invoke()
+                    }
                 }
             })
             rvGame.itemAnimator = null
