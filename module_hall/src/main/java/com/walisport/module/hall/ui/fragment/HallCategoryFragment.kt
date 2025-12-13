@@ -21,6 +21,7 @@ import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.touchBackPressed
 import arch.cayenne.lib.common.utils.helper.BackToTopHelper
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
+import arch.cayenne.module.home.ui.fragment.GameContentListBottomSheetFragment
 import com.walisport.module.hall.R
 import com.walisport.module.hall.data.UniversalLoadMoreScrollListener
 import com.walisport.module.hall.data.constants.GameSortType
@@ -78,7 +79,16 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
         with(mBinding) {
             titleBar.loadDynamicsTitleBar(titleBarBinding.root , null)
             titleBarBinding.tvTitleName.text = 100.getCategoryByType().desc
+
             customTabGroup.submitTabList(mockVendorList)
+
+            customTabGroup.setTabClickListener(object :
+                arch.cayenne.lib.common.ui.view.CustomGameTabClickListener {
+                override fun onTabClicked(id: Int) {
+                    mViewModel.setSuppliers(if (id == 0) emptyList() else listOf(id))
+                    mViewModel.reload()
+                }
+            })
             rvGame.itemAnimator = null
             rvGame.layoutManager = GridLayoutManager(requireContext() , 3)
             val itemDecoration = GridSpacingItemDecoration(
@@ -94,6 +104,8 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
             rvGame.adapter = adapter
 
             BackToTopHelper(rvGame , ivBackToTop, true)
+
+
 
         }
 
@@ -119,6 +131,10 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
         mBinding.customTabGroup.setOnSortBtnClick {
             toggleGameSorting(!isExpanded)
         }
+
+        mBinding.customTabGroup.setOnShowAllCategoryClick({} , {
+            showTournamentListBottomSheet()
+        })
     }
 
 
@@ -420,6 +436,10 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
                 mBinding.customTabGroup.setSortBtnText(arch.cayenne.lib.common.R.string.custom_tab_cold_reward.getString())
             }
         }
+    }
+
+    private fun showTournamentListBottomSheet() {
+
     }
 
 
