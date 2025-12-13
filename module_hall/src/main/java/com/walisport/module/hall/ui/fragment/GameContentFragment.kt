@@ -21,6 +21,7 @@ import arch.cayenne.lib.common.utils.ext.checkCurrentScrollState
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.onScrolledOver
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
+import arch.cayenne.lib.common.utils.ext.startFadeAnim
 import arch.cayenne.lib.common.utils.helper.BackToTopHelper
 import arch.cayenne.lib.database.entity.GameSupplierDataModel
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
@@ -87,6 +88,18 @@ class GameContentFragment : BaseFragment<GameContentViewModel, FragmentGameConte
 
     override fun initView(savedInstanceState: Bundle?) {
         with(mBinding) {
+
+            customTabGroup.setTabClickListener(object :
+                arch.cayenne.lib.common.ui.view.CustomGameTabClickListener {
+                override fun onTabClicked(id: Int) {
+                    mBinding.rvGame.startFadeAnim { onComplete ->
+                        mViewModel.setSupplier(if (id == 0) emptyList() else listOf(id))
+                        mViewModel.reload()
+                        onComplete.invoke()
+                    }
+                }
+            })
+            
             rvGame.layoutManager = GridLayoutManager(requireContext(), 3)
             val itemDecoration = GridSpacingItemDecoration(
                 spanCount = 3,
