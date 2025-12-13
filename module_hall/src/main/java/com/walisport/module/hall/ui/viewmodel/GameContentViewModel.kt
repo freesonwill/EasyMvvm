@@ -82,8 +82,8 @@ class GameContentViewModel : BaseViewModel() {
 
 
     fun queryGameList() {
+        setState(DataState.Loading)
         viewModelScope.launch {
-            setState(DataState.Loading)
             callApi(
                 {
                     repository.queryGameList(page , sortType , suppliers , category)
@@ -134,8 +134,8 @@ class GameContentViewModel : BaseViewModel() {
 
     fun reload() {
         page = INITIAL_PAGE
-        _gameListLiveData.value = emptyList()
         queryGameList()
+        _gameListLiveData.value = emptyList()
     }
 
     fun loadNextPage() {
