@@ -228,7 +228,6 @@ class GameContentFragment : BaseFragment<GameContentViewModel, FragmentGameConte
         }
         mViewModel.setSupplier(emptyList())
         mViewModel.setSortType(currentSortType)
-        mViewModel.queryGameList()
         mViewModel.getSuppliers(mViewModel.getCategory())
     }
 

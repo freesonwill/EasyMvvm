@@ -36,9 +36,7 @@ class GameCategoryViewModel : BaseViewModel() {
     val gameSupplierList: UnPeekLiveData<List<GameSupplierDataModel>> = _gameSupplierList
 
     // 保存彈窗中的選中狀態（跨彈窗生命週期）
-    private val _savedTournamentSelections = MutableLiveData<List<Int>>(
-        emptyList()
-    )
+    private val _savedTournamentSelections = MutableLiveData<List<Int>>()
     val savedTournamentSelections: LiveData<List<Int>> = _savedTournamentSelections
 
 
@@ -77,8 +75,8 @@ class GameCategoryViewModel : BaseViewModel() {
 
 
     fun queryGameList() {
+        setState(DataState.Loading)
         viewModelScope.launch {
-            setState(DataState.Loading)
             callApi(
                 {
                     repository.queryGameList(page, sortType, suppliers, category)
@@ -145,8 +143,8 @@ class GameCategoryViewModel : BaseViewModel() {
 
     fun reload() {
         page = INITIAL_PAGE
-        _gameListLiveData.value = emptyList()
         queryGameList()
+        _gameListLiveData.value = emptyList()
     }
 
     fun loadNextPage() {
