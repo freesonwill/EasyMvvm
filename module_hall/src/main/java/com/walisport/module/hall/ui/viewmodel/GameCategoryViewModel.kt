@@ -55,8 +55,8 @@ class GameCategoryViewModel : BaseViewModel() {
         this.category = category
     }
 
-    fun getCategory() :Int{
-       return category
+    fun getCategory(): Int {
+        return category
     }
 
 
@@ -71,14 +71,8 @@ class GameCategoryViewModel : BaseViewModel() {
 
     fun getSuppliers(type: Int) {
         viewModelScope.launch(Dispatchers.IO) {
-            repository.observeSupplierByGameTypeId(type)
-                .collect {
-                    launch(Dispatchers.Main) {
-                        _gameSupplierList.value = it
-                    }
-                }
+            _gameSupplierList.postValue(repository.getSupplierByGameTypeId(type))
         }
-
     }
 
 
@@ -87,8 +81,8 @@ class GameCategoryViewModel : BaseViewModel() {
             setState(DataState.Loading)
             callApi(
                 {
-                    repository.queryGameList(page , sortType , suppliers, category)
-                } ,
+                    repository.queryGameList(page, sortType, suppliers, category)
+                },
                 {
                     if (it is ApiResponseState.Failed) {
                         setState(DataState.NetworkUnavailable)
@@ -106,7 +100,7 @@ class GameCategoryViewModel : BaseViewModel() {
                                 _gameListLiveData.value?.toMutableList() ?: mutableListOf()
                             val list = gamePageVo?.list?.map { gameVo ->
                                 gameVo.toGameContentData(
-                                    (page * 100 + gameVo.id).toLong() ,
+                                    (page * 100 + gameVo.id).toLong(),
                                     sortType
                                 )
                             }
@@ -118,7 +112,7 @@ class GameCategoryViewModel : BaseViewModel() {
                                 _gameListLiveData.value?.toMutableList() ?: mutableListOf()
                             val list = gamePageVo?.list?.map { gameVo ->
                                 gameVo.toGameContentData(
-                                    (page * 100 + gameVo.id).toLong() ,
+                                    (page * 100 + gameVo.id).toLong(),
                                     sortType
                                 )
                             }
@@ -127,10 +121,11 @@ class GameCategoryViewModel : BaseViewModel() {
                         }
 
                     }
-                } , autoUpdateState = false
+                }, autoUpdateState = false
             )
         }
     }
+
     // 通知需要清除 tlLeagueList 的選中狀態
     private val _shouldClearLeagueListSelection = MutableLiveData<Event<Unit>>()
     val shouldClearLeagueListSelection: LiveData<Event<Unit>> = _shouldClearLeagueListSelection
@@ -147,6 +142,7 @@ class GameCategoryViewModel : BaseViewModel() {
     fun requestClearLeagueListSelection() {
         _shouldClearLeagueListSelection.value = Event(Unit)
     }
+
     fun reload() {
         page = INITIAL_PAGE
         _gameListLiveData.value = emptyList()
