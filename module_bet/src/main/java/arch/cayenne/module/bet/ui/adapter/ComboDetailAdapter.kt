@@ -57,7 +57,7 @@ class ComboDetailAdapter : BaseAdapter<ParameterUIItem, BaseViewHolder, ViewBind
         fun bind(bean: ParameterItems,position: Int) {
             with(mBinding) {
                 tvTitle.text = bean.title
-                val money = bean.items.getOrNull(0)?.money
+                val money = bean.items.getOrNull(0)?.moneyStr
                 tvTabBet.isVisible = !TextUtils.isEmpty(money)
                 tvTabWin.isVisible = !TextUtils.isEmpty(money)
             }
@@ -74,10 +74,10 @@ class ComboDetailAdapter : BaseAdapter<ParameterUIItem, BaseViewHolder, ViewBind
 
         fun bind(bean: ParameterItems2, position: Int) {
             with(mBinding) {
-                tvTabCombo.text = bean.combo
-                tvTabBet.text = bean.money
-                tvTabWin.text = bean.winMoney
-                tvTabOdds.text = bean.odds
+                tvTabCombo.text = bean.comboStr
+                tvTabBet.text = bean.moneyStr
+                tvTabWin.text = bean.winMoneyStr
+                tvTabOdds.text = bean.oddsStr
                 if (position % 2 != 0) {
                     clRoot.setBackgroundColor(Color.TRANSPARENT)
                 } else {

@@ -4,10 +4,8 @@ import arch.cayenne.lib.base.data.repository.BaseRepository
 import arch.cayenne.lib.common.data.constants.UserDataKey
 import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.common.utils.ext.CombinationExt
-import arch.cayenne.lib.common.utils.ext.CombinationExt.combinations
+import arch.cayenne.lib.common.utils.ext.CombinationExt.combination
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
-import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
-import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
 import arch.cayenne.lib.database.dao.BetDao
 import arch.cayenne.lib.database.entity.BetDetailBean
 import arch.cayenne.lib.database.entity.BetResultStatusEnum
@@ -21,6 +19,7 @@ import arch.cayenne.module.bet.data.ComboMultiBetOddsBean
 import arch.cayenne.module.bet.data.OddsChangeEnum
 import arch.cayenne.module.bet.data.remote.ComboRiskDataModel
 import arch.cayenne.module.bet.ui.fragment.ComboDetailFragment
+import arch.cayenne.module.bet.util.BetUtils.calculateCombinationOdds
 import galaxy.client.proto.Client
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -447,26 +446,6 @@ class ComboBetRepository(
         return result
     }
 
-    /**
-     * 计算组合的赔率
-     *
-     * @param oddsList: 赔率列表
-     * @param k:        几个为一组
-     * eg:
-     * input: oddsList:[206,161,125,295,290], k:2
-     * output: 4524
-     * @return
-     */
-    fun calculateCombinationOdds(oddsList:List<Int>, k:Int):Int {
-        val combinationData = oddsList.combinations(k)
-        val sumOdds = combinationData.sumOf { list ->
-            if(list.isEmpty()) 0.0
-            else list.fold(1.0) { acc, odds -> acc * (odds*0.01) }// 计算乘积并且每次除以100
-        }
-        return (sumOdds* 100).toInt()
-    }
-
-
 
     suspend fun getBetSize(): Int = withContext(scope.coroutineContext) {
         betDao.getCurrentBet()?.let {
@@ -555,13 +534,12 @@ class ComboBetRepository(
                 if(k==1) arch.cayenne.lib.res.R.string.title_single_bet.getString()
                 else R.string.title_combo_bet_odds.getString(k,1)
             )
-            val listItems = data.combinations(k).map { l ->
-                val odds = calculateCombinationOdds(l.map { it.odds },l.size)
+            val listItems = data.combination(k).map { l ->
                 val ret = ComboDetailFragment.ParameterItems2(
-                    combo = l.joinToString("·") { "${data.indexOf(it) + 1}" },
-                    money = bean.inputMoney.takeIf { it != 0L }?.let { "$moneySymbol${it.getMoney()}" },
-                    winMoney = bean.inputMoney.takeIf { it != 0L }?.let { "$moneySymbol${bean.inputMoney.getMoney(odds)}" },
-                    odds = "@${odds.getOdds()}"
+                    combo = l.map{ data.indexOf(it)},
+                    money = bean.inputMoney,
+                    oddsList = l.map { it.odds },
+                    moneySymbol = moneySymbol,
                 )
                 ret
             }
@@ -578,18 +556,16 @@ class ComboBetRepository(
      * @param moneySymbol
      * @return
      */
-    fun toCombinationDetailParameter(serialValue: Int,
-                                     comboMultiBetBeans:List<ComboMultiBetBean>?,
+    fun toCombinationDetailParameter(data:ComboMultiBetBean,
                                      betList:List<BetSelectionBean>?,
                                      moneySymbol:String): ComboDetailFragment.Parameter {
-        val data = comboMultiBetBeans?.find { it.serialValue == serialValue }
-            ?: error("can not find serialValue:$serialValue in $comboMultiBetBeans")
         val items = splitComboIntoSingles(data,betList,moneySymbol)
-        //"aaaa---toCombinationDetailParameter----$serialValue,${betList?.size}".logd(TAG)
-        return ComboDetailFragment.Parameter(
-            title = data.title(),
-            titleTips = data.titleTips(),
+        val ret = ComboDetailFragment.Parameter(
+            serialValue = data.serialValue,
+            comboK = data.comboK,
+            comboV = data.comboV,
             items = items
         )
+        return ret
     }
 }

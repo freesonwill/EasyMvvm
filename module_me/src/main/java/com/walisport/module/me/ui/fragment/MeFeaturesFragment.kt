@@ -7,6 +7,7 @@ import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.helper.showToast
+import com.walisport.module.me.R
 import com.walisport.module.me.data.model.FeaturesBean
 import com.walisport.module.me.databinding.FragmentMeFeaturesBinding
 import com.walisport.module.me.ui.adapter.FeaturesAdapter
@@ -98,8 +99,10 @@ class MeFeaturesFragment : BaseFragment<FeaturesViewModel, FragmentMeFeaturesBin
                     showToast(arch.cayenne.lib.common.R.string.drawer_help.getString())
                 },
                 FeaturesBean(
-                    id++, arch.cayenne.lib.common.R.drawable.ic_drawer_feedback,
-                    arch.cayenne.lib.common.R.string.drawer_feedback
+                    id++ , arch.cayenne.lib.common.R.drawable.ic_drawer_feedback ,
+                    arch.cayenne.lib.common.R.string.drawer_feedback ,
+                    true ,
+                    getString(R.string.prize)
                 ) {
                     navigate(arch.cayenne.lib.res.R.string.nav_module_feedback_fragment.deeplink())
                 },

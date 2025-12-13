@@ -14,13 +14,12 @@ object CombinationExt {
      *
      * eg：[A,B,C]的C(3,2): [A, B], [A, C], [B, C]
      */
-    fun <T> List<T>.combinations(k:Int):List<List<T>>{
-        //"aaaa---combinations--k:$k,listSize:${this.size}".printStackTrace()
-        return if(size < 32) combinationsBitmask(k) else combinationsIterator(k)
+    fun <T> List<T>.combination(k:Int):List<List<T>>{
+        return if(size < 32) combinationsBitmask(k) else combinationIterator(k)
     }
 
     /**
-     * 计算 n 选 r 的组合数
+     * 计算 n 选 k 的组合数
      * C(n, k) = n! / (k! × (n-k)!)
      */
     fun cNK(n:Int,k: Int): Int {
@@ -48,8 +47,6 @@ object CombinationExt {
 
         val result = mutableListOf<List<T>>()
         val total = 1 shl n
-        /*val t1 = System.currentTimeMillis()
-        "combinationsBitmask begin:${size}/$k".logd()*/
         for (mask in 0 until total) {
             if (mask.countOneBits() == k) {
                 val combo = mutableListOf<T>()
@@ -59,11 +56,6 @@ object CombinationExt {
                 result.add(combo)
             }
         }
-        /*val t2 = System.currentTimeMillis()
-        val costMils = t2 - t1
-        "combinationsBitmask end:${size}/$k,list:${result.size},costMils:$costMils".let {
-            if(costMils > 50) it.loge() else it.logd()
-        }*/
         return result
     }
 
@@ -104,7 +96,7 @@ object CombinationExt {
      * @param k
      * @return
      */
-    private fun <T> List<T>.combinationsIterator(k: Int): List<List<T>> {
+    private fun <T> List<T>.combinationIterator(k: Int): List<List<T>> {
         val n = size
         if (k > n) return emptyList()
         if (k == 0) return listOf(emptyList())
@@ -139,7 +131,7 @@ object CombinationExt {
      * @param k
      * @return
      */
-    private fun <T> List<T>.combinationsQueue(k: Int): List<List<T>> {
+    private fun <T> List<T>.combinationQueue(k: Int): List<List<T>> {
         if (k == 0) return listOf(emptyList())
         if (k > size) return emptyList()
 
@@ -164,15 +156,15 @@ object CombinationExt {
      * eg:[A,B,C]取2-->[[A,B],[A,C],[B,C]]
      * @return
      */
-    private fun <T> List<T>.combinationsRecursion(k: Int): List<List<T>> {
+    private fun <T> List<T>.combinationRecursion(k: Int): List<List<T>> {
         if (k == 0) return listOf(emptyList())
         if (this.isEmpty()) return emptyList()
 
         val head = first()
         val tail = drop(1)
 
-        val withHead = tail.combinations(k - 1).map { listOf(head) + it }
-        val withoutHead = tail.combinations(k)
+        val withHead = tail.combination(k - 1).map { listOf(head) + it }
+        val withoutHead = tail.combination(k)
 
         return withHead + withoutHead
     }

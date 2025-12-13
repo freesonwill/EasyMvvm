@@ -93,7 +93,7 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
             })
             rvGame.adapter = adapter
 
-            BackToTopHelper(rvGame , ivBackToTop)
+            BackToTopHelper(rvGame , ivBackToTop, true)
 
         }
 
@@ -113,6 +113,8 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
                 mViewModel.loadNextPage()
             }
         })
+
+
 
         mBinding.customTabGroup.setOnSortBtnClick {
             toggleGameSorting(!isExpanded)
@@ -160,6 +162,11 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
         mViewModel.gameListLiveData.observe(viewLifecycleOwner) {
             it.let { list ->
                 adapter.submitList(list)
+
+                // 自動加載下一頁數據（如果當前數據量較少）
+                if (list.size <= 10) {
+                    mViewModel.loadNextPage()
+                }
             }
         }
 

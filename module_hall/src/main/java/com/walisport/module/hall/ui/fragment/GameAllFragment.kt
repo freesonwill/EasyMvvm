@@ -62,7 +62,7 @@ class GameAllFragment: BaseFragment<GameAllViewModel, FragmentGameAllBinding>() 
             )
             rvContent.layoutManager = LinearLayoutManager(requireContext())
             rvContent.adapter = concatAdapter
-            BackToTopHelper(rvContent, ivBackToTop)
+            BackToTopHelper(rvContent, ivBackToTop, false)
         }
         mViewModel.mockAllList(1)
     }

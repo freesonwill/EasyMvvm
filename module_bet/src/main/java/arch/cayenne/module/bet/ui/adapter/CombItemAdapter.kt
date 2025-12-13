@@ -42,10 +42,10 @@ class CombinationItemViewHolder(private val mBinding: ItemComboDetail2Binding) :
 
     fun init(bean: ParameterItems2, position: Int) {
         with(mBinding) {
-            tvTabCombo.text = bean.combo
-            tvTabBet.text = bean.money
-            tvTabWin.text = bean.winMoney
-            tvTabOdds.text = bean.odds
+            tvTabCombo.text = bean.comboStr
+            tvTabBet.text = bean.moneyStr
+            tvTabWin.text = bean.winMoneyStr
+            tvTabOdds.text = bean.oddsStr
             if (position % 2 != 0) {
                 clRoot.setBackgroundColor(Color.TRANSPARENT)
             } else {
