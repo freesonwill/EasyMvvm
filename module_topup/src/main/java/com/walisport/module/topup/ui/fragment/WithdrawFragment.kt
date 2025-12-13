@@ -6,9 +6,11 @@ import androidx.navigation.fragment.findNavController
 import arch.cayenne.lib.base.data.model.PagerBean
 import arch.cayenne.lib.base.ui.adapter.PagerAdapter
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.common.data.constants.BizUrl
 import arch.cayenne.lib.common.databinding.ViewBarEditBinding
 import arch.cayenne.lib.common.ui.view.CustomTabIndicator
 import arch.cayenne.lib.common.ui.view.CustomTabLayoutMediator
+import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
@@ -44,10 +46,9 @@ class WithdrawFragment : BaseFragment<WithdrawViewModel, FragmentWithdrawBinding
                 }
                 tvTitleRight.clickNoRepeat {
                     navigate(
-                        WithdrawFragmentDirections.actionWithdrawFragmentToFundDetailsFragment()
-                            .apply {
-                                arguments.putString("type", "tx_record")
-                            })
+                        arch.cayenne.lib.res.R.string.nav_module_web_fragment
+                            .deeplink("url" to BizUrl.TOP_LESSON.url)
+                    )
                 }
             }
             val list = listOf(

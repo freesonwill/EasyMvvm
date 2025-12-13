@@ -8,12 +8,12 @@ package arch.cayenne.lib.common.data.constants
 enum class BizUrl(val url: String) {
     FUND_DETAIL("https://dev.ra781.com/web-3n1/record") ,
     FEEDBACK("https://dev.ra781.com/web-3n1/feedback") ,
-
-    //    GAME_BET_SHARE("http://192.168.10.37:5173/orderDetail?settleId=s3&name=南京红姐&level=90"),
+    //GAME_BET_SHARE("http://192.168.10.37:5173/orderDetail?settleId=s3&name=南京红姐&level=90")
     GAME_BET_SHARE("https://dev.ra781.com/web-3n1/orderDetail?settleId=s3&name=南京红姐&level=90") ,
     REBATE("https://dev.ra781.com/web-3n1/rebate") ,
     INVITE("https://dev.ra781.com/web-3n1/invite") ,
     PARTNER("https://dev.ra781.com/web-3n1/partner") ,
     VIP("https://dev.ra781.com/web-3n1/vip") ,
-    HELP("https://www.ve657.com/help-docs/help/")
+    HELP("https://www.ve657.com/help-docs/help/"),
+    TOP_LESSON("https://dev.ra781.com/web-3n1/help?url=/wallet/tutorial/") //充值教程
 }
