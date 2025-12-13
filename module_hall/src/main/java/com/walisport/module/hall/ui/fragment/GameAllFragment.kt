@@ -14,6 +14,7 @@ import arch.cayenne.lib.common.utils.helper.BackToTopHelper
 import com.walisport.module.hall.data.GameAllContentData
 import com.walisport.module.hall.databinding.FragmentGameAllBinding
 import com.walisport.module.hall.ui.adapter.GameAllHeaderAdapter
+import com.walisport.module.hall.ui.adapter.GameAllHeaderViewHolder
 import com.walisport.module.hall.ui.adapter.GameAllListAdapter
 import com.walisport.module.hall.ui.adapter.GameAllListViewHolder
 import com.walisport.module.hall.ui.adapter.GameAllRankingAdapter
@@ -26,7 +27,14 @@ class GameAllFragment: BaseFragment<GameAllViewModel, FragmentGameAllBinding>() 
         fun newInstance() = GameAllFragment()
     }
 
-    private val headerAdapter by lazy { GameAllHeaderAdapter() }
+    private val headerAdapter by lazy {
+        GameAllHeaderAdapter(object : GameAllHeaderViewHolder.OnHeaderItemClickListener {
+            override fun onInviteFriendItemClick() {
+                navigate(arch.cayenne.lib.res.R.string.nav_module_invite_friends_fragment.deeplink())
+            }
+        })
+    }
+
     private val listAdapter by lazy {
         GameAllListAdapter(object :GameAllListViewHolder.OnAllItemClickListener {
             override fun onItemClick() {
@@ -73,6 +81,8 @@ class GameAllFragment: BaseFragment<GameAllViewModel, FragmentGameAllBinding>() 
         }, {
             hallViewModel.setScorll(false)
         })
+
+        mBinding.rvContent
     }
 
     override suspend fun createObserver() {
