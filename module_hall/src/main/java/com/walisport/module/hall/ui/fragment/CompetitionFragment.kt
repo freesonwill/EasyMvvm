@@ -11,6 +11,7 @@ import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.touchBackPressed
+import com.walisport.module.hall.R
 import com.walisport.module.hall.data.getCategoryByType
 import com.walisport.module.hall.databinding.FragmentCompetitionBinding
 import com.walisport.module.hall.databinding.TitleBarCompetitionBinding
@@ -34,7 +35,7 @@ class CompetitionFragment : BaseFragment<GameCategoryViewModel , FragmentCompeti
 
         with(mBinding) {
             titleBar.loadDynamicsTitleBar(titleBarBinding.root , null)
-            titleBarBinding.tvTitleName.text = "每日投注比赛"
+            titleBarBinding.tvTitleName.text = getString(R.string.title_daily_match)
 
         }
         mBinding.root.touchBackPressed()
