@@ -12,6 +12,7 @@ import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.ui.adapter.GridSpacingItemDecoration
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout.States
 import arch.cayenne.lib.common.ui.view.SimpleTabDataModel
+import arch.cayenne.lib.common.ui.viewmodel.observeEvent
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
@@ -22,6 +23,7 @@ import arch.cayenne.lib.common.utils.ext.startFadeAnim
 import arch.cayenne.lib.common.utils.ext.touchBackPressed
 import arch.cayenne.lib.common.utils.helper.BackToTopHelper
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
+import arch.cayenne.module.home.ui.fragment.GameCategoryListBottomSheetFragment
 import arch.cayenne.module.home.ui.fragment.GameContentListBottomSheetFragment
 import com.walisport.module.hall.R
 import com.walisport.module.hall.data.UniversalLoadMoreScrollListener
@@ -112,7 +114,7 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
 
 
         }
-
+        mViewModel.getSuppliers(category)
         mBinding.root.touchBackPressed()
     }
 
@@ -135,9 +137,8 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
         mBinding.customTabGroup.setOnSortBtnClick {
             toggleGameSorting(!isExpanded)
         }
-
         mBinding.customTabGroup.setOnShowAllCategoryClick({} , {
-            showTournamentListBottomSheet()
+            showListBottomSheet()
         })
     }
 
@@ -190,8 +191,55 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
             }
         }
 
+        //拿到供应商列表
+        mViewModel.gameSupplierList.observe(viewLifecycleOwner){
+        }
+
+        //根据选中的供应商拉取数据
+        mViewModel.savedTournamentSelections.observe(viewLifecycleOwner){
+            mViewModel.setSuppliers(it)
+            mViewModel.reload()
+        }
+
+        mViewModel.buttonHasSelection.observe(viewLifecycleOwner) { hasSelection ->
+            updateTournamentButtonStyle(hasSelection)
+            if (!hasSelection) {//重新获取数据 在供应商列表没有选中情况下,选中全部
+                mBinding.customTabGroup.select(0)
+            }
+        }
+
+        // 清除 tlLeagueList
+        mViewModel.shouldClearLeagueListSelection.observeEvent(viewLifecycleOwner , this) {
+            clearLeagueListSelection()
+        }
     }
 
+    private fun showListBottomSheet() {
+        val tag = "HallCategoryFragment_bottom_sheet"
+        if (childFragmentManager.findFragmentByTag(tag) != null) return
+
+        GameCategoryListBottomSheetFragment
+            .newInstance(mViewModel.getCategory())
+            .show(childFragmentManager, tag)
+    }
+
+    /**
+     * 更新按鈕樣式
+     * @param hasSelection true: 有選中的供应商，false: 沒有選中的供应商
+     */
+    private fun updateTournamentButtonStyle(hasSelection: Boolean) {
+        mBinding.customTabGroup.updateTournamentButtonStyle(hasSelection)
+    }
+
+    /**
+     * 清除 tlLeagueList 的選中狀態（需求2）
+     */
+    private fun clearLeagueListSelection() {
+        with(mBinding) {
+            // 清除所有 tab 的選中狀態
+            customTabGroup.clearLeagueListSelection()
+        }
+    }
     override fun initData() {
         super.initData()
 
@@ -440,10 +488,6 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
                 mBinding.customTabGroup.setSortBtnText(arch.cayenne.lib.common.R.string.custom_tab_cold_reward.getString())
             }
         }
-    }
-
-    private fun showTournamentListBottomSheet() {
-
     }
 
 

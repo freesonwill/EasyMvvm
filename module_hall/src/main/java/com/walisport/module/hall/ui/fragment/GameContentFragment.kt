@@ -179,7 +179,7 @@ class GameContentFragment : BaseFragment<GameContentViewModel , FragmentGameCont
         mViewModel.gameSupplierList.observe(viewLifecycleOwner){
         }
 
-        //
+        //根据选中的供应商拉取数据
         mViewModel.savedTournamentSelections.observe(viewLifecycleOwner){
             mViewModel.setSupplier(it)
             mViewModel.reload()
@@ -448,8 +448,8 @@ class GameContentFragment : BaseFragment<GameContentViewModel , FragmentGameCont
     }
 
     /**
-     * 更新聯賽按鈕樣式
-     * @param hasSelection true: 有選中的聯賽，false: 沒有選中的聯賽
+     * 更新按鈕樣式
+     * @param hasSelection true: 有選中的供应商，false: 沒有選中的供应商
      */
     private fun updateTournamentButtonStyle(hasSelection: Boolean) {
         mBinding.customTabGroup.updateTournamentButtonStyle(hasSelection)
