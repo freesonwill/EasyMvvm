@@ -117,8 +117,8 @@ class HallRepository(
         database.supplierDao().querySelectSupplier(gameType)
 
     //监听供应商数据变化
-    suspend fun observeSupplierByGameTypeId(gameType: Int) =
-        database.supplierDao().observeSupplierGameTypeId(gameType)
+    suspend fun getSupplierByGameTypeId(gameType: Int) =
+        database.supplierDao().querySelectSupplier(gameType)
 
     private suspend fun roomGameSupplier(
         supplier: List<GameSupplier> ,

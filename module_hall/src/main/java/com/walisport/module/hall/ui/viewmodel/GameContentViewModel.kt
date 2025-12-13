@@ -59,14 +59,8 @@ class GameContentViewModel : BaseViewModel() {
 
     fun getSuppliers(type: Int) {
         viewModelScope.launch(Dispatchers.IO) {
-            repository.observeSupplierByGameTypeId(type)
-                .collect {
-                    launch(Dispatchers.Main) {
-                        _gameSupplierList.value = it
-                    }
-                }
+            _gameSupplierList.postValue(repository.getSupplierByGameTypeId(type))
         }
-
     }
 
     fun setCategory(category: Int) {

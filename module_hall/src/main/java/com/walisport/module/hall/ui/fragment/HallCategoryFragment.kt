@@ -22,9 +22,8 @@ import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.startFadeAnim
 import arch.cayenne.lib.common.utils.ext.touchBackPressed
 import arch.cayenne.lib.common.utils.helper.BackToTopHelper
+import arch.cayenne.lib.database.entity.GameSupplierDataModel
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
-import arch.cayenne.module.home.ui.fragment.GameCategoryListBottomSheetFragment
-import arch.cayenne.module.home.ui.fragment.GameContentListBottomSheetFragment
 import com.walisport.module.hall.R
 import com.walisport.module.hall.data.UniversalLoadMoreScrollListener
 import com.walisport.module.hall.data.constants.GameSortType
@@ -60,18 +59,25 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
 
     private var category: Int = 100
 
-    private val mockVendorList by lazy {
+    fun supplierTabList(list: List<GameSupplierDataModel>): List<SimpleTabDataModel> {
         val l = ArrayList<SimpleTabDataModel>()
-        for (i in 0..5) {
+        l.add(
+            SimpleTabDataModel(
+                id = 0,
+                simpleName = "",
+                icon = "",
+            )
+        )
+        list.take(10).forEach { item ->
             l.add(
                 SimpleTabDataModel(
-                    id = i ,
-                    simpleName = getString(R.string.wali) ,
-                    icon = "" ,
+                    id = item.id,
+                    simpleName = item.name,
+                    icon = item.icon,
                 )
             )
         }
-        l
+        return l
     }
 
 
@@ -82,8 +88,6 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
         with(mBinding) {
             titleBar.loadDynamicsTitleBar(titleBarBinding.root , null)
             titleBarBinding.tvTitleName.text = 100.getCategoryByType().desc
-
-            customTabGroup.submitTabList(mockVendorList)
 
             customTabGroup.setTabClickListener(object :
                 arch.cayenne.lib.common.ui.view.CustomGameTabClickListener {
@@ -192,7 +196,8 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
         }
 
         //拿到供应商列表
-        mViewModel.gameSupplierList.observe(viewLifecycleOwner){
+        mViewModel.gameSupplierList.observe(viewLifecycleOwner) {
+            mBinding.customTabGroup.submitTabList(supplierTabList(it))
         }
 
         //根据选中的供应商拉取数据

@@ -1,4 +1,4 @@
-package arch.cayenne.module.home.ui.fragment
+package com.walisport.module.hall.ui.fragment
 
 import android.annotation.SuppressLint
 import android.content.Context
