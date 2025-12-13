@@ -139,6 +139,7 @@ class HallFragment : BaseFragment<HallViewModel, FragmentHallBinding>() {
             balanceView.init(childFragmentManager)
             initCurveBanner()
             var barHeight = ViewUtils.getStatusBarHeight(requireContext())
+            //
 
             vpGame.adapter = PagerAdapter(childFragmentManager, lifecycle, mockTabList)
             launch {
@@ -228,6 +229,13 @@ class HallFragment : BaseFragment<HallViewModel, FragmentHallBinding>() {
             ivRightLogo.setOnBannerListener { Int, position ->
                 navigate(arch.cayenne.lib.res.R.string.nav_module_promotion_fragment.deeplink())
             }
+
+            llSearchBar.apply {
+                clickNoRepeatSingle {
+                    navigate(arch.cayenne.lib.res.R.string.nav_module_search_fragment.deeplink())
+                }
+            }
+
 
 
         }
