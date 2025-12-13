@@ -1,4 +1,4 @@
-package arch.cayenne.module.home.ui.adapter
+package arch.cayenne.module.hall.ui.adapter
 
 import android.content.Context
 import android.text.SpannableString
@@ -10,7 +10,7 @@ import androidx.core.content.ContextCompat
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
 import arch.cayenne.lib.database.entity.BaseGameSupplierData
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
-import arch.cayenne.module.home.data.GameSupplierListItem
+import arch.cayenne.module.hall.data.GameSupplierListItem
 import com.bumptech.glide.Glide
 import com.walisport.module.hall.databinding.ItemSupplierSectionBinding
 import com.walisport.module.hall.R

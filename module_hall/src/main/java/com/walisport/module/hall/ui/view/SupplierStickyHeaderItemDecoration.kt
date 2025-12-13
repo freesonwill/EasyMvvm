@@ -1,4 +1,4 @@
-package arch.cayenne.module.home.ui.view.decoration
+package arch.cayenne.module.hall.ui.view.decoration
 
 import android.content.Context
 import android.graphics.Canvas

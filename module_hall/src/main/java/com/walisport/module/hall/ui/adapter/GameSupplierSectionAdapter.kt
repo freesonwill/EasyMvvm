@@ -1,4 +1,4 @@
-package arch.cayenne.module.home.ui.adapter
+package arch.cayenne.module.hall.ui.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -9,7 +9,8 @@ import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
 import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.database.entity.BaseGameSupplierData
 import arch.cayenne.lib.database.entity.BaseTournamentData
-import arch.cayenne.module.home.data.GameSupplierListItem
+import arch.cayenne.module.hall.data.GameSupplierListItem
+import arch.cayenne.module.hall.ui.adapter.GameSupplierHeaderViewHolder
 import com.walisport.module.hall.databinding.ItemSupplierHeaderBinding
 import com.walisport.module.hall.databinding.ItemSupplierSectionBinding
 class GameSupplierSectionAdapter(
@@ -123,19 +124,19 @@ class GameSupplierSectionAdapter(
         return initialSelectedTournamentIds.all { it in currentTournamentIds }
     }
 
-    // 獲取選中的聯賽ID列表
+    // 獲取選中的supplierID列表
     fun getSelectedTournamentIds(): List<Int> {
         return selectedTournamentIds.toList()
     }
 
-    // 獲取選中的聯賽數據列表
+    // 獲取選中的supplier數據列表
     fun getSelectedTournaments(): List<BaseGameSupplierData> {
         return currentList.filterIsInstance<GameSupplierListItem.GameSupplierItem>()
             .filter { selectedTournamentIds.contains(it.tournament.id) }
             .map { it.tournament }
     }
 
-    // 設置選中的聯賽ID列表
+    // 設置選中的supplierID列表
     fun setSelectedIds(ids: List<Int>) {
         LogUtils.e("setSelectedIds---a-------->${ids}")
         selectedTournamentIds.clear()

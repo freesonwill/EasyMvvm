@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.checkCurrentScrollState
@@ -41,9 +42,9 @@ class GameAllFragment: BaseFragment<GameAllViewModel, FragmentGameAllBinding>() 
 
     private val listAdapter by lazy {
         GameAllListAdapter(object :GameAllListViewHolder.OnAllItemClickListener {
-            override fun onItemClick() {
-                val category = 100
-                navigate(Uri.parse("walisport://module_hall/hallCategoryFragment?category=${category}"))
+            override fun onItemClick(data: GameAllContentData) {
+                LogUtils.e("GameAllListAdapter-----${data.category},${data.name}")
+                navigate(Uri.parse("walisport://module_hall/hallCategoryFragment?category=${data.category}&name=${data.name}"))
             }
 
             override fun onChildItemClick() {

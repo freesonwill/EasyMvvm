@@ -58,6 +58,7 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
     private val defaultAnimDuration = 300L
 
     private var category: Int = 100
+    private var titleName: String = ""
 
     fun supplierTabList(list: List<GameSupplierDataModel>): List<SimpleTabDataModel> {
         val l = ArrayList<SimpleTabDataModel>()
@@ -84,10 +85,11 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
     override fun initView(savedInstanceState: Bundle?) {
         val requireArguments = requireArguments()
          category = requireArguments.getString("category")?.toInt()?:100
+        titleName =  requireArguments.getString("name")?.toString()?:""
 
         with(mBinding) {
             titleBar.loadDynamicsTitleBar(titleBarBinding.root , null)
-            titleBarBinding.tvTitleName.text = 100.getCategoryByType().desc
+            titleBarBinding.tvTitleName.text = titleName
 
             customTabGroup.setTabClickListener(object :
                 arch.cayenne.lib.common.ui.view.CustomGameTabClickListener {

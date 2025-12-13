@@ -25,10 +25,9 @@ import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.enableRecyclerViewBounce
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
-import arch.cayenne.module.home.data.GameSupplierListItem
-import arch.cayenne.module.home.ui.adapter.GameSupplierSectionAdapter
-import arch.cayenne.module.home.ui.view.decoration.SupplierStickyHeaderItemDecoration
-import arch.cayenne.module.home.ui.viewmodel.GameContentListViewModel
+import arch.cayenne.module.hall.data.GameSupplierListItem
+import arch.cayenne.module.hall.ui.adapter.GameSupplierSectionAdapter
+import arch.cayenne.module.hall.ui.view.decoration.SupplierStickyHeaderItemDecoration
 import com.walisport.module.hall.databinding.FragmentGameContentBottomSheetBinding
 import com.walisport.module.hall.R
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -39,6 +38,8 @@ import arch.cayenne.lib.common.R as CommonR
 import com.google.android.material.R as MaterialR
 import com.walisport.module.hall.databinding.ItemSupplierHeaderBinding
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
+import com.walisport.module.hall.ui.viewmodel.GameContentListViewModel
+
 class GameContentListBottomSheetFragment :
     BaseBottomSheetFragment<GameContentListViewModel, FragmentGameContentBottomSheetBinding>() {
 
