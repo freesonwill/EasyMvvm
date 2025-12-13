@@ -48,9 +48,7 @@ class GameContentViewModel : BaseViewModel() {
     val gameCategoryList: UnPeekLiveData<List<GameCategoryVo>> = _gameCategoryList
 
     // 保存彈窗中的選中狀態（跨彈窗生命週期）
-    private val _savedTournamentSelections = MutableLiveData<List<Int>>(
-        emptyList()
-    )
+    private val _savedTournamentSelections = MutableLiveData<List<Int>>()
     val savedTournamentSelections: LiveData<List<Int>> = _savedTournamentSelections
 
     // 通知按鈕選中狀態變化
