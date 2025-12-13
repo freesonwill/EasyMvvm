@@ -1,4 +1,4 @@
-package com.walisport.module.misc.ui.fragment
+package com.walisport.module.topup.ui.fragment
 
 import android.graphics.Bitmap
 import android.net.Uri
@@ -17,19 +17,19 @@ import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getColor
 import arch.cayenne.lib.common.utils.ext.touchBackPressed
 import arch.cayenne.lib.common.web.WLSWebViewClient
-import com.walisport.module.misc.databinding.FragmentInviteFriendsBinding
-import com.walisport.module.misc.ui.viewmodel.InviteFriendsViewModel
+import com.walisport.module.topup.databinding.FragmentRebateBinding
+import com.walisport.module.topup.ui.viewmodel.RebateViewModel
 import org.koin.java.KoinJavaComponent.inject
 import kotlin.reflect.KClass
 
 /**
- * 邀请好友页面， 内容由Web提供
+ * 实时返水页面， 内容由Web提供
 
  */
-class InviteFriendsFragment : BaseFragment<InviteFriendsViewModel, FragmentInviteFriendsBinding>() {
+class RebateFragment : BaseFragment<RebateViewModel, FragmentRebateBinding>() {
 
-    override val vbClass: KClass<FragmentInviteFriendsBinding> = FragmentInviteFriendsBinding::class
-    override val vmClass: KClass<InviteFriendsViewModel> = InviteFriendsViewModel::class
+    override val vbClass: KClass<FragmentRebateBinding> = FragmentRebateBinding::class
+    override val vmClass: KClass<RebateViewModel> = RebateViewModel::class
 
     private val manager: UserDataManager by inject(UserDataManager::class.java)
 
@@ -37,7 +37,7 @@ class InviteFriendsFragment : BaseFragment<InviteFriendsViewModel, FragmentInvit
         launch {
             initTitleBar()
             initWebView()
-            mBinding.webView.loadUrl(BizUrl.INVITE.url)
+            mBinding.webView.loadUrl(BizUrl.REBATE.url)
         }
     }
 
@@ -85,7 +85,7 @@ class InviteFriendsFragment : BaseFragment<InviteFriendsViewModel, FragmentInvit
                 }
             }
             setBackgroundColor(arch.cayenne.lib.common.R.color.title_bg.getColor())
-            setAttachedFragment(this@InviteFriendsFragment)
+            setAttachedFragment(this@RebateFragment)
         }
     }
 
