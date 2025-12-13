@@ -37,4 +37,5 @@
     <string name="sort_type_cold_reward">近30分钟冰冷返奖</string>
     <string name="reward_tips">返奖率基于该游戏最近30分钟内的数据</string>
     <string name="title_daily_match">每日投注比赛</string>
+    <string name="search_tips">瓦力</string>
 </resources>
