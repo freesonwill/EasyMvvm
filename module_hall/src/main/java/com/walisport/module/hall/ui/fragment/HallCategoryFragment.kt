@@ -253,7 +253,6 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
         mViewModel.setCategory(category ?: 0)
         mViewModel.setSuppliers(emptyList())
         mViewModel.setSortType(currentSortType)
-        mViewModel.queryGameList()
     }
 
     /**
