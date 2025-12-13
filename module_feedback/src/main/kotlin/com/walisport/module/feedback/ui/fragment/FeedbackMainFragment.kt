@@ -15,7 +15,6 @@ import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.data.constants.BizUrl
 import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getColor
@@ -95,7 +94,6 @@ class FeedbackMainFragment : BaseFragment<FeedbackMainViewModel, FragmentFeedbac
 
                 override fun onPermissionRequest(request: PermissionRequest?) {
                     super.onPermissionRequest(request)
-                    "onPerimssionRequrest ${request?.resources}".logd("aaa")
                     request?.grant(request.resources)
                 }
 
