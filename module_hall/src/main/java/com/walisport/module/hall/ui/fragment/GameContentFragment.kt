@@ -61,7 +61,7 @@ class GameContentFragment : BaseFragment<GameContentViewModel , FragmentGameCont
     private var sortMenuClicked: Boolean = false
 
     private val defaultAnimDuration = 300L
-
+    val category get() = requireArguments().getInt(ARG_CATEGORY_TYPE)
     private val mockVendorList by lazy {
         val l = ArrayList<SimpleTabDataModel>()
         for (i in 0..5) {
@@ -94,7 +94,7 @@ class GameContentFragment : BaseFragment<GameContentViewModel , FragmentGameCont
             customTabGroup.submitTabList(mockVendorList)
             BackToTopHelper(rvGame , ivBackToTop , true)
         }
-        mViewModel.getSuppliers(3)
+        mViewModel.getSuppliers(mViewModel.getCategory())
     }
 
     override fun initListener() {
@@ -122,10 +122,8 @@ class GameContentFragment : BaseFragment<GameContentViewModel , FragmentGameCont
         if (childFragmentManager.findFragmentByTag(tag) != null) return
 
         GameContentListBottomSheetFragment
-            .newInstance(
-                3
-            )
-            .show(childFragmentManager , tag)
+            .newInstance(mViewModel.getCategory())
+            .show(childFragmentManager, tag)
     }
 
     override suspend fun createObserver() {
@@ -177,15 +175,14 @@ class GameContentFragment : BaseFragment<GameContentViewModel , FragmentGameCont
         }
 
 
-        mViewModel.gameSupplierList.observe(viewLifecycleOwner) {
-
-
+        //拿到供应商列表
+        mViewModel.gameSupplierList.observe(viewLifecycleOwner){
         }
 
         //
-        mViewModel.savedTournamentSelections.observe(viewLifecycleOwner) {
-
-
+        mViewModel.savedTournamentSelections.observe(viewLifecycleOwner){
+            mViewModel.setSupplier(it)
+            mViewModel.reload()
         }
 
         mViewModel.buttonHasSelection.observe(viewLifecycleOwner) { hasSelection ->

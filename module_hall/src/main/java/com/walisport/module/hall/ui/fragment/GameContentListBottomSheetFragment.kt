@@ -18,7 +18,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.ui.fragment.BaseBottomSheetFragment
+import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.common.ui.view.CustomFilterSideBarView
+import arch.cayenne.lib.common.ui.view.DynamicStateLayout.States
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.enableRecyclerViewBounce
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
@@ -36,7 +38,7 @@ import kotlin.reflect.KClass
 import arch.cayenne.lib.common.R as CommonR
 import com.google.android.material.R as MaterialR
 import com.walisport.module.hall.databinding.ItemSupplierHeaderBinding
-
+import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 class GameContentListBottomSheetFragment :
     BaseBottomSheetFragment<GameContentListViewModel, FragmentGameContentBottomSheetBinding>() {
 
@@ -55,7 +57,9 @@ class GameContentListBottomSheetFragment :
     private lateinit var adapter: GameSupplierSectionAdapter
     private var pendingJumpIndex: Int? = null
     private var stickyHeaderDecoration: SupplierStickyHeaderItemDecoration? = null
-    private val mGameContentVm: GameContentViewModel by sharedViewModel<GameContentViewModel, GameContentFragment>()
+    private val mGameContentVm: GameContentViewModel by sharedViewModel<GameContentViewModel, GameContentFragment>(fragmentFilter = { f->
+        f.category == requireArguments().getInt(GAME_TYPE_ID)
+    })
     private val gameTypeId: Int by lazy {
         arguments?.getInt(GAME_TYPE_ID) ?: -1
     }
@@ -64,6 +68,7 @@ class GameContentListBottomSheetFragment :
     override fun initData() {
         mViewModel.setSportId(gameTypeId)
         mViewModel.getTournaments(gameTypeId)
+        LogUtils.e("mGameContentVm-----$mGameContentVm,category:${mGameContentVm.getCategory()}, gameTypeId:$gameTypeId")
     }
 
     override fun initView(savedInstanceState: Bundle?) {
@@ -268,6 +273,18 @@ class GameContentListBottomSheetFragment :
 
     override suspend fun createObserver() {
         mViewModel.tournamentsChange.observe(viewLifecycleOwner) {data->
+            if (data.isEmpty()){
+                mBinding.clDynamics.setState(
+                    States.DATA_EMPTY ,
+                    arch.cayenne.lib.common.R.string.data_empty.getString()
+                )
+                mBinding.llIndexContainer.visibility = View.GONE
+                mBinding.clDynamics.visibility = View.VISIBLE
+                return@observe
+            }else{
+                mBinding.llIndexContainer.visibility = View.VISIBLE
+                mBinding.clDynamics.visibility = View.GONE
+            }
             adapter.submitList(data)
             val selectedIds = data
                 .asSequence()
