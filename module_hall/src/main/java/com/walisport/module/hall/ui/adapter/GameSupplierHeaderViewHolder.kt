@@ -1,8 +1,8 @@
-package arch.cayenne.module.home.ui.adapter
+package arch.cayenne.module.hall.ui.adapter
 
 import android.view.View
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
-import arch.cayenne.module.home.data.GameSupplierListItem
+import arch.cayenne.module.hall.data.GameSupplierListItem
 import com.walisport.module.hall.databinding.ItemSupplierHeaderBinding
 import com.walisport.module.hall.R
 class GameSupplierHeaderViewHolder(

@@ -2,7 +2,7 @@ package com.walisport.module.hall
 
 import android.content.Context
 import arch.cayenne.lib.base.data.DefaultInitializer
-import arch.cayenne.module.home.data.repo.GameSupplierListRepository
+import arch.cayenne.module.hall.data.repo.GameSupplierListRepository
 import com.walisport.module.hall.data.HallRepository
 import com.walisport.module.hall.defaultModule
 import org.koin.core.context.loadKoinModules

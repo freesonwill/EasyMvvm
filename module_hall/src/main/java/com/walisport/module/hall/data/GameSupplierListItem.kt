@@ -1,4 +1,4 @@
-package arch.cayenne.module.home.data
+package arch.cayenne.module.hall.data
 
 import arch.cayenne.lib.database.entity.BaseGameSupplierData
 
