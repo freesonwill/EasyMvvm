@@ -3,8 +3,10 @@ package com.walisport.module.topup.ui.fragment
 import android.os.Bundle
 import android.text.TextUtils
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.common.data.constants.BizUrl
 import arch.cayenne.lib.common.ui.fragment.CoinDialogFragment
 import arch.cayenne.lib.common.utils.ViewUtils
+import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
@@ -53,9 +55,15 @@ class WithdrawCryptoFragment : BaseFragment<CryptoViewModel, FragmentWithdrawCry
     override fun initListener() {
         mBinding.layTopUpLesson.clickNoRepeat {
             navigate(
-                WithdrawFragmentDirections.actionWithdrawFragmentToFundDetailsFragment().apply {
-                    arguments.putString("type", "recharge")
-                })
+                arch.cayenne.lib.res.R.string.nav_module_web_fragment
+                    .deeplink("url" to BizUrl.TOP_LESSON.url)
+            )
+        }
+        mBinding.layWithdrawLesson.clickNoRepeat {
+            navigate(
+                arch.cayenne.lib.res.R.string.nav_module_web_fragment
+                    .deeplink("url" to BizUrl.TOP_LESSON.url)
+            )
         }
         mBinding.layCoin.clickNoRepeat {
             val location = IntArray(2)
@@ -72,12 +80,6 @@ class WithdrawCryptoFragment : BaseFragment<CryptoViewModel, FragmentWithdrawCry
                     }
                 })
             }.show(childFragmentManager)
-        }
-        mBinding.layWithdrawLesson.clickNoRepeat {
-            navigate(
-                WithdrawFragmentDirections.actionWithdrawFragmentToFundDetailsFragment().apply {
-                    arguments.putString("type", "withdraw")
-                })
         }
         mBinding.layCustomer.clickNoRepeat {
             showToast(R.string.cus_service.getString())
