@@ -32,6 +32,10 @@ class GameAllFragment: BaseFragment<GameAllViewModel, FragmentGameAllBinding>() 
             override fun onInviteFriendItemClick() {
                 navigate(arch.cayenne.lib.res.R.string.nav_module_invite_friends_fragment.deeplink())
             }
+
+            override fun onCompetitionItemClick() {
+                navigate(arch.cayenne.lib.res.R.string.nav_module_competition_fragment.deeplink() )
+            }
         })
     }
 
