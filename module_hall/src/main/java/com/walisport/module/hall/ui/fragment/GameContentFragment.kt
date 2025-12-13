@@ -6,41 +6,34 @@ import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
-import arch.cayenne.lib.base.ui.viewmodel.EmptyViewModel
 import arch.cayenne.lib.common.ui.adapter.GridSpacingItemDecoration
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout.States
 import arch.cayenne.lib.common.ui.view.SimpleTabDataModel
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
-import arch.cayenne.lib.common.utils.ext.onScrolledOver
-import arch.cayenne.lib.common.utils.ext.checkCurrentScrollState
-import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
+import arch.cayenne.lib.common.utils.ext.checkCurrentScrollState
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
-import arch.cayenne.lib.common.utils.ext.scrollToBottomWithLoadMore
+import arch.cayenne.lib.common.utils.ext.onScrolledOver
+import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.helper.BackToTopHelper
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.module.home.ui.fragment.GameContentListBottomSheetFragment
 import com.walisport.module.hall.R
-import com.walisport.module.hall.data.GameContentData
-import com.walisport.module.hall.data.HotColdType
 import com.walisport.module.hall.data.UniversalLoadMoreScrollListener
 import com.walisport.module.hall.data.constants.GameSortType
 import com.walisport.module.hall.databinding.FragmentGameContentBinding
 import com.walisport.module.hall.databinding.LayoutGameSortingMenuBinding
 import com.walisport.module.hall.ui.adapter.GameContentAdapter
 import com.walisport.module.hall.ui.viewmodel.GameContentViewModel
-import com.walisport.module.hall.ui.viewmodel.GameRecentViewModel
 import com.walisport.module.hall.ui.viewmodel.HallViewModel
-import kotlin.random.Random
 import kotlin.reflect.KClass
 
-class GameContentFragment : BaseFragment<GameContentViewModel, FragmentGameContentBinding>() {
+class GameContentFragment : BaseFragment<GameContentViewModel , FragmentGameContentBinding>() {
     companion object {
         private const val ARG_CATEGORY_TYPE = "arg_category_type"
 
@@ -53,9 +46,10 @@ class GameContentFragment : BaseFragment<GameContentViewModel, FragmentGameConte
             }
         }
     }
+
     override val vbClass: KClass<FragmentGameContentBinding> = FragmentGameContentBinding::class
     override val vmClass: KClass<GameContentViewModel> = GameContentViewModel::class
-    private val hallViewModel: HallViewModel by sharedViewModel<HallViewModel, HallFragment>()
+    private val hallViewModel: HallViewModel by sharedViewModel<HallViewModel , HallFragment>()
     private lateinit var adapter: GameContentAdapter
 
     private var isExpanded = false
@@ -73,9 +67,9 @@ class GameContentFragment : BaseFragment<GameContentViewModel, FragmentGameConte
         for (i in 0..5) {
             l.add(
                 SimpleTabDataModel(
-                    id = i,
-                    simpleName = getString(R.string.wali),
-                    icon = "",
+                    id = i ,
+                    simpleName = getString(R.string.wali) ,
+                    icon = "" ,
                 )
             )
         }
@@ -84,11 +78,11 @@ class GameContentFragment : BaseFragment<GameContentViewModel, FragmentGameConte
 
     override fun initView(savedInstanceState: Bundle?) {
         with(mBinding) {
-            rvGame.layoutManager = GridLayoutManager(requireContext(),  3)
+            rvGame.layoutManager = GridLayoutManager(requireContext() , 3)
             val itemDecoration = GridSpacingItemDecoration(
-                spanCount = 3,
-                horizontalSpacing = 9.dp2px,
-                verticalSpacing = 12.dp2px,
+                spanCount = 3 ,
+                horizontalSpacing = 9.dp2px ,
+                verticalSpacing = 12.dp2px ,
                 includeEdge = false // 確保邊緣沒有空隙
             )
             rvGame.addItemDecoration(itemDecoration)
@@ -96,16 +90,17 @@ class GameContentFragment : BaseFragment<GameContentViewModel, FragmentGameConte
                 navigate(arch.cayenne.lib.res.R.string.nav_module_gamedetail.deeplink())
             })
             rvGame.adapter = adapter
+            rvGame.itemAnimator = null
             customTabGroup.submitTabList(mockVendorList)
-            BackToTopHelper(rvGame, ivBackToTop, true)
+            BackToTopHelper(rvGame , ivBackToTop , true)
         }
         mViewModel.getSuppliers(mViewModel.getCategory())
     }
 
     override fun initListener() {
-        mBinding.rvGame.onScrolledOver(100f, 80f, {
+        mBinding.rvGame.onScrolledOver(100f , 80f , {
             hallViewModel.setScorll(true)
-        }, {
+        } , {
             hallViewModel.setScorll(false)
         })
         mBinding.rvGame.addOnScrollListener(UniversalLoadMoreScrollListener(6) {
@@ -116,7 +111,7 @@ class GameContentFragment : BaseFragment<GameContentViewModel, FragmentGameConte
         mBinding.customTabGroup.setOnSortBtnClick {
             toggleGameSorting(!isExpanded)
         }
-        mBinding.customTabGroup.setOnShowAllCategoryClick({},{
+        mBinding.customTabGroup.setOnShowAllCategoryClick({} , {
             showTournamentListBottomSheet()
         })
 
@@ -179,9 +174,9 @@ class GameContentFragment : BaseFragment<GameContentViewModel, FragmentGameConte
             }
         }
 
+
         //拿到供应商列表
         mViewModel.gameSupplierList.observe(viewLifecycleOwner){
-
         }
 
         //
@@ -190,7 +185,7 @@ class GameContentFragment : BaseFragment<GameContentViewModel, FragmentGameConte
             mViewModel.reload()
         }
 
-        mViewModel.buttonHasSelection.observe(viewLifecycleOwner){  hasSelection ->
+        mViewModel.buttonHasSelection.observe(viewLifecycleOwner) { hasSelection ->
             updateTournamentButtonStyle(hasSelection)
             if (!hasSelection) {//重新获取数据 在供应商列表没有选中情况下,选中全部
                 mBinding.customTabGroup.select(0)
@@ -198,7 +193,7 @@ class GameContentFragment : BaseFragment<GameContentViewModel, FragmentGameConte
         }
 
         // 清除 tlLeagueList
-        mViewModel.shouldClearLeagueListSelection.observeEvent(viewLifecycleOwner, this) {
+        mViewModel.shouldClearLeagueListSelection.observeEvent(viewLifecycleOwner , this) {
             clearLeagueListSelection()
         }
     }
@@ -327,6 +322,7 @@ class GameContentFragment : BaseFragment<GameContentViewModel, FragmentGameConte
                 sortMenuClicked = true
                 if (currentSortType != GameSortType.HOT) {
                     currentSortType = GameSortType.HOT
+                    mBinding.tvRewardTips.visibility = View.GONE
                     updateSortingMenuSelection()
                     setSortBtnText()
                     mViewModel.setSortType(currentSortType)
@@ -341,6 +337,7 @@ class GameContentFragment : BaseFragment<GameContentViewModel, FragmentGameConte
                 sortMenuClicked = true
                 if (currentSortType != GameSortType.NEW) {
                     currentSortType = GameSortType.NEW
+                    mBinding.tvRewardTips.visibility = View.GONE
                     updateSortingMenuSelection()
                     setSortBtnText()
                     mViewModel.setSortType(currentSortType)
@@ -355,6 +352,8 @@ class GameContentFragment : BaseFragment<GameContentViewModel, FragmentGameConte
                 sortMenuClicked = true
                 if (currentSortType != GameSortType.HOT_REWARD) {
                     currentSortType = GameSortType.HOT_REWARD
+                    mBinding.tvRewardTips.visibility = View.VISIBLE
+                    mBinding.aplHomeBanner.setExpanded(true , true)
                     updateSortingMenuSelection()
                     setSortBtnText()
                     mViewModel.setSortType(currentSortType)
@@ -368,6 +367,8 @@ class GameContentFragment : BaseFragment<GameContentViewModel, FragmentGameConte
                 sortMenuClicked = true
                 if (currentSortType != GameSortType.COLD_REWARD) {
                     currentSortType = GameSortType.COLD_REWARD
+                    mBinding.tvRewardTips.visibility = View.VISIBLE
+                    mBinding.aplHomeBanner.setExpanded(true , true)
                     updateSortingMenuSelection()
                     setSortBtnText()
                     mViewModel.setSortType(currentSortType)
@@ -445,6 +446,7 @@ class GameContentFragment : BaseFragment<GameContentViewModel, FragmentGameConte
             }
         }
     }
+
     /**
      * 更新聯賽按鈕樣式
      * @param hasSelection true: 有選中的聯賽，false: 沒有選中的聯賽
@@ -452,6 +454,7 @@ class GameContentFragment : BaseFragment<GameContentViewModel, FragmentGameConte
     private fun updateTournamentButtonStyle(hasSelection: Boolean) {
         mBinding.customTabGroup.updateTournamentButtonStyle(hasSelection)
     }
+
     /**
      * 清除 tlLeagueList 的選中狀態（需求2）
      */
@@ -461,12 +464,13 @@ class GameContentFragment : BaseFragment<GameContentViewModel, FragmentGameConte
             customTabGroup.clearLeagueListSelection()
         }
     }
+
     override fun onResume() {
         super.onResume()
         mBinding.rvGame.post {
-            mBinding.rvGame.checkCurrentScrollState(100f, 80f, {
+            mBinding.rvGame.checkCurrentScrollState(100f , 80f , {
                 hallViewModel.setScorll(true)
-            }, {
+            } , {
                 hallViewModel.setScorll(false)
             })
         }
