@@ -11,11 +11,6 @@
 
         <deepLink app:uri="walisport://module_topup/topUpFragment" />
 
-        <!--跳转充值资金页面-->
-        <action
-            android:id="@+id/action_topUpFragment_to_fundDetailsFragment"
-            app:destination="@id/fundDetailsFragment" />
-
         <!--跳转添加提现银行卡页面-->
         <action
             android:id="@+id/action_topUpFragment_to_addBankCardFragment"
@@ -59,11 +54,6 @@
         android:label="WithdrawFragment" >
 
         <deepLink app:uri="walisport://module_topup/withdrawFragment" />
-
-        <!--跳转提现资金页面-->
-        <action
-            android:id="@+id/action_withdrawFragment_to_fundDetailsFragment"
-            app:destination="@id/fundDetailsFragment" />
 
         <!--跳转地址本页面-->
         <action
@@ -112,20 +102,6 @@
         android:id="@+id/orderDetailFragment"
         android:name="com.walisport.module.topup.ui.fragment.OrderDetailFragment"
         android:label="OrderDetailFragment">
-
-        <!--跳转提现资金页面-->
-        <action
-            android:id="@+id/action_orderDetailFragment_to_fundDetailsFragment"
-            app:destination="@id/fundDetailsFragment" />
-    </fragment>
-
-    <fragment
-        android:id="@+id/fundDetailsFragment"
-        android:name="com.walisport.module.topup.ui.fragment.FundDetailsFragment"
-        android:label="fragment_topup_fund_details"
-        tools:layout="@layout/fragment_fund_details">
-
-        <deepLink app:uri="walisport://module_topup/fundDetailsFragment" />
     </fragment>
 
     <fragment
