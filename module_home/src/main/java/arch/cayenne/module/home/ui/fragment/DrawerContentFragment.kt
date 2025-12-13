@@ -121,7 +121,10 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
                     id++, arch.cayenne.lib.common.R.drawable.ic_drawer_fund_details,
                     arch.cayenne.lib.common.R.string.drawer_fund_details
                 ) {
-                    navigatePage(arch.cayenne.lib.res.R.string.nav_module_fund_detail_fragment.deeplink())
+                    navigate(
+                        arch.cayenne.lib.res.R.string.nav_module_web_fragment
+                            .deeplink("url" to BizUrl.FUND_DETAIL.url)
+                    )
                 },
                 CommonFeaturesBean(
                     id++, arch.cayenne.lib.common.R.drawable.ic_drawer_bet_record,
