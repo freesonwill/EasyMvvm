@@ -11,6 +11,7 @@ import arch.cayenne.lib.common.utils.ext.ResourceExt.getColor
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getDrawable
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+import arch.cayenne.lib.common.utils.ext.clickNoRepeatSingle
 import arch.cayenne.lib.common.utils.helper.VIPResourceHelper
 import com.walisport.module.me.databinding.FragmentMeVipInfoBinding
 import com.walisport.module.me.ui.viewmodel.MeVIPInfoViewModel
@@ -44,7 +45,9 @@ class MeVIPInfoFragment : BaseFragment<MeVIPInfoViewModel, FragmentMeVipInfoBind
     override fun initListener() {
         with(mBinding) {
 
-
+            root.clickNoRepeat {
+                navigate(arch.cayenne.lib.res.R.string.nav_module_vip_fragment.deeplink())
+            }
 
             ivVipEntry.addScaleOnTouchAnimation()
             ivVipEntry.clickNoRepeat {
