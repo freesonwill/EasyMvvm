@@ -92,6 +92,12 @@ class GameContentFragment : BaseFragment<GameContentViewModel, FragmentGameConte
             customTabGroup.setTabClickListener(object :
                 arch.cayenne.lib.common.ui.view.CustomGameTabClickListener {
                 override fun onTabClicked(id: Int) {
+                    //点击全部 取消全部选中
+                    if (id == 0) {
+                        mViewModel.clearSupplierSelected()
+                    } else {
+                        mViewModel.selectSupplierId(id)
+                    }
                     mBinding.rvGame.startFadeAnim { onComplete ->
                         mViewModel.setSupplier(if (id == 0) emptyList() else listOf(id))
                         mViewModel.reload()
@@ -99,7 +105,7 @@ class GameContentFragment : BaseFragment<GameContentViewModel, FragmentGameConte
                     }
                 }
             })
-            
+
             rvGame.layoutManager = GridLayoutManager(requireContext(), 3)
             val itemDecoration = GridSpacingItemDecoration(
                 spanCount = 3,

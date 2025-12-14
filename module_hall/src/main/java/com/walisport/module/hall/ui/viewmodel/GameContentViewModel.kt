@@ -70,6 +70,14 @@ class GameContentViewModel : BaseViewModel() {
     }
 
 
+    fun clearSupplierSelected(){
+        repository.clearSelectedByType(category)
+    }
+
+    fun selectSupplierId(id: Int){
+        repository.selectSupplierId(category,id)
+    }
+
     fun setSupplier(suppliers: List<Int>) {
         this.suppliers = suppliers
     }

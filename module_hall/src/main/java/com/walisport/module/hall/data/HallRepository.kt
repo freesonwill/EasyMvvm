@@ -155,6 +155,20 @@ class HallRepository(
         }
     }
 
+    //设置单个ID为选中
+   fun selectSupplierId(gameType: Int,id:Int){
+        scope.launch(Dispatchers.IO) {
+            database.supplierDao().selectSupplierId(gameType,id)
+        }
+   }
+
+
+    //清空选中
+    fun clearSelectedByType(gameType: Int) {
+        scope.launch(Dispatchers.IO) {
+            database.supplierDao().clearSelectedByType(gameType)
+        }
+    }
     companion object {
         const val DEFAULT_GAME_SIZE = 10
         const val INITIAL_PAGE = 1
