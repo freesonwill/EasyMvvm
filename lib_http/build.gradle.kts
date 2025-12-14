@@ -38,6 +38,7 @@ dependencies {
     api(libs.retrofit.logging.interceptor)
     implementation(libs.androidx.core.ktx)
     implementation(project(":lib_base"))
+    implementation(project(":lib_common"))
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     testImplementation(libs.junit)
