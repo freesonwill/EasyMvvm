@@ -11,6 +11,7 @@ import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.ui.animation.AnimationController
 import arch.cayenne.lib.base.ui.animation.AnimationController.AnimType
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.common.ui.adapter.GridSpacingItemDecoration
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout.States
@@ -36,6 +37,7 @@ import com.walisport.module.hall.databinding.LayoutGameSortingMenuBinding
 import com.walisport.module.hall.ui.adapter.GameContentAdapter
 import com.walisport.module.hall.ui.viewmodel.GameContentViewModel
 import com.walisport.module.hall.ui.viewmodel.HallViewModel
+import kotlinx.coroutines.delay
 import kotlin.reflect.KClass
 
 class GameContentFragment : BaseFragment<GameContentViewModel, FragmentGameContentBinding>() {
@@ -213,8 +215,15 @@ class GameContentFragment : BaseFragment<GameContentViewModel, FragmentGameConte
 
         //根据选中的供应商拉取数据
         mViewModel.savedTournamentSelections.observe(viewLifecycleOwner) {
-            mViewModel.setSupplier(it)
-            mViewModel.reload()
+            if (it.size==1){
+                launch{
+                    delay(200)
+                    mBinding.customTabGroup.selectById(it[0])
+                }
+            }else{
+                mViewModel.setSupplier(it)
+                mViewModel.reload()
+            }
         }
 
         mViewModel.buttonHasSelection.observe(viewLifecycleOwner) { hasSelection ->

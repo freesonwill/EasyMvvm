@@ -221,7 +221,9 @@ class GameContentListBottomSheetFragment :
 
                     // 若聯賽有選中，則清除 tlLeagueList 的選中狀態
                     if (selectedIds.isNotEmpty()) {
-                        mGameContentVm.requestClearLeagueListSelection()
+                        if(selectedIds.size!=1){
+                            mGameContentVm.requestClearLeagueListSelection()
+                        }
                         //保存本地记录,记录选中
                         mViewModel.setSelectIds(selectedIds)
                     }
@@ -237,9 +239,10 @@ class GameContentListBottomSheetFragment :
 
                     // 若聯賽有選中，則清除 tlLeagueList 的選中狀態
                     if (selectedTournamentIds.isNotEmpty()) {
-                         mGameContentVm.requestClearLeagueListSelection()
+                        if(selectedTournamentIds.size!=1){
+                            mGameContentVm.requestClearLeagueListSelection()
+                        }
                     }
-
                     dismiss()
                 }
             }
