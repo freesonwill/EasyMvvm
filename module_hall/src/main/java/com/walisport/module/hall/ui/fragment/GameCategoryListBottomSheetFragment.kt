@@ -42,7 +42,7 @@ import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import com.walisport.module.hall.ui.fragment.HallCategoryFragment
 import com.walisport.module.hall.ui.viewmodel.GameCategoryViewModel
 import com.walisport.module.hall.ui.viewmodel.GameContentListViewModel
-
+import arch.cayenne.lib.common.utils.ext.ResourceExt.getColor
 class GameCategoryListBottomSheetFragment :
     BaseBottomSheetFragment<GameContentListViewModel, FragmentGameContentBottomSheetBinding>() {
 
@@ -453,6 +453,18 @@ class GameCategoryListBottomSheetFragment :
         } else {
             mBinding.tvConfirm.text = getString(R.string.btn_confirm)
         }
+
+        if (adapter.getSelectedTournamentIds().isEmpty()){
+            mBinding.tvConfirm.text = getString(R.string.btn_confirm)
+        }
+        if (adapter.getSelectedTournamentIds().isEmpty()){
+            mBinding.tvConfirm.text = getString(R.string.btn_confirm)
+        }
+        mBinding.tvReset.isSelected = isChanged
+        if (adapter.getSelectedTournamentIds().isEmpty()){
+            mBinding.tvReset.isSelected = false
+        }
+
     }
     companion object {
         private const val GAME_TYPE_ID = "gameTypeId"
