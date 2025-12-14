@@ -31,6 +31,7 @@
     <string name="tab_ranking_today_bonus">奖金</string>
     <string name="supplier_section_title_hot">热门</string>
     <string name="supplier_section_title">选供应商</string>
+    <string name="supplier_search_hint">搜索</string>
     <string name="sort_type_hot">热门</string>
     <string name="sort_type_new">最新上线</string>
     <string name="sort_type_hot_reward">近30分钟火热返奖</string>
