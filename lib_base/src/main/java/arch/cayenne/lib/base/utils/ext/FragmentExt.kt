@@ -85,8 +85,8 @@ object FragmentExt {
 
     fun Fragment.setFragmentResultListener(requestKey:String,
                                            lifecycleOwner: LifecycleOwner,
-                                           listener: FragmentResultListener,
-                                           fm: FragmentManager = parentFragmentManager){
+                                           fm: FragmentManager = parentFragmentManager,
+                                           listener: FragmentResultListener){
         fm.setFragmentResultListener(requestKey,lifecycleOwner, listener)
     }
 

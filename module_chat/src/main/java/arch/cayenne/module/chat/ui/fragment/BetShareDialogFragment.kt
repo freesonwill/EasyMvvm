@@ -7,8 +7,10 @@ import android.view.WindowManager
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import arch.cayenne.lib.base.ui.fragment.BasePreLoadBottomSheetFragment
+import arch.cayenne.lib.common.ui.fragment.ShareFragment
 import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.module.chat.R
 import arch.cayenne.module.chat.databinding.FragmentBetShareDialogLayoutBinding
 import arch.cayenne.module.chat.ui.viewmodel.BetShareViewModel
@@ -79,11 +81,13 @@ class BetShareDialogFragment :
         val lp = mBinding.fragmentContainer.layoutParams
         lp.height = if (betType == 0) gameMinHeight else sportMinHeight
         mBinding.fragmentContainer.layoutParams = lp
-        contentMaxHeight =  if(betType == 0) gameMinHeight+269.dp2px else sportMinHeight+269.dp2px
+        contentMaxHeight =
+            if (betType == 0) gameMinHeight + 269.dp2px else sportMinHeight + 269.dp2px
     }
 
 
     override fun initView(savedInstanceState: Bundle?) {
+        ShareFragment.create(this)
     }
 
 
@@ -97,6 +101,7 @@ class BetShareDialogFragment :
         }
     }
 
+
     private fun loadFragment() {
         childFragmentManager.beginTransaction().replace(
             R.id.fragment_container,
@@ -105,6 +110,16 @@ class BetShareDialogFragment :
     }
 
     override fun initListener() {
+
+        mBinding.apply {
+            tvGo.clickNoRepeat {
+                dismiss()
+            }
+            ivShare.clickNoRepeat {
+                ShareFragment.show(this@BetShareDialogFragment)
+            }
+
+        }
 
     }
 
@@ -154,7 +169,7 @@ class BetShareDialogFragment :
                     lp.height = anim.animatedValue as Int
                     container.layoutParams = lp
                 }
-                duration = 200
+                duration = 170
                 start()
             }
         }

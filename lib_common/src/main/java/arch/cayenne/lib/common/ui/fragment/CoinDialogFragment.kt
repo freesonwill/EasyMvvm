@@ -26,9 +26,9 @@ class CoinDialogFragment :
     private var listener: DialogDismissListener? = null
 
     private val mockList: List<BaseCurrencyData> = listOf(
-        BaseCurrencyData.CurrencyContentData2("", "USDT", "", "U"),
-        BaseCurrencyData.CurrencyContentData2("", "BTC", "", "B"),
-        BaseCurrencyData.CurrencyContentData2("", "ETH", "", "E")
+        BaseCurrencyData.CurrencyContentData2(1,"", "USDT", "", "U"),
+        BaseCurrencyData.CurrencyContentData2(2,"", "BTC", "", "B"),
+        BaseCurrencyData.CurrencyContentData2(3,"", "ETH", "", "E")
     )
 
     companion object {

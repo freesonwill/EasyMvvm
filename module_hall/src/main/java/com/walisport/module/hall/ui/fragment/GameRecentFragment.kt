@@ -45,7 +45,7 @@ class GameRecentFragment : BaseFragment<GameRecentViewModel, FragmentGameRecentB
                 navigate(arch.cayenne.lib.res.R.string.nav_module_gamedetail.deeplink())
             })
             rvGame.adapter = adapter
-            BackToTopHelper(rvGame, ivBackToTop)
+            BackToTopHelper(rvGame, ivBackToTop, true)
         }
         mViewModel.mockList(page)
     }

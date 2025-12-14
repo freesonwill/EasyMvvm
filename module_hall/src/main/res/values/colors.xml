@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <color name="game_list_search_hint">#929298</color>
+    <color name="game_list_search_text">#ffffff</color>
 
 </resources>

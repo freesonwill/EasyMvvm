@@ -101,8 +101,9 @@ class BetResultViewModel(private val repo: BetResultRepository, private val betR
     }
 
     fun toCombinationDetailParameter(serialValue: Int): ComboDetailFragment.Parameter {
-        return betRepo.toCombinationDetailParameter(serialValue,
-            comboMultiBetBeans,
+        val data = comboMultiBetBeans?.find { it.serialValue == serialValue }?: error("can not find serialValue:$serialValue in $comboMultiBetBeans")
+        return betRepo.toCombinationDetailParameter(
+            data,
             onBetSheetListener.value,
             moneySymbol
         )

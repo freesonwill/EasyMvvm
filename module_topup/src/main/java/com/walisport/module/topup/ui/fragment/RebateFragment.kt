@@ -17,28 +17,27 @@ import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getColor
 import arch.cayenne.lib.common.utils.ext.touchBackPressed
 import arch.cayenne.lib.common.web.WLSWebViewClient
-import com.walisport.module.topup.databinding.FragmentFundDetailsBinding
-import com.walisport.module.topup.ui.viewmodel.FundDetailsViewModel
+import com.walisport.module.topup.databinding.FragmentRebateBinding
+import com.walisport.module.topup.ui.viewmodel.RebateViewModel
 import org.koin.java.KoinJavaComponent.inject
 import kotlin.reflect.KClass
 
 /**
- * 资金明细、充值教程、提现教程页面
- * @date: 2025/10/8 16:01
- * @description:
+ * 实时返水页面， 内容由Web提供
+
  */
+class RebateFragment : BaseFragment<RebateViewModel, FragmentRebateBinding>() {
 
-class FundDetailsFragment : BaseFragment<FundDetailsViewModel, FragmentFundDetailsBinding>() {
+    override val vbClass: KClass<FragmentRebateBinding> = FragmentRebateBinding::class
+    override val vmClass: KClass<RebateViewModel> = RebateViewModel::class
 
-    override val vbClass: KClass<FragmentFundDetailsBinding> = FragmentFundDetailsBinding::class
-    override val vmClass: KClass<FundDetailsViewModel> = FundDetailsViewModel::class
     private val manager: UserDataManager by inject(UserDataManager::class.java)
 
     override fun initView(savedInstanceState: Bundle?) {
         launch {
             initTitleBar()
             initWebView()
-            mBinding.webView.loadUrl(BizUrl.FUND_DETAIL.url)
+            mBinding.webView.loadUrl(BizUrl.REBATE.url)
         }
     }
 
@@ -47,19 +46,19 @@ class FundDetailsFragment : BaseFragment<FundDetailsViewModel, FragmentFundDetai
             webViewClient = object :
                 WLSWebViewClient(this) {
                 override fun onFormResubmission(
-                    view: WebView?,
-                    dontResend: Message?,
+                    view: WebView? ,
+                    dontResend: Message? ,
                     resend: Message
                 ) {
                     super.onFormResubmission(view, dontResend, resend)
                     resend.sendToTarget()
                 }
 
-                override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
+                override fun onPageStarted(view: WebView? , url: String? , favicon: Bitmap?) {
                     super.onPageStarted(view, url, favicon)
                 }
 
-                override fun onPageFinished(view: WebView, url: String?) {
+                override fun onPageFinished(view: WebView , url: String?) {
                     view.settings.apply {
                         blockNetworkImage = false
                         if (!loadsImagesAutomatically) {
@@ -74,19 +73,19 @@ class FundDetailsFragment : BaseFragment<FundDetailsViewModel, FragmentFundDetai
             requestFocus()
             webChromeClient = object : WebChromeClient() {
                 override fun onShowFileChooser(
-                    webView: WebView,
-                    filePathCallback: ValueCallback<Array<Uri>>,
+                    webView: WebView ,
+                    filePathCallback: ValueCallback<Array<Uri>> ,
                     fileChooserParams: FileChooserParams
                 ): Boolean {
                     return true
                 }
 
-                override fun onProgressChanged(view: WebView, newProgress: Int) {
+                override fun onProgressChanged(view: WebView , newProgress: Int) {
                     super.onProgressChanged(view, newProgress)
                 }
             }
             setBackgroundColor(arch.cayenne.lib.common.R.color.title_bg.getColor())
-            setAttachedFragment(this@FundDetailsFragment)
+            setAttachedFragment(this@RebateFragment)
         }
     }
 
@@ -104,7 +103,7 @@ class FundDetailsFragment : BaseFragment<FundDetailsViewModel, FragmentFundDetai
     override fun onStart() {
         StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND()
         StatusBarConfig.statusBarDarkFont = false
-        setStatusBar(StatusBarConfig,mBinding.root)
+        setStatusBar(StatusBarConfig ,mBinding.root)
         super.onStart()
     }
 

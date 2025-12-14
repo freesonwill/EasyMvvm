@@ -2,6 +2,7 @@ package com.walisport.module.hall
 
 import android.content.Context
 import arch.cayenne.lib.base.data.DefaultInitializer
+import arch.cayenne.module.hall.data.repo.GameSupplierListRepository
 import com.walisport.module.hall.data.HallRepository
 import com.walisport.module.hall.defaultModule
 import org.koin.core.context.loadKoinModules
@@ -22,9 +23,21 @@ class HallModuleInitializer : DefaultInitializer<String> {
     private val viewModules = module {
         includes(defaultModule)
     }
+
     private val repoModules = module {
         factory {
             HallRepository(
+                get() ,
+                get() ,
+                get(named("3n1")) ,
+                get(named("mock")) ,
+                get() ,
+                get() ,
+                get()
+            )
+        }
+        factory {
+            GameSupplierListRepository(
                 get() ,
                 get() ,
                 get(named("3n1")) ,

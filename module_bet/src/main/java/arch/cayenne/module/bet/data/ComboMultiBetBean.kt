@@ -4,6 +4,7 @@ import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
 import arch.cayenne.module.bet.R
+import arch.cayenne.module.bet.util.BetUtils
 
 /***
  * 有三場比賽欲串關，則有3串1、3串2、3串3，共三個串關方式
@@ -41,31 +42,12 @@ data class ComboMultiBetBean(
     val maxWinMoney: Long
         get() = inputMoney.getMoney(odds * count).toMoney()
 
-    val isSuperCombo get() = serialValue == SERIAL_VALUE_SUPER
+    val isSuperCombo get() = BetUtils.isSuperCombo(serialValue)
 
     fun title():String {
         return when {
             isSuperCombo -> R.string.title_combo_bet_super.getString()
             else -> R.string.title_combo_bet_odds.getString(comboK,comboV)
-        }
-    }
-
-    fun titleTips():String{
-        return when {
-            comboV == 1 -> {
-                R.string.title_combo_bet_detail_tips.getString(
-                    title(),
-                    R.string.title_combo_bet_odds.getString(comboK,comboV)
-                )
-            }
-            else ->
-                R.string.title_combo_bet_detail_tips.getString(
-                    title(),
-                    ((if(isSuperCombo) 1 else 2)..comboK).joinToString("、") { k ->
-                        if (k == 1) arch.cayenne.lib.res.R.string.title_single_bet.getString()
-                        else R.string.title_combo_bet_odds.getString(k, 1)
-                    }
-                )
         }
     }
 }

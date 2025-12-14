@@ -16,7 +16,7 @@ import arch.cayenne.lib.websocket.data.SocketConnectState
 import arch.cayenne.module.chat.data.constants.CheckBetResultEnum
 import arch.cayenne.module.chat.data.constants.EmojiEnum
 import arch.cayenne.module.chat.data.constants.KeyBoardType
-import arch.cayenne.module.chat.data.constants.MsgType
+import arch.cayenne.lib.common.data.constants.MsgType
 import arch.cayenne.module.chat.data.model.ChatMsgPageBean
 import arch.cayenne.module.chat.data.model.EmojiModel
 import arch.cayenne.module.chat.data.model.MentionSpan
@@ -152,11 +152,6 @@ class ChatHomeViewModel() : BaseViewModel() {
         var msgBean: ChatMsgPageBean? = null
         val localMsg = chatServer.addLocalMsg(editable.toString()) ?: return null
 
-        if (editable.length == 4 && editable.toString() in arrayOf("注单体育", "注单游戏")) {
-            val betRanges = mutableListOf<IntRange>()
-            betRanges.add(IntRange(0,4))
-            msgBean = ChatMsgPageBean.toChatPageBean(localMsg,MsgType.BET,betRanges)
-        } else {
             val spannable = SpannableStringBuilder(editable)
             val spans = spannable.getSpans(0, editable.length, MentionSpan::class.java)
             if (spans.isNotEmpty()) {
@@ -166,13 +161,10 @@ class ChatHomeViewModel() : BaseViewModel() {
                     val end = spannable.getSpanEnd(it)
                     atIntRanges.add(IntRange(start, end))
                 }
-                msgBean = ChatMsgPageBean.toChatPageBean(localMsg, MsgType.AT, atIntRanges)
+                msgBean = ChatMsgPageBean.toChatPageBean(localMsg, spans.first().msgType, atIntRanges)
             } else {
                 msgBean = ChatMsgPageBean.toChatPageBean(localMsg, MsgType.TEXT)
             }
-        }
-
-
         return msgBean
     }
 

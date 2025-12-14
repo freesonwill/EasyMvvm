@@ -54,11 +54,11 @@ class GameAllListViewHolder(val item: ItemGameAllListBinding,var onItemClickList
         }
         item.tvTitle.text = data.name
         item.root.clickNoRepeat {
-            onItemClickListener?.onItemClick()
+            onItemClickListener?.onItemClick(data)
         }
     }
     interface OnAllItemClickListener {
-        fun onItemClick()
+        fun onItemClick(data: GameAllContentData)
         fun onChildItemClick()
     }
 }

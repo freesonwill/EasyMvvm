@@ -8,13 +8,18 @@ import android.widget.FrameLayout
 import android.widget.LinearLayout
 import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.core.content.withStyledAttributes
+import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.common.R
 import arch.cayenne.lib.common.databinding.ItemCustomGameTabBinding
 import arch.cayenne.lib.common.databinding.ViewCustomGameTabGroupBinding
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.lib.common.utils.ext.TabLayoutExt
+import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import com.bumptech.glide.Glide
-
+import com.google.android.material.tabs.TabLayout
+import arch.cayenne.lib.common.utils.ext.TabLayoutExt.addOnTabSelectedListener2
 class CustomGameTabGroupLayout : FrameLayout {
     private lateinit var binding: ViewCustomGameTabGroupBinding
     constructor(context: Context) : super(context) {
@@ -32,6 +37,9 @@ class CustomGameTabGroupLayout : FrameLayout {
     var defaultIcon = R.drawable.ic_wali_demo
     var tabIconSize = 18.dp2px
 
+    private var tabClickListener: CustomGameTabClickListener? = null
+
+
     private fun initView(context: Context, attrs: AttributeSet? = null) {
         binding = ViewCustomGameTabGroupBinding.inflate(LayoutInflater.from(context), this, true)
         context.withStyledAttributes(attrs, R.styleable.CustomGameTabGroupLayout) {
@@ -40,10 +48,29 @@ class CustomGameTabGroupLayout : FrameLayout {
         }
     }
 
-    fun setOnShowAllCategoryClick(listener: () -> Unit) {
-        binding.llBtnExpand.clickNoRepeat {
-            listener.invoke()
-        }
+    fun setOnShowAllCategoryClick(listener: () -> Unit,listener2: () -> Unit) {
+
+        binding.llBtnExpand.apply { addScaleOnTouchAnimation() }
+            .clickNoRepeat {
+                // toggleTournamentMoreSection(true, TournamentListType.MORE)
+
+                listener2.invoke()
+            }
+        binding.tlVendorList.addOnTabSelectedListener2(object : TabLayoutExt.OnTabSelectedListener2 {
+
+            override fun onTabSelected(tab: TabLayout.Tab, isTabClick: Boolean) {
+                updateTournamentButtonStyle(false)
+                tabClickListener?.onTabClicked(tab.id)
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab, isTabClick: Boolean) {
+
+            }
+
+            override fun onTabReselected(tab: TabLayout.Tab, isTabClick: Boolean) {
+                // Handle reselect if needed
+            }
+        })
     }
 
     fun setOnSortBtnClick(listener: () -> Unit) {
@@ -60,10 +87,47 @@ class CustomGameTabGroupLayout : FrameLayout {
         binding.tvBtnSort.setTextColor(color)
     }
 
+    fun setSortBtnText(text: String) {
+        binding.tvBtnSort.text = text
+    }
+
+    /**
+     * 更新聯賽按鈕樣式
+     * @param hasSelection true: 有選中的聯賽，false: 沒有選中的聯賽
+     */
+     fun updateTournamentButtonStyle(hasSelection: Boolean) {
+        LogUtils.e("updateTournamentButtonStyle--------->${hasSelection}")
+            with(binding) {
+                if (hasSelection) {
+                    // 有選中狀態：高亮顯示
+                    llBtnExpand.setBackgroundResource(R.drawable.selector_league_tab_bg_supplier)
+                    llBtnExpand.isSelected = true
+                    tvBtnExpand.setTextColor(
+                        SkinnableResourceManager.getColor(
+                            binding.root.context,
+                            R.color.league_tab_tint_select
+                        )
+                    )
+                    ivBtnIcon.setImageResource(R.drawable.ic_tournament_list_selected)
+                } else {
+                    // 無選中狀態：默認樣式
+                    llBtnExpand.setBackgroundResource(R.drawable.shape_tournament_more_bg)
+                    llBtnExpand.isSelected = false
+                    tvBtnExpand.setTextColor(
+                        SkinnableResourceManager.getColor(
+                            binding.root.context,
+                            arch.cayenne.lib.common.R.color.color_C0C0C0
+                        )
+                    )
+                    ivBtnIcon.setImageResource(R.drawable.ic_tournament_list)
+                }
+            }
+    }
     fun submitTabList(list : List<SimpleTabDataModel>) {
         with(binding) {
             list.forEachIndexed { i, data ->
                 val tab = tlVendorList.newTab()
+                tab.id = data.id
 
                 tab.customView = createTabView(data)
                 tab.view.setPadding(0, 0, 6f.dp2px, 0)
@@ -75,6 +139,28 @@ class CustomGameTabGroupLayout : FrameLayout {
         }
     }
 
+
+
+    /**
+     * 清除 tlLeagueList 的選中狀態（需求2）
+     */
+     fun clearLeagueListSelection() {
+        with(binding) {
+            // 清除所有 tab 的選中狀態
+            val tabLayout = tlVendorList
+            for (i in 0 until tabLayout.tabCount) {
+                tabLayout.getTabAt(i)?.let { tab ->
+                    tab.customView?.isSelected = false
+                }
+            }
+            // 不設置任何 tab 為選中
+            tabLayout.selectTab(null)
+        }
+    }
+
+fun select(pos:Int){
+    binding.tlVendorList.getTabAt(pos)?.select()
+}
     private fun createTabView(
         tabDataModel: SimpleTabDataModel
     ): View {
@@ -107,6 +193,15 @@ class CustomGameTabGroupLayout : FrameLayout {
     }
 
 
+    fun setTabClickListener(listener: CustomGameTabClickListener) {
+        this.tabClickListener = listener
+    }
+
+}
+
+
+interface CustomGameTabClickListener {
+    fun onTabClicked(id: Int)
 }
 
 //TODO 先給一個簡單的

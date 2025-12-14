@@ -1,15 +1,20 @@
 package com.walisport.module.hall.ui.fragment
 
+import android.annotation.SuppressLint
 import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.os.bundleOf
 import androidx.core.view.isGone
+import androidx.core.view.marginStart
 import androidx.fragment.app.viewModels
+import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.adapter.PagerAdapter
@@ -21,7 +26,6 @@ import arch.cayenne.lib.common.data.constants.DrawerAction.ACTION_OPEN
 import arch.cayenne.lib.common.data.constants.DrawerAction.KEY_ACTION
 import arch.cayenne.lib.common.data.constants.DrawerAction.REQUEST_KEY_DRAWER
 import arch.cayenne.lib.common.ui.adapter.BannerImageAdapter
-import arch.cayenne.lib.common.ui.viewmodel.BalanceViewModel
 import arch.cayenne.lib.common.ui.viewmodel.UnReadMessageViewModel
 import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
@@ -47,11 +51,13 @@ import com.google.android.material.tabs.TabLayout
 import arch.cayenne.lib.common.utils.ext.TabLayoutExt.addOnTabSelectedListener2
 import arch.cayenne.lib.common.utils.ext.startFadeAnim
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getColor
+import arch.cayenne.lib.common.utils.ext.clickNoRepeatSingle
 import arch.cayenne.lib.common.utils.ext.removeAllTips
 import com.walisport.module.hall.ui.view.ScrollableTabIndicatorHelper
 import kotlinx.coroutines.delay
 import arch.cayenne.lib.common.utils.ext.setScaleAnim
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import com.walisport.module.hall.data.Category
+
 /**
  * 游戏大厅界面
  */
@@ -61,7 +67,7 @@ class HallFragment : BaseFragment<HallViewModel, FragmentHallBinding>() {
     override val vbClass: KClass<FragmentHallBinding> = FragmentHallBinding::class
     override val vmClass: KClass<HallViewModel> = HallViewModel::class
 
-    private val balanceViewModel: BalanceViewModel by viewModel()
+
     private val mMinHeight = 34.dp2px
 
     private val mMaxHeight = 38.dp2px
@@ -85,44 +91,44 @@ class HallFragment : BaseFragment<HallViewModel, FragmentHallBinding>() {
             colorRes =  arch.cayenne.lib.common.R.color.red_team,
             res = R.drawable.ic_tab_hall_table,
             _title = R.string.tab_table.getString(),
-            _page = { GameContentFragment.newInstance() }
+            _page = { GameContentFragment.newInstance(Category.POKER.type) }
         ),
         HallGameTabDefault(
             colorRes =   arch.cayenne.lib.common.R.color.red_team,
             res = R.drawable.ic_tab_hall_slot,
             _title = R.string.tab_slot.getString(),
-            _page = { GameContentFragment.newInstance() }
+            _page = { GameContentFragment.newInstance(Category.TIGER.type) }
         ),
 
         HallGameTabDefault(
             colorRes =  arch.cayenne.lib.common.R.color.red_team,
             res = R.drawable.ic_tab_hall_fishing,
             _title = R.string.tab_fishing.getString(),
-            _page = { GameContentFragment.newInstance() }
+            _page = { GameContentFragment.newInstance(Category.FISH.type) }
         ),
         HallGameTabDefault(
             colorRes =  arch.cayenne.lib.common.R.color.red_team,
             res = R.drawable.ic_tab_hall_real,
             _title = R.string.tab_real.getString(),
-            _page = { GameContentFragment.newInstance() }
+            _page = { GameContentFragment.newInstance(Category.VIDEO.type) }
         ),
         HallGameTabDefault(
             colorRes =  arch.cayenne.lib.common.R.color.red_team,
             res = R.drawable.ic_tab_hall_original,
             _title = R.string.tab_original.getString(),
-            _page = { GameContentFragment.newInstance() }
+            _page = { GameContentFragment.newInstance(Category.ORIGIN.type) }
         ),
         HallGameTabDefault(
             colorRes =  arch.cayenne.lib.common.R.color.red_team,
             res = R.drawable.ic_tab_hall_lottery,
             _title = R.string.tab_lottery.getString(),
-            _page = { GameContentFragment.newInstance() }
+            _page = { GameContentFragment.newInstance(Category.LOTTERY.type) }
         ),
         HallGameTabDefault(
             colorRes =  arch.cayenne.lib.common.R.color.red_team,
             res = R.drawable.ic_tab_hall_esports,
             _title = R.string.tab_esprots.getString(),
-            _page = { GameContentFragment.newInstance() }
+            _page = { GameContentFragment.newInstance(Category.ELECTRONIC.type) }
         )
     )
 
@@ -131,9 +137,9 @@ class HallFragment : BaseFragment<HallViewModel, FragmentHallBinding>() {
             root.touchBackPressed()
 
             balanceView.init(childFragmentManager)
-            balanceView.setBalanceViewModel(balanceViewModel, viewLifecycleOwner)
             initCurveBanner()
             var barHeight = ViewUtils.getStatusBarHeight(requireContext())
+            //
 
             vpGame.adapter = PagerAdapter(childFragmentManager, lifecycle, mockTabList)
             launch {
@@ -179,6 +185,7 @@ class HallFragment : BaseFragment<HallViewModel, FragmentHallBinding>() {
                 tabIndicatorHelper?.setup()
             vpGame.setCurrentItem(1, false)
         }
+        mViewModel.queryGameCommon()
     }
 
 
@@ -222,6 +229,15 @@ class HallFragment : BaseFragment<HallViewModel, FragmentHallBinding>() {
             ivRightLogo.setOnBannerListener { Int, position ->
                 navigate(arch.cayenne.lib.res.R.string.nav_module_promotion_fragment.deeplink())
             }
+
+            llSearchBar.apply {
+                clickNoRepeatSingle {
+                    navigate(arch.cayenne.lib.res.R.string.nav_module_search_fragment.deeplink())
+                }
+            }
+
+
+
         }
 
         mBinding.tlGame.addOnTabSelectedListener2(object : TabLayoutExt.OnTabSelectedListener2 {

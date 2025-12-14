@@ -22,7 +22,8 @@ import arch.cayenne.lib.common.utils.ext.clickNoRepeat
  */
 class BackToTopHelper(
     val targetRecyclerView: RecyclerView,
-    val button: AppCompatImageView
+    val button: AppCompatImageView,
+    val isGridView: Boolean
 ) {
     private var totalDy = 0
 
@@ -63,6 +64,11 @@ class BackToTopHelper(
         })
 
         button.clickNoRepeat {
+            //列表数据太多情况下点击返回顶部按钮需先跳至前几页再平滑滚动
+            val number = if (isGridView) 36 else 8
+            if (targetRecyclerView.adapter!!.itemCount > number) {
+                targetRecyclerView.scrollToPosition(number)
+            }
             targetRecyclerView.smoothScrollToPosition(0)
             button.visibility = View.GONE
         }

@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import androidx.core.os.bundleOf
 import androidx.core.view.GravityCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -24,6 +25,8 @@ import arch.cayenne.lib.common.data.constants.DrawerAction.ACTION_OPEN
 import arch.cayenne.lib.common.data.constants.DrawerAction.KEY_ACTION
 import arch.cayenne.lib.common.data.constants.DrawerAction.REQUEST_KEY_DRAWER
 import arch.cayenne.lib.common.data.constants.FragmentResultEnum
+import arch.cayenne.lib.common.data.constants.HomePageEnum
+import arch.cayenne.lib.common.utils.biz.CommonBiz
 import arch.cayenne.lib.common.utils.ext.NavResultExt.observeResult
 import arch.cayenne.lib.common.utils.ext.setDrawerInterpolator
 import arch.cayenne.module.home.ui.fragment.NewHomeFragment
@@ -35,6 +38,7 @@ import com.walisport.app.ui.viewmodel.BetSlot
 import com.walisport.app.ui.viewmodel.MainFragmentViewModel
 import com.walisport.module.hall.ui.fragment.HallFragment
 import com.walisport.module.me.ui.fragment.MeFragment
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNotNull
 import kotlin.reflect.KClass
 
@@ -116,13 +120,8 @@ class MainFragment : BaseFragment<MainFragmentViewModel, FragmentMainBinding>() 
                 }
             }
             bottomNavigation.setOnItemSelectedListener { container, view, position ->
-                container.selectedIndex = position
                 //"bottomNavigation1----$position".logd(TAG)
-                val arguments:Bundle? = if(position != BottomNavType.BET_SLOT.ordinal) null else Bundle().apply {
-                    putInt(HomeOrderFragment.BET_MODE,mViewModel.betSlotFlow.value.ordinal)
-                }
-                setCurrentFragment(position,arguments)
-                mViewModel.selectedIndexFlow.value = position
+                CommonBiz.jump2HomePage(this@MainFragment,HomePageEnum.of(position))
             }
         }
 
@@ -131,7 +130,14 @@ class MainFragment : BaseFragment<MainFragmentViewModel, FragmentMainBinding>() 
             bundle.getInt(key,-1).let {
                 if(it == - 1) return@let
                 mBinding.bottomNavigation.selectedIndex = it
-                setCurrentFragment(it,bundle.apply { remove(FragmentResultEnum.KEY_PAGE.k) })
+                mViewModel.selectedIndexFlow.value = it
+                setCurrentFragment(it,bundle.apply {
+                    remove(FragmentResultEnum.KEY_PAGE.k)
+                    if(it == HomePageEnum.BETSLIP.v){
+                        putInt(HomeOrderFragment.BET_MODE, mViewModel.betSlotFlow.value.ordinal)
+                    }
+                })
+                mBinding.drawerLayout.closeDrawer(GravityCompat.START)
             }
         }.also {
             requireActivity().supportFragmentManager.setFragmentResultListener(FragmentResultEnum.KEY_PAGE.k,viewLifecycleOwner,it)

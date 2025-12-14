@@ -2,28 +2,27 @@ package com.walisport.module.hall.ui.adapter
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import androidx.viewpager2.widget.ViewPager2
 import arch.cayenne.lib.base.ui.animation.CustomCurveTransformer
-import arch.cayenne.lib.base.utils.LogUtils
-import arch.cayenne.lib.common.ui.adapter.BannerImageAdapter
 import arch.cayenne.lib.common.ui.adapter.BannerImageMatchAdapter
+import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import com.walisport.module.hall.R
-import com.walisport.module.hall.data.GameAllBannerData
 import com.walisport.module.hall.databinding.ItemGameAllHeaderBinding
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
+import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+
 /**
  * 全部類型的遊戲頭部Adapter，包含左方的廣告位、右方的邀請朋友和每日比賽
  * */
-class GameAllHeaderAdapter: RecyclerView.Adapter<GameAllHeaderViewHolder>() {
+class GameAllHeaderAdapter(private val onItemClickListener: GameAllHeaderViewHolder.OnHeaderItemClickListener?): RecyclerView.Adapter<GameAllHeaderViewHolder>() {
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
     ): GameAllHeaderViewHolder {
         val binding = ItemGameAllHeaderBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return GameAllHeaderViewHolder(binding)
+        return GameAllHeaderViewHolder(binding, onItemClickListener)
     }
 
     override fun onBindViewHolder(
@@ -34,9 +33,10 @@ class GameAllHeaderAdapter: RecyclerView.Adapter<GameAllHeaderViewHolder>() {
     }
 
     override fun getItemCount(): Int = 1
+
 }
 
-class GameAllHeaderViewHolder(val binding: ItemGameAllHeaderBinding): RecyclerView.ViewHolder(binding.root) {
+class GameAllHeaderViewHolder(val binding: ItemGameAllHeaderBinding , private val onItemClickListener: OnHeaderItemClickListener?): RecyclerView.ViewHolder(binding.root) {
     @SuppressLint("ClickableViewAccessibility")
     fun init() {
         with(binding) {
@@ -92,6 +92,14 @@ class GameAllHeaderViewHolder(val binding: ItemGameAllHeaderBinding): RecyclerVi
             vpBanner.setScrollTime(600)  // 0.5 秒
             vpBanner.setPageTransformer(CustomCurveTransformer())
             // 启动轮播
+
+            ivInviteFriend.clickNoRepeat {
+                onItemClickListener?.onInviteFriendItemClick()
+            }
+
+            ivCompetition.clickNoRepeat {
+                onItemClickListener?.onCompetitionItemClick()
+            }
         }
     }
 
@@ -103,4 +111,12 @@ class GameAllHeaderViewHolder(val binding: ItemGameAllHeaderBinding): RecyclerVi
     fun stopProBannerJob() {
         binding.proBanner.stopTriggerJob()
     }
+
+
+    interface OnHeaderItemClickListener {
+        fun onInviteFriendItemClick()
+
+        fun onCompetitionItemClick()
+    }
+
 }

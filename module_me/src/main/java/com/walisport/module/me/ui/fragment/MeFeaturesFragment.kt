@@ -3,10 +3,14 @@ package com.walisport.module.me.ui.fragment
 import android.os.Bundle
 import androidx.recyclerview.widget.GridLayoutManager
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.common.data.constants.BizUrl
+import arch.cayenne.lib.common.data.constants.HomePageEnum
+import arch.cayenne.lib.common.utils.biz.CommonBiz
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.helper.showToast
+import com.walisport.module.me.R
 import com.walisport.module.me.data.model.FeaturesBean
 import com.walisport.module.me.databinding.FragmentMeFeaturesBinding
 import com.walisport.module.me.ui.adapter.FeaturesAdapter
@@ -61,7 +65,7 @@ class MeFeaturesFragment : BaseFragment<FeaturesViewModel, FragmentMeFeaturesBin
                     id++, arch.cayenne.lib.common.R.drawable.ic_drawer_bet_record,
                     arch.cayenne.lib.common.R.string.drawer_bet_record
                 ) {
-                    showToast(arch.cayenne.lib.common.R.string.drawer_bet_record.getString())
+                    CommonBiz.jump2HomePage(this, HomePageEnum.BETSLIP)
                 },
                 FeaturesBean(
                     id++, arch.cayenne.lib.common.R.drawable.ic_drawer_realtime_cashback,
@@ -74,7 +78,7 @@ class MeFeaturesFragment : BaseFragment<FeaturesViewModel, FragmentMeFeaturesBin
                     id++, arch.cayenne.lib.common.R.drawable.ic_drawer_gift,
                     arch.cayenne.lib.common.R.string.drawer_gift
                 ) {
-                    showToast(arch.cayenne.lib.common.R.string.drawer_gift.getString())
+                    navigate(arch.cayenne.lib.res.R.string.nav_module_promotion_fragment.deeplink())
                 },
 
 
@@ -95,11 +99,13 @@ class MeFeaturesFragment : BaseFragment<FeaturesViewModel, FragmentMeFeaturesBin
                     id++, arch.cayenne.lib.common.R.drawable.ic_drawer_help,
                     arch.cayenne.lib.common.R.string.drawer_help
                 ) {
-                    showToast(arch.cayenne.lib.common.R.string.drawer_help.getString())
+                    navigate(arch.cayenne.lib.res.R.string.nav_module_web_fragment.deeplink("url" to BizUrl.HELP.url) )
                 },
                 FeaturesBean(
-                    id++, arch.cayenne.lib.common.R.drawable.ic_drawer_feedback,
-                    arch.cayenne.lib.common.R.string.drawer_feedback
+                    id++ , arch.cayenne.lib.common.R.drawable.ic_drawer_feedback ,
+                    arch.cayenne.lib.common.R.string.drawer_feedback ,
+                    true ,
+                    getString(R.string.prize)
                 ) {
                     navigate(arch.cayenne.lib.res.R.string.nav_module_feedback_fragment.deeplink())
                 },

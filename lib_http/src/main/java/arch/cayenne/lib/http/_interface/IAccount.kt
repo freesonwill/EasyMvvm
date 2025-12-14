@@ -6,6 +6,6 @@ import retrofit2.Response
 import retrofit2.http.GET
 
 interface IAccount: IApi {
-    @GET("profile/info")
+    @GET("api/profile/info")
     suspend fun profileInfo() : Response<HttpApiResponse<ProfileInfo>>
 }
