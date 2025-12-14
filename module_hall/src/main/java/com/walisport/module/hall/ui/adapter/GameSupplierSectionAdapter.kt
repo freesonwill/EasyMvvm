@@ -118,6 +118,8 @@ class GameSupplierSectionAdapter(
         return selectedTournamentIds != initialSelectedTournamentIds
     }
 
+
+
     // 檢查初始選中的聯賽是否還存在於當前列表中
     fun isInitialSelectionStillValid(): Boolean {
         val currentTournamentIds = currentList
@@ -131,6 +133,11 @@ class GameSupplierSectionAdapter(
     fun getSelectedTournamentIds(): List<Int> {
         return selectedTournamentIds.toList()
     }
+
+    fun getInitSelectedIds(): List<Int> {
+        return initialSelectedTournamentIds.toList()
+    }
+
 
     // 獲取選中的supplier數據列表
     fun getSelectedTournaments(): List<BaseGameSupplierData> {

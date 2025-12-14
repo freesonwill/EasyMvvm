@@ -41,7 +41,7 @@ import com.walisport.module.hall.databinding.ItemSupplierHeaderBinding
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import com.walisport.module.hall.ui.viewmodel.GameContentListViewModel
 import kotlinx.coroutines.delay
-
+import arch.cayenne.lib.common.utils.ext.ResourceExt.getColor
 class GameContentListBottomSheetFragment :
     BaseBottomSheetFragment<GameContentListViewModel, FragmentGameContentBottomSheetBinding>() {
 
@@ -83,7 +83,7 @@ class GameContentListBottomSheetFragment :
 
             isHorizontalGestureEnable = false
             isVerticalGestureEnable = false
-            ceSearchSupplier.hint = getString(R.string.supplier_section_title)
+            ceSearchSupplier.hint = getString(R.string.supplier_search_hint)
             ceSearchSupplier.imeOptions = EditorInfo.IME_ACTION_SEARCH
 
             adapter = GameSupplierSectionAdapter(
@@ -221,7 +221,9 @@ class GameContentListBottomSheetFragment :
 
                     // 若聯賽有選中，則清除 tlLeagueList 的選中狀態
                     if (selectedIds.isNotEmpty()) {
-                        mGameContentVm.requestClearLeagueListSelection()
+                        if(selectedIds.size!=1){
+                            mGameContentVm.requestClearLeagueListSelection()
+                        }
                         //保存本地记录,记录选中
                         mViewModel.setSelectIds(selectedIds)
                     }
@@ -237,9 +239,10 @@ class GameContentListBottomSheetFragment :
 
                     // 若聯賽有選中，則清除 tlLeagueList 的選中狀態
                     if (selectedTournamentIds.isNotEmpty()) {
-                         mGameContentVm.requestClearLeagueListSelection()
+                        if(selectedTournamentIds.size!=1){
+                            mGameContentVm.requestClearLeagueListSelection()
+                        }
                     }
-
                     dismiss()
                 }
             }
@@ -282,6 +285,14 @@ class GameContentListBottomSheetFragment :
             mBinding.tvConfirm.text = getString(R.string.view_latest_results)
         } else {
             mBinding.tvConfirm.text = getString(R.string.btn_confirm)
+        }
+
+        if (adapter.getSelectedTournamentIds().isEmpty()){
+            mBinding.tvConfirm.text = getString(R.string.btn_confirm)
+        }
+        mBinding.tvReset.isSelected = isChanged
+        if (adapter.getSelectedTournamentIds().isEmpty()){
+            mBinding.tvReset.isSelected = false
         }
     }
     override suspend fun createObserver() {
