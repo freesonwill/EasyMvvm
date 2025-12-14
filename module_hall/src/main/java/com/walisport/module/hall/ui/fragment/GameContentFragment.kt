@@ -5,8 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import android.view.animation.LinearInterpolator
 import androidx.recyclerview.widget.GridLayoutManager
 import arch.cayenne.lib.base.data.constants.DataState
+import arch.cayenne.lib.base.ui.animation.AnimationController
+import arch.cayenne.lib.base.ui.animation.AnimationController.AnimType
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.common.ui.adapter.GridSpacingItemDecoration
@@ -62,7 +65,7 @@ class GameContentFragment : BaseFragment<GameContentViewModel, FragmentGameConte
 
     private var sortMenuClicked: Boolean = false
 
-    private val defaultAnimDuration = 300L
+    private val defaultAnimDuration = 210L
     val category get() = requireArguments().getInt(ARG_CATEGORY_TYPE)
 
     fun supplierTabList(list: List<GameSupplierDataModel>): List<SimpleTabDataModel> {
@@ -264,9 +267,16 @@ class GameContentFragment : BaseFragment<GameContentViewModel, FragmentGameConte
             }
 
             // 立即開始動畫
+            //TODO: 移除xml動畫，改用程式碼設置動畫屬性
             val slideInAnim =
-                AnimationUtils.loadAnimation(requireContext(), R.anim.slide_in_from_top)
+                AnimationUtils.loadAnimation(requireContext() , R.anim.slide_in_from_top)
             sortingMenuBinding?.root?.startAnimation(slideInAnim)
+            slideInAnim.duration =
+                AnimationController[AnimType.popupEnter]?.duration ?: defaultAnimDuration
+            slideInAnim.interpolator =
+                AnimationController[AnimType.popupEnter]?.interpolator?.toInterpolator()
+                    ?: LinearInterpolator()
+
 
             // 切換圖標為收起狀態
             mBinding.customTabGroup.setSortBtnSrc(arch.cayenne.lib.common.R.drawable.ic_sort_collapse)
@@ -281,10 +291,17 @@ class GameContentFragment : BaseFragment<GameContentViewModel, FragmentGameConte
 
         } else {
             // 收起排序選單 - 使用動畫
+            //TODO: 移除xml動畫，改用程式碼設置動畫屬性
             val slideOutAnim = AnimationUtils.loadAnimation(
-                requireContext(),
+                requireContext() ,
                 R.anim.slide_out_to_top
             )
+            slideOutAnim.duration =
+                AnimationController[AnimType.popupExit]?.duration ?: defaultAnimDuration
+            slideOutAnim.interpolator =
+                AnimationController[AnimType.popupExit]?.interpolator?.toInterpolator()
+                    ?: LinearInterpolator()
+
             slideOutAnim.setAnimationListener(object : Animation.AnimationListener {
                 override fun onAnimationStart(animation: Animation?) {}
 
@@ -299,7 +316,8 @@ class GameContentFragment : BaseFragment<GameContentViewModel, FragmentGameConte
             // 收回時隱藏遮罩層（帶動畫效果）
             mBinding.vGameListMask.animate()
                 .alpha(0f)
-                .setDuration(defaultAnimDuration)
+                .setDuration(AnimationController[AnimType.popupExit]?.duration
+                    ?: defaultAnimDuration)
                 .setListener(object : android.animation.Animator.AnimatorListener {
                     override fun onAnimationStart(p0: android.animation.Animator) {}
 

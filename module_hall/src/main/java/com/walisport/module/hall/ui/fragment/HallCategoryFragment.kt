@@ -1,13 +1,19 @@
 package com.walisport.module.hall.ui.fragment
 
+import android.animation.ValueAnimator
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import android.view.animation.LinearInterpolator
+import androidx.core.animation.doOnEnd
+import androidx.core.animation.doOnStart
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import arch.cayenne.lib.base.data.constants.DataState
+import arch.cayenne.lib.base.ui.animation.AnimationController
+import arch.cayenne.lib.base.ui.animation.AnimationController.AnimType
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.ui.adapter.GridSpacingItemDecoration
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout.States
@@ -20,6 +26,7 @@ import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.startFadeAnim
+import arch.cayenne.lib.common.utils.ext.startSafeAnimateSet
 import arch.cayenne.lib.common.utils.ext.touchBackPressed
 import arch.cayenne.lib.common.utils.helper.BackToTopHelper
 import arch.cayenne.lib.database.entity.GameSupplierDataModel
@@ -33,6 +40,7 @@ import com.walisport.module.hall.databinding.LayoutGameSortingMenuBinding
 import com.walisport.module.hall.databinding.TitleBarGameCategoryBinding
 import com.walisport.module.hall.ui.adapter.GameContentAdapter
 import com.walisport.module.hall.ui.viewmodel.GameCategoryViewModel
+import kotlin.math.abs
 import kotlin.reflect.KClass
 
 class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCategoryBinding>() {
@@ -55,7 +63,7 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
     // 當前排序類型，預設為按熱門聯賽排序
     private var currentSortType = GameSortType.HOT
 
-    private val defaultAnimDuration = 300L
+    private val defaultAnimDuration = 210L
 
     private var category: Int = 100
     private var titleName: String = ""
@@ -287,8 +295,15 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
             }
 
             // 立即開始動畫
+            //todo: 移除xml動畫，改用程式碼設置動畫屬性
             val slideInAnim =
                 AnimationUtils.loadAnimation(requireContext() , R.anim.slide_in_from_top)
+            slideInAnim.duration =
+                AnimationController[AnimType.popupEnter]?.duration ?: defaultAnimDuration
+            slideInAnim.interpolator =
+                AnimationController[AnimType.popupEnter]?.interpolator?.toInterpolator()
+                    ?: LinearInterpolator()
+
             sortingMenuBinding?.root?.startAnimation(slideInAnim)
 
             // 切換圖標為收起狀態
@@ -304,10 +319,18 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
 
         } else {
             // 收起排序選單 - 使用動畫
+            //todo: 移除xml動畫，改用程式碼設置動畫屬性
             val slideOutAnim = AnimationUtils.loadAnimation(
                 requireContext() ,
                 R.anim.slide_out_to_top
             )
+
+            slideOutAnim.duration =
+                AnimationController[AnimType.popupExit]?.duration ?: defaultAnimDuration
+            slideOutAnim.interpolator =
+                AnimationController[AnimType.popupExit]?.interpolator?.toInterpolator()
+                    ?: LinearInterpolator()
+
             slideOutAnim.setAnimationListener(object : Animation.AnimationListener {
                 override fun onAnimationStart(animation: Animation?) {}
 
@@ -322,7 +345,7 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
             // 收回時隱藏遮罩層（帶動畫效果）
             mBinding.vGameListMask.animate()
                 .alpha(0f)
-                .setDuration(defaultAnimDuration)
+                .setDuration(AnimationController[AnimType.popupExit]!!.duration)
                 .setListener(object : android.animation.Animator.AnimatorListener {
                     override fun onAnimationStart(p0: android.animation.Animator) {}
 
