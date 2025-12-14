@@ -82,7 +82,7 @@ class GameCategoryListBottomSheetFragment :
 
             isHorizontalGestureEnable = false
             isVerticalGestureEnable = false
-            ceSearchSupplier.hint = getString(R.string.supplier_section_title)
+            ceSearchSupplier.hint = getString(R.string.supplier_search_hint)
             ceSearchSupplier.imeOptions = EditorInfo.IME_ACTION_SEARCH
 
             adapter = GameSupplierSectionAdapter(
