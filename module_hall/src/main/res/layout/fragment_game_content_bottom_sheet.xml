@@ -141,9 +141,12 @@
 
     <arch.cayenne.lib.common.ui.view.DynamicStateLayout
         android:id="@+id/cl_dynamics"
-        android:paddingTop="@dimen/dp_170"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
+        android:layout_height="0dp"
+        android:background="@color/color_1E1E1E"
+        app:layout_constraintBottom_toTopOf="@+id/tv_reset"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ll_search_bar_supplier"
          />
 </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
