@@ -41,7 +41,7 @@ import com.walisport.module.hall.databinding.ItemSupplierHeaderBinding
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import com.walisport.module.hall.ui.viewmodel.GameContentListViewModel
 import kotlinx.coroutines.delay
-
+import arch.cayenne.lib.common.utils.ext.ResourceExt.getColor
 class GameContentListBottomSheetFragment :
     BaseBottomSheetFragment<GameContentListViewModel, FragmentGameContentBottomSheetBinding>() {
 
@@ -282,6 +282,14 @@ class GameContentListBottomSheetFragment :
             mBinding.tvConfirm.text = getString(R.string.view_latest_results)
         } else {
             mBinding.tvConfirm.text = getString(R.string.btn_confirm)
+        }
+
+        if (adapter.getSelectedTournamentIds().isEmpty()){
+            mBinding.tvConfirm.text = getString(R.string.btn_confirm)
+        }
+        mBinding.tvReset.isSelected = isChanged
+        if (adapter.getSelectedTournamentIds().isEmpty()){
+            mBinding.tvReset.isSelected = false
         }
     }
     override suspend fun createObserver() {
