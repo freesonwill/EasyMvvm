@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.ui.fragment.BaseBottomSheetFragment
+import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.common.ui.view.CustomFilterSideBarView
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout.States
@@ -86,15 +87,13 @@ class GameCategoryListBottomSheetFragment :
 
             adapter = GameSupplierSectionAdapter(
                 onClick = { ids ->
-                   // mViewModel.setSelectIds(adapter.getSelectedTournamentIds())
+                    // mViewModel.setSelectIds(adapter.getSelectedTournamentIds())
                     //  mGameContentVm.onTournamentListSelected(tournament)
                 },
                 onSelectionChanged = {
-
+                    updateConfirmButtonState()
                 }
             )
-            // 保存當前狀態作為初始狀態（用於重置按鈕）
-            adapter.saveCurrentAsInitialState()
             rvTournamentList.layoutManager = LinearLayoutManager(context)
             rvTournamentList.adapter = adapter
             rvTournamentList.itemAnimator = null
@@ -202,6 +201,8 @@ class GameCategoryListBottomSheetFragment :
             // 重置按鈕：恢復為彈窗打開時的選中狀態
             tvReset.clickNoRepeat {
                 adapter.resetToInitialState()
+                // 重置後更新按鈕狀態
+                updateConfirmButtonState()
             }
 
             // 確認按鈕：根據按鈕狀態執行不同操作
@@ -305,8 +306,23 @@ class GameCategoryListBottomSheetFragment :
                 .map { it.tournament.id }
                 .toList()
             adapter.setSelectedIds(selectedIds)
+            // 保存當前狀態作為初始狀態（用於重置按鈕）
+            adapter.saveCurrentAsInitialState(selectedIds)
             mBinding.groupTop.visibility = View.VISIBLE
             setupAZIndex()
+            mBinding.rvTournamentList.post{
+                launch{
+                    val selectedIndex = data
+                        .asSequence()
+                        .mapIndexedNotNull { index, item ->
+                            if (item is GameSupplierListItem.GameSupplierItem && item.tournament.isSelected == 1) index else null
+                        }
+                        .firstOrNull() ?: 0
+                    val layoutManager = mBinding.rvTournamentList.layoutManager as LinearLayoutManager
+                    layoutManager.scrollToPosition(selectedIndex)
+                }
+
+            }
         }
 
         mViewModel.activeHeaderIndex.observe(viewLifecycleOwner) { _ ->
@@ -429,7 +445,15 @@ class GameCategoryListBottomSheetFragment :
         }
     }
 
-
+    private fun updateConfirmButtonState() {
+        val isChanged = adapter.isSelectionChanged()
+        val isInitialValid = adapter.isInitialSelectionStillValid()
+        if (isChanged || !isInitialValid) {
+            mBinding.tvConfirm.text = getString(R.string.view_latest_results)
+        } else {
+            mBinding.tvConfirm.text = getString(R.string.btn_confirm)
+        }
+    }
     companion object {
         private const val GAME_TYPE_ID = "gameTypeId"
         fun newInstance(

@@ -92,11 +92,9 @@ class GameContentListBottomSheetFragment :
                     //  mGameContentVm.onTournamentListSelected(tournament)
                 },
                 onSelectionChanged = {
-
+                    updateConfirmButtonState()
                 }
             )
-            // 保存當前狀態作為初始狀態（用於重置按鈕）
-            adapter.saveCurrentAsInitialState()
             rvTournamentList.layoutManager = LinearLayoutManager(context)
             rvTournamentList.adapter = adapter
             rvTournamentList.itemAnimator = null
@@ -204,6 +202,8 @@ class GameContentListBottomSheetFragment :
             // 重置按鈕：恢復為彈窗打開時的選中狀態
             tvReset.clickNoRepeat {
                 adapter.resetToInitialState()
+                // 重置後更新按鈕狀態
+                updateConfirmButtonState()
             }
 
             // 確認按鈕：根據按鈕狀態執行不同操作
@@ -274,6 +274,16 @@ class GameContentListBottomSheetFragment :
         }
     }
 
+    private fun updateConfirmButtonState() {
+
+        val isChanged = adapter.isSelectionChanged()
+        val isInitialValid = adapter.isInitialSelectionStillValid()
+        if (isChanged || !isInitialValid) {
+            mBinding.tvConfirm.text = getString(R.string.view_latest_results)
+        } else {
+            mBinding.tvConfirm.text = getString(R.string.btn_confirm)
+        }
+    }
     override suspend fun createObserver() {
         mViewModel.tournamentsChange.observe(viewLifecycleOwner) {data->
             if (data.isEmpty()){
@@ -307,6 +317,7 @@ class GameContentListBottomSheetFragment :
                 .map { it.tournament.id }
                 .toList()
             adapter.setSelectedIds(selectedIds)
+            adapter.saveCurrentAsInitialState(selectedIds)
             mBinding.groupTop.visibility = View.VISIBLE
             setupAZIndex()
             mBinding.rvTournamentList.post{

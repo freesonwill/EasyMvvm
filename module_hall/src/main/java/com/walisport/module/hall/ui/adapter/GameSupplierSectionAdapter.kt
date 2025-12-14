@@ -106,9 +106,11 @@ class GameSupplierSectionAdapter(
     }
 
     // 保存當前選中狀態為初始狀態（在彈窗打開時調用）
-    fun saveCurrentAsInitialState() {
-        initialSelectedTournamentIds.clear()
-        initialSelectedTournamentIds.addAll(selectedTournamentIds)
+    fun saveCurrentAsInitialState(ids: List<Int>) {
+        if (initialSelectedTournamentIds.isEmpty()){
+            initialSelectedTournamentIds.clear()
+            initialSelectedTournamentIds.addAll(ids)
+        }
     }
 
     // 檢查當前選中狀態是否與初始狀態相同
