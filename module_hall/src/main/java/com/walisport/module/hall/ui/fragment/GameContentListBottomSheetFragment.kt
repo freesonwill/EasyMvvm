@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.ui.fragment.BaseBottomSheetFragment
+import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.common.ui.view.CustomFilterSideBarView
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout.States
@@ -39,6 +40,7 @@ import com.google.android.material.R as MaterialR
 import com.walisport.module.hall.databinding.ItemSupplierHeaderBinding
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import com.walisport.module.hall.ui.viewmodel.GameContentListViewModel
+import kotlinx.coroutines.delay
 
 class GameContentListBottomSheetFragment :
     BaseBottomSheetFragment<GameContentListViewModel, FragmentGameContentBottomSheetBinding>() {
@@ -307,6 +309,19 @@ class GameContentListBottomSheetFragment :
             adapter.setSelectedIds(selectedIds)
             mBinding.groupTop.visibility = View.VISIBLE
             setupAZIndex()
+            mBinding.rvTournamentList.post{
+                launch{
+                    val selectedIndex = data
+                        .asSequence()
+                        .mapIndexedNotNull { index, item ->
+                            if (item is GameSupplierListItem.GameSupplierItem && item.tournament.isSelected == 1) index else null
+                        }
+                        .firstOrNull() ?: 0
+                    val layoutManager = mBinding.rvTournamentList.layoutManager as LinearLayoutManager
+                    layoutManager.scrollToPosition(selectedIndex)
+                }
+
+            }
         }
 
         mViewModel.activeHeaderIndex.observe(viewLifecycleOwner) { _ ->

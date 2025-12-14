@@ -18,8 +18,9 @@ class GameSupplierSectionAdapter(
     private val onSelectionChanged: (() -> Unit)? = null
 ) : BaseAdapter<GameSupplierListItem, BaseViewHolder, ViewBinding>(GameSupplierSectionCompare()) {
 
-    // 儲存選中的聯賽ID
+    // 儲存選中的供应商ID
     private val selectedTournamentIds = mutableSetOf<Int>()
+
 
     // 儲存打開彈窗時的初始選中狀態（用於重置和比較）
     private val initialSelectedTournamentIds = mutableSetOf<Int>()
