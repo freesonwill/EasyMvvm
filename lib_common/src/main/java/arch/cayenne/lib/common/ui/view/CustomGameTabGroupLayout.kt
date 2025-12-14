@@ -171,18 +171,20 @@ class CustomGameTabGroupLayout : FrameLayout {
     }
 
     fun selectById(id: Int) {
+        var isSelect: Boolean = true
         with(binding) {
             // 清除所有 tab 的選中狀態
             val tabLayout = tlVendorList
             for (i in 0 until tabLayout.tabCount) {
                 tabLayout.getTabAt(i)?.let { tab ->
                     if (tab.id==id){
+                        isSelect = false
                         tabLayout.selectTab(tab)
                     }
                 }
             }
         }
-        updateTournamentButtonStyle(false)
+        updateTournamentButtonStyle(isSelect)
     }
 
     private fun createTabView(
