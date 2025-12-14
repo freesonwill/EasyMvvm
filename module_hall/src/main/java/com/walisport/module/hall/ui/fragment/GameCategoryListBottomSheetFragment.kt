@@ -275,10 +275,21 @@ class GameCategoryListBottomSheetFragment :
     override suspend fun createObserver() {
         mViewModel.tournamentsChange.observe(viewLifecycleOwner) {data->
             if (data.isEmpty()){
-                mBinding.clDynamics.setState(
-                    States.DATA_EMPTY ,
-                    arch.cayenne.lib.common.R.string.data_empty.getString()
-                )
+                if(mViewModel.isSearchMode){
+                    if (mBinding.ceSearchSupplier.text.toString().isNotEmpty()) {
+                        mBinding.clDynamics.setState(
+                            States.DATA_EMPTY,
+                            arch.cayenne.lib.common.R.string.data_empty.getString()
+                        )
+                    }else{
+                        return@observe
+                    }
+                }else{
+                    mBinding.clDynamics.setState(
+                        States.DATA_EMPTY ,
+                        arch.cayenne.lib.common.R.string.data_empty.getString()
+                    )
+                }
                 mBinding.llIndexContainer.visibility = View.GONE
                 mBinding.clDynamics.visibility = View.VISIBLE
                 return@observe
