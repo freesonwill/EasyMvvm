@@ -129,7 +129,7 @@ class GameContentFragment : BaseFragment<GameContentViewModel, FragmentGameConte
                 // 點擊回到頂部按鈕的額外操作
                 //如果排序方式是热返和冷返
                 if (currentSortType == GameSortType.HOT_REWARD || currentSortType == GameSortType.COLD_REWARD) {
-                    aplHomeBanner.setExpanded(true , true)
+                    aplHomeBanner.setExpanded(true , false)
                 }
             }
         }
