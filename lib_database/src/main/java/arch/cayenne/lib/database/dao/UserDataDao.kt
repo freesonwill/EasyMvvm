@@ -15,5 +15,5 @@ abstract class UserDataDao : BaseDao<UserDataBean>() {
     abstract suspend fun getUser(): UserDataBean?
 
     @Query("SELECT * FROM UserDataBean limit 1")
-    abstract fun observeUser(): Flow<UserDataBean>
+    abstract fun observeUser(): Flow<UserDataBean?>
 }
