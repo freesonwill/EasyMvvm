@@ -47,6 +47,7 @@ import kotlin.reflect.KClass
 import arch.cayenne.module.chat.manager.ChatATHelper
 import arch.cayenne.module.chat.manager.SoftKeyBoardAnim
 import arch.cayenne.module.chat.manager.SoftKeyBoardAnim.getInputAnim
+import arch.cayenne.module.chat.manager.SoftKeyBoardAnim.hotViewAnim
 import kotlinx.coroutines.delay
 
 //聊天
@@ -446,12 +447,11 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
                 inputMain.layoutParams.height = mViewModel.keyBoardHeight
                 main.layoutParams.height =
                     mViewModel.keyBoardHeight + softKeyBoardManager.emojiKeyBoardHeight
+                inputContent.translationY = 44.dp2px.toFloat()
+//                chatKeyboard.layoutParams.height = softKeyBoardManager.emojiKeyBoardHeight
+
                 main.requestLayout()
             }
-
-
-//            chatKeyboard.layoutParams.height = softKeyBoardManager.emojiKeyBoardHeight
-//            inputContent.translationY = 44.dp2px.toFloat()
         }
     }
 
@@ -622,12 +622,12 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
                 })
             }
             //TODO 测试键盘切换anim
-            mainAnim?.play(emojiSet)
+//            mainAnim?.play(emojiSet)
 //            if (offset == 0)
-//                mainAnim?.playSequentially(emojiSet, hotViewAnim(offset))
+//                mainAnim?.playSequentially(emojiSet, hotViewAnim(offset,mBinding.inputContent))
 //            else
-//                mainAnim?.playSequentially(hotViewAnim(offset), emojiSet)
-//            mainAnim?.duration = 170L
+//                mainAnim?.playSequentially(hotViewAnim(offset,mBinding.inputContent), emojiSet)
+            mainAnim?.playTogether(hotViewAnim(offset,mBinding.inputContent), emojiSet)
 
             mainAnim?.addListener(onStart = {
                 if (mBinding.chatEtInput.length() == 0) {
@@ -651,6 +651,7 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
                     }
                 }
             })
+            "isFirstOpen $isFirstOpen".logd("aaa")
             if (isFirstOpen) {
                 mainAnim?.startDelay = 200L
             }

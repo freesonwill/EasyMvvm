@@ -2,6 +2,7 @@ package arch.cayenne.module.chat.manager
 
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
+import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.view.View
 import android.widget.ImageView
@@ -42,15 +43,23 @@ object SoftKeyBoardAnim {
      * */
     @SuppressLint("Recycle")
     fun chatEtInputAnim(
-        scaleX: Float,
+        scaleX: Int,
         transX: Float,
         chatEtInput: View,
     ): AnimatorSet {
+       "chatEtInput scaleX $scaleX ${chatEtInput.width} ".logd("aaa")
         val animSet = AnimatorSet()
-        chatEtInput.pivotX = 0.5f
-        val scaleAnim = ObjectAnimator.ofFloat(chatEtInput, "scaleX", scaleX)
+//        chatEtInput.pivotX = 0.5f
+//        val scaleAnim = ObjectAnimator.ofInt(chatEtInput, "width", chatEtInput.width,scaleX)
+        val inputWidthAnim = ValueAnimator.ofInt(chatEtInput.width,scaleX).apply {
+            addUpdateListener {
+                val lp = chatEtInput.layoutParams
+                lp.width = it.animatedValue as Int
+                chatEtInput.layoutParams = lp
+            }
+        }
         val transXAnim = ObjectAnimator.ofFloat(chatEtInput, "translationX", transX)
-        animSet.playTogether(scaleAnim, transXAnim)
+        animSet.playTogether(inputWidthAnim, transXAnim)
         return animSet
     }
 
@@ -116,12 +125,11 @@ object SoftKeyBoardAnim {
         "translationY",
         if (offset != 0) 0f else 44.dp2px.toFloat()
     ).apply {
-        duration = 30
+        duration = 140
     }
 
     /***
-     *输入框横移和缩放动画
-     * 输入框按钮上下移动动画
+     *键盘弹出和收缩时，输入框横移和缩放 输入框按钮上下移动
      */
     @SuppressLint("Recycle")
     fun getInputAnim(
@@ -150,15 +158,17 @@ object SoftKeyBoardAnim {
         when (actionType) {
             KeyboardActionType.CHAT_TO_SOFT,
             KeyboardActionType.CHAT_TO_EMOJI -> { //弹出键盘 先按钮动画再做输入框动画
-                val inputAnim =
-                    SoftKeyBoardAnim.chatEtInputAnim(1.15f, -48.dp2px.toFloat(), chatLlInput)
+                val inputAnim = chatEtInputAnim(355.dp2px, -48.dp2px.toFloat(), chatLlInput)
                 animSet.playSequentially(btnAnim, inputAnim)
+                "355 ".logd("aaa")
+
             }
 
             KeyboardActionType.SOFT_TO_CHAT,
             KeyboardActionType.EMOJI_TO_CHAT -> {//收回键盘 先输入框动画恢复原位，再按钮动画
-                val inputAnim = SoftKeyBoardAnim.chatEtInputAnim(1f, 0f, chatLlInput)
+                val inputAnim = chatEtInputAnim(307.dp2px, 0f, chatLlInput)
                 animSet.playSequentially(inputAnim, btnAnim)
+                "307".logd("aaa")
             }
 
             else -> {
@@ -182,21 +192,21 @@ object SoftKeyBoardAnim {
         chatLlInput: View,
         tvSend: View
     ): AnimatorSet {
-        var scaleX = 0f
+        var scaleX = 0
         var transX = 0f
         when {
             isEmpty && currentType == KeyBoardType.CHAT -> {
-                scaleX = 1f
+                scaleX = 307.dp2px
                 transX = 0f
             }
 
             isEmpty && currentType != KeyBoardType.CHAT -> {
-                scaleX = 1.15f
+                scaleX = 355.dp2px
                 transX = -48.dp2px.toFloat()
             }
 
             else -> {
-                scaleX = 0.91f
+                scaleX = 282.dp2px
                 transX = -46.dp2px.toFloat()
             }
         }
