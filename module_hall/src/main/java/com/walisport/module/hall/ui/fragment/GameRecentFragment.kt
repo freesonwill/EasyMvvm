@@ -7,7 +7,10 @@ import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.GridLayoutManager
 import arch.cayenne.lib.base.data.constants.DataState
+import arch.cayenne.lib.base.ui.animation.AnimationController
+import arch.cayenne.lib.base.ui.animation.AnimationController.AnimType
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.common.ui.adapter.GridSpacingItemDecoration
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout.States
@@ -26,6 +29,9 @@ import arch.cayenne.lib.common.utils.ext.onScrolledOver
 import com.walisport.module.hall.data.UniversalLoadMoreScrollListener
 import com.walisport.module.hall.ui.viewmodel.GameRecentViewModel
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
+import com.walisport.module.live.data.EventClick
+import kotlinx.coroutines.delay
+
 class GameRecentFragment : BaseFragment<GameRecentViewModel, FragmentGameRecentBinding>() {
 
     companion object {
@@ -55,7 +61,13 @@ class GameRecentFragment : BaseFragment<GameRecentViewModel, FragmentGameRecentB
             )
             rvGame.addItemDecoration(itemDecoration)
             adapter = GameContentAdapter(onItemClick = {
+                mViewModel.setIsClickGame(EventClick.EVENT_CLICK_ACK_TRUE.type)
                 navigate(arch.cayenne.lib.res.R.string.nav_module_gamedetail.deeplink())
+                launch{
+                    delay(AnimationController[AnimType.popupExit]!!.duration)
+                    adapter.submitList(emptyList())
+                }
+
             })
             rvGame.adapter = adapter
             BackToTopHelper(rvGame, ivBackToTop, true)
@@ -95,6 +107,15 @@ class GameRecentFragment : BaseFragment<GameRecentViewModel, FragmentGameRecentB
             }
         }
 
+        mViewModel.gameClickData.observe(viewLifecycleOwner) {
+            it?.let {
+                if (it.clickFlag==EventClick.EVENT_CLICK_ACK_TRUE.type){
+                    mViewModel.reload()
+                    mViewModel.setIsClickGame(EventClick.EVENT_CLICK_ACK_FALSE.type)
+                }
+            }
+        }
+
         mViewModel.apiStateListener.observe(viewLifecycleOwner) { state ->
             when (state) {
                 DataState.LoadSuccess -> {
@@ -130,6 +151,11 @@ class GameRecentFragment : BaseFragment<GameRecentViewModel, FragmentGameRecentB
                 }
             }
         }
+    }
+
+    override fun onStart() {
+        mViewModel.getIsClickGame()
+        super.onStart()
     }
 
     override fun onResume() {

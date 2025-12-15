@@ -10,6 +10,8 @@ import com.walisport.module.hall.data.GameAllContentData
 import com.walisport.module.hall.data.GameContentData
 import com.walisport.module.hall.data.HallRepository
 import com.walisport.module.hall.data.HotColdType
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
 import plugin.koin.KoinViewModel
@@ -22,7 +24,12 @@ class GameAllViewModel : BaseViewModel() {
 
     private val _gameRecentList = UnPeekLiveData<List<GameAllContentData>>()
     val gameRecentList: UnPeekLiveData<List<GameAllContentData>> = _gameRecentList
-    
+
+    fun setIsClickGame(flag:Int){
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.setGameClick(flag)
+        }
+    }
     fun mockAllList(page:Int){
 
         val mockData = listOf(

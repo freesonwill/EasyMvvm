@@ -60,7 +60,11 @@ class GameContentViewModel : BaseViewModel() {
             _gameSupplierList.postValue(repository.getSupplierByGameTypeId(type))
         }
     }
-
+    fun setIsClickGame(flag:Int){
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.setGameClick(flag)
+        }
+    }
     fun setCategory(category: Int) {
         this.category = category
     }

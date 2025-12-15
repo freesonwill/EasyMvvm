@@ -4,29 +4,29 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.data.constants.DataState
-import arch.cayenne.lib.base.data.model.UnPeekLiveData
 import arch.cayenne.lib.base.data.remote.ApiResponseState
+import arch.cayenne.lib.base.data.remote.ApiResponseState.Start.dataAs
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
-import arch.cayenne.lib.base.utils.LogUtils
-import com.walisport.module.hall.data.Avatar
+import arch.cayenne.lib.database.entity.GameBean
 import com.walisport.module.hall.data.GameContentData
 import com.walisport.module.hall.data.GamePageVo
 import com.walisport.module.hall.data.HallRepository
 import com.walisport.module.hall.data.HallRepository.Companion.INITIAL_PAGE
-import com.walisport.module.hall.data.HotColdType
 import com.walisport.module.hall.data.constants.GameSortType
+import com.walisport.module.hall.data.toGameContentData
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
 import plugin.koin.KoinViewModel
-import kotlin.random.Random
-import arch.cayenne.lib.base.data.remote.ApiResponseState.Start.dataAs
-import com.walisport.module.hall.data.toGameContentData
 
 @KoinViewModel
 class GameRecentViewModel : BaseViewModel() {
 
     private val repository: HallRepository by inject { parametersOf(viewModelScope) }
+    private val _gameClickData: MutableLiveData<GameBean?> = MutableLiveData()
+    val gameClickData: LiveData<GameBean?> = _gameClickData
+
     private val _gameListLiveData: MutableLiveData<List<GameContentData>> = MutableLiveData()
     val gameListLiveData: LiveData<List<GameContentData>> = _gameListLiveData
 
@@ -36,6 +36,19 @@ class GameRecentViewModel : BaseViewModel() {
 
     fun setCategory(category: Int) {
         this.category = category
+    }
+
+    //获取是否点击了游戏详情
+    fun getIsClickGame(){
+        viewModelScope.launch(Dispatchers.IO) {
+            _gameClickData.postValue(repository.queryGameClick())
+        }
+    }
+
+    fun setIsClickGame(flag:Int){
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.setGameClick(flag)
+        }
     }
 
     fun queryGameList() {
