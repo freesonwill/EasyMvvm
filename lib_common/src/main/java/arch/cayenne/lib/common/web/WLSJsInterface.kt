@@ -5,22 +5,19 @@ import androidx.navigation.findNavController
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
 import arch.cayenne.lib.common.data.constants.UserDataKey
 import arch.cayenne.lib.common.data.manager.UserDataManager
-import arch.cayenne.lib.common.utils.biz.CommonBiz
 import arch.cayenne.lib.common.data.model.JSResponseData
 import arch.cayenne.lib.common.utils.helper.showToast
 import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import org.koin.java.KoinJavaComponent.inject
 
 /**
- *
  * @date: 2025/10/14 16:02
  * @description:
  */
+
 class WLSJsInterface(val webView: WLSWebView,private val jsBridgeListen:((data:JSResponseData) -> Unit)) {
 
     private val manager: UserDataManager by inject(UserDataManager::class.java)
-
     private val gson = Gson()
 
     @JavascriptInterface
@@ -30,12 +27,10 @@ class WLSJsInterface(val webView: WLSWebView,private val jsBridgeListen:((data:J
         }
     }
 
-
     @JavascriptInterface
     fun getUidToken(input: String , resolve: String , reject: String) {
         val uid = manager.getValue(UserDataKey.KEY_UID , -1)
         val token = manager.getValue(UserDataKey.KEY_TOKEN , "")
-
         val obj = mapOf("uid" to uid , "token" to token)
         val response = Gson().toJson(obj)
         webView.post {
@@ -68,7 +63,6 @@ class WLSJsInterface(val webView: WLSWebView,private val jsBridgeListen:((data:J
             // 如果有错误，可以调用 reject
             // webView.evaluateJavascript("$reject('Error message')", null)
         }
-
     }
 
     @JavascriptInterface
@@ -86,21 +80,18 @@ class WLSJsInterface(val webView: WLSWebView,private val jsBridgeListen:((data:J
             "openPage" -> {
                 val page = data.params.pageName ?: return
                 // 这里可以根据 page 字段来决定打开哪个页面
-                // 例如：
                 when (page) {
                     "customer" -> {
-                        // 打开客服页面
+                        // 退出网页并跳转至客服页面
                         this.webView.jump2CustomerService()
+                        this.webView.findNavController().popBackStack()
                     }
-                    // 添加更多页面处理逻辑
                 }
             }
+
             else -> {
 
             }
         }
-
     }
-
-
 }
