@@ -37,6 +37,7 @@ import com.walisport.module.hall.databinding.LayoutGameSortingMenuBinding
 import com.walisport.module.hall.ui.adapter.GameContentAdapter
 import com.walisport.module.hall.ui.viewmodel.GameContentViewModel
 import com.walisport.module.hall.ui.viewmodel.HallViewModel
+import com.walisport.module.live.data.EventClick
 import kotlinx.coroutines.delay
 import kotlin.reflect.KClass
 
@@ -120,6 +121,7 @@ class GameContentFragment : BaseFragment<GameContentViewModel, FragmentGameConte
             )
             rvGame.addItemDecoration(itemDecoration)
             adapter = GameContentAdapter(onItemClick = {
+                mViewModel.setIsClickGame(EventClick.EVENT_CLICK_ACK_TRUE.type)
                 navigate(arch.cayenne.lib.res.R.string.nav_module_gamedetail.deeplink())
             })
             rvGame.adapter = adapter

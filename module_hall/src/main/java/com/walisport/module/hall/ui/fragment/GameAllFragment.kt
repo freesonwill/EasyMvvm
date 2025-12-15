@@ -21,6 +21,7 @@ import com.walisport.module.hall.ui.adapter.GameAllListViewHolder
 import com.walisport.module.hall.ui.adapter.GameAllRankingAdapter
 import com.walisport.module.hall.ui.viewmodel.GameAllViewModel
 import com.walisport.module.hall.ui.viewmodel.HallViewModel
+import com.walisport.module.live.data.EventClick
 import kotlin.reflect.KClass
 
 class GameAllFragment: BaseFragment<GameAllViewModel, FragmentGameAllBinding>() {
@@ -43,11 +44,11 @@ class GameAllFragment: BaseFragment<GameAllViewModel, FragmentGameAllBinding>() 
     private val listAdapter by lazy {
         GameAllListAdapter(object :GameAllListViewHolder.OnAllItemClickListener {
             override fun onItemClick(data: GameAllContentData) {
-                LogUtils.e("GameAllListAdapter-----${data.category},${data.name}")
                 navigate(Uri.parse("walisport://module_hall/hallCategoryFragment?category=${data.category}&name=${data.name}"))
             }
 
             override fun onChildItemClick() {
+                mViewModel.setIsClickGame(EventClick.EVENT_CLICK_ACK_TRUE.type)
                 navigate(arch.cayenne.lib.res.R.string.nav_module_gamedetail.deeplink() )
             }
         })
@@ -86,8 +87,6 @@ class GameAllFragment: BaseFragment<GameAllViewModel, FragmentGameAllBinding>() 
         }, {
             hallViewModel.setScorll(false)
         })
-
-        mBinding.rvContent
     }
 
     override suspend fun createObserver() {
