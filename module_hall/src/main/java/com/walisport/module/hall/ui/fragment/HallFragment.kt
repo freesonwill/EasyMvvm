@@ -79,7 +79,7 @@ class HallFragment : BaseFragment<HallViewModel, FragmentHallBinding>() {
             colorRes =  Category.RECENT.color,
             res = R.drawable.ic_tab_hall_recent,
             _title = R.string.tab_recent.getString(),
-            _page = { GameRecentFragment.newInstance() }
+            _page = { GameRecentFragment.newInstance(Category.RECENT.type) }
         ),
         HallGameTabDefault(
             colorRes = Category.ALL.color,
