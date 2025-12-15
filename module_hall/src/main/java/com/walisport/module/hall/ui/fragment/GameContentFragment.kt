@@ -125,7 +125,13 @@ class GameContentFragment : BaseFragment<GameContentViewModel, FragmentGameConte
             rvGame.adapter = adapter
             rvGame.itemAnimator = null
 
-            BackToTopHelper(rvGame, ivBackToTop, true)
+            BackToTopHelper(rvGame, ivBackToTop, true){
+                // 點擊回到頂部按鈕的額外操作
+                //如果排序方式是热返和冷返
+                if (currentSortType == GameSortType.HOT_REWARD || currentSortType == GameSortType.COLD_REWARD) {
+                    aplHomeBanner.setExpanded(true , true)
+                }
+            }
         }
 
     }
