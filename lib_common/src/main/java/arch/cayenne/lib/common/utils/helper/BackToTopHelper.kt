@@ -96,5 +96,9 @@ class BackToTopHelper(
             button.visibility = View.GONE
         }
     }
+
+    fun reset() {
+        totalDy = 0
+    }
 }
 
