@@ -23,7 +23,8 @@ import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 class BackToTopHelper(
     val targetRecyclerView: RecyclerView,
     val button: AppCompatImageView,
-    val isGridView: Boolean
+    val isGridView: Boolean,
+    val onBackToTop: (() -> Unit)? = null
 ) {
     private var totalDy = 0
 
@@ -70,6 +71,25 @@ class BackToTopHelper(
                 targetRecyclerView.scrollToPosition(number)
             }
             targetRecyclerView.smoothScrollToPosition(0)
+            // 监听滚动完成
+//            targetRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+//                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+//                    if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+//                        val layoutManager = recyclerView.layoutManager
+//                        val firstVisible = when (layoutManager) {
+//                            is androidx.recyclerview.widget.LinearLayoutManager -> layoutManager.findFirstCompletelyVisibleItemPosition()
+//                            is androidx.recyclerview.widget.GridLayoutManager -> layoutManager.findFirstCompletelyVisibleItemPosition()
+//                            else -> -1
+//                        }
+//                        if (firstVisible == 0) {
+//                            recyclerView.removeOnScrollListener(this)
+//                            // 滚动到顶部后执行操作
+//                            onBackToTop?.invoke()
+//                        }
+//                    }
+//                }
+//            })
+            onBackToTop?.invoke()
             button.visibility = View.GONE
         }
     }
