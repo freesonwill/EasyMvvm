@@ -32,7 +32,7 @@ class BalanceView : FrameLayout {
     fun init(
         childFragmentManager: FragmentManager
     ) {
-        mBinding.tvWalletBalance.clickNoRepeat {
+        mBinding.root.clickNoRepeat {
             rotateArrow(true)
 
             val location = IntArray(2)
