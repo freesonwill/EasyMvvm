@@ -4,11 +4,11 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.text.Editable
 import android.text.SpannableStringBuilder
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.widget.EditText
 import android.widget.PopupWindow
 import androidx.recyclerview.widget.LinearLayoutManager
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.module.chat.data.model.AtBean
@@ -54,7 +54,13 @@ class SearchAtPopupWindow {
     fun showPopupWindow(targetView: EditText) {
         if (atPopupWindow?.isShowing == false) {
             notifyAdapter(targetView)
-            atPopupWindow?.showAsDropDown(targetView, 0, (-10).dp2px)
+//            atPopupWindow?.showAsDropDown(targetView, Gravity.TOP,0, (-10).dp2px)
+            val location = IntArray(2)
+            targetView.getLocationOnScreen(location)
+            atPopupWindow?.showAtLocation(
+                targetView, Gravity.TOP, 0,
+                location[1] - (atPopupWindow?.height ?: 0) - 10.dp2px
+            )
         }
     }
 

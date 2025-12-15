@@ -10,6 +10,7 @@ import android.view.KeyEvent
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import androidx.lifecycle.LifecycleCoroutineScope
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.module.chat.R
@@ -48,6 +49,8 @@ class ChatATHelper(
 
     //是否at输入
     var isAtInput: Boolean = false
+// 由于输入框@按下后需要弹出@弹框，为了@弹框位置正确，等软件盘弹出后在弹出@弹框
+    var shouldOpenAtDialog:Boolean = false
 
     var etWatchListen:((edit:Editable?) -> Unit)? = null
 
@@ -176,6 +179,12 @@ class ChatATHelper(
                     it.insert(selectionStart, betStr)
                     addSpecialMentionSpan(msgType,this, betStr, nStart, betStrLength)//+ @ 空格
             }
+        }
+    }
+
+    fun addAtInEt(){
+        chatEtInput.apply {
+            text.insert(selectionStart,"@")
         }
     }
 

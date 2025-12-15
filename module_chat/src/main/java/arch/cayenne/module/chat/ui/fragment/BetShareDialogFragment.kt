@@ -6,9 +6,11 @@ import android.os.Bundle
 import android.view.WindowManager
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import arch.cayenne.lib.base.ui.fragment.BasePreLoadBottomSheetFragment
 import arch.cayenne.lib.common.ui.fragment.ShareFragment
 import arch.cayenne.lib.common.utils.ViewUtils
+import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.module.chat.R
@@ -113,6 +115,7 @@ class BetShareDialogFragment :
 
         mBinding.apply {
             tvGo.clickNoRepeat {
+                findNavController().navigate("walisport://module_betslip/orderSportPageFragment".deeplink())
                 dismiss()
             }
             ivShare.clickNoRepeat {

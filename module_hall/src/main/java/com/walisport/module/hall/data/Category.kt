@@ -8,18 +8,18 @@ import com.walisport.module.hall.data.Category.entries
  * @date: 2025/12/12 16:12
  * @description:
  */
-enum class Category(val type: Int , val desc: String) {
-    ALL(100 , "全部") ,
-    RECENT(101 , "最近") ,
-    HOT(102 , "热门") ,
-    ORIGIN(103 , "原创") ,
-    FISH(1 , "捕鱼") ,
-    VIDEO(2 , "视讯") ,
-    POKER(3 , "棋牌") ,
-    TIGER(4 , "老虎机") ,
-    SPORT(5 , "体育") ,
-    LOTTERY(6 , "彩票") ,
-    ELECTRONIC(7 , "电竞");
+enum class Category(val type: Int , val desc: String,val color: Int) {
+    ALL(100 , "全部",arch.cayenne.lib.common.R.color.game_tab_all) ,
+    RECENT(101 , "最近",arch.cayenne.lib.common.R.color.game_tab_recent) ,
+    HOT(102 , "热门",arch.cayenne.lib.common.R.color.game_tab_hot) ,
+    ORIGIN(103 , "原创",arch.cayenne.lib.common.R.color.game_tab_original) ,
+    FISH(1 , "捕鱼",arch.cayenne.lib.common.R.color.game_tab_fishing) ,
+    VIDEO(2 , "视讯",arch.cayenne.lib.common.R.color.game_tab_real_people) ,
+    POKER(3 , "棋牌",arch.cayenne.lib.common.R.color.game_tab_chess) ,
+    TIGER(4 , "老虎机",arch.cayenne.lib.common.R.color.game_tab_tiger) ,
+    SPORT(5 , "体育",arch.cayenne.lib.common.R.color.game_tab_all) ,
+    LOTTERY(6 , "彩票",arch.cayenne.lib.common.R.color.game_tab_lottery) ,
+    ELECTRONIC(7 , "电竞",arch.cayenne.lib.common.R.color.game_tab_esports);
 }
 
 fun Int.getCategoryByType(): Category {

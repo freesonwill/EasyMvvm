@@ -8,7 +8,14 @@
         android:name="arch.cayenne.module.order.ui.fragment.ChatChooseBetFragment"
         android:label="fragment_bet_choose"
         tools:layout="@layout/fragment_choose_bet_layout">
-
         <deepLink app:uri="walisport://module_betslip/chatChooseBetFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/orderSportPageFragment"
+        android:name="arch.cayenne.module.order.ui.fragment.OrderSportPageFragment"
+        android:label="fragment_bet_choose"
+        tools:layout="@layout/fragment_choose_bet_layout">
+        <deepLink app:uri="walisport://module_betslip/orderSportPageFragment" />
     </fragment>
 </navigation>
