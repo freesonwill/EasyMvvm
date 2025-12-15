@@ -154,6 +154,10 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
             toggleGameSorting(!isExpanded)
         }
         mBinding.customTabGroup.setOnShowAllCategoryClick({} , {
+            // 点击更多供应商按钮时，需要判断排序菜单是否展开，若展开则先收起
+            if(isExpanded){
+                toggleGameSorting(false)
+            }
             showListBottomSheet()
         })
     }
