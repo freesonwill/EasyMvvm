@@ -9,6 +9,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.animation.addListener
 import androidx.core.view.isVisible
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.module.chat.data.constants.KeyBoardType
 import arch.cayenne.module.chat.data.constants.KeyboardActionType
@@ -52,7 +53,6 @@ object SoftKeyBoardAnim {
         animSet.playTogether(scaleAnim, transXAnim)
         return animSet
     }
-
 
 
     /**
@@ -168,14 +168,14 @@ object SoftKeyBoardAnim {
         return animSet
     }
 
-/**
- * ChatEtInput长度和移动动画
- *      没有弹出键盘 307(左边距：8 右边距: 10)  弹出键盘 355（左右边距:10）1.15  输入款有内容: 282(左边距：12,有边距：11) 0.91
- * transX     0 (58)                           -48   (10)                        -46     (12)
- *
- *
- * **/
-      @SuppressLint("Recycle")
+    /**
+     * ChatEtInput长度和移动动画
+     *      没有弹出键盘 307(左边距：8 右边距: 10)  弹出键盘 355（左右边距:10）1.15  输入款有内容: 282(左边距：12,有边距：11) 0.91
+     * transX     0 (58)                           -48   (10)                        -46     (12)
+     *
+     *
+     * **/
+    @SuppressLint("Recycle")
     fun etInputContentAnim(
         isEmpty: Boolean,
         currentType: KeyBoardType,
@@ -218,9 +218,13 @@ object SoftKeyBoardAnim {
     fun etAnimWhenEtContentChange(
         binding: FragmentLiveChatBinding,
         currentType: KeyBoardType,
-        onStart: () -> Unit
+        onAnimStart: () -> Unit,
+        onAnimEnd: () -> Unit
     ) {
+
         binding.apply {
+            "etAnimWhenEtContentChange chatEtInput ${chatEtInput.length()}    chatTvSend  ${chatTvSend.isVisible}   ivLanguage ${ivLanguage.isVisible}".logd("aaa")
+
             when {
                 chatEtInput.length() == 0 && chatTvSend.isVisible && currentType != KeyBoardType.CHAT -> { //键盘弹出的时候发送 有内容到无内容
                     etInputContentAnim(
@@ -230,7 +234,9 @@ object SoftKeyBoardAnim {
                         chatTvSend
                     ).apply {
                         duration = 170L
-                        addListener(onEnd = {
+                        addListener(onStart = {
+                            onAnimStart.invoke()
+                        }, onEnd = {
                             chatTvSend.isVisible = false
                         })
                         start()
@@ -250,7 +256,7 @@ object SoftKeyBoardAnim {
                             )
                         )
                         addListener(onStart = {
-                            onStart.invoke()
+                            onAnimStart.invoke()
                         })
                     }
                     val inputAnim = etInputContentAnim(
@@ -272,17 +278,29 @@ object SoftKeyBoardAnim {
                 }
 
                 chatEtInput.length() > 0 && !chatTvSend.isVisible -> { //无内容到有内容
-                    etInputContentAnim(
-                        false,
-                        currentType,
-                        chatLlInput,
-                        chatTvSend
-                    ).apply {
-                        duration = 170L
-                        addListener(onStart = {
-                            chatTvSend.isVisible = true
-                        })
-                        start()
+                    if (ivLanguage.isVisible) {
+                        addBetToEtInputAnim(
+                            binding,
+                            currentType,
+                            onStart = {onAnimStart.invoke()},
+                            onEnd = {onAnimEnd.invoke()}
+                        )
+                    } else {
+                        etInputContentAnim(
+                            false,
+                            currentType,
+                            chatLlInput,
+                            chatTvSend
+                        ).apply {
+                            duration = 170L
+                            addListener(onStart = {
+                                chatTvSend.isVisible = true
+                                onAnimStart.invoke()
+                            }, onEnd = {
+                                onAnimEnd.invoke()
+                            })
+                            start()
+                        }
                     }
                 }
 
@@ -297,11 +315,11 @@ object SoftKeyBoardAnim {
     /**
      * 当前状态为chat时，向输入框插入字符串时输入框的动画
      * **/
-     fun addBetToEtInputAnim(
+    fun addBetToEtInputAnim(
         binding: FragmentLiveChatBinding,
         currentType: KeyBoardType,
         onStart: () -> Unit,
-        onEnd:() -> Unit
+        onEnd: () -> Unit
     ) {
         binding.apply {
             val btnAnim = AnimatorSet().apply {

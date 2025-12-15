@@ -19,6 +19,7 @@ import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.ext.touchBackPressed
 import arch.cayenne.lib.common.web.WLSWebViewClient
 import arch.cayenne.lib.common.data.model.JSResponseData
+import arch.cayenne.lib.common.ui.fragment.ShareFragment
 import arch.cayenne.module.chat.databinding.FragmentGameShareLayoutBinding
 import arch.cayenne.module.chat.ui.viewmodel.BetShareViewModel
 import arch.cayenne.module.chat.ui.viewmodel.GameBetShareViewModel
@@ -40,30 +41,38 @@ class GameBetShareFragment : BaseFragment<GameBetShareViewModel, FragmentGameSha
         get() = FragmentGameShareLayoutBinding::class
     override val vmClass: KClass<GameBetShareViewModel>
         get() = GameBetShareViewModel::class
-    private val shareViewModel:BetShareViewModel by sharedViewModel<BetShareViewModel,BetShareDialogFragment>()
+    private val shareViewModel: BetShareViewModel by sharedViewModel<BetShareViewModel, BetShareDialogFragment>()
     val gson = Gson()
     override fun initView(savedInstanceState: Bundle?) {
         initTitleBar()
         initWebView()
         mBinding.webView.loadUrl(BizUrl.GAME_BET_SHARE.url)
+        ShareFragment.create(this)
     }
 
     override fun initListener() {
 
         mBinding.webView.addJsBridgeListen {
-           lifecycleScope.launch(Dispatchers.Main) {
-               when(it.type){
-                   "back" ->{
-                       shareViewModel.closeDialog()
-                   }
-                   "expand" ->{
-                       shareViewModel.expandDialog()
-                   }
-                   "openPage" ->{
+            lifecycleScope.launch(Dispatchers.Main) {
+                when (it.type) {
+                    "back" -> {
+                        shareViewModel.closeDialog()
+                    }
 
-                   }
-               }
-           }
+                    "expand" -> {
+                        shareViewModel.expandDialog()
+                    }
+
+                    "openPage" -> {
+                        if (it.params.pageName == "share") {
+                       ShareFragment.show(this@GameBetShareFragment)
+                        } else if (it.params.pageName == "game") {
+                            shareViewModel.closeDialog()
+                            val gameId = it.params.gameId
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -142,4 +151,5 @@ class GameBetShareFragment : BaseFragment<GameBetShareViewModel, FragmentGameSha
         mBinding.webView.destroy()
         super.onDestroy()
     }
+
 }
