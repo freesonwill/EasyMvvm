@@ -166,6 +166,8 @@ class BottomFragment : BaseFragment<BottomViewModel, FragmentBottomBinding>() {
             parentViewModel.bottomIndexFlow.collect {
                 mBinding.vpPage.post {//延迟一帧，viewPager可能正在刷新adapter
                     mBinding.vpPage.setCurrentItem(it,true)
+                    //Todo bug1: mBinding.vpPage.setCurrentItem(it,false)不会触发tabLayout的选中变化
+                    //Todo bug2: tabLayout.getTabAt(it)?.select()  不会触发indicator的变化
                 }
             }
         }
