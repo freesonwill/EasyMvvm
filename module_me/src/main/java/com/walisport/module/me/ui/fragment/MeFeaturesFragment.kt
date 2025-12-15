@@ -8,15 +8,12 @@ import arch.cayenne.lib.common.data.constants.HomePageEnum
 import arch.cayenne.lib.common.utils.biz.CommonBiz
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
-import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
-import arch.cayenne.lib.common.utils.helper.showToast
 import com.walisport.module.me.R
 import com.walisport.module.me.data.model.FeaturesBean
 import com.walisport.module.me.databinding.FragmentMeFeaturesBinding
 import com.walisport.module.me.ui.adapter.FeaturesAdapter
 import com.walisport.module.me.ui.viewmodel.FeaturesViewModel
 import kotlin.reflect.KClass
-
 
 /**
  * 我的界面中的功能区域
@@ -26,7 +23,6 @@ class MeFeaturesFragment : BaseFragment<FeaturesViewModel, FragmentMeFeaturesBin
 
     override val vbClass: KClass<FragmentMeFeaturesBinding> = FragmentMeFeaturesBinding::class
     override val vmClass: KClass<FeaturesViewModel> = FeaturesViewModel::class
-
 
     private val featuresAdapter by lazy {
         FeaturesAdapter()
@@ -51,7 +47,6 @@ class MeFeaturesFragment : BaseFragment<FeaturesViewModel, FragmentMeFeaturesBin
             adapter = featuresAdapter
             itemAnimator = null
         }
-
         var id = 0
         featuresAdapter.submitList(
             listOf(
@@ -59,7 +54,8 @@ class MeFeaturesFragment : BaseFragment<FeaturesViewModel, FragmentMeFeaturesBin
                     id++, arch.cayenne.lib.common.R.drawable.ic_drawer_fund_details,
                     arch.cayenne.lib.common.R.string.drawer_fund_details
                 ) {
-                    navigate(arch.cayenne.lib.res.R.string.nav_module_fund_detail_fragment.deeplink())
+                    navigate(arch.cayenne.lib.res.R.string.nav_module_web_fragment
+                            .deeplink("url" to BizUrl.FUND_DETAIL.url))
                 },
                 FeaturesBean(
                     id++, arch.cayenne.lib.common.R.drawable.ic_drawer_bet_record,
@@ -80,7 +76,6 @@ class MeFeaturesFragment : BaseFragment<FeaturesViewModel, FragmentMeFeaturesBin
                 ) {
                     navigate(arch.cayenne.lib.res.R.string.nav_module_promotion_fragment.deeplink())
                 },
-
 
                 FeaturesBean(
                     id++, arch.cayenne.lib.common.R.drawable.ic_drawer_invite,
@@ -115,18 +110,13 @@ class MeFeaturesFragment : BaseFragment<FeaturesViewModel, FragmentMeFeaturesBin
 
     override fun initListener() {
 
-
     }
 
     override suspend fun createObserver() {
         mViewModel.createObserver()
     }
 
-
     companion object {
         const val TAG = "MeFeaturesFragment"
     }
-
-
-
 }
