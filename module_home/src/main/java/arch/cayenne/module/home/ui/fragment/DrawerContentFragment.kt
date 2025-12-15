@@ -5,6 +5,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.os.bundleOf
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.data.constants.StatusBarMode
@@ -13,6 +14,7 @@ import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.common.data.constants.BizUrl
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
+import arch.cayenne.lib.common.data.constants.FragmentResultEnum
 import arch.cayenne.lib.common.data.constants.HomePageEnum
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
 import arch.cayenne.lib.common.utils.biz.CommonBiz
@@ -143,19 +145,25 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
                     id++, arch.cayenne.lib.common.R.drawable.ic_drawer_recently_played,
                     arch.cayenne.lib.common.R.string.drawer_recently_played
                 ) {
-                    CommonBiz.jump2HomePage(this , HomePageEnum.ME)
+                    CommonBiz.jump2HomePage(this , HomePageEnum.ME, bundleOf(
+                        FragmentResultEnum.KEY_ME_BOTTOM.name to 0
+                    ))
                 },
                 CommonFeaturesBean(
                     id++, arch.cayenne.lib.common.R.drawable.ic_drawer_game_collection,
                     arch.cayenne.lib.common.R.string.drawer_game_collections
                 ) {
-                    CommonBiz.jump2HomePage(this , HomePageEnum.ME)
+                    CommonBiz.jump2HomePage(this , HomePageEnum.ME,bundleOf(
+                        FragmentResultEnum.KEY_ME_BOTTOM.name to 1
+                    ))
                 },
                 CommonFeaturesBean(
                     id++, arch.cayenne.lib.common.R.drawable.ic_drawer_match_collection,
                     arch.cayenne.lib.common.R.string.drawer_match_collections
                 ) {
-                    CommonBiz.jump2HomePage(this , HomePageEnum.ME)
+                    CommonBiz.jump2HomePage(this , HomePageEnum.ME,bundleOf(
+                        FragmentResultEnum.KEY_ME_BOTTOM.name to 2
+                    ))
                 },
 
                 CommonFeaturesBean(
