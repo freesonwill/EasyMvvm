@@ -9,6 +9,7 @@ import android.webkit.WebChromeClient
 import android.webkit.WebView
 import androidx.annotation.MainThread
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
@@ -19,6 +20,9 @@ import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.ext.touchBackPressed
 import arch.cayenne.lib.common.web.WLSWebViewClient
 import arch.cayenne.lib.common.data.model.JSResponseData
+import arch.cayenne.lib.common.ui.fragment.ShareFragment
+import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
+import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.module.chat.databinding.FragmentGameShareLayoutBinding
 import arch.cayenne.module.chat.ui.viewmodel.BetShareViewModel
 import arch.cayenne.module.chat.ui.viewmodel.GameBetShareViewModel
@@ -40,30 +44,38 @@ class GameBetShareFragment : BaseFragment<GameBetShareViewModel, FragmentGameSha
         get() = FragmentGameShareLayoutBinding::class
     override val vmClass: KClass<GameBetShareViewModel>
         get() = GameBetShareViewModel::class
-    private val shareViewModel:BetShareViewModel by sharedViewModel<BetShareViewModel,BetShareDialogFragment>()
-    val gson = Gson()
+    private val shareViewModel: BetShareViewModel by sharedViewModel<BetShareViewModel, BetShareDialogFragment>()
     override fun initView(savedInstanceState: Bundle?) {
         initTitleBar()
         initWebView()
         mBinding.webView.loadUrl(BizUrl.GAME_BET_SHARE.url)
+        ShareFragment.create(this)
     }
 
     override fun initListener() {
 
         mBinding.webView.addJsBridgeListen {
-           lifecycleScope.launch(Dispatchers.Main) {
-               when(it.type){
-                   "back" ->{
-                       shareViewModel.closeDialog()
-                   }
-                   "expand" ->{
-                       shareViewModel.expandDialog()
-                   }
-                   "openPage" ->{
+            lifecycleScope.launch(Dispatchers.Main) {
+                when (it.type) {
+                    "back" -> {
+                        shareViewModel.closeDialog()
+                    }
 
-                   }
-               }
-           }
+                    "expand" -> {
+                        shareViewModel.expandDialog()
+                    }
+
+                    "openPage" -> {
+                        if (it.params.pageName == "share") {
+                       ShareFragment.show(this@GameBetShareFragment)
+                        } else if (it.params.pageName == "game") {
+                            shareViewModel.closeDialog()
+                            val gameId = it.params.gameId
+                           findNavController().navigate(arch.cayenne.lib.res.R.string.nav_module_gamedetail.deeplink())
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -142,4 +154,5 @@ class GameBetShareFragment : BaseFragment<GameBetShareViewModel, FragmentGameSha
         mBinding.webView.destroy()
         super.onDestroy()
     }
+
 }
