@@ -9,6 +9,7 @@ import android.webkit.WebChromeClient
 import android.webkit.WebView
 import androidx.annotation.MainThread
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
@@ -20,6 +21,8 @@ import arch.cayenne.lib.common.utils.ext.touchBackPressed
 import arch.cayenne.lib.common.web.WLSWebViewClient
 import arch.cayenne.lib.common.data.model.JSResponseData
 import arch.cayenne.lib.common.ui.fragment.ShareFragment
+import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
+import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.module.chat.databinding.FragmentGameShareLayoutBinding
 import arch.cayenne.module.chat.ui.viewmodel.BetShareViewModel
 import arch.cayenne.module.chat.ui.viewmodel.GameBetShareViewModel
@@ -42,7 +45,6 @@ class GameBetShareFragment : BaseFragment<GameBetShareViewModel, FragmentGameSha
     override val vmClass: KClass<GameBetShareViewModel>
         get() = GameBetShareViewModel::class
     private val shareViewModel: BetShareViewModel by sharedViewModel<BetShareViewModel, BetShareDialogFragment>()
-    val gson = Gson()
     override fun initView(savedInstanceState: Bundle?) {
         initTitleBar()
         initWebView()
@@ -69,6 +71,7 @@ class GameBetShareFragment : BaseFragment<GameBetShareViewModel, FragmentGameSha
                         } else if (it.params.pageName == "game") {
                             shareViewModel.closeDialog()
                             val gameId = it.params.gameId
+                           findNavController().navigate(arch.cayenne.lib.res.R.string.nav_module_gamedetail.deeplink())
                         }
                     }
                 }
