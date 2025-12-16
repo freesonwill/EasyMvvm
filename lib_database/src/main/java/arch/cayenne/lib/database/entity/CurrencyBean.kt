@@ -11,4 +11,5 @@ data class CurrencyBean (
     val unit: String,
     val name: String,
     val ccy: String,
+    val icon: String,
 )

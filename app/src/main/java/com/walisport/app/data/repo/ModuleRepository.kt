@@ -162,6 +162,7 @@ class ModuleRepository(
                     unit = it.unit,
                     name = it.name,
                     ccy = it.ccy,
+                    icon = it.icon,
                 )
             }
         )

@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.widget.FrameLayout
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
+import arch.cayenne.lib.common.R
 import arch.cayenne.lib.common.databinding.ViewBalanceBinding
 import arch.cayenne.lib.common.ui.fragment.CurrencyDialogFragment
 import arch.cayenne.lib.common.ui.viewmodel.BalanceViewModel
@@ -15,6 +16,7 @@ import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+import com.bumptech.glide.Glide
 
 class BalanceView : FrameLayout {
     private val mBinding: ViewBalanceBinding
@@ -76,10 +78,24 @@ class BalanceView : FrameLayout {
         mBinding.tvWalletBalance.text = money
     }
 
+    fun setIcon(icon: String) {
+        Glide.with(context)
+            .load(icon)
+            .placeholder(R.drawable.ic_wali_demo)
+            .error(R.drawable.ic_wali_demo)
+            .into(mBinding.ivCurrencyIcon)
+    }
+
     fun setBalanceViewModel(viewModel: BalanceViewModel, lifecycleOwner: LifecycleOwner) {
         this.viewModel = viewModel
         viewModel.onBalanceChange.observe(lifecycleOwner) {
-            setMoney(it)
+            if (it == null) {
+                setMoney("0.00")
+                setIcon("")
+            } else {
+                setMoney(it.amount)
+                setIcon(it.icon)
+            }
         }
     }
 }
