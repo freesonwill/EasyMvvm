@@ -54,8 +54,10 @@ class MeFeaturesFragment : BaseFragment<FeaturesViewModel, FragmentMeFeaturesBin
                     id++, arch.cayenne.lib.common.R.drawable.ic_drawer_fund_details,
                     arch.cayenne.lib.common.R.string.drawer_fund_details
                 ) {
-                    navigate(arch.cayenne.lib.res.R.string.nav_module_web_fragment
-                            .deeplink("url" to BizUrl.FUND_DETAIL.url))
+                    navigate(
+                        arch.cayenne.lib.res.R.string.nav_module_web_fragment
+                            .deeplink("url" to BizUrl.FUND_DETAIL.url)
+                    )
                 },
                 FeaturesBean(
                     id++, arch.cayenne.lib.common.R.drawable.ic_drawer_bet_record,
@@ -67,16 +69,17 @@ class MeFeaturesFragment : BaseFragment<FeaturesViewModel, FragmentMeFeaturesBin
                     id++, arch.cayenne.lib.common.R.drawable.ic_drawer_realtime_cashback,
                     arch.cayenne.lib.common.R.string.drawer_cash_back
                 ) {
-                    navigate(arch.cayenne.lib.res.R.string.nav_module_realtime_cashback_fragment.deeplink())
+                    navigate(
+                        arch.cayenne.lib.res.R.string.nav_module_web_fragment
+                            .deeplink("url" to BizUrl.REBATE.url)
+                    )
                 },
-
                 FeaturesBean(
                     id++, arch.cayenne.lib.common.R.drawable.ic_drawer_gift,
                     arch.cayenne.lib.common.R.string.drawer_gift
                 ) {
                     navigate(arch.cayenne.lib.res.R.string.nav_module_promotion_fragment.deeplink())
                 },
-
                 FeaturesBean(
                     id++, arch.cayenne.lib.common.R.drawable.ic_drawer_invite,
                     arch.cayenne.lib.common.R.string.drawer_invite
@@ -94,12 +97,12 @@ class MeFeaturesFragment : BaseFragment<FeaturesViewModel, FragmentMeFeaturesBin
                     id++, arch.cayenne.lib.common.R.drawable.ic_drawer_help,
                     arch.cayenne.lib.common.R.string.drawer_help
                 ) {
-                    navigate(arch.cayenne.lib.res.R.string.nav_module_web_fragment.deeplink("url" to BizUrl.HELP.url) )
+                    navigate(arch.cayenne.lib.res.R.string.nav_module_web_fragment.deeplink("url" to BizUrl.HELP.url))
                 },
                 FeaturesBean(
-                    id++ , arch.cayenne.lib.common.R.drawable.ic_drawer_feedback ,
-                    arch.cayenne.lib.common.R.string.drawer_feedback ,
-                    true ,
+                    id++, arch.cayenne.lib.common.R.drawable.ic_drawer_feedback,
+                    arch.cayenne.lib.common.R.string.drawer_feedback,
+                    true,
                     getString(R.string.prize)
                 ) {
                     navigate(arch.cayenne.lib.res.R.string.nav_module_feedback_fragment.deeplink())
@@ -109,7 +112,6 @@ class MeFeaturesFragment : BaseFragment<FeaturesViewModel, FragmentMeFeaturesBin
     }
 
     override fun initListener() {
-
     }
 
     override suspend fun createObserver() {
