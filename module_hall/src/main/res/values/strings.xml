@@ -41,5 +41,6 @@
     <string name="search_tips">瓦力</string>
     <string name="btn_confirm">确定</string>
     <string name="view_latest_results">查看最新结果</string>
+    <string name="title_recently_played">最近玩过</string>
 
 </resources>
