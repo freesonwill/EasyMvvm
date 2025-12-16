@@ -21,9 +21,10 @@ import arch.cayenne.lib.common.utils.ext.clickNoRepeat
  * ```
  */
 class BackToTopHelper(
-    val targetRecyclerView: RecyclerView,
-    val button: AppCompatImageView,
-    val isGridView: Boolean,
+    val targetRecyclerView: RecyclerView ,
+    val button: AppCompatImageView ,
+    val isGridView: Boolean ,
+    val pageSize: Int = 10 ,
     val onBackToTop: (() -> Unit)? = null
 ) {
     private var totalDy = 0
@@ -52,6 +53,8 @@ class BackToTopHelper(
 
                 // 檢查滾動距離是否超過了一頁的高度，並且按鈕當前是隱藏的
                 if (totalDy > recyclerViewHeight && !button.isVisible) {
+                    // 如果列表项数小于等于一页（pageSize），则不显示回到顶部按钮
+                    if ((targetRecyclerView.adapter?.itemCount ?: 0) <= pageSize) return
                     // 如果是，則顯示回到頂部的按鈕 (例如使用淡入動畫)
                     button.visibility = View.VISIBLE
                     button.alpha = 0.3f
@@ -92,6 +95,10 @@ class BackToTopHelper(
             onBackToTop?.invoke()
             button.visibility = View.GONE
         }
+    }
+
+    fun reset() {
+        totalDy = 0
     }
 }
 

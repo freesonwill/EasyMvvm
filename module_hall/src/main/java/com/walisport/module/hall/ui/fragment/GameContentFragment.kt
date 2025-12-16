@@ -12,7 +12,6 @@ import arch.cayenne.lib.base.ui.animation.AnimationController
 import arch.cayenne.lib.base.ui.animation.AnimationController.AnimType
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
-import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.common.ui.adapter.GridSpacingItemDecoration
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout.States
 import arch.cayenne.lib.common.ui.view.SimpleTabDataModel
@@ -70,6 +69,8 @@ class GameContentFragment : BaseFragment<GameContentViewModel, FragmentGameConte
     private val defaultAnimDuration = 210L
     val category get() = requireArguments().getInt(ARG_CATEGORY_TYPE)
 
+    private var helper: BackToTopHelper? = null
+
     fun supplierTabList(list: List<GameSupplierDataModel>): List<SimpleTabDataModel> {
         val l = ArrayList<SimpleTabDataModel>()
         l.add(
@@ -105,6 +106,7 @@ class GameContentFragment : BaseFragment<GameContentViewModel, FragmentGameConte
                     }
                     mBinding.rvGame.startFadeAnim { onComplete ->
                         mViewModel.setSupplier(if (id == 0) emptyList() else listOf(id))
+                        helper?.reset()
                         mViewModel.reload()
                         onComplete.invoke()
                     }
@@ -125,7 +127,7 @@ class GameContentFragment : BaseFragment<GameContentViewModel, FragmentGameConte
             rvGame.adapter = adapter
             rvGame.itemAnimator = null
 
-            BackToTopHelper(rvGame, ivBackToTop, true){
+            helper = BackToTopHelper(rvGame , ivBackToTop , true) {
                 // 點擊回到頂部按鈕的額外操作
                 //如果排序方式是热返和冷返
                 if (currentSortType == GameSortType.HOT_REWARD || currentSortType == GameSortType.COLD_REWARD) {
@@ -232,6 +234,7 @@ class GameContentFragment : BaseFragment<GameContentViewModel, FragmentGameConte
                 }
             }else{
                 mViewModel.setSupplier(it)
+                helper?.reset()
                 mViewModel.reload()
             }
         }
@@ -392,6 +395,7 @@ class GameContentFragment : BaseFragment<GameContentViewModel, FragmentGameConte
                     updateSortingMenuSelection()
                     setSortBtnText()
                     mViewModel.setSortType(currentSortType)
+                    helper?.reset()
                     mViewModel.reload()
                 }
 
@@ -407,6 +411,7 @@ class GameContentFragment : BaseFragment<GameContentViewModel, FragmentGameConte
                     updateSortingMenuSelection()
                     setSortBtnText()
                     mViewModel.setSortType(currentSortType)
+                    helper?.reset()
                     mViewModel.reload()
                 }
 
@@ -423,6 +428,7 @@ class GameContentFragment : BaseFragment<GameContentViewModel, FragmentGameConte
                     updateSortingMenuSelection()
                     setSortBtnText()
                     mViewModel.setSortType(currentSortType)
+                    helper?.reset()
                     mViewModel.reload()
                 }
 
@@ -438,6 +444,7 @@ class GameContentFragment : BaseFragment<GameContentViewModel, FragmentGameConte
                     updateSortingMenuSelection()
                     setSortBtnText()
                     mViewModel.setSortType(currentSortType)
+                    helper?.reset()
                     mViewModel.reload()
                 }
 

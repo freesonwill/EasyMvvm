@@ -70,6 +70,8 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
     private var category: Int = 100
     private var titleName: String = ""
 
+    private var helper: BackToTopHelper? = null
+
     fun supplierTabList(list: List<GameSupplierDataModel>): List<SimpleTabDataModel> {
         val l = ArrayList<SimpleTabDataModel>()
         l.add(
@@ -106,6 +108,7 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
                 override fun onTabClicked(id: Int) {
                     mBinding.rvGame.startFadeAnim { onComplete ->
                         mViewModel.setSuppliers(if (id == 0) emptyList() else listOf(id))
+                        helper?.reset()
                         mViewModel.reload()
                         onComplete.invoke()
                     }
@@ -125,7 +128,7 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
             })
             rvGame.adapter = adapter
 
-            BackToTopHelper(rvGame , ivBackToTop , true) {
+            helper = BackToTopHelper(rvGame , ivBackToTop , true) {
                 //如果排序方式是热返和冷返
                 if (currentSortType == GameSortType.HOT_REWARD || currentSortType == GameSortType.COLD_REWARD) {
                     mBinding.aplHomeBanner.setExpanded(true , true)
@@ -228,6 +231,7 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
                 }
             }else{
                 mViewModel.setSuppliers(it)
+                helper?.reset()
                 mViewModel.reload()
             }
         }
@@ -412,6 +416,7 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
                     updateSortingMenuSelection()
                     setSortBtnText()
                     mViewModel.setSortType(currentSortType)
+                    helper?.reset()
                     mViewModel.reload()
                 }
 
@@ -427,6 +432,7 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
                     updateSortingMenuSelection()
                     setSortBtnText()
                     mViewModel.setSortType(currentSortType)
+                    helper?.reset()
                     mViewModel.reload()
                 }
 
@@ -444,6 +450,7 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
                     updateSortingMenuSelection()
                     setSortBtnText()
                     mViewModel.setSortType(currentSortType)
+                    helper?.reset()
                     mViewModel.reload()
                 }
 
@@ -460,6 +467,7 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
                     updateSortingMenuSelection()
                     setSortBtnText()
                     mViewModel.setSortType(currentSortType)
+                    helper?.reset()
                     mViewModel.reload()
                 }
 
