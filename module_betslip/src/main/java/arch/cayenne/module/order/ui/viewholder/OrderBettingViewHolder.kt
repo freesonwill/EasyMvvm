@@ -73,6 +73,7 @@ class OrderBettingViewHolder(private val mBinding: ItemOrderSportBettingBinding)
             item.betAmount, item.earlyBetAmount, item.earlySettlePrice.price
         )
         val isCanSettle = settlePrice.toMoney() > 1000 && item.earlySettlePrice.earlySupport
+        mBinding.clBottomButton.isVisible = isCanSettle
         mBinding.btnEarlySettle.isVisible = isCanSettle
         val earlyAmountStr = "${CurrencySymbols.getSymbol(item.currency)}${settlePrice}"
         mBinding.tvEarlySettleMoney.text = earlyAmountStr
