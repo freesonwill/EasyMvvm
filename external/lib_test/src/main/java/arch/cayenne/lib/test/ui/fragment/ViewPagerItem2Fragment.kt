@@ -1,5 +1,6 @@
 package arch.cayenne.lib.test.ui.fragment
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.navigation.fragment.navArgs
 import arch.cayenne.lib.base.ui.viewmodel.EmptyViewModel
@@ -31,6 +32,9 @@ class ViewPagerItem2Fragment : BaseFragment<EmptyViewModel, FragmentTestViewPage
             //navController.navigate(ViewPagerFragmentDirections.actionViewPagerItem2FragmentToHomeFragment())
             requireActivity().navigate(ViewPagerFragmentDirections.actionViewPagerItem2FragmentToHomeFragment())
         //            navigate(ViewPagerItem2FragmentDirections.actionTextViewScreenToHomeFragment3())
+        }
+        mBinding.root.setOnClickListener {
+            startActivity(Intent(requireActivity(),Class.forName("com.walisport.app.ui.MainActivity")))
         }
     }
 

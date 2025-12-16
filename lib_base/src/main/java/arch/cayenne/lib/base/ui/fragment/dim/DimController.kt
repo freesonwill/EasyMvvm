@@ -13,9 +13,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.core.animation.doOnEnd
+import androidx.core.view.doOnDetach
 import androidx.core.view.isVisible
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
 
 class DimController private constructor() {
@@ -66,6 +68,10 @@ class DimController private constructor() {
         )
         context.addContentView(v, params)
         dimView = v
+        v.doOnDetach {
+            "Dim View Detached".logd(TAG)
+            dimView = null // 置空避免内存泄漏
+        }
     }
 
     private fun getNavigationBarHeight(context: Context): Int {
