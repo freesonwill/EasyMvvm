@@ -77,6 +77,7 @@ class WLSJsInterface(
         jsBridgeListen.invoke(data)
         when (data.type) {
             "back" -> {
+                //postMessage在非UI主线程中执行，故需要post到主线程
                 this.webView.post {
                     if (this.webView.canGoBack()) {
                         this.webView.goBack()
@@ -91,9 +92,11 @@ class WLSJsInterface(
                 // 这里可以根据 page 字段来决定打开哪个页面
                 when (page) {
                     "customer" -> {
-                        // 退出网页并跳转至客服页面
-                        this.webView.jump2CustomerService()
-                        this.webView.findNavController().popBackStack()
+                        this.webView.post {
+                            // 退出网页并跳转至客服页面
+                            this.webView.jump2CustomerService()
+                            this.webView.findNavController().popBackStack()
+                        }
                     }
                 }
             }
