@@ -40,5 +40,13 @@
         <deepLink app:uri="@string/nav_module_recently_played_fragment" />
     </fragment>
 
+    <fragment
+        android:id="@+id/gameFavouriteFragment"
+        android:name="com.walisport.module.hall.ui.fragment.GameFavouriteFragment"
+        android:label="fragment_game_favourite"
+        tools:layout="@layout/fragment_game_favourite">
+        <deepLink app:uri="@string/nav_module_game_favourite" />
+    </fragment>
+
 
 </navigation>

@@ -146,9 +146,7 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
                     id++, arch.cayenne.lib.common.R.drawable.ic_drawer_game_collection,
                     arch.cayenne.lib.common.R.string.drawer_game_collections
                 ) {
-                    CommonBiz.jump2HomePage(this , HomePageEnum.ME,bundleOf(
-                        FragmentResultEnum.KEY_ME_BOTTOM.name to 1
-                    ))
+                    navigate(arch.cayenne.lib.res.R.string.nav_module_game_favourite.deeplink() )
                 },
                 CommonFeaturesBean(
                     id++, arch.cayenne.lib.common.R.drawable.ic_drawer_match_collection,

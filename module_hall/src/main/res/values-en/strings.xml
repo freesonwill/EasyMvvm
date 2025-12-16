@@ -8,5 +8,7 @@
     <string name="title_daily_match">Daily Match</string>
     <string name="search_tips">Wali</string>
     <string name="title_recently_played">Recently Played</string>
+    <string name="title_game_favourite">Favourite Game</string>
+
 
 </resources>
