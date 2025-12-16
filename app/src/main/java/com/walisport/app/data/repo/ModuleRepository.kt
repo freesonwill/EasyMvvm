@@ -11,11 +11,19 @@ import arch.cayenne.lib.common.data.constants.SportEnum
 import arch.cayenne.lib.common.data.constants.UserDataKey
 import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.database.GameDatabase
+import arch.cayenne.lib.database.dao.UserDataDao
+import arch.cayenne.lib.database.entity.AvatarEmbedded
+import arch.cayenne.lib.database.entity.CurrencyBean
 import arch.cayenne.lib.database.entity.SportBean
 import arch.cayenne.lib.database.entity.SportTournamentCrossRef
 import arch.cayenne.lib.database.entity.TournamentBean
 import arch.cayenne.lib.database.entity.TournamentMatchRef
+import arch.cayenne.lib.database.entity.UserDataBean
 import arch.cayenne.lib.http.HttpClient
+import arch.cayenne.lib.http._interface.IAccount
+import arch.cayenne.lib.http._interface.IConfig
+import arch.cayenne.lib.http.data.CurrencyInfo
+import arch.cayenne.lib.http.data.ProfileInfo
 import arch.cayenne.lib.websocket.WebSocketManager
 import arch.cayenne.module.home.data.constants.PlayType
 import arch.cayenne.module.home.data.constants.playTypeToShowType
@@ -36,6 +44,7 @@ class ModuleRepository(
     override val scope: CoroutineScope,
     private val database: GameDatabase,
     private val httpClient: HttpClient,
+    private val mockHttpClient: HttpClient,
     private val socketManager: WebSocketManager,
     private val preloadResultChange: MutableStateFlow<PreloadEnum>,
     private val manager: UserDataManager,
@@ -83,6 +92,82 @@ class ModuleRepository(
         manager.setKeyValue(UserDataKey.KEY_UID, uid)
         manager.setKeyValue(UserDataKey.KEY_TOKEN, token)
     }
+
+    fun getProfileInfo() {
+        val api = mockHttpClient.create(IAccount::class.java)
+        scope.launch(Dispatchers.IO) {
+            mockHttpClient.safeRequest(
+                request = {
+                    api.profileInfo()
+                },
+                onSuccess = { resp ->
+                    if (resp.code == 0) {
+                        saveProfileInfo(resp.data)
+                    }
+                },
+                onFailure = { code, msg, throwable ->
+                    "response------>$code,$msg,$throwable".loge(TAG)
+                }
+            )
+        }
+    }
+
+    fun saveProfileInfo(profileInfo: ProfileInfo) {
+        database.userDataDao().insert(
+            UserDataBean(
+                id = profileInfo.id,
+                name = profileInfo.name,
+                avatar = AvatarEmbedded(
+                    url = profileInfo.avatar.url,
+                    thumbhash = profileInfo.avatar.thumbhash
+                ),
+                registerTime = profileInfo.registerTime,
+                vipLevel = profileInfo.vipLevel,
+                balanceTotal = profileInfo.balanceTotal,
+                balanceWallet = profileInfo.balanceWallet,
+                currentBetAmount = profileInfo.currentBetAmount,
+                requiredBetAmount = profileInfo.requiredBetAmount,
+                vipStage = profileInfo.vipStage,
+                nicknameChangeCount = profileInfo.nicknameChangeCount
+            )
+        )
+    }
+
+    fun getCurrencyConfig() {
+        val api = mockHttpClient.create(IConfig::class.java)
+        scope.launch(Dispatchers.IO) {
+            mockHttpClient.safeRequest(
+                request = {
+                    api.currency()
+                },
+                onSuccess = { resp ->
+                    if (resp.code == 0) {
+                        saveCurrencyConfig(resp.data)
+                    }
+                },
+                onFailure = { code, msg, throwable ->
+                    "response------>$code,$msg,$throwable".loge(TAG)
+                }
+            )
+        }
+    }
+
+    private fun saveCurrencyConfig(data: List<CurrencyInfo>) {
+        database.currencyConfigDao().insert(
+            data.map {
+                CurrencyBean(
+                    id = it.id,
+                    virtual = it.virtual,
+                    rate = it.rate,
+                    unit = it.unit,
+                    name = it.name,
+                    ccy = it.ccy,
+                    icon = it.icon,
+                )
+            }
+        )
+    }
+
 
     fun preLoadHome() {
         val api = httpClient.create(IPreLoadHomeApi::class.java)

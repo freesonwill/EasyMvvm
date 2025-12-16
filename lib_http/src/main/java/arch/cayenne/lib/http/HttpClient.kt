@@ -1,7 +1,9 @@
 package arch.cayenne.lib.http
 
+import android.util.Log
 import androidx.annotation.UiThread
 import androidx.annotation.WorkerThread
+import arch.cayenne.lib.base.data.remote.ApiFailedState
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.http._interface.IApi
 import arch.cayenne.lib.http.data.Result
@@ -224,3 +226,5 @@ class HttpClient private constructor(private val retrofit: Retrofit) {
         }
     }
 }
+
+class HttpException(override val code: Int? , override val msg: String) : ApiFailedState

@@ -40,7 +40,7 @@
     <color name="app_bg_tr45">#654E4A4A</color>
     <color name="search_btn">@color/color_00E0E5</color>
     <color name="search_btn_highlight">@color/color_00E0E5</color>
-    <color name="search_btn_normal">#BBBBBB</color>
+    <color name="search_btn_normal">#ffffff</color>
     <color name="search_btn_in_direct_match">#ffffff</color>
     <color name="search_hint">@color/color_999999</color>
     <color name="search_text">#BBBBBB</color>
@@ -87,6 +87,16 @@
     <color name="navigation_lin">#cce6e6e6</color>
     <color name="event_tags">#2A3B3C</color>
 
+    <color name="game_tab_hot">#5B32FF</color>
+    <color name="game_tab_recent">#00B9D4</color>
+    <color name="game_tab_all">#5B32FF</color>
+    <color name="game_tab_chess">#FE3666</color>
+    <color name="game_tab_tiger">#D52316</color>
+    <color name="game_tab_fishing">#317DFF</color>
+    <color name="game_tab_real_people">#F81D7E</color>
+    <color name="game_tab_original">#FF5634</color>
+    <color name="game_tab_lottery">#FF324D</color>
+    <color name="game_tab_esports">#2B78FF</color>
 
     <!-- Dark Theme Colors -->
     <color name="keyboard_1">#3D3E4B</color>
@@ -115,7 +125,8 @@
     <color name="keyboard_3">#161823</color>
     <color name="live_tab_bg">#0E0F1A</color>
     <color name="keyboard_bg">#161823</color>
-    <color name="search_bg">#0FFFFFFF</color>
+    <color name="search_bg">#24EE8A</color>
+    <color name="search_bar_bg">#0FFFFFFF</color>
     <color name="search_bg_in_direct_match">#33FFFFFF</color>
     <color name="card_outline">#282A34</color>
     <color name="tab_outline">#929298</color>
@@ -198,9 +209,15 @@
     <color name="color_292929">#292929</color> <!--日期tab选中背景色-->
     <color name="color_05FFFFFF">#05FFFFFF</color> <!--分隔線 白透明 2-->
     <color name="color_00C853">#00C853</color>
+    <color name="color_6B6B6B">#6B6B6B</color>
+    <color name="color_A50111">#A50111</color>
+    <color name="color_00B001">#00B001</color>
+    <color name="color_66000000">#66000000</color> <!--黑色透明 40-->
 
     <color name="color_E3603A">#E3603A</color>  <!--聊天tab文本色/Tag text-->
     <color name="color_00E0E54D">#4D00E0E5</color><!--主色（primary）30透明-->
+    <color name="color_2c2c2c">#2c2c2c</color>
+    <color name="color_1EFFFFFF">#1EFFFFFF</color>
 
     <color name="color_979797">#FF979797</color>
     <color name="color_343434">#343434</color>
@@ -228,4 +245,6 @@
     <color name="shader_end_diamond">#8C91E0</color>
     <color name="shader_end_black_diamond">#FFD8B6</color>
     <color name="shader_end_star_diamond">#FECAA0</color>
+    <color name="bg_league_item_selected">@color/color_003A42</color>
+    <color name="league_tab_tint_select">@color/color_00E0E5</color>
 </resources>

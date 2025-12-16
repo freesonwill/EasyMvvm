@@ -16,7 +16,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:orientation="horizontal"
-        app:layout_constraintGuide_begin="@dimen/dp_10"
+        app:layout_constraintGuide_begin="@dimen/dp_61"
         />
 
     <androidx.constraintlayout.widget.Guideline
@@ -24,9 +24,8 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:orientation="horizontal"
-        app:layout_constraintGuide_begin="@dimen/dp_50"
+        app:layout_constraintGuide_begin="@dimen/dp_97"
         />
-
     <arch.cayenne.lib.skin.widget.SkinnableImageView
         android:id="@+id/iv_back"
         style="@style/CircleButtonStyle"

@@ -9,6 +9,7 @@ import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.data.constants.DrawerAction.ACTION_OPEN
 import arch.cayenne.lib.common.data.constants.DrawerAction.KEY_ACTION
 import arch.cayenne.lib.common.data.constants.DrawerAction.REQUEST_KEY_DRAWER
+import arch.cayenne.lib.common.data.constants.FragmentResultEnum
 import arch.cayenne.lib.common.ui.viewmodel.UnReadMessageViewModel
 import arch.cayenne.lib.common.utils.biz.CommonBiz
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
@@ -97,6 +98,10 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
             ivSetting.clickNoRepeat {
                 navigate(arch.cayenne.lib.res.R.string.nav_module_setting_fragment.deeplink())
             }
+
+            ctUserInfo.clickNoRepeat {
+                navigate(arch.cayenne.lib.res.R.string.nav_module_personal_info_fragment.deeplink())
+            }
         }
     }
 
@@ -118,5 +123,10 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
         super.onStart()
     }
 
-
+    override fun onHiddenChanged(hidden: Boolean) {
+        super.onHiddenChanged(hidden)
+        arguments?.getInt(FragmentResultEnum.KEY_ME_BOTTOM.name)?.let {
+            mViewModel.bottomIndexFlow.tryEmit(it)
+        }
+    }
 }

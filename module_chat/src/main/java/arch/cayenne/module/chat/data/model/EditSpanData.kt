@@ -7,7 +7,7 @@ import android.text.style.ClickableSpan
 import android.text.style.UpdateAppearance
 import android.view.View
 import androidx.annotation.ColorInt
-import arch.cayenne.lib.skin.res.SkinnableResourceManager
+import arch.cayenne.lib.common.data.constants.MsgType
 
 /**
  * @author: wenxi
@@ -15,12 +15,13 @@ import arch.cayenne.lib.skin.res.SkinnableResourceManager
  * @description:
  */
 
-class MentionSpan(private val text: String, private val click: ((str: String) -> Unit)) :
+class MentionSpan(private val type: MsgType, private val text: String, private val click: ((str: String) -> Unit)) :
     CharacterStyle(), UpdateAppearance {
     //    ClickableSpan() {
     private val tvColor = Color.parseColor("#8FBEE9")
     private val backColor = Color.parseColor("#4DFE3666")
     val tv = text
+    val msgType: MsgType = type
 
     override fun updateDrawState(ds: TextPaint) {
         ds.let {
@@ -45,15 +46,15 @@ class ColorSpan(@ColorInt val tvColor:Int):CharacterStyle(),UpdateAppearance{
     }
 }
 
-class ClickSpan(private val text: String,private val click:((str:String) -> Unit)):ClickableSpan(){
+class ClickSpan(private val type: MsgType, private val text: String, ):ClickableSpan(){
     private val tvColor = Color.parseColor("#8FBEE9")
-
+    val msgType = type
+    val tv = text
     override fun updateDrawState(ds: TextPaint) {
         ds.let {
             it.color = tvColor
         }
     }
     override fun onClick(widget: View) {
-        click.invoke(text)
     }
 }

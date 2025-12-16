@@ -1,4 +1,11 @@
 <resources>
     <string name="hall">Game Hall</string>
+    <string name="sort_type_hot">Hot</string>
+    <string name="sort_type_new">New Arrivals</string>
+    <string name="sort_type_hot_reward">Hot Rewards in the Past 30 Minutes</string>
+    <string name="sort_type_cold_reward">Cold Rewards in the Past 30 Minutes</string>
+    <string name="reward_tips">The rate is calculated based on data from the last 30 minutes.</string>
+    <string name="title_daily_match">Daily Match</string>
+    <string name="search_tips">Wali</string>
 
 </resources>

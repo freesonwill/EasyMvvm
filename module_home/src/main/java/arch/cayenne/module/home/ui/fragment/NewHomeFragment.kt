@@ -23,6 +23,7 @@ import arch.cayenne.lib.common.data.constants.DrawerAction.KEY_ACTION
 import arch.cayenne.lib.common.data.constants.DrawerAction.REQUEST_KEY_DRAWER
 import arch.cayenne.lib.common.ui.adapter.BannerImageAdapter
 import arch.cayenne.lib.common.ui.view.CustomTabIndicator
+import arch.cayenne.lib.common.ui.viewmodel.BalanceViewModel
 import arch.cayenne.lib.common.ui.viewmodel.UnReadMessageViewModel
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
 import arch.cayenne.lib.common.utils.DensityInfo
@@ -52,6 +53,7 @@ import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
 import com.google.android.material.tabs.TabLayout
 import com.walisport.module.popup.slot.ui.fragment.PopupSlotFragment
 import kotlin.reflect.KClass
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 /**
  * 体育页
@@ -70,11 +72,13 @@ class NewHomeFragment : BaseFragment<HomeViewModel , FragmentNewHomeBinding>() {
     private val popupSlotFragment: PopupSlotFragment by lazy {
         PopupSlotFragment()
     }
+    private val balanceViewModel: BalanceViewModel by viewModel()
 
     //    private val tournamentListFragment  = TournamentListFragment.newInstance()
 
     override fun initView(savedInstanceState: Bundle?) {
         mBinding.balanceView.init(childFragmentManager)
+        mBinding.balanceView.setBalanceViewModel(balanceViewModel, viewLifecycleOwner)
         initPlayTypeLayout()
         setReceiveHorizontalScrollResult()
         initCurveBanner()

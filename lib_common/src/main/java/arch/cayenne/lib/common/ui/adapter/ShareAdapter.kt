@@ -12,6 +12,12 @@ import arch.cayenne.lib.common.ui.compare.ShareBeanCompare
 class ShareAdapter : BaseAdapter<ShareBean, BaseViewHolder, ItemShareLayoutBinding>(
     ShareBeanCompare()
 ) {
+    private var itemClick:RecyclerItemListener<ShareBean>? = null
+
+    fun setItemListener(listener: RecyclerItemListener<ShareBean>){
+        this.itemClick = listener
+    }
+
     override fun convertPlus(
         holder: BaseViewHolder,
         binding: ItemShareLayoutBinding,

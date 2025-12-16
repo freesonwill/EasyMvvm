@@ -24,7 +24,7 @@ import kotlin.coroutines.cancellation.CancellationException
 /**
  * @author: wenxi
  * @date: 27/9/25 14:41
- * @description:
+ * @description: 实现聊天服务相关功能
  */
 class ChatManagerImpl(private val chatRepo: LiveChatRepository) :
     ChatManagerFactory {

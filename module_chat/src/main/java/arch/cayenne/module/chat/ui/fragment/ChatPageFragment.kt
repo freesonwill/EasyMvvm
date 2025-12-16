@@ -8,9 +8,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
-import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.module.chat.data.constants.KeyBoardType
+import arch.cayenne.lib.common.data.constants.MsgType
 import arch.cayenne.module.chat.data.model.ChatMsgPageBean
 import arch.cayenne.module.chat.databinding.FragementChatPageLayoutBinding
 import arch.cayenne.module.chat.ui.adapter.ChatPageAdapter
@@ -24,41 +24,53 @@ import kotlin.reflect.KClass
  * @date: 1/10/25 15:09
  * @description:
  */
-class ChatPageFragment:BaseFragment<ChatPageViewModel,FragementChatPageLayoutBinding>() {
+class ChatPageFragment : BaseFragment<ChatPageViewModel, FragementChatPageLayoutBinding>() {
     override val vbClass: KClass<FragementChatPageLayoutBinding>
         get() = FragementChatPageLayoutBinding::class
     override val vmClass: KClass<ChatPageViewModel>
         get() = ChatPageViewModel::class
-    private val homeViewModel:ChatHomeViewModel by sharedViewModel<ChatHomeViewModel,ChatHomeFragment>()
+    private val homeViewModel: ChatHomeViewModel by sharedViewModel<ChatHomeViewModel, ChatHomeFragment>()
 
 
     override fun initView(savedInstanceState: Bundle?) {
         ChatPersonalDialogFragment.create(this)
+        BetShareDialogFragment.create(this)
         initRecycler()
     }
 
-    private fun initRecycler(){
+    private fun initRecycler() {
         val layoutManger = LinearLayoutManager(context).apply {
             orientation = LinearLayoutManager.VERTICAL
             reverseLayout = true
         }
-        val adapter = ChatPageAdapter(){
-            ChatUserInfoFragment().show(childFragmentManager)
-        }
+        val adapter = ChatPageAdapter { bean, clickSpane, clickType ->
+            when (clickType) {
+                MsgType.BET_GAME -> {
+//                    val betType = if(clickSpane == "注单游戏") 0 else 1
+                    BetShareDialogFragment.show(this, 0)
+                }
+                MsgType.BET_SPORT ->{
+                    BetShareDialogFragment.show(this, 1)
+                }
 
-        adapter.setOnItemListener(object :RecyclerItemListener<ChatMsgPageBean>{
-            override fun onItemClick(item: ChatMsgPageBean?, position: Int) {
-                ChatPersonalDialogFragment.show(this@ChatPageFragment)
+                MsgType.AT -> {
+                    ChatUserInfoFragment().show(childFragmentManager)
+                }
+
+                MsgType.TEXT -> {
+                    ChatPersonalDialogFragment.show(this@ChatPageFragment)
+                }
+
+                else -> {}
             }
-        })
-
+        }
         mBinding.liveChatRecycler.layoutManager = layoutManger
         mBinding.liveChatRecycler.adapter = adapter
         mBinding.liveChatRecycler.itemAnimator = null
         mBinding.liveChatRecycler.addOnItemTouchListener(object : RecyclerView.OnItemTouchListener {
             override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
-                if(e.action == MotionEvent.ACTION_DOWN && homeViewModel.currentKeyBoardType != KeyBoardType.CHAT){
-                    homeViewModel.updateKeyBoardUi(KeyBoardType.CHAT,21)
+                if (e.action == MotionEvent.ACTION_DOWN && homeViewModel.currentKeyBoardType != KeyBoardType.CHAT) {
+                    homeViewModel.updateKeyBoardUi(KeyBoardType.CHAT, 21)
                 }
                 return false
             }
@@ -112,7 +124,7 @@ class ChatPageFragment:BaseFragment<ChatPageViewModel,FragementChatPageLayoutBin
 
     }
 
-    companion object{
-         val TAG: String = ChatHomeFragment::class.java.simpleName
+    companion object {
+        val TAG: String = ChatHomeFragment::class.java.simpleName
     }
 }

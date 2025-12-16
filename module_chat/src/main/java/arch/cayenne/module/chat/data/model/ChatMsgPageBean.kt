@@ -1,7 +1,7 @@
 package arch.cayenne.module.chat.data.model
 
 import arch.cayenne.lib.websocket.chat.data.ChatMsg
-import arch.cayenne.module.chat.data.constants.MsgType
+import arch.cayenne.lib.common.data.constants.MsgType
 
 /**
  * @author: wenxi
@@ -25,7 +25,7 @@ data class ChatMsgPageBean(
 ) :Comparable<ChatMsgPageBean>{
     companion object {
 
-        fun toChatPageBean(bean: ChatMsg, msgType: MsgType,atRange: List<IntRange>? = null): ChatMsgPageBean {
+        fun toChatPageBean(bean: ChatMsg, msgType: MsgType, atRange: List<IntRange>? = null): ChatMsgPageBean {
             return ChatMsgPageBean(
                 uid = bean.uid,
                 userName = bean.userName,

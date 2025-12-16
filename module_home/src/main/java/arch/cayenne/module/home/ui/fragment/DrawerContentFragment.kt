@@ -5,23 +5,25 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.os.bundleOf
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
+import arch.cayenne.lib.common.data.constants.BizUrl
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
+import arch.cayenne.lib.common.data.constants.FragmentResultEnum
+import arch.cayenne.lib.common.data.constants.HomePageEnum
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
 import arch.cayenne.lib.common.utils.biz.CommonBiz
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
-import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
-import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.module.account.data.constants.KeyConfig
 import arch.cayenne.module.home.R
@@ -38,7 +40,6 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
     override val vmClass: KClass<DrawerContentViewModel> = DrawerContentViewModel::class
     private var onFunctionClick: (() -> Unit)? = null
     private val spanCount = 3
-    //note:login入口開關
     private val showBtnLogin = false
 
     companion object {
@@ -61,7 +62,6 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
         StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND()
         StatusBarConfig.statusBarDarkFont = false
         setStatusBar(StatusBarConfig, mBinding.root)
-
         initRvCommonFeatures()
         initRvServiceFeatures()
         initRvEarningFeatures()
@@ -89,14 +89,11 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
                     val layoutManager = parent.layoutManager as? GridLayoutManager ?: return
                     val position = parent.getChildAdapterPosition(view)
                     if (position == RecyclerView.NO_POSITION) return
-
                     val spanCount = layoutManager.spanCount
                     val spanSizeLookup = layoutManager.spanSizeLookup
-
                     // 獲取當前 Item 所在的「行索引」(group index)
                     // 這是 GridLayoutManager 判斷「行」的正確方式，不受 span size 影響
                     val spanGroupIndex = spanSizeLookup.getSpanGroupIndex(position, spanCount)
-
                     // 1. 處理 Top Margin：只在第一行 (spanGroupIndex == 0) 加上 topMargin
                     if (spanGroupIndex == 0) {
                         outRect.top = 12.dp2px
@@ -119,40 +116,50 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
                     id++, arch.cayenne.lib.common.R.drawable.ic_drawer_fund_details,
                     arch.cayenne.lib.common.R.string.drawer_fund_details
                 ) {
-                    navigatePage(arch.cayenne.lib.res.R.string.nav_module_fund_detail_fragment.deeplink())
+                    navigate(
+                        arch.cayenne.lib.res.R.string.nav_module_web_fragment
+                            .deeplink("url" to BizUrl.FUND_DETAIL.url)
+                    )
                 },
                 CommonFeaturesBean(
                     id++, arch.cayenne.lib.common.R.drawable.ic_drawer_bet_record,
                     arch.cayenne.lib.common.R.string.drawer_bet_record
                 ) {
-                    showToast(arch.cayenne.lib.common.R.string.drawer_bet_record.getString())
+                    CommonBiz.jump2HomePage(this, HomePageEnum.BETSLIP)
                 },
                 CommonFeaturesBean(
                     id++, arch.cayenne.lib.common.R.drawable.ic_drawer_realtime_cashback,
                     arch.cayenne.lib.common.R.string.drawer_cash_back
                 ) {
-                    navigatePage(arch.cayenne.lib.res.R.string.nav_module_realtime_cashback_fragment.deeplink())
+                    navigate(
+                        arch.cayenne.lib.res.R.string.nav_module_web_fragment
+                            .deeplink("url" to BizUrl.REBATE.url)
+                    )
                 },
-
                 CommonFeaturesBean(
                     id++, arch.cayenne.lib.common.R.drawable.ic_drawer_recently_played,
                     arch.cayenne.lib.common.R.string.drawer_recently_played
                 ) {
-                    showToast(arch.cayenne.lib.common.R.string.drawer_recently_played.getString())
+                    CommonBiz.jump2HomePage(this , HomePageEnum.ME, bundleOf(
+                        FragmentResultEnum.KEY_ME_BOTTOM.name to 0
+                    ))
                 },
                 CommonFeaturesBean(
                     id++, arch.cayenne.lib.common.R.drawable.ic_drawer_game_collection,
                     arch.cayenne.lib.common.R.string.drawer_game_collections
                 ) {
-                    showToast(arch.cayenne.lib.common.R.string.drawer_game_collections.getString())
+                    CommonBiz.jump2HomePage(this , HomePageEnum.ME,bundleOf(
+                        FragmentResultEnum.KEY_ME_BOTTOM.name to 1
+                    ))
                 },
                 CommonFeaturesBean(
                     id++, arch.cayenne.lib.common.R.drawable.ic_drawer_match_collection,
                     arch.cayenne.lib.common.R.string.drawer_match_collections
                 ) {
-                    navigatePage(arch.cayenne.lib.res.R.string.nav_module_collectlist_fragment.deeplink())
+                    CommonBiz.jump2HomePage(this , HomePageEnum.ME,bundleOf(
+                        FragmentResultEnum.KEY_ME_BOTTOM.name to 2
+                    ))
                 },
-
                 CommonFeaturesBean(
                     id++, arch.cayenne.lib.common.R.drawable.ic_drawer_gift,
                     arch.cayenne.lib.common.R.string.drawer_gift
@@ -167,8 +174,6 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
                 },
             )
         )
-
-
     }
 
     /**
@@ -211,7 +216,7 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
                     id++, arch.cayenne.lib.common.R.drawable.ic_drawer_help,
                     arch.cayenne.lib.common.R.string.drawer_help
                 ) {
-                    navigatePage(Uri.parse("walisport://module_handicap/HandicapFragment?homeId=${R.id.newHomeFragment}"))
+                    navigate(arch.cayenne.lib.res.R.string.nav_module_web_fragment.deeplink("url" to BizUrl.HELP.url) )
                 },
                 CommonFeaturesBean(
                     id++, arch.cayenne.lib.common.R.drawable.ic_drawer_feedback,

@@ -18,19 +18,33 @@ class GamePreviewAdapter : CarouselAdapter<GamePreviewAdapter.ViewHolder>() {
     class ViewHolder(private val binding: ItemGamePreviewBinding): CarouselViewHolder(binding.root) {
         fun bind(data: GamePreviewBean) {
             with(binding) {
+                // Clear previous content first to prevent memory leaks
+                Glide.with(iv).clear(iv)
+                vv.stopNestedScroll()
+
                 when(data.type) {
                     PreviewType.IMAGE -> {
-                        Glide.with(binding.root.context)
+                        // Use imageView itself as lifecycle owner for better memory management
+                        Glide.with(iv)
                             .load(data.url)
                             .placeholder(R.mipmap.img_game_preview)
                             .into(iv)
+                        iv.visibility = View.VISIBLE
                         vv.visibility = View.GONE
                     }
                     PreviewType.VIDEO -> {
                         vv.setVideoURI(data.url.toUri())
+                        vv.visibility = View.VISIBLE
                         iv.visibility = View.GONE
                     }
                 }
+            }
+        }
+
+        fun unbind() {
+            with(binding) {
+                // Clean up resources when ViewHolder is recycled
+                Glide.with(iv).clear(iv)
             }
         }
     }
@@ -56,7 +70,10 @@ class GamePreviewAdapter : CarouselAdapter<GamePreviewAdapter.ViewHolder>() {
         holder.bind(previews[position])
     }
 
-
+    override fun onViewRecycled(holder: ViewHolder) {
+        // Clean up resources when ViewHolder is recycled to prevent memory leaks
+        holder.unbind()
+    }
 
     /**
      * 提供一個公開的方法來更新適配器的數據。

@@ -3,5 +3,6 @@
     <string name="withdraw">提现</string>
     <string name="recharge">充值</string>
     <string name="total_balance">总余额</string>
+    <string name="prize">奖金</string>
 
 </resources>

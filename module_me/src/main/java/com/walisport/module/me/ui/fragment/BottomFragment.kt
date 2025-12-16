@@ -2,16 +2,19 @@ package com.walisport.module.me.ui.fragment
 
 import android.os.Bundle
 import android.view.View
+import androidx.lifecycle.Lifecycle
 import arch.cayenne.lib.base.data.model.PagerBean
 import arch.cayenne.lib.base.ui.adapter.PagerAdapter
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.CustomTabIndicatorUtils
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.TabLayoutExt
 import arch.cayenne.lib.common.utils.ext.TabLayoutExt.addOnTabSelectedListener2
 import arch.cayenne.lib.common.utils.ext.removeAllTips
 import arch.cayenne.lib.common.utils.ext.setupViewPagerScroll
+import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.ext.startFadeAnim
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.lib.skin.widget.SkinnableTextView
@@ -20,6 +23,7 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.walisport.module.me.R
 import com.walisport.module.me.databinding.FragmentBottomBinding
 import com.walisport.module.me.ui.viewmodel.BottomViewModel
+import com.walisport.module.me.ui.viewmodel.MeViewModel
 import kotlinx.coroutines.delay
 import kotlin.reflect.KClass
 
@@ -32,6 +36,7 @@ class BottomFragment : BaseFragment<BottomViewModel, FragmentBottomBinding>() {
 
     override val vbClass: KClass<FragmentBottomBinding> = FragmentBottomBinding::class
     override val vmClass: KClass<BottomViewModel> = BottomViewModel::class
+    private val parentViewModel by sharedViewModel<MeViewModel,MeFragment>()
 
     override fun initView(savedInstanceState: Bundle?) {
         loadFragment()
@@ -154,10 +159,18 @@ class BottomFragment : BaseFragment<BottomViewModel, FragmentBottomBinding>() {
                     changeTabCount(it, count)
                 }
             }
-
         }
         mViewModel.createObserver()
 
+        launch {
+            parentViewModel.bottomIndexFlow.collect {
+                mBinding.vpPage.post {//延迟一帧，viewPager可能正在刷新adapter
+                    mBinding.vpPage.setCurrentItem(it,true)
+                    //Todo bug1: mBinding.vpPage.setCurrentItem(it,false)不会触发tabLayout的选中变化
+                    //Todo bug2: tabLayout.getTabAt(it)?.select()  不会触发indicator的变化
+                }
+            }
+        }
     }
 
     private fun changeTabCount(tab: TabLayout.Tab, count: Long) {

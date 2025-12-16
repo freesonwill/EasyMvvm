@@ -29,5 +29,17 @@
     <string name="tab_ranking_today_player">玩家</string>
     <string name="tab_ranking_today_betting">投注额</string>
     <string name="tab_ranking_today_bonus">奖金</string>
+    <string name="supplier_section_title_hot">热门</string>
+    <string name="supplier_section_title">选供应商</string>
+    <string name="supplier_search_hint">搜索</string>
+    <string name="sort_type_hot">热门</string>
+    <string name="sort_type_new">最新上线</string>
+    <string name="sort_type_hot_reward">近30分钟火热返奖</string>
+    <string name="sort_type_cold_reward">近30分钟冰冷返奖</string>
+    <string name="reward_tips">返奖率基于该游戏最近30分钟内的数据</string>
+    <string name="title_daily_match">每日投注比赛</string>
+    <string name="search_tips">瓦力</string>
+    <string name="btn_confirm">确定</string>
+    <string name="view_latest_results">查看最新结果</string>
 
 </resources>

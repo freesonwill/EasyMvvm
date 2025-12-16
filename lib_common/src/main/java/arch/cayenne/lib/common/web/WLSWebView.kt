@@ -5,9 +5,14 @@ import android.os.Build
 import android.util.AttributeSet
 import android.view.ViewTreeObserver
 import android.webkit.WebSettings
+import androidx.fragment.app.Fragment
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
+import arch.cayenne.lib.common.utils.biz.CommonBiz
+import arch.cayenne.lib.common.data.model.JSResponseData
 import arch.cayenne.lib.common.utils.ext.requireActivity
 import com.github.lzyzsd.jsbridge.BridgeWebView
 import com.github.lzyzsd.jsbridge.DefaultHandler
+import okhttp3.internal.userAgent
 
 /**
  *
@@ -16,6 +21,8 @@ import com.github.lzyzsd.jsbridge.DefaultHandler
  */
 class WLSWebView : BridgeWebView {
     private var scrollListener: OnScrollChangedListener? = null
+    private var attachedFragment: Fragment? = null
+    private var jsBridgeListen:((data: JSResponseData) -> Unit)? = null
 
     interface OnScrollChangedListener{
         fun onScrollChanged(scrollX: Int, scrollY: Int):Unit
@@ -40,6 +47,11 @@ class WLSWebView : BridgeWebView {
         scrollListener?.onScrollChanged(l, t)
     }
 
+    fun addJsBridgeListen(listener:(data:JSResponseData) ->Unit){
+        this.jsBridgeListen = listener
+    }
+
+
     fun setOnScrollChangedListener(listener: OnScrollChangedListener?) {
         scrollListener = listener
     }
@@ -47,12 +59,16 @@ class WLSWebView : BridgeWebView {
         scrollListener = null
     }
 
+    fun setAttachedFragment(fragment: Fragment){
+        this.attachedFragment = fragment
+    }
+
     private fun initWebSettings() {
         val webSettings = settings
 
         with(webSettings) {
             domStorageEnabled = true
-            displayZoomControls = true
+//            displayZoomControls = true
             databaseEnabled = true
             cacheMode = WebSettings.LOAD_DEFAULT
             blockNetworkImage = false
@@ -70,13 +86,26 @@ class WLSWebView : BridgeWebView {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
             }
+            // 获取默认 User-Agent
+            val defaultUA = settings.userAgentString // 在默认 UA 后添加自定义字符串
+            val customUA = "$defaultUA 3N1/Android"  // 示例
 
+            settings.userAgentString = customUA
         }
 
         setDefaultHandler(DefaultHandler())
     }
 
     private fun initJsBridge(){
-        addJavascriptInterface(WLSJsInterface(this), "wls")
+        addJavascriptInterface(WLSJsInterface(this){
+            jsBridgeListen?.invoke(it)
+        }, "AndroidNative")
+    }
+
+    fun jump2CustomerService(){
+        attachedFragment?.let {
+//            "jump2CustomerService called".logd("WLSWebView")
+            CommonBiz.jump2CustomerService(it)
+        }
     }
 }

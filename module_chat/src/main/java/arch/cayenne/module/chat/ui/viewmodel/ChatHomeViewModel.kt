@@ -16,7 +16,7 @@ import arch.cayenne.lib.websocket.data.SocketConnectState
 import arch.cayenne.module.chat.data.constants.CheckBetResultEnum
 import arch.cayenne.module.chat.data.constants.EmojiEnum
 import arch.cayenne.module.chat.data.constants.KeyBoardType
-import arch.cayenne.module.chat.data.constants.MsgType
+import arch.cayenne.lib.common.data.constants.MsgType
 import arch.cayenne.module.chat.data.model.ChatMsgPageBean
 import arch.cayenne.module.chat.data.model.EmojiModel
 import arch.cayenne.module.chat.data.model.MentionSpan
@@ -149,30 +149,36 @@ class ChatHomeViewModel() : BaseViewModel() {
             "chat is not login ".logd(TAG)
             return null
         }
-        val spannable = SpannableStringBuilder(editable)
-        val spans = spannable.getSpans(0, editable.length, MentionSpan::class.java)
-        val atIntRanges = mutableListOf<IntRange>()
-        spans.forEach {
-            val start = spannable.getSpanStart(it)
-            val end = spannable.getSpanEnd(it)
-            atIntRanges.add(IntRange(start, end))
-        }
+        var msgBean: ChatMsgPageBean? = null
+        val localMsg = chatServer.addLocalMsg(editable.toString()) ?: return null
 
-        val chatMsg = chatServer.addLocalMsg(editable.toString()) ?: return null
-        return ChatMsgPageBean.toChatPageBean(chatMsg, MsgType.AT,atIntRanges)
+            val spannable = SpannableStringBuilder(editable)
+            val spans = spannable.getSpans(0, editable.length, MentionSpan::class.java)
+            if (spans.isNotEmpty()) {
+                val atIntRanges = mutableListOf<IntRange>()
+                spans.forEach {
+                    val start = spannable.getSpanStart(it)
+                    val end = spannable.getSpanEnd(it)
+                    atIntRanges.add(IntRange(start, end))
+                }
+                msgBean = ChatMsgPageBean.toChatPageBean(localMsg, spans.first().msgType, atIntRanges)
+            } else {
+                msgBean = ChatMsgPageBean.toChatPageBean(localMsg, MsgType.TEXT)
+            }
+        return msgBean
     }
 
     /**
      * 发送赛事表情
      * */
 
-    fun createBidLocalMsg(emojiKey:String):ChatMsgPageBean?{
+    fun createBidLocalMsg(emojiKey: String): ChatMsgPageBean? {
         if (loginFlow.value == null) {
             "chat is not login ".logd(TAG)
             return null
         }
         val chatMsg = chatServer.addLocalMsg(emojiKey) ?: return null
-        return ChatMsgPageBean.toChatPageBean(chatMsg,MsgType.EMOJI)
+        return ChatMsgPageBean.toChatPageBean(chatMsg, MsgType.EMOJI)
     }
 
 

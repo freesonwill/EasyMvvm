@@ -7,35 +7,53 @@ import androidx.viewpager2.widget.ViewPager2
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.common.ui.viewmodel.BalanceViewModel
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigateUp
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
-import com.walisport.module.gamedetail.R
 import com.walisport.module.gamedetail.databinding.FragmentGameDetailBinding
 import com.walisport.module.gamedetail.ui.viewmodel.GameDetailPageViewModel
 import kotlin.reflect.KClass
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class GameDetailFragment : BaseFragment<GameDetailPageViewModel, FragmentGameDetailBinding>() {
 
     override val vbClass: KClass<FragmentGameDetailBinding> = FragmentGameDetailBinding::class
     override val vmClass: KClass<GameDetailPageViewModel> = GameDetailPageViewModel::class
 
+    private val balanceViewModel: BalanceViewModel by viewModel()
+
+
     override fun initView(savedInstanceState: Bundle?) {
         val adapter = GameDetailPagerAdapter(this)
         with (mBinding) {
+//            val statusBarHeight = ImmersionBar.getStatusBarHeight(this@GameDetailFragment)
+//            val lp = titleTop.layoutParams as ConstraintLayout.LayoutParams
+//            lp.guideBegin += statusBarHeight
+//            val bottomLp = titleBottom.layoutParams as ConstraintLayout.LayoutParams
+//            lp.guideEnd += statusBarHeight
+//            titleTop.layoutParams = lp
+//            titleBottom.layoutParams = bottomLp
+
             // todo 效果待確認
 //            ivFavorite.isSelected = mockData.collect
-            mBinding.gameDetailPager.adapter = adapter
-            mBinding.gameDetailPager.orientation = ViewPager2.ORIENTATION_VERTICAL
+            gameDetailPager.adapter = adapter
+            gameDetailPager.orientation = ViewPager2.ORIENTATION_VERTICAL
+            // Set offscreen page limit to reduce memory usage during fast scrolling
+            // Only keep 1 page on each side, allowing faster recycling
+            gameDetailPager.offscreenPageLimit = 1
+            viewBalance.setBalanceViewModel(balanceViewModel, viewLifecycleOwner)
         }
         // Disable overscroll effect if desired, or keep it
     }
 
-    //    override fun onStart() {
-//        mBinding.root.fitsSystemWindows = false
-//        StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND()
-//        setStatusBar(StatusBarConfig,mBinding.root)
-//        super.onStart()
-//    }
+    override fun onStart() {
+        super.onStart()
+        mBinding.root.fitsSystemWindows = false
+        StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND(
+            autoPadding = false
+        )
+        setStatusBar(StatusBarConfig, mBinding.root)
+    }
     override fun initListener() {
         with (mBinding) {
             viewBalance.init(childFragmentManager)
@@ -49,6 +67,12 @@ class GameDetailFragment : BaseFragment<GameDetailPageViewModel, FragmentGameDet
     }
 
     override suspend fun createObserver() {
+    }
+
+    override fun onDestroyView() {
+        // Clear ViewPager2 adapter to prevent memory leaks
+        mBinding.gameDetailPager.adapter = null
+        super.onDestroyView()
     }
 
     private class GameDetailPagerAdapter(fragment: Fragment) : FragmentStateAdapter(fragment) {

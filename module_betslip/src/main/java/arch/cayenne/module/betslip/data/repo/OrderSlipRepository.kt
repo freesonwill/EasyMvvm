@@ -41,32 +41,24 @@ open class OrderSlipRepository(
         cursorBetTime: Long?,
         size: Int
     ): ApiResponseState = withContext(scope.coroutineContext) {
-        val mockData = getTestMockData(startTime, endTime) ?: return@withContext ApiResponseState.Failed(
-            SimpleResponseError()
+        val result = remoteManager.getOrderReq(
+            type,
+            startTime,
+            endTime,
+            cursorBetTime,
+            size,
+            null,
+            null
         )
-        return@withContext ApiResponseState.Succeeded(mockData)
-//        val result = remoteManager.getOrderReq(
-//            type,
-//            startTime,
-//            endTime,
-//            cursorBetTime,
-//            size,
-//            null,
-//            null
-//        )
-//        return@withContext if (result.error == null && result.data != null) {
-//            val currency = infoDao.getCurrency()
-//            val data = result.data!!.orderList.map {
-//                it.toOrderBean(type, currency, null)
-//            }
-//
-//            betSlipOrderDao.insert(data)
-//            betSlipOrderDao.deleteMissing(type, data.map { it.betId })
-//            ApiResponseState.Succeeded(data)
-//        } else {
-//            betSlipOrderDao.deleteByType(type)
-//            ApiResponseState.Failed(result.error)
-//        }
+        return@withContext if (result.error == null && result.data != null) {
+            val currency = infoDao.getCurrency()
+            val data = result.data!!.orderList.map {
+                it.toOrderBean(type, currency, null)
+            }
+            ApiResponseState.Succeeded(data)
+        } else {
+            ApiResponseState.Failed(result.error)
+        }
     }
 
     private fun getTestMockData(startTime: Long?, endTime: Long?): List<BetSlipOrderBean>? {
@@ -75,7 +67,8 @@ open class OrderSlipRepository(
         
         val calendar = java.util.Calendar.getInstance()
         val allData = mutableListOf<BetSlipOrderBean>()
-        
+
+        val selectionData = originalData.selectionsList.first()
         // 1. 原始資料（保持不變）
         allData.add(originalData)
         
@@ -83,15 +76,70 @@ open class OrderSlipRepository(
         val currentTime = System.currentTimeMillis()
         allData.add(originalData.copy(
             betId = "1",
-            betTime = currentTime
+            betTime = currentTime,
+            resultStatus = 0,
         ))
         allData.add(originalData.copy(
             betId = "11",
-            betTime = currentTime
+            betTime = currentTime,
+            resultStatus = 1,
+            returnAmount = 10000,
+            selectionsList = listOf(
+                selectionData.copy(
+                    selectionName = "測試 贏",
+                    status = 1
+                ),
+                selectionData.copy(
+                    status = 1
+                )
+            )
         ))
         allData.add(originalData.copy(
-            betId = "12",
-            betTime = currentTime
+            betId = "13",
+            betTime = currentTime,
+            resultStatus = 3,
+            selectionsList = listOf(
+                selectionData.copy(
+                    selectionName = "測試 輸",
+                    status = 3
+                )
+            )
+        ))
+        allData.add(originalData.copy(
+            betId = "14",
+            betTime = currentTime,
+            resultStatus = 4,
+            returnAmount = 5000,
+            selectionsList = listOf(
+                selectionData.copy(
+                    selectionName = "測試 贏一半",
+                    status = 4
+                )
+            )
+        ))
+        allData.add(originalData.copy(
+            betId = "15",
+            betTime = currentTime,
+            resultStatus = 5,
+            returnAmount = 5000,
+            selectionsList = listOf(
+                selectionData.copy(
+                    selectionName = "測試 輸一半",
+                    status = 5
+                )
+            )
+        ))
+        allData.add(originalData.copy(
+            betId = "16",
+            betTime = currentTime,
+            resultStatus = 6,
+            returnAmount = 10000
+        ))
+        allData.add(originalData.copy(
+            betId = "17",
+            betTime = currentTime,
+            resultStatus = 7,
+            returnAmount = 3000,
         ))
         
         // 3. 昨天時間

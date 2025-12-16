@@ -41,10 +41,12 @@ dependencies {
     implementation(project(":lib_res"))
     implementation(project(":lib_skin"))
     implementation(project(":lib_common"))
+    implementation(project(":lib_http"))
     implementation(project(":module_game_detail"))
     implementation(project(":module_popup_slot"))
     testImplementation(libs.junit)
     implementation(libs.banner)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+    implementation(libs.tinyPinyin)
 }

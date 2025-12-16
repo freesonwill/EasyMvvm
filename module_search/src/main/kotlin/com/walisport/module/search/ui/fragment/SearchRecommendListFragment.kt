@@ -11,19 +11,19 @@ import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
-import arch.cayenne.lib.base.data.remote.ApiFailedState
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.touchBackPressed
+import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import com.walisport.module.search.R
 import com.walisport.module.search.databinding.FragmentSearchRecommendListBinding
 import com.walisport.module.search.ui.adapter.RecommendAdapter
+import com.walisport.module.search.ui.viewmodel.SearchRecommendError
 import com.walisport.module.search.ui.viewmodel.SearchRecommendListViewModel
 import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
-
 class SearchRecommendListFragment : BaseFragment<SearchRecommendListViewModel, FragmentSearchRecommendListBinding>() {
     override val vbClass: KClass<FragmentSearchRecommendListBinding>
         get() = FragmentSearchRecommendListBinding::class
@@ -31,6 +31,7 @@ class SearchRecommendListFragment : BaseFragment<SearchRecommendListViewModel, F
         get() = SearchRecommendListViewModel::class
 
     private val recommendAdapter by lazy { RecommendAdapter() }
+    private var currentKeyword: String? = null
 
     var onClickListener: ((String) -> Unit?)?
         get() = recommendAdapter.onClick
@@ -50,18 +51,61 @@ class SearchRecommendListFragment : BaseFragment<SearchRecommendListViewModel, F
     override suspend fun createObserver() {
         with(mViewModel) {
             launch(Lifecycle.State.RESUMED) {
+                // 觀察搜索推薦列表
                 launch {
                     searchRecommendList.collect { list ->
                         recommendAdapter.submitList(list)
+                        // 僅在有關鍵字且無結果時顯示空狀態
+                        updateEmptyState(list.isEmpty() && !currentKeyword.isNullOrBlank())
+                    }
+                }
+                
+                // 觀察錯誤狀態
+                launch {
+                    errorState.collect { error ->
+                        when (error) {
+                            is SearchRecommendError.Timeout -> {
+                                showToast(
+                                    SkinnableResourceManager.getString(
+                                        requireContext(),
+                                        R.string.search_timeout
+                                    )
+                                )
+                            }
+                            is SearchRecommendError.General -> {
+                                showToast(error.error.msg)
+                            }
+                            is SearchRecommendError.None -> {
+                                // 無錯誤，不處理
+                            }
+                        }
                     }
                 }
             }
         }
     }
 
-    fun updateKeyword(keyword: String?, failedHandler: ((error: ApiFailedState?) -> Unit)? = null) {
-        mViewModel.getSearchRecommendList(keyword, failedHandler)
+    fun updateKeyword(keyword: String?) {
+        currentKeyword = keyword
+        mViewModel.getSearchRecommendList(keyword)
         recommendAdapter.updateMatchKeyword(keyword)
+    }
+    
+    /**
+     * 更新空狀態顯示
+     */
+    private fun updateEmptyState(isEmpty: Boolean) {
+        with(mBinding) {
+            if (isEmpty) {
+                // 顯示空狀態，隱藏列表
+                rvSearchRecommend.visibility = View.GONE
+                clEmptyState.visibility = View.VISIBLE
+            } else {
+                // 顯示列表，隱藏空狀態
+                rvSearchRecommend.visibility = View.VISIBLE
+                clEmptyState.visibility = View.GONE
+            }
+        }
     }
 
     fun show() {
@@ -135,6 +179,7 @@ class SearchRecommendListFragment : BaseFragment<SearchRecommendListViewModel, F
     private fun resetSearchRecommend() {
         onDismissListener?.invoke()
         mBinding.clSearchRecommend.visibility = View.GONE
+        currentKeyword = null
         mViewModel.clearSearchRecommendList()
     }
 

@@ -1,29 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<arch.cayenne.lib.skin.widget.SkinnableLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<arch.cayenne.lib.skin.widget.SkinnableConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/ll_item_common_func"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_gravity="center_horizontal"
     android:layout_marginTop="@dimen/dp_10"
     android:layout_marginBottom="@dimen/dp_11"
     android:orientation="vertical">
 
     <arch.cayenne.lib.skin.widget.SkinnableImageView
         android:id="@+id/iv_icon"
+        android:layout_width="@dimen/dp_26"
+        android:layout_height="@dimen/dp_26"
+        android:scaleType="fitXY"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
+        android:id="@+id/tv_badge"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:scaleType="fitXY" />
+        android:layout_height="@dimen/dp_17"
+        android:layout_marginStart="-6dp"
+        android:layout_marginTop="-11dp"
+        android:background="@drawable/bg_drawer_badge"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:maxLines="1"
+        android:paddingStart="@dimen/dp_6"
+        android:paddingEnd="@dimen/dp_6"
+        android:textColor="@color/white"
+        android:textSize="@dimen/sp_10"
+        android:visibility="gone"
+        app:layout_constraintLeft_toRightOf="@id/iv_icon"
+        app:layout_constraintTop_toTopOf="@id/iv_icon" />
 
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/tv_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
         android:layout_marginTop="@dimen/dp_4"
         android:ellipsize="end"
         android:gravity="center_horizontal"
         android:maxLines="1"
         android:textColor="#929298"
-        android:textSize="@dimen/sp_13" />
-</arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
+        android:textSize="@dimen/sp_13"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/iv_icon" />
+</arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>

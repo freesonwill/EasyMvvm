@@ -90,6 +90,8 @@ class ModuleInitializer : DefaultInitializer<String> {
         (context as Application).registerActivityLifecycleCallbacks(activityLifecycleCallback)
         val moduleRepository = GlobalContext.get().get<ModuleRepository>()
         moduleRepository.initUidToken()
+        moduleRepository.getProfileInfo()
+        moduleRepository.getCurrencyConfig()
         moduleRepository.preLoadHome()
         moduleRepository.startSocket()
         return TAG
@@ -113,7 +115,7 @@ class ModuleInitializer : DefaultInitializer<String> {
     private val repoModules = module {
         factory { CoroutineScope(Dispatchers.IO) }
         single { MutableStateFlow(PreloadEnum.INIT) }
-        factory { ModuleRepository(get(), get(), get(named("3n1")), get(), get(), get()) }
+        factory { ModuleRepository(get(), get(), get(named("3n1")), get(named("mock")), get(), get(), get()) }
         factory { (scope: CoroutineScope) -> MainRepository(scope, get(), get(), get(), get(), get()) }
         factory { (scope: CoroutineScope) -> SplashRepository(scope, get(), get()) }
     }

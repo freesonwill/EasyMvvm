@@ -17,7 +17,7 @@ import org.koin.core.qualifier.Qualifier
 inline fun <reified VM : ViewModel, reified F : Fragment> Fragment.sharedViewModel(
     qualifier: Qualifier? = null,
     noinline parameters: ParametersDefinition? = null,
-    crossinline fragmentFilter:((f:Fragment)->Boolean) = { true },
+    crossinline fragmentFilter:((f:F)->Boolean) = { true },
 ): Lazy<VM> = lazy(LazyThreadSafetyMode.NONE) {
     findRelative<F>(fragmentFilter).getViewModel<VM>(
         qualifier = qualifier,
@@ -26,7 +26,7 @@ inline fun <reified VM : ViewModel, reified F : Fragment> Fragment.sharedViewMod
 }
 
 ///** Finds a relative fragment of type [F] via BFS. */
-inline fun <reified F : Fragment> Fragment.findRelative(filter: (f: Fragment) -> Boolean): F {
+inline fun <reified F : Fragment> Fragment.findRelative(filter: (f: F) -> Boolean): F {
     val visited = mutableListOf<Fragment>()
     val queued = mutableListOf(this.rootFragment)
     while (queued.isNotEmpty()) {

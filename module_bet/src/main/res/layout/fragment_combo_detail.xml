@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/cl_root"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="@dimen/dp_100"
     android:background="@drawable/bg_bet_dialog"
-    android:orientation="vertical">
+    android:paddingBottom="@dimen/dp_12"
+    >
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_title"
@@ -36,18 +38,18 @@
 
         <arch.cayenne.lib.skin.widget.SkinnableImageView
             android:id="@+id/iv_bet_expand"
-            android:layout_width="@dimen/dp_24"
-            android:layout_height="@dimen/dp_24"
+            android:layout_width="@dimen/dp_20"
+            android:layout_height="@dimen/dp_20"
             android:layout_marginEnd="@dimen/dp_20"
+            android:src="@drawable/icon_expand"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/iv_bet_close"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/icon_bet_expand" />
+            app:layout_constraintTop_toTopOf="parent"/>
 
         <arch.cayenne.lib.skin.widget.SkinnableImageView
             android:id="@+id/iv_bet_close"
-            android:layout_width="@dimen/dp_24"
-            android:layout_height="@dimen/dp_24"
+            android:layout_width="@dimen/dp_20"
+            android:layout_height="@dimen/dp_20"
             android:layout_marginEnd="@dimen/dp_15"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -60,7 +62,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="@dimen/dp_54"
+        android:overScrollMode="never"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:listitem="@layout/item_combo_detail_1"
+        tools:itemCount="2"
+        />
 </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
