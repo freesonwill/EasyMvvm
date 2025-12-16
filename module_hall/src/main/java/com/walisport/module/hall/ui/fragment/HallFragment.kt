@@ -26,6 +26,7 @@ import arch.cayenne.lib.common.data.constants.DrawerAction.ACTION_OPEN
 import arch.cayenne.lib.common.data.constants.DrawerAction.KEY_ACTION
 import arch.cayenne.lib.common.data.constants.DrawerAction.REQUEST_KEY_DRAWER
 import arch.cayenne.lib.common.ui.adapter.BannerImageAdapter
+import arch.cayenne.lib.common.ui.viewmodel.BalanceViewModel
 import arch.cayenne.lib.common.ui.viewmodel.UnReadMessageViewModel
 import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
@@ -57,6 +58,8 @@ import com.walisport.module.hall.ui.view.ScrollableTabIndicatorHelper
 import kotlinx.coroutines.delay
 import arch.cayenne.lib.common.utils.ext.setScaleAnim
 import com.walisport.module.hall.data.Category
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import kotlin.getValue
 
 /**
  * 游戏大厅界面
@@ -67,7 +70,7 @@ class HallFragment : BaseFragment<HallViewModel, FragmentHallBinding>() {
     override val vbClass: KClass<FragmentHallBinding> = FragmentHallBinding::class
     override val vmClass: KClass<HallViewModel> = HallViewModel::class
 
-
+    private val balanceViewModel: BalanceViewModel by viewModel()
     private val mMinHeight = 34.dp2px
 
     private val mMaxHeight = 38.dp2px
@@ -137,6 +140,7 @@ class HallFragment : BaseFragment<HallViewModel, FragmentHallBinding>() {
             root.touchBackPressed()
 
             balanceView.init(childFragmentManager)
+            balanceView.setBalanceViewModel(balanceViewModel, viewLifecycleOwner)
             initCurveBanner()
             var barHeight = ViewUtils.getStatusBarHeight(requireContext())
             //

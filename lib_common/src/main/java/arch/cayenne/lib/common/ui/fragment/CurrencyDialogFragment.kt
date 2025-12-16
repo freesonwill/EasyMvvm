@@ -93,7 +93,6 @@ class CurrencyDialogFragment constructor() : BasePositionDialogFragment<Currency
                 mBinding.root.viewTreeObserver.removeOnGlobalLayoutListener(this)
 
                 mBinding.root.post {
-                    // 取得目標 View (假設是 mBinding.clContent，請依您的 xml id 為準)
                     val targetView = mBinding.clCurrencyRoot
 
                     // 1. 設定動畫軸心為 View 的中心點
@@ -104,7 +103,6 @@ class CurrencyDialogFragment constructor() : BasePositionDialogFragment<Currency
                     targetView.scaleX = 0f
                     targetView.scaleY = 0f
                     targetView.alpha = 0f
-                    targetView.visibility = View.VISIBLE
 
                     // 4. 開始展開動畫
                     targetView.animate()
@@ -113,15 +111,16 @@ class CurrencyDialogFragment constructor() : BasePositionDialogFragment<Currency
                         .alpha(1f)
                         .setDuration(200)
                         .setInterpolator(DecelerateInterpolator())
+                        .withStartAction {
+                            targetView.visibility = View.VISIBLE
+                        }
                         .start()
                 }
 
             }
         })
-
-
-        mBinding.root.visibility = View.VISIBLE
         removeDim()
+
     }
 
     override val vbClass: KClass<FragmentCurrencyDialogBinding> = FragmentCurrencyDialogBinding::class
@@ -138,6 +137,7 @@ class CurrencyDialogFragment constructor() : BasePositionDialogFragment<Currency
 
     override fun initView(savedInstanceState: Bundle?) {
         with(mBinding) {
+            clCurrencyRoot.visibility = View.INVISIBLE
             clCurrencyRoot.setOnClickListener {
                doExitAnim()
             }

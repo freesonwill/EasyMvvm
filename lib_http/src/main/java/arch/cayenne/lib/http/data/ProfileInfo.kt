@@ -7,7 +7,7 @@ data class ProfileInfo(
     val registerTime: Long,
     val vipLevel: Int,
     val balanceTotal: Long,
-    val balanceWallet: Map<Int, Long>,
+    val balanceWallet: Map<String, Long>,
     val currentBetAmount: Double,
     val requiredBetAmount: Double,
     val vipStage: String,

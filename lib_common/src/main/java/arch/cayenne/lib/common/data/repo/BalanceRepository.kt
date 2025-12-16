@@ -38,13 +38,13 @@ class BalanceRepository(
         if (user == null) return Pair(fiat, crypto)
 
         user.balanceWallet.forEach {
-            val currency = currencyList.find { currency -> currency.id == it.key }
+            val currency = currencyList.find { currency -> currency.ccy == it.key }
             if (currency != null) {
                 if (!currency.virtual) {
                     fiat.add(
                         BaseCurrencyData.CurrencyContentData2(
                             id = currency.id,
-                            icon = "",
+                            icon = currency.icon,
                             currencyName = currency.name,
                             amount = it.value.getFormalMoney(),
                             unit = currency.unit
@@ -54,7 +54,7 @@ class BalanceRepository(
                     crypto.add(
                         BaseCurrencyData.CurrencyContentData2(
                             id = currency.id,
-                            icon = "",
+                            icon = currency.icon,
                             currencyName = currency.name,
                             amount = it.value.getFormalMoney(),
                             unit = currency.unit
@@ -86,14 +86,14 @@ class BalanceRepository(
         if (user == null) return Pair(fiat, crypto)
 
         currencyList.forEach {
-            if (user.balanceWallet.contains(it.id)) {
+            if (user.balanceWallet.contains(it.ccy)) {
                 if (!it.virtual) {
                     fiat.add(
                         BaseCurrencyData.CurrencyContentData2(
                             id = it.id,
-                            icon = "",
+                            icon = it.icon,
                             currencyName = it.name,
-                            amount = user.balanceWallet[it.id]!!.getFormalMoney(),
+                            amount = user.balanceWallet[it.ccy]!!.getFormalMoney(),
                             unit = it.unit
                         )
                     )
@@ -101,9 +101,9 @@ class BalanceRepository(
                     crypto.add(
                         BaseCurrencyData.CurrencyContentData2(
                             id = it.id,
-                            icon = "",
+                            icon = it.icon,
                             currencyName = it.name,
-                            amount = user.balanceWallet[it.id]!!.getFormalMoney(),
+                            amount = user.balanceWallet[it.ccy]!!.getFormalMoney(),
                             unit = it.unit
                         )
                     )
@@ -115,6 +115,6 @@ class BalanceRepository(
 
     fun keywordToSqlPattern(keyword: String): String {
         if (keyword.isEmpty()) return "%"
-        return keyword.map { "$it%" }.joinToString("")
+        return "%" + keyword.uppercase().map { "$it%" }.joinToString("")
     }
 }
