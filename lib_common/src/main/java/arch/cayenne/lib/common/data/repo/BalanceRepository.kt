@@ -38,7 +38,7 @@ class BalanceRepository(
         if (user == null) return Pair(fiat, crypto)
 
         user.balanceWallet.forEach {
-            val currency = currencyList.find { currency -> currency.id == it.key }
+            val currency = currencyList.find { currency -> currency.ccy == it.key }
             if (currency != null) {
                 if (!currency.virtual) {
                     fiat.add(
@@ -86,14 +86,14 @@ class BalanceRepository(
         if (user == null) return Pair(fiat, crypto)
 
         currencyList.forEach {
-            if (user.balanceWallet.contains(it.id)) {
+            if (user.balanceWallet.contains(it.ccy)) {
                 if (!it.virtual) {
                     fiat.add(
                         BaseCurrencyData.CurrencyContentData2(
                             id = it.id,
                             icon = "",
                             currencyName = it.name,
-                            amount = user.balanceWallet[it.id]!!.getFormalMoney(),
+                            amount = user.balanceWallet[it.ccy]!!.getFormalMoney(),
                             unit = it.unit
                         )
                     )
@@ -103,7 +103,7 @@ class BalanceRepository(
                             id = it.id,
                             icon = "",
                             currencyName = it.name,
-                            amount = user.balanceWallet[it.id]!!.getFormalMoney(),
+                            amount = user.balanceWallet[it.ccy]!!.getFormalMoney(),
                             unit = it.unit
                         )
                     )

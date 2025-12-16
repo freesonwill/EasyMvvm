@@ -5,5 +5,6 @@ data class CurrencyInfo(
     val virtual: Boolean,
     val rate: Double,
     val unit: String,
-    val name: String
+    val name: String,
+    val ccy: String,
 )
