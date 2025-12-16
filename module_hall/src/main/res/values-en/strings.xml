@@ -9,6 +9,8 @@
     <string name="search_tips">Wali</string>
     <string name="title_recently_played">Recently Played</string>
     <string name="title_game_favourite">Favourite Game</string>
+    <string name="title_match_favourite">Favourite Match</string>
+
 
 
 </resources>

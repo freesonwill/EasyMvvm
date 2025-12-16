@@ -152,9 +152,7 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
                     id++, arch.cayenne.lib.common.R.drawable.ic_drawer_match_collection,
                     arch.cayenne.lib.common.R.string.drawer_match_collections
                 ) {
-                    CommonBiz.jump2HomePage(this , HomePageEnum.ME,bundleOf(
-                        FragmentResultEnum.KEY_ME_BOTTOM.name to 2
-                    ))
+                    navigate(arch.cayenne.lib.res.R.string.nav_module_match_favourite.deeplink() )
                 },
                 CommonFeaturesBean(
                     id++, arch.cayenne.lib.common.R.drawable.ic_drawer_gift,
