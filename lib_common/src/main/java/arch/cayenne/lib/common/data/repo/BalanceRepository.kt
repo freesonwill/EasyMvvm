@@ -115,6 +115,6 @@ class BalanceRepository(
 
     fun keywordToSqlPattern(keyword: String): String {
         if (keyword.isEmpty()) return "%"
-        return keyword.map { "$it%" }.joinToString("")
+        return "%" + keyword.uppercase().map { "$it%" }.joinToString("")
     }
 }
