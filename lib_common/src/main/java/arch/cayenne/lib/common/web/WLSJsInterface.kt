@@ -15,7 +15,10 @@ import org.koin.java.KoinJavaComponent.inject
  * @description:
  */
 
-class WLSJsInterface(val webView: WLSWebView,private val jsBridgeListen:((data:JSResponseData) -> Unit)) {
+class WLSJsInterface(
+    val webView: WLSWebView,
+    private val jsBridgeListen: ((data: JSResponseData) -> Unit)
+) {
 
     private val manager: UserDataManager by inject(UserDataManager::class.java)
     private val gson = Gson()
@@ -28,38 +31,38 @@ class WLSJsInterface(val webView: WLSWebView,private val jsBridgeListen:((data:J
     }
 
     @JavascriptInterface
-    fun getUidToken(input: String , resolve: String , reject: String) {
-        val uid = manager.getValue(UserDataKey.KEY_UID , -1)
-        val token = manager.getValue(UserDataKey.KEY_TOKEN , "")
-        val obj = mapOf("uid" to uid , "token" to token)
+    fun getUidToken(input: String, resolve: String, reject: String) {
+        val uid = manager.getValue(UserDataKey.KEY_UID, -1)
+        val token = manager.getValue(UserDataKey.KEY_TOKEN, "")
+        val obj = mapOf("uid" to uid, "token" to token)
         val response = Gson().toJson(obj)
         webView.post {
             // 调用 resolve 回传成功数据
-            webView.evaluateJavascript("$resolve('$response')" , null)
+            webView.evaluateJavascript("$resolve('$response')", null)
             // 如果有错误，可以调用 reject
             // webView.evaluateJavascript("$reject('Error message')", null)
         }
     }
 
     @JavascriptInterface
-    fun back(input: String , resolve: String , reject: String) {
+    fun back(input: String, resolve: String, reject: String) {
         this.webView.post {
             this.webView.findNavController().popBackStack()
         }
         webView.post {
             // 调用 resolve 回传成功数据
-            webView.evaluateJavascript("$resolve('success')" , null)
+            webView.evaluateJavascript("$resolve('success')", null)
             // 如果有错误，可以调用 reject
             // webView.evaluateJavascript("$reject('Error message')", null)
         }
     }
 
     @JavascriptInterface
-    fun postMessage(input: String , resolve: String , reject: String) {
+    fun postMessage(input: String, resolve: String, reject: String) {
         "postMessage called with input: $input".loge("JsInterface")
         webView.post {
             // 调用 resolve 回传成功数据
-            webView.evaluateJavascript("$resolve('success')" , null)
+            webView.evaluateJavascript("$resolve('success')", null)
             // 如果有错误，可以调用 reject
             // webView.evaluateJavascript("$reject('Error message')", null)
         }
@@ -70,11 +73,18 @@ class WLSJsInterface(val webView: WLSWebView,private val jsBridgeListen:((data:J
 //        "postMessage called with input: $input".loge("JsInterface")
 //        val mapType = object : TypeToken<Map<String , Any>>() {}.type
 //        val data: Map<String , Any> = gson.fromJson(input , mapType)
-        val data: JSResponseData = gson.fromJson(input , JSResponseData::class.java)
+        val data: JSResponseData = gson.fromJson(input, JSResponseData::class.java)
         jsBridgeListen.invoke(data)
         when (data.type) {
             "back" -> {
-                this.webView.findNavController().popBackStack()
+                //postMessage在非UI主线程中执行，故需要post到主线程
+                this.webView.post {
+                    if (this.webView.canGoBack()) {
+                        this.webView.goBack()
+                    } else {
+                        this.webView.findNavController().navigateUp()
+                    }
+                }
             }
 
             "openPage" -> {
@@ -82,9 +92,11 @@ class WLSJsInterface(val webView: WLSWebView,private val jsBridgeListen:((data:J
                 // 这里可以根据 page 字段来决定打开哪个页面
                 when (page) {
                     "customer" -> {
-                        // 退出网页并跳转至客服页面
-                        this.webView.jump2CustomerService()
-                        this.webView.findNavController().popBackStack()
+                        this.webView.post {
+                            // 退出网页并跳转至客服页面
+                            this.webView.jump2CustomerService()
+                            this.webView.findNavController().popBackStack()
+                        }
                     }
                 }
             }
