@@ -131,7 +131,7 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
             helper = BackToTopHelper(rvGame , ivBackToTop , true) {
                 //如果排序方式是热返和冷返
                 if (currentSortType == GameSortType.HOT_REWARD || currentSortType == GameSortType.COLD_REWARD) {
-                    mBinding.aplHomeBanner.setExpanded(true , true)
+                    mBinding.aplHomeBanner.setExpanded(true , false)
                 }
             }
 
