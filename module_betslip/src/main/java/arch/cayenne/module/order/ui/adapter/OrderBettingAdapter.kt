@@ -8,6 +8,7 @@ import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
 import arch.cayenne.lib.database.entity.BetSlipData
 import arch.cayenne.lib.database.entity.BetSlipOrderBean
 import arch.cayenne.lib.database.entity.BetSlipOrderHeaderBean
+import arch.cayenne.lib.database.entity.BetSlipReserveBean
 import arch.cayenne.module.betslip.databinding.ItemOrderSportBettingBinding
 import arch.cayenne.module.betslip.databinding.ItemOrderSportBettingCollapseBinding
 import arch.cayenne.module.betslip.databinding.ItemOrderSportBettingHeaderBinding
@@ -16,10 +17,15 @@ import arch.cayenne.module.order.data.constants.OrderSportPageEnum
 import arch.cayenne.module.order.ui.viewholder.OrderBettingCollapseViewHolder
 import arch.cayenne.module.order.ui.viewholder.OrderBettingHeaderViewHolder
 import arch.cayenne.module.order.ui.viewholder.OrderBettingViewHolder
+import arch.cayenne.module.order.ui.viewholder.OrderReserveViewHolder
+import arch.cayenne.module.order.ui.viewholder.OrderReserveCollapseViewHolder
 
-class OrderBettingAdapter(private val type: OrderSportPageEnum, private val listener: OrderEarlySettleListener? = null, private val dataListener: OrderDataSelectorListener? = null): BaseAdapter<BetSlipData, BaseViewHolder, ViewBinding>(
-    BetSlipCompare()
-) {
+class OrderBettingAdapter(
+    private val type: OrderSportPageEnum, 
+    private val earlySettleListener: OrderEarlySettleListener? = null,
+    private val dataListener: OrderDataSelectorListener? = null,
+    private val reserveListener: OrderReserveListener? = null
+): BaseAdapter<BetSlipData, BaseViewHolder, ViewBinding>(BetSlipCompare()) {
     
     // 記錄每個 item 的展開/收起狀態
     private val itemCollapseStates = mutableMapOf<String, Boolean>()
@@ -39,34 +45,57 @@ class OrderBettingAdapter(private val type: OrderSportPageEnum, private val list
                 }
             }
             BODY_EXPANDED -> {
-                val bodyHolder = holder as OrderBettingViewHolder
-                val item = getItem(position) as BetSlipOrderBean
+                if (type == OrderSportPageEnum.RESERVE) {
+                    val reserveHolder = holder as OrderReserveViewHolder
+                    val item = getItem(position) as BetSlipReserveBean
+                    
+                    reserveHolder.init(item)
+                    reserveHolder.setDoubleClick {
+                        toggleItemState(item.reserveId, position)
+                    }
+                } else {
+                    val orderHolder = holder as OrderBettingViewHolder
+                    val item = getItem(position) as BetSlipOrderBean
+                    
+                    orderHolder.init(item)
+                    orderHolder.setDoubleClick {
+                        toggleItemState(item.betId, position)
+                    }
 
-                bodyHolder.init(item, type) { betId ->
-                    // 雙擊回調
-                    val isCurrentlyCollapsed = itemCollapseStates[betId] ?: false
-                    itemCollapseStates[betId] = !isCurrentlyCollapsed
-                    notifyItemChanged(position)
-                }
-
-                if (type == OrderSportPageEnum.UNSETTLED) {
-                    bodyHolder.getEarlySettleButton().setOnClickListener {
-                        listener?.onEarlySettle(item)
+                    if (type == OrderSportPageEnum.UNSETTLED) {
+                        orderHolder.getEarlySettleButton().setOnClickListener {
+                            earlySettleListener?.onEarlySettle(item)
+                        }
                     }
                 }
             }
             BODY_COLLAPSED -> {
-                val collapseHolder = holder as OrderBettingCollapseViewHolder
-                val item = getItem(position) as BetSlipOrderBean
-
-                collapseHolder.init(item, type) { betId ->
-                    // 雙擊回調
-                    val isCurrentlyCollapsed = itemCollapseStates[betId] ?: false
-                    itemCollapseStates[betId] = !isCurrentlyCollapsed
-                    notifyItemChanged(position)
+                if (type == OrderSportPageEnum.RESERVE) {
+                    val reserveCollapseHolder = holder as OrderReserveCollapseViewHolder
+                    val item = getItem(position) as BetSlipReserveBean
+                    
+                    reserveCollapseHolder.init(item)
+                    reserveCollapseHolder.setDoubleClick{
+                        toggleItemState(item.reserveId, position)
+                    }
+                } else {
+                    val collapseHolder = holder as OrderBettingCollapseViewHolder
+                    val item = getItem(position) as BetSlipOrderBean
+                    
+                    collapseHolder.init(item)
+                    collapseHolder.setDoubleClick{
+                        toggleItemState(item.betId, position)
+                    }
                 }
             }
+
         }
+    }
+
+    private fun toggleItemState(id: String, position: Int) {
+        val isCurrentlyCollapsed = itemCollapseStates[id] ?: false
+        itemCollapseStates[id] = !isCurrentlyCollapsed
+        notifyItemChanged(position)
     }
 
     override fun createViewBinding(
@@ -77,6 +106,7 @@ class OrderBettingAdapter(private val type: OrderSportPageEnum, private val list
         return when (viewType) {
             HEADER -> ItemOrderSportBettingHeaderBinding.inflate(inflater, parent, false)
             BODY_COLLAPSED -> ItemOrderSportBettingCollapseBinding.inflate(inflater, parent, false)
+            BODY_EXPANDED -> ItemOrderSportBettingBinding.inflate(inflater, parent, false)
             else -> ItemOrderSportBettingBinding.inflate(inflater, parent, false)
         }
     }
@@ -87,7 +117,20 @@ class OrderBettingAdapter(private val type: OrderSportPageEnum, private val list
     ): BaseViewHolder {
         return when (viewType) {
             HEADER -> OrderBettingHeaderViewHolder(binding as ItemOrderSportBettingHeaderBinding)
-            BODY_COLLAPSED -> OrderBettingCollapseViewHolder(binding as ItemOrderSportBettingCollapseBinding)
+            BODY_COLLAPSED -> {
+                if (type == OrderSportPageEnum.RESERVE) {
+                    OrderReserveCollapseViewHolder(binding as ItemOrderSportBettingCollapseBinding)
+                } else {
+                    OrderBettingCollapseViewHolder(binding as ItemOrderSportBettingCollapseBinding)
+                }
+            }
+            BODY_EXPANDED -> {
+                if (type == OrderSportPageEnum.RESERVE) {
+                    OrderReserveViewHolder(binding as ItemOrderSportBettingBinding)
+                } else {
+                    OrderBettingViewHolder(binding as ItemOrderSportBettingBinding)
+                }
+            }
             else -> OrderBettingViewHolder(binding as ItemOrderSportBettingBinding)
         }
     }
@@ -99,7 +142,10 @@ class OrderBettingAdapter(private val type: OrderSportPageEnum, private val list
                 val isCollapsed = itemCollapseStates[item.betId] ?: false
                 if (isCollapsed) BODY_COLLAPSED else BODY_EXPANDED
             }
-
+            is BetSlipReserveBean -> {
+                val isCollapsed = itemCollapseStates[item.reserveId] ?: false
+                if (isCollapsed) BODY_COLLAPSED else BODY_EXPANDED
+            }
             else -> BODY_EXPANDED
         }
     }
@@ -113,7 +159,18 @@ class OrderBettingAdapter(private val type: OrderSportPageEnum, private val list
     interface OrderEarlySettleListener {
         fun onEarlySettle(bean: BetSlipOrderBean)
     }
+    
     interface OrderDataSelectorListener {
         fun onDateClicked()
+    }
+    
+    interface OrderReserveListener {
+        fun onCancelReserve(bean: BetSlipReserveBean)
+        fun onModifyReserve(
+            bean: BetSlipReserveBean,
+            locationX: Int,
+            locationY: Int,
+            viewHeight: Int
+        )
     }
 }

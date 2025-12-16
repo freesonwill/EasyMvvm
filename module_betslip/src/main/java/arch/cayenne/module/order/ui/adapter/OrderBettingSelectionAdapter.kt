@@ -10,7 +10,7 @@ import arch.cayenne.module.betslip.ui.compare.BetSlipSelectionCompare
 import arch.cayenne.module.order.data.constants.OrderSportPageEnum
 import arch.cayenne.module.order.ui.viewholder.OrderBettingSelectionViewHolder
 
-class OrderBettingSelectionAdapter(private val type: OrderSportPageEnum): BaseAdapter<BetSlipSelectionData, OrderBettingSelectionViewHolder, ItemOrderSportBettingSelectionBinding>(
+class OrderBettingSelectionAdapter: BaseAdapter<BetSlipSelectionData, OrderBettingSelectionViewHolder, ItemOrderSportBettingSelectionBinding>(
     BetSlipSelectionCompare()
 ) {
     override fun convertPlus(
