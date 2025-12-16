@@ -5,6 +5,8 @@ import android.animation.ObjectAnimator
 import android.view.View
 import android.widget.EditText
 import androidx.core.animation.addListener
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.Lifecycle
@@ -87,6 +89,8 @@ class SoftKeyboardManager(
     //main的初始高度
     var originMainHeight: Int = 0
 
+    var statusBarHeight:Int = 0
+
 
     init {
         lifecycle.addObserver(this)
@@ -112,7 +116,8 @@ class SoftKeyboardManager(
             rootView,
             lifecycle,
             object : SoftAnimListener {
-                override fun setNavigationStatus(hasNavigation: Boolean, navigationHeight: Int) {
+                override fun setNavigationStatus(hasNavigation: Boolean, navigationHeight: Int,statusBarHeight:Int) {
+                this@SoftKeyboardManager.statusBarHeight = navigationHeight
                 }
 
                 override fun onSoftKeyBoardHide() {
@@ -264,15 +269,19 @@ class SoftKeyboardManager(
 
     var mainDiffer:Int = 0
     fun checkMainHeight():Int {
+//  checkMainHeight  mainDiffer 0  getManHeight 1378  originMainHeight 1378
+//  checkMainHeight  mainDiffer 464  getManHeight 1842  originMainHeight 1378
+
         val getManHeight = keyBoardListener.getMainHeight()
         mainDiffer = getManHeight - originMainHeight
         mainDiffer = if(mainDiffer > 50) mainDiffer else 0
+        "checkMainHeight  mainDiffer $mainDiffer  getManHeight ${getManHeight}  originMainHeight $originMainHeight ".logd("aaa")
         return mainDiffer
     }
 
     fun showKeyboardAnimation() {
         val animationType = getKeyBoardActionType(clickKeyBoardType, currentKeyBoardType)
-        "showKeyboardAnimation $animationType $softKeyBoardHeight}".logd("aaa")
+        "showKeyboardAnimation $animationType }".logd("aaa")
         when (animationType) {
             KeyboardActionType.CHAT_TO_CHAT -> keyBoardListener.changeKeyboardUi(KeyBoardType.CHAT)
             //展示软件盘
@@ -322,7 +331,7 @@ class SoftKeyboardManager(
             }
             //表情键盘切换到聊天
             KeyboardActionType.EMOJI_TO_CHAT -> {
-                keyBoardListener.startAnim(animationType, getAnimTransY(animationType), onEnd = {
+                keyBoardListener.startAnim(animationType, getAnimTransY(animationType), onStart = {
                     keyBoardListener.changeKeyboardUi(KeyBoardType.CHAT)
                 })
             }
@@ -338,12 +347,18 @@ class SoftKeyboardManager(
             //软件盘切换到聊天
             KeyboardActionType.SOFT_TO_CHAT -> 0
 //            //软件盘切换到表情键盘
-            KeyboardActionType.SOFT_TO_EMOJI -> if (isMainSoft) -emojiKeyBoardHeight else -(emojiKeyBoardHeight - mainDiffer)
+            KeyboardActionType.SOFT_TO_EMOJI -> if (isMainSoft) -emojiKeyBoardHeight else -(emojiKeyBoardHeight - mainDiffer+statusBarHeight)
+//           KeyboardActionType.SOFT_TO_EMOJI -> if (isMainSoft) -emojiKeyBoardHeight else -(emojiKeyBoardHeight+statusBarHeight)
+
             //展示表情键盘
-            KeyboardActionType.CHAT_TO_EMOJI -> if (isMainSoft) -emojiKeyBoardHeight else -(emojiKeyBoardHeight - checkMainHeight())
+            KeyboardActionType.CHAT_TO_EMOJI -> if (isMainSoft) -emojiKeyBoardHeight else -(emojiKeyBoardHeight - checkMainHeight()+statusBarHeight)
+//           KeyboardActionType.CHAT_TO_EMOJI -> if (isMainSoft) -emojiKeyBoardHeight else -(emojiKeyBoardHeight+statusBarHeight)
+
             //表情键盘切换到软件盘
             KeyboardActionType.EMOJI_TO_SOFT -> if (isMainSoft) -(softKeyBoardHeight - (62).dp2px) else -(softKeyBoardHeight - mainDiffer)
-            //表情键盘切换到聊天
+//           KeyboardActionType.EMOJI_TO_SOFT -> if (isMainSoft) -(softKeyBoardHeight - (62).dp2px) else -(softKeyBoardHeight)
+
+           //表情键盘切换到聊天
             KeyboardActionType.EMOJI_TO_CHAT -> 0
             else -> 0
         }
@@ -450,6 +465,12 @@ class SoftKeyboardManager(
         } else {
             elCall?.invoke()
         }
+    }
+
+    fun getNavigationHeight(view: View): Int {
+        val windowInsetsCompat = ViewCompat.getRootWindowInsets(view)
+        val navigationBottom = windowInsetsCompat?.getInsets(WindowInsetsCompat.Type.navigationBars())?.bottom ?: 0
+        return navigationBottom
     }
 
 

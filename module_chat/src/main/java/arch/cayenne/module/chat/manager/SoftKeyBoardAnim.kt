@@ -47,11 +47,10 @@ object SoftKeyBoardAnim {
         transX: Float,
         chatEtInput: View,
     ): AnimatorSet {
-       "chatEtInput scaleX $scaleX ${chatEtInput.width} ".logd("aaa")
         val animSet = AnimatorSet()
 //        chatEtInput.pivotX = 0.5f
 //        val scaleAnim = ObjectAnimator.ofInt(chatEtInput, "width", chatEtInput.width,scaleX)
-        val inputWidthAnim = ValueAnimator.ofInt(chatEtInput.width,scaleX).apply {
+        val inputWidthAnim = ValueAnimator.ofInt(chatEtInput.width, scaleX).apply {
             addUpdateListener {
                 val lp = chatEtInput.layoutParams
                 lp.width = it.animatedValue as Int
@@ -124,9 +123,7 @@ object SoftKeyBoardAnim {
         inputContent,
         "translationY",
         if (offset != 0) 0f else 44.dp2px.toFloat()
-    ).apply {
-        duration = 140
-    }
+    )
 
     /***
      *键盘弹出和收缩时，输入框横移和缩放 输入框按钮上下移动
@@ -160,15 +157,12 @@ object SoftKeyBoardAnim {
             KeyboardActionType.CHAT_TO_EMOJI -> { //弹出键盘 先按钮动画再做输入框动画
                 val inputAnim = chatEtInputAnim(355.dp2px, -48.dp2px.toFloat(), chatLlInput)
                 animSet.playSequentially(btnAnim, inputAnim)
-                "355 ".logd("aaa")
-
             }
 
             KeyboardActionType.SOFT_TO_CHAT,
             KeyboardActionType.EMOJI_TO_CHAT -> {//收回键盘 先输入框动画恢复原位，再按钮动画
                 val inputAnim = chatEtInputAnim(307.dp2px, 0f, chatLlInput)
                 animSet.playSequentially(inputAnim, btnAnim)
-                "307".logd("aaa")
             }
 
             else -> {
@@ -233,7 +227,7 @@ object SoftKeyBoardAnim {
     ) {
 
         binding.apply {
-            "etAnimWhenEtContentChange chatEtInput ${chatEtInput.length()}    chatTvSend  ${chatTvSend.isVisible}   ivLanguage ${ivLanguage.isVisible}".logd("aaa")
+//            "etAnimWhenEtContentChange chatEtInput ${chatEtInput.length()}    chatTvSend  ${chatTvSend.isVisible}   ivLanguage ${ivLanguage.isVisible}".logd("aaa")
 
             when {
                 chatEtInput.length() == 0 && chatTvSend.isVisible && currentType != KeyBoardType.CHAT -> { //键盘弹出的时候发送 有内容到无内容
@@ -292,8 +286,8 @@ object SoftKeyBoardAnim {
                         addBetToEtInputAnim(
                             binding,
                             currentType,
-                            onStart = {onAnimStart.invoke()},
-                            onEnd = {onAnimEnd.invoke()}
+                            onStart = { onAnimStart.invoke() },
+                            onEnd = { onAnimEnd.invoke() }
                         )
                     } else {
                         etInputContentAnim(

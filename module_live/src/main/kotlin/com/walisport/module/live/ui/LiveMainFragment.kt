@@ -90,6 +90,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
     private var homeMediator: LiveMainTabMediator? = null
     private var indicatorDrawable: android.graphics.drawable.Drawable? = null
     private var customIndicator: CustomTabIndicator? = null
+    private var isChatKeyBoardPopup = false //如果键盘弹出了，禁止页面上下滑动时的收缩和扩展
     private val titleBarBinding: TitleBarLiveBinding by lazy {
         TitleBarLiveBinding.inflate(LayoutInflater.from(context), mBinding.titleBar, false)
     }
@@ -133,6 +134,9 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         mBinding.LayoutInterceptTouch.setLiveMainGestureListener(object : LiveMainGestureListener {
             //跟手滑动
             override fun onAdjustLayoutScroll(deltaY: Float, direction: LiveMainSlideDirection) {
+                if(isChatKeyBoardPopup){// 如果键盘弹出了，禁止页面上下滑动时的收缩和扩展
+                    return
+                }
                 LogUtils.e("animating------->${direction}")
                 mDirection = direction
                 //往下滑动,子类的rv,sc是否滑到了第一条或者顶部
@@ -753,6 +757,9 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
     private fun createChatFragment(): ChatHomeFragment {
         val fragment = ChatHomeFragment()
         fragment.setMatchLiveData(mViewModel.matchId, mViewModel.mainMatch)
+        fragment.addEmojiPopupListen {
+            isChatKeyBoardPopup = it
+        }
         return fragment
     }
 

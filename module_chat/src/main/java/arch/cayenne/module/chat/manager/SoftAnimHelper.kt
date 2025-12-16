@@ -65,12 +65,14 @@ class SoftAnimHelper(
      */
     private fun checkNavigationBarState(insets: WindowInsetsCompat) {
         val navBars = insets.getInsets(WindowInsetsCompat.Type.navigationBars())
-        val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+        val statusBar = insets.getInsets(WindowInsetsCompat.Type.statusBars())
 //         导航栏可见性判断
         isNavigationBarVisible = navBars.bottom > 0
         navigationBarHeight = navBars.bottom
+        val statusBarHeight = statusBar.top
 
-        navigationListener?.setNavigationStatus(isNavigationBarVisible,navigationBarHeight)
+
+        navigationListener?.setNavigationStatus(isNavigationBarVisible,navigationBarHeight,statusBarHeight)
 //        "navigation  navigationBarHeight $navigationBarHeight  isNavigationBarVisible $isNavigationBarVisible  ${systemBars.top}  ${systemBars.bottom}".logd(TAG)
     }
 

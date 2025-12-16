@@ -60,6 +60,9 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
     private lateinit var softKeyBoardManager: SoftKeyboardManager
     private lateinit var chatAtHelper: ChatATHelper
 
+    //传给LiveMainFragment,因为直播间的页面上下滑动时，页面扩展或者恢复。在键盘弹出时，禁止页面扩展和收缩
+    private var emojiPopupListen: ((isPopup: Boolean) -> Unit)? = null
+
 
     override fun initView(savedInstanceState: Bundle?) {
         initChatPageFragment()
@@ -74,6 +77,10 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
                 setMainChatStatus()
             }
         }
+    }
+
+    fun addEmojiPopupListen(emojiPopupListen: (isPopup: Boolean) -> Unit) {
+        this.emojiPopupListen = emojiPopupListen
     }
 
     /**
@@ -443,15 +450,13 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
     private fun calculationLayoutSize() {
         mBinding.apply {
             softKeyBoardManager.emojiKeyBoardHeight = 242.dp2px
-            if (mViewModel.isMainSoft) {
-                inputMain.layoutParams.height = mViewModel.keyBoardHeight
-                main.layoutParams.height =
-                    mViewModel.keyBoardHeight + softKeyBoardManager.emojiKeyBoardHeight
-                inputContent.translationY = 44.dp2px.toFloat()
-//                chatKeyboard.layoutParams.height = softKeyBoardManager.emojiKeyBoardHeight
-
-                main.requestLayout()
-            }
+            inputContent.translationY = 44.dp2px.toFloat()
+//            if (mViewModel.isMainSoft) { //直播间不做设置
+//                inputMain.layoutParams.height = mViewModel.keyBoardHeight
+//                main.layoutParams.height =
+//                    mViewModel.keyBoardHeight + softKeyBoardManager.emojiKeyBoardHeight
+//                main.requestLayout()
+//            }
         }
     }
 
@@ -493,15 +498,21 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
      * 直播间因为要做滑动，所以每次弹出后要对高度重新设置下
      * */
     private fun emojiLayoutSize(isReset: Boolean) {
-        if (mViewModel.isMainSoft) { //首页不做操作
-            return
-        }
+//        if (mViewModel.isMainSoft) { //首页不做操作
+//            return
+//        }
         mBinding.apply {
             inputMain.layoutParams.height =
                 if (isReset) LayoutParams.MATCH_PARENT else mViewModel.keyBoardHeight
             main.layoutParams.height =
                 if (isReset) LayoutParams.MATCH_PARENT else mViewModel.keyBoardHeight + softKeyBoardManager.emojiKeyBoardHeight
             main.requestLayout()
+            lifecycleScope.launch {
+                delay(1000)
+                "emojiLayoutSize isReset $isReset  main ${main.height}  inputMain ${inputMain.height}  mainTranslationY ${main.translationY}".logd(
+                    "aaa"
+                )
+            }
         }
     }
 
@@ -513,6 +524,8 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
         updateKeyboardView(false)
 //        updateKeyboardView(mBinding.chatEtInput.text.isNotEmpty())
         emojiLayoutSize(true)
+        emojiPopupListen?.invoke(false)
+
     }
 
     /**
@@ -521,6 +534,7 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
     private fun showSoftKeyBoard() {
         updateKeyboardView(true)
         emojiLayoutSize(false)
+        emojiPopupListen?.invoke(true)
     }
 
     /**
@@ -530,6 +544,7 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
         updateKeyboardView(true)
 //        softKeyBoardManager.etRequestFocus()
         emojiLayoutSize(false)
+        emojiPopupListen?.invoke(true)
     }
 
     private fun updateKeyboardView(isVisible: Boolean) {
@@ -593,11 +608,11 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
         onStart: () -> Unit,
         onEnd: () -> Unit
     ) {
+        "startAnim   offset $offset".logd("aaa")
         softKeyBoardManager.apply {
             mainAnim = AnimatorSet()
             val mainTransYAnim = SoftKeyBoardAnim.mainTransYAnim(offset, mBinding.main)
             val emojiSet = AnimatorSet().apply {
-                duration = 170L
                 inputIconShouldUpdate(actionType, call = { // 软件盘和表情键盘互相切换时表情按钮动画不播放
                     mBinding.apply {
                         if (chatEtInput.length() == 0) { //有内容时input按钮不能上下移动
@@ -627,13 +642,15 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
 //                mainAnim?.playSequentially(emojiSet, hotViewAnim(offset,mBinding.inputContent))
 //            else
 //                mainAnim?.playSequentially(hotViewAnim(offset,mBinding.inputContent), emojiSet)
-            mainAnim?.playTogether(hotViewAnim(offset,mBinding.inputContent), emojiSet)
-
+            mainAnim?.playTogether(hotViewAnim(offset, mBinding.inputContent), emojiSet)
+            mainAnim?.duration = 170
             mainAnim?.addListener(onStart = {
                 if (mBinding.chatEtInput.length() == 0) {
-                    inputIconShouldUpdate(actionType, call = {//键盘切换动画开始时除了软件盘和表情键盘互相切换外，其他键盘切换会有键盘按钮动画
-                        updateInputIcon(true) //初始动画时要input bt可见
-                    })
+                    inputIconShouldUpdate(
+                        actionType,
+                        call = {//键盘切换动画开始时除了软件盘和表情键盘互相切换外，其他键盘切换会有键盘按钮动画
+                            updateInputIcon(true) //初始动画时要input bt可见
+                        })
                 }
                 onStart.invoke()
             }, onEnd = {
@@ -651,7 +668,7 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
                     }
                 }
             })
-            "isFirstOpen $isFirstOpen".logd("aaa")
+//            "isFirstOpen $isFirstOpen".logd("aaa")
             if (isFirstOpen) {
                 mainAnim?.startDelay = 200L
             }
