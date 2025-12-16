@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.checkCurrentScrollState
@@ -20,6 +21,7 @@ import com.walisport.module.hall.ui.adapter.GameAllListViewHolder
 import com.walisport.module.hall.ui.adapter.GameAllRankingAdapter
 import com.walisport.module.hall.ui.viewmodel.GameAllViewModel
 import com.walisport.module.hall.ui.viewmodel.HallViewModel
+import com.walisport.module.live.data.EventClick
 import kotlin.reflect.KClass
 
 class GameAllFragment: BaseFragment<GameAllViewModel, FragmentGameAllBinding>() {
@@ -32,17 +34,21 @@ class GameAllFragment: BaseFragment<GameAllViewModel, FragmentGameAllBinding>() 
             override fun onInviteFriendItemClick() {
                 navigate(arch.cayenne.lib.res.R.string.nav_module_invite_friends_fragment.deeplink())
             }
+
+            override fun onCompetitionItemClick() {
+                navigate(arch.cayenne.lib.res.R.string.nav_module_competition_fragment.deeplink() )
+            }
         })
     }
 
     private val listAdapter by lazy {
         GameAllListAdapter(object :GameAllListViewHolder.OnAllItemClickListener {
-            override fun onItemClick() {
-                val category = 100
-                navigate(Uri.parse("walisport://module_hall/hallCategoryFragment?category=${category}"))
+            override fun onItemClick(data: GameAllContentData) {
+                navigate(Uri.parse("walisport://module_hall/hallCategoryFragment?category=${data.category}&name=${data.name}"))
             }
 
             override fun onChildItemClick() {
+                mViewModel.setIsClickGame(EventClick.EVENT_CLICK_ACK_TRUE.type)
                 navigate(arch.cayenne.lib.res.R.string.nav_module_gamedetail.deeplink() )
             }
         })
@@ -81,8 +87,6 @@ class GameAllFragment: BaseFragment<GameAllViewModel, FragmentGameAllBinding>() 
         }, {
             hallViewModel.setScorll(false)
         })
-
-        mBinding.rvContent
     }
 
     override suspend fun createObserver() {

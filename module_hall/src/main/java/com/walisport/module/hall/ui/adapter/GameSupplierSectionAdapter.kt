@@ -1,4 +1,4 @@
-package arch.cayenne.module.home.ui.adapter
+package arch.cayenne.module.hall.ui.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -9,7 +9,8 @@ import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
 import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.database.entity.BaseGameSupplierData
 import arch.cayenne.lib.database.entity.BaseTournamentData
-import arch.cayenne.module.home.data.GameSupplierListItem
+import arch.cayenne.module.hall.data.GameSupplierListItem
+import arch.cayenne.module.hall.ui.adapter.GameSupplierHeaderViewHolder
 import com.walisport.module.hall.databinding.ItemSupplierHeaderBinding
 import com.walisport.module.hall.databinding.ItemSupplierSectionBinding
 class GameSupplierSectionAdapter(
@@ -17,8 +18,9 @@ class GameSupplierSectionAdapter(
     private val onSelectionChanged: (() -> Unit)? = null
 ) : BaseAdapter<GameSupplierListItem, BaseViewHolder, ViewBinding>(GameSupplierSectionCompare()) {
 
-    // 儲存選中的聯賽ID
+    // 儲存選中的供应商ID
     private val selectedTournamentIds = mutableSetOf<Int>()
+
 
     // 儲存打開彈窗時的初始選中狀態（用於重置和比較）
     private val initialSelectedTournamentIds = mutableSetOf<Int>()
@@ -104,15 +106,19 @@ class GameSupplierSectionAdapter(
     }
 
     // 保存當前選中狀態為初始狀態（在彈窗打開時調用）
-    fun saveCurrentAsInitialState() {
-        initialSelectedTournamentIds.clear()
-        initialSelectedTournamentIds.addAll(selectedTournamentIds)
+    fun saveCurrentAsInitialState(ids: List<Int>) {
+        if (initialSelectedTournamentIds.isEmpty()){
+            initialSelectedTournamentIds.clear()
+            initialSelectedTournamentIds.addAll(ids)
+        }
     }
 
     // 檢查當前選中狀態是否與初始狀態相同
     fun isSelectionChanged(): Boolean {
         return selectedTournamentIds != initialSelectedTournamentIds
     }
+
+
 
     // 檢查初始選中的聯賽是否還存在於當前列表中
     fun isInitialSelectionStillValid(): Boolean {
@@ -123,19 +129,24 @@ class GameSupplierSectionAdapter(
         return initialSelectedTournamentIds.all { it in currentTournamentIds }
     }
 
-    // 獲取選中的聯賽ID列表
+    // 獲取選中的supplierID列表
     fun getSelectedTournamentIds(): List<Int> {
         return selectedTournamentIds.toList()
     }
 
-    // 獲取選中的聯賽數據列表
+    fun getInitSelectedIds(): List<Int> {
+        return initialSelectedTournamentIds.toList()
+    }
+
+
+    // 獲取選中的supplier數據列表
     fun getSelectedTournaments(): List<BaseGameSupplierData> {
         return currentList.filterIsInstance<GameSupplierListItem.GameSupplierItem>()
             .filter { selectedTournamentIds.contains(it.tournament.id) }
             .map { it.tournament }
     }
 
-    // 設置選中的聯賽ID列表
+    // 設置選中的supplierID列表
     fun setSelectedIds(ids: List<Int>) {
         LogUtils.e("setSelectedIds---a-------->${ids}")
         selectedTournamentIds.clear()

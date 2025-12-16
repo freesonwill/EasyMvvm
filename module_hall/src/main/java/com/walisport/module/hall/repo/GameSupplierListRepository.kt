@@ -1,4 +1,4 @@
-package arch.cayenne.module.home.data.repo
+package arch.cayenne.module.hall.data.repo
 
 import arch.cayenne.lib.base.data.repository.BaseRepository
 import arch.cayenne.lib.common.data.constants.PreloadEnum

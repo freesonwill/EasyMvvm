@@ -39,10 +39,11 @@ import arch.cayenne.lib.common.R as CommonR
 import com.google.android.material.R as MaterialR
 import com.walisport.module.hall.databinding.ItemSupplierHeaderBinding
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
+import com.walisport.module.hall.ui.fragment.HallCategoryFragment
+import com.walisport.module.hall.ui.viewmodel.GameCategoryViewModel
 import com.walisport.module.hall.ui.viewmodel.GameContentListViewModel
-import kotlinx.coroutines.delay
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getColor
-class GameContentListBottomSheetFragment :
+class GameCategoryListBottomSheetFragment :
     BaseBottomSheetFragment<GameContentListViewModel, FragmentGameContentBottomSheetBinding>() {
 
     override val vbClass: KClass<FragmentGameContentBottomSheetBinding> =
@@ -60,9 +61,7 @@ class GameContentListBottomSheetFragment :
     private lateinit var adapter: GameSupplierSectionAdapter
     private var pendingJumpIndex: Int? = null
     private var stickyHeaderDecoration: SupplierStickyHeaderItemDecoration? = null
-    private val mGameContentVm: GameContentViewModel by sharedViewModel<GameContentViewModel, GameContentFragment>(fragmentFilter = { f->
-        f.category == requireArguments().getInt(GAME_TYPE_ID)
-    })
+    private val mGameContentVm: GameCategoryViewModel by sharedViewModel<GameCategoryViewModel, HallCategoryFragment>()
     private val gameTypeId: Int by lazy {
         arguments?.getInt(GAME_TYPE_ID) ?: -1
     }
@@ -88,7 +87,7 @@ class GameContentListBottomSheetFragment :
 
             adapter = GameSupplierSectionAdapter(
                 onClick = { ids ->
-                   // mViewModel.setSelectIds(adapter.getSelectedTournamentIds())
+                    // mViewModel.setSelectIds(adapter.getSelectedTournamentIds())
                     //  mGameContentVm.onTournamentListSelected(tournament)
                 },
                 onSelectionChanged = {
@@ -243,6 +242,7 @@ class GameContentListBottomSheetFragment :
                             mGameContentVm.requestClearLeagueListSelection()
                         }
                     }
+
                     dismiss()
                 }
             }
@@ -277,24 +277,6 @@ class GameContentListBottomSheetFragment :
         }
     }
 
-    private fun updateConfirmButtonState() {
-
-        val isChanged = adapter.isSelectionChanged()
-        val isInitialValid = adapter.isInitialSelectionStillValid()
-        if (isChanged || !isInitialValid) {
-            mBinding.tvConfirm.text = getString(R.string.view_latest_results)
-        } else {
-            mBinding.tvConfirm.text = getString(R.string.btn_confirm)
-        }
-
-        if (adapter.getSelectedTournamentIds().isEmpty()){
-            mBinding.tvConfirm.text = getString(R.string.btn_confirm)
-        }
-        mBinding.tvReset.isSelected = isChanged
-        if (adapter.getSelectedTournamentIds().isEmpty()){
-            mBinding.tvReset.isSelected = false
-        }
-    }
     override suspend fun createObserver() {
         mViewModel.tournamentsChange.observe(viewLifecycleOwner) {data->
             if (data.isEmpty()){
@@ -328,6 +310,7 @@ class GameContentListBottomSheetFragment :
                 .map { it.tournament.id }
                 .toList()
             adapter.setSelectedIds(selectedIds)
+            // 保存當前狀態作為初始狀態（用於重置按鈕）
             adapter.saveCurrentAsInitialState(selectedIds)
             mBinding.groupTop.visibility = View.VISIBLE
             setupAZIndex()
@@ -466,13 +449,33 @@ class GameContentListBottomSheetFragment :
         }
     }
 
+    private fun updateConfirmButtonState() {
+        val isChanged = adapter.isSelectionChanged()
+        val isInitialValid = adapter.isInitialSelectionStillValid()
+        if (isChanged || !isInitialValid) {
+            mBinding.tvConfirm.text = getString(R.string.view_latest_results)
+        } else {
+            mBinding.tvConfirm.text = getString(R.string.btn_confirm)
+        }
 
+        if (adapter.getSelectedTournamentIds().isEmpty()){
+            mBinding.tvConfirm.text = getString(R.string.btn_confirm)
+        }
+        if (adapter.getSelectedTournamentIds().isEmpty()){
+            mBinding.tvConfirm.text = getString(R.string.btn_confirm)
+        }
+        mBinding.tvReset.isSelected = isChanged
+        if (adapter.getSelectedTournamentIds().isEmpty()){
+            mBinding.tvReset.isSelected = false
+        }
+
+    }
     companion object {
         private const val GAME_TYPE_ID = "gameTypeId"
         fun newInstance(
             gameTypeId: Int,
-        ): GameContentListBottomSheetFragment {
-            return GameContentListBottomSheetFragment().apply {
+        ): GameCategoryListBottomSheetFragment {
+            return GameCategoryListBottomSheetFragment().apply {
                 arguments = Bundle().apply {
                     putInt(GAME_TYPE_ID, gameTypeId)
                 }

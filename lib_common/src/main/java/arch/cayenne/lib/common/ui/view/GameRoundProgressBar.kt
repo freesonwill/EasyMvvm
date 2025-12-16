@@ -5,6 +5,9 @@ import android.graphics.Color
 import android.os.SystemClock
 import android.util.AttributeSet
 import androidx.core.content.withStyledAttributes
+import androidx.core.view.doOnAttach
+import androidx.lifecycle.findViewTreeLifecycleOwner
+import androidx.lifecycle.lifecycleScope
 import arch.cayenne.lib.common.R
 import arch.cayenne.lib.skin.widget.SkinnableProgressBar
 import kotlinx.coroutines.CoroutineScope
@@ -41,7 +44,9 @@ class GameRoundProgressBar @JvmOverloads constructor(
                 progressColor = progColor
             )
             max = triggerTime
-            startTimeTrigger()
+            doOnAttach {
+                startTimeTrigger()
+            }
         }
     }
 
@@ -52,17 +57,15 @@ class GameRoundProgressBar @JvmOverloads constructor(
             job!!.cancel()
         }
         val startTime = SystemClock.elapsedRealtime()
-        job = CoroutineScope(Dispatchers.IO).launch {
+        job = findViewTreeLifecycleOwner()!!.lifecycleScope.launch {
             while (true) {
                 val elapsed = (SystemClock.elapsedRealtime() - startTime) % max
-                withContext(Dispatchers.Main) {
-                    if (progress > elapsed) {  //mean (SystemClock.elapsedRealtime() - startTime) > max
-                        onTriggerListener?.invoke()
-                    }
-                    progress = elapsed.toInt()
-                    (progressDrawable as RoundProgressDrawable).progress =
-                        progress / max.toFloat()
+                if (progress > elapsed) {  //mean (SystemClock.elapsedRealtime() - startTime) > max
+                    onTriggerListener?.invoke()
                 }
+                progress = elapsed.toInt()
+                (progressDrawable as RoundProgressDrawable).progress =
+                    progress / max.toFloat()
                 delay(25)
             }
         }

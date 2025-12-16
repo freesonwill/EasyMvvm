@@ -5,9 +5,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import android.view.animation.LinearInterpolator
 import androidx.recyclerview.widget.GridLayoutManager
 import arch.cayenne.lib.base.data.constants.DataState
+import arch.cayenne.lib.base.ui.animation.AnimationController
+import arch.cayenne.lib.base.ui.animation.AnimationController.AnimType
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.ui.fragment.launch
+import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.common.ui.adapter.GridSpacingItemDecoration
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout.States
 import arch.cayenne.lib.common.ui.view.SimpleTabDataModel
@@ -20,9 +25,10 @@ import arch.cayenne.lib.common.utils.ext.checkCurrentScrollState
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.onScrolledOver
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
+import arch.cayenne.lib.common.utils.ext.startFadeAnim
 import arch.cayenne.lib.common.utils.helper.BackToTopHelper
+import arch.cayenne.lib.database.entity.GameSupplierDataModel
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
-import arch.cayenne.module.home.ui.fragment.GameContentListBottomSheetFragment
 import com.walisport.module.hall.R
 import com.walisport.module.hall.data.UniversalLoadMoreScrollListener
 import com.walisport.module.hall.data.constants.GameSortType
@@ -31,17 +37,19 @@ import com.walisport.module.hall.databinding.LayoutGameSortingMenuBinding
 import com.walisport.module.hall.ui.adapter.GameContentAdapter
 import com.walisport.module.hall.ui.viewmodel.GameContentViewModel
 import com.walisport.module.hall.ui.viewmodel.HallViewModel
+import com.walisport.module.live.data.EventClick
+import kotlinx.coroutines.delay
 import kotlin.reflect.KClass
 
-class GameContentFragment : BaseFragment<GameContentViewModel , FragmentGameContentBinding>() {
+class GameContentFragment : BaseFragment<GameContentViewModel, FragmentGameContentBinding>() {
     companion object {
         private const val ARG_CATEGORY_TYPE = "arg_category_type"
 
         fun newInstance(
-            categoryType: Int ,
+            categoryType: Int,
         ) = GameContentFragment().apply {
             arguments = Bundle().apply {
-                putInt(ARG_CATEGORY_TYPE , categoryType)
+                putInt(ARG_CATEGORY_TYPE, categoryType)
 
             }
         }
@@ -49,7 +57,7 @@ class GameContentFragment : BaseFragment<GameContentViewModel , FragmentGameCont
 
     override val vbClass: KClass<FragmentGameContentBinding> = FragmentGameContentBinding::class
     override val vmClass: KClass<GameContentViewModel> = GameContentViewModel::class
-    private val hallViewModel: HallViewModel by sharedViewModel<HallViewModel , HallFragment>()
+    private val hallViewModel: HallViewModel by sharedViewModel<HallViewModel, HallFragment>()
     private lateinit var adapter: GameContentAdapter
 
     private var isExpanded = false
@@ -60,47 +68,74 @@ class GameContentFragment : BaseFragment<GameContentViewModel , FragmentGameCont
 
     private var sortMenuClicked: Boolean = false
 
-    private val defaultAnimDuration = 300L
+    private val defaultAnimDuration = 210L
     val category get() = requireArguments().getInt(ARG_CATEGORY_TYPE)
-    private val mockVendorList by lazy {
+
+    fun supplierTabList(list: List<GameSupplierDataModel>): List<SimpleTabDataModel> {
         val l = ArrayList<SimpleTabDataModel>()
-        for (i in 0..5) {
+        l.add(
+            SimpleTabDataModel(
+                id = 0,
+                simpleName = "",
+                icon = "",
+            )
+        )
+        list.take(10).forEach { item ->
             l.add(
                 SimpleTabDataModel(
-                    id = i ,
-                    simpleName = getString(R.string.wali) ,
-                    icon = "" ,
+                    id = item.id,
+                    simpleName = item.name,
+                    icon = item.icon,
                 )
             )
         }
-        l
+        return l
     }
 
     override fun initView(savedInstanceState: Bundle?) {
         with(mBinding) {
-            rvGame.layoutManager = GridLayoutManager(requireContext() , 3)
+
+            customTabGroup.setTabClickListener(object :
+                arch.cayenne.lib.common.ui.view.CustomGameTabClickListener {
+                override fun onTabClicked(id: Int) {
+                    //点击全部 取消全部选中
+                    if (id == 0) {
+                        mViewModel.clearSupplierSelected()
+                    } else {
+                        mViewModel.selectSupplierId(id)
+                    }
+                    mBinding.rvGame.startFadeAnim { onComplete ->
+                        mViewModel.setSupplier(if (id == 0) emptyList() else listOf(id))
+                        mViewModel.reload()
+                        onComplete.invoke()
+                    }
+                }
+            })
+
+            rvGame.layoutManager = GridLayoutManager(requireContext(), 3)
             val itemDecoration = GridSpacingItemDecoration(
-                spanCount = 3 ,
-                horizontalSpacing = 9.dp2px ,
-                verticalSpacing = 12.dp2px ,
+                spanCount = 3,
+                horizontalSpacing = 9.dp2px,
+                verticalSpacing = 12.dp2px,
                 includeEdge = false // 確保邊緣沒有空隙
             )
             rvGame.addItemDecoration(itemDecoration)
             adapter = GameContentAdapter(onItemClick = {
+                mViewModel.setIsClickGame(EventClick.EVENT_CLICK_ACK_TRUE.type)
                 navigate(arch.cayenne.lib.res.R.string.nav_module_gamedetail.deeplink())
             })
             rvGame.adapter = adapter
             rvGame.itemAnimator = null
-            customTabGroup.submitTabList(mockVendorList)
-            BackToTopHelper(rvGame , ivBackToTop , true)
+
+            BackToTopHelper(rvGame, ivBackToTop, true)
         }
-        mViewModel.getSuppliers(mViewModel.getCategory())
+
     }
 
     override fun initListener() {
-        mBinding.rvGame.onScrolledOver(100f , 80f , {
+        mBinding.rvGame.onScrolledOver(100f, 80f, {
             hallViewModel.setScorll(true)
-        } , {
+        }, {
             hallViewModel.setScorll(false)
         })
         mBinding.rvGame.addOnScrollListener(UniversalLoadMoreScrollListener(6) {
@@ -111,14 +146,14 @@ class GameContentFragment : BaseFragment<GameContentViewModel , FragmentGameCont
         mBinding.customTabGroup.setOnSortBtnClick {
             toggleGameSorting(!isExpanded)
         }
-        mBinding.customTabGroup.setOnShowAllCategoryClick({} , {
-            showTournamentListBottomSheet()
+        mBinding.customTabGroup.setOnShowAllCategoryClick({}, {
+            showSupplierListBottomSheet()
         })
 
     }
 
-    private fun showTournamentListBottomSheet() {
-        val tag = "tournament_bottom_sheet"
+    private fun showSupplierListBottomSheet() {
+        val tag = "GameContentFragment_bottom_sheet"
         if (childFragmentManager.findFragmentByTag(tag) != null) return
 
         GameContentListBottomSheetFragment
@@ -149,7 +184,7 @@ class GameContentFragment : BaseFragment<GameContentViewModel , FragmentGameCont
                     mBinding.rvGame.visibility = View.GONE
                     mBinding.clDynamics.visibility = View.VISIBLE
                     mBinding.clDynamics.setState(
-                        States.DATA_EMPTY ,
+                        States.DATA_EMPTY,
                         arch.cayenne.lib.common.R.string.data_empty.getString()
                     )
 
@@ -164,7 +199,7 @@ class GameContentFragment : BaseFragment<GameContentViewModel , FragmentGameCont
                     mBinding.rvGame.visibility = View.GONE
                     mBinding.clDynamics.visibility = View.VISIBLE
                     mBinding.clDynamics.setState(
-                        States.NETWORK_ANOMALY() ,
+                        States.NETWORK_ANOMALY(),
                         arch.cayenne.lib.common.R.string.error_net.getString()
                     )
                 }
@@ -176,13 +211,21 @@ class GameContentFragment : BaseFragment<GameContentViewModel , FragmentGameCont
 
 
         //拿到供应商列表
-        mViewModel.gameSupplierList.observe(viewLifecycleOwner){
+        mViewModel.gameSupplierList.observe(viewLifecycleOwner) {
+            mBinding.customTabGroup.submitTabList(supplierTabList(it))
         }
 
-        //
-        mViewModel.savedTournamentSelections.observe(viewLifecycleOwner){
-            mViewModel.setSupplier(it)
-            mViewModel.reload()
+        //根据选中的供应商拉取数据
+        mViewModel.savedTournamentSelections.observe(viewLifecycleOwner) {
+            if (it.size==1){
+                launch{
+                    delay(200)
+                    mBinding.customTabGroup.selectById(it[0])
+                }
+            }else{
+                mViewModel.setSupplier(it)
+                mViewModel.reload()
+            }
         }
 
         mViewModel.buttonHasSelection.observe(viewLifecycleOwner) { hasSelection ->
@@ -193,7 +236,7 @@ class GameContentFragment : BaseFragment<GameContentViewModel , FragmentGameCont
         }
 
         // 清除 tlLeagueList
-        mViewModel.shouldClearLeagueListSelection.observeEvent(viewLifecycleOwner , this) {
+        mViewModel.shouldClearLeagueListSelection.observeEvent(viewLifecycleOwner, this) {
             clearLeagueListSelection()
         }
     }
@@ -205,7 +248,7 @@ class GameContentFragment : BaseFragment<GameContentViewModel , FragmentGameCont
         }
         mViewModel.setSupplier(emptyList())
         mViewModel.setSortType(currentSortType)
-        mViewModel.queryGameList()
+        mViewModel.getSuppliers(mViewModel.getCategory())
     }
 
     /**
@@ -222,8 +265,8 @@ class GameContentFragment : BaseFragment<GameContentViewModel , FragmentGameCont
             // 展開排序選單
             if (sortingMenuBinding == null) {
                 sortingMenuBinding = LayoutGameSortingMenuBinding.inflate(
-                    LayoutInflater.from(requireContext()) ,
-                    container ,
+                    LayoutInflater.from(requireContext()),
+                    container,
                     false
                 )
                 container.addView(sortingMenuBinding?.root)
@@ -241,9 +284,16 @@ class GameContentFragment : BaseFragment<GameContentViewModel , FragmentGameCont
             }
 
             // 立即開始動畫
+            //TODO: 移除xml動畫，改用程式碼設置動畫屬性
             val slideInAnim =
                 AnimationUtils.loadAnimation(requireContext() , R.anim.slide_in_from_top)
             sortingMenuBinding?.root?.startAnimation(slideInAnim)
+            slideInAnim.duration =
+                AnimationController[AnimType.popupEnter]?.duration ?: defaultAnimDuration
+            slideInAnim.interpolator =
+                AnimationController[AnimType.popupEnter]?.interpolator?.toInterpolator()
+                    ?: LinearInterpolator()
+
 
             // 切換圖標為收起狀態
             mBinding.customTabGroup.setSortBtnSrc(arch.cayenne.lib.common.R.drawable.ic_sort_collapse)
@@ -251,17 +301,24 @@ class GameContentFragment : BaseFragment<GameContentViewModel , FragmentGameCont
             //  變色為選中狀態
             mBinding.customTabGroup.setSortBtnTextColor(
                 SkinnableResourceManager.getColor(
-                    requireContext() ,
+                    requireContext(),
                     arch.cayenne.lib.common.R.color.color_00E0E5
                 )
             )
 
         } else {
             // 收起排序選單 - 使用動畫
+            //TODO: 移除xml動畫，改用程式碼設置動畫屬性
             val slideOutAnim = AnimationUtils.loadAnimation(
                 requireContext() ,
                 R.anim.slide_out_to_top
             )
+            slideOutAnim.duration =
+                AnimationController[AnimType.popupExit]?.duration ?: defaultAnimDuration
+            slideOutAnim.interpolator =
+                AnimationController[AnimType.popupExit]?.interpolator?.toInterpolator()
+                    ?: LinearInterpolator()
+
             slideOutAnim.setAnimationListener(object : Animation.AnimationListener {
                 override fun onAnimationStart(animation: Animation?) {}
 
@@ -276,7 +333,8 @@ class GameContentFragment : BaseFragment<GameContentViewModel , FragmentGameCont
             // 收回時隱藏遮罩層（帶動畫效果）
             mBinding.vGameListMask.animate()
                 .alpha(0f)
-                .setDuration(defaultAnimDuration)
+                .setDuration(AnimationController[AnimType.popupExit]?.duration
+                    ?: defaultAnimDuration)
                 .setListener(object : android.animation.Animator.AnimatorListener {
                     override fun onAnimationStart(p0: android.animation.Animator) {}
 
@@ -293,7 +351,7 @@ class GameContentFragment : BaseFragment<GameContentViewModel , FragmentGameCont
                 mBinding.customTabGroup.setSortBtnSrc(arch.cayenne.lib.common.R.drawable.ic_sort_expand)
                 mBinding.customTabGroup.setSortBtnTextColor(
                     SkinnableResourceManager.getColor(
-                        requireContext() ,
+                        requireContext(),
                         arch.cayenne.lib.common.R.color.color_C0C0C0
                     )
                 )
@@ -301,7 +359,7 @@ class GameContentFragment : BaseFragment<GameContentViewModel , FragmentGameCont
                 mBinding.customTabGroup.setSortBtnSrc(arch.cayenne.lib.common.R.drawable.ic_sort_expand_blue)
                 mBinding.customTabGroup.setSortBtnTextColor(
                     SkinnableResourceManager.getColor(
-                        requireContext() ,
+                        requireContext(),
                         arch.cayenne.lib.common.R.color.color_00E0E5
                     )
                 )
@@ -353,7 +411,7 @@ class GameContentFragment : BaseFragment<GameContentViewModel , FragmentGameCont
                 if (currentSortType != GameSortType.HOT_REWARD) {
                     currentSortType = GameSortType.HOT_REWARD
                     mBinding.tvRewardTips.visibility = View.VISIBLE
-                    mBinding.aplHomeBanner.setExpanded(true , true)
+                    mBinding.aplHomeBanner.setExpanded(true, true)
                     updateSortingMenuSelection()
                     setSortBtnText()
                     mViewModel.setSortType(currentSortType)
@@ -368,7 +426,7 @@ class GameContentFragment : BaseFragment<GameContentViewModel , FragmentGameCont
                 if (currentSortType != GameSortType.COLD_REWARD) {
                     currentSortType = GameSortType.COLD_REWARD
                     mBinding.tvRewardTips.visibility = View.VISIBLE
-                    mBinding.aplHomeBanner.setExpanded(true , true)
+                    mBinding.aplHomeBanner.setExpanded(true, true)
                     updateSortingMenuSelection()
                     setSortBtnText()
                     mViewModel.setSortType(currentSortType)
@@ -386,11 +444,11 @@ class GameContentFragment : BaseFragment<GameContentViewModel , FragmentGameCont
     private fun updateSortingMenuSelection() {
         sortingMenuBinding?.let { binding ->
             val selectedColor = SkinnableResourceManager.getColor(
-                requireContext() ,
+                requireContext(),
                 arch.cayenne.lib.common.R.color.color_00E0E5
             )
             val unselectedColor = SkinnableResourceManager.getColor(
-                requireContext() ,
+                requireContext(),
                 arch.cayenne.lib.common.R.color.color_999999
             )
 
@@ -448,8 +506,8 @@ class GameContentFragment : BaseFragment<GameContentViewModel , FragmentGameCont
     }
 
     /**
-     * 更新聯賽按鈕樣式
-     * @param hasSelection true: 有選中的聯賽，false: 沒有選中的聯賽
+     * 更新按鈕樣式
+     * @param hasSelection true: 有選中的供应商，false: 沒有選中的供应商
      */
     private fun updateTournamentButtonStyle(hasSelection: Boolean) {
         mBinding.customTabGroup.updateTournamentButtonStyle(hasSelection)
@@ -468,9 +526,9 @@ class GameContentFragment : BaseFragment<GameContentViewModel , FragmentGameCont
     override fun onResume() {
         super.onResume()
         mBinding.rvGame.post {
-            mBinding.rvGame.checkCurrentScrollState(100f , 80f , {
+            mBinding.rvGame.checkCurrentScrollState(100f, 80f, {
                 hallViewModel.setScorll(true)
-            } , {
+            }, {
                 hallViewModel.setScorll(false)
             })
         }

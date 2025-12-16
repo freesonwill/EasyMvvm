@@ -18,8 +18,18 @@ abstract class GameSupplierDao: BaseDao<GameSupplierDataModel>() {
     @Query("SELECT * FROM GameSupplierDataModel WHERE gameTypeId = :gameTypeId")
     abstract suspend fun querySelectSupplier( gameTypeId: Int): List<GameSupplierDataModel>
 
-    @Query("SELECT * FROM GameSupplierDataModel WHERE gameTypeId = :gameTypeId and id = :id")
-    abstract suspend fun querySupplierId( gameTypeId: Int,id: Int): GameSupplierDataModel
+    //设置单个id为选中为1,其他设置为0
+    @Query("UPDATE GameSupplierDataModel SET isSelected = 0 WHERE gameTypeId = :gameTypeId")
+    abstract suspend fun deselectAllInGroup(gameTypeId: Int)
+
+    @Query("UPDATE GameSupplierDataModel SET isSelected = 1 WHERE gameTypeId = :gameTypeId AND id = :id")
+    abstract suspend fun selectById(gameTypeId: Int, id: Int)
+
+    suspend fun selectSupplierId(gameTypeId: Int, id: Int) {
+        deselectAllInGroup(gameTypeId)
+        selectById(gameTypeId, id)
+    }
+
 
     @Query("SELECT * FROM GameSupplierDataModel WHERE gameTypeId = :gameTypeId")
     abstract fun observeSupplierGameTypeId(gameTypeId: Int): Flow<List<GameSupplierDataModel>>

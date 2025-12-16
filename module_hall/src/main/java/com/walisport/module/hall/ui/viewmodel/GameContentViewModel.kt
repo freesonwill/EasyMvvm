@@ -48,9 +48,7 @@ class GameContentViewModel : BaseViewModel() {
     val gameCategoryList: UnPeekLiveData<List<GameCategoryVo>> = _gameCategoryList
 
     // 保存彈窗中的選中狀態（跨彈窗生命週期）
-    private val _savedTournamentSelections = MutableLiveData<List<Int>>(
-        emptyList()
-    )
+    private val _savedTournamentSelections = MutableLiveData<List<Int>>()
     val savedTournamentSelections: LiveData<List<Int>> = _savedTournamentSelections
 
     // 通知按鈕選中狀態變化
@@ -59,16 +57,14 @@ class GameContentViewModel : BaseViewModel() {
 
     fun getSuppliers(type: Int) {
         viewModelScope.launch(Dispatchers.IO) {
-            repository.observeSupplierByGameTypeId(type)
-                .collect {
-                    launch(Dispatchers.Main) {
-                        _gameSupplierList.value = it
-                    }
-                }
+            _gameSupplierList.postValue(repository.getSupplierByGameTypeId(type))
         }
-
     }
-
+    fun setIsClickGame(flag:Int){
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.setGameClick(flag)
+        }
+    }
     fun setCategory(category: Int) {
         this.category = category
     }
@@ -77,6 +73,14 @@ class GameContentViewModel : BaseViewModel() {
        return category
     }
 
+
+    fun clearSupplierSelected(){
+        repository.clearSelectedByType(category)
+    }
+
+    fun selectSupplierId(id: Int){
+        repository.selectSupplierId(category,id)
+    }
 
     fun setSupplier(suppliers: List<Int>) {
         this.suppliers = suppliers
@@ -88,8 +92,8 @@ class GameContentViewModel : BaseViewModel() {
 
 
     fun queryGameList() {
+        setState(DataState.Loading)
         viewModelScope.launch {
-            setState(DataState.Loading)
             callApi(
                 {
                     repository.queryGameList(page , sortType , suppliers , category)
@@ -140,8 +144,8 @@ class GameContentViewModel : BaseViewModel() {
 
     fun reload() {
         page = INITIAL_PAGE
-        _gameListLiveData.value = emptyList()
         queryGameList()
+        _gameListLiveData.value = emptyList()
     }
 
     fun loadNextPage() {

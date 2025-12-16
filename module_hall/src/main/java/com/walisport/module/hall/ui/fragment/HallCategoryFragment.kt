@@ -1,17 +1,25 @@
 package com.walisport.module.hall.ui.fragment
 
+import android.animation.ValueAnimator
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import android.view.animation.LinearInterpolator
+import androidx.core.animation.doOnEnd
+import androidx.core.animation.doOnStart
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import arch.cayenne.lib.base.data.constants.DataState
+import arch.cayenne.lib.base.ui.animation.AnimationController
+import arch.cayenne.lib.base.ui.animation.AnimationController.AnimType
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.common.ui.adapter.GridSpacingItemDecoration
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout.States
 import arch.cayenne.lib.common.ui.view.SimpleTabDataModel
+import arch.cayenne.lib.common.ui.viewmodel.observeEvent
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
@@ -19,10 +27,11 @@ import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.startFadeAnim
+import arch.cayenne.lib.common.utils.ext.startSafeAnimateSet
 import arch.cayenne.lib.common.utils.ext.touchBackPressed
 import arch.cayenne.lib.common.utils.helper.BackToTopHelper
+import arch.cayenne.lib.database.entity.GameSupplierDataModel
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
-import arch.cayenne.module.home.ui.fragment.GameContentListBottomSheetFragment
 import com.walisport.module.hall.R
 import com.walisport.module.hall.data.UniversalLoadMoreScrollListener
 import com.walisport.module.hall.data.constants.GameSortType
@@ -32,6 +41,8 @@ import com.walisport.module.hall.databinding.LayoutGameSortingMenuBinding
 import com.walisport.module.hall.databinding.TitleBarGameCategoryBinding
 import com.walisport.module.hall.ui.adapter.GameContentAdapter
 import com.walisport.module.hall.ui.viewmodel.GameCategoryViewModel
+import kotlinx.coroutines.delay
+import kotlin.math.abs
 import kotlin.reflect.KClass
 
 class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCategoryBinding>() {
@@ -54,34 +65,41 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
     // 當前排序類型，預設為按熱門聯賽排序
     private var currentSortType = GameSortType.HOT
 
-    private val defaultAnimDuration = 300L
+    private val defaultAnimDuration = 210L
 
     private var category: Int = 100
+    private var titleName: String = ""
 
-    private val mockVendorList by lazy {
+    fun supplierTabList(list: List<GameSupplierDataModel>): List<SimpleTabDataModel> {
         val l = ArrayList<SimpleTabDataModel>()
-        for (i in 0..5) {
+        l.add(
+            SimpleTabDataModel(
+                id = 0,
+                simpleName = "",
+                icon = "",
+            )
+        )
+        list.take(10).forEach { item ->
             l.add(
                 SimpleTabDataModel(
-                    id = i ,
-                    simpleName = getString(R.string.wali) ,
-                    icon = "" ,
+                    id = item.id,
+                    simpleName = item.name,
+                    icon = item.icon,
                 )
             )
         }
-        l
+        return l
     }
 
 
     override fun initView(savedInstanceState: Bundle?) {
         val requireArguments = requireArguments()
          category = requireArguments.getString("category")?.toInt()?:100
+        titleName =  requireArguments.getString("name")?.toString()?:""
 
         with(mBinding) {
             titleBar.loadDynamicsTitleBar(titleBarBinding.root , null)
-            titleBarBinding.tvTitleName.text = 100.getCategoryByType().desc
-
-            customTabGroup.submitTabList(mockVendorList)
+            titleBarBinding.tvTitleName.text = titleName
 
             customTabGroup.setTabClickListener(object :
                 arch.cayenne.lib.common.ui.view.CustomGameTabClickListener {
@@ -112,7 +130,7 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
 
 
         }
-
+        mViewModel.getSuppliers(category)
         mBinding.root.touchBackPressed()
     }
 
@@ -135,9 +153,8 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
         mBinding.customTabGroup.setOnSortBtnClick {
             toggleGameSorting(!isExpanded)
         }
-
         mBinding.customTabGroup.setOnShowAllCategoryClick({} , {
-            showTournamentListBottomSheet()
+            showListBottomSheet()
         })
     }
 
@@ -190,15 +207,69 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
             }
         }
 
+        //拿到供应商列表
+        mViewModel.gameSupplierList.observe(viewLifecycleOwner) {
+            mBinding.customTabGroup.submitTabList(supplierTabList(it))
+        }
+
+        //根据选中的供应商拉取数据
+        mViewModel.savedTournamentSelections.observe(viewLifecycleOwner){
+            if (it.size==1){
+                launch{
+                    delay(200)
+                    mBinding.customTabGroup.selectById(it[0])
+                }
+            }else{
+                mViewModel.setSuppliers(it)
+                mViewModel.reload()
+            }
+        }
+
+        mViewModel.buttonHasSelection.observe(viewLifecycleOwner) { hasSelection ->
+            updateTournamentButtonStyle(hasSelection)
+            if (!hasSelection) {//重新获取数据 在供应商列表没有选中情况下,选中全部
+                mBinding.customTabGroup.select(0)
+            }
+        }
+
+        // 清除 tlLeagueList
+        mViewModel.shouldClearLeagueListSelection.observeEvent(viewLifecycleOwner , this) {
+            clearLeagueListSelection()
+        }
     }
 
+    private fun showListBottomSheet() {
+        val tag = "HallCategoryFragment_bottom_sheet"
+        if (childFragmentManager.findFragmentByTag(tag) != null) return
+
+        GameCategoryListBottomSheetFragment
+            .newInstance(mViewModel.getCategory())
+            .show(childFragmentManager, tag)
+    }
+
+    /**
+     * 更新按鈕樣式
+     * @param hasSelection true: 有選中的供应商，false: 沒有選中的供应商
+     */
+    private fun updateTournamentButtonStyle(hasSelection: Boolean) {
+        mBinding.customTabGroup.updateTournamentButtonStyle(hasSelection)
+    }
+
+    /**
+     * 清除 tlLeagueList 的選中狀態（需求2）
+     */
+    private fun clearLeagueListSelection() {
+        with(mBinding) {
+            // 清除所有 tab 的選中狀態
+            customTabGroup.clearLeagueListSelection()
+        }
+    }
     override fun initData() {
         super.initData()
 
         mViewModel.setCategory(category ?: 0)
         mViewModel.setSuppliers(emptyList())
         mViewModel.setSortType(currentSortType)
-        mViewModel.queryGameList()
     }
 
     /**
@@ -233,8 +304,15 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
             }
 
             // 立即開始動畫
+            //todo: 移除xml動畫，改用程式碼設置動畫屬性
             val slideInAnim =
                 AnimationUtils.loadAnimation(requireContext() , R.anim.slide_in_from_top)
+            slideInAnim.duration =
+                AnimationController[AnimType.popupEnter]?.duration ?: defaultAnimDuration
+            slideInAnim.interpolator =
+                AnimationController[AnimType.popupEnter]?.interpolator?.toInterpolator()
+                    ?: LinearInterpolator()
+
             sortingMenuBinding?.root?.startAnimation(slideInAnim)
 
             // 切換圖標為收起狀態
@@ -250,10 +328,18 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
 
         } else {
             // 收起排序選單 - 使用動畫
+            //todo: 移除xml動畫，改用程式碼設置動畫屬性
             val slideOutAnim = AnimationUtils.loadAnimation(
                 requireContext() ,
                 R.anim.slide_out_to_top
             )
+
+            slideOutAnim.duration =
+                AnimationController[AnimType.popupExit]?.duration ?: defaultAnimDuration
+            slideOutAnim.interpolator =
+                AnimationController[AnimType.popupExit]?.interpolator?.toInterpolator()
+                    ?: LinearInterpolator()
+
             slideOutAnim.setAnimationListener(object : Animation.AnimationListener {
                 override fun onAnimationStart(animation: Animation?) {}
 
@@ -268,7 +354,7 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
             // 收回時隱藏遮罩層（帶動畫效果）
             mBinding.vGameListMask.animate()
                 .alpha(0f)
-                .setDuration(defaultAnimDuration)
+                .setDuration(AnimationController[AnimType.popupExit]!!.duration)
                 .setListener(object : android.animation.Animator.AnimatorListener {
                     override fun onAnimationStart(p0: android.animation.Animator) {}
 
@@ -440,10 +526,6 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
                 mBinding.customTabGroup.setSortBtnText(arch.cayenne.lib.common.R.string.custom_tab_cold_reward.getString())
             }
         }
-    }
-
-    private fun showTournamentListBottomSheet() {
-
     }
 
 

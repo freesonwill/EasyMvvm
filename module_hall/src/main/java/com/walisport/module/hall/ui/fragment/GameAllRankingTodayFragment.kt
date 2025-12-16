@@ -5,6 +5,9 @@ import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.viewmodel.EmptyViewModel
+import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
+import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
+import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import com.walisport.module.hall.data.GameAllRankingToday
 import com.walisport.module.hall.databinding.FragmentGameAllRankingTodayBinding
 import com.walisport.module.hall.ui.adapter.GameAllRankingListTodayAdapter
@@ -48,6 +51,9 @@ class GameAllRankingTodayFragment : BaseFragment<EmptyViewModel, FragmentGameAll
     }
 
     override fun initListener() {
+        mBinding.clBanner.clickNoRepeat {
+            navigate(arch.cayenne.lib.res.R.string.nav_module_competition_fragment.deeplink())
+        }
     }
 
     override suspend fun createObserver() {

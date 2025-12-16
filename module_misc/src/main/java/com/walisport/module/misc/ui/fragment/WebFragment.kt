@@ -36,13 +36,11 @@ class WebFragment : BaseFragment<SeniorPartnerViewModel , FragmentSeniorPartnerB
 
     override fun initView(savedInstanceState: Bundle?) {
         val url = args.url
-        val s = requireArguments().getString("url")
 
-        launch {
-            initTitleBar()
-            initWebView()
-            mBinding.webView.loadUrl(url!!)
-        }
+        initTitleBar()
+        initWebView()
+        mBinding.webView.loadUrl(url!!)
+
     }
 
     private fun initWebView() {

@@ -8,6 +8,7 @@ import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
 import arch.cayenne.lib.common.data.constants.PreloadEnum
 import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.database.GameDatabase
+import arch.cayenne.lib.database.entity.GameBean
 import arch.cayenne.lib.database.entity.GameSupplierDataModel
 import arch.cayenne.lib.http.HttpClient
 import arch.cayenne.lib.http.HttpException
@@ -112,13 +113,25 @@ class HallRepository(
     }
 
 
+    //查询是否点击游戏详情页面
+    suspend fun queryGameClick() : GameBean{
+        return database.gameDao().queryGameBean(1)
+    }
+
+    //设置游戏点击状态
+    suspend fun setGameClick(flag:Int){
+        scope.launch(Dispatchers.IO) {
+            database.gameDao().insert(GameBean(id = 1, clickFlag = flag))
+        }
+    }
+
     //查询选中供应商数据
     suspend fun queryGameSuppliersSelect(gameType: Int) =
         database.supplierDao().querySelectSupplier(gameType)
 
     //监听供应商数据变化
-    suspend fun observeSupplierByGameTypeId(gameType: Int) =
-        database.supplierDao().observeSupplierGameTypeId(gameType)
+    suspend fun getSupplierByGameTypeId(gameType: Int) =
+        database.supplierDao().querySelectSupplier(gameType)
 
     private suspend fun roomGameSupplier(
         supplier: List<GameSupplier> ,
@@ -155,6 +168,19 @@ class HallRepository(
         }
     }
 
+    //设置单个ID为选中
+   fun selectSupplierId(gameType: Int,id:Int){
+        scope.launch(Dispatchers.IO) {
+            database.supplierDao().selectSupplierId(gameType,id)
+        }
+   }
+
+    //清空选中
+    fun clearSelectedByType(gameType: Int) {
+        scope.launch(Dispatchers.IO) {
+            database.supplierDao().clearSelectedByType(gameType)
+        }
+    }
     companion object {
         const val DEFAULT_GAME_SIZE = 10
         const val INITIAL_PAGE = 1

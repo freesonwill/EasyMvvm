@@ -18,7 +18,7 @@ object CommonBiz: IBiz {
      * 跳转客服
      */
     fun jump2CustomerService(fragment: Fragment) {
-        jump2HomePage(fragment,HomePageEnum.CHAT, bundleOf(FragmentResultEnum.KEY_CUSTOMER_SERVICE.k to true))
+        jump2HomePage(fragment,HomePageEnum.CHAT, bundleOf(FragmentResultEnum.KEY_CUSTOMER_SERVICE.name to true))
     }
 
     /**
@@ -29,8 +29,8 @@ object CommonBiz: IBiz {
      */
     fun jump2HomePage(fragment: Fragment, page:HomePageEnum, bundle: Bundle? = null) {
         fragment.requireActivity().supportFragmentManager.setFragmentResult(
-            FragmentResultEnum.KEY_PAGE.k, Bundle().apply{
-                putInt(FragmentResultEnum.KEY_PAGE.k, page.v)
+            FragmentResultEnum.KEY_PAGE.name, Bundle().apply{
+                putInt(FragmentResultEnum.KEY_PAGE.name, page.v)
                 bundle?.let { putAll(it)  }
             }
         )

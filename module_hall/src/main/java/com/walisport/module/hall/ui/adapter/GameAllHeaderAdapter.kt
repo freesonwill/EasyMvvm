@@ -6,9 +6,11 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.ui.animation.CustomCurveTransformer
 import arch.cayenne.lib.common.ui.adapter.BannerImageMatchAdapter
+import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import com.walisport.module.hall.R
 import com.walisport.module.hall.databinding.ItemGameAllHeaderBinding
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 
 /**
@@ -94,6 +96,10 @@ class GameAllHeaderViewHolder(val binding: ItemGameAllHeaderBinding , private va
             ivInviteFriend.clickNoRepeat {
                 onItemClickListener?.onInviteFriendItemClick()
             }
+
+            ivCompetition.clickNoRepeat {
+                onItemClickListener?.onCompetitionItemClick()
+            }
         }
     }
 
@@ -109,6 +115,8 @@ class GameAllHeaderViewHolder(val binding: ItemGameAllHeaderBinding , private va
 
     interface OnHeaderItemClickListener {
         fun onInviteFriendItemClick()
+
+        fun onCompetitionItemClick()
     }
 
 }

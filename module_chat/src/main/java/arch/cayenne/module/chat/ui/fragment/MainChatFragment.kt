@@ -206,7 +206,7 @@ class MainChatFragment : BaseFragment<MainChatViewModel, FragmentMainChatLayoutB
     override fun onHiddenChanged(hidden: Boolean) {
         super.onHiddenChanged(hidden)
         //"received , bundle:$arguments".logd(TAG)
-        arguments?.getBoolean(FragmentResultEnum.KEY_CUSTOMER_SERVICE.k)?.let {
+        arguments?.getBoolean(FragmentResultEnum.KEY_CUSTOMER_SERVICE.name)?.let {
             mViewModel.jump2CustomerService(it)
         }
     }
