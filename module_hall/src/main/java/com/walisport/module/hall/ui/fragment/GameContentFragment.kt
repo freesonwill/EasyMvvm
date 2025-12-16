@@ -106,6 +106,7 @@ class GameContentFragment : BaseFragment<GameContentViewModel, FragmentGameConte
                     }
                     mBinding.rvGame.startFadeAnim { onComplete ->
                         mViewModel.setSupplier(if (id == 0) emptyList() else listOf(id))
+                        toggleGameSorting(false)
                         helper?.reset()
                         mViewModel.reload()
                         onComplete.invoke()
@@ -378,6 +379,36 @@ class GameContentFragment : BaseFragment<GameContentViewModel, FragmentGameConte
         }
     }
 
+    //直接关闭排序菜单， 不要动画
+    private fun closeSortingMenu() {
+        if (isExpanded) {
+            isExpanded = false
+            val container = mBinding.llGameDropdown
+            container.visibility = View.GONE
+            mBinding.vGameListMask.apply {
+                visibility = View.GONE
+                alpha = 0f
+            }
+            if (!sortMenuClicked) {
+                mBinding.customTabGroup.setSortBtnSrc(arch.cayenne.lib.common.R.drawable.ic_sort_expand)
+                mBinding.customTabGroup.setSortBtnTextColor(
+                    SkinnableResourceManager.getColor(
+                        requireContext(),
+                        arch.cayenne.lib.common.R.color.color_C0C0C0
+                    )
+                )
+            } else {
+                mBinding.customTabGroup.setSortBtnSrc(arch.cayenne.lib.common.R.drawable.ic_sort_expand_blue)
+                mBinding.customTabGroup.setSortBtnTextColor(
+                    SkinnableResourceManager.getColor(
+                        requireContext(),
+                        arch.cayenne.lib.common.R.color.color_00E0E5
+                    )
+                )
+            }
+        }
+    }
+
     /**
      * 設置排序選單視圖的點擊事件和初始狀態
      */
@@ -548,4 +579,22 @@ class GameContentFragment : BaseFragment<GameContentViewModel, FragmentGameConte
             })
         }
     }
+
+    override fun onHiddenChanged(hidden: Boolean) {
+        super.onHiddenChanged(hidden)
+        if (hidden) {
+            if (isExpanded) {
+                closeSortingMenu()
+            }
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        if (isExpanded) {
+            closeSortingMenu()
+        }
+    }
+
+
 }

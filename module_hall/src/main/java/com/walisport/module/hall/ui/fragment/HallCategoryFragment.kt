@@ -109,6 +109,7 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
                     mBinding.rvGame.startFadeAnim { onComplete ->
                         mViewModel.setSuppliers(if (id == 0) emptyList() else listOf(id))
                         helper?.reset()
+                        toggleGameSorting(false)
                         mViewModel.reload()
                         onComplete.invoke()
                     }
@@ -399,6 +400,36 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
         }
     }
 
+    //直接关闭排序菜单， 不要动画
+    private fun closeSortingMenu() {
+        if (isExpanded) {
+            isExpanded = false
+            val container = mBinding.llGameDropdown
+            container.visibility = View.GONE
+            mBinding.vGameListMask.apply {
+                visibility = View.GONE
+                alpha = 0f
+            }
+            if (!sortMenuClicked) {
+                mBinding.customTabGroup.setSortBtnSrc(arch.cayenne.lib.common.R.drawable.ic_sort_expand)
+                mBinding.customTabGroup.setSortBtnTextColor(
+                    SkinnableResourceManager.getColor(
+                        requireContext(),
+                        arch.cayenne.lib.common.R.color.color_C0C0C0
+                    )
+                )
+            } else {
+                mBinding.customTabGroup.setSortBtnSrc(arch.cayenne.lib.common.R.drawable.ic_sort_expand_blue)
+                mBinding.customTabGroup.setSortBtnTextColor(
+                    SkinnableResourceManager.getColor(
+                        requireContext(),
+                        arch.cayenne.lib.common.R.color.color_00E0E5
+                    )
+                )
+            }
+        }
+    }
+
     /**
      * 設置排序選單視圖的點擊事件和初始狀態
      */
@@ -542,6 +573,8 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
             }
         }
     }
+
+
 
 
 }
