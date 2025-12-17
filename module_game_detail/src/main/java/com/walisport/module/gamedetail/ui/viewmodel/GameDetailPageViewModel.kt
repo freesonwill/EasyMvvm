@@ -35,7 +35,7 @@ class GameDetailPageViewModel : BaseViewModel() {
             maxOdds = 1000,
             online = 1234,
             score = 4.5,
-            comments = 150,
+            comments = 9999,
             tryIt = true,
             hasMore = true,
             collect = false,

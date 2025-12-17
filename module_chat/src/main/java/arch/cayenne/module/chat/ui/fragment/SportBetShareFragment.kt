@@ -45,6 +45,7 @@ class SportBetShareFragment:BaseFragment<SportBetShareViewModel,FragmentSportSha
             ivClose.clickNoRepeat {
                 betShareModel.closeDialog()
             }
+
         }
     }
 
@@ -52,6 +53,10 @@ class SportBetShareFragment:BaseFragment<SportBetShareViewModel,FragmentSportSha
         mViewModel.orderDataListener.observe(viewLifecycleOwner){
             (mBinding.recycler.adapter as? SportBetShareAdapter)?.submitList(it)
         }
+    }
+
+    private fun checkButton(){
+        //比赛进行中 显示为跟单 比赛结束 显示前往体育
     }
 
 }

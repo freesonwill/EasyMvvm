@@ -17,6 +17,7 @@ import android.view.ViewTreeObserver
 import android.view.Window
 import android.view.WindowManager
 import android.view.animation.DecelerateInterpolator
+import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.data.constants.StatusBarMode
@@ -52,6 +53,8 @@ class CurrencyDialogFragment constructor() : BasePositionDialogFragment<Currency
     }
 
     private var dismissListener: (() -> Unit)? = null
+    private var onClickListener: ((BaseCurrencyData.CurrencyContentData2) -> Unit)? = null
+
     private val balanceViewModel: BalanceViewModel by viewModel()
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -90,7 +93,6 @@ class CurrencyDialogFragment constructor() : BasePositionDialogFragment<Currency
                 mBinding.root.viewTreeObserver.removeOnGlobalLayoutListener(this)
 
                 mBinding.root.post {
-                    // 取得目標 View (假設是 mBinding.clContent，請依您的 xml id 為準)
                     val targetView = mBinding.clCurrencyRoot
 
                     // 1. 設定動畫軸心為 View 的中心點
@@ -101,7 +103,6 @@ class CurrencyDialogFragment constructor() : BasePositionDialogFragment<Currency
                     targetView.scaleX = 0f
                     targetView.scaleY = 0f
                     targetView.alpha = 0f
-                    targetView.visibility = View.VISIBLE
 
                     // 4. 開始展開動畫
                     targetView.animate()
@@ -110,26 +111,33 @@ class CurrencyDialogFragment constructor() : BasePositionDialogFragment<Currency
                         .alpha(1f)
                         .setDuration(200)
                         .setInterpolator(DecelerateInterpolator())
+                        .withStartAction {
+                            targetView.visibility = View.VISIBLE
+                        }
                         .start()
                 }
 
             }
         })
-
-
-        mBinding.root.visibility = View.VISIBLE
         removeDim()
+
     }
 
     override val vbClass: KClass<FragmentCurrencyDialogBinding> = FragmentCurrencyDialogBinding::class
     override val vmClass: KClass<CurrencyDialogViewModel> = CurrencyDialogViewModel::class
 
-    val currencyAdapter: CurrencyAdapter by lazy { CurrencyAdapter() }
+    val currencyAdapter: CurrencyAdapter by lazy {
+        CurrencyAdapter{
+            this.onClickListener?.invoke(it)
+            doExitAnim()
+        }
+    }
     val currencySettingAdapter: CurrencySettingAdapter by lazy { CurrencySettingAdapter() }
 
 
     override fun initView(savedInstanceState: Bundle?) {
         with(mBinding) {
+            clCurrencyRoot.visibility = View.INVISIBLE
             clCurrencyRoot.setOnClickListener {
                doExitAnim()
             }
@@ -179,6 +187,12 @@ class CurrencyDialogFragment constructor() : BasePositionDialogFragment<Currency
                     start()
                 }
             }
+            ceSearch.addTextChangedListener(
+                afterTextChanged = { editable ->
+                    val keyword = editable.toString()
+                    balanceViewModel.search(keyword)
+                }
+            )
         }
 
     }
@@ -191,6 +205,10 @@ class CurrencyDialogFragment constructor() : BasePositionDialogFragment<Currency
     override fun initListener() {
         balanceViewModel.onUserCurrencyChange.observe(viewLifecycleOwner) { (fiat, crypto) ->
             val list = arrayListOf<BaseCurrencyData>()
+            if (fiat.isEmpty() && crypto.isEmpty()) {
+                list.add(BaseCurrencyData.CurrencyTitleData(getString(R.string.currency_empty)))
+            }
+
             if (fiat.isNotEmpty()) {
                 list.add(BaseCurrencyData.CurrencyTitleData(getString(R.string.fiat)))
                 list.addAll(fiat)
@@ -233,5 +251,9 @@ class CurrencyDialogFragment constructor() : BasePositionDialogFragment<Currency
 
     fun setOnDismissListener(listener: () -> Unit) {
         this.dismissListener = listener
+    }
+
+    fun setonItemClickListener(listener: (BaseCurrencyData.CurrencyContentData2) -> Unit) {
+        this.onClickListener = listener
     }
 }

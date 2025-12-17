@@ -10,11 +10,12 @@ object SportIntExt {
     /**
      * @return string: 1234 轉換為 12.34, 1000 轉換為 10
      */
-    fun Long.getMoney(): String {
+    fun Long.getMoney(stripTrailingZero:Boolean=true): String {
         if (this == 0L) return "0" // ← 明確處理 0
 
         val value = this.toBigDecimal().divide(BigDecimal(100))
             .setScale(2, RoundingMode.DOWN)
+        if(!stripTrailingZero) return value.toPlainString()
 
         return if (value.stripTrailingZeros().scale() <= 0) {
             value.toPlainString().split(".")[0] // 顯示整數
@@ -47,12 +48,14 @@ object SportIntExt {
     /***
      * @param odds 乘數: 通常為賠率
      */
-    fun Long.getMoney(odds: Int): String {
+    fun Long.getMoney(odds: Int,stripTrailingZero:Boolean=true): String {
         if (this == 0L || odds <= 0) return "0" // ← 明確處理 0
 
         val result = this * odds
         val decimal = BigDecimal(result).divide(BigDecimal(10000))
             .setScale(2, RoundingMode.DOWN)
+        if(!stripTrailingZero) return decimal.toPlainString()
+
         return if (decimal.stripTrailingZeros().scale() <= 0) {
             decimal.toPlainString().split(".")[0] // 僅整數部分
         } else {
@@ -121,21 +124,25 @@ object SportIntExt {
     /**
      * @return string: 1234 轉換為 12.34, 1000 轉換為 10.00
      */
-    fun Int.getOdds(): String {
+    fun Int.getOdds(stripTrailingZero:Boolean = true): String {
         if (this <= 0) return DecimalFormat("#.##").format(this/100f)
         //BigDecimal(this / 100f).setScale(2, RoundingMode.HALF_UP).toFloat()
         //(this / 100f).let { String.format("%.2f", it).toFloat() }
 
         val decimal = BigDecimal(this).divide(BigDecimal(100))
-        return decimal.setScale(2, RoundingMode.DOWN).stripTrailingZeros().toPlainString()
+        return decimal.setScale(2, RoundingMode.DOWN)
+            .apply { if(stripTrailingZero) stripTrailingZeros() }
+            .toPlainString()
     }
 
-    fun Int.getOdds(odds: Int): String {
-        if (this <= 0 || odds <= 0) return "0" // ← 明確處理 0
+    fun Int.getOdds(odds: Int,stripTrailingZero:Boolean = true): String {
+        if (this <= 0) return DecimalFormat("#.##").format(this/100f)// ← 明確處理 0
 
         val result = this * odds
         val decimal = BigDecimal(result).divide(BigDecimal(10000))
-        return decimal.setScale(2, RoundingMode.DOWN).stripTrailingZeros().toPlainString()
+        return decimal.setScale(2, RoundingMode.DOWN)
+            .apply { if(stripTrailingZero) stripTrailingZeros() }
+            .toPlainString()
     }
 
     fun Long.percent(p: Int): Long {

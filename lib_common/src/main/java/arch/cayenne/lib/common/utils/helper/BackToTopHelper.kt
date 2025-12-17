@@ -21,8 +21,11 @@ import arch.cayenne.lib.common.utils.ext.clickNoRepeat
  * ```
  */
 class BackToTopHelper(
-    val targetRecyclerView: RecyclerView,
-    val button: AppCompatImageView
+    val targetRecyclerView: RecyclerView ,
+    val button: AppCompatImageView ,
+    val isGridView: Boolean ,
+    val pageSize: Int = 10 ,
+    val onBackToTop: (() -> Unit)? = null
 ) {
     private var totalDy = 0
 
@@ -50,6 +53,8 @@ class BackToTopHelper(
 
                 // 檢查滾動距離是否超過了一頁的高度，並且按鈕當前是隱藏的
                 if (totalDy > recyclerViewHeight && !button.isVisible) {
+                    // 如果列表项数小于等于一页（pageSize），则不显示回到顶部按钮
+                    if ((targetRecyclerView.adapter?.itemCount ?: 0) <= pageSize) return
                     // 如果是，則顯示回到頂部的按鈕 (例如使用淡入動畫)
                     button.visibility = View.VISIBLE
                     button.alpha = 0.3f
@@ -63,9 +68,37 @@ class BackToTopHelper(
         })
 
         button.clickNoRepeat {
+            //列表数据太多情况下点击返回顶部按钮需先跳至前几页再平滑滚动
+            val number = if (isGridView) 36 else 8
+            if (targetRecyclerView.adapter!!.itemCount > number) {
+                targetRecyclerView.scrollToPosition(number)
+            }
             targetRecyclerView.smoothScrollToPosition(0)
+            // 监听滚动完成
+//            targetRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+//                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+//                    if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+//                        val layoutManager = recyclerView.layoutManager
+//                        val firstVisible = when (layoutManager) {
+//                            is androidx.recyclerview.widget.LinearLayoutManager -> layoutManager.findFirstCompletelyVisibleItemPosition()
+//                            is androidx.recyclerview.widget.GridLayoutManager -> layoutManager.findFirstCompletelyVisibleItemPosition()
+//                            else -> -1
+//                        }
+//                        if (firstVisible == 0) {
+//                            recyclerView.removeOnScrollListener(this)
+//                            // 滚动到顶部后执行操作
+//                            onBackToTop?.invoke()
+//                        }
+//                    }
+//                }
+//            })
+            onBackToTop?.invoke()
             button.visibility = View.GONE
         }
+    }
+
+    fun reset() {
+        totalDy = 0
     }
 }
 

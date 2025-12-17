@@ -271,8 +271,10 @@ class ComboBetViewModel(
 
 
     fun toCombinationDetailParameter(serialValue: Int): ComboDetailFragment.Parameter {
-        return repo.toCombinationDetailParameter(serialValue,
-            onComboMultiBetBeanListener.value,
+        val comboMultiBetBeans = onComboMultiBetBeanListener.value
+        val data = comboMultiBetBeans?.find { it.serialValue == serialValue }?: error("can not find serialValue:$serialValue in $comboMultiBetBeans")
+        return repo.toCombinationDetailParameter(
+            data,
             onBetListListener.value,
             moneySymbol
         )

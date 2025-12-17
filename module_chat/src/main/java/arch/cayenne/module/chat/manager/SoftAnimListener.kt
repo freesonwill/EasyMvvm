@@ -3,7 +3,7 @@ package arch.cayenne.module.chat.manager
 /**
  * @author: wenxi
  * @date: 1/9/25 10:37
- * @description: 实时更新虚拟导航栏的高度
+ * @description: 软件盘弹出隐藏监听
  */
 interface SoftAnimListener {
     fun setNavigationStatus(hasNavigation:Boolean,navigationHeight:Int)

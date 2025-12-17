@@ -1,38 +1,122 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/color_1E1E1E"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/color_1E1E1E">
+
     <arch.cayenne.lib.common.ui.view.CustomGameTabGroupLayout
         android:id="@+id/custom_tab_group"
         android:layout_width="0dp"
         android:layout_height="@dimen/dp_32"
         android:layout_marginTop="@dimen/dp_14"
         app:defaultTabIcon="@drawable/ic_wali_demo"
-        app:tabIconSize="@dimen/dp_25"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
-    <arch.cayenne.lib.skin.widget.SkinnableRecyclerView
-        android:id="@+id/rv_game"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tabIconSize="@dimen/dp_25" />
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="@dimen/dp_12"
-        android:layout_marginStart="@dimen/dp_12"
-        android:layout_marginEnd="@dimen/dp_12"
-        app:layout_constraintTop_toBottomOf="@+id/custom_tab_group"
+        android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/custom_tab_group">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/apl_home_banner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/color_1E1E1E"
+                app:layout_scrollFlags="scroll|exitUntilCollapsed">
+
+                <arch.cayenne.lib.skin.widget.SkinnableTextView
+                    android:id="@+id/tv_reward_tips"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_36"
+                    android:layout_marginStart="@dimen/dp_12"
+                    android:layout_marginTop="@dimen/dp_12"
+                    android:layout_marginEnd="@dimen/dp_12"
+                    android:background="@drawable/hall_reward_tips_bkg"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical|start"
+                    android:maxLines="1"
+                    android:paddingStart="@dimen/dp_12"
+                    android:paddingEnd="@dimen/dp_0"
+                    android:text="@string/reward_tips"
+                    android:textColor="@color/color_999999"
+                    android:textSize="@dimen/sp_13"
+                    android:visibility="gone"
+                    app:skinnableFontWeight="400" />
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+
+        <arch.cayenne.lib.skin.widget.SkinnableRecyclerView
+            android:id="@+id/rv_game"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="@dimen/dp_12"
+            android:layout_marginTop="@dimen/dp_12"
+            android:layout_marginEnd="@dimen/dp_12"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            tools:itemCount="2"
+            tools:listitem="@layout/item_game_content" />
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+    <arch.cayenne.lib.common.ui.view.DynamicStateLayout
+        android:id="@+id/cl_dynamics"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <!-- 蒙層視圖 -->
+    <arch.cayenne.lib.skin.widget.SkinnableView
+        android:id="@+id/v_game_list_mask"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:alpha="0"
+        android:background="#BF000000"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/custom_tab_group" />
+
+    <!-- 排序選單下拉容器 -->
+    <FrameLayout
+        android:id="@+id/ll_game_dropdown"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/custom_tab_group" />
+
     <arch.cayenne.lib.skin.widget.SkinnableImageView
         android:id="@+id/iv_back_to_top"
         android:layout_width="@dimen/dp_35"
         android:layout_height="@dimen/dp_35"
-        android:src="@drawable/ic_back_to_top"
-        android:layout_marginBottom="@dimen/dp_35"
         android:layout_marginEnd="@dimen/dp_6"
+        android:layout_marginBottom="@dimen/dp_35"
+        android:src="@drawable/ic_back_to_top"
         android:visibility="gone"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

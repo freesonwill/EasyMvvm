@@ -70,6 +70,7 @@ class GameContentViewHolder(private val onItemClick: (GameContentData) -> Unit,v
                 params.topMargin = 5.dp2px
             }
         } else {
+            item.llBack.visibility = ViewGroup.GONE
             item.llCount.apply {
                 val params = this.layoutParams as ConstraintLayout.LayoutParams
                 params.topMargin = 6.dp2px

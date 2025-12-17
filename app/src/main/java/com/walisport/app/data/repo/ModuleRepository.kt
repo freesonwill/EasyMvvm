@@ -160,7 +160,9 @@ class ModuleRepository(
                     virtual = it.virtual,
                     rate = it.rate,
                     unit = it.unit,
-                    name = it.name
+                    name = it.name,
+                    ccy = it.ccy,
+                    icon = it.icon,
                 )
             }
         )

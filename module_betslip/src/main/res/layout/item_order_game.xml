@@ -5,6 +5,7 @@
     android:layout_height="wrap_content">
 
     <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
+        android:id="@+id/main"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_100"
         android:background="@color/color_272727"

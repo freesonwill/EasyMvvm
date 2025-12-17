@@ -8,15 +8,19 @@ import androidx.core.animation.addListener
 import androidx.core.os.bundleOf
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.ui.fragment.BaseBottomSheetFragment
-import arch.cayenne.lib.base.ui.fragment.launch
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
+import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
+import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
+import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+import arch.cayenne.module.bet.R
 import arch.cayenne.module.bet.databinding.FragmentComboDetailBinding
 import arch.cayenne.module.bet.ui.adapter.ComboDetailAdapter
+import arch.cayenne.module.bet.util.BetUtils
+import arch.cayenne.module.bet.util.BetUtils.isSuperCombo
 import arch.cayenne.module.bet.viewmodel.BetCombViewModel
 import com.blankj.utilcode.util.GsonUtils
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import kotlin.reflect.KClass
 
 /**
@@ -43,8 +47,9 @@ class ComboDetailFragment :
     }
 
     data class Parameter(
-        val title: String,
-        val titleTips: String,
+        val serialValue: Int,
+        val comboK: Int,
+        val comboV:Int,
         val items: List<ParameterItems>
     )
 
@@ -54,15 +59,22 @@ class ComboDetailFragment :
     )
 
     data class ParameterItems2(
-        val combo: String,
-        val money: String?,
-        val winMoney: String?,
-        val odds: String
-    )
+        val combo: List<Int>,
+        val money: Long,
+        val oddsList:List<Int>,
+        val moneySymbol:String,
+    ){
+        val comboStr:String get() = combo.joinToString("·") { "${it + 1}" }
+        val oddsStr:String get() = "@${odds.getOdds(false)}"
+        val winMoneyStr: String? get() = money.takeIf { it != 0L }?.let { "$moneySymbol${money.getMoney(odds,false)}" }
+        val moneyStr:String? get() = money.takeIf { it != 0L }?.let { "$moneySymbol${it.getMoney(false)}" }
+        val odds: Int get() = BetUtils.calculateCombinationOdds(oddsList,oddsList.size)
+    }
 
     data class ParameterUI(
-        val title: String,
-        val titleTips: String,
+        val serialValue: Int,
+        val comboK: Int,
+        val comboV:Int,
         val items:List<ParameterUIItem>
     ){
         companion object {
@@ -81,7 +93,33 @@ class ComboDetailFragment :
                         result.add(ParameterUIItem(type = TYPE_CHILD, child = child,childIndexInGroup = index))
                     }
                 }
-                return ParameterUI(data.title,data.titleTips,result)
+                return ParameterUI(data.serialValue,data.comboK,data.comboV,result)
+            }
+        }
+
+        fun title():String {
+            return when {
+                isSuperCombo(serialValue) -> R.string.title_combo_bet_super.getString()
+                else -> R.string.title_combo_bet_odds.getString(comboK,comboV)
+            }
+        }
+
+        fun titleTips():String{
+            return when {
+                comboV == 1 -> {
+                    R.string.title_combo_bet_detail_tips.getString(
+                        title(),
+                        R.string.title_combo_bet_odds.getString(comboK,comboV)
+                    )
+                }
+                else ->
+                    R.string.title_combo_bet_detail_tips.getString(
+                        title(),
+                        ((if(isSuperCombo(serialValue)) 1 else 2)..comboK).joinToString("、") { k ->
+                            if (k == 1) arch.cayenne.lib.res.R.string.title_single_bet.getString()
+                            else R.string.title_combo_bet_odds.getString(k, 1)
+                        }
+                    )
             }
         }
     }
@@ -113,36 +151,30 @@ class ComboDetailFragment :
     }
 
     override fun initView(savedInstanceState: Bundle?) {
-        launch {
-            val parameter = withContext(Dispatchers.IO){
-                requireArguments().getString(PARAMETER).let {
-                    GsonUtils.fromJson(it, Parameter::class.java)
-                }
-            }
-            val data = withContext(Dispatchers.IO){
-                ParameterUI.buildParameterUI(parameter)
-            }
-            with(mBinding) {
-                tvBetTitle.text = data.title
-                tipStr = data.titleTips
-                rvContent.layoutManager = LinearLayoutManager(requireContext())
-                rvContent.adapter = listAdapter
-            }
-            val screenHeight = getScreenHeight()
-            val minHeight = (screenHeight * 0.52).toInt()
-            val maxHeight = (screenHeight * 0.84).toInt()
-            mBinding.clRoot.maxHeight = maxHeight
-            mBinding.clRoot.layoutParams = mBinding.clRoot.layoutParams.apply {
-                if (parameter.items.size > 1) {
-                    isCanExpand = false
-                    height = maxHeight
-                } else {
-                    isCanExpand = true
-                    height = minHeight
-                }
-            }
-            listAdapter.submitList(data.items)
+        val parameter = requireArguments().getString(PARAMETER).let {
+            GsonUtils.fromJson(it, Parameter::class.java)
         }
+        val data = ParameterUI.buildParameterUI(parameter)
+        with(mBinding) {
+            tvBetTitle.text = data.title()
+            tipStr = data.titleTips()
+            rvContent.layoutManager = LinearLayoutManager(requireContext())
+            rvContent.adapter = listAdapter
+        }
+        val screenHeight = getScreenHeight()
+        val minHeight = (screenHeight * 0.52).toInt()
+        val maxHeight = (screenHeight * 0.84).toInt()
+        mBinding.clRoot.maxHeight = maxHeight
+        mBinding.clRoot.layoutParams = mBinding.clRoot.layoutParams.apply {
+            if (data.items.size > 12) {
+                isCanExpand = false
+                height = maxHeight
+            } else {
+                isCanExpand = true
+                height = minHeight
+            }
+        }
+        listAdapter.submitList(data.items)
     }
 
     override fun initListener() {

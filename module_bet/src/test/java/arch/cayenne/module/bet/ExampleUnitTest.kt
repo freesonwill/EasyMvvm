@@ -1,6 +1,6 @@
 package arch.cayenne.module.bet
 
-import arch.cayenne.lib.common.utils.ext.CombinationExt.combinations
+import arch.cayenne.lib.common.utils.ext.CombinationExt.combination
 import org.junit.Test
 
 import org.junit.Assert.*
@@ -32,7 +32,7 @@ class ExampleUnitTest {
     }
 
     private fun calculateCombinationOdds(oddsList:List<Int>, k:Int):Int {
-        val combinationData = oddsList.combinations(k)
+        val combinationData = oddsList.combination(k)
         val sumOdds = combinationData.sumOf { list ->
             if(list.isEmpty()) 0.0
             else list.fold(1.0) { acc, odds -> acc * (odds*0.01) }// 计算乘积并且每次除以100
@@ -42,14 +42,14 @@ class ExampleUnitTest {
 
     private fun calculateOdds2(oddsList:List<Int>){
         val k = oddsList.size
-        val combinationData = oddsList.combinations(k)
+        val combinationData = oddsList.combination(k)
         val sumOdds = combinationData.sumOf { it.fold(1.00) { acc, l -> 0.01* acc * l } }
         "calculateOdds2--sumOdds2--->$sumOdds".let(::println)
     }
 
     private fun calculateOdds(oddsList:List<Int>){
         val k = oddsList.size
-        val combinationData = oddsList.combinations(k)
+        val combinationData = oddsList.combination(k)
         val sumOdds = combinationData.sumOf { it.fold(1L) { acc, l -> 1L* acc * l } }
         val sumOdds2 = getScaleOdds(sumOdds,(combinationData.first().size - 1) * 2)
         val a = 2037187750

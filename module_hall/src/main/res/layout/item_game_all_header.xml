@@ -51,6 +51,7 @@
         app:layout_constraintLeft_toLeftOf="@+id/gl_mid" />
     <!--  右上方每日比賽  -->
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/iv_competition"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="@dimen/dp_7"

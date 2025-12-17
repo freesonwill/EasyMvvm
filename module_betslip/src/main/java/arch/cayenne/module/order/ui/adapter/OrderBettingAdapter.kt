@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.base.ui.adapter.BaseAdapter
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
+import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
 import arch.cayenne.lib.database.entity.BetSlipData
 import arch.cayenne.lib.database.entity.BetSlipOrderBean
 import arch.cayenne.lib.database.entity.BetSlipOrderHeaderBean
@@ -165,6 +166,10 @@ class OrderBettingAdapter(
 
             else -> BODY_EXPANDED
         }
+    }
+
+    fun setItemClickListener(listener: RecyclerItemListener<BetSlipOrderBean>){
+
     }
 
     companion object {

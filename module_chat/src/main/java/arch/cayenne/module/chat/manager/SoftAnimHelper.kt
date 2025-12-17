@@ -11,7 +11,7 @@ import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 /**
  * @author: wenxi
  * @date: 29/8/25 23:26
- * @description:
+ * @description: 控制软禁盘和表情键盘的动画
  */
 class SoftAnimHelper(
     private val rootView: View,

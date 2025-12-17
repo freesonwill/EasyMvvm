@@ -9,12 +9,12 @@ import android.text.TextWatcher
 import android.view.KeyEvent
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
-import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleCoroutineScope
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.module.chat.R
+import arch.cayenne.lib.common.data.constants.MsgType
 import arch.cayenne.module.chat.data.model.AtBean
 import arch.cayenne.module.chat.data.model.MentionSpan
 import arch.cayenne.module.chat.utils.EmojiEditFilter
@@ -49,6 +49,8 @@ class ChatATHelper(
 
     //是否at输入
     var isAtInput: Boolean = false
+// 由于输入框@按下后需要弹出@弹框，为了@弹框位置正确，等软件盘弹出后在弹出@弹框
+    var shouldOpenAtDialog:Boolean = false
 
     var etWatchListen:((edit:Editable?) -> Unit)? = null
 
@@ -142,7 +144,7 @@ class ChatATHelper(
                         atStrLength = atStr.length
                     }
                     it.insert(selectionStart, atStr)
-                    filterEtInputWithAt(this, item.name, nStart, atStrLength)//+ @ 空格
+                    addSpecialMentionSpan(MsgType.AT,this, item.name, nStart, atStrLength)//+ @ 空格
                 } else {
                     var indexStart = it.indexOf("@${item.name} ")
                     var indexEnd = indexStart + item.name.length + 2//从0开始，+1 加上空格字符串+1
@@ -156,29 +158,50 @@ class ChatATHelper(
                 }
             }
         }
-
         if (atPopupWindow.isSearchIng) {
             atPopupWindow.isSearchIng = false
             dismissWindow()
         }
-
     }
 
+    fun addShareBetSpan(betStr:String,msgType: MsgType) {
+        chatEtInput.apply {
+            text?.let {
+                var nStart: Int = -1
+                var betStrLength = -1
+                    if (selectionStart > 0 ) {
+                        nStart = selectionStart - 1 //光标在@后面
+                        betStrLength = betStr.length + 1 //少了个@
+                    } else {
+                        nStart = selectionStart
+                        betStrLength = betStr.length
+                    }
+                    it.insert(selectionStart, betStr)
+                    addSpecialMentionSpan(msgType,this, betStr, nStart, betStrLength)//+ @ 空格
+            }
+        }
+    }
+
+    fun addAtInEt(){
+        chatEtInput.apply {
+            text.insert(selectionStart,"@")
+        }
+    }
 
     // 移除at消息背景
     fun removeMentionSpan(editText: EditText, position: Int, count: Int) {
         val spannable = SpannableStringBuilder(editText.text)
         val spans = spannable.getSpans(position, position + 1, MentionSpan::class.java)
-        spans.forEach {
-            val spanStart = spannable.getSpanStart(it)
-            val spanEnd = spannable.getSpanEnd(it)
+        spans.forEach { mention ->
+            val spanStart = spannable.getSpanStart(mention)
+            val spanEnd = spannable.getSpanEnd(mention)
             //两个@中间，在后一个@前面插入
 
             if (position in spanStart + 1..<spanEnd) {
-                spannable.removeSpan(it)
+                spannable.removeSpan(mention)
                 if (spanStart + 1 == position) {
                     val tv = spannable.substring(spanStart + 3, spanEnd)
-                    val mentionSpan = MentionSpan(tv, atClick)
+                    val mentionSpan = MentionSpan(mention.msgType,tv, atClick)
                     spannable.setSpan(
                         mentionSpan, spanStart + 2, spanEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
                     )
@@ -199,13 +222,13 @@ class ChatATHelper(
     }
 
     //添加at消息的背景色字体颜色
-    fun filterEtInputWithAt(editText: EditText, name: String, start: Int, length: Int) {
+    fun addSpecialMentionSpan(type: MsgType, editText: EditText, name: String, start: Int, length: Int) {
         val text = editText.text.toString()
         val allLength = start + length
         if (start < 0 || text.length < allLength) {
             return
         }
-        val mentionSpan = MentionSpan(name, atClick)
+        val mentionSpan = MentionSpan(type,name, atClick)
         editText.text.setSpan(
             mentionSpan, start, allLength, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
         )

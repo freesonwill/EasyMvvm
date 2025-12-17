@@ -1,4 +1,4 @@
-package com.walisport.module.topup.ui.fragment
+package com.walisport.module.misc.ui.fragment
 
 import android.graphics.Bitmap
 import android.net.Uri
@@ -7,48 +7,51 @@ import android.os.Message
 import android.webkit.ValueCallback
 import android.webkit.WebChromeClient
 import android.webkit.WebView
+import androidx.activity.OnBackPressedCallback
+import androidx.navigation.fragment.navArgs
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
-import arch.cayenne.lib.base.ui.fragment.launch
-import arch.cayenne.lib.common.data.constants.UserDataKey
-import arch.cayenne.lib.common.data.manager.UserDataManager
+import arch.cayenne.lib.common.utils.ext.NavigationExt.navigateUp
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getColor
+import arch.cayenne.lib.common.utils.ext.touchBackPressed
 import arch.cayenne.lib.common.web.WLSWebViewClient
-import com.walisport.module.topup.databinding.FragmentRealtimeCashbackBinding
-import com.walisport.module.topup.ui.viewmodel.RealTimeCashBackViewModel
-import org.koin.java.KoinJavaComponent.inject
+import com.walisport.module.misc.databinding.FragmentSeniorPartnerBinding
+import com.walisport.module.misc.ui.viewmodel.SeniorPartnerViewModel
 import kotlin.reflect.KClass
 
 /**
- * 实时返水页面， 内容由Web提供
-
+ * Web浏览页，加载充提教程、实时返水等H5页面
  */
-class RealTimeCashBackFragment : BaseFragment<RealTimeCashBackViewModel, FragmentRealtimeCashbackBinding>() {
+class WebFragment : BaseFragment<SeniorPartnerViewModel, FragmentSeniorPartnerBinding>() {
 
-    override val vbClass: KClass<FragmentRealtimeCashbackBinding> = FragmentRealtimeCashbackBinding::class
-    override val vmClass: KClass<RealTimeCashBackViewModel> = RealTimeCashBackViewModel::class
+    override val vbClass: KClass<FragmentSeniorPartnerBinding> = FragmentSeniorPartnerBinding::class
+    override val vmClass: KClass<SeniorPartnerViewModel> = SeniorPartnerViewModel::class
 
-    private val manager: UserDataManager by inject(UserDataManager::class.java)
-
+    //private val manager: UserDataManager by inject(UserDataManager::class.java)
+    private val args by navArgs<WebFragmentArgs>()
 
     override fun initView(savedInstanceState: Bundle?) {
-        launch {
-            initWebView()
-            val uid = manager.getValue(UserDataKey.KEY_UID, -1)
-            val token = manager.getValue(UserDataKey.KEY_TOKEN, "")
-
-            mBinding.webView.loadUrl("https://www.google.com/")
-
-        }
+        val url = args.url
+        initTitleBar()
+        initWebView()
+        mBinding.webView.loadUrl(url!!)
+        //监听系统返回键
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    if (!doFragmentBack()) {
+                        navigateUp()
+                    }
+                }
+            }
+        )
     }
 
     private fun initWebView() {
         with(mBinding.webView) {
-
-            setWebViewClient(object :
+            webViewClient = object :
                 WLSWebViewClient(this) {
-
                 override fun onFormResubmission(
                     view: WebView?,
                     dontResend: Message?,
@@ -73,10 +76,9 @@ class RealTimeCashBackFragment : BaseFragment<RealTimeCashBackViewModel, Fragmen
                     super.onPageFinished(view, url)
 
                 }
-            })
-
+            }
             requestFocus()
-            setWebChromeClient(object : WebChromeClient() {
+            webChromeClient = object : WebChromeClient() {
                 override fun onShowFileChooser(
                     webView: WebView,
                     filePathCallback: ValueCallback<Array<Uri>>,
@@ -87,11 +89,10 @@ class RealTimeCashBackFragment : BaseFragment<RealTimeCashBackViewModel, Fragmen
 
                 override fun onProgressChanged(view: WebView, newProgress: Int) {
                     super.onProgressChanged(view, newProgress)
-                    //                showProgress(newProgress)
                 }
-            })
-
-            setBackgroundColor(arch.cayenne.lib.common.R.color.black.getColor())
+            }
+            setBackgroundColor(arch.cayenne.lib.common.R.color.title_bg.getColor())
+            setAttachedFragment(this@WebFragment)
         }
     }
 
@@ -101,10 +102,14 @@ class RealTimeCashBackFragment : BaseFragment<RealTimeCashBackViewModel, Fragmen
     override suspend fun createObserver() {
     }
 
+    private fun initTitleBar() {
+        mBinding.root.touchBackPressed()
+    }
+
     override fun onStart() {
-        StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND(autoPadding = false)
+        StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND()
         StatusBarConfig.statusBarDarkFont = false
-        setStatusBar(StatusBarConfig,mBinding.root)
+        setStatusBar(StatusBarConfig, mBinding.root)
         super.onStart()
     }
 
@@ -123,5 +128,13 @@ class RealTimeCashBackFragment : BaseFragment<RealTimeCashBackViewModel, Fragmen
     override fun onDestroy() {
         mBinding.webView.destroy()
         super.onDestroy()
+    }
+
+    fun doFragmentBack(): Boolean {
+        if (mBinding.webView.canGoBack()) {
+            mBinding.webView.goBack()
+            return true
+        }
+        return false
     }
 }

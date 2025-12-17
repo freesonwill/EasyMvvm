@@ -9,8 +9,6 @@ import arch.cayenne.lib.websocket.chat.data.GetChatHistoryResponse
 import arch.cayenne.lib.websocket.chat.data.MsgNotify
 import arch.cayenne.lib.websocket.data.SocketConnectState
 import arch.cayenne.module.chat.data.constants.CheckBetResultEnum
-import arch.cayenne.module.chat.data.constants.MsgType
-import arch.cayenne.module.chat.data.model.ChatMsgPageBean
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -21,7 +19,7 @@ import kotlinx.coroutines.launch
 /**
  * @author: wenxi
  * @date: 27/9/25 14:42
- * @description:
+ * @description: chat聊天相关api监听
  */
 class ChatServerController(
     private val scope: CoroutineScope,

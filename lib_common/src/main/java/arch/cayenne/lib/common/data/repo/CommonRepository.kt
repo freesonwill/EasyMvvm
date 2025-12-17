@@ -33,7 +33,8 @@ class CommonRepository(
     private val socketManager: WebSocketManager,
     private val userDataManager: UserDataManager,
     private val infoDao: InfoDao,
-    private val betDao: BetDao
+    private val betDao: BetDao,
+    private val balanceRepo: BalanceRepository
 ) : BaseRepository() {
 
     private val betResultFlow = MutableSharedFlow<List<BetResultLiteBean>>()
@@ -91,7 +92,11 @@ class CommonRepository(
             dispatcher = Dispatchers.IO,
             apiCode = ApiCode.BALANCE
         ) {
-            Client.BalanceReq.newBuilder().build()
+            Client.BalanceReq.newBuilder()
+                .apply {
+                    this.currency = balanceRepo.getCurrency()
+                }
+                .build()
         }
 
 

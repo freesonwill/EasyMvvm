@@ -10,6 +10,8 @@ import com.walisport.module.hall.data.GameAllContentData
 import com.walisport.module.hall.data.GameContentData
 import com.walisport.module.hall.data.HallRepository
 import com.walisport.module.hall.data.HotColdType
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
 import plugin.koin.KoinViewModel
@@ -23,7 +25,11 @@ class GameAllViewModel : BaseViewModel() {
     private val _gameRecentList = UnPeekLiveData<List<GameAllContentData>>()
     val gameRecentList: UnPeekLiveData<List<GameAllContentData>> = _gameRecentList
 
-
+    fun setIsClickGame(flag:Int){
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.setGameClick(flag)
+        }
+    }
     fun mockAllList(page:Int){
 
         val mockData = listOf(
@@ -31,20 +37,23 @@ class GameAllViewModel : BaseViewModel() {
             GameAllContentData(
                 id = "11${page}".toLong(),
                 name = "热门",
+                category = 102,
                 gameList = mockList(page)
             )
             ,
 
             GameAllContentData(
                 id = "12${page}".toLong(),
-                name = "棋牌",
+                name = "原创",
+                category = 103,
                 gameList = mockList(page)
             )
             ,
 
             GameAllContentData(
                 id = "13${page}".toLong(),
-                name = "老虎机",
+                name = "捕鱼",
+                category = 1,
                 gameList = mockList(page)
             )
 
@@ -52,7 +61,8 @@ class GameAllViewModel : BaseViewModel() {
 
             GameAllContentData(
                 id = "14${page}".toLong(),
-                name = "捕鱼",
+                name = "视讯",
+                category =2,
                 gameList = mockList(page)
             )
 
@@ -60,26 +70,36 @@ class GameAllViewModel : BaseViewModel() {
 
             GameAllContentData(
                 id = "15${page}".toLong(),
-                name = "真人",
+                name = "棋牌",
+                category =3,
                 gameList = mockList(page)
             )
             ,
 
             GameAllContentData(
                 id = "16${page}".toLong(),
-                name = "原创",
+                name = "老虎机",
+                category = 4,
                 gameList = mockList(page)
             )
             ,
 
             GameAllContentData(
                 id = "17${page}".toLong(),
+                name = "体育",
+                category = 5,
+                gameList = mockList(page)
+            ),
+            GameAllContentData(
+                id = "17${page}".toLong(),
                 name = "彩票",
+                category = 6,
                 gameList = mockList(page)
             ),
             GameAllContentData(
                 id = "18${page}".toLong(),
                 name = "电竞",
+                category = 7,
                 gameList = mockList(page)
             )
         )

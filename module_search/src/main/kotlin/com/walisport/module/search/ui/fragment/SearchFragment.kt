@@ -3,12 +3,15 @@ package com.walisport.module.search.ui.fragment
 import android.graphics.Rect
 import android.os.Bundle
 import android.view.View
+import android.view.inputmethod.InputMethodManager
+import androidx.core.view.doOnLayout
 import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.common.ui.dialog.CommonDialog
+import arch.cayenne.lib.common.ui.view.ClearableEditText
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
@@ -51,6 +54,34 @@ class SearchFragment : SearchBaseFragment<SearchViewModel, FragmentSearchBinding
         setHotWords()
         mBinding.root.touchBackPressed()
         contentBinding.root.touchBackPressed()
+        
+        autoShowKeyboard()
+    }
+    
+    /**
+     * 自動喚起鍵盤並設置搜索框為可輸入狀態
+     */
+    private fun autoShowKeyboard() {
+        val searchEditText = mBinding.titleBar.findViewById<ClearableEditText>(RC.id.ce_search)
+            ?: return
+        
+        searchEditText.isFocusable = true
+        searchEditText.isFocusableInTouchMode = true
+        
+        // 使用 doOnLayout 確保視圖布局完成後再喚起鍵盤
+        searchEditText.doOnLayout {
+            if (isAdded && view != null) {
+                searchEditText.requestFocus()
+                
+                // 使用 post 確保焦點設置完成後再喚起鍵盤
+                searchEditText.post {
+                    if (isAdded && view != null && searchEditText.hasFocus()) {
+                        val imm = requireContext().getSystemService(InputMethodManager::class.java)
+                        imm?.showSoftInput(searchEditText, InputMethodManager.SHOW_IMPLICIT)
+                    }
+                }
+            }
+        }
     }
 
     override fun initData() {
