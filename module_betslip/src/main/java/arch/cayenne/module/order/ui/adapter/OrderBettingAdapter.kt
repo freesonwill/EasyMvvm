@@ -10,6 +10,7 @@ import arch.cayenne.lib.database.entity.BetSlipData
 import arch.cayenne.lib.database.entity.BetSlipOrderBean
 import arch.cayenne.lib.database.entity.BetSlipOrderHeaderBean
 import arch.cayenne.lib.database.entity.BetSlipReserveBean
+import arch.cayenne.lib.database.entity.BetSlipSelectionData
 import arch.cayenne.module.betslip.databinding.ItemOrderSportBettingBinding
 import arch.cayenne.module.betslip.databinding.ItemOrderSportBettingCollapseBinding
 import arch.cayenne.module.betslip.databinding.ItemOrderSportBettingHeaderBinding
@@ -25,7 +26,8 @@ class OrderBettingAdapter(
     private val type: OrderSportPageEnum,
     private val earlySettleListener: OrderEarlySettleListener? = null,
     private val dataListener: OrderDataSelectorListener? = null,
-    private val reserveListener: OrderReserveListener? = null
+    private val reserveListener: OrderReserveListener? = null,
+    private val selectionListener: SelectionItemListener? = null
 ) : BaseAdapter<BetSlipData, BaseViewHolder, ViewBinding>(BetSlipCompare()) {
 
     // 記錄每個 item 的展開/收起狀態
@@ -52,7 +54,7 @@ class OrderBettingAdapter(
                     val item = getItem(position) as BetSlipReserveBean
 
                     reserveHolder.init(item)
-                    reserveHolder.initSelection(listOf(item.selection), type)
+                    reserveHolder.initSelection(listOf(item.selection), type, selectionListener)
                     reserveHolder.setDoubleClick {
                         toggleItemState(item.reserveId, position)
                     }
@@ -70,7 +72,7 @@ class OrderBettingAdapter(
                     val item = getItem(position) as BetSlipOrderBean
 
                     orderHolder.init(item)
-                    orderHolder.initSelection(item.selectionsList, type)
+                    orderHolder.initSelection(item.selectionsList, type, selectionListener)
                     orderHolder.setDoubleClick {
                         toggleItemState(item.betId, position)
                     }
@@ -194,5 +196,9 @@ class OrderBettingAdapter(
             locationY: Int,
             viewHeight: Int
         )
+    }
+
+    interface SelectionItemListener {
+        fun onSingleClick(bean: BetSlipSelectionData)
     }
 }

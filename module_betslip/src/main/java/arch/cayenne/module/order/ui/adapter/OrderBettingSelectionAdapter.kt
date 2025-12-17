@@ -13,7 +13,7 @@ import arch.cayenne.module.order.data.constants.OrderSportPageEnum
 import arch.cayenne.module.order.ui.viewholder.OrderBettingReserveSelectionViewHolder
 import arch.cayenne.module.order.ui.viewholder.OrderBettingSelectionViewHolder
 
-class OrderBettingSelectionAdapter(private val type: OrderSportPageEnum?): BaseAdapter<BetSlipSelectionData, BaseViewHolder, ItemOrderSportBettingSelectionBinding>(
+class OrderBettingSelectionAdapter(private val type: OrderSportPageEnum?, private val selectionListener: OrderBettingAdapter.SelectionItemListener?): BaseAdapter<BetSlipSelectionData, BaseViewHolder, ItemOrderSportBettingSelectionBinding>(
     BetSlipSelectionCompare()
 ) {
     override fun convertPlus(
@@ -32,6 +32,9 @@ class OrderBettingSelectionAdapter(private val type: OrderSportPageEnum?): BaseA
                 holder.init(item, itemCount == 1)
                 holder.hideLine(position == 0)
             }
+        }
+        binding.root.setOnClickListener {
+            selectionListener?.onSingleClick(getItem(position))
         }
     }
 
