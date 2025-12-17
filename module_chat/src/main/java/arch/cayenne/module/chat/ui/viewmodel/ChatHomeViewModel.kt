@@ -203,7 +203,8 @@ class ChatHomeViewModel() : BaseViewModel() {
             EmojiEnum.Smile,
             EmojiEnum.Boring,
             EmojiEnum.Scrowl,
-            EmojiEnum.Dizzy
+            EmojiEnum.Dizzy,
+            EmojiEnum.Duh,
         ).map {
             EmojiModel(it.resId, it.key)
         }.toList()

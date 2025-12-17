@@ -28,7 +28,7 @@
                 android:layout_weight="1" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/input_content"
+                android:id="@+id/input_bg"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_106"
                 android:background="@color/color_272727"
@@ -184,7 +184,7 @@
             android:layout_width="match_parent"
             android:layout_height="241dp"
             android:orientation="vertical"
-            app:layout_constraintTop_toBottomOf="@id/input_content" />
+            app:layout_constraintTop_toBottomOf="@id/input_bg" />
 
         <!--            <arch.cayenne.lib.skin.widget.SkinnableTabLayout-->
         <!--                android:id="@+id/keyboard_tb"-->

@@ -59,6 +59,9 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
     private lateinit var softKeyBoardManager: SoftKeyboardManager
     private lateinit var chatAtHelper: ChatATHelper
 
+    //传给LiveMainFragment,因为直播间的页面上下滑动时，页面扩展或者恢复。在键盘弹出时，禁止页面扩展和收缩
+    private var emojiPopupListen: ((isPopup: Boolean) -> Unit)? = null
+
 
     override fun initView(savedInstanceState: Bundle?) {
         initChatPageFragment()
@@ -73,6 +76,10 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
                 setMainChatStatus()
             }
         }
+    }
+
+    fun addEmojiPopupListen(emojiPopupListen: (isPopup: Boolean) -> Unit) {
+        this.emojiPopupListen = emojiPopupListen
     }
 
     /**
@@ -202,8 +209,8 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
                     SoftKeyBoardAnim.etAnimWhenEtContentChange(
                         mBinding,
                         mViewModel.currentKeyBoardType,
-                        onAnimStart = { updateInputIcon(true) },
-                        onAnimEnd = { updateInputIcon(false) })
+                        onAnimStart = { },
+                        onAnimEnd = {  })
                 }
             }
         }
@@ -260,7 +267,7 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
 //        mBinding.ivAt.setOnClickListener(listener)
 //        mBinding.ivBottomAt.setOnClickListener(listener)
         mBinding.ivBet.setOnClickListener(listener)
-        mBinding.ivBottomBet.setOnClickListener(listener)
+//        mBinding.ivBottomBet.setOnClickListener(listener)
     }
 
     private fun toChooseBet() {
@@ -359,31 +366,31 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
                 }
                 return@setOnTouchListener true
             }
-            ivAt.setOnTouchListener { v, event ->
-                if (event.action == MotionEvent.ACTION_DOWN) {
-                    chatAtHelper.shouldOpenAtDialog = true
-                    keyboardChangeClick(KeyBoardType.SOFT_KEYBOARD, 9)
-//                    lifecycleScope.launch {
-//                        chatAtHelper.addAtInEt()
-//                    }
-                }
-                true
-            }
-            ivBottomAt.setOnTouchListener { v, event ->
-                if (event.action == MotionEvent.ACTION_DOWN) {
-                    chatAtHelper.addAtInEt()
-                }
-                true
-            }
+//            ivAt.setOnTouchListener { v, event ->
+//                if (event.action == MotionEvent.ACTION_DOWN) {
+//                    chatAtHelper.shouldOpenAtDialog = true
+//                    keyboardChangeClick(KeyBoardType.SOFT_KEYBOARD, 9)
+////                    lifecycleScope.launch {
+////                        chatAtHelper.addAtInEt()
+////                    }
+//                }
+//                true
+//            }
+//            ivBottomAt.setOnTouchListener { v, event ->
+//                if (event.action == MotionEvent.ACTION_DOWN) {
+//                    chatAtHelper.addAtInEt()
+//                }
+//                true
+//            }
 //            ivBottomAt.setOnTouchListener { v, event -> return@setOnTouchListener true }
 //            ivBottomBet.setOnTouchListener { v, event -> return@setOnTouchListener true }
-            ivBottomEmoji.setOnTouchListener { v, event ->
-                if (event.action == MotionEvent.ACTION_DOWN) {
-                    mViewModel.updateKeyBoardUi(KeyBoardType.EMOJI, 6)
-                    chatAtHelper.dismissWindow()
-                }
-                return@setOnTouchListener true
-            }
+//            ivBottomEmoji.setOnTouchListener { v, event ->
+//                if (event.action == MotionEvent.ACTION_DOWN) {
+//                    mViewModel.updateKeyBoardUi(KeyBoardType.EMOJI, 6)
+//                    chatAtHelper.dismissWindow()
+//                }
+//                return@setOnTouchListener true
+//            }
             ivLanguage.setOnClickListener {
                 showLanguageDialog()
             }
@@ -416,9 +423,9 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
         chatAtHelper.etWatchListen = {
             SoftKeyBoardAnim.etAnimWhenEtContentChange(
                 mBinding,
-                mViewModel.currentKeyBoardType,
-                onAnimStart = { updateInputIcon(true) },
-                onAnimEnd = { updateInputIcon(false) })
+                softKeyBoardManager.clickKeyBoardType,
+                onAnimStart = { },
+                onAnimEnd = {  })
         }
     }
 
@@ -442,16 +449,12 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
     private fun calculationLayoutSize() {
         mBinding.apply {
             softKeyBoardManager.emojiKeyBoardHeight = 242.dp2px
-            if (mViewModel.isMainSoft) {
-                inputMain.layoutParams.height = mViewModel.keyBoardHeight
-                main.layoutParams.height =
-                    mViewModel.keyBoardHeight + softKeyBoardManager.emojiKeyBoardHeight
-                main.requestLayout()
-            }
-
-
-//            chatKeyboard.layoutParams.height = softKeyBoardManager.emojiKeyBoardHeight
-//            inputContent.translationY = 44.dp2px.toFloat()
+//            if (mViewModel.isMainSoft) { //直播间不做设置
+//                inputMain.layoutParams.height = mViewModel.keyBoardHeight
+//                main.layoutParams.height =
+//                    mViewModel.keyBoardHeight + softKeyBoardManager.emojiKeyBoardHeight
+//                main.requestLayout()
+//            }
         }
     }
 
@@ -493,15 +496,21 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
      * 直播间因为要做滑动，所以每次弹出后要对高度重新设置下
      * */
     private fun emojiLayoutSize(isReset: Boolean) {
-        if (mViewModel.isMainSoft) { //首页不做操作
-            return
-        }
+//        if (mViewModel.isMainSoft) { //首页不做操作
+//            return
+//        }
         mBinding.apply {
-            inputMain.layoutParams.height =
+            llContent.layoutParams.height =
                 if (isReset) LayoutParams.MATCH_PARENT else mViewModel.keyBoardHeight
             main.layoutParams.height =
                 if (isReset) LayoutParams.MATCH_PARENT else mViewModel.keyBoardHeight + softKeyBoardManager.emojiKeyBoardHeight
             main.requestLayout()
+//            lifecycleScope.launch {
+//                delay(500)
+//                "emojiLayoutSize isReset $isReset  main ${main.height}    mainTranslationY ${main.translationY} keyBoardHeight ${mViewModel.keyBoardHeight}".logd(
+//                    "aaa"
+//                )
+//            }
         }
     }
 
@@ -510,46 +519,51 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
      * */
     fun showChat() {
         chatAtHelper.dismissWindow()
-        updateKeyboardView(false)
-//        updateKeyboardView(mBinding.chatEtInput.text.isNotEmpty())
+//        updateKeyboardView(false)
         emojiLayoutSize(true)
+        emojiPopupListen?.invoke(false)
+
     }
 
     /**
      * 展示软件盘
      * */
     private fun showSoftKeyBoard() {
-        updateKeyboardView(true)
+//        updateKeyboardView(true)
         emojiLayoutSize(false)
+        emojiPopupListen?.invoke(true)
     }
 
     /**
      * 展示表情界面
      * */
     private fun showEmoji() {
-        updateKeyboardView(true)
+//        updateKeyboardView(true)
 //        softKeyBoardManager.etRequestFocus()
         emojiLayoutSize(false)
+        emojiPopupListen?.invoke(true)
     }
 
     private fun updateKeyboardView(isVisible: Boolean) {
-        mBinding.apply {
-        }
+
     }
 
     private fun updateInputIcon(isVisible: Boolean) {
         mBinding.apply {
-            ivAt.isVisible = isVisible
-            ivBet.isVisible = isVisible
-            ivEmoji.isVisible = isVisible
+            ivAt.isVisible = true //isVisible
+            ivBet.isVisible = true //isVisible
+            ivEmoji.isVisible = true //isVisible
             ivLanguage.isVisible = isVisible
-            ivBottomAt.isVisible = !isVisible
-            ivBottomBet.isVisible = !isVisible
-            ivBottomEmoji.isVisible = !isVisible
+//            ivBottomAt.isVisible = false //!isVisible
+//            ivBottomBet.isVisible = false // !isVisible
+//            ivBottomEmoji.isVisible = false // !isVisible
         }
     }
 
     override fun keyboardChangeClick(keyBoardType: KeyBoardType, flag: Int) {
+//        "keyboardChangeClick keyBoardType:$keyBoardType,currentKeyBoardType:${mViewModel.currentKeyBoardType},flag:$flag".logd(
+//            "aaa"
+//        )
         if (keyBoardType == mViewModel.currentKeyBoardType) {
             return
         }
@@ -597,7 +611,6 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
             mainAnim = AnimatorSet()
             val mainTransYAnim = SoftKeyBoardAnim.mainTransYAnim(offset, mBinding.main)
             val emojiSet = AnimatorSet().apply {
-                duration = 170L
                 inputIconShouldUpdate(actionType, call = { // 软件盘和表情键盘互相切换时表情按钮动画不播放
                     mBinding.apply {
                         if (chatEtInput.length() == 0) { //有内容时input按钮不能上下移动
@@ -621,25 +634,19 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
                     play(mainTransYAnim)
                 })
             }
-            //TODO 测试键盘切换anim
             mainAnim?.play(emojiSet)
-//            if (offset == 0)
-//                mainAnim?.playSequentially(emojiSet, hotViewAnim(offset))
-//            else
-//                mainAnim?.playSequentially(hotViewAnim(offset), emojiSet)
-//            mainAnim?.duration = 170L
-
+            mainAnim?.duration = 170L
             mainAnim?.addListener(onStart = {
                 if (mBinding.chatEtInput.length() == 0) {
-                    inputIconShouldUpdate(actionType, call = {//键盘切换动画开始时除了软件盘和表情键盘互相切换外，其他键盘切换会有键盘按钮动画
-                        updateInputIcon(true) //初始动画时要input bt可见
-                    })
+                    inputIconShouldUpdate(
+                        actionType,
+                        call = {//键盘切换动画开始时除了软件盘和表情键盘互相切换外，其他键盘切换会有键盘按钮动画
+                        })
                 }
                 onStart.invoke()
             }, onEnd = {
                 if (mBinding.chatEtInput.length() == 0) {
                     inputIconShouldUpdate(actionType, call = { //键盘切换动画结束时，根据键盘弹出和缩放判断是否要隐藏输入框按钮
-                        updateInputIcon(offset == 0) //根据上下移判断是否隐藏input bt
                     })
                 }
                 onEnd.invoke()
