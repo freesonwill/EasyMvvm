@@ -4,6 +4,7 @@ import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
+import android.app.Application
 import android.view.View
 import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -15,6 +16,11 @@ import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.module.chat.data.constants.KeyBoardType
 import arch.cayenne.module.chat.data.constants.KeyboardActionType
 import arch.cayenne.module.chat.databinding.FragmentLiveChatBinding
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import org.koin.core.context.GlobalContext
+import org.koin.java.KoinJavaComponent.getKoin
 
 /**
  * @author: wenxi
@@ -33,24 +39,21 @@ object SoftKeyBoardAnim {
         return anim
     }
 
-    fun ivLanguageAlphaAnim(isVisible: Boolean, ivLanguage: View): ObjectAnimator {
-        val alphaObj = ObjectAnimator.ofFloat(ivLanguage, "alpha", if (isVisible) 1f else 0f)
-        return alphaObj
-    }
 
     /**
      * 输入框动画包含横移和缩放
      * */
     @SuppressLint("Recycle")
     fun chatEtInputAnim(
-        scaleX: Int,
+        targetWidth: Int,
         transX: Float,
         chatEtInput: View,
     ): AnimatorSet {
         val animSet = AnimatorSet()
+        val d3pValue = targetWidth.dp2px
 //        chatEtInput.pivotX = 0.5f
 //        val scaleAnim = ObjectAnimator.ofInt(chatEtInput, "width", chatEtInput.width,scaleX)
-        val inputWidthAnim = ValueAnimator.ofInt(chatEtInput.width, scaleX).apply {
+        val inputWidthAnim = ValueAnimator.ofInt(chatEtInput.width, d3pValue).apply {
             addUpdateListener {
                 val lp = chatEtInput.layoutParams
                 lp.width = it.animatedValue as Int
@@ -59,6 +62,9 @@ object SoftKeyBoardAnim {
         }
         val transXAnim = ObjectAnimator.ofFloat(chatEtInput, "translationX", transX)
         animSet.playTogether(inputWidthAnim, transXAnim)
+        animSet.addListener(onEnd = {
+
+        })
         return animSet
     }
 
@@ -119,11 +125,11 @@ object SoftKeyBoardAnim {
         )
     }
 
-    fun hotViewAnim(offset: Int, inputContent: ConstraintLayout) = ObjectAnimator.ofFloat(
-        inputContent,
-        "translationY",
-        if (offset != 0) 0f else 44.dp2px.toFloat()
-    )
+//    fun hotViewAnim(offset: Int, inputContent: ConstraintLayout) = ObjectAnimator.ofFloat(
+//        inputContent,
+//        "translationY",
+//        if (offset != 0) 0f else 44.dp2px.toFloat()
+//    )
 
     /***
      *键盘弹出和收缩时，输入框横移和缩放 输入框按钮上下移动
@@ -155,13 +161,13 @@ object SoftKeyBoardAnim {
         when (actionType) {
             KeyboardActionType.CHAT_TO_SOFT,
             KeyboardActionType.CHAT_TO_EMOJI -> { //弹出键盘 先按钮动画再做输入框动画
-                val inputAnim = chatEtInputAnim(355.dp2px, -48.dp2px.toFloat(), chatLlInput)
+                val inputAnim = chatEtInputAnim(355, -48.dp2px.toFloat(), chatLlInput)
                 animSet.playSequentially(btnAnim, inputAnim)
             }
 
             KeyboardActionType.SOFT_TO_CHAT,
             KeyboardActionType.EMOJI_TO_CHAT -> {//收回键盘 先输入框动画恢复原位，再按钮动画
-                val inputAnim = chatEtInputAnim(307.dp2px, 0f, chatLlInput)
+                val inputAnim = chatEtInputAnim(307, 0f, chatLlInput)
                 animSet.playSequentially(inputAnim, btnAnim)
             }
 
@@ -186,26 +192,26 @@ object SoftKeyBoardAnim {
         chatLlInput: View,
         tvSend: View
     ): AnimatorSet {
-        var scaleX = 0
+        var inputWidth = 0
         var transX = 0f
         when {
             isEmpty && currentType == KeyBoardType.CHAT -> {
-                scaleX = 307.dp2px
+                inputWidth = 307
                 transX = 0f
             }
 
             isEmpty && currentType != KeyBoardType.CHAT -> {
-                scaleX = 355.dp2px
+                inputWidth = 355
                 transX = -48.dp2px.toFloat()
             }
 
             else -> {
-                scaleX = 282.dp2px
+                inputWidth = 282
                 transX = -46.dp2px.toFloat()
             }
         }
         val sendAlphaAnim = ObjectAnimator.ofFloat(tvSend, "alpha", if (isEmpty) 0f else 1f)
-        val inputAnim = chatEtInputAnim(scaleX, transX, chatLlInput)
+        val inputAnim = chatEtInputAnim(inputWidth, transX, chatLlInput)
         val mainAnim = AnimatorSet().apply {
             if (isEmpty) playSequentially(sendAlphaAnim, inputAnim) else playSequentially(
                 inputAnim,
@@ -227,7 +233,6 @@ object SoftKeyBoardAnim {
     ) {
 
         binding.apply {
-//            "etAnimWhenEtContentChange chatEtInput ${chatEtInput.length()}    chatTvSend  ${chatTvSend.isVisible}   ivLanguage ${ivLanguage.isVisible}".logd("aaa")
 
             when {
                 chatEtInput.length() == 0 && chatTvSend.isVisible && currentType != KeyBoardType.CHAT -> { //键盘弹出的时候发送 有内容到无内容
@@ -251,7 +256,7 @@ object SoftKeyBoardAnim {
 //                    input输入框扩展 -> 按钮动画
                     val btnAnim = AnimatorSet().apply {
                         playTogether(
-                            *SoftKeyBoardAnim.inputIconAnim(
+                            *inputIconAnim(
                                 true,
                                 ivAt,
                                 ivBet,
@@ -286,7 +291,9 @@ object SoftKeyBoardAnim {
                         addBetToEtInputAnim(
                             binding,
                             currentType,
-                            onStart = { onAnimStart.invoke() },
+                            onStart = {
+//                                onAnimStart.invoke()
+                            },
                             onEnd = { onAnimEnd.invoke() }
                         )
                     } else {
@@ -299,7 +306,7 @@ object SoftKeyBoardAnim {
                             duration = 170L
                             addListener(onStart = {
                                 chatTvSend.isVisible = true
-                                onAnimStart.invoke()
+//                                onAnimStart.invoke()
                             }, onEnd = {
                                 onAnimEnd.invoke()
                             })
@@ -329,7 +336,7 @@ object SoftKeyBoardAnim {
             val btnAnim = AnimatorSet().apply {
                 playTogether(
                     *inputIconAnim(
-                        true,
+                        false,
                         ivAt,
                         ivBet,
                         ivEmoji,
@@ -355,5 +362,4 @@ object SoftKeyBoardAnim {
             animSet.start()
         }
     }
-
 }
