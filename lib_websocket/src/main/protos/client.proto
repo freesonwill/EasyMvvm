@@ -85,6 +85,7 @@ message ListMatchReq {
   int64 cursor_match_start_time = 7; // 比赛开始时间游标
   int32 size = 8;         // 每页显示数量,最大50
   bool reverse = 9; //true-上页，false-下页
+  int32 sort_type = 10; //排序类型 0-按时间排序 1-按热门排序
 }
 
 message ListMatchResp {
