@@ -45,7 +45,8 @@ class OrderBettingSelectionViewHolder(private val mBinding: ItemOrderSportBettin
     }
 
     private fun setResultStatus(status: Int) {
-        mBinding.groupResult.isVisible = status == 4 || status == 5
+        mBinding.tvResult.isVisible = status == 4 || status == 5
+        mBinding.tvSecondResult.isVisible = status == 4 || status == 5
         when (status) {
             0, 6 -> {
                 mBinding.ivGameResult.setImageDrawable(SkinnableResourceManager.getDrawable(itemView.context, R.drawable.icon_order_status_dot))

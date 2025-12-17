@@ -10,16 +10,30 @@ import arch.cayenne.lib.common.ui.viewmodel.Event
 import arch.cayenne.lib.database.entity.BetSlipData
 import arch.cayenne.lib.database.entity.BetSlipOrderBean
 import arch.cayenne.lib.database.entity.BetSlipOrderHeaderBean
-import arch.cayenne.module.betslip.data.repo.UnsettleRepository
+import arch.cayenne.module.order.data.repo.NewOrderRepository
 import arch.cayenne.module.order.data.constants.OrderSportPageEnum
 import arch.cayenne.module.order.utils.TimeUtils
 import galaxy.common.proto.Common
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 
-class OrderSportPageViewModel(private val repo: UnsettleRepository) : BaseViewModel() {
+class OrderSportPageViewModel(private val repo: NewOrderRepository) : BaseViewModel() {
 
     companion object {
         private const val PAGE_SIZE = 10
+    }
+
+    init {
+        // 監聽 Repository 的訂單資料 Flow
+        repo.orderDataFlow
+            .onEach { orders ->
+                if (orders.isNotEmpty()) {
+                    processOrderData(orders)
+                }
+            }
+            .launchIn(viewModelScope)
     }
 
     private val _intentEvent = MutableLiveData<Event<DataState>>()
@@ -60,13 +74,19 @@ class OrderSportPageViewModel(private val repo: UnsettleRepository) : BaseViewMo
             callApi({
                 repo.getOrder(type.value, startTime, endTime, null, PAGE_SIZE)
             }, { resp ->
-                handleOrderResponse(resp, isLoadMore = false)
                 if (resp is ApiResponseState.Succeeded<*>) {
-                    val data = resp.data as  List<BetSlipOrderBean>
-                    _intentEvent.value = if (startTime != null && endTime != null && endTime != null && data.isEmpty()) {
+                    val data = resp.data as List<BetSlipOrderBean>
+                    _intentEvent.value = if (startTime != null && endTime != null && data.isEmpty()) {
                         Event(DataState.DataEmpty)
                     } else {
                         Event(DataState.None)
+                    }
+                    
+                    if (data.isNotEmpty()) {
+                        lastCursorBetTime = data.last().betTime
+                        canLoadMore = data.size >= PAGE_SIZE
+                    } else {
+                        canLoadMore = false
                     }
                 }
             })
@@ -79,9 +99,17 @@ class OrderSportPageViewModel(private val repo: UnsettleRepository) : BaseViewMo
     fun loadMore() {
         if (checkNetwork() && canLoadMore && currentType != null && lastCursorBetTime != null) {
             callApi({
-                repo.getOrder(currentType!!.value, startTime, endTime, lastCursorBetTime, PAGE_SIZE)
+                repo.loadMoreOrder(currentType!!.value, startTime, endTime, lastCursorBetTime, PAGE_SIZE)
             }, { resp ->
-                handleOrderResponse(resp, isLoadMore = true)
+                if (resp is ApiResponseState.Succeeded<*>) {
+                    val data = resp.data as List<BetSlipOrderBean>
+                    if (data.isNotEmpty()) {
+                        lastCursorBetTime = data.last().betTime
+                        canLoadMore = data.size >= PAGE_SIZE
+                    } else {
+                        canLoadMore = false
+                    }
+                }
             })
         }
     }
@@ -97,7 +125,15 @@ class OrderSportPageViewModel(private val repo: UnsettleRepository) : BaseViewMo
             callApi({
                 repo.getOrder(currentType!!.value, startTime, endTime, null, PAGE_SIZE)
             }, { resp ->
-                handleOrderResponse(resp, isLoadMore = false)
+                if (resp is ApiResponseState.Succeeded<*>) {
+                    val data = resp.data as List<BetSlipOrderBean>
+                    if (data.isNotEmpty()) {
+                        lastCursorBetTime = data.last().betTime
+                        canLoadMore = data.size >= PAGE_SIZE
+                    } else {
+                        canLoadMore = false
+                    }
+                }
             })
         }
     }
@@ -107,44 +143,20 @@ class OrderSportPageViewModel(private val repo: UnsettleRepository) : BaseViewMo
      */
     fun canLoadMore(): Boolean = canLoadMore
 
+
+
     /**
-     * 統一處理訂單 API 響應
-     * @param resp API 響應
-     * @param isLoadMore 是否為載入更多操作
+     * 處理從 Repository 收到的訂單資料，添加 Header 並更新 LiveData
      */
-    private fun handleOrderResponse(resp: ApiResponseState, isLoadMore: Boolean) {
-        if (resp is ApiResponseState.Succeeded<*>) {
-            val newData = resp.data as List<BetSlipOrderBean>
-            
-            if (newData.isNotEmpty()) {
-                val finalData = if (isLoadMore) {
-                    // 載入更多：合併現有資料與新資料
-                    val currentOrders = getCurrentOrderBeans()
-                    currentOrders + newData
-                } else {
-                    // 第一次載入或重新載入：直接使用新資料
-                    newData
-                }
-                
-                processOrderData(finalData)
-                lastCursorBetTime = newData.last().betTime
-                canLoadMore = newData.size >= PAGE_SIZE // 如果返回資料 < 10，表示沒有更多資料
-            } else {
-                canLoadMore = false
-            }
+    private fun processOrderData(orders: List<BetSlipOrderBean>) {
+        // 如果訂單列表為空，直接設置空列表
+        if (orders.isEmpty()) {
+            _orderDataListener.postValue(emptyList())
+            return
         }
-    }
 
-    /**
-     * 從當前 LiveData 中提取所有的 OrderBean 資料
-     */
-    private fun getCurrentOrderBeans(): List<BetSlipOrderBean> {
-        return _orderDataListener.value?.filterIsInstance<BetSlipOrderBean>() ?: emptyList()
-    }
-
-    private fun processOrderData(data: List<BetSlipOrderBean>) {
         // 按日期分組訂單
-        val dataMap = groupOrdersByDate(data)
+        val dataMap = groupOrdersByDate(orders)
 
         // 按日期排序（越接近現在的越前面）
         val sortedDateKeys = dataMap.keys.sortedByDescending { dateString ->

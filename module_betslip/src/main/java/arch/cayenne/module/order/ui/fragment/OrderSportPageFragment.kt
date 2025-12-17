@@ -11,6 +11,7 @@ import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.database.entity.BetSlipOrderBean
+import arch.cayenne.lib.database.entity.BetSlipSelectionData
 import arch.cayenne.module.betslip.R
 import arch.cayenne.module.betslip.databinding.FragmentOrderSportPageBinding
 import arch.cayenne.module.betslip.utisl.BetSlipUtils
@@ -46,15 +47,15 @@ class OrderSportPageFragment :
                 override fun onDateClicked() {
                     showDateDialog()
                 }
+            }, selectionListener = object : OrderBettingAdapter.SelectionItemListener {
+                override fun onSingleClick(bean: BetSlipSelectionData) {
+                    chooseViModel?.clickBtn(MsgType.BET_SPORT)
+                }
+
             })
         } else {
             OrderBettingAdapter(type)
         }
-        adapter.setItemClickListener(object :RecyclerItemListener<BetSlipOrderBean>{
-            override fun onItemClick(item: BetSlipOrderBean?, position: Int) {
-                chooseViModel?.clickBtn(MsgType.BET_SPORT)
-            }
-        })
         mBinding.rvContent.adapter = adapter
 
         val decoration = OrderItemDecoration(10.dp2px)
