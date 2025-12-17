@@ -17,7 +17,8 @@ sealed class BaseCurrencyData {
         val id: Int,
         val icon: String,
         val currencyName: String,
-        val amount: String,
+        val amount: Long,
+        val amountStr: String,
         val unit: String
     ) : BaseCurrencyData()
 }

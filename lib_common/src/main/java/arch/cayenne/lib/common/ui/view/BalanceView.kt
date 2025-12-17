@@ -13,7 +13,6 @@ import arch.cayenne.lib.common.ui.fragment.CurrencyDialogFragment
 import arch.cayenne.lib.common.ui.viewmodel.BalanceViewModel
 import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
-import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import com.bumptech.glide.Glide
@@ -51,7 +50,7 @@ class BalanceView : FrameLayout {
                 rotateArrow(false)
             }
             f.setonItemClickListener {
-                setMoney(it.amount)
+                setMoney(it.amountStr)
             }
             f.show(childFragmentManager)
         }
@@ -93,7 +92,7 @@ class BalanceView : FrameLayout {
                 setMoney("0.00")
                 setIcon("")
             } else {
-                setMoney(it.amount)
+                setMoney(it.amountStr)
                 setIcon(it.icon)
             }
         }

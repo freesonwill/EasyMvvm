@@ -1,7 +1,6 @@
 package arch.cayenne.lib.common.data.repo
 
 import arch.cayenne.lib.base.data.repository.BaseRepository
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.common.data.constants.BaseCurrencyData
 import arch.cayenne.lib.common.data.constants.UserDataKey
 import arch.cayenne.lib.common.data.manager.UserDataManager
@@ -14,7 +13,6 @@ import arch.cayenne.lib.database.entity.UserDataBean
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.onStart
 import java.util.Locale
 
@@ -59,8 +57,8 @@ class BalanceRepository(
             }
         }
         if (!showAllCurrency) {
-            fiat.removeIf { it.amount == "0.00L" }
-            crypto.removeIf { it.amount == "0.00L" }
+            fiat.removeIf { it.amount == 0L }
+            crypto.removeIf { it.amount == 0L }
         }
         return Pair(fiat, crypto)
     }
@@ -79,7 +77,8 @@ class BalanceRepository(
                 id = 0,
                 icon = "",
                 currencyName = "",
-                amount = 0L.getFormalMoney(),
+                amount = 0L,
+                amountStr = 0L.getFormalMoney(),
                 unit = ""
             )
         }
@@ -109,7 +108,8 @@ class BalanceRepository(
                     id = 0,
                     icon = "",
                     currencyName = "",
-                    amount = 0L.getFormalMoney(),
+                    amount = 0L,
+                    amountStr = 0L.getFormalMoney(),
                     unit = ""
                 )
         }
@@ -117,7 +117,8 @@ class BalanceRepository(
             id = 0,
             icon = "",
             currencyName = "",
-            amount = 0L.getFormalMoney(),
+            amount = 0L,
+            amountStr = 0L.getFormalMoney(),
             unit = ""
         )
     }
@@ -133,7 +134,8 @@ class BalanceRepository(
             id = id,
             icon = icon,
             currencyName = name,
-            amount = amount.getFormalMoney(),
+            amount = amount,
+            amountStr = amount.getFormalMoney(),
             unit = unit
         )
     }
@@ -160,10 +162,10 @@ class BalanceRepository(
             }
         }
         if (!showAllCurrency) {
-            fiat.removeIf { it.amount == "0.00L" }
-            crypto.removeIf { it.amount == "0.00L" }
+            fiat.removeIf { it.amount == 0L }
+            crypto.removeIf { it.amount == 0L }
         }
-        
+
         return Pair(fiat, crypto)
     }
 
