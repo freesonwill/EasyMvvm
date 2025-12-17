@@ -6,7 +6,6 @@ import arch.cayenne.lib.common.data.constants.BaseCurrencyData
 import arch.cayenne.lib.common.databinding.ItemCurrencyContentBinding
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import com.bumptech.glide.Glide
-import kotlin.text.ifEmpty
 
 class CurrencyContentViewHolder(
     val mBinding: ItemCurrencyContentBinding,
@@ -15,7 +14,7 @@ class CurrencyContentViewHolder(
         if (item == null) return
         with(mBinding) {
             tvCurrencyName.text = item.currencyName
-            tvCurrencyAmount.text = "${item.unit}${item.amount}"
+            tvCurrencyAmount.text = "${item.unit}${item.amountStr}"
             Glide.with(root.context)
                 .load(item.icon)
                 .placeholder(R.drawable.ic_wali_demo)
