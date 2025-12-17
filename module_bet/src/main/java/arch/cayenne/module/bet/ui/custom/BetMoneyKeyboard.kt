@@ -39,6 +39,7 @@ import arch.cayenne.module.bet.R
 import arch.cayenne.module.bet.databinding.LayoutBetMoneyKeyboardBinding
 import arch.cayenne.module.bet.viewmodel.ComboBetMoneyKeyboardDialogViewModel
 import org.koin.java.KoinJavaComponent.getKoin
+import java.security.Key
 
 /**
  * @date: 2025/11/12 15:20
@@ -75,6 +76,13 @@ class BetMoneyKeyboard @JvmOverloads constructor(
                 return ComboBetMoneyKeyboardDialogViewModel(getKoin().get<BalanceRepository>()) as T
             }
         }
+    }
+    private var keyboardState:KeyboardState? = null
+    private enum class KeyboardState{
+        EXPANDED,
+        EXPANDING,
+        COLLAPSED,
+        COLLAPSING
     }
 
     init {
@@ -232,15 +240,23 @@ class BetMoneyKeyboard @JvmOverloads constructor(
 
     fun hideKeyboard(duration: Long = 150) {
         if(!isAttachedToWindow) return
+        if(keyboardState == KeyboardState.COLLAPSED || keyboardState == KeyboardState.COLLAPSING) return
+        keyboardState = KeyboardState.COLLAPSING
         collapseView(this,duration){
             if(removeWhenHide) (parent as? ViewGroup)?.removeView(this)
+            keyboardState = KeyboardState.COLLAPSED
         }
         onHideKeyboard?.invoke()
     }
 
     fun showKeyBoard(duration: Long = 150,onEnd:(()->Unit)? = null){
         if(!isAttachedToWindow) return
-        expandView(this,duration,onEnd)
+        if(keyboardState == KeyboardState.EXPANDING || keyboardState == KeyboardState.EXPANDED) return
+        keyboardState = KeyboardState.EXPANDING
+        expandView(this,duration){
+            keyboardState = KeyboardState.EXPANDED
+            onEnd?.invoke()
+        }
         onShowKeyboard?.invoke()
     }
 
