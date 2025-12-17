@@ -8,14 +8,14 @@ class MapConverter {
     private val gson = Gson()
 
     @TypeConverter
-    fun fromIntLongMap(map: Map<Int, Long>?): String {
+    fun fromStringLongMap(map: Map<String, Long>?): String {
         return gson.toJson(map)
     }
 
     @TypeConverter
-    fun toIntLongMap(json: String?): Map<Int, Long> {
+    fun toIntLongMap(json: String?): Map<String, Long> {
         if (json.isNullOrEmpty()) return emptyMap()
-        val type = object : TypeToken<Map<Int, Long>>() {}.type
+        val type = object : TypeToken<Map<String, Long>>() {}.type
         return gson.fromJson(json, type)
     }
 }

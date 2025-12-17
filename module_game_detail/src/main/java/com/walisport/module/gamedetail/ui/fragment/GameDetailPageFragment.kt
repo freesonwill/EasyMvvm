@@ -4,11 +4,8 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.view.doOnLayout
 import androidx.fragment.app.viewModels
-import arch.cayenne.lib.base.data.constants.StatusBarMode
-import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.utils.LogUtils
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.locationOnScreen
@@ -19,6 +16,7 @@ import com.walisport.module.gamedetail.data.model.GameDetailBean
 import com.walisport.module.gamedetail.data.model.PlayerRankingBean
 import com.walisport.module.gamedetail.databinding.FragmentGameDetailPageBinding
 import com.walisport.module.gamedetail.ui.adapter.GamePreviewAdapter
+import com.walisport.module.gamedetail.ui.view.CarouselScrollView
 import com.walisport.module.gamedetail.ui.viewmodel.GameDetailViewModel
 import com.walisport.module.gamedetail.ui.viewmodel.GameDetailPageViewModel
 import java.util.Locale
@@ -42,11 +40,11 @@ class GameDetailPageFragment : BaseFragment<GameDetailViewModel, FragmentGameDet
             tvCurrencyName.text = "人民币"
 
             carouselScrollView.apply {
-                StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND(
-                    autoPadding = true,
-                    noPaddingViewIds = listOf(R.id.carousel_scroll_view)
-                )
-                setStatusBar(StatusBarConfig, mBinding.root)
+//                StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND(
+//                    autoPadding = true,
+//                    noPaddingViewIds = listOf(R.id.carousel_scroll_view)
+//                )
+//                setStatusBar(StatusBarConfig, mBinding.root)
                 adapter = previewAdapter
                 doOnLayout {
                     // Sync with shared index
@@ -61,6 +59,13 @@ class GameDetailPageFragment : BaseFragment<GameDetailViewModel, FragmentGameDet
                 setOnPageChangeListener { index ->
                     if (pagerViewModel.sharedCarouselIndex.value != index) {
                         pagerViewModel.sharedCarouselIndex.value = index
+                    }
+                }
+                setOnStateChangeListener { state, _ ->
+                    if (state == CarouselScrollView.State.CAROUSEL) {
+                        tvBigGameName.visibility = View.INVISIBLE
+                    } else {
+                        tvBigGameName.visibility = View.VISIBLE
                     }
                 }
             }
@@ -108,6 +113,7 @@ class GameDetailPageFragment : BaseFragment<GameDetailViewModel, FragmentGameDet
     private fun updateGameDetailUi(data: GameDetailBean) {
         with(mBinding) {
             Glide.with(root.context).load(data.avatar).placeholder(R.mipmap.img_game_cover).into(ivGameCover)
+            tvBigGameName.text = data.name
             tvGameName.text = data.name
             // todo type enum待確認
             tvGameType.text = data.type.toString()

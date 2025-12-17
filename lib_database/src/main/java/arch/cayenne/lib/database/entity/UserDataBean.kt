@@ -17,8 +17,7 @@ data class UserDataBean(
     val vipLevel: Int,
     val balanceTotal: Long,
 
-    // Map<Int, Long> 需 TypeConverter
-    val balanceWallet: Map<Int, Long>,
+    val balanceWallet: Map<String, Long>,
 
     val currentBetAmount: Double,
     val requiredBetAmount: Double,

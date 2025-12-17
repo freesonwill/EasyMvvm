@@ -103,13 +103,4 @@
         android:name="com.walisport.module.topup.ui.fragment.OrderDetailFragment"
         android:label="OrderDetailFragment">
     </fragment>
-
-    <fragment
-        android:id="@+id/realTimeCashbackFragment"
-        android:name="com.walisport.module.topup.ui.fragment.RebateFragment"
-        android:label="fragment_realtime_cashback"
-        tools:layout="@layout/fragment_rebate">
-
-        <deepLink app:uri="walisport://module_topup/realTimeCashBackFragment" />
-    </fragment>
 </navigation>

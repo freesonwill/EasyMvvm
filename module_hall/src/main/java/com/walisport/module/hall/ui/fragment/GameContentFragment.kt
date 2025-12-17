@@ -12,7 +12,6 @@ import arch.cayenne.lib.base.ui.animation.AnimationController
 import arch.cayenne.lib.base.ui.animation.AnimationController.AnimType
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
-import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.common.ui.adapter.GridSpacingItemDecoration
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout.States
 import arch.cayenne.lib.common.ui.view.SimpleTabDataModel
@@ -71,6 +70,8 @@ class GameContentFragment : BaseFragment<GameContentViewModel, FragmentGameConte
     private val defaultAnimDuration = 210L
     val category get() = requireArguments().getInt(ARG_CATEGORY_TYPE)
 
+    private var helper: BackToTopHelper? = null
+
     fun supplierTabList(list: List<GameSupplierDataModel>): List<SimpleTabDataModel> {
         val l = ArrayList<SimpleTabDataModel>()
         l.add(
@@ -106,6 +107,8 @@ class GameContentFragment : BaseFragment<GameContentViewModel, FragmentGameConte
                     }
                     mBinding.rvGame.startFadeAnim { onComplete ->
                         mViewModel.setSupplier(if (id == 0) emptyList() else listOf(id))
+                        toggleGameSorting(false)
+                        helper?.reset()
                         mViewModel.reload()
                         onComplete.invoke()
                     }
@@ -127,7 +130,13 @@ class GameContentFragment : BaseFragment<GameContentViewModel, FragmentGameConte
             rvGame.adapter = adapter
             rvGame.itemAnimator = null
 
-            BackToTopHelper(rvGame, ivBackToTop, true)
+            helper = BackToTopHelper(rvGame , ivBackToTop , true) {
+                // 點擊回到頂部按鈕的額外操作
+                //如果排序方式是热返和冷返
+                if (currentSortType == GameSortType.HOT_REWARD || currentSortType == GameSortType.COLD_REWARD) {
+                    aplHomeBanner.setExpanded(true , false)
+                }
+            }
         }
 
     }
@@ -147,6 +156,10 @@ class GameContentFragment : BaseFragment<GameContentViewModel, FragmentGameConte
             toggleGameSorting(!isExpanded)
         }
         mBinding.customTabGroup.setOnShowAllCategoryClick({}, {
+            // 点击更多供应商按钮时，需要判断排序菜单是否展开，若展开则先收起
+            if(isExpanded){
+                toggleGameSorting(false)
+            }
             showSupplierListBottomSheet()
         })
 
@@ -224,6 +237,7 @@ class GameContentFragment : BaseFragment<GameContentViewModel, FragmentGameConte
                 }
             }else{
                 mViewModel.setSupplier(it)
+                helper?.reset()
                 mViewModel.reload()
             }
         }
@@ -367,6 +381,36 @@ class GameContentFragment : BaseFragment<GameContentViewModel, FragmentGameConte
         }
     }
 
+    //直接关闭排序菜单， 不要动画
+    private fun closeSortingMenu() {
+        if (isExpanded) {
+            isExpanded = false
+            val container = mBinding.llGameDropdown
+            container.visibility = View.GONE
+            mBinding.vGameListMask.apply {
+                visibility = View.GONE
+                alpha = 0f
+            }
+            if (!sortMenuClicked) {
+                mBinding.customTabGroup.setSortBtnSrc(arch.cayenne.lib.common.R.drawable.ic_sort_expand)
+                mBinding.customTabGroup.setSortBtnTextColor(
+                    SkinnableResourceManager.getColor(
+                        requireContext(),
+                        arch.cayenne.lib.common.R.color.color_C0C0C0
+                    )
+                )
+            } else {
+                mBinding.customTabGroup.setSortBtnSrc(arch.cayenne.lib.common.R.drawable.ic_sort_expand_blue)
+                mBinding.customTabGroup.setSortBtnTextColor(
+                    SkinnableResourceManager.getColor(
+                        requireContext(),
+                        arch.cayenne.lib.common.R.color.color_00E0E5
+                    )
+                )
+            }
+        }
+    }
+
     /**
      * 設置排序選單視圖的點擊事件和初始狀態
      */
@@ -384,6 +428,7 @@ class GameContentFragment : BaseFragment<GameContentViewModel, FragmentGameConte
                     updateSortingMenuSelection()
                     setSortBtnText()
                     mViewModel.setSortType(currentSortType)
+                    helper?.reset()
                     mViewModel.reload()
                 }
 
@@ -399,6 +444,7 @@ class GameContentFragment : BaseFragment<GameContentViewModel, FragmentGameConte
                     updateSortingMenuSelection()
                     setSortBtnText()
                     mViewModel.setSortType(currentSortType)
+                    helper?.reset()
                     mViewModel.reload()
                 }
 
@@ -415,6 +461,7 @@ class GameContentFragment : BaseFragment<GameContentViewModel, FragmentGameConte
                     updateSortingMenuSelection()
                     setSortBtnText()
                     mViewModel.setSortType(currentSortType)
+                    helper?.reset()
                     mViewModel.reload()
                 }
 
@@ -430,6 +477,7 @@ class GameContentFragment : BaseFragment<GameContentViewModel, FragmentGameConte
                     updateSortingMenuSelection()
                     setSortBtnText()
                     mViewModel.setSortType(currentSortType)
+                    helper?.reset()
                     mViewModel.reload()
                 }
 
@@ -533,4 +581,22 @@ class GameContentFragment : BaseFragment<GameContentViewModel, FragmentGameConte
             })
         }
     }
+
+    override fun onHiddenChanged(hidden: Boolean) {
+        super.onHiddenChanged(hidden)
+        if (hidden) {
+            if (isExpanded) {
+                closeSortingMenu()
+            }
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        if (isExpanded) {
+            closeSortingMenu()
+        }
+    }
+
+
 }

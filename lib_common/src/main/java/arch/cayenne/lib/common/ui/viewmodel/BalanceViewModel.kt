@@ -13,8 +13,8 @@ class BalanceViewModel(
     private val balanceRepository: BalanceRepository
 ): BaseViewModel() {
 
-    private val _onBalanceChange = MutableLiveData<String>()
-    val onBalanceChange: LiveData<String> = _onBalanceChange
+    private val _onBalanceChange = MutableLiveData<BaseCurrencyData.CurrencyContentData2?>()
+    val onBalanceChange: LiveData<BaseCurrencyData.CurrencyContentData2?> = _onBalanceChange
 
     var userCurrency: Pair<List<BaseCurrencyData.CurrencyContentData2>, List<BaseCurrencyData.CurrencyContentData2>>? = null
 
@@ -29,13 +29,13 @@ class BalanceViewModel(
                 //針對其使語言的特別處理，中日韓顯示該國貨幣，其餘顯示美金
                 //TODO icon沒處理，其他語言的處理還有缺
                 if (currentLanguage == "zh" && fait.find { it.unit == "¥" } != null) {
-                    _onBalanceChange.value = fait.find { it.unit == "¥" }!!.amount
+                    _onBalanceChange.value = fait.find { it.unit == "¥" }!!
                 } else if (fait.find { it.unit == "$" } != null) {
-                    _onBalanceChange.value = fait.find { it.unit == "$" }!!.amount
+                    _onBalanceChange.value = fait.find { it.unit == "$" }!!
                 } else if (fait.isNotEmpty()){
-                    _onBalanceChange.value = fait.first().amount
+                    _onBalanceChange.value = fait.first()
                 } else {
-                    _onBalanceChange.value = "0.00"
+                    _onBalanceChange.value = null
                 }
             }
         }

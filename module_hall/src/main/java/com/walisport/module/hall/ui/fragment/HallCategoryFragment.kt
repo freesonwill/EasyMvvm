@@ -70,6 +70,8 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
     private var category: Int = 100
     private var titleName: String = ""
 
+    private var helper: BackToTopHelper? = null
+
     fun supplierTabList(list: List<GameSupplierDataModel>): List<SimpleTabDataModel> {
         val l = ArrayList<SimpleTabDataModel>()
         l.add(
@@ -106,6 +108,8 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
                 override fun onTabClicked(id: Int) {
                     mBinding.rvGame.startFadeAnim { onComplete ->
                         mViewModel.setSuppliers(if (id == 0) emptyList() else listOf(id))
+                        helper?.reset()
+                        toggleGameSorting(false)
                         mViewModel.reload()
                         onComplete.invoke()
                     }
@@ -125,9 +129,12 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
             })
             rvGame.adapter = adapter
 
-            BackToTopHelper(rvGame , ivBackToTop, true)
-
-
+            helper = BackToTopHelper(rvGame , ivBackToTop , true) {
+                //如果排序方式是热返和冷返
+                if (currentSortType == GameSortType.HOT_REWARD || currentSortType == GameSortType.COLD_REWARD) {
+                    mBinding.aplHomeBanner.setExpanded(true , false)
+                }
+            }
 
         }
         mViewModel.getSuppliers(category)
@@ -154,6 +161,10 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
             toggleGameSorting(!isExpanded)
         }
         mBinding.customTabGroup.setOnShowAllCategoryClick({} , {
+            // 点击更多供应商按钮时，需要判断排序菜单是否展开，若展开则先收起
+            if(isExpanded){
+                toggleGameSorting(false)
+            }
             showListBottomSheet()
         })
     }
@@ -221,6 +232,7 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
                 }
             }else{
                 mViewModel.setSuppliers(it)
+                helper?.reset()
                 mViewModel.reload()
             }
         }
@@ -388,6 +400,36 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
         }
     }
 
+    //直接关闭排序菜单， 不要动画
+    private fun closeSortingMenu() {
+        if (isExpanded) {
+            isExpanded = false
+            val container = mBinding.llGameDropdown
+            container.visibility = View.GONE
+            mBinding.vGameListMask.apply {
+                visibility = View.GONE
+                alpha = 0f
+            }
+            if (!sortMenuClicked) {
+                mBinding.customTabGroup.setSortBtnSrc(arch.cayenne.lib.common.R.drawable.ic_sort_expand)
+                mBinding.customTabGroup.setSortBtnTextColor(
+                    SkinnableResourceManager.getColor(
+                        requireContext(),
+                        arch.cayenne.lib.common.R.color.color_C0C0C0
+                    )
+                )
+            } else {
+                mBinding.customTabGroup.setSortBtnSrc(arch.cayenne.lib.common.R.drawable.ic_sort_expand_blue)
+                mBinding.customTabGroup.setSortBtnTextColor(
+                    SkinnableResourceManager.getColor(
+                        requireContext(),
+                        arch.cayenne.lib.common.R.color.color_00E0E5
+                    )
+                )
+            }
+        }
+    }
+
     /**
      * 設置排序選單視圖的點擊事件和初始狀態
      */
@@ -405,6 +447,7 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
                     updateSortingMenuSelection()
                     setSortBtnText()
                     mViewModel.setSortType(currentSortType)
+                    helper?.reset()
                     mViewModel.reload()
                 }
 
@@ -420,6 +463,7 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
                     updateSortingMenuSelection()
                     setSortBtnText()
                     mViewModel.setSortType(currentSortType)
+                    helper?.reset()
                     mViewModel.reload()
                 }
 
@@ -437,6 +481,7 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
                     updateSortingMenuSelection()
                     setSortBtnText()
                     mViewModel.setSortType(currentSortType)
+                    helper?.reset()
                     mViewModel.reload()
                 }
 
@@ -453,6 +498,7 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
                     updateSortingMenuSelection()
                     setSortBtnText()
                     mViewModel.setSortType(currentSortType)
+                    helper?.reset()
                     mViewModel.reload()
                 }
 
@@ -527,6 +573,8 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
             }
         }
     }
+
+
 
 
 }
