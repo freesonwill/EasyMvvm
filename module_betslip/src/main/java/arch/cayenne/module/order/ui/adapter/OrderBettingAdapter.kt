@@ -50,6 +50,7 @@ class OrderBettingAdapter(
                     val item = getItem(position) as BetSlipReserveBean
                     
                     reserveHolder.init(item)
+                    reserveHolder.initSelection(listOf(item.selection), type)
                     reserveHolder.setDoubleClick {
                         toggleItemState(item.reserveId, position)
                     }
@@ -58,6 +59,7 @@ class OrderBettingAdapter(
                     val item = getItem(position) as BetSlipOrderBean
                     
                     orderHolder.init(item)
+                    orderHolder.initSelection(item.selectionsList, type)
                     orderHolder.setDoubleClick {
                         toggleItemState(item.betId, position)
                     }

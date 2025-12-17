@@ -7,6 +7,7 @@ import arch.cayenne.lib.database.entity.BetSlipData
 import arch.cayenne.lib.database.entity.BetSlipSelectionData
 import arch.cayenne.module.betslip.R
 import arch.cayenne.module.betslip.databinding.ItemOrderSportBettingBinding
+import arch.cayenne.module.order.data.constants.OrderSportPageEnum
 import arch.cayenne.module.order.ui.adapter.OrderBettingSelectionAdapter
 
 abstract class BaseOrderViewHolder<T: BetSlipData>(protected val mBinding: ItemOrderSportBettingBinding): BaseViewHolder(mBinding) {
@@ -22,10 +23,10 @@ abstract class BaseOrderViewHolder<T: BetSlipData>(protected val mBinding: ItemO
 
     abstract fun init(item: T)
 
-    fun initSelection(selections: List<BetSlipSelectionData>) {
+    fun initSelection(selections: List<BetSlipSelectionData>, type: OrderSportPageEnum) {
         fullSelectionsList = selections
 
-        val selectionAdapter = OrderBettingSelectionAdapter()
+        val selectionAdapter = OrderBettingSelectionAdapter(type)
         mBinding.rvContent.adapter = selectionAdapter
 
         val initialList = if (selections.size > 1) {

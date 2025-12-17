@@ -23,6 +23,18 @@ class OrderReserveViewModel(private val repo: OrderReserveRepository) : BaseView
         private const val PAGE_SIZE = 10
     }
 
+    private val _intentEvent = MutableLiveData<Event<DataState>>()
+    val intentEvent: LiveData<Event<DataState>> get() = _intentEvent
+
+    private val _cancelReserveResultLiveData: MutableLiveData<Event<Boolean>> = MutableLiveData()
+    val cancelReserveResultLiveData: LiveData<Event<Boolean>> = _cancelReserveResultLiveData
+
+    private val _modifyReserveResultLiveData: MutableLiveData<Event<Boolean>> = MutableLiveData()
+    val modifyReserveResultLiveData: LiveData<Event<Boolean>> = _modifyReserveResultLiveData
+
+    private val _orderDataListener = MutableLiveData<List<BetSlipData>>()
+    val orderDataListener: LiveData<List<BetSlipData>> = _orderDataListener
+
     init {
         // 監聽 Repository 的預約資料 Flow
         repo.reserveDataFlow
@@ -35,20 +47,7 @@ class OrderReserveViewModel(private val repo: OrderReserveRepository) : BaseView
             }
             .launchIn(viewModelScope)
         repo.loadMockTestData()
-
     }
-
-    private val _intentEvent = MutableLiveData<Event<DataState>>()
-    val intentEvent: LiveData<Event<DataState>> get() = _intentEvent
-
-    private val _cancelReserveResultLiveData: MutableLiveData<Event<Boolean>> = MutableLiveData()
-    val cancelReserveResultLiveData: LiveData<Event<Boolean>> = _cancelReserveResultLiveData
-
-    private val _modifyReserveResultLiveData: MutableLiveData<Event<Boolean>> = MutableLiveData()
-    val modifyReserveResultLiveData: LiveData<Event<Boolean>> = _modifyReserveResultLiveData
-
-    private val _orderDataListener = MutableLiveData<List<BetSlipData>>()
-    val orderDataListener: LiveData<List<BetSlipData>> = _orderDataListener
 
     private var lastCursorBetTime: Long? = null
     private var startTime: Long? = null

@@ -1,17 +1,16 @@
 package arch.cayenne.module.order.ui.viewholder
 
+import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
-import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.utils.ext.SportDisplayOddsExt.getDisplayOdds
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
 import arch.cayenne.lib.database.entity.BetSlipReserveBean
 import arch.cayenne.module.betslip.R
 import arch.cayenne.module.betslip.databinding.ItemOrderSportBettingBinding
-import arch.cayenne.module.order.data.constants.OrderSportPageEnum
-import arch.cayenne.module.order.ui.adapter.OrderBettingSelectionAdapter
+import arch.cayenne.module.betslip.utisl.BetSlipUtils
 
 class OrderReserveViewHolder(mBinding: ItemOrderSportBettingBinding): BaseOrderViewHolder<BetSlipReserveBean>(mBinding) {
 
@@ -20,28 +19,23 @@ class OrderReserveViewHolder(mBinding: ItemOrderSportBettingBinding): BaseOrderV
         mBinding.tvMoney.text = betAmount
         mBinding.tvCombo.text = mBinding.root.context.getString(arch.cayenne.lib.res.R.string.title_single_bet)
 
-        // 預約訂單通常是單關，所以直接顯示單個選項
-        val selectionAdapter = OrderBettingSelectionAdapter()
-        mBinding.rvContent.adapter = selectionAdapter
-
-        // 將 ReserveOrderSelectionBean 轉換為顯示用的資料
-        val selectionList = listOf(item.selection)
-        selectionAdapter.submitList(selectionList)
-
         // 確保 RecyclerView 高度為 wrap_content
         val layoutParams = mBinding.rvContent.layoutParams
         layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
         mBinding.rvContent.layoutParams = layoutParams
 
         setBetMoney(item.betAmount, item.currency)
-        setReserveOdds(item.selection.odds)
+
+        val resultMoney = "${CurrencySymbols.getSymbol(item.currency)}${item.betAmount.getFormalMoney()}"
+        mBinding.tvResultMoney.text = resultMoney
+        setResultStatus(false)
 
         // 預約訂單不顯示提前結算相關內容
+        mBinding.clBetOdds.visibility = View.INVISIBLE
         mBinding.clBottomButton.isVisible = true
         mBinding.btnEarlySettle.isVisible = false
         mBinding.groupReserve.isVisible = true
 
-        initSelection(listOf(item.selection))
     }
 
     private fun setBetMoney(betMoney: Long, symbol: String) {
@@ -49,9 +43,18 @@ class OrderReserveViewHolder(mBinding: ItemOrderSportBettingBinding): BaseOrderV
         mBinding.tvBetMoney.text = betMoney
     }
 
-    private fun setReserveOdds(odds: Int) {
-        val oddsStr = "@${odds.getDisplayOdds()}"
-        mBinding.tvBetOdds.text = oddsStr
-        mBinding.clBetOdds.visibility = View.VISIBLE
+    private fun setResultStatus(isSingleBet: Boolean) {
+        mBinding.tvResult.setText(if(isSingleBet) R.string.live_bet_except_win else R.string.live_bet_except_max_win)
+        mBinding.tvResult.setTextColorRes(arch.cayenne.lib.common.R.color.color_999999)
+        mBinding.tvResult.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f)
+        mBinding.tvResult.setFontWeight(400)
+        val lp = mBinding.tvResult.layoutParams
+        lp.height = ViewGroup.LayoutParams.WRAP_CONTENT
+        lp.width = ViewGroup.LayoutParams.WRAP_CONTENT
+        mBinding.tvResult.layoutParams = lp
+        mBinding.tvResult.backgroundTintList = null
+        mBinding.tvResult.background = null
+
+        mBinding.tvResultMoney.setTextColorRes(arch.cayenne.lib.common.R.color.color_FFFFFF)
     }
 }

@@ -25,7 +25,7 @@ class NewOrderRepository(
     private var notifyScope: Job? = null
     
     // 訂單資料的 Flow，供 ViewModel 監聽
-    private val _orderDataFlow = MutableSharedFlow<List<BetSlipOrderBean>>()
+    private val _orderDataFlow = MutableSharedFlow<List<BetSlipOrderBean>>(replay = 1)
     val orderDataFlow: Flow<List<BetSlipOrderBean>> = _orderDataFlow
     
     // 使用 MAP 來快速查找和管理訂單

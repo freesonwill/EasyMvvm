@@ -1,11 +1,9 @@
 package arch.cayenne.module.order.ui.viewholder
 
-import android.animation.ValueAnimator
 import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
-import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.SportDisplayOddsExt.getDisplayOdds
@@ -13,13 +11,10 @@ import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
 import arch.cayenne.lib.database.entity.BetSlipOrderBean
-import arch.cayenne.lib.database.entity.BetSlipSelectionData
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.module.betslip.R
 import arch.cayenne.module.betslip.databinding.ItemOrderSportBettingBinding
 import arch.cayenne.module.betslip.utisl.BetSlipUtils
-import arch.cayenne.module.order.data.constants.OrderSportPageEnum
-import arch.cayenne.module.order.ui.adapter.OrderBettingSelectionAdapter
 
 class OrderBettingViewHolder(mBinding: ItemOrderSportBettingBinding): BaseOrderViewHolder<BetSlipOrderBean>(mBinding) {
 
@@ -60,8 +55,6 @@ class OrderBettingViewHolder(mBinding: ItemOrderSportBettingBinding): BaseOrderV
         mBinding.tvEarlySettleMoney.text = earlyAmountStr
 
         mBinding.clCollapse.isVisible = item.selectionsList.size > 1
-
-        initSelection(item.selectionsList)
     }
 
     private fun setBetMoney(betMoney: Long, symbol: String) {
@@ -80,8 +73,8 @@ class OrderBettingViewHolder(mBinding: ItemOrderSportBettingBinding): BaseOrderV
         }
     }
 
-    private fun setResultStatus(staus: Int, isSingleBet: Boolean) {
-        when (staus) {
+    private fun setResultStatus(status: Int, isSingleBet: Boolean) {
+        when (status) {
             0 -> {
                 mBinding.tvResult.setText(if(isSingleBet) R.string.live_bet_except_win else R.string.live_bet_except_max_win)
                 mBinding.tvResult.setTextColorRes(arch.cayenne.lib.common.R.color.color_999999)

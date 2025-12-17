@@ -22,7 +22,7 @@ class OrderReserveRepository(
 ) : BaseBetSlipRepository(scope, remoteManager) {
 
     // 預約資料的 Flow，供 ViewModel 監聽
-    private val _reserveDataFlow = MutableSharedFlow<List<BetSlipReserveBean>>()
+    private val _reserveDataFlow = MutableSharedFlow<List<BetSlipReserveBean>>(replay = 1)
     val reserveDataFlow: Flow<List<BetSlipReserveBean>> = _reserveDataFlow
 
     // 使用 MAP 來快速查找和管理預約資料
