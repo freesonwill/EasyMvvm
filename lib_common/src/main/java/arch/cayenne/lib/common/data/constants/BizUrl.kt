@@ -18,7 +18,8 @@ enum class BizUrl(val url: String) {
     PARTNER("${BASE_URL}/web-3n1/partner") ,
     VIP("${BASE_URL}/web-3n1/vip") ,
     HELP("https://www.ve657.com/help-docs/help/") ,//暂时用这个地址，Web端要重新做帮助
-    TOP_LESSON("${BASE_URL}/web-3n1/help?url=/wallet/tutorial/") //充值教程
+    TOP_LESSON("${BASE_URL}/web-3n1/help?url=/wallet/tutorial/"), //充值教程
+    ACTIVITY("${BASE_URL}/web-3n1/activity") ,//活动页面
 
 
 }
