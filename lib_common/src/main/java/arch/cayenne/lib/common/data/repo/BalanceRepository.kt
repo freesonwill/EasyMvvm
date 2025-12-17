@@ -27,7 +27,7 @@ class BalanceRepository(
         return infoDao.getBalance()
     }
 
-    suspend fun getCurrency(): String? {
+    suspend fun getCurrency(): String {
         return infoDao.getCurrency()
     }
 
