@@ -4,6 +4,7 @@ import android.graphics.LinearGradient
 import android.graphics.Shader
 import android.os.Bundle
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
@@ -40,8 +41,6 @@ class MeVIPInfoFragment : BaseFragment<MeVIPInfoViewModel, FragmentMeVipInfoBind
 
     }
 
-
-
     override fun initListener() {
         with(mBinding) {
 
@@ -70,60 +69,58 @@ class MeVIPInfoFragment : BaseFragment<MeVIPInfoViewModel, FragmentMeVipInfoBind
     override suspend fun createObserver() {
         with(mViewModel) {
             vipLevelLiveData.observe(viewLifecycleOwner) {
+                // 使用 VIPResourceHelper 轉換等級
+                val vipLevel = VIPResourceHelper.getVIPLevelFromInt(it)
 
-                vipLevelLiveData.value?.let {
-                    // 使用 VIPResourceHelper 轉換等級
-                    val vipLevel = VIPResourceHelper.getVIPLevelFromInt(it)
+                // 設置背景 - 使用 VIPResourceHelper
+                mBinding.ctVipInfo.background =
+                    VIPResourceHelper.getBackgroundResource(vipLevel).getDrawable()
+                mBinding.ctLevelInfo.background =
+                    VIPResourceHelper.getForegroundResource(vipLevel).getDrawable()
 
-                    // 設置背景 - 使用 VIPResourceHelper
-                    mBinding.ctVipInfo.background =
-                        VIPResourceHelper.getBackgroundResource(vipLevel).getDrawable()
-                    mBinding.ctLevelInfo.background =
-                        VIPResourceHelper.getForegroundResource(vipLevel).getDrawable()
-
-                    // 設置圖標 - 使用 VIPResourceHelper
-                    mBinding.ivLevel.setImageResource(VIPResourceHelper.getIconResource(vipLevel))
-                    mBinding.ivLevelName.setImageResource(
-                        VIPResourceHelper.getLevelNameResource(
-                            vipLevel
-                        )
+                // 設置圖標 - 使用 VIPResourceHelper
+                mBinding.ivLevel.setImageResource(VIPResourceHelper.getIconResource(vipLevel))
+                mBinding.ivLevelName.setImageResource(
+                    VIPResourceHelper.getLevelNameResource(
+                        vipLevel
                     )
+                )
 
-                    val bottom = 30.dp2px.toFloat()
-                    // 创建线性渐变 - 使用 VIPResourceHelper
-                    val linearGradient = LinearGradient(
-                        0f, 0f,  // 渐变起点 (x1, y1)
-                        0f, bottom,  // 渐变终点 (x2, y2)
-                        intArrayOf(
-                            VIPResourceHelper.getShaderStartColor().getColor(),
-                            VIPResourceHelper.getShaderEndColor(vipLevel).getColor()
-                        ),  // 渐变颜色数组
-                        null,  // 渐变位置（null 表示均匀分布）
-                        Shader.TileMode.CLAMP // 填充模式
+                val bottom = 30.dp2px.toFloat()
+                // 创建线性渐变 - 使用 VIPResourceHelper
+                val linearGradient = LinearGradient(
+                    0f, 0f,  // 渐变起点 (x1, y1)
+                    0f, bottom,  // 渐变终点 (x2, y2)
+                    intArrayOf(
+                        VIPResourceHelper.getShaderStartColor().getColor(),
+                        VIPResourceHelper.getShaderEndColor(vipLevel).getColor()
+                    ),  // 渐变颜色数组
+                    null,  // 渐变位置（null 表示均匀分布）
+                    Shader.TileMode.CLAMP // 填充模式
+                )
+
+
+                mBinding.tvLevel.paint.shader = linearGradient
+                mBinding.tvLevel.text =
+                    getString(arch.cayenne.lib.common.R.string.vip_level_format, it.toInt())
+
+                // 設置百分比 - 使用 VIPResourceHelper
+                mBinding.tvPercent.text = "57.91%"
+                mBinding.ivPercent.setImageResource(
+                    VIPResourceHelper.getPercentResource(
+                        vipLevel
                     )
-
-
-                    mBinding.tvLevel.paint.shader = linearGradient
-                    mBinding.tvLevel.text =
-                        getString(arch.cayenne.lib.common.R.string.vip_level_format, it.toInt())
-
-                    // 設置百分比 - 使用 VIPResourceHelper
-                    mBinding.tvPercent.text = "57.91%"
-                    mBinding.ivPercent.setImageResource(
-                        VIPResourceHelper.getPercentResource(
-                            vipLevel
-                        )
-                    )
-                    mBinding.tvLevelUpInfo.text = "升级还需¥59w投注额"
-
-                    mBinding.tvBalance.text = "¥19901.00"
+                )
+                mBinding.tvLevelUpInfo.text = "升级还需¥59w投注额"
+            }
+            launch {
+                balanceFlow.collect {
+                    mBinding.tvBalance.text = it
                 }
-
-
             }
         }
-
         mViewModel.createObserver()
+
     }
 
     companion object {
