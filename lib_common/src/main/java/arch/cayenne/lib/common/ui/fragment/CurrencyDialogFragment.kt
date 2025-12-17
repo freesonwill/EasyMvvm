@@ -128,8 +128,8 @@ class CurrencyDialogFragment constructor() : BasePositionDialogFragment<Currency
 
     val currencyAdapter: CurrencyAdapter by lazy {
         CurrencyAdapter{
-            this.onClickListener?.invoke(it)
-            doExitAnim()
+//            this.onClickListener?.invoke(it)
+//            doExitAnim()
         }
     }
     val currencySettingAdapter: CurrencySettingAdapter by lazy { CurrencySettingAdapter() }
