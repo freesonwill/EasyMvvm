@@ -32,15 +32,6 @@
     </fragment>
 
     <fragment
-        android:id="@+id/promotionFragment"
-        android:name="com.walisport.module.misc.ui.fragment.PromotionFragment"
-        android:label="fragment_promotion"
-        tools:layout="@layout/fragment_promotion">
-
-        <deepLink app:uri="walisport://module_misc/promotionFragment" />
-    </fragment>
-
-    <fragment
         android:id="@+id/webFragment"
         android:name="com.walisport.module.misc.ui.fragment.WebFragment"
         android:label="fragment_web"
