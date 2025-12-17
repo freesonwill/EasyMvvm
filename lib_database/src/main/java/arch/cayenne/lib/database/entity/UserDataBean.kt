@@ -22,7 +22,7 @@ data class UserDataBean(
     val currentBetAmount: Double,
     val requiredBetAmount: Double,
     val vipStage: String,
-    val nicknameChangeCount: Int
+    val nicknameChangeCount: Int,
 )
 
 data class AvatarEmbedded(

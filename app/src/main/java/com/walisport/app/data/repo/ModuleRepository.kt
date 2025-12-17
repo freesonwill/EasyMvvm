@@ -113,6 +113,7 @@ class ModuleRepository(
     }
 
     fun saveProfileInfo(profileInfo: ProfileInfo) {
+        val defaultCurrency = manager.getValue<Int>(UserDataKey.KEY_DEFAULT_CURRENCY)
         database.userDataDao().insert(
             UserDataBean(
                 id = profileInfo.id,
@@ -128,7 +129,7 @@ class ModuleRepository(
                 currentBetAmount = profileInfo.currentBetAmount,
                 requiredBetAmount = profileInfo.requiredBetAmount,
                 vipStage = profileInfo.vipStage,
-                nicknameChangeCount = profileInfo.nicknameChangeCount
+                nicknameChangeCount = profileInfo.nicknameChangeCount,
             )
         )
     }

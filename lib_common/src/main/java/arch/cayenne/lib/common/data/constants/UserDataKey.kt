@@ -12,6 +12,8 @@ enum class UserDataKey(val key: String) {
     KEY_BETSLIP_DETAIL("BetSlipDetail"),
     KEY_RECORD("Record"), //搜索历史
 
+    KEY_DEFAULT_CURRENCY("DefaultCurrency"),
+
     KEY_SYSTEM_BET("System_Goal_Bet"),
     KEY_SYSTEM_FAV("System_Goal_Fav"),
     KEY_SYSTEM_ALL("System_Goal_All"),
