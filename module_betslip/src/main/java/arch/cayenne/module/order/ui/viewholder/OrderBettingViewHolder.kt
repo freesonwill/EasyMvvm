@@ -172,7 +172,9 @@ class OrderBettingViewHolder(mBinding: ItemOrderSportBettingBinding): BaseOrderV
         }
     }
 
-    fun getEarlySettleButton(): View {
-        return mBinding.ivShare
+    fun setEarlySettleButtonClickListener(listener: () -> Unit) {
+        mBinding.btnEarlySettle.setOnClickListener {
+            listener.invoke()
+        }
     }
 }

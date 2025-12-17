@@ -1,5 +1,6 @@
 package arch.cayenne.module.order.ui.viewholder
 
+import android.util.TypedValue
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
@@ -7,6 +8,7 @@ import arch.cayenne.lib.common.data.constants.SportEnum
 import arch.cayenne.lib.common.utils.ext.SportDisplayOddsExt.getDisplayOdds
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
 import arch.cayenne.lib.database.entity.ReserveOrderSelectionBean
+import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.module.betslip.R
 import arch.cayenne.module.betslip.databinding.ItemOrderSportBettingSelectionBinding
 import com.bumptech.glide.Glide
@@ -23,6 +25,8 @@ class OrderBettingReserveSelectionViewHolder(private val mBinding: ItemOrderSpor
         mBinding.tvResult.layoutParams = lp
         mBinding.tvSecondResult.isVisible = false
         mBinding.tvResult.text = getString(R.string.live_bet_reserve_odds)
+        mBinding.tvResult.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f)
+        mBinding.tvResult.setTextColor(SkinnableResourceManager.getColor(itemView.context, arch.cayenne.lib.common.R.color.color_C0C0C0))
 
         Glide.with(itemView.context).load(SportEnum.getSportEnumById(item.matchBasic.sportId)?.resId ?: SportEnum.Default.resId).into(mBinding.ivBall)
         mBinding.tvLeagueName.text = item.matchBasic.matchName
