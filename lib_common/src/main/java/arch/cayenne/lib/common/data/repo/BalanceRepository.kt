@@ -43,7 +43,7 @@ class BalanceRepository(
         val fiat = arrayListOf<BaseCurrencyData.CurrencyContentData2>()
         val crypto = arrayListOf<BaseCurrencyData.CurrencyContentData2>()
         if (user == null) return Pair(fiat, crypto)
-        val showAllCurrency = true //先暫時為true
+        val showAllCurrency =  manager.getValue(UserDataKey.KEY_SHOW_ALL_CURRENCY, false)//先暫時為false
 
         currencyList.forEach {
             if (!it.virtual) {
@@ -148,7 +148,7 @@ class BalanceRepository(
         val fiat = arrayListOf<BaseCurrencyData.CurrencyContentData2>()
         val crypto = arrayListOf<BaseCurrencyData.CurrencyContentData2>()
         if (user == null) return Pair(fiat, crypto)
-        val showAllCurrency = true //先暫時為true
+        val showAllCurrency =  manager.getValue(UserDataKey.KEY_SHOW_ALL_CURRENCY, false)//先暫時為false
 
         currencyList.forEach {
             if (!it.virtual) {

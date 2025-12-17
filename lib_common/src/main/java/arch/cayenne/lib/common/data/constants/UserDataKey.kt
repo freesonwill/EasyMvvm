@@ -13,6 +13,7 @@ enum class UserDataKey(val key: String) {
     KEY_RECORD("Record"), //搜索历史
 
     KEY_DEFAULT_CURRENCY("DefaultCurrency"),
+    KEY_SHOW_ALL_CURRENCY("ShowAllCurrency"),
 
     KEY_SYSTEM_BET("System_Goal_Bet"),
     KEY_SYSTEM_FAV("System_Goal_Fav"),
