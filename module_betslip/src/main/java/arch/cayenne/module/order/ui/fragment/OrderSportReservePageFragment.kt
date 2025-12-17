@@ -19,57 +19,71 @@ import arch.cayenne.module.order.ui.viewmodel.OrderReserveViewModel
 import arch.cayenne.module.order.utils.OrderItemDecoration
 import kotlin.reflect.KClass
 
-class OrderSportReservePageFragment : BaseFragment<OrderReserveViewModel, FragmentOrderSportPageBinding>() {
+class OrderSportReservePageFragment :
+    BaseFragment<OrderReserveViewModel, FragmentOrderSportPageBinding>() {
 
-    override val vbClass: KClass<FragmentOrderSportPageBinding> = FragmentOrderSportPageBinding::class
+    override val vbClass: KClass<FragmentOrderSportPageBinding> =
+        FragmentOrderSportPageBinding::class
     override val vmClass: KClass<OrderReserveViewModel> = OrderReserveViewModel::class
 
     override fun initView(savedInstanceState: Bundle?) {
         val adapter =
-            OrderBettingAdapter(OrderSportPageEnum.RESERVE, reserveListener = object : OrderBettingAdapter.OrderReserveListener {
-                override fun onCancelReserve(bean: BetSlipReserveBean) {
-                    if (mViewModel.checkNetwork()) {
-                        CommonDialog.newInstance(
-                            "",
-                            getString(R.string.confirm_cancel_reserve),
-                            getString(R.string.cancel_reserve),
-                            getString(R.string.not_yet)
-                        ).also {
-                            it.setOnOkClickListener {
-                                mViewModel.cancelReserve(bean)
-                            }
-                            it.show(childFragmentManager)
-                        }
-                    }
-                }
-
-                override fun onModifyReserve(
-                    bean: BetSlipReserveBean,
-                    locationX: Int,
-                    locationY: Int,
-                    viewHeight: Int
-                ) {
-                    if (mViewModel.checkNetwork()) {
-                        childFragmentManager.setFragmentResultListener(
-                            ReserveDialogFragment.KEY_RESULT,
-                            viewLifecycleOwner
-                        ) { _, bundle ->
-                            childFragmentManager.clearFragmentResultListener(ReserveDialogFragment.KEY_RESULT)
-                            if (bundle.getString(ReserveDialogFragment.KEY_RESULT) == ReserveDialogFragment.VALUE_RESERVE_COMPLETE) {
-                                val odds = bundle.getInt(ReserveDialogFragment.KEY_ODDS_RESULT)
-                                mViewModel.modifyReserveOdds(bean, odds.getDisplayOdds().toOdds())
+            OrderBettingAdapter(
+                OrderSportPageEnum.RESERVE,
+                reserveListener = object : OrderBettingAdapter.OrderReserveListener {
+                    override fun onCancelReserve(bean: BetSlipReserveBean) {
+                        if (mViewModel.checkNetwork()) {
+                            CommonDialog.newInstance(
+                                "",
+                                getString(R.string.confirm_cancel_reserve),
+                                getString(R.string.cancel_reserve),
+                                getString(R.string.not_yet)
+                            ).also {
+                                it.setOnOkClickListener {
+                                    mViewModel.cancelReserve(bean)
+                                }
+                                it.show(childFragmentManager)
                             }
                         }
-                        ReserveDialogFragment.newInstance(
-                            locationX,
-                            locationY,
-                            viewHeight,
-                            odds = bean.selection.odds.getDisplayOdds().toOdds()
-                        ).show(childFragmentManager)
                     }
-                }
 
-            })
+                    override fun onModifyReserve(
+                        bean: BetSlipReserveBean,
+                        locationX: Int,
+                        locationY: Int,
+                        viewHeight: Int
+                    ) {
+                        if (mViewModel.checkNetwork()) {
+                            childFragmentManager.setFragmentResultListener(
+                                ReserveDialogFragment.KEY_RESULT,
+                                viewLifecycleOwner
+                            ) { _, bundle ->
+                                childFragmentManager.clearFragmentResultListener(
+                                    ReserveDialogFragment.KEY_RESULT
+                                )
+                                if (bundle.getString(ReserveDialogFragment.KEY_RESULT) == ReserveDialogFragment.VALUE_RESERVE_COMPLETE) {
+                                    val odds = bundle.getInt(ReserveDialogFragment.KEY_ODDS_RESULT)
+                                    mViewModel.modifyReserveOdds(
+                                        bean,
+                                        odds.getDisplayOdds().toOdds()
+                                    )
+                                }
+                            }
+                            ReserveDialogFragment.newInstance(
+                                locationX,
+                                locationY,
+                                viewHeight,
+                                odds = bean.selection.odds.getDisplayOdds().toOdds()
+                            ).show(childFragmentManager)
+                        }
+                    }
+
+                },
+                dataListener = object : OrderBettingAdapter.OrderDataSelectorListener {
+                    override fun onDateClicked() {
+                        showDateDialog()
+                    }
+                })
         mBinding.rvContent.adapter = adapter
 
         val decoration = OrderItemDecoration(10.dp2px)
@@ -96,7 +110,7 @@ class OrderSportReservePageFragment : BaseFragment<OrderReserveViewModel, Fragme
                 showToast(if (it) getString(R.string.modify_odds_success) else getString(R.string.modify_odds_fail))
             }
         }
-        mViewModel.intentEvent.observe(viewLifecycleOwner)  { event ->
+        mViewModel.intentEvent.observe(viewLifecycleOwner) { event ->
             event.getContentIfNotHandled(viewLifecycleOwner)?.let {
                 mBinding.groupNoData.isVisible = it == DataState.DataEmpty
             }
