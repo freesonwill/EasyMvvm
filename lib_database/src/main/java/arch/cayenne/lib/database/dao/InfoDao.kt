@@ -27,6 +27,9 @@ abstract class InfoDao: BaseDao<InfoBean>() {
     abstract suspend fun getCurrency(): String
 
     @Query("SELECT currency FROM InfoBean limit 1")
+    abstract suspend fun getCurrency2(): String?
+
+    @Query("SELECT currency FROM InfoBean limit 1")
     abstract fun observeCurrency(): Flow<String?>
 
     @Query("SELECT login FROM InfoBean limit 1")

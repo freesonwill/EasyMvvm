@@ -28,7 +28,7 @@ class BalanceRepository(
     }
 
     suspend fun getCurrency(): String {
-        return infoDao.getCurrency()
+        return infoDao.getCurrency2() ?: "CNY"
     }
 
     private suspend fun mappingCurrency(user: UserDataBean?) : Pair<List<BaseCurrencyData.CurrencyContentData2>, List<BaseCurrencyData.CurrencyContentData2>> {
