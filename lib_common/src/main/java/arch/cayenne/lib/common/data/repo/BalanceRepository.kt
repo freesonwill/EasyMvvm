@@ -146,20 +146,24 @@ class BalanceRepository(
         val fiat = arrayListOf<BaseCurrencyData.CurrencyContentData2>()
         val crypto = arrayListOf<BaseCurrencyData.CurrencyContentData2>()
         if (user == null) return Pair(fiat, crypto)
+        val showAllCurrency = true //先暫時為true
 
         currencyList.forEach {
-            if (user.balanceWallet.contains(it.ccy)) {
-                if (!it.virtual) {
-                    fiat.add(
-                        it.toCurrencyContentData2(user.balanceWallet[it.ccy]!!)
-                    )
-                } else {
-                    crypto.add(
-                        it.toCurrencyContentData2(user.balanceWallet[it.ccy]!!)
-                    )
-                }
+            if (!it.virtual) {
+                fiat.add(
+                    it.toCurrencyContentData2((user.balanceWallet[it.ccy]?:0L))
+                )
+            } else {
+                crypto.add(
+                    it.toCurrencyContentData2((user.balanceWallet[it.ccy]?:0L))
+                )
             }
         }
+        if (!showAllCurrency) {
+            fiat.removeIf { it.amount == "0.00L" }
+            crypto.removeIf { it.amount == "0.00L" }
+        }
+        
         return Pair(fiat, crypto)
     }
 

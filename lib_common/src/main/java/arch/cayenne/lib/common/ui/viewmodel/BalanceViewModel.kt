@@ -7,7 +7,6 @@ import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.common.data.constants.BaseCurrencyData
 import arch.cayenne.lib.common.data.repo.BalanceRepository
 import kotlinx.coroutines.launch
-import java.util.Locale
 
 class BalanceViewModel(
     private val balanceRepository: BalanceRepository
