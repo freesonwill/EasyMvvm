@@ -12,8 +12,6 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
-import arch.cayenne.lib.base.ui.animation.AnimationController
-import arch.cayenne.lib.base.ui.animation.AnimationController.AnimType
 import arch.cayenne.lib.base.ui.animation.CustomCurveTransformer
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
@@ -51,8 +49,8 @@ import arch.cayenne.module.home.ui.view.HomeTabMediator
 import arch.cayenne.module.home.ui.view.PromoTab
 import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
 import com.google.android.material.tabs.TabLayout
-import kotlin.reflect.KClass
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import kotlin.reflect.KClass
 
 /**
  * 体育页

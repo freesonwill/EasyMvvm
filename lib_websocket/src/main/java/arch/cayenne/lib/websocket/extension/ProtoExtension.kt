@@ -1,5 +1,6 @@
 package arch.cayenne.lib.websocket.extension
 
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.websocket.WebSocketManager
@@ -76,13 +77,17 @@ suspend inline fun<reified T: GeneratedMessageLite<*,*>> WebSocketManager.sendAn
     dispatcher: CoroutineDispatcher,
     apiCode: ApiCode,
     timeout: Long = responseTimeout,
-    crossinline request: () -> GeneratedMessageLite<*, *>
+    crossinline request: suspend () -> GeneratedMessageLite<*, *>
 ): SocketResponseData<T> = withContext(Dispatchers.IO){
     val apiStart = System.currentTimeMillis()
+    val TAG = "WebSocketManager"
     val rid = nextRid()
-    val errorRes = send(request.invoke().asRemoteRequest(apiCode, rid))
+    val errorRes = send(request()
+        .also { if(apiCode != ApiCode.PING)"-> send api:$apiCode rid:$rid $it".logd(TAG) }
+        .asRemoteRequest(apiCode, rid)
+    )
     return@withContext if (errorRes != null && errorRes is SocketResponseError) {
-        "api:$apiCode rid:$rid overall execution time is: ${System.currentTimeMillis() - apiStart}ms".logi(WebSocketManager::class.java.name)
+        "<- api:$apiCode rid:$rid overall execution time is: ${System.currentTimeMillis() - apiStart}ms".logi(TAG)
         SocketResponseData(
             mid = apiCode.mid,
             sid = apiCode.sid,
@@ -94,7 +99,7 @@ suspend inline fun<reified T: GeneratedMessageLite<*,*>> WebSocketManager.sendAn
         val responseData = withTimeoutOrNull(timeout) {
             observeProtoMessage<T>(apiCode).filter { it.rid == rid }.first()
         }
-        "api:$apiCode rid:$rid overall execution time is: ${System.currentTimeMillis() - apiStart}ms".logi(WebSocketManager::class.java.name)
+        "<- api:$apiCode rid:$rid overall execution time is: ${System.currentTimeMillis() - apiStart}ms".logi(TAG)
         responseData ?: SocketResponseData(
             mid = apiCode.mid,
             sid = apiCode.sid,
