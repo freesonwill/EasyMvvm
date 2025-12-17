@@ -1,0 +1,45 @@
+{
+  "reserveId": "R202501020001",
+  "reserveTime": 1735804800000,
+  "betAmount": 15000,
+  "selection": {
+    "selectionId": 9001002,
+    "selectionName": "利物浦 - 全场独赢",
+    "odds": 220,
+    "marketName": "全场独赢",
+    "marketId": 30001,
+    "specifier": "",
+    "matchBasic": {
+      "matchId": 987654322,
+      "matchName": "英超：利物浦 vs 切尔西",
+      "homeTeam": "利物浦",
+      "homeTeamId": 103,
+      "homeTeamIcon": "https://example.com/icon/liverpool.png",
+      "awayTeam": "切尔西",
+      "awayTeamId": 104,
+      "awayTeamIcon": "https://example.com/icon/chelsea.png",
+      "startTime": 1735810800000,
+      "status": 0,
+      "tournamentId": 2001,
+      "tournamentName": "英格兰超级联赛",
+      "tournamentShortName": "英超",
+      "tournamentIcon": "https://example.com/icon/epl.png",
+      "sportId": 1,
+      "sportName": "足球",
+      "betStop": false,
+      "tournamentHot": true,
+      "tournamentWeight": 99,
+      "provider": 1
+    },
+    "liveInfo": {
+      "currentScore": "0-0",
+      "currentTime": "00:00",
+      "period": 0,
+      "isLive": false,
+      "liveStatus": 0
+    }
+  },
+  "betStatus": 0,
+  "currency": "CNY",
+  "liveMatchId": 987654322
+}

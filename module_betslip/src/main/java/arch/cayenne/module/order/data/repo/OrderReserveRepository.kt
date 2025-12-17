@@ -1,14 +1,17 @@
 package arch.cayenne.module.order.data.repo
 
 import arch.cayenne.lib.base.data.remote.ApiResponseState
+import arch.cayenne.lib.common.utils.ext.ResourceExt
 import arch.cayenne.lib.database.dao.InfoDao
 import arch.cayenne.lib.database.entity.BetSlipReserveBean
 import arch.cayenne.module.betslip.BetSlipRemoteManager
 import arch.cayenne.module.betslip.data.constants.CommonExtension.toReserveOrderBean
 import arch.cayenne.module.betslip.data.repo.BaseBetSlipRepository
+import com.google.gson.Gson
 import galaxy.client.proto.Client
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.withContext
 
@@ -19,9 +22,9 @@ class OrderReserveRepository(
 ) : BaseBetSlipRepository(scope, remoteManager) {
 
     // 預約資料的 Flow，供 ViewModel 監聽
-    private val _reserveDataFlow = MutableStateFlow<List<BetSlipReserveBean>>(emptyList())
+    private val _reserveDataFlow = MutableSharedFlow<List<BetSlipReserveBean>>()
     val reserveDataFlow: Flow<List<BetSlipReserveBean>> = _reserveDataFlow
-    
+
     // 使用 MAP 來快速查找和管理預約資料
     private val reserveMap = mutableMapOf<String, BetSlipReserveBean>()
 
@@ -117,7 +120,10 @@ class OrderReserveRepository(
     /**
      * 更新或添加預約資料
      */
-    private fun updateReserveData(newReserves: List<BetSlipReserveBean>, isLoadMore: Boolean = false) {
+    private fun updateReserveData(
+        newReserves: List<BetSlipReserveBean>,
+        isLoadMore: Boolean = false
+    ) {
         if (isLoadMore) {
             // 載入更多：添加到現有資料
             newReserves.forEach { reserve ->
@@ -130,9 +136,9 @@ class OrderReserveRepository(
                 reserveMap[reserve.reserveId] = reserve
             }
         }
-        
+
         // 發送更新的資料
-        _reserveDataFlow.value = reserveMap.values.toList()
+        _reserveDataFlow.tryEmit(reserveMap.values.toList())
     }
 
     /**
@@ -142,9 +148,9 @@ class OrderReserveRepository(
         val reserve = reserveMap[reserveId] ?: return
         val updatedSelection = reserve.selection.copy(odds = newOdds)
         val updatedReserve = reserve.copy(selection = updatedSelection)
-        
+
         reserveMap[reserveId] = updatedReserve
-        _reserveDataFlow.value = reserveMap.values.toList()
+        _reserveDataFlow.tryEmit(reserveMap.values.toList())
     }
 
     /**
@@ -152,6 +158,17 @@ class OrderReserveRepository(
      */
     private fun deleteReserveFromMap(reserveId: String) {
         reserveMap.remove(reserveId)
-        _reserveDataFlow.value = reserveMap.values.toList()
+        _reserveDataFlow.tryEmit(reserveMap.values.toList())
+    }
+
+    fun loadMockTestData() {
+        val mockData = ResourceExt.getAssets("mock_order_reserve.json") ?: return
+        val originalData = Gson().fromJson(mockData, BetSlipReserveBean::class.java)
+
+        // 將讀取到的資料寫入 MAP
+        reserveMap[originalData.reserveId] = originalData
+        
+        // emit 到 Flow 中
+        _reserveDataFlow.tryEmit(reserveMap.values.toList())
     }
 }

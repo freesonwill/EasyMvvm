@@ -12,7 +12,7 @@ import galaxy.common.proto.Common
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -25,7 +25,7 @@ class NewOrderRepository(
     private var notifyScope: Job? = null
     
     // 訂單資料的 Flow，供 ViewModel 監聽
-    private val _orderDataFlow = MutableStateFlow<List<BetSlipOrderBean>>(emptyList())
+    private val _orderDataFlow = MutableSharedFlow<List<BetSlipOrderBean>>()
     val orderDataFlow: Flow<List<BetSlipOrderBean>> = _orderDataFlow
     
     // 使用 MAP 來快速查找和管理訂單
@@ -146,7 +146,7 @@ class NewOrderRepository(
         }
         
         // 發送更新的資料
-        _orderDataFlow.value = orderMap.values.toList()
+        _orderDataFlow.tryEmit(orderMap.values.toList())
     }
 
     /**
@@ -190,7 +190,7 @@ class NewOrderRepository(
         val updatedOrder = order.copy(earlySettlePrice = updatedEarlySettlePrice)
         
         orderMap[betId] = updatedOrder
-        _orderDataFlow.value = orderMap.values.toList()
+        _orderDataFlow.tryEmit(orderMap.values.toList())
     }
 
     /**
@@ -201,7 +201,7 @@ class NewOrderRepository(
         val updatedOrder = order.copy(betSlipType = betSlipType)
         
         orderMap[betId] = updatedOrder
-        _orderDataFlow.value = orderMap.values.toList()
+        _orderDataFlow.tryEmit(orderMap.values.toList())
     }
 
     /**
@@ -209,7 +209,7 @@ class NewOrderRepository(
      */
     private fun addOrderData(newOrder: BetSlipOrderBean) {
         orderMap[newOrder.betId] = newOrder
-        _orderDataFlow.value = orderMap.values.toList()
+        _orderDataFlow.tryEmit(orderMap.values.toList())
     }
 
     /**
@@ -221,6 +221,6 @@ class NewOrderRepository(
         val updatedOrder = order.copy(earlySettlePrice = updatedEarlySettlePrice)
         
         orderMap[betId] = updatedOrder
-        _orderDataFlow.value = orderMap.values.toList()
+        _orderDataFlow.tryEmit(orderMap.values.toList())
     }
 }
