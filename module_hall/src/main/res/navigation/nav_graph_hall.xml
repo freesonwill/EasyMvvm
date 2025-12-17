@@ -27,9 +27,33 @@
     <fragment
         android:id="@+id/competitionFragment"
         android:name="com.walisport.module.hall.ui.fragment.CompetitionFragment"
-        android:label="fragment_competiton"
+        android:label="fragment_competition"
         tools:layout="@layout/fragment_competition">
         <deepLink app:uri="@string/nav_module_competition_fragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/recentlyPlayedFragment"
+        android:name="com.walisport.module.hall.ui.fragment.RecentlyPlayedFragment"
+        android:label="fragment_recently_played"
+        tools:layout="@layout/fragment_recently_played">
+        <deepLink app:uri="@string/nav_module_recently_played_fragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/gameFavouriteFragment"
+        android:name="com.walisport.module.hall.ui.fragment.GameFavouriteFragment"
+        android:label="fragment_game_favourite"
+        tools:layout="@layout/fragment_game_favourite">
+        <deepLink app:uri="@string/nav_module_game_favourite" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/matchFavouriteFragment"
+        android:name="com.walisport.module.hall.ui.fragment.MatchFavouriteFragment"
+        android:label="fragment_match_favourite"
+        tools:layout="@layout/fragment_match_favourite">
+        <deepLink app:uri="@string/nav_module_match_favourite" />
     </fragment>
 
 

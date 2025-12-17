@@ -26,7 +26,9 @@
     <string name="nav_module_promotion_fragment" translatable="false">walisport://module_misc/promotionFragment</string>
     <string name="nav_module_web_fragment" translatable="false">walisport://module_misc/webFragment?url={url}</string>
     <string name="nav_module_competition_fragment" translatable="false">walisport://module_hall/competitionFragment</string>
-
+    <string name="nav_module_recently_played_fragment" translatable="false">walisport://module_hall/recentlyPlayedFragment</string>
+    <string name="nav_module_game_favourite" translatable="false">walisport://module_hall/gameFavouriteFragment</string>
+    <string name="nav_module_match_favourite" translatable="false">walisport://module_hall/matchFavouriteFragment</string>
 
 
 
