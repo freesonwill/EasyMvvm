@@ -1,0 +1,200 @@
+package com.walisport.module.hall.data
+
+import arch.cayenne.lib.http.data.PaginationVo
+import com.walisport.module.hall.data.constants.GameSortType
+
+
+/**
+ *
+ * @date: 2025/12/18 21:58
+ * @description:
+ */
+data class BigVo(
+    val id: Long , // 游戏ID
+    val name: String , // 玩家名称
+    val avatar: AvatarVo , // 图片信息
+    val ccy: String , // 货币缩写(ISO4217)
+    val multiple: Int , // 投注倍率
+    val bonus: Int // 输赢金额
+)
+
+//BigVo转换为GameAllRankingListData
+fun BigVo.toGameAllRankingListData(): GameAllRankingListData {
+    return GameAllRankingListData(
+        gameIconUrl = avatar.url ,
+        gameName = name ,
+        multiple = multiple.toFloat() ,
+        countryIcon = when (ccy) {
+            "USD" -> arch.cayenne.lib.common.R.drawable.ic_usdt
+            "CNY" -> arch.cayenne.lib.common.R.drawable.ic_cny
+            else -> arch.cayenne.lib.common.R.drawable.ic_usdt
+        } ,
+        symbol = when (ccy) {
+            "USD" -> "$"
+            "CNY" -> "¥"
+            else -> "$"
+        } ,
+        result = bonus.toFloat()
+    )
+}
+
+/**
+ *
+ * @date: 2025/12/18 22:01
+ * @description:
+ */
+data class BigPageVo(val pagination: PaginationVo , val list: List<BigVo>)
+
+/**
+ *分页数据
+ * @date: 2025/12/11 11:43
+ * @description:
+ */
+data class GameVo(
+    val id: Int ,//游戏ID
+    val name: String ,//游戏名称
+    val avatar: AvatarVo ,//图片信息
+    val online: Int ,// 当前在线人数
+    val reward: Float ,//返奖率
+    val hasMore: Boolean//是否有更多数据
+)
+
+fun GameVo.toGameContentData(id: Long , sortType: GameSortType): GameContentData {
+    return GameContentData(
+        id = id ,
+        name = this.name ,
+        avatar = Avatar(
+            url = this.avatar.url ,
+            thumbhash = this.avatar.thumbhash ,
+            css = ""
+        ) ,
+        online = this.online ,
+        reward = this.reward.toDouble() ,
+        hasMore = this.hasMore ,
+        hotOrCold = when (sortType) {
+            GameSortType.HOT_REWARD -> {
+                HotColdType.HOT
+            }
+
+            GameSortType.COLD_REWARD -> {
+                HotColdType.COLD
+            }
+
+            else -> {
+                HotColdType.NONE
+            }
+        }
+    )
+}
+
+/**
+ *
+ * @date: 2025/12/11 11:38
+ * @description:
+ */
+data class GamePageVo(val pagination: PaginationVo , val list: List<GameVo>) {
+}
+
+/**
+ *
+ * @date: 2025/12/18 17:32
+ * @description:
+ */
+data class BettingVo(
+    val id: Long ,//游戏ID
+    val name: String ,//玩家名称
+    val avatar: AvatarVo ,//图片信息
+    val ccy: String ,//example: USD 货币缩写(ISO4217)
+    val multiple: Int , //投注倍率
+    val bonus: Int//输赢金额
+)
+
+fun BettingVo.toGameAllRankingListData(): GameAllRankingListData {
+    return GameAllRankingListData(
+        gameIconUrl = avatar.url ,
+        gameName = name ,
+        multiple = multiple.toFloat() ,
+        countryIcon = when (ccy) {
+            "USD" -> arch.cayenne.lib.common.R.drawable.ic_usdt
+            "CNY" -> arch.cayenne.lib.common.R.drawable.ic_cny
+            else -> arch.cayenne.lib.common.R.drawable.ic_usdt
+        } ,
+        symbol = when (ccy) {
+            "USD" -> "$"
+            "CNY" -> "¥"
+            else -> "$"
+        } ,
+        result = bonus.toFloat()
+    )
+}
+
+/**
+ *
+ * @date: 2025/12/18 17:36
+ * @description:
+ */
+data class BettingPageVo(val pagination: PaginationVo , val list: List<BettingVo>)
+
+/**
+ * 每日投注比赛信息
+ *
+ * @property ccy 货币缩写(ISO4217)
+ * @property betScore 投注奖金金额
+ * @property remainingTime 活动剩余时长/s
+ */
+data class DailyBetMatchVo(
+    val ccy: String , // 货币缩写(ISO4217)
+    val betScore: Long , // 投注奖金金额
+    val remainingTime: Long // 活动剩余时长/s
+)
+
+/**
+ * 分页数据
+ * @date: 2025/12/19
+ * @description:
+ */
+data class DayVo(
+    val ranking: Int, // 排名
+    val uid: Long, // 玩家UID
+    val name: String, // 玩家名称
+    val ccy: String, // 货币缩写(ISO4217)
+    val bet: Long, // 投注金额
+    val bonus: Int, // 奖金金额
+    val mySelf: Boolean // 是否自己
+)
+
+data class DayPageVo(val pagination: PaginationVo , val list: List<DayVo>)
+
+fun DayVo.toGameAllRankingListData(): GameAllRankingListData {
+    return GameAllRankingListData(
+        gameIconUrl = "" ,
+        gameName = name ,
+        multiple = bet.toFloat() ,
+        countryIcon = when (ccy) {
+            "USD" -> arch.cayenne.lib.common.R.drawable.ic_usdt
+            "CNY" -> arch.cayenne.lib.common.R.drawable.ic_cny
+            else -> arch.cayenne.lib.common.R.drawable.ic_usdt
+        } ,
+        symbol = when (ccy) {
+            "USD" -> "$"
+            "CNY" -> "¥"
+            else -> "$"
+        } ,
+        result = bonus.toFloat()
+    )
+}
+
+fun DayVo.toGameAllRankingToday(): GameAllRankingToday.GameAllRankingTodayData {
+    return GameAllRankingToday.GameAllRankingTodayData(
+        rank = ranking ,
+        playerName = name ,
+        symbol = when (ccy) {
+            "USD" -> "$"
+            "CNY" -> "¥"
+            else -> "$"
+        } ,
+        betting = bet.toDouble() ,
+        bonus = bonus.toDouble() ,
+        myself = mySelf
+    )
+}

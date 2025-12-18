@@ -13,12 +13,14 @@ import com.walisport.module.hall.databinding.FragmentGameAllRankingTodayBinding
 import com.walisport.module.hall.ui.adapter.GameAllRankingListTodayAdapter
 import kotlin.reflect.KClass
 
-class GameAllRankingTodayFragment : BaseFragment<EmptyViewModel, FragmentGameAllRankingTodayBinding>() {
+class GameAllRankingTodayFragment :
+    BaseFragment<EmptyViewModel , FragmentGameAllRankingTodayBinding>() {
     companion object {
         fun newInstance() = GameAllRankingTodayFragment()
     }
 
-    override val vbClass: KClass<FragmentGameAllRankingTodayBinding> = FragmentGameAllRankingTodayBinding::class
+    override val vbClass: KClass<FragmentGameAllRankingTodayBinding> =
+        FragmentGameAllRankingTodayBinding::class
     override val vmClass: KClass<EmptyViewModel> = EmptyViewModel::class
 
     val mockList: List<GameAllRankingToday> by lazy {
@@ -26,26 +28,26 @@ class GameAllRankingTodayFragment : BaseFragment<EmptyViewModel, FragmentGameAll
         for (i in 0..11) {
             l.add(
                 GameAllRankingToday.GameAllRankingTodayData(
-                    rank = i+1,
-                    playerName = "核弹少年团",
-                    symbol = "¥",
-                    betting = 23001212.22,
-                    bonus = 25000.0
+                    rank = i + 1 ,
+                    playerName = "核弹少年团" ,
+                    symbol = "¥" ,
+                    betting = 23001212.22 ,
+                    bonus = 25000.0,
+                    myself = false
                 )
             )
         }
-        l.add(l.size - 2, GameAllRankingToday.GameAllRankingDashData)
+        l.add(l.size - 2 , GameAllRankingToday.GameAllRankingDashData)
         l
     }
 
     @SuppressLint("ClickableViewAccessibility")
     override fun initView(savedInstanceState: Bundle?) {
         with(mBinding) {
-            with(mBinding) {
-                rvTodayRank.layoutManager = LinearLayoutManager(requireContext())
-                rvTodayRank.adapter = GameAllRankingListTodayAdapter().apply {
-                    submitList(mockList)
-                }
+            rvTodayRank.layoutManager = LinearLayoutManager(requireContext())
+            rvTodayRank.itemAnimator = null
+            rvTodayRank.adapter = GameAllRankingListTodayAdapter().apply {
+                submitList(mockList)
             }
         }
     }

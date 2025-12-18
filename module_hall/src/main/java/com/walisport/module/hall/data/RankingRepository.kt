@@ -9,7 +9,6 @@ import arch.cayenne.lib.database.GameDatabase
 import arch.cayenne.lib.http.HttpClient
 import arch.cayenne.lib.http.HttpException
 import arch.cayenne.lib.websocket.WebSocketManager
-import com.walisport.module.hall.data.constants.GameSortType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -40,7 +39,7 @@ class RankingRepository(
                     request = {
                         api.recordBetting(
                             page = page ,
-                            pageSize = DEFAULT_GAME_SIZE ,
+                            pageSize = DEFAULT_PAGE_SIZE ,
                         )
                     } ,
                     onSuccess = { resp ->
@@ -85,8 +84,97 @@ class RankingRepository(
                     request = {
                         api.recordBig(
                             page = page ,
-                            pageSize = DEFAULT_GAME_SIZE ,
+                            pageSize = DEFAULT_PAGE_SIZE ,
                         )
+                    } ,
+                    onSuccess = { resp ->
+                        if (resp.code == 0) {
+                            cancellableContinuation.resume(ApiResponseState.Succeeded(resp.data))
+                        } else {
+                            "response------>${resp.code},${resp.message}".loge(TAG)
+                            cancellableContinuation.resume(
+                                ApiResponseState.Failed(
+                                    HttpException(
+                                        resp.code ,
+                                        resp.message
+                                    )
+                                )
+                            )
+                        }
+                    } ,
+                    onFailure = { code , msg , throwable ->
+                        "response------>$code,$msg,$throwable".loge(TAG)
+                        cancellableContinuation.resume(
+                            ApiResponseState.Failed(
+                                HttpException(
+                                    code ,
+                                    msg ?: ""
+                                )
+                            )
+                        )
+                    }
+                )
+            }
+        }
+
+    }
+
+    /**
+     * 获取每日比赛
+     */
+    suspend fun getDailyMatch(page: Int , pageSize: Int = DEFAULT_PAGE_SIZE): ApiResponseState {
+        val api = mockHttpClient.create(IRankingApi::class.java)
+        return suspendCancellableCoroutine<ApiResponseState> { cancellableContinuation ->
+            scope.launch(Dispatchers.IO) {
+                mockHttpClient.safeRequest(
+                    request = {
+                        api.getDailyMatch(
+                            page = page ,
+                            pageSize = pageSize ,
+                        )
+                    } ,
+                    onSuccess = { resp ->
+                        if (resp.code == 0) {
+                            cancellableContinuation.resume(ApiResponseState.Succeeded(resp.data))
+                        } else {
+                            "response------>${resp.code},${resp.message}".loge(TAG)
+                            cancellableContinuation.resume(
+                                ApiResponseState.Failed(
+                                    HttpException(
+                                        resp.code ,
+                                        resp.message
+                                    )
+                                )
+                            )
+                        }
+                    } ,
+                    onFailure = { code , msg , throwable ->
+                        "response------>$code,$msg,$throwable".loge(TAG)
+                        cancellableContinuation.resume(
+                            ApiResponseState.Failed(
+                                HttpException(
+                                    code ,
+                                    msg ?: ""
+                                )
+                            )
+                        )
+                    }
+                )
+            }
+        }
+
+    }
+
+    /**
+     * 获取每日投注比赛信息
+     */
+    suspend fun getDayMatchDetail(): ApiResponseState {
+        val api = mockHttpClient.create(IRankingApi::class.java)
+        return suspendCancellableCoroutine<ApiResponseState> { cancellableContinuation ->
+            scope.launch(Dispatchers.IO) {
+                mockHttpClient.safeRequest(
+                    request = {
+                        api.dayMatchDetail()
                     } ,
                     onSuccess = { resp ->
                         if (resp.code == 0) {
@@ -122,7 +210,7 @@ class RankingRepository(
 
 
     companion object {
-        const val DEFAULT_GAME_SIZE = 10
+        const val DEFAULT_PAGE_SIZE = 10
         const val INITIAL_PAGE = 1
     }
 

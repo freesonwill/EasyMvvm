@@ -12,7 +12,7 @@ import com.walisport.module.hall.data.BigPageVo
 import com.walisport.module.hall.data.GameAllRankingListData
 import com.walisport.module.hall.data.HallRepository.Companion.INITIAL_PAGE
 import com.walisport.module.hall.data.RankingRepository
-import com.walisport.module.hall.data.constants.toGameAllRankingListData
+import com.walisport.module.hall.data.toGameAllRankingListData
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
 import plugin.koin.KoinViewModel

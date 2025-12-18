@@ -8,24 +8,22 @@ import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.base.data.remote.ApiResponseState.Start.dataAs
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import com.walisport.module.hall.data.DayPageVo
+import com.walisport.module.hall.data.DayVo
 import com.walisport.module.hall.data.GameAllRankingListData
-import com.walisport.module.hall.data.GameAllRankingToday
 import com.walisport.module.hall.data.HallRepository.Companion.INITIAL_PAGE
 import com.walisport.module.hall.data.RankingRepository
 import com.walisport.module.hall.data.toGameAllRankingListData
-import com.walisport.module.hall.data.toGameAllRankingToday
 import kotlinx.coroutines.launch
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
 import plugin.koin.KoinViewModel
 
 @KoinViewModel
-class CompetitionViewModel : BaseViewModel() {
-
+class DailyMatchViewModel : BaseViewModel() {
     private val repository: RankingRepository by inject { parametersOf(viewModelScope) }
 
-    private val _rankingListLiveData: MutableLiveData<List<GameAllRankingToday>> = MutableLiveData()
-    val rankingListLiveData: LiveData<List<GameAllRankingToday>> = _rankingListLiveData
+    private val _gameListLiveData: MutableLiveData<List<GameAllRankingListData>> = MutableLiveData()
+    val gameListLiveData: LiveData<List<GameAllRankingListData>> = _gameListLiveData
 
     private var page: Int = INITIAL_PAGE
 
@@ -74,20 +72,20 @@ class CompetitionViewModel : BaseViewModel() {
                             val isEmpty = size == 0
 
                             val list =
-                                bettingPageVo?.list?.map { it.toGameAllRankingToday() }
+                                bettingPageVo?.list?.map { it.toGameAllRankingListData() }
                                     ?: emptyList()
                             when {
                                 page == INITIAL_PAGE && isEmpty -> setState(DataState.DataEmpty)
                                 !hasMore -> {
                                     setState(DataState.NoMoreData)
-                                    _rankingListLiveData.value =
-                                        (_rankingListLiveData.value ?: emptyList()) + list
+                                    _gameListLiveData.value =
+                                        (_gameListLiveData.value ?: emptyList()) + list
                                 }
 
                                 else -> {
                                     setState(DataState.LoadSuccess)
-                                    _rankingListLiveData.value =
-                                        (_rankingListLiveData.value ?: emptyList()) + list
+                                    _gameListLiveData.value =
+                                        (_gameListLiveData.value ?: emptyList()) + list
                                 }
                             }
                         }
@@ -107,4 +105,11 @@ class CompetitionViewModel : BaseViewModel() {
         }
     }
 
+    companion object {
+        const val DELAY: Long = 30_000
+    }
+
+
 }
+
+
