@@ -10,6 +10,7 @@ import arch.cayenne.lib.common.utils.CustomTabIndicatorUtils
 import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
+import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.setupHorizontalScrollDegree
 import arch.cayenne.lib.common.utils.ext.startFadeAnim
@@ -100,6 +101,7 @@ class GameAllRankingViewHolder(
                 override fun onTabReselected(tab: TabLayout.Tab?) {}
             })
 
+            ivRankingInfo.addScaleOnTouchAnimation()
             ivRankingInfo.clickNoRepeat {
                 val location = IntArray(2)
                 ivRankingInfo.getLocationInWindow(location)
