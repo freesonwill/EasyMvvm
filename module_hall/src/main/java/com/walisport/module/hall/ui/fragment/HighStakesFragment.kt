@@ -11,9 +11,12 @@ import com.walisport.module.hall.databinding.FragmentGameAllRankingListBinding
 import com.walisport.module.hall.ui.adapter.GameAllRankingListAdapter
 import kotlin.reflect.KClass
 
-class GameAllRankingListFragment : BaseFragment<EmptyViewModel, FragmentGameAllRankingListBinding>() {
+/**
+ * 大额fragment
+ */
+class HighStakesFragment : BaseFragment<EmptyViewModel, FragmentGameAllRankingListBinding>() {
     companion object {
-        fun newInstance() = GameAllRankingListFragment()
+        fun newInstance() = HighStakesFragment()
     }
 
     override val vbClass: KClass<FragmentGameAllRankingListBinding> = FragmentGameAllRankingListBinding::class
@@ -24,7 +27,7 @@ class GameAllRankingListFragment : BaseFragment<EmptyViewModel, FragmentGameAllR
         for (i in 0..9) {
             l.add(
                 GameAllRankingListData(
-                    gameIcon = R.drawable.ic_little_tiger,
+                    gameIconUrl = "",
                     gameName = getString(R.string.tiger),
                     multiple = i * 20f,
                     countryIcon = arch.cayenne.lib.common.R.drawable.ic_usdt,

@@ -18,9 +18,10 @@ import com.google.android.material.tabs.TabLayout
 import com.walisport.module.hall.R
 import com.walisport.module.hall.data.HallGameTabDefault
 import com.walisport.module.hall.databinding.ItemGameAllRankingBinding
-import com.walisport.module.hall.ui.fragment.GameAllRankingListFragment
+import com.walisport.module.hall.ui.fragment.LatestBetFragment
 import com.walisport.module.hall.ui.fragment.GameAllRankingTodayFragment
 import com.walisport.module.hall.ui.fragment.GameRankingInfoDialogFragment
+import com.walisport.module.hall.ui.fragment.HighStakesFragment
 
 class GameAllRankingAdapter(
     val parentFragmentManager : androidx.fragment.app.FragmentManager,
@@ -58,12 +59,12 @@ class GameAllRankingViewHolder(
         HallGameTabDefault(
             res = R.drawable.ic_tab_hall_recent,
             _title = R.string.tab_ranking_newest.getString(),
-            _page = { GameAllRankingListFragment.newInstance() }
+            _page = { LatestBetFragment.newInstance() }
         ),
         HallGameTabDefault(
             res = R.drawable.ic_tab_hall_all,
             _title = R.string.tab_ranking_biggest.getString(),
-            _page = { GameAllRankingListFragment.newInstance() }
+            _page = { HighStakesFragment.newInstance() }
         ),
         HallGameTabDefault(
             res = R.drawable.ic_tab_hall_table,
