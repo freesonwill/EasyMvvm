@@ -162,9 +162,6 @@ open class SubHomeViewModel : BaseViewModel() {
                             }
                         }
                         val list = mutableListOf<TournamentDataModel>()
-                        if (it.isEmpty()) {
-                            return@collect
-                        }
                         list.add(
                             TournamentDataModel.createAllItem(
                                 currentPlayTypeId,
