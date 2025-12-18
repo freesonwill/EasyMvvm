@@ -10,7 +10,7 @@
         android:textSize="@dimen/sp_14"
         android:textColor="@color/color_FFFFFF"
         android:text="@string/tab_ranking_newest"
-        android:layout_marginTop="@dimen/dp_20"
+        android:layout_marginTop="@dimen/dp_10"
         android:layout_marginStart="@dimen/dp_12"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent" />
