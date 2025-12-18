@@ -6,4 +6,4 @@ package arch.cayenne.lib.common.data.model
  * @description:
  */
 data class JSResponseData(val type:String,val params: JSResponseParam)
-data class JSResponseParam(val isExpand:Boolean? = null,val pageName:String? = null,val gameId:Int? = null)
+data class JSResponseParam(val isExpand:Boolean? = null,val pageName:String? = null,val gameId:Int? = null,val file:String? = null)

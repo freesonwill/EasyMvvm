@@ -16,6 +16,9 @@ class BetShareViewModel : BaseViewModel() {
     val expandLiveData: LiveData<Boolean> = _expandLivedata
     private val _closeLivedata: MutableLiveData<Boolean> = MutableLiveData()
     val closeLiveData: LiveData<Boolean> = _closeLivedata
+    var expandAnimStart:(()->Unit)? = null
+    var expandAnimEnd:(()->Unit)? = null
+
 
 
     fun expandDialog() {

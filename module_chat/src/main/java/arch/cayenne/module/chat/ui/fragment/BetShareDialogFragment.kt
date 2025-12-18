@@ -4,12 +4,14 @@ import android.animation.ValueAnimator
 import android.app.Dialog
 import android.os.Bundle
 import android.view.WindowManager
+import androidx.core.animation.addListener
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import arch.cayenne.lib.base.ui.fragment.BasePreLoadBottomSheetFragment
 import arch.cayenne.lib.common.ui.fragment.ShareFragment
 import arch.cayenne.lib.common.utils.ViewUtils
+import arch.cayenne.lib.common.utils.biz.CommonBiz
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
@@ -115,7 +117,7 @@ class BetShareDialogFragment :
 
         mBinding.apply {
             tvGo.clickNoRepeat {
-                findNavController().navigate("walisport://module_betslip/orderSportPageFragment".deeplink())
+                findNavController().navigate("walisport://module_betslip/HomeOrderFragment".deeplink())
                 dismiss()
             }
             ivShare.clickNoRepeat {
@@ -172,6 +174,11 @@ class BetShareDialogFragment :
                     lp.height = anim.animatedValue as Int
                     container.layoutParams = lp
                 }
+                addListener(onStart ={
+                    mViewModel.expandAnimStart?.invoke()
+                }, onEnd = {
+                    mViewModel.expandAnimEnd?.invoke()
+                })
                 duration = 170
                 start()
             }

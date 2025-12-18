@@ -50,6 +50,18 @@ class GameBetShareFragment : BaseFragment<GameBetShareViewModel, FragmentGameSha
         initWebView()
         mBinding.webView.loadUrl(BizUrl.GAME_BET_SHARE.url)
         ShareFragment.create(this)
+        shareViewModel.expandAnimStart = {
+//            mBinding.webView.apply {
+//                layoutParams.height = measuredHeight
+//                requestLayout()
+//            }
+        }
+        shareViewModel.expandAnimEnd = {
+//            mBinding.webView.apply {
+//                layoutParams.height = android.view.ViewGroup.LayoutParams.MATCH_PARENT
+//                requestLayout()
+//            }
+        }
     }
 
     override fun initListener() {

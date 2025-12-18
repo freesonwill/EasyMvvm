@@ -11,9 +11,13 @@ enum class BizUrl(val url: String) {
     FUND_DETAIL("${BASE_URL}/web-3n1/record") ,
     FEEDBACK("${BASE_URL}/web-3n1/feedback") ,
 
-    //GAME_BET_SHARE("http://192.168.10.37:5173/orderDetail?settleId=s3&name=南京红姐&level=90")
+//    GAME_BET_SHARE("http://192.168.10.38:5173/orderDetail?settleId=s3&name=南京红姐&level=90"),
     GAME_BET_SHARE("${BASE_URL}/web-3n1/orderDetail?settleId=s3&name=南京红姐&level=90") ,
+
     REBATE("${BASE_URL}/web-3n1/rebate") ,
+//    http://192.168.10.38:5173/
+//    INVITE("http://192.168.10.38:5173/invite") ,
+
     INVITE("${BASE_URL}/web-3n1/invite") ,
     PARTNER("${BASE_URL}/web-3n1/partner") ,
     VIP("${BASE_URL}/web-3n1/vip") ,
@@ -33,7 +37,8 @@ val BASE_URL
                 "https://test.ra781.com"
             }
             else -> {
-                "https://dev.ra781.com"
+//                "https://dev.ra781.com"
+                "http://192.168.10.38:5173"
             }
         }
     }
