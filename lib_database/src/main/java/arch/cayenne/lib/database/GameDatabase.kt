@@ -102,7 +102,7 @@ import arch.cayenne.lib.database.entity.UserDataBean
     MarketTypeBeanConverter::class,
     BetSlipTypeConverter::class,
     TournamentIdListConverter::class,
-    MapConverter::class
+    WalletListConverter::class,
 )
 abstract class GameDatabase: RoomDatabase() {
 

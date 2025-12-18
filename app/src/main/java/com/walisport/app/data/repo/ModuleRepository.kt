@@ -19,9 +19,11 @@ import arch.cayenne.lib.database.entity.SportTournamentCrossRef
 import arch.cayenne.lib.database.entity.TournamentBean
 import arch.cayenne.lib.database.entity.TournamentMatchRef
 import arch.cayenne.lib.database.entity.UserDataBean
+import arch.cayenne.lib.database.entity.WalletBean
 import arch.cayenne.lib.http.HttpClient
 import arch.cayenne.lib.http._interface.IAccount
 import arch.cayenne.lib.http._interface.IConfig
+import arch.cayenne.lib.http.data.AccountInfo
 import arch.cayenne.lib.http.data.CurrencyInfo
 import arch.cayenne.lib.http.data.ProfileInfo
 import arch.cayenne.lib.websocket.WebSocketManager
@@ -112,22 +114,20 @@ class ModuleRepository(
         }
     }
 
-    fun saveProfileInfo(profileInfo: ProfileInfo) {
-        val defaultCurrency = manager.getValue<Int>(UserDataKey.KEY_DEFAULT_CURRENCY)
+    fun saveProfileInfo(profileInfo: AccountInfo) {
         database.userDataDao().insert(
             UserDataBean(
-                id = profileInfo.id,
-                name = profileInfo.name,
+                nickname = profileInfo.nickname,
                 avatar = AvatarEmbedded(
                     url = profileInfo.avatar.url,
                     thumbhash = profileInfo.avatar.thumbhash
                 ),
                 registerTime = profileInfo.registerTime,
                 vipLevel = profileInfo.vipLevel,
-                balanceTotal = profileInfo.balanceTotal,
-                balanceWallet = profileInfo.balanceWallet,
-                currentBetAmount = profileInfo.currentBetAmount,
-                requiredBetAmount = profileInfo.requiredBetAmount,
+                score = profileInfo.score,
+                list = profileInfo.list.map { WalletBean(it.ccy, it.score, it.exchangeScore) },
+                admittedBetScore = profileInfo.admittedBetScore,
+                requiredAdmittedBetScore = profileInfo.requiredAdmittedBetScore,
                 vipStage = profileInfo.vipStage,
                 nicknameChangeCount = profileInfo.nicknameChangeCount,
             )

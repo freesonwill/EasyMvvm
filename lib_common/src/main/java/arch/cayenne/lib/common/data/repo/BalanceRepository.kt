@@ -24,8 +24,6 @@ class BalanceRepository(
     private val manager: UserDataManager,
 ): BaseRepository() {
 
-    fun observeBalance() = userDataDao.observeBalance().map { it ?: 0L }
-
     fun observeCurrency() = infoDao.observeCurrency().map { it?: "" }
 
     fun observeInfo() = infoDao.observeInfo()
@@ -45,20 +43,20 @@ class BalanceRepository(
         if (user == null) return Pair(fiat, crypto)
         val showAllCurrency =  manager.getValue(UserDataKey.KEY_SHOW_ALL_CURRENCY, false)//先暫時為false
 
-        currencyList.forEach {
-            if (!it.virtual) {
+        currencyList.forEach { currency ->
+            if (!currency.virtual) {
                 fiat.add(
-                    it.toCurrencyContentData2((user.balanceWallet[it.ccy]?:0L))
+                    currency.toCurrencyContentData2((user.list.find { it.currency == currency.ccy }?.balance ?: 0.0))
                 )
             } else {
                 crypto.add(
-                    it.toCurrencyContentData2((user.balanceWallet[it.ccy]?:0L))
+                    currency.toCurrencyContentData2((user.list.find { it.currency == currency.ccy }?.balance ?: 0.0))
                 )
             }
         }
         if (!showAllCurrency) {
-            fiat.removeIf { it.amount == 0L }
-            crypto.removeIf { it.amount == 0L }
+            fiat.removeIf { it.amount == 0.0 }
+            crypto.removeIf { it.amount == 0.0 }
         }
         return Pair(fiat, crypto)
     }
@@ -77,7 +75,7 @@ class BalanceRepository(
                 id = 0,
                 icon = "",
                 currencyName = "",
-                amount = 0L,
+                amount = 0.0,
                 amountStr = 0L.getFormalMoney(),
                 unit = ""
             )
@@ -96,19 +94,19 @@ class BalanceRepository(
         val currentLanguage = Locale.getDefault().language
         val currencyList = currencyConfigDao.getCurrencyConfigList()
         if (currentLanguage == "zh") {
-            val currency = fait.find { it.unit == "¥" }?: currencyList.find { it.unit == "¥" }?.toCurrencyContentData2(0L)
+            val currency = fait.find { it.unit == "¥" }?: currencyList.find { it.unit == "¥" }?.toCurrencyContentData2(0.0)
             if (currency != null) {
                 return@combine currency
             }
         } else {
             return@combine fait.find { it.unit == "$" }
-                ?: currencyList.find { it.unit == "$" }?.toCurrencyContentData2(0L)
+                ?: currencyList.find { it.unit == "$" }?.toCurrencyContentData2(0.0)
                 ?: fait.firstOrNull()
                 ?: BaseCurrencyData.CurrencyContentData2(
                     id = 0,
                     icon = "",
                     currencyName = "",
-                    amount = 0L,
+                    amount = 0.0,
                     amountStr = 0L.getFormalMoney(),
                     unit = ""
                 )
@@ -117,7 +115,7 @@ class BalanceRepository(
             id = 0,
             icon = "",
             currencyName = "",
-            amount = 0L,
+            amount = 0.0,
             amountStr = 0L.getFormalMoney(),
             unit = ""
         )
@@ -129,7 +127,7 @@ class BalanceRepository(
 
     }
 
-    private fun CurrencyBean.toCurrencyContentData2(amount: Long): BaseCurrencyData.CurrencyContentData2 {
+    private fun CurrencyBean.toCurrencyContentData2(amount: Double): BaseCurrencyData.CurrencyContentData2 {
         return BaseCurrencyData.CurrencyContentData2(
             id = id,
             icon = icon,
@@ -150,20 +148,20 @@ class BalanceRepository(
         if (user == null) return Pair(fiat, crypto)
         val showAllCurrency =  manager.getValue(UserDataKey.KEY_SHOW_ALL_CURRENCY, false)//先暫時為false
 
-        currencyList.forEach {
-            if (!it.virtual) {
+        currencyList.forEach { currency ->
+            if (!currency.virtual) {
                 fiat.add(
-                    it.toCurrencyContentData2((user.balanceWallet[it.ccy]?:0L))
+                    currency.toCurrencyContentData2((user.list.find { currency.ccy == it.currency }?.balance ?:0.0))
                 )
             } else {
                 crypto.add(
-                    it.toCurrencyContentData2((user.balanceWallet[it.ccy]?:0L))
+                    currency.toCurrencyContentData2((user.list.find { currency.ccy == it.currency }?.balance ?:0.0))
                 )
             }
         }
         if (!showAllCurrency) {
-            fiat.removeIf { it.amount == 0L }
-            crypto.removeIf { it.amount == 0L }
+            fiat.removeIf { it.amount == 0.0 }
+            crypto.removeIf { it.amount == 0.0 }
         }
 
         return Pair(fiat, crypto)
