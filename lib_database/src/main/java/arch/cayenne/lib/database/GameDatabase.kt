@@ -145,6 +145,5 @@ abstract class GameDatabase: RoomDatabase() {
     abstract fun supplierDao():GameSupplierDao
     abstract fun gameDao(): GameDao
     abstract fun userDataDao(): UserDataDao
-
     abstract fun currencyConfigDao(): CurrencyConfigDao
 }

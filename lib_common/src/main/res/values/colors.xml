@@ -87,16 +87,16 @@
     <color name="navigation_lin">#cce6e6e6</color>
     <color name="event_tags">#2A3B3C</color>
 
-    <color name="game_tab_hot">#5B32FF</color>
-    <color name="game_tab_recent">#00B9D4</color>
-    <color name="game_tab_all">#5B32FF</color>
-    <color name="game_tab_chess">#FE3666</color>
-    <color name="game_tab_tiger">#D52316</color>
-    <color name="game_tab_fishing">#317DFF</color>
-    <color name="game_tab_real_people">#F81D7E</color>
-    <color name="game_tab_original">#FF5634</color>
-    <color name="game_tab_lottery">#FF324D</color>
-    <color name="game_tab_esports">#2B78FF</color>
+    <color name="game_tab_hot">#5B32FF</color>  <!--热门-->
+    <color name="game_tab_recent">#00B9D4</color>  <!--最近-->
+    <color name="game_tab_all">#5B32FF</color>  <!--全部-->
+    <color name="game_tab_chess">#FE3666</color>  <!--棋牌-->
+    <color name="game_tab_tiger">#D52316</color>  <!--老虎机-->
+    <color name="game_tab_fishing">#317DFF</color>  <!--捕鱼-->
+    <color name="game_tab_real_people">#F81D7E</color> <!-- 真人-->
+    <color name="game_tab_original">#FF5634</color>  <!--原创-->
+    <color name="game_tab_lottery">#FF324D</color>  <!--彩票-->
+    <color name="game_tab_esports">#2B78FF</color>  <!--电竞-->
 
     <!-- Dark Theme Colors -->
     <color name="keyboard_1">#3D3E4B</color>

@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.base.data.repository.BaseRepository
+import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
 import arch.cayenne.lib.common.data.constants.PreloadEnum
 import arch.cayenne.lib.common.data.manager.UserDataManager
@@ -112,7 +113,58 @@ class HallRepository(
         }
     }
 
+    suspend fun queryAllGameList(
+        page: Int ,
+        pageSize: Int,
+        category: Int
+    ): ApiResponseState {
+        var sort = if (category==0) 0 else 4
+        LogUtils.e("response------all--category${category}")
+        val api = mockHttpClient.create(IHallApi::class.java)
+        return suspendCancellableCoroutine<ApiResponseState> { cancellableContinuation ->
+            scope.launch(Dispatchers.IO) {
+                mockHttpClient.safeRequest(
+                    request = {
+                        api.queryGameList(
+                            page = page ,
+                            pageSize = pageSize ,
+                            sort = sort ,
+                            supplier = emptyList() ,
+                            category = category
+                        )
+                    } ,
+                    onSuccess = { resp ->
+                        if (resp.code == 0) {
+                            cancellableContinuation.resume(ApiResponseState.Succeeded(resp.data))
+                        } else {
+                            LogUtils.e("response------all--${resp.data}")
+                            "response------all>${resp.code},${resp.message}".loge(TAG)
+                            cancellableContinuation.resume(
+                                ApiResponseState.Failed(
+                                    HttpException(
+                                        resp.code ,
+                                        resp.message
+                                    )
+                                )
+                            )
+                        }
+                    } ,
+                    onFailure = { code , msg , throwable ->
+                        LogUtils.e("response------all--${code}")
+                        cancellableContinuation.resume(
+                            ApiResponseState.Failed(
+                                HttpException(
+                                    code ,
+                                    msg ?: ""
+                                )
+                            )
+                        )
+                    }
+                )
+            }
+        }
 
+    }
     //查询是否点击游戏详情页面
     suspend fun queryGameClick() : GameBean{
         return database.gameDao().queryGameBean(1)
@@ -160,13 +212,15 @@ class HallRepository(
         return list
     }
 
-    //存储到room
+
+    //供应商存储到room
     fun setSupplierList(supplier: List<GameSupplier> , gameTypeList: List<GameCategoryVo>) {
         scope.launch(Dispatchers.IO) {
             var list: List<GameSupplierDataModel> = roomGameSupplier(supplier , gameTypeList)
             database.supplierDao().insert(list)
         }
     }
+
 
     //设置单个ID为选中
    fun selectSupplierId(gameType: Int,id:Int){
