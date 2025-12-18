@@ -19,6 +19,7 @@ sealed class BaseCurrencyData {
         val currencyName: String,
         val amount: Double,
         val amountStr: String,
+        val exchangeAmount: String,
         val unit: String
     ) : BaseCurrencyData()
 }

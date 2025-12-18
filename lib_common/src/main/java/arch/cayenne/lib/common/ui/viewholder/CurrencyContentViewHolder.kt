@@ -1,5 +1,6 @@
 package arch.cayenne.lib.common.ui.viewholder
 
+import android.view.View
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
 import arch.cayenne.lib.common.R
 import arch.cayenne.lib.common.data.constants.BaseCurrencyData
@@ -20,6 +21,12 @@ class CurrencyContentViewHolder(
                 .placeholder(R.drawable.ic_wali_demo)
                 .error(R.drawable.ic_wali_demo)
                 .into(ivIcon)
+            if (item.exchangeAmount == "") {
+                tvCurrencyExchange.visibility = View.GONE
+            } else {
+                tvCurrencyExchange.visibility = View.VISIBLE
+                tvCurrencyExchange.text = item.exchangeAmount
+            }
             mBinding.root.clickNoRepeat {
                 listener?.invoke(item)
             }

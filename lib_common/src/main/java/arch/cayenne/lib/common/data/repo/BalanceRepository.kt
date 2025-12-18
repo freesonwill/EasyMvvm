@@ -5,6 +5,7 @@ import arch.cayenne.lib.common.data.constants.BaseCurrencyData
 import arch.cayenne.lib.common.data.constants.UserDataKey
 import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
+import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
 import arch.cayenne.lib.database.dao.CurrencyConfigDao
 import arch.cayenne.lib.database.dao.InfoDao
 import arch.cayenne.lib.database.dao.UserDataDao
@@ -44,13 +45,20 @@ class BalanceRepository(
         val showAllCurrency =  manager.getValue(UserDataKey.KEY_SHOW_ALL_CURRENCY, false)//先暫時為false
 
         currencyList.forEach { currency ->
+            val wallet = user.list.find { it.currency == currency.ccy }
             if (!currency.virtual) {
                 fiat.add(
-                    currency.toCurrencyContentData2((user.list.find { it.currency == currency.ccy }?.balance ?: 0.0))
+                    currency.toCurrencyContentData2(
+                        wallet?.balance ?: 0.0,
+                        null  //法幣不需要匯率轉換
+                    )
                 )
             } else {
                 crypto.add(
-                    currency.toCurrencyContentData2((user.list.find { it.currency == currency.ccy }?.balance ?: 0.0))
+                    currency.toCurrencyContentData2(
+                        wallet?.balance ?: 0.0,
+                        wallet?.convertedAmount
+                    )
                 )
             }
         }
@@ -76,7 +84,8 @@ class BalanceRepository(
                 icon = "",
                 currencyName = "",
                 amount = 0.0,
-                amountStr = 0L.getFormalMoney(),
+                amountStr = 0.0.getFormalMoney(),
+                exchangeAmount = "",
                 unit = ""
             )
         }
@@ -94,20 +103,21 @@ class BalanceRepository(
         val currentLanguage = Locale.getDefault().language
         val currencyList = currencyConfigDao.getCurrencyConfigList()
         if (currentLanguage == "zh") {
-            val currency = fait.find { it.unit == "¥" }?: currencyList.find { it.unit == "¥" }?.toCurrencyContentData2(0.0)
+            val currency = fait.find { it.unit == "¥" }
+                ?: currencyList.find { it.unit == "¥" }?.toCurrencyContentData2(0.0, null)
             if (currency != null) {
                 return@combine currency
             }
         } else {
             return@combine fait.find { it.unit == "$" }
-                ?: currencyList.find { it.unit == "$" }?.toCurrencyContentData2(0.0)
                 ?: fait.firstOrNull()
                 ?: BaseCurrencyData.CurrencyContentData2(
                     id = 0,
                     icon = "",
                     currencyName = "",
                     amount = 0.0,
-                    amountStr = 0L.getFormalMoney(),
+                    amountStr = 0.0.getFormalMoney(),
+                    exchangeAmount = "",
                     unit = ""
                 )
         }
@@ -116,7 +126,8 @@ class BalanceRepository(
             icon = "",
             currencyName = "",
             amount = 0.0,
-            amountStr = 0L.getFormalMoney(),
+            amountStr = 0.0.getFormalMoney(),
+            "",
             unit = ""
         )
     }
@@ -127,13 +138,14 @@ class BalanceRepository(
 
     }
 
-    private fun CurrencyBean.toCurrencyContentData2(amount: Double): BaseCurrencyData.CurrencyContentData2 {
+    private fun CurrencyBean.toCurrencyContentData2(amount: Double, exchangeAmount: Long?): BaseCurrencyData.CurrencyContentData2 {
         return BaseCurrencyData.CurrencyContentData2(
             id = id,
             icon = icon,
             currencyName = name,
             amount = amount,
             amountStr = amount.getFormalMoney(),
+            exchangeAmount = exchangeAmount?.getMoney() ?: "",
             unit = unit
         )
     }
@@ -149,13 +161,20 @@ class BalanceRepository(
         val showAllCurrency =  manager.getValue(UserDataKey.KEY_SHOW_ALL_CURRENCY, false)//先暫時為false
 
         currencyList.forEach { currency ->
+            val wallet = user.list.find { currency.ccy == it.currency }
             if (!currency.virtual) {
                 fiat.add(
-                    currency.toCurrencyContentData2((user.list.find { currency.ccy == it.currency }?.balance ?:0.0))
+                    currency.toCurrencyContentData2(
+                        wallet?.balance ?:0.0,
+                        wallet?.convertedAmount
+                    )
                 )
             } else {
                 crypto.add(
-                    currency.toCurrencyContentData2((user.list.find { currency.ccy == it.currency }?.balance ?:0.0))
+                    currency.toCurrencyContentData2(
+                        wallet?.balance ?:0.0,
+                        wallet?.convertedAmount
+                    )
                 )
             }
         }
