@@ -19,6 +19,7 @@ import arch.cayenne.lib.skin.SkinnableManager
 import arch.cayenne.module.home.TournamentCombo
 import arch.cayenne.module.home.data.constants.HomeState
 import arch.cayenne.module.home.data.constants.PlayType
+import arch.cayenne.module.home.data.constants.TournamentSortType
 import arch.cayenne.module.home.data.constants.playTypeToShowType
 import arch.cayenne.module.home.data.repo.HomeRepository
 import kotlinx.coroutines.Dispatchers
@@ -75,6 +76,9 @@ open class SubHomeViewModel : BaseViewModel() {
 
     // 暫存 SportDataModel 列表，用於實現延後繪製球種列表
     var tempSportData: List<SportDataModel>? = null
+
+    private val _currentSelectedTournaments = MutableLiveData<List<Int>>(emptyList())
+    val currentSelectedTournaments: LiveData<List<Int>> = _currentSelectedTournaments
 
     override fun initViewModel() {
         super.initViewModel()
@@ -420,6 +424,22 @@ open class SubHomeViewModel : BaseViewModel() {
     fun setPlayTypeId(id: Int) {
         currentPlayTypeId = id
         isAllowTabLoad = currentPlayTypeId != PlayType.TODAY.id
+    }
+
+    fun clearTournamentsSelected(){
+        _currentSelectedTournaments.value = emptyList()
+    }
+
+    fun selectTournamentsId(id: Int) {
+        _currentSelectedTournaments.value = listOf(id)
+    }
+
+    fun setTournaments(ints: List<Int>) {
+        _currentSelectedTournaments.value = ints
+    }
+
+    fun setSortType(currentSortType: TournamentSortType) {
+
     }
 
 }
