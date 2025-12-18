@@ -1,8 +1,14 @@
 package arch.cayenne.module.order.ui.fragment
 
 import android.os.Bundle
+import androidx.core.view.isVisible
+import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
+import arch.cayenne.lib.common.data.constants.MsgType
+import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.database.entity.BetSlipOrderBean
 import arch.cayenne.module.betslip.R
@@ -10,6 +16,7 @@ import arch.cayenne.module.betslip.databinding.FragmentOrderSportPageBinding
 import arch.cayenne.module.betslip.utisl.BetSlipUtils
 import arch.cayenne.module.order.data.constants.OrderSportPageEnum
 import arch.cayenne.module.order.ui.adapter.OrderBettingAdapter
+import arch.cayenne.module.order.ui.viewmodel.ChatChooseViewModel
 import arch.cayenne.module.order.ui.viewmodel.OrderSportPageViewModel
 import arch.cayenne.module.order.utils.OrderItemDecoration
 import kotlin.reflect.KClass
@@ -26,6 +33,8 @@ class OrderSportPageFragment :
             val pageIndex = arguments?.getInt("pageIndex") ?: 0
             return OrderSportPageEnum.entries[pageIndex]
         }
+    private var chooseViModel: ChatChooseViewModel? = null
+
 
     override fun initView(savedInstanceState: Bundle?) {
         val adapter = if (type == OrderSportPageEnum.UNSETTLED) {
@@ -35,20 +44,22 @@ class OrderSportPageFragment :
                 }
             }, object : OrderBettingAdapter.OrderDataSelectorListener {
                 override fun onDateClicked() {
-                    val dialog = OrderDateDialogFragment()
-                    dialog.setListener { v1, v2 ->
-                        mViewModel.setOrderData(type, v1, v2)
-                    }
-                    dialog.show(childFragmentManager)
+                    showDateDialog()
                 }
             })
         } else {
             OrderBettingAdapter(type)
         }
+        adapter.setItemClickListener(object :RecyclerItemListener<BetSlipOrderBean>{
+            override fun onItemClick(item: BetSlipOrderBean?, position: Int) {
+                chooseViModel?.clickBtn(MsgType.BET_SPORT)
+            }
+        })
         mBinding.rvContent.adapter = adapter
 
         val decoration = OrderItemDecoration(10.dp2px)
         mBinding.rvContent.addItemDecoration(decoration)
+        checkChooseFragment()
     }
 
     override fun initData() {
@@ -57,6 +68,15 @@ class OrderSportPageFragment :
     }
 
     override fun initListener() {
+        mBinding.btnNoData.setOnClickListener {
+            showDateDialog()
+        }
+    }
+
+    override suspend fun createObserver() {
+        mViewModel.orderDataListener.observe(viewLifecycleOwner) {
+            (mBinding.rvContent.adapter as OrderBettingAdapter).submitList(it)
+        }
         mViewModel.isSupportEarlySettleLiveData.observe(viewLifecycleOwner) {
             val price = it.price.toDoubleOrNull()
             if (price == null || price <= 0) {
@@ -75,11 +95,24 @@ class OrderSportPageFragment :
                 f.show(childFragmentManager)
             }
         }
+        mViewModel.intentEvent.observe(viewLifecycleOwner)  { event ->
+            event.getContentIfNotHandled(viewLifecycleOwner)?.let {
+                mBinding.groupNoData.isVisible = it == DataState.DataEmpty
+            }
+        }
     }
 
-    override suspend fun createObserver() {
-        mViewModel.orderDataListener.observe(viewLifecycleOwner) {
-            (mBinding.rvContent.adapter as OrderBettingAdapter).submitList(it)
+    private fun showDateDialog() {
+        val dialog = OrderDateDialogFragment()
+        dialog.setListener { v1, v2 ->
+            mViewModel.setOrderData(type, v1, v2)
+        }
+        dialog.show(childFragmentManager)
+    }
+
+    private fun checkChooseFragment(){
+        if(parentFragment?.parentFragment is ChatChooseBetFragment){
+            chooseViModel = sharedViewModel<ChatChooseViewModel,ChatChooseBetFragment>().value
         }
     }
 }

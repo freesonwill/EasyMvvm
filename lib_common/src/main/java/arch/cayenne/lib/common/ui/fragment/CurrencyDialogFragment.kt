@@ -17,6 +17,7 @@ import android.view.ViewTreeObserver
 import android.view.Window
 import android.view.WindowManager
 import android.view.animation.DecelerateInterpolator
+import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.data.constants.StatusBarMode
@@ -29,10 +30,12 @@ import arch.cayenne.lib.common.databinding.FragmentCurrencyDialogBinding
 import arch.cayenne.lib.common.ui.adapter.CurrencyAdapter
 import arch.cayenne.lib.common.ui.adapter.CurrencySettingAdapter
 import arch.cayenne.lib.common.ui.adapter.GridSpacingItemDecoration
+import arch.cayenne.lib.common.ui.viewmodel.BalanceViewModel
 import arch.cayenne.lib.common.ui.viewmodel.CurrencyDialogViewModel
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import kotlin.reflect.KClass
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class CurrencyDialogFragment constructor() : BasePositionDialogFragment<CurrencyDialogViewModel, FragmentCurrencyDialogBinding>() {
     companion object {
@@ -50,16 +53,9 @@ class CurrencyDialogFragment constructor() : BasePositionDialogFragment<Currency
     }
 
     private var dismissListener: (() -> Unit)? = null
+    private var onClickListener: ((BaseCurrencyData.CurrencyContentData2) -> Unit)? = null
 
-    val mockList: List<BaseCurrencyData> = listOf(
-        BaseCurrencyData.CurrencyTitleData("现金"),
-        BaseCurrencyData.CurrencyContentData(R.drawable.ic_usa, "美元", "$100.00"),
-        BaseCurrencyData.CurrencyContentData(R.drawable.ic_china, "人民币", "¥39900.00"),
-        BaseCurrencyData.CurrencyTitleData("加密货币"),
-        BaseCurrencyData.CurrencyContentData(R.drawable.ic_usdt, "USDT", "1100.11100"),
-        BaseCurrencyData.CurrencyContentData(R.drawable.ic_btc, "BTC", "123.15"),
-        BaseCurrencyData.CurrencyContentData(R.drawable.ic_eth, "ETH", "399.11"),
-    )
+    private val balanceViewModel: BalanceViewModel by viewModel()
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return object : Dialog(requireContext(), theme) {
@@ -131,7 +127,12 @@ class CurrencyDialogFragment constructor() : BasePositionDialogFragment<Currency
     override val vbClass: KClass<FragmentCurrencyDialogBinding> = FragmentCurrencyDialogBinding::class
     override val vmClass: KClass<CurrencyDialogViewModel> = CurrencyDialogViewModel::class
 
-    val currencyAdapter: CurrencyAdapter by lazy { CurrencyAdapter() }
+    val currencyAdapter: CurrencyAdapter by lazy {
+        CurrencyAdapter{
+            this.onClickListener?.invoke(it)
+            doExitAnim()
+        }
+    }
     val currencySettingAdapter: CurrencySettingAdapter by lazy { CurrencySettingAdapter() }
 
 
@@ -143,7 +144,6 @@ class CurrencyDialogFragment constructor() : BasePositionDialogFragment<Currency
 
             rvCurrency.adapter = currencyAdapter
             rvCurrency.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-            currencyAdapter.submitList(mockList)
 
             rvCurrencySetting.adapter = currencySettingAdapter
             rvCurrencySetting.layoutManager = GridLayoutManager(requireContext(), 2)
@@ -154,7 +154,6 @@ class CurrencyDialogFragment constructor() : BasePositionDialogFragment<Currency
                 includeEdge = false // 確保邊緣沒有空隙
             )
             rvCurrencySetting.addItemDecoration(itemDecoration)
-            currencySettingAdapter.submitList(mockList.filterIsInstance<BaseCurrencyData.CurrencyContentData>())
 
             ivSetting.clickNoRepeat {
                 ObjectAnimator.ofFloat(
@@ -188,12 +187,39 @@ class CurrencyDialogFragment constructor() : BasePositionDialogFragment<Currency
                     start()
                 }
             }
+            ceSearch.addTextChangedListener(
+                afterTextChanged = { editable ->
+                    val keyword = editable.toString()
+                    balanceViewModel.search(keyword)
+                }
+            )
         }
 
     }
 
-    override fun initListener() {
+    override fun initData() {
+        super.initData()
+        balanceViewModel.getUserCurrency()
+    }
 
+    override fun initListener() {
+        balanceViewModel.onUserCurrencyChange.observe(viewLifecycleOwner) { (fiat, crypto) ->
+            val list = arrayListOf<BaseCurrencyData>()
+            if (fiat.isEmpty() && crypto.isEmpty()) {
+                list.add(BaseCurrencyData.CurrencyTitleData(getString(R.string.currency_empty)))
+            }
+
+            if (fiat.isNotEmpty()) {
+                list.add(BaseCurrencyData.CurrencyTitleData(getString(R.string.fiat)))
+                list.addAll(fiat)
+            }
+            if (crypto.isNotEmpty()) {
+                list.add(BaseCurrencyData.CurrencyTitleData(getString(R.string.crypto)))
+                list.addAll(crypto)
+            }
+            currencyAdapter.submitList(list)
+            currencySettingAdapter.submitList(fiat+crypto)
+        }
     }
 
     override fun onStart() {
@@ -225,5 +251,9 @@ class CurrencyDialogFragment constructor() : BasePositionDialogFragment<Currency
 
     fun setOnDismissListener(listener: () -> Unit) {
         this.dismissListener = listener
+    }
+
+    fun setonItemClickListener(listener: (BaseCurrencyData.CurrencyContentData2) -> Unit) {
+        this.onClickListener = listener
     }
 }

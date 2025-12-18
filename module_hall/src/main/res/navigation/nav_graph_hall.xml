@@ -24,5 +24,13 @@
         <deepLink app:uri="@string/nav_module_hall_category" />
     </fragment>
 
+    <fragment
+        android:id="@+id/competitionFragment"
+        android:name="com.walisport.module.hall.ui.fragment.CompetitionFragment"
+        android:label="fragment_competiton"
+        tools:layout="@layout/fragment_competition">
+        <deepLink app:uri="@string/nav_module_competition_fragment" />
+    </fragment>
+
 
 </navigation>

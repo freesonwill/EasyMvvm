@@ -7,14 +7,11 @@ import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.data.repo.BalanceRepository
 import arch.cayenne.lib.common.ui.viewmodel.Event
-import arch.cayenne.lib.common.utils.ext.CollectionExt.combinations
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
-import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
 import arch.cayenne.lib.common.utils.ext.SportStringExt.isGreaterThanValue
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
 import arch.cayenne.lib.database.entity.BetSelectionBean
@@ -274,8 +271,10 @@ class ComboBetViewModel(
 
 
     fun toCombinationDetailParameter(serialValue: Int): ComboDetailFragment.Parameter {
-        return repo.toCombinationDetailParameter(serialValue,
-            onComboMultiBetBeanListener.value,
+        val comboMultiBetBeans = onComboMultiBetBeanListener.value
+        val data = comboMultiBetBeans?.find { it.serialValue == serialValue }?: error("can not find serialValue:$serialValue in $comboMultiBetBeans")
+        return repo.toCombinationDetailParameter(
+            data,
             onBetListListener.value,
             moneySymbol
         )

@@ -195,7 +195,7 @@ class BiDirectionalMatchListPagerFragment :
             })
 
             // 初始化回到頂部按鈕
-            BackToTopHelper(rvHomeGameList, ivBackToTop)
+            BackToTopHelper(rvHomeGameList, ivBackToTop, false)
         }
     }
 

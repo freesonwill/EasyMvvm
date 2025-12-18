@@ -242,9 +242,13 @@ abstract class SearchBaseFragment<VM : BaseViewModel, CVB : ViewBinding>: BaseFr
                                 }
                             }
                             text?.toString().let { keyword ->
-                                updateKeyword(keyword, apiFailedHandler)
-                                if(keyword?.isNotBlank() == true) show()
-                                else dismiss()
+                                if (keyword.isNullOrBlank()) {
+                                    dismiss()
+                                } else {
+                                    // 只要有文字就觸發推薦搜索
+                                    updateKeyword(keyword)
+                                    show()
+                                }
                             }
                         }
                         updateSearchBtnColor()
@@ -321,7 +325,7 @@ abstract class SearchBaseFragment<VM : BaseViewModel, CVB : ViewBinding>: BaseFr
             SkinnableResourceManager.getColorStateList(
                 requireContext(),
                 if (isDirectMatch()) RC.color.search_bg_in_direct_match
-                else RC.color.search_bg
+                else RC.color.search_bar_bg
             )
     }
 

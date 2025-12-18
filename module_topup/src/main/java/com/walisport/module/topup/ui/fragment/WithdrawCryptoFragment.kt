@@ -1,9 +1,12 @@
 package com.walisport.module.topup.ui.fragment
 
 import android.os.Bundle
+import android.text.TextUtils
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.common.data.constants.BizUrl
 import arch.cayenne.lib.common.ui.fragment.CoinDialogFragment
 import arch.cayenne.lib.common.utils.ViewUtils
+import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
@@ -26,6 +29,7 @@ class WithdrawCryptoFragment : BaseFragment<CryptoViewModel, FragmentWithdrawCry
 
     companion object {
         const val RESULT = "RESULT"
+        const val TIP = "TIP"
     }
 
     override fun initView(savedInstanceState: Bundle?) {
@@ -37,6 +41,10 @@ class WithdrawCryptoFragment : BaseFragment<CryptoViewModel, FragmentWithdrawCry
             mBinding.tvCoin.text = type
             mBinding.tvNetworkType.text = network
         }
+        childFragmentManager.setFragmentResultListener(TIP, viewLifecycleOwner) { _, bundle ->
+            val iid = bundle.getString("iid") ?: ""
+            showTipDialog(iid)
+        }
     }
 
     override fun initData() {
@@ -46,9 +54,16 @@ class WithdrawCryptoFragment : BaseFragment<CryptoViewModel, FragmentWithdrawCry
 
     override fun initListener() {
         mBinding.layTopUpLesson.clickNoRepeat {
-            navigate(WithdrawFragmentDirections.actionWithdrawFragmentToFundDetailsFragment().apply {
-                arguments.putString("type", "recharge")
-            })
+            navigate(
+                arch.cayenne.lib.res.R.string.nav_module_web_fragment
+                    .deeplink("url" to BizUrl.TOP_LESSON.url)
+            )
+        }
+        mBinding.layWithdrawLesson.clickNoRepeat {
+            navigate(
+                arch.cayenne.lib.res.R.string.nav_module_web_fragment
+                    .deeplink("url" to BizUrl.TOP_LESSON.url)
+            )
         }
         mBinding.layCoin.clickNoRepeat {
             val location = IntArray(2)
@@ -57,19 +72,14 @@ class WithdrawCryptoFragment : BaseFragment<CryptoViewModel, FragmentWithdrawCry
             CoinDialogFragment.newInstance(offset).apply {
                 setDismissListener(object : CoinDialogFragment.DialogDismissListener {
                     override fun onDismiss() {
-                        ViewUtils.expandView(mBinding.ivArrow,false)
+                        ViewUtils.expandView(mBinding.ivArrow, false)
                     }
 
                     override fun onShow() {
-                        ViewUtils.expandView(mBinding.ivArrow,true)
+                        ViewUtils.expandView(mBinding.ivArrow, true)
                     }
                 })
             }.show(childFragmentManager)
-        }
-        mBinding.layWithdrawLesson.clickNoRepeat {
-            navigate(WithdrawFragmentDirections.actionWithdrawFragmentToFundDetailsFragment().apply {
-                arguments.putString("type", "withdraw")
-            })
         }
         mBinding.layCustomer.clickNoRepeat {
             showToast(R.string.cus_service.getString())
@@ -81,6 +91,31 @@ class WithdrawCryptoFragment : BaseFragment<CryptoViewModel, FragmentWithdrawCry
         mBinding.btnMiddle.clickNoRepeat { }
         mBinding.btnBig.clickNoRepeat { }
         mBinding.btnAll.clickNoRepeat { }
+        mBinding.btnRecharge.clickNoRepeat {
+            val add = mBinding.edtAddress.text.toString()
+            val coin = mBinding.edtCoin.text.toString() + " USDT"
+            if (TextUtils.isEmpty(add)) {
+                showToast(R.string.tip_empty_address.getString())
+                return@clickNoRepeat
+            }
+            if (TextUtils.isEmpty(coin)) {
+                showToast(R.string.tip_empty_input.getString())
+                return@clickNoRepeat
+            }
+            showConfirmDialog(add, coin)
+        }
+    }
+
+    private fun showConfirmDialog(address: String, coin: String) {
+        val tag = "withdraw_confirm_fragment"
+        if (childFragmentManager.findFragmentByTag(tag) != null) return
+        WithdrawConfirmFragment.newInstance(address, coin).show(childFragmentManager, tag)
+    }
+
+    private fun showTipDialog(iid: String) {
+        val tag = "withdraw_tip_fragment"
+        if (childFragmentManager.findFragmentByTag(tag) != null) return
+        WithdrawTipFragment.newInstance(iid).show(childFragmentManager, tag)
     }
 
     private fun showSelectAddress() {

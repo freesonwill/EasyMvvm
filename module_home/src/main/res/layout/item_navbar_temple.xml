@@ -35,6 +35,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/icon"
         app:layout_constraintVertical_chainStyle="packed"
+        android:textSize="@dimen/sp_12"
         tools:text="首页"
         tools:visibility="visible" />
 

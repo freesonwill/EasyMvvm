@@ -4,8 +4,6 @@ import android.content.Context
 import arch.cayenne.lib.base.data.DefaultInitializer
 import com.walisport.module.topup.data.TopUpMainRepository
 import com.walisport.module.topup.ui.viewmodel.BankCardViewModel
-import com.walisport.module.topup.ui.viewmodel.FundDetailsViewModel
-import com.walisport.module.topup.ui.viewmodel.RealTimeCashBackViewModel
 import com.walisport.module.topup.ui.viewmodel.TopUpViewModel
 import com.walisport.module.topup.ui.viewmodel.SelectBankViewModel
 import com.walisport.module.topup.ui.viewmodel.CryptoViewModel
@@ -37,6 +35,7 @@ class TopUpModuleInitializer : DefaultInitializer<String> {
     }
 
     private val viewModules = module {
+        includes(defaultModule)
         viewModelOf(::TopUpViewModel)
         viewModelOf(::BankCardViewModel)
         viewModelOf(::WithdrawViewModel)
@@ -53,8 +52,6 @@ class TopUpModuleInitializer : DefaultInitializer<String> {
         viewModelOf(::AddressViewModel)
         viewModelOf(::BetDetailViewModel)
         viewModelOf(::WithdrawFiatViewModel)
-        viewModelOf(::FundDetailsViewModel)
-        viewModelOf(::RealTimeCashBackViewModel)
     }
 
     private val repoModules = module {

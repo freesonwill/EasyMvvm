@@ -33,7 +33,7 @@ import kotlin.math.abs
 /**
  * @author: wenxi
  * @date: 29/9/25 18:05
- * @description:
+ * @description: 键盘切换动画管理，获取软件盘高度，管理表情键盘高度，键盘状态等
  */
 class SoftKeyboardManager(
     private val scope: CoroutineScope,
@@ -271,7 +271,7 @@ class SoftKeyboardManager(
 
     fun showKeyboardAnimation() {
         val animationType = getKeyBoardActionType(clickKeyBoardType, currentKeyBoardType)
-//        "showKeyboardAnimation $animationType $softKeyBoardHeight}".logd("aaa")
+        "showKeyboardAnimation $animationType $softKeyBoardHeight}".logd("aaa")
         when (animationType) {
             KeyboardActionType.CHAT_TO_CHAT -> keyBoardListener.changeKeyboardUi(KeyBoardType.CHAT)
             //展示软件盘
@@ -431,5 +431,25 @@ class SoftKeyboardManager(
         currentKeyBoardType = clickKeyBoardType
         keyBoardListener.updateChatKeyboardType(currentKeyBoardType)
     }
+
+    //防止软件盘和表情键盘切换的时候跳动
+     fun inputIconShouldUpdate(
+        animationType: KeyboardActionType,
+        call: () -> Unit,
+        elCall: (() -> Unit)? = null
+    ) {
+        if (animationType in arrayOf(
+                KeyboardActionType.CHAT_TO_SOFT,
+                KeyboardActionType.CHAT_TO_EMOJI,
+                KeyboardActionType.EMOJI_TO_CHAT,
+                KeyboardActionType.SOFT_TO_CHAT
+            )
+        ) { //chat 和 键盘切换时@ 注单 emoji 等按钮需要上下移动
+            call.invoke()
+        } else {
+            elCall?.invoke()
+        }
+    }
+
 
 }
