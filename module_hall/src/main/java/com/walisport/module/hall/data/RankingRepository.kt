@@ -75,6 +75,51 @@ class RankingRepository(
 
     }
 
+    suspend fun recordBig(
+        page: Int ,
+    ): ApiResponseState {
+        val api = mockHttpClient.create(IRankingApi::class.java)
+        return suspendCancellableCoroutine<ApiResponseState> { cancellableContinuation ->
+            scope.launch(Dispatchers.IO) {
+                mockHttpClient.safeRequest(
+                    request = {
+                        api.recordBig(
+                            page = page ,
+                            pageSize = DEFAULT_GAME_SIZE ,
+                        )
+                    } ,
+                    onSuccess = { resp ->
+                        if (resp.code == 0) {
+                            cancellableContinuation.resume(ApiResponseState.Succeeded(resp.data))
+                        } else {
+                            "response------>${resp.code},${resp.message}".loge(TAG)
+                            cancellableContinuation.resume(
+                                ApiResponseState.Failed(
+                                    HttpException(
+                                        resp.code ,
+                                        resp.message
+                                    )
+                                )
+                            )
+                        }
+                    } ,
+                    onFailure = { code , msg , throwable ->
+                        "response------>$code,$msg,$throwable".loge(TAG)
+                        cancellableContinuation.resume(
+                            ApiResponseState.Failed(
+                                HttpException(
+                                    code ,
+                                    msg ?: ""
+                                )
+                            )
+                        )
+                    }
+                )
+            }
+        }
+
+    }
+
 
     companion object {
         const val DEFAULT_GAME_SIZE = 10
