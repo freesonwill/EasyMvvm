@@ -12,6 +12,7 @@ import arch.cayenne.lib.common.utils.ext.checkCurrentScrollState
 import arch.cayenne.lib.common.utils.ext.onScrolledOver
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.helper.BackToTopHelper
+import com.walisport.module.hall.data.Category
 import com.walisport.module.hall.data.GameAllContentData
 import com.walisport.module.hall.databinding.FragmentGameAllBinding
 import com.walisport.module.hall.ui.adapter.GameAllHeaderAdapter
