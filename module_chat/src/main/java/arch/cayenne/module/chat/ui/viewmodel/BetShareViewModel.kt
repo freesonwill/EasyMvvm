@@ -18,7 +18,6 @@ class BetShareViewModel : BaseViewModel() {
     val closeLiveData: LiveData<Boolean> = _closeLivedata
 
 
-
     fun expandDialog() {
         val value = _expandLivedata.value?.let { !it } ?: false
         _expandLivedata.value = value
