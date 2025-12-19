@@ -38,14 +38,15 @@ data class SelectionBean(
 * Cross Reference Entity
 * */
 
-@Entity(primaryKeys = ["playType", "tournamentIdList", "matchId", "date", "page"])
+@Entity(primaryKeys = ["playType" , "tournamentIdList" , "sortType" , "matchId" , "date" , "page"])
 data class TournamentMatchRef(
-    val playType: Int,
-    val tournamentIdList: List<Int>,
-    val page: Int,
-    val date: Long, //0表示ALL Tab，其餘的是該日期標籤起始時間
-    val matchId: Long,
-    val order: Int,
+    val playType: Int ,
+    val tournamentIdList: List<Int> ,
+    val sortType: Int ,//聯賽排序類型 0:按比賽時間排序 1:按熱門聯賽排序
+    val page: Int ,
+    val date: Long , //0表示ALL Tab，其餘的是該日期標籤起始時間
+    val matchId: Long ,
+    val order: Int ,
 )
 
 

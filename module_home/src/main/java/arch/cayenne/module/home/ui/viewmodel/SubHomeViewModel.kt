@@ -19,7 +19,7 @@ import arch.cayenne.lib.skin.SkinnableManager
 import arch.cayenne.module.home.TournamentCombo
 import arch.cayenne.module.home.data.constants.HomeState
 import arch.cayenne.module.home.data.constants.PlayType
-import arch.cayenne.module.home.data.constants.TournamentSortType
+import arch.cayenne.module.home.data.constants.MatchListSortType
 import arch.cayenne.module.home.data.constants.playTypeToShowType
 import arch.cayenne.module.home.data.repo.HomeRepository
 import kotlinx.coroutines.Dispatchers
@@ -81,6 +81,9 @@ open class SubHomeViewModel : BaseViewModel() {
 
     private val _currentSelectedTournaments = MutableLiveData<List<Int>>(emptyList())
     val currentSelectedTournaments: LiveData<List<Int>> = _currentSelectedTournaments
+
+    private val _sortType = MutableLiveData<MatchListSortType>()
+    val sortType: LiveData<MatchListSortType> = _sortType
 
     override fun initViewModel() {
         super.initViewModel()
@@ -469,8 +472,8 @@ open class SubHomeViewModel : BaseViewModel() {
         _currentSelectedTournaments.value = ints
     }
 
-    fun setSortType(currentSortType: TournamentSortType) {
-
+    fun setSortType(currentSortType: MatchListSortType) {
+        _sortType.value = currentSortType
     }
 
 }

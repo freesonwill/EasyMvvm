@@ -330,6 +330,16 @@ class MatchListPagerFragmentV2 :
             }
         }
 
+        subHomeViewModel.sortType.observe(viewLifecycleOwner){
+            mBinding.rvHomeGameList.startFadeAnim { onComplete ->
+                mViewModel.setSortType(it)
+                mViewModel.startObserveMatch()
+                helper?.reset()
+                reloadAllData()
+                onComplete.invoke()
+            }
+        }
+
 
     }
 

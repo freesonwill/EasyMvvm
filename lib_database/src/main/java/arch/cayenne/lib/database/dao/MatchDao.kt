@@ -98,11 +98,12 @@ abstract class MatchDao : BaseDao<MatchBean>() {
     @Query(
         "SELECT *" +
                 "FROM TournamentMatchRef " +
-                "WHERE playType = :playType AND tournamentIdList = :tournamentIdList  ORDER BY `order`"
+                "WHERE playType = :playType AND tournamentIdList = :tournamentIdList  AND sortType = :sortType ORDER BY `order`"
     )
     abstract fun observeMatchChange(
         playType: Int,
-        tournamentIdList: List<Int>
+        tournamentIdList: List<Int>,
+        sortType:Int
     ): Flow<List<TournamentMatchRef>>
 
 

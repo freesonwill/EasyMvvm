@@ -40,7 +40,7 @@ import arch.cayenne.module.home.R
 import arch.cayenne.module.home.data.constants.HomeState
 import arch.cayenne.module.home.data.constants.PlayType
 import arch.cayenne.module.home.data.constants.TournamentListType
-import arch.cayenne.module.home.data.constants.TournamentSortType
+import arch.cayenne.module.home.data.constants.MatchListSortType
 import arch.cayenne.module.home.databinding.FragmentSubHomeV2Binding
 import arch.cayenne.module.home.databinding.LayoutTournamentSortingMenuBinding
 import arch.cayenne.module.home.ui.adapter.SportsListAdapter
@@ -62,7 +62,7 @@ class SubHomeFragmentV2 : BaseFragment<SubHomeViewModel , FragmentSubHomeV2Bindi
     private var sortingMenuBinding: LayoutTournamentSortingMenuBinding? = null
 
     // 當前排序類型，預設為按熱門聯賽排序
-    private var currentSortType = TournamentSortType.BY_TIME
+    private var currentSortType = MatchListSortType.BY_TIME
 
     private val defaultAnimDuration = 300L
 
@@ -597,8 +597,8 @@ class SubHomeFragmentV2 : BaseFragment<SubHomeViewModel , FragmentSubHomeV2Bindi
             // 點擊按熱門排序
             binding.tvSortByHot.clickNoRepeat {
                 sortMenuClicked = true
-                if (currentSortType != TournamentSortType.BY_HOT) {
-                    currentSortType = TournamentSortType.BY_HOT
+                if (currentSortType != MatchListSortType.BY_HOT) {
+                    currentSortType = MatchListSortType.BY_HOT
                     updateSortingMenuSelection()
                     setSortBtnText()
                     mViewModel.setSortType(currentSortType)
@@ -609,8 +609,8 @@ class SubHomeFragmentV2 : BaseFragment<SubHomeViewModel , FragmentSubHomeV2Bindi
             // 點擊按時間排序
             binding.tvSortByTime.clickNoRepeat {
                 sortMenuClicked = true
-                if (currentSortType != TournamentSortType.BY_TIME) {
-                    currentSortType = TournamentSortType.BY_TIME
+                if (currentSortType != MatchListSortType.BY_TIME) {
+                    currentSortType = MatchListSortType.BY_TIME
                     updateSortingMenuSelection()
                     setSortBtnText()
                     mViewModel.setSortType(currentSortType)
@@ -635,12 +635,12 @@ class SubHomeFragmentV2 : BaseFragment<SubHomeViewModel , FragmentSubHomeV2Bindi
             )
 
             when (currentSortType) {
-                TournamentSortType.BY_HOT -> {
+                MatchListSortType.BY_HOT -> {
                     binding.tvSortByHot.setTextColor(selectedColor)
                     binding.tvSortByTime.setTextColor(unselectedColor)
                 }
 
-                TournamentSortType.BY_TIME -> {
+                MatchListSortType.BY_TIME -> {
                     binding.tvSortByHot.setTextColor(unselectedColor)
                     binding.tvSortByTime.setTextColor(selectedColor)
                 }
@@ -650,11 +650,11 @@ class SubHomeFragmentV2 : BaseFragment<SubHomeViewModel , FragmentSubHomeV2Bindi
 
     private fun setSortBtnText() {
         when (currentSortType) {
-            TournamentSortType.BY_TIME -> {
+            MatchListSortType.BY_TIME -> {
                 mBinding.layoutContainer.customTabGroup.setSortBtnText(arch.cayenne.lib.common.R.string.custom_tab_time.getString())
             }
 
-            TournamentSortType.BY_HOT -> {
+            MatchListSortType.BY_HOT -> {
                 mBinding.layoutContainer.customTabGroup.setSortBtnText(arch.cayenne.lib.common.R.string.custom_tab_hot.getString())
             }
         }

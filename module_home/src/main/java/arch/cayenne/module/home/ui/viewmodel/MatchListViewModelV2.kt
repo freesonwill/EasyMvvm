@@ -10,6 +10,7 @@ import arch.cayenne.lib.database.entity.TournamentMatchRef
 import arch.cayenne.module.home.data.constants.HomeState
 import arch.cayenne.module.home.data.constants.PlayType
 import arch.cayenne.module.home.data.constants.SportType
+import arch.cayenne.module.home.data.constants.MatchListSortType
 import arch.cayenne.module.home.data.repo.BaseMatchRepository
 import arch.cayenne.module.home.data.repo.BaseMatchRepository.Companion.DEFAULT_MATCH_SIZE
 import arch.cayenne.module.home.data.repo.MatchListRepository
@@ -29,6 +30,7 @@ class MatchListViewModelV2 : BaseMatchViewModel<MatchListRepository>() {
     private var _sportId = SportType.Init.id
     private var _playType = PlayType.TODAY.id
     private var _tournamentIdList: List<Int> = listOf(HomeViewModel.TOURNAMENT_ALL_ID)
+    private var _sortType: MatchListSortType = MatchListSortType.BY_TIME
     private var _position = -1
     private var _selectedDate = MutableStateFlow<Long>(0L)
     override val repository: MatchListRepository by inject()
@@ -54,6 +56,10 @@ class MatchListViewModelV2 : BaseMatchViewModel<MatchListRepository>() {
 
     fun setPlayTypeId(id: Int) {
         _playType = id
+    }
+
+    fun setSortType(sortType: MatchListSortType) {
+        _sortType = sortType
     }
 
     fun setSelectedDate(date: Long = 0) {
@@ -103,7 +109,7 @@ class MatchListViewModelV2 : BaseMatchViewModel<MatchListRepository>() {
     fun startObserveMatch() {
         job?.cancel()
         job = viewModelScope.launch(Dispatchers.IO) {
-            repository.observeMatchChange(_playType, _tournamentIdList)
+            repository.observeMatchChange(_playType, _tournamentIdList, _sortType)
                 .distinctUntilChanged()
                 .collect { refs ->
                     val selectedDate = _selectedDate.value
@@ -154,7 +160,7 @@ class MatchListViewModelV2 : BaseMatchViewModel<MatchListRepository>() {
                     _selectedDate.value + BaseMatchRepository.ONE_DAY_TIME_STAMP
                 )
 
-            "取得比賽資料 Type = ${loadMatchType} PlayType = $_playType sportId = $_sportId tournamentId = $_tournamentIdList page = $page startTime = $startTime endTime = $endTime".logi(
+            "取得比賽資料 Type = ${loadMatchType} PlayType = $_playType sportId = $_sportId tournamentId = $_tournamentIdList sortType=$_sortType page = $page startTime = $startTime endTime = $endTime".logi(
                 TAG
             )
             callApi(
@@ -168,7 +174,8 @@ class MatchListViewModelV2 : BaseMatchViewModel<MatchListRepository>() {
                         startTime = startTime,
                         endTime = endTime,
                         isForce = requestScrollToTop,
-                        loadMatchType = loadMatchType
+                        loadMatchType = loadMatchType,
+                        sortType = _sortType
                     )
                 },
                 {

@@ -12,6 +12,7 @@ import arch.cayenne.lib.websocket.WebSocketManager
 import arch.cayenne.lib.websocket.data.ApiCode
 import arch.cayenne.lib.websocket.extension.sendAndWaitProtoMessageResponse
 import arch.cayenne.module.home.data.constants.PlayType
+import arch.cayenne.module.home.data.constants.MatchListSortType
 import arch.cayenne.module.home.data.model.toRoomData
 import arch.cayenne.module.home.ui.viewmodel.BaseMatchViewModel.Companion.INITIAL_PAGE
 import arch.cayenne.module.home.ui.viewmodel.LoadMatchType
@@ -50,6 +51,7 @@ class MatchListRepository(
         endTime: Long,
         isForce: Boolean = false,  //是否刪除之前的資料
         loadMatchType: LoadMatchType,
+        sortType: MatchListSortType = MatchListSortType.BY_TIME
     ): ApiResponseState {
         val cursor = if (loadMatchType == LoadMatchType.PREV_PAGE) {
 //            "prevPage:$prevPage".logi("prevPageIssue")
@@ -90,6 +92,7 @@ class MatchListRepository(
                     this.cursorMatchStartTime = cursor.basicInfo.startTime
                 }
                 this.reverse = loadMatchType == LoadMatchType.PREV_PAGE //判断是取上一页，还是下一页
+                this.sortType = sortType.type
             }.build()
         }
 
@@ -140,7 +143,8 @@ class MatchListRepository(
                             page = page,
                             date = date,
                             matchId = match.matchId,
-                            order = page * 100 + index
+                            order = page * 100 + index,
+                            sortType = sortType.type
                         )
                     }
 
@@ -169,9 +173,13 @@ class MatchListRepository(
         matchDao.deleteCurrentTournamentMatchRef(playType, tournamentIdList, date)
     }
 
-    fun observeMatchChange(playType: Int, tournamentIdList: List<Int>): Flow<List<TournamentMatchRef>> {
+    fun observeMatchChange(
+        playType: Int ,
+        tournamentIdList: List<Int> ,
+        sortType: MatchListSortType
+    ): Flow<List<TournamentMatchRef>> {
         //觀察後端的500-1002（获取比赛列表）回傳
-        return matchDao.observeMatchChange(playType, tournamentIdList)
+        return matchDao.observeMatchChange(playType, tournamentIdList, sortType.type)
     }
 
     /**
