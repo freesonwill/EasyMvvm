@@ -39,6 +39,7 @@ import arch.cayenne.module.home.ui.adapter.MatchItemAdapter
 import arch.cayenne.module.home.ui.adapter.OnMatchItemClickListener
 import arch.cayenne.module.home.ui.view.decoration.MatchCardItemDecoration
 import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
+import arch.cayenne.module.home.ui.viewmodel.MatchListViewModel
 import arch.cayenne.module.home.ui.viewmodel.MatchListViewModelV2
 import arch.cayenne.module.home.ui.viewmodel.SubHomeViewModel
 import arch.cayenne.module.home.utils.DateUtils
@@ -237,18 +238,6 @@ class MatchListPagerFragmentV2 :
             mViewModel.updateMatchLiveData()
         }
 
-        launch {
-            subHomeViewModel._currentSportId.collect {
-                if (mViewModel.getSportId() != it) {
-                    mBinding.rvHomeGameList.startFadeAnim { onComplete ->
-                        mViewModel.setSportId(it)
-                        mViewModel.startObserveMatch()
-                        reloadAllData()
-                        onComplete.invoke()
-                    }
-                }
-            }
-        }
 
         subHomeViewModel.currentSelectedTournaments.observe(viewLifecycleOwner) {
             mBinding.rvHomeGameList.startFadeAnim { onComplete ->

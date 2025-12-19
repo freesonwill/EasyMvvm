@@ -138,17 +138,20 @@ class SubHomeFragmentV2 : BaseFragment<SubHomeViewModel , FragmentSubHomeV2Bindi
             }
         }
 
-        mViewModel.tournaments.observeEvent(viewLifecycleOwner , this) { list ->
+        mViewModel.tournamentsPlain.observeEvent(viewLifecycleOwner , this) { list ->
             val l = ArrayList<SimpleTabDataModel>()
-            list.take(10).forEach { item ->
-                l.add(
-                    SimpleTabDataModel(
-                        id = item.tournamentList.first().id ,
-                        simpleName = item.tournamentList.first().simpleName ,
-                        icon = item.tournamentList.first().icon,
+            list.take(10)
+                .forEach { item ->
+                    l.add(
+                        SimpleTabDataModel(
+                            id = item.id ,
+                            simpleName = item.simpleName ,
+                            icon = item.icon ,
+                        )
                     )
-                )
-            }
+                }
+
+            mBinding.layoutContainer.customTabGroup.clearTabList()
             mBinding.layoutContainer.customTabGroup.submitTabList(l)
 
         }
