@@ -7,6 +7,7 @@
     android:background="@color/fragment_bg">
 
     <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
+        android:id="@+id/lay_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/dp_12"
@@ -333,4 +334,9 @@
             </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
         </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
     </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_120"
+        app:layout_constraintTop_toBottomOf="@+id/lay_content" />
 </androidx.constraintlayout.widget.ConstraintLayout>
