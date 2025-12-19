@@ -35,23 +35,24 @@
             <arch.cayenne.lib.skin.widget.SkinnableTabLayout
                 android:id="@+id/emoji_tablayout"
                 android:layout_width="match_parent"
-                android:layout_height="24dp"
+                android:layout_height="30dp"
                 android:background="@color/tran_0"
                 app:tabBackground="@color/tran_0"
-                app:tabIndicatorHeight="@dimen/dp_0"
                 app:tabMode="fixed"
                 app:tabPadding="@dimen/dp_0"
                 app:tabRippleColor="@color/tran_0"
                 app:tabSelectedTextColor="@color/white"
-                app:tabTextColor="@color/color_C0C0C0" />
+                app:tabTextColor="@color/color_C0C0C0"
+                app:tabIndicator="@drawable/bg_order_indicator"
+                app:tabIndicatorAnimationDuration="250"
+                app:tabIndicatorAnimationMode="linear"
+                app:tabIndicatorColor="@color/color_00E0E5"
+                app:tabIndicatorFullWidth="false"
+                app:tabIndicatorGravity="bottom"
+                app:tabIndicatorHeight="2dp"
+                />
 
-            <arch.cayenne.lib.common.ui.view.CustomTabIndicator
-                android:id="@+id/customIndicator"
-                android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:layout_marginTop="4dp"
-                android:background="@color/tran_0"
-                app:tabTextColor="@color/color_00E0E5" />
+
 
         </LinearLayout>
 
