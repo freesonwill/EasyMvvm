@@ -33,6 +33,7 @@ class LatestBetFragment : BaseFragment<LatestBetViewModel , FragmentGameAllRanki
     override fun initView(savedInstanceState: Bundle?) {
         with(mBinding) {
             rvCurrentRank.layoutManager = LinearLayoutManager(requireContext())
+            rvCurrentRank.itemAnimator = null
             rvCurrentRank.adapter = GameAllRankingListAdapter()
         }
     }
@@ -78,7 +79,6 @@ class LatestBetFragment : BaseFragment<LatestBetViewModel , FragmentGameAllRanki
         }
 
         mViewModel.gameListLiveData.observe(this) { list ->
-            "observer latest bet list size=${list.size}".logd(TAG)
             (mBinding.rvCurrentRank.adapter as? GameAllRankingListAdapter)?.submitList(
                 list.toMutableList()
             )

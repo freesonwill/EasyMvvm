@@ -13,6 +13,7 @@ import arch.cayenne.lib.base.ui.adapter.BaseAdapter
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
 import arch.cayenne.lib.common.data.constants.SportEnum
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getColor
+import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
 import com.bumptech.glide.Glide
 import com.walisport.module.hall.R
 import com.walisport.module.hall.data.GameAllRankingListData
@@ -55,19 +56,28 @@ class GameAllRankingListViewHolder(val item: ItemAllRankingListBinding) : BaseVi
             Glide.with(ivGame.context).load(data.gameIconUrl).into(ivGame)
 
             tvGameName.text = data.gameName
-            tvMultiple.text = "${data.multiple}x"
-            if (data.multiple >= 100f) {
+            //倍数数据：由数字和“x”的倍数符号组成。
+            //需完整展示，需显示到小数点后两位，100倍以上的倍数采用火热渐变色。
+            //后台下发的赔率是整形，需要除以100
+            tvMultiple.text = "${data.multiple.getOdds()}x"
+            if (data.multiple >= 10000f) {
                 setTextViewGradient(tvMultiple)
             } else {
                 tvMultiple.paint.shader = null // 關鍵：清除複用帶來的舊 Shader
                 tvMultiple.setTextColor(arch.cayenne.lib.common.R.color.color_C0C0C0.getColor())
             }
             ivCurrency.setBackgroundResource(arch.cayenne.lib.common.R.drawable.ic_usdt)
-            tvResult.text = "${data.symbol}${data.result}"
+            //负号 + 法币符号 + 金额 + 币种
+            if (data.result < 0) {
+                tvResult.text = "-${data.symbol}${-data.result}"
+            } else {
+                tvResult.text = "${data.symbol}${data.result}"
+            }
+
             if (data.result > 0) {
                 tvResult.setTextColor(arch.cayenne.lib.common.R.color.color_00E301.getColor())
             } else {
-                tvMultiple.setTextColor(arch.cayenne.lib.common.R.color.color_C0C0C0.getColor())
+                tvResult.setTextColor(arch.cayenne.lib.common.R.color.color_C0C0C0.getColor())
             }
         }
     }
@@ -101,11 +111,11 @@ class GameAllRankingListCompare : DiffUtil.ItemCallback<GameAllRankingListData>(
     override fun areItemsTheSame(
         oldItem: GameAllRankingListData,
         newItem: GameAllRankingListData
-    ): Boolean = oldItem == newItem
+    ): Boolean = false
 
     override fun areContentsTheSame(
         oldItem: GameAllRankingListData,
         newItem: GameAllRankingListData
-    ): Boolean  = oldItem == newItem
+    ): Boolean  = false
 
 }

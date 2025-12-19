@@ -104,8 +104,8 @@ class GameAllRankingTodayViewHolder(val item: ItemAllRankingTodayBinding) : Base
                 }
 
                 else -> {
-                    tvRank.text = "${data.rank}"
-                }
+                    // 设置排名文本，如果排名大于 5000，则显示 "5000+"，否则显示具体排名
+                    tvRank.text = if (data.rank > 5000) "5000+" else "${data.rank}"                }
             }
             tvPlayerName.text = data.playerName
             val plainFormat = DecimalFormat("#.########")
