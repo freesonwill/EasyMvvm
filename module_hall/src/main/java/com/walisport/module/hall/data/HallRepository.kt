@@ -2,6 +2,7 @@ package com.walisport.module.hall.data
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import arch.cayenne.lib.base.data.model.UnPeekLiveData
 import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.base.data.repository.BaseRepository
 import arch.cayenne.lib.base.utils.LogUtils
@@ -34,9 +35,9 @@ class HallRepository(
     private val _gameListLiveData: MutableLiveData<List<GameVo>> = MutableLiveData()
     val gameListLiveData: LiveData<List<GameVo>> = _gameListLiveData
 
+    private val _gameCategoryListLiveData = UnPeekLiveData<List<GameCategoryVo>>()
+    val gameCategoryListLiveData: UnPeekLiveData<List<GameCategoryVo>> = _gameCategoryListLiveData
 
-    private val _gameCommonListLiveData: MutableLiveData<GameVo> = MutableLiveData()
-    val gameCommonListLiveData: LiveData<GameVo> = _gameCommonListLiveData
 
     suspend fun queryGameList(
         page: Int ,
@@ -101,7 +102,7 @@ class HallRepository(
                     if (resp.code == 0) {
                         "response------queryGameCommonList>${resp.code},${resp.data}".loge(TAG)
                         setSupplierList(resp.data.gameSupplier , resp.data.category)
-                        // _gameCommonListLiveData.postValue(resp.data)
+                         _gameCategoryListLiveData.postValue(resp.data.category)
                     } else {
                         "response------queryGameCommonList>${resp.code},${resp.message}".loge(TAG)
                     }
