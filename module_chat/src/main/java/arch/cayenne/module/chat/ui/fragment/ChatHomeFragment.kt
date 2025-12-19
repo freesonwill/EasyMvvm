@@ -209,8 +209,12 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
                     SoftKeyBoardAnim.etAnimWhenEtContentChange(
                         mBinding,
                         mViewModel.currentKeyBoardType,
-                        onAnimStart = { },
-                        onAnimEnd = {  })
+                        onAnimStart = {
+                            updateInputIcon(it)
+                        },
+                        onAnimEnd = {
+                            updateInputIcon(it)
+                        })
                 }
             }
         }
@@ -237,6 +241,10 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
         }
         mViewModel.etDelLiveData.observe(viewLifecycleOwner) {
             delEtInput()
+        }
+        mViewModel.sendTextLiveData.observe(viewLifecycleOwner) {
+            "sendTextLiveData ".logd("aaa")
+            sendText()
         }
     }
 
@@ -267,7 +275,7 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
 //        mBinding.ivAt.setOnClickListener(listener)
 //        mBinding.ivBottomAt.setOnClickListener(listener)
         mBinding.ivBet.setOnClickListener(listener)
-//        mBinding.ivBottomBet.setOnClickListener(listener)
+        mBinding.ivBottomBet.setOnClickListener(listener)
     }
 
     private fun toChooseBet() {
@@ -384,13 +392,13 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
 //            }
 //            ivBottomAt.setOnTouchListener { v, event -> return@setOnTouchListener true }
 //            ivBottomBet.setOnTouchListener { v, event -> return@setOnTouchListener true }
-//            ivBottomEmoji.setOnTouchListener { v, event ->
-//                if (event.action == MotionEvent.ACTION_DOWN) {
-//                    mViewModel.updateKeyBoardUi(KeyBoardType.EMOJI, 6)
-//                    chatAtHelper.dismissWindow()
-//                }
-//                return@setOnTouchListener true
-//            }
+            ivBottomEmoji.setOnTouchListener { v, event ->
+                if (event.action == MotionEvent.ACTION_DOWN) {
+                    mViewModel.updateKeyBoardUi(KeyBoardType.EMOJI, 6)
+                    chatAtHelper.dismissWindow()
+                }
+                return@setOnTouchListener true
+            }
             ivLanguage.setOnClickListener {
                 showLanguageDialog()
             }
@@ -424,8 +432,12 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
             SoftKeyBoardAnim.etAnimWhenEtContentChange(
                 mBinding,
                 softKeyBoardManager.clickKeyBoardType,
-                onAnimStart = { },
-                onAnimEnd = {  })
+                onAnimStart = {
+                    updateInputIcon(it)
+                },
+                onAnimEnd = {
+                    updateInputIcon(it)
+                })
         }
     }
 
@@ -550,13 +562,12 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
 
     private fun updateInputIcon(isVisible: Boolean) {
         mBinding.apply {
-            ivAt.isVisible = true //isVisible
-            ivBet.isVisible = true //isVisible
-            ivEmoji.isVisible = true //isVisible
+//            ivAt.isVisible =  isVisible
+            ivBet.isVisible = isVisible
+            ivEmoji.isVisible =  isVisible
             ivLanguage.isVisible = isVisible
-//            ivBottomAt.isVisible = false //!isVisible
-//            ivBottomBet.isVisible = false // !isVisible
-//            ivBottomEmoji.isVisible = false // !isVisible
+            ivBottomBet.isVisible =   !isVisible
+            ivBottomEmoji.isVisible =  !isVisible
         }
     }
 
@@ -623,7 +634,13 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
                                     ivBet,
                                     ivEmoji,
                                     ivLanguage,
-                                    chatLlInput
+                                    chatLlInput,
+                                    animStart = {
+                                       updateInputIcon(true)
+                                    },
+                                    animEnd = {
+                                       updateInputIcon(offset == 0)
+                                    }
                                 )
                             )
                         } else {
@@ -671,6 +688,7 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
 
 
     private fun delEtInput() {
+        "delEtInput ".logd("aaa")
         mBinding.chatEtInput.apply {
             if (text?.length == 0) {
                 return@apply
