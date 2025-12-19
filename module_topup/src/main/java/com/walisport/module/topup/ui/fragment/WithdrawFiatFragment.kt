@@ -68,7 +68,7 @@ class WithdrawFiatFragment : BaseFragment<WithdrawFiatViewModel, FragmentWithdra
         mBinding.layWithdrawLesson.clickNoRepeat {
             navigate(
                 arch.cayenne.lib.res.R.string.nav_module_web_fragment
-                    .deeplink("url" to BizUrl.TOP_LESSON.url)
+                    .deeplink("url" to BizUrl.WITHDRAW_LESSON.url)
             )
         }
         mBinding.layCustomer.clickNoRepeat {
