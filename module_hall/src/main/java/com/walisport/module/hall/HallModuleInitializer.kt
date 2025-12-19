@@ -4,6 +4,7 @@ import android.content.Context
 import arch.cayenne.lib.base.data.DefaultInitializer
 import arch.cayenne.module.hall.data.repo.GameSupplierListRepository
 import com.walisport.module.hall.data.HallRepository
+import com.walisport.module.hall.data.RankingRepository
 import com.walisport.module.hall.defaultModule
 import org.koin.core.context.loadKoinModules
 import org.koin.core.module.Module
@@ -38,6 +39,17 @@ class HallModuleInitializer : DefaultInitializer<String> {
         }
         factory {
             GameSupplierListRepository(
+                get() ,
+                get() ,
+                get(named("3n1")) ,
+                get(named("mock")) ,
+                get() ,
+                get() ,
+                get()
+            )
+        }
+        factory {
+            RankingRepository(
                 get() ,
                 get() ,
                 get(named("3n1")) ,

@@ -10,19 +10,19 @@ import arch.cayenne.lib.common.utils.CustomTabIndicatorUtils
 import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
+import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.setupHorizontalScrollDegree
-import arch.cayenne.lib.common.utils.ext.setupViewPagerScroll
 import arch.cayenne.lib.common.utils.ext.startFadeAnim
 import com.google.android.material.tabs.TabLayout
-import com.google.android.material.tabs.TabLayoutMediator
 import com.walisport.module.hall.R
 import com.walisport.module.hall.data.HallGameTab
 import com.walisport.module.hall.data.HallGameTabDefault
 import com.walisport.module.hall.databinding.ItemGameAllRankingBinding
-import com.walisport.module.hall.ui.fragment.GameAllRankingListFragment
+import com.walisport.module.hall.ui.fragment.LatestBetFragment
 import com.walisport.module.hall.ui.fragment.GameAllRankingTodayFragment
 import com.walisport.module.hall.ui.fragment.GameRankingInfoDialogFragment
+import com.walisport.module.hall.ui.fragment.HighStakesFragment
 
 class GameAllRankingAdapter(
     val parentFragmentManager : androidx.fragment.app.FragmentManager,
@@ -59,11 +59,11 @@ class GameAllRankingViewHolder(
     private val mockTabList = arrayListOf(
         HallGameTab(
             _title = R.string.tab_ranking_newest.getString(),
-            _page = { GameAllRankingListFragment.newInstance() }
+            _page = { LatestBetFragment.newInstance() }
         ),
         HallGameTab(
             _title = R.string.tab_ranking_biggest.getString(),
-            _page = { GameAllRankingListFragment.newInstance() }
+            _page = { HighStakesFragment.newInstance() }
         ),
         HallGameTab(
             _title = R.string.tab_ranking_today.getString(),
@@ -100,6 +100,7 @@ class GameAllRankingViewHolder(
                 override fun onTabReselected(tab: TabLayout.Tab?) {}
             })
 
+            ivRankingInfo.addScaleOnTouchAnimation()
             ivRankingInfo.clickNoRepeat {
                 val location = IntArray(2)
                 ivRankingInfo.getLocationInWindow(location)

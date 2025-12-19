@@ -11,7 +11,9 @@ import androidx.core.graphics.toColorInt
 import androidx.recyclerview.widget.DiffUtil
 import arch.cayenne.lib.base.ui.adapter.BaseAdapter
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
+import arch.cayenne.lib.common.data.constants.SportEnum
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getColor
+import com.bumptech.glide.Glide
 import com.walisport.module.hall.R
 import com.walisport.module.hall.data.GameAllRankingListData
 import com.walisport.module.hall.databinding.ItemAllRankingListBinding
@@ -50,7 +52,8 @@ class GameAllRankingListViewHolder(val item: ItemAllRankingListBinding) : BaseVi
             } else {
                 item.clRoot.setBackgroundResource(R.drawable.shape_game_all_rank_list_bg)
             }
-            ivGame.setImageResource(data.gameIcon)
+            Glide.with(ivGame.context).load(data.gameIconUrl).into(ivGame)
+
             tvGameName.text = data.gameName
             tvMultiple.text = "${data.multiple}x"
             if (data.multiple >= 100f) {
