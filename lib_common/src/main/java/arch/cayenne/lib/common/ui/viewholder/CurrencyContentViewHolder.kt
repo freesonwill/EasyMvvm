@@ -1,5 +1,6 @@
 package arch.cayenne.lib.common.ui.viewholder
 
+import android.view.View
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
 import arch.cayenne.lib.common.R
 import arch.cayenne.lib.common.data.constants.BaseCurrencyData
@@ -10,9 +11,14 @@ import com.bumptech.glide.Glide
 class CurrencyContentViewHolder(
     val mBinding: ItemCurrencyContentBinding,
     val listener: ((BaseCurrencyData.CurrencyContentData2) -> Unit)?) : BaseViewHolder(mBinding) {
-    fun bind(item: BaseCurrencyData.CurrencyContentData2?) {
+    fun bind(item: BaseCurrencyData.CurrencyContentData2?, isLastItem: Boolean) {
         if (item == null) return
         with(mBinding) {
+            if (isLastItem) {
+                clRoot.setBackgroundResource(R.drawable.selector_currency_item_last_background)
+            } else {
+                clRoot.setBackgroundResource(R.drawable.selector_currency_item_background)
+            }
             tvCurrencyName.text = item.currencyName
             tvCurrencyAmount.text = "${item.unit}${item.amountStr}"
             Glide.with(root.context)
@@ -20,6 +26,12 @@ class CurrencyContentViewHolder(
                 .placeholder(R.drawable.ic_wali_demo)
                 .error(R.drawable.ic_wali_demo)
                 .into(ivIcon)
+            if (item.exchangeAmount == "") {
+                tvCurrencyExchange.visibility = View.GONE
+            } else {
+                tvCurrencyExchange.visibility = View.VISIBLE
+                tvCurrencyExchange.text = item.exchangeAmount
+            }
             mBinding.root.clickNoRepeat {
                 listener?.invoke(item)
             }

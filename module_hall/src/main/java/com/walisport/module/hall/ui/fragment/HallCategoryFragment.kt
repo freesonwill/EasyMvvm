@@ -33,6 +33,7 @@ import arch.cayenne.lib.common.utils.helper.BackToTopHelper
 import arch.cayenne.lib.database.entity.GameSupplierDataModel
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import com.walisport.module.hall.R
+import com.walisport.module.hall.data.Category
 import com.walisport.module.hall.data.UniversalLoadMoreScrollListener
 import com.walisport.module.hall.data.constants.GameSortType
 import com.walisport.module.hall.data.getCategoryByType
@@ -107,6 +108,11 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
                 arch.cayenne.lib.common.ui.view.CustomGameTabClickListener {
                 override fun onTabClicked(id: Int) {
                     mBinding.rvGame.startFadeAnim { onComplete ->
+                        if (id == 0) {
+                            mViewModel.clearSupplierSelected()
+                        } else {
+                            mViewModel.selectSupplierId(id)
+                        }
                         mViewModel.setSuppliers(if (id == 0) emptyList() else listOf(id))
                         helper?.reset()
                         toggleGameSorting(false)
@@ -253,7 +259,6 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
     private fun showListBottomSheet() {
         val tag = "HallCategoryFragment_bottom_sheet"
         if (childFragmentManager.findFragmentByTag(tag) != null) return
-
         GameCategoryListBottomSheetFragment
             .newInstance(mViewModel.getCategory())
             .show(childFragmentManager, tag)

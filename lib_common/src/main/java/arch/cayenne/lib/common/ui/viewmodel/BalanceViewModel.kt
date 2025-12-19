@@ -45,4 +45,8 @@ class BalanceViewModel(
         }
     }
 
+    fun setDefaultCurrency(ccy: String) {
+        balanceRepository.setDefaultCurrency(ccy)
+    }
+
 }

@@ -90,8 +90,9 @@ class ModuleInitializer : DefaultInitializer<String> {
         (context as Application).registerActivityLifecycleCallbacks(activityLifecycleCallback)
         val moduleRepository = GlobalContext.get().get<ModuleRepository>()
         moduleRepository.initUidToken()
-        moduleRepository.getProfileInfo()
+        moduleRepository.saveDefaultCurrency()
         moduleRepository.getCurrencyConfig()
+//        moduleRepository.getProfileInfo()
         moduleRepository.preLoadHome()
         moduleRepository.startSocket()
         return TAG

@@ -4,6 +4,8 @@ import android.content.Context
 import androidx.lifecycle.lifecycleScope
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
+import arch.cayenne.lib.common.data.constants.BizUrl
+import arch.cayenne.lib.common.data.constants.SPORT_SERVER_WSS
 import arch.cayenne.lib.common.data.repo.CommonRepository.Companion.MATCH_APP
 import arch.cayenne.lib.common.data.repo.CommonRepository.Companion.MATCH_GOAL
 import arch.cayenne.lib.common.data.repo.CommonRepository.Companion.MATCH_KICK
@@ -77,7 +79,7 @@ class WsPopup(context: Context) : BottomPopupView(context), KoinComponent {
                         }
                     }
                 }
-                newWebSocketManager.connect("wss://betwavepro.ja700.com/fb-ws")
+                newWebSocketManager.connect(SPORT_SERVER_WSS)
             }
 
             wsLogin.clickNoRepeat {
@@ -115,7 +117,7 @@ class WsPopup(context: Context) : BottomPopupView(context), KoinComponent {
                         }
                     }
                 }
-                newWebSocketManager.connect("wss://betwavepro.ja700.com/fb-ws")
+                newWebSocketManager.connect(SPORT_SERVER_WSS)
             }
 
             wsToday.clickNoRepeat {

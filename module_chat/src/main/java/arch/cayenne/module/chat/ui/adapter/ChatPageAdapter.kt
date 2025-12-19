@@ -27,9 +27,6 @@ class ChatPageAdapter(private val specialClick: (bean: ChatMsgPageBean, clickSpa
         val nBinding = binding
         fun initListener() {
             nBinding.tv.apply {
-//                setOnClickListener {
-//                    "normal click".logd("aaa")
-//                }
                 movementMethod = object : LinkMovementMethod() {
                     override fun onTouchEvent(
                         widget: TextView?,
