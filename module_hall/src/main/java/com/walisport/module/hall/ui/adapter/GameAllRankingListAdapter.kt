@@ -67,11 +67,17 @@ class GameAllRankingListViewHolder(val item: ItemAllRankingListBinding) : BaseVi
                 tvMultiple.setTextColor(arch.cayenne.lib.common.R.color.color_C0C0C0.getColor())
             }
             ivCurrency.setBackgroundResource(arch.cayenne.lib.common.R.drawable.ic_usdt)
-            tvResult.text = "${data.symbol}${data.result}"
+            //负号 + 法币符号 + 金额 + 币种
+            if (data.result < 0) {
+                tvResult.text = "-${data.symbol}${-data.result}"
+            } else {
+                tvResult.text = "${data.symbol}${data.result}"
+            }
+
             if (data.result > 0) {
                 tvResult.setTextColor(arch.cayenne.lib.common.R.color.color_00E301.getColor())
             } else {
-                tvMultiple.setTextColor(arch.cayenne.lib.common.R.color.color_C0C0C0.getColor())
+                tvResult.setTextColor(arch.cayenne.lib.common.R.color.color_C0C0C0.getColor())
             }
         }
     }
