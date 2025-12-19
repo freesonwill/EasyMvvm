@@ -59,9 +59,8 @@ class SingleBetViewModel(
     private val _onReserveOddsListener = MutableLiveData<Int?>()
     val onReserveOddsListener: LiveData<Int?> get() = _onReserveOddsListener
 
-//    val moneySymbol: String
-//        get() = CurrencySymbols.getSymbol(_onBalanceListener.value?.currency ?: "")
-    val moneySymbol: String = "USDT"
+    val moneySymbol: String
+        get() = CurrencySymbols.getSymbol(_onBalanceListener.value?.currency ?: "")
 
     private val _onBetWinMoney = MediatorLiveData<String>().apply {
         var odds = 100

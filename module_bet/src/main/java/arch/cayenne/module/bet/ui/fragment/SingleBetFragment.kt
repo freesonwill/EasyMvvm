@@ -46,6 +46,7 @@ import arch.cayenne.module.bet.databinding.FragmentSingleBetBinding
 import arch.cayenne.module.bet.util.ViewHelper
 import arch.cayenne.module.bet.viewmodel.SingleBetViewModel
 import kotlinx.coroutines.launch
+import java.util.Locale
 import kotlin.reflect.KClass
 
 /**
@@ -189,31 +190,22 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
         }
         mViewModel.onBetWinMoney.observe(viewLifecycleOwner) {
             mBinding.tvBetMoney.isVisible = it.isNotEmpty() && it != "0"
-            val money = getString(R.string.btn_bet_win_money).format(mViewModel.moneySymbol, it)
-            mBinding.tvBetMoney.setCurrencyText(money,mViewModel.moneySymbol.let { it to CurrencySymbols.getSymbolIcon(it) })
+            if(mBinding.tvBetMoney.isVisible){
+                val result = String.format(Locale.ROOT,"%.2f", it.toFloat())
+                val money = getString(R.string.btn_bet_win_money).format(mViewModel.moneySymbol, result)
+                mBinding.tvBetMoney.setCurrencyText(money,mViewModel.moneySymbol.let { it to CurrencySymbols.getSymbolIcon(it) })
+            }
         }
         mViewModel.onNumberLimit.observe(viewLifecycleOwner) {
             mBinding.etMoney.hint =
                 getString(R.string.et_money_hint).format(it.first.getMoney(), it.second.getMoney())
         }
-        var offset = -8
+
         mViewModel.onBalanceListener.observe(viewLifecycleOwner) {
             if (it != null) {
-                val money = "${mViewModel.moneySymbol} ${it.balance.getFormalMoney()}"
+                val money = "${mViewModel.moneySymbol} ${it.balance.getFormalMoney(false)}"
                 mBinding.tvBalance.setCurrencyText(money,mViewModel.moneySymbol.let { it to CurrencySymbols.getSymbolIcon(it) },-3)
                 mBinding.tvMoney.setCurrencyText(mViewModel.moneySymbol,mViewModel.moneySymbol.let { it to CurrencySymbols.getSymbolIcon(it) },-4)
-
-                mBinding.tvMoney.setOnClickListener {
-                    offset++
-                    mBinding.tvMoney.setCurrencyText(mViewModel.moneySymbol,mViewModel.moneySymbol.let { it to CurrencySymbols.getSymbolIcon(it) },offset)
-                    "offset---$offset".logd(TAG)
-                }
-
-                mBinding.tvBalance.setOnClickListener {
-                    offset--
-                    mBinding.tvMoney.setCurrencyText(mViewModel.moneySymbol,mViewModel.moneySymbol.let { it to CurrencySymbols.getSymbolIcon(it) },offset)
-                    "offset---$offset".logd(TAG)
-                }
             }
         }
 
