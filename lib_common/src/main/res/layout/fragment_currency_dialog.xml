@@ -90,6 +90,8 @@
         android:id="@+id/cl_content_2"
         android:layout_width="290dp"
         android:layout_height="wrap_content"
+        android:clickable="true"
+        android:focusableInTouchMode="true"
         android:maxHeight="460dp"
         app:layout_constraintLeft_toRightOf="@+id/cl_content"
         app:layout_constraintTop_toTopOf="parent">
@@ -145,6 +147,7 @@
             android:textOff=""
             android:textOn=""
             android:layout_marginEnd="@dimen/dp_16"
+            android:checked="true"
             app:layout_constraintTop_toTopOf="@+id/tv_setting_1"
             app:layout_constraintBottom_toBottomOf="@+id/tv_setting_1"
             app:layout_constraintEnd_toEndOf="parent"/>
@@ -168,6 +171,7 @@
             android:textOff=""
             android:textOn=""
             android:layout_marginEnd="@dimen/dp_16"
+            android:checked="true"
             app:layout_constraintTop_toTopOf="@+id/tv_setting_2"
             app:layout_constraintBottom_toBottomOf="@+id/tv_setting_2"
             app:layout_constraintEnd_toEndOf="parent"/>
