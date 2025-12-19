@@ -515,7 +515,7 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
             llContent.layoutParams.height =
                 if (isReset) LayoutParams.MATCH_PARENT else mViewModel.keyBoardHeight
             main.layoutParams.height =
-                if (isReset) LayoutParams.MATCH_PARENT else mViewModel.keyBoardHeight + softKeyBoardManager.emojiKeyBoardHeight
+                if (isReset) LayoutParams.MATCH_PARENT else mViewModel.keyBoardHeight + softKeyBoardManager.emojiKeyBoardHeight+40.dp2px
             main.requestLayout()
 //            lifecycleScope.launch {
 //                delay(500)
