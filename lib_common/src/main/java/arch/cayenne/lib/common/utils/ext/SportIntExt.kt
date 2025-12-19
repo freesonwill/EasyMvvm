@@ -160,4 +160,61 @@ object SportIntExt {
                 .toPlainString()
         }
     }
+
+    fun Double.toBalanceString(): String {
+        val MAX_LENGTH = 10
+        val MAX_DECIMAL = 8
+        val bd = BigDecimal(this).stripTrailingZeros()
+        val plain = bd.toPlainString()
+
+        // ===== 規則 2.2：0 或 純整數 =====
+        if (this == 0.0 || !plain.contains(".")) {
+            return "${bd.setScale(2, RoundingMode.DOWN).toPlainString()}"
+        }
+
+        val parts = plain.split(".")
+        val integerPart = parts[0]
+        val decimalPart = parts.getOrElse(1) { "" }
+
+        // ===== 條件 1：超過字元限制 =====
+        if (plain.length > MAX_LENGTH) {
+            val availableDecimal =
+                MAX_LENGTH - integerPart.length - 1 - 3 // . + ...
+
+            if (availableDecimal <= 0) {
+                return "$integerPart..."
+            }
+
+            val trimmedDecimal = decimalPart
+                .take(MAX_DECIMAL)
+                .take(availableDecimal)
+
+            return "$integerPart.$trimmedDecimal..."
+        }
+
+        // ===== 條件 2：未超過字元限制 =====
+
+        val decimalUpTo8 = decimalPart.take(MAX_DECIMAL)
+
+        // 規則 2.1：小數點後 8 位內有非零
+        val hasNonZero = decimalUpTo8.any { it != '0' }
+
+        return when {
+            // 小數點後完全沒有數字（理論上不會進來，保護用）
+            decimalUpTo8.isEmpty() -> {
+                "$integerPart.00"
+            }
+
+            // 小數點後 8 位內有非零 → 完整顯示並去尾 0
+            hasNonZero -> {
+                val cleanedDecimal = decimalUpTo8.trimEnd('0')
+                "$integerPart.$cleanedDecimal"
+            }
+
+            // 小數點後全為 0 → 顯示 2 位
+            else -> {
+                "$integerPart.00"
+            }
+        }
+    }
 }

@@ -11,9 +11,14 @@ import com.bumptech.glide.Glide
 class CurrencyContentViewHolder(
     val mBinding: ItemCurrencyContentBinding,
     val listener: ((BaseCurrencyData.CurrencyContentData2) -> Unit)?) : BaseViewHolder(mBinding) {
-    fun bind(item: BaseCurrencyData.CurrencyContentData2?) {
+    fun bind(item: BaseCurrencyData.CurrencyContentData2?, isLastItem: Boolean) {
         if (item == null) return
         with(mBinding) {
+            if (isLastItem) {
+                clRoot.setBackgroundResource(R.drawable.selector_currency_item_last_background)
+            } else {
+                clRoot.setBackgroundResource(R.drawable.selector_currency_item_background)
+            }
             tvCurrencyName.text = item.currencyName
             tvCurrencyAmount.text = "${item.unit}${item.amountStr}"
             Glide.with(root.context)
