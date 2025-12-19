@@ -24,7 +24,7 @@ fun BigVo.toGameAllRankingListData(): GameAllRankingListData {
     return GameAllRankingListData(
         gameIconUrl = avatar.url ,
         gameName = name ,
-        multiple = multiple.toFloat() ,
+        multiple = multiple ,
         countryIcon = when (ccy) {
             "USD" -> arch.cayenne.lib.common.R.drawable.ic_usdt
             "CNY" -> arch.cayenne.lib.common.R.drawable.ic_cny
@@ -110,7 +110,7 @@ fun BettingVo.toGameAllRankingListData(): GameAllRankingListData {
     return GameAllRankingListData(
         gameIconUrl = avatar.url ,
         gameName = name ,
-        multiple = multiple.toFloat() ,
+        multiple = multiple ,
         countryIcon = when (ccy) {
             "USD" -> arch.cayenne.lib.common.R.drawable.ic_usdt
             "CNY" -> arch.cayenne.lib.common.R.drawable.ic_cny
@@ -171,21 +171,6 @@ data class DayVo(
 )
 
 data class DayPageVo(val pagination: PaginationVo , val list: List<DayVo>)
-
-fun DayVo.toGameAllRankingListData(): GameAllRankingListData {
-    return GameAllRankingListData(
-        gameIconUrl = "" ,
-        gameName = name ,
-        multiple = bet.toFloat() ,
-        countryIcon = when (ccy) {
-            "USD" -> arch.cayenne.lib.common.R.drawable.ic_usdt
-            "CNY" -> arch.cayenne.lib.common.R.drawable.ic_cny
-            else -> arch.cayenne.lib.common.R.drawable.ic_usdt
-        } ,
-        symbol = ccy.ccyToSymbol() ,
-        result = bonus.toFloat()
-    )
-}
 
 fun DayVo.toGameAllRankingToday(): GameAllRankingToday.GameAllRankingTodayData {
     return GameAllRankingToday.GameAllRankingTodayData(

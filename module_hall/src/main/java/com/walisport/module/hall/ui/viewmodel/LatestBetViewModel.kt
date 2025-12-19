@@ -13,7 +13,6 @@ import com.walisport.module.hall.data.GameAllRankingListData
 import com.walisport.module.hall.data.HallRepository.Companion.INITIAL_PAGE
 import com.walisport.module.hall.data.RankingRepository
 import com.walisport.module.hall.data.toGameAllRankingListData
-import kotlinx.coroutines.launch
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
 import plugin.koin.KoinViewModel
