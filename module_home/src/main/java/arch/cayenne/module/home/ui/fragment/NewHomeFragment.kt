@@ -14,6 +14,7 @@ import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.animation.CustomCurveTransformer
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.common.data.constants.BizUrl
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.data.constants.DrawerAction.ACTION_INIT
 import arch.cayenne.lib.common.data.constants.DrawerAction.ACTION_OPEN
@@ -346,7 +347,10 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             }
 
             banner.setOnBannerListener { Int, position ->
-                navigate(arch.cayenne.lib.res.R.string.nav_module_promotion_fragment.deeplink())
+                navigate(
+                    arch.cayenne.lib.res.R.string.nav_module_web_fragment
+                        .deeplink("url" to BizUrl.ACTIVITY.url)
+                )
             }
         }
     }

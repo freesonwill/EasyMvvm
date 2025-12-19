@@ -22,6 +22,7 @@ import arch.cayenne.lib.base.ui.animation.CustomCurveTransformer
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.base.utils.LogUtils
+import arch.cayenne.lib.common.data.constants.BizUrl
 import arch.cayenne.lib.common.data.constants.DrawerAction.ACTION_OPEN
 import arch.cayenne.lib.common.data.constants.DrawerAction.KEY_ACTION
 import arch.cayenne.lib.common.data.constants.DrawerAction.REQUEST_KEY_DRAWER
@@ -231,7 +232,10 @@ class HallFragment : BaseFragment<HallViewModel, FragmentHallBinding>() {
 //            }
 
             ivRightLogo.setOnBannerListener { Int, position ->
-                navigate(arch.cayenne.lib.res.R.string.nav_module_promotion_fragment.deeplink())
+                navigate(
+                    arch.cayenne.lib.res.R.string.nav_module_web_fragment
+                        .deeplink("url" to BizUrl.ACTIVITY.url)
+                )
             }
 
             llSearchBar.apply {

@@ -148,4 +148,16 @@ object SportIntExt {
     fun Long.percent(p: Int): Long {
         return this * p / 100
     }
+
+    fun Double.getFormalMoney(): String {
+        val bd = BigDecimal.valueOf(this).stripTrailingZeros()
+        return if (bd.scale() <= 0) {
+            // 整數 or 0 → 固定兩位
+            DecimalFormat("0.00").format(this)
+        } else {
+            // 有小數 → 最多 8 位，不補 0
+            bd.setScale(minOf(bd.scale(), 8), RoundingMode.DOWN)
+                .toPlainString()
+        }
+    }
 }

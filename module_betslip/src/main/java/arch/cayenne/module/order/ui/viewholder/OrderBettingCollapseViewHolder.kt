@@ -3,7 +3,6 @@ package arch.cayenne.module.order.ui.viewholder
 import android.util.TypedValue
 import android.view.ViewGroup
 import androidx.core.view.isVisible
-import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
@@ -11,12 +10,10 @@ import arch.cayenne.lib.database.entity.BetSlipOrderBean
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.module.betslip.R
 import arch.cayenne.module.betslip.databinding.ItemOrderSportBettingCollapseBinding
-import arch.cayenne.module.order.data.constants.OrderSportPageEnum
 
-class OrderBettingCollapseViewHolder(private val mBinding: ItemOrderSportBettingCollapseBinding): BaseViewHolder(mBinding) {
+class OrderBettingCollapseViewHolder(mBinding: ItemOrderSportBettingCollapseBinding): BaseOrderCollapseViewHolder<BetSlipOrderBean>(mBinding) {
 
-    fun init(item: BetSlipOrderBean, type: OrderSportPageEnum, onDoubleClick: ((String) -> Unit)? = null,onSingleClick: (() -> Unit)? = null) {
-
+    override fun init(item: BetSlipOrderBean) {
         val betAmount = "${CurrencySymbols.getSymbol(item.currency)}${item.betAmount.getFormalMoney()}"
         mBinding.tvBetMoney.text = betAmount
         mBinding.tvCombo.text = if (item.selectionsList.size == 1) {
@@ -33,25 +30,6 @@ class OrderBettingCollapseViewHolder(private val mBinding: ItemOrderSportBetting
 
         setOrderStatus(item.status, item.comboType == 2)
         setResultStatus(item.resultStatus)
-        
-        // 設置雙擊監聽
-        onDoubleClick?.let { callback ->
-            var lastClickTime = 0L
-            val doubleClickThreshold = 300L // 300ms 內的兩次點擊視為雙擊
-            
-            mBinding.root.setOnClickListener {
-                val currentTime = System.currentTimeMillis()
-                if (currentTime - lastClickTime < doubleClickThreshold) {
-                    // 雙擊
-                    callback(item.betId)
-                    lastClickTime = 0L // 重置，避免三擊觸發
-                } else {
-                    // 單擊
-                    lastClickTime = currentTime
-                    onSingleClick?.invoke()
-                }
-            }
-        }
     }
 
     private fun setOrderStatus(staus: Int, isFullCombo: Boolean) {

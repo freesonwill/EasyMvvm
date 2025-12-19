@@ -19,9 +19,11 @@ import arch.cayenne.lib.database.entity.SportTournamentCrossRef
 import arch.cayenne.lib.database.entity.TournamentBean
 import arch.cayenne.lib.database.entity.TournamentMatchRef
 import arch.cayenne.lib.database.entity.UserDataBean
+import arch.cayenne.lib.database.entity.WalletBean
 import arch.cayenne.lib.http.HttpClient
 import arch.cayenne.lib.http._interface.IAccount
 import arch.cayenne.lib.http._interface.IConfig
+import arch.cayenne.lib.http.data.AccountInfo
 import arch.cayenne.lib.http.data.CurrencyInfo
 import arch.cayenne.lib.http.data.ProfileInfo
 import arch.cayenne.lib.websocket.WebSocketManager
@@ -38,6 +40,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import java.util.Locale
 import kotlin.random.Random
 
 class ModuleRepository(
@@ -112,25 +115,37 @@ class ModuleRepository(
         }
     }
 
-    fun saveProfileInfo(profileInfo: ProfileInfo) {
+    fun saveProfileInfo(profileInfo: AccountInfo) {
         database.userDataDao().insert(
             UserDataBean(
-                id = profileInfo.id,
-                name = profileInfo.name,
+                nickname = profileInfo.nickname,
                 avatar = AvatarEmbedded(
                     url = profileInfo.avatar.url,
                     thumbhash = profileInfo.avatar.thumbhash
                 ),
                 registerTime = profileInfo.registerTime,
                 vipLevel = profileInfo.vipLevel,
-                balanceTotal = profileInfo.balanceTotal,
-                balanceWallet = profileInfo.balanceWallet,
-                currentBetAmount = profileInfo.currentBetAmount,
-                requiredBetAmount = profileInfo.requiredBetAmount,
+                score = profileInfo.score,
+                list = profileInfo.list.map { WalletBean(it.ccy, it.score, it.exchangeScore) },
+                admittedBetScore = profileInfo.admittedBetScore,
+                requiredAdmittedBetScore = profileInfo.requiredAdmittedBetScore,
                 vipStage = profileInfo.vipStage,
-                nicknameChangeCount = profileInfo.nicknameChangeCount
+                nicknameChangeCount = profileInfo.nicknameChangeCount,
             )
         )
+    }
+
+    fun saveDefaultCurrency() {
+        //做塞入default貨幣，如果初始狀態的話
+        //找預設語言的錢包，針對其使語言的特別處理，中日韓顯示該國貨幣，其餘顯示美金
+        if (manager.getValue(UserDataKey.KEY_DEFAULT_CURRENCY, "") == "") {
+            val currentLanguage = Locale.getDefault().language
+            if (currentLanguage == "zh") {
+                manager.setKeyValue(UserDataKey.KEY_DEFAULT_CURRENCY, "CNY")
+            } else {
+                manager.setKeyValue(UserDataKey.KEY_DEFAULT_CURRENCY, "USD")
+            }
+        }
     }
 
     fun getCurrencyConfig() {
@@ -143,6 +158,7 @@ class ModuleRepository(
                 onSuccess = { resp ->
                     if (resp.code == 0) {
                         saveCurrencyConfig(resp.data)
+                        getProfileInfo()
                     }
                 },
                 onFailure = { code, msg, throwable ->

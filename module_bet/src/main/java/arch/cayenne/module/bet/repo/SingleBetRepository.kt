@@ -14,6 +14,7 @@ import arch.cayenne.module.bet.data.ComboMultiBetBean
 import arch.cayenne.module.bet.data.OddsChangeEnum
 import galaxy.client.proto.Client
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.onStart
@@ -131,14 +132,14 @@ class SingleBetRepository(
         }
     }
 
-    suspend fun saveToCombo(): Boolean = withContext(scope.coroutineContext) {
+    suspend fun saveToCombo(): Boolean = withContext(Dispatchers.IO) {
         betDao.getCurrentBet()?.let {
             betDao.updateBetType(it.betId, BetTypeEnum.COMBO)
         }
         true
     }
 
-    suspend fun saveToReserve(odds: Int, money: Long) = withContext(scope.coroutineContext) {
+    suspend fun saveToReserve(odds: Int, money: Long) = withContext(Dispatchers.IO) {
         betDao.getCurrentBet()?.let {
             val selection = betDao.getSelections(it.betId).first()
             betDao.updateOdds(it.betId, selection.selectionId, odds)

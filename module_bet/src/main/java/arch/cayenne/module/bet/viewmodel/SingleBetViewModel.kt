@@ -175,16 +175,12 @@ class SingleBetViewModel(
         val amount = money.toMoney()
         viewModelScope.launch {
             if (reserveOdds == null || reserveOdds == currentOdds) {
-                val isSuccess = async {
-                    betRepo.saveToSingle()
-                }.await()
+                val isSuccess = betRepo.saveToSingle()
                 if (isSuccess) {
                     betRepo.sendBet(amount, oddsChange)
                 }
             } else {
-                val isSuccess = async {
-                    betRepo.saveToReserve(reserveOdds, amount)
-                }.await()
+                val isSuccess = betRepo.saveToReserve(reserveOdds, amount)
                 if (isSuccess) {
                     betRepo.sendReserve(amount)
                 }
