@@ -109,7 +109,7 @@ class ModuleRepository(
                     }
                 },
                 onFailure = { code, msg, throwable ->
-                    "response------>$code,$msg,$throwable".loge(TAG)
+                    "ProfileInfo failure, response------>$code,$msg,$throwable".loge(TAG)
                 }
             )
         }
@@ -162,7 +162,7 @@ class ModuleRepository(
                     }
                 },
                 onFailure = { code, msg, throwable ->
-                    "response------>$code,$msg,$throwable".loge(TAG)
+                    "getCurrencyConfig onFailure, response------>$code,$msg,$throwable".loge(TAG)
                 }
             )
         }
