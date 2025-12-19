@@ -16,6 +16,7 @@ import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.touchBackPressed
 import com.walisport.module.hall.R
+import com.walisport.module.hall.data.GameAllRankingToday
 import com.walisport.module.hall.databinding.FragmentCompetitionBinding
 import com.walisport.module.hall.databinding.TitleBarCompetitionBinding
 import com.walisport.module.hall.ui.adapter.GameAllRankingListTodayAdapter
@@ -108,10 +109,34 @@ class CompetitionFragment : BaseFragment<CompetitionViewModel , FragmentCompetit
         }
 
         mViewModel.rankingListLiveData.observe(viewLifecycleOwner) { gameList ->
-           adapter.submitList(gameList)
+            adapter.submitList(gameList.addDashItem())
         }
 
 
+    }
+
+    private fun List<GameAllRankingToday>.addDashItem(): List<GameAllRankingToday> {
+        //添加分割线
+        //遍历列表， 如果某个item的rank和下一个item的rank不连续，则在它们之间添加一个DashItem
+        val newList = mutableListOf<GameAllRankingToday>()
+        for (i in indices) {
+            newList.add(this[i])
+            if (i < this.size - 1) {
+                val currentRank = when (val item = this[i]) {
+                    is GameAllRankingToday.GameAllRankingTodayData -> item.rank
+                    else -> null
+                }
+                val nextRank = when (val item = this[i + 1]) {
+                    is GameAllRankingToday.GameAllRankingTodayData -> item.rank
+                    else -> null
+                }
+                if (currentRank != null && nextRank != null && nextRank - currentRank > 1) {
+                    newList.add(GameAllRankingToday.GameAllRankingDashData)
+                }
+            }
+        }
+
+        return newList
     }
 
     override fun initData() {
