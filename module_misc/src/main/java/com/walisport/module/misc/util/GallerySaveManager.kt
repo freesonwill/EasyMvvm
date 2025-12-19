@@ -104,7 +104,6 @@ object GallerySaveManager {
                 // 可选：设置图片宽度和高度
                 put(MediaStore.Images.Media.WIDTH, bitmap.width)
                 put(MediaStore.Images.Media.HEIGHT, bitmap.height)
-                "savePath $path".logd("aaa")
             }
             // 获取ContentResolver并插入到MediaStore
             val contentResolver = context.contentResolver
@@ -132,7 +131,6 @@ object GallerySaveManager {
             }
             // 返回URI路径
             val result = uri.toString()
-            "saveToGalleryQ 存储完成 ${result}".logd("aaa")
             result
         } catch (e: Exception) {
             e.printStackTrace()
@@ -170,7 +168,6 @@ object GallerySaveManager {
             val picturesDir = Environment.getExternalStoragePublicDirectory(
                 Environment.DIRECTORY_PICTURES
             )
-            "picturesDir $picturesDir".logd("aaa")
             val appDir = File(picturesDir, "wls") // 自定义文件夹
 
             if (!appDir.exists() && !appDir.mkdirs()) {
@@ -189,13 +186,8 @@ object GallerySaveManager {
             MediaScannerConnection.scanFile(
                 context,
                 arrayOf(imageFile.absolutePath),
-                arrayOf(mimeType),
-                object : MediaScannerConnection.OnScanCompletedListener {
-                    override fun onScanCompleted(path: String?, uri: android.net.Uri?) {
-                        "图片已扫描到相册: $path".logd("aaa")
-                    }
-                }
-            )
+                arrayOf(mimeType)
+            ) { path, uri -> }
 
             // 返回文件路径
             imageFile.absolutePath
@@ -212,7 +204,6 @@ object GallerySaveManager {
     @Suppress("DEPRECATION")
     private fun isExternalStorageWritable(): Boolean {
         val isPermission = Environment.getExternalStorageState() == Environment.MEDIA_MOUNTED
-        "isPermission $isPermission".logd("aaa")
         return isPermission
     }
 

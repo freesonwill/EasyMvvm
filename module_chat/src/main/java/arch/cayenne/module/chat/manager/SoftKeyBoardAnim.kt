@@ -142,7 +142,9 @@ object SoftKeyBoardAnim {
         ivBet: ImageView,
         ivEmoji: ImageView,
         ivLanguage: View,
-        chatLlInput: View
+        chatLlInput: View,
+        animStart:() ->Unit,
+        animEnd:() -> Unit
     ): AnimatorSet {
 //                         没有弹出键盘 307(左边距：8 右边距: 10)  弹出键盘 355（左右边距:10）1.15  输入款有内容: 282(左边距：12,有边距：11) 0.91
 //        transX                  0 (58)                           -48   (10)                        -46     (12)
@@ -156,6 +158,11 @@ object SoftKeyBoardAnim {
                     ivLanguage
                 )
             )
+            addListener(onStart = {
+                animStart.invoke()
+            }, onEnd = {
+                animEnd.invoke()
+            })
         }
         val animSet = AnimatorSet()
         when (actionType) {
@@ -228,12 +235,11 @@ object SoftKeyBoardAnim {
     fun etAnimWhenEtContentChange(
         binding: FragmentLiveChatBinding,
         currentType: KeyBoardType,
-        onAnimStart: () -> Unit,
-        onAnimEnd: () -> Unit
+        onAnimStart: (value:Boolean) -> Unit,
+        onAnimEnd: (value:Boolean) -> Unit
     ) {
 
         binding.apply {
-
             when {
                 chatEtInput.length() == 0 && chatTvSend.isVisible && currentType != KeyBoardType.CHAT -> { //键盘弹出的时候发送 有内容到无内容
                     etInputContentAnim(
@@ -244,7 +250,6 @@ object SoftKeyBoardAnim {
                     ).apply {
                         duration = 170L
                         addListener(onStart = {
-                            onAnimStart.invoke()
                         }, onEnd = {
                             chatTvSend.isVisible = false
                         })
@@ -265,7 +270,7 @@ object SoftKeyBoardAnim {
                             )
                         )
                         addListener(onStart = {
-                            onAnimStart.invoke()
+                            onAnimStart.invoke(true)
                         })
                     }
                     val inputAnim = etInputContentAnim(
@@ -291,10 +296,10 @@ object SoftKeyBoardAnim {
                         addBetToEtInputAnim(
                             binding,
                             currentType,
-                            onStart = {
-//                                onAnimStart.invoke()
+                            onAnimStart = {
+//                                onAnimStart.invoke(true)
                             },
-                            onEnd = { onAnimEnd.invoke() }
+                            onAnimEnd = { onAnimEnd.invoke(false) }
                         )
                     } else {
                         etInputContentAnim(
@@ -306,9 +311,9 @@ object SoftKeyBoardAnim {
                             duration = 170L
                             addListener(onStart = {
                                 chatTvSend.isVisible = true
-//                                onAnimStart.invoke()
+//                                onAnimStart.invoke(true)
                             }, onEnd = {
-                                onAnimEnd.invoke()
+                                onAnimEnd.invoke(false)
                             })
                             start()
                         }
@@ -329,8 +334,8 @@ object SoftKeyBoardAnim {
     fun addBetToEtInputAnim(
         binding: FragmentLiveChatBinding,
         currentType: KeyBoardType,
-        onStart: () -> Unit,
-        onEnd: () -> Unit
+        onAnimStart:() -> Unit,
+        onAnimEnd: () -> Unit
     ) {
         binding.apply {
             val btnAnim = AnimatorSet().apply {
@@ -345,10 +350,10 @@ object SoftKeyBoardAnim {
                 )
                 addListener(onStart = {
 //                    updateInputIcon(true)
-                    onStart.invoke()
+                    onAnimStart.invoke()
                 }, onEnd = {
 //                    updateInputIcon(false)
-                    onEnd.invoke()
+                    onAnimEnd.invoke()
                 })
             }
             val inputEtAnim =
