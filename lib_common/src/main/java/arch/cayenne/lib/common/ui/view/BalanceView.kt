@@ -8,6 +8,7 @@ import android.widget.FrameLayout
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
 import arch.cayenne.lib.common.R
+import arch.cayenne.lib.common.data.constants.BaseCurrencyData
 import arch.cayenne.lib.common.databinding.ViewBalanceBinding
 import arch.cayenne.lib.common.ui.fragment.CurrencyDialogFragment
 import arch.cayenne.lib.common.ui.viewmodel.BalanceViewModel
@@ -50,6 +51,7 @@ class BalanceView : FrameLayout {
                 rotateArrow(false)
             }
             f.setonItemClickListener {
+                setMoney(it)
                 setMoney(it.amountStr)
             }
             f.show(childFragmentManager)
@@ -75,6 +77,10 @@ class BalanceView : FrameLayout {
     }
     fun setMoney(money: String){
         mBinding.tvWalletBalance.text = money
+    }
+
+    fun setMoney(data: BaseCurrencyData.CurrencyContentData2) {
+        viewModel?.setDefaultCurrency(data.ccy)
     }
 
     fun setIcon(icon: String) {

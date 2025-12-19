@@ -36,6 +36,11 @@ class BalanceRepository(
         return infoDao.getCurrency2() ?: "CNY"
     }
 
+    fun setDefaultCurrency(ccy: String) {
+        manager.setKeyValue(UserDataKey.KEY_DEFAULT_CURRENCY, ccy)
+    }
+
+
     private suspend fun mappingCurrency(user: UserDataBean?) : Pair<List<BaseCurrencyData.CurrencyContentData2>, List<BaseCurrencyData.CurrencyContentData2>> {
         val currencyList = currencyConfigDao.getCurrencyConfigList()
         val fiat = arrayListOf<BaseCurrencyData.CurrencyContentData2>()
