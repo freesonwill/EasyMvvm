@@ -145,7 +145,7 @@ class GameContentListBottomSheetFragment :
                 }
                 false
             }
-
+            clDynamics.clickNoRepeat{}
             with(ceSearchSupplier) {
                 fun hasInput(): Boolean = text?.toString()?.trim()?.isNotEmpty() == true
                 setOnFocusChangeListener { _, hasFocus ->
@@ -317,8 +317,13 @@ class GameContentListBottomSheetFragment :
                 mBinding.clDynamics.visibility = View.VISIBLE
                 return@observe
             }else{
-                mBinding.llIndexContainer.visibility = View.VISIBLE
-                mBinding.clDynamics.visibility = View.GONE
+                if(mViewModel.isSearchMode){
+                    mBinding.llIndexContainer.visibility = View.GONE
+                    mBinding.clDynamics.visibility = View.GONE
+                } else{
+                    mBinding.llIndexContainer.visibility = View.VISIBLE
+                    mBinding.clDynamics.visibility = View.GONE
+                }
             }
             adapter.submitList(data)
             val selectedIds = data
