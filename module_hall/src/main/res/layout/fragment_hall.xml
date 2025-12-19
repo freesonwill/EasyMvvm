@@ -171,6 +171,7 @@
             android:id="@+id/aci_tab_bg"
             android:layout_width="@dimen/dp_108"
             android:layout_height="@dimen/dp_50"
+            android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
             android:background="@drawable/hall_tab_bg"
             tools:ignore="MissingConstraints" />

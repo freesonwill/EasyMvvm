@@ -17,6 +17,7 @@ import arch.cayenne.lib.common.utils.ext.startFadeAnim
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.walisport.module.hall.R
+import com.walisport.module.hall.data.HallGameTab
 import com.walisport.module.hall.data.HallGameTabDefault
 import com.walisport.module.hall.databinding.ItemGameAllRankingBinding
 import com.walisport.module.hall.ui.fragment.GameAllRankingListFragment
@@ -56,18 +57,15 @@ class GameAllRankingViewHolder(
     val item: ItemGameAllRankingBinding
 ): BaseViewHolder(item) {
     private val mockTabList = arrayListOf(
-        HallGameTabDefault(
-            res = R.drawable.ic_tab_hall_recent,
+        HallGameTab(
             _title = R.string.tab_ranking_newest.getString(),
             _page = { GameAllRankingListFragment.newInstance() }
         ),
-        HallGameTabDefault(
-            res = R.drawable.ic_tab_hall_all,
+        HallGameTab(
             _title = R.string.tab_ranking_biggest.getString(),
             _page = { GameAllRankingListFragment.newInstance() }
         ),
-        HallGameTabDefault(
-            res = R.drawable.ic_tab_hall_table,
+        HallGameTab(
             _title = R.string.tab_ranking_today.getString(),
             _page = { GameAllRankingTodayFragment.newInstance() }
         )

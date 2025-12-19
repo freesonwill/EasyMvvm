@@ -697,68 +697,52 @@ fun View.setOnClickOrLongPressListener(
         true
     }
 }
-/**
- * TextView 圆角背景渐变显示/隐藏
- *
- * @param backgroundColor 目标背景颜色（显示时的颜色），如 Color.parseColor("#FF6200EE")
- * @param cornerRadiusDp  圆角大小（dp）
- * @param isShow          true = 渐变显示背景，false = 渐变隐藏（变透明）
- * @param duration        动画时长，默认 300ms
- */
 fun TextView.setRoundedBackground(
-    backgroundColor: Int,
+    backgroundColor: String,
     radiusDp: Float = 24f,
     show: Boolean,
     duration: Long = 200L
 ) {
-    // 1. 取消上一次动画（只针对当前 TextView）
     (getTag(R.id.shape_animator_tag) as? ValueAnimator)?.cancel()
 
     val radiusPx = radiusDp.dp2px
 
-    // 2. 复用或创建 MaterialShapeDrawable
     val drawable = if (background is MaterialShapeDrawable) {
         background as MaterialShapeDrawable
     } else {
         MaterialShapeDrawable().also { background = it }
     }
 
-    // 关键：每次都重新构建 ShapeAppearanceModel，保证圆角正确
     drawable.shapeAppearanceModel = ShapeAppearanceModel.Builder()
         .setAllCorners(CornerFamily.ROUNDED, radiusPx.toFloat())
         .build()
 
-    // 当前颜色（可能为 null → 透明）
     val currentColor = drawable.fillColor?.defaultColor ?: Color.TRANSPARENT
-    val targetColor = if (show) backgroundColor else Color.TRANSPARENT
+    val targetColor = if (show) Color.parseColor(backgroundColor) else Color.TRANSPARENT
 
-    // 颜色相同或无需动画 → 直接设置
     if (currentColor == targetColor || duration <= 0) {
         drawable.setTint(targetColor)
         background = drawable
-        if (!show) background = null  // 彻底隐藏
+        if (!show) background = null
         setTag(R.id.shape_animator_tag, null)
         return
     }
 
-    // 3. 执行颜色渐变动画
     ValueAnimator.ofArgb(currentColor, targetColor).apply {
         this.duration = duration
         addUpdateListener {
             drawable.setTint(it.animatedValue as Int)
-            background = drawable  // 实时刷新背景
+            background = drawable
         }
         doOnEnd {
             setTag(R.id.shape_animator_tag, null)
-            if (!show) background = null  // 动画结束彻底移除背景（可选）
+            if (!show) background = null
         }
-
-        // 保存动画引用，下次调用自动取消
         setTag(R.id.shape_animator_tag, this)
         start()
     }
-
 }
+
 fun AppCompatImageView.setScaleAnim(min:Int,max:Int){
     startSafeAnimateSet(
         {
@@ -779,7 +763,6 @@ fun AppCompatImageView.setScaleAnim(min:Int,max:Int){
         start = true
     )
 }
-
 
 fun EditText.getMaxLength(): Int {
     for (filter in filters) {
