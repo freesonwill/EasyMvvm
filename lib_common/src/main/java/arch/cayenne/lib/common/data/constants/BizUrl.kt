@@ -38,8 +38,8 @@ val BASE_URL
                 "https://test.ra781.com"
             }
             else -> {
-//                "https://dev.ra781.com"
-                "http://192.168.10.38:5173"
+                "https://dev.ra781.com"
+//                "http://192.168.10.38:5173"
             }
         }
     }
