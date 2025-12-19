@@ -238,16 +238,6 @@ class MatchListPagerFragmentV2 :
             mViewModel.updateMatchLiveData()
         }
 
-
-        subHomeViewModel.currentSelectedTournaments.observe(viewLifecycleOwner) {
-            mBinding.rvHomeGameList.startFadeAnim { onComplete ->
-                mViewModel.setTournamentIdList(it)
-                helper?.reset()
-                reloadAllData()
-                onComplete.invoke()
-            }
-        }
-
         mViewModel.apiStateListener.observe(viewLifecycleOwner) {
             "MatchListPagerFragment playType: ${mViewModel.getPlayTypeId()} tournament: ${mViewModel.getTournamentId()} state change ${it::class.java.name}".logi(
                 this::class.java.name
@@ -327,6 +317,16 @@ class MatchListPagerFragmentV2 :
                 mViewModel.setTournamentIdList(sorted)
                 mViewModel.startObserveMatch()
                 reloadAllData()
+            }
+        }
+
+        subHomeViewModel.currentSelectedTournaments.observe(viewLifecycleOwner) {
+            mBinding.rvHomeGameList.startFadeAnim { onComplete ->
+                mViewModel.setTournamentIdList(it)
+                mViewModel.startObserveMatch()
+                helper?.reset()
+                reloadAllData()
+                onComplete.invoke()
             }
         }
 
