@@ -1,6 +1,7 @@
 package arch.cayenne.module.chat
 
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
+import arch.cayenne.lib.common.data.constants.CHAT_SERVER
 import arch.cayenne.lib.common.data.constants.UserDataKey
 import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.websocket.chat.ChatWebSocketManager
@@ -43,9 +44,7 @@ class RemoteChatManager(
      * 连接聊天服务器
      * */
     suspend fun startSocket(scope: CoroutineScope): ConnectState? {
-
-//        return socketManager.connect(scope, "wss://ws.qxe68.com:7001/api/game/chat/ws")?.first()
-        return socketManager.connect(scope, "wss://betwavepro.ja700.com/api/game/chat/ws")?.first()
+        return socketManager.connect(scope, CHAT_SERVER)?.first()
 
     }
 

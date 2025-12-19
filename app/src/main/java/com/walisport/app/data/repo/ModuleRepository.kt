@@ -7,6 +7,7 @@ import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.common.data.constants.LanguageType
 import arch.cayenne.lib.common.data.constants.PreloadEnum
+import arch.cayenne.lib.common.data.constants.SPORT_SERVER_WSS
 import arch.cayenne.lib.common.data.constants.SportEnum
 import arch.cayenne.lib.common.data.constants.UserDataKey
 import arch.cayenne.lib.common.data.manager.UserDataManager
@@ -307,7 +308,7 @@ class ModuleRepository(
 
     //开始连接服务器
     fun startSocket() {
-        socketManager.connect("wss://betwavepro.ja700.com/fb-ws")
+        socketManager.connect(SPORT_SERVER_WSS)
     }
 }
 
