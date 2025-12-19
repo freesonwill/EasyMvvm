@@ -15,10 +15,12 @@ sealed class BaseCurrencyData {
 
     data class CurrencyContentData2(
         val id: Int,
+        val ccy: String,
         val icon: String,
         val currencyName: String,
-        val amount: Long,
+        val amount: Double,
         val amountStr: String,
+        val exchangeAmount: String,
         val unit: String
     ) : BaseCurrencyData()
 }

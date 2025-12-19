@@ -13,7 +13,7 @@
 
     <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
         android:id="@+id/main"
-        android:layout_width="@dimen/dp_375"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/app_bg"
         android:orientation="vertical">
@@ -36,18 +36,28 @@
                 android:id="@+id/live_chat_history"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1"
                 android:layout_marginBottom="@dimen/dp_60"
-                />
+                android:layout_weight="1" />
 
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <View
+            android:id="@+id/top_ll_chat"
+            android:layout_width="@dimen/dp_1"
+            android:layout_height="@dimen/dp_1"
+            android:layout_marginBottom="@dimen/dp_10"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toTopOf="@id/chat_ll_input"
+            />
+        <View
             android:id="@+id/input_bg"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_60"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:background="@color/color_272727"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/top_ll_chat"
             app:layout_constraintBottom_toBottomOf="@id/ll_content"
             />
 
@@ -66,28 +76,30 @@
         <androidx.appcompat.widget.LinearLayoutCompat
             android:id="@+id/chat_ll_input"
             android:layout_width="307dp"
-            android:layout_height="40dp"
+            android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_58"
+            android:layout_marginBottom="@dimen/dp_10"
             android:background="@drawable/shape_20"
             android:backgroundTint="@color/color_0FFFFFFF"
+            android:minHeight="@dimen/dp_40"
             android:orientation="horizontal"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toTopOf="@id/input_bg"
-            app:layout_constraintBottom_toBottomOf="@id/input_bg"
-           >
+            app:layout_constraintBottom_toBottomOf="@id/ll_content"
+            app:layout_constraintLeft_toLeftOf="parent">
 
             <arch.cayenne.module.chat.ui.widget.EmojiEditTextView
                 android:id="@+id/chat_et_input"
                 android:layout_width="0dp"
-                android:layout_height="40dp"
+                android:layout_height="wrap_content"
+                android:minHeight="@dimen/dp_40"
                 android:layout_weight="1"
                 android:background="@null"
                 android:gravity="center_vertical"
+                android:maxLines="5"
                 android:hint="@string/live_chat_talk"
                 android:imeActionLabel="@string/send"
                 android:imeOptions="actionSend"
-                android:inputType="text"
-                android:paddingStart="@dimen/dp_16"
+                android:inputType="textMultiLine|textCapSentences"
+                android:layout_marginHorizontal="@dimen/dp_16"
                 android:textColor="@color/main_text"
                 android:textColorHint="@color/secondary_text"
                 android:textSize="@dimen/sp_15" />
@@ -99,33 +111,31 @@
             android:layout_height="38dp"
             android:layout_marginStart="@dimen/dp_11"
             android:layout_marginEnd="@dimen/dp_10"
+            android:layout_marginRight="@dimen/dp_10"
             android:background="@drawable/bg_keyboard_send"
             android:gravity="center"
             android:stateListAnimator="@animator/layout_alpha_animator"
             android:text="@string/send"
-            android:visibility="gone"
             android:textColor="@color/color_FFFFFF"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@id/chat_ll_input"
-            app:layout_constraintTop_toTopOf="@id/chat_ll_input"
             app:layout_constraintRight_toRightOf="parent"
-            android:layout_marginRight="@dimen/dp_10"
-          />
+            app:layout_constraintTop_toTopOf="@id/chat_ll_input" />
 
         <View
             android:id="@+id/hot_bg"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_46"
-            app:layout_constraintTop_toBottomOf="@id/ll_content"
             android:background="@color/color_272727"
-            />
+            app:layout_constraintTop_toBottomOf="@id/ll_content" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_at"
             android:layout_width="17dp"
             android:layout_height="16dp"
-            android:visibility="gone"
             android:layout_gravity="center_vertical"
             android:src="@drawable/icon_input_at"
+            android:visibility="gone"
             app:layout_constraintRight_toLeftOf="@id/iv_bet"
             app:layout_constraintTop_toTopOf="@id/iv_emoji" />
 
@@ -143,8 +153,8 @@
             android:id="@+id/iv_emoji"
             android:layout_width="@dimen/dp_24"
             android:layout_height="@dimen/dp_24"
-            android:src="@drawable/icon_input_emoji"
             android:layout_marginRight="@dimen/dp_30"
+            android:src="@drawable/icon_input_emoji"
             app:layout_constraintBottom_toBottomOf="@id/chat_ll_input"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="@id/chat_ll_input" />
@@ -158,37 +168,43 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@id/ll_content" />
 
-<!--        <androidx.appcompat.widget.AppCompatImageView-->
-<!--            android:id="@+id/iv_bottom_at"-->
-<!--            android:layout_width="@dimen/dp_28"-->
-<!--            android:layout_height="@dimen/dp_28"-->
-<!--            android:layout_marginStart="@dimen/dp_15"-->
-<!--            android:padding="2dp"-->
-<!--            android:visibility="gone"-->
-<!--            android:src="@drawable/icon_input_at"-->
-<!--            app:layout_constraintBottom_toBottomOf="@id/hot_recyclerview"-->
-<!--            app:layout_constraintLeft_toRightOf="@id/hot_recyclerview"-->
-<!--            app:layout_constraintTop_toTopOf="@id/hot_recyclerview" />-->
+        <!--        <androidx.appcompat.widget.AppCompatImageView-->
+        <!--            android:id="@+id/iv_bottom_at"-->
+        <!--            android:layout_width="@dimen/dp_28"-->
+        <!--            android:layout_height="@dimen/dp_28"-->
+        <!--            android:layout_marginStart="@dimen/dp_15"-->
+        <!--            android:padding="2dp"-->
+        <!--            android:visibility="gone"-->
+        <!--            android:src="@drawable/icon_input_at"-->
+        <!--            app:layout_constraintBottom_toBottomOf="@id/hot_recyclerview"-->
+        <!--            app:layout_constraintLeft_toRightOf="@id/hot_recyclerview"-->
+        <!--            app:layout_constraintTop_toTopOf="@id/hot_recyclerview" />-->
 
-<!--        <androidx.appcompat.widget.AppCompatImageView-->
-<!--            android:id="@+id/iv_bottom_bet"-->
-<!--            android:layout_width="@dimen/dp_28"-->
-<!--            android:layout_height="@dimen/dp_28"-->
-<!--            android:layout_marginStart="@dimen/dp_14"-->
-<!--            android:padding="2dp"-->
-<!--            android:src="@drawable/icon_input_bet"-->
-<!--            app:layout_constraintLeft_toRightOf="@id/iv_bottom_at"-->
-<!--            app:layout_constraintTop_toTopOf="@id/iv_bottom_at" />-->
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/iv_bottom_bet"
+                    android:layout_width="@dimen/dp_28"
+                    android:layout_height="@dimen/dp_28"
+                    android:layout_marginRight="@dimen/dp_14"
+                    android:padding="2dp"
+                    android:visibility="gone"
+                    android:src="@drawable/icon_input_bet"
+                    app:layout_constraintBottom_toBottomOf="@id/iv_bottom_emoji"
+                    app:layout_constraintRight_toLeftOf="@id/iv_bottom_emoji"
+                    />
 
-<!--        <androidx.appcompat.widget.AppCompatImageView-->
-<!--            android:id="@+id/iv_bottom_emoji"-->
-<!--            android:layout_width="@dimen/dp_28"-->
-<!--            android:layout_height="@dimen/dp_28"-->
-<!--            android:layout_marginStart="@dimen/dp_14"-->
-<!--            android:padding="2dp"-->
-<!--            android:src="@drawable/icon_input_emoji"-->
-<!--            app:layout_constraintLeft_toRightOf="@id/iv_bottom_bet"-->
-<!--            app:layout_constraintTop_toTopOf="@id/iv_bottom_bet" />-->
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/iv_bottom_emoji"
+                    android:layout_width="@dimen/dp_28"
+                    android:layout_height="@dimen/dp_28"
+                    android:padding="2dp"
+                    android:src="@drawable/icon_emoji_color"
+                    app:layout_constraintRight_toRightOf="parent"
+                    android:layout_marginRight="@dimen/dp_12"
+                    android:visibility="gone"
+
+                    app:layout_constraintTop_toTopOf="@id/hot_recyclerview"
+                    app:layout_constraintBottom_toBottomOf="@id/hot_recyclerview"
+                    />
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/chat_keyboard"

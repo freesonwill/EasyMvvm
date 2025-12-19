@@ -16,6 +16,7 @@ import arch.cayenne.lib.common.utils.ext.setupHorizontalScrollDegree
 import arch.cayenne.lib.common.utils.ext.startFadeAnim
 import com.google.android.material.tabs.TabLayout
 import com.walisport.module.hall.R
+import com.walisport.module.hall.data.HallGameTab
 import com.walisport.module.hall.data.HallGameTabDefault
 import com.walisport.module.hall.databinding.ItemGameAllRankingBinding
 import com.walisport.module.hall.ui.fragment.LatestBetFragment
@@ -55,19 +56,16 @@ class GameAllRankingViewHolder(
     val lifecycle: androidx.lifecycle.Lifecycle,
     val item: ItemGameAllRankingBinding
 ): BaseViewHolder(item) {
-    private val tabList = arrayListOf(
-        HallGameTabDefault(
-            res = R.drawable.ic_tab_hall_recent,
+    private val mockTabList = arrayListOf(
+        HallGameTab(
             _title = R.string.tab_ranking_newest.getString(),
             _page = { LatestBetFragment.newInstance() }
         ),
-        HallGameTabDefault(
-            res = R.drawable.ic_tab_hall_all,
+        HallGameTab(
             _title = R.string.tab_ranking_biggest.getString(),
             _page = { HighStakesFragment.newInstance() }
         ),
-        HallGameTabDefault(
-            res = R.drawable.ic_tab_hall_table,
+        HallGameTab(
             _title = R.string.tab_ranking_today.getString(),
             _page = { GameAllRankingTodayFragment.newInstance() }
         )
@@ -75,10 +73,10 @@ class GameAllRankingViewHolder(
     @SuppressLint("ClickableViewAccessibility")
     fun bind() {
         with(item) {
-            vpRanking.adapter = PagerAdapter(childFragmentManager, lifecycle, tabList)
+            vpRanking.adapter = PagerAdapter(childFragmentManager, lifecycle, mockTabList)
             vpRanking.setupHorizontalScrollDegree(0)
             tlRanking.removeAllTabs()
-            tabList.forEach { m ->
+            mockTabList.forEach { m ->
                 val tab = tlRanking.newTab()
                 tab.text = m.title
                 tlRanking.addTab(tab)

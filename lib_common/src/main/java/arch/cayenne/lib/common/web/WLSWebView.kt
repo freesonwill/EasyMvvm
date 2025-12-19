@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.os.Build
 import android.util.AttributeSet
+import android.view.View
 import android.webkit.WebSettings
 import androidx.fragment.app.Fragment
 import arch.cayenne.lib.common.data.model.JSResponseData
@@ -94,6 +95,7 @@ class WLSWebView : BridgeWebView {
             // 获取默认 User-Agent
             val defaultUA = settings.userAgentString // 在默认 UA 后添加自定义字符串
             val customUA = "$defaultUA 3N1/Android"  // 示例
+            setLayerType(View.LAYER_TYPE_HARDWARE,null)
 
             settings.userAgentString = customUA
         }

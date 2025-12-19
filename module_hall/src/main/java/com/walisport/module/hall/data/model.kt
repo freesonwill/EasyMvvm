@@ -56,9 +56,9 @@ data class GameVo(
     val hasMore: Boolean//是否有更多数据
 )
 
-fun GameVo.toGameContentData(id: Long , sortType: GameSortType): GameContentData {
+fun GameVo.toGameContentData(id: Long, sortType: GameSortType? = null): GameContentData {
     return GameContentData(
-        id = id ,
+        id = id,
         name = this.name ,
         avatar = Avatar(
             url = this.avatar.url ,
