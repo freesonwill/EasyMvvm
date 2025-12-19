@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/title_bg"
+    android:background="@color/color_1E1E1E"
     android:orientation="vertical">
 
     <arch.cayenne.lib.common.ui.view.TitleBarView
@@ -54,21 +54,23 @@
 
         <TextView
             android:id="@+id/tv_timer"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="17dp"
             android:layout_marginStart="@dimen/dp_6"
             android:layout_marginTop="@dimen/dp_3"
             android:gravity="center"
-            android:text="23 : 59 : 59"
+            android:text="@string/count_down_default"
             android:textColor="@color/color_FFFFFF"
             android:textSize="@dimen/sp_12"
             app:layout_constraintLeft_toRightOf="@+id/iv_title_line"
             app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:layout_width="@dimen/dp_12"
+            android:id="@+id/iv_helper"
+            android:layout_width="@dimen/dp_20"
             android:layout_height="@dimen/dp_12"
-            android:layout_marginStart="4dp"
+            android:paddingStart="4dp"
+            android:paddingEnd="@dimen/dp_4"
             app:layout_constraintBottom_toBottomOf="@+id/tv_today_title"
             app:layout_constraintLeft_toRightOf="@+id/tv_timer"
             app:layout_constraintTop_toTopOf="@+id/tv_today_title"
@@ -139,7 +141,6 @@
                 android:layout_marginBottom="@dimen/dp_6"
                 android:fontFamily="@font/sf_pro_display_bold"
                 android:includeFontPadding="false"
-                android:text="1,457,000"
                 android:textColor="@color/color_965F25"
                 android:textSize="34sp"
                 android:textStyle="bold"

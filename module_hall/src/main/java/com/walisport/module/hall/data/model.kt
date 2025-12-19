@@ -1,5 +1,6 @@
 package com.walisport.module.hall.data
 
+import arch.cayenne.lib.common.utils.ext.ccyToSymbol
 import arch.cayenne.lib.http.data.PaginationVo
 import com.walisport.module.hall.data.constants.GameSortType
 
@@ -29,11 +30,7 @@ fun BigVo.toGameAllRankingListData(): GameAllRankingListData {
             "CNY" -> arch.cayenne.lib.common.R.drawable.ic_cny
             else -> arch.cayenne.lib.common.R.drawable.ic_usdt
         } ,
-        symbol = when (ccy) {
-            "USD" -> "$"
-            "CNY" -> "¥"
-            else -> "$"
-        } ,
+        symbol = ccy.ccyToSymbol() ,
         result = bonus.toFloat()
     )
 }
@@ -119,11 +116,7 @@ fun BettingVo.toGameAllRankingListData(): GameAllRankingListData {
             "CNY" -> arch.cayenne.lib.common.R.drawable.ic_cny
             else -> arch.cayenne.lib.common.R.drawable.ic_usdt
         } ,
-        symbol = when (ccy) {
-            "USD" -> "$"
-            "CNY" -> "¥"
-            else -> "$"
-        } ,
+        symbol = ccy.ccyToSymbol() ,
         result = bonus.toFloat()
     )
 }
@@ -148,18 +141,32 @@ data class DailyBetMatchVo(
     val remainingTime: Long // 活动剩余时长/s
 )
 
+data class DailyBetMatchData(
+    val ccy: String , // 货币缩写(ISO4217)
+    val betScore: Long , // 投注奖金金额
+    val remainingTime: Long // 活动剩余时长/s
+)
+
+fun DailyBetMatchVo.toDailyBetMatchData(): DailyBetMatchData {
+    return DailyBetMatchData(
+        ccy = ccy ,
+        betScore = betScore ,
+        remainingTime = remainingTime
+    )
+}
+
 /**
  * 分页数据
  * @date: 2025/12/19
  * @description:
  */
 data class DayVo(
-    val ranking: Int, // 排名
-    val uid: Long, // 玩家UID
-    val name: String, // 玩家名称
-    val ccy: String, // 货币缩写(ISO4217)
-    val bet: Long, // 投注金额
-    val bonus: Int, // 奖金金额
+    val ranking: Int , // 排名
+    val uid: Long , // 玩家UID
+    val name: String , // 玩家名称
+    val ccy: String , // 货币缩写(ISO4217)
+    val bet: Long , // 投注金额
+    val bonus: Int , // 奖金金额
     val mySelf: Boolean // 是否自己
 )
 
@@ -175,11 +182,7 @@ fun DayVo.toGameAllRankingListData(): GameAllRankingListData {
             "CNY" -> arch.cayenne.lib.common.R.drawable.ic_cny
             else -> arch.cayenne.lib.common.R.drawable.ic_usdt
         } ,
-        symbol = when (ccy) {
-            "USD" -> "$"
-            "CNY" -> "¥"
-            else -> "$"
-        } ,
+        symbol = ccy.ccyToSymbol() ,
         result = bonus.toFloat()
     )
 }
@@ -188,11 +191,7 @@ fun DayVo.toGameAllRankingToday(): GameAllRankingToday.GameAllRankingTodayData {
     return GameAllRankingToday.GameAllRankingTodayData(
         rank = ranking ,
         playerName = name ,
-        symbol = when (ccy) {
-            "USD" -> "$"
-            "CNY" -> "¥"
-            else -> "$"
-        } ,
+        symbol = ccy.ccyToSymbol() ,
         betting = bet.toDouble() ,
         bonus = bonus.toDouble() ,
         myself = mySelf

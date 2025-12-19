@@ -7,12 +7,13 @@ import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.base.data.remote.ApiResponseState.Start.dataAs
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
+import com.walisport.module.hall.data.DailyBetMatchData
+import com.walisport.module.hall.data.DailyBetMatchVo
 import com.walisport.module.hall.data.DayPageVo
-import com.walisport.module.hall.data.GameAllRankingListData
 import com.walisport.module.hall.data.GameAllRankingToday
 import com.walisport.module.hall.data.HallRepository.Companion.INITIAL_PAGE
 import com.walisport.module.hall.data.RankingRepository
-import com.walisport.module.hall.data.toGameAllRankingListData
+import com.walisport.module.hall.data.toDailyBetMatchData
 import com.walisport.module.hall.data.toGameAllRankingToday
 import kotlinx.coroutines.launch
 import org.koin.core.component.inject
@@ -27,10 +28,15 @@ class CompetitionViewModel : BaseViewModel() {
     private val _rankingListLiveData: MutableLiveData<List<GameAllRankingToday>> = MutableLiveData()
     val rankingListLiveData: LiveData<List<GameAllRankingToday>> = _rankingListLiveData
 
+    private val _dailyMatchLiveData: MutableLiveData<DailyBetMatchData> = MutableLiveData()
+    val dailyMatchLiveData: LiveData<DailyBetMatchData> = _dailyMatchLiveData
+
     private var page: Int = INITIAL_PAGE
 
+    /**
+     * 每日投注比赛信息
+     */
     fun getDayMatchDetail() {
-        setState(DataState.Loading)
         viewModelScope.launch {
             callApi(
                 {
@@ -39,11 +45,15 @@ class CompetitionViewModel : BaseViewModel() {
                 {
                     when (it) {
                         is ApiResponseState.Failed -> {
-                            setState(DataState.NetworkUnavailable)
                         }
 
                         is ApiResponseState.Succeeded<*> -> {
-                            setState(DataState.LoadSuccess)
+                            val dailyBetMatchVo = it.dataAs<DailyBetMatchVo>()
+
+                            dailyBetMatchVo?.toDailyBetMatchData().let {
+                                _dailyMatchLiveData.value = it
+                            }
+
                         }
 
                         else -> {}
@@ -54,6 +64,9 @@ class CompetitionViewModel : BaseViewModel() {
     }
 
 
+    /**
+     * 每日比赛榜单
+     */
     fun queryDailyMatchList() {
         setState(DataState.Loading)
         viewModelScope.launch {
@@ -98,13 +111,6 @@ class CompetitionViewModel : BaseViewModel() {
             )
         }
 
-    }
-
-    fun loadNextPage() {
-        if (apiStateListener.value == DataState.LoadSuccess) {
-            page++
-            queryDailyMatchList()
-        }
     }
 
 }

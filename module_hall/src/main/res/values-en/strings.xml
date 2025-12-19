@@ -10,7 +10,7 @@
     <string name="title_recently_played">Recently Played</string>
     <string name="title_game_favourite">Favourite Game</string>
     <string name="title_match_favourite">Favourite Match</string>
-
+    <string name="count_down_default">-- : -- : --</string>
 
 
 </resources>
