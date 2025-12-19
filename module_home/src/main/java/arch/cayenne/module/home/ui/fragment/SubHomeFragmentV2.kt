@@ -89,7 +89,7 @@ class SubHomeFragmentV2 : BaseFragment<SubHomeViewModel , FragmentSubHomeV2Bindi
         initSportBanner()
         initVIPInfo()
         initSportLayout()
-        initMatchFragment()
+        setupMatchFragment()
         initTournamentLayout()
     }
 
@@ -154,6 +154,7 @@ class SubHomeFragmentV2 : BaseFragment<SubHomeViewModel , FragmentSubHomeV2Bindi
             mBinding.layoutContainer.customTabGroup.clearTabList()
             mBinding.layoutContainer.customTabGroup.submitTabList(l)
 
+            setupMatchFragment()
         }
 
         mViewModel.collapseTournamentDropdown.observeEvent(
@@ -337,10 +338,9 @@ class SubHomeFragmentV2 : BaseFragment<SubHomeViewModel , FragmentSubHomeV2Bindi
         }
     }
 
-    private fun initMatchFragment() {
+    private fun setupMatchFragment() {
         //生成MatchListPagerFragmentV2， 添加到fragment_game_list_container节点
-        childFragmentManager.findFragmentByTag(MatchListPagerFragmentV2.TAG) as? MatchListPagerFragmentV2
-            ?: MatchListPagerFragmentV2.newInstance(
+      MatchListPagerFragmentV2.newInstance(
                 playTypeId = mViewModel.currentPlayTypeId ,
                 sportId = mViewModel.currentSportId
             ).also {
