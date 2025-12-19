@@ -52,7 +52,7 @@
             app:layout_constraintLeft_toRightOf="@+id/tv_today_title"
             app:layout_constraintTop_toTopOf="@+id/tv_today_title" />
 
-        <TextView
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
             android:id="@+id/tv_timer"
             android:layout_width="wrap_content"
             android:layout_height="17dp"
@@ -63,7 +63,8 @@
             android:textColor="@color/color_FFFFFF"
             android:textSize="@dimen/sp_12"
             app:layout_constraintLeft_toRightOf="@+id/iv_title_line"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:skinnableFontWeight="500" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_helper"
@@ -141,6 +142,7 @@
                 android:layout_marginBottom="@dimen/dp_6"
                 android:fontFamily="@font/sf_pro_display_bold"
                 android:includeFontPadding="false"
+                android:text="0"
                 android:textColor="@color/color_965F25"
                 android:textSize="34sp"
                 android:textStyle="bold"
