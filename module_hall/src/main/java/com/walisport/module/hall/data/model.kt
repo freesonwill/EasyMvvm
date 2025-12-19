@@ -197,3 +197,29 @@ fun DayVo.toGameAllRankingToday(): GameAllRankingToday.GameAllRankingTodayData {
         myself = mySelf
     )
 }
+
+fun List<GameAllRankingToday>.addDashItem(): List<GameAllRankingToday> {
+    //添加分割线
+    //遍历列表， 如果某个item的rank和下一个item的rank不连续，则在它们之间添加一个DashItem， 只添加一次
+    val newList = mutableListOf<GameAllRankingToday>()
+    var dashAdded = false
+    for (i in indices) {
+        newList.add(this[i])
+        if (!dashAdded && i < this.size - 1) {
+            val currentRank = when (val item = this[i]) {
+                is GameAllRankingToday.GameAllRankingTodayData -> item.rank
+                else -> null
+            }
+            val nextRank = when (val item = this[i + 1]) {
+                is GameAllRankingToday.GameAllRankingTodayData -> item.rank
+                else -> null
+            }
+            if (currentRank != null && nextRank != null && nextRank - currentRank > 1) {
+                newList.add(GameAllRankingToday.GameAllRankingDashData)
+                dashAdded = true
+            }
+        }
+    }
+
+    return newList
+}

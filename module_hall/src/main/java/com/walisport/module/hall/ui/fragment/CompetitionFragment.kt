@@ -10,6 +10,7 @@ import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.data.constants.BizUrl
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout.States
+import arch.cayenne.lib.common.utils.DateUtils
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
@@ -18,7 +19,7 @@ import arch.cayenne.lib.common.utils.ext.ccyToSymbol
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.touchBackPressed
 import com.walisport.module.hall.R
-import com.walisport.module.hall.data.GameAllRankingToday
+import com.walisport.module.hall.data.addDashItem
 import com.walisport.module.hall.databinding.FragmentCompetitionBinding
 import com.walisport.module.hall.databinding.TitleBarCompetitionBinding
 import com.walisport.module.hall.ui.adapter.GameAllRankingListTodayAdapter
@@ -126,18 +127,18 @@ class CompetitionFragment : BaseFragment<CompetitionViewModel , FragmentCompetit
         }
 
         mViewModel.dailyMatchLiveData.observe(viewLifecycleOwner) {
-            mBinding.tvTimer.text = formatMillisToHMS(it.remainingTime)
+            mBinding.tvTimer.text = DateUtils.formatMillisToHMS(it.remainingTime)
             //启动定时器，每秒对剩余时间进行减一，并更新UI
             var remainingTime = it.remainingTime
             timer?.cancel()
             timer = object : CountDownTimer(remainingTime * 1000 , 1000) {
                 override fun onTick(millisUntilFinished: Long) {
                     remainingTime--
-                    mBinding.tvTimer.text = formatMillisToHMS(remainingTime)
+                    mBinding.tvTimer.text = DateUtils.formatMillisToHMS(remainingTime)
                 }
 
                 override fun onFinish() {
-                    mBinding.tvTimer.text = formatMillisToHMS(0)
+                    mBinding.tvTimer.text = DateUtils.formatMillisToHMS(0)
                 }
             }
             timer?.start()
@@ -149,31 +150,6 @@ class CompetitionFragment : BaseFragment<CompetitionViewModel , FragmentCompetit
 
     }
 
-    private fun List<GameAllRankingToday>.addDashItem(): List<GameAllRankingToday> {
-        //添加分割线
-        //遍历列表， 如果某个item的rank和下一个item的rank不连续，则在它们之间添加一个DashItem， 只添加一次
-        val newList = mutableListOf<GameAllRankingToday>()
-        var dashAdded = false
-        for (i in indices) {
-            newList.add(this[i])
-            if (!dashAdded && i < this.size - 1) {
-                val currentRank = when (val item = this[i]) {
-                    is GameAllRankingToday.GameAllRankingTodayData -> item.rank
-                    else -> null
-                }
-                val nextRank = when (val item = this[i + 1]) {
-                    is GameAllRankingToday.GameAllRankingTodayData -> item.rank
-                    else -> null
-                }
-                if (currentRank != null && nextRank != null && nextRank - currentRank > 1) {
-                    newList.add(GameAllRankingToday.GameAllRankingDashData)
-                    dashAdded = true
-                }
-            }
-        }
-
-        return newList
-    }
 
     override fun initData() {
         super.initData()
@@ -184,13 +160,6 @@ class CompetitionFragment : BaseFragment<CompetitionViewModel , FragmentCompetit
     override fun onDestroy() {
         super.onDestroy()
         timer?.cancel()
-    }
-
-    private fun formatMillisToHMS(totalSeconds: Long): String {
-        val hours = totalSeconds / 3600
-        val minutes = (totalSeconds % 3600) / 60
-        val seconds = totalSeconds % 60
-        return String.format("%02d : %02d : %02d" , hours , minutes , seconds)
     }
 
 
