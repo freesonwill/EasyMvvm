@@ -40,6 +40,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
+                android:fontFamily="@font/sf_pro"
                 app:skinnableFontWeight="500" />
 
             <arch.cayenne.lib.skin.widget.SkinnableTextView
@@ -174,13 +175,14 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintVertical_bias="0.0"
+                    android:paddingHorizontal="@dimen/dp_8"
                     tools:visibility="visible">
 
                     <arch.cayenne.lib.skin.widget.SkinnableTextView
                         android:id="@+id/tv_reserve_hint"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="1.14dp"
+                        android:layout_marginStart="2.14dp"
                         android:gravity="center"
                         android:text="@string/btn_reserve"
                         android:textColor="@color/color_FFFFFF"
@@ -194,16 +196,16 @@
 
                     <arch.cayenne.lib.skin.widget.SkinnableImageView
                         android:id="@+id/iv_reserve_hint"
-                        android:layout_width="8dp"
-                        android:layout_height="8dp"
-                        android:layout_marginEnd="1dp"
-                        android:src="@drawable/icon_add"
+                        android:layout_width="@dimen/dp_8"
+                        android:layout_height="@dimen/dp_8"
+                        android:layout_marginEnd="0dp"
+                        android:src="@drawable/icon_add_8x8"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toStartOf="@id/tv_reserve_hint"
                         app:layout_constraintHorizontal_chainStyle="packed"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:tint="@color/white" />
+                        />
 
                 </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
 
