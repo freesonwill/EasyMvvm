@@ -8,6 +8,7 @@ sealed class GameAllRankingToday {
         val symbol: String,
         val betting: Double,
         val bonus: Double,
+        val myself: Boolean,
     ) : GameAllRankingToday()
 
     data object GameAllRankingDashData : GameAllRankingToday()

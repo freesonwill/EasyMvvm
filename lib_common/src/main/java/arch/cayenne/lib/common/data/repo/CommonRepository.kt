@@ -27,6 +27,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class CommonRepository(
     override val scope: CoroutineScope,
@@ -112,15 +113,17 @@ class CommonRepository(
         socketManager.observeProtoMessage<Client.BalanceNotify>(ApiCode.BALANCE_NOTIFY).collect {
             if (it.data == null || it.data!!.balance.isNullOrEmpty())
                 return@collect
-            infoDao.queryInfo()?.apply {
-                infoDao.update(
-                    InfoBean(
-                        this.uid,
-                        it.data!!.balance.balanceStringToLong(),
-                        this.currency,//账号余额通知中没有币种字段
-                        this.login
+            withContext(Dispatchers.IO) {
+                infoDao.queryInfo()?.apply {
+                    infoDao.update(
+                        InfoBean(
+                            this.uid,
+                            it.data!!.balance.balanceStringToLong(),
+                            this.currency,//账号余额通知中没有币种字段
+                            this.login
+                        )
                     )
-                )
+                }
             }
         }
     }

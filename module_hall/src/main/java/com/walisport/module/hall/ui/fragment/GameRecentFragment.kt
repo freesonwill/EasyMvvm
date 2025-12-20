@@ -1,36 +1,31 @@
 package com.walisport.module.hall.ui.fragment
 
-import android.content.Context
 import android.os.Bundle
 import android.view.View
-import androidx.lifecycle.DefaultLifecycleObserver
-import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.GridLayoutManager
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.ui.animation.AnimationController
 import arch.cayenne.lib.base.ui.animation.AnimationController.AnimType
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
-import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.common.ui.adapter.GridSpacingItemDecoration
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout.States
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
-import arch.cayenne.lib.common.utils.ext.checkCurrentScrollState
-import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
+import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
+import arch.cayenne.lib.common.utils.ext.checkCurrentScrollState
+import arch.cayenne.lib.common.utils.ext.onScrolledOver
+import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.helper.BackToTopHelper
-import com.walisport.module.hall.data.GameContentData
+import com.walisport.module.hall.data.UniversalLoadMoreScrollListener
 import com.walisport.module.hall.databinding.FragmentGameRecentBinding
 import com.walisport.module.hall.ui.adapter.GameContentAdapter
-import com.walisport.module.hall.ui.viewmodel.HallViewModel
-import kotlin.reflect.KClass
-import arch.cayenne.lib.common.utils.ext.onScrolledOver
-import com.walisport.module.hall.data.UniversalLoadMoreScrollListener
 import com.walisport.module.hall.ui.viewmodel.GameRecentViewModel
-import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
+import com.walisport.module.hall.ui.viewmodel.HallViewModel
 import com.walisport.module.live.data.EventClick
 import kotlinx.coroutines.delay
+import kotlin.reflect.KClass
 
 class GameRecentFragment : BaseFragment<GameRecentViewModel, FragmentGameRecentBinding>() {
 

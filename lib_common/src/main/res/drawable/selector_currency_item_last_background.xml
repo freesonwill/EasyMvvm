@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- 狀態：點擊時 (Pressed state) -->
+    <item android:state_pressed="true">
+        <shape android:shape="rectangle">
+            <!-- 點擊時的顏色 -->
+            <solid android:color="@color/color_003A42" />
+
+            <!-- 設定圓角：只設定底部左、右兩邊 -->
+            <corners
+                android:bottomLeftRadius="@dimen/dp_10"
+                android:bottomRightRadius="@dimen/dp_10"
+                android:topLeftRadius="0dp"
+                android:topRightRadius="0dp" />
+        </shape>
+    </item>
+
+    <!-- 默認狀態：透明 -->
+    <item android:drawable="@android:color/transparent" />
+
+</selector>

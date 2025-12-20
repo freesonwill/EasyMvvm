@@ -250,7 +250,7 @@ class ComboBetFragment2 : BaseFragment<ComboBetViewModel, FragmentComboBet2Bindi
             setSumBetMoney(data)
         }
         mViewModel.onBalanceListener.observe(viewLifecycleOwner) {
-            val money = "${mViewModel.moneySymbol} ${(it?.balance?:0L).getFormalMoney()}"
+            val money = "${mViewModel.moneySymbol} ${(it?.balance?:0L).getFormalMoney(false)}"
             mBinding.tvBalance.text = money
         }
         mViewModel.onForceUpdateListener.observe(viewLifecycleOwner) {
@@ -304,14 +304,14 @@ class ComboBetFragment2 : BaseFragment<ComboBetViewModel, FragmentComboBet2Bindi
 
     private fun setSumBetMoney(data: List<ComboMultiBetBean>) {
         val sumMoney = data.sumOf { it.amount }
-        val money = "${mViewModel.moneySymbol}${sumMoney.getFormalMoney()}"
+        //val money = "${mViewModel.moneySymbol}${sumMoney.getFormalMoney()}"
 
         val winMoney = data.sumOf { it.maxWinMoney }
         val onlyBetOnMain = data.drop(1).all { it.inputMoney == 0L } //仅主投注的才显示预计投注
 
         mBinding.tvBetMoneyHint.isVisible = (winMoney != 0L) && onlyBetOnMain
         mBinding.tvBetMoney.isVisible = (winMoney != 0L) && onlyBetOnMain
-        val sumWinMoney = "${mViewModel.moneySymbol}${winMoney.getFormalMoney()}"
+        val sumWinMoney = "${mViewModel.moneySymbol}${winMoney.getFormalMoney(false)}"
         mBinding.tvBetMoney.text = sumWinMoney
     }
 

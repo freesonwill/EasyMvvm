@@ -109,7 +109,7 @@ class GameAllFragment : BaseFragment<GameAllViewModel, FragmentGameAllBinding>()
         //接收全部参数
         mViewModel.gameListLiveData.observe(viewLifecycleOwner) {
             listAdapter.submitList(it)
-            LogUtils.e("response------all--getGameTitleSize-${mViewModel.getGameTitleSize()},index-${index}")
+            //LogUtils.e("response------all--getGameTitleSize-${mViewModel.getGameTitleSize()},index-${index}")
             if (index < (mViewModel.getGameTitleSize())) {
                 var gameData = mViewModel.getGame(index)
                 gameData?.let {
