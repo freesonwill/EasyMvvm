@@ -12,12 +12,11 @@
     <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
         android:id="@+id/cl_content"
         android:layout_width="290dp"
-        android:layout_height="wrap_content"
-        android:maxHeight="460dp"
+        android:layout_height="460dp"
         android:background="@android:color/transparent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent" >
         <net.center.blurview.ShapeBlurView
             android:id="@+id/blurView"
             android:layout_width="290dp"
@@ -73,7 +72,7 @@
             android:background="@drawable/ic_balance_setting"
             android:layout_marginStart="@dimen/dp_12"
             android:layout_marginEnd="@dimen/dp_12"
-            android:layout_marginBottom="@dimen/dp_2"
+            android:layout_marginBottom="@dimen/dp_3"
             app:layout_constraintStart_toEndOf="@+id/ll_search_bar"
             app:layout_constraintTop_toTopOf="@+id/ll_search_bar"
             app:layout_constraintBottom_toBottomOf="@+id/ll_search_bar"
@@ -81,23 +80,23 @@
         <arch.cayenne.lib.skin.widget.SkinnableRecyclerView
             android:id="@+id/rv_currency"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="-2dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="-1dp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ll_search_bar"
-            />
+            app:layout_constraintBottom_toBottomOf="parent" />
     </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
     <!--  錢包設置頁  -->
     <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
         android:id="@+id/cl_content_2"
         android:layout_width="290dp"
-        android:layout_height="wrap_content"
+        android:layout_height="460dp"
         android:clickable="true"
         android:focusableInTouchMode="true"
         android:maxHeight="460dp"
         app:layout_constraintLeft_toRightOf="@+id/cl_content"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent" >
         <net.center.blurview.ShapeBlurView
             android:id="@+id/blurView_2"
             android:layout_width="290dp"
@@ -181,14 +180,15 @@
         <arch.cayenne.lib.skin.widget.SkinnableRecyclerView
             android:id="@+id/rv_currency_setting"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:layout_marginTop="@dimen/dp_28"
             android:paddingBottom="@dimen/dp_17"
             android:layout_marginStart="@dimen/dp_16"
             android:layout_marginEnd="@dimen/dp_16"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_setting_2"/>
+            app:layout_constraintTop_toBottomOf="@+id/tv_setting_2"
+            app:layout_constraintBottom_toBottomOf="parent" />
     </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
