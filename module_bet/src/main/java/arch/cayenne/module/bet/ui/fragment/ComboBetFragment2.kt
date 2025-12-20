@@ -12,6 +12,7 @@ import android.widget.EditText
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.os.bundleOf
+import androidx.core.view.doOnAttach
 import androidx.core.view.get
 import androidx.core.view.isVisible
 import androidx.core.widget.NestedScrollView
@@ -65,7 +66,12 @@ class ComboBetFragment2 : BaseFragment<ComboBetViewModel, FragmentComboBet2Bindi
     }
 
     private val keyboard:BetMoneyKeyboard by lazy {
-        BetMoneyKeyboard(requireContext()).apply { id = R.id.main }
+        BetMoneyKeyboard(requireContext()).apply {
+            id = R.id.main
+            doOnAttach {
+                getChildAt(0).setPadding(0,6.dp2px,0,6.dp2px)
+            }
+        }
     }
 
 

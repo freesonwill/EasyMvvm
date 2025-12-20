@@ -15,6 +15,7 @@ import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
 import arch.cayenne.lib.common.utils.ext.setOnClickOrLongPressListener
 import arch.cayenne.lib.common.utils.helper.showToast
+import arch.cayenne.lib.skin.widget.SkinnableEditText
 import arch.cayenne.module.bet.R
 import arch.cayenne.module.bet.data.Config.KEY_RESULT
 import arch.cayenne.module.bet.data.Config.VALUE_MONEY_INPUT
@@ -47,7 +48,7 @@ class ComboBetMoneyKeyboardFragment:BaseFragment<ComboBetMoneyKeyboardDialogView
             }
         }
     }
-    private lateinit var etMoney:EditText
+    private lateinit var etMoney:SkinnableEditText
     private lateinit var tvMoney:TextView
     private val resultBundle: Bundle by lazy {
         Bundle()
@@ -113,7 +114,7 @@ class ComboBetMoneyKeyboardFragment:BaseFragment<ComboBetMoneyKeyboardDialogView
             etMoney.setSelection(length)
         }
         mViewModel.onNumberLimit.observe(viewLifecycleOwner) {
-            etMoney.hint = getString(R.string.et_money_hint).format(it.first.getMoney(), it.second.getMoney())
+            etMoney.hintCursor = getString(R.string.et_money_hint).format(it.first.getMoney(), it.second.getMoney())
         }
         mViewModel.onOverNumberListener.observe(viewLifecycleOwner) {
             it.msg?.let { msg ->
