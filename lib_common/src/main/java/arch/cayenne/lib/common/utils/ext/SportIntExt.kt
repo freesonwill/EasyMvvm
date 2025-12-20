@@ -66,10 +66,11 @@ object SportIntExt {
     /**
      * @return string: 123456 轉換為 1,234.56, 123456789 轉換為 1,234,567.89
      */
-    fun Long.getFormalMoney(): String {
+    fun Long.getFormalMoney(stripTrailingZero:Boolean=true): String {
         if (this == 0L) return "0"
 
         val value = this.toBigDecimal().divide(BigDecimal(100)).setScale(2, RoundingMode.DOWN)
+        if(!stripTrailingZero) return value.toPlainString()
         val stripped = value.stripTrailingZeros()
 
         val numberFormat = NumberFormat.getNumberInstance(Locale.US).apply {

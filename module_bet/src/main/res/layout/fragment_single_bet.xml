@@ -49,13 +49,13 @@
                 android:layout_marginEnd="8dp"
                 android:fontFamily="@font/sf_pro_display_bold"
                 android:gravity="center"
-                android:textColor="@color/color_C0C0C0"
+                android:textColor="@color/money_color"
                 android:textSize="15sp"
                 app:skinnableFontWeight="510"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/iv_close"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:text="$1100.00"
+                tools:text="$ 1100.00"
                 />
 
             <arch.cayenne.lib.skin.widget.SkinnableImageView
@@ -103,27 +103,27 @@
 
                 <arch.cayenne.lib.skin.widget.SkinnableTextView
                     android:id="@+id/tv_money"
-                    android:layout_width="18dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginVertical="14dp"
+                    android:layout_width="@dimen/dp_18"
+                    android:layout_height="0dp"
+                    android:layout_marginVertical="11dp"
                     android:layout_marginStart="12dp"
-                    android:background="@drawable/bg_input_money"
-                    android:gravity="center"
+                    android:gravity="center_horizontal"
                     android:textColor="@color/money_color"
-                    android:textSize="14sp"
+                    android:textSize="16sp"
                     android:textStyle="bold"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintDimensionRatio="1:1"
+                    android:fontFamily="@font/sf_pro"
+                    app:skinnableFontWeight="500"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    tools:text="¥"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    tools:text="$"
                     />
 
                 <arch.cayenne.lib.skin.widget.SkinnableEditText
                     android:id="@+id/et_money"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="8dp"
+                    android:layout_height="@dimen/dp_19"
+                    android:layout_marginHorizontal="5dp"
                     android:background="@null"
                     android:cursorVisible="true"
                     android:focusable="true"
@@ -133,6 +133,8 @@
                     android:textColorHint="@color/color_999999"
                     android:textCursorDrawable="@drawable/shape_edittext_cursor"
                     android:textSize="16sp"
+                    android:fontFamily="@font/sf_pro"
+                    app:skinnableFontWeight="510"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/tv_money"
@@ -393,7 +395,8 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tv_bet_hint"
                     app:skinnableFontWeight="500"
-                    tools:visibility="gone"
+                    tools:visibility="visible"
+                    tools:text="可赢 ¥98"
                     />
             </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
 
