@@ -15,7 +15,7 @@ data class ChatMsgPageBean(
     val msgId: String,
     val content: String,
     val timestamp: String,
-    val refUid: String,
+    val refUid: Long,
     val refUserName: String,
     val refAvatarId: Int,
     val onlyForSelf: Int,
@@ -24,7 +24,6 @@ data class ChatMsgPageBean(
     val atRange:List<IntRange>? = null
 ) :Comparable<ChatMsgPageBean>{
     companion object {
-
         fun toChatPageBean(bean: ChatMsg, msgType: MsgType, atRange: List<IntRange>? = null): ChatMsgPageBean {
             return ChatMsgPageBean(
                 uid = bean.uid,
@@ -33,9 +32,9 @@ data class ChatMsgPageBean(
                 msgId = bean.msgId,
                 content = bean.content,
                 timestamp = bean.timestamp,
-                refUid = bean.refUid,
-                refUserName = bean.refUserName,
-                refAvatarId = bean.refAvatarId,
+                refUid = bean.refUid ?: 0L,
+                refUserName = bean.refUserName ?:"",
+                refAvatarId = bean.refAvatarId ?: 0,
                 onlyForSelf = bean.onlyForSelf,
                 platform = bean.platform,
                 msgType = msgType,
