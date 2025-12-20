@@ -357,14 +357,9 @@ class SubHomeFragmentV2 : BaseFragment<SubHomeViewModel , FragmentSubHomeV2Bindi
     // 全部Tab的比賽列表載入完成後的處理
     private fun handleAllTabLoaded() {
         allTabCompleteObserveJob = null
-        drawTournamentTab()
         drawSportList()
     }
 
-    // 畫聯賽列表
-    private fun drawTournamentTab() {
-
-    }
 
     // 畫球種列表
     private fun drawSportList() {
@@ -424,6 +419,8 @@ class SubHomeFragmentV2 : BaseFragment<SubHomeViewModel , FragmentSubHomeV2Bindi
             }
             showTournamentListBottomSheet()
         })
+
+        setSortBtnText()
 
     }
 

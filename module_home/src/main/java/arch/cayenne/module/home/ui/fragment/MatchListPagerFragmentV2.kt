@@ -332,6 +332,7 @@ class MatchListPagerFragmentV2 :
 
         subHomeViewModel.sortType.observe(viewLifecycleOwner){
             mBinding.rvHomeGameList.startFadeAnim { onComplete ->
+                mViewModel.forceTop()
                 mViewModel.setSortType(it)
                 mViewModel.startObserveMatch()
                 helper?.reset()

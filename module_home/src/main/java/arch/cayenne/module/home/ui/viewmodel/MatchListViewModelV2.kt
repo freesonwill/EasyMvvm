@@ -85,6 +85,10 @@ class MatchListViewModelV2 : BaseMatchViewModel<MatchListRepository>() {
         requestScrollToTop = false
     }
 
+    fun forceTop() {
+        requestScrollToTop = true
+    }
+
     fun startObserveDate() {
         if (observeJob != null) return
         observeJob = viewModelScope.launch {
