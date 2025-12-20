@@ -6,22 +6,24 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginBottom="@dimen/dp_6"
-   >
-    <arch.cayenne.module.chat.ui.widget.EmojiTextView
+    android:layout_marginLeft="@dimen/dp_10"
+    android:orientation="vertical">
+
+    <arch.cayenne.module.chat.ui.widget.ChatPageTextView
         android:id="@+id/tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:paddingHorizontal="@dimen/dp_8"
+        android:paddingVertical="@dimen/dp_4"
         android:background="@drawable/shape_60"
         android:backgroundTint="@color/color_0FFFFFFF"
-        android:ellipsize="end"
-        android:maxWidth="311dp"
-        android:paddingHorizontal="@dimen/dp_8"
         android:clickable="false"
+        android:ellipsize="end"
         android:focusable="false"
-        android:paddingVertical="@dimen/dp_4"
+        android:fontFamily="sans-serif"
+        android:maxWidth="312dp"
         android:textColor="@color/main_text"
         android:textFontWeight="500"
-        android:fontFamily="sans-serif"
         android:textSize="@dimen/sp_14"
         tools:ignore="UnusedAttribute" />
 </androidx.appcompat.widget.LinearLayoutCompat>

@@ -130,8 +130,9 @@ class EmojiHomeFragment : BaseFragment<EmojiHomeViewModel, FragmentEmojiHomeLayo
                     val tabView = mTabStrip.getChildAt(i)
                     //设置tab左右间距为8dp  注意这里不能使用Padding 因为源码中线的宽度是根据 tabView的宽度来设置的
                     val params = tabView.layoutParams as LinearLayout.LayoutParams
+                    params.topMargin = -7.dp2px
                     params.leftMargin =
-                        if (i == 0) 0 else 79.dp2px          //     lp.leftMargin = if (position == 0) 84.dp2px else 79.dp2px
+                        if (i == 0) 0 else 81.dp2px          //     lp.leftMargin = if (position == 0) 84.dp2px else 79.dp2px
                     tabView.layoutParams = params
                     tabView.setPadding(0, 0, 0, 0)
                     tabView.invalidate()
