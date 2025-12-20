@@ -197,7 +197,7 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
             }
         }
         mViewModel.onNumberLimit.observe(viewLifecycleOwner) {
-            mBinding.etMoney.hint =
+            mBinding.etMoney.hintCursor =
                 getString(R.string.et_money_hint).format(it.first.getMoney(), it.second.getMoney())
         }
 
@@ -411,7 +411,7 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
         animator.start()
     }
 
-    override fun getBlockingSlideView(): View? {
+    override fun getBlockingSlideView(): View {
         return mBinding.clKeyboard
     }
 }

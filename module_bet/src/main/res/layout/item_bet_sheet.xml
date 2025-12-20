@@ -137,7 +137,9 @@
         android:background="@color/line"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        android:visibility="gone"
+        />
 </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
 
 
