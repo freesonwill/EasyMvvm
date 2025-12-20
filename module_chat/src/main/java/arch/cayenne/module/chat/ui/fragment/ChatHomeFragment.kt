@@ -120,6 +120,11 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
     fun setMatchLiveData(matchId: LiveData<Long>?, mainMatch: LiveData<LiveMatchBean>?) {
         matchIdLiveData = matchId
         this.mainMatch = mainMatch
+//        TODO 直播间进入聊天室逻辑待定
+        if(matchId?.value != null && mainMatch == null){
+            mViewModel.setArguments(matchId.value)
+            mViewModel.startChatServer()
+        }
     }
 
     /**
@@ -127,7 +132,7 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
      * */
     private fun setMainChatStatus() {
         lifecycleScope.launchWhenResumed {
-            observeMatchId(-1)
+            observeMatchId(102)
             observeLiveMatch(null)
         }
     }
@@ -142,10 +147,11 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
     private fun observeLiveMatch(match: LiveMatchBean?) {
         mViewModel.isMainSoft = match == null
         updateChatUi(match)
-        //比赛开始后开启聊天服务
-        if (match?.liveInfo?.charRoom == true || match == null) {
+
+        //比赛开始后开启聊天服务 TODO 直播间进入聊天室逻辑待定
+//        if (match?.liveInfo?.charRoom == true || match == null) {
             mViewModel.startChatServer()
-        }
+//        }
     }
 
 
