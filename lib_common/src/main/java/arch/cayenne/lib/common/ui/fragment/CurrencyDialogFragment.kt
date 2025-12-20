@@ -225,7 +225,6 @@ class CurrencyDialogFragment constructor() : BasePositionDialogFragment<Currency
                 list.add(BaseCurrencyData.CurrencyTitleData(getString(R.string.fiat)))
                 list.addAll(fiat)
             }
-            list.addAll(fiat)
             if (crypto.isNotEmpty()) {
                 list.add(BaseCurrencyData.CurrencyTitleData(getString(R.string.crypto)))
                 list.addAll(crypto)

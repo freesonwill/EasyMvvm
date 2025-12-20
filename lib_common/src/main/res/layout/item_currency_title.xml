@@ -11,6 +11,7 @@
         android:textColor="@color/color_999999"
         android:textSize="14sp"
         android:layout_marginStart="@dimen/dp_13"
+        android:layout_marginTop="@dimen/dp_1"
         tool:text="加密货币"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
