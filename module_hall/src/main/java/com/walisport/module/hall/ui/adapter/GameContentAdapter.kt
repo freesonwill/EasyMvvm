@@ -59,9 +59,9 @@ class GameContentViewHolder(private val onItemClick: (GameContentData) -> Unit,v
         if (data.hotOrCold != HotColdType.NONE) {
             item.llBack.visibility = ViewGroup.VISIBLE
             if (data.hotOrCold == HotColdType.HOT) {
-                item.ivHot.setImageResource(R.drawable.ic_game_hot)
+                item.ivHot.setImageResource(R.drawable.ic_game_flame)
             } else {
-                item.ivHot.setImageResource(R.drawable.ic_game_cold)
+                item.ivHot.setImageResource(R.drawable.ic_game_snow)
             }
             item.tvBack.text = "${data.reward}%"
             item.llCount.apply {
