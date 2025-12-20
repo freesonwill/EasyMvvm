@@ -185,7 +185,6 @@
                     android:layout_width="@dimen/dp_28"
                     android:layout_height="@dimen/dp_28"
                     android:layout_marginRight="@dimen/dp_14"
-                    android:padding="2dp"
                     android:visibility="gone"
                     android:src="@drawable/icon_input_bet"
                     app:layout_constraintBottom_toBottomOf="@id/iv_bottom_emoji"
@@ -196,12 +195,10 @@
                     android:id="@+id/iv_bottom_emoji"
                     android:layout_width="@dimen/dp_28"
                     android:layout_height="@dimen/dp_28"
-                    android:padding="2dp"
                     android:src="@drawable/icon_emoji_color"
                     app:layout_constraintRight_toRightOf="parent"
                     android:layout_marginRight="@dimen/dp_12"
                     android:visibility="gone"
-
                     app:layout_constraintTop_toTopOf="@id/hot_recyclerview"
                     app:layout_constraintBottom_toBottomOf="@id/hot_recyclerview"
                     />
