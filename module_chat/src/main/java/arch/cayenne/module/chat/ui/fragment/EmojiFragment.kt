@@ -61,10 +61,9 @@ class EmojiFragment : BaseFragment<EmojiViewModel, FragmentEmojiLayoutBinding>()
 //            isNestedScrollingEnabled = false
             adapter = nAdapter
         }
-     val animHelper = EmojiScrollAlphaAnimHelper(mBinding.recycler)
-      animHelper.updateUi(emoJiType == EmojiTypeEnum.BID)
-
-
+        if(emoJiType == EmojiTypeEnum.NORMAL){ //仅普通表情使用滚动渐隐动画
+            val animHelper = EmojiScrollAlphaAnimHelper(mBinding.recycler)
+        }
     }
 
 
