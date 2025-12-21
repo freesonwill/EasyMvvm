@@ -16,5 +16,10 @@
         android:textSize="30sp"
         />
 
+    <FrameLayout
+        android:id="@+id/fl_container"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_200"
+        />
 
 </LinearLayout>
