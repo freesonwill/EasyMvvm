@@ -167,13 +167,8 @@ class UIBindDelegate<UIOwner, VM, VB>(
 
     fun setArguments(oldArgs: Bundle?,newArgs:Bundle?) {
         if (uiOwner is IFragmentArguments) {
-            var job:Job? = null
-            job = uiOwner.lifecycleScope.launch {
-                uiOwner.repeatOnLifecycle(Lifecycle.State.RESUMED) {
-                    uiOwner.onArgumentsChanged(oldArgs, newArgs)
-                    job?.cancel()
-                    job = null
-                }
+            uiOwner.launch(Lifecycle.State.RESUMED) {
+                uiOwner.onArgumentsChanged(oldArgs, newArgs)
             }
         }
     }
