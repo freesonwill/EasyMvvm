@@ -3,6 +3,7 @@ package arch.cayenne.lib.base.utils.ext
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
@@ -18,7 +19,7 @@ import kotlin.coroutines.EmptyCoroutineContext
 
 fun LifecycleOwner.launch(
     state: Lifecycle.State? = null,
-    lifecycleScope: LifecycleCoroutineScope,
+    lifecycleScope: LifecycleCoroutineScope = this.lifecycleScope,
     context: CoroutineContext = EmptyCoroutineContext,
     start: CoroutineStart = CoroutineStart.DEFAULT,
     block: suspend CoroutineScope.() -> Unit
