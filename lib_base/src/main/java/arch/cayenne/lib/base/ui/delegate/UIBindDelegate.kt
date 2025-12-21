@@ -9,14 +9,15 @@ import android.view.ViewGroup
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.DefaultLifecycleObserver
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.base.ui._interface.IView
+import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.base.utils.ext.FragmentExt.isRootFragment
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
+import arch.cayenne.lib.base.utils.ext.launch
 import kotlinx.coroutines.launch
 
 
@@ -155,21 +156,8 @@ class UIBindDelegate<UIOwner, VM, VB>(
     }
 
     private suspend fun createObserver(uiOwner: UIOwner) {
-        @Suppress("DEPRECATION")
-        when (val state = uiOwner.createObserverAtState()) {
-            Lifecycle.State.CREATED -> {
-                uiOwner.createObserver()
-            }
-            Lifecycle.State.STARTED ->{
-                uiOwner.lifecycleScope.launchWhenStarted { uiOwner.createObserver() }
-            }
-            Lifecycle.State.RESUMED -> {
-                uiOwner.lifecycleScope.launchWhenResumed { uiOwner.createObserver() }
-            }
-
-            else -> {
-                throw IllegalStateException("Unsupported lifecycle state: $state for createObserver")
-            }
+        uiOwner.launch(uiOwner.createObserverAtState(),uiOwner.lifecycleScope){
+            uiOwner.createObserver()
         }
     }
 }
