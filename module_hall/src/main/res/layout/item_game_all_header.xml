@@ -17,7 +17,7 @@
         android:layout_width="172dp"
         android:layout_height="186dp"
         android:layout_marginStart="@dimen/dp_12"
-        android:layout_marginTop="@dimen/dp_11"
+        android:layout_marginTop="@dimen/dp_10"
         android:layout_marginEnd="@dimen/dp_3.5"
         android:background="@color/tran_0"
         app:layout_constraintTop_toTopOf="parent"
@@ -40,10 +40,10 @@
     <!--  右上方邀請好友  -->
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iv_invite_friend"
-        android:layout_width="171dp"
+        android:layout_width="172dp"
         android:layout_height="76dp"
-        android:layout_marginStart="@dimen/dp_3.5"
-        android:layout_marginEnd="@dimen/dp_12"
+        android:layout_marginStart="@dimen/dp_1"
+        android:layout_marginEnd="@dimen/dp_11"
         app:srcCompat="@drawable/image_game_invite_friend"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -57,7 +57,6 @@
         android:layout_marginStart="@dimen/dp_3.5"
         android:layout_marginEnd="@dimen/dp_12"
         android:background="@drawable/bg_game_all_bonus"
-        app:layout_constraintDimensionRatio="172:111"
         app:layout_constraintTop_toBottomOf="@+id/iv_invite_friend"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toLeftOf="@+id/gl_mid" >
@@ -67,35 +66,37 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             app:layout_constraintGuide_percent="0.5" />
+
         <TextView
-            android:layout_width="0dp"
+            android:layout_width="@dimen/dp_66"
             android:layout_height="17dp"
-            android:includeFontPadding="false"
-            android:textSize="@dimen/sp_12"
-            android:background="@drawable/bg_game_all_daily"
-            android:textColor="@color/color_F6E6C9"
-            android:text="@string/daily_game"
-            android:layout_marginEnd="-3dp"
-            android:paddingStart="@dimen/dp_6"
-            android:gravity="left|center_vertical"
             android:layout_marginTop="@dimen/dp_4"
-            android:layout_marginStart="@dimen/dp_17"
-            app:layout_constraintTop_toTopOf="parent"
+            android:background="@drawable/bg_game_all_daily"
+            android:gravity="left|center_vertical"
+            android:includeFontPadding="false"
+            android:paddingStart="@dimen/dp_5"
+            android:text="@string/daily_game"
+            android:textColor="@color/color_F6E6C9"
+            android:textSize="@dimen/sp_12"
+            app:layout_constraintHorizontal_bias="0.842"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="@id/gl_bonus_mid"
+            app:layout_constraintTop_toTopOf="parent"
             tools:ignore="RtlHardcoded" />
+
         <TextView
             android:id="@+id/tv_timer"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/dp_78"
             android:layout_height="17dp"
             android:textSize="@dimen/sp_12"
+            android:paddingLeft="@dimen/dp_6"
             android:background="@drawable/bg_game_all_timer"
             android:textColor="@color/color_FFFFFF"
-            android:text="23:59:59"
-            android:gravity="center"
-            android:layout_marginStart="-3dp"
+            android:text="23 : 59 : 59"
+            android:gravity="left"
+            android:layout_marginStart="-14dp"
             android:layout_marginTop="@dimen/dp_4"
-            android:layout_marginEnd="@dimen/dp_17"
+            android:layout_marginEnd="@dimen/dp_12"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toLeftOf="@id/gl_bonus_mid"
             app:layout_constraintRight_toRightOf="parent"/>
@@ -126,7 +127,7 @@
                 android:textColor="@color/color_965F25"
                 android:textSize="@dimen/sp_16"
                 android:text="¥"
-                android:layout_marginStart="@dimen/dp_12"
+                android:layout_marginStart="@dimen/dp_6"
                 android:layout_marginBottom="@dimen/dp_4"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintBottom_toBottomOf="@+id/tv_bonus"/>
@@ -139,7 +140,7 @@
                 android:includeFontPadding="false"
                 android:textSize="28sp"
                 android:text="1,457,000"
-                android:layout_marginStart="@dimen/dp_3"
+                android:layout_marginStart="@dimen/dp_4"
                 android:layout_marginTop="-3dp"
                 app:layout_constraintTop_toBottomOf="@+id/iv_bonus_title"
                 app:layout_constraintLeft_toRightOf="@+id/tv_currency_symbol" />
@@ -159,30 +160,33 @@
                 android:layout_width="15dp"
                 android:layout_height="15dp"
                 app:srcCompat="@drawable/ic_game_all_bonus"
-                android:layout_marginStart="@dimen/dp_8"
+                android:layout_marginStart="@dimen/dp_7"
                 android:layout_marginTop="@dimen/dp_5"
                 app:layout_constraintTop_toBottomOf="@+id/iv_line"
                 app:layout_constraintLeft_toLeftOf="parent" />
+
             <TextView
                 android:id="@+id/tv_money"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="9dp"
                 android:fontFamily="@font/sf_pro_display_bold"
-                android:textColor="@color/color_464136"
                 android:includeFontPadding="false"
-                android:textSize="12sp"
                 android:text="¥49999"
-                android:layout_marginStart="@dimen/dp_3"
-                app:layout_constraintTop_toTopOf="@+id/iv_money"
+                android:textColor="@color/color_464136"
+                android:textSize="12sp"
                 app:layout_constraintBottom_toBottomOf="@+id/iv_money"
-                app:layout_constraintLeft_toRightOf="@+id/tv_currency_symbol" />
+                app:layout_constraintLeft_toRightOf="@+id/tv_currency_symbol"
+                app:layout_constraintTop_toTopOf="@+id/iv_money"
+                app:layout_constraintVertical_bias="0.0" />
+
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/iv_rank"
                 android:layout_width="15dp"
+
                 android:layout_height="15dp"
                 app:srcCompat="@drawable/ic_game_all_cup"
-                android:layout_marginStart="@dimen/dp_8"
-                android:layout_marginTop="@dimen/dp_5"
+                android:layout_marginTop="@dimen/dp_4"
                 app:layout_constraintTop_toBottomOf="@+id/iv_line"
                 app:layout_constraintRight_toLeftOf="@+id/tv_rank" />
             <TextView
@@ -193,6 +197,7 @@
                 android:textColor="@color/color_464136"
                 android:includeFontPadding="false"
                 android:textSize="12sp"
+                android:paddingLeft="1dp"
                 android:text="115名"
                 android:layout_marginEnd="@dimen/dp_8"
                 app:layout_constraintTop_toTopOf="@+id/iv_rank"

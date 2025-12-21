@@ -126,8 +126,7 @@
         <arch.cayenne.lib.skin.widget.SkinnableTextView
             android:id="@+id/ce_search"
             android:layout_width="0dp"
-
-            android:paddingTop="@dimen/dp_1"
+            android:paddingTop="-1dp"
             android:layout_height="@dimen/dp_38"
             android:layout_marginStart="@dimen/dp_7"
             android:layout_weight="1"
@@ -153,6 +152,7 @@
             android:layout_height="match_parent"
             android:gravity="end|center_vertical"
             android:text="@string/search_title"
+            android:layout_marginTop="-1dp"
             android:textColor="@color/color_FFFFFF"
             android:textSize="15sp"
             android:paddingEnd="@dimen/dp_16"
