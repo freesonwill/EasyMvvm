@@ -54,7 +54,7 @@ class RecentlyPlayedFragment : BaseFragment<RecentlyPlayedViewModel, FragmentRec
             val itemDecoration = GridSpacingItemDecoration(
                 spanCount = 3,
                 horizontalSpacing = 9.dp2px,
-                verticalSpacing = 12.dp2px,
+                verticalSpacing = 17.dp2px,
                 includeEdge = false // 確保邊緣沒有空隙
             )
             rvGame.addItemDecoration(itemDecoration)
