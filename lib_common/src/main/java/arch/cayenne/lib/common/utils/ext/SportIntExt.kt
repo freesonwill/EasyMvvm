@@ -162,14 +162,14 @@ object SportIntExt {
         }
     }
 
-    fun Double.toBalanceString(): String {
+    fun Long.toBalanceString(divide: Int = 100): String {
         val MAX_LENGTH = 10
         val MAX_DECIMAL = 8
-        val bd = BigDecimal(this).stripTrailingZeros()
+        val bd = BigDecimal(this).divide(BigDecimal(divide)).stripTrailingZeros()
         val plain = bd.toPlainString()
 
         // ===== 規則 2.2：0 或 純整數 =====
-        if (this == 0.0 || !plain.contains(".")) {
+        if (this == 0L || !plain.contains(".")) {
             return "${bd.setScale(2, RoundingMode.DOWN).toPlainString()}"
         }
 

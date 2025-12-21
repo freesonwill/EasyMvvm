@@ -17,13 +17,12 @@ object SportDisplayOddsExt {
     /**
      * @return string: 1234 轉換為 12.34, 1000 轉換為 10.00
      */
-    fun Int.getDisplayOdds(): String {
-        if (this <= 0) return "0"
-
+    fun Int.getDisplayOdds(stripTrailingZero:Boolean = true): String {
         val newOdds = this - oddsType * 100
-        if (newOdds <= 0) return "0"
-        val decimal = BigDecimal(newOdds).divide(BigDecimal(100))
-        return decimal.setScale(2, RoundingMode.DOWN).stripTrailingZeros().toPlainString()
+        val decimal = BigDecimal(newOdds.coerceAtLeast(0)).divide(BigDecimal(100))
+        return decimal.setScale(2, RoundingMode.DOWN)
+            .apply { if(stripTrailingZero) stripTrailingZeros()  }
+            .toPlainString()
     }
 
     fun Int.getDisplayOdds(odds: Int): String {

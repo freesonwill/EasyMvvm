@@ -34,6 +34,6 @@ data class AccountInfo(
 
 data class Wallet(
     val ccy: String,
-    val score: Double,
+    val score: Long,
     val exchangeScore: Long
 )
