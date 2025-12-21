@@ -76,10 +76,11 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
         GridSpacingItemDecoration(
             spanCount = 3,
             horizontalSpacing = 9.dp2px,
-            verticalSpacing = 13.dp2px,
+            verticalSpacing = 12.dp2px,
             includeEdge = false // 確保邊緣沒有空隙
         )
     }
+
 
     fun supplierTabList(list: List<GameSupplierDataModel>): List<SimpleTabDataModel> {
         val l = ArrayList<SimpleTabDataModel>()
@@ -447,7 +448,7 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
                 sortMenuClicked = true
                 if (currentSortType != GameSortType.HOT) {
                     currentSortType = GameSortType.HOT
-                    itemDecoration.verticalSpacing = 13.dp2px
+                    itemDecoration.verticalSpacing = VERTICAL_SPACING_1.dp2px
                     mBinding.tvRewardTips.visibility = View.GONE
                     updateSortingMenuSelection()
                     setSortBtnText()
@@ -464,7 +465,7 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
                 sortMenuClicked = true
                 if (currentSortType != GameSortType.NEW) {
                     currentSortType = GameSortType.NEW
-                    itemDecoration.verticalSpacing = 13.dp2px
+                    itemDecoration.verticalSpacing = VERTICAL_SPACING_1.dp2px
                     mBinding.tvRewardTips.visibility = View.GONE
                     updateSortingMenuSelection()
                     setSortBtnText()
@@ -482,7 +483,7 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
 
                 if (currentSortType != GameSortType.HOT_REWARD) {
                     currentSortType = GameSortType.HOT_REWARD
-                    itemDecoration.verticalSpacing = 15.dp2px
+                    itemDecoration.verticalSpacing = VERTICAL_SPACING_2.dp2px
                     mBinding.tvRewardTips.visibility = View.VISIBLE
                     mBinding.aplHomeBanner.setExpanded(true, true)
                     updateSortingMenuSelection()
@@ -500,7 +501,7 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
 
                 if (currentSortType != GameSortType.COLD_REWARD) {
                     currentSortType = GameSortType.COLD_REWARD
-                    itemDecoration.verticalSpacing = 15.dp2px
+                    itemDecoration.verticalSpacing = VERTICAL_SPACING_2.dp2px
                     mBinding.tvRewardTips.visibility = View.VISIBLE
                     mBinding.aplHomeBanner.setExpanded(true, true)
                     updateSortingMenuSelection()
@@ -580,6 +581,11 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
                 mBinding.customTabGroup.setSortBtnText(arch.cayenne.lib.common.R.string.custom_tab_cold_reward.getString())
             }
         }
+    }
+
+    companion object{
+        const val VERTICAL_SPACING_1 = 12
+        const val VERTICAL_SPACING_2 = 15
     }
 
 
