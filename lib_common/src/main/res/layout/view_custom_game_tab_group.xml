@@ -85,9 +85,9 @@
         <arch.cayenne.lib.skin.widget.SkinnableTextView
             android:id="@+id/tv_btn_expand"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
+            android:layout_height="match_parent"
             android:layout_marginStart="@dimen/dp_5"
+            android:gravity="center_vertical"
             android:text="供应商"
             android:textColor="@color/color_C0C0C0"
             android:textSize="@dimen/sp_14" />

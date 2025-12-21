@@ -2,7 +2,7 @@
 
 
     <style name="CustomToolbarStyle">
-        <item name="android:layout_height">46dp</item>
+        <item name="android:layout_height">50dp</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:paddingEnd">@dimen/title_bar_padding_end</item>
         <item name="android:paddingStart">@dimen/title_bar_padding_start</item>
