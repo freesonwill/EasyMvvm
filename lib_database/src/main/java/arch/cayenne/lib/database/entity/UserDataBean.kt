@@ -33,6 +33,6 @@ data class AvatarEmbedded(
 
 data class WalletBean(
     val currency: String,
-    val balance: Double,
+    val balance: Long,
     val convertedAmount: Long
 )

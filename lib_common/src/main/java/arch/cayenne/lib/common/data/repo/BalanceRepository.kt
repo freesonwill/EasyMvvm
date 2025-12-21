@@ -6,6 +6,7 @@ import arch.cayenne.lib.common.data.constants.UserDataKey
 import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
+import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoneyForScale
 import arch.cayenne.lib.database.dao.CurrencyConfigDao
 import arch.cayenne.lib.database.dao.InfoDao
 import arch.cayenne.lib.database.dao.UserDataDao
@@ -15,6 +16,10 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
+import java.math.BigDecimal
+import java.math.RoundingMode
+import java.text.NumberFormat
+import java.util.Locale
 
 class BalanceRepository(
     override val scope: CoroutineScope,
@@ -53,7 +58,7 @@ class BalanceRepository(
             if (!currency.virtual) {
                 fiat.add(
                     currency.toCurrencyContentData2(
-                        wallet?.balance ?: 0.0,
+                        wallet?.balance ?: 0L,
                         null,  //法幣不需要匯率轉換,
                         "",
                     )
@@ -61,7 +66,7 @@ class BalanceRepository(
             } else {
                 crypto.add(
                     currency.toCurrencyContentData2(
-                        wallet?.balance ?: 0.0,
+                        wallet?.balance ?: 0L,
                         wallet?.convertedAmount,
                         exchangeAmountUnit,
                     )
@@ -69,8 +74,8 @@ class BalanceRepository(
             }
         }
         if (!showAllCurrency) {
-            fiat.removeIf { it.amount == 0.0 }
-            crypto.removeIf { it.amount == 0.0 }
+            fiat.removeIf { it.amount == 0L }
+            crypto.removeIf { it.amount == 0L }
         }
         return Pair(fiat, crypto)
     }
@@ -89,8 +94,8 @@ class BalanceRepository(
                 icon = "",
                 ccy = "",
                 currencyName = "",
-                amount = 0.0,
-                amountStr = 0.0.getFormalMoney(),
+                amount = 0L,
+                amountStr = 0L.getFormalMoney(),
                 exchangeAmount = "",
                 unit = ""
             )
@@ -112,8 +117,8 @@ class BalanceRepository(
                 icon = "",
                 ccy = "",
                 currencyName = "",
-                amount = 0.0,
-                amountStr = 0.0.getFormalMoney(),
+                amount = 0L,
+                amountStr = 0L.getFormalMoney(),
                 exchangeAmount = "",
                 unit = ""
             )
@@ -126,7 +131,7 @@ class BalanceRepository(
     }
 
     private fun CurrencyBean.toCurrencyContentData2(
-        amount: Double,
+        amount: Long,
         exchangeAmount: Long?,
         exchangeAmountUnit: String
     ): BaseCurrencyData.CurrencyContentData2 {
@@ -136,8 +141,8 @@ class BalanceRepository(
             ccy = ccy,
             currencyName = name,
             amount = amount,
-            amountStr = amount.getFormalMoney(),
-            exchangeAmount = if(exchangeAmount == null) "" else "$exchangeAmountUnit${exchangeAmount.getMoney()}",
+            amountStr = if (this.virtual && this.ccy != "USDT") amount.getFormalMoney(1) else amount.getFormalMoney(), //TODO 以後會加上rate，根據不同的需求除不同的rate
+            exchangeAmount = if(exchangeAmount == null) "" else "$exchangeAmountUnit${exchangeAmount.getFormalMoney()}",
             unit = unit
         )
     }
@@ -158,7 +163,7 @@ class BalanceRepository(
             if (!currency.virtual) {
                 fiat.add(
                     currency.toCurrencyContentData2(
-                        wallet?.balance ?:0.0,
+                        wallet?.balance ?:0L,
                         null,
                         "",
                     )
@@ -166,7 +171,7 @@ class BalanceRepository(
             } else {
                 crypto.add(
                     currency.toCurrencyContentData2(
-                        wallet?.balance ?:0.0,
+                        wallet?.balance ?:0L,
                         wallet?.convertedAmount,
                         exchangeAmountUnit,
                     )
@@ -174,8 +179,8 @@ class BalanceRepository(
             }
         }
         if (!showAllCurrency) {
-            fiat.removeIf { it.amount == 0.0 }
-            crypto.removeIf { it.amount == 0.0 }
+            fiat.removeIf { it.amount == 0L }
+            crypto.removeIf { it.amount == 0L }
         }
 
         return Pair(fiat, crypto)
@@ -184,5 +189,21 @@ class BalanceRepository(
     fun keywordToSqlPattern(keyword: String): String {
         if (keyword.isEmpty()) return "%"
         return "%" + keyword.uppercase().map { "$it%" }.joinToString("")
+    }
+
+    fun Long.getFormalMoney(divisor: Int = 100): String {
+        if (this == 0L) return "0.00"
+
+        val value = this.toBigDecimal()
+            .divide(BigDecimal(divisor), 8, RoundingMode.DOWN)
+
+        // 是否為整數（小數部分 = 0）
+        return if (value.stripTrailingZeros().scale() <= 0) {
+            // 整數 → 補 .00
+            value.setScale(2, RoundingMode.DOWN).toPlainString()
+        } else {
+            // 非整數 → 去掉多餘 0
+            value.stripTrailingZeros().toPlainString()
+        }
     }
 }
