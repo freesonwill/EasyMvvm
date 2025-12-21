@@ -2,9 +2,11 @@ package arch.cayenne.lib.test.ui.fragment
 
 import android.content.Intent
 import android.os.Bundle
+import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.navArgs
 import arch.cayenne.lib.base.ui.viewmodel.EmptyViewModel
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.test.databinding.FragmentTestViewPagerItem2Binding
@@ -23,6 +25,10 @@ class ViewPagerItem2Fragment : BaseFragment<EmptyViewModel, FragmentTestViewPage
     override fun initView(savedInstanceState: Bundle?) {
         "initView~~~~~~>args:$args,arguments:$arguments,$this".logd(TAG)
         mBinding.tv.text = args.title
+
+        launch(Lifecycle.State.RESUMED) {
+            "ViewPagerItem2Fragment resumed~~~~~~>".logd(TAG)
+        }
     }
 
     override fun initListener() {
