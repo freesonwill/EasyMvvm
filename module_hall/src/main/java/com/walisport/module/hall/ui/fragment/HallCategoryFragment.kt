@@ -120,7 +120,7 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
             val itemDecoration = GridSpacingItemDecoration(
                 spanCount = 3 ,
                 horizontalSpacing = 9.dp2px ,
-                verticalSpacing = 15.dp2px,
+                verticalSpacing = 14.dp2px,
                 includeEdge = false // 確保邊緣沒有空隙
             )
             rvGame.addItemDecoration(itemDecoration)
