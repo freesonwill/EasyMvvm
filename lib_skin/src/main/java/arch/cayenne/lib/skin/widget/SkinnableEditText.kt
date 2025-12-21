@@ -1,6 +1,7 @@
 package arch.cayenne.lib.skin.widget
 
 import android.content.Context
+import android.content.res.TypedArray
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.style.LeadingMarginSpan
@@ -47,11 +48,15 @@ open class SkinnableEditText : AppCompatEditText, ISkinnableBiz {
         biz.initView(context,attrs,defStyleAttr)
 
         // 读取自定义属性
-        context.obtainStyledAttributes(attrs, R.styleable.SkinnableEditText).use {ta ->
-            val gap = ta.getDimensionPixelSize(0, 0)
+        /*var ta: TypedArray? = null
+        try {
+            ta = context.obtainStyledAttributes(attrs, R.styleable.SkinnableEditText)
+            val gap = ta.getDimensionPixelSize(R.styleable.SkinnableEditText_hintCursorGap, 0)
             hintCursorGap = gap
             applyHintGap(hint, gap)
-        }
+        } finally {
+            ta?.recycle()
+        }*/
     }
 
 
