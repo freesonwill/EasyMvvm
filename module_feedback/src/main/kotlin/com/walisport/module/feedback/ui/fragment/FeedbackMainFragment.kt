@@ -39,7 +39,9 @@ class FeedbackMainFragment : BaseFragment<FeedbackMainViewModel, FragmentFeedbac
 
     private val startForResult =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            fileChooserCallback?.onReceiveValue(arrayOf(Uri.parse(result.data?.dataString)))
+            result.data?.dataString?.let {
+                fileChooserCallback?.onReceiveValue(arrayOf(Uri.parse(it)))
+            }
             fileChooserCallback = null;
         } //监听图片选择
 

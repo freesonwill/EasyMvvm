@@ -15,7 +15,7 @@
         android:id="@+id/main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/app_bg"
+        android:background="@color/color_1E1E1E"
         android:orientation="vertical">
 
         <arch.cayenne.lib.common.ui.view.DynamicStateLayout
@@ -83,6 +83,9 @@
             android:backgroundTint="@color/color_0FFFFFFF"
             android:minHeight="@dimen/dp_40"
             android:orientation="horizontal"
+            android:paddingHorizontal="@dimen/dp_16"
+            android:paddingTop="@dimen/dp_9"
+            android:paddingBottom="@dimen/dp_10"
             app:layout_constraintBottom_toBottomOf="@id/ll_content"
             app:layout_constraintLeft_toLeftOf="parent">
 
@@ -90,7 +93,7 @@
                 android:id="@+id/chat_et_input"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:minHeight="@dimen/dp_40"
+                android:minHeight="@dimen/dp_21"
                 android:layout_weight="1"
                 android:background="@null"
                 android:gravity="center_vertical"
@@ -99,9 +102,9 @@
                 android:imeActionLabel="@string/send"
                 android:imeOptions="actionSend"
                 android:inputType="textMultiLine|textCapSentences"
-                android:layout_marginHorizontal="@dimen/dp_16"
                 android:textColor="@color/main_text"
                 android:textColorHint="@color/secondary_text"
+
                 android:textSize="@dimen/sp_15" />
         </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -185,7 +188,6 @@
                     android:layout_width="@dimen/dp_28"
                     android:layout_height="@dimen/dp_28"
                     android:layout_marginRight="@dimen/dp_14"
-                    android:padding="2dp"
                     android:visibility="gone"
                     android:src="@drawable/icon_input_bet"
                     app:layout_constraintBottom_toBottomOf="@id/iv_bottom_emoji"
@@ -196,12 +198,10 @@
                     android:id="@+id/iv_bottom_emoji"
                     android:layout_width="@dimen/dp_28"
                     android:layout_height="@dimen/dp_28"
-                    android:padding="2dp"
                     android:src="@drawable/icon_emoji_color"
                     app:layout_constraintRight_toRightOf="parent"
                     android:layout_marginRight="@dimen/dp_12"
                     android:visibility="gone"
-
                     app:layout_constraintTop_toTopOf="@id/hot_recyclerview"
                     app:layout_constraintBottom_toBottomOf="@id/hot_recyclerview"
                     />

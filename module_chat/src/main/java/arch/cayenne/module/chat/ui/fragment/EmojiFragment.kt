@@ -1,8 +1,11 @@
 package arch.cayenne.module.chat.ui.fragment
 
+import android.graphics.Rect
 import android.os.Bundle
+import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.GridLayoutManager.SpanSizeLookup
+import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
@@ -58,13 +61,11 @@ class EmojiFragment : BaseFragment<EmojiViewModel, FragmentEmojiLayoutBinding>()
         }
         mBinding.recycler.apply {
             layoutManager = manager
-//            isNestedScrollingEnabled = false
             adapter = nAdapter
         }
-     val animHelper = EmojiScrollAlphaAnimHelper(mBinding.recycler)
-      animHelper.updateUi(emoJiType == EmojiTypeEnum.BID)
-
-
+        if(emoJiType == EmojiTypeEnum.NORMAL){ //仅普通表情使用滚动渐隐动画
+            val animHelper = EmojiScrollAlphaAnimHelper(mBinding.recycler)
+        }
     }
 
 
@@ -72,5 +73,15 @@ class EmojiFragment : BaseFragment<EmojiViewModel, FragmentEmojiLayoutBinding>()
     }
 
     override suspend fun createObserver() {
+    }
+
+    // 零间距的 ItemDecoration
+    class ZeroSpacingDecoration(private val spanCount: Int) : RecyclerView.ItemDecoration() {
+        override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
+            super.getItemOffsets(outRect, view, parent, state)
+
+            // 设置所有边距为 0
+            outRect.set(0, 0, 0, 0)
+        }
     }
 }

@@ -24,6 +24,7 @@ import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.base.utils.ext.FragmentExt.setFragmentResultListener
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.data.constants.MsgType
+import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavResultExt.observeResult
@@ -90,6 +91,11 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
             it.layoutManager =
                 LinearLayoutManager(it.context, LinearLayoutManager.HORIZONTAL, false)
             val adapter = EmojiHotItemAdapter()
+            adapter.setItemListener(object:RecyclerItemListener<EmojiModel>{
+                override fun onItemClick(item: EmojiModel?, position: Int) {
+                    item?.let { it1 -> addEmojiData(it1) }
+                }
+            })
             adapter.submitList(mViewModel.getHotRecycler())
             it.adapter = adapter
         }
@@ -711,7 +717,7 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
     private fun addEmojiData(emojiData: EmojiModel) {
         val emojiPattern: Pattern = Pattern.compile(BID_EMOJI_REGEX)
         if (emojiPattern.matcher(emojiData.key).find()) {
-            keyboardChangeClick(KeyBoardType.CHAT, 5)
+//            keyboardChangeClick(KeyBoardType.CHAT, 5)
             mViewModel.createBidLocalMsg(emojiData.key)?.let { mViewModel.sendMsgToChat(it) }
             return
         }

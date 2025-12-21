@@ -59,7 +59,7 @@ class EmojiHomeFragment : BaseFragment<EmojiHomeViewModel, FragmentEmojiHomeLayo
     override suspend fun createObserver() {
     }
 
-    fun initTab() {
+    private fun initTab() {
         val list = resources.getStringArray(R.array.emoji_tab)
         val pageList = arrayListOf(
             PagerBean(list[0]) {
@@ -94,17 +94,17 @@ class EmojiHomeFragment : BaseFragment<EmojiHomeViewModel, FragmentEmojiHomeLayo
                     tvDel.isVisible = tab.position == 0
                     tvSend.isVisible = tab.position == 0
 
-                    if (isTabClick) {
-                        CustomTabIndicatorUtils.animateIndicatorToPosition(
-                            mBinding.customIndicator,
-                            tab.position
-                        )
-                        val vp = viewpager
-                        vp.startFadeAnim {
-                            vp.setCurrentItem(tab.position, false)
-                            it.invoke()
-                        }
-                    }
+//                    if (isTabClick) {
+//                        CustomTabIndicatorUtils.animateIndicatorToPosition(
+//                            mBinding.customIndicator,
+//                            tab.position
+//                        )
+//                        val vp = viewpager
+//                        vp.startFadeAnim {
+//                            vp.setCurrentItem(tab.position, false)
+//                            it.invoke()
+//                        }
+//                    }
                 }
 
                 override fun onTabUnselected(tab: TabLayout.Tab, isTabClick: Boolean) {
@@ -115,8 +115,9 @@ class EmojiHomeFragment : BaseFragment<EmojiHomeViewModel, FragmentEmojiHomeLayo
             })
             reflexPadding(tabLayout = emojiTablayout)
             // 自定義滑動行為
-            viewpager.setupViewPagerScroll(emojiTablayout, customIndicator, 0.15f)
+//            viewpager.setupViewPagerScroll(emojiTablayout, customIndicator, 0.15f)
             viewpager.setupHorizontalScrollDegree()
+            emojiTablayout.setSelectedTabIndicator(arch.cayenne.module.betslip.R.drawable.bg_order_indicator)
         }
     }
 
@@ -129,6 +130,7 @@ class EmojiHomeFragment : BaseFragment<EmojiHomeViewModel, FragmentEmojiHomeLayo
                     val tabView = mTabStrip.getChildAt(i)
                     //设置tab左右间距为8dp  注意这里不能使用Padding 因为源码中线的宽度是根据 tabView的宽度来设置的
                     val params = tabView.layoutParams as LinearLayout.LayoutParams
+                    params.topMargin = -7.dp2px
                     params.leftMargin =
                         if (i == 0) 0 else 79.dp2px          //     lp.leftMargin = if (position == 0) 84.dp2px else 79.dp2px
                     tabView.layoutParams = params
