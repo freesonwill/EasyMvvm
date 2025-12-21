@@ -20,6 +20,8 @@
         android:clickable="false"
         android:ellipsize="end"
         android:focusable="false"
+        android:breakStrategy="simple"
+        android:hyphenationFrequency="normal"
         android:fontFamily="sans-serif"
         android:maxWidth="312dp"
         android:textColor="@color/main_text"

@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import arch.cayenne.lib.base.ui.adapter.BaseAdapter
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
@@ -76,13 +77,13 @@ class ChatPageAdapter(private val specialClick: (bean: ChatMsgPageBean, clickSpa
                 ), 0, first.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
             )
             val msgSpannable = SpannableStringBuilder(second)
-            msgSpannable.setSpan(
-                ColorSpan(
-                    SkinnableResourceManager.getColor(
-                        binding.root.context, arch.cayenne.lib.common.R.color.color_FFFFFF
-                    )
-                ), 0, msgSpannable.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-            )
+//            msgSpannable.setSpan(
+//                ColorSpan(
+//                    SkinnableResourceManager.getColor(
+//                        binding.root.context, arch.cayenne.lib.common.R.color.color_FFFFFF
+//                    )
+//                ), 0, msgSpannable.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+//            )
             if (bean.msgType in arrayOf(MsgType.AT, MsgType.BET_GAME, MsgType.BET_SPORT)) {
                 bean.atRange?.forEach {
                     msgSpannable.setSpan(
@@ -107,6 +108,14 @@ class ChatPageAdapter(private val specialClick: (bean: ChatMsgPageBean, clickSpa
         position: Int
     ) {
         holder.setText(getItem(position), position)
+        val item = getItem(position)
+
+        holder.nBinding.tv.backgroundTintList = ContextCompat.getColorStateList(binding.tv.context,
+            if(item.msgType == MsgType.BET_SPORT || item.msgType == MsgType.BET_GAME) {
+                arch.cayenne.lib.common.R.color.color_632433
+            } else {
+                arch.cayenne.lib.common.R.color.color_0FFFFFFF
+            })
     }
 
     override fun createViewBinding(
