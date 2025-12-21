@@ -17,12 +17,11 @@
         android:layout_height="@dimen/dp_18"
         android:layout_marginEnd="6dp" />
 
-    <TextView
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/tv_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:paddingBottom="@dimen/dp_2"
         android:gravity="center_vertical"
         android:text="1234"
         android:textColor="@drawable/selector_custom_game_tab_tint"

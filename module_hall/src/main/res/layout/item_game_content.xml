@@ -58,6 +58,7 @@
     <androidx.appcompat.widget.AppCompatImageView
         android:layout_width="@dimen/dp_9"
         android:layout_height="@dimen/dp_9"
+        android:layout_marginTop="@dimen/dp_1"
         android:background="@drawable/ic_game_dot" />
 
         <arch.cayenne.lib.skin.widget.SkinnableTextView
@@ -74,6 +75,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_3"
+        android:layout_marginBottom="@dimen/dp_1"
         android:textColor="@color/color_999999"
         android:textSize="12sp"
         android:text="@string/online_count" />
