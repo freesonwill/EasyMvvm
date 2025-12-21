@@ -6,13 +6,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingTop="@dimen/dp_2"
+    android:fitsSystemWindows="true"
     android:background="@drawable/bg_bottom_game_sheet_round_top">
 
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/tv_section_title"
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/dp_52"
-        android:paddingTop="@dimen/dp_16"
+        android:layout_height="@dimen/dp_50"
+        android:paddingTop="@dimen/dp_12"
         android:text="供应商"
         android:textColor="@color/color_FFFFFF"
         android:textSize="15sp"
@@ -34,10 +35,10 @@
 
     <arch.cayenne.lib.skin.widget.SkinnableImageView
         android:id="@+id/iv_search_supplier"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="7dp"
         android:src="@drawable/search_icon"
         app:layout_constraintBottom_toBottomOf="@id/ll_search_bar_supplier"
         app:layout_constraintEnd_toStartOf="@id/ce_search_supplier"
@@ -46,8 +47,10 @@
 
     <arch.cayenne.lib.common.ui.view.ClearableEditText
         android:id="@+id/ce_search_supplier"
-        style="@style/CustomToolbarEditStyle"
+        style="@style/CustomBottomToolbarEditStyle"
+        android:paddingTop="1dp"
         android:layout_width="0dp"
+        android:paddingStart="@dimen/dp_2"
         android:layout_weight="1"
         android:background="@null"
         android:drawablePadding="@dimen/dp_10"
@@ -66,9 +69,9 @@
         android:layout_width="63dp"
         android:layout_height="@dimen/dp_52"
         android:paddingStart="25dp"
-        android:paddingTop="@dimen/dp_10"
-        android:paddingEnd="10dp"
-        android:paddingBottom="@dimen/dp_14"
+        android:paddingTop="@dimen/dp_4"
+        android:paddingEnd="8dp"
+        android:paddingBottom="@dimen/dp_12"
         android:src="@drawable/ic_game_close"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -84,7 +87,7 @@
         android:id="@+id/rv_tournament_list"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="@dimen/dp_6"
+        android:layout_marginTop="@dimen/dp_5"
         android:paddingBottom="@dimen/dp_20"
         android:overScrollMode="never"
         android:scrollbars="none"
@@ -107,18 +110,19 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/rv_tournament_list" />
 
+
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/tv_reset"
         android:layout_width="@dimen/dp_162"
         android:layout_height="@dimen/dp_48"
         android:layout_marginStart="@dimen/dp_16"
         android:layout_marginEnd="@dimen/dp_19"
-        android:layout_marginBottom="35dp"
+        android:layout_marginBottom="51dp"
         android:background="@drawable/selector_game_round_button_bg"
         android:gravity="center"
         android:text="重置"
         android:textColor="@color/game_selector_round_button_text"
-        android:textSize="@dimen/sp_15"
+        android:textSize="@dimen/sp_14"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/tv_confirm"
         app:layout_constraintHorizontal_chainStyle="packed"
@@ -129,12 +133,12 @@
         android:layout_width="@dimen/dp_162"
         android:layout_height="@dimen/dp_48"
         android:layout_marginEnd="@dimen/dp_16"
-        android:layout_marginBottom="35dp"
+        android:layout_marginBottom="51dp"
         android:background="@drawable/game_shape_round_button_confirm_bg"
         android:gravity="center"
         android:text="@string/btn_confirm"
         android:textColor="@android:color/white"
-        android:textSize="@dimen/sp_15"
+        android:textSize="@dimen/sp_14"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/tv_reset" />

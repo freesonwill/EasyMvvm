@@ -57,7 +57,8 @@ class GameCategoryListBottomSheetFragment :
 //            viewModels<SubHomeViewModel>({ requireParentFragment() }).value
 //        }
 //    }
-
+    //var b = 0.885f
+    var popHeight = 0.795f
     private lateinit var adapter: GameSupplierSectionAdapter
     private var pendingJumpIndex: Int? = null
     private var stickyHeaderDecoration: SupplierStickyHeaderItemDecoration? = null
@@ -77,7 +78,7 @@ class GameCategoryListBottomSheetFragment :
         with(mBinding) {
             // 設置最大高度為螢幕的 81%
             val screenHeight = resources.displayMetrics.heightPixels
-            val maxFragmentHeight = (screenHeight * 0.81).toInt()
+            val maxFragmentHeight = (screenHeight *popHeight).toInt()
             root.maxHeight = maxFragmentHeight
 
             isHorizontalGestureEnable = false
@@ -115,7 +116,7 @@ class GameCategoryListBottomSheetFragment :
         ) ?: return
 
         val screenHeight = resources.displayMetrics.heightPixels
-        val targetHeight = (screenHeight * 0.81).toInt()
+        val targetHeight = (screenHeight * popHeight).toInt()
         val topOffset = screenHeight - targetHeight  // 頂部偏移 = 19% 螢幕高度
 
         bottomSheet.layoutParams?.height = ViewGroup.LayoutParams.MATCH_PARENT
