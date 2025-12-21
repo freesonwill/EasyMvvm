@@ -16,7 +16,7 @@
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/tv_title"
         android:layout_width="48dp"
-        android:layout_height="18dp"
+        android:layout_height="19dp"
         android:textSize="12sp"
         android:gravity="center"
         android:textColor="@color/color_C0C0C0"

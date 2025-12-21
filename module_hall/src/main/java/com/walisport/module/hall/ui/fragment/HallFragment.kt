@@ -76,9 +76,9 @@ class HallFragment : BaseFragment<HallViewModel, FragmentHallBinding>() {
     override val vmClass: KClass<HallViewModel> = HallViewModel::class
 
     private val balanceViewModel: BalanceViewModel by viewModel()
-    private val mMinHeight = 34.dp2px
+    private val mMinHeight = 40.dp2px
 
-    private val mMaxHeight = 38.dp2px
+    private val mMaxHeight = 42.dp2px
 
     private val unreadMessageViewModel: UnReadMessageViewModel by viewModels()
     private var tabIndicatorHelper: ScrollableTabIndicatorHelper? = null
