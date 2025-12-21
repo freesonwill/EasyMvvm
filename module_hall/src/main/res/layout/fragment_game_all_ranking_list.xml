@@ -13,15 +13,14 @@
         android:layout_marginStart="@dimen/dp_12"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/tab_ranking_list_multiple"
-        android:textColor="@color/color_999999"
         android:textSize="@dimen/sp_14"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="152dp"
+        android:textColor="@color/color_999999"
+        app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:layout_width="wrap_content"
