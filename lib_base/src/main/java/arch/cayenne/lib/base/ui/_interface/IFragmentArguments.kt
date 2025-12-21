@@ -7,5 +7,5 @@ import android.os.Bundle
  * @description: Fragment参数变化监听接口
  */
 interface IFragmentArguments {
-    fun onArgumentsChanged(oldArgs: Bundle?, newArgs: Bundle?) {}
+    suspend fun onArgumentsChanged(oldArgs: Bundle?, newArgs: Bundle?) {}
 }

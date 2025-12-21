@@ -123,7 +123,7 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
         super.onStart()
     }
 
-    override fun onArgumentsChanged(oldArgs: Bundle?, newArgs: Bundle?) {
+    override suspend fun onArgumentsChanged(oldArgs: Bundle?, newArgs: Bundle?) {
         arguments?.getInt(FragmentResultEnum.KEY_ME_BOTTOM.name)?.let {
             mViewModel.bottomIndexFlow.tryEmit(it)
         }

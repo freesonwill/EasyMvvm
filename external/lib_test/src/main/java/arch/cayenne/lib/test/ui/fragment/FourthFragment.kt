@@ -27,7 +27,7 @@ class FourthFragment : BaseFragment<EmptyViewModel, FragmentTestFourthBinding>()
     override suspend fun createObserver() {
     }
 
-    override fun onArgumentsChanged(oldArgs: Bundle?, newArgs: Bundle?) {
+    override suspend fun onArgumentsChanged(oldArgs: Bundle?, newArgs: Bundle?) {
         super.onArgumentsChanged(oldArgs, newArgs)
         showToast("FourthFragment onArgumentsChanged oldArgs:$oldArgs,newArgs:$newArgs")
     }

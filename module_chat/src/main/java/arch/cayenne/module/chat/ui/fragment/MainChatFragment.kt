@@ -204,7 +204,7 @@ class MainChatFragment : BaseFragment<MainChatViewModel, FragmentMainChatLayoutB
         super.onStart()
     }
 
-    override fun onArgumentsChanged(oldArgs: Bundle?, newArgs: Bundle?) {
+    override suspend fun onArgumentsChanged(oldArgs: Bundle?, newArgs: Bundle?) {
         //"received , bundle:$arguments".logd(TAG)
         arguments?.getBoolean(FragmentResultEnum.KEY_CUSTOMER_SERVICE.name)?.let {
             mViewModel.jump2CustomerService(it)
