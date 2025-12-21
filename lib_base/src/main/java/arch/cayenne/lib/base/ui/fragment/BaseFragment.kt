@@ -20,6 +20,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.base.R
 import arch.cayenne.lib.base.data.model.StatusBarConfig
+import arch.cayenne.lib.base.ui._interface.IFragmentArguments
 import arch.cayenne.lib.base.ui._interface.IStatusBar
 import arch.cayenne.lib.base.ui._interface.IView
 import arch.cayenne.lib.base.ui.delegate.StatusBarDelegate
@@ -44,7 +45,7 @@ import kotlin.reflect.KClass
  * @date: 2025/3/13 18:38
  * @description: ViewModelFragment基类，自动把ViewModel注入Fragment
  */
-abstract class BaseFragment<VM : BaseViewModel, VB : ViewBinding> : Fragment(), IView, IStatusBar {
+abstract class BaseFragment<VM : BaseViewModel, VB : ViewBinding> : Fragment(), IView, IStatusBar,IFragmentArguments {
     protected open val TAG = this.javaClass.simpleName
     //#region VB,VM
     protected val mBinding: VB get() = uiBind.binding
@@ -184,6 +185,11 @@ abstract class BaseFragment<VM : BaseViewModel, VB : ViewBinding> : Fragment(), 
     }
 
     override fun logEnabled(): Boolean = isRootFragment
+
+    override fun setArguments(args: Bundle?) {
+        uiBind.setArguments(arguments,args)
+        super.setArguments(args)
+    }
 }
 
 /**

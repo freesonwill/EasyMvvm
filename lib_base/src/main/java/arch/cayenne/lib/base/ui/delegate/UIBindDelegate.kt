@@ -11,14 +11,18 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.viewbinding.ViewBinding
+import arch.cayenne.lib.base.ui._interface.IFragmentArguments
 import arch.cayenne.lib.base.ui._interface.IView
 import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.base.utils.ext.FragmentExt.isRootFragment
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.base.utils.ext.launch
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import androidx.lifecycle.Lifecycle
 
 
 /**
@@ -160,4 +164,18 @@ class UIBindDelegate<UIOwner, VM, VB>(
             uiOwner.createObserver()
         }
     }
+
+    fun setArguments(oldArgs: Bundle?,newArgs:Bundle?) {
+        if (uiOwner is IFragmentArguments) {
+            var job:Job? = null
+            job = uiOwner.lifecycleScope.launch {
+                uiOwner.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                    uiOwner.onArgumentsChanged(oldArgs, newArgs)
+                    job?.cancel()
+                    job = null
+                }
+            }
+        }
+    }
+
 }
