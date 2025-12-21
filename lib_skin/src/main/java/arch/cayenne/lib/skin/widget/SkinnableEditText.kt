@@ -48,15 +48,14 @@ open class SkinnableEditText : AppCompatEditText, ISkinnableBiz {
         biz.initView(context,attrs,defStyleAttr)
 
         // 读取自定义属性
-        /*var ta: TypedArray? = null
+        val ta: TypedArray = context.obtainStyledAttributes(attrs, R.styleable.SkinnableEditText)
         try {
-            ta = context.obtainStyledAttributes(attrs, R.styleable.SkinnableEditText)
             val gap = ta.getDimensionPixelSize(R.styleable.SkinnableEditText_hintCursorGap, 0)
             hintCursorGap = gap
             applyHintGap(hint, gap)
         } finally {
-            ta?.recycle()
-        }*/
+            ta.recycle()
+        }
     }
 
 
