@@ -10,7 +10,9 @@ import androidx.annotation.IdRes
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleCoroutineScope
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
@@ -25,6 +27,8 @@ import arch.cayenne.lib.base.ui.delegate.UIBindDelegate
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.base.utils.ext.FragmentExt.handleBackPressed
 import arch.cayenne.lib.base.utils.ext.FragmentExt.isRootFragment
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
+import arch.cayenne.lib.base.utils.ext.launch
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Job
@@ -197,14 +201,7 @@ fun Fragment.launch(
     start: CoroutineStart = CoroutineStart.DEFAULT,
     block: suspend CoroutineScope.() -> Unit
 ): Job {
-    @Suppress("DEPRECATION")
-    return if (state == null) lifecycleScope.launch(block = block, context = context, start = start)
-    else when(state) {
-            Lifecycle.State.CREATED -> lifecycleScope.launchWhenCreated{ launch(context,start,block) }
-            Lifecycle.State.STARTED -> lifecycleScope.launchWhenStarted{ launch(context,start,block) }
-            Lifecycle.State.RESUMED -> lifecycleScope.launchWhenResumed{ launch(context,start,block) }
-            else -> throw IllegalArgumentException("Unsupported lifecycle state: $state")
-        }
+    return (this as LifecycleOwner).launch(state,lifecycleScope,context,start,block)
 }
 
 /**
