@@ -10,6 +10,7 @@ import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.module.chat.data.constants.EmojiTypeEnum
+import arch.cayenne.module.chat.data.constants.KeyBoardType
 import arch.cayenne.module.chat.data.model.EmojiModel
 import arch.cayenne.module.chat.databinding.FragmentEmojiLayoutBinding
 import arch.cayenne.module.chat.ui.adapter.EmojiGridAdapter
@@ -73,6 +74,12 @@ class EmojiFragment : BaseFragment<EmojiViewModel, FragmentEmojiLayoutBinding>()
     }
 
     override suspend fun createObserver() {
+        chatViewModel.currentKeyBoardTypeLiveData.observe(viewLifecycleOwner){
+            if(it == KeyBoardType.CHAT){
+                mBinding.recycler.scrollToPosition(0)
+            }
+        }
+
     }
 
     // 零间距的 ItemDecoration

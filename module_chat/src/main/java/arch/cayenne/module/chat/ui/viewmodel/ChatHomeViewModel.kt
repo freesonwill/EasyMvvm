@@ -37,7 +37,7 @@ class ChatHomeViewModel() : BaseViewModel() {
     private val _emojiLiveData: MutableLiveData<EmojiModel> = MutableLiveData()
     private val _etDelLiveDta: MutableLiveData<Boolean> = MutableLiveData()
     private val _sendTextLiveData: MutableLiveData<Boolean> = MutableLiveData()
-
+    private val _currentKeyBoardType = MutableLiveData<KeyBoardType>(KeyBoardType.CHAT)
 
     var currentKeyBoardType: KeyBoardType = KeyBoardType.CHAT
 
@@ -61,7 +61,6 @@ class ChatHomeViewModel() : BaseViewModel() {
     val etDelLiveData: LiveData<Boolean> = _etDelLiveDta
     val sendTextLiveData: LiveData<Boolean> = _sendTextLiveData
 
-
     val languageManager: LanguageManager by inject { parametersOf(viewModelScope) }
     val userDataManager: UserDataManager by inject()
 
@@ -70,6 +69,9 @@ class ChatHomeViewModel() : BaseViewModel() {
 
     var keyBoardHeight: Int = 0
     var isMainSoft: Boolean = false
+
+    //聊天键盘切换监听
+    val currentKeyBoardTypeLiveData: LiveData<KeyBoardType> = _currentKeyBoardType
 
 
     fun setArguments(matchId: Long?) {
@@ -230,6 +232,10 @@ class ChatHomeViewModel() : BaseViewModel() {
         _sendTextLiveData.value = value
         "sendTextToChat:${value}".logd("aaa")
 
+    }
+
+    fun listenCurrentKeyBoardType(keyBoardType: KeyBoardType) {
+        _currentKeyBoardType.value = keyBoardType
     }
 
 }

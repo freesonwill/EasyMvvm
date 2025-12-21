@@ -546,6 +546,7 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
 //        updateKeyboardView(false)
         emojiLayoutSize(true)
         emojiPopupListen?.invoke(false)
+        mViewModel.listenCurrentKeyBoardType(KeyBoardType.CHAT)
 
     }
 
@@ -556,6 +557,7 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
 //        updateKeyboardView(true)
         emojiLayoutSize(false)
         emojiPopupListen?.invoke(true)
+        mViewModel.listenCurrentKeyBoardType(KeyBoardType.SOFT_KEYBOARD)
     }
 
     /**
@@ -566,6 +568,7 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
 //        softKeyBoardManager.etRequestFocus()
         emojiLayoutSize(false)
         emojiPopupListen?.invoke(true)
+        mViewModel.listenCurrentKeyBoardType(KeyBoardType.EMOJI)
     }
 
     private fun updateKeyboardView(isVisible: Boolean) {

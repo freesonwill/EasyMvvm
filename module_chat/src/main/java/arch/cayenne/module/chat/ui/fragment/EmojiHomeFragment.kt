@@ -13,11 +13,10 @@ import arch.cayenne.lib.common.utils.ext.TabLayoutExt
 import arch.cayenne.lib.common.utils.ext.TabLayoutExt.addOnTabSelectedListener2
 import arch.cayenne.lib.common.utils.ext.removeAllTips
 import arch.cayenne.lib.common.utils.ext.setupHorizontalScrollDegree
-import arch.cayenne.lib.common.utils.ext.setupViewPagerScroll
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
-import arch.cayenne.lib.common.utils.ext.startFadeAnim
 import arch.cayenne.module.chat.R
 import arch.cayenne.module.chat.data.constants.EmojiTypeEnum
+import arch.cayenne.module.chat.data.constants.KeyBoardType
 import arch.cayenne.module.chat.databinding.FragmentEmojiHomeLayoutBinding
 import arch.cayenne.module.chat.databinding.ItemTabEmojiLayoutBinding
 import arch.cayenne.module.chat.ui.viewmodel.ChatHomeViewModel
@@ -52,11 +51,13 @@ class EmojiHomeFragment : BaseFragment<EmojiHomeViewModel, FragmentEmojiHomeLayo
         }
     }
 
-    override fun onStart() {
-        super.onStart()
-    }
 
     override suspend fun createObserver() {
+     chatViewModel.currentKeyBoardTypeLiveData.observe(viewLifecycleOwner){
+         if(it == KeyBoardType.CHAT){
+             mBinding.viewpager.setCurrentItem(0,false)
+         }
+     }
     }
 
     private fun initTab() {
