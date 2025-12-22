@@ -145,17 +145,6 @@ data class DayVo(
 
 data class DayPageVo(val pagination: PaginationVo , val list: List<DayVo>)
 
-fun DayVo.toGameAllRankingToday(): GameAllRankingToday.GameAllRankingTodayData {
-    return GameAllRankingToday.GameAllRankingTodayData(
-        rank = ranking ,
-        playerName = name ,
-        symbol = ccy.ccyToSymbol() ,
-        betting = bet.toDouble() ,
-        bonus = bonus.toDouble() ,
-        myself = mySelf
-    )
-}
-
 fun List<GameAllRankingToday>.addDashItem(): List<GameAllRankingToday> {
     //添加分割线
     //遍历列表， 如果某个item的rank和下一个item的rank不连续，则在它们之间添加一个DashItem， 只添加一次
