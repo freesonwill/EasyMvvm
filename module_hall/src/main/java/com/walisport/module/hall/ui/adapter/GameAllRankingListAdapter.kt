@@ -71,9 +71,9 @@ class GameAllRankingListViewHolder(val item: ItemAllRankingListBinding) : BaseVi
             Glide.with(ivCurrency.context).load(data.symbol.symbolUrl().trim()).into(ivCurrency)
             //负号 + 法币符号 + 金额 + 币种
             if (data.result < 0) {
-                tvResult.text = "-${data.symbol}${-data.result}"
+                tvResult.text = "-${data.symbol}${"%.2f".format(-data.result)}"
             } else {
-                tvResult.text = "${data.symbol}${data.result}"
+                tvResult.text = "${data.symbol}${"%.2f".format(data.result)}"
             }
 
             if (data.result > 0) {
