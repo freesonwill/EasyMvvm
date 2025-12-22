@@ -21,7 +21,7 @@ enum class BizUrl(val url: String) {
     HELP("${BASE_URL}/web-help/zh-CN/"), //帮助页面
     TOP_LESSON("${BASE_URL}/web-help/zh-CN/wallet/tutorial/?backUrl=/web-help/zh-CN/wallet/tutorial/"), //充值教程
     WITHDRAW_LESSON("${BASE_URL}/web-help/zh-CN/wallet/withdraw/?backUrl=/web-help/zh-CN/wallet/withdraw/"), //提现教程
-    ACTIVITY("${BASE_URL}/web-3n1/activity"),//活动页面
+    ACTIVITY("${BASE_URL}/web-3n1/activity"), //活动页面
 }
 
 val BASE_URL
