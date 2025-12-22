@@ -18,12 +18,10 @@ enum class BizUrl(val url: String) {
     INVITE("${BASE_URL}/web-3n1/invite"),
     PARTNER("${BASE_URL}/web-3n1/partner"),
     VIP("${BASE_URL}/web-3n1/vip"),
-    HELP("https://www.ve657.com/help-docs/help/"),//暂时用这个地址，Web端要重新做帮助
+    HELP("${BASE_URL}/web-help/zh-CN/"), //帮助页面
     TOP_LESSON("${BASE_URL}/web-help/zh-CN/wallet/tutorial/?backUrl=/web-help/zh-CN/wallet/tutorial/"), //充值教程
     WITHDRAW_LESSON("${BASE_URL}/web-help/zh-CN/wallet/withdraw/?backUrl=/web-help/zh-CN/wallet/withdraw/"), //提现教程
     ACTIVITY("${BASE_URL}/web-3n1/activity"),//活动页面
-
-
 }
 
 val BASE_URL
