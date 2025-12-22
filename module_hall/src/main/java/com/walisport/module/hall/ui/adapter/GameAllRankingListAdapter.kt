@@ -14,6 +14,8 @@ import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
 import arch.cayenne.lib.common.data.constants.SportEnum
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getColor
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
+import arch.cayenne.lib.common.utils.ext.ccyToSymbol
+import arch.cayenne.lib.common.utils.ext.symbolUrl
 import com.bumptech.glide.Glide
 import com.walisport.module.hall.R
 import com.walisport.module.hall.data.GameAllRankingListData
@@ -66,7 +68,7 @@ class GameAllRankingListViewHolder(val item: ItemAllRankingListBinding) : BaseVi
                 tvMultiple.paint.shader = null // 關鍵：清除複用帶來的舊 Shader
                 tvMultiple.setTextColor(arch.cayenne.lib.common.R.color.color_C0C0C0.getColor())
             }
-            ivCurrency.setBackgroundResource(arch.cayenne.lib.common.R.drawable.ic_usdt)
+            Glide.with(ivCurrency.context).load(data.symbol.symbolUrl()).into(ivCurrency)
             //负号 + 法币符号 + 金额 + 币种
             if (data.result < 0) {
                 tvResult.text = "-${data.symbol}${-data.result}"

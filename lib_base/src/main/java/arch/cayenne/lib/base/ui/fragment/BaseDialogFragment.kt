@@ -19,6 +19,7 @@ import androidx.navigation.findNavController
 import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.base.R
 import arch.cayenne.lib.base.data.model.StatusBarConfig
+import arch.cayenne.lib.base.ui._interface.IFragmentArguments
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.base.ui.delegate.StatusBarDelegate
 import arch.cayenne.lib.base.ui.delegate.UIBindDelegate
@@ -27,7 +28,7 @@ import arch.cayenne.lib.base.ui._interface.IView
 import org.koin.androidx.viewmodel.ext.android.viewModelForClass
 import kotlin.reflect.KClass
 
-abstract class BaseDialogFragment<VM : BaseViewModel, VB : ViewBinding> : DialogFragment(), IView,IStatusBar {
+abstract class BaseDialogFragment<VM : BaseViewModel, VB : ViewBinding> : DialogFragment(), IView,IStatusBar, IFragmentArguments {
     protected open val TAG = this.javaClass.simpleName
 
     //#region VB,VM
@@ -159,5 +160,10 @@ abstract class BaseDialogFragment<VM : BaseViewModel, VB : ViewBinding> : Dialog
 
     private fun setDim(amount: Float) {
         dialog?.window?.setDimAmount(amount)
+    }
+
+    override fun setArguments(args: Bundle?) {
+        uiBind.setArguments(arguments,args)
+        super.setArguments(args)
     }
 }

@@ -76,9 +76,9 @@ class HallFragment : BaseFragment<HallViewModel, FragmentHallBinding>() {
     override val vmClass: KClass<HallViewModel> = HallViewModel::class
 
     private val balanceViewModel: BalanceViewModel by viewModel()
-    private val mMinHeight = 34.dp2px
+    private val mMinHeight = 38.dp2px
 
-    private val mMaxHeight = 38.dp2px
+    private val mMaxHeight = 42.dp2px
 
     private val unreadMessageViewModel: UnReadMessageViewModel by viewModels()
     private var tabIndicatorHelper: ScrollableTabIndicatorHelper? = null
@@ -206,6 +206,17 @@ class HallFragment : BaseFragment<HallViewModel, FragmentHallBinding>() {
                 }
                 tab.customView?.findViewById<SkinnableTextView>(R.id.tv_title)?.apply {
                     if (position == 1) {
+                        (layoutParams as? ViewGroup.MarginLayoutParams)?.apply {
+                            marginStart = marginStart
+                            topMargin = 3.dp2px
+                            marginEnd = marginEnd
+                            bottomMargin = bottomMargin
+                            layoutParams = this
+                        }
+                    }
+                }
+                tab.customView?.findViewById<SkinnableTextView>(R.id.tv_title)?.apply {
+                    if (position == 1) {
                         typeface = Typeface.DEFAULT_BOLD
                         setTextColor(
                             SkinnableResourceManager.getColor(
@@ -261,6 +272,15 @@ class HallFragment : BaseFragment<HallViewModel, FragmentHallBinding>() {
                     }
 
                 }
+                tab.customView?.findViewById<SkinnableTextView>(R.id.tv_title)?.apply {
+                        (layoutParams as? ViewGroup.MarginLayoutParams)?.apply {
+                            marginStart = marginStart
+                            topMargin = 3.dp2px
+                            marginEnd = marginEnd
+                            bottomMargin = bottomMargin
+                            layoutParams = this
+                        }
+                }
                 tab.customView?.findViewById<AppCompatImageView>(R.id.iv_Hall_tab_icon)?.apply {
                     setScaleAnim(mMinHeight.toInt(), mMaxHeight.toInt())
                 }
@@ -287,6 +307,15 @@ class HallFragment : BaseFragment<HallViewModel, FragmentHallBinding>() {
                             arch.cayenne.lib.common.R.color.color_C0C0C0
                         )
                     )
+                    tab.customView?.findViewById<SkinnableTextView>(R.id.tv_title)?.apply {
+                        (layoutParams as? ViewGroup.MarginLayoutParams)?.apply {
+                            marginStart = marginStart
+                            topMargin = 5.dp2px
+                            marginEnd = marginEnd
+                            bottomMargin = bottomMargin
+                            layoutParams = this
+                        }
+                    }
                     tab.customView?.findViewById<AppCompatImageView>(R.id.iv_Hall_tab_icon)?.apply {
                         setScaleAnim(mMaxHeight.toInt(), mMinHeight.toInt())
                     }
