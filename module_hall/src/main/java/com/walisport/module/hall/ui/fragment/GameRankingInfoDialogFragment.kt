@@ -1,5 +1,6 @@
 package com.walisport.module.hall.ui.fragment
 
+import android.app.Dialog
 import android.os.Bundle
 import android.view.Gravity
 import android.view.View
@@ -7,6 +8,7 @@ import android.view.Window
 import androidx.constraintlayout.widget.ConstraintLayout
 import arch.cayenne.lib.base.ui.fragment.BasePositionDialogFragment
 import arch.cayenne.lib.base.ui.viewmodel.EmptyViewModel
+import arch.cayenne.lib.common.ui.dialog.NoGapDialog
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import com.walisport.module.hall.databinding.FragmentGameRankingInfoDialogBinding
 import kotlin.reflect.KClass
@@ -38,6 +40,10 @@ class GameRankingInfoDialogFragment : BasePositionDialogFragment<EmptyViewModel,
 
     override fun initListener() {
 
+    }
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        return NoGapDialog(requireContext(), theme)
     }
 
     override fun setDialogPosition(w: Window) {
