@@ -4,6 +4,7 @@ import arch.cayenne.lib.base.data.repository.BaseRepository
 import arch.cayenne.lib.common.data.constants.UserDataKey
 import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.database.dao.BetDao
+import arch.cayenne.lib.database.dao.InfoDao
 import arch.cayenne.lib.database.entity.BetDetailBean
 import arch.cayenne.lib.database.entity.BetResultStatusEnum
 import arch.cayenne.lib.database.entity.BetSelectionBean
@@ -24,6 +25,7 @@ import kotlinx.coroutines.withContext
 class SingleBetRepository(
     override val scope: CoroutineScope,
     private val betDao: BetDao,
+    private val infoDao: InfoDao,
     manager: UserDataManager,
     private val remoteManager: BettingRemoteManager
 ) : BaseRepository() {
@@ -142,13 +144,15 @@ class SingleBetRepository(
     suspend fun saveToReserve(odds: Int, money: Long) = withContext(Dispatchers.IO) {
         betDao.getCurrentBet()?.let {
             val selection = betDao.getSelections(it.betId).first()
+            val currency = infoDao.getCurrency()
             betDao.updateOdds(it.betId, selection.selectionId, odds)
             betDao.insertDetail(
                 BetDetailBean(
                     betId = it.betId,
                     sumOdds = odds,
                     odds = odds,
-                    inputMoney = money
+                    inputMoney = money,
+                    currency = currency
                 )
             )
             return@withContext betDao.updateBetType(it.betId, BetTypeEnum.RESERVE) == 1
@@ -163,12 +167,14 @@ class SingleBetRepository(
         } else {
             val selection = betDao.getSelections(betId)
             if (selection.isNotEmpty()) {
+                val currency = infoDao.getCurrency()
                 val data = selection.first()
                 val newDetail = BetDetailBean(
                     betId = betId,
                     sumOdds = data.odds,
                     odds = data.odds,
-                    inputMoney = money
+                    inputMoney = money,
+                    currency = currency
                 )
                 betDao.insertDetail(newDetail)
             }
@@ -184,12 +190,14 @@ class SingleBetRepository(
                     val selection = betDao.getSelections(betId).first()
                     unregister(selection)
 
+                    val currency = infoDao.getCurrency()
                     val tempDetail = betDao.getDetail(betId).firstOrNull() ?: run {
                         BetDetailBean(
                             betId = betId,
                             sumOdds = selection.odds,
                             odds = selection.odds,
-                            inputMoney = money
+                            inputMoney = money,
+                            currency = currency
                         ).apply {
                             betDao.insertDetail(this)
                         }
@@ -248,13 +256,15 @@ class SingleBetRepository(
                     betDao.updateBetStatus(betId, BetStatusEnum.BETTING)
 
                     val selection = betDao.getSelections(betId).first()
+                    val currency = infoDao.getCurrency()
                     unregister(selection)
                     val detail = betDao.getDetail(betId).firstOrNull() ?: run {
                         BetDetailBean(
                             betId = betId,
                             sumOdds = selection.odds,
                             odds = selection.odds,
-                            inputMoney = money
+                            inputMoney = money,
+                            currency = currency
                         ).apply {
                             betDao.insertDetail(this)
                         }

@@ -4,12 +4,11 @@ import android.os.Bundle
 import androidx.core.view.isVisible
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.data.constants.MsgType
-import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.helper.showToast
+import arch.cayenne.lib.database.entity.BetSlipData
 import arch.cayenne.lib.database.entity.BetSlipOrderBean
 import arch.cayenne.lib.database.entity.BetSlipSelectionData
 import arch.cayenne.module.betslip.R
@@ -39,20 +38,26 @@ class OrderSportPageFragment :
 
     override fun initView(savedInstanceState: Bundle?) {
         val adapter = if (type == OrderSportPageEnum.UNSETTLED) {
-            OrderBettingAdapter(type, object : OrderBettingAdapter.OrderEarlySettleListener {
-                override fun onEarlySettle(bean: BetSlipOrderBean) {
-                    mViewModel.isSupportEarlySettled(bean)
-                }
-            }, object : OrderBettingAdapter.OrderDataSelectorListener {
-                override fun onDateClicked() {
-                    showDateDialog()
-                }
-            }, selectionListener = object : OrderBettingAdapter.SelectionItemListener {
-                override fun onSingleClick(bean: BetSlipSelectionData) {
-                    chooseViModel?.clickBtn(MsgType.BET_SPORT)
-                }
+            OrderBettingAdapter(
+                type, object : OrderBettingAdapter.OnOrderClickListener {
+                    override fun onDateClick() {
+                        showDateDialog()
+                    }
 
-            })
+                    override fun onItemSingleClick(bean: BetSlipSelectionData) {
+                        chooseViModel?.clickBtn(MsgType.BET_SPORT)
+                    }
+
+                    override fun onShareClick(bean: BetSlipData) {
+                        TODO("Not yet implemented")
+                    }
+
+                },
+                object : OrderBettingAdapter.OrderEarlySettleListener {
+                    override fun onEarlySettle(bean: BetSlipOrderBean) {
+                        mViewModel.isSupportEarlySettled(bean)
+                    }
+                })
         } else {
             OrderBettingAdapter(type)
         }
@@ -96,7 +101,7 @@ class OrderSportPageFragment :
                 f.show(childFragmentManager)
             }
         }
-        mViewModel.intentEvent.observe(viewLifecycleOwner)  { event ->
+        mViewModel.intentEvent.observe(viewLifecycleOwner) { event ->
             event.getContentIfNotHandled(viewLifecycleOwner)?.let {
                 mBinding.groupNoData.isVisible = it == DataState.DataEmpty
             }
@@ -111,9 +116,9 @@ class OrderSportPageFragment :
         dialog.show(childFragmentManager)
     }
 
-    private fun checkChooseFragment(){
-        if(parentFragment?.parentFragment is ChatChooseBetFragment){
-            chooseViModel = sharedViewModel<ChatChooseViewModel,ChatChooseBetFragment>().value
+    private fun checkChooseFragment() {
+        if (parentFragment?.parentFragment is ChatChooseBetFragment) {
+            chooseViModel = sharedViewModel<ChatChooseViewModel, ChatChooseBetFragment>().value
         }
     }
 }
