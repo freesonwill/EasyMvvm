@@ -291,10 +291,10 @@ class HallFragment : BaseFragment<HallViewModel, FragmentHallBinding>() {
                             arch.cayenne.lib.common.R.color.white
                         )
                     )
-                    textView.setRoundedBackground(
-                        backgroundColor = tabList[tab.position].colorRes,
-                        show = true
-                    )
+//                    textView.setRoundedBackground(
+//                        backgroundColor = tabList[tab.position].colorRes,
+//                        show = true
+//                    )
                     textView.typeface = Typeface.DEFAULT_BOLD
                 }
             }
