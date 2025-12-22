@@ -67,6 +67,7 @@ class SocketClientService(
 
     /************* Method **************/
     override fun connect(host: String): SharedFlow<ConnectState> {
+        //"Socket Client -> connect, host:$host".logi(TAG)
         return when(currentState) {
             SocketConnectState.Connecting -> { connectStateFlow }
             else -> {
@@ -79,7 +80,7 @@ class SocketClientService(
     }
 
     private fun openWebSocket() {
-        "Socket Client -> openWebSocket".loge(TAG)
+        "Socket Client -> openWebSocket".logi(TAG)
         val request = Request.Builder()
             .url(host)
             .build()
@@ -111,7 +112,7 @@ class SocketClientService(
 
             override fun onOpen(webSocket: WebSocket, response: Response) {
                 super.onOpen(webSocket, response)
-                "Socket Client -> ConnectOpen".loge(TAG)
+                "Socket Client -> ConnectOpen".logi(TAG)
                 currentState = SocketConnectState.Connecting
                 this@SocketClientService.webSocket = webSocket
                 workingScope.launch { connectStateFlow.emit(ConnectState.ConnectSuccess) }

@@ -1,17 +1,26 @@
 package arch.cayenne.module.bet.ui.fragment
 
 import android.animation.ObjectAnimator
+import android.graphics.Canvas
+import android.graphics.Paint
 import android.graphics.Rect
 import android.os.Bundle
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.style.ImageSpan
 import android.view.View
 import android.view.ViewTreeObserver
 import android.view.animation.LinearInterpolator
+import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
+import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.data.constants.QuickAmountEnum
 import arch.cayenne.lib.common.ui.adapter.QuickAmountAdapter
 import arch.cayenne.lib.common.ui.fragment.ReserveDialogFragment
@@ -37,6 +46,7 @@ import arch.cayenne.module.bet.databinding.FragmentSingleBetBinding
 import arch.cayenne.module.bet.util.ViewHelper
 import arch.cayenne.module.bet.viewmodel.SingleBetViewModel
 import kotlinx.coroutines.launch
+import java.util.Locale
 import kotlin.reflect.KClass
 
 /**
@@ -180,18 +190,22 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
         }
         mViewModel.onBetWinMoney.observe(viewLifecycleOwner) {
             mBinding.tvBetMoney.isVisible = it.isNotEmpty() && it != "0"
-            val money = getString(R.string.btn_bet_win_money).format(mViewModel.moneySymbol, it)
-            mBinding.tvBetMoney.text = money
+            if(mBinding.tvBetMoney.isVisible){
+                val result = String.format(Locale.ROOT,"%.2f", it.toFloat())
+                val money = getString(R.string.btn_bet_win_money).format(mViewModel.moneySymbol, result)
+                mBinding.tvBetMoney.setCurrencyText(money,mViewModel.moneySymbol.let { it to CurrencySymbols.getSymbolIcon(it) })
+            }
         }
         mViewModel.onNumberLimit.observe(viewLifecycleOwner) {
-            mBinding.etMoney.hint =
+            mBinding.etMoney.hintCursor =
                 getString(R.string.et_money_hint).format(it.first.getMoney(), it.second.getMoney())
         }
+
         mViewModel.onBalanceListener.observe(viewLifecycleOwner) {
             if (it != null) {
-                val money = "${mViewModel.moneySymbol} ${it.balance.getFormalMoney()}"
-                mBinding.tvBalance.text = money
-                mBinding.tvMoney.text = mViewModel.moneySymbol
+                val money = "${mViewModel.moneySymbol} ${it.balance.getFormalMoney(false)}"
+                mBinding.tvBalance.setCurrencyText(money,mViewModel.moneySymbol.let { it to CurrencySymbols.getSymbolIcon(it) },-3)
+                mBinding.tvMoney.setCurrencyText(mViewModel.moneySymbol,mViewModel.moneySymbol.let { it to CurrencySymbols.getSymbolIcon(it) },-4)
             }
         }
 
@@ -217,7 +231,52 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
             mBinding.tvOddsChange.text = SkinnableResourceManager.getString(requireContext(), it.textRes)
         }
     }
+    /**
+     * 设置带有货币图标的文本
+     *
+     * @param text
+     * @param replacePair
+     */
+    private fun TextView.setCurrencyText(
+        text: String,
+        replacePair: Pair<String, Int?>,
+        offset: Int = 0
+    ) {
+        val ss = SpannableString(text)
+        val (str, icon)  = replacePair
+        val start = text.indexOf(str)
+        if (icon != null && start >= 0) {
+            val drawable = ContextCompat.getDrawable(context, icon)!!
+            val size = (textSize * 1.1f).toInt()
+            drawable.setBounds(0, 0, size, size)
 
+            ss.setSpan(object : ImageSpan(drawable, ALIGN_BASELINE) {
+                override fun draw(
+                    canvas: Canvas,
+                    text: CharSequence,
+                    start: Int,
+                    end: Int,
+                    x: Float,
+                    top: Int,
+                    y: Int,
+                    bottom: Int,
+                    paint: Paint
+                ) {
+                    val fm = paint.fontMetricsInt
+                    val transY = (y + fm.descent + y + fm.ascent) / 2 - drawable.bounds.height() / 2 + offset
+                    canvas.save()
+                    canvas.translate(x, transY.toFloat())
+                    drawable.draw(canvas)
+                    canvas.restore()
+                }
+            },
+                start,
+                start + str.length,
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+        }
+        setText(ss)
+    }
     private fun setBetTypeLayout(type: BetTypeEnum?) {
         when (type) {
             BetTypeEnum.SINGLE, BetTypeEnum.RESERVE -> {
@@ -352,7 +411,7 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
         animator.start()
     }
 
-    override fun getBlockingSlideView(): View? {
+    override fun getBlockingSlideView(): View {
         return mBinding.clKeyboard
     }
 }

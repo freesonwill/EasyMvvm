@@ -25,6 +25,7 @@ class ShareAdapter : BaseAdapter<ShareBean, BaseViewHolder, ItemShareLayoutBindi
     ) {
         binding.tv.text = getItem(position).title
         binding.iv.background = ContextCompat.getDrawable(binding.iv.context,getItem(position).icon)
+        binding.root.tag = position
     }
 
     override fun createViewBinding(
@@ -39,6 +40,9 @@ class ShareAdapter : BaseAdapter<ShareBean, BaseViewHolder, ItemShareLayoutBindi
         binding: ItemShareLayoutBinding,
         viewType: Int
     ): BaseViewHolder {
+        binding.root.setOnClickListener {
+            itemClick?.onItemClick(null,-1)
+        }
         return BaseViewHolder(binding)
     }
 }

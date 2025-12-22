@@ -1,18 +1,19 @@
 package arch.cayenne.lib.common.web
 
+import android.app.Activity
 import android.content.Context
 import android.os.Build
 import android.util.AttributeSet
-import android.view.ViewTreeObserver
+import android.view.View
 import android.webkit.WebSettings
 import androidx.fragment.app.Fragment
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
-import arch.cayenne.lib.common.utils.biz.CommonBiz
 import arch.cayenne.lib.common.data.model.JSResponseData
+import arch.cayenne.lib.common.utils.biz.CommonBiz
 import arch.cayenne.lib.common.utils.ext.requireActivity
 import com.github.lzyzsd.jsbridge.BridgeWebView
 import com.github.lzyzsd.jsbridge.DefaultHandler
-import okhttp3.internal.userAgent
+import me.jessyan.autosize.AutoSize
+
 
 /**
  *
@@ -40,6 +41,11 @@ class WLSWebView : BridgeWebView {
     private fun initView() {
         initWebSettings()
         initJsBridge()
+    }
+
+    override fun setOverScrollMode(mode: Int) {
+        super.setOverScrollMode(mode)
+        AutoSize.autoConvertDensityOfGlobal(context as Activity)
     }
 
     override fun onScrollChanged(l: Int, t: Int, oldl: Int, oldt: Int) {
@@ -89,6 +95,7 @@ class WLSWebView : BridgeWebView {
             // 获取默认 User-Agent
             val defaultUA = settings.userAgentString // 在默认 UA 后添加自定义字符串
             val customUA = "$defaultUA 3N1/Android"  // 示例
+            setLayerType(View.LAYER_TYPE_HARDWARE,null)
 
             settings.userAgentString = customUA
         }

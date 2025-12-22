@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="@dimen/dp_6"
-    android:paddingBottom="@dimen/dp_6"
+    android:paddingTop="@dimen/dp_0"
+    android:paddingBottom="@dimen/dp_0"
     android:background="@color/color_1E1E1E"
     tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
 

@@ -675,7 +675,7 @@ public final class LogUtils {
             if (mDefaultDir != null) {
                 return;
             }
-            if(!Utils.isInEditMode() && Build.FINGERPRINT != null){
+            if(!Utils.isInEditMode()){
                 Application appGame = Utils.getApp();
                 if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())
                         && appGame.getExternalCacheDir() != null)

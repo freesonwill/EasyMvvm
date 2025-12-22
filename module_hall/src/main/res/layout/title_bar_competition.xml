@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="@dimen/dp_46"
-    android:background="@color/title_bg">
+    android:background="@color/color_1E1E1E">
 
     <arch.cayenne.lib.skin.widget.SkinnableImageView
         android:id="@+id/iv_back"
@@ -25,6 +25,17 @@
         app:layout_constraintTop_toTopOf="parent"
         app:skinnableFontWeight="500"
         tools:ignore="MissingConstraints" />
+
+    <arch.cayenne.lib.skin.widget.SkinnableImageView
+        android:id="@+id/iv_question"
+        android:layout_width="@dimen/dp_36"
+        android:layout_height="@dimen/dp_36"
+        android:layout_marginEnd="@dimen/dp_2"
+        android:padding="@dimen/dp_6"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/hall_question_mark" />
 
 
 </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>

@@ -8,8 +8,10 @@
     <string name="tab_fishing">捕鱼</string>
     <string name="tab_real">真人</string>
     <string name="tab_original">原创</string>
+    <string name="tab_avava_original">Avava原创</string>
     <string name="tab_lottery">彩票</string>
     <string name="tab_esprots">电竞</string>
+    <string name="tab_wls">体育</string>
     <string name="back_percent">返奖率</string>
     <string name="online_count">在玩</string>
     <string name="daily_game">每日比赛</string>
@@ -41,5 +43,10 @@
     <string name="search_tips">瓦力</string>
     <string name="btn_confirm">确定</string>
     <string name="view_latest_results">查看最新结果</string>
+    <string name="title_recently_played">最近玩过</string>
+    <string name="title_game_favourite">游戏收藏</string>
+    <string name="title_match_favourite">比赛收藏</string>
+    <string name="count_down_default">-- : -- : --</string>
+
 
 </resources>

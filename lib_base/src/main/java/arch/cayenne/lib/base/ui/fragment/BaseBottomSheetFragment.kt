@@ -10,7 +10,6 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.util.AttributeSet
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -31,8 +30,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.base.R
-import arch.cayenne.lib.base.data.constants.StatusBarMode
-import arch.cayenne.lib.base.data.model.StatusBarConfig
+import arch.cayenne.lib.base.ui._interface.IFragmentArguments
 import arch.cayenne.lib.base.ui._interface.IStatusBar
 import arch.cayenne.lib.base.ui._interface.IView
 import arch.cayenne.lib.base.ui.animation.AnimationController
@@ -54,7 +52,7 @@ import kotlin.reflect.KClass
 
 
 abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
-    BottomSheetDialogFragment(), IView, DimInterface {
+    BottomSheetDialogFragment(), IView, DimInterface, IFragmentArguments {
 
     protected val TAG by lazy { this::class.java.simpleName }
     protected var backgroundView: View? = null
@@ -557,6 +555,11 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
     protected fun showDim() {
         if (isDismissing) return
         dimController.showDim()
+    }
+
+    override fun setArguments(args: Bundle?) {
+        uiBind.setArguments(arguments,args)
+        super.setArguments(args)
     }
 }
 

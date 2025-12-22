@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
+import arch.cayenne.module.chat.R
 import arch.cayenne.module.chat.databinding.FragmentSportShareLayoutBinding
 import arch.cayenne.module.chat.ui.adapter.SportBetShareAdapter
 import arch.cayenne.module.chat.ui.viewmodel.BetShareViewModel
@@ -39,10 +40,12 @@ class SportBetShareFragment:BaseFragment<SportBetShareViewModel,FragmentSportSha
 
     override fun initListener() {
         mBinding.apply {
-            ivExpand.setOnClickListener {
+            iconExpand.setOnClickListener {
+                ivExpand.setImageResource(if (mViewModel.isExpand) R.drawable.icon_chat_expand else R.drawable.icon_chat_fold)
                 betShareModel.expandDialog()
+                mViewModel.isExpand = !mViewModel.isExpand
             }
-            ivClose.clickNoRepeat {
+            iconClose.clickNoRepeat {
                 betShareModel.closeDialog()
             }
 

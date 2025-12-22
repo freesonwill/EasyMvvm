@@ -11,6 +11,7 @@
            android:layout_width="30dp"
            android:layout_height="30dp"
            android:scaleType="fitXY"
+           android:stateListAnimator="@animator/layout_alpha_animator"
            android:layout_marginTop="@dimen/dp_12"
            android:layout_marginLeft="@dimen/dp_6"
            android:layout_marginRight="@dimen/dp_10"

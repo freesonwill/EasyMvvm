@@ -15,6 +15,8 @@ import arch.cayenne.module.betslip.data.repo.OrderSlipRepository
 import arch.cayenne.module.betslip.data.repo.ReserveSlipRepository
 import arch.cayenne.module.betslip.data.repo.SportPickerRepository
 import arch.cayenne.module.betslip.data.repo.UnsettleRepository
+import arch.cayenne.module.order.data.repo.NewOrderRepository
+import arch.cayenne.module.order.data.repo.OrderReserveRepository
 import arch.cayenne.module.betslip.ui.viewmodel.BetSlipFilterViewModel
 import arch.cayenne.module.betslip.ui.viewmodel.BetSlipOtherSettingViewModel
 import arch.cayenne.module.betslip.ui.viewmodel.ConfirmingSlipViewModel
@@ -38,6 +40,7 @@ import arch.cayenne.module.order.ui.viewmodel.GameFilterViewModel
 import arch.cayenne.module.order.ui.viewmodel.OrderDateCustomViewModel
 import arch.cayenne.module.order.ui.viewmodel.OrderDateDialogViewModel
 import arch.cayenne.module.order.ui.viewmodel.OrderDateSelectorViewModel
+import arch.cayenne.module.order.ui.viewmodel.OrderReserveViewModel
 import arch.cayenne.module.order.ui.viewmodel.ChatChooseViewModel
 
 import org.koin.dsl.module
@@ -86,6 +89,7 @@ class BetSlipModuleInitializer: DefaultInitializer<String> {
         viewModelOf(::OrderDateDialogViewModel)
         viewModelOf(::OrderDateSelectorViewModel)
         viewModelOf(::ChatChooseViewModel)
+        viewModelOf(::OrderReserveViewModel)
     }
 
     private val repoModules = module {
@@ -96,6 +100,8 @@ class BetSlipModuleInitializer: DefaultInitializer<String> {
         factoryOf(::UnsettleRepository)
         factoryOf(::BetSlipOtherSettingRepository)
         factoryOf(::ConfirmingSlipRepository)
+        factoryOf(::NewOrderRepository)
+        factoryOf(::OrderReserveRepository)
     }
 
     private val moduleList:List<Module> = listOf(managerModule, viewModules, repoModules)

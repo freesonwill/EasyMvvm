@@ -7,14 +7,17 @@ import android.view.LayoutInflater
 import android.widget.FrameLayout
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
+import arch.cayenne.lib.common.R
+import arch.cayenne.lib.common.data.constants.BaseCurrencyData
 import arch.cayenne.lib.common.databinding.ViewBalanceBinding
 import arch.cayenne.lib.common.ui.fragment.CurrencyDialogFragment
 import arch.cayenne.lib.common.ui.viewmodel.BalanceViewModel
 import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
-import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
+import arch.cayenne.lib.common.utils.ext.SportIntExt.toBalanceString
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+import com.bumptech.glide.Glide
 
 class BalanceView : FrameLayout {
     private val mBinding: ViewBalanceBinding
@@ -32,7 +35,7 @@ class BalanceView : FrameLayout {
     fun init(
         childFragmentManager: FragmentManager
     ) {
-        mBinding.tvWalletBalance.clickNoRepeat {
+        mBinding.root.clickNoRepeat {
             rotateArrow(true)
 
             val location = IntArray(2)
@@ -40,7 +43,7 @@ class BalanceView : FrameLayout {
 
             val offset = if(isPortrait()) {
                 val h = ViewUtils.getStatusBarHeight(mBinding.root.context)
-                location.last() - h + mBinding.root.measuredHeight + 7.dp2px
+                location.last() - h + mBinding.root.measuredHeight + 4.dp2px
             } else {
                 location.first() + mBinding.root.measuredWidth + 15.dp2px
             }
@@ -49,7 +52,8 @@ class BalanceView : FrameLayout {
                 rotateArrow(false)
             }
             f.setonItemClickListener {
-                setMoney(it.amount)
+                setMoney(it)
+                setMoney(it.amountStr)
             }
             f.show(childFragmentManager)
         }
@@ -76,10 +80,28 @@ class BalanceView : FrameLayout {
         mBinding.tvWalletBalance.text = money
     }
 
+    fun setMoney(data: BaseCurrencyData.CurrencyContentData2) {
+        viewModel?.setDefaultCurrency(data.ccy)
+    }
+
+    fun setIcon(icon: String) {
+        Glide.with(context)
+            .load(icon)
+            .placeholder(R.drawable.ic_wali_demo)
+            .error(R.drawable.ic_wali_demo)
+            .into(mBinding.ivCurrencyIcon)
+    }
+
     fun setBalanceViewModel(viewModel: BalanceViewModel, lifecycleOwner: LifecycleOwner) {
         this.viewModel = viewModel
         viewModel.onBalanceChange.observe(lifecycleOwner) {
-            setMoney(it)
+            if (it == null) {
+                setMoney("0.00")
+                setIcon("")
+            } else {
+                setMoney(it.amount.toBalanceString())
+                setIcon(it.icon)
+            }
         }
     }
 }
