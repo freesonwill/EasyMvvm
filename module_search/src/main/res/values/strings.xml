@@ -28,4 +28,10 @@
     <string name="search_no_history_record">暂无搜索数据</string>
     <string name="search_recommend_no_data">暂无搜索数据，请换个搜索词尝试</string>
     <string name="search_timeout">搜索超时，请重试</string>
+    <string name="reward_tips">返奖率基于该游戏最近30分钟内的数据</string>
+
+    <string name="sort_type_hot">热门</string>
+    <string name="sort_type_new">最新上线</string>
+    <string name="sort_type_hot_reward">近30分钟火热返奖</string>
+    <string name="sort_type_cold_reward">近30分钟冰冷返奖</string>
 </resources>

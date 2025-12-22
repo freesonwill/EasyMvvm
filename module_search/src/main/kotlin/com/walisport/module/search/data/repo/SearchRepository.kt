@@ -5,6 +5,7 @@ import arch.cayenne.lib.base.data.repository.BaseRepository
 import arch.cayenne.lib.common.data.constants.UserDataKey
 import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.database.GameDatabase
+import arch.cayenne.lib.database.entity.GameSupplierDataModel
 import arch.cayenne.lib.websocket.WebSocketManager
 import arch.cayenne.lib.websocket.data.ApiCode
 import arch.cayenne.lib.websocket.extension.sendAndWaitProtoMessageResponse
@@ -276,5 +277,61 @@ class SearchRepository(
         } else {
             ApiResponseState.Failed(error = result.error)
         }
+    }
+
+    // ================== 遊戲供應商相關方法 ==================
+
+    /**
+     * 從本地 Room 查詢指定遊戲分類下的供應商列表。
+     * 用於「遊戲廠商精準響應詞」判斷和 Tab 列表展示。
+     */
+    suspend fun querySuppliersByGameType(gameTypeId: Int): List<GameSupplierDataModel> {
+        return withContext(Dispatchers.IO) {
+            database.supplierDao().querySupplier(gameTypeId)
+        }
+    }
+
+    /**
+     * 根據關鍵字查找供應商（精準匹配）。
+     * 用於判斷是否為「遊戲廠商精準響應詞」。
+     */
+    suspend fun findSupplierByKeyword(
+        keyword: String,
+        gameTypeId: Int = 0
+    ): GameSupplierDataModel? {
+        if (keyword.isBlank()) return null
+        val suppliers = querySuppliersByGameType(gameTypeId)
+        val lower = keyword.lowercase()
+        return suppliers.firstOrNull { supplier ->
+            val name = supplier.name.lowercase()
+            name == lower || name.startsWith(lower)
+        }
+    }
+
+    /**
+     * 根據 ID 查詢供應商。
+     */
+    suspend fun querySupplierById(id: Int): GameSupplierDataModel? {
+        return withContext(Dispatchers.IO) {
+            database.supplierDao().querySupplierById(id)
+        }
+    }
+
+    /**
+     * 根據關鍵字匹配遊戲分類（例如：電子、老虎機）。
+     * 返回對應的 gameTypeId，如果沒有匹配則返回 null。
+     */
+    suspend fun matchGameCategoryByKeyword(keyword: String): Int? {
+        val lower = keyword.lowercase()
+        // 常見遊戲分類關鍵字映射
+        val categoryMap = mapOf(
+            "電子" to 4,
+            "老虎機" to 4,
+            "slot" to 4,
+            "slots" to 4,
+            "瓦力遊戲" to 0, // 全部
+            "瓦力" to 0,
+        )
+        return categoryMap[lower]
     }
 }

@@ -11,6 +11,7 @@
     android:visibility="gone"
     tools:visibility="visible">
 
+    <!-- 一般文字推薦列表模式 -->
     <arch.cayenne.lib.skin.widget.SkinnableRecyclerView
         android:id="@+id/rv_search_recommend"
         android:layout_width="match_parent"

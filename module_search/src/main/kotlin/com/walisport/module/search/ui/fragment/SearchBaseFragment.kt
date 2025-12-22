@@ -157,6 +157,20 @@ abstract class SearchBaseFragment<VM : BaseViewModel, CVB : ViewBinding>: BaseFr
         }
     }
 
+    /**
+     * 處理搜索框文字變更事件。
+     * 
+     * 子類可以重寫此方法來處理特殊邏輯（例如：遊戲分類匹配關鍵字）。
+     * 
+     * @param keyword 當前輸入的關鍵字
+     * @return true 表示子類已處理完成，不需要顯示推薦列表；false 表示繼續使用默認推薦列表邏輯
+     */
+    @CallSuper
+    protected open fun handleKeywordChanged(keyword: String): Boolean {
+        // 默認實現：不處理，返回 false，使用推薦列表
+        return false
+    }
+
     protected fun getCurrentKeyword(): String {
         return sharedViewModel.getCurrentKeyword() ?: ""
     }
@@ -225,29 +239,37 @@ abstract class SearchBaseFragment<VM : BaseViewModel, CVB : ViewBinding>: BaseFr
                     afterTextChanged = { text, _ ->
                         if (!canSearch) return@loadSearchTitleBar
 
-                        val count = text?.length ?: 0
+                        val keyword = text?.toString() ?: ""
+                        val count = keyword.length
                         // 避免點擊清空搜尋時失去焦點且收起鍵盤
                         if (count == 0) {
                             showKeyboard(requireContext(), getSearchEditText())
                         }
 
-                        // 搜索自动补充词汇
-                        recommendListFragment.apply {
-                            if(onClickListener == null) {
-                                onClickListener = { recommendWord ->
-                                    updateSearchText(recommendWord) {
-                                        toSearchResult(recommendWord)
-                                        dismiss()
+                        // 交由子類處理關鍵字變更邏輯（例如：SearchFragment 可以處理遊戲分類匹配）
+                        if (handleKeywordChanged(keyword)) {
+                            // 子類已處理，不需要顯示推薦列表
+                            recommendListFragment.dismiss()
+                        } else {
+                            // 搜索自动补充词汇（僅負責顯示關聯詞，不做頁面跳轉；
+                            // 精準匹配 / 分類匹配邏輯交由點擊「搜索」按鈕後的流程處理）
+                            recommendListFragment.apply {
+                                if(onClickListener == null) {
+                                    onClickListener = { recommendWord ->
+                                        updateSearchText(recommendWord) {
+                                            toSearchResult(recommendWord)
+                                            dismiss()
+                                        }
                                     }
                                 }
-                            }
-                            text?.toString().let { keyword ->
-                                if (keyword.isNullOrBlank()) {
-                                    dismiss()
-                                } else {
-                                    // 只要有文字就觸發推薦搜索
-                                    updateKeyword(keyword)
-                                    show()
+                                keyword.let {
+                                    if (it.isBlank()) {
+                                        dismiss()
+                                    } else {
+                                        // 只要有文字就觸發推薦搜索
+                                        updateKeyword(it)
+                                        show()
+                                    }
                                 }
                             }
                         }
