@@ -160,9 +160,13 @@ class HallFragment : BaseFragment<HallViewModel, FragmentHallBinding>() {
         mBinding.aciTabBg.visibility = View.VISIBLE
        //循环把tabCategoryList装到HallGameTabDefault里面
         val tabList = tabCategoryList.map { vo ->
+            var colorRes = vo.color
+            if (colorRes.isEmpty()){
+                colorRes = String.format("#%06X", Category.entries.find { it.type == vo.category }?.color)
+            }
             if(vo.category==Category.ALL.type){
                 HallGameTabDefault(
-                    colorRes = vo.color,
+                    colorRes = colorRes,
                     icon = vo.icon,
                     thumbhash = vo.thumbhash,
                     _title = vo.name,
@@ -224,10 +228,10 @@ class HallFragment : BaseFragment<HallViewModel, FragmentHallBinding>() {
                                 arch.cayenne.lib.common.R.color.white
                             )
                         )
-//                        setRoundedBackground(
-//                            backgroundColor = tabList[position].colorRes,
-//                            show = true
-//                        )
+                        setRoundedBackground(
+                            backgroundColor = tabList[position].colorRes,
+                            show = true
+                        )
                     } else {
                         setTextColor(
                             SkinnableResourceManager.getColor(
@@ -291,10 +295,10 @@ class HallFragment : BaseFragment<HallViewModel, FragmentHallBinding>() {
                             arch.cayenne.lib.common.R.color.white
                         )
                     )
-//                    textView.setRoundedBackground(
-//                        backgroundColor = tabList[tab.position].colorRes,
-//                        show = true
-//                    )
+                    textView.setRoundedBackground(
+                        backgroundColor = tabList[tab.position].colorRes,
+                        show = true
+                    )
                     textView.typeface = Typeface.DEFAULT_BOLD
                 }
             }
