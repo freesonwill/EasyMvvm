@@ -92,7 +92,15 @@ class ChatPageFragment : BaseFragment<ChatPageViewModel, FragementChatPageLayout
         val adapter = mBinding.liveChatRecycler.adapter?.let { it as ChatPageAdapter }
         val nList = mutableListOf<ChatMsgPageBean>()
         nList.addAll(mViewModel.msgLists)
-        adapter?.submitList(nList)
+        adapter?.submitList(nList){
+            mBinding.liveChatRecycler.postDelayed({
+                try {
+                    mBinding.liveChatRecycler.scrollToPosition(0)
+                }catch (e:Exception){
+                    e.printStackTrace()
+                }
+            },100)
+        }
     }
 
     override fun initListener() {
