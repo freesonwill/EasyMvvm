@@ -8,20 +8,30 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.graphics.toColorInt
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DiffUtil
 import arch.cayenne.lib.base.ui.adapter.BaseAdapter
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.common.data.constants.SportEnum
+import arch.cayenne.lib.common.utils.ViewUtils
+import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getColor
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
+import arch.cayenne.lib.common.utils.ext.TextViewExt.hasShownEllipsize
 import arch.cayenne.lib.common.utils.ext.ccyToSymbol
+import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.symbolUrl
 import com.bumptech.glide.Glide
 import com.walisport.module.hall.R
 import com.walisport.module.hall.data.GameAllRankingListData
 import com.walisport.module.hall.databinding.ItemAllRankingListBinding
+import com.walisport.module.hall.ui.fragment.AllInfoDialogFragment
+import com.walisport.module.hall.ui.fragment.GameRankingInfoDialogFragment
 
-class GameAllRankingListAdapter : BaseAdapter<GameAllRankingListData, GameAllRankingListViewHolder, ItemAllRankingListBinding>(GameAllRankingListCompare()) {
+class GameAllRankingListAdapter(
+    private val parentFragment: androidx.fragment.app.Fragment
+) : BaseAdapter<GameAllRankingListData, GameAllRankingListViewHolder, ItemAllRankingListBinding>(GameAllRankingListCompare()) {
     override fun convertPlus(
         holder: GameAllRankingListViewHolder,
         binding: ItemAllRankingListBinding,
@@ -42,11 +52,11 @@ class GameAllRankingListAdapter : BaseAdapter<GameAllRankingListData, GameAllRan
         binding: ItemAllRankingListBinding,
         viewType: Int
     ): GameAllRankingListViewHolder {
-        return GameAllRankingListViewHolder(binding)
+        return GameAllRankingListViewHolder(binding, parentFragment)
     }
 }
 
-class GameAllRankingListViewHolder(val item: ItemAllRankingListBinding) : BaseViewHolder(item) {
+class GameAllRankingListViewHolder(val item: ItemAllRankingListBinding, val parentFragment: Fragment) : BaseViewHolder(item) {
     @SuppressLint("ClickableViewAccessibility", "SetTextI18n")
     fun bind(data: GameAllRankingListData, position: Int) {
         with(item) {
@@ -56,6 +66,21 @@ class GameAllRankingListViewHolder(val item: ItemAllRankingListBinding) : BaseVi
                 item.clRoot.setBackgroundResource(R.drawable.shape_game_all_rank_list_bg)
             }
             Glide.with(ivGame.context).load(data.gameIconUrl).into(ivGame)
+
+            tvGameName.clickNoRepeat {
+                if(tvGameName.hasShownEllipsize()){
+                    val location = IntArray(2)
+                    tvGameName.getLocationInWindow(location)
+                    val h = ViewUtils.getStatusBarHeight(item.root.context)
+                    val positionX = location.first() + tvGameName.width / 2
+                    val positionY = location.last() - h - 1.dp2px
+                    AllInfoDialogFragment.newInstance(
+                        positionX ,
+                        positionY ,
+                        tvGameName.text.toString()
+                    ).show(parentFragment.childFragmentManager , TAG)
+                }
+            }
 
             tvGameName.text = data.gameName
             //倍数数据：由数字和“x”的倍数符号组成。

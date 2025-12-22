@@ -29,7 +29,7 @@ class HighStakesFragment : BaseFragment<HighStakesViewModel , FragmentGameAllRan
     override fun initView(savedInstanceState: Bundle?) {
         with(mBinding) {
             rvCurrentRank.layoutManager = LinearLayoutManager(requireContext())
-            rvCurrentRank.adapter = GameAllRankingListAdapter()
+            rvCurrentRank.adapter = GameAllRankingListAdapter(this@HighStakesFragment)
 
         }
     }

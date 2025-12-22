@@ -1,7 +1,8 @@
-package com.walisport.module.live.utils
+package arch.cayenne.lib.common.utils.ext
 
 import android.graphics.drawable.Drawable
 import android.widget.TextView
+import org.w3c.dom.Text
 
 object TextViewExt {
 
@@ -24,5 +25,19 @@ object TextViewExt {
             drawables[2], // right
             null          // bottom
         )
+    }
+
+    /**
+     * 判断TextView是否显示了省略号
+     */
+    fun TextView.hasShownEllipsize():Boolean{
+        val layout = layout ?: return false
+        val lines = layout.lineCount
+        for (i in 0 until lines) {
+            if (layout.getEllipsisCount(i) > 0) {
+                return true
+            }
+        }
+        return false
     }
 }
