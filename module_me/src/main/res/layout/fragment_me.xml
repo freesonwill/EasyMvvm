@@ -22,6 +22,7 @@
         android:orientation="vertical">
 
         <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
+            android:id="@+id/ct_top_bar"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_44">
 
