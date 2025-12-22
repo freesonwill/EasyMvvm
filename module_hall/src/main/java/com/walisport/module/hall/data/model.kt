@@ -19,21 +19,7 @@ data class BigVo(
     val bonus: Int // 输赢金额
 )
 
-//BigVo转换为GameAllRankingListData
-fun BigVo.toGameAllRankingListData(): GameAllRankingListData {
-    return GameAllRankingListData(
-        gameIconUrl = avatar.url ,
-        gameName = name ,
-        multiple = multiple ,
-        countryIcon = when (ccy) {
-            "USD" -> arch.cayenne.lib.common.R.drawable.ic_usdt
-            "CNY" -> arch.cayenne.lib.common.R.drawable.ic_cny
-            else -> arch.cayenne.lib.common.R.drawable.ic_usdt
-        } ,
-        symbol = ccy.ccyToSymbol() ,
-        result = bonus.toFloat()
-    )
-}
+
 
 /**
  *
@@ -106,20 +92,7 @@ data class BettingVo(
     val bonus: Int//输赢金额
 )
 
-fun BettingVo.toGameAllRankingListData(): GameAllRankingListData {
-    return GameAllRankingListData(
-        gameIconUrl = avatar.url ,
-        gameName = name ,
-        multiple = multiple ,
-        countryIcon = when (ccy) {
-            "USD" -> arch.cayenne.lib.common.R.drawable.ic_usdt
-            "CNY" -> arch.cayenne.lib.common.R.drawable.ic_cny
-            else -> arch.cayenne.lib.common.R.drawable.ic_usdt
-        } ,
-        symbol = ccy.ccyToSymbol() ,
-        result = bonus.toFloat()
-    )
-}
+
 
 /**
  *
