@@ -224,10 +224,10 @@ class HallFragment : BaseFragment<HallViewModel, FragmentHallBinding>() {
                                 arch.cayenne.lib.common.R.color.white
                             )
                         )
-                        setRoundedBackground(
-                            backgroundColor = tabList[position].colorRes,
-                            show = true
-                        )
+//                        setRoundedBackground(
+//                            backgroundColor = tabList[position].colorRes,
+//                            show = true
+//                        )
                     } else {
                         setTextColor(
                             SkinnableResourceManager.getColor(
