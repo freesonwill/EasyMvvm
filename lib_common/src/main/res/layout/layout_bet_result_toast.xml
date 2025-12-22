@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginHorizontal="7dp"
     android:background="@drawable/bg_bet_result_toast">
 
     <ImageView
@@ -36,6 +37,7 @@
         android:layout_height="wrap_content"
         android:textColor="@color/color_FFFFFF"
         android:textSize="14sp"
+        android:layout_marginBottom="2dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@id/tv_title"
