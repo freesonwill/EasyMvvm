@@ -47,11 +47,11 @@ val SPORT_SERVER_WSS
     get() = run {
         when (BuildConfig.BUILD_TYPE) {
             "qatest" -> {
-                "wss://sport-dev.ra781.com/api/sport/ws"
+                "wss://sport-test.ra781.com/api/sport/ws"
             }
 
             "release" -> {
-                "wss://sport-dev.ra781.com/api/sport/ws"
+                "wss://sport-pre.ra781.com/api/sport/ws"
             }
 
             else -> {
