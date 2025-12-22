@@ -138,7 +138,6 @@ class CommonRepository(
                             resp.orderId,
                             BetResultStatusEnum.getStatusByCode(resp.status)
                         )
-
                         betDao.getDetailByOrderId(resp.orderId)?.let { detail ->
                             val selection = betDao.getSelections(detail.betId)
                             val resultLiteBean = if (selection.size == 1) {
@@ -147,7 +146,9 @@ class CommonRepository(
                                     s.sportId,
                                     s.matchName,
                                     s.name,
-                                    BetResultStatusEnum.getStatusByCode(resp.status) == BetResultStatusEnum.SUCCESS_BET
+                                    BetResultStatusEnum.getStatusByCode(resp.status) == BetResultStatusEnum.SUCCESS_BET,
+                                    detail.inputMoney,
+                                    detail.currency
                                 )
                             } else {
                                 val sportIds = selection.map { s -> s.sportId }
@@ -157,7 +158,9 @@ class CommonRepository(
                                     matchName,
                                     detail.comboK,
                                     detail.comboV,
-                                    BetResultStatusEnum.getStatusByCode(resp.status) == BetResultStatusEnum.SUCCESS_BET
+                                    BetResultStatusEnum.getStatusByCode(resp.status) == BetResultStatusEnum.SUCCESS_BET,
+                                    detail.inputMoney,
+                                    detail.currency
                                 )
                             }
                             resultList.add(resultLiteBean)
