@@ -71,9 +71,9 @@ class BetInfoDialogFragment : BasePositionDialogFragment<EmptyViewModel, Fragmen
             layoutParams.gravity = Gravity.TOP or Gravity.START
             layoutParams.x = locationX - offsetX
             if (tip?.length!! > 16) {
-                layoutParams.y = locationY - clRoot.measuredHeight - 50.dp2px
+                layoutParams.y = locationY - clRoot.measuredHeight - 47.dp2px
             } else {
-                layoutParams.y = locationY - clRoot.measuredHeight - 30.dp2px
+                layoutParams.y = locationY - clRoot.measuredHeight - 27.dp2px
             }
             w.attributes = layoutParams
             mBinding.root.visibility = View.VISIBLE

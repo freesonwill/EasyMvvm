@@ -62,7 +62,7 @@ class GameRankingInfoDialogFragment : BasePositionDialogFragment<EmptyViewModel,
             if (y > 180.dp2px) {
                 ivBgTop.visibility = View.GONE
                 ivBgBottom.visibility = View.VISIBLE
-                layoutParams.y = y
+                layoutParams.y = y - 3.dp2px
             } else {
                 ivBgTop.visibility = View.VISIBLE
                 ivBgBottom.visibility = View.GONE
