@@ -15,6 +15,7 @@ import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
 import arch.cayenne.lib.common.data.constants.BizUrl
 import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getColor
@@ -36,14 +37,23 @@ class FeedbackMainFragment : BaseFragment<FeedbackMainViewModel, FragmentFeedbac
 
     private val manager: UserDataManager by inject(UserDataManager::class.java)
     private var fileChooserCallback: ValueCallback<Array<Uri>>? = null //图片选择后返回h5
+    private val requestImgCode = 101
 
-    private val startForResult =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            result.data?.dataString?.let {
-                fileChooserCallback?.onReceiveValue(arrayOf(Uri.parse(it)))
-            }
-            fileChooserCallback = null;
-        } //监听图片选择
+//    private val startForResult =
+//        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+//            result.data?.dataString?.let {
+//                fileChooserCallback?.onReceiveValue(arrayOf(Uri.parse(it)))
+//            }
+//            fileChooserCallback = null;
+//        } //监听图片选择
+
+//    private val startForResult =
+//        registerForActivityResult(ActivityResultContracts.GetContent()) { result ->
+//            result?.let {
+//                fileChooserCallback?.onReceiveValue(arrayOf(it))
+//            }
+//            fileChooserCallback = null;
+//        }
 
     override fun initView(savedInstanceState: Bundle?) {
         launch {
@@ -108,6 +118,54 @@ class FeedbackMainFragment : BaseFragment<FeedbackMainViewModel, FragmentFeedbac
         }
     }
 
+    /**
+     * 打开图片选择器
+     * */
+    private fun chooseImages() {
+        try {
+            val mimeTypes = arrayOf("image/*")
+            val selectionIntent = Intent(Intent.ACTION_GET_CONTENT).apply {
+                addCategory(Intent.CATEGORY_OPENABLE)
+                setType("image/*")
+                putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes)
+                // 重要：这些标志可以加快处理
+                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+                // 添加标志，告诉系统不要压缩
+                putExtra(Intent.EXTRA_ALLOW_MULTIPLE, false)
+                // 对于 Android 11+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    putExtra(Intent.EXTRA_LOCAL_ONLY, true)
+                }
+            }
+            val chooserIntent = Intent(Intent.ACTION_CHOOSER).apply {
+                putExtra(Intent.EXTRA_INTENT, selectionIntent)
+                // 添加标志避免系统处理
+                addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
+                addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            }
+            startActivityForResult(chooserIntent, requestImgCode)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            "打开图片选择器失败 ${e.message}".loge(TAG)
+        }
+//                    startForResult.launch(chooserIntent)
+    }
+
+    override fun onActivityResult(
+        requestCode: Int,
+        resultCode: Int,
+        data: Intent?
+    ) {//TODO 由于在android9报错，不知道具体原因，先使用老代码
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == requestImgCode && resultCode == android.app.Activity.RESULT_OK) {
+            data?.data?.let {
+                fileChooserCallback?.onReceiveValue(arrayOf(it))
+            }
+            fileChooserCallback = null;
+        }
+    }
+
     override fun initListener() {
     }
 
@@ -143,35 +201,5 @@ class FeedbackMainFragment : BaseFragment<FeedbackMainViewModel, FragmentFeedbac
         super.onDestroy()
     }
 
-    /**
-     * 打开图片选择器
-     * */
-    private fun chooseImages(){
-        val mimeTypes = arrayOf("image/*")
-        val selectionIntent = Intent(Intent.ACTION_GET_CONTENT).apply {
-            addCategory(Intent.CATEGORY_OPENABLE)
-            setType("image/*")
-            putExtra(Intent.EXTRA_MIME_TYPES,mimeTypes)
-            // 重要：这些标志可以加快处理
-            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
-            // 添加标志，告诉系统不要压缩
-            putExtra(Intent.EXTRA_ALLOW_MULTIPLE, false)
-            // 对于 Android 11+
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                putExtra(Intent.EXTRA_LOCAL_ONLY, true)
-            }
-        }
-
-
-        val chooserIntent = Intent(Intent.ACTION_CHOOSER).apply {
-            putExtra(Intent.EXTRA_INTENT, selectionIntent)
-            // 添加标志避免系统处理
-            addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
-            addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        }
-//                    startActivityForResult(chooserIntent, 0)
-        startForResult.launch(chooserIntent)
-    }
 
 }
