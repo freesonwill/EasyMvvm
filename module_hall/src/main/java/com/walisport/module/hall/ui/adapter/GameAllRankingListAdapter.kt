@@ -106,6 +106,22 @@ class GameAllRankingListViewHolder(val item: ItemAllRankingListBinding, val pare
             } else {
                 tvResult.setTextColor(arch.cayenne.lib.common.R.color.color_C0C0C0.getColor())
             }
+
+
+            tvResult.clickNoRepeat {
+                if(tvResult.hasShownEllipsize()){
+                    val location = IntArray(2)
+                    tvResult.getLocationInWindow(location)
+                    val h = ViewUtils.getStatusBarHeight(item.root.context)
+                    val positionX = location.first() + tvResult.width / 2
+                    val positionY = location.last() - h - 1.dp2px
+                    AllInfoDialogFragment.newInstance(
+                        positionX ,
+                        positionY ,
+                        tvResult.text.toString()
+                    ).show(parentFragment.childFragmentManager , TAG)
+                }
+            }
         }
     }
 
