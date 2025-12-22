@@ -29,12 +29,12 @@ class EmojiItemAdapter() :
             when (binding) {
                 is ItemEmojiLayoutBinding -> {
                     val nBinding = binding as ItemEmojiLayoutBinding
-                    nBinding.iv.setOnClickListener(listener)
+                    nBinding.container.setOnClickListener(listener)
                 }
 
                 is ItemRecyclerHorizontalBidLayoutBinding -> {
                     val nBinding = binding as ItemRecyclerHorizontalBidLayoutBinding
-                    nBinding.iv.setOnClickListener(listener)
+                    nBinding.container.setOnClickListener(listener)
                 }
 
                 else -> {}
@@ -45,12 +45,12 @@ class EmojiItemAdapter() :
             when (binding) {
                 is ItemEmojiLayoutBinding -> {
                     val nBinding = binding as ItemEmojiLayoutBinding
-                    nBinding.iv.tag = position
+                    nBinding.container.tag = position
                     nBinding.iv.setImageResource(resId)
                 }
                 is ItemRecyclerHorizontalBidLayoutBinding -> {
                     val nBinding = binding as ItemRecyclerHorizontalBidLayoutBinding
-                    nBinding.iv.tag = position
+                    nBinding.container.tag = position
                     nBinding.iv.setImageResource(resId)
                 }
                 else -> {}

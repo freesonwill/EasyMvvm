@@ -149,6 +149,7 @@
             android:layout_gravity="center_vertical"
             android:layout_marginEnd="@dimen/dp_12"
             android:src="@drawable/icon_input_bet"
+            android:stateListAnimator="@animator/layout_alpha_animator"
             app:layout_constraintRight_toLeftOf="@id/iv_emoji"
             app:layout_constraintTop_toTopOf="@id/iv_emoji" />
 
@@ -157,6 +158,7 @@
             android:layout_width="@dimen/dp_24"
             android:layout_height="@dimen/dp_24"
             android:layout_marginRight="@dimen/dp_30"
+            android:stateListAnimator="@animator/layout_alpha_animator"
             android:src="@drawable/icon_input_emoji"
             app:layout_constraintBottom_toBottomOf="@id/chat_ll_input"
             app:layout_constraintRight_toRightOf="parent"
@@ -189,6 +191,7 @@
                     android:layout_height="@dimen/dp_28"
                     android:layout_marginRight="@dimen/dp_14"
                     android:visibility="gone"
+                    android:stateListAnimator="@animator/layout_alpha_animator"
                     android:src="@drawable/icon_input_bet"
                     app:layout_constraintBottom_toBottomOf="@id/iv_bottom_emoji"
                     app:layout_constraintRight_toLeftOf="@id/iv_bottom_emoji"
@@ -202,6 +205,7 @@
                     app:layout_constraintRight_toRightOf="parent"
                     android:layout_marginRight="@dimen/dp_12"
                     android:visibility="gone"
+                    android:stateListAnimator="@animator/layout_alpha_animator"
                     app:layout_constraintTop_toTopOf="@id/hot_recyclerview"
                     app:layout_constraintBottom_toBottomOf="@id/hot_recyclerview"
                     />
