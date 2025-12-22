@@ -12,6 +12,7 @@ import android.widget.EditText
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.os.bundleOf
+import androidx.core.view.doOnAttach
 import androidx.core.view.get
 import androidx.core.view.isVisible
 import androidx.core.widget.NestedScrollView
@@ -65,7 +66,12 @@ class ComboBetFragment2 : BaseFragment<ComboBetViewModel, FragmentComboBet2Bindi
     }
 
     private val keyboard:BetMoneyKeyboard by lazy {
-        BetMoneyKeyboard(requireContext()).apply { id = R.id.main }
+        BetMoneyKeyboard(requireContext()).apply {
+            id = R.id.main
+            doOnAttach {
+                getChildAt(0).setPadding(0,6.dp2px,0,6.dp2px)
+            }
+        }
     }
 
 
@@ -250,7 +256,7 @@ class ComboBetFragment2 : BaseFragment<ComboBetViewModel, FragmentComboBet2Bindi
             setSumBetMoney(data)
         }
         mViewModel.onBalanceListener.observe(viewLifecycleOwner) {
-            val money = "${mViewModel.moneySymbol} ${(it?.balance?:0L).getFormalMoney()}"
+            val money = "${mViewModel.moneySymbol} ${(it?.balance?:0L).getFormalMoney(false)}"
             mBinding.tvBalance.text = money
         }
         mViewModel.onForceUpdateListener.observe(viewLifecycleOwner) {
@@ -304,14 +310,14 @@ class ComboBetFragment2 : BaseFragment<ComboBetViewModel, FragmentComboBet2Bindi
 
     private fun setSumBetMoney(data: List<ComboMultiBetBean>) {
         val sumMoney = data.sumOf { it.amount }
-        val money = "${mViewModel.moneySymbol}${sumMoney.getFormalMoney()}"
+        //val money = "${mViewModel.moneySymbol}${sumMoney.getFormalMoney()}"
 
         val winMoney = data.sumOf { it.maxWinMoney }
         val onlyBetOnMain = data.drop(1).all { it.inputMoney == 0L } //仅主投注的才显示预计投注
 
         mBinding.tvBetMoneyHint.isVisible = (winMoney != 0L) && onlyBetOnMain
         mBinding.tvBetMoney.isVisible = (winMoney != 0L) && onlyBetOnMain
-        val sumWinMoney = "${mViewModel.moneySymbol}${winMoney.getFormalMoney()}"
+        val sumWinMoney = "${mViewModel.moneySymbol}${winMoney.getFormalMoney(false)}"
         mBinding.tvBetMoney.text = sumWinMoney
     }
 

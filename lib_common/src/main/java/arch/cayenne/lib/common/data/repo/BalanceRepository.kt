@@ -5,6 +5,8 @@ import arch.cayenne.lib.common.data.constants.BaseCurrencyData
 import arch.cayenne.lib.common.data.constants.UserDataKey
 import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
+import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
+import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoneyForScale
 import arch.cayenne.lib.database.dao.CurrencyConfigDao
 import arch.cayenne.lib.database.dao.InfoDao
 import arch.cayenne.lib.database.dao.UserDataDao
@@ -14,6 +16,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
+import java.math.BigDecimal
+import java.math.RoundingMode
+import java.text.NumberFormat
 import java.util.Locale
 
 class BalanceRepository(
@@ -23,8 +28,6 @@ class BalanceRepository(
     private val currencyConfigDao: CurrencyConfigDao,
     private val manager: UserDataManager,
 ): BaseRepository() {
-
-    fun observeBalance() = userDataDao.observeBalance().map { it ?: 0L }
 
     fun observeCurrency() = infoDao.observeCurrency().map { it?: "" }
 
@@ -38,21 +41,35 @@ class BalanceRepository(
         return infoDao.getCurrency2() ?: "CNY"
     }
 
+    fun setDefaultCurrency(ccy: String) {
+        manager.setKeyValue(UserDataKey.KEY_DEFAULT_CURRENCY, ccy)
+    }
+
+
     private suspend fun mappingCurrency(user: UserDataBean?) : Pair<List<BaseCurrencyData.CurrencyContentData2>, List<BaseCurrencyData.CurrencyContentData2>> {
         val currencyList = currencyConfigDao.getCurrencyConfigList()
         val fiat = arrayListOf<BaseCurrencyData.CurrencyContentData2>()
         val crypto = arrayListOf<BaseCurrencyData.CurrencyContentData2>()
         if (user == null) return Pair(fiat, crypto)
         val showAllCurrency =  manager.getValue(UserDataKey.KEY_SHOW_ALL_CURRENCY, false)//先暫時為false
-
-        currencyList.forEach {
-            if (!it.virtual) {
+        val exchangeAmountUnit = currencyList.find { it.ccy == manager.getValue<String>(UserDataKey.KEY_DEFAULT_CURRENCY) }?.unit ?: ""
+        currencyList.forEach { currency ->
+            val wallet = user.list.find { it.currency == currency.ccy }
+            if (!currency.virtual) {
                 fiat.add(
-                    it.toCurrencyContentData2((user.balanceWallet[it.ccy]?:0L))
+                    currency.toCurrencyContentData2(
+                        wallet?.balance ?: 0L,
+                        null,  //法幣不需要匯率轉換,
+                        "",
+                    )
                 )
             } else {
                 crypto.add(
-                    it.toCurrencyContentData2((user.balanceWallet[it.ccy]?:0L))
+                    currency.toCurrencyContentData2(
+                        wallet?.balance ?: 0L,
+                        wallet?.convertedAmount,
+                        exchangeAmountUnit,
+                    )
                 )
             }
         }
@@ -65,9 +82,8 @@ class BalanceRepository(
 
     fun observeUserCurrency() = userDataDao.observeUser()
         .combine(
-            manager.observe<Int?>(UserDataKey.KEY_DEFAULT_CURRENCY)
+            manager.observe<String?>(UserDataKey.KEY_DEFAULT_CURRENCY)
                 .onStart {
-                    // 在開始訂閱時，主動發射一次當前儲存的值
                     emit(manager.getValue(UserDataKey.KEY_DEFAULT_CURRENCY))
                 }
         ) { user, defaultCurrency ->
@@ -76,51 +92,36 @@ class BalanceRepository(
             return@combine BaseCurrencyData.CurrencyContentData2(
                 id = 0,
                 icon = "",
+                ccy = "",
                 currencyName = "",
                 amount = 0L,
                 amountStr = 0L.getFormalMoney(),
+                exchangeAmount = "",
                 unit = ""
             )
         }
 
         val (fait, crypto) = mappingCurrency(user)
         //之前有紀錄預設顯示的錢包，並且在原本user的內容中
-        if (defaultCurrency != null && defaultCurrency != 0) {
-            val currency = fait.find { it.id == defaultCurrency }
-                ?: crypto.find { it.id == defaultCurrency }
+        if (defaultCurrency != null) {
+            val currency = fait.find { it.ccy == defaultCurrency }
+                ?: crypto.find { it.ccy == defaultCurrency }
             if (currency != null) {
                 return@combine currency
             }
         }
-        //找預設語言的錢包，針對其使語言的特別處理，中日韓顯示該國貨幣，其餘顯示美金
-        val currentLanguage = Locale.getDefault().language
-        val currencyList = currencyConfigDao.getCurrencyConfigList()
-        if (currentLanguage == "zh") {
-            val currency = fait.find { it.unit == "¥" }?: currencyList.find { it.unit == "¥" }?.toCurrencyContentData2(0L)
-            if (currency != null) {
-                return@combine currency
-            }
-        } else {
-            return@combine fait.find { it.unit == "$" }
-                ?: currencyList.find { it.unit == "$" }?.toCurrencyContentData2(0L)
-                ?: fait.firstOrNull()
-                ?: BaseCurrencyData.CurrencyContentData2(
-                    id = 0,
-                    icon = "",
-                    currencyName = "",
-                    amount = 0L,
-                    amountStr = 0L.getFormalMoney(),
-                    unit = ""
-                )
-        }
-        return@combine BaseCurrencyData.CurrencyContentData2(
-            id = 0,
-            icon = "",
-            currencyName = "",
-            amount = 0L,
-            amountStr = 0L.getFormalMoney(),
-            unit = ""
-        )
+        return@combine fait.firstOrNull()
+            ?: crypto.firstOrNull()
+            ?: BaseCurrencyData.CurrencyContentData2(
+                id = 0,
+                icon = "",
+                ccy = "",
+                currencyName = "",
+                amount = 0L,
+                amountStr = 0L.getFormalMoney(),
+                exchangeAmount = "",
+                unit = ""
+            )
     }
 
     suspend fun getUserCurrency(): Pair<List<BaseCurrencyData.CurrencyContentData2>, List<BaseCurrencyData.CurrencyContentData2>> {
@@ -129,13 +130,19 @@ class BalanceRepository(
 
     }
 
-    private fun CurrencyBean.toCurrencyContentData2(amount: Long): BaseCurrencyData.CurrencyContentData2 {
+    private fun CurrencyBean.toCurrencyContentData2(
+        amount: Long,
+        exchangeAmount: Long?,
+        exchangeAmountUnit: String
+    ): BaseCurrencyData.CurrencyContentData2 {
         return BaseCurrencyData.CurrencyContentData2(
             id = id,
             icon = icon,
+            ccy = ccy,
             currencyName = name,
             amount = amount,
-            amountStr = amount.getFormalMoney(),
+            amountStr = if (this.virtual && this.ccy != "USDT") amount.getFormalMoney(1) else amount.getFormalMoney(), //TODO 以後會加上rate，根據不同的需求除不同的rate
+            exchangeAmount = if(exchangeAmount == null) "" else "$exchangeAmountUnit${exchangeAmount.getFormalMoney()}",
             unit = unit
         )
     }
@@ -149,15 +156,25 @@ class BalanceRepository(
         val crypto = arrayListOf<BaseCurrencyData.CurrencyContentData2>()
         if (user == null) return Pair(fiat, crypto)
         val showAllCurrency =  manager.getValue(UserDataKey.KEY_SHOW_ALL_CURRENCY, false)//先暫時為false
+        val exchangeAmountUnit = currencyList.find { it.ccy == manager.getValue<String>(UserDataKey.KEY_DEFAULT_CURRENCY) }?.unit ?: ""
 
-        currencyList.forEach {
-            if (!it.virtual) {
+        currencyList.forEach { currency ->
+            val wallet = user.list.find { currency.ccy == it.currency }
+            if (!currency.virtual) {
                 fiat.add(
-                    it.toCurrencyContentData2((user.balanceWallet[it.ccy]?:0L))
+                    currency.toCurrencyContentData2(
+                        wallet?.balance ?:0L,
+                        null,
+                        "",
+                    )
                 )
             } else {
                 crypto.add(
-                    it.toCurrencyContentData2((user.balanceWallet[it.ccy]?:0L))
+                    currency.toCurrencyContentData2(
+                        wallet?.balance ?:0L,
+                        wallet?.convertedAmount,
+                        exchangeAmountUnit,
+                    )
                 )
             }
         }
@@ -172,5 +189,21 @@ class BalanceRepository(
     fun keywordToSqlPattern(keyword: String): String {
         if (keyword.isEmpty()) return "%"
         return "%" + keyword.uppercase().map { "$it%" }.joinToString("")
+    }
+
+    fun Long.getFormalMoney(divisor: Int = 100): String {
+        if (this == 0L) return "0.00"
+
+        val value = this.toBigDecimal()
+            .divide(BigDecimal(divisor), 8, RoundingMode.DOWN)
+
+        // 是否為整數（小數部分 = 0）
+        return if (value.stripTrailingZeros().scale() <= 0) {
+            // 整數 → 補 .00
+            value.setScale(2, RoundingMode.DOWN).toPlainString()
+        } else {
+            // 非整數 → 去掉多餘 0
+            value.stripTrailingZeros().toPlainString()
+        }
     }
 }

@@ -5,8 +5,9 @@
     android:layout_width="81dp"
     android:layout_height="41dp"
     android:layout_marginTop="@dimen/dp_4"
-    android:layout_marginStart="@dimen/dp_2"
-    android:layout_marginEnd="@dimen/dp_7"
+    android:layout_marginLeft="@dimen/dp_9"
+    android:layout_marginRight="@dimen/dp_4"
+    android:stateListAnimator="@animator/layout_alpha_animator"
     >
 
     <arch.cayenne.lib.skin.widget.SkinnableImageView

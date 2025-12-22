@@ -12,10 +12,14 @@
     </fragment>
 
     <fragment
-        android:id="@+id/orderSportPageFragment"
-        android:name="arch.cayenne.module.order.ui.fragment.OrderSportPageFragment"
+        android:id="@+id/homeOrderFragment"
+        android:name="arch.cayenne.module.order.ui.fragment.HomeOrderFragment"
         android:label="fragment_bet_choose"
         tools:layout="@layout/fragment_choose_bet_layout">
-        <deepLink app:uri="walisport://module_betslip/orderSportPageFragment" />
+        <argument
+            android:name="isShare"
+            app:argType="boolean"
+            android:defaultValue="false"/>
+        <deepLink app:uri="walisport://module_betslip/homeOrderFragment" />
     </fragment>
 </navigation>

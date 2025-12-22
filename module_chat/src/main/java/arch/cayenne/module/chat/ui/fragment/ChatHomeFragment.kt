@@ -24,6 +24,7 @@ import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.base.utils.ext.FragmentExt.setFragmentResultListener
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.data.constants.MsgType
+import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavResultExt.observeResult
@@ -90,6 +91,11 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
             it.layoutManager =
                 LinearLayoutManager(it.context, LinearLayoutManager.HORIZONTAL, false)
             val adapter = EmojiHotItemAdapter()
+            adapter.setItemListener(object:RecyclerItemListener<EmojiModel>{
+                override fun onItemClick(item: EmojiModel?, position: Int) {
+                    item?.let { it1 -> addEmojiData(it1) }
+                }
+            })
             adapter.submitList(mViewModel.getHotRecycler())
             it.adapter = adapter
         }
@@ -120,6 +126,11 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
     fun setMatchLiveData(matchId: LiveData<Long>?, mainMatch: LiveData<LiveMatchBean>?) {
         matchIdLiveData = matchId
         this.mainMatch = mainMatch
+//        TODO 直播间进入聊天室逻辑待定
+        if(matchId?.value != null && mainMatch == null){
+            mViewModel.setArguments(matchId.value)
+            mViewModel.startChatServer()
+        }
     }
 
     /**
@@ -127,7 +138,7 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
      * */
     private fun setMainChatStatus() {
         lifecycleScope.launchWhenResumed {
-            observeMatchId(-1)
+            observeMatchId(102)
             observeLiveMatch(null)
         }
     }
@@ -142,10 +153,11 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
     private fun observeLiveMatch(match: LiveMatchBean?) {
         mViewModel.isMainSoft = match == null
         updateChatUi(match)
-        //比赛开始后开启聊天服务
-        if (match?.liveInfo?.charRoom == true || match == null) {
+
+        //比赛开始后开启聊天服务 TODO 直播间进入聊天室逻辑待定
+//        if (match?.liveInfo?.charRoom == true || match == null) {
             mViewModel.startChatServer()
-        }
+//        }
     }
 
 
@@ -209,8 +221,12 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
                     SoftKeyBoardAnim.etAnimWhenEtContentChange(
                         mBinding,
                         mViewModel.currentKeyBoardType,
-                        onAnimStart = { },
-                        onAnimEnd = {  })
+                        onAnimStart = {
+                            updateInputIcon(it)
+                        },
+                        onAnimEnd = {
+                            updateInputIcon(it)
+                        })
                 }
             }
         }
@@ -237,6 +253,10 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
         }
         mViewModel.etDelLiveData.observe(viewLifecycleOwner) {
             delEtInput()
+        }
+        mViewModel.sendTextLiveData.observe(viewLifecycleOwner) {
+            "sendTextLiveData ".logd("aaa")
+            sendText()
         }
     }
 
@@ -267,7 +287,7 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
 //        mBinding.ivAt.setOnClickListener(listener)
 //        mBinding.ivBottomAt.setOnClickListener(listener)
         mBinding.ivBet.setOnClickListener(listener)
-//        mBinding.ivBottomBet.setOnClickListener(listener)
+        mBinding.ivBottomBet.setOnClickListener(listener)
     }
 
     private fun toChooseBet() {
@@ -384,13 +404,13 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
 //            }
 //            ivBottomAt.setOnTouchListener { v, event -> return@setOnTouchListener true }
 //            ivBottomBet.setOnTouchListener { v, event -> return@setOnTouchListener true }
-//            ivBottomEmoji.setOnTouchListener { v, event ->
-//                if (event.action == MotionEvent.ACTION_DOWN) {
-//                    mViewModel.updateKeyBoardUi(KeyBoardType.EMOJI, 6)
-//                    chatAtHelper.dismissWindow()
-//                }
-//                return@setOnTouchListener true
-//            }
+            ivBottomEmoji.setOnTouchListener { v, event ->
+                if (event.action == MotionEvent.ACTION_DOWN) {
+                    mViewModel.updateKeyBoardUi(KeyBoardType.EMOJI, 6)
+                    chatAtHelper.dismissWindow()
+                }
+                return@setOnTouchListener true
+            }
             ivLanguage.setOnClickListener {
                 showLanguageDialog()
             }
@@ -424,8 +444,12 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
             SoftKeyBoardAnim.etAnimWhenEtContentChange(
                 mBinding,
                 softKeyBoardManager.clickKeyBoardType,
-                onAnimStart = { },
-                onAnimEnd = {  })
+                onAnimStart = {
+                    updateInputIcon(it)
+                },
+                onAnimEnd = {
+                    updateInputIcon(it)
+                })
         }
     }
 
@@ -503,7 +527,7 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
             llContent.layoutParams.height =
                 if (isReset) LayoutParams.MATCH_PARENT else mViewModel.keyBoardHeight
             main.layoutParams.height =
-                if (isReset) LayoutParams.MATCH_PARENT else mViewModel.keyBoardHeight + softKeyBoardManager.emojiKeyBoardHeight
+                if (isReset) LayoutParams.MATCH_PARENT else mViewModel.keyBoardHeight + softKeyBoardManager.emojiKeyBoardHeight+40.dp2px
             main.requestLayout()
 //            lifecycleScope.launch {
 //                delay(500)
@@ -522,6 +546,7 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
 //        updateKeyboardView(false)
         emojiLayoutSize(true)
         emojiPopupListen?.invoke(false)
+        mViewModel.listenCurrentKeyBoardType(KeyBoardType.CHAT)
 
     }
 
@@ -532,6 +557,7 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
 //        updateKeyboardView(true)
         emojiLayoutSize(false)
         emojiPopupListen?.invoke(true)
+        mViewModel.listenCurrentKeyBoardType(KeyBoardType.SOFT_KEYBOARD)
     }
 
     /**
@@ -542,6 +568,7 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
 //        softKeyBoardManager.etRequestFocus()
         emojiLayoutSize(false)
         emojiPopupListen?.invoke(true)
+        mViewModel.listenCurrentKeyBoardType(KeyBoardType.EMOJI)
     }
 
     private fun updateKeyboardView(isVisible: Boolean) {
@@ -550,13 +577,12 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
 
     private fun updateInputIcon(isVisible: Boolean) {
         mBinding.apply {
-            ivAt.isVisible = true //isVisible
-            ivBet.isVisible = true //isVisible
-            ivEmoji.isVisible = true //isVisible
+//            ivAt.isVisible =  isVisible
+            ivBet.isVisible = isVisible
+            ivEmoji.isVisible =  isVisible
             ivLanguage.isVisible = isVisible
-//            ivBottomAt.isVisible = false //!isVisible
-//            ivBottomBet.isVisible = false // !isVisible
-//            ivBottomEmoji.isVisible = false // !isVisible
+            ivBottomBet.isVisible =   !isVisible
+            ivBottomEmoji.isVisible =  !isVisible
         }
     }
 
@@ -623,7 +649,13 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
                                     ivBet,
                                     ivEmoji,
                                     ivLanguage,
-                                    chatLlInput
+                                    chatLlInput,
+                                    animStart = {
+                                       updateInputIcon(true)
+                                    },
+                                    animEnd = {
+                                       updateInputIcon(offset == 0)
+                                    }
                                 )
                             )
                         } else {
@@ -671,6 +703,7 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
 
 
     private fun delEtInput() {
+        "delEtInput ".logd("aaa")
         mBinding.chatEtInput.apply {
             if (text?.length == 0) {
                 return@apply
@@ -687,7 +720,7 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
     private fun addEmojiData(emojiData: EmojiModel) {
         val emojiPattern: Pattern = Pattern.compile(BID_EMOJI_REGEX)
         if (emojiPattern.matcher(emojiData.key).find()) {
-            keyboardChangeClick(KeyBoardType.CHAT, 5)
+//            keyboardChangeClick(KeyBoardType.CHAT, 5)
             mViewModel.createBidLocalMsg(emojiData.key)?.let { mViewModel.sendMsgToChat(it) }
             return
         }

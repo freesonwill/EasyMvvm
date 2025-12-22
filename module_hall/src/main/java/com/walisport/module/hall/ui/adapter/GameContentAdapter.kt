@@ -12,7 +12,6 @@ import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
-import com.bumptech.glide.request.RequestOptions
 import com.walisport.module.hall.R
 import com.walisport.module.hall.data.GameContentData
 import com.walisport.module.hall.data.HotColdType
@@ -50,7 +49,7 @@ class GameContentViewHolder(private val onItemClick: (GameContentData) -> Unit,v
         thumbBitmap?.let { bitmap ->
             val placeholderDrawable = BitmapDrawable(item.root.context.resources, bitmap)
             Glide.with(item.root)
-                .load(data.avatar.url)
+                .load(data.avatar.url.trim())
                 .placeholder(placeholderDrawable)
                 .transition(DrawableTransitionOptions.withCrossFade()) // 淡入动画
                 .into(item.ivGameCover)
@@ -60,9 +59,9 @@ class GameContentViewHolder(private val onItemClick: (GameContentData) -> Unit,v
         if (data.hotOrCold != HotColdType.NONE) {
             item.llBack.visibility = ViewGroup.VISIBLE
             if (data.hotOrCold == HotColdType.HOT) {
-                item.ivHot.setImageResource(R.drawable.ic_game_hot)
+                item.ivHot.setImageResource(R.drawable.ic_game_flame)
             } else {
-                item.ivHot.setImageResource(R.drawable.ic_game_cold)
+                item.ivHot.setImageResource(R.drawable.ic_game_snow)
             }
             item.tvBack.text = "${data.reward}%"
             item.llCount.apply {

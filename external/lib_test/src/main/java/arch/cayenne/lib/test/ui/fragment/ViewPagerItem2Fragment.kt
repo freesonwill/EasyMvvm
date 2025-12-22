@@ -2,11 +2,15 @@ package arch.cayenne.lib.test.ui.fragment
 
 import android.content.Intent
 import android.os.Bundle
+import androidx.core.os.bundleOf
+import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.navArgs
 import arch.cayenne.lib.base.ui.viewmodel.EmptyViewModel
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
+import arch.cayenne.lib.test.R
 import arch.cayenne.lib.test.databinding.FragmentTestViewPagerItem2Binding
 import kotlin.reflect.KClass
 
@@ -23,6 +27,15 @@ class ViewPagerItem2Fragment : BaseFragment<EmptyViewModel, FragmentTestViewPage
     override fun initView(savedInstanceState: Bundle?) {
         "initView~~~~~~>args:$args,arguments:$arguments,$this".logd(TAG)
         mBinding.tv.text = args.title
+
+        launch(Lifecycle.State.RESUMED) {
+            "ViewPagerItem2Fragment resumed~~~~~~>".logd(TAG)
+        }
+        childFragmentManager
+            .beginTransaction()
+            .add(R.id.fl_container, FourthFragment().apply {
+                arguments = bundleOf("title" to "From ViewPagerItem2Fragment")
+            }).commit()
     }
 
     override fun initListener() {
@@ -30,8 +43,9 @@ class ViewPagerItem2Fragment : BaseFragment<EmptyViewModel, FragmentTestViewPage
             //navigate(ViewPagerItem2FragmentDirections.actionTextViewScreenToHomeFragment3())
             //val navController = (requireActivity() as BaseNavActivity).findNavController()
             //navController.navigate(ViewPagerFragmentDirections.actionViewPagerItem2FragmentToHomeFragment())
-            requireActivity().navigate(ViewPagerFragmentDirections.actionViewPagerItem2FragmentToHomeFragment())
-        //            navigate(ViewPagerItem2FragmentDirections.actionTextViewScreenToHomeFragment3())
+            //requireActivity().navigate(ViewPagerFragmentDirections.actionViewPagerItem2FragmentToHomeFragment())
+            navigate(R.id.homeFragment3)
+            //navigate(ViewPagerItem2FragmentDirections.actionTextViewScreenToHomeFragment3())
         }
         mBinding.root.setOnClickListener {
             startActivity(Intent(requireActivity(),Class.forName("com.walisport.app.ui.MainActivity")))

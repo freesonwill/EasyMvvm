@@ -8,10 +8,10 @@
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tv_bet_info"
-        android:layout_width="216dp"
+        android:layout_width="215dp"
         android:layout_height="wrap_content"
         android:paddingHorizontal="@dimen/dp_12"
-        android:paddingVertical="@dimen/dp_13"
+        android:paddingVertical="@dimen/dp_11"
         android:gravity="start"
         android:maxLines="2"
         android:textColor="@color/color_000000"

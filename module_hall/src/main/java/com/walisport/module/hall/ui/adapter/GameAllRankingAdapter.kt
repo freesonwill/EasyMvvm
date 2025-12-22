@@ -10,18 +10,19 @@ import arch.cayenne.lib.common.utils.CustomTabIndicatorUtils
 import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
+import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.setupHorizontalScrollDegree
-import arch.cayenne.lib.common.utils.ext.setupViewPagerScroll
 import arch.cayenne.lib.common.utils.ext.startFadeAnim
 import com.google.android.material.tabs.TabLayout
-import com.google.android.material.tabs.TabLayoutMediator
 import com.walisport.module.hall.R
+import com.walisport.module.hall.data.HallGameTab
 import com.walisport.module.hall.data.HallGameTabDefault
 import com.walisport.module.hall.databinding.ItemGameAllRankingBinding
-import com.walisport.module.hall.ui.fragment.GameAllRankingListFragment
+import com.walisport.module.hall.ui.fragment.LatestBetFragment
 import com.walisport.module.hall.ui.fragment.GameAllRankingTodayFragment
 import com.walisport.module.hall.ui.fragment.GameRankingInfoDialogFragment
+import com.walisport.module.hall.ui.fragment.HighStakesFragment
 
 class GameAllRankingAdapter(
     val parentFragmentManager : androidx.fragment.app.FragmentManager,
@@ -56,18 +57,15 @@ class GameAllRankingViewHolder(
     val item: ItemGameAllRankingBinding
 ): BaseViewHolder(item) {
     private val mockTabList = arrayListOf(
-        HallGameTabDefault(
-            res = R.drawable.ic_tab_hall_recent,
+        HallGameTab(
             _title = R.string.tab_ranking_newest.getString(),
-            _page = { GameAllRankingListFragment.newInstance() }
+            _page = { LatestBetFragment.newInstance() }
         ),
-        HallGameTabDefault(
-            res = R.drawable.ic_tab_hall_all,
+        HallGameTab(
             _title = R.string.tab_ranking_biggest.getString(),
-            _page = { GameAllRankingListFragment.newInstance() }
+            _page = { HighStakesFragment.newInstance() }
         ),
-        HallGameTabDefault(
-            res = R.drawable.ic_tab_hall_table,
+        HallGameTab(
             _title = R.string.tab_ranking_today.getString(),
             _page = { GameAllRankingTodayFragment.newInstance() }
         )
@@ -102,6 +100,7 @@ class GameAllRankingViewHolder(
                 override fun onTabReselected(tab: TabLayout.Tab?) {}
             })
 
+            ivRankingInfo.addScaleOnTouchAnimation()
             ivRankingInfo.clickNoRepeat {
                 val location = IntArray(2)
                 ivRankingInfo.getLocationInWindow(location)

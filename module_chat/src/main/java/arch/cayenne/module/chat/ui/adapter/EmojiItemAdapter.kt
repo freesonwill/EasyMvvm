@@ -10,8 +10,8 @@ import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
 import arch.cayenne.module.chat.data.compare.EmojiCompare
 import arch.cayenne.module.chat.data.constants.EmojiTypeEnum
 import arch.cayenne.module.chat.data.model.EmojiModel
-import arch.cayenne.module.chat.databinding.ItemBidEmojiLayoutBinding
 import arch.cayenne.module.chat.databinding.ItemEmojiLayoutBinding
+import arch.cayenne.module.chat.databinding.ItemRecyclerHorizontalBidLayoutBinding
 
 
 class EmojiItemAdapter() :
@@ -32,8 +32,8 @@ class EmojiItemAdapter() :
                     nBinding.iv.setOnClickListener(listener)
                 }
 
-                is ItemBidEmojiLayoutBinding -> {
-                    val nBinding = binding as ItemBidEmojiLayoutBinding
+                is ItemRecyclerHorizontalBidLayoutBinding -> {
+                    val nBinding = binding as ItemRecyclerHorizontalBidLayoutBinding
                     nBinding.iv.setOnClickListener(listener)
                 }
 
@@ -48,8 +48,8 @@ class EmojiItemAdapter() :
                     nBinding.iv.tag = position
                     nBinding.iv.setImageResource(resId)
                 }
-                is ItemBidEmojiLayoutBinding -> {
-                    val nBinding = binding as ItemBidEmojiLayoutBinding
+                is ItemRecyclerHorizontalBidLayoutBinding -> {
+                    val nBinding = binding as ItemRecyclerHorizontalBidLayoutBinding
                     nBinding.iv.tag = position
                     nBinding.iv.setImageResource(resId)
                 }
@@ -72,7 +72,7 @@ class EmojiItemAdapter() :
         val binding = if (viewType == EmojiTypeEnum.NORMAL.value)
             ItemEmojiLayoutBinding.inflate(inflater, parent, false)
         else
-            ItemBidEmojiLayoutBinding.inflate(inflater, parent, false)
+            ItemRecyclerHorizontalBidLayoutBinding.inflate(inflater, parent, false)
         return binding
     }
 

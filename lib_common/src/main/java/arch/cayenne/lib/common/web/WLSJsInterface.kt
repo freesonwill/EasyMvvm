@@ -82,7 +82,11 @@ class WLSJsInterface(
                     if (this.webView.canGoBack()) {
                         this.webView.goBack()
                     } else {
-                        this.webView.findNavController().navigateUp()
+                       try{ //弹框没有对应的navController，增加try-catch避免崩溃
+                           this.webView.findNavController().navigateUp()
+                       }catch (e:Exception){
+                           e.printStackTrace()
+                       }
                     }
                 }
             }
@@ -95,7 +99,11 @@ class WLSJsInterface(
                         this.webView.post {
                             // 退出网页并跳转至客服页面
                             this.webView.jump2CustomerService()
-                            this.webView.findNavController().popBackStack()
+                          try {//  弹框没有对应的navController，增加try-catch避免崩溃
+                              this.webView.findNavController().popBackStack()
+                            }catch (e:Exception){
+                              e.printStackTrace()
+                          }
                         }
                     }
                 }

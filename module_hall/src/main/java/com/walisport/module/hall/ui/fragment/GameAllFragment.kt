@@ -12,6 +12,7 @@ import arch.cayenne.lib.common.utils.ext.checkCurrentScrollState
 import arch.cayenne.lib.common.utils.ext.onScrolledOver
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.helper.BackToTopHelper
+import com.walisport.module.hall.data.Category
 import com.walisport.module.hall.data.GameAllContentData
 import com.walisport.module.hall.databinding.FragmentGameAllBinding
 import com.walisport.module.hall.ui.adapter.GameAllHeaderAdapter
@@ -24,10 +25,12 @@ import com.walisport.module.hall.ui.viewmodel.HallViewModel
 import com.walisport.module.live.data.EventClick
 import kotlin.reflect.KClass
 
-class GameAllFragment: BaseFragment<GameAllViewModel, FragmentGameAllBinding>() {
+class GameAllFragment : BaseFragment<GameAllViewModel, FragmentGameAllBinding>() {
     companion object {
         fun newInstance() = GameAllFragment()
     }
+
+    var index: Int = 0
 
     private val headerAdapter by lazy {
         GameAllHeaderAdapter(object : GameAllHeaderViewHolder.OnHeaderItemClickListener {
@@ -36,20 +39,20 @@ class GameAllFragment: BaseFragment<GameAllViewModel, FragmentGameAllBinding>() 
             }
 
             override fun onCompetitionItemClick() {
-                navigate(arch.cayenne.lib.res.R.string.nav_module_competition_fragment.deeplink() )
+                navigate(arch.cayenne.lib.res.R.string.nav_module_competition_fragment.deeplink())
             }
         })
     }
 
     private val listAdapter by lazy {
-        GameAllListAdapter(object :GameAllListViewHolder.OnAllItemClickListener {
+        GameAllListAdapter(object : GameAllListViewHolder.OnAllItemClickListener {
             override fun onItemClick(data: GameAllContentData) {
                 navigate(Uri.parse("walisport://module_hall/hallCategoryFragment?category=${data.category}&name=${data.name}"))
             }
 
             override fun onChildItemClick() {
                 mViewModel.setIsClickGame(EventClick.EVENT_CLICK_ACK_TRUE.type)
-                navigate(arch.cayenne.lib.res.R.string.nav_module_gamedetail.deeplink() )
+                navigate(arch.cayenne.lib.res.R.string.nav_module_gamedetail.deeplink())
             }
         })
     }
@@ -62,11 +65,9 @@ class GameAllFragment: BaseFragment<GameAllViewModel, FragmentGameAllBinding>() 
     }
 
 
-
     override val vbClass: KClass<FragmentGameAllBinding> = FragmentGameAllBinding::class
     override val vmClass: KClass<GameAllViewModel> = GameAllViewModel::class
     private val hallViewModel: HallViewModel by sharedViewModel<HallViewModel, HallFragment>()
-    private var list : MutableList<GameAllContentData> = mutableListOf()
     override fun initView(savedInstanceState: Bundle?) {
         with(mBinding) {
             val concatAdapter = ConcatAdapter(
@@ -76,9 +77,15 @@ class GameAllFragment: BaseFragment<GameAllViewModel, FragmentGameAllBinding>() 
             )
             rvContent.layoutManager = LinearLayoutManager(requireContext())
             rvContent.adapter = concatAdapter
+            rvContent.setItemViewCacheSize(10)
             BackToTopHelper(rvContent, ivBackToTop, false)
         }
-        mViewModel.mockAllList(1)
+
+    }
+
+    override fun initData() {
+        mViewModel.getAllList()
+        super.initData()
     }
 
     override fun initListener() {
@@ -89,23 +96,40 @@ class GameAllFragment: BaseFragment<GameAllViewModel, FragmentGameAllBinding>() 
         })
     }
 
+
+    //循环请求数据
     override suspend fun createObserver() {
+        //title列表
         mViewModel.gameRecentList.observe(viewLifecycleOwner) {
             it.let {
-                list.addAll(it)
-                listAdapter.submitList(list)
+                mViewModel.queryGameList(it[index].category, it[index])
+                index += 1
             }
+        }
+
+        //接收全部参数
+        mViewModel.gameListLiveData.observe(viewLifecycleOwner) {
+            listAdapter.submitList(it)
+            //LogUtils.e("response------all--getGameTitleSize-${mViewModel.getGameTitleSize()},index-${index}")
+            if (index < (mViewModel.getGameTitleSize())) {
+                var gameData = mViewModel.getGame(index)
+                gameData?.let {
+                    mViewModel.queryGameList(
+                        gameData.category,gameData)/**/
+                }
+            }
+            index += 1
         }
     }
 
     override fun onStart() {
         super.onStart()
-       // headerAdapter.restProBannerJob(mBinding.rvContent)
+        // headerAdapter.restProBannerJob(mBinding.rvContent)
     }
 
     override fun onStop() {
         super.onStop()
-       // headerAdapter.stopProBannerJob(mBinding.rvContent)
+        // headerAdapter.stopProBannerJob(mBinding.rvContent)
     }
 
     override fun onResume() {

@@ -16,6 +16,7 @@ import arch.cayenne.module.order.utils.TimeUtils
  * @description:
  */
 class SportBetShareViewModel(private val repo: OrderSlipRepository):BaseViewModel() {
+    var isExpand = false
 
 
     private val _orderDataListener = MutableLiveData<List<BetSlipData>>()

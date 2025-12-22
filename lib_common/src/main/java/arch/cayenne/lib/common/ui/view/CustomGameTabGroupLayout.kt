@@ -200,6 +200,10 @@ class CustomGameTabGroupLayout : FrameLayout {
             } else {
                 tabDataModel.simpleName
             }
+            val fontWeight = if (tabDataModel.id == 0) 500 else 400
+            val bottomPadding = if (tabDataModel.id == 0) 1.dp2px else 2.dp2px
+            tvName.setFontWeight(fontWeight)
+            tvName.setPadding(0, 0, 0, bottomPadding)
 
             if (tabDataModel.id == 0) {
                 ivIcon.visibility = View.GONE
