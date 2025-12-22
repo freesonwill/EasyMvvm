@@ -68,7 +68,7 @@ class GameAllRankingListViewHolder(val item: ItemAllRankingListBinding) : BaseVi
                 tvMultiple.paint.shader = null // 關鍵：清除複用帶來的舊 Shader
                 tvMultiple.setTextColor(arch.cayenne.lib.common.R.color.color_C0C0C0.getColor())
             }
-            Glide.with(ivCurrency.context).load(data.symbol.symbolUrl()).into(ivCurrency)
+            Glide.with(ivCurrency.context).load(data.symbol.symbolUrl().trim()).into(ivCurrency)
             //负号 + 法币符号 + 金额 + 币种
             if (data.result < 0) {
                 tvResult.text = "-${data.symbol}${-data.result}"

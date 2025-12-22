@@ -86,7 +86,6 @@ class EmojiFragment : BaseFragment<EmojiViewModel, FragmentEmojiLayoutBinding>()
     class ZeroSpacingDecoration(private val spanCount: Int) : RecyclerView.ItemDecoration() {
         override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
             super.getItemOffsets(outRect, view, parent, state)
-
             // 设置所有边距为 0
             outRect.set(0, 0, 0, 0)
         }
