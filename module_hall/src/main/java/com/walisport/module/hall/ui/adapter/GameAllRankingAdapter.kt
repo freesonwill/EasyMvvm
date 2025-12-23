@@ -87,7 +87,7 @@ class GameAllRankingViewHolder(
                 tab.text = m.title
                 tlRanking.addTab(tab)
             }
-            vpRanking.offscreenPageLimit = 1
+            vpRanking.offscreenPageLimit = 3
             tlRanking.post {
                 val tabWidth = tlRanking.width.toFloat() / tlRanking.tabCount
                 homeIndicator.setTabWidth(tabWidth, 1f)
