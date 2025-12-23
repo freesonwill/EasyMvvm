@@ -134,20 +134,20 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintRight_toLeftOf="@+id/tv_bonus" />
 
-            <arch.cayenne.lib.skin.widget.SkinnableTextView
+            <TextView
                 android:id="@+id/tv_bonus"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/dp_14"
                 android:layout_marginBottom="@dimen/dp_6"
-                android:fontFamily="@font/sf_pro_display_bold"
+                android:fontFamily="@font/sf_pro_display_black"
                 android:includeFontPadding="false"
+                android:text="0"
                 android:textColor="@color/color_965F25"
+                android:textFontWeight="900"
                 android:textSize="34sp"
-                android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:skinnableFontWeight="900" />
+                app:layout_constraintRight_toRightOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
