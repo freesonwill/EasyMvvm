@@ -220,7 +220,8 @@ class RankingRepository(
             multiple = bettingVo.multiple ,
             symbol = currencyBean?.unit ?: bettingVo.ccy.ccyToSymbol() ,
             icon = currencyBean?.icon ?: bettingVo.ccy.symbolUrl() ,
-            result = bettingVo.bonus.toFloat()
+            result = bettingVo.bonus.toFloat(),
+            virtual = currencyBean?.virtual ?: false
         )
     }
 
@@ -233,7 +234,8 @@ class RankingRepository(
             multiple = bigVo.multiple ,
             symbol = currencyBean?.unit ?: bigVo.ccy.ccyToSymbol() ,
             icon = currencyBean?.icon ?: bigVo.ccy.symbolUrl() ,
-            result = bigVo.bonus.toFloat()
+            result = bigVo.bonus.toFloat(),
+            virtual = currencyBean?.virtual ?: false
         )
     }
 
