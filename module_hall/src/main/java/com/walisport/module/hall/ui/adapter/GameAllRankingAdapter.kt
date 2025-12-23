@@ -4,8 +4,10 @@ import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager2.widget.ViewPager2
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
 import arch.cayenne.lib.base.ui.adapter.PagerAdapter
+import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.common.utils.CustomTabIndicatorUtils
 import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
@@ -28,13 +30,16 @@ class GameAllRankingAdapter(
     val parentFragmentManager : androidx.fragment.app.FragmentManager,
     val childFragmentManager : androidx.fragment.app.FragmentManager,
     val lifecycle: androidx.lifecycle.Lifecycle,
+    val onPageChanged: (() -> Unit)? = null
 ) : RecyclerView.Adapter<GameAllRankingViewHolder>() {
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
     ): GameAllRankingViewHolder {
         val binding = ItemGameAllRankingBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return GameAllRankingViewHolder(parentFragmentManager, childFragmentManager, lifecycle, binding)
+        return GameAllRankingViewHolder(parentFragmentManager, childFragmentManager, lifecycle, binding) {
+            onPageChanged?.invoke()
+        }
     }
 
     override fun onBindViewHolder(
@@ -54,7 +59,8 @@ class GameAllRankingViewHolder(
     val parentFragmentManager : androidx.fragment.app.FragmentManager,
     val childFragmentManager : androidx.fragment.app.FragmentManager,
     val lifecycle: androidx.lifecycle.Lifecycle,
-    val item: ItemGameAllRankingBinding
+    val item: ItemGameAllRankingBinding,
+    val onPageChanged: (() -> Unit)? = null
 ): BaseViewHolder(item) {
     private val mockTabList = arrayListOf(
         HallGameTab(
@@ -81,10 +87,37 @@ class GameAllRankingViewHolder(
                 tab.text = m.title
                 tlRanking.addTab(tab)
             }
+            vpRanking.offscreenPageLimit = 1
             tlRanking.post {
                 val tabWidth = tlRanking.width.toFloat() / tlRanking.tabCount
                 homeIndicator.setTabWidth(tabWidth, 1f)
             }
+            vpRanking.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+                override fun onPageSelected(position: Int) {
+                    // 假设 pagerAdapter 是你的 PagerAdapter 实例
+                    val pagerAdapter = vpRanking.adapter as? PagerAdapter
+                    val fragment = pagerAdapter?.getFragment(position)
+                    if (fragment is GameAllRankingTodayFragment) {
+                        val height = fragment.getContentHeight()
+                        vpRanking.layoutParams.height = height
+                        vpRanking.requestLayout()
+                        LogUtils.e("√", "onPageSelected height=$height")
+                    } else if (fragment is LatestBetFragment) {
+                        val height = fragment.getContentHeight()
+                        vpRanking.layoutParams.height = height
+                        vpRanking.requestLayout()
+                        LogUtils.e("GameAllRankingViewHolder", "onPageSelected height=$height")
+                    } else if (fragment is HighStakesFragment) {
+                        val height = fragment.getContentHeight()
+                        vpRanking.layoutParams.height = height
+                        vpRanking.requestLayout()
+                        LogUtils.e("GameAllRankingViewHolder", "onPageSelected height=$height")
+                    }
+
+
+                }
+            })
+
             tlRanking.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener{
                 override fun onTabSelected(tab: TabLayout.Tab?) {
                     vpRanking.startFadeAnim { onComplete ->

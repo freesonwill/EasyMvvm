@@ -61,7 +61,13 @@ class GameAllFragment : BaseFragment<GameAllViewModel, FragmentGameAllBinding>()
             parentFragmentManager,
             childFragmentManager,
             lifecycle
-        )
+        ){
+            mBinding.nestedScrollView.requestLayout()
+            //更新rvContent指定position
+            // 更新 rvContent 指定 position
+          //  mBinding.rvContent.adapter?.notifyItemChanged(headerAdapter.itemCount - 1)
+            LogUtils.e("GameAllRankingViewHolder", "onPageSelected height-nestedScrollView=${mBinding.nestedScrollView.height}")
+        }
     }
 
 

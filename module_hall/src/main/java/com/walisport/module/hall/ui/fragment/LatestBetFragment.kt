@@ -6,6 +6,7 @@ import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout.States
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
@@ -15,7 +16,7 @@ import com.walisport.module.hall.databinding.FragmentGameAllRankingListBinding
 import com.walisport.module.hall.ui.adapter.GameAllRankingListAdapter
 import com.walisport.module.hall.ui.viewmodel.LatestBetViewModel
 import kotlin.reflect.KClass
-
+import arch.cayenne.lib.common.utils.ext.DimensionExt.px2dp
 /**
  * 最新投注fragment
  */
@@ -37,7 +38,14 @@ class LatestBetFragment : BaseFragment<LatestBetViewModel , FragmentGameAllRanki
             rvCurrentRank.adapter = GameAllRankingListAdapter()
         }
     }
+    fun getContentHeight(): Int {
+         return 1469
+    }
+    override fun onResume() {
+        LogUtils.e("GameAllRankingTodayFragment-----LatestBetFragment-----${mBinding.root.height}")
 
+        super.onResume()
+    }
     override fun initListener() {
     }
 
