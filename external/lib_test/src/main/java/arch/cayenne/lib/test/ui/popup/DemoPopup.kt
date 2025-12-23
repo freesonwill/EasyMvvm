@@ -4,6 +4,7 @@ import android.text.InputFilter
 import android.text.Spanned
 import arch.cayenne.lib.common.data.constants.UserDataKey
 import arch.cayenne.lib.common.data.manager.UserDataManager
+import arch.cayenne.lib.common.utils.ext.DimensionExt.px2dp
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.test.R
@@ -11,9 +12,11 @@ import arch.cayenne.lib.test.data.bean.DemoData
 import arch.cayenne.lib.test.databinding.DemoPopupBinding
 import arch.cayenne.lib.test.ui.popup.DemoShowPopup
 import com.blankj.utilcode.util.ScreenUtils
+import com.gyf.immersionbar.ImmersionBar
 import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.core.BottomPopupView
 import org.koin.java.KoinJavaComponent.inject
+import java.util.Locale
 import kotlin.getValue
 
 class DemoPopup(context: Context) : BottomPopupView(context) {
@@ -30,6 +33,9 @@ class DemoPopup(context: Context) : BottomPopupView(context) {
         vb = DemoPopupBinding.bind(popupImplView)
 
         vb?.apply {
+            tvStatusBarHeight.text = ImmersionBar.getStatusBarHeight(context).let {
+                String.format(Locale.ROOT,"状态栏高度: $it px,\t${it.px2dp} dp", it)
+            }
             tvUid.setText(manager.getValue<Int>(UserDataKey.KEY_UID,0).toString())
             tvToken.setText(manager.getValue<String>(UserDataKey.KEY_TOKEN,""))
 
