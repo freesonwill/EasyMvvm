@@ -134,13 +134,13 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintRight_toLeftOf="@+id/tv_bonus" />
 
-            <TextView
+            <arch.cayenne.lib.skin.widget.SkinnableTextView
                 android:id="@+id/tv_bonus"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/dp_14"
                 android:layout_marginBottom="@dimen/dp_6"
-                android:fontFamily="@font/sf_pro"
+                android:fontFamily="@font/sf_pro_display_bold"
                 android:includeFontPadding="false"
                 android:textColor="@color/color_965F25"
                 android:textSize="34sp"
@@ -165,6 +165,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_18"
+            android:layout_marginBottom="@dimen/dp_6"
             android:text="@string/tab_ranking_today_rank"
             android:textColor="@color/color_999999"
             android:textSize="@dimen/sp_14"
@@ -176,6 +177,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_42"
+            android:layout_marginBottom="@dimen/dp_6"
             android:text="@string/tab_ranking_today_player"
             android:textColor="@color/color_999999"
             android:textSize="@dimen/sp_14"
@@ -187,6 +189,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_70"
+            android:layout_marginBottom="@dimen/dp_6"
             android:text="@string/tab_ranking_today_betting"
             android:textColor="@color/color_999999"
             android:textSize="@dimen/sp_14"
@@ -198,6 +201,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="69dp"
+            android:layout_marginBottom="@dimen/dp_6"
             android:text="@string/tab_ranking_today_bonus"
             android:textColor="@color/color_999999"
             android:textSize="@dimen/sp_14"
