@@ -51,6 +51,8 @@ class FeedbackMainFragment : BaseFragment<FeedbackMainViewModel, FragmentFeedbac
         registerForActivityResult(ActivityResultContracts.GetContent()) { result ->
             result?.let {
                 fileChooserCallback?.onReceiveValue(arrayOf(it))
+            } ?: {
+                fileChooserCallback?.onReceiveValue(arrayOf())
             }
             fileChooserCallback = null;
         }
@@ -125,7 +127,7 @@ class FeedbackMainFragment : BaseFragment<FeedbackMainViewModel, FragmentFeedbac
                     fileChooserCallback = filePathCallback
                     if (!isWritePermissionGranted) {
                         checkReadPermission()
-                        fileChooserCallback?.onReceiveValue(null)
+                        fileChooserCallback?.onReceiveValue(arrayOf())
                         fileChooserCallback = null
                         return true
                     }
@@ -149,15 +151,15 @@ class FeedbackMainFragment : BaseFragment<FeedbackMainViewModel, FragmentFeedbac
 
     private fun chooseImages() {
         try {
-            if(Build.VERSION.SDK_INT <= Build.VERSION_CODES.P){
+            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
                 chooseImagesLegacy()
-            }else{
-            startForResult.launch("image/*")
+            } else {
+                startForResult.launch("image/*")
             }
         } catch (e: Exception) {
             e.printStackTrace()
             "打开图片选择器失败 ${e.message}".loge(TAG)
-            fileChooserCallback?.onReceiveValue(null)
+            fileChooserCallback?.onReceiveValue(arrayOf())
             fileChooserCallback = null
         }
     }
@@ -173,7 +175,7 @@ class FeedbackMainFragment : BaseFragment<FeedbackMainViewModel, FragmentFeedbac
             startActivityForResult(chooser, requestImgCode)
         } catch (e: Exception) {
             e.printStackTrace()
-            fileChooserCallback?.onReceiveValue(null)
+            fileChooserCallback?.onReceiveValue(arrayOf())
             fileChooserCallback = null
         }
     }
@@ -220,6 +222,8 @@ class FeedbackMainFragment : BaseFragment<FeedbackMainViewModel, FragmentFeedbac
         if (requestCode == requestImgCode && resultCode == android.app.Activity.RESULT_OK) {
             data?.data?.let {
                 fileChooserCallback?.onReceiveValue(arrayOf(it))
+            } ?: {
+                fileChooserCallback?.onReceiveValue(arrayOf())
             }
             fileChooserCallback = null;
         }
