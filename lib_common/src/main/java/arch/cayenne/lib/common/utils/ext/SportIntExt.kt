@@ -162,10 +162,11 @@ object SportIntExt {
         }
     }
 
-    fun Long.toBalanceString(divide: Int = 100): String {
+    fun Long.toBalanceString(scale: Int = 2): String {
         val MAX_LENGTH = 10
         val MAX_DECIMAL = 8
-        val bd = BigDecimal(this).divide(BigDecimal(divide)).stripTrailingZeros()
+        val divisor = BigDecimal.TEN.pow(scale)
+        val bd = BigDecimal(this).divide(divisor).stripTrailingZeros()
         val plain = bd.toPlainString()
 
         // ===== 規則 2.2：0 或 純整數 =====
