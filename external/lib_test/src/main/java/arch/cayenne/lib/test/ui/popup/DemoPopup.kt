@@ -2,6 +2,9 @@
 import android.content.Context
 import android.text.InputFilter
 import android.text.Spanned
+import arch.cayenne.lib.base.BuildConfig
+import arch.cayenne.lib.base.utils.ext.launch
+import arch.cayenne.lib.base.utils.log.Utils
 import arch.cayenne.lib.common.data.constants.UserDataKey
 import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.common.utils.ext.DimensionExt.px2dp
@@ -168,6 +171,13 @@ class DemoPopup(context: Context) : BottomPopupView(context) {
                 data5X1,data5Y1,data5X2,data5Y2,
             ).forEach {
                 it.filters = arrayOf(InputFilterMinMax(0.0, 1.0))
+            }
+            btnShareLog.clickNoRepeat {
+                if(BuildConfig.BUILD_TYPE != "release")
+                launch {
+                    Utils.shareLogFile(context)
+                    dismiss()
+                }
             }
         }
     }
