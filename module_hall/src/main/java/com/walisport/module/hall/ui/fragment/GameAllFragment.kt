@@ -78,7 +78,7 @@ class GameAllFragment : BaseFragment<GameAllViewModel, FragmentGameAllBinding>()
             rvContent.layoutManager = LinearLayoutManager(requireContext())
             rvContent.adapter = concatAdapter
             rvContent.setItemViewCacheSize(10)
-            BackToTopHelper(rvContent, ivBackToTop, false, 2)
+            BackToTopHelper(rvContent, ivBackToTop, false, 2, false)
         }
 
     }
