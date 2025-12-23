@@ -55,6 +55,7 @@
             android:layout_rowWeight="0"
             android:layout_marginBottom="3dp"
             android:scaleType="center"
+            android:paddingTop="0dp"
             android:src="@drawable/icon_keyboard_back" />
 
         <arch.cayenne.lib.skin.widget.SkinnableTextView
