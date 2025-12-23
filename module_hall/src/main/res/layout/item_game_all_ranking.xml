@@ -10,20 +10,22 @@
         android:textSize="@dimen/sp_14"
         android:textColor="@color/color_FFFFFF"
         android:text="@string/tab_ranking_newest"
-        android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginTop="@dimen/dp_16"
         android:layout_marginStart="@dimen/dp_12"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent" />
+
     <arch.cayenne.lib.skin.widget.SkinnableImageView
         android:id="@+id/iv_ranking_info"
         android:layout_width="@dimen/dp_28"
         android:layout_height="@dimen/dp_14"
+        android:layout_marginTop="@dimen/dp_2"
         android:paddingStart="@dimen/dp_7"
         android:paddingEnd="@dimen/dp_7"
-        app:srcCompat="@drawable/ic_ranking_info"
-        app:layout_constraintTop_toTopOf="@+id/tv_title"
         app:layout_constraintBottom_toBottomOf="@+id/tv_title"
-        app:layout_constraintLeft_toRightOf="@+id/tv_title" />
+        app:layout_constraintLeft_toRightOf="@+id/tv_title"
+        app:layout_constraintTop_toTopOf="@+id/tv_title"
+        app:srcCompat="@drawable/ic_ranking_info" />
 
     <!-- TabLayout組件 -->
     <arch.cayenne.lib.skin.widget.SkinnableImageView
