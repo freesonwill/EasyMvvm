@@ -97,7 +97,8 @@ class BalanceRepository(
                 amount = 0L,
                 amountStr = 0L.getFormalMoney(),
                 exchangeAmount = "",
-                unit = ""
+                unit = "",
+                scale = 0
             )
         }
 
@@ -120,7 +121,8 @@ class BalanceRepository(
                 amount = 0L,
                 amountStr = 0L.getFormalMoney(),
                 exchangeAmount = "",
-                unit = ""
+                unit = "",
+                scale = 0,
             )
     }
 
@@ -143,7 +145,8 @@ class BalanceRepository(
             amount = amount,
             amountStr = if (this.virtual && this.ccy != "USDT") amount.getFormalMoney(1) else amount.getFormalMoney(), //TODO 以後會加上rate，根據不同的需求除不同的rate
             exchangeAmount = if(exchangeAmount == null) "" else "$exchangeAmountUnit${exchangeAmount.getFormalMoney()}",
-            unit = unit
+            unit = unit,
+            scale = if (this.virtual && this.ccy != "USDT") 0 else 2
         )
     }
 
