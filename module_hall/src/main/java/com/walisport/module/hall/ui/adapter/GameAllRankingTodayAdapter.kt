@@ -109,9 +109,8 @@ class GameAllRankingTodayViewHolder(val item: ItemAllRankingTodayBinding) : Base
             }
             tvPlayerName.text = data.playerName
             val plainFormat = DecimalFormat("#.########")
-            tvBetting.text = "${data.symbol}${plainFormat.format(data.betting / 100)}"
-            tvBonus.text = "${data.symbol}${plainFormat.format(data.bonus / 100)}"
-
+            tvBetting.text = "${data.symbol}${String.format("%.2f" , data.betting / 100.0)}"
+            tvBonus.text = "${data.symbol}${String.format("%.2f" , data.bonus / 100.0)}"
             if (data.myself) {
                 tvRank.setTextColor(arch.cayenne.lib.common.R.color.color_00E0E5.getColor())
                 tvPlayerName.setTextColor(arch.cayenne.lib.common.R.color.color_00E0E5.getColor())
