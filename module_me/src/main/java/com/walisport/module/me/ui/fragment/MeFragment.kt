@@ -3,9 +3,13 @@ package com.walisport.module.me.ui.fragment
 import android.os.Bundle
 import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
+import arch.cayenne.lib.base.BuildConfig
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.ui.fragment.launch
+import arch.cayenne.lib.base.utils.ext.launch
+import arch.cayenne.lib.base.utils.log.Utils
 import arch.cayenne.lib.common.data.constants.DrawerAction.ACTION_OPEN
 import arch.cayenne.lib.common.data.constants.DrawerAction.KEY_ACTION
 import arch.cayenne.lib.common.data.constants.DrawerAction.REQUEST_KEY_DRAWER
@@ -97,6 +101,11 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
             ivSetting.addScaleOnTouchAnimation()
             ivSetting.clickNoRepeat {
                 navigate(arch.cayenne.lib.res.R.string.nav_module_setting_fragment.deeplink())
+            }
+            ctTopBar.setOnLongClickListener {
+                if(BuildConfig.BUILD_TYPE != "release")
+                launch { Utils.shareLogFile(requireContext()) }
+                true
             }
 
             ctUserInfo.clickNoRepeat {

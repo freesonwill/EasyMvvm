@@ -120,7 +120,7 @@ class HallRepository(
         category: Int
     ): ApiResponseState {
         var sort = if (category==0) 0 else 4
-        LogUtils.e("response------all--category${category}")
+        //LogUtils.e("response------all--category${category}")
         val api = mockHttpClient.create(IHallApi::class.java)
         return suspendCancellableCoroutine<ApiResponseState> { cancellableContinuation ->
             scope.launch(Dispatchers.IO) {
