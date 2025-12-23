@@ -16,19 +16,6 @@ class PagerAdapter(
 ) : FragmentStateAdapter(fragmentManager, lifecycle) {
     override fun getItemCount(): Int = pages.size
 
-    override fun createFragment(position: Int): Fragment {
-        val fragment = pages[position].page.invoke().apply {
-            arguments = arguments?.let {
-                it.putInt("pageIndex", position)
-                it
-            } ?: Bundle().apply {
-                putInt("pageIndex", position)
-            }
-        }
-        return fragment
-    }
-
-
 
     override fun onBindViewHolder(
         holder: FragmentViewHolder,
@@ -39,7 +26,24 @@ class PagerAdapter(
         clipChildren(vg)
         super.onBindViewHolder(holder, position, payloads)
     }
+private val fragmentCache = mutableMapOf<Int, Fragment>()
 
+override fun createFragment(position: Int): Fragment {
+    val fragment = pages[position].page.invoke().apply {
+        arguments = arguments?.let {
+            it.putInt("pageIndex", position)
+            it
+        } ?: Bundle().apply {
+            putInt("pageIndex", position)
+        }
+    }
+    fragmentCache[position] = fragment
+    return fragment
+}
+
+fun getFragment(position: Int): Fragment? {
+    return fragmentCache[position]
+}
     private fun clipChildren(vg: ViewGroup) {
         vg.clipChildren = false
         vg.clipToPadding = false
