@@ -3,6 +3,7 @@ package com.walisport.module.me.ui.fragment
 import android.os.Bundle
 import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
+import arch.cayenne.lib.base.BuildConfig
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
@@ -102,6 +103,7 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
                 navigate(arch.cayenne.lib.res.R.string.nav_module_setting_fragment.deeplink())
             }
             ctTopBar.setOnLongClickListener {
+                if(BuildConfig.BUILD_TYPE != "release")
                 launch { Utils.shareLogFile(requireContext()) }
                 true
             }
