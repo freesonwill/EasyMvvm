@@ -102,12 +102,6 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
             ivSetting.clickNoRepeat {
                 navigate(arch.cayenne.lib.res.R.string.nav_module_setting_fragment.deeplink())
             }
-            ctTopBar.setOnLongClickListener {
-                if(BuildConfig.BUILD_TYPE != "release")
-                launch { Utils.shareLogFile(requireContext()) }
-                true
-            }
-
             ctUserInfo.clickNoRepeat {
                 navigate(arch.cayenne.lib.res.R.string.nav_module_personal_info_fragment.deeplink())
             }
