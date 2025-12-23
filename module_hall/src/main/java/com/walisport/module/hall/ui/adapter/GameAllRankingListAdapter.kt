@@ -94,11 +94,19 @@ class GameAllRankingListViewHolder(val item: ItemAllRankingListBinding, val pare
                 tvMultiple.setTextColor(arch.cayenne.lib.common.R.color.color_C0C0C0.getColor())
             }
             Glide.with(ivCurrency.context).load(data.icon.trim()).into(ivCurrency)
-            //负号 + 法币符号 + 金额 + 币种
-            if (data.result < 0) {
-                tvResult.text = "-${data.symbol}${"%.2f".format(-data.result)}"
+            // 负号 + 法币符号 + 金额 + 币种（虚拟币不展示符号）
+            if (data.virtual) {
+                tvResult.text = if (data.result < 0) {
+                    "-${"%.2f".format(-data.result)}"
+                } else {
+                    "%.2f".format(data.result)
+                }
             } else {
-                tvResult.text = "${data.symbol}${"%.2f".format(data.result)}"
+                if (data.result < 0) {
+                    tvResult.text = "-${data.symbol}${"%.2f".format(-data.result)}"
+                } else {
+                    tvResult.text = "${data.symbol}${"%.2f".format(data.result)}"
+                }
             }
 
             if (data.result > 0) {

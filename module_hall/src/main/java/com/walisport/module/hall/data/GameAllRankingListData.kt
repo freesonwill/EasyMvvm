@@ -7,4 +7,5 @@ data class GameAllRankingListData(
     val symbol: String ,
     val icon: String ,
     val result: Float ,
+    val virtual: Boolean ,//是否虚拟币
 )
