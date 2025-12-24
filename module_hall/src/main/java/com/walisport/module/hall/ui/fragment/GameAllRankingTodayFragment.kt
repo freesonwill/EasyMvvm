@@ -4,6 +4,10 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.View
+import android.view.ViewGroup
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.marginTop
+import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
@@ -12,6 +16,7 @@ import arch.cayenne.lib.common.data.constants.BizUrl
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout.States
 import arch.cayenne.lib.common.utils.DateUtils
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
+import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
@@ -48,6 +53,23 @@ class GameAllRankingTodayFragment :
             rvTodayRank.layoutManager = LinearLayoutManager(requireContext())
             rvTodayRank.itemAnimator = null
             rvTodayRank.adapter = adapter
+
+            //如果是华为手机，增加顶部间距，避免被刘海遮挡
+            if (arch.cayenne.lib.common.utils.DeviceUtils.isHuaweiDevice()) {
+               val params= rvTodayRank.layoutParams as ConstraintLayout.LayoutParams
+                params.topMargin = (-10f).dp2px
+                rvTodayRank.layoutParams = params
+
+                val params1 = tvTabTodayTitle.layoutParams as ConstraintLayout.LayoutParams
+                params1.bottomMargin = 0
+                tvTabTodayTitle.layoutParams = params1
+
+//                tvTodayTitle.updateLayoutParams<ConstraintLayout.LayoutParams> { bottomMargin = 0 }
+//
+//              tvTabTodayPlayer.updateLayoutParams<ConstraintLayout.LayoutParams> { bottomMargin = 0 }
+//                tvTabTodayBetting.updateLayoutParams<ConstraintLayout.LayoutParams> { bottomMargin = 0 }
+//                tvTabTodayBonus.updateLayoutParams<ConstraintLayout.LayoutParams> { bottomMargin = 0 }
+            }
         }
     }
 
