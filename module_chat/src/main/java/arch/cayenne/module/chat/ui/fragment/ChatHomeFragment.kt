@@ -91,7 +91,7 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
             it.layoutManager =
                 LinearLayoutManager(it.context, LinearLayoutManager.HORIZONTAL, false)
             val adapter = EmojiHotItemAdapter()
-            adapter.setItemListener(object:RecyclerItemListener<EmojiModel>{
+            adapter.setItemListener(object : RecyclerItemListener<EmojiModel> {
                 override fun onItemClick(item: EmojiModel?, position: Int) {
                     item?.let { it1 -> addEmojiData(it1) }
                 }
@@ -127,7 +127,7 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
         matchIdLiveData = matchId
         this.mainMatch = mainMatch
 //        TODO 直播间进入聊天室逻辑待定
-        if(matchId?.value != null && mainMatch == null){
+        if (matchId?.value != null && mainMatch == null) {
             mViewModel.setArguments(matchId.value)
             mViewModel.startChatServer()
         }
@@ -156,7 +156,7 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
 
         //比赛开始后开启聊天服务 TODO 直播间进入聊天室逻辑待定
 //        if (match?.liveInfo?.charRoom == true || match == null) {
-            mViewModel.startChatServer()
+        mViewModel.startChatServer()
 //        }
     }
 
@@ -229,6 +229,12 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
                         })
                 }
             }
+
+            launch {
+                mViewModel.emojiFlow.collect {
+                    it?.let { addEmojiData(it) }
+                }
+            }
         }
         matchIdLiveData?.observe(viewLifecycleOwner) {
             observeMatchId(it)
@@ -248,9 +254,7 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
         softKeyBoardManager.toastLiveData.observe(viewLifecycleOwner) {
             showToast(it)
         }
-        mViewModel.emojiLiveData.observe(viewLifecycleOwner) {
-            addEmojiData(it)
-        }
+
         mViewModel.etDelLiveData.observe(viewLifecycleOwner) {
             delEtInput()
         }
@@ -406,7 +410,12 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
 //            ivBottomBet.setOnTouchListener { v, event -> return@setOnTouchListener true }
             ivBottomEmoji.setOnTouchListener { v, event ->
                 if (event.action == MotionEvent.ACTION_DOWN) {
-                    mViewModel.updateKeyBoardUi(KeyBoardType.EMOJI, 6)
+                    val clickType = if(softKeyBoardManager.currentKeyBoardType == KeyBoardType.EMOJI) {
+                        KeyBoardType.CHAT
+                    } else {
+                        KeyBoardType.EMOJI
+                    }
+                    mViewModel.updateKeyBoardUi(clickType, 6)
                     chatAtHelper.dismissWindow()
                 }
                 return@setOnTouchListener true
@@ -496,11 +505,15 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
     private fun showLanguageDialog() {
         val viewLocation = IntArray(2)
         mBinding.ivLanguage.getLocationOnScreen(viewLocation)
+        "showLanguageDialog select position:${mViewModel.languageSelectPosition}".logd("aaa")
 
         ChatLanguageDialogFragment.newInstance(
             viewLocation[0],
-            viewLocation[1]
-        ).show(childFragmentManager)
+            viewLocation[1],
+            mViewModel.languageSelectPosition
+        ) {
+            "ChatLanguageDialogFragment select position:$it".logd("aaa")
+            mViewModel.updateLanguageSelect(it) }.show(childFragmentManager)
     }
 
     /**
@@ -527,7 +540,7 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
             llContent.layoutParams.height =
                 if (isReset) LayoutParams.MATCH_PARENT else mViewModel.keyBoardHeight
             main.layoutParams.height =
-                if (isReset) LayoutParams.MATCH_PARENT else mViewModel.keyBoardHeight + softKeyBoardManager.emojiKeyBoardHeight+40.dp2px
+                if (isReset) LayoutParams.MATCH_PARENT else mViewModel.keyBoardHeight + softKeyBoardManager.emojiKeyBoardHeight + 40.dp2px
             main.requestLayout()
 //            lifecycleScope.launch {
 //                delay(500)
@@ -578,11 +591,12 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
     private fun updateInputIcon(isVisible: Boolean) {
         mBinding.apply {
 //            ivAt.isVisible =  isVisible
+
             ivBet.isVisible = isVisible
-            ivEmoji.isVisible =  isVisible
+            ivEmoji.isVisible = isVisible
             ivLanguage.isVisible = isVisible
-            ivBottomBet.isVisible =   !isVisible
-            ivBottomEmoji.isVisible =  !isVisible
+            ivBottomBet.isVisible = !isVisible
+            ivBottomEmoji.isVisible = !isVisible
         }
     }
 
@@ -604,6 +618,8 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
 //                return
 //            }
 //        }
+        mBinding.ivBottomEmoji.setImageResource(if (keyBoardType == KeyBoardType.EMOJI) R.drawable.icon_emoji_color else R.drawable.icon_emoji_grey)
+
         softKeyBoardManager.addSoftKeyBoardEvent(keyBoardType, flag)
         softKeyBoardManager.showKeyboardAnimation()
     }
@@ -651,10 +667,10 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
                                     ivLanguage,
                                     chatLlInput,
                                     animStart = {
-                                       updateInputIcon(true)
+                                        updateInputIcon(true)
                                     },
                                     animEnd = {
-                                       updateInputIcon(offset == 0)
+                                        updateInputIcon(offset == 0)
                                     }
                                 )
                             )
@@ -703,7 +719,6 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
 
 
     private fun delEtInput() {
-        "delEtInput ".logd("aaa")
         mBinding.chatEtInput.apply {
             if (text?.length == 0) {
                 return@apply

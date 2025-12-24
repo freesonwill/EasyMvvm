@@ -12,6 +12,7 @@ import arch.cayenne.lib.common.utils.ext.checkCurrentScrollState
 import arch.cayenne.lib.common.utils.ext.onScrolledOver
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.helper.BackToTopHelper
+import arch.cayenne.lib.common.utils.helper.NestedScrollViewBackToTopHelper
 import com.walisport.module.hall.data.Category
 import com.walisport.module.hall.data.GameAllContentData
 import com.walisport.module.hall.databinding.FragmentGameAllBinding
@@ -61,7 +62,13 @@ class GameAllFragment : BaseFragment<GameAllViewModel, FragmentGameAllBinding>()
             parentFragmentManager,
             childFragmentManager,
             lifecycle
-        )
+        ){
+            mBinding.nestedScrollView.requestLayout()
+            //更新rvContent指定position
+            // 更新 rvContent 指定 position
+          //  mBinding.rvContent.adapter?.notifyItemChanged(headerAdapter.itemCount - 1)
+            LogUtils.e("GameAllRankingViewHolder", "onPageSelected height-nestedScrollView=${mBinding.nestedScrollView.height}")
+        }
     }
 
 
@@ -78,7 +85,7 @@ class GameAllFragment : BaseFragment<GameAllViewModel, FragmentGameAllBinding>()
             rvContent.layoutManager = LinearLayoutManager(requireContext())
             rvContent.adapter = concatAdapter
             rvContent.setItemViewCacheSize(10)
-            BackToTopHelper(rvContent, ivBackToTop, false)
+            NestedScrollViewBackToTopHelper(nestedScrollView, ivBackToTop)
         }
 
     }

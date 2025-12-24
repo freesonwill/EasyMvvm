@@ -89,7 +89,7 @@ class ChatATHelper(
         //输入拦截
         chatEtInput.filters = arrayOf(EmojiEditFilter(atInput = {
             startInputPosition = chatEtInput.selectionStart
-            atPopupWindow.showPopupWindow(chatEtInput)
+//            atPopupWindow.showPopupWindow(chatEtInput)
         }))
         atPopupWindow.createPopupWindow(context, object : RecyclerItemListener<AtBean> {
             override fun onItemClick(item: AtBean?, position: Int) {

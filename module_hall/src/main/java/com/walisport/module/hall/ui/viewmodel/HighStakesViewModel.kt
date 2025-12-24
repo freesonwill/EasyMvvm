@@ -12,7 +12,6 @@ import com.walisport.module.hall.data.BigPageVo
 import com.walisport.module.hall.data.GameAllRankingListData
 import com.walisport.module.hall.data.HallRepository.Companion.INITIAL_PAGE
 import com.walisport.module.hall.data.RankingRepository
-import com.walisport.module.hall.data.toGameAllRankingListData
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
 import plugin.koin.KoinViewModel
@@ -45,7 +44,7 @@ class HighStakesViewModel : BaseViewModel() {
                     val size = bigPageVo?.list?.size ?: 0
                     val isEmpty = size == 0
 
-                    val list = bigPageVo?.list?.map { it.toGameAllRankingListData() } ?: emptyList()
+                    val list = bigPageVo?.list?.map { repository.toGameAllRankingListData(it) } ?: emptyList()
                     when {
                         page == INITIAL_PAGE && isEmpty -> setState(DataState.DataEmpty)
                         !hasMore -> {

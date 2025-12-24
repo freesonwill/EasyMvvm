@@ -42,7 +42,7 @@ class ChatPageAdapter(private val specialClick: (bean: ChatMsgPageBean, clickSpa
                             val layout = widget.layout
                             val line = layout.getLineForVertical(y)
                             val off = layout.getOffsetForHorizontal(line, x.toFloat())
-                            val spans = buffer.getSpans(off, off + 1, ClickSpan::class.java)
+                            val spans = buffer.getSpans(off-1, off + 1, ClickSpan::class.java)
                             val position = widget.tag as Int
 
                             if (spans.isNotEmpty()) {
@@ -54,13 +54,10 @@ class ChatPageAdapter(private val specialClick: (bean: ChatMsgPageBean, clickSpa
                                 specialClick.invoke(getItem(position), "", MsgType.TEXT)
                             }
                         }
-
                         return true
                     }
                 }
-
             }
-
         }
 
         fun setText(bean: ChatMsgPageBean, position: Int) {

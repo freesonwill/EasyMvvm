@@ -14,7 +14,7 @@ import com.walisport.module.hall.data.GameAllRankingToday
 import com.walisport.module.hall.data.HallRepository.Companion.INITIAL_PAGE
 import com.walisport.module.hall.data.RankingRepository
 import com.walisport.module.hall.data.toDailyBetMatchData
-import com.walisport.module.hall.data.toGameAllRankingToday
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
@@ -81,28 +81,33 @@ class CompetitionViewModel : BaseViewModel() {
                         }
 
                         is ApiResponseState.Succeeded<*> -> {
-                            val bettingPageVo = it.dataAs<DayPageVo>()
-                            val hasMore = bettingPageVo?.pagination?.hasMore ?: false
-                            val size = bettingPageVo?.list?.size ?: 0
-                            val isEmpty = size == 0
+                            viewModelScope.launch(Dispatchers.IO) {
+                                val bettingPageVo = it.dataAs<DayPageVo>()
+                                val hasMore = bettingPageVo?.pagination?.hasMore ?: false
+                                val size = bettingPageVo?.list?.size ?: 0
+                                val isEmpty = size == 0
+                                val list =
+                                    bettingPageVo?.list?.map { repository.toGameAllRankingToday(it) }
+                                        ?: emptyList()
+                                launch(Dispatchers.Main) {
+                                    when {
+                                        page == INITIAL_PAGE && isEmpty -> setState(DataState.DataEmpty)
+                                        !hasMore -> {
+                                            setState(DataState.NoMoreData)
+                                            _rankingListLiveData.value =
+                                                (_rankingListLiveData.value ?: emptyList()) + list
+                                        }
 
-                            val list =
-                                bettingPageVo?.list?.map { it.toGameAllRankingToday() }
-                                    ?: emptyList()
-                            when {
-                                page == INITIAL_PAGE && isEmpty -> setState(DataState.DataEmpty)
-                                !hasMore -> {
-                                    setState(DataState.NoMoreData)
-                                    _rankingListLiveData.value =
-                                        (_rankingListLiveData.value ?: emptyList()) + list
+                                        else -> {
+                                            setState(DataState.LoadSuccess)
+                                            _rankingListLiveData.value =
+                                                (_rankingListLiveData.value ?: emptyList()) + list
+                                        }
+                                    }
                                 }
 
-                                else -> {
-                                    setState(DataState.LoadSuccess)
-                                    _rankingListLiveData.value =
-                                        (_rankingListLiveData.value ?: emptyList()) + list
-                                }
                             }
+
                         }
 
                         else -> {}
