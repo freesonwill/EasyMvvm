@@ -20,6 +20,7 @@ import arch.cayenne.lib.common.data.constants.BizUrl
 import arch.cayenne.lib.common.ui.fragment.ShareFragment
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getColor
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.web.WLSWebViewClient
@@ -93,7 +94,11 @@ class GameBetShareFragment : BaseFragment<GameBetShareViewModel, FragmentGameSha
                         } else if (it.params.pageName == "game") {
                             shareViewModel.closeDialog()
                             val gameId = it.params.gameId
-                           findNavController().navigate(arch.cayenne.lib.res.R.string.nav_module_gamedetail.deeplink())
+//                            findNavController().navigate(
+//                                arch.cayenne.lib.res.R.string.nav_module_gamedetail.deeplink(
+//                                    "gameId" to gameId
+//                                )
+//                            )
                         }
                     }
                 }

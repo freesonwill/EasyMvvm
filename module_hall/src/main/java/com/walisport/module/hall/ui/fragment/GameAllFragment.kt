@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.utils.LogUtils
+import arch.cayenne.lib.common.data.constants.BizUrl
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.checkCurrentScrollState
@@ -51,9 +52,9 @@ class GameAllFragment : BaseFragment<GameAllViewModel, FragmentGameAllBinding>()
                 navigate(Uri.parse("walisport://module_hall/hallCategoryFragment?category=${data.category}&name=${data.name}"))
             }
 
-            override fun onChildItemClick() {
+            override fun onChildItemClick(gameId:Long) {
                 mViewModel.setIsClickGame(EventClick.EVENT_CLICK_ACK_TRUE.type)
-                navigate(arch.cayenne.lib.res.R.string.nav_module_gamedetail.deeplink())
+                navigate(arch.cayenne.lib.res.R.string.nav_module_gamedetail.deeplink("gameId" to gameId))
             }
         })
     }
