@@ -27,6 +27,8 @@ import arch.cayenne.lib.common.ui.fragment.ReserveDialogFragment
 import arch.cayenne.lib.common.ui.view.NumberKeyboardView
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
 import arch.cayenne.lib.common.utils.ViewUtils
+import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.lib.common.utils.ext.DimensionExt.px2dp
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
@@ -384,7 +386,7 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
         mBinding.btnReserve.getLocationInWindow(location)
         ReserveDialogFragment.newInstance(
             location.first() + mBinding.btnReserve.width / 2,
-            location.last() - ViewUtils.getStatusBarHeight(requireContext()),
+            (location.last() - 17f.dp2px).toInt(),
             mBinding.btnReserve.height,
             odds = odds
         ).show(childFragmentManager)
