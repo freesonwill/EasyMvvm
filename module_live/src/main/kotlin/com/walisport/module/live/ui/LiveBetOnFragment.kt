@@ -5,6 +5,7 @@ import android.graphics.Typeface
 import android.os.Bundle
 import android.view.MotionEvent
 import android.view.View
+import android.view.View.OnTouchListener
 import androidx.core.view.doOnDetach
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -150,35 +151,32 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
         viewPager2 = requireActivity().findViewById(R.id.vp_page)
 
         // 设置 ViewPager2 的触摸监听
-        viewPager2.setOnTouchListener(object: View.OnTouchListener {
-            override fun onTouch(v: View?, event: MotionEvent?): Boolean {
-                when (event?.action) {
-                    MotionEvent.ACTION_DOWN -> {
-                        startX = event.x
-                        startY = event.y
-                    }
-                    MotionEvent.ACTION_MOVE -> {
-                        val endX = event.x
-                        val endY = event.y
-                        val distanceX = abs(endX - startX)
-                        val distanceY = abs(endY - startY)
-                        // 判断水平和垂直滑动距离
-                        if (distanceX > distanceY && distanceX > 20) {
-                            // 水平滑动，禁用 RecyclerView 的滑动
-                            mBinding.rvBetList.requestDisallowInterceptTouchEvent(true)
-                        } else if (distanceY > distanceX && distanceY > 20) {
-                            // 垂直滑动，启用 RecyclerView 的滑动
-                            mBinding.rvBetList.requestDisallowInterceptTouchEvent(false)
-                        }
-                    }
-                    MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
-                        // 手指抬起或取消，恢复 RecyclerView 的滑动
-                        mBinding.rvBetList.requestDisallowInterceptTouchEvent(false)
+        viewPager2.setOnTouchListener(OnTouchListener { _, event ->
+            when (event.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    startX = event.x
+                    startY = event.y
+                }
+
+                MotionEvent.ACTION_MOVE -> {
+                    val endX = event.x
+                    val endY = event.y
+                    val distanceX = abs(endX - startX)
+                    val distanceY = abs(endY - startY)
+                    // 如果垂直滑动距离大于水平滑动距离，禁用 ViewPager2 滑动
+                    if (distanceY > distanceX) {
+                        viewPager2.isUserInputEnabled = false
+                    } else {
+                        viewPager2.isUserInputEnabled = true
                     }
                 }
-                return false
-            }
 
+                MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                    // 恢复 ViewPager2 的滑动
+                    viewPager2.isUserInputEnabled = true
+                }
+            }
+            false // 让事件继续传递给 RecyclerView
         }.also {
             requireView().doOnDetach {
                 viewPager2.setOnTouchListener(null)
