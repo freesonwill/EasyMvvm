@@ -36,6 +36,29 @@ class GameDetailPageViewModel : BaseViewModel() {
     private val _isCollected = MutableLiveData<Boolean>()
     val isCollected: LiveData<Boolean> = _isCollected
 
+    init {
+        loadMockData()
+    }
+
+    private fun loadMockData() {
+        // Mock Preview Data
+        _previewData.value = listOf(
+            // GamePreviewBean(PreviewType.VIDEO, "https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/1080/Big_Buck_Bunny_1080_10s_1MB.mp4"),
+            GamePreviewBean(PreviewType.IMAGE , "https://xxx.com/xxx.jpg") ,
+            GamePreviewBean(PreviewType.IMAGE , "https://xxx.com/xxx.jpg") ,
+            GamePreviewBean(PreviewType.IMAGE , "https://xxx.com/xxx.jpg") ,
+            GamePreviewBean(PreviewType.IMAGE , "https://xxx.com/xxx.jpg") ,
+            GamePreviewBean(PreviewType.IMAGE , "https://xxx.com/xxx.jpg") ,
+            GamePreviewBean(PreviewType.IMAGE , "https://xxx.com/xxx.jpg") ,
+            GamePreviewBean(PreviewType.IMAGE , "https://xxx.com/xxx.jpg") ,
+            GamePreviewBean(PreviewType.IMAGE , "https://xxx.com/xxx.jpg") ,
+            GamePreviewBean(PreviewType.IMAGE , "https://xxx.com/xxx.jpg") ,
+            GamePreviewBean(PreviewType.IMAGE , "https://xxx.com/xxx.jpg") ,
+            GamePreviewBean(PreviewType.IMAGE , "https://xxx.com/xxx.jpg") ,
+            GamePreviewBean(PreviewType.IMAGE , "https://xxx.com/xxx.jpg")
+        )
+    }
+
 
     fun queryGameDetail(gameId: Long) {
         setState(DataState.Loading)
@@ -57,9 +80,9 @@ class GameDetailPageViewModel : BaseViewModel() {
                                 val gameDetailVo = it.dataAs<GameDetailVo>()
                                 val toGameDetailBean = repository.toGameDetailBean(gameDetailVo)
                                 withContext(Dispatchers.Main) {
-                                    _previewData.value = gameDetailVo?.avatar?.map { vo ->
-                                        GamePreviewBean(PreviewType.IMAGE , vo.url)
-                                    }
+//                                    _previewData.value = gameDetailVo?.avatar?.map { vo ->
+//                                        GamePreviewBean(PreviewType.IMAGE , vo.url)
+//                                    }
                                     toGameDetailBean.let { gameDetailBean ->
                                         _gameDetailData.value = gameDetailBean
                                     }
