@@ -55,21 +55,9 @@ class GameAllRankingTodayFragment :
             rvTodayRank.adapter = adapter
 
             //如果是华为手机，增加顶部间距，避免被刘海遮挡
-            if (arch.cayenne.lib.common.utils.DeviceUtils.isHuaweiDevice()) {
-               val params= rvTodayRank.layoutParams as ConstraintLayout.LayoutParams
-                params.topMargin = (-10f).dp2px
-                rvTodayRank.layoutParams = params
-
-                val params1 = tvTabTodayTitle.layoutParams as ConstraintLayout.LayoutParams
-                params1.bottomMargin = 0
-                tvTabTodayTitle.layoutParams = params1
-
-//                tvTodayTitle.updateLayoutParams<ConstraintLayout.LayoutParams> { bottomMargin = 0 }
-//
-//              tvTabTodayPlayer.updateLayoutParams<ConstraintLayout.LayoutParams> { bottomMargin = 0 }
-//                tvTabTodayBetting.updateLayoutParams<ConstraintLayout.LayoutParams> { bottomMargin = 0 }
-//                tvTabTodayBonus.updateLayoutParams<ConstraintLayout.LayoutParams> { bottomMargin = 0 }
-            }
+            val params= rvTodayRank.layoutParams as ConstraintLayout.LayoutParams
+            params.topMargin = (-10f).dp2px
+            rvTodayRank.layoutParams = params
         }
     }
 
