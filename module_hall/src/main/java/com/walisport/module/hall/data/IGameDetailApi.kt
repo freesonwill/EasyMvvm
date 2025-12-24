@@ -15,8 +15,8 @@ import retrofit2.http.Query
  */
 interface IGameDetailApi : IApi {
 
-    @GET("/game/{id}")
-        suspend fun getGameDetail(
-            @retrofit2.http.Path("id") id: Int
-        ): Response<HttpApiResponse<Game>>
+//    @GET("/game/{id}")
+//        suspend fun getGameDetail(
+//            @retrofit2.http.Path("id") id: Int
+//        ): Response<HttpApiResponse<Game>>
 }

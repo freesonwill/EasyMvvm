@@ -2,14 +2,20 @@ package com.walisport.module.gamedetail.ui.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
+import com.walisport.module.gamedetail.data.GameDetailRepository
 import com.walisport.module.gamedetail.data.model.GameDetailBean
 import com.walisport.module.gamedetail.data.model.GamePreviewBean
 import com.walisport.module.gamedetail.data.model.PreviewType
+import org.koin.core.component.inject
+import org.koin.core.parameter.parametersOf
 import plugin.koin.KoinViewModel
 
 @KoinViewModel
 class GameDetailPageViewModel : BaseViewModel() {
+    private val repository: GameDetailRepository by inject { parametersOf(viewModelScope) }
+
     // Shared state for Carousel index
     val sharedCarouselIndex = MutableLiveData(0)
 
@@ -59,5 +65,9 @@ class GameDetailPageViewModel : BaseViewModel() {
             GamePreviewBean(PreviewType.IMAGE, "https://xxx.com/xxx.jpg"),
             GamePreviewBean(PreviewType.IMAGE, "https://xxx.com/xxx.jpg")
         )
+    }
+
+    fun queryGameDetail(gameId: Int) {
+
     }
 }

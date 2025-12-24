@@ -69,6 +69,11 @@ class GameDetailFragment : BaseFragment<GameDetailPageViewModel, FragmentGameDet
     override suspend fun createObserver() {
     }
 
+    override fun initData() {
+        super.initData()
+        mViewModel.queryGameDetail(100)
+    }
+
     override fun onDestroyView() {
         // Clear ViewPager2 adapter to prevent memory leaks
         mBinding.gameDetailPager.adapter = null

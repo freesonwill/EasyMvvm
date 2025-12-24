@@ -41,6 +41,7 @@ dependencies {
     implementation(project(":lib_res"))
     implementation(project(":lib_websocket"))
     implementation(project(":lib_skin"))
+    implementation(project(":lib_http"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)

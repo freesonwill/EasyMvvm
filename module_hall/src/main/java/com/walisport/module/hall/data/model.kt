@@ -1,6 +1,6 @@
 package com.walisport.module.hall.data
 
-import arch.cayenne.lib.common.utils.ext.ccyToSymbol
+import arch.cayenne.lib.http.data.AvatarVo
 import arch.cayenne.lib.http.data.PaginationVo
 import com.walisport.module.hall.data.constants.GameSortType
 
