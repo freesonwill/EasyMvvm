@@ -10,6 +10,7 @@ import arch.cayenne.lib.database.entity.TournamentMatchRef
 import arch.cayenne.module.home.data.constants.HomeState
 import arch.cayenne.module.home.data.constants.PlayType
 import arch.cayenne.module.home.data.constants.SportType
+import arch.cayenne.module.home.data.constants.MatchListSortType
 import arch.cayenne.module.home.data.repo.BaseMatchRepository
 import arch.cayenne.module.home.data.repo.BaseMatchRepository.Companion.DEFAULT_MATCH_SIZE
 import arch.cayenne.module.home.data.repo.MatchListRepository
@@ -103,7 +104,7 @@ class MatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
     fun startObserveMatch() {
         job?.cancel()
         job = viewModelScope.launch(Dispatchers.IO) {
-            repository.observeMatchChange(_playType, _tournamentIdList)
+            repository.observeMatchChange(_playType , _tournamentIdList , MatchListSortType.BY_TIME)
                 .distinctUntilChanged()
                 .collect { refs ->
                     val selectedDate = _selectedDate.value

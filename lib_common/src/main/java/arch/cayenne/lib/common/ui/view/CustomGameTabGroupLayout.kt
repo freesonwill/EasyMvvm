@@ -148,6 +148,10 @@ class CustomGameTabGroupLayout : FrameLayout {
         }
     }
 
+    fun clearTabList() {
+        binding.tlVendorList.removeAllTabs()
+    }
+
 
     /**
      * 清除 tlLeagueList 的選中狀態（需求2）

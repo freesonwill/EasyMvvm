@@ -8,6 +8,7 @@ import arch.cayenne.module.home.data.constants.PlayType
 import arch.cayenne.module.home.data.constants.SportType
 import arch.cayenne.module.home.ui.fragment.CollectListFragment
 import arch.cayenne.module.home.ui.fragment.EarlyFragment
+import arch.cayenne.module.home.ui.fragment.SubHomeFragmentV2
 import arch.cayenne.module.home.ui.fragment.SubHomeFragment
 import arch.cayenne.module.home.ui.fragment.SuperCompetitionFragment
 
@@ -36,6 +37,7 @@ class SubHomePagerAdapter(
         return when (val playType = playTypes[position - promoCount]) {
             PlayType.FAVORITE -> CollectListFragment()
             PlayType.EARLY -> EarlyFragment.newInstance(playType.id)
+            PlayType.ROLLING -> SubHomeFragmentV2.newInstance(playType.id)
             else -> SubHomeFragment.newInstance(
                 playType.id
             )

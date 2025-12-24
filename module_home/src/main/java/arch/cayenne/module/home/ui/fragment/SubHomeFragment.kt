@@ -45,7 +45,7 @@ import arch.cayenne.module.home.TournamentCombo
 import arch.cayenne.module.home.data.constants.HomeState
 import arch.cayenne.module.home.data.constants.PlayType
 import arch.cayenne.module.home.data.constants.TournamentListType
-import arch.cayenne.module.home.data.constants.TournamentSortType
+import arch.cayenne.module.home.data.constants.MatchListSortType
 import arch.cayenne.module.home.databinding.FragmentSubHomeBinding
 import arch.cayenne.module.home.databinding.ItemLeagueTabBinding
 import arch.cayenne.module.home.databinding.LayoutTournamentSortingMenuBinding
@@ -79,7 +79,7 @@ class SubHomeFragment : BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>()
     private var sortingMenuBinding: LayoutTournamentSortingMenuBinding? = null
 
     // 當前排序類型，預設為按熱門聯賽排序
-    private var currentSortType = TournamentSortType.BY_HOT
+    private var currentSortType = MatchListSortType.BY_HOT
 
     private val defaultAnimDuration = 300L
 
@@ -600,8 +600,8 @@ class SubHomeFragment : BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>()
 
             // 點擊按熱門排序
             binding.tvSortByHot.clickNoRepeat {
-                if (currentSortType != TournamentSortType.BY_HOT) {
-                    currentSortType = TournamentSortType.BY_HOT
+                if (currentSortType != MatchListSortType.BY_HOT) {
+                    currentSortType = MatchListSortType.BY_HOT
                     updateSortingMenuSelection()
                     applySorting()
                 }
@@ -610,8 +610,8 @@ class SubHomeFragment : BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>()
 
             // 點擊按時間排序
             binding.tvSortByTime.clickNoRepeat {
-                if (currentSortType != TournamentSortType.BY_TIME) {
-                    currentSortType = TournamentSortType.BY_TIME
+                if (currentSortType != MatchListSortType.BY_TIME) {
+                    currentSortType = MatchListSortType.BY_TIME
                     updateSortingMenuSelection()
                     applySorting()
                 }
@@ -635,12 +635,12 @@ class SubHomeFragment : BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>()
             )
 
             when (currentSortType) {
-                TournamentSortType.BY_HOT -> {
+                MatchListSortType.BY_HOT -> {
                     binding.tvSortByHot.setTextColor(selectedColor)
                     binding.tvSortByTime.setTextColor(unselectedColor)
                 }
 
-                TournamentSortType.BY_TIME -> {
+                MatchListSortType.BY_TIME -> {
                     binding.tvSortByHot.setTextColor(unselectedColor)
                     binding.tvSortByTime.setTextColor(selectedColor)
                 }
@@ -655,12 +655,12 @@ class SubHomeFragment : BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>()
         // TODO: 實現實際的排序邏輯
         // 根據 currentSortType 來決定如何排序賽事列表
         when (currentSortType) {
-            TournamentSortType.BY_HOT -> {
+            MatchListSortType.BY_HOT -> {
                 // 按熱門聯賽排序的邏輯
                 // 可以調用 ViewModel 的方法來更新數據
             }
 
-            TournamentSortType.BY_TIME -> {
+            MatchListSortType.BY_TIME -> {
                 // 按比賽時間排序的邏輯
                 // 可以調用 ViewModel 的方法來更新數據
             }

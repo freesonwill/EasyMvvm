@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="@dimen/dp_32"
+    android:id="@+id/cl_custom_game_tab_group"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <arch.cayenne.lib.common.ui.view.BounceTabLayoutContainer
         android:id="@+id/tl_container"
