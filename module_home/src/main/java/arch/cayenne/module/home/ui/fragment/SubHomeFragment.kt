@@ -386,7 +386,7 @@ class SubHomeFragment : BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>()
 
                 if (tab != null && data != null && tab.customView == null) {
                     tab.customView = createTournamentTabView(data)
-                    tab.view.setPadding(0, 0, 6f.dp2px, 0)
+                    tab.view.setPadding(0, 0, 6.dp2px, 0)
                     if (data.tournamentList[0].id == HomeViewModel.TOURNAMENT_ALL_ID) {
                         tab.view.minimumWidth = 0
                     }
