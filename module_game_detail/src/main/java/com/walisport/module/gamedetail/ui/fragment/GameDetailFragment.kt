@@ -75,7 +75,7 @@ class GameDetailFragment : BaseFragment<GameDetailPageViewModel, FragmentGameDet
 
     override fun initData() {
         super.initData()
-        mViewModel.queryGameDetail(100)
+        mViewModel.queryGameDetail(args.gameId)
     }
 
     override fun onDestroyView() {

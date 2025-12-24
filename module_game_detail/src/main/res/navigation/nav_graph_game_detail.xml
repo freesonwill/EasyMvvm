@@ -12,7 +12,7 @@
         tools:layout="@layout/fragment_game_detail">
         <argument
             android:name="gameId"
-            app:argType="string"
+            app:argType="long"
             app:nullable="false" />
         <deepLink app:uri="@string/nav_module_gamedetail" />
     </fragment>

@@ -14,8 +14,8 @@ import retrofit2.http.Path
  */
 interface IGameDetailApi : IApi {
 
-    @GET("/game/{id}")
+    @GET("api/game/{id}")
     suspend fun getGameDetail(
-        @Path("id") id: Int
+        @Path("id") id: Long
     ): Response<HttpApiResponse<GameDetailVo>>
 }

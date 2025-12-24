@@ -8,9 +8,13 @@ import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.common.utils.ext.ccyToSymbol
 import arch.cayenne.lib.common.utils.ext.symbolUrl
 import arch.cayenne.lib.database.GameDatabase
+import arch.cayenne.lib.database.entity.CurrencyBean
 import arch.cayenne.lib.http.HttpClient
 import arch.cayenne.lib.http.HttpException
 import arch.cayenne.lib.websocket.WebSocketManager
+import com.walisport.module.gamedetail.data.model.CurrencyInfoBean
+import com.walisport.module.gamedetail.data.model.GameDetailBean
+import com.walisport.module.gamedetail.data.model.GameDetailVo
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -31,8 +35,9 @@ class GameDetailRepository(
     private val manager: UserDataManager ,
 ) : BaseRepository() {
 
+    private val currencyConfigDao = database.currencyConfigDao()
 
-    suspend fun getGameDetail(id: Int): ApiResponseState {
+    suspend fun getGameDetail(id: Long): ApiResponseState {
         val api = mockHttpClient.create(IGameDetailApi::class.java)
         return suspendCancellableCoroutine<ApiResponseState> { cancellableContinuation ->
             scope.launch(Dispatchers.IO) {
@@ -69,6 +74,39 @@ class GameDetailRepository(
                 )
             }
         }
+    }
+
+    suspend fun toGameDetailBean(vo: GameDetailVo?): GameDetailBean {
+
+        return GameDetailBean(
+            id = vo?.gameType?.toLong() ?: 0L ,
+            name = vo?.name.orEmpty() ,
+            type = vo?.category ?: 0 ,
+            supplier = vo?.supplier.orEmpty() ,
+            avatar = vo?.icon.orEmpty() ,
+            reward = (vo?.reward ?: 0.0f).toDouble() ,
+            maxOdds = vo?.maxOdds ?: 0 ,
+            online = vo?.online ?: 0 ,
+            score = vo?.score ?: 0.0 ,
+            comments = vo?.comments ?: 0 ,
+            tryIt = vo?.tryIt ?: false ,
+            hasMore = vo?.hasMore ?: false ,
+            collect = vo?.collect ?: false ,
+            materials = vo?.materials.orEmpty() ,
+            currency = vo?.ccyList?.mapNotNull {
+                currencyConfigDao.getCurrencyByCcy(it)?.let { bean -> toCurrencyInfoBean(bean) }
+            } ?: emptyList())
+    }
+
+    fun toCurrencyInfoBean(currencyBean: CurrencyBean): CurrencyInfoBean {
+        return CurrencyInfoBean(
+            id = currencyBean.id ,
+            isVirtual = currencyBean.virtual ,
+            rate = currencyBean.rate ,
+            unit = currencyBean.unit ,
+            name = currencyBean.name ,
+
+            )
     }
 
 
