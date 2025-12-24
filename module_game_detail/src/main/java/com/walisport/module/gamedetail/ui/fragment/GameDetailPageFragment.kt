@@ -108,6 +108,8 @@ class GameDetailPageFragment : BaseFragment<GameDetailViewModel, FragmentGameDet
         pagerViewModel.previewData.observe(viewLifecycleOwner) { list ->
             previewAdapter.setData(list)
         }
+
+
     }
 
     private fun updateGameDetailUi(data: GameDetailBean) {

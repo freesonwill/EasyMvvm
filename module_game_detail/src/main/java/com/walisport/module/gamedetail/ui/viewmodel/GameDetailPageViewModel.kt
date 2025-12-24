@@ -32,28 +32,10 @@ class GameDetailPageViewModel : BaseViewModel() {
     private val _previewData = MutableLiveData<List<GamePreviewBean>>()
     val previewData: LiveData<List<GamePreviewBean>> = _previewData
 
-    init {
-        loadMockData()
-    }
+    // 收藏状态
+    private val _isCollected = MutableLiveData<Boolean>()
+    val isCollected: LiveData<Boolean> = _isCollected
 
-    private fun loadMockData() {
-        // Mock Preview Data
-//        _previewData.value = listOf(
-//            // GamePreviewBean(PreviewType.VIDEO, "https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/1080/Big_Buck_Bunny_1080_10s_1MB.mp4"),
-//            GamePreviewBean(PreviewType.IMAGE , "https://xxx.com/xxx.jpg") ,
-//            GamePreviewBean(PreviewType.IMAGE , "https://xxx.com/xxx.jpg") ,
-//            GamePreviewBean(PreviewType.IMAGE , "https://xxx.com/xxx.jpg") ,
-//            GamePreviewBean(PreviewType.IMAGE , "https://xxx.com/xxx.jpg") ,
-//            GamePreviewBean(PreviewType.IMAGE , "https://xxx.com/xxx.jpg") ,
-//            GamePreviewBean(PreviewType.IMAGE , "https://xxx.com/xxx.jpg") ,
-//            GamePreviewBean(PreviewType.IMAGE , "https://xxx.com/xxx.jpg") ,
-//            GamePreviewBean(PreviewType.IMAGE , "https://xxx.com/xxx.jpg") ,
-//            GamePreviewBean(PreviewType.IMAGE , "https://xxx.com/xxx.jpg") ,
-//            GamePreviewBean(PreviewType.IMAGE , "https://xxx.com/xxx.jpg") ,
-//            GamePreviewBean(PreviewType.IMAGE , "https://xxx.com/xxx.jpg") ,
-//            GamePreviewBean(PreviewType.IMAGE , "https://xxx.com/xxx.jpg")
-//        )
-    }
 
     fun queryGameDetail(gameId: Long) {
         setState(DataState.Loading)
@@ -81,6 +63,7 @@ class GameDetailPageViewModel : BaseViewModel() {
                                     toGameDetailBean.let { gameDetailBean ->
                                         _gameDetailData.value = gameDetailBean
                                     }
+                                    _isCollected.value = gameDetailVo?.collect ?: false
                                 }
                             }
                         }
@@ -90,6 +73,35 @@ class GameDetailPageViewModel : BaseViewModel() {
                 } , autoUpdateState = false
             )
         }
+    }
+
+    fun toggleCollectStatus(gameId: Long) {
+        _isCollected.value = !(_isCollected.value ?: false)
+        val status = _isCollected.value ?: true
+
+        viewModelScope.launch {
+            callApi(
+                {
+                    repository.updateGameCollect(
+                        gameId ,
+                        status
+                    )
+                } ,
+                {
+                    when (it) {
+                        is ApiResponseState.Failed -> {
+
+                        }
+
+                        is ApiResponseState.Succeeded<*> -> {
+                        }
+
+                        else -> {}
+                    }
+                } , autoUpdateState = false
+            )
+        }
+
     }
 
 

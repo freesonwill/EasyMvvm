@@ -65,12 +65,15 @@ class GameDetailFragment : BaseFragment<GameDetailPageViewModel, FragmentGameDet
                 navigateUp()
             }
             ivFavorite.clickNoRepeat {
-                it.isSelected = !it.isSelected
+                mViewModel.toggleCollectStatus(args.gameId)
             }
         }
     }
 
     override suspend fun createObserver() {
+        mViewModel.isCollected.observe(viewLifecycleOwner) { isCollected ->
+            mBinding.ivFavorite.isSelected = isCollected
+        }
     }
 
     override fun initData() {

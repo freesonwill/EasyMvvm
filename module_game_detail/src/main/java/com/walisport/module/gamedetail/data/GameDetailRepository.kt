@@ -98,7 +98,7 @@ class GameDetailRepository(
             } ?: emptyList())
     }
 
-    fun toCurrencyInfoBean(currencyBean: CurrencyBean): CurrencyInfoBean {
+    private fun toCurrencyInfoBean(currencyBean: CurrencyBean): CurrencyInfoBean {
         return CurrencyInfoBean(
             id = currencyBean.id ,
             isVirtual = currencyBean.virtual ,
@@ -107,6 +107,50 @@ class GameDetailRepository(
             name = currencyBean.name ,
 
             )
+    }
+
+    suspend fun updateGameCollect(gameId: Long , collect: Boolean): ApiResponseState {
+        val api = mockHttpClient.create(IGameDetailApi::class.java)
+        return suspendCancellableCoroutine<ApiResponseState> { cancellableContinuation ->
+            scope.launch(Dispatchers.IO) {
+                mockHttpClient.safeRequest(
+                    request = {
+                        api.updateGameCollect(
+                            body = com.walisport.module.gamedetail.data.model.ProfileCollectEditVo(
+                                gameType = gameId.toInt() ,
+                                collect = collect
+                            )
+                        )
+                    } ,
+                    onSuccess = { resp ->
+                        if (resp.code == 0) {
+                            cancellableContinuation.resume(ApiResponseState.Succeeded(resp.data))
+                        } else {
+                            "response------>${resp.code},${resp.message}".loge(TAG)
+                            cancellableContinuation.resume(
+                                ApiResponseState.Failed(
+                                    HttpException(
+                                        resp.code ,
+                                        resp.message
+                                    )
+                                )
+                            )
+                        }
+                    } ,
+                    onFailure = { code , msg , throwable ->
+                        "response------>$code,$msg,$throwable".loge(TAG)
+                        cancellableContinuation.resume(
+                            ApiResponseState.Failed(
+                                HttpException(
+                                    code ,
+                                    msg ?: ""
+                                )
+                            )
+                        )
+                    }
+                )
+            }
+        }
     }
 
 
