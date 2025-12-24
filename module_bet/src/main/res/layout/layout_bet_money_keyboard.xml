@@ -36,7 +36,8 @@
         app:layout_constraintBottom_toBottomOf="@id/gl_other"
         app:layout_constraintEnd_toStartOf="@id/gl_other"
         app:layout_constraintStart_toEndOf="@id/rv_quick_amount"
-        app:layout_constraintTop_toTopOf="@id/gl_other" />
+        app:layout_constraintTop_toTopOf="@id/gl_other"
+        app:spacing="@dimen/dp_6"/>
 
     <GridLayout
         android:id="@+id/gl_other"
@@ -55,6 +56,7 @@
             android:layout_rowWeight="0"
             android:layout_marginBottom="3dp"
             android:scaleType="center"
+            android:paddingTop="0dp"
             android:src="@drawable/icon_keyboard_back" />
 
         <arch.cayenne.lib.skin.widget.SkinnableTextView

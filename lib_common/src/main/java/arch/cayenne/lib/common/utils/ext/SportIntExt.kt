@@ -5,7 +5,7 @@ import java.math.RoundingMode
 import java.text.DecimalFormat
 import java.text.NumberFormat
 import java.util.Locale
-
+import arch.cayenne.lib.common.utils.ext.SportDisplayOddsExt.getDisplayOdds
 object SportIntExt {
     /**
      * @return string: 1234 轉換為 12.34, 1000 轉換為 10
@@ -123,6 +123,8 @@ object SportIntExt {
     }
 
     /**
+     * 欧洲盘赔率（含本金）
+     * @see [getDisplayOdds]
      * @return string: 1234 轉換為 12.34, 1000 轉換為 10.00
      */
     fun Int.getOdds(stripTrailingZero:Boolean = true): String {

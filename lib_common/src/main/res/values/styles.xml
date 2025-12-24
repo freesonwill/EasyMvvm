@@ -71,6 +71,7 @@
         <item name="android:textStyle">bold</item>
         <item name="android:textColor">@color/color_FFFFFF</item>
         <item name="android:gravity">center</item>
+        <item name="skinnableFontWeight">500</item>
     </style>
 
     <style name="MoneyKeyboardButton">
@@ -95,6 +96,7 @@
         <item name="android:textStyle">bold</item>
         <item name="android:textColor">@color/color_FFFFFF</item>
         <item name="android:gravity">center</item>
+        <item name="android:fontFamily">@font/sf_pro</item>
     </style>
 
     <style name="ButtonStyle">
