@@ -1,6 +1,7 @@
 package com.walisport.module.gamedetail.data.model
 
 import arch.cayenne.lib.http.data.AvatarVo
+import arch.cayenne.lib.http.data.PaginationVo
 
 /**
  *
@@ -43,4 +44,9 @@ data class ProfileCollectEditVo(
     val gameType: Int , // 游戏类型
     val collect: Boolean? // 是否收藏，true:收藏，false:取消收藏，不传则自动转换
 )
+
+
+
+
+
 
