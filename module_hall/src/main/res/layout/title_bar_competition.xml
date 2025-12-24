@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/dp_46"
+    android:layout_height="@dimen/dp_50"
     android:background="@color/color_1E1E1E">
 
     <arch.cayenne.lib.skin.widget.SkinnableImageView
@@ -16,8 +16,10 @@
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/tv_title_name"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
+        android:paddingBottom="@dimen/dp_1"
         android:textColor="@color/title_bar"
+        android:gravity="center_vertical"
         android:textSize="@dimen/sp_16"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -31,6 +33,7 @@
         android:layout_width="@dimen/dp_36"
         android:layout_height="@dimen/dp_36"
         android:layout_marginEnd="@dimen/dp_2"
+        android:layout_marginTop="@dimen/dp_1"
         android:padding="@dimen/dp_6"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

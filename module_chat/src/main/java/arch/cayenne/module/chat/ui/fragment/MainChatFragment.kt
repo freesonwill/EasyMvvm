@@ -10,6 +10,7 @@ import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.adapter.PagerAdapter
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.data.constants.FragmentResultEnum
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
@@ -203,8 +204,7 @@ class MainChatFragment : BaseFragment<MainChatViewModel, FragmentMainChatLayoutB
         super.onStart()
     }
 
-    override fun onHiddenChanged(hidden: Boolean) {
-        super.onHiddenChanged(hidden)
+    override suspend fun onArgumentsChanged(oldArgs: Bundle?, newArgs: Bundle?) {
         //"received , bundle:$arguments".logd(TAG)
         arguments?.getBoolean(FragmentResultEnum.KEY_CUSTOMER_SERVICE.name)?.let {
             mViewModel.jump2CustomerService(it)

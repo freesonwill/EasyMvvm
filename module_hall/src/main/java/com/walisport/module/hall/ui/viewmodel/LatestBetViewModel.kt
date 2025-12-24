@@ -12,13 +12,12 @@ import com.walisport.module.hall.data.BettingPageVo
 import com.walisport.module.hall.data.GameAllRankingListData
 import com.walisport.module.hall.data.HallRepository.Companion.INITIAL_PAGE
 import com.walisport.module.hall.data.RankingRepository
-import com.walisport.module.hall.data.toGameAllRankingListData
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
 import plugin.koin.KoinViewModel
 
 @KoinViewModel
-class LatestBetViewModel : BaseViewModel() {
+class LatestBetViewModel() : BaseViewModel() {
     private val repository: RankingRepository by inject { parametersOf(viewModelScope) }
 
     private val _gameListLiveData: MutableLiveData<List<GameAllRankingListData>> = MutableLiveData()
@@ -46,7 +45,8 @@ class LatestBetViewModel : BaseViewModel() {
                     val size = bettingPageVo?.list?.size ?: 0
                     val isEmpty = size == 0
 
-                    val list = bettingPageVo?.list?.map { it.toGameAllRankingListData() } ?: emptyList()
+
+                    val list = bettingPageVo?.list?.map { repository.toGameAllRankingListData(it) } ?: emptyList()
                     when {
                         page == INITIAL_PAGE && isEmpty -> setState(DataState.DataEmpty)
                         !hasMore -> {

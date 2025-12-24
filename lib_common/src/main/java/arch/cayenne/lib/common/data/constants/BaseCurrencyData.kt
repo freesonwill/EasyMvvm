@@ -18,9 +18,10 @@ sealed class BaseCurrencyData {
         val ccy: String,
         val icon: String,
         val currencyName: String,
-        val amount: Double,
+        val amount: Long,
         val amountStr: String,
         val exchangeAmount: String,
-        val unit: String
+        val unit: String,
+        val scale: Int = 2, //預設為10^2 = 100
     ) : BaseCurrencyData()
 }

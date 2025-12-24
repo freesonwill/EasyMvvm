@@ -12,6 +12,7 @@ import arch.cayenne.lib.common.utils.ext.checkCurrentScrollState
 import arch.cayenne.lib.common.utils.ext.onScrolledOver
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.helper.BackToTopHelper
+import arch.cayenne.lib.common.utils.helper.NestedScrollViewBackToTopHelper
 import com.walisport.module.hall.data.Category
 import com.walisport.module.hall.data.GameAllContentData
 import com.walisport.module.hall.databinding.FragmentGameAllBinding
@@ -61,7 +62,13 @@ class GameAllFragment : BaseFragment<GameAllViewModel, FragmentGameAllBinding>()
             parentFragmentManager,
             childFragmentManager,
             lifecycle
-        )
+        ){
+            mBinding.nestedScrollView.requestLayout()
+            //更新rvContent指定position
+            // 更新 rvContent 指定 position
+          //  mBinding.rvContent.adapter?.notifyItemChanged(headerAdapter.itemCount - 1)
+            LogUtils.e("GameAllRankingViewHolder", "onPageSelected height-nestedScrollView=${mBinding.nestedScrollView.height}")
+        }
     }
 
 
@@ -77,7 +84,8 @@ class GameAllFragment : BaseFragment<GameAllViewModel, FragmentGameAllBinding>()
             )
             rvContent.layoutManager = LinearLayoutManager(requireContext())
             rvContent.adapter = concatAdapter
-            BackToTopHelper(rvContent, ivBackToTop, false)
+            rvContent.setItemViewCacheSize(10)
+            NestedScrollViewBackToTopHelper(nestedScrollView, ivBackToTop)
         }
 
     }
@@ -109,7 +117,7 @@ class GameAllFragment : BaseFragment<GameAllViewModel, FragmentGameAllBinding>()
         //接收全部参数
         mViewModel.gameListLiveData.observe(viewLifecycleOwner) {
             listAdapter.submitList(it)
-            LogUtils.e("response------all--getGameTitleSize-${mViewModel.getGameTitleSize()},index-${index}")
+            //LogUtils.e("response------all--getGameTitleSize-${mViewModel.getGameTitleSize()},index-${index}")
             if (index < (mViewModel.getGameTitleSize())) {
                 var gameData = mViewModel.getGame(index)
                 gameData?.let {

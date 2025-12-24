@@ -8,6 +8,7 @@
     <arch.cayenne.lib.skin.widget.SkinnableImageView
         android:id="@+id/iv"
         android:layout_width="30dp"
+        android:stateListAnimator="@animator/layout_alpha_animator"
         android:layout_height="30dp"
         android:scaleType="fitXY"
         android:layout_marginLeft="@dimen/dp_6"

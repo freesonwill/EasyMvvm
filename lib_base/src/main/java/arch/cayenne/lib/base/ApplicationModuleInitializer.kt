@@ -1,10 +1,12 @@
 package arch.cayenne.lib.base
 
+import android.app.Application
 import android.content.Context
 import androidx.startup.Initializer
 import arch.cayenne.lib.base.data.DefaultInitializer
 import arch.cayenne.lib.base.data.repository.EmptyRepository
 import arch.cayenne.lib.base.utils.LogUtils
+import arch.cayenne.lib.base.utils.crash.CrashHandler
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
@@ -32,7 +34,7 @@ class ApplicationModuleInitializer : DefaultInitializer<String> {
             .setSaveDays(7)
             .setLogHeadSwitch(false)
             .setSingleTagSwitch(false)
-
+        Thread.setDefaultUncaughtExceptionHandler(CrashHandler(context as Application))
         //Koin init
         startKoin {
             androidLogger()

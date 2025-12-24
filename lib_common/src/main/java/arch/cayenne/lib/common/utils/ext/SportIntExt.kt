@@ -66,10 +66,11 @@ object SportIntExt {
     /**
      * @return string: 123456 轉換為 1,234.56, 123456789 轉換為 1,234,567.89
      */
-    fun Long.getFormalMoney(): String {
+    fun Long.getFormalMoney(stripTrailingZero:Boolean=true): String {
         if (this == 0L) return "0"
 
         val value = this.toBigDecimal().divide(BigDecimal(100)).setScale(2, RoundingMode.DOWN)
+        if(!stripTrailingZero) return value.toPlainString()
         val stripped = value.stripTrailingZeros()
 
         val numberFormat = NumberFormat.getNumberInstance(Locale.US).apply {
@@ -161,14 +162,15 @@ object SportIntExt {
         }
     }
 
-    fun Double.toBalanceString(): String {
+    fun Long.toBalanceString(scale: Int = 2): String {
         val MAX_LENGTH = 10
         val MAX_DECIMAL = 8
-        val bd = BigDecimal(this).stripTrailingZeros()
+        val divisor = BigDecimal.TEN.pow(scale)
+        val bd = BigDecimal(this).divide(divisor).stripTrailingZeros()
         val plain = bd.toPlainString()
 
         // ===== 規則 2.2：0 或 純整數 =====
-        if (this == 0.0 || !plain.contains(".")) {
+        if (this == 0L || !plain.contains(".")) {
             return "${bd.setScale(2, RoundingMode.DOWN).toPlainString()}"
         }
 

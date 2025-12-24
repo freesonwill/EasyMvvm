@@ -3,9 +3,13 @@ package com.walisport.module.me.ui.fragment
 import android.os.Bundle
 import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
+import arch.cayenne.lib.base.BuildConfig
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.ui.fragment.launch
+import arch.cayenne.lib.base.utils.ext.launch
+import arch.cayenne.lib.base.utils.log.Utils
 import arch.cayenne.lib.common.data.constants.DrawerAction.ACTION_OPEN
 import arch.cayenne.lib.common.data.constants.DrawerAction.KEY_ACTION
 import arch.cayenne.lib.common.data.constants.DrawerAction.REQUEST_KEY_DRAWER
@@ -98,7 +102,6 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
             ivSetting.clickNoRepeat {
                 navigate(arch.cayenne.lib.res.R.string.nav_module_setting_fragment.deeplink())
             }
-
             ctUserInfo.clickNoRepeat {
                 navigate(arch.cayenne.lib.res.R.string.nav_module_personal_info_fragment.deeplink())
             }
@@ -123,8 +126,7 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
         super.onStart()
     }
 
-    override fun onHiddenChanged(hidden: Boolean) {
-        super.onHiddenChanged(hidden)
+    override suspend fun onArgumentsChanged(oldArgs: Bundle?, newArgs: Bundle?) {
         arguments?.getInt(FragmentResultEnum.KEY_ME_BOTTOM.name)?.let {
             mViewModel.bottomIndexFlow.tryEmit(it)
         }

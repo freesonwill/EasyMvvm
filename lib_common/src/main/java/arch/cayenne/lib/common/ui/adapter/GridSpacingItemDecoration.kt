@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 class GridSpacingItemDecoration(
     private val spanCount: Int,
     private val horizontalSpacing: Int,
-    private val verticalSpacing: Int,
+    var verticalSpacing: Int ,
     private val includeEdge: Boolean = false
 ) : RecyclerView.ItemDecoration() {
 

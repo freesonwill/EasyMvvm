@@ -7,6 +7,7 @@ import arch.cayenne.lib.common.utils.ext.CombinationExt
 import arch.cayenne.lib.common.utils.ext.CombinationExt.combination
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.database.dao.BetDao
+import arch.cayenne.lib.database.dao.InfoDao
 import arch.cayenne.lib.database.entity.BetDetailBean
 import arch.cayenne.lib.database.entity.BetResultStatusEnum
 import arch.cayenne.lib.database.entity.BetSelectionBean
@@ -31,6 +32,7 @@ import kotlinx.coroutines.withContext
 class ComboBetRepository(
     override val scope: CoroutineScope,
     private val betDao: BetDao,
+    private val infoDao: InfoDao,
     manager: UserDataManager,
     private val remoteManager: BettingRemoteManager
 ) : BaseRepository() {
@@ -165,6 +167,7 @@ class ComboBetRepository(
             val currentDetail = betDao.getDetail(betId)
             multiBet.forEach { multiBet ->
                 if (currentDetail.find { it.serialValue == multiBet.serialValue && it.comboK == multiBet.comboK && it.comboV == multiBet.comboV && it.count == multiBet.count} == null) {
+                    val currency = infoDao.getCurrency()
                     BetDetailBean(
                         serialValue = multiBet.serialValue,
                         betId = betId,
@@ -173,7 +176,8 @@ class ComboBetRepository(
                         sumOdds = multiBet.sumOdds,
                         odds = multiBet.odds,
                         count = multiBet.count,
-                        inputMoney = 0L
+                        inputMoney = 0L,
+                        currency = currency
                     ).apply {
                         betDao.insertDetail(this)
                     }
@@ -241,6 +245,7 @@ class ComboBetRepository(
                     unregister(selection)
                     val currentDetail = betDao.getDetail(betId)
                     val tempDetail = currentDetail.ifEmpty {
+                        val currency = infoDao.getCurrency()
                         multiBet.map { bean ->
                             BetDetailBean(
                                 serialValue = bean.serialValue,
@@ -252,6 +257,7 @@ class ComboBetRepository(
                                 odds = bean.odds,
                                 count = bean.count,
                                 inputMoney = bean.inputMoney,
+                                currency = currency,
                                 status = BetResultStatusEnum.CONFIRMING
                             )
                         }.apply {

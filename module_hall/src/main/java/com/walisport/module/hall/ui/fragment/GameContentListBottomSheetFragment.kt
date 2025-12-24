@@ -56,7 +56,7 @@ class GameContentListBottomSheetFragment :
 //            viewModels<SubHomeViewModel>({ requireParentFragment() }).value
 //        }
 //    }
-
+    var popHeight = 0.795f
     private lateinit var adapter: GameSupplierSectionAdapter
     private var pendingJumpIndex: Int? = null
     private var stickyHeaderDecoration: SupplierStickyHeaderItemDecoration? = null
@@ -78,7 +78,7 @@ class GameContentListBottomSheetFragment :
         with(mBinding) {
             // 設置最大高度為螢幕的 81%
             val screenHeight = resources.displayMetrics.heightPixels
-            val maxFragmentHeight = (screenHeight * 0.81).toInt()
+            val maxFragmentHeight = (screenHeight * popHeight).toInt()
             root.maxHeight = maxFragmentHeight
 
             isHorizontalGestureEnable = false
@@ -116,7 +116,7 @@ class GameContentListBottomSheetFragment :
         ) ?: return
 
         val screenHeight = resources.displayMetrics.heightPixels
-        val targetHeight = (screenHeight * 0.81).toInt()
+        val targetHeight = (screenHeight * popHeight).toInt()
         val topOffset = screenHeight - targetHeight  // 頂部偏移 = 19% 螢幕高度
 
         bottomSheet.layoutParams?.height = ViewGroup.LayoutParams.MATCH_PARENT
@@ -145,7 +145,7 @@ class GameContentListBottomSheetFragment :
                 }
                 false
             }
-
+            clDynamics.clickNoRepeat{}
             with(ceSearchSupplier) {
                 fun hasInput(): Boolean = text?.toString()?.trim()?.isNotEmpty() == true
                 setOnFocusChangeListener { _, hasFocus ->
@@ -317,8 +317,13 @@ class GameContentListBottomSheetFragment :
                 mBinding.clDynamics.visibility = View.VISIBLE
                 return@observe
             }else{
-                mBinding.llIndexContainer.visibility = View.VISIBLE
-                mBinding.clDynamics.visibility = View.GONE
+                if(mViewModel.isSearchMode){
+                    mBinding.llIndexContainer.visibility = View.GONE
+                    mBinding.clDynamics.visibility = View.GONE
+                } else{
+                    mBinding.llIndexContainer.visibility = View.VISIBLE
+                    mBinding.clDynamics.visibility = View.GONE
+                }
             }
             adapter.submitList(data)
             val selectedIds = data

@@ -25,6 +25,7 @@ data class BetDetailBean(
     var odds: Int,
     val count: Int = 1, // 場次組合數量
     var inputMoney: Long,
+    val currency: String,
     var status: BetResultStatusEnum? = null
 )
 
@@ -108,6 +109,8 @@ enum class BetResultStatusEnum(val code: Int) {
 }
 
 interface BetResultLiteBean {
+    val currency: String
+    val money: Long
     val isSuccessful: Boolean
 }
 
@@ -115,7 +118,9 @@ data class SingleBetResultBean(
     val sportId: Int,
     val matchName: String,
     val selectionName: String,
-    override val isSuccessful: Boolean
+    override val isSuccessful: Boolean,
+    override val money: Long,
+    override val currency: String
 ): BetResultLiteBean
 
 data class ComboBetResultBean(
@@ -123,5 +128,7 @@ data class ComboBetResultBean(
     val matchName: List<String>,
     val comboK: Int,
     val comboV: Int,
-    override val isSuccessful: Boolean
+    override val isSuccessful: Boolean,
+    override val money: Long,
+    override val currency: String
 ): BetResultLiteBean

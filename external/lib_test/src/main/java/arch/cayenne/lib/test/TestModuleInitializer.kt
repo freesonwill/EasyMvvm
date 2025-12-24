@@ -50,7 +50,7 @@ class TestModuleInitializer : DefaultInitializer<Unit> {
                     activity.supportFragmentManager.registerFragmentLifecycleCallbacks(object : FragmentManager.FragmentLifecycleCallbacks() {
                         override fun onFragmentViewCreated(fm: FragmentManager, f: Fragment, v: View, savedInstanceState: Bundle?) {
                             super.onFragmentViewCreated(fm, f, v, savedInstanceState)
-                            if(f::class.java.simpleName.startsWith("NewHomeFragment")){
+                            if(f::class.java.simpleName.startsWith("MainFragment")){
                                 fm.unregisterFragmentLifecycleCallbacks(this)
                                 createAnimFloat(f.requireActivity())
                                 createWSFloat(f.requireActivity())

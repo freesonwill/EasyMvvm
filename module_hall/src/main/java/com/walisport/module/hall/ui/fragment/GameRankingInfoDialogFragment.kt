@@ -1,5 +1,6 @@
 package com.walisport.module.hall.ui.fragment
 
+import android.app.Dialog
 import android.os.Bundle
 import android.view.Gravity
 import android.view.View
@@ -7,6 +8,8 @@ import android.view.Window
 import androidx.constraintlayout.widget.ConstraintLayout
 import arch.cayenne.lib.base.ui.fragment.BasePositionDialogFragment
 import arch.cayenne.lib.base.ui.viewmodel.EmptyViewModel
+import arch.cayenne.lib.common.ui.dialog.NoGapDialog
+import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import com.walisport.module.hall.databinding.FragmentGameRankingInfoDialogBinding
 import kotlin.reflect.KClass
 
@@ -39,6 +42,10 @@ class GameRankingInfoDialogFragment : BasePositionDialogFragment<EmptyViewModel,
 
     }
 
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        return NoGapDialog(requireContext(), theme)
+    }
+
     override fun setDialogPosition(w: Window) {
         with(mBinding) {
             root.measure(
@@ -51,7 +58,16 @@ class GameRankingInfoDialogFragment : BasePositionDialogFragment<EmptyViewModel,
             val layoutParams = w.attributes
             layoutParams.gravity = Gravity.TOP or Gravity.START
             layoutParams.x = locationX - offsetX
-            layoutParams.y = locationY - clRoot.measuredHeight
+            val y = locationY - clRoot.measuredHeight
+            if (y > 180.dp2px) {
+                ivBgTop.visibility = View.GONE
+                ivBgBottom.visibility = View.VISIBLE
+                layoutParams.y = y - 3.dp2px
+            } else {
+                ivBgTop.visibility = View.VISIBLE
+                ivBgBottom.visibility = View.GONE
+                layoutParams.y = y + 90.dp2px
+            }
             w.attributes = layoutParams
             mBinding.root.visibility = View.VISIBLE
         }

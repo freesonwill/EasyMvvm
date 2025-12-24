@@ -3,14 +3,18 @@ package arch.cayenne.module.chat.ui.fragment
 import android.os.Bundle
 import android.view.Gravity
 import android.view.Window
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import arch.cayenne.lib.base.ui.fragment.BasePositionDialogFragment
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.module.chat.R
 import arch.cayenne.module.chat.databinding.FragmentLanguageDialogLayoutBinding
 import arch.cayenne.module.chat.ui.adapter.LanguageAdapter
 import arch.cayenne.module.chat.ui.viewmodel.ChatLanguageDialogViewModel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
 
 /**
@@ -23,19 +27,30 @@ class ChatLanguageDialogFragment :
     companion object {
         private const val LOCATION_X = "locationX"
         private const val LOCATION_Y = "locationY"
+        private const val SELECT_POSITION = "selectPosition"
 
         fun newInstance(
             positionX: Int,
             positionY: Int,
+            selectPosition:Int,
+            listenerLanguage:(position:Int) -> Unit
         ): ChatLanguageDialogFragment {
             val b = Bundle()
             b.putInt(LOCATION_X, positionX)
             b.putInt(LOCATION_Y, positionY)
+            b.putInt(SELECT_POSITION,selectPosition)
             return ChatLanguageDialogFragment().apply {
                 arguments = b
+                addSelectListen {
+                    listenerLanguage.invoke(it)
+                }
             }
         }
     }
+
+    private var selectListener:((position:Int)->Unit)? = null
+    private var selectPosition:Int = -1
+
 
     override fun setDialogPosition(w: Window) {
         val positionX = requireArguments().getInt(LOCATION_X, -1)
@@ -59,19 +74,34 @@ class ChatLanguageDialogFragment :
         get() = ChatLanguageDialogViewModel::class
 
     override fun initView(savedInstanceState: Bundle?) {
+        selectPosition = requireArguments().getInt(SELECT_POSITION,-1)
         mBinding.apply {
             recycler.layoutManager = GridLayoutManager(requireActivity(),2)
             val nAdapter = LanguageAdapter()
+            nAdapter.addSelectListenPosition(selectPosition){ position ->
+                "adapter select position:$position".logd("aaa")
+                selectListener?.invoke(position)
+            }
             nAdapter.submitList(resources.getStringArray(R.array.languages).toList())
             nAdapter.setRecyclerItemClick(object :RecyclerItemListener<String>{
                 override fun onItemClick(item: String?, position: Int) {
-                    dismiss()
+                    lifecycleScope.launch {
+                        delay(200)
+                     if(dialog?.isShowing == true){
+                         dismiss()
+                     }
+                    }
                 }
             })
             recycler.adapter = nAdapter
         }
 
     }
+
+    fun addSelectListen(listen:(position:Int) -> Unit){
+        selectListener = listen
+    }
+
 
     override fun initListener() {
     }

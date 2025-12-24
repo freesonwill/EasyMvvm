@@ -12,6 +12,7 @@ import androidx.navigation.fragment.navArgs
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigateUp
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getColor
 import arch.cayenne.lib.common.utils.ext.touchBackPressed
@@ -103,7 +104,15 @@ class WebFragment : BaseFragment<SeniorPartnerViewModel, FragmentSeniorPartnerBi
     }
 
     private fun initTitleBar() {
-        mBinding.root.touchBackPressed()
+        mBinding.root.touchBackPressed {
+            LogUtils.e("touchBackPressed--------${mBinding.webView.canGoBack()}")
+            //是否在第一页,如果不是则返回上一页.如果是结束该fragment
+            if (!mBinding.webView.canGoBack()) {
+                requireActivity().onBackPressedDispatcher.onBackPressed()
+            } else {
+                mBinding.webView.goBack()
+            }
+        }
     }
 
     override fun onStart() {

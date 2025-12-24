@@ -1,6 +1,7 @@
 package arch.cayenne.module.chat.ui.widget
 
 import android.content.Context
+import android.graphics.drawable.Drawable
 import android.text.SpannableString
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatTextView
@@ -12,11 +13,12 @@ import arch.cayenne.lib.skin.widget.helper.SkinnableViewFlowHelper
 import arch.cayenne.module.chat.utils.EmojiUtils
 
 
-class EmojiTextView :
+open class EmojiTextView :
     AppCompatTextView {
     private val textHelper: SkinnableTextHelper = SkinnableTextHelper(this)
     private val backGroundHelper: SkinnableBackGroundHelper = SkinnableBackGroundHelper(this)
     private val flowHelper = SkinnableViewFlowHelper()
+
 
     constructor(context: Context) : super(context) {
         initView(context)

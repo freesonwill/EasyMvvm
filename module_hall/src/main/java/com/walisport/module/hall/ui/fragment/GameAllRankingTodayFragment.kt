@@ -7,6 +7,7 @@ import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.common.data.constants.BizUrl
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout.States
 import arch.cayenne.lib.common.utils.DateUtils
@@ -21,7 +22,7 @@ import com.walisport.module.hall.databinding.FragmentGameAllRankingTodayBinding
 import com.walisport.module.hall.ui.adapter.GameAllRankingListTodayAdapter
 import com.walisport.module.hall.ui.viewmodel.CompetitionViewModel
 import kotlin.reflect.KClass
-
+import arch.cayenne.lib.common.utils.ext.DimensionExt.px2dp
 class GameAllRankingTodayFragment :
     BaseFragment<CompetitionViewModel , FragmentGameAllRankingTodayBinding>() {
     companion object {
@@ -37,7 +38,9 @@ class GameAllRankingTodayFragment :
     }
 
     private var timer: CountDownTimer? = null
-
+    fun getContentHeight(): Int {
+        return 2246
+    }
 
     @SuppressLint("ClickableViewAccessibility")
     override fun initView(savedInstanceState: Bundle?) {

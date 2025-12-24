@@ -10,8 +10,8 @@ import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
 import arch.cayenne.module.chat.data.compare.EmojiCompare
 import arch.cayenne.module.chat.data.constants.EmojiTypeEnum
 import arch.cayenne.module.chat.data.model.EmojiModel
-import arch.cayenne.module.chat.databinding.ItemBidEmojiLayoutBinding
-import arch.cayenne.module.chat.databinding.ItemEmojiLayoutBinding
+import arch.cayenne.module.chat.databinding.ItemEmojiHorizontalLayoutBinding
+import arch.cayenne.module.chat.databinding.ItemRecyclerHorizontalBidLayoutBinding
 
 
 class EmojiItemAdapter() :
@@ -27,14 +27,14 @@ class EmojiItemAdapter() :
     inner class LiveEmojiViewHolder(binding: ViewBinding) : BaseViewHolder(binding) {
         fun setListener(listener: OnClickListener) {
             when (binding) {
-                is ItemEmojiLayoutBinding -> {
-                    val nBinding = binding as ItemEmojiLayoutBinding
-                    nBinding.iv.setOnClickListener(listener)
+                is ItemEmojiHorizontalLayoutBinding -> {
+                    val nBinding = binding as ItemEmojiHorizontalLayoutBinding
+                    nBinding.container.setOnClickListener(listener)
                 }
 
-                is ItemBidEmojiLayoutBinding -> {
-                    val nBinding = binding as ItemBidEmojiLayoutBinding
-                    nBinding.iv.setOnClickListener(listener)
+                is ItemRecyclerHorizontalBidLayoutBinding -> {
+                    val nBinding = binding as ItemRecyclerHorizontalBidLayoutBinding
+                    nBinding.container.setOnClickListener(listener)
                 }
 
                 else -> {}
@@ -43,14 +43,14 @@ class EmojiItemAdapter() :
 
         fun updateIv(resId: Int, position: Int) {
             when (binding) {
-                is ItemEmojiLayoutBinding -> {
-                    val nBinding = binding as ItemEmojiLayoutBinding
-                    nBinding.iv.tag = position
+                is ItemEmojiHorizontalLayoutBinding -> {
+                    val nBinding = binding as ItemEmojiHorizontalLayoutBinding
+                    nBinding.container.tag = position
                     nBinding.iv.setImageResource(resId)
                 }
-                is ItemBidEmojiLayoutBinding -> {
-                    val nBinding = binding as ItemBidEmojiLayoutBinding
-                    nBinding.iv.tag = position
+                is ItemRecyclerHorizontalBidLayoutBinding -> {
+                    val nBinding = binding as ItemRecyclerHorizontalBidLayoutBinding
+                    nBinding.container.tag = position
                     nBinding.iv.setImageResource(resId)
                 }
                 else -> {}
@@ -70,9 +70,9 @@ class EmojiItemAdapter() :
         inflater: LayoutInflater, parent: ViewGroup, viewType: Int
     ): ViewBinding {
         val binding = if (viewType == EmojiTypeEnum.NORMAL.value)
-            ItemEmojiLayoutBinding.inflate(inflater, parent, false)
+            ItemEmojiHorizontalLayoutBinding.inflate(inflater, parent, false)
         else
-            ItemBidEmojiLayoutBinding.inflate(inflater, parent, false)
+            ItemRecyclerHorizontalBidLayoutBinding.inflate(inflater, parent, false)
         return binding
     }
 

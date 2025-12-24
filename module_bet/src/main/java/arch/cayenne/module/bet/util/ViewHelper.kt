@@ -19,9 +19,9 @@ internal object ViewHelper {
 
     fun bindBetSheet(size: Int, bean: BetSelectionBean, binding: ItemBetSheetBinding) {
         val odds = if (size == 1) {
-            "@${bean.odds.getDisplayOdds()}"
+            "@${bean.odds.getDisplayOdds(false)}"
         } else {
-            "@${bean.odds.getOdds()}"
+            "@${bean.odds.getOdds(false)}"
         }
         binding.tvOdds.text = odds
         binding.tvSelectionName.text = bean.name
@@ -46,7 +46,7 @@ internal object ViewHelper {
         //颜色根据oddsStatus变化
         val originColor = SkinnableResourceManager.getColor(
             binding.root.context,
-            arch.cayenne.lib.common.R.color.main_text
+            arch.cayenne.lib.common.R.color.color_00E0E5
         )
         if (oddsColor != null) {
             binding.tvOdds.setTextColor(oddsColor)

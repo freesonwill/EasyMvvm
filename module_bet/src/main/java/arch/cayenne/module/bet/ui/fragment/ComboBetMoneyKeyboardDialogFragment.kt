@@ -210,7 +210,7 @@ class ComboBetMoneyKeyboardDialogFragment constructor():
             mBinding.etMoney.setSelection(length)
         }
         mViewModel.onNumberLimit.observe(viewLifecycleOwner) {
-            mBinding.etMoney.hint =
+            mBinding.etMoney.hintCursor =
                 getString(R.string.et_money_hint).format(it.first.getMoney(), it.second.getMoney())
         }
         mViewModel.onOverNumberListener.observe(viewLifecycleOwner) {

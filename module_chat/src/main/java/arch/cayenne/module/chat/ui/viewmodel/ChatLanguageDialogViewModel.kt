@@ -8,4 +8,5 @@ import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
  * @description:
  */
 class ChatLanguageDialogViewModel:BaseViewModel() {
+
 }

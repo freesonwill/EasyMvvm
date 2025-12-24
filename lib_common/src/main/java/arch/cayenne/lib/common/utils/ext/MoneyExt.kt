@@ -1,5 +1,7 @@
 package arch.cayenne.lib.common.utils.ext
 
+import arch.cayenne.lib.common.data.constants.BASE_URL
+
 /**
  *
  * @date: 2025/12/19 15:21
@@ -50,5 +52,18 @@ fun String.ccyToSymbol(): String {
         else -> "$"
     }
 
+
+}
+
+fun String.symbolUrl(): String {
+    return when (this) {
+        "CNY" -> "$BASE_URL/gameresource/ccy/cny.png"
+        "USD" -> "$BASE_URL/gameresource/ccy/usd.png"
+        "USDT" -> "$BASE_URL/gameresource/ccy/usdt.png"
+        "EUR" -> "$BASE_URL/gameresource/ccy/eur.png"
+        "BTC" -> "$BASE_URL/gameresource/ccy/btc.png"
+        "ETH" -> "$BASE_URL/gameresource/ccy/eth.png"
+        else -> "$BASE_URL/gameresource/ccy/usd.png"
+    }
 
 }
