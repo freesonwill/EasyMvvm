@@ -1,10 +1,3 @@
-workflow:
-  rules:
-    # 排除 -latest 结尾的 tag，防止 Releaser token 创建 tag 后触发权限错误
-    - if: $CI_COMMIT_TAG =~ /-latest$/
-      when: never
-    - when: always
-
 include:
   - component: gitlab.iptco.me/big/gitlab-ci/android-app@main
     inputs:
