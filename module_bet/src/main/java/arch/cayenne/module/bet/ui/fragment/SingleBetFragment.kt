@@ -20,6 +20,7 @@ import androidx.lifecycle.lifecycleScope
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
+import arch.cayenne.lib.base.utils.ext.launch
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.data.constants.QuickAmountEnum
 import arch.cayenne.lib.common.ui.adapter.QuickAmountAdapter
@@ -29,6 +30,7 @@ import arch.cayenne.lib.common.ui.viewmodel.observeEvent
 import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.DimensionExt.px2dp
+import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
@@ -47,6 +49,7 @@ import arch.cayenne.module.bet.data.Config.VALUE_TO_RESULT
 import arch.cayenne.module.bet.databinding.FragmentSingleBetBinding
 import arch.cayenne.module.bet.util.ViewHelper
 import arch.cayenne.module.bet.viewmodel.SingleBetViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.Locale
 import kotlin.reflect.KClass
@@ -115,7 +118,7 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
             }
         }
         mBinding.clBet.setOnClickListener {
-            sendBet()
+            launch { sendBet() }
         }
         mBinding.btnReserve.setOnClickListener {
             mViewModel.onBetSheetListener.value?.let {
@@ -181,6 +184,10 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
 
     override fun createObserverAtState(): Lifecycle.State = Lifecycle.State.RESUMED
     override suspend fun createObserver() {
+        mViewModel.sendBetting.observe(viewLifecycleOwner) {
+            mBinding.groupBetText.isVisible = !it
+            mBinding.progressBar.isVisible = it
+        }
         mViewModel.onEditNumber.observe(viewLifecycleOwner) {
             mBinding.etMoney.setText(it)
             val length = it.length
@@ -191,7 +198,7 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
             setBetButtonByOdds(mViewModel.onReserveOddsListener.value, it.odds)
         }
         mViewModel.onBetWinMoney.observe(viewLifecycleOwner) {
-            mBinding.tvBetMoney.isVisible = it.isNotEmpty() && it != "0"
+            mBinding.tvBetMoney.isVisible = (it.isNotEmpty() && it != "0") && !mViewModel.sendBetting.value!!
             if(mBinding.tvBetMoney.isVisible){
                 val result = String.format(Locale.ROOT,"%.2f", it.toFloat())
                 val money = getString(R.string.btn_bet_win_money).format(mViewModel.moneySymbol, result)
@@ -345,8 +352,12 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
         mBinding.clKeyboard.showKeyBoard()
     }
 
-    private fun sendBet() {
+    private suspend fun sendBet() {
         val curAmount = mViewModel.editValue
+        if(curAmount.isBlank()) {
+            showToast(getString(R.string.hint_empty_amount))
+            return
+        }
         if (curAmount.isGreaterThanValue(mViewModel.maxMoney.getMoney())) {
             showToast(getString(arch.cayenne.lib.common.R.string.toast_over_max))
             return
@@ -364,9 +375,11 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
             }
         } else {
             val isSuccess = mViewModel.sendBet()
-            if (isSuccess) {
-                navToResult()
+            if (isSuccess.isFailure) {
+                showToast(R.string.toast_bet_failure.getString())
+                return
             }
+            navToResult()
         }
     }
 
