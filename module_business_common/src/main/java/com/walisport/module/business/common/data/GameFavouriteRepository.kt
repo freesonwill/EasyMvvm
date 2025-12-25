@@ -1,21 +1,14 @@
-package com.walisport.module.hall.data
+package com.walisport.module.business.common.data
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import arch.cayenne.lib.base.data.model.UnPeekLiveData
 import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.base.data.repository.BaseRepository
-import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
 import arch.cayenne.lib.common.data.constants.PreloadEnum
 import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.database.GameDatabase
-import arch.cayenne.lib.database.entity.GameBean
-import arch.cayenne.lib.database.entity.GameSupplierDataModel
 import arch.cayenne.lib.http.HttpClient
 import arch.cayenne.lib.http.HttpException
 import arch.cayenne.lib.websocket.WebSocketManager
-import com.walisport.module.hall.data.constants.GameSortType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -32,8 +25,6 @@ class GameFavouriteRepository(
     private val preloadResultChange: MutableStateFlow<PreloadEnum> ,
     private val manager: UserDataManager ,
 ) : BaseRepository() {
-    private val _gameListLiveData: MutableLiveData<List<GameVo>> = MutableLiveData()
-    val gameListLiveData: LiveData<List<GameVo>> = _gameListLiveData
 
 
     suspend fun getGameCollectList(
