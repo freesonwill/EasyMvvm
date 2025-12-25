@@ -94,11 +94,11 @@ class GameBetShareFragment : BaseFragment<GameBetShareViewModel, FragmentGameSha
                         } else if (it.params.pageName == "game") {
                             shareViewModel.closeDialog()
                             val gameId = it.params.gameId
-//                            findNavController().navigate(
-//                                arch.cayenne.lib.res.R.string.nav_module_gamedetail.deeplink(
-//                                    "gameId" to gameId
-//                                )
-//                            )
+                            findNavController().navigate(
+                                arch.cayenne.lib.res.R.string.nav_module_gamedetail.deeplink(
+                                    "gameId" to gameId!!
+                                )
+                            )
                         }
                     }
                 }

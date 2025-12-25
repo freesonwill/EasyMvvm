@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/gameDetailFragment"
         android:name="com.walisport.module.gamedetail.ui.fragment.GameDetailFragment"
-        android:label="fragment_hall"
+        android:label="fragment_game_detail"
         tools:layout="@layout/fragment_game_detail">
         <argument
             android:name="gameId"
