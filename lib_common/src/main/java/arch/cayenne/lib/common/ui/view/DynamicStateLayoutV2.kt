@@ -6,9 +6,8 @@ import android.view.LayoutInflater
 import androidx.core.view.contains
 import arch.cayenne.lib.common.R
 import arch.cayenne.lib.common.databinding.LayoutEmptyErrorCloseV2Binding
-import arch.cayenne.lib.common.utils.ext.clickNoRepeat
-import arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout.States
+import arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
 
 class DynamicStateLayoutV2 @JvmOverloads constructor(
     context: Context ,
@@ -33,8 +32,7 @@ class DynamicStateLayoutV2 @JvmOverloads constructor(
                 //说明文字
                 binding.tvMessage.visibility = VISIBLE
                 binding.tvMessage.text = msg
-                //刷新按钮
-                binding.btnRefresh.visibility = GONE
+
             }
 
             is States.NETWORK_ANOMALY -> {
@@ -46,12 +44,7 @@ class DynamicStateLayoutV2 @JvmOverloads constructor(
                 binding.tvMessage.visibility = VISIBLE
                 binding.tvMessage.text = msg
                 //刷新按钮
-                state.onRefresh?.apply {
-                    binding.btnRefresh.visibility = VISIBLE
-                    clickNoRepeat { this.invoke() }
-                } ?: run {
-                    binding.btnRefresh.visibility = GONE
-                }
+
             }
 
             States.CLOSE -> {
@@ -62,8 +55,7 @@ class DynamicStateLayoutV2 @JvmOverloads constructor(
                 //说明文字
                 binding.tvMessage.visibility = VISIBLE
                 binding.tvMessage.text = msg
-                //刷新按钮
-                binding.btnRefresh.visibility = GONE
+
 
 
             }
@@ -78,8 +70,7 @@ class DynamicStateLayoutV2 @JvmOverloads constructor(
                 binding.ivIcon.visibility = GONE
                 //说明文字
                 binding.tvMessage.visibility = GONE
-                //刷新按钮
-                binding.btnRefresh.visibility = GONE
+
 
             }
         }
