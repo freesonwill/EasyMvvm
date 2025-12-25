@@ -5,7 +5,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tool="http://schemas.android.com/tools">
     <androidx.appcompat.widget.AppCompatImageView
-        android:layout_marginTop="-3dp"
         android:id="@+id/iv_Hall_tab_icon"
         android:layout_width="@dimen/dp_38"
         android:layout_height="@dimen/dp_38"

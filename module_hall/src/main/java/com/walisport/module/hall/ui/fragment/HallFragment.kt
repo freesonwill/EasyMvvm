@@ -212,7 +212,7 @@ class HallFragment : BaseFragment<HallViewModel, FragmentHallBinding>() {
                     if (position == 1) {
                         (layoutParams as? ViewGroup.MarginLayoutParams)?.apply {
                             marginStart = marginStart
-                            topMargin = 3.dp2px
+                            topMargin = 4.dp2px
                             marginEnd = marginEnd
                             bottomMargin = bottomMargin
                             layoutParams = this
@@ -279,7 +279,7 @@ class HallFragment : BaseFragment<HallViewModel, FragmentHallBinding>() {
                 tab.customView?.findViewById<SkinnableTextView>(R.id.tv_title)?.apply {
                         (layoutParams as? ViewGroup.MarginLayoutParams)?.apply {
                             marginStart = marginStart
-                            topMargin = 3.dp2px
+                            topMargin = 4.dp2px
                             marginEnd = marginEnd
                             bottomMargin = bottomMargin
                             layoutParams = this
