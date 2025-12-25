@@ -293,6 +293,7 @@
     <com.walisport.module.live.ui.widget.ChatUserInfoLayoutInterceptTouch
         android:id="@+id/LayoutInterceptTouch"
         android:layout_width="match_parent"
+        android:visibility="gone"
         android:background="@color/tran_0"
         android:layout_height="match_parent"/>
 
