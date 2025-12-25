@@ -13,7 +13,7 @@ class BusinessCommonModuleInitializer: DefaultInitializer<Unit> {
     }
 
     private val viewModules = module {
-        includes(defaultModule)
+        
     }
 
     private val repoModules = module {
