@@ -8,4 +8,5 @@
     <string name="hint_input_money">Please enter the amount</string>
     <string name="toast_bet_failure">Bet failed, please try again</string>
     <string name="hint_empty_amount">Please enter the bet amount</string>
+    <string name="hint_bet_inactive">盘口已暂停/关闭</string>
 </resources>
