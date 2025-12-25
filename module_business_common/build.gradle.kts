@@ -7,7 +7,7 @@ plugins {
 apply(from = rootProject.file("gradle/flavor.gradle"))
 
 android {
-    namespace = "com.walisport.module.gamedetail"
+    namespace = "com.walisport.module.business.common"
     compileSdk = 34
 
     defaultConfig {
@@ -42,7 +42,6 @@ dependencies {
     implementation(project(":lib_websocket"))
     implementation(project(":lib_skin"))
     implementation(project(":lib_http"))
-    implementation(project(":module_business_common"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
