@@ -1,4 +1,4 @@
-package com.walisport.module.hall.ui.adapter
+package com.walisport.module.business.common.ui.adapter
 
 import android.graphics.drawable.BitmapDrawable
 import android.view.LayoutInflater
@@ -15,7 +15,6 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.walisport.module.business.common.data.GameContentData
 import com.walisport.module.business.common.data.HotColdType
 import com.walisport.module.business.common.databinding.ItemGameContentBinding
-import com.walisport.module.hall.R
 
 class GameContentAdapter(private val onItemClick: (GameContentData) -> Unit) : BaseAdapter<GameContentData, GameContentViewHolder, ItemGameContentBinding>(GameContentDiff()) {
     override fun convertPlus(
