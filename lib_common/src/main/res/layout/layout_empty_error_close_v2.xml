@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<arch.cayenne.lib.skin.widget.SkinnableLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <arch.cayenne.lib.skin.widget.SkinnableImageView
+        android:id="@+id/iv_icon"
+        android:layout_width="@dimen/dp_60"
+        android:layout_height="@dimen/dp_70"
+        android:scaleType="centerCrop"/>
+
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
+        android:id="@+id/tv_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_30"
+        android:textColor="@color/color_FFFFFF"
+        android:textSize="15sp" />
+
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_refresh"
+        android:layout_width="@dimen/dp_160"
+        android:layout_height="@dimen/dp_42"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/net_error_btn"
+        android:text="@string/net_refresh"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:visibility="gone" />
+
+
+
+</arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
