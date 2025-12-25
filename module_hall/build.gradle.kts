@@ -43,6 +43,7 @@ dependencies {
     implementation(project(":lib_common"))
     implementation(project(":lib_http"))
     implementation(project(":module_game_detail"))
+    implementation(project(":module_business_common"))
     testImplementation(libs.junit)
     implementation(libs.banner)
     androidTestImplementation(libs.androidx.junit)
