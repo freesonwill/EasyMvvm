@@ -1,5 +1,6 @@
 package com.walisport.module.me.ui.fragment
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.View
 import androidx.core.os.bundleOf
@@ -40,6 +41,8 @@ import arch.cayenne.lib.common.utils.ext.TabLayoutExt.addOnTabSelectedListener2
 import arch.cayenne.lib.common.utils.ext.setupViewPagerScroll
 import arch.cayenne.lib.common.utils.ext.startFadeAnim
 import com.google.android.material.tabs.TabLayout
+import com.walisport.module.live.ui.widget.MeGestureListener
+import com.walisport.module.live.ui.widget.MeLayoutInterceptTouch.MeSlideDirection
 
 /**
  * 我的界面
@@ -59,7 +62,6 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
     private val unreadMessageViewModel: UnReadMessageViewModel by viewModels()
 
 
-
     override fun initView(savedInstanceState: Bundle?) {
         with(mBinding) {
             tvNickname.text = "中文sdf323"
@@ -69,10 +71,10 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
 
         initVIPInfo()
         initFeatures()
-
         initBarHeight()
         loadFragment()
     }
+
     private fun loadFragment() {
         val tabSelectPosition = 0
         with(mBinding) {
@@ -125,10 +127,17 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
             }
             tabLayout.removeAllTips()
         }
+        mBinding.clTop.post {
+            mBinding.meLayoutScale.initViewHeight(
+                (mBinding.clTop.height.toFloat() + getStatusBarHeight(
+                    mBinding.root
+                )), (mBinding.ctTopBar.height.toFloat() + getStatusBarHeight(mBinding.root))
+            )
+        }
     }
 
-    fun initBarHeight(){
-        mBinding.root.post{
+    fun initBarHeight() {
+        mBinding.root.post {
             mBinding.ctTopBar.setPadding(
                 mBinding.ctTopBar.paddingLeft,
                 getStatusBarHeight(mBinding.root),
@@ -155,10 +164,16 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
     }
 
 
-
+    @SuppressLint("ClickableViewAccessibility")
     override fun initListener() {
         with(mBinding) {
-
+            // 上层 View 触摸事件
+            mBinding.LayoutInterceptTouch.setOnTouchListener { _, event ->
+                // 将触摸事件传递给下层 View
+                mBinding.meLayoutScale.dispatchTouchEvent(event)
+                mBinding.bottom.dispatchTouchEvent(event)
+                false // 返回 false 不消耗事件，允许事件继续传递
+            }
             ivDrawer.addScaleOnTouchAnimation()
             ivDrawer.clickNoRepeat {
                 requireActivity().supportFragmentManager.setFragmentResult(
@@ -166,7 +181,30 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
                     bundleOf(KEY_ACTION to ACTION_OPEN)
                 )
             }
+            mBinding.LayoutInterceptTouch.seGestureListener(object : MeGestureListener {
 
+                override fun onAdjustLayoutScroll(deltaY: Float, direction: MeSlideDirection) {
+                    //  LogUtils.e("ChatUserInfoFragment--------->${deltaY},${direction}")
+                    //往下滑动,子类的rv是否滑到了第一条或者顶部
+                    if (direction == MeSlideDirection.DOWN) {
+                        var bool: Boolean? = mViewModel.sonVerticalScrollIsTop.value
+                        bool?.let {
+                            if (it) {
+                                mBinding.meLayoutScale.adjustLayout(
+                                    deltaY,
+                                    direction,{ top->//传递当前顶部距离
+
+                                    }
+                                )
+                            }
+                        }
+                    } else {
+                        mBinding.meLayoutScale.adjustLayout(deltaY, direction,{top->//传递当前顶部距离
+
+                        })
+                    }
+                }
+            })
             ivCustomer.addScaleOnTouchAnimation()
             ivCustomer.clickNoRepeat {
                 CommonBiz.jump2CustomerService(this@MeFragment)
@@ -228,7 +266,8 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
         with(unreadMessageViewModel) {
             //未读消息监听
             unreadMsg.observe(viewLifecycleOwner) { flag ->
-                mBinding.ivUnreadDot.visibility = if (flag) android.view.View.VISIBLE else android.view.View.GONE
+                mBinding.ivUnreadDot.visibility =
+                    if (flag) android.view.View.VISIBLE else android.view.View.GONE
             }
         }
 
@@ -259,7 +298,7 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
         launch {
             mViewModel.bottomIndexFlow.collect {
                 mBinding.vpPage.post {//延迟一帧，viewPager可能正在刷新adapter
-                    mBinding.vpPage.setCurrentItem(it,true)
+                    mBinding.vpPage.setCurrentItem(it, true)
                     //Todo bug1: mBinding.vpPage.setCurrentItem(it,false)不会触发tabLayout的选中变化
                     //Todo bug2: tabLayout.getTabAt(it)?.select()  不会触发indicator的变化
                 }
@@ -267,9 +306,8 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
         }
 
 
-
-
     }
+
     private fun changeTabCount(tab: TabLayout.Tab, count: Long) {
         tab.customView?.findViewById<SkinnableTextView>(R.id.count)?.apply {
             visibility = View.VISIBLE
@@ -286,10 +324,11 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
 
         }
     }
-    private fun getStatusBarHeight(view:View):Int{
+
+    private fun getStatusBarHeight(view: View): Int {
         val windowInsetsCompat = ViewCompat.getRootWindowInsets(view)
         val topInset = windowInsetsCompat?.getInsets(WindowInsetsCompat.Type.statusBars())?.top ?: 0
-        val ret = if(topInset == 0) ImmersionBar.getStatusBarHeight(view.context) else topInset
+        val ret = if (topInset == 0) ImmersionBar.getStatusBarHeight(view.context) else topInset
         return ret
     }
 

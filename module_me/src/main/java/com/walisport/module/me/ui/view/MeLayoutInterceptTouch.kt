@@ -17,7 +17,7 @@ class MeLayoutInterceptTouch @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : LinearLayoutCompat(context, attrs, defStyleAttr) {
     private val density = resources.displayMetrics.density
-    private var mLiveMainGesture: ChatInfoGestureListener? = null
+    private var mMeMainGesture: MeGestureListener? = null
     private var lastX = 0f // 记录触摸起点的 X 坐标
     private var lastY = 0f // 记录触摸起点的 Y 坐标
     private var startY = 0f
@@ -78,13 +78,13 @@ class MeLayoutInterceptTouch @JvmOverloads constructor(
                         //如果不是相同方向滑动,需要判断滑动区域临界点,避免上下滑动跳动情况
                         if (currDirection != MeSlideDirection.DOWN) {
                             if (absDeltaY >= pointY) {
-                                mLiveMainGesture?.onAdjustLayoutScroll(
+                                mMeMainGesture?.onAdjustLayoutScroll(
                                     absDeltaY * scrollSpeed,
                                     MeSlideDirection.DOWN
                                 )
                             }
                         } else {
-                            mLiveMainGesture?.onAdjustLayoutScroll(
+                            mMeMainGesture?.onAdjustLayoutScroll(
                                 absDeltaY * scrollSpeed,
                                 MeSlideDirection.DOWN
                             )
@@ -93,13 +93,13 @@ class MeLayoutInterceptTouch @JvmOverloads constructor(
                     } else if (deltaY < 0) {
                         if (currDirection != MeSlideDirection.UP) {
                             if (absDeltaY >= pointY) {
-                                mLiveMainGesture?.onAdjustLayoutScroll(
+                                mMeMainGesture?.onAdjustLayoutScroll(
                                     -absDeltaY * scrollSpeed,
                                     MeSlideDirection.UP
                                 )
                             }
                         } else {
-                            mLiveMainGesture?.onAdjustLayoutScroll(
+                            mMeMainGesture?.onAdjustLayoutScroll(
                                 -absDeltaY * scrollSpeed,
                                 MeSlideDirection.UP
                             )
@@ -114,29 +114,17 @@ class MeLayoutInterceptTouch @JvmOverloads constructor(
             MotionEvent.ACTION_UP -> {
                 isDirectionDetermined = false // 重置滑动方向
                 determined = true
-                val deltaY = event.y - startY
-                if (deltaY > 0) {
-                    mLiveMainGesture?.onAdjustLayoutScrollUp(
-                        MeSlideDirection.DOWN
-                    )
-                } else {
-                    mLiveMainGesture?.onAdjustLayoutScrollUp(
-                        MeSlideDirection.UP
-                    )
-                }
             }
         }
         return true
     }
 
-    fun seGestureListener(liveMainGesture: ChatInfoGestureListener) {
-        this.mLiveMainGesture = liveMainGesture
+    fun seGestureListener(liveMainGesture: MeGestureListener) {
+        this.mMeMainGesture = liveMainGesture
     }
 }
 
-interface ChatInfoGestureListener {
+interface MeGestureListener {
     //正常滑动
     fun onAdjustLayoutScroll(deltaY: Float, direction: MeSlideDirection)
-    //滑动抬起事件
-    fun onAdjustLayoutScrollUp(direction: MeSlideDirection)
 }
