@@ -20,6 +20,7 @@ class CurrencyContentViewHolder(
             } else {
                 clRoot.setBackgroundResource(R.drawable.selector_currency_item_background)
             }
+            clRoot.isSelected = item.isSelected
             tvCurrencyName.text = item.currencyName
             tvCurrencyAmount.text = "${item.unit}${item.amountStr}"
             Glide.with(root.context)

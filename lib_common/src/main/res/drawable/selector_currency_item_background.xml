@@ -3,6 +3,7 @@
 
     <!-- 狀態：點擊時 (Pressed state) -->
     <item android:drawable="@color/color_003A42"  android:state_pressed="true" />
+    <item android:drawable="@color/color_003A42"  android:state_selected="true" />
 
     <item android:drawable="@android:color/transparent" />
 
