@@ -65,5 +65,6 @@
     <string name="toast_odds_change_none">赔率已变更，请重新投注</string>
     <string name="exit_combo_bet">退出串关</string>
     <string name="toast_no_more_bet_combs">没有更多组合投注</string>
+    <string name="toast_bet_failure">投注失败，请重试</string>
 
 </resources>
