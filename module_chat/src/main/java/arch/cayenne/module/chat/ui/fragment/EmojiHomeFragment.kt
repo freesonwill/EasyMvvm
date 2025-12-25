@@ -43,12 +43,7 @@ class EmojiHomeFragment : BaseFragment<EmojiHomeViewModel, FragmentEmojiHomeLayo
     }
 
     override fun initListener() {
-        mBinding.tvDel.setOnClickListener {
-            chatViewModel.etDelFunction()
-        }
-        mBinding.tvSend.setOnClickListener {
-            chatViewModel.sendTextToChat()
-        }
+
     }
 
 
@@ -90,30 +85,6 @@ class EmojiHomeFragment : BaseFragment<EmojiHomeViewModel, FragmentEmojiHomeLayo
             }.attach()
             emojiTablayout.removeAllTips()
 
-            emojiTablayout.addOnTabSelectedListener2(object : TabLayoutExt.OnTabSelectedListener2 {
-                override fun onTabSelected(tab: TabLayout.Tab, isTabClick: Boolean) {
-                    tvDel.isVisible = tab.position == 0
-                    tvSend.isVisible = tab.position == 0
-
-//                    if (isTabClick) {
-//                        CustomTabIndicatorUtils.animateIndicatorToPosition(
-//                            mBinding.customIndicator,
-//                            tab.position
-//                        )
-//                        val vp = viewpager
-//                        vp.startFadeAnim {
-//                            vp.setCurrentItem(tab.position, false)
-//                            it.invoke()
-//                        }
-//                    }
-                }
-
-                override fun onTabUnselected(tab: TabLayout.Tab, isTabClick: Boolean) {
-                }
-
-                override fun onTabReselected(tab: TabLayout.Tab, isTabClick: Boolean) {
-                }
-            })
             reflexPadding(tabLayout = emojiTablayout)
             // 自定義滑動行為
 //            viewpager.setupViewPagerScroll(emojiTablayout, customIndicator, 0.15f)
