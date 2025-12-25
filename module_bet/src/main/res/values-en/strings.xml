@@ -7,4 +7,5 @@
     <string name="title_result_amount">Principal</string>
     <string name="hint_input_money">Please enter the amount</string>
     <string name="toast_bet_failure">Bet failed, please try again</string>
+    <string name="hint_empty_amount">Please enter the bet amount</string>
 </resources>
