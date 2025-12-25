@@ -43,7 +43,7 @@ class PicVerifyDialog: BaseDialogFragment<EmptyViewModel, DialogPicVerifyBinding
     override fun onStart() {
         super.onStart()
         dialog?.window?.apply {
-            setLayout(280f.dp2px, ViewGroup.LayoutParams.WRAP_CONTENT)
+            setLayout(280.dp2px, ViewGroup.LayoutParams.WRAP_CONTENT)
         }
     }
 

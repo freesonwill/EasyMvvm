@@ -7,6 +7,7 @@ import arch.cayenne.lib.base.utils.ext.launch
 import arch.cayenne.lib.base.utils.log.Utils
 import arch.cayenne.lib.common.data.constants.UserDataKey
 import arch.cayenne.lib.common.data.manager.UserDataManager
+import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.DimensionExt.px2dp
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.helper.showToast
@@ -37,7 +38,7 @@ class DemoPopup(context: Context) : BottomPopupView(context) {
 
         vb?.apply {
             tvStatusBarHeight.text = ImmersionBar.getStatusBarHeight(context).let {
-                String.format(Locale.ROOT,"状态栏高度: $it px,\t${it.px2dp} dp", it)
+                String.format(Locale.ROOT,"状态栏高度: $it px,\t${it.px2dp} dp, dp2px:${1f.dp2px},px2dp:${1f.px2dp},w-h:${ScreenUtils.getScreenWidth()}-${ScreenUtils.getScreenHeight()}", it)
             }
             tvUid.setText(manager.getValue<Int>(UserDataKey.KEY_UID,0).toString())
             tvToken.setText(manager.getValue<String>(UserDataKey.KEY_TOKEN,""))

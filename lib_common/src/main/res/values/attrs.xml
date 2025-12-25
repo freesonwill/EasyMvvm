@@ -29,4 +29,10 @@
         <attr name="selectedBgTextColor" format="color|reference" />
     </declare-styleable>
 
+    <declare-styleable name="NumberKeyboardView">
+        <attr name="spacing" format="dimension" />
+        <attr name="horizontalSpacing" format="dimension" />
+        <attr name="verticalSpacing" format="dimension" />
+    </declare-styleable>
+
 </resources>
