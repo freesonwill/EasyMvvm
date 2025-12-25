@@ -309,9 +309,9 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
         mBinding.btnCollusion.isEnabled = data.isParlay
         mBinding.tvCollusionHint.alpha = if (data.isParlay) 1.0f else 0.3f
         mBinding.ivCollusionHint.alpha = if (data.isParlay) 1.0f else 0.3f
-        mBinding.clBet.isEnabled = data.isActive
+        /*mBinding.clBet.isEnabled = data.isActive
         mBinding.tvBetHint.alpha = if (data.isActive) 1.0f else 0.3f
-        mBinding.tvBetMoney.alpha = if (data.isActive) 0.7f else 0.1f
+        mBinding.tvBetMoney.alpha = if (data.isActive) 0.7f else 0.1f*/
         mBinding.layoutBet.ivDelete.isVisible = false
     }
 
@@ -353,6 +353,12 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
     }
 
     private suspend fun sendBet() {
+        mViewModel.onBetSheetListener.value?.let {
+            if (!it.isActive) {
+                showToast(getString(R.string.hint_bet_inactive))
+                return
+            }
+        }
         val curAmount = mViewModel.editValue
         if(curAmount.isBlank()) {
             showToast(getString(R.string.hint_empty_amount))
