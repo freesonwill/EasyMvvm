@@ -54,10 +54,6 @@ class GameAllRankingTodayFragment :
             rvTodayRank.itemAnimator = null
             rvTodayRank.adapter = adapter
 
-            //如果是华为手机，增加顶部间距，避免被刘海遮挡
-            val params= rvTodayRank.layoutParams as ConstraintLayout.LayoutParams
-            params.topMargin = (-10f).dp2px
-            rvTodayRank.layoutParams = params
         }
     }
 
