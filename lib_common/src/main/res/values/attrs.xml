@@ -30,9 +30,9 @@
     </declare-styleable>
 
     <declare-styleable name="NumberKeyboardView">
-        <attr name="spacing" format="dimension" />
-        <attr name="horizontalSpacing" format="dimension" />
-        <attr name="verticalSpacing" format="dimension" />
+        <attr name="android:spacing" format="dimension" />
+        <attr name="android:horizontalSpacing" format="dimension" />
+        <attr name="android:verticalSpacing" format="dimension" />
     </declare-styleable>
 
 </resources>

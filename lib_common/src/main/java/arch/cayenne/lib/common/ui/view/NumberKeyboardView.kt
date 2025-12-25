@@ -48,9 +48,9 @@ class NumberKeyboardView @JvmOverloads constructor(
         if (attrs == null) return
         val a = context.obtainStyledAttributes(attrs, R.styleable.NumberKeyboardView, defStyleAttr, 0)
         try {
-            val spacing = a.getDimensionPixelSize(R.styleable.NumberKeyboardView_spacing, Int.MAX_VALUE)
-            val h = a.getDimensionPixelSize(R.styleable.NumberKeyboardView_horizontalSpacing, Int.MAX_VALUE)
-            val v = a.getDimensionPixelSize(R.styleable.NumberKeyboardView_verticalSpacing, Int.MAX_VALUE)
+            val spacing = a.getDimensionPixelSize(R.styleable.NumberKeyboardView_android_spacing, Int.MAX_VALUE)
+            val h = a.getDimensionPixelSize(R.styleable.NumberKeyboardView_android_horizontalSpacing, Int.MAX_VALUE)
+            val v = a.getDimensionPixelSize(R.styleable.NumberKeyboardView_android_verticalSpacing, Int.MAX_VALUE)
             val spacingX = if (h != Int.MAX_VALUE) h else spacing
             val spacingY = if (v != Int.MAX_VALUE) v else spacing
             applyItemSpacing(spacingX,spacingY)

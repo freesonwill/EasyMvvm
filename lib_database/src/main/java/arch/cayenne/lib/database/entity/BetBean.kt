@@ -98,7 +98,7 @@ enum class BetResultStatusEnum(val code: Int) {
     CANCEL(3),
     SUCCESS_BET(4),
     SETTLED(5), //结算
-    FAIL(100);
+    FAIL(100);  //失败
 
     companion object {
         fun getStatusByCode(code: Int): BetResultStatusEnum {

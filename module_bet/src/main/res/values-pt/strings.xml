@@ -6,4 +6,7 @@
     <string name="title_combo_bet_detail_tips">%s é composto por todas as apostas %s</string>
     <string name="title_result_amount">Principal</string>
     <string name="hint_input_money">Por favor, insira o valor</string>
+    <string name="toast_bet_failure">Falha ao apostar, tente novamente</string>
+    <string name="hint_empty_amount">Por favor, insira o valor da aposta</string>
+    <string name="hint_bet_inactive">盘口已暂停/关闭</string>
 </resources>

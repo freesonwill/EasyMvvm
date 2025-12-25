@@ -79,7 +79,7 @@ class BettingRemoteManager(
      * @param oddsChange
      * @return
      */
-    suspend fun singleBet(bean: BetSelectionBean, money: Long, oddsChange: OddsChangeEnum): SingleBetDataModel? {
+    suspend fun singleBet(bean: BetSelectionBean, money: Long, oddsChange: OddsChangeEnum): SingleBetDataModel {
         val res = socketManager.sendAndWaitProtoMessageResponse<Client.SingleBetResp>(
             scope = scope,
             dispatcher = Dispatchers.IO,
@@ -104,7 +104,12 @@ class BettingRemoteManager(
             )
         } else {
             if (res.error is ResponseTimeOutError) {
-                null
+                SingleBetDataModel(
+                    isSuccessful = false,
+                    message = res.error!!.msg,
+                    orderId = "",
+                    orderStatus = -1
+                )
             } else {
                 SingleBetDataModel(
                     isSuccessful = false,
