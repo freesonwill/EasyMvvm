@@ -1,5 +1,7 @@
 package com.walisport.module.hall.data
 
+import com.walisport.module.business.common.data.HotColdType
+
 data class Avatar(
     val url: String,
     val thumbhash: String,

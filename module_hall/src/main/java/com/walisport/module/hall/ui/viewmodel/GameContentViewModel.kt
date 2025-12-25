@@ -13,7 +13,6 @@ import arch.cayenne.lib.common.ui.viewmodel.Event
 import com.walisport.module.hall.data.Avatar
 import com.walisport.module.hall.data.GameContentData
 import com.walisport.module.hall.data.HallRepository
-import com.walisport.module.hall.data.HotColdType
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
 import plugin.koin.KoinViewModel
