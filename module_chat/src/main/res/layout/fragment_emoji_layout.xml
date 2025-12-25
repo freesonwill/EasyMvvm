@@ -18,7 +18,7 @@
         android:layout_width="@dimen/dp_62"
         android:layout_height="32dp"
         android:layout_marginEnd="@dimen/dp_6"
-        android:layout_marginBottom="@dimen/dp_12"
+        android:layout_marginBottom="@dimen/dp_11"
         android:background="@drawable/shape_20"
         android:backgroundTint="@color/color_3D404D"
         android:gravity="center"
@@ -30,7 +30,7 @@
         <androidx.appcompat.widget.AppCompatImageView
             android:layout_width="@dimen/dp_30"
             android:layout_height="@dimen/dp_24"
-            android:src="@drawable/icon_emoji_del" />
+            android:src="@drawable/icon_emoji_del"/>
     </LinearLayout>
 
     <arch.cayenne.lib.skin.widget.SkinnableTextView
