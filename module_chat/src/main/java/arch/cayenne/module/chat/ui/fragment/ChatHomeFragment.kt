@@ -170,6 +170,7 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
     }
 
     override fun onStop() {
+        "onStop leaveRoom".logd("aaa")
         mViewModel.leaveRoom()
         super.onStop()
         mViewModel.setSoftConfig(true)
@@ -259,7 +260,6 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
             delEtInput()
         }
         mViewModel.sendTextLiveData.observe(viewLifecycleOwner) {
-            "sendTextLiveData ".logd("aaa")
             sendText()
         }
     }
@@ -378,7 +378,13 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
         mBinding.apply {
             ivEmoji.setOnTouchListener { v, event ->
                 if (event.action == MotionEvent.ACTION_UP) {
-                    keyboardChangeClick(KeyBoardType.EMOJI)
+                    val clickType =
+                        if (softKeyBoardManager.currentKeyBoardType == KeyBoardType.EMOJI) {
+                            KeyBoardType.CHAT
+                        } else {
+                            KeyBoardType.EMOJI
+                        }
+                    keyboardChangeClick(clickType)
                     chatAtHelper.dismissWindow()
                 }
                 calculationLayoutSize()
