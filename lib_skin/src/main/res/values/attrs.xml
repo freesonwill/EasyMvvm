@@ -105,4 +105,8 @@
         <attr name="otherTextColor" format="color|reference"/>
     </declare-styleable>
 
+    <declare-styleable name="SkinnableEditText">
+        <attr name="hintCursorGap" format="dimension"/>
+    </declare-styleable>
+
 </resources>

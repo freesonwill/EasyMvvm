@@ -25,6 +25,7 @@ class BackToTopHelper(
     val button: AppCompatImageView ,
     val isGridView: Boolean ,
     val pageSize: Int = 10 ,
+    val skip: Boolean = true ,
     val onBackToTop: (() -> Unit)? = null
 ) {
     private var totalDy = 0
@@ -70,8 +71,10 @@ class BackToTopHelper(
         button.clickNoRepeat {
             //列表数据太多情况下点击返回顶部按钮需先跳至前几页再平滑滚动
             val number = if (isGridView) 36 else 8
-            if (targetRecyclerView.adapter!!.itemCount > number) {
-                targetRecyclerView.scrollToPosition(number)
+            if (skip) {
+                if (targetRecyclerView.adapter!!.itemCount > number) {
+                    targetRecyclerView.scrollToPosition(number)
+                }
             }
             targetRecyclerView.smoothScrollToPosition(0)
             // 监听滚动完成

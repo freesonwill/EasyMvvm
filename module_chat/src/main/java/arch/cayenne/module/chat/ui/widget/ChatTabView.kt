@@ -53,6 +53,7 @@ class ChatTabView : LinearLayout {
             tabChatRoom.initTab(NORMAL)
             tabChatLiving.initTab(LIVING)
             tabChatCustomer.initTab(CUSTOMER)
+            tabChatRoom.tabSelect(true)
         }
     }
 

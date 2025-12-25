@@ -4,6 +4,8 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
+import arch.cayenne.lib.base.data.constants.StatusBarMode
+import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.ui.viewmodel.BalanceViewModel
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigateUp
@@ -24,6 +26,14 @@ class GameDetailFragment : BaseFragment<GameDetailPageViewModel, FragmentGameDet
     override fun initView(savedInstanceState: Bundle?) {
         val adapter = GameDetailPagerAdapter(this)
         with (mBinding) {
+//            val statusBarHeight = ImmersionBar.getStatusBarHeight(this@GameDetailFragment)
+//            val lp = titleTop.layoutParams as ConstraintLayout.LayoutParams
+//            lp.guideBegin += statusBarHeight
+//            val bottomLp = titleBottom.layoutParams as ConstraintLayout.LayoutParams
+//            lp.guideEnd += statusBarHeight
+//            titleTop.layoutParams = lp
+//            titleBottom.layoutParams = bottomLp
+
             // todo 效果待確認
 //            ivFavorite.isSelected = mockData.collect
             gameDetailPager.adapter = adapter
@@ -36,12 +46,14 @@ class GameDetailFragment : BaseFragment<GameDetailPageViewModel, FragmentGameDet
         // Disable overscroll effect if desired, or keep it
     }
 
-    //    override fun onStart() {
-//        mBinding.root.fitsSystemWindows = false
-//        StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND()
-//        setStatusBar(StatusBarConfig,mBinding.root)
-//        super.onStart()
-//    }
+    override fun onStart() {
+        super.onStart()
+        mBinding.root.fitsSystemWindows = false
+        StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND(
+            autoPadding = false
+        )
+        setStatusBar(StatusBarConfig, mBinding.root)
+    }
     override fun initListener() {
         with (mBinding) {
             viewBalance.init(childFragmentManager)

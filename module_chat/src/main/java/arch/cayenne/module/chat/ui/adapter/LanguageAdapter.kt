@@ -8,6 +8,7 @@ import arch.cayenne.lib.base.ui.adapter.BaseAdapter
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
+import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.module.chat.databinding.ItemLanguageLayoutBinding
 
 /**
@@ -28,9 +29,15 @@ class LanguageAdapter() :
     }) {
     private var selectPosition: Int = -1
     private var itemClick:RecyclerItemListener<String>? = null
+    private var selectListener:((position:Int)->Unit)? = null
 
     fun setRecyclerItemClick(itemListener: RecyclerItemListener<String>){
         this.itemClick = itemListener
+    }
+
+    fun addSelectListenPosition(position: Int,listener:(position:Int)->Unit){
+        this.selectPosition = position
+        this.selectListener = listener
     }
 
 
@@ -42,7 +49,7 @@ class LanguageAdapter() :
         }
 
         fun initListener() {
-            nBinding.main.setOnClickListener {
+            nBinding.main.clickNoRepeat {
                 val position = it.tag as Int
                 val lastPosition = selectPosition
                 selectPosition = position
@@ -52,6 +59,7 @@ class LanguageAdapter() :
                 if(selectPosition != -1){
                     notifyItemChanged(selectPosition)
                 }
+                selectListener?.invoke(selectPosition)
                 itemClick?.onItemClick(getItem(position),position)
             }
         }

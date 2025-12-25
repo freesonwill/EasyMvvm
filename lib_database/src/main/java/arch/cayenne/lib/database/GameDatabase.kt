@@ -12,6 +12,7 @@ import arch.cayenne.lib.database.dao.ChatConfigDao
 import arch.cayenne.lib.database.dao.CoinDao
 import arch.cayenne.lib.database.dao.CollectListDao
 import arch.cayenne.lib.database.dao.CurrencyConfigDao
+import arch.cayenne.lib.database.dao.GameDao
 import arch.cayenne.lib.database.dao.GameSupplierDao
 import arch.cayenne.lib.database.dao.HomeSelectedDao
 import arch.cayenne.lib.database.dao.InfoDao
@@ -34,6 +35,7 @@ import arch.cayenne.lib.database.entity.CoinBean
 import arch.cayenne.lib.database.entity.CollectListBean
 import arch.cayenne.lib.database.entity.CurrencyBean
 import arch.cayenne.lib.database.entity.EarlyTournamentMatchRef
+import arch.cayenne.lib.database.entity.GameBean
 import arch.cayenne.lib.database.entity.HomeSelectedBean
 import arch.cayenne.lib.database.entity.InfoBean
 import arch.cayenne.lib.database.entity.LiveMarketBean
@@ -89,7 +91,8 @@ import arch.cayenne.lib.database.entity.UserDataBean
         ChatConfigBean::class,
         UserDataBean::class,
         CurrencyBean::class,
-        GameSupplierDataModel::class
+        GameSupplierDataModel::class,
+        GameBean::class
     ],
     version = 1,
     exportSchema = false
@@ -99,7 +102,7 @@ import arch.cayenne.lib.database.entity.UserDataBean
     MarketTypeBeanConverter::class,
     BetSlipTypeConverter::class,
     TournamentIdListConverter::class,
-    MapConverter::class
+    WalletListConverter::class,
 )
 abstract class GameDatabase: RoomDatabase() {
 
@@ -140,7 +143,7 @@ abstract class GameDatabase: RoomDatabase() {
     abstract fun collectListDao():CollectListDao
     abstract fun chatConfigDao():ChatConfigDao
     abstract fun supplierDao():GameSupplierDao
+    abstract fun gameDao(): GameDao
     abstract fun userDataDao(): UserDataDao
-
     abstract fun currencyConfigDao(): CurrencyConfigDao
 }

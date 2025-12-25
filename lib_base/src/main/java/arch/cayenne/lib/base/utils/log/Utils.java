@@ -3,6 +3,8 @@ package arch.cayenne.lib.base.utils.log;
 import android.app.Application;
 import android.util.Log;
 
+import java.util.Objects;
+
 public final class Utils {
     private static Application sApp;
 
@@ -35,6 +37,10 @@ public final class Utils {
      *  是否编辑模式(预览）
      */
     public static boolean isInEditMode(){
-        return System.getProperty("idea.active") != null;
+        String brand = android.os.Build.BRAND;
+        String model = android.os.Build.MODEL;
+        String idea = System.getProperty("idea.active");
+        //throw new IllegalArgumentException("brand:"+brand+",model:"+model+",idea:"+idea);
+        return Objects.equals(brand, "studio");
     }
 }

@@ -56,12 +56,20 @@ message LeaveChatRoomResp {
 
 // 3. 发送消息：500-1005
 message SendMsgReq {
-  required uint64 roomId = 1;     // 房间ID
-  required string content = 2;    // 消息内容
-  optional uint64 refUid = 3;     // @用户 ID
-  optional int32 refPlatform = 4; // @用户平台
-
+  required uint64 roomId = 1;         // 房间ID
+  required string content = 2;        // 消息内容
+  optional uint64 refUid = 3;         // @用户 ID
+  optional int32 refPlatform = 4;     // @用户平台
+  required MsgType msgType = 5;       // 消息类型
+  map<string, string> extraData = 6;  // 额外数据 如分享链接等
 }
+
+enum MsgType {
+  MSG_TYPE_SYSTEM = 0;      // 系统消息 - 仅限后台发送
+  MSG_TYPE_TEXT = 1;        // 文字消息
+  MSG_TYPE_SHARE = 2;        // 分享消息
+}
+
 // 响应：500-1006
 message SendMsgResp {
   required int32 code = 1;          // 状态码
@@ -100,6 +108,9 @@ message ChatMsg {
   optional string replaceUserName = 12;     // 脱敏用户名
   optional string replaceRefUserName = 13;  // 脱敏@用户名称
   optional int32 refPlatform = 14;          // @用户所属平台
+
+  required MsgType msgType = 15;       // 消息类型
+  map<string, string> extraData = 16;  // 额外数据 如分享链接等
 }
 
 // 5. 获取用户统计信息：500-1009
@@ -175,6 +186,7 @@ enum NotificationType {
   USERNAME_SENSITIVE = 3;   // 用户名涉及敏感词
   USERNAME_NORMAL = 4;      // 用户名正常
   USER_REPORT = 5;          // 用户被举报
+  USER_BANNED_NOTIFY = 6;   // 封禁用户通知
 }
 
 // 扩展字段
@@ -183,3 +195,6 @@ enum NotificationType {
 // replace_user_name ---------------- 脱敏用户名/恢复正常的用户名
 // report_type ---------------------- 举报类型
 // report_count --------------------- 未被处理的举报次数(不同用户)
+// mute_count ----------------------- 封禁次数
+// next_day ------------------------- 下次封禁天数 -1:永久
+// mute_until ----------------------- 封禁截止时间(毫秒时间戳)

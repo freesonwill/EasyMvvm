@@ -36,6 +36,7 @@ import com.walisport.module.hall.databinding.LayoutGameSortingMenuBinding
 import com.walisport.module.hall.ui.adapter.GameContentAdapter
 import com.walisport.module.hall.ui.viewmodel.GameContentViewModel
 import com.walisport.module.hall.ui.viewmodel.HallViewModel
+import com.walisport.module.live.data.EventClick
 import kotlinx.coroutines.delay
 import kotlin.reflect.KClass
 
@@ -70,6 +71,15 @@ class GameContentFragment : BaseFragment<GameContentViewModel, FragmentGameConte
     val category get() = requireArguments().getInt(ARG_CATEGORY_TYPE)
 
     private var helper: BackToTopHelper? = null
+
+    private val itemDecoration by lazy {
+        GridSpacingItemDecoration(
+            spanCount = 3,
+            horizontalSpacing = 9.dp2px,
+            verticalSpacing = 13.dp2px,
+            includeEdge = false // 確保邊緣沒有空隙
+        )
+    }
 
     fun supplierTabList(list: List<GameSupplierDataModel>): List<SimpleTabDataModel> {
         val l = ArrayList<SimpleTabDataModel>()
@@ -115,14 +125,9 @@ class GameContentFragment : BaseFragment<GameContentViewModel, FragmentGameConte
             })
 
             rvGame.layoutManager = GridLayoutManager(requireContext(), 3)
-            val itemDecoration = GridSpacingItemDecoration(
-                spanCount = 3,
-                horizontalSpacing = 9.dp2px,
-                verticalSpacing = 12.dp2px,
-                includeEdge = false // 確保邊緣沒有空隙
-            )
             rvGame.addItemDecoration(itemDecoration)
             adapter = GameContentAdapter(onItemClick = {
+                mViewModel.setIsClickGame(EventClick.EVENT_CLICK_ACK_TRUE.type)
                 navigate(arch.cayenne.lib.res.R.string.nav_module_gamedetail.deeplink())
             })
             rvGame.adapter = adapter
@@ -422,6 +427,7 @@ class GameContentFragment : BaseFragment<GameContentViewModel, FragmentGameConte
                 sortMenuClicked = true
                 if (currentSortType != GameSortType.HOT) {
                     currentSortType = GameSortType.HOT
+                    itemDecoration.verticalSpacing = 12.dp2px
                     mBinding.tvRewardTips.visibility = View.GONE
                     updateSortingMenuSelection()
                     setSortBtnText()
@@ -437,6 +443,7 @@ class GameContentFragment : BaseFragment<GameContentViewModel, FragmentGameConte
             binding.tvSortByNew.clickNoRepeat {
                 sortMenuClicked = true
                 if (currentSortType != GameSortType.NEW) {
+                    itemDecoration.verticalSpacing = 12.dp2px
                     currentSortType = GameSortType.NEW
                     mBinding.tvRewardTips.visibility = View.GONE
                     updateSortingMenuSelection()
@@ -454,6 +461,7 @@ class GameContentFragment : BaseFragment<GameContentViewModel, FragmentGameConte
                 sortMenuClicked = true
                 if (currentSortType != GameSortType.HOT_REWARD) {
                     currentSortType = GameSortType.HOT_REWARD
+                    itemDecoration.verticalSpacing = 14.dp2px
                     mBinding.tvRewardTips.visibility = View.VISIBLE
                     mBinding.aplHomeBanner.setExpanded(true, true)
                     updateSortingMenuSelection()
@@ -470,6 +478,7 @@ class GameContentFragment : BaseFragment<GameContentViewModel, FragmentGameConte
                 sortMenuClicked = true
                 if (currentSortType != GameSortType.COLD_REWARD) {
                     currentSortType = GameSortType.COLD_REWARD
+                    itemDecoration.verticalSpacing = 14.dp2px
                     mBinding.tvRewardTips.visibility = View.VISIBLE
                     mBinding.aplHomeBanner.setExpanded(true, true)
                     updateSortingMenuSelection()

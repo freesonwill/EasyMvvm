@@ -78,10 +78,10 @@ data class MsgNotify(val roomId:Long,val msg:ChatMsg):IResponse
 /**
  * 消息Bean
  * */
-data class ChatMsg(val uid:String,val userName:String,val avatarId:Int,val msgId:String,val content:String,val timestamp:String,val refUid:String,val refUserName:String,
-                   val refAvatarId:Int,val onlyForSelf:Int,val platform:Int){
+data class ChatMsg(val uid:String,val userName:String,val avatarId:Int,val msgId:String,val content:String,val timestamp:String,val refUid:Long? = null,val refUserName:String? = null,
+                   val refAvatarId:Int? = null,val onlyForSelf:Int,val platform:Int){
 }
-
+//{"avatarId":1,"content":"官方推荐大家多多交流！","msgId":"1766242779790","onlyForSelf":0,"platform":0,"refAvatarId":0,"timestamp":"2025-12-20T14:59:39.790Z","uid":"18446744073709551615","userName":"我是官方"}
 /**
  * 获取用户统计消息
  * */

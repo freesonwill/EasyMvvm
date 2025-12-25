@@ -104,7 +104,7 @@ class ChatManagerImpl(private val chatRepo: LiveChatRepository) :
             content = content,
             msgId = id,
             timestamp = id,
-            refUid = "",
+            refUid = 0L,
             refAvatarId = 0,
             refUserName = "",
             onlyForSelf = 0,

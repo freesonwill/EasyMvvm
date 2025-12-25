@@ -1,19 +1,33 @@
 package com.walisport.module.hall.ui.viewmodel
 
+import android.annotation.SuppressLint
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.data.model.UnPeekLiveData
+import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import com.walisport.module.hall.data.Avatar
+import com.walisport.module.hall.data.Category
 import com.walisport.module.hall.data.GameAllContentData
 import com.walisport.module.hall.data.GameContentData
 import com.walisport.module.hall.data.HallRepository
 import com.walisport.module.hall.data.HotColdType
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
 import plugin.koin.KoinViewModel
 import kotlin.random.Random
+import com.walisport.module.hall.R
+import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
+import com.walisport.module.hall.data.GamePageVo
+import com.walisport.module.hall.data.constants.GameSortType
+import arch.cayenne.lib.base.data.remote.ApiResponseState.Start.dataAs
+import com.walisport.module.hall.data.HallRepository.Companion.DEFAULT_GAME_SIZE
+import com.walisport.module.hall.data.HallRepository.Companion.INITIAL_PAGE
+import com.walisport.module.hall.data.toGameContentData
 
 @KoinViewModel
 class GameAllViewModel : BaseViewModel() {
@@ -22,205 +36,108 @@ class GameAllViewModel : BaseViewModel() {
 
     private val _gameRecentList = UnPeekLiveData<List<GameAllContentData>>()
     val gameRecentList: UnPeekLiveData<List<GameAllContentData>> = _gameRecentList
-    
-    fun mockAllList(page:Int){
+
+    private var _gameListLiveData: MutableLiveData<List<GameAllContentData>> = MutableLiveData()
+    var gameListLiveData: LiveData<List<GameAllContentData>> = _gameListLiveData
+
+    fun setIsClickGame(flag: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.setGameClick(flag)
+        }
+    }
+
+    fun getGameTitleSize(): Int {
+        return _gameRecentList.value?.size ?: 0
+    }
+
+    fun getGameCategory(position: Int): Int {
+        return _gameRecentList.value?.get(position)?.category ?: -1
+    }
+
+    fun getGame(position: Int): GameAllContentData? {
+        return _gameRecentList.value?.get(position)
+    }
+
+    @SuppressLint("SuspiciousIndentation")
+    fun queryGameList(category: Int, data: GameAllContentData) {
+        setState(DataState.Loading)
+        viewModelScope.launch {
+            callApi(
+                {
+                    repository.queryAllGameList(INITIAL_PAGE, DEFAULT_GAME_SIZE, category)
+                },
+                {
+                    if (it is ApiResponseState.Failed) {
+                        setState(DataState.NetworkUnavailable)
+                    } else if (it is ApiResponseState.Succeeded<*>) {
+                        val gamePageVo = it.dataAs<GamePageVo>()
+                        setState(DataState.LoadSuccess)
+                        val currentList =
+                            _gameListLiveData.value?.toMutableList() ?: mutableListOf()
+                        val list = gamePageVo?.list?.map { gameVo ->
+                            gameVo.toGameContentData(
+                                (1 * 100 + gameVo.id).toLong()
+                            )
+                        }
+                        data.gameList = list!!
+                        if (data.gameList.isNotEmpty()){
+                            currentList.add(data)
+                        }
+                        _gameListLiveData.postValue(currentList)
+                    }
+                }, autoUpdateState = false
+            )
+        }
+    }
+
+    fun getAllList() {
 
         val mockData = listOf(
+            GameAllContentData(
+                name = R.string.hot_game.getString(),
+                category = 0, emptyList()
+            ),
 
             GameAllContentData(
-                id = "11${page}".toLong(),
-                name = "热门",
-                category = 102,
-                gameList = mockList(page)
-            )
-            ,
+                name = R.string.tab_avava_original.getString(),
+                category = Category.ORIGIN.type, emptyList()
+            ),
 
             GameAllContentData(
-                id = "12${page}".toLong(),
-                name = "原创",
-                category = 103,
-                gameList = mockList(page)
-            )
-            ,
+                name = R.string.tab_fishing.getString(),
+                category = Category.FISH.type, emptyList()
+            ),
 
             GameAllContentData(
-                id = "13${page}".toLong(),
-                name = "捕鱼",
-                category = 1,
-                gameList = mockList(page)
-            )
-
-            ,
+                name = R.string.tab_real.getString(),
+                category = Category.VIDEO.type, emptyList()
+            ),
 
             GameAllContentData(
-                id = "14${page}".toLong(),
-                name = "视讯",
-                category =2,
-                gameList = mockList(page)
-            )
-
-            ,
+                name = R.string.tab_table.getString(),
+                category = Category.POKER.type, emptyList()
+            ),
 
             GameAllContentData(
-                id = "15${page}".toLong(),
-                name = "棋牌",
-                category =3,
-                gameList = mockList(page)
-            )
-            ,
+                name = R.string.tab_esprots.getString(),
+                category = Category.TIGER.type, emptyList()
+            ),
 
             GameAllContentData(
-                id = "16${page}".toLong(),
-                name = "老虎机",
-                category = 4,
-                gameList = mockList(page)
-            )
-            ,
-
-            GameAllContentData(
-                id = "17${page}".toLong(),
-                name = "体育",
-                category = 5,
-                gameList = mockList(page)
+                name = R.string.tab_wls.getString(),
+                category = Category.SPORT.type, emptyList()
             ),
             GameAllContentData(
-                id = "17${page}".toLong(),
-                name = "彩票",
-                category = 6,
-                gameList = mockList(page)
+                name = R.string.tab_lottery.getString(),
+                category = Category.LOTTERY.type, emptyList()
             ),
             GameAllContentData(
-                id = "18${page}".toLong(),
-                name = "电竞",
-                category = 7,
-                gameList = mockList(page)
+                name = R.string.tab_esprots.getString(),
+                category = Category.ELECTRONIC.type, emptyList()
             )
         )
         _gameRecentList.postValue(mockData)
 
     }
 
-
-   private fun mockList(page:Int):List<GameContentData>{
-        val mockData = listOf(
-            GameContentData(
-                id = "${page}1".toLong(),
-                name = "${page}1",
-                avatar = Avatar(
-                    url = "https://eu.xa148.com/gameresource/games/1.avif",
-                    thumbhash = "JTqGLAQPcwaGh4h3cgq2moiAgHB4CAiHAA==",
-                    css = "--ar: 0.76; --c1: #efd94b; --css-bg: radial-gradient(...);"
-                ),
-                online = Random.nextInt(10, 32767),
-                reward = 0.95,
-                hasMore = true,
-                hotOrCold = HotColdType.COLD
-            ),
-            GameContentData(
-                id = "${page}2".toLong(),
-                name = "${page}2",
-                avatar = Avatar(
-                    url = "https://eu.xa148.com/gameresource/games/2.avif",
-                    thumbhash = "JTqGLAQPcwaGh4h3cgq2moiAgHB4CAiHAA==",
-                    css = "--ar: 0.76; --c1: #efd94b; --css-bg: radial-gradient(...);"
-                ),
-                online = Random.nextInt(10, 32767),
-                reward = 0.95,
-                hasMore = true,
-                hotOrCold = HotColdType.HOT
-            ),
-            GameContentData(
-                id = "${page}3".toLong(),
-                name = "${page}3",
-                avatar = Avatar(
-                    url = "https://eu.xa148.com/gameresource/games/3.avif",
-                    thumbhash = "JTqGLAQPcwaGh4h3cgq2moiAgHB4CAiHAA==",
-                    css = "--ar: 0.76; --c1: #efd94b; --css-bg: radial-gradient(...);"
-                ),
-                online = Random.nextInt(10, 32767),
-                reward = 0.95,
-                hasMore = true,
-                hotOrCold = HotColdType.COLD
-            ),
-            GameContentData(
-                id = "${page}4".toLong(),
-                name = "${page}4",
-                avatar = Avatar(
-                    url = "https://eu.xa148.com/gameresource/games/4.avif",
-                    thumbhash = "JTqGLAQPcwaGh4h3cgq2moiAgHB4CAiHAA==",
-                    css = "--ar: 0.76; --c1: #efd94b; --css-bg: radial-gradient(...);"
-                ),
-                online = Random.nextInt(10, 32767),
-                reward = 0.95,
-                hasMore = true,
-                hotOrCold = HotColdType.HOT
-            ),
-            GameContentData(
-                id = "${page}5".toLong(),
-                name = "${page}5",
-                avatar = Avatar(
-                    url = "https://eu.xa148.com/gameresource/games/5.avif",
-                    thumbhash = "JTqGLAQPcwaGh4h3cgq2moiAgHB4CAiHAA==",
-                    css = "--ar: 0.76; --c1: #efd94b; --css-bg: radial-gradient(...);"
-                ),
-                online = Random.nextInt(10, 32767),
-                reward = 0.95,
-                hasMore = true,
-                hotOrCold = HotColdType.HOT
-            ),
-            GameContentData(
-                id = "${page}6".toLong(),
-                name = "${page}6",
-                avatar = Avatar(
-                    url = "https://eu.xa148.com/gameresource/games/6.avif",
-                    thumbhash = "JTqGLAQPcwaGh4h3cgq2moiAgHB4CAiHAA==",
-                    css = "--ar: 0.76; --c1: #efd94b; --css-bg: radial-gradient(...);"
-                ),
-                online = Random.nextInt(10, 32767),
-                reward = 0.95,
-                hasMore = true,
-                hotOrCold = HotColdType.COLD
-            ),
-            GameContentData(
-                id = "${page}7".toLong(),
-                name = "${page}7",
-                avatar = Avatar(
-                    url = "https://eu.xa148.com/gameresource/games/7.avif",
-                    thumbhash = "JTqGLAQPcwaGh4h3cgq2moiAgHB4CAiHAA==",
-                    css = "--ar: 0.76; --c1: #efd94b; --css-bg: radial-gradient(...);"
-                ),
-                online = Random.nextInt(10, 32767),
-                reward = 0.95,
-                hasMore = true,
-                hotOrCold = HotColdType.HOT
-            ),
-            GameContentData(
-                id = "${page}8".toLong(),
-                name = "${page}8",
-                avatar = Avatar(
-                    url = "https://eu.xa148.com/gameresource/games/8.avif",
-                    thumbhash = "JTqGLAQPcwaGh4h3cgq2moiAgHB4CAiHAA==",
-                    css = "--ar: 0.76; --c1: #efd94b; --css-bg: radial-gradient(...);"
-                ),
-                online = Random.nextInt(10, 32767),
-                reward = 0.95,
-                hasMore = true,
-                hotOrCold = HotColdType.HOT
-            ),
-            GameContentData(
-                id = "${page}9".toLong(),
-                name = "${page}9",
-                avatar = Avatar(
-                    url = "https://eu.xa148.com/gameresource/games/9.avif",
-                    thumbhash = "JTqGLAQPcwaGh4h3cgq2moiAgHB4CAiHAA==",
-                    css = "--ar: 0.76; --c1: #efd94b; --css-bg: radial-gradient(...);"
-                ),
-                online = Random.nextInt(10, 32767),
-                reward = 0.95,
-                hasMore = true,
-                hotOrCold = HotColdType.COLD
-            )
-        )
-        return mockData
-    }
 }

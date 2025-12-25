@@ -132,7 +132,7 @@ class MainFragment : BaseFragment<MainFragmentViewModel, FragmentMainBinding>() 
                 mBinding.bottomNavigation.selectedIndex = it
                 mViewModel.selectedIndexFlow.value = it
                 setCurrentFragment(it,bundle.apply {
-                    remove(FragmentResultEnum.KEY_PAGE.k)
+                    remove(FragmentResultEnum.KEY_PAGE.name)
                     if(it == HomePageEnum.BETSLIP.v){
                         putInt(HomeOrderFragment.BET_MODE, mViewModel.betSlotFlow.value.ordinal)
                     }
@@ -140,7 +140,7 @@ class MainFragment : BaseFragment<MainFragmentViewModel, FragmentMainBinding>() 
                 mBinding.drawerLayout.closeDrawer(GravityCompat.START)
             }
         }.also {
-            requireActivity().supportFragmentManager.setFragmentResultListener(FragmentResultEnum.KEY_PAGE.k,viewLifecycleOwner,it)
+            requireActivity().supportFragmentManager.setFragmentResultListener(FragmentResultEnum.KEY_PAGE.name,viewLifecycleOwner,it)
         }
     }
 
@@ -206,10 +206,13 @@ class MainFragment : BaseFragment<MainFragmentViewModel, FragmentMainBinding>() 
             if (!fragment.isAdded) {
                 add(R.id.fragment_container,fragment,"$TAG$index")
                 fragment.launch(Lifecycle.State.RESUMED, fragment.lifecycleScope){
+                    //第一次fragment的add，补一个onHiddenChanged(false)
                     fragment.onHiddenChanged(false)
                 }
             } else {
                 show(fragment)
+                //如果fragment已经show，补一个onHiddenChanged(false)
+                if(!fragment.isHidden) fragment.onHiddenChanged(false)
             }
         }.commit()
         //java.lang.IllegalStateException: Fragment no longer exists for key f#0: unique id ba2286df-4545-4383-b414-da475c5d5aac

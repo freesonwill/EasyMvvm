@@ -7,7 +7,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/app_bg">
-
     <com.walisport.module.gamedetail.ui.view.CarouselScrollView
         android:id="@+id/carousel_scroll_view"
         android:layout_width="match_parent"
@@ -20,12 +19,24 @@
         app:carousel_itemHeight="412dp"
         app:carousel_itemSpacing="11dp"
         app:carousel_itemWidth="232dp"
-        app:carousel_shrinkTopOffset="@dimen/dp_10"
-        app:carousel_shrinkBottomOffset="@dimen/dp_70"
+        app:carousel_shrinkTopOffset="@dimen/dp_50"
+        app:carousel_shrinkBottomOffset="@dimen/dp_80"
         app:carousel_verticalAlignTo="@id/carousel_shrink_anchor_top"
         app:carousel_verticalAlignToBottom="@id/carousel_shrink_anchor_bottom"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
+        android:id="@+id/tv_big_game_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/color_FFFFFF"
+        android:textSize="@dimen/sp_16"
+        app:skinnableFontWeight="700"
+        android:layout_marginTop="@dimen/dp_20"
+        android:layout_marginStart="@dimen/dp_12"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title_bottom"
+        tools:text="Doony Dough" />
 
     <View
         android:id="@+id/carousel_align_anchor"
@@ -37,7 +48,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/view_balance" />
-    />
     <View
         android:id="@+id/carousel_shrink_anchor_top"
         android:layout_width="0dp"
@@ -165,131 +175,178 @@
         app:layout_constraintBottom_toTopOf="@id/iv_start_game"
         app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@mipmap/img_game_cover" />
-
-    <HorizontalScrollView
-        android:id="@+id/scroll_game_info"
+    <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_10"
+        android:layout_marginBottom="@dimen/dp_17"
+        android:layout_marginEnd="@dimen/dp_14"
+        app:layout_constraintBottom_toTopOf="@id/iv_start_game"
         app:layout_constraintStart_toEndOf="@id/iv_game_cover"
-        app:layout_constraintTop_toTopOf="@id/iv_game_cover">
+        app:layout_constraintEnd_toEndOf="parent"
+        >
+        <HorizontalScrollView
+            android:id="@+id/scroll_game_info"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_10"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
 
-        <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-            <arch.cayenne.lib.skin.widget.SkinnableTextView
-                android:id="@+id/tv_game_name"
+            <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/color_FFFFFF"
-                android:textSize="@dimen/sp_14"
-                android:textStyle="bold"
-                tools:text="Doony Dough" />
+                android:layout_height="wrap_content">
 
-            <arch.cayenne.lib.skin.widget.SkinnableTextView
-                android:id="@+id/tv_game_type"
-                style="@style/RoundedTagStyle"
-                android:layout_marginStart="@dimen/dp_7"
-                android:layout_marginBottom="@dimen/dp_1"
-                app:layout_constraintBottom_toBottomOf="@id/tv_game_name"
-                app:layout_constraintStart_toEndOf="@id/tv_game_name"
-                app:layout_constraintTop_toTopOf="@id/tv_game_name"
-                tools:text="电子" />
+                <arch.cayenne.lib.skin.widget.SkinnableTextView
+                    android:id="@+id/tv_game_name"
+                    android:layout_width="91dp"
+                    android:layout_height="24dp"
+                    android:textColor="@color/color_FFFFFF"
+                    android:textSize="@dimen/sp_14"
+                    app:skinnableFontWeight="700"
+                    tools:layout_editor_absoluteX="-6dp"
+                    tools:text="Doony Dough" />
 
-            <arch.cayenne.lib.skin.widget.SkinnableTextView
-                android:id="@+id/tv_game_vendor"
-                style="@style/RoundedTagStyle"
-                android:layout_marginStart="@dimen/dp_6"
-                android:layout_marginBottom="@dimen/dp_1"
-                app:layout_constraintBottom_toBottomOf="@id/tv_game_name"
-                app:layout_constraintStart_toEndOf="@id/tv_game_type"
-                app:layout_constraintTop_toTopOf="@id/tv_game_name"
-                tools:text="Hacksaw Gaming" />
+                <arch.cayenne.lib.skin.widget.SkinnableTextView
+                    android:id="@+id/tv_game_type"
+                    style="@style/RoundedTagStyle"
+                    android:layout_marginStart="@dimen/dp_7"
+                    android:layout_marginBottom="@dimen/dp_1"
+                    app:layout_constraintBottom_toBottomOf="@id/tv_game_name"
+                    app:layout_constraintStart_toEndOf="@id/tv_game_name"
+                    app:layout_constraintTop_toTopOf="@id/tv_game_name"
+                    tools:text="电子" />
 
-        </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
+                <arch.cayenne.lib.skin.widget.SkinnableTextView
+                    android:id="@+id/tv_game_vendor"
+                    style="@style/RoundedTagStyle"
+                    android:layout_marginStart="@dimen/dp_6"
+                    android:layout_marginBottom="@dimen/dp_1"
+                    app:layout_constraintBottom_toBottomOf="@id/tv_game_name"
+                    app:layout_constraintStart_toEndOf="@id/tv_game_type"
+                    app:layout_constraintTop_toTopOf="@id/tv_game_name"
+                    tools:text="Hacksaw Gaming" />
 
-    </HorizontalScrollView>
+            </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
 
-    <arch.cayenne.lib.skin.widget.SkinnableTextView
-        android:id="@+id/tv_rtp_value"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_15"
-        android:textColor="@color/color_FFFFFF"
-        android:textSize="@dimen/sp_12"
-        app:layout_constraintStart_toStartOf="@id/scroll_game_info"
-        app:layout_constraintTop_toBottomOf="@id/scroll_game_info"
-        tools:text="97.5%" />
+        </HorizontalScrollView>
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
+            android:id="@+id/tv_rtp_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_15"
+            android:textColor="@color/color_FFFFFF"
+            android:textSize="@dimen/sp_12"
+            app:layout_constraintStart_toStartOf="@id/scroll_game_info"
+            app:layout_constraintTop_toBottomOf="@id/scroll_game_info"
+            tools:text="97.5%" />
 
-    <arch.cayenne.lib.skin.widget.SkinnableTextView
-        android:id="@+id/tv_rtp_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_3"
-        android:text="@string/rtp"
-        android:textColor="@color/color_999999"
-        android:textSize="@dimen/sp_12"
-        app:layout_constraintBottom_toBottomOf="@id/tv_rtp_value"
-        app:layout_constraintStart_toEndOf="@id/tv_rtp_value"
-        app:layout_constraintTop_toTopOf="@id/tv_rtp_value" />
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
+            android:id="@+id/tv_rtp_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_3"
+            android:text="@string/rtp"
+            android:textColor="@color/color_999999"
+            android:textSize="@dimen/sp_12"
+            app:layout_constraintBottom_toBottomOf="@id/tv_rtp_value"
+            app:layout_constraintStart_toEndOf="@id/tv_rtp_value"
+            app:layout_constraintTop_toTopOf="@id/tv_rtp_value" />
 
-    <arch.cayenne.lib.skin.widget.SkinnableTextView
-        android:id="@+id/tv_max_reward_value"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_13"
-        android:textColor="@color/color_FFFFFF"
-        android:textSize="@dimen/sp_12"
-        app:layout_constraintBottom_toBottomOf="@id/tv_rtp_title"
-        app:layout_constraintStart_toEndOf="@id/tv_rtp_title"
-        app:layout_constraintTop_toTopOf="@id/tv_rtp_title"
-        tools:text="10000x" />
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
+            android:id="@+id/tv_max_reward_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_13"
+            android:textColor="@color/color_FFFFFF"
+            android:textSize="@dimen/sp_12"
+            app:layout_constraintBottom_toBottomOf="@id/tv_rtp_title"
+            app:layout_constraintStart_toEndOf="@id/tv_rtp_title"
+            app:layout_constraintTop_toTopOf="@id/tv_rtp_title"
+            tools:text="10000x" />
 
-    <arch.cayenne.lib.skin.widget.SkinnableTextView
-        android:id="@+id/tv_max_reward_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_3"
-        android:text="@string/max_reward"
-        android:textColor="@color/color_999999"
-        android:textSize="@dimen/sp_12"
-        app:layout_constraintBottom_toBottomOf="@id/tv_max_reward_value"
-        app:layout_constraintStart_toEndOf="@id/tv_max_reward_value"
-        app:layout_constraintTop_toTopOf="@id/tv_max_reward_value" />
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
+            android:id="@+id/tv_max_reward_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_3"
+            android:text="@string/max_reward"
+            android:textColor="@color/color_999999"
+            android:textSize="@dimen/sp_12"
+            app:layout_constraintBottom_toBottomOf="@id/tv_max_reward_value"
+            app:layout_constraintStart_toEndOf="@id/tv_max_reward_value"
+            app:layout_constraintTop_toTopOf="@id/tv_max_reward_value" />
 
-    <arch.cayenne.lib.skin.widget.SkinnableView
-        android:id="@+id/view_online_dot"
-        android:layout_width="6.5dp"
-        android:layout_height="6.5dp"
-        android:layout_marginTop="20.25dp"
-        android:background="@drawable/shape_green_circle"
-        app:layout_constraintStart_toStartOf="@id/scroll_game_info"
-        app:layout_constraintTop_toBottomOf="@id/tv_rtp_value" />
+        <arch.cayenne.lib.skin.widget.SkinnableView
+            android:id="@+id/view_online_dot"
+            android:layout_width="6.5dp"
+            android:layout_height="6.5dp"
+            android:layout_marginTop="20.25dp"
+            android:background="@drawable/shape_green_circle"
+            app:layout_constraintStart_toStartOf="@id/scroll_game_info"
+            app:layout_constraintTop_toBottomOf="@id/tv_rtp_value" />
 
-    <arch.cayenne.lib.skin.widget.SkinnableTextView
-        android:id="@+id/tv_online_value"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_3"
-        android:textColor="@color/color_FFFFFF"
-        android:textSize="@dimen/sp_12"
-        app:layout_constraintBottom_toBottomOf="@id/view_online_dot"
-        app:layout_constraintStart_toEndOf="@id/view_online_dot"
-        app:layout_constraintTop_toTopOf="@id/view_online_dot"
-        tools:text="6234" />
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
+            android:id="@+id/tv_online_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_3"
+            android:textColor="@color/color_FFFFFF"
+            android:textSize="@dimen/sp_12"
+            app:layout_constraintBottom_toBottomOf="@id/view_online_dot"
+            app:layout_constraintStart_toEndOf="@id/view_online_dot"
+            app:layout_constraintTop_toTopOf="@id/view_online_dot"
+            tools:text="6234" />
 
-    <arch.cayenne.lib.skin.widget.SkinnableTextView
-        android:id="@+id/tv_online_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_3"
-        android:text="@string/is_playing"
-        android:textColor="@color/color_999999"
-        android:textSize="@dimen/sp_12"
-        app:layout_constraintBottom_toBottomOf="@id/view_online_dot"
-        app:layout_constraintStart_toEndOf="@id/tv_online_value"
-        app:layout_constraintTop_toTopOf="@id/view_online_dot" />
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
+            android:id="@+id/tv_online_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_3"
+            android:text="@string/is_playing"
+            android:textColor="@color/color_999999"
+            android:textSize="@dimen/sp_12"
+            app:layout_constraintBottom_toBottomOf="@id/view_online_dot"
+            app:layout_constraintStart_toEndOf="@id/tv_online_value"
+            app:layout_constraintTop_toTopOf="@id/view_online_dot" />
+
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
+            android:id="@+id/tv_score"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_3"
+            android:layout_marginBottom="@dimen/dp_5"
+            android:layout_marginEnd="@dimen/dp_15"
+            android:textColor="@color/color_00E0E5"
+            android:textSize="@dimen/sp_20"
+            app:skinnableFontWeight="600"
+            app:layout_constraintBottom_toTopOf="@id/tv_score_count_value"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:text="4.9" />
+
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
+            android:id="@+id/tv_score_count_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/color_999999"
+            android:textSize="@dimen/sp_11"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/tv_score_count_title"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            tools:text="6234" />
+
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
+            android:id="@+id/tv_score_count_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dp_1"
+            android:text="@string/rating_count"
+            android:textColor="@color/color_999999"
+            android:textSize="@dimen/sp_11"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+    </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
+
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guide_line_score"
@@ -299,44 +356,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintGuide_end="@dimen/dp_45" />
 
-    <arch.cayenne.lib.skin.widget.SkinnableTextView
-        android:id="@+id/tv_score"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_3"
-        android:layout_marginBottom="@dimen/dp_5"
-        android:textColor="@color/color_00E0E5"
-        android:textSize="@dimen/sp_20"
-        app:layout_constraintBottom_toTopOf="@id/tv_score_count_value"
-        app:layout_constraintEnd_toEndOf="@id/guide_line_score"
-        app:layout_constraintStart_toStartOf="@id/guide_line_score"
-        tools:text="4.9" />
-
-    <arch.cayenne.lib.skin.widget.SkinnableTextView
-        android:id="@+id/tv_score_count_value"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/color_999999"
-        android:textSize="@dimen/sp_11"
-        app:layout_constraintBottom_toBottomOf="@id/tv_score_count_title"
-        app:layout_constraintEnd_toStartOf="@id/tv_score_count_title"
-        app:layout_constraintHorizontal_chainStyle="packed"
-        app:layout_constraintStart_toStartOf="@id/guide_line_score"
-        app:layout_constraintTop_toTopOf="@id/tv_score_count_title"
-        tools:text="6234" />
-
-    <arch.cayenne.lib.skin.widget.SkinnableTextView
-        android:id="@+id/tv_score_count_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/dp_14"
-        android:layout_marginBottom="@dimen/dp_1"
-        android:text="@string/rating_count"
-        android:textColor="@color/color_999999"
-        android:textSize="@dimen/sp_11"
-        app:layout_constraintBottom_toBottomOf="@id/iv_game_cover"
-        app:layout_constraintEnd_toEndOf="@id/guide_line_score"
-        app:layout_constraintStart_toEndOf="@id/tv_score_count_value" />
 
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/iv_start_trial"
@@ -367,44 +386,41 @@
         android:layout_height="wrap_content"
         app:constraint_referenced_ids="view_bg_top, tv_swipe_for_more, iv_swipe_for_more" />
 
-    <arch.cayenne.lib.skin.widget.SkinnableView
+    <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
         android:id="@+id/view_bg_top"
         android:layout_width="match_parent"
         android:layout_height="46dp"
         android:background="@drawable/shape_game_detail_item_bg_top"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintBottom_toBottomOf="parent" >
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
+            android:id="@+id/tv_swipe_for_more"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/swipe_for_more_game"
+            android:textColor="@color/color_999999"
+            android:textSize="@dimen/sp_12"
+            android:layout_marginTop="@dimen/dp_6"
+            app:layout_constraintEnd_toStartOf="@id/iv_swipe_for_more"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <arch.cayenne.lib.skin.widget.SkinnableTextView
-        android:id="@+id/tv_swipe_for_more"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_6"
-        android:layout_marginBottom="@dimen/dp_23"
-        android:text="@string/swipe_for_more_game"
-        android:textColor="@color/color_999999"
-        android:textSize="@dimen/sp_12"
-        app:layout_constraintBottom_toBottomOf="@id/view_bg_top"
-        app:layout_constraintEnd_toStartOf="@id/iv_swipe_for_more"
-        app:layout_constraintHorizontal_chainStyle="packed"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/view_bg_top" />
-
-    <arch.cayenne.lib.skin.widget.SkinnableImageView
-        android:id="@+id/iv_swipe_for_more"
-        android:layout_width="@dimen/dp_16"
-        android:layout_height="@dimen/dp_16"
-        app:layout_constraintBottom_toBottomOf="@id/tv_swipe_for_more"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/tv_swipe_for_more"
-        app:layout_constraintTop_toTopOf="@id/tv_swipe_for_more"
-        app:srcCompat="@drawable/ic_swipe_for_more" />
-
+        <arch.cayenne.lib.skin.widget.SkinnableImageView
+            android:id="@+id/iv_swipe_for_more"
+            android:layout_width="@dimen/dp_16"
+            android:layout_height="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_6"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/tv_swipe_for_more"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_swipe_for_more" />
+    </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/title_top"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:orientation="horizontal"
-        app:layout_constraintGuide_begin="@dimen/dp_10"
+        app:layout_constraintGuide_begin="@dimen/dp_61"
         />
 
     <androidx.constraintlayout.widget.Guideline
@@ -412,8 +428,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:orientation="horizontal"
-        app:layout_constraintGuide_begin="@dimen/dp_50"
-        />
+        app:layout_constraintGuide_begin="@dimen/dp_97" />
 
 
 </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>

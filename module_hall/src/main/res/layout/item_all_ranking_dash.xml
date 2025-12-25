@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/cl_root"
     android:layout_width="match_parent"
+    android:layout_height="@dimen/dp_24"
     android:clickable="false"
-    android:focusable="false"
-    android:layout_height="@dimen/dp_48"
-    xmlns:app="http://schemas.android.com/apk/res-auto" >
+    android:focusable="false">
+
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iv_rank"
-        android:layout_width="19.6dp"
-        android:layout_height="4.1dp"
-        app:srcCompat="@drawable/ic_game_all_ranking_today_dash"
-        app:layout_constraintTop_toTopOf="parent"
+        android:layout_width="@dimen/dp_20"
+        android:layout_height="@dimen/dp_4"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_game_all_ranking_today_dash" />
 </androidx.constraintlayout.widget.ConstraintLayout>

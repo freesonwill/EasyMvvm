@@ -9,7 +9,6 @@
         android:id="@+id/iv_currency_icon"
         android:layout_width="@dimen/dp_20"
         android:layout_height="@dimen/dp_20"
-        android:background="@drawable/ic_usdt"
         android:layout_marginStart="@dimen/dp_6"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"

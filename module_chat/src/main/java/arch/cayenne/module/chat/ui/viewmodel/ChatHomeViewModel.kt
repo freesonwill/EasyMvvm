@@ -21,7 +21,11 @@ import arch.cayenne.module.chat.data.model.ChatMsgPageBean
 import arch.cayenne.module.chat.data.model.EmojiModel
 import arch.cayenne.module.chat.data.model.MentionSpan
 import arch.cayenne.module.chat.manager.ChatServerController
+import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
@@ -34,9 +38,10 @@ class ChatHomeViewModel() : BaseViewModel() {
     private val _sendMsgLiveData = MutableLiveData<ChatMsgPageBean>()
     private val _chatHistoryIsEmpty = MutableLiveData<Boolean>()
     private val chatServer: ChatServerController by inject { parametersOf(viewModelScope) }
-    private val _emojiLiveData: MutableLiveData<EmojiModel> = MutableLiveData()
+    private val _emojiFlow: MutableSharedFlow<EmojiModel?> = MutableSharedFlow(replay = 0, extraBufferCapacity = 10, onBufferOverflow = BufferOverflow.DROP_OLDEST)
     private val _etDelLiveDta: MutableLiveData<Boolean> = MutableLiveData()
-
+    private val _sendTextLiveData: MutableLiveData<Boolean> = MutableLiveData()
+    private val _currentKeyBoardType = MutableLiveData<KeyBoardType>(KeyBoardType.CHAT)
 
     var currentKeyBoardType: KeyBoardType = KeyBoardType.CHAT
 
@@ -56,9 +61,9 @@ class ChatHomeViewModel() : BaseViewModel() {
     val checkBetAmountFlow = chatServer.checkBetAmountFlow
 
     //emojiFragment 发送emoji到et显示
-    val emojiLiveData: LiveData<EmojiModel> = _emojiLiveData
+    val emojiFlow: SharedFlow<EmojiModel?> = _emojiFlow
     val etDelLiveData: LiveData<Boolean> = _etDelLiveDta
-
+    val sendTextLiveData: LiveData<Boolean> = _sendTextLiveData
 
     val languageManager: LanguageManager by inject { parametersOf(viewModelScope) }
     val userDataManager: UserDataManager by inject()
@@ -68,6 +73,12 @@ class ChatHomeViewModel() : BaseViewModel() {
 
     var keyBoardHeight: Int = 0
     var isMainSoft: Boolean = false
+
+    //聊天键盘切换监听
+    val currentKeyBoardTypeLiveData: LiveData<KeyBoardType> = _currentKeyBoardType
+
+    var languageSelectPosition:Int = 1
+
 
     fun setArguments(matchId: Long?) {
         //直播间重新从联赛进入时，刷新matchId 重新进入聊天室
@@ -203,7 +214,8 @@ class ChatHomeViewModel() : BaseViewModel() {
             EmojiEnum.Smile,
             EmojiEnum.Boring,
             EmojiEnum.Scrowl,
-            EmojiEnum.Dizzy
+            EmojiEnum.Dizzy,
+            EmojiEnum.Duh,
         ).map {
             EmojiModel(it.resId, it.key)
         }.toList()
@@ -211,11 +223,25 @@ class ChatHomeViewModel() : BaseViewModel() {
 
 
     fun etDelFunction() {
-        _etDelLiveDta.value = _etDelLiveDta.value?.let { !it } ?: false
+        val value = _etDelLiveDta.value?.let { !it } ?: false
+        _etDelLiveDta.value = value
     }
 
     fun addEmojiToChat(emojiData: EmojiModel) {
-        _emojiLiveData.value = emojiData
+        _emojiFlow.tryEmit(emojiData)
+    }
+
+    fun sendTextToChat() {
+        val value =  _sendTextLiveData.value?.let { !it } ?: false
+        _sendTextLiveData.value = value
+    }
+
+    fun listenCurrentKeyBoardType(keyBoardType: KeyBoardType) {
+        _currentKeyBoardType.value = keyBoardType
+    }
+
+    fun updateLanguageSelect(position:Int){
+        languageSelectPosition = position
     }
 
 }

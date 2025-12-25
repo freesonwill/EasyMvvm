@@ -17,6 +17,7 @@ import android.view.ViewTreeObserver
 import android.view.Window
 import android.view.WindowManager
 import android.view.animation.DecelerateInterpolator
+import androidx.core.view.doOnPreDraw
 import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -34,6 +35,7 @@ import arch.cayenne.lib.common.ui.viewmodel.BalanceViewModel
 import arch.cayenne.lib.common.ui.viewmodel.CurrencyDialogViewModel
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+import com.blankj.utilcode.util.SizeUtils
 import kotlin.reflect.KClass
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -93,7 +95,6 @@ class CurrencyDialogFragment constructor() : BasePositionDialogFragment<Currency
                 mBinding.root.viewTreeObserver.removeOnGlobalLayoutListener(this)
 
                 mBinding.root.post {
-                    // 取得目標 View (假設是 mBinding.clContent，請依您的 xml id 為準)
                     val targetView = mBinding.clCurrencyRoot
 
                     // 1. 設定動畫軸心為 View 的中心點
@@ -104,7 +105,6 @@ class CurrencyDialogFragment constructor() : BasePositionDialogFragment<Currency
                     targetView.scaleX = 0f
                     targetView.scaleY = 0f
                     targetView.alpha = 0f
-                    targetView.visibility = View.VISIBLE
 
                     // 4. 開始展開動畫
                     targetView.animate()
@@ -113,15 +113,16 @@ class CurrencyDialogFragment constructor() : BasePositionDialogFragment<Currency
                         .alpha(1f)
                         .setDuration(200)
                         .setInterpolator(DecelerateInterpolator())
+                        .withStartAction {
+                            targetView.visibility = View.VISIBLE
+                        }
                         .start()
                 }
 
             }
         })
-
-
-        mBinding.root.visibility = View.VISIBLE
         removeDim()
+
     }
 
     override val vbClass: KClass<FragmentCurrencyDialogBinding> = FragmentCurrencyDialogBinding::class
@@ -138,6 +139,7 @@ class CurrencyDialogFragment constructor() : BasePositionDialogFragment<Currency
 
     override fun initView(savedInstanceState: Bundle?) {
         with(mBinding) {
+            clCurrencyRoot.visibility = View.INVISIBLE
             clCurrencyRoot.setOnClickListener {
                doExitAnim()
             }
@@ -195,6 +197,16 @@ class CurrencyDialogFragment constructor() : BasePositionDialogFragment<Currency
             )
         }
 
+        //解決搜尋時動態改變Recycleview高度後，blurView下方左右的圓角消失問題
+        mBinding.blurView.apply {
+            clipToOutline = true // 開啟裁剪
+            outlineProvider = object : ViewOutlineProvider() {
+                override fun getOutline(view: View, outline: Outline) {
+                    outline.setRoundRect(0, 0, view.width, view.height, SizeUtils.dp2px(9f).toFloat())
+                }
+            }
+        }
+
     }
 
     override fun initData() {
@@ -218,6 +230,9 @@ class CurrencyDialogFragment constructor() : BasePositionDialogFragment<Currency
                 list.addAll(crypto)
             }
             currencyAdapter.submitList(list)
+            mBinding.rvCurrency.doOnPreDraw {
+                mBinding.blurView.invalidateOutline()
+            }
             currencySettingAdapter.submitList(fiat+crypto)
         }
     }

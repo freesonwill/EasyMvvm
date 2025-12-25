@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/title_bg"
+    android:background="@color/color_1E1E1E"
     android:orientation="vertical">
 
     <arch.cayenne.lib.common.ui.view.TitleBarView
@@ -13,6 +13,201 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="MissingConstraints" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_banner"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_110"
+        android:layout_marginStart="@dimen/dp_12"
+        android:layout_marginTop="@dimen/dp_12"
+        android:layout_marginEnd="@dimen/dp_12"
+
+        android:background="@drawable/bg_game_all_bonus"
+        app:layout_constraintDimensionRatio="351:110"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/tv_today_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_93"
+            android:layout_marginTop="@dimen/dp_2"
+            android:includeFontPadding="false"
+            android:text="@string/daily_betting_game"
+            android:textColor="@color/color_D9BFAA"
+            android:textSize="@dimen/sp_12"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="RtlHardcoded" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_title_line"
+            android:layout_width="0.5dp"
+            android:layout_height="11dp"
+            android:layout_marginStart="@dimen/dp_6"
+            android:background="@color/color_D0B5A1"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_today_title"
+            app:layout_constraintLeft_toRightOf="@+id/tv_today_title"
+            app:layout_constraintTop_toTopOf="@+id/tv_today_title" />
+
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
+            android:id="@+id/tv_timer"
+            android:layout_width="wrap_content"
+            android:layout_height="17dp"
+            android:layout_marginStart="@dimen/dp_6"
+            android:layout_marginTop="@dimen/dp_3"
+            android:gravity="center"
+            android:text="@string/count_down_default"
+            android:textColor="@color/color_FFFFFF"
+            android:textSize="@dimen/sp_12"
+            app:layout_constraintLeft_toRightOf="@+id/iv_title_line"
+            app:layout_constraintTop_toTopOf="parent"
+            app:skinnableFontWeight="500" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_helper"
+            android:layout_width="@dimen/dp_20"
+            android:layout_height="@dimen/dp_12"
+            android:paddingStart="4dp"
+            android:paddingEnd="@dimen/dp_4"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_today_title"
+            app:layout_constraintLeft_toRightOf="@+id/tv_timer"
+            app:layout_constraintTop_toTopOf="@+id/tv_today_title"
+            app:srcCompat="@drawable/ic_helper" />
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="331dp"
+            android:layout_height="80dp"
+            android:layout_marginStart="@dimen/dp_10"
+            android:layout_marginTop="@dimen/dp_4"
+            android:layout_marginEnd="@dimen/dp_10"
+            android:layout_marginBottom="@dimen/dp_6"
+            android:background="@drawable/bg_game_all_ranking_today_bonus"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_today_title">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/iv_today_money"
+                android:layout_width="@dimen/dp_102"
+                android:layout_height="@dimen/dp_66"
+                android:layout_marginStart="@dimen/dp_10"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/ic_game_all_ranking_today_money"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/iv_line_inner"
+                android:layout_width="0.5dp"
+                android:layout_height="0dp"
+                android:layout_marginStart="@dimen/dp_10"
+                android:layout_marginTop="@dimen/dp_8"
+                android:layout_marginBottom="@dimen/dp_8"
+                android:background="@color/color_513D301A"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toRightOf="@+id/iv_today_money"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/iv_bonus_title"
+                android:layout_width="@dimen/dp_56"
+                android:layout_height="@dimen/dp_19"
+                android:layout_marginStart="81dp"
+                android:layout_marginTop="@dimen/dp_12"
+                app:layout_constraintLeft_toRightOf="@+id/iv_line_inner"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_game_all_ranking_today_title" />
+
+            <TextView
+                android:id="@+id/tv_currency_symbol"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/dp_6"
+                android:layout_marginBottom="@dimen/dp_9"
+                android:text="¥"
+                android:textColor="@color/color_965F25"
+                android:textSize="@dimen/sp_20"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintRight_toLeftOf="@+id/tv_bonus" />
+
+            <TextView
+                android:id="@+id/tv_bonus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/dp_14"
+                android:layout_marginBottom="@dimen/dp_6"
+                android:fontFamily="@font/sf_pro_display_black"
+                android:includeFontPadding="false"
+                android:text="0"
+                android:textColor="@color/color_965F25"
+                android:textFontWeight="900"
+                android:textSize="34sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintRight_toRightOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_15"
+        android:paddingStart="@dimen/dp_12"
+        android:paddingEnd="@dimen/dp_12"
+        android:paddingBottom="@dimen/dp_13">
+        <!--  列表標題欄  -->
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
+            android:id="@+id/tv_tab_today_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_18"
+            android:layout_marginBottom="@dimen/dp_2"
+            android:text="@string/tab_ranking_today_rank"
+            android:textColor="@color/color_999999"
+            android:textSize="@dimen/sp_14"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
+            android:id="@+id/tv_tab_today_player"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_42"
+            android:layout_marginBottom="@dimen/dp_2"
+            android:text="@string/tab_ranking_today_player"
+            android:textColor="@color/color_999999"
+            android:textSize="@dimen/sp_14"
+            app:layout_constraintLeft_toRightOf="@+id/tv_tab_today_title"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
+            android:id="@+id/tv_tab_today_betting"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_70"
+            android:layout_marginBottom="@dimen/dp_2"
+            android:text="@string/tab_ranking_today_betting"
+            android:textColor="@color/color_999999"
+            android:textSize="@dimen/sp_14"
+            app:layout_constraintLeft_toRightOf="@+id/tv_tab_today_player"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
+            android:id="@+id/tv_tab_today_bonus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="69dp"
+            android:layout_marginBottom="@dimen/dp_2"
+            android:text="@string/tab_ranking_today_bonus"
+            android:textColor="@color/color_999999"
+            android:textSize="@dimen/sp_14"
+            app:layout_constraintLeft_toRightOf="@+id/tv_tab_today_betting"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -25,7 +220,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginStart="@dimen/dp_12"
-            android:layout_marginTop="@dimen/dp_12"
             android:layout_marginEnd="@dimen/dp_12"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

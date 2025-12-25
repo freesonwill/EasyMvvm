@@ -64,14 +64,14 @@ class EmojiGridAdapter :
             val nBinding = binding
             when (nBinding) {
                 is ItemEmojiLayoutBinding -> {
-                    nBinding.iv.setOnClickListener {
+                    nBinding.container.setOnClickListener {
                         val position = it.tag as Int
                         emojiListener?.onItemClick(getItem(position), position)
                     }
                 }
 
                 is ItemBidEmojiLayoutBinding -> {
-                    nBinding.iv.setOnClickListener {
+                    nBinding.container.setOnClickListener {
                         val position = it.tag as Int
                         emojiListener?.onItemClick(getItem(position), position)
                     }
@@ -87,12 +87,12 @@ class EmojiGridAdapter :
             when (nBinding) {
                 is ItemEmojiLayoutBinding -> {
                     nBinding.iv.setImageResource(getItem(position).resId)
-                    nBinding.iv.tag = position
+                    nBinding.container.tag = position
                 }
 
                 is ItemBidEmojiLayoutBinding -> {
                     nBinding.iv.setImageResource(getItem(position).resId)
-                    nBinding.iv.tag = position
+                    nBinding.container.tag = position
                 }
 
                 else -> {
@@ -148,7 +148,6 @@ class EmojiGridAdapter :
                 parent,
                 false
             )
-
             else -> ItemBidEmojiLayoutBinding.inflate(inflater, parent, false)
         }
     }

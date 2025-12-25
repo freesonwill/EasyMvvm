@@ -16,4 +16,8 @@ abstract class CurrencyConfigDao : BaseDao<CurrencyBean>() {
     )
     abstract suspend fun searchByKeyword(pattern: String, firstChar: String): List<CurrencyBean>
 
+    //根据ccy获取币种信息
+    @Query("SELECT * FROM CurrencyBean WHERE ccy = :ccy LIMIT 1")
+    abstract suspend fun getCurrencyByCcy(ccy: String): CurrencyBean?
+
 }

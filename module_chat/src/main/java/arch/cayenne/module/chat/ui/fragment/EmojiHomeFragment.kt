@@ -4,9 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.widget.LinearLayout
 import androidx.core.view.isVisible
-import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.PagerBean
-import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.adapter.PagerAdapter
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.utils.CustomTabIndicatorUtils
@@ -15,11 +13,10 @@ import arch.cayenne.lib.common.utils.ext.TabLayoutExt
 import arch.cayenne.lib.common.utils.ext.TabLayoutExt.addOnTabSelectedListener2
 import arch.cayenne.lib.common.utils.ext.removeAllTips
 import arch.cayenne.lib.common.utils.ext.setupHorizontalScrollDegree
-import arch.cayenne.lib.common.utils.ext.setupViewPagerScroll
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
-import arch.cayenne.lib.common.utils.ext.startFadeAnim
 import arch.cayenne.module.chat.R
 import arch.cayenne.module.chat.data.constants.EmojiTypeEnum
+import arch.cayenne.module.chat.data.constants.KeyBoardType
 import arch.cayenne.module.chat.databinding.FragmentEmojiHomeLayoutBinding
 import arch.cayenne.module.chat.databinding.ItemTabEmojiLayoutBinding
 import arch.cayenne.module.chat.ui.viewmodel.ChatHomeViewModel
@@ -50,18 +47,20 @@ class EmojiHomeFragment : BaseFragment<EmojiHomeViewModel, FragmentEmojiHomeLayo
             chatViewModel.etDelFunction()
         }
         mBinding.tvSend.setOnClickListener {
-
+            chatViewModel.sendTextToChat()
         }
     }
 
-    override fun onStart() {
-        super.onStart()
-    }
 
     override suspend fun createObserver() {
+     chatViewModel.currentKeyBoardTypeLiveData.observe(viewLifecycleOwner){
+         if(it == KeyBoardType.CHAT){
+             mBinding.viewpager.setCurrentItem(0,false)
+         }
+     }
     }
 
-    fun initTab() {
+    private fun initTab() {
         val list = resources.getStringArray(R.array.emoji_tab)
         val pageList = arrayListOf(
             PagerBean(list[0]) {
@@ -96,17 +95,17 @@ class EmojiHomeFragment : BaseFragment<EmojiHomeViewModel, FragmentEmojiHomeLayo
                     tvDel.isVisible = tab.position == 0
                     tvSend.isVisible = tab.position == 0
 
-                    if (isTabClick) {
-                        CustomTabIndicatorUtils.animateIndicatorToPosition(
-                            mBinding.customIndicator,
-                            tab.position
-                        )
-                        val vp = viewpager
-                        vp.startFadeAnim {
-                            vp.setCurrentItem(tab.position, false)
-                            it.invoke()
-                        }
-                    }
+//                    if (isTabClick) {
+//                        CustomTabIndicatorUtils.animateIndicatorToPosition(
+//                            mBinding.customIndicator,
+//                            tab.position
+//                        )
+//                        val vp = viewpager
+//                        vp.startFadeAnim {
+//                            vp.setCurrentItem(tab.position, false)
+//                            it.invoke()
+//                        }
+//                    }
                 }
 
                 override fun onTabUnselected(tab: TabLayout.Tab, isTabClick: Boolean) {
@@ -117,8 +116,9 @@ class EmojiHomeFragment : BaseFragment<EmojiHomeViewModel, FragmentEmojiHomeLayo
             })
             reflexPadding(tabLayout = emojiTablayout)
             // 自定義滑動行為
-            viewpager.setupViewPagerScroll(emojiTablayout, customIndicator, 0.15f)
+//            viewpager.setupViewPagerScroll(emojiTablayout, customIndicator, 0.15f)
             viewpager.setupHorizontalScrollDegree()
+            emojiTablayout.setSelectedTabIndicator(R.drawable.bg_emoji_tab_indicator)
         }
     }
 
@@ -131,8 +131,9 @@ class EmojiHomeFragment : BaseFragment<EmojiHomeViewModel, FragmentEmojiHomeLayo
                     val tabView = mTabStrip.getChildAt(i)
                     //设置tab左右间距为8dp  注意这里不能使用Padding 因为源码中线的宽度是根据 tabView的宽度来设置的
                     val params = tabView.layoutParams as LinearLayout.LayoutParams
+                    params.topMargin = -9.dp2px
                     params.leftMargin =
-                        if (i == 0) 0 else 79.dp2px          //     lp.leftMargin = if (position == 0) 84.dp2px else 79.dp2px
+                        if (i == 0) 0 else 80.dp2px          //     lp.leftMargin = if (position == 0) 84.dp2px else 79.dp2px
                     tabView.layoutParams = params
                     tabView.setPadding(0, 0, 0, 0)
                     tabView.invalidate()

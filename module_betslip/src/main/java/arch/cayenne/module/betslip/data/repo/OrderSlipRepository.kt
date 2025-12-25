@@ -5,7 +5,6 @@ import arch.cayenne.lib.common.utils.ext.ResourceExt
 import arch.cayenne.lib.database.dao.BetSlipOrderDao
 import arch.cayenne.lib.database.dao.InfoDao
 import arch.cayenne.lib.database.entity.BetSlipOrderBean
-import arch.cayenne.lib.websocket.data.SimpleResponseError
 import arch.cayenne.module.betslip.BetSlipRemoteManager
 import arch.cayenne.module.betslip.data.constants.CommonExtension.toOrderBean
 import com.google.gson.Gson
