@@ -1,6 +1,4 @@
-package com.walisport.module.hall.data
-
-import com.walisport.module.business.common.data.HotColdType
+package com.walisport.module.business.common.data
 
 data class Avatar(
     val url: String,

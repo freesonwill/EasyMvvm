@@ -7,10 +7,8 @@ import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.base.data.remote.ApiResponseState.Start.dataAs
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
-import com.walisport.module.hall.data.GameContentData
+import com.walisport.module.business.common.data.GameContentData
 import com.walisport.module.hall.data.GameFavouriteRepository
-import com.walisport.module.hall.data.GamePageVo
-import com.walisport.module.hall.data.HallRepository
 import com.walisport.module.hall.data.HallRepository.Companion.INITIAL_PAGE
 import com.walisport.module.hall.data.ProfilePlayedPageVo
 import com.walisport.module.hall.data.toGameContentData
