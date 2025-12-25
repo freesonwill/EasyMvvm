@@ -11,16 +11,21 @@ import arch.cayenne.lib.common.ui.view.NumberKeyboardView
 import kotlin.reflect.KClass
 import android.content.DialogInterface
 import android.graphics.drawable.Drawable
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.style.ForegroundColorSpan
 import android.view.Window
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
 import arch.cayenne.lib.base.ui.fragment.BasePositionDialogFragment
+import arch.cayenne.lib.common.R
 import arch.cayenne.lib.common.databinding.FragmentReserveDialogBinding
 import arch.cayenne.lib.common.ui.viewmodel.ReserveDialogViewModel
 import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.SportDisplayOddsExt.getDisplayOdds
 import arch.cayenne.lib.common.utils.ext.setOnClickOrLongPressListener
+import arch.cayenne.lib.skin.res.SkinnableResourceManager
 
 class ReserveDialogFragment constructor() : BasePositionDialogFragment<ReserveDialogViewModel, FragmentReserveDialogBinding>() {
 
@@ -192,7 +197,14 @@ class ReserveDialogFragment constructor() : BasePositionDialogFragment<ReserveDi
 
     override suspend fun createObserver() {
         mViewModel.onEditNumber.observe(viewLifecycleOwner) {
-            val text = "@$it"
+            val text = "@$it".let { str ->
+                SpannableString(str).apply {
+                    val color1 = SkinnableResourceManager.getColor(requireContext(), R.color.color_C0C0C0)
+                    val color2 = SkinnableResourceManager.getColor(requireContext(), R.color.color_00E0E5)
+                    setSpan(ForegroundColorSpan(color1), 0, 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    setSpan(ForegroundColorSpan(color2), 1, str.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                }
+            }
             mBinding.etRate.setText(text)
             val length = text.length
             mBinding.etRate.setSelection(length)
