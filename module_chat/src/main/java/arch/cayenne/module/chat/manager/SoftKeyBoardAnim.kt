@@ -62,12 +62,13 @@ object SoftKeyBoardAnim {
         }
         val transXAnim = ObjectAnimator.ofFloat(chatEtInput, "translationX", transX)
         animSet.playTogether(inputWidthAnim, transXAnim)
+        animSet.duration = etAnimDuration
         animSet.addListener(onEnd = {
 
         })
         return animSet
     }
-
+    private val etAnimDuration = 20L
 
     /**
      * 输入框在有内容和键盘弹出时的at bet emoji language 按钮的动画
@@ -81,18 +82,17 @@ object SoftKeyBoardAnim {
         ivEmoji: ImageView,
         ivLanguage: View
     ): Array<ObjectAnimator> {
-        val atTransYParam = if (isExpand) 0f else 47.dp2px.toFloat()
+        val atTransYParam = if (isExpand) 0f else 48.dp2px.toFloat()
         val atTransXParam = if (isExpand) 0f else 5.dp2px.toFloat()
-        val betTransXParam = if (isExpand) 0f else 12.dp2px.toFloat()
-        val emojiTransXParam = if (isExpand) 0f else 18.dp2px.toFloat()
-        val languageAlphaParam = if (isExpand) 1f else 0f
+        val betTransXParam = if (isExpand) 0f else 11.dp2px.toFloat()
+        val emojiTransXParam = if (isExpand) 0f else 16.dp2px.toFloat()
 
         val scaleParam = if (isExpand) floatArrayOf(1.16f, 1f) else floatArrayOf(1f, 1.16f)
 
-        val atTransXAnim = ObjectAnimator.ofFloat(ivAt, "translationX", atTransXParam)
-        val atTransYAnim = ObjectAnimator.ofFloat(ivAt, "translationY", atTransYParam)
-        val atScaleXParam = ObjectAnimator.ofFloat(ivAt, "scaleX", *scaleParam)
-        val atScaleYParam = ObjectAnimator.ofFloat(ivAt, "scaleY", *scaleParam)
+//        val atTransXAnim = ObjectAnimator.ofFloat(ivAt, "translationX", atTransXParam)
+//        val atTransYAnim = ObjectAnimator.ofFloat(ivAt, "translationY", atTransYParam)
+//        val atScaleXParam = ObjectAnimator.ofFloat(ivAt, "scaleX", *scaleParam)
+//        val atScaleYParam = ObjectAnimator.ofFloat(ivAt, "scaleY", *scaleParam)
 
         val betTransXAnim = ObjectAnimator.ofFloat(ivBet, "translationX", betTransXParam)
         val betTransYAnim = ObjectAnimator.ofFloat(ivBet, "translationY", atTransYParam)
@@ -105,14 +105,16 @@ object SoftKeyBoardAnim {
             ObjectAnimator.ofFloat(ivEmoji, "translationY", atTransYParam)
         val emojiScaleXParam = ObjectAnimator.ofFloat(ivEmoji, "scaleX", *scaleParam)
         val emojiScaleYParam = ObjectAnimator.ofFloat(ivEmoji, "scaleY", *scaleParam)
+        val languageAlphaParam = if (isExpand) 1f else 0f
 
         val ivLanguageAlphaAnim = ObjectAnimator.ofFloat(ivLanguage, "alpha", languageAlphaParam)
 
+
         return arrayOf(
-            atTransXAnim,
-            atTransYAnim,
-            atScaleXParam,
-            atScaleYParam,
+//            atTransXAnim,
+//            atTransYAnim,
+//            atScaleXParam,
+//            atScaleYParam,
             betTransXAnim,
             betTransYAnim,
             betScaleXParam,
@@ -130,6 +132,7 @@ object SoftKeyBoardAnim {
 //        "translationY",
 //        if (offset != 0) 0f else 44.dp2px.toFloat()
 //    )
+
 
     /***
      *键盘弹出和收缩时，输入框横移和缩放 输入框按钮上下移动
@@ -169,19 +172,20 @@ object SoftKeyBoardAnim {
             KeyboardActionType.CHAT_TO_SOFT,
             KeyboardActionType.CHAT_TO_EMOJI -> { //弹出键盘 先按钮动画再做输入框动画
                 val inputAnim = chatEtInputAnim(355, -48.dp2px.toFloat(), chatLlInput)
-                animSet.playSequentially(btnAnim, inputAnim)
+                animSet.playTogether(btnAnim, inputAnim)
             }
 
             KeyboardActionType.SOFT_TO_CHAT,
             KeyboardActionType.EMOJI_TO_CHAT -> {//收回键盘 先输入框动画恢复原位，再按钮动画
                 val inputAnim = chatEtInputAnim(307, 0f, chatLlInput)
-                animSet.playSequentially(inputAnim, btnAnim)
+                animSet.playTogether(inputAnim, btnAnim)
             }
 
             else -> {
                 animSet.play(btnAnim)
             }
         }
+        animSet.duration = etAnimDuration
         return animSet
     }
 
@@ -220,10 +224,12 @@ object SoftKeyBoardAnim {
         val sendAlphaAnim = ObjectAnimator.ofFloat(tvSend, "alpha", if (isEmpty) 0f else 1f)
         val inputAnim = chatEtInputAnim(inputWidth, transX, chatLlInput)
         val mainAnim = AnimatorSet().apply {
-            if (isEmpty) playSequentially(sendAlphaAnim, inputAnim) else playSequentially(
-                inputAnim,
-                sendAlphaAnim
-            )
+//            if (isEmpty) playSequentially(sendAlphaAnim, inputAnim) else playSequentially(
+//                inputAnim,
+//                sendAlphaAnim
+//            )
+            playTogether(inputAnim, sendAlphaAnim)
+            duration = etAnimDuration
         }
 
         return mainAnim
@@ -248,7 +254,7 @@ object SoftKeyBoardAnim {
                         chatLlInput,
                         chatTvSend
                     ).apply {
-                        duration = 170L
+                        duration = etAnimDuration
                         addListener(onStart = {
                         }, onEnd = {
                             chatTvSend.isVisible = false
@@ -284,7 +290,7 @@ object SoftKeyBoardAnim {
                         })
                     }
                     AnimatorSet().apply {
-                        duration = 170
+                        duration = etAnimDuration
                         playSequentially(inputAnim, btnAnim)
                         start()
                     }
@@ -308,7 +314,7 @@ object SoftKeyBoardAnim {
                             chatLlInput,
                             chatTvSend
                         ).apply {
-                            duration = 170L
+                            duration = etAnimDuration
                             addListener(onStart = {
                                 chatTvSend.isVisible = true
 //                                onAnimStart.invoke(true)
@@ -360,7 +366,7 @@ object SoftKeyBoardAnim {
                 etInputContentAnim(false, currentType, chatLlInput, chatTvSend)
             val animSet = AnimatorSet()
             animSet.playSequentially(btnAnim, inputEtAnim)
-            animSet.duration = 170L
+            animSet.duration = etAnimDuration
             animSet.addListener(onStart = {
                 chatTvSend.isVisible = true
             })

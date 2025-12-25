@@ -410,11 +410,12 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
 //            ivBottomBet.setOnTouchListener { v, event -> return@setOnTouchListener true }
             ivBottomEmoji.setOnTouchListener { v, event ->
                 if (event.action == MotionEvent.ACTION_DOWN) {
-                    val clickType = if(softKeyBoardManager.currentKeyBoardType == KeyBoardType.EMOJI) {
-                        KeyBoardType.CHAT
-                    } else {
-                        KeyBoardType.EMOJI
-                    }
+                    val clickType =
+                        if (softKeyBoardManager.currentKeyBoardType == KeyBoardType.EMOJI) {
+                            KeyBoardType.CHAT
+                        } else {
+                            KeyBoardType.EMOJI
+                        }
                     mViewModel.updateKeyBoardUi(clickType, 6)
                     chatAtHelper.dismissWindow()
                 }
@@ -513,7 +514,8 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
             mViewModel.languageSelectPosition
         ) {
             "ChatLanguageDialogFragment select position:$it".logd("aaa")
-            mViewModel.updateLanguageSelect(it) }.show(childFragmentManager)
+            mViewModel.updateLanguageSelect(it)
+        }.show(childFragmentManager)
     }
 
     /**
@@ -592,11 +594,11 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
         mBinding.apply {
 //            ivAt.isVisible =  isVisible
 
-            ivBet.isVisible = isVisible
-            ivEmoji.isVisible = isVisible
+            ivBet.isVisible = true //isVisible
+            ivEmoji.isVisible = true //isVisible
             ivLanguage.isVisible = isVisible
-            ivBottomBet.isVisible = !isVisible
-            ivBottomEmoji.isVisible = !isVisible
+            ivBottomBet.isVisible = false //!isVisible
+            ivBottomEmoji.isVisible = false //!isVisible
         }
     }
 
@@ -618,7 +620,7 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
 //                return
 //            }
 //        }
-        mBinding.ivBottomEmoji.setImageResource(if (keyBoardType == KeyBoardType.EMOJI) R.drawable.icon_emoji_color else R.drawable.icon_emoji_grey)
+        mBinding.ivEmoji.setImageResource(if (keyBoardType == KeyBoardType.EMOJI) R.drawable.icon_emoji_color else R.drawable.icon_emoji_grey)
 
         softKeyBoardManager.addSoftKeyBoardEvent(keyBoardType, flag)
         softKeyBoardManager.showKeyboardAnimation()
@@ -657,7 +659,6 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
                     mBinding.apply {
                         if (chatEtInput.length() == 0) { //有内容时input按钮不能上下移动
                             playTogether(
-                                mainTransYAnim,
                                 getInputAnim(
                                     actionType,
                                     offset,
@@ -672,7 +673,8 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
                                     animEnd = {
                                         updateInputIcon(offset == 0)
                                     }
-                                )
+                                ),
+                                mainTransYAnim
                             )
                         } else {
                             play(mainTransYAnim)
@@ -683,7 +685,7 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
                 })
             }
             mainAnim?.play(emojiSet)
-            mainAnim?.duration = 170L
+            mainAnim?.duration = 200L
             mainAnim?.addListener(onStart = {
                 if (mBinding.chatEtInput.length() == 0) {
                     inputIconShouldUpdate(
