@@ -30,6 +30,7 @@ class GameDetailModuleInitializer: DefaultInitializer<Unit> {
                 get()
             )
         }
+        
     }
 
     private val moduleList: List<Module> = listOf(viewModules, repoModules)
