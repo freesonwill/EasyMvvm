@@ -57,7 +57,11 @@ class EmojiFragment : BaseFragment<EmojiViewModel, FragmentEmojiLayoutBinding>()
         )
         nAdapter.setEmojiListener(object : RecyclerItemListener<EmojiModel> {
             override fun onItemClick(item: EmojiModel?, position: Int) {
-                item?.let { chatViewModel.addEmojiToChat(it) }
+                item?.let {
+                    if(it.resId == -2){
+                        return@let
+                    }
+                    chatViewModel.addEmojiToChat(it) }
             }
         })
         val spanCount = if (emoJiType == EmojiTypeEnum.NORMAL) 8 else 4
