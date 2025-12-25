@@ -70,7 +70,7 @@
             app:layout_constraintEnd_toStartOf="@id/gl_other"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/gl_other"
-            app:spacing="@dimen/dp_4"/>
+            android:spacing="@dimen/dp_4"/>
 
         <GridLayout
             android:id="@+id/gl_other"
