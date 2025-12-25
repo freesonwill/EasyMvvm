@@ -53,6 +53,7 @@ class BalanceRepository(
         if (user == null) return Pair(fiat, crypto)
         val showAllCurrency =  manager.getValue(UserDataKey.KEY_SHOW_ALL_CURRENCY, false)//先暫時為false
         val exchangeAmountUnit = currencyList.find { it.ccy == manager.getValue<String>(UserDataKey.KEY_DEFAULT_CURRENCY) }?.unit ?: ""
+        val currentSelectedCCY = currencyList.find { it.ccy == manager.getValue<String>(UserDataKey.KEY_DEFAULT_CURRENCY) }?.ccy ?: "USD"
         currencyList.forEach { currency ->
             val wallet = user.list.find { it.currency == currency.ccy }
             if (!currency.virtual) {
@@ -61,6 +62,7 @@ class BalanceRepository(
                         wallet?.balance ?: 0L,
                         null,  //法幣不需要匯率轉換,
                         "",
+                        currentSelectedCCY
                     )
                 )
             } else {
@@ -69,6 +71,7 @@ class BalanceRepository(
                         wallet?.balance ?: 0L,
                         wallet?.convertedAmount,
                         exchangeAmountUnit,
+                        currentSelectedCCY
                     )
                 )
             }
@@ -135,7 +138,8 @@ class BalanceRepository(
     private fun CurrencyBean.toCurrencyContentData2(
         amount: Long,
         exchangeAmount: Long?,
-        exchangeAmountUnit: String
+        exchangeAmountUnit: String,
+        currencySelectedCCY: String,
     ): BaseCurrencyData.CurrencyContentData2 {
         return BaseCurrencyData.CurrencyContentData2(
             id = id,
@@ -146,7 +150,8 @@ class BalanceRepository(
             amountStr = if (this.virtual && this.ccy != "USDT") amount.getFormalMoney(1) else amount.getFormalMoney(), //TODO 以後會加上rate，根據不同的需求除不同的rate
             exchangeAmount = if(exchangeAmount == null) "" else "$exchangeAmountUnit${exchangeAmount.getFormalMoney()}",
             unit = unit,
-            scale = if (this.virtual && this.ccy != "USDT") 0 else 2
+            scale = if (this.virtual && this.ccy != "USDT") 0 else 2,
+            isSelected = ccy == currencySelectedCCY,
         )
     }
 
@@ -169,6 +174,7 @@ class BalanceRepository(
                         wallet?.balance ?:0L,
                         null,
                         "",
+                        "",
                     )
                 )
             } else {
@@ -177,6 +183,7 @@ class BalanceRepository(
                         wallet?.balance ?:0L,
                         wallet?.convertedAmount,
                         exchangeAmountUnit,
+                        "",
                     )
                 )
             }

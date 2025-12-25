@@ -114,6 +114,7 @@ class GameAllRankingViewHolder(
                         LogUtils.e("GameAllRankingViewHolder", "onPageSelected height=$height")
                     }
 
+                    tvTitle.text = mockTabList[position].title
 
                 }
             })

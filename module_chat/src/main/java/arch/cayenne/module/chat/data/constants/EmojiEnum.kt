@@ -15,7 +15,7 @@ enum class EmojiEnum(val key: String, val resId: Int) {
     HandHeart("/id=21/", R.drawable.emoji21),
     Kiss("/id=23/", R.drawable.emoji23),
 
-//        Squint("emoji49", R.drawable.emoji49),
+    Squint("/id=49/", R.drawable.emoji49),
     Salute("/id=38/", R.drawable.emoji38),
     Respect("/id=35/", R.drawable.emoji35),
     Tricky("/id=60/", R.drawable.emoji60),
@@ -25,6 +25,9 @@ enum class EmojiEnum(val key: String, val resId: Int) {
     Tongue("/id=58/", R.drawable.emoji58),
     Drinking("/id=12/", R.drawable.emoji12),
     Omg("/id=31/", R.drawable.emoji31),
+    Emoji48("/id=48/", R.drawable.emoji48),
+    Emoji61("/id=61/", R.drawable.emoji61),
+    Emoji77("/id=77/", R.drawable.emoji77),
 
     Tired("/id=56/", R.drawable.emoji56),
     Shrunken("/id=43/", R.drawable.emoji43),
@@ -61,7 +64,6 @@ enum class EmojiEnum(val key: String, val resId: Int) {
     ShutUp("/id=22/", R.drawable.emoji22),
     Awakward("/id=3/", R.drawable.emoji3),
     Coffee("/id=67/", R.drawable.emoji67),
-    Skeleton("/id=81/", R.drawable.emoji81),
     Pig("/id=75/", R.drawable.emoji75),
     WaterMelon("/id=52/", R.drawable.emoji52),
 

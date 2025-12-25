@@ -26,6 +26,13 @@ class EmojiViewModel : BaseViewModel() {
     fun getNormalList(): List<EmojiModel> {
         val list = getNormalEmojis()
         list.add(0,EmojiModel(-1, ""))
+        list.add(EmojiModel(-2, ""))
+        list.add(EmojiModel(-2, ""))
+        list.add(EmojiModel(-2, ""))
+        list.add(EmojiModel(-2, ""))
+        list.add(EmojiModel(-2, ""))
+        list.add(EmojiModel(-2, ""))
+
         return list
     }
 
@@ -33,6 +40,9 @@ class EmojiViewModel : BaseViewModel() {
     fun getBidList(): List<EmojiModel> {
         val list = getBidEmojis()
         list.add(0,EmojiModel(-1, ""))
+        list.add(EmojiModel(-2, ""))
+        list.add(EmojiModel(-2, ""))
+        list.add(EmojiModel(-2, ""))
         return  list
     }
 

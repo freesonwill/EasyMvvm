@@ -13,18 +13,7 @@ enum class BidEmojiEnum(val key: String, val resId: Int) {
     ChampionDream("/bid=7/", R.drawable.bid7),
     TargeLock("/bid=8/", R.drawable.bid8),
     QuickFighting("/bid=9/", R.drawable.bid9),
-    FinalBattle("/bid=10/", R.drawable.bid10),
-    GoalCombo("/bid=11/", R.drawable.bid11),
-    OnThePitch("/bid=12/", R.drawable.bid12),
-    ShotNet("/bid=13/", R.drawable.bid13),
-    Courageous("/bid=14/", R.drawable.bid14,),
-    Passionate("/bid=15/", R.drawable.bid15,),
-    Shocking("/bid=16/", R.drawable.bid16),
-    BloodBoiling("/bid=17/", R.drawable.bid17),
-    FinalMoment("/bid=18/", R.drawable.bid18),
-    SuperPlayer("/bid=19/", R.drawable.bid19),
-    Siuuu("/bid=20/", R.drawable.bid20),
-    MajinBuu("/bid=21/", R.drawable.bid21);
+    FinalBattle("/bid=10/", R.drawable.bid10);
 
 
     companion object {
