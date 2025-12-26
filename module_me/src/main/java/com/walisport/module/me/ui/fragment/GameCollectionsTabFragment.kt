@@ -126,5 +126,12 @@ class GameCollectionsTabFragment : BaseFragment<GameCollectionTabViewModel, Frag
                 parentViewModel.setGameFavouriteCount(count)
             }
         }
+
+        // 監聽收藏變化，若有變化則重新加載數據
+        mViewModel.favouriteChangedLiveData.observe(viewLifecycleOwner) { isChanged ->
+            if (isChanged) {
+                mViewModel.reload()
+            }
+        }
     }
 }
