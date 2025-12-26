@@ -1,4 +1,4 @@
-package com.walisport.module.hall.data.constants
+package com.walisport.module.business.common.data.constants
 
 /**
  *

@@ -10,14 +10,14 @@ import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.base.data.remote.ApiResponseState.Start.dataAs
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
+import com.walisport.module.business.common.data.GamePageVo
+import com.walisport.module.business.common.data.toGameContentData
 import com.walisport.module.hall.R
 import com.walisport.module.hall.data.Category
 import com.walisport.module.hall.data.GameAllContentData
-import com.walisport.module.hall.data.GamePageVo
 import com.walisport.module.hall.data.HallRepository
 import com.walisport.module.hall.data.HallRepository.Companion.DEFAULT_GAME_SIZE
 import com.walisport.module.hall.data.HallRepository.Companion.INITIAL_PAGE
-import com.walisport.module.hall.data.toGameContentData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.core.component.inject
