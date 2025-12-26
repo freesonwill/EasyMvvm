@@ -2,8 +2,12 @@ package com.walisport.module.popup.slot.ui.fragment
 
 import android.os.Bundle
 import android.view.View
+import arch.cayenne.lib.base.ui.animation.CustomCurveTransformer
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.common.ui.adapter.BannerUrlImageAdapter
+import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+import com.walisport.module.popup.slot.R
 import com.walisport.module.popup.slot.databinding.FragmentPopupSlotBinding
 import com.walisport.module.popup.slot.ui.viewmodel.PopUpSlotViewModel
 import kotlin.reflect.KClass
@@ -19,7 +23,26 @@ class PopupSlotFragment :
         FragmentPopupSlotBinding::class
     override val vmClass: KClass<PopUpSlotViewModel> = PopUpSlotViewModel::class
 
+
     override fun initView(savedInstanceState: Bundle?) {
+        val radius = 6.dp2px.toFloat()
+        with(mBinding.popupSlot0.binding) {
+            vpBanner.setBannerRound(radius)
+            vpBanner.isAutoLoop(false)
+            // 设置滑动时长丝滑,不影响曲线,
+            vpBanner.setScrollTime(600)  // 0.5 秒
+            vpBanner.setPageTransformer(CustomCurveTransformer())
+            // 启动轮播
+        }
+
+        with(mBinding.popupSlot1.binding) {
+            vpBanner.setBannerRound(radius)
+            vpBanner.isAutoLoop(false)
+            // 设置滑动时长丝滑,不影响曲线,
+            vpBanner.setScrollTime(600)  // 0.5 秒
+            vpBanner.setPageTransformer(CustomCurveTransformer())
+            // 启动轮播
+        }
     }
 
     override fun initListener() {
@@ -99,11 +122,37 @@ class PopupSlotFragment :
                 mBinding.popupSlot1.visibility = View.GONE
             }
         }
+
+        mViewModel.popupSlotDataListLiveData.observe(viewLifecycleOwner) {
+            val dataList = it
+            // 可根据需要将此变量提到类属性或通过参数传递
+            mBinding.popupSlot0.binding.vpBanner.apply {
+                setAdapter(BannerUrlImageAdapter(dataList[0].data.map {
+                    Pair(it.bottomImagePath, R.drawable.popup_slot_placeholder)
+                }))
+                setLoopTime(LOOP_TIME)
+                isAutoLoop(true)
+                start()
+            }
+            mBinding.popupSlot1.binding.vpBanner.apply {
+                setAdapter(BannerUrlImageAdapter(dataList[1].data.map {
+                    Pair(
+                        it.bottomImagePath,
+                        R.drawable.popup_slot_placeholder
+                    )
+                }))
+                setLoopTime(LOOP_TIME)
+                isAutoLoop(true)
+                start()
+            }
+        }
     }
 
 
     companion object {
         const val TAG = "PopupSlotFragment"
+        const val LOOP_TIME = 3000L
+
     }
 
 
