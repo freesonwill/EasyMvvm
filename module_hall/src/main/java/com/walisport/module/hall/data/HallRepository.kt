@@ -32,8 +32,6 @@ class HallRepository(
     private val preloadResultChange: MutableStateFlow<PreloadEnum> ,
     private val manager: UserDataManager ,
 ) : BaseRepository() {
-    private val _gameListLiveData: MutableLiveData<List<GameVo>> = MutableLiveData()
-    val gameListLiveData: LiveData<List<GameVo>> = _gameListLiveData
 
     private val _gameCategoryListLiveData = UnPeekLiveData<List<GameCategoryVo>>()
     val gameCategoryListLiveData: UnPeekLiveData<List<GameCategoryVo>> = _gameCategoryListLiveData
