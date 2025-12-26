@@ -21,15 +21,15 @@ import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
-import arch.cayenne.lib.base.utils.ext.FragmentExt.setFragmentResultListener
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
-import arch.cayenne.lib.common.data.constants.MsgType
+import arch.cayenne.lib.common.data.constants.ChatMsgType
 import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavResultExt.observeResult
 import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.database.entity.LiveMatchBean
+import arch.cayenne.lib.websocket.chat.data.ChatType
 import arch.cayenne.lib.websocket.data.SocketConnectState
 import arch.cayenne.module.chat.R
 import arch.cayenne.module.chat.data.constants.KeyBoardType
@@ -51,32 +51,44 @@ import arch.cayenne.module.chat.manager.SoftKeyBoardAnim.getInputAnim
 import kotlinx.coroutines.delay
 
 //聊天
-class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding>(),
+abstract class ChatBaseFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding>(),
     SoftKeyBoardMangerListener {
+    companion object {
+        const val FRAGMENT_RESULT_KEY = "chat_fragment"
+        const val MATCH_ID_KEY = "match_id_key"
+        const val MATCH_STATUS_KEY = "match_status_key"
+        const val LIVE_START_KEY = "live_start_key"
+
+    }
+
     override val vbClass: KClass<FragmentLiveChatBinding> = FragmentLiveChatBinding::class
     override val vmClass: KClass<ChatHomeViewModel> = ChatHomeViewModel::class
-    var mainMatch: LiveData<LiveMatchBean>? = null
-    var matchIdLiveData: LiveData<Long>? = null
+
     private lateinit var softKeyBoardManager: SoftKeyboardManager
     private lateinit var chatAtHelper: ChatATHelper
+    abstract val chatType: ChatType
+    abstract val isMainSoft:Boolean
 
     //传给LiveMainFragment,因为直播间的页面上下滑动时，页面扩展或者恢复。在键盘弹出时，禁止页面扩展和收缩
     private var emojiPopupListen: ((isPopup: Boolean) -> Unit)? = null
 
 
+    abstract fun listenParentFragment()
+
     override fun initView(savedInstanceState: Bundle?) {
+        listenParentFragment()
         initChatPageFragment()
         initSoftKeyBoardFragment()
         initInputListener()
         initHotRecycler()
         initChatHelper()
 
-        arguments?.let { //TODO  首页过来的 之后需要处理聊天室要matchId的问题
-            val value = it.getBoolean("chat", false)
-            if (value) {
-                setMainChatStatus()
-            }
-        }
+//        arguments?.let { //TODO  首页过来的 之后需要处理聊天室要matchId的问题
+//            val value = it.getBoolean("chat", false)
+//            if (value) {
+//                setMainChatStatus()
+//            }
+//        }
     }
 
     fun addEmojiPopupListen(emojiPopupListen: (isPopup: Boolean) -> Unit) {
@@ -123,41 +135,35 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
     /**
      * 直播间调用
      * */
-    fun setMatchLiveData(matchId: LiveData<Long>?, mainMatch: LiveData<LiveMatchBean>?) {
-        matchIdLiveData = matchId
-        this.mainMatch = mainMatch
-//        TODO 直播间进入聊天室逻辑待定
-        if (matchId?.value != null && mainMatch == null) {
-            mViewModel.setArguments(matchId.value)
-            mViewModel.startChatServer()
-        }
-    }
-
-    /**
-     * 首页调用
-     * */
-    private fun setMainChatStatus() {
-        lifecycleScope.launchWhenResumed {
-            observeMatchId(102)
-            observeLiveMatch(null)
-        }
-    }
+//    fun setMatchLiveData(matchId: LiveData<Long>?, mainMatch: LiveData<LiveMatchBean>?) {
+//        matchIdLiveData = matchId
+//        this.mainMatch = mainMatch
+////        TODO 直播间进入聊天室逻辑待定
+//        if (matchId?.value != null && mainMatch == null) {
+//            mViewModel.setArguments(matchId.value)
+//            mViewModel.startChatServer()
+//        }
+//    }
+//
+//    /**
+//     * 首页调用
+//     * */
+//    private fun setMainChatStatus() {
+//        lifecycleScope.launchWhenResumed {
+//            observeMatchId(102)
+//            observeLiveMatch(null)
+//        }
+//    }
 
     /**
      * 当首页和直播间调用时给
      * */
-    private fun observeMatchId(matchId: Long) {
-        mViewModel.setArguments(matchId)
+    fun observeMatchId(matchId: Long) {
+        mViewModel.setArguments(matchId, chatType)
     }
 
-    private fun observeLiveMatch(match: LiveMatchBean?) {
-        mViewModel.isMainSoft = match == null
-        updateChatUi(match)
-
-        //比赛开始后开启聊天服务 TODO 直播间进入聊天室逻辑待定
-//        if (match?.liveInfo?.charRoom == true || match == null) {
-        mViewModel.startChatServer()
-//        }
+    fun observeLiveMatch(liveStart: Boolean,matchStatus:Int) {
+        updateChatUi(liveStart,matchStatus)
     }
 
 
@@ -170,8 +176,6 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
     }
 
     override fun onStop() {
-        "onStop leaveRoom".logd("aaa")
-        mViewModel.leaveRoom()
         super.onStop()
         mViewModel.setSoftConfig(true)
     }
@@ -201,7 +205,7 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
             launch {
                 mViewModel.serverFlow().collect {
                     if (it == SocketConnectState.Connecting && mViewModel.loginFlow.value == null) {
-                        mViewModel.chatLogin()
+                        mViewModel.chatLogin(chatType)
                     }
                 }
             }
@@ -217,7 +221,7 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
                         if (type == 0) "#游戏订单:D1k19[赢100x,\$9331]" else "#体育订单:D1k19[赢100x,\$9331]"
                     chatAtHelper.addShareBetSpan(
                         text,
-                        if (type == 0) MsgType.BET_GAME else MsgType.BET_SPORT
+                        if (type == 0) ChatMsgType.BET_GAME else ChatMsgType.BET_SPORT
                     )
                     SoftKeyBoardAnim.etAnimWhenEtContentChange(
                         mBinding,
@@ -237,15 +241,10 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
                 }
             }
         }
-        matchIdLiveData?.observe(viewLifecycleOwner) {
-            observeMatchId(it)
-        }
-        mainMatch?.observe(viewLifecycleOwner) {
-            observeLiveMatch(it)
-        }
-        mViewModel.chatHistoryIsEmpty.observe(viewLifecycleOwner) {
-            updateChatUi(mainMatch?.value)
-        }
+
+//        mViewModel.chatHistoryIsEmpty.observe(viewLifecycleOwner) {
+//            updateChatUi(mainMatch?.value)
+//        }
         //input
         launch(Lifecycle.State.RESUMED) {
             mViewModel.updateKeyboardUiStatus.observe(viewLifecycleOwner) {
@@ -318,7 +317,7 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
         softKeyBoardManager.initView(
             requireActivity().window.decorView,
             mBinding.chatEtInput,
-            mViewModel.isMainSoft
+            isMainSoft
         )
         calculationLayoutSize()
 //        mBinding.main.viewTreeObserver
@@ -333,7 +332,7 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
     /**
      * 进入直播间不成功时修改
      * */
-    fun updateChatUi(matchBean: LiveMatchBean? = null) {
+    fun updateChatUi(liveStart:Boolean,matchStatus:Int) {
         updateChatList()
 
 //        if (matchBean?.liveInfo?.charRoom == true || matchBean == null) {
@@ -533,7 +532,7 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
             return
         }
         keyboardChangeClick(KeyBoardType.CHAT, 7)
-        mViewModel.createLocalMsg(mBinding.chatEtInput.text!!)?.let { mViewModel.sendMsgToChat(it) }
+        mViewModel.createLocalMsg(mBinding.chatEtInput.text!!,chatType)?.let { mViewModel.sendMsgToChat(it) }
         mBinding.chatEtInput.text?.clear()
     }
 
@@ -744,7 +743,7 @@ class ChatHomeFragment : BaseFragment<ChatHomeViewModel, FragmentLiveChatBinding
         val emojiPattern: Pattern = Pattern.compile(BID_EMOJI_REGEX)
         if (emojiPattern.matcher(emojiData.key).find()) {
 //            keyboardChangeClick(KeyBoardType.CHAT, 5)
-            mViewModel.createBidLocalMsg(emojiData.key)?.let { mViewModel.sendMsgToChat(it) }
+            mViewModel.createBidLocalMsg(emojiData.key,chatType)?.let { mViewModel.sendMsgToChat(it) }
             return
         }
         chatAtHelper.dismissWindow() // 输入表情后at弹框消失

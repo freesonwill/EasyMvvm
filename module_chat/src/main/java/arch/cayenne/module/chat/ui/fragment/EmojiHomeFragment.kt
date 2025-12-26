@@ -35,7 +35,7 @@ class EmojiHomeFragment : BaseFragment<EmojiHomeViewModel, FragmentEmojiHomeLayo
         get() = FragmentEmojiHomeLayoutBinding::class
     override val vmClass: KClass<EmojiHomeViewModel>
         get() = EmojiHomeViewModel::class
-    private val chatViewModel: ChatHomeViewModel by sharedViewModel<ChatHomeViewModel, ChatHomeFragment>()
+    private val chatViewModel: ChatHomeViewModel by sharedViewModel<ChatHomeViewModel, ChatBaseFragment>()
 
 
     override fun initView(savedInstanceState: Bundle?) {

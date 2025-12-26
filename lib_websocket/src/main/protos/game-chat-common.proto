@@ -1,0 +1,8 @@
+package game.chat.proto;
+
+message RefUser {
+  required uint64 uid = 1;                  // 用户ID
+  required string userName = 2;             // 用户名称
+  required int32 avatarId = 3;              // 用户头像
+  optional string replaceRefUserName = 12;  // 脱敏用户名称 如存在则使用该字段
+}

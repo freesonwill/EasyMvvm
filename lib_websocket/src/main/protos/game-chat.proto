@@ -1,21 +1,28 @@
 package game.chat.proto;
 
 import "google/protobuf/timestamp.proto";
+import "game-chat-common.proto";
 
 // 登录请求：90-1101
 message LoginReq {
   required int64 uid = 1;
   required string token = 2;
-  required int32 platform = 3;
+  required ChatType chatType = 3; // 链接类型枚举
+}
+
+// 链接类型枚举
+enum ChatType {
+  LOBBY = 1; // 大厅
+  GAME = 2;  // 游戏
 }
 
 // 登录响应：90-1102
 message LoginResp {
-  required int32 code = 1; // 0-成功，1-失败原因
-  optional string message = 2; // 失败原因提示
-  optional int64 uid = 3; // 成功时返回用户ID
+  required int32 code = 1;      // 0-成功，1-失败原因
+  optional string message = 2;  // 失败原因提示
+  optional int64 uid = 3;       // 成功时返回用户ID
   optional string username = 4; // 成功时返回用户名
-  optional int32 avatarId = 5; // 成功时返回用户头像
+  optional int32 avatarId = 5;  // 成功时返回用户头像
 }
 
 // 错误代码枚举
@@ -35,19 +42,19 @@ enum ErrorCode {
 
 // 1. 进入聊天室：500-1001
 message EnterChatRoomReq {
-  required uint64 roomId = 1;     // 房间ID
-  optional int32 platform = 2;    // 用户所属平台
+  required uint64 roomId = 1;             // 房间ID
+  required ChatType chatType = 2;   // 链接类型枚举
 }
 // 响应：500-1002
 message EnterChatRoomResp {
   required int32 code = 1;
-  optional uint64 chatroomId = 2; // 可选，聊天室唯一标识
+  optional uint64 chatroomId = 2;   // 可选，聊天室唯一标识
 }
 
 // 2. 离开聊天室：500-1003
 message LeaveChatRoomReq {
-  required uint64 roomId = 1;     // 房间ID
-  optional int32 platform = 2;    // 用户所属平台
+  required uint64 roomId = 1;             // 房间ID
+  required ChatType chatType = 2;   // 链接类型枚举
 }
 // 响应：500-1004
 message LeaveChatRoomResp {
@@ -56,18 +63,25 @@ message LeaveChatRoomResp {
 
 // 3. 发送消息：500-1005
 message SendMsgReq {
-  required uint64 roomId = 1;         // 房间ID
-  required string content = 2;        // 消息内容
-  optional uint64 refUid = 3;         // @用户 ID
-  optional int32 refPlatform = 4;     // @用户平台
-  required MsgType msgType = 5;       // 消息类型
-  map<string, string> extraData = 6;  // 额外数据 如分享链接等
+  required uint64 roomId = 1;             // 房间ID
+  required string content = 2;            // 消息内容
+  repeated uint64 refUid = 3;             // @用户 ID
+  required ChatType chatType = 4;   // 链接类型枚举
+  required MsgType msgType = 5;           // 消息类型
+  map<string, string> extraData = 6;      // 额外数据 如分享链接等
 }
 
+// 占位符类型
+// @用户：[**]
+// 分享：[***]
+// 表情：/id=xx/
+// 大图：/bid=xx/
+
+
 enum MsgType {
-  MSG_TYPE_SYSTEM = 0;      // 系统消息 - 仅限后台发送
-  MSG_TYPE_TEXT = 1;        // 文字消息
-  MSG_TYPE_SHARE = 2;        // 分享消息
+  MSG_TYPE_SYSTEM = 0;  // 系统消息 - 仅限后台发送
+  MSG_TYPE_TEXT = 1;    // 文字消息
+  MSG_TYPE_SHARE = 2;   // 分享消息
 }
 
 // 响应：500-1006
@@ -93,30 +107,27 @@ message GetChatHistoryResp {
 }
 
 message ChatMsg {
-  required uint64 uid = 1;                  // 用户ID
-  required string userName = 2;             // 用户名称
-  required int32 avatarId = 3;              // 用户头像
-  optional uint64 msgId = 4;                // 消息ID
-  required string content = 5;              // 消息内容
+  required uint64 uid = 1;                          // 用户ID
+  required string userName = 2;                     // 用户名称
+  required int32 avatarId = 3;                      // 用户头像
+  optional uint64 msgId = 4;                        // 消息ID
+  required string content = 5;                      // 消息内容
   optional google.protobuf.Timestamp timestamp = 6; // 消息时间戳
-  optional uint64 refUid = 7;               // @用户ID
-  optional string refUserName = 8;          // @用户名称
-  optional int32 refAvatarId = 9;           // @用户头像
+  repeated uint64 refUids = 7;                       // @用户ID
+  map<uint64, RefUser> refInfos = 8;                 // @用户信息
 
-  optional int32 onlyForSelf = 10;          // 1-仅自己可见 0-所有人可见. 理论上不需要客户端 发这个字段
-  optional int32 platform = 11;             // 用户所属平台
-  optional string replaceUserName = 12;     // 脱敏用户名
-  optional string replaceRefUserName = 13;  // 脱敏@用户名称
-  optional int32 refPlatform = 14;          // @用户所属平台
+  optional int32 onlyForSelf = 10;                  // 1-仅自己可见 0-所有人可见. 理论上不需要客户端 发这个字段
+  optional string replaceUserName = 11;             // 脱敏用户名
 
-  required MsgType msgType = 15;       // 消息类型
-  map<string, string> extraData = 16;  // 额外数据 如分享链接等
+  required MsgType msgType = 13;                    // 消息类型
+  map<string, string> extraData = 14;               // 额外数据 如分享链接等
+
+  optional ChatType chatType = 15;                  // 链接类型枚举
 }
 
 // 5. 获取用户统计信息：500-1009
 message GetUserStatisticReq {
-  required uint64 uid = 1;      // 用户头像
-  optional int32 platform = 2;  // 用户所属平台
+  required uint64 uid = 1;                // 用户头像
 }
 // 响应：500-1010
 message GetUserStatisticResp {
@@ -128,7 +139,6 @@ message GetUserStatisticResp {
 // 6. 设置用户头像：500-1011
 message SetUserAvatarReq {
   required int32 avatarId = 1;  // 用户头像
-  optional int32 platform = 2;  // 用户所属平台
 }
 // 响应：500-1012
 message SetUserAvatarResp {
@@ -137,7 +147,6 @@ message SetUserAvatarResp {
 
 // 7. 更新用户信息：500-1013
 message SyncUserNameReq {
-  optional int32 platform = 1;  // 用户所属平台
 }
 // 响应 500-1014
 message SyncUserNameResp {
@@ -146,7 +155,6 @@ message SyncUserNameResp {
 
 // 8. 校验校验投注额：500-1015
 message CheckScoreReq {
-  required int32 platform = 1;  // 用户所属平台
 }
 // 响应：500-1016
 message CheckScoreResp {
@@ -157,15 +165,14 @@ message CheckScoreResp {
 
 //9. 举报请求：500-1017
 message ReportUserReq {
-  required uint64 uid = 1;      // 用户ID
-  required int32 platform = 2;  // 用户所属平台
-  required int32 type = 3;      // 举报类型 1.色情低俗 2.非法广告 3.辱骂他人 4.违法违规 5.涉嫌诈骗 6.其他
+  required uint64 uid = 1;                // 用户ID
+  required ChatType chatType = 2;   // 链接类型枚举
+  required int32 type = 3;                // 举报类型 1.色情低俗 2.非法广告 3.辱骂他人 4.违法违规 5.涉嫌诈骗 6.其他
 }
 // 举报响应：500-1018
 message ReportUserResp{
   required int32 code = 1;  // 状态码
 }
-
 
 // 服务器 -> 客户端
 // 1. 消息通知
@@ -191,7 +198,7 @@ enum NotificationType {
 
 // 扩展字段
 // userId --------------------------- 用户ID
-// platform ------------------------- 用户所属平台
+// chatType ------------------------- 链接类型枚举
 // replace_user_name ---------------- 脱敏用户名/恢复正常的用户名
 // report_type ---------------------- 举报类型
 // report_count --------------------- 未被处理的举报次数(不同用户)

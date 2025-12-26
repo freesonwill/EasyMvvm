@@ -10,16 +10,15 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import arch.cayenne.lib.base.ui.adapter.BaseAdapter
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.module.chat.data.compare.ChatCompare
-import arch.cayenne.lib.common.data.constants.MsgType
+import arch.cayenne.lib.common.data.constants.ChatMsgType
 import arch.cayenne.module.chat.data.model.ChatMsgPageBean
 import arch.cayenne.module.chat.data.model.ClickSpan
 import arch.cayenne.module.chat.data.model.ColorSpan
 import arch.cayenne.module.chat.databinding.ItemLiveChatBinding
 
-class ChatPageAdapter(private val specialClick: (bean: ChatMsgPageBean, clickSpan: String, clickType: MsgType) -> Unit) :
+class ChatPageAdapter(private val specialClick: (bean: ChatMsgPageBean, clickSpan: String, clickType: ChatMsgType) -> Unit) :
     BaseAdapter<ChatMsgPageBean, ChatPageAdapter.LiveChatViewHolder, ItemLiveChatBinding>(
         ChatCompare()
     ) {
@@ -51,7 +50,7 @@ class ChatPageAdapter(private val specialClick: (bean: ChatMsgPageBean, clickSpa
                                 }
                                 return true
                             } else {
-                                specialClick.invoke(getItem(position), "", MsgType.TEXT)
+                                specialClick.invoke(getItem(position), "", ChatMsgType.TEXT)
                             }
                         }
                         return true
@@ -81,7 +80,7 @@ class ChatPageAdapter(private val specialClick: (bean: ChatMsgPageBean, clickSpa
 //                    )
 //                ), 0, msgSpannable.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
 //            )
-            if (bean.msgType in arrayOf(MsgType.AT, MsgType.BET_GAME, MsgType.BET_SPORT)) {
+            if (bean.msgType in arrayOf(ChatMsgType.AT, ChatMsgType.BET_GAME, ChatMsgType.BET_SPORT)) {
                 bean.atRange?.forEach {
                     msgSpannable.setSpan(
                         ClickSpan(bean.msgType, second.substring(it.first, it.last)),
@@ -108,7 +107,7 @@ class ChatPageAdapter(private val specialClick: (bean: ChatMsgPageBean, clickSpa
         val item = getItem(position)
 
         holder.nBinding.tv.backgroundTintList = ContextCompat.getColorStateList(binding.tv.context,
-            if(item.msgType == MsgType.BET_SPORT || item.msgType == MsgType.BET_GAME) {
+            if(item.msgType == ChatMsgType.BET_SPORT || item.msgType == ChatMsgType.BET_GAME) {
                 arch.cayenne.lib.common.R.color.color_632433
             } else {
                 arch.cayenne.lib.common.R.color.color_0FFFFFFF
