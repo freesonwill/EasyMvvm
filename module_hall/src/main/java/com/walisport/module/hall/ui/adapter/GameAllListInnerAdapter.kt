@@ -11,11 +11,14 @@ import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
-import com.walisport.module.hall.data.GameContentData
+import com.walisport.module.business.common.data.GameContentData
+import com.walisport.module.business.common.ui.adapter.GameContentDiff
 import com.walisport.module.hall.databinding.ItemGameAllListInnerBinding
 
 //TODO 先暫時用GameContentData，等接api再說
-class GameAllListInnerAdapter(private val onItemClickListener: ((Long)->Unit)?) : BaseAdapter<GameContentData, GameListInnerViewHolder, ItemGameAllListInnerBinding>(GameContentDiff()) {
+class GameAllListInnerAdapter(private val onItemClickListener: ((Long)->Unit)?) : BaseAdapter<GameContentData, GameListInnerViewHolder, ItemGameAllListInnerBinding>(
+    GameContentDiff()
+) {
     override fun convertPlus(
         holder: GameListInnerViewHolder,
         binding: ItemGameAllListInnerBinding,

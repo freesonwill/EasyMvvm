@@ -1,4 +1,4 @@
-package com.walisport.module.hall.ui.adapter
+package com.walisport.module.business.common.ui.adapter
 
 import android.graphics.drawable.BitmapDrawable
 import android.view.LayoutInflater
@@ -12,10 +12,9 @@ import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
-import com.walisport.module.hall.R
-import com.walisport.module.hall.data.GameContentData
-import com.walisport.module.hall.data.HotColdType
-import com.walisport.module.hall.databinding.ItemGameContentBinding
+import com.walisport.module.business.common.data.GameContentData
+import com.walisport.module.business.common.data.HotColdType
+import com.walisport.module.business.common.databinding.ItemGameContentBinding
 
 class GameContentAdapter(private val onItemClick: (GameContentData) -> Unit) : BaseAdapter<GameContentData, GameContentViewHolder, ItemGameContentBinding>(GameContentDiff()) {
     override fun convertPlus(
@@ -59,9 +58,9 @@ class GameContentViewHolder(private val onItemClick: (GameContentData) -> Unit,v
         if (data.hotOrCold != HotColdType.NONE) {
             item.llBack.visibility = ViewGroup.VISIBLE
             if (data.hotOrCold == HotColdType.HOT) {
-                item.ivHot.setImageResource(R.drawable.ic_game_flame)
+                item.ivHot.setImageResource(com.walisport.module.business.common.R.drawable.ic_game_flame)
             } else {
-                item.ivHot.setImageResource(R.drawable.ic_game_snow)
+                item.ivHot.setImageResource(com.walisport.module.business.common.R.drawable.ic_game_snow)
             }
             item.tvBack.text = "${data.reward}%"
             item.llCount.apply {

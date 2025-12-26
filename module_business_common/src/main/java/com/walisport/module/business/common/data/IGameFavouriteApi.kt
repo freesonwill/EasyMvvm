@@ -1,4 +1,4 @@
-package com.walisport.module.hall.data
+package com.walisport.module.business.common.data
 
 import arch.cayenne.lib.http._interface.IApi
 import arch.cayenne.lib.http.data.HttpApiResponse

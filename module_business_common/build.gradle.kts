@@ -1,15 +1,17 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
+    id("kotlin-parcelize")
 }
+
 apply(from = rootProject.file("gradle/flavor.gradle"))
+
 android {
-    namespace = "com.walisport.module.hall"
+    namespace = "com.walisport.module.business.common"
     compileSdk = 34
 
     defaultConfig {
         minSdk = 24
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
     }
@@ -24,29 +26,29 @@ android {
         }
     }
     compileOptions {
+        isCoreLibraryDesugaringEnabled = true
+
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
-    }
-    buildFeatures {
-        viewBinding = true
-        dataBinding = true
     }
     kotlinOptions {
         jvmTarget = "1.8"
     }
-
 }
 
 dependencies {
-    implementation(project(":lib_res"))
-    implementation(project(":lib_skin"))
     implementation(project(":lib_common"))
+    implementation(project(":lib_res"))
+    implementation(project(":lib_websocket"))
+    implementation(project(":lib_skin"))
     implementation(project(":lib_http"))
-    implementation(project(":module_game_detail"))
-    implementation(project(":module_business_common"))
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.material)
+    implementation(libs.gson)
+    coreLibraryDesugaring(libs.desugar.jdk.libs)
     testImplementation(libs.junit)
-    implementation(libs.banner)
+    implementation(libs.blurview)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-    implementation(libs.tinyPinyin)
 }
