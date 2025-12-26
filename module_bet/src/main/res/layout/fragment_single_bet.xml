@@ -146,9 +146,11 @@
                     android:fontFamily="@font/sf_pro"
                     app:skinnableFontWeight="400"
                     android:layout_marginStart="@dimen/dp_32"
+                    android:layout_marginEnd="@dimen/dp_8"
                     android:layout_marginTop="@dimen/dp_13"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:hintCursorGap="@dimen/dp_4"
                     tools:text=""
                     />
