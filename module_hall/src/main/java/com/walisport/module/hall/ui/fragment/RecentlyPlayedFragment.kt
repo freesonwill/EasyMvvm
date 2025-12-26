@@ -17,18 +17,18 @@ import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
-import arch.cayenne.lib.common.utils.helper.BackToTopHelper
-import com.walisport.module.hall.ui.adapter.GameContentAdapter
-import com.walisport.module.live.data.EventClick
-import kotlinx.coroutines.delay
-import kotlin.reflect.KClass
 import arch.cayenne.lib.common.utils.ext.touchBackPressed
+import arch.cayenne.lib.common.utils.helper.BackToTopHelper
+import com.walisport.module.business.common.ui.adapter.GameContentAdapter
 import com.walisport.module.hall.R
 import com.walisport.module.hall.data.Category
 import com.walisport.module.hall.data.UniversalLoadMoreScrollListener
 import com.walisport.module.hall.databinding.FragmentRecentlyPlayedBinding
 import com.walisport.module.hall.databinding.TitleBarSimpleBinding
 import com.walisport.module.hall.ui.viewmodel.RecentlyPlayedViewModel
+import com.walisport.module.live.data.EventClick
+import kotlinx.coroutines.delay
+import kotlin.reflect.KClass
 
 class RecentlyPlayedFragment : BaseFragment<RecentlyPlayedViewModel, FragmentRecentlyPlayedBinding>() {
     override val vbClass: KClass<FragmentRecentlyPlayedBinding> = FragmentRecentlyPlayedBinding::class
@@ -60,7 +60,7 @@ class RecentlyPlayedFragment : BaseFragment<RecentlyPlayedViewModel, FragmentRec
             rvGame.addItemDecoration(itemDecoration)
             adapter = GameContentAdapter(onItemClick = {
                 mViewModel.setIsClickGame(EventClick.EVENT_CLICK_ACK_TRUE.type)
-                navigate(arch.cayenne.lib.res.R.string.nav_module_gamedetail.deeplink())
+                navigate(arch.cayenne.lib.res.R.string.nav_module_gamedetail.deeplink("gameId" to it.id))
                 launch{
                     delay(AnimationController[AnimType.popupExit]!!.duration)
                     adapter.submitList(emptyList())

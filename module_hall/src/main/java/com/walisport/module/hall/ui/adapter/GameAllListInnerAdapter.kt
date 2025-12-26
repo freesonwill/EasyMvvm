@@ -11,11 +11,14 @@ import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
-import com.walisport.module.hall.data.GameContentData
+import com.walisport.module.business.common.data.GameContentData
+import com.walisport.module.business.common.ui.adapter.GameContentDiff
 import com.walisport.module.hall.databinding.ItemGameAllListInnerBinding
 
 //TODO 先暫時用GameContentData，等接api再說
-class GameAllListInnerAdapter(private val onItemClickListener: (()->Unit)?) : BaseAdapter<GameContentData, GameListInnerViewHolder, ItemGameAllListInnerBinding>(GameContentDiff()) {
+class GameAllListInnerAdapter(private val onItemClickListener: ((Long)->Unit)?) : BaseAdapter<GameContentData, GameListInnerViewHolder, ItemGameAllListInnerBinding>(
+    GameContentDiff()
+) {
     override fun convertPlus(
         holder: GameListInnerViewHolder,
         binding: ItemGameAllListInnerBinding,
@@ -39,7 +42,7 @@ class GameAllListInnerAdapter(private val onItemClickListener: (()->Unit)?) : Ba
         return GameListInnerViewHolder(binding,onItemClickListener)
     }
 }
-class GameListInnerViewHolder(val item: ItemGameAllListInnerBinding,private val onItemClickListener: (()->Unit)?): BaseViewHolder(item) {
+class GameListInnerViewHolder(val item: ItemGameAllListInnerBinding,private val onItemClickListener: ((Long)->Unit)?): BaseViewHolder(item) {
     fun bind(data: GameContentData,position: Int) {
         if (position==0){
             LogUtils.e("GameListInnerViewHolder----------${position}")
@@ -69,7 +72,7 @@ class GameListInnerViewHolder(val item: ItemGameAllListInnerBinding,private val 
         item.tvCount.text = data.online.toString()
         // TODO 暫時串接遊戲詳情
         item.root.clickNoRepeat {
-            onItemClickListener?.invoke()
+            onItemClickListener?.invoke(data.id)
         }
     }
 }

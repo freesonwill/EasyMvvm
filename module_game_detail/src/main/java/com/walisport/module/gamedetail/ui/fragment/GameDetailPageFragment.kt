@@ -108,6 +108,8 @@ class GameDetailPageFragment : BaseFragment<GameDetailViewModel, FragmentGameDet
         pagerViewModel.previewData.observe(viewLifecycleOwner) { list ->
             previewAdapter.setData(list)
         }
+
+
     }
 
     private fun updateGameDetailUi(data: GameDetailBean) {
@@ -242,7 +244,7 @@ class GameDetailPageFragment : BaseFragment<GameDetailViewModel, FragmentGameDet
                 // todo 介接資料
                 setCurrencyDatas(
                     listOf(
-                        CurrencyInfoBean(1, true, 1.1, null, "USDT"),
+                        CurrencyInfoBean(1, true, 1.1, null, "USDT") ,
                         CurrencyInfoBean(2, true, 1.2, null, "BTC"),
                         CurrencyInfoBean(3, true, 1.2, null, "RMB"),
                         CurrencyInfoBean(4, true, 1.2, null, "欧元"),

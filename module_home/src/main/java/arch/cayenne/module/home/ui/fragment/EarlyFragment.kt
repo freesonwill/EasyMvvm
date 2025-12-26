@@ -48,7 +48,7 @@ import arch.cayenne.module.home.data.BiDirectionalDate
 import arch.cayenne.module.home.data.BiDirectionalDateType
 import arch.cayenne.module.home.data.constants.HomeState
 import arch.cayenne.module.home.data.constants.TournamentListType
-import arch.cayenne.module.home.data.constants.TournamentSortType
+import arch.cayenne.module.home.data.constants.MatchListSortType
 import arch.cayenne.module.home.databinding.FragmentEarlyBinding
 import arch.cayenne.module.home.databinding.ItemDateTabBinding
 import arch.cayenne.module.home.databinding.ItemLeagueTabBinding
@@ -88,7 +88,7 @@ class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>(),
     private var sortingMenuBinding: LayoutTournamentSortingMenuBinding? = null
 
     // 當前排序類型，預設為按熱門聯賽排序
-    private var currentSortType = TournamentSortType.BY_HOT
+    private var currentSortType = MatchListSortType.BY_HOT
 
     private val defaultAnimDuration = 300L
 
@@ -395,7 +395,7 @@ class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>(),
 
                 if (tab != null && data != null && tab.customView == null) {
                     tab.customView = createTournamentTabView(data)
-                    tab.view.setPadding(0, 0, 6f.dp2px, 0)
+                    tab.view.setPadding(0, 0, 6.dp2px, 0)
                     if (data.tournamentList[0].id == HomeViewModel.TOURNAMENT_ALL_ID) {
                         tab.view.minimumWidth = 0
                     }
@@ -646,8 +646,8 @@ class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>(),
 
             // 點擊按熱門排序
             binding.tvSortByHot.clickNoRepeat {
-                if (currentSortType != TournamentSortType.BY_HOT) {
-                    currentSortType = TournamentSortType.BY_HOT
+                if (currentSortType != MatchListSortType.BY_HOT) {
+                    currentSortType = MatchListSortType.BY_HOT
                     updateSortingMenuSelection()
                     applySorting()
                 }
@@ -656,8 +656,8 @@ class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>(),
 
             // 點擊按時間排序
             binding.tvSortByTime.clickNoRepeat {
-                if (currentSortType != TournamentSortType.BY_TIME) {
-                    currentSortType = TournamentSortType.BY_TIME
+                if (currentSortType != MatchListSortType.BY_TIME) {
+                    currentSortType = MatchListSortType.BY_TIME
                     updateSortingMenuSelection()
                     applySorting()
                 }
@@ -681,12 +681,12 @@ class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>(),
             )
 
             when (currentSortType) {
-                TournamentSortType.BY_HOT -> {
+                MatchListSortType.BY_HOT -> {
                     binding.tvSortByHot.setTextColor(selectedColor)
                     binding.tvSortByTime.setTextColor(unselectedColor)
                 }
 
-                TournamentSortType.BY_TIME -> {
+                MatchListSortType.BY_TIME -> {
                     binding.tvSortByHot.setTextColor(unselectedColor)
                     binding.tvSortByTime.setTextColor(selectedColor)
                 }
@@ -701,12 +701,12 @@ class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>(),
         // TODO: 實現實際的排序邏輯
         // 根據 currentSortType 來決定如何排序賽事列表
         when (currentSortType) {
-            TournamentSortType.BY_HOT -> {
+            MatchListSortType.BY_HOT -> {
                 // 按熱門聯賽排序的邏輯
                 // 可以調用 ViewModel 的方法來更新數據
             }
 
-            TournamentSortType.BY_TIME -> {
+            MatchListSortType.BY_TIME -> {
                 // 按比賽時間排序的邏輯
                 // 可以調用 ViewModel 的方法來更新數據
             }

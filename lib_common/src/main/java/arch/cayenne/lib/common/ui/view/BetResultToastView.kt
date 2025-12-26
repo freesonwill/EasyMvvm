@@ -7,16 +7,15 @@ import android.widget.LinearLayout
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.R
-import arch.cayenne.lib.common.data.constants.SportEnum
 import arch.cayenne.lib.common.databinding.LayoutBetResultToastBinding
-import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
+import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
 import arch.cayenne.lib.database.entity.BetResultLiteBean
 import arch.cayenne.lib.database.entity.ComboBetResultBean
 import arch.cayenne.lib.database.entity.SingleBetResultBean
+import arch.cayenne.lib.skin.res.SkinnableResourceManager
 
-class BetResultToastView: LinearLayout {
+class BetResultToastView : LinearLayout {
 
     companion object {
         fun canShowToast(activity: FragmentActivity): Boolean {
@@ -40,7 +39,11 @@ class BetResultToastView: LinearLayout {
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
-    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
+    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(
+        context,
+        attrs,
+        defStyleAttr
+    )
 
     private val mBinding: LayoutBetResultToastBinding
 
@@ -59,41 +62,23 @@ class BetResultToastView: LinearLayout {
     }
 
     private fun setSingleResult(data: SingleBetResultBean) {
-        mBinding.tvMatch.text = data.selectionName
-        mBinding.groupSuccess.isVisible = data.isSuccessful
-        mBinding.tvSuccessCombo.isVisible = data.isSuccessful
-        mBinding.groupFailure.isVisible = !data.isSuccessful
-        mBinding.tvFailureCombo.isVisible = !data.isSuccessful
-        if (data.isSuccessful) {
-            mBinding.tvSuccessCombo.text = data.matchName
-        } else {
-            mBinding.tvFailureCombo.text = data.matchName
-        }
-        SportEnum.getSportEnumById(data.sportId)?.let {
-            mBinding.ivSport.setImageResource(it.resId)
-        }
+        mBinding.ivResult.setImageDrawable(
+            SkinnableResourceManager.getDrawable(
+                context,
+                if (data.isSuccessful) R.drawable.icon_bet_result_success else R.drawable.icon_bet_result_failure
+            )
+        )
+        mBinding.tvTitle.text =
+            context.getString(if (data.isSuccessful) R.string.title_result_success_bet else R.string.title_result_fail_bet)
+
+        val resultStr =
+            "${data.matchName} ${data.selectionName} ${data.currency}${data.money.getFormalMoney()} ${
+                context.getString(if (data.isSuccessful) R.string.title_result_success_bet_done else R.string.title_result_fail_bet_done)
+            }"
+        mBinding.tvResult.text = resultStr
     }
 
     private fun setComboResult(data: List<ComboBetResultBean>) {
-        if (data.isEmpty() || data.first().matchName.isEmpty()) return
-        mBinding.tvMatch.text = data.first().matchName.joinToString("、")
-        val successfulData = data.filter { it.isSuccessful }
-        val failureData = data.filter { !it.isSuccessful }
-        mBinding.groupSuccess.isVisible = successfulData.isNotEmpty()
-        mBinding.tvSuccessCombo.isVisible = successfulData.isNotEmpty()
-        mBinding.groupFailure.isVisible = failureData.isNotEmpty()
-        mBinding.tvFailureCombo.isVisible = failureData.isNotEmpty()
-        val successfulTitle = successfulData
-            .sortedWith(compareBy({ it.comboK }, { it.comboV }))
-            .joinToString("、") { R.string.title_combo_bet.getString(it.comboK, it.comboV) }
-        val failureTitle = failureData
-            .sortedWith(compareBy({ it.comboK }, { it.comboV }))
-            .joinToString("、") { R.string.title_combo_bet.getString(it.comboK, it.comboV) }
-        mBinding.tvSuccessCombo.text = successfulTitle
-        mBinding.tvFailureCombo.text = failureTitle
-        SportEnum.getSportEnumById(data.first().sportIds.first())?.let {
-            mBinding.ivSport.setImageResource(it.resId)
-        }
     }
 
     interface Block

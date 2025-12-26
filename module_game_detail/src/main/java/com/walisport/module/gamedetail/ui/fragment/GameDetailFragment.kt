@@ -2,6 +2,7 @@ package com.walisport.module.gamedetail.ui.fragment
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.navArgs
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import arch.cayenne.lib.base.data.constants.StatusBarMode
@@ -22,8 +23,11 @@ class GameDetailFragment : BaseFragment<GameDetailPageViewModel, FragmentGameDet
 
     private val balanceViewModel: BalanceViewModel by viewModel()
 
+    private val args by navArgs<GameDetailFragmentArgs>()
+
 
     override fun initView(savedInstanceState: Bundle?) {
+        val gameId = args.gameId
         val adapter = GameDetailPagerAdapter(this)
         with (mBinding) {
 //            val statusBarHeight = ImmersionBar.getStatusBarHeight(this@GameDetailFragment)
@@ -61,12 +65,20 @@ class GameDetailFragment : BaseFragment<GameDetailPageViewModel, FragmentGameDet
                 navigateUp()
             }
             ivFavorite.clickNoRepeat {
-                it.isSelected = !it.isSelected
+                mViewModel.toggleCollectStatus(args.gameId)
             }
         }
     }
 
     override suspend fun createObserver() {
+        mViewModel.isCollected.observe(viewLifecycleOwner) { isCollected ->
+            mBinding.ivFavorite.isSelected = isCollected
+        }
+    }
+
+    override fun initData() {
+        super.initData()
+        mViewModel.queryGameDetail(args.gameId)
     }
 
     override fun onDestroyView() {

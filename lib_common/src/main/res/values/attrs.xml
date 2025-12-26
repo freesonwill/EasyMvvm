@@ -29,4 +29,10 @@
         <attr name="selectedBgTextColor" format="color|reference" />
     </declare-styleable>
 
+    <declare-styleable name="NumberKeyboardView">
+        <attr name="android:spacing" format="dimension" />
+        <attr name="android:horizontalSpacing" format="dimension" />
+        <attr name="android:verticalSpacing" format="dimension" />
+    </declare-styleable>
+
 </resources>

@@ -139,13 +139,17 @@ class CustomGameTabGroupLayout : FrameLayout {
                 tab.id = data.id
 
                 tab.customView = createTabView(data)
-                tab.view.setPadding(0, 0, 6f.dp2px, 0)
+                tab.view.setPadding(0, 0, 6.dp2px, 0)
                 if (data.id == 0) {
                     tab.view.minimumWidth = 0
                 }
                 tlVendorList.addTab(tab)
             }
         }
+    }
+
+    fun clearTabList() {
+        binding.tlVendorList.removeAllTabs()
     }
 
 

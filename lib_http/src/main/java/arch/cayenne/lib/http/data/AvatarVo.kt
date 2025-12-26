@@ -1,4 +1,4 @@
-package com.walisport.module.hall.data
+package arch.cayenne.lib.http.data
 
 /**
  *图片信息

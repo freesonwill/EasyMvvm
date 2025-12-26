@@ -31,20 +31,20 @@ object DimensionExt {
             (v / scale + 0.5f).toInt()
         }
 
-    val Float.dp2px: Int
+    val Float.dp2px: Float
         get() = run {
-            val context = application ?: return@run this.toInt()
+            val context = application ?: return@run this
             val scale = context.resources.displayMetrics.density
             val dp = this
-            (dp * scale + 0.5f).toInt()
+            (dp * scale + 0.5f)
         }
 
-    val Float.px2dp: Int
+    val Float.px2dp: Float
         get() = run {
-            val context = application ?: return@run this.toInt()
+            val context = application ?: return@run this
             val scale = context.resources.displayMetrics.density
             val v = this
-            (v / scale + 0.5f).toInt()
+            (v / scale + 0.5f)
         }
 
 

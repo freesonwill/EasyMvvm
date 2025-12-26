@@ -53,7 +53,6 @@ class GameAllRankingTodayFragment :
             rvTodayRank.layoutManager = LinearLayoutManager(requireContext())
             rvTodayRank.itemAnimator = null
             rvTodayRank.adapter = adapter
-
         }
     }
 

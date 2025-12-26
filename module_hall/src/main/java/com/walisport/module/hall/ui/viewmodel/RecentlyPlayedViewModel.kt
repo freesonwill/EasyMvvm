@@ -8,7 +8,7 @@ import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.base.data.remote.ApiResponseState.Start.dataAs
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.database.entity.GameBean
-import com.walisport.module.hall.data.GameContentData
+import com.walisport.module.business.common.data.GameContentData
 import com.walisport.module.hall.data.GamePageVo
 import com.walisport.module.hall.data.HallRepository
 import com.walisport.module.hall.data.HallRepository.Companion.INITIAL_PAGE
@@ -19,6 +19,7 @@ import kotlinx.coroutines.launch
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
 import plugin.koin.KoinViewModel
+
 @KoinViewModel
 class RecentlyPlayedViewModel : BaseViewModel() {
 

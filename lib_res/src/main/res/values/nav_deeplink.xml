@@ -22,7 +22,7 @@
     <string name="nav_module_invite_friends_fragment" translatable="false">walisport://module_misc/inviteFriendsFragment</string>
     <string name="nav_module_vip_fragment" translatable="false">walisport://module_misc/vipFragment</string>
     <string name="nav_module_hall_category" translatable="false">walisport://module_hall/hallCategoryFragment?category={category}&amp;name={name}</string>
-    <string name="nav_module_gamedetail" translatable="false">walisport://module_gamedetail/GameDetailFragment</string>
+    <string name="nav_module_gamedetail" translatable="false">walisport://module_gamedetail/GameDetailFragment?gameId={gameId}</string>
     <string name="nav_module_web_fragment" translatable="false">walisport://module_misc/webFragment?url={url}</string>
     <string name="nav_module_competition_fragment" translatable="false">walisport://module_hall/competitionFragment</string>
     <string name="nav_module_recently_played_fragment" translatable="false">walisport://module_hall/recentlyPlayedFragment</string>

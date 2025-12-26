@@ -19,6 +19,7 @@ import arch.cayenne.lib.skin.SkinnableManager
 import arch.cayenne.module.home.TournamentCombo
 import arch.cayenne.module.home.data.constants.HomeState
 import arch.cayenne.module.home.data.constants.PlayType
+import arch.cayenne.module.home.data.constants.MatchListSortType
 import arch.cayenne.module.home.data.constants.playTypeToShowType
 import arch.cayenne.module.home.data.repo.HomeRepository
 import kotlinx.coroutines.Dispatchers
@@ -52,6 +53,8 @@ open class SubHomeViewModel : BaseViewModel() {
 
     val tournaments by lazy { MutableLiveData<Event<List<TournamentCombo>>>() } // 今日/早盤
 
+    val tournamentsPlain by lazy { MutableLiveData<Event<List<TournamentDataModel>>>() } // 今日/早盤
+
 
     //聯賽收回上滑動畫結束事件
     private val _tournamentSlideOutEnd = MutableLiveData<Event<Unit>>()
@@ -75,6 +78,12 @@ open class SubHomeViewModel : BaseViewModel() {
 
     // 暫存 SportDataModel 列表，用於實現延後繪製球種列表
     var tempSportData: List<SportDataModel>? = null
+
+    private val _currentSelectedTournaments = MutableLiveData<List<Int>>(emptyList())
+    val currentSelectedTournaments: LiveData<List<Int>> = _currentSelectedTournaments
+
+    private val _sortType = MutableLiveData<MatchListSortType>()
+    val sortType: LiveData<MatchListSortType> = _sortType
 
     override fun initViewModel() {
         super.initViewModel()
@@ -158,9 +167,6 @@ open class SubHomeViewModel : BaseViewModel() {
                             }
                         }
                         val list = mutableListOf<TournamentDataModel>()
-                        if (it.isEmpty()) {
-                            return@collect
-                        }
                         list.add(
                             TournamentDataModel.createAllItem(
                                 currentPlayTypeId,
@@ -197,6 +203,8 @@ open class SubHomeViewModel : BaseViewModel() {
                             "送出联赛资料到UI".logi(this@SubHomeViewModel::class.java.simpleName)
                             tournaments.value =
                                 Event(list.map { tournament -> TournamentCombo(listOf(tournament), false) })
+
+                            tournamentsPlain.value = Event(list)
                             setState(HomeState.Tournament.LoadSuccess)
                         }
                     }
@@ -252,6 +260,14 @@ open class SubHomeViewModel : BaseViewModel() {
                             )
                         )
                     )
+                    tournamentsPlain.value = Event(
+                        arrayListOf(
+                            TournamentDataModel.createAllItem(
+                                currentPlayTypeId,
+                                currentSportId
+                            )
+                        )
+                    )
                 }
                 setState(HomeState.Sport.LoadFailure)
             }
@@ -260,6 +276,7 @@ open class SubHomeViewModel : BaseViewModel() {
 
     //切換當前的二級選項(各項運動)
     open fun setCurrentSport(sportId: Int) {
+        "setCurrentSport: $sportId, playType: $currentPlayTypeId".logi("dataIssue")
         viewModelScope.launch(Dispatchers.IO) {
             _currentSportId.value = sportId
             repository.updateSelectedSportId(currentPlayTypeId, currentSportId)
@@ -298,6 +315,15 @@ open class SubHomeViewModel : BaseViewModel() {
                                             currentSportId
                                         )
                                     ), false
+                                )
+                            )
+                        )
+
+                        tournamentsPlain.value = Event(
+                            arrayListOf(
+                                TournamentDataModel.createAllItem(
+                                    currentPlayTypeId,
+                                    currentSportId
                                 )
                             )
                         )
@@ -408,6 +434,18 @@ open class SubHomeViewModel : BaseViewModel() {
         return stringList.joinToString(separator = "/")
     }
 
+    fun getTournamentsNamePlain(tournamentId: List<Int>): String {
+        val stringList = mutableListOf<String>()
+        tournamentId.forEach { id ->
+            val tournamentData =
+                tournamentsPlain.value?.peekContent()?.firstOrNull { it.id == id }
+
+            stringList.add(tournamentData?.simpleName ?: "")
+        }
+
+        return stringList.joinToString(separator = "/")
+    }
+
     // 通知需要清除 tlLeagueList 的選中狀態
     private val _shouldClearLeagueListSelection = MutableLiveData<Event<Unit>>()
     val shouldClearLeagueListSelection: LiveData<Event<Unit>> = _shouldClearLeagueListSelection
@@ -420,6 +458,22 @@ open class SubHomeViewModel : BaseViewModel() {
     fun setPlayTypeId(id: Int) {
         currentPlayTypeId = id
         isAllowTabLoad = currentPlayTypeId != PlayType.TODAY.id
+    }
+
+    fun clearTournamentsSelected(){
+        _currentSelectedTournaments.value = emptyList()
+    }
+
+    fun selectTournamentsId(id: Int) {
+        _currentSelectedTournaments.value = listOf(id)
+    }
+
+    fun setTournaments(ints: List<Int>) {
+        _currentSelectedTournaments.value = ints
+    }
+
+    fun setSortType(currentSortType: MatchListSortType) {
+        _sortType.value = currentSortType
     }
 
 }
