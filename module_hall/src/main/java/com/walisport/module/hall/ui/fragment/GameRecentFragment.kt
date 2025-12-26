@@ -20,7 +20,6 @@ import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.helper.BackToTopHelper
 import com.walisport.module.business.common.data.UniversalLoadMoreScrollListener
 import com.walisport.module.business.common.ui.adapter.GameContentAdapter
-import com.walisport.module.hall.R
 import com.walisport.module.hall.databinding.FragmentGameRecentBinding
 import com.walisport.module.hall.ui.viewmodel.GameRecentViewModel
 import com.walisport.module.hall.ui.viewmodel.HallViewModel
@@ -59,7 +58,7 @@ class GameRecentFragment : BaseFragment<GameRecentViewModel, FragmentGameRecentB
             adapter = GameContentAdapter(onItemClick = {
                 mViewModel.setIsClickGame(EventClick.EVENT_CLICK_ACK_TRUE.type)
                 navigate(arch.cayenne.lib.res.R.string.nav_module_gamedetail.deeplink("gameId" to it.id))
-                launch{
+                launch {
                     delay(AnimationController[AnimType.popupExit]!!.duration)
                     adapter.submitList(emptyList())
                 }
@@ -105,7 +104,7 @@ class GameRecentFragment : BaseFragment<GameRecentViewModel, FragmentGameRecentB
 
         mViewModel.gameClickData.observe(viewLifecycleOwner) {
             it?.let {
-                if (it.clickFlag== EventClick.EVENT_CLICK_ACK_TRUE.type){
+                if (it.clickFlag == EventClick.EVENT_CLICK_ACK_TRUE.type) {
                     mViewModel.reload()
                     mViewModel.setIsClickGame(EventClick.EVENT_CLICK_ACK_FALSE.type)
                 }
@@ -124,7 +123,7 @@ class GameRecentFragment : BaseFragment<GameRecentViewModel, FragmentGameRecentB
                     mBinding.clDynamics.visibility = View.VISIBLE
                     mBinding.clDynamics.setState(
                         States.DATA_EMPTY,
-                        R.string.game_data_empty.getString()
+                        com.walisport.module.business.common.R.string.game_data_empty.getString()
                     )
 
                 }
