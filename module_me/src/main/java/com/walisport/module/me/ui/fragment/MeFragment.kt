@@ -34,7 +34,6 @@ import arch.cayenne.lib.common.utils.ext.TabLayoutExt
 import arch.cayenne.lib.common.utils.ext.removeAllTips
 import arch.cayenne.lib.skin.widget.SkinnableTextView
 import com.google.android.material.tabs.TabLayoutMediator
-import kotlinx.coroutines.delay
 import com.walisport.module.me.R
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.lib.common.utils.ext.TabLayoutExt.addOnTabSelectedListener2
@@ -79,7 +78,7 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
         val tabSelectPosition = 0
         with(mBinding) {
             val list = listOf(
-                PagerBean(arch.cayenne.lib.common.R.string.drawer_recently_played.getString()) { RecentlyFragment() },
+                PagerBean(arch.cayenne.lib.common.R.string.drawer_recently_played.getString()) { RecentlyTabFragment() },
                 PagerBean(
                     arch.cayenne.lib.common.R.string.drawer_game_collections.getString()
                 ) { GameCollectionsFragment() },
