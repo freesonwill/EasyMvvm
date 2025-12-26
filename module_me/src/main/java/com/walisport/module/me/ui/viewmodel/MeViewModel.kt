@@ -51,11 +51,15 @@ class MeViewModel : BaseViewModel() {
         return sonVerticalScrollIsTop.value
     }
     fun createObserver() {
-        viewModelScope.launch {
-            delay(1500)
-            _recentlyCount.value = 1000
-            _gameCount.value = 1
-            _matchCount.value = 1
-        }
+//        viewModelScope.launch {
+//            delay(1500)
+//            _recentlyCount.value = 1000
+//            _gameCount.value = 1
+//            _matchCount.value = 1
+//        }
+    }
+
+    fun setRecentlyCount(count:Long){
+        _recentlyCount.value = count
     }
 }

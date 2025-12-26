@@ -2,6 +2,7 @@ package com.walisport.module.me.ui.fragment
 
 import android.os.Bundle
 import android.view.View
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.ui.animation.AnimationController
@@ -19,6 +20,7 @@ import com.walisport.module.business.common.data.UniversalLoadMoreScrollListener
 import com.walisport.module.business.common.ui.adapter.GameContentAdapter
 import com.walisport.module.live.data.EventClick
 import com.walisport.module.me.databinding.FragmentRecentlyTabBinding
+import com.walisport.module.me.ui.viewmodel.MeViewModel
 import com.walisport.module.me.ui.viewmodel.RecentlyTabViewModel
 import kotlinx.coroutines.delay
 import kotlin.reflect.KClass
@@ -32,6 +34,8 @@ class RecentlyTabFragment : BaseFragment<RecentlyTabViewModel, FragmentRecentlyT
 
     override val vbClass: KClass<FragmentRecentlyTabBinding> = FragmentRecentlyTabBinding::class
     override val vmClass: KClass<RecentlyTabViewModel> = RecentlyTabViewModel::class
+
+    private val parentViewModel: MeViewModel by viewModels({ requireParentFragment() })
 
     private lateinit var adapter: GameContentAdapter
 
@@ -122,6 +126,12 @@ class RecentlyTabFragment : BaseFragment<RecentlyTabViewModel, FragmentRecentlyT
 
                 else -> {
                 }
+            }
+        }
+
+        mViewModel.totalCountLiveData.observe(viewLifecycleOwner){
+            it?.let { count->
+                parentViewModel.setRecentlyCount(count)
             }
         }
 

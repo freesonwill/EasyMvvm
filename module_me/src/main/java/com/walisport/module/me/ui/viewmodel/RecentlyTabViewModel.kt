@@ -1,5 +1,6 @@
 package com.walisport.module.me.ui.viewmodel
 
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -24,11 +25,15 @@ import plugin.koin.KoinViewModel
 class RecentlyTabViewModel : BaseViewModel() {
 
     private val repository: GameRecentRepository by inject { parametersOf(viewModelScope) }
+
     private val _gameClickData: MutableLiveData<GameBean?> = MutableLiveData()
     val gameClickData: LiveData<GameBean?> = _gameClickData
 
     private val _gameListLiveData: MutableLiveData<List<GameContentData>> = MutableLiveData()
     val gameListLiveData: LiveData<List<GameContentData>> = _gameListLiveData
+
+    private val _totalCountLiveData: MutableLiveData<Long> = MutableLiveData()
+    val totalCountLiveData: LiveData<Long> = _totalCountLiveData
 
     private var page: Int = INITIAL_PAGE
     private var sortType: GameSortType = GameSortType.HOT
@@ -62,8 +67,9 @@ class RecentlyTabViewModel : BaseViewModel() {
                     if (it is ApiResponseState.Failed) {
                         setState(DataState.NetworkUnavailable)
                     } else if (it is ApiResponseState.Succeeded<*>) {
-
                         val gamePageVo = it.dataAs<GamePageVo>()
+                        val totalItems = gamePageVo?.pagination?.totalItems
+                        _totalCountLiveData.value = totalItems?.toLong() ?: 0L
                         val hasMore = gamePageVo?.pagination?.hasMore ?: false
                         val size = gamePageVo?.list?.size ?: 0
                         val isEmpty = size == 0
