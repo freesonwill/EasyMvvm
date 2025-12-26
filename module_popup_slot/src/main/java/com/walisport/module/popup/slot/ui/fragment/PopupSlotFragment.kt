@@ -2,6 +2,7 @@ package com.walisport.module.popup.slot.ui.fragment
 
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import arch.cayenne.lib.base.ui.animation.CustomCurveTransformer
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.ui.adapter.BannerUrlImageAdapter
@@ -132,7 +133,11 @@ class PopupSlotFragment :
                 }))
                 setLoopTime(LOOP_TIME)
                 isAutoLoop(true)
+                setOnBannerListener { data, position ->
+                    // 这里处理点击事件，比如：
+                }
                 start()
+
             }
             mBinding.popupSlot1.binding.vpBanner.apply {
                 setAdapter(BannerUrlImageAdapter(dataList[1].data.map {
@@ -143,6 +148,9 @@ class PopupSlotFragment :
                 }))
                 setLoopTime(LOOP_TIME)
                 isAutoLoop(true)
+                setOnBannerListener { data, position ->
+                    // 这里处理点击事件，比如：
+                }
                 start()
             }
         }
