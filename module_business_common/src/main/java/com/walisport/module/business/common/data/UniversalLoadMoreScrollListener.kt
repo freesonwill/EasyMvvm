@@ -1,4 +1,4 @@
-package com.walisport.module.hall.data
+package com.walisport.module.business.common.data
 
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager

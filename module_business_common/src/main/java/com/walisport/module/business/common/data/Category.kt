@@ -1,7 +1,5 @@
-package com.walisport.module.hall.data
+package com.walisport.module.business.common.data
 
-import com.walisport.module.hall.data.Category.ALL
-import com.walisport.module.hall.data.Category.entries
 
 /**
  *
@@ -22,6 +20,3 @@ enum class Category(val type: Int , val desc: String,val color: Int) {
     ELECTRONIC(7 , "电竞",arch.cayenne.lib.common.R.color.game_tab_esports);
 }
 
-fun Int.getCategoryByType(): Category {
-    return entries.find { it.type == this } ?: ALL
-}

@@ -19,10 +19,10 @@ import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.touchBackPressed
 import arch.cayenne.lib.common.utils.helper.BackToTopHelper
+import com.walisport.module.business.common.data.Category
+import com.walisport.module.business.common.data.UniversalLoadMoreScrollListener
 import com.walisport.module.business.common.ui.adapter.GameContentAdapter
 import com.walisport.module.hall.R
-import com.walisport.module.hall.data.Category
-import com.walisport.module.hall.data.UniversalLoadMoreScrollListener
 import com.walisport.module.hall.databinding.FragmentRecentlyPlayedBinding
 import com.walisport.module.hall.databinding.TitleBarSimpleBinding
 import com.walisport.module.hall.ui.viewmodel.RecentlyPlayedViewModel
@@ -100,7 +100,7 @@ class RecentlyPlayedFragment : BaseFragment<RecentlyPlayedViewModel, FragmentRec
 
         mViewModel.gameClickData.observe(viewLifecycleOwner) {
             it?.let {
-                if (it.clickFlag==EventClick.EVENT_CLICK_ACK_TRUE.type){
+                if (it.clickFlag== EventClick.EVENT_CLICK_ACK_TRUE.type){
                     mViewModel.reload()
                     mViewModel.setIsClickGame(EventClick.EVENT_CLICK_ACK_FALSE.type)
                 }
