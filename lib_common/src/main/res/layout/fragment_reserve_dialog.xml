@@ -40,6 +40,22 @@
             app:layout_constraintTop_toTopOf="@id/et_rate"
             app:skinnableFontWeight="500" />
 
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="@id/et_rate"
+            app:layout_constraintEnd_toEndOf="@id/et_rate"
+            app:layout_constraintTop_toTopOf="@id/et_rate"
+            app:layout_constraintBottom_toBottomOf="@id/et_rate"
+            app:layout_constraintHorizontal_bias="0"
+            android:padding="8dp"
+            android:text="\@"
+            android:textColor="@color/color_C0C0C0"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            app:skinnableFontWeight="700"
+            />
+
         <arch.cayenne.lib.skin.widget.SkinnableEditText
             android:id="@+id/et_rate"
             android:layout_width="130dp"
@@ -51,7 +67,9 @@
             android:focusableInTouchMode="true"
             android:fontFamily="@font/sf_pro"
             android:inputType="numberDecimal"
-            android:padding="8dp"
+            android:paddingStart="22dp"
+            android:paddingEnd="8dp"
+            android:paddingVertical="@dimen/dp_8"
             android:textColor="@color/color_00E0E5"
             android:textCursorDrawable="@drawable/shape_edittext_cursor"
             android:textSize="15sp"
@@ -59,7 +77,9 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:skinnableFontWeight="700"
-            tools:text="\@1.85" />
+            android:maxLines="1"
+            android:maxLength="7"
+            tools:text="\1.85" />
 
         <arch.cayenne.lib.common.ui.view.NumberKeyboardView
             android:id="@+id/number_keyboard"
