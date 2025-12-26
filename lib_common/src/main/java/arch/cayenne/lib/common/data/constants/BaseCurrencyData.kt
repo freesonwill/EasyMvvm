@@ -22,6 +22,7 @@ sealed class BaseCurrencyData {
         val amountStr: String,
         val exchangeAmount: String,
         val unit: String,
-        val scale: Int = 2, //預設為10^2 = 100
+        val scale: Int = 2, //預設為10^2 = 100,
+        val isSelected: Boolean = false,
     ) : BaseCurrencyData()
 }
