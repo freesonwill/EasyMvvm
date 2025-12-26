@@ -7,10 +7,9 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.module.chat.data.constants.KeyBoardType
-import arch.cayenne.lib.common.data.constants.MsgType
+import arch.cayenne.lib.common.data.constants.ChatMsgType
 import arch.cayenne.module.chat.data.model.ChatMsgPageBean
 import arch.cayenne.module.chat.databinding.FragementChatPageLayoutBinding
 import arch.cayenne.module.chat.ui.adapter.ChatPageAdapter
@@ -29,7 +28,7 @@ class ChatPageFragment : BaseFragment<ChatPageViewModel, FragementChatPageLayout
         get() = FragementChatPageLayoutBinding::class
     override val vmClass: KClass<ChatPageViewModel>
         get() = ChatPageViewModel::class
-    private val homeViewModel: ChatHomeViewModel by sharedViewModel<ChatHomeViewModel, ChatHomeFragment>()
+    private val homeViewModel: ChatHomeViewModel by sharedViewModel<ChatHomeViewModel, ChatBaseFragment>()
 
 
     override fun initView(savedInstanceState: Bundle?) {
@@ -45,19 +44,19 @@ class ChatPageFragment : BaseFragment<ChatPageViewModel, FragementChatPageLayout
         }
         val adapter = ChatPageAdapter { bean, clickSpane, clickType ->
             when (clickType) {
-                MsgType.BET_GAME -> {
+                ChatMsgType.BET_GAME -> {
 //                    val betType = if(clickSpane == "注单游戏") 0 else 1
                     BetShareDialogFragment.show(this, 0)
                 }
-                MsgType.BET_SPORT ->{
+                ChatMsgType.BET_SPORT ->{
                     BetShareDialogFragment.show(this, 1)
                 }
 
-                MsgType.AT -> {
+                ChatMsgType.AT -> {
                     ChatUserInfoFragment().show(childFragmentManager)
                 }
 
-                MsgType.TEXT -> {
+                ChatMsgType.TEXT -> {
                     ChatPersonalDialogFragment.show(this@ChatPageFragment)
                 }
 
@@ -133,6 +132,6 @@ class ChatPageFragment : BaseFragment<ChatPageViewModel, FragementChatPageLayout
     }
 
     companion object {
-        val TAG: String = ChatHomeFragment::class.java.simpleName
+        val TAG: String = ChatBaseFragment::class.java.simpleName
     }
 }

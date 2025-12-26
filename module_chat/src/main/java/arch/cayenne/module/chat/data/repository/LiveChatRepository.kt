@@ -4,10 +4,13 @@ import arch.cayenne.lib.base.data.repository.BaseRepository
 import arch.cayenne.lib.websocket.chat.data.ChatEnterRoomResponse
 import arch.cayenne.lib.websocket.chat.data.ChatLeaveRoomResponse
 import arch.cayenne.lib.websocket.chat.data.ChatLoginResponseData
+import arch.cayenne.lib.websocket.chat.data.ChatRefUser
 import arch.cayenne.lib.websocket.chat.data.ChatSendMsgResponse
+import arch.cayenne.lib.websocket.chat.data.ChatType
 import arch.cayenne.lib.websocket.chat.data.CheckBetAmountResponse
 import arch.cayenne.lib.websocket.chat.data.GetChatHistoryResponse
 import arch.cayenne.lib.websocket.chat.data.MsgNotify
+import arch.cayenne.lib.websocket.chat.data.MsgType
 import arch.cayenne.lib.websocket.data.ConnectState
 import arch.cayenne.lib.websocket.data.SocketConnectState
 import arch.cayenne.module.chat.RemoteChatManager
@@ -27,27 +30,40 @@ class LiveChatRepository(val remote: RemoteChatManager) : BaseRepository() {
         return remote.disConnect(scope)
     }
 
-    suspend fun login(): ChatLoginResponseData? {
-        return remote.login()
+    suspend fun login(chatType: ChatType): ChatLoginResponseData? {
+        return remote.login(chatType)
     }
 
-    suspend fun enterRoom(matchId: Long): ChatEnterRoomResponse? = remote.enterChatRoom(matchId)
+    suspend fun enterRoom(matchId: Long, chatType: ChatType): ChatEnterRoomResponse? =
+        remote.enterChatRoom(matchId, chatType)
 
-    suspend fun leaveRoom(matchId: Long): ChatLeaveRoomResponse? = remote.leaveChatRoom(matchId)
+    suspend fun leaveRoom(matchId: Long, chatType: ChatType): ChatLeaveRoomResponse? =
+        remote.leaveChatRoom(matchId, chatType)
 
     suspend fun sendMsg(
         roomId: Long,
         content: String,
-        refUid: String? = null,
-        refPlatform: Int? = null
-    ): ChatSendMsgResponse? = remote.sendMsgNotify(roomId, content, refUid, refPlatform)
+        chatType: ChatType,
+        msgType: MsgType,
+        extraData: Map<String, String>? = null,
+        refUid: List<Long>?,
+    ): ChatSendMsgResponse? = remote.sendMsgNotify(roomId, content,  chatType, msgType, extraData,refUid)
 
     suspend fun registerNotifyMsg(): Flow<MsgNotify> = remote.msgNotify()
 
-    suspend fun checkBetAmount():CheckBetAmountResponse? = remote.checkBetAmount()
+    suspend fun checkBetAmount(): CheckBetAmountResponse? = remote.checkBetAmount()
 
-    suspend fun getChatHistory(roomId: Long, page: Int, pageSize: Int, requestId: String = ""):GetChatHistoryResponse? = remote.getChatHistory(roomId, page, pageSize, requestId)
+    suspend fun getChatHistory(
+        roomId: Long,
+        page: Int,
+        pageSize: Int,
+        requestId: String = ""
+    ): GetChatHistoryResponse? = remote.getChatHistory(roomId, page, pageSize, requestId)
 
-    fun getConnectStateFlow():StateFlow<SocketConnectState> = remote.getConnectStateFlow()
+    fun getConnectStateFlow(): StateFlow<SocketConnectState> = remote.getConnectStateFlow()
+
+    fun getLoginFlow(): StateFlow<ChatLoginResponseData?>{
+        return remote.getLoginFlow()
+    }
 
 }

@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
-import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams
 import android.widget.TextView
 import androidx.core.content.res.ResourcesCompat
@@ -55,7 +54,7 @@ import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.lib.skin.widget.SkinnableTextView
 import arch.cayenne.module.bet.ui.fragment.BetSheetFragment
 import arch.cayenne.module.betslip.ui.fragment.BetSlipFragment
-import arch.cayenne.module.chat.ui.fragment.ChatHomeFragment
+import arch.cayenne.module.chat.ui.fragment.ChatBaseFragment
 import arch.cayenne.module.home.ui.view.LiveMainTabMediator
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
@@ -746,16 +745,16 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         }
     }
 
-    private fun getChatFragment(): ChatHomeFragment? {
+    private fun getChatFragment(): ChatBaseFragment? {
         val adapter = mBinding.vpPage.adapter?.let { it as PagerAdapter }
         val index = adapter!!.pages.indexOfFirst { it.title == R.string.live_chat.getString() }
         val tag = "f${adapter.getItemId(index)}"
-        val fragment = childFragmentManager.findFragmentByTag(tag)?.let { it as ChatHomeFragment }
+        val fragment = childFragmentManager.findFragmentByTag(tag)?.let { it as ChatBaseFragment }
         return fragment
     }
 
-    private fun createChatFragment(): ChatHomeFragment {
-        val fragment = ChatHomeFragment()
+    private fun createChatFragment(): ChatBaseFragment {
+        val fragment = ChatBaseFragment()
         fragment.setMatchLiveData(mViewModel.matchId, mViewModel.mainMatch)
         fragment.addEmojiPopupListen {
             isChatKeyBoardPopup = it

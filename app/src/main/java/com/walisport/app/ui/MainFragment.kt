@@ -5,7 +5,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
-import androidx.core.os.bundleOf
 import androidx.core.view.GravityCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -19,7 +18,7 @@ import arch.cayenne.lib.base.ui.animation.AnimationController.AnimType
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
-import arch.cayenne.module.chat.ui.fragment.MainChatFragment
+import arch.cayenne.module.chat.ui.fragment.HomeMainFragment
 import arch.cayenne.lib.common.data.constants.DrawerAction.ACTION_CLOSE
 import arch.cayenne.lib.common.data.constants.DrawerAction.ACTION_OPEN
 import arch.cayenne.lib.common.data.constants.DrawerAction.KEY_ACTION
@@ -27,7 +26,6 @@ import arch.cayenne.lib.common.data.constants.DrawerAction.REQUEST_KEY_DRAWER
 import arch.cayenne.lib.common.data.constants.FragmentResultEnum
 import arch.cayenne.lib.common.data.constants.HomePageEnum
 import arch.cayenne.lib.common.utils.biz.CommonBiz
-import arch.cayenne.lib.common.utils.ext.NavResultExt.observeResult
 import arch.cayenne.lib.common.utils.ext.setDrawerInterpolator
 import arch.cayenne.module.home.ui.fragment.NewHomeFragment
 import arch.cayenne.module.home.ui.view.Style
@@ -38,7 +36,6 @@ import com.walisport.app.ui.viewmodel.BetSlot
 import com.walisport.app.ui.viewmodel.MainFragmentViewModel
 import com.walisport.module.hall.ui.fragment.HallFragment
 import com.walisport.module.me.ui.fragment.MeFragment
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNotNull
 import kotlin.reflect.KClass
 
@@ -67,7 +64,7 @@ class MainFragment : BaseFragment<MainFragmentViewModel, FragmentMainBinding>() 
             0 -> HallFragment()
             1 -> NewHomeFragment()
             2 -> HomeOrderFragment()
-            3 -> MainChatFragment()
+            3 -> HomeMainFragment()
             else -> MeFragment()
         }.also { fragments[position] = it}
     }

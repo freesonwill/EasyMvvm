@@ -2,14 +2,13 @@ package arch.cayenne.module.order.ui.fragment
 
 import android.os.Bundle
 import android.widget.LinearLayout
-import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.adapter.PagerAdapter
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
-import arch.cayenne.lib.common.data.constants.MsgType
+import arch.cayenne.lib.common.data.constants.ChatMsgType
 import arch.cayenne.lib.common.ui.viewmodel.UnReadMessageViewModel
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavResultExt.sendResult
@@ -82,7 +81,7 @@ class ChatChooseBetFragment : BaseFragment<ChatChooseViewModel, FragmentChooseBe
         unreadMessageViewModel.createObserver()
         mViewModel.betClickLiveData.observe(viewLifecycleOwner) {
             val bundle = Bundle().apply {
-                putInt("key", if (it == MsgType.BET_GAME) 0 else 1)
+                putInt("key", if (it == ChatMsgType.BET_GAME) 0 else 1)
             }
             sendResult("choose_bet", bundle)
             findNavController().navigateUp()

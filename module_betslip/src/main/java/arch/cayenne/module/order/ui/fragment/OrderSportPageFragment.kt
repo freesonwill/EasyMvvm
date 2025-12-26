@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.core.view.isVisible
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
-import arch.cayenne.lib.common.data.constants.MsgType
+import arch.cayenne.lib.common.data.constants.ChatMsgType
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.helper.showToast
@@ -45,7 +45,7 @@ class OrderSportPageFragment :
                     }
 
                     override fun onItemSingleClick(bean: BetSlipSelectionData) {
-                        chooseViModel?.clickBtn(MsgType.BET_SPORT)
+                        chooseViModel?.clickBtn(ChatMsgType.BET_SPORT)
                     }
 
                     override fun onShareClick(bean: BetSlipData) {

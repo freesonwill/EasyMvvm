@@ -31,7 +31,7 @@ class EmojiFragment : BaseFragment<EmojiViewModel, FragmentEmojiLayoutBinding>()
     override val vmClass: KClass<EmojiViewModel>
         get() = EmojiViewModel::class
     private lateinit var emoJiType: EmojiTypeEnum
-    private val chatViewModel by sharedViewModel<ChatHomeViewModel, ChatHomeFragment>()
+    private val chatViewModel by sharedViewModel<ChatHomeViewModel, ChatBaseFragment>()
 
     override fun initView(savedInstanceState: Bundle?) {
 

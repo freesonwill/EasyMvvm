@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/chatHomeFragment"
-        android:name="arch.cayenne.module.chat.ui.fragment.ChatHomeFragment"
+        android:name="arch.cayenne.module.chat.ui.fragment.ChatBaseFragment"
         android:label="fragment_live_chat"
         tools:layout="@layout/fragment_live_chat">
 
