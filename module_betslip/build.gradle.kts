@@ -41,6 +41,7 @@ dependencies {
     api(project(":lib_common"))
     api(project(":lib_websocket"))
     implementation(project(":lib_res"))
+    implementation(project(":lib_http"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)

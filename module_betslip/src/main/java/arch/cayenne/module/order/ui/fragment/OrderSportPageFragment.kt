@@ -15,6 +15,7 @@ import arch.cayenne.module.betslip.R
 import arch.cayenne.module.betslip.databinding.FragmentOrderSportPageBinding
 import arch.cayenne.module.betslip.utisl.BetSlipUtils
 import arch.cayenne.module.order.data.constants.OrderSportPageEnum
+import arch.cayenne.module.order.data.model.ChooseBetData
 import arch.cayenne.module.order.ui.adapter.OrderBettingAdapter
 import arch.cayenne.module.order.ui.viewmodel.ChatChooseViewModel
 import arch.cayenne.module.order.ui.viewmodel.OrderSportPageViewModel
@@ -44,8 +45,8 @@ class OrderSportPageFragment :
                         showDateDialog()
                     }
 
-                    override fun onItemSingleClick(bean: BetSlipSelectionData) {
-                        chooseViModel?.clickBtn(ChatMsgType.BET_SPORT)
+                    override fun onItemSingleClick(bean: BetSlipOrderBean) {
+                        chooseViModel?.clickBtn(ChooseBetData(ChatMsgType.BET_SPORT, bean.betId))
                     }
 
                     override fun onShareClick(bean: BetSlipData) {

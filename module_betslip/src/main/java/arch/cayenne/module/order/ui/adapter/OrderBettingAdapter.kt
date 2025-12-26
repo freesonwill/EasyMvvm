@@ -50,7 +50,10 @@ class OrderBettingAdapter(
             BODY_EXPANDED -> {
                 val selectionItemListener = object : OrderBettingSelectionAdapter.SelectionItemListener {
                     override fun onSingleClick(bean: BetSlipSelectionData) {
-                        onClickListener?.onItemSingleClick(bean)
+                        val item = getItem(position)
+                        if (item is BetSlipOrderBean) {
+                            onClickListener?.onItemSingleClick(item)
+                        }
                     }
                 }
                 val mBinding = (binding as? ItemOrderSportBettingBinding)
@@ -190,7 +193,7 @@ class OrderBettingAdapter(
 
     interface OnOrderClickListener {
         fun onDateClick()
-        fun onItemSingleClick(bean: BetSlipSelectionData)
+        fun onItemSingleClick(bean: BetSlipOrderBean)
         fun onShareClick(bean: BetSlipData)
     }
 

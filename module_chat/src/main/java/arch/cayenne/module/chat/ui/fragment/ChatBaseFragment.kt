@@ -13,7 +13,6 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -28,7 +27,6 @@ import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavResultExt.observeResult
 import arch.cayenne.lib.common.utils.helper.showToast
-import arch.cayenne.lib.database.entity.LiveMatchBean
 import arch.cayenne.lib.websocket.chat.data.ChatType
 import arch.cayenne.lib.websocket.data.SocketConnectState
 import arch.cayenne.module.chat.R
@@ -48,6 +46,8 @@ import kotlin.reflect.KClass
 import arch.cayenne.module.chat.manager.ChatATHelper
 import arch.cayenne.module.chat.manager.SoftKeyBoardAnim
 import arch.cayenne.module.chat.manager.SoftKeyBoardAnim.getInputAnim
+import arch.cayenne.module.order.data.model.BetShareBean
+import arch.cayenne.module.order.ui.fragment.ChatChooseBetFragment
 import kotlinx.coroutines.delay
 
 //聊天
@@ -67,7 +67,7 @@ abstract class ChatBaseFragment : BaseFragment<ChatHomeViewModel, FragmentLiveCh
     private lateinit var softKeyBoardManager: SoftKeyboardManager
     private lateinit var chatAtHelper: ChatATHelper
     abstract val chatType: ChatType
-    abstract val isMainSoft:Boolean
+    abstract val isMainSoft: Boolean
 
     //传给LiveMainFragment,因为直播间的页面上下滑动时，页面扩展或者恢复。在键盘弹出时，禁止页面扩展和收缩
     private var emojiPopupListen: ((isPopup: Boolean) -> Unit)? = null
@@ -162,8 +162,8 @@ abstract class ChatBaseFragment : BaseFragment<ChatHomeViewModel, FragmentLiveCh
         mViewModel.setArguments(matchId, chatType)
     }
 
-    fun observeLiveMatch(liveStart: Boolean,matchStatus:Int) {
-        updateChatUi(liveStart,matchStatus)
+    fun observeLiveMatch(liveStart: Boolean, matchStatus: Int) {
+        updateChatUi(liveStart, matchStatus)
     }
 
 
@@ -215,12 +215,13 @@ abstract class ChatBaseFragment : BaseFragment<ChatHomeViewModel, FragmentLiveCh
                 }
             }
             launch {//选择注单返回监听
-                observeResult<Bundle>("choose_bet") {
-                    val type = it.getInt("key")
-                    val text =
-                        if (type == 0) "#游戏订单:D1k19[赢100x,\$9331]" else "#体育订单:D1k19[赢100x,\$9331]"
+                observeResult<Bundle>(ChatChooseBetFragment.SHARE_BET_LISTEN) {
+                    val data =
+                        it.getParcelable<BetShareBean>(ChatChooseBetFragment.SHARE_BET_RESULT)
+                    val type = it.getInt(ChatChooseBetFragment.SHARE_BET_TYPE, 0)
+
                     chatAtHelper.addShareBetSpan(
-                        text,
+                        data?.content ?: "",
                         if (type == 0) ChatMsgType.BET_GAME else ChatMsgType.BET_SPORT
                     )
                     SoftKeyBoardAnim.etAnimWhenEtContentChange(
@@ -332,7 +333,7 @@ abstract class ChatBaseFragment : BaseFragment<ChatHomeViewModel, FragmentLiveCh
     /**
      * 进入直播间不成功时修改
      * */
-    fun updateChatUi(liveStart:Boolean,matchStatus:Int) {
+    fun updateChatUi(liveStart: Boolean, matchStatus: Int) {
         updateChatList()
 
 //        if (matchBean?.liveInfo?.charRoom == true || matchBean == null) {
@@ -532,7 +533,8 @@ abstract class ChatBaseFragment : BaseFragment<ChatHomeViewModel, FragmentLiveCh
             return
         }
         keyboardChangeClick(KeyBoardType.CHAT, 7)
-        mViewModel.createLocalMsg(mBinding.chatEtInput.text!!,chatType)?.let { mViewModel.sendMsgToChat(it) }
+        mViewModel.createLocalMsg(mBinding.chatEtInput.text!!, chatType)
+            ?.let { mViewModel.sendMsgToChat(it) }
         mBinding.chatEtInput.text?.clear()
     }
 
@@ -743,7 +745,8 @@ abstract class ChatBaseFragment : BaseFragment<ChatHomeViewModel, FragmentLiveCh
         val emojiPattern: Pattern = Pattern.compile(BID_EMOJI_REGEX)
         if (emojiPattern.matcher(emojiData.key).find()) {
 //            keyboardChangeClick(KeyBoardType.CHAT, 5)
-            mViewModel.createBidLocalMsg(emojiData.key,chatType)?.let { mViewModel.sendMsgToChat(it) }
+            mViewModel.createBidLocalMsg(emojiData.key, chatType)
+                ?.let { mViewModel.sendMsgToChat(it) }
             return
         }
         chatAtHelper.dismissWindow() // 输入表情后at弹框消失

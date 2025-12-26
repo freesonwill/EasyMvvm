@@ -2,8 +2,18 @@ package arch.cayenne.module.order.ui.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
+import arch.cayenne.lib.base.data.constants.DataState
+import arch.cayenne.lib.base.data.remote.ApiResponseState
+import arch.cayenne.lib.base.data.remote.ApiResponseState.Start.dataAs
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.common.data.constants.ChatMsgType
+import arch.cayenne.module.order.data.model.BetShareBean
+import arch.cayenne.module.order.data.model.ChooseBetData
+import arch.cayenne.module.order.data.repo.BetSlipHttpRepository
+import kotlinx.coroutines.launch
+import org.koin.core.component.inject
+import org.koin.core.parameter.parametersOf
 
 /**
  * @author: wenxi
@@ -11,13 +21,45 @@ import arch.cayenne.lib.common.data.constants.ChatMsgType
  * @description:
  */
 class ChatChooseViewModel:BaseViewModel() {
-    private val _betClickLiveData:MutableLiveData<ChatMsgType> = MutableLiveData()
-    val betClickLiveData:LiveData<ChatMsgType> = _betClickLiveData
+    private val _betClickLiveData:MutableLiveData<ChooseBetData> = MutableLiveData()
+    val betClickLiveData:LiveData<ChooseBetData> = _betClickLiveData
+    val report:BetSlipHttpRepository by inject { parametersOf(viewModelScope) }
+    val betShareLiveData = MutableLiveData<BetShareBean>()
 
     /**
      * type 0 game 1 sport
      * */
-    fun clickBtn(type:ChatMsgType){
+    fun clickBtn(type:ChooseBetData){
         _betClickLiveData.value = type
+    }
+
+    fun getBetShare(userId: Long, settleId: String){
+        setState(DataState.Loading)
+      viewModelScope.launch {
+          callApi(
+              {
+                  report.getBetShare(userId, settleId)
+              },
+              {
+                  when(it){
+                      is ApiResponseState.Failed ->{
+                          setState(DataState.NetworkUnavailable)
+                      }
+
+                      is ApiResponseState.Succeeded<*> ->{
+                          setState(DataState.LoadSuccess)
+                          val data = it.dataAs<BetShareBean>()
+                          betShareLiveData.value = data
+                      }
+
+                      else ->{}
+
+                  }
+
+              },
+              autoUpdateState = false
+          )
+
+      }
     }
 }

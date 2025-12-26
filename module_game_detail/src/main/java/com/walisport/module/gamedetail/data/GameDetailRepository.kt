@@ -26,13 +26,13 @@ import kotlin.coroutines.resume
  * 游戏详情的Repository
  */
 class GameDetailRepository(
-    override val scope: CoroutineScope ,
-    private val database: GameDatabase ,
-    private val httpClient: HttpClient ,
-    private val mockHttpClient: HttpClient ,
-    private val socketManager: WebSocketManager ,
-    private val preloadResultChange: MutableStateFlow<PreloadEnum> ,
-    private val manager: UserDataManager ,
+    override val scope: CoroutineScope,
+    private val database: GameDatabase,
+    private val httpClient: HttpClient,
+    private val mockHttpClient: HttpClient,
+    private val socketManager: WebSocketManager,
+    private val preloadResultChange: MutableStateFlow<PreloadEnum>,
+    private val manager: UserDataManager,
 ) : BaseRepository() {
 
     private val currencyConfigDao = database.currencyConfigDao()
@@ -44,7 +44,7 @@ class GameDetailRepository(
                 mockHttpClient.safeRequest(
                     request = {
                         api.getGameDetail(id)
-                    } ,
+                    },
                     onSuccess = { resp ->
                         if (resp.code == 0) {
                             cancellableContinuation.resume(ApiResponseState.Succeeded(resp.data))
@@ -53,19 +53,19 @@ class GameDetailRepository(
                             cancellableContinuation.resume(
                                 ApiResponseState.Failed(
                                     HttpException(
-                                        resp.code ,
+                                        resp.code,
                                         resp.message
                                     )
                                 )
                             )
                         }
-                    } ,
-                    onFailure = { code , msg , throwable ->
+                    },
+                    onFailure = { code, msg, throwable ->
                         "response------>$code,$msg,$throwable".loge(TAG)
                         cancellableContinuation.resume(
                             ApiResponseState.Failed(
                                 HttpException(
-                                    code ,
+                                    code,
                                     msg ?: ""
                                 )
                             )
@@ -79,20 +79,20 @@ class GameDetailRepository(
     suspend fun toGameDetailBean(vo: GameDetailVo?): GameDetailBean {
 
         return GameDetailBean(
-            id = vo?.gameType?.toLong() ?: 0L ,
-            name = vo?.name.orEmpty() ,
-            type = vo?.category ?: 0 ,
-            supplier = vo?.supplier.orEmpty() ,
-            avatar = vo?.icon.orEmpty() ,
-            reward = (vo?.reward ?: 0.0f).toDouble() ,
-            maxOdds = vo?.maxOdds ?: 0 ,
-            online = vo?.online ?: 0 ,
-            score = vo?.score ?: 0.0 ,
-            comments = vo?.comments ?: 0 ,
-            tryIt = vo?.tryIt ?: false ,
-            hasMore = vo?.hasMore ?: false ,
-            collect = vo?.collect ?: false ,
-            materials = vo?.materials.orEmpty() ,
+            id = vo?.gameType?.toLong() ?: 0L,
+            name = vo?.name.orEmpty(),
+            type = vo?.category ?: 0,
+            supplier = vo?.supplier.orEmpty(),
+            avatar = vo?.icon.orEmpty(),
+            reward = (vo?.reward ?: 0.0f).toDouble(),
+            maxOdds = vo?.maxOdds ?: 0,
+            online = vo?.online ?: 0,
+            score = vo?.score ?: 0.0,
+            comments = vo?.comments ?: 0,
+            tryIt = vo?.tryIt ?: false,
+            hasMore = vo?.hasMore ?: false,
+            collect = vo?.collect ?: false,
+            materials = vo?.materials.orEmpty(),
             currency = vo?.ccyList?.mapNotNull {
                 currencyConfigDao.getCurrencyByCcy(it)?.let { bean -> toCurrencyInfoBean(bean) }
             } ?: emptyList())
@@ -100,16 +100,16 @@ class GameDetailRepository(
 
     private fun toCurrencyInfoBean(currencyBean: CurrencyBean): CurrencyInfoBean {
         return CurrencyInfoBean(
-            id = currencyBean.id ,
-            isVirtual = currencyBean.virtual ,
-            rate = currencyBean.rate ,
-            unit = currencyBean.unit ,
-            name = currencyBean.name ,
+            id = currencyBean.id,
+            isVirtual = currencyBean.virtual,
+            rate = currencyBean.rate,
+            unit = currencyBean.unit,
+            name = currencyBean.name,
 
             )
     }
 
-    suspend fun updateGameCollect(gameId: Long , collect: Boolean): ApiResponseState {
+    suspend fun updateGameCollect(gameId: Long, collect: Boolean): ApiResponseState {
         val api = mockHttpClient.create(IGameDetailApi::class.java)
         return suspendCancellableCoroutine<ApiResponseState> { cancellableContinuation ->
             scope.launch(Dispatchers.IO) {
@@ -117,11 +117,11 @@ class GameDetailRepository(
                     request = {
                         api.updateGameCollect(
                             body = com.walisport.module.gamedetail.data.model.ProfileCollectEditVo(
-                                gameType = gameId.toInt() ,
+                                gameType = gameId.toInt(),
                                 collect = collect
                             )
                         )
-                    } ,
+                    },
                     onSuccess = { resp ->
                         if (resp.code == 0) {
                             cancellableContinuation.resume(ApiResponseState.Succeeded(resp.data))
@@ -130,19 +130,19 @@ class GameDetailRepository(
                             cancellableContinuation.resume(
                                 ApiResponseState.Failed(
                                     HttpException(
-                                        resp.code ,
+                                        resp.code,
                                         resp.message
                                     )
                                 )
                             )
                         }
-                    } ,
-                    onFailure = { code , msg , throwable ->
+                    },
+                    onFailure = { code, msg, throwable ->
                         "response------>$code,$msg,$throwable".loge(TAG)
                         cancellableContinuation.resume(
                             ApiResponseState.Failed(
                                 HttpException(
-                                    code ,
+                                    code,
                                     msg ?: ""
                                 )
                             )
