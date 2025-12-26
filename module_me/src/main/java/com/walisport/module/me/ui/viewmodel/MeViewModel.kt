@@ -5,9 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import com.walisport.module.me.data.MeRepository
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.launch
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
 import plugin.koin.KoinViewModel
@@ -19,8 +17,8 @@ class MeViewModel : BaseViewModel() {
     private val _recentlyCount = MutableLiveData<Long>(0)
     val recentlyCount: LiveData<Long> = _recentlyCount
 
-    private val _gameCount = MutableLiveData<Long>(0)
-    val gameCount: LiveData<Long> = _gameCount
+    private val _gameFavouriteCount = MutableLiveData<Long>(0)
+    val gameFavourite: LiveData<Long> = _gameFavouriteCount
 
     private val _matchCount = MutableLiveData<Long>(0)
     val matchCount: LiveData<Long> = _matchCount
@@ -61,5 +59,9 @@ class MeViewModel : BaseViewModel() {
 
     fun setRecentlyCount(count:Long){
         _recentlyCount.value = count
+    }
+
+    fun setGameFavouriteCount(count:Long){
+        _gameFavouriteCount.value = count
     }
 }
