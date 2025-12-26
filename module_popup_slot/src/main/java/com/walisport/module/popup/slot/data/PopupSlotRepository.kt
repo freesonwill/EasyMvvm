@@ -14,6 +14,7 @@ import arch.cayenne.lib.http.HttpException
 import arch.cayenne.lib.websocket.WebSocketManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -33,6 +34,11 @@ class PopupSlotRepository(
         MutableLiveData()
     val popupSlotDataListLiveData: LiveData<List<PopupSlotBean>>
         get() = _popupSlotDataListLiveData
+
+    private val _popUpShowLiveData: MutableLiveData<List<Boolean>> = MutableLiveData()
+    val popUpShowLiveData: MutableLiveData<List<Boolean>>
+        get() = _popUpShowLiveData
+
 
     private var hasFetched = false
 
@@ -59,6 +65,7 @@ class PopupSlotRepository(
                         }
                     )
                 })
+                _popUpShowLiveData.postValue(popupVoList?.map { true } ?: emptyList())
 
             }
 
@@ -107,6 +114,16 @@ class PopupSlotRepository(
 
     }
 
+    fun hidePopupSlot(id: Int) {
+        scope.launch {
+            val currentList = _popUpShowLiveData.value?.toMutableList() ?: return@launch
+            if (id in currentList.indices) {
+                currentList[id] = false
+                _popUpShowLiveData.postValue(currentList)
+            }
+        }
+    }
+
 }
 
 
@@ -125,5 +142,4 @@ data class PopupSlotDataModel(
 data class PopupSlotBean(
     val popupId: Long,
     val data: List<PopupSlotDataModel>,
-    var show: Boolean = true
 )

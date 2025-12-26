@@ -1,7 +1,6 @@
 package com.walisport.module.popup.slot.ui.viewmodel
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import com.walisport.module.popup.slot.data.PopupSlotBean
 import com.walisport.module.popup.slot.data.PopupSlotRepository
@@ -13,6 +12,9 @@ class PopUpSlotViewModel(val repository: PopupSlotRepository) : BaseViewModel() 
     val popupSlotDataListLiveData: LiveData<List<PopupSlotBean>> =
         repository.popupSlotDataListLiveData
 
+    val popupShowLiveData: LiveData<List<Boolean>> =
+        repository.popUpShowLiveData
+
     override fun initViewModel() {
         super.initViewModel()
         repository.getPopupSlotData()
@@ -20,9 +22,7 @@ class PopUpSlotViewModel(val repository: PopupSlotRepository) : BaseViewModel() 
 
 
     fun hideView(id: Int) {
-        repository.popupSlotDataListLiveData.value?.get(id)?.let {
-            it.show = false
-        }
+        repository.hidePopupSlot(id)
     }
 
 

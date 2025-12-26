@@ -2,7 +2,6 @@ package com.walisport.module.popup.slot.ui.fragment
 
 import android.os.Bundle
 import android.view.View
-import android.widget.FrameLayout
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import com.walisport.module.popup.slot.databinding.FragmentPopupSlotBinding
@@ -40,20 +39,63 @@ class PopupSlotFragment :
     }
 
     override suspend fun createObserver() {
-        mViewModel.popupSlotDataListLiveData.observe(viewLifecycleOwner) {
-            if (it.get(0) != null && it[0].show) {
-                mBinding.popupSlot0.visibility = View.VISIBLE
+        //监听弹窗显示与隐藏
+        mViewModel.popupShowLiveData.observe(viewLifecycleOwner) {
+            val showList = it
+            val initialAlpha = 0.5f
+            val targetAlpha = 1f
+            val alphaDuration = 320L
+            val translationDistance = 20f
+            val translationDuration = 80L
+            val translationBackDistance = -40f
+            val translationBackDuration = 160L
+
+            if (showList[0]) {
+                mBinding.popupSlot0.apply {
+                    visibility = View.VISIBLE
+                    alpha = initialAlpha
+                    animate().alpha(targetAlpha).setDuration(alphaDuration).start()
+                    animate()
+                        .translationXBy(translationDistance).setDuration(translationDuration)
+                        .withEndAction {
+                            animate()
+                                .translationXBy(translationBackDistance)
+                                .setDuration(translationBackDuration).withEndAction {
+                                    animate()
+                                        .translationXBy(translationDistance)
+                                        .setDuration(translationDuration).start()
+                                }.start()
+                        }.start()
+                }.visibility = View.VISIBLE
+            } else {
+                mBinding.popupSlot0.visibility = View.GONE
             }
 
-            if (it.get(1) != null && it[1].show) {
-                mBinding.popupSlot1.visibility = View.VISIBLE
+            if (showList[1]) {
+                mBinding.popupSlot1.apply {
+                    visibility = View.VISIBLE
+                    alpha = initialAlpha
+                    animate().alpha(targetAlpha).setDuration(alphaDuration).start()
+                    animate()
+                        .translationXBy(translationDistance).setDuration(translationDuration)
+                        .withEndAction {
+                            animate()
+                                .translationXBy(translationBackDistance)
+                                .setDuration(translationBackDuration).withEndAction {
+                                    animate()
+                                        .translationXBy(translationDistance)
+                                        .setDuration(translationDuration).start()
+                                }.start()
+                        }.start()
+                }.visibility = View.VISIBLE
+            } else {
+                mBinding.popupSlot1.visibility = View.GONE
             }
         }
     }
 
 
-
-    companion object{
+    companion object {
         const val TAG = "PopupSlotFragment"
     }
 
