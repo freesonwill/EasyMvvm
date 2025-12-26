@@ -9,11 +9,12 @@ import arch.cayenne.lib.base.data.remote.ApiResponseState.Start.dataAs
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.database.entity.GameBean
 import com.walisport.module.business.common.data.GameContentData
-import com.walisport.module.hall.data.GamePageVo
+import com.walisport.module.business.common.data.GamePageVo
+import com.walisport.module.business.common.data.GameRecentRepository
+import com.walisport.module.business.common.data.constants.GameSortType
+import com.walisport.module.business.common.data.toGameContentData
 import com.walisport.module.hall.data.HallRepository
 import com.walisport.module.hall.data.HallRepository.Companion.INITIAL_PAGE
-import com.walisport.module.hall.data.constants.GameSortType
-import com.walisport.module.hall.data.toGameContentData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.core.component.inject
@@ -23,7 +24,7 @@ import plugin.koin.KoinViewModel
 @KoinViewModel
 class GameRecentViewModel : BaseViewModel() {
 
-    private val repository: HallRepository by inject { parametersOf(viewModelScope) }
+    private val repository: GameRecentRepository by inject { parametersOf(viewModelScope) }
     private val _gameClickData: MutableLiveData<GameBean?> = MutableLiveData()
     val gameClickData: LiveData<GameBean?> = _gameClickData
 

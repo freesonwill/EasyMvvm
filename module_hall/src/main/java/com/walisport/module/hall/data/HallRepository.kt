@@ -15,7 +15,7 @@ import arch.cayenne.lib.database.entity.GameSupplierDataModel
 import arch.cayenne.lib.http.HttpClient
 import arch.cayenne.lib.http.HttpException
 import arch.cayenne.lib.websocket.WebSocketManager
-import com.walisport.module.hall.data.constants.GameSortType
+import com.walisport.module.business.common.data.constants.GameSortType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -38,9 +38,9 @@ class HallRepository(
 
 
     suspend fun queryGameList(
-        page: Int ,
-        sortType: GameSortType ,
-        suppliers: List<Int> ,
+        page: Int,
+        sortType: GameSortType,
+        suppliers: List<Int>,
         category: Int
     ): ApiResponseState {
         val api = mockHttpClient.create(IHallApi::class.java)
@@ -163,10 +163,6 @@ class HallRepository(
             }
         }
 
-    }
-    //查询是否点击游戏详情页面
-    suspend fun queryGameClick() : GameBean{
-        return database.gameDao().queryGameBean(1)
     }
 
     //设置游戏点击状态
