@@ -3,7 +3,7 @@ package arch.cayenne.module.chat.ui.viewmodel
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.websocket.chat.data.ChatMsg
 import arch.cayenne.lib.websocket.chat.data.MsgNotify
-import arch.cayenne.lib.common.data.constants.MsgType
+import arch.cayenne.lib.common.data.constants.ChatMsgType
 import arch.cayenne.module.chat.data.model.ChatMsgPageBean
 
 /**
@@ -25,7 +25,7 @@ class ChatPageViewModel:BaseViewModel() {
      * 添加新数据的chatlist
      * */
     fun addNewMsgs(msg: MsgNotify): List<ChatMsgPageBean> {
-        msgLists.add(0, ChatMsgPageBean.toChatPageBean(msg.msg, MsgType.TEXT))
+        msgLists.add(0, ChatMsgPageBean.toChatPageBean(msg.msg, ChatMsgType.TEXT))
         return msgLists
     }
 
@@ -36,7 +36,7 @@ class ChatPageViewModel:BaseViewModel() {
         if (list == null) {
             return
         }
-        val nList = list.map { ChatMsgPageBean.toChatPageBean(it, MsgType.TEXT)}.toList()
+        val nList = list.map { ChatMsgPageBean.toChatPageBean(it, ChatMsgType.TEXT)}.toList()
         msgLists.clear()
         msgLists.addAll(nList.reversed())
     }

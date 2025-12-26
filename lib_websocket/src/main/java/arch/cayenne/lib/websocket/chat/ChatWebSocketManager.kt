@@ -1,6 +1,7 @@
 package arch.cayenne.lib.websocket.chat
 
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
+import arch.cayenne.lib.websocket.chat.data.ChatLoginResponseData
 import arch.cayenne.lib.websocket.chat.data.ChatPinRequestData
 import arch.cayenne.lib.websocket.chat.extension.chatAsRemoteRequest
 import arch.cayenne.lib.websocket.data.ApiCode
@@ -18,6 +19,7 @@ import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeoutOrNull
@@ -35,6 +37,8 @@ class ChatWebSocketManager(
     private var reconnectDispatcher: ExecutorCoroutineDispatcher? = null
 
     private var retryCount = 0
+
+    private var _loginFlow:MutableStateFlow<ChatLoginResponseData?> = MutableStateFlow(null)
 
     //线程安全的自增Rid
     private val ridGenerator by lazy { ThreadSafeAutoIncrementID(max = 0xFFF) } //4095
@@ -55,7 +59,7 @@ class ChatWebSocketManager(
     }
 
     suspend fun connect(scope: CoroutineScope,host: String): Flow<ConnectState>? {
-      val deferred =  scope.async(Dispatchers.IO) {
+        val deferred =  scope.async(Dispatchers.IO) {
             withTimeoutOrNull(responseTimeout){
                 socket.connect(host)
             }
@@ -159,9 +163,16 @@ class ChatWebSocketManager(
         heartbeatDispatcher?.close()
     }
 
+    fun setLoginFlow(loginData:ChatLoginResponseData) {
+        _loginFlow.tryEmit(loginData)
+    }
+
     override fun getSocketFlow(): Flow<IResponse> = socket.responseObserve()
     override fun getConnectStateFlow(): Flow<ConnectState> = socket.stateChangeObserve()
     override val socketConnectState: SocketConnectState get() = socket.socketConnectState
     fun getSocketConnectStateFlow(): StateFlow<SocketConnectState> = socket.socketConnectStateFlow()
     fun getMessageFlow():Flow<IResponse> = socket.messageFlow()
+    fun getLoginFlow():StateFlow<ChatLoginResponseData?> = _loginFlow
+
+
 }

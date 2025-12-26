@@ -10,7 +10,6 @@ import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.adapter.PagerAdapter
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.data.constants.FragmentResultEnum
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
@@ -30,7 +29,7 @@ import kotlin.reflect.KClass
  * @date: 6/10/25 17:46
  * @description: 首页聊天室
  */
-class MainChatFragment : BaseFragment<MainChatViewModel, FragmentMainChatLayoutBinding>() {
+class HomeMainFragment : BaseFragment<MainChatViewModel, FragmentMainChatLayoutBinding>() {
     override val vbClass: KClass<FragmentMainChatLayoutBinding>
         get() = FragmentMainChatLayoutBinding::class
     override val vmClass: KClass<MainChatViewModel>
@@ -38,6 +37,7 @@ class MainChatFragment : BaseFragment<MainChatViewModel, FragmentMainChatLayoutB
 
     override fun initView(savedInstanceState: Bundle?) {
         initViewPager2()
+        sendMatchIdToChatFragment(102)
 //        initTabLayout()
     }
 
@@ -103,7 +103,7 @@ class MainChatFragment : BaseFragment<MainChatViewModel, FragmentMainChatLayoutB
         )
         val pages = listOf(
             PagerBean(titles[0]) {
-                ChatHomeFragment().apply {
+                ChatMainFragment().apply {
                     arguments = Bundle().apply {
                         putBoolean("chat", true)
                     }
@@ -133,6 +133,16 @@ class MainChatFragment : BaseFragment<MainChatViewModel, FragmentMainChatLayoutB
 //            reflexPadding(tabLayout)
 //        }
 //    }
+
+    private fun sendMatchIdToChatFragment(matchId: Long) {
+        val bundle = Bundle().apply {
+            putLong(ChatBaseFragment.MATCH_ID_KEY, matchId)
+        }
+        childFragmentManager.setFragmentResult(
+            ChatBaseFragment.FRAGMENT_RESULT_KEY,
+            bundle
+        )
+    }
 
     private fun updateTabBack(
         position: Int,
