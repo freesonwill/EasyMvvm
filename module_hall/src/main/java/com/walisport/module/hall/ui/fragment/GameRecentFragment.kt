@@ -18,6 +18,7 @@ import arch.cayenne.lib.common.utils.ext.checkCurrentScrollState
 import arch.cayenne.lib.common.utils.ext.onScrolledOver
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.helper.BackToTopHelper
+import com.walisport.module.hall.R
 import com.walisport.module.hall.data.UniversalLoadMoreScrollListener
 import com.walisport.module.hall.databinding.FragmentGameRecentBinding
 import com.walisport.module.hall.ui.adapter.GameContentAdapter
@@ -123,7 +124,7 @@ class GameRecentFragment : BaseFragment<GameRecentViewModel, FragmentGameRecentB
                     mBinding.clDynamics.visibility = View.VISIBLE
                     mBinding.clDynamics.setState(
                         States.DATA_EMPTY,
-                        arch.cayenne.lib.common.R.string.data_empty.getString()
+                        R.string.game_data_empty.getString()
                     )
 
                 }
