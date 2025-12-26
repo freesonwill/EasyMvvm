@@ -88,7 +88,7 @@
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 
-        <arch.cayenne.lib.common.ui.view.DynamicStateLayout
+        <arch.cayenne.lib.common.ui.view.DynamicStateLayoutV2
             android:id="@+id/cl_dynamics"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
