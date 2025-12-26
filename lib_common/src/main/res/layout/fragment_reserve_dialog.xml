@@ -90,7 +90,9 @@
             app:layout_constraintEnd_toStartOf="@id/gl_other"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/gl_other"
-            android:spacing="@dimen/dp_4"/>
+            android:spacing="@dimen/dp_4"
+            app:otherTextSize="@dimen/sp_16"
+            />
 
         <GridLayout
             android:id="@+id/gl_other"
