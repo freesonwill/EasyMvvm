@@ -50,44 +50,51 @@ class PopupSlotFragment :
             val translationBackDistance = -40f
             val translationBackDuration = 160L
 
+            // 假设 PopupSlotRepository 有两个布尔变量 slot0Animated 和 slot1Animated
             if (showList[0]) {
-                mBinding.popupSlot0.apply {
-                    visibility = View.VISIBLE
-                    alpha = initialAlpha
-                    animate().alpha(targetAlpha).setDuration(alphaDuration).start()
-                    animate()
-                        .translationXBy(translationDistance).setDuration(translationDuration)
-                        .withEndAction {
-                            animate()
-                                .translationXBy(translationBackDistance)
-                                .setDuration(translationBackDuration).withEndAction {
-                                    animate()
-                                        .translationXBy(translationDistance)
-                                        .setDuration(translationDuration).start()
-                                }.start()
-                        }.start()
-                }.visibility = View.VISIBLE
+                mBinding.popupSlot0.visibility = View.VISIBLE
+                if (!mViewModel.slot0Animated) {
+                    mBinding.popupSlot0.apply {
+                        alpha = initialAlpha
+                        animate().alpha(targetAlpha).setDuration(alphaDuration).start()
+                        animate()
+                            .translationXBy(translationDistance).setDuration(translationDuration)
+                            .withEndAction {
+                                animate()
+                                    .translationXBy(translationBackDistance)
+                                    .setDuration(translationBackDuration).withEndAction {
+                                        animate()
+                                            .translationXBy(translationDistance)
+                                            .setDuration(translationDuration).start()
+                                    }.start()
+                            }.start()
+                    }
+                    mViewModel.slot0Animated = true
+                }
             } else {
                 mBinding.popupSlot0.visibility = View.GONE
             }
 
             if (showList[1]) {
-                mBinding.popupSlot1.apply {
-                    visibility = View.VISIBLE
-                    alpha = initialAlpha
-                    animate().alpha(targetAlpha).setDuration(alphaDuration).start()
-                    animate()
-                        .translationXBy(translationDistance).setDuration(translationDuration)
-                        .withEndAction {
-                            animate()
-                                .translationXBy(translationBackDistance)
-                                .setDuration(translationBackDuration).withEndAction {
-                                    animate()
-                                        .translationXBy(translationDistance)
-                                        .setDuration(translationDuration).start()
-                                }.start()
-                        }.start()
-                }.visibility = View.VISIBLE
+                mBinding.popupSlot1.visibility = View.VISIBLE
+                if (!mViewModel.slot1Animated) {
+                    mBinding.popupSlot1.apply {
+                        alpha = initialAlpha
+                        animate().alpha(targetAlpha).setDuration(alphaDuration).start()
+                        animate()
+                            .translationXBy(translationDistance).setDuration(translationDuration)
+                            .withEndAction {
+                                animate()
+                                    .translationXBy(translationBackDistance)
+                                    .setDuration(translationBackDuration).withEndAction {
+                                        animate()
+                                            .translationXBy(translationDistance)
+                                            .setDuration(translationDuration).start()
+                                    }.start()
+                            }.start()
+                    }
+                    mViewModel.slot1Animated = true
+                }
             } else {
                 mBinding.popupSlot1.visibility = View.GONE
             }

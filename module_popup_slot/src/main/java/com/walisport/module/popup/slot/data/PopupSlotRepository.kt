@@ -14,7 +14,6 @@ import arch.cayenne.lib.http.HttpException
 import arch.cayenne.lib.websocket.WebSocketManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -38,6 +37,10 @@ class PopupSlotRepository(
     private val _popUpShowLiveData: MutableLiveData<List<Boolean>> = MutableLiveData()
     val popUpShowLiveData: MutableLiveData<List<Boolean>>
         get() = _popUpShowLiveData
+
+
+    var slot0Animated: Boolean = false
+    var slot1Animated: Boolean = false
 
 
     private var hasFetched = false
