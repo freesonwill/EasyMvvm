@@ -84,6 +84,15 @@ class GameRecentFragment : BaseFragment<GameRecentViewModel, FragmentGameRecentB
         }, {
             hallViewModel.setScorll(false)
         })
+
+        mBinding.rvGame.addOnScrollListener(object : androidx.recyclerview.widget.RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: androidx.recyclerview.widget.RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                // 这里处理滚动状态变化
+                // newState: 0=IDLE, 1=DRAGGING, 2=SETTLING
+                hallViewModel.setScrollState(newState)
+            }
+        })
         mBinding.rvGame.addOnScrollListener(UniversalLoadMoreScrollListener(6) {
             if (mViewModel.apiStateListener.value == DataState.LoadSuccess) {
                 mViewModel.loadNextPage()

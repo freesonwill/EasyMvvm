@@ -1,11 +1,14 @@
 package com.walisport.module.popup.slot.ui.fragment
 
+import android.animation.ValueAnimator
 import android.os.Bundle
 import android.view.View
+import android.view.animation.LinearInterpolator
 import arch.cayenne.lib.base.ui.animation.CustomCurveTransformer
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+import arch.cayenne.lib.common.utils.ext.startSafeAnimateSet
 import com.walisport.module.popup.slot.R
 import com.walisport.module.popup.slot.databinding.FragmentPopupSlotBinding
 import com.walisport.module.popup.slot.ui.adapter.BannerUrlImageAdapter
@@ -165,6 +168,86 @@ class PopupSlotFragment :
                 start()
             }
         }
+    }
+
+    fun fadeAndOut() {
+        view?.startSafeAnimateSet({
+            playTogether(
+                ValueAnimator.ofFloat(
+                    view?.translationX ?: 0f,
+                    28.dp2px.toFloat()
+                ).apply {
+                    addUpdateListener {
+                        val value = it.animatedValue as Float
+                        view?.translationX = value
+                    }
+                },
+                ValueAnimator.ofFloat(
+                    view?.alpha ?: 1f,
+                    0.6f
+                ).apply {
+                    addUpdateListener {
+                        val value = it.animatedValue as Float
+                        view?.alpha = value
+                    }
+                },
+                ValueAnimator.ofFloat(mBinding.popupSlot0.binding.ivPopupSlotClose.alpha, 0f)
+                    .apply {
+                        addUpdateListener {
+                            val value = it.animatedValue as Float
+                            mBinding.popupSlot0.binding.ivPopupSlotClose.alpha = value
+                            mBinding.popupSlot1.binding.ivPopupSlotClose.alpha = value
+                        }
+                    },
+                ValueAnimator.ofFloat(mBinding.popupSlot1.binding.ivPopupSlotClose.alpha, 0f)
+                    .apply {
+                        addUpdateListener {
+                            val value = it.animatedValue as Float
+                            mBinding.popupSlot1.binding.ivPopupSlotClose.alpha = value
+                        }
+                    }
+            )
+        }, duration = 150, interpolator = LinearInterpolator(), start = true)
+    }
+
+    fun fadeAndIn() {
+        view?.startSafeAnimateSet({
+            playTogether(
+                ValueAnimator.ofFloat(
+                    view?.translationX ?: 28.dp2px.toFloat(),
+                    0f
+                ).apply {
+                    addUpdateListener {
+                        val value = it.animatedValue as Float
+                        view?.translationX = value
+                    }
+                },
+                ValueAnimator.ofFloat(
+                    view?.alpha ?: 0.6f,
+                    1f
+                ).apply {
+                    addUpdateListener {
+                        val value = it.animatedValue as Float
+                        view?.alpha = value
+                    }
+                },
+                ValueAnimator.ofFloat(mBinding.popupSlot0.binding.ivPopupSlotClose.alpha, 1f)
+                    .apply {
+                        addUpdateListener {
+                            val value = it.animatedValue as Float
+                            mBinding.popupSlot0.binding.ivPopupSlotClose.alpha = value
+                            mBinding.popupSlot1.binding.ivPopupSlotClose.alpha = value
+                        }
+                    },
+                ValueAnimator.ofFloat(mBinding.popupSlot1.binding.ivPopupSlotClose.alpha, 1f)
+                    .apply {
+                        addUpdateListener {
+                            val value = it.animatedValue as Float
+                            mBinding.popupSlot1.binding.ivPopupSlotClose.alpha = value
+                        }
+                    }
+            )
+        }, duration = 150, interpolator = LinearInterpolator(), start = true)
     }
 
 
