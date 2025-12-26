@@ -413,13 +413,7 @@ class HallFragment : BaseFragment<HallViewModel , FragmentHallBinding>() {
             .commit()
     }
 
-    // 当 Fragment 可见性发生变化时调用
-    override fun onHiddenChanged(hidden: Boolean) {
-        super.onHiddenChanged(hidden)
-        if (!hidden) {
-            popupSlotFragment.adjustPosition()
-        }
-    }
+
 
 
 }

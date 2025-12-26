@@ -8,8 +8,8 @@
 
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/iv_popup_slot"
-        android:layout_width="@dimen/dp_38"
-        android:layout_height="@dimen/dp_40"
+        android:layout_width="@dimen/dp_40"
+        android:layout_height="@dimen/dp_43"
         android:src="@drawable/popup_slot_placeholder"
         app:shapeAppearanceOverlay="@style/PopUpSlotRoundedCorner" />
 

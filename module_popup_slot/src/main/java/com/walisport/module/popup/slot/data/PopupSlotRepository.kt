@@ -1,80 +1,109 @@
 package com.walisport.module.popup.slot.data
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import arch.cayenne.lib.base.data.remote.ApiResponseState
+import arch.cayenne.lib.base.data.remote.ApiResponseState.Start.dataAs
 import arch.cayenne.lib.base.data.repository.BaseRepository
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
+import arch.cayenne.lib.common.data.constants.PreloadEnum
 import arch.cayenne.lib.common.data.manager.UserDataManager
+import arch.cayenne.lib.database.GameDatabase
+import arch.cayenne.lib.http.HttpClient
+import arch.cayenne.lib.http.HttpException
 import arch.cayenne.lib.websocket.WebSocketManager
-import com.walisport.module.popup.slot.data.PopupSlotBean.Companion.UNINITIALIZED_ANCHOR
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlin.coroutines.resume
 
 class PopupSlotRepository(
-    override val scope: CoroutineScope ,
-    private val socketManager: WebSocketManager ,
-    private val manager: UserDataManager
+    override val scope: CoroutineScope,
+    private val database: GameDatabase,
+    private val httpClient: HttpClient,
+    private val mockHttpClient: HttpClient,
+    private val socketManager: WebSocketManager,
+    private val preloadResultChange: MutableStateFlow<PreloadEnum>,
+    private val manager: UserDataManager,
 ) : BaseRepository() {
 
     private val _popupSlotDataListLiveData: MutableLiveData<List<PopupSlotBean>> =
         MutableLiveData()
-    val popupSlotDataListLiveData: MutableLiveData<List<PopupSlotBean>>
+    val popupSlotDataListLiveData: LiveData<List<PopupSlotBean>>
         get() = _popupSlotDataListLiveData
 
-
     private var hasFetched = false
-
 
     fun getPopupSlotData() {
         //该方法仅被执行一次
         if (hasFetched) return
         hasFetched = true
-        scope.launch(Dispatchers.IO) {
+        scope.launch {
+            val response = queryPopupList()
 
-            delay(300)
+            if (response is ApiResponseState.Failed) {
+            } else if (response is ApiResponseState.Succeeded<*>) {
+                val popupVoList = response.dataAs<List<PopupVo>>()
 
-            withContext(Dispatchers.Main) {
-                _popupSlotDataListLiveData.value = mockData()
+                _popupSlotDataListLiveData.postValue(popupVoList?.map { popupVo ->
+                    PopupSlotBean(
+                        popupId = popupVo.popupId,
+                        data = popupVo.items.map { itemVo ->
+                            PopupSlotDataModel(
+                                operateType = itemVo.operateType,
+                                operateParams = itemVo.operateParams,
+                                bottomImagePath = itemVo.bottomImagePath
+                            )
+                        }
+                    )
+                })
+
             }
+
 
         }
     }
 
-    private fun mockData(): List<PopupSlotBean> {
-        return listOf(
-            PopupSlotBean(
-                listOf(
-                    PopupSlotDataModel(
-                        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSYR7KdbJuSCOOE2ddY6VX3hh8tn_RfFtPgSA&s" ,
-                        "https://www.google.com/"
-                    ) ,
-                    PopupSlotDataModel(
-                        "https://pic.5tu.cn/uploads/allimg/2410/pic_5tu_big_6672913_6720a1c561819-thumb-650.jpg" ,
-                        "https://www.facebook.com/"
-                    ) ,
-                    PopupSlotDataModel(
-                        "https://pic.5tu.cn/uploads/allimg/2404/pic_5tu_big_6672913_6627b3e462e70-thumb-650.jpg" ,
-                        "https://www.twitter.com/"
-                    )
+    private suspend fun queryPopupList(
+    ): ApiResponseState {
+        val api = mockHttpClient.create(IPopupApi::class.java)
+        return suspendCancellableCoroutine<ApiResponseState> { cancellableContinuation ->
+            scope.launch(Dispatchers.IO) {
+                mockHttpClient.safeRequest(
+                    request = {
+                        api.getPopupList()
+                    },
+                    onSuccess = { resp ->
+                        if (resp.code == 0) {
+                            cancellableContinuation.resume(ApiResponseState.Succeeded(resp.data))
+                        } else {
+                            "response------>${resp.code},${resp.message}".loge(TAG)
+                            cancellableContinuation.resume(
+                                ApiResponseState.Failed(
+                                    HttpException(
+                                        resp.code,
+                                        resp.message
+                                    )
+                                )
+                            )
+                        }
+                    },
+                    onFailure = { code, msg, throwable ->
+                        "response------>$code,$msg,$throwable".loge(TAG)
+                        cancellableContinuation.resume(
+                            ApiResponseState.Failed(
+                                HttpException(
+                                    code,
+                                    msg ?: ""
+                                )
+                            )
+                        )
+                    }
                 )
-            ) , PopupSlotBean(
-                listOf(
-                    PopupSlotDataModel(
-                        "https://img.freepik.com/premium-photo/scenic-view-lake-mountains-against-sky_1048944-27460488.jpg?semt=ais_se_enriched&w=740&q=80" ,
-                        "https://www.google.com/"
-                    ) ,
-                    PopupSlotDataModel(
-                        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcStv-haBrS16nwCmPCYl7UABWeeIJfnQQ_-ZQ&s" ,
-                        "https://www.facebook.com/"
-                    ) ,
-                    PopupSlotDataModel(
-                        "https://bpic.wotucdn.com//original/36/22/17/36221765-1abaf60f5484fd4315504e22fa79c3d6.png!waterxwebp320x556" ,
-                        "https://www.twitter.com/"
-                    )
-                )
-            )
-        )
+            }
+        }
 
     }
 
@@ -87,15 +116,14 @@ class PopupSlotRepository(
  * @date: 2025/12/9 14:29
  * @description:
  */
-data class PopupSlotDataModel(val imgUrl: String , val contentUrl: String)
+data class PopupSlotDataModel(
+    val operateType: String,
+    val operateParams: List<String>,
+    val bottomImagePath: String
+)
 
 data class PopupSlotBean(
-    val data: List<PopupSlotDataModel> ,
-    var anchorX: Float = UNINITIALIZED_ANCHOR ,//显示位置X
-    var anchorY: Float = UNINITIALIZED_ANCHOR, //显示位置
+    val popupId: Long,
+    val data: List<PopupSlotDataModel>,
     var show: Boolean = true
-) {
-    companion object {
-        const val UNINITIALIZED_ANCHOR = -1f
-    }
-}
+)

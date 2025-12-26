@@ -126,6 +126,13 @@ class NewHomeFragment : BaseFragment<HomeViewModel , FragmentNewHomeBinding>() {
         // 启动轮播
         mBinding. banner.start()
     }
+
+    private fun initPopupSlot() {
+        childFragmentManager.beginTransaction()
+            .add(R.id.fragment_new_home_container_view , popupSlotFragment , PopupSlotFragment.TAG)
+            .commit()
+    }
+
     private fun setupSidebar() {
         mBinding.ivHomeSidebar.clickNoRepeat {
             requireActivity().supportFragmentManager.setFragmentResult(
@@ -451,18 +458,8 @@ class NewHomeFragment : BaseFragment<HomeViewModel , FragmentNewHomeBinding>() {
         super.onDestroyView()
     }
 
-    private fun initPopupSlot() {
-        childFragmentManager.beginTransaction()
-            .add(R.id.fragment_new_home_container_view , popupSlotFragment , PopupSlotFragment.TAG)
-            .commit()
-    }
 
-    //當前Fragment可見時，顯示PopupSlotFragment
-    override fun onHiddenChanged(hidden: Boolean) {
-        super.onHiddenChanged(hidden)
-        if (!hidden) {
-            popupSlotFragment.adjustPosition()
-        }
-    }
+
+
 
 }
