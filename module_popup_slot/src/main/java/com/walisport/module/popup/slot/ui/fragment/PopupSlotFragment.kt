@@ -2,14 +2,13 @@ package com.walisport.module.popup.slot.ui.fragment
 
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import arch.cayenne.lib.base.ui.animation.CustomCurveTransformer
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
-import arch.cayenne.lib.common.ui.adapter.BannerUrlImageAdapter
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import com.walisport.module.popup.slot.R
 import com.walisport.module.popup.slot.databinding.FragmentPopupSlotBinding
+import com.walisport.module.popup.slot.ui.adapter.BannerUrlImageAdapter
 import com.walisport.module.popup.slot.ui.viewmodel.PopUpSlotViewModel
 import kotlin.reflect.KClass
 
@@ -129,12 +128,18 @@ class PopupSlotFragment :
             // 可根据需要将此变量提到类属性或通过参数传递
             mBinding.popupSlot0.binding.vpBanner.apply {
                 setAdapter(BannerUrlImageAdapter(dataList[0].data.map {
-                    Pair(it.bottomImagePath, R.drawable.popup_slot_placeholder)
+                    Pair(it, R.drawable.popup_slot_placeholder)
                 }))
                 setLoopTime(LOOP_TIME)
                 isAutoLoop(true)
                 setOnBannerListener { data, position ->
                     // 这里处理点击事件，比如：
+//                    val url =
+//                        ((data as Pair<PopupSlotDataModel, Int>).first as PopupSlotDataModel).operateParams[0]
+//                    navigate(
+//                        arch.cayenne.lib.res.R.string.nav_module_web_fragment
+//                            .deeplink("url" to url)
+//                    )
                 }
                 start()
 
@@ -142,7 +147,7 @@ class PopupSlotFragment :
             mBinding.popupSlot1.binding.vpBanner.apply {
                 setAdapter(BannerUrlImageAdapter(dataList[1].data.map {
                     Pair(
-                        it.bottomImagePath,
+                        it,
                         R.drawable.popup_slot_placeholder
                     )
                 }))
@@ -150,6 +155,12 @@ class PopupSlotFragment :
                 isAutoLoop(true)
                 setOnBannerListener { data, position ->
                     // 这里处理点击事件，比如：
+//                    val url =
+//                        ((data as Pair<PopupSlotDataModel, Int>).first as PopupSlotDataModel).operateParams[0]
+//                    navigate(
+//                        arch.cayenne.lib.res.R.string.nav_module_web_fragment
+//                            .deeplink("url" to url)
+//                    )
                 }
                 start()
             }

@@ -1,4 +1,4 @@
-package arch.cayenne.lib.common.ui.adapter
+package com.walisport.module.popup.slot.ui.adapter
 
 import android.view.View
 import android.view.ViewGroup
@@ -6,11 +6,12 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.walisport.module.popup.slot.data.PopupSlotDataModel
 import com.youth.banner.adapter.BannerAdapter
 
 // 示例适配器
-class BannerUrlImageAdapter(private val images: List<Pair<String, Int>>) :
-    BannerAdapter<Pair<String, Int>, BannerUrlImageAdapter.Holder>(images) {
+class BannerUrlImageAdapter(private val images: List<Pair<PopupSlotDataModel, Int>>) :
+    BannerAdapter<Pair<PopupSlotDataModel, Int>, BannerUrlImageAdapter.Holder>(images) {
 
     override fun onCreateHolder(parent: ViewGroup, viewType: Int): Holder {
         val container = FrameLayout(parent.context).apply {
@@ -32,8 +33,8 @@ class BannerUrlImageAdapter(private val images: List<Pair<String, Int>>) :
         return Holder(container)
     }
 
-    override fun onBindView(holder: Holder, data: Pair<String, Int>, position: Int, size: Int) {
-        Glide.with(holder.imageView).load(data.first).placeholder(data.second)
+    override fun onBindView(holder: Holder, data: Pair<PopupSlotDataModel, Int>, position: Int, size: Int) {
+        Glide.with(holder.imageView).load(data.first.bottomImagePath).placeholder(data.second)
             .into(holder.imageView)
     }
 
