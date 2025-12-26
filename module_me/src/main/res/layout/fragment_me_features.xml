@@ -11,4 +11,5 @@
     android:paddingStart="@dimen/dp_12"
     android:paddingTop="@dimen/dp_8"
     android:paddingEnd="@dimen/dp_12"
-    tools:showIn="@layout/fragment_me" />
+    tools:showIn="@layout/fragment_me"
+    />

@@ -1,38 +1,36 @@
 package arch.cayenne.module.chat.ui.fragment
 
+import android.R
 import android.graphics.Bitmap
+import android.graphics.Color
+import android.graphics.Outline
+import android.graphics.drawable.GradientDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.os.Message
+import android.view.View
+import android.view.ViewOutlineProvider
 import android.webkit.ValueCallback
 import android.webkit.WebChromeClient
 import android.webkit.WebView
-import androidx.annotation.MainThread
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import arch.cayenne.lib.base.data.constants.StatusBarMode
-import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.data.constants.BizUrl
-import arch.cayenne.lib.common.utils.ext.ResourceExt.getColor
-import arch.cayenne.lib.common.utils.ext.sharedViewModel
-import arch.cayenne.lib.common.utils.ext.touchBackPressed
-import arch.cayenne.lib.common.web.WLSWebViewClient
-import arch.cayenne.lib.common.data.model.JSResponseData
 import arch.cayenne.lib.common.ui.fragment.ShareFragment
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
+import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
+import arch.cayenne.lib.common.utils.ext.ResourceExt.getColor
+import arch.cayenne.lib.common.utils.ext.sharedViewModel
+import arch.cayenne.lib.common.web.WLSWebViewClient
 import arch.cayenne.module.chat.databinding.FragmentGameShareLayoutBinding
 import arch.cayenne.module.chat.ui.viewmodel.BetShareViewModel
 import arch.cayenne.module.chat.ui.viewmodel.GameBetShareViewModel
-import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import org.koin.core.scope.Scope
 import kotlin.reflect.KClass
+
 
 /**
  * @author: wenxi
@@ -50,6 +48,31 @@ class GameBetShareFragment : BaseFragment<GameBetShareViewModel, FragmentGameSha
         initWebView()
         mBinding.webView.loadUrl(BizUrl.GAME_BET_SHARE.url)
         ShareFragment.create(this)
+        shareViewModel.expandAnimStart = {
+//            mBinding.webView.apply {
+//                layoutParams.height = measuredHeight
+//                requestLayout()
+//            }
+        }
+        shareViewModel.expandAnimEnd = {
+//            mBinding.webView.apply {
+//                layoutParams.height = android.view.ViewGroup.LayoutParams.MATCH_PARENT
+//                requestLayout()
+//            }
+        }
+        val radius = 9.dp2px
+        mBinding.webView.outlineProvider = object : ViewOutlineProvider() {
+            override fun getOutline(view: View, outline: Outline) {
+                outline.setRoundRect(
+                    0,
+                    0,
+                    view.width,
+                    view.height + radius.toInt(),
+                    radius.toFloat()
+                )
+            }
+        }
+        mBinding.webView.clipToOutline = true
     }
 
     override fun initListener() {
@@ -71,7 +94,11 @@ class GameBetShareFragment : BaseFragment<GameBetShareViewModel, FragmentGameSha
                         } else if (it.params.pageName == "game") {
                             shareViewModel.closeDialog()
                             val gameId = it.params.gameId
-                           findNavController().navigate(arch.cayenne.lib.res.R.string.nav_module_gamedetail.deeplink())
+                            findNavController().navigate(
+                                arch.cayenne.lib.res.R.string.nav_module_gamedetail.deeplink(
+                                    "gameId" to gameId!!
+                                )
+                            )
                         }
                     }
                 }

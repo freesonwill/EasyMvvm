@@ -5,7 +5,7 @@ import arch.cayenne.lib.common.data.manager.UserDataManager
 import org.koin.java.KoinJavaComponent.inject
 import java.math.BigDecimal
 import java.math.RoundingMode
-
+import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
 /**
  * 負責最終顯示於畫面上的賠率與金額，根據歐洲盤或香港盤做變化
  */
@@ -15,15 +15,16 @@ object SportDisplayOddsExt {
     private val oddsType: Int get() = manager.getValue(UserDataKey.KEY_ODDS, 0)
 
     /**
+     * 香港盘赔率（不含本金）
+     * @see [getOdds]
      * @return string: 1234 轉換為 12.34, 1000 轉換為 10.00
      */
-    fun Int.getDisplayOdds(): String {
-        if (this <= 0) return "0"
-
+    fun Int.getDisplayOdds(stripTrailingZero:Boolean = true): String {
         val newOdds = this - oddsType * 100
-        if (newOdds <= 0) return "0"
-        val decimal = BigDecimal(newOdds).divide(BigDecimal(100))
-        return decimal.setScale(2, RoundingMode.DOWN).stripTrailingZeros().toPlainString()
+        val decimal = BigDecimal(newOdds.coerceAtLeast(0)).divide(BigDecimal(100))
+        return decimal.setScale(2, RoundingMode.DOWN)
+            .apply { if(stripTrailingZero) stripTrailingZeros()  }
+            .toPlainString()
     }
 
     fun Int.getDisplayOdds(odds: Int): String {

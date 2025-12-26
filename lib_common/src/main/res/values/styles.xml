@@ -2,7 +2,7 @@
 
 
     <style name="CustomToolbarStyle">
-        <item name="android:layout_height">46dp</item>
+        <item name="android:layout_height">50dp</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:paddingEnd">@dimen/title_bar_padding_end</item>
         <item name="android:paddingStart">@dimen/title_bar_padding_start</item>
@@ -48,12 +48,19 @@
         <item name="android:layout_height">38dp</item>
         <item name="android:layout_width">0dp</item>
     </style>
-
+    <style name="gameCustomToolbarLine">
+        <item name="android:layout_height">@dimen/dp_36</item>
+        <item name="android:layout_width">0dp</item>
+    </style>
     <style name="CustomToolbarEditStyle">
         <item name="android:layout_height">38dp</item>
         <item name="android:textSize">15sp</item>
     </style>
 
+    <style name="CustomBottomToolbarEditStyle">
+        <item name="android:layout_height">38dp</item>
+        <item name="android:textSize">14sp</item>
+    </style>
     <style name="NumberKeyboardButton">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">0dp</item>
@@ -64,6 +71,7 @@
         <item name="android:textStyle">bold</item>
         <item name="android:textColor">@color/color_FFFFFF</item>
         <item name="android:gravity">center</item>
+        <item name="skinnableFontWeight">500</item>
     </style>
 
     <style name="MoneyKeyboardButton">
@@ -88,6 +96,7 @@
         <item name="android:textStyle">bold</item>
         <item name="android:textColor">@color/color_FFFFFF</item>
         <item name="android:gravity">center</item>
+        <item name="android:fontFamily">@font/sf_pro</item>
     </style>
 
     <style name="ButtonStyle">

@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
-import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams
 import android.widget.TextView
 import androidx.core.content.res.ResourcesCompat
@@ -51,11 +50,13 @@ import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.ext.startFadeAnim
 import arch.cayenne.lib.common.utils.ext.touchBackPressed
 import arch.cayenne.lib.common.utils.helper.showToast
+import arch.cayenne.lib.database.entity.LiveMatchBean
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.lib.skin.widget.SkinnableTextView
 import arch.cayenne.module.bet.ui.fragment.BetSheetFragment
 import arch.cayenne.module.betslip.ui.fragment.BetSlipFragment
-import arch.cayenne.module.chat.ui.fragment.ChatHomeFragment
+import arch.cayenne.module.chat.ui.fragment.ChatBaseFragment
+import arch.cayenne.module.chat.ui.fragment.ChatLiveFragment
 import arch.cayenne.module.home.ui.view.LiveMainTabMediator
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
@@ -90,6 +91,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
     private var homeMediator: LiveMainTabMediator? = null
     private var indicatorDrawable: android.graphics.drawable.Drawable? = null
     private var customIndicator: CustomTabIndicator? = null
+    private var isChatKeyBoardPopup = false //如果键盘弹出了，禁止页面上下滑动时的收缩和扩展
     private val titleBarBinding: TitleBarLiveBinding by lazy {
         TitleBarLiveBinding.inflate(LayoutInflater.from(context), mBinding.titleBar, false)
     }
@@ -133,6 +135,9 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         mBinding.LayoutInterceptTouch.setLiveMainGestureListener(object : LiveMainGestureListener {
             //跟手滑动
             override fun onAdjustLayoutScroll(deltaY: Float, direction: LiveMainSlideDirection) {
+                if(isChatKeyBoardPopup){// 如果键盘弹出了，禁止页面上下滑动时的收缩和扩展
+                    return
+                }
                 LogUtils.e("animating------->${direction}")
                 mDirection = direction
                 //往下滑动,子类的rv,sc是否滑到了第一条或者顶部
@@ -451,6 +456,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
             mViewModel.getMainMatch(it)
             mViewModel.observeMatchBean(it)
             mViewModel.registerMatchInfoNotify(it)
+            sendMatchIdToChatFragment(it)
         }
         mViewModel.currentBalanceChange.observe(viewLifecycleOwner) {
             titleBarBinding.includedLayout.tvMoney.text =
@@ -464,6 +470,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                 mViewModel.setLeagueLogo(logo)
                 titleBarBinding.tvCompetitionName.text = it.basicInfo.matchName
                 mBinding.tvVideoVs.text = it.basicInfo.matchName
+                sendMatchToChatFragment(it)
             }
         }
         launch(Lifecycle.State.RESUMED) {
@@ -742,18 +749,35 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         }
     }
 
-    private fun getChatFragment(): ChatHomeFragment? {
+    private fun getChatFragment(): ChatBaseFragment? {
         val adapter = mBinding.vpPage.adapter?.let { it as PagerAdapter }
         val index = adapter!!.pages.indexOfFirst { it.title == R.string.live_chat.getString() }
         val tag = "f${adapter.getItemId(index)}"
-        val fragment = childFragmentManager.findFragmentByTag(tag)?.let { it as ChatHomeFragment }
+        val fragment = childFragmentManager.findFragmentByTag(tag)?.let { it as ChatBaseFragment }
         return fragment
     }
 
-    private fun createChatFragment(): ChatHomeFragment {
-        val fragment = ChatHomeFragment()
-        fragment.setMatchLiveData(mViewModel.matchId, mViewModel.mainMatch)
+    private fun createChatFragment(): ChatLiveFragment {
+        val fragment = ChatLiveFragment()
+        fragment.addEmojiPopupListen {
+            isChatKeyBoardPopup = it
+        }
         return fragment
+    }
+
+    private fun sendMatchIdToChatFragment(matchId: Long) {
+        val bundle = Bundle().apply {
+            putLong(ChatBaseFragment.MATCH_ID_KEY,matchId)
+        }
+        childFragmentManager.setFragmentResult(ChatBaseFragment.FRAGMENT_RESULT_KEY,bundle)
+    }
+
+    private fun sendMatchToChatFragment(match: LiveMatchBean) {
+        val bundle = Bundle().apply {
+            putBoolean(ChatBaseFragment.LIVE_START_KEY,match.liveInfo.charRoom)
+            putInt(ChatBaseFragment.MATCH_STATUS_KEY,match.basicInfo.status)
+        }
+        childFragmentManager.setFragmentResult(ChatBaseFragment.FRAGMENT_RESULT_KEY,bundle)
     }
 
     private fun showMediaSourceFragment() {

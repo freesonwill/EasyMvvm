@@ -15,9 +15,14 @@ sealed class BaseCurrencyData {
 
     data class CurrencyContentData2(
         val id: Int,
+        val ccy: String,
         val icon: String,
         val currencyName: String,
-        val amount: String,
-        val unit: String
+        val amount: Long,
+        val amountStr: String,
+        val exchangeAmount: String,
+        val unit: String,
+        val scale: Int = 2, //預設為10^2 = 100,
+        val isSelected: Boolean = false,
     ) : BaseCurrencyData()
 }

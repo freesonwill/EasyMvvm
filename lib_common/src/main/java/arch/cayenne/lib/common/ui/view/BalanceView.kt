@@ -8,12 +8,13 @@ import android.widget.FrameLayout
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
 import arch.cayenne.lib.common.R
+import arch.cayenne.lib.common.data.constants.BaseCurrencyData
 import arch.cayenne.lib.common.databinding.ViewBalanceBinding
 import arch.cayenne.lib.common.ui.fragment.CurrencyDialogFragment
 import arch.cayenne.lib.common.ui.viewmodel.BalanceViewModel
 import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
-import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
+import arch.cayenne.lib.common.utils.ext.SportIntExt.toBalanceString
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import com.bumptech.glide.Glide
@@ -42,7 +43,7 @@ class BalanceView : FrameLayout {
 
             val offset = if(isPortrait()) {
                 val h = ViewUtils.getStatusBarHeight(mBinding.root.context)
-                location.last() - h + mBinding.root.measuredHeight + 7.dp2px
+                location.last() - h + mBinding.root.measuredHeight - 1.dp2px
             } else {
                 location.first() + mBinding.root.measuredWidth + 15.dp2px
             }
@@ -51,7 +52,8 @@ class BalanceView : FrameLayout {
                 rotateArrow(false)
             }
             f.setonItemClickListener {
-                setMoney(it.amount)
+                setMoney(it)
+                setMoney(it.amountStr)
             }
             f.show(childFragmentManager)
         }
@@ -78,6 +80,10 @@ class BalanceView : FrameLayout {
         mBinding.tvWalletBalance.text = money
     }
 
+    fun setMoney(data: BaseCurrencyData.CurrencyContentData2) {
+        viewModel?.setDefaultCurrency(data.ccy)
+    }
+
     fun setIcon(icon: String) {
         Glide.with(context)
             .load(icon)
@@ -93,7 +99,7 @@ class BalanceView : FrameLayout {
                 setMoney("0.00")
                 setIcon("")
             } else {
-                setMoney(it.amount)
+                setMoney(it.amount.toBalanceString(it.scale))
                 setIcon(it.icon)
             }
         }

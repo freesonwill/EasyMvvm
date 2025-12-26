@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.base.ui.adapter.BaseAdapter
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
 import arch.cayenne.module.chat.data.compare.EmojiCompare
 import arch.cayenne.module.chat.data.constants.EmojiTypeEnum
@@ -13,6 +14,7 @@ import arch.cayenne.module.chat.data.model.EmojiModel
 import arch.cayenne.module.chat.databinding.ItemBidEmojiLayoutBinding
 import arch.cayenne.module.chat.databinding.ItemChatEmojiTitleLayoutBinding
 import arch.cayenne.module.chat.databinding.ItemEmojiLayoutBinding
+import arch.cayenne.module.chat.databinding.ItemRecylerFooterBinding
 
 /**
  * @author: wenxi
@@ -27,6 +29,7 @@ class EmojiGridAdapter :
     private var emojiType: EmojiTypeEnum = EmojiTypeEnum.NORMAL
     private var recentList: List<EmojiModel> = arrayListOf()
     private val topViewType = 1
+    private val bottomViewType = 4
     private val normalEmojiViewType = 2
     private val bidEmojiViewType = 3
     private var emojiListener: RecyclerItemListener<EmojiModel>? = null
@@ -64,14 +67,14 @@ class EmojiGridAdapter :
             val nBinding = binding
             when (nBinding) {
                 is ItemEmojiLayoutBinding -> {
-                    nBinding.iv.setOnClickListener {
+                    nBinding.container.setOnClickListener {
                         val position = it.tag as Int
                         emojiListener?.onItemClick(getItem(position), position)
                     }
                 }
 
                 is ItemBidEmojiLayoutBinding -> {
-                    nBinding.iv.setOnClickListener {
+                    nBinding.container.setOnClickListener {
                         val position = it.tag as Int
                         emojiListener?.onItemClick(getItem(position), position)
                     }
@@ -87,12 +90,12 @@ class EmojiGridAdapter :
             when (nBinding) {
                 is ItemEmojiLayoutBinding -> {
                     nBinding.iv.setImageResource(getItem(position).resId)
-                    nBinding.iv.tag = position
+                    nBinding.container.tag = position
                 }
 
                 is ItemBidEmojiLayoutBinding -> {
                     nBinding.iv.setImageResource(getItem(position).resId)
-                    nBinding.iv.tag = position
+                    nBinding.container.tag = position
                 }
 
                 else -> {
@@ -143,6 +146,7 @@ class EmojiGridAdapter :
                 false
             )
 
+            bottomViewType -> ItemRecylerFooterBinding.inflate(inflater, parent, false)
             normalEmojiViewType -> ItemEmojiLayoutBinding.inflate(
                 inflater,
                 parent,
@@ -161,9 +165,14 @@ class EmojiGridAdapter :
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if (position == 0) topViewType else if (emojiType == EmojiTypeEnum.NORMAL) normalEmojiViewType else bidEmojiViewType
-//        return  if (emojiType == EmojiTypeEnum.NORMAL) normalEmojiViewType else bidEmojiViewType
+        return if (position == 0) {
+            return topViewType
+        } else if (getItem(position).resId == -2) {
+            return bottomViewType
+        } else if (emojiType == EmojiTypeEnum.NORMAL) normalEmojiViewType else bidEmojiViewType
 
     }
+//        return  if (emojiType == EmojiTypeEnum.NORMAL) normalEmojiViewType else bidEmojiViewType
+
 
 }

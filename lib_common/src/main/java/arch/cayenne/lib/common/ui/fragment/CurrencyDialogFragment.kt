@@ -17,6 +17,7 @@ import android.view.ViewTreeObserver
 import android.view.Window
 import android.view.WindowManager
 import android.view.animation.DecelerateInterpolator
+import androidx.core.view.doOnPreDraw
 import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -34,6 +35,7 @@ import arch.cayenne.lib.common.ui.viewmodel.BalanceViewModel
 import arch.cayenne.lib.common.ui.viewmodel.CurrencyDialogViewModel
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+import com.blankj.utilcode.util.SizeUtils
 import kotlin.reflect.KClass
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -195,6 +197,16 @@ class CurrencyDialogFragment constructor() : BasePositionDialogFragment<Currency
             )
         }
 
+        //解決搜尋時動態改變Recycleview高度後，blurView下方左右的圓角消失問題
+        mBinding.blurView.apply {
+            clipToOutline = true // 開啟裁剪
+            outlineProvider = object : ViewOutlineProvider() {
+                override fun getOutline(view: View, outline: Outline) {
+                    outline.setRoundRect(0, 0, view.width, view.height, SizeUtils.dp2px(9f).toFloat())
+                }
+            }
+        }
+
     }
 
     override fun initData() {
@@ -218,6 +230,9 @@ class CurrencyDialogFragment constructor() : BasePositionDialogFragment<Currency
                 list.addAll(crypto)
             }
             currencyAdapter.submitList(list)
+            mBinding.rvCurrency.doOnPreDraw {
+                mBinding.blurView.invalidateOutline()
+            }
             currencySettingAdapter.submitList(fiat+crypto)
         }
     }

@@ -49,7 +49,7 @@ class GameAllListViewHolder(val item: ItemGameAllListBinding,var onItemClickList
         item.rvInnerList.layoutManager =
             LinearLayoutManager(item.rvInnerList.context, LinearLayoutManager.HORIZONTAL, false)
 
-        item.rvInnerList.adapter = GameAllListInnerAdapter(onItemClickListener?.run {::onChildItemClick} as (() -> Unit)?).also {
+        item.rvInnerList.adapter = GameAllListInnerAdapter(onItemClickListener?.run {::onChildItemClick} as ((Long) -> Unit)?).also {
             it.submitList(data.gameList)
         }
         item.tvTitle.text = data.name
@@ -59,20 +59,20 @@ class GameAllListViewHolder(val item: ItemGameAllListBinding,var onItemClickList
     }
     interface OnAllItemClickListener {
         fun onItemClick(data: GameAllContentData)
-        fun onChildItemClick()
+        fun onChildItemClick(gameId:Long)
     }
 }
 class GameAllContentDiff : DiffUtil.ItemCallback<GameAllContentData>() {
     override fun areItemsTheSame(
         oldItem: GameAllContentData,
         newItem: GameAllContentData
-    ): Boolean = oldItem.id == newItem.id
+    ): Boolean = oldItem.category == newItem.category
 
 
     override fun areContentsTheSame(
         oldItem: GameAllContentData,
         newItem: GameAllContentData
-    ): Boolean  = oldItem.id == newItem.id
+    ): Boolean  = oldItem.category == newItem.category
 
 }
 

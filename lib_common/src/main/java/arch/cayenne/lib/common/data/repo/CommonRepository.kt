@@ -27,13 +27,15 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class CommonRepository(
     override val scope: CoroutineScope,
     private val socketManager: WebSocketManager,
     private val userDataManager: UserDataManager,
     private val infoDao: InfoDao,
-    private val betDao: BetDao
+    private val betDao: BetDao,
+    private val balanceRepo: BalanceRepository
 ) : BaseRepository() {
 
     private val betResultFlow = MutableSharedFlow<List<BetResultLiteBean>>()
@@ -91,7 +93,11 @@ class CommonRepository(
             dispatcher = Dispatchers.IO,
             apiCode = ApiCode.BALANCE
         ) {
-            Client.BalanceReq.newBuilder().build()
+            Client.BalanceReq.newBuilder()
+                .apply {
+                    this.currency = balanceRepo.getCurrency()
+                }
+                .build()
         }
 
 
@@ -107,15 +113,17 @@ class CommonRepository(
         socketManager.observeProtoMessage<Client.BalanceNotify>(ApiCode.BALANCE_NOTIFY).collect {
             if (it.data == null || it.data!!.balance.isNullOrEmpty())
                 return@collect
-            infoDao.queryInfo()?.apply {
-                infoDao.update(
-                    InfoBean(
-                        this.uid,
-                        it.data!!.balance.balanceStringToLong(),
-                        this.currency,//账号余额通知中没有币种字段
-                        this.login
+            withContext(Dispatchers.IO) {
+                infoDao.queryInfo()?.apply {
+                    infoDao.update(
+                        InfoBean(
+                            this.uid,
+                            it.data!!.balance.balanceStringToLong(),
+                            this.currency,//账号余额通知中没有币种字段
+                            this.login
+                        )
                     )
-                )
+                }
             }
         }
     }
@@ -133,7 +141,6 @@ class CommonRepository(
                             resp.orderId,
                             BetResultStatusEnum.getStatusByCode(resp.status)
                         )
-
                         betDao.getDetailByOrderId(resp.orderId)?.let { detail ->
                             val selection = betDao.getSelections(detail.betId)
                             val resultLiteBean = if (selection.size == 1) {
@@ -142,7 +149,9 @@ class CommonRepository(
                                     s.sportId,
                                     s.matchName,
                                     s.name,
-                                    BetResultStatusEnum.getStatusByCode(resp.status) == BetResultStatusEnum.SUCCESS_BET
+                                    BetResultStatusEnum.getStatusByCode(resp.status) == BetResultStatusEnum.SUCCESS_BET,
+                                    detail.inputMoney,
+                                    detail.currency
                                 )
                             } else {
                                 val sportIds = selection.map { s -> s.sportId }
@@ -152,7 +161,9 @@ class CommonRepository(
                                     matchName,
                                     detail.comboK,
                                     detail.comboV,
-                                    BetResultStatusEnum.getStatusByCode(resp.status) == BetResultStatusEnum.SUCCESS_BET
+                                    BetResultStatusEnum.getStatusByCode(resp.status) == BetResultStatusEnum.SUCCESS_BET,
+                                    detail.inputMoney,
+                                    detail.currency
                                 )
                             }
                             resultList.add(resultLiteBean)

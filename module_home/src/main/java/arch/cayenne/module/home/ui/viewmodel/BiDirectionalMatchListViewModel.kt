@@ -220,14 +220,14 @@ class BiDirectionalMatchListViewModel : BaseMatchViewModel<MatchListRepository>(
                             setState(HomeState.Match.LoadSuccess)
                         }
 
-                        //向后查询成功，且为第一页， 则自动向前查询一页
-                        if (page == INITIAL_PAGE) {
-                            //向前查询一页数据
-                            //早盘日期为明天时，不能向前查询数据
-                            if (_queryDate.value != DateUtils.getTomorrowMidnight()) {
-                                loadPrevPage()
-                            }
-                        }
+//                        //向后查询成功，且为第一页， 则自动向前查询一页
+//                        if (page == INITIAL_PAGE) {
+//                            //向前查询一页数据
+//                            //早盘日期为明天时，不能向前查询数据
+//                            if (_queryDate.value != DateUtils.getTomorrowMidnight()) {
+//                                loadPrevPage()
+//                            }
+//                        }
 
                     }
                 }, autoUpdateState = false

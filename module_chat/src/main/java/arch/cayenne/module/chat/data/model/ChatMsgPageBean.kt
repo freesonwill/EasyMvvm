@@ -1,7 +1,8 @@
 package arch.cayenne.module.chat.data.model
 
 import arch.cayenne.lib.websocket.chat.data.ChatMsg
-import arch.cayenne.lib.common.data.constants.MsgType
+import arch.cayenne.lib.common.data.constants.ChatMsgType
+import arch.cayenne.lib.websocket.chat.data.ChatRefUser
 
 /**
  * @author: wenxi
@@ -15,17 +16,20 @@ data class ChatMsgPageBean(
     val msgId: String,
     val content: String,
     val timestamp: String,
-    val refUid: String,
-    val refUserName: String,
-    val refAvatarId: Int,
     val onlyForSelf: Int,
-    val platform: Int,
-    val msgType: MsgType,
-    val atRange:List<IntRange>? = null
-) :Comparable<ChatMsgPageBean>{
+    val msgType: ChatMsgType,
+    val atRange: List<IntRange>? = null,
+    val replaceUserName: String? = null,
+    val refUid: List<Long>? = null,
+    val refInfos:  Map<Long, ChatRefUser>? = null,
+    val extraData:Map<String,String>?=null
+) : Comparable<ChatMsgPageBean> {
     companion object {
-
-        fun toChatPageBean(bean: ChatMsg, msgType: MsgType, atRange: List<IntRange>? = null): ChatMsgPageBean {
+        fun toChatPageBean(
+            bean: ChatMsg,
+            msgType: ChatMsgType,
+            atRange: List<IntRange>? = null
+        ): ChatMsgPageBean {
             return ChatMsgPageBean(
                 uid = bean.uid,
                 userName = bean.userName,
@@ -34,16 +38,12 @@ data class ChatMsgPageBean(
                 content = bean.content,
                 timestamp = bean.timestamp,
                 refUid = bean.refUid,
-                refUserName = bean.refUserName,
-                refAvatarId = bean.refAvatarId,
+                refInfos = bean.refInfos,
                 onlyForSelf = bean.onlyForSelf,
-                platform = bean.platform,
                 msgType = msgType,
                 atRange = atRange
             )
         }
-
-
 
 
     }

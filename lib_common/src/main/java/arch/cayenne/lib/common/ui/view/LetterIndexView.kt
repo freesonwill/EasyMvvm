@@ -127,8 +127,8 @@ class LetterIndexView @JvmOverloads constructor(
     private fun loadDefaultSetting() {
         fontSize =10.sp2px
         circleRadiusExtra = 2f.dp2px.toFloat()
-        circlePadding =2f.dp2px
-        itemPadding =5f.dp2px
+        circlePadding =2.dp2px
+        itemPadding =5.dp2px
         textColor = Color.BLACK
         textSelectedColor = Color.WHITE
         circleColor = Color.RED
@@ -304,7 +304,7 @@ class LetterIndexView @JvmOverloads constructor(
     private fun initPopupwindow() {
         popTextView = createPopTextView()
         popView = createPopView()
-        pop = PopupWindow(popView,90f.dp2px, 90f.dp2px)
+        pop = PopupWindow(popView,90.dp2px, 90.dp2px)
 
         pop!!.setBackgroundDrawable(shapeDrawable)
     }

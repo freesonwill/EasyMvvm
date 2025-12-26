@@ -5,6 +5,7 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.data.constants.DataState
+import arch.cayenne.lib.base.data.model.CodeException
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.data.repo.BalanceRepository
 import arch.cayenne.lib.common.ui.viewmodel.Event
@@ -18,7 +19,7 @@ import arch.cayenne.lib.database.entity.InfoBean
 import arch.cayenne.module.bet.data.ComboMultiBetBean
 import arch.cayenne.module.bet.data.OddsChangeEnum
 import arch.cayenne.module.bet.repo.SingleBetRepository
-import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import java.math.BigDecimal
@@ -61,6 +62,8 @@ class SingleBetViewModel(
 
     val moneySymbol: String
         get() = CurrencySymbols.getSymbol(_onBalanceListener.value?.currency ?: "")
+    private val _sendBetting = MutableLiveData(false)
+    val sendBetting:LiveData<Boolean> = _sendBetting
 
     private val _onBetWinMoney = MediatorLiveData<String>().apply {
         var odds = 100
@@ -163,36 +166,40 @@ class SingleBetViewModel(
         }
     }
 
-    fun sendBet(): Boolean {
+    suspend fun sendBet(): Result<Unit> {
         if (!checkNetwork()) {
-            return false
+            return Result.failure(CodeException(-1, "Network Unavailable"))
         }
-        val money = onEditNumber.value ?: return false
-        val oddsChange = _oddsChangeListener.value ?: return false
+        val money = onEditNumber.value ?: return Result.failure(CodeException(-1, "Empty bet amount"))
+        val oddsChange = _oddsChangeListener.value ?: return Result.failure(CodeException(-1, "OddsChange is null"))
         val currentOdds = _onBetSheetListener.value?.odds ?: 0
         val reserveOdds = _onReserveOddsListener.value?.reserveDisplayOdds()
 
-        val amount = money.toMoney()
-        viewModelScope.launch {
+        _sendBetting.value = true
+        val result: Result<Unit> = let {
+            val amount = money.toMoney()
             if (reserveOdds == null || reserveOdds == currentOdds) {
-                val isSuccess = async {
-                    betRepo.saveToSingle()
-                }.await()
-                if (isSuccess) {
-                    betRepo.sendBet(amount, oddsChange)
-                }
+                val isSuccess = betRepo.saveToSingle()
+                if (isSuccess.isFailure) return@let isSuccess
+                betRepo.sendBet(amount, oddsChange)
             } else {
-                val isSuccess = async {
-                    betRepo.saveToReserve(reserveOdds, amount)
-                }.await()
-                if (isSuccess) {
-                    betRepo.sendReserve(amount)
-                }
+                val isSuccess = betRepo.saveToReserve(reserveOdds, amount)
+                if (isSuccess.isFailure) return@let isSuccess
+                betRepo.sendReserve(amount)
             }
         }
-        return true
-    }
 
+        if(result.isFailure) {
+            _sendBetting.value = false
+        } else {
+            //成功时会跳转，延迟设置，否则会看到残影
+            viewModelScope.launch {
+                delay(200)
+                _sendBetting.value = false
+            }
+        }
+        return result
+    }
     fun removeBet() {
         betRepo.removeBet()
     }

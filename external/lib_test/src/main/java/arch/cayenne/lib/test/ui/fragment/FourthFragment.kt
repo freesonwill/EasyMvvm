@@ -4,6 +4,7 @@ import android.os.Bundle
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.viewmodel.EmptyViewModel
 import arch.cayenne.lib.common.utils.ext.NavResultExt.sendResult
+import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.test.R
 import arch.cayenne.lib.test.databinding.FragmentTestFourthBinding
 import kotlin.reflect.KClass
@@ -24,5 +25,10 @@ class FourthFragment : BaseFragment<EmptyViewModel, FragmentTestFourthBinding>()
     }
 
     override suspend fun createObserver() {
+    }
+
+    override suspend fun onArgumentsChanged(oldArgs: Bundle?, newArgs: Bundle?) {
+        super.onArgumentsChanged(oldArgs, newArgs)
+        showToast("FourthFragment onArgumentsChanged oldArgs:$oldArgs,newArgs:$newArgs")
     }
 }

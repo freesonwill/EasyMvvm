@@ -8,6 +8,7 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.core.os.bundleOf
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import arch.cayenne.lib.base.BuildConfig
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
@@ -140,31 +141,28 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
                     id++, arch.cayenne.lib.common.R.drawable.ic_drawer_recently_played,
                     arch.cayenne.lib.common.R.string.drawer_recently_played
                 ) {
-                    CommonBiz.jump2HomePage(this , HomePageEnum.ME, bundleOf(
-                        FragmentResultEnum.KEY_ME_BOTTOM.name to 0
-                    ))
+                    navigate(arch.cayenne.lib.res.R.string.nav_module_recently_played_fragment.deeplink() )
                 },
                 CommonFeaturesBean(
                     id++, arch.cayenne.lib.common.R.drawable.ic_drawer_game_collection,
                     arch.cayenne.lib.common.R.string.drawer_game_collections
                 ) {
-                    CommonBiz.jump2HomePage(this , HomePageEnum.ME,bundleOf(
-                        FragmentResultEnum.KEY_ME_BOTTOM.name to 1
-                    ))
+                    navigate(arch.cayenne.lib.res.R.string.nav_module_game_favourite.deeplink() )
                 },
                 CommonFeaturesBean(
                     id++, arch.cayenne.lib.common.R.drawable.ic_drawer_match_collection,
                     arch.cayenne.lib.common.R.string.drawer_match_collections
                 ) {
-                    CommonBiz.jump2HomePage(this , HomePageEnum.ME,bundleOf(
-                        FragmentResultEnum.KEY_ME_BOTTOM.name to 2
-                    ))
+                    navigate(arch.cayenne.lib.res.R.string.nav_module_match_favourite.deeplink() )
                 },
                 CommonFeaturesBean(
                     id++, arch.cayenne.lib.common.R.drawable.ic_drawer_gift,
                     arch.cayenne.lib.common.R.string.drawer_gift
                 ) {
-                    navigatePage(arch.cayenne.lib.res.R.string.nav_module_promotion_fragment.deeplink())
+                    navigate(
+                        arch.cayenne.lib.res.R.string.nav_module_web_fragment
+                            .deeplink("url" to BizUrl.ACTIVITY.url)
+                    )
                 },
                 CommonFeaturesBean(
                     id++, arch.cayenne.lib.common.R.drawable.ic_drawer_settings,
@@ -275,7 +273,7 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
 
         var id = 0
         earningFeaturesAdapter.submitList(
-            listOf(
+            listOfNotNull(
                 CommonFeaturesBean(
                     id++, arch.cayenne.lib.common.R.drawable.ic_drawer_invite,
                     arch.cayenne.lib.common.R.string.drawer_invite,
@@ -291,7 +289,18 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
                     navigatePage(arch.cayenne.lib.res.R.string.nav_module_partner_fragment.deeplink())
                 },
 
-                )
+                if (BuildConfig.BUILD_TYPE != "release") {
+                    CommonFeaturesBean(
+                        id++, arch.cayenne.lib.common.R.drawable.ic_drawer_help,
+                        arch.cayenne.lib.common.R.string.drawer_debug
+                    ) {
+                        navigate(arch.cayenne.lib.res.R.string.nav_module_debug_fragment.deeplink())
+                    }
+                } else {
+                    null
+                }
+
+            )
         )
 
 

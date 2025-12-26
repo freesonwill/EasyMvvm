@@ -9,8 +9,8 @@
         android:id="@+id/tv_recent"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_16"
-        android:layout_marginStart="@dimen/dp_6"
-        android:layout_marginTop="@dimen/dp_12"
+        android:layout_marginStart="@dimen/dp_9"
+        android:layout_marginTop="@dimen/dp_11"
         android:text="最近使用"
         android:textColor="@color/color_909092"
         android:textSize="@dimen/sp_11"
@@ -23,16 +23,14 @@
         android:layout_width="match_parent"
         android:layout_height="42dp"
         android:layout_marginTop="@dimen/dp_2"
-        app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_recent" />
 
     <TextView
         android:id="@+id/tv_all"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_16"
-        android:layout_marginStart="@dimen/dp_8"
+        android:layout_marginStart="@dimen/dp_9"
         android:layout_marginTop="@dimen/dp_12"
-        android:layout_marginBottom="@dimen/dp_2"
         android:text="全部表情"
         android:textColor="@color/color_909092"
         android:textSize="@dimen/sp_11"

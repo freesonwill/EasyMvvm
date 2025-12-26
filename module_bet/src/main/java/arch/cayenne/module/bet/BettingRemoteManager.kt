@@ -1,5 +1,6 @@
 package arch.cayenne.module.bet
 
+import arch.cayenne.lib.common.data.repo.BalanceRepository
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
@@ -39,7 +40,8 @@ import kotlinx.coroutines.withContext
 
 class BettingRemoteManager(
     private val scope: CoroutineScope,
-    private val socketManager: WebSocketManager
+    private val socketManager: WebSocketManager,
+    private val balanceRepo: BalanceRepository
 ) {
 
     private val _matchMarketNotifyFlow: MutableSharedFlow<List<BetNotifySelectionBean>> =
@@ -77,7 +79,7 @@ class BettingRemoteManager(
      * @param oddsChange
      * @return
      */
-    suspend fun singleBet(bean: BetSelectionBean, money: Long, oddsChange: OddsChangeEnum): SingleBetDataModel? {
+    suspend fun singleBet(bean: BetSelectionBean, money: Long, oddsChange: OddsChangeEnum): SingleBetDataModel {
         val res = socketManager.sendAndWaitProtoMessageResponse<Client.SingleBetResp>(
             scope = scope,
             dispatcher = Dispatchers.IO,
@@ -89,6 +91,7 @@ class BettingRemoteManager(
                 this.odds = bean.odds.getOdds()
                 this.betAmount = money.getMoney()
                 this.oddsChange = oddsChange.value
+                this.currency = balanceRepo.getCurrency()
             }.build()
         }
         return if (res.error == null && res.data != null) {
@@ -101,7 +104,12 @@ class BettingRemoteManager(
             )
         } else {
             if (res.error is ResponseTimeOutError) {
-                null
+                SingleBetDataModel(
+                    isSuccessful = false,
+                    message = res.error!!.msg,
+                    orderId = "",
+                    orderStatus = -1
+                )
             } else {
                 SingleBetDataModel(
                     isSuccessful = false,
@@ -138,6 +146,7 @@ class BettingRemoteManager(
                     this.odds = reserveOdds.getOdds()
                 })
                 this.betAmount = money.getMoney()
+                this.currency = balanceRepo.getCurrency()
             }.build()
         }
         return if (res.error == null && res.data != null) {
@@ -195,6 +204,7 @@ class BettingRemoteManager(
                         }.build()
                     }
                 )
+                this.currency = balanceRepo.getCurrency()
             }.build()
         }
         return if (res.error == null && res.data != null) {

@@ -6,7 +6,7 @@ package arch.cayenne.module.chat.manager
  * @description: 软件盘弹出隐藏监听
  */
 interface SoftAnimListener {
-    fun setNavigationStatus(hasNavigation:Boolean,navigationHeight:Int)
+    fun setNavigationStatus(hasNavigation:Boolean,navigationHeight:Int,statusBar:Int)
     fun onSoftKeyBoardHide()
     fun onSoftKeyBoardShow(keyboardHeight:Int)
     fun secondSoftKeyBoardShow()

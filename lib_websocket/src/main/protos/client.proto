@@ -85,6 +85,7 @@ message ListMatchReq {
   int64 cursor_match_start_time = 7; // 比赛开始时间游标
   int32 size = 8;         // 每页显示数量,最大50
   bool reverse = 9; //true-上页，false-下页
+  int32 sort_type = 10; //排序类型 0-按时间排序 1-按热门排序
 }
 
 message ListMatchResp {
@@ -122,6 +123,7 @@ message ListSportResp {
 
 // 500-1005: 查询余额
 message BalanceReq {
+  string currency = 1; // 币种
 }
 
 message BalanceResp {
@@ -194,6 +196,7 @@ message SingleBetReq {
   string odds = 3;        //required 赔率
   string bet_amount = 4;  //required 投注
   int32 odds_change = 5;  //required 接受赔率变化类型,0:不接受赔率变动 1:接受最优赔率变动 2:接受任意赔率变动
+  string currency = 6; //币种
 }
 
 message SingleBetResp {
@@ -206,6 +209,7 @@ message SingleBetResp {
 message MultipleBetReq {
   repeated galaxy.common.proto.BetOption bet = 1;     // 投注项
   repeated galaxy.common.proto.BetCombo combo = 2;    // 串关方式
+  string currency = 3; //币种
 }
 
 message MultipleBetResp {
@@ -289,6 +293,7 @@ message EarlySettlePriceResp {
 message ReserveBetReq {
   galaxy.common.proto.BetOption bet = 1;  // 投注项
   string bet_amount = 2;  //required  每笔下注金额
+  string currency = 3; //币种
 }
 
 message ReserveBetResp {
@@ -422,6 +427,7 @@ message ListCollectReq {
 
 message ListCollectResp {
   repeated galaxy.common.proto.Match match = 1; //比赛
+  int32 total = 2;
 }
 
 
@@ -612,6 +618,31 @@ message SystemMsgNotify {
   string title = 3; //消息标题
   string content = 4;  //消息内容
   int64 create_time = 5;  //消息创建时间
+}
+//600-1024: 赛事推广
+message MatchPromotionMessage {
+  int32 id = 1;  //消息id
+  int32 status = 2; //状态
+  int32 tournament_id = 3;   //联赛id
+  int32 weight = 4;   //权重
+  int32 displayArea = 5;   //显示区域
+  string language = 6;   //语言
+  string picUrl = 7;   //广告图地址
+  int64 create_time = 8;  //消息创建时间
+}
+//600-1014: 进球通知
+message GoalNotify {
+  int32 sport_id = 1;   //球类
+  int64 match_id = 2;   //比赛id
+  string home_team = 3;     //主队名称
+  int32 home_team_id = 4;   //主队id
+  string home_team_icon = 5;//主队icon
+  int32 home_team_score = 6;//主队得分
+  string away_team = 7;     //客队名称
+  int32 away_team_id = 8;   //客队id
+  string away_team_icon = 9;  //客队icon
+  int32 away_team_score = 10;  //客队得分
+  int32 clock = 11;   //走表
 }
 
 //700-2001: 比赛统计数据

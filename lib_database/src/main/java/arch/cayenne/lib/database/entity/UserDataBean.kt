@@ -1,26 +1,27 @@
 package arch.cayenne.lib.database.entity
 
+import androidx.room.ColumnInfo
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity
 data class UserDataBean(
-    @PrimaryKey val id: Long,
-    val name: String,
+    @PrimaryKey(autoGenerate = true) val id: Int = 0,
+    val nickname: String,
 
-    // 使用 @Embedded 展開 Avatar
     @Embedded(prefix = "avatar_")
     val avatar: AvatarEmbedded,
 
     val registerTime: Long,
     val vipLevel: Int,
-    val balanceTotal: Long,
+    val score: Long,
 
-    val balanceWallet: Map<String, Long>,
+    @ColumnInfo(name = "wallet_list")
+    val list: List<WalletBean>,
 
-    val currentBetAmount: Double,
-    val requiredBetAmount: Double,
+    val admittedBetScore: Long,
+    val requiredAdmittedBetScore: Long,
     val vipStage: String,
     val nicknameChangeCount: Int
 )
@@ -28,4 +29,10 @@ data class UserDataBean(
 data class AvatarEmbedded(
     val url: String,
     val thumbhash: String
+)
+
+data class WalletBean(
+    val currency: String,
+    val balance: Long,
+    val convertedAmount: Long
 )

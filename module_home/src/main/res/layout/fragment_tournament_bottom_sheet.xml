@@ -60,7 +60,6 @@
         app:layout_constraintStart_toEndOf="@id/iv_search_icon"
         app:layout_constraintTop_toTopOf="@id/ll_search_bar"
         tools:ignore="MissingConstraints" />
-
     <arch.cayenne.lib.skin.widget.SkinnableImageView
         android:id="@+id/iv_home_league_collapse"
         android:layout_width="63dp"
@@ -77,8 +76,7 @@
         android:id="@+id/group_top"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="invisible"
-        app:constraint_referenced_ids="ll_search_bar,tv_tournament_section_title, iv_search_icon, ce_search" />
+        android:visibility="invisible" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_tournament_list"
@@ -142,9 +140,10 @@
     <arch.cayenne.lib.common.ui.view.DynamicStateLayout
         android:id="@+id/cl_dynamics"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:background="@color/color_1E1E1E"
+        app:layout_constraintBottom_toTopOf="@+id/tv_reset"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ll_search_bar" />

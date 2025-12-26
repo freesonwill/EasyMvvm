@@ -7,11 +7,11 @@ import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.common.data.constants.LanguageType
 import arch.cayenne.lib.common.data.constants.PreloadEnum
+import arch.cayenne.lib.common.data.constants.SPORT_SERVER_WSS
 import arch.cayenne.lib.common.data.constants.SportEnum
 import arch.cayenne.lib.common.data.constants.UserDataKey
 import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.database.GameDatabase
-import arch.cayenne.lib.database.dao.UserDataDao
 import arch.cayenne.lib.database.entity.AvatarEmbedded
 import arch.cayenne.lib.database.entity.CurrencyBean
 import arch.cayenne.lib.database.entity.SportBean
@@ -19,13 +19,15 @@ import arch.cayenne.lib.database.entity.SportTournamentCrossRef
 import arch.cayenne.lib.database.entity.TournamentBean
 import arch.cayenne.lib.database.entity.TournamentMatchRef
 import arch.cayenne.lib.database.entity.UserDataBean
+import arch.cayenne.lib.database.entity.WalletBean
 import arch.cayenne.lib.http.HttpClient
 import arch.cayenne.lib.http._interface.IAccount
 import arch.cayenne.lib.http._interface.IConfig
+import arch.cayenne.lib.http.data.AccountInfo
 import arch.cayenne.lib.http.data.CurrencyInfo
-import arch.cayenne.lib.http.data.ProfileInfo
 import arch.cayenne.lib.websocket.WebSocketManager
 import arch.cayenne.module.home.data.constants.PlayType
+import arch.cayenne.module.home.data.constants.MatchListSortType
 import arch.cayenne.module.home.data.constants.playTypeToShowType
 import arch.cayenne.module.home.data.repo.HomeRepository
 import com.blankj.utilcode.util.GsonUtils
@@ -38,6 +40,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import java.util.Locale
 import kotlin.random.Random
 
 class ModuleRepository(
@@ -106,31 +109,43 @@ class ModuleRepository(
                     }
                 },
                 onFailure = { code, msg, throwable ->
-                    "response------>$code,$msg,$throwable".loge(TAG)
+                    "ProfileInfo failure, response------>$code,$msg,$throwable".loge(TAG)
                 }
             )
         }
     }
 
-    fun saveProfileInfo(profileInfo: ProfileInfo) {
+    fun saveProfileInfo(profileInfo: AccountInfo) {
         database.userDataDao().insert(
             UserDataBean(
-                id = profileInfo.id,
-                name = profileInfo.name,
+                nickname = profileInfo.nickname,
                 avatar = AvatarEmbedded(
                     url = profileInfo.avatar.url,
                     thumbhash = profileInfo.avatar.thumbhash
                 ),
                 registerTime = profileInfo.registerTime,
                 vipLevel = profileInfo.vipLevel,
-                balanceTotal = profileInfo.balanceTotal,
-                balanceWallet = profileInfo.balanceWallet,
-                currentBetAmount = profileInfo.currentBetAmount,
-                requiredBetAmount = profileInfo.requiredBetAmount,
+                score = profileInfo.score,
+                list = profileInfo.list.map { WalletBean(it.ccy, it.score, it.exchangeScore) },
+                admittedBetScore = profileInfo.admittedBetScore,
+                requiredAdmittedBetScore = profileInfo.requiredAdmittedBetScore,
                 vipStage = profileInfo.vipStage,
-                nicknameChangeCount = profileInfo.nicknameChangeCount
+                nicknameChangeCount = profileInfo.nicknameChangeCount,
             )
         )
+    }
+
+    fun saveDefaultCurrency() {
+        //做塞入default貨幣，如果初始狀態的話
+        //找預設語言的錢包，針對其使語言的特別處理，中日韓顯示該國貨幣，其餘顯示美金
+        if (manager.getValue(UserDataKey.KEY_DEFAULT_CURRENCY, "") == "") {
+            val currentLanguage = Locale.getDefault().language
+            if (currentLanguage == "zh") {
+                manager.setKeyValue(UserDataKey.KEY_DEFAULT_CURRENCY, "CNY")
+            } else {
+                manager.setKeyValue(UserDataKey.KEY_DEFAULT_CURRENCY, "USD")
+            }
+        }
     }
 
     fun getCurrencyConfig() {
@@ -143,10 +158,11 @@ class ModuleRepository(
                 onSuccess = { resp ->
                     if (resp.code == 0) {
                         saveCurrencyConfig(resp.data)
+                        getProfileInfo()
                     }
                 },
                 onFailure = { code, msg, throwable ->
-                    "response------>$code,$msg,$throwable".loge(TAG)
+                    "getCurrencyConfig onFailure, response------>$code,$msg,$throwable".loge(TAG)
                 }
             )
         }
@@ -270,7 +286,8 @@ class ModuleRepository(
                         page = 0,
                         date = 0,//default沒給，只能預設為是今日
                         matchId = match.matchId,
-                        order = index
+                        order = index,
+                        sortType = MatchListSortType.BY_TIME.type
                     )
                 }
                 database.matchDao().insertMatch(
@@ -291,7 +308,7 @@ class ModuleRepository(
 
     //开始连接服务器
     fun startSocket() {
-        socketManager.connect("wss://betwavepro.ja700.com/fb-ws")
+        socketManager.connect(SPORT_SERVER_WSS)
     }
 }
 

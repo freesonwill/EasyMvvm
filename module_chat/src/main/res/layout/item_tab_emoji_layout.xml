@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
-    android:layout_width="@dimen/dp_66"
+    android:layout_width="@dimen/dp_68"
     android:layout_height="@dimen/dp_24"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal"
@@ -12,6 +12,9 @@
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:src="@drawable/tab_emoji"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="@dimen/dp_1"
         />
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/tab_tv"
@@ -22,6 +25,11 @@
         android:layout_gravity="center_vertical"
         android:textColor="@color/white"
         android:text="Emoji"
+        android:layout_marginTop="2dp"
         app:skinnableFontWeight="500"
-        tools:ignore="HardcodedText" />
-</androidx.appcompat.widget.LinearLayoutCompat>
+        tools:ignore="HardcodedText"
+        app:layout_constraintLeft_toRightOf="@id/tab_icon"
+        app:layout_constraintTop_toTopOf="@id/tab_icon"
+
+        />
+</androidx.constraintlayout.widget.ConstraintLayout>

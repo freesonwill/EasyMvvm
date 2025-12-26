@@ -10,13 +10,13 @@ import arch.cayenne.lib.base.data.remote.ApiResponseState.Start.dataAs
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.common.ui.viewmodel.Event
 import arch.cayenne.lib.database.entity.GameSupplierDataModel
-import com.walisport.module.hall.data.GameContentData
-import com.walisport.module.hall.data.GamePageVo
-import com.walisport.module.hall.data.GameVo
+import com.walisport.module.business.common.data.Category
+import com.walisport.module.business.common.data.GameContentData
+import com.walisport.module.business.common.data.GamePageVo
+import com.walisport.module.business.common.data.constants.GameSortType
+import com.walisport.module.business.common.data.toGameContentData
 import com.walisport.module.hall.data.HallRepository
 import com.walisport.module.hall.data.HallRepository.Companion.INITIAL_PAGE
-import com.walisport.module.hall.data.constants.GameSortType
-import com.walisport.module.hall.data.toGameContentData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.core.component.inject
@@ -54,9 +54,15 @@ class GameCategoryViewModel : BaseViewModel() {
     }
 
     fun getCategory(): Int {
-        return category
+        return if (category==0)  Category.HOT.type else category
+    }
+    fun clearSupplierSelected(){
+        repository.clearSelectedByType(getCategory())
     }
 
+    fun selectSupplierId(id: Int){
+        repository.selectSupplierId(getCategory(),id)
+    }
 
     fun setSortType(sortType: GameSortType) {
         this.sortType = sortType
@@ -69,7 +75,7 @@ class GameCategoryViewModel : BaseViewModel() {
 
     fun getSuppliers(type: Int) {
         viewModelScope.launch(Dispatchers.IO) {
-            _gameSupplierList.postValue(repository.getSupplierByGameTypeId(type))
+            _gameSupplierList.postValue(repository.getSupplierByGameTypeId(getCategory()))
         }
     }
 

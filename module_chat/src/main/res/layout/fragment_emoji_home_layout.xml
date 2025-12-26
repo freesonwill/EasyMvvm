@@ -35,68 +35,41 @@
             <arch.cayenne.lib.skin.widget.SkinnableTabLayout
                 android:id="@+id/emoji_tablayout"
                 android:layout_width="match_parent"
-                android:layout_height="24dp"
+                android:layout_height="30dp"
                 android:background="@color/tran_0"
                 app:tabBackground="@color/tran_0"
-                app:tabIndicatorHeight="@dimen/dp_0"
                 app:tabMode="fixed"
                 app:tabPadding="@dimen/dp_0"
                 app:tabRippleColor="@color/tran_0"
                 app:tabSelectedTextColor="@color/white"
-                app:tabTextColor="@color/color_C0C0C0" />
+                app:tabTextColor="@color/color_C0C0C0"
+                app:tabIndicator="@drawable/bg_order_indicator"
+                app:tabIndicatorAnimationDuration="250"
+                app:tabIndicatorAnimationMode="linear"
+                app:tabIndicatorColor="@color/color_00E0E5"
+                app:tabIndicatorFullWidth="false"
+                app:tabIndicatorGravity="bottom"
+                app:tabIndicatorHeight="2dp"
+                />
 
-            <arch.cayenne.lib.common.ui.view.CustomTabIndicator
-                android:id="@+id/customIndicator"
-                android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:layout_marginTop="4dp"
-                android:background="@color/tran_0"
-                app:tabTextColor="@color/color_00E0E5" />
+
 
         </LinearLayout>
 
-        <androidx.viewpager2.widget.ViewPager2
-            android:id="@+id/viewpager"
+        <arch.cayenne.lib.common.ui.view.OnlyInnerViewPager2
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginStart="@dimen/dp_6"
+            android:layout_marginStart="@dimen/dp_3"
             android:layout_marginEnd="@dimen/dp_1"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/ll_tab" />
+            app:layout_constraintTop_toBottomOf="@id/ll_tab"
+            >
+            <androidx.viewpager2.widget.ViewPager2
+                android:id="@+id/viewpager"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
 
-        <LinearLayout
-            android:id="@+id/tv_del"
-            android:layout_width="@dimen/dp_62"
-            android:layout_height="32dp"
-            android:layout_marginEnd="@dimen/dp_6"
-            android:layout_marginBottom="@dimen/dp_12"
-            android:background="@drawable/shape_20"
-            android:backgroundTint="@color/color_3D404D"
-            android:gravity="center"
-            android:stateListAnimator="@animator/layout_alpha_animator"
-            android:textColor="@color/color_FFFFFF"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintRight_toLeftOf="@id/tv_send">
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:layout_width="@dimen/dp_30"
-                android:layout_height="@dimen/dp_24"
-                android:src="@drawable/icon_emoji_del" />
-        </LinearLayout>
-
-        <arch.cayenne.lib.skin.widget.SkinnableTextView
-            android:id="@+id/tv_send"
-            android:layout_width="@dimen/dp_62"
-            android:layout_height="32dp"
-            android:layout_marginEnd="@dimen/dp_12"
-            android:background="@drawable/bg_keyboard_send"
-            android:gravity="center"
-            android:stateListAnimator="@animator/layout_alpha_animator"
-            android:text="@string/send"
-            android:textColor="@color/color_FFFFFF"
-            app:layout_constraintBottom_toBottomOf="@id/tv_del"
-            app:layout_constraintRight_toRightOf="parent" />
-
+        </arch.cayenne.lib.common.ui.view.OnlyInnerViewPager2>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 

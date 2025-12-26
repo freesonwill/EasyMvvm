@@ -44,6 +44,7 @@ dependencies {
     implementation(project(":lib_http"))
     implementation(project(":module_game_detail"))
     implementation(project(":module_popup_slot"))
+    implementation(project(":module_business_common"))
     testImplementation(libs.junit)
     implementation(libs.banner)
     androidTestImplementation(libs.androidx.junit)

@@ -7,7 +7,6 @@ import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.common.data.constants.BaseCurrencyData
 import arch.cayenne.lib.common.data.repo.BalanceRepository
 import kotlinx.coroutines.launch
-import java.util.Locale
 
 class BalanceViewModel(
     private val balanceRepository: BalanceRepository
@@ -24,22 +23,9 @@ class BalanceViewModel(
     init {
         viewModelScope.launch {
             balanceRepository.observeUserCurrency().collect {
-                val fait = it.first
-                val currentLanguage = Locale.getDefault().language
-                //針對其使語言的特別處理，中日韓顯示該國貨幣，其餘顯示美金
-                //TODO icon沒處理，其他語言的處理還有缺
-                if (currentLanguage == "zh" && fait.find { it.unit == "¥" } != null) {
-                    _onBalanceChange.value = fait.find { it.unit == "¥" }!!
-                } else if (fait.find { it.unit == "$" } != null) {
-                    _onBalanceChange.value = fait.find { it.unit == "$" }!!
-                } else if (fait.isNotEmpty()){
-                    _onBalanceChange.value = fait.first()
-                } else {
-                    _onBalanceChange.value = null
-                }
+                _onBalanceChange.value = it
             }
         }
-
     }
 
     fun getUserCurrency() {
@@ -57,6 +43,10 @@ class BalanceViewModel(
         viewModelScope.launch {
             _onUserCurrencyChange.value = balanceRepository.search(keyword)
         }
+    }
+
+    fun setDefaultCurrency(ccy: String) {
+        balanceRepository.setDefaultCurrency(ccy)
     }
 
 }

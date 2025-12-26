@@ -356,7 +356,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_12"
-            android:layout_marginTop="@dimen/dp_12"
+            android:layout_marginTop="@dimen/dp_11"
             android:text="@string/drawer_common_function"
             android:textColor="@color/drawer_notification_title"
             android:textSize="@dimen/sp_15"
@@ -413,7 +413,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_12"
-            android:layout_marginTop="@dimen/dp_12"
+            android:layout_marginTop="@dimen/dp_11"
             android:text="@string/drawer_earning_function"
             android:textColor="@color/drawer_notification_title"
             android:textSize="@dimen/sp_15"
@@ -422,7 +422,8 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_earning_features"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_marginTop="0dp"/>
     </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
 </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
 </androidx.core.widget.NestedScrollView>

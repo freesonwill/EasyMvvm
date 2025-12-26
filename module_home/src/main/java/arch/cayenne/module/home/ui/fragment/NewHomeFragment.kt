@@ -12,10 +12,9 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
-import arch.cayenne.lib.base.ui.animation.AnimationController
-import arch.cayenne.lib.base.ui.animation.AnimationController.AnimType
 import arch.cayenne.lib.base.ui.animation.CustomCurveTransformer
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.common.data.constants.BizUrl
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.data.constants.DrawerAction.ACTION_INIT
 import arch.cayenne.lib.common.data.constants.DrawerAction.ACTION_OPEN
@@ -52,8 +51,8 @@ import arch.cayenne.module.home.ui.view.PromoTab
 import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
 import com.google.android.material.tabs.TabLayout
 import com.walisport.module.popup.slot.ui.fragment.PopupSlotFragment
-import kotlin.reflect.KClass
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import kotlin.reflect.KClass
 
 /**
  * 体育页
@@ -352,7 +351,10 @@ class NewHomeFragment : BaseFragment<HomeViewModel , FragmentNewHomeBinding>() {
             }
 
             banner.setOnBannerListener { Int, position ->
-                navigate(arch.cayenne.lib.res.R.string.nav_module_promotion_fragment.deeplink())
+                navigate(
+                    arch.cayenne.lib.res.R.string.nav_module_web_fragment
+                        .deeplink("url" to BizUrl.ACTIVITY.url)
+                )
             }
         }
     }

@@ -1,14 +1,18 @@
 package arch.cayenne.module.chat.manager
 
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.websocket.chat.data.ChatEnterRoomResponse
 import arch.cayenne.lib.websocket.chat.data.ChatLeaveRoomResponse
 import arch.cayenne.lib.websocket.chat.data.ChatLoginResponseData
 import arch.cayenne.lib.websocket.chat.data.ChatMsg
 import arch.cayenne.lib.websocket.chat.data.ChatSendMsgResponse
+import arch.cayenne.lib.websocket.chat.data.ChatType
 import arch.cayenne.lib.websocket.chat.data.GetChatHistoryResponse
 import arch.cayenne.lib.websocket.chat.data.MsgNotify
+import arch.cayenne.lib.websocket.chat.data.MsgType
 import arch.cayenne.lib.websocket.data.SocketConnectState
 import arch.cayenne.module.chat.data.constants.CheckBetResultEnum
+import game.chat.proto.GameChat
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -26,7 +30,7 @@ class ChatServerController(
     private val manager: ChatManagerImpl
 ) {
 
-    private val _loginFlow = MutableStateFlow<ChatLoginResponseData?>(null)
+    val TAG = this.javaClass.simpleName
     private val _sendMsgResultFlow = MutableStateFlow<ChatSendMsgResponse?>(null)
     private val _historyFlow = MutableStateFlow<GetChatHistoryResponse?>(null)
     private val _checkBetAmountFlow = MutableStateFlow<CheckBetResultEnum?>(null)
@@ -35,10 +39,6 @@ class ChatServerController(
 
     //检查是否可以发送消息
     var checkBetAmountFlow: StateFlow<CheckBetResultEnum?> = _checkBetAmountFlow
-
-
-    //登陆返回数据
-    val loginFlow: StateFlow<ChatLoginResponseData?> = _loginFlow
 
     //进入聊天室返回结果
     val enterRoomFlow: StateFlow<ChatEnterRoomResponse?> = _enterRoomFlow
@@ -71,21 +71,23 @@ class ChatServerController(
         return manager.serverConnectFlow()
     }
 
-    fun chatLogin(matchId: Long) {
+    fun chatLogin(chatType: ChatType) {
+        "chatLogin is null ${getManagerLoginFlow().value == null}".logd(TAG)
+        if (getManagerLoginFlow().value != null) {
+            return
+        }
         scope.launch(Dispatchers.IO) {
-            val value = manager.chatLogin()
-            _loginFlow.emit(value)
-            enterRoom(matchId)
+            manager.chatLogin(chatType)
         }
     }
 
-    fun enterRoom(matchId: Long) {
+    fun enterRoom(matchId: Long, chatType: ChatType) {
         this.matchId = matchId
         scope.launch(Dispatchers.IO) {
-            val value = manager.enterRoom(matchId)
+            val value = manager.enterRoom(matchId, chatType)
             _enterRoomFlow.emit(value)
             checkBetAmount()
-            getChatHistory(matchId, 1, 100)
+            getChatHistory(matchId, 1, 20)
         }
 
     }
@@ -99,9 +101,9 @@ class ChatServerController(
         }
     }
 
-    fun leaveRoom(matchId: Long) {
+    fun leaveRoom(matchId: Long, chatType: ChatType) {
         scope.launch(Dispatchers.IO) {
-            val value = manager.leaveRoom(matchId)
+            val value = manager.leaveRoom(matchId, chatType)
             _leaveRoomFlow.emit(value)
         }
     }
@@ -109,11 +111,14 @@ class ChatServerController(
     fun sendMsgToServer(
         matchId: Long,
         content: String,
-        refUid: String? = null,
-        refPlatform: Int? = null
+        chatType: ChatType,
+        msgType: MsgType,
+        extraData: Map<String, String>?,
+        refUid: List<Long>?,
     ) {
         scope.launch(Dispatchers.IO) {
-            val value = manager.sendMsgToServer(matchId, content, refUid, refPlatform)
+            val value =
+                manager.sendMsgToServer(matchId, content,  chatType, msgType, extraData,refUid)
             _sendMsgResultFlow.emit(value)
         }
     }
@@ -134,12 +139,18 @@ class ChatServerController(
         }
     }
 
-    fun addLocalMsg(content: String): ChatMsg? {
-        if (loginFlow.value == null) {
+    fun addLocalMsg(
+        content: String,
+        chatType: ChatType,
+        msgType: MsgType,
+        extraData: Map<String, String>?
+    ): ChatMsg? {
+        if (getManagerLoginFlow()?.value == null) {
+            "login is null".logd(TAG)
             return null
         }
         val id = System.currentTimeMillis().toString()
-        val loginValue = _loginFlow.value
+        val loginValue = getManagerLoginFlow()?.value
         val msg = ChatMsg(
             uid = loginValue?.uid.toString(),
             userName = loginValue?.username ?: "",
@@ -147,13 +158,20 @@ class ChatServerController(
             content = content,
             msgId = id,
             timestamp = id,
-            refUid = "",
-            refAvatarId = 0,
-            refUserName = "",
+            refUid = null,
+            refInfos = null,
             onlyForSelf = 0,
-            platform = 5
+            replaceUserName = "",
+            msgType = MsgType.MSG_TYPE_TEXT,
+            extraData = extraData,
+            chatType = ChatType.LOBBY
         )
         return msg
     }
+
+    fun getManagerLoginFlow(): StateFlow<ChatLoginResponseData?> {
+        return manager.getLoginFlow()
+    }
+
 
 }

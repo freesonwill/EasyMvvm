@@ -10,11 +10,10 @@ import android.view.KeyEvent
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import androidx.lifecycle.LifecycleCoroutineScope
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.module.chat.R
-import arch.cayenne.lib.common.data.constants.MsgType
+import arch.cayenne.lib.common.data.constants.ChatMsgType
 import arch.cayenne.module.chat.data.model.AtBean
 import arch.cayenne.module.chat.data.model.MentionSpan
 import arch.cayenne.module.chat.utils.EmojiEditFilter
@@ -89,7 +88,7 @@ class ChatATHelper(
         //输入拦截
         chatEtInput.filters = arrayOf(EmojiEditFilter(atInput = {
             startInputPosition = chatEtInput.selectionStart
-            atPopupWindow.showPopupWindow(chatEtInput)
+//            atPopupWindow.showPopupWindow(chatEtInput)
         }))
         atPopupWindow.createPopupWindow(context, object : RecyclerItemListener<AtBean> {
             override fun onItemClick(item: AtBean?, position: Int) {
@@ -144,7 +143,7 @@ class ChatATHelper(
                         atStrLength = atStr.length
                     }
                     it.insert(selectionStart, atStr)
-                    addSpecialMentionSpan(MsgType.AT,this, item.name, nStart, atStrLength)//+ @ 空格
+                    addSpecialMentionSpan(ChatMsgType.AT,this, item.name, nStart, atStrLength)//+ @ 空格
                 } else {
                     var indexStart = it.indexOf("@${item.name} ")
                     var indexEnd = indexStart + item.name.length + 2//从0开始，+1 加上空格字符串+1
@@ -164,7 +163,7 @@ class ChatATHelper(
         }
     }
 
-    fun addShareBetSpan(betStr:String,msgType: MsgType) {
+    fun addShareBetSpan(betStr:String,msgType: ChatMsgType) {
         chatEtInput.apply {
             text?.let {
                 var nStart: Int = -1
@@ -222,7 +221,7 @@ class ChatATHelper(
     }
 
     //添加at消息的背景色字体颜色
-    fun addSpecialMentionSpan(type: MsgType, editText: EditText, name: String, start: Int, length: Int) {
+    fun addSpecialMentionSpan(type: ChatMsgType, editText: EditText, name: String, start: Int, length: Int) {
         val text = editText.text.toString()
         val allLength = start + length
         if (start < 0 || text.length < allLength) {

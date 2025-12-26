@@ -15,6 +15,7 @@ import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.data.constants.BizUrl
 import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getColor
@@ -37,11 +38,16 @@ class FeedbackMainFragment : BaseFragment<FeedbackMainViewModel, FragmentFeedbac
     private val manager: UserDataManager by inject(UserDataManager::class.java)
     private var fileChooserCallback: ValueCallback<Array<Uri>>? = null //图片选择后返回h5
 
+
     private val startForResult =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            fileChooserCallback?.onReceiveValue(arrayOf(Uri.parse(result.data?.dataString)))
+        registerForActivityResult(ActivityResultContracts.GetContent()) { result ->
+            result?.let {
+                fileChooserCallback?.onReceiveValue(arrayOf(it))
+            } ?: run {
+                fileChooserCallback?.onReceiveValue(arrayOf(Uri.EMPTY))
+            }
             fileChooserCallback = null;
-        } //监听图片选择
+        }
 
     override fun initView(savedInstanceState: Bundle?) {
         launch {
@@ -50,6 +56,7 @@ class FeedbackMainFragment : BaseFragment<FeedbackMainViewModel, FragmentFeedbac
             mBinding.webView.loadUrl(BizUrl.FEEDBACK.url)
         }
     }
+
 
     private fun initWebView() {
         with(mBinding.webView) {
@@ -106,6 +113,16 @@ class FeedbackMainFragment : BaseFragment<FeedbackMainViewModel, FragmentFeedbac
         }
     }
 
+    private fun chooseImages() {
+        try {
+            startForResult.launch("image/*")
+        } catch (e: Exception) {
+            e.printStackTrace()
+            fileChooserCallback?.onReceiveValue(arrayOf())
+            fileChooserCallback = null
+        }
+    }
+
     override fun initListener() {
     }
 
@@ -140,36 +157,11 @@ class FeedbackMainFragment : BaseFragment<FeedbackMainViewModel, FragmentFeedbac
         mBinding.webView.destroy()
         super.onDestroy()
     }
+//
+//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+//        super.onActivityResult(requestCode, resultCode, data)
+//
+//    }
 
-    /**
-     * 打开图片选择器
-     * */
-    private fun chooseImages(){
-        val mimeTypes = arrayOf("image/*")
-        val selectionIntent = Intent(Intent.ACTION_GET_CONTENT).apply {
-            addCategory(Intent.CATEGORY_OPENABLE)
-            setType("image/*")
-            putExtra(Intent.EXTRA_MIME_TYPES,mimeTypes)
-            // 重要：这些标志可以加快处理
-            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
-            // 添加标志，告诉系统不要压缩
-            putExtra(Intent.EXTRA_ALLOW_MULTIPLE, false)
-            // 对于 Android 11+
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                putExtra(Intent.EXTRA_LOCAL_ONLY, true)
-            }
-        }
-
-
-        val chooserIntent = Intent(Intent.ACTION_CHOOSER).apply {
-            putExtra(Intent.EXTRA_INTENT, selectionIntent)
-            // 添加标志避免系统处理
-            addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
-            addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        }
-//                    startActivityForResult(chooserIntent, 0)
-        startForResult.launch(chooserIntent)
-    }
 
 }

@@ -22,7 +22,7 @@ class HallViewModel : BaseViewModel() {
     //分类列表触发广告位收起动画  true 为收起 false 为展开
     private val _scorll = MutableLiveData<Boolean>()
     val scorll: LiveData<Boolean> = _scorll
-   // val gameCategory = repository.gameCategoryListLiveData
+    val gameCategory = repository.gameCategoryListLiveData //分类列表
     fun setScorll(bool:Boolean){
         if (bool!=scorll.value) {
             _scorll.value = bool

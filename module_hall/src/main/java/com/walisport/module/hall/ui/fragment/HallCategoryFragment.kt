@@ -1,14 +1,11 @@
 package com.walisport.module.hall.ui.fragment
 
-import android.animation.ValueAnimator
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.view.animation.LinearInterpolator
-import androidx.core.animation.doOnEnd
-import androidx.core.animation.doOnStart
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import arch.cayenne.lib.base.data.constants.DataState
@@ -27,22 +24,19 @@ import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.startFadeAnim
-import arch.cayenne.lib.common.utils.ext.startSafeAnimateSet
 import arch.cayenne.lib.common.utils.ext.touchBackPressed
 import arch.cayenne.lib.common.utils.helper.BackToTopHelper
 import arch.cayenne.lib.database.entity.GameSupplierDataModel
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
+import com.walisport.module.business.common.data.UniversalLoadMoreScrollListener
+import com.walisport.module.business.common.data.constants.GameSortType
+import com.walisport.module.business.common.ui.adapter.GameContentAdapter
 import com.walisport.module.hall.R
-import com.walisport.module.hall.data.UniversalLoadMoreScrollListener
-import com.walisport.module.hall.data.constants.GameSortType
-import com.walisport.module.hall.data.getCategoryByType
 import com.walisport.module.hall.databinding.FragmentHallCategoryBinding
 import com.walisport.module.hall.databinding.LayoutGameSortingMenuBinding
 import com.walisport.module.hall.databinding.TitleBarGameCategoryBinding
-import com.walisport.module.hall.ui.adapter.GameContentAdapter
 import com.walisport.module.hall.ui.viewmodel.GameCategoryViewModel
 import kotlinx.coroutines.delay
-import kotlin.math.abs
 import kotlin.reflect.KClass
 
 class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCategoryBinding>() {
@@ -71,6 +65,16 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
     private var titleName: String = ""
 
     private var helper: BackToTopHelper? = null
+
+    private val itemDecoration by lazy {
+        GridSpacingItemDecoration(
+            spanCount = 3,
+            horizontalSpacing = 9.dp2px,
+            verticalSpacing = 12.dp2px,
+            includeEdge = false // 確保邊緣沒有空隙
+        )
+    }
+
 
     fun supplierTabList(list: List<GameSupplierDataModel>): List<SimpleTabDataModel> {
         val l = ArrayList<SimpleTabDataModel>()
@@ -107,6 +111,11 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
                 arch.cayenne.lib.common.ui.view.CustomGameTabClickListener {
                 override fun onTabClicked(id: Int) {
                     mBinding.rvGame.startFadeAnim { onComplete ->
+                        if (id == 0) {
+                            mViewModel.clearSupplierSelected()
+                        } else {
+                            mViewModel.selectSupplierId(id)
+                        }
                         mViewModel.setSuppliers(if (id == 0) emptyList() else listOf(id))
                         helper?.reset()
                         toggleGameSorting(false)
@@ -117,15 +126,10 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
             })
             rvGame.itemAnimator = null
             rvGame.layoutManager = GridLayoutManager(requireContext() , 3)
-            val itemDecoration = GridSpacingItemDecoration(
-                spanCount = 3 ,
-                horizontalSpacing = 9.dp2px ,
-                verticalSpacing = 18.dp2px ,
-                includeEdge = false // 確保邊緣沒有空隙
-            )
+
             rvGame.addItemDecoration(itemDecoration)
             adapter = GameContentAdapter(onItemClick = {
-                navigate(arch.cayenne.lib.res.R.string.nav_module_gamedetail.deeplink())
+                navigate(arch.cayenne.lib.res.R.string.nav_module_gamedetail.deeplink("gameId" to it.id))
             })
             rvGame.adapter = adapter
 
@@ -253,7 +257,6 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
     private fun showListBottomSheet() {
         val tag = "HallCategoryFragment_bottom_sheet"
         if (childFragmentManager.findFragmentByTag(tag) != null) return
-
         GameCategoryListBottomSheetFragment
             .newInstance(mViewModel.getCategory())
             .show(childFragmentManager, tag)
@@ -443,6 +446,7 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
                 sortMenuClicked = true
                 if (currentSortType != GameSortType.HOT) {
                     currentSortType = GameSortType.HOT
+                    itemDecoration.verticalSpacing = VERTICAL_SPACING_1.dp2px
                     mBinding.tvRewardTips.visibility = View.GONE
                     updateSortingMenuSelection()
                     setSortBtnText()
@@ -459,6 +463,7 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
                 sortMenuClicked = true
                 if (currentSortType != GameSortType.NEW) {
                     currentSortType = GameSortType.NEW
+                    itemDecoration.verticalSpacing = VERTICAL_SPACING_1.dp2px
                     mBinding.tvRewardTips.visibility = View.GONE
                     updateSortingMenuSelection()
                     setSortBtnText()
@@ -476,6 +481,7 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
 
                 if (currentSortType != GameSortType.HOT_REWARD) {
                     currentSortType = GameSortType.HOT_REWARD
+                    itemDecoration.verticalSpacing = VERTICAL_SPACING_2.dp2px
                     mBinding.tvRewardTips.visibility = View.VISIBLE
                     mBinding.aplHomeBanner.setExpanded(true, true)
                     updateSortingMenuSelection()
@@ -493,6 +499,7 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
 
                 if (currentSortType != GameSortType.COLD_REWARD) {
                     currentSortType = GameSortType.COLD_REWARD
+                    itemDecoration.verticalSpacing = VERTICAL_SPACING_2.dp2px
                     mBinding.tvRewardTips.visibility = View.VISIBLE
                     mBinding.aplHomeBanner.setExpanded(true, true)
                     updateSortingMenuSelection()
@@ -572,6 +579,11 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
                 mBinding.customTabGroup.setSortBtnText(arch.cayenne.lib.common.R.string.custom_tab_cold_reward.getString())
             }
         }
+    }
+
+    companion object{
+        const val VERTICAL_SPACING_1 = 12
+        const val VERTICAL_SPACING_2 = 15
     }
 
 

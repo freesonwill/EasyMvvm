@@ -228,7 +228,7 @@ public final class LogUtils {
         if (type_low < CONFIG.mConsoleFilter && type_low < CONFIG.mFileFilter){
             return;
         }
-        final TagHead tagHead = processTagAndHead(CONFIG.mTagPrefix+tag);
+        final TagHead tagHead = processTagAndHead("AndroidRuntime".equals(tag) ? tag : CONFIG.mTagPrefix+tag);
         String body = processBody(type_high, contents);
         if (CONFIG.mLog2ConsoleSwitch && type_low >= CONFIG.mConsoleFilter && type_high != FILE) {
             print2Console(type_low, tagHead.tag, tagHead.consoleHead, body);
@@ -740,6 +740,11 @@ public final class LogUtils {
         public Config setDir(final File dir) {
             mDir = dir == null ? null : dir.getAbsolutePath() + FILE_SEP;
             return this;
+        }
+
+        public File getDir() {
+            String dir = mDir == null ? mDefaultDir : mDir;
+            return new File(dir);
         }
 
         public Config setFilePrefix(final String filePrefix) {
