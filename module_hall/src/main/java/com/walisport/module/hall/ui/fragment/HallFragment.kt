@@ -54,6 +54,7 @@ import com.walisport.module.hall.databinding.FragmentHallBinding
 import com.walisport.module.hall.databinding.ItemHallGameTabBinding
 import com.walisport.module.hall.ui.view.ScrollableTabIndicatorHelper
 import com.walisport.module.hall.ui.viewmodel.HallViewModel
+import com.walisport.module.popup.slot.ui.fragment.PopupSlotFragment
 import kotlinx.coroutines.delay
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import kotlin.reflect.KClass
@@ -62,10 +63,14 @@ import kotlin.reflect.KClass
  * 游戏大厅界面
  */
 
-class HallFragment : BaseFragment<HallViewModel, FragmentHallBinding>() {
+class HallFragment : BaseFragment<HallViewModel , FragmentHallBinding>() {
 
     override val vbClass: KClass<FragmentHallBinding> = FragmentHallBinding::class
     override val vmClass: KClass<HallViewModel> = HallViewModel::class
+
+    private val popupSlotFragment: PopupSlotFragment by lazy {
+        PopupSlotFragment()
+    }
 
     private val balanceViewModel: BalanceViewModel by viewModel()
     private val mMinHeight = 38.dp2px
@@ -85,7 +90,7 @@ class HallFragment : BaseFragment<HallViewModel, FragmentHallBinding>() {
             var barHeight = ViewUtils.getStatusBarHeight(requireContext())
             //
         }
-
+        initPopupSlot()
         mViewModel.queryGameCommon()
     }
 
@@ -401,4 +406,20 @@ class HallFragment : BaseFragment<HallViewModel, FragmentHallBinding>() {
         // 启动轮播
         mBinding.ivRightLogo.start()
     }
+
+    private fun initPopupSlot() {
+        childFragmentManager.beginTransaction()
+            .add(R.id.fragment_hall_container_view , popupSlotFragment , PopupSlotFragment.TAG)
+            .commit()
+    }
+
+    // 当 Fragment 可见性发生变化时调用
+    override fun onHiddenChanged(hidden: Boolean) {
+        super.onHiddenChanged(hidden)
+        if (!hidden) {
+            popupSlotFragment.adjustPosition()
+        }
+    }
+
+
 }
