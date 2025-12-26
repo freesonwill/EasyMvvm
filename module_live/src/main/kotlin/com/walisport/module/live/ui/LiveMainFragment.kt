@@ -50,11 +50,13 @@ import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.ext.startFadeAnim
 import arch.cayenne.lib.common.utils.ext.touchBackPressed
 import arch.cayenne.lib.common.utils.helper.showToast
+import arch.cayenne.lib.database.entity.LiveMatchBean
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.lib.skin.widget.SkinnableTextView
 import arch.cayenne.module.bet.ui.fragment.BetSheetFragment
 import arch.cayenne.module.betslip.ui.fragment.BetSlipFragment
 import arch.cayenne.module.chat.ui.fragment.ChatBaseFragment
+import arch.cayenne.module.chat.ui.fragment.ChatLiveFragment
 import arch.cayenne.module.home.ui.view.LiveMainTabMediator
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
@@ -454,6 +456,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
             mViewModel.getMainMatch(it)
             mViewModel.observeMatchBean(it)
             mViewModel.registerMatchInfoNotify(it)
+            sendMatchIdToChatFragment(it)
         }
         mViewModel.currentBalanceChange.observe(viewLifecycleOwner) {
             titleBarBinding.includedLayout.tvMoney.text =
@@ -467,6 +470,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                 mViewModel.setLeagueLogo(logo)
                 titleBarBinding.tvCompetitionName.text = it.basicInfo.matchName
                 mBinding.tvVideoVs.text = it.basicInfo.matchName
+                sendMatchToChatFragment(it)
             }
         }
         launch(Lifecycle.State.RESUMED) {
@@ -753,13 +757,27 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         return fragment
     }
 
-    private fun createChatFragment(): ChatBaseFragment {
-        val fragment = ChatBaseFragment()
-        fragment.setMatchLiveData(mViewModel.matchId, mViewModel.mainMatch)
+    private fun createChatFragment(): ChatLiveFragment {
+        val fragment = ChatLiveFragment()
         fragment.addEmojiPopupListen {
             isChatKeyBoardPopup = it
         }
         return fragment
+    }
+
+    private fun sendMatchIdToChatFragment(matchId: Long) {
+        val bundle = Bundle().apply {
+            putLong(ChatBaseFragment.MATCH_ID_KEY,matchId)
+        }
+        childFragmentManager.setFragmentResult(ChatBaseFragment.FRAGMENT_RESULT_KEY,bundle)
+    }
+
+    private fun sendMatchToChatFragment(match: LiveMatchBean) {
+        val bundle = Bundle().apply {
+            putBoolean(ChatBaseFragment.LIVE_START_KEY,match.liveInfo.charRoom)
+            putInt(ChatBaseFragment.MATCH_STATUS_KEY,match.basicInfo.status)
+        }
+        childFragmentManager.setFragmentResult(ChatBaseFragment.FRAGMENT_RESULT_KEY,bundle)
     }
 
     private fun showMediaSourceFragment() {

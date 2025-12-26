@@ -10,6 +10,8 @@ import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.module.chat.data.constants.KeyBoardType
 import arch.cayenne.lib.common.data.constants.ChatMsgType
+import arch.cayenne.lib.websocket.chat.data.ChatType
+import arch.cayenne.lib.websocket.chat.data.MsgType
 import arch.cayenne.module.chat.data.model.ChatMsgPageBean
 import arch.cayenne.module.chat.databinding.FragementChatPageLayoutBinding
 import arch.cayenne.module.chat.ui.adapter.ChatPageAdapter
@@ -110,7 +112,7 @@ class ChatPageFragment : BaseFragment<ChatPageViewModel, FragementChatPageLayout
     override suspend fun createObserver() {
         homeViewModel.sendMsgLiveData.observe(viewLifecycleOwner) {
             mViewModel.addLocalMsg(it)
-            homeViewModel.sendMsgToServer(it.content)
+            homeViewModel.sendMsgToServer(it.content,it.refUid,ChatType.LOBBY,MsgType.MSG_TYPE_TEXT,it.extraData)
             refreshChatList()
         }
         viewLifecycleOwner.lifecycleScope.launch {

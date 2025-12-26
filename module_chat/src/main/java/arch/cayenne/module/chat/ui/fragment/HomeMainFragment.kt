@@ -37,6 +37,7 @@ class HomeMainFragment : BaseFragment<MainChatViewModel, FragmentMainChatLayoutB
 
     override fun initView(savedInstanceState: Bundle?) {
         initViewPager2()
+        sendMatchIdToChatFragment(102)
 //        initTabLayout()
     }
 
@@ -102,7 +103,7 @@ class HomeMainFragment : BaseFragment<MainChatViewModel, FragmentMainChatLayoutB
         )
         val pages = listOf(
             PagerBean(titles[0]) {
-                ChatBaseFragment().apply {
+                ChatMainFragment().apply {
                     arguments = Bundle().apply {
                         putBoolean("chat", true)
                     }
@@ -132,6 +133,16 @@ class HomeMainFragment : BaseFragment<MainChatViewModel, FragmentMainChatLayoutB
 //            reflexPadding(tabLayout)
 //        }
 //    }
+
+    private fun sendMatchIdToChatFragment(matchId: Long) {
+        val bundle = Bundle().apply {
+            putLong(ChatBaseFragment.MATCH_ID_KEY, matchId)
+        }
+        childFragmentManager.setFragmentResult(
+            ChatBaseFragment.FRAGMENT_RESULT_KEY,
+            bundle
+        )
+    }
 
     private fun updateTabBack(
         position: Int,
