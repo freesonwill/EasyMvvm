@@ -28,6 +28,7 @@
     <string name="nav_module_recently_played_fragment" translatable="false">walisport://module_hall/recentlyPlayedFragment</string>
     <string name="nav_module_game_favourite" translatable="false">walisport://module_hall/gameFavouriteFragment</string>
     <string name="nav_module_match_favourite" translatable="false">walisport://module_hall/matchFavouriteFragment</string>
+    <string name="nav_module_debug_fragment" translatable="false">walisport://module_misc/debugFragment</string>
 
 
 

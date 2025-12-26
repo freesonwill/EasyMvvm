@@ -10,6 +10,7 @@ import arch.cayenne.lib.base.ui.animation.AnimationController
 import arch.cayenne.lib.base.ui.animation.AnimationController.AnimType
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
+import arch.cayenne.lib.common.databinding.TitleBarSimpleBinding
 import arch.cayenne.lib.common.ui.adapter.GridSpacingItemDecoration
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout.States
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
@@ -24,7 +25,6 @@ import com.walisport.module.business.common.data.UniversalLoadMoreScrollListener
 import com.walisport.module.business.common.ui.adapter.GameContentAdapter
 import com.walisport.module.hall.R
 import com.walisport.module.hall.databinding.FragmentGameFavouriteBinding
-import com.walisport.module.hall.databinding.TitleBarSimpleBinding
 import com.walisport.module.hall.ui.viewmodel.GameFavouriteViewModel
 import kotlinx.coroutines.delay
 import kotlin.reflect.KClass
