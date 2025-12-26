@@ -18,8 +18,8 @@ import arch.cayenne.lib.common.utils.ext.checkCurrentScrollState
 import arch.cayenne.lib.common.utils.ext.onScrolledOver
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.helper.BackToTopHelper
-import arch.cayenne.lib.res.R
 import com.walisport.module.business.common.ui.adapter.GameContentAdapter
+import com.walisport.module.hall.R
 import com.walisport.module.hall.data.UniversalLoadMoreScrollListener
 import com.walisport.module.hall.databinding.FragmentGameRecentBinding
 import com.walisport.module.hall.ui.viewmodel.GameRecentViewModel
@@ -58,7 +58,7 @@ class GameRecentFragment : BaseFragment<GameRecentViewModel, FragmentGameRecentB
             rvGame.addItemDecoration(itemDecoration)
             adapter = GameContentAdapter(onItemClick = {
                 mViewModel.setIsClickGame(EventClick.EVENT_CLICK_ACK_TRUE.type)
-                navigate(R.string.nav_module_gamedetail.deeplink("gameId" to it.id))
+                navigate(arch.cayenne.lib.res.R.string.nav_module_gamedetail.deeplink("gameId" to it.id))
                 launch{
                     delay(AnimationController[AnimType.popupExit]!!.duration)
                     adapter.submitList(emptyList())
@@ -124,7 +124,7 @@ class GameRecentFragment : BaseFragment<GameRecentViewModel, FragmentGameRecentB
                     mBinding.clDynamics.visibility = View.VISIBLE
                     mBinding.clDynamics.setState(
                         States.DATA_EMPTY,
-                        arch.cayenne.lib.common.R.string.data_empty.getString()
+                        R.string.game_data_empty.getString()
                     )
 
                 }

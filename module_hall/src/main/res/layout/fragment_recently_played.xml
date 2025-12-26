@@ -32,7 +32,7 @@
             app:layout_constraintStart_toStartOf="parent"
             tools:itemCount="2" />
 
-        <arch.cayenne.lib.common.ui.view.DynamicStateLayout
+        <arch.cayenne.lib.common.ui.view.DynamicStateLayoutV2
             android:id="@+id/cl_dynamics"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

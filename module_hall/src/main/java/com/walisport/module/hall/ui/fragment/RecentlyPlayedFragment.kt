@@ -119,7 +119,7 @@ class RecentlyPlayedFragment : BaseFragment<RecentlyPlayedViewModel, FragmentRec
                     mBinding.clDynamics.visibility = View.VISIBLE
                     mBinding.clDynamics.setState(
                         States.DATA_EMPTY,
-                        arch.cayenne.lib.common.R.string.data_empty.getString()
+                        R.string.game_data_empty.getString()
                     )
 
                 }
