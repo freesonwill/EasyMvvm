@@ -22,15 +22,8 @@ class PopupSlotFragment :
         FragmentPopupSlotBinding::class
     override val vmClass: KClass<PopUpSlotViewModel> = PopUpSlotViewModel::class
 
-
     override fun initView(savedInstanceState: Bundle?) {
-        mBinding.popupSlot0.setPositionCallbacks { x , y ->
-            mViewModel.setViewAnchor(0 , x , y)
-        }
 
-        mBinding.popupSlot1.setPositionCallbacks { x , y ->
-            mViewModel.setViewAnchor(1 , x , y)
-        }
     }
 
     override fun initListener() {
