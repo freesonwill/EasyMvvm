@@ -140,10 +140,12 @@ class GameFavouriteFragment : BaseFragment<GameFavouriteViewModel, FragmentGameF
                 mViewModel.reload()
             }
         }
+
+        mViewModel.reload()
     }
 
     override fun initData() {
-        mViewModel.reload()
+//        mViewModel.reload()
         super.initData()
     }
 
