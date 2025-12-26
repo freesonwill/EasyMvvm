@@ -220,6 +220,10 @@ abstract class ChatBaseFragment : BaseFragment<ChatHomeViewModel, FragmentLiveCh
                         it.getParcelable<BetShareBean>(ChatChooseBetFragment.SHARE_BET_RESULT)
                     val type = it.getInt(ChatChooseBetFragment.SHARE_BET_TYPE, 0)
 
+//                    val tv =
+//                        data?.content?.replace("注", "注\u00A0")?.replace("单", "单\u00A0")
+//                            ?.replace(":", ":\u00A0") ?: ""
+
                     chatAtHelper.addShareBetSpan(
                         data?.content ?: "",
                         if (type == 0) ChatMsgType.BET_GAME else ChatMsgType.BET_SPORT
@@ -261,6 +265,18 @@ abstract class ChatBaseFragment : BaseFragment<ChatHomeViewModel, FragmentLiveCh
         }
         mViewModel.sendTextLiveData.observe(viewLifecycleOwner) {
             sendText()
+        }
+        mViewModel.atLiveData.observe(viewLifecycleOwner) {
+            chatAtHelper.addAtMentionSpan(it.userName)
+            SoftKeyBoardAnim.etAnimWhenEtContentChange(
+                mBinding,
+                mViewModel.currentKeyBoardType,
+                onAnimStart = {
+                    updateInputIcon(it)
+                },
+                onAnimEnd = {
+                    updateInputIcon(it)
+                })
         }
     }
 

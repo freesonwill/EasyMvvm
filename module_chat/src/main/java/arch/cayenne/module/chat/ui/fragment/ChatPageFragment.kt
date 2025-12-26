@@ -44,27 +44,32 @@ class ChatPageFragment : BaseFragment<ChatPageViewModel, FragementChatPageLayout
             orientation = LinearLayoutManager.VERTICAL
             reverseLayout = true
         }
-        val adapter = ChatPageAdapter { bean, clickSpane, clickType ->
-            when (clickType) {
-                ChatMsgType.BET_GAME -> {
+        val adapter = ChatPageAdapter(
+            specialClick = { bean, clickSpane, clickType ->
+                when (clickType) {
+                    ChatMsgType.BET_GAME -> {
 //                    val betType = if(clickSpane == "注单游戏") 0 else 1
-                    BetShareDialogFragment.show(this, 0)
-                }
-                ChatMsgType.BET_SPORT ->{
-                    BetShareDialogFragment.show(this, 1)
-                }
+                        BetShareDialogFragment.show(this, 0)
+                    }
+                    ChatMsgType.BET_SPORT ->{
+                        BetShareDialogFragment.show(this, 1)
+                    }
 
-                ChatMsgType.AT -> {
-                    ChatUserInfoFragment().show(childFragmentManager)
-                }
+                    ChatMsgType.AT -> {
+                        ChatUserInfoFragment().show(childFragmentManager)
+                    }
 
-                ChatMsgType.TEXT -> {
-                    ChatPersonalDialogFragment.show(this@ChatPageFragment)
-                }
+                    ChatMsgType.TEXT -> {
+                        ChatPersonalDialogFragment.show(this@ChatPageFragment)
+                    }
 
-                else -> {}
+                    else -> {}
+                }
+            },
+            longClick = { bean ->
+                homeViewModel.addAtMsgToChat(bean)
             }
-        }
+        )
         mBinding.liveChatRecycler.layoutManager = layoutManger
         mBinding.liveChatRecycler.adapter = adapter
         mBinding.liveChatRecycler.itemAnimator = null

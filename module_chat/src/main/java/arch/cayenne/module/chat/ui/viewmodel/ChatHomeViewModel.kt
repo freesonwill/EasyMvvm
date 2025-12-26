@@ -37,12 +37,14 @@ class ChatHomeViewModel() : BaseViewModel() {
     //    private val _currentSoftKeyboard = MutableStateFlow(KeyBoardType.CHAT)
     private val _updateKeyboardUiStatus = MutableLiveData(KeyBoardType.CHAT)
     private val _sendMsgLiveData = MutableLiveData<ChatMsgPageBean>()
-    private val _chatHistoryIsEmpty = MutableLiveData<Boolean>()
+//    private val _chatHistoryIsEmpty = MutableLiveData<Boolean>()
     private val chatServer: ChatServerController by inject { parametersOf(viewModelScope) }
     private val _emojiFlow: MutableSharedFlow<EmojiModel?> = MutableSharedFlow(replay = 0, extraBufferCapacity = 10, onBufferOverflow = BufferOverflow.DROP_OLDEST)
     private val _etDelLiveDta: MutableLiveData<Boolean> = MutableLiveData()
     private val _sendTextLiveData: MutableLiveData<Boolean> = MutableLiveData()
     private val _currentKeyBoardType = MutableLiveData<KeyBoardType>(KeyBoardType.CHAT)
+    private val _atLiveData:MutableLiveData<ChatMsgPageBean> = MutableLiveData<ChatMsgPageBean>()
+
 
     var currentKeyBoardType: KeyBoardType = KeyBoardType.CHAT
 
@@ -52,8 +54,8 @@ class ChatHomeViewModel() : BaseViewModel() {
     //更新键盘盘状态
     val updateKeyboardUiStatus: LiveData<KeyBoardType> = _updateKeyboardUiStatus
 
-    //判断聊天记录是不是空的
-    val chatHistoryIsEmpty: LiveData<Boolean> = _chatHistoryIsEmpty
+//    //判断聊天记录是不是空的
+//    val chatHistoryIsEmpty: LiveData<Boolean> = _chatHistoryIsEmpty
 
     //聊天api相关
     val chatHistoryFlow = chatServer.historyFlow
@@ -65,18 +67,16 @@ class ChatHomeViewModel() : BaseViewModel() {
     val emojiFlow: SharedFlow<EmojiModel?> = _emojiFlow
     val etDelLiveData: LiveData<Boolean> = _etDelLiveDta
     val sendTextLiveData: LiveData<Boolean> = _sendTextLiveData
+    val atLiveData:LiveData<ChatMsgPageBean> = _atLiveData
 
     val languageManager: LanguageManager by inject { parametersOf(viewModelScope) }
     val userDataManager: UserDataManager by inject()
 
     //聊天设置
     val chatConfigDao: ChatConfigDao by inject()
-
     var keyBoardHeight: Int = 0
-
     //聊天键盘切换监听
     val currentKeyBoardTypeLiveData: LiveData<KeyBoardType> = _currentKeyBoardType
-
     var languageSelectPosition:Int = 1
 
 
@@ -252,6 +252,10 @@ class ChatHomeViewModel() : BaseViewModel() {
 
     fun updateLanguageSelect(position:Int){
         languageSelectPosition = position
+    }
+
+    fun addAtMsgToChat(msg:ChatMsgPageBean){
+        _atLiveData.value = msg
     }
 
 }

@@ -18,14 +18,27 @@ import arch.cayenne.module.chat.data.model.ClickSpan
 import arch.cayenne.module.chat.data.model.ColorSpan
 import arch.cayenne.module.chat.databinding.ItemLiveChatBinding
 
-class ChatPageAdapter(private val specialClick: (bean: ChatMsgPageBean, clickSpan: String, clickType: ChatMsgType) -> Unit) :
+class ChatPageAdapter(
+    private val specialClick: (bean: ChatMsgPageBean, clickSpan: String, clickType: ChatMsgType) -> Unit,
+    private val longClick: (bean: ChatMsgPageBean) -> Unit
+) :
     BaseAdapter<ChatMsgPageBean, ChatPageAdapter.LiveChatViewHolder, ItemLiveChatBinding>(
         ChatCompare()
     ) {
+    private var isLongPress = false
+    private val longPressTimeout = 500L
+    private val longPressHandler = android.os.Handler()
+    private val longPressRunnable = Runnable {
+        isLongPress = true
+        // 这里处理长按逻辑
+    }
+
 
     inner class LiveChatViewHolder(binding: ItemLiveChatBinding) : BaseViewHolder(binding) {
         val nBinding = binding
         fun initListener() {
+
+
             nBinding.tv.apply {
                 movementMethod = object : LinkMovementMethod() {
                     override fun onTouchEvent(
@@ -33,7 +46,10 @@ class ChatPageAdapter(private val specialClick: (bean: ChatMsgPageBean, clickSpa
                         buffer: Spannable?,
                         event: MotionEvent?
                     ): Boolean {
-                        if (widget != null && buffer != null && event?.action == MotionEvent.ACTION_UP) {
+                        if (widget != null && buffer != null && event?.action == MotionEvent.ACTION_DOWN) {
+                            isLongPress = false
+                            longPressHandler.postDelayed(longPressRunnable, longPressTimeout)
+                        } else if (widget != null && buffer != null && event?.action == MotionEvent.ACTION_UP) {
                             // 获取点击位置
                             val x = event.x.toInt() - widget.totalPaddingLeft + widget.scrollX
                             val y = event.y.toInt() - widget.totalPaddingTop + widget.scrollY
@@ -41,9 +57,18 @@ class ChatPageAdapter(private val specialClick: (bean: ChatMsgPageBean, clickSpa
                             val layout = widget.layout
                             val line = layout.getLineForVertical(y)
                             val off = layout.getOffsetForHorizontal(line, x.toFloat())
-                            val spans = buffer.getSpans(off-1, off + 1, ClickSpan::class.java)
                             val position = widget.tag as Int
 
+                            if (isLongPress) {
+                                val colorSpans =
+                                    buffer.getSpans(off - 1, off + 1, ColorSpan::class.java)
+                                if (colorSpans.isNotEmpty()) {
+                                    longClick.invoke(getItem(position))
+                                }
+                                return true
+
+                            }
+                            val spans = buffer.getSpans(off - 1, off + 1, ClickSpan::class.java)
                             if (spans.isNotEmpty()) {
                                 spans.first().also {
                                     specialClick.invoke(getItem(position), it.tv, it.msgType)
@@ -80,7 +105,12 @@ class ChatPageAdapter(private val specialClick: (bean: ChatMsgPageBean, clickSpa
 //                    )
 //                ), 0, msgSpannable.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
 //            )
-            if (bean.msgType in arrayOf(ChatMsgType.AT, ChatMsgType.BET_GAME, ChatMsgType.BET_SPORT)) {
+            if (bean.msgType in arrayOf(
+                    ChatMsgType.AT,
+                    ChatMsgType.BET_GAME,
+                    ChatMsgType.BET_SPORT
+                )
+            ) {
                 bean.atRange?.forEach {
                     msgSpannable.setSpan(
                         ClickSpan(bean.msgType, second.substring(it.first, it.last)),
@@ -106,12 +136,14 @@ class ChatPageAdapter(private val specialClick: (bean: ChatMsgPageBean, clickSpa
         holder.setText(getItem(position), position)
         val item = getItem(position)
 
-        holder.nBinding.tv.backgroundTintList = ContextCompat.getColorStateList(binding.tv.context,
-            if(item.msgType == ChatMsgType.BET_SPORT || item.msgType == ChatMsgType.BET_GAME) {
+        holder.nBinding.tv.backgroundTintList = ContextCompat.getColorStateList(
+            binding.tv.context,
+            if (item.msgType == ChatMsgType.BET_SPORT || item.msgType == ChatMsgType.BET_GAME) {
                 arch.cayenne.lib.common.R.color.color_632433
             } else {
                 arch.cayenne.lib.common.R.color.color_0FFFFFFF
-            })
+            }
+        )
     }
 
     override fun createViewBinding(
