@@ -57,4 +57,5 @@ class EmojiEditTextView : AppCompatEditText {
         super.onDetachedFromWindow()
     }
 
+
 }

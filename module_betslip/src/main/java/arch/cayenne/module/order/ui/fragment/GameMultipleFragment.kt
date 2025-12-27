@@ -7,6 +7,7 @@ import arch.cayenne.lib.common.data.constants.ChatMsgType
 import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.module.betslip.databinding.FragmentGameMultipleBinding
+import arch.cayenne.module.order.data.model.ChooseBetData
 import arch.cayenne.module.order.data.model.RecordsBean
 import arch.cayenne.module.order.ui.adapter.OrderGameAdapter
 import arch.cayenne.module.order.ui.viewmodel.ChatChooseViewModel
@@ -36,7 +37,7 @@ class GameMultipleFragment : BaseFragment<GameMultipleViewModel, FragmentGameMul
     override fun initListener() {
         gameAdapter.setItemClickListener(object :RecyclerItemListener<RecordsBean>{
             override fun onItemClick(item: RecordsBean?, position: Int) {
-                chooseViModel?.clickBtn(ChatMsgType.BET_GAME)
+                chooseViModel?.clickBtn(ChooseBetData(ChatMsgType.BET_GAME,item?.bet?:""))
             }
         })
     }
