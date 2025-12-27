@@ -384,8 +384,10 @@ class SubHomeFragmentV2 : BaseFragment<SubHomeViewModel , FragmentSubHomeV2Bindi
                     //点击全部 取消全部选中
                     if (id == 0) {
                         mViewModel.clearTournamentsSelected()
+                        mViewModel.clearSavedTournamentSelections()
                     } else {
                         mViewModel.selectTournamentsId(id)
+                        mViewModel.saveTournamentSelections(listOf(id))
                     }
 
                     toggleTournamentSorting(false)
