@@ -407,6 +407,7 @@ open class SubHomeViewModel : BaseViewModel() {
         // 通知按鈕狀態更新
         _tournamentButtonHasSelection.value = Event(selections.isNotEmpty())
         // TODO: 未來同時保存到後端
+        _currentSelectedTournaments.value = selections
     }
 
     // 清空保存的選中狀態

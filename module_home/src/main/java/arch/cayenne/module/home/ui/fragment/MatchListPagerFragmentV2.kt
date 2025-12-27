@@ -318,15 +318,6 @@ class MatchListPagerFragmentV2 :
             reloadAllData()
         }
 
-        //联赛列表可能发生变化
-        subHomeViewModel.savedTournamentSelections.observe(viewLifecycleOwner) {
-            val sorted = it.sorted()
-            if (mViewModel.getTournamentIdList() != sorted) {
-                mViewModel.setTournamentIdList(sorted)
-                mViewModel.startObserveMatch()
-                reloadAllData()
-            }
-        }
 
         subHomeViewModel.currentSelectedTournaments.observe(viewLifecycleOwner) {
             mBinding.rvHomeGameList.startFadeAnim { onComplete ->
