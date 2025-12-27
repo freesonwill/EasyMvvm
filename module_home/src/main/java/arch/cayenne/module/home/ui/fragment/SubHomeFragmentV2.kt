@@ -19,6 +19,7 @@ import arch.cayenne.lib.base.ui.animation.AnimationController.AnimType
 import arch.cayenne.lib.base.ui.animation.CustomCurveTransformer
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
+import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.ui.adapter.BannerImageMatchAdapter
 import arch.cayenne.lib.common.ui.view.SimpleTabDataModel
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
@@ -26,9 +27,7 @@ import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getColor
-import arch.cayenne.lib.common.utils.ext.ResourceExt.getDrawable
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
-import arch.cayenne.lib.common.utils.ext.VIPDataExt
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.clickNoRepeatSingle
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
@@ -51,6 +50,7 @@ import kotlin.reflect.KClass
 
 class SubHomeFragmentV2 : BaseFragment<SubHomeViewModel , FragmentSubHomeV2Binding>() ,
     ISubFragmentLifecycle {
+
     override val vbClass: KClass<FragmentSubHomeV2Binding> = FragmentSubHomeV2Binding::class
     override val vmClass: KClass<SubHomeViewModel> = SubHomeViewModel::class
     private val homeViewModel: HomeViewModel by sharedViewModel<HomeViewModel , NewHomeFragment>()
@@ -87,7 +87,6 @@ class SubHomeFragmentV2 : BaseFragment<SubHomeViewModel , FragmentSubHomeV2Bindi
 
     override fun initView(savedInstanceState: Bundle?) {
         initSportBanner()
-        initVIPInfo()
         initSportLayout()
         setupMatchFragment()
         initTournamentLayout()
@@ -200,12 +199,24 @@ class SubHomeFragmentV2 : BaseFragment<SubHomeViewModel , FragmentSubHomeV2Bindi
             }
         }
 
-        // 監聽 VIP 等級變化
-        mViewModel.vipLevel.observe(viewLifecycleOwner) { level ->
+        mViewModel.onVipListener.observe(viewLifecycleOwner) {
+            var percent = "0%"
+            var progress = 0f
+            val betScore = it.admittedBetScore.toFloat()
+            val reqScore = it.requiredAdmittedBetScore.toFloat()
+            val require = it.requiredAdmittedBetScore.toInt()
+            if (reqScore > 0L && betScore > 0L) {
+                progress = (betScore / reqScore) * 100f
+                percent = String.format("%.2f", progress) + "%"
+            }
+            val cny = CurrencySymbols.getSymbol(it.ccy) + require
+            val info = getString(arch.cayenne.lib.common.R.string.vip_level_require, cny)
             updateVIPInfo(
-                vipLevel = level.toInt() ,
-                percent = "57.91%" ,
-                levelUpInfo = "升级还需¥59w"
+                vipLevel = it.vipLevel,
+                vipStage = it.vipStage,
+                percent = percent,
+                levelUpInfo = info,
+                progress
             )
         }
     }
@@ -262,51 +273,39 @@ class SubHomeFragmentV2 : BaseFragment<SubHomeViewModel , FragmentSubHomeV2Bindi
         }
     }
 
-
-    // init VIP 信息區塊
-    private fun initVIPInfo() {
-        // VIP 數據設置初始值，避免初始化時沒有數據
-        val currentLevel = VIPDataExt.getVIPLevel(75L)
-        updateVIPInfo(
-            vipLevel = currentLevel.toInt() ,
-            percent = "57.91%" ,
-            levelUpInfo = "升级还需¥59w"
-        )
-    }
-
     // 更新 VIP 信息顯示
-    private fun updateVIPInfo(vipLevel: Int , percent: String , levelUpInfo: String) {
-        // 使用 VIPResourceHelper 轉換等級
-        val level = VIPResourceHelper.getVIPLevelFromInt(vipLevel)
-
+    private fun updateVIPInfo(
+        vipLevel: Int,
+        vipStage: Int,
+        percent: String,
+        levelUpInfo: String,
+        progress: Float
+    ) {
+        val level = VIPResourceHelper.getVIPLevelFromInt(vipStage)
         with(mBinding) {
             // 設置背景 - 使用 VIPResourceHelper
-            clVipInfo.background = VIPResourceHelper.getForegroundResource(level)
-
+            clVipInfo.background = VIPResourceHelper.getSportBackgroundResource(level)
             // 設置圖標 - 使用 VIPResourceHelper
             ivLevel.setImageResource(VIPResourceHelper.getIconResource(level))
             ivLevelName.setImageResource(VIPResourceHelper.getLevelNameResource(level))
-
             // 設置文字漸變效果 - 使用 VIPResourceHelper
             val bottom = 20.dp2px.toFloat()
             val linearGradient = LinearGradient(
-                0f , 0f ,
-                0f , bottom ,
+                0f, 0f,
+                0f, bottom,
                 intArrayOf(
-                    VIPResourceHelper.getShaderStartColor().getColor(requireContext()) ,
+                    VIPResourceHelper.getShaderStartColor().getColor(requireContext()),
                     VIPResourceHelper.getShaderEndColor(level).getColor(requireContext())
-                ) ,
-                null ,
+                ),
+                null,
                 Shader.TileMode.CLAMP
             )
             tvLevel.paint.shader = linearGradient
-            tvLevel.text = getString(arch.cayenne.lib.common.R.string.vip_level_format , vipLevel)
-
-            // 設置百分比 - 使用 VIPResourceHelper
+            tvLevel.text = getString(arch.cayenne.lib.common.R.string.vip_level_format, vipLevel)
             tvPercent.text = percent
-            ivPercent.setImageResource(VIPResourceHelper.getPercentResource(level))
-
-            // 設置升級信息
+            val color = VIPResourceHelper.getProgressStartColor(level)
+            vipProgress.setProgressColor(color)
+            vipProgress.setProgress(progress)
             tvLevelUpInfo.text = levelUpInfo
         }
     }
