@@ -1,5 +1,6 @@
 package com.walisport.module.popup.slot.ui.fragment
 
+import android.animation.Animator
 import android.animation.ValueAnimator
 import android.os.Bundle
 import android.view.View
@@ -77,7 +78,7 @@ class PopupSlotFragment :
             val translationBackDuration = 160L
 
             // 假设 PopupSlotRepository 有两个布尔变量 slot0Animated 和 slot1Animated
-            if (showList[0]) {
+            if (showList.isNotEmpty() && showList[0]) {
                 mBinding.popupSlot0.visibility = View.VISIBLE
                 if (!mViewModel.slot0Animated) {
                     mBinding.popupSlot0.apply {
@@ -101,7 +102,7 @@ class PopupSlotFragment :
                 mBinding.popupSlot0.visibility = View.GONE
             }
 
-            if (showList[1]) {
+            if (showList.size > 1 && showList[1]) {
                 mBinding.popupSlot1.visibility = View.VISIBLE
                 if (!mViewModel.slot1Animated) {
                     mBinding.popupSlot1.apply {
@@ -129,49 +130,62 @@ class PopupSlotFragment :
         mViewModel.popupSlotDataListLiveData.observe(viewLifecycleOwner) {
             val dataList = it
             // 可根据需要将此变量提到类属性或通过参数传递
-            mBinding.popupSlot0.binding.vpBanner.apply {
-                setAdapter(BannerUrlImageAdapter(dataList[0].data.map {
-                    Pair(it, R.drawable.popup_slot_placeholder)
-                }))
-                setLoopTime(LOOP_TIME)
-                isAutoLoop(true)
-                setOnBannerListener { data, position ->
-                    // 这里处理点击事件，比如：
+            if (dataList.isNotEmpty()) {
+                mBinding.popupSlot0.binding.vpBanner.apply {
+                    setAdapter(BannerUrlImageAdapter(dataList[0].data.map {
+                        Pair(it, R.drawable.popup_slot_placeholder)
+                    }))
+                    setLoopTime(LOOP_TIME)
+                    isAutoLoop(true)
+                    setOnBannerListener { data, position ->
+                        // 这里处理点击事件，比如：
 //                    val url =
 //                        ((data as Pair<PopupSlotDataModel, Int>).first as PopupSlotDataModel).operateParams[0]
 //                    navigate(
 //                        arch.cayenne.lib.res.R.string.nav_module_web_fragment
 //                            .deeplink("url" to url)
 //                    )
-                }
-                start()
+                    }
+                    start()
 
+                }
             }
-            mBinding.popupSlot1.binding.vpBanner.apply {
-                setAdapter(BannerUrlImageAdapter(dataList[1].data.map {
-                    Pair(
-                        it,
-                        R.drawable.popup_slot_placeholder
-                    )
-                }))
-                setLoopTime(LOOP_TIME)
-                isAutoLoop(true)
-                setOnBannerListener { data, position ->
-                    // 这里处理点击事件，比如：
+
+            if (dataList.size > 1) {
+                mBinding.popupSlot1.binding.vpBanner.apply {
+                    setAdapter(BannerUrlImageAdapter(dataList[1].data.map {
+                        Pair(
+                            it,
+                            R.drawable.popup_slot_placeholder
+                        )
+                    }))
+                    setLoopTime(LOOP_TIME)
+                    isAutoLoop(true)
+                    setOnBannerListener { data, position ->
+                        // 这里处理点击事件，比如：
 //                    val url =
 //                        ((data as Pair<PopupSlotDataModel, Int>).first as PopupSlotDataModel).operateParams[0]
 //                    navigate(
 //                        arch.cayenne.lib.res.R.string.nav_module_web_fragment
 //                            .deeplink("url" to url)
 //                    )
+                    }
+                    start()
                 }
-                start()
             }
         }
     }
 
+    var fadeOutAnimator: Animator? = null
+    var fadeInAnimator: Animator? = null
+
     fun fadeAndOut() {
-        view?.startSafeAnimateSet({
+        mBinding.popupSlot0.binding.vpBanner.stop()
+        mBinding.popupSlot1.binding.vpBanner.stop()
+        fadeInAnimator?.cancel()
+        fadeOutAnimator?.cancel()
+
+        fadeOutAnimator = view?.startSafeAnimateSet({
             playTogether(
                 ValueAnimator.ofFloat(
                     view?.translationX ?: 0f,
@@ -208,10 +222,16 @@ class PopupSlotFragment :
                     }
             )
         }, duration = 150, interpolator = LinearInterpolator(), start = true)
+
     }
 
     fun fadeAndIn() {
-        view?.startSafeAnimateSet({
+        mBinding.popupSlot0.binding.vpBanner.start()
+        mBinding.popupSlot1.binding.vpBanner.start()
+        fadeInAnimator?.cancel()
+        fadeOutAnimator?.cancel()
+
+        fadeInAnimator = view?.startSafeAnimateSet({
             playTogether(
                 ValueAnimator.ofFloat(
                     view?.translationX ?: 28.dp2px.toFloat(),
