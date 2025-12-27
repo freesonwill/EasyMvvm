@@ -194,6 +194,14 @@ class MatchListPagerFragmentV2 :
 
 
     override fun initListener() {
+        mBinding.rvHomeGameList.addOnScrollListener(object : androidx.recyclerview.widget.RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: androidx.recyclerview.widget.RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                // 这里处理滚动状态变化
+                // newState: 0=IDLE, 1=DRAGGING, 2=SETTLING
+                homeViewModel.setScrollState(newState)
+            }
+        })
     }
 
     val matchListObserver = Observer<List<MatchWithMarkets>> { matchList ->

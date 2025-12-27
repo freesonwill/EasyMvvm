@@ -10,6 +10,8 @@ import android.widget.TextView
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.animation.CustomCurveTransformer
@@ -51,6 +53,8 @@ import arch.cayenne.module.home.ui.view.PromoTab
 import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
 import com.google.android.material.tabs.TabLayout
 import com.walisport.module.popup.slot.ui.fragment.PopupSlotFragment
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import kotlin.reflect.KClass
 
@@ -430,6 +434,17 @@ class NewHomeFragment : BaseFragment<HomeViewModel , FragmentNewHomeBinding>() {
                 mBinding.homeBarIcon.marginEndAnim()
             }else{ //展开
                 mBinding.homeBarIcon.marginStartAnim()
+            }
+        }
+
+        mViewModel.scrollStateChanged.observe(viewLifecycleOwner) {
+            if (it == RecyclerView.SCROLL_STATE_IDLE) {
+                lifecycleScope.launch {
+                    delay(200)
+                    popupSlotFragment.fadeAndIn()
+                }
+            } else {
+                popupSlotFragment.fadeAndOut()
             }
         }
 

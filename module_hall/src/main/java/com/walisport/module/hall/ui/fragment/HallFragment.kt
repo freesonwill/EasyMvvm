@@ -11,6 +11,7 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.os.bundleOf
 import androidx.core.view.isGone
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
@@ -58,6 +59,7 @@ import com.walisport.module.hall.ui.view.ScrollableTabIndicatorHelper
 import com.walisport.module.hall.ui.viewmodel.HallViewModel
 import com.walisport.module.popup.slot.ui.fragment.PopupSlotFragment
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import kotlin.reflect.KClass
 
@@ -374,7 +376,11 @@ class HallFragment : BaseFragment<HallViewModel , FragmentHallBinding>() {
 
         mViewModel.scrollStateChanged.observe(viewLifecycleOwner) {
             if (it == RecyclerView.SCROLL_STATE_IDLE) {
-                popupSlotFragment.fadeAndIn()
+                lifecycleScope.launch {
+                    delay(200)
+                    popupSlotFragment.fadeAndIn()
+                }
+
             } else {
                 popupSlotFragment.fadeAndOut()
             }
