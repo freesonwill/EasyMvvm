@@ -5,25 +5,20 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import com.walisport.module.me.data.MeRepository
+import com.walisport.module.me.data.MeTabBean
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
 import plugin.koin.KoinViewModel
-
+import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 @KoinViewModel
 class MeViewModel : BaseViewModel() {
     private val repository: MeRepository by inject { parametersOf(viewModelScope) }
     val bottomIndexFlow:MutableSharedFlow<Int> = MutableSharedFlow(replay = 1)
-    private val _recentlyCount = MutableLiveData<Long>(0)
-    val recentlyCount: LiveData<Long> = _recentlyCount
-
-    private val _gameCount = MutableLiveData<Long>(0)
-    val gameCount: LiveData<Long> = _gameCount
-
-    private val _matchCount = MutableLiveData<Long>(0)
-    val matchCount: LiveData<Long> = _matchCount
+    private val _count = MutableLiveData<List<MeTabBean>>()
+    val count: LiveData<List<MeTabBean>> = _count
 
     override fun initViewModel() {
         super.initViewModel()
@@ -50,12 +45,25 @@ class MeViewModel : BaseViewModel() {
     fun getSonVerticalScrollIsTop():Boolean?{
         return sonVerticalScrollIsTop.value
     }
+
     fun createObserver() {
         viewModelScope.launch {
-            delay(1500)
-            _recentlyCount.value = 1000
-            _gameCount.value = 1
-            _matchCount.value = 1
+            _count.value = listOf(
+                MeTabBean(
+                    id = 0,
+                    name =arch.cayenne.lib.common.R.string.drawer_recently_played.getString(),
+                    const = 999
+                ),
+                MeTabBean(
+                    id = 1,
+                    name = arch.cayenne.lib.common.R.string.drawer_game_collections.getString(),
+                    const = 2
+                ),
+                MeTabBean(
+                    id = 2,
+                    name = arch.cayenne.lib.common.R.string.drawer_match_collections.getString(),
+                    const = 19
+                ))
         }
     }
 }
