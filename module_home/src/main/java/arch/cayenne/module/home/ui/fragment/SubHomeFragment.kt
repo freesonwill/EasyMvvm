@@ -338,7 +338,7 @@ class SubHomeFragment : BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>()
 
         with(mBinding) {
             // 設置背景 - 使用 VIPResourceHelper
-            clVipInfo.background = VIPResourceHelper.getForegroundResource(level).getDrawable()
+            clVipInfo.background = VIPResourceHelper.getForegroundResource(level)
 
             // 設置圖標 - 使用 VIPResourceHelper
             ivLevel.setImageResource(VIPResourceHelper.getIconResource(level))
