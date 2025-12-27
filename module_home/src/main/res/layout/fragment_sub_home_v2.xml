@@ -56,13 +56,13 @@
                     android:textColor="@color/white"
                     android:textSize="@dimen/sp_12"
                     android:textStyle="bold"
-                    app:layout_constraintBottom_toTopOf="@+id/iv_percent"
+                    app:layout_constraintBottom_toTopOf="@+id/vip_progress"
                     app:layout_constraintStart_toStartOf="parent"
                     app:skinnableFontWeight="700"
                     tools:text="87%" />
 
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/iv_percent"
+                <arch.cayenne.lib.common.ui.view.VIPProgressView
+                    android:id="@+id/vip_progress"
                     android:layout_width="@dimen/dp_75"
                     android:layout_height="@dimen/dp_4"
                     android:layout_marginStart="@dimen/dp_12"

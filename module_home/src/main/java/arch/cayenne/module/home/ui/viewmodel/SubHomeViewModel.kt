@@ -15,6 +15,7 @@ import arch.cayenne.lib.database.entity.BaseTournamentData
 import arch.cayenne.lib.database.entity.ChampionTournamentDataModel
 import arch.cayenne.lib.database.entity.SportDataModel
 import arch.cayenne.lib.database.entity.TournamentDataModel
+import arch.cayenne.lib.database.entity.UserDataBean
 import arch.cayenne.lib.skin.SkinnableManager
 import arch.cayenne.module.home.TournamentCombo
 import arch.cayenne.module.home.data.constants.HomeState
@@ -69,10 +70,6 @@ open class SubHomeViewModel : BaseViewModel() {
     private val _selectedSkinType = MutableLiveData<Event<String>>()
     val selectedSkinType: LiveData<Event<String>> = _selectedSkinType
 
-    // VIP 等級數據
-    private val _vipLevel = MutableLiveData<Long>()
-    val vipLevel: LiveData<Long> = _vipLevel
-
     // 用於記錄全部的比賽列表是否載入完成
     var isAllowTabLoad: Boolean = false
 
@@ -85,6 +82,9 @@ open class SubHomeViewModel : BaseViewModel() {
     private val _sortType = MutableLiveData<MatchListSortType>()
     val sortType: LiveData<MatchListSortType> = _sortType
 
+    private val _onVipListener = MutableLiveData<UserDataBean>()
+    val onVipListener: LiveData<UserDataBean> get() = _onVipListener
+
     override fun initViewModel() {
         super.initViewModel()
         viewModelScope.launch {
@@ -93,12 +93,9 @@ open class SubHomeViewModel : BaseViewModel() {
             }
         }
 
-        // 監聽 VIP 等級變化
-        viewModelScope.launch(Dispatchers.IO) {
-            VIPDataExt.observeVIPLevel().collect { level ->
-                withContext(Dispatchers.Main) {
-                    _vipLevel.value = level
-                }
+        viewModelScope.launch {
+            repository.observeUserInfo().collect {
+                _onVipListener.value = it
             }
         }
 

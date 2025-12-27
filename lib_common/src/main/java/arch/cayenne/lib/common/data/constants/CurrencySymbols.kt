@@ -14,9 +14,10 @@ object CurrencySymbols {
             "CNY" -> "¥"
             "USD" -> "$"
             "JPY" -> "¥"
+            "KRW" -> "₩"
             "EUR" -> "€"
             "GBP" -> "£"
-            else -> currency
+            else -> "$"
         }
     }
 
