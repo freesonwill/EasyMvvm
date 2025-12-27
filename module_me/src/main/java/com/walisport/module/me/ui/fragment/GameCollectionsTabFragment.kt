@@ -15,29 +15,30 @@ import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
-import com.walisport.module.business.common.data.Category
 import com.walisport.module.business.common.data.UniversalLoadMoreScrollListener
 import com.walisport.module.business.common.ui.adapter.GameContentAdapter
 import com.walisport.module.live.data.EventClick
-import com.walisport.module.me.databinding.FragmentRecentlyTabBinding
+import com.walisport.module.me.databinding.FragmentGameCollectionsBinding
+import com.walisport.module.me.ui.viewmodel.GameCollectionTabViewModel
+import com.walisport.module.me.ui.viewmodel.MeVIPInfoViewModel
 import com.walisport.module.me.ui.viewmodel.MeViewModel
-import com.walisport.module.me.ui.viewmodel.RecentlyTabViewModel
 import kotlinx.coroutines.delay
 import kotlin.reflect.KClass
 
 /**
- * 我的页面底部的最近tab
+ *
  * @date: 2025/10/17 16:52
  * @description:
  */
-class RecentlyTabFragment : BaseFragment<RecentlyTabViewModel, FragmentRecentlyTabBinding>() {
+class GameCollectionsTabFragment : BaseFragment<GameCollectionTabViewModel, FragmentGameCollectionsBinding>() {
 
-    override val vbClass: KClass<FragmentRecentlyTabBinding> = FragmentRecentlyTabBinding::class
-    override val vmClass: KClass<RecentlyTabViewModel> = RecentlyTabViewModel::class
+    override val vbClass: KClass<FragmentGameCollectionsBinding> = FragmentGameCollectionsBinding::class
+    override val vmClass: KClass<GameCollectionTabViewModel> = GameCollectionTabViewModel::class
 
     private val parentViewModel: MeViewModel by viewModels({ requireParentFragment() })
 
     private lateinit var adapter: GameContentAdapter
+
 
     override fun initView(savedInstanceState: Bundle?) {
         with(mBinding) {
@@ -64,7 +65,6 @@ class RecentlyTabFragment : BaseFragment<RecentlyTabViewModel, FragmentRecentlyT
     }
 
     override fun initListener() {
-
         mBinding.rvRecently.addOnScrollListener(UniversalLoadMoreScrollListener(6) {
             if (mViewModel.apiStateListener.value == DataState.LoadSuccess) {
                 mViewModel.loadNextPage()
@@ -84,14 +84,6 @@ class RecentlyTabFragment : BaseFragment<RecentlyTabViewModel, FragmentRecentlyT
             }
         }
 
-        mViewModel.gameClickData.observe(viewLifecycleOwner) {
-            it?.let {
-                if (it.clickFlag== EventClick.EVENT_CLICK_ACK_TRUE.type){
-                    mViewModel.reload()
-                    mViewModel.setIsClickGame(EventClick.EVENT_CLICK_ACK_FALSE.type)
-                }
-            }
-        }
 
         mViewModel.apiStateListener.observe(viewLifecycleOwner) { state ->
             when (state) {
@@ -131,18 +123,15 @@ class RecentlyTabFragment : BaseFragment<RecentlyTabViewModel, FragmentRecentlyT
 
         mViewModel.totalCountLiveData.observe(viewLifecycleOwner){
             it?.let { count->
-                parentViewModel.setRecentlyCount(count)
+                parentViewModel.setGameFavouriteCount(count)
             }
         }
 
-
-    }
-
-    override fun initData() {
-        arguments?.apply {
-            mViewModel.setCategory(Category.RECENT.type)
+        // 監聽收藏變化，若有變化則重新加載數據
+        mViewModel.favouriteChangedLiveData.observe(viewLifecycleOwner) { isChanged ->
+            if (isChanged) {
+                mViewModel.reload()
+            }
         }
-        mViewModel.reload()
-        super.initData()
     }
 }

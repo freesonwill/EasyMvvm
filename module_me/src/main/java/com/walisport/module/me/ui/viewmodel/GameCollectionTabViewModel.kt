@@ -1,4 +1,4 @@
-package com.walisport.module.hall.ui.viewmodel
+package com.walisport.module.me.ui.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -10,25 +10,33 @@ import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import com.walisport.module.business.common.data.FavouriteChangedRepository
 import com.walisport.module.business.common.data.GameContentData
 import com.walisport.module.business.common.data.GameFavouriteRepository
+import com.walisport.module.business.common.data.GameFavouriteRepository.Companion.INITIAL_PAGE
 import com.walisport.module.business.common.data.ProfilePlayedPageVo
 import com.walisport.module.business.common.data.toGameContentData
-import com.walisport.module.hall.data.HallRepository.Companion.INITIAL_PAGE
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
 import plugin.koin.KoinViewModel
 
 @KoinViewModel
-class GameFavouriteViewModel : BaseViewModel() {
+class GameCollectionTabViewModel : BaseViewModel() {
 
     private val repository: GameFavouriteRepository by inject { parametersOf(viewModelScope) }
-    private val favouriteChangedRepository: FavouriteChangedRepository by inject { parametersOf(viewModelScope) }
+    private val favouriteChangedRepository: FavouriteChangedRepository by inject {
+        parametersOf(
+            viewModelScope
+        )
+    }
 
     private val _gameListLiveData: MutableLiveData<List<GameContentData>> = MutableLiveData()
     val gameListLiveData: LiveData<List<GameContentData>> = _gameListLiveData
 
     private val _favouriteChangedLiveData = MutableLiveData<Boolean>()
     val favouriteChangedLiveData: LiveData<Boolean> get() = _favouriteChangedLiveData
+
+    private val _totalCountLiveData = MutableLiveData<Long>()
+    val totalCountLiveData: LiveData<Long> get() = _totalCountLiveData
 
 
     private var page: Int = INITIAL_PAGE
@@ -51,8 +59,8 @@ class GameFavouriteViewModel : BaseViewModel() {
         viewModelScope.launch {
             callApi(
                 {
-                    repository.getGameCollectList(page )
-                } ,
+                    repository.getGameCollectList(page)
+                },
                 {
                     if (it is ApiResponseState.Failed) {
                         setState(DataState.NetworkUnavailable)
@@ -60,6 +68,8 @@ class GameFavouriteViewModel : BaseViewModel() {
 
                         val profilePlayedPageVo = it.dataAs<ProfilePlayedPageVo>()
                         val hasMore = profilePlayedPageVo?.pagination?.hasMore ?: false
+                        val totalItems = profilePlayedPageVo?.pagination?.totalItems
+                        _totalCountLiveData.value = totalItems?.toLong() ?: 0L
                         val size = profilePlayedPageVo?.list?.size ?: 0
                         val isEmpty = size == 0
                         if (page == INITIAL_PAGE && isEmpty) {
@@ -95,7 +105,7 @@ class GameFavouriteViewModel : BaseViewModel() {
 
 
                     }
-                } , autoUpdateState = false
+                }, autoUpdateState = false
             )
         }
     }
@@ -110,6 +120,12 @@ class GameFavouriteViewModel : BaseViewModel() {
         if (apiStateListener.value == DataState.LoadSuccess) {
             page++
             getGameCollectList()
+        }
+    }
+
+    fun setIsClickGame(flag: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.setGameClick(flag)
         }
     }
 

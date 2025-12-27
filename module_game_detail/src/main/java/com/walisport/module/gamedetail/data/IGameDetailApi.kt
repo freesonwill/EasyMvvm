@@ -3,11 +3,8 @@ package com.walisport.module.gamedetail.data
 import arch.cayenne.lib.http._interface.IApi
 import arch.cayenne.lib.http.data.HttpApiResponse
 import com.walisport.module.gamedetail.data.model.GameDetailVo
-import com.walisport.module.gamedetail.data.model.ProfileCollectEditVo
 import retrofit2.Response
-import retrofit2.http.Body
 import retrofit2.http.GET
-import retrofit2.http.POST
 import retrofit2.http.Path
 
 /**
@@ -22,10 +19,5 @@ interface IGameDetailApi : IApi {
         @Path("id") id: Long
     ): Response<HttpApiResponse<GameDetailVo>>
 
-    // 更新游戏收藏状态
-    @POST("api/game/collect")
-    suspend fun updateGameCollect(
-        @Body body: ProfileCollectEditVo
-    ): Response<HttpApiResponse<String>>
 
 }

@@ -89,7 +89,7 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
                 PagerBean(arch.cayenne.lib.common.R.string.drawer_recently_played.getString()) { RecentlyTabFragment() },
                 PagerBean(
                     arch.cayenne.lib.common.R.string.drawer_game_collections.getString()
-                ) { GameCollectionsFragment() },
+                ) { GameCollectionsTabFragment() },
                 PagerBean(
                     arch.cayenne.lib.common.R.string.drawer_match_collections.getString()
                 ) { MatchCollectionsFragment() },
@@ -278,10 +278,11 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
         mViewModel.createObserver()
 
         with(mViewModel) {
-            count.observe(viewLifecycleOwner) { count ->
-                count.forEachIndexed { index, item ->
-                    mBinding.tabLayout.getTabAt(index)?.let {
-                        changeTabCount(it, item.const.toLong())
+            count.observe(viewLifecycleOwner){
+                tabWiths.clear()
+                for (i in it.indices){
+                    mBinding.tabLayout.getTabAt(i)?.let {tab->
+                        changeTabCount(tab, it[i].const.toLong())
                     }
                 }
             }
