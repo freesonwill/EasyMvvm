@@ -140,7 +140,7 @@ class MatchListPagerFragmentV2 :
 
             //賽事卡片之間的間閣
             val decoration = MatchCardItemDecoration(
-                11.dp2px,
+                10.5f.dp2px.toInt(),
                 6.dp2px
             )
             mBinding.rvHomeGameList.apply {

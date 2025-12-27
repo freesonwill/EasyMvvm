@@ -39,7 +39,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_begin="40dp" />
+        app:layout_constraintGuide_begin="@dimen/dp_39" />
 
     <!-- 垂直分隔 guideline -->
     <androidx.constraintlayout.widget.Guideline
