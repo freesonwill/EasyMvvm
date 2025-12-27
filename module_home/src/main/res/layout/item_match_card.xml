@@ -47,7 +47,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_begin="160dp" />
+        app:layout_constraintGuide_begin="@dimen/dp_157" />
 
     <!-- 上下半場 + 比賽時間 -->
     <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
@@ -185,7 +185,7 @@
         android:id="@+id/tv_home_score"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/dp_14"
+        android:layout_marginEnd="@dimen/dp_11"
         android:layout_marginBottom="@dimen/dp_2"
         android:gravity="center_vertical"
         android:textColor="@color/match_card_score"
@@ -237,7 +237,7 @@
         android:id="@+id/tv_away_score"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/dp_14"
+        android:layout_marginEnd="@dimen/dp_11"
         android:layout_marginBottom="@dimen/dp_2"
         android:gravity="center_vertical"
         android:textColor="@color/match_card_score"
