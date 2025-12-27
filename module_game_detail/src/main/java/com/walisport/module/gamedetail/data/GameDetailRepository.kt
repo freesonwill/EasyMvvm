@@ -101,12 +101,10 @@ class GameDetailRepository(
     private fun toCurrencyInfoBean(currencyBean: CurrencyBean): CurrencyInfoBean {
         return CurrencyInfoBean(
             id = currencyBean.id ,
-            isVirtual = currencyBean.virtual ,
+            isVirtual = currencyBean.crypto ,
             rate = currencyBean.rate ,
             unit = currencyBean.unit ,
-            name = currencyBean.name ,
-
-            )
+            name = currencyBean.name)
     }
 
     suspend fun updateGameCollect(gameId: Long , collect: Boolean): ApiResponseState {

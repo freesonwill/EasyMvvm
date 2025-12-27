@@ -56,7 +56,7 @@ class BalanceRepository(
         val currentSelectedCCY = currencyList.find { it.ccy == manager.getValue<String>(UserDataKey.KEY_DEFAULT_CURRENCY) }?.ccy ?: "USD"
         currencyList.forEach { currency ->
             val wallet = user.list.find { it.currency == currency.ccy }
-            if (!currency.virtual) {
+            if (!currency.crypto) {
                 fiat.add(
                     currency.toCurrencyContentData2(
                         wallet?.balance ?: 0L,
@@ -147,10 +147,10 @@ class BalanceRepository(
             ccy = ccy,
             currencyName = name,
             amount = amount,
-            amountStr = if (this.virtual && this.ccy != "USDT") amount.getFormalMoney(1) else amount.getFormalMoney(), //TODO 以後會加上rate，根據不同的需求除不同的rate
+            amountStr = if (this.crypto && this.ccy != "USDT") amount.getFormalMoney(1) else amount.getFormalMoney(), //TODO 以後會加上rate，根據不同的需求除不同的rate
             exchangeAmount = if(exchangeAmount == null) "" else "$exchangeAmountUnit${exchangeAmount.getFormalMoney()}",
             unit = unit,
-            scale = if (this.virtual && this.ccy != "USDT") 0 else 2,
+            scale = if (this.crypto && this.ccy != "USDT") 0 else 2,
             isSelected = ccy == currencySelectedCCY,
         )
     }
@@ -168,7 +168,7 @@ class BalanceRepository(
 
         currencyList.forEach { currency ->
             val wallet = user.list.find { currency.ccy == it.currency }
-            if (!currency.virtual) {
+            if (!currency.crypto) {
                 fiat.add(
                     currency.toCurrencyContentData2(
                         wallet?.balance ?:0L,

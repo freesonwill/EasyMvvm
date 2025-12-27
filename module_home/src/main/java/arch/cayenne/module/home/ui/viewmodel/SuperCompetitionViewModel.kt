@@ -9,6 +9,7 @@ import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.common.data.constants.SportEnum
 import arch.cayenne.lib.common.ui.viewmodel.Event
 import arch.cayenne.lib.common.utils.ext.VIPDataExt
+import arch.cayenne.lib.database.entity.UserDataBean
 import arch.cayenne.lib.skin.SkinnableManager
 import arch.cayenne.module.home.R
 import arch.cayenne.module.home.TournamentCombo
@@ -65,8 +66,8 @@ class SuperCompetitionViewModel : BaseViewModel() {
     val displayDate: MutableLiveData<BiDirectionalDate> = _displayDate
 
     // VIP 等級數據
-    private val _vipLevel = MutableLiveData<Long>()
-    val vipLevel: LiveData<Long> = _vipLevel
+    private val _onVipListener = MutableLiveData<UserDataBean>()
+    val onVipListener: LiveData<UserDataBean> get() = _onVipListener
 
     private val skinManager: SkinnableManager by inject { parametersOf(viewModelScope) }
     private val _selectedSkinType = MutableLiveData<Event<String>>()
@@ -110,13 +111,9 @@ class SuperCompetitionViewModel : BaseViewModel() {
             }
         }
 
-
-        // 監聽 VIP 等級變化
-        viewModelScope.launch(Dispatchers.IO) {
-            VIPDataExt.observeVIPLevel().collect { level ->
-                withContext(Dispatchers.Main) {
-                    _vipLevel.value = level
-                }
+        viewModelScope.launch {
+            repository.observeUserInfo().collect {
+                _onVipListener.value = it
             }
         }
 

@@ -2,10 +2,6 @@ package com.walisport.module.hall.data
 
 import arch.cayenne.lib.http.data.AvatarVo
 import arch.cayenne.lib.http.data.PaginationVo
-import com.walisport.module.business.common.data.Avatar
-import com.walisport.module.business.common.data.GameContentData
-import com.walisport.module.business.common.data.HotColdType
-import com.walisport.module.business.common.data.constants.GameSortType
 
 
 /**

@@ -21,7 +21,7 @@ class MeRepository(
     private val manager: UserDataManager,
     private val database: GameDatabase,
     private val httpClient: HttpClient
-    ) : BaseRepository() {
+) : BaseRepository() {
 
     fun observeUserInfo() = database.userDataDao().observeUser()
 
@@ -35,7 +35,9 @@ class MeRepository(
                 onSuccess = { resp ->
                     "======${resp.data}".loge("测试")
                     if (resp.code == 0) {
-                        saveAccountInfo(resp.data)
+                        launch {
+                            saveAccountInfo(resp.data)
+                        }
                     }
                 },
                 onFailure = { code, msg, throwable ->
@@ -45,7 +47,7 @@ class MeRepository(
         }
     }
 
-    private fun saveAccountInfo(profileInfo: AccountInfo) {
+    private suspend fun saveAccountInfo(profileInfo: AccountInfo) {
         database.userDataDao().insert(
             UserDataBean(
                 nickname = profileInfo.nickname,
@@ -63,6 +65,8 @@ class MeRepository(
                 nicknameChangeCount = profileInfo.nicknameChangeCount,
             )
         )
+        //更新余额信息
+        database.infoDao().updateBalance(profileInfo.score)
     }
 
 }

@@ -69,7 +69,8 @@ class MeVIPInfoFragment : BaseFragment<MeVIPInfoViewModel, FragmentMeVipInfoBind
                 }
                 val levelUpInfo = getString(arch.cayenne.lib.common.R.string.vip_level_require, require)
                 updateVIPInfo(
-                    vipLevel = it.vipStage,
+                    vipLevel = it.vipLevel,
+                    vipStage = it.vipStage,
                     percent = percent,
                     levelUpInfo = levelUpInfo,
                     progress
@@ -85,11 +86,12 @@ class MeVIPInfoFragment : BaseFragment<MeVIPInfoViewModel, FragmentMeVipInfoBind
 
     private fun updateVIPInfo(
         vipLevel: Int,
+        vipStage: Int,
         percent: String,
         levelUpInfo: String,
         progress: Float
     ) {
-        val level = VIPResourceHelper.getVIPLevelFromInt(vipLevel)
+        val level = VIPResourceHelper.getVIPLevelFromInt(vipStage)
         with(mBinding) {
             ctVipInfo.background = VIPResourceHelper.getBackgroundResource(level)
             ctLevelInfo.background = VIPResourceHelper.getForegroundResource(level)

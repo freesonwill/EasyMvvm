@@ -173,12 +173,13 @@ class ModuleRepository(
             data.map {
                 CurrencyBean(
                     id = it.id,
-                    virtual = it.virtual,
-                    rate = it.rate,
-                    unit = it.unit,
                     name = it.name,
                     ccy = it.ccy,
+                    crypto = it.crypto,
+                    scale = it.scale,
+                    unit = it.unit,
                     icon = it.icon,
+                    rate = it.rate
                 )
             }
         )

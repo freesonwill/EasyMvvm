@@ -221,7 +221,7 @@ class RankingRepository(
             symbol = currencyBean?.unit ?: bettingVo.ccy.ccyToSymbol() ,
             icon = currencyBean?.icon ?: bettingVo.ccy.symbolUrl() ,
             result = bettingVo.bonus.toFloat(),
-            virtual = currencyBean?.virtual ?: false
+            virtual = currencyBean?.crypto ?: false
         )
     }
 
@@ -235,7 +235,7 @@ class RankingRepository(
             symbol = currencyBean?.unit ?: bigVo.ccy.ccyToSymbol() ,
             icon = currencyBean?.icon ?: bigVo.ccy.symbolUrl() ,
             result = bigVo.bonus.toFloat(),
-            virtual = currencyBean?.virtual ?: false
+            virtual = currencyBean?.crypto ?: false
         )
     }
 
@@ -252,11 +252,8 @@ class RankingRepository(
         )
     }
 
-
     companion object {
         const val DEFAULT_PAGE_SIZE = 10
         const val INITIAL_PAGE = 1
     }
-
-
 }

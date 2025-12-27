@@ -28,7 +28,7 @@ data class AccountInfo(
     val list: List<Wallet>,
     val admittedBetScore: Long,
     val requiredAdmittedBetScore: Long,
-    val vipStage: String,
+    val vipStage: Int,
     val nicknameChangeCount: Int
 )
 

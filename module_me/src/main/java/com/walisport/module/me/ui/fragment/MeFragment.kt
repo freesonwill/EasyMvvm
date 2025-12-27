@@ -1,8 +1,11 @@
 package com.walisport.module.me.ui.fragment
 
+import android.R.attr.end
 import android.annotation.SuppressLint
+import android.os.Build
 import android.os.Bundle
 import android.view.View
+import androidx.annotation.RequiresApi
 import androidx.core.os.bundleOf
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -22,26 +25,32 @@ import arch.cayenne.lib.common.utils.CustomTabIndicatorUtils
 import arch.cayenne.lib.common.utils.biz.CommonBiz
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
-import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
-import arch.cayenne.lib.common.utils.ext.clickNoRepeat
-import com.gyf.immersionbar.ImmersionBar
-import com.walisport.module.me.databinding.FragmentMeBinding
-import com.walisport.module.me.ui.viewmodel.MeViewModel
-import kotlin.reflect.KClass
-
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.TabLayoutExt
-import arch.cayenne.lib.common.utils.ext.removeAllTips
-import arch.cayenne.lib.skin.widget.SkinnableTextView
-import com.google.android.material.tabs.TabLayoutMediator
-import com.walisport.module.me.R
-import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.lib.common.utils.ext.TabLayoutExt.addOnTabSelectedListener2
+import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
+import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+import arch.cayenne.lib.common.utils.ext.removeAllTips
 import arch.cayenne.lib.common.utils.ext.setupViewPagerScroll
 import arch.cayenne.lib.common.utils.ext.startFadeAnim
+import arch.cayenne.lib.skin.res.SkinnableResourceManager
+import arch.cayenne.lib.skin.widget.SkinnableTextView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CircleCrop
+import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
+import com.gyf.immersionbar.ImmersionBar
 import com.walisport.module.live.ui.widget.MeGestureListener
 import com.walisport.module.live.ui.widget.MeLayoutInterceptTouch.MeSlideDirection
+import com.walisport.module.me.R
+import com.walisport.module.me.databinding.FragmentMeBinding
+import com.walisport.module.me.ui.viewmodel.MeViewModel
+import java.time.Instant
+import java.time.ZoneId
+import java.time.temporal.ChronoUnit
+import kotlin.reflect.KClass
+
 
 /**
  * 我的界面
@@ -67,7 +76,6 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
             val day = 137
             tvJoinTime.text = "已加入${day}天"
         }
-
         initVIPInfo()
         initFeatures()
         initBarHeight()
@@ -191,14 +199,14 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
                             if (it) {
                                 mBinding.meLayoutScale.adjustLayout(
                                     deltaY,
-                                    direction,{ top->//传递当前顶部距离
+                                    direction, { top ->//传递当前顶部距离
 
                                     }
                                 )
                             }
                         }
                     } else {
-                        mBinding.meLayoutScale.adjustLayout(deltaY, direction,{top->//传递当前顶部距离
+                        mBinding.meLayoutScale.adjustLayout(deltaY, direction, { top ->//传递当前顶部距离
 
                         })
                     }
@@ -265,8 +273,7 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
         with(unreadMessageViewModel) {
             //未读消息监听
             unreadMsg.observe(viewLifecycleOwner) { flag ->
-                mBinding.ivUnreadDot.visibility =
-                    if (flag) android.view.View.VISIBLE else android.view.View.GONE
+                mBinding.ivUnreadDot.visibility = if (flag) View.VISIBLE else View.GONE
             }
         }
 
@@ -291,6 +298,17 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
                     changeTabCount(it, count)
                 }
             }
+
+            onVipListener.observe(viewLifecycleOwner) {
+                if (it != null) {
+                    mBinding.tvNickname.text = it.nickname
+                    Glide.with(this@MeFragment).load(it.avatar.url).apply(
+                        RequestOptions.bitmapTransform(CircleCrop())
+                    ).into(mBinding.ivAvatar)
+                    val day = calculateBetweenDay(it.registerTime)
+                    mBinding.tvJoinTime.text = day
+                }
+            }
         }
         mViewModel.createObserver()
 
@@ -303,8 +321,6 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
                 }
             }
         }
-
-
     }
 
     private fun changeTabCount(tab: TabLayout.Tab, count: Long) {
@@ -329,6 +345,15 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
         val topInset = windowInsetsCompat?.getInsets(WindowInsetsCompat.Type.statusBars())?.top ?: 0
         val ret = if (topInset == 0) ImmersionBar.getStatusBarHeight(view.context) else topInset
         return ret
+    }
+
+    private fun calculateBetweenDay(reg: Long): String {
+        if (reg == 0L) {
+            return getString(R.string.reg_day, 0)
+        }
+        val diff = System.currentTimeMillis() - reg
+        val day = diff / (24 * 60 * 60 * 1000)
+        return getString(R.string.reg_day, day)
     }
 
     override fun onStart() {

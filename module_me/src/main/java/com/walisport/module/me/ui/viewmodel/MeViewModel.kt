@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
+import arch.cayenne.lib.database.entity.UserDataBean
 import com.walisport.module.me.data.MeRepository
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -35,6 +36,17 @@ class MeViewModel : BaseViewModel() {
 
     private val _scrollTop = MutableLiveData<Boolean?>()
     val scrollTop: LiveData<Boolean?> = _scrollTop
+
+    private val _onVipListener = MutableLiveData<UserDataBean>()
+    val onVipListener: LiveData<UserDataBean> get() = _onVipListener
+
+    init {
+        viewModelScope.launch {
+            repository.observeUserInfo().collect {
+                _onVipListener.value = it
+            }
+        }
+    }
 
     fun setSonVerticalScrollIsTop(boo:Boolean){
         if (boo!=sonVerticalScrollIsTop.value){

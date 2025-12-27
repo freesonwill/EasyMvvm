@@ -41,11 +41,9 @@ class HomeRepository(
 
     fun observeSportsMatchCount() = sportDao.observeSportsMatchCount(filter = SportType.entries.map { it.id })
     fun observeTenTournaments() = tournamentDao.observeTournamentWithLimit()
-
+    fun observeUserInfo() = database.userDataDao().observeUser()
     fun observeLanguageChange() = userDataManager.observe<String>(UserDataKey.KEY_LANGUAGE)
-
-    suspend fun observeLoginChange() = infoDao.observeIsLogin()
-
+    fun observeLoginChange() = infoDao.observeIsLogin()
     fun isPreloadSuccess() = preloadResultChange.value == PreloadEnum.SUCCESS
 
     suspend fun getTournament(playTypeId: Int, sportId: Int, tournamentId: Int): TournamentDataModel? = tournamentDao.queryTournament(playTypeId, sportId, tournamentId)
