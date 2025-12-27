@@ -252,6 +252,14 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
     }
 
     override fun initListener() {
+        mBinding.rvCollectList.addOnScrollListener(object : androidx.recyclerview.widget.RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: androidx.recyclerview.widget.RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                // 这里处理滚动状态变化
+                // newState: 0=IDLE, 1=DRAGGING, 2=SETTLING
+                homeViewModel.setScrollState(newState)
+            }
+        })
     }
 
     @SuppressLint("SetTextI18n")

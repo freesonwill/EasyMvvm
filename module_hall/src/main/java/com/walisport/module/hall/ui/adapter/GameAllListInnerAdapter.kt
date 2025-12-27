@@ -45,7 +45,7 @@ class GameAllListInnerAdapter(private val onItemClickListener: ((Long)->Unit)?) 
 class GameListInnerViewHolder(val item: ItemGameAllListInnerBinding,private val onItemClickListener: ((Long)->Unit)?): BaseViewHolder(item) {
     fun bind(data: GameContentData,position: Int) {
         if (position==0){
-            LogUtils.e("GameListInnerViewHolder----------${position}")
+            //LogUtils.e("GameListInnerViewHolder----------${position}")
             item.rvRoot.layoutParams = item.rvRoot.layoutParams.apply {
                 width =124.dp2px
                 height = ViewGroup.LayoutParams.WRAP_CONTENT

@@ -191,10 +191,14 @@ class SingleBetRepository(
         betDao.getCurrentBet()?.let {
             if (it.betType == BetTypeEnum.SINGLE) {
                 val betId = it.betId
-                betDao.updateBetStatus(betId, BetStatusEnum.BETTING)
                 val selection = betDao.getSelections(betId).first()
-                unregister(selection)
+                val resp = remoteManager.singleBet(selection, money, oddsChange)
+                if(!resp.isSuccessful) {
+                    return@withContext Result.failure(CodeException(-1, resp.message))
+                }
 
+                betDao.updateBetStatus(betId, BetStatusEnum.BETTING)
+                unregister(selection)
                 val currency = infoDao.getCurrency()
                 val tempDetail = betDao.getDetail(betId).firstOrNull() ?: run {
                     BetDetailBean(
@@ -212,15 +216,9 @@ class SingleBetRepository(
                     tempDetail.serialValue,
                     BetResultStatusEnum.CONFIRMING
                 )
-                val resp = remoteManager.singleBet(selection, money, oddsChange)
-                if (resp.isSuccessful) {
-                    tempDetail.orderId = resp.orderId
-                    tempDetail.status = BetResultStatusEnum.getStatusByCode(resp.orderStatus)
-                    betDao.updateDetail(tempDetail)
-                } else {
-                    tempDetail.status = BetResultStatusEnum.FAIL
-                    betDao.updateDetail(tempDetail)
-                }
+                tempDetail.orderId = resp.orderId
+                tempDetail.status = BetResultStatusEnum.getStatusByCode(resp.orderStatus)
+                betDao.updateDetail(tempDetail)
                 betDao.getCurrentBet(BetStatusEnum.BETTING)?.let { bettingBet ->
                     betDao.updateBetStatus(bettingBet.betId, BetStatusEnum.COMPLETE)
                 }

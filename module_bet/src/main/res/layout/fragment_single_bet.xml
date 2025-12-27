@@ -146,9 +146,11 @@
                     android:fontFamily="@font/sf_pro"
                     app:skinnableFontWeight="400"
                     android:layout_marginStart="@dimen/dp_32"
+                    android:layout_marginEnd="@dimen/dp_8"
                     android:layout_marginTop="@dimen/dp_13"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:hintCursorGap="@dimen/dp_4"
                     tools:text=""
                     />
@@ -173,7 +175,7 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintVertical_bias="0.0"
                     android:paddingHorizontal="@dimen/dp_0"
-                    tools:visibility="visible">
+                    tools:visibility="gone">
 
                     <arch.cayenne.lib.skin.widget.SkinnableImageView
                         android:id="@+id/iv_reserve_hint"
@@ -216,35 +218,34 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    tools:visibility="gone">
+                    tools:visibility="visible">
 
                     <arch.cayenne.lib.skin.widget.SkinnableTextView
                         android:id="@+id/tv_cancel_reserve"
                         android:layout_width="wrap_content"
-                        android:layout_height="0dp"
-                        android:layout_margin="4dp"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginBottom="9dp"
+                        android:layout_height="@dimen/dp_38"
+                        android:layout_marginStart="4dp"
                         android:background="@drawable/shape_6dp"
                         android:backgroundTint="@color/color_0FFFFFFF"
                         android:gravity="center"
-                        android:paddingHorizontal="11dp"
-                        android:textColor="@color/color_FFFFFF"
+                        android:paddingHorizontal="@dimen/dp_7"
+                        android:textColor="@color/color_00E0E5"
                         android:textSize="15sp"
                         android:textStyle="bold"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:skinnableFontWeight="600"
-                        tools:text="\@1.82" />
+                        android:fontFamily="@font/sf_pro"
+                        app:skinnableFontWeight="700"
+                        tools:text="\@1.86" />
 
                     <arch.cayenne.lib.skin.widget.SkinnableImageView
                         android:id="@+id/iv_cancel_reserve"
-                        android:layout_width="wrap_content"
+                        android:layout_width="@dimen/dp_36"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="2dp"
                         android:padding="8dp"
-                        android:src="@drawable/icon_page_close"
+                        android:src="@drawable/icon_page_close_20x20"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@id/tv_cancel_reserve"

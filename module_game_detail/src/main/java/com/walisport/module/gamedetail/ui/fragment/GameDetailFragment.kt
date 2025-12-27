@@ -2,6 +2,7 @@ package com.walisport.module.gamedetail.ui.fragment
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
@@ -13,6 +14,7 @@ import arch.cayenne.lib.common.utils.ext.NavigationExt.navigateUp
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import com.walisport.module.gamedetail.databinding.FragmentGameDetailBinding
 import com.walisport.module.gamedetail.ui.viewmodel.GameDetailPageViewModel
+import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -66,6 +68,10 @@ class GameDetailFragment : BaseFragment<GameDetailPageViewModel, FragmentGameDet
             }
             ivFavorite.clickNoRepeat {
                 mViewModel.toggleCollectStatus(args.gameId)
+
+                lifecycleScope.launch {
+                    mViewModel.notifyFavouriteChanged()
+                }
             }
         }
     }

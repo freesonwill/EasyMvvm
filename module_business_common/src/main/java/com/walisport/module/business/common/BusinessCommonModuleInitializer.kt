@@ -2,6 +2,7 @@ package com.walisport.module.business.common
 
 import android.content.Context
 import arch.cayenne.lib.base.data.DefaultInitializer
+import com.walisport.module.business.common.data.FavouriteChangedRepository
 import com.walisport.module.business.common.data.GameFavouriteRepository
 import com.walisport.module.business.common.data.GameRecentRepository
 import org.koin.core.context.loadKoinModules
@@ -43,6 +44,11 @@ class BusinessCommonModuleInitializer: DefaultInitializer<Unit> {
                 get()
             )
         }
+
+        single {
+            FavouriteChangedRepository(
+            get() ,
+        ) }
 
     }
 

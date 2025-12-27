@@ -44,6 +44,7 @@ dependencies {
     implementation(project(":module_betslip"))
     implementation(project(":module_account"))
     implementation(project(":module_message"))
+    implementation(project(":module_popup_slot"))
     implementation(libs.tinyPinyin)
     implementation(libs.banner)
     testImplementation(libs.junit)

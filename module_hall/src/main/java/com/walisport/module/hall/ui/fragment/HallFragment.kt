@@ -11,6 +11,8 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.os.bundleOf
 import androidx.core.view.isGone
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.adapter.PagerAdapter
@@ -18,6 +20,7 @@ import arch.cayenne.lib.base.ui.animation.CustomCurveTransformer
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.base.utils.LogUtils
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.common.data.constants.BizUrl
 import arch.cayenne.lib.common.data.constants.DrawerAction.ACTION_OPEN
 import arch.cayenne.lib.common.data.constants.DrawerAction.KEY_ACTION
@@ -54,7 +57,9 @@ import com.walisport.module.hall.databinding.FragmentHallBinding
 import com.walisport.module.hall.databinding.ItemHallGameTabBinding
 import com.walisport.module.hall.ui.view.ScrollableTabIndicatorHelper
 import com.walisport.module.hall.ui.viewmodel.HallViewModel
+import com.walisport.module.popup.slot.ui.fragment.PopupSlotFragment
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import kotlin.reflect.KClass
 
@@ -62,10 +67,14 @@ import kotlin.reflect.KClass
  * 游戏大厅界面
  */
 
-class HallFragment : BaseFragment<HallViewModel, FragmentHallBinding>() {
+class HallFragment : BaseFragment<HallViewModel , FragmentHallBinding>() {
 
     override val vbClass: KClass<FragmentHallBinding> = FragmentHallBinding::class
     override val vmClass: KClass<HallViewModel> = HallViewModel::class
+
+    private val popupSlotFragment: PopupSlotFragment by lazy {
+        PopupSlotFragment()
+    }
 
     private val balanceViewModel: BalanceViewModel by viewModel()
     private val mMinHeight = 38.dp2px
@@ -85,7 +94,7 @@ class HallFragment : BaseFragment<HallViewModel, FragmentHallBinding>() {
             var barHeight = ViewUtils.getStatusBarHeight(requireContext())
             //
         }
-
+        initPopupSlot()
         mViewModel.queryGameCommon()
     }
 
@@ -364,6 +373,18 @@ class HallFragment : BaseFragment<HallViewModel, FragmentHallBinding>() {
                 mBinding.homeBarIcon.marginStartAnim()
             }
         }
+
+        mViewModel.scrollStateChanged.observe(viewLifecycleOwner) {
+            if (it == RecyclerView.SCROLL_STATE_IDLE) {
+                lifecycleScope.launch {
+                    delay(200)
+                    popupSlotFragment.fadeAndIn()
+                }
+
+            } else {
+                popupSlotFragment.fadeAndOut()
+            }
+        }
     }
 
     override fun onStart() {
@@ -401,4 +422,14 @@ class HallFragment : BaseFragment<HallViewModel, FragmentHallBinding>() {
         // 启动轮播
         mBinding.ivRightLogo.start()
     }
+
+    private fun initPopupSlot() {
+        childFragmentManager.beginTransaction()
+            .add(R.id.fragment_hall_container_view , popupSlotFragment , PopupSlotFragment.TAG)
+            .commit()
+    }
+
+
+
+
 }

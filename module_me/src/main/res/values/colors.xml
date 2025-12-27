@@ -11,6 +11,6 @@
     <color name="shader_end_star_diamond">#FECAA0</color>
     <color name="tab_selected_text_color">#ffffff</color>
     <color name="video_tab_text_color">#999999</color>
-
+    <color name="me_resolution_vertical_selected_text_color">#00E0E5</color>
 
 </resources>

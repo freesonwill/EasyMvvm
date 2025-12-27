@@ -1,6 +1,8 @@
 package com.walisport.module.me.ui.fragment
 
 import android.os.Bundle
+import android.view.View
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.ui.animation.AnimationController
@@ -8,14 +10,17 @@ import arch.cayenne.lib.base.ui.animation.AnimationController.AnimType
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.common.ui.adapter.GridSpacingItemDecoration
+import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
+import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import com.walisport.module.business.common.data.Category
 import com.walisport.module.business.common.data.UniversalLoadMoreScrollListener
 import com.walisport.module.business.common.ui.adapter.GameContentAdapter
 import com.walisport.module.live.data.EventClick
 import com.walisport.module.me.databinding.FragmentRecentlyTabBinding
+import com.walisport.module.me.ui.viewmodel.MeViewModel
 import com.walisport.module.me.ui.viewmodel.RecentlyTabViewModel
 import kotlinx.coroutines.delay
 import kotlin.reflect.KClass
@@ -29,6 +34,8 @@ class RecentlyTabFragment : BaseFragment<RecentlyTabViewModel, FragmentRecentlyT
 
     override val vbClass: KClass<FragmentRecentlyTabBinding> = FragmentRecentlyTabBinding::class
     override val vmClass: KClass<RecentlyTabViewModel> = RecentlyTabViewModel::class
+
+    private val parentViewModel: MeViewModel by viewModels({ requireParentFragment() })
 
     private lateinit var adapter: GameContentAdapter
 
@@ -86,41 +93,47 @@ class RecentlyTabFragment : BaseFragment<RecentlyTabViewModel, FragmentRecentlyT
             }
         }
 
-//        mViewModel.apiStateListener.observe(viewLifecycleOwner) { state ->
-//            when (state) {
-//                DataState.LoadSuccess -> {
-//                    mBinding.rvGame.visibility = View.VISIBLE
-//                    mBinding.clDynamics.visibility = View.GONE
-//                }
-//
-//                DataState.DataEmpty -> {
-//                    mBinding.rvGame.visibility = View.GONE
-//                    mBinding.clDynamics.visibility = View.VISIBLE
-//                    mBinding.clDynamics.setState(
-//                        States.DATA_EMPTY,
-//                        R.string.game_data_empty.getString()
-//                    )
-//
-//                }
-//
-//                DataState.NoMoreData -> {
-//                    mBinding.rvGame.visibility = View.VISIBLE
-//                    mBinding.clDynamics.visibility = View.GONE
-//                }
-//
-//                DataState.NetworkUnavailable -> {
-//                    mBinding.rvGame.visibility = View.GONE
-//                    mBinding.clDynamics.visibility = View.VISIBLE
-//                    mBinding.clDynamics.setState(
-//                        States.NETWORK_ANOMALY(),
-//                        arch.cayenne.lib.common.R.string.error_net.getString()
-//                    )
-//                }
-//
-//                else -> {
-//                }
-//            }
-//        }
+        mViewModel.apiStateListener.observe(viewLifecycleOwner) { state ->
+            when (state) {
+                DataState.LoadSuccess -> {
+                    mBinding.rvRecently.visibility = View.VISIBLE
+                    mBinding.clDynamics.visibility = View.GONE
+                }
+
+                DataState.DataEmpty -> {
+                    mBinding.rvRecently.visibility = View.GONE
+                    mBinding.clDynamics.visibility = View.VISIBLE
+                    mBinding.clDynamics.setState(
+                        DynamicStateLayout.States.DATA_EMPTY,
+                        com.walisport.module.business.common.R.string.game_data_empty.getString()
+                    )
+
+                }
+
+                DataState.NoMoreData -> {
+                    mBinding.rvRecently.visibility = View.VISIBLE
+                    mBinding.clDynamics.visibility = View.GONE
+                }
+
+                DataState.NetworkUnavailable -> {
+                    mBinding.rvRecently.visibility = View.GONE
+                    mBinding.clDynamics.visibility = View.VISIBLE
+                    mBinding.clDynamics.setState(
+                        DynamicStateLayout.States.NETWORK_ANOMALY(),
+                        arch.cayenne.lib.common.R.string.error_net.getString()
+                    )
+                }
+
+                else -> {
+                }
+            }
+        }
+
+        mViewModel.totalCountLiveData.observe(viewLifecycleOwner){
+            it?.let { count->
+                parentViewModel.setRecentlyCount(count)
+            }
+        }
 
 
     }

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<arch.cayenne.lib.common.ui.view.InterceptedLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_1E1E1E"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical"
+    app:interceptedDirection="RIGHT">
+
+    <arch.cayenne.lib.common.ui.view.TitleBarView
+        android:id="@+id/title_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingConstraints" />
+
+
+    <TextView
+        android:id="@+id/tvStatusBarHeight"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_11"
+        android:layout_marginTop="@dimen/dp_11"
+        android:layout_marginEnd="@dimen/dp_11"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        android:paddingHorizontal="@dimen/dp_0"
+        tools:text="状态栏高度: 11px" />
+
+</arch.cayenne.lib.common.ui.view.InterceptedLinearLayout>
