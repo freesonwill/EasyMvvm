@@ -30,7 +30,7 @@ class MeScrollableTabIndicatorHelper(
         val pos = tabLayout.selectedTabPosition
             tabLayout.postDelayed({ doAnimate(duration) }, 50 )
         isSyncNow = false
-         LogUtils.e("MeScrollableTabIndicatorHelper-------->smartAnimateToCurrent------->${pos}")
+         //LogUtils.e("MeScrollableTabIndicatorHelper-------->smartAnimateToCurrent------->${pos}")
         position = pos
     }
 
@@ -43,7 +43,7 @@ class MeScrollableTabIndicatorHelper(
             bgView.getLocationInWindow(loc)
             val bgCenter = loc[0] + bgView.width / 2f
             val targetX = bgView.translationX + tabCenter - bgCenter
-            LogUtils.e("MeScrollableTabIndicatorHelper-------->动画距离${targetX},,,,,,,,,${width}------tabCenter:${tabCenter}")
+            //LogUtils.e("MeScrollableTabIndicatorHelper-------->动画距离${targetX},,,,,,,,,${width}------tabCenter:${tabCenter}")
             bgView.animate().apply {
                 translationX((targetX - mLeft))
                 setDuration(duration)
@@ -68,7 +68,7 @@ class MeScrollableTabIndicatorHelper(
             tabLayout.getTabAt(0)?.customView?.findViewById<SkinnableTextView>(R.id.count)?.apply {
                 tabView.getLocationInWindow(loc)
                 val tabCenter = (loc[0] + tabView.width / 2f) - (width)
-                LogUtils.e("MeScrollableTabIndicatorHelper-------->syncNow------->${pos},,,,,,${width}------tabCenter:${tabCenter}")
+                //LogUtils.e("MeScrollableTabIndicatorHelper-------->syncNow------->${pos},,,,,,${width}------tabCenter:${tabCenter}")
                 bgView.getLocationInWindow(loc)
                 val bgCenter = loc[0] + bgView.width / 2f
                 var targetX = bgView.translationX + (tabCenter - bgCenter - mLeft)

@@ -104,7 +104,7 @@ class CustomGameTabGroupLayout : FrameLayout {
      * @param hasSelection true: 有選中的聯賽，false: 沒有選中的聯賽
      */
     fun updateTournamentButtonStyle(hasSelection: Boolean) {
-        LogUtils.e("updateTournamentButtonStyle--------->${hasSelection}")
+        //LogUtils.e("updateTournamentButtonStyle--------->${hasSelection}")
         with(binding) {
             if (hasSelection) {
                 // 有選中狀態：高亮顯示
