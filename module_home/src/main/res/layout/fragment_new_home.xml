@@ -46,8 +46,7 @@
                 android:id="@+id/clAvava"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/dp_3"
-                android:paddingTop="@dimen/dp_9"
+                android:paddingTop="@dimen/dp_10"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:ignore="MissingConstraints">
@@ -68,7 +67,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_9"
-                android:layout_marginBottom="@dimen/dp_1"
+                android:layout_marginTop="@dimen/dp_3"
                 android:paddingTop="@dimen/dp_7"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toRightOf="@+id/clAvava"
@@ -92,7 +91,7 @@
             <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
                 android:id="@+id/cl_first_navbar"
                 android:layout_width="match_parent"
-                android:layout_height="45dp"
+                android:layout_height="@dimen/dp_46"
                 android:clipChildren="false"
                 android:clipToPadding="false"
                 android:orientation="horizontal"

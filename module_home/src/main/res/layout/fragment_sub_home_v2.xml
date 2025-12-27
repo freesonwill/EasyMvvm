@@ -117,7 +117,7 @@
             <arch.cayenne.lib.skin.widget.SkinnableView
                 android:id="@+id/view_second_navbar"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_71"
+                android:layout_height="@dimen/dp_70"
                 android:background="@color/color_1E1E1E"
                 android:clipChildren="true"
                 android:nestedScrollingEnabled="false"
