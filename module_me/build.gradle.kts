@@ -42,6 +42,8 @@ dependencies {
     implementation(project(":lib_skin"))
     implementation(project(":lib_http"))
     implementation(project(":lib_common"))
+    implementation(project(":lib_http"))
+    implementation(project(":module_business_common"))
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

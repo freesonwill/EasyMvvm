@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/dp_1"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/gl_mid"
@@ -17,7 +18,7 @@
         android:layout_width="172dp"
         android:layout_height="186dp"
         android:layout_marginStart="@dimen/dp_12"
-        android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginTop="@dimen/dp_9"
         android:layout_marginEnd="@dimen/dp_3.5"
         android:background="@color/tran_0"
         app:layout_constraintTop_toTopOf="parent"
@@ -42,6 +43,7 @@
         android:id="@+id/iv_invite_friend"
         android:layout_width="172dp"
         android:layout_height="76dp"
+        android:layout_marginTop="@dimen/dp_1"
         android:layout_marginStart="@dimen/dp_1"
         android:layout_marginEnd="@dimen/dp_11"
         app:srcCompat="@drawable/image_game_invite_friend"

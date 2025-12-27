@@ -43,7 +43,7 @@ class BalanceView : FrameLayout {
 
             val offset = if(isPortrait()) {
                 val h = ViewUtils.getStatusBarHeight(mBinding.root.context)
-                location.last() - h + mBinding.root.measuredHeight + 4.dp2px
+                location.last() - h + mBinding.root.measuredHeight - 1.dp2px
             } else {
                 location.first() + mBinding.root.measuredWidth + 15.dp2px
             }

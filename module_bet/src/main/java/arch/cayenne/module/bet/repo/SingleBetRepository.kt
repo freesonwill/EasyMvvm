@@ -1,5 +1,6 @@
 package arch.cayenne.module.bet.repo
 
+import arch.cayenne.lib.base.data.model.CodeException
 import arch.cayenne.lib.base.data.repository.BaseRepository
 import arch.cayenne.lib.common.data.constants.UserDataKey
 import arch.cayenne.lib.common.data.manager.UserDataManager
@@ -141,7 +142,7 @@ class SingleBetRepository(
         true
     }
 
-    suspend fun saveToReserve(odds: Int, money: Long) = withContext(Dispatchers.IO) {
+    suspend fun saveToReserve(odds: Int, money: Long):Result<Unit> = withContext(Dispatchers.IO) {
         betDao.getCurrentBet()?.let {
             val selection = betDao.getSelections(it.betId).first()
             val currency = infoDao.getCurrency()
@@ -155,9 +156,14 @@ class SingleBetRepository(
                     currency = currency
                 )
             )
-            return@withContext betDao.updateBetType(it.betId, BetTypeEnum.RESERVE) == 1
-        }
-        false
+            return@withContext (betDao.updateBetType(it.betId, BetTypeEnum.RESERVE) == 1).let {
+                if(it) {
+                    Result.success(Unit)
+                } else {
+                    Result.failure(CodeException(-1, "Update bet type failed"))
+                }
+            }
+        } ?: Result.failure(CodeException(-1,"No current bet"))
     }
 
     private suspend fun setMoney(betId: Long, money: Long) {
@@ -181,111 +187,112 @@ class SingleBetRepository(
         }
     }
 
-    fun sendBet(money: Long, oddsChange: OddsChangeEnum) {
-        scope.launch {
-            betDao.getCurrentBet()?.let {
-                if (it.betType == BetTypeEnum.SINGLE) {
-                    val betId = it.betId
-                    betDao.updateBetStatus(betId, BetStatusEnum.BETTING)
-                    val selection = betDao.getSelections(betId).first()
-                    unregister(selection)
+    suspend fun sendBet(money: Long, oddsChange: OddsChangeEnum):Result<Unit> = withContext(Dispatchers.IO) {
+        betDao.getCurrentBet()?.let {
+            if (it.betType == BetTypeEnum.SINGLE) {
+                val betId = it.betId
+                betDao.updateBetStatus(betId, BetStatusEnum.BETTING)
+                val selection = betDao.getSelections(betId).first()
+                unregister(selection)
 
-                    val currency = infoDao.getCurrency()
-                    val tempDetail = betDao.getDetail(betId).firstOrNull() ?: run {
-                        BetDetailBean(
-                            betId = betId,
-                            sumOdds = selection.odds,
-                            odds = selection.odds,
-                            inputMoney = money,
-                            currency = currency
-                        ).apply {
-                            betDao.insertDetail(this)
-                        }
-                    }
-                    betDao.updateDetailStatus(
-                        tempDetail.betId,
-                        tempDetail.serialValue,
-                        BetResultStatusEnum.CONFIRMING
-                    )
-                    val resp = remoteManager.singleBet(selection, money, oddsChange)
-                    if (resp != null && resp.isSuccessful) {
-                        tempDetail.orderId = resp.orderId
-                        tempDetail.status = BetResultStatusEnum.getStatusByCode(resp.orderStatus)
-                        betDao.updateDetail(tempDetail)
-                    } else {
-                        tempDetail.status =
-                            if (resp != null && !resp.isSuccessful) BetResultStatusEnum.REJECT else BetResultStatusEnum.CONFIRMING
-                        betDao.updateDetail(tempDetail)
-                    }
-                    betDao.getCurrentBet(BetStatusEnum.BETTING)?.let { bettingBet ->
-                        betDao.updateBetStatus(bettingBet.betId, BetStatusEnum.COMPLETE)
+                val currency = infoDao.getCurrency()
+                val tempDetail = betDao.getDetail(betId).firstOrNull() ?: run {
+                    BetDetailBean(
+                        betId = betId,
+                        sumOdds = selection.odds,
+                        odds = selection.odds,
+                        inputMoney = money,
+                        currency = currency
+                    ).apply {
+                        betDao.insertDetail(this)
                     }
                 }
+                betDao.updateDetailStatus(
+                    tempDetail.betId,
+                    tempDetail.serialValue,
+                    BetResultStatusEnum.CONFIRMING
+                )
+                val resp = remoteManager.singleBet(selection, money, oddsChange)
+                if (resp.isSuccessful) {
+                    tempDetail.orderId = resp.orderId
+                    tempDetail.status = BetResultStatusEnum.getStatusByCode(resp.orderStatus)
+                    betDao.updateDetail(tempDetail)
+                } else {
+                    tempDetail.status = BetResultStatusEnum.FAIL
+                    betDao.updateDetail(tempDetail)
+                }
+                betDao.getCurrentBet(BetStatusEnum.BETTING)?.let { bettingBet ->
+                    betDao.updateBetStatus(bettingBet.betId, BetStatusEnum.COMPLETE)
+                }
+                Result.success(Unit)
+            } else {
+                Result.failure(CodeException(-1, "Current bet is not SINGLE"))
             }
-        }
+        } ?: Result.failure(CodeException(-1, "No current bet"))
     }
 
     private fun unregister(selection: BetSelectionBean) {
-        scope.launch {
-            remoteManager.unregisterMatchMarketNotify(
-                listOf(
-                    Client.MarketIdBase.newBuilder()
-                        .setMatchId(selection.matchId)
-                        .addMarketId(selection.marketId)
-                        .build()
-                )
+        remoteManager.unregisterMatchMarketNotify(
+            listOf(
+                Client.MarketIdBase.newBuilder()
+                    .setMatchId(selection.matchId)
+                    .addMarketId(selection.marketId)
+                    .build()
             )
-            selection.oddsStatus = null
-            betDao.updateSelection(selection)
-
-        }
+        )
+        selection.oddsStatus = null
+        betDao.updateSelection(selection)
     }
 
-    suspend fun saveToSingle() = withContext(scope.coroutineContext) {
+    suspend fun saveToSingle():Result<Unit> = withContext(scope.coroutineContext) {
         betDao.getCurrentBet()?.let { bet ->
-            return@withContext betDao.updateBetType(bet.betId, BetTypeEnum.SINGLE) == 1
-        }
-        false
-    }
-
-    fun sendReserve(money: Long) {
-        scope.launch {
-            betDao.getCurrentBet()?.let { bet ->
-                if (bet.betType == BetTypeEnum.RESERVE) {
-                    val betId = bet.betId
-                    betDao.updateBetStatus(betId, BetStatusEnum.BETTING)
-
-                    val selection = betDao.getSelections(betId).first()
-                    val currency = infoDao.getCurrency()
-                    unregister(selection)
-                    val detail = betDao.getDetail(betId).firstOrNull() ?: run {
-                        BetDetailBean(
-                            betId = betId,
-                            sumOdds = selection.odds,
-                            odds = selection.odds,
-                            inputMoney = money,
-                            currency = currency
-                        ).apply {
-                            betDao.insertDetail(this)
-                        }
-                    }
-                    betDao.updateDetailStatus(
-                        detail.betId,
-                        detail.serialValue,
-                        BetResultStatusEnum.CONFIRMING
-                    )
-                    val resp = remoteManager.reserveBet(selection, detail.sumOdds, money)
-                    val status =
-                        if (resp?.isSuccessful == true) BetResultStatusEnum.SUCCESS_BET else BetResultStatusEnum.REJECT
-
-
-                    betDao.updateDetailStatus(detail.betId, detail.serialValue, status)
-                    betDao.getCurrentBet(BetStatusEnum.BETTING)?.let { bettingBet ->
-                        betDao.updateBetStatus(bettingBet.betId, BetStatusEnum.COMPLETE)
-                    }
+            return@withContext (betDao.updateBetType(bet.betId, BetTypeEnum.SINGLE) == 1).let {
+                if(it) {
+                    Result.success(Unit)
+                } else {
+                    Result.failure(CodeException(-1, "Update bet type failed"))
                 }
             }
-        }
+        } ?:Result.failure(CodeException(-1, "No current bet"))
+    }
+
+    suspend fun sendReserve(money: Long):Result<Unit> = withContext(Dispatchers.IO) {
+        betDao.getCurrentBet()?.let { bet ->
+            if (bet.betType == BetTypeEnum.RESERVE) {
+                val betId = bet.betId
+                betDao.updateBetStatus(betId, BetStatusEnum.BETTING)
+
+                val selection = betDao.getSelections(betId).first()
+                val currency = infoDao.getCurrency()
+                unregister(selection)
+                val detail = betDao.getDetail(betId).firstOrNull() ?: run {
+                    BetDetailBean(
+                        betId = betId,
+                        sumOdds = selection.odds,
+                        odds = selection.odds,
+                        inputMoney = money,
+                        currency = currency
+                    ).apply {
+                        betDao.insertDetail(this)
+                    }
+                }
+                betDao.updateDetailStatus(
+                    detail.betId,
+                    detail.serialValue,
+                    BetResultStatusEnum.CONFIRMING
+                )
+                val resp = remoteManager.reserveBet(selection, detail.sumOdds, money)
+                val status =
+                    if (resp?.isSuccessful == true) BetResultStatusEnum.SUCCESS_BET else BetResultStatusEnum.REJECT
+
+
+                betDao.updateDetailStatus(detail.betId, detail.serialValue, status)
+                betDao.getCurrentBet(BetStatusEnum.BETTING)?.let { bettingBet ->
+                    betDao.updateBetStatus(bettingBet.betId, BetStatusEnum.COMPLETE)
+                }
+            }
+            Result.success(Unit)
+        } ?: Result.failure(CodeException(-1, "No current bet"))
     }
 
     private fun updateLanguage() {

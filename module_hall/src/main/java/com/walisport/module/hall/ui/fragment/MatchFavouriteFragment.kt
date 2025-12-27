@@ -6,19 +6,15 @@ import android.view.View
 import androidx.navigation.fragment.findNavController
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.common.databinding.TitleBarSimpleBinding
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout.States
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.touchBackPressed
 import com.walisport.module.hall.R
-import com.walisport.module.hall.databinding.FragmentGameFavouriteBinding
 import com.walisport.module.hall.databinding.FragmentMatchFavouriteBinding
-import com.walisport.module.hall.databinding.FragmentRecentlyPlayedBinding
-import com.walisport.module.hall.databinding.TitleBarSimpleBinding
-import com.walisport.module.hall.ui.viewmodel.GameFavouriteViewModel
 import com.walisport.module.hall.ui.viewmodel.MatchFavouriteViewModel
-import com.walisport.module.hall.ui.viewmodel.RecentlyPlayedViewModel
 import kotlin.reflect.KClass
 
 class MatchFavouriteFragment : BaseFragment<MatchFavouriteViewModel, FragmentMatchFavouriteBinding>() {

@@ -16,7 +16,7 @@ import com.walisport.module.gamedetail.databinding.ItemCurrencySelectorBinding
 import com.walisport.module.gamedetail.ui.compare.CurrencySelectorCompare
 
 class CurrencySelectorAdapter :
-    BaseAdapter<CurrencyInfoBean, BaseViewHolder, ViewBinding>(CurrencySelectorCompare()) {
+    BaseAdapter<CurrencyInfoBean , BaseViewHolder, ViewBinding>(CurrencySelectorCompare()) {
 
     private var currencyId: Int = -1
     private var onCurrencySelectedListener: ((currencyId: Int) -> Unit)? = null

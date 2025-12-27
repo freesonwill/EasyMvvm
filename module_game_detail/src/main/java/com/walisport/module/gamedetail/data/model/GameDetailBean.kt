@@ -18,6 +18,6 @@ data class GameDetailBean(
     val type: Int,                              // 游戏类型
     val supplier: String,                       // 供应商名称
     val tryIt: Boolean,                         // 是否提供试玩
-    val materials: Boolean,                     // 游戏介绍物料
-    val currency: List<CurrencyInfoBean>        // 支持货币
+    val materials: String,                     // 游戏介绍物料
+    val currency: List<CurrencyInfoBean> ?       // 支持货币
 ) : Parcelable

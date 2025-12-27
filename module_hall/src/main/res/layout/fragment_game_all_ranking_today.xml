@@ -59,6 +59,7 @@
             android:layout_height="@dimen/dp_12"
             android:paddingStart="@dimen/dp_4"
             android:paddingEnd="@dimen/dp_4"
+            android:layout_marginTop="@dimen/dp_1"
             app:layout_constraintBottom_toBottomOf="@+id/tv_today_title"
             app:layout_constraintLeft_toRightOf="@+id/tv_timer"
             app:layout_constraintTop_toTopOf="@+id/tv_today_title"
@@ -199,7 +200,6 @@
         android:clickable="false"
 
         android:focusable="false"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_tab_today_title" />

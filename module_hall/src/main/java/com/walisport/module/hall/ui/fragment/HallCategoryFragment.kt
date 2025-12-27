@@ -1,14 +1,11 @@
 package com.walisport.module.hall.ui.fragment
 
-import android.animation.ValueAnimator
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.view.animation.LinearInterpolator
-import androidx.core.animation.doOnEnd
-import androidx.core.animation.doOnStart
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import arch.cayenne.lib.base.data.constants.DataState
@@ -27,23 +24,19 @@ import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.startFadeAnim
-import arch.cayenne.lib.common.utils.ext.startSafeAnimateSet
 import arch.cayenne.lib.common.utils.ext.touchBackPressed
 import arch.cayenne.lib.common.utils.helper.BackToTopHelper
 import arch.cayenne.lib.database.entity.GameSupplierDataModel
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
+import com.walisport.module.business.common.data.UniversalLoadMoreScrollListener
+import com.walisport.module.business.common.data.constants.GameSortType
+import com.walisport.module.business.common.ui.adapter.GameContentAdapter
 import com.walisport.module.hall.R
-import com.walisport.module.hall.data.Category
-import com.walisport.module.hall.data.UniversalLoadMoreScrollListener
-import com.walisport.module.hall.data.constants.GameSortType
-import com.walisport.module.hall.data.getCategoryByType
 import com.walisport.module.hall.databinding.FragmentHallCategoryBinding
 import com.walisport.module.hall.databinding.LayoutGameSortingMenuBinding
 import com.walisport.module.hall.databinding.TitleBarGameCategoryBinding
-import com.walisport.module.hall.ui.adapter.GameContentAdapter
 import com.walisport.module.hall.ui.viewmodel.GameCategoryViewModel
 import kotlinx.coroutines.delay
-import kotlin.math.abs
 import kotlin.reflect.KClass
 
 class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCategoryBinding>() {
@@ -136,7 +129,7 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
 
             rvGame.addItemDecoration(itemDecoration)
             adapter = GameContentAdapter(onItemClick = {
-                navigate(arch.cayenne.lib.res.R.string.nav_module_gamedetail.deeplink())
+                navigate(arch.cayenne.lib.res.R.string.nav_module_gamedetail.deeplink("gameId" to it.id))
             })
             rvGame.adapter = adapter
 

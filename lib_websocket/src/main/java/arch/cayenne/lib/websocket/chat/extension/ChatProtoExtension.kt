@@ -50,6 +50,7 @@ inline fun <reified T : IResponse> ChatWebSocketManager.chatObserveProtoMessage(
     .filter { it.mid == responseCode.mid && it.sid == responseCode.sid }
     .map {
         try {
+            "byteArray ${String( it.originProto ?: byteArrayOf())}".logi(ChatSocketClientService::class.java.simpleName)
             val bean = it.originProto?.let { byteArray -> Gson().fromJson(String(byteArray), T::class.java) }
             return@map ChatResponseData(
                 mid = it.mid,

@@ -2,12 +2,10 @@ package com.walisport.module.me.ui.fragment
 
 import android.os.Bundle
 import android.view.View
-import androidx.lifecycle.Lifecycle
 import arch.cayenne.lib.base.data.model.PagerBean
 import arch.cayenne.lib.base.ui.adapter.PagerAdapter
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.CustomTabIndicatorUtils
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.TabLayoutExt
@@ -46,7 +44,7 @@ class BottomFragment : BaseFragment<BottomViewModel, FragmentBottomBinding>() {
         val tabSelectPosition = 0
         with(mBinding) {
             val list = listOf(
-                PagerBean(arch.cayenne.lib.common.R.string.drawer_recently_played.getString()) { RecentlyFragment() },
+                PagerBean(arch.cayenne.lib.common.R.string.drawer_recently_played.getString()) { RecentlyTabFragment() },
                 PagerBean(
                     arch.cayenne.lib.common.R.string.drawer_game_collections.getString()
                 ) { GameCollectionsFragment() },

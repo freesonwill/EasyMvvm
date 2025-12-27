@@ -7,27 +7,22 @@ import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.data.model.UnPeekLiveData
 import arch.cayenne.lib.base.data.remote.ApiResponseState
+import arch.cayenne.lib.base.data.remote.ApiResponseState.Start.dataAs
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
-import com.walisport.module.hall.data.Avatar
-import com.walisport.module.hall.data.Category
+import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
+import com.walisport.module.business.common.data.Category
+import com.walisport.module.business.common.data.GamePageVo
+import com.walisport.module.business.common.data.toGameContentData
+import com.walisport.module.hall.R
 import com.walisport.module.hall.data.GameAllContentData
-import com.walisport.module.hall.data.GameContentData
 import com.walisport.module.hall.data.HallRepository
-import com.walisport.module.hall.data.HotColdType
+import com.walisport.module.hall.data.HallRepository.Companion.DEFAULT_GAME_SIZE
+import com.walisport.module.hall.data.HallRepository.Companion.INITIAL_PAGE
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
 import plugin.koin.KoinViewModel
-import kotlin.random.Random
-import com.walisport.module.hall.R
-import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
-import com.walisport.module.hall.data.GamePageVo
-import com.walisport.module.hall.data.constants.GameSortType
-import arch.cayenne.lib.base.data.remote.ApiResponseState.Start.dataAs
-import com.walisport.module.hall.data.HallRepository.Companion.DEFAULT_GAME_SIZE
-import com.walisport.module.hall.data.HallRepository.Companion.INITIAL_PAGE
-import com.walisport.module.hall.data.toGameContentData
 
 @KoinViewModel
 class GameAllViewModel : BaseViewModel() {

@@ -2,15 +2,14 @@ package arch.cayenne.module.chat.ui.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.widget.ImageView
 import android.widget.LinearLayout
-import androidx.core.view.isVisible
+import android.widget.TextView
+import androidx.core.content.ContextCompat
 import arch.cayenne.lib.base.data.model.PagerBean
 import arch.cayenne.lib.base.ui.adapter.PagerAdapter
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
-import arch.cayenne.lib.common.utils.CustomTabIndicatorUtils
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
-import arch.cayenne.lib.common.utils.ext.TabLayoutExt
-import arch.cayenne.lib.common.utils.ext.TabLayoutExt.addOnTabSelectedListener2
 import arch.cayenne.lib.common.utils.ext.removeAllTips
 import arch.cayenne.lib.common.utils.ext.setupHorizontalScrollDegree
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
@@ -22,6 +21,7 @@ import arch.cayenne.module.chat.databinding.ItemTabEmojiLayoutBinding
 import arch.cayenne.module.chat.ui.viewmodel.ChatHomeViewModel
 import arch.cayenne.module.chat.ui.viewmodel.EmojiHomeViewModel
 import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlin.reflect.KClass
 
@@ -35,7 +35,7 @@ class EmojiHomeFragment : BaseFragment<EmojiHomeViewModel, FragmentEmojiHomeLayo
         get() = FragmentEmojiHomeLayoutBinding::class
     override val vmClass: KClass<EmojiHomeViewModel>
         get() = EmojiHomeViewModel::class
-    private val chatViewModel: ChatHomeViewModel by sharedViewModel<ChatHomeViewModel, ChatHomeFragment>()
+    private val chatViewModel: ChatHomeViewModel by sharedViewModel<ChatHomeViewModel, ChatBaseFragment>()
 
 
     override fun initView(savedInstanceState: Bundle?) {
@@ -43,21 +43,16 @@ class EmojiHomeFragment : BaseFragment<EmojiHomeViewModel, FragmentEmojiHomeLayo
     }
 
     override fun initListener() {
-        mBinding.tvDel.setOnClickListener {
-            chatViewModel.etDelFunction()
-        }
-        mBinding.tvSend.setOnClickListener {
-            chatViewModel.sendTextToChat()
-        }
+
     }
 
 
     override suspend fun createObserver() {
-     chatViewModel.currentKeyBoardTypeLiveData.observe(viewLifecycleOwner){
-         if(it == KeyBoardType.CHAT){
-             mBinding.viewpager.setCurrentItem(0,false)
-         }
-     }
+        chatViewModel.currentKeyBoardTypeLiveData.observe(viewLifecycleOwner) {
+            if (it == KeyBoardType.CHAT) {
+                mBinding.viewpager.setCurrentItem(0, false)
+            }
+        }
     }
 
     private fun initTab() {
@@ -87,40 +82,48 @@ class EmojiHomeFragment : BaseFragment<EmojiHomeViewModel, FragmentEmojiHomeLayo
                     tabTv.text = list[position]
                 }
                 tab.customView = tabView.root
+                setTabBg(tab, position == 0)
             }.attach()
             emojiTablayout.removeAllTips()
 
-            emojiTablayout.addOnTabSelectedListener2(object : TabLayoutExt.OnTabSelectedListener2 {
-                override fun onTabSelected(tab: TabLayout.Tab, isTabClick: Boolean) {
-                    tvDel.isVisible = tab.position == 0
-                    tvSend.isVisible = tab.position == 0
-
-//                    if (isTabClick) {
-//                        CustomTabIndicatorUtils.animateIndicatorToPosition(
-//                            mBinding.customIndicator,
-//                            tab.position
-//                        )
-//                        val vp = viewpager
-//                        vp.startFadeAnim {
-//                            vp.setCurrentItem(tab.position, false)
-//                            it.invoke()
-//                        }
-//                    }
-                }
-
-                override fun onTabUnselected(tab: TabLayout.Tab, isTabClick: Boolean) {
-                }
-
-                override fun onTabReselected(tab: TabLayout.Tab, isTabClick: Boolean) {
-                }
-            })
             reflexPadding(tabLayout = emojiTablayout)
             // 自定義滑動行為
 //            viewpager.setupViewPagerScroll(emojiTablayout, customIndicator, 0.15f)
             viewpager.setupHorizontalScrollDegree()
             emojiTablayout.setSelectedTabIndicator(R.drawable.bg_emoji_tab_indicator)
+            emojiTablayout.addOnTabSelectedListener(object : OnTabSelectedListener {
+                override fun onTabSelected(tab: TabLayout.Tab?) {
+                    tab?.let { setTabBg(it,true) }
+                }
+
+                override fun onTabUnselected(tab: TabLayout.Tab?) {
+                    tab?.let { setTabBg(it,false) }
+                }
+
+                override fun onTabReselected(tab: TabLayout.Tab?) {
+                }
+            })
         }
     }
+
+    private fun setTabBg(tab: TabLayout.Tab, isSelected: Boolean) {
+        val position = tab.position
+        if (position == 0) {
+            val iv = tab.customView?.findViewById<ImageView>(R.id.tab_icon)
+            iv?.setImageResource(if (isSelected) R.drawable.tab_emoji else R.drawable.tab_emoji_grey)
+        }
+        val tv = tab.customView?.findViewById<TextView>(R.id.tab_tv)
+        tv?.setTextColor(
+            if (isSelected) ContextCompat.getColor(
+                requireContext(),
+                arch.cayenne.lib.common.R.color.white
+            ) else ContextCompat.getColor(
+                requireContext(),
+                arch.cayenne.lib.common.R.color.color_C0C0C0
+            )
+        )
+    }
+
 
     private fun reflexPadding(tabLayout: TabLayout) {
         tabLayout.post {

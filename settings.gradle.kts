@@ -30,7 +30,7 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "wls-android"
+rootProject.name = "3n1-android"
 include(":app")
 include(":lib_base")
 include(":lib_common")
@@ -64,3 +64,5 @@ include(":module_misc")
 include(":module_hall")
 include(":module_launcher")
 include(":module_game_detail")
+include(":module_popup_slot")
+include(":module_business_common")
