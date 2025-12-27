@@ -8,6 +8,7 @@ import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.data.repo.BalanceRepository
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
 import arch.cayenne.lib.common.utils.ext.VIPDataExt
+import arch.cayenne.lib.database.entity.UserDataBean
 import com.walisport.module.me.data.MeRepository
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.map
@@ -24,6 +25,10 @@ class MeVIPInfoViewModel : BaseViewModel() {
 
     private val _vipLevelLiveData = MutableLiveData<Long>(75)
     val vipLevelLiveData: LiveData<Long> = _vipLevelLiveData
+
+    private val _onVipListener = MutableLiveData<UserDataBean>()
+    val onVipListener: LiveData<UserDataBean> get() = _onVipListener
+
     val balanceFlow = balanceRepo.observeInfo().map {
         if(it == null) return@map ""
         CurrencySymbols.getSymbol(it.currency) + it.balance.getFormalMoney()
