@@ -41,7 +41,6 @@ import arch.cayenne.module.home.ui.viewmodel.EarlyViewModel
 import arch.cayenne.module.home.ui.viewmodel.SubHomeViewModel
 import arch.cayenne.module.home.ui.viewmodel.TournamentListViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import org.koin.core.component.getScopeId
 import kotlin.reflect.KClass
 import arch.cayenne.lib.common.R as CommonR
 import com.google.android.material.R as MaterialR
@@ -133,7 +132,7 @@ class TournamentListBottomSheetFragment :
                     adapter.clearAllSelections()
                 } else {
                     // 情況2：沒有切換外部tab，從 ViewModel 中讀取已保存的選中狀態
-                    val savedSelections = subHomeViewModel.getSavedTournamentSelections()
+                    val savedSelections = subHomeViewModel.getCurrentSelectedTournaments()
 
                     if (savedSelections.isNotEmpty()) {
                         // 有保存的狀態，恢復之前的選中
@@ -420,7 +419,7 @@ class TournamentListBottomSheetFragment :
             }
             mBinding.rvTournamentList.post{
                 launch{
-                    val savedSelections = subHomeViewModel.getSavedTournamentSelections()
+                    val savedSelections = subHomeViewModel.getCurrentSelectedTournaments()
                     if(savedSelections.isNotEmpty()){
                         val selectedIndex = it
                             .asSequence()

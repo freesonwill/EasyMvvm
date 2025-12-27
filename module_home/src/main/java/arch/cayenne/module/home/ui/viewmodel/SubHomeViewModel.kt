@@ -335,11 +335,7 @@ open class SubHomeViewModel : BaseViewModel() {
     }
 
 
-    fun setCurrentTournamentIdList(tournamentIdList: List<Int>) {
-        viewModelScope.launch {
-            repository.updateSelectedTournamentIdList(currentPlayTypeId, tournamentIdList)
-        }
-    }
+
 
     fun requestCollapseTournamentDropdown() {
         _collapseTournamentDropdown.value = Event(true)
@@ -396,9 +392,9 @@ open class SubHomeViewModel : BaseViewModel() {
         hasTournamentTabSwitched = false
     }
 
-    // 獲取已保存的選中狀態
-    fun getSavedTournamentSelections(): List<Int> {
-        return savedTournamentSelections.value!!
+    // 获取当前联赛列表
+    fun getCurrentSelectedTournaments(): List<Int> {
+        return currentSelectedTournaments.value ?: emptyList()
     }
 
     // 保存選中狀態（在確認時調用）
@@ -406,8 +402,6 @@ open class SubHomeViewModel : BaseViewModel() {
         _savedTournamentSelections.value = selections
         // 通知按鈕狀態更新
         _tournamentButtonHasSelection.value = Event(selections.isNotEmpty())
-        // TODO: 未來同時保存到後端
-        _currentSelectedTournaments.value = selections
     }
 
     // 清空保存的選中狀態
@@ -435,18 +429,6 @@ open class SubHomeViewModel : BaseViewModel() {
         return stringList.joinToString(separator = "/")
     }
 
-    fun getTournamentsNamePlain(tournamentId: List<Int>): String {
-        val stringList = mutableListOf<String>()
-        tournamentId.forEach { id ->
-            val tournamentData =
-                tournamentsPlain.value?.peekContent()?.firstOrNull { it.id == id }
-
-            stringList.add(tournamentData?.simpleName ?: "")
-        }
-
-        return stringList.joinToString(separator = "/")
-    }
-
     // 通知需要清除 tlLeagueList 的選中狀態
     private val _shouldClearLeagueListSelection = MutableLiveData<Event<Unit>>()
     val shouldClearLeagueListSelection: LiveData<Event<Unit>> = _shouldClearLeagueListSelection
@@ -461,18 +443,48 @@ open class SubHomeViewModel : BaseViewModel() {
         isAllowTabLoad = currentPlayTypeId != PlayType.TODAY.id
     }
 
-    fun clearTournamentsSelected(){
-        _currentSelectedTournaments.value = emptyList()
+    /**
+     * 清空当前选中的联赛 ID 列表。
+     *
+     * 此方法将 `_currentSelectedTournaments` 的值设置为空列表，
+     * 用于清除所有选中的联赛状态。
+     */
+    fun clearTournamentsSelected() {
+        _currentSelectedTournaments.postValue(emptyList())
     }
 
+    /**
+     * 设置当前选中的联赛 ID。
+     *
+     * 此方法将提供的联赛 ID 设置为 `_currentSelectedTournaments` 的值，
+     * 用于更新当前选中的联赛状态。
+     *
+     * @param id 要选中的联赛 ID。
+     */
     fun selectTournamentsId(id: Int) {
-        _currentSelectedTournaments.value = listOf(id)
+        _currentSelectedTournaments.postValue(listOf(id))
     }
 
-    fun setTournaments(ints: List<Int>) {
-        _currentSelectedTournaments.value = ints
+    /**
+     * 设置当前选中的联赛 ID 列表。
+     *
+     * 此方法将提供的联赛 ID 列表设置为 `_currentSelectedTournaments` 的值，
+     * 用于更新当前选中的联赛状态。
+     *
+     * @param tournamentIdList 包含联赛 ID 的列表。
+     */
+    fun setCurrentTournamentIdList(tournamentIdList: List<Int>) {
+        _currentSelectedTournaments.postValue(tournamentIdList)
     }
 
+    /**
+     * 设置当前的比赛列表排序类型。
+     *
+     * 此方法将提供的排序类型设置为 `_sortType` 的值，
+     * 用于更新比赛列表的排序状态。
+     *
+     * @param currentSortType 当前的比赛列表排序类型。
+     */
     fun setSortType(currentSortType: MatchListSortType) {
         _sortType.value = currentSortType
     }
