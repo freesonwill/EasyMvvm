@@ -3,6 +3,7 @@ package arch.cayenne.lib.common.ui.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.data.constants.OddsDisplayEnum
 import arch.cayenne.lib.common.data.repo.ReserveDialogRepository
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
@@ -21,11 +22,14 @@ class ReserveDialogViewModel(repo: ReserveDialogRepository) : NumberCalculatorVi
         var lastNumber: Int? = null
 
         fun update() {
+            /*Todo Temporarily comment out this logic; re-enable it after PM confirmation
             value = when (lastType) {
                 OddsDisplayEnum.EU -> (lastNumber ?: 0) > 100
                 OddsDisplayEnum.HK -> (lastNumber ?: 0) > 0
                 else -> false
             }
+            */
+            value = (lastNumber ?: 0) > 0
         }
 
         addSource(_displayType) { type ->
@@ -42,9 +46,9 @@ class ReserveDialogViewModel(repo: ReserveDialogRepository) : NumberCalculatorVi
     val minOdds = 1
 
     fun init(odds: Int) {
-        setRemainingNumber(ODDS_LIMIT)
+        /*setRemainingNumber(ODDS_LIMIT)
         setMaxNumber(ODDS_LIMIT)
-        setNumberLimit(minOdds.toLong(), ODDS_LIMIT)
+        setNumberLimit(minOdds.toLong(), ODDS_LIMIT)*/
         setEditNumber(odds.getOdds())
     }
 

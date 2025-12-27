@@ -3,14 +3,14 @@ package arch.cayenne.lib.common.ui.view
 import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.widget.GridLayout
 import android.widget.LinearLayout
 import androidx.core.view.children
-import androidx.core.view.doOnAttach
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
+import androidx.core.view.doOnLayout
 import arch.cayenne.lib.common.R
 import arch.cayenne.lib.common.databinding.LayoutNumberKeyboardBinding
 
@@ -48,24 +48,28 @@ class NumberKeyboardView @JvmOverloads constructor(
         if (attrs == null) return
         val a = context.obtainStyledAttributes(attrs, R.styleable.NumberKeyboardView, defStyleAttr, 0)
         try {
-            val spacing = a.getDimensionPixelSize(R.styleable.NumberKeyboardView_android_spacing, Int.MAX_VALUE)
-            val h = a.getDimensionPixelSize(R.styleable.NumberKeyboardView_android_horizontalSpacing, Int.MAX_VALUE)
-            val v = a.getDimensionPixelSize(R.styleable.NumberKeyboardView_android_verticalSpacing, Int.MAX_VALUE)
-            val spacingX = if (h != Int.MAX_VALUE) h else spacing
-            val spacingY = if (v != Int.MAX_VALUE) v else spacing
-            applyItemSpacing(spacingX,spacingY)
+            a.getDimensionPixelSize(R.styleable.NumberKeyboardView_android_spacing, Int.MAX_VALUE).let { spacing ->
+                val h = a.getDimensionPixelSize(R.styleable.NumberKeyboardView_android_horizontalSpacing, Int.MAX_VALUE)
+                val v = a.getDimensionPixelSize(R.styleable.NumberKeyboardView_android_verticalSpacing, Int.MAX_VALUE)
+                val spacingX = if (h != Int.MAX_VALUE) h else spacing
+                val spacingY = if (v != Int.MAX_VALUE) v else spacing
+                applyItemSpacing(spacingX,spacingY)
+            }
+            a.getDimension(R.styleable.NumberKeyboardView_otherTextSize, Float.MAX_VALUE).let {
+                if (it != Float.MAX_VALUE) {
+                    mBinding.btnOther.setTextSize(TypedValue.COMPLEX_UNIT_PX, it)
+                }
+            }
         } finally {
             a.recycle()
         }
-
     }
 
     private fun applyItemSpacing(spacingX: Int, spacingY: Int) {
-        //"applyItemSpacing----$spacingX,spacingY:$spacingY".logd(TAG)
         if(spacingX == Int.MAX_VALUE || spacingY == Int.MAX_VALUE) return
         val halfH = spacingX / 2
         val halfV = spacingY / 2
-        doOnAttach {
+        doOnLayout {
             val grid = children.first() as GridLayout
             val rowCount = grid.rowCount
             val colCount = grid.columnCount

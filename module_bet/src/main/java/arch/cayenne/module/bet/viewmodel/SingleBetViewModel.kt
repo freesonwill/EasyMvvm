@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.data.model.CodeException
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.data.repo.BalanceRepository
 import arch.cayenne.lib.common.ui.viewmodel.Event
@@ -191,6 +192,7 @@ class SingleBetViewModel(
 
         if(result.isFailure) {
             _sendBetting.value = false
+            "sendBet failure: ${result.exceptionOrNull()?.message}".loge(TAG)
         } else {
             //成功时会跳转，延迟设置，否则会看到残影
             viewModelScope.launch {
