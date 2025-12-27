@@ -133,10 +133,19 @@ class GameFavouriteFragment : BaseFragment<GameFavouriteViewModel, FragmentGameF
                 }
             }
         }
+
+        // 監聽收藏變化，若有變化則重新加載數據
+        mViewModel.favouriteChangedLiveData.observe(viewLifecycleOwner) { isChanged ->
+            if (isChanged) {
+                mViewModel.reload()
+            }
+        }
+
+        mViewModel.reload()
     }
 
     override fun initData() {
-        mViewModel.reload()
+//        mViewModel.reload()
         super.initData()
     }
 

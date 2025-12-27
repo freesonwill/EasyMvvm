@@ -7,6 +7,7 @@ import arch.cayenne.lib.common.data.constants.ChatMsgType
 import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.module.betslip.databinding.FragmentGameOrderAllBinding
+import arch.cayenne.module.order.data.model.ChooseBetData
 import arch.cayenne.module.order.data.model.OrderAllBean
 import arch.cayenne.module.order.ui.adapter.AllGameAdapter
 import arch.cayenne.module.order.ui.viewmodel.ChatChooseViewModel
@@ -32,7 +33,7 @@ class GameOrderAllFragment : BaseFragment<GameAllViewModel, FragmentGameOrderAll
         }
         gameAdapter.setOnItemClickListener(object :RecyclerItemListener<OrderAllBean>{
             override fun onItemClick(item: OrderAllBean?, position: Int) {
-                chooseViModel?.clickBtn(ChatMsgType.BET_GAME)
+                chooseViModel?.clickBtn(ChooseBetData(ChatMsgType.BET_GAME,item?.bet?:""))
             }
         })
         checkChooseFragment()

@@ -10,6 +10,8 @@ import android.widget.TextView
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.animation.CustomCurveTransformer
@@ -51,6 +53,8 @@ import arch.cayenne.module.home.ui.view.PromoTab
 import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
 import com.google.android.material.tabs.TabLayout
 import com.walisport.module.popup.slot.ui.fragment.PopupSlotFragment
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import kotlin.reflect.KClass
 
@@ -126,6 +130,13 @@ class NewHomeFragment : BaseFragment<HomeViewModel , FragmentNewHomeBinding>() {
         // 启动轮播
         mBinding. banner.start()
     }
+
+    private fun initPopupSlot() {
+        childFragmentManager.beginTransaction()
+            .add(R.id.fragment_new_home_container_view , popupSlotFragment , PopupSlotFragment.TAG)
+            .commit()
+    }
+
     private fun setupSidebar() {
         mBinding.ivHomeSidebar.clickNoRepeat {
             requireActivity().supportFragmentManager.setFragmentResult(
@@ -426,6 +437,17 @@ class NewHomeFragment : BaseFragment<HomeViewModel , FragmentNewHomeBinding>() {
             }
         }
 
+        mViewModel.scrollStateChanged.observe(viewLifecycleOwner) {
+            if (it == RecyclerView.SCROLL_STATE_IDLE) {
+                lifecycleScope.launch {
+                    delay(200)
+                    popupSlotFragment.fadeAndIn()
+                }
+            } else {
+                popupSlotFragment.fadeAndOut()
+            }
+        }
+
     }
 
     //設置是否允許水平滑動ViewPager，預設是可以滑動
@@ -451,18 +473,8 @@ class NewHomeFragment : BaseFragment<HomeViewModel , FragmentNewHomeBinding>() {
         super.onDestroyView()
     }
 
-    private fun initPopupSlot() {
-        childFragmentManager.beginTransaction()
-            .add(R.id.fragment_new_home_container_view , popupSlotFragment , PopupSlotFragment.TAG)
-            .commit()
-    }
 
-    //當前Fragment可見時，顯示PopupSlotFragment
-    override fun onHiddenChanged(hidden: Boolean) {
-        super.onHiddenChanged(hidden)
-        if (!hidden) {
-            popupSlotFragment.adjustPosition()
-        }
-    }
+
+
 
 }

@@ -28,12 +28,16 @@ class ChatPersonalAdapter :
 
 
     inner class ChatPersonalViewHolder(binding: ViewBinding) : BaseViewHolder(binding) {
+        init {
+            initClickListener()
+        }
 
-        fun initClickListener() {
+        private fun initClickListener() {
             val nBinding = binding
             when (nBinding) {
                 is ItemPersonalDialogNormalLayoutBinding -> {
-                    nBinding.tv.setOnClickListener {
+
+                    nBinding.main.setOnClickListener {
                         val position = it.tag as Int
                         itemClick?.onItemClick(getItem(position), position)
                     }
@@ -48,13 +52,13 @@ class ChatPersonalAdapter :
             when (nBinding) {
                 is ItemPersonalDialogNameLayoutBinding -> {
                     nBinding.tvName.text = text
-                    nBinding.tvName.tag = position
+                    nBinding.main.tag = position
                 }
 
                 is ItemPersonalDialogNormalLayoutBinding -> {
                     nBinding.tv.text = text
-                    nBinding.tv.tag = position
-                    if(position == currentList.size - 1){
+                    nBinding.main.tag = position
+                    if (position == currentList.size - 1) {
                         nBinding.line.isVisible = false
                     }
                 }
@@ -83,9 +87,7 @@ class ChatPersonalAdapter :
     }
 
     override fun createViewHolder(binding: ViewBinding, viewType: Int): ChatPersonalViewHolder {
-        return ChatPersonalViewHolder(binding).apply {
-            initClickListener()
-        }
+        return ChatPersonalViewHolder(binding)
     }
 
     override fun getItemViewType(position: Int): Int {

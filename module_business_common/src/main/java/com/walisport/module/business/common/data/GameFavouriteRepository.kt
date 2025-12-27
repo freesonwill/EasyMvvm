@@ -6,6 +6,7 @@ import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
 import arch.cayenne.lib.common.data.constants.PreloadEnum
 import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.database.GameDatabase
+import arch.cayenne.lib.database.entity.GameBean
 import arch.cayenne.lib.http.HttpClient
 import arch.cayenne.lib.http.HttpException
 import arch.cayenne.lib.websocket.WebSocketManager
@@ -70,6 +71,13 @@ class GameFavouriteRepository(
             }
         }
 
+    }
+
+    //设置游戏点击状态
+    suspend fun setGameClick(flag:Int){
+        scope.launch(Dispatchers.IO) {
+            database.gameDao().insert(GameBean(id = 1, clickFlag = flag))
+        }
     }
 
     companion object {

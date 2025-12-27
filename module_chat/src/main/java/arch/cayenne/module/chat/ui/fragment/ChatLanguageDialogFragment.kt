@@ -79,7 +79,6 @@ class ChatLanguageDialogFragment :
             recycler.layoutManager = GridLayoutManager(requireActivity(),2)
             val nAdapter = LanguageAdapter()
             nAdapter.addSelectListenPosition(selectPosition){ position ->
-                "adapter select position:$position".logd("aaa")
                 selectListener?.invoke(position)
             }
             nAdapter.submitList(resources.getStringArray(R.array.languages).toList())

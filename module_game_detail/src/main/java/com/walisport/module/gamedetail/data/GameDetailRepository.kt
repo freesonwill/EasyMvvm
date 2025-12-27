@@ -12,6 +12,8 @@ import arch.cayenne.lib.database.entity.CurrencyBean
 import arch.cayenne.lib.http.HttpClient
 import arch.cayenne.lib.http.HttpException
 import arch.cayenne.lib.websocket.WebSocketManager
+import com.walisport.module.business.common.data.IGameFavouriteApi
+import com.walisport.module.business.common.data.ProfileCollectEditVo
 import com.walisport.module.gamedetail.data.model.CurrencyInfoBean
 import com.walisport.module.gamedetail.data.model.GameDetailBean
 import com.walisport.module.gamedetail.data.model.GameDetailVo
@@ -108,13 +110,13 @@ class GameDetailRepository(
     }
 
     suspend fun updateGameCollect(gameId: Long , collect: Boolean): ApiResponseState {
-        val api = mockHttpClient.create(IGameDetailApi::class.java)
+        val api = mockHttpClient.create(IGameFavouriteApi::class.java)
         return suspendCancellableCoroutine<ApiResponseState> { cancellableContinuation ->
             scope.launch(Dispatchers.IO) {
                 mockHttpClient.safeRequest(
                     request = {
                         api.updateGameCollect(
-                            body = com.walisport.module.gamedetail.data.model.ProfileCollectEditVo(
+                            body = ProfileCollectEditVo(
                                 gameType = gameId.toInt() ,
                                 collect = collect
                             )

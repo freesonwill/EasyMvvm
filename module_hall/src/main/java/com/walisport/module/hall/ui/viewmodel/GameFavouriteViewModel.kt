@@ -7,6 +7,7 @@ import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.base.data.remote.ApiResponseState.Start.dataAs
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
+import com.walisport.module.business.common.data.FavouriteChangedRepository
 import com.walisport.module.business.common.data.GameContentData
 import com.walisport.module.business.common.data.GameFavouriteRepository
 import com.walisport.module.business.common.data.ProfilePlayedPageVo
@@ -21,10 +22,29 @@ import plugin.koin.KoinViewModel
 class GameFavouriteViewModel : BaseViewModel() {
 
     private val repository: GameFavouriteRepository by inject { parametersOf(viewModelScope) }
+    private val favouriteChangedRepository: FavouriteChangedRepository by inject { parametersOf(viewModelScope) }
+
     private val _gameListLiveData: MutableLiveData<List<GameContentData>> = MutableLiveData()
     val gameListLiveData: LiveData<List<GameContentData>> = _gameListLiveData
 
+    private val _favouriteChangedLiveData = MutableLiveData<Boolean>()
+    val favouriteChangedLiveData: LiveData<Boolean> get() = _favouriteChangedLiveData
+
+
     private var page: Int = INITIAL_PAGE
+
+
+    override fun initViewModel() {
+        super.initViewModel()
+        viewModelScope.launch {
+            launch {
+                favouriteChangedRepository.getFavouriteChangedFlow().collect {
+                    _favouriteChangedLiveData.postValue(it)
+                }
+            }
+        }
+
+    }
 
     private fun getGameCollectList() {
         setState(DataState.Loading)
@@ -50,10 +70,12 @@ class GameFavouriteViewModel : BaseViewModel() {
                             val currentList =
                                 _gameListLiveData.value?.toMutableList() ?: mutableListOf()
                             val list = profilePlayedPageVo?.list?.map { gameVo ->
-                                gameVo.toGameContentData(
-                                    (page * 100 + gameVo.gameType).toLong() ,
-                                )
-                            }
+                                try {
+                                    gameVo.toGameContentData((page * 100 + gameVo.gameType).toLong())
+                                } catch (e: Exception) {
+                                    null
+                                }
+                            }?.filterNotNull()
                             currentList.addAll(list ?: emptyList())
                             _gameListLiveData.value = currentList
                         } else {
@@ -61,13 +83,16 @@ class GameFavouriteViewModel : BaseViewModel() {
                             val currentList =
                                 _gameListLiveData.value?.toMutableList() ?: mutableListOf()
                             val list = profilePlayedPageVo?.list?.map { gameVo ->
-                                gameVo.toGameContentData(
-                                    (page * 100 + gameVo.gameType).toLong() ,
-                                )
-                            }
+                                try {
+                                    gameVo.toGameContentData((page * 100 + gameVo.gameType).toLong())
+                                } catch (e: Exception) {
+                                    null
+                                }
+                            }?.filterNotNull()
                             currentList.addAll(list ?: emptyList())
                             _gameListLiveData.value = currentList
                         }
+
 
                     }
                 } , autoUpdateState = false

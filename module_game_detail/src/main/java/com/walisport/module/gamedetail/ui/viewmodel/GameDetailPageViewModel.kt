@@ -7,6 +7,8 @@ import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.base.data.remote.ApiResponseState.Start.dataAs
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
+import com.walisport.module.business.common.data.FavouriteChangedRepository
+import com.walisport.module.business.common.data.GameFavouriteRepository
 import com.walisport.module.gamedetail.data.GameDetailRepository
 import com.walisport.module.gamedetail.data.model.GameDetailBean
 import com.walisport.module.gamedetail.data.model.GameDetailVo
@@ -22,6 +24,12 @@ import plugin.koin.KoinViewModel
 @KoinViewModel
 class GameDetailPageViewModel : BaseViewModel() {
     private val repository: GameDetailRepository by inject { parametersOf(viewModelScope) }
+
+    private val changedRepository: FavouriteChangedRepository by inject {
+        parametersOf(
+            viewModelScope
+        )
+    }
 
     // Shared state for Carousel index
     val sharedCarouselIndex = MutableLiveData(0)
@@ -125,6 +133,10 @@ class GameDetailPageViewModel : BaseViewModel() {
             )
         }
 
+    }
+
+    suspend fun notifyFavouriteChanged() {
+        changedRepository.notifyFavouriteChanged(true)
     }
 
 

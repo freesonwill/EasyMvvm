@@ -1,11 +1,8 @@
 package com.walisport.module.me.ui.fragment
 
-import android.R.attr.end
 import android.annotation.SuppressLint
-import android.os.Build
 import android.os.Bundle
 import android.view.View
-import androidx.annotation.RequiresApi
 import androidx.core.os.bundleOf
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -25,32 +22,26 @@ import arch.cayenne.lib.common.utils.CustomTabIndicatorUtils
 import arch.cayenne.lib.common.utils.biz.CommonBiz
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
-import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
-import arch.cayenne.lib.common.utils.ext.TabLayoutExt
-import arch.cayenne.lib.common.utils.ext.TabLayoutExt.addOnTabSelectedListener2
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
-import arch.cayenne.lib.common.utils.ext.removeAllTips
-import arch.cayenne.lib.common.utils.ext.setupViewPagerScroll
-import arch.cayenne.lib.common.utils.ext.startFadeAnim
-import arch.cayenne.lib.skin.res.SkinnableResourceManager
-import arch.cayenne.lib.skin.widget.SkinnableTextView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.bitmap.CircleCrop
-import com.bumptech.glide.request.RequestOptions
-import com.google.android.material.tabs.TabLayout
-import com.google.android.material.tabs.TabLayoutMediator
 import com.gyf.immersionbar.ImmersionBar
-import com.walisport.module.live.ui.widget.MeGestureListener
-import com.walisport.module.live.ui.widget.MeLayoutInterceptTouch.MeSlideDirection
-import com.walisport.module.me.R
 import com.walisport.module.me.databinding.FragmentMeBinding
 import com.walisport.module.me.ui.viewmodel.MeViewModel
-import java.time.Instant
-import java.time.ZoneId
-import java.time.temporal.ChronoUnit
 import kotlin.reflect.KClass
 
+import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
+import arch.cayenne.lib.common.utils.ext.TabLayoutExt
+import arch.cayenne.lib.common.utils.ext.removeAllTips
+import arch.cayenne.lib.skin.widget.SkinnableTextView
+import com.google.android.material.tabs.TabLayoutMediator
+import com.walisport.module.me.R
+import arch.cayenne.lib.skin.res.SkinnableResourceManager
+import arch.cayenne.lib.common.utils.ext.TabLayoutExt.addOnTabSelectedListener2
+import arch.cayenne.lib.common.utils.ext.setupViewPagerScroll
+import arch.cayenne.lib.common.utils.ext.startFadeAnim
+import com.google.android.material.tabs.TabLayout
+import com.walisport.module.live.ui.widget.MeGestureListener
+import com.walisport.module.live.ui.widget.MeLayoutInterceptTouch.MeSlideDirection
 
 /**
  * 我的界面
@@ -69,17 +60,20 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
 
     private val unreadMessageViewModel: UnReadMessageViewModel by viewModels()
 
-
+    private var tabIndicatorHelper: MeScrollableTabIndicatorHelper? = null
+    private var tabWiths: MutableList<Int> =mutableListOf()
     override fun initView(savedInstanceState: Bundle?) {
         with(mBinding) {
             tvNickname.text = "中文sdf323"
             val day = 137
             tvJoinTime.text = "已加入${day}天"
         }
+
         initVIPInfo()
         initFeatures()
         initBarHeight()
         loadFragment()
+        tabIndicatorHelper = MeScrollableTabIndicatorHelper(mBinding.tabLayout, mBinding.customIndicator)
     }
 
     private fun loadFragment() {
@@ -89,7 +83,7 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
                 PagerBean(arch.cayenne.lib.common.R.string.drawer_recently_played.getString()) { RecentlyTabFragment() },
                 PagerBean(
                     arch.cayenne.lib.common.R.string.drawer_game_collections.getString()
-                ) { GameCollectionsFragment() },
+                ) { GameCollectionsTabFragment() },
                 PagerBean(
                     arch.cayenne.lib.common.R.string.drawer_match_collections.getString()
                 ) { MatchCollectionsFragment() },
@@ -97,9 +91,9 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
 
             vpPage.adapter = PagerAdapter(childFragmentManager, lifecycle, list)
             launch {
-                vpPage.offscreenPageLimit = list.size
+                vpPage.offscreenPageLimit = 1
             }
-
+            vpPage.isUserInputEnabled = false
             TabLayoutMediator(tabLayout, vpPage, false) { tab, position ->
                 tab.text = list[position].title
                 tab.setCustomView(R.layout.layout_custom_tab)
@@ -116,31 +110,22 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
 
                 tab.customView?.findViewById<SkinnableTextView>(R.id.count)?.apply {
                     visibility = View.VISIBLE
-                    text = if (position == 0) {
-                        "999+"
-                    } else {
-                        "1"
-                    }
+                    text =  "999+"
                 }
             }.attach()
             tabLayout.clearOnTabSelectedListeners()
             tabLayout.post {
-                CustomTabIndicatorUtils.animateIndicatorToPosition(
-                    mBinding.customIndicator,
-                    0,
-                    false
-                )
                 mBinding.vpPage.setCurrentItem(0, false)
             }
             tabLayout.removeAllTips()
         }
-        mBinding.clTop.post {
-            mBinding.meLayoutScale.initViewHeight(
-                (mBinding.clTop.height.toFloat() + getStatusBarHeight(
-                    mBinding.root
-                )), (mBinding.ctTopBar.height.toFloat() + getStatusBarHeight(mBinding.root))
-            )
-        }
+//        mBinding.clTop.postDelayed ({
+//            mBinding.meLayoutScale.initViewHeight(
+//                (mBinding.clTop.height.toFloat() + getStatusBarHeight(
+//                    mBinding.root
+//                )), mBinding.ctTopBar.height.toFloat()
+//            )
+//        },200)
     }
 
     fun initBarHeight() {
@@ -173,6 +158,41 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
 
     @SuppressLint("ClickableViewAccessibility")
     override fun initListener() {
+        mBinding.vpPage.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                val pagerAdapter = mBinding.vpPage.adapter as? PagerAdapter
+                val fragment = pagerAdapter?.getFragment(position)
+                val height = fragment?.view?.height
+                height?.let {
+                    LogUtils.e("MeFragment-------->onPageSelected------height->${height}}")
+                    mBinding.vpPage.requestLayout()
+                    mBinding.nestedScrollView.requestLayout()
+                }
+            }
+        })
+
+        mBinding.vpPage.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+
+                // 获取当前页面的 ViewHolder（ViewPager2 内部用 RecyclerView）
+                val recyclerView =  mBinding.vpPage.getChildAt(0) as? RecyclerView
+                val viewHolder = recyclerView?.findViewHolderForAdapterPosition(position)
+
+                viewHolder?.itemView?.post {
+                    // 重新测量当前页面
+                    val widthSpec = View.MeasureSpec.makeMeasureSpec( mBinding.vpPage.width, View.MeasureSpec.EXACTLY)
+                    val heightSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+                    viewHolder.itemView.measure(widthSpec, heightSpec)
+
+                    // 更新 ViewPager2 高度
+                    if ( mBinding.vpPage.layoutParams.height != viewHolder.itemView.measuredHeight) {
+                        mBinding.vpPage.layoutParams.height = viewHolder.itemView.measuredHeight
+                        mBinding.vpPage.requestLayout()
+                    }
+                }
+            }
+        })
         with(mBinding) {
             // 上层 View 触摸事件
             mBinding.LayoutInterceptTouch.setOnTouchListener { _, event ->
@@ -230,10 +250,9 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
             override fun onTabSelected(tab: TabLayout.Tab, isTabClick: Boolean) {
                 tab.let {
                     if (isTabClick) {
-                        CustomTabIndicatorUtils.animateIndicatorToPosition(
-                            mBinding.customIndicator,
-                            tab.position
-                        )
+                        if (!mBinding.customIndicator.isGone) {
+                            tabIndicatorHelper?.smartAnimateToCurrent()
+                        }
                         val vp = mBinding.vpPage
                         vp.startFadeAnim {
                             vp.setCurrentItem(tab.position, false)
@@ -282,14 +301,12 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
         mViewModel.createObserver()
 
         with(mViewModel) {
-            recentlyCount.observe(viewLifecycleOwner) { count ->
-                mBinding.tabLayout.getTabAt(0)?.let {
-                    changeTabCount(it, count)
-                }
-            }
-            gameCount.observe(viewLifecycleOwner) { count ->
-                mBinding.tabLayout.getTabAt(1)?.let {
-                    changeTabCount(it, count)
+            count.observe(viewLifecycleOwner){
+                tabWiths.clear()
+                for (i in it.indices){
+                    mBinding.tabLayout.getTabAt(i)?.let {tab->
+                        changeTabCount(tab, it[i].const.toLong())
+                    }
                 }
             }
 
@@ -321,6 +338,8 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
                 }
             }
         }
+
+
     }
 
     private fun changeTabCount(tab: TabLayout.Tab, count: Long) {
@@ -336,8 +355,14 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
             } else {
                 visibility = View.GONE
             }
+            post{
+                tabWiths.add(width)
+                LogUtils.e("MeScrollableTabIndicatorHelper-------->count------width->${width}}")
+                tabIndicatorHelper?.setup(tabWiths)
+            }
 
         }
+
     }
 
     private fun getStatusBarHeight(view: View): Int {
@@ -345,15 +370,6 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
         val topInset = windowInsetsCompat?.getInsets(WindowInsetsCompat.Type.statusBars())?.top ?: 0
         val ret = if (topInset == 0) ImmersionBar.getStatusBarHeight(view.context) else topInset
         return ret
-    }
-
-    private fun calculateBetweenDay(reg: Long): String {
-        if (reg == 0L) {
-            return getString(R.string.reg_day, 0)
-        }
-        val diff = System.currentTimeMillis() - reg
-        val day = diff / (24 * 60 * 60 * 1000)
-        return getString(R.string.reg_day, day)
     }
 
     override fun onStart() {

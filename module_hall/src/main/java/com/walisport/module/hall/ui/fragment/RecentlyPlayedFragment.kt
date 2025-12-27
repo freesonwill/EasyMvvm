@@ -119,7 +119,7 @@ class RecentlyPlayedFragment : BaseFragment<RecentlyPlayedViewModel, FragmentRec
                     mBinding.clDynamics.visibility = View.VISIBLE
                     mBinding.clDynamics.setState(
                         States.DATA_EMPTY,
-                        R.string.game_data_empty.getString()
+                        com.walisport.module.business.common.R.string.game_data_empty.getString()
                     )
 
                 }

@@ -28,6 +28,7 @@ import arch.cayenne.module.betslip.ui.viewmodel.OrderSlipViewModel
 import arch.cayenne.module.betslip.ui.viewmodel.ReserveSlipViewModel
 import arch.cayenne.module.betslip.ui.viewmodel.SportPickerViewModel
 import arch.cayenne.module.betslip.ui.viewmodel.UnsettledViewModel
+import arch.cayenne.module.order.data.repo.BetSlipHttpRepository
 import arch.cayenne.module.order.ui.viewmodel.HomeOrderViewModel
 import arch.cayenne.module.order.ui.viewmodel.OrderGameViewModel
 import arch.cayenne.module.order.ui.viewmodel.GameAllViewModel
@@ -42,6 +43,7 @@ import arch.cayenne.module.order.ui.viewmodel.OrderDateDialogViewModel
 import arch.cayenne.module.order.ui.viewmodel.OrderDateSelectorViewModel
 import arch.cayenne.module.order.ui.viewmodel.OrderReserveViewModel
 import arch.cayenne.module.order.ui.viewmodel.ChatChooseViewModel
+import org.koin.core.qualifier.named
 
 import org.koin.dsl.module
 
@@ -102,6 +104,7 @@ class BetSlipModuleInitializer: DefaultInitializer<String> {
         factoryOf(::ConfirmingSlipRepository)
         factoryOf(::NewOrderRepository)
         factoryOf(::OrderReserveRepository)
+        factory { BetSlipHttpRepository(get(),get(named("mock"))) }
     }
 
     private val moduleList:List<Module> = listOf(managerModule, viewModules, repoModules)
