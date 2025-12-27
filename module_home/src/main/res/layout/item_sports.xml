@@ -4,7 +4,7 @@
     android:layout_height="@dimen/dp_66"
     android:background="@android:color/transparent"
     android:gravity="center"
-    android:paddingTop="@dimen/dp_4"
+    android:paddingTop="@dimen/dp_5"
     android:orientation="vertical"
     android:paddingHorizontal="@dimen/dp_6">
 

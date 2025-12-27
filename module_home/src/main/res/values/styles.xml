@@ -8,9 +8,9 @@
     <style name="OddsShortNameStyle">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:textSize">11sp</item>
-        <item name="android:textColor">@color/selector_league_tab_tint</item>
-        <item name="android:gravity">left</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">@color/selector_odds_title_color</item>
+        <item name="android:gravity">center_horizontal</item>
     </style>
 
     <style name="OddsTextStyle">
