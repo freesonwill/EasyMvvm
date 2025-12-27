@@ -140,11 +140,8 @@ class MatchListPagerFragmentV2 :
 
             //賽事卡片之間的間閣
             val decoration = MatchCardItemDecoration(
-                12.dp2px , if (arguments?.getInt(ARG_PLAY_TYPE_ID) == PlayType.EARLY.id) {
-                    12.dp2px
-                } else {
-                    6.dp2px
-                }
+                11.dp2px,
+                6.dp2px
             )
             mBinding.rvHomeGameList.apply {
                 this.layoutManager = gameLayoutManager

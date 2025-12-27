@@ -9,7 +9,7 @@
         android:id="@+id/custom_tab_group"
         android:layout_width="0dp"
         android:layout_height="@dimen/dp_32"
-        android:layout_marginTop="@dimen/dp_4"
+        android:layout_marginTop="@dimen/dp_5"
         android:paddingStart="@dimen/dp_10"
         android:paddingEnd="@dimen/dp_0"
         app:defaultTabIcon="@drawable/ic_wali_demo"
