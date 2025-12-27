@@ -236,15 +236,37 @@
     <color name="color_1A98AF">#1A98AF</color>
     <color name="color_801A98AF">#801A98AF</color>
 
-    <!-- VIP 等級顏色 -->
+    <color name="shader_background">#33FFFFFF</color>
     <color name="shader_start">#FFFFFF</color>
+
+    <!--升级所需投注额进度条渐变开始色-->
+    <color name="shader_start_copper">#6BCBDE</color>
+    <color name="shader_start_silver">#59C2F4</color>
+    <color name="shader_start_gold">#DCA847</color>
+    <color name="shader_start_platinum">#59C2F4</color>
+    <color name="shader_start_diamond">#B937FF</color>
+    <color name="shader_start_green_diamond">#02C3BC</color>
+    <color name="shader_start_red_diamond">#EB13B4</color>
+    <color name="shader_start_black_diamond">#A659FF</color>
+    <color name="shader_start_star_diamond">#DD12CC</color>
+    <color name="shader_start_meteorite_diamond">#982BD3</color>
+    <color name="shader_start_star">#3485FF</color>
+    <color name="shader_start_universe">#4D2EFF</color>
+
+    <!--VIP文字渐变结束顏色-->
     <color name="shader_end_copper">#90EBE9</color>
     <color name="shader_end_silver">#90AEEB</color>
     <color name="shader_end_gold">#EBD690</color>
     <color name="shader_end_platinum">#90AEEB</color>
     <color name="shader_end_diamond">#8C91E0</color>
-    <color name="shader_end_black_diamond">#FFD8B6</color>
+    <color name="shader_end_green_diamond">#84EFEC</color>
+    <color name="shader_end_red_diamond">#FECAA0</color>
+    <color name="shader_end_black_diamond">#FECAA0</color>
     <color name="shader_end_star_diamond">#FECAA0</color>
+    <color name="shader_end_meteorite_diamond">#B6A0FE</color>
+    <color name="shader_end_star">#A0C1FE</color>
+    <color name="shader_end_universe">#8B9FFF</color>
+
     <color name="bg_league_item_selected">@color/color_003A42</color>
     <color name="league_tab_tint_select">@color/color_00E0E5</color>
 </resources>

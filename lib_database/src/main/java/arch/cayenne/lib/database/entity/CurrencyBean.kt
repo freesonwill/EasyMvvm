@@ -6,10 +6,11 @@ import androidx.room.PrimaryKey
 @Entity
 data class CurrencyBean (
     @PrimaryKey val id: Int,
-    val virtual: Boolean,
-    val rate: Double,
-    val unit: String,
     val name: String,
     val ccy: String,
+    val crypto: Boolean,
+    val scale: Long,
+    val unit: String,
     val icon: String,
+    val rate: Double
 )

@@ -40,6 +40,7 @@ android {
 dependencies {
     implementation(project(":lib_res"))
     implementation(project(":lib_skin"))
+    implementation(project(":lib_http"))
     implementation(project(":lib_common"))
     implementation(project(":lib_http"))
     implementation(project(":module_business_common"))
