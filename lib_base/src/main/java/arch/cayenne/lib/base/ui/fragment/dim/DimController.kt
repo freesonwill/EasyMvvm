@@ -12,6 +12,7 @@ import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.widget.Toast
 import androidx.core.animation.doOnEnd
 import androidx.core.view.doOnDetach
 import androidx.core.view.isVisible
@@ -60,6 +61,15 @@ class DimController private constructor() {
             z = 100f
             translationY = -(getNavigationBarHeight(context) + 1).toFloat()
             isVisible = false
+        }.apply {
+            setOnClickListener {
+                Toast.makeText(context, "Dim View Clicked,alpha:${it.alpha}, translationX:${it.translationX},translationY:${it.translationY}",Toast.LENGTH_SHORT).show()
+            }
+            setOnLongClickListener {
+                Toast.makeText(context, "Dim View removed",Toast.LENGTH_SHORT).show()
+                hideDim()
+                true
+            }
         }
 
         val params = ViewGroup.LayoutParams(
