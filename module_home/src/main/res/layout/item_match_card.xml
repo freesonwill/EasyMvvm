@@ -47,7 +47,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_begin="161dp" />
+        app:layout_constraintGuide_begin="160dp" />
 
     <!-- 上下半場 + 比賽時間 -->
     <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
@@ -169,22 +169,24 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
-        android:layout_marginBottom="@dimen/dp_2"
+        android:layout_marginBottom="@dimen/dp_3"
         android:textColor="@color/home_main_text"
         android:textSize="14sp"
-        app:skinnableFontWeight="500"
         app:layout_constrainedWidth="true"
         app:layout_constraintBottom_toBottomOf="@id/space_team_home"
         app:layout_constraintEnd_toStartOf="@id/tv_home_score"
         app:layout_constraintStart_toEndOf="@id/iv_home_icon"
         app:layout_constraintTop_toTopOf="@id/space_team_home"
+        app:layout_goneMarginBottom="@dimen/dp_2"
+        app:skinnableFontWeight="500"
         tools:text="馬恩島" />
 
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/tv_home_score"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/dp_11"
+        android:layout_marginEnd="@dimen/dp_14"
+        android:layout_marginBottom="@dimen/dp_2"
         android:gravity="center_vertical"
         android:textColor="@color/match_card_score"
         android:textSize="15sp"
@@ -220,21 +222,23 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
+        android:layout_marginBottom="@dimen/dp_3"
         android:textColor="@color/home_main_text"
         android:textSize="14sp"
-        app:skinnableFontWeight="500"
         app:layout_constrainedWidth="true"
         app:layout_constraintBottom_toBottomOf="@id/space_team_away"
         app:layout_constraintEnd_toStartOf="@id/tv_away_score"
         app:layout_constraintStart_toEndOf="@id/iv_away_icon"
         app:layout_constraintTop_toTopOf="@id/space_team_away"
+        app:skinnableFontWeight="500"
         tools:text="阿根廷" />
 
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/tv_away_score"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/dp_11"
+        android:layout_marginEnd="@dimen/dp_14"
+        android:layout_marginBottom="@dimen/dp_2"
         android:gravity="center_vertical"
         android:textColor="@color/match_card_score"
         android:textSize="15sp"
