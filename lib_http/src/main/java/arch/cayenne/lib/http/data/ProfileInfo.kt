@@ -25,6 +25,7 @@ data class AccountInfo(
     val registerTime: Long,
     val vipLevel: Int,
     val score: Long,
+    val ccy: String,
     val list: List<Wallet>,
     val admittedBetScore: Long,
     val requiredAdmittedBetScore: Long,

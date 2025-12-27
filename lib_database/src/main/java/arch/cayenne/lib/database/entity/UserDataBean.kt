@@ -9,17 +9,14 @@ import androidx.room.PrimaryKey
 data class UserDataBean(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val nickname: String,
-
     @Embedded(prefix = "avatar_")
     val avatar: AvatarEmbedded,
-
     val registerTime: Long,
     val vipLevel: Int,
     val score: Long,
-
+    val ccy: String,
     @ColumnInfo(name = "wallet_list")
     val list: List<WalletBean>,
-
     val admittedBetScore: Long,
     val requiredAdmittedBetScore: Long,
     val vipStage: Int,

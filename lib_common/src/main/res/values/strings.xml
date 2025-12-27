@@ -76,7 +76,7 @@
     <string name="crazy_earn_text">疯狂赚钱</string>
 
     <!-- VIP 相關文字 -->
-    <string name="vip_level_require">升级还需%d投注额</string>
+    <string name="vip_level_require">升级还需%s投注额</string>
     <string name="vip_level_format">VIP %d</string>
     <string name="notification_text">notification</string>
 </resources>

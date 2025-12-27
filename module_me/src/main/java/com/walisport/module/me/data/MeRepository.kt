@@ -23,6 +23,7 @@ class MeRepository(
     private val httpClient: HttpClient
 ) : BaseRepository() {
 
+    private val currencyConfigDao = database.currencyConfigDao()
     fun observeUserInfo() = database.userDataDao().observeUser()
 
     fun getAccountInfo() {
@@ -58,6 +59,7 @@ class MeRepository(
                 registerTime = profileInfo.registerTime,
                 vipLevel = profileInfo.vipLevel,
                 score = profileInfo.score,
+                ccy = profileInfo.ccy,
                 list = profileInfo.list.map { WalletBean(it.ccy, it.score, it.exchangeScore) },
                 admittedBetScore = profileInfo.admittedBetScore,
                 requiredAdmittedBetScore = profileInfo.requiredAdmittedBetScore,

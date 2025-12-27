@@ -126,6 +126,7 @@ class ModuleRepository(
                 registerTime = profileInfo.registerTime,
                 vipLevel = profileInfo.vipLevel,
                 score = profileInfo.score,
+                ccy = profileInfo.ccy,
                 list = profileInfo.list.map { WalletBean(it.ccy, it.score, it.exchangeScore) },
                 admittedBetScore = profileInfo.admittedBetScore,
                 requiredAdmittedBetScore = profileInfo.requiredAdmittedBetScore,

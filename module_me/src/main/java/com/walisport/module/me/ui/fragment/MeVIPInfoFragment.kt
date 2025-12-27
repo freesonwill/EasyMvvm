@@ -6,6 +6,7 @@ import android.graphics.Shader
 import android.os.Bundle
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
+import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
@@ -67,12 +68,13 @@ class MeVIPInfoFragment : BaseFragment<MeVIPInfoViewModel, FragmentMeVipInfoBind
                     progress = (betScore / reqScore) * 100f
                     percent = String.format("%.2f", progress) + "%"
                 }
-                val levelUpInfo = getString(arch.cayenne.lib.common.R.string.vip_level_require, require)
+                val cny = CurrencySymbols.getSymbol(it.ccy) + require
+                val info = getString(arch.cayenne.lib.common.R.string.vip_level_require, cny)
                 updateVIPInfo(
                     vipLevel = it.vipLevel,
                     vipStage = it.vipStage,
                     percent = percent,
-                    levelUpInfo = levelUpInfo,
+                    levelUpInfo = info,
                     progress
                 )
             }

@@ -12,6 +12,7 @@ import androidx.viewpager2.widget.ViewPager2
 import arch.cayenne.lib.base.ui.animation.CustomCurveTransformer
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
+import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.ui.adapter.BannerImageMatchAdapter
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
@@ -75,12 +76,13 @@ class SuperCompetitionFragment :
                 progress = (betScore / reqScore) * 100f
                 percent = String.format("%.2f", progress) + "%"
             }
-            val levelUpInfo = getString(arch.cayenne.lib.common.R.string.vip_level_require, require)
+            val cny = CurrencySymbols.getSymbol(it.ccy) + require
+            val info = getString(arch.cayenne.lib.common.R.string.vip_level_require, cny)
             updateVIPInfo(
                 vipLevel = it.vipLevel,
                 vipStage = it.vipStage,
                 percent = percent,
-                levelUpInfo = levelUpInfo,
+                levelUpInfo = info,
                 progress = progress
             )
         }
@@ -101,7 +103,6 @@ class SuperCompetitionFragment :
             if (display.timestamp == HomeViewModel.DEFAULT_DATE) return@observe
             showSelectedDateTab(mViewModel.getDisplayDateIndex(display.timestamp))
         }
-
     }
 
     override fun initData() {
