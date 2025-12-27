@@ -26,9 +26,16 @@ class MeViewModel : BaseViewModel() {
     private val _count = MutableLiveData<List<MeTabBean>>()
     val count: LiveData<List<MeTabBean>> = _count
 
+    private val _onVipListener = MutableLiveData<UserDataBean>()
+    val onVipListener: LiveData<UserDataBean> get() = _onVipListener
 
     override fun initViewModel() {
         super.initViewModel()
+        viewModelScope.launch {
+            repository.observeUserInfo().collect {
+                _onVipListener.value = it
+            }
+        }
     }
 
     //子类判断是否滑动到顶部
