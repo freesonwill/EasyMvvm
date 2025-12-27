@@ -22,7 +22,7 @@ data class UserDataBean(
 
     val admittedBetScore: Long,
     val requiredAdmittedBetScore: Long,
-    val vipStage: String,
+    val vipStage: Int,
     val nicknameChangeCount: Int
 )
 

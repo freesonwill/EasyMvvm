@@ -34,17 +34,18 @@ class MeVIPInfoViewModel : BaseViewModel() {
         CurrencySymbols.getSymbol(it.currency) + it.balance.getFormalMoney()
     }
 
-    override fun initViewModel() {
-        super.initViewModel()
+    init {
+        viewModelScope.launch {
+            repository.observeUserInfo().collect {
+                _onVipListener.value = it
+            }
+        }
     }
 
-    fun createObserver() {
+    //获取账户信息
+    fun getAccountInfo() {
         viewModelScope.launch {
-            delay(1000)
-            val vipLevel = 75L
-            _vipLevelLiveData.value = vipLevel
-            // 將 VIP 等級同步到 UserDataManager，讓其他模組也能獲取
-            VIPDataExt.setVIPLevel(vipLevel)
+            repository.getAccountInfo()
         }
     }
 }
