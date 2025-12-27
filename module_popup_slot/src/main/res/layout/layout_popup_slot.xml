@@ -3,15 +3,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
     android:gravity="center_horizontal"
     android:orientation="vertical">
 
-    <com.google.android.material.imageview.ShapeableImageView
-        android:id="@+id/iv_popup_slot"
-        android:layout_width="@dimen/dp_38"
-        android:layout_height="@dimen/dp_40"
-        android:src="@drawable/popup_slot_placeholder"
-        app:shapeAppearanceOverlay="@style/PopUpSlotRoundedCorner" />
+    <com.youth.banner.Banner
+        android:id="@+id/vp_banner"
+        android:layout_width="@dimen/dp_40"
+        android:layout_height="@dimen/dp_43"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="@+id/gl_mid"
+        tools:ignore="MissingConstraints" />
 
     <arch.cayenne.lib.skin.widget.SkinnableImageView
         android:id="@+id/iv_popup_slot_close"

@@ -99,6 +99,16 @@ class GameAllFragment : BaseFragment<GameAllViewModel, FragmentGameAllBinding>()
         }, {
             hallViewModel.setScorll(false)
         })
+
+        // 监听 RecyclerView 滚动状态变更
+        mBinding.rvContent.addOnScrollListener(object : androidx.recyclerview.widget.RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: androidx.recyclerview.widget.RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                // 这里可以根据 newState 处理滚动状态变更
+                // 例如：RecyclerView.SCROLL_STATE_IDLE、SCROLL_STATE_DRAGGING、SCROLL_STATE_SETTLING
+                hallViewModel.setScrollState(newState)
+            }
+        })
     }
 
 

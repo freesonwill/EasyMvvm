@@ -7,6 +7,7 @@ import org.koin.core.context.loadKoinModules
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 class PopUpSlotModuleInitializer : DefaultInitializer<String> {
@@ -22,7 +23,16 @@ class PopUpSlotModuleInitializer : DefaultInitializer<String> {
         includes(defaultModule)
     }
     private val repoModules = module {
-        singleOf(::PopupSlotRepository)
+        single {
+            PopupSlotRepository(
+                get() ,
+                get() ,
+                get(named("3n1")) ,
+                get(named("mock")) ,
+                get() ,
+                get() ,
+                get()
+            ) }
     }
     private val moduleList: List<Module> = listOf(viewModules, repoModules)
 }

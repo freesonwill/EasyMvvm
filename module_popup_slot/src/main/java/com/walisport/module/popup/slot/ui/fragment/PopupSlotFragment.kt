@@ -1,13 +1,17 @@
 package com.walisport.module.popup.slot.ui.fragment
 
+import android.animation.ValueAnimator
 import android.os.Bundle
 import android.view.View
-import android.widget.FrameLayout
+import android.view.animation.LinearInterpolator
+import arch.cayenne.lib.base.ui.animation.CustomCurveTransformer
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
+import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
-import com.walisport.module.popup.slot.data.PopupSlotBean.Companion.UNINITIALIZED_ANCHOR
+import arch.cayenne.lib.common.utils.ext.startSafeAnimateSet
+import com.walisport.module.popup.slot.R
 import com.walisport.module.popup.slot.databinding.FragmentPopupSlotBinding
+import com.walisport.module.popup.slot.ui.adapter.BannerUrlImageAdapter
 import com.walisport.module.popup.slot.ui.viewmodel.PopUpSlotViewModel
 import kotlin.reflect.KClass
 
@@ -17,19 +21,30 @@ import kotlin.reflect.KClass
  * @description:
  */
 class PopupSlotFragment :
-    BaseFragment<PopUpSlotViewModel , FragmentPopupSlotBinding>() {
+    BaseFragment<PopUpSlotViewModel, FragmentPopupSlotBinding>() {
     override val vbClass: KClass<FragmentPopupSlotBinding> =
         FragmentPopupSlotBinding::class
     override val vmClass: KClass<PopUpSlotViewModel> = PopUpSlotViewModel::class
 
 
     override fun initView(savedInstanceState: Bundle?) {
-        mBinding.popupSlot0.setPositionCallbacks { x , y ->
-            mViewModel.setViewAnchor(0 , x , y)
+        val radius = 6.dp2px.toFloat()
+        with(mBinding.popupSlot0.binding) {
+            vpBanner.setBannerRound(radius)
+            vpBanner.isAutoLoop(false)
+            // 设置滑动时长丝滑,不影响曲线,
+            vpBanner.setScrollTime(600)  // 0.5 秒
+            vpBanner.setPageTransformer(CustomCurveTransformer())
+            // 启动轮播
         }
 
-        mBinding.popupSlot1.setPositionCallbacks { x , y ->
-            mViewModel.setViewAnchor(1 , x , y)
+        with(mBinding.popupSlot1.binding) {
+            vpBanner.setBannerRound(radius)
+            vpBanner.isAutoLoop(false)
+            // 设置滑动时长丝滑,不影响曲线,
+            vpBanner.setScrollTime(600)  // 0.5 秒
+            vpBanner.setPageTransformer(CustomCurveTransformer())
+            // 启动轮播
         }
     }
 
@@ -50,61 +65,202 @@ class PopupSlotFragment :
     }
 
     override suspend fun createObserver() {
-        mViewModel.popupSlotDataListLiveData.observe(viewLifecycleOwner) {
-            "popupSlotDataListLiveData.observed. $it".logi("PopupSlotFragment")
-            if (it.get(0) != null && it[0].show) {
-                "it[0].show == true , set visible".logi("PopupSlotFragment")
+        //监听弹窗显示与隐藏
+        mViewModel.popupShowLiveData.observe(viewLifecycleOwner) {
+            val showList = it
+            val initialAlpha = 0.5f
+            val targetAlpha = 1f
+            val alphaDuration = 320L
+            val translationDistance = 20f
+            val translationDuration = 80L
+            val translationBackDistance = -40f
+            val translationBackDuration = 160L
+
+            // 假设 PopupSlotRepository 有两个布尔变量 slot0Animated 和 slot1Animated
+            if (showList[0]) {
                 mBinding.popupSlot0.visibility = View.VISIBLE
+                if (!mViewModel.slot0Animated) {
+                    mBinding.popupSlot0.apply {
+                        alpha = initialAlpha
+                        animate().alpha(targetAlpha).setDuration(alphaDuration).start()
+                        animate()
+                            .translationXBy(translationDistance).setDuration(translationDuration)
+                            .withEndAction {
+                                animate()
+                                    .translationXBy(translationBackDistance)
+                                    .setDuration(translationBackDuration).withEndAction {
+                                        animate()
+                                            .translationXBy(translationDistance)
+                                            .setDuration(translationDuration).start()
+                                    }.start()
+                            }.start()
+                    }
+                    mViewModel.slot0Animated = true
+                }
+            } else {
+                mBinding.popupSlot0.visibility = View.GONE
             }
 
-            if (it.get(1) != null && it[1].show) {
-                "it[1].show == true , set visible".logi("PopupSlotFragment")
+            if (showList[1]) {
                 mBinding.popupSlot1.visibility = View.VISIBLE
+                if (!mViewModel.slot1Animated) {
+                    mBinding.popupSlot1.apply {
+                        alpha = initialAlpha
+                        animate().alpha(targetAlpha).setDuration(alphaDuration).start()
+                        animate()
+                            .translationXBy(translationDistance).setDuration(translationDuration)
+                            .withEndAction {
+                                animate()
+                                    .translationXBy(translationBackDistance)
+                                    .setDuration(translationBackDuration).withEndAction {
+                                        animate()
+                                            .translationXBy(translationDistance)
+                                            .setDuration(translationDuration).start()
+                                    }.start()
+                            }.start()
+                    }
+                    mViewModel.slot1Animated = true
+                }
+            } else {
+                mBinding.popupSlot1.visibility = View.GONE
+            }
+        }
+
+        mViewModel.popupSlotDataListLiveData.observe(viewLifecycleOwner) {
+            val dataList = it
+            // 可根据需要将此变量提到类属性或通过参数传递
+            mBinding.popupSlot0.binding.vpBanner.apply {
+                setAdapter(BannerUrlImageAdapter(dataList[0].data.map {
+                    Pair(it, R.drawable.popup_slot_placeholder)
+                }))
+                setLoopTime(LOOP_TIME)
+                isAutoLoop(true)
+                setOnBannerListener { data, position ->
+                    // 这里处理点击事件，比如：
+//                    val url =
+//                        ((data as Pair<PopupSlotDataModel, Int>).first as PopupSlotDataModel).operateParams[0]
+//                    navigate(
+//                        arch.cayenne.lib.res.R.string.nav_module_web_fragment
+//                            .deeplink("url" to url)
+//                    )
+                }
+                start()
+
+            }
+            mBinding.popupSlot1.binding.vpBanner.apply {
+                setAdapter(BannerUrlImageAdapter(dataList[1].data.map {
+                    Pair(
+                        it,
+                        R.drawable.popup_slot_placeholder
+                    )
+                }))
+                setLoopTime(LOOP_TIME)
+                isAutoLoop(true)
+                setOnBannerListener { data, position ->
+                    // 这里处理点击事件，比如：
+//                    val url =
+//                        ((data as Pair<PopupSlotDataModel, Int>).first as PopupSlotDataModel).operateParams[0]
+//                    navigate(
+//                        arch.cayenne.lib.res.R.string.nav_module_web_fragment
+//                            .deeplink("url" to url)
+//                    )
+                }
+                start()
             }
         }
     }
 
-    fun adjustPosition() {
-        // 檢查當前 Fragment 是否已經是目標父 Fragment 的子 Fragment
-        setFloatingViewPosition(requireActivity().resources.displayMetrics.heightPixels)
-
+    fun fadeAndOut() {
+        view?.startSafeAnimateSet({
+            playTogether(
+                ValueAnimator.ofFloat(
+                    view?.translationX ?: 0f,
+                    28.dp2px.toFloat()
+                ).apply {
+                    addUpdateListener {
+                        val value = it.animatedValue as Float
+                        view?.translationX = value
+                    }
+                },
+                ValueAnimator.ofFloat(
+                    view?.alpha ?: 1f,
+                    0.6f
+                ).apply {
+                    addUpdateListener {
+                        val value = it.animatedValue as Float
+                        view?.alpha = value
+                    }
+                },
+                ValueAnimator.ofFloat(mBinding.popupSlot0.binding.ivPopupSlotClose.alpha, 0f)
+                    .apply {
+                        addUpdateListener {
+                            val value = it.animatedValue as Float
+                            mBinding.popupSlot0.binding.ivPopupSlotClose.alpha = value
+                            mBinding.popupSlot1.binding.ivPopupSlotClose.alpha = value
+                        }
+                    },
+                ValueAnimator.ofFloat(mBinding.popupSlot1.binding.ivPopupSlotClose.alpha, 0f)
+                    .apply {
+                        addUpdateListener {
+                            val value = it.animatedValue as Float
+                            mBinding.popupSlot1.binding.ivPopupSlotClose.alpha = value
+                        }
+                    }
+            )
+        }, duration = 150, interpolator = LinearInterpolator(), start = true)
     }
 
-    private fun setFloatingViewPosition(screenHeight: Int) {
-
-        mViewModel.popupSlotDataListLiveData.value?.forEachIndexed { index , popupSlotBean ->
-            if (!popupSlotBean.show) {
-                return@forEachIndexed
-            }
-            val floatingView = if (index == 0) mBinding.popupSlot0 else mBinding.popupSlot1
-            val layoutParams = floatingView.layoutParams as FrameLayout.LayoutParams
-
-            if (popupSlotBean.anchorX != UNINITIALIZED_ANCHOR) {
-                layoutParams.leftMargin = popupSlotBean.anchorX.toInt()
-            } else {
-                layoutParams.leftMargin =
-                    resources.displayMetrics.widthPixels
-                popupSlotBean.anchorX = layoutParams.leftMargin.toFloat()
-            }
-
-            if (popupSlotBean.anchorY != UNINITIALIZED_ANCHOR) {
-                layoutParams.topMargin = popupSlotBean.anchorY.toInt()
-            } else {
-                // 設定懸浮按鈕的縱向位置，將其放在螢幕高度的2/3處
-                layoutParams.topMargin = (screenHeight * 2 / 3)
-                popupSlotBean.anchorY = layoutParams.topMargin.toFloat()
-            }
-
-            floatingView.layoutParams = layoutParams
-        }
-
-
+    fun fadeAndIn() {
+        view?.startSafeAnimateSet({
+            playTogether(
+                ValueAnimator.ofFloat(
+                    view?.translationX ?: 28.dp2px.toFloat(),
+                    0f
+                ).apply {
+                    addUpdateListener {
+                        val value = it.animatedValue as Float
+                        view?.translationX = value
+                    }
+                },
+                ValueAnimator.ofFloat(
+                    view?.alpha ?: 0.6f,
+                    1f
+                ).apply {
+                    addUpdateListener {
+                        val value = it.animatedValue as Float
+                        view?.alpha = value
+                    }
+                },
+                ValueAnimator.ofFloat(mBinding.popupSlot0.binding.ivPopupSlotClose.alpha, 1f)
+                    .apply {
+                        addUpdateListener {
+                            val value = it.animatedValue as Float
+                            mBinding.popupSlot0.binding.ivPopupSlotClose.alpha = value
+                            mBinding.popupSlot1.binding.ivPopupSlotClose.alpha = value
+                        }
+                    },
+                ValueAnimator.ofFloat(mBinding.popupSlot1.binding.ivPopupSlotClose.alpha, 1f)
+                    .apply {
+                        addUpdateListener {
+                            val value = it.animatedValue as Float
+                            mBinding.popupSlot1.binding.ivPopupSlotClose.alpha = value
+                        }
+                    }
+            )
+        }, duration = 150, interpolator = LinearInterpolator(), start = true)
     }
 
 
     companion object {
         const val TAG = "PopupSlotFragment"
+        const val LOOP_TIME = 3000L
+
     }
 
 
 }
+
+
+
+
+
