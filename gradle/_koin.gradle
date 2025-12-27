@@ -17,6 +17,6 @@ dependencies {
     implementation("io.insert-koin:koin-annotations:1.3.0")
     // Koin Annotations KSP Compiler
     ksp("io.insert-koin:koin-ksp-compiler:1.3.0")*/
-    implementation(project(":plugin_koin"))
-    ksp(project(":plugin_koin"))
+    implementation(project(":external:plugin_koin"))
+    ksp(project(":external:plugin_koin"))
 }
