@@ -33,6 +33,7 @@
         <attr name="android:spacing" format="dimension" />
         <attr name="android:horizontalSpacing" format="dimension" />
         <attr name="android:verticalSpacing" format="dimension" />
+        <attr name="otherTextSize" format="dimension" />
     </declare-styleable>
 
 </resources>

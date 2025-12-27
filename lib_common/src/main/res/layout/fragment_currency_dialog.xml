@@ -20,7 +20,7 @@
         <net.center.blurview.ShapeBlurView
             android:id="@+id/blurView"
             android:layout_width="290dp"
-            app:blur_radius="9dp"
+            app:blur_radius="21dp"
             android:layout_height="0dp"
             app:blur_corner_radius="@dimen/dp_9"
             app:blur_mode="rectangle"

@@ -83,7 +83,9 @@ class GameAllFragment : BaseFragment<GameAllViewModel, FragmentGameAllBinding>()
             rvContent.layoutManager = LinearLayoutManager(requireContext())
             rvContent.adapter = concatAdapter
             rvContent.setItemViewCacheSize(10)
-            NestedScrollViewBackToTopHelper(nestedScrollView, ivBackToTop)
+            NestedScrollViewBackToTopHelper(nestedScrollView, ivBackToTop, scrollStateListener = {
+                hallViewModel.setScrollState(it)
+            })
         }
 
     }

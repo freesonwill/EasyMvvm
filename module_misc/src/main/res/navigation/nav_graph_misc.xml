@@ -46,6 +46,16 @@
         <deepLink app:uri="@string/nav_module_web_fragment" />
     </fragment>
 
+    <fragment
+        android:id="@+id/debugFragment"
+        android:name="com.walisport.module.misc.ui.fragment.DebugFragment"
+        android:label="fragment_web"
+        tools:layout="@layout/fragment_debug">
+
+
+        <deepLink app:uri="@string/nav_module_debug_fragment" />
+    </fragment>
+
 
 
 </navigation>

@@ -37,6 +37,7 @@
         app:layout_constraintEnd_toStartOf="@id/gl_other"
         app:layout_constraintStart_toEndOf="@id/rv_quick_amount"
         app:layout_constraintTop_toTopOf="@id/gl_other"
+        app:otherTextSize="@dimen/sp_14"
         android:spacing="@dimen/dp_6"/>
 
     <GridLayout
