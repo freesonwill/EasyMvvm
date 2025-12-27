@@ -11,6 +11,7 @@ import arch.cayenne.lib.common.utils.ext.SportDisplayOddsExt.getDisplayOdds
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toOdds
 import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.database.entity.BetSlipData
+import arch.cayenne.lib.database.entity.BetSlipOrderBean
 import arch.cayenne.lib.database.entity.BetSlipReserveBean
 import arch.cayenne.lib.database.entity.BetSlipSelectionData
 import arch.cayenne.module.betslip.R
@@ -36,12 +37,10 @@ class OrderSportReservePageFragment :
                         showDateDialog()
                     }
 
-                    override fun onItemSingleClick(bean: BetSlipSelectionData) {
-                        TODO("Not yet implemented")
+                    override fun onItemSingleClick(bean: BetSlipOrderBean) {
                     }
 
                     override fun onShareClick(bean: BetSlipData) {
-                        TODO("Not yet implemented")
                     }
 
                 },
