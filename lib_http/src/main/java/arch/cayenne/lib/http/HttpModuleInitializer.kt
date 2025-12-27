@@ -31,8 +31,6 @@ class HttpModuleInitializer : DefaultInitializer<String> {
                     .addInterceptor(HeaderInterceptor(get()))
                     .build()
             }
-            single(named("api")) {  HttpClient.Builder("https://dev.ra781.com/api/",5000).build()  }
-
         })
         return TAG
     }

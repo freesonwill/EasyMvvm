@@ -528,14 +528,12 @@ abstract class ChatBaseFragment : BaseFragment<ChatHomeViewModel, FragmentLiveCh
     private fun showLanguageDialog() {
         val viewLocation = IntArray(2)
         mBinding.ivLanguage.getLocationOnScreen(viewLocation)
-        "showLanguageDialog select position:${mViewModel.languageSelectPosition}".logd("aaa")
 
         ChatLanguageDialogFragment.newInstance(
             viewLocation[0],
             viewLocation[1],
             mViewModel.languageSelectPosition
         ) {
-            "ChatLanguageDialogFragment select position:$it".logd("aaa")
             mViewModel.updateLanguageSelect(it)
         }.show(childFragmentManager)
     }

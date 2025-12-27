@@ -15,7 +15,7 @@ import retrofit2.http.Query
 interface BetSlipApi : IApi {
 
     // 获取游戏详情
-    @GET("record/share")
+    @GET("api/record/share")
     suspend fun getBetShareResult(
        @Query("userId") userId: Long,
        @Query("settleId") settleId: String): Response<HttpApiResponse<BetShareBean>>

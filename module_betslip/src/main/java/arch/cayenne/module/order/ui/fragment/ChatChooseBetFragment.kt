@@ -18,6 +18,7 @@ import arch.cayenne.lib.common.utils.ext.NavResultExt.sendResult
 import arch.cayenne.lib.common.utils.ext.removeAllTips
 import arch.cayenne.lib.common.utils.ext.setupHorizontalScrollDegree
 import arch.cayenne.lib.common.utils.helper.showToast
+import arch.cayenne.module.betslip.BuildConfig
 import arch.cayenne.module.betslip.R
 import arch.cayenne.module.betslip.databinding.FragmentChooseBetLayoutBinding
 import arch.cayenne.module.order.data.constants.OrderPageEnum
@@ -115,8 +116,9 @@ class ChatChooseBetFragment : BaseFragment<ChatChooseViewModel, FragmentChooseBe
         mViewModel.betClickLiveData.observe(viewLifecycleOwner) {
             betType = if (it.type == ChatMsgType.BET_GAME) 0 else 1
             val betCode =
-                if (it.type == ChatMsgType.BET_GAME) "b-p55ye09-xt8ap-rw-82d" else it.betCode
-            mViewModel.getBetShare(6660001, betCode)
+                if (it.type == ChatMsgType.BET_GAME) "bet-test202512223-wg0s53" else it.betCode
+            val userId = if(it.type == ChatMsgType.BET_GAME) 6660030 else mViewModel.getUid()
+            mViewModel.getBetShare(userId, betCode)
 
 //            val bundle = Bundle().apply {
 //                putInt(BET_TYPE, if (it.type == ChatMsgType.BET_GAME) 0 else 1)

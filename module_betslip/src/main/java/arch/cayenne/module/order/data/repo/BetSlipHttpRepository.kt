@@ -7,6 +7,7 @@ import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.http.HttpClient
 import arch.cayenne.lib.http.HttpException
 import arch.cayenne.module.order.utils.BetSlipApi
+import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -20,8 +21,9 @@ import kotlin.coroutines.resume
  */
 class BetSlipHttpRepository(override val scope: CoroutineScope, private val apiClient: HttpClient) :
     BaseRepository() {
-
     suspend fun getBetShare(userId: Long, settleId: String): ApiResponseState {
+        "getBetShare param------>$userId,$settleId".logi(TAG)
+
         val api = apiClient.create(BetSlipApi::class.java)
         return suspendCancellableCoroutine { cancellableContinuation ->
             scope.launch(Dispatchers.IO) {
@@ -30,7 +32,7 @@ class BetSlipHttpRepository(override val scope: CoroutineScope, private val apiC
                         api.getBetShareResult(userId, settleId)
                     },
                     onSuccess = { resp ->
-                        "response------>${resp.code},${resp.message}".logi(TAG)
+                        "response------>${resp.code},${resp.message}  ${Gson().toJson(resp.data)}".logi(TAG)
                         if (resp.code == 0) {
                             cancellableContinuation.resume(ApiResponseState.Succeeded(resp.data))
                         } else {

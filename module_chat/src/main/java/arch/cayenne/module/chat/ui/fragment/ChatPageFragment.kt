@@ -7,6 +7,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.module.chat.data.constants.KeyBoardType
 import arch.cayenne.lib.common.data.constants.ChatMsgType
@@ -36,8 +37,12 @@ class ChatPageFragment : BaseFragment<ChatPageViewModel, FragementChatPageLayout
     override fun initView(savedInstanceState: Bundle?) {
         ChatPersonalDialogFragment.create(this)
         BetShareDialogFragment.create(this)
+        ChatPrivateUserFragment.create(this)
         initRecycler()
+        listenFragmentResult()
     }
+
+    var selectBean: ChatMsgPageBean? = null
 
     private fun initRecycler() {
         val layoutManger = LinearLayoutManager(context).apply {
@@ -46,17 +51,20 @@ class ChatPageFragment : BaseFragment<ChatPageViewModel, FragementChatPageLayout
         }
         val adapter = ChatPageAdapter(
             specialClick = { bean, clickSpane, clickType ->
+                selectBean = bean
                 when (clickType) {
                     ChatMsgType.BET_GAME -> {
 //                    val betType = if(clickSpane == "注单游戏") 0 else 1
                         BetShareDialogFragment.show(this, 0)
                     }
-                    ChatMsgType.BET_SPORT ->{
+
+                    ChatMsgType.BET_SPORT -> {
                         BetShareDialogFragment.show(this, 1)
                     }
 
                     ChatMsgType.AT -> {
-                        ChatUserInfoFragment().show(childFragmentManager)
+                        ChatPrivateUserFragment.show(this)
+//                        ChatUserInfoFragment().show(childFragmentManager)
                     }
 
                     ChatMsgType.TEXT -> {
@@ -98,14 +106,14 @@ class ChatPageFragment : BaseFragment<ChatPageViewModel, FragementChatPageLayout
         val adapter = mBinding.liveChatRecycler.adapter?.let { it as ChatPageAdapter }
         val nList = mutableListOf<ChatMsgPageBean>()
         nList.addAll(mViewModel.msgLists)
-        adapter?.submitList(nList){
+        adapter?.submitList(nList) {
             mBinding.liveChatRecycler.postDelayed({
                 try {
                     mBinding.liveChatRecycler.scrollToPosition(0)
-                }catch (e:Exception){
+                } catch (e: Exception) {
                     e.printStackTrace()
                 }
-            },100)
+            }, 100)
         }
     }
 
@@ -117,7 +125,13 @@ class ChatPageFragment : BaseFragment<ChatPageViewModel, FragementChatPageLayout
     override suspend fun createObserver() {
         homeViewModel.sendMsgLiveData.observe(viewLifecycleOwner) {
             mViewModel.addLocalMsg(it)
-            homeViewModel.sendMsgToServer(it.content,it.refUid,ChatType.LOBBY,MsgType.MSG_TYPE_TEXT,it.extraData)
+            homeViewModel.sendMsgToServer(
+                it.content,
+                it.refUid,
+                ChatType.LOBBY,
+                MsgType.MSG_TYPE_TEXT,
+                it.extraData
+            )
             refreshChatList()
         }
         viewLifecycleOwner.lifecycleScope.launch {
@@ -136,6 +150,23 @@ class ChatPageFragment : BaseFragment<ChatPageViewModel, FragementChatPageLayout
             }
         }
 
+    }
+
+    private fun listenFragmentResult() {
+        //监听个人消息弹窗结果
+        childFragmentManager.setFragmentResultListener(
+            ChatPersonalDialogFragment.CHAT_PERSONAL_REQUEST,
+            this
+        ) { _, bundle ->
+            val result = bundle.getInt(ChatPersonalDialogFragment.CHAT_PERSONAL_RESULT)
+            //处理结果 0 title 1 @ta 2 复制评论 3 举报评论
+            if (result == 1) {
+                selectBean?.let {
+                    homeViewModel.addAtMsgToChat(it)
+                }
+            }
+
+        }
     }
 
     companion object {
