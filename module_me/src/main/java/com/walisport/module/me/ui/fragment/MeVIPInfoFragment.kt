@@ -64,12 +64,12 @@ class MeVIPInfoFragment : BaseFragment<MeVIPInfoViewModel, FragmentMeVipInfoBind
                     var progress = 0f
                     val betScore = it.admittedBetScore.toFloat()
                     val reqScore = it.requiredAdmittedBetScore.toFloat()
-                    val require = it.requiredAdmittedBetScore.toInt()
                     if (reqScore > 0L && betScore > 0L) {
                         progress = (betScore / reqScore) * 100f
                         percent = String.format("%.2f", progress) + "%"
                     }
-                    val cny = CurrencySymbols.getSymbol(it.ccy) + require
+                    val cny = CurrencySymbols.getSymbol(it.ccy) +
+                            CurrencySymbols.getFormatAmount(it.ccy, reqScore)
                     val info = getString(arch.cayenne.lib.common.R.string.vip_level_require, cny)
                     updateVIPInfo(
                         vipLevel = it.vipLevel,

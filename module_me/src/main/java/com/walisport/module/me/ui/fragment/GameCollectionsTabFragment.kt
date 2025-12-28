@@ -16,11 +16,10 @@ import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import com.walisport.module.business.common.data.UniversalLoadMoreScrollListener
-import com.walisport.module.business.common.ui.adapter.GameContentAdapter
+import com.walisport.module.business.common.ui.adapter.GameContentSimpleAdapter
 import com.walisport.module.live.data.EventClick
 import com.walisport.module.me.databinding.FragmentGameCollectionsBinding
 import com.walisport.module.me.ui.viewmodel.GameCollectionTabViewModel
-import com.walisport.module.me.ui.viewmodel.MeVIPInfoViewModel
 import com.walisport.module.me.ui.viewmodel.MeViewModel
 import kotlinx.coroutines.delay
 import kotlin.reflect.KClass
@@ -37,7 +36,7 @@ class GameCollectionsTabFragment : BaseFragment<GameCollectionTabViewModel, Frag
 
     private val parentViewModel: MeViewModel by viewModels({ requireParentFragment() })
 
-    private lateinit var adapter: GameContentAdapter
+    private lateinit var adapter: GameContentSimpleAdapter
 
 
     override fun initView(savedInstanceState: Bundle?) {
@@ -46,18 +45,13 @@ class GameCollectionsTabFragment : BaseFragment<GameCollectionTabViewModel, Frag
             val itemDecoration = GridSpacingItemDecoration(
                 spanCount = 3,
                 horizontalSpacing = 9.dp2px,
-                verticalSpacing = 17.dp2px,
+                verticalSpacing = 11.dp2px,
                 includeEdge = false // 確保邊緣沒有空隙
             )
             rvRecently.addItemDecoration(itemDecoration)
-            adapter = GameContentAdapter(onItemClick = {
+            adapter = GameContentSimpleAdapter(onItemClick = {
                 mViewModel.setIsClickGame(EventClick.EVENT_CLICK_ACK_TRUE.type)
-                navigate(arch.cayenne.lib.res.R.string.nav_module_gamedetail.deeplink("gameId" to it.id))
-                launch {
-                    delay(AnimationController[AnimType.popupExit]!!.duration)
-                    adapter.submitList(emptyList())
-                }
-
+                navigate(arch.cayenne.lib.res.R.string.nav_module_gamedetail.deeplink("gameId" to it.gameID))
             })
             rvRecently.adapter = adapter
 //            BackToTopHelper(rvRecently, ivBackToTop, true)

@@ -32,37 +32,36 @@ data class ProfilePlayedPageVo(
 
 fun ProfilePlayedVo.toGameContentData(): GameContentData {
     return GameContentData(
-        id = this.gameType.toLong() ,
-        name = this.name ,
+        gameID = this.gameType.toLong(),
+        name = this.name,
         avatar = Avatar(
-            url = this.avatar.url ,
-            thumbhash = this.avatar.thumbhash ,
+            url = this.avatar.url,
+            thumbhash = this.avatar.thumbhash,
             css = ""
-        ) ,
-        online = this.online ,
-        reward = this.reward ,
-        hasMore = false ,
-        hotOrCold = HotColdType.NONE
+        ),
+        online = this.online,
+        reward = this.reward,
+        hasMore = false,
+        hotOrCold = HotColdType.NONE,
     )
 }
 
 /**
- *分页数据
- * @date: 2025/12/11 11:43
- * @description:
+ * 分页数据
  */
 data class GameVo(
-    val id: Int ,//游戏ID
-    val name: String ,//游戏名称
-    val avatar: AvatarVo ,//图片信息
-    val online: Int ,// 当前在线人数
-    val reward: Float ,//返奖率
-    val hasMore: Boolean//是否有更多数据
+    val gameType: Int, // 游戏ID
+    val name: String, // 游戏名称
+    val category: Int, // 游戏分类
+    val avatar: AvatarVo, // 图片信息
+    val online: Int, // 在线人数
+    val reward: Float, // 返奖率
+    val hasMore: Boolean // 更多数据
 )
 
 fun GameVo.toGameContentData(sortType: GameSortType? = null): GameContentData {
     return GameContentData(
-        id = this.id.toLong(),
+        gameID = this.gameType.toLong(),
         name = this.name ,
         avatar = Avatar(
             url = this.avatar.url ,

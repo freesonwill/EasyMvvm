@@ -61,12 +61,7 @@ class GameFavouriteFragment : BaseFragment<GameFavouriteViewModel, FragmentGameF
             rvGame.layoutManager = GridLayoutManager(requireContext(), 3)
             rvGame.addItemDecoration(itemDecoration)
             adapter = GameContentAdapter(onItemClick = {
-                navigate(arch.cayenne.lib.res.R.string.nav_module_gamedetail.deeplink("gameId" to it.id))
-                launch{
-                    delay(AnimationController[AnimType.popupExit]!!.duration)
-                    adapter.submitList(emptyList())
-                }
-
+                navigate(arch.cayenne.lib.res.R.string.nav_module_gamedetail.deeplink("gameId" to it.gameID))
             })
             rvGame.adapter = adapter
             BackToTopHelper(rvGame, ivBackToTop, true)
