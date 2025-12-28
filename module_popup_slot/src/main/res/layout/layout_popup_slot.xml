@@ -20,6 +20,7 @@
         android:id="@+id/iv_popup_slot_close"
         android:layout_width="@dimen/dp_33"
         android:layout_height="@dimen/dp_33"
+        android:layout_marginTop="@dimen/dp_3"
         android:padding="@dimen/dp_9"
         android:scaleType="fitXY"
         android:src="@drawable/popup_slot_close" />
