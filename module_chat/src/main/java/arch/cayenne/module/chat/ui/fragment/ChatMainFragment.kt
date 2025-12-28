@@ -55,7 +55,7 @@ class ChatMainFragment : ChatBaseFragment() {
     override suspend fun createObserver() {
         super.createObserver()
         lifecycleScope.launch {
-            mViewModel.loginFlow?.collect{
+            mViewModel.loginFlow.collect{
                 if(it?.code == 0)    {
                     mViewModel.enterRoom(chatType)
                 }
@@ -66,9 +66,9 @@ class ChatMainFragment : ChatBaseFragment() {
     /**
      * 如果服务开启了登陆没有成功，就重新登陆一次
      * */
-    fun checkLogin() {
+    private fun checkLogin() {
         lifecycleScope.launch {
-            if (mViewModel.serverFlow().value == SocketConnectState.Connecting && (mViewModel.loginFlow?.value == null || mViewModel.loginFlow?.value?.code != 0)) {
+            if (mViewModel.serverFlow().value == SocketConnectState.Connecting && (mViewModel.loginFlow.value == null || mViewModel.loginFlow.value?.code != 0)) {
                 mViewModel.chatLogin(chatType)
             }
         }

@@ -10,6 +10,7 @@ import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.adapter.PagerAdapter
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.data.constants.ChatMsgType
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.ui.viewmodel.UnReadMessageViewModel
@@ -120,12 +121,7 @@ class ChatChooseBetFragment : BaseFragment<ChatChooseViewModel, FragmentChooseBe
             val userId = if(it.type == ChatMsgType.BET_GAME) 6660030 else mViewModel.getUid()
             mViewModel.getBetShare(userId, betCode)
 
-//            val bundle = Bundle().apply {
-//                putInt(BET_TYPE, if (it.type == ChatMsgType.BET_GAME) 0 else 1)
-//                putString(BET_ID,if(it.type == ChatMsgType.BET_GAME) "bet-test202512223-wg0s53" else it.betCode)
-//            }
-//            sendResult("choose_bet", bundle)
-//            findNavController().navigateUp()
+            "choose_bet betCode $betType betCode $betCode".logd("aaa")
         }
         mViewModel.betShareLiveData.observe(viewLifecycleOwner) {
             val bundle = Bundle().apply {

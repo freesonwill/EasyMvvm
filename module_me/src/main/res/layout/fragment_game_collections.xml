@@ -3,14 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_weight="1"
+    android:layout_height="wrap_content"
     android:background="@color/color_272727">
 
     <arch.cayenne.lib.skin.widget.SkinnableRecyclerView
         android:id="@+id/rv_recently"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_12"
         android:layout_marginTop="@dimen/dp_12"
         android:layout_marginEnd="@dimen/dp_12"
@@ -22,7 +21,7 @@
     <arch.cayenne.lib.common.ui.view.DynamicStateLayoutV2
         android:id="@+id/cl_dynamics"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/dp_200"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -39,5 +38,4 @@
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>

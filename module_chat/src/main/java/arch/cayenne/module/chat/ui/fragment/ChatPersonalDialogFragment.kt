@@ -84,10 +84,6 @@ class ChatPersonalDialogFragment :
                 setFragmentResult(position)
                 if (position == 3) {
                     ChatReportFragment.show(this@ChatPersonalDialogFragment)
-//                    lifecycleScope.launch {
-//                        delay(200)
-//                        dismissNow()
-//                    }
                     dismiss()
                 } else {
                     dismiss()

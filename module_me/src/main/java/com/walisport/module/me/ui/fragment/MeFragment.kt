@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -194,40 +195,14 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
 
     @SuppressLint("ClickableViewAccessibility")
     override fun initListener() {
-        mBinding.vpPage.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-            override fun onPageSelected(position: Int) {
-                val pagerAdapter = mBinding.vpPage.adapter as? PagerAdapter
-                val fragment = pagerAdapter?.getFragment(position)
-                val height = fragment?.view?.height
-                height?.let {
-                    LogUtils.e("MeFragment-------->onPageSelected------height->${height}}")
-                    mBinding.vpPage.requestLayout()
-                    mBinding.nestedScrollView.requestLayout()
-                }
-            }
-        })
 
-        mBinding.vpPage.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-            override fun onPageSelected(position: Int) {
-                super.onPageSelected(position)
-                // 获取当前页面的 ViewHolder（ViewPager2 内部用 RecyclerView）
-                val recyclerView =  mBinding.vpPage.getChildAt(0) as? RecyclerView
-                val viewHolder = recyclerView?.findViewHolderForAdapterPosition(position)
+        mViewModel.onViewpagerHeight.observe(viewLifecycleOwner){
+            LogUtils.e("MeFragment-------->onViewpagerHeight------it->${it}}")
+            mBinding.vpPage.layoutParams.height = it
+            mBinding.vpPage.requestLayout()
+        }
 
-                viewHolder?.itemView?.post {
-                    // 重新测量当前页面
-                    val widthSpec = View.MeasureSpec.makeMeasureSpec( mBinding.vpPage.width, View.MeasureSpec.EXACTLY)
-                    val heightSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
-                    viewHolder.itemView.measure(widthSpec, heightSpec)
 
-                    // 更新 ViewPager2 高度
-                    if ( mBinding.vpPage.layoutParams.height != viewHolder.itemView.measuredHeight) {
-                        mBinding.vpPage.layoutParams.height = viewHolder.itemView.measuredHeight
-                        mBinding.vpPage.requestLayout()
-                    }
-                }
-            }
-        })
         with(mBinding) {
             ivDrawer.addScaleOnTouchAnimation()
             ivDrawer.clickNoRepeat {
@@ -381,8 +356,12 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
                 }
                 mBinding.tabLayout.getTabAt(tabSelectPosition)?.select()
                 mBinding.topTabLayout.getTabAt(tabSelectPosition)?.select()
-                tabIndicatorHelper?.smartAnimateToCurrent(0)
-                topTabIndicatorHelper?.smartAnimateToCurrent(0)
+                mBinding.tabLayout.post{
+                    tabIndicatorHelper?.smartAnimateToCurrent(0)
+                }
+                mBinding.topTabLayout.post{
+                    topTabIndicatorHelper?.smartAnimateToCurrent(0)
+                }
             }
 
             onVipListener.observe(viewLifecycleOwner) {

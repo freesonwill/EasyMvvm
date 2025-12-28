@@ -2,6 +2,7 @@ package com.walisport.module.me.ui.fragment
 
 import android.os.Bundle
 import android.view.View
+import android.view.ViewTreeObserver
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import arch.cayenne.lib.base.data.constants.DataState
@@ -9,6 +10,7 @@ import arch.cayenne.lib.base.ui.animation.AnimationController
 import arch.cayenne.lib.base.ui.animation.AnimationController.AnimType
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
+import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.common.ui.adapter.GridSpacingItemDecoration
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
@@ -81,12 +83,19 @@ class RecentlyTabFragment : BaseFragment<RecentlyTabViewModel, FragmentRecentlyT
                 if (list.size <= 10) {
                     mViewModel.loadNextPage()
                 }
+                mBinding.rvRecently.post {
+                    LogUtils.e(
+                        "RecentlyTabFragment",
+                        "rvRecently height=${mBinding.rvRecently.height}"
+                    )
+                    parentViewModel.setOnHeight(mBinding.rvRecently.height)
+                }
             }
         }
 
         mViewModel.gameClickData.observe(viewLifecycleOwner) {
             it?.let {
-                if (it.clickFlag== EventClick.EVENT_CLICK_ACK_TRUE.type){
+                if (it.clickFlag == EventClick.EVENT_CLICK_ACK_TRUE.type) {
                     mViewModel.reload()
                     mViewModel.setIsClickGame(EventClick.EVENT_CLICK_ACK_FALSE.type)
                 }
@@ -101,6 +110,7 @@ class RecentlyTabFragment : BaseFragment<RecentlyTabViewModel, FragmentRecentlyT
                 }
 
                 DataState.DataEmpty -> {
+                    parentViewModel.setOnHeight(mBinding.clDynamics.height)
                     mBinding.rvRecently.visibility = View.GONE
                     mBinding.clDynamics.visibility = View.VISIBLE
                     mBinding.clDynamics.setState(
@@ -116,6 +126,7 @@ class RecentlyTabFragment : BaseFragment<RecentlyTabViewModel, FragmentRecentlyT
                 }
 
                 DataState.NetworkUnavailable -> {
+                    parentViewModel.setOnHeight(mBinding.clDynamics.height)
                     mBinding.rvRecently.visibility = View.GONE
                     mBinding.clDynamics.visibility = View.VISIBLE
                     mBinding.clDynamics.setState(
@@ -129,8 +140,8 @@ class RecentlyTabFragment : BaseFragment<RecentlyTabViewModel, FragmentRecentlyT
             }
         }
 
-        mViewModel.totalCountLiveData.observe(viewLifecycleOwner){
-            it?.let { count->
+        mViewModel.totalCountLiveData.observe(viewLifecycleOwner) {
+            it?.let { count ->
                 parentViewModel.setRecentlyCount(count)
             }
         }
@@ -144,5 +155,17 @@ class RecentlyTabFragment : BaseFragment<RecentlyTabViewModel, FragmentRecentlyT
         }
         mViewModel.reload()
         super.initData()
+    }
+
+    override fun onResume() {
+
+        if (mBinding.clDynamics.visibility == View.VISIBLE)
+            parentViewModel.setOnHeight(mBinding.clDynamics.height)
+        else
+            if (mBinding.rvRecently.height == 0)
+                parentViewModel.setOnHeight(mBinding.clDynamics.height)
+            else
+                parentViewModel.setOnHeight(mBinding.rvRecently.height)
+        super.onResume()
     }
 }
