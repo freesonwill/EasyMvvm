@@ -111,7 +111,7 @@ class GameFavouriteFragment : BaseFragment<GameFavouriteViewModel, FragmentGameF
                     mBinding.clDynamics.visibility = View.VISIBLE
                     mBinding.clDynamics.setState(
                         States.DATA_EMPTY,
-                        arch.cayenne.lib.common.R.string.data_empty.getString()
+                        com.walisport.module.business.common.R.string.game_favorite_empty.getString()
                     )
 
                 }
