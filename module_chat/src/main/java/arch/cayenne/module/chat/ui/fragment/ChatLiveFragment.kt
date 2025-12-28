@@ -53,7 +53,7 @@ class ChatLiveFragment : ChatBaseFragment() {
 
     private fun checkLogin() {
         lifecycleScope.launch {
-            if (mViewModel.loginFlow?.value?.code != 0) {
+            if (mViewModel.loginFlow.value?.code != 0) {
                 mViewModel.chatLogin(chatType)
             }
         }
@@ -61,7 +61,7 @@ class ChatLiveFragment : ChatBaseFragment() {
 
     override suspend fun createObserver() {
         super.createObserver()
-        mViewModel.loginFlow?.collect {
+        mViewModel.loginFlow.collect {
             if (it?.code == 0) {
                 mViewModel.enterRoom(chatType)
             }

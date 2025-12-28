@@ -46,7 +46,8 @@ class OrderSportPageFragment :
                     }
 
                     override fun onItemSingleClick(bean: BetSlipOrderBean) {
-                        chooseViModel?.clickBtn(ChooseBetData(ChatMsgType.BET_SPORT, bean.betId))
+//                        分享注单不需要预约
+//                        chooseViModel?.clickBtn(ChooseBetData(ChatMsgType.BET_SPORT, bean.betId))
                     }
 
                     override fun onShareClick(bean: BetSlipData) {
