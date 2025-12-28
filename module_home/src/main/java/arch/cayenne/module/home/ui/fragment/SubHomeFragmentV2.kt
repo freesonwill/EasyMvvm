@@ -174,7 +174,6 @@ class SubHomeFragmentV2 : BaseFragment<SubHomeViewModel, FragmentSubHomeV2Bindin
             mBinding.layoutContainer.llTournamentsDropdown.visibility = View.GONE
         }
 
-
         mViewModel.savedTournamentSelections.observe(viewLifecycleOwner) { selections ->
             if (selections.size > 1) {
                 // 更新联赛按钮样式为选中状态。
@@ -220,24 +219,26 @@ class SubHomeFragmentV2 : BaseFragment<SubHomeViewModel, FragmentSubHomeV2Bindin
         }
 
         mViewModel.onVipListener.observe(viewLifecycleOwner) {
-            var percent = "0%"
-            var progress = 0f
-            val betScore = it.admittedBetScore.toFloat()
-            val reqScore = it.requiredAdmittedBetScore.toFloat()
-            val require = it.requiredAdmittedBetScore.toInt()
-            if (reqScore > 0L && betScore > 0L) {
-                progress = (betScore / reqScore) * 100f
-                percent = String.format("%.2f", progress) + "%"
+            if (it != null) {
+                var percent = "0%"
+                var progress = 0f
+                val betScore = it.admittedBetScore.toFloat()
+                val reqScore = it.requiredAdmittedBetScore.toFloat()
+                val require = it.requiredAdmittedBetScore.toInt()
+                if (reqScore > 0L && betScore > 0L) {
+                    progress = (betScore / reqScore) * 100f
+                    percent = String.format("%.2f", progress) + "%"
+                }
+                val cny = CurrencySymbols.getSymbol(it.ccy) + require
+                val info = getString(arch.cayenne.lib.common.R.string.vip_level_require, cny)
+                updateVIPInfo(
+                    vipLevel = it.vipLevel,
+                    vipStage = it.vipStage,
+                    percent = percent,
+                    levelUpInfo = info,
+                    progress
+                )
             }
-            val cny = CurrencySymbols.getSymbol(it.ccy) + require
-            val info = getString(arch.cayenne.lib.common.R.string.vip_level_require, cny)
-            updateVIPInfo(
-                vipLevel = it.vipLevel,
-                vipStage = it.vipStage,
-                percent = percent,
-                levelUpInfo = info,
-                progress
-            )
         }
     }
 
