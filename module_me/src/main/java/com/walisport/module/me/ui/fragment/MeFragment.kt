@@ -52,6 +52,7 @@ import com.google.android.material.tabs.TabLayout
 import com.walisport.module.hall.ui.view.MeScrollableTabIndicatorHelper
 import com.walisport.module.live.ui.widget.MeGestureListener
 import com.walisport.module.live.ui.widget.MeLayoutInterceptTouch.MeSlideDirection
+import kotlinx.coroutines.delay
 
 /**
  * 我的界面
@@ -209,7 +210,6 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
         mBinding.vpPage.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
-
                 // 获取当前页面的 ViewHolder（ViewPager2 内部用 RecyclerView）
                 val recyclerView =  mBinding.vpPage.getChildAt(0) as? RecyclerView
                 val viewHolder = recyclerView?.findViewHolderForAdapterPosition(position)
@@ -264,6 +264,7 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
                             }
                         }
                         tabIndicatorHelper?.smartAnimateToCurrent()
+                        topTabIndicatorHelper?.smartAnimateToCurrent()
                         val vp = mBinding.vpPage
                         vp.startFadeAnim {
                             vp.setCurrentItem(tab.position, false)
@@ -308,6 +309,12 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
                             topTab.select()
                         }
                     }
+                    val vp = mBinding.vpPage
+                    vp.startFadeAnim {
+                        vp.setCurrentItem(tab.position, false)
+                        it.invoke()
+                    }
+                    tabIndicatorHelper?.smartAnimateToCurrent()
                     topTabIndicatorHelper?.smartAnimateToCurrent()
                     tab.view.findViewById<SkinnableTextView>(R.id.tabText)?.let { textView ->
                         textView.setTextColor(
