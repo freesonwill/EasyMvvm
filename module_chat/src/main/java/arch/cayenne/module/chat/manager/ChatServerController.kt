@@ -162,9 +162,9 @@ class ChatServerController(
             refInfos = null,
             onlyForSelf = 0,
             replaceUserName = "",
-            msgType = MsgType.MSG_TYPE_TEXT,
+            msgType = msgType,
             extraData = extraData,
-            chatType = ChatType.LOBBY
+            chatType = chatType
         )
         return msg
     }
