@@ -30,7 +30,7 @@ data class ProfilePlayedPageVo(
     val list: List<ProfilePlayedVo> // 分页数据
 )
 
-fun ProfilePlayedVo.toGameContentData(onlyShowCover: Boolean = false): GameContentData {
+fun ProfilePlayedVo.toGameContentData(): GameContentData {
     return GameContentData(
         id = this.gameType.toLong(),
         name = this.name,
@@ -43,7 +43,6 @@ fun ProfilePlayedVo.toGameContentData(onlyShowCover: Boolean = false): GameConte
         reward = this.reward,
         hasMore = false,
         hotOrCold = HotColdType.NONE,
-        isOnlyShowCover = onlyShowCover
     )
 }
 

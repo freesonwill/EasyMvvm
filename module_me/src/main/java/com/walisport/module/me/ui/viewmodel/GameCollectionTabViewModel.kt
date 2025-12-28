@@ -81,7 +81,7 @@ class GameCollectionTabViewModel : BaseViewModel() {
                                 _gameListLiveData.value?.toMutableList() ?: mutableListOf()
                             val list = profilePlayedPageVo?.list?.map { gameVo ->
                                 try {
-                                    gameVo.toGameContentData(true)
+                                    gameVo.toGameContentData()
                                 } catch (e: Exception) {
                                     null
                                 }
@@ -94,7 +94,7 @@ class GameCollectionTabViewModel : BaseViewModel() {
                                 _gameListLiveData.value?.toMutableList() ?: mutableListOf()
                             val list = profilePlayedPageVo?.list?.map { gameVo ->
                                 try {
-                                    gameVo.toGameContentData(true)
+                                    gameVo.toGameContentData()
                                 } catch (e: Exception) {
                                     null
                                 }

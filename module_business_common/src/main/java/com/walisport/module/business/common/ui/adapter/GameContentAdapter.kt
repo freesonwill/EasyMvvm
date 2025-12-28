@@ -55,32 +55,28 @@ class GameContentViewHolder(private val onItemClick: (GameContentData) -> Unit,v
         }
         item.tvCount.text = data.online.toString()
 
-        if (data.isOnlyShowCover) {
-            item.llCount.visibility = ViewGroup.GONE
-            item.llBack.visibility = ViewGroup.GONE
-        } else {
-            item.llCount.visibility = ViewGroup.VISIBLE
-            //TODO 判斷
-            if (data.hotOrCold != HotColdType.NONE) {
-                item.llBack.visibility = ViewGroup.VISIBLE
-                if (data.hotOrCold == HotColdType.HOT) {
-                    item.ivHot.setImageResource(com.walisport.module.business.common.R.drawable.ic_game_flame)
-                } else {
-                    item.ivHot.setImageResource(com.walisport.module.business.common.R.drawable.ic_game_snow)
-                }
-                item.tvBack.text = "${data.reward}%"
-                item.llCount.apply {
-                    val params = this.layoutParams as ConstraintLayout.LayoutParams
-                    params.topMargin = 5.dp2px
-                }
+        item.llCount.visibility = ViewGroup.VISIBLE
+        //TODO 判斷
+        if (data.hotOrCold != HotColdType.NONE) {
+            item.llBack.visibility = ViewGroup.VISIBLE
+            if (data.hotOrCold == HotColdType.HOT) {
+                item.ivHot.setImageResource(com.walisport.module.business.common.R.drawable.ic_game_flame)
             } else {
-                item.llBack.visibility = ViewGroup.GONE
-                item.llCount.apply {
-                    val params = this.layoutParams as ConstraintLayout.LayoutParams
-                    params.topMargin = 6.dp2px
-                }
+                item.ivHot.setImageResource(com.walisport.module.business.common.R.drawable.ic_game_snow)
+            }
+            item.tvBack.text = "${data.reward}%"
+            item.llCount.apply {
+                val params = this.layoutParams as ConstraintLayout.LayoutParams
+                params.topMargin = 5.dp2px
+            }
+        } else {
+            item.llBack.visibility = ViewGroup.GONE
+            item.llCount.apply {
+                val params = this.layoutParams as ConstraintLayout.LayoutParams
+                params.topMargin = 6.dp2px
             }
         }
+
 
 
 
