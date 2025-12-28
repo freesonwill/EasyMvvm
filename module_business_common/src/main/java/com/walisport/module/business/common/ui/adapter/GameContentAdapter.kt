@@ -54,6 +54,8 @@ class GameContentViewHolder(private val onItemClick: (GameContentData) -> Unit,v
                 .into(item.ivGameCover)
         }
         item.tvCount.text = data.online.toString()
+
+        item.llCount.visibility = ViewGroup.VISIBLE
         //TODO 判斷
         if (data.hotOrCold != HotColdType.NONE) {
             item.llBack.visibility = ViewGroup.VISIBLE
@@ -76,6 +78,8 @@ class GameContentViewHolder(private val onItemClick: (GameContentData) -> Unit,v
         }
 
 
+
+
         // TODO 暫時串接遊戲詳情
         item.root.clickNoRepeat {
             onItemClick.invoke(data)
@@ -87,13 +91,13 @@ class GameContentDiff : DiffUtil.ItemCallback<GameContentData>() {
     override fun areItemsTheSame(
         oldItem: GameContentData,
         newItem: GameContentData
-    ): Boolean = oldItem.id == newItem.id
+    ): Boolean = false
 
 
     override fun areContentsTheSame(
         oldItem: GameContentData,
         newItem: GameContentData
-    ): Boolean  = oldItem.id == newItem.id
+    ): Boolean  = false
 
 }
 

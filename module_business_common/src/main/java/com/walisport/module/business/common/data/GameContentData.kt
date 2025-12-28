@@ -7,7 +7,7 @@ data class Avatar(
 )
 
 data class GameContentData(
-    val id: Long,//游戏id
+    val gameID: Long,//游戏id
     val name: String, //游戏名称
     val avatar: Avatar, //游戏icon
     val online: Int, //游戏在线人数

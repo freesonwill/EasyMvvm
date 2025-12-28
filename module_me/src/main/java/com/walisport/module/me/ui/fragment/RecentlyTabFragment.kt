@@ -2,7 +2,6 @@ package com.walisport.module.me.ui.fragment
 
 import android.os.Bundle
 import android.view.View
-import android.view.ViewTreeObserver
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import arch.cayenne.lib.base.data.constants.DataState
@@ -53,7 +52,7 @@ class RecentlyTabFragment : BaseFragment<RecentlyTabViewModel, FragmentRecentlyT
             rvRecently.addItemDecoration(itemDecoration)
             adapter = GameContentAdapter(onItemClick = {
                 mViewModel.setIsClickGame(EventClick.EVENT_CLICK_ACK_TRUE.type)
-                navigate(arch.cayenne.lib.res.R.string.nav_module_gamedetail.deeplink("gameId" to it.id))
+                navigate(arch.cayenne.lib.res.R.string.nav_module_gamedetail.deeplink("gameId" to it.gameID))
                 launch {
                     delay(AnimationController[AnimType.popupExit]!!.duration)
                     adapter.submitList(emptyList())
