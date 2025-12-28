@@ -17,4 +17,6 @@
     <string name="select_currency">Currency Display for Game Selection</string>
     <string name="current_currency">Current Cryptocurrency</string>
     <string name="rating_count">reviews</string>
+    <string name="collect_success">Collect successfully</string>
+    <string name="collect_cancelled">Unfavorited</string>
 </resources>
