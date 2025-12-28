@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
@@ -140,11 +141,8 @@ class MatchListPagerFragmentV2 :
 
             //賽事卡片之間的間閣
             val decoration = MatchCardItemDecoration(
-                12.dp2px , if (arguments?.getInt(ARG_PLAY_TYPE_ID) == PlayType.EARLY.id) {
-                    12.dp2px
-                } else {
-                    6.dp2px
-                }
+                10.5f.dp2px.toInt(),
+                6.dp2px
             )
             mBinding.rvHomeGameList.apply {
                 this.layoutManager = gameLayoutManager
@@ -181,14 +179,20 @@ class MatchListPagerFragmentV2 :
     private fun subscribeVisibleMatch() {
         val firstVisible = gameLayoutManager.findFirstVisibleItemPosition()
         val lastVisible = gameLayoutManager.findLastVisibleItemPosition()
-        if (firstVisible >= 0 && lastVisible <= matchAdapter.itemCount) {
-            mViewModel.compareSubscribeMatch(
-                matchAdapter.currentList
-                    .slice(firstVisible..lastVisible)
-                    .filterIsInstance<MatchWithMarkets>()
-                    .map { it.match.matchId }
-                    .toSet()
-            )
+        try {
+            if (firstVisible >= 0 && lastVisible <= matchAdapter.itemCount) {
+                mViewModel.compareSubscribeMatch(
+                    matchAdapter.currentList
+                        .slice(firstVisible..lastVisible)
+                        .filterIsInstance<MatchWithMarkets>()
+                        .map { it.match.matchId }
+                        .toSet()
+                )
+            }
+        } catch (e:Throwable){
+            e.printStackTrace()
+            "firstVisible:$firstVisible,lastVisible:$lastVisible,listCount:${matchAdapter.currentList.count()},itemCount:${matchAdapter.itemCount},currentList:${matchAdapter.currentList}".loge(TAG)
+            throw e
         }
     }
 
@@ -318,15 +322,6 @@ class MatchListPagerFragmentV2 :
             reloadAllData()
         }
 
-        //联赛列表可能发生变化
-        subHomeViewModel.savedTournamentSelections.observe(viewLifecycleOwner) {
-            val sorted = it.sorted()
-            if (mViewModel.getTournamentIdList() != sorted) {
-                mViewModel.setTournamentIdList(sorted)
-                mViewModel.startObserveMatch()
-                reloadAllData()
-            }
-        }
 
         subHomeViewModel.currentSelectedTournaments.observe(viewLifecycleOwner) {
             mBinding.rvHomeGameList.startFadeAnim { onComplete ->

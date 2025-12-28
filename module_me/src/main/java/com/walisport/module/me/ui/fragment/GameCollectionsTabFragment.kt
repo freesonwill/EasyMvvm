@@ -76,10 +76,12 @@ class GameCollectionsTabFragment : BaseFragment<GameCollectionTabViewModel, Frag
         mViewModel.gameListLiveData.observe(viewLifecycleOwner) {
             it.let { list ->
                 adapter.submitList(list)
-
                 // 自動加載下一頁數據（如果當前數據量較少）
                 if (list.size <= 10) {
                     mViewModel.loadNextPage()
+                }
+                mBinding.rvRecently.post{
+                    parentViewModel.setOnHeight(mBinding.rvRecently.height)
                 }
             }
         }
@@ -99,6 +101,7 @@ class GameCollectionsTabFragment : BaseFragment<GameCollectionTabViewModel, Frag
                         DynamicStateLayout.States.DATA_EMPTY,
                         com.walisport.module.business.common.R.string.game_data_empty.getString()
                     )
+                    parentViewModel.setOnHeight(mBinding.clDynamics.height)
 
                 }
 
@@ -114,6 +117,7 @@ class GameCollectionsTabFragment : BaseFragment<GameCollectionTabViewModel, Frag
                         DynamicStateLayout.States.NETWORK_ANOMALY(),
                         arch.cayenne.lib.common.R.string.error_net.getString()
                     )
+                    parentViewModel.setOnHeight(mBinding.clDynamics.height)
                 }
 
                 else -> {
@@ -133,5 +137,18 @@ class GameCollectionsTabFragment : BaseFragment<GameCollectionTabViewModel, Frag
                 mViewModel.reload()
             }
         }
+
+        mViewModel.reload()
+    }
+
+    override fun onResume() {
+        if (mBinding.clDynamics.visibility == View.VISIBLE)
+            parentViewModel.setOnHeight(mBinding.clDynamics.height)
+        else
+            if (mBinding.rvRecently.height == 0)
+                parentViewModel.setOnHeight(mBinding.clDynamics.height)
+            else
+                parentViewModel.setOnHeight(mBinding.rvRecently.height)
+        super.onResume()
     }
 }

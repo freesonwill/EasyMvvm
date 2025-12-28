@@ -17,4 +17,6 @@
     <string name="select_currency">选择游戏时的货币显示</string>
     <string name="current_currency">当前加密货币</string>
     <string name="rating_count">條評分</string>
+    <string name="collect_success">收藏成功</string>
+    <string name="collect_cancelled">已取消收藏</string>
 </resources>

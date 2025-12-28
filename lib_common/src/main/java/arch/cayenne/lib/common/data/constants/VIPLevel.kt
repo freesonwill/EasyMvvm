@@ -2,13 +2,10 @@ package arch.cayenne.lib.common.data.constants
 
 /**
  * VIP等级
- *
  * VIP原有12个等级
- *
  * 铜 白银 黄金 铂金 钻石 绿钻 红钻 黑钻 星钻 陨钻 星辰 宇宙
- *
- * 后台设定xx-xx位白银，xx-xx位黄金
  */
+
 enum class VIPLevel(val value: Int) {
     Copper(0),
     Silver(1),
@@ -24,22 +21,19 @@ enum class VIPLevel(val value: Int) {
     Universe(11);
 
     companion object {
-        /**
-         * 根據 VIP 等級數字轉換為對應的 VIPLevel enum
-         */
         fun fromLevel(level: Int): VIPLevel {
             return when (level) {
-                in 0..9 -> Copper
-                in 10..19 -> Silver
-                in 20..29 -> Gold
-                in 30..39 -> Platinum
-                in 40..49 -> Diamond
-                in 50..59 -> GreenDiamond
-                in 60..69 -> RedDiamond
-                in 70..79 -> BlackDiamond
-                in 80..89 -> StarDiamond
-                in 90..99 -> MeteoriteDiamond
-                in 100..109 -> Stars
+                1 -> Copper
+                2 -> Silver
+                3 -> Gold
+                4 -> Platinum
+                5 -> Diamond
+                6 -> GreenDiamond
+                7 -> RedDiamond
+                8 -> BlackDiamond
+                9 -> StarDiamond
+                10 -> MeteoriteDiamond
+                11 -> Stars
                 else -> Universe
             }
         }

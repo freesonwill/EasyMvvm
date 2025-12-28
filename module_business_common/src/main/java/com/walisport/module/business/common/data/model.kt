@@ -30,9 +30,9 @@ data class ProfilePlayedPageVo(
     val list: List<ProfilePlayedVo> // 分页数据
 )
 
-fun ProfilePlayedVo.toGameContentData(id: Long): GameContentData {
+fun ProfilePlayedVo.toGameContentData(): GameContentData {
     return GameContentData(
-        id = id,
+        id = this.gameType.toLong() ,
         name = this.name ,
         avatar = Avatar(
             url = this.avatar.url ,
@@ -60,9 +60,9 @@ data class GameVo(
     val hasMore: Boolean//是否有更多数据
 )
 
-fun GameVo.toGameContentData(id: Long, sortType: GameSortType? = null): GameContentData {
+fun GameVo.toGameContentData(sortType: GameSortType? = null): GameContentData {
     return GameContentData(
-        id = id,
+        id = this.id.toLong(),
         name = this.name ,
         avatar = Avatar(
             url = this.avatar.url ,

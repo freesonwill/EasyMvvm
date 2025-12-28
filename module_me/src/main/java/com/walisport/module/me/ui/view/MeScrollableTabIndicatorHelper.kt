@@ -10,8 +10,9 @@ import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import arch.cayenne.lib.base.utils.LogUtils
+import arch.cayenne.lib.skin.widget.SkinnableTextView
 import com.google.android.material.tabs.TabLayout
-
+import com.walisport.module.me.R
 class MeScrollableTabIndicatorHelper(
     private val tabLayout: TabLayout,
     private val bgView: View
@@ -24,63 +25,60 @@ class MeScrollableTabIndicatorHelper(
     private var mLeft = 0
     private var isSetup = false
     private var position = 1
-    private var tabWiths: MutableList<Int> =mutableListOf()
     @SuppressLint("SuspiciousIndentation")
-    fun smartAnimateToCurrent() {
+    fun smartAnimateToCurrent(duration: Long = 280) {
         val pos = tabLayout.selectedTabPosition
-            tabLayout.postDelayed({ doAnimate() }, 100 )
+            tabLayout.postDelayed({ doAnimate(duration) }, 50 )
         isSyncNow = false
-         LogUtils.e("MeScrollableTabIndicatorHelper-------->smartAnimateToCurrent------->${pos}")
-
-
+         //LogUtils.e("MeScrollableTabIndicatorHelper-------->smartAnimateToCurrent------->${pos}")
         position = pos
     }
 
-    private fun doAnimate() {
+    private fun doAnimate(duration: Long) {
         val pos = tabLayout.selectedTabPosition
-
         val tabView = (tabLayout.getChildAt(0) as? ViewGroup)?.getChildAt(pos) ?: return
-
-        tabView.getLocationInWindow(loc)
-        val tabCenter = (loc[0] + tabView.width / 2f)-(tabWiths[pos]/1.15f)
-
-        bgView.getLocationInWindow(loc)
-        val bgCenter = loc[0] + bgView.width / 2f
-
-        val targetX = bgView.translationX + tabCenter - bgCenter
-         LogUtils.e("MeScrollableTabIndicatorHelper-------->动画距离${targetX},,,,,,,,,${tabWiths[pos]}------tabCenter:${tabCenter}")
-        bgView.animate().apply {
-            translationX((targetX - mLeft))
-            setDuration(280)
-            setInterpolator(FastOutSlowInInterpolator())
-            withEndAction {
-                isSyncNow = true
-                if (bgView.isGone) {
-                    bgView.visibility = View.VISIBLE
+        tabLayout.getTabAt(0)?.customView?.findViewById<SkinnableTextView>(R.id.count)?.apply {
+            tabView.getLocationInWindow(loc)
+            val tabCenter = (loc[0] + tabView.width / 2f)-(width)
+            bgView.getLocationInWindow(loc)
+            val bgCenter = loc[0] + bgView.width / 2f
+            val targetX = bgView.translationX + tabCenter - bgCenter
+            //LogUtils.e("MeScrollableTabIndicatorHelper-------->动画距离${targetX},,,,,,,,,${width}------tabCenter:${tabCenter}")
+            bgView.animate().apply {
+                translationX((targetX - mLeft))
+                setDuration(duration)
+                setInterpolator(FastOutSlowInInterpolator())
+                withEndAction {
+                    isSyncNow = true
+                    if (bgView.isGone) {
+                        bgView.visibility = View.VISIBLE
+                    }
                 }
+                start()
             }
-            start()
         }
+
     }
 
     // 手势滑动实时跟随
     private fun syncNow() {
         if (isSyncNow){
             val pos = tabLayout.selectedTabPosition
-            val tabView = (tabLayout.getChildAt(0) as? ViewGroup)?.getChildAt(pos) ?: return
-            tabView.getLocationInWindow(loc)
-            val tabCenter = (loc[0] + tabView.width / 2f )-(tabWiths[pos]/1.15f)
-            LogUtils.e("MeScrollableTabIndicatorHelper-------->syncNow------->${pos},,,,,,${tabWiths[pos]}------tabCenter:${tabCenter}")
-            bgView.getLocationInWindow(loc)
-            val bgCenter = loc[0] + bgView.width / 2f
-            var targetX = bgView.translationX + (tabCenter - bgCenter - mLeft)
-            bgView.translationX = targetX
+            val tabView = (tabLayout.getTabAt(0) as? ViewGroup)?.getChildAt(pos) ?: return
+            tabLayout.getTabAt(0)?.customView?.findViewById<SkinnableTextView>(R.id.count)?.apply {
+                tabView.getLocationInWindow(loc)
+                val tabCenter = (loc[0] + tabView.width / 2f) - (width)
+                //LogUtils.e("MeScrollableTabIndicatorHelper-------->syncNow------->${pos},,,,,,${width}------tabCenter:${tabCenter}")
+                bgView.getLocationInWindow(loc)
+                val bgCenter = loc[0] + bgView.width / 2f
+                var targetX = bgView.translationX + (tabCenter - bgCenter - mLeft)
+                bgView.translationX = targetX
+            }
         }
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    fun setup( tabWiths: MutableList<Int>) {
-        this.tabWiths = tabWiths
+    fun setup() {
             tabLayout.viewTreeObserver.addOnScrollChangedListener {
                 syncNow()
             }

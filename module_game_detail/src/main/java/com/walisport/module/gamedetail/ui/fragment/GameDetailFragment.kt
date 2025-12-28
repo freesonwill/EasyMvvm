@@ -12,6 +12,8 @@ import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.ui.viewmodel.BalanceViewModel
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigateUp
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+import arch.cayenne.lib.common.utils.helper.showToast
+import com.walisport.module.gamedetail.R
 import com.walisport.module.gamedetail.databinding.FragmentGameDetailBinding
 import com.walisport.module.gamedetail.ui.viewmodel.GameDetailPageViewModel
 import kotlinx.coroutines.launch
@@ -67,6 +69,14 @@ class GameDetailFragment : BaseFragment<GameDetailPageViewModel, FragmentGameDet
                 navigateUp()
             }
             ivFavorite.clickNoRepeat {
+                // 根据当前收藏状态显示相应的提示信息。
+                // 如果未收藏，则显示“收藏成功”的提示；
+                // 如果已收藏，则显示“取消收藏”的提示。
+                if (mViewModel.isCollected.value != true) {
+                    showToast(getString(R.string.collect_success))
+                } else {
+                    showToast(getString(R.string.collect_cancelled))
+                }
                 mViewModel.toggleCollectStatus(args.gameId)
 
                 lifecycleScope.launch {
