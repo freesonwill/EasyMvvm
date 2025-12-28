@@ -67,24 +67,26 @@ class SuperCompetitionFragment :
 
     override suspend fun createObserver() {
         mViewModel.onVipListener.observe(viewLifecycleOwner) {
-            var percent = "0%"
-            var progress = 0f
-            val betScore = it.admittedBetScore.toFloat()
-            val reqScore = it.requiredAdmittedBetScore.toFloat()
-            val require = it.requiredAdmittedBetScore.toInt()
-            if (reqScore > 0L && betScore > 0L) {
-                progress = (betScore / reqScore) * 100f
-                percent = String.format("%.2f", progress) + "%"
+            if (it != null) {
+                var percent = "0%"
+                var progress = 0f
+                val betScore = it.admittedBetScore.toFloat()
+                val reqScore = it.requiredAdmittedBetScore.toFloat()
+                val require = it.requiredAdmittedBetScore.toInt()
+                if (reqScore > 0L && betScore > 0L) {
+                    progress = (betScore / reqScore) * 100f
+                    percent = String.format("%.2f", progress) + "%"
+                }
+                val cny = CurrencySymbols.getSymbol(it.ccy) + require
+                val info = getString(arch.cayenne.lib.common.R.string.vip_level_require, cny)
+                updateVIPInfo(
+                    vipLevel = it.vipLevel,
+                    vipStage = it.vipStage,
+                    percent = percent,
+                    levelUpInfo = info,
+                    progress = progress
+                )
             }
-            val cny = CurrencySymbols.getSymbol(it.ccy) + require
-            val info = getString(arch.cayenne.lib.common.R.string.vip_level_require, cny)
-            updateVIPInfo(
-                vipLevel = it.vipLevel,
-                vipStage = it.vipStage,
-                percent = percent,
-                levelUpInfo = info,
-                progress = progress
-            )
         }
         mViewModel.dateList.observe(viewLifecycleOwner) {
             // 日期 Tab 設定
@@ -213,7 +215,11 @@ class SuperCompetitionFragment :
         clearDateTabSelection()
     }
 
-    private fun createDateTab(date: String?, weekday: String?, type: BiDirectionalDateType): TabLayout.Tab {
+    private fun createDateTab(
+        date: String?,
+        weekday: String?,
+        type: BiDirectionalDateType
+    ): TabLayout.Tab {
         val tab = mBinding.tlDateList.newTab()
         val tabView = ItemDateTabBinding.inflate(LayoutInflater.from(context), null, false).apply {
             if (type == BiDirectionalDateType.Date) {
