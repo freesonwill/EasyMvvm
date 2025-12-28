@@ -71,7 +71,7 @@ class GameFavouriteViewModel : BaseViewModel() {
                                 _gameListLiveData.value?.toMutableList() ?: mutableListOf()
                             val list = profilePlayedPageVo?.list?.map { gameVo ->
                                 try {
-                                    gameVo.toGameContentData((page * 100 + gameVo.gameType).toLong())
+                                    gameVo.toGameContentData()
                                 } catch (e: Exception) {
                                     null
                                 }
@@ -84,7 +84,7 @@ class GameFavouriteViewModel : BaseViewModel() {
                                 _gameListLiveData.value?.toMutableList() ?: mutableListOf()
                             val list = profilePlayedPageVo?.list?.map { gameVo ->
                                 try {
-                                    gameVo.toGameContentData((page * 100 + gameVo.gameType).toLong())
+                                    gameVo.toGameContentData()
                                 } catch (e: Exception) {
                                     null
                                 }
