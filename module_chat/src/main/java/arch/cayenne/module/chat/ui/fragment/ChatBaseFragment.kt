@@ -58,7 +58,6 @@ abstract class ChatBaseFragment : BaseFragment<ChatHomeViewModel, FragmentLiveCh
         const val MATCH_ID_KEY = "match_id_key"
         const val MATCH_STATUS_KEY = "match_status_key"
         const val LIVE_START_KEY = "live_start_key"
-
     }
 
     override val vbClass: KClass<FragmentLiveChatBinding> = FragmentLiveChatBinding::class
