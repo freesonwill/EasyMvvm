@@ -69,6 +69,9 @@ class GameDetailFragment : BaseFragment<GameDetailPageViewModel, FragmentGameDet
                 navigateUp()
             }
             ivFavorite.clickNoRepeat {
+                // 根据当前收藏状态显示相应的提示信息。
+                // 如果未收藏，则显示“收藏成功”的提示；
+                // 如果已收藏，则显示“取消收藏”的提示。
                 if (mViewModel.isCollected.value != true) {
                     showToast(getString(R.string.collect_success))
                 } else {
