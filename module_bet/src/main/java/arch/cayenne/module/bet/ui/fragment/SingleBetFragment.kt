@@ -39,6 +39,7 @@ import arch.cayenne.lib.common.utils.ext.SportStringExt.isGreaterThanValue
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toOdds
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
+import arch.cayenne.lib.common.utils.ext.getMaxLength
 import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.database.entity.BetSelectionBean
 import arch.cayenne.lib.database.entity.BetTypeEnum
@@ -135,6 +136,7 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
         }
 
         mBinding.clKeyboard.apply {
+            mViewModel.setMaxLength(mBinding.etMoney.getMaxLength())
             setOnBackListener(onClick = {
                 mViewModel.backNumber()
             }, onLongPressRepeat = {

@@ -101,17 +101,17 @@ class GameAllRankingViewHolder(
                         val height = fragment.getContentHeight()
                         vpRanking.layoutParams.height = height
                         vpRanking.requestLayout()
-                        LogUtils.e("√", "onPageSelected height=$height")
+                        //LogUtils.eTag("√", "onPageSelected height=$height")
                     } else if (fragment is LatestBetFragment) {
                         val height = fragment.getContentHeight()
                         vpRanking.layoutParams.height = height
                         vpRanking.requestLayout()
-                        LogUtils.e("GameAllRankingViewHolder", "onPageSelected height=$height")
+                        //LogUtils.eTag("GameAllRankingViewHolder", "onPageSelected height=$height")
                     } else if (fragment is HighStakesFragment) {
                         val height = fragment.getContentHeight()
                         vpRanking.layoutParams.height = height
                         vpRanking.requestLayout()
-                        LogUtils.e("GameAllRankingViewHolder", "onPageSelected height=$height")
+                        //LogUtils.eTag("GameAllRankingViewHolder", "onPageSelected height=$height")
                     }
 
                     tvTitle.text = mockTabList[position].title
