@@ -29,6 +29,12 @@ class MeViewModel : BaseViewModel() {
     private val _onVipListener = MutableLiveData<UserDataBean>()
     val onVipListener: LiveData<UserDataBean> get() = _onVipListener
 
+    private val _onViewpagerHeight = MutableLiveData<Int>()
+    val onViewpagerHeight: LiveData<Int> get() = _onViewpagerHeight
+     fun setOnHeight(height: Int) {
+         _onViewpagerHeight.value = height
+    }
+
     override fun initViewModel() {
         super.initViewModel()
         viewModelScope.launch {
