@@ -23,6 +23,7 @@
         android:layout_marginBottom="@dimen/dp_116"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_goneMarginTop="@dimen/dp_16" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
