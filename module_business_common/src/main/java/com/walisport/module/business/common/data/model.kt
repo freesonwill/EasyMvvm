@@ -30,19 +30,20 @@ data class ProfilePlayedPageVo(
     val list: List<ProfilePlayedVo> // 分页数据
 )
 
-fun ProfilePlayedVo.toGameContentData(): GameContentData {
+fun ProfilePlayedVo.toGameContentData(onlyShowCover: Boolean = false): GameContentData {
     return GameContentData(
-        id = this.gameType.toLong() ,
-        name = this.name ,
+        id = this.gameType.toLong(),
+        name = this.name,
         avatar = Avatar(
-            url = this.avatar.url ,
-            thumbhash = this.avatar.thumbhash ,
+            url = this.avatar.url,
+            thumbhash = this.avatar.thumbhash,
             css = ""
-        ) ,
-        online = this.online ,
-        reward = this.reward ,
-        hasMore = false ,
-        hotOrCold = HotColdType.NONE
+        ),
+        online = this.online,
+        reward = this.reward,
+        hasMore = false,
+        hotOrCold = HotColdType.NONE,
+        isOnlyShowCover = onlyShowCover
     )
 }
 

@@ -14,6 +14,7 @@ data class GameContentData(
     val reward: Double, //奖率
     val hasMore: Boolean, //是否有返奖
     val hotOrCold: HotColdType,
+    val isOnlyShowCover: Boolean = false, //是否只显示封面
 )
 
 

@@ -54,26 +54,34 @@ class GameContentViewHolder(private val onItemClick: (GameContentData) -> Unit,v
                 .into(item.ivGameCover)
         }
         item.tvCount.text = data.online.toString()
-        //TODO 判斷
-        if (data.hotOrCold != HotColdType.NONE) {
-            item.llBack.visibility = ViewGroup.VISIBLE
-            if (data.hotOrCold == HotColdType.HOT) {
-                item.ivHot.setImageResource(com.walisport.module.business.common.R.drawable.ic_game_flame)
-            } else {
-                item.ivHot.setImageResource(com.walisport.module.business.common.R.drawable.ic_game_snow)
-            }
-            item.tvBack.text = "${data.reward}%"
-            item.llCount.apply {
-                val params = this.layoutParams as ConstraintLayout.LayoutParams
-                params.topMargin = 5.dp2px
-            }
-        } else {
+
+        if (data.isOnlyShowCover) {
+            item.llCount.visibility = ViewGroup.GONE
             item.llBack.visibility = ViewGroup.GONE
-            item.llCount.apply {
-                val params = this.layoutParams as ConstraintLayout.LayoutParams
-                params.topMargin = 6.dp2px
+        } else {
+            item.llCount.visibility = ViewGroup.VISIBLE
+            //TODO 判斷
+            if (data.hotOrCold != HotColdType.NONE) {
+                item.llBack.visibility = ViewGroup.VISIBLE
+                if (data.hotOrCold == HotColdType.HOT) {
+                    item.ivHot.setImageResource(com.walisport.module.business.common.R.drawable.ic_game_flame)
+                } else {
+                    item.ivHot.setImageResource(com.walisport.module.business.common.R.drawable.ic_game_snow)
+                }
+                item.tvBack.text = "${data.reward}%"
+                item.llCount.apply {
+                    val params = this.layoutParams as ConstraintLayout.LayoutParams
+                    params.topMargin = 5.dp2px
+                }
+            } else {
+                item.llBack.visibility = ViewGroup.GONE
+                item.llCount.apply {
+                    val params = this.layoutParams as ConstraintLayout.LayoutParams
+                    params.topMargin = 6.dp2px
+                }
             }
         }
+
 
 
         // TODO 暫時串接遊戲詳情
