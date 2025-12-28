@@ -5,7 +5,7 @@
     android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/app_bg"
+    android:background="@color/color_1E1E1E"
     android:fitsSystemWindows="false"
     >
 
@@ -156,7 +156,7 @@
                     android:id="@+id/vp_page"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    />
+                    android:background="@color/color_272727" />
             </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
         </androidx.appcompat.widget.LinearLayoutCompat>
 

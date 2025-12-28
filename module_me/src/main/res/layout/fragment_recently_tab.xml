@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_weight="1"
-    android:background="@color/color_1E1E1E">
+    android:background="@color/color_272727">
 
     <com.walisport.module.hall.ui.view.MeRecyclerView
         android:id="@+id/rv_recently"
