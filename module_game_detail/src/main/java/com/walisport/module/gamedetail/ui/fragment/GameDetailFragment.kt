@@ -70,6 +70,8 @@ class GameDetailFragment : BaseFragment<GameDetailPageViewModel, FragmentGameDet
             ivFavorite.clickNoRepeat {
                 if (mViewModel.isCollected.value != true) {
                     showToast("收藏成功")
+                } else {
+                    showToast("已取消收藏")
                 }
                 mViewModel.toggleCollectStatus(args.gameId)
 
