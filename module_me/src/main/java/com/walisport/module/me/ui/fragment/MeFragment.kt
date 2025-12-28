@@ -2,17 +2,11 @@ package com.walisport.module.me.ui.fragment
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
 import android.view.View
-import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.isGone
-import androidx.core.view.postDelayed
 import androidx.fragment.app.viewModels
-import androidx.recyclerview.widget.RecyclerView
-import androidx.viewpager2.widget.ViewPager2
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.PagerBean
 import arch.cayenne.lib.base.data.model.StatusBarConfig
@@ -25,7 +19,6 @@ import arch.cayenne.lib.common.data.constants.DrawerAction.KEY_ACTION
 import arch.cayenne.lib.common.data.constants.DrawerAction.REQUEST_KEY_DRAWER
 import arch.cayenne.lib.common.data.constants.FragmentResultEnum
 import arch.cayenne.lib.common.ui.viewmodel.UnReadMessageViewModel
-import arch.cayenne.lib.common.utils.CustomTabIndicatorUtils
 import arch.cayenne.lib.common.utils.biz.CommonBiz
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
@@ -44,16 +37,12 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.walisport.module.me.R
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.lib.common.utils.ext.TabLayoutExt.addOnTabSelectedListener2
-import arch.cayenne.lib.common.utils.ext.setupViewPagerScroll
 import arch.cayenne.lib.common.utils.ext.startFadeAnim
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.tabs.TabLayout
 import com.walisport.module.hall.ui.view.MeScrollableTabIndicatorHelper
-import com.walisport.module.live.ui.widget.MeGestureListener
-import com.walisport.module.live.ui.widget.MeLayoutInterceptTouch.MeSlideDirection
-import kotlinx.coroutines.delay
 
 /**
  * 我的界面
@@ -75,12 +64,6 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
     private var tabIndicatorHelper: MeScrollableTabIndicatorHelper? = null
     private var topTabIndicatorHelper: MeScrollableTabIndicatorHelper? = null
     override fun initView(savedInstanceState: Bundle?) {
-        with(mBinding) {
-            tvNickname.text = "中文sdf323"
-            val day = 137
-            tvJoinTime.text = "已加入${day}天"
-        }
-
         initVIPInfo()
         initFeatures()
         initBarHeight()
@@ -126,13 +109,6 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
             }
             tabLayout.removeAllTips()
         }
-//        mBinding.clTop.postDelayed ({
-//            mBinding.meLayoutScale.initViewHeight(
-//                (mBinding.clTop.height.toFloat() + getStatusBarHeight(
-//                    mBinding.root
-//                )), mBinding.ctTopBar.height.toFloat()
-//            )
-//        },200)
         initTopTab(list)
     }
 
@@ -160,13 +136,17 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
             )
         }
         mBinding.topTabLayout.removeAllTips()
-
-
     }
 
 
     fun initBarHeight() {
         mBinding.root.post {
+            mBinding.ctTopCc.setPadding(
+                mBinding.ctTopCc.paddingLeft,
+                getStatusBarHeight(mBinding.root),
+                mBinding.ctTopCc.paddingRight,
+                mBinding.ctTopCc.paddingBottom
+            )
             mBinding.ctTopBar.setPadding(
                 mBinding.ctTopBar.paddingLeft,
                 getStatusBarHeight(mBinding.root),
@@ -319,7 +299,6 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
         })
         mBinding.nestedScrollView.setOnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
             // scrollY 就是当前的垂直滑动距离
-            LogUtils.e("MeFragment-------->nestedScrollView------scrollY->${scrollY},,oldScrollY${oldScrollY},,,,${(mBinding.clTop.height+mBinding.bottom.height- mBinding.ctTopBar.height)}")
             if (scrollY > (mBinding.clTop.height- mBinding.ctTopBar.height)) {
                 mBinding.topSkinTab.visibility = View.VISIBLE
             } else if (scrollY < mBinding.clTop.height- mBinding.ctTopBar.height) {
@@ -327,7 +306,7 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
             }
             val contentHeight = mBinding.ctUserInfo.height
             val percent = (scrollY.toFloat() / contentHeight).coerceIn(0f, 1f)
-            //mBinding.ctTopBarBg.alpha = percent
+            mBinding.ctTopBar.alpha = percent
         }
     }
 
@@ -382,8 +361,6 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
             mViewModel.bottomIndexFlow.collect {
                 mBinding.vpPage.post {//延迟一帧，viewPager可能正在刷新adapter
                     mBinding.vpPage.setCurrentItem(it, true)
-                    //Todo bug1: mBinding.vpPage.setCurrentItem(it,false)不会触发tabLayout的选中变化
-                    //Todo bug2: tabLayout.getTabAt(it)?.select()  不会触发indicator的变化
                 }
             }
         }
