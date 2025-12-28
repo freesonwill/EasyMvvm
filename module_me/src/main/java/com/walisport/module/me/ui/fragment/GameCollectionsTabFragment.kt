@@ -133,5 +133,7 @@ class GameCollectionsTabFragment : BaseFragment<GameCollectionTabViewModel, Frag
                 mViewModel.reload()
             }
         }
+
+        mViewModel.reload()
     }
 }
