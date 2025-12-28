@@ -71,7 +71,6 @@ class GameAllViewModel : BaseViewModel() {
                             _gameListLiveData.value?.toMutableList() ?: mutableListOf()
                         val list = gamePageVo?.list?.map { gameVo ->
                             gameVo.toGameContentData(
-                                (1 * 100 + gameVo.id).toLong()
                             )
                         }
                         data.gameList = list!!

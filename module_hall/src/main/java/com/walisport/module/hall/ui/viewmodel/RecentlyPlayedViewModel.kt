@@ -77,7 +77,6 @@ class RecentlyPlayedViewModel : BaseViewModel() {
                                 _gameListLiveData.value?.toMutableList() ?: mutableListOf()
                             val list = gamePageVo?.list?.map { gameVo ->
                                 gameVo.toGameContentData(
-                                    (page * 100 + gameVo.id).toLong() ,
                                     sortType
                                 )
                             }
@@ -89,7 +88,6 @@ class RecentlyPlayedViewModel : BaseViewModel() {
                                 _gameListLiveData.value?.toMutableList() ?: mutableListOf()
                             val list = gamePageVo?.list?.map { gameVo ->
                                 gameVo.toGameContentData(
-                                    (page * 100 + gameVo.id).toLong() ,
                                     sortType
                                 )
                             }
