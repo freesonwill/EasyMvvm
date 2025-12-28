@@ -9,6 +9,7 @@ import arch.cayenne.lib.http._interface.IApi
 import arch.cayenne.lib.http.data.Result
 import arch.cayenne.lib.http.interceptor.DynamicBaseUrlInterceptor
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import okhttp3.Interceptor
@@ -160,6 +161,37 @@ class HttpClient private constructor(private val retrofit: Retrofit) {
                 is Result.Failure -> onResult(null,it)
             }
         }
+    }
+
+    /**
+     * 返回最终结果
+     *
+     * @param T
+     * @param request
+     * @param onStart
+     * @param onProgress
+     * @return
+     */
+    suspend fun <T> safeRequest(
+        @WorkerThread request: suspend () -> Response<T>,
+        @UiThread onStart: () -> Unit = {},
+        @UiThread onProgress: (progress: Int, total: Int) -> Unit = { _, _ -> }
+    ):Result<T> {
+        val terminal: Result<T> = safeRequest(request).first { r ->
+            when (r) {
+                is Result.Start -> {
+                    onStart()
+                    false
+                }
+                is Result.Progress -> {
+                    onProgress(r.progress, r.total)
+                    false
+                }
+                is Result.Success,
+                is Result.Failure -> true
+            }
+        }
+        return terminal
     }
 
     class Builder(private val baseUrl: String, private val timeout: Long = 15L) {

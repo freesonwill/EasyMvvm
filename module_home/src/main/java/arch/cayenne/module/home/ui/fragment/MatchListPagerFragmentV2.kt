@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
@@ -178,14 +179,20 @@ class MatchListPagerFragmentV2 :
     private fun subscribeVisibleMatch() {
         val firstVisible = gameLayoutManager.findFirstVisibleItemPosition()
         val lastVisible = gameLayoutManager.findLastVisibleItemPosition()
-        if (firstVisible >= 0 && lastVisible <= matchAdapter.itemCount) {
-            mViewModel.compareSubscribeMatch(
-                matchAdapter.currentList
-                    .slice(firstVisible..lastVisible)
-                    .filterIsInstance<MatchWithMarkets>()
-                    .map { it.match.matchId }
-                    .toSet()
-            )
+        try {
+            if (firstVisible >= 0 && lastVisible <= matchAdapter.itemCount) {
+                mViewModel.compareSubscribeMatch(
+                    matchAdapter.currentList
+                        .slice(firstVisible..lastVisible)
+                        .filterIsInstance<MatchWithMarkets>()
+                        .map { it.match.matchId }
+                        .toSet()
+                )
+            }
+        } catch (e:Throwable){
+            e.printStackTrace()
+            "firstVisible:$firstVisible,lastVisible:$lastVisible,listCount:${matchAdapter.currentList.count()},itemCount:${matchAdapter.itemCount},currentList:${matchAdapter.currentList}".loge(TAG)
+            throw e
         }
     }
 
