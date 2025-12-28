@@ -58,11 +58,6 @@ class GameRecentFragment : BaseFragment<GameRecentViewModel, FragmentGameRecentB
             adapter = GameContentAdapter(onItemClick = {
                 mViewModel.setIsClickGame(EventClick.EVENT_CLICK_ACK_TRUE.type)
                 navigate(arch.cayenne.lib.res.R.string.nav_module_gamedetail.deeplink("gameId" to it.gameID))
-                launch {
-                    delay(AnimationController[AnimType.popupExit]!!.duration)
-                    adapter.submitList(emptyList())
-                }
-
             })
             rvGame.adapter = adapter
             BackToTopHelper(rvGame, ivBackToTop, true)
