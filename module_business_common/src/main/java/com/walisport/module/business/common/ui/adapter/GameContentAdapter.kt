@@ -95,13 +95,13 @@ class GameContentDiff : DiffUtil.ItemCallback<GameContentData>() {
     override fun areItemsTheSame(
         oldItem: GameContentData,
         newItem: GameContentData
-    ): Boolean = oldItem.id == newItem.id
+    ): Boolean = false
 
 
     override fun areContentsTheSame(
         oldItem: GameContentData,
         newItem: GameContentData
-    ): Boolean  = oldItem.id == newItem.id
+    ): Boolean  = false
 
 }
 
