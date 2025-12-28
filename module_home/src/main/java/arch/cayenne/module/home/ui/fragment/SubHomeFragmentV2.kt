@@ -37,9 +37,9 @@ import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.module.home.R
 import arch.cayenne.module.home.data.constants.HomeState
+import arch.cayenne.module.home.data.constants.MatchListSortType
 import arch.cayenne.module.home.data.constants.PlayType
 import arch.cayenne.module.home.data.constants.TournamentListType
-import arch.cayenne.module.home.data.constants.MatchListSortType
 import arch.cayenne.module.home.databinding.FragmentSubHomeV2Binding
 import arch.cayenne.module.home.databinding.LayoutTournamentSortingMenuBinding
 import arch.cayenne.module.home.ui.adapter.SportsListAdapter
@@ -174,12 +174,31 @@ class SubHomeFragmentV2 : BaseFragment<SubHomeViewModel, FragmentSubHomeV2Bindin
             mBinding.layoutContainer.llTournamentsDropdown.visibility = View.GONE
         }
 
-        // 觀察聯賽按鈕選中狀態變化
-        mViewModel.tournamentButtonHasSelection.observeEvent(
-            viewLifecycleOwner,
-            this
-        ) { hasSelection ->
+        mViewModel.savedTournamentSelections.observe(viewLifecycleOwner) { selections ->
+            if (selections.size > 1) {
+                // 更新联赛按钮样式为选中状态。
+                updateTournamentButtonStyle(true)
 
+                // 清除联赛列表的选中状态。
+                mBinding.layoutContainer.customTabGroup.clearLeagueListSelection()
+
+                // 设置当前选中的联赛 ID 列表。
+                mViewModel.setCurrentTournamentIdList(selections)
+            } else if (selections.size == 1) {
+                // 更新联赛按钮样式为未选中状态。
+                updateTournamentButtonStyle(false)
+
+                // 获取当前选中的联赛 ID 在联赛列表中的索引。
+                // 如果未找到匹配的联赛 ID，则返回默认值 0。
+                val index = mViewModel.tournamentsPlain.value?.peekContent()
+                    ?.indexOfFirst { it.id == selections[0] }
+
+                // 根据索引设置联赛按钮的选中状态。
+                mBinding.layoutContainer.customTabGroup.select(index ?: 0)
+            } else {
+                // 如果没有其他选中的联赛，此代码将默认选中第一个联赛按钮。
+                mBinding.layoutContainer.customTabGroup.select(0)
+            }
         }
 
         // 觀察是否需要清除 tlLeagueList 的選中狀態
@@ -274,6 +293,7 @@ class SubHomeFragmentV2 : BaseFragment<SubHomeViewModel, FragmentSubHomeV2Bindin
             vpSportBanner.setPageTransformer(CustomCurveTransformer())
         }
     }
+
 
     // 更新 VIP 信息顯示
     private fun updateVIPInfo(
@@ -709,6 +729,14 @@ class SubHomeFragmentV2 : BaseFragment<SubHomeViewModel, FragmentSubHomeV2Bindin
     override fun onDestroyView() {
         sortingMenuBinding = null
         super.onDestroyView()
+    }
+
+    /**
+     * 更新按鈕樣式
+     * @param hasSelection true: 有選中的供应商，false: 沒有選中的供应商
+     */
+    private fun updateTournamentButtonStyle(hasSelection: Boolean) {
+        mBinding.layoutContainer.customTabGroup.updateTournamentButtonStyle(hasSelection)
     }
 
     companion object {

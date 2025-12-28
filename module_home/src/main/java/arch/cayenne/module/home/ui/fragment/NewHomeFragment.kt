@@ -42,6 +42,7 @@ import arch.cayenne.lib.common.utils.ext.clickNoRepeatSingle
 import arch.cayenne.lib.common.utils.ext.removeAllTips
 import arch.cayenne.lib.common.utils.ext.setupHorizontalScrollDegree
 import arch.cayenne.lib.common.utils.ext.setupViewPagerScroll
+import arch.cayenne.lib.common.utils.ext.startFadeAnim
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.module.home.R
 import arch.cayenne.module.home.data.constants.HomeState
@@ -244,6 +245,9 @@ class NewHomeFragment : BaseFragment<HomeViewModel , FragmentNewHomeBinding>() {
                     // 樣式：設為粗體，並更新顏色
                     (tab.view.getChildAt(1) as? TextView)?.typeface = Typeface.DEFAULT_BOLD
                     updateTabTextStyle(position)
+                }
+                mBinding.vpSub.startFadeAnim { onComplete ->
+                    onComplete.invoke()
                 }
             }
 

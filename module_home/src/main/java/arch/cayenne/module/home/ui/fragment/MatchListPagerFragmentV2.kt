@@ -140,11 +140,8 @@ class MatchListPagerFragmentV2 :
 
             //賽事卡片之間的間閣
             val decoration = MatchCardItemDecoration(
-                12.dp2px , if (arguments?.getInt(ARG_PLAY_TYPE_ID) == PlayType.EARLY.id) {
-                    12.dp2px
-                } else {
-                    6.dp2px
-                }
+                10.5f.dp2px.toInt(),
+                6.dp2px
             )
             mBinding.rvHomeGameList.apply {
                 this.layoutManager = gameLayoutManager
@@ -318,15 +315,6 @@ class MatchListPagerFragmentV2 :
             reloadAllData()
         }
 
-        //联赛列表可能发生变化
-        subHomeViewModel.savedTournamentSelections.observe(viewLifecycleOwner) {
-            val sorted = it.sorted()
-            if (mViewModel.getTournamentIdList() != sorted) {
-                mViewModel.setTournamentIdList(sorted)
-                mViewModel.startObserveMatch()
-                reloadAllData()
-            }
-        }
 
         subHomeViewModel.currentSelectedTournaments.observe(viewLifecycleOwner) {
             mBinding.rvHomeGameList.startFadeAnim { onComplete ->
