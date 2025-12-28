@@ -12,6 +12,7 @@ import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.ui.viewmodel.BalanceViewModel
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigateUp
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+import arch.cayenne.lib.common.utils.helper.showToast
 import com.walisport.module.gamedetail.databinding.FragmentGameDetailBinding
 import com.walisport.module.gamedetail.ui.viewmodel.GameDetailPageViewModel
 import kotlinx.coroutines.launch
@@ -67,6 +68,9 @@ class GameDetailFragment : BaseFragment<GameDetailPageViewModel, FragmentGameDet
                 navigateUp()
             }
             ivFavorite.clickNoRepeat {
+                if (mViewModel.isCollected.value != true) {
+                    showToast("收藏成功")
+                }
                 mViewModel.toggleCollectStatus(args.gameId)
 
                 lifecycleScope.launch {
