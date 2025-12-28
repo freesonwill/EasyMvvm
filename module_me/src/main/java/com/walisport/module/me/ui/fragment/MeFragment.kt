@@ -14,7 +14,6 @@ import arch.cayenne.lib.base.ui.adapter.PagerAdapter
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.base.utils.LogUtils
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
 import arch.cayenne.lib.common.data.constants.DrawerAction.ACTION_OPEN
 import arch.cayenne.lib.common.data.constants.DrawerAction.KEY_ACTION
 import arch.cayenne.lib.common.data.constants.DrawerAction.REQUEST_KEY_DRAWER
@@ -307,11 +306,7 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
             }
             val contentHeight = mBinding.ctUserInfo.height
             val percent = (scrollY.toFloat() / contentHeight).coerceIn(0f, 1f)
-            "$percent=======$scrollY".loge("测试")
             mBinding.ctTopBar.alpha = percent
-            /*mBinding.ivDrawer.alpha = 1f
-            mBinding.ivCustomer.alpha = 1f
-            mBinding.ivSetting.alpha = 1f*/
         }
     }
 
