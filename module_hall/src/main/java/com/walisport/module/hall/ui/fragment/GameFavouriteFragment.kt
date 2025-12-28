@@ -47,10 +47,11 @@ class GameFavouriteFragment : BaseFragment<GameFavouriteViewModel, FragmentGameF
         GridSpacingItemDecoration(
             spanCount = 3,
             horizontalSpacing = 9.dp2px,
-            verticalSpacing = 12.dp2px,
+            verticalSpacing = 17.dp2px,
             includeEdge = false // 確保邊緣沒有空隙
         )
     }
+
 
     override fun initView(savedInstanceState: Bundle?) {
         with(mBinding) {
