@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import arch.cayenne.lib.base.ui.adapter.BaseAdapter
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
-import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.common.utils.ThumbHashUtils
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
@@ -72,7 +71,7 @@ class GameListInnerViewHolder(val item: ItemGameAllListInnerBinding,private val 
         item.tvCount.text = data.online.toString()
         // TODO 暫時串接遊戲詳情
         item.root.clickNoRepeat {
-            onItemClickListener?.invoke(data.id)
+            onItemClickListener?.invoke(data.gameID)
         }
     }
 }
