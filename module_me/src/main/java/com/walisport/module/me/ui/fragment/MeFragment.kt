@@ -69,10 +69,9 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
     override val vmClass: KClass<MeViewModel> = MeViewModel::class
 
     private val unreadMessageViewModel: UnReadMessageViewModel by viewModels()
-
+    var tabSelectPosition = 0 //保留选中状态,数据更新时不会切换tab
     private var tabIndicatorHelper: MeScrollableTabIndicatorHelper? = null
     private var topTabIndicatorHelper: MeScrollableTabIndicatorHelper? = null
-    private var tabWiths: MutableList<Int> =mutableListOf()
     override fun initView(savedInstanceState: Bundle?) {
         with(mBinding) {
             tvNickname.text = "中文sdf323"
@@ -89,7 +88,6 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
     }
 
     private fun loadFragment() {
-        val tabSelectPosition = 0
         val list = listOf(
             PagerBean(arch.cayenne.lib.common.R.string.drawer_recently_played.getString()) { RecentlyTabFragment() },
             PagerBean(
@@ -101,10 +99,9 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
         )
         with(mBinding) {
 
-
             vpPage.adapter = PagerAdapter(childFragmentManager, lifecycle, list)
             launch {
-                vpPage.offscreenPageLimit = 1
+                vpPage.offscreenPageLimit = 3
             }
             vpPage.isUserInputEnabled = false
             TabLayoutMediator(tabLayout, vpPage, false) { tab, position ->
@@ -120,11 +117,6 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
                     )
                 }
                 tab.view.setOnClickListener { /* Handle click */ }
-
-                tab.customView?.findViewById<SkinnableTextView>(R.id.count)?.apply {
-                    visibility = View.VISIBLE
-                    text =  "999+"
-                }
             }.attach()
             tabLayout.clearOnTabSelectedListeners()
             tabLayout.post {
@@ -264,15 +256,14 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
                 tab.let {
                     if (isTabClick) {
                         val selectedTopTabIndex = mBinding.topTabLayout.selectedTabPosition
+                        tabSelectPosition = tab.position
+                         LogUtils.e("MeFragment-------->onTabSelected------tabSelectPosition->${tabSelectPosition}}")
                         if (selectedTopTabIndex != tab.position) {
                             mBinding.topTabLayout.getTabAt(tab.position)?.let { topTab ->
                                 topTab.select()
                             }
                         }
-
-                        if (!mBinding.customIndicator.isGone) {
-                            tabIndicatorHelper?.smartAnimateToCurrent()
-                        }
+                        tabIndicatorHelper?.smartAnimateToCurrent()
                         val vp = mBinding.vpPage
                         vp.startFadeAnim {
                             vp.setCurrentItem(tab.position, false)
@@ -311,15 +302,13 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
             override fun onTabSelected(tab: TabLayout.Tab, isTabClick: Boolean) {
                 tab.let {
                     val selectedTopTabIndex = mBinding.tabLayout.selectedTabPosition
+                    tabSelectPosition = tab.position
                     if (selectedTopTabIndex != tab.position) {
                         mBinding.tabLayout.getTabAt(tab.position)?.let { topTab ->
                             topTab.select()
                         }
                     }
-
-                    if (!mBinding.topCustomIndicator.isGone) {
-                        topTabIndicatorHelper?.smartAnimateToCurrent()
-                    }
+                    topTabIndicatorHelper?.smartAnimateToCurrent()
                     tab.view.findViewById<SkinnableTextView>(R.id.tabText)?.let { textView ->
                         textView.setTextColor(
                             SkinnableResourceManager.getColor(
@@ -352,7 +341,7 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
             if (scrollY > (mBinding.clTop.height- mBinding.ctTopBar.height)) {
                 mBinding.topSkinTab.visibility = View.VISIBLE
             } else if (scrollY < mBinding.clTop.height- mBinding.ctTopBar.height) {
-                mBinding.topSkinTab.visibility = View.GONE
+                mBinding.topSkinTab.visibility = View.INVISIBLE
             }
             val contentHeight = mBinding.ctUserInfo.height
             val percent = (scrollY.toFloat() / contentHeight).coerceIn(0f, 1f)
@@ -371,17 +360,22 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
 
         unreadMessageViewModel.createObserver()
 
-
         with(mViewModel) {
             count.observe(viewLifecycleOwner) { count ->
                 count.forEachIndexed { index, item ->
                     mBinding.tabLayout.getTabAt(index)?.let {
                         changeTabCount(it, item.const.toLong())
+
                     }
                     mBinding.topTabLayout.getTabAt(index)?.let {
                         changeTopTabCount(it, item.const.toLong())
+
                     }
                 }
+                mBinding.tabLayout.getTabAt(tabSelectPosition)?.select()
+                mBinding.topTabLayout.getTabAt(tabSelectPosition)?.select()
+                tabIndicatorHelper?.smartAnimateToCurrent(0)
+                topTabIndicatorHelper?.smartAnimateToCurrent(0)
             }
 
             onVipListener.observe(viewLifecycleOwner) {
@@ -393,6 +387,7 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
                     val day = calculateBetweenDay(it.registerTime)
                     mBinding.tvJoinTime.text = day
                 }
+                tabIndicatorHelper?.setup()
             }
         }
         mViewModel.createObserver()
@@ -421,15 +416,10 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
                 visibility = View.GONE
             }
             post{
-                tabWiths.add(width)
-                LogUtils.e("MeScrollableTabIndicatorHelper-------->count------width->${width}}")
-                tabIndicatorHelper?.setup(tabWiths)
+                tabIndicatorHelper?.setup()
             }
-
         }
-
     }
-
     private fun changeTopTabCount(tab: TabLayout.Tab, count: Long) {
         tab.customView?.findViewById<SkinnableTextView>(R.id.count)?.apply {
             if (count > 0) {
@@ -442,14 +432,9 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
             } else {
                 visibility = View.GONE
             }
-            post{
-                tabWiths.add(width)
-                LogUtils.e("MeScrollableTabIndicatorHelper-------->count------width->${width}}")
-                topTabIndicatorHelper?.setup(tabWiths)
-            }
         }
-    }
 
+    }
     private fun calculateBetweenDay(reg: Long): String {
         if (reg == 0L) {
             return getString(R.string.reg_day, 0)
