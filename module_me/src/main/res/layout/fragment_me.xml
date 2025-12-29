@@ -135,7 +135,7 @@
                     <arch.cayenne.lib.skin.widget.SkinnableTabLayout
                         android:id="@+id/tabLayout"
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/dp_18"
+                        android:layout_height="@dimen/dp_21"
                         android:layout_gravity="top"
                         android:background="@color/tran_0"
                         android:focusable="false"
@@ -150,9 +150,9 @@
 
                     <arch.cayenne.lib.common.ui.view.CustomTabIndicator
                         android:id="@+id/customIndicator"
-                        android:layout_width="17dp"
-                        android:layout_height="3dp"
-                        android:layout_marginTop="@dimen/dp_3"
+                        android:layout_width="14dp"
+                        android:layout_height="2dp"
+                        android:layout_marginTop="@dimen/dp_5"
                         android:background="@drawable/tab_indicator_me"
                         app:layout_constraintTop_toBottomOf="@id/skinTab" />
                 </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
@@ -161,7 +161,7 @@
                     android:id="@+id/vp_page"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_12"
+                    android:layout_marginTop="@dimen/dp_10"
                     android:background="@color/color_272727"
                     app:layout_constraintTop_toBottomOf="@+id/skinTab"
                     tools:ignore="MissingConstraints" />
