@@ -2,14 +2,13 @@ package com.walisport.module.search.ui.controller
 
 import android.view.View
 import android.widget.TextView
-import arch.cayenne.lib.common.data.constants.GameSortType
-import arch.cayenne.lib.common.data.constants.GameSortType.*
 import arch.cayenne.lib.common.ui.adapter.GridSpacingItemDecoration
 import arch.cayenne.lib.common.ui.view.CustomGameTabClickListener
 import arch.cayenne.lib.common.ui.view.CustomGameTabGroupLayout
 import arch.cayenne.lib.common.ui.view.SimpleTabDataModel
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
+import com.walisport.module.business.common.data.constants.GameSortType
 import com.walisport.module.search.R
 import arch.cayenne.lib.common.R as RC
 
@@ -25,7 +24,7 @@ class SearchGameTabController(
     private val tabGroup: CustomGameTabGroupLayout,
     private val rewardTipsView: TextView?,
     private val gridItemDecoration: GridSpacingItemDecoration?,
-    private val initialSortType: GameSortType = HOT,
+    private val initialSortType: GameSortType = GameSortType.HOT,
     /** Tab 被點擊時回傳供應商 id（0 代表全部 -> 回傳 null） */
     private val onSupplierChanged: (supplierId: Int?) -> Unit,
     /** 排序類型變更時 callback，由外部決定如何重新產生 / 請求資料 */
@@ -91,10 +90,10 @@ class SearchGameTabController(
     private fun setupSortButton() {
         tabGroup.setOnSortBtnClick {
             val next = when (currentSortType) {
-                HOT -> NEW
-                NEW -> HOT_REWARD
-                HOT_REWARD -> COLD_REWARD
-                COLD_REWARD -> HOT
+                GameSortType.HOT -> GameSortType.NEW
+                GameSortType.NEW -> GameSortType.HOT_REWARD
+                GameSortType.HOT_REWARD -> GameSortType.COLD_REWARD
+                GameSortType.COLD_REWARD -> GameSortType.HOT
             }
             applySortType(next, notify = true)
         }
@@ -120,22 +119,22 @@ class SearchGameTabController(
         val context = tabGroup.context
         tabGroup.setSortBtnText(
             when (sortType) {
-                HOT -> SkinnableResourceManager.getString(context, RC.string.custom_tab_hot)
-                NEW -> SkinnableResourceManager.getString(context, RC.string.custom_tab_new)
-                HOT_REWARD -> SkinnableResourceManager.getString(context, RC.string.custom_tab_hot_reward)
-                COLD_REWARD -> SkinnableResourceManager.getString(context, RC.string.custom_tab_cold_reward)
+                GameSortType.HOT -> SkinnableResourceManager.getString(context, RC.string.custom_tab_hot)
+                GameSortType.NEW -> SkinnableResourceManager.getString(context, RC.string.custom_tab_new)
+                GameSortType.HOT_REWARD -> SkinnableResourceManager.getString(context, RC.string.custom_tab_hot_reward)
+                GameSortType.COLD_REWARD -> SkinnableResourceManager.getString(context, RC.string.custom_tab_cold_reward)
             }
         )
 
         // 返獎率提示顯示邏輯（火熱 / 冰冷 顯示）
         rewardTipsView?.visibility = when (sortType) {
-            HOT_REWARD, COLD_REWARD -> View.VISIBLE
+            GameSortType.HOT_REWARD, GameSortType.COLD_REWARD -> View.VISIBLE
             else -> View.GONE
         }
 
         // 更新 Grid 間距，與 GameContentFragment 一致
         gridItemDecoration?.verticalSpacing = when (sortType) {
-            HOT_REWARD, COLD_REWARD -> 14.dp2px
+            GameSortType.HOT_REWARD, GameSortType.COLD_REWARD -> 14.dp2px
             else -> 12.dp2px
         }
 

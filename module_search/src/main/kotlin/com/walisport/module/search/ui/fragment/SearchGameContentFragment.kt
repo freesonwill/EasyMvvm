@@ -23,8 +23,8 @@ import arch.cayenne.lib.common.utils.ext.startFadeAnim
 import arch.cayenne.lib.common.utils.helper.BackToTopHelper
 import arch.cayenne.lib.database.entity.GameSupplierDataModel
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
+import com.walisport.module.business.common.data.constants.GameSortType
 import com.walisport.module.search.R
-import arch.cayenne.lib.common.data.constants.GameSortType
 import com.walisport.module.search.databinding.FragmentSearchGameContentBinding
 import com.walisport.module.search.databinding.LayoutGameSortingMenuBinding
 import com.walisport.module.search.ui.adapter.SearchGameCardAdapter

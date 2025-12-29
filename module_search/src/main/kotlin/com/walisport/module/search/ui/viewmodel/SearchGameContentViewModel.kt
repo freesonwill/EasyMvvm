@@ -6,9 +6,9 @@ import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.data.model.UnPeekLiveData
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
-import arch.cayenne.lib.common.data.constants.GameSortType
 import arch.cayenne.lib.common.utils.ext.getFormatDate
 import arch.cayenne.lib.database.entity.GameSupplierDataModel
+import com.walisport.module.business.common.data.constants.GameSortType
 import com.walisport.module.search.data.repo.SearchRepository
 import com.walisport.module.search.ui.model.Avatar
 import com.walisport.module.search.ui.model.HotColdType
@@ -183,4 +183,5 @@ class SearchGameContentViewModel : BaseViewModel() {
         // TODO: 未來可實作本地選中狀態管理
     }
 }
+
 

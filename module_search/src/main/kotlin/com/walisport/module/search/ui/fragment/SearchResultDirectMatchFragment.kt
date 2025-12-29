@@ -23,8 +23,6 @@ import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.base.ui.fragment.launch
-import arch.cayenne.lib.common.data.constants.GameSortType
-import arch.cayenne.lib.common.data.constants.GameSortType.*
 import arch.cayenne.lib.common.ui.adapter.GridSpacingItemDecoration
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.ui.view.SimpleTabDataModel

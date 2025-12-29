@@ -4,8 +4,6 @@ import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
-import arch.cayenne.lib.common.data.constants.GameSortType
-import arch.cayenne.lib.common.data.constants.GameSortType.*
 import arch.cayenne.lib.common.ui.view.SimpleTabDataModel
 import arch.cayenne.lib.common.utils.ext.getFormatDate
 import arch.cayenne.lib.database.entity.GameSupplierDataModel
@@ -20,6 +18,7 @@ import com.walisport.module.search.data.model.SearchResultPlayerBean
 import com.walisport.module.search.data.model.SearchResultTeamBean
 import com.walisport.module.search.data.model.SearchResultTournamentBean
 import com.walisport.module.search.data.repo.SearchRepository
+import com.walisport.module.business.common.data.constants.GameSortType
 import com.walisport.module.search.ui.model.Avatar
 import com.walisport.module.search.ui.model.HotColdType
 import com.walisport.module.search.ui.model.SearchGameContentData
@@ -312,16 +311,16 @@ class SearchResultDirectMatchViewModel: BaseViewModel() {
             // 使用 Int 範圍產生隨機值，再轉成 1 位小數的 Double，避免 FloatingPointRange 的 random() 解析問題
             val reward = when (sortType) {
                 // 97.0% ~ 99.9%
-                HOT_REWARD -> (970..999).random() / 10.0
+                GameSortType.HOT_REWARD -> (970..999).random() / 10.0
                 // 90.0% ~ 95.0%
-                COLD_REWARD -> (900..950).random() / 10.0
+                GameSortType.COLD_REWARD -> (900..950).random() / 10.0
                 // 94.0% ~ 98.0%
                 else -> (940..980).random() / 10.0
             }
 
             val hotOrCold = when (sortType) {
-                HOT_REWARD -> HotColdType.HOT
-                COLD_REWARD -> HotColdType.COLD
+                GameSortType.HOT_REWARD -> HotColdType.HOT
+                GameSortType.COLD_REWARD -> HotColdType.COLD
                 else -> HotColdType.NONE
             }
 
