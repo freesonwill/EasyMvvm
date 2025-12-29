@@ -50,7 +50,6 @@ class OrderSportPageFragment :
                     }
 
                     override fun onShareClick(bean: BetSlipData) {
-                        TODO("Not yet implemented")
                     }
 
                 },
