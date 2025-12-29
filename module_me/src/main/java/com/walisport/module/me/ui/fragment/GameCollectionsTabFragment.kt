@@ -53,6 +53,7 @@ class GameCollectionsTabFragment : BaseFragment<GameCollectionTabViewModel, Frag
                 mViewModel.setIsClickGame(EventClick.EVENT_CLICK_ACK_TRUE.type)
                 navigate(arch.cayenne.lib.res.R.string.nav_module_gamedetail.deeplink("gameId" to it.gameID))
             })
+            rvRecently.itemAnimator = null
             rvRecently.adapter = adapter
 //            BackToTopHelper(rvRecently, ivBackToTop, true)
         }

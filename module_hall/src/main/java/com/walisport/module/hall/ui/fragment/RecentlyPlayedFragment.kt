@@ -67,6 +67,7 @@ class RecentlyPlayedFragment : BaseFragment<RecentlyPlayedViewModel, FragmentRec
                 }
 
             })
+            rvGame.itemAnimator = null
             rvGame.adapter = adapter
             BackToTopHelper(rvGame, ivBackToTop, true)
         }
