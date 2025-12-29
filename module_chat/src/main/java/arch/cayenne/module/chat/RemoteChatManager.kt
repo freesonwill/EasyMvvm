@@ -127,14 +127,14 @@ class RemoteChatManager(
         content: String,
         chatType: ChatType,
         msgType: MsgType,
-        extraData: Map<String, String>? = null,
+        extraData: Any? = null,
         refUid: List<Long>?,
     ): ChatSendMsgResponse? {
         val resp = socketManager.chatSendAndWaitProtoMessageResponse<ChatSendMsgResponse>(
             ApiCode.CHAT_SEND_MSG,
             responseCode = ChatResponseCode.SEND_MSG_RESP,
         ) {
-            ChatSendMsgRequest(roomId, content, refUid, chatType, msgType, extraData)
+            ChatSendMsgRequest(roomId, content, refUid, chatType.value, msgType.value, extraData)
         }
         "sendMsgNotify matchId:$roomId   result ${Gson().toJson(resp)}".logd(TAG)
 

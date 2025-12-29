@@ -45,7 +45,7 @@ class LiveChatRepository(val remote: RemoteChatManager) : BaseRepository() {
         content: String,
         chatType: ChatType,
         msgType: MsgType,
-        extraData: Map<String, String>? = null,
+        extraData: Any? = null,
         refUid: List<Long>?,
     ): ChatSendMsgResponse? = remote.sendMsgNotify(roomId, content,  chatType, msgType, extraData,refUid)
 

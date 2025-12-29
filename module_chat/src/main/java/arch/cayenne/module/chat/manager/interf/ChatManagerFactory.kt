@@ -34,7 +34,7 @@ interface ChatManagerFactory {
         content: String,
         chatType: ChatType,
         msgType: MsgType,
-        extraData: Map<String, String>? = null,
+        extraData: Any?,
         refUid: List<Long>?,
     ): ChatSendMsgResponse?
 
@@ -48,7 +48,7 @@ interface ChatManagerFactory {
 
     suspend fun addLocalMsg(loginValue: ChatLoginResponseData, content: String,
                             msgType: MsgType,
-                            extraData: Map<String, String>?,
+                            extraData: Any?,
                             chatType: ChatType,
                             refUid: List<Long>? = null,
                             refInfos: Map<Long,ChatRefUser>? = null

@@ -129,7 +129,7 @@ class ChatPageFragment : BaseFragment<ChatPageViewModel, FragementChatPageLayout
                 it.content,
                 it.refUid,
                 ChatType.LOBBY,
-                MsgType.MSG_TYPE_TEXT,
+                MsgType.getSendMsgType(it.msgType.value),
                 it.extraData
             )
             refreshChatList()
@@ -159,8 +159,8 @@ class ChatPageFragment : BaseFragment<ChatPageViewModel, FragementChatPageLayout
             this
         ) { key, bundle ->
             "listenFragmentResult $key ".logd("aaa")
-            val result = bundle.getInt(ChatPersonalDialogFragment.CHAT_PERSONAL_RESULT,-1)
-            if(result != -1){
+            val result = bundle.getInt(ChatPersonalDialogFragment.CHAT_PERSONAL_RESULT, -1)
+            if (result != -1) {
                 //处理结果 0 title 1 @ta 2 复制评论 3 举报评论
                 if (result == 1) {
                     selectBean?.let {
@@ -168,7 +168,7 @@ class ChatPageFragment : BaseFragment<ChatPageViewModel, FragementChatPageLayout
                     }
                 }
             }
-            val result1 = bundle.getInt(ChatPrivateUserFragment.CHAT_USER_RESULT,-1)
+            val result1 = bundle.getInt(ChatPrivateUserFragment.CHAT_USER_RESULT, -1)
             if (result1 != -1) {
                 selectBean?.let {
                     homeViewModel.addAtMsgToChat(it)

@@ -111,14 +111,14 @@ class ChatPageAdapter(
                     ChatMsgType.BET_SPORT
                 )
             ) {
-                bean.atRange?.forEach {
-                    msgSpannable.setSpan(
-                        ClickSpan(bean.msgType, second.substring(it.first, it.last)),
-                        it.first,
-                        it.last,
-                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                    )
-                }
+//                bean.atRange?.forEach {
+//                    msgSpannable.setSpan(
+//                        ClickSpan(bean.msgType, second.substring(it.first, it.last)),
+//                        it.first,
+//                        it.last,
+//                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+//                    )
+//                }
             }
             builder.append(msgSpannable)
 

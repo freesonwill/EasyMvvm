@@ -8,6 +8,7 @@ import android.text.style.UpdateAppearance
 import android.view.View
 import androidx.annotation.ColorInt
 import arch.cayenne.lib.common.data.constants.ChatMsgType
+import arch.cayenne.lib.websocket.chat.data.ChatRefUser
 
 /**
  * @author: wenxi
@@ -15,13 +16,14 @@ import arch.cayenne.lib.common.data.constants.ChatMsgType
  * @description:
  */
 
-class MentionSpan(private val type: ChatMsgType, private val text: String, private val click: ((str: String) -> Unit)) :
+class MentionSpan(private val _msgType: ChatMsgType, private val _tv: String,private val _user:ChatRefUser?,private val click: ((str: String) -> Unit)) :
     CharacterStyle(), UpdateAppearance {
     //    ClickableSpan() {
     private val tvColor = Color.parseColor("#8FBEE9")
     private val backColor = Color.parseColor("#4DFE3666")
-    val tv = text
-    val msgType: ChatMsgType = type
+    val tv = _tv
+    val msgType: ChatMsgType = _msgType
+    val user: ChatRefUser? = _user
 
     override fun updateDrawState(ds: TextPaint) {
         ds.let {

@@ -27,6 +27,7 @@ import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavResultExt.observeResult
 import arch.cayenne.lib.common.utils.helper.showToast
+import arch.cayenne.lib.websocket.chat.data.ChatRefUser
 import arch.cayenne.lib.websocket.chat.data.ChatType
 import arch.cayenne.lib.websocket.data.SocketConnectState
 import arch.cayenne.module.chat.R
@@ -224,7 +225,7 @@ abstract class ChatBaseFragment : BaseFragment<ChatHomeViewModel, FragmentLiveCh
                         tv,
                         if (type == 0) ChatMsgType.BET_GAME else ChatMsgType.BET_SPORT
                     )
-                    keyboardChangeClick(KeyBoardType.SOFT_KEYBOARD, 8)
+                    mViewModel.currentSelectBetShare = data
                     SoftKeyBoardAnim.etAnimWhenEtContentChange(
                         mBinding,
                         mViewModel.currentKeyBoardType,
@@ -234,6 +235,7 @@ abstract class ChatBaseFragment : BaseFragment<ChatHomeViewModel, FragmentLiveCh
                         onAnimEnd = {
                             updateInputIcon(it)
                         })
+                    keyboardChangeClick(KeyBoardType.SOFT_KEYBOARD, 8)
                 }
             }
 
@@ -264,7 +266,7 @@ abstract class ChatBaseFragment : BaseFragment<ChatHomeViewModel, FragmentLiveCh
             sendText()
         }
         mViewModel.atLiveData.observe(viewLifecycleOwner) {
-            chatAtHelper.addAtMentionSpan(it.userName)
+            chatAtHelper.addAtMentionSpan(it.userName, ChatRefUser(it.uid.toLong(),it.userName,it.avatarId,it.replaceUserName))
             SoftKeyBoardAnim.etAnimWhenEtContentChange(
                 mBinding,
                 mViewModel.currentKeyBoardType,

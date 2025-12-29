@@ -3,6 +3,7 @@ package arch.cayenne.module.chat.data.model
 import arch.cayenne.lib.websocket.chat.data.ChatMsg
 import arch.cayenne.lib.common.data.constants.ChatMsgType
 import arch.cayenne.lib.websocket.chat.data.ChatRefUser
+import arch.cayenne.lib.websocket.chat.data.ChatType
 import arch.cayenne.lib.websocket.chat.data.MsgType
 import arch.cayenne.module.chat.utils.ChatMsgUtils
 
@@ -24,7 +25,7 @@ data class ChatMsgPageBean(
     val replaceUserName: String? = null,
     val refUid: List<Long>? = null,
     val refInfos: Map<Long, ChatRefUser>? = null,
-    val extraData: Map<String, String>? = null
+    val extraData: Any? = null
 ) : Comparable<ChatMsgPageBean> {
 
     companion object {
@@ -34,9 +35,7 @@ data class ChatMsgPageBean(
             atRange: List<IntRange>? = null
         ): ChatMsgPageBean {
 
-            val content = if (bean.msgType == MsgType.MSG_TYPE_SHARE) {
-                ChatMsgUtils.addNoDivideCharInBetShar(bean.content)
-            } else bean.content
+            val content = bean.content
             return ChatMsgPageBean(
                 uid = bean.uid,
                 userName = bean.userName,
@@ -47,8 +46,10 @@ data class ChatMsgPageBean(
                 refUid = bean.refUid,
                 refInfos = bean.refInfos,
                 onlyForSelf = bean.onlyForSelf,
+                replaceUserName = bean.replaceUserName,
                 msgType = ChatMsgType.getChatMsgType(bean.msgType),
-                atRange = atRange
+                atRange = atRange,
+                extraData = bean.extraData
             )
         }
 

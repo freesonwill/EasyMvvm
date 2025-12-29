@@ -55,12 +55,18 @@ enum class MsgType(val value: Int) {
         fun getMsgType(value: Int): MsgType {
             return when (value) {
                 0 -> MSG_TYPE_SYSTEM
-                2,4 -> MSG_TYPE_SHARE
+                2, 4 -> MSG_TYPE_SHARE
                 3 -> MSG_TYPE_AT
                 else -> MSG_TYPE_TEXT
             }
         }
-
+         //服务器没有At消息类型
+        fun getSendMsgType(value: Int): MsgType {
+            return when (value) {
+                2, 4 -> MSG_TYPE_SHARE
+                else -> MSG_TYPE_TEXT
+            }
+        }
 
     }
 }
@@ -89,7 +95,7 @@ data class ChatLoginRequestData(
 data class ChatLoginResponseData(
     override val code: Int,
     val message: String? = null,
-    val uid: Long? = null,
+    val uid: String? = null,
     val username: String? = null,
     val avatarId: Int? = null
 ) : IResponse, ChatResponseBase()
@@ -119,9 +125,9 @@ data class ChatSendMsgRequest(
     val roomId: Long,
     val content: String,
     val refUid: List<Long>? = null,
-    val chatType: ChatType,
-    val msgType: MsgType,
-    val extraData: Map<String, String>? = null
+    val chatType: Int,
+    val msgType: Int,
+    val extraData: Any? = null
 ) : ChatRequestData
 
 data class ChatSendMsgResponse(override val code: Int, val errorMessage: String? = "") : IResponse,
@@ -170,7 +176,7 @@ data class ChatMsg(
     val onlyForSelf: Int,
     val replaceUserName: String? = null,
     val msgType: MsgType,
-    val extraData: Map<String, String>? = null,
+    val extraData: Any? = null,
     val chatType: ChatType
 ) {
 }
