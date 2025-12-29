@@ -51,6 +51,11 @@ class ChatPageFragment : BaseFragment<ChatPageViewModel, FragementChatPageLayout
         }
         val adapter = ChatPageAdapter(
             specialClick = { bean, clickSpane, clickType ->
+                "bean.msgType=${bean.msgType},clickType=$clickType".logd(TAG)
+                if(bean.msgType == ChatMsgType.SYSTEM){
+                    return@ChatPageAdapter
+                }
+
                 selectBean = bean
                 when (clickType) {
                     ChatMsgType.BET_GAME -> {
@@ -75,6 +80,11 @@ class ChatPageFragment : BaseFragment<ChatPageViewModel, FragementChatPageLayout
                 }
             },
             longClick = { bean ->
+                "bean.msgType=${bean.msgType}".logd(TAG)
+
+                if(bean.msgType == ChatMsgType.SYSTEM){
+                    return@ChatPageAdapter
+                }
                 homeViewModel.addAtMsgToChat(bean)
             }
         )

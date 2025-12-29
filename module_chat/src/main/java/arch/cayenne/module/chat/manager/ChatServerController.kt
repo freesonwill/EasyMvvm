@@ -115,7 +115,7 @@ class ChatServerController(
         content: String,
         chatType: ChatType,
         msgType: MsgType,
-        extraData: Any?,
+        extraData: Map<String,String>?,
         refUid: List<Long>?,
     ) {
         scope.launch(Dispatchers.IO) {
@@ -145,7 +145,7 @@ class ChatServerController(
         content: String,
         chatType: ChatType,
         msgType: MsgType,
-        extraData: Any?,
+        extraData: Map<String,String>?,
         refUid: List<Long>?,
         refInfos: List<ChatRefUser>?
     ): ChatMsg? {

@@ -127,7 +127,7 @@ data class ChatSendMsgRequest(
     val refUid: List<Long>? = null,
     val chatType: Int,
     val msgType: Int,
-    val extraData: Any? = null
+    val extraData: Map<String,String>? = null
 ) : ChatRequestData
 
 data class ChatSendMsgResponse(override val code: Int, val errorMessage: String? = "") : IResponse,
@@ -176,7 +176,7 @@ data class ChatMsg(
     val onlyForSelf: Int,
     val replaceUserName: String? = null,
     val msgType: MsgType,
-    val extraData: Any? = null,
+    val extraData: Map<String,String>? = null,
     val chatType: ChatType
 ) {
 }

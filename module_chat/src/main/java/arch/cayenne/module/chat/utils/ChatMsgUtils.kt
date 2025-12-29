@@ -1,8 +1,10 @@
 package arch.cayenne.module.chat.utils
 
 import android.text.SpannableStringBuilder
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.data.constants.ChatMsgType
 import arch.cayenne.lib.websocket.chat.data.ChatRefUser
+import arch.cayenne.module.chat.data.model.ChatMsgPageBean
 import arch.cayenne.module.chat.data.model.MentionSpan
 import arch.cayenne.module.order.data.model.BetShareBean
 import com.google.gson.Gson
@@ -13,6 +15,7 @@ import com.google.gson.Gson
  * @description:
  */
 object ChatMsgUtils {
+    private val TAG = this.javaClass.simpleName
 
     /**
      * 由于部分字段在显示的时候会被拆分开，这里在字段中间添加不可见字符，防止被拆分
@@ -44,28 +47,57 @@ object ChatMsgUtils {
         val sharSpan =
             spans.find { it.msgType == ChatMsgType.BET_SPORT || it.msgType == ChatMsgType.BET_GAME }
         sharSpan?.let {
-            newStr = newStr.replace(it.tv, "[***]")
+            val replaceTv = it.tv.replace("\u2060", "")
+            "sharSpan tv=${it.tv}".logd(TAG)
+            newStr = newStr.replace(replaceTv, "[***]")
         }
+        "content after replace $newStr ".logd(TAG)
         return newStr
     }
 
-    fun createExtraData(bean: BetShareBean? = null, spans: Array<MentionSpan>): Any? {
+    /**
+     * 恢复内容中的占位符
+     * */
+    fun recoveryContent(
+        content: String,
+        bean: ChatMsgPageBean
+    ): SpannableStringBuilder {
+        val spannable = SpannableStringBuilder(content)
+        bean.refUid?.forEach { uid ->
+            val user = bean.refInfos?.get(uid)
+            val newChar = "@${user?.userName} "
+            val index = content.indexOf("[**]")
+            val endIndex = index+newChar.length
+        }
+
+       if(bean.msgType == ChatMsgType.BET_GAME || bean.msgType == ChatMsgType.BET_SPORT){
+       }
+        return spannable
+
+    }
+
+
+    fun createExtraData(
+        bean: BetShareBean? = null,
+        spans: Array<MentionSpan>
+    ): Map<String, String>? {
         val sharSpan =
             spans.find { it.msgType == ChatMsgType.BET_SPORT || it.msgType == ChatMsgType.BET_GAME }
-        val map = HashMap<String, String>()
-        spans?.let {
-            map.put("userId", bean?.userId?.toString() ?: "")
-            map.put("settleId", bean?.settleId?.toString() ?: "")
-            map.put("gameType", bean?.gameType?.toString() ?: "")
-            map.put("validBetScore", bean?.validBetScore?.toString() ?: "")
-            map.put("winScore", bean?.winScore?.toString() ?: "")
-            map.put("multi", bean?.multi?.toString() ?: "")
-            map.put("roomName", bean?.roomName?.toString() ?: "")
-            map.put("ccy", bean?.ccy?.toString() ?: "")
-            map.put("settleTime", bean?.settleTime?.toString() ?: "")
-            map.put("content", bean?.content?.toString() ?: "")
+        var map: HashMap<String, String>? = null
+        sharSpan?.let {
+            map = HashMap()
+            map!!["userId"] = bean?.userId?.toString() ?: ""
+            map!!["settleId"] = bean?.settleId ?: ""
+            map!!["gameType"] = bean?.gameType?.toString() ?: ""
+            map!!["validBetScore"] = bean?.validBetScore?.toString() ?: ""
+            map!!["winScore"] = bean?.winScore?.toString() ?: ""
+            map!!["multi"] = bean?.multi ?: ""
+            map!!["roomName"] = bean?.roomName ?: ""
+            map!!["ccy"] = bean?.ccy ?: ""
+            map!!["settleTime"] = bean?.settleTime ?: ""
+            map!!.put("content", bean?.content ?: "")
         }
-        return sharSpan?.let { map } ?: null
+        return map
     }
 
     fun createUserInfo(spans: Array<MentionSpan>): List<ChatRefUser>? {
@@ -74,4 +106,28 @@ object ChatMsgUtils {
                 .toList()
         return users.ifEmpty { null }
     }
+
+    fun recoveryExtraDataBetShareBean(
+        extraData: Map<String, String>,
+        msgType: ChatMsgType
+    ): BetShareBean? {
+        var betShareBean: BetShareBean? = null
+        if (msgType == ChatMsgType.BET_GAME || msgType == ChatMsgType.BET_SPORT) {
+            betShareBean = BetShareBean(
+                userId = extraData["userId"]?.toLongOrNull() ?: 0L,
+                settleId = extraData["settleId"] ?: "",
+                gameType = extraData["gameType"]?.toIntOrNull() ?: 0,
+                validBetScore = extraData["validBetScore"]?.toInt() ?: 0,
+                winScore = extraData["winScore"]?.toInt() ?: 0,
+                multi = extraData["multi"] ?: "",
+                roomName = extraData["roomName"] ?: "",
+                ccy = extraData["ccy"] ?: "",
+                settleTime = extraData["settleTime"] ?: "",
+                content = extraData["content"] ?: ""
+            )
+        }
+        return betShareBean
+    }
+
+
 }

@@ -25,7 +25,7 @@ data class ChatMsgPageBean(
     val replaceUserName: String? = null,
     val refUid: List<Long>? = null,
     val refInfos: Map<Long, ChatRefUser>? = null,
-    val extraData: Any? = null
+    val extraData: Map<String,String>? = null
 ) : Comparable<ChatMsgPageBean> {
 
     companion object {

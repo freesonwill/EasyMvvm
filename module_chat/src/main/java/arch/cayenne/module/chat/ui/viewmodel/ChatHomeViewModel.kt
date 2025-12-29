@@ -154,7 +154,7 @@ class ChatHomeViewModel() : BaseViewModel() {
         refUid: List<Long>? = null,
         chatType: ChatType,
         msgType: MsgType,
-        extraData: Any?,
+        extraData: Map<String,String>?,
     ) {
         matchId?.let {
             chatServer.sendMsgToServer(it, content, chatType, msgType, extraData, refUid)
@@ -191,6 +191,7 @@ class ChatHomeViewModel() : BaseViewModel() {
 
         val spannable = SpannableStringBuilder(editable)
         val spans = spannable.getSpans(0, editable.length, MentionSpan::class.java)
+        "sendMsg spans size:${spans.size}".logd(TAG)
         if (spans.isNotEmpty()) {
             val atIntRanges = mutableListOf<IntRange>()
             spans.forEach {
