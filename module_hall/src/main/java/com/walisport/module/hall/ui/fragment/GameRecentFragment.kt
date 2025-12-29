@@ -60,6 +60,7 @@ class GameRecentFragment : BaseFragment<GameRecentViewModel, FragmentGameRecentB
                 navigate(arch.cayenne.lib.res.R.string.nav_module_gamedetail.deeplink("gameId" to it.gameID))
             })
             rvGame.adapter = adapter
+            rvGame.itemAnimator = null
             BackToTopHelper(rvGame, ivBackToTop, true)
         }
     }

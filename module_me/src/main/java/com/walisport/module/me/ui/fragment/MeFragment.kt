@@ -300,6 +300,9 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
         mBinding.nestedScrollView.setOnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
             // scrollY 就是当前的垂直滑动距离
             if (scrollY > (mBinding.clTop.height- mBinding.ctTopBar.height)) {
+                if (mBinding.topSkinTab.visibility== View.INVISIBLE){
+                    topTabIndicatorHelper?.smartAnimateToCurrent(0)
+                }
                 mBinding.topSkinTab.visibility = View.VISIBLE
             } else if (scrollY < mBinding.clTop.height- mBinding.ctTopBar.height) {
                 mBinding.topSkinTab.visibility = View.INVISIBLE

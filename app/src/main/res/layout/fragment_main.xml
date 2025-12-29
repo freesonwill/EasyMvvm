@@ -31,6 +31,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        android:paddingBottom="@dimen/dp_1"
         app:selected_index="0">
 
         <arch.cayenne.module.home.ui.view.NavBarView
