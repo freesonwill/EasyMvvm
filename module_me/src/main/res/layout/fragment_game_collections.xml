@@ -6,13 +6,13 @@
     android:layout_height="wrap_content"
     android:background="@color/color_272727">
 
-    <arch.cayenne.lib.skin.widget.SkinnableRecyclerView
+    <com.walisport.module.hall.ui.view.MeRecyclerView
         android:id="@+id/rv_recently"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_12"
+        android:layout_marginStart="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_12"
-        android:layout_marginEnd="@dimen/dp_12"
+        android:layout_marginEnd="@dimen/dp_16"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
