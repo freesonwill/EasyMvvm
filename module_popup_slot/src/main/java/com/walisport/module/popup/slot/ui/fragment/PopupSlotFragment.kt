@@ -189,7 +189,7 @@ class PopupSlotFragment :
             playTogether(
                 ValueAnimator.ofFloat(
                     view?.translationX ?: 0f,
-                    28.dp2px.toFloat()
+                    33.dp2px.toFloat()
                 ).apply {
                     addUpdateListener {
                         val value = it.animatedValue as Float
@@ -234,7 +234,7 @@ class PopupSlotFragment :
         fadeInAnimator = view?.startSafeAnimateSet({
             playTogether(
                 ValueAnimator.ofFloat(
-                    view?.translationX ?: 28.dp2px.toFloat(),
+                    view?.translationX ?: 33.dp2px.toFloat(),
                     0f
                 ).apply {
                     addUpdateListener {
