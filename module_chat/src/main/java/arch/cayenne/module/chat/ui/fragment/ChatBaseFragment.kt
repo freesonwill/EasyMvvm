@@ -46,6 +46,7 @@ import kotlin.reflect.KClass
 import arch.cayenne.module.chat.manager.ChatATHelper
 import arch.cayenne.module.chat.manager.SoftKeyBoardAnim
 import arch.cayenne.module.chat.manager.SoftKeyBoardAnim.getInputAnim
+import arch.cayenne.module.chat.utils.ChatMsgUtils
 import arch.cayenne.module.order.data.model.BetShareBean
 import arch.cayenne.module.order.ui.fragment.ChatChooseBetFragment
 import kotlinx.coroutines.delay
@@ -218,15 +219,12 @@ abstract class ChatBaseFragment : BaseFragment<ChatHomeViewModel, FragmentLiveCh
                     val data =
                         it.getParcelable<BetShareBean>(ChatChooseBetFragment.SHARE_BET_RESULT)
                     val type = it.getInt(ChatChooseBetFragment.SHARE_BET_TYPE, 0)
-
-//                    val tv =
-//                        data?.content?.replace("注", "注\u00A0")?.replace("单", "单\u00A0")
-//                            ?.replace(":", ":\u00A0") ?: ""
-
+                    val tv = data?.content?.let { ChatMsgUtils.addNoDivideCharInBetShar(it) } ?: ""
                     chatAtHelper.addShareBetSpan(
-                        data?.content ?: "",
+                        tv,
                         if (type == 0) ChatMsgType.BET_GAME else ChatMsgType.BET_SPORT
                     )
+                    keyboardChangeClick(KeyBoardType.SOFT_KEYBOARD, 8)
                     SoftKeyBoardAnim.etAnimWhenEtContentChange(
                         mBinding,
                         mViewModel.currentKeyBoardType,

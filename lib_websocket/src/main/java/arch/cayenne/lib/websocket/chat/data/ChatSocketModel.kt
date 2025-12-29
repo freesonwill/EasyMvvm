@@ -48,17 +48,20 @@ enum class ChatType(val value: Int) {
 enum class MsgType(val value: Int) {
     MSG_TYPE_SYSTEM(0),
     MSG_TYPE_TEXT(1),
-    MSG_TYPE_SHARE(2);
+    MSG_TYPE_SHARE(2),
+    MSG_TYPE_AT(3);
 
     companion object {
-        fun getMsgType(value: Int): MsgType? {
+        fun getMsgType(value: Int): MsgType {
             return when (value) {
                 0 -> MSG_TYPE_SYSTEM
-                1 -> MSG_TYPE_TEXT
-                2 -> MSG_TYPE_TEXT
-                else -> null
+                2,4 -> MSG_TYPE_SHARE
+                3 -> MSG_TYPE_AT
+                else -> MSG_TYPE_TEXT
             }
         }
+
+
     }
 }
 

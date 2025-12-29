@@ -25,7 +25,7 @@ class ChatPageViewModel:BaseViewModel() {
      * 添加新数据的chatlist
      * */
     fun addNewMsgs(msg: MsgNotify): List<ChatMsgPageBean> {
-        msgLists.add(0, ChatMsgPageBean.toChatPageBean(msg.msg, ChatMsgType.TEXT))
+        msgLists.add(0, ChatMsgPageBean.toChatPageBean(msg.msg))
         return msgLists
     }
 
@@ -36,7 +36,7 @@ class ChatPageViewModel:BaseViewModel() {
         if (list == null) {
             return
         }
-        val nList = list.map { ChatMsgPageBean.toChatPageBean(it, ChatMsgType.TEXT)}.toList()
+        val nList = list.map { ChatMsgPageBean.toChatPageBean(it)}.toList()
         msgLists.clear()
         msgLists.addAll(nList.reversed())
     }

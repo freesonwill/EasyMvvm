@@ -85,11 +85,11 @@ class ChatPageAdapter(
         }
 
         fun setText(bean: ChatMsgPageBean, position: Int) {
-            val first = "${bean.userName}:"
+            val first = "${bean.userName}\u2060:"
             val second = bean.content
 
             val builder = SpannableStringBuilder()
-            builder.append("$first  ")
+            builder.append("$first\u2060  \u2060")
             builder.setSpan(
                 ColorSpan(
                     SkinnableResourceManager.getColor(
