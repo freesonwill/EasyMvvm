@@ -182,6 +182,35 @@ class SearchGameContentViewModel : BaseViewModel() {
     fun selectSupplierId(id: Int) {
         // TODO: 未來可實作本地選中狀態管理
     }
+
+    // 保存彈窗中的選中狀態（跨彈窗生命週期）
+    private val _savedTournamentSelections = MutableLiveData<List<Int>>()
+    val savedTournamentSelections: LiveData<List<Int>> = _savedTournamentSelections
+
+    // 通知按鈕選中狀態變化
+    private val _buttonHasSelection = UnPeekLiveData<Boolean>()
+    val buttonHasSelection: UnPeekLiveData<Boolean> = _buttonHasSelection
+
+    // 通知需要清除 tlLeagueList 的選中狀態
+    private val _shouldClearLeagueListSelection = MutableLiveData<arch.cayenne.lib.common.ui.viewmodel.Event<Unit>>()
+    val shouldClearLeagueListSelection: LiveData<arch.cayenne.lib.common.ui.viewmodel.Event<Unit>> = _shouldClearLeagueListSelection
+
+    // 保存選中狀態（在確認時調用）
+    fun saveTournamentSelections(selections: List<Int>) {
+        _savedTournamentSelections.value = selections
+        // 通知按鈕狀態更新
+        _buttonHasSelection.value = selections.isNotEmpty()
+    }
+
+    // 觸發清除 tlLeagueList 選中狀態（在彈窗確認時調用）
+    fun requestClearLeagueListSelection() {
+        _shouldClearLeagueListSelection.value = arch.cayenne.lib.common.ui.viewmodel.Event(Unit)
+    }
+
+    /**
+     * 獲取遊戲分類 ID
+     */
+    fun getGameTypeId(): Int = gameTypeId
 }
 
 

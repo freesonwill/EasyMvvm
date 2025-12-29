@@ -34,4 +34,8 @@
     <string name="sort_type_new">最新上线</string>
     <string name="sort_type_hot_reward">近30分钟火热返奖</string>
     <string name="sort_type_cold_reward">近30分钟冰冷返奖</string>
+    <string name="supplier_section_title_hot">热门</string>
+    <string name="supplier_search_hint">搜索供应商</string>
+    <string name="view_latest_results">查看最新结果</string>
+    <string name="btn_confirm">确定</string>
 </resources>

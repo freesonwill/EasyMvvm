@@ -334,4 +334,25 @@ class SearchRepository(
         )
         return categoryMap[lower]
     }
+
+    /**
+     * 監聽指定遊戲分類下的供應商數據變化（用於 BottomSheet）。
+     */
+    suspend fun observeSupplierByGameTypeId(gameTypeId: Int) = withContext(Dispatchers.IO) {
+        database.supplierDao().observeSupplierGameTypeId(gameTypeId)
+    }
+
+    /**
+     * 設置供應商的選中狀態（用於 BottomSheet 確認後保存選中狀態）。
+     */
+    suspend fun setSupplierSelectIds(gameTypeId: Int, ids: List<Int>) {
+        withContext(Dispatchers.IO) {
+            val selectedIdSet = ids.toSet()
+            val suppliers = querySuppliersByGameType(gameTypeId)
+            suppliers.forEach { supplier ->
+                supplier.isSelected = if (supplier.id in selectedIdSet) 1 else 0
+            }
+            database.supplierDao().insert(suppliers)
+        }
+    }
 }

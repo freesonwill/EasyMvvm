@@ -11,6 +11,8 @@
         android:layout_width="0dp"
         android:layout_height="@dimen/dp_32"
         android:layout_marginTop="@dimen/dp_14"
+        android:paddingStart="@dimen/dp_13"
+        android:paddingEnd="@dimen/dp_0"
         app:defaultTabIcon="@drawable/ic_wali_demo"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -69,11 +71,11 @@
             android:layout_marginEnd="@dimen/dp_12"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             tools:itemCount="2"
-            tools:listitem="@layout/item_search_game_card" />
+            tools:listitem="@layout/item_game_content" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
-    <arch.cayenne.lib.common.ui.view.DynamicStateLayout
+    <arch.cayenne.lib.common.ui.view.DynamicStateLayoutV2
         android:id="@+id/cl_dynamics"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -120,4 +122,3 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
-

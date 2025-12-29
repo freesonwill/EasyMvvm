@@ -15,6 +15,7 @@ import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.common.ui.adapter.GridSpacingItemDecoration
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout.States
 import arch.cayenne.lib.common.ui.view.SimpleTabDataModel
+import arch.cayenne.lib.common.ui.viewmodel.observeEvent
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
@@ -29,6 +30,7 @@ import com.walisport.module.search.databinding.FragmentSearchGameContentBinding
 import com.walisport.module.search.databinding.LayoutGameSortingMenuBinding
 import com.walisport.module.search.ui.adapter.SearchGameCardAdapter
 import com.walisport.module.search.ui.controller.SearchGameTabController
+import com.walisport.module.search.ui.fragment.SearchGameContentListBottomSheetFragment
 import com.walisport.module.search.ui.viewmodel.SearchGameContentViewModel
 import kotlinx.coroutines.delay
 import kotlin.reflect.KClass
@@ -73,7 +75,7 @@ class SearchGameContentFragment : BaseFragment<SearchGameContentViewModel, Fragm
     private val defaultAnimDuration = 210L
     private var helper: BackToTopHelper? = null
 
-    private val gameTypeId: Int
+    val gameTypeId: Int
         get() = requireArguments().getInt(ARG_GAME_TYPE_ID, 4)
 
     private val keyword: String?
@@ -144,7 +146,11 @@ class SearchGameContentFragment : BaseFragment<SearchGameContentViewModel, Fragm
                     mViewModel.reload()
                 },
                 onShowAllSupplierClick = {
-                    // TODO: 之後可打開供應商 BottomSheet
+                    // 点击更多供应商按钮时，需要判断排序菜单是否展开，若展开则先收起
+                    if (isExpanded) {
+                        toggleGameSorting(false)
+                    }
+                    showSupplierListBottomSheet()
                 }
             )
             gameTabController.attach()
@@ -177,7 +183,7 @@ class SearchGameContentFragment : BaseFragment<SearchGameContentViewModel, Fragm
             if (isExpanded) {
                 toggleGameSorting(false)
             }
-            // TODO: 顯示供應商 BottomSheet
+            showSupplierListBottomSheet()
         })
         
         // 加載更多監聽（與 GameContentFragment 一致）
@@ -252,6 +258,44 @@ class SearchGameContentFragment : BaseFragment<SearchGameContentViewModel, Fragm
         // 拿到供应商列表
         mViewModel.gameSupplierList.observe(viewLifecycleOwner) {
             gameTabController.submitTabs(supplierTabList(it))
+        }
+
+        // 根據選中的供應商拉取數據（與 GameContentFragment 一致）
+        mViewModel.savedTournamentSelections.observe(viewLifecycleOwner) {
+            if (it.size == 1) {
+                launch {
+                    delay(200)
+                    mBinding.customTabGroup.selectById(it[0])
+                }
+            } else {
+                mViewModel.setSupplier(it)
+                helper?.reset()
+                mViewModel.reload()
+            }
+        }
+
+        mViewModel.buttonHasSelection.observe(viewLifecycleOwner) { hasSelection ->
+            // 更新按鈕樣式（與 GameContentFragment 一致）
+            mBinding.customTabGroup.updateTournamentButtonStyle(hasSelection)
+            if (!hasSelection) {
+                // 重新獲取數據，在供應商列表沒有選中情況下，選中全部
+                mBinding.customTabGroup.select(0)
+            }
+        }
+
+        // 清除 tlLeagueList 的選中狀態（與 GameContentFragment 一致）
+        mViewModel.shouldClearLeagueListSelection.observeEvent(viewLifecycleOwner, this) {
+            clearLeagueListSelection()
+        }
+    }
+
+    /**
+     * 清除 tlLeagueList 的選中狀態（與 GameContentFragment 一致）
+     */
+    private fun clearLeagueListSelection() {
+        with(mBinding) {
+            // 清除所有 tab 的選中狀態
+            customTabGroup.clearLeagueListSelection()
         }
     }
 
@@ -368,7 +412,7 @@ class SearchGameContentFragment : BaseFragment<SearchGameContentViewModel, Fragm
                     mBinding.tvRewardTips.visibility = View.GONE
                     updateSortingMenuSelection()
                     setSortBtnText()
-                    gameTabController.applySortType(currentSortType, notify = true)
+                    mViewModel.setSortType(currentSortType)
                     helper?.reset()
                     mViewModel.reload()
                 }
@@ -383,7 +427,7 @@ class SearchGameContentFragment : BaseFragment<SearchGameContentViewModel, Fragm
                     mBinding.tvRewardTips.visibility = View.GONE
                     updateSortingMenuSelection()
                     setSortBtnText()
-                    gameTabController.applySortType(currentSortType, notify = true)
+                    mViewModel.setSortType(currentSortType)
                     helper?.reset()
                     mViewModel.reload()
                 }
@@ -399,7 +443,7 @@ class SearchGameContentFragment : BaseFragment<SearchGameContentViewModel, Fragm
                     mBinding.aplHomeBanner.setExpanded(true, true)
                     updateSortingMenuSelection()
                     setSortBtnText()
-                    gameTabController.applySortType(currentSortType, notify = true)
+                    mViewModel.setSortType(currentSortType)
                     helper?.reset()
                     mViewModel.reload()
                 }
@@ -415,7 +459,7 @@ class SearchGameContentFragment : BaseFragment<SearchGameContentViewModel, Fragm
                     mBinding.aplHomeBanner.setExpanded(true, true)
                     updateSortingMenuSelection()
                     setSortBtnText()
-                    gameTabController.applySortType(currentSortType, notify = true)
+                    mViewModel.setSortType(currentSortType)
                     helper?.reset()
                     mViewModel.reload()
                 }
@@ -486,6 +530,18 @@ class SearchGameContentFragment : BaseFragment<SearchGameContentViewModel, Fragm
         if (isExpanded) {
             toggleGameSorting(false)
         }
+    }
+
+    /**
+     * 顯示供應商列表 BottomSheet（與 GameContentFragment 一致）
+     */
+    private fun showSupplierListBottomSheet() {
+        val tag = "SearchGameContentFragment_bottom_sheet"
+        if (childFragmentManager.findFragmentByTag(tag) != null) return
+
+        SearchGameContentListBottomSheetFragment
+            .newInstance(gameTypeId)
+            .show(childFragmentManager, tag)
     }
 }
 
