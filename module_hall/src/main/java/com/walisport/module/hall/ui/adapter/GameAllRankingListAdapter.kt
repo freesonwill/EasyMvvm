@@ -12,22 +12,17 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DiffUtil
 import arch.cayenne.lib.base.ui.adapter.BaseAdapter
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
-import arch.cayenne.lib.common.data.constants.SportEnum
+import arch.cayenne.lib.common.ui.fragment.AllInfoDialogFragment
 import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getColor
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
 import arch.cayenne.lib.common.utils.ext.TextViewExt.hasShownEllipsize
-import arch.cayenne.lib.common.utils.ext.ccyToSymbol
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
-import arch.cayenne.lib.common.utils.ext.symbolUrl
 import com.bumptech.glide.Glide
 import com.walisport.module.hall.R
 import com.walisport.module.hall.data.GameAllRankingListData
 import com.walisport.module.hall.databinding.ItemAllRankingListBinding
-import com.walisport.module.hall.ui.fragment.AllInfoDialogFragment
-import com.walisport.module.hall.ui.fragment.GameRankingInfoDialogFragment
 
 class GameAllRankingListAdapter(
     private val parentFragment: androidx.fragment.app.Fragment
