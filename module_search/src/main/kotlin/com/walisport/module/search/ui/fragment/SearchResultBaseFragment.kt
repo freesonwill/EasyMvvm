@@ -18,7 +18,9 @@ import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.utils.ext.touchBackPressed
 import com.walisport.module.search.R
 import com.walisport.module.search.data.constants.SearchResultUiState.DirectMatch
+import com.walisport.module.search.data.constants.SearchResultUiState.GameCategoryMatch
 import com.walisport.module.search.data.constants.SearchResultUiState.ResultList
+import com.walisport.module.search.data.constants.SearchResultUiState.VendorDirectMatch
 import com.walisport.module.search.data.constants.SearchTypeEnum
 import com.walisport.module.search.data.model.SearchResultBean
 import com.walisport.module.search.databinding.FragmentSearchResultBaseBinding
@@ -127,6 +129,8 @@ class SearchResultBaseFragment :
                         when (it) {
                             is ResultList -> goToListResult(it.data)
                             is DirectMatch -> goToDirectMatch(it.data)
+                            is VendorDirectMatch -> goToVendorDirectMatch(it)
+                            is GameCategoryMatch -> goToGameCategoryMatch(it)
                         }
                     }
                 }
@@ -189,6 +193,30 @@ class SearchResultBaseFragment :
             SearchResultBaseFragmentDirections
                 .actionSearchResultBaseFragmentToSearchResultDirectMatchFragment(
                     data, getCurrentKeyword(), null, SearchTypeEnum.UNKNOWN
+                )
+        navigateTo(action)
+    }
+
+    private fun goToVendorDirectMatch(state: VendorDirectMatch) {
+        val action =
+            SearchResultBaseFragmentDirections
+                .actionSearchResultBaseFragmentToSearchResultDirectMatchFragment(
+                    null,
+                    state.keyword,
+                    state.supplier.id.toString(),
+                    SearchTypeEnum.UNKNOWN // 使用 UNKNOWN 來標識供應商模式
+                )
+        navigateTo(action)
+    }
+
+    private fun goToGameCategoryMatch(state: GameCategoryMatch) {
+        val action =
+            SearchResultBaseFragmentDirections
+                .actionSearchResultBaseFragmentToSearchResultDirectMatchFragment(
+                    null,
+                    state.keyword,
+                    state.gameTypeId.toString(),
+                    SearchTypeEnum.NORMAL_WORD // 使用 NORMAL_WORD 來標識分類模式
                 )
         navigateTo(action)
     }
