@@ -7,10 +7,13 @@ import android.os.Bundle
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
+import arch.cayenne.lib.common.ui.fragment.AllInfoDialogFragment
+import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getColor
+import arch.cayenne.lib.common.utils.ext.TextViewExt.hasShownEllipsize
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.helper.VIPResourceHelper
@@ -51,6 +54,22 @@ class MeVIPInfoFragment : BaseFragment<MeVIPInfoViewModel, FragmentMeVipInfoBind
             btRecharge.addScaleOnTouchAnimation()
             btRecharge.clickNoRepeat {
                 navigate(arch.cayenne.lib.res.R.string.nav_module_topup_fragment.deeplink())
+            }
+            tvBalance.clickNoRepeat {
+                if(tvBalance.hasShownEllipsize()){
+                    val location = IntArray(2)
+                    tvBalance.getLocationInWindow(location)
+                    val h = ViewUtils.getStatusBarHeight(root.context)
+                    val positionX = location.first() + tvBalance.width / 2
+                    val positionY = location.last() - h
+                    parentFragment?.let {
+                        AllInfoDialogFragment.newInstance(
+                            positionX ,
+                            positionY ,
+                            tvBalance.text.toString()
+                        ).show(it.childFragmentManager , TAG)
+                    }
+                }
             }
         }
     }
