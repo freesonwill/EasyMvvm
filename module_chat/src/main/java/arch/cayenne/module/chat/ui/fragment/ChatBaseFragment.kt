@@ -217,6 +217,7 @@ abstract class ChatBaseFragment : BaseFragment<ChatHomeViewModel, FragmentLiveCh
             }
             launch {//选择注单返回监听
                 observeResult<Bundle>(ChatChooseBetFragment.SHARE_BET_LISTEN) {
+                    ChatMsgUtils.checkAndReplaceBetShareInEditable(mBinding.chatEtInput)
                     val data =
                         it.getParcelable<BetShareBean>(ChatChooseBetFragment.SHARE_BET_RESULT)
                     val type = it.getInt(ChatChooseBetFragment.SHARE_BET_TYPE, 0)
@@ -311,7 +312,6 @@ abstract class ChatBaseFragment : BaseFragment<ChatHomeViewModel, FragmentLiveCh
 
     private fun toChooseBet() {
         findNavController().navigate("walisport://module_betslip/chatChooseBetFragment".deeplink())
-        ChatMsgUtils.checkAndReplaceBetShareInEditable(mBinding.chatEtInput)
     }
 
     private fun initSoftKeyBoardFragment() {

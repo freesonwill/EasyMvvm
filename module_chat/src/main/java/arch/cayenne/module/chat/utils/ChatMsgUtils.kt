@@ -2,6 +2,7 @@ package arch.cayenne.module.chat.utils
 
 import android.annotation.SuppressLint
 import android.text.SpannableStringBuilder
+import android.widget.EditText
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.data.constants.ChatMsgType
 import arch.cayenne.lib.websocket.chat.data.ChatRefUser
@@ -171,6 +172,22 @@ object ChatMsgUtils {
         }
 
         return betShareBean
+    }
+
+    /*
+    *插入分享注单时检查Editext是否有分享注单，如果有的话进行替换
+    * */
+    fun checkAndReplaceBetShareInEditable(edittext: EditText) {
+        val spannable = SpannableStringBuilder(edittext.text)
+        val spans = spannable.getSpans(0, edittext.text.length, MentionSpan::class.java)
+        spans.find { it.msgType == ChatMsgType.BET_SPORT || it.msgType == ChatMsgType.BET_GAME }
+            ?.let {
+                edittext.setText(spannable.removeRange(
+                    spannable.getSpanStart(it),
+                    spannable.getSpanEnd(it)
+                ))
+                "edittext.setSelection(edittext.text.length)".logd(TAG)
+            }
     }
 
 
