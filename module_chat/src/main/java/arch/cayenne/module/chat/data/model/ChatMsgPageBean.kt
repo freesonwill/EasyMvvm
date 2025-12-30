@@ -1,5 +1,6 @@
 package arch.cayenne.module.chat.data.model
 
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.websocket.chat.data.ChatMsg
 import arch.cayenne.lib.common.data.constants.ChatMsgType
 import arch.cayenne.lib.websocket.chat.data.ChatRefUser
@@ -34,7 +35,7 @@ data class ChatMsgPageBean(
             bean: ChatMsg,
             atRange: List<IntRange>? = null
         ): ChatMsgPageBean {
-
+                "toChatPageBean content=${bean.content}".logd("ChatMsgPageBean")
             val content = bean.content
             return ChatMsgPageBean(
                 uid = bean.uid,
@@ -52,8 +53,6 @@ data class ChatMsgPageBean(
                 extraData = bean.extraData
             )
         }
-
-
     }
 
     override fun compareTo(other: ChatMsgPageBean): Int {

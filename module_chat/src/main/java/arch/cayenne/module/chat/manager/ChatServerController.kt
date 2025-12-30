@@ -147,7 +147,7 @@ class ChatServerController(
         msgType: MsgType,
         extraData: Map<String,String>?,
         refUid: List<Long>?,
-        refInfos: List<ChatRefUser>?
+        refInfos: Map<Long, ChatRefUser>?
     ): ChatMsg? {
         if (getManagerLoginFlow().value == null) {
             "login is null".logd(TAG)
@@ -163,7 +163,7 @@ class ChatServerController(
             msgId = id,
             timestamp = id,
             refUid = refUid,
-            refInfos = null,
+            refInfos = refInfos,
             onlyForSelf = 0,
             replaceUserName = "",
             msgType = msgType,

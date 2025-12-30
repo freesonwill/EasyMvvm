@@ -179,8 +179,7 @@ class ChatHomeViewModel() : BaseViewModel() {
     /**
      * 发送文本，@，普通表情消息
      * @用户：[**]
-     *     分享：[***]
-     *
+     *分享：[***]
      * */
     fun createLocalMsg(editable: Editable, chatType: ChatType): ChatMsgPageBean? {
         if (loginFlow.value == null) {
@@ -200,7 +199,7 @@ class ChatHomeViewModel() : BaseViewModel() {
                 atIntRanges.add(IntRange(start, end))
             }
             val users = ChatMsgUtils.createUserInfo(spans)
-            val refUids = users?.map { it.uid }?.toList()
+            val refUids = users?.map { it.key }?.toList()
             val localMsg = chatServer.addLocalMsg(
                 ChatMsgUtils.createContent(spannable, spans),
                 chatType,

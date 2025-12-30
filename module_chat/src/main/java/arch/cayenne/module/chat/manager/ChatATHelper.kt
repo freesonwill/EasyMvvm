@@ -76,9 +76,9 @@ class ChatATHelper(
             if (startInputPosition == -1 && !isAtInput && !isEditDelete) {
                 atPopupWindow.dismiss()
             }
-            if (!isEditDelete && startInputPosition >= 0) {
-                listenEditInput()
-            }
+//            if (!isEditDelete && startInputPosition >= 0) {
+//                listenEditInput()
+//            }
             isAtInput = false
             etWatchListen?.invoke(s)
         }

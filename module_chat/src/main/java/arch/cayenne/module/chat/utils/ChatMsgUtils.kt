@@ -1,5 +1,6 @@
 package arch.cayenne.module.chat.utils
 
+import android.annotation.SuppressLint
 import android.text.SpannableStringBuilder
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.data.constants.ChatMsgType
@@ -57,21 +58,48 @@ object ChatMsgUtils {
 
     /**
      * 恢复内容中的占位符
+     *  @用户：[**]
+     *  分享：[***]
      * */
     fun recoveryContent(
-        content: String,
         bean: ChatMsgPageBean
     ): SpannableStringBuilder {
-        val spannable = SpannableStringBuilder(content)
+        var spannable = SpannableStringBuilder(bean.content)
+        //添加at消息
         bean.refUid?.forEach { uid ->
             val user = bean.refInfos?.get(uid)
             val newChar = "@${user?.userName} "
-            val index = content.indexOf("[**]")
-            val endIndex = index+newChar.length
+            val index = spannable.indexOf("[**]")
+            val endIndex = index + newChar.length
+            spannable = spannable.replace(index, index + 4, newChar)
+            val span = MentionSpan(ChatMsgType.AT, bean.userName, bean.refInfos?.get(uid), click = {})
+            spannable.setSpan(
+                span,
+                index,
+                endIndex,
+                SpannableStringBuilder.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+//            "recoveryAtChar $newChar  ${Gson().toJson(bean)} ".logd(TAG)
         }
+        "recoveryAtChar ${Gson().toJson(bean)} ".logd(TAG)
 
-       if(bean.msgType == ChatMsgType.BET_GAME || bean.msgType == ChatMsgType.BET_SPORT){
-       }
+        if (bean.msgType == ChatMsgType.BET_GAME || bean.msgType == ChatMsgType.BET_SPORT) {
+            bean.extraData?.let {
+             val betShareBean = recoveryExtraDataBetShareBean(bean.extraData)
+             val index = spannable.indexOf("[***]")
+             val newChar = addNoDivideCharInBetShar(betShareBean?.content ?: "")
+             val endIndex = index + newChar.length
+             spannable = spannable.replace(index, index + 5, newChar)
+             val span = MentionSpan(bean.msgType, newChar, null, click = {})
+                spannable.setSpan(
+                    span,
+                    index,
+                    endIndex,
+                    SpannableStringBuilder.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+//             "recoveryBetShar $newChar ".logd(TAG)
+            }
+        }
         return spannable
 
     }
@@ -100,19 +128,18 @@ object ChatMsgUtils {
         return map
     }
 
-    fun createUserInfo(spans: Array<MentionSpan>): List<ChatRefUser>? {
+    fun createUserInfo(spans: Array<MentionSpan>): Map<Long,ChatRefUser>? {
         val users =
-            spans.filter { it.msgType == ChatMsgType.AT && it.user != null }.map { it.user!! }
-                .toList()
+            spans.filter { it.msgType == ChatMsgType.AT && it.user != null }.map {it.user!!.uid to it.user }
+                .toMap()
         return users.ifEmpty { null }
     }
 
     fun recoveryExtraDataBetShareBean(
         extraData: Map<String, String>,
-        msgType: ChatMsgType
     ): BetShareBean? {
         var betShareBean: BetShareBean? = null
-        if (msgType == ChatMsgType.BET_GAME || msgType == ChatMsgType.BET_SPORT) {
+        if (extraData.isNotEmpty()) {
             betShareBean = BetShareBean(
                 userId = extraData["userId"]?.toLongOrNull() ?: 0L,
                 settleId = extraData["settleId"] ?: "",
@@ -126,6 +153,7 @@ object ChatMsgUtils {
                 content = extraData["content"] ?: ""
             )
         }
+
         return betShareBean
     }
 
