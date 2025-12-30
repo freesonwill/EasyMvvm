@@ -61,7 +61,7 @@ class SubHomeFragmentV2 : BaseFragment<SubHomeViewModel, FragmentSubHomeV2Bindin
     private var isExpanded = false
     private var sortingMenuBinding: LayoutTournamentSortingMenuBinding? = null
 
-    // 當前排序類型，預設為按熱門聯賽排序
+    // 当前排序类型，默认为按时间排序
     private var currentSortType = MatchListSortType.BY_TIME
 
     private val defaultAnimDuration = 300L
@@ -75,11 +75,14 @@ class SubHomeFragmentV2 : BaseFragment<SubHomeViewModel, FragmentSubHomeV2Bindin
     private var sortMenuClicked: Boolean = false
 
 
-    // VIP 等級資源設置於 lib_common，統一使用 VIPResourceHelper 管理
-
+    // VIP等级资源已在 lib_common 设置，统一由 VIPResourceHelper 管理
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         arguments?.apply {
             mViewModel.setPlayTypeId(this.getInt(ARG_PLAY_TYPE_ID))
+            // 获取并设置初始排序类型
+            currentSortType =
+                MatchListSortType.fromType(this.getInt(ARG_SORT_TYPE))
+                    ?: MatchListSortType.BY_TIME
         }
         super.onViewCreated(view, savedInstanceState)
     }
@@ -742,10 +745,12 @@ class SubHomeFragmentV2 : BaseFragment<SubHomeViewModel, FragmentSubHomeV2Bindin
     companion object {
         const val LOW_MEMORY_THRESHOLD = 2_000_000_000L
         private const val ARG_PLAY_TYPE_ID = "play_type_id"
-        fun newInstance(playTypeId: Int): SubHomeFragmentV2 {
+        private const val ARG_SORT_TYPE = "sort_type" //排序类型
+        fun newInstance(playTypeId: Int, sortType: MatchListSortType): SubHomeFragmentV2 {
             return SubHomeFragmentV2().apply {
                 arguments = Bundle().apply {
                     putInt(ARG_PLAY_TYPE_ID, playTypeId)
+                    putInt(ARG_SORT_TYPE, sortType.type)
                 }
             }
         }
