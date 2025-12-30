@@ -91,7 +91,7 @@ class SoftKeyboardManager(
 
     var statusBarHeight:Int = 0
 
-    private val hotViewHeight = 46.dp2px
+    private val hotViewHeight = 41.5.dp2px
     private val mainBarBottomHeight = 62.dp2px
 
 

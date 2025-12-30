@@ -126,6 +126,15 @@
             app:layout_constraintTop_toTopOf="@id/chat_ll_input" />
 
         <View
+            android:id="@+id/top_line"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_1"
+            android:background="@color/color_0FFFFFFF"
+            android:visibility="gone"
+            app:layout_constraintTop_toTopOf="@id/input_bg"
+            />
+
+        <View
             android:id="@+id/hot_bg"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_44"

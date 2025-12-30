@@ -3,10 +3,11 @@ package arch.cayenne.lib.common.utils.helper
 
 
 
+import android.view.MotionEvent
 import android.view.View
 import androidx.appcompat.widget.AppCompatImageView
-import androidx.core.widget.NestedScrollView
 import androidx.core.view.isVisible
+import androidx.core.widget.NestedScrollView
 import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import kotlin.math.abs
@@ -25,13 +26,28 @@ class NestedScrollViewBackToTopHelper(
         button.alpha = 1f
     }
 
+    private var touched = false
+
     private val scrollRunnable: Runnable by lazy {
         Runnable {
+            if (touched) {
+                // 用户正在触摸屏幕，延迟检查
+                nestedScrollView.postDelayed(scrollRunnable, 150)
+                return@Runnable
+            }
             scrollStateListener?.invoke(RecyclerView.SCROLL_STATE_IDLE)
         }
     }
 
     init {
+        nestedScrollView.setOnTouchListener { _, event ->
+            if (event.action == MotionEvent.ACTION_UP || event.action == MotionEvent.ACTION_CANCEL) {
+                touched = false
+            } else if (event.action == MotionEvent.ACTION_DOWN || event.action == MotionEvent.ACTION_MOVE) {
+                touched = true
+            }
+            false
+        }
             nestedScrollView.setOnScrollChangeListener { v, _, scrollY, _, _ ->
                 val height = v.height
 

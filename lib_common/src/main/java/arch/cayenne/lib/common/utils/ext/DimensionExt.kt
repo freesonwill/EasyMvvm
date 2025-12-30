@@ -23,6 +23,14 @@ object DimensionExt {
             (dp * scale + 0.5).toInt()
         }
 
+    val Double.dp2px: Int
+        get() = run {
+            val context = application ?: return@run this.toInt()
+            val scale = context.resources.displayMetrics.density
+            val dp = this
+            (dp * scale + 0.5).toInt()
+        }
+
     val Int.px2dp: Int
         get() = run {
             val context = application ?: return@run this
