@@ -188,16 +188,22 @@ class SubHomeFragmentV2 : BaseFragment<SubHomeViewModel, FragmentSubHomeV2Bindin
                 // 设置当前选中的联赛 ID 列表。
                 mViewModel.setCurrentTournamentIdList(selections)
             } else if (selections.size == 1) {
-                // 更新联赛按钮样式为未选中状态。
-                updateTournamentButtonStyle(false)
-
                 // 获取当前选中的联赛 ID 在联赛列表中的索引。
-                // 如果未找到匹配的联赛 ID，则返回默认值 0。
                 val index = mViewModel.tournamentsPlain.value?.peekContent()
                     ?.indexOfFirst { it.id == selections[0] }
 
-                // 根据索引设置联赛按钮的选中状态。
-                mBinding.layoutContainer.customTabGroup.select(index ?: 0)
+                // 根据索引设置联赛按钮的选中状态
+                if (index != null) {
+                    //该分类在外部 tab 中存在, 外部【联赛】按钮状态不亮起, 外部 tab 自动选中该分类 tab
+                    // 更新联赛按钮样式为未选中状态。
+                    updateTournamentButtonStyle(false)
+                    mBinding.layoutContainer.customTabGroup.select(index)
+                } else {
+                    //该分类不在外部 tab 中, 外部【联赛】按钮状态亮起, 外部 tab 不选中任何联赛
+                    updateTournamentButtonStyle(true)
+                    // 清除联赛列表的选中状态。
+                    mBinding.layoutContainer.customTabGroup.clearLeagueListSelection()
+                }
             } else {
                 // 如果没有其他选中的联赛，此代码将默认选中第一个联赛按钮。
                 mBinding.layoutContainer.customTabGroup.select(0)
