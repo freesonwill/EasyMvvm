@@ -441,6 +441,7 @@ class SubHomeFragmentV2 : BaseFragment<SubHomeViewModel, FragmentSubHomeV2Bindin
             showTournamentListBottomSheet()
         })
 
+        setExpandBtnText(getString(R.string.league))
         setSortBtnText()
 
     }
@@ -676,6 +677,10 @@ class SubHomeFragmentV2 : BaseFragment<SubHomeViewModel, FragmentSubHomeV2Bindin
                 mBinding.layoutContainer.customTabGroup.setSortBtnText(arch.cayenne.lib.common.R.string.custom_tab_hot.getString())
             }
         }
+    }
+
+    private fun setExpandBtnText(text: String) {
+        mBinding.layoutContainer.customTabGroup.setExpandBtnText(text)
     }
 
 

@@ -10,6 +10,7 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import arch.cayenne.lib.base.ui.adapter.BaseAdapter
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.module.chat.data.compare.ChatCompare
 import arch.cayenne.lib.common.data.constants.ChatMsgType
@@ -17,6 +18,7 @@ import arch.cayenne.module.chat.data.model.ChatMsgPageBean
 import arch.cayenne.module.chat.data.model.ClickSpan
 import arch.cayenne.module.chat.data.model.ColorSpan
 import arch.cayenne.module.chat.databinding.ItemLiveChatBinding
+import arch.cayenne.module.chat.utils.ChatMsgUtils
 
 class ChatPageAdapter(
     private val specialClick: (bean: ChatMsgPageBean, clickSpan: String, clickType: ChatMsgType) -> Unit,

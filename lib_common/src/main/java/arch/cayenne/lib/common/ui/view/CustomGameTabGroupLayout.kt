@@ -99,6 +99,10 @@ class CustomGameTabGroupLayout : FrameLayout {
         binding.tvBtnSort.text = text
     }
 
+    fun setExpandBtnText(text: String) {
+        binding.tvBtnExpand.text = text
+    }
+
     /**
      * 更新聯賽按鈕樣式
      * @param hasSelection true: 有選中的聯賽，false: 沒有選中的聯賽
