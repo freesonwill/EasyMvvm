@@ -1,6 +1,7 @@
 package com.walisport.module.popup.slot.ui.fragment
 
 import android.animation.Animator
+import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.os.Bundle
 import android.view.View
@@ -72,10 +73,7 @@ class PopupSlotFragment :
             val initialAlpha = 0.5f
             val targetAlpha = 1f
             val alphaDuration = 320L
-            val translationDistance = 20f
-            val translationDuration = 80L
-            val translationBackDistance = -40f
-            val translationBackDuration = 160L
+
 
             // 假设 PopupSlotRepository 有两个布尔变量 slot0Animated 和 slot1Animated
             if (showList.isNotEmpty() && showList[0]) {
@@ -84,17 +82,12 @@ class PopupSlotFragment :
                     mBinding.popupSlot0.apply {
                         alpha = initialAlpha
                         animate().alpha(targetAlpha).setDuration(alphaDuration).start()
-                        animate()
-                            .translationXBy(translationDistance).setDuration(translationDuration)
-                            .withEndAction {
-                                animate()
-                                    .translationXBy(translationBackDistance)
-                                    .setDuration(translationBackDuration).withEndAction {
-                                        animate()
-                                            .translationXBy(translationDistance)
-                                            .setDuration(translationDuration).start()
-                                    }.start()
-                            }.start()
+                        ObjectAnimator.ofFloat(this, "rotation", -10f, 10f, -10f, 10f, 0f).apply {
+                            duration = 500 // 总动画时长，可根据需要调整
+                            repeatCount = 0
+                            repeatMode = ValueAnimator.RESTART
+                            start()
+                        }
                     }
                     mViewModel.slot0Animated = true
                 }
@@ -108,17 +101,12 @@ class PopupSlotFragment :
                     mBinding.popupSlot1.apply {
                         alpha = initialAlpha
                         animate().alpha(targetAlpha).setDuration(alphaDuration).start()
-                        animate()
-                            .translationXBy(translationDistance).setDuration(translationDuration)
-                            .withEndAction {
-                                animate()
-                                    .translationXBy(translationBackDistance)
-                                    .setDuration(translationBackDuration).withEndAction {
-                                        animate()
-                                            .translationXBy(translationDistance)
-                                            .setDuration(translationDuration).start()
-                                    }.start()
-                            }.start()
+                        ObjectAnimator.ofFloat(this, "rotation", -10f, 10f, -10f, 10f, 0f).apply {
+                            duration = 500 // 总动画时长，可根据需要调整
+                            repeatCount = 0
+                            repeatMode = ValueAnimator.RESTART
+                            start()
+                        }
                     }
                     mViewModel.slot1Animated = true
                 }
