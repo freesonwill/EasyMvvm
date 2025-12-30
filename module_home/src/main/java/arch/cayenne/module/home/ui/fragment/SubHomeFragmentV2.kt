@@ -198,6 +198,8 @@ class SubHomeFragmentV2 : BaseFragment<SubHomeViewModel, FragmentSubHomeV2Bindin
                 } else {
                     //该分类不在外部 tab 中, 外部【联赛】按钮状态亮起, 外部 tab 不选中任何联赛
                     updateTournamentButtonStyle(true)
+                    // 设置当前选中的联赛 ID 列表。
+                    mViewModel.setCurrentTournamentIdList(selections)
                     // 清除联赛列表的选中状态。
                     mBinding.layoutContainer.customTabGroup.clearLeagueListSelection()
                 }
