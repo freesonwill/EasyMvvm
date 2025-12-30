@@ -93,24 +93,22 @@ class LiveBetOnRepository(
     private fun matchSelectionInsertBean(
         match: LiveMatchBean,
         selectionBean: LiveSelectionBean
-    ): BetInsertBean? {
-        match.let {
-            return BetInsertBean(
-                sportId = match.basicInfo.sportId,
-                matchId = match.matchId,
-                marketId = selectionBean.marketId,
-                marketName = selectionBean.marketName,
-                selectionId = selectionBean.selectionId,
-                name = selectionBean.shortName,
-                odds = selectionBean.odds.toOdds(),
-                leagueName = match.basicInfo.tournamentName,
-                matchName = match.basicInfo.matchName,
-                isActive = selectionBean.active,
-                isPlaying = match.basicInfo.status == 5,
-                isParlay = selectionBean.parlay,
-                provider = match.basicInfo.provider
-            )
-        }
-        return null
+    ): BetInsertBean {
+        return BetInsertBean(
+            sportId = match.basicInfo.sportId,
+            matchId = match.matchId,
+            marketId = selectionBean.marketId,
+            marketName = selectionBean.marketName,
+            score = match.liveInfo.score,
+            selectionId = selectionBean.selectionId,
+            name = selectionBean.shortName,
+            odds = selectionBean.odds.toOdds(),
+            leagueName = match.basicInfo.tournamentName,
+            matchName = match.basicInfo.matchName,
+            isActive = selectionBean.active,
+            isPlaying = match.basicInfo.status == 5,
+            isParlay = selectionBean.parlay,
+            provider = match.basicInfo.provider
+        )
     }
 }

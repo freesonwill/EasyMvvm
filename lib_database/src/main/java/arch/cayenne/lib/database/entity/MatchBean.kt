@@ -159,7 +159,11 @@ data class SelectionBeanLite(
     val parlay: Boolean,
     var isSelected: Boolean = false,
     var trend: Int = 0,
-)
+){
+    fun oddsDisplay(oddsType:Int):Int {
+        return odds - 100 * oddsType
+    }
+}
 
 data class OldSelectionLite(
     val selectionId: Long,

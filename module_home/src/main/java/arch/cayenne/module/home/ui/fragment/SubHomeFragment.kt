@@ -61,6 +61,9 @@ import kotlinx.coroutines.launch
 import java.util.Locale
 import kotlin.reflect.KClass
 
+/**
+ * 今日Fragment
+ */
 class SubHomeFragment : BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>(),
     ISubFragmentLifecycle {
     override val vbClass: KClass<FragmentSubHomeBinding> = FragmentSubHomeBinding::class

@@ -3,6 +3,7 @@ package com.walisport.module.me.ui.fragment
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.GridLayoutManager
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.ui.animation.AnimationController
@@ -29,9 +30,11 @@ import kotlin.reflect.KClass
  * @date: 2025/10/17 16:52
  * @description:
  */
-class GameCollectionsTabFragment : BaseFragment<GameCollectionTabViewModel, FragmentGameCollectionsBinding>() {
+class GameCollectionsTabFragment :
+    BaseFragment<GameCollectionTabViewModel, FragmentGameCollectionsBinding>() {
 
-    override val vbClass: KClass<FragmentGameCollectionsBinding> = FragmentGameCollectionsBinding::class
+    override val vbClass: KClass<FragmentGameCollectionsBinding> =
+        FragmentGameCollectionsBinding::class
     override val vmClass: KClass<GameCollectionTabViewModel> = GameCollectionTabViewModel::class
 
     private val parentViewModel: MeViewModel by viewModels({ requireParentFragment() })
@@ -44,8 +47,8 @@ class GameCollectionsTabFragment : BaseFragment<GameCollectionTabViewModel, Frag
             rvRecently.layoutManager = GridLayoutManager(requireContext(), 3)
             val itemDecoration = GridSpacingItemDecoration(
                 spanCount = 3,
-                horizontalSpacing = 9.dp2px,
-                verticalSpacing = 11.dp2px,
+                horizontalSpacing = 12.dp2px,
+                verticalSpacing = 12.dp2px,
                 includeEdge = false // 確保邊緣沒有空隙
             )
             rvRecently.addItemDecoration(itemDecoration)
@@ -75,8 +78,8 @@ class GameCollectionsTabFragment : BaseFragment<GameCollectionTabViewModel, Frag
                 if (list.size <= 10) {
                     mViewModel.loadNextPage()
                 }
-                mBinding.rvRecently.post{
-                    parentViewModel.setOnHeight(mBinding.rvRecently.height)
+                mBinding.rvRecently.post {
+                    setHeight()
                 }
             }
         }
@@ -96,13 +99,13 @@ class GameCollectionsTabFragment : BaseFragment<GameCollectionTabViewModel, Frag
                         DynamicStateLayout.States.DATA_EMPTY,
                         com.walisport.module.business.common.R.string.game_data_empty.getString()
                     )
-                    parentViewModel.setOnHeight(mBinding.clDynamics.height)
-
+                    setHeight()
                 }
 
                 DataState.NoMoreData -> {
                     mBinding.rvRecently.visibility = View.VISIBLE
                     mBinding.clDynamics.visibility = View.GONE
+                    setHeight()
                 }
 
                 DataState.NetworkUnavailable -> {
@@ -112,7 +115,7 @@ class GameCollectionsTabFragment : BaseFragment<GameCollectionTabViewModel, Frag
                         DynamicStateLayout.States.NETWORK_ANOMALY(),
                         arch.cayenne.lib.common.R.string.error_net.getString()
                     )
-                    parentViewModel.setOnHeight(mBinding.clDynamics.height)
+                    setHeight()
                 }
 
                 else -> {
@@ -120,30 +123,38 @@ class GameCollectionsTabFragment : BaseFragment<GameCollectionTabViewModel, Frag
             }
         }
 
-        mViewModel.totalCountLiveData.observe(viewLifecycleOwner){
-            it?.let { count->
+        mViewModel.totalCountLiveData.observe(viewLifecycleOwner) {
+            it?.let { count ->
                 parentViewModel.setGameFavouriteCount(count)
             }
         }
 
         // 監聽收藏變化，若有變化則重新加載數據
         mViewModel.favouriteChangedLiveData.observe(viewLifecycleOwner) { isChanged ->
-            if (isChanged) {
-                mViewModel.reload()
+            launch(Lifecycle.State.RESUMED) {
+                if (isChanged) {
+                    mViewModel.reload()
+                }
             }
         }
 
         mViewModel.reload()
     }
 
-    override fun onResume() {
-        if (mBinding.clDynamics.visibility == View.VISIBLE)
-            parentViewModel.setOnHeight(mBinding.clDynamics.height)
-        else
-            if (mBinding.rvRecently.height == 0)
+    fun setHeight() {
+        launch(Lifecycle.State.RESUMED) {
+            if (mBinding.clDynamics.visibility == View.VISIBLE)
                 parentViewModel.setOnHeight(mBinding.clDynamics.height)
             else
-                parentViewModel.setOnHeight(mBinding.rvRecently.height)
+                if (mBinding.rvRecently.height == 0)
+                    parentViewModel.setOnHeight(mBinding.clDynamics.height)
+                else
+                    parentViewModel.setOnHeight(mBinding.rvRecently.height)
+        }
+    }
+
+    override fun onResume() {
+        setHeight()
         super.onResume()
     }
 }

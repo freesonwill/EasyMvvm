@@ -7,20 +7,18 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.utils.LogUtils
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
+import arch.cayenne.lib.common.ui.fragment.AllInfoDialogFragment
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout.States
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
-import com.walisport.module.hall.R
-import com.walisport.module.hall.data.GameAllRankingListData
 import com.walisport.module.hall.databinding.FragmentGameAllRankingListBinding
 import com.walisport.module.hall.ui.adapter.GameAllRankingListAdapter
 import com.walisport.module.hall.ui.viewmodel.LatestBetViewModel
 import kotlin.reflect.KClass
-import arch.cayenne.lib.common.utils.ext.DimensionExt.px2dp
+
 /**
  * 最新投注fragment
  */
+
 class LatestBetFragment : BaseFragment<LatestBetViewModel , FragmentGameAllRankingListBinding>() {
     companion object {
         fun newInstance() = LatestBetFragment()
@@ -30,7 +28,6 @@ class LatestBetFragment : BaseFragment<LatestBetViewModel , FragmentGameAllRanki
         FragmentGameAllRankingListBinding::class
     override val vmClass: KClass<LatestBetViewModel> = LatestBetViewModel::class
 
-
     @SuppressLint("ClickableViewAccessibility")
     override fun initView(savedInstanceState: Bundle?) {
         with(mBinding) {
@@ -39,14 +36,17 @@ class LatestBetFragment : BaseFragment<LatestBetViewModel , FragmentGameAllRanki
             rvCurrentRank.adapter = GameAllRankingListAdapter(this@LatestBetFragment)
         }
     }
+
     fun getContentHeight(): Int {
          return 1469
     }
+
     override fun onResume() {
         LogUtils.e("GameAllRankingTodayFragment-----LatestBetFragment-----${mBinding.root.height}")
 
         super.onResume()
     }
+
     override fun initListener() {
     }
 

@@ -48,6 +48,18 @@ class SearchFragment : SearchBaseFragment<SearchViewModel, FragmentSearchBinding
         }
     }
 
+    // 遊戲分類匹配 Fragment（例如：輸入「電子」時顯示）
+    private var gameContentFragment: SearchGameContentFragment? = null
+
+    companion object {
+        // 匹配關鍵字列表（目前僅「電子」，未來可擴展）
+        private val MATCH_KEYWORDS = setOf("電子")
+        // 匹配關鍵字對應的 gameTypeId（例如：電子 = 4）
+        private val KEYWORD_TO_GAME_TYPE_ID = mapOf(
+            "電子" to 4
+        )
+    }
+
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
         setHistory()
@@ -56,6 +68,80 @@ class SearchFragment : SearchBaseFragment<SearchViewModel, FragmentSearchBinding
         contentBinding.root.touchBackPressed()
         
         autoShowKeyboard()
+        setupGameContentFragment()
+    }
+
+    /**
+     * 設置遊戲分類匹配 Fragment 容器
+     */
+    private fun setupGameContentFragment() {
+        // Fragment 將在關鍵字匹配時動態添加
+    }
+
+    /**
+     * 判斷關鍵字是否為遊戲分類匹配關鍵字（例如：「電子」）
+     */
+    private fun isGameCategoryKeyword(keyword: String?): Boolean {
+        return !keyword.isNullOrBlank() && MATCH_KEYWORDS.contains(keyword.trim())
+    }
+
+    /**
+     * 重寫基類方法，處理遊戲分類匹配關鍵字（例如：「電子」）。
+     * 當輸入匹配關鍵字時，顯示 SearchGameContentFragment 而不是推薦列表。
+     */
+    override fun handleKeywordChanged(keyword: String): Boolean {
+        val trimmedKeyword = keyword.trim()
+        
+        if (trimmedKeyword.isNotEmpty() && isGameCategoryKeyword(trimmedKeyword)) {
+            // 顯示遊戲分類匹配頁面
+            showGameContentFragment(trimmedKeyword)
+            return true  // 已處理，不需要顯示推薦列表
+        } else {
+            // 隱藏遊戲分類匹配頁面
+            hideGameContentFragment()
+            return false  // 未處理，繼續使用推薦列表
+        }
+    }
+
+    /**
+     * 顯示遊戲分類匹配 Fragment（當輸入匹配關鍵字時）
+     */
+    fun showGameContentFragment(keyword: String) {
+        val gameTypeId = KEYWORD_TO_GAME_TYPE_ID[keyword.trim()] ?: return
+        with(contentBinding) {
+            // 隱藏歷史記錄與熱門搜索區塊，改為顯示遊戲內容
+            clHistory.visibility = View.GONE
+            clHotWord.visibility = View.GONE
+            dynamicState.visibility = View.GONE
+
+            // 顯示遊戲內容容器
+            flGameContentContainer.visibility = View.VISIBLE
+
+            // 如果 Fragment 尚未添加，則添加它
+            if (gameContentFragment == null) {
+                gameContentFragment = SearchGameContentFragment.newInstance(gameTypeId, keyword)
+                childFragmentManager.beginTransaction()
+                    .replace(R.id.fl_game_content_container, gameContentFragment!!)
+                    .commitAllowingStateLoss()
+            }
+        }
+    }
+
+    /**
+     * 隱藏遊戲分類匹配 Fragment（當關鍵字不匹配或清空時）
+     */
+    fun hideGameContentFragment() {
+        with(contentBinding) {
+            flGameContentContainer.visibility = View.GONE
+            // 還原歷史記錄區塊的可見性（實際內容是否顯示由各自觀察者決定）
+            clHistory.visibility = View.VISIBLE
+            gameContentFragment?.let { fragment ->
+                childFragmentManager.beginTransaction()
+                    .remove(fragment)
+                    .commitAllowingStateLoss()
+                gameContentFragment = null
+            }
+        }
     }
     
     /**
@@ -129,6 +215,7 @@ class SearchFragment : SearchBaseFragment<SearchViewModel, FragmentSearchBinding
         historyAdapter?.setOnDataChangedListener(null)
         historyAdapter = null
         contentBinding.rvHotWord.adapter = null
+        hideGameContentFragment()
         super.onDestroyView()
     }
 

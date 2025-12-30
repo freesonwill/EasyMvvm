@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <arch.cayenne.lib.common.ui.view.RoundedImageView
+        android:id="@+id/iv_game_cover"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintDimensionRatio="111:146"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:roundedCornerRadius="9dp" />
+
+
+    <LinearLayout
+        android:id="@+id/ll_count"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_18"
+        android:paddingTop="@dimen/dp_2"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/iv_game_cover">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:layout_width="@dimen/dp_9"
+            android:layout_height="@dimen/dp_9"
+            android:layout_marginTop="@dimen/dp_1"
+            android:background="@drawable/ic_game_dot" />
+
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
+            android:id="@+id/tv_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_2"
+            android:gravity="center_vertical"
+            android:text="553"
+            android:textColor="@color/color_FFFFFF"
+            android:textSize="12sp"
+            app:skinnableFontWeight="600" />
+
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_3"
+            android:layout_marginBottom="@dimen/dp_1"
+            android:text="@string/online_count"
+            android:textColor="@color/color_999999"
+            android:textSize="12sp" />
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

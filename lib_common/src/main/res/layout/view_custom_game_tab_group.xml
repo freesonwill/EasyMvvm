@@ -57,7 +57,6 @@
             android:paddingBottom="@dimen/dp_2"
             android:layout_marginStart="@dimen/dp_5"
             android:layout_marginEnd="@dimen/dp_1"
-            android:text="@string/custom_tab_hot"
             android:textColor="@color/color_C0C0C0"
             android:textSize="@dimen/sp_14" />
 

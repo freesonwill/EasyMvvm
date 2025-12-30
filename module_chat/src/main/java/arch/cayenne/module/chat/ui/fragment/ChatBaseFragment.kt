@@ -235,7 +235,7 @@ abstract class ChatBaseFragment : BaseFragment<ChatHomeViewModel, FragmentLiveCh
                         onAnimEnd = {
                             updateInputIcon(it)
                         })
-                    keyboardChangeClick(KeyBoardType.SOFT_KEYBOARD, 8)
+                    keyboardChangeClick(KeyBoardType.SOFT_KEYBOARD,6)
                 }
             }
 
@@ -311,6 +311,7 @@ abstract class ChatBaseFragment : BaseFragment<ChatHomeViewModel, FragmentLiveCh
 
     private fun toChooseBet() {
         findNavController().navigate("walisport://module_betslip/chatChooseBetFragment".deeplink())
+        ChatMsgUtils.checkAndReplaceBetShareInEditable(mBinding.chatEtInput)
     }
 
     private fun initSoftKeyBoardFragment() {
@@ -578,7 +579,7 @@ abstract class ChatBaseFragment : BaseFragment<ChatHomeViewModel, FragmentLiveCh
      * */
     fun showChat() {
         chatAtHelper.dismissWindow()
-//        updateKeyboardView(false)
+        updateKeyboardView(KeyBoardType.CHAT)
         emojiLayoutSize(true)
         emojiPopupListen?.invoke(false)
         mViewModel.listenCurrentKeyBoardType(KeyBoardType.CHAT)
@@ -589,7 +590,7 @@ abstract class ChatBaseFragment : BaseFragment<ChatHomeViewModel, FragmentLiveCh
      * 展示软件盘
      * */
     private fun showSoftKeyBoard() {
-//        updateKeyboardView(true)
+        updateKeyboardView(KeyBoardType.SOFT_KEYBOARD)
         emojiLayoutSize(false)
         emojiPopupListen?.invoke(true)
         mViewModel.listenCurrentKeyBoardType(KeyBoardType.SOFT_KEYBOARD)
@@ -599,15 +600,15 @@ abstract class ChatBaseFragment : BaseFragment<ChatHomeViewModel, FragmentLiveCh
      * 展示表情界面
      * */
     private fun showEmoji() {
-//        updateKeyboardView(true)
+        updateKeyboardView(KeyBoardType.EMOJI)
 //        softKeyBoardManager.etRequestFocus()
         emojiLayoutSize(false)
         emojiPopupListen?.invoke(true)
         mViewModel.listenCurrentKeyBoardType(KeyBoardType.EMOJI)
     }
 
-    private fun updateKeyboardView(isVisible: Boolean) {
-
+    private fun updateKeyboardView(keyBoardType: KeyBoardType) {
+        mBinding.topLine.isVisible = keyBoardType != KeyBoardType.CHAT
     }
 
     private fun updateInputIcon(isVisible: Boolean) {

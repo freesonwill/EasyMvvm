@@ -47,6 +47,8 @@
 
     <string name="match_query_date_no_data">No matching events, try adjusting your filters.</string>
     <string name="super_competition_title">Super</string>
+    <string name="not_started">Not Started</string>
+    <string name="league">League</string>
 
 
 

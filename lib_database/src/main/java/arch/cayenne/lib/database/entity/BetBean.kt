@@ -47,6 +47,7 @@ data class BetSelectionBean(
     val matchId: Long,
     val marketId: Long, // 盘口ID
     var marketName: String, // 盘口名称 ex. 讓分盤
+    val score: String, // 比分 ex. 1:0
     val selectionId: Long, // 盘口ID
     var name: String, // 盘口名称 ex. 中國 (+1.5)
     var odds: Int, // 盘口赔率 ex. 1.9
