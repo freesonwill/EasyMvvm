@@ -441,7 +441,6 @@ class SubHomeFragmentV2 : BaseFragment<SubHomeViewModel, FragmentSubHomeV2Bindin
             showTournamentListBottomSheet()
         })
 
-        setExpandBtnText("联赛")
         setExpandBtnText(getString(R.string.league))
         setSortBtnText()
 
