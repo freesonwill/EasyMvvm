@@ -28,12 +28,19 @@ internal object ViewHelper {
         } else {
             "@${bean.odds.getOdds(false)}"
         }
+        //Todo 验收后统一去掉
         if(odds == "@0.0"){
             "bindBetSheet:$odds,--${bean.odds}-size:$size--oddType:${manager.getValue(UserDataKey.KEY_ODDS, 0)}--bean:$bean".loge()
         }
         binding.tvOdds.text = odds
         binding.tvSelectionName.text = bean.name
-        binding.tvMarket.text = bean.marketName
+        binding.tvMarket.text = bean.score.let {
+            if (it.isBlank()) {
+                bean.marketName
+            } else {
+                bean.marketName + "（%s）".format(it.replace(":", "-"))
+            }
+        }
         binding.tvMatchName.text = bean.matchName
         binding.tvLeagueName.text = bean.leagueName
         binding.tvStatus.isVisible = bean.isPlaying

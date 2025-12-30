@@ -211,11 +211,12 @@ abstract class BaseMatchRepository(
         match: MatchBean,
         market: MarketBeanLite,
         selectionBean: SelectionBeanLite
-    ): BetInsertBean? = BetInsertBean(
+    ): BetInsertBean = BetInsertBean(
         sportId = match.basicInfo.sportId,
         matchId = selectionBean.matchId,
         marketId = selectionBean.marketId,
         marketName = market.marketName,
+        score = match.liveInfo.score,
         selectionId = selectionBean.selectionId,
         name = selectionBean.name,
         odds = selectionBean.odds,
