@@ -23,6 +23,7 @@ import arch.cayenne.module.chat.data.model.ChatMsgPageBean
 import arch.cayenne.module.chat.data.model.EmojiModel
 import arch.cayenne.module.chat.data.model.MentionSpan
 import arch.cayenne.module.chat.manager.ChatServerController
+import arch.cayenne.module.chat.utils.ChatMsgUtils
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -140,7 +141,7 @@ class ChatHomeViewModel() : BaseViewModel() {
      * */
     fun sendMsgToServer(content: String, refUid: List<Long>? = null, chatType: ChatType, msgType:MsgType, extraData: Map<String, String>?,) {
         matchId?.let {
-            chatServer.sendMsgToServer(it, content, chatType, msgType, extraData,refUid)
+            chatServer.sendMsgToServer(it, ChatMsgUtils.replaceNoDivideChar(content), chatType, msgType, extraData,refUid)
         }
     }
 
