@@ -190,7 +190,7 @@ class SubHomeFragmentV2 : BaseFragment<SubHomeViewModel, FragmentSubHomeV2Bindin
                     ?.indexOfFirst { it.id == selections[0] }
 
                 // 根据索引设置联赛按钮的选中状态
-                if (index != null) {
+                if (index != null && index in 0..<mBinding.layoutContainer.customTabGroup.tabCount()) {
                     //该分类在外部 tab 中存在, 外部【联赛】按钮状态不亮起, 外部 tab 自动选中该分类 tab
                     // 更新联赛按钮样式为未选中状态。
                     updateTournamentButtonStyle(false)
