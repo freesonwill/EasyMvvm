@@ -143,6 +143,7 @@ class HallCategoryFragment : BaseFragment<GameCategoryViewModel , FragmentHallCa
         }
         mViewModel.getSuppliers(category)
         mBinding.root.touchBackPressed()
+        setSortBtnText()
     }
 
     override fun initListener() {
