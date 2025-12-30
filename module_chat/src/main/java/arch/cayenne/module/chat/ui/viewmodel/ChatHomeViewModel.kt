@@ -179,13 +179,12 @@ class ChatHomeViewModel() : BaseViewModel() {
                 val end = spannable.getSpanEnd(it)
                 atIntRanges.add(IntRange(start, end))
             }
-            val localMsg = chatServer.addLocalMsg(editable.toString(),chatType,MsgType.MSG_TYPE_TEXT,null) ?: return null
 
-            msgBean = ChatMsgPageBean.toChatPageBean(localMsg, spans.first().msgType, atIntRanges)
+            val localMsg = chatServer.addLocalMsg(editable.toString(),chatType,MsgType.getMsgType(spans.first().msgType.value),null) ?: return null
+            msgBean = ChatMsgPageBean.toChatPageBean(localMsg,  atIntRanges)
         } else {
             val localMsg = chatServer.addLocalMsg(editable.toString(),chatType,MsgType.MSG_TYPE_TEXT, null) ?: return null
-
-            msgBean = ChatMsgPageBean.toChatPageBean(localMsg, ChatMsgType.TEXT)
+            msgBean = ChatMsgPageBean.toChatPageBean(localMsg)
         }
         return msgBean
     }
@@ -200,7 +199,7 @@ class ChatHomeViewModel() : BaseViewModel() {
             return null
         }
         val chatMsg = chatServer.addLocalMsg(emojiKey,chatType,MsgType.MSG_TYPE_TEXT,null) ?: return null
-        return ChatMsgPageBean.toChatPageBean(chatMsg, ChatMsgType.EMOJI)
+        return ChatMsgPageBean.toChatPageBean(chatMsg)
     }
 
 

@@ -3,6 +3,8 @@ package arch.cayenne.module.chat.data.model
 import arch.cayenne.lib.websocket.chat.data.ChatMsg
 import arch.cayenne.lib.common.data.constants.ChatMsgType
 import arch.cayenne.lib.websocket.chat.data.ChatRefUser
+import arch.cayenne.lib.websocket.chat.data.MsgType
+import arch.cayenne.module.chat.utils.ChatMsgUtils
 
 /**
  * @author: wenxi
@@ -21,26 +23,31 @@ data class ChatMsgPageBean(
     val atRange: List<IntRange>? = null,
     val replaceUserName: String? = null,
     val refUid: List<Long>? = null,
-    val refInfos:  Map<Long, ChatRefUser>? = null,
-    val extraData:Map<String,String>?=null
+    val refInfos: Map<Long, ChatRefUser>? = null,
+    val extraData: Map<String, String>? = null
 ) : Comparable<ChatMsgPageBean> {
+
     companion object {
+
         fun toChatPageBean(
             bean: ChatMsg,
-            msgType: ChatMsgType,
             atRange: List<IntRange>? = null
         ): ChatMsgPageBean {
+
+            val content = if (bean.msgType == MsgType.MSG_TYPE_SHARE) {
+                ChatMsgUtils.addNoDivideCharInBetShar(bean.content)
+            } else bean.content
             return ChatMsgPageBean(
                 uid = bean.uid,
                 userName = bean.userName,
                 avatarId = bean.avatarId,
                 msgId = bean.msgId,
-                content = bean.content,
+                content = content,
                 timestamp = bean.timestamp,
                 refUid = bean.refUid,
                 refInfos = bean.refInfos,
                 onlyForSelf = bean.onlyForSelf,
-                msgType = msgType,
+                msgType = ChatMsgType.getChatMsgType(bean.msgType),
                 atRange = atRange
             )
         }

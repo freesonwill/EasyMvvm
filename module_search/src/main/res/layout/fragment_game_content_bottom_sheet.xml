@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<arch.cayenne.lib.skin.widget.SkinnableConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ll_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingTop="@dimen/dp_2"
+    android:fitsSystemWindows="true"
+    android:background="@drawable/bg_bottom_game_sheet_round_top">
+
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
+        android:id="@+id/tv_section_title"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_50"
+        android:paddingTop="@dimen/dp_12"
+        android:text="供应商"
+        android:textColor="@color/color_FFFFFF"
+        android:textSize="15sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+         />
+
+    <arch.cayenne.lib.skin.widget.SkinnableView
+        android:id="@+id/ll_search_bar_supplier"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_36"
+        android:layout_marginHorizontal="@dimen/dp_16"
+        android:background="@drawable/game_search_rounded_background"
+        android:gravity="center_vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_section_title" />
+
+    <arch.cayenne.lib.skin.widget.SkinnableImageView
+        android:id="@+id/iv_search_supplier"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="7dp"
+        android:src="@drawable/search_icon"
+        app:layout_constraintBottom_toBottomOf="@id/ll_search_bar_supplier"
+        app:layout_constraintEnd_toStartOf="@id/ce_search_supplier"
+        app:layout_constraintStart_toStartOf="@id/ll_search_bar_supplier"
+        app:layout_constraintTop_toTopOf="@id/ll_search_bar_supplier" />
+
+    <arch.cayenne.lib.common.ui.view.ClearableEditText
+        android:id="@+id/ce_search_supplier"
+        style="@style/CustomBottomToolbarEditStyle"
+        android:paddingTop="1dp"
+        android:layout_width="0dp"
+        android:paddingStart="@dimen/dp_2"
+        android:layout_weight="1"
+        android:background="@null"
+        android:drawablePadding="@dimen/dp_10"
+        android:imeOptions="actionSearch"
+        android:singleLine="true"
+        android:textColor="@color/game_list_search_text"
+        android:textColorHint="@color/game_list_search_hint"
+        app:layout_constraintBottom_toBottomOf="@id/ll_search_bar_supplier"
+        app:layout_constraintEnd_toEndOf="@id/ll_search_bar_supplier"
+        app:layout_constraintStart_toEndOf="@id/iv_search_supplier"
+        app:layout_constraintTop_toTopOf="@id/ll_search_bar"
+        tools:ignore="MissingConstraints" />
+
+    <arch.cayenne.lib.skin.widget.SkinnableImageView
+        android:id="@+id/iv_home_league_collapse"
+        android:layout_width="63dp"
+        android:layout_height="@dimen/dp_52"
+        android:paddingStart="25dp"
+        android:paddingTop="@dimen/dp_4"
+        android:paddingEnd="8dp"
+        android:paddingBottom="@dimen/dp_12"
+        android:src="@drawable/ic_game_close"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/group_top"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+         />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_tournament_list"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/dp_5"
+        android:paddingBottom="@dimen/dp_20"
+        android:overScrollMode="never"
+        android:scrollbars="none"
+        app:layout_constraintVertical_bias="0"
+        app:layout_constraintBottom_toTopOf="@+id/tv_reset"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ll_search_bar_supplier" />
+
+    <arch.cayenne.lib.common.ui.view.CustomFilterSideBarView
+        android:id="@+id/ll_index_container"
+        android:layout_width="120dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="@dimen/dp_12"
+        android:layout_marginEnd="@dimen/dp_10"
+        android:layout_marginBottom="@dimen/dp_20"
+        android:gravity="end"
+        app:layout_constraintBottom_toTopOf="@+id/tv_reset"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/rv_tournament_list" />
+
+
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
+        android:id="@+id/tv_reset"
+        android:layout_width="@dimen/dp_162"
+        android:layout_height="@dimen/dp_48"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_19"
+        android:layout_marginBottom="51dp"
+        android:background="@drawable/selector_game_round_button_bg"
+        android:gravity="center"
+        android:text="重置"
+        android:textColor="@color/game_selector_round_button_text"
+        android:textSize="@dimen/sp_14"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/tv_confirm"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
+        android:id="@+id/tv_confirm"
+        android:layout_width="@dimen/dp_162"
+        android:layout_height="@dimen/dp_48"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginBottom="51dp"
+        android:background="@drawable/game_shape_round_button_confirm_bg"
+        android:gravity="center"
+        android:text="@string/btn_confirm"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/sp_14"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/tv_reset" />
+
+    <arch.cayenne.lib.common.ui.view.DynamicStateLayout
+        android:id="@+id/cl_dynamics"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/color_1E1E1E"
+        app:layout_constraintBottom_toTopOf="@+id/tv_reset"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ll_search_bar_supplier"
+         />
+</arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
+

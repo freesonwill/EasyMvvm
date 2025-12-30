@@ -219,13 +219,12 @@ abstract class ChatBaseFragment : BaseFragment<ChatHomeViewModel, FragmentLiveCh
                     val data =
                         it.getParcelable<BetShareBean>(ChatChooseBetFragment.SHARE_BET_RESULT)
                     val type = it.getInt(ChatChooseBetFragment.SHARE_BET_TYPE, 0)
-                    val content = data?.content?.let { betStr ->
-                        ChatMsgUtils.addNoDivideCharInBetShar(betStr)
-                    } ?: ""
+                    val tv = data?.content?.let { ChatMsgUtils.addNoDivideCharInBetShar(it) } ?: ""
                     chatAtHelper.addShareBetSpan(
-                        content,
+                        tv,
                         if (type == 0) ChatMsgType.BET_GAME else ChatMsgType.BET_SPORT
                     )
+                    keyboardChangeClick(KeyBoardType.SOFT_KEYBOARD, 8)
                     SoftKeyBoardAnim.etAnimWhenEtContentChange(
                         mBinding,
                         mViewModel.currentKeyBoardType,

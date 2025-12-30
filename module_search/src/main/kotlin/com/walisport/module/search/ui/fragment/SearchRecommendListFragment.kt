@@ -24,6 +24,7 @@ import com.walisport.module.search.ui.viewmodel.SearchRecommendError
 import com.walisport.module.search.ui.viewmodel.SearchRecommendListViewModel
 import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
+import arch.cayenne.lib.common.R as RC
 class SearchRecommendListFragment : BaseFragment<SearchRecommendListViewModel, FragmentSearchRecommendListBinding>() {
     override val vbClass: KClass<FragmentSearchRecommendListBinding>
         get() = FragmentSearchRecommendListBinding::class
@@ -97,7 +98,7 @@ class SearchRecommendListFragment : BaseFragment<SearchRecommendListViewModel, F
     private fun updateEmptyState(isEmpty: Boolean) {
         with(mBinding) {
             if (isEmpty) {
-                // 顯示空狀態，隱藏列表
+                // 關鍵字有輸入但沒有任何推薦詞時，顯示「暫無搜索數據」文案
                 rvSearchRecommend.visibility = View.GONE
                 clEmptyState.visibility = View.VISIBLE
             } else {
