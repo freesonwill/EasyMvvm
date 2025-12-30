@@ -186,15 +186,9 @@ class ChatATHelper(
     fun addShareBetSpan(betStr: String, msgType: ChatMsgType) {
         chatEtInput.apply {
             text?.let {
-                var nStart: Int = -1
-                var betStrLength = -1
-                if (selectionStart > 0) {
-                    nStart = selectionStart - 1 //光标在@后面
-                    betStrLength = betStr.length + 1 //少了个@
-                } else {
-                    nStart = selectionStart
-                    betStrLength = betStr.length
-                }
+                val nStart: Int = selectionStart
+                val betStrLength = betStr.length
+
                 it.insert(selectionStart, betStr)
                 addSpecialMentionSpan(msgType, this, betStr, nStart, betStrLength)//+ @ 空格
             }

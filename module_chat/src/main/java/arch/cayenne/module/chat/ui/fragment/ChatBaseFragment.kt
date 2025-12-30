@@ -234,6 +234,7 @@ abstract class ChatBaseFragment : BaseFragment<ChatHomeViewModel, FragmentLiveCh
                         onAnimEnd = {
                             updateInputIcon(it)
                         })
+                    keyboardChangeClick(KeyBoardType.SOFT_KEYBOARD,6)
                 }
             }
 
@@ -309,6 +310,7 @@ abstract class ChatBaseFragment : BaseFragment<ChatHomeViewModel, FragmentLiveCh
 
     private fun toChooseBet() {
         findNavController().navigate("walisport://module_betslip/chatChooseBetFragment".deeplink())
+        ChatMsgUtils.checkAndReplaceBetShareInEditable(mBinding.chatEtInput)
     }
 
     private fun initSoftKeyBoardFragment() {
