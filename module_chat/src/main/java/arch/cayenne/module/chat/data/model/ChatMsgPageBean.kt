@@ -4,9 +4,6 @@ import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.websocket.chat.data.ChatMsg
 import arch.cayenne.lib.common.data.constants.ChatMsgType
 import arch.cayenne.lib.websocket.chat.data.ChatRefUser
-import arch.cayenne.lib.websocket.chat.data.ChatType
-import arch.cayenne.lib.websocket.chat.data.MsgType
-import arch.cayenne.module.chat.utils.ChatMsgUtils
 
 /**
  * @author: wenxi
@@ -22,7 +19,6 @@ data class ChatMsgPageBean(
     val timestamp: String,
     val onlyForSelf: Int,
     val msgType: ChatMsgType,
-    val atRange: List<IntRange>? = null,
     val replaceUserName: String? = null,
     val refUid: List<Long>? = null,
     val refInfos: Map<Long, ChatRefUser>? = null,
@@ -33,7 +29,6 @@ data class ChatMsgPageBean(
 
         fun toChatPageBean(
             bean: ChatMsg,
-            atRange: List<IntRange>? = null
         ): ChatMsgPageBean {
                 "toChatPageBean content=${bean.content}".logd("ChatMsgPageBean")
             val content = bean.content
@@ -49,7 +44,6 @@ data class ChatMsgPageBean(
                 onlyForSelf = bean.onlyForSelf,
                 replaceUserName = bean.replaceUserName,
                 msgType = ChatMsgType.getChatMsgType(bean.msgType),
-                atRange = atRange,
                 extraData = bean.extraData
             )
         }

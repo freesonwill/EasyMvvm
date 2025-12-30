@@ -208,7 +208,7 @@ class ChatHomeViewModel() : BaseViewModel() {
                 refUids,
                 users
             ) ?: return null
-            msgBean = ChatMsgPageBean.toChatPageBean(localMsg, atIntRanges)
+            msgBean = ChatMsgPageBean.toChatPageBean(localMsg)
             "localMsg msgBean:${Gson().toJson(localMsg)}".logd(TAG)
         } else {
             val localMsg =
