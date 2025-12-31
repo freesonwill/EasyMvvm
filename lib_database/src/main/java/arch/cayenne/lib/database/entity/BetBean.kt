@@ -45,6 +45,7 @@ data class BetSelectionBean(
     val betId: Long,
     val sportId: Int,
     val matchId: Long,
+    val matchStatus:Int,//比赛状态
     val marketId: Long, // 盘口ID
     var marketName: String, // 盘口名称 ex. 讓分盤
     val score: String, // 比分 ex. 1:0
@@ -73,6 +74,13 @@ data class BetSelectionBean(
         }
     }
 
+    fun isMatchEnd(): Boolean {
+        return matchStatusEnum == MatchBasicInfoBean.MatchStatus.FINISHED
+                || matchStatusEnum == MatchBasicInfoBean.MatchStatus.CANCELED
+                || matchStatusEnum == MatchBasicInfoBean.MatchStatus.ABANDONED
+    }
+
+    val matchStatusEnum get() = MatchBasicInfoBean.MatchStatus.of(matchStatus)
 }
 
 enum class BetTypeEnum {

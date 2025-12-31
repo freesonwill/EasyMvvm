@@ -315,6 +315,10 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
         mBinding.tvBetHint.alpha = if (data.isActive) 1.0f else 0.3f
         mBinding.tvBetMoney.alpha = if (data.isActive) 0.7f else 0.1f*/
         mBinding.layoutBet.ivDelete.isVisible = false
+        mBinding.layoutBet.mask.isVisible = !data.isActive
+        mBinding.layoutBet.tvMarketStatus.isVisible = !data.isActive
+        mBinding.layoutBet.tvMarketStatus.text = getString(if(data.isMatchEnd()) R.string.market_pause else R.string.market_close)
+        "aaaa----setBetData isActive:${data.isActive},matchStatus:${data.matchStatusEnum} data;$data".logd(TAG)
     }
 
     private fun setBetButtonByOdds(reserveOdds: Int?, currentOdds: Int) {

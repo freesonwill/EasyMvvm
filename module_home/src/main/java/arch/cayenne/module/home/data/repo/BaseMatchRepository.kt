@@ -215,6 +215,7 @@ abstract class BaseMatchRepository(
         sportId = match.basicInfo.sportId,
         matchId = selectionBean.matchId,
         marketId = selectionBean.marketId,
+        matchStatus = match.basicInfo.status,
         marketName = market.marketName,
         score = match.liveInfo.score,
         selectionId = selectionBean.selectionId,
