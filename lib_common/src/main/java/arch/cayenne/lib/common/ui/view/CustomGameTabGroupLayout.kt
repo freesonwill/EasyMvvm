@@ -235,6 +235,10 @@ class CustomGameTabGroupLayout : FrameLayout {
         this.tabClickListener = listener
     }
 
+    fun tabCount(): Int {
+        return binding.tlVendorList.tabCount
+    }
+
 }
 
 
