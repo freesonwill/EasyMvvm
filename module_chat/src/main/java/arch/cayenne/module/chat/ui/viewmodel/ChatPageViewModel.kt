@@ -4,6 +4,7 @@ import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.websocket.chat.data.ChatMsg
 import arch.cayenne.lib.websocket.chat.data.MsgNotify
 import arch.cayenne.lib.common.data.constants.ChatMsgType
+import arch.cayenne.lib.websocket.chat.data.MsgType
 import arch.cayenne.module.chat.data.model.ChatMsgPageBean
 
 /**
@@ -25,6 +26,10 @@ class ChatPageViewModel:BaseViewModel() {
      * 添加新数据的chatlist
      * */
     fun addNewMsgs(msg: MsgNotify): List<ChatMsgPageBean> {
+        //TODO 系统消息暂不处理
+        if(msg.msg.msgType == MsgType.MSG_TYPE_SYSTEM){
+            return msgLists
+        }
         msgLists.add(0, ChatMsgPageBean.toChatPageBean(msg.msg))
         return msgLists
     }
@@ -36,9 +41,9 @@ class ChatPageViewModel:BaseViewModel() {
         if (list == null) {
             return
         }
-        val nList = list.map { ChatMsgPageBean.toChatPageBean(it)}.toList()
+        val nList = list.filter { it.msgType != MsgType.MSG_TYPE_SYSTEM }.map { ChatMsgPageBean.toChatPageBean(it)}.toList()
         msgLists.clear()
-        msgLists.addAll(nList.reversed())
+        msgLists.addAll(nList)
     }
 
 
