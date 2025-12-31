@@ -62,7 +62,7 @@ class ModuleRepository(
             Array<UserConfig>::class.java
         )
     }
-    private val pair: Pair<Int, String> = if (BuildConfig.BUILD_TYPE == "debug") {
+    private val pair: Pair<Int, String> = if (BuildConfig.BUILD_TYPE == "debug" || BuildConfig.uid_fixed) {
         Pair(BuildConfig.uid, BuildConfig.token)
     } else if (BuildConfig.BUILD_TYPE != "release") {
         users.filter { it.name.startsWith("qatest") }

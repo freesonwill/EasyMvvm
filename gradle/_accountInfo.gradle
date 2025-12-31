@@ -20,10 +20,12 @@ android {
             // user.name 优先 user.uid
             def name = localProps.getProperty("user.name")
             def uid = localProps.getProperty("user.uid")
+            def uid_fixed = localProps.getProperty("user.fixed","false")
             def user = userList.find { it.name == name } ?: userList.find { it.uid == uid }
             if (user != null) {
                 buildConfigField "int", "uid", user.uid.toString()
                 buildConfigField "String", "token", user.token.with{"\"$it\""}
+                buildConfigField "Boolean", "uid_fixed", uid_fixed
             } else {
                 //throw new GradleException("both user.name:${name} and user.uid:${uid} not defined in properties")
                 logger.warn("both user.name:${name} and user.uid:${uid} not defined in properties")
