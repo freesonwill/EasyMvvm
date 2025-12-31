@@ -10,7 +10,6 @@ import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 
 class WLLinearGradientFontSpan : ReplacementSpan {
 
-    // 文字宽度
     private val mBottom = 35.dp2px.toFloat()
     private val pos = floatArrayOf(0.7f, 1.0f)
     private var startColor = Color.BLUE
