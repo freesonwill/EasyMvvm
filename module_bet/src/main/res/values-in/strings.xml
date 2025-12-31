@@ -9,4 +9,6 @@
     <string name="toast_bet_failure">Taruhan gagal, silakan coba lagi</string>
     <string name="hint_empty_amount">Silakan masukkan jumlah taruhan</string>
     <string name="hint_bet_inactive">盘口已暂停/关闭</string>
+    <string name="market_close">盘口关闭</string>
+    <string name="market_pause">盘口暂停</string>
 </resources>
