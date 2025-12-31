@@ -31,23 +31,23 @@ class ChatMainFragment : ChatBaseFragment() {
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
         mViewModel.startChatServer()
-
+        checkLogin()
+        mViewModel.enterRoom(chatType)
     }
 
 
     override fun onStart() {
         super.onStart()
-        checkLogin()
-        mViewModel.enterRoom(chatType)
+
     }
 
     override fun onStop() {
         super.onStop()
-        mViewModel.leaveRoom(chatType)
     }
 
     override fun onDestroy() {
         super.onDestroy()
+        mViewModel.leaveRoom(chatType)
         //首页的直播间不用退出房间
         mViewModel.disConnectChatServer()
     }
