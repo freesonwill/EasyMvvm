@@ -35,6 +35,7 @@
             android:id="@+id/live_chat_history"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:layout_marginTop="@dimen/dp_12"
             app:layout_constraintBottom_toTopOf="@id/input_bg"
             app:layout_constraintTop_toTopOf="parent"
             android:layout_weight="1" />

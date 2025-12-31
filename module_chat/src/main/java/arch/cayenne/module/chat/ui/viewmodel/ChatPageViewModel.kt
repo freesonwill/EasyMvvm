@@ -41,10 +41,9 @@ class ChatPageViewModel:BaseViewModel() {
         if (list == null) {
             return
         }
-//        TODO 系统消息暂不处理
         val nList = list.filter { it.msgType != MsgType.MSG_TYPE_SYSTEM }.map { ChatMsgPageBean.toChatPageBean(it)}.toList()
         msgLists.clear()
-        msgLists.addAll(nList.reversed())
+        msgLists.addAll(nList)
     }
 
 

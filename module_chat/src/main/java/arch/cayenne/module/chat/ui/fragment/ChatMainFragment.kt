@@ -33,6 +33,7 @@ class ChatMainFragment : ChatBaseFragment() {
         mViewModel.startChatServer()
         checkLogin()
         mViewModel.enterRoom(chatType)
+        //102 ～ 120 按issues 里的聊天室列表顺序分别为各个语言的聊天室房间号
     }
 
 

@@ -66,10 +66,8 @@ object ChatMsgUtils {
             spans.find { it.msgType == ChatMsgType.BET_SPORT || it.msgType == ChatMsgType.BET_GAME }
         sharSpan?.let {
             val replaceTv = it.tv.replace("\u2060", "")
-            "sharSpan tv=${it.tv}".logd(TAG)
             newStr = newStr.replace(replaceTv, "[***]")
         }
-        "content after replace $newStr ".logd(TAG)
         return newStr
     }
 
