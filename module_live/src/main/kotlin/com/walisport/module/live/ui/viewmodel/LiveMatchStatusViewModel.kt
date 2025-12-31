@@ -8,7 +8,7 @@ import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import com.walisport.module.live.R
-import arch.cayenne.lib.common.data.constants.MatchStatus
+import arch.cayenne.lib.database.entity.MatchBasicInfoBean.MatchStatus
 import com.walisport.module.live.data.repository.LiveVideoRepository
 import com.walisport.module.live.utils.LiveDateUtil
 import kotlinx.coroutines.Job
