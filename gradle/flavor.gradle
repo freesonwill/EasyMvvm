@@ -39,6 +39,13 @@ android{
             }*/
         }
     }
+
+    sourceSets {
+        // Lazy 配置：只有在需要该 sourceSet 时才会真正配置
+        named("qatest") {
+            assets.srcDir("src/debug/assets")
+        }
+    }
 }
 
 static def getGitVersion() {
