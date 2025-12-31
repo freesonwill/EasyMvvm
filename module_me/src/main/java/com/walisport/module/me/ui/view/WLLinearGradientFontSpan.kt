@@ -12,6 +12,7 @@ class WLLinearGradientFontSpan : ReplacementSpan {
 
     // 文字宽度
     private val mBottom = 35.dp2px.toFloat()
+    private val pos = floatArrayOf(0.7f, 1.0f)
     private var startColor = Color.BLUE
     private var endColor = Color.RED
 
@@ -32,7 +33,6 @@ class WLLinearGradientFontSpan : ReplacementSpan {
         canvas: Canvas, text: CharSequence, start: Int, end: Int, x: Float, top: Int, y: Int,
         bottom: Int, paint: Paint
     ) {
-        val pos = floatArrayOf(0.7f, 1.0f)
         val col = intArrayOf(startColor, endColor)
         val shader = LinearGradient(
             0f, 0f, 0f, mBottom,
