@@ -17,8 +17,10 @@ import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import arch.cayenne.lib.base.BuildConfig
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.base.utils.ext.launch
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
@@ -39,6 +41,7 @@ import arch.cayenne.lib.common.utils.ext.SportStringExt.isGreaterThanValue
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toOdds
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
+import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.getMaxLength
 import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.database.entity.BetSelectionBean
@@ -182,6 +185,14 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
         mBinding.clOddsChange.setOnClickListener {
             showOddsChangeDialog()
         }
+
+        //Todo: for qaTest only
+        if(BuildConfig.BUILD_TYPE == "qatest") {
+            mBinding.clTitleBet.setOnLongClickListener{
+                launch { mViewModel.mockBetData() }
+                true
+            }
+        }
     }
 
     override fun createObserverAtState(): Lifecycle.State = Lifecycle.State.RESUMED
@@ -315,10 +326,6 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
         mBinding.tvBetHint.alpha = if (data.isActive) 1.0f else 0.3f
         mBinding.tvBetMoney.alpha = if (data.isActive) 0.7f else 0.1f*/
         mBinding.layoutBet.ivDelete.isVisible = false
-        mBinding.layoutBet.mask.isVisible = !data.isActive
-        mBinding.layoutBet.tvMarketStatus.isVisible = !data.isActive
-        mBinding.layoutBet.tvMarketStatus.text = getString(if(data.isMatchEnd()) R.string.market_pause else R.string.market_close)
-        "aaaa----setBetData isActive:${data.isActive},matchStatus:${data.matchStatusEnum} data;$data".logd(TAG)
     }
 
     private fun setBetButtonByOdds(reserveOdds: Int?, currentOdds: Int) {

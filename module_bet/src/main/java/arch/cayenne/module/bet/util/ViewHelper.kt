@@ -6,15 +6,18 @@ import android.view.animation.LinearInterpolator
 import androidx.core.animation.addListener
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
 import arch.cayenne.lib.base.utils.ext.ViewExt.postDelayedSafely
 import arch.cayenne.lib.common.data.constants.UserDataKey
 import arch.cayenne.lib.common.data.manager.UserDataManager
+import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.SportDisplayOddsExt.getDisplayOdds
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
 import arch.cayenne.lib.database.entity.BetSelectionBean
 import arch.cayenne.lib.database.entity.OddsStatusEnum
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
+import arch.cayenne.module.bet.R
 import arch.cayenne.module.bet.databinding.ItemBetSheetBinding
 import org.koin.java.KoinJavaComponent.getKoin
 
@@ -27,10 +30,6 @@ internal object ViewHelper {
             "@${bean.odds.getDisplayOdds(false)}"
         } else {
             "@${bean.odds.getOdds(false)}"
-        }
-        //Todo 验收后统一去掉
-        if(odds == "@0.0"){
-            "bindBetSheet:$odds,--${bean.odds}-size:$size--oddType:${manager.getValue(UserDataKey.KEY_ODDS, 0)}--bean:$bean".loge()
         }
         binding.tvOdds.text = odds
         binding.tvSelectionName.text = bean.name
@@ -45,6 +44,10 @@ internal object ViewHelper {
         binding.tvLeagueName.text = bean.leagueName
         binding.tvStatus.isVisible = bean.isPlaying
         binding.tvBetStop.isVisible = !bean.isActive
+        binding.mask.isVisible = !bean.isActive
+        binding.tvBetStop.text = if(!bean.isMatchEnd()) R.string.market_pause.getString() else R.string.market_close.getString()
+        "aaaa----setBetData isActive:${bean.isActive},matchStatus:${bean.matchStatusEnum} data;$bean".logd()
+
         val oddsColor = when (bean.oddsStatus) {
             OddsStatusEnum.UP -> ContextCompat.getColor(
                 binding.root.context,
