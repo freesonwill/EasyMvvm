@@ -259,4 +259,13 @@ class SingleBetViewModel(
         }
         return true
     }
+
+    suspend fun mockBetData(){
+        val data = _onBetSheetListener.value
+        data?.isActive = false
+        _onBetSheetListener.value = data
+        delay(1000)
+        data?.isActive = true
+        _onBetSheetListener.value = data
+    }
 }

@@ -362,7 +362,7 @@ class SubHomeFragmentV2 : BaseFragment<SubHomeViewModel, FragmentSubHomeV2Bindin
                     ) {
                         val pos = parent.getChildAdapterPosition(view)
                         val last = (parent.adapter?.itemCount ?: 0) - 1
-                        outRect.right = if (pos == last) 0 else 4.dp2px   // marginEnd
+                        outRect.right = if (pos == last) 0 else 4.dp2px - 1   // marginEnd
                     }
                 })
                 adapter = sportsListAdapter

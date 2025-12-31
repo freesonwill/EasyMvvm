@@ -1,0 +1,53 @@
+{
+  "basicUpdate_": {
+    "betStop_": true,
+    "bitField0_": 1,
+    "liveInfo_": {
+      "animationLiveUrl_": "",
+      "awayScore_": 0,
+      "chatRoom_": false,
+      "clockModified_": 1767177894363,
+      "clock_": 0,
+      "homeScore_": 0,
+      "liveVideo_": false,
+      "periodName_": "",
+      "period_": "0",
+      "rollClock_": false,
+      "score_": "0:0",
+      "viewerCount_": 34,
+      "memoizedSerializedSize": 2147483647,
+      "unknownFields": {
+        "count": 0,
+        "isMutable": false,
+        "memoizedSerializedSize": 0,
+        "objects": [],
+        "tags": []
+      },
+      "memoizedHashCode": -666408170
+    },
+    "provider_": 0,
+    "startTime_": 0,
+    "status_": 0,
+    "memoizedSerializedSize": 2147483647,
+    "unknownFields": {
+      "count": 0,
+      "isMutable": false,
+      "memoizedSerializedSize": 0,
+      "objects": [],
+      "tags": []
+    },
+    "memoizedHashCode": 2019167020
+  },
+  "bitField0_": 1,
+  "marketUpdate_": [],
+  "matchId_": 3600,
+  "memoizedSerializedSize": 2147483647,
+  "unknownFields": {
+    "count": 0,
+    "isMutable": false,
+    "memoizedSerializedSize": 0,
+    "objects": [],
+    "tags": []
+  },
+  "memoizedHashCode": -1275174592
+}
