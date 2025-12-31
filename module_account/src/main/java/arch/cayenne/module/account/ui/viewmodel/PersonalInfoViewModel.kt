@@ -1,10 +1,15 @@
 package arch.cayenne.module.account.ui.viewmodel
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
+import arch.cayenne.lib.database.entity.UserDataBean
 import arch.cayenne.module.account.data.model.PersonalInfoData
 import arch.cayenne.module.account.data.repo.PersonalInfoRepository
 import org.koin.core.component.inject
 import plugin.koin.KoinViewModel
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.launch
 
 /**
  * @author: ricky.chang
@@ -13,18 +18,17 @@ import plugin.koin.KoinViewModel
  */
 @KoinViewModel
 class PersonalInfoViewModel : BaseViewModel() {
+
     private val repository: PersonalInfoRepository by inject()
-    fun getPersonalInfoData(): List<PersonalInfoData> {
-        return repository.getPersonalInfoData()
+    private val _onUserInfoListener = MutableLiveData<UserDataBean>()
+    val onUserInfoListener: LiveData<UserDataBean> get() = _onUserInfoListener
+    override fun initViewModel() {
+        super.initViewModel()
+        viewModelScope.launch {
+            repository.observeUserInfo().collect {
+                _onUserInfoListener.value = it
+            }
+        }
     }
-    fun saveData(nickName: String, resId: Int, position: Int) {
-        repository.saveData(nickName, resId, position)
-        // Optionally, you can also update the UI or notify the user that the data has been saved
-    }
-    fun getDefaultNickName(): String {
-        return repository.getDefaultNickName()
-    }
-    fun getDefaultPosition(): Int {
-        return repository.getDefaultPosition()
-    }
+
 }

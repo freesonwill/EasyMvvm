@@ -29,7 +29,7 @@ class AccountModuleInitializer: DefaultInitializer<Unit> {
         factory {
             CoroutineScope(Dispatchers.IO)
         }
-        factory { PersonalInfoRepository(get(), get(), get()) }
+        factory { PersonalInfoRepository(get(), get(), get(),get()) }
     }
     private val moduleList: List<Module> = listOf(viewModules, repoModules)
 }

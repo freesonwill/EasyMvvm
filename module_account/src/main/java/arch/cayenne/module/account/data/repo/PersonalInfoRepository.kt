@@ -3,6 +3,7 @@ package arch.cayenne.module.account.data.repo
 import arch.cayenne.lib.base.data.repository.BaseRepository
 import arch.cayenne.lib.common.data.constants.UserDataKey
 import arch.cayenne.lib.common.data.manager.UserDataManager
+import arch.cayenne.lib.database.GameDatabase
 import arch.cayenne.lib.websocket.WebSocketManager
 import arch.cayenne.module.account.R
 import arch.cayenne.module.account.data.model.PersonalInfoData
@@ -16,8 +17,11 @@ import kotlinx.coroutines.CoroutineScope
 class PersonalInfoRepository(
     override val scope: CoroutineScope,
     private val socketManager: WebSocketManager,
-    private val userDataManager: UserDataManager
+    private val userDataManager: UserDataManager,
+    private val database: GameDatabase,
 ) : BaseRepository() {
+
+    fun observeUserInfo() = database.userDataDao().observeUser()
     fun getPersonalInfoData(): List<PersonalInfoData> {
         val personalInfoData = mutableListOf<PersonalInfoData>()
         for (i in 0..7) {
