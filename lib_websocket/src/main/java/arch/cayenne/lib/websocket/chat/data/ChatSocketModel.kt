@@ -124,7 +124,7 @@ data class ChatLeaveRoomResponse(override val code: Int) : IResponse, ChatRespon
 data class ChatSendMsgRequest(
     val roomId: Long,
     val content: String,
-    val refUid: List<Long>? = null,
+    val refUid: List<String>? = null,
     val chatType: Int,
     val msgType: Int,
     val extraData: Map<String,String>? = null
@@ -155,7 +155,7 @@ data class GetChatHistoryResponse(
 data class MsgNotify(val roomId: Long, val msg: ChatMsg) : IResponse
 
 data class ChatRefUser(
-    val uid: Long,
+    val uid: String,
     val userName: String,
     val avatarId: Int,
     val replaceRefUserName: String? = null
@@ -171,8 +171,8 @@ data class ChatMsg(
     val msgId: String,
     val content: String,
     val timestamp: String,
-    val refUid: List<Long>? = null,
-    val refInfos: Map<Long, ChatRefUser>? = null,
+    val refUids: List<String>? = null,
+    val refInfos: Map<String, ChatRefUser>? = null,
     val onlyForSelf: Int,
     val replaceUserName: String? = null,
     val msgType: MsgType,

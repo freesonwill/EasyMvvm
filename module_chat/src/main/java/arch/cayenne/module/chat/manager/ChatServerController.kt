@@ -116,7 +116,7 @@ class ChatServerController(
         chatType: ChatType,
         msgType: MsgType,
         extraData: Map<String,String>?,
-        refUid: List<Long>?,
+        refUid: List<String>?,
     ) {
         scope.launch(Dispatchers.IO) {
             val value =
@@ -146,8 +146,8 @@ class ChatServerController(
         chatType: ChatType,
         msgType: MsgType,
         extraData: Map<String,String>?,
-        refUid: List<Long>?,
-        refInfos: Map<Long, ChatRefUser>?
+        refUid: List<String>?,
+        refInfos: Map<String, ChatRefUser>?
     ): ChatMsg? {
         if (getManagerLoginFlow().value == null) {
             "login is null".logd(TAG)
@@ -162,7 +162,7 @@ class ChatServerController(
             content = content,
             msgId = id,
             timestamp = id,
-            refUid = refUid,
+            refUids = refUid,
             refInfos = refInfos,
             onlyForSelf = 0,
             replaceUserName = "",
@@ -170,7 +170,7 @@ class ChatServerController(
             extraData = extraData,
             chatType = chatType
         )
-        "addLocalMsg msg=${Gson().toJson(msg)}".logd(TAG)
+//        "addLocalMsg msg=${Gson().toJson(msg)}".logd(TAG)
         return msg
     }
 

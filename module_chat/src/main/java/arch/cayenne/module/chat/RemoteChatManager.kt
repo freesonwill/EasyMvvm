@@ -128,7 +128,7 @@ class RemoteChatManager(
         chatType: ChatType,
         msgType: MsgType,
         extraData: Map<String,String>? = null,
-        refUid: List<Long>?,
+        refUid: List<String>?,
     ): ChatSendMsgResponse? {
         val resp = socketManager.chatSendAndWaitProtoMessageResponse<ChatSendMsgResponse>(
             ApiCode.CHAT_SEND_MSG,

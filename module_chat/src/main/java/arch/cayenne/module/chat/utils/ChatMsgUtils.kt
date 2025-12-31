@@ -98,7 +98,7 @@ object ChatMsgUtils {
             )
 //            "recoveryAtChar $newChar  ${Gson().toJson(bean)} ".logd(TAG)
         }
-        "recoveryAtChar ${Gson().toJson(bean)} ".logd(TAG)
+//        "recoveryAtChar ${Gson().toJson(bean)} ".logd(TAG)
 
         if (bean.msgType == ChatMsgType.BET_GAME || bean.msgType == ChatMsgType.BET_SPORT) {
             bean.extraData?.let {
@@ -145,7 +145,7 @@ object ChatMsgUtils {
         return map
     }
 
-    fun createUserInfo(spans: Array<MentionSpan>): Map<Long,ChatRefUser>? {
+    fun createUserInfo(spans: Array<MentionSpan>): Map<String,ChatRefUser>? {
         val users =
             spans.filter { it.msgType == ChatMsgType.AT && it.user != null }.map {it.user!!.uid to it.user }
                 .toMap()
@@ -186,7 +186,6 @@ object ChatMsgUtils {
                     spannable.getSpanStart(it),
                     spannable.getSpanEnd(it)
                 ))
-                "edittext.setSelection(edittext.text.length)".logd(TAG)
             }
     }
 

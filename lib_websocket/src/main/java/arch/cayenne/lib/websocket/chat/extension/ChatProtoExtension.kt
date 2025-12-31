@@ -34,7 +34,7 @@ fun ChatRequestData.chatAsRemoteRequest(
 ): SocketRequestData {
     val json = toJson()
 //    if(apiCode != ApiCode.CHAT_PING)
-    "chat request json  $json".logd(ChatSocketClientService::class.java.simpleName)
+//    "chat request json  $json".logd(ChatSocketClientService::class.java.simpleName)
     return SocketRequestData(
         mid = apiCode.mid,
         sid = apiCode.sid,

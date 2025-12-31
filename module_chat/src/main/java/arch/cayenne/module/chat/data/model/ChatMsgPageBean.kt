@@ -4,6 +4,7 @@ import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.websocket.chat.data.ChatMsg
 import arch.cayenne.lib.common.data.constants.ChatMsgType
 import arch.cayenne.lib.websocket.chat.data.ChatRefUser
+import com.google.gson.Gson
 
 /**
  * @author: wenxi
@@ -20,8 +21,8 @@ data class ChatMsgPageBean(
     val onlyForSelf: Int,
     val msgType: ChatMsgType,
     val replaceUserName: String? = null,
-    val refUid: List<Long>? = null,
-    val refInfos: Map<Long, ChatRefUser>? = null,
+    val refUid: List<String>? = null,
+    val refInfos: Map<String, ChatRefUser>? = null,
     val extraData: Map<String,String>? = null
 ) : Comparable<ChatMsgPageBean> {
 
@@ -30,7 +31,8 @@ data class ChatMsgPageBean(
         fun toChatPageBean(
             bean: ChatMsg,
         ): ChatMsgPageBean {
-                "toChatPageBean content=${bean.content}".logd("ChatMsgPageBean")
+//            "toChatMsg ${Gson().toJson(bean)}".logd("ChatMsgPageBean")
+//                "toChatPageBean ${Gson().toJson(bean)}".logd("ChatMsgPageBean")
             val content = bean.content
             return ChatMsgPageBean(
                 uid = bean.uid,
@@ -39,7 +41,7 @@ data class ChatMsgPageBean(
                 msgId = bean.msgId,
                 content = content,
                 timestamp = bean.timestamp,
-                refUid = bean.refUid,
+                refUid = bean.refUids,
                 refInfos = bean.refInfos,
                 onlyForSelf = bean.onlyForSelf,
                 replaceUserName = bean.replaceUserName,

@@ -80,7 +80,7 @@ class ChatManagerImpl(private val chatRepo: LiveChatRepository) :
         chatType: ChatType,
         msgType: MsgType,
         extraData: Map<String,String>?,
-        refUid: List<Long>?,
+        refUid: List<String>?,
     ): ChatSendMsgResponse? {
         return chatRepo.sendMsg(matchId, content,  chatType, msgType, extraData,refUid)
     }
@@ -106,8 +106,8 @@ class ChatManagerImpl(private val chatRepo: LiveChatRepository) :
         msgType: MsgType,
         extraData: Map<String,String>?,
         chatType: ChatType,
-        refUid: List<Long>?,
-        refInfos: Map<Long, ChatRefUser>?
+        refUid: List<String>?,
+        refInfos: Map<String, ChatRefUser>?
     ): ChatMsg {
         val id = System.currentTimeMillis().toString()
         val msg = ChatMsg(
@@ -117,7 +117,7 @@ class ChatManagerImpl(private val chatRepo: LiveChatRepository) :
             content = content,
             msgId = id,
             timestamp = id,
-            refUid = null,
+            refUids = null,
             onlyForSelf = 0,
             replaceUserName = "",
             msgType = msgType,

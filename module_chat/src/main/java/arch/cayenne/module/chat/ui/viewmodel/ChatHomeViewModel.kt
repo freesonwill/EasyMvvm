@@ -151,7 +151,7 @@ class ChatHomeViewModel() : BaseViewModel() {
      * */
     fun sendMsgToServer(
         content: String,
-        refUid: List<Long>? = null,
+        refUid: List<String>? = null,
         chatType: ChatType,
         msgType: MsgType,
         extraData: Map<String,String>?,
