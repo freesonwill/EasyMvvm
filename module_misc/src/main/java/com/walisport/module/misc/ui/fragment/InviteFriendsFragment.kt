@@ -20,6 +20,7 @@ import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.common.data.model.JSResponseData
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getColor
 import arch.cayenne.lib.common.utils.ext.touchBackPressed
+import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.common.web.WLSWebViewClient
 import com.walisport.module.misc.databinding.FragmentInviteFriendsBinding
 import com.walisport.module.misc.ui.viewmodel.InviteFriendsViewModel
@@ -124,6 +125,7 @@ class InviteFriendsFragment : BaseFragment<InviteFriendsViewModel, FragmentInvit
             if (isWritePermissionGranted) {
                 data.params.file?.let { baseData ->
                     mViewModel.saveImage(baseData, requireContext())
+                    showToast("图片已保存到相册")
                 }
             } else {
                 requestPermissionLauncher.launch(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -131,6 +133,7 @@ class InviteFriendsFragment : BaseFragment<InviteFriendsViewModel, FragmentInvit
         } else { //android 10及以上使用MediaStore保存图片不需要申请权限
             data.params.file?.let { baseData ->
                 mViewModel.saveImage(baseData, requireContext())
+                showToast("图片已保存到相册")
             }
         }
 
