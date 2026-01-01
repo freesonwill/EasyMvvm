@@ -72,6 +72,7 @@
         <item name="android:textColor">@color/color_FFFFFF</item>
         <item name="android:gravity">center</item>
         <item name="skinnableFontWeight">500</item>
+        <item name="android:paddingBottom">1.7dp</item>
     </style>
 
     <style name="MoneyKeyboardButton">
