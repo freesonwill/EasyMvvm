@@ -234,7 +234,7 @@ class SubHomeFragment : BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>()
                 }
                 val cny = CurrencySymbols.getSymbol(it.ccy) +
                         CurrencySymbols.getFormatAmount(it.ccy, reqScore)
-                val info = getString(arch.cayenne.lib.common.R.string.vip_level_info, cny)
+                val info = getString(arch.cayenne.lib.common.R.string.vip_level_need, cny)
                 updateVIPInfo(
                     vipLevel = it.vipLevel,
                     vipStage = it.vipStage,

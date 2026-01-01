@@ -103,7 +103,7 @@ class MatchItemViewHolder(
 
 
             if (basicInfo.status == 5) {  //開賽中
-                tvRoll.visibility = View.VISIBLE
+                tvRoll.visibility = View.GONE
                 tvGameStatus.visibility = View.VISIBLE
                 tvGameStatus.text = liveInfo.period
                 tvGameTime.text = liveClock(liveInfo.clock, liveInfo.clockModified)

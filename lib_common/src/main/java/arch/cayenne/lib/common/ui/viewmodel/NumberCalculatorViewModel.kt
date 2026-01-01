@@ -2,6 +2,7 @@ package arch.cayenne.lib.common.ui.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import arch.cayenne.lib.base.data.model.UnPeekLiveData
 import arch.cayenne.lib.common.data.constants.NumberOverEnum
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoneyForScale
@@ -9,7 +10,7 @@ import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoneyForScale
 
 open class NumberCalculatorViewModel : NumberCalculatorNoLimitViewModel() {
 
-    private val _onNumberLimit = MutableLiveData<Pair<Long, Long>>(Pair(0, 0))
+    private val _onNumberLimit = UnPeekLiveData<Pair<Long, Long>>(Pair(0, 0))
     val onNumberLimit: LiveData<Pair<Long, Long>> get() =  _onNumberLimit
 
     private val _onOverNumberListener = MutableLiveData(NumberOverEnum.DEFAULT)

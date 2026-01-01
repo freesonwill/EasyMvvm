@@ -245,7 +245,7 @@ class SubHomeFragmentV2 : BaseFragment<SubHomeViewModel, FragmentSubHomeV2Bindin
                 }
                 val cny = CurrencySymbols.getSymbol(it.ccy) +
                         CurrencySymbols.getFormatAmount(it.ccy, reqScore)
-                val info = getString(arch.cayenne.lib.common.R.string.vip_level_info, cny)
+                val info = getString(arch.cayenne.lib.common.R.string.vip_level_need, cny)
                 updateVIPInfo(
                     vipLevel = it.vipLevel,
                     vipStage = it.vipStage,
@@ -634,6 +634,7 @@ class SubHomeFragmentV2 : BaseFragment<SubHomeViewModel, FragmentSubHomeV2Bindin
                     currentSortType = MatchListSortType.BY_HOT
                     updateSortingMenuSelection()
                     setSortBtnText()
+                    setSortBtnSelected()
                     mViewModel.setSortType(currentSortType)
                 }
                 toggleTournamentSorting(false)
@@ -646,6 +647,7 @@ class SubHomeFragmentV2 : BaseFragment<SubHomeViewModel, FragmentSubHomeV2Bindin
                     currentSortType = MatchListSortType.BY_TIME
                     updateSortingMenuSelection()
                     setSortBtnText()
+                    setSortBtnSelected()
                     mViewModel.setSortType(currentSortType)
                 }
                 toggleTournamentSorting(false)
@@ -691,6 +693,10 @@ class SubHomeFragmentV2 : BaseFragment<SubHomeViewModel, FragmentSubHomeV2Bindin
                 mBinding.layoutContainer.customTabGroup.setSortBtnText(arch.cayenne.lib.common.R.string.custom_tab_hot.getString())
             }
         }
+    }
+
+    private fun setSortBtnSelected() {
+        mBinding.layoutContainer.customTabGroup.setSortBtnSelected()
     }
 
     private fun setExpandBtnText(text: String) {
