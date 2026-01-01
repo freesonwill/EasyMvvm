@@ -145,4 +145,6 @@ class ChatPageAdapter(
         return holder
     }
 
+
+
 }

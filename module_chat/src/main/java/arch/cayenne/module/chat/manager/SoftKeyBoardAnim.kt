@@ -6,6 +6,7 @@ import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.app.Application
 import android.view.View
+import android.view.animation.PathInterpolator
 import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.animation.addListener
@@ -372,5 +373,18 @@ object SoftKeyBoardAnim {
             })
             animSet.start()
         }
+    }
+
+    /**
+     * 收到at消息时，item的闪烁动画
+     * */
+    fun atFlashAnim(targetView: View): ObjectAnimator {
+        val pathinterpolator = PathInterpolator(0.22f,1f,0.36f,1f)
+        val anim = ObjectAnimator.ofFloat(targetView, "alpha", 0.22f, 1f,0.36f,1f).apply {
+            duration = 1000L
+            interpolator = pathinterpolator
+            start()
+        }
+        return anim
     }
 }
