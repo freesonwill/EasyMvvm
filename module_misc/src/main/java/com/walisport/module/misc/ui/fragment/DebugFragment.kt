@@ -68,6 +68,11 @@ class DebugFragment : BaseFragment<DebugViewModel, FragmentDebugBinding>() {
             space = 22
         }
 
+        //如果是ROG， 且状态栏高度是78px
+        if (Build.MANUFACTURER.equals("asus", ignoreCase = true) && it == 78) {
+            space = 24
+        }
+
         return space
     }
 
